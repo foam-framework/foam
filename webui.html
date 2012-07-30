@@ -1,0 +1,28 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <script language="javascript" src="webui.js"></script> 
+  <title>WebUI Gen</title>
+ </head>
+
+ <body>
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.5) 3px 3px 4px;">
+  <font color="#3333FF">C</font><font color="#FF0000">H</font><font color="#FFCC00">I</font><font color="#3333FF">M</font><font color="#33CC00">E</font></font>
+</div>
+<a href="chime.html">Chime</a>
+<br/>
+<br/>
+
+  <script language="javascript">
+    var ModelDAO = ModelDAO.create(this, StorageDAO.createModels("models"));
+
+    var stack = StackView.create();
+    stack.write(document);
+
+    FOAM.browse(WebUI);
+  </script>
+
+ </body>
+</html>

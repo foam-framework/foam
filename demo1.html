@@ -1,0 +1,74 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+
+  <script language="javascript" src="context.js"></script>
+  <script language="javascript" src="event.js"></script>
+  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="JSONUtil.js"></script>
+  <script language="javascript" src="XMLUtil.js"></script>
+  <script language="javascript" src="FOAM.js"></script>
+  <script language="javascript" src="TemplateUtil.js"></script>
+  <script language="javascript" src="AbstractPrototype.js"></script>
+  <script language="javascript" src="ModelProto.js"></script>
+  <script language="javascript" src="metamodel.js"></script>
+  <script language="javascript" src="view.js"></script>
+  <script language="javascript" src="models.js"></script>
+  <script language="javascript" src="chrome.js"></script>
+  <script language="javascript" src="dao.js"></script>
+  <script language="javascript" src="StackView.js"></script>
+  <script language="javascript" src="DAOController.js"></script>
+  <script language="javascript" src="UML.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <script language="javascript" src="turntable.js"></script>
+  <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
+
+  <title>Chaos </title>
+ </head>
+
+ <body>
+
+  <script language="javascript">
+    var timer = TimerModel.create({});
+
+    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+//    var timerView = DetailView.create(timer.model_);
+    document.writeln(timerView.toHTML());
+    timerView.setValue(timer);
+    timerView.initHTML();
+
+    var space = CanvasView.create({width: 1000, height: 700, background:'#fff'});
+    space.write(document);
+
+    var mouse = mouseModel.create();
+    mouse.connect(space.element());
+
+    var COUNT = 100;
+    var colours = ['#33f','#f00','#fc0','#33f','#3c0'];
+    var s = [];
+    for ( var i = 0 ; i < COUNT ; i++ )
+    {
+       s[i] = circleModel.create({
+          x: Math.random()*300+300,
+          y: Math.random()*300+300,
+	  r: Math.random()*20+2,
+	  color: colours[i%colours.length]
+       });
+       space.addChild(s[i]);
+    }
+
+    for ( var i = 1 ; i < COUNT ; i++ )
+//       if ( i % 5 == 0 )
+       Movement.moveTowards(timer, s[i-1], s[i], 7-6.7*i/COUNT);
+//       else
+//       Movement.orbit(timer, s[i-1], s[i], 10+Math.random(30), 1000);
+			  
+    
+//    Movement.orbit(timer, mouse, s[0], 100, 800);
+    Movement.moveTowards(timer, mouse, s[0], 3);
+
+    space.paint();
+  </script>
+
+ </body>
+</html>

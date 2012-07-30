@@ -1,0 +1,236 @@
+<html>
+ <head>
+  <style type="text/css">
+    .bar {
+       color: white;
+       margin-left:8px;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+    } 
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+
+  <script language="javascript" src="context.js"></script>
+  <script language="javascript" src="event.js"></script>
+  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="AbstractPrototype.js"></script>
+  <script language="javascript" src="ModelProto.js"></script>
+  <script language="javascript" src="view.js"></script>
+  <script language="javascript" src="metamodel.js"></script>
+  <script language="javascript" src="models.js"></script>
+  <script language="javascript" src="facets.js"></script>
+  <script language="javascript" type="text/javascript">
+
+   function loaded()
+   {
+   }
+
+  </script>
+  <title>Chaos Test</title>
+ </head>
+
+ <body onload="loaded()">
+   <div style="background:black; height:25px; padding-top: 8px">
+   <span class="bar" style="color: white; font-weight:bold;" gray;">Models</span>
+     <span class="bar">Interfaces</span>
+     <span class="bar">Activities</span>
+     <span class="bar">Views</span>
+     <span class="bar">Types</span>
+     <span class="bar">Actions</span>
+   </div>
+
+<!--<div style="height:40px;background:-webkit-gradient(radial,100 36,0,100 -40,120,from(white),to(whiteSmoke));"> -->
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.5) 3px 3px 4px;">
+  <font color="#3333FF">C</font><font color="#FF0000">H</font><font color="#FFCC00">A</font><font color="#3333FF">O</font><font color="#33CC00">S</font></font>
+</div>
+
+<br/>
+
+<div id="activity-area" style="width:100%;height:85%;background-color:#eee">
+activity area
+</div>
+<div style="width:100%" id="status-bar">
+   <span id="status1" style="min-width:10%;background-color:#fff;float:center;">status1</span>
+   <span id="status2" style="min-width:70%;max-width:2000px;background-color:#fff;float:right;">status2</span>
+   <span id="status3" style="min-width:20%;;max-width:4000px;background-color:#fff;float:right;">status3</span>
+</div>
+
+<canvas id="uml" width="900" height="400">
+</canvas>
+
+
+</br>
+</br>
+</br>
+
+  <script language="javascript">
+    var models = [ModelModel, PropertyModel];
+
+    document.writeln(toHTML("id", ModelModel, ModelModel));
+    document.write("<br/>");
+    document.writeln(toHTML("id2", ModelModel.properties[0], PropertyModel));
+    document.write("<br/>");
+//    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
+
+    var tv1 = TableView.create(ModelModel);
+    tv1.objs = models;
+    document.writeln(tv1.toHTML());
+    tv1.init();
+
+    var dv = DetailView.create(ModelModel);
+    document.writeln(dv.toHTML());
+    dv.init();
+
+    tv1.selectionModel.addListener(function (src, property, oldValue, newValue) {
+       if ( newValue )
+          dv.setValue(tv1.selectionModel.getValue().clone());
+    });
+
+    // Events.follow(tv1.selectionModel, dv);
+    // dv.setModel(tv1.selectionModel);
+
+
+    document.write("<pre>");
+    document.write(toJSON(ModelModel, ModelModel));
+    document.write("\r\n");
+    document.write(toMultiLineJSON(ModelModel, ModelModel));
+    document.write("\r\n");
+    document.write("<textarea cols=120 rows=20>");
+    document.write(toXML(ModelModel, ModelModel));
+    document.write("\r\n");
+    document.write(toXML(models, ModelModel));
+    document.writeln("</textarea>");
+
+    document.writeln(ModelModel);
+    document.writeln(ModelModel.getPrototype());
+    document.writeln(ModelModel.getPrototype().create());
+
+    var o = ModelModel.create({ name: 'User', label: 'User' });
+
+    document.writeln("ModelModelObj: " + o);
+    document.writeln("ModelModel: " + o.model_);
+    document.writeln("ModelModel.name: " + o.name_);
+
+    var example = document.getElementById('uml');
+    var ctx     = example.getContext('2d');
+
+    drawUML(ctx,100,100,ModelModel);
+    drawUML(ctx,400,100,PropertyModel);
+
+    ctx.beginPath();  
+    ctx.moveTo(250,180);  
+    ctx.lineTo(400,180); 
+    ctx.stroke();
+
+    document.writeln("</br><h2>Test Events</h2>");
+    var l = function(obj, property, oldValue, newValue)
+    {
+       document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
+    }
+
+    var pm = o.propertyModel('name');
+    document.writeln(pm + " val: " + pm.getValue());
+//    pm.addListener(function() {document.writeln("name updated via property model")});
+
+    // o.addListener(l);
+    // o.addPropertyListener('name', l);
+    // o.addPropertyListener('label',l);
+
+    pm.setValue("foo");
+    pm.setValue("bar");
+
+    o.name = 'Group';
+    o.label = 'Group'
+
+//     l("foo","bar","old", "new");
+
+    o.globalChange();
+
+    document.writeln(o);
+
+    var sm = new SimpleModel("foo");
+    sm.addPropertyListener(l);
+
+    document.writeln(sm.getValue());
+    sm.setValue("bar");
+    document.writeln(sm.getValue());
+
+
+    document.writeln("</br><h2>Test New Events</h2>");
+    var e = { __proto__: PropertyChangeSupport };
+
+    e.subscribe(['property','lname'], l);
+    e.subscribe(['property','age'], l);
+    e.subscribe(['property'], function (source,topic) { document.writeln("property: " + topic); });
+    e.subscribe([], function (source,topic) { document.writeln("global: " + topic); });
+    e.subscribe([], e.oneTime(function (source,topic) { document.writeln("one-time: " + topic); }));
+    
+//    document.writeln("subs: " + e.publishAsync(['property','age'], "************async***********", "*********async********"));
+    document.writeln("subs: " + e.publish(['property','age'], "old", "new"));
+    document.writeln("subs: " + e.publish(['property','lname'], "old", "new"));
+    document.writeln("subs: " + e.publish(['property','company'], "old", "new"));
+    document.writeln("subs: " + e.publish(['on','focus'], "old", "new"));
+
+    e.publish(['property','*'], "old", "new");
+    e.publish(['property','*'], "old", "new");
+
+    e.propertyChange('age', 10, 11); 
+
+      /*
+    e.subscribe(['test'], function (source,topic) { document.writeln("normal: " + topic); });
+    e.subscribe(['test'], e.async(function (source,topic) { document.writeln("async: " + topic); }));
+    e.subscribe(['test'], e.merged(function (source,topic) { document.writeln("merged: " + topic); }));
+    
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+
+      */
+  </script>
+
+<canvas id="view" width="300" height="30">
+</canvas>
+
+  <script language="javascript">
+
+    example = document.getElementById('view');
+    ctx     = example.getContext('2d');
+
+    var v1 = TextFieldView.create();
+    var v2 = TextFieldView.create();
+    var v3 = ProgressView.create();
+    var v4 = { __proto__: ProgressCView };
+
+    document.writeln("<br/>");
+
+    document.writeln(v1.toHTML());
+    v1.init();
+
+    document.writeln(v2.toHTML());
+    v2.init();
+
+    document.writeln(v3.toHTML());
+    v3.init();
+
+    v4.init(ctx);
+
+    v2.setModel(v1.model);
+    v3.setModel(v1.model);
+    v4.setModel(v1.model);
+
+    document.writeln("<br/>subs: " + e.subs_);
+
+
+  </script>
+
+
+ </body>
+</html>

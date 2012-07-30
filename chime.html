@@ -1,0 +1,116 @@
+<html>
+ <head>
+  <style type="text/css">
+    .bar {
+       color: white;
+       margin-left:8px;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+    } 
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+
+  <script language="javascript" src="context.js"></script>
+  <script language="javascript" src="event.js"></script>
+  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="JSONUtil.js"></script>
+  <script language="javascript" src="XMLUtil.js"></script>
+  <script language="javascript" src="FOAM.js"></script>
+  <script language="javascript" src="TemplateUtil.js"></script>
+  <script language="javascript" src="AbstractPrototype.js"></script>
+  <script language="javascript" src="ModelProto.js"></script>
+  <script language="javascript" src="metamodel.js"></script>
+  <script language="javascript" src="view.js"></script>
+  <script language="javascript" src="models.js"></script>
+  <script language="javascript" src="dao.js"></script>
+  <script language="javascript" src="chrome.js"></script>
+  <script language="javascript" src="StackView.js"></script>
+  <script language="javascript" src="DAOController.js"></script>
+  <script language="javascript" src="power.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+
+  <script language="javascript" src="resources/js/Iuppiter.js"></script>
+
+  <title>CHIME</title>
+ </head>
+
+ <body>
+   <div hidden style="background:black; height:25px; padding-top: 8px">
+   <span class="bar" style="color: white; font-weight:bold;gray;">Models</span>
+     <span class="bar">Interfaces</span>
+     <span class="bar">Activities</span>
+     <span class="bar">Views</span>
+     <span class="bar">Types</span>
+     <span class="bar">Actions</span>
+   </div>
+
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.5) 3px 3px 4px;">
+  <font color="#3333FF">C</font><font color="#FF0000">H</font><font color="#FFCC00">I</font><font color="#3333FF">M</font><font color="#33CC00">E</font></font>
+</div>
+<a href="issue.html">Issues</a> | <a href="test.html">Test</a> | <a href="power.html">Power</a>
+<br/>
+<br/>
+
+  <script language="javascript">
+    // to re-load models into local storage run the follow from JS shell: localStorage.removeItem('models');
+    var models = [
+       ActionModel,
+       AlternateView,
+       ApplicationPower,
+       BatteryMeter,
+       BookmarkModel,
+       CanvasModel,
+       Dragon,
+       circleModel,
+       ClockView,
+       DAOController,
+       DAOCreateController,
+       DAOUpdateController,
+       EyeCViewModel,
+       EyesCViewModel,
+       GraphModel,
+       Issue,
+       MethodModel,
+       ModelModel,
+       mouseModel,
+       NeedleMeter,
+       PanelCViewModel,
+       Power,
+       PropertyModel,
+       RectModel,
+       Screen,
+       StackView,
+       TimerModel,
+       UnitTest,
+       UnitTests,
+       System,
+       Developer,
+       EMail
+//       WebUI
+    ];
+
+
+    var ModelDAO = ModelDAO.create(this,StorageDAO.createModels("models"));
+
+
+    if ( ModelDAO.select().length == 0 ) {
+       for ( var i = 0 ; i < models.length ; i++ ) {
+          ModelDAO.put(models[i]);
+       }
+    } 
+
+    // var ModelDAO = ArrayDAO.create(models);
+
+    var stack = StackView.create();
+    stack.write(document);
+
+    FOAM.browse(Model);
+  </script>
+
+ </body>
+</html>

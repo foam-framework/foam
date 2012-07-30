@@ -1,0 +1,527 @@
+<html>
+ <head>
+  <style type="text/css">
+    .bar {
+       color: white;
+       margin-left:8px;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+    } 
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+
+  <script language="javascript" src="context.js"></script>
+  <script language="javascript" src="event.js"></script>
+  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="JSONUtil.js"></script>
+  <script language="javascript" src="XMLUtil.js"></script>
+  <script language="javascript" src="FOAM.js"></script>
+  <script language="javascript" src="TemplateUtil.js"></script>
+  <script language="javascript" src="AbstractPrototype.js"></script>
+  <script language="javascript" src="ModelProto.js"></script>
+  <script language="javascript" src="metamodel.js"></script>
+  <script language="javascript" src="view.js"></script>
+  <script language="javascript" src="models.js"></script>
+  <script language="javascript" src="chrome.js"></script>
+  <script language="javascript" src="dao.js"></script>
+  <script language="javascript" src="StackView.js"></script>
+  <script language="javascript" src="DAOController.js"></script>
+  <script language="javascript" src="UML.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <script language="javascript" src="turntable.js"></script>
+  <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
+
+  <script language="javascript" type="text/javascript">
+
+   function loaded()
+   {
+   }
+
+  </script>
+  <title>Chaos Test</title>
+ </head>
+
+ <body onload="loaded()">
+   <div style="background:black; height:25px; padding-top: 8px">
+   <span class="bar" style="color: white; font-weight:bold;" gray;">Models</span>
+     <span class="bar">Interfaces</span>
+     <span class="bar">Activities</span>
+     <span class="bar">Views</span>
+     <span class="bar">Types</span>
+     <span class="bar">Actions</span>
+   </div>
+
+<!--<div style="height:40px;background:-webkit-gradient(radial,100 36,0,100 -40,120,from(white),to(whiteSmoke));"> -->
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.5) 3px 3px 4px;">
+  <font color="#3333FF">C</font><font color="#FF0000">H</font><font color="#FFCC00">A</font><font color="#3333FF">O</font><font color="#33CC00">S</font></font>
+</div>
+
+<br/>
+<img src="images/facet.png"/>
+
+
+<!--
+<div id="activity-area" style="width:100%;height:85%;background-color:#eee">
+activity area
+</div>
+<div style="width:100%" id="status-bar">
+   <span id="status1" style="min-width:10%;background-color:#fff;float:center;">status1</span>
+   <span id="status2" style="min-width:70%;max-width:2000px;background-color:#fff;float:right;">status2</span>
+   <span id="status3" style="min-width:20%;;max-width:4000px;background-color:#fff;float:right;">status3</span>
+</div>
+
+-->
+
+<canvas id="uml" width="900" height="700">
+</canvas>
+
+
+</br>
+</br>
+</br>
+
+  <script language="javascript">
+    // var models = [ModelModel, PropertyModel];
+    var models = [
+       ModelModel,
+       PropertyModel,
+       ActionModel,
+       MethodModel,
+       circleModel,
+       CanvasModel,
+       RectModel,
+       DAOController,
+       TimerModel,
+       mouseModel,
+       PanelCViewModel,
+       EyeCViewModel,
+       EyesCViewModel,
+       ClockView,
+       TextFieldView,
+       BookmarkModel
+    ];
+
+/*
+    document.writeln(toHTML("id", ModelModel, ModelModel));
+    document.write("<br/>");
+    document.writeln(toHTML("id2", ModelModel.properties[0], PropertyModel));
+*/
+    document.write("<br/>");
+//    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
+
+    document.writeln("<table><tr><td valign=top>");
+    var tv1 = TableView.create(ModelModel);
+    tv1.objs = models;
+    document.writeln(tv1.toHTML());
+    tv1.initHTML();
+
+    document.writeln("</td><td><font size=-1>");
+    var dv = DetailView.create(ModelModel);
+    document.writeln(dv.toHTML());
+    dv.initHTML();
+    document.writeln("</font></td></tr></table>");
+
+    tv1.selectionModel.addListener(function (src, property, oldValue, newValue) {
+       if ( newValue )
+          dv.setValue(tv1.selectionModel.getValue()/*.clone()*/);
+    });
+
+    // Events.follow(tv1.selectionModel, dv);
+    // dv.setModel(tv1.selectionModel);
+
+    /*
+    console.log("<br/><br/>BookmarkModel");
+    console.log(BookmarkModel);
+
+    var tvbm = TableView.create(BookmarkModel);
+    tvbm.objs = bookmarks;
+    document.writeln(tvbm.toHTML());
+    tvbm.initHTML();
+    */
+
+    document.write("<pre>");
+    document.write(JSONUtil.compact.stringify(ModelModel));
+    document.write("\r\n");
+    document.write(JSONUtil.pretty.stringify(ModelModel));
+    document.write("\r\n");
+    document.write("<textarea cols=120 rows=20>");
+    document.write(XMLUtil.stringify(ModelModel));
+    document.write("\r\n");
+    document.write(XMLUtil.stringify(models));
+    document.writeln("</textarea>");
+
+      /*
+    document.writeln(ModelModel);
+    document.writeln(ModelModel.getPrototype());
+    document.writeln(ModelModel.getPrototype().create());
+      */
+    var o = ModelModel.create({ name: 'User', label: 'User' });
+
+      /*
+    document.writeln("ModelModelObj: " + o);
+    document.writeln("ModelModel: " + o.model_);
+    document.writeln("ModelModel.name: " + o.name_);
+      */
+    var example = document.getElementById('uml');
+    var ctx     = example.getContext('2d');
+
+    drawUML(ctx,100,100,ModelModel);
+    drawUML(ctx,400,100,PropertyModel);
+
+    ctx.beginPath();  
+    ctx.moveTo(250,180);  
+    ctx.lineTo(400,180); 
+    ctx.stroke();
+
+    document.writeln("</br><h2>Test Events</h2>");
+    var l = function(obj, property, oldValue, newValue)
+    {
+       document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
+    }
+
+    var pm = o.propertyModel('name');
+    document.writeln(pm + " val: " + pm.getValue());
+//    pm.addListener(function() {document.writeln("name updated via property model")});
+
+    // o.addListener(l);
+    // o.addPropertyListener('name', l);
+    // o.addPropertyListener('label',l);
+
+    pm.setValue("foo");
+    pm.setValue("bar");
+
+    o.name = 'Group';
+    o.label = 'Group'
+
+//     l("foo","bar","old", "new");
+
+    o.globalChange();
+
+    document.writeln(o);
+
+    var sm = new SimpleModel("foo");
+    sm.addPropertyListener(l);
+
+    document.writeln(sm.getValue());
+    sm.setValue("bar");
+    document.writeln(sm.getValue());
+
+
+    document.writeln("</br><h2>Test New Events</h2>");
+    var e = { __proto__: PropertyChangeSupport };
+
+    e.subscribe(['property','lname'], l);
+    e.subscribe(['property','age'], l);
+    e.subscribe(['property'], function (source,topic) { document.writeln("property: " + topic); });
+    e.subscribe([], function (source,topic) { document.writeln("global: " + topic); });
+    e.subscribe([], e.oneTime(function (source,topic) { document.writeln("one-time: " + topic); }));
+    
+//    document.writeln("subs: " + e.publishAsync(['property','age'], "************async***********", "*********async********"));
+    document.writeln("subs: " + e.publish(['property','age'], "old", "new"));
+    document.writeln("subs: " + e.publish(['property','lname'], "old", "new"));
+    document.writeln("subs: " + e.publish(['property','company'], "old", "new"));
+    document.writeln("subs: " + e.publish(['on','focus'], "old", "new"));
+
+    e.publish(['property','*'], "old", "new");
+    e.publish(['property','*'], "old", "new");
+
+    e.propertyChange('age', 10, 11); 
+
+      /*
+    e.subscribe(['test'], function (source,topic) { document.writeln("normal: " + topic); });
+    e.subscribe(['test'], e.async(function (source,topic) { document.writeln("async: " + topic); }));
+    e.subscribe(['test'], e.merged(function (source,topic) { document.writeln("merged: " + topic); }));
+    
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+    e.publish(['test'], "foo", "bar");
+
+      */
+  </script>
+
+<canvas id="view" width="300" height="30">
+</canvas>
+
+  <script language="javascript">
+
+    example = document.getElementById('view');
+    ctx     = example.getContext('2d');
+
+    var v1 = TextFieldView.create();
+    var v2 = TextFieldView.create();
+    var v3 = ProgressView.create();
+    var v4 = { __proto__: ProgressCView };
+
+    document.writeln("<br/>");
+
+    document.writeln(v1.toHTML());
+    v1.initHTML();
+
+    document.writeln(v2.toHTML());
+    v2.initHTML();
+
+    document.writeln("</br>");
+    document.writeln(v3.toHTML());
+    v3.initHTML();
+
+    v4.setCanvas(ctx);
+
+    v2.setModel(v1.model);
+    v3.setModel(v1.model);
+    v4.setModel(v1.model);
+
+//    document.writeln("<br/>subs: " + e.subs_);
+
+
+    document.writeln("</br><h2>Test DetailView</h2>");
+
+    
+//    var user = new (o.getPrototype())();
+
+    document.writeln("<table><tr>");
+    document.writeln("<td>");
+
+    DomModel.DEFAULT_EVENT = 'onkeyup';
+o = ModelModel;
+    var dv1 = DetailView.create(o.model_);
+    dv1.setValue(o);
+    document.writeln("<td>");
+    dv1.write(document);
+    document.writeln("</td>");
+
+	/*
+    var dv2 = DetailView.create(o.model_);
+    dv2.setValue(o);
+    document.writeln("<td>");
+    dv2.write(document);
+    document.writeln("</td>");
+*/
+    var dv3 = TextAreaView.create({displayHeight:30});
+	// dv3.setModel(o.model_);
+    document.writeln("<td valign=top>");
+    document.writeln(dv3.toHTML());
+//    document.writeln("</td>");
+    dv3.initHTML();
+
+    var dv4 = TextAreaView.create({displayHeight:30});
+    // dv4.setModel(o.model_);
+//    document.writeln("<td>");
+    document.writeln(dv4.toHTML());
+    document.writeln("</td>");
+    dv4.initHTML();
+    document.writeln("</tr></table>");
+
+    dv1.setModel(o);
+    // dv2.setModel(o);
+    dv3.setModel({
+       __proto__: o,
+       setValue: function (val) { return JSONUtil.parse(val);},
+       getValue: function () { return JSONUtil.stringify(this); }
+    });
+    dv4.setModel({
+       __proto__: o,
+       setValue: function (val) { },
+       getValue: function () { return XMLUtil.stringify(this); }
+    });
+    DomModel.DEFAULT_EVENT = 'onchange';
+
+    document.writeln("</br><h2>Test Property Linking</h2>");
+
+
+    var planetModel = circleModel;
+
+    var space = CanvasView.create({width: 800, height: 600, background:'#000'});
+    document.writeln("<table><tr>");
+    document.writeln("<td valign=top>");
+    document.writeln(space.toHTML());
+    document.writeln("</td>");
+
+    space.initHTML();
+
+    var timer = TimerModel.create({});
+    // timer.start();
+
+    var Planet = planetModel.getPrototype();
+
+    var sun    = Planet.create({r:30,x:400,y:300,color:'yellow'});
+    var venus  = Planet.create({r:6, color: 'green'});
+    var earth  = Planet.create({r:10, color: 'blue'});
+    var moon   = Planet.create({r:5, color:'lightgray'});
+    var apollo = Planet.create({r:3, color:'white'});
+    var mars   = Planet.create({r:8, color: 'red'});
+    var mmoons = [
+	Planet.create({r:2, color: 'red'}),
+	Planet.create({r:3, color: 'red'}),
+	Planet.create({r:4, color: 'red'})
+    ];
+    space.addChild(sun);
+    space.addChild(venus);
+    space.addChild(earth);
+    space.addChild(moon);
+    space.addChild(apollo);
+    space.addChild(mars);
+    for ( var i = 0 ; i < mmoons.length ; i++ ) { space.addChild(mmoons[i]); Movement.orbit(timer, mars, mmoons[i], 20+i*10, 1500+372*i); }
+
+    Movement.orbit(timer,   sun,  venus,  80,  2007);
+    Movement.orbit(timer,   sun,  earth, 160,  6011);
+    Movement.orbit(timer,   sun,   mars, 260, 10007);
+    Movement.orbit(timer, earth,   moon,  50,  2049);
+    Movement.orbit(timer,  moon, apollo,  10,  1513);
+//    Movement.moveTowards(timer, moon, apollo, 0.75);
+    space.paint();
+
+    document.writeln("<td valign=top>");
+
+    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+//    var timerView = DetailView.create(timer.model_);
+    document.writeln(timerView.toHTML());
+    timerView.setValue(timer);
+    timerView.initHTML();
+
+    document.writeln("</td><td valign=top>");
+    var sunView = DetailView.create(sun.model_);
+    document.writeln(sunView.toHTML());
+    sunView.setValue(sun);
+    sunView.initHTML();
+
+    var earthView = DetailView.create(sun.model_);
+    document.writeln(earthView.toHTML());
+    earthView.setValue(earth);
+    earthView.initHTML();
+
+    document.writeln("</td>");
+    document.writeln("</tr></table>");
+
+
+    var dragon = Dragon.create({
+      width: 1000,
+      height: 800,
+      backgroundColor: 'green',
+      timer:timer
+    });
+
+    var tt = Turntable.create();
+//    space.addChild(tt);
+	tt.write(document);
+    tt.paint();
+    dragon.write(document);
+    dragon.paint();
+
+    timer.start();
+    Events.link(timer.propertyModel('time'), tt.propertyModel('time'));
+  
+    var dmouse = mouseModel.create();
+    dmouse.connect(dragon.canvasView.element());
+    dragon.eyes.watch(dmouse);
+
+    document.writeln("<br/><h2>MoveTowards</h2>");  
+    var field = CanvasView.create({width:400, height:400, background:'#0d0'});
+    document.writeln(field.toHTML());
+    field.initHTML();
+ 			  
+    var bug1 = Planet.create({r:2, color: 'blue',   x: 50, y: 50});
+    var bug2 = Planet.create({r:2, color: 'red',    x: 350, y: 50});
+    var bug3 = Planet.create({r:2, color: 'yellow', x: 350, y: 350});
+    var bug4 = Planet.create({r:2, color: 'orange', x: 50, y: 350});
+
+    field.addChild(bug1);
+    field.addChild(bug2);
+    field.addChild(bug3);
+    field.addChild(bug4);
+
+    field.paint();
+    field.erase = function() {};
+
+			  
+    Movement.moveTowards(timer, bug1, bug2, 1.2);
+    Movement.moveTowards(timer, bug2, bug3, 0.8);
+    Movement.moveTowards(timer, bug3, bug4, 0.4);
+//    Movement.moveTowards(timer, bug4, bug1, 0.22);
+
+    var mouse = mouseModel.create();
+    mouse.connect(field.element());
+    Movement.orbit(timer, mouse, bug1, 80, 1500);
+//    Movement.moveTowards(timer, mouse, bug1, 0.24);
+
+    document.writeln("<table><tr><td valign=top>");
+    var mouseView = DetailView.create(mouse.model_);
+    document.writeln(mouseView.toHTML());
+    mouseView.setValue(mouse);
+    mouseView.initHTML();
+
+    document.writeln("</td><td>");
+
+    var bugView = DetailView.create(bug1.model_);
+    document.writeln(bugView.toHTML());
+    bugView.setValue(bug1);
+    bugView.initHTML();
+    document.writeln("</td></tr></table>");
+
+    var clock = ClockView.create({x:700,y:90,r:80,color:'red'});
+    space.addChild(clock);
+
+    var eye = EyeCViewModel.create({x:60,y:60,r:50,color:'red'});
+    space.addChild(eye);
+    eye.watch(mars);	  
+
+    var graph = GraphModel.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
+    space.addChild(graph);
+
+    graph.watch(apollo.propertyModel('y'));
+
+    var eyes = EyesCViewModel.create({x:600,y:470});
+    space.addChild(eyes);
+    eyes.watch(mars);	  
+
+    var eyes2 = EyesCViewModel.create({x:100,y:100});
+    field.addChild(eyes2);
+    eyes2.watch(mouse);	  
+
+    // todo: fix 
+//    Movement.orbit(timer,   sun,  eyes,  180,  1007);
+
+</script>
+<img src="images/controller.png"/>
+<script>
+
+
+    document.writeln("<br/><h2>Controller</h2>");
+
+    var bookmarksDAO = ArrayDAO.create(bookmarks);
+//    var bookmarksDAO = StorageDAO.create("bookmarks");
+    var ctrl2 = ActionBorder.create(DAOController, DAOController.create({
+      model: BookmarkModel,
+      dao: bookmarksDAO,
+      selection: bookmarks[0]
+    }));
+
+    var stack2 = StackView.create();
+
+    stack2.write(document);
+    ctrl2.__proto__.stackView = stack2;
+    stack2.pushView(ctrl2, "Bookmarks");
+
+    var ctrl = ActionBorder.create(DAOController, DAOController.create({
+      model: ModelModel,
+      dao: ArrayDAO.create(models),
+      selection: ModelModel
+    }));
+
+    var stack = StackView.create();
+
+    stack.write(document);
+    ctrl.__proto__.stackView = stack;
+    stack.pushView(ctrl, "Browse Models");
+
+  </script>
+
+ </body>
+</html>

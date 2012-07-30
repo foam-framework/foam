@@ -1,0 +1,63 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="chaos.css" />
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <title>FOAM Diagram </title>
+ </head>
+ <body>
+  <script language="javascript">
+    var timer = TimerModel.create({});
+    var space = CanvasView.create({width: 2000, height: 1200, background: 'white'});
+
+    space.write(document);
+
+    function box(color, x, text) {
+      return BoxModel.create({color: 'white', width: 120, height:100, font: '10pt Arial', y: -200, background: color, x: x, text: text});
+    }
+
+    var x = -100;
+    var sql       = box('green',  x+=120, 'Issue.sql');
+    var jdbc      = box('red',    x+=120, 'IssueDB.java');
+    var java      = box('red',    x+=120, 'Issue.java');
+    var skeleton  = box('red',    x+=120, 'IssueSkeleton.java');
+    var proto     = box('black',  x+=120, 'Issue.proto');
+    var stub      = box('blue',   x+=120, 'IssueStub.js');
+    var js        = box('blue',   x+=120, 'Issue.js');
+    var ui        = box('blue',   x+=120, 'Issue_UI.js');
+    var ui_tm     = box('blue',   x,      'IssueColumns.js');
+    var ui_table  = box('blue',   x,      'IssueTable.js');
+    var ui_detail = box('blue',   x,      'IssueDetail.js');
+    var ui_ctrl   = box('blue',   x,      'IssueController.js');
+    var ui_model  = box('blue',   x,      'IssueModel.js');
+    var html      = box('orange', x+=120, 'Issue.html');
+    var css       = box('pink',   x+=120, 'Issue.css');
+    var middle    = box('black',  380,    'Middleware');
+
+    middle.y = 500;
+    middle.width = 360;
+    middle.height = 0;
+/*
+    var  = box('', x+=50, 'Issue');
+*/
+
+    space.addChildren(
+      sql, jdbc, java, skeleton, proto, stub, js, ui, html, css,
+      ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle
+    );
+
+    var M = Movement;
+    var B = M.bounce(0.2, 0.08, 3);
+
+    M.compile([
+       [1000, function() { sql.y = 400; }, B],
+       [1000, function() { jdbc.y = java.y = skeleton.y = 400;   }, B],
+       [1000, function() { proto.y = 400;   }, B],
+       [1000, function() { stub.y = js.y = ui.y = 400;   }, B],
+       [1000, function() { middle.height = 35;   }, B],
+       [1000, function() { html.y = 400;   }, B],
+       [1000, function() { css.y = 400;   }, B],
+       [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
+    ])();
+  </script>
+ </body>
+</html>

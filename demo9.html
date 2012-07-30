@@ -1,0 +1,97 @@
+<html>
+ <head>
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <title>Chaos Uses</title>
+ </head>
+ <body>
+  <script language="javascript">
+    var space   = CanvasView.create({width: 2000, height: 1700});
+    var timer   = TimerModel.create({interval:20});
+
+    space.write(document);
+
+    var dCircle = circleModel.create({
+      color: 'black',
+      x: 200, y: 200,
+      r: 10
+    });
+    var dLabel = LabelModel.create({
+      color: 'black',
+      text: 'Data',
+      align: 'center',
+      x: 200, y: 180,
+      font: '22pt Arial'
+    });
+
+    var gCircle = circleModel.create({
+      color: 'black',
+      x: 700, y: 200,
+      r: 10
+    });
+    var gLabel = LabelModel.create({
+      color: 'black',
+      text: 'Graphics',
+      align: 'center',
+      x: 700, y: 180,
+      font: '22pt Arial'
+    });
+
+    var cCircle = circleModel.create({
+      color: 'black',
+      x: 450, y: 600,
+      r: 10
+    });
+    var cLabel = LabelModel.create({
+      color: 'black',
+      text: 'Code',
+      align: 'center',
+      x: 450, y: 640,
+      font: '22pt Arial'
+    });
+    
+    var graph = GraphModel.create({
+      x: 80, y: 80,  width: 70, height: 70, graphColor: null, capColor: 'red', lineWidth: 3, style: 'Line', data:[1,2,4,8,16,32,64]
+    });
+
+    var bImage = ImageModel.create({
+      x: 555, y: 205, src: 'resources/demo9/block.png', scale: 0.15
+    });
+    var dImage = ImageModel.create({
+      x: 460, y: 355, src: 'resources/demo9/dragon.png', scale: 0.25
+    });
+    var pImage = ImageModel.create({
+      x: 395, y: 205, src: 'resources/demo9/power.png', scale: 0.1
+    });
+    var iImage = ImageModel.create({
+    x: 240, y: 205, src: 'resources/demo9/issue_small.png', scale: 0.75
+    });
+    var cImage = ImageModel.create({
+      x: 345, y: 350, src: 'resources/demo9/chime.png', scale: 0.8
+    });
+
+    space.addChildren(
+      graph,
+      bImage,
+      dImage,
+      pImage,
+      iImage,
+      cImage,
+      dCircle, dLabel,
+      gCircle, gLabel,
+      cCircle, cLabel,
+      {
+        paint: function(c) {
+          var c = space.canvas;
+          c.beginPath();c.moveTo(dCircle.x, dCircle.y);c.lineTo(gCircle.x, gCircle.y);c.stroke();
+          c.beginPath();c.moveTo(dCircle.x, dCircle.y);c.lineTo(cCircle.x, cCircle.y);c.stroke();
+          c.beginPath();c.moveTo(cCircle.x, cCircle.y);c.lineTo(gCircle.x, gCircle.y);c.stroke();
+        }
+      }
+    );
+
+    space.paint();
+
+    setTimeout(space.paint.bind(space), 200);
+  </script>
+ </body>
+</html>
