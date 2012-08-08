@@ -911,10 +911,11 @@ var Issue = FOAM.create(
            required: true,
            displayWidth: 12,
            displayHeight: 1,
+           defaultValue: 0,
            view: 'IntFieldView',
            help: 'Issue\'s unique sequence number.'
         },
-       {
+        {
 	   name: 'severity',
 	   label: 'Severity',
 	   view: {

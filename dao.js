@@ -21,6 +21,12 @@ var query = {
     if ( ! p1 ) return p2;
     if ( ! p2 ) return p1;
     return function(arg) { return p1(arg) && p2(arg); };
+  },
+
+  or: function(p1, p2) {
+    if ( ! p1 ) return p2;
+    if ( ! p2 ) return p1;
+    return function(arg) { return p1(arg) || p2(arg); };
   }
 
 };
@@ -36,11 +42,42 @@ var FilteredDAO = {
               return delegate.select(query.and(predicate, this.predicate));
             },
 
-          forEach: function(action, predicate) {
-            return delegate.forEach(action, query.and(predicate, this.predicate));
-          }
+            forEach: function(action, predicate) {
+              return delegate.forEach(action, query.and(predicate, this.predicate));
+            }
 	};
     }
+};
+
+
+/**
+ * Set a specified properties value with an auto-increment
+ * sequence number on DAO.put() if the properties value
+ * is set to the properties default value.
+ */
+var SeqNoDAO = {
+
+  create: function(prop, startSeqNo, delegate) {
+    delegate.forEach(function(obj) {
+      var val = obj[prop.name];
+
+      startSeqNo = Math.max(val, startSeqNo);
+    });
+
+    return {
+      __proto__: delegate,
+      prop:      prop,
+
+      put: function(obj) {
+        var val = obj[prop.name];
+
+        if ( val == prop.defaultValue )
+          obj[prop.name] = startSeqNo++;
+
+        return delegate.put(obj);
+      }
+    };
+  }
 };
 
 

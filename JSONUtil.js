@@ -30,7 +30,7 @@ var JSONUtil =
    },
 
    parse: function(str) {
-      return this.chaosify(eval('(' + str + ')'));
+     return this.chaosify(eval('(' + str + ')'));
    },
 
    /**
