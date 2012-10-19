@@ -1137,14 +1137,20 @@ var SplitView = FOAM.create({
     ],
 
    methods: {
-      init: function()
-      {
+      init: function() {
 	 AbstractPrototype.init.call(this);
+/*
 	 this.view1 = AlternateView.create();
 	 this.view2 = AlternateView.create();
+*/
+// debugger;
+	 this.view1 = DetailView2.create();
+	 this.view2 = JSView.create();
+
 	 this.setModel(new SimpleModel(""));
       },
 
+      // Sets the Data-Model
       setModel: function(model) {
 	 this.model = model;
 	 if ( this.view1 ) this.view1.setModel(model);
@@ -1161,16 +1167,18 @@ var SplitView = FOAM.create({
 
       toHTML: function() {
 	 var str  = [];
-	 str.push(view1.toHTML());
-	 str.push(view2.toHTML());
+         str.push('<table width=80%><tr><td width=40%>');
+	 str.push(this.view1.toHTML());
+         str.push('</td><td>');
+	 str.push(this.view2.toHTML());
+         str.push('</td></tr></table><tr><td width=40%>');
 	 return str.join('');
       },
 
       initHTML: function() {
-	 view1.initHTML();
-	 view2.initHTML();
+	 this.view1.initHTML();
+	 this.view2.initHTML();
       }
-
   }
 
 });
