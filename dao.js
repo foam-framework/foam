@@ -166,21 +166,24 @@ var ArrayDAO = {
 	;
     },
 
-    //////////////////////////// Implement Model
+    asValue: function() {
+      var dao = this;
 
-    addListener: function(listener)
-    {
-       this.subscribe('updated');
-    },
+      return {
+        //////////////////////////// Implement Value
 
-    removeListener: function(listener)
-    {
-       this.unsubscribe('updated', listener);
-    },
+        addListener: function(listener) {
+          dao.subscribe('updated');
+        },
 
-    get: function()
-    {
-       return this.select();
+        removeListener: function(listener) {
+          dao.unsubscribe('updated', listener);
+        },
+
+        get: function() {
+          return dao.select();
+        }
+      };
     }
 
 };
@@ -313,6 +316,26 @@ var StorageDAO = {
     },
 
 
+    asValue: function() {
+      var dao = this;
+
+      return {
+        //////////////////////////// Implement Value
+
+        addListener: function(listener) {
+          dao.subscribe('updated');
+        },
+
+        removeListener: function(listener) {
+          dao.unsubscribe('updated', listener);
+        },
+
+        get: function() {
+          return dao.select();
+        }
+      };
+    }
+/*
     //////////////////////////// Implement Model
 
     addListener: function(listener) {
@@ -326,6 +349,7 @@ var StorageDAO = {
     get: function() {
        return this.select();
     }
+*/
 
 };
 

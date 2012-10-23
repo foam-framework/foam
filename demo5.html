@@ -177,7 +177,7 @@
          break;
          case 1: setDisplay(HelpView.create(model).toHTML()); break;
          case 2: var dv = DetailView.create(model, value); setDisplay(dv.toHTML()); dv.initHTML(); break;
-         case 3: setDisplay(TableView.create(model).setModel(new SimpleValue(arr)).toHTML()); break;
+         case 3: setDisplay(TableView.create(model).setValue(new SimpleValue(arr)).toHTML()); break;
          case 4: setDisplay(SummaryView.create(value).toHTML()); break;
          case 5: setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); break;
          case 6: setDisplay("<pre>" + obj.toJSON() + "</pre>"); break;

@@ -68,7 +68,6 @@
   <script language="javascript" src="dao.js"></script>
   <script language="javascript" src="DAOController.js"></script>
   <script language="javascript" src="chrome.js"></script>
-  <script language="javascript" src="facets.js"></script>
   <script language="javascript" src="power.js"></script>
 
   <title>Power</title>
@@ -428,16 +427,16 @@
     powerView.initHTML();
 
     var bv1 = BooleanView.create();
-    bv1.setModel(power.applications[0].propertyValue('active'));
+    bv1.setValue(power.applications[0].propertyValue('active'));
     bv1.write(document);
     var bv2 = BooleanView.create();
-    bv2.setModel(power.applications[1].propertyValue('active'));
+    bv2.setValue(power.applications[1].propertyValue('active'));
     bv2.write(document);
     var bv3 = BooleanView.create();
-    bv3.setModel(power.applications[2].propertyValue('active'));
+    bv3.setValue(power.applications[2].propertyValue('active'));
     bv3.write(document);
     var bv4 = BooleanView.create();
-    bv4.setModel(power.applications[3].propertyValue('active'));
+    bv4.setValue(power.applications[3].propertyValue('active'));
     bv4.write(document);
     document.write("</td></tr></table>");
 

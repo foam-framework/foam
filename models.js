@@ -1116,6 +1116,80 @@ var AlternateView = FOAM.create({
 });
 
 
+var TextAreaView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsPrototype: 'AbstractView',
+
+   name: 'TextAreaView',
+   label: 'Text-Area View',
+
+    properties: [
+      {
+	 name:  'rows',
+	 label: 'Rows',
+         type:  'int',
+         view:  'IntFieldView',
+	 defaultValue: 5
+      },
+      {
+	 name:  'cols',
+	 label: 'Columns',
+         type:  'int',
+         view:  'IntFieldView',
+	 defaultValue: 70
+      },
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         defaultValueFn: function() { return new SimpleValue(); },
+         postSet: function(newValue, oldValue) {
+           Events.unlink(this.domValue, oldValue);
+
+	   //Events.follow(this.model, this.domValue);
+           try {
+	     Events.link(newValue, this.domValue);
+           } catch (x) {
+           }
+         }
+      }
+    ],
+
+   methods: {
+      init: function(args) {
+       AbstractView.init.call(this, args);
+
+       this.cols = (args && args.displayWidth)  || 70;
+       this.rows = (args && args.displayHeight) || 10;
+      },
+
+      toHTML: function() {
+	return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
+    },
+
+    setValue: function(value) {
+      this.value = value;
+    },
+
+    initHTML: function() {
+       var e = this.element();
+
+       this.domValue = DomValue.create(e, 'onchange', 'value');
+
+       // Events.follow(this.model, this.domValue);
+       Events.link(this.value, this.domValue);
+    },
+
+    destroy: function() {
+       Events.unlink(this.domValue, this.value);
+    }
+  }
+
+});
+
+
 var SplitView = FOAM.create({
 
    model_: 'Model',

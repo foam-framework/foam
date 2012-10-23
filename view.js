@@ -392,7 +392,7 @@ var ImageModel = ModelModel.create({
    methods: {
 
       init: function() {
-        this.__super__.init.call(this);
+        AbstractView.init.call(this);
 
         this.image_ = new Image();
         this.image_.src = this.src;
@@ -659,6 +659,21 @@ var TextFieldView = {
 	      create: function() { return ChoiceView.create({choices:[
                  "read-only", "read-write", "final"
               ]}); } }
+      },
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         postSet: function(newValue, oldValue) {
+           if ( this.mode === 'read-write' ) {
+	     Events.unlink(this.domValue, oldValue);
+	     Events.link(newValue, this.domValue);
+           } else {
+	     value.addListener(function() {
+	                         this.element().innerHTML = newValue.get();
+	                       }.bind(this));
+           }
+         }
       }
    ],
 
@@ -670,10 +685,14 @@ var TextFieldView = {
     },
 
     getValue: function() {
+console.log("getValue");
         return this.value;
     },
 
     setValue: function(value) {
+console.log("setValue");
+      this.value = value;
+/*
        if ( this.mode === 'read-write' ) {
 	Events.unlink(this.domValue, this.value);
 	this.value = value;
@@ -684,6 +703,7 @@ var TextFieldView = {
 	     this.element().innerHTML = this.value.get();
 	  }.bind(this));
        }
+*/
     },
 
     initHTML: function() {
@@ -827,7 +847,7 @@ var BooleanView = {
 };
 
 
-var TextAreaView = {
+var TextAreaView2 = {
     __proto__: AbstractView,
 
     name: 'name',
@@ -835,6 +855,7 @@ var TextAreaView = {
     value: new SimpleValue(),
 
     init: function(args) {
+debugger;
        AbstractView.init.call(this, args);
 
        this.cols = (args && args.displayWidth)  || 70;
@@ -875,10 +896,10 @@ var TextAreaView = {
 var FunctionView =
 {
 
-    __proto__: TextAreaView,
+    __proto__: TextAreaView2,
 
     init: function(args) {
-       TextAreaView.init.call(this, args);
+       TextAreaView2.init.call(this, args);
 
        this.cols = args.displayWidth  || 80;
        this.rows = args.displayHeight || 8;
@@ -886,13 +907,13 @@ var FunctionView =
     },
 
     toHTML: function() {
-       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.toHTML.call(this);
+       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView2.toHTML.call(this);
     },
 
     initHTML: function() {
        this.domValue = DomValue.create(this.element(), 'onkeyup', 'value');
 
-//       TextAreaView.initHTML.call(this);
+//       TextAreaView2.initHTML.call(this);
        this.errorView.initHTML();
 
        /*
@@ -1031,13 +1052,13 @@ var StringArrayView = {
 
 var HTMLView =
 {
-    __proto__: TextAreaView,
+    __proto__: TextAreaView2,
 
     cols: 120,
     rows: 20,
 
     initHTML: function() {
-       TextAreaView.initHTML.call(this);
+       TextAreaView2.initHTML.call(this);
 
        editAreaLoader.init({
          id : this.getID(),
@@ -1052,13 +1073,13 @@ var HTMLView =
 
 var JSView =
 {
-    __proto__: TextAreaView,
+    __proto__: TextAreaView2,
 
     cols: 120,
     rows: 80,
 
     init: function(args) {
-       TextAreaView.init.call(this, args);
+       TextAreaView2.init.call(this, args);
 
        this.cols = (args && args.displayWidth)  || 120;
        this.rows = (args && args.displayHeight) || 35;
@@ -1111,14 +1132,13 @@ console.log("parseValue:",this.model.get());
 
 var XMLView =
 {
-
-    __proto__: TextAreaView,
+    __proto__: TextAreaView2,
 
     cols: 100,
     rows: 50,
 
     init: function(args) {
-       TextAreaView.init.call(this, args);
+       TextAreaView2.init.call(this, args);
 
        this.cols = (args && args.displayWidth)  || 100;
        this.rows = (args && args.displayHeight) || 30;
@@ -1197,7 +1217,7 @@ var DetailView =
 	 var view = this.createView(prop);
 
 	 try {
-	    view.setModel(this.get().propertyValue[prop.name]);
+	    view.setValue(this.get().propertyValue[prop.name]);
    	 } catch (x) { }
 	 view.prop = prop;
 	 view.toString = function () { return this.prop.name + "View"; };
@@ -1334,7 +1354,7 @@ var DetailView2 = {
 	 var view = this.createView(prop);
 
 	 try {
-	    view.setModel(this.get().propertyValue[prop.name]);
+	    view.setValue(this.get().propertyValue[prop.name]);
    	 } catch (x) {
 	 }
 
@@ -1394,7 +1414,7 @@ var DetailView2 = {
             if ( prop && ! prop.hidden ) {
 //	       console.log("updateSubView: " + child + " " + prop.name);
 //	       console.log(obj.propertyValue(prop.name).get());
-	       child.setModel(obj.propertyValue(prop.name));
+	       child.setValue(obj.propertyValue(prop.name));
 	    }
 	 } catch (x) {
 	    console.log("Error on updateSubView: ", prop.name, x, obj);
@@ -1614,8 +1634,8 @@ var TableView =
 	return str.join('');
     },
 
-    setModel: function(obj) {
-       this.objs = obj.get();
+    setValue: function(value) {
+       this.objs = value.get();
        if ( ! this.element() ) return this;
        this.element().innerHTML = this.tableToHTML();
        this.initHTML();
@@ -1761,7 +1781,7 @@ catch (x)
         }
 	return obj;
     }
-}
+};
 
 
 // TODO: implement
@@ -1774,7 +1794,7 @@ var TransformBorder = {
 	    }
 	};
     }
-}
+};
 
 
 var FloatFieldView = {
@@ -1784,7 +1804,7 @@ var FloatFieldView = {
 	this.value.set(parseFloat(evt.srcElement.value));
     }
 
-}
+};
 
 
 var IntFieldView = {
@@ -1794,7 +1814,7 @@ var IntFieldView = {
 	this.value.set(parseInt(evt.srcElement.value));
     }
 
-}
+};
 
 
 var ProgressView = {

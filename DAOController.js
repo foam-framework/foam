@@ -74,7 +74,7 @@ var DAOController = FOAM.create({
       {
 	 name:  'dao',
 	 label: 'DAO',
-	 postSet: function(val) { if ( this.tableView && val ) this.tableView.setModel(val); }
+	 postSet: function(val) { if ( this.tableView && val ) this.tableView.setValue(val.asValue()); }
       }
    ],
 
@@ -227,7 +227,7 @@ var DAOController = FOAM.create({
       },
 
       refresh: function() {
-	 this.tableView.setModel(this.dao);
+	 this.tableView.setValue(this.dao.asValue());
       }
    },
 
@@ -593,8 +593,8 @@ var DAOControllerView = {
        this.ctrl.initHTML();
     },
 
-    setModel: function(model) {
-       this.dao = ArrayDAO.create(model.get());
+    setValue: function(value) {
+       this.dao = ArrayDAO.create(value.get());
 
        this.dao.subscribe('updated', function() {
          console.log("************", this.dao.arr);
@@ -602,7 +602,7 @@ var DAOControllerView = {
        });
 
        this.ctrl.__proto__.dao = this.dao;
-       this.ctrl.tableView.setModel(this.dao);
+       this.ctrl.tableView.setValue(this.dao.asValue());
     },
 
     destroy: function() {

@@ -27,6 +27,8 @@
  * TODO: Is still used by a few views in view.js.  Those views
  * should be fixed and then ModelProto should be deleted at
  * the end of metamodel.js once the real ModelModel is created.
+ *
+ * TODO: provide 'super' support for calling same method for parent class
  **/
 var ModelProto = {
 
@@ -49,10 +51,16 @@ var ModelProto = {
        };
 
        /** Add a method to 'cls' and set it's name. **/
-       function addMethod(name, method)
-       {
+       function addMethod(name, method) {
          cls[name] = method;
          method.name = name;
+         /*
+          TODO: add 'super' support here.
+         if ( cls.__proto__[name] ) {
+           method.super2 = cls.__proto__[name];
+           console.log('subclass: ', cls.name_, ' ', name);
+         }
+         */
        }
 
        cls.name_  = this.name;
