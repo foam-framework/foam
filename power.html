@@ -56,7 +56,7 @@
 
   <script language="javascript" src="context.js"></script>
   <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="SimpleValue.js"></script>
   <script language="javascript" src="JSONUtil.js"></script>
   <script language="javascript" src="FOAM.js"></script>
   <script language="javascript" src="TemplateUtil.js"></script>
@@ -126,7 +126,7 @@
     wattMeter.write(document);
     document.write("</div></center>");
 
-    power.propertyModel("battery").addListener(function(power) {
+    power.propertyValue("battery").addListener(function(power) {
       var estimate = estimateBatteryLife(data);
     
       var str = power.recharging ?
@@ -329,8 +329,8 @@
        addData();
     }; 
 
-//    timer.propertyModel('second').addListener(requestData);
-    timer.propertyModel('i').addListener(requestData);
+//    timer.propertyValue('second').addListener(requestData);
+    timer.propertyValue('i').addListener(requestData);
     
     timer.start();
 
@@ -371,7 +371,7 @@
     document.writeln('</tr></table>');
     document.writeln("</center>");
     
-    /*power.propertyModel('backlite')*/powerlets[0].propertyModel('level').addListener(function() {
+    /*power.propertyValue('backlite')*/powerlets[0].propertyValue('level').addListener(function() {
        var a = [
           'rgba(0,0,0,0.18)',
           'rgba(0,0,0,0.16)',
@@ -390,7 +390,7 @@
 
     });
 
-       powerlets[0].propertyModel('level').addListener(function() {
+       powerlets[0].propertyValue('level').addListener(function() {
           power.backlite = powerlets[0].level;
 			  console.log('level:', powerlets[0].level);
        var a = [
@@ -417,27 +417,27 @@
 
     var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
     document.writeln(timerView.toHTML());
-    timerView.setValue(timer);
+    timerView.set(timer);
     timerView.initHTML();
 
     document.write("</td><td valign=top>");
 
     var powerView = DetailView.create(Power);
     document.writeln(powerView.toHTML());
-    powerView.setValue(power);
+    powerView.set(power);
     powerView.initHTML();
 
     var bv1 = BooleanView.create();
-    bv1.setModel(power.applications[0].propertyModel('active'));
+    bv1.setModel(power.applications[0].propertyValue('active'));
     bv1.write(document);
     var bv2 = BooleanView.create();
-    bv2.setModel(power.applications[1].propertyModel('active'));
+    bv2.setModel(power.applications[1].propertyValue('active'));
     bv2.write(document);
     var bv3 = BooleanView.create();
-    bv3.setModel(power.applications[2].propertyModel('active'));
+    bv3.setModel(power.applications[2].propertyValue('active'));
     bv3.write(document);
     var bv4 = BooleanView.create();
-    bv4.setModel(power.applications[3].propertyModel('active'));
+    bv4.setModel(power.applications[3].propertyValue('active'));
     bv4.write(document);
     document.write("</td></tr></table>");
 

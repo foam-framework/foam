@@ -619,10 +619,10 @@ var FilteredModel = FOAM.create({
    ],
 
    methods: {
-      getValue: function() {
+      get: function() {
 	 if ( ! this.filteredValue )
 	 {
-	    var val = this.delegate.getValue();
+	    var val = this.delegate.get();
 
 	    this.filteredValue = [];
 
@@ -635,8 +635,8 @@ var FilteredModel = FOAM.create({
 	 return this.filteredValue;
       },
 
-      setValue: function(val) {
-	 this.delegate.setValue(val);
+      set: function(val) {
+	 this.delegate.set(val);
 
 	 this.filteredValue = undefined;
 
@@ -987,7 +987,7 @@ var GraphModel = FOAM.create({
       watch: function(model, opt_maxNumValues) {
          var graph = this;
 
-         model.addListener(function() { this.addData(model.getValue(), opt_maxNumValues); });
+         model.addListener(function() { this.addData(model.get(), opt_maxNumValues); });
       }
 
    }
@@ -1065,14 +1065,14 @@ var AlternateView = FOAM.create({
       init: function()
       {
 	 AbstractPrototype.init.call(this);
-	 this.model = new SimpleModel("");
+	 this.model = new SimpleValue("");
       },
 
       installSubView: function(viewChoice) {
-	 var view = GLOBAL[viewChoice.view].create(this.model.getValue().model_, this.model);
+	 var view = GLOBAL[viewChoice.view].create(this.model.get().model_, this.model);
 	 this.element().innerHTML = view.toHTML();
 	 view.initHTML();
-	 if ( view.setValue ) view.setValue(this.model.getValue());
+	 if ( view.set ) view.set(this.model.get());
 //	 Events.link(this.model, this.view.model);
 
       },
@@ -1147,22 +1147,22 @@ var SplitView = FOAM.create({
 	 this.view1 = DetailView2.create();
 	 this.view2 = JSView.create();
 
-	 this.setModel(new SimpleModel(""));
+	 this.setValue(new SimpleValue(""));
       },
 
       // Sets the Data-Model
-      setModel: function(model) {
-	 this.model = model;
-	 if ( this.view1 ) this.view1.setModel(model);
-	 if ( this.view2 ) this.view2.setModel(model);
+      setValue: function(value) {
+	 this.value = value;
+	 if ( this.view1 ) this.view1.setValue(value);
+	 if ( this.view2 ) this.view2.setValue(value);
       },
 
-      setValue: function(obj) {
-	 this.model.setValue(obj);
+      set: function(obj) {
+	 this.value.set(obj);
       },
 
-      getValue: function() {
-	 return this.model.getValue();
+      get: function() {
+	 return this.value.get();
       },
 
       toHTML: function() {
@@ -1352,7 +1352,7 @@ var System = FOAM.create({
         this.efficiencyGraph = GraphModel.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
 
         this.l = LabelModel.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
-        Events.follow(this.propertyModel('title'), this.l.propertyModel('text'));
+        Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
       },
 
       totalUtility: function() {

@@ -134,7 +134,7 @@ var DAOController = FOAM.create({
 	 isEnabled:   function() { return true; },
 	 action:      function() {
 	    // Todo: fix, should already be connected
-	    this.selection = this.tableView.selectionModel.getValue();
+	    this.selection = this.tableView.selection.get();
 
 	    var obj = this.selection;
 	    var actions = DAOUpdateController.actions.slice(0);
@@ -176,7 +176,7 @@ var DAOController = FOAM.create({
 	 isEnabled: function()   { return this.selected; },
 	 action: function()      {
 	    // Todo: fix, should already be connected
-	    this.selection = this.tableView.selectionModel.getValue();
+	    this.selection = this.tableView.selection.get();
 	    this.dao.remove(this.selection);
 	    // Hack: shouldn't be needed
 	    this.refresh();
@@ -223,7 +223,7 @@ var DAOController = FOAM.create({
 	 this.dao = this.dao;
 	 // this.tableView.setModel(this.dao);
 	 this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
-	 this.tableView.selectionModel.addListener(this.onSelection);
+	 this.tableView.selection.addListener(this.onSelection);
       },
 
       refresh: function() {
@@ -256,7 +256,7 @@ var DAOController = FOAM.create({
 
 	 name: 'onSelection',
 	 code: function(evt) {
-	    var obj = this.tableView.selectionModel.getValue();
+	    var obj = this.tableView.selection.get();
 
 	    if ( obj )
 	    {
@@ -287,12 +287,12 @@ var DAOController = FOAM.create({
 //	       var view = XMLView.create({});
 //	       view.rows = 50;
 //	       view.cols = 100;
-//	       view.model = new SimpleModel("");
-//	       view.model.setValue(obj);
+//	       view.model = new SimpleValue("");
+//	       view.model.set(obj);
 //	       (this.stackView || stack).setPreview(view);
 
-	       (this.stackView || stack).setPreview(SummaryView.create(this.tableView.selectionModel));
-//	       (this.stackView || stack).setPreview(DetailView.create(obj.model_, new SimpleModel(obj)));
+	       (this.stackView || stack).setPreview(SummaryView.create(this.tableView.selection));
+//	       (this.stackView || stack).setPreview(DetailView.create(obj.model_, new SimpleValue(obj)));
 	    }
 	    else
 	    {
@@ -399,7 +399,7 @@ var DAOCreateController = FOAM.create({
 
 	 this.obj = this.model.create();
 
-	 this.view = DetailView2.create(this.model, new SimpleModel(this.obj));
+	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
       },
 
       toHTML: function() {
@@ -540,7 +540,7 @@ var DAOUpdateController = FOAM.create({
 		  ]
 	       });
 
-	 this.view.model.setValue(this.obj);
+	 this.view.model.set(this.obj);
       },
 
       init2: function() {
@@ -548,9 +548,9 @@ var DAOUpdateController = FOAM.create({
 	 AbstractView.init.call(this);
 	 this.model = tmp;
 
-	 this.view = DetailView2.create(this.model, new SimpleModel(this.obj));
-//	 this.view.setValue(this);
-//	 this.view.setValue(this.obj);
+	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
+//	 this.view.set(this);
+//	 this.view.set(this.obj);
 //	 this.view.updateSubViews();
       },
 
@@ -594,11 +594,11 @@ var DAOControllerView = {
     },
 
     setModel: function(model) {
-       this.dao = ArrayDAO.create(model.getValue());
+       this.dao = ArrayDAO.create(model.get());
 
        this.dao.subscribe('updated', function() {
          console.log("************", this.dao.arr);
-         model.setValue(this.dao.arr);
+         model.set(this.dao.arr);
        });
 
        this.ctrl.__proto__.dao = this.dao;

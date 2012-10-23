@@ -15,7 +15,7 @@
       timer:timer
     });
 
-    Events.link(timer.propertyModel('time'), tt.propertyModel('time'));
+    Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
 
     var stack = StackView.create();
     stack.setPreview = function() {};

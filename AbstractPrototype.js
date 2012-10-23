@@ -248,7 +248,7 @@ console.log(i, k, v);
     var view = ActionBorder.create(this.model_, DetailView.create(this.model_));
 
     document.writeln(view.toHTML());
-    view.setValue(this);
+    view.set(this);
     view.initHTML();
   }
 

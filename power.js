@@ -542,8 +542,8 @@ var BatteryMeter = ModelModel.create({
       },
       link: function(powerInfo)
       {
-	 Events.follow(powerInfo.propertyModel('battery'), this.propertyModel('battery'));
-	 Events.follow(powerInfo.propertyModel('recharging'), this.propertyModel('recharging'));
+	 Events.follow(powerInfo.propertyValue('battery'), this.propertyValue('battery'));
+	 Events.follow(powerInfo.propertyValue('recharging'), this.propertyValue('recharging'));
       },
 
       paint: function() {
@@ -662,7 +662,7 @@ var NeedleMeter = ModelModel.create({
 
       link: function(powerInfo)
       {
-	 Events.follow(powerInfo.propertyModel('watts'), this.propertyModel('value'));
+	 Events.follow(powerInfo.propertyValue('watts'), this.propertyValue('value'));
       },
 
       rotateToValue: function(x, y, value) {

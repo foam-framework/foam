@@ -65,8 +65,12 @@ Object.defineProperty(Object.prototype, 'forEach', {
 }});
 
 
-function randomAct()
-{
+/**
+ * Take an array where even values are weights and odd values are functions,
+ * and execute one of the functions with propability equal to it's relative
+ * weight.
+ */
+function randomAct() {
   var totalWeight = 0.0;
   for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
 

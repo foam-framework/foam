@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var DomModel =
+var DomValue =
 {
     DEFAULT_EVENT:    'onchange',
     //    DEFAULT_EVENT:    'onkeyup',
@@ -32,11 +32,11 @@ var DomModel =
 	this.element = element;
     },
 
-    getValue: function() {
+    get: function() {
 	return this.element[this.property];
     },
 
-    setValue: function(value) {
+    set: function(value) {
 	this.element[this.property] = value;
     },
 
@@ -54,7 +54,7 @@ var DomModel =
     },
 
     toString: function() {
-	return "DomModel(" + this.event + ", " + this.property + ")";
+	return "DomValue(" + this.event + ", " + this.property + ")";
     }
 
 }
@@ -68,7 +68,7 @@ var AbstractView =
        AbstractPrototype.init.call(this);
 
        this.children = [];
-       this.model    = new SimpleModel("");
+       this.value    = new SimpleValue("");
     },
 
     addChild: function(child) {
@@ -669,19 +669,19 @@ var TextFieldView = {
 	  '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     },
 
-    getModel: function() {
-        return this.model;
+    getValue: function() {
+        return this.value;
     },
 
-    setModel: function(model) {
+    setValue: function(value) {
        if ( this.mode === 'read-write' ) {
-	Events.unlink(this.domModel, this.model);
-	this.model = model;
-	Events.link(this.model, this.domModel);
+	Events.unlink(this.domValue, this.value);
+	this.value = value;
+	Events.link(value, this.domValue);
        } else {
-	  this.model = model;
-	  this.model.addListener(function() {
-	     this.element().innerHTML = this.model.getValue();
+	  this.value = value;
+	  value.addListener(function() {
+	     this.element().innerHTML = this.value.get();
 	  }.bind(this));
        }
     },
@@ -689,16 +689,16 @@ var TextFieldView = {
     initHTML: function() {
        var e = this.element();
 
-       this.domModel = DomModel.create(e);
+       this.domValue = DomValue.create(e);
 
-       this.setModel(this.model);
-//       Events.link(this.model, this.domModel);
+       this.setValue(this.value);
+//       Events.link(this.model, this.domValue);
     },
 
     destroy: function() {
-       Events.unlink(this.domModel, this.model);
+       Events.unlink(this.domValue, this.value);
     }
-   }
+  }
 };
 
 
@@ -751,26 +751,26 @@ var ChoiceView = {
        return str;
     },
 
-    getModel: function() {
-        return this.model;
+    getValue: function() {
+        return this.value;
     },
 
-    setModel: function(model) {
-	Events.unlink(this.domModel, this.model);
-	this.model = model;
-	Events.link(this.model, this.domModel);
+    setValue: function(value) {
+	Events.unlink(this.domValue, this.value);
+	this.value = value;
+	Events.link(value, this.domValue);
     },
 
     initHTML: function() {
 	var e = this.element();
 
-	this.domModel = DomModel.create(e);
+	this.domValue = DomValue.create(e);
 
-	Events.link(this.model, this.domModel);
+	Events.link(this.value, this.domValue);
     },
 
     destroy: function() {
-	Events.unlink(this.domModel, this.model);
+	Events.unlink(this.domValue, this.value);
     }
    }
 };
@@ -805,23 +805,23 @@ var BooleanView = {
     initHTML: function() {
 	var e = this.element();
 
-	this.domModel = DomModel.create(e, 'onchange', 'checked');
+	this.domValue = DomValue.create(e, 'onchange', 'checked');
 
-	Events.link(this.model, this.domModel);
+	Events.link(this.value, this.domValue);
     },
 
-    getModel: function() {
-        return this.model;
+    getValue: function() {
+        return this.value;
     },
 
-    setModel: function(model) {
-	Events.unlink(this.domModel, this.model);
-	this.model = model;
-	Events.link(this.model, this.domModel);
+    setValue: function(value) {
+	Events.unlink(this.domValue, this.value);
+	this.value = value;
+	Events.link(value, this.domValue);
     },
 
     destroy: function() {
-	Events.unlink(this.domModel, this.model);
+	Events.unlink(this.domValue, this.value);
     }
    }
 };
@@ -832,7 +832,7 @@ var TextAreaView = {
 
     name: 'name',
 
-    model: new SimpleModel(),
+    value: new SimpleValue(),
 
     init: function(args) {
        AbstractView.init.call(this, args);
@@ -845,14 +845,13 @@ var TextAreaView = {
 	return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
     },
 
-    setModel: function(model) {
-	Events.unlink(this.domModel, this.model);
-	this.model = model;
+    setValue: function(value) {
+      Events.unlink(this.domValue, this.value);
+      this.value = value;
 
-	//Events.follow(this.model, this.domModel);
+	//Events.follow(this.model, this.domValue);
       try {
-	Events.link(this.model, this.domModel);
-
+	Events.link(value, this.domValue);
       } catch (x) {
 
       }
@@ -861,16 +860,16 @@ var TextAreaView = {
     initHTML: function() {
        var e = this.element();
 
-       this.domModel = DomModel.create(e, 'onchange', 'value');
+       this.domValue = DomValue.create(e, 'onchange', 'value');
 
-       // Events.follow(this.model, this.domModel);
-       Events.link(this.model, this.domModel);
+       // Events.follow(this.model, this.domValue);
+       Events.link(this.value, this.domValue);
     },
 
     destroy: function() {
-       Events.unlink(this.domModel, this.model);
+       Events.unlink(this.domValue, this.value);
     }
-}
+};
 
 
 var FunctionView =
@@ -891,7 +890,7 @@ var FunctionView =
     },
 
     initHTML: function() {
-       this.domModel = DomModel.create(this.element(), 'onkeyup', 'value');
+       this.domValue = DomValue.create(this.element(), 'onkeyup', 'value');
 
 //       TextAreaView.initHTML.call(this);
        this.errorView.initHTML();
@@ -914,18 +913,18 @@ var FunctionView =
     setError: function(err) {
        if ( err ) console.log("Javascript Error: ", err);
 
-       this.errorView.getModel().setValue(err || "");
+       this.errorView.getModel().set(err || "");
     },
 
-    setModel: function(model) {
-	Events.unlink(this.domModel, this.model);
-	this.model = model;
+    setValue: function(value) {
+	Events.unlink(this.domValue, this.value);
+	this.value = value;
 
         var setError = this.setError.bind(this);
 
 	Events.relate(
-	   this.model,
-	   this.domModel,
+	   this.value,
+	   this.domValue,
 	   // function->string
 	   function(f) {
 	      return f ? f.toString() : "";
@@ -994,37 +993,37 @@ var StringArrayView = {
 	  '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     },
 
-    getModel: function() {
-        return this.model;
+    getValue: function() {
+      return this.model;
     },
 
-    setModel: function(model) {
-//	Events.unlink(this.domModel, this.model);
-	this.model = model;
+    setValue: function(value) {
+      //	Events.unlink(this.domValue, this.model);
+      this.value = value;
 
-	Events.relate(
-	   this.model,
-	   this.domModel,
-	   function(f) {
-	      return f ? f.toString() : "";
-	   },
-	   function(str) {
-	      return str.replace(/\s/g,'').split(',');
-           }
-	);
+      Events.relate(
+	this.value,
+	this.domValue,
+	function(f) {
+	  return f ? f.toString() : "";
+	},
+	function(str) {
+	  return str.replace(/\s/g,'').split(',');
+        }
+      );
     },
 
     initHTML: function() {
        var e = this.element();
 
-       this.domModel = DomModel.create(e);
+       this.domValue = DomValue.create(e);
 
-       this.setModel(this.model);
-//       Events.link(this.model, this.domModel);
+       this.setValue(this.value);
+//       Events.link(this.model, this.domValue);
     },
 
     destroy: function() {
-       Events.unlink(this.domModel, this.model);
+       Events.unlink(this.domValue, this.model);
     }
    }
 };
@@ -1032,7 +1031,6 @@ var StringArrayView = {
 
 var HTMLView =
 {
-
     __proto__: TextAreaView,
 
     cols: 120,
@@ -1054,7 +1052,6 @@ var HTMLView =
 
 var JSView =
 {
-
     __proto__: TextAreaView,
 
     cols: 120,
@@ -1066,48 +1063,47 @@ var JSView =
        this.cols = (args && args.displayWidth)  || 120;
        this.rows = (args && args.displayHeight) || 35;
 
-       this.setValue = function(obj) {
-	  this.model.setValue(obj);
+       this.set = function(obj) {
+	  this.value.set(obj);
        };
     },
 
     initHTML: function() {
        var e = this.element();
 
-       this.domModel = DomModel.create(e, 'onchange', 'value');
+       this.domValue = DomValue.create(e, 'onchange', 'value');
 
        var me = this;
 
-       this.model.addListener(function(src, oldValue, newValue) {
-	  me.domModel.setValue(JSONUtil.stringify(me.model.getValue()));
+       this.value.addListener(function(src, oldValue, newValue) {
+	  me.domValue.set(JSONUtil.stringify(me.value.get()));
        });
-       this.domModel.addListener(function() {
+       this.domValue.addListener(function() {
           try
           {
-//	     me.model.setValue(JSONUtil.parse(me.domModel.getValue()
-	     me.model.getValue().copyFrom(JSONUtil.parse(me.domModel.getValue()));
+//	     me.model.set(JSONUtil.parse(me.domValue.get()
+	     me.value.get().copyFrom(JSONUtil.parse(me.domValue.get()));
 	  }
 	  catch (x)
 	  {
 	     console.log("error");
 	     // not valid JS syntax
 
-	     // return this.__proto__.getValue.call(this);
+	     // return this.__proto__.get.call(this);
 	  }
        });
 
-       this.domModel.setValue(JSONUtil.stringify(this.model.getValue()));
-
+       this.domValue.set(JSONUtil.stringify(this.value.get()));
     }
 
        /*,
 
-   setValue: function (obj) {
-      this.model.setValue(JSONUtil.stringify(obj));
+   set: function (obj) {
+      this.model.set(JSONUtil.stringify(obj));
    },
-   getValue: function () {
-console.log("parseValue:",this.model.getValue());
-      return JSONUtil.parse(this.model.getValue());
+   get: function () {
+console.log("parseValue:",this.model.get());
+      return JSONUtil.parse(this.model.get());
    }
 	*/
 };
@@ -1128,11 +1124,11 @@ var XMLView =
        this.rows = (args && args.displayHeight) || 30;
     },
 
-   setValue: function (obj) {
-      this.model.setValue(XMLUtil.stringify(obj));
+   set: function (obj) {
+      this.value.set(XMLUtil.stringify(obj));
    },
 
-   getValue: function () {
+   get: function () {
       return this.value;
    }
 };
@@ -1144,31 +1140,31 @@ var DetailView =
 
    __proto__: AbstractView,
 
-   create: function(model, dataModel) {
+   create: function(model, value) {
       var obj = AbstractView.create.call(this);
 
       obj.model = model;
       // TODO: this remembers the wrong 'this' when decorated with
       // ActionBorder
-      obj.setDataModel(dataModel || new SimpleModel());
+      obj.setValue(value || new SimpleValue());
 
       return obj;
    },
 
-   getDataModel: function() {
-      return this.dataModel;
+   getValue: function() {
+      return this.value;
    },
 
-   setDataModel: function (model) {
-      if ( this.getDataModel() ) {
+   setValue: function (value) {
+      if ( this.getValue() ) {
 	 // todo:
-	 /// getDataModel().removeListener(???)
+	 /// getValue().removeListener(???)
       }
-      this.dataModel = model;
+      this.value = value;
       this.updateSubViews();
       // TODO: model this class and make updateSubViews a listener
       // instead of bind()'ing
-      model.addListener(this.updateSubViews.bind(this));
+      value.addListener(this.updateSubViews.bind(this));
    },
 
    /** Create the sub-view from property info. **/
@@ -1201,10 +1197,10 @@ var DetailView =
 	 var view = this.createView(prop);
 
 	 try {
-	    view.setModel(this.getValue().propertyModel[prop.name]);
+	    view.setModel(this.get().propertyValue[prop.name]);
    	 } catch (x) { }
 	 view.prop = prop;
-	 view.toString = function () { return this.prop.name + "View"; }
+	 view.toString = function () { return this.prop.name + "View"; };
          this.addChild(view);
 
          str += '<tr>';
@@ -1228,16 +1224,16 @@ var DetailView =
       this.updateSubViews();
    },
 
-   setValue: function(obj) {
-      this.getDataModel().setValue(obj);
+   set: function(obj) {
+      this.getValue().set(obj);
    },
 
-   getValue: function() {
-      return this.getDataModel().getValue();
+   get: function() {
+      return this.getValue().get();
    },
 
    updateSubViews: function() {
-      var obj = this.getValue();
+      var obj = this.get();
 
       if ( obj === "" ) return;
 
@@ -1248,7 +1244,7 @@ var DetailView =
 	 try {
 	    // todo: fix
             if ( prop && ! prop.hidden )
-	       child.setModel(obj.propertyModel(prop.name));
+	       child.setValue(obj.propertyValue(prop.name));
 	 }
 	 catch (x) {
 	    console.log("error: ", prop.name, " ", x);
@@ -1274,26 +1270,26 @@ var DetailView2 = {
 
    __proto__: AbstractView,
 
-   create: function(unusedModel, dataModel) {
+   create: function(unusedModel, value) {
       var obj = AbstractView.create.call(this);
 
       obj.model = null;
-      obj.setDataModel(dataModel || new SimpleModel());
+      obj.setValue(value || new SimpleValue());
 
       return obj;
    },
 
-   getDataModel: function() {
-      return this.dataModel;
+   getValue: function() {
+      return this.value;
    },
 
-   setDataModel: function (model) {
-      if ( this.getDataModel() ) {
+   setValue: function (model) {
+      if ( this.getValue() ) {
 	 // todo:
-	 /// getDataModel().removeListener(???)
+	 /// getValue().removeListener(???)
       }
 
-      this.dataModel = model;
+      this.value = model;
 
       this.updateSubViews();
       model.addListener(this.updateSubViews.bind(this));
@@ -1338,12 +1334,12 @@ var DetailView2 = {
 	 var view = this.createView(prop);
 
 	 try {
-	    view.setModel(this.getValue().propertyModel[prop.name]);
+	    view.setModel(this.get().propertyValue[prop.name]);
    	 } catch (x) {
 	 }
 
 	 view.prop = prop;
-	 view.toString = function () { return this.prop.name + "View"; }
+	 view.toString = function () { return this.prop.name + "View"; };
          this.addChild(view);
 
          str += '<tr>';
@@ -1363,7 +1359,7 @@ var DetailView2 = {
    initHTML: function() {
       AbstractView.initHTML.call(this);
 
-      if ( this.getValue() )
+      if ( this.get() )
       {
 	 this.updateHTML();
 
@@ -1372,22 +1368,22 @@ var DetailView2 = {
       }
    },
 
-   setValue: function(obj) {
-      this.getDataModel().setValue(obj);
+   set: function(obj) {
+      this.getValue().set(obj);
    },
 
-   getValue: function() {
-       return this.getDataModel().getValue();
+   get: function() {
+       return this.getValue().get();
    },
 
    updateSubViews: function() {
-      // check if the DataModel's model has changed
-      if ( this.getValue().model_ != this.model ) {
-	 this.model = this.getValue().model_;
+      // check if the Value's model has changed
+      if ( this.get().model_ != this.model ) {
+	 this.model = this.get().model_;
 	 this.updateHTML();
       }
 
-      var obj = this.getValue();
+      var obj = this.get();
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
 	 var child = this.children[i];
@@ -1397,8 +1393,8 @@ var DetailView2 = {
 	    // todo: fix
             if ( prop && ! prop.hidden ) {
 //	       console.log("updateSubView: " + child + " " + prop.name);
-//	       console.log(obj.propertyModel(prop.name).getValue());
-	       child.setModel(obj.propertyModel(prop.name));
+//	       console.log(obj.propertyValue(prop.name).get());
+	       child.setModel(obj.propertyValue(prop.name));
 	    }
 	 } catch (x) {
 	    console.log("Error on updateSubView: ", prop.name, x, obj);
@@ -1424,23 +1420,23 @@ var SummaryView =
 
    __proto__: AbstractView,
 
-   create: function(dataModel) {
+   create: function(value) {
       var obj = AbstractView.create.call(this);
 
-      obj.model     = dataModel.getValue().model_;
-      obj.dataModel = dataModel;
+      obj.model = value.get().model_;
+      obj.value = value;
 
       return obj;
    },
 
-   getDataModel: function() {
-      return this.dataModel;
+   getValue: function() {
+      return this.value;
    },
 
    toHTML: function() {
       this.children = [];
       var model = this.model;
-      var obj   = this.getValue();
+      var obj   = this.get();
       var out   = [];
 
       out.push('<div id="' + this.getID() + '" class="summaryView">');
@@ -1480,8 +1476,8 @@ var SummaryView =
       return out.join('');
    },
 
-   getValue: function() {
-       return this.getDataModel().getValue();
+   get: function() {
+     return this.getValue().get();
    }
 
 };
@@ -1534,11 +1530,12 @@ var HelpView =
       out.push('</div>');
 
       return out.join('');
-   },
+   }/* TODO: remove,
 
-   getValue: function() {
-       return this.getDataModel().getValue();
+   get: function() {
+     return this.getValue().get();
    }
+*/
 
 };
 
@@ -1552,25 +1549,21 @@ var TableView =
 
     create: function(model) {
 	var obj = {
-	    __proto__:      this,
-	    model:          model,
-	    properties:     model.tableProperties,
-	    selectionModel: new SimpleModel(),
-	    children:       [],
-	    instance_:      {} // todo: fix
+	    __proto__:  this,
+	    model:      model,
+	    properties: model.tableProperties,
+	    selection:  new SimpleValue(),
+	    children:   [],
+	    instance_:  {} // todo: fix
 	};
 
 	return obj;
     },
 
     toHTML: function() {
-	var str = "";
-
-        str += '<span id="' + this.getID() + '">';
-        str += this.tableToHTML();
-        str += '</span>';
-
-	return str;
+      return '<span id="' + this.getID() + '">' +
+        this.tableToHTML() +
+        '</span>';
     },
 
     tableToHTML: function() {
@@ -1622,7 +1615,7 @@ var TableView =
     },
 
     setModel: function(obj) {
-       this.objs = obj.getValue();
+       this.objs = obj.get();
        if ( ! this.element() ) return this;
        this.element().innerHTML = this.tableToHTML();
        this.initHTML();
@@ -1635,27 +1628,27 @@ var TableView =
 	for ( var i = 0 ; i < es.length ; i++ ) {
 	    var e = es[i];
 
-	    e.onmouseover = function(model, obj) { return function() {
-               model.prevValue = model.getValue();
-	       model.setValue(obj);
-	    }; }(this.selectionModel, this.objs[i]);
-	    e.onmouseout = function(model, obj) { return function() {
-	       if ( ! model.prevValue ) return;
-               model.setValue(model.prevValue);
-               delete model['prevValue'];
-	    }; }(this.selectionModel, this.objs[i]);
-	    e.onclick = function(model, obj) { return function(evt) {
-	       model.setValue(obj);
-               delete model['prevValue'];
+	    e.onmouseover = function(value, obj) { return function() {
+               value.prevValue = value.get();
+	       value.set(obj);
+	    }; }(this.selection, this.objs[i]);
+	    e.onmouseout = function(value, obj) { return function() {
+	       if ( ! value.prevValue ) return;
+               value.set(value.prevValue);
+               delete value['prevValue'];
+	    }; }(this.selection, this.objs[i]);
+	    e.onclick = function(value, obj) { return function(evt) {
+	       value.set(obj);
+               delete value['prevValue'];
                var siblings = evt.srcElement.parentNode.parentNode.childNodes;
 	       for ( var i = 0 ; i < siblings.length ; i++ ) {
                   siblings[i].className = "";
 	       }
                evt.srcElement.parentNode.className = 'rowSelected';
-	    }; }(this.selectionModel, this.objs[i]);
-	    e.ondblclick = function(me, model, obj) { return function(evt) {
-               me.publish(me.DOUBLE_CLICK, obj, model);
-	    }; }(this, this.selectionModel, this.objs[i]);
+	    }; }(this.selection, this.objs[i]);
+	    e.ondblclick = function(me, value, obj) { return function(evt) {
+               me.publish(me.DOUBLE_CLICK, obj, value);
+	    }; }(this, this.selection, this.objs[i]);
 	}
     },
 
@@ -1670,21 +1663,21 @@ var ActionButton =
 {
    __proto__: AbstractView,
 
-   create: function(action, subjectModel) {
+   create: function(action, value) {
       var obj = {
-	 __proto__:    this,
-	 action:       action,
-	 subjectModel: subjectModel,
-	 instance_:    {} // todo: fix
+	 __proto__: this,
+	 action:    action,
+	 value:     value,
+	 instance_: {} // todo: fix
       };
 
-      subjectModel.addListener(this.subjectUpdate.bind(this));
+      value.addListener(this.subjectUpdate.bind(this));
 
       return obj;
    },
 
    subjectUpdate: function() {
-      // console.log('subject update: ' + this.subjectModel);
+      // console.log('subject update: ' + this.value);
    },
 
    toHTML: function() {
@@ -1692,7 +1685,7 @@ var ActionButton =
 	 'onclick',
 	 function(action) { return function() {
 console.log("action: ", action);
-	    action.action.apply(this.subjectModel.getValue());
+	    action.action.apply(this.value.get());
          };}(this.action));
 
       return '<button class="myButton" id="' + this.eid_ + '">' + this.action.label + '</button>';
@@ -1736,7 +1729,7 @@ var ActionBorder =
 		for ( var i = 0 ; i < this.actions.length ; i++ )
 		{
 		   var action = this.actions[i];
-		   var button = ActionButton.create(action, this.getDataModel());
+		   var button = ActionButton.create(action, this.getValue());
 		   str += " " + button.toHTML() + " ";
 
 		   this.addChild(button);
@@ -1748,21 +1741,21 @@ var ActionBorder =
 	    }
 	};
 
-        // if delegate doesn't have a getDataModel method, then add one
+        // if delegate doesn't have a getValue method, then add one
 try
 {
-obj.getDataModel().setValue(obj);
-//        obj.setDataModel(obj.getDataModel());
+obj.getValue().set(obj);
+//        obj.setValue(obj.getValue());
 }
 catch (x)
 {
 
 }
 // todo: this is breaking timer
-        if ( ! obj.getDataModel )
+        if ( ! obj.getValue )
         {
-	   var dm = new SimpleModel(obj);
-	   obj.getDataModel = function() {
+	   var dm = new SimpleValue(obj);
+	   obj.getValue = function() {
 	      return dm;
 	   };
         }
@@ -1788,7 +1781,7 @@ var FloatFieldView = {
     __proto__: TextFieldView,
 
     onChange: function (evt) {
-	this.model.setValue(parseFloat(evt.srcElement.value));
+	this.value.set(parseFloat(evt.srcElement.value));
     }
 
 }
@@ -1798,7 +1791,7 @@ var IntFieldView = {
     __proto__: TextFieldView,
 
     onChange: function (evt) {
-	this.model.setValue(parseInt(evt.srcElement.value));
+	this.value.set(parseInt(evt.srcElement.value));
     }
 
 }
@@ -1811,32 +1804,33 @@ var ProgressView = {
 	return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
     },
 
-    setModel: function(model) {
-	this.model.removeListener(this.modelListener_);
+    setValue: function(value) {
+	this.value.removeListener(this.listener_);
 
-	this.model = model;
+	this.value = value;
 
-	this.model.addListener(this.modelListener_);
+	this.value.addListener(this.listener_);
     },
 
     updateValue: function() {
 	var e = this.element();
 
-	e.value = parseInt(this.model.getValue());
+	e.value = parseInt(this.value.get());
     },
 
     initHTML: function() {
 	var e = this.element();
 
-	this.modelListener_ = this.updateValue.bind(this);
+        // TODO: move to modelled listener
+	this.listener_ = this.updateValue.bind(this);
 
-	this.model.addListener(this.modelListener_);
+	this.value.addListener(this.listener_);
     },
 
     destroy: function() {
-	this.model.removeListener(this.modelListener_);
+	this.value.removeListener(this.listener_);
     }
-}
+};
 
 
 
@@ -1844,7 +1838,7 @@ var ProgressCView = {
 
     __proto__: AbstractView,
 
-    model: new SimpleModel("0"),
+    value: new SimpleValue("0"),
 
     paint: function() {
 	this.canvas.fillStyle = '#fff';
@@ -1853,15 +1847,15 @@ var ProgressCView = {
 	this.canvas.strokeStyle = '#000';
 	this.canvas.strokeRect(0, 0, 104, 20);
 	this.canvas.fillStyle = '#f00';
-	this.canvas.fillRect(2, 2, parseInt(this.model.getValue()), 16);
+	this.canvas.fillRect(2, 2, parseInt(this.value.get()), 16);
     },
 
-    setModel: function(model) {
-	this.model.removeListener(this.modelListener_);
+    setValue: function(value) {
+	this.value.removeListener(this.listener_);
 
-	this.model = model;
+	this.value = value;
 
-	this.model.addListener(this.modelListener_);
+	this.value.addListener(this.listener_);
     },
 
     updateValue: function() {
@@ -1871,17 +1865,17 @@ var ProgressCView = {
     setCanvas: function(canvas) {
 	this.canvas = canvas;
 
-	this.modelListener_ = this.updateValue.bind(this);
+	this.listener_ = this.updateValue.bind(this);
 
-	this.model.addListener(this.modelListener_);
+	this.value.addListener(this.listener_);
 
 	this.paint();
     },
 
     destroy: function() {
-	this.model.removeListener(this.modelListener_);
+	this.value.removeListener(this.listener_);
     }
-}
+};
 
 
 var ArrayView = {
@@ -1889,4 +1883,4 @@ var ArrayView = {
       var view = DAOControllerView.create(GLOBAL[prop.subType]);
       return view;
    }
-}
+};

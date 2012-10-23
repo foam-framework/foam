@@ -16,7 +16,7 @@
 
   <script language="javascript" src="context.js"></script>
   <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="SimpleValue.js"></script>
   <script language="javascript" src="AbstractPrototype.js"></script>
   <script language="javascript" src="ModelProto.js"></script>
   <script language="javascript" src="view.js"></script>
@@ -86,13 +86,13 @@ activity area
     document.writeln(dv.toHTML());
     dv.init();
 
-    tv1.selectionModel.addListener(function (src, property, oldValue, newValue) {
+    tv1.selection.addListener(function (src, property, oldValue, newValue) {
        if ( newValue )
-          dv.setValue(tv1.selectionModel.getValue().clone());
+          dv.set(tv1.selection.get().clone());
     });
 
-    // Events.follow(tv1.selectionModel, dv);
-    // dv.setModel(tv1.selectionModel);
+    // Events.follow(tv1.selection, dv);
+    // dv.setModel(tv1.selection);
 
 
     document.write("<pre>");
@@ -133,16 +133,16 @@ activity area
        document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
     }
 
-    var pm = o.propertyModel('name');
-    document.writeln(pm + " val: " + pm.getValue());
+    var pm = o.propertyValue('name');
+    document.writeln(pm + " val: " + pm.get());
 //    pm.addListener(function() {document.writeln("name updated via property model")});
 
     // o.addListener(l);
     // o.addPropertyListener('name', l);
     // o.addPropertyListener('label',l);
 
-    pm.setValue("foo");
-    pm.setValue("bar");
+    pm.set("foo");
+    pm.set("bar");
 
     o.name = 'Group';
     o.label = 'Group'
@@ -153,12 +153,12 @@ activity area
 
     document.writeln(o);
 
-    var sm = new SimpleModel("foo");
+    var sm = new SimpleValue("foo");
     sm.addPropertyListener(l);
 
-    document.writeln(sm.getValue());
-    sm.setValue("bar");
-    document.writeln(sm.getValue());
+    document.writeln(sm.get());
+    sm.set("bar");
+    document.writeln(sm.get());
 
 
     document.writeln("</br><h2>Test New Events</h2>");

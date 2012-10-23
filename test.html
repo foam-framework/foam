@@ -16,7 +16,7 @@
 
   <script language="javascript" src="context.js"></script>
   <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleModel.js"></script>
+  <script language="javascript" src="SimpleValue.js"></script>
   <script language="javascript" src="JSONUtil.js"></script>
   <script language="javascript" src="XMLUtil.js"></script>
   <script language="javascript" src="FOAM.js"></script>
@@ -114,11 +114,14 @@ activity area
     document.write("<br/>");
 //    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
 
+document.writeln("=======================================");
+
     document.writeln("<table><tr><td valign=top>");
     var tv1 = TableView.create(ModelModel);
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.initHTML();
+
 
     document.writeln("</td><td><font size=-1>");
     var dv = DetailView.create(ModelModel);
@@ -126,13 +129,13 @@ activity area
     dv.initHTML();
     document.writeln("</font></td></tr></table>");
 
-    tv1.selectionModel.addListener(function (src, property, oldValue, newValue) {
+    tv1.selection.addListener(function (src, property, oldValue, newValue) {
        if ( newValue )
-          dv.setValue(tv1.selectionModel.getValue()/*.clone()*/);
+          dv.set(tv1.selection.get()/*.clone()*/);
     });
 
-    // Events.follow(tv1.selectionModel, dv);
-    // dv.setModel(tv1.selectionModel);
+    // Events.follow(tv1.selection, dv);
+    // dv.setModel(tv1.selection);
 
     /*
     console.log("<br/><br/>BookmarkModel");
@@ -184,16 +187,16 @@ activity area
        document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
     }
 
-    var pm = o.propertyModel('name');
-    document.writeln(pm + " val: " + pm.getValue());
+    var pm = o.propertyValue('name');
+    document.writeln(pm + " val: " + pm.get());
 //    pm.addListener(function() {document.writeln("name updated via property model")});
 
     // o.addListener(l);
     // o.addPropertyListener('name', l);
     // o.addPropertyListener('label',l);
 
-    pm.setValue("foo");
-    pm.setValue("bar");
+    pm.set("foo");
+    pm.set("bar");
 
     o.name = 'Group';
     o.label = 'Group'
@@ -204,12 +207,12 @@ activity area
 
     document.writeln(o);
 
-    var sm = new SimpleModel("foo");
+    var sm = new SimpleValue("foo");
     sm.addPropertyListener(l);
 
-    document.writeln(sm.getValue());
-    sm.setValue("bar");
-    document.writeln(sm.getValue());
+    document.writeln(sm.get());
+    sm.set("bar");
+    document.writeln(sm.get());
 
 
     document.writeln("</br><h2>Test New Events</h2>");
@@ -274,9 +277,9 @@ activity area
 
     v4.setCanvas(ctx);
 
-    v2.setModel(v1.model);
-    v3.setModel(v1.model);
-    v4.setModel(v1.model);
+    v2.setValue(v1.value);
+    v3.setValue(v1.value);
+    v4.setValue(v1.value);
 
 //    document.writeln("<br/>subs: " + e.subs_);
 
@@ -289,17 +292,17 @@ activity area
     document.writeln("<table><tr>");
     document.writeln("<td>");
 
-    DomModel.DEFAULT_EVENT = 'onkeyup';
+    DomValue.DEFAULT_EVENT = 'onkeyup';
 o = ModelModel;
     var dv1 = DetailView.create(o.model_);
-    dv1.setValue(o);
+    dv1.set(o);
     document.writeln("<td>");
     dv1.write(document);
     document.writeln("</td>");
 
 	/*
     var dv2 = DetailView.create(o.model_);
-    dv2.setValue(o);
+    dv2.set(o);
     document.writeln("<td>");
     dv2.write(document);
     document.writeln("</td>");
@@ -319,19 +322,19 @@ o = ModelModel;
     dv4.initHTML();
     document.writeln("</tr></table>");
 
-    dv1.setModel(o);
+    dv1.set(o);
     // dv2.setModel(o);
-    dv3.setModel({
+    dv3.setValue({
        __proto__: o,
-       setValue: function (val) { return JSONUtil.parse(val);},
-       getValue: function () { return JSONUtil.stringify(this); }
+       set: function (val) { return JSONUtil.parse(val);},
+       get: function () { return JSONUtil.stringify(this); }
     });
-    dv4.setModel({
+    dv4.setValue({
        __proto__: o,
-       setValue: function (val) { },
-       getValue: function () { return XMLUtil.stringify(this); }
+       set: function (val) { },
+       get: function () { return XMLUtil.stringify(this); }
     });
-    DomModel.DEFAULT_EVENT = 'onchange';
+    DomValue.DEFAULT_EVENT = 'onchange';
 
     document.writeln("</br><h2>Test Property Linking</h2>");
 
@@ -383,18 +386,18 @@ o = ModelModel;
     var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
 //    var timerView = DetailView.create(timer.model_);
     document.writeln(timerView.toHTML());
-    timerView.setValue(timer);
+    timerView.set(timer);
     timerView.initHTML();
 
     document.writeln("</td><td valign=top>");
     var sunView = DetailView.create(sun.model_);
     document.writeln(sunView.toHTML());
-    sunView.setValue(sun);
+    sunView.set(sun);
     sunView.initHTML();
 
     var earthView = DetailView.create(sun.model_);
     document.writeln(earthView.toHTML());
-    earthView.setValue(earth);
+    earthView.set(earth);
     earthView.initHTML();
 
     document.writeln("</td>");
@@ -416,7 +419,7 @@ o = ModelModel;
     dragon.paint();
 
     timer.start();
-    Events.link(timer.propertyModel('time'), tt.propertyModel('time'));
+    Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
   
     var dmouse = mouseModel.create();
     dmouse.connect(dragon.canvasView.element());
@@ -454,14 +457,14 @@ o = ModelModel;
     document.writeln("<table><tr><td valign=top>");
     var mouseView = DetailView.create(mouse.model_);
     document.writeln(mouseView.toHTML());
-    mouseView.setValue(mouse);
+    mouseView.set(mouse);
     mouseView.initHTML();
 
     document.writeln("</td><td>");
 
     var bugView = DetailView.create(bug1.model_);
     document.writeln(bugView.toHTML());
-    bugView.setValue(bug1);
+    bugView.set(bug1);
     bugView.initHTML();
     document.writeln("</td></tr></table>");
 
@@ -475,7 +478,7 @@ o = ModelModel;
     var graph = GraphModel.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
     space.addChild(graph);
 
-    graph.watch(apollo.propertyModel('y'));
+    graph.watch(apollo.propertyValue('y'));
 
     var eyes = EyesCViewModel.create({x:600,y:470});
     space.addChild(eyes);

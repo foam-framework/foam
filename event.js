@@ -287,14 +287,14 @@ var PropertyChangeSupport = {
    },
 
 
-   /** Create a Model for the specified property. **/
-   propertyModel: function(property) {
+   /** Create a Value for the specified property. **/
+   propertyValue: function(property) {
       var obj = this;
 
       return {
-	 getValue: function() { return obj[property]; },
+	 get: function() { return obj[property]; },
 
-	 setValue: function(val) { obj[property] = val; },
+	 set: function(val) { obj[property] = val; },
 
 	 addListener: function(listener) {
 	    obj.addPropertyListener(property, listener);
@@ -305,7 +305,7 @@ var PropertyChangeSupport = {
 	 },
 
  	 toString: function () {
-	    return "PropertyModel(" + obj + "," + property + ")";
+	    return "PropertyValue(" + obj + "," + property + ")";
 	 }
       };
    }
@@ -321,76 +321,76 @@ var Events = {
 
     identity: function (x) { return x; },
 
-    /** Have the dstModel listen to changes in the srcModel and update its value to be the same. **/
-    follow: function (srcModel, dstModel) {
-       if ( ! srcModel || ! dstModel ) return;
+    /** Have the dstValue listen to changes in the srcValue and update its value to be the same. **/
+    follow: function (srcValue, dstValue) {
+       if ( ! srcValue || ! dstValue ) return;
 
-       dstModel.setValue(srcModel.getValue());
+       dstValue.set(srcValue.get());
 
        var listener = function () {
-	  dstModel.setValue(srcModel.getValue());
+	  dstValue.set(srcValue.get());
        };
 
-       this.listeners_[[srcModel, dstModel]] = listener;
+       this.listeners_[[srcValue, dstValue]] = listener;
 
-       srcModel.addListener(listener);
+       srcValue.addListener(listener);
     },
 
 
     /**
      * Maps values from one model to another.
-     * @param f maps values from srcModel to dstModel
+     * @param f maps values from srcValue to dstValue
      */
-    map: function (srcModel, dstModel, f) {
-       if ( ! srcModel || ! dstModel ) return;
+    map: function (srcValue, dstValue, f) {
+       if ( ! srcValue || ! dstValue ) return;
 
        var listener = function () {
-	  dstModel.setValue(f(srcModel.getValue()));
+	  dstValue.set(f(srcValue.get()));
        };
 
        listener(); // copy initial value
 
-       this.listeners_[[srcModel, dstModel]] = listener;
+       this.listeners_[[srcValue, dstValue]] = listener;
 
-       srcModel.addListener(listener);
+       srcValue.addListener(listener);
     },
 
 
-    /** Have the dstModel stop listening for changes to the srcModel. **/
-    unfollow: function (srcModel, dstModel) {
-       if ( ! srcModel || ! dstModel ) return;
+    /** Have the dstValue stop listening for changes to the srcValue. **/
+    unfollow: function (srcValue, dstValue) {
+       if ( ! srcValue || ! dstValue ) return;
 
-       var key      = [srcModel, dstModel];
+       var key      = [srcValue, dstValue];
        var listener = this.listeners_[key];
 
        delete this.listeners_[key];
 
-       srcModel.removeListener(listener);
+       srcValue.removeListener(listener);
     },
 
 
-    /** Link the values of two models by having them follow each other.  Initial value is copied from model1 to model2. **/
-    link: function (model1, model2) {
-       this.follow(model1, model2);
-       this.follow(model2, model1);
+    /** Link the values of two models by having them follow each other.  Initial value is copied from value1 to model2. **/
+    link: function (value1, model2) {
+       this.follow(value1, model2);
+       this.follow(model2, value1);
     },
 
 
     /**
      * Relate the values of two models.
-     * @param f maps model1 to model2
-     * @param fprime maps model2 to model1
+     * @param f maps value1 to model2
+     * @param fprime maps model2 to value1
      */
-    relate: function (model1, model2, f, fprime) {
-       this.map(model1, model2, f);
-       this.map(model2, model1, fprime);
+    relate: function (value1, value2, f, fprime) {
+       this.map(value1, value2, f);
+       this.map(value2, value1, fprime);
     },
 
 
     /** Unlink the values of two models by having them no longer follow each other. **/
-    unlink: function (model1, model2) {
-       this.unfollow(model1, model2);
-       this.unfollow(model2, model1);
+    unlink: function (value1, value2) {
+       this.unfollow(value1, value2);
+       this.unfollow(value2, value1);
     },
 
 
@@ -411,7 +411,7 @@ var Events = {
      var listener = EventService.merged(fn2, 5);
      Events.onGet = function(obj, name, value)
      {
-       obj.propertyModel(name).addListener(listener);
+       obj.propertyValue(name).addListener(listener);
      };
      var ret = fn();
      Events.onGet = oldOnGet;
@@ -426,7 +426,7 @@ var Events = {
    onGet: function(obj, name, value) {
    }
 
-    // ???: would be nice to have a removeModel method
+    // ???: would be nice to have a removeValue method
     // or maybe add an 'owner' property, combine with Janitor
 
 }
@@ -678,21 +678,21 @@ var Movement = {
     * @arg p period of orbit
     */
     moveTowards: function (t, body, sat, v) {
-       var bodyX = body.propertyModel('x');
-       var bodyY = body.propertyModel('y');
-       var satX  = sat.propertyModel('x');
-       var satY  = sat.propertyModel('y');
+       var bodyX = body.propertyValue('x');
+       var bodyY = body.propertyValue('y');
+       var satX  = sat.propertyValue('x');
+       var satY  = sat.propertyValue('y');
 
        t.addListener(function() {
-         var dx = bodyX.getValue() - satX.getValue();
-	 var dy = (bodyY.getValue() - satY.getValue());
+         var dx = bodyX.get() - satX.get();
+	 var dy = (bodyY.get() - satY.get());
 	 var theta = Math.atan2(dy,dx);
 	 var r     = Math.sqrt(dx*dx+dy*dy);
 
 	 r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
 
-	 satX.setValue(satX.getValue() + r*Math.cos(-theta));
-	 satY.setValue(satY.getValue() - r*Math.sin(-theta));
+	 satX.set(satX.get() + r*Math.cos(-theta));
+	 satY.set(satY.get() - r*Math.sin(-theta));
        });
     },
 
@@ -708,15 +708,15 @@ var Movement = {
     */
     orbit: function (t, body, sat, r, p)
     {
-       var bodyX = body.propertyModel('x');
-       var bodyY = body.propertyModel('y');
-       var satX  = sat.propertyModel('x');
-       var satY  = sat.propertyModel('y');
+       var bodyX = body.propertyValue('x');
+       var bodyY = body.propertyValue('y');
+       var satX  = sat.propertyValue('x');
+       var satY  = sat.propertyValue('y');
 
        t.addListener(function() {
           var time = t.time;
-	  satX.setValue(bodyX.getValue() + r*Math.sin(time/p*Math.PI*2));
-	  satY.setValue(bodyY.getValue() + r*Math.cos(time/p*Math.PI*2));
+	  satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
+	  satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
        });
     }
 

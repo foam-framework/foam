@@ -178,7 +178,7 @@ var ArrayDAO = {
        this.unsubscribe('updated', listener);
     },
 
-    getValue: function()
+    get: function()
     {
        return this.select();
     }
@@ -323,7 +323,7 @@ var StorageDAO = {
        this.unsubscribe('updated', listener);
     },
 
-    getValue: function() {
+    get: function() {
        return this.select();
     }
 

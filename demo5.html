@@ -168,7 +168,7 @@
        }
       } catch(x) { }
       var arr = [obj];
-      var dataModel = new SimpleModel(obj);
+      var value = new SimpleValue(obj);
       console.log("Model: ", model.name);
 
       switch ( sys.selectedX ) {
@@ -176,9 +176,9 @@
            setDisplay('<pre>' + model.toJSON() + '</pre>');
          break;
          case 1: setDisplay(HelpView.create(model).toHTML()); break;
-         case 2: var dv = DetailView.create(model, dataModel); setDisplay(dv.toHTML()); dv.initHTML(); break;
-         case 3: setDisplay(TableView.create(model).setModel(new SimpleModel(arr)).toHTML()); break;
-         case 4: setDisplay(SummaryView.create(dataModel).toHTML()); break;
+         case 2: var dv = DetailView.create(model, value); setDisplay(dv.toHTML()); dv.initHTML(); break;
+         case 3: setDisplay(TableView.create(model).setModel(new SimpleValue(arr)).toHTML()); break;
+         case 4: setDisplay(SummaryView.create(value).toHTML()); break;
          case 5: setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); break;
          case 6: setDisplay("<pre>" + obj.toJSON() + "</pre>"); break;
          case 7: setDisplay("<textarea rows=100 cols=80>" + protoToString(model.getPrototype()) + '</textarea>'); break;
@@ -204,7 +204,7 @@
            //setDisplay();
           break;
          case 15:
-           var dv = DetailView.create(Model, new SimpleModel(model)); setDisplay(dv.toHTML() ); dv.initHTML();
+           var dv = DetailView.create(Model, new SimpleValue(model)); setDisplay(dv.toHTML() ); dv.initHTML();
          break;
       }
     });

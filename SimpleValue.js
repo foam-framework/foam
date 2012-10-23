@@ -17,24 +17,24 @@
 // todo: add enabled/disabled support
 // todo: bind
 
-function SimpleModel(val)
+function SimpleValue(val)
 {
     this.val_ = val || "";
 
     return this;
 }
 
-SimpleModel.prototype = { __proto__: PropertyChangeSupport };
-SimpleModel.prototype.setValue = function(val) {
-   var oldValue = this.getValue();
+SimpleValue.prototype = { __proto__: PropertyChangeSupport };
+SimpleValue.prototype.set = function(val) {
+   var oldValue = this.get();
    this.val_ = val;
    this.propertyChange(null, oldValue, val);
    return this;
 }
-SimpleModel.prototype.getValue = function() {
+SimpleValue.prototype.get = function() {
     return this.val_;
 }
-SimpleModel.prototype.toString = function() {
-    return "SimpleModel(" + this.getValue() + ")";
+SimpleValue.prototype.toString = function() {
+    return "SimpleValue(" + this.get() + ")";
 }
 

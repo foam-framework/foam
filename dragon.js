@@ -114,7 +114,7 @@ var Dragon = ModelModel.create({
       var me = this;
       this.i = 0;
       Events.dynamic(function() { timer.time; me.paint(); });
-//      this.timer && this.timer.propertyModel('time').addListener(this.paint.bind(this));
+//      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
     },
 
     paint: function() {

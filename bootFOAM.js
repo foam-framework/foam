@@ -17,7 +17,7 @@
 var files = [
   'context',
   'event',
-  'SimpleModel',
+  'SimpleValue',
   'JSONUtil',
   'XMLUtil',
   'FOAM',
