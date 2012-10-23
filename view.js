@@ -685,12 +685,10 @@ var TextFieldView = {
     },
 
     getValue: function() {
-console.log("getValue");
         return this.value;
     },
 
     setValue: function(value) {
-console.log("setValue");
       this.value = value;
 /*
        if ( this.mode === 'read-write' ) {
@@ -847,6 +845,11 @@ var BooleanView = {
 };
 
 
+/**
+ * TODO:
+ *  A Modelled version of this is in models.js.
+ *  Remove this when all of its subclasses have been modelled.
+ */
 var TextAreaView2 = {
     __proto__: AbstractView,
 

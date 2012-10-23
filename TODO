@@ -1,0 +1,5 @@
+Model all views.
+Rename View.get/setValue to 'value' property.
+Add 'super' support.
+Implement type support.
+Support for generating default values (like 'label').
