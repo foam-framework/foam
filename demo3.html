@@ -29,9 +29,9 @@
  <body>
 
   <script language="javascript">
-    var timer = TimerModel.create({});
+    var timer = Timer.create({});
 
-    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();
@@ -39,7 +39,7 @@
     var space = CanvasView.create({width: 2500, height: 2700, background:'#fff'});
     space.write(document);
 
-    var mouse = mouseModel.create();
+    var mouse = Mouse.create();
     mouse.connect(space.element());
 
     var M = Movement;
@@ -70,8 +70,8 @@
     for ( var i = 0 ; i < is.length ; i++ )
     {
       clocks[i] = ClockView.create({x:250,y:50+i*100,r:40,color:is[i][1]});
-      graphs[i] = GraphModel.create({x:5,y:50+i*100,width:200,height:95,style:'Line',graphColor:null,lineWidth:2,drawShadow:false,capColor:is[i][1], data:[]});
-//      graphs[i] = GraphModel.create({x:250,y:50,width:1500,height:1200,style:'Line',graphColor:null,lineWidth:3,drawShadow:false,capColor:is[i][1], data:[]});
+      graphs[i] = Graph.create({x:5,y:50+i*100,width:200,height:95,style:'Line',graphColor:null,lineWidth:2,drawShadow:false,capColor:is[i][1], data:[]});
+//      graphs[i] = Graph.create({x:250,y:50,width:1500,height:1200,style:'Line',graphColor:null,lineWidth:3,drawShadow:false,capColor:is[i][1], data:[]});
       space.addChild(clocks[i]);
       space.addChild(graphs[i]);
 

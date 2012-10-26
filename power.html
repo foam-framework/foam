@@ -96,7 +96,7 @@
   }
 
     var power = Power.create();
-    var timer = TimerModel.getPrototype().create({interval:1000,timeWarp:1});
+    var timer = Timer.getPrototype().create({interval:1000,timeWarp:1});
 
     var batteryMeter = BatteryMeter.create({
        width: 45,
@@ -203,7 +203,7 @@
        data:data,
        f: function(p) { return p.battery; }
     });
-    var powerGraph   = GraphModel.create({
+    var powerGraph   = Graph.create({
        axisSize:0,
        width:width,
        height:60,
@@ -212,7 +212,7 @@
        data:data,
        f: function(p) { return p.watts; }
     });
-    var wattsGraph   = GraphModel.create({
+    var wattsGraph   = Graph.create({
        capColor:'yellow',
        gridColor: '#cccccc',
        graphColor:'lightGray',
@@ -258,7 +258,7 @@
         var h = hardware[i];
 
 	document.writeln("<div class=graphLabel>" + h.label + "</div><div class=graph>");
-	h.graph = GraphModel.create({
+	h.graph = Graph.create({
 	   style: 'Bar',
 	   width: width,
 	   height: 18,
@@ -414,7 +414,7 @@
     document.write("<div style=\"height:700;\"> </div>");
     document.write("<table style=\"position:relative;left:220;\"><tr><td valign=top>");
 
-    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();

@@ -7,7 +7,7 @@
  <body>
   <h1>Dragon</h1>
   <script language="javascript">
-    var timer   = TimerModel.create({});
+    var timer   = Timer.create({});
     var tt = Turntable.create();
     var dragon  = Dragon.create({
       width: 1000,
@@ -37,7 +37,7 @@
     tt.paint();
     dragon.paint();
 
-    var dmouse = mouseModel.create();
+    var dmouse = Mouse.create();
     dmouse.connect(dragon.canvasView.element());
     dragon.eyes.watch(dmouse);
 

@@ -18,7 +18,7 @@
  * Only completely modelled models here.
  * All models in this file can be stored and loaded in a DAO.
  **/
-var TimerModel = FOAM.create({
+var Timer = FOAM.create({
    model_: 'Model',
 
    name: 'Timer',
@@ -155,7 +155,7 @@ var TimerModel = FOAM.create({
 });
 
 
-var mouseModel = FOAM.create({
+var Mouse = FOAM.create({
    model_: 'Model',
 
    name: 'Mouse',
@@ -652,7 +652,7 @@ var FilteredModel = FOAM.create({
 
 
 
-var GraphModel = FOAM.create({
+var Graph = FOAM.create({
    model_: 'Model',
 
    extendsModel: 'PanelCView',
@@ -1341,12 +1341,12 @@ var System = FOAM.create({
       {
 	 name:  'mouse',
 	 label: 'Mouse',
-	 type:  'mouseModel',
+	 type:  'Mouse',
 	 view: {
-	    create: function() { return DetailView.create(mouseModel); }
+	    create: function() { return DetailView.create(Mouse); }
          },
 	 valueFactory: function() {
-	    return mouseModel.create();
+	    return Mouse.create();
 	 }
       },
       {
@@ -1394,9 +1394,9 @@ var System = FOAM.create({
         }
 */
 
-        this.codeGraph = GraphModel.create({x:20, y:20, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
-        this.utilityGraph = GraphModel.create({x:20, y:260, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
-        this.efficiencyGraph = GraphModel.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
+        this.codeGraph = Graph.create({x:20, y:20, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
+        this.utilityGraph = Graph.create({x:20, y:260, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
+        this.efficiencyGraph = Graph.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
 
         this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
         Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));

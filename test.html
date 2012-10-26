@@ -26,13 +26,13 @@
   <script language="javascript" src="metamodel.js"></script>
   <script language="javascript" src="view.js"></script>
   <script language="javascript" src="models.js"></script>
+  <script language="javascript" src="turntable.js"></script>
   <script language="javascript" src="chrome.js"></script>
   <script language="javascript" src="dao.js"></script>
   <script language="javascript" src="StackView.js"></script>
   <script language="javascript" src="DAOController.js"></script>
   <script language="javascript" src="UML.js"></script>
   <script language="javascript" src="dragon.js"></script>
-  <script language="javascript" src="turntable.js"></script>
   <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
 
   <script language="javascript" type="text/javascript">
@@ -96,8 +96,8 @@ activity area
        CanvasModel,
        Rectangle,
        DAOController,
-       TimerModel,
-       mouseModel,
+       Timer,
+       Mouse,
        PanelCView,
        EyeCView,
        EyesCView,
@@ -347,7 +347,7 @@ o = Model;
     space.write(document);
     document.writeln("</td>");
 
-    var timer = TimerModel.create({});
+    var timer = Timer.create({});
     // timer.start();
 
     var Planet = planetModel.getPrototype();
@@ -381,7 +381,7 @@ o = Model;
 
     document.writeln("<td valign=top>");
 
-    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
 //    var timerView = DetailView.create(timer.model_);
     document.writeln(timerView.toHTML());
     timerView.set(timer);
@@ -419,7 +419,7 @@ o = Model;
     timer.start();
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
   
-    var dmouse = mouseModel.create();
+    var dmouse = Mouse.create();
     dmouse.connect(dragon.canvasView.element());
     dragon.eyes.watch(dmouse);
 
@@ -447,7 +447,7 @@ o = Model;
     Movement.moveTowards(timer, bug3, bug4, 0.4);
 //    Movement.moveTowards(timer, bug4, bug1, 0.22);
 
-    var mouse = mouseModel.create();
+    var mouse = Mouse.create();
     mouse.connect(field.element());
     Movement.orbit(timer, mouse, bug1, 80, 1500);
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
@@ -473,7 +473,7 @@ o = Model;
     space.addChild(eye);
     eye.watch(mars);	  
 
-    var graph = GraphModel.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
+    var graph = Graph.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
     space.addChild(graph);
 
     graph.watch(apollo.propertyValue('y'));

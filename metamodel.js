@@ -446,7 +446,7 @@ var PropertyModel = {
 	   rows:3,
 	   view: 'FunctionView',
 	   defaultValue: '',
-	   help: 'Factory for creating initial value when new object instantiated.',
+	   help: 'Factory for creating initial value when new object instantiated.'
        },
        {
 	   name: 'getter',
@@ -506,8 +506,7 @@ var PropertyModel = {
     ],
 
     getProperty: function(name) {
-        for ( var i = 0 ; i < this.properties.length ; i++ )
-	{
+        for ( var i = 0 ; i < this.properties.length ; i++ ) {
 	    var p = this.properties[i];
 
 	    if ( p.name == name ) return p;

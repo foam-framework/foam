@@ -29,10 +29,10 @@
  <body>
 
   <script language="javascript">
-    var timer     = TimerModel.create({});
-    var timerView = ActionBorder.create(TimerModel, DetailView.create(timer.model_));
+    var timer     = Timer.create({});
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
     var space     = CanvasView.create({width: 1000, height: 700, background:'#fff'});
-    var mouse     = mouseModel.create();
+    var mouse     = Mouse.create();
     var clock1    = ClockView.create({x:300, y:300, r:60, color:'red'});
     var clock2    = ClockView.create({x:0, y:0, r:60, color:'green'});
 

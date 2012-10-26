@@ -380,7 +380,7 @@ evt.preventDefault();
 
 var BatteryGraph = Model.create({
 
-   extendsModel: 'GraphModel',
+   extendsModel: 'Graph',
 
    name:  'BatteryGraph',
    label: 'Battery Graph',
