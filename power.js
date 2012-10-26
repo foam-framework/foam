@@ -170,7 +170,7 @@ var Power = ModelModel.create({
 
 var CloseApp = ModelModel.create({
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name: 'CloseApp',
    label: 'Close Application',
@@ -284,7 +284,7 @@ var CloseApp = ModelModel.create({
 
 var Screen = ModelModel.create({
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name: 'Backlite',
    label: 'Backlite',
@@ -347,7 +347,7 @@ var Screen = ModelModel.create({
 
       initHTML: function() {
        var me = this;
-       PanelCViewModel.getPrototype().initHTML.call(this);
+       PanelCView.getPrototype().initHTML.call(this);
        this.canvasView.element().addEventListener('click', function(evt) {
 	  me.level = Math.max(1, Math.min(10, me.level + ((evt.offsetX > 100) ? 1 : -1)));
 	  me.paint();
@@ -496,7 +496,7 @@ var BatteryGraph = ModelModel.create({
 
 var BatteryMeter = ModelModel.create({
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name: 'BatteryMeter',
    label: 'Battery Meter',
@@ -608,7 +608,7 @@ var BatteryMeter = ModelModel.create({
 
 var NeedleMeter = ModelModel.create({
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name: 'NeedleMeter',
    label: 'Needle Meter',

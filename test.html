@@ -98,9 +98,9 @@ activity area
        DAOController,
        TimerModel,
        mouseModel,
-       PanelCViewModel,
-       EyeCViewModel,
-       EyesCViewModel,
+       PanelCView,
+       EyeCView,
+       EyesCView,
        ClockView,
        TextFieldView,
        BookmarkModel
@@ -344,10 +344,8 @@ o = ModelModel;
     var space = CanvasView.create({width: 800, height: 600, background:'#000'});
     document.writeln("<table><tr>");
     document.writeln("<td valign=top>");
-    document.writeln(space.toHTML());
+    space.write(document);
     document.writeln("</td>");
-
-    space.initHTML();
 
     var timer = TimerModel.create({});
     // timer.start();
@@ -471,7 +469,7 @@ o = ModelModel;
     var clock = ClockView.create({x:700,y:90,r:80,color:'red'});
     space.addChild(clock);
 
-    var eye = EyeCViewModel.create({x:60,y:60,r:50,color:'red'});
+    var eye = EyeCView.create({x:60,y:60,r:50,color:'red'});
     space.addChild(eye);
     eye.watch(mars);	  
 
@@ -480,11 +478,11 @@ o = ModelModel;
 
     graph.watch(apollo.propertyValue('y'));
 
-    var eyes = EyesCViewModel.create({x:600,y:470});
+    var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
     eyes.watch(mars);	  
 
-    var eyes2 = EyesCViewModel.create({x:100,y:100});
+    var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
     eyes2.watch(mouse);	  
 

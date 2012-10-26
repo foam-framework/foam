@@ -19,7 +19,7 @@
  * All models in this file can be stored and loaded in a DAO.
  **/
 var TimerModel = FOAM.create({
-   model_: 'ModelModel',
+   model_: 'Model',
 
    name: 'Timer',
    label: 'Timer',
@@ -156,7 +156,7 @@ var TimerModel = FOAM.create({
 
 
 var mouseModel = FOAM.create({
-   model_: 'ModelModel',
+   model_: 'Model',
 
    name: 'Mouse',
    label: 'Mouse',
@@ -199,8 +199,8 @@ var mouseModel = FOAM.create({
 
 
 /** A Panel is a container of other CViews. **/
-var PanelCViewModel = FOAM.create({
-   model_: 'ModelModel',
+var PanelCView = FOAM.create({
+   model_: 'Model',
 
    name:  'PanelCView',
    label: 'Panel',
@@ -244,8 +244,7 @@ var PanelCViewModel = FOAM.create({
    ],
 
    methods: {
-      toHTML: function()
-      {
+      toHTML: function() {
 //	 this.canvasView = CanvasModel.create(this);
 	 this.canvasView = CanvasModel.create({width:this.width+1, height:this.height+2});
 	 if ( this.backgroundColor ) this.canvasView.backgroundColor = this.backgroundColor;
@@ -253,29 +252,23 @@ var PanelCViewModel = FOAM.create({
 	 return this.canvasView.toHTML();
       },
 
-      initHTML: function()
-      {
+      initHTML: function() {
 	 this.canvasView.initHTML();
       },
 
-
-      write: function(document)
-      {
+      write: function(document) {
 	 document.writeln(this.toHTML());
 	 this.initHTML();
       },
 
-      addChild: function(child)
-      {
+      addChild: function(child) {
 	 this.children.push(child);
 	 child.parent = this;
 	 return this;
       },
 
-      paint: function()
-      {
-	 for ( var i = 0 ; i < this.children.length ; i++ )
-	 {
+      paint: function() {
+	 for ( var i = 0 ; i < this.children.length ; i++ ) {
 	    var child = this.children[i];
 
 	    child.paint();
@@ -285,11 +278,11 @@ var PanelCViewModel = FOAM.create({
 });
 
 
-var EyeCViewModel = FOAM.create({
+var EyeCView = FOAM.create({
 
    model_: 'Model',
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name:  'EyeCView',
    label: 'Eye',
@@ -367,11 +360,11 @@ var EyeCViewModel = FOAM.create({
 });
 
 
-var EyesCViewModel = FOAM.create({
+var EyesCView = FOAM.create({
 
    model_: 'Model',
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name:  'EyesCView',
    label: 'Eyes',
@@ -383,7 +376,7 @@ var EyesCViewModel = FOAM.create({
 	 type:  'Eye',
 	 paint: true,
 	 valueFactory: function() {
-	    return EyeCViewModel.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
+	    return EyeCView.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
 	 }
       },
       {
@@ -392,7 +385,7 @@ var EyesCViewModel = FOAM.create({
 	 type:  'Eye',
 	 paint: true,
 	 valueFactory: function() {
-	    return EyeCViewModel.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
+	    return EyeCView.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
 	 }
       }
    ],
@@ -415,7 +408,7 @@ var ClockView = FOAM.create({
 
    model_: 'Model',
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name:  'ClockView',
    label: 'Clock',
@@ -522,7 +515,7 @@ var ClockView = FOAM.create({
      model_: 'Model',
      name: 'Hand',
      label: 'Clock Hand',
-     extendsModel: 'PanelCViewModel',
+     extendsModel: 'PanelCView',
      properties:
      [
         {
@@ -660,9 +653,9 @@ var FilteredModel = FOAM.create({
 
 
 var GraphModel = FOAM.create({
-   model_: 'ModelModel',
+   model_: 'Model',
 
-   extendsModel: 'PanelCViewModel',
+   extendsModel: 'PanelCView',
 
    name:  'Graph',
    label: 'Graph',
@@ -1062,19 +1055,18 @@ var AlternateView = FOAM.create({
     ],
 
    methods: {
-      init: function()
-      {
+      init: function() {
 	 AbstractPrototype.init.call(this);
-	 this.model = new SimpleValue("");
+	 this.value = new SimpleValue("");
       },
 
       installSubView: function(viewChoice) {
-	 var view = GLOBAL[viewChoice.view].create(this.model.get().model_, this.model);
+	 var view = GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
 	 this.element().innerHTML = view.toHTML();
 	 view.initHTML();
-	 if ( view.set ) view.set(this.model.get());
+         view.value.set(this.value.get());
+//	 if ( view.set ) view.set(this.model.get());
 //	 Events.link(this.model, this.view.model);
-
       },
 
       toHTML: function() {
@@ -1116,77 +1108,58 @@ var AlternateView = FOAM.create({
 });
 
 
-var TextAreaView = FOAM.create({
+
+var FloatFieldView = FOAM.create({
 
    model_: 'Model',
 
-   extendsPrototype: 'AbstractView',
+   name:  'FloatFieldView',
+   label: 'Float Field View',
 
-   name: 'TextAreaView',
-   label: 'Text-Area View',
-
-    properties: [
-      {
-	 name:  'rows',
-	 label: 'Rows',
-         type:  'int',
-         view:  'IntFieldView',
-	 defaultValue: 5
-      },
-      {
-	 name:  'cols',
-	 label: 'Columns',
-         type:  'int',
-         view:  'IntFieldView',
-	 defaultValue: 70
-      },
-      {
-	 name:  'value',
-	 label: 'Value',
-         type:  'Value',
-         defaultValueFn: function() { return new SimpleValue(); },
-         postSet: function(newValue, oldValue) {
-           Events.unlink(this.domValue, oldValue);
-
-	   //Events.follow(this.model, this.domValue);
-           try {
-	     Events.link(newValue, this.domValue);
-           } catch (x) {
-           }
-         }
-      }
-    ],
+   extendsModel: 'TextFieldView',
 
    methods: {
-      init: function(args) {
-       AbstractView.init.call(this, args);
+     textToValue: function(text) {
+       return parseFloat(text);
+     }
+   }
+});
 
-       this.cols = (args && args.displayWidth)  || 70;
-       this.rows = (args && args.displayHeight) || 10;
-      },
 
-      toHTML: function() {
-	return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-    },
+var IntFieldView = FOAM.create({
 
-    setValue: function(value) {
-      this.value = value;
-    },
+   model_: 'Model',
 
-    initHTML: function() {
-       var e = this.element();
+   name:  'IntFieldView',
+   label: 'Int Field View',
 
-       this.domValue = DomValue.create(e, 'onchange', 'value');
+   extendsModel: 'TextFieldView',
 
-       // Events.follow(this.model, this.domValue);
-       Events.link(this.value, this.domValue);
-    },
+   methods: {
+     textToValue: function(text) {
+       return parseInt(text);
+     }
+   }
+});
 
-    destroy: function() {
-       Events.unlink(this.domValue, this.value);
-    }
-  }
 
+var StringArrayView = FOAM.create({
+
+   model_: 'Model',
+
+   name:  'StringArrayView',
+   label: 'String Array View',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
+     textToValue: function(text) {
+       return text.replace(/\s/g,'').split(',');
+     },
+     valueToText: function(value) {
+       return value ? value.toString() : "";
+     }
+   }
 });
 
 

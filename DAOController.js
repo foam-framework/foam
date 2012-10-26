@@ -54,6 +54,7 @@ var ModelAlternateView = FOAM.create({
    }
 });
 
+
 var DAOController = FOAM.create({
    model_: 'Model',
 
@@ -540,7 +541,7 @@ var DAOUpdateController = FOAM.create({
 		  ]
 	       });
 
-	 this.view.model.set(this.obj);
+	 this.view.value.set(this.obj);
       },
 
       init2: function() {
@@ -566,8 +567,18 @@ var DAOUpdateController = FOAM.create({
 });
 
 
-var DAOControllerView = {
-    __proto__: AbstractView,
+//var DAOControllerView = {
+//    __proto__: AbstractView,
+
+
+var DAOControllerView = ModelModel.create({
+
+   extendsModel: 'AbstractView2',
+
+   name:  'DAOControllerView',
+   label: 'DAOControllerView',
+
+   methods: {
 
     create: function(model, dao) {
        var ctrl = ActionBorder.create(DAOController, DAOController.create({
@@ -607,6 +618,7 @@ var DAOControllerView = {
 
     destroy: function() {
     }
+   }
 
-};
+});
 

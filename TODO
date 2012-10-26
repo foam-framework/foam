@@ -1,5 +1,16 @@
+Finish moving to AbstractView Model.
+
+fixes uses of 'eid'
+Replace getID() with .id
+Replace element() with element
+add isInitialized() to AbstractView
+
 Model all views.
+Fix/standardize naming of Models.  Remove 'Model' from name and have
+   consistent capitalization.
 Rename View.get/setValue to 'value' property.
 Add 'super' support.
 Implement type support.
 Support for generating default values (like 'label').
+Add asserts to methods (including type-checking?).
+Move extension methods out of context.js

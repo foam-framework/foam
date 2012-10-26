@@ -139,7 +139,8 @@ console.log(i, k, v);
       this.defineFOAMSetter(name, function(newValue) {
         var oldValue = this[name];
 
-        if ( prop.preSet ) newValue = prop.preSet.call(this, newValue, oldValue);
+        if ( prop.preSet )
+          newValue = prop.preSet.call(this, newValue, oldValue);
 
         // todo: fix
         if ( prop.type == 'int' || prop.type == 'float' )
@@ -147,7 +148,8 @@ console.log(i, k, v);
 
         this.instance_[name] = newValue;
 
-        if ( prop.postSet ) prop.postSet.call(this, newValue, oldValue);
+        if ( prop.postSet )
+          prop.postSet.call(this, newValue, oldValue);
 
         this.propertyChange(name, oldValue, newValue);
       });

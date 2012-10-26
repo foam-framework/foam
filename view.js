@@ -14,6 +14,246 @@
  * limitations under the License.
  */
 
+// TODO: model, document
+// properties: children, parent, value, eid,
+var AbstractView =
+{
+   __proto__: AbstractPrototype,
+
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      this.children = [];
+      this.value    = new SimpleValue("");
+    },
+
+    addChild: function(child) {
+      child.parent = this;
+      this.children.push(child);
+
+      return this;
+    },
+
+    removeChild: function(child) {
+      this.children.remove(child);
+
+      return this;
+    },
+
+    addChildren: function() {
+      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+
+      return this;
+    },
+
+    nextID: function() {
+        // @return a unique DOM element-id
+
+	var id = 0;
+
+	return function() {
+	    return "view" + (id++);
+	};
+    }(),
+
+    getID: function() {
+      // @return this View's unique DOM element-id
+
+      if ( ! this.eid_ ) this.eid_ = this.nextID();
+
+      return this.eid_;
+    },
+
+    element: function() {
+      // @return this View's DOM element
+      return document.getElementById(this.getID());
+    },
+
+    registerCallback: function(event, listener, opt_elementId) {
+	opt_elementId = opt_elementId || this.nextID();
+
+//	if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
+	if ( ! this.callbacks_ ) this.callbacks_ = [];
+
+	this.callbacks_.push([opt_elementId, event, listener]);
+
+	return opt_elementId;
+    },
+
+    write: function(document) {
+       // Write the View's HTML to the provided document and then initialize.
+
+       document.writeln(this.toHTML());
+       this.initHTML();
+    },
+
+    initHTML: function() {
+       // Initialize this View and all of it's children.
+       // This mostly involves attaching listeners.
+       // Must be called activate a view after it has been added to the DOM.
+
+       if ( this.callbacks_ ) {
+	  // hookup event listeners
+	  for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
+	     var callback  = this.callbacks_[i];
+	     var elementId = callback[0];
+	     var event     = callback[1];
+	     var listener  = callback[2];
+	     var e         = document.getElementById(elementId);
+             // ???: Should this be addEventListener instead?
+	     e[event]      = listener.bind(this);
+	  }
+
+	  delete this['callbacks_'];
+       }
+
+       if ( this.children ) {
+	  // init children
+	  for ( var i = 0 ; i < this.children.length ; i++ ) {
+	     // console.log("init child: " + this.children[i]);
+	     try {
+		this.children[i].initHTML();
+   	     } catch (x) {
+		console.log("Error on AbstractView.child.initHTML", x, x.stack);
+	     }
+	  }
+       }
+    }
+
+};
+
+
+var AbstractView2 = FOAM.create({
+   model_: 'Model',
+
+   name: 'AbstractView2',
+   label: 'AbstractView',
+
+   properties: [
+      {
+	 name:  'parent',
+	 label: 'Parent',
+	 type:  'View',
+         hidden: true
+      },
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         defaultValueFn: function() { return new SimpleValue(); }
+      },
+      {
+	 name:  'children',
+	 label: 'Children',
+         type:  'Array[View]',
+	 defaultValueFn: function() {
+            return [];
+         }
+      },
+      {
+	 name:  'id',
+	 label: 'Element ID',
+         type:  'String',
+         view:  'IntFieldView'
+      }
+   ],
+
+   methods: {
+    addChild: function(child) {
+      child.parent = this;
+
+      var children = this.children;
+      children.push(child);
+      this.children = children;
+
+      return this;
+    },
+
+    removeChild: function(child) {
+      child.parent = undefined;
+      this.children.remove(child);
+
+      return this;
+    },
+
+    addChildren: function() {
+      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
+
+      return this;
+    },
+
+    nextID: function() {
+      return "View" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+    },
+
+    getID: function() {
+      // @return this View's unique DOM element-id
+
+      return this.id || ( this.id = this.nextID() );
+    },
+
+    element: function() {
+      // @return this View's DOM element
+
+      return document.getElementById(this.getID());
+    },
+
+    registerCallback: function(event, listener, opt_elementId) {
+	opt_elementId = opt_elementId || this.nextID();
+
+//	if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
+	if ( ! this.callbacks_ ) this.callbacks_ = [];
+
+	this.callbacks_.push([opt_elementId, event, listener]);
+
+	return opt_elementId;
+    },
+
+    write: function(document) {
+       // Write the View's HTML to the provided document and then initialize.
+
+       document.writeln(this.toHTML());
+       this.initHTML();
+    },
+
+    initHTML: function() {
+       // Initialize this View and all of it's children.
+       // This mostly involves attaching listeners.
+       // Must be called activate a view after it has been added to the DOM.
+
+       if ( this.callbacks_ ) {
+	  // hookup event listeners
+	  for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
+	     var callback  = this.callbacks_[i];
+	     var elementId = callback[0];
+	     var event     = callback[1];
+	     var listener  = callback[2];
+	     var e         = document.getElementById(elementId);
+             // ???: Should this be addEventListener instead?
+	     e[event]      = listener.bind(this);
+	  }
+
+	  delete this['callbacks_'];
+       }
+
+       if ( this.children ) {
+	  // init children
+	  for ( var i = 0 ; i < this.children.length ; i++ ) {
+	     // console.log("init child: " + this.children[i]);
+	     try {
+		this.children[i].initHTML();
+   	     } catch (x) {
+		console.log("Error on AbstractView.child.initHTML", x, x.stack);
+	     }
+	  }
+       }
+    }
+
+   }
+
+});
+
+
 var DomValue =
 {
     DEFAULT_EVENT:    'onchange',
@@ -57,106 +297,13 @@ var DomValue =
 	return "DomValue(" + this.event + ", " + this.property + ")";
     }
 
-}
-
-
-var AbstractView =
-{
-   __proto__: AbstractPrototype,
-
-    init: function() {
-       AbstractPrototype.init.call(this);
-
-       this.children = [];
-       this.value    = new SimpleValue("");
-    },
-
-    addChild: function(child) {
-       child.parent = this;
-       this.children.push(child);
-
-       return this;
-    },
-
-    removeChild: function(child) {
-       this.children.remove(child);
-
-       return this;
-    },
-
-    addChildren: function() {
-       Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-       return this;
-    },
-
-    nextID: function() {
-	var id = 0;
-
-	return function() {
-	    return "view" + (id++);
-	};
-    }(),
-
-    getID: function() {
-	if ( ! this.eid_ ) this.eid_ = this.nextID();
-
-	return this.eid_;
-    },
-
-    element: function() {
-	return document.getElementById(this.getID());
-    },
-
-    registerCallback: function(event, listener, opt_elementId) {
-	opt_elementId = opt_elementId || this.nextID();
-
-//	if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
-	if ( ! this.callbacks_ ) this.callbacks_ = [];
-
-	this.callbacks_.push([opt_elementId, event, listener]);
-
-	return opt_elementId;
-    },
-
-    write: function(document) {
-       document.writeln(this.toHTML());
-       this.initHTML();
-    },
-
-    initHTML: function() {
-       if ( this.callbacks_ ) {
-	  // hookup event listeners
-	  for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
-	     var callback  = this.callbacks_[i];
-	     var elementId = callback[0];
-	     var event     = callback[1];
-	     var listener  = callback[2];
-	     var e         = document.getElementById(elementId);
-	     e[event]      = listener.bind(this);
-	  }
-
-	  delete this['callbacks_'];
-       }
-
-       if ( this.children ) {
-	  // init children
-	  for ( var i = 0 ; i < this.children.length ; i++ ) {
-	     // console.log("init child: " + this.children[i]);
-	     try {
-		this.children[i].initHTML();
-   	     } catch (x) {
-		console.log("Error on AbstractView.child.initHTML", x, x.stack);
-	     }
-	  }
-       }
-    }
-
 };
+
 
 
 var CanvasModel = ModelModel.create({
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    name:  'Canvas',
    label: 'Canvas',
@@ -185,6 +332,7 @@ var CanvasModel = ModelModel.create({
    methods: {
       init: function() {
 	 this.__super__.init.call(this);
+         // AbstractView2.getPrototype().init.call(this);
 
 	 this.repaint = EventService.merged(function() {
 	   this.paint();
@@ -192,6 +340,7 @@ var CanvasModel = ModelModel.create({
       },
 
       toHTML: function() {
+console.log('canvas: ', this.getID());
 	 return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
       },
 
@@ -200,7 +349,8 @@ var CanvasModel = ModelModel.create({
       },
 
       addChild: function(child) {
-	 AbstractView.addChild.call(this, child);
+//	 AbstractView2.addChild.call(this, child);
+	 AbstractView2.getPrototype().addChild.call(this, child);
 
 	 try {
 	    child.addListener(this.repaint);
@@ -629,13 +779,13 @@ var BoxModel = ModelModel.create({
 });
 
 
-var TextFieldView = {
-   __proto__: ModelProto,
+var TextFieldView = FOAM.create({
 
-   extendsPrototype: 'AbstractView',
-
-   name:  'TextField',
+   model_: 'Model',
+   name:  'TextFieldView',
    label: 'Text Field',
+
+   extendsModel: 'AbstractView2',
 
    properties: [
       {
@@ -664,14 +814,18 @@ var TextFieldView = {
 	 name:  'value',
 	 label: 'Value',
          type:  'Value',
+         defaultValueFn: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
            if ( this.mode === 'read-write' ) {
 	     Events.unlink(this.domValue, oldValue);
-	     Events.link(newValue, this.domValue);
+	     Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
            } else {
+             Events.follow(newValue, this.domValue);
+             /*
 	     value.addListener(function() {
 	                         this.element().innerHTML = newValue.get();
 	                       }.bind(this));
+              */
            }
          }
       }
@@ -685,23 +839,13 @@ var TextFieldView = {
     },
 
     getValue: function() {
+// console.log('getValue');
         return this.value;
-    },
+     },
 
     setValue: function(value) {
+// console.log('setValue');
       this.value = value;
-/*
-       if ( this.mode === 'read-write' ) {
-	Events.unlink(this.domValue, this.value);
-	this.value = value;
-	Events.link(value, this.domValue);
-       } else {
-	  this.value = value;
-	  value.addListener(function() {
-	     this.element().innerHTML = this.value.get();
-	  }.bind(this));
-       }
-*/
     },
 
     initHTML: function() {
@@ -713,11 +857,19 @@ var TextFieldView = {
 //       Events.link(this.model, this.domValue);
     },
 
+//    textToValue: Events.identity,
+
+//    valueToText: Events.identity,
+
+    textToValue: function(text) { return text;},
+
+    valueToText: function(value) { return value;},
+
     destroy: function() {
        Events.unlink(this.domValue, this.value);
     }
   }
-};
+});
 
 
 var ChoiceView = {
@@ -730,7 +882,8 @@ var ChoiceView = {
  *
  *
  */
-   extendsPrototype: 'AbstractView',
+//   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    name:  'ChoiceView',
    label: 'Choice View',
@@ -797,7 +950,8 @@ var ChoiceView = {
 var BooleanView = {
    __proto__: ModelProto,
 
-   extendsPrototype: 'AbstractView',
+//   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    name:  'BooleanView',
    label: 'Boolean View',
@@ -845,64 +999,98 @@ var BooleanView = {
 };
 
 
-/**
- * TODO:
- *  A Modelled version of this is in models.js.
- *  Remove this when all of its subclasses have been modelled.
- */
-var TextAreaView2 = {
-    __proto__: AbstractView,
+var TextAreaView = FOAM.create({
 
-    name: 'name',
+   model_: 'Model',
 
-    value: new SimpleValue(),
+   extendsModel: 'AbstractView2',
 
-    init: function(args) {
-debugger;
-       AbstractView.init.call(this, args);
+   name: 'TextAreaView',
+   label: 'Text-Area View',
+
+    properties: [
+      {
+	 name:  'rows',
+	 label: 'Rows',
+         type:  'int',
+         view:  'IntFieldView',
+	 defaultValue: 5
+      },
+      {
+	 name:  'cols',
+	 label: 'Columns',
+         type:  'int',
+         view:  'IntFieldView',
+	 defaultValue: 70
+      },
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         defaultValueFn: function() { return new SimpleValue(); },
+         postSet: function(newValue, oldValue) {
+           Events.unlink(this.domValue, oldValue);
+
+	   //Events.follow(this.model, this.domValue);
+           try {
+	     // Events.link(newValue, this.domValue);
+             Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
+           } catch (x) {
+           }
+         }
+      }
+    ],
+
+   methods: {
+      init: function(args) {
+       AbstractView2.init.call(this, args);
 
        this.cols = (args && args.displayWidth)  || 70;
        this.rows = (args && args.displayHeight) || 10;
-    },
+      },
 
-    toHTML: function() {
+      toHTML: function() {
 	return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-    },
+      },
 
     setValue: function(value) {
-      Events.unlink(this.domValue, this.value);
+console.log('setValue:', value.get);
       this.value = value;
-
-	//Events.follow(this.model, this.domValue);
-      try {
-	Events.link(value, this.domValue);
-      } catch (x) {
-
-      }
     },
 
     initHTML: function() {
-       var e = this.element();
+      this.domValue = DomValue.create(this.element(), 'onchange', 'value');
 
-       this.domValue = DomValue.create(e, 'onchange', 'value');
-
-       // Events.follow(this.model, this.domValue);
-       Events.link(this.value, this.domValue);
+      // Events.follow(this.model, this.domValue);
+      // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
+      this.value = this.value;
     },
 
     destroy: function() {
        Events.unlink(this.domValue, this.value);
-    }
-};
+    },
+
+    textToValue: function(text) { console.log('text: ',text);return text;},
+
+    valueToText: function(value) { console.log('value: ',value);return value;}
+  }
+
+});
 
 
-var FunctionView =
-{
+// TODO: finish, extend text area, add error
+var FunctionView2 = FOAM.create({
 
-    __proto__: TextAreaView2,
+   model_: 'Model',
 
+   name:  'FunctionView',
+   label: 'Function View',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
     init: function(args) {
-       TextAreaView2.init.call(this, args);
+       TextAreaView.init.call(this, args);
 
        this.cols = args.displayWidth  || 80;
        this.rows = args.displayHeight || 8;
@@ -910,13 +1098,59 @@ var FunctionView =
     },
 
     toHTML: function() {
-       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView2.toHTML.call(this);
+       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.toHTML.call(this);
+    },
+
+     setError: function(err) {
+       if ( err ) console.log("Javascript Error: ", err);
+
+       this.errorView.getModel().set(err || "");
+     },
+
+     textToValue: function(text) {
+       setError("");
+
+       if ( ! text ) return null;
+
+       try {
+	 return eval("(" + text + ")");
+       } catch (x) {
+         console.log("JS Error: ", text);
+	 setError(x);
+       }
+
+       return text;
+     },
+
+     valueToText: function(value) {
+       return value ? value.toString() : "";
+     }
+   }
+});
+
+
+// TODO: finish modelled replacement
+var FunctionView =
+{
+
+    __proto__: TextAreaView,
+
+    init: function(args) {
+       TextAreaView.init.call(this, args);
+
+       this.cols = args.displayWidth  || 80;
+       this.rows = args.displayHeight || 8;
+       this.errorView = TextFieldView.create({mode:'read-only'});
+    },
+
+    toHTML: function() {
+       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.toHTML.call(this);
     },
 
     initHTML: function() {
        this.domValue = DomValue.create(this.element(), 'onkeyup', 'value');
 
-//       TextAreaView2.initHTML.call(this);
+//       TextAreaView.initHTML.call(this);
        this.errorView.initHTML();
 
        /*
@@ -928,10 +1162,6 @@ var FunctionView =
          change_listener: this.onChange.bind(this)
        });
 	*/
-    },
-
-    onChange: function() {
-       console.log("onChange");
     },
 
     setError: function(err) {
@@ -977,91 +1207,17 @@ var FunctionView =
 };
 
 
-var StringArrayView = {
-   __proto__: ModelProto,
-
-   extendsPrototype: 'AbstractView',
-
-   name:  'StringArray',
-   label: 'StringArray Field',
-
-   properties: [
-      {
-	 name:  'name',
-	 label: 'Name',
-         type:  'String',
-	 defaultValue: 'field'
-      },
-      {
-	 name:  'displayWidth',
-	 label: 'Display Width',
-         type:  'int',
-	 defaultValue: 30
-      },
-      {
-	 name:  'mode',
-	 label: 'Mode',
-         type:  'String',
-	 defaultValue: 'read-write',
-         view: {
-	      create: function() { return ChoiceView.create({choices:[
-                 "read-only", "read-write", "final"
-              ]}); } }
-      }
-   ],
-
-   methods: {
-    toHTML: function() {
-	return ( this.mode === 'read-write' ) ?
-	  '<input id="' + this.getID() + '" type="text" name="' + this.name + '" size=' + 75 /*this.displayWidth*/ + '/>' :
-	  '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
-    },
-
-    getValue: function() {
-      return this.model;
-    },
-
-    setValue: function(value) {
-      //	Events.unlink(this.domValue, this.model);
-      this.value = value;
-
-      Events.relate(
-	this.value,
-	this.domValue,
-	function(f) {
-	  return f ? f.toString() : "";
-	},
-	function(str) {
-	  return str.replace(/\s/g,'').split(',');
-        }
-      );
-    },
-
-    initHTML: function() {
-       var e = this.element();
-
-       this.domValue = DomValue.create(e);
-
-       this.setValue(this.value);
-//       Events.link(this.model, this.domValue);
-    },
-
-    destroy: function() {
-       Events.unlink(this.domValue, this.model);
-    }
-   }
-};
-
-
+/*
+Not used.
 var HTMLView =
 {
-    __proto__: TextAreaView2,
+    __proto__: TextAreaView,
 
     cols: 120,
     rows: 20,
 
     initHTML: function() {
-       TextAreaView2.initHTML.call(this);
+       TextAreaView.initHTML.call(this);
 
        editAreaLoader.init({
          id : this.getID(),
@@ -1072,90 +1228,68 @@ var HTMLView =
     }
 
 };
+*/
 
 
-var JSView =
-{
-    __proto__: TextAreaView2,
+var JSView = FOAM.create({
 
-    cols: 120,
-    rows: 80,
+   model_: 'Model',
 
-    init: function(args) {
-       TextAreaView2.init.call(this, args);
+   name:  'JSView',
+   label: 'JS View',
 
-       this.cols = (args && args.displayWidth)  || 120;
-       this.rows = (args && args.displayHeight) || 35;
+   extendsModel: 'TextAreaView',
 
-       this.set = function(obj) {
-	  this.value.set(obj);
-       };
-    },
+    methods: {
+      init: function(args) {
+        TextAreaView.init.call(this, args);
 
-    initHTML: function() {
-       var e = this.element();
+        this.cols = (args && args.displayWidth)  || 100;
+        this.rows = (args && args.displayHeight) || 50;
+      },
 
-       this.domValue = DomValue.create(e, 'onchange', 'value');
+      textToValue: function(text) {
+        try {
+	  return JSONUtil.parse(text);
+        } catch (x) {
+	  console.log("error");
+        }
+        return text;
+      },
 
-       var me = this;
-
-       this.value.addListener(function(src, oldValue, newValue) {
-	  me.domValue.set(JSONUtil.stringify(me.value.get()));
-       });
-       this.domValue.addListener(function() {
-          try
-          {
-//	     me.model.set(JSONUtil.parse(me.domValue.get()
-	     me.value.get().copyFrom(JSONUtil.parse(me.domValue.get()));
-	  }
-	  catch (x)
-	  {
-	     console.log("error");
-	     // not valid JS syntax
-
-	     // return this.__proto__.get.call(this);
-	  }
-       });
-
-       this.domValue.set(JSONUtil.stringify(this.value.get()));
+      valueToText: function(val) {
+        return JSONUtil.stringify(val);
+      }
     }
+});
 
-       /*,
+var XMLView = FOAM.create({
 
-   set: function (obj) {
-      this.model.set(JSONUtil.stringify(obj));
-   },
-   get: function () {
-console.log("parseValue:",this.model.get());
-      return JSONUtil.parse(this.model.get());
-   }
-	*/
-};
+   model_: 'Model',
 
+   name:  'JSView',
+   label: 'JS View',
 
-var XMLView =
-{
-    __proto__: TextAreaView2,
+   extendsModel: 'TextAreaView',
 
-    cols: 100,
-    rows: 50,
+    methods: {
+      init: function(args) {
+        TextAreaView.init.call(this, args);
 
-    init: function(args) {
-       TextAreaView2.init.call(this, args);
+        this.cols = (args && args.displayWidth)  || 100;
+        this.rows = (args && args.displayHeight) || 50;
+      },
 
-       this.cols = (args && args.displayWidth)  || 100;
-       this.rows = (args && args.displayHeight) || 30;
-    },
+      textToValue: function(text) {
+        // TODO: parse XML
+        return text;
+      },
 
-   set: function (obj) {
-      this.value.set(XMLUtil.stringify(obj));
-   },
-
-   get: function () {
-      return this.value;
-   }
-};
-
+      valueToText: function(val) {
+        return XMLUtil.stringify(val);
+      }
+    }
+});
 
 
 var DetailView =
@@ -1215,7 +1349,7 @@ var DetailView =
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
 	 var prop = model.properties[i];
 
-//	 if ( prop.hidden ) continue;
+	 // if ( prop.hidden ) continue;
 
 	 var view = this.createView(prop);
 
@@ -1337,7 +1471,7 @@ var DetailView2 = {
 
 
    updateHTML: function() {
-      if ( ! this.eid_ ) return;
+      if ( ! this.id ) return;
 
       this.children = [];
 
@@ -1704,12 +1838,13 @@ var ActionButton =
    },
 
    toHTML: function() {
-      this.eid_ = this.registerCallback(
+      this.registerCallback(
 	 'onclick',
 	 function(action) { return function() {
 console.log("action: ", action);
 	    action.action.apply(this.value.get());
-         };}(this.action));
+         };}(this.action),
+         this.getID());
 
       return '<button class="myButton" id="' + this.eid_ + '">' + this.action.label + '</button>';
    }
@@ -1764,19 +1899,20 @@ var ActionBorder =
 	    }
 	};
 
-        // if delegate doesn't have a getValue method, then add one
-try
-{
-obj.getValue().set(obj);
-//        obj.setValue(obj.getValue());
-}
-catch (x)
-{
+      // if delegate doesn't have a getValue method, then add one
+      // TODO: remember why I do this and either document or remove
+      try
+      {
+        obj.value.set(obj.value.get);
+        //        obj.setValue(obj.getValue());
+      }
+      catch (x)
+      {
+        console.log('error: ', x);
+      }
 
-}
-// todo: this is breaking timer
-        if ( ! obj.getValue )
-        {
+      // todo: this is breaking timer
+        if ( ! obj.getValue ) {
 	   var dm = new SimpleValue(obj);
 	   obj.getValue = function() {
 	      return dm;
@@ -1800,26 +1936,6 @@ var TransformBorder = {
 };
 
 
-var FloatFieldView = {
-    __proto__: TextFieldView,
-
-    onChange: function (evt) {
-	this.value.set(parseFloat(evt.srcElement.value));
-    }
-
-};
-
-
-var IntFieldView = {
-    __proto__: TextFieldView,
-
-    onChange: function (evt) {
-	this.value.set(parseInt(evt.srcElement.value));
-    }
-
-};
-
-
 var ProgressView = {
     __proto__: AbstractView,
 
@@ -1831,8 +1947,7 @@ var ProgressView = {
 	this.value.removeListener(this.listener_);
 
 	this.value = value;
-
-	this.value.addListener(this.listener_);
+	value.addListener(this.listener_);
     },
 
     updateValue: function() {

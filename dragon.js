@@ -16,7 +16,7 @@
 
 var Dragon = ModelModel.create({
 
-  extendsModel: 'PanelCViewModel',
+  extendsModel: 'PanelCView',
 
   name:  'Dragon',
   label: 'Dragon',
@@ -25,10 +25,10 @@ var Dragon = ModelModel.create({
     {
       name:  'eyes',
       label: 'Eyes',
-      type:  'EyesCViewModel',
+      type:  'EyesCView',
       paint: true,
       valueFactory: function() {
-        return EyesCViewModel.create({x:500,y:500,r:this.r*10,parent:this});
+        return EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
       }
     },
     {

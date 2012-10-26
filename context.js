@@ -29,6 +29,18 @@ var Context = {
 // TODO: move this somewhere better
 
 /**
+ * Push an array of values onto an array.
+ * @param arr array of values
+ * @return new length of this array
+ */
+Object.defineProperty(Array.prototype, 'pushAll', {
+  value: function(arr) {
+    this.push.apply(this, arr);
+    return this.length;
+}});
+
+
+/**
  * Search for a single element in an array.
  * @param predicate used to determine element to find
  * @param action to be called with (key, index) arguments

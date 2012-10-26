@@ -16,7 +16,7 @@
 
 var Turntable = ModelModel.create({
 
-  extendsModel: 'PanelCViewModel',
+  extendsModel: 'PanelCView',
 
   name:  'Turntable',
   label: 'Turntable',
