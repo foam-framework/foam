@@ -86,9 +86,9 @@ activity area
 </br>
 
   <script language="javascript">
-    // var models = [ModelModel, PropertyModel];
+    // var models = [Model, PropertyModel];
     var models = [
-       ModelModel,
+       Model,
        PropertyModel,
        ActionModel,
        MethodModel,
@@ -107,9 +107,9 @@ activity area
     ];
 
 /*
-    document.writeln(toHTML("id", ModelModel, ModelModel));
+    document.writeln(toHTML("id", Model, Model));
     document.write("<br/>");
-    document.writeln(toHTML("id2", ModelModel.properties[0], PropertyModel));
+    document.writeln(toHTML("id2", Model.properties[0], PropertyModel));
 */
     document.write("<br/>");
 //    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
@@ -117,14 +117,14 @@ activity area
 document.writeln("=======================================");
 
     document.writeln("<table><tr><td valign=top>");
-    var tv1 = TableView.create(ModelModel);
+    var tv1 = TableView.create(Model);
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.initHTML();
 
 
     document.writeln("</td><td><font size=-1>");
-    var dv = DetailView.create(ModelModel);
+    var dv = DetailView.create(Model);
     document.writeln(dv.toHTML());
     dv.initHTML();
     document.writeln("</font></td></tr></table>");
@@ -148,32 +148,32 @@ document.writeln("=======================================");
     */
 
     document.write("<pre>");
-    document.write(JSONUtil.compact.stringify(ModelModel));
+    document.write(JSONUtil.compact.stringify(Model));
     document.write("\r\n");
-    document.write(JSONUtil.pretty.stringify(ModelModel));
+    document.write(JSONUtil.pretty.stringify(Model));
     document.write("\r\n");
     document.write("<textarea cols=120 rows=20>");
-    document.write(XMLUtil.stringify(ModelModel));
+    document.write(XMLUtil.stringify(Model));
     document.write("\r\n");
     document.write(XMLUtil.stringify(models));
     document.writeln("</textarea>");
 
       /*
-    document.writeln(ModelModel);
-    document.writeln(ModelModel.getPrototype());
-    document.writeln(ModelModel.getPrototype().create());
+    document.writeln(Model);
+    document.writeln(Model.getPrototype());
+    document.writeln(Model.getPrototype().create());
       */
-    var o = ModelModel.create({ name: 'User', label: 'User' });
+    var o = Model.create({ name: 'User', label: 'User' });
 
       /*
-    document.writeln("ModelModelObj: " + o);
-    document.writeln("ModelModel: " + o.model_);
-    document.writeln("ModelModel.name: " + o.name_);
+    document.writeln("ModelObj: " + o);
+    document.writeln("Model: " + o.model_);
+    document.writeln("Model.name: " + o.name_);
       */
     var example = document.getElementById('uml');
     var ctx     = example.getContext('2d');
 
-    drawUML(ctx,100,100,ModelModel);
+    drawUML(ctx,100,100,Model);
     drawUML(ctx,400,100,PropertyModel);
 
     ctx.beginPath();  
@@ -293,7 +293,7 @@ document.writeln("=======================================");
     document.writeln("<td>");
 
     DomValue.DEFAULT_EVENT = 'onkeyup';
-o = ModelModel;
+o = Model;
     var dv1 = DetailView.create(o.model_);
     dv1.set(o);
     document.writeln("<td>");
@@ -511,9 +511,9 @@ o = ModelModel;
     stack2.pushView(ctrl2, "Bookmarks");
 
     var ctrl = ActionBorder.create(DAOController, DAOController.create({
-      model: ModelModel,
+      model: Model,
       dao: ArrayDAO.create(models),
-      selection: ModelModel
+      selection: Model
     }));
 
     var stack = StackView.create();

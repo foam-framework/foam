@@ -212,8 +212,8 @@ var StorageDAO = {
 	  return model;
        };
 
-       //modelLoader("ModelModel");
-       //ModelModel.create = ModelProto.create;
+       //modelLoader("Model");
+       //Model.create = ModelProto.create;
 
        for ( var key in models )
 	  models[key] = modelLoader(key);

@@ -64,9 +64,9 @@ console.log(i, k, v);
     }
 
     // Add shortcut create() method to Models which allows them to be
-    // used as constructors.  Don't do this for the ModelModel though
+    // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
-    if ( this.model_ == ModelModel && this.name != 'Model' )
+    if ( this.model_ == Model && this.name != 'Model' )
       this.create = ModelProto.create;
   },
 

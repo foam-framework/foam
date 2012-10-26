@@ -16,7 +16,7 @@
 
 /**
  * Prototype for original proto-Models.
- * Used during bootstrapping to create the real ModelModel
+ * Used during bootstrapping to create the real Model
  * and PropertyModel.
  *
  * TODO: The handling of the various property types (properties,
@@ -26,7 +26,7 @@
  *
  * TODO: Is still used by a few views in view.js.  Those views
  * should be fixed and then ModelProto should be deleted at
- * the end of metamodel.js once the real ModelModel is created.
+ * the end of metamodel.js once the real Model is created.
  *
  * TODO: provide 'super' support for calling same method for parent class
  **/

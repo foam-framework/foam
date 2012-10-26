@@ -571,7 +571,7 @@ var DAOUpdateController = FOAM.create({
 //    __proto__: AbstractView,
 
 
-var DAOControllerView = ModelModel.create({
+var DAOControllerView = Model.create({
 
    extendsModel: 'AbstractView2',
 

@@ -69,20 +69,20 @@ activity area
 </br>
 
   <script language="javascript">
-    var models = [ModelModel, PropertyModel];
+    var models = [Model, PropertyModel];
 
-    document.writeln(toHTML("id", ModelModel, ModelModel));
+    document.writeln(toHTML("id", Model, Model));
     document.write("<br/>");
-    document.writeln(toHTML("id2", ModelModel.properties[0], PropertyModel));
+    document.writeln(toHTML("id2", Model.properties[0], PropertyModel));
     document.write("<br/>");
 //    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
 
-    var tv1 = TableView.create(ModelModel);
+    var tv1 = TableView.create(Model);
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.init();
 
-    var dv = DetailView.create(ModelModel);
+    var dv = DetailView.create(Model);
     document.writeln(dv.toHTML());
     dv.init();
 
@@ -96,30 +96,30 @@ activity area
 
 
     document.write("<pre>");
-    document.write(toJSON(ModelModel, ModelModel));
+    document.write(toJSON(Model, Model));
     document.write("\r\n");
-    document.write(toMultiLineJSON(ModelModel, ModelModel));
+    document.write(toMultiLineJSON(Model, Model));
     document.write("\r\n");
     document.write("<textarea cols=120 rows=20>");
-    document.write(toXML(ModelModel, ModelModel));
+    document.write(toXML(Model, Model));
     document.write("\r\n");
-    document.write(toXML(models, ModelModel));
+    document.write(toXML(models, Model));
     document.writeln("</textarea>");
 
-    document.writeln(ModelModel);
-    document.writeln(ModelModel.getPrototype());
-    document.writeln(ModelModel.getPrototype().create());
+    document.writeln(Model);
+    document.writeln(Model.getPrototype());
+    document.writeln(Model.getPrototype().create());
 
-    var o = ModelModel.create({ name: 'User', label: 'User' });
+    var o = Model.create({ name: 'User', label: 'User' });
 
-    document.writeln("ModelModelObj: " + o);
-    document.writeln("ModelModel: " + o.model_);
-    document.writeln("ModelModel.name: " + o.name_);
+    document.writeln("ModelObj: " + o);
+    document.writeln("Model: " + o.model_);
+    document.writeln("Model.name: " + o.name_);
 
     var example = document.getElementById('uml');
     var ctx     = example.getContext('2d');
 
-    drawUML(ctx,100,100,ModelModel);
+    drawUML(ctx,100,100,Model);
     drawUML(ctx,400,100,PropertyModel);
 
     ctx.beginPath();  

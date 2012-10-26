@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var Turntable = ModelModel.create({
+var Turntable = Model.create({
 
   extendsModel: 'PanelCView',
 

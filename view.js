@@ -301,7 +301,7 @@ var DomValue =
 
 
 
-var CanvasModel = ModelModel.create({
+var CanvasModel = Model.create({
 
    extendsModel: 'AbstractView2',
 
@@ -388,7 +388,7 @@ console.log('canvas: ', this.getID());
 
 var CanvasView = CanvasModel.getPrototype();
 
-var circleModel = ModelModel.create({
+var circleModel = Model.create({
 
    name:  'Circle',
    label: 'Circle',

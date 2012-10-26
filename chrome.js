@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var BookmarkModel = ModelModel.create({
+var BookmarkModel = Model.create({
 
    name: 'Bookmark',
    label: 'Bookmark',

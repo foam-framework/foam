@@ -30,7 +30,7 @@ function getObjectSize(myObject) {
 */
 
 
-var ModelModel = {
+var Model = {
     __proto__: ModelProto,
 
     name:  'Model',
@@ -210,7 +210,7 @@ var ModelModel = {
 	   name: 'models',
 	   label: 'Models',
 	   type: 'Array[Model]',
-           subType: 'ModelModel',
+           subType: 'Model',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
@@ -274,7 +274,7 @@ var ModelModel = {
       }
    ],
 
-    toString: function() { return "ModelModel"; }
+    toString: function() { return "Model"; }
 };
 
 
@@ -521,26 +521,26 @@ var PropertyModel = {
 };
 
 
-ModelModel.methods = {
+Model.methods = {
     buildPrototype: ModelProto.buildPrototype,
     getPrototype:   ModelProto.getPrototype,
     isInstance:     ModelProto.isInstance
 };
 
 console.log("Model:");
-console.log(ModelModel);
+console.log(Model);
 
 // This is the coolest line of code that I've ever written or
 // ever will write. Oct. 4, 2011 -- KGR
-ModelModel = ModelModel.create(ModelModel);
-ModelModel.model_ = ModelModel;
+Model = Model.create(Model);
+Model.model_ = Model;
 
-PropertyModel = ModelModel.create(PropertyModel);
+PropertyModel = Model.create(PropertyModel);
 
 // Now remove ModelProto so nobody tries to use it
 // delete ModelProto;
 
-var ActionModel = ModelModel.create({
+var ActionModel = Model.create({
 
    name: 'Action',
    label: 'Action',
@@ -621,7 +621,7 @@ var ActionModel = ModelModel.create({
 });
 
 
-var TopicModel = ModelModel.create({
+var TopicModel = Model.create({
 
    name: 'Topic',
    label: 'Topic',
@@ -659,7 +659,7 @@ var TopicModel = ModelModel.create({
 });
 
 
-var MethodModel = ModelModel.create({
+var MethodModel = Model.create({
 
    name: 'Method',
    label: 'Method',
@@ -711,7 +711,7 @@ var MethodModel = ModelModel.create({
 });
 
 
-var TemplateModel = ModelModel.create({
+var TemplateModel = Model.create({
 
    name: 'Template',
    label: 'Template',
@@ -768,12 +768,12 @@ var TemplateModel = ModelModel.create({
 
 var Template = TemplateModel;
 var Property = PropertyModel;
-var Model    = ModelModel;
+var Model    = Model;
 var Method   = MethodModel;
 var Action   = ActionModel;
 var Topic    = TopicModel;
 
-var UnitTest = ModelModel.create({
+var UnitTest = Model.create({
      model_: 'Model',
      name: 'UnitTest',
      label: 'Unit Test',
@@ -1008,10 +1008,10 @@ var Issue = FOAM.create(
 );
 
 
-ModelModel.templates[0] = JSONUtil.chaosify(ModelModel.templates[0]);
-ModelModel.templates[1] = JSONUtil.chaosify(ModelModel.templates[1])
+Model.templates[0] = JSONUtil.chaosify(Model.templates[0]);
+Model.templates[1] = JSONUtil.chaosify(Model.templates[1])
 
-var a = ModelModel.properties;
+var a = Model.properties;
 for ( var i = 0 ; i < a.length ; i++ ) {
    if ( ! PropertyModel.isInstance(a[i]) ) {
       a[i] = PropertyModel.getPrototype().create(a[i]);

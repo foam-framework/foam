@@ -16,7 +16,7 @@
 
 // todo: slider controls for gpu/cpu/etc.
 
-var ApplicationPower = ModelModel.create({
+var ApplicationPower = Model.create({
 
    name: 'AppPowerInfo',
    label: 'Application Power Information',
@@ -66,7 +66,7 @@ var ApplicationPower = ModelModel.create({
 });
 
 
-var Power = ModelModel.create({
+var Power = Model.create({
 
    name: 'PowerInfo',
    label: 'Power Information',
@@ -168,7 +168,7 @@ var Power = ModelModel.create({
 });
 
 
-var CloseApp = ModelModel.create({
+var CloseApp = Model.create({
 
    extendsModel: 'PanelCView',
 
@@ -282,7 +282,7 @@ var CloseApp = ModelModel.create({
 
 
 
-var Screen = ModelModel.create({
+var Screen = Model.create({
 
    extendsModel: 'PanelCView',
 
@@ -378,7 +378,7 @@ evt.preventDefault();
 });
 
 
-var BatteryGraph = ModelModel.create({
+var BatteryGraph = Model.create({
 
    extendsModel: 'GraphModel',
 
@@ -494,7 +494,7 @@ var BatteryGraph = ModelModel.create({
 });
 
 
-var BatteryMeter = ModelModel.create({
+var BatteryMeter = Model.create({
 
    extendsModel: 'PanelCView',
 
@@ -606,7 +606,7 @@ var BatteryMeter = ModelModel.create({
 });
 
 
-var NeedleMeter = ModelModel.create({
+var NeedleMeter = Model.create({
 
    extendsModel: 'PanelCView',
 

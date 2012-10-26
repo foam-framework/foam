@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var Dragon = ModelModel.create({
+var Dragon = Model.create({
 
   extendsModel: 'PanelCView',
 
