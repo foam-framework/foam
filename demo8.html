@@ -81,7 +81,7 @@
    function addGraph() {
     System.getPrototype().addCode = oldAddCode;
     g = GraphModel.create({graphColor: 'red', x:810, y:500, width: 200, height: 200});
-    l = LabelModel.create({x:g.x+50, y: g.y+180, font: '22pt Arial'});
+    l = Label.create({x:g.x+50, y: g.y+180, font: '22pt Arial'});
     space.addChildren(g,l);
 
     Events.dynamic(function() { timer.second; }, function() {

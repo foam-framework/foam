@@ -1012,10 +1012,8 @@ ModelModel.templates[0] = JSONUtil.chaosify(ModelModel.templates[0]);
 ModelModel.templates[1] = JSONUtil.chaosify(ModelModel.templates[1])
 
 var a = ModelModel.properties;
-for ( var i = 0 ; i < a.length ; i++ )
-{
-   if ( ! PropertyModel.isInstance(a[i]) )
-   {
+for ( var i = 0 ; i < a.length ; i++ ) {
+   if ( ! PropertyModel.isInstance(a[i]) ) {
       a[i] = PropertyModel.getPrototype().create(a[i]);
    }
 }

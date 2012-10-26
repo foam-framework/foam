@@ -14,3 +14,5 @@ Implement type support.
 Support for generating default values (like 'label').
 Add asserts to methods (including type-checking?).
 Move extension methods out of context.js
+
+Rename ModelModel to just Model

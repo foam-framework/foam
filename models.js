@@ -1398,7 +1398,7 @@ var System = FOAM.create({
         this.utilityGraph = GraphModel.create({x:20, y:260, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
         this.efficiencyGraph = GraphModel.create({x:20, y:500, width:360, height:200, style:'Line', graphColor:null, capColor: this.devColor});
 
-        this.l = LabelModel.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
+        this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
         Events.follow(this.propertyValue('title'), this.l.propertyValue('text'));
       },
 

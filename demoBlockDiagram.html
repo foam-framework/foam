@@ -34,19 +34,19 @@
 
     space.write(document);
 
-    var events    = BoxModel.create({color: 'white', text: "Events", background: 'green', width: 300, height: 50, x:-300, font: '22pt Arial'});
-    var reactive  = BoxModel.create({color: 'white', text: "Reactivity", background: 'blue', width: 300, height: 50, x:-300, font: '22pt Arial'});
-    var animation = BoxModel.create({color: 'white', text: "Animation", background: 'brown', width: 300, height: 50, x:-300, font: '22pt Arial'});
-    var m         = BoxModel.create({color: 'white', text: "M", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
-    var V         = BoxModel.create({color: 'white', text: "V", background: 'gray', width: 100, height: 100, x:-300, font: '22pt Arial'});
-    var C         = BoxModel.create({color: 'white', text: "C", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
-    var meta      = BoxModel.create({color: 'white', a: Math.PI/2, text: "Meta", background: 'black', width: 300, height: 100, x:-300, font: '22pt Arial'});
-    var ime       = BoxModel.create({color: 'white', text: "IME", background: 'orange', width: 300, height: 0, x:750, y:450, font: '22pt Arial'});
-    var js        = BoxModel.create({color: 'white', text: "JavaScript", background: 'red', width: 0, height: 50, x:750, y:800, font: '16pt Arial'});
-    var java      = BoxModel.create({color: 'white', text: "Java", background: 'red', width: 50, height: 0, x:1050, y:550, font: '16pt Arial'});
-    var dart      = BoxModel.create({color: 'white', text: "Dart", background: 'red', width: 50, height: 0, x:1100, y:550, font: '16pt Arial'});
-    var cpp       = BoxModel.create({color: 'white', text: "C++", background: 'red', width: 50, height: 0, x:1150, y:550, font: '16pt Arial'});
-    var future    = BoxModel.create({color: 'white', text: "...", background: 'red', width: 100, height: 0, x:1200, y:550, font: '16pt Arial'});
+    var events    = Box.create({color: 'white', text: "Events", background: 'green', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var reactive  = Box.create({color: 'white', text: "Reactivity", background: 'blue', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var animation = Box.create({color: 'white', text: "Animation", background: 'brown', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var m         = Box.create({color: 'white', text: "M", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
+    var V         = Box.create({color: 'white', text: "V", background: 'gray', width: 100, height: 100, x:-300, font: '22pt Arial'});
+    var C         = Box.create({color: 'white', text: "C", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
+    var meta      = Box.create({color: 'white', a: Math.PI/2, text: "Meta", background: 'black', width: 300, height: 100, x:-300, font: '22pt Arial'});
+    var ime       = Box.create({color: 'white', text: "IME", background: 'orange', width: 300, height: 0, x:750, y:450, font: '22pt Arial'});
+    var js        = Box.create({color: 'white', text: "JavaScript", background: 'red', width: 0, height: 50, x:750, y:800, font: '16pt Arial'});
+    var java      = Box.create({color: 'white', text: "Java", background: 'red', width: 50, height: 0, x:1050, y:550, font: '16pt Arial'});
+    var dart      = Box.create({color: 'white', text: "Dart", background: 'red', width: 50, height: 0, x:1100, y:550, font: '16pt Arial'});
+    var cpp       = Box.create({color: 'white', text: "C++", background: 'red', width: 50, height: 0, x:1150, y:550, font: '16pt Arial'});
+    var future    = Box.create({color: 'white', text: "...", background: 'red', width: 100, height: 0, x:1200, y:550, font: '16pt Arial'});
     var dev       = circleModel.create({color:'red', r:15, x:800-15, y:-15});
     
     space.addChildren(

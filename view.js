@@ -495,7 +495,9 @@ var circleModel = ModelModel.create({
 });
 
 
-var ImageModel = ModelModel.create({
+var ImageModel = FOAM.create({
+
+   model_: 'Model',
 
    name:  'Image',
    label: 'Image',
@@ -542,6 +544,7 @@ var ImageModel = ModelModel.create({
    methods: {
 
       init: function() {
+        // TODO: Why is this calling AbstractView
         AbstractView.init.call(this);
 
         this.image_ = new Image();
@@ -560,7 +563,9 @@ var ImageModel = ModelModel.create({
 });
 
 
-var RectModel = ModelModel.create({
+var Rectangle = FOAM.create({
+
+   model_: 'Model',
 
    name:  'Rectangle',
    label: 'Rectangle',
@@ -615,7 +620,9 @@ var RectModel = ModelModel.create({
 });
 
 
-var LabelModel = ModelModel.create({
+var Label = FOAM.create({
+
+   model_: 'Model',
 
    name:  'Label',
    label: 'Label',
@@ -690,9 +697,11 @@ var LabelModel = ModelModel.create({
 });
 
 
-var BoxModel = ModelModel.create({
+var Box = FOAM.create({
 
-   extendsModel: 'LabelModel',
+   model_: 'Model',
+
+   extendsModel: 'Label',
 
    name:  'Box',
    label: 'Box',
@@ -1205,30 +1214,6 @@ var FunctionView =
     }
 
 };
-
-
-/*
-Not used.
-var HTMLView =
-{
-    __proto__: TextAreaView,
-
-    cols: 120,
-    rows: 20,
-
-    initHTML: function() {
-       TextAreaView.initHTML.call(this);
-
-       editAreaLoader.init({
-         id : this.getID(),
-         syntax: "html",
-         allow_toggle: false,
-	 start_highlight: true
-       });
-    }
-
-};
-*/
 
 
 var JSView = FOAM.create({
