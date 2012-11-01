@@ -35,17 +35,10 @@
   <script language="javascript" src="dragon.js"></script>
   <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
 
-  <script language="javascript" type="text/javascript">
-
-   function loaded()
-   {
-   }
-
-  </script>
   <title>Chaos Test</title>
  </head>
 
- <body onload="loaded()">
+ <body>
    <div style="background:black; height:25px; padding-top: 8px">
    <span class="bar" style="color: white; font-weight:bold;" gray;">Models</span>
      <span class="bar">Interfaces</span>
@@ -256,30 +249,25 @@ document.writeln("=======================================");
   <script language="javascript">
 
     example = document.getElementById('view');
-    ctx     = example.getContext('2d');
+    var view = CanvasView.create({width: 300, height: 30, background:'#fff'});
 
     var v1 = TextFieldView.create();
     var v2 = TextFieldView.create();
     var v3 = ProgressView.create();
-    var v4 = { __proto__: ProgressCView };
+    var v4 = ProgressCView.create();
+
+    view.addChild(v4);
 
     document.writeln("<br/>");
 
-    document.writeln(v1.toHTML());
-    v1.initHTML();
-
-    document.writeln(v2.toHTML());
-    v2.initHTML();
-
-    document.writeln("</br>");
-    document.writeln(v3.toHTML());
-    v3.initHTML();
-
-    v4.setCanvas(ctx);
+    v1.write(document);
+    v2.write(document);
+    v3.write(document);
+    view.write(document);
 
     v2.setValue(v1.value);
     v3.setValue(v1.value);
-    v4.setValue(v1.value);
+    v4.value = v1.value;
 
 //    document.writeln("<br/>subs: " + e.subs_);
 

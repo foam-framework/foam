@@ -122,7 +122,8 @@ var AbstractView =
 
 };
 
-
+// ??? Should this have a 'value'?
+// Or maybe a ValueView and ModelView
 var AbstractView2 = FOAM.create({
    model_: 'Model',
 
@@ -137,18 +138,10 @@ var AbstractView2 = FOAM.create({
          hidden: true
       },
       {
-	 name:  'value',
-	 label: 'Value',
-         type:  'Value',
-         defaultValueFn: function() { return new SimpleValue(); }
-      },
-      {
 	 name:  'children',
 	 label: 'Children',
          type:  'Array[View]',
-	 defaultValueFn: function() {
-            return [];
-         }
+	 valueFactory: function() { return []; }
       },
       {
 	 name:  'id',
@@ -257,7 +250,6 @@ var AbstractView2 = FOAM.create({
 var DomValue =
 {
     DEFAULT_EVENT:    'onchange',
-    //    DEFAULT_EVENT:    'onkeyup',
     DEFAULT_PROPERTY: 'value',
 
     create: function ( element, opt_event, opt_property ) {
@@ -296,7 +288,6 @@ var DomValue =
     toString: function() {
 	return "DomValue(" + this.event + ", " + this.property + ")";
     }
-
 };
 
 
@@ -340,7 +331,6 @@ var CanvasModel = Model.create({
       },
 
       toHTML: function() {
-console.log('canvas: ', this.getID());
 	 return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
       },
 
@@ -823,7 +813,7 @@ var TextFieldView = FOAM.create({
 	 name:  'value',
 	 label: 'Value',
          type:  'Value',
-         defaultValueFn: function() { return new SimpleValue(); },
+         valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
            if ( this.mode === 'read-write' ) {
 	     Events.unlink(this.domValue, oldValue);
@@ -1036,7 +1026,7 @@ var TextAreaView = FOAM.create({
 	 name:  'value',
 	 label: 'Value',
          type:  'Value',
-         defaultValueFn: function() { return new SimpleValue(); },
+         valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
            Events.unlink(this.domValue, oldValue);
 
@@ -1063,7 +1053,6 @@ var TextAreaView = FOAM.create({
       },
 
     setValue: function(value) {
-console.log('setValue:', value.get);
       this.value = value;
     },
 
@@ -1079,9 +1068,9 @@ console.log('setValue:', value.get);
        Events.unlink(this.domValue, this.value);
     },
 
-    textToValue: function(text) { console.log('text: ',text);return text;},
+    textToValue: function(text) { return text; },
 
-    valueToText: function(value) { console.log('value: ',value);return value;}
+    valueToText: function(value) { return value; }
   }
 
 });
@@ -1247,6 +1236,7 @@ var JSView = FOAM.create({
       }
     }
 });
+
 
 var XMLView = FOAM.create({
 
@@ -1626,11 +1616,29 @@ var SummaryView =
 
 
 /** A display-only on-line help view. **/
-var HelpView =
-{
+var HelpView = FOAM.create({
+   model_: 'Model',
 
-   __proto__: AbstractView,
+   extendsModel: 'AbstractView2',
 
+   name: 'HelpView',
+   label: 'Help View',
+
+   properties: [
+      {
+	 name:  'model',
+	 label: 'Model',
+	 type:  'Model'
+      }
+   ],
+
+   methods: {
+
+   // TODO: it would be better if it were initiated with
+   // .create({model: model}) instead of just .create(model)
+   // TODO:
+   // would be nice if I could mark properties as mandatory
+   // if they were required to be initialized
    create: function(model) {
       var obj = AbstractView.create.call(this);
 
@@ -1672,35 +1680,64 @@ var HelpView =
       out.push('</div>');
 
       return out.join('');
-   }/* TODO: remove,
-
-   get: function() {
-     return this.getValue().get();
    }
-*/
 
-};
+  }
+
+});
 
 
-var TableView =
-{
+var TableView = FOAM.create({
+   model_: 'Model',
 
-    __proto__: AbstractView,
+   extendsModel: 'AbstractView2',
 
+   name: 'TableView',
+   label: 'Table View',
+
+   properties: [
+      {
+	 name:  'model',
+	 label: 'Model',
+	 type:  'Model'
+      },
+      {
+	 name:  'properties',
+	 label: 'Model',
+	 type:  'Array[String]',
+         defaultValueFn: function() {
+           return this.model.tableProperties;
+         }
+      },
+      {
+	 name:  'selection',
+	 label: 'Selection',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
+      },
+      {
+	 name:  'children',
+	 label: 'Children',
+         type:  'Array[View]',
+	 valueFactory: function() { return []; }
+      }
+   ],
+
+   methods: {
+
+    // Not actually a method, but still works
+    // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
 
-    create: function(model) {
-	var obj = {
-	    __proto__:  this,
-	    model:      model,
-	    properties: model.tableProperties,
-	    selection:  new SimpleValue(),
-	    children:   [],
-	    instance_:  {} // todo: fix
-	};
+   // TODO: it would be better if it were initiated with
+   // .create({model: model}) instead of just .create(model)
+   create: function(model) {
+      var obj = AbstractView.create.call(this);
 
-	return obj;
-    },
+      obj.model = model;
+
+      return obj;
+   },
 
     toHTML: function() {
       return '<span id="' + this.getID() + '">' +
@@ -1797,8 +1834,8 @@ var TableView =
 
     destroy: function() {
     }
-
-};
+  }
+});
 
 
 var ActionButton =
@@ -1869,8 +1906,7 @@ var ActionBorder =
 
 		str += '</td></tr><tr><td align=right>';
 
-		for ( var i = 0 ; i < this.actions.length ; i++ )
-		{
+		for ( var i = 0 ; i < this.actions.length ; i++ ) {
 		   var action = this.actions[i];
 		   var button = ActionButton.create(action, this.getValue());
 		   str += " " + button.toHTML() + " ";
@@ -1886,13 +1922,10 @@ var ActionBorder =
 
       // if delegate doesn't have a getValue method, then add one
       // TODO: remember why I do this and either document or remove
-      try
-      {
+      try {
         obj.value.set(obj.value.get);
         //        obj.setValue(obj.getValue());
-      }
-      catch (x)
-      {
+      } catch (x) {
         console.log('error: ', x);
       }
 
@@ -1908,21 +1941,25 @@ var ActionBorder =
 };
 
 
-// TODO: implement
-var TransformBorder = {
-    create: function(delegate) {
-	return {
-	    __proto__: delegate,
-	    paint: function() {
-		this.__proto__.toHTML.paint(this);
-	    }
-	};
-    }
-};
+var ProgressView = FOAM.create({
 
+   model_: 'Model',
 
-var ProgressView = {
-    __proto__: AbstractView,
+   extendsModel: 'AbstractView2',
+
+   name:  'ProgressView',
+   label: 'ProgressView',
+
+   properties: [
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
+      }
+   ],
+
+   methods: {
 
     toHTML: function() {
 	return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
@@ -1953,52 +1990,8 @@ var ProgressView = {
     destroy: function() {
 	this.value.removeListener(this.listener_);
     }
-};
-
-
-
-var ProgressCView = {
-
-    __proto__: AbstractView,
-
-    value: new SimpleValue("0"),
-
-    paint: function() {
-	this.canvas.fillStyle = '#fff';
-	this.canvas.fillRect(0, 0, 104, 20);
-
-	this.canvas.strokeStyle = '#000';
-	this.canvas.strokeRect(0, 0, 104, 20);
-	this.canvas.fillStyle = '#f00';
-	this.canvas.fillRect(2, 2, parseInt(this.value.get()), 16);
-    },
-
-    setValue: function(value) {
-	this.value.removeListener(this.listener_);
-
-	this.value = value;
-
-	this.value.addListener(this.listener_);
-    },
-
-    updateValue: function() {
-	this.paint();
-    },
-
-    setCanvas: function(canvas) {
-	this.canvas = canvas;
-
-	this.listener_ = this.updateValue.bind(this);
-
-	this.value.addListener(this.listener_);
-
-	this.paint();
-    },
-
-    destroy: function() {
-	this.value.removeListener(this.listener_);
-    }
-};
+  }
+});
 
 
 var ArrayView = {

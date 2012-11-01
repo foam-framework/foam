@@ -278,6 +278,66 @@ var PanelCView = FOAM.create({
 });
 
 
+var ProgressCView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'PanelCView',
+
+   name:  'ProgressCView',
+   label: 'ProgressCView',
+
+   properties: [
+      {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); },
+         postSet: function(newValue, oldValue) {
+	   oldValue && oldValue.removeListener(this.updateValue);
+	   newValue.addListener(this.updateValue);
+         }
+      }
+   ],
+
+   listeners: {
+    updateValue: function() {
+	this.paint();
+    }
+   },
+
+   methods: {
+
+    paint: function() {
+        var c = this.canvas;
+
+	c.fillStyle = '#fff';
+	c.fillRect(0, 0, 104, 20);
+
+	c.strokeStyle = '#000';
+	c.strokeRect(0, 0, 104, 20);
+	c.fillStyle = '#f00';
+	c.fillRect(2, 2, parseInt(this.value.get()), 16);
+    },
+
+/*
+    setCanvas: function(canvas) {
+	this.canvas = canvas;
+
+	this.listener_ = this.updateValue.bind(this);
+
+	this.value.addListener(this.listener_);
+
+	this.paint();
+    },
+*/
+    destroy: function() {
+	this.value.removeListener(this.listener_);
+    }
+   }
+});
+
+
 var EyeCView = FOAM.create({
 
    model_: 'Model',
@@ -1736,7 +1796,7 @@ var EMail = FOAM.create({
          displayWidth: 50,
          displayHeight: 1,
          view: 'TextFieldView',
-         defaultValueFn: function() { return new Date(); }
+         valueFactory: function() { return new Date(); }
       },
       {
          model_: 'Property',
@@ -1748,7 +1808,7 @@ var EMail = FOAM.create({
          displayWidth: 60,
          displayHeight: 1,
          view: 'TextFieldView',
-         defaultValueFn: function() { return GLOBAL.user; }
+         valueFactory: function() { return GLOBAL.user; }
       },
       {
          model_: 'Property',

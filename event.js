@@ -129,8 +129,9 @@ var EventService = {
 
 
     // TODO: alternate name: lazyPublish
+    // fn: function which returns array
     publishLazy: function (topic, fn) {
-       if ( this.hasListeners(topic) ) return this.publish();
+       if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
 
        return 0;
     },

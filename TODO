@@ -1,16 +1,38 @@
+s/CanvasModel/CanvasView/
+s/circleModel/Circle???/
+
+
+
+Standardize use of create/init in Views.  Should argument be optional value?
+
 Finish moving to AbstractView Model.
 
-fixes uses of 'eid'
+fix uses of 'eid'
 Replace getID() with .id
 Replace element() with element
 add isInitialized() to AbstractView
 
 Model all views.
-Fix/standardize naming of Models.  Remove 'Model' from name and have
-   consistent capitalization.
 Rename View.get/setValue to 'value' property.
 Add 'super' support.
+
 Implement type support.
 Support for generating default values (like 'label').
 Add asserts to methods (including type-checking?).
 Move extension methods out of context.js
+
+The "FOAM Simulator" would actually make a nice view for
+navigating a system's custom components.
+It would show which components
+had been overriden and could show which features have
+enough model information to be generated.  Would be an
+actual view into the Feature-Manager.  How to show for
+sub-contexts?
+
+Add 'Constants' to Model.  (Currently can be defined as methods.)
+
+
+Fix up CView hierarchy.  Do we need an AbsstractCView that 
+implements 'View' so individual CViews can be used without
+a Canvas container.  Also, standardize position, size, rotation, 
+etc.

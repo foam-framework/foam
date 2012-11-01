@@ -47,7 +47,7 @@ console.log(i, k, v);
   },
 
 
-  init: function() {
+  init: function(notused_args) {
     if ( ! this.model_ ) return;
 
     for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
@@ -119,7 +119,7 @@ console.log(i, k, v);
   defineProperty: function(prop) {
     // this method might be a good candidate for a decision table
 
-    var name  = prop.name;
+    var name = prop.name;
 
     if ( prop.getter ) {
       this.__defineGetter__(name, prop.getter);
@@ -185,13 +185,13 @@ console.log(i, k, v);
   },
 
 
-  /** Create a copy of this object. **/
+  /** Create a shallow copy of this object. **/
   clone: function() {
     return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
 
 
-  /** Create a copy of this object. **/
+  /** Create a deep copy of this object. **/
   deepClone: function() {
     var cln = this.clone();
 
