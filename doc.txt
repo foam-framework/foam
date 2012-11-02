@@ -1,0 +1,86 @@
+Models
+-------
+create(opt_args)
+  calls
+    obj.copyFrom(opt_args)
+    obj.init(opt_args);
+
+
+getPrototype()	returns JS Prototype/Class
+isInstance(obj)	returns true iff obj is instance of model
+		TODO: support subclasses
+
+
+PropertyChangeSupport
+---------------------
+extends EventService
+
+EventService
+------------
+subs_			subscriptions
+oneTime(listener)	decorate a listener to be one-time
+consoleLog(listener)	decorate a listener to log to console
+merged(listener, opt_delay)	 decorate listener to merge events
+async(listener)	 		 decorate listener to make async
+delay(delay, listener)		 decorate to add delay
+hasListeners(topic)		 TODO
+publish(topic)			 publish arguments to topic
+publishAsync(topic)		 publish arguments asynchronously
+publishLazy(topic, fn)		 publish fn result if listeners
+subscribe(topic, listener)
+unsubscribe(topic, listener)	 TODO
+unsubscribeAll	   		 unsubscribe all registered listeners
+
+Objects
+-------
+extend PropertyChangeSupport
+propertyTopic(propertyName)	creates topic for property events
+propertyChange(property, oldValue, newValue) fire property change event
+globalChange()		 one or more unspecified properties changed
+addListener(listener)
+removeListener(listener)
+addPropertyListener(property, listener)
+removePropertyListener(property, listener)	TODO
+propertyValue(propertyName)	 create a Value for specified property
+
+
+model_			object's Model
+instance_		map of instance property values
+__proto__		prototype
+name_			name of object's Model
+TYPE			Model name (used for testing, remove)
+
+copyFrom(map)		calls all setters defined in map
+toString()
+hasOwnProperty(name)
+clearProperty(name)	reverts to default value or defaultValueFn
+getProperty(name)	returns Property
+clone()			returns a shallow copy
+deepClone()		returns a deepClone
+output(out)		outputs object in JSON format
+toJSON(): 		returns JSON string representation of obj
+toXML(): 		returns XML string representation of obj
+write(document): 	writes DetailView with Action Border to document
+
+
+
+Properties
+----------
+defaultValueFn
+	function used to provide a value for a property whose value hasn't
+	been set
+
+valueFactory
+	used when an object is init()'ialized to create the initial value
+
+
+
+Function
+	o(fn)	function composition
+
+Value
+	get()
+	set()
+	addListener(listener)
+	removeListener(listener)
+

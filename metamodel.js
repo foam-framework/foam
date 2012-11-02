@@ -94,6 +94,13 @@ var Model = {
 	   help: 'The plural form of this model\'s name.'
        },
        {
+	   name: 'version',
+	   label: 'Version',
+	   type: 'int',
+           defaultValue: 1,
+	   help: 'Version number of model.'
+       },
+       {
 	   name: 'ids',
 	   label: 'Key Properties',
 	   type: 'Array[String]',
