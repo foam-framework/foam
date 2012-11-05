@@ -188,6 +188,59 @@ var ArrayDAO = {
 
 };
 
+/*
+// Defers all calls to the decorated DAO until it receives
+// a 'dao-ready' event.
+// This is useful for decorating DAOs that don't have a synchronous
+// initialization path (ex. IndexedDBDAO).
+var DeferredDAO = {
+    create: function(dao) {
+	var obj = {
+	    __proto__: this,
+	    dao: dao,
+	    queue: []
+	};
+
+	dao.subscribe('dao-ready', obj.onready.bind(obj));
+
+	return obj;
+    },
+
+    get: function(key, callback) {
+	if (this.ready) {
+	    this.dao.get(key, callback);
+	    return;
+	}
+
+	this.queue.push(this.dao.get.bind(this.dao, key, callback));
+    },
+
+    put: function(value) {
+	if (this.ready) {
+	    this.dao.put(value);
+	    return;
+	}
+	this.queue.push(this.dao.bind(this.dao, value));
+    },
+
+    forEach: function(query, iterator) {
+	if (this.ready) {
+	    this.dao.forEach(query, iterator);
+	    return;
+	}
+	this.queue.push(this.dao.bind(this.dao, query, iterator));
+    },
+
+    onready: function() {
+	this.ready = true;
+	// Execute all queued actions.
+	for (var i  = 0; i < this.queue.length; i++) {
+	    this.queue[i]();
+	}
+    }
+};
+*/
+
 //FIXME: handle exceptions
 var StorageDAO = {
 

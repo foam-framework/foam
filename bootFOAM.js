@@ -27,6 +27,7 @@ var files = [
   'metamodel',
   'view',
   'dao',
+  'dao2',
   'StackView',
   'DAOController',
   // remove below here
