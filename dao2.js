@@ -57,6 +57,93 @@ function future(factory) {
   };
 }
 
+var Visitor = {
+  visit: function(o) {
+    if ( o instanceof Array ) {
+      this.visitArray(o);
+    } else if ( typeof o == 'string' ) {
+      this.visitString(o);
+    } else if ( o instanceof Function ) {
+      this.visitFunction(o);
+    } else if ( o instanceof Number ) {
+      this.visitNumber(o);
+    } else if ( o instanceof Date ) {
+      this.visitDate(o);
+    } else if ( o instanceof Oect ) {
+      if ( o.model_ ) {
+        this.visitOect(o);
+      } else {
+        this.visitMap(o);
+      }
+    } else if ( o == true ) {
+      this.visitTrue();
+    } else if ( o == true ) {
+      this.visitFalse();
+    } else if ( o === null ) {
+      this.visitNull();
+    } else if ( o === undefined ) {
+      this.visitUndefined();
+    }
+  },
+
+  visitArray: function(o) {
+    var c = [];
+    for ( var i = 0 ; i < o.length ; i++ ) {
+      c[i] = this.vist(o[i]);
+    }
+    return c;
+  },
+
+  visitString: function(o) {
+    return o;
+  },
+
+  visitFunction: function(o) {
+    return o;
+  },
+
+  visitNumber: function(o) {
+    return o;
+  },
+
+  visitDate: function(o) {
+    return o;
+  },
+
+  visitObject: function(o) {
+    for ( var key in o.model_.properties ) {
+      var prop = o.model_.properties[key];
+  
+      if ( prop.name in obj.instance_ ) {
+        this.visitProperty(o, prop);
+      }
+    }
+  },
+
+  visitMap: function(o) {
+    var c = {};
+    o.forEach(function(key, value) { c[key] = this.visit(value); });
+    return c;
+  },
+
+  visitTrue: function() {
+    return true;
+  },
+
+  visitFalse: function() {
+    return false;
+  },
+
+  visitNull: function() {
+    return null;
+  },
+
+  visitUndefined: function() {
+    return undefined;
+  }
+
+};
+
 
 // FIXME: Error handling
 /* Usage:
@@ -88,10 +175,16 @@ var IndexedDBDAO2 = FOAM.create({
 
    methods: {
 
+   init: function() {
+     AbstractPrototype.init.call(this);
+
+     this.withDB = future(this.openDB.bind(this));
+    },
+
     openDB: function(cc) {
       var indexedDB = window.indexedDB ||
         window.webkitIndexedDB         ||
-         window.mozIndexedDB;
+        window.mozIndexedDB;
 
       var request = indexedDB.open("FOAM:" + this.name, Date.now());
 
@@ -110,10 +203,8 @@ var IndexedDBDAO2 = FOAM.create({
       };
     },
 
-    execute: function(mode, fn) {
-      if ( ! this.db ) this.db = future(this.openDB.bind(this));
-
-      this.db((function (db) {
+    withStore: function(mode, fn) {
+      this.withDB((function (db) {
         var tx = db.transaction([this.name], mode);
         fn.bind(this)(tx.objectStore(this.name));
       }).bind(this));
@@ -121,7 +212,7 @@ var IndexedDBDAO2 = FOAM.create({
 
     put: function(value) {
 console.log('put: ', value.instance_, value.id);
-      this.execute("readwrite", function(store) {
+      this.withStore("readwrite", function(store) {
         var request = store.put(value.instance_);
 	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
 	request.onerror = console.log.bind(console, 'put error: ');
@@ -129,7 +220,7 @@ console.log('put: ', value.instance_, value.id);
     },
 
     get: function(callback, key) {
-      this.execute("readonly", function(store) {
+      this.withStore("readonly", function(store) {
 console.log('getting: ', key);
         var request = store.get(key);
         request.onsuccess = callback;
@@ -141,7 +232,7 @@ console.log('getting: ', key);
     // where we can, rather than doing all the processing in
     // javascript.
     forEach2: function(fn, opt_predicate) {
-      this.execute("readonly", function(store) {
+      this.withStore("readonly", function(store) {
         var request = store.openCursor();
 console.log('forEach open cursor: ', cursor);
         request.onerror = console.log.bind(console, 'forEach failure: ');
