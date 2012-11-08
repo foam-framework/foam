@@ -32,6 +32,7 @@ futureValue(function(value) { console.log(value); });
 
  *
  */
+// TODO: move somewhere better
 function future(factory) {
   var value;
   var waiters;
@@ -57,90 +58,142 @@ function future(factory) {
   };
 }
 
+
+// TODO: move somewhere better
 var Visitor = {
+  create: function() {
+    return { __proto__: this, stack: [] };
+  },
+
+  push: function(o) { this.stack.push(o); },
+
+  pop: function() { return this.stack.pop(); },
+
+  top: function() {
+    return this.stack.length && this.stack[this.stack.length-1];
+  },
+
   visit: function(o) {
-    if ( o instanceof Array ) {
-      this.visitArray(o);
-    } else if ( typeof o == 'string' ) {
-      this.visitString(o);
-    } else if ( o instanceof Function ) {
-      this.visitFunction(o);
-    } else if ( o instanceof Number ) {
-      this.visitNumber(o);
-    } else if ( o instanceof Date ) {
-      this.visitDate(o);
-    } else if ( o instanceof Oect ) {
-      if ( o.model_ ) {
-        this.visitOect(o);
-      } else {
-        this.visitMap(o);
-      }
-    } else if ( o == true ) {
-      this.visitTrue();
-    } else if ( o == true ) {
-      this.visitFalse();
-    } else if ( o === null ) {
-      this.visitNull();
-    } else if ( o === undefined ) {
-      this.visitUndefined();
-    }
+var oldLog = console.log;
+console.log = console.log.bind(console, '   ');
+console.log('visit: ', o);
+try {
+    return ( o instanceof Array )     ? this.visitArray(o)    :
+           ( typeof o === 'string' )  ? this.visitString(o)   :
+           ( typeof o === 'number' )  ? this.visitNumber(o)   :
+           ( o instanceof Function )  ? this.visitFunction(o) :
+           ( o instanceof Date )      ? this.visitDate(o)     :
+           ( o === true )             ? this.visitTrue()      :
+           ( o === false )            ? this.visitFalse()     :
+           ( o === null )             ? this.visitNull()      :
+           ( o instanceof Object )    ? ( o.model_            ?
+             this.visitObject(o)      :
+             this.visitMap(o)
+           )                          : this.visitUndefined() ;
+} finally {
+   console.log = oldLog;
+}
   },
 
   visitArray: function(o) {
-    var c = [];
-    for ( var i = 0 ; i < o.length ; i++ ) {
-      c[i] = this.vist(o[i]);
-    }
-    return c;
+    var len = o.length;
+    for ( var i = 0 ; i < len ; i++ ) this.visitArrayElement(o, i);
   },
+  visitArrayElement: function (arr, i) { this.visit(arr[i]); },
 
-  visitString: function(o) {
-    return o;
-  },
+  visitString: function(o) { return o; },
 
-  visitFunction: function(o) {
-    return o;
-  },
+  visitFunction: function(o) { return o; },
 
-  visitNumber: function(o) {
-    return o;
-  },
+  visitNumber: function(o) { return o; },
 
-  visitDate: function(o) {
-    return o;
-  },
+  visitDate: function(o) { return o; },
 
   visitObject: function(o) {
     for ( var key in o.model_.properties ) {
       var prop = o.model_.properties[key];
-  
-      if ( prop.name in obj.instance_ ) {
+
+      if ( prop.name in o.instance_ ) {
         this.visitProperty(o, prop);
       }
     }
   },
+  visitProperty: function(o, prop) { this.visit(o[prop.name]); },
 
   visitMap: function(o) {
-    var c = {};
-    o.forEach(function(key, value) { c[key] = this.visit(value); });
-    return c;
+    o.forEach((function(value, key) { this.visitMapElement(key, value); }).bind(this));
+  },
+  visitMapElement: function(key, value) { },
+
+  visitTrue: function() { return true; },
+
+  visitFalse: function() { return false; },
+
+  visitNull: function() { return null; },
+
+  visitUndefined: function() { return undefined; }
+
+};
+
+
+var ObjectToIndexedDB = {
+  __proto__: Visitor.create(),
+
+  visitFunction: function(o) {
+     return o.toString();
   },
 
-  visitTrue: function() {
-    return true;
+  visitObject: function(o) {
+    this.push({model_: o.model_.name});
+    this.__proto__.visitObject.call(this, o);
+    return this.pop();
+  },
+  visitProperty: function(o, prop) { this.top()[prop.name] = this.visit(o[prop.name]); },
+
+  visitMap: function(o) {
+    this.push({});
+    Visitor.visitMap.call(this, o);
+    return this.pop();
+  },
+  visitMapElement: function(key, value) { this.top()[key] = this.visit(value); },
+
+  visitArray: function(o) {
+    this.push([]);
+    this.__proto__.visitArray.call(this, o);
+    return this.pop();
+  },
+  visitArrayElement: function (arr, i) { this.top().push(this.visit(arr[i])); },
+
+};
+
+
+var IndexedDBToObject = {
+  __proto__: ObjectToIndexedDB.create(),
+
+  visitString: function(o) {
+     return o.substr(0, 8) === 'function' ?
+       eval('(' + o + ')') :
+       o ;
   },
 
-  visitFalse: function() {
-    return false;
+  visitObject: function(o) {
+    var model   = GLOBAL[o.model_];
+    var obj     = model.create();
+
+    o.forEach((function(value, key) {
+      if ( key !== 'model_' ) obj[key] = this.visit(value);
+    }).bind(this));
+
+    return obj;
   },
 
-  visitNull: function() {
-    return null;
+  // Substitute in-place
+  visitArray: function(o) {
+    var len = o.length;
+    for ( var i = 0 ; i < len ; i++ ) this.visitArrayElement(o, i);
+    return o;
   },
-
-  visitUndefined: function() {
-    return undefined;
-  }
+  visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); },
 
 };
 
@@ -168,7 +221,7 @@ var IndexedDBDAO2 = FOAM.create({
 	 label: 'Store Name',
 	 type:  'String',
          defaultValueFn: function() {
-           return this.model.plural + "17";
+           return this.model.plural;
          }
       }
    ],
@@ -186,7 +239,7 @@ var IndexedDBDAO2 = FOAM.create({
         window.webkitIndexedDB         ||
         window.mozIndexedDB;
 
-      var request = indexedDB.open("FOAM:" + this.name, Date.now());
+      var request = indexedDB.open("FOAM:" + this.name, 1);
 
       request.onupgradeneeded = (function(e) {
         console.log('*****************upgradeneeded', this.name);
@@ -204,6 +257,7 @@ var IndexedDBDAO2 = FOAM.create({
     },
 
     withStore: function(mode, fn) {
+console.log('withStore: ', mode);
       this.withDB((function (db) {
         var tx = db.transaction([this.name], mode);
         fn.bind(this)(tx.objectStore(this.name));
@@ -213,7 +267,7 @@ var IndexedDBDAO2 = FOAM.create({
     put: function(value) {
 console.log('put: ', value.instance_, value.id);
       this.withStore("readwrite", function(store) {
-        var request = store.put(value.instance_);
+        var request = store.put(ObjectToIndexedDB.visitObject(value));
 	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
 	request.onerror = console.log.bind(console, 'put error: ');
       });
@@ -223,7 +277,10 @@ console.log('put: ', value.instance_, value.id);
       this.withStore("readonly", function(store) {
 console.log('getting: ', key);
         var request = store.get(key);
-        request.onsuccess = callback;
+        request.onsuccess = function() {
+	  IndexedDBToObject.visitObject(request.result);
+	  callback(request.result);
+	};
         request.onerror = console.log.bind(console, 'get error: ');
       });
     },
@@ -274,10 +331,10 @@ console.log('forEach cursor: ', cursor);
 });
 
 /*
-var d2 = IndexedDBDAO2.create({model: Model});
-d2.put(Issue);
-d2.get(console.log.bind(console), "Issue");
+var d = IndexedDBDAO2.create({model: Model});
+d.put(Issue);
+d.get(function(i) { console.log('got: ', i); }, "Issue");
 
-ModelDAO.forEach(d2.put.bind(d2));
-d2.forEach(console.log.bind(console, 'forEach: '));
+ModelDAO.forEach(d.put.bind(d));
+d.forEach(console.log.bind(console, 'forEach: '));
 */

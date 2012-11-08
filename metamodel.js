@@ -516,7 +516,7 @@ var PropertyModel = {
         for ( var i = 0 ; i < this.properties.length ; i++ ) {
 	    var p = this.properties[i];
 
-	    if ( p.name == name ) return p;
+	    if ( p.name === name ) return p;
 	}
 
 	document.writeln("couldn't find: " + name);
