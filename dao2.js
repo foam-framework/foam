@@ -181,6 +181,12 @@ var IndexedDBDAO2 = FOAM.create({
      this.withDB = future(this.openDB.bind(this));
     },
 
+    makeKey: function(value) {
+        return this.model.ids.map(function(key) {
+                                       return value[key];
+                                   });
+    },
+
     openDB: function(cc) {
       var indexedDB = window.indexedDB ||
         window.webkitIndexedDB         ||
@@ -190,7 +196,9 @@ var IndexedDBDAO2 = FOAM.create({
 
       request.onupgradeneeded = (function(e) {
         console.log('*****************upgradeneeded', this.name);
-	e.target.result.createObjectStore(this.name, {keyPath: 'name'});
+        // Remove this when no longer debugging.
+        e.target.result.deleteObjectStore(this.name);
+	e.target.result.createObjectStore(this.name);
       }).bind(this);
 
       request.onsuccess = (function(e) {
@@ -211,19 +219,23 @@ var IndexedDBDAO2 = FOAM.create({
     },
 
     put: function(value) {
-console.log('put: ', value.instance_, value.id);
+console.log('put: ', value);
       this.withStore("readwrite", function(store) {
-        var request = store.put(value.instance_);
+        var request = store.put(value, this.makeKey(value));
 	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
 	request.onerror = console.log.bind(console, 'put error: ');
       });
     },
 
     get: function(callback, key) {
+      if (!Array.isArray(key)) key = [key];
+
       this.withStore("readonly", function(store) {
 console.log('getting: ', key);
         var request = store.get(key);
-        request.onsuccess = callback;
+        request.onsuccess = function(e) {
+            callback(e.target.result);
+        };
         request.onerror = console.log.bind(console, 'get error: ');
       });
     },
