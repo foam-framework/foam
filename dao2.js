@@ -74,10 +74,6 @@ var Visitor = {
   },
 
   visit: function(o) {
-var oldLog = console.log;
-console.log = console.log.bind(console, '   ');
-console.log('visit: ', o);
-try {
     return ( o instanceof Array )     ? this.visitArray(o)    :
            ( typeof o === 'string' )  ? this.visitString(o)   :
            ( typeof o === 'number' )  ? this.visitNumber(o)   :
@@ -90,14 +86,12 @@ try {
              this.visitObject(o)      :
              this.visitMap(o)
            )                          : this.visitUndefined() ;
-} finally {
-   console.log = oldLog;
-}
   },
 
   visitArray: function(o) {
     var len = o.length;
     for ( var i = 0 ; i < len ; i++ ) this.visitArrayElement(o, i);
+    return o;
   },
   visitArrayElement: function (arr, i) { this.visit(arr[i]); },
 
@@ -117,11 +111,13 @@ try {
         this.visitProperty(o, prop);
       }
     }
+    return o;
   },
   visitProperty: function(o, prop) { this.visit(o[prop.name]); },
 
   visitMap: function(o) {
     o.forEach((function(value, key) { this.visitMapElement(key, value); }).bind(this));
+    return o;
   },
   visitMapElement: function(key, value) { },
 
@@ -188,11 +184,7 @@ var IndexedDBToObject = {
   },
 
   // Substitute in-place
-  visitArray: function(o) {
-    var len = o.length;
-    for ( var i = 0 ; i < len ; i++ ) this.visitArrayElement(o, i);
-    return o;
-  },
+  visitArray: Visitor.visitArray,
   visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); },
 
 };
@@ -235,9 +227,7 @@ var IndexedDBDAO2 = FOAM.create({
     },
 
     makeKey: function(value) {
-        return this.model.ids.map(function(key) {
-                                       return value[key];
-                                   });
+      return this.model.ids.map(function(key) { return value[key]; });
     },
 
     openDB: function(cc) {
@@ -270,6 +260,7 @@ console.log('withStore: ', mode);
       }).bind(this));
     },
 
+    // TODO: add callback to return modified value
     put: function(value) {
 console.log('put: ', value);
       this.withStore("readwrite", function(store) {
