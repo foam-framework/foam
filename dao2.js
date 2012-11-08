@@ -249,8 +249,6 @@ var IndexedDBDAO2 = FOAM.create({
 
       request.onupgradeneeded = (function(e) {
         console.log('*****************upgradeneeded', this.name);
-        // Remove this when no longer debugging.
-        e.target.result.deleteObjectStore(this.name);
 	e.target.result.createObjectStore(this.name);
       }).bind(this);
 
