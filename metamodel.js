@@ -105,7 +105,9 @@ var Model = {
 	   label: 'Key Properties',
 	   type: 'Array[String]',
 	   view: 'StringArrayView',
-	   defaultValue: [],
+	   defaultValueFn: function() {
+             return this.properties.length ? [this.properties[0].name] : [];
+           },
 	   help: 'Properties which make up unique id.'
        },
        {
@@ -1023,4 +1025,3 @@ for ( var i = 0 ; i < a.length ; i++ ) {
       a[i] = PropertyModel.getPrototype().create(a[i]);
    }
 }
-
