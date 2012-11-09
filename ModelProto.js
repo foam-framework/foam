@@ -137,21 +137,18 @@ console.log(cls);
           var primaryKey = this.ids && this.ids.length > 0 ?
 	     this.ids[0] :
 	     this.properties[0].name ;
-          if (Array.isArray(primaryKey) && primaryKey.length == 1) {
+          if (Array.isArray(primaryKey) && primaryKey.length == 1)
             primaryKey = primaryKey[0];
 
-          cls.__defineGetter__("id", function() {
-            if (Array.isArray(primaryKey)) return primaryKey.map(function(key) { return this[key]; });
-            return this[primaryKey]; });
-          cls.__defineSetter__("id", function(val) {
-            if (Array.isArray(val)) {
-              for (var i = 0; i < val.length; i++) {
-                this[primaryKey[i]] = val[i];
-              }
-              return;
-            }
-            this[primaryKey] = val;
-          });
+          if (Array.isArray(primaryKey) {
+            cls.__defineGetter__("id", function() {
+                return primaryKey.map(function(key) { return this[key]; }); });
+            cls.__defineSetter__("id", function(val) {
+                primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+          } else {
+            cls.__defineGetter__("id", function() { return this[primaryKey]; });
+            cls.__defineSetter__("id", function(val) { this[primaryKey] = val; });
+          }
        }
 
        cls.model_ = this;
