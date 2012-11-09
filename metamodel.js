@@ -295,6 +295,10 @@ var PropertyModel = {
     label: 'Property',
     help:  "Describes a properties of a modelled entity.",
 
+    ids: [
+      'name',
+    ],
+
     tableProperties: [
       'name',
       'label',
