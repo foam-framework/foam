@@ -226,10 +226,6 @@ var IndexedDBDAO2 = FOAM.create({
      this.withDB = future(this.openDB.bind(this));
     },
 
-    makeKey: function(value) {
-      return this.model.ids.map(function(key) { return value[key]; });
-    },
-
     openDB: function(cc) {
       var indexedDB = window.indexedDB ||
         window.webkitIndexedDB         ||
@@ -264,16 +260,13 @@ console.log('withStore: ', mode);
     put: function(value) {
 console.log('put: ', value);
       this.withStore("readwrite", function(store) {
-        var request = store.put(ObjectToIndexedDB.visitObject(value),
-                                this.makeKey(value));
+        var request = store.put(ObjectToIndexedDB.visitObject(value), value.id);
 	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
 	request.onerror = console.log.bind(console, 'put error: ');
       });
     },
 
     get: function(callback, key) {
-      if (!Array.isArray(key)) key = [key];
-
       this.withStore("readonly", function(store) {
 console.log('getting: ', key);
         var request = store.get(key);
