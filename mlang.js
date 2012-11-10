@@ -271,7 +271,7 @@ var OrExpr = FOAM.create({
           var a    = this.args[i];
           var newA = this.args[i].partialEval();
 
-          if ( newA === FALSE ) return FALSE;
+          if ( newA === TRUE ) return TRUE;
 
           if ( OrExpr.isInstance(newA) ) {
             // In-line nested OR clauses
