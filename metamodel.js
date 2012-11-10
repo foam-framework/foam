@@ -909,6 +909,9 @@ var Issue = FOAM.create(
      label: 'Issue',
      plural: 'Issues',
      help: 'An issue describes a question, feature request, or defect.',
+     ids: [
+       'id'
+     ],
      tableProperties:
      [
 	'id', 'severity', 'status', 'summary', 'assignedTo'
