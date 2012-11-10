@@ -278,6 +278,14 @@ console.log('getting: ', key);
       });
     },
 
+    remove: function(callback, key) {
+      this.withStore("readwrite", function(store) {
+        var request = store.delete(key);
+        request.onsuccess = callback;
+        request.onerror = console.log.bind(console, 'remove error: ');
+      });
+    },
+
     // TODO: Model queries and handle them at the db layer
     // where we can, rather than doing all the processing in
     // javascript.
