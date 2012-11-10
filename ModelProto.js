@@ -133,12 +133,16 @@ console.log(cls);
 
        // build primary key getter and setter
        if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
-          var primaryKey = this.ids && this.ids.length > 0 ?
-	     this.ids[0] :
-	     this.properties[0].name ;
-
-          cls.__defineGetter__("id", function() { return this[primaryKey]; });
-          cls.__defineSetter__("id", function(val) { this[primaryKey] = val; });
+          var primaryKey = this.ids;
+          if (primaryKey.length == 1) {
+            cls.__defineGetter__("id", function() { return this[primaryKey[0]]; });
+            cls.__defineSetter__("id", function(val) { this[primaryKey[0]] = val; });
+          } else {
+            cls.__defineGetter__("id", function() {
+                return primaryKey.map(function(key) { return this[key]; }); });
+            cls.__defineSetter__("id", function(val) {
+                primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+          }
        }
 
        cls.model_ = this;
@@ -168,7 +172,6 @@ console.log(cls);
 };
 
 /*
- *
  * Ex.
  * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).toSQL();
  *   -> "(assignedTo = 'kgr' OR severity = 'Minor')"

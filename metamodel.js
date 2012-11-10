@@ -110,10 +110,10 @@ var Model = {
 	   label: 'Key Properties',
 	   type: 'Array[String]',
 	   view: 'StringArrayView',
-        defaultValueFn: function() {
+	   defaultValueFn: function() {
              return this.properties.length ? [this.properties[0].name] : [];
            },
-     	   help: 'Properties which make up unique id.'
+	   help: 'Properties which make up unique id.'
        },
        {
 	   name: 'tableProperties',
@@ -300,6 +300,10 @@ var PropertyModel = {
     plural:'Properties',
     label: 'Property',
     help:  "Describes a properties of a modelled entity.",
+
+    ids: [
+      'name',
+    ],
 
     tableProperties: [
       'name',
@@ -924,6 +928,9 @@ var Issue = FOAM.create(
      label: 'Issue',
      plural: 'Issues',
      help: 'An issue describes a question, feature request, or defect.',
+     ids: [
+       'id'
+     ],
      tableProperties:
      [
 	'id', 'severity', 'status', 'summary', 'assignedTo'
@@ -1044,4 +1051,3 @@ for ( var i = 0 ; i < a.length ; i++ ) {
       a[i] = PropertyModel.getPrototype().create(a[i]);
    }
 }
-

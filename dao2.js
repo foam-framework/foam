@@ -226,10 +226,6 @@ var IndexedDBDAO2 = FOAM.create({
      this.withDB = future(this.openDB.bind(this));
     },
 
-    makeKey: function(value) {
-      return this.model.ids.map(function(key) { return value[key]; });
-    },
-
     openDB: function(cc) {
       var indexedDB = window.indexedDB ||
         window.webkitIndexedDB         ||
@@ -264,24 +260,29 @@ console.log('withStore: ', mode);
     put: function(value) {
 console.log('put: ', value);
       this.withStore("readwrite", function(store) {
-        var request = store.put(ObjectToIndexedDB.visitObject(value),
-                                this.makeKey(value));
+        var request = store.put(ObjectToIndexedDB.visitObject(value), value.id);
 	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
 	request.onerror = console.log.bind(console, 'put error: ');
       });
     },
 
     get: function(callback, key) {
-      if (!Array.isArray(key)) key = [key];
-
       this.withStore("readonly", function(store) {
 console.log('getting: ', key);
         var request = store.get(key);
         request.onsuccess = function() {
-	  IndexedDBToObject.visitObject(request.result);
-	  callback(request.result);
+	  var result = IndexedDBToObject.visitObject(request.result);
+	  callback(result);
 	};
         request.onerror = console.log.bind(console, 'get error: ');
+      });
+    },
+
+    remove: function(callback, key) {
+      this.withStore("readwrite", function(store) {
+        var request = store.delete(key);
+        request.onsuccess = callback;
+        request.onerror = console.log.bind(console, 'remove error: ');
       });
     },
 
@@ -291,14 +292,15 @@ console.log('getting: ', key);
     forEach2: function(fn, opt_predicate) {
       this.withStore("readonly", function(store) {
         var request = store.openCursor();
-console.log('forEach open cursor: ', cursor);
+console.log('forEach open cursor: ', request);
         request.onerror = console.log.bind(console, 'forEach failure: ');
         request.onsuccess = opt_predicate ? function(e) {
 	      var cursor = e.target.result;
 console.log('forEach cursor P: ', cursor);
 	      if (cursor) {
-		if (opt_predicate(cursor.value)) {
-		  fn(cursor.value);
+                var value = IndexedDBToObject.visitObject(cursor.value);
+		if (opt_predicate(value)) {
+		  fn(value);
 		}
 		cursor.continue();
 	      }
@@ -307,11 +309,19 @@ console.log('forEach onSuccess: ', e);
 	      var cursor = e.target.result;
 console.log('forEach cursor: ', cursor);
 	      if (cursor) {
-		fn(cursor/*.value*/);
+                var value = IndexedDBToObject.visitObject(cursor.value);
+		fn(value);
 		cursor.continue();
 	      }
 	    };
       });
+    },
+
+    removeAll: function(callback) {
+       this.withStore("readwrite", function(store) {
+         var request = store.clear();
+         request.onsuccess = callback;
+       });
     }
    },
 
