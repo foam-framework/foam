@@ -29,7 +29,9 @@ Property.getPrototype().f = function(obj) {
   return obj[this.name];
 }
 
-
+// TODO: add 'contains', 'startsWith'
+// TODO: add type-checking in partialEval
+//  (type-checking is a subset of partial-eval)
 
 var EXPR = FOAM.create({
    model_: 'Model',
@@ -307,16 +309,14 @@ var OrExpr = FOAM.create({
 var NotExpr = FOAM.create({
    model_: 'Model',
 
-   extendsModel: 'NARY',
+   extendsModel: 'UNARY',
 
    name: 'NotExpr',
 
    methods: {
       outSQL: function(out) {
-        out.push(this.name_);
-        out.push('(');
+        out.push('not ');
         this.arg1.outSQL(out);
-        out.push(')');
       },
 
       partialEval: function() {
