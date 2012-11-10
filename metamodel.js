@@ -20,6 +20,11 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+// switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+String.prototype.constantize = function() {
+    return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+};
+
 /*
 function getObjectSize(myObject) {
   var count=0
@@ -105,8 +110,10 @@ var Model = {
 	   label: 'Key Properties',
 	   type: 'Array[String]',
 	   view: 'StringArrayView',
-	   defaultValue: [],
-	   help: 'Properties which make up unique id.'
+        defaultValueFn: function() {
+             return this.properties.length ? [this.properties[0].name] : [];
+           },
+     	   help: 'Properties which make up unique id.'
        },
        {
 	   name: 'tableProperties',
@@ -128,17 +135,18 @@ var Model = {
 	   preSet: function(newValue) {
 	      if ( ! PropertyModel ) return;
 
-	      for ( var i = 0 ; i < newValue.length ; i++ )
-	      {
-		 if ( ! PropertyModel.isInstance(newValue[i]) )
-		 {
+	      for ( var i = 0 ; i < newValue.length ; i++ ) {
+		 if ( ! PropertyModel.isInstance(newValue[i]) ) {
                     var oldValue = newValue[i];
 		    newValue[i] = PropertyModel.getPrototype().create(newValue[i]);
 		 }
+
+                 // create property constant
+                 this[newValue[i].name.constantize()] = newValue[i];
 	      }
 
-	      return newValue;
-	   }
+              return newValue;
+           }
        },
        {
 	   name: 'actions',
@@ -319,7 +327,7 @@ var PropertyModel = {
            required: false,
 	   displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
+	   defaultValueFn: function() { return this.name.capitalize(); },
 	   help: 'The display label for the property.'
        },
        {
@@ -512,6 +520,18 @@ var PropertyModel = {
        }
     ],
 
+    methods: {
+      f: function(obj) {
+         return obj[this.name];
+      },
+      outSQL: function(out) {
+        out.push(this.toSQL());
+      },
+      toSQL: function() {
+        return this.name;
+      }
+    },
+
     getProperty: function(name) {
         for ( var i = 0 ; i < this.properties.length ; i++ ) {
 	    var p = this.properties[i];
@@ -530,6 +550,7 @@ var PropertyModel = {
 Model.methods = {
     buildPrototype: ModelProto.buildPrototype,
     getPrototype:   ModelProto.getPrototype,
+    isSubModel:     ModelProto.isSubModel,
     isInstance:     ModelProto.isInstance
 };
 
@@ -544,6 +565,7 @@ Model.model_ = Model;
 PropertyModel = Model.create(PropertyModel);
 
 // Now remove ModelProto so nobody tries to use it
+// TODO: do this once no views use it directly
 // delete ModelProto;
 
 var ActionModel = Model.create({
@@ -774,7 +796,6 @@ var TemplateModel = Model.create({
 
 var Template = TemplateModel;
 var Property = PropertyModel;
-var Model    = Model;
 var Method   = MethodModel;
 var Action   = ActionModel;
 var Topic    = TopicModel;

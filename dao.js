@@ -14,21 +14,100 @@
  * limitations under the License.
  */
 
+// TODO: replace with mlang
 var query = {
 
-  // TODO: allow for vargs
-  and: function(p1, p2) {
-    if ( ! p1 ) return p2;
-    if ( ! p2 ) return p1;
-    return function(arg) { return p1(arg) && p2(arg); };
+  tail_: function(args) {
+    var a = [];
+    for ( var i = 1 ; i < a.length ; i++ ) a.push(args[i]);
+    return a;
   },
 
-  or: function(p1, p2) {
-    if ( ! p1 ) return p2;
-    if ( ! p2 ) return p1;
-    return function(arg) { return p1(arg) || p2(arg); };
-  }
+  TRUE: function() {
+    return true;
+  },
 
+  FALSE: function() {
+    return false;
+  },
+
+  not: function(fn) {
+    if ( fn == query.TRUE ) return query.FALSE;
+    if ( fn == query.FALSE ) return query.TRUE;
+
+    return function(arg) { return ! fn(arg); };
+  },
+
+  and: function() {
+    if ( arguments.length == 0 ) return query.TRUE;
+
+    var head = arguments[0];
+
+    if ( head === query.FALSE ) return query.FALSE;
+
+    var tail = query.and.apply(null, query.tail_(arguments));
+
+    if ( head === query.TRUE )  return tail;
+    if ( tail === query.FALSE ) return query.FALSE;
+
+    return function(arg) { return head(arg) && tail(arg); };
+  },
+
+  or: function() {
+    if ( ! arguments.length ) return query.FALSE;
+
+    var head = arguments[0];
+
+    if ( head === query.TRUE ) return query.TRUE;
+
+    var tail = query.or.apply(null, query.tail_(arguments));
+
+    if ( head === query.FALSE )  return tail;
+    if ( tail === query.TRUE ) return query.TRUE;
+
+    return function(arg) { return head(arg) || tail(arg); };
+  },
+
+  constant: function(value) {
+    var fn = function() {
+       return falue;
+    };
+    fn.isConstant = true;
+    return fn;
+  },
+
+  compile_: function(value) {
+    return ( typeof value === 'function' ) ?
+      value :
+      constant(value);
+  },
+
+  eq: function(a, b) {
+    var A = query_.compile(a);
+    var B = query_.compile(a);
+    if ( A.isConstant && B.isConstant ) return A() == B() ? query.true : queyr.false;
+    return function(arg) { return A(arg) == A(arg); };
+  },
+
+  neq: function(a, b) {
+    return function(arg) { return a(arg) != b(arg); };
+  },
+
+  lt: function(a, b) {
+    return function(arg) { return a(arg) < b(arg); };
+  },
+
+  gt: function(a, b) {
+    return function(arg) { return a(arg) > b(arg); };
+  },
+
+  lte: function(a, b) {
+    return function(arg) { return a(arg) <= b(arg); };
+  },
+
+  gte: function(a, b) {
+    return function(arg) { return a(arg) >= b(arg); };
+  }
 };
 
 

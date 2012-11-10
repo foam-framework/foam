@@ -26,6 +26,7 @@ var files = [
   'ModelProto',
   'metamodel',
   'view',
+  'mlang',
   'dao',
   'dao2',
   'StackView',

@@ -88,7 +88,6 @@ console.log(cls);
 	// add methods
 	for ( var key in this.methods )	{
 	  var m = this.methods[key];
-
 	  if ( MethodModel && MethodModel.isInstance(m) )
 	    addMethod(m.name, m.code); //cls[m.name] = m.code;
 	  else
@@ -155,8 +154,24 @@ console.log(cls);
 
     create: function(args) { return this.getPrototype().create(args); },
 
-    isInstance: function(obj) { return obj && ( obj.model_ == this ); },
+    isSubModel: function(model) {
+      try {
+        return model == this || this.isSubModel(model.prototype_.__proto__.model_);
+      } catch (x) {
+        return false;
+      }
+    },
+
+    isInstance: function(obj) { return obj && obj.model_ && this.isSubModel(obj.model_); },
 
     toString: function() { return "ModelProto(" + this.name + ")"; }
 };
 
+/*
+ *
+ * Ex.
+ * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).toSQL();
+ *   -> "(assignedTo = 'kgr' OR severity = 'Minor')"
+ * OR(EQ(Issue.ASSIGNED_TO, 'kgr'), EQ(Issue.SEVERITY, 'Minor')).f(Issue.create({assignedTo: 'kgr'}));
+ *   -> true
+ */
