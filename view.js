@@ -1416,7 +1416,6 @@ var DetailView2 = {
    },
 
    setValue: function (value) {
-debugger;
       if ( this.getValue() ) {
 	 // todo:
 	 /// getValue().removeListener(???)
