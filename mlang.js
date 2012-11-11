@@ -38,16 +38,6 @@ var EXPR = FOAM.create({
 
    name: 'EXPR',
 
-   properties: [
-      {
-	 name:  'args',
-	 label: 'Arguments',
-	 type:  'Expr[]',
-	 help:  'Sub-expressions',
-	 valueFactory: function() { return []; },
-      }
-   ],
-
    methods: {
      toSQL: function() {
        var out = [];
