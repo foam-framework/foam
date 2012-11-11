@@ -1415,16 +1415,17 @@ var DetailView2 = {
       return this.value;
    },
 
-   setValue: function (model) {
+   setValue: function (value) {
+debugger;
       if ( this.getValue() ) {
 	 // todo:
 	 /// getValue().removeListener(???)
       }
 
-      this.value = model;
+      this.value = value;
 
       this.updateSubViews();
-      model.addListener(this.updateSubViews.bind(this));
+      value.addListener(this.updateSubViews.bind(this));
    },
 
 
@@ -1446,7 +1447,7 @@ var DetailView2 = {
 
 
    updateHTML: function() {
-      if ( ! this.id ) return;
+      if ( ! this.eid_ ) return;
 
       this.children = [];
 
@@ -1510,7 +1511,7 @@ var DetailView2 = {
 
    updateSubViews: function() {
       // check if the Value's model has changed
-      if ( this.get().model_ != this.model ) {
+      if ( this.get().model_ !== this.model ) {
 	 this.model = this.get().model_;
 	 this.updateHTML();
       }

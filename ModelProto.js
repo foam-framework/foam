@@ -37,10 +37,15 @@ var ModelProto = {
    TYPE: 'ModelProto <startup only, error if you see this>',
 
     buildPrototype: function() {
+      /*
+       Used to allow for actual model to be used, but no longer needed
        var extendsModel =
 	  typeof this.extendsModel == 'object' ? this.extendsModel         :
 	  this.extendsModel                    ? GLOBAL[this.extendsModel] :
 	                                         null ;
+       */
+       var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+
        var cls = {
           instance_: {},
 	  __proto__:
