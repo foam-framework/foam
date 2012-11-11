@@ -203,7 +203,7 @@ var AndExpr = FOAM.create({
       },
 
       partialEval: function() {
-        var newArgs = this.args;
+        var newArgs = [];
         var updated = false;
 
         for ( var i = 0 ; i < this.args.length ; i++ ) {
@@ -264,7 +264,7 @@ var OrExpr = FOAM.create({
       },
 
       partialEval: function() {
-        var newArgs = this.args;
+        var newArgs = [];
         var updated = false;
 
         for ( var i = 0 ; i < this.args.length ; i++ ) {
