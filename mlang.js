@@ -549,7 +549,7 @@ function compileArray_(args) {
   for ( var i = 0 ; i < args.length ; i++ ) {
     var a = args[i];
 
-    b.push(compile_(a));
+    if ( a !== null && a !== undefined ) b.push(compile_(a));
   }
 
   return b;

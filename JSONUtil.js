@@ -47,6 +47,8 @@ var JSONUtil =
 
       if ( obj instanceof Function ) return obj;
 
+      if ( obj instanceof Date ) return obj;
+
       if ( obj instanceof Object ) {
 	 for ( var key in obj ) {
 	    if ( key != 'model_' ) obj[key] = this.chaosify(obj[key]);
@@ -92,6 +94,9 @@ var JSONUtil =
 	 }
 	 else if ( obj instanceof Function ) {
 	    out(obj);
+	 }
+	 else if ( obj instanceof Date ) {
+	    out("new Date('", obj, "')");
 	 }
 	 else if ( obj instanceof Object ) {
 	    try {
@@ -197,6 +202,9 @@ var JSONUtil =
 	 }
 	 else if ( obj instanceof Function ) {
 	    out(obj);
+	 }
+	 else if ( obj instanceof Date ) {
+	    out("new Date('", obj, "')");
 	 }
 	 else if ( obj instanceof Object ) {
 	    try {

@@ -14,103 +14,6 @@
  * limitations under the License.
  */
 
-// TODO: replace with mlang
-var query = {
-
-  tail_: function(args) {
-    var a = [];
-    for ( var i = 1 ; i < a.length ; i++ ) a.push(args[i]);
-    return a;
-  },
-
-  TRUE: function() {
-    return true;
-  },
-
-  FALSE: function() {
-    return false;
-  },
-
-  not: function(fn) {
-    if ( fn == query.TRUE ) return query.FALSE;
-    if ( fn == query.FALSE ) return query.TRUE;
-
-    return function(arg) { return ! fn(arg); };
-  },
-
-  and: function() {
-    if ( arguments.length == 0 ) return query.TRUE;
-
-    var head = arguments[0];
-
-    if ( head === query.FALSE ) return query.FALSE;
-
-    var tail = query.and.apply(null, query.tail_(arguments));
-
-    if ( head === query.TRUE )  return tail;
-    if ( tail === query.FALSE ) return query.FALSE;
-
-    return function(arg) { return head(arg) && tail(arg); };
-  },
-
-  or: function() {
-    if ( ! arguments.length ) return query.FALSE;
-
-    var head = arguments[0];
-
-    if ( head === query.TRUE ) return query.TRUE;
-
-    var tail = query.or.apply(null, query.tail_(arguments));
-
-    if ( head === query.FALSE )  return tail;
-    if ( tail === query.TRUE ) return query.TRUE;
-
-    return function(arg) { return head(arg) || tail(arg); };
-  },
-
-  constant: function(value) {
-    var fn = function() {
-       return falue;
-    };
-    fn.isConstant = true;
-    return fn;
-  },
-
-  compile_: function(value) {
-    return ( typeof value === 'function' ) ?
-      value :
-      constant(value);
-  },
-
-  eq: function(a, b) {
-    var A = query_.compile(a);
-    var B = query_.compile(a);
-    if ( A.isConstant && B.isConstant ) return A() == B() ? query.true : queyr.false;
-    return function(arg) { return A(arg) == A(arg); };
-  },
-
-  neq: function(a, b) {
-    return function(arg) { return a(arg) != b(arg); };
-  },
-
-  lt: function(a, b) {
-    return function(arg) { return a(arg) < b(arg); };
-  },
-
-  gt: function(a, b) {
-    return function(arg) { return a(arg) > b(arg); };
-  },
-
-  lte: function(a, b) {
-    return function(arg) { return a(arg) <= b(arg); };
-  },
-
-  gte: function(a, b) {
-    return function(arg) { return a(arg) >= b(arg); };
-  }
-};
-
-
 var FilteredDAO = {
 
     create: function(predicate, delegate) {
@@ -118,11 +21,11 @@ var FilteredDAO = {
 	    __proto__: delegate,
             predicate: predicate,
             select: function(predicate) {
-              return delegate.select(query.and(predicate, this.predicate));
+              return delegate.select(AND(predicate, this.predicate));
             },
 
             forEach: function(action, predicate) {
-              return delegate.forEach(action, query.and(predicate, this.predicate));
+              return delegate.forEach(action, AND(predicate, this.predicate));
             }
 	};
     }
@@ -198,7 +101,7 @@ var ArrayDAO = {
 
 	for (var idx in this.arr) {
 	    var obj = this.arr[idx];
-	    if (predicate(obj) === true)
+	    if (predicate.f(obj) === true)
 		return obj;
 	}
 	return undefined;
@@ -214,7 +117,7 @@ var ArrayDAO = {
     forEach: function(action, predicate) {
 	if (predicate) {
 	    for (var idx in this.arr)
-		if (predicate(this.arr[idx]))
+		if (predicate.f(this.arr[idx]))
 		    action(this.arr[idx]);
 	} else {
 	    for (var idx in this.arr)
@@ -229,7 +132,7 @@ var ArrayDAO = {
 
 	for (var i = 0; i < this.arr.length; i++) {
 	  var obj = this.arr[i];
-	  if (predicate(obj)) {
+	  if (predicate.f(obj)) {
             this.arr.splice(i,1);
             i--;
 	  }
@@ -396,12 +299,12 @@ var StorageDAO = {
 
     get: function(predicate) {
 	var param = predicate;
-	if (typeof predicate !== 'function') {
+	if (! EXPR.isInstance(predicate)) {
 	    return this.storage[predicate];
 	} else {
 	    for (var objID in this.storage) {
 		var obj = this.storage[objID];
-		if (predicate(obj) === true)
+		if (predicate.f(obj) === true)
 		    return obj;
 	    }
 	}
@@ -419,7 +322,7 @@ var StorageDAO = {
 	if (predicate) {
 	    for (var objID in this.storage) {
 		var obj = this.storage[objID];
-		if (predicate(obj))
+		if (predicate.f(obj))
 		    action(obj);
 	    }
 	} else {
@@ -430,10 +333,10 @@ var StorageDAO = {
     },
 
     remove: function(predicate) {
-	if (typeof predicate === 'function') {
+	if (EXPR.isInstance(predicate)) {
 	    for (var objID in this.storage) {
 		var obj = this.storage[objID];
-		if (predicate(obj))
+		if (predicate.f(obj))
 		    delete this.storage[objID];
 	    }
 	} else {

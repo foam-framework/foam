@@ -11,10 +11,7 @@
 
     var ModelDAO = ModelDAO.create(this, StorageDAO.createModels("models"));
 
-    EMailDAO = FilteredDAO.create(function(email) {
-        return email.to === user;
-      },
-      EMailDAO);
+    EMailDAO = FilteredDAO.create(EQ(EMail.TO, user), EMailDAO);
 
     var stack = StackView.create();
     stack.write(document);
