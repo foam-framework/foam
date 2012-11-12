@@ -17,6 +17,10 @@
 // TODO: remove these three redundant definitions when
 // meta-weirdness fixed
 
+Property.getPrototype().partialEval = function() {
+  return this;
+};
+
 Property.getPrototype().outSQL = function(out) {
   out.push(this.toSQL());
 };
@@ -315,6 +319,13 @@ var NotExpr = FOAM.create({
         if ( newArg === TRUE ) return FALSE;
         if ( newArg === FALSE ) return TRUE;
         if ( NotExpr.isInstance(newArg) ) return newArg.arg1;
+        if ( EqExpr.isInstance(newArg)  ) return NeqExpr.create(newArg);
+        if ( NeqExpr.isInstance(newArg) ) return EqExpr.create(newArg);
+        if ( LtExpr.isInstance(newArg)  ) return GteExpr.create(newArg);
+        if ( GtExpr.isInstance(newArg)  ) return LteExpr.create(newArg);
+        if ( LteExpr.isInstance(newArg) ) return GtExpr.create(newArg);
+        if ( GteExpr.isInstance(newArg) ) return LtExpr.create(newArg);
+        if ( LteExpr.isInstance(newArg) ) return GtExpr.create(newArg);
 
         return this.arg1 === newArg ? this : newArg;
       },
@@ -528,7 +539,7 @@ var ConstantExpr = FOAM.create({
         if ( typeof this.arg1 === 'string' ) {
           this.outString(out, this.arg1);
         } else {
-          out.push(this.arg1.toString);
+          out.push(this.arg1.toString());
         }
       },
       f: function(obj) { return this.arg1; }
