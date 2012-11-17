@@ -871,8 +871,11 @@ var TextFieldView = FOAM.create({
 });
 
 
-var ChoiceView = {
-   __proto__: ModelProto,
+var ChoiceView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
 
 /*
  * <select size="">
@@ -881,9 +884,6 @@ var ChoiceView = {
  *
  *
  */
-//   extendsPrototype: 'AbstractView',
-   extendsModel: 'AbstractView2',
-
    name:  'ChoiceView',
    label: 'Choice View',
 
@@ -943,7 +943,80 @@ var ChoiceView = {
 	Events.unlink(this.domValue, this.value);
     }
    }
-};
+});
+
+
+var RoleView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name:  'RoleView',
+   label: 'Role View',
+
+   properties: [
+      {
+	 name:  'roleName',
+	 label: 'RoleName',
+         type:  'String',
+	 defaultValue: ''
+      },
+      {
+	 name:  'models',
+	 label: 'Models',
+         type:  'Array[String]',
+	 defaultValue: []
+      },
+      {
+	 name:  'selection',
+	 label: 'Selection',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
+      },
+      {
+	 name:  'model',
+	 label: 'Model',
+	 type:  'Model'
+      }
+   ],
+
+   methods: {
+    initHTML: function() {
+	var e = this.element();
+
+	this.domValue = DomValue.create(e);
+
+	Events.link(this.value, this.domValue);
+    },
+
+    toHTML: function() {
+       var str = "";
+
+       str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+       for ( var i = 0 ; i < this.choices.length ; i++ ) {
+	  str += "\t<option>" + this.choices[i].toString() + "</option>";
+       }
+       str += '</select>';
+
+       return str;
+    },
+
+    getValue: function() {
+        return this.value;
+    },
+
+    setValue: function(value) {
+	Events.unlink(this.domValue, this.value);
+	this.value = value;
+	Events.link(value, this.domValue);
+    },
+
+    destroy: function() {
+	Events.unlink(this.domValue, this.value);
+    }
+   }
+});
 
 
 var BooleanView = {

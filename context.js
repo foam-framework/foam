@@ -55,8 +55,8 @@ Object.defineProperty(Array.prototype, 'find', {
   return undefined;
 }});
 
-
 /** Remove an element from an array. **/
+/*
 Object.defineProperty(Array.prototype, 'remove', {
   value: function(obj) {
     var i = this.indexOf(obj);
@@ -65,7 +65,7 @@ Object.defineProperty(Array.prototype, 'remove', {
 
     return this;
 }});
-
+*/
 
 /**
  * ForEach operator on Objects.

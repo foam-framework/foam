@@ -53,7 +53,15 @@ var EXPR = FOAM.create({
      },
      partialEval: function() { return this; },
      normalize: function() { return this; },
-     toString: function() { return this.name_; }
+     toString: function() { return this.name_; },
+     pipe: function(sink) {
+       var expr = this;
+       return {
+         __proto__: sink,
+         put:    function(obj) { if ( expr.f(obj) ) sink.put(obj);   },
+         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj) }
+       };
+     }
    }
 });
 
@@ -565,6 +573,152 @@ function compileArray_(args) {
 
   return b;
 };
+
+
+var SumExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'UNARY',
+
+   name: 'SumExpr',
+
+   properties: [
+      {
+	 name:  'sum',
+	 label: 'Sum',
+	 type:  'int',
+	 help:  'Sum of values.',
+         defaultValue: 0
+      }
+   ],
+
+   methods: {
+     pipe: function(sink) { sink.put(this); },
+     put: function(obj) { this.sum += this.arg1.f(obj); },
+     remove: function(obj) { this.sum -= this.arg1.f(obj); },
+     toString: function() { return this.sum; }
+   }
+});
+
+var GroupByExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'BINARY',
+
+   name: 'GroupByExpr',
+
+   properties: [
+      {
+	 name:  'groups',
+	 label: 'Groups',
+	 type:  'Map[EXPR]',
+	 help:  'Groups.',
+         valueFactory: function() { return {}; }
+      }
+   ],
+
+   methods: {
+     pipe: function(sink) {
+         for ( key in this.groups ) {
+           sink.push([key, this.groups[key].toString()]);
+       }
+       return sink;
+     },
+     put: function(obj) {
+       var key = this.arg1.f(obj);
+       var group = this.groups[key];
+       if ( ! group ) {
+         group = this.arg2.clone();
+         this.groups[key] = group;
+       }
+       group.put(obj);
+     },
+     remove: function(obj) { /* TODO: */ },
+     toString: function() { return this.groups; }
+   }
+});
+
+var CountExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'EXPR',
+
+   name: 'CountExpr',
+
+   properties: [
+      {
+	 name:  'count',
+	 label: 'Count',
+	 type:  'int',
+         defaultValue: 0
+      }
+   ],
+
+   methods: {
+     pipe: function(sink) { sink.put(this); },
+     put: function(obj) { this.count++; },
+     remove: function(obj) { this.count--; },
+     toString: function() { return this.count; }
+   }
+});
+
+
+var SeqExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'NARY',
+
+   name: 'SeqExpr',
+
+   methods: {
+      pipe: function(sink) { sink.put(this); },
+      put: function(obj) {
+        var ret = [];
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          var a = this.args[i];
+          a.put(obj);
+        }
+      },
+      f: function(obj) {
+        var ret = [];
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          var a = this.args[i];
+
+          ret.push(a.f(obj));
+        }
+        return ret;
+      },
+      toString: function(obj) {
+        var out = [];
+        out.push('(');
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          var a = this.args[i];
+          out.push(a.toString());
+          if ( i < this.args.length-1 ) out.push(',');
+        }
+        out.push(')');
+        return out.join('');
+      }
+   }
+});
+
+function SUM(expr) {
+  return SumExpr.create({arg1: expr});
+}
+
+function COUNT() {
+  return CountExpr.create();
+}
+
+function SEQ() {
+  return SeqExpr.create({args: compileArray_.call(null, arguments)});
+}
+
+function GROUP_BY(expr1, expr2) {
+  return GroupByExpr.create({arg1: expr1, arg2: expr2});
+}
+
+
 
 
 function AND() {

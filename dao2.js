@@ -348,3 +348,92 @@ d.get(function(i) { console.log('got: ', i); }, "Issue");
 ModelDAO.forEach(d.put.bind(d));
 d.forEach(console.log.bind(console, 'forEach: '));
 */
+
+
+Object.defineProperty(Object.prototype, 'put', {
+  value: function(obj) {
+    this[obj.id] = obj;  
+  },
+  configurable: true,
+  writable: true
+});
+
+
+Object.defineProperty(Array.prototype, 'put', {
+  value: function(obj) {
+      	var added = false;
+	for (var idx in this) {
+	    if (this[idx].id === obj.id) {
+		this[idx] = obj;
+		added = true;
+		break;
+	    }
+	}
+	if (! added) this.push(obj);
+	// TODO: push update
+  }
+});
+
+Object.defineProperty(Array.prototype, 'clone', {
+  value: function() { return new Array(this); }
+});
+
+Object.defineProperty(Array.prototype, 'remove', {
+  value: function(query, callback) {
+	var param = query;
+	if (! EXPR.isInstance(query))
+	    query = function(obj) { return obj.id === param; };
+
+	// TODO: call callback (sink)
+	for (var i = 0; i < this.length; i++) {
+	  var obj = this[i];
+	  if (query.f(obj)) {
+            this.splice(i,1);
+            i--;
+	  }
+	}
+	// TODO: publish
+  }
+});
+
+Object.defineProperty(Array.prototype, 'pipe', {
+  value: function(sink) {
+    for (var i in this) sink.put(this[i]);
+    return sink;
+  }
+});
+
+
+console.log.json = function() {
+   var args = [];
+   for ( var i = 0 ; i < arguments.length ; i++ ) { 
+     var arg = arguments[i];
+     args.push(arg.toJSON ? arg.toJSON() : arg);
+   }
+   console.log.apply(console, args);
+};
+
+console.log.str = function() {
+   var args = [];
+   for ( var i = 0 ; i < arguments.length ; i++ ) { 
+     var arg = arguments[i];
+     args.push(arg.toString ? arg.toString() : arg);
+   }
+   console.log.apply(console, args);
+};
+
+// Promote 'console.log' into a Sink
+console.log.put    = console.log.bind(console);
+console.log.remove = console.log.bind(console, 'remove: ');
+console.log.json.put    = console.log.json.bind(console);
+console.log.json.remove = console.log.json.bind(console, 'remove: ');
+console.log.str.put    = console.log.str.bind(console);
+console.log.str.remove = console.log.str.bind(console, 'remove: ');
+
+/*
+EQ(Issue.SEVERITY, 'Major').pipe(console.log);
+  add
+
+*/
+
+String.prototype.put = function(obj) { return this + obj.toJSON(); };

@@ -332,6 +332,12 @@ var StorageDAO = {
 	return action;
     },
 
+    pipe: function(sink) {
+      for (var objID in this.storage)
+	sink = sink.put(this.storage[objID]) || sink;
+      return sink;
+    },
+
     remove: function(predicate) {
 	if (EXPR.isInstance(predicate)) {
 	    for (var objID in this.storage) {
