@@ -14,122 +14,55 @@
  * limitations under the License.
  */
 
-/*
- * Asynchronous DAO Support
- * Once all Synchronous DAO's are converted and we have an DAO2Controller,
- * then remove the old DAO code and rename DAO2 to just DAO.
- */
-
-/*
-var futureValue = future(function(setter) {
-  setTimeout(function() { setter(42); }, 1000);
-});
-
-futureValue(function(value) { console.log(value); });
-futureValue(function(value) { console.log(value); });
-futureValue(function(value) { console.log(value); });
-futureValue(function(value) { console.log(value); });
-
+/* DAO2 Interface
+ * put(obj, callback(newObj)) - either create or update (required?)
+ *   insert(obj, callback(newObj)) - create a new record
+ *   update(obj, callback(newObj)) - update an existing record
+ * get(index, callback) - like pipe but only finds one value
+ *    could be merged with pipe?
+ *    what values for 'index': primary-key, object, query?
+ * remove(obj, callback) - remove one object
+ * removeAll(query, callback)
+ *    Are both remove and removeAll needed?
+ * has(callback)
+ *    Internal only?
+ * pipe(callback[, {map of options, including 'query', 'order', 'limit'}])
+ *   bind() = pipe + listen
+ *   listen()
+ * where(query) -> DAO2
+ *   synchronous
+ * orderBy(map) -> DAO2
+ *   synchronous
+ * limit(count[,start]) -> DAO2
+ *   synchronous
+ *
+ * future:
+ * drop() (rare enough to be handled by cmd()?)
+ * cmd()
+ *
+ * query: obj or predicate or primary-key
+ *   If you allow 'obj' how do you tell the difference
+ *   between mLang's stored in a DAO?
+ *
+ * ???:
+ *   how to specify 'limit'
+ *   how to specify 'sortOrder'
+ *
+ * Strange Ideas:
+ *   What if DAO only supported cmd() method and other 'methods'
+ *   were mlang's?
+ *      Good for queueing
+ *
+ * Usage:
+ * dao.where(AND(...)).limit(100).orderBy(User.LAST_NAME).pipe(fn);
+ *
+ * OR
+ *
+ * dao.pipe(fn, { query: AND(...), limit: 100, orderBy: User.LAST_NAME });
+ * (doesn't read well when pipelined; reverse arg order?)
+ * dao.pipe({ query: AND(...), limit: 100, orderBy: User.LAST_NAME }, fn);
  *
  */
-// TODO: move somewhere better
-function future(factory) {
-  var value;
-  var waiters;
-
-  return function(callback) {
-    if ( value ) { callback(value); return; }
-
-    var first = ! waiters;
-
-    if ( first ) waiters = [];
-
-    waiters.push(callback);
-
-    if ( first ) {
-      factory(function(v) {
-	value = v;
-	for (var i = 0 ; i < waiters.length; i++) {
-	  waiters[i](value);
-	}
-        waiters = [];
-      });
-    }
-  };
-}
-
-
-// TODO: move somewhere better
-var Visitor = {
-  create: function() {
-    return { __proto__: this, stack: [] };
-  },
-
-  push: function(o) { this.stack.push(o); },
-
-  pop: function() { return this.stack.pop(); },
-
-  top: function() {
-    return this.stack.length && this.stack[this.stack.length-1];
-  },
-
-  visit: function(o) {
-    return ( o instanceof Array )     ? this.visitArray(o)    :
-           ( typeof o === 'string' )  ? this.visitString(o)   :
-           ( typeof o === 'number' )  ? this.visitNumber(o)   :
-           ( o instanceof Function )  ? this.visitFunction(o) :
-           ( o instanceof Date )      ? this.visitDate(o)     :
-           ( o === true )             ? this.visitTrue()      :
-           ( o === false )            ? this.visitFalse()     :
-           ( o === null )             ? this.visitNull()      :
-           ( o instanceof Object )    ? ( o.model_            ?
-             this.visitObject(o)      :
-             this.visitMap(o)
-           )                          : this.visitUndefined() ;
-  },
-
-  visitArray: function(o) {
-    var len = o.length;
-    for ( var i = 0 ; i < len ; i++ ) this.visitArrayElement(o, i);
-    return o;
-  },
-  visitArrayElement: function (arr, i) { this.visit(arr[i]); },
-
-  visitString: function(o) { return o; },
-
-  visitFunction: function(o) { return o; },
-
-  visitNumber: function(o) { return o; },
-
-  visitDate: function(o) { return o; },
-
-  visitObject: function(o) {
-    for ( var key in o.model_.properties ) {
-      var prop = o.model_.properties[key];
-
-      if ( prop.name in o.instance_ ) {
-        this.visitProperty(o, prop);
-      }
-    }
-    return o;
-  },
-  visitProperty: function(o, prop) { this.visit(o[prop.name]); },
-
-  visitMap: function(o) {
-    o.forEach((function(value, key) { this.visitMapElement(key, value); }).bind(this));
-    return o;
-  },
-  visitMapElement: function(key, value) { },
-
-  visitTrue: function() { return true; },
-
-  visitFalse: function() { return false; },
-
-  visitNull: function() { return null; },
-
-  visitUndefined: function() { return undefined; }
-
-};
 
 
 var ObjectToIndexedDB = {
@@ -350,90 +283,3 @@ d.forEach(console.log.bind(console, 'forEach: '));
 */
 
 
-Object.defineProperty(Object.prototype, 'put', {
-  value: function(obj) {
-    this[obj.id] = obj;  
-  },
-  configurable: true,
-  writable: true
-});
-
-
-Object.defineProperty(Array.prototype, 'put', {
-  value: function(obj) {
-      	var added = false;
-	for (var idx in this) {
-	    if (this[idx].id === obj.id) {
-		this[idx] = obj;
-		added = true;
-		break;
-	    }
-	}
-	if (! added) this.push(obj);
-	// TODO: push update
-  }
-});
-
-Object.defineProperty(Array.prototype, 'clone', {
-  value: function() { return new Array(this); }
-});
-
-Object.defineProperty(Array.prototype, 'remove', {
-  value: function(query, callback) {
-	var param = query;
-	if (! EXPR.isInstance(query))
-	    query = function(obj) { return obj.id === param; };
-
-	// TODO: call callback (sink)
-	for (var i = 0; i < this.length; i++) {
-	  var obj = this[i];
-	  if (query.f(obj)) {
-            this.splice(i,1);
-            i--;
-	  }
-	}
-	// TODO: publish
-  }
-});
-
-Object.defineProperty(Array.prototype, 'pipe', {
-  value: function(sink) {
-    for (var i in this) sink.put(this[i]);
-    return sink;
-  }
-});
-
-
-console.log.json = function() {
-   var args = [];
-   for ( var i = 0 ; i < arguments.length ; i++ ) { 
-     var arg = arguments[i];
-     args.push(arg.toJSON ? arg.toJSON() : arg);
-   }
-   console.log.apply(console, args);
-};
-
-console.log.str = function() {
-   var args = [];
-   for ( var i = 0 ; i < arguments.length ; i++ ) { 
-     var arg = arguments[i];
-     args.push(arg.toString ? arg.toString() : arg);
-   }
-   console.log.apply(console, args);
-};
-
-// Promote 'console.log' into a Sink
-console.log.put    = console.log.bind(console);
-console.log.remove = console.log.bind(console, 'remove: ');
-console.log.json.put    = console.log.json.bind(console);
-console.log.json.remove = console.log.json.bind(console, 'remove: ');
-console.log.str.put    = console.log.str.bind(console);
-console.log.str.remove = console.log.str.bind(console, 'remove: ');
-
-/*
-EQ(Issue.SEVERITY, 'Major').pipe(console.log);
-  add
-
-*/
-
-String.prototype.put = function(obj) { return this + obj.toJSON(); };
