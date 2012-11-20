@@ -15,6 +15,7 @@
  */
 
 var files = [
+  'stdlib',
   'context',
   'event',
   'SimpleValue',
@@ -27,6 +28,8 @@ var files = [
   'metamodel',
   'view',
   'mlang',
+  'future',
+  'visitor',
   'dao',
   'dao2',
   'StackView',
