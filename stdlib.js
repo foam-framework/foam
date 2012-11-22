@@ -170,11 +170,12 @@ function limitedSink(limit, sink) {
     i: 0,
     put: function(obj, s, fc) {
       this.i++;
-      if ( i <= limit.start )
+      if ( this.i <= limit.start )
         return;
       sink.put(obj, s, fc);
-      if ( i > limit.start + limit.count && s.eof )
-        s.eof();
+      // TODO: fix
+      if ( this.i >= limit.start + limit.count && fc )
+        fc.stop();
     }
   };
 }
@@ -211,6 +212,14 @@ defineProperties(Array.prototype, {
     this.notify('remove', arguments);
   },
   pipe: function(sink, options) {
+    this.pipe_(sink, options);
+    sink.eof && sink.eof();
+  },
+  pipeAndListen: function(sink, options) {
+    this.pipe_(sink, options);
+    this.listen(sink, options);
+  },
+  pipe_: function(sink, options) {
     if ( options ) {
       if ( options.query )
         sink = predicatedSink(options.query.partialEval(), sink);
@@ -234,8 +243,6 @@ defineProperties(Array.prototype, {
         break;
       }
     }
-
-    sink && sink.eof && sink.eof();
   },
   where: function(query) {
     return filteredDAO(query, this);
@@ -243,7 +250,8 @@ defineProperties(Array.prototype, {
   limit: function(count, opt_start) {
     return limitedDAO(count, opt_start || 0, this);
   },
-  listen: function(sink) {
+  listen: function(sink, options) {
+    // TODO: support options
     if ( ! this.listeners_ ) this.listeners_ = [];
     this.listeners_.push(sink);
   },
