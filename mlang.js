@@ -31,7 +31,17 @@ Property.getPrototype().toSQL = function() {
 
 Property.getPrototype().f = function(obj) {
   return obj[this.name];
-}
+};
+
+Property.getPrototype().compare = function(o1, o2) {
+debugger;
+  o1 = this.f(o1);
+  o2 = this.f(o2);
+
+  return o1.localeCompare ?
+    o1.localeCompare(o2) :
+    o1 - o2 ;
+};
 
 // TODO: add 'contains', 'startsWith'
 // TODO: add type-checking in partialEval

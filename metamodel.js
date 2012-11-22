@@ -528,6 +528,14 @@ var PropertyModel = {
       f: function(obj) {
          return obj[this.name];
       },
+      compare: function(o1, o2) {
+        o1 = this.f(o1);
+        o2 = this.f(o2);
+
+        return o1.localeCompare ?
+          o1.localeCompare(o2) :
+          o1 - o2 ;
+      },
       outSQL: function(out) {
         out.push(this.toSQL());
       },

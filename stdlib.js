@@ -129,6 +129,22 @@ function filteredDAO(query, dao) {
   };
 }
 
+function orderedDAO(comparator, dao) {
+  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
+
+  return {
+    __proto__: dao,
+    pipe: function(sink, options) {
+      if ( options ) {
+        options = { __proto__: options, order: comparator };
+      } else {
+        options = {order: comparator};
+      }
+      dao.pipe(sink, options);
+    }
+  };
+}
+
 function limitedDAO(count, start, dao) {
   return {
     __proto__: dao,
@@ -176,42 +192,63 @@ function limitedSink(limit, sink) {
   };
 }
 
+function orderedSink(comparator, sink) {
+  return {
+    __proto__: sink,
+    i: 0,
+    arr: [],
+    put: function(obj, s, fc) {
+      this.arr.push(obj);
+    },
+    eof: function() {
+      this.arr.sort(comparator);
+      this.arr.pipe(sink);
+      sink.eof && sink.eof();
+    }
+  };
+}
 
 defineProperties(Array.prototype, {
   clone: function() { return new Array(this); },
   put: function(obj, sink) {
-    var added = false;
     for (var idx in this) {
       if (this[idx].id === obj.id) {
 	this[idx] = obj;
-        sink && sink.error && sink.error('duplicate');
+        sink && sink.error && sink.error('put', obj, duplicate);
         return;
       }
     }
     this.push(obj);
     sink && sink.put && sink.put(obj);
-    this.notify('put', arguments);
+    this.notify_('put', arguments);
   },
+  get: function(id, sink) {
+    for (var idx in this) {
+      if (this[idx].id === id) {
+        sink && sink.put && sink.put(this[idx]);
+        return;
+      }
+    }
+    sink && sink.error && sink.error('get', id);
+  },
+  // TODO: distinguish between remove() and removeAll()?
   remove: function(query, callback) {
     var param = query;
     if (! EXPR.isInstance(query))
       query = function(obj) { return obj.id === param; };
 
-    // TODO: call callback (sink)
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
       if (query.f(obj)) {
-        this.splice(i,1);
+        this.notify_('remove', this.splice(i,1)[0]);
         i--;
       }
     }
-    this.notify('remove', arguments);
   },
   pipe: function(sink, options) {
-    this.pipe_(
-      this.decorateSink_(sink, options, false),
-      options,
-      this.createFlowControl_());
+    sink = this.decorateSink_(sink, options, false);
+
+    this.pipe_(sink, options, this.createFlowControl_());
 
     sink.eof && sink.eof();
   },
@@ -220,6 +257,7 @@ defineProperties(Array.prototype, {
     if ( ! this.listeners_ ) this.listeners_ = [];
     this.listeners_.push(sink);
   },
+  // Better name?
   pipeAndListen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
@@ -230,12 +268,12 @@ defineProperties(Array.prototype, {
   },
   decorateSink_: function(sink, options, isListener) {
     if ( options ) {
-      if ( options.query )
-        sink = predicatedSink(options.query.partialEval(), sink);
+      if ( options.order && ! isListener )
+        sink = orderedSink(options.order, sink);
       if ( options.limit )
         sink = limitedSink(options.limit, sink);
-      if ( options.orderBy && ! isListener )
-        sink = orderedSink(options.orderBy, sink);
+      if ( options.query )
+        sink = predicatedSink(options.query.partialEval(), sink);
     }
 
     return sink;
@@ -262,17 +300,20 @@ defineProperties(Array.prototype, {
   limit: function(count, opt_start) {
     return limitedDAO(count, opt_start || 0, this);
   },
+  orderBy: function(comparator) {
+    return orderedDAO(comparator, this);
+  },
   unlisten: function(sink) {
     this.listeners_ && this.listeners_.remove(sink);
   },
-  notify: function(fName, args) {
+  notify_: function(fName, args) {
     if ( ! this.listeners_ ) return;
 
     for ( var i = 0 ; i < this.listeners_.length ; i++ ) {
       var l = this.listeners_[i];
       var fn = l[fName];
       args[2] = {
-        stop: (function(fn, l) { return function() { fn(l); }})(this.unlisten.bind(this), l),
+        stop: (function(fn, l) { return function() { fn(l); }; })(this.unlisten.bind(this), l),
         error: function(e) { /* Don't care. */ }
       };
       fn && fn.apply(l, args);
@@ -308,10 +349,12 @@ console.log.json.remove = console.log.json.bind(console, 'remove: ');
 console.log.str.put     = console.log.str.bind(console);
 console.log.str.remove  = console.log.str.bind(console, 'remove: ');
 
-/*
-EQ(Issue.SEVERITY, 'Major').pipe(console.log);
-  add
-
-*/
+document.put = function(obj) {
+  if ( obj.write ) {
+    obj.write(this);
+  } else {
+    this.write(obj.toString());
+  }
+};
 
 String.prototype.put = function(obj) { return this + obj.toJSON(); };
