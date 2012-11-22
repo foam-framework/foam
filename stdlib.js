@@ -158,8 +158,7 @@ function predicatedSink(predicate, sink) {
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
-      if ( predicate.f(obj) )
-        sink.put(obj, s, fc);
+      if ( predicate.f(obj) ) sink.put(obj, s, fc);
     }
   };
 }
@@ -170,12 +169,9 @@ function limitedSink(limit, sink) {
     i: 0,
     put: function(obj, s, fc) {
       this.i++;
-      if ( this.i <= limit.start )
-        return;
+      if ( this.i <= limit.start ) return;
       sink.put(obj, s, fc);
-      // TODO: fix
-      if ( this.i >= limit.start + limit.count && fc )
-        fc.stop();
+      if ( this.i >= limit.start + limit.count && fc ) fc.stop();
     }
   };
 }
@@ -212,32 +208,48 @@ defineProperties(Array.prototype, {
     this.notify('remove', arguments);
   },
   pipe: function(sink, options) {
-    this.pipe_(sink, options);
+    this.pipe_(
+      this.decorateSink_(sink, options, false),
+      options,
+      this.createFlowControl_());
+
     sink.eof && sink.eof();
   },
-  pipeAndListen: function(sink, options) {
-    this.pipe_(sink, options);
-    this.listen(sink, options);
+  listen: function(sink, options) {
+    sink = this.decorateSink_(sink, options, true);
+    if ( ! this.listeners_ ) this.listeners_ = [];
+    this.listeners_.push(sink);
   },
-  pipe_: function(sink, options) {
+  pipeAndListen: function(sink, options) {
+    sink = this.decorateSink_(sink, options, true);
+    var fc = this.createFlowControl_();
+
+    this.pipe_(sink, options, fc);
+
+    if ( ! fc.stopped ) this.listen(sink, options);
+  },
+  decorateSink_: function(sink, options, isListener) {
     if ( options ) {
       if ( options.query )
         sink = predicatedSink(options.query.partialEval(), sink);
       if ( options.limit )
         sink = limitedSink(options.limit, sink);
-      if ( options.orderBy )
+      if ( options.orderBy && ! isListener )
         sink = orderedSink(options.orderBy, sink);
     }
 
-    var fc = {
+    return sink;
+  },
+  createFlowControl_: function() {
+    return {
       stop: function() { this.stopped = true; },
       error: function(e) { this.errorEvt = e; }
     };
-
+  },
+  pipe_: function(sink, options, fc) {
     for (var i in this) {
       sink.put(this[i], null, fc);
-      if ( fc.stopped )
-        break;
+      if ( fc.stopped ) break;
       if ( fc.errorEvt && sink.error ) {
         sink.error(fc.errorEvt);
         break;
@@ -250,20 +262,19 @@ defineProperties(Array.prototype, {
   limit: function(count, opt_start) {
     return limitedDAO(count, opt_start || 0, this);
   },
-  listen: function(sink, options) {
-    // TODO: support options
-    if ( ! this.listeners_ ) this.listeners_ = [];
-    this.listeners_.push(sink);
-  },
   unlisten: function(sink) {
     this.listeners_ && this.listeners_.remove(sink);
   },
   notify: function(fName, args) {
-    if ( ! this.listeners_ )
-      return;
+    if ( ! this.listeners_ ) return;
+
     for ( var i = 0 ; i < this.listeners_.length ; i++ ) {
       var l = this.listeners_[i];
       var fn = l[fName];
+      args[2] = {
+        stop: (function(fn, l) { return function() { fn(l); }})(this.unlisten.bind(this), l),
+        error: function(e) { /* Don't care. */ }
+      };
       fn && fn.apply(l, args);
     }
   }
@@ -290,12 +301,12 @@ console.log.str = function() {
 };
 
 // Promote 'console.log' into a Sink
-console.log.put    = console.log.bind(console);
-console.log.remove = console.log.bind(console, 'remove: ');
+console.log.put         = console.log.bind(console);
+console.log.remove      = console.log.bind(console, 'remove: ');
 console.log.json.put    = console.log.json.bind(console);
 console.log.json.remove = console.log.json.bind(console, 'remove: ');
-console.log.str.put    = console.log.str.bind(console);
-console.log.str.remove = console.log.str.bind(console, 'remove: ');
+console.log.str.put     = console.log.str.bind(console);
+console.log.str.remove  = console.log.str.bind(console, 'remove: ');
 
 /*
 EQ(Issue.SEVERITY, 'Major').pipe(console.log);
