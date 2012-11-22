@@ -129,6 +129,31 @@ function filteredDAO(query, dao) {
   };
 }
 
+function limitedDAO(count, start, dao) {
+  return {
+    __proto__: dao,
+    pipe: function(sink, options) {
+      if ( options ) {
+        if ( options.limit ) {
+          options = {
+            __proto__: options,
+            limit: {
+              count: Math.min(count, options.limit.count),
+              start: start
+            }
+          };
+        } else {
+          options = { __proto__: options, limit: {count: count, start: start} };
+        }
+      }
+      else {
+        options = {limit: {count: count, start: start}};
+      }
+      dao.pipe(sink, options);
+    }
+  };
+}
+
 function predicatedSink(predicate, sink) {
   return {
     __proto__: sink,
@@ -190,9 +215,9 @@ defineProperties(Array.prototype, {
       if ( options.query )
         sink = predicatedSink(options.query.partialEval(), sink);
       if ( options.limit )
-        sink = limitedSink(query.limit, sink);
+        sink = limitedSink(options.limit, sink);
       if ( options.orderBy )
-        sink = orderedSink(query.orderBy, sink);
+        sink = orderedSink(options.orderBy, sink);
     }
 
     var fc = {
@@ -210,10 +235,13 @@ defineProperties(Array.prototype, {
       }
     }
 
-    sink.eof && sink.eof();
+    sink && sink.eof && sink.eof();
   },
   where: function(query) {
     return filteredDAO(query, this);
+  },
+  limit: function(count, opt_start) {
+    return limitedDAO(count, opt_start || 0, this);
   },
   listen: function(sink) {
     if ( ! this.listeners_ ) this.listeners_ = [];
@@ -239,7 +267,7 @@ console.log.json = function() {
    var args = [];
    for ( var i = 0 ; i < arguments.length ; i++ ) {
      var arg = arguments[i];
-     args.push(arg.toJSON ? arg.toJSON() : arg);
+     args.push(arg && arg.toJSON ? arg.toJSON() : arg);
    }
    console.log.apply(console, args);
 };
@@ -248,7 +276,7 @@ console.log.str = function() {
    var args = [];
    for ( var i = 0 ; i < arguments.length ; i++ ) {
      var arg = arguments[i];
-     args.push(arg.toString ? arg.toString() : arg);
+     args.push(arg && arg.toString ? arg.toString() : arg);
    }
    console.log.apply(console, args);
 };
