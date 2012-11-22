@@ -18,13 +18,46 @@
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
 
-// TODO: move this somewhere better
+
+/**
+ * Take an array where even values are weights and odd values are functions,
+ * and execute one of the functions with propability equal to it's relative
+ * weight.
+ */
+// TODO: move this method somewhere better
+function randomAct() {
+  var totalWeight = 0.0;
+  for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
+
+  var r = Math.random();
+
+  for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
+    weight += arguments[i];
+    if ( r <= weight / totalWeight ) {
+      arguments[i+1]();
+      return;
+    }
+  }
+}
+
+
+function defineProperties(proto, fns) {
+  for ( var key in fns ) {
+    Object.defineProperty(proto, key, {
+      value: fns[key],
+      configurable: true,
+      writable: true
+    });
+  }
+}
+
 
 /**
  * Push an array of values onto an array.
  * @param arr array of values
  * @return new length of this array
  */
+// TODO: not needed, port and replace with pipe()
 Object.defineProperty(Array.prototype, 'pushAll', {
   value: function(arr) {
     this.push.apply(this, arr);
@@ -69,27 +102,6 @@ Object.defineProperty(Object.prototype, 'forEach', {
 }});
 
 
-/**
- * Take an array where even values are weights and odd values are functions,
- * and execute one of the functions with propability equal to it's relative
- * weight.
- */
-function randomAct() {
-  var totalWeight = 0.0;
-  for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
-
-  var r = Math.random();
-
-  for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
-    weight += arguments[i];
-    if ( r <= weight / totalWeight ) {
-      arguments[i+1]();
-      return;
-    }
-  }
-}
-
-
 Object.defineProperty(Object.prototype, 'put', {
   value: function(obj) {
     this[obj.id] = obj;
@@ -98,50 +110,129 @@ Object.defineProperty(Object.prototype, 'put', {
   writable: true
 });
 
+function filteredDAO(query, dao) {
+  return {
+    __proto__: dao,
+    pipe: function(sink, options) {
+      if ( options ) {
+        if ( options.query ) {
+          options = { __proto__: options, query: AND(query, options.query) };
+        } else {
+          options = { __proto__: options, query: query };
+        }
+      }
+      else {
+        options = {query: query};
+      }
+      dao.pipe(sink, options);
+    }
+  };
+}
 
-Object.defineProperty(Array.prototype, 'put', {
-  value: function(obj) {
-      	var added = false;
-	for (var idx in this) {
-	    if (this[idx].id === obj.id) {
-		this[idx] = obj;
-		added = true;
-		break;
-	    }
-	}
-	if (! added) this.push(obj);
-	// TODO: push update
+function predicatedSink(predicate, sink) {
+  return {
+    __proto__: sink,
+    put: function(obj, s, fc) {
+      if ( predicate.f(obj) )
+        sink.put(obj, s, fc);
+    }
+  };
+}
+
+function limitedSink(limit, sink) {
+  return {
+    __proto__: sink,
+    i: 0,
+    put: function(obj, s, fc) {
+      this.i++;
+      if ( i <= limit.start )
+        return;
+      sink.put(obj, s, fc);
+      if ( i > limit.start + limit.count && s.eof )
+        s.eof();
+    }
+  };
+}
+
+
+defineProperties(Array.prototype, {
+  clone: function() { return new Array(this); },
+  put: function(obj, sink) {
+    var added = false;
+    for (var idx in this) {
+      if (this[idx].id === obj.id) {
+	this[idx] = obj;
+        sink && sink.error && sink.error('duplicate');
+        return;
+      }
+    }
+    this.push(obj);
+    sink && sink.put && sink.put(obj);
+    this.notify('put', arguments);
+  },
+  remove: function(query, callback) {
+    var param = query;
+    if (! EXPR.isInstance(query))
+      query = function(obj) { return obj.id === param; };
+
+    // TODO: call callback (sink)
+    for (var i = 0; i < this.length; i++) {
+      var obj = this[i];
+      if (query.f(obj)) {
+        this.splice(i,1);
+        i--;
+      }
+    }
+    this.notify('remove', arguments);
+  },
+  pipe: function(sink, options) {
+    if ( options ) {
+      if ( options.query )
+        sink = predicatedSink(options.query.partialEval(), sink);
+      if ( options.limit )
+        sink = limitedSink(query.limit, sink);
+      if ( options.orderBy )
+        sink = orderedSink(query.orderBy, sink);
+    }
+
+    var fc = {
+      stop: function() { this.stopped = true; },
+      error: function(e) { this.errorEvt = e; }
+    };
+
+    for (var i in this) {
+      sink.put(this[i], null, fc);
+      if ( fc.stopped )
+        break;
+      if ( fc.errorEvt && sink.error ) {
+        sink.error(fc.errorEvt);
+        break;
+      }
+    }
+
+    sink.eof && sink.eof();
+  },
+  where: function(query) {
+    return filteredDAO(query, this);
+  },
+  listen: function(sink) {
+    if ( ! this.listeners_ ) this.listeners_ = [];
+    this.listeners_.push(sink);
+  },
+  unlisten: function(sink) {
+    this.listeners_ && this.listeners_.remove(sink);
+  },
+  notify: function(fName, args) {
+    if ( ! this.listeners_ )
+      return;
+    for ( var i = 0 ; i < this.listeners_.length ; i++ ) {
+      var l = this.listeners_[i];
+      var fn = l[fName];
+      fn && fn.apply(l, args);
+    }
   }
 });
 
-Object.defineProperty(Array.prototype, 'clone', {
-  value: function() { return new Array(this); }
-});
-
-Object.defineProperty(Array.prototype, 'remove', {
-  value: function(query, callback) {
-	var param = query;
-	if (! EXPR.isInstance(query))
-	    query = function(obj) { return obj.id === param; };
-
-	// TODO: call callback (sink)
-	for (var i = 0; i < this.length; i++) {
-	  var obj = this[i];
-	  if (query.f(obj)) {
-            this.splice(i,1);
-            i--;
-	  }
-	}
-	// TODO: publish
-  }
-});
-
-Object.defineProperty(Array.prototype, 'pipe', {
-  value: function(sink) {
-    for (var i in this) sink.put(this[i]);
-    return sink;
-  }
-});
 
 
 console.log.json = function() {
