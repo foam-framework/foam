@@ -133,26 +133,27 @@ var AbstractDAO2 = FOAM.create({
    ],
 
    methods: {
-  pipe: function(sink, options) {
-    sink = this.decorateSink_(sink, options, false);
-
-    this.pipe_(sink, options, this.createFlowControl_());
-
-    sink.eof && sink.eof();
-  },
   listen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
-    if ( ! this.listeners_ ) this.listeners_ = [];
-    this.listeners_.push(sink);
+    if ( ! this.daoListeners_ ) this.daoListeners_ = [];
+    this.daoListeners_.push(sink);
   },
   // Better name?
   pipeAndListen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
 
-    this.pipe_(sink, options, fc);
-
-    if ( ! fc.stopped ) this.listen(sink, options);
+    this.pipe(
+      {
+        __proto__: sink,
+        eof: function() {
+          if ( fc.stopped ) {
+            sink.eof && sink.eof();
+          } else {
+            this.listen(sink, options);
+          }
+        }
+      }, options, fc);
   },
   decorateSink_: function(sink, options, isListener) {
     if ( options ) {
@@ -182,13 +183,13 @@ var AbstractDAO2 = FOAM.create({
     return orderedDAO(comparator, this);
   },
   unlisten: function(sink) {
-    this.listeners_ && this.listeners_.remove(sink);
+    this.daoListeners_ && this.daoListeners_.remove(sink);
   },
   notify_: function(fName, args) {
-    if ( ! this.listeners_ ) return;
+    if ( ! this.daoListeners_ ) return;
 
-    for ( var i = 0 ; i < this.listeners_.length ; i++ ) {
-      var l = this.listeners_[i];
+    for ( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
+      var l = this.daoListeners_[i];
       var fn = l[fName];
       args[2] = {
         stop: (function(fn, l) { return function() { fn(l); }; })(this.unlisten.bind(this), l),
@@ -274,7 +275,7 @@ defineProperties(Array.prototype, {
   put: function(obj, sink) {
     for (var idx in this) {
       if (this[idx].id === obj.id) {
-	this[idx] = obj;
+        this[idx] = obj;
         sink && sink.error && sink.error('put', obj, duplicate);
         return;
       }
@@ -306,7 +307,11 @@ defineProperties(Array.prototype, {
       }
     }
   },
-  pipe_: function(sink, options, fc) {
+  pipe: function(sink, options) {
+    sink = this.decorateSink_(sink, options, false);
+
+    var fc = this.createFlowControl_();
+
     for (var i in this) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
@@ -315,6 +320,8 @@ defineProperties(Array.prototype, {
         break;
       }
     }
+
+    sink.eof && sink.eof();
   }
 });
 
@@ -333,15 +340,15 @@ var IndexedDBDAO2 = FOAM.create({
 
    properties: [
       {
-	 name:  'model',
-	 label: 'Model',
-	 type:  'Model',
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
          required: true
       },
       {
-	 name:  'name',
-	 label: 'Store Name',
-	 type:  'String',
+         name:  'name',
+         label: 'Store Name',
+         type:  'String',
          defaultValueFn: function() {
            return this.model.plural;
          }
@@ -365,7 +372,7 @@ var IndexedDBDAO2 = FOAM.create({
 
       request.onupgradeneeded = (function(e) {
         console.log('*****************upgradeneeded', this.name);
-	e.target.result.createObjectStore(this.name);
+        e.target.result.createObjectStore(this.name);
       }).bind(this);
 
       request.onsuccess = (function(e) {
@@ -391,8 +398,8 @@ console.log('withStore: ', mode);
 console.log('put: ', value);
       this.withStore("readwrite", function(store) {
         var request = store.put(ObjectToIndexedDB.visitObject(value), value.id);
-	request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
-	request.onerror = console.log.bind(console, 'put error: ');
+        request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
+        request.onerror = console.log.bind(console, 'put error: ');
       });
     },
 
@@ -401,9 +408,9 @@ console.log('put: ', value);
 console.log('getting: ', key);
         var request = store.get(key);
         request.onsuccess = function() {
-	  var result = IndexedDBToObject.visitObject(request.result);
-	  callback(result);
-	};
+          var result = IndexedDBToObject.visitObject(request.result);
+          callback(result);
+        };
         request.onerror = console.log.bind(console, 'get error: ');
       });
     },
@@ -425,25 +432,25 @@ console.log('getting: ', key);
 console.log('forEach open cursor: ', request);
         request.onerror = console.log.bind(console, 'forEach failure: ');
         request.onsuccess = opt_predicate ? function(e) {
-	      var cursor = e.target.result;
+              var cursor = e.target.result;
 console.log('forEach cursor P: ', cursor);
-	      if (cursor) {
+              if (cursor) {
                 var value = IndexedDBToObject.visitObject(cursor.value);
-		if (opt_predicate(value)) {
-		  fn(value);
-		}
-		cursor.continue();
-	      }
-	    } : function(e) {
+                if (opt_predicate(value)) {
+                  fn(value);
+                }
+                cursor.continue();
+              }
+            } : function(e) {
 console.log('forEach onSuccess: ', e);
-	      var cursor = e.target.result;
+              var cursor = e.target.result;
 console.log('forEach cursor: ', cursor);
-	      if (cursor) {
+              if (cursor) {
                 var value = IndexedDBToObject.visitObject(cursor.value);
-		fn(value);
-		cursor.continue();
-	      }
-	    };
+                fn(value);
+                cursor.continue();
+              }
+            };
       });
     },
 
@@ -458,13 +465,13 @@ console.log('forEach cursor: ', cursor);
    listeners:
    [
       {
-	 model_: 'MethodModel',
+         model_: 'MethodModel',
 
-	 name: 'updated',
-	 code: function(evt) {
+         name: 'updated',
+         code: function(evt) {
            console.log('updated: ', evt);
            this.publish('updated');
-	 }
+         }
       }
    ]
 
