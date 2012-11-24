@@ -139,6 +139,7 @@ var AbstractDAO2 = FOAM.create({
     this.daoListeners_.push(sink);
   },
   // Better name?
+  // attach?
   pipeAndListen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
@@ -315,8 +316,8 @@ defineProperties(Array.prototype, {
     for (var i in this) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
-      if ( fc.errorEvt && sink.error ) {
-        sink.error(fc.errorEvt);
+      if ( fc.errorEvt ) {
+        sink.error && sink.error(fc.errorEvt);
         break;
       }
     }
@@ -327,13 +328,24 @@ defineProperties(Array.prototype, {
 
 
 
-// FIXME: Error handling
 /* Usage:
  * var dao = IndexedDBDAO2.create({model: Issue});
  * var dao = IndexedDBDAO2.create({model: Issue, name: 'ImportantIssues'});
+ *
+ * TODO:
+ * We notify the sinks as soon as each request returns onsuccess, this is
+ * wrong, we need to wait until the transaction object fires oncomplete
+ * as the transaction could still be rolled back if an error happens
+ * later.
+ *
+ * Optimization.  This DAO doesn't use an indexes in indexeddb yet, which
+ * means for any query other than a single get/remove we iterate the entire
+ * data store.  Obviously this will get slow if you store large amounts
+ * of data in the database.
  */
 var IndexedDBDAO2 = FOAM.create({
    model_: 'Model',
+   extendsModel: 'AbstractDAO2',
 
    name: 'IndexedDBDAO2',
    label: 'IndexedDB DAO',
@@ -371,13 +383,11 @@ var IndexedDBDAO2 = FOAM.create({
       var request = indexedDB.open("FOAM:" + this.name, 1);
 
       request.onupgradeneeded = (function(e) {
-        console.log('*****************upgradeneeded', this.name);
         e.target.result.createObjectStore(this.name);
       }).bind(this);
 
       request.onsuccess = (function(e) {
         cc(e.target.result);
-        console.log('************** CREATED DB success', e);
       }).bind(this);
 
       request.onerror = function (e) {
@@ -386,71 +396,128 @@ var IndexedDBDAO2 = FOAM.create({
     },
 
     withStore: function(mode, fn) {
-console.log('withStore: ', mode);
       this.withDB((function (db) {
         var tx = db.transaction([this.name], mode);
         fn.bind(this)(tx.objectStore(this.name));
       }).bind(this));
     },
 
-    // TODO: add callback to return modified value
-    put: function(value) {
-console.log('put: ', value);
+    put: function(value, sink) {
+      var self = this;
       this.withStore("readwrite", function(store) {
-        var request = store.put(ObjectToIndexedDB.visitObject(value), value.id);
-        request.onsuccess = console.log.bind(console, 'put success: '); //this.updated;
-        request.onerror = console.log.bind(console, 'put error: ');
+        var request =
+            store.put(ObjectToIndexedDB.visitObject(value), value.id);
+        
+        request.onsuccess = function(e) {
+          sink && sink.put && sink.put(value);
+          self.notify_('put', value);
+        };
+        request.onerror = function(e) {
+          // TODO: Pass a better error mesage out of e
+          sink && sink.error && sink.error('put', value);
+        };
       });
     },
 
-    get: function(callback, key) {
+    get: function(key, sink) {
       this.withStore("readonly", function(store) {
-console.log('getting: ', key);
         var request = store.get(key);
         request.onsuccess = function() {
+          if (!request.result) {
+            sink && sink.error && sink.error('get', key);
+            return;
+          }
           var result = IndexedDBToObject.visitObject(request.result);
-          callback(result);
+          sink && sink.put && sink.put(result);
         };
-        request.onerror = console.log.bind(console, 'get error: ');
+        request.onerror = function(e) {
+          // TODO: Parse a better error out of e
+          sink && sink.error && sink.error('get', key);
+        };
       });
     },
 
-    remove: function(callback, key) {
+    remove: function(query, sink) {
       this.withStore("readwrite", function(store) {
-        var request = store.delete(key);
-        request.onsuccess = callback;
-        request.onerror = console.log.bind(console, 'remove error: ');
+        var self = this;
+
+        if (! EXPR.isInstance(query)) {
+          var key = query;
+          var getRequest = store.get(key);
+          getRequest.onsuccess = function(e) {
+            if (!getRequest.result) {
+              sink && sink.error && sink.error('remove', query);
+              return;
+            }
+            var result = IndexedDBToObject.visitObject(getRequest.result);
+            var delRequest = store.delete(key);
+            delRequest.onsuccess = function(e) {
+              sink && sink.remove && sink.remove(result);
+              self.notify_('remove', result);
+            };
+            delRequest.onerror = function(e) {
+              sink && sink.error && sink.error('remove', e);
+            };
+          };
+          getRequest.onerror = function(e) {
+            sink && sink.error && sink.error('remove', e);
+          };
+          return;
+        }
+
+        query = query.partialEval();
+
+        var request = store.openCursor();
+        request.onsuccess = function(e) {
+          var cursor = e.target.result;
+          if (cursor) {
+            var value = IndexedDBToObject.visitObject(cursor.value);
+            if (query.f(value)) {
+              var deleteReq = cursor.delete();
+              deleteReq.onsuccess = function() {
+                sink && sink.remove && sink.remove(value);
+                self.notify_('remove', value);
+              }
+              deleteReq.onerror = function(e) {
+                sink && sink.error && sink.error('remove', e);
+              }
+            }
+            cursor.continue();
+          }
+        };
+        request.onerror = function(e) {
+          sink && sink.error && sink.error('remove', e);
+        }
       });
     },
 
-    // TODO: Model queries and handle them at the db layer
-    // where we can, rather than doing all the processing in
-    // javascript.
-    forEach2: function(fn, opt_predicate) {
+    pipe: function(sink, options) {
+      sink = this.decorateSink_(sink, options, false);
+
+      var fc = this.createFlowControl_();
+
       this.withStore("readonly", function(store) {
         var request = store.openCursor();
-console.log('forEach open cursor: ', request);
-        request.onerror = console.log.bind(console, 'forEach failure: ');
-        request.onsuccess = opt_predicate ? function(e) {
-              var cursor = e.target.result;
-console.log('forEach cursor P: ', cursor);
-              if (cursor) {
-                var value = IndexedDBToObject.visitObject(cursor.value);
-                if (opt_predicate(value)) {
-                  fn(value);
-                }
-                cursor.continue();
-              }
-            } : function(e) {
-console.log('forEach onSuccess: ', e);
-              var cursor = e.target.result;
-console.log('forEach cursor: ', cursor);
-              if (cursor) {
-                var value = IndexedDBToObject.visitObject(cursor.value);
-                fn(value);
-                cursor.continue();
-              }
-            };
+        request.onsuccess = function(e) {
+          var cursor = e.target.result;
+          if ( fc.stopped ) return;
+          if ( fc.errorEvt ) {
+            sink.error && sink.error(fc.errorEvt);
+            return;
+          }
+
+          if (!cursor) {
+            sink.eof && sink.eof();
+            return;
+          }
+
+          var value = IndexedDBToObject.visitObject(cursor.value);
+          sink.put(value);
+          cursor.continue();
+        };
+        request.onerror = function(e) {
+          sink.error && sink.error(e);
+        };
       });
     },
 

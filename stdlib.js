@@ -170,10 +170,13 @@ console.log.str = function() {
 // Promote 'console.log' into a Sink
 console.log.put         = console.log.bind(console);
 console.log.remove      = console.log.bind(console, 'remove: ');
+console.log.error       = console.log.bind(console, 'error: ');
 console.log.json.put    = console.log.json.bind(console);
 console.log.json.remove = console.log.json.bind(console, 'remove: ');
+console.log.json.error  = console.log.json.bind(console, 'error: ');
 console.log.str.put     = console.log.str.bind(console);
 console.log.str.remove  = console.log.str.bind(console, 'remove: ');
+console.log.str.error  = console.log.str.bind(console, 'error: ');
 
 document.put = function(obj) {
   if ( obj.write ) {
