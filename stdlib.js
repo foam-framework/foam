@@ -71,6 +71,7 @@ Object.defineProperty(Array.prototype, 'pushAll', {
  * @param action to be called with (key, index) arguments
  *        when found
  */
+/*
 Object.defineProperty(Array.prototype, 'find', {
   value: function(predicate, action) {
   for (var i=0; i<this.length; i++)
@@ -79,6 +80,7 @@ Object.defineProperty(Array.prototype, 'find', {
     }
   return undefined;
 }});
+*/
 
 /** Remove an element from an array. **/
 /*
@@ -101,7 +103,7 @@ Object.defineProperty(Object.prototype, 'forEach', {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
 }});
 
-
+/*
 Object.defineProperty(Object.prototype, 'put', {
   value: function(obj) {
     this[obj.id] = obj;
@@ -109,6 +111,7 @@ Object.defineProperty(Object.prototype, 'put', {
   configurable: true,
   writable: true
 });
+*/
 
 function predicatedSink(predicate, sink) {
   return {

@@ -138,13 +138,12 @@ var AbstractDAO2 = FOAM.create({
     if ( ! this.daoListeners_ ) this.daoListeners_ = [];
     this.daoListeners_.push(sink);
   },
-  // Better name?
-  // attach?
-  pipeAndListen: function(sink, options) {
+  // TODO: rename to pipe
+  pipe: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
 
-    this.pipe(
+    this.select(
       {
         __proto__: sink,
         eof: function() {
@@ -206,7 +205,7 @@ var AbstractDAO2 = FOAM.create({
 function filteredDAO(query, dao) {
   return {
     __proto__: dao,
-    pipe: function(sink, options) {
+    select: function(sink, options) {
       if ( options ) {
         if ( options.query ) {
           options = { __proto__: options, query: AND(query, options.query) };
@@ -217,7 +216,7 @@ function filteredDAO(query, dao) {
       else {
         options = {query: query};
       }
-      dao.pipe(sink, options);
+      dao.select(sink, options);
     }
   };
 }
@@ -227,13 +226,13 @@ function orderedDAO(comparator, dao) {
 
   return {
     __proto__: dao,
-    pipe: function(sink, options) {
+    select: function(sink, options) {
       if ( options ) {
         options = { __proto__: options, order: comparator };
       } else {
         options = {order: comparator};
       }
-      dao.pipe(sink, options);
+      dao.select(sink, options);
     }
   };
 }
@@ -241,7 +240,7 @@ function orderedDAO(comparator, dao) {
 function limitedDAO(count, start, dao) {
   return {
     __proto__: dao,
-    pipe: function(sink, options) {
+    select: function(sink, options) {
       if ( options ) {
         if ( options.limit ) {
           options = {
@@ -258,7 +257,7 @@ function limitedDAO(count, start, dao) {
       else {
         options = {limit: {count: count, start: start}};
       }
-      dao.pipe(sink, options);
+      dao.select(sink, options);
     }
   };
 }
@@ -269,6 +268,60 @@ var pmap = {};
 for ( var key in AbstractDAO2.methods ) {
   pmap[AbstractDAO2.methods[key].name] = AbstractDAO2.methods[key].code;
 }
+
+defineProperties(Object.prototype, pmap);
+
+defineProperties(Object.prototype, {
+  clone: function() { return this; /* TODO */ },
+  put: function(obj, sink) {
+    /*
+    if ( this.hasOwnProperty('id') ) {
+      sink && sink.error && sink.error('put', obj, duplicate);
+      return;
+    }
+    */
+    this[obj.id] = obj;
+    sink && sink.put && sink.put(obj);
+    this.notify_('put', arguments);
+  },
+  find: function(id, sink) {
+    if ( this.hasOwnProperty(obj.id) ) {
+      sink && sink.put && sink.put(this[id]);
+      return;
+    }
+    sink && sink.error && sink.error('find', id);
+  },
+  select: function(sink, options) {
+    sink = this.decorateSink_(sink, options, false);
+
+    var fc = this.createFlowControl_();
+
+    for (var key in this) {
+      sink.put(this[key], null, fc);
+      if ( fc.stopped ) break;
+      if ( fc.errorEvt ) {
+        sink.error && sink.error(fc.errorEvt);
+        break;
+      }
+    }
+
+    sink.eof && sink.eof();
+  },
+  // TODO: distinguish between remove() and removeAll()?
+  remove: function(query, sink) {
+    var id = query.id || query;
+
+    if ( this.hasOwnProperty(id) ) {
+      sink && sink.remove && sink.remove(this[id]);
+      delete this[id];
+      this.notify_('remove', arguments);
+      return;
+    }
+    sink && sink.error && sink.error('remove', id);
+  }
+});
+
+
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {
@@ -285,14 +338,14 @@ defineProperties(Array.prototype, {
     sink && sink.put && sink.put(obj);
     this.notify_('put', arguments);
   },
-  get: function(id, sink) {
+  find: function(id, sink) {
     for (var idx in this) {
       if (this[idx].id === id) {
         sink && sink.put && sink.put(this[idx]);
         return;
       }
     }
-    sink && sink.error && sink.error('get', id);
+    sink && sink.error && sink.error('find', id);
   },
   // TODO: distinguish between remove() and removeAll()?
   remove: function(query, callback) {
@@ -308,7 +361,7 @@ defineProperties(Array.prototype, {
       }
     }
   },
-  pipe: function(sink, options) {
+  select: function(sink, options) {
     sink = this.decorateSink_(sink, options, false);
 
     var fc = this.createFlowControl_();
@@ -339,7 +392,7 @@ defineProperties(Array.prototype, {
  * later.
  *
  * Optimization.  This DAO doesn't use an indexes in indexeddb yet, which
- * means for any query other than a single get/remove we iterate the entire
+ * means for any query other than a single find/remove we iterate the entire
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
  */
@@ -407,7 +460,7 @@ var IndexedDBDAO2 = FOAM.create({
       this.withStore("readwrite", function(store) {
         var request =
             store.put(ObjectToIndexedDB.visitObject(value), value.id);
-        
+
         request.onsuccess = function(e) {
           sink && sink.put && sink.put(value);
           self.notify_('put', value);
@@ -419,12 +472,12 @@ var IndexedDBDAO2 = FOAM.create({
       });
     },
 
-    get: function(key, sink) {
+    find: function(key, sink) {
       this.withStore("readonly", function(store) {
-        var request = store.get(key);
+        var request = store.find(key);
         request.onsuccess = function() {
           if (!request.result) {
-            sink && sink.error && sink.error('get', key);
+            sink && sink.error && sink.error('find', key);
             return;
           }
           var result = IndexedDBToObject.visitObject(request.result);
@@ -432,7 +485,7 @@ var IndexedDBDAO2 = FOAM.create({
         };
         request.onerror = function(e) {
           // TODO: Parse a better error out of e
-          sink && sink.error && sink.error('get', key);
+          sink && sink.error && sink.error('find', key);
         };
       });
     },
@@ -443,7 +496,7 @@ var IndexedDBDAO2 = FOAM.create({
 
         if (! EXPR.isInstance(query)) {
           var key = query;
-          var getRequest = store.get(key);
+          var getRequest = store.find(key);
           getRequest.onsuccess = function(e) {
             if (!getRequest.result) {
               sink && sink.error && sink.error('remove', query);
@@ -491,7 +544,7 @@ var IndexedDBDAO2 = FOAM.create({
       });
     },
 
-    pipe: function(sink, options) {
+    select: function(sink, options) {
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
@@ -547,7 +600,7 @@ var IndexedDBDAO2 = FOAM.create({
 /*
 var d = IndexedDBDAO2.create({model: Model});
 d.put(Issue);
-d.get(function(i) { console.log('got: ', i); }, "Issue");
+d.find(function(i) { console.log('got: ', i); }, "Issue");
 
 ModelDAO.forEach(d.put.bind(d));
 d.forEach(console.log.bind(console, 'forEach: '));
