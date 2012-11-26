@@ -330,7 +330,9 @@ defineProperties(Array.prototype, {
     for (var idx in this) {
       if (this[idx].id === obj.id) {
         this[idx] = obj;
-        sink && sink.error && sink.error('put', obj, duplicate);
+	sink && sink.put && sink.put(obj);
+    	this.notify_('put', arguments);
+	//        sink && sink.error && sink.error('put', obj, duplicate);
         return;
       }
     }
