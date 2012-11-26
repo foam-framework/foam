@@ -599,6 +599,84 @@ var IndexedDBDAO2 = FOAM.create({
 
 });
 
+
+var StorageDAO2 = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO2',
+
+   name: 'StorageDAO2',
+   label: 'Storage DAO',
+
+   properties: [
+      {
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
+         required: true
+      },
+      {
+         name:  'name',
+         label: 'Store Name',
+         type:  'String',
+         defaultValueFn: function() {
+           return this.model.plural;
+         }
+      }
+   ],
+
+   methods: {
+
+   init: function() {
+     AbstractPrototype.init.call(this);
+
+     this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || {};
+    },
+
+    put: function(obj, sink) {
+      this.storage.put(obj, sink);
+      this.flush_();
+    },
+
+    find: function(key, sink) {
+      this.storage.find(key, sink);
+    },
+
+    remove: function(query, sink) {
+      this.storage.remove(query, sink);
+      this.flush_();
+    },
+
+    select: function(sink, options) {
+      this.storage.select(sink, options);
+    },
+
+    remove: function(query, sink) {
+      this.storage.remove(query, sink);
+    },
+
+    flush_: function() {
+      localStorage.setItem(this.name, JSONUtil.stringify(this.storage));
+      this.publish('updated');
+    }
+
+   },
+
+   listeners:
+   [
+      {
+         model_: 'MethodModel',
+
+         name: 'updated',
+         code: function(evt) {
+           console.log('updated: ', evt);
+           this.publish('updated');
+         }
+      }
+   ]
+
+});
+
+
 /*
 var d = IndexedDBDAO2.create({model: Model});
 d.put(Issue);
