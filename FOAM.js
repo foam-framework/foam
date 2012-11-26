@@ -52,8 +52,7 @@ var FOAM = {
 
       var ctrl = ActionBorder.create(DAOController, DAOController.create({
         model:     model,
-        dao:       dao,
-        selection: dao.select()[0]
+        dao:       dao
       }));
 
       ctrl.__proto__.stackView = GLOBAL.stack;
@@ -61,5 +60,3 @@ var FOAM = {
    }
 
 };
-
-

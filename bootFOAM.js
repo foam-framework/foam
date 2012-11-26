@@ -34,6 +34,7 @@ var files = [
   'dao2',
   'StackView',
   'DAOController',
+  'DAO2Controller',
   // remove below here
   'models',
   'turntable',

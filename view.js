@@ -2073,3 +2073,44 @@ var ArrayView = {
       return view;
    }
 };
+
+
+var ModelAlternateView = FOAM.create({
+   model_: 'Model',
+   name: 'ModelAlternateView',
+   label: 'Model Alternate View',
+   extendsModel: 'AlternateView',
+   methods: {
+      init: function() {
+         // TODO: super.init
+	 this.views = FOAM.create([
+                     {
+			model_: 'ViewChoice',
+			label:  'GUI',
+			view:   'DetailView'
+		     },
+                     {
+			model_: 'ViewChoice',
+			label:  'JS',
+			view:   'JSView'
+		     },
+                     {
+			model_: 'ViewChoice',
+			label:  'XML',
+			view:   'XMLView'
+		     },
+                     {
+			model_: 'ViewChoice',
+			label:  'UML',
+			view:   'XMLView'
+		     },
+                     {
+			model_: 'ViewChoice',
+			label:  'Split',
+			view:   'SplitView'
+		     }
+		  ]
+	       );
+      }
+   }
+});
