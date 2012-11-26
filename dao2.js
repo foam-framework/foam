@@ -353,7 +353,7 @@ defineProperties(Array.prototype, {
   remove: function(query, callback) {
     var param = query;
     if (! EXPR.isInstance(query))
-      query = function(obj) { return obj.id === param; };
+      query = {f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
 
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
