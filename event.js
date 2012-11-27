@@ -205,16 +205,16 @@ var EventService = {
 
             map[null].remove(listener);
 
-            return map[null].length == 0;
+            if ( ! map[null].length ) delete map[null];
         } else {
             var key = topic[topicIndex];
 
             if ( ! map[key] ) return false;
 
-            if ( this.unsub_(map[key], topicIndex+1, topic, listener) ) {
-                delete map[key];
-            }
+            if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
+              delete map[key];
         }
+        return Object.keys(map).length == 0;
     },
 
 
