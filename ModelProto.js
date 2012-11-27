@@ -98,9 +98,10 @@ console.log(cls);
 	   // re-binds a bound version of the function
 	   // when first called
            fn.name = name;
+           var l;
 
 	   cls.__defineGetter__(name, function () {
-	      var l = fn.bind(this);
+	      l = l || fn.bind(this);
 
 	      this[name] = l;
 
