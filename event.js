@@ -147,7 +147,9 @@ var EventService = {
 
     /** Unsubscribe a listener from the specified topic. **/
     unsubscribe: function (topic, listener) {
-	// todo
+        if ( ! this.subs_ ) return;
+
+        this.unsub_(this.subs_, 0, topic, listener);
     },
 
 
@@ -195,6 +197,24 @@ var EventService = {
 
 	   this.sub_(map[key], topicIndex+1, topic, listener);
 	}
+    },
+
+    unsub_: function(map, topicIndex, topic, listener) {
+        if ( topicIndex == topic.length ) {
+            if ( ! map[null] ) return true;
+
+            map[null].remove(listener);
+
+            if ( ! map[null].length ) delete map[null];
+        } else {
+            var key = topic[topicIndex];
+
+            if ( ! map[key] ) return false;
+
+            if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
+              delete map[key];
+        }
+        return Object.keys(map).length == 0;
     },
 
 
