@@ -99,13 +99,16 @@ console.log(cls);
 	   // when first called
            fn.name = name;
 
-	   cls.__defineGetter__(name, function () {
-	      var l = fn.bind(this);
+           Object.defineProperty(cls, name, {
+             get: function () {
+	       var l = fn.bind(this);
 
-	      this[name] = l;
+               Object.defineProperty(cls, name, { value: l});
 
-	      return l;
-	   });
+	       return l;
+	     },
+             configurable: true
+           });
         };
 
 	// add listeners
