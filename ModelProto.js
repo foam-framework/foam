@@ -103,7 +103,7 @@ console.log(cls);
              get: function () {
 	       var l = fn.bind(this);
 
-               Object.defineProperty(cls, name, { value: l});
+               Object.defineProperty(this, name, { value: l});
 
 	       return l;
 	     },
