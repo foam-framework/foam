@@ -182,6 +182,7 @@ var DAOController = FOAM.create({
 
 	 this.dao = this.dao;
 	 // this.tableView.setModel(this.dao);
+         this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.selection.addListener(this.onSelection);
       },
