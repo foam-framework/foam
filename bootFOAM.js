@@ -15,6 +15,7 @@
  */
 
 var files = [
+  'parse',
   'stdlib',
   'context',
   'event',
