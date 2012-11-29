@@ -56,7 +56,7 @@ function future(factory) {
 function futureChain(prev, factory) {
   return future(function(cb) {
     prev(function(v) {
-      factory(c, cb);
+      factory(v, cb);
     });
   });
 }

@@ -712,11 +712,18 @@ var AbstractFileDAO2 = FOAM.create({
     init: function() {
       AbstractPrototype.init.call(this);
 
-      // TODO: Give estimated size and handle error callbacks;
-      this.withFilesystem = future((function(cb) {
+      this.withQuota = future((function(cb) {
+        window.webkitStorageInfo.requestQuota(
+            this.type === 'Persistent' ? 1 : 0,
+            1024 * 1024 * 200, // 200 MB should be fine.
+            function() { cb(1024 * 1024 * 200); },
+            console.error.bind(console));
+      }).bind(this));
+
+      this.withFilesystem = futureChain(this.withQuota, (function(quota, cb) {
         window.requestFileSystem(
             this.type === 'Persistent' ? 1 : 0,
-            4000, /* expected size*/
+            quota, /* expected size*/
             cb,
             console.error.bind(console));
       }).bind(this));
@@ -756,18 +763,19 @@ var AbstractFileDAO2 = FOAM.create({
               this.parseContents_(reader.result, storage, callback);
             }).bind(this);
 
-            this.readFile_(reader);
+            this.readFile_(reader, file);
           }).bind(this));
     },
 
     put: function(obj, sink) {
       this.withStorage((function(s) {
+        var self = this;
         s.put(obj, {
           __proto__: sink,
           put: function() {
             this.__proto__.put && this.__proto__.put(obj);
-            this.notify_('put', obj);
-            this.update_('put', obj);
+            self.notify_('put', obj);
+            self.update_('put', obj);
           }
         });
       }).bind(this));
@@ -781,12 +789,13 @@ var AbstractFileDAO2 = FOAM.create({
 
     remove: function(query, sink) {
       this.withStorage((function(s) {
+        var self = this;
         s.remove(query, {
           __proto__: sink,
           remove: function(obj) {
             this.__proto__.remove && this.__proto__.remove(obj);
-            this.notify_('remove', obj);
-            this.update('remove', obj);
+            self.notify_('remove', obj);
+            self.update_('remove', obj);
           }
         });
       }).bind(this));
@@ -831,6 +840,10 @@ var JSONFileDAO2 = FOAM.create({
        }).bind(this));
      },
 
+     readFile_: function(reader, file) {
+       reader.readAsText(file);
+     },
+
      parseContents_: function(contents, storage, callback) {
        with (storage) { eval(contents); }
        callback(storage);
@@ -845,15 +858,15 @@ var JSONFileDAO2 = FOAM.create({
      },
 
      update_: function(mutation, obj) {
-       var builder = new BlobBuilder();
+       var parts = [];
 
        if (mutation === 'put') {
-         builder.append("put(" + JSONUtil.compact.stringify(obj) + ");\n");
+         parts.push("put(" + JSONUtil.compact.stringify(obj) + ");\n");
        } else if (mutation === 'remove') {
-         builder.append("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
+         parts.push("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
        }
 
-       writeQueue.push(builder.getBlob());
+       this.writeQueue.push(new Blob(parts));
 
        this.withWriter((function(writer) {
          this.writeOne_(writer);
