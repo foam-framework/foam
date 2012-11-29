@@ -190,3 +190,7 @@ document.put = function(obj) {
 };
 
 String.prototype.put = function(obj) { return this + obj.toJSON(); };
+
+// Promote webkit apis
+
+window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;

@@ -672,67 +672,193 @@ var StorageDAO2 = FOAM.create({
 
 });
 
-var JSONFileDAO2 = FOAM.create({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO2',
+var AbstractFileDAO2 = FOAM.create({
+  model_: 'Model',
+  extendsModel: 'AbstractDAO2',
 
-   name: 'JSONFileDAO2',
-   label: 'JSON formatted File DAO',
+  name: 'AbstractFileDAO2',
+  label: 'Abstract File DAO',
 
-   properties: [
-      {
-         name:  'model',
-         label: 'Model',
-         type:  'Model',
-         required: true
-      },
-      {
-         name:  'file',
-         label: 'Storage File',
-         type:  'File',
-         required: true
+  properties: [
+    {
+      name:  'model',
+      label: 'Model',
+      type:  'Model',
+      requred: true
+    },
+    {
+      name:  'filename',
+      label: 'Storage file name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
       }
-   ],
+    },
+    {
+      name:  'type',
+      label: 'Filesystem Type',
+      type:  'String',
+      view: {
+        create: function() { return ChoiceView.create({choices: [
+          'Persistent',
+          'Temporary'
+        ]});}
+      },
+      defaultValue: 'Persistent'
+    }
+  ],
 
-   methods: {
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
 
-   init: function() {
-     AbstractPrototype.init.call(this);
+      // TODO: Give estimated size and handle error callbacks;
+      this.withFilesystem = future((function(cb) {
+        window.requestFileSystem(
+            this.type === 'Persistent' ? 1 : 0,
+            4000, /* expected size*/
+            cb,
+            console.error.bind(console));
+      }).bind(this));
 
-     this.withStorage = future((function(cb) {
-       var reader = new FileReader();
+      this.withEntry = futureChain(
+          this.withFilesystem,
+          (function(filesystem, callback) {
+            filesystem.root.getFile(
+                this.filename,
+                { create: true },
+                callback,
+                console.error.bind(console));
+          }).bind(this));
 
-       reader.onloadend = function() {
-         var storage = {};
+      this.withFile = futureChain(
+          this.withEntry,
+          (function(entry, callback) {
+            entry.file(callback, console.error.bind(console));
+          }).bind(this));
 
-         if ( reader.result ) with (storage) { eval(reader.result); }
+      this.withWriter = futureChain(
+          this.withEntry,
+          (function(entry, callback) {
+            entry.createWriter(callback, console.error.bind(console));
+          }).bind(this));
 
-         cb(storage);
-       };
+      this.withStorage = futureChain(
+          this.withFile,
+          (function(file, callback) {
+            var reader = new FileReader();
 
-       reader.readAsText(this.file);
-     }).bind(this));
+            var storage = {};
+
+            reader.onerror = console.error.bind(console);
+
+            reader.onloadend = (function() {
+              this.parseContents_(reader.result, storage, callback);
+            }).bind(this);
+
+            this.readFile_(reader);
+          }).bind(this));
     },
 
     put: function(obj, sink) {
-      sink && sink.error && sink.error('put', 'unsupported');
+      this.withStorage((function(s) {
+        s.put(obj, {
+          __proto__: sink,
+          put: function() {
+            this.__proto__.put && this.__proto__.put(obj);
+            this.notify_('put', obj);
+            this.update_('put', obj);
+          }
+        });
+      }).bind(this));
     },
 
     find: function(key, sink) {
-      this.withStorage(function(storage) {
-        storage.find(key, sink);
-      });
+      this.withStorage((function(s) {
+        s.find(key, sink);
+      }).bind(this));
     },
 
     remove: function(query, sink) {
-      sink && sink.error && sink.error('remove', 'unsupported');
+      this.withStorage((function(s) {
+        s.remove(query, {
+          __proto__: sink,
+          remove: function(obj) {
+            this.__proto__.remove && this.__proto__.remove(obj);
+            this.notify_('remove', obj);
+            this.update('remove', obj);
+          }
+        });
+      }).bind(this));
     },
 
     select: function(sink, options) {
-      this.withStorage(function(storage) {
-        storage.select(sink, options);
-      });
+      this.withStorage((function(s) {
+        s.select(sink, options);
+      }).bind(this));
     }
+  }
+});
+
+var JSONFileDAO2 = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractFileDAO2',
+
+   name: 'JSONFileDAO2',
+   label: 'JSON File DAO',
+
+   properties: [
+     {
+       name:  'writeQueue',
+       label: 'Write Queue',
+       type:  'Array[String]',
+       defaultValueFn: function() {
+         return [];
+       }
+     }
+   ],
+
+   methods: {
+     init: function() {
+       AbstractFileDAO2.getPrototype().init.call(this);
+
+       this.withWriter((function(writer) {
+         writer.addEventListener(
+             'writeend',
+             function(e) {
+               this.writeOne_.bind(this, e.target);
+             });
+       }).bind(this));
+     },
+
+     parseContents_: function(contents, storage, callback) {
+       with (storage) { eval(contents); }
+       callback(storage);
+     },
+
+     writeOne_: function(writer) {
+       if ( writer.readyState == 1 ) return;
+       if ( this.writeQueue.length == 0 ) return;
+
+       writer.seek(writer.length);
+       writer.write(this.writeQueue.pop());
+     },
+
+     update_: function(mutation, obj) {
+       var builder = new BlobBuilder();
+
+       if (mutation === 'put') {
+         builder.append("put(" + JSONUtil.compact.stringify(obj) + ");\n");
+       } else if (mutation === 'remove') {
+         builder.append("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
+       }
+
+       writeQueue.push(builder.getBlob());
+
+       this.withWriter((function(writer) {
+         this.writeOne_(writer);
+       }).bind(this));
+     }
    }
 });
 
