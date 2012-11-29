@@ -285,7 +285,7 @@ defineProperties(Object.prototype, {
     this.notify_('put', arguments);
   },
   find: function(id, sink) {
-    if ( this.hasOwnProperty(obj.id) ) {
+    if ( this.hasOwnProperty(id) ) {
       sink && sink.put && sink.put(this[id]);
       return;
     }
@@ -650,10 +650,6 @@ var StorageDAO2 = FOAM.create({
       this.storage.select(sink, options);
     },
 
-    remove: function(query, sink) {
-      this.storage.remove(query, sink);
-    },
-
     flush_: function() {
       localStorage.setItem(this.name, JSONUtil.stringify(this.storage));
       this.publish('updated');
@@ -676,6 +672,69 @@ var StorageDAO2 = FOAM.create({
 
 });
 
+var JSONFileDAO2 = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO2',
+
+   name: 'JSONFileDAO2',
+   label: 'JSON formatted File DAO',
+
+   properties: [
+      {
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
+         required: true
+      },
+      {
+         name:  'file',
+         label: 'Storage File',
+         type:  'File',
+         required: true
+      }
+   ],
+
+   methods: {
+
+   init: function() {
+     AbstractPrototype.init.call(this);
+
+     this.withStorage = future((function(cb) {
+       var reader = new FileReader();
+
+       reader.onloadend = function() {
+         var storage = {};
+
+         if ( reader.result ) with (storage) { eval(reader.result); }
+
+         cb(storage);
+       };
+
+       reader.readAsText(this.file);
+     }).bind(this));
+    },
+
+    put: function(obj, sink) {
+      sink && sink.error && sink.error('put', 'unsupported');
+    },
+
+    find: function(key, sink) {
+      this.withStorage(function(storage) {
+        storage.find(key, sink);
+      });
+    },
+
+    remove: function(query, sink) {
+      sink && sink.error && sink.error('remove', 'unsupported');
+    },
+
+    select: function(sink, options) {
+      this.withStorage(function(storage) {
+        storage.select(sink, options);
+      });
+    }
+   }
+});
 
 /*
 var d = IndexedDBDAO2.create({model: Model});
@@ -685,5 +744,3 @@ d.find(function(i) { console.log('got: ', i); }, "Issue");
 ModelDAO.forEach(d.put.bind(d));
 d.forEach(console.log.bind(console, 'forEach: '));
 */
-
-

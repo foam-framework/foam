@@ -1,0 +1,5 @@
+put(Issue.create({ id: 1, severity: 'Major', assignee: 'kgr' }));
+put(Issue.create({ id: 2, severity: 'Minor' }));
+put(Issue.create({ id: 3, severity: 'Feature' }));
+remove(1);
+put(Issue.create({ id: 4, severity: 'Minor' }));
