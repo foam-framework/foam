@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-/** End of Stream PStream **/
-var EOS = {
-  head: undefined,
-  tail: this
-};
-
-
 /** String PStream **/
 function stringPS(str, opt_index, opt_value) {
   opt_index = opt_index || 0;
