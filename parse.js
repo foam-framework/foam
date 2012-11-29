@@ -17,20 +17,26 @@
 /** String PStream **/
 function stringPS(str, opt_index, opt_value) {
   opt_index = opt_index || 0;
-  //if ( opt_index >= str.length ) return EOS;
 
   return {
-    head: str.charAt(opt_index),
-    tail: ( opt_index >= str.length ) ? undefined : stringPS(str, opt_index+1),
+    head: ( opt_index >= str.length ) ? undefined : str.charAt(opt_index),
+    tail: ( opt_index >= str.length ) ? this : stringPS(str, opt_index+1),
     getValue: function() { return opt_value; },
     setValue: function(value) { return stringPS(str, opt_index, value); }
+  };
+}
+
+function range(c1, c2) {
+  return function(ps) {
+    if ( ! ps.head ) return undefined;
+    if ( ps.head < c1 || ps.head > c2 ) return undefined;
+    return ps.tail.setValue(ps.head);
   };
 }
 
 function literal(str) {
   return function(ps) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( ps == EOS ) return undefined;
       if ( str.charAt(i) !== ps.head ) return undefined;
     }
 
@@ -114,6 +120,10 @@ function test(str, p, opt_expect) {
   console.log(pass ? 'PASS' : 'ERROR', str, opt_expect, res && res.getValue());
 }
 
+
+test('0', range('0', '9'), '0');
+test('9', range('0', '9'), '9');
+test('a', range('0', '1'));
 
 test('abc', literal('abc'), 'abc');
 test('abcd', literal('abc'), 'abc');
