@@ -773,7 +773,7 @@ var AbstractFileDAO2 = FOAM.create({
         s.put(obj, {
           __proto__: sink,
           put: function() {
-            this.__proto__.put && this.__proto__.put(obj);
+            sink && sink.put && sink.put(obj);
             self.notify_('put', obj);
             self.update_('put', obj);
           }
@@ -834,9 +834,9 @@ var JSONFileDAO2 = FOAM.create({
        this.withWriter((function(writer) {
          writer.addEventListener(
              'writeend',
-             function(e) {
-               this.writeOne_.bind(this, e.target);
-             });
+             (function(e) {
+               this.writeOne_(e.target);
+             }).bind(this));
        }).bind(this));
      },
 
@@ -854,7 +854,10 @@ var JSONFileDAO2 = FOAM.create({
        if ( this.writeQueue.length == 0 ) return;
 
        writer.seek(writer.length);
-       writer.write(this.writeQueue.pop());
+       var queue = this.writeQueue;
+       var blob = queue.shift();
+       this.writeQueue = queue;
+       writer.write(blob);
      },
 
      update_: function(mutation, obj) {
@@ -866,7 +869,7 @@ var JSONFileDAO2 = FOAM.create({
          parts.push("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
        }
 
-       this.writeQueue.push(new Blob(parts));
+       this.writeQueue = this.writeQueue.concat(new Blob(parts));
 
        this.withWriter((function(writer) {
          this.writeOne_(writer);
