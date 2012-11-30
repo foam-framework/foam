@@ -46,13 +46,13 @@ function literal(str) {
 
 function not(p) {
   return function(ps) {
-    return p(ps) ? undefined : ps;
+    return this.parse(p,ps) ? undefined : ps;
   };
 }
 
 function optional(p) {
   return function(ps) {
-    return p(ps) || ps.setValue(undefined);
+    return this.parse(p,ps) || ps.setValue(undefined);
   };
 }
 
@@ -60,22 +60,21 @@ function repeat(p, opt_delim, opt_min, opt_max) {
   return function(ps) {
     var ret = [];
 
-    while ( true ) {
+    for ( var i = 0 ; ! opt_max || i < opt_max ; i++ ) {
       var res;
 
       if ( opt_delim && ret.length != 0 ) {
-        if ( ! ( res = opt_delim(ps) ) ) break;
+        if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
         ps = res;
       }
 
-      if ( ! ( res = p(ps) ) ) break;
+      if ( ! ( res = this.parse(p,ps) ) ) break;
 
       ret.push(res.getValue());
       ps = res;
     }
 
     if ( opt_min && ret.length < opt_min ) return undefined;
-    if ( opt_max && ret.length > opt_max ) return undefined;
 
     return ps.setValue(ret);
   };
@@ -88,7 +87,7 @@ function seq(/* vargs */) {
     var ret = [];
 
     for ( var i = 0 ; i < args.length ; i++ ) {
-      if ( ! ( ps = args[i](ps) ) ) return undefined;
+      if ( ! ( ps = this.parse(args[i], ps) ) ) return undefined;
       ret.push(ps.getValue());
     }
 
@@ -101,7 +100,7 @@ function alt(/* vargs */) {
 
   return function(ps) {
     for ( var i = 0 ; i < args.length ; i++ ) {
-      var res = args[i](ps);
+      var res = this.parse(args[i], ps);
 
       if ( res ) return res;
     }
@@ -113,11 +112,13 @@ function alt(/* vargs */) {
 
 // TODO: doesn't compare arrays properly and gives false errors
 function test(str, p, opt_expect) {
+/*
   var res = p(stringPS(str));
 
   var pass = opt_expect ? res.getValue() == opt_expect : ! res ;
 
   console.log(pass ? 'PASS' : 'ERROR', str, opt_expect, res && res.getValue());
+*/
 }
 
 
@@ -147,3 +148,123 @@ test('aaba', repeat(literal('a')), ['a','a']);
 test('abbab', repeat(seq(optional(literal('a')), literal('b'))), [['a','b'],[undefined,'b'],['a','b']]);
 
 
+function sym(name) {
+  return function(ps) { return this[name](ps); }
+}
+
+var grammar = {
+  parseString: function(str) {
+    var res = this.parse(this.START, stringPS(str));
+
+    return res && res.getValue();
+  },
+
+  parse: function(parser, pstream) {
+ //    console.log('parser: ', parser, 'stream: ',pstream);
+    return parser.call(this, pstream);
+  },
+
+  addAction: function(sym, action) {
+    var p = this[sym];
+    this[sym] = function(ps) {
+      var ps2 = this.parse(p, ps);
+
+      return ps2 && ps2.setValue(action(ps2.getValue(), ps.getValue()));
+    };
+  },
+
+  addActions: function(map) {
+    for ( var key in map ) this.addAction(key, map[key]);
+
+    return this;
+  }
+};
+
+var expr = {
+  __proto__: grammar,
+
+  START: sym('expr'),
+
+  expr: seq(sym('expr1'), optional(seq(alt(literal('+'), literal('-')), sym('expr')))),
+
+  expr1: seq(sym('expr2'), optional(seq(alt(literal('*'), literal('/')), sym('expr1')))),
+
+  expr2: alt(
+    sym('number'),
+    sym('group')),
+
+  group: seq(literal('('), sym('expr'), literal(')')),
+
+  number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
+
+};
+
+/* Create an expression interpreter from the expression parser. */
+var calc = {
+  __proto__: expr
+}.addActions({
+  'group': function(v) { return v[1]; },
+  'number': function(v) { return  (v[0] ? -1 : 1) * parseInt(v[1].join('')); },
+  'expr': function(v) {
+    var val = v[0];
+
+    if ( v[1] ) {
+      var val2 = v[1][1];
+      val = ( v[1][0] == '+' ) ? val + val2 : val - val2;
+    }
+
+    return val;
+  },
+  'expr1': function(v) {
+    var val = v[0];
+
+    if ( v[1] ) {
+      var val2 = v[1][1];
+      val = ( v[1][0] == '*' ) ? val * val2 : val / val2;
+    }
+
+    return val;
+  }
+});
+
+
+/* Create an expression compiler from the expression parser. */
+var calcCompiler = {
+  __proto__: expr
+}.addActions({
+  'group': function(v) { return v[1]; },
+  'number': function(v) { return (function(c) { return function() { return c; }; })((v[0] ? -1 : 1) * parseInt(v[1].join(''))); },
+  'expr': function(v) {
+    var fn = v[0];
+
+    if ( v[1] ) {
+      var fn2 = v[1][1];
+      return ( v[1][0] == '+' ) ?
+        function() { return fn() + fn2(); } :
+        function() { return fn() - fn2(); } ;
+    }
+
+    return fn;
+  },
+  'expr1': function(v) {
+    var fn = v[0];
+
+    if ( v[1] ) {
+      var fn2 = v[1][1];
+      return ( v[1][0] == '*' ) ?
+        function() { return fn() * fn2(); } :
+        function() { return fn() / fn2(); } ;
+    }
+
+    return fn;
+  }
+});
+
+console.log(calc.parse(calc.expr, stringPS('1 ')).getValue());
+console.log(calc.parse(calc.expr, stringPS('1 ')).getValue());
+console.log(calc.parse(calc.expr, stringPS('-1 ')).getValue());
+console.log(calc.parse(calc.expr, stringPS('1+2 ')).getValue());
+console.log(calc.parse(calc.expr, stringPS('2*3 ')).getValue());
+console.log(calc.parse(calc.expr, stringPS('(1) ')).getValue());
+console.log(calc.parseString('-2*(10+20+30) '));
+console.log(calcCompiler.parseString('-2*(10+20+30) ')());
