@@ -8,7 +8,6 @@ create(opt_args)
 
 getPrototype()	returns JS Prototype/Class
 isInstance(obj)	returns true iff obj is instance of model
-		TODO: support subclasses
 
 
 PropertyChangeSupport

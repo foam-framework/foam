@@ -26,6 +26,20 @@ function stringPS(str, opt_index, opt_value) {
   };
 }
 
+function prep(arg) {
+  if ( typeof arg === 'string' ) return literal(arg);
+
+  return arg;
+}
+
+function prepArgs(args) {
+  for ( var i = 0 ; i < args.length ; i++ ) {
+    args[i] = prep(args[i]);
+  }
+
+  return args;
+}
+
 function range(c1, c2) {
   return function(ps) {
     if ( ! ps.head ) return undefined;
@@ -44,19 +58,26 @@ function literal(str) {
   };
 }
 
-function not(p) {
+function notChar(c) {
   return function(ps) {
-    return this.parse(p,ps) ? undefined : ps;
+    return ps.head !== c ? ps.tail.setValue(ps.head) : undefined;
   };
+}
+
+function not(p) {
+  p = prep(p);
+  return function(ps) { return this.parse(p,ps) ? undefined : ps; };
 }
 
 function optional(p) {
-  return function(ps) {
-    return this.parse(p,ps) || ps.setValue(undefined);
-  };
+  p = prep(p);
+  return function(ps) { return this.parse(p,ps) || ps.setValue(undefined); };
 }
 
 function repeat(p, opt_delim, opt_min, opt_max) {
+  p = prep(p);
+  opt_delim = prep(opt_delim);
+
   return function(ps) {
     var ret = [];
 
@@ -81,7 +102,7 @@ function repeat(p, opt_delim, opt_min, opt_max) {
 }
 
 function seq(/* vargs */) {
-  var args = arguments;
+  var args = prepArgs(arguments);
 
   return function(ps) {
     var ret = [];
@@ -96,7 +117,7 @@ function seq(/* vargs */) {
 }
 
 function alt(/* vargs */) {
-  var args = arguments;
+  var args = prepArgs(arguments);
 
   return function(ps) {
     for ( var i = 0 ; i < args.length ; i++ ) {
@@ -149,7 +170,7 @@ test('abbab', repeat(seq(optional(literal('a')), literal('b'))), [['a','b'],[und
 
 
 function sym(name) {
-  return function(ps) { return this[name](ps); }
+  return function(ps) { /* console.log('<' + name + '>'); */ return this[name](ps); };
 }
 
 var grammar = {
@@ -169,7 +190,7 @@ var grammar = {
     this[sym] = function(ps) {
       var ps2 = this.parse(p, ps);
 
-      return ps2 && ps2.setValue(action(ps2.getValue(), ps.getValue()));
+      return ps2 && ps2.setValue(action.call(this, ps2.getValue(), ps.getValue()));
     };
   },
 
@@ -185,18 +206,17 @@ var expr = {
 
   START: sym('expr'),
 
-  expr: seq(sym('expr1'), optional(seq(alt(literal('+'), literal('-')), sym('expr')))),
+  expr: seq(sym('expr1'), optional(seq(alt('+', '-'), sym('expr')))),
 
-  expr1: seq(sym('expr2'), optional(seq(alt(literal('*'), literal('/')), sym('expr1')))),
+  expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
 
   expr2: alt(
     sym('number'),
     sym('group')),
 
-  group: seq(literal('('), sym('expr'), literal(')')),
+  group: seq('(', sym('expr'), ')'),
 
-  number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
-
+  number: seq(optional('-'), repeat(range('0', '9'), null, 1))
 };
 
 /* Create an expression interpreter from the expression parser. */
@@ -268,3 +288,111 @@ console.log(calc.parse(calc.expr, stringPS('2*3 ')).getValue());
 console.log(calc.parse(calc.expr, stringPS('(1) ')).getValue());
 console.log(calc.parseString('-2*(10+20+30) '));
 console.log(calcCompiler.parseString('-2*(10+20+30) ')());
+
+
+
+var MBOXParser = {
+  __proto__: grammar,
+
+  START: sym('line'),
+
+  'eol': literal('\n'),
+
+  'until eol': repeat(notChar('\n')),
+
+  line: alt(
+    sym('start of email'),
+    sym('to'),
+    sym('from'),
+    sym('subject'),
+    sym('date'),
+    sym('labels'),
+    sym('unknown header')
+//    sym('body')
+  ),
+
+  'start of email': seq('From ', sym('until eol')),
+
+  to: seq('To: ', sym('until eol')),
+  from: seq('From: ', sym('until eol')),
+
+  labels: seq('X-Gmail-Labels: ', repeat(sym('label'), ',')),
+
+  label: repeat(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
+
+  subject: seq('Subject: ', sym('until eol')),
+
+  date: seq('Date: ', sym('until eol')),
+
+  'unknown header': sym('until eol'),
+
+  'email address': alt(
+    sym('named email address'),
+    sym('raw email address')),
+
+  'named email address': seq(
+    repeat(notChar('<')),
+    sym('raw email address'),
+    '>'),
+
+  'raw email address': seq(repeat(notChar('@')), sym('until eol'))
+
+};
+
+/** Sink which loads Emails into a DAO. **/
+var MBOXLoader = {
+  __proto__: MBOXParser,
+
+  put: function(str) {
+    this.parseString(str);
+  },
+
+  eof: function() {
+    this.saveCurrentEmail();
+  },
+
+  saveCurrentEmail: function() {
+    if ( this.email ) {
+      console.log('creating: ', this.email.toJSON());
+      if ( this.dao ) this.dao.put(this.email);
+    }
+  }
+}.addActions({
+  'start of email': function() {
+    this.saveCurrentEmail();
+
+    this.email = EMail.create();
+  },
+
+  to: function(v) {
+    this.email.to = v[1].join('');
+  },
+
+  from: function(v) {
+    this.email.from = v[1].join('');
+  },
+
+  subject: function(v) {
+    this.email.subject = v[1].join('');
+  },
+
+  label: function(v) {
+    this.email.labels.push(v.join(''));
+  }
+
+  // TODO: timestamp, message-id, body
+
+});
+
+
+var p = MBOXLoader.put.bind(MBOXLoader);
+
+p('From 1404692113434165298@xxx Wed Jun 13 08:19:51 2012\n');
+p('X-Gmail-Labels: Retention5,SuperCool\n');
+p('Message-ID: <20cf30563d5b2b446604c2604e64@google.com>\n');
+p('Date: Wed, 13 Jun 2012 20:19:50 +0000\n');
+p('Subject: New voicemail from (917) 359-5785 at 3:18 PM\n');
+p('From: Google Voice <voice-noreply@google.com>\n');
+p('To: thafunkypresident@gmail.com\n');
+
+MBOXLoader.eof();

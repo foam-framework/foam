@@ -1833,6 +1833,14 @@ var EMail = FOAM.create({
          view: 'TextFieldView'
       },
       {
+         name: 'labels',
+	 label: 'Labels',
+	 type: 'Array[String]',
+	 view: 'StringArrayView',
+	 valueFactory: function() { return []; },
+	 help: 'Email labels.'
+      },
+      {
          model_: 'Property',
          name: 'body',
          type: 'String',

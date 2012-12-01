@@ -15,7 +15,6 @@
  */
 
 var files = [
-  'parse',
   'stdlib',
   'context',
   'event',
@@ -39,6 +38,7 @@ var files = [
   // remove below here
   'models',
   'turntable',
+  'parse',
   'dragon'
 ];
 
