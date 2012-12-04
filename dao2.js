@@ -135,7 +135,12 @@ var AbstractDAO2 = FOAM.create({
    methods: {
   listen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
-    if ( ! this.daoListeners_ ) this.daoListeners_ = [];
+    if ( ! this.daoListeners_ ) {
+      Object.defineProperty(this, 'daoListeners_', {
+        enumerable: false,
+        value: []
+      });
+    }
     this.daoListeners_.push(sink);
   },
   // TODO: rename to pipe
