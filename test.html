@@ -14,7 +14,9 @@
 
   <link rel="stylesheet" type="text/css" href="chaos.css" />
 
+  <script language="javascript" src="stdlib.js"></script>
   <script language="javascript" src="context.js"></script>
+  <script language="javascript" src="parse.js"></script>
   <script language="javascript" src="event.js"></script>
   <script language="javascript" src="SimpleValue.js"></script>
   <script language="javascript" src="JSONUtil.js"></script>
@@ -271,6 +273,18 @@ document.writeln("=======================================");
 
 //    document.writeln("<br/>subs: " + e.subs_);
 
+
+    var sview = CanvasView.create({width: 50, height: 300, background:'#fff'});
+    var s1 = SliderCView.create({
+      x:10, y:10, width: 30, height:290,
+      value:100, extent:50, size: 500
+    });
+    sview.write(document);
+    sview.addChild(s1);
+    s1.paint();
+    var sv1 = DetailView.create(s1.model_);
+    sv1.set(s1);
+    sv1.write(document);
 
     document.writeln("</br><h2>Test DetailView</h2>");
 
