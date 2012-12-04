@@ -23,45 +23,80 @@
  *    \<new-line>: ignored
  *    %value<whitespace>: TODO: output a single value to the template output
  */
+
+var TemplateParser = {
+  __proto__: grammar,
+
+  START: sym('markup'),
+
+  markup: repeat0(alt(
+    sym('values tag'),
+    sym('code tag'),
+    sym('ignored newline'),
+    sym('newline'),
+    sym('single quote'),
+    sym('text')
+  )),
+
+  'values tag': seq('<%=', repeat(not('%>', anyChar)), '%>'),
+  'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
+  'ignored newline': literal('\\\n'),
+  newline: literal('\n'),
+  'single quote': literal("'"),
+  text: anyChar
+};
+
+var TemplateCompiler = {
+  __proto__: TemplateParser,
+
+  out: [],
+
+  push: function() { this.out.push.apply(this.out, arguments); },
+
+  header: "var out;" +
+    "if ( opt_out ) { out = opt_out; } else { var buf = []; out = buf.push.bind(buf); }\n" +
+    "out('",
+
+  footer: "');" +
+    "if ( ! opt_out ) return buf.join('');"
+
+}.addActions({
+   markup: function (v) {
+     var ret = this.header + this.out.join('') + this.footer;
+
+     this.out = [];
+
+     return ret;
+   },
+   'values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
+   'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },
+   'single quote': function () { this.push("\\'"); },
+   newline: function () { this.push("\\n"); },
+   text: function(v) { this.push(v); }
+});
+
+/*
+function test(str) {
+  console.log('input: ', str);
+  console.log('output: ', TemplateCompiler.parseString(str));
+}
+
+test('foo');
+test("foo 'bar'");
+test('foo <%= 1,2,3 %>');
+test('foo <% out.push("foobar"); %>');
+*/
+
 var TemplateUtil =
 {
 
-   compile: function(str)
-   {
-//console.log("compiling template: ", str);
-      var str = "var out;" +
-        "if ( opt_out ) { out = opt_out; } else { var buf = []; out = buf.push.bind(buf); }\n" +
-	"out('" + str
-	   .replace(/'/g, "\\'")
-	   .replace(/<%=(([^%]|(%[^>]))*)%>/g, function(unused,s){ return "'," + s.replace(/\\'/g, "'") + ",'"; })
-	   .replace(/<%(([^%]|(%[^>]))*)%>/g, function(unused,s){ return "');\n" + s.replace(/\\'/g, "'") + "\nout('";} ) +
-        "\');" +
-	"if ( ! opt_out ) return buf.join('');";
+   compile: function(str) {
+     var str = TemplateCompiler.parseString(str);
 
-      // Convert newlines inside of string literals into \n's
-      // and remove newlines preceeded with a backslash (\).
-      for ( var i = 0 ; i < str.length ; )
-      {
-	 i = str.indexOf("out('", i);
-
-	 if ( i == -1 ) break;
-
-	 var j = str.indexOf("');", i);
-
-	 if ( j == -1 ) break;
-
-	 str = str.slice(0,i-1) + str.slice(i,j).replace(/\\\n/g, '').replace(/\n/g, '\\n') + str.slice(j);
-
-	 i = j;
-      }
-
-     try
-     {
+     try {
       return new Function("opt_out", str);
-     }
-     catch (err)
-     {
-       console.log("Template Error: " + err);
+     } catch (err) {
+       console.log("Template Error: ", err);
        console.log(str);
      }
    },

@@ -16,6 +16,7 @@
 
 var files = [
   'stdlib',
+  'parse',
   'context',
   'event',
   'SimpleValue',
@@ -37,8 +38,8 @@ var files = [
   'DAO2Controller',
   // remove below here
   'models',
+  'email',
   'turntable',
-  'parse',
   'dragon'
 ];
 
