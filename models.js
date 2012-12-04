@@ -237,7 +237,7 @@ var PanelCView = FOAM.create({
 	 label: 'Canvas',
 	 type:  'CView',
 	 getter: function() {
-	    return this.parent.canvas;
+	   return this.parent.canvas;
 	 },
 	 setter: undefined
       }
@@ -301,9 +301,9 @@ var ProgressCView = FOAM.create({
    ],
 
    listeners: {
-    updateValue: function() {
-	this.paint();
-    }
+     updateValue: function() {
+       this.paint();
+     }
    },
 
    methods: {
@@ -320,19 +320,128 @@ var ProgressCView = FOAM.create({
 	c.fillRect(2, 2, parseInt(this.value.get()), 16);
     },
 
-/*
-    setCanvas: function(canvas) {
-	this.canvas = canvas;
-
-	this.listener_ = this.updateValue.bind(this);
-
-	this.value.addListener(this.listener_);
-
-	this.paint();
-    },
-*/
     destroy: function() {
-	this.value.removeListener(this.listener_);
+      this.value.removeListener(this.listener_);
+    }
+   }
+});
+
+
+var SliderCView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'PanelCView',
+
+   name:  'SliderCView',
+
+   properties: [
+      {
+	 name:  'parent',
+	 label: 'Parent',
+         type:  'CView',
+	 hidden: true,
+         postSet: function(newValue, oldValue) {
+//	   oldValue && oldValue.removeListener(this.updateValue);
+//	   newValue.addListener(this.updateValue);
+           var e = newValue.element();
+           e.addEventListener('mousedown', this.mouseDown, false);
+           e.addEventListener('mouseup',   this.mouseUp,   false);
+         }
+      },
+      {
+	 name:  'x',
+         type:  'int'
+      },
+      {
+	 name:  'y',
+         type:  'int'
+      },
+      {
+	 name:  'width',
+         type:  'int'
+      },
+      {
+	 name:  'height',
+         type:  'int'
+      },
+      {
+	name:  'vertical',
+        type:  'boolean',
+        defaultValue: true
+      },
+      {
+	 name:  'value',
+         type:  'int'
+      },
+      {
+	 name:  'extent',
+         type:  'int'
+      },
+      {
+	 name:  'size',
+         type:  'int'
+      }
+   ],
+
+   listeners: {
+     mouseDown: function(e) {
+       console.log('mouseDown: ', e);
+       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
+       this.mouseMove(e);
+     },
+     mouseUp: function(e) {
+       console.log('mouseUp: ', e);
+       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
+     },
+     mouseMove: function(e) {
+       console.log('mouseMove: ', e);
+       var y = e.offsetY;
+
+       console.log('y: ', y);
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
+     },
+     touchStart: function(e) {
+       console.log('touchStart: ', e);
+       this.parent.element().addEventListener('touchmove', this.touchMove, false);
+       this.mouseMove(e);
+     },
+     touchEnd: function(e) {
+       console.log('touchEnd: ', e);
+       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
+     },
+     touchMove: function(e) {
+       console.log('touchMove: ', e);
+       var y = e.offsetY;
+
+       console.log('y: ', y);
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
+     },
+     updateValue: function() {
+       this.paint();
+     }
+   },
+
+   methods: {
+
+    paint: function() {
+      var c = this.canvas;
+
+      c.fillStyle = '#fff';
+      c.fillRect(this.x, this.w, this.width, this.height);
+
+      c.strokeStyle = '#000';
+      c.strokeRect(this.x, this.y, this.width, this.height);
+      c.fillStyle = '#f00';
+      c.fillRect(
+        this.x + 2,
+        this.y + 2 + this.value / this.size * this.height,
+        this.width - 4,
+        this.y + 2 + this.extent / this.size * this.height);
+    },
+
+    destroy: function() {
+//      this.value.removeListener(this.listener_);
     }
    }
 });

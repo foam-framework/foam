@@ -63,9 +63,7 @@ var TemplateCompiler = {
 }.addActions({
    markup: function (v) {
      var ret = this.header + this.out.join('') + this.footer;
-
      this.out = [];
-
      return ret;
    },
    'values tag': function (v) { this.push("',", v[1].join(''), ",'"); },

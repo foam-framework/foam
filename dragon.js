@@ -69,11 +69,12 @@ var Dragon = Model.create({
   ],
 
   methods: {
+    colours: ['#33f','#f00','#fc0','#33f','#3c0'],
+
     dot: function(r) {
-      var colours = ['#33f','#f00','#fc0','#33f','#3c0'];
       var c = this.canvas;
       c.beginPath();
-      c.fillStyle = colours[this.i = (this.i + 1) % colours.length];//'rgb(245,50,50)';
+      c.fillStyle = this.colours[this.i = (this.i + 1) % this.colours.length];//'rgb(245,50,50)';
       c.arc(0,0,r,0,Math.PI*2,true);
       c.fill();
     },
@@ -157,6 +158,40 @@ var Dragon = Model.create({
         console.log(x);
       }
       c.restore();
+
+      if ( Math.random() > 0.1 ) return;
+
+      var Y = 210-30*Math.sin(this.timer.time/2000*(Math.PI*2));
+
+       var circle = circleModel.create({
+         x: 500,
+         y: Y,
+         r: 0,
+         color: undefined,
+         borderWidth: 4,
+         border: this.colours[timer.time/10%this.colours.length]});
+
+       this.addChild(circle);
+
+       var M = Movement;
+
+       M.compile([
+          [
+            [6000, function() {
+               circle.r = 5 + Math.random() * 50;
+               circle.x = 350 - Math.random()*150;
+               circle.alpha = 0;
+             },
+             Math.sqrt
+            ],
+            [6000, function() {
+               circle.y = Y - 130 - Math.random() * 40;
+             },
+             M.easeIn(0.5)
+            ]
+          ],
+          (function() { this.removeChild(circle); }).bind(this)
+       ])();
     }
   }
 });

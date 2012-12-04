@@ -261,28 +261,27 @@ var DomValue =
     },
 
     setElement: function ( element ) {
-	this.element = element;
+      this.element = element;
     },
 
     get: function() {
-	return this.element[this.property];
+      return this.element[this.property];
     },
 
     set: function(value) {
-	this.element[this.property] = value;
+      this.element[this.property] = value;
     },
 
-    // TODO: support multiple listeners
     addListener: function(listener) {
-	this.element[this.event] = listener;
+      this.element.addEventListener(this.event, listener, false);
     },
 
     removeListener: function(listener) {
-	try {
-	   this.element[this.event] = null;
-	} catch (x) {
-	   // could be that the element has been removed
-	}
+      try {
+	this.element[this.event] = null;
+      } catch (x) {
+	// could be that the element has been removed
+      }
     },
 
     toString: function() {
