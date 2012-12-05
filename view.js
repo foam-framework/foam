@@ -1984,15 +1984,17 @@ var TableView2 = FOAM.create({
      },
 
     repaint: function() {
-      this.objs = [];
       var self = this;
-      this.dao.limit(this.rows).select({
-        __proto__: self.objs,
+      this.objs = {
+        __proto__: [],
         eof: function() {
-          if ( self.element() )
+          if ( self.element() ) {
             self.element().innerHTML = self.tableToHTML();
+            self.initHTML();
+          }
         }
-      });
+      };
+      this.dao.limit(this.rows).select(this.objs);
     },
 
    // TODO: it would be better if it were initiated with
