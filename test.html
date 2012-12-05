@@ -294,7 +294,7 @@ document.writeln("=======================================");
     document.writeln("<table><tr>");
     document.writeln("<td>");
 
-    DomValue.DEFAULT_EVENT = 'onkeyup';
+    DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
     var dv1 = DetailView.create(o.model_);
     dv1.set(o);
@@ -336,7 +336,7 @@ o = Model;
        set: function (val) { },
        get: function () { return XMLUtil.stringify(this); }
     });
-    DomValue.DEFAULT_EVENT = 'onchange';
+    DomValue.DEFAULT_EVENT = 'change';
 
     document.writeln("</br><h2>Test Property Linking</h2>");
 

@@ -267,6 +267,12 @@ var PanelCView = FOAM.create({
 	 return this;
       },
 
+      removeChild: function(child) {
+	 this.children.remove(child);
+	 child.parent = undefined;
+	 return this;
+      },
+
       paint: function() {
 	 for ( var i = 0 ; i < this.children.length ; i++ ) {
 	    var child = this.children[i];
@@ -1253,7 +1259,7 @@ var AlternateView = FOAM.create({
 
 	       return false;
 	    };}(this,view);
-	    str.push('<a href="#top" id="' + this.registerCallback('onclick', listener) + '">' + view.label + '</a>');
+	    str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
 	    if ( view.label == this.selected ) viewChoice = view;
 	 }
 	 str.push('<br/>');

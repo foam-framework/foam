@@ -430,8 +430,7 @@ var Events = {
      var fn2 = opt_fn ? function() { fn(opt_fn()); } : fn;
      var oldOnGet = Events.onGet;
      var listener = EventService.merged(fn2, 5);
-     Events.onGet = function(obj, name, value)
-     {
+     Events.onGet = function(obj, name, value) {
        obj.propertyValue(name).addListener(listener);
      };
      var ret = fn();

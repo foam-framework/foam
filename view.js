@@ -36,6 +36,7 @@ var AbstractView =
 
     removeChild: function(child) {
       this.children.remove(child);
+      child.parent = undefined;
 
       return this;
     },
@@ -100,8 +101,7 @@ var AbstractView =
 	     var event     = callback[1];
 	     var listener  = callback[2];
 	     var e         = document.getElementById(elementId);
-             // ???: Should this be addEventListener instead?
-	     e[event]      = listener.bind(this);
+             e.addEventListener(event, listener.bind(this), false);
 	  }
 
 	  delete this['callbacks_'];
@@ -163,8 +163,8 @@ var AbstractView2 = FOAM.create({
     },
 
     removeChild: function(child) {
-      child.parent = undefined;
       this.children.remove(child);
+      child.parent = undefined;
 
       return this;
     },
@@ -222,8 +222,7 @@ var AbstractView2 = FOAM.create({
 	     var event     = callback[1];
 	     var listener  = callback[2];
 	     var e         = document.getElementById(elementId);
-             // ???: Should this be addEventListener instead?
-	     e[event]      = listener.bind(this);
+             e.addEventListener(event, listener.bind(this), false);
 	  }
 
 	  delete this['callbacks_'];
@@ -249,7 +248,7 @@ var AbstractView2 = FOAM.create({
 
 var DomValue =
 {
-    DEFAULT_EVENT:    'onchange',
+    DEFAULT_EVENT:    'change',
     DEFAULT_PROPERTY: 'value',
 
     create: function ( element, opt_event, opt_property ) {
@@ -278,7 +277,7 @@ var DomValue =
 
     removeListener: function(listener) {
       try {
-	this.element[this.event] = null;
+        this.element.removeEventListener(this.event, listener, false);
       } catch (x) {
 	// could be that the element has been removed
       }
@@ -381,6 +380,8 @@ var circleModel = Model.create({
 
    name:  'Circle',
    label: 'Circle',
+
+   ids: [],
 
    properties: [
       {
@@ -1048,7 +1049,7 @@ var BooleanView = {
     initHTML: function() {
 	var e = this.element();
 
-	this.domValue = DomValue.create(e, 'onchange', 'checked');
+	this.domValue = DomValue.create(e, 'change', 'checked');
 
 	Events.link(this.value, this.domValue);
     },
@@ -1129,7 +1130,7 @@ var TextAreaView = FOAM.create({
     },
 
     initHTML: function() {
-      this.domValue = DomValue.create(this.element(), 'onchange', 'value');
+      this.domValue = DomValue.create(this.element(), 'change', 'value');
 
       // Events.follow(this.model, this.domValue);
       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
@@ -1218,7 +1219,7 @@ var FunctionView =
     },
 
     initHTML: function() {
-       this.domValue = DomValue.create(this.element(), 'onkeyup', 'value');
+       this.domValue = DomValue.create(this.element(), 'keyup', 'value');
 
 //       TextAreaView.initHTML.call(this);
        this.errorView.initHTML();
@@ -1933,9 +1934,8 @@ var ActionButton =
 
    toHTML: function() {
       this.registerCallback(
-	 'onclick',
+	 'click',
 	 function(action) { return function() {
-console.log("action: ", action);
 	    action.action.apply(this.value.get());
          };}(this.action),
          this.getID());

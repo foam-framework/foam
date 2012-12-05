@@ -135,10 +135,11 @@ console.log(cls);
        // build primary key getter and setter
        if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
           var primaryKey = this.ids;
+
           if (primaryKey.length == 1) {
             cls.__defineGetter__("id", function() { return this[primaryKey[0]]; });
             cls.__defineSetter__("id", function(val) { this[primaryKey[0]] = val; });
-          } else {
+          } else if (primaryKey.length > 1) {
             cls.__defineGetter__("id", function() {
                 return primaryKey.map(function(key) { return this[key]; }); });
             cls.__defineSetter__("id", function(val) {

@@ -114,7 +114,7 @@ var Dragon = Model.create({
       this.__super__.init.apply(this, arguments);
       var me = this;
       this.i = 0;
-      Events.dynamic(function() { timer.time; me.paint(); });
+      Events.dynamic(function() { timer.time; }, function() { me.paint(); });
 //      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
     },
 
@@ -177,20 +177,20 @@ var Dragon = Model.create({
 
        M.compile([
           [
-            [6000, function() {
+            [4000, function() {
                circle.r = 5 + Math.random() * 50;
                circle.x = 350 - Math.random()*150;
                circle.alpha = 0;
              },
              Math.sqrt
             ],
-            [6000, function() {
-               circle.y = Y - 130 - Math.random() * 40;
+            [4000, function() {
+               circle.y = Y - 150 - Math.random() * 50;
              },
              M.easeIn(0.5)
             ]
           ],
-          (function() { this.removeChild(circle); }).bind(this)
+          (function() { debugger; this.removeChild(circle); }).bind(this)
        ])();
     }
   }

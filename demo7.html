@@ -43,6 +43,7 @@
 
     Dragon.methods.forEach(function(meth) {
       Events.dynamic(function() {
+console.log('update', meth.name);
         Dragon.getPrototype()[meth.name] = eval(meth.code);
       });
     });
