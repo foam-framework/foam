@@ -36,19 +36,7 @@ var DAO2Controller = FOAM.create({
 	 name:  'dao',
 	 label: 'DAO',
 	 postSet: function(val) {
-           if ( this.tableView && val ) {
-             var value = [];
-             var self = this;
-             val.select({
-               __proto__: value,
-               eof: function() {
-                 self.tableView.setValue(this);
-               },
-               get: function() {
-                 return this;
-               }
-             });
-           }
+           if ( this.tableView && val ) this.tableView.setValue(new SimpleValue(val));
          }
       }
    ],
@@ -188,7 +176,9 @@ var DAO2Controller = FOAM.create({
 	 AbstractView.init.call(this);
 	 this.model = tmp;
 
-	 this.tableView = TableView.create(this.model);
+         var model = this.model;
+         var dao = this.dao;
+	 this.tableView = TableView2.create({ model: model, dao: dao });
       },
 
       toHTML: function() {
@@ -200,24 +190,13 @@ var DAO2Controller = FOAM.create({
 	 this.tableView.initHTML(); // could this just be added to children?
 
 	 this.dao = this.dao;
-	 // this.tableView.setModel(this.dao);
          this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.selection.addListener(this.onSelection);
       },
 
       refresh: function() {
-         var value = [];
-         var self = this;
-         this.dao.select({
-           __proto__: value,
-           eof: function() {
-             self.tableView && self.tableView.setValue(this);
-           },
-           get: function() {
-             return value;
-           }
-         });
+        this.dao = this.dao;
       }
    },
 

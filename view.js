@@ -1910,6 +1910,191 @@ var TableView = FOAM.create({
   }
 });
 
+var TableView2 = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name: 'TableView2',
+   label: 'Table View 2',
+
+   properties: [
+      {
+	 name:  'model',
+	 label: 'Model',
+	 type:  'Model'
+      },
+      {
+	 name:  'properties',
+	 label: 'Model',
+	 type:  'Array[String]',
+         defaultValueFn: function() {
+           return this.model.tableProperties;
+         }
+      },
+      {
+	 name:  'selection',
+	 label: 'Selection',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
+      },
+      {
+	 name:  'children',
+	 label: 'Children',
+         type:  'Array[View]',
+	 valueFactory: function() { return []; }
+      },
+      {
+         name:  'dao',
+         label: 'DAO',
+         type: 'DAO',
+         required: true,
+         postSet: function(val, oldValue) {
+           if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
+           this.listener && val.listen(this.listener);
+           this.repaint_ && this.repaint_();
+         }
+      },
+      {
+        name: 'rows',
+        label: 'Rows',
+        type:  'Integer',
+        defaultValue: 30,
+        postSet: function(val, oldValue) {
+          this.repaint();
+        }
+      }
+   ],
+
+   methods: {
+
+    // Not actually a method, but still works
+    // TODO: add 'Constants' to Model
+    DOUBLE_CLICK: "double-click", // event topic
+
+     init: function() {
+       AbstractView2.getPrototype().init.call(this);
+
+       var self = this;
+       this.repaint_ = EventService.merged(this.repaint.bind(this));
+
+       this.listener = {
+         put: self.repaint_,
+         remove: self.repaint_
+       };
+     },
+
+    repaint: function() {
+      var self = this;
+      this.objs = {
+        __proto__: [],
+        eof: function() {
+          if ( self.element() ) {
+            self.element().innerHTML = self.tableToHTML();
+            self.initHTML();
+          }
+        }
+      };
+      this.dao.limit(this.rows).select(this.objs);
+    },
+
+   // TODO: it would be better if it were initiated with
+   // .create({model: model}) instead of just .create(model)
+    toHTML: function() {
+      return '<span id="' + this.getID() + '">' +
+        this.tableToHTML() +
+        '</span>';
+    },
+
+    tableToHTML: function() {
+	var model = this.model;
+
+	var str = [];
+	var props = [];
+
+        str.push('<table class="chaosTable ' + model.name + 'Table">');
+
+	//str += '<!--<caption>' + model.plural + '</caption>';
+        str.push('<thead><tr>');
+	for ( var i = 0 ; i < this.properties.length ; i++ )
+	{
+	    var key  = this.properties[i];
+	    var prop = model.getProperty(key);
+
+	    if ( ! prop ) continue;
+
+	   // if ( prop.hidden ) continue;
+
+	    str.push('<th scope=col>' + prop.label + '</th>');
+
+	    props.push(prop);
+	}
+	str.push('</tr></thead><tbody>');
+
+        if ( this.objs )
+	for ( var i = 0 ; i < this.objs.length; i++ ) {
+	    var obj = this.objs[i];
+
+	    str.push('<tr class="tr-' + this.getID() + '")">');
+
+	    for ( var j = 0 ; j < props.length ; j++ ) {
+		var prop = props[j];
+
+		str.push('<td>');
+		var val = obj[prop.name];
+		str.push(( val == null ) ? '&nbsp;' : val);
+		str.push('</td>');
+	    }
+
+	    str.push('</tr>');
+	}
+
+	str.push('</tbody></table>');
+
+	return str.join('');
+    },
+
+    setValue: function(value) {
+       this.dao = value.get();
+       return this;
+    },
+
+    initHTML: function() {
+	var es = document.getElementsByClassName('tr-' + this.getID());
+
+	for ( var i = 0 ; i < es.length ; i++ ) {
+	    var e = es[i];
+
+	    e.onmouseover = function(value, obj) { return function() {
+               value.prevValue = value.get();
+	       value.set(obj);
+	    }; }(this.selection, this.objs[i]);
+	    e.onmouseout = function(value, obj) { return function() {
+	       if ( ! value.prevValue ) return;
+               value.set(value.prevValue);
+               delete value['prevValue'];
+	    }; }(this.selection, this.objs[i]);
+	    e.onclick = function(value, obj) { return function(evt) {
+	       value.set(obj);
+               delete value['prevValue'];
+               var siblings = evt.srcElement.parentNode.parentNode.childNodes;
+	       for ( var i = 0 ; i < siblings.length ; i++ ) {
+                  siblings[i].className = "";
+	       }
+               evt.srcElement.parentNode.className = 'rowSelected';
+	    }; }(this.selection, this.objs[i]);
+	    e.ondblclick = function(me, value, obj) { return function(evt) {
+               me.publish(me.DOUBLE_CLICK, obj, value);
+	    }; }(this, this.selection, this.objs[i]);
+	}
+    },
+
+
+    destroy: function() {
+    }
+  }
+});
+
 
 var ActionButton =
 {
