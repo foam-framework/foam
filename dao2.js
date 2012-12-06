@@ -210,8 +210,11 @@ var AbstractDAO2 = FOAM.create({
   where: function(query) {
     return filteredDAO(query, this);
   },
-  limit: function(count, opt_start) {
-    return limitedDAO(count, opt_start || 0, this);
+  limit: function(count) {
+    return limitedDAO(count, this);
+  },
+  skip: function(skip) {
+    return skipDAO(skip, this);
   },
   orderBy: function(comparator) {
     return orderedDAO(comparator, this);
@@ -271,7 +274,7 @@ function orderedDAO(comparator, dao) {
   };
 }
 
-function limitedDAO(count, start, dao) {
+function limitedDAO(count, dao) {
   return {
     __proto__: dao,
     select: function(sink, options) {
@@ -279,23 +282,38 @@ function limitedDAO(count, start, dao) {
         if ( options.limit ) {
           options = {
             __proto__: options,
-            limit: {
-              count: Math.min(count, options.limit.count),
-              start: start
-            }
+            limit: Math.min(count, options.limit.count)
           };
         } else {
-          options = { __proto__: options, limit: {count: count, start: start} };
+          options = { __proto__: options, limit: count };
         }
       }
       else {
-        options = {limit: {count: count, start: start}};
+        options = { limit: count };
       }
       dao.select(sink, options);
     }
   };
 }
 
+function skipDAO(count, dao) {
+  return {
+    __proto__: dao,
+    select: function(sink, options) {
+      if ( options ) {
+        if ( options.skip ) {
+          options = {
+            __proto__: options,
+            skip: Math.max(count, options.skip)
+          };
+        } else {
+          options = { __proto__: options, skip: count };
+        }
+      }
+      dao.select(sink, options);
+    }
+  };
+}
 
 
 var pmap = {};
