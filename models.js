@@ -230,7 +230,7 @@ var PanelCView = FOAM.create({
 	 name:  'children',
 	 label: 'Children',
 	 type:  'CView[]',
-	 defaultValue: []
+	 valueFactory: function() { return []; }
       },
       {
 	 name:  'canvas',

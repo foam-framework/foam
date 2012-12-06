@@ -64,6 +64,35 @@
  *
  */
 
+/**
+ * Set a specified properties value with an auto-increment
+ * sequence number on DAO.put() if the properties value
+ * is set to the properties default value.
+ */
+var SeqNoDAO2 = {
+
+  create: function(prop, startSeqNo, delegate) {
+    // TODO: this is async but the constructor is sync
+    // TODO: there should be a better way to pipe sinks than this
+    delegate.select({ __proto__: MAX(prop), eof: function() { startSeqNo = this.__proto__.max + 1; }});
+
+    return {
+      __proto__: delegate,
+      prop:      prop,
+
+      put: function(obj, sink) {
+        var val = obj[prop.name];
+
+        if ( val == prop.defaultValue )
+          obj[prop.name] = startSeqNo;
+
+        return delegate.put(obj, sink);
+      }
+    };
+  }
+};
+
+
 
 var ObjectToIndexedDB = {
   __proto__: Visitor.create(),

@@ -43,10 +43,12 @@ var StackView = FOAM.create({
 	 help:  'Go to previous view',
 
 	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
+	 isEnabled:   function() { return this.stack.length > 1; },
 	 action:      function() {
-	    this.redo.push(this.stack.pop());
-	    this.pushView(this.stack.pop());
+           if ( this.stack.length < 2 ) return;
+
+	   this.redo.push(this.stack.pop());
+	   this.pushView(this.stack.pop());
 	 }
       },
       {
@@ -56,7 +58,7 @@ var StackView = FOAM.create({
 	 help:  'Undo the previous back.',
 
 	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
+	 isEnabled:   function() { return this.redo.length; },
 	 action:      function() { }
       }
    ],
@@ -68,23 +70,23 @@ var StackView = FOAM.create({
             '<table><tr><td valign=top><div class="stackview-viewarea" width:760px></div></td><td valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
       },
 
-      setTopView: function (view, opt_label)
+      setTopView: function(view, opt_label)
       {
 	 this.stack = [];
 	 this.pushView(view);
       },
 
-      navBarElement: function ()
+      navBarElement: function()
       {
 	 return this.element().childNodes[0];
       },
 
-      viewAreaElement: function ()
+      viewAreaElement: function()
       {
 	 return this.element().childNodes[1].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
       },
 
-      previewAreaElement: function ()
+      previewAreaElement: function()
       {
 	 return this.element().childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
       },
@@ -104,7 +106,7 @@ var StackView = FOAM.create({
 	 this.navBarElement().innerHTML = buf.join('');
       },
 
-      pushView: function (view, opt_label)
+      pushView: function(view, opt_label)
       {
 	 this.setPreview(null);
 	 view.stackLabel = opt_label || view.stackLabel || view.label;
@@ -115,7 +117,7 @@ var StackView = FOAM.create({
 	 view.initHTML();
       },
 
-      setPreview: function (view)
+      setPreview: function(view)
       {
 	 if ( ! view ) { this.previewAreaElement().innerHTML = ""; return; }
 	 this.previewAreaElement().innerHTML = view.toHTML();
