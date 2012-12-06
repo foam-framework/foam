@@ -19,8 +19,7 @@ var StackView = FOAM.create({
 
    name:  'StackView',
    label: 'Stack View',
-
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    properties: [
       {
@@ -32,6 +31,23 @@ var StackView = FOAM.create({
 	 name:  'redo',
 	 label: 'Redo',
 	 valueFactory: function() { return []; }
+      },
+      {
+        name:   'backButton',
+        label: 'Back Button',
+        type:  'ActionButton',
+        valueFactory: function() {
+          // TODO: What's the right value for the action button.
+          return ActionButton.create(StackView.actions[0], new SimpleValue(this));
+        }
+      },
+      {
+        name:   'forwardButton',
+        label:  'Forward Button',
+        type:   'ActionButton',
+        valueFactory: function() {
+          return ActionButton.create(StackView.actions[1], new SimpleValue(this));
+        }
       }
    ],
 
@@ -43,10 +59,10 @@ var StackView = FOAM.create({
 	 help:  'Go to previous view',
 
 	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
+	 isEnabled:   function() { return this.stack.length > 0; },
 	 action:      function() {
 	    this.redo.push(this.stack.pop());
-	    this.pushView(this.stack.pop());
+	    this.pushView(this.stack.pop(), undefined, true);
 	 }
       },
       {
@@ -56,15 +72,24 @@ var StackView = FOAM.create({
 	 help:  'Undo the previous back.',
 
 	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() { }
+	 isEnabled:   function() { return this.redo.length > 0; },
+	 action:      function() {
+           this.pushView(this.redo.pop());
+         }
       }
    ],
 
    methods: {
+      init: function() {
+        AbstractView2.getPrototype().init.call(this);
+        this.addChild(this.forwardButton);
+        this.addChild(this.backButton);
+      },
+
       toHTML: function() {
 	 return '<div class="stackview" style="width:100%;font-size:200%;font-family:sans-serif" id="' + this.getID() + '">' +
 	    '<div class="stackview_navbar"></div>' +
+            '<div class="stackview_navactions">' + this.backButton.toHTML() + this.forwardButton.toHTML() + '</div>' +
             '<table><tr><td valign=top><div class="stackview-viewarea" width:760px></div></td><td valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
       },
 
@@ -79,14 +104,19 @@ var StackView = FOAM.create({
 	 return this.element().childNodes[0];
       },
 
+      navActionsElement: function()
+      {
+         return this.element().childNodes[1];
+      },
+
       viewAreaElement: function ()
       {
-	 return this.element().childNodes[1].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+	 return this.element().childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
       },
 
       previewAreaElement: function ()
       {
-	 return this.element().childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+	 return this.element().childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
       },
 
       updateNavBar: function()
@@ -104,8 +134,9 @@ var StackView = FOAM.create({
 	 this.navBarElement().innerHTML = buf.join('');
       },
 
-      pushView: function (view, opt_label)
+      pushView: function (view, opt_label, opt_back)
       {
+         if ( !opt_back ) this.redo.length = 0;
 	 this.setPreview(null);
 	 view.stackLabel = opt_label || view.stackLabel || view.label;
 	 this.stack.push(view);
