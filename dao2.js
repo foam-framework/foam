@@ -65,7 +65,7 @@
  */
 
 
-var ObjectToIndexedDB = {
+var ObjectToJSON = {
   __proto__: Visitor.create(),
 
   visitFunction: function(o) {
@@ -96,8 +96,8 @@ var ObjectToIndexedDB = {
 };
 
 
-var IndexedDBToObject = {
-  __proto__: ObjectToIndexedDB.create(),
+var JSONToObject = {
+  __proto__: ObjectToJSON.create(),
 
   visitString: function(o) {
      return o.substr(0, 8) === 'function' ?
@@ -484,7 +484,7 @@ var IndexedDBDAO2 = FOAM.create({
       var self = this;
       this.withStore("readwrite", function(store) {
         var request =
-            store.put(ObjectToIndexedDB.visitObject(value), value.id);
+            store.put(ObjectToJSON.visitObject(value), value.id);
 
         request.onsuccess = function(e) {
           sink && sink.put && sink.put(value);
@@ -505,7 +505,7 @@ var IndexedDBDAO2 = FOAM.create({
             sink && sink.error && sink.error('find', key);
             return;
           }
-          var result = IndexedDBToObject.visitObject(request.result);
+          var result = JSONToObject.visitObject(request.result);
           sink && sink.put && sink.put(result);
         };
         request.onerror = function(e) {
@@ -527,7 +527,7 @@ var IndexedDBDAO2 = FOAM.create({
               sink && sink.error && sink.error('remove', query);
               return;
             }
-            var result = IndexedDBToObject.visitObject(getRequest.result);
+            var result = JSONToObject.visitObject(getRequest.result);
             var delRequest = store.delete(key);
             delRequest.onsuccess = function(e) {
               sink && sink.remove && sink.remove(result);
@@ -549,7 +549,7 @@ var IndexedDBDAO2 = FOAM.create({
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {
-            var value = IndexedDBToObject.visitObject(cursor.value);
+            var value = JSONToObject.visitObject(cursor.value);
             if (query.f(value)) {
               var deleteReq = cursor.delete();
               deleteReq.onsuccess = function() {
@@ -589,7 +589,7 @@ var IndexedDBDAO2 = FOAM.create({
             return;
           }
 
-          var value = IndexedDBToObject.visitObject(cursor.value);
+          var value = JSONToObject.visitObject(cursor.value);
           sink.put(value);
           cursor.continue();
         };
@@ -899,6 +899,101 @@ var JSONFileDAO2 = FOAM.create({
        }).bind(this));
      }
    }
+});
+
+var WorkerDAO2 = FOAM.create({
+  model_: 'Model',
+  name: 'WorkerDAO2',
+  label: 'Worker DAO',
+
+  properties: [
+    {
+      name: 'delegate',
+      type: 'Worker',
+      label:'Delegate',
+      help: 'The web-worker to delegate all actions to.'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      var workerscript = [
+        "importScripts('bootFOAMWorker.js');\n",
+      ];
+
+//      this.delegate = new Worker(window.URL.createObjectURL(
+//          new Blob(workerscript, { type: "text/javascript" })));
+      this.delegate = new Worker("bootFOAMWorker.js");
+
+      this.delegate.addEventListener("message", this.delegateMessage);
+
+      this.callbacks_ = {};
+
+      this.storage_ = {};
+
+      this.nextRequest_ = 0;
+    },
+    destroy: function() {
+      // Send a message to the delegate?
+      this.delegate.terminate();
+    },
+    makeReqest_: function(params, sink) {
+      var req = this.nextRequest_++;
+      this.callbacks_[req] = sink;
+      params.request = req;
+      this.delegate.postMessage(params);
+    },
+    put: function(obj, sink) {
+      this.storage_[obj.id] = obj;
+      this.makeRequest_({
+        method: 'put',
+        obj: ObjectToJSON(obj),
+      }, sink);
+    },
+    find: function(id, sink) {
+      // No need to go to worker.
+      this.storage_.find(id, sink);
+    },
+    select: function(sink, options) {
+      this.makeRequest_({
+        method: 'select',
+        options: options
+      }, sink);
+    },
+    remove: function(query, sink) {
+      this.makeRequest({
+        method: 'remove',
+        query: query
+      }, sink);
+    },
+    where: function(query) {
+      return filteredDAO(query, this);
+    },
+    limit: function(count) {
+      return limitedDAO(count, this);
+    },
+    skip: function(skip) {
+      return skipDAO(skip, this);
+    },
+    orderBy: function(comparator) {
+      return orderedDAO(comparator, this);
+    },
+    unlisten: function(sink) {},
+    listen: function(sink, options) {},
+    pipe: function(sink, options) {}
+  },
+
+  listeners: [
+    {
+      model_: 'MethodModel',
+      name: 'delegateMessage',
+      code: function(e) {
+        var sink = this.callbacks_[e.request];
+      }
+    }
+  ]
 });
 
 /*

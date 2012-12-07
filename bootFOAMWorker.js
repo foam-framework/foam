@@ -14,5 +14,21 @@
  * limitations under the License.
  */
 
-document.writeln('<script type="text/javascript" src="FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="bootFOAMMain.js"></script>\n');
+// Workers don't get a console object.  We should model our own loggin system.
+var console = {
+  log: function() {},
+  warn: function() {},
+  error: function() {},
+  info: function() {}
+};
+
+// We also don't get a window or document object, we should find a way to
+// encapsulate our refernces to this or model a wrapper.
+var window = {};
+var document = {};
+
+// FIXME: Workers should be able to bootstrap just from a Model DAO and only
+// load the models it needs.
+importScripts("FOAMmodels.js")
+for (var i = 0; i < files.length; i++) files[i] = files[i] + '.js';
+importScripts.apply(self, files);
