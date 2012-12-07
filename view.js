@@ -1985,6 +1985,8 @@ var TableView2 = FOAM.create({
      },
 
     repaint: function() {
+console.time('redraw');
+// if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
       this.objs = [];
       this.objs.eof = function() {
@@ -1994,6 +1996,7 @@ var TableView2 = FOAM.create({
         }
       };
       this.dao.limit(this.rows).select(this.objs);
+console.timeEnd('redraw');
     },
 
    // TODO: it would be better if it were initiated with
