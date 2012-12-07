@@ -64,6 +64,35 @@
  *
  */
 
+/**
+ * Set a specified properties value with an auto-increment
+ * sequence number on DAO.put() if the properties value
+ * is set to the properties default value.
+ */
+var SeqNoDAO2 = {
+
+  create: function(prop, startSeqNo, delegate) {
+    // TODO: this is async but the constructor is sync
+    // TODO: there should be a better way to pipe sinks than this
+    delegate.select({ __proto__: MAX(prop), eof: function() { startSeqNo = this.__proto__.max + 1; }});
+
+    return {
+      __proto__: delegate,
+      prop:      prop,
+
+      put: function(obj, sink) {
+        var val = obj[prop.name];
+
+        if ( val == prop.defaultValue )
+          obj[prop.name] = startSeqNo;
+
+        return delegate.put(obj, sink);
+      }
+    };
+  }
+};
+
+
 
 var ObjectToJSON = {
   __proto__: Visitor.create(),
@@ -166,6 +195,8 @@ var AbstractDAO2 = FOAM.create({
         sink = orderedSink(options.order, sink);
       if ( options.limit )
         sink = limitedSink(options.limit, sink);
+      if ( options.skip )
+        sink = skipSink(options.skip, sink);
       if ( options.query )
         sink = predicatedSink(options.query.partialEval(), sink);
     }
@@ -253,12 +284,12 @@ function limitedDAO(count, dao) {
         if ( options.limit ) {
           options = {
             __proto__: options,
-            limit: Math.min(count, options.limit.count)
+            limit: Math.min(count, options.limit)
           };
         } else {
           options = { __proto__: options, limit: count };
         }
-      }
+      }	
       else {
         options = { limit: count };
       }
@@ -267,19 +298,17 @@ function limitedDAO(count, dao) {
   };
 }
 
-function skipDAO(count, dao) {
+function skipDAO(skip, dao) {
   return {
     __proto__: dao,
     select: function(sink, options) {
       if ( options ) {
-        if ( options.skip ) {
-          options = {
-            __proto__: options,
-            skip: Math.max(count, options.skip)
-          };
-        } else {
-          options = { __proto__: options, skip: count };
-        }
+        options = {
+          __proto__: options,
+          skip: skip
+        };
+      } else {
+        options = { __proto__: options, skip: skip };
       }
       dao.select(sink, options);
     }
@@ -292,10 +321,11 @@ for ( var key in AbstractDAO2.methods ) {
   pmap[AbstractDAO2.methods[key].name] = AbstractDAO2.methods[key].code;
 }
 
+if ( false ) {
 defineProperties(Object.prototype, pmap);
 
 defineProperties(Object.prototype, {
-  clone: function() { return this; /* TODO */ },
+  clone: function() { return this; }, // TODO
   put: function(obj, sink) {
     /*
     if ( this.hasOwnProperty('id') ) {
@@ -343,8 +373,7 @@ defineProperties(Object.prototype, {
     sink && sink.error && sink.error('remove', id);
   }
 });
-
-
+}
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {

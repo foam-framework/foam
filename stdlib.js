@@ -98,6 +98,7 @@ Object.defineProperty(Array.prototype, 'remove', {
  * ForEach operator on Objects.
  * Calls function with arguments (obj, key).
  **/
+
 Object.defineProperty(Object.prototype, 'forEach', {
   value: function(fn) {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
@@ -118,6 +119,9 @@ function predicatedSink(predicate, sink) {
     __proto__: sink,
     put: function(obj, s, fc) {
       if ( predicate.f(obj) ) sink.put(obj, s, fc);
+    },
+    eof: function() {
+      sink.eof && sink.eof();
     }
   };
 }
@@ -130,6 +134,9 @@ function limitedSink(count, sink) {
       this.i++;
       sink.put(obj, s, fc);
       if ( this.i >= count && fc ) fc.stop();
+    },
+    eof: function() {
+      sink.eof && sink.eof();
     }
   };
 }
@@ -139,9 +146,7 @@ function skipSink(skip, sink) {
     __proto__: sink,
     i: 0,
     put: function(obj, s, fc) {
-      this.i++;
-      if ( this.i <= skip ) return;
-      sink.put(i);
+      if ( this.i++ >= skip ) sink.put(obj, s, fc);
     }
   };
 }

@@ -178,7 +178,6 @@ var Dragon = Model.create({
        M.compile([
           [
             [4000, function() {
-               circle.r = 5 + Math.random() * 50;
                circle.x = 350 - Math.random()*150;
                circle.alpha = 0;
              },
@@ -186,11 +185,12 @@ var Dragon = Model.create({
             ],
             [4000, function() {
                circle.y = Y - 150 - Math.random() * 50;
+               circle.r = 5 + Math.random() * 50;
              },
              M.easeIn(0.5)
             ]
           ],
-          (function() { debugger; this.removeChild(circle); }).bind(this)
+          (function() { this.removeChild(circle); }).bind(this)
        ])();
     }
   }

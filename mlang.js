@@ -610,6 +610,65 @@ var SumExpr = FOAM.create({
    }
 });
 
+
+var MaxExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'UNARY',
+
+   name: 'MaxExpr',
+
+   properties: [
+      {
+	 name:  'max',
+	 label: 'Max',
+	 type:  'int',
+	 help:  'Maximum value.',
+         defaultValue: undefined
+      }
+   ],
+
+   methods: {
+     pipe: function(sink) { sink.put(this); },
+     put: function(obj) {
+       var v = this.arg1.f(obj);
+       this.max = this.max === undefined ? v : Math.max(this.max, v);
+     },
+     remove: function(obj) { },
+     toString: function() { return this.sum; }
+   }
+});
+
+
+var MinExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'UNARY',
+
+   name: 'MinExpr',
+
+   properties: [
+      {
+	 name:  'min',
+	 label: 'Min',
+	 type:  'int',
+	 help:  'Minimum value.',
+         defaultValue: undefined
+      }
+   ],
+
+   methods: {
+     pipe: function(sink) { sink.put(this); },
+     put: function(obj) {
+       var v = this.arg1.f(obj);
+       this.min = this.min === undefined ? v : Math.min(this.min, v);
+     },
+     remove: function(obj) { },
+     toString: function() { return this.sum; }
+   }
+});
+
+
 var GroupByExpr = FOAM.create({
    model_: 'Model',
 
@@ -714,6 +773,14 @@ var SeqExpr = FOAM.create({
 
 function SUM(expr) {
   return SumExpr.create({arg1: expr});
+}
+
+function MIN(expr) {
+  return MinExpr.create({arg1: expr});
+}
+
+function MAX(expr) {
+  return MaxExpr.create({arg1: expr});
 }
 
 function COUNT() {

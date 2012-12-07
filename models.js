@@ -230,7 +230,7 @@ var PanelCView = FOAM.create({
 	 name:  'children',
 	 label: 'Children',
 	 type:  'CView[]',
-	 defaultValue: []
+	 valueFactory: function() { return []; }
       },
       {
 	 name:  'canvas',
@@ -248,12 +248,12 @@ var PanelCView = FOAM.create({
 //	 this.canvasView = CanvasModel.create(this);
 	 this.canvasView = CanvasModel.create({width:this.width+1, height:this.height+2});
 	 if ( this.backgroundColor ) this.canvasView.backgroundColor = this.backgroundColor;
-	 this.canvasView.addChild(this);
 	 return this.canvasView.toHTML();
       },
 
       initHTML: function() {
 	 this.canvasView.initHTML();
+	 this.canvasView.addChild(this);
       },
 
       write: function(document) {
@@ -333,13 +333,13 @@ var ProgressCView = FOAM.create({
 });
 
 
-var SliderCView = FOAM.create({
+var ScrollCView = FOAM.create({
 
    model_: 'Model',
 
    extendsModel: 'PanelCView',
 
-   name:  'SliderCView',
+   name:  'ScrollCView',
 
    properties: [
       {
@@ -357,15 +357,18 @@ var SliderCView = FOAM.create({
       },
       {
 	 name:  'x',
-         type:  'int'
+         type:  'int',
+         defaultValue: 0
       },
       {
 	 name:  'y',
-         type:  'int'
+         type:  'int',
+         defaultValue: 0
       },
       {
 	 name:  'width',
-         type:  'int'
+         type:  'int',
+         defaultValue: 20
       },
       {
 	 name:  'height',
@@ -377,12 +380,14 @@ var SliderCView = FOAM.create({
         defaultValue: true
       },
       {
-	 name:  'value',
-         type:  'int'
+	name:  'value',
+        type:  'int',
+        defaultValue: 0
       },
       {
-	 name:  'extent',
-         type:  'int'
+	name:  'extent',
+        type:  'int',
+        defaultValue: 10
       },
       {
 	 name:  'size',
@@ -404,7 +409,6 @@ var SliderCView = FOAM.create({
        console.log('mouseMove: ', e);
        var y = e.offsetY;
 
-       console.log('y: ', y);
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
@@ -433,6 +437,9 @@ var SliderCView = FOAM.create({
     paint: function() {
       var c = this.canvas;
 
+      if ( ! c ) {
+        debugger;
+      }
       c.fillStyle = '#fff';
       c.fillRect(this.x, this.w, this.width, this.height);
 
@@ -452,6 +459,71 @@ var SliderCView = FOAM.create({
    }
 });
 
+var ScrollBorder = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name:  'ScrollBorder',
+   label: 'Scroll Border',
+
+   properties: [
+       {
+	   name: 'view',
+	   label: 'View',
+	   type: 'view',
+           postSet: function(view) {
+             this.scrollbar.extent = this.view.rows;
+           }
+       },
+       {
+	   name: 'scrollbar',
+	   label: 'Scrollbar',
+	   type: 'ScrollCView',
+           valueFactory: function() {
+             return ScrollCView.create({height:500, width: 30, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+           }
+       },
+       {
+         name:  'dao',
+         label: 'DAO',
+         type: 'DAO',
+         required: true,
+         postSet: function(newValue, oldValue) {
+           this.view.dao = newValue;
+           // TODO: only works for []'s
+           this.scrollbar.size = this.view.dao.length;
+           this.scrollbar.value = 0;
+           /*
+           if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
+           this.listener && val.listen(this.listener);
+           this.repaint_ && this.repaint_();
+            */
+         }
+       }
+   ],
+
+   methods: {
+     toHTML: function() {
+       return '<table border=1><tr><td valign=top>' +
+         this.view.toHTML() +
+         '</td><td>' +
+         this.scrollbar.toHTML() +
+         '</td></tr></table>';
+     },
+     initHTML: function() {
+       this.view.initHTML();
+       this.scrollbar.initHTML();
+       this.scrollbar.paint();
+
+       var scrollbar = this.scrollbar;
+       var self = this;
+       Events.dynamic(function() {scrollbar.value;}, function() {
+         if ( self.dao) self.view.dao = self.dao.skip(scrollbar.value); });
+     }
+   }
+});
 
 var EyeCView = FOAM.create({
 

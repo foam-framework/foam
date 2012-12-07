@@ -43,8 +43,15 @@
 
     Dragon.methods.forEach(function(meth) {
       Events.dynamic(function() {
-console.log('update', meth.name);
+// console.log('update', meth.name);
+console.log(meth.name);
+try
+{
         Dragon.getPrototype()[meth.name] = eval(meth.code);
+} catch (e)
+{
+console.log(e);
+}
       });
     });
   </script>
