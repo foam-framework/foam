@@ -1986,13 +1986,11 @@ var TableView2 = FOAM.create({
 
     repaint: function() {
       var self = this;
-      this.objs = {
-        __proto__: [],
-        eof: function() {
-          if ( self.element() ) {
-            self.element().innerHTML = self.tableToHTML();
-            self.initHTML();
-          }
+      this.objs = [];
+      this.objs.eof = function() {
+        if ( self.element() ) {
+          self.element().innerHTML = self.tableToHTML();
+          self.initHTML();
         }
       };
       this.dao.limit(this.rows).select(this.objs);
