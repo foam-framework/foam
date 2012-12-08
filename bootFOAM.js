@@ -32,6 +32,7 @@ var files = [
   'future',
   'visitor',
   'dao',
+  'index',
   'dao2',
   'StackView',
   'DAOController',
