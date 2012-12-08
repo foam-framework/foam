@@ -15,39 +15,6 @@
  */
 
 
-var StringComparator = function(s1, s2) {
-  if ( s1 === s2 ) return 0;
-  return s1 < s2 ? -1 : 1;
-};
-
-var toCompare = function(c) {
-  if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
-
-  return c.compare ? c.compare.bind(c) : c;
-};
-
-/** Reverse the direction of a comparator. **/
-var DESC = function(c) {
-  c = toCompare(c);
-  return function(o1, o2) { return c(o2,o1); };
-};
-
-var CompoundComparator = function() {
-  var cs = arguments;
-
-  // Convert objects with .compare() methods to compare functions.
-  for ( var i = 0 ; i < cs.length ; i++ )
-    cs[i] = toCompare(cs[i]);
-
-  return function(o1, o2) {
-    for ( var i = 0 ; i < cs.length ; i++ ) {
-      var r = cs[i](o1, o2);
-      if ( r != 0 ) return r;
-    }
-    return 0;
-  };
-};
-
 var EMPTY = {
   size: 0,
   put: function(idx, obj) {
@@ -106,7 +73,31 @@ var Index = {
   select: function(sink) { this.root.select(this, sink); },
   size: function() { return this.root.size; },
   createNode: function(obj) { return Node.create(obj, this, this, 1); },
-  addToNode: function(oldObj, newObj) { console.log('duplicate', newObj); }
+  addToNode: function(node, newObj) { console.log('duplicate', newObj); }
+};
+
+
+var CompoundIndex = {
+  create: function() {
+    if ( arguments.length == 1 ) return Index.create(arguments[0]);
+
+    return {
+      __proto__: this,
+      root: EMPTY,
+      compare: toCompare(arguments[0]),
+      remainingComparators: argsToArray(arguments).slice(1)
+    };
+  },
+  put: function(obj) { this.root = this.root.put(this, obj); },
+  find: function(obj) { return this.root.find(this, obj); },
+  select: function(sink) { this.root.select(this, sink); },
+  size: function() { return this.root.size; },
+  createNode: function(obj) {
+    return CompoundIndex.create.apply(null, this.remainingComparators);
+  },
+  addToNode: function(node, newObj) {
+    node.obj = node.obj.put(newObj);
+  }
 };
 
 var idx = Index.create(StringComparator);
@@ -118,4 +109,3 @@ idx.put('i');
 idx.put('n');
 
 idx.select(console.log);
-

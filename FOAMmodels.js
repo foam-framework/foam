@@ -14,5 +14,32 @@
  * limitations under the License.
  */
 
-document.writeln('<script type="text/javascript" src="FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="bootFOAMMain.js"></script>\n');
+var files = [
+  'stdlib',
+  'parse',
+  'context',
+  'event',
+  'SimpleValue',
+  'JSONUtil',
+  'XMLUtil',
+  'FOAM',
+  'TemplateUtil',
+  'AbstractPrototype',
+  'ModelProto',
+  'metamodel',
+  'view',
+  'mlang',
+  'future',
+  'visitor',
+  'index.js',
+  'dao',
+  'dao2',
+  'StackView',
+  'DAOController',
+  'DAO2Controller',
+  // remove below here
+  'models',
+  'email',
+  'turntable',
+  'dragon'
+];

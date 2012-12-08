@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-document.writeln('<script type="text/javascript" src="FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="bootFOAMMain.js"></script>\n');
+for ( var i = 0 ; i < files.length ; i++ ) {
+   // console.log("loading: ", files[i]);
+   document.writeln('<script language="javascript" src="' + files[i] + '.js"></script>\n');
+}

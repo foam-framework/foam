@@ -24,6 +24,40 @@ var argsToArray = function(args) {
   return ret;
 };
 
+var StringComparator = function(s1, s2) {
+  if ( s1 === s2 ) return 0;
+  return s1 < s2 ? -1 : 1;
+};
+
+var toCompare = function(c) {
+  if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
+
+  return c.compare ? c.compare.bind(c) : c;
+};
+
+/** Reverse the direction of a comparator. **/
+var DESC = function(c) {
+  c = toCompare(c);
+  return function(o1, o2) { return c(o2,o1); };
+};
+
+var CompoundComparator = function() {
+  var cs = arguments;
+
+  // Convert objects with .compare() methods to compare functions.
+  for ( var i = 0 ; i < cs.length ; i++ )
+    cs[i] = toCompare(cs[i]);
+
+  return function(o1, o2) {
+    for ( var i = 0 ; i < cs.length ; i++ ) {
+      var r = cs[i](o1, o2);
+      if ( r != 0 ) return r;
+    }
+    return 0;
+  };
+};
+
+
 /**
  * Take an array where even values are weights and odd values are functions,
  * and execute one of the functions with propability equal to it's relative
