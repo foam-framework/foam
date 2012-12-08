@@ -18,6 +18,11 @@
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
 
+var argsToArray = function(args) {
+  var ret = [];
+  for ( var i = 0 ; i < args.length ; i++ ) ret[i] = args[i];
+  return ret;
+};
 
 /**
  * Take an array where even values are weights and odd values are functions,
@@ -161,7 +166,7 @@ function orderedSink(comparator, sink) {
     },
     eof: function() {
       this.arr.sort(comparator);
-      this.arr.pipe(sink);
+      this.arr.select(sink);
       sink.eof && sink.eof();
     }
   };

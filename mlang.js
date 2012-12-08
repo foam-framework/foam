@@ -34,7 +34,6 @@ Property.getPrototype().f = function(obj) {
 };
 
 Property.getPrototype().compare = function(o1, o2) {
-debugger;
   o1 = this.f(o1);
   o2 = this.f(o2);
 

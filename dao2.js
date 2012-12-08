@@ -220,8 +220,8 @@ var AbstractDAO2 = FOAM.create({
   skip: function(skip) {
     return skipDAO(skip, this);
   },
-  orderBy: function(comparator) {
-    return orderedDAO(comparator, this);
+  orderBy: function() {
+    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
   },
   unlisten: function(sink) {
     this.daoListeners_ && this.daoListeners_.remove(sink);
@@ -263,7 +263,8 @@ function filteredDAO(query, dao) {
 }
 
 function orderedDAO(comparator, dao) {
-  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
+  comparator = toCompare(comparator);
+//  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
 
   return {
     __proto__: dao,
