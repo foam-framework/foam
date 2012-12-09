@@ -934,13 +934,184 @@ var WorkerDAO2 = FOAM.create({
   model_: 'Model',
   name: 'WorkerDAO2',
   label: 'Worker DAO',
+  extendsModel: 'AbstractDAO2',
 
   properties: [
+    {
+      name: 'model',
+      type: 'Model',
+      label: 'Model',
+      required: true
+    },
     {
       name: 'delegate',
       type: 'Worker',
       label:'Delegate',
-      help: 'The web-worker to delegate all actions to.'
+      help: 'The web-worker to delegate all actions to.',
+      valueFactory: function() {
+        var url = window.location.origin + "/";
+        var workerscript = [
+          "var url = '" + url + "';\n",
+          "var a = importScripts;",
+          "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
+          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n debugger; }\n",
+          "WorkerDelegate.create({ dao: [] });\n",
+        ];
+        return new Worker(window.URL.createObjectURL(
+            new Blob(workerscript, { type: "text/javascript" })));
+      },
+      postSet: function(val, oldVal) {
+        if ( oldVal ) {
+          oldVal.terminate();
+        }
+        val.addEventListener("message", this.onMessage);
+      }
+    },
+    {
+      name:  'requests_',
+      type:  'Object',
+      label: 'Requests',
+      help:  'Map of pending requests to delegate.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      name:  'nextRequest_',
+      type:  'Integer',
+      label: 'NextRequest',
+      help:  'Id of the next request to the delegate.',
+      valueFactory: function() { return 0; }
+    },
+    { // Consider making this a DAO.  Challenge is keeping in sync if this throws errors after delegate has completed something.
+      name:  'storage_',
+      type:  'Object',
+      label: 'Storage',
+      help:  'Local cache of the data in the delegate.',
+      valueFactory: function() { return {}; }
+    }
+  ],
+
+  methods: {
+    destroy: function() {
+      // Send a message to the delegate?
+      this.delegate.terminate();
+    },
+    makeRequest_: function(method, params, callback, error) {
+      var reqid = this.nextRequest_++;
+      params = params || {};
+      if ( params.model_ ) params = ObjectToJSON.visitObject(params);
+      var message = {
+        method: method,
+        params: params,
+        request: reqid
+      };
+      this.requests_[reqid] = {
+        method: method,
+        callback: callback,
+        error: error
+      };
+      this.delegate.postMessage(message);
+    },
+    put: function(obj, sink) {
+      this.makeRequest_(
+        "put", obj,
+        (function(response) {
+          this.storage_[obj.id] = obj;
+          sink && sink.put && sink.put(obj);
+          this.notify_("put", obj);
+        }).bind(this),
+        sink && sink.error && sink.error.bind(sink));
+    },
+    remove: function(query, sink) {
+      this.makeRequest_(
+        "remove", query,
+        (function(response) {
+          for ( var i = 0, key = response.keys[i]; key; i++) {
+            var obj = this.storage_[key];
+            delete this.storage_[key];
+            sink && sink.remove && sink.remove(obj);
+          }
+        }).bind(this),
+        sink && sink.error && sink.error.bind(sink));
+    },
+    find: function(id, sink) {
+      // No need to go to worker.
+      this.storage_.find(id, sink);
+    },
+    select: function(sink, options) {
+      sink = this.decorateSink_(sink, options, false);
+
+      var fc = this.createFlowControl_();
+
+      this.makeRequest_(
+        "select", options,
+        (function(response) {
+          for (var i = 0; i < response.keys.length; i++) {
+            var key = response.keys[i];
+            if ( fc.stopped ) break;
+            if ( fc.errorEvt ) {
+              sink.error && sink.error(fc.errorEvt);
+              break;
+            }
+            var obj = this.storage_[key];
+            sink.put(obj);
+          }
+        }).bind(this),
+        sink && sink.error && sink.error.bind(sink));
+    },
+    handleNotification_: function(message) {
+      if (message.method == "put") {
+        var obj = JSONToObject.visitObject(message.obj);
+        this.storage_[obj.id] = obj;
+        this.notify_("put", obj);
+      } else if (message.method == "remove") {
+        var obj = this.stroage_[message.key];
+        delete this.storage_[message.key];
+        this.notify_("remove", obj);
+      }
+    }
+  },
+
+  listeners: [
+    {
+      model_: 'MethodModel',
+      name: 'onMessage',
+      help: 'Callback for message events from the delegate.',
+      code: function(e) {
+        // FIXME: Validate origin.
+        var message = e.data;
+        if (message.request) {
+          var request = this.requests_[message.request];
+          delete this.requests_[message.request];
+          if (message.error) {
+            request.error(message.error);
+            return;
+          }
+          request.callback(message);
+          return;
+        } // If no request was specified this is a notification.
+        this.handleNotification_(message);        
+      }
+    }
+  ]
+});
+
+
+var WorkerDelegate = FOAM.create({
+  model_: 'Model',
+  name: 'WorkerDelegate',
+  label: 'Worker Delegate',
+  help:  'The client side of a web-worker DAO',
+
+  properties: [
+    {
+      name:  'dao',
+      label: 'dao',
+      type:  'DAO',
+      required: 'true',
+      postSet: function(val, oldVal) {
+        if (oldVal) oldVal.unlisten(this);
+        val.listen(this);
+      }
     }
   ],
 
@@ -948,78 +1119,81 @@ var WorkerDAO2 = FOAM.create({
     init: function() {
       AbstractPrototype.init.call(this);
 
-      var workerscript = [
-        "importScripts('bootFOAMWorker.js');\n",
-      ];
-
-//      this.delegate = new Worker(window.URL.createObjectURL(
-//          new Blob(workerscript, { type: "text/javascript" })));
-      this.delegate = new Worker("bootFOAMWorker.js");
-
-      this.delegate.addEventListener("message", this.delegateMessage);
-
-      this.callbacks_ = {};
-
-      this.storage_ = {};
-
-      this.nextRequest_ = 0;
+      self.addEventListener('message', this.onMessage);
     },
-    destroy: function() {
-      // Send a message to the delegate?
-      this.delegate.terminate();
+    put: function(obj) {
+      self.postMessage({
+        method: "put",
+        obj: ObjectToJSON.visitObject(obj)
+      });
     },
-    makeReqest_: function(params, sink) {
-      var req = this.nextRequest_++;
-      this.callbacks_[req] = sink;
-      params.request = req;
-      this.delegate.postMessage(params);
+    remove: function(obj) {
+      self.postMessage({
+        method: "remove",
+        key: obj.id
+      });
     },
-    put: function(obj, sink) {
-      this.storage_[obj.id] = obj;
-      this.makeRequest_({
-        method: 'put',
-        obj: ObjectToJSON(obj),
-      }, sink);
-    },
-    find: function(id, sink) {
-      // No need to go to worker.
-      this.storage_.find(id, sink);
-    },
-    select: function(sink, options) {
-      this.makeRequest_({
-        method: 'select',
-        options: options
-      }, sink);
-    },
-    remove: function(query, sink) {
-      this.makeRequest({
-        method: 'remove',
-        query: query
-      }, sink);
-    },
-    where: function(query) {
-      return filteredDAO(query, this);
-    },
-    limit: function(count) {
-      return limitedDAO(count, this);
-    },
-    skip: function(skip) {
-      return skipDAO(skip, this);
-    },
-    orderBy: function(comparator) {
-      return orderedDAO(comparator, this);
-    },
-    unlisten: function(sink) {},
-    listen: function(sink, options) {},
-    pipe: function(sink, options) {}
   },
 
   listeners: [
     {
       model_: 'MethodModel',
-      name: 'delegateMessage',
+      name: 'onMessage',
       code: function(e) {
-        var sink = this.callbacks_[e.request];
+        // This is a nightmare of a function, clean it up.
+        var message = e.data;
+        var me = this;
+        var params = message.params.model_ ?
+              JSONToObject.visitObject(message.params) :
+              message.params;
+        if (message.method == "put") {
+          this.dao.put(params, {
+            put: function() {
+              self.postMessage({
+                request: message.request
+              });
+            },
+            error: function() {
+              self.postMessage({
+                request: message.request,
+                error: true
+              });
+            }
+          });
+        } else if(message.method == "remove") {
+          this.dao.remove(params, {
+            remove: function() {
+              self.postMessage({
+                request: message.request
+              });
+            },
+            error: function() {
+              self.postMessage({
+                request: message.request,
+                error: true
+              });
+            }
+          });
+        } else if(message.method == "select") {
+          var buffer = [];
+          this.dao.select({
+            put: function(obj) {
+              buffer.push(obj.id);
+            },
+            eof: function() {
+              self.postMessage({
+                request: message.request,
+                keys: buffer
+              });
+            },
+            error: function() {
+              self.postMessage({
+                request: message.request,
+                error: true,
+              });
+            }
+          });
+        }
       }
     }
   ]

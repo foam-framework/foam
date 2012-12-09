@@ -1051,11 +1051,13 @@ var Issue = FOAM.create(
 
 
 Model.templates[0] = JSONUtil.chaosify(Model.templates[0]);
-Model.templates[1] = JSONUtil.chaosify(Model.templates[1])
+Model.templates[1] = JSONUtil.chaosify(Model.templates[1]);
 
-var a = Model.properties;
-for ( var i = 0 ; i < a.length ; i++ ) {
-   if ( ! PropertyModel.isInstance(a[i]) ) {
-      a[i] = PropertyModel.getPrototype().create(a[i]);
-   }
-}
+(function() {
+    var a = Model.properties;
+    for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( ! PropertyModel.isInstance(a[i]) ) {
+            a[i] = PropertyModel.getPrototype().create(a[i]);
+        }
+    }
+})();
