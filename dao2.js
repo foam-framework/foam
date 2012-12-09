@@ -189,14 +189,16 @@ var AbstractDAO2 = FOAM.create({
         }
       }, options, fc);
   },
-  decorateSink_: function(sink, options, isListener) {
+  decorateSink_: function(sink, options, isListener, disableLimit) {
     if ( options ) {
       if ( options.order && ! isListener )
         sink = orderedSink(options.order, sink);
-      if ( options.limit )
-        sink = limitedSink(options.limit, sink);
-      if ( options.skip )
-        sink = skipSink(options.skip, sink);
+      if ( ! disableLimit ) {
+        if ( options.limit )  
+          sink = limitedSink(options.limit, sink);
+        if ( options.skip )
+          sink = skipSink(options.skip, sink);
+      }
       if ( options.query )
         sink = predicatedSink(options.query.partialEval(), sink);
     }
@@ -218,8 +220,8 @@ var AbstractDAO2 = FOAM.create({
   skip: function(skip) {
     return skipDAO(skip, this);
   },
-  orderBy: function(comparator) {
-    return orderedDAO(comparator, this);
+  orderBy: function() {
+    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
   },
   unlisten: function(sink) {
     this.daoListeners_ && this.daoListeners_.remove(sink);
@@ -261,7 +263,8 @@ function filteredDAO(query, dao) {
 }
 
 function orderedDAO(comparator, dao) {
-  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
+  comparator = toCompare(comparator);
+//  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
 
   return {
     __proto__: dao,
@@ -416,11 +419,13 @@ defineProperties(Array.prototype, {
     }
   },
   select: function(sink, options) {
-    sink = this.decorateSink_(sink, options, false);
+    sink = this.decorateSink_(sink, options, false, true);
 
     var fc = this.createFlowControl_();
 
-    for (var i in this) {
+    var start = options && options.skip || 0;
+    var end = Math.min(this.length, start + (options && options.limit || this.length));
+    for ( var i = start ; i < end ; i++ ) { 
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
       if ( fc.errorEvt ) {

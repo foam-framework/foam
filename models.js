@@ -406,7 +406,7 @@ var ScrollCView = FOAM.create({
        this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
-       console.log('mouseMove: ', e);
+//       console.log('mouseMove: ', e);
        var y = e.offsetY;
 
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
