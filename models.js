@@ -352,7 +352,7 @@ var ScrollCView = FOAM.create({
 //	   newValue.addListener(this.updateValue);
            var e = newValue.element();
            e.addEventListener('mousedown', this.mouseDown, false);
-           e.addEventListener('mouseup',   this.mouseUp,   false);
+//           e.addEventListener('mouseup',   this.mouseUp,   false);
          }
       },
       {
@@ -385,6 +385,11 @@ var ScrollCView = FOAM.create({
         defaultValue: 0
       },
       {
+        name: 'starty',
+        type: 'int',
+        defaultValue: 0
+      },
+      {
 	name:  'extent',
         type:  'int',
         defaultValue: 10
@@ -398,32 +403,43 @@ var ScrollCView = FOAM.create({
    listeners: {
      mouseDown: function(e) {
        console.log('mouseDown: ', e);
-       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
+//       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
+       this.starty = e.y - e.offsetY;
+       window.addEventListener('mouseup', this.mouseUp, true);
+       window.addEventListener('mousemove', this.mouseMove, true);
        this.mouseMove(e);
      },
      mouseUp: function(e) {
        console.log('mouseUp: ', e);
-       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
+       e.preventDefault();
+       window.removeEventListener('mousemove', this.mouseMove, true);
+       window.removeEventListener('mouseUp', this.mouseUp, true);
+//       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
-//       console.log('mouseMove: ', e);
-       var y = e.offsetY;
+       console.log('mouseMove: ', e);
+       var y = e.y - this.starty;
+       e.preventDefault();
 
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
        console.log('touchStart: ', e);
-       this.parent.element().addEventListener('touchmove', this.touchMove, false);
+       window.addEventListener('touchmove', this.touchMove, false);
+//       this.parent.element().addEventListener('touchmove', this.touchMove, false);
        this.mouseMove(e);
      },
      touchEnd: function(e) {
        console.log('touchEnd: ', e);
-       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
+       e.preventDefault();
+       window.removeEventListener('touchmove', this.touchMove, false);
+       window.removeEventListener('touchend', this.touchEnd, false);
+//       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
      },
      touchMove: function(e) {
        console.log('touchMove: ', e);
        var y = e.offsetY;
-
+       e.preventDefault();
        console.log('y: ', y);
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
      },
@@ -493,8 +509,15 @@ var ScrollBorder = FOAM.create({
          postSet: function(newValue, oldValue) {
            this.view.dao = newValue;
            // TODO: only works for []'s
-           this.scrollbar.size = this.view.dao.length;
-           this.scrollbar.value = 0;
+           var self = this;
+           var count = COUNT();
+           this.dao.select({
+             __proto__: count,
+             eof: function() {
+               self.scrollbar.size = this.count;
+               self.scrollbar.value = 0;
+             }
+           })
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
@@ -517,10 +540,14 @@ var ScrollBorder = FOAM.create({
        this.scrollbar.initHTML();
        this.scrollbar.paint();
 
+       var view = this.view;
        var scrollbar = this.scrollbar;
        var self = this;
        Events.dynamic(function() {scrollbar.value;}, function() {
          if ( self.dao) self.view.dao = self.dao.skip(scrollbar.value); });
+       Events.dynamic(function() {view.rows;}, function() {
+           scrollbar.extent = view.rows;
+         });
      }
    }
 });
@@ -1941,5 +1968,3 @@ var Developer = FOAM.create({
       }
    }
 });
-
-

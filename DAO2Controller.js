@@ -36,7 +36,7 @@ var DAO2Controller = FOAM.create({
 	 name:  'dao',
 	 label: 'DAO',
 	 postSet: function(val) {
-           if ( this.tableView && val ) this.tableView.setValue(new SimpleValue(val));
+           if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
          }
       }
    ],
@@ -178,16 +178,17 @@ var DAO2Controller = FOAM.create({
 
          var model = this.model;
          var dao = this.dao;
-	 this.tableView = TableView2.create({ model: model, dao: dao });
+	 this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
+         this.scrollBorder = ScrollBorder.create({ view: this.tableView });
       },
 
       toHTML: function() {
-	 return this.tableView.toHTML();
+	 return this.scrollBorder.toHTML();
       },
 
       initHTML: function() {
          AbstractView.initHTML.call(this);
-	 this.tableView.initHTML(); // could this just be added to children?
+	 this.scrollBorder.initHTML(); // could this just be added to children?
 
 	 this.dao = this.dao;
          this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
@@ -602,7 +603,7 @@ var DAO2ControllerView = Model.create({
 
        this.dao.listen(this.listener);
        this.ctrl.__proto__.dao = this.dao;
-       this.ctrl.tableView.setValue(this.dao.asValue());
+       this.ctrl.scrollBorder.dao = this.dao;
     },
 
     destroy: function() {
