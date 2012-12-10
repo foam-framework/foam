@@ -15,6 +15,6 @@
  */
 
 for ( var i = 0 ; i < files.length ; i++ ) {
-   // console.log("loading: ", files[i]);
+   console.log('loading: ', files[i]);
    document.writeln('<script language="javascript" src="' + files[i] + '.js"></script>\n');
 }

@@ -19,7 +19,7 @@
 // (Which needs to be fixed anyway.)
 
 String.prototype.compareTo = function(o) {
-  if ( o === this ) return 0;
+  if ( o == this ) return 0;
   return this < o ? -1 : 1;
 };
 
@@ -33,7 +33,7 @@ var argsToArray = function(args) {
 };
 
 var StringComparator = function(s1, s2) {
-  if ( s1 === s2 ) return 0;
+  if ( s1 == s2 ) return 0;
   return s1 < s2 ? -1 : 1;
 };
 
