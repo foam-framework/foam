@@ -1002,8 +1002,9 @@ var WorkerDAO2 = FOAM.create({
     },
     makeRequest_: function(method, params, callback, error) {
       var reqid = this.nextRequest_++;
-      params = params || {};
-      if ( params.model_ ) params = ObjectToJSON.visitObject(params);
+      params = params ?
+          ObjectToJSON.visit(params) :
+          {};
       var message = {
         method: method,
         params: params,
@@ -1181,6 +1182,7 @@ var WorkerDelegate = FOAM.create({
           });
         } else if(message.method == "select") {
           var buffer = [];
+          var options = JSONToObject.visit(message.params);
           this.dao.select({
             put: function(obj) {
               buffer.push(obj.id);
@@ -1197,7 +1199,7 @@ var WorkerDelegate = FOAM.create({
                 error: true,
               });
             }
-          });
+          }, options);
         }
       }
     }

@@ -31,7 +31,7 @@ var files = [
   'mlang',
   'future',
   'visitor',
-  'index.js',
+  'index',
   'dao',
   'dao2',
   'StackView',
