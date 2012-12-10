@@ -108,11 +108,6 @@ var By = {
     };
   },
 
-  putToNode: function(s, obj) {
-    if ( ! s[0] ) s[0] = [];
-    this.tail.putToNode(s[0], obj);
-  },
-
   put: function(obj) { this.put_(this.set.root, obj); },
   select: function(sink) { this.select_(this.set.root, sink); },
 
@@ -148,9 +143,7 @@ var Contains = {
         updateValue_: function(oldObj, newObj) { oldObj[1] =  tail.updateValue_(oldObj[1], newObj[1]); return oldObj; },
 	selectValue_: function(obj, sink) { tail.selectValue_(obj[1], sink); },
 	getValue_: function(obj) { return tail.getValue_(obj[1]); },
-        compare: function(o1, o2) {
-if (! o1 || ! o2 || ! o1[1]) { debugger;}
-return o1[0].compareTo(o2[0]); }
+        compare: function(o1, o2) { return o1[0].compareTo(o2[0]); }
       }
     };
   },
@@ -193,7 +186,6 @@ var And = {
    },
 
   select_: function(s, sink) {
-debugger;
     this.delegates[0].select_(s[0], sink);
   },
 
@@ -210,22 +202,13 @@ debugger;
     }
     return oldObj;
   },
-  selectValue_: function(obj, sink) {
-debugger;
-this.delegates[0].selectValue_(obj[0], sink); },
+  selectValue_: function(obj, sink) { this.delegates[0].selectValue_(obj[0], sink); },
   getValue_: function(obj) { return this.delegates[0].getValue_(obj[0]); }
 };
 
 var P1 = {
    f: function(obj) { return obj[0]; },
-   compare: function(o1, o2) {
-try
-{
-      return this.f(o1).compareTo(this.f(o2));
-} catch (x) {
-   debugger;
-}
-}
+   compare: function(o1, o2) { return this.f(o1).compareTo(this.f(o2)); }
 };
 var P2 = {
    f: function(obj) { return obj[1]; },
