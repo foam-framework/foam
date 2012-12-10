@@ -18,10 +18,18 @@
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
 
+String.prototype.compareTo = function(o) {
+  if ( o === this ) return 0;
+  return this < o ? -1 : 1;
+};
+
+Number.prototype.compareTo = function(o) {
+  if ( o === this ) return 0;
+  return this < o ? -1 : 1;
+};
+
 var argsToArray = function(args) {
-  var ret = [];
-  for ( var i = 0 ; i < args.length ; i++ ) ret[i] = args[i];
-  return ret;
+  return Array.prototype.slice.call(args);
 };
 
 var StringComparator = function(s1, s2) {
