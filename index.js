@@ -109,3 +109,135 @@ idx.put('i');
 idx.put('n');
 
 idx.select(console.log);
+
+// [obj,left,right]
+
+var OrderedSet = {
+  create: function(prop) {
+    return {
+      __proto__: this,
+      root: [],
+      prop: prop
+    };
+  },
+  putToNode: function(s, obj) {
+    s[0] = obj;
+  },
+  compare: function(o1, o2) {
+    return this.prop.compare(o1, o2);
+  },
+
+  put: function(obj) { this.put_(this.root, obj); },
+  select: function(sink) { this.select_(this.root, sink); },
+
+  put_: function(s, obj) {
+if ( ! s ) {
+  debugger;
+}
+    if ( ! s[0] ) {
+      this.putToNode(s, obj);
+      return;
+    }
+
+    var r = this.compare(s[0], obj);
+
+    if ( r === 0 ) {
+      this.putToNode(s, obj);
+    } else if ( r > 0 ) {
+      this.put_(s[1] || (s[1] = []), obj);
+    } else {
+      this.put_(s[2] || (s[2] = []), obj);
+    }
+  },
+  select_: function(s, sink) {
+    if ( ! s ) return;
+    this.select_(s[1], sink);
+    if (!sink) {
+      debugger;
+    }
+    sink.put(s[0]);
+    this.select_(s[2], sink);
+  }
+};
+
+var s = OrderedSet.create({compare: StringComparator});
+
+// s = SEQ(s, COUNT());
+
+s.put('k');
+s.put('e');
+s.put('v');
+s.put('i');
+s.put('n');
+s.put('kevin');
+s.put('greer');
+s.put('was');
+s.put('here');
+s.put('boo');
+
+s.select(console.log);
+
+// By(p, By(p, ByUnique(p)))
+
+var UNIQUE = {
+  put_: function(s, obj) {
+    s[0] = obj;
+  },
+  select_: function(s, sink) {
+    sink.put(s[0]);
+  },
+  get_: function(s) { return s[0]; }
+
+};
+
+var By = {
+  create: function(prop, tail) {
+    tail = tail || UNIQUE;
+    return {
+      __proto__: this,
+      prop: prop,
+      tail: tail,
+      set: {
+        __proto__: OrderedSet.create(prop),
+        compare: function(o1, o2) {
+          o1 = this.tail.get_(o1);
+          o2 = this.tail.get_(o2);
+
+          return prop.compare(o1, o2);
+        },
+        putToNode: function(s, obj) {
+          tail.put_(s, obj);
+        }
+      }
+    };
+  },
+
+  put: function(obj) { this.put_(this.root, obj); },
+  select: function(sink) { this.select_(this.root, sink); },
+
+  put_: function(s, obj) {
+    this.set.put_(s, obj);
+  },
+  select_: function(s, sink) {
+    this.set.select_(s, sink);
+  },
+  get_: function(s) { return this.tail.get(s); }
+};
+
+var i2 = By.create({compare: StringComparator});
+
+console.log('index test');
+
+i2.put('k');
+i2.put('e');
+i2.put('v');
+i2.put('i');
+i2.put('n');
+i2.put('kevin');
+i2.put('greer');
+i2.put('was');
+i2.put('here');
+i2.put('boo');
+
+
+i2.select(console.log);
