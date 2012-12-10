@@ -46,11 +46,11 @@ var FOAM = {
       var dao = opt_dao || GLOBAL[model.name + 'DAO'] || GLOBAL[model.plural];
 
       if ( ! dao ) {
-	 dao = StorageDAO.create(model.name + 'DAO');
+	 dao = StorageDAO2.create({ model: model });
 	 GLOBAL[model.name + 'DAO'] = dao;
       }
 
-      var ctrl = ActionBorder.create(DAOController, DAOController.create({
+      var ctrl = ActionBorder.create(DAO2Controller, DAO2Controller.create({
         model:     model,
         dao:       dao
       }));

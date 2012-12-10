@@ -493,8 +493,15 @@ var ScrollBorder = FOAM.create({
          postSet: function(newValue, oldValue) {
            this.view.dao = newValue;
            // TODO: only works for []'s
-           this.scrollbar.size = this.view.dao.length;
-           this.scrollbar.value = 0;
+           var self = this;
+           var count = COUNT();
+           this.dao.select({
+             __proto__: count,
+             eof: function() {
+               self.scrollbar.size = this.count;
+               self.scrollbar.value = 0;
+             }
+           })
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
@@ -517,10 +524,14 @@ var ScrollBorder = FOAM.create({
        this.scrollbar.initHTML();
        this.scrollbar.paint();
 
+       var view = this.view;
        var scrollbar = this.scrollbar;
        var self = this;
        Events.dynamic(function() {scrollbar.value;}, function() {
          if ( self.dao) self.view.dao = self.dao.skip(scrollbar.value); });
+       Events.dynamic(function() {view.rows;}, function() {
+           scrollbar.extent = view.rows;
+         });
      }
    }
 });
@@ -1941,5 +1952,3 @@ var Developer = FOAM.create({
       }
    }
 });
-
-

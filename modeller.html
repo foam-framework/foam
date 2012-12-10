@@ -94,21 +94,23 @@
     ];
 
 
-    var ModelDAO = ModelDAO.create(this,StorageDAO.createModels("models"));
-
-
-    if ( ModelDAO.select().length == 0 ) {
-       for ( var i = 0 ; i < models.length ; i++ ) {
-          ModelDAO.put(models[i]);
-       }
-    } 
-
-    // var ModelDAO = ArrayDAO.create(models);
+    var ModelDAO = ModelDAO.create(this,StorageDAO2.create({ model: Model }));
+    ModelDAO.find("Model", {
+      found: false,
+      put: function(ignore, ignore, fc) { this.found = true; },
+      eof: function() {
+        if (!this.found) {
+          for ( var i = 0 ; i < models.length ; i++ ) {
+            ModelDAO.put(models[i]);
+          }
+        }
+      }
+    })
 
     var stack = StackView.create();
     stack.write(document);
-
     FOAM.browse(Model);
+
   </script>
 
  </body>

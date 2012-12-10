@@ -395,7 +395,7 @@ var StorageDAO = {
 };
 
 
-var ModelDAO = {
+/*var ModelDAO = {
     create: function(namespace, dao) {
 	var res = {
 	    __proto__: dao,
@@ -444,7 +444,7 @@ var ModelDAO = {
 	return res;
     }
 };
-
+*/
 
 
 var UnitTests = FOAM.create(

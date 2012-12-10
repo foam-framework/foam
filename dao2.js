@@ -176,7 +176,7 @@ var AbstractDAO2 = FOAM.create({
   pipe: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
-
+    var self = this;
     this.select(
       {
         __proto__: sink,
@@ -184,7 +184,7 @@ var AbstractDAO2 = FOAM.create({
           if ( fc.stopped ) {
             sink.eof && sink.eof();
           } else {
-            this.listen(sink, options);
+            self.listen(sink, options);
           }
         }
       }, options, fc);
@@ -522,10 +522,10 @@ var IndexedDBDAO2 = FOAM.create({
 
         request.onsuccess = function(e) {
           sink && sink.put && sink.put(value);
-          self.notify_('put', value);
+          self.notify_('put', [value]);
         };
         request.onerror = function(e) {
-          // TODO: Pass a better error mesage out of e
+          // TODO: Parse a better error mesage out of e
           sink && sink.error && sink.error('put', value);
         };
       });
@@ -565,7 +565,7 @@ var IndexedDBDAO2 = FOAM.create({
             var delRequest = store.delete(key);
             delRequest.onsuccess = function(e) {
               sink && sink.remove && sink.remove(result);
-              self.notify_('remove', result);
+              self.notify_('remove', [result]);
             };
             delRequest.onerror = function(e) {
               sink && sink.error && sink.error('remove', e);
@@ -588,7 +588,7 @@ var IndexedDBDAO2 = FOAM.create({
               var deleteReq = cursor.delete();
               deleteReq.onsuccess = function() {
                 sink && sink.remove && sink.remove(value);
-                self.notify_('remove', value);
+                self.notify_('remove', [value]);
               }
               deleteReq.onerror = function(e) {
                 sink && sink.error && sink.error('remove', e);
@@ -686,7 +686,7 @@ var StorageDAO2 = FOAM.create({
    init: function() {
      AbstractPrototype.init.call(this);
 
-     this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || {};
+     this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
     },
 
     put: function(obj, sink) {
@@ -831,7 +831,7 @@ var AbstractFileDAO2 = FOAM.create({
           __proto__: sink,
           put: function() {
             sink && sink.put && sink.put(obj);
-            self.notify_('put', obj);
+            self.notify_('put', [obj]);
             self.update_('put', obj);
           }
         });
@@ -851,7 +851,7 @@ var AbstractFileDAO2 = FOAM.create({
           __proto__: sink,
           remove: function(obj) {
             this.__proto__.remove && this.__proto__.remove(obj);
-            self.notify_('remove', obj);
+            self.notify_('remove', [obj]);
             self.update_('remove', obj);
           }
         });
@@ -1023,7 +1023,7 @@ var WorkerDAO2 = FOAM.create({
         (function(response) {
           this.storage_[obj.id] = obj;
           sink && sink.put && sink.put(obj);
-          this.notify_("put", obj);
+          this.notify_("put", [obj]);
         }).bind(this),
         sink && sink.error && sink.error.bind(sink));
     },
@@ -1068,11 +1068,11 @@ var WorkerDAO2 = FOAM.create({
       if (message.method == "put") {
         var obj = JSONToObject.visitObject(message.obj);
         this.storage_[obj.id] = obj;
-        this.notify_("put", obj);
+        this.notify_("put", [obj]);
       } else if (message.method == "remove") {
         var obj = this.stroage_[message.key];
         delete this.storage_[message.key];
-        this.notify_("remove", obj);
+        this.notify_("remove", [obj]);
       }
     }
   },
@@ -1205,6 +1205,52 @@ var WorkerDelegate = FOAM.create({
     }
   ]
 });
+
+var ModelDAO = {
+    create: function(namespace, dao) {
+	var res = {
+	    __proto__: dao,
+	    namespace: namespace,
+	    dao:       dao,
+	    created:   { },
+
+	    init_: function() {
+              var self = this;
+              this.pipe({
+                put: self.add_.bind(this),
+                remove: self.del_.bind(this)
+              });
+	    },
+
+	    add_: function(obj) {
+	       if ( obj.name == 'Model' ) return;
+
+	       var dao = this;
+
+               this.namespace[obj.name] = obj;
+
+	       FOAM.putFactory(this.namespace, obj.name + "Proto", function() {
+                  return this.namespace[obj.name].getPrototype();
+               });
+
+	       FOAM.putFactory(this.namespace, obj.name + 'DAO', function() {
+		  console.log("Creating '" + obj.name + "DAO'");
+                  return StorageDAO2.create({ model: obj });
+               });
+	    },
+
+	    del_: function() {
+		for (var objID in this.created) {
+		    delete this.namespace[objID];
+		}
+	    }
+
+	    //TODO: remove models from namespace on remove()
+	};
+	res.init_();
+	return res;
+    }
+};
 
 /*
 var d = IndexedDBDAO2.create({model: Model});
