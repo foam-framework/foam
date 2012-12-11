@@ -560,6 +560,7 @@ var PropertyModel = {
 
 
 Model.methods = {
+    hashCode:       ModelProto.hashCode,
     buildPrototype: ModelProto.buildPrototype,
     getPrototype:   ModelProto.getPrototype,
     isSubModel:     ModelProto.isSubModel,

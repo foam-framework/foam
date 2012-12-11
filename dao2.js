@@ -1252,6 +1252,72 @@ var ModelDAO = {
     }
 };
 
+var PartitionDAO2 = FOAM.create({
+  model_: 'Model',
+  extendsModel: 'AbstractDAO2',
+
+  name: 'ParitionDAO2',
+  label: 'PartitionDAO2',
+
+  properties: [
+    {
+      name: 'partitions',
+      label: 'Partitions',
+      type: 'Array[DAO]',
+      mode: "read-only",
+      required: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      for ( var i = 0; i < this.partitions.length; i++) {
+        var part = this.partitions[i];
+        var self = this;
+        part.listen({
+          put: function(value) {
+            self.notify_("put", [value]);
+          },
+          remove: function(value) {
+            self.notify_("remove", [value]);
+          }
+        });
+      }
+    },
+    getPartition_: function(value) {
+      return this.partitions[Math.abs(value.hashCode()) % this.partitions.length];
+    },
+    put: function(value, sink) {
+      this.getPartition_(value).put(value, sink);
+    },
+    remove: function(query, sink) {
+      this.getPartition_(value).remove(value, sink);
+    },
+    find: function(key, sink) {
+      // Assumes no data redundancy
+      for (var i = 0; i < this.partitions.length; i++) {
+        this.partitions[i].find(key, sink);
+      }
+    },
+    select: function(sink, options) {
+      var pending = this.partitions.length;
+      for ( var i = 0; i < this.partitions.length; i++) {
+        this.partitions[i].select({
+          put: function(value) {
+            sink.put(value);
+          },
+          eof: function() {
+            pending--;
+            if (pending <= 0) sink && sink.eof && sink.eof();
+          }
+        });
+      }
+    }
+  }
+});
+
 /*
 var d = IndexedDBDAO2.create({model: Model});
 d.put(Issue);

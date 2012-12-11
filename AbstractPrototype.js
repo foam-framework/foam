@@ -184,6 +184,14 @@ console.log(i, k, v);
     return undefined;
   },
 
+  hashCode: function() {
+    var string = ""
+    for ( var i = 0; i < this.model_.properties.length; i++) {
+      string += this[this.model_.properties[i].name].toString();
+    }
+    return string.hashCode();
+  },
+
 
   /** Create a shallow copy of this object. **/
   clone: function() {
@@ -261,5 +269,3 @@ console.log(i, k, v);
 AbstractPrototype.__defineGetter__('__super__', function() {
   return this.__proto__.__proto__;
 });
-
-
