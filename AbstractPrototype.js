@@ -185,11 +185,19 @@ console.log(i, k, v);
   },
 
   hashCode: function() {
-    var string = ""
-    for ( var i = 0; i < this.model_.properties.length; i++) {
-      string += this[this.model_.properties[i].name].toString();
+    var hash = 17;
+
+    for ( var i = 0; i < this.model_.properties.length ; i++ ) {
+      var prop = this[this.model_.properties[i].name];
+      var code = ! prop ? 0 :
+        prop.hashCode   ? prop.hashCode()
+                        : prop.toString().hashCode();
+
+      hash = ((hash << 5) - hash) + code;
+      hash &= hash;
     }
-    return string.hashCode();
+
+    return hash;
   },
 
 
