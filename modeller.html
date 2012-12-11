@@ -104,6 +104,9 @@
             ModelDAO.put(models[i]);
           }
         }
+      },
+      error: function() {
+        this.eof();
       }
     })
 
