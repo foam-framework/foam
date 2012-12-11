@@ -88,7 +88,7 @@ function anyChar(ps) {
 
 function notChar(c) {
   return function(ps) {
-    return ps.head !== c ? ps.tail.setValue(ps.head) : undefined;
+    return ps.head && ps.head !== c ? ps.tail.setValue(ps.head) : undefined;
   };
 }
 
@@ -219,7 +219,7 @@ test('aaba', repeat(literal('a')), ['a','a']);
 
 test('abbab', repeat(seq(optional(literal('a')), literal('b'))), [['a','b'],[undefined,'b'],['a','b']]);
 
-function sym(name) { return function(ps) { return this[name](ps); }; }
+function sym(name) { return function(ps) { /*console.log('<' + name + '>');*/ return this[name](ps); }; }
 
 var grammar = {
   parseString: function(str) {
@@ -329,6 +329,7 @@ var calcCompiler = {
   }
 });
 
+/*
 console.log(calc.parse(calc.expr, stringPS('1 ')).value);
 console.log(calc.parse(calc.expr, stringPS('1 ')).value);
 console.log(calc.parse(calc.expr, stringPS('-1 ')).value);
@@ -337,3 +338,4 @@ console.log(calc.parse(calc.expr, stringPS('2*3 ')).value);
 console.log(calc.parse(calc.expr, stringPS('(1) ')).value);
 console.log(calc.parseString('-2*(10+20+30) '));
 console.log(calcCompiler.parseString('-2*(10+20+30) ')());
+*/
