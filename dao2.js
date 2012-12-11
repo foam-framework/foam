@@ -194,13 +194,17 @@ var AbstractDAO2 = FOAM.create({
       if ( options.order && ! isListener )
         sink = orderedSink(options.order, sink);
       if ( ! disableLimit ) {
-        if ( options.limit )  
+        if ( options.limit )
           sink = limitedSink(options.limit, sink);
         if ( options.skip )
           sink = skipSink(options.skip, sink);
       }
       if ( options.query )
-        sink = predicatedSink(options.query.partialEval(), sink);
+        sink = predicatedSink(
+            options.query.partialEval ?
+	        options.query.partialEval() :
+                options.query,
+            sink) ;
     }
 
     return sink;
@@ -292,7 +296,7 @@ function limitedDAO(count, dao) {
         } else {
           options = { __proto__: options, limit: count };
         }
-      }	
+      }
       else {
         options = { limit: count };
       }
@@ -425,7 +429,7 @@ defineProperties(Array.prototype, {
 
     var start = options && options.skip || 0;
     var end = Math.min(this.length, start + (options && options.limit || this.length));
-    for ( var i = start ; i < end ; i++ ) { 
+    for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
       if ( fc.errorEvt ) {
@@ -1095,7 +1099,7 @@ var WorkerDAO2 = FOAM.create({
           request.callback(message);
           return;
         } // If no request was specified this is a notification.
-        this.handleNotification_(message);        
+        this.handleNotification_(message);
       }
     }
   ]
