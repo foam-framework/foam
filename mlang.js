@@ -631,6 +631,9 @@ var MaxExpr = FOAM.create({
      reduce: function(other) {
        return MaxExpr.create({max: Math.max(this.max, other.max)});
      },
+     reduceI: function(other) {
+       this.max = Math.max(this.max, other.max);
+     },
      pipe: function(sink) { sink.put(this); },
      put: function(obj) {
        var v = this.arg1.f(obj);
@@ -663,6 +666,9 @@ var MinExpr = FOAM.create({
      reduce: function(other) {
        return MinExpr.create({max: Math.min(this.min, other.min)});
      },
+     reduceI: function(other) {
+       this.min = Math.min(this.min, other.min);
+     },
      pipe: function(sink) { sink.put(this); },
      put: function(obj) {
        var v = this.arg1.f(obj);
@@ -693,7 +699,7 @@ var GroupByExpr = FOAM.create({
 
    methods: {
      reduce: function(other) {
-       // TODO: 
+       // TODO:
      },
      pipe: function(sink) {
          for ( key in this.groups ) {
@@ -735,6 +741,9 @@ var CountExpr = FOAM.create({
    methods: {
      reduce: function(other) {
        return CountExpr.create({count: this.count + other.count});
+     },
+     reduceI: function(other) {
+       this.count = this.count + other.count;
      },
      pipe: function(sink) { sink.put(this); },
      put: function(obj) { this.count++; },
