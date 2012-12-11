@@ -1316,7 +1316,7 @@ var PartitionDAO2 = FOAM.create({
             pending--;
             if (pending <= 0) sink && sink.eof && sink.eof();
           }
-        });
+        }, options);
       }
     }
   }
