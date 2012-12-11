@@ -42,6 +42,29 @@ Property.getPrototype().compare = function(o1, o2) {
     o1 - o2 ;
 };
 
+Array.prototype.reduce = function(comparator, arr) {
+  compare = toCompare(comparator);
+  var result = new Array(this.length + arr.length);
+
+  var i = 0;
+  var j = 0;
+  var k = 0;
+  while(i < this.length && j < arr.length) {
+    var a = compare(this[i], arr[j]);
+    if ( a < 0 ) {
+      result[k++] = this[i++];
+      continue;
+    }
+    if ( a == 0) {
+      result[k++] = this[i++];
+      result[k++] = arr[j++];
+      continue;
+    }
+    result[k++] = arr[j++];
+  }
+  return result;
+};
+
 // TODO: add 'contains', 'startsWith'
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
@@ -700,6 +723,12 @@ var GroupByExpr = FOAM.create({
    methods: {
      reduce: function(other) {
        // TODO:
+     },
+     reduceI: function(other) {
+       for ( var i in other.groups ) {
+         if ( this.groups[i] ) this.groups[i].reduceI(other.groups[i]);
+         else this.groups[i] = other.groups[i].clone();
+       }
      },
      pipe: function(sink) {
          for ( key in this.groups ) {

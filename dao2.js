@@ -267,7 +267,7 @@ function filteredDAO(query, dao) {
 }
 
 function orderedDAO(comparator, dao) {
-  comparator = toCompare(comparator);
+//  comparator = toCompare(comparator);
 //  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
 
   return {
@@ -1013,7 +1013,7 @@ var WorkerDAO2 = FOAM.create({
       type:  'Integer',
       label: 'NextRequest',
       help:  'Id of the next request to the delegate.',
-      valueFactory: function() { return 0; }
+      valueFactory: function() { return 1; }
     },
     { // Consider making this a DAO.  Challenge is keeping in sync if this throws errors after delegate has completed something.
       name:  'storage_',
@@ -1025,6 +1025,10 @@ var WorkerDAO2 = FOAM.create({
   ],
 
   methods: {
+    init: function() {
+      AbstractDAO2.getPrototype().init.call(this);
+      this.delegate.postMessage("");
+    },
     destroy: function() {
       // Send a message to the delegate?
       this.delegate.terminate();
@@ -1193,6 +1197,7 @@ var WorkerDelegate = FOAM.create({
       code: function(e) {
         // This is a nightmare of a function, clean it up.
         var message = e.data;
+        if ( !message.method ) return;
         var me = this;
         var params = message.params.model_ ?
               JSONToObject.visitObject(message.params) :
@@ -1237,7 +1242,7 @@ var WorkerDelegate = FOAM.create({
               })
             },
             error: function() {
-              this.__proto__.eof();
+              this.__proto__ && this.__proto__.error();
               self.postMessage({
                 request: message.request,
                 error: true
@@ -1347,17 +1352,43 @@ var PartitionDAO2 = FOAM.create({
       }
     },
     select: function(sink, options) {
-      var pending = this.partitions.length;
-      for ( var i = 0; i < this.partitions.length; i++) {
-        this.partitions[i].select({
-          put: function(value) {
-            sink.put(value);
-          },
-          eof: function() {
-            pending--;
-            if (pending <= 0) sink && sink.eof && sink.eof();
+      if (sink.model_ && sink.reduceI) {
+        var mysink = sink;
+      } else if (options.order) {
+        function makesink() {
+          return {
+            storage: [],
+            put: function(value) {
+              storage.push(value);
+            },
+            reduceI: function(array) {
+              storage = storage.reduce(options.order, array);
+            },
+            clone: function() {
+              return makesink();
+            }
+          };
+        }
+        mysink = makesink();
+        mysink.eof = function() {
+          for ( var i = 0; i < this.length; i++) {
+            sink.put(this[i]);
           }
-        }, options);
+        };
+      }
+
+      var pending = this.partitions.length;
+      for ( var i = 0; i < this.partitions.length; i++ ) {
+        (function() {
+          // TODO deep clone?
+          var sink_ = mysink.clone();
+          sink_.eof = function() {
+            mysink.reduceI(this);
+            pending--;
+            if (pending <= 0) sink.eof && sink.eof();
+          };
+          this.partitions[i].select(sink_, options);
+        })();
       }
     }
   }
