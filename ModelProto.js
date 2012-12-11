@@ -66,10 +66,8 @@ var ModelProto = {
 
 	// add sub-models
         this.models && this.models.forEach(function(m) {
-console.log("InnerClass: ", cls.name_, m.name);
-cls[m.name] = JSONUtil.chaosify(m);
-console.log(cls);
- });
+          cls[m.name] = JSONUtil.chaosify(m);
+        });
 
 	// build properties
         this.properties && this.properties.forEach(function(p) { cls.defineProperty(p); });

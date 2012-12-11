@@ -15,21 +15,20 @@
  */
 
 
-// [obj,left,right]
+// [obj,size,left,right]
 
-var UNIQUE = {
+var UniqueIndex = {
   createValue_: function(obj) { return obj; },
   updateValue_: function(oldObj, newObj) { return newObj; },
   selectValue_: function(obj, sink) { sink.put(obj); },
   getValue_: function(obj) { return obj; },
-  compare_: function(o1, o2) {
-
-  }
+  valueSize_: function(obj) { return 1; }
 };
 
 
 var OrderedSet = {
-  __proto__: UNIQUE,
+  __proto__: UniqueIndex,
+
   create: function(prop) {
     return {
       __proto__: this,
@@ -37,16 +36,19 @@ var OrderedSet = {
       prop: prop
     };
   },
-  compare: function(o1, o2) {
-    return this.prop.compare(o1, o2);
-  },
 
   put: function(obj) { this.put_(this.root, obj); },
+
   select: function(sink) { this.select_(this.root, sink); },
+
+  size: function() { return this.size_(this.root); },
+
+  size_: function(obj) { return obj[1]; },
 
   put_: function(s, obj) {
     if ( ! s[0] ) {
       s[0] = this.createValue_(obj);
+      s[1] = 1;
       return;
     }
 
@@ -54,19 +56,31 @@ var OrderedSet = {
     var r = v ? this.compare(v, obj) : 0;
 
     if ( r == 0 ) {
+      s[1] -= this.valueSize_(s[0]);
       s[0] = this.updateValue_(s[0], obj);
+      s[1] += this.valueSize_(s[0]);
     } else if ( r > 0 ) {
-      this.put_(s[1] || (s[1] = []), obj);
-    } else {
+      if ( s[2] ) s[1] -= s[2][1];
       this.put_(s[2] || (s[2] = []), obj);
+      s[1] += s[2][1];
+    } else {
+      if ( s[3] ) s[1] -= s[3][1];
+      this.put_(s[3] || (s[3] = []), obj);
+      s[1] += s[3][1];
     }
   },
+
   select_: function(s, sink) {
     if ( ! s ) return;
-    this.select_(s[1], sink);
-    this.selectValue_(s[0], sink);
     this.select_(s[2], sink);
+    this.selectValue_(s[0], sink);
+    this.select_(s[3], sink);
+  },
+
+  compare: function(o1, o2) {
+    return this.prop.compare(o1, o2);
   }
+
 };
 
 var s = OrderedSet.create({compare: StringComparator});
@@ -86,11 +100,11 @@ s.put('boo');
 
 s.select(console.log);
 
-// By(p, By(p, ByUnique(p)))
+// PropertyIndex(p, PropertyIndex(p, PropertyIndexUnique(p)))
 
-var By = {
+var PropertyIndex = {
   create: function(prop, tail) {
-    tail = tail || UNIQUE;
+    tail = tail || UniqueIndex;
     return {
       __proto__: this,
       prop: prop,
@@ -103,7 +117,8 @@ var By = {
         createValue_: function(obj) { return tail.createValue_(obj); },
         updateValue_: function(oldObj, newObj) { return tail.updateValue_(oldObj, newObj); },
 	selectValue_: function(obj, sink) { tail.selectValue_(obj, sink); },
-	getValue_: function(obj) { return tail.getValue_(obj); }
+	getValue_: function(obj) { return tail.getValue_(obj); },
+	valueSize_: function(obj) { return tail.valueSize_(obj); }
       }
     };
   },
@@ -126,13 +141,60 @@ var By = {
   },
   updateValue_: function(oldObj, newObj) { this.set.put_(oldObj, newObj); return oldObj; },
   selectValue_: function(obj, sink) { this.set.select_(obj, sink); },
-  getValue_: function(obj) { return this.tail.getValue_(obj)[0]; }
+  getValue_: function(obj) { return this.tail.getValue_(obj)[0]; },
+  valueSize_: function(obj) { return obj[1]; },
+
+  plan: function(options, sink) {
+    var query = options && options.query;
+
+    var getEQKey = function (query) {
+      if ( query.model_ === EqExpr && query.arg1 === this.prop ) {
+        return query.arg2.f();
+      }
+      return undefined;
+    };
+    var getAndKey = function () {
+      if ( query.model_ === AndExpr ) {
+        for ( var i = 0 ; i < query.args.length ; i++ ) {
+          var q = query.args[i];
+          var k = getEQKey.call(this, q);
+          if ( k ) {
+            query.args[i] = TRUE;
+            query = query.partialEval();
+            return k;
+          }
+        }
+      }
+      return undefined;
+    };
+    if ( query ) {
+      var key = getEQKey.call(this, query) || getAndKey.call(this);
+      if ( key ) {
+        // TODO: how to do a get()?
+        //      var result = this.get_(key);
+        var prop = this.prop;
+        return {
+          cost: 1,
+          execute: function() {
+            console.log('key(' + prop.name + ')', options, sink, this, query);
+          }
+        };
+      }
+    }
+
+    return {
+      cost: 100,
+      execute: function() {
+        console.log('scan', options, sink, this, query);
+      }
+    };
+  }
 };
 
 
-var Contains = {
+var SetIndex = {
   create: function(prop, tail) {
-    tail = tail || UNIQUE;
+    tail = tail || UniqueIndex;
     return {
       __proto__: this,
       prop: prop,
@@ -143,6 +205,7 @@ var Contains = {
         updateValue_: function(oldObj, newObj) { oldObj[1] =  tail.updateValue_(oldObj[1], newObj[1]); return oldObj; },
 	selectValue_: function(obj, sink) { tail.selectValue_(obj[1], sink); },
 	getValue_: function(obj) { return tail.getValue_(obj[1]); },
+	valueSize_: function(obj) { return tail.valueSize_(obj[1]); },
         compare: function(o1, o2) { return o1[0].compareTo(o2[0]); }
       }
     };
@@ -158,7 +221,7 @@ var Contains = {
     }
   },
   select_: function(s, sink) {
-     // TODO: this will only be called with a 'Contains' query
+     // TODO: this will only be called with a 'SetIndex' query
     this.set.select_(s, sink);
   },
   get_: function(s) { return s[0]; }
@@ -177,16 +240,53 @@ var Count = {
   getValue_: function(obj) { return obj; }
 };
 
-var And = {
+
+// Cost of a good plan.
+var GOOD_PLAN = 1; // 10; // put to 1 for testing
+
+
+var AltIndex = {
    create: function() {
+      var root = [];
+      for ( var i = 0 ; i < arguments.length ; i++ ) root.push([]);
       return {
 	 __proto__: this,
-	 delegates: arguments
+	 delegates: arguments,
+         root: root
       };
    },
 
-  select_: function(s, sink) {
-    this.delegates[0].select_(s[0], sink);
+  put: function(obj) { this.put_(this.root, obj); },
+  select: function(sink) { this.select_(this.root, sink); },
+
+  put_: function(oldObj, newObj) {
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      this.delegates[i].put_(oldObj[i], newObj);
+    }
+  },
+  updateValue_: function(oldObj, newObj) {
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      oldObj[i] = this.delegates[i].updateValue_(oldObj[i], newObj);
+    }
+    return oldObj;
+  },
+
+  select_: function(s, sink) { this.delegates[0].select_(s[0], sink); },
+
+  plan: function(options, sink) {
+    var bestPlan;
+
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      var plan = this.delegates[i].plan(options, sink);
+
+      if ( plan ) {
+        if ( plan.cost < GOOD_PLAN ) return plan;
+
+        if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
+      }
+    }
+
+    return bestPlan;
   },
 
   createValue_: function(obj) {
@@ -203,42 +303,51 @@ var And = {
     return oldObj;
   },
   selectValue_: function(obj, sink) { this.delegates[0].selectValue_(obj[0], sink); },
-  getValue_: function(obj) { return this.delegates[0].getValue_(obj[0]); }
+  getValue_: function(obj) { return this.delegates[0].getValue_(obj[0]); },
+  valueSize_: function(obj) { return this.delegates[0].valueSize_(obj[0]); }
 };
 
 var P1 = {
+   model_: EXPR,
+   name: 'P1',
    f: function(obj) { return obj[0]; },
    compare: function(o1, o2) { return this.f(o1).compareTo(this.f(o2)); }
 };
 var P2 = {
+   model_: EXPR,
+   name: 'P2',
    f: function(obj) { return obj[1]; },
    compare: function(o1, o2) {
       return this.f(o1).compareTo(this.f(o2));
    }
 };
 var P3 = {
+   model_: EXPR,
+   name: 'P3',
    f: function(obj) { return obj[2]; },
    compare: function(o1, o2) {
       return this.f(o1).compareTo(this.f(o2));
    }
 };
 var P4 = {
+   model_: EXPR,
+   name: 'P4',
    f: function(obj) { return obj[3]; },
    compare: function(o1, o2) {
       return this.f(o1).compareTo(this.f(o2));
    }
 };
 
-// var i2 = By.create(P3);
-// var i2 = By.create(P1, By.create(P2));
+// var i2 = PropertyIndex.create(P3);
+// var i2 = PropertyIndex.create(P1, PropertyIndex.create(P2));
 
-var i2 = By.create(P1, And.create(By.create(P2), By.create(P3), Count.create()));
+var i2 = AltIndex.create(PropertyIndex.create(P3), PropertyIndex.create(P1, PropertyIndex.create(P2)));
 
-// var i2 = By.create(P1, And.create(By.create(P2), Count.create()));
-// var i2 = By.create(P1, And.create(By.create(P1), By.create(P3)));
+// var i2 = PropertyIndex.create(P1, And.create(PropertyIndex.create(P2), Count.create()));
+// var i2 = PropertyIndex.create(P1, And.create(PropertyIndex.create(P1), PropertyIndex.create(P3)));
 
-// var i2 = Contains.create(P4, By.create(P3));
-// var i2 = By.create(P1, Count.create());
+// var i2 = SetIndex.create(P4, PropertyIndex.create(P3));
+// var i2 = PropertyIndex.create(P1, Count.create());
 
 console.log('\nIndex Test');
 
@@ -260,9 +369,12 @@ dump(result);
 
 // i2.select(console.log);
 
-// By(p1, And(By(p3), By(p2, By(p3, UNIQUE)))))
+// PropertyIndex(p1, And(PropertyIndex(p3), PropertyIndex(p2, PropertyIndex(p3, UniqueIndex)))))
 
 function dump(o) {
    if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
    return o ? o.toString() : '<undefined>';
 }
+
+i2.plan({query: EQ(P1, 'a')}, console.log).execute();
+i2.plan({query: EQ(P3, 9)}, console.log).execute();

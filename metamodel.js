@@ -526,7 +526,7 @@ var PropertyModel = {
 
     methods: {
       f: function(obj) {
-         return obj[this.name];
+         return obj[this.name] || obj;
       },
       compare: function(o1, o2) {
         o1 = this.f(o1);

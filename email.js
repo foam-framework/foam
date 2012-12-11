@@ -235,7 +235,7 @@ var MBOXLoader = {
 
 });
 
-
+/*
 var p = MBOXLoader.put.bind(MBOXLoader);
 
 p('From 1404692113434165298@xxx Wed Jun 13 08:19:51 2012\n');
@@ -247,3 +247,4 @@ p('From: Google Voice <voice-noreply@google.com>\n');
 p('To: thafunkypresident@gmail.com\n');
 
 MBOXLoader.eof();
+*/
