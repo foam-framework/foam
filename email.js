@@ -205,7 +205,7 @@ var MBOXParser = {
 var MBOXLoader = {
   __proto__: MBOXParser,
 
-  put: function(str) { this.parseString(str); },
+  put: function(str) { console.log(str); this.parseString(str); },
 
   eof: function() { this.saveCurrentEmail(); },
 
@@ -234,7 +234,10 @@ var MBOXLoader = {
   // TODO: internalize common strings to save memory (or maybe do it at the DAO level)
 
 });
+// grep -i -E "To:|From|Date:|Subject:|X-Gmail-Labels:" sample.mbox > sample.small.mbox
 
+
+// sed "s/'/\\\\'/g" sample.mbox | sed "s/\r/\\\n/g" | sed "s/^/put('/g" | sed "s/$/');/g" > mbox.js
 /*
 var p = MBOXLoader.put.bind(MBOXLoader);
 
@@ -248,3 +251,774 @@ p('To: thafunkypresident@gmail.com\n');
 
 MBOXLoader.eof();
 */
+
+
+
+var emails = JSONUtil.chaosify([
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '=?ISO-8859-1?Q?K=E1ri?= <no-reply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'You have been invited to contribute to Blah lah la Blog'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012 (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Top 3 posts for you on Google+ this week'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'wmt-noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Email notifications from Google Webmaster Tools'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Brian Willard (Google+)" <replyto-7b45ec87@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'July 10, 2012 (5 photos)'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Brian Willard added you on Google+'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?Brian_Fitzpatrick=2C_K=E1ri_Ragnarsson=2C_and_1_other_sha?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Someone you might know on Google+',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Ihr Google Datenexport-Archiv ist fertig.',
+      labels:
+      [
+         'Personal',
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Change to your Google Voice account',
+      labels:
+      [
+         'Personal',
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'New voicemail from (917) 359-5785 at 3:18 PM',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'SMS from (917) 359-5785',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'SMS from (917) 359-5785',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'JJ Lueck <jlueck@google.com>',
+      to: 'JJ Lueck <jlueck@google.com>, thafunkypresident@gmail.com',
+      subject: 'Sample video',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: One beautiful user experience',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+" <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+" <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Presidentia?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Q1 2012 Board of NerfWarriors All Hands @ Tue Apr 24 2pm -',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: 'Google Wallet <wallet-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?utf-8?q?Google_Wallet_special_offer_today=3A_=245_for_=2410_at_Starbuck?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: I could really use a generously crafter bologna...',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: I could really use a generously crafter bologna...',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: If anyone is reading this, please bring me...',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: If anyone is reading this, please bring me...',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-daa26fef@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Getting started on Google+',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Checkout <noreply@checkout.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Rate your shopping experience with Google using Google Checkout',
+      labels:
+      [
+         'Personal',
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels:
+      [
+         'Personal',
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google <privacy-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Changes to Google Privacy Policy and Terms of Service',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'no-reply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Upgrade to Google Paid Storage',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Checkout <noreply@checkout.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Order receipt from Google ($5.00)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Ihr Google Datenexport-Archiv ist fertig.',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Kalender <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00 (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 13 6:30am - 7:50am (Takeout',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'nobody@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Takeout',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Test calendar)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Test calendar)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Takeout',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Test calendar)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Takeout',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am (thafunkypresident@gmail.com)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'JJ Lueck <jlueck@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Nick Piepmeier <pieps@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Kari Ragnarsson <karir@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Liberate calendars @ Fri Nov 4 12pm - 1:50pm (Test calendar)',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'YouTube <no_reply@youtube.com>',
+      to: 'thafunkypresident <thafunkypresident@gmail.com>',
+      subject: '=?iso-8859-1?q?Invitation_to_earn_revenue_from_your_YouTube_videos_?=',
+      labels:
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      from: 'Nick Piepmeier <pieps@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Hey Chuck, can you help me out?',
+      labels:
+      [
+         'Retention5'
+      ]
+   }
+]);
