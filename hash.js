@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-var files = [
-  'stdlib',
-  'hash',
-  'parse',
-  'context',
-  'event',
-  'SimpleValue',
-  'JSONUtil',
-  'XMLUtil',
-  'FOAM',
-  'TemplateUtil',
-  'AbstractPrototype',
-  'ModelProto',
-  'metamodel',
-  'view',
-  'mlang',
-  'future',
-  'visitor',
-  'dao',
-  'dao2',
-  'index',
-  'StackView',
-  'DAOController',
-  'DAO2Controller',
-  // remove below here
-  'models',
-  'email',
-  'turntable',
-  'dragon'
-];
+String.prototype.hashCode = function() {
+  var hash = 0;
+  if ( this.length == 0 ) return hash;
+
+  for (i = 0; i < this.length; i++) {
+    var code = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + code;
+    hash &= hash;
+  }
+
+  return hash;
+};

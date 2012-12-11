@@ -166,6 +166,14 @@ var ModelProto = {
       }
     },
 
+    hashCode: function() {
+      var string = ""
+      for ( var key in this.properties ) {
+        string += this.properties[key].toString();
+      }
+      return string.hashCode();
+    },
+
     isInstance: function(obj) { return obj && obj.model_ && this.isSubModel(obj.model_); },
 
     toString: function() { return "ModelProto(" + this.name + ")"; }
