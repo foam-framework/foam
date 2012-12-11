@@ -1022,3 +1022,26 @@ var emails = JSONUtil.chaosify([
       ]
    }
 ]);
+
+
+
+if (window.location) {
+  var mails = WorkerDAO2.create({ model: "EMail" });
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email1"}));
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email2"}));
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email3"}));
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email4"}));
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email5"}));
+  mails.put(EMail.create({ from: "adamvy", to: "kgr", subject: "email6"}));
+  mails.put(EMail.create({ from: "adamvy", to: "fredjk", subject: "email7"}));
+  mails.put(EMail.create({ from: "adamvy", to: "fredjk", subject: "email8"}));
+  mails.put(EMail.create({ from: "adamvy", to: "fredjk", subject: "email9"}));
+  mails.put(EMail.create({ from: "adamvy", to: "fredjk", subject: "email10"}));
+}
+
+mails.select(console.log.json);
+var count = COUNT();
+count.eof = function() {
+  console.log("Count is: ", count.count);
+}
+mails.select(count);

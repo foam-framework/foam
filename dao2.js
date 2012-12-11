@@ -939,6 +939,31 @@ var JSONFileDAO2 = FOAM.create({
    }
 });
 
+var KeyCollector = FOAM.create({
+  model_: 'Model',
+  name: 'KeyCollector',
+  label: 'KeyCollector',
+  help: 'A sink that collects the keys of the objects its given.',
+
+  properties: [
+    {
+      name: 'keys',
+      type: 'Array',
+      label: 'Keys',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    put: function(value) {
+      this.keys.push(value.id);
+    },
+    remove: function(value) {
+      this.keys.remove(value.id);
+    }
+  }
+});
+
 var WorkerDAO2 = FOAM.create({
   model_: 'Model',
   name: 'WorkerDAO2',
@@ -1048,15 +1073,31 @@ var WorkerDAO2 = FOAM.create({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
-      sink = this.decorateSink_(sink, options, false);
+      if (sink.model_ && sink.reduceI) {
+        var mysink = sink;
+      } else {
+        mysink = KeyCollector.create();
+      }
+
+      var request = {
+        sink: mysink,
+        options: options
+      };
 
       var fc = this.createFlowControl_();
 
       this.makeRequest_(
-        "select", options,
+        "select", request,
         (function(response) {
-          for (var i = 0; i < response.keys.length; i++) {
-            var key = response.keys[i];
+          var responsesink = JSONToObject.visit(response.sink);
+          if (sink.model_ && sink.reduceI) {
+            sink.reduceI(responsesink);
+            sink.eof && sink.eof();
+            return;
+          }
+
+          for (var i = 0; i < responsesink.keys.length; i++) {
+            var key = responsesink.keys[i];
             if ( fc.stopped ) break;
             if ( fc.errorEvt ) {
               sink.error && sink.error(fc.errorEvt);
@@ -1185,25 +1226,25 @@ var WorkerDelegate = FOAM.create({
             }
           });
         } else if(message.method == "select") {
-          var buffer = [];
-          var options = JSONToObject.visit(message.params);
-          this.dao.select({
-            put: function(obj) {
-              buffer.push(obj.id);
-            },
+          var request = JSONToObject.visit(message.params);
+          var mysink = {
+            __proto__: request.sink,
             eof: function() {
+              this.__proto__.eof && this.__proto__.eof();
               self.postMessage({
                 request: message.request,
-                keys: buffer
-              });
+                sink: ObjectToJSON.visit(this.__proto__)
+              })
             },
             error: function() {
+              this.__proto__.eof();
               self.postMessage({
                 request: message.request,
-                error: true,
+                error: true
               });
             }
-          }, options);
+          };
+          this.dao.select(mysink, request.options);
         }
       }
     }
