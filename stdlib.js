@@ -43,6 +43,33 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
+Array.prototype.clone = function() {
+  return this.slice(0);
+}
+
+Array.prototype.reduce = function(comparator, arr) {
+  compare = toCompare(comparator);
+  var result = new Array(this.length + arr.length);
+
+  var i = 0;
+  var j = 0;
+  var k = 0;
+  while(i < this.length && j < arr.length) {
+    var a = compare(this[i], arr[j]);
+    if ( a < 0 ) {
+      result[k++] = this[i++];
+      continue;
+    }
+    if ( a == 0) {
+      result[k++] = this[i++];
+      result[k++] = arr[j++];
+      continue;
+    }
+    result[k++] = arr[j++];
+  }
+  return result;
+};
+
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
   c = toCompare(c);
@@ -199,6 +226,7 @@ function skipSink(skip, sink) {
 }
 
 function orderedSink(comparator, sink) {
+  comparator = toCompare(comparator);
   return {
     __proto__: sink,
     i: 0,
