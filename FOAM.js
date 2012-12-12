@@ -22,7 +22,7 @@ var $ = function () {
 var FOAM = {
 
    create: function(map) {
-      return JSONUtil.chaosify(map);
+      return JSONUtil.mapToObj(map);
    },
 
    /**

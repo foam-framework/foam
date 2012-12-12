@@ -47,7 +47,7 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'timestamp',
-         label: 'Time',
+         label: 'Date',
          type: 'String',
          mode: 'read-write',
          required: true,
@@ -254,7 +254,7 @@ MBOXLoader.eof();
 
 
 
-var emails = JSONUtil.chaosify([
+var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),

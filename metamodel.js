@@ -159,7 +159,7 @@ var Model = {
 	   help: 'Actions associated with the entity.',
 	   preSet: function(newValue) {
 	      if ( ! ActionModel ) return newValue;
-	      return JSONUtil.chaosify(newValue);
+	      return JSONUtil.mapToObj(newValue);
 	   }
        },
        {
@@ -1051,8 +1051,8 @@ var Issue = FOAM.create(
 );
 
 
-Model.templates[0] = JSONUtil.chaosify(Model.templates[0]);
-Model.templates[1] = JSONUtil.chaosify(Model.templates[1]);
+Model.templates[0] = JSONUtil.mapToObj(Model.templates[0]);
+Model.templates[1] = JSONUtil.mapToObj(Model.templates[1]);
 
 (function() {
     var a = Model.properties;

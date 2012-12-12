@@ -460,13 +460,13 @@ var ScrollCView = FOAM.create({
       c.fillRect(this.x, this.w, this.width, this.height);
 
       c.strokeStyle = '#000';
-      c.strokeRect(this.x, this.y, this.width, this.height);
-      c.fillStyle = '#f00';
+      c.strokeRect(this.x, this.y, this.width-2, this.height);
+      c.fillStyle = '#039';
       c.fillRect(
         this.x + 2,
         this.y + 2 + this.value / this.size * this.height,
-        this.width - 4,
-        this.y + 2 + this.extent / this.size * this.height);
+        this.width - 6,
+        this.y - 6 + this.extent / this.size * this.height);
     },
 
     destroy: function() {
@@ -498,7 +498,7 @@ var ScrollBorder = FOAM.create({
 	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
-             return ScrollCView.create({height:500, width: 30, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+             return ScrollCView.create({height:500, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
            }
        },
        {
@@ -529,7 +529,7 @@ var ScrollBorder = FOAM.create({
 
    methods: {
      toHTML: function() {
-       return '<table border=1><tr><td valign=top>' +
+       return '<table width=100% border=0><tr><td valign=top>' +
          this.view.toHTML() +
          '</td><td valign=top>' +
          this.scrollbar.toHTML() +
@@ -1744,7 +1744,7 @@ var System = FOAM.create({
          });
     },
 
-    chaos: function(system, dev)
+    foam: function(system, dev)
     {
        var r = Math.random();
        var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;

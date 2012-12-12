@@ -1,6 +1,6 @@
 <html>
  <head>
-  <link rel="stylesheet" type="text/css" href="chaos.css" />
+  <link rel="stylesheet" type="text/css" href="foam.css" />
 
   <script language="javascript" src="bootFOAM.js"></script> 
   <script language="javascript" src="power.js"></script>
@@ -102,7 +102,7 @@
 			      
     var M = Movement;
 
-    var chaos = function(system, dev)
+    var foam = function(system, dev)
     {
        var r = Math.random();
        var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;
@@ -130,7 +130,7 @@
        system.addCode(dev.f, dev.e, 1);
     };
 
-    sys.architecture = chaos;
+    sys.architecture = foam;
 
     Events.dynamic(function () {
         //timer.second;

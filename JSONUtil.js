@@ -30,17 +30,17 @@ var JSONUtil =
    },
 
    parse: function(str) {
-     return this.chaosify(eval('(' + str + ')'));
+     return this.mapToObj(eval('(' + str + ')'));
    },
 
    /**
     * Convert JS-Maps which contain the 'model_' property, into
     * instances of that model.
     **/
-   chaosify: function(obj, opt_modelLoader) {
+   mapToObj: function(obj, opt_modelLoader) {
       if ( obj instanceof Array ) {
 	 for ( var i = 0 ; i < obj.length ; i++ ) {
-	    obj[i] = this.chaosify(obj[i]);
+	    obj[i] = this.mapToObj(obj[i]);
 	 }
 	 return obj;
       }
@@ -51,7 +51,7 @@ var JSONUtil =
 
       if ( obj instanceof Object ) {
 	 for ( var key in obj ) {
-	    if ( key != 'model_' ) obj[key] = this.chaosify(obj[key]);
+	    if ( key != 'model_' ) obj[key] = this.mapToObj(obj[key]);
 	 }
 
 	 if ( typeof obj.model_ == 'string' ) {

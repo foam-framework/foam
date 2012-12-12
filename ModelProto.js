@@ -66,7 +66,7 @@ var ModelProto = {
 
 	// add sub-models
         this.models && this.models.forEach(function(m) {
-          cls[m.name] = JSONUtil.chaosify(m);
+          cls[m.name] = JSONUtil.mapToObj(m);
         });
 
 	// build properties

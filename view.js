@@ -1824,7 +1824,7 @@ var TableView = FOAM.create({
 	var str = [];
 	var props = [];
 
-        str.push('<table class="chaosTable ' + model.name + 'Table">');
+        str.push('<table class="foamTable ' + model.name + 'Table">');
 
 	//str += '<!--<caption>' + model.plural + '</caption>';
         str.push('<thead><tr>');
@@ -2013,7 +2013,7 @@ console.timeEnd('redraw');
 	var str = [];
 	var props = [];
 
-        str.push('<table class="chaosTable ' + model.name + 'Table">');
+        str.push('<table class="foamTable ' + model.name + 'Table">');
 
 	//str += '<!--<caption>' + model.plural + '</caption>';
         str.push('<thead><tr>');
