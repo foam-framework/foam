@@ -55,7 +55,7 @@ var StackView = FOAM.create({
       {
          model_: 'ActionModel',
 	 name:  'back',
-	 label: 'Back',
+	 label: '<',
 	 help:  'Go to previous view',
 
 	 isAvailable: function() { return true; },
@@ -70,7 +70,7 @@ var StackView = FOAM.create({
       {
          model_: 'ActionModel',
 	 name:  'forth',
-	 label: '->',
+	 label: '>',
 	 help:  'Undo the previous back.',
 
 	 isAvailable: function() { return true; },
@@ -91,7 +91,7 @@ var StackView = FOAM.create({
 	 return '<div class="stackview" style="width:100%;font-size:200%;font-family:sans-serif" id="' + this.getID() + '">' +
 	    '<div class="stackview_navbar"></div>' +
             '<div class="stackview_navactions">' + this.backButton.toHTML() + this.forwardButton.toHTML() + '</div>' +
-            '<table><tr><td valign=top><div class="stackview-viewarea" width:760px></div></td><td valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
+            '<table width=100% style="table-layout:fixed;"><tr><td width=50% valign=top><div class="stackview-viewarea"></div></td><td width=50% valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
       },
 
       setTopView: function(view, opt_label) {

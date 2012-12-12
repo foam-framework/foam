@@ -6,7 +6,9 @@
  </head>
  <body>
   <script language="javascript">
-    var ModelDAO = ModelDAO.create(this, StorageDAO2.create({ model: Model }));
+    var EMailDAO = StorageDAO2.create({model: EMail});
+//     var ModelDAO = ModelDAO.create(this, []/*StorageDAO2.create({ model: Model })*/);
+//   EMail.plural = 'Take-Out Mail';
 
     var stack = StackView.create();
     stack.write(document);

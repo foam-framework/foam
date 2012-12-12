@@ -260,14 +260,14 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012'
    },
    {
       model_: 'EMail',
@@ -281,56 +281,56 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012'
    },
    {
       model_: 'EMail',
@@ -344,28 +344,28 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012'
    },
    {
       model_: 'EMail',
@@ -379,21 +379,21 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012'
    },
    {
       model_: 'EMail',
@@ -573,7 +573,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am',
       labels:
       [
          'Retention5'
@@ -584,7 +584,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am',
       labels:
       [
          'Retention5'
@@ -595,7 +595,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm',
       labels:
       [
          'Retention5'
@@ -784,7 +784,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Kalender <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00 (thafunkypresident@gmail.com)',
+      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00',
       labels:
       [
          'Retention5'
@@ -795,7 +795,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -806,7 +806,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -817,7 +817,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -828,7 +828,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -949,7 +949,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am',
       labels:
       [
          'Retention5'

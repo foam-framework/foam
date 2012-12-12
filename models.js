@@ -498,7 +498,7 @@ var ScrollBorder = FOAM.create({
 	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
-             return ScrollCView.create({height:500, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+             return ScrollCView.create({height:1300, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
            }
        },
        {
@@ -517,7 +517,7 @@ var ScrollBorder = FOAM.create({
                self.scrollbar.size = this.count;
                self.scrollbar.value = 0;
              }
-           })
+           });
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
@@ -531,7 +531,7 @@ var ScrollBorder = FOAM.create({
      toHTML: function() {
        return '<table width=100% border=0><tr><td valign=top>' +
          this.view.toHTML() +
-         '</td><td valign=top>' +
+         '</td><td valign=top><div class="scrollSpacer"></div>' +
          this.scrollbar.toHTML() +
          '</td></tr></table>';
      },

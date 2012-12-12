@@ -69,11 +69,9 @@ p, h1, form, button{
 /* ----------- summaryView ----------- */
 
 .summaryView {
-    border-left:solid 2px #dddddd;
-    border1:solid 2px #dddddd;
-    border2:solid 2px #b7ddf2;
     background:'white';
     width:100%;
+    table-layout:fixed;
 }
 
 .summaryView .label{
@@ -161,29 +159,30 @@ p, h1, form, button{
     width:200px;
 }
 #stylized button{
-    clear:both;
-    margin-left:150px;
-    width:125px;
-    height:31px;
     background:#666666;
-    text-align:center;
-    line-height:31px;
+    clear:both;
     color:#FFFFFF;
     font-size:11px;
     font-weight:bold;
+    height:31px;
+    line-height:31px;
+    margin-left:150px;
+    text-align:center;
+    width:125px;
 }
 
 
 
 .foamTable
 {
+	background: #fff;
+	border-collapse: collapse;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
-	background: #fff;
 	margin: 10px; 
-	width: 100%;
-	border-collapse: collapse;
+	table-layout:fixed;
 	text-align: left;
+	width: 100%;
 }
 .BookmarkTable
 {
@@ -258,4 +257,9 @@ p, h1, form, button{
 }.myButton:active {
 	position:relative;
 	top:1px;
+}
+
+
+.scrollSpacer {
+    height:52;
 }
