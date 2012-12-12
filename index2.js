@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/** Plan indicating that there are no matching records. **/
+var NOT_FOUND = {
+  cost: 0,
+  execute: function() {},
+  toString: function() { return "no-match(cost=0)"; }
+};
+
 
 function dump(o) {
    if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
@@ -172,9 +179,12 @@ var TreeIndex = {
 
       if ( key ) {
         var result = this.get(s, key);
-        var subPlan = result && this.tail.plan(result, sink, options);
+
+        if ( ! result ) return NOT_FOUND;
+
+        var subPlan = this.tail.plan(result, sink, options);
         return {
-          cost: 1 + (subPlan ? subPlan.cost : 0),
+          cost: 1 + subPlan.cost,
           execute: function(s2, sink) {
 // console.log(prop.name, key, result, subPlan, s);
             subPlan.execute(result[1], sink);
@@ -184,8 +194,18 @@ var TreeIndex = {
       }
     }
 
+    var cost = this.size(s);
+
+    if ( options && options.order ) {
+      if ( options.order == prop ) {
+         // sort not required
+      } else {
+        cost *= Math.log(cost) / Math.log(2);
+      }
+    }
+
     return {
-      cost: this.size(s),
+      cost: cost,
       execute: function() {
         index.select(s, sink);
       },
@@ -286,11 +306,9 @@ var AltIndex = {
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      if ( plan ) {
-        if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
+      if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
 
-        if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
-      }
+      if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
     }
 
     return bestPlan;
@@ -387,10 +405,8 @@ var MemoryDAO = FOAM.create({
 
     select: function(sink, options) {
       var plan = this.index.plan(this.root, sink, options);
-      if ( plan ) {
-        console.log(plan.toString());
-        plan.execute(this.root, sink);
-      }
+      console.log(plan.toString());
+      plan.execute(this.root, sink, options);
       sink && sink.eof && sink.eof();
     }
 
@@ -402,8 +418,11 @@ console.log('\nMemoryDAO Test');
 var d = MemoryDAO.create({model:Issue});
 
 // d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
+
+/*
 d.index = AltIndex.create(TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
 d.root = undefined;
+*/
 
 d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
 d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
@@ -414,29 +433,37 @@ d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
 
 var sink = {
   put: function(i) {
-    console.log(i && i.id, i && i.severity, i &&i.status);
+    console.log(i && i.id, i && i.severity, i && i.status);
   }
 };
 
+console.log('\nDefault Order');
 d.select(sink);
 
-/*
 d.where(EQ(Issue.ID, 2)).select(sink);
 
 // This causes the DAO's tree to rebalance itself. Cool!
-// d.bulkLoad(d);
+d.bulkLoad(d);
 
 d.addIndex(Issue.SEVERITY);
 d.addIndex(Issue.STATUS);
 
-d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
-*/
 
+console.log('\nBy Severity');
+d.orderBy(Issue.SEVERITY).select(sink);
+
+console.log('\nBy Status');
+d.orderBy(Issue.STATUS).select(sink);
+
+
+console.log('\nWhere Major');
+d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
+
+console.log('\nWhere Open');
 d.where(EQ(Issue.STATUS, 'Open')).select(sink);
 
+console.log('\nWhere Closed');
 d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
 
-/*
 console.log('\nMissing Key');
 d.where(EQ(Issue.STATUS, 'XXX')).select(sink);
-*/
