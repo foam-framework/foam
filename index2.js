@@ -21,11 +21,19 @@ var NOT_FOUND = {
   toString: function() { return "no-match(cost=0)"; }
 };
 
+/** Plan indicating that an index has no plan for executing a query. **/
+var NO_PLAN = {
+  cost: Number.MAX_VALUE,
+  execute: function() {},
+  toString: function() { return "no-plan"; }
+};
+
 
 function dump(o) {
    if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
    return o ? o.toString() : '<undefined>';
 }
+
 
 /*
  * Index Interface:
@@ -49,7 +57,13 @@ var ValueIndex = {
 
     return function() { return plan; };
   })(),
-  select: function(value, sink) { sink.put(value); },
+  select: function(value, sink, options) {
+    if ( options ) {
+      if ( options.skip-- > 0 ) return;
+      if ( options.limit-- < 1 ) return;
+    }
+    sink.put(value);
+  },
   selectReverse: function(value, sink) { sink.put(value); },
   size:   function(obj) { return 1; },
   toString: function() { return 'value'; }
@@ -136,11 +150,22 @@ var TreeIndex = {
     return this.get(r > 0 ? s[3] : s[4], key);
   },
 
-  select: function(s, sink) {
+  select: function(s, sink, options) {
     if ( ! s ) return;
-    this.select(s[3], sink);
-    this.tail.select(s[1], sink);
-    this.select(s[4], sink);
+
+    if ( options ) {
+      if ( options.limit <= 0 ) return;
+
+      var size = this.size(s);
+      if ( options.skip >= size ) {
+        options.skip -= size;
+        return;
+      }
+    }
+
+    this.select(s[3], sink, options);
+    this.tail.select(s[1], sink, options);
+    this.select(s[4], sink, options);
   },
 
   selectReverse: function(s, sink) {
@@ -216,7 +241,10 @@ var TreeIndex = {
     return {
       cost: cost,
       execute: function() {
-        index.select(s, sink);
+        var o = options && (options.skip || options.limit) ?
+          {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
+          undefined;
+        index.select(s, sink, o);
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + ')'; }
     };
@@ -455,6 +483,9 @@ var sink = {
 
 console.log('\nDefault Order');
 d.select(sink);
+
+console.log('\nLimit Order');
+d.skip(2).limit(2).select(sink);
 
 d.where(EQ(Issue.ID, 2)).select(sink);
 
