@@ -20,9 +20,16 @@ function dump(o) {
    return o ? o.toString() : '<undefined>';
 }
 
+/*
+ * Index Interface:
+ *   put(state, value) -> new state
+ *   remove(state, value) -> new state
+ *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
+ *   size(state) -> int
+ */
 
 var ValueIndex = {
-  put: function(oldValue, newValue) { return newValue; },
+  put: function(s, newValue) { return newValue; },
   remove: function() {},
   plan: (function() {
     var plan = {
@@ -74,8 +81,8 @@ var TreeIndex = {
     return tree;
   },
 
-  put: function(oldValue, newValue) {
-    return this.putKeyValue(oldValue, this.prop.f(newValue), newValue);
+  put: function(s, newValue) {
+    return this.putKeyValue(s, this.prop.f(newValue), newValue);
   },
 
   putKeyValue: function(s, key, value) {
@@ -164,13 +171,13 @@ var TreeIndex = {
       var key = getEQKey(query) || getAndKey();
 
       if ( key ) {
-        var result = s[1];
+        var result = this.get(s, key);
         var subPlan = result && this.tail.plan(result, sink, options);
         return {
-          cost: 1 + (result ? subPlan.cost : 0),
-          execute: function(s, sink) {
-            sink.put(result[1]);
-            subPlan.execute(result, sink);
+          cost: 1 + (subPlan ? subPlan.cost : 0),
+          execute: function(s2, sink) {
+// console.log(prop.name, key, result, subPlan, s);
+            subPlan.execute(result[1], sink);
           },
           toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + ') ' + subPlan.toString(); }
         };
@@ -243,10 +250,6 @@ var AltIndex = {
   GOOD_PLAN: 1, // put to 10 or more when not testing
 
   create: function() {
-    var root = [];
-
-    for ( var i = 0 ; i < arguments.length ; i++ ) root.push([]);
-
     return {
       __proto__: this,
       delegates: argsToArray(arguments)
@@ -268,10 +271,13 @@ var AltIndex = {
     }
   },
 
-  put: function(oldValue, newValue) {
+  put: function(s, newValue) {
+    s = s || [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      this.delegates[i].put(oldValue[i], newValue);
+      s[i] = this.delegates[i].put(s[i], newValue);
     }
+
+    return s;
   },
 
   plan: function(s, sink, options) {
@@ -395,6 +401,10 @@ console.log('\nMemoryDAO Test');
 
 var d = MemoryDAO.create({model:Issue});
 
+// d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
+d.index = AltIndex.create(TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
+d.root = undefined;
+
 d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
 d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
 d.put(Issue.create({id:3, severity:'Feature', status:'Accepted'}));
@@ -402,9 +412,16 @@ d.put(Issue.create({id:4, severity:'Minor',   status:'Closed'}));
 d.put(Issue.create({id:5, severity:'Major',   status:'Accepted'}));
 d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
 
-d.select(console.log);
+var sink = {
+  put: function(i) {
+    console.log(i && i.id, i && i.severity, i &&i.status);
+  }
+};
 
-d.where(EQ(Issue.ID, 2)).select(console.log);
+d.select(sink);
+
+/*
+d.where(EQ(Issue.ID, 2)).select(sink);
 
 // This causes the DAO's tree to rebalance itself. Cool!
 // d.bulkLoad(d);
@@ -412,6 +429,14 @@ d.where(EQ(Issue.ID, 2)).select(console.log);
 d.addIndex(Issue.SEVERITY);
 d.addIndex(Issue.STATUS);
 
-d.where(EQ(Issue.SEVERITY, 'Major')).select(console.log);
+d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
+*/
 
-d.where(EQ(Issue.STATUS, 'Open')).select(console.log);
+d.where(EQ(Issue.STATUS, 'Open')).select(sink);
+
+d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
+
+/*
+console.log('\nMissing Key');
+d.where(EQ(Issue.STATUS, 'XXX')).select(sink);
+*/

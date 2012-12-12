@@ -43,11 +43,13 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
-Array.prototype.clone = function() {
-  return this.slice(0);
-}
+Object.defineProperty(Array.prototype, 'clone', {
+  value: function() {
+    return this.slice(0);
+}});
 
-Array.prototype.reduce = function(comparator, arr) {
+Object.defineProperty(Array.prototype, 'reduce', {
+  value: function(comparator, arr) {
   compare = toCompare(comparator);
   var result = new Array(this.length + arr.length);
 
@@ -68,7 +70,7 @@ Array.prototype.reduce = function(comparator, arr) {
     result[k++] = arr[j++];
   }
   return result;
-};
+}});
 
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
@@ -117,11 +119,15 @@ function randomAct() {
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
-    Object.defineProperty(proto, key, {
-      value: fns[key],
-      configurable: true,
-      writable: true
-    });
+    try {
+      Object.defineProperty(proto, key, {
+        value: fns[key],
+        configurable: true,
+        writable: true
+      });
+    } catch (x) {
+      console.log('Warning: ' + x);
+    }
   }
 }
 
