@@ -37,6 +37,9 @@ Property.getPrototype().compare = function(o1, o2) {
   o1 = this.f(o1);
   o2 = this.f(o2);
 
+if ( ! o1 ) {
+  debugger;
+}
   return o1.localeCompare ?
     o1.localeCompare(o2) :
     o1 - o2 ;

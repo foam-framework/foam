@@ -39,6 +39,8 @@ var OrderedSet = {
 
   put: function(obj) { this.put_(this.root, obj); },
 
+  get: function(key) { return this.get_(this.root, key); },
+
   select: function(sink) { this.select_(this.root, sink); },
 
   size: function() { return this.size_(this.root); },
@@ -70,6 +72,17 @@ var OrderedSet = {
     }
   },
 
+  get_: function(s, key) {
+    if ( ! s ) return undefined;
+
+    var v = this.getValue_(s[0]);
+    var r = this.compare(v, key);
+
+    if ( r === 0 ) return v;
+
+    return this.get_(r > 0 ? s[2] : s[3], key);
+  },
+
   select_: function(s, sink) {
     if ( ! s ) return;
     this.select_(s[2], sink);
@@ -85,7 +98,6 @@ var OrderedSet = {
 
 var s = OrderedSet.create({compare: StringComparator});
 
-// s = SEQ(s, COUNT());
 console.log('\nOrderedSet Test');
 s.put('k');
 s.put('e');
@@ -99,6 +111,11 @@ s.put('here');
 s.put('boo');
 
 s.select(console.log);
+console.log(s.get('kevin'));
+console.log(s.get('here'));
+console.log(s.get('smith'));
+
+
 
 // PropertyIndex(p, PropertyIndex(p, PropertyIndexUnique(p)))
 
@@ -132,7 +149,7 @@ var PropertyIndex = {
   select_: function(s, sink) {
     this.set.select_(s, sink);
   },
-  get_: function(s) { return this.tail.get_(s[0]); },
+  get_: function(s, key) { return this.tail.get_(s[0]); },
 
   createValue_: function(obj) {
      var ret = [];
@@ -144,7 +161,7 @@ var PropertyIndex = {
   getValue_: function(obj) { return this.tail.getValue_(obj)[0]; },
   valueSize_: function(obj) { return obj[1]; },
 
-  plan: function(options, sink) {
+  plan: function(s, options, sink) {
     var query = options && options.query;
 
     var getEQKey = function (query) {
@@ -171,10 +188,11 @@ var PropertyIndex = {
       var key = getEQKey.call(this, query) || getAndKey.call(this);
       if ( key ) {
         // TODO: how to do a get()?
-        //      var result = this.get_(key);
+debugger;
+        var result = this.set.get_(s, key);
         var prop = this.prop;
         return {
-          cost: 1,
+          cost: result ? this.valueSize_(result) : 0,
           execute: function() {
             console.log('key(' + prop.name + ')', options, sink, this, query);
           }
@@ -183,7 +201,7 @@ var PropertyIndex = {
     }
 
     return {
-      cost: 100,
+      cost: this.set.size(),
       execute: function() {
         console.log('scan', options, sink, this, query);
       }
@@ -273,11 +291,12 @@ var AltIndex = {
 
   select_: function(s, sink) { this.delegates[0].select_(s[0], sink); },
 
-  plan: function(options, sink) {
+  plan: function(s, options, sink) {
+    s = s || this.root;
     var bestPlan;
 
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      var plan = this.delegates[i].plan(options, sink);
+      var plan = this.delegates[i].plan(s[i], options, sink);
 
       if ( plan ) {
         if ( plan.cost < GOOD_PLAN ) return plan;
@@ -376,5 +395,6 @@ function dump(o) {
    return o ? o.toString() : '<undefined>';
 }
 
-i2.plan({query: EQ(P1, 'a')}, console.log).execute();
-i2.plan({query: EQ(P3, 9)}, console.log).execute();
+i2.plan(null,{query: EQ(P1, 'a')}, console.log).execute();
+i2.plan(null,{query: EQ(P2, 'b')}, console.log).execute();
+i2.plan(null,{query: EQ(P3, 9)}, console.log).execute();

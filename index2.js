@@ -1,24 +1,40 @@
+/*
+ * Copyright 2012 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 function dump(o) {
    if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
    return o ? o.toString() : '<undefined>';
 }
 
 
-
 var ValueIndex = {
   put: function(oldValue, newValue) { return newValue; },
   remove: function() {},
   plan: (function() {
-           var plan = {
-             cost: 1,
-             execute: function(s, sink) {
-               sink.put(s);
-             },
-             toString: function() { return 'unique'; }
-           };
+    var plan = {
+      cost: 1,
+      execute: function(s, sink) {
+        sink.put(s);
+      },
+      toString: function() { return 'unique'; }
+    };
 
-           return function() { return plan; };
-         })(),
+    return function() { return plan; };
+  })(),
   select: function(value, sink) { sink.put(value); },
   selectReverse: function(value, sink) { sink.put(value); },
   size:   function(obj) { return 1; }
@@ -34,6 +50,28 @@ var TreeIndex = {
       prop: prop,
       tail: tail
     };
+  },
+
+  /**
+   * Bulk load an unsorted array of objects.
+   * Faster than loading individually, and produces a balanced tree.
+   **/
+  bulkLoad: function(a) {
+    a.sort(toCompare(this.prop));
+    return this.bulkLoad_(a, 0, a.length-1);
+  },
+
+  bulkLoad_: function(a, start, end) {
+    if ( end < start ) return undefined;
+
+    var m    = start + Math.floor((end-start+1) / 2);
+    var tree = this.put(undefined, a[m]);
+
+    tree[3] = this.bulkLoad_(a, start, m-1);
+    tree[4] = this.bulkLoad_(a, m+1, end);
+    tree[2] += this.size(tree[3]) + this.size(tree[4]);
+
+    return tree;
   },
 
   put: function(oldValue, newValue) {
@@ -88,7 +126,7 @@ var TreeIndex = {
     this.selectReverse(s[3], sink);
   },
 
-  size: function(s) { return s[2]; },
+  size: function(s) { return s ? s[2] : 0; },
 
   compare: function(o1, o2) {
     return o1.compareTo(o2); //this.prop.compare(o1, o2);
@@ -129,9 +167,10 @@ var TreeIndex = {
         var result = s[1];
         var subPlan = result && this.tail.plan(result, sink, options);
         return {
-          cost: result ? subPlan.cost : 0,
+          cost: 1 + (result ? subPlan.cost : 0),
           execute: function(s, sink) {
-            subPlan.execute(s, sink);
+            sink.put(result[1]);
+            subPlan.execute(result, sink);
           },
           toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + ') ' + subPlan.toString(); }
         };
@@ -160,6 +199,7 @@ var OrderedMap = {
     };
   },
 
+  bulkLoad: function(a) { this.root = this.index.bulkLoad(a); },
   putObject: function(value) { this.root = this.index.put(this.root, value); },
   put: function(key, value) { this.root = this.index.putKeyValue(this.root, key, value); },
   get: function(key) { return this.index.get(this.root, key); },
@@ -190,6 +230,70 @@ m.put('kevin', 'greer');
 console.log(m.get('kevin'));
 
 
+console.log('\nOrderedSet BulkLoad Test');
+m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
+
+m.bulkLoad('kxeyvizngdrwfash'.split(''));
+
+m.select(console.log);
+
+
+var AltIndex = {
+  // Maximum cost for a plan which is good enough to not bother looking at the rest.
+  GOOD_PLAN: 1, // put to 10 or more when not testing
+
+  create: function() {
+    var root = [];
+
+    for ( var i = 0 ; i < arguments.length ; i++ ) root.push([]);
+
+    return {
+      __proto__: this,
+      delegates: argsToArray(arguments)
+    };
+  },
+
+  addIndex: function(s, index) {
+    // Populate the index
+    var a = [];
+    this.plan(s, a).execute(s, a);
+
+    s.push(index.bulkLoad(a));
+    this.delegates.push(index);
+  },
+
+  bulkLoad: function(a) {
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      this.root[i] = this.delegates[i].bulkLoad(a);
+    }
+  },
+
+  put: function(oldValue, newValue) {
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      this.delegates[i].put(oldValue[i], newValue);
+    }
+  },
+
+  plan: function(s, sink, options) {
+    var bestPlan;
+
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      var plan = this.delegates[i].plan(s[i], sink, options);
+
+      if ( plan ) {
+        if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
+
+        if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
+      }
+    }
+
+    return bestPlan;
+  },
+
+  size: function(obj) { return this.delegates[0].size(obj[0]); }
+};
+
+
 var MemoryDAO = FOAM.create({
    model_: 'Model',
    extendsModel: 'AbstractDAO2',
@@ -208,10 +312,58 @@ var MemoryDAO = FOAM.create({
 
    methods: {
 
-    init: function() {
-      AbstractPrototype.init.call(this);
+     init: function() {
+       AbstractPrototype.init.call(this);
 
-      this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+     },
+
+     /**
+      * Add a non-unique index
+      * args: one or more properties
+      **/
+     addIndex: function() {
+       var props = argsToArray(arguments);
+
+       // Add on the primary key(s) to make the index unique.
+       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
+         props.push(this.model.getProperty(this.model.ids[i]));
+       }
+
+       this.addUniqueIndex.apply(this, props);
+     },
+
+     /**
+      * Add a unique index
+      * args: one or more properties
+      **/
+     addUniqueIndex: function() {
+       // Upgrade single Index to an AltIndex if required.
+       if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
+         this.index = AltIndex.create(this.index);
+         this.root = [this.root];
+       }
+
+       var index = ValueIndex;
+
+       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
+         index = TreeIndex.create(arguments[i], index);
+       }
+
+       this.index.addIndex(this.root, index);
+     },
+
+    /**
+     * Bulk load data from another DAO.
+     * Any data already loaded into this DAO will be lost.
+     * @arg sink (optional) eof is called when loading is complete.
+     **/
+    bulkLoad: function(dao, sink) {
+      var self = this;
+      dao.select({ __proto__: [], eof: function() {
+        self.root = self.index.bulkLoad(this);
+        sink && sink.eof && sink.eof();
+      }});
     },
 
     put: function(obj, sink) {
@@ -243,10 +395,23 @@ console.log('\nMemoryDAO Test');
 
 var d = MemoryDAO.create({model:Issue});
 
-d.put(Issue.create({id:1, severity:'Minor', status:'Open'}));
-d.put(Issue.create({id:2, severity:'Major', status:'Closed'}));
+d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
+d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
 d.put(Issue.create({id:3, severity:'Feature', status:'Accepted'}));
+d.put(Issue.create({id:4, severity:'Minor',   status:'Closed'}));
+d.put(Issue.create({id:5, severity:'Major',   status:'Accepted'}));
+d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
 
 d.select(console.log);
 
 d.where(EQ(Issue.ID, 2)).select(console.log);
+
+// This causes the DAO's tree to rebalance itself. Cool!
+// d.bulkLoad(d);
+
+d.addIndex(Issue.SEVERITY);
+d.addIndex(Issue.STATUS);
+
+d.where(EQ(Issue.SEVERITY, 'Major')).select(console.log);
+
+d.where(EQ(Issue.STATUS, 'Open')).select(console.log);
