@@ -51,7 +51,8 @@ var ValueIndex = {
   })(),
   select: function(value, sink) { sink.put(value); },
   selectReverse: function(value, sink) { sink.put(value); },
-  size:   function(obj) { return 1; }
+  size:   function(obj) { return 1; },
+  toString: function() { return 'value'; }
 };
 
 
@@ -71,8 +72,17 @@ var TreeIndex = {
    * Faster than loading individually, and produces a balanced tree.
    **/
   bulkLoad: function(a) {
-    a.sort(toCompare(this.prop));
-    return this.bulkLoad_(a, 0, a.length-1);
+     // Only safe if children aren't themselves trees
+     if ( this.tail === ValueIndex ) {
+       a.sort(toCompare(this.prop));
+       return this.bulkLoad_(a, 0, a.length-1);
+     }
+
+     var s = undefined;
+     for ( var i = 0 ; i < a.length ; i++ ) {
+       s = this.put(s, a[i]);
+     }
+     return s;
   },
 
   bulkLoad_: function(a, start, end) {
@@ -186,7 +196,6 @@ var TreeIndex = {
         return {
           cost: 1 + subPlan.cost,
           execute: function(s2, sink) {
-// console.log(prop.name, key, result, subPlan, s);
             subPlan.execute(result[1], sink);
           },
           toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + ') ' + subPlan.toString(); }
@@ -211,6 +220,10 @@ var TreeIndex = {
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + ')'; }
     };
+  },
+
+  toString: function() {
+    return 'TreeIndex(' + this.prop.name + ', ' + this.tail + ')';
   }
 
 };
@@ -308,7 +321,10 @@ var AltIndex = {
 
       if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
 
-      if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
+      if ( ! bestPlan || plan.cost < bestPlan.cost ) {
+	 // curry the proper state
+	 bestPlan = (function(plan, s) { return {__proto__: plan, execute: function(unused, sink, options) { plan.execute(s, sink, options);}};})(plan, s[i]);
+      }
     }
 
     return bestPlan;
@@ -318,12 +334,12 @@ var AltIndex = {
 };
 
 
-var MemoryDAO = FOAM.create({
+var IDAO = FOAM.create({
    model_: 'Model',
    extendsModel: 'AbstractDAO2',
 
-   name: 'MemoryDAO',
-   label: 'Memory DAO',
+   name: 'IDAO',
+   label: 'Indexed DAO',
 
    properties: [
       {
@@ -413,9 +429,9 @@ var MemoryDAO = FOAM.create({
    }
 });
 
-console.log('\nMemoryDAO Test');
+console.log('\nIDAO Test');
 
-var d = MemoryDAO.create({model:Issue});
+var d = IDAO.create({model:Issue});
 
 // d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
 
@@ -443,7 +459,7 @@ d.select(sink);
 d.where(EQ(Issue.ID, 2)).select(sink);
 
 // This causes the DAO's tree to rebalance itself. Cool!
-d.bulkLoad(d);
+// d.bulkLoad(d);
 
 d.addIndex(Issue.SEVERITY);
 d.addIndex(Issue.STATUS);
@@ -456,14 +472,14 @@ console.log('\nBy Status');
 d.orderBy(Issue.STATUS).select(sink);
 
 
+console.log('\nWhere Closed');
+d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
+
 console.log('\nWhere Major');
 d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
 
 console.log('\nWhere Open');
 d.where(EQ(Issue.STATUS, 'Open')).select(sink);
-
-console.log('\nWhere Closed');
-d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
 
 console.log('\nMissing Key');
 d.where(EQ(Issue.STATUS, 'XXX')).select(sink);

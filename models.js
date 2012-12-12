@@ -531,7 +531,7 @@ var ScrollBorder = FOAM.create({
      toHTML: function() {
        return '<table border=1><tr><td valign=top>' +
          this.view.toHTML() +
-         '</td><td>' +
+         '</td><td valign=top>' +
          this.scrollbar.toHTML() +
          '</td></tr></table>';
      },
