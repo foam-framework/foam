@@ -15,6 +15,12 @@ var GroupBySearchView = FOAM.create({
        valueFactory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
      },
      {
+       name:  'width',
+       label: 'Width',
+       type:  'int',
+       defaultValue: 60
+     },
+     {
        name:  'size',
        label: 'Size',
        type:  'int',
@@ -65,14 +71,13 @@ var GroupBySearchView = FOAM.create({
            var groups = futureSink(GROUP_BY(this.property, COUNT()));
            this.dao.select(groups);
            groups.future(function(groups) {
-             var maxSize = 0;
-             for ( var key in groups.groups ) {
-               maxSize = Math.max(maxSize, key.length);
-             }
              var options = [];
              for ( var key in groups.groups ) {
-               var cleanKey = key.replace('<', '&lt;').replace('>', '&gt;');
-               options.push(cleanKey + Array(4 + maxSize-key.length).join('&nbsp;') + '(' + groups.groups[key] + ')');
+               var count = '(' + groups.groups[key] + ')';
+               var subKey = key.substring(0, self.width-count.length-3);
+               var cleanKey = subKey.replace('<', '&lt;').replace('>', '&gt;');
+debugger;
+               options.push(cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count);
              }
              options.sort();
              options.splice(0,0,'-- CLEAR SELECTION --');
