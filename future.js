@@ -60,3 +60,25 @@ function futureChain(prev, factory) {
     });
   });
 }
+
+
+function futureSink(sink) {
+  var done = false;
+  var callback;
+
+  return {
+    __proto__: sink,
+    eof: function() {
+      done = true;
+      if ( callback ) callback(sink);
+      sink.eof && sink.eof.apply(sink, arguments);
+    },
+    future: function(f) {
+      if ( done ) {
+        f(sink);
+      } else {
+        callback = f;
+      }
+    }
+  };
+}
