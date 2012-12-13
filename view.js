@@ -895,6 +895,11 @@ var ChoiceView = FOAM.create({
 	 defaultValue: 'field'
       },
       {
+         name: 'cssClass',
+         type: 'String',
+         defaultValue: 'foamChoiceView'
+      },
+      {
 	 name:  'size',
 	 label: 'Size',
          type:  'int',
@@ -909,39 +914,47 @@ var ChoiceView = FOAM.create({
    ],
 
    methods: {
-    toHTML: function() {
-       var str = "";
+     toHTML: function() {
+       return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
+     },
 
-       str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+     updateHTML: function() {
+       var out = [];
+
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-	  str += "\t<option>" + this.choices[i].toString() + "</option>";
+	 out.push('\t<option>');
+         out.push(this.choices[i].toString());
+         out.push('</option>');
        }
-       str += '</select>';
 
-       return str;
-    },
+       this.element().innerHTML = out.join('');
+     },
 
-    getValue: function() {
-        return this.value;
-    },
+     getValue: function() {
+       return this.value;
+     },
 
-    setValue: function(value) {
-	Events.unlink(this.domValue, this.value);
-	this.value = value;
-	Events.link(value, this.domValue);
-    },
+     setValue: function(value) {
+       Events.unlink(this.domValue, this.value);
+       this.value = value;
+       Events.link(value, this.domValue);
+     },
 
-    initHTML: function() {
-	var e = this.element();
+     initHTML: function() {
+       var e = this.element();
 
-	this.domValue = DomValue.create(e);
+       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
 
-	Events.link(this.value, this.domValue);
-    },
+//       this.updateHTML();
 
-    destroy: function() {
-	Events.unlink(this.domValue, this.value);
-    }
+       this.domValue = DomValue.create(e);
+
+       Events.link(this.value, this.domValue);
+     },
+
+     destroy: function() {
+       Events.unlink(this.domValue, this.value);
+     }
    }
 });
 

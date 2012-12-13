@@ -734,19 +734,30 @@ var GroupByExpr = FOAM.create({
        }
      },
      pipe: function(sink) {
-         for ( key in this.groups ) {
-           sink.push([key, this.groups[key].toString()]);
+       for ( key in this.groups ) {
+         sink.push([key, this.groups[key].toString()]);
        }
        return sink;
      },
      put: function(obj) {
        var key = this.arg1.f(obj);
-       var group = this.groups[key];
-       if ( ! group ) {
-         group = this.arg2.clone();
-         this.groups[key] = group;
+       if ( Array.isArray(key) ) {
+         for ( var i = 0 ; i < key.length ; i++ ) {
+           var group = this.groups[key[i]];
+           if ( ! group ) {
+             group = this.arg2.clone();
+             this.groups[key[i]] = group;
+           }
+           group.put(obj);
+         }
+       } else {
+         var group = this.groups[key];
+         if ( ! group ) {
+           group = this.arg2.clone();
+           this.groups[key] = group;
+         }
+         group.put(obj);
        }
-       group.put(obj);
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; }

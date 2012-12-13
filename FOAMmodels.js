@@ -29,6 +29,7 @@ var files = [
   'ModelProto',
   'metamodel',
   'view',
+  'search',
   'mlang',
   'future',
   'visitor',

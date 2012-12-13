@@ -2,13 +2,32 @@
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script language="javascript" src="bootFOAM.js"></script>
-  <title>Take-Out Mail Reader</title>
+  <title>Takeout Mail Reader</title>
  </head>
  <body>
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+  &nbsp;<font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
+<font color="#555555" >
+ Takeout Mail Reader
+</font></font>
+</div>
+<br/>
   <script language="javascript">
     var EMailDAO = StorageDAO2.create({model: EMail});
 //     var ModelDAO = ModelDAO.create(this, []/*StorageDAO2.create({ model: Model })*/);
 //   EMail.plural = 'Take-Out Mail';
+
+    var byFrom = GroupBySearchView.create({dao: EMailDAO, property: EMail.FROM});
+//    byFrom.write(document);
+
+    var byTo = GroupBySearchView.create({dao: EMailDAO, property: EMail.TO});
+//    byTo.write(document);
+
+document.writeln(byFrom.toHTML() + " " + byTo.toHTML());
+
+byFrom.initHTML();
+byTo.initHTML();
 
     var stack = StackView.create();
     stack.write(document);

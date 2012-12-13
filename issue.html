@@ -18,9 +18,10 @@
 <br/>
 
   <script language="javascript">
-    var ModelDAO = ModelDAO.create(this,StorageDAO.createModels("models"));
+//    var ModelDAO = ModelDAO.create(this,StorageDAO.createModels("models"));
+//    IssueDAO = SeqNoDAO.create(Issue.getProperty('id'), 10000, IssueDAO);
+    var IssueDAO = StorageDAO2.create({model: Issue});
 
-    IssueDAO = SeqNoDAO.create(Issue.getProperty('id'), 10000, IssueDAO);
 
     var stack = StackView.create();
     stack.write(document);

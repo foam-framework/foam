@@ -12,7 +12,13 @@ var GroupBySearchView = FOAM.create({
        name: 'view',
        label: 'View',
        type: 'view',
-       valueFactory: function() { return ChoiceView.create({size:10, cssClass: 'foamSearchChoiceView'}); }
+       valueFactory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
+     },
+     {
+       name:  'size',
+       label: 'Size',
+       type:  'int',
+       defaultValue: 17
      },
      {
        name:  'dao',
@@ -71,7 +77,7 @@ var GroupBySearchView = FOAM.create({
              options.sort();
              options.splice(0,0,'-- CLEAR SELECTION --');
              self.view.choices = options;
-             console.log(groups.groups, options);
+             // console.log(groups.groups, options);
            });
 	 }
       }

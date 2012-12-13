@@ -370,7 +370,7 @@ var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri?= <no-reply@google.com>',
+      from: '<no-reply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'You have been invited to contribute to Blah lah la Blog'
    },
@@ -428,7 +428,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?Brian_Fitzpatrick=2C_K=E1ri_Ragnarsson=2C_and_1_other_sha?=',
+      subject: 'Brian_Fitzpatrick',
       labels:
       [
          'Retention5'
@@ -538,7 +538,7 @@ var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: One beautiful user experience',
       labels:
@@ -551,7 +551,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: '"Google+" <noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi?=',
+      subject: 'E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi',
       labels:
       [
          'Retention5'
@@ -562,7 +562,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: '"Google+" <noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Presidentia?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -639,7 +639,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: '"Google+" <noreply-1670dad1@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -650,7 +650,7 @@ var emails = JSONUtil.mapToObj([
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: '"Google+" <noreply-1670dad1@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -659,7 +659,7 @@ var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: I could really use a generously crafter bologna...',
       labels:
@@ -681,7 +681,7 @@ var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: If anyone is reading this, please bring me...',
       labels:

@@ -92,6 +92,10 @@ p, h1, form, button{
 }
 
 
+.foamSearchView select{
+  font-family: 'Courier New', Courier, monospace;
+}
+
 /* ----------- summaryView ----------- */
 
 .helpView {
