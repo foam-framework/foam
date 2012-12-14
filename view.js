@@ -933,7 +933,7 @@ var ChoiceView = FOAM.create({
          var choice = this.choices[i];
 
          if ( Array.isArray(choice) ) {
-	   out.push('\t<option value="' + choice[0] + '">');
+	   out.push('\t<option value="' + choice[0].replace(/"/g, '&quot;') + '">');
            out.push(choice[1].toString());
          } else {
 	   out.push('\t<option>');
@@ -1804,7 +1804,7 @@ var TableView = FOAM.create({
       },
       {
 	 name:  'properties',
-	 label: 'Model',
+	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -1954,7 +1954,7 @@ var TableView2 = FOAM.create({
       },
       {
 	 name:  'properties',
-	 label: 'Model',
+	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -2039,10 +2039,11 @@ console.time('redraw');
       this.objs.eof = function() {
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
-          self.initHTML();
+         self.initHTML();
         }
       };
-      this.dao.limit(this.rows).select(this.objs);
+// TODO: why does limit(rows) break this?
+      this.dao./*limit(this.rows).*/select(this.objs);
 console.timeEnd('redraw');
     },
 

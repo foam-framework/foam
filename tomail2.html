@@ -6,27 +6,32 @@
  </head>
 <body>
 
-<div id="header" style="position:absolute;background-color:#FFA500;">
-<h1 style="margin-bottom:0;">Takeout Mail Reader</h1>
+<div id="header" style="position:absolute;background-color:#ccc;">
+<img style="float:left;padding-left: 20px;" width=53 height=53 src="http://conical.ca/static/500e18ebc4aac913a35ac7f3/500e1988e4b0757e9f47b421/500e198be4b0757e9f47b4cb/?format=original"/>
+<font size=+3 face="catull" style="float:left;padding-top:8px;padding-left:15px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+Takeout Reader</font>
 </div>
 
-<div id="search" style="background-color:#FFD700;position:absolute;float:left;">
-  <div id="textSearch"></div>
-  <div id="toSearch"></div>
-  <div id="fromSearch"></div>
-  <div id="labelSearch"></div>
+<div id="search" style="background-color:#FFF;position:absolute;float:left;">
+  <div id="textSearch"  class="searchTitle"></div>
+  <div id="toSearch"    class="searchTitle"></div>
+  <div id="fromSearch"  class="searchTitle"></div>
+  <div id="labelSearch" class="searchTitle"></div>
 </div>
 
 <div id="browse" style="position:absolute;background-color:#EEEEEE;float:left;">
 Table Browser
 </div>
 
-<div id="edit" style="position:absolute;background-color:#EEEE99;float:left;">
+<div id="edit" style="margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;float:left;">
 View/Edit Here
 </div>
 
-<div id="footer" style="position:absolute;background-color:#FFA500;text-align:left;">
-FOAM Powered
+<div id="footer" style="position:absolute;background-color:#ccc;text-align:left;">
+<!-- <div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;"> -->
+<font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+  <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
+<font color="#555555" > POWERED
 </div>
 
 <script>
@@ -75,8 +80,8 @@ function layout() {
     pos(edit,
       toNum(browse.style.top) + toNum(browse.style.height) + 5,
       SEARCH_W + 10,
-      RIGHT_W,
-      SEARCH_H / 2 -5);
+      RIGHT_W-10,
+      SEARCH_H / 2 -20);
   }
   pos(footer, H-FOOTER_H, null, W, FOOTER_H);
 
@@ -124,6 +129,23 @@ layout();
     byLabel.initHTML();
 
     layout();
+
+    Events.dynamic(function() {
+      byFrom.predicate;
+      byTo.predicate;
+      byLabel.predicate;
+    },
+    function() {
+      var predicate = AND(
+        byFrom.predicate,
+        byTo.predicate,
+        byLabel.predicate).partialEval();
+
+      console.log('query: ', predicate.toSQL());
+
+      table.scrollbar.value = 0;
+      table.dao = dao.where(predicate);
+    });
   </script>
 
 </body>

@@ -94,7 +94,7 @@ var EXPR = FOAM.create({
        return {
          __proto__: sink,
          put:    function(obj) { if ( expr.f(obj) ) sink.put(obj);   },
-         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj) }
+         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
        };
      }
    }
@@ -143,7 +143,7 @@ var NARY = FOAM.create({
 	 label: 'Arguments',
 	 type:  'Expr[]',
 	 help:  'Sub-expressions',
-	 valueFactory: function() { return []; },
+	 valueFactory: function() { return []; }
       }
    ],
 
@@ -252,20 +252,22 @@ var AndExpr = FOAM.create({
           if ( AndExpr.isInstance(newA) ) {
             // In-line nested AND clauses
             for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA[j]);
+              newArgs.push(newA.args[j]);
             }
             updated = true;
           }
           else {
-            if ( newA !== TRUE ) {
-              newArgs.push(newA);
-            }
-            if ( a !== newA ) updated = true;
+            if ( newA === TRUE ) {
+	       updated = true;
+            } else {
+	       newArgs.push(newA);
+               if ( a !== newA ) updated = true;
+	    }
           }
         }
 
-        if ( newArgs.length === 0 ) return TRUE;
-        if ( newArgs.length === 1 ) return newArgs[0];
+        if ( newArgs.length == 0 ) return TRUE;
+        if ( newArgs.length == 1 ) return newArgs[0];
 
         return updated ? AndExpr.create({args: newArgs}) : this;
       },
@@ -274,6 +276,10 @@ var AndExpr = FOAM.create({
         for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a = this.args[i];
 
+          if ( ! a )
+{
+   debugger;
+}
           if ( ! a.f(obj) ) return false;
         }
         return true;
@@ -313,7 +319,7 @@ var OrExpr = FOAM.create({
           if ( OrExpr.isInstance(newA) ) {
             // In-line nested OR clauses
             for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA[j]);
+              newArgs.push(newA.args[j]);
             }
             updated = true;
           }
@@ -325,8 +331,8 @@ var OrExpr = FOAM.create({
           }
         }
 
-        if ( newArgs.length === 0 ) return TRUE;
-        if ( newArgs.length === 1 ) return newArgs[0];
+        if ( newArgs.length == 0 ) return TRUE;
+        if ( newArgs.length == 1 ) return newArgs[0];
 
         return updated ? AndExpr.create({args: newArgs}) : this;
       },

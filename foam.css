@@ -274,3 +274,14 @@ td, th {
   overflow: hidden;
   text-overflow:ellipsis;
 }
+
+select {
+  background-color:rgb(240,240,240);
+  margin-bottom: 15px;
+}
+
+.searchTitle {
+  font-size: 16px;
+  padding-left: 5px;
+}
+

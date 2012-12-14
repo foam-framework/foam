@@ -38,6 +38,12 @@ var GroupBySearchView = FOAM.create({
        type: 'Property'
      },
      {
+       name: 'predicate',
+       label: 'Predicate',
+       type: 'Object',
+       defaultValue: TRUE
+     },
+     {
        name: 'label',
        type: 'String',
        defaultValueFn: function() { return this.property.label; }
@@ -56,9 +62,9 @@ var GroupBySearchView = FOAM.create({
      initHTML: function() {
        this.view.initHTML();
 
-       Events.dynamic(function() { this.dao; }, this.update);
+       Events.dynamic(function() { this.dao; }, this.updateDAO);
 //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
-this.view.value.addListener(console.log.bind(console));
+	this.view.value.addListener(this.updateChoice);
 //       this.view.addListener(console.log.bind(console));
 //       this.view.value.addListener(console.log.bind(console));
      }
@@ -69,7 +75,8 @@ this.view.value.addListener(console.log.bind(console));
       {
 	 model_: 'MethodModel',
 
-	 name: 'update',
+	 name: 'updateDAO',
+
 	 code: function() {
            var self = this;
            var groups = futureSink(GROUP_BY(this.property, COUNT()));
@@ -79,19 +86,32 @@ this.view.value.addListener(console.log.bind(console));
              for ( var key in groups.groups ) {
                var count = '(' + groups.groups[key] + ')';
                var subKey = key.substring(0, self.width-count.length-3);
-               var cleanKey = subKey.replace('<', '&lt;').replace('>', '&gt;');
-               options.push([cleanKey, cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count]);
+               var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+               options.push([key.replace(/</g, '&lt;').replace(/>/g, '&gt;'), cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count]);
              }
              options.sort();
-             options.splice(0,0,'-- CLEAR SELECTION --');
+             options.splice(0,0,['','-- CLEAR SELECTION --']);
              self.view.choices = options;
              // console.log(groups.groups, options);
            });
 
-           self.view.propertyValue('value').addListener(console.log.bind(console));
+//           self.view.value.addListener(this.updateChoice);
+	 }
+      },
+      {
+	 model_: 'MethodModel',
 
+	 name: 'updateChoice',
+
+	 code: function(newValue) {
+	    var choice = newValue.get();
+
+	    console.log('****** Choice: ', choice);
+
+	    this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
 	 }
       }
+
    ]
 
 });
