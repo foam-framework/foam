@@ -207,13 +207,15 @@ function predicatedSink(predicate, sink) {
 }
 
 function limitedSink(count, sink) {
+  var i = 0;
   return {
     __proto__: sink,
-    i: 0,
     put: function(obj, s, fc) {
-      this.i++;
-      sink.put(obj, s, fc);
-      if ( this.i >= count && fc ) fc.stop();
+      if ( i++ >= count && fc ) {
+        fc.stop();
+      } else {
+        sink.put(obj, s, fc);
+      }
     },
     eof: function() {
       sink.eof && sink.eof();
@@ -222,11 +224,11 @@ function limitedSink(count, sink) {
 }
 
 function skipSink(skip, sink) {
+  var i = 0;
   return {
     __proto__: sink,
-    i: 0,
     put: function(obj, s, fc) {
-      if ( this.i++ >= skip ) sink.put(obj, s, fc);
+      if ( i++ >= skip ) sink.put(obj, s, fc);
     }
   };
 }

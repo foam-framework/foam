@@ -422,7 +422,7 @@ defineProperties(Array.prototype, {
   },
   select: function(sink, options) {
     var hasQuery = options && options.query;
-    sink = this.decorateSink_(sink, options, false, hasQuery);
+    sink = this.decorateSink_(sink, options, false, ! hasQuery);
 
     var fc = this.createFlowControl_();
 
