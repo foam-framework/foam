@@ -76,7 +76,6 @@ var GroupBySearchView = FOAM.create({
                var count = '(' + groups.groups[key] + ')';
                var subKey = key.substring(0, self.width-count.length-3);
                var cleanKey = subKey.replace('<', '&lt;').replace('>', '&gt;');
-debugger;
                options.push(cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count);
              }
              options.sort();

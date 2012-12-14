@@ -370,7 +370,7 @@ var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '<no-reply@google.com>',
+      from: 'John Doe<no-reply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'You have been invited to contribute to Blah lah la Blog'
    },

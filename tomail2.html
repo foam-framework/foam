@@ -40,6 +40,7 @@ var toSearch   = document.getElementById('toSearch');
 var fromSearch = document.getElementById('fromSearch');
 var labelSearch = document.getElementById('labelSearch');
 
+
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 function pos(e, top, left, width, height) {
@@ -52,6 +53,7 @@ function pos(e, top, left, width, height) {
 }
 
 var MIN_THREE_COLUMN_W = 1600;
+var table;
 
 function layout() {
   var W         = window.innerWidth - 15;
@@ -77,6 +79,8 @@ function layout() {
       SEARCH_H / 2 -5);
   }
   pos(footer, H-FOOTER_H, null, W, FOOTER_H);
+
+  table && table.view.layout();
 }
 
 window.onresize = layout;
@@ -118,6 +122,8 @@ layout();
     byFrom.initHTML();
     byTo.initHTML();
     byLabel.initHTML();
+
+    layout();
   </script>
 
 </body>

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
+
 // TODO: model, document
 // properties: children, parent, value, eid,
 var AbstractView =
@@ -1980,6 +1982,25 @@ var TableView2 = FOAM.create({
    ],
 
    methods: {
+
+     layout: function() {
+       var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
+       var style = window.getComputedStyle(this.element().children[0]);
+
+       console.log('**** SIZES ***', parent.height, style.height );
+       while ( toNum(parent.height) -22 > toNum(style.height) ) {
+         console.log('**** TOO SMALL ***', parent.height, style.height );
+         this.rows = this.rows+1;
+style = window.getComputedStyle(this.element().children[0]);
+       }
+       while ( toNum(parent.height) -22 < toNum(style.height) ) {
+         console.log('**** TOO BIG ***', parent.height, style.height );
+         this.rows = this.rows-1;
+style = window.getComputedStyle(this.element().children[0]);
+       }
+//       this.scrollbar.height = (parent.style.height - 50) + 'px';
+//       this.scrollbar.height = toNum(this.element().style.width)-50;
+     },
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model

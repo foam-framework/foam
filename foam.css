@@ -267,3 +267,10 @@ p, h1, form, button{
 .scrollSpacer {
     height:52;
 }
+
+
+td, th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
