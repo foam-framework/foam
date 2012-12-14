@@ -402,7 +402,7 @@ var ScrollCView = FOAM.create({
 
    listeners: {
      mouseDown: function(e) {
-       console.log('mouseDown: ', e);
+//       console.log('mouseDown: ', e);
 //       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
        this.starty = e.y - e.offsetY;
        window.addEventListener('mouseup', this.mouseUp, true);
@@ -410,14 +410,14 @@ var ScrollCView = FOAM.create({
        this.mouseMove(e);
      },
      mouseUp: function(e) {
-       console.log('mouseUp: ', e);
+//       console.log('mouseUp: ', e);
        e.preventDefault();
        window.removeEventListener('mousemove', this.mouseMove, true);
        window.removeEventListener('mouseUp', this.mouseUp, true);
 //       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
-       console.log('mouseMove: ', e);
+//       console.log('mouseMove: ', e);
        var y = e.y - this.starty;
        e.preventDefault();
 

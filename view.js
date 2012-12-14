@@ -908,6 +908,12 @@ var ChoiceView = FOAM.create({
 	 defaultValue: 1
       },
       {
+	 name:  'value',
+	 label: 'Value',
+         type:  'String',
+         valueFactory: function() { return new SimpleValue(); }
+      },
+      {
 	 name:  'choices',
 	 label: 'Choices',
          type:  'Array[StringField]',
@@ -924,8 +930,15 @@ var ChoiceView = FOAM.create({
        var out = [];
 
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-	 out.push('\t<option>');
-         out.push(this.choices[i].toString());
+         var choice = this.choices[i];
+
+         if ( Array.isArray(choice) ) {
+	   out.push('\t<option value="' + choice[0] + '">');
+           out.push(choice[1].toString());
+         } else {
+	   out.push('\t<option>');
+           out.push(choice.toString());
+         }
          out.push('</option>');
        }
 
@@ -1993,7 +2006,7 @@ var TableView2 = FOAM.create({
          this.rows = this.rows+1;
 style = window.getComputedStyle(this.element().children[0]);
        }
-       while ( toNum(parent.height) -22 < toNum(style.height) ) {
+       while ( toNum(parent.height) -22 < toNum(style.height) && this.rows > 0 ) {
          console.log('**** TOO BIG ***', parent.height, style.height );
          this.rows = this.rows-1;
 style = window.getComputedStyle(this.element().children[0]);

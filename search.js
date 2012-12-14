@@ -57,6 +57,10 @@ var GroupBySearchView = FOAM.create({
        this.view.initHTML();
 
        Events.dynamic(function() { this.dao; }, this.update);
+//       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
+this.view.value.addListener(console.log.bind(console));
+//       this.view.addListener(console.log.bind(console));
+//       this.view.value.addListener(console.log.bind(console));
      }
    },
 
@@ -76,13 +80,16 @@ var GroupBySearchView = FOAM.create({
                var count = '(' + groups.groups[key] + ')';
                var subKey = key.substring(0, self.width-count.length-3);
                var cleanKey = subKey.replace('<', '&lt;').replace('>', '&gt;');
-               options.push(cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count);
+               options.push([cleanKey, cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count]);
              }
              options.sort();
              options.splice(0,0,'-- CLEAR SELECTION --');
              self.view.choices = options;
              // console.log(groups.groups, options);
            });
+
+           self.view.propertyValue('value').addListener(console.log.bind(console));
+
 	 }
       }
    ]
