@@ -194,10 +194,8 @@ var AbstractDAO2 = FOAM.create({
       if ( options.order && ! isListener )
         sink = orderedSink(options.order, sink);
       if ( ! disableLimit ) {
-        if ( options.limit )
-          sink = limitedSink(options.limit, sink);
-        if ( options.skip )
-          sink = skipSink(options.skip, sink);
+        if ( options.limit ) { debugger; sink = limitedSink(options.limit, sink); }
+        if ( options.skip )  sink = skipSink(options.skip, sink);
       }
       if ( options.query )
         sink = predicatedSink(
@@ -423,7 +421,7 @@ defineProperties(Array.prototype, {
     }
   },
   select: function(sink, options) {
-    sink = this.decorateSink_(sink, options, false, true);
+    sink = this.decorateSink_(sink, options, false, ! (options && options.query));
 
     var fc = this.createFlowControl_();
 
@@ -437,7 +435,6 @@ defineProperties(Array.prototype, {
         break;
       }
     }
-
     sink.eof && sink.eof();
   }
 });

@@ -280,7 +280,13 @@ select {
   margin-bottom: 15px;
 }
 
+.foamSearchViewLabel {
+  margin-top: 5px;
+  padding-left: 4px;
+}
+
 .searchTitle {
+  color:#039;
   font-size: 16px;
   padding-left: 5px;
 }

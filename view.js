@@ -2043,7 +2043,8 @@ console.time('redraw');
         }
       };
 // TODO: why does limit(rows) break this?
-      this.dao./*limit(this.rows).*/select(this.objs);
+// debugger;
+      this.dao.limit(this.rows).select(this.objs);
 console.timeEnd('redraw');
     },
 
