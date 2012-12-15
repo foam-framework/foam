@@ -917,7 +917,10 @@ var ChoiceView = FOAM.create({
 	 name:  'choices',
 	 label: 'Choices',
          type:  'Array[StringField]',
-	 defaultValue: []
+	 defaultValue: [],
+         postSet: function() {
+//           if ( this.eid_ ) this.updateHTML();
+         }
       }
    ],
 
@@ -960,7 +963,7 @@ var ChoiceView = FOAM.create({
 
        Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
 
-//       this.updateHTML();
+       this.updateHTML();
 
        this.domValue = DomValue.create(e);
 
@@ -2000,14 +2003,11 @@ var TableView2 = FOAM.create({
        var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
        var style = window.getComputedStyle(this.element().children[0]);
 
-       console.log('**** SIZES ***', toNum(parent.height), toNum(style.height), this.rows);
        while ( toNum(parent.height)-22 > toNum(style.height) ) {
-         console.log('**** TOO SMALL ***', parent.height, style.height,this.rows);
          this.rows = this.rows+1;
 style = window.getComputedStyle(this.element().children[0]);
        }
        while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
-         console.log('**** TOO BIG ***', parent.height, style.height, this.rows);
          this.rows = this.rows-1;
 style = window.getComputedStyle(this.element().children[0]);
        }

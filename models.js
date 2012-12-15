@@ -459,7 +459,7 @@ var ScrollCView = FOAM.create({
       c.fillStyle = '#fff';
       c.fillRect(this.x, this.w, this.width, this.height);
 
-      c.strokeStyle = '#000';
+      c.strokeStyle = '#555';
       c.strokeRect(this.x, this.y, this.width-2, this.height);
       c.fillStyle = '#039';
       c.fillRect(
@@ -528,6 +528,11 @@ var ScrollBorder = FOAM.create({
    ],
 
    methods: {
+     layout: function() {
+       this.view.layout();
+       var view = window.getComputedStyle(this.view.element().children[0]);
+       this.scrollbar.height = toNum(view.height)-30;
+     },
      toHTML: function() {
        return '<table width=100% border=0><tr><td valign=top>' +
          this.view.toHTML() +

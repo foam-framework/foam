@@ -4,9 +4,9 @@
   <script language="javascript" src="bootFOAM.js"></script>
   <title>Takeout Mail Reader</title>
  </head>
-<body>
+<body style="overflow:hidden;">
 
-<div id="header" style="position:absolute;background-color:#ccc;">
+<div id="header" style="position:absolute;background-color:#bbb;">
 <img style="float:left;padding-left: 16px;" width=53 height=53 src="http://conical.ca/static/500e18ebc4aac913a35ac7f3/500e1988e4b0757e9f47b421/500e198be4b0757e9f47b4cb/?format=original"/>
 <font size=+3 face="catull" style="float:left;padding-top:8px;padding-left:15px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
 Takeout Reader</font>
@@ -25,11 +25,10 @@ Takeout Reader</font>
 <div id="edit" style="margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;float:left;">
 </div>
 
-<div id="footer" style="position:absolute;background-color:#ccc;text-align:left;">
-<!-- <div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;"> -->
+<div id="footer" style="position:absolute;background-color:#bbb;text-align:left;">
 <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
   <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
-<font color="#555555" > POWERED
+<font color="#555555" > POWERED</font>
 </div>
 
 <script>
@@ -71,7 +70,7 @@ function layout() {
 
   if ( W > MIN_THREE_COLUMN_W ) {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W * 0.6, SEARCH_H);
-    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.6, RIGHT_W * 0.4, SEARCH_H);
+    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.6, RIGHT_W * 0.4, SEARCH_H-15);
   } else {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W, SEARCH_H/2);
     pos(edit,
@@ -82,7 +81,7 @@ function layout() {
   }
   pos(footer, H-FOOTER_H, null, W, FOOTER_H);
 
-  table && table.view.layout();
+  table && table.layout();
 }
 
 window.onresize = layout;
@@ -127,12 +126,7 @@ layout();
 
     layout();
 
-    Events.dynamic(function() {
-      byFrom.predicate;
-      byTo.predicate;
-      byLabel.predicate;
-    },
-    function() {
+    function updateQuery() {
       var predicate = AND(
         byFrom.predicate,
         byTo.predicate,
@@ -142,7 +136,18 @@ layout();
 
       table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
-    });
+
+      byFrom.dao = dao.where(AND(byTo.predicate, byLabel.predicate).partialEval());
+      byTo.dao = dao.where(AND(byFrom.predicate, byLabel.predicate).partialEval());
+      byLabel.dao = dao.where(AND(byTo.predicate, byFrom.predicate).partialEval());
+    }
+
+    Events.dynamic(function() {
+      byFrom.predicate;
+      byTo.predicate;
+      byLabel.predicate;
+    },
+    updateQuery);
   </script>
 
 </body>

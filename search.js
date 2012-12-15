@@ -30,7 +30,10 @@ var GroupBySearchView = FOAM.create({
        name:  'dao',
        label: 'DAO',
        type: 'DAO',
-       required: true
+       required: true,
+       postSet: function() {
+         if ( this.view.id ) this.updateDAO();
+       }
      },
      {
        name: 'property',
@@ -62,9 +65,10 @@ var GroupBySearchView = FOAM.create({
      initHTML: function() {
        this.view.initHTML();
 
-       Events.dynamic(function() { this.dao; }, this.updateDAO);
 //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
-	this.view.value.addListener(this.updateChoice);
+       Events.dynamic(function() { this.dao; }, this.updateDAO);
+       this.view.value.addListener(this.updateChoice);
+//       this.updateDAO();
 //       this.view.addListener(console.log.bind(console));
 //       this.view.value.addListener(console.log.bind(console));
      }
@@ -78,6 +82,7 @@ var GroupBySearchView = FOAM.create({
 	 name: 'updateDAO',
 
 	 code: function() {
+console.log('****************************************');
            var self = this;
            var groups = futureSink(GROUP_BY(this.property, COUNT()));
            this.dao.select(groups);
@@ -94,8 +99,6 @@ var GroupBySearchView = FOAM.create({
              self.view.choices = options;
              // console.log(groups.groups, options);
            });
-
-//           self.view.value.addListener(this.updateChoice);
 	 }
       },
       {
