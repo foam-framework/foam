@@ -524,6 +524,14 @@ var PropertyModel = {
 	   help: 'Function to format value for display in TableView.'
        },
        {
+	   name: 'tableWidth',
+	   label: 'Table Width',
+	   type: 'String',
+           required: false,
+	   defaultValue: '',
+	   help: 'Table View Column Width.'
+       },
+       {
 	   name: 'help',
 	   label: 'Help Text',
 	   type: 'String',

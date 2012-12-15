@@ -55,6 +55,7 @@ var EMail = FOAM.create({
          displayWidth: 50,
          displayHeight: 1,
          view: 'TextFieldView',
+         tableWidth: '100',
          tableFormatter: function(d) {
            return d.toDateString();
          },
@@ -98,6 +99,7 @@ var EMail = FOAM.create({
          required: true,
          displayWidth: 70,
          displayHeight: 1,
+         tableWidth: '50%',
          view: 'TextFieldView'
       },
       {

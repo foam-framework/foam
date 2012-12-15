@@ -2083,7 +2083,9 @@ console.timeEnd('redraw');
 
 	   // if ( prop.hidden ) continue;
 
-	    str.push('<th scope=col>' + prop.label + '</th>');
+	    str.push('<th scope=col');
+            if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
+            str.push('>' + prop.label + '</th>');
 
 	    props.push(prop);
 	}
