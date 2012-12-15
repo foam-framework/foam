@@ -411,7 +411,19 @@ var EqExpr = FOAM.create({
           this;
       },
 
-      f: function(obj) { return this.arg1.f(obj) === this.arg2.f(obj); }
+      f: function(obj) {
+        var arg1 = this.arg1.f(obj);
+        var arg2 = this.arg2.f(obj);
+
+        if ( Array.isArray(arg1) ) {
+          for ( var i = 0 ; i < arg1.length ; i++ ) {
+            if ( arg1[i] === arg2 ) return true;
+          }
+          return false;
+        }
+
+        return arg1 === arg2;
+      }
    }
 });
 
