@@ -25,6 +25,7 @@ var EMail = FOAM.create({
    ],
    tableProperties:
    [
+      'to',
       'from',
       'subject',
       'timestamp'
@@ -55,8 +56,7 @@ var EMail = FOAM.create({
          displayHeight: 1,
          view: 'TextFieldView',
          tableFormatter: function(d) {
-console.log("**** tableFormatter", d.toString('dddd, MMMM ,yyyy'));
-           return d.toDateString(); //'dddd, MMMM ,yyyy');
+           return d.toDateString();
          },
          valueFactory: function() { return new Date(); }
       },
@@ -70,6 +70,9 @@ console.log("**** tableFormatter", d.toString('dddd, MMMM ,yyyy'));
          displayWidth: 60,
          displayHeight: 1,
          view: 'TextFieldView',
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         },
          valueFactory: function() { return GLOBAL.user; }
       },
       {
@@ -81,7 +84,10 @@ console.log("**** tableFormatter", d.toString('dddd, MMMM ,yyyy'));
          required: true,
          displayWidth: 60,
          displayHeight: 1,
-         view: 'TextFieldView'
+         view: 'TextFieldView',
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         },
       },
       {
          model_: 'Property',
