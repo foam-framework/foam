@@ -54,6 +54,10 @@ var EMail = FOAM.create({
          displayWidth: 50,
          displayHeight: 1,
          view: 'TextFieldView',
+         tableFormatter: function(d) {
+console.log("**** tableFormatter", d.toString('dddd, MMMM ,yyyy'));
+           return d.toDateString(); //'dddd, MMMM ,yyyy');
+         },
          valueFactory: function() { return new Date(); }
       },
       {

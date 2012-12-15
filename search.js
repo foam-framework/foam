@@ -82,7 +82,6 @@ var GroupBySearchView = FOAM.create({
 	 name: 'updateDAO',
 
 	 code: function() {
-console.log('****************************************');
            var self = this;
            var groups = futureSink(GROUP_BY(this.property, COUNT()));
            this.dao.select(groups);
@@ -108,8 +107,6 @@ console.log('****************************************');
 
 	 code: function(newValue) {
 	    var choice = newValue.get();
-
-	    console.log('****** Choice: ', choice);
 
 	    this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
 	 }

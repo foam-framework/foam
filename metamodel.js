@@ -512,6 +512,18 @@ var PropertyModel = {
 	   help: 'The property\'s default value function.'
        },
        {
+	   name: 'tableFormatter',
+	   label: 'Table View Cell Formatter',
+	   type: 'Function',
+           required: false,
+	   displayWidth: 70,
+           displayHeight: 3,
+	   rows:3,
+	   view: 'FunctionView',
+	   defaultValue: '',
+	   help: 'Function to format value for display in TableView.'
+       },
+       {
 	   name: 'help',
 	   label: 'Help Text',
 	   type: 'String',

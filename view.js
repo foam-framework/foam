@@ -29,6 +29,10 @@ var AbstractView =
       this.value    = new SimpleValue("");
     },
 
+    strToHTML: function(str) {
+      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    },
+
     addChild: function(child) {
       child.parent = this;
       this.children.push(child);
@@ -154,6 +158,10 @@ var AbstractView2 = FOAM.create({
    ],
 
    methods: {
+    strToHTML: function(str) {
+      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    },
+
     addChild: function(child) {
       child.parent = this;
 
@@ -1701,7 +1709,7 @@ var SummaryView =
             out.push('<tr>');
 	    out.push('<td class="label">' + prop.label + '</td>');
 	    out.push('<td class="value"><pre>');
-	    out.push(value);
+	    out.push(this.strToHTML(value));
 	    out.push('</pre></td></tr>');
 	 }
       }
@@ -2092,7 +2100,11 @@ console.timeEnd('redraw');
 
 		str.push('<td>');
 		var val = obj[prop.name];
-		str.push(( val == null ) ? '&nbsp;' : val);
+                if ( prop.tableFormatter ) {
+                  str.push(prop.tableFormatter(val));
+                } else {
+		  str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
+                }
 		str.push('</td>');
 	    }
 
