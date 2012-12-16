@@ -461,7 +461,7 @@ var ScrollCView = FOAM.create({
 
       c.strokeStyle = '#555';
       c.strokeRect(this.x, this.y, this.width-2, this.height);
-      c.fillStyle = '#039';
+      c.fillStyle = 'rgb(107,136,173)';
       c.fillRect(
         this.x + 2,
         this.y + 2 + this.value / this.size * this.height,

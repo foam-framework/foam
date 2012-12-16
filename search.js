@@ -18,7 +18,7 @@ var GroupBySearchView = FOAM.create({
        name:  'width',
        label: 'Width',
        type:  'int',
-       defaultValue: 60
+       defaultValue: 47
      },
      {
        name:  'size',
@@ -39,6 +39,12 @@ var GroupBySearchView = FOAM.create({
        name: 'property',
        label: 'Property',
        type: 'Property'
+     },
+     {
+       name: 'filter',
+       label: 'Filter',
+       type: 'Object',
+       defaultValue: TRUE
      },
      {
        name: 'predicate',
@@ -67,6 +73,9 @@ var GroupBySearchView = FOAM.create({
 
 //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
        Events.dynamic(function() { this.dao; }, this.updateDAO);
+       this.propertyValue('filter').addListener((function(a,b,oldValue,newValue) {
+         this.updateDAO();
+       }).bind(this));
        this.view.value.addListener(this.updateChoice);
 //       this.updateDAO();
 //       this.view.addListener(console.log.bind(console));
@@ -84,7 +93,7 @@ var GroupBySearchView = FOAM.create({
 	 code: function() {
            var self = this;
            var groups = futureSink(GROUP_BY(this.property, COUNT()));
-           this.dao.select(groups);
+           this.dao.where(this.filter).select(groups);
            groups.future(function(groups) {
              var options = [];
              for ( var key in groups.groups ) {
@@ -105,9 +114,9 @@ var GroupBySearchView = FOAM.create({
 
 	 name: 'updateChoice',
 
-	 code: function(newValue) {
+	 code: function(newValue, oldValue) {
 	    var choice = newValue.get();
-
+console.log('***** Search Choice:', choice);
 	    this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
 	 }
       }

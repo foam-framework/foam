@@ -99,7 +99,7 @@ var EMail = FOAM.create({
          required: true,
          displayWidth: 70,
          displayHeight: 1,
-         tableWidth: '50%',
+         tableWidth: '45%',
          view: 'TextFieldView'
       },
       {

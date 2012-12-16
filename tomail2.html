@@ -61,7 +61,7 @@ function layout() {
   var H         = window.innerHeight-5;
   var HEADER_H  = 60;
   var FOOTER_H  = 30;
-  var SEARCH_W  = 500;
+  var SEARCH_W  = 400;
   var SEARCH_H  = H - HEADER_H - FOOTER_H;
   var RIGHT_W   = W - SEARCH_W - 5;
 
@@ -137,9 +137,9 @@ layout();
       table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
 
-      byFrom.dao = dao.where(AND(byTo.predicate, byLabel.predicate).partialEval());
-      byTo.dao = dao.where(AND(byFrom.predicate, byLabel.predicate).partialEval());
-      byLabel.dao = dao.where(AND(byTo.predicate, byFrom.predicate).partialEval());
+      byFrom.filter = AND(byTo.predicate, byLabel.predicate).partialEval();
+      byTo.filter = AND(byFrom.predicate, byLabel.predicate).partialEval();
+      byLabel.filter = AND(byTo.predicate, byFrom.predicate).partialEval();
     }
 
     Events.dynamic(function() {
@@ -148,6 +148,11 @@ layout();
       byLabel.predicate;
     },
     updateQuery);
+
+    function resetSearch() {
+      byFrom.filter = byTo.filter = byLabel.filter = TRUE;
+      table.dao = dao;
+    }
   </script>
 
 </body>

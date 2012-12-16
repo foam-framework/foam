@@ -186,7 +186,7 @@ var AbstractView2 = FOAM.create({
     },
 
     nextID: function() {
-      return "View" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return "view2_" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     getID: function() {
