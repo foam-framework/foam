@@ -12,7 +12,7 @@
 Takeout Reader</font>
 </div>
 
-<div id="search" style="background-color:#FFF;position:absolute;float:left;">
+<div id="search" style="position:absolute;background-color:#fff;">
   <div id="textSearch"  class="searchTitle"></div>
   <div id="toSearch"    class="searchTitle"></div>
   <div id="fromSearch"  class="searchTitle"></div>
@@ -23,13 +23,18 @@ Takeout Reader</font>
 <div id="browse" style="position:absolute;background-color:#FFF;float:left;">
 </div>
 
-<div id="edit" style="margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;float:left;">
+<div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
 </div>
 
 <div id="footer" style="position:absolute;background-color:#bbb;text-align:left;">
 <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
   <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
 <font color="#555555" > POWERED</font>
+
+  <div onClick="switchHands()" style="float:right;padding-right:10px;" class="searchTitle"><u>switch hands</u></div>
+
+</div>
+
 </div>
 
 <script>
@@ -45,9 +50,15 @@ var labelSearch = document.getElementById('labelSearch');
 
 // function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
+var reverse = false;
+var W         = window.innerWidth - 15;
+var H         = window.innerHeight-5;
+
 function pos(e, top, left, width, height) {
   var s = e.style;
-
+  
+  if ( reverse ) left = W - left - width;
+  
   top != null && (e.style.top = toNum(top) + 'px');
   left != null && (e.style.left = toNum(left) + 'px');
   width != null && (e.style.width = toNum(width) + 'px');
@@ -58,8 +69,6 @@ var MIN_THREE_COLUMN_W = 1600;
 var table;
 
 function layout() {
-  var W         = window.innerWidth - 15;
-  var H         = window.innerHeight-5;
   var HEADER_H  = 60;
   var FOOTER_H  = 30;
   var SEARCH_W  = 400;
@@ -71,7 +80,7 @@ function layout() {
 
   if ( W > MIN_THREE_COLUMN_W ) {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W * 0.6, SEARCH_H);
-    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.6, RIGHT_W * 0.4, SEARCH_H-15);
+    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.6, RIGHT_W * 0.4-10, SEARCH_H-15);
   } else {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W, SEARCH_H/2);
     pos(edit,
@@ -153,6 +162,11 @@ layout();
     function resetSearch() {
       byFrom.filter = byTo.filter = byLabel.filter = TRUE;
       table.dao = dao;
+    }
+
+    function switchHands() {
+      reverse = ! reverse;
+      layout();
     }
   </script>
 
