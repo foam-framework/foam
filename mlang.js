@@ -427,6 +427,52 @@ var EqExpr = FOAM.create({
    }
 });
 
+
+var ContainsExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'BINARY',
+
+   name: 'ContainsExpr',
+
+   methods: {
+      outSQL: function(out) {
+        this.arg1.outSQL(out);
+        out.push(" like '%");
+        this.arg2.outSQL(out);
+        out.push("'");
+      },
+
+      partialEval: function() {
+        var newArg1 = this.arg1.partialEval();
+        var newArg2 = this.arg2.partialEval();
+
+        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+          return compile_(newArg1.f().indexOf(newArg2.f()) != -1);
+        }
+
+        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+          ContainsExpr.create({arg1: newArg1, arg2: newArg2}) :
+          this;
+      },
+
+      f: function(obj) {
+        var arg1 = this.arg1.f(obj);
+        var arg2 = this.arg2.f(obj);
+
+        if ( Array.isArray(arg1) ) {
+          for ( var i = 0 ; i < arg1.length ; i++ ) {
+            if ( arg1.indexOf(arg2) != -1 ) return true;
+          }
+          return false;
+        }
+
+        return arg1.indexOf(arg2) != -1;
+      }
+   }
+});
+
+
 var NeqExpr = FOAM.create({
    model_: 'Model',
 
@@ -915,3 +961,8 @@ function LTE(arg1, arg2) {
 function GTE(arg1, arg2) {
   return GteExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
+
+function CONTAINS(arg1, arg2) {
+  return ContainsExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+
