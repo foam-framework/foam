@@ -51,13 +51,11 @@ var labelSearch = document.getElementById('labelSearch');
 // function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 var reverse = false;
-var W         = window.innerWidth - 15;
-var H         = window.innerHeight-5;
 
 function pos(e, top, left, width, height) {
   var s = e.style;
   
-  if ( reverse ) left = W - left - width;
+  if ( reverse ) left = (window.innerWidth - 15) - left - width;
   
   top != null && (e.style.top = toNum(top) + 'px');
   left != null && (e.style.left = toNum(left) + 'px');
@@ -69,6 +67,8 @@ var MIN_THREE_COLUMN_W = 1600;
 var table;
 
 function layout() {
+  var W         = window.innerWidth - 15;
+  var H         = window.innerHeight-5;
   var HEADER_H  = 60;
   var FOOTER_H  = 30;
   var SEARCH_W  = 400;
