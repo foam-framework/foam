@@ -1984,6 +1984,12 @@ var TableView2 = FOAM.create({
 	 valueFactory: function() { return []; }
       },
       {
+	 name:  'sortOrder',
+	 label: 'Sort Order',
+         type:  'Comparator',
+         defaultValue: undefined
+      },
+      {
          name:  'dao',
          label: 'DAO',
          type: 'DAO',
@@ -2047,12 +2053,11 @@ console.time('redraw');
       this.objs.eof = function() {
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
-         self.initHTML();
+          self.initHTML();
         }
       };
-// TODO: why does limit(rows) break this?
-// debugger;
-      this.dao.limit(this.rows).select(this.objs);
+
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs);
 console.timeEnd('redraw');
     },
 
@@ -2083,7 +2088,11 @@ console.timeEnd('redraw');
 
 	   // if ( prop.hidden ) continue;
 
-	    str.push('<th scope=col');
+	    str.push('<th scope=col ');
+            str.push('id=' +
+                this.registerCallback(
+                  'click',
+                  (function(table, prop) { return function() { table.sortOrder = prop; table.repaint(); };})(this, prop)));
             if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
             str.push('>' + prop.label + '</th>');
 
@@ -2124,33 +2133,34 @@ console.timeEnd('redraw');
     },
 
     initHTML: function() {
-	var es = document.getElementsByClassName('tr-' + this.getID());
+      AbstractView.initHTML.call(this);
+      var es = document.getElementsByClassName('tr-' + this.getID());
 
-	for ( var i = 0 ; i < es.length ; i++ ) {
-	    var e = es[i];
+      for ( var i = 0 ; i < es.length ; i++ ) {
+	var e = es[i];
 
-	    e.onmouseover = function(value, obj) { return function() {
-               value.prevValue = value.get();
-	       value.set(obj);
-	    }; }(this.selection, this.objs[i]);
-	    e.onmouseout = function(value, obj) { return function() {
-	       if ( ! value.prevValue ) return;
-               value.set(value.prevValue);
-               delete value['prevValue'];
-	    }; }(this.selection, this.objs[i]);
-	    e.onclick = function(value, obj) { return function(evt) {
-	       value.set(obj);
-               delete value['prevValue'];
-               var siblings = evt.srcElement.parentNode.parentNode.childNodes;
-	       for ( var i = 0 ; i < siblings.length ; i++ ) {
-                  siblings[i].className = "";
-	       }
-               evt.srcElement.parentNode.className = 'rowSelected';
-	    }; }(this.selection, this.objs[i]);
-	    e.ondblclick = function(me, value, obj) { return function(evt) {
-               me.publish(me.DOUBLE_CLICK, obj, value);
-	    }; }(this, this.selection, this.objs[i]);
-	}
+	e.onmouseover = function(value, obj) { return function() {
+          value.prevValue = value.get();
+	  value.set(obj);
+	}; }(this.selection, this.objs[i]);
+	e.onmouseout = function(value, obj) { return function() {
+	  if ( ! value.prevValue ) return;
+            value.set(value.prevValue);
+            delete value['prevValue'];
+	}; }(this.selection, this.objs[i]);
+	e.onclick = function(value, obj) { return function(evt) {
+	   value.set(obj);
+           delete value['prevValue'];
+           var siblings = evt.srcElement.parentNode.parentNode.childNodes;
+	   for ( var i = 0 ; i < siblings.length ; i++ ) {
+              siblings[i].className = "";
+	   }
+           evt.srcElement.parentNode.className = 'rowSelected';
+	}; }(this.selection, this.objs[i]);
+	e.ondblclick = function(me, value, obj) { return function(evt) {
+           me.publish(me.DOUBLE_CLICK, obj, value);
+	}; }(this, this.selection, this.objs[i]);
+      }
     },
 
 

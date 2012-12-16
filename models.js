@@ -1372,7 +1372,7 @@ var AlternateView = FOAM.create({
 //	 Events.link(this.model, this.view.model);
 
 //	 str.push(this.view.toHTML());
-	 str.push('<div id="' + this.getID() + '" class="altView"> </div>')
+	 str.push('<div id="' + this.getID() + '" class="altView"> </div>');
 	 return str.join('');
       },
 
@@ -1534,7 +1534,7 @@ var System = FOAM.create({
 	 name:  'color',
 	 label: 'Color',
          type:  'String',
-	 defaultValue: 'black',
+	 defaultValue: 'black'
       },
       {
 	 name:  'devColor',
