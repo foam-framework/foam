@@ -59,8 +59,12 @@ var ValueIndex = {
   })(),
   select: function(value, sink, options) {
     if ( options ) {
-      if ( options.skip-- > 0 ) return;
-      if ( options.limit-- < 1 ) return;
+      if ( options.query ) {
+	 if ( ! options.query.f(value) ) return;
+      } else {
+	 if ( options.skip-- > 0 ) return;
+	 if ( options.limit-- < 1 ) return;
+      }
     }
     sink.put(value);
   },
@@ -184,6 +188,15 @@ var TreeIndex = {
   plan: function(s, sink, options) {
     var query = options && options.query;
 
+    if ( ! query && CountExpr.isInstance(sink) ) {
+      var count = this.size(s);
+      return {
+	 cost: 0,
+         execute: function(unused, sink, options) { sink.count = count; },
+	 toString: function() { return 'count(' + count + ')'; }
+      };
+    }
+
     var prop = this.prop;
     var index = this;
 
@@ -200,6 +213,7 @@ var TreeIndex = {
           var q = query.args[i];
           var k = getEQKey(q);
           if ( k ) {
+            query = query.deepClone();
             query.args[i] = TRUE;
             query = query.partialEval();
             return k;
@@ -210,20 +224,27 @@ var TreeIndex = {
     };
 
     if ( query ) {
-      var key = getEQKey(query) || getAndKey();
+      var key;
+      if ( key = getEQKey(query) ) {
+	 query = null;
+      } else {
+	 key = getAndKey();
+	 if ( query == TRUE ) query = null;
+      }
 
       if ( key ) {
         var result = this.get(s, key);
 
         if ( ! result ) return NOT_FOUND;
 
-        var subPlan = this.tail.plan(result, sink, options);
+        var newOptions = {__proto__: options, query: query};
+        var subPlan = this.tail.plan(result, sink, newOptions);
         return {
           cost: 1 + subPlan.cost,
-          execute: function(s2, sink) {
-            subPlan.execute(result[1], sink);
+          execute: function(s2, sink, options) {
+            subPlan.execute(result[1], sink, newOptions);
           },
-          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + ') ' + subPlan.toString(); }
+          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString(); }
         };
       }
     }
@@ -241,12 +262,14 @@ var TreeIndex = {
     return {
       cost: cost,
       execute: function() {
+	    /*
         var o = options && (options.skip || options.limit) ?
           {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
           undefined;
-        index.select(s, sink, o);
+*/
+        index.select(s, sink, options);
       },
-      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + ')'; }
+      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
   },
 
@@ -347,16 +370,20 @@ var AltIndex = {
   plan: function(s, sink, options) {
     var bestPlan;
 
+    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
+console.log('  plan ' + i + ': ' + plan);
+      if ( plan.cost <= AltIndex.GOOD_PLAN ) { bestPlan = plan; break; }
 
       if ( ! bestPlan || plan.cost < bestPlan.cost ) {
 	 // curry the proper state
 	 bestPlan = (function(plan, s) { return {__proto__: plan, execute: function(unused, sink, options) { plan.execute(s, sink, options);}};})(plan, s[i]);
       }
     }
+
+    console.log('Best Plan: ' + bestPlan);
 
     return bestPlan;
   },
@@ -452,7 +479,6 @@ var IDAO = FOAM.create({
 
     select: function(sink, options) {
       var plan = this.index.plan(this.root, sink, options);
-      console.log(plan.toString());
       plan.execute(this.root, sink, options);
       sink && sink.eof && sink.eof();
     }
