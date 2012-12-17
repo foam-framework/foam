@@ -49,34 +49,32 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
-Object.defineProperty(Array.prototype, 'clone', {
-  value: function() {
-    return this.slice(0);
-}});
-
 Object.defineProperty(Array.prototype, 'reduce', {
   value: function(comparator, arr) {
-  compare = toCompare(comparator);
-  var result = new Array(this.length + arr.length);
+    compare = toCompare(comparator);
+    var result = new Array(this.length + arr.length);
 
-  var i = 0;
-  var j = 0;
-  var k = 0;
-  while(i < this.length && j < arr.length) {
-    var a = compare(this[i], arr[j]);
-    if ( a < 0 ) {
-      result[k++] = this[i++];
-      continue;
+    var i = 0;
+    var j = 0;
+    var k = 0;
+    while(i < this.length && j < arr.length) {
+      var a = compare(this[i], arr[j]);
+      if ( a < 0 ) {
+        result[k++] = this[i++];
+        continue;
+      }
+      if ( a == 0) {
+        result[k++] = this[i++];
+        result[k++] = arr[j++];
+      }
+
+      if ( i != this.length ) result = result.concat(this.slice(i));
+      if ( j != arr.length ) result = result.concat(arr.slice(j));
+
+      return result;
     }
-    if ( a == 0) {
-      result[k++] = this[i++];
-      result[k++] = arr[j++];
-      continue;
-    }
-    result[k++] = arr[j++];
   }
-  return result;
-}});
+});
 
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
@@ -251,7 +249,6 @@ function orderedSink(comparator, sink) {
     eof: function() {
       this.arr.sort(comparator);
       this.arr.select(sink);
-      sink.eof && sink.eof();
     }
   };
 }
@@ -280,6 +277,7 @@ console.log.put         = console.log.bind(console);
 console.log.remove      = console.log.bind(console, 'remove: ');
 console.log.error       = console.log.bind(console, 'error: ');
 console.log.json.put    = console.log.json.bind(console);
+console.log.json.reduceI = console.log.json.bind(console, 'reduceI: ');
 console.log.json.remove = console.log.json.bind(console, 'remove: ');
 console.log.json.error  = console.log.json.bind(console, 'error: ');
 console.log.str.put     = console.log.str.bind(console);

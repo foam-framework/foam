@@ -1034,15 +1034,3 @@ var emails = JSONUtil.mapToObj([
       ]
    }
 ]);
-
-
-
-if (window.location) {
-  var mails = WorkerDAO2.create({ model: "EMail" });
-  mails.put(EMail.create({ from: "a", to: "kgr", subject: "email1", timestamp: new Date(Date.now)}));
-  mails.put(EMail.create({ from: "r", to: "fredjk", subject: "email8", timestamp: new Date(Date.now - 10000)}));
-  mails.put(EMail.create({ from: "z", to: "fredjk", subject: "email9", timestamp: new Date(Date.now - 20000)}));
-  mails.put(EMail.create({ from: "f", to: "fredjk", subject: "email10", timestamp: new Date(Date.now - 30000)}));
-}
-
-mails.orderBy(EMail.FROM).select(console.log.json);
