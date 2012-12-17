@@ -95,6 +95,12 @@ p, h1, form, button{
 .foamSearchView select{
   font-family: 'Courier New', Courier, monospace;
 }
+/*
+option[selected]{
+   background-color: blue;
+   background:green;
+}
+*/
 
 /* ----------- summaryView ----------- */
 
@@ -275,10 +281,12 @@ td, th {
   text-overflow:ellipsis;
 }
 
+
 select {
   background-color:rgb(240,240,240);
   margin-bottom: 15px;
 }
+
 
 .foamSearchViewLabel {
   margin-top: 5px;
@@ -290,4 +298,3 @@ select {
   font-size: 16px;
   padding-left: 5px;
 }
-

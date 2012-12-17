@@ -5,13 +5,11 @@
   <title>Takeout Mail Reader</title>
  </head>
 <body style="overflow:hidden;margin-top:5px;">
-
 <div id="header" style="position:absolute;background-color:#bbb;">
 <img style="float:left;padding-left: 16px;" width=53 height=53 src="http://conical.ca/static/500e18ebc4aac913a35ac7f3/500e1988e4b0757e9f47b421/500e198be4b0757e9f47b4cb/?format=original"/>
 <font size=+3 face="catull" style="float:left;padding-top:8px;padding-left:15px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
 Takeout Reader</font>
 </div>
-
 <div id="search" style="position:absolute;background-color:#fff;">
   <div id="textSearch"  class="searchTitle"></div>
   <div id="toSearch"    class="searchTitle"></div>
@@ -19,24 +17,16 @@ Takeout Reader</font>
   <div id="labelSearch" class="searchTitle"></div>
   <div onClick="resetSearch()" style="float:right" class="searchTitle"><u>Clear All</u></div>
 </div>
-
-<div id="browse" style="position:absolute;background-color:#FFF;float:left;">
-</div>
-
+<div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
 <div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
 </div>
-
 <div id="footer" style="position:absolute;background-color:#bbb;text-align:left;padding-top:3px;">
-<font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+  <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
   <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
-<font color="#555555" > POWERED</font>
-
+  <font color="#555555" > POWERED</font>
   <div onClick="switchHands()" style="float:right;padding-right:10px;" class="searchTitle"><u>switch hands</u></div>
-
 </div>
-
 </div>
-
 <script>
 var header = document.getElementById('header');
 var footer = document.getElementById('footer');
@@ -48,14 +38,12 @@ var toSearch   = document.getElementById('toSearch');
 var fromSearch = document.getElementById('fromSearch');
 var labelSearch = document.getElementById('labelSearch');
 
-// function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
-
-var reverse = false;
+var reversed = false;
 
 function pos(e, top, left, width, height) {
   var s = e.style;
   
-  if ( reverse ) left = (window.innerWidth - 15) - left - width;
+  if ( reversed ) left = (window.innerWidth - 15) - left - width;
   
   top != null && (e.style.top = toNum(top) + 'px');
   left != null && (e.style.left = toNum(left) + 'px');
@@ -96,10 +84,16 @@ function layout() {
 
 window.onresize = layout;
 layout();
-</script>
 
-  <script language="javascript">
-    var dao = StorageDAO2.create({model: EMail});
+//    var dao = StorageDAO2.create({model: EMail});
+
+    var dao = IDAO.create({model: EMail});
+    emails.select(dao);
+    dao.bulkLoad(dao);
+    dao.addIndex(EMail.TO);
+    dao.addIndex(EMail.FROM);
+    dao.addIndex(EMail.SUBJECT);
+
 
     var table = ScrollBorder.create({
       view: TableView2.create({
@@ -160,15 +154,15 @@ layout();
     updateQuery);
 
     function resetSearch() {
+      byFrom.view.value.set(''); byTo.view.value.set(''); byLabel.view.value.set('');
       byFrom.filter = byTo.filter = byLabel.filter = TRUE;
       table.dao = dao;
     }
 
     function switchHands() {
-      reverse = ! reverse;
+      reversed = ! reversed;
       layout();
     }
   </script>
-
 </body>
 </html>

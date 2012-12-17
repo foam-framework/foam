@@ -277,6 +277,8 @@ var OrderedMap = {
 };
 
 
+if ( false ) {
+
 var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
 console.log('\nOrderedSet Test');
@@ -305,6 +307,7 @@ m.bulkLoad('kxeyvizngdrwfash'.split(''));
 
 m.select(console.log);
 
+}
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
@@ -457,6 +460,8 @@ var IDAO = FOAM.create({
    }
 });
 
+if ( false ) {
+
 console.log('\nIDAO Test');
 
 var d = IDAO.create({model:Issue});
@@ -514,3 +519,5 @@ d.where(EQ(Issue.STATUS, 'Open')).select(sink);
 
 console.log('\nMissing Key');
 d.where(EQ(Issue.STATUS, 'XXX')).select(sink);
+
+}

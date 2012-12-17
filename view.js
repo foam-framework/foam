@@ -889,7 +889,7 @@ var ChoiceView = FOAM.create({
 
 /*
  * <select size="">
- *    <choice></choice>
+ *    <choice value="" selected></choice>
  * </select>
  *
  *
@@ -918,7 +918,7 @@ var ChoiceView = FOAM.create({
       {
 	 name:  'value',
 	 label: 'Value',
-         type:  'String',
+         type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
       {
@@ -944,10 +944,13 @@ var ChoiceView = FOAM.create({
          var choice = this.choices[i];
 
          if ( Array.isArray(choice) ) {
-	   out.push('\t<option value="' + choice[0].replace(/"/g, '&quot;') + '">');
+           var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+	   out.push(choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+	   out.push(encodedValue + '">');
            out.push(choice[1].toString());
          } else {
-	   out.push('\t<option>');
+	   out.push(choice == this.value.get() ? '\t<option selected>' : '\t<option>');
            out.push(choice.toString());
          }
          out.push('</option>');
@@ -2017,9 +2020,11 @@ var TableView2 = FOAM.create({
        var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
        var style = window.getComputedStyle(this.element().children[0]);
 
-       while ( toNum(parent.height)-22 > toNum(style.height) ) {
+       var prevHeight = 0;
+       while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
+         prevHeight = toNum(style.height);
          this.rows = this.rows+1;
-style = window.getComputedStyle(this.element().children[0]);
+	 style = window.getComputedStyle(this.element().children[0]);
        }
        while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
          this.rows = this.rows-1;

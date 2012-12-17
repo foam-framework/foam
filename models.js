@@ -453,11 +453,10 @@ var ScrollCView = FOAM.create({
     paint: function() {
       var c = this.canvas;
 
-      if ( ! c ) {
-        debugger;
-      }
       c.fillStyle = '#fff';
       c.fillRect(this.x, this.w, this.width, this.height);
+
+      if ( this.extent >= this.size ) return;
 
       c.strokeStyle = '#555';
       c.strokeRect(this.x, this.y, this.width-2, this.height);

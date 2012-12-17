@@ -18,6 +18,12 @@
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
 
+Date.prototype.compareTo = function(o) {
+  if ( o === this ) return 0;
+  var d = this.getTime() - o.getTime();
+  return d == 0 ? 0 : d > 0 ? 1 : -1;
+};
+
 String.prototype.compareTo = function(o) {
   if ( o == this ) return 0;
   return this < o ? -1 : 1;
