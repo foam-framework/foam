@@ -71,7 +71,7 @@ var EXPR = FOAM.create({
        return {
          __proto__: sink,
          put:    function(obj) { if ( expr.f(obj) ) sink.put(obj);   },
-         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj) }
+         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
        };
      }
    }
@@ -120,7 +120,7 @@ var NARY = FOAM.create({
 	 label: 'Arguments',
 	 type:  'Expr[]',
 	 help:  'Sub-expressions',
-	 valueFactory: function() { return []; },
+	 valueFactory: function() { return []; }
       }
    ],
 
@@ -229,20 +229,22 @@ var AndExpr = FOAM.create({
           if ( AndExpr.isInstance(newA) ) {
             // In-line nested AND clauses
             for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA[j]);
+              newArgs.push(newA.args[j]);
             }
             updated = true;
           }
           else {
-            if ( newA !== TRUE ) {
-              newArgs.push(newA);
-            }
-            if ( a !== newA ) updated = true;
+            if ( newA === TRUE ) {
+	       updated = true;
+            } else {
+	       newArgs.push(newA);
+               if ( a !== newA ) updated = true;
+	    }
           }
         }
 
-        if ( newArgs.length === 0 ) return TRUE;
-        if ( newArgs.length === 1 ) return newArgs[0];
+        if ( newArgs.length == 0 ) return TRUE;
+        if ( newArgs.length == 1 ) return newArgs[0];
 
         return updated ? AndExpr.create({args: newArgs}) : this;
       },
@@ -251,6 +253,10 @@ var AndExpr = FOAM.create({
         for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a = this.args[i];
 
+          if ( ! a )
+{
+   debugger;
+}
           if ( ! a.f(obj) ) return false;
         }
         return true;
@@ -290,7 +296,7 @@ var OrExpr = FOAM.create({
           if ( OrExpr.isInstance(newA) ) {
             // In-line nested OR clauses
             for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA[j]);
+              newArgs.push(newA.args[j]);
             }
             updated = true;
           }
@@ -302,8 +308,8 @@ var OrExpr = FOAM.create({
           }
         }
 
-        if ( newArgs.length === 0 ) return TRUE;
-        if ( newArgs.length === 1 ) return newArgs[0];
+        if ( newArgs.length == 0 ) return TRUE;
+        if ( newArgs.length == 1 ) return newArgs[0];
 
         return updated ? AndExpr.create({args: newArgs}) : this;
       },
@@ -382,9 +388,67 @@ var EqExpr = FOAM.create({
           this;
       },
 
-      f: function(obj) { return this.arg1.f(obj) === this.arg2.f(obj); }
+      f: function(obj) {
+        var arg1 = this.arg1.f(obj);
+        var arg2 = this.arg2.f(obj);
+
+        if ( Array.isArray(arg1) ) {
+          for ( var i = 0 ; i < arg1.length ; i++ ) {
+            if ( arg1[i] === arg2 ) return true;
+          }
+          return false;
+        }
+
+        return arg1 === arg2;
+      }
    }
 });
+
+
+var ContainsExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'BINARY',
+
+   name: 'ContainsExpr',
+
+   methods: {
+      outSQL: function(out) {
+        this.arg1.outSQL(out);
+        out.push(" like '%");
+        this.arg2.outSQL(out);
+        out.push("'");
+      },
+
+      partialEval: function() {
+        var newArg1 = this.arg1.partialEval();
+        var newArg2 = this.arg2.partialEval();
+
+        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+          return compile_(newArg1.f().indexOf(newArg2.f()) != -1);
+        }
+
+        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+          ContainsExpr.create({arg1: newArg1, arg2: newArg2}) :
+          this;
+      },
+
+      f: function(obj) {
+        var arg1 = this.arg1.f(obj);
+        var arg2 = this.arg2.f(obj);
+
+        if ( Array.isArray(arg1) ) {
+          for ( var i = 0 ; i < arg1.length ; i++ ) {
+            if ( arg1.indexOf(arg2) != -1 ) return true;
+          }
+          return false;
+        }
+
+        return arg1.indexOf(arg2) != -1;
+      }
+   }
+});
+
 
 var NeqExpr = FOAM.create({
    model_: 'Model',
@@ -711,19 +775,30 @@ var GroupByExpr = FOAM.create({
        }
      },
      pipe: function(sink) {
-         for ( key in this.groups ) {
-           sink.push([key, this.groups[key].toString()]);
+       for ( key in this.groups ) {
+         sink.push([key, this.groups[key].toString()]);
        }
        return sink;
      },
      put: function(obj) {
        var key = this.arg1.f(obj);
-       var group = this.groups[key];
-       if ( ! group ) {
-         group = this.arg2.clone();
-         this.groups[key] = group;
+       if ( Array.isArray(key) ) {
+         for ( var i = 0 ; i < key.length ; i++ ) {
+           var group = this.groups[key[i]];
+           if ( ! group ) {
+             group = this.arg2.clone();
+             this.groups[key[i]] = group;
+           }
+           group.put(obj);
+         }
+       } else {
+         var group = this.groups[key];
+         if ( ! group ) {
+           group = this.arg2.clone();
+           this.groups[key] = group;
+         }
+         group.put(obj);
        }
-       group.put(obj);
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; },
@@ -871,3 +946,8 @@ function LTE(arg1, arg2) {
 function GTE(arg1, arg2) {
   return GteExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
+
+function CONTAINS(arg1, arg2) {
+  return ContainsExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+

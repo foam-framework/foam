@@ -242,7 +242,7 @@ var StorageDAO = {
 
        var modelLoader = function(key) {
 //	  console.log("loading: " + key);
-	  var model = JSONUtil.chaosify(models[key], modelLoader);
+	  var model = JSONUtil.mapToObj(models[key], modelLoader);
 	  if ( model.name == 'Model' ) model.model_ = model;
 	  return model;
        };

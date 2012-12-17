@@ -24,7 +24,7 @@ p, h1, form, button{
 
 .spacer {clear:both; height:1px;}
 
-.chaosform{
+.foamform{
     margin:0 auto;
     width:450px;
     padding:14px;
@@ -69,10 +69,9 @@ p, h1, form, button{
 /* ----------- summaryView ----------- */
 
 .summaryView {
-    border-left:solid 2px #dddddd;
-    border1:solid 2px #dddddd;
-    border2:solid 2px #b7ddf2;
     background:'white';
+    width:100%;
+    table-layout:fixed;
 }
 
 .summaryView .label{
@@ -92,6 +91,16 @@ p, h1, form, button{
     margin:2px 15px 2px 0px;
 }
 
+
+.foamSearchView select{
+  font-family: 'Courier New', Courier, monospace;
+}
+/*
+option[selected]{
+   background-color: blue;
+   background:green;
+}
+*/
 
 /* ----------- summaryView ----------- */
 
@@ -160,36 +169,37 @@ p, h1, form, button{
     width:200px;
 }
 #stylized button{
-    clear:both;
-    margin-left:150px;
-    width:125px;
-    height:31px;
     background:#666666;
-    text-align:center;
-    line-height:31px;
+    clear:both;
     color:#FFFFFF;
     font-size:11px;
     font-weight:bold;
+    height:31px;
+    line-height:31px;
+    margin-left:150px;
+    text-align:center;
+    width:125px;
 }
 
 
 
-.chaosTable
+.foamTable
 {
+	background: #fff;
+	border-collapse: collapse;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
-	background: #fff;
 	margin: 10px; 
-	width: 600px;
-	border-collapse: collapse;
+	table-layout:fixed;
 	text-align: left;
+	width: 100%;
 }
 .BookmarkTable
 {
 	width: 800px;
 }
 <!-- margin was 45 above -->
-.chaosTable caption
+.foamTable caption
 {
 	font-size: 16px;
 	font-weight: bold;
@@ -197,13 +207,13 @@ p, h1, form, button{
 	padding: 10px 8px;
 	text-align: left;
 }
-.chaosTable tr
+.foamTable tr
 {
 	border-left: 2px solid #fff;
 	border-right: 2px solid #fff;
 	border-top: 2px solid #fff;
 }
-.chaosTable th
+.foamTable th
 {
 	font-size: 14px;
 	font-weight: normal;
@@ -211,23 +221,22 @@ p, h1, form, button{
 	padding: 10px 8px;
 	border-bottom: 2px solid #6678b1;
 }
-.chaosTable td
+.foamTable td
 {
 	color: #669;
 	padding: 8px 8px 0 8px;
 }
-.chaosTable tbody tr:hover td
+.foamTable tbody tr:hover td
 {
 	color: #009;
         background: #eee;
 }
-.chaosTable tr.rowSelected
+.foamTable tr.rowSelected
 {
 	color: #900;
         background: #eee;
 	border: 2px solid #f00;
 }
-
 
 
 .myButton {
@@ -258,4 +267,34 @@ p, h1, form, button{
 }.myButton:active {
 	position:relative;
 	top:1px;
+}
+
+
+.scrollSpacer {
+    height:52;
+}
+
+
+td, th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
+
+
+select {
+  background-color:rgb(240,240,240);
+  margin-bottom: 15px;
+}
+
+
+.foamSearchViewLabel {
+  margin-top: 5px;
+  padding-left: 4px;
+}
+
+.searchTitle {
+  color:#039;
+  font-size: 16px;
+  padding-left: 5px;
 }

@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
+/** Plan indicating that there are no matching records. **/
+var NOT_FOUND = {
+  cost: 0,
+  execute: function() {},
+  toString: function() { return "no-match(cost=0)"; }
+};
+
+/** Plan indicating that an index has no plan for executing a query. **/
+var NO_PLAN = {
+  cost: Number.MAX_VALUE,
+  execute: function() {},
+  toString: function() { return "no-plan"; }
+};
+
 
 function dump(o) {
    if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
@@ -21,8 +35,16 @@ function dump(o) {
 }
 
 
+/*
+ * Index Interface:
+ *   put(state, value) -> new state
+ *   remove(state, value) -> new state
+ *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
+ *   size(state) -> int
+ */
+
 var ValueIndex = {
-  put: function(oldValue, newValue) { return newValue; },
+  put: function(s, newValue) { return newValue; },
   remove: function() {},
   plan: (function() {
     var plan = {
@@ -35,9 +57,20 @@ var ValueIndex = {
 
     return function() { return plan; };
   })(),
-  select: function(value, sink) { sink.put(value); },
+  select: function(value, sink, options) {
+    if ( options ) {
+      if ( options.query ) {
+	 if ( ! options.query.f(value) ) return;
+      } else {
+	 if ( options.skip-- > 0 ) return;
+	 if ( options.limit-- < 1 ) return;
+      }
+    }
+    sink.put(value);
+  },
   selectReverse: function(value, sink) { sink.put(value); },
-  size:   function(obj) { return 1; }
+  size:   function(obj) { return 1; },
+  toString: function() { return 'value'; }
 };
 
 
@@ -57,8 +90,17 @@ var TreeIndex = {
    * Faster than loading individually, and produces a balanced tree.
    **/
   bulkLoad: function(a) {
-    a.sort(toCompare(this.prop));
-    return this.bulkLoad_(a, 0, a.length-1);
+     // Only safe if children aren't themselves trees
+     if ( this.tail === ValueIndex ) {
+       a.sort(toCompare(this.prop));
+       return this.bulkLoad_(a, 0, a.length-1);
+     }
+
+     var s = undefined;
+     for ( var i = 0 ; i < a.length ; i++ ) {
+       s = this.put(s, a[i]);
+     }
+     return s;
   },
 
   bulkLoad_: function(a, start, end) {
@@ -74,8 +116,8 @@ var TreeIndex = {
     return tree;
   },
 
-  put: function(oldValue, newValue) {
-    return this.putKeyValue(oldValue, this.prop.f(newValue), newValue);
+  put: function(s, newValue) {
+    return this.putKeyValue(s, this.prop.f(newValue), newValue);
   },
 
   putKeyValue: function(s, key, value) {
@@ -112,11 +154,22 @@ var TreeIndex = {
     return this.get(r > 0 ? s[3] : s[4], key);
   },
 
-  select: function(s, sink) {
+  select: function(s, sink, options) {
     if ( ! s ) return;
-    this.select(s[3], sink);
-    this.tail.select(s[1], sink);
-    this.select(s[4], sink);
+
+    if ( options ) {
+      if ( options.limit <= 0 ) return;
+
+      var size = this.size(s);
+      if ( options.skip >= size ) {
+        options.skip -= size;
+        return;
+      }
+    }
+
+    this.select(s[3], sink, options);
+    this.tail.select(s[1], sink, options);
+    this.select(s[4], sink, options);
   },
 
   selectReverse: function(s, sink) {
@@ -135,7 +188,23 @@ var TreeIndex = {
   plan: function(s, sink, options) {
     var query = options && options.query;
 
+    if ( ! query && sink.model_ === CountExpr ) {
+       console.log('**************** COUNT SHORT-CIRCUIT ****************');
+      var count = this.size(s);
+      return {
+	 cost: 0,
+         execute: function(unused, sink, options) { sink.count = count; },
+	 toString: function() { return 'count(' + count + ')'; }
+      };
+    }
+
     var prop = this.prop;
+
+    if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
+       console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // TODO:
+    }
+
     var index = this;
 
     var getEQKey = function (query) {
@@ -151,6 +220,7 @@ var TreeIndex = {
           var q = query.args[i];
           var k = getEQKey(q);
           if ( k ) {
+            query = query.deepClone();
             query.args[i] = TRUE;
             query = query.partialEval();
             return k;
@@ -161,29 +231,57 @@ var TreeIndex = {
     };
 
     if ( query ) {
-      var key = getEQKey(query) || getAndKey();
+      var key;
+      if ( key = getEQKey(query) ) {
+	 query = null;
+      } else {
+	 key = getAndKey();
+	 if ( query == TRUE ) query = null;
+      }
 
       if ( key ) {
-        var result = s[1];
-        var subPlan = result && this.tail.plan(result, sink, options);
+        var result = this.get(s, key);
+
+        if ( ! result ) return NOT_FOUND;
+
+        var newOptions = {__proto__: options, query: query};
+        var subPlan = this.tail.plan(result, sink, newOptions);
         return {
-          cost: 1 + (result ? subPlan.cost : 0),
-          execute: function(s, sink) {
-            sink.put(result[1]);
-            subPlan.execute(result, sink);
+          cost: 1 + subPlan.cost,
+          execute: function(s2, sink, options) {
+            subPlan.execute(result[1], sink, newOptions);
           },
-          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + ') ' + subPlan.toString(); }
+          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString(); }
         };
       }
     }
 
+    var cost = this.size(s);
+
+    if ( options && options.order ) {
+      if ( options.order == prop ) {
+         // sort not required
+      } else {
+        cost *= Math.log(cost) / Math.log(2);
+      }
+    }
+
     return {
-      cost: this.size(s),
+      cost: cost,
       execute: function() {
-        index.select(s, sink);
+	    /*
+        var o = options && (options.skip || options.limit) ?
+          {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
+          undefined;
+*/
+        index.select(s, sink, options);
       },
-      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + ')'; }
+      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
+  },
+
+  toString: function() {
+    return 'TreeIndex(' + this.prop.name + ', ' + this.tail + ')';
   }
 
 };
@@ -208,6 +306,8 @@ var OrderedMap = {
   size: function() { return this.index.size(this.root); }
 };
 
+
+if ( false ) {
 
 var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
@@ -237,16 +337,13 @@ m.bulkLoad('kxeyvizngdrwfash'.split(''));
 
 m.select(console.log);
 
+}
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
   GOOD_PLAN: 1, // put to 10 or more when not testing
 
   create: function() {
-    var root = [];
-
-    for ( var i = 0 ; i < arguments.length ; i++ ) root.push([]);
-
     return {
       __proto__: this,
       delegates: argsToArray(arguments)
@@ -268,24 +365,32 @@ var AltIndex = {
     }
   },
 
-  put: function(oldValue, newValue) {
+  put: function(s, newValue) {
+    s = s || [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      this.delegates[i].put(oldValue[i], newValue);
+      s[i] = this.delegates[i].put(s[i], newValue);
     }
+
+    return s;
   },
 
   plan: function(s, sink, options) {
     var bestPlan;
 
+    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      if ( plan ) {
-        if ( plan.cost <= AltIndex.GOOD_PLAN ) return plan;
+console.log('  plan ' + i + ': ' + plan);
+      if ( plan.cost <= AltIndex.GOOD_PLAN ) { bestPlan = plan; break; }
 
-        if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
+      if ( ! bestPlan || plan.cost < bestPlan.cost ) {
+	 // curry the proper state
+	 bestPlan = (function(plan, s) { return {__proto__: plan, execute: function(unused, sink, options) { plan.execute(s, sink, options);}};})(plan, s[i]);
       }
     }
+
+    console.log('Best Plan: ' + bestPlan);
 
     return bestPlan;
   },
@@ -294,12 +399,12 @@ var AltIndex = {
 };
 
 
-var MemoryDAO = FOAM.create({
+var IDAO = FOAM.create({
    model_: 'Model',
    extendsModel: 'AbstractDAO2',
 
-   name: 'MemoryDAO',
-   label: 'Memory DAO',
+   name: 'IDAO',
+   label: 'Indexed DAO',
 
    properties: [
       {
@@ -381,19 +486,25 @@ var MemoryDAO = FOAM.create({
 
     select: function(sink, options) {
       var plan = this.index.plan(this.root, sink, options);
-      if ( plan ) {
-        console.log(plan.toString());
-        plan.execute(this.root, sink);
-      }
+      plan.execute(this.root, sink, options);
       sink && sink.eof && sink.eof();
     }
 
    }
 });
 
-console.log('\nMemoryDAO Test');
+if ( false ) {
 
-var d = MemoryDAO.create({model:Issue});
+console.log('\nIDAO Test');
+
+var d = IDAO.create({model:Issue});
+
+// d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
+
+/*
+d.index = AltIndex.create(TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
+d.root = undefined;
+*/
 
 d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
 d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
@@ -402,9 +513,19 @@ d.put(Issue.create({id:4, severity:'Minor',   status:'Closed'}));
 d.put(Issue.create({id:5, severity:'Major',   status:'Accepted'}));
 d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
 
-d.select(console.log);
+var sink = {
+  put: function(i) {
+    console.log(i && i.id, i && i.severity, i && i.status);
+  }
+};
 
-d.where(EQ(Issue.ID, 2)).select(console.log);
+console.log('\nDefault Order');
+d.select(sink);
+
+console.log('\nLimit Order');
+d.skip(2).limit(2).select(sink);
+
+d.where(EQ(Issue.ID, 2)).select(sink);
 
 // This causes the DAO's tree to rebalance itself. Cool!
 // d.bulkLoad(d);
@@ -412,6 +533,24 @@ d.where(EQ(Issue.ID, 2)).select(console.log);
 d.addIndex(Issue.SEVERITY);
 d.addIndex(Issue.STATUS);
 
-d.where(EQ(Issue.SEVERITY, 'Major')).select(console.log);
 
-d.where(EQ(Issue.STATUS, 'Open')).select(console.log);
+console.log('\nBy Severity');
+d.orderBy(Issue.SEVERITY).select(sink);
+
+console.log('\nBy Status');
+d.orderBy(Issue.STATUS).select(sink);
+
+
+console.log('\nWhere Closed');
+d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
+
+console.log('\nWhere Major');
+d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
+
+console.log('\nWhere Open');
+d.where(EQ(Issue.STATUS, 'Open')).select(sink);
+
+console.log('\nMissing Key');
+d.where(EQ(Issue.STATUS, 'XXX')).select(sink);
+
+}

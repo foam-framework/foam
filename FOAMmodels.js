@@ -30,6 +30,7 @@ var files = [
   'metamodel',
   'view',
   'mlang',
+  'search',
   'future',
   'visitor',
   'dao',

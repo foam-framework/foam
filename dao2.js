@@ -191,14 +191,12 @@ var AbstractDAO2 = FOAM.create({
   },
   decorateSink_: function(sink, options, isListener, disableLimit) {
     if ( options ) {
+      if ( ! disableLimit ) {
+        if ( options.limit ) sink = limitedSink(options.limit, sink);
+        if ( options.skip )  sink = skipSink(options.skip, sink);
+      }
       if ( options.order && ! isListener )
         sink = orderedSink(options.order, sink);
-      if ( ! disableLimit ) {
-        if ( options.limit )
-          sink = limitedSink(options.limit, sink);
-        if ( options.skip )
-          sink = skipSink(options.skip, sink);
-      }
       if ( options.query )
         sink = predicatedSink(
             options.query.partialEval ?
@@ -423,12 +421,13 @@ defineProperties(Array.prototype, {
     }
   },
   select: function(sink, options) {
-    sink = this.decorateSink_(sink, options, false, true);
+    var hasQuery = options && ( options.query || options.order );
+    sink = this.decorateSink_(sink, options, false, ! hasQuery);
 
     var fc = this.createFlowControl_();
 
-    var start = options && options.skip || 0;
-    var end = Math.min(this.length, start + (options && options.limit || this.length));
+    var start = hasQuery ? 0 : options && options.skip || 0;
+    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
@@ -437,7 +436,6 @@ defineProperties(Array.prototype, {
         break;
       }
     }
-
     sink.eof && sink.eof();
   }
 });

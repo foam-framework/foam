@@ -18,6 +18,12 @@
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
 
+Date.prototype.compareTo = function(o) {
+  if ( o === this ) return 0;
+  var d = this.getTime() - o.getTime();
+  return d == 0 ? 0 : d > 0 ? 1 : -1;
+};
+
 String.prototype.compareTo = function(o) {
   if ( o == this ) return 0;
   return this < o ? -1 : 1;
@@ -43,25 +49,27 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
-Object.defineProperty(Array.prototype, "reduce", {
-  value: function(comparator, arr) {
-    compare = toCompare(comparator);
-    var result = [];
+Object.defineProperty(Array.prototype, 'clone', {
+  value: function() {
+    return this.slice(0);
+}});
 
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    while(i < this.length && j < arr.length) {
-      var a = compare(this[i], arr[j]);
-      if ( a < 0 ) {
-        result[k++] = this[i++];
-        continue;
-      }
-      if ( a == 0) {
-        result[k++] = this[i++];
-        result[k++] = arr[j++];
-        continue;
-      }
+Object.defineProperty(Array.prototype, 'reduce', {
+  value: function(comparator, arr) {
+  compare = toCompare(comparator);
+  var result = new Array(this.length + arr.length);
+
+  var i = 0;
+  var j = 0;
+  var k = 0;
+  while(i < this.length && j < arr.length) {
+    var a = compare(this[i], arr[j]);
+    if ( a < 0 ) {
+      result[k++] = this[i++];
+      continue;
+    }
+    if ( a == 0) {
+      result[k++] = this[i++];
       result[k++] = arr[j++];
     }
 
@@ -119,11 +127,15 @@ function randomAct() {
 
 function defineProperties(proto, fns) {
   for ( var key in fns ) {
-    Object.defineProperty(proto, key, {
-      value: fns[key],
-      configurable: true,
-      writable: true
-    });
+    try {
+      Object.defineProperty(proto, key, {
+        value: fns[key],
+        configurable: true,
+        writable: true
+      });
+    } catch (x) {
+      console.log('Warning: ' + x);
+    }
   }
 }
 
@@ -194,22 +206,24 @@ function predicatedSink(predicate, sink) {
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
-      if ( predicate.f(obj) ) sink.put(obj, s, fc);
+      if ( sink && predicate.f(obj) ) sink.put(obj, s, fc);
     },
     eof: function() {
-      sink.eof && sink.eof();
+      sink && sink.eof && sink.eof();
     }
   };
 }
 
 function limitedSink(count, sink) {
+  var i = 0;
   return {
     __proto__: sink,
-    i: 0,
     put: function(obj, s, fc) {
-      this.i++;
-      sink.put(obj, s, fc);
-      if ( this.i >= count && fc ) fc.stop();
+      if ( i++ >= count && fc ) {
+        fc.stop();
+      } else {
+        sink.put(obj, s, fc);
+      }
     },
     eof: function() {
       sink.eof && sink.eof();
@@ -218,11 +232,11 @@ function limitedSink(count, sink) {
 }
 
 function skipSink(skip, sink) {
+  var i = 0;
   return {
     __proto__: sink,
-    i: 0,
     put: function(obj, s, fc) {
-      if ( this.i++ >= skip ) sink.put(obj, s, fc);
+      if ( i++ >= skip ) sink.put(obj, s, fc);
     }
   };
 }

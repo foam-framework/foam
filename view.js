@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
+
 // TODO: model, document
 // properties: children, parent, value, eid,
 var AbstractView =
@@ -25,6 +27,10 @@ var AbstractView =
 
       this.children = [];
       this.value    = new SimpleValue("");
+    },
+
+    strToHTML: function(str) {
+      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
     addChild: function(child) {
@@ -152,6 +158,10 @@ var AbstractView2 = FOAM.create({
    ],
 
    methods: {
+    strToHTML: function(str) {
+      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    },
+
     addChild: function(child) {
       child.parent = this;
 
@@ -176,7 +186,7 @@ var AbstractView2 = FOAM.create({
     },
 
     nextID: function() {
-      return "View" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return "view2_" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     getID: function() {
@@ -879,7 +889,7 @@ var ChoiceView = FOAM.create({
 
 /*
  * <select size="">
- *    <choice></choice>
+ *    <choice value="" selected></choice>
  * </select>
  *
  *
@@ -895,53 +905,85 @@ var ChoiceView = FOAM.create({
 	 defaultValue: 'field'
       },
       {
+         name: 'cssClass',
+         type: 'String',
+         defaultValue: 'foamChoiceView'
+      },
+      {
 	 name:  'size',
 	 label: 'Size',
          type:  'int',
 	 defaultValue: 1
       },
       {
+	 name:  'value',
+	 label: 'Value',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
+      },
+      {
 	 name:  'choices',
 	 label: 'Choices',
          type:  'Array[StringField]',
-	 defaultValue: []
+	 defaultValue: [],
+         postSet: function() {
+//           if ( this.eid_ ) this.updateHTML();
+         }
       }
    ],
 
    methods: {
-    toHTML: function() {
-       var str = "";
+     toHTML: function() {
+       return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
+     },
 
-       str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+     updateHTML: function() {
+       var out = [];
+
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-	  str += "\t<option>" + this.choices[i].toString() + "</option>";
+         var choice = this.choices[i];
+
+         if ( Array.isArray(choice) ) {
+           var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+	   out.push(choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+	   out.push(encodedValue + '">');
+           out.push(choice[1].toString());
+         } else {
+	   out.push(choice == this.value.get() ? '\t<option selected>' : '\t<option>');
+           out.push(choice.toString());
+         }
+         out.push('</option>');
        }
-       str += '</select>';
 
-       return str;
-    },
+       this.element().innerHTML = out.join('');
+     },
 
-    getValue: function() {
-        return this.value;
-    },
+     getValue: function() {
+       return this.value;
+     },
 
-    setValue: function(value) {
-	Events.unlink(this.domValue, this.value);
-	this.value = value;
-	Events.link(value, this.domValue);
-    },
+     setValue: function(value) {
+       Events.unlink(this.domValue, this.value);
+       this.value = value;
+       Events.link(value, this.domValue);
+     },
 
-    initHTML: function() {
-	var e = this.element();
+     initHTML: function() {
+       var e = this.element();
 
-	this.domValue = DomValue.create(e);
+       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
 
-	Events.link(this.value, this.domValue);
-    },
+       this.updateHTML();
 
-    destroy: function() {
-	Events.unlink(this.domValue, this.value);
-    }
+       this.domValue = DomValue.create(e);
+
+       Events.link(this.value, this.domValue);
+     },
+
+     destroy: function() {
+       Events.unlink(this.domValue, this.value);
+     }
    }
 });
 
@@ -1670,7 +1712,7 @@ var SummaryView =
             out.push('<tr>');
 	    out.push('<td class="label">' + prop.label + '</td>');
 	    out.push('<td class="value"><pre>');
-	    out.push(value);
+	    out.push(this.strToHTML(value));
 	    out.push('</pre></td></tr>');
 	 }
       }
@@ -1776,7 +1818,7 @@ var TableView = FOAM.create({
       },
       {
 	 name:  'properties',
-	 label: 'Model',
+	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -1824,7 +1866,7 @@ var TableView = FOAM.create({
 	var str = [];
 	var props = [];
 
-        str.push('<table class="chaosTable ' + model.name + 'Table">');
+        str.push('<table class="foamTable ' + model.name + 'Table">');
 
 	//str += '<!--<caption>' + model.plural + '</caption>';
         str.push('<thead><tr>');
@@ -1926,7 +1968,7 @@ var TableView2 = FOAM.create({
       },
       {
 	 name:  'properties',
-	 label: 'Model',
+	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -1943,6 +1985,12 @@ var TableView2 = FOAM.create({
 	 label: 'Children',
          type:  'Array[View]',
 	 valueFactory: function() { return []; }
+      },
+      {
+	 name:  'sortOrder',
+	 label: 'Sort Order',
+         type:  'Comparator',
+         defaultValue: undefined
       },
       {
          name:  'dao',
@@ -1967,6 +2015,24 @@ var TableView2 = FOAM.create({
    ],
 
    methods: {
+
+     layout: function() {
+       var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
+       var style = window.getComputedStyle(this.element().children[0]);
+
+       var prevHeight = 0;
+       while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
+         prevHeight = toNum(style.height);
+         this.rows = this.rows+1;
+	 style = window.getComputedStyle(this.element().children[0]);
+       }
+       while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
+         this.rows = this.rows-1;
+style = window.getComputedStyle(this.element().children[0]);
+       }
+//       this.scrollbar.height = (parent.style.height - 50) + 'px';
+//       this.scrollbar.height = toNum(this.element().style.width)-50;
+     },
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
@@ -1995,7 +2061,8 @@ console.time('redraw');
           self.initHTML();
         }
       };
-      this.dao.limit(this.rows).select(this.objs);
+
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs);
 console.timeEnd('redraw');
     },
 
@@ -2013,7 +2080,7 @@ console.timeEnd('redraw');
 	var str = [];
 	var props = [];
 
-        str.push('<table class="chaosTable ' + model.name + 'Table">');
+        str.push('<table class="foamTable ' + model.name + 'Table">');
 
 	//str += '<!--<caption>' + model.plural + '</caption>';
         str.push('<thead><tr>');
@@ -2026,7 +2093,13 @@ console.timeEnd('redraw');
 
 	   // if ( prop.hidden ) continue;
 
-	    str.push('<th scope=col>' + prop.label + '</th>');
+	    str.push('<th scope=col ');
+            str.push('id=' +
+                this.registerCallback(
+                  'click',
+                  (function(table, prop) { return function() { table.sortOrder = prop; table.repaint(); };})(this, prop)));
+            if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
+            str.push('>' + prop.label + '</th>');
 
 	    props.push(prop);
 	}
@@ -2043,7 +2116,11 @@ console.timeEnd('redraw');
 
 		str.push('<td>');
 		var val = obj[prop.name];
-		str.push(( val == null ) ? '&nbsp;' : val);
+                if ( prop.tableFormatter ) {
+                  str.push(prop.tableFormatter(val));
+                } else {
+		  str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
+                }
 		str.push('</td>');
 	    }
 
@@ -2061,33 +2138,34 @@ console.timeEnd('redraw');
     },
 
     initHTML: function() {
-	var es = document.getElementsByClassName('tr-' + this.getID());
+      AbstractView.initHTML.call(this);
+      var es = document.getElementsByClassName('tr-' + this.getID());
 
-	for ( var i = 0 ; i < es.length ; i++ ) {
-	    var e = es[i];
+      for ( var i = 0 ; i < es.length ; i++ ) {
+	var e = es[i];
 
-	    e.onmouseover = function(value, obj) { return function() {
-               value.prevValue = value.get();
-	       value.set(obj);
-	    }; }(this.selection, this.objs[i]);
-	    e.onmouseout = function(value, obj) { return function() {
-	       if ( ! value.prevValue ) return;
-               value.set(value.prevValue);
-               delete value['prevValue'];
-	    }; }(this.selection, this.objs[i]);
-	    e.onclick = function(value, obj) { return function(evt) {
-	       value.set(obj);
-               delete value['prevValue'];
-               var siblings = evt.srcElement.parentNode.parentNode.childNodes;
-	       for ( var i = 0 ; i < siblings.length ; i++ ) {
-                  siblings[i].className = "";
-	       }
-               evt.srcElement.parentNode.className = 'rowSelected';
-	    }; }(this.selection, this.objs[i]);
-	    e.ondblclick = function(me, value, obj) { return function(evt) {
-               me.publish(me.DOUBLE_CLICK, obj, value);
-	    }; }(this, this.selection, this.objs[i]);
-	}
+	e.onmouseover = function(value, obj) { return function() {
+          value.prevValue = value.get();
+	  value.set(obj);
+	}; }(this.selection, this.objs[i]);
+	e.onmouseout = function(value, obj) { return function() {
+	  if ( ! value.prevValue ) return;
+            value.set(value.prevValue);
+            delete value['prevValue'];
+	}; }(this.selection, this.objs[i]);
+	e.onclick = function(value, obj) { return function(evt) {
+	   value.set(obj);
+           delete value['prevValue'];
+           var siblings = evt.srcElement.parentNode.parentNode.childNodes;
+	   for ( var i = 0 ; i < siblings.length ; i++ ) {
+              siblings[i].className = "";
+	   }
+           evt.srcElement.parentNode.className = 'rowSelected';
+	}; }(this.selection, this.objs[i]);
+	e.ondblclick = function(me, value, obj) { return function(evt) {
+           me.publish(me.DOUBLE_CLICK, obj, value);
+	}; }(this, this.selection, this.objs[i]);
+      }
     },
 
 

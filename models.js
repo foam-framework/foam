@@ -402,7 +402,7 @@ var ScrollCView = FOAM.create({
 
    listeners: {
      mouseDown: function(e) {
-       console.log('mouseDown: ', e);
+//       console.log('mouseDown: ', e);
 //       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
        this.starty = e.y - e.offsetY;
        window.addEventListener('mouseup', this.mouseUp, true);
@@ -410,14 +410,14 @@ var ScrollCView = FOAM.create({
        this.mouseMove(e);
      },
      mouseUp: function(e) {
-       console.log('mouseUp: ', e);
+//       console.log('mouseUp: ', e);
        e.preventDefault();
        window.removeEventListener('mousemove', this.mouseMove, true);
        window.removeEventListener('mouseUp', this.mouseUp, true);
 //       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
-       console.log('mouseMove: ', e);
+//       console.log('mouseMove: ', e);
        var y = e.y - this.starty;
        e.preventDefault();
 
@@ -453,20 +453,19 @@ var ScrollCView = FOAM.create({
     paint: function() {
       var c = this.canvas;
 
-      if ( ! c ) {
-        debugger;
-      }
       c.fillStyle = '#fff';
       c.fillRect(this.x, this.w, this.width, this.height);
 
-      c.strokeStyle = '#000';
-      c.strokeRect(this.x, this.y, this.width, this.height);
-      c.fillStyle = '#f00';
+      if ( this.extent >= this.size ) return;
+
+      c.strokeStyle = '#555';
+      c.strokeRect(this.x, this.y, this.width-2, this.height);
+      c.fillStyle = 'rgb(107,136,173)';
       c.fillRect(
         this.x + 2,
         this.y + 2 + this.value / this.size * this.height,
-        this.width - 4,
-        this.y + 2 + this.extent / this.size * this.height);
+        this.width - 6,
+        this.y - 6 + this.extent / this.size * this.height);
     },
 
     destroy: function() {
@@ -498,7 +497,7 @@ var ScrollBorder = FOAM.create({
 	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
-             return ScrollCView.create({height:500, width: 30, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+             return ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
            }
        },
        {
@@ -517,7 +516,7 @@ var ScrollBorder = FOAM.create({
                self.scrollbar.size = this.count;
                self.scrollbar.value = 0;
              }
-           })
+           });
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
@@ -528,10 +527,15 @@ var ScrollBorder = FOAM.create({
    ],
 
    methods: {
+     layout: function() {
+       this.view.layout();
+       var view = window.getComputedStyle(this.view.element().children[0]);
+       this.scrollbar.height = toNum(view.height)-30;
+     },
      toHTML: function() {
-       return '<table border=1><tr><td valign=top>' +
+       return '<table width=100% border=0><tr><td valign=top>' +
          this.view.toHTML() +
-         '</td><td>' +
+         '</td><td valign=top><div class="scrollSpacer"></div>' +
          this.scrollbar.toHTML() +
          '</td></tr></table>';
      },
@@ -1367,7 +1371,7 @@ var AlternateView = FOAM.create({
 //	 Events.link(this.model, this.view.model);
 
 //	 str.push(this.view.toHTML());
-	 str.push('<div id="' + this.getID() + '" class="altView"> </div>')
+	 str.push('<div id="' + this.getID() + '" class="altView"> </div>');
 	 return str.join('');
       },
 
@@ -1529,7 +1533,7 @@ var System = FOAM.create({
 	 name:  'color',
 	 label: 'Color',
          type:  'String',
-	 defaultValue: 'black',
+	 defaultValue: 'black'
       },
       {
 	 name:  'devColor',
@@ -1744,7 +1748,7 @@ var System = FOAM.create({
          });
     },
 
-    chaos: function(system, dev)
+    foam: function(system, dev)
     {
        var r = Math.random();
        var nx = Math.floor(Math.random() * 100000) % system.features.length + 1;

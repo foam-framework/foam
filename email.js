@@ -25,6 +25,7 @@ var EMail = FOAM.create({
    ],
    tableProperties:
    [
+      'to',
       'from',
       'subject',
       'timestamp'
@@ -47,13 +48,17 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'timestamp',
-         label: 'Time',
+         label: 'Date',
          type: 'String',
          mode: 'read-write',
          required: true,
          displayWidth: 50,
          displayHeight: 1,
          view: 'TextFieldView',
+         tableWidth: '100',
+         tableFormatter: function(d) {
+           return d.toDateString();
+         },
          valueFactory: function() { return new Date(); }
       },
       {
@@ -66,6 +71,9 @@ var EMail = FOAM.create({
          displayWidth: 60,
          displayHeight: 1,
          view: 'TextFieldView',
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         },
          valueFactory: function() { return GLOBAL.user; }
       },
       {
@@ -77,7 +85,10 @@ var EMail = FOAM.create({
          required: true,
          displayWidth: 60,
          displayHeight: 1,
-         view: 'TextFieldView'
+         view: 'TextFieldView',
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         },
       },
       {
          model_: 'Property',
@@ -88,6 +99,7 @@ var EMail = FOAM.create({
          required: true,
          displayWidth: 70,
          displayHeight: 1,
+         tableWidth: '45%',
          view: 'TextFieldView'
       },
       {
@@ -254,181 +266,181 @@ MBOXLoader.eof();
 
 
 
-var emails = JSONUtil.chaosify([
+var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:01 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:02 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:03 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: '6 people you might know on Google+'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:04 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:05 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm'
+   },
+   {
+      model_: 'EMail',
+      timestamp: new Date('Tue Dec 11 2012 10:57:06 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012'
    },
    {
       model_: 'EMail',
       timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:09 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:10 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:11 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: 'Google Calendar <calendar-notification@google.com>',
-      to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
-   },
-   {
-      model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: 'Google Calendar <calendar-notification@google.com>',
-      to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)'
-   },
-   {
-      model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:12 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: '6 people you might know on Google+'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:13 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:14 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:15 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:16 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri?= <no-reply@google.com>',
+      timestamp: new Date('Tue Dec 11 2012 10:57:17 GMT-0500 (EST)'),
+      from: 'John Doe<no-reply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'You have been invited to contribute to Blah lah la Blog'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:18 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:19 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:20 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012 (thafunkypresident@gmail.com)'
+      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:21 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Top 3 posts for you on Google+ this week'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:22 GMT-0500 (EST)'),
       from: 'wmt-noreply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Email notifications from Google Webmaster Tools'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:23 GMT-0500 (EST)'),
       from: '"Brian Willard (Google+)" <replyto-7b45ec87@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'July 10, 2012 (5 photos)'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:24 GMT-0500 (EST)'),
       from: '"Google+" <noreply-1670dad1@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Brian Willard added you on Google+'
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:25 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?Brian_Fitzpatrick=2C_K=E1ri_Ragnarsson=2C_and_1_other_sha?=',
+      subject: 'Brian_Fitzpatrick',
       labels:
       [
          'Retention5'
@@ -436,7 +448,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:26 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Someone you might know on Google+',
@@ -447,7 +459,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:27 GMT-0500 (EST)'),
       from: 'noreply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Ihr Google Datenexport-Archiv ist fertig.',
@@ -459,7 +471,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:28 GMT-0500 (EST)'),
       from: 'Google Voice <voice-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Change to your Google Voice account',
@@ -471,7 +483,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:29 GMT-0500 (EST)'),
       from: 'Google Voice <voice-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'New voicemail from (917) 359-5785 at 3:18 PM',
@@ -482,7 +494,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:30 GMT-0500 (EST)'),
       from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'SMS from (917) 359-5785',
@@ -493,7 +505,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:31 GMT-0500 (EST)'),
       from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'SMS from (917) 359-5785',
@@ -504,7 +516,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:32 GMT-0500 (EST)'),
       from: 'Google Voice <voice-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Welcome to Google Voice',
@@ -515,7 +527,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:33 GMT-0500 (EST)'),
       from: 'Google Voice <voice-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Welcome to Google Voice',
@@ -526,7 +538,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:34 GMT-0500 (EST)'),
       from: 'JJ Lueck <jlueck@google.com>',
       to: 'JJ Lueck <jlueck@google.com>, thafunkypresident@gmail.com',
       subject: 'Sample video',
@@ -537,8 +549,8 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      timestamp: new Date('Tue Dec 11 2012 10:57:35 GMT-0500 (EST)'),
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: One beautiful user experience',
       labels:
@@ -548,10 +560,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:36 GMT-0500 (EST)'),
       from: '"Google+" <noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi?=',
+      subject: 'E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi',
       labels:
       [
          'Retention5'
@@ -559,10 +571,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:37 GMT-0500 (EST)'),
       from: '"Google+" <noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Presidentia?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -570,10 +582,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:38 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am',
       labels:
       [
          'Retention5'
@@ -581,10 +593,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:39 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am',
       labels:
       [
          'Retention5'
@@ -592,10 +604,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:40 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm',
       labels:
       [
          'Retention5'
@@ -603,7 +615,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:41 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Q1 2012 Board of NerfWarriors All Hands @ Tue Apr 24 2pm -',
@@ -614,7 +626,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:42 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: '6 people you might know on Google+',
@@ -625,7 +637,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:43 GMT-0500 (EST)'),
       from: 'Google Wallet <wallet-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: '=?utf-8?q?Google_Wallet_special_offer_today=3A_=245_for_=2410_at_Starbuck?=',
@@ -636,10 +648,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:44 GMT-0500 (EST)'),
       from: '"Google+" <noreply-1670dad1@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -647,10 +659,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:45 GMT-0500 (EST)'),
       from: '"Google+" <noreply-1670dad1@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
-      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      subject: 'Testing',
       labels:
       [
          'Retention5'
@@ -658,8 +670,8 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      timestamp: new Date('Tue Dec 11 2012 10:57:46 GMT-0500 (EST)'),
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: I could really use a generously crafter bologna...',
       labels:
@@ -669,7 +681,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:07 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:47 GMT-0500 (EST)'),
       from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: I could really use a generously crafter bologna...',
@@ -680,8 +692,8 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
-      from: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_=28Google=2B=29?= <noreply-3467b12d@plus.google.com>',
+      timestamp: new Date('Tue Dec 11 2012 10:57:48 GMT-0500 (EST)'),
+      from: '<noreply-3467b12d@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: If anyone is reading this, please bring me...',
       labels:
@@ -691,7 +703,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:49 GMT-0500 (EST)'),
       from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Re: If anyone is reading this, please bring me...',
@@ -702,7 +714,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:50 GMT-0500 (EST)'),
       from: '"Google+ team" <noreply-daa26fef@plus.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Getting started on Google+',
@@ -713,7 +725,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:51 GMT-0500 (EST)'),
       from: 'Google Checkout <noreply@checkout.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Rate your shopping experience with Google using Google Checkout',
@@ -725,7 +737,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:52 GMT-0500 (EST)'),
       from: 'Google Voice <voice-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Welcome to Google Voice',
@@ -737,7 +749,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:53 GMT-0500 (EST)'),
       from: 'Google <privacy-noreply@google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Changes to Google Privacy Policy and Terms of Service',
@@ -748,7 +760,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:54 GMT-0500 (EST)'),
       from: 'no-reply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Upgrade to Google Paid Storage',
@@ -759,7 +771,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:55 GMT-0500 (EST)'),
       from: 'Google Checkout <noreply@checkout.google.com>',
       to: 'thafunkypresident@gmail.com',
       subject: 'Order receipt from Google ($5.00)',
@@ -770,7 +782,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:56 GMT-0500 (EST)'),
       from: 'noreply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Ihr Google Datenexport-Archiv ist fertig.',
@@ -781,10 +793,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:57 GMT-0500 (EST)'),
       from: 'Google Kalender <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00 (thafunkypresident@gmail.com)',
+      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00',
       labels:
       [
          'Retention5'
@@ -792,10 +804,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:58 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -803,10 +815,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:57:59 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -814,10 +826,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:58 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -825,10 +837,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm',
       labels:
       [
          'Retention5'
@@ -836,7 +848,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:01 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 13 6:30am - 7:50am (Takeout',
@@ -847,7 +859,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:02 GMT-0500 (EST)'),
       from: 'noreply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Your Google Takeout archive is ready',
@@ -858,7 +870,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:03 GMT-0500 (EST)'),
       from: 'nobody@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Your Google Takeout archive is ready',
@@ -869,7 +881,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:04 GMT-0500 (EST)'),
       from: 'noreply@google.com',
       to: 'thafunkypresident@gmail.com',
       subject: 'Your Google Takeout archive is ready',
@@ -880,7 +892,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:05 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Takeout',
@@ -891,7 +903,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:06 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Test calendar)',
@@ -902,7 +914,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:07 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Test calendar)',
@@ -913,7 +925,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:08 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Takeout',
@@ -924,7 +936,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:09 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Test calendar)',
@@ -935,7 +947,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:10 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Takeout',
@@ -946,10 +958,10 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:11 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
-      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am (thafunkypresident@gmail.com)',
+      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am',
       labels:
       [
          'Retention5'
@@ -957,7 +969,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:12 GMT-0500 (EST)'),
       from: 'JJ Lueck <jlueck@google.com>',
       to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
       subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
@@ -968,7 +980,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:13 GMT-0500 (EST)'),
       from: 'Nick Piepmeier <pieps@google.com>',
       to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
       subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
@@ -979,7 +991,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:14 GMT-0500 (EST)'),
       from: 'Kari Ragnarsson <karir@google.com>',
       to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
       subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
@@ -990,7 +1002,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:15 GMT-0500 (EST)'),
       from: 'Google Calendar <calendar-notification@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Reminder: Liberate calendars @ Fri Nov 4 12pm - 1:50pm (Test calendar)',
@@ -1001,7 +1013,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:16 GMT-0500 (EST)'),
       from: 'YouTube <no_reply@youtube.com>',
       to: 'thafunkypresident <thafunkypresident@gmail.com>',
       subject: '=?iso-8859-1?q?Invitation_to_earn_revenue_from_your_YouTube_videos_?=',
@@ -1012,7 +1024,7 @@ var emails = JSONUtil.chaosify([
    },
    {
       model_: 'EMail',
-      timestamp: new Date('Tue Dec 11 2012 10:57:08 GMT-0500 (EST)'),
+      timestamp: new Date('Tue Dec 11 2012 10:59:17 GMT-0500 (EST)'),
       from: 'Nick Piepmeier <pieps@google.com>',
       to: 'Chuck Finley <thafunkypresident@gmail.com>',
       subject: 'Hey Chuck, can you help me out?',

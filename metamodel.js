@@ -159,7 +159,7 @@ var Model = {
 	   help: 'Actions associated with the entity.',
 	   preSet: function(newValue) {
 	      if ( ! ActionModel ) return newValue;
-	      return JSONUtil.chaosify(newValue);
+	      return JSONUtil.mapToObj(newValue);
 	   }
        },
        {
@@ -510,6 +510,26 @@ var PropertyModel = {
 	   view: 'FunctionView',
 	   defaultValue: '',
 	   help: 'The property\'s default value function.'
+       },
+       {
+	   name: 'tableFormatter',
+	   label: 'Table View Cell Formatter',
+	   type: 'Function',
+           required: false,
+	   displayWidth: 70,
+           displayHeight: 3,
+	   rows:3,
+	   view: 'FunctionView',
+	   defaultValue: '',
+	   help: 'Function to format value for display in TableView.'
+       },
+       {
+	   name: 'tableWidth',
+	   label: 'Table Width',
+	   type: 'String',
+           required: false,
+	   defaultValue: '',
+	   help: 'Table View Column Width.'
        },
        {
 	   name: 'help',
@@ -1051,8 +1071,8 @@ var Issue = FOAM.create(
 );
 
 
-Model.templates[0] = JSONUtil.chaosify(Model.templates[0]);
-Model.templates[1] = JSONUtil.chaosify(Model.templates[1]);
+Model.templates[0] = JSONUtil.mapToObj(Model.templates[0]);
+Model.templates[1] = JSONUtil.mapToObj(Model.templates[1]);
 
 (function() {
     var a = Model.properties;
