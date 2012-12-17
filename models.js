@@ -413,7 +413,7 @@ var ScrollCView = FOAM.create({
 //       console.log('mouseUp: ', e);
        e.preventDefault();
        window.removeEventListener('mousemove', this.mouseMove, true);
-       window.removeEventListener('mouseUp', this.mouseUp, true);
+       window.removeEventListener('mouseup', this.mouseUp, true);
 //       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {

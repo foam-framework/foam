@@ -1461,29 +1461,3 @@ var PartitionDAO2 = FOAM.create({
     }
   }
 });
-
-/*
-var d = IndexedDBDAO2.create({model: Model});
-d.put(Issue);
-d.find(function(i) { console.log('got: ', i); }, "Issue");
-
-ModelDAO.forEach(d.put.bind(d));
-d.forEach(console.log.bind(console, 'forEach: '));
-*/
-if (window.location) {
-var workers = [
-  WorkerDAO2.create({ model: Issue }),
-  WorkerDAO2.create({ model: Issue }),
-  WorkerDAO2.create({ model: Issue }),
-  WorkerDAO2.create({ model: Issue }),
-  WorkerDAO2.create({ model: Issue }),
-]
-
-  var issues = PartitionDAO2.create({ partitions: workers });
-for ( var jn = 1; jn < 501; jn++) {
-console.log(jn);
-  issues.put(Issue.create({ id: jn, severity: "Major", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
-  issues.put(Issue.create({ id: jn + 500, severity: "Minor", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
-  issues.put(Issue.create({ id: jn + 1000, severity: "Feature", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
-}
-}
