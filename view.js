@@ -261,7 +261,8 @@ var DomValue =
     DEFAULT_EVENT:    'change',
     DEFAULT_PROPERTY: 'value',
 
-    create: function ( element, opt_event, opt_property ) {
+    create: function(element, opt_event, opt_property) {
+console.log(element, opt_event, opt_property);
 	return {
 	    __proto__: this,
 	    element:   element,

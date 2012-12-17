@@ -124,3 +124,92 @@ console.log('***** Search Choice:', choice);
    ]
 
 });
+
+
+var TextSearchView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name:  'TextSearchView',
+   label: 'Text Search View',
+
+   properties: [
+     {
+       name:  'width',
+       label: 'Width',
+       type:  'int',
+       defaultValue: 47
+     },
+     {
+       name: 'property',
+       label: 'Property',
+       type: 'Property'
+     },
+     {
+       name: 'predicate',
+       label: 'Predicate',
+       type: 'Object',
+       defaultValue: TRUE
+     },
+     {
+       name: 'view',
+       label: 'View',
+       type: 'view',
+       valueFactory: function() { return TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
+     },
+     {
+       name: 'label',
+       type: 'String',
+       defaultValueFn: function() { return this.property.label; }
+     }
+   ],
+
+   methods: {
+     toHTML: function() {
+       return '<div class="foamSearchView">' +
+         '<div class="foamSearchViewLabel">' +
+           this.label +
+         '</div>' +
+         this.view.toHTML() + '</div>' +
+         '<div id=' + this.registerCallback('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
+     },
+     initHTML: function() {
+	AbstractView2.getPrototype().initHTML.call(this);
+	this.view.initHTML();
+
+	this.view.value.addListener(this.updateValue);
+     }
+   },
+
+   listeners:
+   [
+      {
+	 model_: 'MethodModel',
+
+	 name: 'updateValue',
+
+	 code: function() {
+	    var value = this.view.getValue().get();
+	    if ( ! value ) {
+	       this.predicate = TRUE;
+	       return;
+	    }
+	   this.predicate = CONTAINS_IC(this.property, value);
+	 }
+      },
+      {
+	 model_: 'MethodModel',
+
+	 name: 'clear',
+
+	 code: function() {
+console.log('**************************** clear');
+	   this.view.getValue().set('');
+	   this.predicate = TRUE;
+	 }
+      }
+
+   ]
+});
