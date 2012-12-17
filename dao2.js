@@ -983,7 +983,7 @@ var WorkerDAO2 = FOAM.create({
       label:'Delegate',
       help: 'The web-worker to delegate all actions to.',
       valueFactory: function() {
-        var url = window.location.origin + "/";
+        var url = window.location.protocol + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
         var workerscript = [
           "var url = '" + url + "';\n",
           "var a = importScripts;",
@@ -1077,41 +1077,52 @@ var WorkerDAO2 = FOAM.create({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
-      if (sink.model_ && sink.reduceI) {
-        var mysink = sink;
-      } else {
-        mysink = KeyCollector.create();
-      }
-
-      var request = {
-        sink: mysink,
-        options: options
-      };
+      // Cases:
+      // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
+      // 2) Non-cloneable reducable sink -- treat same as case 2.
+      // 3) Non-cloneable non-reducable sink -- Use key-creator, just put into sink
 
       var fc = this.createFlowControl_();
 
-      this.makeRequest_(
-        "select", request,
-        (function(response) {
-          var responsesink = JSONToObject.visit(response.sink);
-          if (sink.model_ && sink.reduceI) {
-            sink.reduceI(responsesink);
-            sink.eof && sink.eof();
-            return;
-          }
+      if (sink.model_ && sink.reduceI) {
+        var request = {
+          sink: sink,
+          options: options
+        };
 
-          for (var i = 0; i < responsesink.keys.length; i++) {
-            var key = responsesink.keys[i];
-            if ( fc.stopped ) break;
-            if ( fc.errorEvt ) {
-              sink.error && sink.error(fc.errorEvt);
-              break;
-            }
-            var obj = this.storage_[key];
-            sink.put(obj);
-          }
-        }).bind(this),
-        sink && sink.error && sink.error.bind(sink));
+        this.makeRequest_(
+            "select", request,
+            (function(response) {
+              var responsesink = JSONToObject.visit(response.sink);
+              sink.reduceI(responsesink);
+              sink.eof && sink.eof();
+            }).bind(this),
+            sink && sink.error && sink.error.bind(sink));
+      } else {
+        var mysink = KeyCollector.create();
+        request = {
+          sink: mysink,
+          options: options
+        };
+
+        this.makeRequest_(
+            "select", request,
+            (function(response) {
+              var responsesink = JSONToObject.visit(response.sink);
+              for (var i = 0; i < responsesink.keys.length; i++) {
+                var key = responsesink.keys[i];
+                if ( fc.stopped ) break;
+                if ( fc.errorEvt ) {
+                  sink.error && sink.error(fc.errorEvt);
+                  break;
+                }
+                var obj = this.storage_[key];
+                sink.put(obj);
+              }
+              sink.eof && sink.eof();
+            }).bind(this),
+            sink && sink.error && sink.error.bind(sink));
+      }
     },
     handleNotification_: function(message) {
       if (message.method == "put") {
@@ -1302,6 +1313,53 @@ var ModelDAO = {
     }
 };
 
+var CollectorSink = FOAM.create({
+  model_: 'Model',
+
+  name: 'CollectorSink',
+  label: 'CollectorSink',
+
+  properties: [
+    {
+      name: 'storage',
+      type: 'Array',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    reduceI: function(other) {
+      this.storage = this.storage.concat(other.storage);
+    },
+    put: function(obj) {
+      this.storage.push(obj);
+    }
+  }
+});
+
+var OrderedCollectorSink = FOAM.create({
+  model_: 'Model',
+
+  name: 'OrderedCollectorSink',
+  label: 'OrderedCollectorSink',
+
+  extendsModel: 'CollectorSink',
+
+  properties: [
+    {
+      name: 'comparator',
+      type: 'Value',
+      required: true
+    }
+  ],
+
+  methods: {
+    reduceI: function(other) {
+      this.storage = this.storage.reduce(this.comparator, other.storage);
+    }
+  }
+});
+
 var PartitionDAO2 = FOAM.create({
   model_: 'Model',
   extendsModel: 'AbstractDAO2',
@@ -1352,43 +1410,55 @@ var PartitionDAO2 = FOAM.create({
       }
     },
     select: function(sink, options) {
+      var myoptions = {};
+      options = options || {};
+      if (options.limit) {
+        myoptions.limit = options.limit + (options.skip || 0),
+        myoptions.skip = 0;
+      }
+
+      myoptions.order = options.order;
+      myoptions.query = options.query;
+
+      var pending = this.partitions.length;
+
+      var fc = this.createFlowControl_();
+
       if (sink.model_ && sink.reduceI) {
         var mysink = sink;
-      } else if (options.order) {
-        function makesink() {
-          return {
-            storage: [],
-            put: function(value) {
-              storage.push(value);
-            },
-            reduceI: function(array) {
-              storage = storage.reduce(options.order, array);
-            },
-            clone: function() {
-              return makesink();
-            }
-          };
+      } else {
+        if (options.order) {
+          mysink = OrderedCollectorSink.create({ comparator: options.order });
+        } else {
+          mysink = CollectorSink.create({});
         }
-        mysink = makesink();
+        if ( options.limit ) sink = limitedSink(options.limit, sink);
+        if ( options.skip ) sink = skipSink(options.skip, sink);
+
         mysink.eof = function() {
-          for ( var i = 0; i < this.length; i++) {
-            sink.put(this[i]);
+          for (var i = 0; i < this.storage.length; i++) {
+            if ( fc.stopped ) break;
+            if ( fc.errorEvt ) {
+              sink.error && sink.error(fc.errorEvt);
+              break;
+            }
+            sink.put(this.storage[i], null, fc);
           }
+        }
+      }
+
+      var sinks = new Array(this.partitions.length);
+      for ( var i = 0; i < this.partitions.length; i++ ) {
+        sinks[i] = mysink.deepClone();
+        sinks[i].eof = function() {
+          mysink.reduceI(this);
+          pending--;
+          if (pending <= 0) mysink.eof && mysink.eof();
         };
       }
 
-      var pending = this.partitions.length;
       for ( var i = 0; i < this.partitions.length; i++ ) {
-        (function() {
-          // TODO deep clone?
-          var sink_ = mysink.clone();
-          sink_.eof = function() {
-            mysink.reduceI(this);
-            pending--;
-            if (pending <= 0) sink.eof && sink.eof();
-          };
-          this.partitions[i].select(sink_, options);
-        })();
+        this.partitions[i].select(sinks[i], options);
       }
     }
   }
@@ -1402,3 +1472,20 @@ d.find(function(i) { console.log('got: ', i); }, "Issue");
 ModelDAO.forEach(d.put.bind(d));
 d.forEach(console.log.bind(console, 'forEach: '));
 */
+if (window.location) {
+var workers = [
+  WorkerDAO2.create({ model: Issue }),
+  WorkerDAO2.create({ model: Issue }),
+  WorkerDAO2.create({ model: Issue }),
+  WorkerDAO2.create({ model: Issue }),
+  WorkerDAO2.create({ model: Issue }),
+]
+
+  var issues = PartitionDAO2.create({ partitions: workers });
+for ( var jn = 1; jn < 501; jn++) {
+console.log(jn);
+  issues.put(Issue.create({ id: jn, severity: "Major", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
+  issues.put(Issue.create({ id: jn + 500, severity: "Minor", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
+  issues.put(Issue.create({ id: jn + 1000, severity: "Feature", status: Math.random() < 0.5 ? 'Open' : 'Accepted', assignedTo: Math.random() < 0.5 ? 'kgr' : 'adamvy' }));
+}
+}
