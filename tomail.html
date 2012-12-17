@@ -111,7 +111,7 @@ layout();
     });
     var byTo = GroupBySearchView.create({size: 11, dao: dao, property: EMail.TO});
     var byFrom = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
-    var byLabel = GroupBySearchView.create({size: 8, dao: dao, property: EMail.LABELS});
+    var byLabel = GroupBySearchView.create({size: 7, dao: dao, property: EMail.LABELS});
 
     browse.innerHTML = table.toHTML();
     toSearch.innerHTML = byTo.toHTML();
