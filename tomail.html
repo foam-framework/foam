@@ -11,6 +11,10 @@
 Takeout Reader</font>
 </div>
 <div id="search" style="position:absolute;background-color:#fff;">
+  <div id="textSearch" class="searchTitle" style="margin-top:15px;margin-bottom:15px">
+    <div class="foamSearchViewLabel">Subject</div>
+    <input size=59/>
+  </div>
   <div id="textSearch"  class="searchTitle"></div>
   <div id="toSearch"    class="searchTitle"></div>
   <div id="fromSearch"  class="searchTitle"></div>
@@ -85,15 +89,16 @@ function layout() {
 window.onresize = layout;
 layout();
 
-//    var dao = StorageDAO2.create({model: EMail});
+    var dao = StorageDAO2.create({model: EMail});
 
+/*
     var dao = IDAO.create({model: EMail});
     emails.select(dao);
     dao.bulkLoad(dao);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
-
+*/
 
     var table = ScrollBorder.create({
       view: TableView2.create({

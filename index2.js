@@ -188,7 +188,8 @@ var TreeIndex = {
   plan: function(s, sink, options) {
     var query = options && options.query;
 
-    if ( ! query && CountExpr.isInstance(sink) ) {
+    if ( ! query && sink.model_ === CountExpr ) {
+       console.log('**************** COUNT SHORT-CIRCUIT ****************');
       var count = this.size(s);
       return {
 	 cost: 0,
@@ -198,6 +199,12 @@ var TreeIndex = {
     }
 
     var prop = this.prop;
+
+    if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
+       console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // TODO:
+    }
+
     var index = this;
 
     var getEQKey = function (query) {
