@@ -498,7 +498,7 @@ var ScrollBorder = FOAM.create({
 	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
-             return ScrollCView.create({height:800, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+             return ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
            }
        },
        {
