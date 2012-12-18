@@ -979,7 +979,7 @@ var WorkerDAO2 = FOAM.create({
       label:'Delegate',
       help: 'The web-worker to delegate all actions to.',
       valueFactory: function() {
-        var url = window.location.protocol + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+        var url = window.location.protocol + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
         var workerscript = [
           "var url = '" + url + "';\n",
           "var a = importScripts;",
