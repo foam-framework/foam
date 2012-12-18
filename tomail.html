@@ -11,11 +11,7 @@
 Takeout Reader</font>
 </div>
 <div id="search" style="position:absolute;background-color:#fff;">
-  <div id="textSearch" class="searchTitle" style="margin-top:15px;margin-bottom:15px">
-    <div class="foamSearchViewLabel">Subject</div>
-    <input size=59/>
-  </div>
-  <div id="textSearch"  class="searchTitle"></div>
+  <div id="subjectSearch"  class="searchTitle"></div>
   <div id="toSearch"    class="searchTitle"></div>
   <div id="fromSearch"  class="searchTitle"></div>
   <div id="labelSearch" class="searchTitle"></div>
@@ -38,6 +34,7 @@ var search = document.getElementById('search');
 var browse = document.getElementById('browse');
 var edit   = document.getElementById('edit');
 
+var subjectSearch   = document.getElementById('subjectSearch');
 var toSearch   = document.getElementById('toSearch');
 var fromSearch = document.getElementById('fromSearch');
 var labelSearch = document.getElementById('labelSearch');
@@ -46,8 +43,9 @@ var reversed = false;
 
 function pos(e, top, left, width, height) {
   var s = e.style;
-  
-  if ( reversed ) left = (window.innerWidth - 15) - left - width;
+  left = left || 0;
+
+  if ( reversed ) left = (window.innerWidth - 15) - left - (width || toNum(e.style.width));
   
   top != null && (e.style.top = toNum(top) + 'px');
   left != null && (e.style.left = toNum(left) + 'px');
@@ -108,11 +106,14 @@ layout();
       }),
       dao: dao
     });
+
+    var searchSubject = TextSearchView.create({width:57, property: EMail.SUBJECT});
     var byTo = GroupBySearchView.create({size: 11, dao: dao, property: EMail.TO});
     var byFrom = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
     var byLabel = GroupBySearchView.create({size: 7, dao: dao, property: EMail.LABELS});
 
     browse.innerHTML = table.toHTML();
+    subjectSearch.innerHTML = searchSubject.toHTML();
     toSearch.innerHTML = byTo.toHTML();
     fromSearch.innerHTML = byFrom.toHTML();
     labelSearch.innerHTML = byLabel.toHTML();
@@ -129,6 +130,7 @@ layout();
 
     table.view.selection.set(table.view.objs[0]);
 
+    searchSubject.initHTML();
     byFrom.initHTML();
     byTo.initHTML();
     byLabel.initHTML();
@@ -137,6 +139,7 @@ layout();
 
     function updateQuery() {
       var predicate = AND(
+        searchSubject.predicate,
         byFrom.predicate,
         byTo.predicate,
         byLabel.predicate).partialEval();
@@ -146,12 +149,13 @@ layout();
       table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
 
-      byFrom.filter = AND(byTo.predicate, byLabel.predicate).partialEval();
-      byTo.filter = AND(byFrom.predicate, byLabel.predicate).partialEval();
-      byLabel.filter = AND(byTo.predicate, byFrom.predicate).partialEval();
+      byFrom.filter  = AND(searchSubject.predicate, byTo.predicate,   byLabel.predicate).partialEval();
+      byTo.filter    = AND(searchSubject.predicate, byFrom.predicate, byLabel.predicate).partialEval();
+      byLabel.filter = AND(searchSubject.predicate, byTo.predicate,   byFrom.predicate).partialEval();
     }
 
     Events.dynamic(function() {
+      searchSubject.predicate;
       byFrom.predicate;
       byTo.predicate;
       byLabel.predicate;
