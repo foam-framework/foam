@@ -19,7 +19,7 @@ var BufferedTextReader = {
     return {
       __proto__: this,
       buffersize: opt_buffersize || 4096,
-      postition: opt_skip || 0,
+      position: opt_skip || 0,
       blob: blob
     };
   },
@@ -31,12 +31,9 @@ var BufferedTextReader = {
     // TODO what happens if we stop on a multibyte character boundary?
 
     var slice = this.blob;
-    if ( this.position + 500 < this.blob.size ) {
-      slice = slice.slice(this.postition, this.position + 4096);
-      this.position += 500;
-    } else {
-      this.position = this.blob.size;
-    }
+    var size = Math.min(this.buffersize, this.blob.size - this.position)
+    slice = this.blob.slice(this.position, this.position + size);
+    this.position += size;
     return slice;
   },
 
@@ -53,7 +50,7 @@ var BufferedTextReader = {
         this.aborted = true;
       },
       error: function(e) {
-        this.error = e;
+        this.errorEvt = e;
       }
     };
 
@@ -63,8 +60,8 @@ var BufferedTextReader = {
     reader.readAsText(slice);
 
     reader.onload = function(e) {
-      callback && callback.put && callback.put(reader.result, null, fc);
-      if (fc.aborted || fc.error) return;
+      callback && callback.put && callback.put(reader.result, fc);
+      if (fc.aborted || fc.errorEvt) return;
 
       self.read(callback);
     };
@@ -74,3 +71,49 @@ var BufferedTextReader = {
     };
   }
 };
+
+var LineBasedReader = {
+    create: function(reader) {
+        return {
+            __proto__: this,
+            reader: reader,
+            index: 0
+        };
+    },
+
+    put: function(blob, fc) {
+        this.buffer += blob;
+        this.fc = fc;
+        for (; this.index < this.buffer.length; this.index++) {
+            if (fc.stopped || fc.errorEvt) break;
+
+            if (this.buffer[this.index] == '\n') {
+                this.index++;
+                var line = this.buffer.slice(0, this.index);
+                this.buffer = this.buffer.slice(this.index);
+                this.index = 0;
+                this.callback.put(line, fc);
+            }
+        }
+    },
+
+    eof: function() {
+        if (this.buffer.length > 0) {
+            if (!this.fc.stopped && !this.fc.errorEvt) {
+                this.callback.put(this.buffer, this.fc);
+            }
+        }
+        this.callback.eof && this.callback.eof();
+    },
+
+    read: function(callback) {
+        this.callback = callback;
+        this.reader.read(this);
+    }
+};
+
+/**
+ * <input type="file" id="fileinput">
+ * reader = LineBasedReader.create(BufferedTextReader.create(document.getElementById("fileinput").files[0]))
+ * reader.read(console.log);
+ */
