@@ -193,6 +193,7 @@ function test(str, p, opt_expect) {
 */
 }
 
+if ( false ) {
 
 test('0', range('0', '9'), '0');
 test('9', range('0', '9'), '9');
@@ -218,8 +219,10 @@ test('aaaa', repeat(literal('a')), ['a','a','a','a']);
 test('aaba', repeat(literal('a')), ['a','a']);
 
 test('abbab', repeat(seq(optional(literal('a')), literal('b'))), [['a','b'],[undefined,'b'],['a','b']]);
+}
 
-function sym(name) { return function(ps) { /*console.log('<' + name + '>');*/ return this[name](ps); }; }
+function sym(name) { return function(ps) { return this[name](ps); }; }
+// function sym(name) { return function(ps) { var ret = this[name](ps); console.log('<' + name + '> -> ', !! ret); return ret; }; }
 
 var grammar = {
   parseString: function(str) {

@@ -34,11 +34,6 @@ var search = document.getElementById('search');
 var browse = document.getElementById('browse');
 var edit   = document.getElementById('edit');
 
-var subjectSearch   = document.getElementById('subjectSearch');
-var toSearch   = document.getElementById('toSearch');
-var fromSearch = document.getElementById('fromSearch');
-var labelSearch = document.getElementById('labelSearch');
-
 var reversed = false;
 
 function pos(e, top, left, width, height) {
@@ -108,15 +103,15 @@ layout();
     });
 
     var searchSubject = TextSearchView.create({width:57, property: EMail.SUBJECT});
-    var byTo = GroupBySearchView.create({size: 11, dao: dao, property: EMail.TO});
+    var byTo = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
     var byFrom = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
     var byLabel = GroupBySearchView.create({size: 7, dao: dao, property: EMail.LABELS});
 
     browse.innerHTML = table.toHTML();
-    subjectSearch.innerHTML = searchSubject.toHTML();
-    toSearch.innerHTML = byTo.toHTML();
-    fromSearch.innerHTML = byFrom.toHTML();
-    labelSearch.innerHTML = byLabel.toHTML();
+    searchSubject.insertInElement('subjectSearch');
+    byTo.insertInElement('toSearch');
+    byFrom.insertInElement('fromSearch');
+    byLabel.insertInElement('labelSearch');
 
     table.initHTML();
 
@@ -129,11 +124,6 @@ layout();
     });
 
     table.view.selection.set(table.view.objs[0]);
-
-    searchSubject.initHTML();
-    byFrom.initHTML();
-    byTo.initHTML();
-    byLabel.initHTML();
 
     layout();
 
@@ -168,10 +158,7 @@ layout();
       table.dao = dao;
     }
 
-    function switchHands() {
-      reversed = ! reversed;
-      layout();
-    }
+    function switchHands() { reversed = ! reversed; layout(); }
   </script>
 </body>
 </html>

@@ -212,6 +212,12 @@ var AbstractView2 = FOAM.create({
 	return opt_elementId;
     },
 
+    insertInElement: function(name) {
+      var e = document.getElementById(name);
+      e.innerHTML = this.toHTML();
+      this.initHTML();
+    },
+
     write: function(document) {
        // Write the View's HTML to the provided document and then initialize.
 

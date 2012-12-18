@@ -31,7 +31,7 @@ var BufferedTextReader = {
     // TODO what happens if we stop on a multibyte character boundary?
 
     var slice = this.blob;
-    var size = Math.min(this.buffersize, this.blob.size - this.position)
+    var size = Math.min(this.buffersize, this.blob.size - this.position);
     slice = this.blob.slice(this.position, this.position + size);
     this.position += size;
     return slice;
@@ -77,7 +77,8 @@ var LineBasedReader = {
         return {
             __proto__: this,
             reader: reader,
-            index: 0
+            index: 0,
+            buffer: ''
         };
     },
 
@@ -116,4 +117,14 @@ var LineBasedReader = {
  * <input type="file" id="fileinput">
  * reader = LineBasedReader.create(BufferedTextReader.create(document.getElementById("fileinput").files[0]))
  * reader.read(console.log);
+ */
+
+/*
+
+MBOXLoader.dao = [];
+
+reader = LineBasedReader.create(BufferedTextReader.create(document.getElementById("fileinput").files[0]))
+reader.read(MBOXLoader);
+
+
  */
