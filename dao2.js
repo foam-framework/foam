@@ -1461,3 +1461,44 @@ var PartitionDAO2 = FOAM.create({
     }
   }
 });
+
+// TODO Why is this even a DAO, it literally only does find.
+var BlobReaderDAO = FOAM.create({
+    model_: 'Model',
+    label: 'BlobReaderDAO',
+    name: 'BlobReaderDAO',
+
+    properties: [
+        {
+            name: 'blob',
+            label: 'Blob',
+            type: 'Blob',
+            required: true
+        }
+    ],
+    methods: {
+        put: function(value, sink) {
+            sink && sink.error && sink.error("Unsupported");
+        },
+
+        remove: function(query, sink) {
+            sink && sink.error && sink.error("Unsupported");
+        },
+
+        select: function(query, sink) {
+            sink && sink.error && sink.error("Unsupported");
+        },
+
+        find: function(key, sink) {
+            var slice = this.blob.slice(key[0], key[0] + key[1]);
+            var reader = new FileReader();
+            reader.readAsText(slice)
+            reader.onload = function(e) {
+                sink && sink.put && sink.put(reader.result);
+            };
+            reader.onerror = function(e) {
+                sink && sink.error && sink.error("find", e);
+            };
+        }
+    }
+});

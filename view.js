@@ -1119,6 +1119,46 @@ var BooleanView = {
    }
 };
 
+var FutureView = FOAM.create({
+    model_: 'Model',
+    extendsModel: 'AbstractView2',
+
+    name: 'FutureView',
+    label: 'Future View',
+
+    properties: [
+        {
+            name: 'value',
+            label: 'Value',
+            type: 'Future',
+            postSet: function(newValue, oldValue) {
+                var self = this;
+                newValue(function(v) {
+                    if (self.delegate) self.delegate.setValue(v);
+                });
+            }
+        },
+        {
+            name:  'delegate',
+            label: 'Delegate',
+            type:  'View',
+            postSet: function(newValue, oldValue) {
+                if ( oldValue ) this.removeChild(oldValue);
+                this.addChild(newValue);
+            }
+        }
+    ],
+
+    methods: {
+        setValue: function(value) {
+            this.value = value;
+        },
+        toHTML: function() {
+            return this.delegate.toHTML();
+        }
+    }
+});
+
 
 var TextAreaView = FOAM.create({
 
