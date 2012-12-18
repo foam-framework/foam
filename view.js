@@ -1718,9 +1718,13 @@ var SummaryView =
 	 } else {
             out.push('<tr>');
 	    out.push('<td class="label">' + prop.label + '</td>');
-	    out.push('<td class="value"><pre>');
-	    out.push(this.strToHTML(value));
-	    out.push('</pre></td></tr>');
+	    out.push('<td class="value">');
+            if ( prop.summaryFormatter ) {
+               out.push(prop.summaryFormatter(this.strToHTML(value)));
+            } else {
+	       out.push(this.strToHTML(value));
+            }
+	    out.push('</td></tr>');
 	 }
       }
 
