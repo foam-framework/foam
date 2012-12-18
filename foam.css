@@ -75,7 +75,7 @@ p, h1, form, button{
 }
 
 .summaryView .label{
-    font-size:12px;
+    font-size:14px;
     display:block;
     font-weight:bold;
     text-align:right;
@@ -297,4 +297,9 @@ select {
   color:#039;
   font-size: 16px;
   padding-left: 5px;
+}
+
+.messageBody {
+  background: lightgray;
+  white-space: normal;
 }

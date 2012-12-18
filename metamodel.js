@@ -524,6 +524,18 @@ var PropertyModel = {
 	   help: 'Function to format value for display in TableView.'
        },
        {
+	   name: 'summaryFormatter',
+	   label: 'Summary View Cell Formatter',
+	   type: 'Function',
+           required: false,
+	   displayWidth: 70,
+           displayHeight: 3,
+	   rows:3,
+	   view: 'FunctionView',
+	   defaultValue: '',
+	   help: 'Function to format value for display in SummaryView.'
+       },
+       {
 	   name: 'tableWidth',
 	   label: 'Table Width',
 	   type: 'String',

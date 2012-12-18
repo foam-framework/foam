@@ -117,7 +117,10 @@ var EMail = FOAM.create({
          displayWidth: 70,
          displayHeight: 15,
          view: 'TextAreaView',
-         help: 'Email message body.'
+         help: 'Email message body.',
+         summaryFormatter: function(t) {
+           return '<div class="messageBody">' + t.replace(/\n/g,'<br/>') + '</div>';
+         }
       }
    ],
    actions:
@@ -236,7 +239,7 @@ var MBOXLoader = {
 
   saveCurrentEmail: function() {
     if ( this.email ) {
-      this.email.body = this.b.join('');
+      this.email.body = this.b.join('\n');
       this.b = [];
       console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
