@@ -16,6 +16,7 @@
 
 var files = [
   'stdlib',
+  'io',
   'hash',
   'parse',
   'context',
