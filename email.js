@@ -289,3 +289,37 @@ MBOXLoader.eof();
 
 
 
+var EMailBody = FOAM.create({
+    model_: 'Model',
+    label: 'EMailBody',
+    name: 'EMailBody',
+
+    ids: [
+        'offset',
+        'size'
+    ],
+
+    properties: [
+        {
+            name: 'offset',
+            label: 'Offset',
+            type: 'Integer',
+            required: true
+        },
+        {
+            name: 'size',
+            label: 'Size',
+            type: 'Integer',
+            required: true
+        },
+        {
+            name: 'value',
+            label: 'Value',
+            type: 'String',
+            defaultValue: ''
+        }
+    ],
+
+    methods: {
+    }
+});
