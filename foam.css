@@ -71,10 +71,16 @@ p, h1, form, button{
 .summaryView {
     background:'white';
     width:100%;
-    table-layout:fixed;
     height: 100%;
     overflow-y: scroll;
 }
+
+.summaryView .table {
+    table-layout:fixed;
+}
+
+/* Temp for gmail demo. */
+.summaryView td:first-child { width: 50px; }
 
 .summaryView .label{
     font-size:14px;

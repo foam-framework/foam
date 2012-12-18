@@ -120,8 +120,7 @@ var ObjectToJSON = {
     this.__proto__.visitArray.call(this, o);
     return this.pop();
   },
-  visitArrayElement: function (arr, i) { this.top().push(this.visit(arr[i])); },
-
+  visitArrayElement: function (arr, i) { this.top().push(this.visit(arr[i])); }
 };
 
 
@@ -147,8 +146,7 @@ var JSONToObject = {
 
   // Substitute in-place
   visitArray: Visitor.visitArray,
-  visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); },
-
+  visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); }
 };
 
 
@@ -591,17 +589,17 @@ var IndexedDBDAO2 = FOAM.create({
               deleteReq.onsuccess = function() {
                 sink && sink.remove && sink.remove(value);
                 self.notify_('remove', [value]);
-              }
+              };
               deleteReq.onerror = function(e) {
                 sink && sink.error && sink.error('remove', e);
-              }
+              };
             }
             cursor.continue();
           }
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
-        }
+        };
       });
     },
 
@@ -1196,7 +1194,7 @@ var WorkerDelegate = FOAM.create({
         method: "remove",
         key: obj.id
       });
-    },
+    }
   },
 
   listeners: [
@@ -1248,7 +1246,7 @@ var WorkerDelegate = FOAM.create({
               self.postMessage({
                 request: message.request,
                 sink: ObjectToJSON.visit(this.__proto__)
-              })
+              });
             },
             error: function() {
               this.__proto__ && this.__proto__.error();
@@ -1484,21 +1482,21 @@ var BlobReaderDAO = FOAM.create({
     ],
     methods: {
         put: function(value, sink) {
-            sink && sink.error && sink.error("Unsupported");
+           sink && sink.error && sink.error("Unsupported");
         },
 
         remove: function(query, sink) {
-            sink && sink.error && sink.error("Unsupported");
+           sink && sink.error && sink.error("Unsupported");
         },
 
         select: function(query, sink) {
-            sink && sink.error && sink.error("Unsupported");
+           sink && sink.error && sink.error("Unsupported");
         },
 
         find: function(key, sink) {
             var slice = this.blob.slice(key[0], key[0] + key[1]);
             var reader = new FileReader();
-            reader.readAsText(slice)
+            reader.readAsText(slice);
             reader.onload = function(e) {
                 sink && sink.put && sink.put(reader.result);
             };
