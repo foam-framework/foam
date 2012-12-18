@@ -52,7 +52,7 @@ var toCompare = function(c) {
 Object.defineProperty(Array.prototype, 'reduce', {
   value: function(comparator, arr) {
     compare = toCompare(comparator);
-    var result = new Array(this.length + arr.length);
+    var result = [];
 
     var i = 0;
     var j = 0;
@@ -66,13 +66,15 @@ Object.defineProperty(Array.prototype, 'reduce', {
       if ( a == 0) {
         result[k++] = this[i++];
         result[k++] = arr[j++];
+        continue;
       }
-
-      if ( i != this.length ) result = result.concat(this.slice(i));
-      if ( j != arr.length ) result = result.concat(arr.slice(j));
-
-      return result;
+      result[k++] = arr[j++];
     }
+
+    if ( i != this.length ) result = result.concat(this.slice(i));
+    if ( j != arr.length ) result = result.concat(arr.slice(j));
+
+    return result;
   }
 });
 
