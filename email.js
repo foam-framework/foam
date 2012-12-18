@@ -113,6 +113,7 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'body',
+         label: '',
          type: 'String',
          displayWidth: 70,
          displayHeight: 15,
@@ -220,7 +221,8 @@ var MBOXParser = {
 
   'end of body': alt(
     seq('Content-Transfer-Encoding:', sym('until eol')),
-    seq('--', sym('until eol'))),
+    '--',
+    '\n--'), // TODO: remove this line when reader fixed!
 
   'raw email address': seq(repeat(notChar('@')), sym('until eol'))
 
@@ -231,7 +233,6 @@ var MBOXLoader = {
   __proto__: MBOXParser,
 
   put: function(str) {
-//    console.log('"""' + str + '"""');
     this.parseString(str);
   },
 

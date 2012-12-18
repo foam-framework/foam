@@ -72,6 +72,8 @@ p, h1, form, button{
     background:'white';
     width:100%;
     table-layout:fixed;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .summaryView .label{
@@ -300,6 +302,5 @@ select {
 }
 
 .messageBody {
-  background: lightgray;
   white-space: normal;
 }
