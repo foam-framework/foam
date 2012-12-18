@@ -1311,6 +1311,35 @@ var ModelDAO = {
     }
 };
 
+var OrderedCollectorSink = FOAM.create({
+  model_: 'Model',
+
+  name: 'OrderedCollectorSink',
+  label: 'OrderedCollectorSink',
+
+  properties: [
+    {
+      name: 'storage',
+      type: 'Array',
+      valueFactory: function() { return []; }
+    },
+    {
+      name: 'comparator',
+      type: 'Value',
+      required: true
+    }
+  ],
+
+  methods: {
+    reduceI: function(other) {
+      this.storage = this.storage.reduce(this.comparator, other.storage);
+    },
+    put: function(obj) {
+      this.storage.push(obj);
+    }
+  }
+});
+
 var CollectorSink = FOAM.create({
   model_: 'Model',
 
@@ -1331,29 +1360,6 @@ var CollectorSink = FOAM.create({
     },
     put: function(obj) {
       this.storage.push(obj);
-    }
-  }
-});
-
-var OrderedCollectorSink = FOAM.create({
-  model_: 'Model',
-
-  name: 'OrderedCollectorSink',
-  label: 'OrderedCollectorSink',
-
-  extendsModel: 'CollectorSink',
-
-  properties: [
-    {
-      name: 'comparator',
-      type: 'Value',
-      required: true
-    }
-  ],
-
-  methods: {
-    reduceI: function(other) {
-      this.storage = this.storage.reduce(this.comparator, other.storage);
     }
   }
 });
