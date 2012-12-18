@@ -241,6 +241,7 @@ var MBOXLoader = {
   saveCurrentEmail: function() {
     if ( this.email ) {
       this.email.body = this.b.join('\n');
+      this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
       console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
@@ -251,7 +252,6 @@ var MBOXLoader = {
     this.saveCurrentEmail();
 
     this.email = EMail.create();
-    this.email.date = new Date(Date.now() + Math.random(3600000)); // tmp
     this.b = [];
   },
 
