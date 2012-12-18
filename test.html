@@ -294,7 +294,6 @@ document.writeln("=======================================");
 
     mmodels = mmodels.concat(mmodels).concat(mmodels);
     mmodels = mmodels.concat(mmodels).concat(mmodels);
-/*
     mmodels = mmodels.concat(mmodels).concat(mmodels);
     mmodels = mmodels.concat(mmodels).concat(mmodels);
     mmodels = mmodels.concat(mmodels).concat(mmodels);
@@ -302,7 +301,6 @@ document.writeln("=======================================");
     mmodels = mmodels.concat(mmodels).concat(mmodels);
     mmodels = mmodels.concat(mmodels).concat(mmodels);
     mmodels = mmodels.concat(mmodels).concat(mmodels);
-*/
 console.log('************************************', mmodels.length);
 
     var stv = ScrollBorder.create({
@@ -314,6 +312,7 @@ console.log('************************************', mmodels.length);
       dao: mmodels,
     });
     
+    stv.scrollbar.height=430;
     stv.write(document);
 
     document.writeln("</br><h2>Test DetailView</h2>");

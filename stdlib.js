@@ -67,12 +67,12 @@ Object.defineProperty(Array.prototype, 'reduce', {
         result[k++] = this[i++];
         result[k++] = arr[j++];
       }
-
-      if ( i != this.length ) result = result.concat(this.slice(i));
-      if ( j != arr.length ) result = result.concat(arr.slice(j));
-
-      return result;
     }
+
+    if ( i != this.length ) result = result.concat(this.slice(i));
+    if ( j != arr.length ) result = result.concat(arr.slice(j));
+
+    return result;
   }
 });
 
