@@ -61,10 +61,9 @@ var ValueIndex = {
     if ( options ) {
       if ( options.query ) {
 	 if ( ! options.query.f(value) ) return;
-      } else {
-	 if ( options.skip-- > 0 ) return;
-	 if ( options.limit-- < 1 ) return;
       }
+       if ( options.skip-- > 0 ) return;
+       if ( options.limit-- < 1 ) return;
     }
     sink.put(value);
   },
@@ -307,38 +306,6 @@ var OrderedMap = {
 };
 
 
-if ( false ) {
-
-var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
-
-console.log('\nOrderedSet Test');
-m.putObject('k');
-m.putObject('e');
-m.putObject('v');
-m.putObject('i');
-m.putObject('n');
-m.putObject('kevin');
-m.putObject('greer');
-m.putObject('was');
-m.putObject('here');
-m.putObject('boo');
-
-m.select(console.log);
-
-console.log(m.get('kevin'));
-m.put('kevin', 'greer');
-console.log(m.get('kevin'));
-
-
-console.log('\nOrderedSet BulkLoad Test');
-m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
-
-m.bulkLoad('kxeyvizngdrwfash'.split(''));
-
-m.select(console.log);
-
-}
-
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
   GOOD_PLAN: 1, // put to 10 or more when not testing
@@ -492,6 +459,38 @@ var IDAO = FOAM.create({
 
    }
 });
+
+if ( false ) {
+
+var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
+
+console.log('\nOrderedSet Test');
+m.putObject('k');
+m.putObject('e');
+m.putObject('v');
+m.putObject('i');
+m.putObject('n');
+m.putObject('kevin');
+m.putObject('greer');
+m.putObject('was');
+m.putObject('here');
+m.putObject('boo');
+
+m.select(console.log);
+
+console.log(m.get('kevin'));
+m.put('kevin', 'greer');
+console.log(m.get('kevin'));
+
+
+console.log('\nOrderedSet BulkLoad Test');
+m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
+
+m.bulkLoad('kxeyvizngdrwfash'.split(''));
+
+m.select(console.log);
+
+}
 
 if ( false ) {
 

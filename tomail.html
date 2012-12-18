@@ -83,7 +83,7 @@ function layout() {
 window.onresize = layout;
 layout();
 
-    var dao = StorageDAO2.create({model: EMail});
+//    var dao = StorageDAO2.create({model: EMail});
 
 function loadmbox(event) {
 var file = event.target.files[0];
@@ -92,15 +92,12 @@ var reader = LineBasedReader.create(BufferedTextReader.create(file));
 MBOXLoader.dao = dao;
 reader.read(MBOXLoader);
 }
-
-/*
     var dao = IDAO.create({model: EMail});
     emails.select(dao);
     dao.bulkLoad(dao);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
-*/
 
     var table = ScrollBorder.create({
       view: TableView2.create({
