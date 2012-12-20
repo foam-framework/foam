@@ -382,11 +382,11 @@ var AltIndex = {
   plan: function(s, sink, options) {
     var bestPlan;
 
-    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
+//     console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-console.log('  plan ' + i + ': ' + plan);
+// console.log('  plan ' + i + ': ' + plan);
       if ( plan.cost <= AltIndex.GOOD_PLAN ) { bestPlan = plan; break; }
 
       if ( ! bestPlan || plan.cost < bestPlan.cost ) {
@@ -395,7 +395,7 @@ console.log('  plan ' + i + ': ' + plan);
       }
     }
 
-    console.log('Best Plan: ' + bestPlan);
+//    console.log('Best Plan: ' + bestPlan);
 
     return bestPlan;
   },
