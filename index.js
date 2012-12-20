@@ -14,168 +14,212 @@
  * limitations under the License.
  */
 
+/** Plan indicating that there are no matching records. **/
+var NOT_FOUND = {
+  cost: 0,
+  execute: function() {},
+  toString: function() { return "no-match(cost=0)"; }
+};
 
-// [obj,size,left,right]
-
-var UniqueIndex = {
-  createValue_: function(obj) { return obj; },
-  updateValue_: function(oldObj, newObj) { return newObj; },
-  selectValue_: function(obj, sink) { sink.put(obj); },
-  getValue_: function(obj) { return obj; },
-  valueSize_: function(obj) { return 1; }
+/** Plan indicating that an index has no plan for executing a query. **/
+var NO_PLAN = {
+  cost: Number.MAX_VALUE,
+  execute: function() {},
+  toString: function() { return "no-plan"; }
 };
 
 
-var OrderedSet = {
-  __proto__: UniqueIndex,
+function dump(o) {
+   if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
+   return o ? o.toString() : '<undefined>';
+}
 
-  create: function(prop) {
-    return {
-      __proto__: this,
-      root: [],
-      prop: prop
+
+/*
+ * Index Interface:
+ *   put(state, value) -> new state
+ *   remove(state, value) -> new state
+ *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
+ *   size(state) -> int
+ */
+
+var ValueIndex = {
+  put: function(s, newValue) { return newValue; },
+  remove: function() {},
+  plan: (function() {
+    var plan = {
+      cost: 1,
+      execute: function(s, sink) {
+        sink.put(s);
+      },
+      toString: function() { return 'unique'; }
     };
-  },
 
-  put: function(obj) { this.put_(this.root, obj); },
-
-  get: function(key) { return this.get_(this.root, key); },
-
-  select: function(sink) { this.select_(this.root, sink); },
-
-  size: function() { return this.size_(this.root); },
-
-  size_: function(obj) { return obj[1]; },
-
-  put_: function(s, obj) {
-    if ( ! s[0] ) {
-      s[0] = this.createValue_(obj);
-      s[1] = 1;
-      return;
+    return function() { return plan; };
+  })(),
+  select: function(value, sink, options) {
+    if ( options ) {
+      if ( options.query ) {
+	 if ( ! options.query.f(value) ) return;
+      }
+       if ( options.skip-- > 0 ) return;
+       if ( options.limit-- < 1 ) return;
     }
-
-    var v = this.getValue_(s[0]);
-    var r = v ? this.compare(v, obj) : 0;
-
-    if ( r == 0 ) {
-      s[1] -= this.valueSize_(s[0]);
-      s[0] = this.updateValue_(s[0], obj);
-      s[1] += this.valueSize_(s[0]);
-    } else if ( r > 0 ) {
-      if ( s[2] ) s[1] -= s[2][1];
-      this.put_(s[2] || (s[2] = []), obj);
-      s[1] += s[2][1];
-    } else {
-      if ( s[3] ) s[1] -= s[3][1];
-      this.put_(s[3] || (s[3] = []), obj);
-      s[1] += s[3][1];
-    }
+    sink.put(value);
   },
-
-  get_: function(s, key) {
-    if ( ! s ) return undefined;
-
-    var v = this.getValue_(s[0]);
-    var r = this.compare(v, key);
-
-    if ( r === 0 ) return v;
-
-    return this.get_(r > 0 ? s[2] : s[3], key);
-  },
-
-  select_: function(s, sink) {
-    if ( ! s ) return;
-    this.select_(s[2], sink);
-    this.selectValue_(s[0], sink);
-    this.select_(s[3], sink);
-  },
-
-  compare: function(o1, o2) {
-    return this.prop.compare(o1, o2);
-  }
-
+  selectReverse: function(value, sink) { sink.put(value); },
+  size:   function(obj) { return 1; },
+  toString: function() { return 'value'; }
 };
 
-var s = OrderedSet.create({compare: StringComparator});
 
-console.log('\nOrderedSet Test');
-s.put('k');
-s.put('e');
-s.put('v');
-s.put('i');
-s.put('n');
-s.put('kevin');
-s.put('greer');
-s.put('was');
-s.put('here');
-s.put('boo');
-
-s.select(console.log);
-console.log(s.get('kevin'));
-console.log(s.get('here'));
-console.log(s.get('smith'));
-
-
-
-// PropertyIndex(p, PropertyIndex(p, PropertyIndexUnique(p)))
-
-var PropertyIndex = {
+var TreeIndex = {
   create: function(prop, tail) {
-    tail = tail || UniqueIndex;
+    tail = tail || ValueIndex;
+
     return {
       __proto__: this,
       prop: prop,
-      tail: tail,
-      set: {
-        __proto__: OrderedSet.create(prop),
-        compare: function(o1, o2) {
-          return prop.compare(o1, o2);
-        },
-        createValue_: function(obj) { return tail.createValue_(obj); },
-        updateValue_: function(oldObj, newObj) { return tail.updateValue_(oldObj, newObj); },
-	selectValue_: function(obj, sink) { tail.selectValue_(obj, sink); },
-	getValue_: function(obj) { return tail.getValue_(obj); },
-	valueSize_: function(obj) { return tail.valueSize_(obj); }
-      }
+      tail: tail
     };
   },
 
-  put: function(obj) { this.put_(this.set.root, obj); },
-  select: function(sink) { this.select_(this.set.root, sink); },
+  /**
+   * Bulk load an unsorted array of objects.
+   * Faster than loading individually, and produces a balanced tree.
+   **/
+  bulkLoad: function(a) {
+     // Only safe if children aren't themselves trees
+     if ( this.tail === ValueIndex ) {
+       a.sort(toCompare(this.prop));
+       return this.bulkLoad_(a, 0, a.length-1);
+     }
 
-  put_: function(s, obj) {
-    this.set.put_(s, obj);
+     var s = undefined;
+     for ( var i = 0 ; i < a.length ; i++ ) {
+       s = this.put(s, a[i]);
+     }
+     return s;
   },
-  select_: function(s, sink) {
-    this.set.select_(s, sink);
-  },
-  get_: function(s, key) { return this.tail.get_(s[0]); },
 
-  createValue_: function(obj) {
-     var ret = [];
-     this.set.put_(ret, obj);
-     return ret;
-  },
-  updateValue_: function(oldObj, newObj) { this.set.put_(oldObj, newObj); return oldObj; },
-  selectValue_: function(obj, sink) { this.set.select_(obj, sink); },
-  getValue_: function(obj) { return this.tail.getValue_(obj)[0]; },
-  valueSize_: function(obj) { return obj[1]; },
+  bulkLoad_: function(a, start, end) {
+    if ( end < start ) return undefined;
 
-  plan: function(s, options, sink) {
+    var m    = start + Math.floor((end-start+1) / 2);
+    var tree = this.put(undefined, a[m]);
+
+    tree[3] = this.bulkLoad_(a, start, m-1);
+    tree[4] = this.bulkLoad_(a, m+1, end);
+    tree[2] += this.size(tree[3]) + this.size(tree[4]);
+
+    return tree;
+  },
+
+  put: function(s, newValue) {
+    return this.putKeyValue(s, this.prop.f(newValue), newValue);
+  },
+
+  putKeyValue: function(s, key, value) {
+    if ( ! s ) {
+      return [key, this.tail.put(null, value), 1];
+    }
+
+    var r = this.compare(s[0], key);
+
+    if ( r == 0 ) {
+      s[2] -= this.tail.size(s[1]);
+      s[1] = this.tail.put(s[1], value);
+      s[2] += this.tail.size(s[1]);
+    } else if ( r > 0 ) {
+      if ( s[3] ) s[2] -= s[3][2];
+      s[3] = this.putKeyValue(s[3], key, value);
+      s[2] += s[3][2];
+    } else {
+      if ( s[4] ) s[2] -= s[4][2];
+      s[4] = this.putKeyValue(s[4], key, value);
+      s[2] += s[4][2];
+    }
+
+    return s;
+  },
+
+  get: function(s, key) {
+    if ( ! s ) return undefined;
+
+    var r = this.compare(s[0], key);
+
+    if ( r === 0 ) return s[1];
+
+    return this.get(r > 0 ? s[3] : s[4], key);
+  },
+
+  select: function(s, sink, options) {
+    if ( ! s ) return;
+
+    if ( options ) {
+      if ( options.limit <= 0 ) return;
+
+      var size = this.size(s);
+      if ( options.skip >= size ) {
+        options.skip -= size;
+        return;
+      }
+    }
+
+    this.select(s[3], sink, options);
+    this.tail.select(s[1], sink, options);
+    this.select(s[4], sink, options);
+  },
+
+  selectReverse: function(s, sink) {
+    if ( ! s ) return;
+    this.selectReverse(s[4], sink);
+    this.tail.selectReverse(s[1], sink);
+    this.selectReverse(s[3], sink);
+  },
+
+  size: function(s) { return s ? s[2] : 0; },
+
+  compare: function(o1, o2) {
+    return o1.compareTo(o2); //this.prop.compare(o1, o2);
+  },
+
+  plan: function(s, sink, options) {
     var query = options && options.query;
 
+    if ( ! query && sink.model_ === CountExpr ) {
+       console.log('**************** COUNT SHORT-CIRCUIT ****************');
+      var count = this.size(s);
+      return {
+	 cost: 0,
+         execute: function(unused, sink, options) { sink.count = count; },
+	 toString: function() { return 'count(' + count + ')'; }
+      };
+    }
+
+    var prop = this.prop;
+
+    if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
+       console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // TODO:
+    }
+
+    var index = this;
+
     var getEQKey = function (query) {
-      if ( query.model_ === EqExpr && query.arg1 === this.prop ) {
+      if ( query.model_ === EqExpr && query.arg1 === prop ) {
         return query.arg2.f();
       }
       return undefined;
     };
+
     var getAndKey = function () {
       if ( query.model_ === AndExpr ) {
         for ( var i = 0 ; i < query.args.length ; i++ ) {
           var q = query.args[i];
-          var k = getEQKey.call(this, q);
+          var k = getEQKey(q);
           if ( k ) {
+            query = query.deepClone();
             query.args[i] = TRUE;
             query = query.partialEval();
             return k;
@@ -184,31 +228,64 @@ var PropertyIndex = {
       }
       return undefined;
     };
+
     if ( query ) {
-      var key = getEQKey.call(this, query) || getAndKey.call(this);
+      var key;
+      if ( key = getEQKey(query) ) {
+	 query = null;
+      } else {
+	 key = getAndKey();
+	 if ( query == TRUE ) query = null;
+      }
+
       if ( key ) {
-        // TODO: how to do a get()?
-debugger;
-        var result = this.set.get_(s, key);
-        var prop = this.prop;
+        var result = this.get(s, key);
+
+        if ( ! result ) return NOT_FOUND;
+
+        var newOptions = {__proto__: options, query: query};
+        var subPlan = this.tail.plan(result, sink, newOptions);
         return {
-          cost: result ? this.valueSize_(result) : 0,
-          execute: function() {
-            console.log('key(' + prop.name + ')', options, sink, this, query);
-          }
+          cost: 1 + subPlan.cost,
+          execute: function(s2, sink, options) {
+            subPlan.execute(result[1], sink, newOptions);
+          },
+          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString(); }
         };
       }
     }
 
-    return {
-      cost: this.set.size(),
-      execute: function() {
-        console.log('scan', options, sink, this, query);
+    var cost = this.size(s);
+
+    if ( options && options.order ) {
+      if ( options.order == prop ) {
+         // sort not required
+      } else {
+        cost *= Math.log(cost) / Math.log(2);
       }
+    }
+
+    return {
+      cost: cost,
+      execute: function() {
+	    /*
+        var o = options && (options.skip || options.limit) ?
+          {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
+          undefined;
+*/
+        index.select(s, sink, options);
+      },
+      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
+  },
+
+  toString: function() {
+    return 'TreeIndex(' + this.prop.name + ', ' + this.tail + ')';
   }
+
 };
 
+/*
 
 var SetIndex = {
   create: function(prop, tail) {
@@ -245,156 +322,272 @@ var SetIndex = {
   get_: function(s) { return s[0]; }
 };
 
-var Count = {
-   create: function() {
-     return {
-	__proto__: this
-     };
-   },
+ */
 
-  createValue_: function(obj) { return 1; },
-  updateValue_: function(oldObj, newObj) { return oldObj+1; },
-  selectValue_: function(obj, sink) { },
-  getValue_: function(obj) { return obj; }
+// [0 key, 1 value, 2 size, 3 left, 4 right]
+var OrderedMap = {
+  create: function(prop) {
+    return {
+      __proto__: this,
+      root: undefined,
+      index: TreeIndex.create(prop)
+    };
+  },
+
+  bulkLoad: function(a) { this.root = this.index.bulkLoad(a); },
+  putObject: function(value) { this.root = this.index.put(this.root, value); },
+  put: function(key, value) { this.root = this.index.putKeyValue(this.root, key, value); },
+  get: function(key) { return this.index.get(this.root, key); },
+  select: function(sink) { this.index.select(this.root, sink); },
+  selectReverse: function(sink) { this.index.selectReverse(this.root, sink); },
+  size: function() { return this.index.size(this.root); }
 };
 
 
-// Cost of a good plan.
-var GOOD_PLAN = 1; // 10; // put to 1 for testing
-
-
 var AltIndex = {
-   create: function() {
-      var root = [];
-      for ( var i = 0 ; i < arguments.length ; i++ ) root.push([]);
-      return {
-	 __proto__: this,
-	 delegates: arguments,
-         root: root
-      };
-   },
+  // Maximum cost for a plan which is good enough to not bother looking at the rest.
+  GOOD_PLAN: 1, // put to 10 or more when not testing
 
-  put: function(obj) { this.put_(this.root, obj); },
-  select: function(sink) { this.select_(this.root, sink); },
-
-  put_: function(oldObj, newObj) {
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      this.delegates[i].put_(oldObj[i], newObj);
-    }
-  },
-  updateValue_: function(oldObj, newObj) {
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      oldObj[i] = this.delegates[i].updateValue_(oldObj[i], newObj);
-    }
-    return oldObj;
+  create: function() {
+    return {
+      __proto__: this,
+      delegates: argsToArray(arguments)
+    };
   },
 
-  select_: function(s, sink) { this.delegates[0].select_(s[0], sink); },
+  addIndex: function(s, index) {
+    // Populate the index
+    var a = [];
+    this.plan(s, a).execute(s, a);
 
-  plan: function(s, options, sink) {
-    s = s || this.root;
+    s.push(index.bulkLoad(a));
+    this.delegates.push(index);
+  },
+
+  bulkLoad: function(a) {
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      this.root[i] = this.delegates[i].bulkLoad(a);
+    }
+  },
+
+  put: function(s, newValue) {
+    s = s || [];
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      s[i] = this.delegates[i].put(s[i], newValue);
+    }
+
+    return s;
+  },
+
+  plan: function(s, sink, options) {
     var bestPlan;
 
+    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      var plan = this.delegates[i].plan(s[i], options, sink);
+      var plan = this.delegates[i].plan(s[i], sink, options);
 
-      if ( plan ) {
-        if ( plan.cost < GOOD_PLAN ) return plan;
+console.log('  plan ' + i + ': ' + plan);
+      if ( plan.cost <= AltIndex.GOOD_PLAN ) { bestPlan = plan; break; }
 
-        if ( ! bestPlan || plan.cost < bestPlan.cost ) bestPlan = plan;
+      if ( ! bestPlan || plan.cost < bestPlan.cost ) {
+	 // curry the proper state
+	 bestPlan = (function(plan, s) { return {__proto__: plan, execute: function(unused, sink, options) { plan.execute(s, sink, options);}};})(plan, s[i]);
       }
     }
+
+    console.log('Best Plan: ' + bestPlan);
 
     return bestPlan;
   },
 
-  createValue_: function(obj) {
-    var ret = [];
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      ret.push(this.delegates[i].createValue_(obj));
+  size: function(obj) { return this.delegates[0].size(obj[0]); }
+};
+
+
+var IDAO = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO2',
+
+   name: 'IDAO',
+   label: 'Indexed DAO',
+
+   properties: [
+      {
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
+         required: true
+      }
+   ],
+
+   methods: {
+
+     init: function() {
+       AbstractPrototype.init.call(this);
+
+       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+     },
+
+     /**
+      * Add a non-unique index
+      * args: one or more properties
+      **/
+     addIndex: function() {
+       var props = argsToArray(arguments);
+
+       // Add on the primary key(s) to make the index unique.
+       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
+         props.push(this.model.getProperty(this.model.ids[i]));
+       }
+
+       this.addUniqueIndex.apply(this, props);
+     },
+
+     /**
+      * Add a unique index
+      * args: one or more properties
+      **/
+     addUniqueIndex: function() {
+       // Upgrade single Index to an AltIndex if required.
+       if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
+         this.index = AltIndex.create(this.index);
+         this.root = [this.root];
+       }
+
+       var index = ValueIndex;
+
+       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
+         index = TreeIndex.create(arguments[i], index);
+       }
+
+       this.index.addIndex(this.root, index);
+     },
+
+    /**
+     * Bulk load data from another DAO.
+     * Any data already loaded into this DAO will be lost.
+     * @arg sink (optional) eof is called when loading is complete.
+     **/
+    bulkLoad: function(dao, sink) {
+      var self = this;
+      dao.select({ __proto__: [], eof: function() {
+        self.root = self.index.bulkLoad(this);
+        sink && sink.eof && sink.eof();
+      }});
+    },
+
+    put: function(obj, sink) {
+      this.root = this.index.put(this.root, obj);
+      // TODO: notify
+    },
+
+    find: function(key, sink) {
+      // TODO:
+    },
+
+    remove: function(query, sink) {
+      // TODO:
+    },
+
+    select: function(sink, options) {
+      var plan = this.index.plan(this.root, sink, options);
+      plan.execute(this.root, sink, options);
+      sink && sink.eof && sink.eof();
     }
-    return ret;
-  },
-  updateValue_: function(oldObj, newObj) {
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      oldObj[i] = this.delegates[i].updateValue_(oldObj[i], newObj);
-    }
-    return oldObj;
-  },
-  selectValue_: function(obj, sink) { this.delegates[0].selectValue_(obj[0], sink); },
-  getValue_: function(obj) { return this.delegates[0].getValue_(obj[0]); },
-  valueSize_: function(obj) { return this.delegates[0].valueSize_(obj[0]); }
-};
 
-var P1 = {
-   model_: EXPR,
-   name: 'P1',
-   f: function(obj) { return obj[0]; },
-   compare: function(o1, o2) { return this.f(o1).compareTo(this.f(o2)); }
-};
-var P2 = {
-   model_: EXPR,
-   name: 'P2',
-   f: function(obj) { return obj[1]; },
-   compare: function(o1, o2) {
-      return this.f(o1).compareTo(this.f(o2));
    }
-};
-var P3 = {
-   model_: EXPR,
-   name: 'P3',
-   f: function(obj) { return obj[2]; },
-   compare: function(o1, o2) {
-      return this.f(o1).compareTo(this.f(o2));
-   }
-};
-var P4 = {
-   model_: EXPR,
-   name: 'P4',
-   f: function(obj) { return obj[3]; },
-   compare: function(o1, o2) {
-      return this.f(o1).compareTo(this.f(o2));
-   }
-};
+});
 
-// var i2 = PropertyIndex.create(P3);
-// var i2 = PropertyIndex.create(P1, PropertyIndex.create(P2));
+if ( false ) {
 
-var i2 = AltIndex.create(PropertyIndex.create(P3), PropertyIndex.create(P1, PropertyIndex.create(P2)));
+var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
-// var i2 = PropertyIndex.create(P1, And.create(PropertyIndex.create(P2), Count.create()));
-// var i2 = PropertyIndex.create(P1, And.create(PropertyIndex.create(P1), PropertyIndex.create(P3)));
+console.log('\nOrderedSet Test');
+m.putObject('k');
+m.putObject('e');
+m.putObject('v');
+m.putObject('i');
+m.putObject('n');
+m.putObject('kevin');
+m.putObject('greer');
+m.putObject('was');
+m.putObject('here');
+m.putObject('boo');
 
-// var i2 = SetIndex.create(P4, PropertyIndex.create(P3));
-// var i2 = PropertyIndex.create(P1, Count.create());
+m.select(console.log);
 
-console.log('\nIndex Test');
+console.log(m.get('kevin'));
+m.put('kevin', 'greer');
+console.log(m.get('kevin'));
 
-i2.put(['b','a',1,['x','y','z']]);
-i2.put(['a','a',2,['x','y','z']]);
-i2.put(['c','c',3,['x','y','z']]);
-i2.put(['c','b',4,['x','y']]);
-i2.put(['a','b',5,['x','y']]);
-i2.put(['b','c',6,['x','z']]);
-i2.put(['c','a',7,['x','z']]);
-i2.put(['a','c',8,['y','z']]);
-i2.put(['b','b',9,[]]);
-i2.put(['b','z',9,[]]);
 
-var result = [];
-i2.select(result);
-i2.select(console.log);
-dump(result);
+console.log('\nOrderedSet BulkLoad Test');
+m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
-// i2.select(console.log);
+m.bulkLoad('kxeyvizngdrwfash'.split(''));
 
-// PropertyIndex(p1, And(PropertyIndex(p3), PropertyIndex(p2, PropertyIndex(p3, UniqueIndex)))))
+m.select(console.log);
 
-function dump(o) {
-   if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
-   return o ? o.toString() : '<undefined>';
 }
 
-i2.plan(null,{query: EQ(P1, 'a')}, console.log).execute();
-i2.plan(null,{query: EQ(P2, 'b')}, console.log).execute();
-i2.plan(null,{query: EQ(P3, 9)}, console.log).execute();
+if ( false ) {
+
+console.log('\nIDAO Test');
+
+var d = IDAO.create({model:Issue});
+
+// d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
+
+/*
+d.index = AltIndex.create(TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
+d.root = undefined;
+*/
+
+d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
+d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
+d.put(Issue.create({id:3, severity:'Feature', status:'Accepted'}));
+d.put(Issue.create({id:4, severity:'Minor',   status:'Closed'}));
+d.put(Issue.create({id:5, severity:'Major',   status:'Accepted'}));
+d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
+
+var sink = {
+  put: function(i) {
+    console.log(i && i.id, i && i.severity, i && i.status);
+  }
+};
+
+console.log('\nDefault Order');
+d.select(sink);
+
+console.log('\nLimit Order');
+d.skip(2).limit(2).select(sink);
+
+d.where(EQ(Issue.ID, 2)).select(sink);
+
+// This causes the DAO's tree to rebalance itself. Cool!
+// d.bulkLoad(d);
+
+d.addIndex(Issue.SEVERITY);
+d.addIndex(Issue.STATUS);
+
+
+console.log('\nBy Severity');
+d.orderBy(Issue.SEVERITY).select(sink);
+
+console.log('\nBy Status');
+d.orderBy(Issue.STATUS).select(sink);
+
+
+console.log('\nWhere Closed');
+d.where(EQ(Issue.STATUS, 'Closed')).select(sink);
+
+console.log('\nWhere Major');
+d.where(EQ(Issue.SEVERITY, 'Major')).select(sink);
+
+console.log('\nWhere Open');
+d.where(EQ(Issue.STATUS, 'Open')).select(sink);
+
+console.log('\nMissing Key');
+d.where(EQ(Issue.STATUS, 'XXX')).select(sink);
+
+}
