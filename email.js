@@ -19,10 +19,7 @@ var EMail = FOAM.create({
    name: 'EMail',
    label: 'EMail',
    plural: 'EMail',
-   ids:
-   [
-      'timestamp'
-   ],
+   ids: [ 'timestamp' ],
    tableProperties:
    [
       'to',
@@ -32,19 +29,6 @@ var EMail = FOAM.create({
    ],
    properties:
    [
-/*
-      {
-         model_: 'Property',
-         name: 'id',
-         label: 'ID',
-         type: 'String',
-         mode: 'read-write',
-         required: true,
-         displayWidth: 30,
-         displayHeight: 1,
-         view: 'TextFieldView'
-      },
-*/
       {
          model_: 'Property',
          name: 'timestamp',

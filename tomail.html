@@ -108,7 +108,7 @@ reader.read(MBOXLoader);
       dao: dao
     });
 
-    var searchSubject = TextSearchView.create({width:57, property: {__proto__: EMail.SUBJECT, f: function(o) { return o.subject + o.body; }}});
+    var searchSubject = TextSearchView.create({width:57, label: 'Search', property: CONCAT(EMail.SUBJECT, EMail.BODY)});
     var byTo = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
     var byFrom = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
     var byLabel = GroupBySearchView.create({size: 6, dao: dao, property: EMail.LABELS});
