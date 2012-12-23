@@ -107,7 +107,12 @@ var AbstractView =
 	     var event     = callback[1];
 	     var listener  = callback[2];
 	     var e         = document.getElementById(elementId);
-             e.addEventListener(event, listener.bind(this), false);
+             if ( ! e ) {
+	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+	        // debugger;
+	     } else {
+               e.addEventListener(event, listener.bind(this), false);
+             }
 	  }
 
 	  delete this['callbacks_'];
@@ -2102,7 +2107,7 @@ style = window.getComputedStyle(this.element().children[0]);
      },
 
     repaint: function() {
-console.time('redraw');
+// console.time('redraw');
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
       this.objs = [];
@@ -2114,7 +2119,7 @@ console.time('redraw');
       };
 
       (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs);
-console.timeEnd('redraw');
+// console.timeEnd('redraw');
     },
 
    // TODO: it would be better if it were initiated with

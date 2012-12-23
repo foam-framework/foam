@@ -89,12 +89,12 @@ var TemplateUtil =
 {
 
    compile: function(str) {
-console.time('compile-1');
+// console.time('compile-1');
+//      var code = TemplateCompiler.parseString(str);
+// console.timeEnd('compile-1');
+// console.time('compile');
      var code = TemplateCompiler.parseString(str);
-console.timeEnd('compile-1');
-console.time('compile');
-     var code = TemplateCompiler.parseString(str);
-console.timeEnd('compile');
+// console.timeEnd('compile');
 
      try {
       return new Function("opt_out", code);

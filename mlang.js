@@ -881,7 +881,7 @@ var GroupByExpr = FOAM.create({
        var key = this.arg1.f(obj);
        if ( Array.isArray(key) ) {
          for ( var i = 0 ; i < key.length ; i++ ) {
-           var group = this.groups[key[i]];
+           var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
            if ( ! group ) {
              group = this.arg2.clone();
              this.groups[key[i]] = group;
@@ -889,7 +889,7 @@ var GroupByExpr = FOAM.create({
            group.put(obj);
          }
        } else {
-         var group = this.groups[key];
+         var group = this.groups.hasOwnProperty(key) && this.groups[key];
          if ( ! group ) {
            group = this.arg2.clone();
            this.groups[key] = group;
