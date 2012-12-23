@@ -507,7 +507,6 @@ var ScrollBorder = FOAM.create({
          required: true,
          postSet: function(newValue, oldValue) {
            this.view.dao = newValue;
-           // TODO: only works for []'s
            var self = this;
            var count = COUNT();
            this.dao.select({
@@ -1054,6 +1053,19 @@ var Graph = FOAM.create({
 	 help: 'The graph\'s data function.'
       }
 
+   ],
+
+   issues: [
+    {
+      id: 1000,
+      severity: 'Major',
+      status: 'Open',
+      summary: 'Make \'style\' view serializable',
+      created: 'Sun Dec 23 2012 18:14:56 GMT-0500 (EST)',
+      createdBy: 'kgr',
+      assignedTo: 'kgr',
+      notes: 'ChoiceView factory prevents Model from being serializable.'
+    }
    ],
 
    methods: {

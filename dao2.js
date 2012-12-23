@@ -239,7 +239,21 @@ var AbstractDAO2 = FOAM.create({
       fn && fn.apply(l, args);
     }
   }
-   }
+   },
+
+   issues: [
+    {
+      id: 1001,
+      severity: 'Major',
+      status: 'Open',
+      summary: 'Finish DAO2 Conversaion',
+      created: 'Sun Dec 23 2012 18:17:28 GMT-0500 (EST)',
+      createdBy: 'kgr',
+      assignedTo: 'kgr',
+      notes: 'Rename DAO2 to just DAO and remove DAO(1)\'s.'
+    }
+   ]
+
 });
 
 
