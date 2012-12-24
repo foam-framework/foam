@@ -273,7 +273,6 @@ var DomValue =
     DEFAULT_PROPERTY: 'value',
 
     create: function(element, opt_event, opt_property) {
-console.log(element, opt_event, opt_property);
 	return {
 	    __proto__: this,
 	    element:   element,
@@ -958,11 +957,11 @@ var ChoiceView = FOAM.create({
          if ( Array.isArray(choice) ) {
            var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-	   out.push(choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+	   out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
 	   out.push(encodedValue + '">');
            out.push(choice[1].toString());
          } else {
-	   out.push(choice == this.value.get() ? '\t<option selected>' : '\t<option>');
+	   out.push(this.value && choice == this.value.get() ? '\t<option selected>' : '\t<option>');
            out.push(choice.toString());
          }
          out.push('</option>');
