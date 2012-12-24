@@ -155,6 +155,7 @@ layout();
       for ( var i = 0 ; i < features.length ; i++ ) {
         var f = Feature.create(features[i]);
         if ( ! f.name && features[i].description ) f.name = features[i].description;
+        if ( ! f.name && features[i].summary ) f.name = features[i].summary;
         if ( ! f.name || typeof f.name !== 'string' ) continue;
         f.model = m.name;
         f.type = type;
