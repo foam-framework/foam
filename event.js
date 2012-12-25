@@ -254,6 +254,8 @@ var EventService = {
 
 }
 
+GLOBAL['EventService'] = EventService;
+
 
 /** Extend EventService with support for dealing with property-change notification. **/
 var PropertyChangeSupport = {
@@ -741,3 +743,5 @@ var Movement = {
     }
 
 };
+
+GLOBAL['PropertyChangeSupport'] = PropertyChangeSupport;
