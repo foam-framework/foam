@@ -11,9 +11,10 @@ FOAM Browser</font>
 </div>
 <div id="search" style="position:absolute;background-color:#fff;">
   <div id="subjectSearch"  class="searchTitle"></div>
-  <div id="toSearch"    class="searchTitle"></div>
-  <div id="fromSearch"  class="searchTitle"></div>
-  <div id="labelSearch" class="searchTitle"></div>
+  <div id="modelSearch"    class="searchTitle"></div>
+  <div id="modelMatchType" style="margin-left:35px;margin-bottom:20px"></div>
+  <div id="typeSearch"  class="searchTitle"></div>
+  <div id="nameSearch" class="searchTitle"></div>
   <div onClick="resetSearch()" style="float:right" class="searchTitle"><u>Clear All</u></div>
 </div>
 <div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
@@ -201,15 +202,42 @@ layout();
 
     var searchSubject = TextSearchView.create({width:44, label: 'Search',
       property: { __proto__: Feature.NAME, f: function(o) { return o.toJSON(); } }});
-    var byTo = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
-    var byFrom = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
-    var byLabel = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
+    var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
+    var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
+    var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
+Object.defineProperty(byModel, 'updateChoice', {value: (function(newValue, oldValue) {
+	    var choice = newValue.get();
+            if ( choice ) {
+              this.predicate = EQ(this.property, choice);
+              
+              var matchType = modelMatchType.value.get();
 
+              if ( matchType !== 'Exact' ) this.predicate.f = function(obj) {
+                var arg1 = this.arg1.f(obj);
+                var arg2 = this.arg2.f(obj);
+                var m1 = GLOBAL[arg1];
+                var m2 = GLOBAL[arg2];
+
+                if ( m1 && m2 ) return matchType === 'Super' ? m1.isSubModel(m2) : m2.isSubModel(m1);
+                
+                return arg1 === arg2;
+              };
+ 	    } else {
+              this.predicate = TRUE;
+            }
+    }).bind(byModel)});
+
+    var modelMatchType = RadioBoxView.create({
+      name: 'modelMatchType',
+      choices: ['Super', 'Exact', 'Sub']
+    });
+    modelMatchType.value.set('Exact');
     browse.innerHTML = table.toHTML();
     searchSubject.insertInElement('subjectSearch');
-    byTo.insertInElement('toSearch');
-    byFrom.insertInElement('fromSearch');
-    byLabel.insertInElement('labelSearch');
+    byModel.insertInElement('modelSearch');
+    modelMatchType.insertInElement('modelMatchType');
+    byType.insertInElement('typeSearch');
+    byName.insertInElement('nameSearch');
 
     table.initHTML();
 
@@ -227,31 +255,33 @@ layout();
     function updateQuery() {
       var predicate = AND(
         searchSubject.predicate,
-        byFrom.predicate,
-        byTo.predicate,
-        byLabel.predicate).partialEval();
+        byType.predicate,
+        byModel.predicate,
+        byName.predicate).partialEval();
 
       console.log('query: ', predicate.toSQL());
 
       table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
 
-      byFrom.filter  = AND(searchSubject.predicate, byTo.predicate,   byLabel.predicate).partialEval();
-      byTo.filter    = AND(searchSubject.predicate, byFrom.predicate, byLabel.predicate).partialEval();
-      byLabel.filter = AND(searchSubject.predicate, byTo.predicate,   byFrom.predicate).partialEval();
+      byType.filter  = AND(searchSubject.predicate, byModel.predicate, byName.predicate).partialEval();
+      byModel.filter = AND(searchSubject.predicate, byType.predicate,  byName.predicate).partialEval();
+      byName.filter  = AND(searchSubject.predicate, byModel.predicate, byType.predicate).partialEval();
     }
 
     Events.dynamic(function() {
       searchSubject.predicate;
-      byFrom.predicate;
-      byTo.predicate;
-      byLabel.predicate;
+      byType.predicate;
+      byModel.predicate;
+      byName.predicate;
     },
     updateQuery);
 
+    modelMatchType.value.addListener(function() { byModel.updateChoice(byModel.view.value); updateQuery(); });
+
     function resetSearch() {
-      byFrom.view.value.set(''); byTo.view.value.set(''); byLabel.view.value.set('');
-      byFrom.filter = byTo.filter = byLabel.filter = TRUE;
+      byType.view.value.set(''); byModel.view.value.set(''); byName.view.value.set('');
+      byType.filter = byModel.filter = byName.filter = TRUE;
       table.dao = dao;
     }
 

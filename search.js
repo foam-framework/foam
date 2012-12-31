@@ -73,9 +73,12 @@ var GroupBySearchView = FOAM.create({
 
 //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
        Events.dynamic(function() { this.dao; }, this.updateDAO);
+       this.propertyValue('filter').addListener(this.updateDAO);
+/*
        this.propertyValue('filter').addListener((function(a,b,oldValue,newValue) {
          this.updateDAO();
        }).bind(this));
+*/
        this.view.value.addListener(this.updateChoice);
 //       this.updateDAO();
 //       this.view.addListener(console.log.bind(console));
@@ -115,9 +118,8 @@ var GroupBySearchView = FOAM.create({
 	 name: 'updateChoice',
 
 	 code: function(newValue, oldValue) {
-	    var choice = newValue.get();
-console.log('***** Search Choice:', choice);
-	    this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
+           var choice = newValue.get();
+           this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
 	 }
       }
 

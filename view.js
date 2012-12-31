@@ -243,7 +243,12 @@ var AbstractView2 = FOAM.create({
 	     var event     = callback[1];
 	     var listener  = callback[2];
 	     var e         = document.getElementById(elementId);
-             e.addEventListener(event, listener.bind(this), false);
+             if ( ! e ) {
+	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+	        // debugger;
+	     } else {
+               e.addEventListener(event, listener.bind(this), false);
+             }
 	  }
 
 	  delete this['callbacks_'];
@@ -996,6 +1001,77 @@ var ChoiceView = FOAM.create({
        Events.unlink(this.domValue, this.value);
      }
    }
+});
+
+var RadioBoxView = FOAM.create({
+
+   model_: 'Model',
+
+   extendsModel: 'ChoiceView',
+
+   name:  'RadioBoxView',
+   label: 'RadioBox View',
+
+   properties: [
+   ],
+
+   methods: {
+     toHTML: function() {
+       return '<span id="' + this.getID() + '"/></span>';
+     },
+
+     updateHTML: function() {
+       var out = [];
+
+       for ( var i = 0 ; i < this.choices.length ; i++ ) {
+         var choice = this.choices[i];
+
+         if ( Array.isArray(choice) ) {
+/*
+           var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+	   out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+	   out.push(encodedValue + '">');
+           out.push(choice[1].toString());
+*/
+         } else {
+           out.push(choice.toString());
+           out.push(': <input type="radio" name="');
+           out.push(this.name);
+           out.push('" value="');
+           out.push(choice.toString());
+           out.push('"');
+           var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
+	   out.push('id="' + this.registerCallback('click', callback) + '"');
+           if ( this.value && choice == this.value.get() ) out.push(' checked');
+           out.push('/> ');
+         }
+         out.push('</option>');
+       }
+
+       this.element().innerHTML = out.join('');
+       AbstractView2.getPrototype().initHTML.call(this);
+     },
+
+     initHTML: function() {
+       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+
+//       this.updateHTML();
+     }
+   },
+
+   listeners:
+   [
+      {
+	 model_: 'MethodModel',
+
+	 name: 'onClick',
+	 code: function(evt) {
+           console.log('****************', evt, arguments);
+	 }
+      }
+   ]
+
 });
 
 
