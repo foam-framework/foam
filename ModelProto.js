@@ -178,6 +178,7 @@ var ModelProto = {
 
     toString: function() { return "ModelProto(" + this.name + ")"; }
 };
+GLOBAL['ModelProto'] = ModelProto;
 
 /*
  * Ex.

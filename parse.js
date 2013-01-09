@@ -169,6 +169,73 @@ function seq(/* vargs */) {
 
 function alt(/* vargs */) {
   var args = prepArgs(arguments);
+  var map  = {};
+
+  function nullParser() { return undefined; }
+
+  function testParser(p, ps) {
+    var c = ps.head;
+    var trapPS = {
+      getValue: function() {
+        return this.value;
+      },
+      setValue: function(v) {
+        this.value = v;
+      },
+      value: ps.value,
+      head: c
+    };
+    var goodChar = false;
+
+    trapPS.__defineGetter__('tail', function() {
+      goodChar = true;
+      return {
+        value: this.value,
+        getValue: function() {
+          return this.value;
+        },
+        setValue: function(v) {
+          this.value = v;
+        }
+      };
+    });
+
+    this.parse(p, trapPS);
+
+// console.log('*** TestParser:',p,c,goodChar);
+    return goodChar;
+  }
+
+  function getParserForChar(ps) {
+    var c = ps.head;
+    var p = map[c];
+
+    if ( ! p ) {
+      var alts = [];
+
+      for ( var i = 0 ; i < args.length ; i++ ) {
+        var parser = args[i];
+
+        if ( testParser.call(this, parser, ps) ) alts.push(parser);
+      }
+
+      p = alts.length == 0 ? nullParser :
+        alts.length == 1 ? alts[0] :
+        simpleAlt.apply(null, alts);
+
+      map[c] = p;
+    }
+
+    return p;
+  }
+
+  return function(ps) {
+    return this.parse(getParserForChar.call(this, ps), ps);
+  };
+}
+
+function simpleAlt(/* vargs */) {
+  var args = prepArgs(arguments);
 
   return function(ps) {
     for ( var i = 0 ; i < args.length ; i++ ) {
@@ -181,6 +248,7 @@ function alt(/* vargs */) {
   };
 }
 
+// alt = simpleAlt;
 
 // TODO: doesn't compare arrays properly and gives false errors
 function test(str, p, opt_expect) {

@@ -1,0 +1,291 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="foam.css" />
+  <script language="javascript" src="bootFOAM.js"></script>
+  <title>Feature Oriented Active Modeller</title>
+ </head>
+<body style="overflow:hidden;margin-top:5px;">
+<div id="header" style="position:absolute;background-color:#bbb;">
+<font size=+3 face="catull" style="float:left;padding-top:8px;padding-left:15px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+FOAM Browser</font>
+</div>
+<div id="search" style="position:absolute;background-color:#fff;">
+  <div id="subjectSearch"  class="searchTitle"></div>
+  <div id="modelSearch"    class="searchTitle"></div>
+  <div id="modelMatchType" style="margin-left:35px;margin-bottom:20px"></div>
+  <div id="typeSearch"  class="searchTitle"></div>
+  <div id="nameSearch" class="searchTitle"></div>
+  <div onClick="resetSearch()" style="float:right" class="searchTitle"><u>Clear All</u></div>
+</div>
+<div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
+<div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
+</div>
+<div id="footer" style="position:absolute;background-color:#bbb;text-align:left;padding-top:3px;">
+  <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+  <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
+  <font color="#555555" > POWERED</font>
+  <div onClick="switchHands()" style="float:right;padding-right:10px;" class="searchTitle"><u>switch hands</u></div>
+</div>
+</div>
+<script>
+
+var Feature = FOAM.create({
+   model_: 'Model',
+
+   name: 'Feature',
+   label: 'Feature',
+   plural:'Features',
+   help:  "A feature of a Model.",
+
+    ids: [
+      'model','name' 
+    ],
+
+    tableProperties: [
+      'model',
+      'type',
+      'name'
+    ],
+
+    properties: [
+       {
+	  name:  'model',
+	  label: 'Model',
+          type:  'String',
+       },
+       {
+	   name:  'name',
+	   label: 'Name',
+	   type:  'String',
+	   displayWidth: 30,
+           displayHeight: 1,
+	   defaultValue: '',
+	   help: 'The coding identifier for the property.'
+       },
+       {
+	   name: 'type',
+	   label: 'Type',
+	   type: 'String',
+           required: true,
+	   view: {
+	      create: function() { return ChoiceView.create({choices: [
+                 'Property',
+                 'Method',
+                 'Listener',
+                 'Template',
+                 'Issue',
+                 'Test'
+	      ]});}
+	   },
+	   defaultValue: 'Property',
+	   help: 'Type of a feature.'
+       },
+       {
+	   name: 'label',
+	   label: 'Label',
+	   type: 'String',
+           required: false,
+	   displayWidth: 70,
+           displayHeight: 1,
+	   defaultValueFn: function() { return this.name.capitalize(); },
+	   help: 'The display label for the property.'
+       }
+    ]
+});
+
+
+var header = document.getElementById('header');
+var footer = document.getElementById('footer');
+var search = document.getElementById('search');
+var browse = document.getElementById('browse');
+var edit   = document.getElementById('edit');
+
+var reversed = false;
+
+function pos(e, top, left, width, height) {
+  var s = e.style;
+  left = left || 0;
+
+  if ( reversed ) left = (window.innerWidth - 15) - left - (width || toNum(e.style.width));
+  
+  top != null && (e.style.top = toNum(top) + 'px');
+  left != null && (e.style.left = toNum(left) + 'px');
+  width != null && (e.style.width = toNum(width) + 'px');
+  height != null && (e.style.height = toNum(height) + 'px');
+}
+
+var MIN_THREE_COLUMN_W = 1600;
+var table;
+
+function layout() {
+  var W         = window.innerWidth - 15;
+  var H         = window.innerHeight-5;
+  var HEADER_H  = 60;
+  var FOOTER_H  = 23;
+  var SEARCH_W  = 300;
+  var SEARCH_H  = H - HEADER_H - FOOTER_H;
+  var RIGHT_W   = W - SEARCH_W - 5;
+
+  pos(header,null,null,W,HEADER_H-10);
+  pos(search, HEADER_H, null, SEARCH_W, SEARCH_H);
+
+  if ( W > MIN_THREE_COLUMN_W ) {
+    pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W * 0.3, SEARCH_H);
+    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.3, RIGHT_W * 0.7-10, SEARCH_H-15);
+  } else {
+    pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W, SEARCH_H/2);
+    pos(edit,
+      toNum(browse.style.top) + toNum(browse.style.height) + 5,
+      SEARCH_W + 10,
+      RIGHT_W-10,
+      SEARCH_H / 2 -20);
+  }
+  pos(footer, H-FOOTER_H, null, W, FOOTER_H);
+
+  table && table.layout();
+}
+
+window.onresize = layout;
+layout();
+
+//    var dao = StorageDAO2.create({model: Feature});
+    var dao = [];
+
+    function importFeatures(m, features, type) {
+      if ( ! features ) return;
+      for ( var i = 0 ; i < features.length ; i++ ) {
+        var f = Feature.create(features[i]);
+        if ( ! f.name && features[i].description ) f.name = features[i].description;
+        if ( ! f.name && features[i].summary ) f.name = features[i].summary;
+        if ( ! f.name || typeof f.name !== 'string' ) continue;
+        f.model = m.name;
+        f.type = type;
+        f.obj = features[i];
+        dao.put(f);
+      }
+    }
+    window.forEach(function (m) {
+      if ( ! ( m && m.model_ && m.model_ === Model ) ) return;
+      console.log('Model: ', m.name);
+ 
+      var f = Feature.create(m);
+      f.model = '- GLOBAL -';
+      f.type = 'Model';
+      f.obj = m;
+      dao.put(f);
+
+      importFeatures(m, m.properties, 'Property');
+      importFeatures(m, m.methods,    'Method');
+      importFeatures(m, m.listeners,  'Listener');
+      importFeatures(m, m.templates,  'Template');
+      importFeatures(m, m.tests,      'Test');
+      importFeatures(m, m.issues,     'Issue');
+      importFeatures(m, m.models,     'Model');
+    });
+
+/*
+    var dao = IDAO.create({model: EMail});
+    emails.select(dao);
+    dao.bulkLoad(dao);
+    dao.addIndex(EMail.TO);
+    dao.addIndex(EMail.FROM);
+    dao.addIndex(EMail.SUBJECT);
+*/
+    var table = ScrollBorder.create({
+      view: TableView2.create({
+        model: Feature,
+        dao: dao,
+        rows: 20
+      }),
+      dao: dao
+    });
+
+    var searchSubject = TextSearchView.create({width:44, label: 'Search',
+      property: { __proto__: Feature.NAME, f: function(o) { return o.toJSON(); } }});
+    var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
+    var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
+    var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
+Object.defineProperty(byModel, 'updateChoice', {value: (function(newValue, oldValue) {
+	    var choice = newValue.get();
+            if ( choice ) {
+              this.predicate = EQ(this.property, choice);
+              
+              var matchType = modelMatchType.value.get();
+
+              if ( matchType !== 'Exact' ) this.predicate.f = function(obj) {
+                var arg1 = this.arg1.f(obj);
+                var arg2 = this.arg2.f(obj);
+                var m1 = GLOBAL[arg1];
+                var m2 = GLOBAL[arg2];
+
+                if ( m1 && m2 ) return matchType === 'Super' ? m1.isSubModel(m2) : m2.isSubModel(m1);
+                
+                return arg1 === arg2;
+              };
+ 	    } else {
+              this.predicate = TRUE;
+            }
+    }).bind(byModel)});
+
+    var modelMatchType = RadioBoxView.create({
+      name: 'modelMatchType',
+      choices: ['Super', 'Exact', 'Sub']
+    });
+    modelMatchType.value.set('Exact');
+    browse.innerHTML = table.toHTML();
+    searchSubject.insertInElement('subjectSearch');
+    byModel.insertInElement('modelSearch');
+    modelMatchType.insertInElement('modelMatchType');
+    byType.insertInElement('typeSearch');
+    byName.insertInElement('nameSearch');
+
+    table.initHTML();
+
+    table.view.selection.addListener(function (src, property, oldValue, newValue) {
+       if ( ! newValue ) return;
+       var editView = DetailView2.create(null, new SimpleValue(table.view.selection.get().obj));
+       editView.model = table.view.selection.get().obj.model_;
+       edit.innerHTML = editView.toHTML();
+       editView.initHTML();
+    });
+    table.view.selection.set(table.view.objs[0]);
+
+    layout();
+
+    function updateQuery() {
+      var predicate = AND(
+        searchSubject.predicate,
+        byType.predicate,
+        byModel.predicate,
+        byName.predicate).partialEval();
+
+      console.log('query: ', predicate.toSQL());
+
+      table.scrollbar.value = 0;
+      table.dao = dao.where(predicate);
+
+      byType.filter  = AND(searchSubject.predicate, byModel.predicate, byName.predicate).partialEval();
+      byModel.filter = AND(searchSubject.predicate, byType.predicate,  byName.predicate).partialEval();
+      byName.filter  = AND(searchSubject.predicate, byModel.predicate, byType.predicate).partialEval();
+    }
+
+    Events.dynamic(function() {
+      searchSubject.predicate;
+      byType.predicate;
+      byModel.predicate;
+      byName.predicate;
+    },
+    updateQuery);
+
+    modelMatchType.value.addListener(function() { byModel.updateChoice(byModel.view.value); updateQuery(); });
+
+    function resetSearch() {
+      byType.view.value.set(''); byModel.view.value.set(''); byName.view.value.set('');
+      byType.filter = byModel.filter = byName.filter = TRUE;
+      table.dao = dao;
+    }
+
+    function switchHands() { reversed = ! reversed; layout(); }
+  </script>
+</body>
+</html>

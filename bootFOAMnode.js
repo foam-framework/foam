@@ -14,36 +14,18 @@
  * limitations under the License.
  */
 
-var files = [
-  'stdlib',
-  'io',
-  'hash',
-  'parse',
-  'context',
-  'event',
-  'SimpleValue',
-  'JSONUtil',
-  'XMLUtil',
-  'FOAM',
-  'TemplateUtil',
-  'AbstractPrototype',
-  'ModelProto',
-  'metamodel',
-  'view',
-  'mlang',
-  'search',
-  'future',
-  'visitor',
-  'dao',
-  'dao2',
-  'index',
-  'StackView',
-  'DAOController',
-  'DAO2Controller',
-  // remove below here
-  'models',
-  'email',
-  'emaildata',
-  'turntable',
-  'dragon'
-];
+var fs = require('fs');
+
+global.document = {};
+global.window = {};
+
+var modelsfiles = fs.readFileSync('FOAMmodels.js', 'utf8');
+
+eval(modelsfiles);
+
+for (var i = 0; i < files.length; i++) {
+    console.log("loading ", files[i]);
+    var filedata = fs.readFileSync(files[i] + '.js', 'utf8');
+    with (global) { eval(filedata) };
+}
+

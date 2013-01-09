@@ -22,7 +22,9 @@ var $ = function () {
 var FOAM = {
 
    create: function(map) {
-      return JSONUtil.mapToObj(map);
+      var obj = JSONUtil.mapToObj(map);
+       GLOBAL[obj.name] = obj;
+       return obj;
    },
 
    /**

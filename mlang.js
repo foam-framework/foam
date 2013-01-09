@@ -45,6 +45,7 @@ if ( ! o1 ) {
     o1 - o2 ;
 };
 
+
 // TODO: add 'contains', 'startsWith'
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
@@ -691,8 +692,44 @@ var ConstantExpr = FOAM.create({
 });
 
 
+var ConcatExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'NARY',
+
+   name: 'ConcatExpr',
+
+   methods: {
+      outSQL: function(out) {
+        out.push('concat(');
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          var a = this.args[i];
+          a.outSQL(out);
+          if ( i < this.args.length-1 ) out.push(', ');
+        }
+        out.push(')');
+      },
+
+      partialEval: function() {
+        // TODO: implement
+        return this;
+      },
+
+      f: function(obj) {
+        var str = [];
+
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          str.push(this.args[i].f(obj));
+        }
+
+        return str.join('');
+      }
+   }
+});
+
+
 function compile_(a) {
-  return EXPR.isInstance(a) || Property.isInstance(a) ? a :
+  return /*EXPR.isInstance(a) || Property.isInstance(a)*/ a.f ? a :
       a === true  ? TRUE        :
       a === false ? FALSE       :
       ConstantExpr.create({arg1:a});
@@ -844,7 +881,7 @@ var GroupByExpr = FOAM.create({
        var key = this.arg1.f(obj);
        if ( Array.isArray(key) ) {
          for ( var i = 0 ; i < key.length ; i++ ) {
-           var group = this.groups[key[i]];
+           var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
            if ( ! group ) {
              group = this.arg2.clone();
              this.groups[key[i]] = group;
@@ -852,7 +889,7 @@ var GroupByExpr = FOAM.create({
            group.put(obj);
          }
        } else {
-         var group = this.groups[key];
+         var group = this.groups.hasOwnProperty(key) && this.groups[key];
          if ( ! group ) {
            group = this.arg2.clone();
            this.groups[key] = group;
@@ -1013,5 +1050,9 @@ function CONTAINS(arg1, arg2) {
 
 function CONTAINS_IC(arg1, arg2) {
   return ContainsICExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+
+function CONCAT() {
+  return ConcatExpr.create({args: compileArray_.call(null, arguments)});
 }
 

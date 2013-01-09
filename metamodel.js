@@ -600,20 +600,23 @@ Model.methods = {
 };
 
 console.log("Model:");
-console.log(Model);
+//console.log(Model);
 
 // This is the coolest line of code that I've ever written or
 // ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
+GLOBAL['Model'] = Model;
 
 PropertyModel = Model.create(PropertyModel);
+GLOBAL['PropertyModel'] = PropertyModel;
 
 // Now remove ModelProto so nobody tries to use it
 // TODO: do this once no views use it directly
 // delete ModelProto;
 
-var ActionModel = Model.create({
+var ActionModel = FOAM.create({
+    model_: 'Model',
 
    name: 'Action',
    label: 'Action',
@@ -694,7 +697,8 @@ var ActionModel = Model.create({
 });
 
 
-var TopicModel = Model.create({
+var TopicModel = FOAM.create({
+    model_: 'Model',
 
    name: 'Topic',
    label: 'Topic',
@@ -732,7 +736,8 @@ var TopicModel = Model.create({
 });
 
 
-var MethodModel = Model.create({
+var MethodModel = FOAM.create({
+    model_: 'Model',
 
    name: 'Method',
    label: 'Method',
@@ -784,7 +789,8 @@ var MethodModel = Model.create({
 });
 
 
-var TemplateModel = Model.create({
+var TemplateModel = FOAM.create({
+    model_: 'Model',
 
    name: 'Template',
    label: 'Template',
@@ -844,8 +850,13 @@ var Property = PropertyModel;
 var Method   = MethodModel;
 var Action   = ActionModel;
 var Topic    = TopicModel;
+GLOBAL['Template'] = Template;
+GLOBAL['Property'] = Property;
+GLOBAL['Method'] = Method;
+GLOBAL['Action'] = Action;
+GLOBAL['Topic'] = Topic;
 
-var UnitTest = Model.create({
+var UnitTest = FOAM.create({
      model_: 'Model',
      name: 'UnitTest',
      label: 'Unit Test',
