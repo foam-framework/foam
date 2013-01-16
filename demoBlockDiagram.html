@@ -66,6 +66,7 @@
     }
     Events.dynamic(function() { dev.x; }, function() {
       dev.y += ++dev.v;
+      // TODO: fix, find is broken
       space.children.find(intersects, function(child) { dev.y = child.y-dev.r-1; dev.v *= -.45; });
     });
  

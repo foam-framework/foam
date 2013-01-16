@@ -89,6 +89,34 @@ var EventService = {
     },
 
 
+    /**
+     * Merge all notifications occuring until the next animation frame.
+     * Only the last notification is delivered.
+     **/
+    animate: function(listener) {
+       return function() {
+	  var triggered = false;
+	  var lastArgs  = null;
+
+	  return function() {
+	     lastArgs = arguments;
+
+	     if ( ! triggered ) {
+		triggered = true;
+
+		window.requestAnimationFrame(
+		   function() {
+		      triggered = false;
+		      var args = lastArgs;
+		      lastArgs = null;
+
+		      listener.apply(this, args);
+		   });
+	     }
+	  };
+       }();
+    },
+
     /** Decroate a listener so that the event is delivered asynchronously. **/
     async: function(listener) {
       return this.delay(0, listener);
