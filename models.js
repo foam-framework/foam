@@ -1819,6 +1819,9 @@ var System = FOAM.create({
 
 
       paint: function() {
+if ( ! this.parent ) {
+// debugger;
+}
          var c = this.parent.canvas;
          var w = this.parent.width-15;
          var h = this.parent.height-28;
