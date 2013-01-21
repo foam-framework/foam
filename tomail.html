@@ -42,7 +42,7 @@ function pos(e, top, left, width, height) {
   left = left || 0;
 
   if ( reversed ) left = (window.innerWidth - 15) - left - (width || toNum(e.style.width));
-  
+
   top != null && (e.style.top = toNum(top) + 'px');
   left != null && (e.style.left = toNum(left) + 'px');
   width != null && (e.style.width = toNum(width) + 'px');
@@ -85,11 +85,14 @@ layout();
 
 //    var dao = StorageDAO2.create({model: EMail});
 
+    emails = StorageDAO2.create({model: EMail});
+
 function loadmbox(event) {
+emails.remove(TRUE); // this only works with storagedao2 because its synchronous
 var file = event.target.files[0];
 var reader = LineBasedReader.create(BufferedTextReader.create(file));
 
-MBOXLoader.dao = dao;
+MBOXLoader.dao = emails;
 reader.read(MBOXLoader);
 }
     var dao = IDAO.create({model: EMail});

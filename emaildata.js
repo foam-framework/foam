@@ -1,3 +1,4 @@
+if (false) {
 var emails = JSONUtil.mapToObj([
    {
       model_: 'EMail',
@@ -799,3 +800,4 @@ var emails = JSONUtil.mapToObj([
       body: '\nI\'ve got a job for you. Call me.\n'
    }
 ]);
+}
