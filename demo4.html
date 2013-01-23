@@ -48,6 +48,7 @@
       features: sys.features,
       entities: sys.entities
     });
+    space2.addChild(sys2); // KGR
 			      
     graphs.addChildren(
       sys.codeGraph,
@@ -143,8 +144,9 @@
       dim(sys2);
       for ( var i = 0 ; i < 100 /*systems.length*/ ; i++ ) {
         setTimeout((function(i) { return function() {
-debugger;
+          proto.parent = space2;
           var sys = proto.clone();
+          proto.parent = null;
           sys.architecture = sys2.architecture;
           sys.code = sys2.code;
           sys.title = i >= systems.length ? "???" : systems[i];

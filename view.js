@@ -109,7 +109,6 @@ var AbstractView =
 	     var e         = document.getElementById(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-	        // debugger;
 	     } else {
                e.addEventListener(event, listener.bind(this), false);
              }
@@ -245,7 +244,6 @@ var AbstractView2 = FOAM.create({
 	     var e         = document.getElementById(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-	        // debugger;
 	     } else {
                e.addEventListener(event, listener.bind(this), false);
              }

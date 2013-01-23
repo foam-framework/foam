@@ -137,7 +137,7 @@ var Turntable = Model.create({
       c.rotate(this.rpm*this.time/36000*Math.PI*2);
       c.translate(-this.x,-this.y);
       c.fillStyle = '#999';
-      c.fillText("FOAM", this.x-113, this.y+25);
+      c.fillText("FOAM", this.x-92, this.y+25);
       c.restore();
 
       c.beginPath();
