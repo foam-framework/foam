@@ -19,6 +19,7 @@ var files = [
   'io',
   'hash',
   'parse',
+  'base64',
   'context',
   'event',
   'SimpleValue',
