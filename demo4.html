@@ -48,6 +48,7 @@
       features: sys.features,
       entities: sys.entities
     });
+    space2.addChild(sys2); // KGR
 			      
     graphs.addChildren(
       sys.codeGraph,
@@ -143,18 +144,17 @@
       dim(sys2);
       for ( var i = 0 ; i < 100 /*systems.length*/ ; i++ ) {
         setTimeout((function(i) { return function() {
+          proto.parent = space2;
           var sys = proto.clone();
+          proto.parent = null;
           sys.architecture = sys2.architecture;
           sys.code = sys2.code;
           sys.title = i >= systems.length ? "???" : systems[i];
           space2.addChild(sys);
           dim(sys);
-          Events.dynamic(function () {
-            timer.time;
-          },
-          function () {
-            sys.tick(timer);
-          });
+          Events.dynamic(
+            function() { timer.time; },
+            function() { sys.tick(timer); });
         }})(i), (i+1)*2000);
       }
    }

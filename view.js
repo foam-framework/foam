@@ -109,7 +109,6 @@ var AbstractView =
 	     var e         = document.getElementById(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-	        // debugger;
 	     } else {
                e.addEventListener(event, listener.bind(this), false);
              }
@@ -245,7 +244,6 @@ var AbstractView2 = FOAM.create({
 	     var e         = document.getElementById(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-	        // debugger;
 	     } else {
                e.addEventListener(event, listener.bind(this), false);
              }
@@ -349,9 +347,9 @@ var CanvasModel = Model.create({
 	 this.__super__.init.call(this);
          // AbstractView2.getPrototype().init.call(this);
 
-	 this.repaint = EventService.merged(function() {
+	 this.repaint = EventService.animate(function() {
 	   this.paint();
-	 }.bind(this), 16);
+	 }.bind(this));
       },
 
       toHTML: function() {
@@ -2173,7 +2171,7 @@ style = window.getComputedStyle(this.element().children[0]);
        AbstractView2.getPrototype().init.call(this);
 
        var self = this;
-       this.repaint_ = EventService.merged(this.repaint.bind(this));
+       this.repaint_ = EventService.animate(this.repaint.bind(this));
 
        this.listener = {
          put: self.repaint_,

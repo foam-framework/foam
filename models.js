@@ -1568,13 +1568,13 @@ var System = FOAM.create({
              this.devs[0].parent = this.parent;
            }
          },
-	 defaultValue: 10,
+	 defaultValue: 10
       },
       {
 	 name:  'totalCode',
 	 label: 'Code',
          type:  'int',
-	 defaultValue: 0,
+	 defaultValue: 0
       },
       {
          name: 'features',
@@ -1819,6 +1819,7 @@ var System = FOAM.create({
 
 
       paint: function() {
+         if ( ! this.parent ) return;
          var c = this.parent.canvas;
          var w = this.parent.width-15;
          var h = this.parent.height-28;

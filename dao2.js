@@ -409,11 +409,20 @@ defineProperties(Array.prototype, {
     sink && sink.put && sink.put(obj);
     this.notify_('put', arguments);
   },
-  find: function(id, sink) {
-    for (var idx in this) {
-      if (this[idx].id === id) {
-        sink && sink.put && sink.put(this[idx]);
-        return;
+  find: function(query, sink) {
+    if ( query.f ) {
+      for (var idx in this) {
+        if ( query.f(this[idx]) ) {
+          sink && sink.put && sink.put(this[idx]);
+          return;
+        }
+      }
+    } else {
+      for (var idx in this) {
+        if ( this[idx].id === id ) {
+          sink && sink.put && sink.put(this[idx]);
+          return;
+        }
       }
     }
     sink && sink.error && sink.error('find', id);
