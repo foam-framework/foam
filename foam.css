@@ -310,3 +310,15 @@ select {
 .messageBody {
   white-space: normal;
 }
+
+.summaryView table {
+  width: 100%;
+}
+
+.summaryView .label[colspan="2"] { 
+  width: 100%;
+}
+
+.summaryView .label { 
+  width: 30%;
+}
