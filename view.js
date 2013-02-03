@@ -2365,11 +2365,11 @@ var ActionBorder =
 		var model = this.model;
 		var str   = "";
 
-		str += '<table><tr><td>';
+		str += '<table class="actionBorder"><tr><td>';
 
 		str += this.__proto__.toHTML.apply(this);
 
-		str += '</td></tr><tr><td align=right>';
+		str += '</td></tr><tr><td class="actionBorderActions">';
 
 		for ( var i = 0 ; i < this.actions.length ; i++ ) {
 		   var action = this.actions[i];
