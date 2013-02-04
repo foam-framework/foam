@@ -521,20 +521,6 @@ o = Model;
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);
 
 </script>
-<div id="futureview"></div>
-<script>
-  var hellofuture = future(function(cb) {
-    window.setTimeout(cb("hello from future"), 5000);
-  });
-  var futureviewelement = document.getElementById("futureview");
-  var futuredelegate = TextFieldView.create({});
-  var futureview = FutureView.create({
-    delegate: futuredelegate,
-    value: hellofuture
-  });
-  futureviewelement = futureview.toHTML();
-  futureview.initHTML();
-</script>
 <img src="images/controller.png"/>
 <script>
 
