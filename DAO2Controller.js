@@ -183,12 +183,14 @@ var DAO2Controller = FOAM.create({
       },
 
       toHTML: function() {
-	 return this.scrollBorder.toHTML();
+//	 return this.scrollBorder.toHTML();
+        return this.scrollBorder.view.toHTML();
       },
 
       initHTML: function() {
          AbstractView.initHTML.call(this);
-	 this.scrollBorder.initHTML(); // could this just be added to children?
+//	 this.scrollBorder.initHTML(); // could this just be added to children?
+	 this.scrollBorder.view.initHTML();
 
 	 this.dao = this.dao;
          this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);

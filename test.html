@@ -36,7 +36,7 @@
   <script language="javascript" src="dao.js"></script>
   <script language="javascript" src="dao2.js"></script>
   <script language="javascript" src="StackView.js"></script>
-  <script language="javascript" src="DAOController.js"></script>
+  <script language="javascript" src="DAO2Controller.js"></script>
   <script language="javascript" src="UML.js"></script>
   <script language="javascript" src="dragon.js"></script>
   <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
@@ -92,9 +92,9 @@ activity area
        ActionModel,
        MethodModel,
        circleModel,
-       CanvasModel,
+       Canvas,
        Rectangle,
-       DAOController,
+       DAO2Controller,
        Timer,
        Mouse,
        PanelCView,
@@ -527,9 +527,9 @@ o = Model;
 
     document.writeln("<br/><h2>Controller</h2>");
 
-    var bookmarksDAO = ArrayDAO.create(bookmarks);
+    var bookmarksDAO = bookmarks;
 //    var bookmarksDAO = StorageDAO.create("bookmarks");
-    var ctrl2 = ActionBorder.create(DAOController, DAOController.create({
+    var ctrl2 = ActionBorder.create(DAO2Controller, DAO2Controller.create({
       model: BookmarkModel,
       dao: bookmarksDAO,
       selection: bookmarks[0]
@@ -541,9 +541,9 @@ o = Model;
     ctrl2.__proto__.stackView = stack2;
     stack2.pushView(ctrl2, "Bookmarks");
 
-    var ctrl = ActionBorder.create(DAOController, DAOController.create({
+    var ctrl = ActionBorder.create(DAO2Controller, DAO2Controller.create({
       model: Model,
-      dao: ArrayDAO.create(models),
+      dao: models,
       selection: Model
     }));
 

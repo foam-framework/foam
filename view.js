@@ -314,7 +314,7 @@ var DomValue =
 
 
 
-var CanvasModel = Model.create({
+var Canvas = Model.create({
 
    extendsModel: 'AbstractView2',
 
@@ -332,13 +332,19 @@ var CanvasModel = Model.create({
 	 name:  'width',
 	 label: 'Width',
          type:  'int',
-	 defaultValue: 100
+	 defaultValue: 100,
+         postSet: function(width) {
+           if ( this.element() ) this.element().width = width + 'px';
+         }
       },
       {
 	 name:  'height',
 	 label: 'Height',
 	 type:  'int',
-	 defaultValue: 100
+	 defaultValue: 100,
+         postSet: function(height) {
+           if ( this.element() ) this.element().height = height + 'px';
+         }
       }
    ],
 
@@ -385,7 +391,7 @@ var CanvasModel = Model.create({
 	    var child = this.children[i];
             this.canvas.save();
 	    child.paint();
-            this.canvas.restore()
+            this.canvas.restore();
 	 }
       },
 
@@ -398,7 +404,7 @@ var CanvasModel = Model.create({
 });
 
 
-var CanvasView = CanvasModel.getPrototype();
+var CanvasView = Canvas.getPrototype();
 
 var circleModel = Model.create({
 
@@ -2140,6 +2146,7 @@ style = window.getComputedStyle(this.element().children[0]);
      },
 
     repaint: function() {
+      if ( ! this.dao ) return;
 // console.time('redraw');
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
@@ -2150,7 +2157,6 @@ style = window.getComputedStyle(this.element().children[0]);
           self.initHTML();
         }
       };
-
       (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs);
 // console.timeEnd('redraw');
     },
@@ -2421,7 +2427,7 @@ var ProgressView = FOAM.create({
 
 var ArrayView = {
    create: function(prop) {
-      var view = DAOControllerView.create(GLOBAL[prop.subType]);
+      var view = DAO2ControllerView.create(GLOBAL[prop.subType]);
       return view;
    }
 };

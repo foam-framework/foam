@@ -536,7 +536,7 @@ var BatteryMeter = Model.create({
    methods: {
       toHTML: function()
       {
-	 this.canvasView = CanvasModel.create({background:'rgba(0,0,0,0)',width:this.width+10, height:this.height+10});
+	 this.canvasView = Canvas.create({background:'rgba(0,0,0,0)',width:this.width+10, height:this.height+10});
 	 this.canvasView.addChild(this);
 	 return this.canvasView.toHTML();
       },
@@ -655,7 +655,7 @@ var NeedleMeter = Model.create({
    methods: {
       toHTML: function()
       {
-	 this.canvasView = CanvasModel.create({background:'rgba(0,0,0,0)',width:this.width+4, height:this.height+4});
+	 this.canvasView = Canvas.create({background:'rgba(0,0,0,0)',width:this.width+4, height:this.height+4});
 	 this.canvasView.addChild(this);
 	 return this.canvasView.toHTML();
       },

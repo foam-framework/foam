@@ -245,8 +245,8 @@ var PanelCView = FOAM.create({
 
    methods: {
       toHTML: function() {
-//	 this.canvasView = CanvasModel.create(this);
-	 this.canvasView = CanvasModel.create({width:this.width+1, height:this.height+2});
+//	 this.canvasView = Canvas.create(this);
+	 this.canvasView = Canvas.create({width:this.width+1, height:this.height+2});
 	 if ( this.backgroundColor ) this.canvasView.backgroundColor = this.backgroundColor;
 	 return this.canvasView.toHTML();
       },
@@ -372,7 +372,12 @@ var ScrollCView = FOAM.create({
       },
       {
 	 name:  'height',
-         type:  'int'
+         type:  'int',
+         postSet: function(height) {
+if ( this.canvasView ) {
+  this.canvasView.height = height;
+}
+         }
       },
       {
 	name:  'vertical',
@@ -474,6 +479,8 @@ var ScrollCView = FOAM.create({
    }
 });
 
+
+/** Add a scrollbar around an inner-view. **/
 var ScrollBorder = FOAM.create({
 
    model_: 'Model',
@@ -514,6 +521,7 @@ var ScrollBorder = FOAM.create({
              eof: function() {
                self.scrollbar.size = this.count;
                self.scrollbar.value = 0;
+               self.layout();
              }
            });
            /*
@@ -1480,7 +1488,6 @@ var SplitView = FOAM.create({
 	 this.view1 = AlternateView.create();
 	 this.view2 = AlternateView.create();
 */
-// debugger;
 	 this.view1 = DetailView2.create();
 	 this.view2 = JSView.create();
 

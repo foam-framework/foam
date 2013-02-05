@@ -17,7 +17,7 @@
       this.canvas.translate(0,-850);
       this.canvas.transform(1,0,-0.6,1,0,0);
 
-      CanvasModel.getPrototype().paintChildren.call(this);
+      Canvas.getPrototype().paintChildren.call(this);
 
       // cause fading with white gradient
       var fade = this.canvas.createLinearGradient(0,750,0,-1000);
@@ -29,7 +29,7 @@
       this.canvas.restore();
 
       // paint children in normally
-      CanvasModel.getPrototype().paintChildren.call(this);
+      Canvas.getPrototype().paintChildren.call(this);
     };
 
     space.write(document);
