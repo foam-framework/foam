@@ -1,0 +1,17 @@
+{
+    "name": "Takeout Mail Reader",
+    "version": "1.0",
+    "manifest_version": 2,
+
+    "permissions": [
+        "storage"
+    ],
+
+    "app": {
+        "background": {
+            "scripts": [
+                "tomail_bg.js"
+            ]
+        }
+    }
+}
