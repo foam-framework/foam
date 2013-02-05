@@ -101,6 +101,7 @@ var TemplateUtil =
      } catch (err) {
        console.log("Template Error: ", err);
        console.log(code);
+       return function() {};
      }
    },
 
