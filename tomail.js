@@ -66,7 +66,7 @@ withFOAM(function() {
 
         MBOXLoader.dao = emails;
         reader.read(MBOXLoader);
-    }
+    };
 
     var emailarray = [];
     emailarray.eof = function() {
@@ -140,7 +140,7 @@ withFOAM(function() {
             byFrom.view.value.set(''); byTo.view.value.set(''); byLabel.view.value.set('');
             byFrom.filter = byTo.filter = byLabel.filter = TRUE;
             table.dao = dao;
-        }
+        };
     };
     emails.select(emailarray);
 });

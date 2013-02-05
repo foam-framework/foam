@@ -521,7 +521,6 @@ var ScrollBorder = FOAM.create({
              eof: function() {
                self.scrollbar.size = this.count;
                self.scrollbar.value = 0;
-               self.layout();
              }
            });
            /*
