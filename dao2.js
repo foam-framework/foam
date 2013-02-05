@@ -419,13 +419,13 @@ defineProperties(Array.prototype, {
       }
     } else {
       for (var idx in this) {
-        if ( this[idx].id === id ) {
+        if ( this[idx].id === query ) {
           sink && sink.put && sink.put(this[idx]);
           return;
         }
       }
     }
-    sink && sink.error && sink.error('find', id);
+    sink && sink.error && sink.error('find', query);
   },
   // TODO: distinguish between remove() and removeAll()?
   remove: function(query, callback) {

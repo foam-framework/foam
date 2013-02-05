@@ -35,7 +35,7 @@ var files = [
   'search',
   'future',
   'visitor',
-  'dao',
+//  'dao',
   'dao2',
   'index',
   'StackView',

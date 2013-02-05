@@ -15,28 +15,10 @@
   <link rel="stylesheet" type="text/css" href="foam.css" />
 
   <script language="javascript" src="bootFOAM.js"></script>
-<!--
-  <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleValue.js"></script>
-  <script language="javascript" src="JSONUtil.js"></script>
-  <script language="javascript" src="XMLUtil.js"></script>
-  <script language="javascript" src="FOAM.js"></script>
-  <script language="javascript" src="TemplateUtil.js"></script>
-  <script language="javascript" src="AbstractPrototype.js"></script>
-  <script language="javascript" src="ModelProto.js"></script>
-  <script language="javascript" src="metamodel.js"></script>
-  <script language="javascript" src="view.js"></script>
-  <script language="javascript" src="models.js"></script>
-  <script language="javascript" src="dao.js"></script>
-  <script language="javascript" src="dao2.js"></script>
-  <script language="javascript" src="StackView.js"></script>
-  <script language="javascript" src="DAOController.js"></script>
-  <script language="javascript" src="dragon.js"></script>
--->
   <script language="javascript" src="chrome.js"></script>
   <script language="javascript" src="power.js"></script>
 
-  <script language="javascript" src="resources/js/Iuppiter.js"></script>
+ <!-- <script language="javascript" src="resources/js/Iuppiter.js"></script> -->
 
   <title>FOAM Modeller</title>
  </head>
@@ -85,7 +67,6 @@
        TextAreaView,
        Timer,
        UnitTest,
-       UnitTests,
        System,
        Developer,
        EMail
@@ -93,7 +74,7 @@
 //       WebUI
     ];
 
-/*
+
     var ModelDAO = ModelDAO.create(this,StorageDAO2.create({ model: Model }));
     ModelDAO.find("Model", {
       found: false,
@@ -109,7 +90,7 @@
         this.eof();
       }
     })
-*/
+
     var stack = StackView.create();
     stack.write(document);
     FOAM.browse(Model);

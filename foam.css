@@ -41,6 +41,7 @@ p, h1, form, button{
     border:solid 2px #b7ddf2;
     background:#ebebeb;
     background2:#ebf4fb;
+    width:98%;
 }
 
 .detailView .heading {
@@ -135,6 +136,14 @@ option[selected]{
     margin:2px 15px 2px 0px;
 }
 
+.actionBorder {
+    width:95%;
+}
+
+.actionBorderActions {
+  padding-right:15px;
+  text-align:right;
+}
 
 /* ----------- stylized ----------- */
 #stylized {
@@ -200,7 +209,7 @@ option[selected]{
 	margin: 10px; 
 	table-layout:fixed;
 	text-align: left;
-	width: 100%;
+	width: 98%;
 }
 .BookmarkTable
 {
@@ -310,3 +319,17 @@ select {
 .messageBody {
   white-space: normal;
 }
+
+.summaryView table {
+  width: 100%;
+}
+
+.summaryView .label[colspan="2"] { 
+  width: 100%;
+}
+
+.summaryView .label { 
+  width: 30%;
+}
+
+textarea { width: 94%; overflow: auto; }
