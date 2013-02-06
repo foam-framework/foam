@@ -17,6 +17,7 @@
 var files = [
   'stdlib',
   'io',
+  'socket',
   'hash',
   'parse',
   'base64',

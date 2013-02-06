@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-var BufferedTextReader = {
-  create: function(blob, opt_buffersize, opt_skip) {
-    return {
-      __proto__: this,
-      buffersize: opt_buffersize || 4096,
-      position: opt_skip || 0,
-      blob: blob
-    };
-  },
+var BlobReader = {
+    create: function(blob, opt_buffersize, opt_skip) {
+        return {
+            __proto__: this,
+            blob: blob,
+            buffersize: opt_buffersize || 2048,
+            position: opt_skip || 0
+        };
+    },
 
   nextSlice_: function() {
     if (this.position >= this.blob.size)
@@ -37,39 +37,46 @@ var BufferedTextReader = {
     return slice;
   },
 
-  read: function(callback) {
-    slice = this.nextSlice_();
+  read: function(sink) {
+      slice = this.nextSlice_();
 
-    if (!slice) {
-      callback && callback.eof && callback.eof();
-      return;
-    }
-
-    var fc = {
-      abort: function() {
-        this.aborted = true;
-      },
-      error: function(e) {
-        this.errorEvt = e;
+      if (!slice) {
+          sink.eof && sink(slice);
+          return;
       }
-    };
-
-    var reader = new FileReader();
-    var self = this;
-
-    reader.readAsText(slice);
-
-    reader.onload = function(e) {
-      callback && callback.put && callback.put(reader.result, fc);
-      if (fc.aborted || fc.errorEvt) return;
-
-      self.read(callback);
-    };
-
-    reader.onerror = function(e) {
-      callback && callback.error && callback.error(e);
-    };
+      sink.put && sink.put(slice);
   }
+};
+
+var TextReader = {
+    create: function(reader) {
+        return {
+            __proto__: this,
+            reader: reader,
+            sink: sink
+        }
+    },
+
+    read: function(sink) {
+        var s = {
+            __proto__: sink,
+            put: function(blob) {
+                var reader = new FileReader();
+                var self = this;
+
+                reader.readAsText(blob);
+
+                reader.onload = function(e) {
+                    self.__proto__.put && self.__proto__.put(reader.result);
+                };
+
+                reader.onerror = function(e) {
+                    self.__proto__.error && self.__proto__.error(e);
+                };
+            }
+        };
+        this.reader.read(s);
+    }
 };
 
 var LineBasedReader = {
@@ -78,38 +85,101 @@ var LineBasedReader = {
             __proto__: this,
             reader: reader,
             index: 0,
-            buffer: ''
+            buffer: '',
         };
     },
 
-    put: function(blob, fc) {
-        this.buffer += blob;
-        this.fc = fc;
+    emitLine_: function() {
         for (; this.index < this.buffer.length; this.index++) {
-            if (fc.stopped || fc.errorEvt) break;
-
             if (this.buffer[this.index] == '\n') {
                 this.index++;
                 var line = this.buffer.slice(0, this.index);
                 this.buffer = this.buffer.slice(this.index);
                 this.index = 0;
-                this.callback.put(line, fc);
+                this.sink.put && this.sink.put(line);
+                return true;
             }
         }
+        return false;
+    },
+
+    read: function(sink) {
+        this.sink = sink;
+        if (this.emitLine_()) return;
+        this.reader.read(this);
+    },
+
+    put: function(data) {
+        this.buffer += data;
+        if (this.emitLine_()) return;
+        this.reader.read(this);
     },
 
     eof: function() {
-        if (this.buffer.length > 0) {
-            if (!this.fc.stopped && !this.fc.errorEvt) {
-                this.callback.put(this.buffer, this.fc);
-            }
-        }
-        this.callback.eof && this.callback.eof();
+        this.sink.eof && this.sink.eof();
+    }
+};
+
+var FullReader = {
+    create: function(reader) {
+        return {
+            __proto__: this,
+            reader: reader
+        };
     },
 
-    read: function(callback) {
-        this.callback = callback;
-        this.reader.read(this);
+    read: function(sink) {
+        var reader = this.reader;
+        var s = {
+            __proto__: sink,
+            put: function(data) {
+                this.__proto__.put(data);
+                reader.read(this);
+            }
+        };
+        reader.read(s);
+    }
+};
+
+var AsBlobReader = {
+    create: function(reader) {
+        return {
+            __proto__: this,
+            reader: reader
+        };
+    },
+
+    read: function(sink) {
+        var s = {
+            __proto__: sink,
+            put: function(buffer) {
+                this.__proto__.put && this.__proto__.put(new Blob([buffer]));
+            }
+        };
+        this.reader.read(s);
+    }
+};
+
+var SocketReader = {
+    create: function(socket, opt_buffersize) {
+        return {
+            __proto__: this,
+            socket: socket,
+            buffersize: opt_buffersize || 2048
+        };
+    },
+
+    read: function(sink) {
+        chrome.socket.read(this.socket.socketId, function(result) {
+            if (result.resultCode < 0) {
+                sink.error && sink.error(result.resultCode);
+                return;
+            }
+            if (result.resultCode == 0) {
+                sink.eof && sink.eof();
+            }
+            sink.put(result.data);
+        });
     }
 };
 
