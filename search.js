@@ -95,9 +95,7 @@ var GroupBySearchView = FOAM.create({
 
 	 code: function() {
            var self = this;
-           var groups = futureSink(GROUP_BY(this.property, COUNT()));
-           this.dao.where(this.filter).select(groups);
-           groups.future(function(groups) {
+           this.dao.where(this.filter).select(onEOF(GROUP_BY(this.property, COUNT()), function(groups) {
              var options = [];
              for ( var key in groups.groups ) {
                var count = '(' + groups.groups[key] + ')';
@@ -109,7 +107,7 @@ var GroupBySearchView = FOAM.create({
              options.splice(0,0,['','-- CLEAR SELECTION --']);
              self.view.choices = options;
              // console.log(groups.groups, options);
-           });
+           }));
 	 }
       },
       {

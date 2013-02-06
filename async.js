@@ -112,7 +112,32 @@ function par(/* ... afuncs */) {
   };
 }
 
+/**
+ * Decorate a Sink so that a specified callback is called
+ * when the Sink's eof() method is called.
+ */
+function onEOF(sink, opt_callback) {
+  var done = false;
+  var callback = opt_callback;
 
+  return {
+    __proto__: sink,
+    eof: function() {
+      done = true;
+      if ( callback ) callback(sink);
+      sink.eof && sink.eof.apply(sink, arguments);
+    },
+    future: function(f) {
+      if ( done ) {
+        f(sink);
+      } else {
+        callback = f;
+      }
+    }
+  };
+}
+
+/*
 var f1 = amemo(function(ret) { console.log('f1'); ret(1); });
 var f2 = function(ret, a) { console.log('f2'); ret(a,2); };
 var f3 = function(a, b) { console.log(a,b); };
@@ -158,3 +183,5 @@ seq(
   ),
   f4
 )();
+
+*/

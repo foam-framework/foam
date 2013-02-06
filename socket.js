@@ -27,7 +27,7 @@ var SocketManager = {
         var host = parts[1];
         var port = parseInt(parts[2]);
 
-        return future(function(cb) {
+        return amemo(function(cb) {
             chrome.socket.create(type, {}, function(info) {
                 chrome.socket.connect(
                     info.socketId,

@@ -507,7 +507,7 @@ var IndexedDBDAO2 = FOAM.create({
    init: function() {
      AbstractPrototype.init.call(this);
 
-     this.withDB = future(this.openDB.bind(this));
+     this.withDB = amemo(this.openDB.bind(this));
     },
 
     openDB: function(cc) {
@@ -792,64 +792,60 @@ var AbstractFileDAO2 = FOAM.create({
     init: function() {
       AbstractPrototype.init.call(this);
 
-      this.withQuota = future((function(cb) {
-        window.webkitStorageInfo.requestQuota(
-            this.type === 'Persistent' ? 1 : 0,
+      var self = this;
+
+      var withEntry = amemo(seq(
+	function(ret) {
+          window.webkitStorageInfo.requestQuota(
+            self.type === 'Persistent' ? 1 : 0,
             1024 * 1024 * 200, // 200 MB should be fine.
-            function() { cb(1024 * 1024 * 200); },
+            function() { ret(1024 * 1024 * 200); },
             console.error.bind(console));
-      }).bind(this));
-
-      this.withFilesystem = futureChain(this.withQuota, (function(quota, cb) {
-        window.requestFileSystem(
-            this.type === 'Persistent' ? 1 : 0,
+	},
+        function(ret, quota) {
+          window.requestFileSystem(
+            self.type === 'Persistent' ? 1 : 0,
             quota, /* expected size*/
-            cb,
+            ret,
             console.error.bind(console));
-      }).bind(this));
+        },
+        function(ret, filesystem) {
+          filesystem.root.getFile(
+            self.filename,
+            { create: true },
+            ret,
+            console.error.bind(console));
+        }));
 
-      this.withEntry = futureChain(
-          this.withFilesystem,
-          (function(filesystem, callback) {
-            filesystem.root.getFile(
-                this.filename,
-                { create: true },
-                callback,
-                console.error.bind(console));
-          }).bind(this));
 
-      this.withFile = futureChain(
-          this.withEntry,
-          (function(entry, callback) {
-            entry.file(callback, console.error.bind(console));
-          }).bind(this));
+      this.withWriter = amemo(seq(
+        withEntry,
+        function(ret, entry) {
+          entry.createWriter(ret, console.error.bind(console));
+        })),
 
-      this.withWriter = futureChain(
-          this.withEntry,
-          (function(entry, callback) {
-            entry.createWriter(callback, console.error.bind(console));
-          }).bind(this));
 
-      this.withStorage = futureChain(
-          this.withFile,
-          (function(file, callback) {
-            var reader = new FileReader();
+      this.withStorage = amemo(seq(
+        withEntry,
+        function(ret, entry) {
+          entry.file(ret, console.error.bind(console));
+        },
+        function(ret, file) {
+          var reader = new FileReader();
+          var storage = {};
 
-            var storage = {};
+          reader.onerror = console.error.bind(console);
+          reader.onloadend = function() {
+	    self.parseContents_(ret, reader.result, storage);
+	  };
 
-            reader.onerror = console.error.bind(console);
-
-            reader.onloadend = (function() {
-              this.parseContents_(reader.result, storage, callback);
-            }).bind(this);
-
-            this.readFile_(reader, file);
-          }).bind(this));
+          this.readFile_(reader, file);
+        }));
     },
 
     put: function(obj, sink) {
-      this.withStorage((function(s) {
-        var self = this;
+      var self = this;
+      this.withStorage(function(s) {
         s.put(obj, {
           __proto__: sink,
           put: function() {
@@ -858,33 +854,33 @@ var AbstractFileDAO2 = FOAM.create({
             self.update_('put', obj);
           }
         });
-      }).bind(this));
+      });
     },
 
     find: function(key, sink) {
-      this.withStorage((function(s) {
+      this.withStorage(function(s) {
         s.find(key, sink);
-      }).bind(this));
+      });
     },
 
     remove: function(query, sink) {
-      this.withStorage((function(s) {
-        var self = this;
+      var self = this;
+      this.withStorage(function(s) {
         s.remove(query, {
           __proto__: sink,
           remove: function(obj) {
-            this.__proto__.remove && this.__proto__.remove(obj);
+            self.__proto__.remove && self.__proto__.remove(obj);
             self.notify_('remove', [obj]);
             self.update_('remove', obj);
           }
         });
-      }).bind(this));
+      });
     },
 
     select: function(sink, options) {
-      this.withStorage((function(s) {
+      this.withStorage(function(s) {
         s.select(sink, options);
-      }).bind(this));
+      });
     }
   }
 });
@@ -924,9 +920,9 @@ var JSONFileDAO2 = FOAM.create({
        reader.readAsText(file);
      },
 
-     parseContents_: function(contents, storage, callback) {
+     parseContents_: function(ret, contents, storage) {
        with (storage) { eval(contents); }
-       callback(storage);
+       ret(storage);
      },
 
      writeOne_: function(writer) {
