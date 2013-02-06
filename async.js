@@ -52,13 +52,7 @@ Function.prototype.ao = function(f2) {
 };
 
 Function.prototype.seq = function(f2) {
-  var f1 = this;
-  return function() {
-    var args = Array.prototype.splice.call(arguments, 0);
-    args.unshift(f2);
-    f1.apply(null, args);
-  };
-//  return f1.ao(this);
+  return f2.ao(this);
 };
 
 
