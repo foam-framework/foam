@@ -62,10 +62,29 @@ withFOAM(function() {
     document.getElementById('loadmbox').onchange = function (event) {
         emails.remove(TRUE); // this only works with storagedao2 because its synchronous
         var file = event.target.files[0];
-        var reader = LineBasedReader.create(BufferedTextReader.create(file));
-
+        var reader =
+            FullReader.create(
+                LineBasedReader.create(
+                    TextReader.create(
+                        BlobReader.create(file))));
         MBOXLoader.dao = emails;
         reader.read(MBOXLoader);
+    };
+
+    document.getElementById('socketload').onclick = function(event) {
+        emails.remove(TRUE);
+        var sockets = SocketManager.create();
+        var withSocket = sockets.get('tcp:localhost:1234');
+        withSocket(function(socket) {
+            var reader =
+                FullReader.create(
+                    LineBasedReader.create(
+                        TextReader.create(
+                            AsBlobReader.create(
+                                SocketReader.create(socket)))));
+            MBOXLoader.dao = emails;
+            reader.read(MBOXLoader);
+        });
     };
 
     var emailarray = [];

@@ -4,7 +4,10 @@
     "manifest_version": 2,
 
     "permissions": [
-        "storage"
+        "storage",
+        {"socket": [
+          "tcp-connect"
+        ] }
     ],
 
     "app": {
