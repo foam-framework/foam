@@ -752,6 +752,7 @@ var StorageDAO2 = FOAM.create({
 
 });
 
+
 var AbstractFileDAO2 = FOAM.create({
   model_: 'Model',
   extendsModel: 'AbstractDAO2',
@@ -885,6 +886,7 @@ var AbstractFileDAO2 = FOAM.create({
   }
 });
 
+
 var JSONFileDAO2 = FOAM.create({
    model_: 'Model',
    extendsModel: 'AbstractFileDAO2',
@@ -954,11 +956,12 @@ var JSONFileDAO2 = FOAM.create({
    }
 });
 
+
 var KeyCollector = FOAM.create({
   model_: 'Model',
   name: 'KeyCollector',
   label: 'KeyCollector',
-  help: 'A sink that collects the keys of the objects its given.',
+  help: "A sink that collects the keys of the objects it's given.",
 
   properties: [
     {
@@ -978,6 +981,7 @@ var KeyCollector = FOAM.create({
     }
   }
 });
+
 
 var WorkerDAO2 = FOAM.create({
   model_: 'Model',
@@ -1282,6 +1286,7 @@ var WorkerDelegate = FOAM.create({
   ]
 });
 
+
 var ModelDAO = {
     create: function(namespace, dao) {
 	var res = {
@@ -1328,6 +1333,7 @@ var ModelDAO = {
     }
 };
 
+
 var OrderedCollectorSink = FOAM.create({
   model_: 'Model',
 
@@ -1357,6 +1363,7 @@ var OrderedCollectorSink = FOAM.create({
   }
 });
 
+
 var CollectorSink = FOAM.create({
   model_: 'Model',
 
@@ -1380,6 +1387,7 @@ var CollectorSink = FOAM.create({
     }
   }
 });
+
 
 var PartitionDAO2 = FOAM.create({
   model_: 'Model',
@@ -1484,6 +1492,7 @@ var PartitionDAO2 = FOAM.create({
     }
   }
 });
+
 
 // TODO Why is this even a DAO, it literally only does find.
 var BlobReaderDAO = FOAM.create({
