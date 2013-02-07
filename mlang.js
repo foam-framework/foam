@@ -254,10 +254,6 @@ var AndExpr = FOAM.create({
         for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a = this.args[i];
 
-          if ( ! a )
-{
-   debugger;
-}
           if ( ! a.f(obj) ) return false;
         }
         return true;
