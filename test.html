@@ -169,7 +169,7 @@ document.writeln("=======================================");
     document.writeln("Model: " + o.model_);
     document.writeln("Model.name: " + o.name_);
       */
-    var example = document.getElementById('uml');
+    var example = $('uml');
     var ctx     = example.getContext('2d');
 
     drawUML(ctx,100,100,Model);
@@ -254,7 +254,7 @@ document.writeln("=======================================");
 
   <script language="javascript">
 
-    example = document.getElementById('view');
+    example = $('view');
     var view = CanvasView.create({width: 300, height: 30, background:'#fff'});
 
     var v1 = TextFieldView.create();

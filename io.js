@@ -185,7 +185,7 @@ var SocketReader = {
 
 /**
  * <input type="file" id="fileinput">
- * reader = LineBasedReader.create(BufferedTextReader.create(document.getElementById("fileinput").files[0]))
+ * reader = LineBasedReader.create(BufferedTextReader.create($("fileinput").files[0]))
  * reader.read(console.log);
  */
 
@@ -193,7 +193,7 @@ var SocketReader = {
 
 MBOXLoader.dao = [];
 
-reader = LineBasedReader.create(BufferedTextReader.create(document.getElementById("fileinput").files[0]))
+reader = LineBasedReader.create(BufferedTextReader.create($("fileinput").files[0]))
 reader.read(MBOXLoader);
 
 

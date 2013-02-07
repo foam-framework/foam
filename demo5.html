@@ -190,7 +190,7 @@
          case 12: setDisplay(); break;
          case 13:
             setDisplay('<canvas id="uml" width=800 height=1000> </canvas>');
-            var ctx = document.getElementById('uml').getContext('2d');
+            var ctx = $('uml').getContext('2d');
 	    drawUML(ctx,100,100,model);
          break;
          case 14:

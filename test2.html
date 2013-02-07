@@ -116,7 +116,7 @@ activity area
     document.writeln("Model: " + o.model_);
     document.writeln("Model.name: " + o.name_);
 
-    var example = document.getElementById('uml');
+    var example = $('uml');
     var ctx     = example.getContext('2d');
 
     drawUML(ctx,100,100,Model);
@@ -201,7 +201,7 @@ activity area
 
   <script language="javascript">
 
-    example = document.getElementById('view');
+    example = $('view');
     ctx     = example.getContext('2d');
 
     var v1 = TextFieldView.create();

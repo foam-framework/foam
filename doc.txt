@@ -16,9 +16,9 @@ extends EventService
 
 EventService
 ------------
-subs_			subscriptions
-oneTime(listener)	decorate a listener to be one-time
-consoleLog(listener)	decorate a listener to log to console
+subs_				 subscriptions
+oneTime(listener)		 decorate a listener to be one-time
+consoleLog(listener)		 decorate a listener to log to console
 merged(listener, opt_delay)	 decorate listener to merge events
 async(listener)	 		 decorate listener to make async
 delay(delay, listener)		 decorate to add delay
@@ -83,3 +83,11 @@ Value
 	addListener(listener)
 	removeListener(listener)
 
+Async Functions
+amemo()
+aseq()
+ajoin()
+ao()
+
+Function.ao()
+Function.seq()

@@ -1,11 +1,11 @@
 console.log('tomail.js');
 withFOAM(function() {
     console.log('tomail.js - withFOAM');
-    var header = document.getElementById('header');
-    var footer = document.getElementById('footer');
-    var search = document.getElementById('search');
-    var browse = document.getElementById('browse');
-    var edit   = document.getElementById('edit');
+    var header = $('header');
+    var footer = $('footer');
+    var search = $('search');
+    var browse = $('browse');
+    var edit   = $('edit');
 
     var reversed = false;
 
@@ -59,7 +59,7 @@ withFOAM(function() {
 
     emails = IndexedDBDAO2.create({model: EMail});
 
-    document.getElementById('loadmbox').onchange = function (event) {
+    $('loadmbox').onchange = function (event) {
         emails.remove(TRUE); // this only works with storagedao2 because its synchronous
         var file = event.target.files[0];
         var reader =
@@ -71,7 +71,7 @@ withFOAM(function() {
         reader.read(MBOXLoader);
     };
 
-    document.getElementById('socketload').onclick = function(event) {
+    $('socketload').onclick = function(event) {
         emails.remove(TRUE);
         var sockets = SocketManager.create();
         var withSocket = sockets.get('tcp:localhost:1234');
@@ -155,7 +155,7 @@ withFOAM(function() {
         },
                        updateQuery);
 
-        document.getElementById("resetSearch").onclick = function() {
+        $("resetSearch").onclick = function() {
             byFrom.view.value.set(''); byTo.view.value.set(''); byLabel.view.value.set('');
             byFrom.filter = byTo.filter = byLabel.filter = TRUE;
             table.dao = dao;

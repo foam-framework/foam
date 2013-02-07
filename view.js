@@ -73,7 +73,7 @@ var AbstractView =
 
     element: function() {
       // @return this View's DOM element
-      return document.getElementById(this.getID());
+      return $(this.getID());
     },
 
     registerCallback: function(event, listener, opt_elementId) {
@@ -106,7 +106,7 @@ var AbstractView =
 	     var elementId = callback[0];
 	     var event     = callback[1];
 	     var listener  = callback[2];
-	     var e         = document.getElementById(elementId);
+	     var e         = $(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
 	     } else {
@@ -202,7 +202,7 @@ var AbstractView2 = FOAM.create({
     element: function() {
       // @return this View's DOM element
 
-      return document.getElementById(this.getID());
+      return $(this.getID());
     },
 
     registerCallback: function(event, listener, opt_elementId) {
@@ -217,7 +217,7 @@ var AbstractView2 = FOAM.create({
     },
 
     insertInElement: function(name) {
-      var e = document.getElementById(name);
+      var e = $(name);
       e.innerHTML = this.toHTML();
       this.initHTML();
     },
@@ -241,7 +241,7 @@ var AbstractView2 = FOAM.create({
 	     var elementId = callback[0];
 	     var event     = callback[1];
 	     var listener  = callback[2];
-	     var e         = document.getElementById(elementId);
+	     var e         = $(elementId);
              if ( ! e ) {
 	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
 	     } else {
