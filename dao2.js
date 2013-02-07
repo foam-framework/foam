@@ -794,7 +794,7 @@ var AbstractFileDAO2 = FOAM.create({
 
       var self = this;
 
-      var withEntry = amemo(seq(
+      var withEntry = amemo(aseq(
 	function(ret) {
           window.webkitStorageInfo.requestQuota(
             self.type === 'Persistent' ? 1 : 0,
@@ -818,14 +818,14 @@ var AbstractFileDAO2 = FOAM.create({
         }));
 
 
-      this.withWriter = amemo(seq(
+      this.withWriter = amemo(aseq(
         withEntry,
         function(ret, entry) {
           entry.createWriter(ret, console.error.bind(console));
         })),
 
 
-      this.withStorage = amemo(seq(
+      this.withStorage = amemo(aseq(
         withEntry,
         function(ret, entry) {
           entry.file(ret, console.error.bind(console));

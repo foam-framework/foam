@@ -69,11 +69,11 @@ function ao(/* ... afuncs */) {
 
 
 /** Compose a variable number of async functions. **/
-function seq(/* ... afuncs */) {
+function aseq(/* ... afuncs */) {
   var f = arguments[arguments.length-1];
 
   for ( var i = arguments.length-2 ; i >= 0 ; i-- ) {
-    f = arguments[i].seq(f);
+    f = arguments[i].aseq(f);
   }
 
   return f;
@@ -82,14 +82,13 @@ function seq(/* ... afuncs */) {
 
 /**
  * Create a function which executes several afunc's in parallel and passes
- * their joined return values to an optional afunc.  'join' would have been
- * another suitable name for this function.
+ * their joined return values to an optional afunc.
  *
- * Usage: par(f1,f2,f3)(opt_afunc, opt_args)
+ * Usage: ajoin(f1,f2,f3)(opt_afunc, opt_args)
  * @param opt_afunc called with joined results after all afuncs finish
  * @param opt_args passed to all afuncs
  **/
-function par(/* ... afuncs */) {
+function ajoin(/* ... afuncs */) {
   var aargs = [];
   var count = 0;
   var fs = arguments;
@@ -144,40 +143,40 @@ var f3 = function(a, b) { console.log(a,b); };
 var f4 = console.log.bind(console);
 
 console.log('test1');
-f1.seq(f2.seq(f4))();
+f1.aseq(f2.aseq(f4))();
 
 console.log('test2');
-f1.seq(f2.seq(f4))();
+f1.aseq(f2.aseq(f4))();
 
 console.log('test3');
-f1.seq(f4)();
+f1.aseq(f4)();
 
 console.log('test4');
 ao(f4,f2,f1)();
 
 console.log('test5');
-seq(f1, f4)();
+aseq(f1, f4)();
 
 console.log('test6');
-seq(f1,f2,f4)();
+aseq(f1,f2,f4)();
 
 console.log('test7');
-seq(
+aseq(
   function(ret) { console.log('fB'); ret(1); },
   function(ret) { console.log('fC'); ret(2); },
   f4
 )();
 
 console.log('test8');
-par(
+ajoin(
   function(ret, a) { console.log('fB'); ret(1); },
   function(ret, a) { console.log('fC'); ret(2); }
 )(f4);
 
 console.log('test9');
-seq(
+aseq(
   function(ret) { console.log('fA'); ret(1); },
-  par(
+  ajoin(
     function(ret, a) { console.log('fB', a); ret(1); },
     function(ret, a) { console.log('fC', a); ret(2); }
   ),
