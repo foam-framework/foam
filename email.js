@@ -58,7 +58,7 @@ var EMail = FOAM.create({
          tableFormatter: function(t) {
            return t.replace(/"/g, '').replace(/<.*/, '');
          },
-         valueFactory: function() { return GLOBAL.user; }
+         valueFactory: function() { return GLOBAL.user || ""; }
       },
       {
          model_: 'Property',
