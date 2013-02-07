@@ -41,7 +41,7 @@ var BlobReader = {
       slice = this.nextSlice_();
 
       if (!slice) {
-          sink.eof && sinke.eof();
+          sink.eof && sink.eof();
           return;
       }
       sink.put && sink.put(slice);
