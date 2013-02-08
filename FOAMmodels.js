@@ -36,12 +36,10 @@ var files = [
   'search',
   'async',
   'visitor',
-//  'dao',
-  'dao2',
+  'dao',
   'index',
   'StackView',
   'DAOController',
-  'DAO2Controller',
   // remove below here
   'models',
   'email',

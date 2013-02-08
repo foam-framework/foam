@@ -13,34 +13,9 @@
   </style>
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
-
-  <script language="javascript" src="stdlib.js"></script>
-  <script language="javascript" src="context.js"></script>
-  <script language="javascript" src="async.js"></script>
-  <script language="javascript" src="parse.js"></script>
-  <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleValue.js"></script>
-  <script language="javascript" src="JSONUtil.js"></script>
-  <script language="javascript" src="XMLUtil.js"></script>
-  <script language="javascript" src="FOAM.js"></script>
-  <script language="javascript" src="TemplateUtil.js"></script>
-  <script language="javascript" src="AbstractPrototype.js"></script>
-  <script language="javascript" src="ModelProto.js"></script>
-  <script language="javascript" src="metamodel.js"></script>
-  <script language="javascript" src="view.js"></script>
-  <script language="javascript" src="models.js"></script>
-  <script language="javascript" src="turntable.js"></script>
-  <script language="javascript" src="chrome.js"></script>
-  <script language="javascript" src="mlang.js"></script>
-  <script language="javascript" src="visitor.js"></script>
-  <script language="javascript" src="dao.js"></script>
-  <script language="javascript" src="dao2.js"></script>
-  <script language="javascript" src="StackView.js"></script>
-  <script language="javascript" src="DAO2Controller.js"></script>
-  <script language="javascript" src="UML.js"></script>
-  <script language="javascript" src="dragon.js"></script>
-  <script language="javascript" type="text/javascript" src="editarea/edit_area/edit_area_full.js"></script>
-
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <script language="javascript" src="chrome.js"></script> 
+  <script language="javascript" src="UML.js"></script> 
   <title>Chaos Test</title>
  </head>
 
@@ -94,7 +69,7 @@ activity area
        circleModel,
        Canvas,
        Rectangle,
-       DAO2Controller,
+       DAOController,
        Timer,
        Mouse,
        PanelCView,
@@ -528,8 +503,7 @@ o = Model;
     document.writeln("<br/><h2>Controller</h2>");
 
     var bookmarksDAO = bookmarks;
-//    var bookmarksDAO = StorageDAO.create("bookmarks");
-    var ctrl2 = ActionBorder.create(DAO2Controller, DAO2Controller.create({
+    var ctrl2 = ActionBorder.create(DAOController, DAOController.create({
       model: BookmarkModel,
       dao: bookmarksDAO,
       selection: bookmarks[0]
@@ -541,7 +515,7 @@ o = Model;
     ctrl2.__proto__.stackView = stack2;
     stack2.pushView(ctrl2, "Bookmarks");
 
-    var ctrl = ActionBorder.create(DAO2Controller, DAO2Controller.create({
+    var ctrl = ActionBorder.create(DAOController, DAOController.create({
       model: Model,
       dao: models,
       selection: Model

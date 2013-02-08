@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 var DAOController = FOAM.create({
    model_: 'Model',
 
@@ -34,7 +35,9 @@ var DAOController = FOAM.create({
       {
 	 name:  'dao',
 	 label: 'DAO',
-	 postSet: function(val) { if ( this.tableView && val ) this.tableView.setValue(val.asValue()); }
+	 postSet: function(val) {
+           if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
+         }
       }
    ],
 
@@ -137,9 +140,13 @@ var DAOController = FOAM.create({
 	 action: function()      {
 	    // Todo: fix, should already be connected
 	    this.selection = this.tableView.selection.get();
-	    this.dao.remove(this.selection);
-	    // Hack: shouldn't be needed
-	    this.refresh();
+            var self = this;
+	    this.dao.remove(this.selection, {
+	      // Hack: shouldn't be needed
+              remove: function() {
+                self.refresh();
+              }
+            });
 	 }
       }/*,
       {
@@ -169,26 +176,30 @@ var DAOController = FOAM.create({
 	 AbstractView.init.call(this);
 	 this.model = tmp;
 
-	 this.tableView = TableView.create(this.model);
+         var model = this.model;
+         var dao = this.dao;
+	 this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
+         this.scrollBorder = ScrollBorder.create({ view: this.tableView });
       },
 
       toHTML: function() {
-	 return this.tableView.toHTML();
+//	 return this.scrollBorder.toHTML();
+        return this.scrollBorder.view.toHTML();
       },
 
       initHTML: function() {
          AbstractView.initHTML.call(this);
-	 this.tableView.initHTML(); // could this just be added to children?
+//	 this.scrollBorder.initHTML(); // could this just be added to children?
+	 this.scrollBorder.view.initHTML();
 
 	 this.dao = this.dao;
-	 // this.tableView.setModel(this.dao);
          this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
 	 this.tableView.selection.addListener(this.onSelection);
       },
 
       refresh: function() {
-	 this.tableView.setValue(this.dao.asValue());
+        this.dao = this.dao;
       }
    },
 
@@ -270,7 +281,7 @@ var DAOCreateController = FOAM.create({
    model_: 'Model',
 
    name:  'DAOCreateController',
-   label: 'Create',
+   label: 'DAO Create',
 
    extendsPrototype: 'AbstractView',
 
@@ -299,10 +310,16 @@ var DAOCreateController = FOAM.create({
 	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return true; },
 	 action:      function() {
-	    this.dao.put(this.obj);
-	    console.log("Creating: ", this.obj, this.dao.select());
-
-	    this.stackView.back();
+            var self = this;
+	    this.dao.put(this.obj, {
+              put: function(value) {
+                console.log("Created: ", value);
+                self.stackView.back();
+              },
+              error: function() {
+                console.error("Error creating value: ", arguments);
+              }
+            });
 	 }
       },
       {
@@ -379,7 +396,7 @@ var DAOUpdateController = FOAM.create({
    model_: 'Model',
 
    name:  'DAOUpdateController',
-   label: 'Update',
+   label: 'DAO Update',
 
    extendsPrototype: 'AbstractView',
 
@@ -408,11 +425,17 @@ var DAOUpdateController = FOAM.create({
 	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return true; },
 	 action:      function() {
-	    this.dao.put(this.obj);
-
-	    console.log("Saving: " + this.obj.toJSON());
-
-	    this.stackView.back();
+            var self = this;
+            var obj = this.obj;
+	    this.dao.put(obj, {
+              put: function() {
+                console.log("Saving: ", obj.toJSON());
+                self.stackView.back();
+              },
+              error: function() {
+                console.error("Error saving", arguments);
+              }
+            });
 	 }
       },
       {
@@ -565,18 +588,28 @@ var DAOControllerView = Model.create({
     },
 
     setValue: function(value) {
-       this.dao = ArrayDAO.create(value.get());
+       // value.get() returns an array which implements DAO
+       this.dao = value.get();
 
-       this.dao.subscribe('updated', function() {
-         console.log("************", this.dao.arr);
-         model.set(this.dao.arr);
-       });
+       this.listener = {
+         put: function() {
+           model.set(this.dao);
+         },
+         remove: function() {
+           model.set(this.dao);
+         },
+         error: function() {
+           console.error(arguments);
+         }
+       };
 
+       this.dao.listen(this.listener);
        this.ctrl.__proto__.dao = this.dao;
-       this.ctrl.tableView.setValue(this.dao.asValue());
+       this.ctrl.scrollBorder.dao = this.dao;
     },
 
     destroy: function() {
+      this.dao.unlisten(this.listener);
     }
    }
 

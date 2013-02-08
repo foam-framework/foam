@@ -14,23 +14,55 @@
  * limitations under the License.
  */
 
-var FilteredDAO = {
-
-    create: function(predicate, delegate) {
-	return {
-	    __proto__: delegate,
-            predicate: predicate,
-            select: function(predicate) {
-              return delegate.select(AND(predicate, this.predicate));
-            },
-
-            forEach: function(action, predicate) {
-              return delegate.forEach(action, AND(predicate, this.predicate));
-            }
-	};
-    }
-};
-
+/* DAO Interface
+ * put(obj, callback(newObj)) - either create or update (required?)
+ *   insert(obj, callback(newObj)) - create a new record
+ *   update(obj, callback(newObj)) - update an existing record
+ * get(index, callback) - like pipe but only finds one value
+ *    could be merged with pipe?
+ *    what values for 'index': primary-key, object, query?
+ * remove(obj, callback) - remove one object
+ * removeAll(query, callback)
+ *    Are both remove and removeAll needed?
+ * has(callback)
+ *    Internal only?
+ * pipe(callback[, {map of options, including 'query', 'order', 'limit'}])
+ *   bind() = pipe + listen
+ *   listen()
+ * where(query) -> DAO
+ *   synchronous
+ * orderBy(map) -> DAO
+ *   synchronous
+ * limit(count[,start]) -> DAO
+ *   synchronous
+ *
+ * future:
+ * drop() (rare enough to be handled by cmd()?)
+ * cmd()
+ *
+ * query: obj or predicate or primary-key
+ *   If you allow 'obj' how do you tell the difference
+ *   between mLang's stored in a DAO?
+ *
+ * ???:
+ *   how to specify 'limit'
+ *   how to specify 'sortOrder'
+ *
+ * Strange Ideas:
+ *   What if DAO only supported cmd() method and other 'methods'
+ *   were mlang's?
+ *      Good for queueing
+ *
+ * Usage:
+ * dao.where(AND(...)).limit(100).orderBy(User.LAST_NAME).pipe(fn);
+ *
+ * OR
+ *
+ * dao.pipe(fn, { query: AND(...), limit: 100, orderBy: User.LAST_NAME });
+ * (doesn't read well when pipelined; reverse arg order?)
+ * dao.pipe({ query: AND(...), limit: 100, orderBy: User.LAST_NAME }, fn);
+ *
+ */
 
 /**
  * Set a specified properties value with an auto-increment
@@ -40,362 +72,1222 @@ var FilteredDAO = {
 var SeqNoDAO = {
 
   create: function(prop, startSeqNo, delegate) {
-    delegate.forEach(function(obj) {
-      var val = obj[prop.name];
-
-      startSeqNo = Math.max(val, startSeqNo);
-    });
+    // TODO: this is async but the constructor is sync
+    // TODO: there should be a better way to pipe sinks than this
+    delegate.select({ __proto__: MAX(prop), eof: function() { startSeqNo = this.__proto__.max + 1; }});
 
     return {
       __proto__: delegate,
       prop:      prop,
 
-      put: function(obj) {
+      put: function(obj, sink) {
         var val = obj[prop.name];
 
         if ( val == prop.defaultValue )
-          obj[prop.name] = startSeqNo++;
+          obj[prop.name] = startSeqNo;
 
-        return delegate.put(obj);
+        return delegate.put(obj, sink);
       }
     };
   }
 };
 
 
-var ArrayDAO = {
-    __proto__: EventService,
 
-    create: function(arr) {
-	return {
-	    __proto__: this,
-	    arr: arr
-	};
-    },
+var ObjectToJSON = {
+  __proto__: Visitor.create(),
 
-    put: function(obj) {
-	var added = false;
-	for (var idx in this.arr) {
-	    if (this.arr[idx].id === obj.id) {
-		this.arr[idx] = obj;
-		added = true;
-		break;
-	    }
-	}
-	if (! added)
-	    this.arr.push(obj);
-	this.sync_();
-    },
+  visitFunction: function(o) {
+     return o.toString();
+  },
 
-    has: function(obj) {
-	for (var idx in this.arr)
-	    if (this.arr[idx].id === obj.id)
-		return true;
-	return false;
-    },
+  visitObject: function(o) {
+    this.push({model_: o.model_.name});
+    this.__proto__.visitObject.call(this, o);
+    return this.pop();
+  },
+  visitProperty: function(o, prop) { this.top()[prop.name] = this.visit(o[prop.name]); },
 
-    get: function(predicate) {
-	var param = predicate;
-	if (typeof predicate !== 'function')
-	    predicate = function(obj) { return obj.id === param; };
+  visitMap: function(o) {
+    this.push({});
+    Visitor.visitMap.call(this, o);
+    return this.pop();
+  },
+  visitMapElement: function(key, value) { this.top()[key] = this.visit(value); },
 
-	for (var idx in this.arr) {
-	    var obj = this.arr[idx];
-	    if (predicate.f(obj) === true)
-		return obj;
-	}
-	return undefined;
-    },
-
-    select: function(predicate) {
-	var res = [ ];
-	var func = res.push.bind(res);
-	this.forEach(func, predicate);
-	return res;
-    },
-
-    forEach: function(action, predicate) {
-	if (predicate) {
-	    for (var idx in this.arr)
-		if (predicate.f(this.arr[idx]))
-		    action(this.arr[idx]);
-	} else {
-	    for (var idx in this.arr)
-		action(this.arr[idx]);
-	}
-    },
-
-    remove: function(predicate) {
-	var param = predicate;
-	if (typeof predicate !== 'function')
-	    predicate = function(obj) { return obj.id === param.id; };
-
-	for (var i = 0; i < this.arr.length; i++) {
-	  var obj = this.arr[i];
-	  if (predicate.f(obj)) {
-            this.arr.splice(i,1);
-            i--;
-	  }
-	}
-	this.sync_();
-    },
-
-    sync_: function() {
-	this.publish('updated');
-    },
-
-    del: function() {
-	;
-    },
-
-    asValue: function() {
-      var dao = this;
-
-      return {
-        //////////////////////////// Implement Value
-
-        addListener: function(listener) {
-          dao.subscribe('updated');
-        },
-
-        removeListener: function(listener) {
-          dao.unsubscribe('updated', listener);
-        },
-
-        get: function() {
-          return dao.select();
-        }
-      };
-    }
-
+  visitArray: function(o) {
+    this.push([]);
+    this.__proto__.visitArray.call(this, o);
+    return this.pop();
+  },
+  visitArrayElement: function (arr, i) { this.top().push(this.visit(arr[i])); }
 };
 
-/*
-// Defers all calls to the decorated DAO until it receives
-// a 'dao-ready' event.
-// This is useful for decorating DAOs that don't have a synchronous
-// initialization path (ex. IndexedDBDAO).
-var DeferredDAO = {
-    create: function(dao) {
-	var obj = {
-	    __proto__: this,
-	    dao: dao,
-	    queue: []
-	};
 
-	dao.subscribe('dao-ready', obj.onready.bind(obj));
+var JSONToObject = {
+  __proto__: ObjectToJSON.create(),
 
-	return obj;
+  visitString: function(o) {
+     return o.substr(0, 8) === 'function' ?
+       eval('(' + o + ')') :
+       o ;
+  },
+
+  visitObject: function(o) {
+    var model   = GLOBAL[o.model_];
+    var obj     = model.create();
+
+    o.forEach((function(value, key) {
+      if ( key !== 'model_' ) obj[key] = this.visit(value);
+    }).bind(this));
+
+    return obj;
+  },
+
+  // Substitute in-place
+  visitArray: Visitor.visitArray,
+  visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); }
+};
+
+
+var AbstractDAO = FOAM.create({
+   model_: 'Model',
+
+   name: 'AbstractDAO',
+   label: 'Abstract DAO',
+
+   properties: [
+   ],
+
+   methods: {
+  listen: function(sink, options) {
+    sink = this.decorateSink_(sink, options, true);
+    if ( ! this.daoListeners_ ) {
+      Object.defineProperty(this, 'daoListeners_', {
+        enumerable: false,
+        value: []
+      });
+    }
+    this.daoListeners_.push(sink);
+  },
+  // TODO: rename to pipe
+  pipe: function(sink, options) {
+    sink = this.decorateSink_(sink, options, true);
+    var fc = this.createFlowControl_();
+    var self = this;
+    this.select(
+      {
+        __proto__: sink,
+        eof: function() {
+          if ( fc.stopped ) {
+            sink.eof && sink.eof();
+          } else {
+            self.listen(sink, options);
+          }
+        }
+      }, options, fc);
+  },
+  decorateSink_: function(sink, options, isListener, disableLimit) {
+    if ( options ) {
+      if ( ! disableLimit ) {
+        if ( options.limit ) sink = limitedSink(options.limit, sink);
+        if ( options.skip )  sink = skipSink(options.skip, sink);
+      }
+      if ( options.order && ! isListener )
+        sink = orderedSink(options.order, sink);
+      if ( options.query )
+        sink = predicatedSink(
+            options.query.partialEval ?
+	        options.query.partialEval() :
+                options.query,
+            sink) ;
+    }
+
+    return sink;
+  },
+  createFlowControl_: function() {
+    return {
+      stop: function() { this.stopped = true; },
+      error: function(e) { this.errorEvt = e; }
+    };
+  },
+  where: function(query) {
+    return filteredDAO(query, this);
+  },
+  limit: function(count) {
+    return limitedDAO(count, this);
+  },
+  skip: function(skip) {
+    return skipDAO(skip, this);
+  },
+  orderBy: function() {
+    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+  },
+  unlisten: function(sink) {
+    this.daoListeners_ && this.daoListeners_.remove(sink);
+  },
+  notify_: function(fName, args) {
+    if ( ! this.daoListeners_ ) return;
+
+    for ( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
+      var l = this.daoListeners_[i];
+      var fn = l[fName];
+      args[2] = {
+        stop: (function(fn, l) { return function() { fn(l); }; })(this.unlisten.bind(this), l),
+        error: function(e) { /* Don't care. */ }
+      };
+      fn && fn.apply(l, args);
+    }
+  }
+   },
+
+   issues: [
+    {
+      id: 1001,
+      severity: 'Major',
+      status: 'Open',
+      summary: 'Finish DAO Conversaion',
+      created: 'Sun Dec 23 2012 18:17:28 GMT-0500 (EST)',
+      createdBy: 'kgr',
+      assignedTo: 'kgr',
+      notes: 'Rename DAO to just DAO and remove DAO(1)\'s.'
+    }
+   ]
+
+});
+
+
+function filteredDAO(query, dao) {
+  return {
+    __proto__: dao,
+    select: function(sink, options) {
+      if ( options ) {
+        if ( options.query ) {
+          options = { __proto__: options, query: AND(query, options.query) };
+        } else {
+          options = { __proto__: options, query: query };
+        }
+      }
+      else {
+        options = {query: query};
+      }
+      dao.select(sink, options);
+    }
+  };
+}
+
+function orderedDAO(comparator, dao) {
+//  comparator = toCompare(comparator);
+//  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
+
+  return {
+    __proto__: dao,
+    select: function(sink, options) {
+      if ( options ) {
+        options = { __proto__: options, order: comparator };
+      } else {
+        options = {order: comparator};
+      }
+      dao.select(sink, options);
+    }
+  };
+}
+
+function limitedDAO(count, dao) {
+  return {
+    __proto__: dao,
+    select: function(sink, options) {
+      if ( options ) {
+        if ( options.limit ) {
+          options = {
+            __proto__: options,
+            limit: Math.min(count, options.limit)
+          };
+        } else {
+          options = { __proto__: options, limit: count };
+        }
+      }
+      else {
+        options = { limit: count };
+      }
+      dao.select(sink, options);
+    }
+  };
+}
+
+function skipDAO(skip, dao) {
+  return {
+    __proto__: dao,
+    select: function(sink, options) {
+      if ( options ) {
+        options = {
+          __proto__: options,
+          skip: skip
+        };
+      } else {
+        options = { __proto__: options, skip: skip };
+      }
+      dao.select(sink, options);
+    }
+  };
+}
+
+
+var pmap = {};
+for ( var key in AbstractDAO.methods ) {
+  pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
+}
+
+if ( false ) {
+defineProperties(Object.prototype, pmap);
+
+defineProperties(Object.prototype, {
+  clone: function() { return this; }, // TODO
+  put: function(obj, sink) {
+    /*
+    if ( this.hasOwnProperty('id') ) {
+      sink && sink.error && sink.error('put', obj, duplicate);
+      return;
+    }
+    */
+    this[obj.id] = obj;
+    sink && sink.put && sink.put(obj);
+    this.notify_('put', arguments);
+  },
+  find: function(id, sink) {
+    if ( this.hasOwnProperty(id) ) {
+      sink && sink.put && sink.put(this[id]);
+      return;
+    }
+    sink && sink.error && sink.error('find', id);
+  },
+  select: function(sink, options) {
+    sink = this.decorateSink_(sink, options, false);
+
+    var fc = this.createFlowControl_();
+
+    for (var key in this) {
+      sink.put(this[key], null, fc);
+      if ( fc.stopped ) break;
+      if ( fc.errorEvt ) {
+        sink.error && sink.error(fc.errorEvt);
+        break;
+      }
+    }
+
+    sink.eof && sink.eof();
+  },
+  // TODO: distinguish between remove() and removeAll()?
+  remove: function(query, sink) {
+    var id = query.id || query;
+
+    if ( this.hasOwnProperty(id) ) {
+      sink && sink.remove && sink.remove(this[id]);
+      delete this[id];
+      this.notify_('remove', arguments);
+      return;
+    }
+    sink && sink.error && sink.error('remove', id);
+  }
+});
+}
+defineProperties(Array.prototype, pmap);
+
+defineProperties(Array.prototype, {
+  clone: function() { return new Array(this); },
+  put: function(obj, sink) {
+    for (var idx in this) {
+      if (this[idx].id === obj.id) {
+        this[idx] = obj;
+	sink && sink.put && sink.put(obj);
+    	this.notify_('put', arguments);
+	//        sink && sink.error && sink.error('put', obj, duplicate);
+        return;
+      }
+    }
+    this.push(obj);
+    sink && sink.put && sink.put(obj);
+    this.notify_('put', arguments);
+  },
+  find: function(query, sink) {
+    if ( query.f ) {
+      for (var idx in this) {
+        if ( query.f(this[idx]) ) {
+          sink && sink.put && sink.put(this[idx]);
+          return;
+        }
+      }
+    } else {
+      for (var idx in this) {
+        if ( this[idx].id === query ) {
+          sink && sink.put && sink.put(this[idx]);
+          return;
+        }
+      }
+    }
+    sink && sink.error && sink.error('find', query);
+  },
+  // TODO: distinguish between remove() and removeAll()?
+  remove: function(query, callback) {
+    var param = query;
+    if (! EXPR.isInstance(query))
+      query = {f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
+
+    for (var i = 0; i < this.length; i++) {
+      var obj = this[i];
+      if (query.f(obj)) {
+        this.notify_('remove', this.splice(i,1)[0]);
+        i--;
+      }
+    }
+  },
+  select: function(sink, options) {
+    var hasQuery = options && ( options.query || options.order );
+    sink = this.decorateSink_(sink, options, false, ! hasQuery);
+
+    var fc = this.createFlowControl_();
+
+    var start = hasQuery ? 0 : options && options.skip || 0;
+    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
+    for ( var i = start ; i < end ; i++ ) {
+      sink.put(this[i], null, fc);
+      if ( fc.stopped ) break;
+      if ( fc.errorEvt ) {
+        sink.error && sink.error(fc.errorEvt);
+        break;
+      }
+    }
+    sink.eof && sink.eof();
+  }
+});
+
+
+
+/* Usage:
+ * var dao = IndexedDBDAO.create({model: Issue});
+ * var dao = IndexedDBDAO.create({model: Issue, name: 'ImportantIssues'});
+ *
+ * TODO:
+ * We notify the sinks as soon as each request returns onsuccess, this is
+ * wrong, we need to wait until the transaction object fires oncomplete
+ * as the transaction could still be rolled back if an error happens
+ * later.
+ *
+ * Optimization.  This DAO doesn't use an indexes in indexeddb yet, which
+ * means for any query other than a single find/remove we iterate the entire
+ * data store.  Obviously this will get slow if you store large amounts
+ * of data in the database.
+ */
+var IndexedDBDAO = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO',
+
+   name: 'IndexedDBDAO',
+   label: 'IndexedDB DAO',
+
+   properties: [
+      {
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
+         required: true
+      },
+      {
+         name:  'name',
+         label: 'Store Name',
+         type:  'String',
+         defaultValueFn: function() {
+           return this.model.plural;
+         }
+      }
+   ],
+
+   methods: {
+
+   init: function() {
+     AbstractPrototype.init.call(this);
+
+     this.withDB = amemo(this.openDB.bind(this));
     },
 
-    get: function(key, callback) {
-	if (this.ready) {
-	    this.dao.get(key, callback);
-	    return;
-	}
+    openDB: function(cc) {
+      var indexedDB = window.indexedDB ||
+        window.webkitIndexedDB         ||
+        window.mozIndexedDB;
 
-	this.queue.push(this.dao.get.bind(this.dao, key, callback));
+      var request = indexedDB.open("FOAM:" + this.name, 1);
+
+      request.onupgradeneeded = (function(e) {
+        e.target.result.createObjectStore(this.name);
+      }).bind(this);
+
+      request.onsuccess = (function(e) {
+        cc(e.target.result);
+      }).bind(this);
+
+      request.onerror = function (e) {
+        console.log('************** failure', e);
+      };
     },
 
+    withStore: function(mode, fn) {
+      this.withDB((function (db) {
+        var tx = db.transaction([this.name], mode);
+        fn.bind(this)(tx.objectStore(this.name));
+      }).bind(this));
+    },
+
+    put: function(value, sink) {
+      var self = this;
+      this.withStore("readwrite", function(store) {
+        var request =
+            store.put(ObjectToJSON.visitObject(value), value.id);
+
+        request.onsuccess = function(e) {
+          sink && sink.put && sink.put(value);
+          self.notify_('put', [value]);
+        };
+        request.onerror = function(e) {
+          // TODO: Parse a better error mesage out of e
+          sink && sink.error && sink.error('put', value);
+        };
+      });
+    },
+
+    find: function(key, sink) {
+      this.withStore("readonly", function(store) {
+        var request = store.find(key);
+        request.onsuccess = function() {
+          if (!request.result) {
+            sink && sink.error && sink.error('find', key);
+            return;
+          }
+          var result = JSONToObject.visitObject(request.result);
+          sink && sink.put && sink.put(result);
+        };
+        request.onerror = function(e) {
+          // TODO: Parse a better error out of e
+          sink && sink.error && sink.error('find', key);
+        };
+      });
+    },
+
+    remove: function(query, sink) {
+      this.withStore("readwrite", function(store) {
+        var self = this;
+
+        if (! EXPR.isInstance(query)) {
+          var key = query;
+          var getRequest = store.find(key);
+          getRequest.onsuccess = function(e) {
+            if (!getRequest.result) {
+              sink && sink.error && sink.error('remove', query);
+              return;
+            }
+            var result = JSONToObject.visitObject(getRequest.result);
+            var delRequest = store.delete(key);
+            delRequest.onsuccess = function(e) {
+              sink && sink.remove && sink.remove(result);
+              self.notify_('remove', [result]);
+            };
+            delRequest.onerror = function(e) {
+              sink && sink.error && sink.error('remove', e);
+            };
+          };
+          getRequest.onerror = function(e) {
+            sink && sink.error && sink.error('remove', e);
+          };
+          return;
+        }
+
+        query = query.partialEval();
+
+        var request = store.openCursor();
+        request.onsuccess = function(e) {
+          var cursor = e.target.result;
+          if (cursor) {
+            var value = JSONToObject.visitObject(cursor.value);
+            if (query.f(value)) {
+              var deleteReq = cursor.delete();
+              deleteReq.onsuccess = function() {
+                sink && sink.remove && sink.remove(value);
+                self.notify_('remove', [value]);
+              };
+              deleteReq.onerror = function(e) {
+                sink && sink.error && sink.error('remove', e);
+              };
+            }
+            cursor.continue();
+          }
+        };
+        request.onerror = function(e) {
+          sink && sink.error && sink.error('remove', e);
+        };
+      });
+    },
+
+    select: function(sink, options) {
+      sink = this.decorateSink_(sink, options, false);
+
+      var fc = this.createFlowControl_();
+
+      this.withStore("readonly", function(store) {
+        var request = store.openCursor();
+        request.onsuccess = function(e) {
+          var cursor = e.target.result;
+          if ( fc.stopped ) return;
+          if ( fc.errorEvt ) {
+            sink.error && sink.error(fc.errorEvt);
+            return;
+          }
+
+          if (!cursor) {
+            sink.eof && sink.eof();
+            return;
+          }
+
+          var value = JSONToObject.visitObject(cursor.value);
+          sink.put(value);
+          cursor.continue();
+        };
+        request.onerror = function(e) {
+          sink.error && sink.error(e);
+        };
+      });
+    },
+
+    removeAll: function(callback) {
+       this.withStore("readwrite", function(store) {
+         var request = store.clear();
+         request.onsuccess = callback;
+       });
+    }
+   },
+
+   listeners:
+   [
+      {
+         model_: 'MethodModel',
+
+         name: 'updated',
+         code: function(evt) {
+           console.log('updated: ', evt);
+           this.publish('updated');
+         }
+      }
+   ]
+
+});
+
+
+var StorageDAO = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO',
+
+   name: 'StorageDAO',
+   label: 'Storage DAO',
+
+   properties: [
+      {
+         name:  'model',
+         label: 'Model',
+         type:  'Model',
+         required: true
+      },
+      {
+         name:  'name',
+         label: 'Store Name',
+         type:  'String',
+         defaultValueFn: function() {
+           return this.model.plural;
+         }
+      }
+   ],
+
+   methods: {
+
+   init: function() {
+     AbstractPrototype.init.call(this);
+
+     this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
+    },
+
+    put: function(obj, sink) {
+      this.storage.put(obj, sink);
+      this.flush_();
+    },
+
+    find: function(key, sink) {
+      this.storage.find(key, sink);
+    },
+
+    remove: function(query, sink) {
+      this.storage.remove(query, sink);
+      this.flush_();
+    },
+
+    select: function(sink, options) {
+      this.storage.select(sink, options);
+    },
+
+    flush_: function() {
+      localStorage.setItem(this.name, JSONUtil.stringify(this.storage));
+      this.publish('updated');
+    }
+
+   },
+
+   listeners:
+   [
+      {
+         model_: 'MethodModel',
+
+         name: 'updated',
+         code: function(evt) {
+           console.log('updated: ', evt);
+           this.publish('updated');
+         }
+      }
+   ]
+
+});
+
+
+var AbstractFileDAO = FOAM.create({
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
+
+  name: 'AbstractFileDAO',
+  label: 'Abstract File DAO',
+
+  properties: [
+    {
+      name:  'model',
+      label: 'Model',
+      type:  'Model',
+      requred: true
+    },
+    {
+      name:  'filename',
+      label: 'Storage file name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
+      }
+    },
+    {
+      name:  'type',
+      label: 'Filesystem Type',
+      type:  'String',
+      view: {
+        create: function() { return ChoiceView.create({choices: [
+          'Persistent',
+          'Temporary'
+        ]});}
+      },
+      defaultValue: 'Persistent'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      var self = this;
+
+      var withEntry = amemo(aseq(
+	function(ret) {
+          window.webkitStorageInfo.requestQuota(
+            self.type === 'Persistent' ? 1 : 0,
+            1024 * 1024 * 200, // 200 MB should be fine.
+            function() { ret(1024 * 1024 * 200); },
+            console.error.bind(console));
+	},
+        function(ret, quota) {
+          window.requestFileSystem(
+            self.type === 'Persistent' ? 1 : 0,
+            quota, /* expected size*/
+            ret,
+            console.error.bind(console));
+        },
+        function(ret, filesystem) {
+          filesystem.root.getFile(
+            self.filename,
+            { create: true },
+            ret,
+            console.error.bind(console));
+        }));
+
+
+      this.withWriter = amemo(aseq(
+        withEntry,
+        function(ret, entry) {
+          entry.createWriter(ret, console.error.bind(console));
+        })),
+
+
+      this.withStorage = amemo(aseq(
+        withEntry,
+        function(ret, entry) {
+          entry.file(ret, console.error.bind(console));
+        },
+        function(ret, file) {
+          var reader = new FileReader();
+          var storage = {};
+
+          reader.onerror = console.error.bind(console);
+          reader.onloadend = function() {
+	    self.parseContents_(ret, reader.result, storage);
+	  };
+
+          this.readFile_(reader, file);
+        }));
+    },
+
+    put: function(obj, sink) {
+      var self = this;
+      this.withStorage(function(s) {
+        s.put(obj, {
+          __proto__: sink,
+          put: function() {
+            sink && sink.put && sink.put(obj);
+            self.notify_('put', [obj]);
+            self.update_('put', obj);
+          }
+        });
+      });
+    },
+
+    find: function(key, sink) {
+      this.withStorage(function(s) {
+        s.find(key, sink);
+      });
+    },
+
+    remove: function(query, sink) {
+      var self = this;
+      this.withStorage(function(s) {
+        s.remove(query, {
+          __proto__: sink,
+          remove: function(obj) {
+            self.__proto__.remove && self.__proto__.remove(obj);
+            self.notify_('remove', [obj]);
+            self.update_('remove', obj);
+          }
+        });
+      });
+    },
+
+    select: function(sink, options) {
+      this.withStorage(function(s) {
+        s.select(sink, options);
+      });
+    }
+  }
+});
+
+
+var JSONFileDAO = FOAM.create({
+   model_: 'Model',
+   extendsModel: 'AbstractFileDAO',
+
+   name: 'JSONFileDAO',
+   label: 'JSON File DAO',
+
+   properties: [
+     {
+       name:  'writeQueue',
+       label: 'Write Queue',
+       type:  'Array[String]',
+       defaultValueFn: function() {
+         return [];
+       }
+     }
+   ],
+
+   methods: {
+     init: function() {
+       AbstractFileDAO.getPrototype().init.call(this);
+
+       this.withWriter((function(writer) {
+         writer.addEventListener(
+             'writeend',
+             (function(e) {
+               this.writeOne_(e.target);
+             }).bind(this));
+       }).bind(this));
+     },
+
+     readFile_: function(reader, file) {
+       reader.readAsText(file);
+     },
+
+     parseContents_: function(ret, contents, storage) {
+       with (storage) { eval(contents); }
+       ret(storage);
+     },
+
+     writeOne_: function(writer) {
+       if ( writer.readyState == 1 ) return;
+       if ( this.writeQueue.length == 0 ) return;
+
+       writer.seek(writer.length);
+       var queue = this.writeQueue;
+       var blob = queue.shift();
+       this.writeQueue = queue;
+       writer.write(blob);
+     },
+
+     update_: function(mutation, obj) {
+       var parts = [];
+
+       if (mutation === 'put') {
+         parts.push("put(" + JSONUtil.compact.stringify(obj) + ");\n");
+       } else if (mutation === 'remove') {
+         parts.push("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
+       }
+
+       this.writeQueue = this.writeQueue.concat(new Blob(parts));
+
+       this.withWriter((function(writer) {
+         this.writeOne_(writer);
+       }).bind(this));
+     }
+   }
+});
+
+
+var KeyCollector = FOAM.create({
+  model_: 'Model',
+  name: 'KeyCollector',
+  label: 'KeyCollector',
+  help: "A sink that collects the keys of the objects it's given.",
+
+  properties: [
+    {
+      name: 'keys',
+      type: 'Array',
+      label: 'Keys',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
     put: function(value) {
-	if (this.ready) {
-	    this.dao.put(value);
-	    return;
-	}
-	this.queue.push(this.dao.bind(this.dao, value));
+      this.keys.push(value.id);
     },
-
-    forEach: function(query, iterator) {
-	if (this.ready) {
-	    this.dao.forEach(query, iterator);
-	    return;
-	}
-	this.queue.push(this.dao.bind(this.dao, query, iterator));
-    },
-
-    onready: function() {
-	this.ready = true;
-	// Execute all queued actions.
-	for (var i  = 0; i < this.queue.length; i++) {
-	    this.queue[i]();
-	}
+    remove: function(value) {
+      this.keys.remove(value.id);
     }
-};
-*/
+  }
+});
 
-//FIXME: handle exceptions
-var StorageDAO = {
 
-    __proto__: EventService,
+var WorkerDAO = FOAM.create({
+  model_: 'Model',
+  name: 'WorkerDAO',
+  label: 'Worker DAO',
+  extendsModel: 'AbstractDAO',
 
-    create: function(storageKey) {
-	return {
-	    __proto__:  this,
-	    storageKey: storageKey,
-	    storage:    JSONUtil.parse(localStorage.getItem(storageKey)) || {}
-	};
+  properties: [
+    {
+      name: 'model',
+      type: 'Model',
+      label: 'Model',
+      required: true
     },
-
-    // Special constructor for use when loading Model containing DAO's
-    createModels: function(storageKey) {
-       var models = eval('(' + localStorage.getItem(storageKey) + ')') || {};
-
-       var modelLoader = function(key) {
-//	  console.log("loading: " + key);
-	  var model = JSONUtil.mapToObj(models[key], modelLoader);
-	  if ( model.name == 'Model' ) model.model_ = model;
-	  return model;
-       };
-
-       //modelLoader("Model");
-       //Model.create = ModelProto.create;
-
-       for ( var key in models )
-	  models[key] = modelLoader(key);
-
-       return {
-	  __proto__:  this,
-	  storageKey: storageKey,
-	  storage:    models
-       };
-    },
-
-    load: function(storageKey, storageValue) {
-	var res = this.create(storageKey);
-	res.parse_(storageValue);
-	return res;
-    },
-
-    parse_: function(serialized) {
-	var stObj = JSONUtil.parse(serialized);
-	for (var objID in stObj)
-	    this.storage[objID] = JSONUtil.parse(stObj[objID]);
-    },
-
-    sync_: function() {
-	localStorage.setItem(this.storageKey, JSONUtil.stringify(this.storage));
-	this.publish('updated');
-    },
-
-    put: function(obj) {
-	if (this.has(obj))
-	    this.update_(obj);
-	else
-	    this.insert_(obj);
-	this.sync_();
-    },
-
-    insert_: function(obj) {
-	this.storage[obj.id] = obj;
-    },
-
-    update_: function(obj) {
-	this.storage[obj.id] = obj;
-    },
-
-    has: function(obj) {
-	return this.storage.hasOwnProperty(obj.id);
-    },
-
-    get: function(predicate) {
-	var param = predicate;
-	if (! EXPR.isInstance(predicate)) {
-	    return this.storage[predicate];
-	} else {
-	    for (var objID in this.storage) {
-		var obj = this.storage[objID];
-		if (predicate.f(obj) === true)
-		    return obj;
-	    }
-	}
-	return undefined;
-    },
-
-    select: function(predicate) {
-	var res = [ ];
-	var func = res.push.bind(res);
-	this.forEach(func, predicate);
-	return res;
-    },
-
-    forEach: function(action, predicate) {
-	if (predicate) {
-	    for (var objID in this.storage) {
-		var obj = this.storage[objID];
-		if (predicate.f(obj))
-		    action(obj);
-	    }
-	} else {
-	    for (var objID in this.storage)
-		action(this.storage[objID]);
-	}
-	return action;
-    },
-
-    pipe: function(sink) {
-      for (var objID in this.storage)
-	sink = sink.put(this.storage[objID]) || sink;
-      return sink;
-    },
-
-    remove: function(predicate) {
-	if (EXPR.isInstance(predicate)) {
-	    for (var objID in this.storage) {
-		var obj = this.storage[objID];
-		if (predicate.f(obj))
-		    delete this.storage[objID];
-	    }
-	} else {
-	    delete this.storage[predicate.id];
-	}
-	//TODO: do not sync_ if no object was removed
-	this.sync_();
-    },
-
-    del: function() {
-	localStorage.removeItem(this.storageKey);
-    },
-
-
-    asValue: function() {
-      var dao = this;
-
-      return {
-        //////////////////////////// Implement Value
-
-        addListener: function(listener) {
-          dao.subscribe('updated');
-        },
-
-        removeListener: function(listener) {
-          dao.unsubscribe('updated', listener);
-        },
-
-        get: function() {
-          return dao.select();
+    {
+      name: 'delegate',
+      type: 'Worker',
+      label:'Delegate',
+      help: 'The web-worker to delegate all actions to.',
+      valueFactory: function() {
+        var url = window.location.protocol + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+        var workerscript = [
+          "var url = '" + url + "';\n",
+          "var a = importScripts;",
+          "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
+          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n debugger; }\n",
+          "WorkerDelegate.create({ dao: [] });\n",
+        ];
+        return new Worker(window.URL.createObjectURL(
+            new Blob(workerscript, { type: "text/javascript" })));
+      },
+      postSet: function(val, oldVal) {
+        if ( oldVal ) {
+          oldVal.terminate();
         }
+        val.addEventListener("message", this.onMessage);
+      }
+    },
+    {
+      name:  'requests_',
+      type:  'Object',
+      label: 'Requests',
+      help:  'Map of pending requests to delegate.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      name:  'nextRequest_',
+      type:  'Integer',
+      label: 'NextRequest',
+      help:  'Id of the next request to the delegate.',
+      valueFactory: function() { return 1; }
+    },
+    { // Consider making this a DAO.  Challenge is keeping in sync if this throws errors after delegate has completed something.
+      name:  'storage_',
+      type:  'Object',
+      label: 'Storage',
+      help:  'Local cache of the data in the delegate.',
+      valueFactory: function() { return {}; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractDAO.getPrototype().init.call(this);
+      this.delegate.postMessage("");
+    },
+    destroy: function() {
+      // Send a message to the delegate?
+      this.delegate.terminate();
+    },
+    makeRequest_: function(method, params, callback, error) {
+      var reqid = this.nextRequest_++;
+      params = params ?
+          ObjectToJSON.visit(params) :
+          {};
+      var message = {
+        method: method,
+        params: params,
+        request: reqid
       };
-    }
-/*
-    //////////////////////////// Implement Model
-
-    addListener: function(listener) {
-       this.subscribe('updated');
+      this.requests_[reqid] = {
+        method: method,
+        callback: callback,
+        error: error
+      };
+      this.delegate.postMessage(message);
     },
-
-    removeListener: function(listener) {
-       this.unsubscribe('updated', listener);
+    put: function(obj, sink) {
+      this.makeRequest_(
+        "put", obj,
+        (function(response) {
+          this.storage_[obj.id] = obj;
+          sink && sink.put && sink.put(obj);
+          this.notify_("put", [obj]);
+        }).bind(this),
+        sink && sink.error && sink.error.bind(sink));
     },
+    remove: function(query, sink) {
+      this.makeRequest_(
+        "remove", query,
+        (function(response) {
+          for ( var i = 0, key = response.keys[i]; key; i++) {
+            var obj = this.storage_[key];
+            delete this.storage_[key];
+            sink && sink.remove && sink.remove(obj);
+          }
+        }).bind(this),
+        sink && sink.error && sink.error.bind(sink));
+    },
+    find: function(id, sink) {
+      // No need to go to worker.
+      this.storage_.find(id, sink);
+    },
+    select: function(sink, options) {
+      // Cases:
+      // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
+      // 2) Non-cloneable reducable sink -- treat same as case 2.
+      // 3) Non-cloneable non-reducable sink -- Use key-creator, just put into sink
 
-    get: function() {
-       return this.select();
+      var fc = this.createFlowControl_();
+
+      if (sink.model_ && sink.reduceI) {
+        var request = {
+          sink: sink,
+          options: options
+        };
+
+        this.makeRequest_(
+            "select", request,
+            (function(response) {
+              var responsesink = JSONToObject.visit(response.sink);
+              sink.reduceI(responsesink);
+              sink.eof && sink.eof();
+            }).bind(this),
+            sink && sink.error && sink.error.bind(sink));
+      } else {
+        var mysink = KeyCollector.create();
+        request = {
+          sink: mysink,
+          options: options
+        };
+
+        this.makeRequest_(
+            "select", request,
+            (function(response) {
+              var responsesink = JSONToObject.visit(response.sink);
+              for (var i = 0; i < responsesink.keys.length; i++) {
+                var key = responsesink.keys[i];
+                if ( fc.stopped ) break;
+                if ( fc.errorEvt ) {
+                  sink.error && sink.error(fc.errorEvt);
+                  break;
+                }
+                var obj = this.storage_[key];
+                sink.put(obj);
+              }
+              sink.eof && sink.eof();
+            }).bind(this),
+            sink && sink.error && sink.error.bind(sink));
+      }
+    },
+    handleNotification_: function(message) {
+      if (message.method == "put") {
+        var obj = JSONToObject.visitObject(message.obj);
+        this.storage_[obj.id] = obj;
+        this.notify_("put", [obj]);
+      } else if (message.method == "remove") {
+        var obj = this.stroage_[message.key];
+        delete this.storage_[message.key];
+        this.notify_("remove", [obj]);
+      }
     }
-*/
+  },
 
-};
+  listeners: [
+    {
+      model_: 'MethodModel',
+      name: 'onMessage',
+      help: 'Callback for message events from the delegate.',
+      code: function(e) {
+        // FIXME: Validate origin.
+        var message = e.data;
+        if (message.request) {
+          var request = this.requests_[message.request];
+          delete this.requests_[message.request];
+          if (message.error) {
+            request.error(message.error);
+            return;
+          }
+          request.callback(message);
+          return;
+        } // If no request was specified this is a notification.
+        this.handleNotification_(message);
+      }
+    }
+  ]
+});
 
 
-/*var ModelDAO = {
+var WorkerDelegate = FOAM.create({
+  model_: 'Model',
+  name: 'WorkerDelegate',
+  label: 'Worker Delegate',
+  help:  'The client side of a web-worker DAO',
+
+  properties: [
+    {
+      name:  'dao',
+      label: 'dao',
+      type:  'DAO',
+      required: 'true',
+      postSet: function(val, oldVal) {
+        if (oldVal) oldVal.unlisten(this);
+        val.listen(this);
+      }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      self.addEventListener('message', this.onMessage);
+    },
+    put: function(obj) {
+      self.postMessage({
+        method: "put",
+        obj: ObjectToJSON.visitObject(obj)
+      });
+    },
+    remove: function(obj) {
+      self.postMessage({
+        method: "remove",
+        key: obj.id
+      });
+    }
+  },
+
+  listeners: [
+    {
+      model_: 'MethodModel',
+      name: 'onMessage',
+      code: function(e) {
+        // This is a nightmare of a function, clean it up.
+        var message = e.data;
+        if ( !message.method ) return;
+        var me = this;
+        var params = message.params.model_ ?
+              JSONToObject.visitObject(message.params) :
+              message.params;
+        if (message.method == "put") {
+          this.dao.put(params, {
+            put: function() {
+              self.postMessage({
+                request: message.request
+              });
+            },
+            error: function() {
+              self.postMessage({
+                request: message.request,
+                error: true
+              });
+            }
+          });
+        } else if(message.method == "remove") {
+          this.dao.remove(params, {
+            remove: function() {
+              self.postMessage({
+                request: message.request
+              });
+            },
+            error: function() {
+              self.postMessage({
+                request: message.request,
+                error: true
+              });
+            }
+          });
+        } else if(message.method == "select") {
+          var request = JSONToObject.visit(message.params);
+          var mysink = {
+            __proto__: request.sink,
+            eof: function() {
+              this.__proto__.eof && this.__proto__.eof();
+              self.postMessage({
+                request: message.request,
+                sink: ObjectToJSON.visit(this.__proto__)
+              });
+            },
+            error: function() {
+              this.__proto__ && this.__proto__.error();
+              self.postMessage({
+                request: message.request,
+                error: true
+              });
+            }
+          };
+          this.dao.select(mysink, request.options);
+        }
+      }
+    }
+  ]
+});
+
+
+var ModelDAO = {
     create: function(namespace, dao) {
 	var res = {
 	    __proto__: dao,
@@ -404,35 +1296,31 @@ var StorageDAO = {
 	    created:   { },
 
 	    init_: function() {
-		this.forEach(this.add_.bind(this));
+              var self = this;
+              this.pipe({
+                put: self.add_.bind(this),
+                remove: self.del_.bind(this)
+              });
 	    },
 
 	    add_: function(obj) {
-//	       this.namespace[obj.name]           = obj;
-//	       this.namespace[obj.name + "Proto"] = obj.getPrototype();
-
 	       if ( obj.name == 'Model' ) return;
 
 	       var dao = this;
-	       if ( ! this.namespace[obj.name] )
-	       FOAM.putFactory(this.namespace, obj.name, function() {
-                 console.log("Loading Model '" + obj.name + "'");
-		 return dao.get(obj.name);
-               });
+
+               this.namespace[obj.name] = obj;
 
 	       FOAM.putFactory(this.namespace, obj.name + "Proto", function() {
-                  return this[obj.name].getPrototype();
+                  return this.namespace[obj.name].getPrototype();
                });
 
 	       FOAM.putFactory(this.namespace, obj.name + 'DAO', function() {
 		  console.log("Creating '" + obj.name + "DAO'");
-                  return StorageDAO.create(obj.plural);
+                  return StorageDAO.create({ model: obj });
                });
-
-	       // this.namespace[obj.plural] = StorageDAO.create(obj.plural)
 	    },
 
-	    del: function() {
+	    del_: function() {
 		for (var objID in this.created) {
 		    delete this.namespace[objID];
 		}
@@ -444,86 +1332,205 @@ var StorageDAO = {
 	return res;
     }
 };
-*/
 
 
-var UnitTests = FOAM.create(
-{
-     model_: 'Model',
-     name: 'UnitTests',
-     label: 'Unit Tests',
-     plural: 'UnitTests',
-     tests:[
-{
-     model_: 'UnitTest',
-     description: 'DAO Tests',
-     passed: 24,
-     code: function () {
- var propagateBookmarks = function(bookmarks) {
-    bookmarks.put(BookmarkModel.getPrototype().create({index: 1, title: 'Google Blog', url: 'http://googleblog.blogspot.com/2011/09/happy-third-birthday-chrome.html'}));
-};
-    // TODO: sample bookmarks removed for privacy issues, add new bookarms and fix tests
+var OrderedCollectorSink = FOAM.create({
+  model_: 'Model',
 
-var firstBookmarksTest = function(bookmarks) {
-    this.assert(bookmarks.select(function(bmrk) { return bmrk.title[0] == "M"; }).
-	length == 2,
-	'# of titles beginning with M == 2');
-    this.assert(bookmarks.get(function(bmrk) { return bmrk.title[0] == "M"; }).
-	title[0] == "M", "first obj with title beginning with M");
-    this.assert(bookmarks.select(function(bmrk) { return bmrk.index % 3 == 2; }).
-	length == 2,
-	'# (index mod 3 == 2) == 2');
-    this.assert(bookmarks.select(function(bmrk) { return bmrk.title[0] == "A"; }).
-	length == 0,
-	'# of titles beginning with A == 0');
-    var chosenBookmarks = bookmarks.get(1);
-    this.assert(chosenBookmarks.title === 'Google Blog',
-	    'chosenBookmarks title');
+  name: 'OrderedCollectorSink',
+  label: 'OrderedCollectorSink',
 
-    var counter = 0;
-    var incrCounter = function() { ++counter; };
-    bookmarks.forEach(incrCounter);
-    this.assert(counter == 6, 'forEach pass');
+  properties: [
+    {
+      name: 'storage',
+      type: 'Array',
+      valueFactory: function() { return []; }
+    },
+    {
+      name: 'comparator',
+      type: 'Value',
+      required: true
+    }
+  ],
 
-    counter = 0;
-    bookmarks.forEach(incrCounter,
-			    function(bmrk) { return bmrk.title[0] == "M"; });
-    this.assert(counter == 2, 'forEach pass (first letter = "M")');
-
-    counter = 0;
-    bookmarks.forEach(incrCounter,
-			    function(bmrk) { return bmrk.title[0] == "A"; });
-    this.assert(counter == 0, 'forEach pass (first letter = "A")');
-
-    var obj2 = bookmarks.get(2);
-    bookmarks.remove(obj2);
-    bookmarks.remove(obj2);
-    this.assert(bookmarks.select().length == 5, 'collection size after removal');
-    this.assert(bookmarks.select(function(bmrk) { return bmrk.title[0] == "M"; }).
-	length == 1,
-	'# of titles beginning with M == 1');
-    bookmarks.put(BookmarkModel.getPrototype().create({index: 2, title: 'XXX', url: 'https://XXX'}));
-    this.assert(bookmarks.select().length == 6, 'collection size after re-insertion');
-
-    bookmarks.remove(function(bmrk) { return bmrk.title[0] == "M"; });
-    this.assert(bookmarks.select().length == 4, 'collection size after another removal');
-    bookmarks.put(BookmarkModel.getPrototype().create({index: 2, title: 'XXX', url: 'https://XXX'}));
-    bookmarks.put(BookmarkModel.getPrototype().create({index: 4, title: 'YYY', url: 'https://YYY'}));
-};
-
-
-  this.addHeader('ArrayDAO');
-  var bookmarksDao = ArrayDAO.create([]);
-  propagateBookmarks.call(this, bookmarksDao);
-  firstBookmarksTest.call(this,bookmarksDao);
-
-  this.addHeader('StorageDAO');
-  bookmarksDao = StorageDAO.create("test2");
-  propagateBookmarks.call(this, bookmarksDao);
-  firstBookmarksTest.call(this,bookmarksDao);
-
-
-}
+  methods: {
+    reduceI: function(other) {
+      this.storage = this.storage.reduce(this.comparator, other.storage);
+    },
+    put: function(obj) {
+      this.storage.push(obj);
+    }
   }
+});
 
-]});
+
+var CollectorSink = FOAM.create({
+  model_: 'Model',
+
+  name: 'CollectorSink',
+  label: 'CollectorSink',
+
+  properties: [
+    {
+      name: 'storage',
+      type: 'Array',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    reduceI: function(other) {
+      this.storage = this.storage.concat(other.storage);
+    },
+    put: function(obj) {
+      this.storage.push(obj);
+    }
+  }
+});
+
+
+var PartitionDAO = FOAM.create({
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
+
+  name: 'ParitionDAO',
+  label: 'PartitionDAO',
+
+  properties: [
+    {
+      name: 'partitions',
+      label: 'Partitions',
+      type: 'Array[DAO]',
+      mode: "read-only",
+      required: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      for ( var i = 0; i < this.partitions.length; i++) {
+        var part = this.partitions[i];
+        var self = this;
+        part.listen({
+          put: function(value) {
+            self.notify_("put", [value]);
+          },
+          remove: function(value) {
+            self.notify_("remove", [value]);
+          }
+        });
+      }
+    },
+    getPartition_: function(value) {
+      return this.partitions[Math.abs(value.hashCode()) % this.partitions.length];
+    },
+    put: function(value, sink) {
+      this.getPartition_(value).put(value, sink);
+    },
+    remove: function(query, sink) {
+      this.getPartition_(value).remove(value, sink);
+    },
+    find: function(key, sink) {
+      // Assumes no data redundancy
+      for (var i = 0; i < this.partitions.length; i++) {
+        this.partitions[i].find(key, sink);
+      }
+    },
+    select: function(sink, options) {
+      var myoptions = {};
+      options = options || {};
+      if (options.limit) {
+        myoptions.limit = options.limit + (options.skip || 0),
+        myoptions.skip = 0;
+      }
+
+      myoptions.order = options.order;
+      myoptions.query = options.query;
+
+      var pending = this.partitions.length;
+
+      var fc = this.createFlowControl_();
+
+      if (sink.model_ && sink.reduceI) {
+        var mysink = sink;
+      } else {
+        if (options.order) {
+          mysink = OrderedCollectorSink.create({ comparator: options.order });
+        } else {
+          mysink = CollectorSink.create({});
+        }
+        if ( options.limit ) sink = limitedSink(options.limit, sink);
+        if ( options.skip ) sink = skipSink(options.skip, sink);
+
+        mysink.eof = function() {
+          for (var i = 0; i < this.storage.length; i++) {
+            if ( fc.stopped ) break;
+            if ( fc.errorEvt ) {
+              sink.error && sink.error(fc.errorEvt);
+              break;
+            }
+            sink.put(this.storage[i], null, fc);
+          }
+        }
+      }
+
+      var sinks = new Array(this.partitions.length);
+      for ( var i = 0; i < this.partitions.length; i++ ) {
+        sinks[i] = mysink.deepClone();
+        sinks[i].eof = function() {
+          mysink.reduceI(this);
+          pending--;
+          if (pending <= 0) mysink.eof && mysink.eof();
+        };
+      }
+
+      for ( var i = 0; i < this.partitions.length; i++ ) {
+        this.partitions[i].select(sinks[i], options);
+      }
+    }
+  }
+});
+
+
+// TODO Why is this even a DAO, it literally only does find.
+var BlobReaderDAO = FOAM.create({
+    model_: 'Model',
+    label: 'BlobReaderDAO',
+    name: 'BlobReaderDAO',
+
+    properties: [
+        {
+            name: 'blob',
+            label: 'Blob',
+            type: 'Blob',
+            required: true
+        }
+    ],
+    methods: {
+        put: function(value, sink) {
+           sink && sink.error && sink.error("Unsupported");
+        },
+
+        remove: function(query, sink) {
+           sink && sink.error && sink.error("Unsupported");
+        },
+
+        select: function(query, sink) {
+           sink && sink.error && sink.error("Unsupported");
+        },
+
+        find: function(key, sink) {
+            var slice = this.blob.slice(key[0], key[0] + key[1]);
+            var reader = new FileReader();
+            reader.readAsText(slice);
+            reader.onload = function(e) {
+                sink && sink.put && sink.put(reader.result);
+            };
+            reader.onerror = function(e) {
+                sink && sink.error && sink.error("find", e);
+            };
+        }
+    }
+});

@@ -81,9 +81,9 @@ function layout() {
 window.onresize = layout;
 layout();
 
-//    var dao = StorageDAO2.create({model: EMail});
+//    var dao = StorageDAO.create({model: EMail});
 
-    emails = StorageDAO2.create({model: EMail});
+    emails = StorageDAO.create({model: EMail});
 
 function loadmbox(event) {
 emails.remove(TRUE); // this only works with storagedao2 because its synchronous

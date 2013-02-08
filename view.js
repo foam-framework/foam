@@ -2427,7 +2427,7 @@ var ProgressView = FOAM.create({
 
 var ArrayView = {
    create: function(prop) {
-      var view = DAO2ControllerView.create(GLOBAL[prop.subType]);
+      var view = DAOControllerView.create(GLOBAL[prop.subType]);
       return view;
    }
 };

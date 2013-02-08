@@ -47,7 +47,7 @@
        Dragon,
        circleModel,
        ClockView,
-       DAO2Controller,
+       DAOController,
        DAOCreateController,
        DAOUpdateController,
        EyeCView,
@@ -70,12 +70,10 @@
        System,
        Developer,
        EMail
-//       IndexedDBADAO
-//       WebUI
     ];
 
 
-    var ModelDAO = ModelDAO.create(this,StorageDAO2.create({ model: Model }));
+    var ModelDAO = ModelDAO.create(this,StorageDAO.create({ model: Model }));
     ModelDAO.find("Model", {
       found: false,
       put: function(ignore, ignore, fc) { this.found = true; },

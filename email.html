@@ -9,7 +9,7 @@
     var i = window.location.search.indexOf('user=');
     GLOBAL.user = ( i == -1 ) ? '"Kevin Greer" <kgr@domain.com>' : window.location.search.substring(i+5);
 
-    var ModelDAO = ModelDAO.create(this, StorageDAO2.create({ model: Model }));
+    var ModelDAO = ModelDAO.create(this, StorageDAO.create({ model: Model }));
 
     // This doesn't work, some async weirdness going on
     EMailDAO = EMailDAO.where(EQ(EMail.TO, user));

@@ -406,7 +406,7 @@ var AltIndex = {
 
 var IDAO = FOAM.create({
    model_: 'Model',
-   extendsModel: 'AbstractDAO2',
+   extendsModel: 'AbstractDAO',
 
    name: 'IDAO',
    label: 'Indexed DAO',

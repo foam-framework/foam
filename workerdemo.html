@@ -7,13 +7,13 @@
 <body style="overflow:hidden;margin-top:5px;">
   <script>
     var partitions = [
-    WorkerDAO2.create({model: Issue}),
-    WorkerDAO2.create({model: Issue}),
-    WorkerDAO2.create({model: Issue}),
-    WorkerDAO2.create({model: Issue}),
-    WorkerDAO2.create({model: Issue})
+    WorkerDAO.create({model: Issue}),
+    WorkerDAO.create({model: Issue}),
+    WorkerDAO.create({model: Issue}),
+    WorkerDAO.create({model: Issue}),
+    WorkerDAO.create({model: Issue})
     ];
-    var dao = PartitionDAO2.create({partitions: partitions});
+    var dao = PartitionDAO.create({partitions: partitions});
 
     var severities = [
     "Minor",

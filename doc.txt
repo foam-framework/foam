@@ -163,7 +163,7 @@ Data Access Object (DAO)
 Data persistance abstraction.
 
 Methods:
-	put(obj, sink)
+	put(obj, opt_sink)
 	remove(query, callback)
 
 	find(query, sink)
@@ -177,6 +177,11 @@ Methods:
 	skip(count) -> DAO
 	orderBy(...comparators) -> DAO
 
+
+Sink Interface
+     put(obj, opt_sink)
+     error()
+     eof()
 
 
 DAO Implementations

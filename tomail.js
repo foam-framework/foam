@@ -55,9 +55,9 @@ withFOAM(function() {
     window.onresize = layout;
     layout();
 
-    //    var dao = StorageDAO2.create({model: EMail});
+    //    var dao = StorageDAO.create({model: EMail});
 
-    emails = IndexedDBDAO2.create({model: EMail});
+    emails = IndexedDBDAO.create({model: EMail});
 
     $('loadmbox').onchange = function (event) {
         emails.remove(TRUE); // this only works with storagedao2 because its synchronous
