@@ -338,59 +338,7 @@ for ( var key in AbstractDAO.methods ) {
   pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
 }
 
-if ( false ) {
-defineProperties(Object.prototype, pmap);
 
-defineProperties(Object.prototype, {
-  clone: function() { return this; }, // TODO
-  put: function(obj, sink) {
-    /*
-    if ( this.hasOwnProperty('id') ) {
-      sink && sink.error && sink.error('put', obj, duplicate);
-      return;
-    }
-    */
-    this[obj.id] = obj;
-    sink && sink.put && sink.put(obj);
-    this.notify_('put', arguments);
-  },
-  find: function(id, sink) {
-    if ( this.hasOwnProperty(id) ) {
-      sink && sink.put && sink.put(this[id]);
-      return;
-    }
-    sink && sink.error && sink.error('find', id);
-  },
-  select: function(sink, options) {
-    sink = this.decorateSink_(sink, options, false);
-
-    var fc = this.createFlowControl_();
-
-    for (var key in this) {
-      sink.put(this[key], null, fc);
-      if ( fc.stopped ) break;
-      if ( fc.errorEvt ) {
-        sink.error && sink.error(fc.errorEvt);
-        break;
-      }
-    }
-
-    sink.eof && sink.eof();
-  },
-  // TODO: distinguish between remove() and removeAll()?
-  remove: function(query, sink) {
-    var id = query.id || query;
-
-    if ( this.hasOwnProperty(id) ) {
-      sink && sink.remove && sink.remove(this[id]);
-      delete this[id];
-      this.notify_('remove', arguments);
-      return;
-    }
-    sink && sink.error && sink.error('remove', id);
-  }
-});
-}
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {
