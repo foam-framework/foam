@@ -230,7 +230,7 @@ document.writeln("=======================================");
   <script language="javascript">
 
     example = $('view');
-    var view = CanvasView.create({width: 300, height: 30, background:'#fff'});
+    var view = Canvas.create({width: 300, height: 30, background:'#fff'});
 
     var v1 = TextFieldView.create();
     var v2 = TextFieldView.create();
@@ -253,7 +253,7 @@ document.writeln("=======================================");
 //    document.writeln("<br/>subs: " + e.subs_);
 
 
-    var sview = CanvasView.create({width: 50, height: 300, background:'#fff'});
+    var sview = Canvas.create({width: 50, height: 300, background:'#fff'});
     var s1 = ScrollCView.create({
       x:10, y:10, width: 30, height:290,
       value:100, extent:50, size: 500
@@ -347,7 +347,7 @@ o = Model;
 
     var planetModel = circleModel;
 
-    var space = CanvasView.create({width: 800, height: 600, background:'#000'});
+    var space = Canvas.create({width: 800, height: 600, background:'#000'});
     document.writeln("<table><tr>");
     document.writeln("<td valign=top>");
     space.write(document);
@@ -430,7 +430,7 @@ o = Model;
     dragon.eyes.watch(dmouse);
 
     document.writeln("<br/><h2>MoveTowards</h2>");  
-    var field = CanvasView.create({width:400, height:400, background:'#0d0'});
+    var field = Canvas.create({width:400, height:400, background:'#0d0'});
     document.writeln(field.toHTML());
     field.initHTML();
  			  

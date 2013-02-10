@@ -284,6 +284,135 @@ var PanelCView = FOAM.create({
 });
 
 
+/** Abstract CViews. **/
+var CView = FOAM.create({
+   model_: 'Model',
+
+   name:  'CView',
+   label: 'Panel',
+
+   properties: [
+      {
+	 name:  'parent',
+	 label: 'Parent',
+         type:  'CView',
+	 hidden: true
+      },
+      {
+	 name:  'x',
+	 label: 'X',
+	 type:  'int',
+	 view:  'IntFieldView',
+	 defaultValue: 10
+      },
+      {
+	 name:  'y',
+	 label: 'Y',
+	 type:  'int',
+	 view:  'IntFieldView',
+	 defaultValue: 10
+      },
+      {
+	 name:  'width',
+	 label: 'Width',
+	 type:  'int',
+	 view:  'IntFieldView',
+	 defaultValue: 10
+      },
+      {
+	 name:  'height',
+	 label: '',
+	 type:  'int',
+	 view:  'IntFieldView',
+	 defaultValue: 10
+      },
+      {
+	 name:  'children',
+	 label: 'Children',
+	 type:  'CView[]',
+	 valueFactory: function() { return []; }
+      },
+      {
+	 name:  'background',
+	 label: 'Background Color',
+	 type:  'String',
+	 defaultValue: 'white'
+      },
+      {
+	 name:  'canvas',
+	 label: 'Canvas',
+	 type:  'CView',
+	 getter: function() {
+	   return this.parent.canvas;
+	 },
+	 setter: undefined
+      }
+   ],
+
+   methods: {
+      toHTML: function() {
+
+         // If being added to HTML directly, then needs to create own Canvas as parent.
+	 this.parent = Canvas.create();
+	 return this.parent.toHTML();
+      },
+
+      initHTML: function() {
+         var self = this;
+         var parent = this.parent;
+
+	 parent.initHTML();
+	 parent.addChild(this);
+         Events.dynamic(
+           function() { self.x; self.y; self.width; self.height; }, function() {
+             parent.width = self.x + self.width + 1;
+             parent.height = self.y + self.height + 2;
+           });
+         Events.dynamic(
+           function() { self.background; }, function() {
+             parent.background = self.background;
+           });
+      },
+
+      write: function(document) {
+	 document.writeln(this.toHTML());
+	 this.initHTML();
+      },
+
+      addChild: function(child) {
+	 this.children.push(child);
+	 child.parent = this;
+	 return this;
+      },
+
+      removeChild: function(child) {
+	 this.children.remove(child);
+	 child.parent = undefined;
+	 return this;
+      },
+
+      erase: function() {
+	 this.canvas.fillStyle = this.background;
+	 this.canvas.fillRect(0, 0, this.width, this.height);
+      },
+
+      paintChildren: function() {
+	 for ( var i = 0 ; i < this.children.length ; i++ ) {
+	    var child = this.children[i];
+            this.canvas.save();
+	    child.paint();
+            this.canvas.restore();
+	 }
+      },
+
+      paint: function() {
+	 this.erase();
+         this.paintChildren();
+      }
+   }
+});
+
+
 var ProgressCView = FOAM.create({
 
    model_: 'Model',
@@ -337,7 +466,7 @@ var ScrollCView = FOAM.create({
 
    model_: 'Model',
 
-   extendsModel: 'PanelCView',
+   extendsModel: 'CView',
 
    name:  'ScrollCView',
 
@@ -351,32 +480,9 @@ var ScrollCView = FOAM.create({
 //	   oldValue && oldValue.removeListener(this.updateValue);
 //	   newValue.addListener(this.updateValue);
            var e = newValue.element();
+           if ( ! e ) return;
            e.addEventListener('mousedown', this.mouseDown, false);
 //           e.addEventListener('mouseup',   this.mouseUp,   false);
-         }
-      },
-      {
-	 name:  'x',
-         type:  'int',
-         defaultValue: 0
-      },
-      {
-	 name:  'y',
-         type:  'int',
-         defaultValue: 0
-      },
-      {
-	 name:  'width',
-         type:  'int',
-         defaultValue: 20
-      },
-      {
-	 name:  'height',
-         type:  'int',
-         postSet: function(height) {
-if ( this.canvasView ) {
-  this.canvasView.height = height;
-}
          }
       },
       {
@@ -390,11 +496,6 @@ if ( this.canvasView ) {
         defaultValue: 0
       },
       {
-        name: 'starty',
-        type: 'int',
-        defaultValue: 0
-      },
-      {
 	name:  'extent',
         type:  'int',
         defaultValue: 10
@@ -402,6 +503,11 @@ if ( this.canvasView ) {
       {
 	 name:  'size',
          type:  'int'
+      },
+      {
+        name: 'starty',
+        type: 'int',
+        defaultValue: 0
       }
    ],
 
@@ -457,7 +563,6 @@ if ( this.canvasView ) {
 
     paint: function() {
       var c = this.canvas;
-
       c.fillStyle = '#fff';
       c.fillRect(this.x, this.w, this.width, this.height);
 
@@ -537,6 +642,7 @@ var ScrollBorder = FOAM.create({
        this.view.layout();
        var view = window.getComputedStyle(this.view.element().children[0]);
        this.scrollbar.height = toNum(view.height)-30;
+       this.scrollbar.paint();
      },
      toHTML: function() {
        return '<table width=100% border=0><tr><td valign=top>' +

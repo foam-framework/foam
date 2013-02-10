@@ -334,7 +334,7 @@ var Canvas = Model.create({
          type:  'int',
 	 defaultValue: 100,
          postSet: function(width) {
-           if ( this.element() ) this.element().width = width + 'px';
+           if ( this.element() ) this.element().width = width;
          }
       },
       {
@@ -343,7 +343,7 @@ var Canvas = Model.create({
 	 type:  'int',
 	 defaultValue: 100,
          postSet: function(height) {
-           if ( this.element() ) this.element().height = height + 'px';
+           if ( this.element() ) this.element().height = height;
          }
       }
    ],
@@ -403,8 +403,6 @@ var Canvas = Model.create({
    }
 });
 
-
-var CanvasView = Canvas.getPrototype();
 
 var circleModel = Model.create({
 
