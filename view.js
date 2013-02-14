@@ -2190,7 +2190,8 @@ style = window.getComputedStyle(this.element().children[0]);
             str.push('id=' +
                 this.registerCallback(
                   'click',
-                  (function(table, prop) { return function() { table.sortOrder = prop; table.repaint(); };})(this, prop)));
+                  (function(table, prop) { return function() {
+                    table.sortOrder = prop; table.repaint(); };})(this, prop)));
             if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
             str.push('>' + prop.label + '</th>');
 

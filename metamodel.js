@@ -302,7 +302,7 @@ var PropertyModel = {
     help:  "Describes a properties of a modelled entity.",
 
     ids: [
-      'name',
+      'name'
     ],
 
     tableProperties: [

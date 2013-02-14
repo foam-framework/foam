@@ -256,11 +256,13 @@ var TreeIndex = {
     }
 
     var cost = this.size(s);
+    var sortRequired = false;
 
     if ( options && options.order ) {
       if ( options.order == prop ) {
          // sort not required
       } else {
+        sortRequired = true;
         cost *= Math.log(cost) / Math.log(2);
       }
     }
@@ -273,7 +275,13 @@ var TreeIndex = {
           {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
           undefined;
 */
-        index.select(s, sink, options);
+        if ( sortRequired ) {
+          var a = [];
+          index.select(s, a, {query: options.query});
+          a.select(sink, options);
+        } else {
+          index.select(s, sink, options);
+        }
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
