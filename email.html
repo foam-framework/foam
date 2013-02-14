@@ -11,6 +11,7 @@
 
     var ModelDAO = ModelDAO.create(this, StorageDAO.create({ model: Model }));
 
+    EMailDAO = [];
     // This doesn't work, some async weirdness going on
     EMailDAO = EMailDAO.where(EQ(EMail.TO, user));
 

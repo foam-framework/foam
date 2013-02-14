@@ -14,6 +14,67 @@
  * limitations under the License.
  */
 
+var Attachment = FOAM.create({
+   model_: 'Model',
+   name: 'Attachment',
+   label: 'Attachment',
+   plural: 'Attachments',
+   ids: [ 'filename' ],
+   tableProperties:
+   [
+      'filename',
+      'type',
+      'size'
+   ],
+   properties:
+   [
+      {
+         model_: 'Property',
+         name: 'filename',
+         label: 'File Name',
+         type: 'String',
+         displayWidth: 50,
+         view: 'TextFieldView'
+      },
+      {
+         model_: 'Property',
+         name: 'type',
+         label: 'Type',
+         type: 'String',
+         displayWidth: 30,
+         view: 'TextFieldView'
+      },
+      {
+         model_: 'Property',
+         name: 'size',
+         label: 'Size',
+         type: 'int',
+         displayWidth: 10,
+         view: 'TextFieldView'
+      },
+      {
+         model_: 'Property',
+         name: 'position',
+         label: 'Position',
+         type: 'int',
+         displayWidth: 10,
+         view: 'TextFieldView'
+      },
+   ],
+   actions:
+   [
+      {
+         model_: 'Action',
+         name: 'view',
+         label: 'View',
+         help: 'View an attachment.',
+         action: function () {
+         }
+      }
+   ]
+});
+
+
 var EMail = FOAM.create({
    model_: 'Model',
    name: 'EMail',
@@ -22,6 +83,7 @@ var EMail = FOAM.create({
    ids: [ 'timestamp' ],
    tableProperties:
    [
+      'attachments',
       'to',
       'from',
       'subject',
@@ -87,12 +149,27 @@ var EMail = FOAM.create({
          view: 'TextFieldView'
       },
       {
+         model_: 'Property',
          name: 'labels',
 	 label: 'Labels',
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 valueFactory: function() { return []; },
 	 help: 'Email labels.'
+      },
+      {
+         model_: 'Property',
+	 name: 'attachments',
+	 label: 'Attachments',
+	 type: 'Array[Attachment]',
+         subType: 'Attachment',
+	 view: 'ArrayView',
+	 valueFactory: function() { return []; },
+         tableWidth: '20',
+         tableFormatter: function(a) {
+           return a.length ? a.length : "";
+         },
+	 help: 'Email attachments.'
       },
       {
          model_: 'Property',
@@ -153,6 +230,7 @@ var EMail = FOAM.create({
 });
 
 
+
 var MBOXParser = {
   __proto__: grammar,
 
@@ -171,6 +249,7 @@ var MBOXParser = {
     sym('labels'),
     sym('start of body'),
     sym('end of body'),
+    sym('start of attachment'),
     sym('other')
   ),
 
@@ -207,6 +286,13 @@ var MBOXParser = {
     seq('Content-Transfer-Encoding:', sym('until eol')),
     '--',
     '\n--'), // TODO: remove this line when reader fixed!
+
+  'start of attachment': seq(
+    'Content-Disposition: attachment; filename="', sym("filename"), '"',
+    sym('until eol')
+    ),
+
+  filename: repeat(notChar('"')),
 
   'raw email address': seq(repeat(notChar('@')), sym('until eol'))
 
@@ -250,6 +336,14 @@ var MBOXLoader = {
   'start of body': function(v) { this.inBody = true; },
 
   'end of body': function(v) { this.inBody = false; },
+
+  'start of attachment': function(v) {
+    var attachment = Attachment.create();
+
+    attachment.filename = v[1].join('');
+
+    this.email.attachments.push(attachment);
+  },
 
   other: function(v) { if ( this.inBody ) this.b.push(v.join('')); }
 
