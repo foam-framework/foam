@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+/**
+ * Replace Function.bind with a version
+ * which is ~10X faster for the common case
+ * where you're only binding 'this'.
+ **/
+Function.prototype.bind = (function() {
+  var oldBind    = Function.prototype.bind;
+  var simpleBind = function(f, self) {
+    return function() { return f.apply(self, arguments); };
+  };
+
+  return function() {
+    return arguments.length == 1 ? simpleBind(this, arguments[0]) : oldBind.apply(this, arguments);
+  };
+})();
+
+
 // Define extensions to built-in prototypes as non-enumerable properties so
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)
