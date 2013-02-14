@@ -22,8 +22,8 @@ var Attachment = FOAM.create({
    ids: [ 'filename' ],
    tableProperties:
    [
-      'filename',
       'type',
+      'filename',
       'size'
    ],
    properties:
@@ -160,7 +160,7 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
 	 name: 'attachments',
-	 label: 'Attachments',
+	 label: 'Attachments', // TODO: switch to paperclip icon
 	 type: 'Array[Attachment]',
          subType: 'Attachment',
 	 view: 'ArrayView',
@@ -288,8 +288,8 @@ var MBOXParser = {
     '\n--'), // TODO: remove this line when reader fixed!
 
   'start of attachment': seq(
-    'Content-Disposition: attachment; filename="', sym("filename"), '"',
-    sym('until eol')
+    'Content-Type: ', repeat(notChar(';')), '; name="', sym("filename"), '"', sym('until eol')
+//    'Content-Disposition: attachment; filename="', sym("filename"), '"', sym('until eol')
     ),
 
   filename: repeat(notChar('"')),
@@ -340,7 +340,8 @@ var MBOXLoader = {
   'start of attachment': function(v) {
     var attachment = Attachment.create();
 
-    attachment.filename = v[1].join('');
+    attachment.type = v[1].join('');
+    attachment.filename = v[3].join('');
 
     this.email.attachments.push(attachment);
   },
