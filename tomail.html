@@ -90,22 +90,27 @@ layout();
 
 //    var dao = StorageDAO.create({model: EMail});
 
-    emails = StorageDAO.create({model: EMail});
+    // emails = StorageDAO.create({model: EMail});
+    emails = IndexedDBDAO.create({model: EMail});
 
 function loadmbox(event) {
-emails.remove(TRUE); // this only works with storagedao2 because its synchronous
-var file = event.target.files[0];
-var reader = FullReader.create(LineBasedReader.create(TextReader.create(BlobReader.create(file))));
+  emails.remove(TRUE); // this only works with storagedao because its synchronous
+  var file = event.target.files[0];
+  var reader = FullReader.create(LineBasedReader.create(TextReader.create(BlobReader.create(file))));
 
-MBOXLoader.dao = emails;
-reader.read(MBOXLoader);
+  MBOXLoader.dao = emails;
+  reader.read(MBOXLoader);
 }
+
+/*
     var dao = IDAO.create({model: EMail});
     emails.select(dao);
     dao.bulkLoad(dao);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
+*/
+    var dao = emails;
 
     var table = ScrollBorder.create({
       view: TableView2.create({

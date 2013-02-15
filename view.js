@@ -216,6 +216,7 @@ var AbstractView2 = FOAM.create({
 	return opt_elementId;
     },
 
+    /** Insert this View's toHTML into the Element of the supplied name. **/
     insertInElement: function(name) {
       var e = $(name);
       e.innerHTML = this.toHTML();

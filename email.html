@@ -11,9 +11,11 @@
 
     var ModelDAO = ModelDAO.create(this, StorageDAO.create({ model: Model }));
 
-    EMailDAO = [];
+//    var EMailDAO = [];
+    var EMailDAO = IndexedDBDAO.create({model: EMail});
+
     // This doesn't work, some async weirdness going on
-    EMailDAO = EMailDAO.where(EQ(EMail.TO, user));
+//    EMailDAO = EMailDAO.where(EQ(EMail.TO, user));
 
     var stack = StackView.create();
     stack.write(document);

@@ -102,6 +102,9 @@ var EMail = FOAM.create({
          displayHeight: 1,
          view: 'TextFieldView',
          tableWidth: '100',
+         preSet: function (d) {
+           return typeof d === 'string' ? new Date(d) : d;
+	 },
          tableFormatter: function(d) {
            return d.toDateString();
          },

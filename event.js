@@ -304,7 +304,7 @@ var PropertyChangeSupport = {
    /** Indicate that a specific property has changed. **/
    propertyChange: function (property, oldValue, newValue) {
       // don't fire event if value didn't change
-      if ( property != null && oldValue == newValue ) return;
+      if ( property != null && oldValue === newValue ) return;
 
       this.publish(this.propertyTopic(property), oldValue, newValue);
    },

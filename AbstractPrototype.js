@@ -126,10 +126,10 @@ console.log(i, k, v);
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
         function() {
-          return name in this.instance_ ? this.instance_[name] : prop.defaultValueFn.call(this);
+          return this.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValueFn.call(this);
         } :
         function() {
-          return this.instance_ && name in this.instance_ ? this.instance_[name] : prop.defaultValue;
+          return this.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValue;
         });
     }
 
