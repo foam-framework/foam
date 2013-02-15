@@ -43,7 +43,6 @@ var files = [
   // remove below here
   'models',
   'email',
-  'emaildata',
   'turntable',
   'dragon'
 ];
