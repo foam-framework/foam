@@ -14,6 +14,78 @@
  * limitations under the License.
  */
 
+
+/** NOP afunc. **/
+function anop(ret) { ret && ret(undefined); }
+
+
+/** afunc log. **/
+function alog(val) {
+  return function (ret) {
+    console.log(val);
+    ret && ret.apply(this, [].shift.call(arguments));
+  };
+}
+
+
+/** Create an afunc which always returns the supplied constant value. **/
+function aconstant(v) { return function(ret) { ret && ret(anop, v); } }
+
+/** Execute the supplied afunc N times. **/
+function arepeat(n, afunc) {
+  return function(ret) {
+    var a = [];
+    for ( var i = 0 ; i < arguments.length ; i++ ) a[i] = arguments[i];
+
+    var g = function() {
+      if ( n-- == 1 ) { a[0] = ret; afunc.apply(this, a); return; };
+      afunc.apply(this, a);
+    };
+
+    a[0] = g;
+    g.apply(this, a);
+  };
+}
+
+/** Time an afunc. **/
+function atime(str, afunc) {
+  return function(ret) {
+    console.time(str);
+    var a = arguments;
+    var args = [function() {
+      console.timeEnd(str);
+      ret && ret.apply(this, [].shift.call(a));
+    }];
+    for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
+    afunc.apply(this, args);
+  };
+}
+
+
+/** Create a future value. **/
+function afuture() {
+  var set     = false;
+  var values  = undefined;
+  var waiters = [];
+
+  return {
+    set: function() {
+      values = arguments;
+      set = true;
+      for (var i = 0 ; i < waiters.length; i++) {
+        waiters[i].apply(null, values);
+      }
+      waiters = undefined;
+    },
+
+    get: function(ret) {
+      if ( set ) { ret.apply(null, values); return; }
+      waiters.push(ret);
+    }
+  };
+};
+
+
 /** Memoize an async function. **/
 function amemo(f) {
   var values;
