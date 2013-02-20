@@ -1,0 +1,26 @@
+TO-Reader
+attachments
+html bodies
+FileDAO of Messages
+Apps V2 App
+test WebWorker performance for top-level DAO
+full-text search
+L&F, including Logo
+make own stylesheet
+internationalization
+parse multiple addresses in 'to'
+needs better end-of-attachment handling so it doesn't detect and parse emails embeded as attachments in other emails
+
+
+FOAM
+finish IndexedDB
+AbstractView2 migration
+Node.js boot hack
+Client/Server DAO
+IDAO
+DAO2 Unit Tests
+Feature-Oriented Migration
+Generic Search Controller
+Scroll-Wheel Support
+<Type>Properties
+
