@@ -15,7 +15,7 @@
  */
 
 /* TODO:
-     - parse multiple addresses in to/from
+     - parse multiple addresses in 'to'
      - needs better end-of-attachment handling so it doesn't detect and parse
        emails embeded as attachments in other emails
 */
@@ -339,6 +339,8 @@ var MBOXLoader = {
   to: function(v) { 
     this.email.to = v[1].join(''); 
     var i = this.email.to.indexOf(',');
+    if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
+    i = this.email.to.indexOf('<<');
     if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
 },
 

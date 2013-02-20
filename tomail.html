@@ -100,6 +100,7 @@ layout();
     var d1 = dao;
     var d2 = emails;
 
+/*
 
     dao = {
       __proto__: dao,
@@ -116,7 +117,10 @@ layout();
         return future.get;
       }
     };
-
+*/
+    // Quick hack to make search work on each keystroke
+    // TODO: make option of TextSearchView
+    DomValue.DEFAULT_EVENT = 'keyup';
 
     var table = ScrollBorder.create({
       view: TableView2.create({

@@ -961,23 +961,43 @@ var ChoiceView = FOAM.create({
 
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
          var choice = this.choices[i];
+         var id     = this.nextID();
+         var self   = this;
+  
+         this.registerCallback('mouseover', function(e) {
+           console.log('onmouseover', e.target.value);
+           self.prev = self.value.get();
+           self.value.set(e.target.value);
+         }, id);
+         this.registerCallback('mouseout',  function(e) {
+           console.log('onmouseout', e.target.value);
+           self.value.set(self.prev);
+         }, id);
+         this.registerCallback('click',  function(e) {
+           console.log('click', e.target.value);
+           self.prev = e.target.value;
+           self.value.set(self.prev);
+         }, id);
+
+         out.push('\t<option id="' + id + '"');
 
          if ( Array.isArray(choice) ) {
            var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-	   out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+	   if ( this.value && choice[0] == this.value.get() ) out.push(' selected');
+           out.push(' value="');
 	   out.push(encodedValue + '">');
            out.push(choice[1].toString());
          } else {
-           var id = 'id="' + this.registerCallback('onfocus', function() { console.log('onmouseover'); }) + '" ';
-
-	   out.push(this.value && choice == this.value.get() ? '\t<option ' + id + 'selected>' : '\t<option' + id + '>');
+	   if ( this.value && choice == this.value.get() ) out.push(' selected');
+           out.push(' value="');
            out.push(choice.toString());
          }
          out.push('</option>');
        }
 
        this.element().innerHTML = out.join('');
+       AbstractView2.getPrototype().initHTML.call(this);
      },
 
      getValue: function() {
@@ -991,7 +1011,6 @@ var ChoiceView = FOAM.create({
      },
 
      initHTML: function() {
-       AbstractView2.getPrototype().initHTML.call(this);
        var e = this.element();
 
        Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
@@ -1008,6 +1027,7 @@ var ChoiceView = FOAM.create({
      }
    }
 });
+
 
 var RadioBoxView = FOAM.create({
 
