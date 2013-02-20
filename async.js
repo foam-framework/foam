@@ -20,22 +20,23 @@ function anop(ret) { ret && ret(undefined); }
 
 
 /** afunc log. **/
-function alog(val) {
+function alog() {
+  var args = arguments;
   return function (ret) {
-    console.log(val);
+    console.log.apply(console, args);
     ret && ret.apply(this, [].shift.call(arguments));
   };
 }
 
 
 /** Create an afunc which always returns the supplied constant value. **/
-function aconstant(v) { return function(ret) { ret && ret(anop, v); } }
+function aconstant(v) { return function(ret) { ret && ret(v); } }
+
 
 /** Execute the supplied afunc N times. **/
 function arepeat(n, afunc) {
   return function(ret) {
-    var a = [];
-    for ( var i = 0 ; i < arguments.length ; i++ ) a[i] = arguments[i];
+    var a = argsToArray(arguments);
 
     var g = function() {
       if ( n-- == 1 ) { a[0] = ret; afunc.apply(this, a); return; };
@@ -59,6 +60,15 @@ function atime(str, afunc) {
     for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
     afunc.apply(this, args);
   };
+}
+
+
+/** Sleep for the specified delay. **/
+function asleep(ms) {
+  return function(ret) {
+    var args = [].shift.call(arguments);
+    window.setTimeout(ret.bind(args), ms);
+  }
 }
 
 
@@ -123,7 +133,7 @@ Function.prototype.ao = function(f2) {
   };
 };
 
-Function.prototype.seq = function(f2) {
+Function.prototype.aseq = function(f2) {
   return f2.ao(this);
 };
 
@@ -180,31 +190,6 @@ function ajoin(/* ... afuncs */) {
 
     for ( var i = 0 ; i < fs.length ; i++ )
       fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
-  };
-}
-
-/**
- * Decorate a Sink so that a specified callback is called
- * when the Sink's eof() method is called.
- */
-function onEOF(sink, opt_callback) {
-  var done = false;
-  var callback = opt_callback;
-
-  return {
-    __proto__: sink,
-    eof: function() {
-      done = true;
-      if ( callback ) callback(sink);
-      sink.eof && sink.eof.apply(sink, arguments);
-    },
-    future: function(f) {
-      if ( done ) {
-        f(sink);
-      } else {
-        callback = f;
-      }
-    }
   };
 }
 

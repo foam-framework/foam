@@ -88,29 +88,35 @@ function layout() {
 window.onresize = layout;
 layout();
 
-//    var dao = StorageDAO.create({model: EMail});
-
-    // emails = StorageDAO.create({model: EMail});
     emails = IndexedDBDAO.create({model: EMail});
 
-function loadmbox(event) {
-  emails.remove(TRUE); // this only works with storagedao because its synchronous
-  var file = event.target.files[0];
-  var reader = FullReader.create(LineBasedReader.create(TextReader.create(BlobReader.create(file))));
-
-  MBOXLoader.dao = emails;
-  reader.read(MBOXLoader);
-}
-
-/*
     var dao = IDAO.create({model: EMail});
-    emails.select(dao);
-    dao.bulkLoad(dao);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
-*/
-    var dao = emails;
+
+//    dao2.bulkLoad(dao2);
+
+    var d1 = dao;
+    var d2 = emails;
+
+
+    dao = {
+      __proto__: dao,
+      select: function(sink, options) {
+        var future = afuture();
+
+        aseq(
+          // alog('select ', sink, options && options.query && options.query.toSQL()),
+          // atime('indexedDB: ', arepeat(10, function(ret) { d2.select(COUNT(), {__proto__:options}); ret(); })),
+         atime('idao: ', arepeat(100, function(ret) { d1.select(COUNT(), options); ret(); })),
+          function() { d1.select(sink, options)(function(v) { future.set(sink); }); }
+        )();
+
+        return future.get;
+      }
+    };
+
 
     var table = ScrollBorder.create({
       view: TableView2.create({
@@ -178,6 +184,26 @@ function loadmbox(event) {
     }
 
     function switchHands() { reversed = ! reversed; layout(); }
+
+    function loadmbox(event) {
+      // emails.remove(TRUE); // this only works with storagedao because its synchronous
+      var file = event.target.files[0];
+      var reader = FullReader.create(LineBasedReader.create(TextReader.create(BlobReader.create(file))));
+
+      MBOXLoader.dao = emails;
+      reader.read(MBOXLoader);
+    }
+
+    emails.select(dao)(function() {
+      console.log('********************************************** loaded');
+      layout();
+      byTo.dao = byTo.dao;
+      byFrom.dao = byFrom.dao;
+      byLabel.dao = byLabel.dao;
+      resetSearch();
+    });
+
+
   </script>
 </body>
 </html>

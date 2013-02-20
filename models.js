@@ -502,7 +502,8 @@ var ScrollCView = FOAM.create({
       },
       {
 	 name:  'size',
-         type:  'int'
+         type:  'int',
+         postSet: function() { console.log('*******size:',this.size, this.height); this.paint(); }
       },
       {
         name: 'starty',
@@ -609,7 +610,11 @@ var ScrollBorder = FOAM.create({
 	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
-             return ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10, size: this.dao ? this.dao.length : 100});
+             var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
+
+//             this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+
+	     return sb;
            }
        },
        {
@@ -620,13 +625,11 @@ var ScrollBorder = FOAM.create({
          postSet: function(newValue, oldValue) {
            this.view.dao = newValue;
            var self = this;
-           var count = COUNT();
-           this.dao.select({
-             __proto__: count,
-             eof: function() {
-               self.scrollbar.size = this.count;
+console.log('*************************************************************** foo');
+           this.dao.select(COUNT())(function(c) {
+console.log('****************count: ', c.count);
+               self.scrollbar.size = c.count;
                self.scrollbar.value = 0;
-             }
            });
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
@@ -642,6 +645,7 @@ var ScrollBorder = FOAM.create({
        this.view.layout();
        var view = window.getComputedStyle(this.view.element().children[0]);
        this.scrollbar.height = toNum(view.height)-30;
+console.log('**********height:', this.scrollbar.height);
        this.scrollbar.paint();
      },
      toHTML: function() {
@@ -660,13 +664,14 @@ var ScrollBorder = FOAM.create({
        var scrollbar = this.scrollbar;
        var self = this;
        Events.dynamic(function() {scrollbar.value;}, function() {
-         if ( self.dao) self.view.dao = self.dao.skip(scrollbar.value); });
+         if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value); });
        Events.dynamic(function() {view.rows;}, function() {
            scrollbar.extent = view.rows;
          });
      }
    }
 });
+
 
 var EyeCView = FOAM.create({
 

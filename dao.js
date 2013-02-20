@@ -128,9 +128,14 @@ var JSONToObject = {
   __proto__: ObjectToJSON.create(),
 
   visitString: function(o) {
+try {
      return o.substr(0, 8) === 'function' ?
        eval('(' + o + ')') :
        o ;
+} catch (x) {
+  console.log(x, o);
+  return o;
+}
   },
 
   visitObject: function(o) {
@@ -170,11 +175,11 @@ var AbstractDAO = FOAM.create({
     }
     this.daoListeners_.push(sink);
   },
-  // TODO: rename to pipe
   pipe: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     var fc = this.createFlowControl_();
     var self = this;
+    // TODO: switch to use future
     this.select(
       {
         __proto__: sink,
@@ -271,10 +276,12 @@ function filteredDAO(query, dao) {
       else {
         options = {query: query};
       }
-      dao.select(sink, options);
+
+      return dao.select(sink, options);
     }
   };
 }
+
 
 function orderedDAO(comparator, dao) {
 //  comparator = toCompare(comparator);
@@ -288,17 +295,19 @@ function orderedDAO(comparator, dao) {
       } else {
         options = {order: comparator};
       }
-      dao.select(sink, options);
+
+      return dao.select(sink, options);
     }
   };
 }
+
 
 function limitedDAO(count, dao) {
   return {
     __proto__: dao,
     select: function(sink, options) {
       if ( options ) {
-        if ( options.limit ) {
+        if ( 'limit' in options ) {
           options = {
             __proto__: options,
             limit: Math.min(count, options.limit)
@@ -310,10 +319,12 @@ function limitedDAO(count, dao) {
       else {
         options = { limit: count };
       }
-      dao.select(sink, options);
+
+      return dao.select(sink, options);
     }
   };
 }
+
 
 function skipDAO(skip, dao) {
   return {
@@ -327,7 +338,8 @@ function skipDAO(skip, dao) {
       } else {
         options = { __proto__: options, skip: skip };
       }
-      dao.select(sink, options);
+
+      return dao.select(sink, options);
     }
   };
 }
@@ -396,16 +408,19 @@ defineProperties(Array.prototype, {
     var fc = this.createFlowControl_();
 
     var start = hasQuery ? 0 : options && options.skip || 0;
-    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
+    var end = hasQuery ? this.length : Math.min(this.length, start + (options && 'limit' in options || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
       if ( fc.errorEvt ) {
         sink.error && sink.error(fc.errorEvt);
-        break;
+        return aconstant(sink, fc.errorEvt);
       }
     }
+
     sink.eof && sink.eof();
+
+    return aconstant(sink);
   }
 });
 
@@ -579,6 +594,7 @@ console.log("put: ", value);
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
+      var future = afuture();
 
       this.withStore("readonly", function(store) {
         var request = store.openCursor();
@@ -587,11 +603,13 @@ console.log("put: ", value);
           if ( fc.stopped ) return;
           if ( fc.errorEvt ) {
             sink.error && sink.error(fc.errorEvt);
+	    future.set(sink, fc.errorEvt);
             return;
           }
 
           if (!cursor) {
             sink.eof && sink.eof();
+	    future.set(sink);
             return;
           }
 
@@ -603,6 +621,8 @@ console.log("put: ", value);
           sink.error && sink.error(e);
         };
       });
+
+      return future.get;
     },
 
     removeAll: function(callback) {
@@ -677,6 +697,7 @@ var StorageDAO = FOAM.create({
 
     select: function(sink, options) {
       this.storage.select(sink, options);
+      return aconstant(sink);
     },
 
     flush_: function() {
@@ -1390,7 +1411,7 @@ var PartitionDAO = FOAM.create({
     select: function(sink, options) {
       var myoptions = {};
       options = options || {};
-      if (options.limit) {
+      if ( 'limit' in options ) {
         myoptions.limit = options.limit + (options.skip || 0),
         myoptions.skip = 0;
       }
@@ -1410,7 +1431,7 @@ var PartitionDAO = FOAM.create({
         } else {
           mysink = CollectorSink.create({});
         }
-        if ( options.limit ) sink = limitedSink(options.limit, sink);
+        if ( 'limit' in options ) sink = limitedSink(options.limit, sink);
         if ( options.skip ) sink = skipSink(options.skip, sink);
 
         mysink.eof = function() {

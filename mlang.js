@@ -412,9 +412,9 @@ var ContainsExpr = FOAM.create({
    methods: {
       outSQL: function(out) {
         this.arg1.outSQL(out);
-        out.push(" like '%");
+        out.push(" like '%' + ");
         this.arg2.outSQL(out);
-        out.push("%'");
+        out.push(" + '%'");
       },
 
       partialEval: function() {
@@ -472,9 +472,9 @@ var ContainsICExpr = FOAM.create({
    methods: {
       outSQL: function(out) {
         this.arg1.outSQL(out);
-        out.push(" like '%");
+        out.push(" like '%' + ");
         this.arg2.outSQL(out);
-        out.push("'");
+        out.push(" + '%'");
       },
 
       partialEval: function() {

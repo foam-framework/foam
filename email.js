@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/* TODO:
+     - parse multiple addresses in to/from
+     - needs better end-of-attachment handling so it doesn't detect and parse
+       emails embeded as attachments in other emails
+*/
+
 var Attachment = FOAM.create({
    model_: 'Model',
    name: 'Attachment',
@@ -84,8 +90,8 @@ var EMail = FOAM.create({
    tableProperties:
    [
       'attachments',
-      'to',
       'from',
+      'to',
       'subject',
       'timestamp'
    ],
@@ -258,6 +264,7 @@ var MBOXParser = {
 
   'start of email': seq('From ', sym('until eol')),
 
+//  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
   from: seq('From: ', sym('until eol')),
 
@@ -316,7 +323,8 @@ var MBOXLoader = {
       this.email.body = this.b.join('\n');
       this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
-      console.log('creating: ', this.email.toJSON());
+      console.log('creating: ', this.email.timestamp);
+      // console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
     }
   }
@@ -328,7 +336,11 @@ var MBOXLoader = {
     this.b = [];
   },
 
-  to: function(v) { this.email.to = v[1].join(''); },
+  to: function(v) { 
+    this.email.to = v[1].join(''); 
+    var i = this.email.to.indexOf(',');
+    if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
+},
 
   from: function(v) { this.email.from = v[1].join(''); },
 

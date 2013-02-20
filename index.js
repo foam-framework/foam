@@ -59,11 +59,9 @@ var ValueIndex = {
   })(),
   select: function(value, sink, options) {
     if ( options ) {
-      if ( options.query ) {
-	 if ( ! options.query.f(value) ) return;
-      }
-       if ( options.skip-- > 0 ) return;
-       if ( options.limit-- < 1 ) return;
+      if ( options.query && ! options.query.f(value) ) return;
+      if ( 'skip' in options && options.skip-- > 0 ) return;
+      if ( 'limit' in options && options.limit-- < 1 ) return;
     }
     sink.put(value);
   },
@@ -157,7 +155,7 @@ var TreeIndex = {
     if ( ! s ) return;
 
     if ( options ) {
-      if ( options.limit <= 0 ) return;
+      if ( 'limit' in options && options.limit <= 0 ) return;
 
       var size = this.size(s);
       if ( options.skip >= size ) {
@@ -188,7 +186,7 @@ var TreeIndex = {
     var query = options && options.query;
 
     if ( ! query && sink.model_ === CountExpr ) {
-       console.log('**************** COUNT SHORT-CIRCUIT ****************');
+//       console.log('**************** COUNT SHORT-CIRCUIT ****************');
       var count = this.size(s);
       return {
 	 cost: 0,
@@ -243,7 +241,11 @@ var TreeIndex = {
 
         if ( ! result ) return NOT_FOUND;
 
-        var newOptions = {__proto__: options, query: query};
+//        var newOptions = {__proto__: options, query: query};
+        var newOptions = {query: query};
+if ( 'limit' in options ) newOptions.limit = options.limit;
+if ( 'skip' in options ) newOptions.skip = options.skip;
+
         var subPlan = this.tail.plan(result, sink, newOptions);
         return {
           cost: 1 + subPlan.cost,
@@ -333,6 +335,7 @@ var SetIndex = {
  */
 
 // [0 key, 1 value, 2 size, 3 left, 4 right]
+/*
 var OrderedMap = {
   create: function(prop) {
     return {
@@ -350,7 +353,7 @@ var OrderedMap = {
   selectReverse: function(sink) { this.index.selectReverse(this.root, sink); },
   size: function() { return this.index.size(this.root); }
 };
-
+*/
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
@@ -498,9 +501,12 @@ var IDAO = FOAM.create({
     },
 
     select: function(sink, options) {
+      // Clone the options to prevent 'limit' from being mutated in the original.
+      if ( options ) options = {__proto__:options};
       var plan = this.index.plan(this.root, sink, options);
       plan.execute(this.root, sink, options);
       sink && sink.eof && sink.eof();
+      return aconstant(sink);
     }
 
    }

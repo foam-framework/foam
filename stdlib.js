@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/** Create an afunc which always returns the supplied constant value. **/
+function constantFn(v) { return function() { return v; } }
+
+
 /**
  * Replace Function.bind with a version
  * which is ~10X faster for the common case
@@ -222,10 +226,10 @@ function predicatedSink(predicate, sink) {
     __proto__: sink,
     put: function(obj, s, fc) {
       if ( sink && predicate.f(obj) ) sink.put(obj, s, fc);
-    },
+    }/*,
     eof: function() {
       sink && sink.eof && sink.eof();
-    }
+    }*/
   };
 }
 
@@ -239,10 +243,10 @@ function limitedSink(count, sink) {
       } else {
         sink.put(obj, s, fc);
       }
-    },
+    }/*,
     eof: function() {
       sink.eof && sink.eof();
-    }
+    }*/
   };
 }
 
@@ -317,3 +321,10 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+
+// TODO: benchmark which is faster, looping or calling Array.prototype.slice.call(arguments);
+function argsToArray(args) {
+  var a = [];
+  for ( var i = 0 ; i < args.length ; i++ ) a[i] = args[i];
+  return a;
+}

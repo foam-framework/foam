@@ -969,7 +969,9 @@ var ChoiceView = FOAM.create({
 	   out.push(encodedValue + '">');
            out.push(choice[1].toString());
          } else {
-	   out.push(this.value && choice == this.value.get() ? '\t<option selected>' : '\t<option>');
+           var id = 'id="' + this.registerCallback('onfocus', function() { console.log('onmouseover'); }) + '" ';
+
+	   out.push(this.value && choice == this.value.get() ? '\t<option ' + id + 'selected>' : '\t<option' + id + '>');
            out.push(choice.toString());
          }
          out.push('</option>');
@@ -989,6 +991,7 @@ var ChoiceView = FOAM.create({
      },
 
      initHTML: function() {
+       AbstractView2.getPrototype().initHTML.call(this);
        var e = this.element();
 
        Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
@@ -2150,13 +2153,12 @@ style = window.getComputedStyle(this.element().children[0]);
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
       this.objs = [];
-      this.objs.eof = function() {
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs)(function() {
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
           self.initHTML();
         }
-      };
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs);
+      });
 // console.timeEnd('redraw');
     },
 
