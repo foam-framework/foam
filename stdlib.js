@@ -222,6 +222,8 @@ Object.defineProperty(Object.prototype, 'put', {
 */
 
 function predicatedSink(predicate, sink) {
+  if ( predicate === TRUE ) return sink;
+
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
