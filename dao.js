@@ -1235,14 +1235,14 @@ var WorkerDelegate = FOAM.create({
           var mysink = {
             __proto__: request.sink,
             eof: function() {
-              this.__proto__.eof && this.__proto__.eof();
+              request.sink.eof && request.sink.eof();
               self.postMessage({
                 request: message.request,
                 sink: ObjectToJSON.visit(this.__proto__)
               });
             },
             error: function() {
-              this.__proto__ && this.__proto__.error();
+              request.sink.error && request.sink.error();
               self.postMessage({
                 request: message.request,
                 error: true
@@ -1422,6 +1422,7 @@ var PartitionDAO = FOAM.create({
       var pending = this.partitions.length;
 
       var fc = this.createFlowControl_();
+      var future = afuture();
 
       if (sink.model_ && sink.reduceI) {
         var mysink = sink;
@@ -1439,6 +1440,7 @@ var PartitionDAO = FOAM.create({
             if ( fc.stopped ) break;
             if ( fc.errorEvt ) {
               sink.error && sink.error(fc.errorEvt);
+              future.set(sink, fc.errorEvt);
               break;
             }
             sink.put(this.storage[i], null, fc);
@@ -1452,13 +1454,18 @@ var PartitionDAO = FOAM.create({
         sinks[i].eof = function() {
           mysink.reduceI(this);
           pending--;
-          if (pending <= 0) mysink.eof && mysink.eof();
+          if (pending <= 0) {
+            mysink.eof && mysink.eof();
+            future.set(mysink);
+          }
         };
       }
 
       for ( var i = 0; i < this.partitions.length; i++ ) {
         this.partitions[i].select(sinks[i], options);
       }
+
+      return future.get;
     }
   }
 });
