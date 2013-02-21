@@ -482,6 +482,7 @@ var ScrollCView = FOAM.create({
            var e = newValue.element();
            if ( ! e ) return;
            e.addEventListener('mousedown', this.mouseDown, false);
+           e.addEventListener('touchstart', this.touchStart, false);
 //           e.addEventListener('mouseup',   this.mouseUp,   false);
          }
       },
@@ -509,6 +510,11 @@ var ScrollCView = FOAM.create({
         name: 'starty',
         type: 'int',
         defaultValue: 0
+      },
+      {
+        name: 'startvalue',
+        type: 'int',
+        defaultValue: 0
       }
    ],
 
@@ -519,6 +525,7 @@ var ScrollCView = FOAM.create({
        this.starty = e.y - e.offsetY;
        window.addEventListener('mouseup', this.mouseUp, true);
        window.addEventListener('mousemove', this.mouseMove, true);
+       window.addEventListener('touchstart', this.touchstart, true);
        this.mouseMove(e);
      },
      mouseUp: function(e) {
@@ -536,24 +543,24 @@ var ScrollCView = FOAM.create({
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
-       console.log('touchStart: ', e);
+//       console.log('touchStart: ', e);
+       this.starty = e.targetTouches[0].pageY;
+       this.startvalue = this.value;
        window.addEventListener('touchmove', this.touchMove, false);
 //       this.parent.element().addEventListener('touchmove', this.touchMove, false);
-       this.mouseMove(e);
+       this.touchMove(e);
      },
      touchEnd: function(e) {
-       console.log('touchEnd: ', e);
-       e.preventDefault();
+//       console.log('touchEnd: ', e);
        window.removeEventListener('touchmove', this.touchMove, false);
        window.removeEventListener('touchend', this.touchEnd, false);
 //       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
      },
      touchMove: function(e) {
-       console.log('touchMove: ', e);
-       var y = e.offsetY;
+//       console.log('touchMove: ', e);
+       var y = e.targetTouches[0].pageY;
        e.preventDefault();
-       console.log('y: ', y);
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startvalue + (y - this.starty) / (this.height-4) * this.size )));
      },
      updateValue: function() {
        this.paint();
