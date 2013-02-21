@@ -324,9 +324,3 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 
-// TODO: benchmark which is faster, looping or calling Array.prototype.slice.call(arguments);
-function argsToArray(args) {
-  var a = [];
-  for ( var i = 0 ; i < args.length ; i++ ) a[i] = args[i];
-  return a;
-}

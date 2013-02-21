@@ -328,7 +328,7 @@ var MBOXLoader = {
       if ( this.email.from.indexOf('<<') != -1 ) return;
       if ( this.email.to.indexOf('3D') != -1 ) return;
       if ( this.email.from.indexOf('3D') != -1 ) return;
-      if ( this.email.from.indexOf('=') == 0 ) return;
+      if ( this.email.from.indexOf('=') != -1 ) return;
       if ( this.email.from.indexOf('<') == 0 ) return;
       if ( this.email.from.indexOf(' ') == 0 ) return;
 

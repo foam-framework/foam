@@ -95,20 +95,29 @@ layout();
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
 
+/*
+    dao.index = AltIndex.create(
+      TreeIndex.create(EMail.TIMESTAMP,    ValueIndex),
+      TreeIndex.create(EMail.TO,      AltIndex.create(
+        TreeIndex.create(EMail.FROM, TreeIndex.create(EMail.TIMESTAMP, ValueIndex)),
+        TreeIndex.create(EMail.TIMESTAMP, ValueIndex)
+      )),      
+      TreeIndex.create(EMail.FROM,    TreeIndex.create(EMail.TIMESTAMP, ValueIndex)),
+      TreeIndex.create(EMail.SUBJECT, TreeIndex.create(EMail.TIMESTAMP, ValueIndex))
+    );
+*/
 //    dao2.bulkLoad(dao2);
 
     var d1 = dao;
     var d2 = emails;
-
 /*
-
     dao = {
       __proto__: dao,
       select: function(sink, options) {
         var future = afuture();
 
         aseq(
-          // alog('select ', sink, options && options.query && options.query.toSQL()),
+          alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
           // atime('indexedDB: ', arepeat(10, function(ret) { d2.select(COUNT(), {__proto__:options}); ret(); })),
          atime('idao: ', arepeat(100, function(ret) { d1.select(COUNT(), options); ret(); })),
           function() { d1.select(sink, options)(function(v) { future.set(sink); }); }
