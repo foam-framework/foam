@@ -37,9 +37,9 @@
     ];
 
 for (var j = 0; j < 10; j++) {
-window.setTimeout(function() {
+window.setTimeout((function(h) {
     for (var k = 0; k < 200; k++) {
-                        var id = Math.floor(Math.random() * 100000);
+                        var id = h * 1000 + k;
                         console.log(id);
                         dao.put(Issue.create({
                         id: id,
@@ -48,7 +48,7 @@ window.setTimeout(function() {
                         status: statuses[Math.floor(Math.random() * statuses.length)]
                         }));
                         }
-}, j+1000);
+}).bind(undefined, j), j+1000);
 }
 
 console.log("done");

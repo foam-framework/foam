@@ -1410,6 +1410,7 @@ var PartitionDAO = FOAM.create({
     },
     select: function(sink, options) {
       var myoptions = {};
+      var originalsink = sink;
       options = options || {};
       if ( 'limit' in options ) {
         myoptions.limit = options.limit + (options.skip || 0),
@@ -1456,13 +1457,13 @@ var PartitionDAO = FOAM.create({
           pending--;
           if (pending <= 0) {
             mysink.eof && mysink.eof();
-            future.set(mysink);
+            future.set(originalsink);
           }
         };
       }
 
       for ( var i = 0; i < this.partitions.length; i++ ) {
-        this.partitions[i].select(sinks[i], options);
+        this.partitions[i].select(sinks[i], myoptions);
       }
 
       return future.get;
