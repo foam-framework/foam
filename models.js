@@ -625,9 +625,8 @@ var ScrollBorder = FOAM.create({
          postSet: function(newValue, oldValue) {
            this.view.dao = newValue;
            var self = this;
-console.log('*************************************************************** foo');
+
            this.dao.select(COUNT())(function(c) {
-console.log('****************count: ', c.count);
                self.scrollbar.size = c.count;
                self.scrollbar.value = 0;
            });
@@ -645,7 +644,6 @@ console.log('****************count: ', c.count);
        this.view.layout();
        var view = window.getComputedStyle(this.view.element().children[0]);
        this.scrollbar.height = toNum(view.height)-30;
-console.log('**********height:', this.scrollbar.height);
        this.scrollbar.paint();
      },
      toHTML: function() {

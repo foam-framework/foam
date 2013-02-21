@@ -965,16 +965,13 @@ var ChoiceView = FOAM.create({
          var self   = this;
   
          this.registerCallback('mouseover', function(e) {
-           console.log('onmouseover', e.target.value);
            self.prev = self.value.get();
            self.value.set(e.target.value);
          }, id);
          this.registerCallback('mouseout',  function(e) {
-           console.log('onmouseout', e.target.value);
            self.value.set(self.prev);
          }, id);
          this.registerCallback('click',  function(e) {
-           console.log('click', e.target.value);
            self.prev = e.target.value;
            self.value.set(self.prev);
          }, id);
