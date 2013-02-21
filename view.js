@@ -982,7 +982,8 @@ var ChoiceView = FOAM.create({
          out.push('\t<option id="' + id + '"');
 
          if ( Array.isArray(choice) ) {
-           var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
 
 	   if ( this.value && choice[0] == this.value.get() ) out.push(' selected');
            out.push(' value="');

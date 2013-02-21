@@ -323,6 +323,15 @@ var MBOXLoader = {
       this.email.body = this.b.join('\n');
       this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
+      if ( this.email.to.length == 0 ) return;
+      if ( this.email.to.indexOf('<<') != -1 ) return;
+      if ( this.email.from.indexOf('<<') != -1 ) return;
+      if ( this.email.to.indexOf('3D') != -1 ) return;
+      if ( this.email.from.indexOf('3D') != -1 ) return;
+      if ( this.email.from.indexOf('=') == 0 ) return;
+      if ( this.email.from.indexOf('<') == 0 ) return;
+      if ( this.email.from.indexOf(' ') == 0 ) return;
+
       console.log('creating: ', this.email.timestamp);
       // console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
@@ -337,16 +346,14 @@ var MBOXLoader = {
   },
 
   to: function(v) { 
-    this.email.to = v[1].join(''); 
+    this.email.to = v[1].join('').trim(); 
     var i = this.email.to.indexOf(',');
-    if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
-    i = this.email.to.indexOf('<<');
     if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
 },
 
-  from: function(v) { this.email.from = v[1].join(''); },
+  from: function(v) { this.email.from = v[1].join('').trim(); },
 
-  subject: function(v) { this.email.subject = v[1].join(''); },
+  subject: function(v) { this.email.subject = v[1].join('').trim(); },
 
   label: function(v) { this.email.labels.push(v.join('')); },
 
