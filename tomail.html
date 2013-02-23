@@ -110,6 +110,7 @@ layout();
 
     var d1 = dao;
     var d2 = emails;
+
 /*
     dao = {
       __proto__: dao,
@@ -172,7 +173,7 @@ layout();
         byTo.predicate,
         byLabel.predicate).partialEval();
 
-      console.log('query: ', predicate.toSQL());
+      // console.log('query: ', predicate.toSQL());
 
       table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
@@ -201,10 +202,9 @@ layout();
     function loadmbox(event) {
       emails.remove(TRUE); // this only works with storagedao because its synchronous
       var file = event.target.files[0];
-      var reader = FullReader.create(LineBasedReader.create(TextReader.create(BlobReader.create(file))));
 
       MBOXLoader.dao = emails;
-      reader.read(MBOXLoader);
+      SourceBlob(file, BlobToText(TextToLines(MBOXLoader)));
     }
 
     emails.select(dao)(function() {

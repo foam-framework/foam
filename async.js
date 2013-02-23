@@ -166,11 +166,11 @@ function aseq(/* ... afuncs */) {
  * Create a function which executes several afunc's in parallel and passes
  * their joined return values to an optional afunc.
  *
- * Usage: ajoin(f1,f2,f3)(opt_afunc, opt_args)
+ * Usage: apar(f1,f2,f3)(opt_afunc, opt_args)
  * @param opt_afunc called with joined results after all afuncs finish
  * @param opt_args passed to all afuncs
  **/
-function ajoin(/* ... afuncs */) {
+function apar(/* ... afuncs */) {
   var aargs = [];
   var count = 0;
   var fs = arguments;
@@ -225,7 +225,7 @@ aseq(
 )();
 
 console.log('test8');
-ajoin(
+apar(
   function(ret, a) { console.log('fB'); ret(1); },
   function(ret, a) { console.log('fC'); ret(2); }
 )(f4);
@@ -233,7 +233,7 @@ ajoin(
 console.log('test9');
 aseq(
   function(ret) { console.log('fA'); ret(1); },
-  ajoin(
+  apar(
     function(ret, a) { console.log('fB', a); ret(1); },
     function(ret, a) { console.log('fC', a); ret(2); }
   ),

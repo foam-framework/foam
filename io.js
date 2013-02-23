@@ -14,6 +14,99 @@
  * limitations under the License.
  */
 
+var SourceBlob = function(blob, sink, opt_skip, opt_buffersize) {
+  var pos        = opt_skip || 0;
+  var buffersize = opt_buffersize || 147456;
+
+  while ( pos < blob.size )  {
+    var size = Math.min(buffersize, blob.size - pos);
+
+    sink.put(blob.slice(pos, pos + size));
+
+    pos += size;
+  }
+
+  sink && sink.eof && sink.eof();
+};
+
+
+var BlobToText = function(sink) {
+    var blobs = [];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      sink.put && sink.put(reader.result);
+      blobs.shift();
+      if ( blobs.length ) send();
+    };
+
+    reader.onerror = function(e) {
+      sink.error && sink.error(e);
+    };
+
+    function send() {
+      reader.readAsText(blobs[0]);
+    }
+
+    return {
+      __proto__: sink,
+      put: function(blob) {
+        blobs.push(blob);
+        if ( blobs.length == 1 ) send();
+      }
+    };
+};
+
+
+var TextToLines = function(sink) {
+    var buf = undefined;
+
+    var split = function(data) {
+      var b = [];
+      var s = 0;
+      for ( var i = 0 ; i < data.length ; i++ ) {
+        if ( data.charCodeAt(i) == 10 ) {
+	  b.push(data.slice(s,i));
+          s = i+1;
+        }
+      }
+      
+      b.push(data.slice(s));
+
+      return b;
+    };
+
+
+    return {
+      __proto__: sink,
+
+      put: function(data) {
+        var b   = split(data);
+        var ll  = b[b.length-1]; // last line
+        var line;
+
+        for ( i = 0 ; i < b.length-1 ; i++ ) {
+	  if ( buf ) {
+	    line = buf + b[i];
+            buf = undefined;
+	  } else {
+	    line = b[i];
+	  }
+
+	  sink.put(line);
+        }
+
+	buf = buf ? buf + ll : ll;
+      },
+
+      eof: function() {
+        if ( buf ) sink.put(buf)  
+        sink.eof && sink.eof();
+      }
+    };
+};
+
+
 var BlobReader = {
     create: function(blob, opt_buffersize, opt_skip) {
         return {

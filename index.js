@@ -202,7 +202,7 @@ var TreeIndex = {
     var prop = this.prop;
 
     if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
-       console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
        // TODO:
     }
 

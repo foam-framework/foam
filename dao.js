@@ -501,7 +501,6 @@ var IndexedDBDAO = FOAM.create({
     },
 
     put: function(value, sink) {
-console.log("put: ", value);
       var self = this;
       this.withStore("readwrite", function(store) {
         var request =
