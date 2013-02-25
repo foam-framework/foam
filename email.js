@@ -368,10 +368,11 @@ var MBOXLoader = {
       var bps = Math.floor(this.pos / (Date.now() - this.startTime));
       var slps = Math.floor(10000 / (Date.now() - this.segStartTime));
       var sbps = Math.floor((this.pos-this.segPos) / (Date.now() - this.segStartTime));
+
       console.log(
         'line: ' + Math.floor(this.lineNo/1000) +
-        'k  time: ' + Math.floor((Date.now() - this.startTime)/1000) +
-        's  bytes: ' + Math.floor(this.pos/1000) +
+        'k  time: ' + Math.floor((Date.now() - this.startTime)) +
+        'ms  bytes: ' + Math.floor(this.pos/1000) +
         'k  created: ' + this.created +
         '    SEGMENT:',
         ' lps: ' + slps +
@@ -380,6 +381,7 @@ var MBOXLoader = {
         ' lps: ' + lps +
         'k bps: ' + bps + 'k ' +
         'state: ' + this.state.name);
+
       this.segStartTime = Date.now();
       this.segPos = this.pos;
     } 
@@ -392,6 +394,13 @@ var MBOXLoader = {
   saveCurrentEmail: function() {
     if ( this.email ) {
       this.email.body = this.b.join('\n');
+
+      var i = this.email.body.indexOf("Content-Type:");
+      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
+
+      i = this.email.body.indexOf("Content-Transfer-Encoding: base64");
+      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
+
       this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
       if ( this.email.to.length == 0 ) return;
