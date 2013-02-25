@@ -338,7 +338,7 @@ var MBOXLoader = {
       this.blockId = undefined;
     }
 
-    this.b.push(str);
+    this.b.push(str.trimRight());
   },
 
   SKIP_ATTACHMENT_STATE: function ATTACHMENT(str) {
