@@ -102,7 +102,7 @@ var GroupBySearchView = FOAM.create({
                var count = '(' + groups.groups[key] + ')';
                var subKey = key.substring(0, self.width-count.length-3);
                var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-               options.push([key, cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count]);
+               options.push([key, new String(cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count)]);
              }
              options.sort();
              options.splice(0,0,['','-- CLEAR SELECTION --']);

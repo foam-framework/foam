@@ -81,6 +81,8 @@ var Attachment = FOAM.create({
 });
 
 
+labelMap = [];
+
 var EMail = FOAM.create({
    model_: 'Model',
    name: 'EMail',
@@ -164,6 +166,12 @@ var EMail = FOAM.create({
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 valueFactory: function() { return []; },
+         postSet: function(a) {
+	   for ( var i = 0 ; i < a.length ; i++ ) {
+             if ( ! labelMap[a[i]] ) labelMap[a[i]] = a[i];
+             a[i] = labelMap[a[i]];
+           }
+         },
 	 help: 'Email labels.'
       },
       {
