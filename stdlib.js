@@ -323,6 +323,7 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 
 // TODO: benchmark which is faster, looping or calling Array.prototype.slice.call(arguments);
 function argsToArray(args) {
