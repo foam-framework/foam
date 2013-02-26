@@ -125,6 +125,10 @@ var TreeIndex = {
     var r = this.compare(s[0], key);
 
     if ( r == 0 ) {
+      // Set the value's property to be the same as the key in the index.
+      // This saves memory by sharing objects.
+      value[this.prop.name] = s[0];
+
       s[2] -= this.tail.size(s[1]);
       s[1] = this.tail.put(s[1], value);
       s[2] += this.tail.size(s[1]);
@@ -198,7 +202,7 @@ var TreeIndex = {
     var prop = this.prop;
 
     if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
-       console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
        // TODO:
     }
 

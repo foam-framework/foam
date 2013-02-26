@@ -81,6 +81,8 @@ var Attachment = FOAM.create({
 });
 
 
+labelMap = [];
+
 var EMail = FOAM.create({
    model_: 'Model',
    name: 'EMail',
@@ -164,6 +166,12 @@ var EMail = FOAM.create({
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 valueFactory: function() { return []; },
+         postSet: function(a) {
+	   for ( var i = 0 ; i < a.length ; i++ ) {
+             if ( ! labelMap[a[i]] ) labelMap[a[i]] = a[i];
+             a[i] = labelMap[a[i]];
+           }
+         },
 	 help: 'Email labels.'
       },
       {
@@ -256,10 +264,9 @@ var MBOXParser = {
     sym('subject'),
     sym('date'),
     sym('labels'),
+    sym('start of block'),
     sym('start of body'),
-    sym('end of body'),
-    sym('start of attachment'),
-    sym('other')
+    sym('start of attachment')
   ),
 
   'start of email': seq('From ', sym('until eol')),
@@ -287,6 +294,9 @@ var MBOXParser = {
     sym('raw email address'),
     '>'),
 
+  'start of block': seq(
+    '--', sym('until eol')),
+
   'start of body': seq(
     'Content-Type: text/plain; ',
     sym('until eol')
@@ -312,8 +322,79 @@ var MBOXParser = {
 var MBOXLoader = {
   __proto__: MBOXParser,
 
-  put: function(str) {
+  PARSE_HEADERS_STATE: function HEADERS(str) {
     this.parseString(str);
+  },
+
+  READ_BODY_STATE: function BODY(str) {
+    if ( str.slice(0, 5) === 'From ' ) {
+      this.state = this.PARSE_HEADERS_STATE;
+      this.state(str);
+      return;
+    }
+
+    if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
+      this.state = this.PARSE_HEADERS_STATE;
+      this.blockId = undefined;
+    }
+
+    this.b.push(str.trimRight());
+  },
+
+  SKIP_ATTACHMENT_STATE: function ATTACHMENT(str) {
+    if ( str.slice(0, 5) === 'From ' ) {
+      this.state = this.PARSE_HEADERS_STATE;
+      this.state(str);
+      return;
+    }
+
+    if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
+      this.state = this.PARSE_HEADERS_STATE;
+      this.blockId   = undefined;
+    }
+  },
+
+  created: 0, // No of Emails created
+ 
+  lineNo: 0,  // Current Line Number in mbox file
+
+  pos: 0,     // Current byte position in mbox file
+
+  segPos: 0,
+
+  put: function(str) {
+    if ( this.lineNo == 0 ) {
+      this.segStartTime = this.startTime = Date.now();
+      this.state = this.PARSE_HEADERS_STATE;
+    }
+
+    this.lineNo++;
+    this.pos += str.length;
+
+    if ( ! ( this.lineNo % 10000 ) ) {
+      var lps = Math.floor(this.lineNo / (Date.now() - this.startTime));
+      var bps = Math.floor(this.pos / (Date.now() - this.startTime));
+      var slps = Math.floor(10000 / (Date.now() - this.segStartTime));
+      var sbps = Math.floor((this.pos-this.segPos) / (Date.now() - this.segStartTime));
+
+      console.log(
+        'line: ' + Math.floor(this.lineNo/1000) +
+        'k  time: ' + Math.floor((Date.now() - this.startTime)) +
+        'ms  bytes: ' + Math.floor(this.pos/1000) +
+        'k  created: ' + this.created +
+        '    SEGMENT:',
+        ' lps: ' + slps +
+        'k bps: ' + sbps + 'k' +
+        '    TOTAL:',
+        ' lps: ' + lps +
+        'k bps: ' + bps + 'k ' +
+        'state: ' + this.state.name);
+
+      this.segStartTime = Date.now();
+      this.segPos = this.pos;
+    } 
+
+    this.state(str);
   },
 
   eof: function() { this.saveCurrentEmail(); },
@@ -321,6 +402,13 @@ var MBOXLoader = {
   saveCurrentEmail: function() {
     if ( this.email ) {
       this.email.body = this.b.join('\n');
+
+      var i = this.email.body.indexOf("Content-Type:");
+      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
+
+      i = this.email.body.indexOf("Content-Transfer-Encoding: base64");
+      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
+
       this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
       if ( this.email.to.length == 0 ) return;
@@ -328,13 +416,16 @@ var MBOXLoader = {
       if ( this.email.from.indexOf('<<') != -1 ) return;
       if ( this.email.to.indexOf('3D') != -1 ) return;
       if ( this.email.from.indexOf('3D') != -1 ) return;
-      if ( this.email.from.indexOf('=') == 0 ) return;
+      if ( this.email.from.indexOf('=') != -1 ) return;
       if ( this.email.from.indexOf('<') == 0 ) return;
       if ( this.email.from.indexOf(' ') == 0 ) return;
 
-      console.log('creating: ', this.email.timestamp);
+      this.created++;
+
+      // console.log('creating: ', this.created);
       // console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
+
     }
   }
 }.addActions({
@@ -357,9 +448,15 @@ var MBOXLoader = {
 
   label: function(v) { this.email.labels.push(v.join('')); },
 
-  'start of body': function(v) { this.inBody = true; },
+  'start of block': function(v) {
+     var blockId = v[1].join('');
+     if ( blockId.slice(-2) == '--' ) return;
+     this.blockId = blockId;
+   },
 
-  'end of body': function(v) { this.inBody = false; },
+  'start of body': function(v) {
+    this.state = this.READ_BODY_STATE;
+  },
 
   'start of attachment': function(v) {
     var attachment = Attachment.create();
@@ -368,9 +465,8 @@ var MBOXLoader = {
     attachment.filename = v[3].join('');
 
     this.email.attachments.push(attachment);
+    this.state = this.SKIP_ATTACHMENT_STATE;
   },
-
-  other: function(v) { if ( this.inBody ) this.b.push(v.join('')); }
 
   // TODO: timestamp, message-id, body, attachments
   // TODO: internalize common strings to save memory (or maybe do it at the DAO level)

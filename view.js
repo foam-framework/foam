@@ -962,19 +962,10 @@ var ChoiceView = FOAM.create({
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
          var choice = this.choices[i];
          var id     = this.nextID();
-         var self   = this;
-  
-         this.registerCallback('mouseover', function(e) {
-           self.prev = self.value.get();
-           self.value.set(e.target.value);
-         }, id);
-         this.registerCallback('mouseout',  function(e) {
-           self.value.set(self.prev);
-         }, id);
-         this.registerCallback('click',  function(e) {
-           self.prev = e.target.value;
-           self.value.set(self.prev);
-         }, id);
+
+         this.registerCallback('mouseover', this.onMouseOver, id);
+         this.registerCallback('mouseout', this.onMouseOut, id);
+         this.registerCallback('click', this.onClick, id);
 
          out.push('\t<option id="' + id + '"');
 
@@ -1023,7 +1014,40 @@ var ChoiceView = FOAM.create({
      destroy: function() {
        Events.unlink(this.domValue, this.value);
      }
-   }
+   },
+
+   listeners:
+   [
+      {
+	 model_: 'MethodModel',
+
+	 name: 'onMouseOver',
+	 code: function(e) {
+           this.prev = this.value.get();
+           this.value.set(e.target.value);
+	 }
+      },
+
+      {
+	 model_: 'MethodModel',
+
+	 name: 'onMouseOut',
+	 code: function(e) {
+           this.value.set(this.prev);
+	 }
+      },
+
+      {
+	 model_: 'MethodModel',
+
+	 name: 'onClick',
+	 code: function(e) {
+           this.prev = e.target.value;
+           this.value.set(this.prev);
+	 }
+      }
+   ]
+
 });
 
 
