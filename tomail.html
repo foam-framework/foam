@@ -95,13 +95,18 @@ layout();
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
 
-//    dao = PartitionDAO.create({ partitions: [
-//        WorkerDAO.create({ model: EMail }),
-//        WorkerDAO.create({ model: EMail }),
-//        WorkerDAO.create({ model: EMail }),
-//        WorkerDAO.create({ model: EMail })
-// ] });
+//    var dao = [];
 
+/*    dao = PartitionDAO.create({ partitions: [
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail })
+ ] });
+*/
 /*
     dao.index = AltIndex.create(
       TreeIndex.create(EMail.TIMESTAMP,    ValueIndex),
@@ -115,8 +120,8 @@ layout();
 */
 //    dao2.bulkLoad(dao2);
 
-    var d1 = dao;
-    var d2 = emails;
+//    var d1 = dao;
+//    var d2 = emails;
 
 /*
     dao = {
