@@ -494,16 +494,19 @@ var ScrollCView = FOAM.create({
       {
 	name:  'value',
         type:  'int',
+        help:  'The first element being shown, starting at zero.',
         defaultValue: 0
       },
       {
 	name:  'extent',
+        help:  'Number of things visible.',
         type:  'int',
         defaultValue: 10
       },
       {
 	 name:  'size',
          type:  'int',
+         help:  'Number of things that you are scrolling through',
          postSet: function() { console.log('*******size:',this.size, this.height); this.paint(); }
       },
       {
@@ -649,8 +652,8 @@ var ScrollBorder = FOAM.create({
    methods: {
      layout: function() {
        this.view.layout();
-       var view = window.getComputedStyle(this.view.element().children[0]);
-       this.scrollbar.height = toNum(view.height)-30;
+//       var view = window.getComputedStyle(this.view.element().children[0]);
+       this.scrollbar.height = (toNum(this.view.rows) * 28) - 40;
        this.scrollbar.paint();
      },
      toHTML: function() {

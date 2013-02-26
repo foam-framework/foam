@@ -95,6 +95,12 @@ layout();
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
 
+//    dao = PartitionDAO.create({ partitions: [
+//        WorkerDAO.create({ model: EMail }),
+//        WorkerDAO.create({ model: EMail }),
+//        WorkerDAO.create({ model: EMail }),
+//        WorkerDAO.create({ model: EMail })
+// ] });
 //    dao2.bulkLoad(dao2);
 
     var d1 = dao;
@@ -122,7 +128,7 @@ layout();
     // TODO: make option of TextSearchView
     DomValue.DEFAULT_EVENT = 'keyup';
 
-    var table = ScrollBorder.create({
+    table = ScrollBorder.create({
       view: TableView2.create({
         model: EMail,
         dao: dao,
