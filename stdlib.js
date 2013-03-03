@@ -324,3 +324,10 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 
+
+/** Convert a string to an internal canonical copy. **/
+String.prototype.intern = (function() {
+  var map = {};
+
+  return function() { return map[this] || (map[this] = this.toString()); };
+})();
