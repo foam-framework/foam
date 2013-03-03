@@ -1,6 +1,4 @@
-console.log('tomail.js');
 withFOAM(function() {
-    console.log('tomail.js - withFOAM');
     var header = $('header');
     var footer = $('footer');
     var search = $('search');
@@ -89,14 +87,14 @@ withFOAM(function() {
 
     var emailarray = [];
     emailarray.eof = function() {
-        var dao = IDAO.create({model: EMail});
+       var dao = IDAO.create({model: EMail});
 
         dao.bulkLoad(emailarray);
         dao.addIndex(EMail.TO);
         dao.addIndex(EMail.FROM);
         dao.addIndex(EMail.SUBJECT);
 
-        var table = ScrollBorder.create({
+        table = ScrollBorder.create({
             view: TableView2.create({
                 model: EMail,
                 dao: dao,

@@ -99,10 +99,10 @@ var GroupBySearchView = FOAM.create({
            this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
              var options = [];
              for ( var key in groups.groups ) {
-               var count = '(' + groups.groups[key] + ')';
+               var count = ('(' + groups.groups[key] + ')').intern();
                var subKey = key.substring(0, self.width-count.length-3);
                var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-               options.push([key, new String(cleanKey + Array(self.width-subKey.length-count.length).join('&nbsp;') + count)]);
+               options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join('&nbsp;')).intern() + count]);
              }
              options.sort();
              options.splice(0,0,['','-- CLEAR SELECTION --']);

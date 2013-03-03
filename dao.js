@@ -408,7 +408,7 @@ defineProperties(Array.prototype, {
     var fc = this.createFlowControl_();
 
     var start = hasQuery ? 0 : options && options.skip || 0;
-    var end = hasQuery ? this.length : Math.min(this.length, start + (options && 'limit' in options || this.length));
+    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
@@ -1510,4 +1510,47 @@ var BlobReaderDAO = FOAM.create({
             };
         }
     }
+});
+
+var GDriveDAO = FOAM.create({
+  model_: 'Model',
+  name: 'GDriveDAO',
+  properties: [
+    {
+      name: 'authtoken',
+      label: 'Authentication Token'
+    }
+  ],
+
+  methods: {
+    put: function(value, sink) {
+    },
+    remove: function(query, sink) {
+    },
+    select: function(sink, options) {
+      var xhr = new XMLHttpRequest();
+      var params = [
+        'maxResults=10'
+      ];
+      xhr.open('GET', "https://www.googleapis.com/drive/v2/files?" + params.join('&'));
+      xhr.setRequestHeader('Authorization', 'Bearer ' + this.authtoken);
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState != 4) return;
+
+        var response = JSON.parse(xhr.responseText);
+        if (!response || !response.items) {
+          sink && sink.error && sink.error(xhr.responseText);
+          return;
+        }
+
+        for (var i = 0; i < response.items.length; i++) {
+          sink && sink.put && sink.put(response.items[i]);
+        }
+      }
+      xhr.send();
+    },
+    find: function(key, sink) {
+    }
+  }
 });

@@ -2157,7 +2157,8 @@ var TableView2 = FOAM.create({
 
      layout: function() {
        var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
-       var style = window.getComputedStyle(this.element().children[0]);
+       this.rows = Math.floor((toNum(parent.height) - 22) / 28);
+/*       var style = window.getComputedStyle(this.element().children[0]);
 
        var prevHeight = 0;
        while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
@@ -2168,7 +2169,7 @@ var TableView2 = FOAM.create({
        while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
          this.rows = this.rows-1;
 style = window.getComputedStyle(this.element().children[0]);
-       }
+       }*/
 //       this.scrollbar.height = (parent.style.height - 50) + 'px';
 //       this.scrollbar.height = toNum(this.element().style.width)-50;
      },

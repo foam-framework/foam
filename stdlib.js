@@ -323,7 +323,7 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
-
+Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 
 /** Convert a string to an internal canonical copy. **/
 String.prototype.intern = (function() {

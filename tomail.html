@@ -95,21 +95,33 @@ layout();
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
 
+//    var dao = [];
+
+/*    dao = PartitionDAO.create({ partitions: [
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail }),
+        WorkerDAO.create({ model: EMail })
+ ] });
+*/
 /*
     dao.index = AltIndex.create(
       TreeIndex.create(EMail.TIMESTAMP,    ValueIndex),
       TreeIndex.create(EMail.TO,      AltIndex.create(
         TreeIndex.create(EMail.FROM, TreeIndex.create(EMail.TIMESTAMP, ValueIndex)),
         TreeIndex.create(EMail.TIMESTAMP, ValueIndex)
-      )),      
+      )),
       TreeIndex.create(EMail.FROM,    TreeIndex.create(EMail.TIMESTAMP, ValueIndex)),
       TreeIndex.create(EMail.SUBJECT, TreeIndex.create(EMail.TIMESTAMP, ValueIndex))
     );
 */
 //    dao2.bulkLoad(dao2);
 
-    var d1 = dao;
-    var d2 = emails;
+//    var d1 = dao;
+//    var d2 = emails;
 
     var lock = {};
 
@@ -137,7 +149,7 @@ layout();
     // TODO: make option of TextSearchView
     DomValue.DEFAULT_EVENT = 'keyup';
 
-    var table = ScrollBorder.create({
+    table = ScrollBorder.create({
       view: TableView2.create({
         model: EMail,
         dao: dao,

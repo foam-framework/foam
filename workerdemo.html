@@ -2,57 +2,9 @@
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script language="javascript" src="bootFOAM.js"></script>
-  <title>Join Test Document</title>
+  <title>WebWorker Test Document</title>
  </head>
 <body style="overflow:hidden;margin-top:5px;">
-  <script>
-    var partitions = [
-    WorkerDAO.create({model: Issue}),
-    WorkerDAO.create({model: Issue}),
-    WorkerDAO.create({model: Issue}),
-    WorkerDAO.create({model: Issue}),
-    WorkerDAO.create({model: Issue})
-    ];
-    var dao = PartitionDAO.create({partitions: partitions});
-
-    var severities = [
-    "Minor",
-    "Major",
-    "Feature",
-    "Question"
-    ];
-
-    var assignee = [
-    "kgr",
-    "adamvy",
-    "alice",
-    "bob"
-    ];
-
-    var statuses = [
-    "Open",
-    "Accepted",
-    "Complete",
-    "Closed"
-    ];
-
-for (var j = 0; j < 10; j++) {
-window.setTimeout((function(h) {
-    for (var k = 0; k < 200; k++) {
-                        var id = h * 1000 + k;
-                        console.log(id);
-                        dao.put(Issue.create({
-                        id: id,
-                        severity: severities[Math.floor(Math.random() * severities.length)],
-                        assignedTo: assignee[Math.floor(Math.random() * assignee.length)],
-                        status: statuses[Math.floor(Math.random() * statuses.length)]
-                        }));
-                        }
-}).bind(undefined, j), j+1000);
-}
-
-console.log("done");
-
-  </script>
+  <script src="workerdemo.js"></script>
 </body>
 </html>
