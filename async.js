@@ -48,26 +48,34 @@ function arepeat(n, afunc) {
   };
 }
 
+
 /** Time an afunc. **/
-function atime(str, afunc) {
-  return function(ret) {
-    console.time(str);
-    var a = arguments;
-    var args = [function() {
-      console.timeEnd(str);
-      ret && ret.apply(this, [].shift.call(a));
-    }];
-    for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
-    afunc.apply(this, args);
-  };
-}
+var atime = (function() {
+  // Add a unique suffix to timer names in case multiple instances
+  // of the same timing are active at once.
+  var id = 1;
+ 
+  return function (str, afunc) {
+    return function(ret) {
+      var name = str + "-" + id++;
+      console.time(name);
+      var a = arguments;
+      var args = [function() {
+        console.timeEnd(name);
+        ret && ret.apply(this, [].shift.call(a));
+      }];
+      for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
+      afunc.apply(this, args);
+    };
+  }
+})();
 
 
 /** Sleep for the specified delay. **/
 function asleep(ms) {
   return function(ret) {
-    var args = [].shift.call(arguments);
-    window.setTimeout(ret.bind(args), ms);
+    var args = argsToArray(arguments);
+    window.setTimeout(ret.bind(args.shift()), ms);
   }
 }
 
@@ -80,6 +88,7 @@ function afuture() {
 
   return {
     set: function() {
+      if ( set ) { console.log('ERROR: redundant set on future'); return; }
       values = arguments;
       set = true;
       for (var i = 0 ; i < waiters.length; i++) {
@@ -94,6 +103,76 @@ function afuture() {
     }
   };
 };
+
+
+function aapply_(f, ret, args) {
+  f.apply(this, args.unshift(ret));
+}
+
+
+/**
+ * A Binary Semaphore which only allows the delegate function to be 
+ * executed by a single thread of execution at once.
+ * Like Java's synchronized blocks.
+ * @param opt_lock an empty map {} to be used as a lock
+ *                 sharable across multiple asynchronized instances
+ **/
+function asynchronized(f, opt_lock) {
+  var lock = opt_lock || {};
+  if ( ! lock.q ) { lock.q = []; lock.active = false; }
+
+  function onExit(g) {
+    return function(ret) {
+      var next = lock.q.shift();
+      if ( next ) {
+        setTimeout(next, 0);
+      } else {
+        lock.active = false;
+      }
+
+      g(ret);
+    };
+  }
+
+  return function(ret) {
+    if ( lock.active ) {
+       lock.q.push(function() { f(onExit(ret)); onExit(ret); });
+       return;
+    }
+
+    lock.active = true;
+
+    f(onExit(ret));
+  };
+}
+
+
+/**
+ * Execute an optional timeout function and abort the continuation
+ * of the delegate function, if it doesn't finish in the specified
+ * time.
+ **/
+// Could be generalized into an afirst() combinator which allows
+// for the execution of multiple streams but only the first to finish
+// gets to continue.
+function atimeout(delay, f, opt_timeoutF) {
+  return function(ret) {
+    var timedOut  = false;
+    var completed = false;
+    setTimeout(function() {
+      if ( completed ) return;
+      timedOut = true;
+      console.log('timeout');
+      opt_timeoutF && opt_timeoutF();
+    }, delay);
+
+    f(aseq(
+      function(ret) {
+        if ( ! timedOut ) completed = true;
+	if ( completed ) ret();
+      }, ret));
+  };
+}
 
 
 /** Memoize an async function. **/
@@ -126,9 +205,9 @@ function amemo(f) {
 /** Async Compose (like Function.prototype.O, but for async functions **/
 Function.prototype.ao = function(f2) {
   var f1 = this;
-  return function() {
-    var args = Array.prototype.splice.call(arguments, 0);
-    args.unshift(f1);
+  return function(ret) {
+    var args = argsToArray(arguments);
+    args.unshift(f1.bind(this, ret));
     f2.apply(null, args);
   };
 };
@@ -241,3 +320,46 @@ aseq(
 )();
 
 */
+
+
+var tlock = {};
+
+function atest() {
+
+var f1 = aseq(
+   alog('f1 start'),
+   asleep(2000),
+   alog('f1 end')  
+);
+
+// atime('test1', alog('foobar'))();
+// atime('test1', aseq(alog('step 1'), alog('step 2')))();
+
+// aseq(alog('stepA'), alog('stepB1').aseq(alog('stepB2')), alog('stepC'))();
+// aseq(alog('stepA'), aseq(alog('stepB1'), alog('stepB2')), alog('stepC'))();
+
+var f2 = aseq(asynchronized(atime('f2', f1), tlock), alog('END'));
+
+// f1(anop);
+// f1(anop);
+/*
+f2(anop);
+f2(anop);
+f2(anop);
+*/
+
+aseq(
+  aseq(
+    alog('starting'),
+    atimeout(1000, asleep(500), alog('too slow')),
+    alog('on time')
+  ),
+  aseq(
+    alog('starting'),
+    atimeout(1000, asleep(1500), alog('too slow')),
+    alog('on time')
+  )
+)();
+ 
+
+}

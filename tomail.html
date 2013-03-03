@@ -111,18 +111,23 @@ layout();
     var d1 = dao;
     var d2 = emails;
 
+    var lock = {};
+
 /*
     dao = {
       __proto__: dao,
       select: function(sink, options) {
         var future = afuture();
 
-        aseq(
-          alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
-          // atime('indexedDB: ', arepeat(10, function(ret) { d2.select(COUNT(), {__proto__:options}); ret(); })),
-         atime('idao: ', arepeat(100, function(ret) { d1.select(COUNT(), options); ret(); })),
-          function() { d1.select(sink, options)(function(v) { future.set(sink); }); }
-        )();
+        var s = CountExpr.isInstance(sink) ? COUNT() : { put: function() { } };
+
+         asynchronized(aseq(
+          // alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
+          atime('indexedDB', arepeat(1, function(ret) { d2.select(s, options)(ret); })),
+          // alog('indexedDB to IDAO'),
+          atime('idao', arepeat(1000, function(ret) { d1.select(s, options)(ret); })),
+          function(ret) { d1.select(sink, options)(function(v) { future.set(sink); ret(); }); }
+        ),lock)(anop);
 
         return future.get;
       }

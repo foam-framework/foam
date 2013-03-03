@@ -1,5 +1,17 @@
 Intro
 
+FOAM/Core	- base meta-programming system
+FOAM/Events	- events, pub/sub, reactive programming
+FOAM/Animate	- animation
+FOAM/Views	- HTML UI components
+FOAM/DAO	- Data Access Objects, persistence framework
+FOAM/ASync	- async support
+FOAM/Parse	- parsing support
+FOAM/J		- Java support
+FOAM/Modeller	- Modeller / IDE
+FOAM/IO		- IO support
+
+
 Framework
 	Cross-Platform (intent, but currently only JS)
 
@@ -120,11 +132,18 @@ Value
 
 
 Async Functions
-      amemo()	- memoize an afunc	
-      aseq()	- execute afunc's in sequence, passing results from one to next
-      ajoin()	- execute afunc's in parallel, passing joined results to continuation
-      ao()	- async compose, like ao(f1,f2,f3) = f1 o f2 o f3 = f1(f2(f3()))
-      		  like aseq() but in reverse order
+      amemo()	      - memoize an afunc	
+      aseq()	      - execute afunc's in sequence, passing results from one to next
+      apar()	      - execute afunc's in parallel, passing joined results to continuation
+      ao()	      - async compose, like ao(f1,f2,f3) = f1 o f2 o f3 = f1(f2(f3()))
+      		        like aseq() but in reverse order
+      alog()          - log message to console
+      asleep()        - sleep for a specified duration
+      atimeout()      - perform an action if an afunc times-out
+      asynchronized() - like Java's synchronized block (binary semaphore)
+      anop()          - no-opeation
+      atime()         - time/benchmark an afunc's execution
+      afuture()       - a future value
 
 Function.ao()	  - Function method version: ex f1.ao(f2)
 Function.aseq()	  - Function method version: ex f1.aseq(f2)
