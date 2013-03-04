@@ -441,6 +441,9 @@ var MBOXLoader = {
 
   subject: function(v) { this.email.subject = v[1].join('').trim(); },
 
+  // TODO: uncomment this when the AA tree balancing is added
+  // date: function(v) { this.email.timestamp = new Date(v[1].join('').trim()); }
+
   label: function(v) { this.email.labels.push(v.join('')); },
 
   'start of block': function(v) {

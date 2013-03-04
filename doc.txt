@@ -145,6 +145,7 @@ Async Functions
       atime()         - time/benchmark an afunc's execution
       afuture()       - a future value
       ayield()	      - yield
+      aconstant()     - always returns a constant
 
 Function.ao()	  - Function method version: ex f1.ao(f2)
 Function.aseq()	  - Function method version: ex f1.aseq(f2)
