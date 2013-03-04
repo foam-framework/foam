@@ -79,6 +79,8 @@ function asleep(ms) {
   }
 }
 
+var ayield = asleep.bind(null, 0);
+
 
 /** Create a future value. **/
 function afuture() {
@@ -361,5 +363,10 @@ aseq(
   )
 )();
  
+apar(
+  arepeat(10, aseq(alog('A'), ayield())),
+  arepeat(10, aseq(alog('B'), ayield()))
+)();
+
 
 }
