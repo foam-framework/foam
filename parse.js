@@ -279,3 +279,35 @@ function alt(/* vargs */) {
 
 // alt = simpleAlt;
 
+function sym(name) { return function(ps) { return this[name](ps); }; }
+// function sym(name) { return function(ps) { var ret = this[name](ps); console.log('<' + name + '> -> ', !! ret); return ret; }; }
+
+var grammar = {
+  parseString: function(str) {
+    var res = this.parse(this.START, stringPS(str));
+
+    return res && res.value;
+  },
+
+  parse: function(parser, pstream) {
+ //    console.log('parser: ', parser, 'stream: ',pstream);
+    return parser.call(this, pstream);
+  },
+
+  addAction: function(sym, action) {
+    var p = this[sym];
+    this[sym] = function(ps) {
+      var ps2 = this.parse(p, ps);
+
+      return ps2 && ps2.setValue(action.call(this, ps2.value, ps.value));
+    };
+  },
+
+  addActions: function(map) {
+    for ( var key in map ) this.addAction(key, map[key]);
+
+    return this;
+  }
+};
+
+
