@@ -317,6 +317,8 @@ var MBOXParser = {
 var MBOXLoader = {
   __proto__: MBOXParser,
 
+  ps: StringPS.create(""),
+
   PARSE_HEADERS_STATE: function HEADERS(str) {
     this.parseString(str);
   },
@@ -366,10 +368,10 @@ var MBOXLoader = {
     this.lineNo++;
     this.pos += str.length;
 
-    if ( ! ( this.lineNo % 10000 ) ) {
+    if ( ! ( this.lineNo % 100000 ) ) {
       var lps = Math.floor(this.lineNo / (Date.now() - this.startTime));
       var bps = Math.floor(this.pos / (Date.now() - this.startTime));
-      var slps = Math.floor(10000 / (Date.now() - this.segStartTime));
+      var slps = Math.floor(100000 / (Date.now() - this.segStartTime));
       var sbps = Math.floor((this.pos-this.segPos) / (Date.now() - this.segStartTime));
 
       console.log(
@@ -420,7 +422,6 @@ var MBOXLoader = {
       // console.log('creating: ', this.created);
       // console.log('creating: ', this.email.toJSON());
       if ( this.dao ) this.dao.put(this.email);
-
     }
   }
 }.addActions({

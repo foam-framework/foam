@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 var ErrorReportingPS = {
   create: function(delegate, opt_pos) {
 console.log('ERPS:',delegate.head);
@@ -40,43 +41,25 @@ console.log('setValue:',value);
     return this;
   }
 };
-
+*/
 
 /** String PStream **/
-var StringPSProto = {
-  setValue: function(value) {
+var StringPS = {
+  create: function(str) {
     return {
-      __proto__: StringPSProto,
-      head: this.head,
-      tail: this.tail,
-      value: value
+      __proto__: this,
+      pos:   0,
+      str_:  [str],
+      tail_: []
     };
-  }
-};
-
-function stringPS(str) {
-  var prev;
-
-  var tail = {
-    __proto__: StringPSProto
-  };
-
-  tail.tail = tail;
-
-  for ( var i = str.length-1 ; i >= 0 ; i-- ) {
-    var ps = {
-      setValue: StringPSProto.setValue,
-      head: str.charAt(i),
-      tail: tail
-    };
-
-    tail.value = ps.head;
-
-    tail = ps;
-  }
-
-  return tail;
+  },
+  set str(str) { this.str_[0] = str; },
+  get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
+  get value() { return this.value_ || this.str_[0].charAt(this.pos-1); },
+  get tail() { return this.pos >= this.str_[0].length ? this : this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
+  setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
 }
+
 
 function prep(arg) {
   if ( typeof arg === 'string' ) return literal(arg);
@@ -105,6 +88,8 @@ function literal(str) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
       if ( str.charAt(i) !== ps.head ) return undefined;
     }
+
+if ( ! ps.setValue ) debugger;
 
     return ps.setValue(str);
   };
@@ -284,7 +269,11 @@ function sym(name) { return function(ps) { return this[name](ps); }; }
 
 var grammar = {
   parseString: function(str) {
-    var res = this.parse(this.START, stringPS(str));
+    if ( ! this.hasOwnProperty('stringPS') ) this.stringPS = StringPS.create("");
+
+    var ps = this.stringPS;
+    ps.str = str;
+    var res = this.parse(this.START, ps);
 
     return res && res.value;
   },
