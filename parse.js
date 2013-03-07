@@ -56,7 +56,7 @@ var StringPS = {
   set str(str) { this.str_[0] = str; },
   get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
   get value() { return this.value_ || this.str_[0].charAt(this.pos-1); },
-  get tail() { return this.pos >= this.str_[0].length ? this : this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
+  get tail() { return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
   setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
 }
 
@@ -88,8 +88,6 @@ function literal(str) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
       if ( str.charAt(i) !== ps.head ) return undefined;
     }
-
-if ( ! ps.setValue ) debugger;
 
     return ps.setValue(str);
   };

@@ -42,7 +42,7 @@ var files = [
   'DAOController',
   // remove below here
   'models',
-  'demoss',
+  'demos',
   'oauth',
   'email',
   'turntable',
