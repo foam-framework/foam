@@ -28,6 +28,10 @@ var OAuth2 = FOAM.create({
     {
       name: 'clientid',
       required: true
+    },
+    {
+      name: 'scope',
+      required: true
     }
   ],
 
@@ -44,8 +48,8 @@ var OAuth2 = FOAM.create({
       var queryparams = [
         'response_type=token',
         'client_id=' + encodeURIComponent(this.clientid),
-        'redirect_uri=http://localhost:8080/oauth.html',
-        'scope=' + encodeURIComponent('https://www.googleapis.com/auth/drive'),
+        'redirect_uri=http://localhost:8000/oauth.html',
+        'scope=' + encodeURIComponent(this.scope),
         'state=' + encodeURIComponent(callbackid)
       ];
       uri += queryparams.join('&');

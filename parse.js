@@ -58,8 +58,22 @@ var StringPS = {
   get value() { return this.value_ || this.str_[0].charAt(this.pos-1); },
   get tail() { return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
   setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
-}
+};
 
+var BinaryPS = {
+  create: function(bytearray) {
+    return {
+      __proto__: this,
+      pos: 0,
+      view_: [bytearray],
+      tail_: []
+    };
+  },
+  get head() { return this.pos >= this.view_[0].length ? null : this.view_[0][this.pos]; },
+  get value() { return this.hasOwnProperty('value_') ? this.value_ : this.view_[0][this.pos-1]; },
+  get tail() { return this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, view_: this.view_, pos: this.pos + 1, tail_: [] } ); },
+  setValue: function (value) { return { __proto__: this.__proto__, pos: this.pos, view_: this.view_, tail_: this.tail_, value_: value }; }
+};
 
 function prep(arg) {
   if ( typeof arg === 'string' ) return literal(arg);
@@ -260,6 +274,155 @@ function alt(/* vargs */) {
   };
 }
 
+// parse a protocol buffer varint
+// Verifies that it matches the given value if opt_value is specified.
+function varint(opt_value) {
+  return function(ps) {
+    var parts = [];
+    while(ps) {
+      var b = ps.head;
+      if (b == null) return undefined;
+      parts.push(b & 0x7f);
+      ps = ps.tail;
+      if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
+    }
+    var res = 0;
+    for (var i = 0; i < parts.length; i++) {
+      res |= parts[i] << (7 * i);
+    }
+    if ((opt_value != undefined) && res != opt_value) return undefined;
+    return ps.setValue(res);
+  };
+}
+
+// Parses a varintkey which is (varint << 3) | type
+// Verifies that the value and type match if specified.
+function varintkey(opt_value, opt_type) {
+  var p = varint();
+  return function(ps) {
+    if (!(ps = this.parse(p, ps))) return undefined;
+    var type = ps.value & 7;
+    var value = ps.value >> 3
+    if ((opt_value != undefined && opt_value != value) ||
+        (opt_type != undefined && opt_type != type))  return undefined
+    return ps.setValue([value, type]);
+  }
+}
+
+function toboolean(p) {
+  return function(ps) {
+    if ( ! (ps = this.parse(p, ps)) ) return undefined;
+    return ps.setValue( !! ps.value);
+  }
+}
+
+function protouint32(tag) {
+  return seq(varintkey(tag, 0), varint());
+}
+
+function protoint32(tag) {
+  return protouint32(tag);
+}
+
+function protobool(tag) {
+  return seq(varintkey(tag, 0), toboolean(varint()));
+}
+
+function protobytes(tag) {
+  var header = seq(varintkey(tag, 2), varint());
+  return function(ps) {
+    if ( ! (ps = this.parse(header, ps))) return undefined;
+    var length = ps.value[1];
+    return this.parse(repeat(anyChar, undefined, length, length), ps);
+  }
+}
+
+// WARNING: This is a very primitive UTF-8 decoder it probably has bugs.
+function protostring(tag) {
+  tag = varintkey(tag, 2);
+  var length = varint();
+  return function(ps) {
+    if ( ! (ps = this.parse(tag, ps)) ) return undefined;
+    if ( ! (ps = this.parse(length, ps)) ) return undefined;
+    var size = ps.value;
+
+    var first;
+    var chars = [];
+    var j = 0;
+    for (var i = 0; i < size; i++) {
+      var buffer = []
+      if ( !ps ) return undefined;
+      buffer[0] = ps.head;
+      ps = ps.tail;
+      var remaining;
+      if (!(buffer[0] & 0x80)) {
+        remaining = 0;
+        buffer[0] &= 0x7f;
+      } else if ((buffer[0] & 0xe0) == 0xc0) {
+        remaining = 1;
+        buffer[0] &= 0x1f;
+      } else if ((buffer[0] & 0xf0) == 0xe0) {
+        remaining = 2;
+        buffer[0] &= 0x0f;
+      } else if ((buffer[0] & 0xf8) == 0xf0) {
+        remaining = 3;
+        buffer[0] &= 0x07;
+      } else if ((buffer[0] & 0xfc) == 0xf8) {
+        remaining = 4;
+        buffer[0] &= 0x03;
+      } else if ((buffer[0] & 0xfe) == 0xfc) {
+        remaining = 5;
+        buffer[0] &= 0x01;
+      } else return undefined;
+
+      for (var j = 0; j < remaining && j + i < size; j++) {
+        if ( ! ps ) return undefined;
+        buffer.unshift(ps.head);
+        ps = ps.tail;
+      }
+      i += j;
+      var charcode = 0;
+      for (var k = 0; k < buffer.length; k++) {
+        charcode |= (buffer[k] & 0x7f) << (6 * k);
+      }
+      chars.push(charcode);
+    }
+    // NOTE: Turns out fromCharCode can't handle all unicode code points.
+    // We need fromCodePoint from ES 6 before this will work properly.
+    return ps.setValue(String.fromCharCode.apply(undefined, chars));
+  };
+}
+
+function protomessage(tag, opt_p) {
+  var header = seq(varintkey(tag, 2), varint());
+  return function(ps) {
+    if (!(ps = this.parse(header, ps))) return undefined;
+    var length = ps.value[1];
+    opt_p = opt_p || repeat(anyChar);
+    var start = ps.pos;
+    var limiter = {
+      __proto__: this,
+      parse: function(parser, pstream) {
+        if (pstream.pos == start + length) return undefined;
+        return parser.call(this, pstream);
+      }
+    };
+    return limiter.parse(opt_p, ps);
+  };
+}
+
+/*
+function varstring() {
+  var size = varint();
+  return function(ps) {
+    if (! (ps = this.parse(size, ps)) ) return undefined;
+    var length = ps.value;
+    if (! (ps = this.parse(repeat(anyChar, undefined, length, length)))) return undefined;
+    INCOMPLETE;
+    should be able to use unescape(encodeURIComponent(str)) if we can set each character of str to the \u#### code point.
+  }
+}*/
+
 // alt = simpleAlt;
 
 function sym(name) { return function(ps) { return this[name](ps); }; }
@@ -297,4 +460,12 @@ var grammar = {
   }
 };
 
+var binarygrammar = {
+  __proto__: grammar,
 
+  parseArrayBuffer: function(ab) {
+    var ps = BinaryPS.create(ab);
+    var res = this.parse(this.START, ps);
+    return res && res.value;
+  }
+};
