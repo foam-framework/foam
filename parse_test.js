@@ -1,3 +1,5 @@
+function stringPS(str) { return StringPS.create(str); }
+
 // TODO: doesn't compare arrays properly and gives false errors
 function test(str, p, opt_expect) {
 /*
