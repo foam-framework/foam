@@ -90,6 +90,7 @@ console.log(i, k, v);
 
 
   toString: function() {
+console.log(this.model_.name + "Prototype");
     return this.model_.name + "Prototype";
   },
 

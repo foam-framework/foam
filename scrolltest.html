@@ -1,0 +1,81 @@
+<html>
+ <head>
+  <style type="text/css">
+    .bar {
+       color: white;
+       margin-left:8px;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+    } 
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="foam.css" />
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <title>Chaos Test</title>
+ </head>
+
+ <body>
+
+<script>
+    var models = [
+       Model,
+       PropertyModel,
+       ActionModel,
+       MethodModel,
+       circleModel,
+       Canvas,
+       Rectangle,
+       DAOController,
+       Timer,
+       Mouse,
+       PanelCView,
+       EyeCView,
+       EyesCView,
+       ClockView,
+       TextFieldView
+    ];
+
+models = [];
+for ( key in window ) { 
+  if ( window[key] && Model.isInstance(window[key]) ) models.push(window[key]);
+}
+
+//    var mmodels = models.concat(models).concat(models).concat(models).concat(models);
+      var mmodels = models;
+
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    mmodels = mmodels.concat(mmodels).concat(mmodels);
+console.log('************************************', mmodels.length);
+document.write('<h1>Rows: ', mmodels.length, '</h1>');
+    var stv = ScrollBorder.create({
+      view: TableView2.create({
+        model: Model,
+        dao: mmodels,
+        rows: 20
+      }),
+      dao: mmodels,
+    });
+    
+    stv.scrollbar.height=800;
+    stv.write(document);
+    stv.layout();
+
+    DetailView.create(stv.scrollbar.model_, new SimpleValue(stv.scrollbar)).write(document);
+
+//    DetailView.create(stv.view.model_, new SimpleValue(stv.view)).write(document);
+   "";
+  </script>
+
+ </body>
+</html>

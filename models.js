@@ -330,7 +330,8 @@ var CView = FOAM.create({
 	 name:  'children',
 	 label: 'Children',
 	 type:  'CView[]',
-	 valueFactory: function() { return []; }
+	 valueFactory: function() { return []; },
+	 hidden: true
       },
       {
 	 name:  'background',
@@ -345,7 +346,8 @@ var CView = FOAM.create({
 	 getter: function() {
 	   return this.parent.canvas;
 	 },
-	 setter: undefined
+	 setter: undefined,
+	 hidden: true
       }
    ],
 
@@ -499,23 +501,25 @@ var ScrollCView = FOAM.create({
       },
       {
 	name:  'extent',
-        help:  'Number of things visible.',
+        help:  'Number of elements shown.',
         type:  'int',
         defaultValue: 10
       },
       {
 	 name:  'size',
          type:  'int',
-         help:  'Number of things that you are scrolling through',
-         postSet: function() { console.log('*******size:',this.size, this.height); this.paint(); }
+         defaultValue: 0,
+         help:  'Total number of elements being scrolled through.',
+         postSet: function() { console.log('ScrollCView size:', this.size, 'height: ', this.height); this.paint(); }
       },
       {
-        name: 'starty',
+        name: 'startY',
         type: 'int',
         defaultValue: 0
       },
       {
-        name: 'startvalue',
+        name: 'startValue',
+        help: 'Starting value or current drag operation.',
         type: 'int',
         defaultValue: 0
       }
@@ -523,47 +527,41 @@ var ScrollCView = FOAM.create({
 
    listeners: {
      mouseDown: function(e) {
-//       console.log('mouseDown: ', e);
 //       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
-       this.starty = e.y - e.offsetY;
+       this.startY = e.y - e.offsetY;
        window.addEventListener('mouseup', this.mouseUp, true);
        window.addEventListener('mousemove', this.mouseMove, true);
        window.addEventListener('touchstart', this.touchstart, true);
        this.mouseMove(e);
      },
      mouseUp: function(e) {
-//       console.log('mouseUp: ', e);
        e.preventDefault();
        window.removeEventListener('mousemove', this.mouseMove, true);
        window.removeEventListener('mouseup', this.mouseUp, true);
 //       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
-//       console.log('mouseMove: ', e);
-       var y = e.y - this.starty;
+       var y = e.y - this.startY;
        e.preventDefault();
 
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
-//       console.log('touchStart: ', e);
-       this.starty = e.targetTouches[0].pageY;
-       this.startvalue = this.value;
+       this.startY = e.targetTouches[0].pageY;
+       this.startValue = this.value;
        window.addEventListener('touchmove', this.touchMove, false);
 //       this.parent.element().addEventListener('touchmove', this.touchMove, false);
        this.touchMove(e);
      },
      touchEnd: function(e) {
-//       console.log('touchEnd: ', e);
        window.removeEventListener('touchmove', this.touchMove, false);
        window.removeEventListener('touchend', this.touchEnd, false);
 //       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
      },
      touchMove: function(e) {
-//       console.log('touchMove: ', e);
        var y = e.targetTouches[0].pageY;
        e.preventDefault();
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startvalue + (y - this.starty) / (this.height-4) * this.size )));
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startValue + (y - this.startY) / (this.height-4) * this.size )));
      },
      updateValue: function() {
        this.paint();
@@ -574,7 +572,10 @@ var ScrollCView = FOAM.create({
 
     paint: function() {
       var c = this.canvas;
-      c.fillStyle = '#fff';
+
+      if ( ! c ) return;
+
+      c.fillStyle = '#0f0';
       c.fillRect(this.x, this.w, this.width, this.height);
 
       if ( this.extent >= this.size ) return;
@@ -622,7 +623,7 @@ var ScrollBorder = FOAM.create({
            valueFactory: function() {
              var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
 
-//             this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+	     if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
 	     return sb;
            }
@@ -631,9 +632,10 @@ var ScrollBorder = FOAM.create({
          name:  'dao',
          label: 'DAO',
          type: 'DAO',
+	 hidden: true,
          required: true,
-         postSet: function(newValue, oldValue) {
-           this.view.dao = newValue;
+         postSet: function(newValue, oldValue) { 
+          this.view.dao = newValue;
            var self = this;
 
            this.dao.select(COUNT())(function(c) {
@@ -671,8 +673,10 @@ var ScrollBorder = FOAM.create({
        var view = this.view;
        var scrollbar = this.scrollbar;
        var self = this;
+
        Events.dynamic(function() {scrollbar.value;}, function() {
          if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value); });
+
        Events.dynamic(function() {view.rows;}, function() {
            scrollbar.extent = view.rows;
          });
