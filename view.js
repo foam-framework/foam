@@ -963,9 +963,14 @@ var ChoiceView = FOAM.create({
          var choice = this.choices[i];
          var id     = this.nextID();
 
-         this.registerCallback('mouseover', this.onMouseOver, id);
-         this.registerCallback('mouseout', this.onMouseOut, id);
-         this.registerCallback('click', this.onClick, id);
+	 try {
+           this.registerCallback('click', this.onClick, id);
+           this.registerCallback('mouseover', this.onMouseOver, id);
+           this.registerCallback('mouseout', this.onMouseOut, id);
+         } catch (x) {
+	   // Fails on iPad, which is okay, because this feature doesn't make
+           // sense on the iPad anyway.
+	 }
 
          out.push('\t<option id="' + id + '"');
 
@@ -1574,7 +1579,7 @@ var DetailView =
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
 	 var prop = model.properties[i];
 
-	 // if ( prop.hidden ) continue;
+	 if ( prop.hidden ) continue;
 
 	 var view = this.createView(prop);
 
@@ -1621,15 +1626,14 @@ var DetailView =
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
 	 var child = this.children[i];
-	 var prop  = this.model.properties[i];
+	 var prop  = child.prop;
+
+         if ( ! prop ) continue;
 
 	 try {
-	    // todo: fix
-            if ( prop && ! prop.hidden )
-	       child.setValue(obj.propertyValue(prop.name));
-	 }
-	 catch (x) {
-	    console.log("error: ", prop.name, " ", x);
+	   child.setValue(obj.propertyValue(prop.name));
+	 } catch (x) {
+	   console.log("error: ", prop.name, " ", x);
 	 }
       }
    },
@@ -1741,8 +1745,7 @@ var DetailView2 = {
    initHTML: function() {
       AbstractView.initHTML.call(this);
 
-      if ( this.get() )
-      {
+      if ( this.get() ) {
 	 this.updateHTML();
 
 	 // hooks sub-views upto sub-models
@@ -1767,17 +1770,16 @@ var DetailView2 = {
 
       var obj = this.get();
 
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
+      for ( var i = 0; i < this.children.length ; i++ ) {
 	 var child = this.children[i];
-	 var prop  = this.model.properties[i];
+	 var prop  = child.prop;
+
+	 if ( ! prop ) continue;
 
 	 try {
-	    // todo: fix
-            if ( prop && ! prop.hidden ) {
 //	       console.log("updateSubView: " + child + " " + prop.name);
 //	       console.log(obj.propertyValue(prop.name).get());
-	       child.setValue(obj.propertyValue(prop.name));
-	    }
+              child.setValue(obj.propertyValue(prop.name));
 	 } catch (x) {
 	    console.log("Error on updateSubView: ", prop.name, x, obj);
 	 }
@@ -2016,7 +2018,7 @@ var TableView = FOAM.create({
 
 	    if ( ! prop ) continue;
 
-	   // if ( prop.hidden ) continue;
+	    if ( prop.hidden ) continue;
 
 	    str.push('<th scope=col>' + prop.label + '</th>');
 
@@ -2091,6 +2093,7 @@ var TableView = FOAM.create({
   }
 });
 
+
 var TableView2 = FOAM.create({
    model_: 'Model',
 
@@ -2136,6 +2139,7 @@ var TableView2 = FOAM.create({
          label: 'DAO',
          type: 'DAO',
          required: true,
+	 hidden: true,
          postSet: function(val, oldValue) {
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
@@ -2196,7 +2200,8 @@ style = window.getComputedStyle(this.element().children[0]);
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
       this.objs = [];
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select(this.objs)(function() {
+//console.log('*********** TableView2.rows:', this.rows);
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {self.objs.push(o); }} )(function() {
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
           self.initHTML();
@@ -2223,14 +2228,13 @@ style = window.getComputedStyle(this.element().children[0]);
 
 	//str += '<!--<caption>' + model.plural + '</caption>';
         str.push('<thead><tr>');
-	for ( var i = 0 ; i < this.properties.length ; i++ )
-	{
+	for ( var i = 0 ; i < this.properties.length ; i++ ) {
 	    var key  = this.properties[i];
 	    var prop = model.getProperty(key);
 
 	    if ( ! prop ) continue;
 
-	   // if ( prop.hidden ) continue;
+	    if ( prop.hidden ) continue;
 
 	    str.push('<th scope=col ');
             str.push('id=' +
@@ -2244,12 +2248,11 @@ style = window.getComputedStyle(this.element().children[0]);
 	    props.push(prop);
 	}
 	str.push('</tr></thead><tbody>');
-
         if ( this.objs )
 	for ( var i = 0 ; i < this.objs.length; i++ ) {
 	    var obj = this.objs[i];
 
-	    str.push('<tr class="tr-' + this.getID() + '")">');
+	    str.push('<tr class="tr-' + this.getID() + '">');
 
 	    for ( var j = 0 ; j < props.length ; j++ ) {
 		var prop = props[j];

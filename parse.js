@@ -262,7 +262,12 @@ function alt(/* vargs */) {
 
 // alt = simpleAlt;
 
-function sym(name) { return function(ps) { return this[name](ps); }; }
+function sym(name) { return function(ps) { return this.parse(this[name], ps); }; }
+
+// This isn't any faster because V8 does the same thing already.
+// function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
+
+
 // function sym(name) { return function(ps) { var ret = this[name](ps); console.log('<' + name + '> -> ', !! ret); return ret; }; }
 
 var grammar = {
