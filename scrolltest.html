@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script language="javascript" src="bootFOAM.js"></script> 
-  <title>Chaos Test</title>
+  <title>FOAM Test</title>
  </head>
 
  <body>
@@ -62,15 +62,17 @@ document.write('<h1>Rows: ', mmodels.length, '</h1>');
       view: TableView2.create({
         model: Model,
         dao: mmodels,
-        rows: 20
+        rows: 15
       }),
       dao: mmodels,
     });
     
-    stv.scrollbar.height=800;
+    stv.scrollbar.height=250;
     stv.write(document);
+//debugger;
     stv.layout();
 
+debugger;
     DetailView.create(stv.scrollbar.model_, new SimpleValue(stv.scrollbar)).write(document);
 
 //    DetailView.create(stv.view.model_, new SimpleValue(stv.view)).write(document);
