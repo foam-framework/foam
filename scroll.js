@@ -44,7 +44,7 @@ var ScrollCView = FOAM.create({
          type:  'int',
          defaultValue: 0,
          help:  'Total number of elements being scrolled through.',
-         postSet: function() { console.log('ScrollCView size:', this.size, 'height: ', this.height); this.paint(); }
+         postSet: function() { this.paint(); }
       },
       {
 	 name:  'minHandleSize',
@@ -122,9 +122,8 @@ var ScrollCView = FOAM.create({
 
    methods: {
 
-      init: function(args) {
+    init: function(args) {
        AbstractView2.init.call(this, args);
-
        this.addListener(EventService.animate(this.paint.bind(this)));
     },
 
@@ -222,7 +221,7 @@ var ScrollBorder = FOAM.create({
    methods: {
      layout: function() {
        this.view.layout();
-       this.scrollbar.height = toNum(window.getComputedStyle(this.view.element().children[0]).height)-35;
+       this.scrollbar.height = toNum(window.getComputedStyle(this.view.element().children[0]).height)-36;
      },
      toHTML: function() {
        return '<table width=100% border=0><tr><td valign=top>' +

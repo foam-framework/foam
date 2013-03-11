@@ -405,8 +405,13 @@ defineProperties(Array.prototype, {
     var hasQuery = options && ( options.query || options.order );
     sink = this.decorateSink_(sink, options, false, ! hasQuery);
 
-    var fc = this.createFlowControl_();
+    // Short-circuit COUNT.
+    if ( sink.model_ === CountExpr ) {
+      sink.count = this.length;
+      return aconstant(sink);
+    }
 
+    var fc = this.createFlowControl_();
     var start = hasQuery ? 0 : options && options.skip || 0;
     var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
     for ( var i = start ; i < end ; i++ ) {

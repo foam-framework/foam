@@ -14,7 +14,20 @@
  * limitations under the License.
  */
 
-/** Create an afunc which always returns the supplied constant value. **/
+
+/** Give all objects a Unique ID. **/ 
+Object.defineProperty(Object.prototype, '$UID', {
+  get: (function() {
+    var id = 1;
+
+    return function() {
+      return this.$UID__ || (this.$UID__ = id++);
+    };
+  })()
+});
+
+
+/** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; } }
 
 

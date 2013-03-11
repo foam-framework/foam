@@ -44,18 +44,10 @@ for ( key in window ) {
 }
 
 //    var mmodels = models.concat(models).concat(models).concat(models).concat(models);
-      var mmodels = models;
+      var mmodels = [];
 
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    for ( var i = 0 ; i < 5000000 ; i++ ) mmodels.push(models[i%models.length]); 
+
 console.log('************************************', mmodels.length);
 document.write('<h1>Rows: ', mmodels.length, '</h1>');
     var stv = ScrollBorder.create({
@@ -69,10 +61,8 @@ document.write('<h1>Rows: ', mmodels.length, '</h1>');
     
     stv.scrollbar.height=250;
     stv.write(document);
-//debugger;
     stv.layout();
 
-debugger;
     DetailView.create(stv.scrollbar.model_, new SimpleValue(stv.scrollbar)).write(document);
 
 //    DetailView.create(stv.view.model_, new SimpleValue(stv.view)).write(document);
