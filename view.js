@@ -984,7 +984,7 @@ var ChoiceView = FOAM.create({
            out.push(choice[1].toString());
          } else {
 	   if ( this.value && choice == this.value.get() ) out.push(' selected');
-           out.push(' value="');
+           out.push('>');
            out.push(choice.toString());
          }
          out.push('</option>');
