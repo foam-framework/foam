@@ -30,6 +30,7 @@ var Attachment = FOAM.create({
    [
       'type',
       'filename',
+      'position',
       'size'
    ],
    properties:
@@ -339,15 +340,18 @@ var MBOXLoader = {
   },
 
   SKIP_ATTACHMENT_STATE: function ATTACHMENT(str) {
+    var att = this.email.attachments[this.email.attachments.length-1];
     if ( str.slice(0, 5) === 'From ' ) {
+      att.size = att.pos - att.position; 
       this.state = this.PARSE_HEADERS_STATE;
       this.state(str);
       return;
     }
 
     if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
+      att.size = att.pos - att.position; 
       this.state = this.PARSE_HEADERS_STATE;
-      this.blockId   = undefined;
+      this.blockId = undefined;
     }
   },
 
@@ -457,11 +461,12 @@ var MBOXLoader = {
     this.state = this.READ_BODY_STATE;
   },
 
-  'start of attachment': function(v) {
-    var attachment = Attachment.create();
-
-    attachment.type = v[1].join('');
-    attachment.filename = v[3].join('');
+  'start of attachment': function(v, unused, pos) {
+    var attachment = Attachment.create({
+      type: v[1].join(''),
+      filename: v[3].join(''),
+      position: this.pos
+    });
 
     this.email.attachments.push(attachment);
     this.state = this.SKIP_ATTACHMENT_STATE;

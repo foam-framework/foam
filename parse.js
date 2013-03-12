@@ -132,7 +132,6 @@ function optional(p) {
   return function(ps) { return this.parse(p,ps) || ps.setValue(undefined); };
 }
 
-
 function repeat(p, opt_delim, opt_min, opt_max) {
   p = prep(p);
   opt_delim = prep(opt_delim);
@@ -159,6 +158,8 @@ function repeat(p, opt_delim, opt_min, opt_max) {
     return ps.setValue(ret);
   };
 }
+
+function plus(p) { return this.repeat(p, undefined, 1); }
 
 /** A simple repeat which doesn't build an array of parsed values. **/
 function repeat0(p) {
