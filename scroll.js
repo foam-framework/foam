@@ -141,7 +141,7 @@ var ScrollCView = FOAM.create({
       c.strokeRect(this.x, this.y, this.width-2, this.height);
 
       c.fillStyle = this.handleColor;
-           
+
       var h = this.height-8;
       var handleSize = this.extent / this.size * h;
 
@@ -201,7 +201,7 @@ var ScrollBorder = FOAM.create({
          type: 'DAO',
 	 hidden: true,
          required: true,
-         postSet: function(newValue, oldValue) { 
+         postSet: function(newValue, oldValue) {
           this.view.dao = newValue;
            var self = this;
 
@@ -239,10 +239,13 @@ var ScrollBorder = FOAM.create({
        var scrollbar = this.scrollbar;
        var self = this;
 
-       Events.dynamic(function() {scrollbar.value;}, function() {
+       scrollbar.addPropertyListener('value', EventService.animate(function() {
          if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value);
-       });
+       }));
 
+/*
+       Events.dynamic(function() {scrollbar.value;}, );
+*/
        Events.dynamic(function() {view.rows;}, function() {
          scrollbar.extent = view.rows;
        });
