@@ -1497,8 +1497,8 @@ var XMLView = FOAM.create({
 
    model_: 'Model',
 
-   name:  'JSView',
-   label: 'JS View',
+   name:  'XMLView',
+   label: 'XML View',
 
    extendsModel: 'TextAreaView',
 
