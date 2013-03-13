@@ -23,37 +23,70 @@ var OAuth2 = FOAM.create({
 
   properties: [
     {
-      name: 'token'
+      name: 'accesstoken'
+    },
+    {
+      name: 'refreshtoken'
+    },
+    {
+      name: 'authcode',
+      postSet: function(oldValue, newValue) {
+        this.updateRefreshToken_();
+      }
     },
     {
       name: 'clientid',
       required: true
     },
     {
+      name: 'clientsecret',
+      required: true
+    },
+    {
       name: 'scope',
       required: true
+    },
+    {
+      name: 'endpoint',
+      type: 'String',
+      defaultValue: "https://accounts.google.com/o/oauth2/auth"
     }
   ],
 
   methods: {
-    authenticate: function() {
-      var callbackid = Math.floor(Math.random() * 1000000);
-      var self = this;
-      window['__oauth_' + callbackid] = function(result) {
-        delete window['__oauth_' + callbackid];
-        self.token = result.token;
-      };
-
-      var uri = "https://accounts.google.com/o/oauth2/auth?";
-      var queryparams = [
-        'response_type=token',
-        'client_id=' + encodeURIComponent(this.clientid),
-        'redirect_uri=http://localhost:8000/oauth.html',
-        'scope=' + encodeURIComponent(this.scope),
-        'state=' + encodeURIComponent(callbackid)
+    updateRefreshToken_: function() {
+      var postdata = [
+        'code=' + (this.authcode),
+        'client_id=' + (this.clientid),
+        'client_secret=' + (this.clientsecret),
+        'grant_type=authorization_code'
       ];
-      uri += queryparams.join('&');
-      var w = window.open(uri);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", this.endpoint);
+      aseq(
+        function(ret) {
+          xhr.asend(ret, postdata.join('&'));
+        },
+        function() {
+          console.log('auth result: ' + xhr.responseText);
+        })();
+    },
+
+    auth: function() {
+/*      var queryparams = [
+        '?response_type=code',
+        'client_id=' + encodeURIComponent(this.clientid),
+        'redirect_uri=urn:ietf:wg:oauth:2.0:oob',
+        'scope=' + encodeURIComponent(this.scope)
+      ];*/
+      var queryparams = [
+        '?response_type=token',
+        'client_id=' + encodeURIComponent(this.clientid),
+        'redirect_uri=http://localhost:8080/oauth2callback',
+        'scope=' + encodeURIComponent(this.scope)
+      ];
+      window.open(this.endpoint + queryparams.join('&'));
     }
   }
 });

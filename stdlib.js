@@ -331,3 +331,14 @@ String.prototype.intern = (function() {
 
   return function() { return map[this] || (map[this] = this.toString()); };
 })();
+
+/**
+ * And an afunc send to XMLHttpRequest
+ */
+XMLHttpRequest.prototype.asend = function(ret, opt_data) {
+    var xhr = this;
+    xhr.onloadend = function() {
+        ret(xhr.response);
+    };
+    xhr.send(opt_data);
+};

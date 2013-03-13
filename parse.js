@@ -62,6 +62,7 @@ var StringPS = {
 
 var BinaryPS = {
   create: function(bytearray) {
+    if (bytearray instanceof ArrayBuffer) bytearray = new Uint8Array(bytearray);
     return {
       __proto__: this,
       pos: 0,
@@ -279,6 +280,7 @@ function alt(/* vargs */) {
 function varint(opt_value) {
   return function(ps) {
     var parts = [];
+    var rest = 0;
     while(ps) {
       var b = ps.head;
       if (b == null) return undefined;
@@ -292,6 +294,27 @@ function varint(opt_value) {
     }
     if ((opt_value != undefined) && res != opt_value) return undefined;
     return ps.setValue(res);
+  };
+}
+
+// Parses a varint and returns a hex string.  Used for field too big
+// for js to handle as Numbers.
+function varintstring(opt_value) {
+  return function(ps) {
+    var parts = [];
+    var rest = 0;
+    while(ps) {
+      var b = ps.head;
+      if (b == null) return undefined;
+      var str = b.toString(16);
+      if (str.length == 1) str = "0" + str;
+      parts.push(str);
+      ps = ps.tail;
+      if (!(b & 0x80)) break;
+    }
+    var result = parts.join('');
+    if (opt_value && result !== opt_value) return undefined;
+    return ps.setValue(result);
   };
 }
 
@@ -316,8 +339,19 @@ function toboolean(p) {
   }
 }
 
+function index(i, p) {
+    return function(ps) {
+        if (!(ps = this.parse(p, ps))) return undefined;
+        return ps.setValue(ps.value[i]);
+    }
+}
+
 function protouint32(tag) {
   return seq(varintkey(tag, 0), varint());
+}
+
+function protovarintstring(tag) {
+  return seq(varintkey(tag, 0), varintstring());
 }
 
 function protoint32(tag) {
@@ -332,64 +366,30 @@ function protobytes(tag) {
   var header = seq(varintkey(tag, 2), varint());
   return function(ps) {
     if ( ! (ps = this.parse(header, ps))) return undefined;
-    var length = ps.value[1];
-    return this.parse(repeat(anyChar, undefined, length, length), ps);
+    var oldvalue = ps.value;
+    var length = oldvalue[1];
+    if ( ! (ps = this.parse(repeat(anyChar, undefined, length, length), ps))) return undefined;
+    return ps.setValue([oldvalue[0], ps.value]);
   }
 }
 
-// WARNING: This is a very primitive UTF-8 decoder it probably has bugs.
-function protostring(tag) {
-  tag = varintkey(tag, 2);
-  var length = varint();
+function protobytes0(tag) {
+  var header = seq(varintkey(tag, 2), varint());
   return function(ps) {
-    if ( ! (ps = this.parse(tag, ps)) ) return undefined;
-    if ( ! (ps = this.parse(length, ps)) ) return undefined;
-    var size = ps.value;
+    if ( ! (ps = this.parse(header, ps))) return undefined;
+    var oldvalue = ps.value;
+    var length = oldvalue[1];
+    while(length--) ps = ps.tail;
+    return ps.setValue([oldvalue, undefined]);
+  }
+}
 
-    var first;
-    var chars = [];
-    var j = 0;
-    for (var i = 0; i < size; i++) {
-      var buffer = []
-      if ( !ps ) return undefined;
-      buffer[0] = ps.head;
-      ps = ps.tail;
-      var remaining;
-      if (!(buffer[0] & 0x80)) {
-        remaining = 0;
-        buffer[0] &= 0x7f;
-      } else if ((buffer[0] & 0xe0) == 0xc0) {
-        remaining = 1;
-        buffer[0] &= 0x1f;
-      } else if ((buffer[0] & 0xf0) == 0xe0) {
-        remaining = 2;
-        buffer[0] &= 0x0f;
-      } else if ((buffer[0] & 0xf8) == 0xf0) {
-        remaining = 3;
-        buffer[0] &= 0x07;
-      } else if ((buffer[0] & 0xfc) == 0xf8) {
-        remaining = 4;
-        buffer[0] &= 0x03;
-      } else if ((buffer[0] & 0xfe) == 0xfc) {
-        remaining = 5;
-        buffer[0] &= 0x01;
-      } else return undefined;
-
-      for (var j = 0; j < remaining && j + i < size; j++) {
-        if ( ! ps ) return undefined;
-        buffer.unshift(ps.head);
-        ps = ps.tail;
-      }
-      i += j;
-      var charcode = 0;
-      for (var k = 0; k < buffer.length; k++) {
-        charcode |= (buffer[k] & 0x7f) << (6 * k);
-      }
-      chars.push(charcode);
-    }
-    // NOTE: Turns out fromCharCode can't handle all unicode code points.
-    // We need fromCodePoint from ES 6 before this will work properly.
-    return ps.setValue(String.fromCharCode.apply(undefined, chars));
+function protostring(tag) {
+  var data = protobytes(tag);
+  return function(ps) {
+    if (!(ps = this.parse(data, ps))) return undefined;
+    var str = utf8tostring(ps.value[1]);
+    return str ? ps.setValue([ps.value[0], str]) : undefined;
   };
 }
 
@@ -397,6 +397,7 @@ function protomessage(tag, opt_p) {
   var header = seq(varintkey(tag, 2), varint());
   return function(ps) {
     if (!(ps = this.parse(header, ps))) return undefined;
+    var key = ps.value[0];
     var length = ps.value[1];
     opt_p = opt_p || repeat(anyChar);
     var start = ps.pos;
@@ -407,9 +408,23 @@ function protomessage(tag, opt_p) {
         return parser.call(this, pstream);
       }
     };
-    return limiter.parse(opt_p, ps);
+    if (!(ps = limiter.parse(opt_p, ps))) return undefined;
+    return ps.setValue([key, ps.value]);
   };
 }
+
+function parsedebug(p) {
+  return function(ps) {
+    debugger;
+    return this.parse(p, ps);
+  };
+}
+
+//function subparser(model, name) {
+//  return function(ps) {
+//    return this.parse(model.parser.bind((ps, name);
+//  }
+//}
 
 /*
 function varstring() {
@@ -472,5 +487,9 @@ var binarygrammar = {
     var ps = BinaryPS.create(ab);
     var res = this.parse(this.START, ps);
     return res && res.value;
-  }
+  },
+
+  'unknown field': alt(
+      protouint32(),
+      protobytes0())
 };
