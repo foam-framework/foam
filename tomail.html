@@ -89,6 +89,7 @@ layout();
     emails = IndexedDBDAO.create({model: EMail});
 
     var dao = IDAO.create({model: EMail});
+    dao.addIndex(EMail.TIMESTAMP);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);

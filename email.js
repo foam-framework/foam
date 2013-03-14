@@ -87,7 +87,7 @@ var EMail = FOAM.create({
    name: 'EMail',
    label: 'EMail',
    plural: 'EMail',
-   ids: [ 'timestamp' ],
+   ids: [ 'id' ],
    tableProperties:
    [
       'attachments',
@@ -98,6 +98,18 @@ var EMail = FOAM.create({
    ],
    properties:
    [
+      {
+         model_: 'Property',
+         name: 'id',
+         label: 'Message ID',
+         type: 'String',
+         mode: 'read-write',
+         required: true,
+         displayWidth: 50,
+         displayHeight: 1,
+         view: 'TextFieldView',
+	 defaltValue: ''
+      },
       {
          model_: 'Property',
          name: 'timestamp',
@@ -255,6 +267,7 @@ var MBOXParser = {
 
   line: alt(
     sym('start of email'),
+    sym('id'),
     sym('to'),
     sym('from'),
     sym('subject'),
@@ -266,6 +279,8 @@ var MBOXParser = {
   ),
 
   'start of email': seq('From ', sym('until eol')),
+
+  id: seq('Message-ID: ', sym('until eol')),
 
 //  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
@@ -434,6 +449,8 @@ var MBOXLoader = {
     this.email = EMail.create();
     this.b = [];
   },
+
+  id: function(v) { this.email.id = v[1].join('').trim(); },
 
   to: function(v) { 
     this.email.to = v[1].join('').trim(); 
