@@ -410,7 +410,6 @@ var MBOXLoader = {
       i = this.email.body.indexOf("Content-Transfer-Encoding: base64");
       if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
 
-      this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
       if ( this.email.to.length == 0 ) return;
       if ( this.email.to.indexOf('<<') != -1 ) return;
@@ -446,8 +445,7 @@ var MBOXLoader = {
 
   subject: function(v) { this.email.subject = v[1].join('').trim(); },
 
-  // TODO: uncomment this when the AA tree balancing is added
-  // date: function(v) { this.email.timestamp = new Date(v[1].join('').trim()); }
+  date: function(v) { this.email.timestamp = new Date(v[1].join('').trim()); },
 
   label: function(v) { this.email.labels.push(v.join('')); },
 

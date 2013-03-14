@@ -29,9 +29,7 @@ Takeout Reader</font>
 </div>
 <script>
 EMail.ATTACHMENTS.compare = function(o1, o2) {
-  o1 = this.f(o1);
-  o2 = this.f(o2);
-  return o2.length - o1.length;
+  return this.f(o1).length - this.f(o2).length;
 };
 
 var header = $('header');
@@ -120,24 +118,29 @@ layout();
 */
 //    dao2.bulkLoad(dao2);
 
-//    var d1 = dao;
-//    var d2 = emails;
+    var d1 = dao;
+    var d2 = emails;
 
     var lock = {};
 
 /*
     dao = {
       __proto__: dao,
-      select: function(sink, options) {
+      find: function(query, sink) {
+        console.log('find:', query);
+        d1.find(query, sink);
+      },
+
+      select2: function(sink, options) {
         var future = afuture();
 
         var s = CountExpr.isInstance(sink) ? COUNT() : { put: function() { } };
 
          asynchronized(aseq(
           // alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
-          atime('indexedDB', arepeat(1, function(ret) { d2.select(s, options)(ret); })),
+          atime('indexedDB', arepeat(1000, function(ret) { d2.select(s, options)(ret); })),
           // alog('indexedDB to IDAO'),
-          atime('idao', arepeat(1000, function(ret) { d1.select(s, options)(ret); })),
+          atime('idao', arepeat(1, function(ret) { d1.select(s, options)(ret); })),
           function(ret) { d1.select(sink, options)(function(v) { future.set(sink); ret(); }); }
         ),lock)(anop);
 
@@ -225,8 +228,23 @@ layout();
       SourceBlob(file, BlobToText(TextToLines(MBOXLoader)));
     }
 
-    emails.select(dao)(function() {
+    var a = [];
+    emails.select(a)(function() {
       console.log('********************************************** loaded');
+      // Copy values from the array into the dao in an order
+      // which will cause a balanced tree to be created.
+      function bcopy(s,e) {
+        if ( s == e ) dao.put(a[s]);
+        if ( e <= s ) return;
+        var m = Math.floor((s+e)/2);
+        dao.put(a[m]);
+        bcopy(s,m-1);
+        bcopy(m+1,e);
+      }
+      bcopy(0, a.length-1);
+      a = undefined;
+
+      console.log('********************************************** inserted');
       layout();
       byTo.dao = byTo.dao;
       byFrom.dao = byFrom.dao;
