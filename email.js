@@ -108,6 +108,18 @@ var EMail = FOAM.create({
          displayWidth: 50,
          displayHeight: 1,
          view: 'TextFieldView',
+	 hidden: true,
+	 defaltValue: ''
+      },
+      {
+         model_: 'Property',
+         name: 'convId',
+         label: 'Conversation ID',
+         type: 'String',
+         mode: 'read-write',
+         displayWidth: 30,
+         displayHeight: 1,
+         view: 'TextFieldView',
 	 defaltValue: ''
       },
       {
@@ -268,6 +280,7 @@ var MBOXParser = {
   line: alt(
     sym('start of email'),
     sym('id'),
+    sym('conversation id'),
     sym('to'),
     sym('from'),
     sym('subject'),
@@ -281,6 +294,8 @@ var MBOXParser = {
   'start of email': seq('From ', sym('until eol')),
 
   id: seq('Message-ID: ', sym('until eol')),
+
+  'conversation id': seq('Conversation-ID: ', sym('until eol')),
 
 //  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
@@ -451,6 +466,8 @@ var MBOXLoader = {
   },
 
   id: function(v) { this.email.id = v[1].join('').trim(); },
+
+  'conversation id': function(v) { this.email.convId = v[1].join('').trim(); },
 
   to: function(v) { 
     this.email.to = v[1].join('').trim(); 

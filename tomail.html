@@ -13,10 +13,11 @@ Takeout Reader</font>
 </div>
 <div id="search" style="position:absolute;background-color:#fff;">
   <div id="subjectSearch"  class="searchTitle"></div>
-  <div id="toSearch"    class="searchTitle"></div>
-  <div id="fromSearch"  class="searchTitle"></div>
-  <div id="labelSearch" class="searchTitle"></div>
+  <div id="toSearch"       class="searchTitle"></div>
+  <div id="fromSearch"     class="searchTitle"></div>
+  <div id="labelSearch"    class="searchTitle"></div>
   <div onClick="resetSearch()" style="float:right" class="searchTitle"><u>Clear All</u></div>
+  <div id="viewMode"       class="searchTitle"></div>
 </div>
 <div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
 <div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
@@ -164,12 +165,14 @@ layout();
     });
 
     var searchSubject = TextSearchView.create({width:57, label: 'Search', property: CONCAT(EMail.SUBJECT, EMail.BODY)});
-    var byTo = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
-    var byFrom = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
-    var byLabel = GroupBySearchView.create({size: 6, dao: dao, property: EMail.LABELS});
+    var byTo     = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
+    var byFrom   = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
+    var byLabel  = GroupBySearchView.create({size: 6, dao: dao, property: EMail.LABELS});
+    var viewMode = RadioBoxView.create({value:new SimpleValue('Message'), choices: ['Message', 'Conversation']});
 
     browse.innerHTML = table.toHTML();
     searchSubject.insertInElement('subjectSearch');
+    viewMode.insertInElement('viewMode');
     byTo.insertInElement('toSearch');
     byFrom.insertInElement('fromSearch');
     byLabel.insertInElement('labelSearch');
