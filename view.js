@@ -1028,7 +1028,8 @@ var ChoiceView = FOAM.create({
 
 	 name: 'onMouseOver',
 	 code: function(e) {
-           this.prev = this.value.get();
+	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+           this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
            this.value.set(e.target.value);
 	 }
       },
@@ -1038,7 +1039,11 @@ var ChoiceView = FOAM.create({
 
 	 name: 'onMouseOut',
 	 code: function(e) {
-           this.value.set(this.prev);
+	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+           this.timer_ = window.setTimeout(function() {
+	     this.value.set(this.prev || "");
+             this.prev = undefined;
+           }.bind(this), 1);
 	 }
       },
 
