@@ -524,7 +524,7 @@ var IndexedDBDAO = FOAM.create({
 
     find: function(key, sink) {
       this.withStore("readonly", function(store) {
-        var request = store.find(key);
+        var request = store.get(key);
         request.onsuccess = function() {
           if (!request.result) {
             sink && sink.error && sink.error('find', key);
@@ -545,8 +545,8 @@ var IndexedDBDAO = FOAM.create({
         var self = this;
 
         if (! EXPR.isInstance(query)) {
-          var key = query;
-          var getRequest = store.find(key);
+          var key = query.id;
+          var getRequest = store.get(key);
           getRequest.onsuccess = function(e) {
             if (!getRequest.result) {
               sink && sink.error && sink.error('remove', query);
