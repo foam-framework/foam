@@ -90,10 +90,10 @@ var EMail = FOAM.create({
    ids: [ 'id' ],
    tableProperties:
    [
-      'attachments',
       'from',
       'to',
       'subject',
+      'attachments',
       'timestamp'
    ],
    properties:
@@ -465,7 +465,8 @@ var MBOXLoader = {
     this.b = [];
   },
 
-  id: function(v) { this.email.id = v[1].join('').trim(); },
+//  id: function(v) { this.email.id = v[1].join('').trim(); },
+  id: function(v) { this.email.id = Math.floor(Math.random()*100000000); },
 
   'conversation id': function(v) { this.email.convId = v[1].join('').trim(); },
 
