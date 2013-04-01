@@ -2193,7 +2193,7 @@ style = window.getComputedStyle(this.element().children[0]);
        AbstractView2.getPrototype().init.call(this);
 
        var self = this;
-       this.repaint_ = EventService.animate(this.repaint.bind(this));
+       this.repaint = EventService.animate(this.repaint.bind(this));
 
        this.listener = {
          put: self.repaint_,
@@ -2206,9 +2206,10 @@ style = window.getComputedStyle(this.element().children[0]);
 // console.time('redraw');
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
-      this.objs = [];
+      var objs = [];
 //console.log('*********** TableView2.rows:', this.rows);
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {self.objs.push(o); }} )(function() {
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {objs.push(o); }} )(function() {
+        self.objs = objs;
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
           self.initHTML();
@@ -2267,7 +2268,7 @@ style = window.getComputedStyle(this.element().children[0]);
 		str.push('<td>');
 		var val = obj[prop.name];
                 if ( prop.tableFormatter ) {
-                  str.push(prop.tableFormatter(val));
+                  str.push(prop.tableFormatter(val, obj, this));
                 } else {
 		  str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
                 }
