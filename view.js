@@ -2157,7 +2157,7 @@ var TableView2 = FOAM.create({
         type:  'Integer',
         defaultValue: 30,
         postSet: function(val, oldValue) {
-          this.repaint();
+	   this.repaint();
         }
       }
    ],
@@ -2193,7 +2193,7 @@ style = window.getComputedStyle(this.element().children[0]);
        AbstractView2.getPrototype().init.call(this);
 
        var self = this;
-       this.repaint = EventService.animate(this.repaint.bind(this));
+       this.repaint_ = EventService.animate(this.repaint.bind(this));
 
        this.listener = {
          put: self.repaint_,
