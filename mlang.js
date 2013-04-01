@@ -1049,3 +1049,98 @@ function CONCAT() {
   return ConcatExpr.create({args: compileArray_.call(null, arguments)});
 }
 
+
+var ExpandableGroupByExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'BINARY',
+
+   name: 'ExpandableGroupByExpr',
+
+   properties: [
+      {
+	 name:  'groups',
+	 label: 'Groups',
+	 type:  'Map[EXPR]',
+	 help:  'Groups.',
+         valueFactory: function() { return {}; }
+      },
+      {
+	 name:  'expanded',
+	 label: 'Expanded',
+	 type:  'Map',
+	 help:  'Expanded.',
+         valueFactory: function() { return {}; }
+      },
+      {
+	 name:  'values',
+	 label: 'Values',
+	 type:  'Object',
+	 help:  'Values',
+         valueFactory: function() { return []; }
+      }
+   ],
+
+   methods: {
+     reduce: function(other) {
+       // TODO:
+     },
+     reduceI: function(other) {
+       // TODO:
+     },
+     /*
+     pipe: function(sink) {
+       for ( key in this.groups ) {
+         sink.push([key, this.groups[key].toString()]);
+       }
+       return sink;
+     },*/
+     select: function(sink, options) {
+       var self = this;
+       this.values.select({put:function(o) {
+         sink.put(o);
+         var key = self.arg1.f(o);
+	 var a = o.children;
+	 if ( a ) for ( var i = 0 ; i < a.length ; i++ ) sink.put(a[i]);
+       }}, options);
+       return aconstant(sink);
+     },
+     put: function(obj) {
+       var key = this.arg1.f(obj);
+
+       var group = this.groups.hasOwnProperty(key) && this.groups[key];
+
+       if ( ! group ) {
+         group = obj.clone();
+         if ( this.expanded[key] ) group.children = [];
+         this.groups[key] = group;
+         group.count = 1;
+         this.values.push(group);
+       } else {
+         group.count++;
+       }
+
+       if ( group.children ) group.children.push(obj);
+     },
+  where: function(query) {
+    return filteredDAO(query, this);
+  },
+  limit: function(count) {
+    return limitedDAO(count, this);
+  },
+  skip: function(skip) {
+    return skipDAO(skip, this);
+  },
+  orderBy: function() {
+    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+  },
+  listen: function() {},
+  unlisten: function() {},
+     remove: function(obj) { /* TODO: */ },
+     toString: function() { return this.groups; },
+     deepClone: function() {
+       return this;
+     }
+   }
+});
+

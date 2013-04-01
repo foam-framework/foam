@@ -22,16 +22,46 @@ Takeout Reader</font>
 <div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
 <div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
 </div>
-<div id="footer" style="position:absolute;background-color2:#bbb;background-color:rgba(0,0,0,0.1);text-align:left;padding-top:3px;">
+<div id="footer" style="position:absolute;background-color:#bbb;text-align:left;padding-top:3px;">
   <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
   <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
   <font color2="#555555" > POWERED</font>
   <div onClick="switchHands()" style="float:right;padding-right:10px;" class="searchTitle"><u>switch hands</u></div>
 </div>
 <script>
+var GROUP_PROPERTY = EMail.SUBJECT;
+var expanded = {};
+
+var ThreadedEMail = EMail.deepClone();
+ThreadedEMail.properties.push(Property.create({
+  name: 'count',
+  tableWidth: 45,
+  label: 'Count',
+  type: 'int',
+  tableFormatter: function(c, email, table) {
+    if ( c ) {
+      if ( c == 1 ) return "&nbsp;&nbsp;&nbsp;&nbsp;1";
+      var isExpanded = expanded[GROUP_PROPERTY.f(email)];
+      var icon = isExpanded ? "&nbsp;-" : "+";
+      var id = table.registerCallback('click', (function(isExpanded) { return function() {
+        if ( isExpanded ) {
+          delete expanded[GROUP_PROPERTY.f(email)];
+        } else {
+          expanded[GROUP_PROPERTY.f(email)] = true;
+        }
+        updateQuery();
+      }})(isExpanded));
+      return '<span id=' + id + '>' + icon + '</span>' + "&nbsp;&nbsp;" + c;
+    }
+    return "";
+  },
+}));
+ThreadedEMail.tableProperties.unshift('count');
+
 EMail.ATTACHMENTS.compare = function(o1, o2) {
   return this.f(o1).length - this.f(o2).length;
 };
+
 
 var header = $('header');
 var footer = $('footer');
@@ -91,6 +121,7 @@ layout();
 
     var dao = IDAO.create({model: EMail});
     dao.addIndex(EMail.TIMESTAMP);
+    // dao.addIndex(EMail.CONV_ID);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
@@ -125,7 +156,8 @@ layout();
 
     var lock = {};
 
-/*
+    var idbPerf;
+
     dao = {
       __proto__: dao,
       find: function(query, sink) {
@@ -139,17 +171,17 @@ layout();
         var s = CountExpr.isInstance(sink) ? COUNT() : { put: function() { } };
 
          asynchronized(aseq(
-          // alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
-          atime('indexedDB', arepeat(1000, function(ret) { d2.select(s, options)(ret); })),
-          // alog('indexedDB to IDAO'),
-          atime('idao', arepeat(1, function(ret) { d1.select(s, options)(ret); })),
+//          alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
+//          atime('indexedDB', arepeat(1, function(ret) { d2.select(s, options)(ret); }), function(p) { idbPerf = p; }),
+//          alog('indexedDB to IDAO'),
+//          atime('idao', arepeat(100, function(ret) { d1.select(s, options)(ret); }), function(p) { console.log(idbPerf + ',' + (p/1000)); }),
           function(ret) { d1.select(sink, options)(function(v) { future.set(sink); ret(); }); }
         ),lock)(anop);
 
         return future.get;
       }
     };
-*/
+
 
     // Quick hack to make search work on each keystroke
     // TODO: make option of TextSearchView
@@ -201,12 +233,27 @@ layout();
       // console.log('query: ', predicate.toSQL());
 
       table.scrollbar.value = 0;
-      table.dao = dao.where(predicate);
+
+      if ( viewMode.value.get() === 'Message' ) {
+        table.view.model = EMail;
+        table.dao = dao.where(predicate);
+      } else {
+        table.view.model = ThreadedEMail;
+        dao.where(predicate).select(ExpandableGroupByExpr.create({
+          arg1: GROUP_PROPERTY,
+          arg2: EMail.TIMESTAMP,
+          expanded: expanded
+        }))(function(groups) {
+          table.dao = groups;// .values;
+        });
+      }
 
       byFrom.filter  = AND(searchSubject.predicate, byTo.predicate,   byLabel.predicate).partialEval();
       byTo.filter    = AND(searchSubject.predicate, byFrom.predicate, byLabel.predicate).partialEval();
       byLabel.filter = AND(searchSubject.predicate, byTo.predicate,   byFrom.predicate).partialEval();
     }
+
+    viewMode.value.addListener(updateQuery);
 
     Events.dynamic(function() {
       searchSubject.predicate;

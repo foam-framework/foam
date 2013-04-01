@@ -80,6 +80,7 @@ var GroupBySearchView = FOAM.create({
        }).bind(this));
 */
        this.view.value.addListener(this.updateChoice);
+
 //       this.updateDAO();
 //       this.view.addListener(console.log.bind(console));
 //       this.view.value.addListener(console.log.bind(console));
