@@ -93,6 +93,104 @@ var SeqNoDAO = {
 };
 
 
+var CachingDAO = {
+
+  create: function(cache, source) {
+   // TODO: how to handle blocking DAO until ready?
+//   source.pipe({put:function(o) { console.log(o); cache.put(o); }});
+//    source.select(cache);
+
+    var future = afuture();
+    source.select(cache)(function() { future.set(cache.select); source.listen(cache);} );
+    return {
+      __proto__: cache,
+
+      put: function(obj, sink) { source.put(obj, sink); },
+      remove: function(query, sink) { source.remove(query, sink); },
+      select: function() { var self = this; var a = arguments; var f = afuture(); future.get(function(m) { f.set(m.apply(self, a));}); return f.get; }
+    };
+  }
+
+};
+
+
+var LoggingDAO = {
+
+  create: function(/*[logger], delegate*/) {
+    var logger, delegate;
+    if ( arguments.length == 2 ) {
+      logger = arguments[0];
+      delegate = arguments[1];
+    } else {
+      logger = console.log.bind(console);
+      delegate = arguments[0];
+    }
+
+    return {
+      __proto__: delegate,
+
+      put: function(obj, sink) {
+        logger('put', obj);
+        delegate.put(obj, sink);
+      },
+      remove: function(query, sink) {
+        logger('remove', query);
+        delegate.remove(query, sink);
+      },
+      select: function(sink, options) {
+        logger('select', options || "");
+	return delegate.select(sink, options);
+      }
+    };
+  }
+
+};
+
+
+var TimingDAO = {
+
+  create: function(name, delegate) {
+    var id = 1;
+    function start(op) {
+      var str = name + "-" + op + "-" + id++;
+      console.time(str);
+      return str;
+    }
+    function end(str) { id--; console.timeEnd(str); }
+    function endSink(str, sink) {
+      return {
+        put: function() { end(str); sink.put.apply(sink, arguments); },
+        remove: function() { end(str); sink.remove.apply(sink, arguments); },
+        error: function() { end(str); sink.error.apply(sink, arguments); },
+        eof: function() { end(str); sink.eof.apply(sink, arguments); }
+      };
+    }
+    return {
+      __proto__: delegate,
+
+      put: function(obj, sink) {
+        var str = start('put');
+        delegate.put(obj, endSink(str, sink));
+      },
+      remove: function(query, sink) {
+        var str = start('remove');
+        delegate.remove(query, endSink(str, sink));
+      },
+      select: function(sink, options) {
+        var str = start('select');
+	var fut = afuture();
+	delegate.select(sink, options)(function(s) {
+	  end(str);
+	  fut.set(s);
+	}); 
+	return fut.get;
+      }
+    };
+  }
+
+};
+
+
 
 var ObjectToJSON = {
   __proto__: Visitor.create(),

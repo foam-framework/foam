@@ -14,6 +14,11 @@
 //    var EMailDAO = [];
     var EMailDAO = IndexedDBDAO.create({model: EMail});
 
+    // Add Caching
+    EMailDAO = CachingDAO.create(
+      IDAO.create({model: EMail}),
+      EMailDAO);
+
     // This doesn't work, some async weirdness going on
 //    EMailDAO = EMailDAO.where(EQ(EMail.TO, user));
 
