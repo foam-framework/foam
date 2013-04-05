@@ -984,7 +984,7 @@ var ChoiceView = FOAM.create({
            out.push(choice[1].toString());
          } else {
 	   if ( this.value && choice == this.value.get() ) out.push(' selected');
-           out.push(' value="');
+           out.push('>');
            out.push(choice.toString());
          }
          out.push('</option>');
@@ -1028,7 +1028,8 @@ var ChoiceView = FOAM.create({
 
 	 name: 'onMouseOver',
 	 code: function(e) {
-           this.prev = this.value.get();
+	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+           this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
            this.value.set(e.target.value);
 	 }
       },
@@ -1038,7 +1039,11 @@ var ChoiceView = FOAM.create({
 
 	 name: 'onMouseOut',
 	 code: function(e) {
-           this.value.set(this.prev);
+	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+           this.timer_ = window.setTimeout(function() {
+	     this.value.set(this.prev || "");
+             this.prev = undefined;
+           }.bind(this), 1);
 	 }
       },
 
@@ -1497,8 +1502,8 @@ var XMLView = FOAM.create({
 
    model_: 'Model',
 
-   name:  'JSView',
-   label: 'JS View',
+   name:  'XMLView',
+   label: 'XML View',
 
    extendsModel: 'TextAreaView',
 
@@ -2152,7 +2157,7 @@ var TableView2 = FOAM.create({
         type:  'Integer',
         defaultValue: 30,
         postSet: function(val, oldValue) {
-          this.repaint();
+	   this.repaint();
         }
       }
    ],
@@ -2161,8 +2166,9 @@ var TableView2 = FOAM.create({
 
      layout: function() {
        var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
-       this.rows = Math.floor((toNum(parent.height) - 22) / 28);
-/*       var style = window.getComputedStyle(this.element().children[0]);
+       this.rows = Math.floor((toNum(parent.height) - 22) / 26);
+/*
+       var style = window.getComputedStyle(this.element().children[0]);
 
        var prevHeight = 0;
        while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
@@ -2173,7 +2179,8 @@ var TableView2 = FOAM.create({
        while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
          this.rows = this.rows-1;
 style = window.getComputedStyle(this.element().children[0]);
-       }*/
+       }
+*/
 //       this.scrollbar.height = (parent.style.height - 50) + 'px';
 //       this.scrollbar.height = toNum(this.element().style.width)-50;
      },
@@ -2199,9 +2206,10 @@ style = window.getComputedStyle(this.element().children[0]);
 // console.time('redraw');
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
-      this.objs = [];
+      var objs = [];
 //console.log('*********** TableView2.rows:', this.rows);
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {self.objs.push(o); }} )(function() {
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {objs.push(o); }} )(function() {
+        self.objs = objs;
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
           self.initHTML();
@@ -2260,7 +2268,7 @@ style = window.getComputedStyle(this.element().children[0]);
 		str.push('<td>');
 		var val = obj[prop.name];
                 if ( prop.tableFormatter ) {
-                  str.push(prop.tableFormatter(val));
+                  str.push(prop.tableFormatter(val, obj, this));
                 } else {
 		  str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
                 }

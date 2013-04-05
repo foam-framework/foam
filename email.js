@@ -30,6 +30,7 @@ var Attachment = FOAM.create({
    [
       'type',
       'filename',
+      'position',
       'size'
    ],
    properties:
@@ -86,17 +87,41 @@ var EMail = FOAM.create({
    name: 'EMail',
    label: 'EMail',
    plural: 'EMail',
-   ids: [ 'timestamp' ],
+   ids: [ 'id' ],
    tableProperties:
    [
-      'attachments',
       'from',
       'to',
       'subject',
+      'attachments',
       'timestamp'
    ],
    properties:
    [
+      {
+         model_: 'Property',
+         name: 'id',
+         label: 'Message ID',
+         type: 'String',
+         mode: 'read-write',
+         required: true,
+         displayWidth: 50,
+         displayHeight: 1,
+         view: 'TextFieldView',
+	 hidden: true,
+	 defaltValue: ''
+      },
+      {
+         model_: 'Property',
+         name: 'convId',
+         label: 'Conversation ID',
+         type: 'String',
+         mode: 'read-write',
+         displayWidth: 30,
+         displayHeight: 1,
+         view: 'TextFieldView',
+	 defaltValue: ''
+      },
       {
          model_: 'Property',
          name: 'timestamp',
@@ -254,6 +279,8 @@ var MBOXParser = {
 
   line: alt(
     sym('start of email'),
+    sym('id'),
+    sym('conversation id'),
     sym('to'),
     sym('from'),
     sym('subject'),
@@ -265,6 +292,10 @@ var MBOXParser = {
   ),
 
   'start of email': seq('From ', sym('until eol')),
+
+  id: seq('Message-ID: ', sym('until eol')),
+
+  'conversation id': seq('Conversation-ID: ', sym('until eol')),
 
 //  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
@@ -339,15 +370,18 @@ var MBOXLoader = {
   },
 
   SKIP_ATTACHMENT_STATE: function ATTACHMENT(str) {
+    var att = this.email.attachments[this.email.attachments.length-1];
     if ( str.slice(0, 5) === 'From ' ) {
+      att.size = att.pos - att.position; 
       this.state = this.PARSE_HEADERS_STATE;
       this.state(str);
       return;
     }
 
     if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
+      att.size = att.pos - att.position; 
       this.state = this.PARSE_HEADERS_STATE;
-      this.blockId   = undefined;
+      this.blockId = undefined;
     }
   },
 
@@ -406,7 +440,6 @@ var MBOXLoader = {
       i = this.email.body.indexOf("Content-Transfer-Encoding: base64");
       if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
 
-      this.email.timestamp = new Date(Date.now() + Math.random()*360000); // tmp
       this.b = [];
       if ( this.email.to.length == 0 ) return;
       if ( this.email.to.indexOf('<<') != -1 ) return;
@@ -432,6 +465,11 @@ var MBOXLoader = {
     this.b = [];
   },
 
+//  id: function(v) { this.email.id = v[1].join('').trim(); },
+  id: function(v) { this.email.id = Math.floor(Math.random()*100000000); },
+
+  'conversation id': function(v) { this.email.convId = v[1].join('').trim(); },
+
   to: function(v) { 
     this.email.to = v[1].join('').trim(); 
     var i = this.email.to.indexOf(',');
@@ -442,8 +480,7 @@ var MBOXLoader = {
 
   subject: function(v) { this.email.subject = v[1].join('').trim(); },
 
-  // TODO: uncomment this when the AA tree balancing is added
-  // date: function(v) { this.email.timestamp = new Date(v[1].join('').trim()); }
+  date: function(v) { this.email.timestamp = new Date(v[1].join('').trim()); },
 
   label: function(v) { this.email.labels.push(v.join('')); },
 
@@ -457,11 +494,12 @@ var MBOXLoader = {
     this.state = this.READ_BODY_STATE;
   },
 
-  'start of attachment': function(v) {
-    var attachment = Attachment.create();
-
-    attachment.type = v[1].join('');
-    attachment.filename = v[3].join('');
+  'start of attachment': function(v, unused, pos) {
+    var attachment = Attachment.create({
+      type: v[1].join(''),
+      filename: v[3].join(''),
+      position: this.pos
+    });
 
     this.email.attachments.push(attachment);
     this.state = this.SKIP_ATTACHMENT_STATE;

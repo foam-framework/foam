@@ -382,7 +382,7 @@ var Events = {
 	  dstValue.set(srcValue.get());
        };
 
-       this.listeners_[[srcValue, dstValue]] = listener;
+       this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
        srcValue.addListener(listener);
     },
@@ -401,7 +401,7 @@ var Events = {
 
        listener(); // copy initial value
 
-       this.listeners_[[srcValue, dstValue]] = listener;
+       this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
        srcValue.addListener(listener);
     },
@@ -411,7 +411,7 @@ var Events = {
     unfollow: function (srcValue, dstValue) {
        if ( ! srcValue || ! dstValue ) return;
 
-       var key      = [srcValue, dstValue];
+       var key      = [srcValue.$UID, dstValue.$UID];
        var listener = this.listeners_[key];
 
        delete this.listeners_[key];

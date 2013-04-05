@@ -224,12 +224,14 @@ option[selected]{
 	padding: 10px 8px;
 	text-align: left;
 }
+/*
 .foamTable tr
 {
 	border-left: 2px solid #fff;
 	border-right: 2px solid #fff;
 	border-top: 2px solid #fff;
 }
+*/
 .foamTable th
 {
 	font-size: 14px;

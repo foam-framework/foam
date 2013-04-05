@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script language="javascript" src="bootFOAM.js"></script> 
-  <title>Chaos Test</title>
+  <title>FOAM Test</title>
  </head>
 
  <body>
@@ -44,30 +44,22 @@ for ( key in window ) {
 }
 
 //    var mmodels = models.concat(models).concat(models).concat(models).concat(models);
-      var mmodels = models;
+      var mmodels = [];
 
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
-    mmodels = mmodels.concat(mmodels).concat(mmodels);
+    for ( var i = 0 ; i < 5000000 ; i++ ) mmodels.push(models[i%models.length]); 
+
 console.log('************************************', mmodels.length);
 document.write('<h1>Rows: ', mmodels.length, '</h1>');
     var stv = ScrollBorder.create({
       view: TableView2.create({
         model: Model,
         dao: mmodels,
-        rows: 20
+        rows: 15
       }),
       dao: mmodels,
     });
     
-    stv.scrollbar.height=800;
+    stv.scrollbar.height=250;
     stv.write(document);
     stv.layout();
 

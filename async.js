@@ -57,12 +57,15 @@ var atime = (function() {
   // of the same timing are active at once.
   var id = 1;
  
-  return function (str, afunc) {
+  return function (str, afunc, opt_callback) {
     return function(ret) {
       var name = str + "-" + id++;
+      var start = performance.now();
       console.time(name);
       var a = arguments;
       var args = [function() {
+        var end = performance.now();
+        if ( opt_callback ) opt_callback(end-start);
         console.timeEnd(name);
         ret && ret.apply(this, [].shift.call(a));
       }];
@@ -275,4 +278,3 @@ function apar(/* ... afuncs */) {
       fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
   };
 }
-

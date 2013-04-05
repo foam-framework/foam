@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script language="javascript" src="bootFOAM.js"></script>
-  <title>Chaos Mail</title>
+  <title>FOAM Mail</title>
  </head>
  <body>
   <script language="javascript">
@@ -13,6 +13,11 @@
 
 //    var EMailDAO = [];
     var EMailDAO = IndexedDBDAO.create({model: EMail});
+
+    // Add Caching
+    EMailDAO = CachingDAO.create(
+      IDAO.create({model: EMail}),
+      EMailDAO);
 
     // This doesn't work, some async weirdness going on
 //    EMailDAO = EMailDAO.where(EQ(EMail.TO, user));

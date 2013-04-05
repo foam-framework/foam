@@ -303,6 +303,7 @@ var CView = FOAM.create({
 	 label: 'X',
 	 type:  'int',
 	 view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
 	 defaultValue: 10
       },
       {
@@ -310,6 +311,7 @@ var CView = FOAM.create({
 	 label: 'Y',
 	 type:  'int',
 	 view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
 	 defaultValue: 10
       },
       {
@@ -317,6 +319,7 @@ var CView = FOAM.create({
 	 label: 'Width',
 	 type:  'int',
 	 view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
 	 defaultValue: 10
       },
       {
@@ -324,6 +327,7 @@ var CView = FOAM.create({
 	 label: '',
 	 type:  'int',
 	 view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
 	 defaultValue: 10
       },
       {
@@ -359,17 +363,17 @@ var CView = FOAM.create({
 	 return this.parent.toHTML();
       },
 
+      resizeParent: function() {
+        this.parent.width  = this.x + this.width + 1;
+        this.parent.height = this.y + this.height + 2;
+      },
+
       initHTML: function() {
          var self = this;
          var parent = this.parent;
 
 	 parent.initHTML();
 	 parent.addChild(this);
-         Events.dynamic(
-           function() { self.x; self.y; self.width; self.height; }, function() {
-             parent.width = self.x + self.width + 1;
-             parent.height = self.y + self.height + 2;
-           });
          Events.dynamic(
            function() { self.background; }, function() {
              parent.background = self.background;
@@ -460,227 +464,6 @@ var ProgressCView = FOAM.create({
     destroy: function() {
       this.value.removeListener(this.listener_);
     }
-   }
-});
-
-
-var ScrollCView = FOAM.create({
-
-   model_: 'Model',
-
-   extendsModel: 'CView',
-
-   name:  'ScrollCView',
-
-   properties: [
-      {
-	 name:  'parent',
-	 label: 'Parent',
-         type:  'CView',
-	 hidden: true,
-         postSet: function(newValue, oldValue) {
-//	   oldValue && oldValue.removeListener(this.updateValue);
-//	   newValue.addListener(this.updateValue);
-           var e = newValue.element();
-           if ( ! e ) return;
-           e.addEventListener('mousedown', this.mouseDown, false);
-           e.addEventListener('touchstart', this.touchStart, false);
-//           e.addEventListener('mouseup',   this.mouseUp,   false);
-         }
-      },
-      {
-	name:  'vertical',
-        type:  'boolean',
-        defaultValue: true
-      },
-      {
-	name:  'value',
-        type:  'int',
-        help:  'The first element being shown, starting at zero.',
-        defaultValue: 0
-      },
-      {
-	name:  'extent',
-        help:  'Number of elements shown.',
-        type:  'int',
-        defaultValue: 10
-      },
-      {
-	 name:  'size',
-         type:  'int',
-         defaultValue: 0,
-         help:  'Total number of elements being scrolled through.',
-         postSet: function() { console.log('ScrollCView size:', this.size, 'height: ', this.height); this.paint(); }
-      },
-      {
-        name: 'startY',
-        type: 'int',
-        defaultValue: 0
-      },
-      {
-        name: 'startValue',
-        help: 'Starting value or current drag operation.',
-        type: 'int',
-        defaultValue: 0
-      }
-   ],
-
-   listeners: {
-     mouseDown: function(e) {
-//       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
-       this.startY = e.y - e.offsetY;
-       window.addEventListener('mouseup', this.mouseUp, true);
-       window.addEventListener('mousemove', this.mouseMove, true);
-       window.addEventListener('touchstart', this.touchstart, true);
-       this.mouseMove(e);
-     },
-     mouseUp: function(e) {
-       e.preventDefault();
-       window.removeEventListener('mousemove', this.mouseMove, true);
-       window.removeEventListener('mouseup', this.mouseUp, true);
-//       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
-     },
-     mouseMove: function(e) {
-       var y = e.y - this.startY;
-       e.preventDefault();
-
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
-     },
-     touchStart: function(e) {
-       this.startY = e.targetTouches[0].pageY;
-       this.startValue = this.value;
-       window.addEventListener('touchmove', this.touchMove, false);
-//       this.parent.element().addEventListener('touchmove', this.touchMove, false);
-       this.touchMove(e);
-     },
-     touchEnd: function(e) {
-       window.removeEventListener('touchmove', this.touchMove, false);
-       window.removeEventListener('touchend', this.touchEnd, false);
-//       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
-     },
-     touchMove: function(e) {
-       var y = e.targetTouches[0].pageY;
-       e.preventDefault();
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startValue + (y - this.startY) / (this.height-4) * this.size )));
-     },
-     updateValue: function() {
-       this.paint();
-     }
-   },
-
-   methods: {
-
-    paint: function() {
-      var c = this.canvas;
-
-      if ( ! c ) return;
-
-      c.fillStyle = '#0f0';
-      c.fillRect(this.x, this.w, this.width, this.height);
-
-      if ( this.extent >= this.size ) return;
-
-      c.strokeStyle = '#555';
-      c.strokeRect(this.x, this.y, this.width-2, this.height);
-      c.fillStyle = 'rgb(107,136,173)';
-      c.fillRect(
-        this.x + 2,
-        this.y + 2 + this.value / this.size * this.height,
-        this.width - 6,
-        this.y - 6 + this.extent / this.size * this.height);
-    },
-
-    destroy: function() {
-//      this.value.removeListener(this.listener_);
-    }
-   }
-});
-
-
-/** Add a scrollbar around an inner-view. **/
-var ScrollBorder = FOAM.create({
-
-   model_: 'Model',
-
-   extendsModel: 'AbstractView2',
-
-   name:  'ScrollBorder',
-   label: 'Scroll Border',
-
-   properties: [
-       {
-	   name: 'view',
-	   label: 'View',
-	   type: 'view',
-           postSet: function(view) {
-             this.scrollbar.extent = this.view.rows;
-           }
-       },
-       {
-	   name: 'scrollbar',
-	   label: 'Scrollbar',
-	   type: 'ScrollCView',
-           valueFactory: function() {
-             var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
-
-	     if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
-
-	     return sb;
-           }
-       },
-       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-	 hidden: true,
-         required: true,
-         postSet: function(newValue, oldValue) { 
-          this.view.dao = newValue;
-           var self = this;
-
-           this.dao.select(COUNT())(function(c) {
-               self.scrollbar.size = c.count;
-               self.scrollbar.value = 0;
-           });
-           /*
-           if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
-           this.listener && val.listen(this.listener);
-           this.repaint_ && this.repaint_();
-            */
-         }
-       }
-   ],
-
-   methods: {
-     layout: function() {
-       this.view.layout();
-//       var view = window.getComputedStyle(this.view.element().children[0]);
-       this.scrollbar.height = (toNum(this.view.rows) * 28) - 40;
-       this.scrollbar.paint();
-     },
-     toHTML: function() {
-       return '<table width=100% border=0><tr><td valign=top>' +
-         this.view.toHTML() +
-         '</td><td valign=top><div class="scrollSpacer"></div>' +
-         this.scrollbar.toHTML() +
-         '</td></tr></table>';
-     },
-     initHTML: function() {
-       this.view.initHTML();
-       this.scrollbar.initHTML();
-       this.scrollbar.paint();
-
-       var view = this.view;
-       var scrollbar = this.scrollbar;
-       var self = this;
-
-       Events.dynamic(function() {scrollbar.value;}, function() {
-         if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value); });
-
-       Events.dynamic(function() {view.rows;}, function() {
-           scrollbar.extent = view.rows;
-         });
-     }
    }
 });
 

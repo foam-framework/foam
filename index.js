@@ -71,6 +71,7 @@ var ValueIndex = {
 };
 
 
+// [0 key, 1 value, 2 size, 3 left, 4 right]
 var TreeIndex = {
   create: function(prop, tail) {
     tail = tail || ValueIndex;
@@ -338,7 +339,7 @@ var SetIndex = {
 
  */
 
-// [0 key, 1 value, 2 size, 3 left, 4 right]
+
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
   GOOD_PLAN: 1, // put to 10 or more when not testing

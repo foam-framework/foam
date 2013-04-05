@@ -201,6 +201,7 @@ Methods:
 
 Sink Interface
      put(obj, opt_sink)
+     remove()
      error()
      eof()
 
@@ -212,6 +213,12 @@ IndexedDBDAO	- Adapts the IndexedDB API.
 StorageDAO	- Adapts the Web Storage API.
 JSONFileDAO	- Stores data in JSON format in flat-files.
 IDAO		- Very efficient query optimizing DAO implementation.
+
+
+DAO Decorators
+LoggingDAO(opt_logger, delegate)
+TimingDAO(name, delegate)
+CachingDAO(cache, source) 
 
 
 Model Properties
