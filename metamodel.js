@@ -553,6 +553,13 @@ var PropertyModel = {
 	   view: 'TextAreaView',
 	   defaultValue: '',
 	   help: 'Help text associated with the property.'
+       },
+       {
+           name: 'prototag',
+           label: 'Protobuf tag',
+           type: 'Integer',
+           required: false,
+           help: 'The protobuf tag number for this field.'
        }
     ],
 

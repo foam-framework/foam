@@ -201,12 +201,63 @@ console.log(i, k, v);
     return hash;
   },
 
+  toProtobuf: function() {
+    var out = ProtoWriter.create();
+    this.outProtobuf(out);
+    return out.value;
+  },
+
+  outProtobuf: function(out) {
+    for ( var i = 0; i < this.model_.properties.length; i++ ) {
+      var prop = this.model_.properties[i];
+      var tag = prop.prototag;
+      if (typeof(tag) !== 'number') continue; // Skip properties with no protobuf tag.
+      var value = this[prop.name];
+
+      // Skip unset values, this may need to be revisited if some protos
+      // require an empty string be present for whatever reason.
+      if (value === "") continue;
+
+      var bytes;
+      var data;
+      switch(prop.type) {
+        case 'String':
+          out.varint((tag << 3) | 2);
+          bytes = stringtoutf8(value);
+          out.varint(bytes.length);
+          out.bytes(bytes);
+          break;
+        case 'Integer':
+          out.varint(tag << 3);
+          out.varint(value);
+          break;
+        case 'Boolean':
+          out.varint(tag << 3);
+          out.varint(Number(value));
+          break;
+        case 'ByteString':
+          out.varint(tag << 3);
+          out.bytestring(value);
+          break;
+        default: // Sub messages must be modelled.
+          if (!value) {
+          } else if (Array.isArray(value)) {
+            for (var j = 0; j < value.length; j++) {
+              out.varint(tag << 3 | 2);
+              out.message(value[i]);
+            }
+          } else if (value.model_) {
+            out.varint((tag << 3) | 2);
+            out.message(value);
+          }
+      }
+    }
+  },
 
   /** Create a shallow copy of this object. **/
   clone: function() {
     return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
-
 
   /** Create a deep copy of this object. **/
   deepClone: function() {

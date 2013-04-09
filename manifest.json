@@ -9,7 +9,9 @@
           "tcp-connect"
         ] },
       "https://*/",
-      "http://*/"
+      "http://*/",
+      "experimental",
+      "identity"
     ],
 
     "app": {

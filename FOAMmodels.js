@@ -17,10 +17,12 @@
 var files = [
   'stdlib',
   'io',
+  'writer',
   'socket',
   'hash',
-  'parse',
   'base64',
+  'utf8',
+  'parse',
   'context',
   'event',
   'SimpleValue',
