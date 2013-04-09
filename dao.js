@@ -93,21 +93,86 @@ var SeqNoDAO = {
 };
 
 
-var CachingDAO = {
+/** A DAO proxy that delays operations until the delegate is set in the future. **/
+var FutureDAO = {
+  create: function(futureDelegate) {
+
+    // This is kind-of tricky.  We actually return an object whose proto is the future-proxy
+    // code.  This is so that once the future-delegate is set, that we can rewrite the proto
+    // to be that delegate.  This removes the future related code so that we no longer have
+    // pay the overhead once the delegate has been set.
+
+    return {
+      __proto__: {
+        // TODO: implement other DAO methods
+
+        select: function() {
+          var a = arguments;
+          var self = this;
+	  var f = afuture();
+	  futureDelegate(function(delegate) {
+	    // This removes this code from the delegate-chain and replaces the real delegate.
+	    self.__proto__ = delegate;
+	    f.set(delegate.select.apply(delegate, a));
+	  });
+	  return f.get;
+        },
+        where: function(query) {
+          return filteredDAO(query, this);
+        },
+        limit: function(count) {
+          return limitedDAO(count, this);
+        },
+        skip: function(skip) {
+          return skipDAO(skip, this);
+        },
+        orderBy: function() {
+          return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+        },
+        listen: function() {
+	  // TODO: something
+        },
+        unlisten: function() {
+	  // TODO: something
+        }
+    }};
+  }
+};
+
+
+var CachingDAOOld = {
 
   create: function(cache, source) {
-   // TODO: how to handle blocking DAO until ready?
-//   source.pipe({put:function(o) { console.log(o); cache.put(o); }});
-//    source.select(cache);
-
+    // TODO: this should be moved to something like a "FutureDAO", which blocks until the delegate is set
+    
     var future = afuture();
+
     source.select(cache)(function() { future.set(cache.select); source.listen(cache);} );
+
     return {
       __proto__: cache,
 
       put: function(obj, sink) { source.put(obj, sink); },
       remove: function(query, sink) { source.remove(query, sink); },
       select: function() { var self = this; var a = arguments; var f = afuture(); future.get(function(m) { f.set(m.apply(self, a));}); return f.get; }
+    };
+  }
+
+};
+
+
+var CachingDAO = {
+
+  create: function(cache, source) {
+    var futureDelegate = afuture();
+
+    source.select(cache)(function() { futureDelegate.set(cache); source.listen(cache);} );
+
+    return {
+      __proto__: FutureDAO.create(futureDelegate.get),
+
+      put: function(obj, sink) { source.put(obj, sink); },
+      remove: function(query, sink) { source.remove(query, sink); }
     };
   }
 

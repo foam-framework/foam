@@ -267,6 +267,29 @@ var EMail = FOAM.create({
 });
 
 
+var EmailAddressParser = {
+  __proto__: grammar,
+
+  START: sym('address'),
+
+  'until eol': repeat(notChar('\r')),
+
+  'address list': repeat(sym('address'), seq(',', repeat(' '))),
+
+  'address': alt(
+    sym('labelled address'),
+    sym('simple address')),
+
+  'labelled address': seq(
+    repeat(notChars('<,')),
+    '<', sym('simple address'), '>'),
+
+  'simple address': seq(repeat(notChar('@')), '@', repeat(notChars('\r>,')))
+}.addActions({
+  'labelled address': function(v) { return v[0].join('') + v[1] + v[2] + v[3]; },
+  'simple address': function(v) { return v[0].join('') + v[1] + v[2].join(''); } 
+});
+
 
 var MBOXParser = {
   __proto__: grammar,
@@ -297,6 +320,10 @@ var MBOXParser = {
 
   'conversation id': seq('Conversation-ID: ', sym('until eol')),
 
+  address: EmailAddressParser.export('address'),
+
+  'address list': EmailAddressParser.export('address list'),
+
 //  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
   from: seq('From: ', sym('until eol')),
@@ -310,15 +337,6 @@ var MBOXParser = {
   date: seq('Date: ', sym('until eol')),
 
   'other': sym('until eol'),
-
-  'email address': alt(
-    sym('named email address'),
-    sym('raw email address')),
-
-  'named email address': seq(
-    repeat(notChar('<')),
-    sym('raw email address'),
-    '>'),
 
   'start of block': seq(
     '--', sym('until eol')),
@@ -338,9 +356,7 @@ var MBOXParser = {
 //    'Content-Disposition: attachment; filename="', sym("filename"), '"', sym('until eol')
     ),
 
-  filename: repeat(notChar('"')),
-
-  'raw email address': seq(repeat(notChar('@')), sym('until eol'))
+  filename: repeat(notChar('"'))
 
 };
 
@@ -509,24 +525,6 @@ var MBOXLoader = {
   // TODO: internalize common strings to save memory (or maybe do it at the DAO level)
 
 });
-// grep -i -E "To:|From|Date:|Subject:|X-Gmail-Labels:" sample.mbox > sample.small.mbox
-
-
-// sed "s/'/\\\\'/g" sample.mbox | sed "s/\r/\\\n/g" | sed "s/^/put('/g" | sed "s/$/');/g" > mbox.js
-/*
-var p = MBOXLoader.put.bind(MBOXLoader);
-
-p('From 1404692113434165298@xxx Wed Jun 13 08:19:51 2012\n');
-p('X-Gmail-Labels: Retention5,SuperCool\n');
-p('Message-ID: <20cf30563d5b2b446604c2604e64@google.com>\n');
-p('Date: Wed, 13 Jun 2012 20:19:50 +0000\n');
-p('Subject: New voicemail from (917) 359-5785 at 3:18 PM\n');
-p('From: Google Voice <voice-noreply@google.com>\n');
-p('To: thafunkypresident@gmail.com\n');
-
-MBOXLoader.eof();
-*/
-
 
 
 var EMailBody = FOAM.create({
