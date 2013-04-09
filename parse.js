@@ -117,6 +117,12 @@ function notChar(c) {
   };
 }
 
+function notChars(s) {
+  return function(ps) {
+    return ps.head && s.indexOf(ps.head) == -1 ? ps.tail.setValue(ps.head) : undefined;
+  };
+}
+
 function not(p, opt_else) {
   p = prep(p);
   opt_else = prep(opt_else);
@@ -426,7 +432,13 @@ function varstring() {
 
 // alt = simpleAlt;
 
-function sym(name) { return function(ps) { return this.parse(this[name], ps); }; }
+function sym(name) { return function(ps) {
+  var p = this[name];
+
+  if ( ! p ) console.log('PARSE ERROR: Unknown Symbol <' + name + '>');
+
+  return this.parse(p, ps);
+};}
 
 // This isn't any faster because V8 does the same thing already.
 // function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
@@ -446,8 +458,13 @@ var grammar = {
   },
 
   parse: function(parser, pstream) {
- //    console.log('parser: ', parser, 'stream: ',pstream);
+ //   console.log('parser: ', parser, 'stream: ',pstream);
     return parser.call(this, pstream);
+  },
+
+  /** Export a symbol for use in another grammar or stand-alone. **/
+  export: function(str) { 
+    return this[str].bind(this);
   },
 
   addAction: function(sym, action) {
