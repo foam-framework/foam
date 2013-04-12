@@ -1,4 +1,6 @@
-var protobufdef = {
+// Translated from EBNF at https://groups.google.com/forum/?fromgroups=#!topic/protobuf/HMz8YkzWEto
+
+var ProtoBufGrammar = {
   __proto__: grammar,
 
   START: sym('proto'),
@@ -9,13 +11,15 @@ var protobufdef = {
 
   a: alt(range('a', 'z'), range('A', 'Z')),
 
+  ws: repeat(alt(' ','\r','\n'), undefined),
+
   proto: repeat(alt(
     sym('message'),
     sym('extend'),
     sym('enum'),
     sym('import'),
     sym('package'),
-    sym('option'), ';'); 
+    sym('option'), ';')), 
  
   import: seq("import", sym('strLit'), ";"), 
 
@@ -25,7 +29,7 @@ var protobufdef = {
 
   optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')), 
 
-  message: seq("message", sym('ident'), sym('messageBody')), 
+  message: seq("message", sym('ws'), sym('ident'), sym('messageBody')), 
 
   extend: seq("extend", sym('userType'), sym('messageBody')), 
 
@@ -37,12 +41,25 @@ var protobufdef = {
 
   rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"), 
 
-  messageBody: seq("{", repeat(seq(sym('field, sym('enum, sym('message, sym('extend, sym('extensions, sym('group, sym('option), ":"), "}"), 
+  messageBody: seq(
+    "{",
+      repeat(
+        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ':'),
+       sym('ws')
+      ),
+    "}"), 
 
-  group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')), 
+  group: seq(sym('modifier'), sym('ws'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')), 
 
   // tag number must be 2^28-1 or lower 
-  field: seq(sym('modifier'), sym('type'), sym('ident'), "=", sym('intLit'), optional("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]", ), ";"), 
+  field: seq(
+    sym('modifier'),
+    sym('type'),
+    sym('ident'),
+    "=",
+    sym('intLit'),
+    optional(seq("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]")),
+    ";"), 
 
   fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))), 
 
@@ -53,7 +70,7 @@ var protobufdef = {
   type: alt(
       "double", "float", "int32", "int64", "uint32", "uint64", 
       "sint32", "sint64", "fixed32", "fixed64", "sfixed32", 
-      "sfixed64", "bool", "string", "bytes", userType),
+      "sfixed64", "bool", "string", "bytes", sym('userType')),
 
   // leading dot for identifiers means they're fully qualified 
   userType: plus(seq(optional("."), sym('ident'))), 
@@ -89,3 +106,10 @@ var protobufdef = {
   charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')) 
 
 };
+
+
+var sample = "message Person{required int32 id = 1; required string name = 2; optional string email = 3;}";
+
+DEBUG_PARSE = true;
+console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample));
+DEBUG_PARSE = false;
