@@ -29,7 +29,7 @@ var ProtoBufGrammar = {
 
   optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')), 
 
-  message: seq("message", sym('ws'), sym('ident'), sym('messageBody')), 
+  message: seq("message", sym('ws'), sym('ident'), sym('ws'), sym('messageBody')), 
 
   extend: seq("extend", sym('userType'), sym('messageBody')), 
 
@@ -54,11 +54,17 @@ var ProtoBufGrammar = {
   // tag number must be 2^28-1 or lower 
   field: seq(
     sym('modifier'),
+    sym('ws'),
     sym('type'),
+    sym('ws'),
     sym('ident'),
+    sym('ws'),
     "=",
+    sym('ws'),
     sym('intLit'),
+    sym('ws'),
     optional(seq("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]")),
+    sym('ws'),
     ";"), 
 
   fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))), 
@@ -105,11 +111,32 @@ var ProtoBufGrammar = {
 
   charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')) 
 
-};
+}.addActions({
+  field: function(a) {
+    return Property.create({
+      type: a[2],
+      name: a[4],
+      prototag: a[8],
+      required: a[0] === 'required'
+    });
+  },
+
+  message: function(a) {
+debugger;
+    return Model.create({
+      name: a[2],
+      properties: a[4]
+    });
+  },
+
+  messageBody: function(a) { return a[1]; },
+
+  ident: function(a) { return a[0] + a[1].join(''); }
+});
 
 
 var sample = "message Person{required int32 id = 1; required string name = 2; optional string email = 3;}";
 
 DEBUG_PARSE = true;
-console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample));
+console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample)[0].toJSON());
 DEBUG_PARSE = false;
