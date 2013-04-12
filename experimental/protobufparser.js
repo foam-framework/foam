@@ -122,7 +122,6 @@ var ProtoBufGrammar = {
   },
 
   message: function(a) {
-debugger;
     return Model.create({
       name: a[2],
       properties: a[4]
@@ -131,7 +130,9 @@ debugger;
 
   messageBody: function(a) { return a[1]; },
 
-  ident: function(a) { return a[0] + a[1].join(''); }
+  ident: function(a) { return a[0] + a[1].join(''); },
+
+  decInt: function(a) { return parseInt(a.join('')); }
 });
 
 
