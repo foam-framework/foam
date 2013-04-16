@@ -33,9 +33,9 @@ var ProtoBufGrammar = {
 
   extend: seq("extend", sym('userType'), sym('messageBody')), 
 
-  enum: seq("enum", sym('ident'), "{", repeat(seq(sym('option'), sym('enumField')), ";"), "}"), 
+  enum: seq("enum", sym('ws'), sym('ident'), sym('ws'), "{", sym('ws'), repeat(alt(sym('option'), sym('enumField'), ";"), sym('ws')), sym('ws'), "}"), 
 
-  enumField: seq(sym('ident'), "=", sym('intLit'), ";"), 
+  enumField: seq(sym('ident'), sym('ws'), "=", sym('ws'), sym('intLit'), sym('ws'), ";"), 
 
   service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"), 
 
@@ -112,6 +112,23 @@ var ProtoBufGrammar = {
   charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')) 
 
 }.addActions({
+
+  enumField: function(a) {
+console.log('enumField', a[0], a[4]);
+    return [a[0], a[4]];
+  },
+
+  enum: function(a) {
+    var e = {};
+    var name = a[2];
+    var values = a[6];
+    for ( var i = 0 ; i < values.length ; i++ ) {
+      var value = values[i];
+      e[value[0]] = parseInt(value[1]);
+    } 
+    (this.ctx || GLOBAL)[name] = e; 
+  },
+
   field: function(a) {
     return Property.create({
       type: a[2],
@@ -137,7 +154,12 @@ var ProtoBufGrammar = {
 
 
 var sample = "message Person{required int32 id = 1; required string name = 2; optional string email = 3;}";
+var sample2 = "enum PhoneType {MOBILE = 3; HOME = 0; WORK = 2; }";
+
+console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample)[0].toJSON());
+
+console.log('Parseing Enum:', ProtoBufGrammar.parseString(sample2)[0]);
+console.log('PhoneType: ', PhoneType);
 
 DEBUG_PARSE = true;
-console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample)[0].toJSON());
 DEBUG_PARSE = false;
