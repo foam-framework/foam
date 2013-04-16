@@ -318,7 +318,7 @@ var MBOXParser = {
 
   id: seq('Message-ID: ', sym('until eol')),
 
-  'conversation id': seq('Conversation-ID: ', sym('until eol')),
+  'conversation id': seq('X-GM-THRID: ', sym('until eol')),
 
   address: EmailAddressParser.export('address'),
 
