@@ -517,7 +517,7 @@ for ( var key in AbstractDAO.methods ) {
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {
-  clone: function() { return new Array(this); },
+  clone: function() { return this.slice(0); },
   put: function(obj, sink) {
     for (var idx in this) {
       if (this[idx].id === obj.id) {

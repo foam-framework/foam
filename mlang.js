@@ -885,10 +885,15 @@ var GroupByExpr = FOAM.create({
          var group = this.groups.hasOwnProperty(key) && this.groups[key];
          if ( ! group ) {
            group = this.arg2.clone();
+console.log('new Group', group);
            this.groups[key] = group;
          }
          group.put(obj);
        }
+     },
+     clone: function() {
+       // Don't use default clone because we don't want to copy 'groups'
+       return GroupByExpr.create({arg1: this.arg1, arg2: this.arg2});
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; },
