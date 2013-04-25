@@ -885,7 +885,6 @@ var GroupByExpr = FOAM.create({
          var group = this.groups.hasOwnProperty(key) && this.groups[key];
          if ( ! group ) {
            group = this.arg2.clone();
-console.log('new Group', group);
            this.groups[key] = group;
          }
          group.put(obj);
@@ -904,6 +903,52 @@ console.log('new Group', group);
          cl.groups[i] = this.groups[i].deepClone();
        }
        return cl;
+     },
+     toHTML: function() {
+       var out = [];
+       
+       out.push('<table border=1>');
+       for ( var key in this.groups ) {
+         var value = this.groups[key];
+	 var str = value.toHTML ? value.toHTML() : value;
+         out.push('<tr><th>', key, '</th><td>', str, '</td></tr>');
+       }
+       out.push('</table>');
+
+       return out.join('');
+     }
+   }
+});
+
+
+var MapExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'BINARY',
+
+   name: 'MapExpr',
+
+   methods: {
+     reduce: function(other) {
+       // TODO:
+     },
+     reduceI: function(other) {
+     },
+     pipe: function(sink) {
+     },
+     put: function(obj) {
+       this.arg2.put(this.arg1.f(obj));
+     },
+     clone: function() {
+       // Don't use default clone because we don't want to copy 'groups'
+       return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
+     },
+     remove: function(obj) { /* TODO: */ },
+     toString: function() { return this.arg2.toString(); },
+     deepClone: function() {
+     },
+     toHTML: function() {
+       return this.arg2.toHTML ? this.arg2.toHTML() : this.toString();
      }
    }
 });
@@ -953,7 +998,9 @@ var SeqExpr = FOAM.create({
         var ret = [];
         for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a = this.args[i];
-          a.put(obj);
+try{          a.put(obj); } catch (x) { 
+debugger;
+} 
         }
       },
       f: function(obj) {
@@ -965,6 +1012,9 @@ var SeqExpr = FOAM.create({
         }
         return ret;
       },
+      clone: function() {
+        return SeqExpr.create({args:this.args.clone()});
+      },
       toString: function(obj) {
         var out = [];
         out.push('(');
@@ -974,6 +1024,15 @@ var SeqExpr = FOAM.create({
           if ( i < this.args.length-1 ) out.push(',');
         }
         out.push(')');
+        return out.join('');
+      },
+      toHTML: function(obj) {
+        var out = [];
+        for ( var i = 0 ; i < this.args.length ; i++ ) {
+          var a = this.args[i];
+          out.push(a.toHTML ? a.toHTML() : a.toString());
+          if ( i < this.args.length-1 ) out.push('&nbsp;');
+        }
         return out.join('');
       }
    }
@@ -996,11 +1055,16 @@ function COUNT() {
 }
 
 function SEQ() {
-  return SeqExpr.create({args: compileArray_.call(null, arguments)});
+//  return SeqExpr.create({args: compileArray_.call(null, arguments)});
+  return SeqExpr.create({args: argsToArray(arguments)});
 }
 
 function GROUP_BY(expr1, expr2) {
   return GroupByExpr.create({arg1: expr1, arg2: expr2});
+}
+
+function MAP(expr1, expr2) {
+  return MapExpr.create({arg1: expr1, arg2: expr2});
 }
 
 
