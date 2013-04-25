@@ -921,6 +921,111 @@ var GroupByExpr = FOAM.create({
 });
 
 
+var GridByExpr = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'EXPR',
+
+   name: 'GridByExpr',
+
+   properties: [
+      {
+	 name:  'xFunc',
+	 label: 'X-Axis Function',
+	 type:  'Expr',
+	 help:  'Sub-expression',
+         defaultValue: TRUE
+      },
+      {
+	 name:  'yFunc',
+	 label: 'Y-Axis Function',
+	 type:  'Expr',
+	 help:  'Sub-expression',
+         defaultValue: TRUE
+      },
+      {
+	 name:  'acc',
+	 label: 'Accumulator',
+	 type:  'Expr',
+	 help:  'Sub-expression',
+         defaultValue: TRUE
+      },
+      {
+	 name:  'rows',
+	 label: 'Rows',
+	 type:  'Map[EXPR]',
+	 help:  'Rows.',
+         valueFactory: function() { return {}; }
+      },
+      {
+	 name:  'cols',
+	 label: 'Columns',
+	 type:  'Map[EXPR]',
+	 help:  'Columns.',
+         valueFactory: function() { return {}; }
+      }
+   ],
+
+   methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+
+      this.cols = GROUP_BY(this.xFunc, COUNT());
+      this.rows = GROUP_BY(this.yFunc, GROUP_BY(this.xFunc, this.acc));
+    },
+
+     reduce: function(other) {
+     },
+     reduceI: function(other) {
+     },
+     pipe: function(sink) {
+     },
+     put: function(obj) {
+       this.rows.put(obj);
+       this.cols.put(obj);
+     },
+     clone: function() {
+       // Don't use default clone because we don't want to copy 'groups'
+       return GroupByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc});
+     },
+     remove: function(obj) { /* TODO: */ },
+     toString: function() { return this.groups; },
+     deepClone: function() {
+     },
+     toHTML: function() {
+       var out = [];
+       var cols = this.cols.groups;
+       var rows = this.rows.groups;
+
+       out.push('<table border><tr><td></td>');
+
+       for ( var x in cols ) {
+	 var str = x.toHTML ? x.toHTML() : x;
+         out.push('<th>', str, '</th>');
+       }
+       out.push('</tr>');
+
+       for ( var y in rows ) {
+         out.push('<tr>');
+           out.push('<th>');
+             out.push(y);
+           out.push('</th>');
+ 
+         for ( var x in cols ) {
+           var value = rows[y].groups[x];
+           var str = value ? (value.toHTML ? value.toHTML() : value) : '';
+           out.push('<th>', str, '</th>');
+         }
+         out.push('</tr>');
+       }
+       out.push('</table>');
+
+       return out.join('');
+     }
+   }
+});
+
+
 var MapExpr = FOAM.create({
    model_: 'Model',
 
@@ -937,7 +1042,13 @@ var MapExpr = FOAM.create({
      pipe: function(sink) {
      },
      put: function(obj) {
-       this.arg2.put(this.arg1.f(obj));
+       var val = this.arg1.f(obj);
+       var acc = this.arg2;
+       if ( Array.isArray(acc) ) {
+         acc.push(val);
+       } else {
+         acc.put(val);
+       }
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
@@ -998,9 +1109,7 @@ var SeqExpr = FOAM.create({
         var ret = [];
         for ( var i = 0 ; i < this.args.length ; i++ ) {
           var a = this.args[i];
-try{          a.put(obj); } catch (x) { 
-debugger;
-} 
+          a.put(obj);
         }
       },
       f: function(obj) {
@@ -1063,12 +1172,13 @@ function GROUP_BY(expr1, expr2) {
   return GroupByExpr.create({arg1: expr1, arg2: expr2});
 }
 
+function GRID_BY(xFunc, yFunc, acc) {
+  return GridByExpr.create({xFunc: xFunc, yFunc: yFunc, acc: acc});
+}
+
 function MAP(expr1, expr2) {
   return MapExpr.create({arg1: expr1, arg2: expr2});
 }
-
-
-
 
 function AND() {
   return AndExpr.create({args: compileArray_.call(null, arguments)});
