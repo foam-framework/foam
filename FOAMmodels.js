@@ -43,6 +43,8 @@ var files = [
   'index',
   'StackView',
   'DAOController',
+  'cissues',
+  'experimental/protobufparser',
   // remove below here
   'models',
   'demos',

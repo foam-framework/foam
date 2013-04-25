@@ -461,6 +461,8 @@ function sym(name) { return function(ps) {
 
 // function sym(name) { return function(ps) { var ret = this[name](ps); console.log('<' + name + '> -> ', !! ret); return ret; }; }
 
+var DEBUG_PARSE = false;
+
 var grammar = {
   parseString: function(str) {
     if ( ! this.hasOwnProperty('stringPS') ) this.stringPS = StringPS.create("");
@@ -473,7 +475,11 @@ var grammar = {
   },
 
   parse: function(parser, pstream) {
- //   console.log('parser: ', parser, 'stream: ',pstream);
+//    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
+    if ( DEBUG_PARSE ) { 
+//      console.log(new Array(pstream.pos).join(' '), pstream.head);
+        console.log(pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
+    }
     return parser.call(this, pstream);
   },
 

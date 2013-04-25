@@ -1,0 +1,80 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="foam.css" />
+  <script language="javascript" src="bootFOAM.js"></script> 
+  <script language="javascript" src="cissue_data.js"></script> 
+  <title>Chrome Issues</title>
+ </head>
+
+ <body>
+<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
+<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+Chrome Issues
+</font></font>
+</div>
+<a href="modeller.html">Models</a>
+<br/>
+<br/>
+
+  <script language="javascript">
+    // var CIssueDAO = StorageDAO.create({model: CIssue});
+    var CIssueDAO = issues;
+
+    var stack = StackView.create();
+    stack.write(document);
+
+    FOAM.browse(CIssue);
+
+issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) {
+  for ( var key in g.groups ) {
+    console.log('Key: ', key);
+    var value = g.groups[key];
+    for ( var key2 in value.groups ) {
+      var value2 = value.groups[key2];
+      console.log('  Key2: ', key2);
+      for ( var i = 0 ; i < value2.length ; i++ ) {
+        var issue = value2[i];
+        console.log('    issue: ', issue.id);
+       }
+     }
+  }
+});
+
+issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.STATUS, MAP(CIssue.ID, []))))(function (g) {
+   document.writeln(g.toHTML());
+});
+
+issues.select(SEQ(GROUP_BY(CIssue.STATUS, COUNT()), GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.STATUS, SEQ(COUNT(), MAP(CIssue.ID, []))))))(function (g) {
+   document.writeln(g.toHTML());
+});
+
+  </script>
+
+ </body>
+</html>
+
+<!--
+
+issues.select(GROUP_BY(CIssue.PRIORITY, COUNT()))(function (g) { console.log(g.groups); });
+
+issues.select(GROUP_BY(CIssue.OWNER, COUNT()))(function (g) { console.log(g.groups); });
+
+
+issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) { console.log(g.groups); });
+
+issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, COUNT())))(function (g) {
+  for ( var key in g.groups ) {
+    console.log('Key: ', key);
+    var value = g.groups[key];
+    for ( var key2 in value.groups ) {
+      var value2 = value.groups[key2];
+      console.log('  Key2: ', key2);
+      for ( var i = 0 ; i < value2.length ; i++ ) {
+        var issue = value2[i];
+        console.log('    issue: ', issue.id);
+       }
+     }
+  }
+});
+
+-->
