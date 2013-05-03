@@ -970,8 +970,24 @@ var GridByExpr = FOAM.create({
     init: function() {
       AbstractPrototype.init.call(this);
 
-      this.cols = GROUP_BY(this.xFunc, COUNT());
-      this.rows = GROUP_BY(this.yFunc, GROUP_BY(this.xFunc, this.acc));
+      var self = this;
+      var f = function() {
+          self.cols = GROUP_BY(self.xFunc, COUNT());
+          self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
+	};
+
+      self.addPropertyListener('xFunc', f);
+      self.addPropertyListener('yFunc', f);
+      self.addPropertyListener('acc', f);
+      f();
+/* 
+      Events.dynamic(
+        function() { self.xFunc; self.yFunc; self.acc; },
+	function() {
+          self.cols = GROUP_BY(self.xFunc, COUNT());
+          self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
+	});
+*/
     },
 
      reduce: function(other) {
@@ -986,7 +1002,7 @@ var GridByExpr = FOAM.create({
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
-       return GroupByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc});
+       return GroupByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; },
