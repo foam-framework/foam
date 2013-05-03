@@ -335,3 +335,65 @@ select {
 }
 
 textarea { width: 94%; overflow: auto; }
+
+
+
+
+body {
+font: 82% arial,sans-serif;
+}
+
+div.gridtile td div a {
+color: #000;
+text-decoration: none;
+white-space: normal;
+}
+
+div.gridtile {
+width: 10em;
+float: left;
+margin: 2px;
+}
+div.gridtile {
+border: 2px solid #c3d9ff;
+border-radius: 6px;
+padding: 1px;
+}
+
+div.gridtile td.id {
+width: 5em;
+text-align: left;
+margin-left:4px;
+}
+
+div.gridtile td.id a {
+margin-left:4px;
+}
+
+div.gridtile td.status {
+  font-size: 11px;
+  text-align: right;
+  width: 70%;
+}
+
+div.gridtile table, div.projecttile table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+div.gridtile td, div.projecttile td {
+  border: 0;
+  padding: 2px;
+  overflow: hidden;
+
+font-family: arial, sans-serif;
+font-size: 13px;
+font-style: normal;
+}
+
+div.gridtile td div {
+  height:5.5ex;
+  font-size:90%;
+  line-height: 100%;
+}
+
