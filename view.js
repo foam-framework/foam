@@ -944,6 +944,7 @@ var ChoiceView = FOAM.create({
 	 name:  'choices',
 	 label: 'Choices',
          type:  'Array[StringField]',
+	 help: 'Array of choices or array of [value, label] pairs.',
 	 defaultValue: [],
          postSet: function() {
 //           if ( this.eid_ ) this.updateHTML();
@@ -975,12 +976,12 @@ var ChoiceView = FOAM.create({
          out.push('\t<option id="' + id + '"');
 
          if ( Array.isArray(choice) ) {
-           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 //           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
 
 	   if ( this.value && choice[0] == this.value.get() ) out.push(' selected');
            out.push(' value="');
-	   out.push(encodedValue + '">');
+	   out.push(i + '">');
            out.push(choice[1].toString());
          } else {
 	   if ( this.value && choice == this.value.get() ) out.push(' selected');
@@ -1001,7 +1002,24 @@ var ChoiceView = FOAM.create({
      setValue: function(value) {
        Events.unlink(this.domValue, this.value);
        this.value = value;
-       Events.link(value, this.domValue);
+//       Events.link(value, this.domValue);
+       var self = this;
+       Events.relate(
+         value,
+	 this.domValue,
+	 function (v) {
+	   for ( var i = 0 ; i < self.choices.length ; i++ ) {
+	     var c = self.choices[i];
+	     if ( Array.isArray(c) ) {
+	       if ( c[0] === v ) return i;
+	     } else {
+	       if ( v == c ) return v;
+	     }
+	   }
+	   return v;
+         },
+	 function (v) { console.log('fp:',v,'->',self.indexToValue(v)); return self.indexToValue(v); }
+       );
      },
 
      initHTML: function() {
@@ -1013,12 +1031,24 @@ var ChoiceView = FOAM.create({
 
        this.domValue = DomValue.create(e);
 
-       Events.link(this.value, this.domValue);
+       this.setValue(this.value);
+//       Events.link(this.value, this.domValue);
      },
 
      destroy: function() {
        Events.unlink(this.domValue, this.value);
-     }
+     },
+
+     indexToValue: function(v) {
+       var i = parseInt(v);
+       if ( isNaN(i) ) return v;
+
+       if ( Array.isArray(this.choices[i]) ) return this.choices[i][0];
+
+       return v;
+     },
+
+     evtToValue: function(e) { return this.indexToValue(e.target.value); }
    },
 
    listeners:
@@ -1030,7 +1060,7 @@ var ChoiceView = FOAM.create({
 	 code: function(e) {
 	   if ( this.timer_ ) window.clearTimeout(this.timer_);
            this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
-           this.value.set(e.target.value);
+           this.value.set(this.evtToValue(e));
 	 }
       },
 
@@ -1052,7 +1082,7 @@ var ChoiceView = FOAM.create({
 
 	 name: 'onClick',
 	 code: function(e) {
-           this.prev = e.target.value;
+           this.prev = this.evtToValue(e);
            this.value.set(this.prev);
 	 }
       }
@@ -2528,3 +2558,107 @@ var ModelAlternateView = FOAM.create({
       }
    }
 });
+
+
+var GridView = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name: 'GridView',
+   label: 'Grid View',
+
+   properties: [
+      {
+         name:  'row',
+         label: 'row',
+         type: 'ChoiceView',
+	 valueFactory: function() { return ChoiceView.create(); }
+      },
+      {
+         name:  'col',
+         label: 'column',
+         type: 'ChoiceView',
+	 valueFactory: function() { return ChoiceView.create(); }
+      },
+      {
+         name:  'model',
+         label: 'Model',
+         type: 'Model'
+      },
+      {
+         name:  'dao',
+         label: 'DAO',
+         type: 'DAO'
+      },
+      {
+	 name:  'grid',
+	 label: 'Grid',
+	 type:  'GridByExpr',
+	 valueFactory: function() { return GridByExpr.create(); }
+      }
+   ],
+
+   // TODO: need an 'onChange:' property to handle both value
+   // changing and values in the value changing
+
+   // TODO: listeners should be able to mark themselves as mergable
+   // or updatable on 'animate', ie. specify decorators
+   methods: {
+     updateHTML: function() {
+       var self = this;
+       this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
+       this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
+
+       console.log('update: ' , this.col.value.get(), this.row.value.get());
+       debugger;
+       this.dao.select(this.grid/*.clone()*/)(function(g) {
+         debugger;
+         self.element().innerHTML = g.toHTML();
+       });
+     },
+
+     initHTML: function() {
+       this.row.initHTML();
+       this.col.initHTML();
+
+       var choices = [];
+       this.model.properties.select({put:function(p) {
+         choices.push([p, p.label]);
+       }});
+       this.row.choices = choices;
+       this.col.choices = choices;
+
+       AbstractView2.getPrototype().initHTML.call(this);
+       this.repaint_ = EventService.animate(this.updateHTML.bind(this));
+
+       this.grid.addListener(function() {
+         console.log('Grid Grid Update');
+	 this.repaint_();
+       });
+
+       this.grid.addListener(function() {
+         console.log('Grid DAO Update');
+	 this.repaint_();
+       });
+
+       this.row.value.addListener(function(v) { console.log('rowChange:',v); });
+       this.col.value.addListener(function(v) { console.log('colChange:',v); });
+       this.row.value.addListener(this.repaint_);       
+       this.col.value.addListener(this.repaint_);       
+
+       this.updateHTML();
+     }
+   },
+
+   templates:[
+     {
+        model_: 'Template',
+
+        name: 'toHTML',
+        description: 'TileView',
+        template: 'Rows: <%= this.row.toHTML() %> Cols: <%= this.col.toHTML() %>  Cells: <br/><div id="<%= this.getID()%>"></div>'
+     }
+   ]
+});
+
