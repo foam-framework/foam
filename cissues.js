@@ -108,6 +108,40 @@ var CIssue = FOAM.create({
     }
 });
 
+
+var CIssueTileView = FOAM.create({
+   model_: 'Model',
+
+   extendsModel: 'AbstractView2',
+
+   name: 'CIssueTileView',
+   label: 'CIssue Tile View',
+
+   properties: [
+      {
+	 name:  'issue',
+	 label: 'Issue',
+	 type:  'CIssue'
+      }
+   ],
+
+   methods: {
+     put: function(issue) { this.issue = issue; },
+     f: function(issue) { this.issue = issue; return this.toHTML(); }
+   },
+
+   templates:[
+     {
+        model_: 'Template',
+
+        name: 'toHTML',
+        description: 'TileView',
+        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="../../chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="../../chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.summary %></a></div></td></tr></tbody></table></div>'
+     }
+   ]
+});
+
+
 /*
 // Generate a Spreadsheet formula to convert exported CSV issues to JSON.
 

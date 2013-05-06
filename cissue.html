@@ -25,6 +25,7 @@ Chrome Issues
 
     FOAM.browse(CIssue);
 
+/*
 issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) {
   for ( var key in g.groups ) {
     console.log('Key: ', key);
@@ -39,7 +40,9 @@ issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g
      }
   }
 });
+*/
 
+/*
 issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.STATUS, MAP(CIssue.ID, []))))(function (g) {
    document.writeln(g.toHTML());
 });
@@ -48,6 +51,48 @@ issues.select(SEQ(GROUP_BY(CIssue.STATUS, COUNT()), GROUP_BY(CIssue.OWNER, GROUP
    document.writeln(g.toHTML());
 });
 
+issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, COUNT()))(function (g) {
+  document.writeln(g.toHTML());
+}); 
+
+issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.ID, [])))(function (g) {
+  document.writeln(g.toHTML());
+}); 
+
+issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.SUMMARY, [])))(function (g) {
+  document.writeln(g.toHTML());
+}); 
+*/
+ 
+var COL = {
+  put: function(v) { this.values.push(v); },
+  toHTML: function() { return this.values.join('<br/>'); },
+  create: function() { return { __proto__: this, values: [] }; },
+  clone: function() { return this.create(); }
+};
+
+/* 
+issues.select(GRID_BY(CIssue.STATUS, CIssue.OWNER, MAP(CIssueTileView.create(), COL.create())))(function (g) {
+  document.writeln(g.toHTML());
+});
+*/
+
+var gridView = GridView.create({
+  dao: issues,
+  model: CIssue,
+  grid: GridByExpr.create({
+    xFunc: CIssue.STATUS,
+    yFunc: CIssue.OWNER,
+    acc: MAP(CIssueTileView.create(), COL.create())
+  })});
+
+gridView.write(document);
+
+/*
+issues.select({put:function (issue) {
+  document.writeln(CIssueTileView.create({issue: issue}).toHTML());
+}}); 
+*/
   </script>
 
  </body>
