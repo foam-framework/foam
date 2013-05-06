@@ -5,13 +5,11 @@ var ProtoBufGrammar = {
 
   START: sym('proto'),
 
-  d: range('0', '9'), 
+  d: range('0', '9'),
 
-  w: alt(sym('d'), range('a', 'z'), range('A', 'Z')),
+  w: alt(sym('d'), range('a', 'z'), range('A', 'Z'), "_"),
 
   a: alt(range('a', 'z'), range('A', 'Z')),
-
-  ws: repeat(alt(' ','\r','\n'), undefined),
 
   proto: repeat(alt(
     sym('message'),
@@ -19,7 +17,7 @@ var ProtoBufGrammar = {
     sym('enum'),
     sym('import'),
     sym('package'),
-    sym('option'), ';')), 
+    sym('option'), ';')),
  
   import: seq("import", sym('strLit'), ";"), 
 
@@ -29,13 +27,13 @@ var ProtoBufGrammar = {
 
   optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')), 
 
-  message: seq("message", sym('ws'), sym('ident'), sym('ws'), sym('messageBody')), 
+  message: seq("message", sym('ident'), sym('messageBody')), 
 
   extend: seq("extend", sym('userType'), sym('messageBody')), 
 
-  enum: seq("enum", sym('ws'), sym('ident'), sym('ws'), "{", sym('ws'), repeat(alt(sym('option'), sym('enumField'), ";"), sym('ws')), sym('ws'), "}"), 
+  enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"), 
 
-  enumField: seq(sym('ident'), sym('ws'), "=", sym('ws'), sym('intLit'), sym('ws'), ";"), 
+  enumField: seq(sym('ident'), "=", sym('intLit'), ";"), 
 
   service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"), 
 
@@ -44,27 +42,20 @@ var ProtoBufGrammar = {
   messageBody: seq(
     "{",
       repeat(
-        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ':'),
-       sym('ws')
+        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ':')
       ),
     "}"), 
 
-  group: seq(sym('modifier'), sym('ws'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')), 
+  group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')), 
 
   // tag number must be 2^28-1 or lower 
   field: seq(
     sym('modifier'),
-    sym('ws'),
     sym('type'),
-    sym('ws'),
     sym('ident'),
-    sym('ws'),
     "=",
-    sym('ws'),
     sym('intLit'),
-    sym('ws'),
     optional(seq("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]")),
-    sym('ws'),
     ";"), 
 
   fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))), 
@@ -79,7 +70,7 @@ var ProtoBufGrammar = {
       "sfixed64", "bool", "string", "bytes", sym('userType')),
 
   // leading dot for identifiers means they're fully qualified 
-  userType: plus(seq(optional("."), sym('ident'))), 
+  userType: noskip(plus(seq(optional("."), sym('ident')))), 
 
   constant: alt(sym('ident'), sym('intLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
 
@@ -101,7 +92,7 @@ var ProtoBufGrammar = {
 
   boolLit: alt("true", "false"), 
 
-  strLit: seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), notChar('\n'))) ,sym('quote')), 
+  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), notChar('\n'))) ,sym('quote'))), 
 
   quote: alt('"', "'"), 
 
@@ -114,14 +105,14 @@ var ProtoBufGrammar = {
 }.addActions({
 
   enumField: function(a) {
-console.log('enumField', a[0], a[4]);
-    return [a[0], a[4]];
+console.log('enumField', a[0], a[2]);
+    return [a[0], a[2]];
   },
 
   enum: function(a) {
     var e = {};
-    var name = a[2];
-    var values = a[6];
+    var name = a[1];
+    var values = a[3];
     for ( var i = 0 ; i < values.length ; i++ ) {
       var value = values[i];
       e[value[0]] = parseInt(value[1]);
@@ -129,19 +120,23 @@ console.log('enumField', a[0], a[4]);
     (this.ctx || GLOBAL)[name] = e; 
   },
 
+  userType: function(a) {
+    return a[0].join('');
+  },
+
   field: function(a) {
     return Property.create({
-      type: a[2],
-      name: a[4],
-      prototag: a[8],
+      type: a[1],
+      name: a[2],
+      prototag: a[4],
       required: a[0] === 'required'
     });
   },
 
   message: function(a) {
     return Model.create({
-      name: a[2],
-      properties: a[4]
+      name: a[1],
+      properties: a[2]
     });
   },
 
@@ -153,13 +148,11 @@ console.log('enumField', a[0], a[4]);
 });
 
 
-var sample = "message Person{required int32 id = 1; required string name = 2; optional string email = 3;}";
-var sample2 = "enum PhoneType {MOBILE = 3; HOME = 0; WORK = 2; }";
 
+/*
+console.log('parsing');
 console.log('Parseing ProtoBuf:', ProtoBufGrammar.parseString(sample)[0].toJSON());
 
 console.log('Parseing Enum:', ProtoBufGrammar.parseString(sample2)[0]);
 console.log('PhoneType: ', PhoneType);
-
-DEBUG_PARSE = true;
-DEBUG_PARSE = false;
+*/

@@ -55,7 +55,7 @@ var StringPS = {
   },
   set str(str) { this.str_[0] = str; },
   get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
-  get value() { return this.value_ || this.str_[0].charAt(this.pos-1); },
+  get value() { return this.hasOwnProperty('value_') ? this.value_ : this.str_[0].charAt(this.pos-1); },
   get tail() { return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
   setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
 };
@@ -166,7 +166,16 @@ function repeat(p, opt_delim, opt_min, opt_max) {
   };
 }
 
-function plus(p) { return this.repeat(p, undefined, 1); }
+function plus(p) { return repeat(p, undefined, 1); }
+
+function noskip(p) {
+  return function(ps) {
+    this.skip_ = false;
+    ps = this.parse(p, ps);
+    this.skip_ = true;
+    return ps;
+  };
+}
 
 /** A simple repeat which doesn't build an array of parsed values. **/
 function repeat0(p) {
@@ -517,3 +526,21 @@ var binarygrammar = {
       protouint32(),
       protobytes0())
 };
+
+
+var SkipGrammar = {
+  create: function(gramr, skipp) {
+    return {
+      __proto__: gramr,
+
+      skip_: true,
+
+      parse: function(parser, pstream) {
+        if (this.skip_) pstream = this.skip.call(grammar, pstream) || pstream;
+        return this.__proto__.parse.call(this, parser, pstream);
+      },
+
+      skip: skipp
+    };
+  }
+}
