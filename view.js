@@ -2611,9 +2611,7 @@ var GridView = FOAM.create({
        this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
 
        console.log('update: ' , this.col.value.get(), this.row.value.get());
-       debugger;
        this.dao.select(this.grid/*.clone()*/)(function(g) {
-         debugger;
          self.element().innerHTML = g.toHTML();
        });
      },

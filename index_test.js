@@ -1,4 +1,4 @@
-/*
+
 var OrderedMap = {
   create: function(prop) {
     return {
@@ -9,6 +9,7 @@ var OrderedMap = {
   },
 
   bulkLoad: function(a) { this.root = this.index.bulkLoad(a); },
+  delete: function(value) { this.root = this.index.delete(this.root, value); },
   putObject: function(value) { this.root = this.index.put(this.root, value); },
   put: function(key, value) { this.root = this.index.putKeyValue(this.root, key, value); },
   get: function(key) { return this.index.get(this.root, key); },
@@ -16,14 +17,27 @@ var OrderedMap = {
   selectReverse: function(sink) { this.index.selectReverse(this.root, sink); },
   size: function() { return this.index.size(this.root); }
 };
-*/
 
 
-if ( false ) {
+if ( true ) {
 
 var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
 console.log('\nOrderedSet Test');
+m.putObject('a');
+m.putObject('b');
+m.putObject('c');
+m.putObject('d');
+m.putObject('e');
+m.putObject('f');
+m.putObject('g');
+m.putObject('h');
+m.putObject('i');
+m.putObject('j');
+
+m.delete('d');
+
+/*
 m.putObject('k');
 m.putObject('e');
 m.putObject('v');
@@ -34,21 +48,21 @@ m.putObject('greer');
 m.putObject('was');
 m.putObject('here');
 m.putObject('boo');
-
+*/
 m.select(console.log);
 
 console.log(m.get('kevin'));
 m.put('kevin', 'greer');
 console.log(m.get('kevin'));
 
-
+/*
 console.log('\nOrderedSet BulkLoad Test');
 m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
 
 m.bulkLoad('kxeyvizngdrwfash'.split(''));
 
 m.select(console.log);
-
+*/
 }
 
 if ( false ) {

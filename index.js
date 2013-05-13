@@ -70,8 +70,19 @@ var ValueIndex = {
   toString: function() { return 'value'; }
 };
 
+var KEY   = 0;
+var VALUE = 1;
+var SIZE  = 2;
+var LEVEL = 3;
+var LEFT  = 4;
+var RIGHT = 5;
+
+// TODO: investigate how well V8 optimizes static classes
 
 // [0 key, 1 value, 2 size, 3 left, 4 right]
+// [0 key, 1 value, 2 size, 3 level, 4 left, 5 right]
+
+// AATree -- balanced binary search tree.
 var TreeIndex = {
   create: function(prop, tail) {
     tail = tail || ValueIndex;
@@ -107,9 +118,9 @@ var TreeIndex = {
     var m    = start + Math.floor((end-start+1) / 2);
     var tree = this.put(undefined, a[m]);
 
-    tree[3] = this.bulkLoad_(a, start, m-1);
-    tree[4] = this.bulkLoad_(a, m+1, end);
-    tree[2] += this.size(tree[3]) + this.size(tree[4]);
+    tree[LEFT] = this.bulkLoad_(a, start, m-1);
+    tree[RIGHT] = this.bulkLoad_(a, m+1, end);
+    tree[SIZE] += this.size(tree[LEFT]) + this.size(tree[RIGHT]);
 
     return tree;
   },
@@ -120,27 +131,126 @@ var TreeIndex = {
 
   putKeyValue: function(s, key, value) {
     if ( ! s ) {
-      return [key, this.tail.put(null, value), 1];
+      return [key, this.tail.put(null, value), 1, 1];
     }
 
-    var r = this.compare(s[0], key);
+    var r = this.compare(s[KEY], key);
 
-    if ( r == 0 ) {
+    if ( r === 0 ) {
       // Set the value's property to be the same as the key in the index.
       // This saves memory by sharing objects.
-      value[this.prop.name] = s[0];
+      value[this.prop.name] = s[KEY];
 
-      s[2] -= this.tail.size(s[1]);
-      s[1] = this.tail.put(s[1], value);
-      s[2] += this.tail.size(s[1]);
-    } else if ( r > 0 ) {
-      if ( s[3] ) s[2] -= s[3][2];
-      s[3] = this.putKeyValue(s[3], key, value);
-      s[2] += s[3][2];
+      s[SIZE] -= this.tail.size(s[VALUE]);
+      s[VALUE] = this.tail.put(s[VALUE], value);
+      s[SIZE] += this.tail.size(s[VALUE]);
     } else {
-      if ( s[4] ) s[2] -= s[4][2];
-      s[4] = this.putKeyValue(s[4], key, value);
-      s[2] += s[4][2];
+      var side = r > 0 ? LEFT : RIGHT;
+
+      if ( s[side] ) s[SIZE] -= s[side][SIZE];
+      s[side] = this.putKeyValue(s[side], key, value);
+      s[SIZE] += s[side][SIZE];
+    }
+
+    return this.split(this.skew(s));
+  },
+
+//    input: T, a node representing an AA tree that needs to be rebalanced.
+//    output: Another node representing the rebalanced AA tree.
+
+  skew: function(s) {
+    if ( s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL] ) {
+      // Swap the pointers of horizontal left links.
+      var l = s[LEFT];
+      s[LEFT] = l[RIGHT];
+      l[RIGHT] = s;
+
+      return l;
+    }
+
+    return s;
+  },
+
+  //  input: T, a node representing an AA tree that needs to be rebalanced.
+  //  output: Another node representing the rebalanced AA tree.
+  split: function(s) {
+    if ( s && s[RIGHT] && s[RIGHT][RIGHT] && s[LEVEL] === s[RIGHT][RIGHT][LEVEL] ) {
+      // We have two horizontal right links.  Take the middle node, elevate it, and return it.
+      var r = s[RIGHT];
+      s[RIGHT] = r[LEFT];
+      r[LEFT] = s;
+      r[LEVEL]++;
+
+      return r;
+    }
+
+    return s;
+  },
+
+  // input: X, the value to delete, and T, the root of the tree from which it should be deleted.
+  // output: T, balanced, without the value X.
+  delete: function(s, key) {
+    if ( ! s ) return s;
+
+    var r = this.compare(s[KEY], key);
+
+    if ( r === 0 ) {
+      // If we're a leaf, easy, otherwise reduce to leaf case. 
+      if ( s[SIZE] === 1 ) return undefined;
+
+      // TODO: add a unit test to verify that the size
+      // adjusting logic is correct here.
+      var side = s[LEFT] ? LEFT : RIGHT;
+
+      var l = side === LEFT ?
+        this.successor(s)   :
+        this.predecessor(s) ;
+
+      s[SIZE] -= this.tail.size(s[VALUE]);
+      s[side] = this.delete(s[side], l[KEY]);
+      s[KEY] = l[KEY];
+      s[VALUE] = l[VALUE];
+    } else {
+      var side = r > 0 ? LEFT : RIGHT;
+
+      s[SIZE] -= this.size(s[side]);
+      s[side] = this.delete(s[side], key);
+      s[SIZE] += this.size(s[side]);
+    }
+
+    // Rebalance the tree. Decrease the level of all nodes in this level if
+    // necessary, and then skew and split all nodes in the new level.
+    s = this.skew(this.decreaseLevel(s));
+    if ( s[RIGHT] ) {
+      s[RIGHT] = this.skew(s[RIGHT]);
+      if ( s[RIGHT][RIGHT] ) s[RIGHT][RIGHT] = this.skew(s[RIGHT][RIGHT]);
+    }
+    s = this.split(s);
+    s[RIGHT] = this.split(s[RIGHT]);
+
+    return s;
+  },
+
+  predecessor: function(s) {
+    for ( s = s[LEFT] ; s[RIGHT] ; s = s[RIGHT] );
+    return s;
+  },
+
+  successor: function(s) {
+    for ( s = s[RIGHT] ; s[LEFT] ; s = s[LEFT] );
+    return s;
+  },
+
+  // input: T, a tree for which we want to remove links that skip levels.
+  // output: T with its level decreased.
+  decreaseLevel: function(s) {
+    var expectedLevel = Math.min(s[LEFT] ? s[LEFT][LEVEL] : 0, s[RIGHT] ? s[RIGHT][LEVEL] : 0) + 1;
+
+    if ( expectedLevel < s[LEVEL] ) {
+      s[LEVEL] = expectedLevel;
+      if ( expectedLevel < s[RIGHT][LEVEL] ) {
+        s[RIGHT][LEVEL] = expectedLevel;
+      }
     }
 
     return s;
@@ -149,11 +259,11 @@ var TreeIndex = {
   get: function(s, key) {
     if ( ! s ) return undefined;
 
-    var r = this.compare(s[0], key);
+    var r = this.compare(s[KEY], key);
 
-    if ( r === 0 ) return s[1];
+    if ( r === 0 ) return s[VALUE];
 
-    return this.get(r > 0 ? s[3] : s[4], key);
+    return this.get(r > 0 ? s[LEFT] : s[RIGHT], key);
   },
 
   select: function(s, sink, options) {
@@ -169,19 +279,19 @@ var TreeIndex = {
       }
     }
 
-    this.select(s[3], sink, options);
-    this.tail.select(s[1], sink, options);
-    this.select(s[4], sink, options);
+    this.select(s[LEFT], sink, options);
+    this.tail.select(s[VALUE], sink, options);
+    this.select(s[RIGHT], sink, options);
   },
 
   selectReverse: function(s, sink) {
     if ( ! s ) return;
-    this.selectReverse(s[4], sink);
-    this.tail.selectReverse(s[1], sink);
-    this.selectReverse(s[3], sink);
+    this.selectReverse(s[RIGHT], sink);
+    this.tail.selectReverse(s[VALUE], sink);
+    this.selectReverse(s[LEFT], sink);
   },
 
-  size: function(s) { return s ? s[2] : 0; },
+  size: function(s) { return s ? s[SIZE] : 0; },
 
   compare: function(o1, o2) {
     return o1.compareTo(o2); //this.prop.compare(o1, o2);
@@ -238,7 +348,7 @@ var TreeIndex = {
 	 query = null;
       } else {
 	 key = getAndKey();
-	 if ( query == TRUE ) query = null;
+	 if ( query === TRUE ) query = null;
       }
 
       if ( key ) {
@@ -255,7 +365,7 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
         return {
           cost: 1 + subPlan.cost,
           execute: function(s2, sink, options) {
-            subPlan.execute(result[1], sink, newOptions);
+            subPlan.execute(result[VALUE], sink, newOptions);
           },
           toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString(); }
         };
@@ -266,7 +376,7 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
     var sortRequired = false;
 
     if ( options && options.order ) {
-      if ( options.order == prop ) {
+      if ( options.order === prop ) {
          // sort not required
       } else {
         sortRequired = true;
