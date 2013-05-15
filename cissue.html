@@ -86,13 +86,42 @@ var gridView = GridView.create({
     acc: MAP(CIssueTileView.create(), COL.create())
   })});
 
-gridView.write(document);
+// gridView.write(document);
 
+var altView = AlternateView.create({
+  views: [
+    ViewChoice.create({
+      label: 'Table',
+      view: function() {
+	return TableView2.create({
+          model: CIssue,
+          dao: issues
+        });
+      }
+    }),
+    ViewChoice.create({
+      label: 'Grid',
+      view: function() {
+	return GridView.create({
+          model: CIssue,
+          dao: issues,
+          grid: GridByExpr.create({
+            xFunc: CIssue.STATUS,
+            yFunc: CIssue.OWNER,
+            acc: MAP(CIssueTileView.create(), COL.create())
+        })});
+      }
+    })
+  ]
+});
+
+altView.write(document);
 /*
 issues.select({put:function (issue) {
   document.writeln(CIssueTileView.create({issue: issue}).toHTML());
 }}); 
 */
+
   </script>
 
  </body>
