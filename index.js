@@ -160,6 +160,7 @@ var TreeIndex = {
 
   skew: function(s) {
     if ( s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL] ) {
+// console.log('skew');
       // Swap the pointers of horizontal left links.
       var l = s[LEFT];
       s[LEFT] = l[RIGHT];
@@ -171,15 +172,22 @@ var TreeIndex = {
     return s;
   },
 
+  updateSize: function(s) {
+    s[SIZE] = this.size(s[LEFT]) + this.size(s[RIGHT]) + this.tail.size(s[VALUE]);
+  },
+
   //  input: T, a node representing an AA tree that needs to be rebalanced.
   //  output: Another node representing the rebalanced AA tree.
   split: function(s) {
     if ( s && s[RIGHT] && s[RIGHT][RIGHT] && s[LEVEL] === s[RIGHT][RIGHT][LEVEL] ) {
+// console.log('split');
       // We have two horizontal right links.  Take the middle node, elevate it, and return it.
       var r = s[RIGHT];
       s[RIGHT] = r[LEFT];
       r[LEFT] = s;
       r[LEVEL]++;
+      this.updateSize(s);
+      this.updateSize(r);
 
       return r;
     }
@@ -196,12 +204,15 @@ var TreeIndex = {
 
     if ( r === 0 ) {
       // If we're a leaf, easy, otherwise reduce to leaf case. 
-      if ( s[SIZE] === 1 ) return undefined;
+      if ( ! s[LEFT] && ! s[RIGHT] ) return undefined;
 
       // TODO: add a unit test to verify that the size
       // adjusting logic is correct here.
       var side = s[LEFT] ? LEFT : RIGHT;
 
+      // TODO: it would be faster if successor and predecessor also deleted
+      // the entry at the same time in order to prevent two traversals.
+      // But, this would also duplicate the delete logic.
       var l = side === LEFT ?
         this.successor(s)   :
         this.predecessor(s) ;
