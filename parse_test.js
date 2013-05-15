@@ -154,10 +154,13 @@ var testdata = new Uint8Array([0xba, 0x01, 0x02, 0x08, 0x20, 0xf2, 0xff, 0x1f, 0
 console.log('parsing binary data: ', testparser.parseArrayBuffer(testdata));
 
 
-var sample = "message Person \n\n\n { required int32 id = 1; required string name = 2; optional string email = 3;}";
+var sample = "\n\n\n message Person // asdfasdf \n\n\n { /* required asdfasdf \n\n */ optional int32 id = 1; required string name = 2; optional string email = 3;}";
 var sample2 = "enum PhoneType {MOBILE = 3; HOME = 0; WORK = 2; }";
 
-var protoparser = SkipGrammar.create(ProtoBufGrammar,
-                                     alt(repeat(alt(' ','\r','\n'))));
-
+var protoparser = SkipGrammar.create(
+    ProtoBufGrammar,
+    repeat0(
+        alt(alt(' ','\r','\n'),
+            seq('//', repeat0(notChar('\n')), '\n'),
+            seq('/*', repeat0(not('*/', anyChar)), '*/'))));
 console.log('Parsing protobuf: ', protoparser.parse(ProtoBufGrammar.START, StringPS.create(sample)).value[0].toJSON());
