@@ -2242,7 +2242,7 @@ style = window.getComputedStyle(this.element().children[0]);
         self.objs = objs;
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
-          self.initHTML();
+          self.initHTML_();
         }
       });
 // console.timeEnd('redraw');
@@ -2319,6 +2319,10 @@ style = window.getComputedStyle(this.element().children[0]);
     },
 
     initHTML: function() {
+      this.repaint();
+    },
+
+    initHTML_: function() {
       AbstractView.initHTML.call(this);
       var es = document.getElementsByClassName('tr-' + this.getID());
 
