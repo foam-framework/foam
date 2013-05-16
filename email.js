@@ -246,7 +246,7 @@ var EMail = FOAM.create({
              subject: "Re.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>')
            });
-           DAOCreateControllerProto.newObj(replyMail, EMailDAO);
+           DAOCreateController.getPrototype().newObj(replyMail, EMailDAO);
          }
       },
       {
@@ -260,7 +260,7 @@ var EMail = FOAM.create({
              subject: "Fwd.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>')
            });
-           DAOCreateControllerProto.newObj(forwardedMail, EMailDAO);
+           DAOCreateController.getPrototype().newObj(forwardedMail, EMailDAO);
          }
       }
    ]
