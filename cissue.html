@@ -71,12 +71,6 @@ var COL = {
   clone: function() { return this.create(); }
 };
 
-/* 
-issues.select(GRID_BY(CIssue.STATUS, CIssue.OWNER, MAP(CIssueTileView.create(), COL.create())))(function (g) {
-  document.writeln(g.toHTML());
-});
-*/
-
 var gridView = GridView.create({
   dao: issues,
   model: CIssue,
@@ -102,25 +96,28 @@ var altView = AlternateView.create({
     ViewChoice.create({
       label: 'Grid',
       view: function() {
-	return GridView.create({
+	var g = GridView.create({
           model: CIssue,
           dao: issues,
-          grid: GridByExpr.create({
-            xFunc: CIssue.STATUS,
-            yFunc: CIssue.OWNER,
-            acc: MAP(CIssueTileView.create(), COL.create())
-        })});
+          accChoices: [
+            [ MAP(CIssueTileView.create(), COL.create()), "Tile"  ],
+            [ MAP(CIssue.ID, []),                         "List"  ],
+            [ COUNT(),                                    "Count" ],
+          ],
+          grid: GridByExpr.create()
+        });
+
+	g.row.value.set(CIssue.OWNER);
+	g.col.value.set(CIssue.STATUS);
+	g.acc.value.set(g.accChoices[0][0]);
+		    
+        return g;
       }
     })
   ]
 });
 
 altView.write(document);
-/*
-issues.select({put:function (issue) {
-  document.writeln(CIssueTileView.create({issue: issue}).toHTML());
-}}); 
-*/
 
   </script>
 
@@ -132,7 +129,6 @@ issues.select({put:function (issue) {
 issues.select(GROUP_BY(CIssue.PRIORITY, COUNT()))(function (g) { console.log(g.groups); });
 
 issues.select(GROUP_BY(CIssue.OWNER, COUNT()))(function (g) { console.log(g.groups); });
-
 
 issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) { console.log(g.groups); });
 
