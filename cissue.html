@@ -64,6 +64,15 @@ issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.SUMMARY, [])))(fun
 }); 
 */
  
+var ItemCount = Model.create({
+   extendsModel: 'CountExpr',
+   methods: {
+     toString: function() {
+       return '<span class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
+     }
+   }
+});
+
 var COL = {
   put: function(v) { this.values.push(v); },
   toHTML: function() { return this.values.join('<br/>'); },
@@ -81,6 +90,10 @@ var gridView = GridView.create({
   })});
 
 // gridView.write(document);
+
+var idFormatter = {
+  f: function(i) { return '<span class=idlist>' + i.id + '</span>'; }
+};
 
 var altView = AlternateView.create({
   views: [
@@ -100,9 +113,9 @@ var altView = AlternateView.create({
           model: CIssue,
           dao: issues,
           accChoices: [
-            [ MAP(CIssueTileView.create(), COL.create()), "Tile"  ],
-            [ MAP(CIssue.ID, []),                         "List"  ],
-            [ COUNT(),                                    "Count" ],
+            [ MAP(CIssueTileView.create(), COL.create()), "Tiles"  ],
+            [ MAP(idFormatter, COL.create()),             "IDs"    ],
+            [ ItemCount.create(),                         "Counts" ]
           ],
           grid: GridByExpr.create()
         });

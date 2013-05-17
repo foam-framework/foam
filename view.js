@@ -2674,7 +2674,7 @@ var GridView = FOAM.create({
 
         name: 'toHTML',
         description: 'TileView',
-        template: 'Rows: <%= this.row.toHTML() %> Cols: <%= this.col.toHTML() %>  Cells: <%= this.acc.toHTML() %> <br/><div id="<%= this.getID()%>"></div>'
+        template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
      }
    ]
 });

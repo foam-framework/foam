@@ -340,34 +340,34 @@ textarea { width: 94%; overflow: auto; }
 
 
 body {
-font: 82% arial,sans-serif;
+  font: 82% arial,sans-serif;
 }
 
 div.gridtile td div a {
-color: #000;
-text-decoration: none;
-white-space: normal;
+  color: #000;
+  text-decoration: none;
+  white-space: normal;
 }
 
 div.gridtile {
-width: 10em;
-float: left;
-margin: 2px;
+  width: 10em;
+  float: left;
+  margin: 2px;
 }
 div.gridtile {
-border: 2px solid #c3d9ff;
-border-radius: 6px;
-padding: 1px;
+  border: 2px solid #c3d9ff;
+  border-radius: 6px;
+  padding: 1px;
 }
 
 div.gridtile td.id {
-width: 5em;
-text-align: left;
-margin-left:4px;
+  width: 5em;
+  text-align: left;
+  margin-left:4px;
 }
 
 div.gridtile td.id a {
-margin-left:4px;
+  margin-left:4px;
 }
 
 div.gridtile td.status {
@@ -385,10 +385,9 @@ div.gridtile td, div.projecttile td {
   border: 0;
   padding: 2px;
   overflow: hidden;
-
-font-family: arial, sans-serif;
-font-size: 13px;
-font-style: normal;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
 }
 
 div.gridtile td div {
@@ -397,3 +396,54 @@ div.gridtile td div {
   line-height: 100%;
 }
 
+div.gridViewControl {
+  padding:5px;
+  background:rgb(235, 239, 249);
+  border-color: rgb(187, 187, 187);
+  border-style: solid;
+  border-width: 1px;  
+}
+
+div.gridViewControl select {
+  margin-bottom:0;
+  font-family: arial, sans-serif;
+  font-size: 10px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  color: rgb(0, 0, 0);
+  outline-color: rgb(223, 215, 207);
+  background-color: rgb(221, 221, 221);
+}
+
+.gridBy th {
+  background: #eeeeee;
+  border: 1px solid #ccc;
+  border-spacing: 2px;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  padding: 2px;
+  text-align: left;
+}
+
+.gridBy td {
+  vertical-align: top;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 4px;
+}
+
+.idcount {
+  color: #0000cc;
+  text-decoration: underline;
+  font: 82% arial,sans-serif;
+}
+
+.idlist {
+  color: #0000cc;
+  text-decoration: underline;
+  font: 82% arial,sans-serif;
+}
