@@ -966,10 +966,13 @@ var AlternateView = FOAM.create({
       },
 
       installSubView: function(viewChoice) {
-	 var view = GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
+	 var view = typeof(viewChoice.view) === 'function' ?
+	   viewChoice.view(this.value.get().model_, this.value) :
+	   GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
+
 	 this.element().innerHTML = view.toHTML();
 	 view.initHTML();
-         view.value.set(this.value.get());
+         view.value && view.value.set(this.value.get());
 //	 if ( view.set ) view.set(this.model.get());
 //	 Events.link(this.model, this.view.model);
       },
@@ -989,7 +992,8 @@ var AlternateView = FOAM.create({
 
 	       return false;
 	    };}(this,view);
-	    str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+//	    str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+	    str.push('<a id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
 	    if ( view.label == this.selected ) viewChoice = view;
 	 }
 	 str.push('<br/>');

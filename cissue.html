@@ -64,18 +64,21 @@ issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.SUMMARY, [])))(fun
 }); 
 */
  
+var ItemCount = Model.create({
+   extendsModel: 'CountExpr',
+   methods: {
+     toString: function() {
+       return '<span class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
+     }
+   }
+});
+
 var COL = {
   put: function(v) { this.values.push(v); },
   toHTML: function() { return this.values.join('<br/>'); },
   create: function() { return { __proto__: this, values: [] }; },
   clone: function() { return this.create(); }
 };
-
-/* 
-issues.select(GRID_BY(CIssue.STATUS, CIssue.OWNER, MAP(CIssueTileView.create(), COL.create())))(function (g) {
-  document.writeln(g.toHTML());
-});
-*/
 
 var gridView = GridView.create({
   dao: issues,
@@ -86,13 +89,49 @@ var gridView = GridView.create({
     acc: MAP(CIssueTileView.create(), COL.create())
   })});
 
-gridView.write(document);
+// gridView.write(document);
 
-/*
-issues.select({put:function (issue) {
-  document.writeln(CIssueTileView.create({issue: issue}).toHTML());
-}}); 
-*/
+var idFormatter = {
+  f: function(i) { return '<span class=idlist>' + i.id + '</span>'; }
+};
+
+var altView = AlternateView.create({
+  views: [
+    ViewChoice.create({
+      label: 'Table',
+      view: function() {
+	return TableView2.create({
+          model: CIssue,
+          dao: issues
+        });
+      }
+    }),
+    ViewChoice.create({
+      label: 'Grid',
+      view: function() {
+	var g = GridView.create({
+          model: CIssue,
+          dao: issues,
+          accChoices: [
+            [ MAP(CIssueTileView.create(), COL.create()), "Tiles"  ],
+            [ MAP(idFormatter, COL.create()),             "IDs"    ],
+            [ ItemCount.create(),                         "Counts" ]
+          ],
+          grid: GridByExpr.create()
+        });
+
+	g.row.value.set(CIssue.OWNER);
+	g.col.value.set(CIssue.STATUS);
+	g.acc.value.set(g.accChoices[0][0]);
+		    
+        return g;
+      }
+    })
+  ]
+});
+
+altView.write(document);
+
   </script>
 
  </body>
@@ -103,7 +142,6 @@ issues.select({put:function (issue) {
 issues.select(GROUP_BY(CIssue.PRIORITY, COUNT()))(function (g) { console.log(g.groups); });
 
 issues.select(GROUP_BY(CIssue.OWNER, COUNT()))(function (g) { console.log(g.groups); });
-
 
 issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) { console.log(g.groups); });
 

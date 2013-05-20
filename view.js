@@ -2242,7 +2242,7 @@ style = window.getComputedStyle(this.element().children[0]);
         self.objs = objs;
         if ( self.element() ) {
           self.element().innerHTML = self.tableToHTML();
-          self.initHTML();
+          self.initHTML_();
         }
       });
 // console.timeEnd('redraw');
@@ -2319,6 +2319,10 @@ style = window.getComputedStyle(this.element().children[0]);
     },
 
     initHTML: function() {
+      this.repaint();
+    },
+
+    initHTML_: function() {
       AbstractView.initHTML.call(this);
       var es = document.getElementsByClassName('tr-' + this.getID());
 
@@ -2582,6 +2586,18 @@ var GridView = FOAM.create({
 	 valueFactory: function() { return ChoiceView.create(); }
       },
       {
+         name:  'acc',
+         label: 'accumulator',
+         type: 'ChoiceView',
+	 valueFactory: function() { return ChoiceView.create(); }
+      },
+      {
+         name:  'accChoices',
+         label: 'Accumulator Choices',
+         type: 'Array',
+	 valueFactory: function() { return []; }
+      },
+      {
          name:  'model',
          label: 'Model',
          type: 'Model'
@@ -2609,23 +2625,27 @@ var GridView = FOAM.create({
        var self = this;
        this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
        this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
+       this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
-       console.log('update: ' , this.col.value.get(), this.row.value.get());
+       console.log('update: ' , this.col.value.get(), this.row.value.get(), this.acc.value.get());
        this.dao.select(this.grid/*.clone()*/)(function(g) {
          self.element().innerHTML = g.toHTML();
        });
      },
 
      initHTML: function() {
-       this.row.initHTML();
-       this.col.initHTML();
-
        var choices = [];
        this.model.properties.select({put:function(p) {
          choices.push([p, p.label]);
        }});
        this.row.choices = choices;
        this.col.choices = choices;
+
+       this.acc.choices = this.accChoices;
+
+       this.row.initHTML();
+       this.col.initHTML();
+       this.acc.initHTML();
 
        AbstractView2.getPrototype().initHTML.call(this);
        this.repaint_ = EventService.animate(this.updateHTML.bind(this));
@@ -2640,10 +2660,9 @@ var GridView = FOAM.create({
 	 this.repaint_();
        });
 
-       this.row.value.addListener(function(v) { console.log('rowChange:',v); });
-       this.col.value.addListener(function(v) { console.log('colChange:',v); });
        this.row.value.addListener(this.repaint_);       
        this.col.value.addListener(this.repaint_);       
+       this.acc.value.addListener(this.repaint_);       
 
        this.updateHTML();
      }
@@ -2655,7 +2674,7 @@ var GridView = FOAM.create({
 
         name: 'toHTML',
         description: 'TileView',
-        template: 'Rows: <%= this.row.toHTML() %> Cols: <%= this.col.toHTML() %>  Cells: <br/><div id="<%= this.getID()%>"></div>'
+        template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
      }
    ]
 });

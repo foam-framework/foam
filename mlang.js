@@ -1013,7 +1013,7 @@ var GridByExpr = FOAM.create({
        var cols = this.cols.groups;
        var rows = this.rows.groups;
 
-       out.push('<table border><tr><td></td>');
+       out.push('<table border=0 cellspacing=0 class="gridBy"><tr><th></th>');
 
        for ( var x in cols ) {
 	 var str = x.toHTML ? x.toHTML() : x;
@@ -1030,7 +1030,7 @@ var GridByExpr = FOAM.create({
          for ( var x in cols ) {
            var value = rows[y].groups[x];
            var str = value ? (value.toHTML ? value.toHTML() : value) : '';
-           out.push('<th>', str, '</th>');
+           out.push('<td>', str, '</td>');
          }
          out.push('</tr>');
        }
