@@ -160,11 +160,14 @@ var TreeIndex = {
 
   skew: function(s) {
     if ( s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL] ) {
-// console.log('skew');
       // Swap the pointers of horizontal left links.
       var l = s[LEFT];
+
       s[LEFT] = l[RIGHT];
       l[RIGHT] = s;
+
+      this.updateSize(s);
+      this.updateSize(l);
 
       return l;
     }
@@ -183,9 +186,11 @@ var TreeIndex = {
 // console.log('split');
       // We have two horizontal right links.  Take the middle node, elevate it, and return it.
       var r = s[RIGHT];
+
       s[RIGHT] = r[LEFT];
       r[LEFT] = s;
       r[LEVEL]++;
+
       this.updateSize(s);
       this.updateSize(r);
 
