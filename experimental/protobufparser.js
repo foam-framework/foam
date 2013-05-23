@@ -17,7 +17,10 @@ var ProtoBufGrammar = {
     sym('enum'),
     sym('import'),
     sym('package'),
-    sym('option'), ';')),
+    sym('option'),
+    sym('syntax'), ';')),
+
+  syntax: seq("syntax", "=", sym('strLit'), ";"),
  
   import: seq("import", sym('strLit'), ";"), 
 
@@ -33,7 +36,7 @@ var ProtoBufGrammar = {
 
   enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"), 
 
-  enumField: seq(sym('ident'), "=", sym('intLit'), ";"), 
+  enumField: seq(sym('ident'), "=", sym('sintLit'), ";"), 
 
   service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"), 
 
@@ -42,7 +45,7 @@ var ProtoBufGrammar = {
   messageBody: seq(
     "{",
       repeat(
-        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ':')
+        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
       ),
     "}"), 
 
@@ -72,7 +75,7 @@ var ProtoBufGrammar = {
   // leading dot for identifiers means they're fully qualified 
   userType: noskip(plus(seq(optional("."), sym('ident')))), 
 
-  constant: alt(sym('ident'), sym('intLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
+  constant: alt(sym('ident'), sym('sintLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
 
   ident: seq(sym('a'), repeat(sym('w'))),
 
@@ -80,7 +83,11 @@ var ProtoBufGrammar = {
   // hack for backwards-compatibility 
   camelIdent: seq(range('A', 'Z'), repeat(sym('w'))), 
 
-  intLit: alt(sym('decInt'), sym('hexInt'), sym('octInt')), 
+  intLit: alt(sym('decInt'), sym('hexInt'), sym('octInt')),
+
+  sintLit: alt(
+      seq(optional(alt('+', '-')), sym('decInt')),
+      sym('intLit')),
 
   decInt: plus(sym('d')), 
 
@@ -88,11 +95,20 @@ var ProtoBufGrammar = {
 
   octInt: seq('/0', plus(range('0', '7'))),
 
-  floatLit: seq(optional(seq(sym('decInt'), optional('.', sym('decInt')))), optional(seq(alt('E', 'e'), optional(alt('+', '-')), sym('decInt')))),
+  floatLit:
+    seq(
+        seq(
+            sym('decInt'),
+            optional('.', sym('decInt'))),
+        optional(
+            seq(
+                alt('E', 'e'),
+                optional(alt('+', '-')),
+                sym('decInt')))),
 
   boolLit: alt("true", "false"), 
 
-  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), notChar('\n'))) ,sym('quote'))), 
+  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), sym('quoteEscape'), not(sym('quote'), anyChar))) ,sym('quote'))), 
 
   quote: alt('"', "'"), 
 
@@ -100,9 +116,15 @@ var ProtoBufGrammar = {
 
   octEscape: seq('\\0', repeat(range('0', '7'), undefined, 1, 3)), 
 
-  charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')) 
+  charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')),
+
+  quoteEscape: seq('\\"'),
 
 }.addActions({
+
+  quoteEscape: function(a) {
+      return ['"'];
+  },
 
   enumField: function(a) {
 console.log('enumField', a[0], a[2]);
@@ -134,9 +156,15 @@ console.log('enumField', a[0], a[2]);
   },
 
   message: function(a) {
+    var properties = [];
+    for (var i = 0; i < a[2].length; i++) {
+      if (a[2][i] && a[2][i].TYPE == "Property") {
+        properties.push(a[2][i]);
+      }
+    }
     return Model.create({
       name: a[1],
-      properties: a[2]
+      properties: properties
     });
   },
 
