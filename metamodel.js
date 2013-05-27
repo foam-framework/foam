@@ -270,7 +270,58 @@ var Model = {
 	   view: 'TextAreaView',
 	   defaultValue: '',
 	   help: 'Internal documentation associated with this entity.'
-       }
+       },
+       {
+           name: 'protoparser',
+           label: 'ProtoParser',
+           type: 'Grammar',
+           defaultValueFn: function() {
+             var parser = {
+               __proto__: binarygrammar,
+
+               START: sym('model'),
+
+               model: [],
+             };
+             for (var i = 0, prop; prop = this.properties[i]; i++) {
+               var p;
+               switch(prop.type) {
+                 case 'uint32':
+                 case 'uint64':
+                 case 'int32':
+                 case 'int64':
+                 p = protouint32(prop.prototag);
+                 break;
+                 case 'boolean':
+                 p = protobool(prop.prototag);
+                 break;
+                 case 'string':
+                 p = protostring(prop.prototag);
+                 break;
+               }
+
+               parser[prop.name] = p;
+               (function(prop) {
+                 parser.addAction(prop.name, function(a) {
+                   return [prop, a[1]];
+                 });
+               })(prop);
+               parser.model.push(sym(prop.name));
+             }
+             parser.model.push(sym('unknown field'));
+             parser.model = repeat(alt.apply(undefined, parser.model));
+             var self = this;
+             parser.addAction('model', function(a) {
+               var createArgs = {};
+               for (var i = 0, field; field = a[i]; i++) {
+                 if (!field[0] || field[0].TYPE != 'Property') continue;
+                 createArgs[field[0].name] = field[1];
+               }
+               return self.create(createArgs);
+             });
+             return parser;
+           },
+       },
     ],
 
    templates:[

@@ -157,6 +157,8 @@ console.log('parsing binary data: ', testparser.parseArrayBuffer(testdata));
 var sample = "\n\n\n message Person // asdfasdf \n\n\n { /* required asdfasdf \n\n */ optional int32 id = 1; required string name = 2; optional string email = 3;}";
 var sample2 = "enum PhoneType {MOBILE = 3; HOME = 0; WORK = 2; }";
 
+var sample3 = "message NumberMessage { required uint32 num = 1; }";
+
 var protoparser = SkipGrammar.create(
     ProtoBufGrammar,
     repeat0(
@@ -164,3 +166,11 @@ var protoparser = SkipGrammar.create(
             seq('//', repeat0(notChar('\n')), '\n'),
             seq('/*', repeat0(not('*/', anyChar)), '*/'))));
 console.log('Parsing protobuf: ', protoparser.parse(ProtoBufGrammar.START, StringPS.create(sample)).value[0].toJSON());
+
+var NumberMessage = protoparser.parseString(sample3)[0];
+var numinstance = NumberMessage.create({ num: 1 });
+console.log('instance: ', numinstance.toJSON());
+var protodata = numinstance.toProtobuf();
+console.log('binary: ', protodata);
+var numinstance2 = NumberMessage.protoparser.parseArrayBuffer(protodata);
+console.log('parsed binary: ', numinstance2.toJSON());
