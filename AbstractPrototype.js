@@ -221,17 +221,20 @@ console.log(i, k, v);
       var bytes;
       var data;
       switch(prop.type) {
-        case 'String':
+        case 'string':
           out.varint((tag << 3) | 2);
           bytes = stringtoutf8(value);
           out.varint(bytes.length);
           out.bytes(bytes);
           break;
-        case 'Integer':
+        case 'uint32':
+        case 'uint64':
+        case 'int32':
+        case 'int64':
           out.varint(tag << 3);
           out.varint(value);
           break;
-        case 'Boolean':
+        case 'bool':
           out.varint(tag << 3);
           out.varint(Number(value));
           break;
