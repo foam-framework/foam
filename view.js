@@ -1054,7 +1054,7 @@ var ChoiceView = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onMouseOver',
 	 code: function(e) {
@@ -1065,7 +1065,7 @@ var ChoiceView = FOAM.create({
       },
 
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onMouseOut',
 	 code: function(e) {
@@ -1078,7 +1078,7 @@ var ChoiceView = FOAM.create({
       },
 
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onClick',
 	 code: function(e) {
@@ -1151,7 +1151,7 @@ var RadioBoxView = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onClick',
 	 code: function(evt) {

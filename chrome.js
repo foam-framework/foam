@@ -68,7 +68,7 @@ var BookmarkModel = Model.create({
 
    actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'visit',
 	 label: 'Visit',
 	 help:  'Visit Bookmark.',

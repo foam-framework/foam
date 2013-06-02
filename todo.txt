@@ -24,3 +24,8 @@ Generic Search Controller
 Scroll-Wheel Support
 <Type>Properties
 
+
+
+extendsModel doesn't set 'create' on subclass
+which is set in AbstractPrototype.init()
+

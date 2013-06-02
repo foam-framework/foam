@@ -27,7 +27,7 @@ console.log('\nOrderedSet Test');
 m.putObject('a');
 m.putObject('b');
 m.putObject('c');
-m.putObject('d');
+/*m.putObject('d');
 m.putObject('e');
 m.putObject('f');
 m.putObject('g');
@@ -35,7 +35,9 @@ m.putObject('h');
 m.putObject('i');
 m.putObject('j');
 
-m.delete('d');
+*/
+
+m.delete('a');
 
 /*
 m.putObject('k');
@@ -51,9 +53,11 @@ m.putObject('boo');
 */
 m.select(console.log);
 
+/*
 console.log(m.get('kevin'));
 m.put('kevin', 'greer');
 console.log(m.get('kevin'));
+*/
 
 /*
 console.log('\nOrderedSet BulkLoad Test');

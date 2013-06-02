@@ -15,16 +15,6 @@
  */
 
 
-// todo: put somewhere better
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-};
-
-// switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-String.prototype.constantize = function() {
-    return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
-};
-
 /*
 function getObjectSize(myObject) {
   var count=0
@@ -127,18 +117,19 @@ var Model = {
 	   name: 'properties',
 	   label: 'Properties',
 	   type: 'Array[Property]',
-           subType: 'PropertyModel',
+           subType: 'Property',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
 	   help: 'Properties associated with the entity.',
 	   preSet: function(newValue) {
-	      if ( ! PropertyModel ) return;
+	      if ( ! Property ) return;
 
 	      for ( var i = 0 ; i < newValue.length ; i++ ) {
-		 if ( ! PropertyModel.isInstance(newValue[i]) ) {
+//		 if ( ! Property.isInstance(newValue[i]) ) {
+		 if ( ! newValue[i].model_ ) {
                     var oldValue = newValue[i];
-		    newValue[i] = PropertyModel.getPrototype().create(newValue[i]);
+		    newValue[i] = Property.getPrototype().create(newValue[i]);
 		 }
 
                  // create property constant
@@ -152,13 +143,13 @@ var Model = {
 	   name: 'actions',
 	   label: 'Actions',
 	   type: 'Array[Action]',
-           subType: 'ActionModel',
+           subType: 'Action',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
 	   help: 'Actions associated with the entity.',
 	   preSet: function(newValue) {
-	      if ( ! ActionModel ) return newValue;
+	      if ( ! Action ) return newValue;
 	      return JSONUtil.mapToObj(newValue);
 	   }
        },
@@ -166,23 +157,23 @@ var Model = {
 	   name: 'methods',
 	   label: 'Methods',
 	   type: 'Array[Method]',
-           subType: 'MethodModel',
+           subType: 'Method',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
 	   help: 'Methods associated with the entity.',
 	   preSet: function(newValue) {
-	      if ( ! MethodModel ) return;
+	      if ( ! Method ) return;
 
 	      if ( newValue instanceof Array ) return newValue;
 
-	      // convert a map of functions to an array of MethodModel instances
+	      // convert a map of functions to an array of Method instances
 	      var methods = [];
 
 	      for ( var key in newValue )
 	      {
                  var oldValue = newValue[key];
-		 var method   = MethodModel.create({name: key, code: oldValue});
+		 var method   = Method.create({name: key, code: oldValue});
 
 		 methods.push(method);
 	      }
@@ -194,27 +185,29 @@ var Model = {
 	   name: 'listeners',
 	   label: 'Listeners',
 	   type: 'Array[Method]',
-           subType: 'MethodModel',
+           subType: 'Method',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
 	   help: 'Event listeners associated with the entity.'
        },
+       /*
        {
 	   name: 'topics',
 	   label: 'Topics',
 	   type: 'Array[topic]',
-           subType: 'TopicModel',
+           subType: 'Topic',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
 	   help: 'Event topics associated with the entity.'
        },
+       */
        {
 	   name: 'templates',
 	   label: 'Templates',
 	   type: 'Array[Template]',
-           subType: 'TemplateModel',
+           subType: 'Template',
 	   view: 'ArrayView',
 	   valueFactory: function() { return []; },
 	   defaultValue: [],
@@ -344,7 +337,7 @@ var Model = {
 };
 
 
-var PropertyModel = {
+var Property = {
     __proto__: ModelProto,
 
     name:  'Property',
@@ -645,7 +638,7 @@ var PropertyModel = {
         return null;
     },
 
-    toString: function() { return "PropertyModel"; }
+    toString: function() { return "Property"; }
 };
 
 
@@ -660,20 +653,20 @@ Model.methods = {
 console.log("Model:");
 //console.log(Model);
 
-// This is the coolest line of code that I've ever written or
-// ever will write. Oct. 4, 2011 -- KGR
+// This is the coolest line of code that I've ever written
+// or ever will write. Oct. 4, 2011 -- KGR
 Model = Model.create(Model);
 Model.model_ = Model;
 GLOBAL['Model'] = Model;
 
-PropertyModel = Model.create(PropertyModel);
-GLOBAL['PropertyModel'] = PropertyModel;
+Property = Model.create(Property);
+GLOBAL['Property'] = Property;
 
 // Now remove ModelProto so nobody tries to use it
 // TODO: do this once no views use it directly
 // delete ModelProto;
 
-var ActionModel = FOAM.create({
+var Action = FOAM.create({
     model_: 'Model',
 
    name: 'Action',
@@ -754,8 +747,8 @@ var ActionModel = FOAM.create({
    ]
 });
 
-
-var TopicModel = FOAM.create({
+/* Not used yet
+var Topic = FOAM.create({
     model_: 'Model',
 
    name: 'Topic',
@@ -792,9 +785,9 @@ var TopicModel = FOAM.create({
        }
    ]
 });
+*/
 
-
-var MethodModel = FOAM.create({
+var Method = FOAM.create({
     model_: 'Model',
 
    name: 'Method',
@@ -847,7 +840,7 @@ var MethodModel = FOAM.create({
 });
 
 
-var TemplateModel = FOAM.create({
+var Template = FOAM.create({
     model_: 'Model',
 
    name: 'Template',
@@ -893,7 +886,7 @@ var TemplateModel = FOAM.create({
 	   name: 'templates',
 	   label: 'Templates',
 	   type: 'Array[Template]',
-           subType: 'TemplateModel',
+           subType: 'Template',
 	   view: 'ArrayView',
 	   defaultValue: [],
 	   help: 'Sub-templates of this template.'
@@ -903,16 +896,11 @@ var TemplateModel = FOAM.create({
 });
 
 
-var Template = TemplateModel;
-var Property = PropertyModel;
-var Method   = MethodModel;
-var Action   = ActionModel;
-var Topic    = TopicModel;
 GLOBAL['Template'] = Template;
 GLOBAL['Property'] = Property;
 GLOBAL['Method'] = Method;
 GLOBAL['Action'] = Action;
-GLOBAL['Topic'] = Topic;
+// GLOBAL['Topic'] = Topic;
 
 var UnitTest = FOAM.create({
      model_: 'Model',
@@ -983,7 +971,7 @@ var UnitTest = FOAM.create({
 
      actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'test',
 	 label: 'Test',
 	 help:  'Run the unit tests.',
@@ -1158,8 +1146,8 @@ Model.templates[1] = JSONUtil.mapToObj(Model.templates[1]);
 (function() {
     var a = Model.properties;
     for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( ! PropertyModel.isInstance(a[i]) ) {
-            a[i] = PropertyModel.getPrototype().create(a[i]);
+        if ( ! Property.isInstance(a[i]) ) {
+            a[i] = Property.getPrototype().create(a[i]);
         }
     }
 })();

@@ -39,6 +39,7 @@ var ModelProto = {
     buildPrototype: function() {
        var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
 
+       // TODO: remove 'extendsPrototype' support when no longer used
        var cls = {
           instance_: {},
 	  __proto__:
@@ -84,7 +85,7 @@ var ModelProto = {
 	// add methods
 	for ( var key in this.methods )	{
 	  var m = this.methods[key];
-	  if ( MethodModel && MethodModel.isInstance(m) )
+	  if ( Method && Method.isInstance(m) )
 	    addMethod(m.name, m.code); //cls[m.name] = m.code;
 	  else
 	    addMethod(key, m); //cls[key] = m;

@@ -106,7 +106,7 @@ var Timer = FOAM.create({
 
    actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'start',
 	 label: 'Start',
 	 help:  'Start the timer.',
@@ -116,7 +116,7 @@ var Timer = FOAM.create({
 	 action:      function() { this.isStarted = true; this.tick(); }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'step',
 	 label: 'Step',
 	 help:  'Step the timer.',
@@ -132,7 +132,7 @@ var Timer = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'stop',
 	 label: 'Stop',
 	 help:  'Stop the timer.',
@@ -186,7 +186,7 @@ var Mouse = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onMouseMove',
 	 code: function(evt) {
@@ -981,10 +981,8 @@ var AlternateView = FOAM.create({
 	 var str  = [];
 	 var viewChoice = this.views[0];
 
-	 for ( var i = 0 ; i < this.views.length ; i++ )
-	 {
+	 for ( var i = 0 ; i < this.views.length ; i++ ) {
 	    var view = this.views[i];
-	    if ( i != 0 ) str.push(' | ');
             var listener = function(altView, view) { return function (e) {
 	       console.log("evt: ", e);
 
@@ -993,7 +991,7 @@ var AlternateView = FOAM.create({
 	       return false;
 	    };}(this,view);
 //	    str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
-	    str.push('<a id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+	    str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
 	    if ( view.label == this.selected ) viewChoice = view;
 	 }
 	 str.push('<br/>');

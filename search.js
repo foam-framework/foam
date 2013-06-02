@@ -90,7 +90,7 @@ var GroupBySearchView = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'updateDAO',
 
@@ -113,7 +113,7 @@ var GroupBySearchView = FOAM.create({
 	 }
       },
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'updateChoice',
 
@@ -188,7 +188,7 @@ var TextSearchView = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'updateValue',
 
@@ -202,7 +202,7 @@ var TextSearchView = FOAM.create({
 	 }
       },
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'clear',
 

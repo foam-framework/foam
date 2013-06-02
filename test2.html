@@ -69,13 +69,13 @@ activity area
 </br>
 
   <script language="javascript">
-    var models = [Model, PropertyModel];
+    var models = [Model, Property];
 
     document.writeln(toHTML("id", Model, Model));
     document.write("<br/>");
-    document.writeln(toHTML("id2", Model.properties[0], PropertyModel));
+    document.writeln(toHTML("id2", Model.properties[0], Property));
     document.write("<br/>");
-//    document.writeln(toHTMLTable("id3", PropertyModel.properties, PropertyModel, PropertyModel.tableProperties));
+//    document.writeln(toHTMLTable("id3", Property.properties, Property, Property.tableProperties));
 
     var tv1 = TableView.create(Model);
     tv1.objs = models;
@@ -120,7 +120,7 @@ activity area
     var ctx     = example.getContext('2d');
 
     drawUML(ctx,100,100,Model);
-    drawUML(ctx,400,100,PropertyModel);
+    drawUML(ctx,400,100,Property);
 
     ctx.beginPath();  
     ctx.moveTo(250,180);  

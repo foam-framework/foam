@@ -809,7 +809,7 @@ var IndexedDBDAO = FOAM.create({
    listeners:
    [
       {
-         model_: 'MethodModel',
+         model_: 'Method',
 
          name: 'updated',
          code: function(evt) {
@@ -883,7 +883,7 @@ var StorageDAO = FOAM.create({
    listeners:
    [
       {
-         model_: 'MethodModel',
+         model_: 'Method',
 
          name: 'updated',
          code: function(evt) {
@@ -1301,7 +1301,7 @@ var WorkerDAO = FOAM.create({
 
   listeners: [
     {
-      model_: 'MethodModel',
+      model_: 'Method',
       name: 'onMessage',
       help: 'Callback for message events from the delegate.',
       code: function(e) {
@@ -1365,7 +1365,7 @@ var WorkerDelegate = FOAM.create({
 
   listeners: [
     {
-      model_: 'MethodModel',
+      model_: 'Method',
       name: 'onMessage',
       code: function(e) {
         // This is a nightmare of a function, clean it up.

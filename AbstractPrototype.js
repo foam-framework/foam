@@ -47,7 +47,7 @@ console.log(i, k, v);
   },
 
 
-  init: function(notused_args) {
+  init: function(unused_args) {
     if ( ! this.model_ ) return;
 
     for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
@@ -134,9 +134,9 @@ console.log(i, k, v);
         });
     }
 
-    if ( prop.setter )
+    if ( prop.setter ) {
       this.defineFOAMSetter(name, prop.setter);
-    else if ( prop.preSet || prop.postSet ) {
+    } else if ( prop.preSet || prop.postSet ) {
       this.defineFOAMSetter(name, function(newValue) {
         var oldValue = this[name];
 
@@ -201,12 +201,14 @@ console.log(i, k, v);
     return hash;
   },
 
+  // TODO: this should be monkey-patched from a 'ProtoBuf' library
   toProtobuf: function() {
     var out = ProtoWriter.create();
     this.outProtobuf(out);
     return out.value;
   },
 
+  // TODO: this should be monkey-patched from a 'ProtoBuf' library
   outProtobuf: function(out) {
     for ( var i = 0; i < this.model_.properties.length; i++ ) {
       var prop = this.model_.properties[i];

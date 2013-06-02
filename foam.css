@@ -447,3 +447,19 @@ div.gridViewControl select {
   text-decoration: underline;
   font: 82% arial,sans-serif;
 }
+
+
+.buttonify {
+font-size: 100%;
+background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left top #e3e3e3;
+background: -webkit-gradient(linear,0% 40%,0% 70%,from(#f9f9f9),to(#e3e3e3));
+background: -moz-linear-gradient(top,#fff,#ddd);
+vertical-align: baseline;
+padding: 1px 3px 1px 3px;
+border: 1px solid #aaa;
+border-top-color: #ccc;
+border-bottom-color: #888;
+border-radius: 3px;
+cursor: pointer;
+text-decoration: none;
+}
