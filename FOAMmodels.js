@@ -23,7 +23,7 @@ var files = [
   'base64',
   'utf8',
   'parse',
-  'scaleParser',
+//  'scaleParser',
   'context',
   'event',
   'SimpleValue',

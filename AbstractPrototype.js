@@ -71,8 +71,7 @@ console.log(i, k, v);
   },
 
 
-  defineFOAMGetter: function(name, getter)
-  {
+  defineFOAMGetter: function(name, getter) {
     this.__defineGetter__(name, function() {
       var value = getter.call(this);
       Events.onGet(this, name, value);
@@ -80,8 +79,7 @@ console.log(i, k, v);
     });
   },
 
-  defineFOAMSetter: function(name, setter)
-  {
+  defineFOAMSetter: function(name, setter) {
     this.__defineSetter__(name, function(newValue) {
       if ( ! Events.onSet(this, name, newValue) ) return;
       setter.call(this, newValue);
