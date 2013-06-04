@@ -27,35 +27,40 @@ var CIssue = FOAM.create({
             name: 'id',
             label: 'ID',
             type: 'Integer',
-            required: true
+            required: true,
+            tableWidth: '48px',
         },
         {
             name: 'priority',
-            label: 'Priority',
+            label: 'Pri',
             type: 'Integer',
+            tableWidth: '35px',
             required: true
         },
         {
             name: 'milestone',
-            label: 'Milestone',
+            label: 'M',
             type: 'Integer',
+            tableWidth: '29px',
             defaultValue: ''
         },
         {
             name: 'iteration',
             label: 'Iteration',
             type: 'String',
-            defaultValue: ''
+            tableWidth: '69px',
         },
         {
             name: 'releaseBlock',
             label: 'Release Block',
             type: 'String',
+            tableWidth: '103px',
             defaultValue: ''
         },
         {
             name: 'category',
-            label: 'Category',
+            label: 'Cr',
+            tableWidth: '87px',
             type: 'String',
             defaultValue: ''
         },
@@ -63,15 +68,24 @@ var CIssue = FOAM.create({
             name: 'status',
             label: 'Status',
             type: 'String',
+            tableWidth: '58px',
             defaultValue: ''
         },
         {
             name: 'owner',
+            tableWidth: '181px',
             type: 'String'
         },
         {
             name: 'summary',
-            type: 'String'
+            label: 'Summary + Labels',
+            type: 'String',
+            tableWidth: '100%',
+            tableFormatter: function(value, row) {
+              return value //+ " " + TODO(anicolao): add this back when labels
+              // are fully implemented
+                  //row.model_.getProperty("labels").tableFormatter(row.labels)
+            },
         },
         {
             name: 'labels',
@@ -79,6 +93,7 @@ var CIssue = FOAM.create({
         },
         {
             name: 'OS',
+            tableWidth: '61px',
             type: 'String'
         },
       {
@@ -96,6 +111,28 @@ var CIssue = FOAM.create({
            return typeof d === 'string' ? new Date(d) : d;
 	 },
          tableFormatter: function(d) {
+           var now = new Date();
+           var seconds = Math.floor((now - d)/1000);
+           if (seconds < 60) return 'moments ago';
+           var minutes = Math.floor((seconds)/60);
+           if (minutes == 1) {
+             return '1 minute ago';
+           } else if (minutes < 60) {
+             return minutes + ' minutes ago';
+           } else {
+             var hours = Math.floor(minutes/60);
+             if (hours < 24) {
+               return hours + ' hours ago';
+             }
+             var days = Math.floor(hours / 24);
+             if (days < 7) {
+               return days + ' days ago';
+             } else if (days < 365) {
+               var year = 1900+d.getYear();
+               var noyear = d.toDateString().replace(" " + year, "")
+               return /....(.*)/.exec(noyear)[1]
+             }
+           }
            return d.toDateString();
          },
          valueFactory: function() { return new Date(); }
@@ -106,6 +143,14 @@ var CIssue = FOAM.create({
     }
 });
 
+CIssue.properties.forEach(function(p) {
+    if (!p["tableFormatter"]) {
+      p["tableFormatter"] = function(v) {
+        if (('' + v).length) return v;
+        return '----';
+      };
+    }
+  });
 
 var CIssueTileView = FOAM.create({
    model_: 'Model',
@@ -141,7 +186,6 @@ var CIssueTileView = FOAM.create({
      }
    ]
 });
-
 
 /*
 // Generate a Spreadsheet formula to convert exported CSV issues to JSON.

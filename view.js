@@ -2304,7 +2304,7 @@ style = window.getComputedStyle(this.element().children[0]);
 	    for ( var j = 0 ; j < props.length ; j++ ) {
 		var prop = props[j];
 
-		str.push('<td>');
+		str.push('<td class="' + prop.name + '">');
 		var val = obj[prop.name];
                 if ( prop.tableFormatter ) {
                   str.push(prop.tableFormatter(val, obj, this));

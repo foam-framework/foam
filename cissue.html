@@ -1,6 +1,7 @@
 <html>
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
+  <link rel="stylesheet" type="text/css" href="cissue.css" />
   <script language="javascript" src="bootFOAM.js"></script> 
   <script language="javascript" src="CIssueSchema.js"></script>
   <script language="javascript" src="cissue_data.js"></script> 
@@ -22,7 +23,10 @@ Chrome Issues
     var stack = StackView.create();
     stack.write(document);
 
-    FOAM.browse(CIssue);
+    //FOAM.browse(CIssue);
+    var bugs = TableView2.create({ model: CIssue });
+    bugs.dao = issues;
+    bugs.write(document);
 
 var COL = {
   create: function() { return { __proto__: this, values: [] }; },
