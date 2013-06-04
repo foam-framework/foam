@@ -49,7 +49,9 @@ var expr = {
 
   expr1: seq(sym('expr2'), optional(seq(alt('*', '/'), sym('expr1')))),
 
-  expr2: alt(
+  expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
+
+  expr3: alt(
     sym('number'),
     sym('group')),
 
@@ -80,6 +82,16 @@ var calc = {
     if ( v[1] ) {
       var val2 = v[1][1];
       val = ( v[1][0] == '*' ) ? val * val2 : val / val2;
+    }
+
+    return val;
+  },
+  'expr2': function(v) {
+    var val = v[0];
+
+    if ( v[1] ) {
+      var val2 = v[1][1];
+      val = Math.pow(val, val2);
     }
 
     return val;
@@ -116,10 +128,19 @@ var calcCompiler = {
     }
 
     return fn;
+  },
+  'expr2': function(v) {
+    var fn = v[0];
+
+    if ( v[1] ) {
+      var fn2 = v[1][1];
+      return function() { return Math.pow(fn(), fn2()); };
+    }
+
+    return fn;
   }
 });
 
-/*
 console.log(calc.parse(calc.expr, stringPS('1 ')).value);
 console.log(calc.parse(calc.expr, stringPS('1 ')).value);
 console.log(calc.parse(calc.expr, stringPS('-1 ')).value);
@@ -128,7 +149,7 @@ console.log(calc.parse(calc.expr, stringPS('2*3 ')).value);
 console.log(calc.parse(calc.expr, stringPS('(1) ')).value);
 console.log(calc.parseString('-2*(10+20+30) '));
 console.log(calcCompiler.parseString('-2*(10+20+30) ')());
-*/
+console.log(calcCompiler.parseString('1+2^3+4 ')());
 
 console.log('***********', calc.parse(calc.expr, stringPS('1+2+3 ')).value);
 //console.log('***********', calc.parse(calc.expr, ErrorReportingPS.create(stringPS('1+2+3 '))).value);

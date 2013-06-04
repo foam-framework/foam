@@ -53,7 +53,7 @@ var DAOController = FOAM.create({
 	 action:      function() {  }
       },*/
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'new',
 	 label: 'New',
 	 help:  'Create a new record.',
@@ -76,7 +76,7 @@ var DAOController = FOAM.create({
       },
       /*
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'view',
 	 label: 'View',
 	 help:  'View the current record.',
@@ -87,7 +87,7 @@ var DAOController = FOAM.create({
       },
        */
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'edit',
 	 label: 'Edit',
 	 help:  'Edit the current record.',
@@ -106,7 +106,7 @@ var DAOController = FOAM.create({
 	    {
 	       var action = this.model.actions[i];
 
-	       var newAction = ActionModel.create(action);
+	       var newAction = Action.create(action);
 	       newAction.action = function (oldAction) {
 		  return function()
 		  {
@@ -130,7 +130,7 @@ var DAOController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'delete',
 	 label: 'Delete',
 	 help:  'Delete the current record.',
@@ -206,7 +206,7 @@ var DAOController = FOAM.create({
    listeners:
    [
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onDoubleClick',
 	 code: function(evt) {
@@ -224,7 +224,7 @@ var DAOController = FOAM.create({
 	 }
       },
       {
-	 model_: 'MethodModel',
+	 model_: 'Method',
 
 	 name: 'onSelection',
 	 code: function(evt) {
@@ -302,7 +302,7 @@ var DAOCreateController = FOAM.create({
 
    actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'save',
 	 label: 'Create',
 	 help:  'Create a new record.',
@@ -323,7 +323,7 @@ var DAOCreateController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'cancel',
 	 label: 'Cancel',
 	 help:  'Cancel creation.',
@@ -335,7 +335,7 @@ var DAOCreateController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'help',
 	 label: 'Help',
 	 help:  'View help.',
@@ -417,7 +417,7 @@ var DAOUpdateController = FOAM.create({
 
    actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'save',
 	 label: 'Save',
 	 help:  'Save updates.',
@@ -439,7 +439,7 @@ var DAOUpdateController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'copy',
 	 label: 'Copy',
 	 help:  'Create a new object which is a copy of this one.',
@@ -450,7 +450,7 @@ var DAOUpdateController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'cancel',
 	 label: 'Cancel',
 	 help:  'Cancel update.',
@@ -462,7 +462,7 @@ var DAOUpdateController = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'help',
 	 label: 'Help',
 	 help:  'View help.',

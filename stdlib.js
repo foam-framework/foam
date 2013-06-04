@@ -15,6 +15,16 @@
  */
 
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+// switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+String.prototype.constantize = function() {
+    return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+};
+
+
 /** Give all objects a Unique ID. **/ 
 Object.defineProperty(Object.prototype, '$UID', {
   get: (function() {

@@ -53,7 +53,7 @@ var StackView = FOAM.create({
 
    actions: [
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'back',
 	 label: '<',
 	 help:  'Go to previous view',
@@ -68,7 +68,7 @@ var StackView = FOAM.create({
 	 }
       },
       {
-         model_: 'ActionModel',
+         model_: 'Action',
 	 name:  'forth',
 	 label: '>',
 	 help:  'Undo the previous back.',

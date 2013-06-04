@@ -99,28 +99,20 @@ var EMail = FOAM.create({
    properties:
    [
       {
-         model_: 'Property',
+         model_: 'StringProperty',
          name: 'id',
          label: 'Message ID',
-         type: 'String',
          mode: 'read-write',
          required: true,
          displayWidth: 50,
-         displayHeight: 1,
-         view: 'TextFieldView',
-	 hidden: true,
-	 defaltValue: ''
+	 hidden: true
       },
       {
-         model_: 'Property',
+         model_: 'StringProperty',
          name: 'convId',
          label: 'Conversation ID',
-         type: 'String',
          mode: 'read-write',
-         displayWidth: 30,
-         displayHeight: 1,
-         view: 'TextFieldView',
-	 defaltValue: ''
+         displayWidth: 30
       },
       {
          model_: 'Property',
@@ -142,30 +134,23 @@ var EMail = FOAM.create({
          valueFactory: function() { return new Date(); }
       },
       {
-         model_: 'Property',
+         model_: 'StringProperty',
          name: 'from',
          label: 'From',
-         type: 'String',
          mode: 'read-write',
          required: true,
          displayWidth: 60,
-         displayHeight: 1,
-         view: 'TextFieldView',
          tableFormatter: function(t) {
            return t.replace(/"/g, '').replace(/<.*/, '');
          },
          valueFactory: function() { return GLOBAL.user || ""; }
       },
       {
-         model_: 'Property',
+         model_: 'StringProperty',
          name: 'to',
          label: 'To',
-         type: 'String',
-         mode: 'read-write',
          required: true,
          displayWidth: 60,
-         displayHeight: 1,
-         view: 'TextFieldView',
          tableFormatter: function(t) {
            return t.replace(/"/g, '').replace(/<.*/, '');
          }
@@ -209,13 +194,11 @@ var EMail = FOAM.create({
 	 help: 'Email attachments.'
       },
       {
-         model_: 'Property',
+         model_: 'StringProperty',
          name: 'body',
          label: '',
-         type: 'String',
          displayWidth: 70,
          displayHeight: 15,
-         view: 'TextAreaView',
          help: 'Email message body.',
          summaryFormatter: function(t) {
            return '<div class="messageBody">' + t.replace(/\n/g,'<br/>') + '</div>';

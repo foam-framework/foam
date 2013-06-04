@@ -25,45 +25,13 @@ Chrome Issues
 
     FOAM.browse(CIssue);
 
-/*
-issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) {
-  for ( var key in g.groups ) {
-    console.log('Key: ', key);
-    var value = g.groups[key];
-    for ( var key2 in value.groups ) {
-      var value2 = value.groups[key2];
-      console.log('  Key2: ', key2);
-      for ( var i = 0 ; i < value2.length ; i++ ) {
-        var issue = value2[i];
-        console.log('    issue: ', issue.id);
-       }
-     }
-  }
-});
-*/
+var COL = {
+  create: function() { return { __proto__: this, values: [] }; },
+  put: function(v) { this.values.push(v); },
+  toHTML: function() { return this.values.join('<br/>'); },
+  clone: function() { return this.create(); }
+};
 
-/*
-issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.STATUS, MAP(CIssue.ID, []))))(function (g) {
-   document.writeln(g.toHTML());
-});
-
-issues.select(SEQ(GROUP_BY(CIssue.STATUS, COUNT()), GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.STATUS, SEQ(COUNT(), MAP(CIssue.ID, []))))))(function (g) {
-   document.writeln(g.toHTML());
-});
-
-issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, COUNT()))(function (g) {
-  document.writeln(g.toHTML());
-}); 
-
-issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.ID, [])))(function (g) {
-  document.writeln(g.toHTML());
-}); 
-
-issues.select(GRID_BY(CIssue.OWNER, CIssue.STATUS, MAP(CIssue.SUMMARY, [])))(function (g) {
-  document.writeln(g.toHTML());
-}); 
-*/
- 
 var ItemCount = Model.create({
    extendsModel: 'CountExpr',
    methods: {
@@ -72,24 +40,6 @@ var ItemCount = Model.create({
      }
    }
 });
-
-var COL = {
-  put: function(v) { this.values.push(v); },
-  toHTML: function() { return this.values.join('<br/>'); },
-  create: function() { return { __proto__: this, values: [] }; },
-  clone: function() { return this.create(); }
-};
-
-var gridView = GridView.create({
-  dao: issues,
-  model: CIssue,
-  grid: GridByExpr.create({
-    xFunc: CIssue.STATUS,
-    yFunc: CIssue.OWNER,
-    acc: MAP(CIssueTileView.create(), COL.create())
-  })});
-
-// gridView.write(document);
 
 var idFormatter = {
   f: function(i) { return '<span class=idlist>' + i.id + '</span>'; }
@@ -120,6 +70,7 @@ var altView = AlternateView.create({
           grid: GridByExpr.create()
         });
 
+        // Pre-set default values.  TODO: persist settings
 	g.row.value.set(CIssue.OWNER);
 	g.col.value.set(CIssue.STATUS);
 	g.acc.value.set(g.accChoices[0][0]);
@@ -131,33 +82,6 @@ var altView = AlternateView.create({
 });
 
 altView.write(document);
-
   </script>
-
  </body>
 </html>
-
-<!--
-
-issues.select(GROUP_BY(CIssue.PRIORITY, COUNT()))(function (g) { console.log(g.groups); });
-
-issues.select(GROUP_BY(CIssue.OWNER, COUNT()))(function (g) { console.log(g.groups); });
-
-issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, [])))(function (g) { console.log(g.groups); });
-
-issues.select(GROUP_BY(CIssue.OWNER, GROUP_BY(CIssue.PRIORITY, COUNT())))(function (g) {
-  for ( var key in g.groups ) {
-    console.log('Key: ', key);
-    var value = g.groups[key];
-    for ( var key2 in value.groups ) {
-      var value2 = value.groups[key2];
-      console.log('  Key2: ', key2);
-      for ( var i = 0 ; i < value2.length ; i++ ) {
-        var issue = value2[i];
-        console.log('    issue: ', issue.id);
-       }
-     }
-  }
-});
-
--->
