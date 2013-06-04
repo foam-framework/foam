@@ -134,7 +134,7 @@ console.log('***********', calc.parse(calc.expr, stringPS('1+2+3 ')).value);
 //console.log('***********', calc.parse(calc.expr, ErrorReportingPS.create(stringPS('1+2+3 '))).value);
 
 var testparser = {
-  __proto__: binarygrammar,
+  __proto__: BinaryProtoGrammar,
 
   START: sym('hi'),
 
@@ -154,7 +154,7 @@ var testdata = new Uint8Array([0xba, 0x01, 0x02, 0x08, 0x20, 0xf2, 0xff, 0x1f, 0
 console.log('parsing binary data: ', testparser.parseArrayBuffer(testdata));
 
 
-var sample = "\n\n\n message Person // asdfasdf \n\n\n { /* required asdfasdf \n\n */ optional int32 id = 1; required string name = 2; optional string email = 3;}";
+var sample = "\n\n\n message Person // asdfasdf \n\n\n { /* required asdfasdf \n\n */ optional int32 id = 1; required string name = 2; optional CompoundEmail email = 3; }\n\n\n message CompoundEmail { optional string name = 1; optional string domain = 2; }";
 var sample2 = "enum PhoneType {MOBILE = 3; HOME = 0; WORK = 2; }";
 
 var sample3 = "message NumberMessage { required uint32 num = 1; }";
@@ -167,10 +167,12 @@ var protoparser = SkipGrammar.create(
             seq('/*', repeat0(not('*/', anyChar)), '*/'))));
 console.log('Parsing protobuf: ', protoparser.parse(ProtoBufGrammar.START, StringPS.create(sample)).value[0].toJSON());
 
-var NumberMessage = protoparser.parseString(sample3)[0];
-var numinstance = NumberMessage.create({ num: 1 });
-console.log('instance: ', numinstance.toJSON());
-var protodata = numinstance.toProtobuf();
-console.log('binary: ', protodata);
-var numinstance2 = NumberMessage.protoparser.parseArrayBuffer(protodata);
-console.log('parsed binary: ', numinstance2.toJSON());
+var protomodels = protoparser.parseString(sample);
+GLOBAL[protomodels[0].name] = protomodels[0];
+GLOBAL[protomodels[1].name] = protomodels[1];
+var instance = protomodels[0].create({ id: 12, name: 'adam', email: protomodels[1].create({ name: 'adamvy', domain: 'google.com' }) });
+console.log('instance: ', instance.toJSON());
+var binary = instance.toProtobuf();
+console.log('binary: ', binary);
+var parsed = protomodels[0].protoparser.parseArrayBuffer(binary);
+console.log('parsed binary: ', parsed.toJSON());
