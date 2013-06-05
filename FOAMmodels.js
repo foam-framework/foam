@@ -47,6 +47,7 @@ var files = [
   'DAOController',
   'cissues',
   'experimental/protobufparser',
+  'experimental/protobuf',
   // remove below here
   'models',
   'demos',

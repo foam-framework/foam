@@ -271,13 +271,14 @@ var Model = {
 	   hidden: true,
            defaultValueFn: function() {
              var parser = {
-               __proto__: binarygrammar,
+               __proto__: BinaryProtoGrammar,
 
                START: sym('model'),
 
                model: [],
              };
              for (var i = 0, prop; prop = this.properties[i]; i++) {
+               if (!prop.prototag) continue;
                var p;
                switch(prop.type) {
                  case 'uint32':
@@ -292,6 +293,10 @@ var Model = {
                  case 'string':
                  p = protostring(prop.prototag);
                  break;
+                 default:
+                 var model = GLOBAL[prop.type];
+                 if (!model) throw "Could not find model for " + prop.type;
+                 p = protomessage(prop.prototag, model.protoparser.export('START'));
                }
 
                parser[prop.name] = p;
