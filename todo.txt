@@ -26,6 +26,9 @@ Scroll-Wheel Support
 
 
 
-extendsModel doesn't set 'create' on subclass
-which is set in AbstractPrototype.init()
+Fix/Finish AltView CSS
+Fix reloading Models in modeller.html
+FOAM.create is not the same as Model.create because M.c doesn't FOAM-ify inner-objects
+
+experiment: have models be constructor functions
 

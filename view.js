@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+var DOM = {
+  setClass: function(e, className, opt_enabled) {
+    var oldClassName = e.className || '';
+    var enabled = opt_enabled === undefined ? true : opt_enabled;
+    e.className = oldClassName.replace(' ' + className, '').replace(className, '');
+    if ( enabled ) e.className = e.className + ' ' + className;
+  }
+};
+
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // TODO: model, document
@@ -2401,8 +2410,7 @@ var ActionButton =
    use isAvailable and isEnabled
    Buttons should be own View with enabled = true/false and own listeners, don't use <button> directly
  */
-var ActionBorder =
-{
+var ActionBorder = {
 
     /** @arg actions either a model or an array of actions **/
     create: function(actions, delegate) {

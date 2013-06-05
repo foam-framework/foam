@@ -980,7 +980,9 @@ var AlternateView = FOAM.create({
       toHTML: function() {
 	 var str  = [];
 	 var viewChoice = this.views[0];
+	 var buttons;
 
+         str.push('<div style="width:100%;margin-bottom:5px;"><div style="margin-top:28px;margin-right:7px;float:right">');
 	 for ( var i = 0 ; i < this.views.length ; i++ ) {
 	    var view = this.views[i];
             var listener = function(altView, view) { return function (e) {
@@ -988,12 +990,25 @@ var AlternateView = FOAM.create({
 
                altView.view = view;
 
+	       // This is a bit hackish, each element should listen on a 'selected' 
+	       // property and update themselves
+	       for ( var j = 0 ; j < buttons.length ; j++ ) {
+	         console.log($(buttons[j]));
+		 DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
+               }
+
+	       DOM.setClass(e.toElement, 'mode_button_active');
+
 	       return false;
 	    };}(this,view);
 //	    str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
 	    str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
 	    if ( view.label == this.selected ) viewChoice = view;
 	 }
+         str.push('</div></div>');
+	 buttons = this.callbacks_;
+	 this.buttons_ = buttons;
+
 	 str.push('<br/>');
 // console.log("viewChoice: ", viewChoice);
 
@@ -1008,6 +1023,10 @@ var AlternateView = FOAM.create({
       initHTML: function() {
          AbstractView.initHTML.call(this);
 	 this.installSubView(this.view || this.views[0]);
+
+	 DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
+	 DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
+	 DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
       }
 
   }

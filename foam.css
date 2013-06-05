@@ -463,3 +463,23 @@ border-radius: 3px;
 cursor: pointer;
 text-decoration: none;
 }
+
+.mode_button_active
+{
+background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left bottom #bbb;
+background: -webkit-gradient(linear,0% 40%,0% 70%,from(#e3e3e3),to(#f9f9f9));
+background: -moz-linear-gradient(top,#e3e3e3,#f9f9f9);
+border-color: #aaa;
+}
+
+.capsule_right {
+border-top-left-radius: 0;
+border-bottom-left-radius: 0;
+}
+.capsule_left {
+border-right: 0;
+border-top-right-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+TODO: add margin-top: 5px;

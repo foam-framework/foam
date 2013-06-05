@@ -1,5 +1,3 @@
-// https://www-googleapis-test.sandbox.google.com/discovery/v1/apis/projecthosting/v2/rest
-
 /*
 ID	Pri	M	Iteration	ReleaseBlock	Cr	Status	Owner	Summary	AllLabels	OS	Modified	ModifiedTimestamp
 225563	1	27		Beta	Internals-Media-Video	Assigned	s...@chromium.org	Daisy - HTML5 and Flash video playback has out of order frames	Arch-ARM, Cr-Internals-Media-Video, M-27, Mstone-27, OS-Chrome, Pri-1, ReleaseBlock-Beta, Type-Bug-Regression	Chrome	Apr 09, 2013 20:24:39	1365539079
@@ -126,7 +124,10 @@ var CIssueTileView = FOAM.create({
    ],
 
    methods: {
+     // Implement Sink
      put: function(issue) { this.issue = issue; },
+
+     // Implement Adapter
      f: function(issue) { this.issue = issue; return this.toHTML(); }
    },
 

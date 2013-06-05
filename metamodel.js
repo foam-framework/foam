@@ -268,6 +268,7 @@ var Model = {
            name: 'protoparser',
            label: 'ProtoParser',
            type: 'Grammar',
+	   hidden: true,
            defaultValueFn: function() {
              var parser = {
                __proto__: binarygrammar,
@@ -896,11 +897,13 @@ var Template = FOAM.create({
 });
 
 
+/*
 GLOBAL['Template'] = Template;
 GLOBAL['Property'] = Property;
 GLOBAL['Method'] = Method;
 GLOBAL['Action'] = Action;
 // GLOBAL['Topic'] = Topic;
+*/
 
 var UnitTest = FOAM.create({
      model_: 'Model',
