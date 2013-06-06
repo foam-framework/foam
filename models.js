@@ -950,6 +950,18 @@ var AlternateView = FOAM.create({
 	   help: 'View choices.'
        },
        {
+           name:  'dao',
+           label: 'DAO',
+           type: 'DAO',
+           postSet: function(dao) {
+	     // HACK: we should just update the dao of the current view,
+	     // but not all views currently redraw on DAO update.  Swtich
+	     // once the views are fixed/finished.
+	     if ( this.view ) this.installSubView(this.view);
+//	     if (this.view && this.view.model_.getProperty('dao')) this.view.dao = dao;
+           }
+       },
+       {
 	  name:  'view',
 	  label: 'View',
 	  postSet: function(viewChoice) {
@@ -963,12 +975,15 @@ var AlternateView = FOAM.create({
       init: function() {
 	 AbstractPrototype.init.call(this);
 	 this.value = new SimpleValue("");
-      },
+	 this.view = this.views[0];
+     },
 
       installSubView: function(viewChoice) {
 	 var view = typeof(viewChoice.view) === 'function' ?
 	   viewChoice.view(this.value.get().model_, this.value) :
 	   GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
+
+         if (view.model_.getProperty('dao')) view.dao = this.dao;
 
 	 this.element().innerHTML = view.toHTML();
 	 view.initHTML();

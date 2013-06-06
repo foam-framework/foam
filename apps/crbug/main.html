@@ -6,6 +6,7 @@
   <script language="javascript" src="../../bootFOAM.js"></script> 
   <script language="javascript" src="SchemaImport.js"></script>
   <script language="javascript" src="issue.js"></script> 
+  <script language="javascript" src="QueryParser.js"></script> 
   <script language="javascript" src="testdata.js"></script> 
   <title>Chrome Issues</title>
  </head>
@@ -15,17 +16,6 @@
 
 Search
   <script language="javascript">
-    var searchField = TextFieldView.create({
-      name: 'search',
-      displayWidth: 90
-    });
-    
-    searchField.write(document);
-
-    searchField.value.addListener(function(_,_,_,query) {
-      console.log('search: ', query);
-    });
-
     // var CIssueDAO = StorageDAO.create({model: CIssue});
     var CIssueDAO = issues;
 
@@ -54,13 +44,13 @@ Search
     };
 
     var altView = AlternateView.create({
+      dao: issues,
       views: [
         ViewChoice.create({
           label: 'List',
           view: function() {
 	    return TableView2.create({
               model: CIssue,
-              dao: issues
             });
           }
         }),
@@ -69,7 +59,6 @@ Search
           view: function() {
 	    var g = GridView.create({
               model: CIssue,
-              dao: issues,
               accChoices: [
                 [ MAP(CIssueTileView.create(), COL.create()), "Tiles"  ],
                 [ MAP(idFormatter, COL.create()),             "IDs"    ],
@@ -89,6 +78,22 @@ Search
       ]
     });
 
+    var searchField = TextFieldView.create({
+      name: 'search',
+      displayWidth: 90
+    });
+
+    /** Filter data with the supplied predicate, or select all data if null. **/
+    function search(p) {
+      altView.dao = p ? issues.where(p) : issues;
+    }
+
+    searchField.value.addListener(function(_,_,_,query) {
+      console.log('search: ', query);
+      search(QueryParser.parseString(query));
+    });
+
+    searchField.write(document);
     altView.write(document);
   </script>
  </body>
