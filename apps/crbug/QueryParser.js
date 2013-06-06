@@ -16,10 +16,6 @@ var QueryGrammar = {
 
 var QueryParser = {
   __proto__: QueryGrammar,
-
-  parseQuery: function(query) {
-    
-  }
 }.addActions({
   id: function(v) { return EQ(CIssue.ID, v); },
 
