@@ -305,7 +305,7 @@ var OrExpr = FOAM.create({
         if ( newArgs.length == 0 ) return TRUE;
         if ( newArgs.length == 1 ) return newArgs[0];
 
-        return updated ? AndExpr.create({args: newArgs}) : this;
+        return updated ? OrExpr.create({args: newArgs}) : this;
       },
 
       f: function(obj) {
@@ -1211,6 +1211,8 @@ function NOT(arg) {
 function EQ(arg1, arg2) {
   return EqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
+
+// TODO: add EQ_ic
 
 function NEQ(arg1, arg2) {
   return NeqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
