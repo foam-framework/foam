@@ -1,0 +1,95 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../../foam.css" />
+  <link rel="stylesheet" type="text/css" href="crbug.css" />
+  <script>var FOAM_BOOT_DIR="../../";</script>
+  <script language="javascript" src="../../bootFOAM.js"></script> 
+  <script language="javascript" src="SchemaImport.js"></script>
+  <script language="javascript" src="issue.js"></script> 
+  <script language="javascript" src="testdata.js"></script> 
+  <title>Chrome Issues</title>
+ </head>
+
+ <body>
+<img src="https://code.google.com/p/chromium/logo?cct=1370456375"><br/>
+
+Search
+  <script language="javascript">
+    var searchField = TextFieldView.create({
+      name: 'search',
+      displayWidth: 90
+    });
+    
+    searchField.write(document);
+
+    searchField.value.addListener(function(_,_,_,query) {
+      console.log('search: ', query);
+    });
+
+    // var CIssueDAO = StorageDAO.create({model: CIssue});
+    var CIssueDAO = issues;
+
+    // var stack = StackView.create();
+    // stack.write(document);
+    //FOAM.browse(CIssue);
+
+    var COL = {
+      create: function() { return { __proto__: this, values: [] }; },
+      put: function(v) { this.values.push(v); },
+      toHTML: function() { return this.values.join('<br/>'); },
+      clone: function() { return this.create(); }
+    };
+
+    var ItemCount = Model.create({
+       extendsModel: 'CountExpr',
+       methods: {
+         toString: function() {
+           return '<span class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
+         }
+       }
+    });
+
+    var idFormatter = {
+      f: function(i) { return '<span class=idlist>' + i.id + '</span>'; }
+    };
+
+    var altView = AlternateView.create({
+      views: [
+        ViewChoice.create({
+          label: 'List',
+          view: function() {
+	    return TableView2.create({
+              model: CIssue,
+              dao: issues
+            });
+          }
+        }),
+        ViewChoice.create({
+          label: 'Grid',
+          view: function() {
+	    var g = GridView.create({
+              model: CIssue,
+              dao: issues,
+              accChoices: [
+                [ MAP(CIssueTileView.create(), COL.create()), "Tiles"  ],
+                [ MAP(idFormatter, COL.create()),             "IDs"    ],
+                [ ItemCount.create(),                         "Counts" ]
+              ],
+              grid: GridByExpr.create()
+            });
+
+            // Pre-set default values.  TODO: persist settings
+	    g.row.value.set(CIssue.OWNER);
+	    g.col.value.set(CIssue.STATUS);
+	    g.acc.value.set(g.accChoices[0][0]);
+		    
+            return g;
+          }
+        })
+      ]
+    });
+
+    altView.write(document);
+  </script>
+ </body>
+</html>
