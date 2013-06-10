@@ -414,6 +414,24 @@ var Property = {
 	   help: 'The type of the property.'
        },
        {
+	   name:  'shortName',
+	   label: 'Short Name',
+	   type:  'String',
+           required: true,
+	   displayWidth: 10,
+           displayHeight: 1,
+	   defaultValue: '',
+	   help: 'A short alternate name to be used for compact encoding.'
+       },
+       {
+	   name: 'aliases',
+	   label: 'Aliases',
+	   type: 'Array[String]',
+	   view: 'StringArrayView',
+	   defaultValue: [],
+	   help: 'Alternate names for this property.'
+       },
+       {
 	  name:  'mode',
 	  label: 'Mode',
           type:  'String',
