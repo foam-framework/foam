@@ -302,7 +302,7 @@ var OrExpr = FOAM.create({
           }
         }
 
-        if ( newArgs.length == 0 ) return TRUE;
+        if ( newArgs.length == 0 ) return FALSE;
         if ( newArgs.length == 1 ) return newArgs[0];
 
         return updated ? OrExpr.create({args: newArgs}) : this;
