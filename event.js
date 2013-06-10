@@ -204,7 +204,7 @@ var EventService = {
 	   if ( t == this.WILDCARD )
 	      return this.notifyListeners_(topic, map, msg);
 
-	   count += this.pub_(map[t], topicIndex+1, topic, msg);
+	   if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
 	}
 
 	count += this.notifyListeners_(topic, map[null], msg);
