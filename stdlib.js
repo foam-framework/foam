@@ -15,8 +15,12 @@
  */
 
 
+String.prototype.equalsIC = function(other) {
+  return other && this.toUpperCase() === other.toUpperCase();
+};
+
 String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
+  return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
 // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
