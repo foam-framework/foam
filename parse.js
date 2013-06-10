@@ -75,21 +75,49 @@ function prepArgs(args) {
 }
 
 function range(c1, c2) {
-  return function(ps) {
+  var f = function(ps) {
     if ( ! ps.head ) return undefined;
     if ( ps.head < c1 || ps.head > c2 ) return undefined;
     return ps.tail.setValue(ps.head);
   };
+
+  f.toString = function() { return 'range(' + c1 + ', ' + c2 + ')'; };
+
+  return f;
 }
 
 function literal(str) {
-  return function(ps) {
+  var f = function(ps) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
       if ( str.charAt(i) !== ps.head ) return undefined;
     }
 
     return ps.setValue(str);
   };
+
+  f.toString = function() { return '"' + str + '"'; };
+
+  return f;
+}
+
+/**
+ * Case-insensitive String literal.
+ * Doesn't work for Unicode characters.
+ **/
+function literal_ic(str) {
+  str = str.toLowerCase();
+
+  var f = function(ps) {
+    for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
+      if ( ps.head && str.charAt(i) !== ps.head.toLowerCase() ) return undefined;
+    }
+
+    return ps.setValue(str);
+  };
+
+  f.toString = function() { return '"' + str + '"'; };
+
+  return f;
 }
 
 function anyChar(ps) {
@@ -111,23 +139,41 @@ function notChars(s) {
 function not(p, opt_else) {
   p = prep(p);
   opt_else = prep(opt_else);
-  return function(ps) {
+  var f = function(ps) {
     return this.parse(p,ps) ? undefined :
       opt_else ? this.parse(opt_else, ps) :
       ps;
   };
+
+  f.toString = function() { return 'not(' + p + ')'; };
+
+  return f;
 }
 
 function optional(p) {
   p = prep(p);
-  return function(ps) { return this.parse(p,ps) || ps.setValue(undefined); };
+  var f = function(ps) { return this.parse(p,ps) || ps.setValue(undefined); };
+
+  f.toString = function() { return 'optional(' + p + ')'; };
+
+  return f;
+}
+
+/** Parses if the delegate parser parses, but doesn't advance the pstream. **/
+function lookahead(p) {
+  p = prep(p);
+  var f = function(ps) { return this.parse(p,ps) && ps; };
+
+  f.toString = function() { return 'lookahead(' + p + ')'; };
+
+  return f;
 }
 
 function repeat(p, opt_delim, opt_min, opt_max) {
   p = prep(p);
   opt_delim = prep(opt_delim);
 
-  return function(ps) {
+  var f = function(ps) {
     var ret = [];
 
     for ( var i = 0 ; ! opt_max || i < opt_max ; i++ ) {
@@ -148,6 +194,10 @@ function repeat(p, opt_delim, opt_min, opt_max) {
 
     return ps.setValue(ret);
   };
+
+  f.toString = function() { return 'repeat(' + p + ', ' + opt_delim + ', ' + opt_min + ', ' + opt_max + ')'; };
+
+  return f;
 }
 
 function plus(p) { return repeat(p, undefined, 1); }
@@ -181,7 +231,7 @@ function repeat0(p) {
 function seq(/* vargs */) {
   var args = prepArgs(arguments);
 
-  return function(ps) {
+  var f = function(ps) {
     var ret = [];
 
     for ( var i = 0 ; i < args.length ; i++ ) {
@@ -191,6 +241,10 @@ function seq(/* vargs */) {
 
     return ps.setValue(ret);
   };
+
+  f.toString = function() { return 'seq(' + argsToArray(args).join(',') + ')'; };
+
+  return f;
 }
 
 function alt(/* vargs */) {
@@ -264,7 +318,7 @@ function alt(/* vargs */) {
 function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
-  return function(ps) {
+  var f = function(ps) {
     for ( var i = 0 ; i < args.length ; i++ ) {
       var res = this.parse(args[i], ps);
 
@@ -272,25 +326,39 @@ function alt(/* vargs */) {
     }
 
     return undefined;
-  };
+  }
+
+  f.toString = function() { return argsToArray(args).join(' | '); };
+
+  return f;
 }
 function parsedebug(p) {
   return function(ps) {
     debugger;
-    return this.parse(p, ps);
+    var old = DEBUG_PARSE;
+    DEBUG_PARSE = true;
+    var ret = this.parse(p, ps);
+    DEBUG_PARSE = old;
+    return ret;
   };
 }
 
 
 // alt = simpleAlt;
 
-function sym(name) { return function(ps) {
-  var p = this[name];
+function sym(name) {
+  var f = function(ps) {
+    var p = this[name];
 
-  if ( ! p ) console.log('PARSE ERROR: Unknown Symbol <' + name + '>');
+    if ( ! p ) console.log('PARSE ERROR: Unknown Symbol <' + name + '>');
 
-  return this.parse(p, ps);
-};}
+    return this.parse(p, ps);
+  };
+
+  f.toString = function() { return '<' + name + '>'; };
+
+  return f;
+}
 
 // This isn't any faster because V8 does the same thing already.
 // function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
@@ -317,7 +385,11 @@ var grammar = {
 //      console.log(new Array(pstream.pos).join(' '), pstream.head);
         console.log(pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
-    return parser.call(this, pstream);
+    var ret = parser.call(this, pstream);
+    if ( DEBUG_PARSE ) { 
+      console.log(parser + ' ==> ' + (!!ret));
+    }
+    return ret;
   },
 
   /** Export a symbol for use in another grammar or stand-alone. **/
@@ -332,6 +404,8 @@ var grammar = {
 
       return ps2 && ps2.setValue(action.call(this, ps2.value, ps.value));
     };
+
+    this[sym].toString = function() { return '<<' + sym + '>>'; };
   },
 
   addActions: function(map) {
