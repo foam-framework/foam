@@ -2268,6 +2268,11 @@ style = window.getComputedStyle(this.element().children[0]);
     tableToHTML: function() {
 	var model = this.model;
 
+	if ( this.callbacks_ ) {
+	  console.log('Warning: TableView2.tableToHTML called twice without initHTML');
+	  delete this['callbacks_'];
+        }
+
 	var str = [];
 	var props = [];
 
