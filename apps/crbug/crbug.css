@@ -33,3 +33,9 @@
   white-space: normal;
   overflow: auto;
 }
+
+.CIssueTable .label {
+  color: green!important;
+  font: 80% arial,sans-serif;
+  white-space: nowrap;
+}

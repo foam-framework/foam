@@ -85,6 +85,7 @@ Search
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     function search(p) {
+      if ( p ) console.log('SEARCH: ', p.toSQL());
       altView.dao = p ? issues.where(p) : issues;
     }
 

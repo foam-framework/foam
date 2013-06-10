@@ -1,5 +1,37 @@
-// today, me
-// 
+var ME = "s...@chromium.org";
+
+/**
+ * Find a property for the provided name.
+ * Checks in the following order:
+ *   1. property Name
+ *   2. list of propety Aliases
+ *   3. property shortName
+ **/
+function findPropertyForName(model, name) {
+  // Name
+  for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var prop = model.properties[i];
+    if ( name.equalsIC(prop.name) ) return prop;
+  }
+
+  // Aliases
+  for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var prop = model.properties[i];
+
+    for ( var j = 0 ; j < prop.aliases.length ; j++ )
+      if ( name.equalsIC(prop.aliases[j]) ) return prop;
+  }
+
+  // ShortName
+  for ( var i = 0 ; i < model.properties.length ; i++ ) {
+    var prop = model.properties[i];
+
+    if ( name.equalsIC(prop.shortName) ) return prop;
+  }
+
+  return undefined;
+}
+
 
 var QueryGrammar = {
   __proto__: grammar,
@@ -8,14 +40,16 @@ var QueryGrammar = {
 
   query: sym('or'),
 
-  or: repeat(sym('and'), 'OR ', 1),
+  or: repeat(sym('and'), literal_ic('OR '), 1),
 
-  and: repeat(sym('expr'), alt('AND', ' '), 1),
+  and: repeat(sym('expr'), alt(literal_ic('AND'), ' '), 1),
 
   expr: alt(
     sym('id'),
-    sym('substring'),
+    sym('has'),
     sym('equals'),
+    sym('before'),
+    sym('after'),
     sym('negate')
   ),
 
@@ -25,18 +59,43 @@ var QueryGrammar = {
 
   id: sym('number'),
 
-  substring: seq(sym('fieldname'), ':', sym('value')),
+  has: seq(literal_ic('has:'), sym('fieldname')),
 
-  equals: seq(sym('fieldname'), '=', sym('value')),
+  equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
-  fieldname: sym('identifier'),
+  labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
-  value: alt(sym('identifier'), sym('number')),
+  before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
 
-  identifier: plus(alt(range('a','z'), range('A', 'Z'))),
+  after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
+
+  // TODO: it would be better to traverse the Model and explicitly add 
+  //       each fieldname because this would give better auto-complete.
+  fieldname: plus(alt(range('a','z'), range('A', 'Z'))),
+
+  value: alt(
+    sym('me'),
+    sym('date'),
+    sym('string'),
+    sym('number')),
+
+  valueList: repeat(sym('value'), ',', 1),
+
+  me: seq(literal_ic('me'), lookahead(not(sym('char')))),
+
+  string: plus(sym('char')),
   
-  number: seq(repeat(range('0', '9'), null, 1))
-//  number: seq(optional('-'), repeat(range('0', '9'), null, 1))
+  number: seq(plus(range('0', '9'))),
+
+  date: alt(
+    sym('literal date'),
+    sym('relative date')),
+
+  'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')), 
+
+  'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
+
+  char: alt(range('a','z'), range('A', 'Z'), '-')
 
 };
 
@@ -46,7 +105,7 @@ var QueryParser = {
 }.addActions({
   id: function(v) { return EQ(CIssue.ID, v); },
 
-  or: function(v) { debugger; return OR.apply(OR, v); },
+  or: function(v) { return OR.apply(OR, v); },
 
   and: function(v) { return AND.apply(AND, v); },
 
@@ -54,34 +113,94 @@ var QueryParser = {
 
   number: function(v) { return  parseInt(v[0].join('')); },
 
-  fieldname: function(v) { return CIssue.getProperty(v); },
+  fieldname: function(v) { return findPropertyForName(CIssue, v.join('')); },
 
-  identifier: function(v) { return v.join(''); },
+  me: function() { return ME; },
 
   paren: function(v) { return v[1]; },
 
-  substring: function(v) {
-    return v[0].type == 'String' ?
-      CONTAINS_IC(v[0], v[2]) :
-      EQ(v[0], v[2]) ;
+  has: function(v) { return NEQ(v[1], ''); },
+
+  before: function(v) { return LT(v[0], v[2]); },
+
+  after: function(v) { return GT(v[0], v[2]); },
+
+  equals: function(v) {
+    // Always treat an OR'ed value list and let the partial evalulator
+    // simplify it when it isn't.
+
+    var or = OR();
+    var values = v[2];
+    for ( var i = 0 ; i < values.length ; i++ ) {
+      or.args.push(v[1] == ':' && v[0].type === 'String' ?
+        CONTAINS_IC(v[0], values[i]) :
+        EQ(v[0], values[i]));
+    }
+    return or;
   },
 
-  equals: function(v) { return EQ(v[0], v[2]); }
-//  equals: function(v) { return EQ_IC(v[0], v[2]); }
+  string: function(v) { return v.join(''); },
+
+  'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
+
+  'relative date': function(v) {
+    var d = new Date();
+    if ( v[1] ) d.setDate(d.getDate() - v[1][1]);
+    return d;
+  },
 
 });
 
+/*
+var superFieldName = QueryParser.fieldName;
+QueryParser.fieldName = function(ps) {
+  ps = superFieldName.parse.call(this, ps);
 
+  return ps && ps.getValue() && ps;
+};
 
+  labelMatch: parsedebug(function(v) {
+    var or = OR();
+    var values = v[2];
+    for ( var i = 0 ; i < values.length ; i++ ) {
+      or.args.push(EQ(CIssue.LABELS, v[0] + '-' + values[i]));
+    }
+    return or;
+  }),
+*/
 
 
 function test(query) {
-  console.log('query: ', query, ' -> ', QueryParser.parseString(query));
+  var res = QueryParser.parseString(query);
+  console.log('query: ', query, ' -> ', res && res.toSQL());
 }
 
 test('priority=0');
+test('priority=0,1,2');
 test('priority:0');
 test('1234567');
 test('status:Assigned');
 test('status:Assigned priority:0');
+test('Type:Bug');
+test('Iteration:29');
 test('');
+
+
+
+// label:Priority-High = Priority:High
+// blockeon:NNN
+// blocking:NNN
+// is:blocked
+// Priority:High,Medium = Priority:High OR Priority:Medium
+// is:starred
+// stars: 3  at least three users have starred
+// "contains text"
+// has:attachment
+// attachment:screenshot or attachment:png
+
+// consider
+//  < and > support (done)
+//  limit:# support
+//  format:table/grid/csv/xml/json
+//  orderBy:((-)field)+
+

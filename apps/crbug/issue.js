@@ -25,6 +25,7 @@ var CIssue = FOAM.create({
     properties: [
         {
             name: 'id',
+	    shortName: 'i',
             label: 'ID',
             type: 'Integer',
             required: true,
@@ -32,6 +33,8 @@ var CIssue = FOAM.create({
         },
         {
             name: 'priority',
+	    shortName: 'p',
+	    aliases: ['pr', 'pri', 'prior'],
             label: 'Pri',
             type: 'Integer',
             tableWidth: '35px',
@@ -39,6 +42,8 @@ var CIssue = FOAM.create({
         },
         {
             name: 'milestone',
+	    shortName: 'ms',
+	    aliases: ['mstone'],
             label: 'M',
             type: 'Integer',
             tableWidth: '29px',
@@ -46,12 +51,16 @@ var CIssue = FOAM.create({
         },
         {
             name: 'iteration',
+	    shortName: 'it',
+	    aliases: ['iter'],
             label: 'Iteration',
             type: 'String',
             tableWidth: '69px',
         },
         {
             name: 'releaseBlock',
+	    shortName: 'rb',
+	    aliases: ['rBlock', 'release'],
             label: 'Release Block',
             type: 'String',
             tableWidth: '103px',
@@ -59,6 +68,8 @@ var CIssue = FOAM.create({
         },
         {
             name: 'category',
+	    shortName: 'c',
+	    aliases: ['cat', 'cr'],
             label: 'Cr',
             tableWidth: '87px',
             type: 'String',
@@ -66,6 +77,8 @@ var CIssue = FOAM.create({
         },
         {
             name: 'status',
+	    shortName: 's',
+	    aliases: ['stat'],
             label: 'Status',
             type: 'String',
             tableWidth: '58px',
@@ -73,23 +86,36 @@ var CIssue = FOAM.create({
         },
         {
             name: 'owner',
+	    shortName: 'o',
             tableWidth: '181px',
             type: 'String'
         },
         {
             name: 'summary',
+	    shortName: 'su',
             label: 'Summary + Labels',
             type: 'String',
             tableWidth: '100%',
             tableFormatter: function(value, row) {
-              return value //+ " " + TODO(anicolao): add this back when labels
-              // are fully implemented
-                  //row.model_.getProperty("labels").tableFormatter(row.labels)
+              return value +
+                CIssue.LABELS.tableFormatter(row.labels, row);
             },
         },
         {
             name: 'labels',
-            type: 'String'
+	    shortName: 'l',
+	    aliases: ['label'],
+            type: 'String',
+	    tableFormatter: function(value, row) {
+              var sb = [];
+	      var a = value.split(',');
+	      for ( var i = 0 ; i < a.length ; i++ ) {
+	        sb.push(' <span class="label">');
+		sb.push(a[i]);
+		sb.push('</span>');
+              }
+	      return sb.join('');
+            }
         },
         {
             name: 'OS',
@@ -99,8 +125,10 @@ var CIssue = FOAM.create({
       {
          model_: 'Property',
          name: 'modified',
+	 aliases: ['mod'],
+	 shortName: 'm',
          label: 'Modified',
-         type: 'String',
+         type: 'Date',
          mode: 'read-write',
          required: true,
          displayWidth: 50,
@@ -111,6 +139,7 @@ var CIssue = FOAM.create({
            return typeof d === 'string' ? new Date(d) : d;
 	 },
          tableFormatter: function(d) {
+	   // TODO: put this somewhere reusable
            var now = new Date();
            var seconds = Math.floor((now - d)/1000);
            if (seconds < 60) return 'moments ago';
