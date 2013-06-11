@@ -45,14 +45,14 @@ var files = [
   'index',
   'StackView',
   'DAOController',
-  'cissues',
+  'apps/crbug/issue',
   'experimental/protobufparser',
   'experimental/protobuf',
   // remove below here
   'models',
   'demos',
   'oauth',
-  'email',
+  'apps/tomail/email',
   'turntable',
   'dragon'
 ];

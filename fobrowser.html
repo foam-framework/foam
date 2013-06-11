@@ -242,7 +242,8 @@ Object.defineProperty(byModel, 'updateChoice', {value: (function(newValue, oldVa
 
     table.view.selection.addListener(function (src, property, oldValue, newValue) {
        if ( ! newValue ) return;
-       var editView = DetailView2.create(null, new SimpleValue(table.view.selection.get().obj));
+       var obj = table.view.selection.get().obj.clone();
+       var editView = DetailView2.create(null, new SimpleValue(obj));
        editView.model = table.view.selection.get().obj.model_;
        edit.innerHTML = editView.toHTML();
        editView.initHTML();

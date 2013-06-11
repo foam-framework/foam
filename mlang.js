@@ -347,7 +347,7 @@ var NotExpr = FOAM.create({
         if ( GteExpr.isInstance(newArg) ) return LtExpr.create(newArg);
         if ( LteExpr.isInstance(newArg) ) return GtExpr.create(newArg);
 
-        return this.arg1 === newArg ? this : newArg;
+        return this.arg1 === newArg ? this : NOT(newArg);
       },
 
       f: function(obj) { return ! this.arg1.f(obj); }
@@ -460,7 +460,7 @@ var ContainsICExpr = FOAM.create({
          defaultValue: TRUE,
 	 preSet: function(oldValue) {
 	    return ConstantExpr.isInstance(oldValue) ?
-	       compile_(oldValue.f().toLowerCase()) :
+	       compile_(oldValue.f().toString().toLowerCase()) :
                oldValue;
 	 }
       }
