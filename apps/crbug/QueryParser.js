@@ -42,20 +42,21 @@ var QueryGrammar = {
 
   or: repeat(sym('and'), literal_ic('OR '), 1),
 
-  and: repeat(sym('expr'), alt(literal_ic('AND'), ' '), 1),
+  and: repeat(sym('expr'), alt(literal_ic('AND '), ' '), 1),
 
   expr: alt(
+    sym('negate'),
     sym('id'),
     sym('has'),
     sym('equals'),
+    sym('labelMatch'),
     sym('before'),
-    sym('after'),
-    sym('negate')
+    sym('after')
   ),
 
   paren: seq('(', sym('query'), ')'),
 
-  negate: seq('-', sym('query')),
+  negate: seq('-', sym('expr')),
 
   id: sym('number'),
 
@@ -63,7 +64,7 @@ var QueryGrammar = {
 
   equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
-  labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
+  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
   before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
 
@@ -83,24 +84,24 @@ var QueryGrammar = {
 
   me: seq(literal_ic('me'), lookahead(not(sym('char')))),
 
-  string: plus(sym('char')),
-  
-  number: seq(plus(range('0', '9'))),
-
   date: alt(
     sym('literal date'),
     sym('relative date')),
 
-  'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')), 
+    'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')), 
 
-  'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
+    'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
-  char: alt(range('a','z'), range('A', 'Z'), '-')
+  string: plus(sym('char')),
+  
+    char: alt(range('a','z'), range('A', 'Z'), '-'),
+
+  number: seq(plus(range('0', '9'))),
 
 };
 
 
-var QueryParser = {
+var KeyValueQueryParser = {
   __proto__: QueryGrammar,
 }.addActions({
   id: function(v) { return EQ(CIssue.ID, v); },
@@ -139,6 +140,15 @@ var QueryParser = {
     return or;
   },
 
+  labelMatch: function(v) {
+    var or = OR();
+    var values = v[2];
+    for ( var i = 0 ; i < values.length ; i++ ) {
+      or.args.push(CONTAINS_IC(CIssue.LABELS, v[0] + '-' + values[i]));
+    }
+    return or;
+  },
+
   string: function(v) { return v.join(''); },
 
   'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
@@ -151,26 +161,23 @@ var QueryParser = {
 
 });
 
-/*
-var superFieldName = QueryParser.fieldName;
-QueryParser.fieldName = function(ps) {
-  ps = superFieldName.parse.call(this, ps);
-
-  return ps && ps.getValue() && ps;
+// For 'labelMatch' to work, we need to cause the 
+// 'equals' to fail when the name doesn't exist.
+var superFieldname = KeyValueQueryParser.fieldname;
+KeyValueQueryParser.fieldname = function(ps) {
+  ps = superFieldname.call(this, ps);
+  return ps && ps.value && ps;
 };
 
-  labelMatch: parsedebug(function(v) {
-    var or = OR();
-    var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(EQ(CIssue.LABELS, v[0] + '-' + values[i]));
-    }
-    return or;
-  }),
-*/
+
+var QueryParser = {
+  __proto__: KeyValueQueryParser
+};
+
 
 
 function test(query) {
+  console.log('QueryParserTest: ' + query);
   var res = QueryParser.parseString(query);
   console.log('query: ', query, ' -> ', res && res.toSQL());
 }
@@ -181,9 +188,9 @@ test('priority:0');
 test('1234567');
 test('status:Assigned');
 test('status:Assigned priority:0');
-test('Type:Bug');
 test('Iteration:29');
-test('');
+test('Type:Bug');
+// test('');
 
 
 

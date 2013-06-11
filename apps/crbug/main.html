@@ -78,6 +78,17 @@ Search
       ]
     });
 
+    var searchChoice = ChoiceView.create({choices:[
+      ["",                     "All issues"],
+      ["-status=Closed",          "Open issues"],
+      ["owner=me -status=Closed", "Open and owned by me"],
+      ["-status=Closed reporter=me", "Open and reported by me"],
+      ["-status=Closed owner=me", "Open and starred by me"],
+      ["-status=Closed owner=me", "Open and comment by me"],
+      ["status:New",                     "New issues"],
+      ["statusOpen",           "Issues to verify"]
+    ]});
+
     var searchField = TextFieldView.create({
       name: 'search',
       displayWidth: 90
@@ -85,15 +96,24 @@ Search
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     function search(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL());
+      if ( p ) console.log('SEARCH: ', p.toSQL(), p.toJSON(), p);
       altView.dao = p ? issues.where(p) : issues;
     }
 
-    searchField.value.addListener(function(_,_,_,query) {
-      console.log('search: ', query);
-      search(QueryParser.parseString(query));
-    });
+    function performQuery() {
+debugger;
+      var q1 = searchChoice.value.get();
+      var q2 = searchField.value.get();
+      var p1 = QueryParser.parseString(q1) || TRUE;
+      var p2 = QueryParser.parseString(q2) || TRUE;
+      var p = AND(p1, p2).partialEval();
+      search(p);
+    }
 
+    searchChoice.value.addListener(performQuery);
+    searchField.value.addListener(performQuery);
+
+    searchChoice.write(document);
     searchField.write(document);
     altView.write(document);
   </script>
