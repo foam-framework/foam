@@ -1,3 +1,34 @@
+.title
+{
+  color: #666;
+  font-family: arial, sans-serif;
+  font-size: 39px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+}
+
+.subtitle
+{
+  color: #666;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+}
+
+.searchBar
+{
+color: black;
+font-family: arial, sans-serif;
+font-size: 13px;
+font-style: normal;
+font-variant: normal;
+font-weight: bold;
+}
+
+
 .CIssueTable
 {
   background: #fff;
@@ -38,4 +69,9 @@
   color: green!important;
   font: 80% arial,sans-serif;
   white-space: nowrap;
+}
+
+.altViewButtons {
+  margin-right: 7px;
+  margin-top: 24px;
 }

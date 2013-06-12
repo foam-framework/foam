@@ -8,14 +8,29 @@
   <script language="javascript" src="issue.js"></script> 
   <script language="javascript" src="QueryParser.js"></script> 
   <script language="javascript" src="testdata.js"></script> 
-  <title>Chrome Issues</title>
+  <title>Chromium Issues</title>
  </head>
 
  <body>
-<img src="https://code.google.com/p/chromium/logo?cct=1370456375"><br/>
-
-Search
-  <script language="javascript">
+<table>
+  <tr>
+  <td>
+    <img src="https://code.google.com/p/chromium/logo?cct=1370456375">
+  </td>
+  <td>
+    <span class="title">cr<sup><font size=-0.5>2</font></sup>bug</span>
+    <div class="subtitle">Chromium issue tracker in Chromium.</div>
+  </td>
+  <td width=150></td>
+  <td valign="bottom">
+  <div class="searchBar">
+  Search <span id="searchChoice"></span> for <span id="searchField"></span> 
+  </div>
+  </td>
+  </tr>
+</table>
+<hr color="#9BC0FA">
+<script language="javascript">
     // var CIssueDAO = StorageDAO.create({model: CIssue});
     var CIssueDAO = issues;
 
@@ -78,16 +93,33 @@ Search
       ]
     });
 
-    var searchChoice = ChoiceView.create({choices:[
-      ["",                     "All issues"],
-      ["-status=Closed",          "Open issues"],
-      ["owner=me -status=Closed", "Open and owned by me"],
-      ["-status=Closed reporter=me", "Open and reported by me"],
-      ["-status=Closed owner=me", "Open and starred by me"],
-      ["-status=Closed owner=me", "Open and comment by me"],
-      ["status:New",                     "New issues"],
-      ["statusOpen",           "Issues to verify"]
-    ]});
+  /*
+    From: google3/codesite/dit/constants.py
+  DEFAULT_CANNED_QUERIES = [
+    ('All issues', ''),
+    ('Open issues', 'is:open'),
+    ('Open and owned by me', 'is:open owner:me'),
+    ('Open and reported by me', 'is:open reporter:me'),
+    ('Open and starred by me', 'is:open is:starred'),
+    ('New issues', 'status:new'),
+    ('Issues to verify', 'status=fixed,done'),
+    ('Open with comment by me', 'is:open commentby:me'),
+    ]
+  */
+
+    var searchChoice = ChoiceView.create({
+      helpText: 'Search within:',
+      choices:[
+        ["",                            "&nbsp;All issues"],
+        ["-status=Closed",              "&nbsp;Open issues"],
+        ["owner=me -status=Closed",     "&nbsp;Open and owned by me"],
+        ["-status=Closed reporter=me",  "&nbsp;Open and reported by me"],
+        ["-status=Closed is:starred",   "&nbsp;Open and starred by me"],
+        ["-status=Closed commentby:me", "&nbsp;Open and comment by me"],
+        ["status=New",                  "&nbsp;New issues"],
+        ["status=Fixed,Done",           "&nbsp;Issues to verify"]
+      ]
+    });
 
     var searchField = TextFieldView.create({
       name: 'search',
@@ -96,25 +128,23 @@ Search
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     function search(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL(), p.toJSON(), p);
+      if ( p ) console.log('SEARCH: ', p.toSQL());
       altView.dao = p ? issues.where(p) : issues;
     }
 
     function performQuery() {
-debugger;
-      var q1 = searchChoice.value.get();
-      var q2 = searchField.value.get();
-      var p1 = QueryParser.parseString(q1) || TRUE;
-      var p2 = QueryParser.parseString(q2) || TRUE;
-      var p = AND(p1, p2).partialEval();
-      search(p);
+      search(AND(
+          QueryParser.parseString(searchChoice.value.get()) || TRUE,
+          QueryParser.parseString(searchField.value.get()) || TRUE
+        ).partialEval());
     }
 
     searchChoice.value.addListener(performQuery);
     searchField.value.addListener(performQuery);
 
-    searchChoice.write(document);
-    searchField.write(document);
+    searchChoice.insertInElement('searchChoice');
+    searchField.insertInElement('searchField');
+
     altView.write(document);
   </script>
  </body>
