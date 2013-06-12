@@ -91,7 +91,7 @@ var StackView = FOAM.create({
 	 return '<div class="stackview" style="width:100%;font-size:200%;font-family:sans-serif" id="' + this.getID() + '">' +
 	    '<div class="stackview_navbar"></div>' +
             '<div class="stackview_navactions">' + this.backButton.toHTML() + this.forwardButton.toHTML() + '</div>' +
-            '<table width=100% style="table-layout:fixed;"><tr><td width=53% valign=top><div class="stackview-viewarea"></div></td><td width=43% valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
+            '<table width=100% style="table-layout:fixed;"><tr><td width=100% notwidth2=53% valign=top><div class="stackview-viewarea"></div></td><td notwidth2=43% valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
       },
 
       setTopView: function(view, opt_label) {
@@ -141,7 +141,13 @@ var StackView = FOAM.create({
       },
 
       setPreview: function(view) {
-	 if ( ! view ) { this.previewAreaElement().innerHTML = ""; return; }
+	 if ( ! view ) {
+           this.viewAreaElement().parentNode.width = '100%';
+           this.previewAreaElement().innerHTML = '';
+	   return;
+	 }
+
+         this.viewAreaElement().parentNode.width = '';
 	 this.previewAreaElement().innerHTML = view.toHTML();
 	 view.initHTML();
       }
