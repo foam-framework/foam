@@ -42,7 +42,7 @@
 localStorage.removeItem('Models');
     // to re-load models into local storage run the follow from JS shell: localStorage.removeItem('models');
     var models = [
-//       Action,
+       Action,
        AlternateView,
        ApplicationPower,
        BatteryMeter,
@@ -61,18 +61,18 @@ localStorage.removeItem('Models');
        EyesCView,
        Graph,
        Issue,
-//       Method,
-//       Model,
+        Method,
+       Model,
        Mouse,
        NeedleMeter,
        PanelCView,
        Power,
-//       Property,
+       Property,
        Rectangle,
        Screen,
        StackView,
-        TextAreaView,
-//       Template,
+       TextAreaView,
+       // Template,
        Timer,
        UnitTest,
        System,
@@ -80,6 +80,7 @@ localStorage.removeItem('Models');
        EMail
     ];
 
+/*
 
     var ModelDAO = ModelDAO.create(this,StorageDAO.create({ model: Model }));
     ModelDAO.find("Model", {
@@ -96,6 +97,8 @@ localStorage.removeItem('Models');
         this.eof();
       }
     })
+*/
+var ModelDAO = models;
 
     var stack = StackView.create();
     stack.write(document);

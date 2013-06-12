@@ -785,7 +785,6 @@ var Graph = FOAM.create({
 	 }
       },
 
-
       paint: function()
       {
 	 var canvas = this.canvas;
@@ -885,7 +884,9 @@ var Graph = FOAM.create({
       watch: function(model, opt_maxNumValues) {
          var graph = this;
 
-         model.addListener(function() { this.addData(model.get(), opt_maxNumValues); });
+         model.addListener(function() {
+           graph.addData(model.get(), opt_maxNumValues);
+         });
       }
 
    }
@@ -958,7 +959,7 @@ var AlternateView = FOAM.create({
 	     // but not all views currently redraw on DAO update.  Swtich
 	     // once the views are fixed/finished.
 	     if ( this.view ) this.installSubView(this.view);
-//	     if (this.view && this.view.model_.getProperty('dao')) this.view.dao = dao;
+//	     if (this.view && this.view.model_ && this.view.model_.getProperty('dao')) this.view.dao = dao;
            }
        },
        {
@@ -983,7 +984,9 @@ var AlternateView = FOAM.create({
 	   viewChoice.view(this.value.get().model_, this.value) :
 	   GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
 
-         if (view.model_.getProperty('dao')) view.dao = this.dao;
+	 // TODO: some views are broken and don't have model_, remove
+	 // first guard when fixed.
+         if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
 
 	 this.element().innerHTML = view.toHTML();
 	 view.initHTML();
@@ -997,7 +1000,7 @@ var AlternateView = FOAM.create({
 	 var viewChoice = this.views[0];
 	 var buttons;
 
-         str.push('<div style="width:100%;margin-bottom:5px;"><div style="margin-top:28px;margin-right:7px;float:right">');
+         str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
 	 for ( var i = 0 ; i < this.views.length ; i++ ) {
 	    var view = this.views[i];
             var listener = function(altView, view) { return function (e) {
@@ -1037,7 +1040,8 @@ var AlternateView = FOAM.create({
 
       initHTML: function() {
          AbstractView.initHTML.call(this);
-	 this.installSubView(this.view || this.views[0]);
+	 if ( ! this.view ) this.view = this.views[0];
+	 this.installSubView(this.view);
 
 	 DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
 	 DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
