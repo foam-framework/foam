@@ -296,34 +296,34 @@ console.log('************************************', mmodels.length);
     
 //    var user = new (o.getPrototype())();
 
-    document.writeln("<table><tr>");
-    document.writeln("<td>");
+    document.writeln("<table width=1600><tr>");
+//    document.writeln("<td width=500>");
 
     DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
     var dv1 = DetailView.create(o.model_);
     dv1.set(o);
-    document.writeln("<td>");
+    document.writeln("<td valign=top width=500>");
     dv1.write(document);
     document.writeln("</td>");
 
 	/*
     var dv2 = DetailView.create(o.model_);
     dv2.set(o);
-    document.writeln("<td>");
+    document.writeln("<td width=500>");
     dv2.write(document);
     document.writeln("</td>");
 */
-    var dv3 = TextAreaView.create({displayHeight:30});
+    var dv3 = TextAreaView.create({displayHeight:120});
 	// dv3.setModel(o.model_);
-    document.writeln("<td valign=top>");
+    document.writeln("<td width=500 valign=top>");
     document.writeln(dv3.toHTML());
-//    document.writeln("</td>");
+    document.writeln("</td>");
     dv3.initHTML();
 
-    var dv4 = TextAreaView.create({displayHeight:30});
+    document.writeln("<td width=500 valign=top>");
+    var dv4 = TextAreaView.create({displayHeight:120});
     // dv4.setModel(o.model_);
-//    document.writeln("<td>");
     document.writeln(dv4.toHTML());
     document.writeln("</td>");
     dv4.initHTML();
