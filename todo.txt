@@ -32,3 +32,6 @@ FOAM.create is not the same as Model.create because M.c doesn't FOAM-ify inner-o
 
 experiment: have models be constructor functions
 
+
+UnitTest.test() doesn't appear to run on the real Object.
+Finish and switch to FunctionView2

@@ -858,7 +858,7 @@ var Method = FOAM.create({
            displayWidth: 80,
            displayHeight: 30,
 	   view: 'FunctionView',
-	   help: 'Help text associated with the entity.'
+	   help: 'Javascript code to implement this method.'
        }
    ]
 });
@@ -991,7 +991,7 @@ var UnitTest = FOAM.create({
            displayWidth: 80,
            displayHeight: 30,
 	   defaultValue: function() {},
-           view: 'FunctionView'
+           view: 'FunctionView2'
         }
      ],
 

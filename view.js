@@ -1394,7 +1394,7 @@ var FunctionView2 = FOAM.create({
    name:  'FunctionView',
    label: 'Function View',
 
-   extendsModel: 'TextFieldView',
+   extendsModel: 'TextAreaView',
 
    methods: {
     init: function(args) {
@@ -1406,7 +1406,7 @@ var FunctionView2 = FOAM.create({
     },
 
     toHTML: function() {
-       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.toHTML.call(this);
+       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.getPrototype().toHTML.call(this);
     },
 
      setError: function(err) {
@@ -1444,6 +1444,7 @@ var FunctionView =
     __proto__: TextAreaView,
 
     init: function(args) {
+debugger;
        TextAreaView.init.call(this, args);
 
        this.cols = args.displayWidth  || 80;
@@ -1456,11 +1457,13 @@ var FunctionView =
     },
 
     initHTML: function() {
+debugger;
        this.domValue = DomValue.create(this.element(), 'keyup', 'value');
 
 //       TextAreaView.initHTML.call(this);
        this.errorView.initHTML();
 
+       this.setValue(this.value);
        /*
        editAreaLoader.init({
          id : this.getID(),
@@ -1479,6 +1482,7 @@ var FunctionView =
     },
 
     setValue: function(value) {
+debugger;
 	Events.unlink(this.domValue, this.value);
 	this.value = value;
 
@@ -1489,10 +1493,12 @@ var FunctionView =
 	   this.domValue,
 	   // function->string
 	   function(f) {
+debugger;
 	      return f ? f.toString() : "";
 	   },
 	   // string->function
 	   function(str) {
+debugger;
 	      setError("");
 
 	      if ( ! str ) return null;
