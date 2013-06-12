@@ -51,7 +51,7 @@ p, h1, form, button{
     margin-bottom:8px;
 }
 
-.detailView .label{
+.detailView .propertyLabel {
     font-size:14px;
     display:block;
     font-weight:bold;
@@ -480,4 +480,9 @@ border-bottom-left-radius: 0;
 border-right: 0;
 border-top-right-radius: 0;
 border-bottom-right-radius: 0;
+}
+
+.altViewButtons {
+  margin-right: 17px;
+  float: right;
 }

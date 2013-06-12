@@ -933,6 +933,11 @@ var ChoiceView = FOAM.create({
 	 defaultValue: 'field'
       },
       {
+	 name:  'helpText',
+         type:  'String',
+	 defaultValue: undefined
+      },
+      {
          name: 'cssClass',
          type: 'String',
          defaultValue: 'foamChoiceView'
@@ -968,6 +973,12 @@ var ChoiceView = FOAM.create({
 
      updateHTML: function() {
        var out = [];
+
+       if ( this.helpText ) {
+         out.push('<option disabled="disabled">');
+	 out.push(this.helpText);
+	 out.push('</option>');
+       }
 
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
          var choice = this.choices[i];
@@ -1773,7 +1784,7 @@ var DetailView2 = {
          this.addChild(view);
 
          str += '<tr>';
-	 str += "<td class='label'>" + prop.label + "</td>";
+	 str += "<td class='propertyLabel'>" + prop.label + "</td>";
 	 str += '<td>';
 	 str += view.toHTML();
 	 str += '</td>';
