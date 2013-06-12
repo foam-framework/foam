@@ -491,6 +491,8 @@ var DAOUpdateController = FOAM.create({
 	 AbstractView.init.call(this);
 	 this.model = tmp;
 
+	 this.view2 = DetailView2.create();
+
 	 this.view = FOAM.create({
 		  model_: 'AlternateView',
 
@@ -499,7 +501,7 @@ var DAOUpdateController = FOAM.create({
                      {
 			model_: 'ViewChoice',
 			label:  'GUI',
-			view:   'DetailView'
+			view:   'DetailView2'
 		     },
                      {
 			model_: 'ViewChoice',
@@ -554,7 +556,8 @@ var DAOUpdateController = FOAM.create({
 //    __proto__: AbstractView,
 
 
-var DAOControllerView = Model.create({
+var DAOControllerView = FOAM.create({
+   model_: 'Model',
 
    extendsModel: 'AbstractView2',
 
