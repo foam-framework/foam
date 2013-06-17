@@ -1405,6 +1405,12 @@ var FunctionView2 = FOAM.create({
        this.errorView = TextFieldView.create({mode:'read-only'});
     },
 
+    initHTML: function() {
+      TextAreaView.getPrototype().initHTML.call(this);
+      
+      this.errorView.initHTML();
+    },
+
     toHTML: function() {
        return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.getPrototype().toHTML.call(this);
     },
@@ -1412,19 +1418,19 @@ var FunctionView2 = FOAM.create({
      setError: function(err) {
        if ( err ) console.log("Javascript Error: ", err);
 
-       this.errorView.getModel().set(err || "");
+       this.errorView.getValue().set(err || "");
      },
 
      textToValue: function(text) {
-       setError("");
+       this.setError('foobar');
 
        if ( ! text ) return null;
 
        try {
 	 return eval("(" + text + ")");
        } catch (x) {
-         console.log("JS Error: ", text);
-	 setError(x);
+         console.log("JS Error: ", x, text);
+	 this.setError(x);
        }
 
        return text;
@@ -1444,7 +1450,6 @@ var FunctionView =
     __proto__: TextAreaView,
 
     init: function(args) {
-debugger;
        TextAreaView.init.call(this, args);
 
        this.cols = args.displayWidth  || 80;
@@ -1457,7 +1462,6 @@ debugger;
     },
 
     initHTML: function() {
-debugger;
        this.domValue = DomValue.create(this.element(), 'keyup', 'value');
 
 //       TextAreaView.initHTML.call(this);
@@ -1482,7 +1486,6 @@ debugger;
     },
 
     setValue: function(value) {
-debugger;
 	Events.unlink(this.domValue, this.value);
 	this.value = value;
 
@@ -1493,12 +1496,10 @@ debugger;
 	   this.domValue,
 	   // function->string
 	   function(f) {
-debugger;
 	      return f ? f.toString() : "";
 	   },
 	   // string->function
 	   function(str) {
-debugger;
 	      setError("");
 
 	      if ( ! str ) return null;
@@ -1643,7 +1644,6 @@ var DetailView =
 	 if ( prop.hidden ) continue;
 
 	 var view = this.createView(prop);
-
 	 try {
 	    view.setValue(this.get().propertyValue[prop.name]);
    	 } catch (x) { }
@@ -1755,7 +1755,6 @@ var DetailView2 = {
          ! prop.view                   ? TextFieldView     :
          typeof prop.view === 'string' ? GLOBAL[prop.view] :
          prop.view ;
-
       return view.create(prop);
    },
 

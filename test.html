@@ -483,15 +483,15 @@ o = Model;
     var graph = Graph.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
     space.addChild(graph);
 
-    graph.watch(apollo.propertyValue('y'));
+    // graph.watch(apollo.propertyValue('y'));
 
     var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
-    eyes.watch(mars);	  
+    // eyes.watch(mars);	  
 
     var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
-    eyes2.watch(mouse);	  
+    // eyes2.watch(mouse);	  
 
     // todo: fix 
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);

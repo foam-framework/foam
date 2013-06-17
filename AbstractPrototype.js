@@ -289,7 +289,8 @@ console.log(i, k, v);
 
   copyFrom: function(src) {
     // Faster and doesn't copy default values from modelled objects.
-    if ( src && src.instance_ ) src = src.instance_;
+    // Doesn't work when src is modelled and has default values
+    // if ( src && src.instance_ ) src = src.instance_;
 
     // TODO: remove the 'this.model_' check when all classes modelled
     if ( src && this.model_ ) {

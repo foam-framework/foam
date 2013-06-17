@@ -324,7 +324,6 @@ var CView = FOAM.create({
       },
       {
 	 name:  'height',
-	 label: '',
 	 type:  'int',
 	 view:  'IntFieldView',
          postSet: function() { this.resizeParent(); },
