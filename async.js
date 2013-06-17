@@ -56,7 +56,7 @@ var atime = (function() {
   // Add a unique suffix to timer names in case multiple instances
   // of the same timing are active at once.
   var id = 1;
- 
+
   return function (str, afunc, opt_callback) {
     return function(ret) {
       var name = str + "-" + id++;
@@ -72,7 +72,7 @@ var atime = (function() {
       for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
       afunc.apply(this, args);
     };
-  }
+  };
 })();
 
 
@@ -81,7 +81,7 @@ function asleep(ms) {
   return function(ret) {
     var args = argsToArray(arguments);
     window.setTimeout(ret.bind(args.shift()), ms);
-  }
+  };
 }
 
 var ayield = asleep.bind(null, 0);
@@ -118,7 +118,7 @@ function aapply_(f, ret, args) {
 
 
 /**
- * A Binary Semaphore which only allows the delegate function to be 
+ * A Binary Semaphore which only allows the delegate function to be
  * executed by a single thread of execution at once.
  * Like Java's synchronized blocks.
  * @param opt_lock an empty map {} to be used as a lock
@@ -278,3 +278,27 @@ function apar(/* ... afuncs */) {
       fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
   };
 }
+
+var __JSONP_CALLBACKS__ = {};
+var ajsonp = (function() {
+  var nextID = 0;
+
+  return function(url, params) {
+    return function(ret) {
+      var id = 'c' + (nextID++);
+
+      __JSONP_CALLBACKS__[id] = function(data) {
+        delete __JSONP_CALLBACKS__[id];
+
+        console.log(id, arguments);
+        ret && ret.call(this, data);
+      };
+
+      var script = '<script type="text/javascript" src="' +
+        url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&') +
+        '"></script>';
+
+      document.write(script);
+    };
+  };
+})();

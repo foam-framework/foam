@@ -144,7 +144,7 @@ var CachingDAOOld = {
 
   create: function(cache, source) {
     // TODO: this should be moved to something like a "FutureDAO", which blocks until the delegate is set
-    
+
     var future = afuture();
 
     source.select(cache)(function() { future.set(cache.select); source.listen(cache);} );
@@ -247,7 +247,7 @@ var TimingDAO = {
 	delegate.select(sink, options)(function(s) {
 	  end(str);
 	  fut.set(s);
-	}); 
+	});
 	return fut.get;
       }
     };
@@ -1721,10 +1721,59 @@ var GDriveDAO = FOAM.create({
         for (var i = 0; i < response.items.length; i++) {
           sink && sink.put && sink.put(response.items[i]);
         }
-      }
+      };
       xhr.send();
     },
     find: function(key, sink) {
     }
   }
 });
+
+
+var RestDAO = FOAM.create({
+  model_: 'Model',
+
+  name: 'RestDAO',
+
+  properties: [
+    {
+      name: 'model',
+      label: 'Type of data stored in this DAO.'
+    },
+    {
+      name: 'url',
+      label: 'REST API URL.'
+    }
+  ],
+
+  methods: {
+    jsonToObj: function(json) {
+      return this.model.create(json);
+    },
+
+    put: function(value, sink) {
+    },
+    remove: function(query, sink) {
+    },
+    select: function(sink, options) {
+      var params = [
+        'maxResults=10'
+      ];
+
+      var fut = afuture();
+
+      ajsonp(this.url, params)(function(data) {
+        var items = data.items;
+        for ( var i = 0 ; i < items ; i++ ) {
+	  sink && sink.put && sink.put(this.jsonToObj(items[i]));
+	}
+        fut.set(sink);
+      });
+
+      return fut.get;
+    },
+    find: function(key, sink) {
+    }
+  }
+});
+
