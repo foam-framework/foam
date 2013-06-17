@@ -147,7 +147,7 @@ var StackView = FOAM.create({
 	   return;
 	 }
 
-         this.viewAreaElement().parentNode.width = '';
+         this.viewAreaElement().parentNode.width = '65%';
 	 this.previewAreaElement().innerHTML = view.toHTML();
 	 view.initHTML();
       }
