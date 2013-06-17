@@ -108,11 +108,15 @@ var CIssue = FOAM.create({
             type: 'String',
 	    tableFormatter: function(value, row) {
               var sb = [];
-	      var a = value.split(',');
+	      var labelToProperty = { Pri:'priority', M:'milestone', Cr:'category', Iteration:'iteration', ReleaseBlock:'releaseBlock', OS:'OS' }; 
+	      var a = value.split(', ');
 	      for ( var i = 0 ; i < a.length ; i++ ) {
-	        sb.push(' <span class="label">');
-		sb.push(a[i]);
-		sb.push('</span>');
+                // The the column is already being shown, then exclude it's label
+	        if ( row.model_.tableProperties.indexOf(labelToProperty[a[i].split('-')[0]]) == -1 ) {
+	          sb.push(' <span class="label">');
+		  sb.push(a[i]);
+		  sb.push('</span>');
+		}
               }
 	      return sb.join('');
             }

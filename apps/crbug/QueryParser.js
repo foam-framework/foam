@@ -181,7 +181,7 @@ function test(query) {
   var res = QueryParser.parseString(query);
   console.log('query: ', query, ' -> ', res && res.toSQL());
 }
-
+/*
 test('priority=0');
 test('priority=0,1,2');
 test('priority:0');
@@ -190,8 +190,8 @@ test('status:Assigned');
 test('status:Assigned priority:0');
 test('Iteration:29');
 test('Type:Bug');
-// test('');
-
+test('');
+*/
 
 
 // label:Priority-High = Priority:High
