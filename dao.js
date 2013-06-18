@@ -1760,7 +1760,7 @@ var RestDAO = FOAM.create({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      var params = [];
+      var params = ['sort=modified'];
 
       if ( options ) {
         if ( options.query ) {

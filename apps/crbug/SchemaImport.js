@@ -1203,7 +1203,7 @@ var IssueNetworkDAO = IssueRestDAO.create({
   model: CrIssue
 });
 
-IssueNetworkDAO = IssueNetworkDAO.limit(10);
+// IssueNetworkDAO = IssueNetworkDAO.limit(10);
 
 
 var IssueCommentNetworkDAO = RestDAO.create({
@@ -1225,9 +1225,11 @@ IssueCommentNetworkDAO.jsonToObj = function(json) {
 
 var FIVE_MINS = 10 * 60 * 1000;
 
+/*
 IssueNetworkDAO
   .where(GT(CrIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
   .limit(10)
   .select(console.log.json);
 
 IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
+*/

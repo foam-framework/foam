@@ -105,6 +105,10 @@ var DateProperty = Model.create({
 	   help: 'The FOAM type of this property.'
        },
        {
+	   name: 'displayWidth',
+	   defaultValue: 50
+       },
+       {
 	   name: 'javaType',
 	   label: 'Java Type',
 	   type: 'String',

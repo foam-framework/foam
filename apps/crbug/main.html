@@ -4,6 +4,7 @@
   <link rel="stylesheet" type="text/css" href="crbug.css" />
   <script>var FOAM_BOOT_DIR="../../";</script>
   <script language="javascript" src="../../bootFOAM.js"></script> 
+  <script language="javascript" src="SyncManager.js"></script> 
   <script language="javascript" src="SchemaImport.js"></script>
   <script language="javascript" src="issue.js"></script> 
   <script language="javascript" src="QueryParser.js"></script> 
@@ -159,6 +160,25 @@ IssueDAO = IssueDAO.limit(10);
 var dv = DetailView.create(CrIssue);
 dv.write(document);
 
+var localIssueDAO = [];
+var syncManager = SyncManager.create({
+  srcDAO: IssueNetworkDAO,
+  dstDAO: localIssueDAO,
+  lastModified: new Date(2013,01,01),
+  modifiedProperty: CrIssue.UPDATED
+});
+
+var syncView = ActionBorder.create(SyncManager, DetailView.create(SyncManager));
+document.writeln(syncView.toHTML());
+syncView.set(syncManager);
+syncView.initHTML();
+
+    var space = Canvas.create({width: 1300, height: 100, background:'#000'});
+    var graph = Graph.create({x:0,y:0,width:1300,height:100,axisColor:'white',data:[]});
+    space.addChild(graph);
+    space.write(document);
+    graph.watch(syncManager.propertyValue('lastBatchSize'));
+    syncManager.addListener(space.paint.bind(space));
   </script>
  </body>
 </html>

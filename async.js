@@ -295,11 +295,10 @@ var ajsonp = (function() {
         ret && ret.call(this, data);
       };
 
-      var script = '<script type="text/javascript" src="' +
-        url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&') +
-        '"></script>';
-
-      document.write(script);
+      var script = document.createElement('script');
+      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&');
+      script.onload = function() { /* TODO: remove */ };
+      document.body.appendChild(script);
     };
   };
 })();

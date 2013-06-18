@@ -38,3 +38,5 @@ Finish and switch to FunctionView2
 
 Allow view prototypes to be defined in the model.
 Support 'super' methods.
+
+Add 'units' support to DetailView.
