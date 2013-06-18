@@ -290,7 +290,8 @@ var ajsonp = (function() {
       __JSONP_CALLBACKS__[id] = function(data) {
         delete __JSONP_CALLBACKS__[id];
 
-        console.log(id, arguments);
+        console.log('JSONP Callback', id, data);
+
         ret && ret.call(this, data);
       };
 

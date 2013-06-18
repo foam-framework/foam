@@ -1732,6 +1732,7 @@ var GDriveDAO = FOAM.create({
 
 var RestDAO = FOAM.create({
   model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
   name: 'RestDAO',
 
@@ -1756,16 +1757,28 @@ var RestDAO = FOAM.create({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      var params = [
-        'maxResults=10'
-      ];
+      var params = [];
+
+      // format: 2013-06-17T21:46:19.000Z
+
+      if ( options ) {
+        if ( options.query ) {
+          if ( GtExpr.isInstance(options.query) ) {
+            params.push('updatedMin=' + Math.floor(options.query.arg2.f().getTime()/1000));
+          }
+        }
+
+        if ( options.limit ) {
+          params.push('maxResults=' + options.limit);
+        }
+      }
 
       var fut = afuture();
-
+      var self = this;
       ajsonp(this.url, params)(function(data) {
-        var items = data.items;
-        for ( var i = 0 ; i < items ; i++ ) {
-	  sink && sink.put && sink.put(this.jsonToObj(items[i]));
+        var items = data.items || [];
+        for ( var i = 0 ; i < items.length ; i++ ) {
+	  sink && sink.put && sink.put(self.jsonToObj(items[i]));
 	}
         fut.set(sink);
       });
