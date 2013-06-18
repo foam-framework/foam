@@ -48,6 +48,8 @@ var QueryGrammar = {
     sym('negate'),
     sym('id'),
     sym('has'),
+    sym('is'),
+    sym('stars'),
     sym('equals'),
     sym('labelMatch'),
     sym('before'),
@@ -62,8 +64,14 @@ var QueryGrammar = {
 
   has: seq(literal_ic('has:'), sym('fieldname')),
 
+  is: seq(literal_ic('is:'), sym('fieldname')),
+
+  // TODO: move to subclass
+  stars: seq(literal_ic('stars:'), sym('number')),
+
   equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
+  // TODO: move to subclass
   labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
   before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
@@ -121,6 +129,10 @@ var KeyValueQueryParser = {
   paren: function(v) { return v[1]; },
 
   has: function(v) { return NEQ(v[1], ''); },
+
+  is: function(v) { return EQ(v[1], TRUE); },
+
+  stars: function(v) { return GTE({f:function(i) {debugger; return i.stars.length;}, partialEval: function() {return this;}, outSQL: function(out) { out.push("stars > " + v[1]); }}, v[1]); },
 
   before: function(v) { return LT(v[0], v[2]); },
 

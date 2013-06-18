@@ -170,6 +170,17 @@ var CIssue = FOAM.create({
          },
          valueFactory: function() { return new Date(); }
       },
+      {
+         model_: 'BooleanProperty',
+         name: 'starred',
+         help: 'Whether the authenticated user has starred this issue.'
+      },
+      {
+         model_: 'IntegerProperty',
+         name: 'stars',
+         help: 'Number of stars this issue has.',
+         valueFactory: function() { return []; }
+      }
     ],
 
     methods: {
@@ -219,25 +230,3 @@ var CIssueTileView = FOAM.create({
      }
    ]
 });
-
-/*
-// Generate a Spreadsheet formula to convert exported CSV issues to JSON.
-
-var ss = '=concatenate("{model_: \'CIssue\', \", ';
-
-for ( var i = 0 ; i < CIssue.properties.length ; i++ ) {
-  var p = CIssue.properties[i];
-  if ( p.type === 'String' || p.type === 'Date' ) {
-    ss = ss + '"' + p.name + ': ", "\'", ' + String.fromCharCode(65+i) + '2' + ', "\'"';
-  } else {
-    ss = ss + '"' + p.name + ': ", ' + String.fromCharCode(65+i) + '2';
-  } 
-
-  ss = ss + ', ", ", ';
-}
-
-ss = ss + '"}")';
-
-console.log(ss);
-*/
-
