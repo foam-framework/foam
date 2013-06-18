@@ -1751,6 +1751,9 @@ var RestDAO = FOAM.create({
     jsonToObj: function(json) {
       return this.model.create(json);
     },
+    buildURL: function(options) {
+      return this.url;
+    },
 
     put: function(value, sink) {
     },
@@ -1758,8 +1761,6 @@ var RestDAO = FOAM.create({
     },
     select: function(sink, options) {
       var params = [];
-
-      // format: 2013-06-17T21:46:19.000Z
 
       if ( options ) {
         if ( options.query ) {
@@ -1775,7 +1776,7 @@ var RestDAO = FOAM.create({
 
       var fut = afuture();
       var self = this;
-      ajsonp(this.url, params)(function(data) {
+      ajsonp(this.buildURL(options), params)(function(data) {
         var items = data.items || [];
         for ( var i = 0 ; i < items.length ; i++ ) {
 	  sink && sink.put && sink.put(self.jsonToObj(items[i]));
