@@ -123,29 +123,35 @@ var SyncManager = FOAM.create({
       },
       sync: function() {
         var self = this;
+	var batchSize = this.batchSize;
 
 	this.isSyncing = true;
         this.syncStatus = 'syncing...';
 	this.srcDAO
-	  .limit(this.batchSize)
+	  .limit(batchSize)
           .where(GT(this.modifiedProperty, this.lastModified))
           .select([])(function(issues) {
             self.syncStatus = 'processing sync data';
 	    self.timesSynced++;
 	    self.lastBatchSize = issues.length;
-	    self.issuesSynced += issues.length;
-	    if ( issues.length ) {
-	      self.lastId = issues[issues.length-1].id;
-	      self.lastModified = new Date(issues[issues.length-1].updated.getTime()+1);
-	    }
 
-issues.select(console.log.json);
-	    issues.select(self.dstDAO);
+	    issues.select(console.log.json); // TODO: for debugging, remove
+	    issues.select(self.dstDAO)(function() {
+	      self.isSyncing = false;
+	      self.syncStatus = '';
 
-	    self.isSyncing = false;
-	    self.syncStatus = '';
+	      self.issuesSynced += issues.length;
 
-	    self.schedule(issues.length > 1 ? self.delay : self.syncInterval);
+	      if ( issues.length ) {
+	        var issue = issues[issues.length-1];
+	        self.lastId = issue.id;
+	        self.lastModified = new Date(issue.updated.getTime()+1);
+	      }
+
+	      self.schedule(issues.length == batchSize ?
+	        self.delay :
+ 		self.syncInterval);
+            });
           });
       },
       schedule: function(syncInterval) {

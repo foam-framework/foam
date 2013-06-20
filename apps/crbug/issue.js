@@ -1,7 +1,3 @@
-/*
-ID	Pri	M	Iteration	ReleaseBlock	Cr	Status	Owner	Summary	AllLabels	OS	Modified	ModifiedTimestamp
-225563	1	27		Beta	Internals-Media-Video	Assigned	s...@chromium.org	Daisy - HTML5 and Flash video playback has out of order frames	Arch-ARM, Cr-Internals-Media-Video, M-27, Mstone-27, OS-Chrome, Pri-1, ReleaseBlock-Beta, Type-Bug-Regression	Chrome	Apr 09, 2013 20:24:39	1365539079
-*/
 var CIssue = FOAM.create({
     model_: 'Model',
     label: 'CIssue',
@@ -42,7 +38,7 @@ var CIssue = FOAM.create({
         },
         {
             name: 'milestone',
-	    shortName: 'ms',
+	    shortName: 'm',
 	    aliases: ['mstone'],
             label: 'M',
             type: 'Integer',
@@ -126,11 +122,10 @@ var CIssue = FOAM.create({
             tableWidth: '61px',
             type: 'String'
         },
-      {
+        {
          model_: 'Property',
          name: 'modified',
-	 aliases: ['mod'],
-	 shortName: 'm',
+	 shortName: 'mod',
          label: 'Modified',
          type: 'Date',
          mode: 'read-write',
@@ -188,13 +183,12 @@ var CIssue = FOAM.create({
 });
 
 CIssue.properties.forEach(function(p) {
-    if (!p["tableFormatter"]) {
-      p["tableFormatter"] = function(v) {
-        if (('' + v).length) return v;
-        return '----';
-      };
-    }
-  });
+  if ( ! p["tableFormatter"] ) {
+    p["tableFormatter"] = function(v) {
+      return ('' + v).length ? v : '----';
+    };
+  }
+});
 
 var CIssueTileView = FOAM.create({
    model_: 'Model',

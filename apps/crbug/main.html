@@ -16,7 +16,7 @@
 <table>
   <tr>
   <td>
-    <img src="https://code.google.com/p/chromium/logo?cct=1370456375">
+    <img id="logo" src="https://code.google.com/p/chromium/logo?cct=1370456375">
   </td>
   <td>
     <span class="title">cr<sup><font size=-0.5>2</font></sup>bug</span>
@@ -173,12 +173,27 @@ document.writeln(syncView.toHTML());
 syncView.set(syncManager);
 syncView.initHTML();
 
-    var space = Canvas.create({width: 1300, height: 100, background:'#000'});
-    var graph = Graph.create({x:0,y:0,width:1300,height:100,axisColor:'white',data:[]});
-    space.addChild(graph);
-    space.write(document);
-    graph.watch(syncManager.propertyValue('lastBatchSize'));
-    syncManager.addListener(space.paint.bind(space));
+var space = Canvas.create({width: 1300, height: 100, background:'#000'});
+var graph = Graph.create({x:0,y:0,width:1300,height:100,axisColor:'white',data:[]});
+space.addChild(graph);
+space.write(document);
+syncManager.propertyValue('timesSynced').addListener(function() { graph.addData(syncManager.lastBatchSize); space.paint(); });
+
+var timer = Timer.create({});
+var logo = $('logo');
+syncManager.propertyValue('isSyncing').addListener(function() {
+  if ( syncManager.isSyncing ) {
+    timer.start();
+  } else {
+    timer.stop();
+  }
+});
+
+logo.onclick = syncManager.forceSync.bind(syncManager);
+Events.dynamic(function() {
+  logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
+});
+
   </script>
  </body>
 </html>
