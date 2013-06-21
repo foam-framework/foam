@@ -97,6 +97,16 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
+Object.defineProperty(Array.prototype, 'intern', {
+  value: function() {
+    for ( var i = 0 ; i < this.length ; i++ )
+      if ( this[i].intern ) this[i] = this[i].intern();
+
+    return this;
+  }
+});
+
+
 Object.defineProperty(Array.prototype, 'reduce', {
   value: function(comparator, arr) {
     compare = toCompare(comparator);
