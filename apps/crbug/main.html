@@ -177,12 +177,14 @@ var space = Canvas.create({width: 1300, height: 100, background:'#000'});
 var graph = Graph.create({x:0,y:0,width:1300,height:100,axisColor:'white',data:[]});
 space.addChild(graph);
 space.write(document);
-syncManager.propertyValue('timesSynced').addListener(function() { graph.addData(syncManager.lastBatchSize); space.paint(); });
+// syncManager.propertyValue('timesSynced').addListener(function() { graph.addData(syncManager.lastBatchSize); space.paint(); });
+ syncManager.propertyValue('timesSynced').addListener(function() { graph.addData(syncManager.lastSyncDuration); space.paint(); });
 
 var timer = Timer.create({});
 var logo = $('logo');
 syncManager.propertyValue('isSyncing').addListener(function() {
   if ( syncManager.isSyncing ) {
+    timer.step();
     timer.start();
   } else {
     timer.stop();
@@ -190,6 +192,12 @@ syncManager.propertyValue('isSyncing').addListener(function() {
 });
 
 logo.onclick = syncManager.forceSync.bind(syncManager);
+
+/*
+timer.propertyValue('i').addListener(function() {
+  logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
+});
+*/
 Events.dynamic(function() {
   logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
 });

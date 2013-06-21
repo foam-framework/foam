@@ -41,12 +41,12 @@ var SyncManager = FOAM.create({
 	 label: 'Delay',
 	 help:  'Interval of time between repeating sync.',
 	 units: 's',
-	 defaultValue: 1
+	 defaultValue: 0
       },
       {
          model_: 'IntegerProperty',
 	 name:  'batchSize',
-	 defaultValue: 10
+	 defaultValue: 500
       },
       {
          model_: 'StringProperty',
@@ -55,8 +55,12 @@ var SyncManager = FOAM.create({
       },
       {
          model_: 'IntegerProperty',
-	 name:  'lastBatchSize',
-	 defaultValue: 10
+	 name:  'lastBatchSize'
+      },
+      {
+         model_: 'IntegerProperty',
+	 name:  'lastSyncDuration',
+	 units: 'ms'
       },
       {
          model_: 'BooleanProperty',
@@ -124,6 +128,7 @@ var SyncManager = FOAM.create({
       sync: function() {
         var self = this;
 	var batchSize = this.batchSize;
+	var startTime = Date.now();
 
 	this.isSyncing = true;
         this.syncStatus = 'syncing...';
@@ -135,9 +140,9 @@ var SyncManager = FOAM.create({
 	    self.timesSynced++;
 	    self.lastBatchSize = issues.length;
 
-	    issues.select(console.log.json); // TODO: for debugging, remove
+	    // issues.select(console.log.json); // TODO: for debugging, remove
 	    issues.select(self.dstDAO)(function() {
-	      self.isSyncing = false;
+	      self.lastSyncDuration = Date.now() - startTime;
 	      self.syncStatus = '';
 
 	      self.issuesSynced += issues.length;
@@ -145,10 +150,15 @@ var SyncManager = FOAM.create({
 	      if ( issues.length ) {
 	        var issue = issues[issues.length-1];
 	        self.lastId = issue.id;
-	        self.lastModified = new Date(issue.updated.getTime()+1);
+	        self.lastModified = new Date(
+		  Math.max(
+		    self.lastModified.getTime() + 1000,
+		    issue.updated.getTime()));
 	      }
 
-	      self.schedule(issues.length == batchSize ?
+	      self.isSyncing = false;
+
+	      self.schedule(issues.length ?
 	        self.delay :
  		self.syncInterval);
             });

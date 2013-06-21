@@ -1188,10 +1188,21 @@ var IssueRestDAO = FOAM.create({
       // Adapt IssuePerson types to just Strings
       if ( json.cc ) {
         for ( var i = 0 ; i < json.cc.length ; i++ )
-	  json.cc[i] = json.cc[i].name;
+	  json.cc[i] = json.cc[i].name.intern();
       }
-      if ( json.owner ) json.owner = json.owner.name;
-      if ( json.author ) json.author = json.author.name;
+      if ( json.owner ) json.owner = json.owner.name.intern();
+      if ( json.author ) json.author = json.author.name.intern();
+
+      if ( json.mergedInto ) json.mergedInto = json.mergedInto.issueId;
+      json.state = json.state.intern();
+      json.status = json.status.intern();
+      if ( json.summary == json.title ) json.summary = json.title;
+      delete json['kind'];
+      delete json['projectId'];
+      if ( json.labels ) json.labels = json.labels.intern();
+      if ( json.closed ) json.closed = new Date(json.closed).getTime()/1000;
+      if ( json.updated ) json.updated = new Date(new Date(json.updated).getTime());
+      if ( json.published ) json.published = new Date(json.published).getTime()/1000;
 
       return this.model.create(json);
     }
