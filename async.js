@@ -215,7 +215,7 @@ Function.prototype.ao = function(f2) {
   return function(ret) {
     var args = argsToArray(arguments);
     args.unshift(f1.bind(this, ret));
-    f2.apply(null, args);
+    f2.apply(this, args);
   };
 };
 
@@ -290,14 +290,16 @@ var ajsonp = (function() {
       __JSONP_CALLBACKS__[id] = function(data) {
         delete __JSONP_CALLBACKS__[id];
 
-        console.log('JSONP Callback', id, data);
+        // console.log('JSONP Callback', id, data);
 
         ret && ret.call(this, data);
       };
 
       var script = document.createElement('script');
       script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&');
-      script.onload = function() { /* TODO: remove */ };
+      script.onload = function() {
+        document.body.removeChild(this);
+      };
       document.body.appendChild(script);
     };
   };
