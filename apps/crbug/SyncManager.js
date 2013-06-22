@@ -87,7 +87,6 @@ var SyncManager = FOAM.create({
 	 label: 'Start',
 	 help:  'Start the timer.',
 
-	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return ! this.enabled; },
 	 action:      function() { this.enabled = true; this.sync(); }
       },
@@ -97,8 +96,6 @@ var SyncManager = FOAM.create({
 	 label: 'Force Sync',
 	 help:  'Force a sync.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled: function()   { return true; },
 	 action: function()      {
 	   clearTimeout(this.timer);
 	   this.sync();
@@ -110,7 +107,6 @@ var SyncManager = FOAM.create({
 	 label: 'Stop',
 	 help:  'Stop the timer.',
 
-	 isAvailable: function() { return true; },
 	 isEnabled: function()   { return this.enabled },
 	 action: function()      { this.enabled = false; clearTimeout(this.timer); }
       }

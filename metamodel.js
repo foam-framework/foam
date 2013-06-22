@@ -745,7 +745,7 @@ var Action = FOAM.create({
 	   displayWidth: 70,
            displayHeight: 3,
 	   view: 'FunctionView',
-	   defaultValue: '',
+	   defaultValue: function() { return true; },
 	   help: 'Function to determine if action is available.'
        },
        {
