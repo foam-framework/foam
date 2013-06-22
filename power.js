@@ -32,7 +32,6 @@ var ApplicationPower = Model.create({
 	 name:  'name',
 	 label: 'Application Name',
 	 type:  'String',
-	 displayWidth: 30,
 	 help:  'The name of the application.',
 	 defaultValue: ""
       },
@@ -173,14 +172,12 @@ var CloseApp = Model.create({
 	 name:  'name',
 	 label: 'Application Name',
 	 type:  'String',
-	 displayWidth: 30,
 	 help:  'The name of the application.',
 	 defaultValue: ""
       },
       {
 	 name:  'image',
 	 type:  'image',
-	 displayWidth: 30,
 	 help:  'The application\'s image.',
 	 defaultValue: ""
       },
@@ -282,7 +279,6 @@ var Screen = Model.create({
 	 name:  'name',
 	 label: 'Application Name',
 	 type:  'String',
-	 displayWidth: 30,
 	 help:  'The name of the application.',
 	 defaultValue: "Dim Screen"
       },
@@ -595,7 +591,6 @@ var NeedleMeter = Model.create({
      {
 	 name:  'label',
 	 type:  'String',
-	 displayWidth: 30,
 	 help:  'The label to appear on the meter.',
 	 defaultValue: ""
      },

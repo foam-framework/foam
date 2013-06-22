@@ -32,7 +32,6 @@ var Feature = FOAM.create({
    model_: 'Model',
 
    name: 'Feature',
-   label: 'Feature',
    plural:'Features',
    help:  "A feature of a Model.",
 
@@ -49,21 +48,16 @@ var Feature = FOAM.create({
     properties: [
        {
 	  name:  'model',
-	  label: 'Model',
           type:  'String',
        },
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
-	   displayWidth: 30,
-           displayHeight: 1,
 	   defaultValue: '',
 	   help: 'The coding identifier for the property.'
        },
        {
 	   name: 'type',
-	   label: 'Type',
 	   type: 'String',
            required: true,
 	   view: {
@@ -81,7 +75,6 @@ var Feature = FOAM.create({
        },
        {
 	   name: 'label',
-	   label: 'Label',
 	   type: 'String',
            required: false,
 	   displayWidth: 70,

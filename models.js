@@ -860,7 +860,6 @@ var ViewChoice = FOAM.create({
 	   name: 'label',
 	   type: 'String',
 	   displayWidth: 20,
-           displayHeight: 1,
 	   defaultValue: '',
 	   help: "View's label."
        },
