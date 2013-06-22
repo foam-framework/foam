@@ -30,7 +30,6 @@ var Model = {
 
     name:  'Model',
     plural:'Models',
-    label: 'Model',
     help:  "Describes the attributes and properties of an entity.",
 
     tableProperties: [
@@ -44,7 +43,6 @@ var Model = {
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -54,16 +52,14 @@ var Model = {
        },
        {
 	   name: 'label',
-	   label: 'Label',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.capitalize(); },
+	   defaultValueFn: function() { return this.name.labelize(); },
 	   help: 'The display label for the entity.'
        },
        {
 	   name: 'extendsModel',
-	   label: 'Extends Model',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -72,7 +68,6 @@ var Model = {
        },
        {
 	   name: 'extendsPrototype',
-	   label: 'Extends Prototype',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -81,7 +76,6 @@ var Model = {
        },
        {
 	   name: 'plural',
-	   label: 'Plural',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -90,7 +84,6 @@ var Model = {
        },
        {
 	   name: 'version',
-	   label: 'Version',
 	   type: 'int',
            defaultValue: 1,
 	   help: 'Version number of model.'
@@ -107,7 +100,6 @@ var Model = {
        },
        {
 	   name: 'tableProperties',
-	   label: 'Table Properties',
 	   type: 'Array[String]',
 	   view: 'StringArrayView',
 	   defaultValue: [],
@@ -115,7 +107,6 @@ var Model = {
        },
        {
 	   name: 'properties',
-	   label: 'Properties',
 	   type: 'Array[Property]',
            subType: 'Property',
 	   view: 'ArrayView',
@@ -141,7 +132,6 @@ var Model = {
        },
        {
 	   name: 'actions',
-	   label: 'Actions',
 	   type: 'Array[Action]',
            subType: 'Action',
 	   view: 'ArrayView',
@@ -155,7 +145,6 @@ var Model = {
        },
        {
 	   name: 'methods',
-	   label: 'Methods',
 	   type: 'Array[Method]',
            subType: 'Method',
 	   view: 'ArrayView',
@@ -183,7 +172,6 @@ var Model = {
        },
        {
 	   name: 'listeners',
-	   label: 'Listeners',
 	   type: 'Array[Method]',
            subType: 'Method',
 	   view: 'ArrayView',
@@ -194,7 +182,6 @@ var Model = {
        /*
        {
 	   name: 'topics',
-	   label: 'Topics',
 	   type: 'Array[topic]',
            subType: 'Topic',
 	   view: 'ArrayView',
@@ -205,7 +192,6 @@ var Model = {
        */
        {
 	   name: 'templates',
-	   label: 'Templates',
 	   type: 'Array[Template]',
            subType: 'Template',
 	   view: 'ArrayView',
@@ -216,7 +202,6 @@ var Model = {
        },
        {
 	   name: 'models',
-	   label: 'Models',
 	   type: 'Array[Model]',
            subType: 'Model',
 	   view: 'ArrayView',
@@ -236,7 +221,6 @@ var Model = {
        },
        {
 	   name: 'issues',
-	   label: 'Issues',
 	   type: 'Array[Issue]',
            subType: 'Issue',
 	   view: 'ArrayView',
@@ -256,7 +240,6 @@ var Model = {
        },
        {
 	   name: 'notes',
-	   label: 'Notes',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 6,
@@ -348,7 +331,6 @@ var Property = {
 
     name:  'Property',
     plural:'Properties',
-    label: 'Property',
     help:  "Describes a properties of a modelled entity.",
 
     ids: [
@@ -366,7 +348,6 @@ var Property = {
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -376,17 +357,15 @@ var Property = {
        },
        {
 	   name: 'label',
-	   label: 'Label',
 	   type: 'String',
            required: false,
 	   displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.capitalize(); },
+	   defaultValueFn: function() { return this.name.labelize(); },
 	   help: 'The display label for the property.'
        },
        {
 	   name: 'type',
-	   label: 'Type',
 	   type: 'String',
            required: true,
 	   // todo: curry arguments
@@ -415,7 +394,6 @@ var Property = {
        },
        {
 	   name:  'shortName',
-	   label: 'Short Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 10,
@@ -425,7 +403,6 @@ var Property = {
        },
        {
 	   name: 'aliases',
-	   label: 'Aliases',
 	   type: 'Array[String]',
 	   view: 'StringArrayView',
 	   defaultValue: [],
@@ -433,7 +410,6 @@ var Property = {
        },
        {
 	  name:  'mode',
-	  label: 'Mode',
           type:  'String',
 	  defaultValue: 'read-write',
           view: {
@@ -452,7 +428,6 @@ var Property = {
        },
        {
 	   name: 'units',
-	   label: 'Units',
 	   type: 'String',
            required: true,
 	   displayWidth: 70,
@@ -462,7 +437,6 @@ var Property = {
        },
        {
 	   name: 'required',
-	   label: 'Required',
 	   type: 'Boolean',
 	   view: 'BooleanView',
 	   defaultValue: true,
@@ -470,7 +444,6 @@ var Property = {
        },
        {
 	   name: 'hidden',
-	   label: 'Hidden',
 	   type: 'Boolean',
 	   view: 'BooleanView',
 	   defaultValue: false,
@@ -478,7 +451,6 @@ var Property = {
        },
        {
 	   name: 'displayWidth',
-	   label: 'Display Width',
 	   type: 'int',
 	   displayWidth: 8,
            displayHeight: 1,
@@ -487,7 +459,6 @@ var Property = {
        },
        {
 	   name: 'displayHeight',
-	   label: 'Display Height',
 	   type: 'int',
 	   displayWidth: 8,
            displayHeight: 1,
@@ -496,14 +467,12 @@ var Property = {
        },
        {
 	   name: 'view',
-	   label: 'View',
 	   type: 'view',
 	   defaultValue: 'TextFieldView',
 	   help: 'View component for the property.'
        },
        {
 	   name: 'defaultValue',
-	   label: 'Default Value',
 	   type: 'String',
            required: false,
 	   displayWidth: 70,
@@ -525,7 +494,6 @@ var Property = {
        },
        {
 	   name: 'valueFactory',
-	   label: 'Value Factory',
 	   type: 'Function',
            required: false,
 	   displayWidth: 70,
@@ -537,7 +505,6 @@ var Property = {
        },
        {
 	   name: 'getter',
-	   label: 'Getter',
 	   type: 'Function',
            required: false,
 	   displayWidth: 70,
@@ -548,7 +515,6 @@ var Property = {
        },
        {
 	   name: 'preSet',
-	   label: 'Pre Set',
 	   type: 'Function',
            required: false,
 	   displayWidth: 70,
@@ -559,7 +525,6 @@ var Property = {
        },
        {
 	   name: 'postSet',
-	   label: 'Post Set',
 	   type: 'Function',
            required: false,
 	   displayWidth: 70,
@@ -570,7 +535,6 @@ var Property = {
        },
        {
 	   name: 'setter',
-	   label: 'Setter',
 	   type: 'Function',
            required: false,
 	   displayWidth: 70,
@@ -605,7 +569,6 @@ var Property = {
        },
        {
 	   name: 'tableWidth',
-	   label: 'Table Width',
 	   type: 'String',
            required: false,
 	   defaultValue: '',
@@ -694,7 +657,6 @@ var Action = FOAM.create({
     model_: 'Model',
 
    name: 'Action',
-   label: 'Action',
 
     tableProperties: [
       'name',
@@ -704,7 +666,6 @@ var Action = FOAM.create({
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -714,7 +675,6 @@ var Action = FOAM.create({
        },
        {
 	   name: 'label',
-	   label: 'Label',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -732,7 +692,6 @@ var Action = FOAM.create({
        },
        {
 	   name: 'default',
-	   label: 'Default',
 	   type: 'Boolean',
 	   view: 'BooleanView',
 	   defaultValue: false,
@@ -755,12 +714,11 @@ var Action = FOAM.create({
 	   displayWidth: 70,
            displayHeight: 3,
 	   view: 'FunctionView',
-	   defaultValue: '',
+	   defaultValue: function() { return true; },
 	   help: 'Function to determine if action is enabled.'
        },
        {
 	   name: 'action',
-	   label: 'Action',
 	   type: 'Function',
 	   displayWidth: 80,
            displayHeight: 20,
@@ -776,7 +734,6 @@ var Topic = FOAM.create({
     model_: 'Model',
 
    name: 'Topic',
-   label: 'Topic',
 
     tableProperties: [
       'name',
@@ -786,7 +743,6 @@ var Topic = FOAM.create({
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -800,7 +756,6 @@ var Topic = FOAM.create({
        },
        {
 	   name: 'description',
-	   label: 'Description',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -815,7 +770,6 @@ var Method = FOAM.create({
     model_: 'Model',
 
    name: 'Method',
-   label: 'Method',
 
     tableProperties: [
       'name',
@@ -825,7 +779,6 @@ var Method = FOAM.create({
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -835,7 +788,6 @@ var Method = FOAM.create({
        },
        {
 	   name: 'description',
-	   label: 'Description',
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
@@ -853,7 +805,6 @@ var Method = FOAM.create({
        },
        {
 	   name: 'code',
-	   label: 'Code',
 	   type: 'Function',
            displayWidth: 80,
            displayHeight: 30,
@@ -868,7 +819,6 @@ var Template = FOAM.create({
     model_: 'Model',
 
    name: 'Template',
-   label: 'Template',
 
     tableProperties: [
       'name', 'description'
@@ -877,7 +827,6 @@ var Template = FOAM.create({
     properties: [
        {
 	   name:  'name',
-	   label: 'Name',
 	   type:  'String',
            required: true,
 	   displayWidth: 30,
@@ -887,7 +836,6 @@ var Template = FOAM.create({
        },
        {
 	   name:  'description',
-	   label: 'Description',
 	   type:  'String',
            required: true,
 	   displayWidth: 70,
@@ -897,7 +845,6 @@ var Template = FOAM.create({
        },
        {
 	   name: 'template',
-	   label: 'Template',
 	   type: 'String',
 	   displayWidth: 180,
            displayHeight: 30,
@@ -908,7 +855,6 @@ var Template = FOAM.create({
        },
        {
 	   name: 'templates',
-	   label: 'Templates',
 	   type: 'Array[Template]',
            subType: 'Template',
 	   view: 'ArrayView',
@@ -931,7 +877,6 @@ GLOBAL['Action'] = Action;
 var UnitTest = FOAM.create({
      model_: 'Model',
      name: 'UnitTest',
-     label: 'Unit Test',
      plural: 'Unit Tests',
      tableProperties:
      [
@@ -942,7 +887,6 @@ var UnitTest = FOAM.create({
         {
            model_: 'Property',
            name: 'description',
-           label: 'Description',
            type: 'String',
            required: true,
            displayWidth: 70,
@@ -952,7 +896,6 @@ var UnitTest = FOAM.create({
         {
            model_: 'Property',
            name: 'passed',
-           label: 'Passed',
            type: 'Integer',
            required: true,
            displayWidth: 8,
@@ -963,7 +906,6 @@ var UnitTest = FOAM.create({
         {
            model_: 'Property',
            name: 'failed',
-           label: 'Failed',
            type: 'Integer',
            required: true,
            displayWidth: 8,
@@ -973,7 +915,6 @@ var UnitTest = FOAM.create({
         {
            model_: 'Property',
            name: 'results',
-           label: 'Results',
            type: 'String',
 	   mode: 'read-only',
            required: true,
@@ -999,7 +940,6 @@ var UnitTest = FOAM.create({
       {
          model_: 'Action',
 	 name:  'test',
-	 label: 'Test',
 	 help:  'Run the unit tests.',
 
 	 isAvailable: function() { return true; },
@@ -1049,7 +989,6 @@ var Issue = FOAM.create(
 {
      model_: 'Model',
      name: 'Issue',
-     label: 'Issue',
      plural: 'Issues',
      help: 'An issue describes a question, feature request, or defect.',
      ids: [
@@ -1075,7 +1014,6 @@ var Issue = FOAM.create(
         },
         {
 	   name: 'severity',
-	   label: 'Severity',
 	   view: {
 	      create: function() { return ChoiceView.create({choices: [
                  'Feature',
@@ -1089,7 +1027,6 @@ var Issue = FOAM.create(
        },
        {
 	   name: 'status',
-	   label: 'Status',
 	   type: 'String',
            required: true,
 	   view: {
@@ -1106,7 +1043,6 @@ var Issue = FOAM.create(
        {
            model_: 'Property',
            name: 'summary',
-           label: 'Summary',
            type: 'String',
            required: true,
            displayWidth: 70,
@@ -1116,7 +1052,6 @@ var Issue = FOAM.create(
        {
            model_: 'Property',
            name: 'created',
-           label: 'Created',
            type: 'DateTime',
            required: true,
            displayWidth: 50,
@@ -1127,7 +1062,6 @@ var Issue = FOAM.create(
        {
            model_: 'Property',
            name: 'createdBy',
-           label: 'Created By',
            type: 'String',
 	   defaultValue: 'kgr',
            required: true,
@@ -1138,7 +1072,6 @@ var Issue = FOAM.create(
        {
            model_: 'Property',
            name: 'assignedTo',
-           label: 'Assigned To',
            type: 'String',
 	   defaultValue: 'kgr',
            displayWidth: 30,
@@ -1148,7 +1081,6 @@ var Issue = FOAM.create(
        {
            model_: 'Property',
            name: 'notes',
-           label: 'Notes',
            displayWidth: 75,
            displayHeight: 20,
 	   view: 'TextAreaView',

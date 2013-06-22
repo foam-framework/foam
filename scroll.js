@@ -9,7 +9,6 @@ var ScrollCView = FOAM.create({
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true,
          postSet: function(newValue, oldValue) {
@@ -65,13 +64,11 @@ var ScrollCView = FOAM.create({
       },
       {
 	 name:  'handleColor',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: 'rgb(107,136,173)'
       },
       {
 	 name:  'borderColor',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: '#555'
       }
@@ -172,12 +169,10 @@ var ScrollBorder = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name:  'ScrollBorder',
-   label: 'Scroll Border',
 
    properties: [
        {
 	   name: 'view',
-	   label: 'View',
 	   type: 'view',
            postSet: function(view) {
              this.scrollbar.extent = this.view.rows;
@@ -185,7 +180,6 @@ var ScrollBorder = FOAM.create({
        },
        {
 	   name: 'scrollbar',
-	   label: 'Scrollbar',
 	   type: 'ScrollCView',
            valueFactory: function() {
              var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});

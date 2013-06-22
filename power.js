@@ -38,7 +38,6 @@ var ApplicationPower = Model.create({
       },
       {
 	 name: 'active',
-	 label: 'Active',
 	 type: 'Boolean',
 	 view: 'BooleanView',
 	 defaultValue: false,
@@ -46,7 +45,6 @@ var ApplicationPower = Model.create({
       },
       {
 	 name: 'state',
-	 label: 'State',
 	 type: 'String',
 	 // todo: curry arguments
 	 view: {
@@ -74,7 +72,6 @@ var Power = Model.create({
    properties: [
      {
 	 name:  'battery',
-	 label: 'Battery',
 	 type:  'float',
 	 view:  'FloatFieldView',
 	 help:  'Percentage of battery power remaining.',
@@ -83,7 +80,6 @@ var Power = Model.create({
       },
       {
 	 name:  'watts',
-	 label: 'Watts',
 	 type:  'float',
 	 view:  'FloatFieldView',
 	 help:  'Power drain.',
@@ -116,7 +112,6 @@ var Power = Model.create({
       },
       {
 	 name: 'USB',
-	 label: 'USB',
 	 type: 'float',
 	 view:  'FloatFieldView',
 	 defaultValue: 5,
@@ -124,7 +119,6 @@ var Power = Model.create({
       },
       {
 	 name: 'CPU',
-	 label: 'CPU',
 	 type: 'float',
 	 view: 'FloatFieldView',
 	 defaultValue: 10,
@@ -148,7 +142,6 @@ var Power = Model.create({
       },
       {
 	 name: 'applications',
-	 label: 'Applications',
 	 type: 'Array[ApplicationPower]',
          subType: 'ApplicationPower',
 	 view: 'ArrayView',
@@ -186,7 +179,6 @@ var CloseApp = Model.create({
       },
       {
 	 name:  'image',
-	 label: 'Image',
 	 type:  'image',
 	 displayWidth: 30,
 	 help:  'The application\'s image.',
@@ -194,7 +186,6 @@ var CloseApp = Model.create({
       },
       {
 	 name: 'enabled',
-	 label: 'Enabled',
 	 type: 'Boolean',
 	 view: 'BooleanView',
 	 defaultValue: true,
@@ -202,27 +193,25 @@ var CloseApp = Model.create({
       },
       {
 	 name: 'minDrain',
-	 label: 'Drain',
+	 label: 'Minimum Drain',
 	 type: 'float',
 	 defaultValue: '0',
 	 help: 'Average battery drain.'
       },
       {
 	 name: 'maxDrain',
-	 label: 'Drain',
+	 label: 'Maximum Drain',
 	 type: 'float',
 	 defaultValue: '0',
 	 help: 'Average battery drain.'
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 200
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 200
       }
@@ -287,7 +276,6 @@ var Screen = Model.create({
    extendsModel: 'PanelCView',
 
    name: 'Backlite',
-   label: 'Backlite',
 
    properties: [
       {
@@ -300,19 +288,16 @@ var Screen = Model.create({
       },
       {
 	 name:  'level',
-	 label: 'Level',
 	 type:  'int',
 	 defaultValue: 5
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 200
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 200
       }
@@ -383,12 +368,10 @@ var BatteryGraph = Model.create({
    extendsModel: 'Graph',
 
    name:  'BatteryGraph',
-   label: 'Battery Graph',
 
    properties: [
        {
 	   name: 'displayProjection',
-	   label: 'Display Projection',
 	   type: 'Boolean',
 	   view: 'BooleanView',
 	   defaultValue: true,
@@ -499,12 +482,10 @@ var BatteryMeter = Model.create({
    extendsModel: 'PanelCView',
 
    name: 'BatteryMeter',
-   label: 'Battery Meter',
 
    properties: [
      {
 	 name:  'battery',
-	 label: 'Battery',
 	 type:  'float',
 	 view:  'FloatFieldView',
 	 help:  'Percentage of battery power remaining.',
@@ -521,13 +502,11 @@ var BatteryMeter = Model.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 200
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 200
       }
@@ -611,12 +590,10 @@ var NeedleMeter = Model.create({
    extendsModel: 'PanelCView',
 
    name: 'NeedleMeter',
-   label: 'Needle Meter',
 
    properties: [
      {
 	 name:  'label',
-	 label: 'Label',
 	 type:  'String',
 	 displayWidth: 30,
 	 help:  'The label to appear on the meter.',
@@ -624,7 +601,6 @@ var NeedleMeter = Model.create({
      },
      {
 	 name:  'value',
-	 label: 'Value',
 	 type:  'float',
 	 view:  'FloatFieldView',
 	 help:  'Value.',
@@ -640,13 +616,11 @@ var NeedleMeter = Model.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 200
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 200
       }

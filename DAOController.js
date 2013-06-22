@@ -26,11 +26,9 @@ var DAOController = FOAM.create({
    properties: [
       {
 	 name:  'selection',
-	 label: 'Selection'
       },
       {
 	 name:  'model',
-	 label: 'Model'
       },
       {
 	 name:  'dao',
@@ -48,18 +46,13 @@ var DAOController = FOAM.create({
 	 label: 'Table/Detail',
 	 help:  'Toggle the display format between table and details views.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
 	 action:      function() {  }
       },*/
       {
          model_: 'Action',
 	 name:  'new',
-	 label: 'New',
 	 help:  'Create a new record.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
 	 action:      function() {
 	    var createView = ActionBorder.create(
 	       DAOCreateController,
@@ -78,23 +71,17 @@ var DAOController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'view',
-	 label: 'View',
 	 help:  'View the current record.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
 	 action:      function() { }
       },
        */
       {
          model_: 'Action',
 	 name:  'edit',
-	 label: 'Edit',
 	 help:  'Edit the current record.',
 	 default: 'true',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
 	 action:      function() {
 	    // Todo: fix, should already be connected
 	    this.selection = this.tableView.selection.get();
@@ -132,10 +119,8 @@ var DAOController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'delete',
-	 label: 'Delete',
 	 help:  'Delete the current record.',
 
-	 isAvailable: function() { return true; },
 	 isEnabled: function()   { return this.selected; },
 	 action: function()      {
 	    // Todo: fix, should already be connected
@@ -151,20 +136,14 @@ var DAOController = FOAM.create({
       }/*,
       {
 	 name:  'prev',
-	 label: 'Prev',
 	 help:  'Select the previous record.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled: function()   { return true; },
 	 action: function()      {  }
       },
       {
 	 name:  'next',
-	 label: 'Next',
 	 help:  'Select the next record.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled: function()   { return true; },
 	 action: function()      {  }
       }*/
 
@@ -291,8 +270,7 @@ var DAOCreateController = FOAM.create({
 	 label: 'New Object',
       },
       {
-	 name:  'model',
-	 label: 'Model',
+	 name:  'model'
       },
       {
 	 name:  'dao',
@@ -325,7 +303,6 @@ var DAOCreateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'cancel',
-	 label: 'Cancel',
 	 help:  'Cancel creation.',
 
 	 isAvailable: function() { return true; },
@@ -337,7 +314,6 @@ var DAOCreateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'help',
-	 label: 'Help',
 	 help:  'View help.',
 
 	 isAvailable: function() { return true; },
@@ -407,7 +383,6 @@ var DAOUpdateController = FOAM.create({
       },
       {
 	 name:  'model',
-	 label: 'Model',
       },
       {
 	 name:  'dao',
@@ -419,7 +394,6 @@ var DAOUpdateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'save',
-	 label: 'Save',
 	 help:  'Save updates.',
 
 	 isAvailable: function() { return true; },
@@ -441,7 +415,6 @@ var DAOUpdateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'copy',
-	 label: 'Copy',
 	 help:  'Create a new object which is a copy of this one.',
 
 	 isAvailable: function() { return true; },
@@ -452,7 +425,6 @@ var DAOUpdateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'cancel',
-	 label: 'Cancel',
 	 help:  'Cancel update.',
 
 	 isAvailable: function() { return true; },
@@ -464,7 +436,6 @@ var DAOUpdateController = FOAM.create({
       {
          model_: 'Action',
 	 name:  'help',
-	 label: 'Help',
 	 help:  'View help.',
 
 	 isAvailable: function() { return true; },

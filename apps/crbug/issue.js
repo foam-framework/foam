@@ -1,6 +1,5 @@
 var CIssue = FOAM.create({
     model_: 'Model',
-    label: 'CIssue',
     name: 'CIssue',
 
    tableProperties:
@@ -49,7 +48,6 @@ var CIssue = FOAM.create({
             name: 'iteration',
 	    shortName: 'it',
 	    aliases: ['iter'],
-            label: 'Iteration',
             type: 'String',
             tableWidth: '69px',
         },
@@ -57,7 +55,6 @@ var CIssue = FOAM.create({
             name: 'releaseBlock',
 	    shortName: 'rb',
 	    aliases: ['rBlock', 'release'],
-            label: 'Release Block',
             type: 'String',
             tableWidth: '103px',
             defaultValue: ''
@@ -75,7 +72,6 @@ var CIssue = FOAM.create({
             name: 'status',
 	    shortName: 's',
 	    aliases: ['stat'],
-            label: 'Status',
             type: 'String',
             tableWidth: '58px',
             defaultValue: ''
@@ -126,7 +122,6 @@ var CIssue = FOAM.create({
          model_: 'Property',
          name: 'modified',
 	 shortName: 'mod',
-         label: 'Modified',
          type: 'Date',
          mode: 'read-write',
          required: true,

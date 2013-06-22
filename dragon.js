@@ -19,12 +19,10 @@ var Dragon = Model.create({
   extendsModel: 'PanelCView',
 
   name:  'Dragon',
-  label: 'Dragon',
 
   properties: [
     {
       name:  'eyes',
-      label: 'Eyes',
       type:  'EyesCView',
       paint: true,
       valueFactory: function() {
@@ -33,7 +31,6 @@ var Dragon = Model.create({
     },
     {
       name:  'color',
-      label: 'Color',
       type:  'String',
       defaultValue: 'red'
     },
@@ -46,13 +43,11 @@ var Dragon = Model.create({
     },
     {
       name:  'width',
-      label: 'Width',
       type:  'int',
       defaultValue: 200
     },
     {
       name:  'height',
-      label: 'Height',
       type:  'int',
       defaultValue: 200
     },
@@ -63,8 +58,7 @@ var Dragon = Model.create({
       defaultValue: 'gray'
     },
     {
-      name:  'timer',
-      label: 'Timer'
+      name:  'timer'
     }
   ],
 

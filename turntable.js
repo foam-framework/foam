@@ -19,7 +19,6 @@ var Turntable = Model.create({
   extendsModel: 'PanelCView',
 
   name:  'Turntable',
-  label: 'Turntable',
 
   properties: [
     {
@@ -31,25 +30,21 @@ var Turntable = Model.create({
     },
     {
       name:  'width',
-      label: 'Width',
       type:  'int',
       defaultValue: 350
     },
     {
       name:  'height',
-      label: 'Height',
       type:  'int',
       defaultValue: 350
     },
     {
       name:  'x',
-      label: 'X',
       type:  'int',
       defaultValue: 170
     },
     {
       name:  'y',
-      label: 'Y',
       type:  'int',
       defaultValue: 170
     },
@@ -63,7 +58,6 @@ var Turntable = Model.create({
     },
     {
       name:  'internalTime',
-      label: 'Internal Time',
       preSet: function(newValue) {
         if ( this.active ) this.time = newValue;
         return newValue;
@@ -71,7 +65,6 @@ var Turntable = Model.create({
     },
     {
       name:  'time',
-      label: 'Time',
       preSet: function(newValue) {
         setTimeout(function(){
           if ( this.active )

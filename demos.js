@@ -26,7 +26,6 @@ var EyeCView = FOAM.create({
    properties: [
       {
 	 name:  'color',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: 'red'
       },
@@ -39,7 +38,6 @@ var EyeCView = FOAM.create({
       },
       {
 	 name:  'lid',
-	 label: 'Lid',
 	 type:  'Circle',
 	 paint: true,
 	 valueFactory: function() {
@@ -48,7 +46,6 @@ var EyeCView = FOAM.create({
       },
       {
 	 name:  'white',
-	 label: 'White',
 	 type:  'Circle',
 	 paint: true,
 	 valueFactory: function() {
@@ -57,7 +54,6 @@ var EyeCView = FOAM.create({
       },
       {
 	 name:  'pupil',
-	 label: 'Pupil',
 	 type:  'Circle',
 	 paint: true,
 	 valueFactory: function() {
@@ -152,13 +148,11 @@ var ClockView = FOAM.create({
    properties: [
       {
 	 name:  'color',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: 'yellow'
       },
       {
 	 name:  'lid',
-	 label: 'Lid',
 	 type:  'Circle',
 	 paint: true,
 	 valueFactory: function() {
@@ -167,7 +161,6 @@ var ClockView = FOAM.create({
       },
       {
 	 name:  'white',
-	 label: 'White',
 	 type:  'Circle',
 	 paint: true,
 	 valueFactory: function() {
@@ -190,7 +183,6 @@ var ClockView = FOAM.create({
       },
       {
 	 name:  'hourHand',
-	 label: 'Hour Hand',
 	 type:  'Hand',
 	 paint: true,
 	 valueFactory: function() {
@@ -199,7 +191,6 @@ var ClockView = FOAM.create({
       },
       {
 	 name:  'minuteHand',
-	 label: 'MinuteHand',
 	 type:  'Hand',
 	 paint: true,
 	 valueFactory: function() {
@@ -208,7 +199,6 @@ var ClockView = FOAM.create({
       },
       {
 	 name:  'secondHand',
-	 label: 'Second Hand',
 	 type:  'Hand',
 	 paint: true,
 	 valueFactory: function() {
@@ -257,14 +247,12 @@ var ClockView = FOAM.create({
         {
            model_: 'Property',
            name: 'color',
-           label: 'Color',
            type: 'String',
            defaultValue: 'blue'
         },
         {
            model_: 'Property',
            name: 'width',
-           label: 'Width',
            type: 'int',
            view: 'IntFieldView',
            defaultValue: 5
@@ -318,24 +306,20 @@ var System = FOAM.create({
    model_: 'Model',
 
    name:  'System',
-   label: 'System',
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'title',
-	 label: 'Title',
          type:  'String',
 	 defaultValue: ''
       },
       {
 	 name:  'color',
-	 label: 'Color',
          type:  'String',
 	 defaultValue: 'black'
       },
@@ -370,7 +354,6 @@ var System = FOAM.create({
       },
       {
          name: 'features',
-	 label: 'Features',
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 defaultValue: [],
@@ -378,7 +361,6 @@ var System = FOAM.create({
       },
       {
          name: 'entities',
-	 label: 'Entities',
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 defaultValue: [],
@@ -386,43 +368,36 @@ var System = FOAM.create({
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'selectedX',
-	 label: 'Selected X',
          type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'selectedY',
-	 label: 'Selected Y',
 	 type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'mouse',
-	 label: 'Mouse',
 	 type:  'Mouse',
 	 view: {
 	    create: function() { return DetailView.create(Mouse); }
@@ -434,7 +409,6 @@ var System = FOAM.create({
       {
          model_: 'Property',
          name: 'alpha',
-         label: 'Alpha',
          type: 'int',
          view: 'IntFieldView',
          defaultValue: 1
@@ -700,30 +674,25 @@ var Developer = FOAM.create({
    model_: 'Model',
 
    name:  'Developer',
-   label: 'Developer',
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'color',
-	 label: 'Color',
          type:  'String',
 	 defaultValue: 'white'
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 100
       }

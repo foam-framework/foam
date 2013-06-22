@@ -751,7 +751,6 @@ var SumExpr = FOAM.create({
    properties: [
       {
 	 name:  'sum',
-	 label: 'Sum',
 	 type:  'int',
 	 help:  'Sum of values.',
          defaultValue: 0
@@ -777,7 +776,6 @@ var MaxExpr = FOAM.create({
    properties: [
       {
 	 name:  'max',
-	 label: 'Max',
 	 type:  'int',
 	 help:  'Maximum value.',
          defaultValue: undefined
@@ -812,7 +810,6 @@ var MinExpr = FOAM.create({
    properties: [
       {
 	 name:  'min',
-	 label: 'Min',
 	 type:  'int',
 	 help:  'Minimum value.',
          defaultValue: undefined
@@ -847,7 +844,6 @@ var GroupByExpr = FOAM.create({
    properties: [
       {
 	 name:  'groups',
-	 label: 'Groups',
 	 type:  'Map[EXPR]',
 	 help:  'Groups.',
          valueFactory: function() { return {}; }
@@ -952,7 +948,6 @@ var GridByExpr = FOAM.create({
       },
       {
 	 name:  'rows',
-	 label: 'Rows',
 	 type:  'Map[EXPR]',
 	 help:  'Rows.',
          valueFactory: function() { return {}; }
@@ -1091,7 +1086,6 @@ var CountExpr = FOAM.create({
    properties: [
       {
 	 name:  'count',
-	 label: 'Count',
 	 type:  'int',
          defaultValue: 0
       }
@@ -1257,21 +1251,18 @@ var ExpandableGroupByExpr = FOAM.create({
    properties: [
       {
 	 name:  'groups',
-	 label: 'Groups',
 	 type:  'Map[EXPR]',
 	 help:  'Groups.',
          valueFactory: function() { return {}; }
       },
       {
 	 name:  'expanded',
-	 label: 'Expanded',
 	 type:  'Map',
 	 help:  'Expanded.',
          valueFactory: function() { return {}; }
       },
       {
 	 name:  'values',
-	 label: 'Values',
 	 type:  'Object',
 	 help:  'Values',
          valueFactory: function() { return []; }

@@ -18,23 +18,19 @@ var StackView = FOAM.create({
    model_: 'Model',
 
    name:  'StackView',
-   label: 'Stack View',
    extendsModel: 'AbstractView2',
 
    properties: [
       {
 	 name:  'stack',
-	 label: 'Stack',
 	 valueFactory: function() { return []; }
       },
       {
 	 name:  'redo',
-	 label: 'Redo',
 	 valueFactory: function() { return []; }
       },
       {
         name:   'backButton',
-        label: 'Back Button',
         type:  'ActionButton',
         valueFactory: function() {
           // TODO: What's the right value for the action button.
@@ -43,7 +39,6 @@ var StackView = FOAM.create({
       },
       {
         name:   'forwardButton',
-        label:  'Forward Button',
         type:   'ActionButton',
         valueFactory: function() {
           return ActionButton.create(StackView.actions[1], new SimpleValue(this));
@@ -58,7 +53,6 @@ var StackView = FOAM.create({
 	 label: '<',
 	 help:  'Go to previous view',
 
-	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return this.stack.length > 1; },
 	 action:      function() {
            if ( this.stack.length < 2 ) return;
@@ -73,7 +67,6 @@ var StackView = FOAM.create({
 	 label: '>',
 	 help:  'Undo the previous back.',
 
-	 isAvailable: function() { return true; },
 	 action:      function() {
            this.pushView(this.redo.pop());
          }

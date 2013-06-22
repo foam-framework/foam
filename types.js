@@ -7,7 +7,6 @@ var StringProperty = Model.create({
     properties: [
        {
 	   name: 'displayHeight',
-	   label: 'Display Height',
 	   type: 'int',
 	   displayWidth: 8,
 	   defaultValue: 1,
@@ -22,7 +21,6 @@ var StringProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 70,
 	   defaultValue: 'String',
@@ -59,7 +57,6 @@ var BooleanProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 70,
 	   defaultValue: 'bool',
@@ -110,7 +107,6 @@ var DateProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   defaultValue: 'Date',
 	   help: 'The Java type of this property.'
@@ -164,7 +160,6 @@ var IntegerProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 10,
 	   defaultValue: 'int',
@@ -205,7 +200,6 @@ var FloatProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 10,
 	   defaultValue: 'double',
@@ -253,7 +247,6 @@ var ArrayProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 10,
 	   defaultValueFn: function(p) { return p.subType + '[]'; },
@@ -301,7 +294,6 @@ var ReferenceProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 10,
 	   // TODO: should obtain primary-key type from subType
@@ -351,7 +343,6 @@ var StringArrayProperty = Model.create({
        },
        {
 	   name: 'javaType',
-	   label: 'Java Type',
 	   type: 'String',
 	   displayWidth: 10,
 	   defaultValue: 'String[]',

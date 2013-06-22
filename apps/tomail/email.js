@@ -23,7 +23,6 @@
 var Attachment = FOAM.create({
    model_: 'Model',
    name: 'Attachment',
-   label: 'Attachment',
    plural: 'Attachments',
    ids: [ 'filename' ],
    tableProperties:
@@ -46,7 +45,6 @@ var Attachment = FOAM.create({
       {
          model_: 'Property',
          name: 'type',
-         label: 'Type',
          type: 'String',
          displayWidth: 30,
          view: 'TextFieldView'
@@ -54,7 +52,6 @@ var Attachment = FOAM.create({
       {
          model_: 'Property',
          name: 'size',
-         label: 'Size',
          type: 'int',
          displayWidth: 10,
          view: 'TextFieldView'
@@ -62,7 +59,6 @@ var Attachment = FOAM.create({
       {
          model_: 'Property',
          name: 'position',
-         label: 'Position',
          type: 'int',
          displayWidth: 10,
          view: 'TextFieldView'
@@ -73,7 +69,6 @@ var Attachment = FOAM.create({
       {
          model_: 'Action',
          name: 'view',
-         label: 'View',
          help: 'View an attachment.',
          action: function () {
          }
@@ -85,7 +80,6 @@ var Attachment = FOAM.create({
 var EMail = FOAM.create({
    model_: 'Model',
    name: 'EMail',
-   label: 'EMail',
    plural: 'EMail',
    ids: [ 'id' ],
    tableProperties:
@@ -136,7 +130,6 @@ var EMail = FOAM.create({
       {
          model_: 'StringProperty',
          name: 'from',
-         label: 'From',
          mode: 'read-write',
          required: true,
          displayWidth: 60,
@@ -148,7 +141,6 @@ var EMail = FOAM.create({
       {
          model_: 'StringProperty',
          name: 'to',
-         label: 'To',
          required: true,
          displayWidth: 60,
          tableFormatter: function(t) {
@@ -158,7 +150,6 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'subject',
-         label: 'Subject',
          type: 'String',
          mode: 'read-write',
          required: true,
@@ -170,7 +161,6 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'labels',
-	 label: 'Labels',
 	 type: 'Array[String]',
 	 view: 'StringArrayView',
 	 valueFactory: function() { return []; },
@@ -210,7 +200,6 @@ var EMail = FOAM.create({
       {
          model_: 'Action',
          name: 'send',
-         label: 'Send',
          help: 'Send the email.',
          action: function () {
            EmailDAO.put(this);
@@ -220,7 +209,6 @@ var EMail = FOAM.create({
       {
          model_: 'Action',
          name: 'reply',
-         label: 'Reply',
          help: 'Reply to an email.',
          action: function () {
            var replyMail = EMail.create({
@@ -235,7 +223,6 @@ var EMail = FOAM.create({
       {
          model_: 'Action',
          name: 'forward',
-         label: 'Forward',
          help: 'Forward an email.',
          action: function () {
            var forwardedMail = EMail.create({
@@ -512,8 +499,8 @@ var MBOXLoader = {
 
 var EMailBody = FOAM.create({
     model_: 'Model',
-    label: 'EMailBody',
     name: 'EMailBody',
+    label: 'EMailBody',
 
     ids: [
         'offset',
@@ -523,19 +510,16 @@ var EMailBody = FOAM.create({
     properties: [
         {
             name: 'offset',
-            label: 'Offset',
             type: 'Integer',
             required: true
         },
         {
             name: 'size',
-            label: 'Size',
             type: 'Integer',
             required: true
         },
         {
             name: 'value',
-            label: 'Value',
             type: 'String',
             defaultValue: ''
         }

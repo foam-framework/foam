@@ -322,7 +322,6 @@ var AbstractDAO = FOAM.create({
    model_: 'Model',
 
    name: 'AbstractDAO',
-   label: 'Abstract DAO',
 
    properties: [
    ],
@@ -827,12 +826,10 @@ var StorageDAO = FOAM.create({
    extendsModel: 'AbstractDAO',
 
    name: 'StorageDAO',
-   label: 'Storage DAO',
 
    properties: [
       {
          name:  'model',
-         label: 'Model',
          type:  'Model',
          required: true
       },
@@ -901,12 +898,10 @@ var AbstractFileDAO = FOAM.create({
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
-  label: 'Abstract File DAO',
 
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       requred: true
     },
@@ -1040,7 +1035,6 @@ var JSONFileDAO = FOAM.create({
    properties: [
      {
        name:  'writeQueue',
-       label: 'Write Queue',
        type:  'Array[String]',
        defaultValueFn: function() {
          return [];
@@ -1103,14 +1097,12 @@ var JSONFileDAO = FOAM.create({
 var KeyCollector = FOAM.create({
   model_: 'Model',
   name: 'KeyCollector',
-  label: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
   properties: [
     {
       name: 'keys',
       type: 'Array',
-      label: 'Keys',
       valueFactory: function() { return []; }
     }
   ],
@@ -1129,20 +1121,17 @@ var KeyCollector = FOAM.create({
 var WorkerDAO = FOAM.create({
   model_: 'Model',
   name: 'WorkerDAO',
-  label: 'Worker DAO',
   extendsModel: 'AbstractDAO',
 
   properties: [
     {
       name: 'model',
       type: 'Model',
-      label: 'Model',
       required: true
     },
     {
       name: 'delegate',
       type: 'Worker',
-      label:'Delegate',
       help: 'The web-worker to delegate all actions to.',
       valueFactory: function() {
         var url = window.location.protocol + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
@@ -1173,7 +1162,7 @@ var WorkerDAO = FOAM.create({
     {
       name:  'nextRequest_',
       type:  'Integer',
-      label: 'NextRequest',
+      label: 'Next Request',
       help:  'Id of the next request to the delegate.',
       valueFactory: function() { return 1; }
     },
@@ -1327,13 +1316,12 @@ var WorkerDAO = FOAM.create({
 var WorkerDelegate = FOAM.create({
   model_: 'Model',
   name: 'WorkerDelegate',
-  label: 'Worker Delegate',
   help:  'The client side of a web-worker DAO',
 
   properties: [
     {
       name:  'dao',
-      label: 'dao',
+      label: 'DAO',
       type:  'DAO',
       required: 'true',
       postSet: function(val, oldVal) {
@@ -1481,7 +1469,6 @@ var OrderedCollectorSink = FOAM.create({
   model_: 'Model',
 
   name: 'OrderedCollectorSink',
-  label: 'OrderedCollectorSink',
 
   properties: [
     {
@@ -1511,7 +1498,6 @@ var CollectorSink = FOAM.create({
   model_: 'Model',
 
   name: 'CollectorSink',
-  label: 'CollectorSink',
 
   properties: [
     {
@@ -1537,12 +1523,10 @@ var PartitionDAO = FOAM.create({
   extendsModel: 'AbstractDAO',
 
   name: 'ParitionDAO',
-  label: 'PartitionDAO',
 
   properties: [
     {
       name: 'partitions',
-      label: 'Partitions',
       type: 'Array[DAO]',
       mode: "read-only",
       required: true
@@ -1648,13 +1632,11 @@ var PartitionDAO = FOAM.create({
 // TODO Why is this even a DAO, it literally only does find.
 var BlobReaderDAO = FOAM.create({
     model_: 'Model',
-    label: 'BlobReaderDAO',
     name: 'BlobReaderDAO',
 
     properties: [
         {
             name: 'blob',
-            label: 'Blob',
             type: 'Blob',
             required: true
         }

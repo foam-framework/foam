@@ -23,6 +23,12 @@ String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+String.prototype.labelize = function() {
+  return this.replace(/[a-z][A-Z]/g, function (a) {
+    return a.charAt(0) + ' ' + a.charAt(1);
+  }).capitalize();
+};
+
 // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
     return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();

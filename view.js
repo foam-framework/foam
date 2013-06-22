@@ -152,13 +152,11 @@ var AbstractView2 = FOAM.create({
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
 	 type:  'View',
          hidden: true
       },
       {
 	 name:  'children',
-	 label: 'Children',
          type:  'Array[View]',
 	 valueFactory: function() { return []; }
       },
@@ -329,7 +327,6 @@ var Canvas = Model.create({
    extendsModel: 'AbstractView2',
 
    name:  'Canvas',
-   label: 'Canvas',
 
    properties: [
       {
@@ -340,7 +337,6 @@ var Canvas = Model.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 100,
          postSet: function(width) {
@@ -349,7 +345,6 @@ var Canvas = Model.create({
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 100,
          postSet: function(height) {
@@ -417,20 +412,17 @@ var Canvas = Model.create({
 var circleModel = Model.create({
 
    name:  'Circle',
-   label: 'Circle',
 
    ids: [],
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'color',
-	 label: 'Color',
          type:  'String',
 	 defaultValue: 'white'
       },
@@ -442,25 +434,21 @@ var circleModel = Model.create({
       },
       {
 	 name:  'borderWidth',
-	 label: 'Border Width',
          type:  'int',
 	 defaultValue: 1
       },
       {
 	 name:  'alpha',
-	 label: 'Alpha',
 	 type:  'int',
 	 defaultValue: 1
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 100
       },
@@ -528,36 +516,30 @@ var ImageModel = FOAM.create({
    model_: 'Model',
 
    name:  'Image',
-   label: 'Image',
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'alpha',
-	 label: 'Alpha',
 	 type:  'int',
 	 defaultValue: 1
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'scale',
-	 label: 'Scale',
 	 type:  'int',
 	 defaultValue: 1
       },
@@ -596,42 +578,35 @@ var Rectangle = FOAM.create({
    model_: 'Model',
 
    name:  'Rectangle',
-   label: 'Rectangle',
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'color',
-	 label: 'Color',
          type:  'String',
 	 defaultValue: 'white',
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 1000
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 100
       }
@@ -653,18 +628,15 @@ var Label = FOAM.create({
    model_: 'Model',
 
    name:  'Label',
-   label: 'Label',
 
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'text',
-	 label: 'Text',
          type:  'String',
 	 defaultValue: ''
       },
@@ -676,25 +648,21 @@ var Label = FOAM.create({
       },
       {
 	 name:  'font',
-	 label: 'Font',
          type:  'String',
 	 defaultValue: ''
       },
       {
 	 name:  'color',
-	 label: 'Color',
          type:  'String',
 	 defaultValue: 'black'
       },
       {
 	 name:  'x',
-	 label: 'X',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 defaultValue: 100
       },
@@ -732,7 +700,6 @@ var Box = FOAM.create({
    extendsModel: 'Label',
 
    name:  'Box',
-   label: 'Box',
 
    properties: [
       {
@@ -755,13 +722,11 @@ var Box = FOAM.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
          type:  'int',
 	 defaultValue: 100
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 defaultValue: 100
       }
@@ -827,19 +792,16 @@ var TextFieldView = FOAM.create({
    properties: [
       {
 	 name:  'name',
-	 label: 'Name',
          type:  'String',
 	 defaultValue: 'field'
       },
       {
 	 name:  'displayWidth',
-	 label: 'Display Width',
          type:  'int',
 	 defaultValue: 30
       },
       {
 	 name:  'mode',
-	 label: 'Mode',
          type:  'String',
 	 defaultValue: 'read-write',
          view: {
@@ -849,7 +811,6 @@ var TextFieldView = FOAM.create({
       },
       {
 	 name:  'value',
-	 label: 'Value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
@@ -923,12 +884,10 @@ var ChoiceView = FOAM.create({
  *
  */
    name:  'ChoiceView',
-   label: 'Choice View',
 
    properties: [
       {
 	 name:  'name',
-	 label: 'Name',
          type:  'String',
 	 defaultValue: 'field'
       },
@@ -944,19 +903,16 @@ var ChoiceView = FOAM.create({
       },
       {
 	 name:  'size',
-	 label: 'Size',
          type:  'int',
 	 defaultValue: 1
       },
       {
 	 name:  'value',
-	 label: 'Value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
       {
 	 name:  'choices',
-	 label: 'Choices',
          type:  'Array[StringField]',
 	 help: 'Array of choices or array of [value, label] pairs.',
 	 defaultValue: [],
@@ -1118,7 +1074,6 @@ var RadioBoxView = FOAM.create({
    extendsModel: 'ChoiceView',
 
    name:  'RadioBoxView',
-   label: 'RadioBox View',
 
    properties: [
    ],
@@ -1190,30 +1145,25 @@ var RoleView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name:  'RoleView',
-   label: 'Role View',
 
    properties: [
       {
 	 name:  'roleName',
-	 label: 'RoleName',
          type:  'String',
 	 defaultValue: ''
       },
       {
 	 name:  'models',
-	 label: 'Models',
          type:  'Array[String]',
 	 defaultValue: []
       },
       {
 	 name:  'selection',
-	 label: 'Selection',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
       {
 	 name:  'model',
-	 label: 'Model',
 	 type:  'Model'
       }
    ],
@@ -1263,7 +1213,6 @@ var BooleanView = {
    extendsModel: 'AbstractView2',
 
    name:  'BooleanView',
-   label: 'Boolean View',
 
    properties: [
       {
@@ -1320,21 +1269,18 @@ var TextAreaView = FOAM.create({
     properties: [
       {
 	 name:  'rows',
-	 label: 'Rows',
          type:  'int',
          view:  'IntFieldView',
 	 defaultValue: 5
       },
       {
 	 name:  'cols',
-	 label: 'Columns',
          type:  'int',
          view:  'IntFieldView',
 	 defaultValue: 70
       },
       {
 	 name:  'value',
-	 label: 'Value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
@@ -1392,7 +1338,6 @@ var FunctionView2 = FOAM.create({
    model_: 'Model',
 
    name:  'FunctionView',
-   label: 'Function View',
 
    extendsModel: 'TextAreaView',
 
@@ -1527,7 +1472,6 @@ var JSView = FOAM.create({
    model_: 'Model',
 
    name:  'JSView',
-   label: 'JS View',
 
    extendsModel: 'TextAreaView',
 
@@ -1938,12 +1882,10 @@ var HelpView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name: 'HelpView',
-   label: 'Help View',
 
    properties: [
       {
 	 name:  'model',
-	 label: 'Model',
 	 type:  'Model'
       }
    ],
@@ -2009,17 +1951,14 @@ var TableView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name: 'TableView',
-   label: 'Table View',
 
    properties: [
       {
 	 name:  'model',
-	 label: 'Model',
 	 type:  'Model'
       },
       {
 	 name:  'properties',
-	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -2027,13 +1966,11 @@ var TableView = FOAM.create({
       },
       {
 	 name:  'selection',
-	 label: 'Selection',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
       {
 	 name:  'children',
-	 label: 'Children',
          type:  'Array[View]',
 	 valueFactory: function() { return []; }
       }
@@ -2165,12 +2102,10 @@ var TableView2 = FOAM.create({
    properties: [
       {
 	 name:  'model',
-	 label: 'Model',
 	 type:  'Model'
       },
       {
 	 name:  'properties',
-	 label: 'Properties',
 	 type:  'Array[String]',
          defaultValueFn: function() {
            return this.model.tableProperties;
@@ -2178,19 +2113,16 @@ var TableView2 = FOAM.create({
       },
       {
 	 name:  'selection',
-	 label: 'Selection',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
       {
 	 name:  'children',
-	 label: 'Children',
          type:  'Array[View]',
 	 valueFactory: function() { return []; }
       },
       {
 	 name:  'sortOrder',
-	 label: 'Sort Order',
          type:  'Comparator',
          defaultValue: undefined
       },
@@ -2208,7 +2140,6 @@ var TableView2 = FOAM.create({
       },
       {
         name: 'rows',
-        label: 'Rows',
         type:  'Integer',
         defaultValue: 30,
         postSet: function(val, oldValue) {
@@ -2498,12 +2429,10 @@ var ProgressView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name:  'ProgressView',
-   label: 'ProgressView',
 
    properties: [
       {
 	 name:  'value',
-	 label: 'Value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       }
@@ -2555,7 +2484,6 @@ var ArrayView = {
 var ModelAlternateView = FOAM.create({
    model_: 'Model',
    name: 'ModelAlternateView',
-   label: 'Model Alternate View',
    extendsModel: 'AlternateView',
    methods: {
       init: function() {
@@ -2599,12 +2527,10 @@ var GridView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name: 'GridView',
-   label: 'Grid View',
 
    properties: [
       {
          name:  'row',
-         label: 'row',
          type: 'ChoiceView',
 	 valueFactory: function() { return ChoiceView.create(); }
       },
@@ -2628,7 +2554,6 @@ var GridView = FOAM.create({
       },
       {
          name:  'model',
-         label: 'Model',
          type: 'Model'
       },
       {
@@ -2638,7 +2563,6 @@ var GridView = FOAM.create({
       },
       {
 	 name:  'grid',
-	 label: 'Grid',
 	 type:  'GridByExpr',
 	 valueFactory: function() { return GridByExpr.create(); }
       }

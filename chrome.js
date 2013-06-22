@@ -17,7 +17,6 @@
 var BookmarkModel = Model.create({
 
    name: 'Bookmark',
-   label: 'Bookmark',
 
     tableProperties: [
       'icon',
@@ -28,14 +27,12 @@ var BookmarkModel = Model.create({
    properties: [
       {
 	 name:  'index',
-	 label: 'Index',
          type:  'int',
 	 defaultValue: 0,
          view:  'IntFieldView'
       },
       {
 	 name:  'icon',
-	 label: 'Icon',
          type:  'String',
          view:  'TextFieldView',
 	 getter: function() {
@@ -50,7 +47,6 @@ var BookmarkModel = Model.create({
       },
       {
 	 name:  'title',
-	 label: 'Title',
 	 type:  'String',
 	 defaultValue: '',
 	 help:  "Bookmarked page's title.",
@@ -70,11 +66,8 @@ var BookmarkModel = Model.create({
       {
          model_: 'Action',
 	 name:  'visit',
-	 label: 'Visit',
 	 help:  'Visit Bookmark.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled: function()   { return true; },
 	 action: function()      {
 	    window.location = this.url;
 	    /*

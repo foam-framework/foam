@@ -22,12 +22,10 @@ var Timer = FOAM.create({
    model_: 'Model',
 
    name: 'Timer',
-   label: 'Timer',
 
    properties: [
       {
 	 name:  'interval',
-	 label: 'Interval',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 help:  'Interval of time between updating time.',
@@ -36,21 +34,18 @@ var Timer = FOAM.create({
       },
       {
 	 name:  'i',
-	 label: 'I',
          type:  'int',
          view:  'IntFieldView',
 	 defaultValue: 0
       },
       {
 	 name:  'timeWarp',
-	 label: 'Time Warp',
          type:  'float',
          view:  'FloatFieldView',
 	 defaultValue: 1.0
       },
       {
 	 name:  'duration',
-	 label: 'Duration',
 	 type:  'int',
          view:  'IntFieldView',
          units: 'ms',
@@ -58,21 +53,18 @@ var Timer = FOAM.create({
       },
       {
 	 name: 'percent',
-	 label: 'Percent',
 	 type: 'float',
          view:  'FloatFieldView',
 	 defaultValue: 0
       },
       {
 	 name:  'startTime',
-	 label: 'Start Time',
          type:  'int',
          view:  'IntFieldView',
 	 defaultValue: 0
       },
       {
 	 name:  'time',
-	 label: 'Time',
          type:  'int',
          help:  'The current time in milliseconds since epoch.',
          view:  'IntFieldView',
@@ -80,7 +72,6 @@ var Timer = FOAM.create({
       },
       {
 	 name:  'second',
-	 label: 'Second',
          type:  'int',
          help:  'The second of the current minute.',
          view:  'IntFieldView',
@@ -88,7 +79,6 @@ var Timer = FOAM.create({
       },
       {
 	 name:  'minute',
-	 label: 'Minute',
          type:  'int',
          help:  'The minute of the current hour.',
          view:  'IntFieldView',
@@ -96,7 +86,6 @@ var Timer = FOAM.create({
       },
       {
 	 name:  'hour',
-	 label: 'Hour',
          type:  'int',
          help:  'The hour of the current day.',
          view:  'IntFieldView',
@@ -108,7 +97,6 @@ var Timer = FOAM.create({
       {
          model_: 'Action',
 	 name:  'start',
-	 label: 'Start',
 	 help:  'Start the timer.',
 
 	 isAvailable: function() { return true; },
@@ -118,7 +106,6 @@ var Timer = FOAM.create({
       {
          model_: 'Action',
 	 name:  'step',
-	 label: 'Step',
 	 help:  'Step the timer.',
 
 	 isAvailable: function() { return true; },
@@ -134,7 +121,6 @@ var Timer = FOAM.create({
       {
          model_: 'Action',
 	 name:  'stop',
-	 label: 'Stop',
 	 help:  'Stop the timer.',
 
 	 isAvailable: function() { return true; },
@@ -159,19 +145,16 @@ var Mouse = FOAM.create({
    model_: 'Model',
 
    name: 'Mouse',
-   label: 'Mouse',
 
    properties: [
       {
 	 name:  'x',
-	 label: 'X',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 10
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 10
@@ -208,33 +191,28 @@ var PanelCView = FOAM.create({
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'x',
-	 label: 'X',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 10
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 10
       },
       {
 	 name:  'children',
-	 label: 'Children',
 	 type:  'CView[]',
 	 valueFactory: function() { return []; }
       },
       {
 	 name:  'canvas',
-	 label: 'Canvas',
 	 type:  'CView',
 	 getter: function() {
 	   return this.parent.canvas;
@@ -294,13 +272,11 @@ var CView = FOAM.create({
    properties: [
       {
 	 name:  'parent',
-	 label: 'Parent',
          type:  'CView',
 	 hidden: true
       },
       {
 	 name:  'x',
-	 label: 'X',
 	 type:  'int',
 	 view:  'IntFieldView',
          postSet: function() { this.resizeParent(); },
@@ -308,7 +284,6 @@ var CView = FOAM.create({
       },
       {
 	 name:  'y',
-	 label: 'Y',
 	 type:  'int',
 	 view:  'IntFieldView',
          postSet: function() { this.resizeParent(); },
@@ -316,7 +291,6 @@ var CView = FOAM.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
 	 type:  'int',
 	 view:  'IntFieldView',
          postSet: function() { this.resizeParent(); },
@@ -331,7 +305,6 @@ var CView = FOAM.create({
       },
       {
 	 name:  'children',
-	 label: 'Children',
 	 type:  'CView[]',
 	 valueFactory: function() { return []; },
 	 hidden: true
@@ -344,7 +317,6 @@ var CView = FOAM.create({
       },
       {
 	 name:  'canvas',
-	 label: 'Canvas',
 	 type:  'CView',
 	 getter: function() {
 	   return this.parent.canvas;
@@ -430,7 +402,6 @@ var ProgressCView = FOAM.create({
    properties: [
       {
 	 name:  'value',
-	 label: 'Value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
@@ -473,12 +444,10 @@ var FilteredModel = FOAM.create({
    model_: 'Model',
 
    name: 'FilteredModel',
-   label: 'Filtered Model',
 
    properties: [
       {
 	 name:  'delegate',
-	 label: 'Delegate',
 	 type:  'Model',
 	 postSet: function(model) {
 	    this.filteredValue = undefined;
@@ -486,12 +455,10 @@ var FilteredModel = FOAM.create({
       },
       {
 	 name:  'filteredValue',
-	 label: 'FilteredValue',
 	 type:  'Array[Object]'
       },
       {
 	 name:  'predicate',
-	 label: 'Predicate',
 	 type:  'predicate',
 	 defaultValue: function() {
 	     return true;
@@ -549,12 +516,10 @@ var Graph = FOAM.create({
    extendsModel: 'PanelCView',
 
    name:  'Graph',
-   label: 'Graph',
 
    properties: [
       {
 	 name:  'style',
-	 label: 'Style',
 	 type:  'String',
 	 defaultValue: 'Line',
 	 // TODO: fix the view, it's not storabe
@@ -568,75 +533,63 @@ var Graph = FOAM.create({
       },
       {
 	 name:  'width',
-	 label: 'Width',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 5
       },
       {
 	 name:  'height',
-	 label: 'Height',
 	 type:  'int',
 	 view:  'IntFieldView',
 	 defaultValue: 5
       },
       {
 	 name:  'graphColor',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: 'green'
       },
       {
 	 name:  'backgroundColor',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: undefined
       },
       {
 	 name:  'lineWidth',
-	 label: 'Line Width',
 	 type:  'int',
 	 defaultValue: 6
       },
       {
 	 name:  'drawShadow',
-	 label: 'Draw Shadow',
 	 type:  'boolean',
 	 defaultValue: true
       },
       {
 	 name:  'capColor',
-	 label: 'Color',
 	 type:  'String',
 	 defaultValue: ''
       },
       {
 	 name:  'axisColor',
-	 label: 'Axis Color',
 	 type:  'String',
 	 defaultValue: 'black'
       },
       {
 	 name:  'gridColor',
-	 label: 'Axis Color',
 	 type:  'String',
 	 defaultValue: undefined
       },
       {
 	 name:  'axisSize',
-	 label: 'Axis Size',
 	 type:  'int',
 	 defaultValue: 2
       },
       {
 	 name:  'xAxisInterval',
-	 label: 'X Axis Interval',
 	 type:  'int',
 	 defaultValue: 0
       },
       {
 	 name:  'yAxisInterval',
-	 label: 'X Axis Interval',
 	 type:  'int',
 	 defaultValue: 0
       },
@@ -648,7 +601,6 @@ var Graph = FOAM.create({
       },
       {
 	 name:  'data',
-	 label: 'Data',
 	 type:  'Array[float]',
          valueFactory: function() {
             return [];
@@ -897,7 +849,6 @@ var ViewChoice = FOAM.create({
    model_: 'Model',
 
    name: 'ViewChoice',
-   label: 'ViewChoice',
 
    tableProperties: [
       'label',
@@ -907,7 +858,6 @@ var ViewChoice = FOAM.create({
     properties: [
        {
 	   name: 'label',
-	   label: 'Label',
 	   type: 'String',
 	   displayWidth: 20,
            displayHeight: 1,
@@ -916,7 +866,6 @@ var ViewChoice = FOAM.create({
        },
        {
 	   name: 'view',
-	   label: 'View',
 	   type: 'view',
 	   defaultValue: 'DetailView',
 	   help: 'View factory.'
@@ -933,16 +882,13 @@ var AlternateView = FOAM.create({
    extendsPrototype: 'AbstractView',
 
    name: 'AlternateView',
-   label: 'Alternate View',
 
     properties: [
        {
 	  name:  'selection',
-	  label: 'Selection'
        },
        {
 	   name: 'views',
-	   label: 'Views',
 	   type: 'Array[ViewChoice]',
            subType: 'ViewChoice',
 	   view: 'ArrayView',
@@ -963,7 +909,6 @@ var AlternateView = FOAM.create({
        },
        {
 	  name:  'view',
-	  label: 'View',
 	  postSet: function(viewChoice) {
 	     if ( this.eid_ ) this.installSubView(viewChoice);
 	  },
@@ -1058,7 +1003,6 @@ var FloatFieldView = FOAM.create({
    model_: 'Model',
 
    name:  'FloatFieldView',
-   label: 'Float Field View',
 
    extendsModel: 'TextFieldView',
 
@@ -1075,7 +1019,6 @@ var IntFieldView = FOAM.create({
    model_: 'Model',
 
    name:  'IntFieldView',
-   label: 'Int Field View',
 
    extendsModel: 'TextFieldView',
 
@@ -1092,7 +1035,6 @@ var StringArrayView = FOAM.create({
    model_: 'Model',
 
    name:  'StringArrayView',
-   label: 'String Array View',
 
    extendsModel: 'TextFieldView',
 
@@ -1114,7 +1056,6 @@ var SplitView = FOAM.create({
    extendsPrototype: 'AbstractView',
 
    name: 'SplitView',
-   label: 'Split View',
 
     properties: [
        {

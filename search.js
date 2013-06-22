@@ -10,19 +10,16 @@ var GroupBySearchView = FOAM.create({
    properties: [
      {
        name: 'view',
-       label: 'View',
        type: 'view',
        valueFactory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
      },
      {
        name:  'width',
-       label: 'Width',
        type:  'int',
        defaultValue: 47
      },
      {
        name:  'size',
-       label: 'Size',
        type:  'int',
        defaultValue: 17
      },
@@ -37,18 +34,15 @@ var GroupBySearchView = FOAM.create({
      },
      {
        name: 'property',
-       label: 'Property',
        type: 'Property'
      },
      {
        name: 'filter',
-       label: 'Filter',
        type: 'Object',
        defaultValue: TRUE
      },
      {
        name: 'predicate',
-       label: 'Predicate',
        type: 'Object',
        defaultValue: TRUE
      },
@@ -135,29 +129,24 @@ var TextSearchView = FOAM.create({
    extendsModel: 'AbstractView2',
 
    name:  'TextSearchView',
-   label: 'Text Search View',
 
    properties: [
      {
        name:  'width',
-       label: 'Width',
        type:  'int',
        defaultValue: 47
      },
      {
        name: 'property',
-       label: 'Property',
        type: 'Property'
      },
      {
        name: 'predicate',
-       label: 'Predicate',
        type: 'Object',
        defaultValue: TRUE
      },
      {
        name: 'view',
-       label: 'View',
        type: 'view',
        valueFactory: function() { return TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
      },
