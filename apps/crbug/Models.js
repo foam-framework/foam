@@ -1,9 +1,21 @@
+var labelToProperty = {
+  Pri:          'priority',
+  M:            'milestone',
+  Cr:           'category',
+  Iteration:    'iteration',
+  ReleaseBlock: 'releaseBlock',
+  OS:           'OS'
+}; 
+
+
 var CIssue = FOAM.create({
     model_: 'Model',
+    extendsModel: 'GeneratedCIssue',
+
     name: 'CIssue',
 
-   tableProperties:
-   [
+    tableProperties:
+    [
       'id',
       'priority',
       'milestone',
@@ -14,15 +26,14 @@ var CIssue = FOAM.create({
       'owner',
       'summary',
       'OS',
-      'modified'
-   ],
+      'updated'
+    ],
 
     properties: [
         {
             name: 'id',
 	    shortName: 'i',
             label: 'ID',
-            type: 'Integer',
             required: true,
             tableWidth: '48px',
         },
@@ -100,8 +111,8 @@ var CIssue = FOAM.create({
             type: 'String',
 	    tableFormatter: function(value, row) {
               var sb = [];
-	      var labelToProperty = { Pri:'priority', M:'milestone', Cr:'category', Iteration:'iteration', ReleaseBlock:'releaseBlock', OS:'OS' }; 
-	      var a = value.split(', ');
+	      // 	      var a = value.split(', ');
+	      var a = value;
 	      for ( var i = 0 ; i < a.length ; i++ ) {
                 // The the column is already being shown, then exclude it's label
 	        if ( row.model_.tableProperties.indexOf(labelToProperty[a[i].split('-')[0]]) == -1 ) {
@@ -111,6 +122,22 @@ var CIssue = FOAM.create({
 		}
               }
 	      return sb.join('');
+            },
+	    postSet: function(a) {
+	      for ( var i = 0 ; i < a.length ; i++ ) {
+	        for ( var key in labelToProperty ) {
+		  if ( a[i].substring(0, key.length) == key ) {
+		    var prop = labelToProperty[key];
+		    var val = a[i].substring(key.length+1).intern();
+		    // ???: Should be treated as last value or an array?
+		    this[prop] = val;
+//		    this[prop].push(val);
+		    a.splice(i,1);
+		    i--;
+		    break;
+                  }
+                }
+              }
             }
         },
         {
@@ -120,7 +147,7 @@ var CIssue = FOAM.create({
         },
         {
          model_: 'Property',
-         name: 'modified',
+         name: 'updated',
 	 shortName: 'mod',
          type: 'Date',
          mode: 'read-write',

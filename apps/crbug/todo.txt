@@ -1,0 +1,27 @@
+- Search:
+  URL Import
+
+- IFrame/Webview DetailView
+- Network DAO
+  - improve
+- Update to full Issue Model
+- TableView Column Features
+- Add scrollbar
+- Add header to TableView
+- Header + Footer
+- EQ_IC
+
+IDAO
+  - efficient REVERSE
+  - efficient OR
+
+Sync
+  - how to handle inital sync and/or sync filter
+  - sync based on 'id' as well or accept dups from last second
+  - force sync on reactivation of UI
+
+Group-By support for array values
+
+Only request properties we actually need.
+
+Look into possibility of sharing whole lists.

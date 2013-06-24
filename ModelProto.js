@@ -71,7 +71,23 @@ var ModelProto = {
         });
 
 	// build properties
-        this.properties && this.properties.forEach(function(p) { cls.defineProperty(p); });
+        if ( this.properties ) {
+	  for ( var i = 0 ; i < this.properties.length ; i++ ) {
+	    var p = this.properties[i];
+            if ( extendsModel ) {
+              var superProp = extendsModel.getProperty(p.name);
+              if ( superProp ) {
+                p = superProp.clone().copyFrom(p);
+		this.properties[i] = p;
+
+                console.log('******', p.name);
+                if ( p.name == 'id' ) debugger;
+              }
+            }
+            cls.defineProperty(p);
+	  }
+        }
+
 
 	// templates
         this.templates && this.templates.forEach(function(t) { addMethod(t.name, TemplateUtil.compile(t.template)); });
@@ -126,9 +142,12 @@ var ModelProto = {
 	});
 
         // copy parent model's properties and actions into this model
-        if ( this.extendsModel ) {
-	   this.properties = extendsModel.properties.concat(this.properties);
-	   this.actions    = extendsModel.actions.concat(this.actions);
+        if ( extendsModel ) {
+	   for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
+	     var p = extendsModel.properties[i];
+	     if ( ! ( this.getProperty && this.getProperty(p.name) ) ) this.properties.unshift(p);
+	   }
+	   this.actions = extendsModel.actions.concat(this.actions);
         }
 
        // build primary key getter and setter

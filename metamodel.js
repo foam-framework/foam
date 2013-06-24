@@ -116,15 +116,19 @@ var Model = {
 	   preSet: function(newValue) {
 	      if ( ! Property ) return;
 
+	      // Convert Maps to Properties if required
 	      for ( var i = 0 ; i < newValue.length ; i++ ) {
-//		 if ( ! Property.isInstance(newValue[i]) ) {
-		 if ( ! newValue[i].model_ ) {
-                    var oldValue = newValue[i];
-		    newValue[i] = Property.getPrototype().create(newValue[i]);
+	      	 var p = newValue[i];
+
+		 if ( ! p.model_ ) {
+		    if ( this.extendsModel && this.name == 'CIssue'/* && this.getProperty(p.name) */) {
+//		      debugger;
+                    }
+		    newValue[i] = Property.create(p);
 		 }
 
                  // create property constant
-                 this[newValue[i].name.constantize()] = newValue[i];
+                 this[p.name.constantize()] = newValue[i];
 	      }
 
               return newValue;
