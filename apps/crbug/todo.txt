@@ -25,3 +25,8 @@ Group-By support for array values
 Only request properties we actually need.
 
 Look into possibility of sharing whole lists.
+
+Add PivotTable support: https://github.com/nicolaskruchten/pivottable
+
+Add chrome.omnibox support: https://developer.chrome.com/extensions/omnibox.html
+

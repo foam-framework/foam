@@ -4,7 +4,7 @@ var GeneratedCIssue = FOAM.create({
    model_: 'Model',
    name: 'Issue',
 
-   properties: 
+   properties:
    [
       {
          model_: 'ReferenceProperty',
@@ -113,10 +113,10 @@ var GeneratedCIssue = FOAM.create({
 });
 
 
-var GeneratedIssuePerson = FOAM.create({
+var IssueComment = FOAM.create({
    model_: 'Model',
    name: 'IssueComment',
-   properties: 
+   properties:
    [
       {
          model_: 'ReferenceProperty',
@@ -164,10 +164,10 @@ var GeneratedIssuePerson = FOAM.create({
 });
 
 
-var GeneratedIssuePerson = FOAM.create({
+var IssuePerson = FOAM.create({
    model_: 'Model',
    name: 'IssuePerson',
-   properties: 
+   properties:
    [
       {
          model_: 'StringProperty',
@@ -184,4 +184,4 @@ var GeneratedIssuePerson = FOAM.create({
          name: 'name'
       }
    ]
-}); 
+});
