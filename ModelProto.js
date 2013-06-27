@@ -79,9 +79,6 @@ var ModelProto = {
               if ( superProp ) {
                 p = superProp.clone().copyFrom(p);
 		this.properties[i] = p;
-
-                console.log('******', p.name);
-                if ( p.name == 'id' ) debugger;
               }
             }
             cls.defineProperty(p);
