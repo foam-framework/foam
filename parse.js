@@ -86,13 +86,13 @@ function range(c1, c2) {
   return f;
 }
 
-function literal(str) {
+function literal(str, opt_value) {
   var f = function(ps) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
       if ( str.charAt(i) !== ps.head ) return undefined;
     }
 
-    return ps.setValue(str);
+    return ps.setValue(opt_value || str);
   };
 
   f.toString = function() { return '"' + str + '"'; };
@@ -104,7 +104,7 @@ function literal(str) {
  * Case-insensitive String literal.
  * Doesn't work for Unicode characters.
  **/
-function literal_ic(str) {
+function literal_ic(str, opt_value) {
   str = str.toLowerCase();
 
   var f = function(ps) {
@@ -112,7 +112,7 @@ function literal_ic(str) {
       if ( ps.head && str.charAt(i) !== ps.head.toLowerCase() ) return undefined;
     }
 
-    return ps.setValue(str);
+    return ps.setValue(opt_value || str);
   };
 
   f.toString = function() { return '"' + str + '"'; };

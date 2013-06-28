@@ -1,39 +1,7 @@
 var ME = "s...@chromium.org";
 
-/**
- * Find a property for the provided name.
- * Checks in the following order:
- *   1. property Name
- *   2. list of propety Aliases
- *   3. property shortName
- **/
-function findPropertyForName(model, name) {
-  // Name
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
-    if ( name.equalsIC(prop.name) ) return prop;
-  }
-
-  // Aliases
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
-
-    for ( var j = 0 ; j < prop.aliases.length ; j++ )
-      if ( name.equalsIC(prop.aliases[j]) ) return prop;
-  }
-
-  // ShortName
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
-
-    if ( name.equalsIC(prop.shortName) ) return prop;
-  }
-
-  return undefined;
-}
-
-
-var QueryGrammar = {
+var QueryParserFactory = function(model) {
+   var g = {
   __proto__: grammar,
 
   START: sym('query'),
@@ -49,9 +17,9 @@ var QueryGrammar = {
     sym('id'),
     sym('has'),
     sym('is'),
-    sym('stars'),
+    sym('stars'),  // CIssue Specific
     sym('equals'),
-    sym('labelMatch'),
+    sym('labelMatch'), // CIssue Specific
     sym('before'),
     sym('after')
   ),
@@ -74,8 +42,10 @@ var QueryGrammar = {
   // TODO: move to subclass
   labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
+  // TODO: merge with 'equals'
   before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
 
+  // TODO: merge with 'equals'
   after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
 
   // TODO: it would be better to traverse the Model and explicitly add 
@@ -106,13 +76,36 @@ var QueryGrammar = {
 
   number: seq(plus(range('0', '9'))),
 
-};
+   };
 
+   var fields = [];
 
-var KeyValueQueryParser = {
-  __proto__: QueryGrammar,
-}.addActions({
-  id: function(v) { return EQ(CIssue.ID, v); },
+   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+      var prop = model.properties[i];
+      fields.push(literal_ic(prop.name, prop));
+   }
+
+   // Aliases
+   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+      var prop = model.properties[i];
+
+      for ( var j = 0 ; j < prop.aliases.length ; j++ )
+         fields.push(literal_ic(prop.aliases[j], prop));
+   }
+
+   // ShortName
+   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+      var prop = model.properties[i];
+
+      fields.push(literal_ic(prop.shortName, prop));
+   }
+
+   // TODO: sort by length, then merge above loops
+
+   g.fieldname = alt.apply(null, fields);
+
+   g.addActions({
+  id: function(v) { return EQ(model.ID, v); },
 
   or: function(v) { return OR.apply(OR, v); },
 
@@ -121,8 +114,6 @@ var KeyValueQueryParser = {
   negate: function(v) { return NOT(v[1]); },
 
   number: function(v) { return  parseInt(v[0].join('')); },
-
-  fieldname: function(v) { return findPropertyForName(CIssue, v.join('')); },
 
   me: function() { return ME; },
 
@@ -169,10 +160,13 @@ var KeyValueQueryParser = {
     var d = new Date();
     if ( v[1] ) d.setDate(d.getDate() - v[1][1]);
     return d;
-  },
+  }
+  });
 
-});
+  return g;
+}
 
+/*
 // For 'labelMatch' to work, we need to cause the 
 // 'equals' to fail when the name doesn't exist.
 var superFieldname = KeyValueQueryParser.fieldname;
@@ -180,11 +174,9 @@ KeyValueQueryParser.fieldname = function(ps) {
   ps = superFieldname.call(this, ps);
   return ps && ps.value && ps;
 };
+*/
 
-
-var QueryParser = {
-  __proto__: KeyValueQueryParser
-};
+var QueryParser = QueryParserFactory(CIssue);
 
 
 

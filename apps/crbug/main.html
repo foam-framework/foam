@@ -33,6 +33,7 @@
 <hr color="#9BC0FA">
 <script language="javascript">
     var issues = IDAO.create({model: CIssue});
+//    var issues = IndexedDBDAO.create({model: CIssue});
     // var CIssueDAO = StorageDAO.create({model: CIssue});
     var CIssueDAO = issues;
     var localIssueDAO = issues;
@@ -110,6 +111,9 @@
         ["status=Fixed,Done",           "&nbsp;Issues to verify"]
       ]
     });
+
+    // Set initial value to 'Open issues'
+    searchChoice.value.set(searchChoice.choices[1][0]);
 
     var searchField = TextFieldView.create({
       name: 'search',
@@ -191,6 +195,8 @@ timer.propertyValue('i').addListener(function() {
 Events.dynamic(function() {
   logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
 });
+
+
 
   </script>
  </body>
