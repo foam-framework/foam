@@ -5,7 +5,7 @@ var labelToProperty = {
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
   OS:           'OS'
-}; 
+};
 
 
 var CIssue = FOAM.create({
@@ -35,7 +35,7 @@ var CIssue = FOAM.create({
 	    shortName: 'i',
             label: 'ID',
             required: true,
-            tableWidth: '48px',
+            tableWidth: '48px'
         },
         {
             name: 'priority',
@@ -44,6 +44,10 @@ var CIssue = FOAM.create({
             label: 'Pri',
             type: 'Integer',
             tableWidth: '35px',
+            // TODO: move this to IntegerProperty
+            preSet: function(val) {
+               return parseInt(val);
+            },
             required: true
         },
         {
@@ -60,7 +64,7 @@ var CIssue = FOAM.create({
 	    shortName: 'it',
 	    aliases: ['iter'],
             type: 'String',
-            tableWidth: '69px',
+            tableWidth: '69px'
         },
         {
             name: 'releaseBlock',
@@ -102,7 +106,7 @@ var CIssue = FOAM.create({
             tableFormatter: function(value, row) {
               return value +
                 CIssue.LABELS.tableFormatter(row.labels, row);
-            },
+            }
         },
         {
             name: 'labels',

@@ -1,5 +1,26 @@
 var ME = "s...@chromium.org";
 
+/**
+ * Generic Mustang-like query-language parser generator.
+ *
+ * key:value                  key contains "value"
+ * key=value                  key exactly matches "value"
+ * key:value1,value2          key contains "value1" OR "value2"
+ * key1:value key2:value      key1 contains value AND key2 contains "value"
+ * key1:value AND key2:value  "
+ * (expr)                     groups expression
+ * -expr                      not expression, ie. -pri:1
+ * has:key                    key has a value
+ * is:key                     key is a boolean TRUE value
+ * key>value                  key is greater than value
+ * key-after:value            "
+ * key<value                  key is less than value
+ * key-before:value           "
+ * date:YY/MM/DD              date specified
+ * date:today                 date of today
+ * date-after:today-7         date newer than 7 days ago
+ * key:me                     key is the current user
+ */
 var QueryParserFactory = function(model) {
    var g = {
   __proto__: grammar,
@@ -17,9 +38,7 @@ var QueryParserFactory = function(model) {
     sym('id'),
     sym('has'),
     sym('is'),
-    sym('stars'),  // CIssue Specific
     sym('equals'),
-    sym('labelMatch'), // CIssue Specific
     sym('before'),
     sym('after')
   ),
@@ -34,23 +53,13 @@ var QueryParserFactory = function(model) {
 
   is: seq(literal_ic('is:'), sym('fieldname')),
 
-  // TODO: move to subclass
-  stars: seq(literal_ic('stars:'), sym('number')),
-
   equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
-
-  // TODO: move to subclass
-  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
   // TODO: merge with 'equals'
   before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
 
   // TODO: merge with 'equals'
   after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
-
-  // TODO: it would be better to traverse the Model and explicitly add 
-  //       each fieldname because this would give better auto-complete.
-  fieldname: plus(alt(range('a','z'), range('A', 'Z'))),
 
   value: alt(
     sym('me'),
@@ -66,15 +75,15 @@ var QueryParserFactory = function(model) {
     sym('literal date'),
     sym('relative date')),
 
-    'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')), 
+    'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')),
 
     'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
   string: plus(sym('char')),
-  
-    char: alt(range('a','z'), range('A', 'Z'), '-'),
 
-  number: seq(plus(range('0', '9'))),
+  'char': alt(range('a','z'), range('A', 'Z'), '-'),
+
+  number: seq(plus(range('0', '9')))
 
    };
 
@@ -90,17 +99,25 @@ var QueryParserFactory = function(model) {
       var prop = model.properties[i];
 
       for ( var j = 0 ; j < prop.aliases.length ; j++ )
-         fields.push(literal_ic(prop.aliases[j], prop));
+         if ( prop.aliases[j] ) fields.push(literal_ic(prop.aliases[j], prop));
    }
 
    // ShortName
    for ( var i = 0 ; i < model.properties.length ; i++ ) {
       var prop = model.properties[i];
 
-      fields.push(literal_ic(prop.shortName, prop));
+      if ( prop.shortName ) fields.push(literal_ic(prop.shortName, prop));
    }
 
-   // TODO: sort by length, then merge above loops
+   fields.sort(function(a, b) {
+     var d = a.length - b.length;
+
+     if ( d !== 0 ) return d;
+
+     if ( a == b ) return 0;
+
+     return a < b ? 1 : -1;
+   });
 
    g.fieldname = alt.apply(null, fields);
 
@@ -123,8 +140,6 @@ var QueryParserFactory = function(model) {
 
   is: function(v) { return EQ(v[1], TRUE); },
 
-  stars: function(v) { return GTE({f:function(i) {debugger; return i.stars.length;}, partialEval: function() {return this;}, outSQL: function(out) { out.push("stars > " + v[1]); }}, v[1]); },
-
   before: function(v) { return LT(v[0], v[2]); },
 
   after: function(v) { return GT(v[0], v[2]); },
@@ -143,15 +158,6 @@ var QueryParserFactory = function(model) {
     return or;
   },
 
-  labelMatch: function(v) {
-    var or = OR();
-    var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(CONTAINS_IC(CIssue.LABELS, v[0] + '-' + values[i]));
-    }
-    return or;
-  },
-
   string: function(v) { return v.join(''); },
 
   'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
@@ -164,53 +170,4 @@ var QueryParserFactory = function(model) {
   });
 
   return g;
-}
-
-/*
-// For 'labelMatch' to work, we need to cause the 
-// 'equals' to fail when the name doesn't exist.
-var superFieldname = KeyValueQueryParser.fieldname;
-KeyValueQueryParser.fieldname = function(ps) {
-  ps = superFieldname.call(this, ps);
-  return ps && ps.value && ps;
 };
-*/
-
-var QueryParser = QueryParserFactory(CIssue);
-
-
-
-function test(query) {
-  console.log('QueryParserTest: ' + query);
-  var res = QueryParser.parseString(query);
-  console.log('query: ', query, ' -> ', res && res.toSQL());
-}
-/*
-test('priority=0');
-test('priority=0,1,2');
-test('priority:0');
-test('1234567');
-test('status:Assigned');
-test('status:Assigned priority:0');
-test('Iteration:29');
-test('Type:Bug');
-test('');
-*/
-
-
-// label:Priority-High = Priority:High
-// blockeon:NNN
-// blocking:NNN
-// is:blocked
-// Priority:High,Medium = Priority:High OR Priority:Medium
-// is:starred
-// stars: 3  at least three users have starred
-// "contains text"
-// has:attachment
-// attachment:screenshot or attachment:png
-
-// consider
-//  < and > support (done)
-//  limit:# support
-//  format:table/grid/csv/xml/json
-//  orderBy:((-)field)+

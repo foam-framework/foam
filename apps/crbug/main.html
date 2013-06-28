@@ -8,7 +8,7 @@
   <script language="javascript" src="ImportedModels.js"></script> 
   <script language="javascript" src="Models.js"></script> 
   <script language="javascript" src="DAO.js"></script> 
-  <script language="javascript" src="QueryParser.js"></script> 
+  <script language="javascript" src="CIssueQueryParser.js"></script> 
   <title>Chromium Issues</title>
  </head>
 
@@ -128,8 +128,8 @@
 
     function performQuery() {
       search(AND(
-          QueryParser.parseString(searchChoice.value.get()) || TRUE,
-          QueryParser.parseString(searchField.value.get()) || TRUE
+          CIssueQueryParser.parseString(searchChoice.value.get()) || TRUE,
+          CIssueQueryParser.parseString(searchField.value.get()) || TRUE
         ).partialEval());
     }
 

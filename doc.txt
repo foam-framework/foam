@@ -201,7 +201,7 @@ Methods:
 
 
 Sink Interface
-     put(obj, opt_sink)
+     put(obj, opt_sink, opt_flow-control)
      remove()
      error()
      eof()

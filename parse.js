@@ -36,7 +36,7 @@ console.log('head:',this.pos, this.delegate.head);
   },
   setValue: function(value) {
 console.log('setValue:',value);
-//    return ErrorReportingPS.create(this.delegate.setValue(value)); 
+//    return ErrorReportingPS.create(this.delegate.setValue(value));
     this.delegate = this.delegate.setValue(value);
     return this;
   }
@@ -109,7 +109,7 @@ function literal_ic(str, opt_value) {
 
   var f = function(ps) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( ps.head && str.charAt(i) !== ps.head.toLowerCase() ) return undefined;
+      if ( ! ps.head || str.charAt(i) !== ps.head.toLowerCase() ) return undefined;
     }
 
     return ps.setValue(opt_value || str);
@@ -326,12 +326,13 @@ function alt(/* vargs */) {
     }
 
     return undefined;
-  }
+  };
 
-  f.toString = function() { return argsToArray(args).join(' | '); };
+  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
 
   return f;
 }
+
 function parsedebug(p) {
   return function(ps) {
     debugger;
@@ -381,19 +382,19 @@ var grammar = {
 
   parse: function(parser, pstream) {
 //    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
-    if ( DEBUG_PARSE ) { 
+    if ( DEBUG_PARSE ) {
 //      console.log(new Array(pstream.pos).join(' '), pstream.head);
-        console.log(pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
+        console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
-    if ( DEBUG_PARSE ) { 
+    if ( DEBUG_PARSE ) {
       console.log(parser + ' ==> ' + (!!ret));
     }
     return ret;
   },
 
   /** Export a symbol for use in another grammar or stand-alone. **/
-  export: function(str) { 
+  'export': function(str) {
     return this[str].bind(this);
   },
 

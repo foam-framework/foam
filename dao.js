@@ -18,7 +18,7 @@
  * put(obj, callback(newObj)) - either create or update (required?)
  *   insert(obj, callback(newObj)) - create a new record
  *   update(obj, callback(newObj)) - update an existing record
- * get(index, callback) - like pipe but only finds one value
+ * find(index, callback) - like pipe but only finds one value
  *    could be merged with pipe?
  *    what values for 'index': primary-key, object, query?
  * remove(obj, callback) - remove one object
@@ -323,10 +323,8 @@ var AbstractDAO = FOAM.create({
 
    name: 'AbstractDAO',
 
-   properties: [
-   ],
-
    methods: {
+
   listen: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
     if ( ! this.daoListeners_ ) {
@@ -337,90 +335,99 @@ var AbstractDAO = FOAM.create({
     }
     this.daoListeners_.push(sink);
   },
+
   pipe: function(sink, options) {
     sink = this.decorateSink_(sink, options, true);
-    var fc = this.createFlowControl_();
+
+    var fc   = this.createFlowControl_();
     var self = this;
-    // TODO: switch to use future
-    this.select(
-      {
-        __proto__: sink,
-        eof: function() {
-          if ( fc.stopped ) {
-            sink.eof && sink.eof();
-          } else {
-            self.listen(sink, options);
-          }
+
+    this.select({
+      __proto__: sink,
+      eof: function() {
+        if ( fc.stopped ) {
+          sink.eof && sink.eof();
+        } else {
+          self.listen(sink, options);
         }
+      }
       }, options, fc);
   },
+
   decorateSink_: function(sink, options, isListener, disableLimit) {
     if ( options ) {
       if ( ! disableLimit ) {
         if ( options.limit ) sink = limitedSink(options.limit, sink);
         if ( options.skip )  sink = skipSink(options.skip, sink);
       }
-      if ( options.order && ! isListener )
+
+      if ( options.order && ! isListener ) {
         sink = orderedSink(options.order, sink);
-      if ( options.query )
+      }
+
+      if ( options.query ) {
         sink = predicatedSink(
             options.query.partialEval ?
 	        options.query.partialEval() :
                 options.query,
             sink) ;
+      }
     }
 
     return sink;
   },
+
   createFlowControl_: function() {
     return {
       stop: function() { this.stopped = true; },
       error: function(e) { this.errorEvt = e; }
     };
   },
+
   where: function(query) {
     return filteredDAO(query, this);
   },
+
   limit: function(count) {
     return limitedDAO(count, this);
   },
+
   skip: function(skip) {
     return skipDAO(skip, this);
   },
+
   orderBy: function() {
     return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
   },
+
   unlisten: function(sink) {
     this.daoListeners_ && this.daoListeners_.remove(sink);
   },
+
+  /**
+   * Notify all listeners of update to DAO.
+   * @param fName the name of the method in the listeners to call.
+   *        possible values: 'put', 'remove'
+   **/
   notify_: function(fName, args) {
     if ( ! this.daoListeners_ ) return;
 
     for ( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
       var l = this.daoListeners_[i];
       var fn = l[fName];
-      args[2] = {
-        stop: (function(fn, l) { return function() { fn(l); }; })(this.unlisten.bind(this), l),
-        error: function(e) { /* Don't care. */ }
-      };
-      fn && fn.apply(l, args);
+      if ( fn ) {
+        // Create flow-control object
+        args[2] = {
+          stop: (function(fn, l) {
+	    return function() { fn(l); };
+          })(this.unlisten.bind(this), l),
+          error: function(e) { /* Don't care. */ }
+        };
+        fn.apply(l, args);
+      }
     }
   }
-   },
-
-   issues: [
-    {
-      id: 1001,
-      severity: 'Major',
-      status: 'Open',
-      summary: 'Finish DAO Conversaion',
-      created: 'Sun Dec 23 2012 18:17:28 GMT-0500 (EST)',
-      createdBy: 'kgr',
-      assignedTo: 'kgr',
-      notes: 'Rename DAO to just DAO and remove DAO(1)\'s.'
-    }
-   ]
-
+   }
 });
 
 
@@ -428,18 +435,13 @@ function filteredDAO(query, dao) {
   return {
     __proto__: dao,
     select: function(sink, options) {
-      if ( options ) {
-        if ( options.query ) {
-          options = { __proto__: options, query: AND(query, options.query) };
-        } else {
-          options = { __proto__: options, query: query };
-        }
-      }
-      else {
-        options = {query: query};
-      }
-
-      return dao.select(sink, options);
+      return dao.select(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(query, options.query) :
+          query
+        } :
+        {query: query});
     }
   };
 }
@@ -507,11 +509,12 @@ function skipDAO(skip, dao) {
 }
 
 
+// Copy AbstractDAO methods in Array prototype
+
 var pmap = {};
 for ( var key in AbstractDAO.methods ) {
   pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
 }
-
 
 defineProperties(Array.prototype, pmap);
 
@@ -1140,7 +1143,7 @@ var WorkerDAO = FOAM.create({
           "var a = importScripts;",
           "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
           "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n debugger; }\n",
-          "WorkerDelegate.create({ dao: [] });\n",
+          "WorkerDelegate.create({ dao: [] });\n"
         ];
         return new Worker(window.URL.createObjectURL(
             new Blob(workerscript, { type: "text/javascript" })));
