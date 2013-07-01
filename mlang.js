@@ -493,7 +493,7 @@ var ContainsICExpr = FOAM.create({
 
         if ( Array.isArray(arg1) ) {
           for ( var i = 0 ; i < arg1.length ; i++ ) {
-            if ( arg1.toLowerCase().indexOf(arg2) != -1 ) return true;
+            if ( arg1[i].toLowerCase().indexOf(arg2) != -1 ) return true;
           }
           return false;
         }

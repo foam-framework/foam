@@ -9,7 +9,7 @@ var OrderedMap = {
   },
 
   bulkLoad: function(a) { this.root = this.index.bulkLoad(a); },
-  delete: function(value) { this.root = this.index.delete(this.root, value); },
+  remove: function(value) { this.root = this.index.remove(this.root, value); },
   putObject: function(value) { this.root = this.index.put(this.root, value); },
   put: function(key, value) { this.root = this.index.putKeyValue(this.root, key, value); },
   get: function(key) { return this.index.get(this.root, key); },
@@ -37,7 +37,7 @@ m.putObject('j');
 
 */
 
-m.delete('a');
+m.remove('a');
 
 /*
 m.putObject('k');
