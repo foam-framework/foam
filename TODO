@@ -36,3 +36,15 @@ Fix up CView hierarchy.  Do we need an AbsstractCView that
 implements 'View' so individual CViews can be used without
 a Canvas container.  Also, standardize position, size, rotation, 
 etc.
+
+
+IDAO
+   remove()
+   notify on update
+   SetIndex
+   find()
+
+
+??? What does it mean to order by a multi-value field?
+  Does the record appear once for each value?
+??? What if a record has value for a multi-value field?

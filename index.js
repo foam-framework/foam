@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/*
+ * Index Interface:
+ *   put(state, value) -> new state
+ *   remove(state, value) -> new state
+ *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
+ *   size(state) -> int
+ */
+
 /** Plan indicating that there are no matching records. **/
 var NOT_FOUND = {
   cost: 0,
@@ -35,17 +43,9 @@ function dump(o) {
 }
 
 
-/*
- * Index Interface:
- *   put(state, value) -> new state
- *   remove(state, value) -> new state
- *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
- *   size(state) -> int
- */
-
 var ValueIndex = {
   put: function(s, newValue) { return newValue; },
-  remove: function() {},
+  remove: function() { return undefined; },
   plan: (function() {
     var plan = {
       cost: 1,
@@ -79,7 +79,6 @@ var RIGHT = 5;
 
 // TODO: investigate how well V8 optimizes static classes
 
-// [0 key, 1 value, 2 size, 3 left, 4 right]
 // [0 key, 1 value, 2 size, 3 level, 4 left, 5 right]
 
 // AATree -- balanced binary search tree.
@@ -183,7 +182,6 @@ var TreeIndex = {
   //  output: Another node representing the rebalanced AA tree.
   split: function(s) {
     if ( s && s[RIGHT] && s[RIGHT][RIGHT] && s[LEVEL] === s[RIGHT][RIGHT][LEVEL] ) {
-// console.log('split');
       // We have two horizontal right links.  Take the middle node, elevate it, and return it.
       var r = s[RIGHT];
 
@@ -200,14 +198,26 @@ var TreeIndex = {
     return s;
   },
 
-  // input: X, the value to delete, and T, the root of the tree from which it should be deleted.
-  // output: T, balanced, without the value X.
-  delete: function(s, key) {
+  remove: function(s, value) {
+     return this.removeKeyValue(s, this.prop.f(value), value);
+  },
+
+  removeKeyValue: function(s, key, value) {
     if ( ! s ) return s;
 
     var r = this.compare(s[KEY], key);
 
     if ( r === 0 ) {
+      s[SIZE] -= this.tail.size(s[VALUE]);
+      s[VALUE] = this.tail.remove(s[VALUE], value);
+
+      // If the sub-Index still has values, then don't
+      // delete this node.
+      if ( s[VALUE] ) {
+         s[SIZE] += this.tail.size(s[VALUE]);
+         return;
+      }
+
       // If we're a leaf, easy, otherwise reduce to leaf case. 
       if ( ! s[LEFT] && ! s[RIGHT] ) return undefined;
 
@@ -223,14 +233,14 @@ var TreeIndex = {
         this.predecessor(s) ;
 
       s[SIZE] -= this.tail.size(s[VALUE]);
-      s[side] = this.delete(s[side], l[KEY]);
+      s[side] = this.removeKeyValue(s[side], l[KEY], value);
       s[KEY] = l[KEY];
       s[VALUE] = l[VALUE];
     } else {
       var side = r > 0 ? LEFT : RIGHT;
 
       s[SIZE] -= this.size(s[side]);
-      s[side] = this.delete(s[side], key);
+      s[side] = this.removeKeyValue(s[side], key, value);
       s[SIZE] += this.size(s[side]);
     }
 
@@ -426,6 +436,39 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
 
 };
 
+var SetIndex = {
+  __proto__: TreeIndex,
+
+  create: function(prop, tail) {
+    tail = tail || ValueIndex;
+
+    return {
+      __proto__: this,
+      prop: prop,
+      tail: tail
+    };
+  },
+
+  put: function(s, newValue) {
+    var a = this.prop.f(newValue);
+ 
+    for ( var i = 0 ; i < a.length ; i++ )
+      s = this.putKeyValue(s, a[i], newValue);
+
+    return s;
+  },
+
+  remove: function(s, value) {
+    var a = this.prop.f(value);
+ 
+    for ( var i = 0 ; i < a.length ; i++ )
+      s = this.removeKeyValue(s, a[i], value);
+
+    return s;
+  }
+
+};
+
 /*
 
 var SetIndex = {
@@ -468,7 +511,7 @@ var SetIndex = {
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
-  GOOD_PLAN: 1, // put to 10 or more when not testing
+  GOOD_ENOUGH_PLAN: 1, // put to 10 or more when not testing
 
   create: function() {
     return {
@@ -509,7 +552,7 @@ var AltIndex = {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
 // console.log('  plan ' + i + ': ' + plan);
-      if ( plan.cost <= AltIndex.GOOD_PLAN ) { bestPlan = plan; break; }
+      if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) { bestPlan = plan; break; }
 
       if ( ! bestPlan || plan.cost < bestPlan.cost ) {
 	 // curry the proper state
@@ -607,9 +650,10 @@ var IDAO = FOAM.create({
     },
 
     remove: function(query, sink) {
-      // TODO:
+      this.root = this.index.remove(this.root, query);
+      // TODO: notify
     },
-
+      
     select: function(sink, options) {
       // Clone the options to prevent 'limit' from being mutated in the original.
       if ( options ) options = {__proto__:options};
