@@ -1,0 +1,1039 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="foam.css" />
+  <script language="javascript" src="bootFOAM.js"></script>
+  <title>Takeout Mail Reader</title>
+ </head>
+<body style="overflow:hidden;margin-top:5px;">
+<div id="header" style="position:absolute;background-color:#bbb;">
+<img style="float:left;padding-left: 16px;" width=53 height=53 src="http://conical.ca/static/500e18ebc4aac913a35ac7f3/500e1988e4b0757e9f47b421/500e198be4b0757e9f47b4cb/?format=original"/>
+<font size=+3 face="catull" style="float:left;padding-top:8px;padding-left:15px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+Takeout Reader</font>
+<span style="float:right; margin-top: 23px;">MBOX File:<input type="file" onchange="loadmbox(event);"></span>
+</div>
+<div id="search" style="position:absolute;background-color:#fff;">
+  <div id="subjectSearch"  class="searchTitle"></div>
+  <div id="toSearch"       class="searchTitle"></div>
+  <div id="fromSearch"     class="searchTitle"></div>
+  <div id="labelSearch"    class="searchTitle"></div>
+  <div onClick="resetSearch()" style="float:right" class="searchTitle"><u>Clear All</u></div>
+</div>
+<div id="browse" style="position:absolute;background-color:#FFF;float:left;"></div>
+<div id="edit" style="position:absolute;margin-top:10px;margin-right:15px;border-width:1px;border-style:solid;border-color:black;position:absolute;background-color:#FFF;">
+</div>
+<div id="footer" style="position:absolute;background-color:#bbb;text-align:left;padding-top:3px;">
+  <font size=+1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
+  <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
+  <font color2="#555555" > POWERED</font>
+  <div onClick="switchHands()" style="float:right;padding-right:10px;" class="searchTitle"><u>switch hands</u></div>
+</div>
+<script>
+EMail.ATTACHMENTS.compare = function(o1, o2) {
+  return this.f(o1).length - this.f(o2).length;
+};
+
+var header = $('header');
+var footer = $('footer');
+var search = $('search');
+var browse = $('browse');
+var edit   = $('edit');
+
+var reversed = false;
+
+function pos(e, top, left, width, height) {
+  var s = e.style;
+  left = left || 0;
+
+  if ( reversed ) left = (window.innerWidth - 15) - left - (width || toNum(e.style.width));
+
+  top != null && (e.style.top = toNum(top) + 'px');
+  left != null && (e.style.left = toNum(left) + 'px');
+  width != null && (e.style.width = toNum(width) + 'px');
+  height != null && (e.style.height = toNum(height) + 'px');
+}
+
+var MIN_THREE_COLUMN_W = 1600;
+var table;
+
+function layout() {
+  var W         = window.innerWidth - 15;
+  var H         = window.innerHeight-5;
+  var HEADER_H  = 60;
+  var FOOTER_H  = 23;
+  var SEARCH_W  = 400;
+  var SEARCH_H  = H - HEADER_H - FOOTER_H;
+  var RIGHT_W   = W - SEARCH_W - 5;
+
+  pos(header,null,null,W,HEADER_H-10);
+  pos(search, HEADER_H, null, SEARCH_W, SEARCH_H);
+
+  if ( W > MIN_THREE_COLUMN_W ) {
+    pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W * 0.6, SEARCH_H-2);
+    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.6, RIGHT_W * 0.4-10, SEARCH_H-15);
+  } else {
+    pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W, SEARCH_H/2);
+    pos(edit,
+      toNum(browse.style.top) + toNum(browse.style.height) + 5,
+      SEARCH_W + 10,
+      RIGHT_W-10,
+      SEARCH_H / 2 -20);
+  }
+  pos(footer, H-FOOTER_H, null, W, FOOTER_H);
+
+  table && table.layout();
+}
+
+window.onresize = layout;
+layout();
+
+emails = JSONUtil.mapToObj([
+   {
+      model_: 'EMail',
+      timestamp: new Date('Sat Oct 29 2011 15:58:55 GMT-0400 (EDT)'),
+      from: 'YouTube <no_reply@youtube.com>',
+      to: 'thafunkypresident <thafunkypresident@gmail.com>',
+      subject: '=?iso-8859-1?q?Invitation_to_earn_revenue_from_your_YouTube_videos_?=',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: 'MIME-Version: 1.0\nContent-Transfer-Encoding: quoted-printable\n\n\nDear thafunkypresident,\n\nYour YouTube account thafunkypresident might be eligible to earn revenue fr=\nom the playbacks of your videos.\n\nMaking money from your videos is easy. Here\'s how it works: First sign into=\n your YouTube account. Then review and complete the steps outlined here: <a=\n href=3D"http://www.youtube.com/account_monetization?feature=3Dieqe">http:/=\n/www.youtube.com/account_monetization?feature=3Dieqe</a>.\n\nIf your account is enabled, we may place ads next to the videos you submit =\nfor monetization. You will earn a share of the revenue from the ads as long=\n as you meet the program requirements.\n\nThanks and good luck!\n\nThe YouTube Team\n\n\n--===============1564248193==\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<+17736093865.2b9d937c0688d470f4fa6d4c67c00224bc2b123d@txt.voice.google.com>',
+      timestamp: new Date('Wed Jun 13 2012 16:13:06 GMT-0400 (EDT)'),
+      from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'SMS from (917) 359-5785',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nWhat does the Funk want?\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<+17736093865.ba3a999ba84d2e0be1c397a8ccd454b008ca6bbf@txt.voice.google.com>',
+      timestamp: new Date('Wed Jun 13 2012 16:19:08 GMT-0400 (EDT)'),
+      from: '"(917) 359-5785" <17736093865.19173595785.Tjz-mdw7-7@txt.voice.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'SMS from (917) 359-5785',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\n(A Hoy)Ahoy the funk!\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<0015175d05103fd43204b39c7e41@google.com>',
+      timestamp: new Date('Thu Dec 08 2011 17:50:21 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nYour Google Takeout archive is ready -- please visit\nhttps://namadako.chi.corp.google.com/#downloads to download it. It will be\navailable for you to download at any time until around Dec 15, 2011. Thanks\nfor using Google Takeout!\n\n--0015175d05103fd41904b39c7e3e\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<001636920469a14c8004b747be97@google.com>',
+      timestamp: new Date('Tue Jan 24 2012 10:24:35 GMT-0500 (EST)'),
+      from: 'no-reply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Upgrade to Google Paid Storage',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nHi there,\n\nWe\'ve successfully processed your order for additional paid storage\nfrom Google. It may take up to 24 hours for the 20 GB of storage to\nappear in your account.\n\nIf you have trouble accessing your storage, please use our paid storage\ntroubleshooting steps. Visit our help center to get more information on\nthe paid storage refund policy.\n\n-The Google Storage Team\n\n--001636920469a14c7204b747be94\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<001636b2b0cb4b11f904b488e323@google.com>',
+      timestamp: new Date('Tue Dec 20 2011 11:52:08 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Ihr Google Datenexport-Archiv ist fertig.',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nIhr Google Datenexport-Archiv ist fertig und steht bis zum 27.12.2011 unter\nhttps://takeout-dogfood.corp.google.com/takeout/#downloads zum Download\nbereit. Vielen Dank, dass Sie Google Datenexport verwenden.\n\n--001636b2b0cb4b11e504b488e320\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<001636b2b17cf9998a04b488db2f@google.com>',
+      timestamp: new Date('Tue Dec 20 2011 11:50:05 GMT-0500 (EST)'),
+      from: 'Google Kalender <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Erinnerung: Lunch break @ Di 20. Dez. 11:00 - 13:00 (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<0016e6d2736056776804b3f1b4ac@google.com>',
+      timestamp: new Date('Mon Dec 12 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 13 6:30am - 7:50am (Takeout',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7b67826cdde34504cdc8fa9e@google.com>',
+      timestamp: new Date('Mon Nov 05 2012 19:49:52 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7b6dc18a8411a904cd116968@google.com>',
+      timestamp: new Date('Sat Oct 27 2012 17:49:35 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Oct 28, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…MWQ2MmEyNzE0NDM5MTZjZjQ5NTUyNmI0ZQ&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--047d7b6dc18a84119d04cd116965\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7bd6badac6931504cd3b54a0@google.com>',
+      timestamp: new Date('Mon Oct 29 2012 19:50:15 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7bdc8a7ad153c604ce55cb49@google.com>',
+      timestamp: new Date('Mon Nov 12 2012 19:49:53 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7bdc8c5273515604ccae83c5@google.com>',
+      timestamp: new Date('Mon Oct 22 2012 19:50:08 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7bdca9f2f62c1304cdc8fb9e@google.com>',
+      timestamp: new Date('Mon Nov 05 2012 19:50:11 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 5 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<047d7bf0d70a80a53504ce2be588@google.com>',
+      timestamp: new Date('Sat Nov 10 2012 17:50:36 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Nov 11, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…ODZiOWRlOTcxZjlkNjNkZWQ4MjAyNmE2Yw&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--047d7bf0d70a80a52704ce2be585\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<089e013cc3642c915c04cd9e48fd@google.com>',
+      timestamp: new Date('Sat Nov 03 2012 17:53:26 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Nov 4, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…MGIzNmY0ZjZhNTE2M2MxNjZhOWUxMTA1Mg&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--089e013cc3642c914404cd9e48fa\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<1328668800215.43bed4c7-2fb3-41b7-8c52-80850a134944@checkout.google.com>',
+      timestamp: new Date('Tue Feb 07 2012 21:40:00 GMT-0500 (EST)'),
+      from: 'Google Checkout <noreply@checkout.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Rate your shopping experience with Google using Google Checkout',
+      labels: 
+      [
+         'Personal',
+         'Retention5'
+      ],
+      body: 'Content-Transfer-Encoding: 7bit\n\nDear Kari,\n\nThanks for your recent purchase from Google.\n\nWe\'d appreciate hearing and sharing your experience. Please take a\nmoment to tell us about it by filling out the form below. We will\npublish your review online so that others can learn from your\nexperience. Your review will be linked to your Google account.\n\n\nExcellent: I would definitely buy from this store again. Poor: I would\ndiscourage others from this store.\nHow was your overall experience with this store?\n\n\n\nHaving trouble with this form?\nSubmit your review online\n\nHow do I get details about this order?\nGet up-to-date information about order #447140032829666\n\n\nNeed help? Visit the Google Checkout help center.\nStop receiving seller review emails\n------=_Part_43088_26817322.1328668800400\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<14dae9341179342ad704b7d82206@google.com>',
+      timestamp: new Date('Tue Jan 31 2012 14:40:21 GMT-0500 (EST)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels: 
+      [
+         'Personal',
+         'Retention5'
+      ],
+      body: '\nHi there,\n\nThanks for signing up for Google Voice!  Your new Google number is (424)\n253-5699.\nHere are some things you can do to get started with Google Voice:\n1. Read transcriptions of voicemails.\nhttp://www.youtube.com/watch?v=fHuai7-jVlY\n2. Customize which phones ring. http://www.youtube.com/watch?v=1KSoxdtyc58\n3. Personalize greetings for different callers.\nhttp://www.youtube.com/watch?v=W1AHzu7CLkk\n4. Make cheap international calls.\nhttp://www.youtube.com/watch?v=y6Zy-Ande6I\n5. Forward SMS to email. http://www.youtube.com/watch?v=Ka3T0RXwIbw\n6. Share voicemails with friends. http://www.youtube.com/watch?v=LpX0wbNtkC4\n7. Block unwanted callers. http://www.youtube.com/watch?v=hZwtQNKdWzk\n8. Screen callers before answering.\nhttp://www.youtube.com/watch?v=eF-7UTvwAXs\n9. Access the mobile app on your phone.\nhttp://www.youtube.com/watch?v=YSk9szCUDqA\n10. Conference call with co-workers.\nhttp://www.youtube.com/watch?v=QkNEntf6qdw\n\nYou can see all these videos at http://www.youtube.com/googlevoice .  And\nfor the latest news, check out our blog\nhttp://googlevoiceblog.blogspot.com/ .\n\n- The Google Voice Team\n\n--14dae9341179342ace04b7d82203\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<2012.01.24.privacy@notifications.google.com>',
+      timestamp: new Date('Thu Jan 26 2012 10:41:28 GMT-0500 (EST)'),
+      from: 'Google <privacy-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Changes to Google Privacy Policy and Terms of Service',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: 'Content-Transfer-Encoding: quoted-printable\n\nDear Google user,\n\nWe\'re getting rid of over 60 different privacy policies across Google\nand replacing them with one that\'s a lot shorter and easier to read.\nOur new policy covers multiple products and features, reflecting our\ndesire to create one beautifully simple and intuitive experience across\nGoogle.\n\nWe believe this stuff matters, so please take a few minutes to read our\nupdated Privacy Policy and Terms of Service at\nhttp://www.google.com/policies. These changes will take effect on\nMarch 1, 2012.\n\nOne policy, one Google experience\n__________________________________________________________________\n\nEasy to work across Google\n\nOur new policy reflects a single product experience that does what you\nneed, when you want it to. Whether reading an email that reminds you to\nschedule a family get-together or finding a favorite video that you\nwant to share, we want to ensure you can move across Gmail, Calendar,\nSearch, YouTube, or whatever your life calls for with ease.\n\nTailored for you\n\nIf you\'re signed into Google, we can do things like suggest search\nqueries =96 or tailor your search results =96 based on the interests you\'ve\nexpressed in Google+, Gmail, and YouTube. We\'ll better understand which\nversion of Pink or Jaguar you\'re searching for and get you those\nresults faster.\n\nEasy to share and collaborate\n\nWhen you post or create a document online, you often want others to see\nand contribute. By remembering the contact information of the people\nyou want to share with, we make it easy for you to share in any Google\nproduct or service with minimal clicks and errors.\n__________________________________________________________________\n\nProtecting your privacy hasn\'t changed\n\nOur goal is to provide you with as much transparency and choice as\npossible, through products like Google Dashboard and Ads Preferences\nManager, alongside other tools. Our privacy principles remain\nunchanged. And we\'ll never sell your personal information or share it\nwithout your permission (other than rare circumstances like valid legal\nrequests).\n\nUnderstand how Google uses your data\n\nIf you want to learn more about your data on Google and across the web,\nincluding tips and advice for staying safe online, check out\nhttp://www.google.com/goodtoknow\n\nGot questions? We got answers.\n\nVisit our FAQ at http://www.google.com/policies/faq to read more\nabout the changes. (We figured our users might have a question or\ntwenty-two.)\n__________________________________________________________________\n\nNotice of Change\n\nMarch 1, 2012 is when the new Privacy Policy and Terms will come into\neffect. If you choose to keep using Google once the change occurs, you\nwill be doing so under the new Privacy Policy and Terms of Service.\n\nPlease do not reply to this email. Mail sent to this address cannot be\nanswered. Also, never enter your Google Account password after\nfollowing a link in an email or chat to an untrusted site. Instead, go\ndirectly to the site, such as mail.google.com or\nwww.google.com/accounts. Google will never email you to ask for your\npassword or other sensitive information.\n\n\n--f46d04479fa1b2911f04b77036aa\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf300fb4c7fb064004b3ad9388@google.com>',
+      timestamp: new Date('Fri Dec 09 2011 14:13:20 GMT-0500 (EST)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nYour Google Takeout archive is ready -- please visit\nhttps://namadako.chi.corp.google.com/#downloads to download it. It will be\navailable for you to download at any time until around Dec 16, 2011. Thanks\nfor using Google Takeout!\n\n--20cf300fb4c7fb063804b3ad9385\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf300fb4c7fee2c804b4609fe1@google.com>',
+      timestamp: new Date('Sun Dec 18 2011 11:50:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Sun Dec 18 11am - 1pm (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf301cc37654c7ba04ce55cc77@google.com>',
+      timestamp: new Date('Mon Nov 12 2012 19:50:02 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 12 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf303640cdec9c5104b474bdbc@google.com>',
+      timestamp: new Date('Mon Dec 19 2011 11:50:02 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Mon Dec 19 11am - 1pm (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf30563d5b2b446604c2604e64@google.com>',
+      timestamp: new Date('Wed Jun 13 2012 16:19:50 GMT-0400 (EDT)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'New voicemail from (917) 359-5785 at 3:18 PM',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nVoicemail from:  (917) 359-5785 at 3:18 PM\n\nTranscript: Hello my phone. Croaker you called about. This is one of your\npotentially loyal subjects. 5. Yet.\n\nPlay message:\nhttps://www.google.com/voice/fm/01922096794354635956/AHwOX_CLfmn2ncD3-ZgtW…1Be8BAqhkra5K_ghB3AkYkQObk6XprZ6zwrQ\n\n\n--20cf30563d5b2b445904c2604e61\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf3074afc4d4c64504b39c30fd@google.com>',
+      timestamp: new Date('Thu Dec 08 2011 17:28:42 GMT-0500 (EST)'),
+      from: 'nobody@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Your Google Takeout archive is ready',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nYour Google Takeout archive is ready -- please visit\nhttps://namadako.chi.corp.google.com/#downloads to download it. It will be\navailable for you to download at any time until around Dec 15, 2011. Thanks\nfor using Google Takeout!\n\n--20cf3074afc4d4c63b04b39c30fa\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf3074d3226ba62404b364e3f7@google.com>',
+      timestamp: new Date('Mon Dec 05 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Takeout',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf307ca34a8a123e04be9543af@google.com>',
+      timestamp: new Date('Thu Apr 26 2012 09:49:59 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Bring Your Keds to Work @ Thu Apr 26 9am - 10am (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf307d0158c4aa7f04b4386418@google.com>',
+      timestamp: new Date('Fri Dec 16 2011 11:50:08 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Fri Dec 16 11am - 1pm (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<20cf307f313495edc904ccae83df@google.com>',
+      timestamp: new Date('Mon Oct 22 2012 19:50:10 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 22 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<447140032829666.0.8.1327418667752.f0c5f258-b876-4747-92d3-2cba5da04eb2@checkout.google.com>',
+      timestamp: new Date('Tue Jan 24 2012 10:24:27 GMT-0500 (EST)'),
+      from: 'Google Checkout <noreply@checkout.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Order receipt from Google ($5.00)',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: 'Content-Transfer-Encoding: quoted-printable\n\nNew! Google Checkout is now part of Google Wallet. Google Wallet makes\nbuying easy with one wallet for online, mobile and in-store shopping.\nLearn more\nHello Kari Ragnarsson,\n\nThanks for buying from Google using Google Checkout! Google will charge\nyour order soon.\n\nHow do I check on this order?\nGet up-to-date information about order #447140032829666\n\nProblems with this order?\nContact Google\n\nShop confidently\n\n- Continue shopping at Google.\n- Search for products using Google Product Search.\n\nOrder date: Jan 24, 2012 7:24 AM PST\nGoogle order number: 447140032829666 Shipping Status Qty Item Price\nDigital delivery 1 Google storage - 20 GB shared storage plan for\nthafunkypresident@gmail.com - expires on 1/24/2013 $5.00 Total: $5.00\n(includes Tax (IL) $0.00)\nPaid with: VISA xxx-2255\n\n\n\n\nNeed help? Visit the Google Checkout help center. Please do not reply\nto this message.\n\n=C2=A92012 Google\n------=_Part_8296_26517139.1327418667757\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<6d6c9b00.1333598325.000000.50513.1.EN_US.1efe7fd6@google.com>',
+      timestamp: new Date('Wed Apr 04 2012 23:58:45 GMT-0400 (EDT)'),
+      from: 'Google Wallet <wallet-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?utf-8?q?Google_Wallet_special_offer_today=3A_=245_for_=2410_at_Starbuck?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba3fced1c6826204cd9e3fc5@google.com>',
+      timestamp: new Date('Sat Nov 03 2012 17:51:05 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 4, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Nov 4, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…MGIzNmY0ZjZhNTE2M2MxNjZhOWUxMTA1Mg&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--90e6ba3fced1c6824e04cd9e3fc2\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba3fd369ba107c04ceb8b801@google.com>',
+      timestamp: new Date('Sat Nov 17 2012 17:51:15 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 18, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Nov 18, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…ZTc2YTIwNmQyNjJiMjc0ZGI4YzEwMTg0MA&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--90e6ba3fd369ba106f04ceb8b8fe\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba613b166f384604be82d275@google.com>',
+      timestamp: new Date('Wed Apr 25 2012 11:49:52 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Stand-Up Comedy @ Wed Apr 25 11am - 12pm (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba6e8a6462c27e04b16ae396@google.com>',
+      timestamp: new Date('Thu Nov 10 2011 19:49:06 GMT-0500 (EST)'),
+      from: 'JJ Lueck <jlueck@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba6e8a64eb1c9604b16ab2e8@google.com>',
+      timestamp: new Date('Thu Nov 10 2011 19:35:33 GMT-0500 (EST)'),
+      from: 'Nick Piepmeier <pieps@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba6e8b041cf9a904b178bb85@google.com>',
+      timestamp: new Date('Fri Nov 11 2011 12:20:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Hair of the dog @ Fri Nov 11 9:30am - 10:30am (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba6e8b4e39580804cd3b536d@google.com>',
+      timestamp: new Date('Mon Oct 29 2012 19:49:49 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Oct 29 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<90e6ba6e8ffca813ed04b24b41dc@google.com>',
+      timestamp: new Date('Mon Nov 21 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Takeout',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<CAGEZF3rAQzrCxoDMg2AvNwyMVnHn9SYWGW8TCeR5Y4v396cvEg@mail.gmail.com>',
+      timestamp: new Date('Thu May 17 2012 13:03:38 GMT-0400 (EDT)'),
+      from: 'JJ Lueck <jlueck@google.com>',
+      to: 'JJ Lueck <jlueck@google.com>',
+      subject: 'Sample video',
+      labels: 
+      [
+         'Retention5'
+      ],
+      attachments: 
+      [
+         {
+            model_: 'Attachment',
+            filename: 'VID_20120517_120114.mp4',
+            type: 'video/mp4',
+            position: 278513
+         }
+      ],
+      body: '\n\n\n--e89a8f3bad134558c304c03e6b5a\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<CICWhouSz7MCFQIMcgodsRwAAA@plus.google.com>',
+      timestamp: new Date('Wed Nov 14 2012 13:59:13 GMT-0500 (EST)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+',
+      body: '\nHi Chuck\nHere\'s the week\'s top content.\n\nBrian Fitzpatrick\'s post:\n\n"\nI can\'t decide if this is a NYT restaurant review or an Onion article."\n\n----\n\nNick Piepmeier\'s post:\n\n"Ooh! New Ubuntu for Android promo video Ubuntu for Android"\n\n----\n\n\nSuggestions for you: 6\n\nView all suggestions:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…exp=EXP_6&dt=1352919553317&src=1&ub=37\n\n------------------------\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…dsRwAAA&path=%2Fsettings%2Fplus&reexp=EXP_6&dt=1352919553317&ub=37\nGoogle Inc., 1600 Amphitheatre Pkwy, Mountain View, CA 94043 USA\n\n\n--047d7b60520262ec4804ce792185\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<CJC_sfWO-a4CFdOe3godwyYAAA@plus.google.com>',
+      timestamp: new Date('Wed Mar 21 2012 19:12:58 GMT-0400 (EDT)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<CJCljfaO-a4CFVIUQAoduS4AAA@plus.google.com>',
+      timestamp: new Date('Wed Mar 21 2012 19:13:00 GMT-0400 (EDT)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_and_Chuck_Finley_added_you_on_Googl?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<CKCRiOuG_bECFaRRQAodhlsAAA@plus.google.com>',
+      timestamp: new Date('Thu Aug 23 2012 01:49:48 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?Brian_Fitzpatrick=2C_K=E1ri_Ragnarsson=2C_and_1_other_sha?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<CKCSm57K5bICFeU3QAoduR0AAA@plus.google.com>',
+      timestamp: new Date('Wed Oct 03 2012 15:28:13 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Top 3 posts for you on Google+ this week',
+      body: '\nHi Chuck\nHere\'s the week\'s top content.\n\nBrian Fitzpatrick\'s post:\n\n"London to Brussels on the Eurostar. I love trains in Europe/ the UK."\n\n----\n\nNick Piepmeier\'s post:\n\n"Peoples Gas just cut me off because they can\'t distinguish between units 3N\nand 3S and don\'t verify normalized addresses with the customer before\ntransferring service.\n\nSo now I get to wait until mid next week for heat/hot water/laundry (if I\'m\nlucky) because of their inability to make their webapp work. Hooray."\n\n----\n\n\n------------------------\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…R0AAA&path=%2Fsettings%2Fplus&reexp=CONTROL&dt=1349292493781&ub=37\nGoogle Inc., 1600 Amphitheatre Pkwy, Mountain View, CA 94043 USA\n\n\n--f46d044630fcca499c04cb2ca3e3\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<CKjPwYmk2LECFaSIQAodWDUAAA@plus.google.com>',
+      timestamp: new Date('Wed Aug 08 2012 10:52:06 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Someone you might know on Google+',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<CLid-9Dl664CFZBU3godMxYAAA@plus.google.com>',
+      timestamp: new Date('Fri Mar 16 2012 12:03:40 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-daa26fef@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Getting started on Google+',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nHey Chuck,Welcome to Google+ - we\'re glad you\'re here! Here\'s a video and\nsome tips to help you get started:\n\n\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…FZBU3godMxYAAA&path=%2F%3Fpop%3Dwv%26hl%3Den&dt=1331913820156\n\n\nGetting started on Google+\nFind people you knowCircles are the heart of Google+ - they control who you\nshare with and whose posts you see.  Find people you know, then drag and\ndrop them into circles that match your real-world relationships.\n\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…9Dl664CFZBU3godMxYAAA&path=%2Fcircles%2Ffind&dt=1331913820156&src=1\n\nSee what people are sharingNow that you\'ve added people to your circles,\nvisit your stream to see what they\'re saying. When you find something you\nlike, add a comment or click +1 to just say "cool!"\n\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…7&emid=CLid-9Dl664CFZBU3godMxYAAA&path=%2Fstream&dt=1331913820156\n\nShare somethingTo post for the first time, click "Share what\'s new" - you\ncan include photos, videos, and links. Select the circles or people you\nwant to share with, or choose "Public" so that anyone can see what you have\nto say.\n\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…d=CLid-9Dl664CFZBU3godMxYAAA&path=%2Fstream&dt=1331913820156\n\n\nCongrats, you\'ve made it to the end of this epic email. If you\'re still\nseeking answers, check out the Google+ Help Center.\n\nhttp://www.google.com/support/+/?hl=en\n\nEnjoy! - The Google+ Team\n\n\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…th=%2Fsettings%2Fplus&dt=1331913820156\n\n--bcaec52be75d1fb9ab04bb5e5a59\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<CMCcgoLcvq8CFeiqQAodjxcAAA@plus.google.com>',
+      timestamp: new Date('Wed Apr 18 2012 11:31:36 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nHi Chuck\nHere\'s the week\'s top content.\n\nSuggestions for you: 6\n\nView all suggestions:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…ind&reexp=EXP_6&dt=1334763096942&src=1\n\n------------------------\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…%2Fplus&reexp=EXP_6&dt=1334763096942\n\n\n--90e6ba6e8b4c40b1bf04bdf5c0aa\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<CNDzu8GCq7MCFeITtAodT3gAAA@plus.google.com>',
+      timestamp: new Date('Wed Oct 31 2012 06:13:41 GMT-0400 (EDT)'),
+      from: '"Google+ team" <noreply-475ba29f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '6 people you might know on Google+',
+      body: '\nHi Chuck\nHere\'s the week\'s top content.\n\nBrian Fitzpatrick\'s post:\n\n"This is beautiful.\n\nTibetan Sand Mandala 2012"\n\n----\n\nNick Piepmeier\'s post:\n\n"Holycrapholycrapholycrap\n\n#SHUTUPANDTAKEMYMONEY  "\n\n----\n\n\nSuggestions for you: 6\n\nView all suggestions:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…exp=EXP_6&dt=1351678421843&src=1&ub=37\n\n------------------------\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…dT3gAAA&path=%2Fsettings%2Fplus&reexp=EXP_6&dt=1351678421843&ub=37\nGoogle Inc., 1600 Amphitheatre Pkwy, Mountain View, CA 94043 USA\n\n\n--f46d04447fc12f70f904cd5828cb\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec5014a3794cbd904c2708175@google.com>',
+      timestamp: new Date('Thu Jun 14 2012 11:39:32 GMT-0400 (EDT)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Change to your Google Voice account',
+      labels: 
+      [
+         'Personal',
+         'Retention5'
+      ],
+      body: '\nDear Chuck Finley,\nPlease note that the forwarding number (650) 390-3387 was deleted from your\nGoogle Voice account (thafunkypresident@gmail.com) because it was claimed\nand verified by another Google Voice user.\n\nIf you still want this forwarding number on your account and believe this\nwas an error, please click here to learn more\nhttp://www.google.com/support/voice/bin/answer.py?hl=en&answer=159519\n\n\nThanks,\nThe Google Voice Team\n\n--bcaec5014a3794cbce04c2708172\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec501c53c2fbaaf04b0ed2ca2@google.com>',
+      timestamp: new Date('Fri Nov 04 2011 14:50:01 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Liberate calendars @ Fri Nov 4 12pm - 1:50pm (Test calendar)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec501c53c679c1f04b364e340@google.com>',
+      timestamp: new Date('Mon Dec 05 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Dec 6 6:30am - 7:50am (Test calendar)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec501c53cc78f5b04b16aabb3@google.com>',
+      timestamp: new Date('Thu Nov 10 2011 19:33:33 GMT-0500 (EST)'),
+      from: 'Kari Ragnarsson <karir@google.com>',
+      to: '"thafunkypresident@gmail.com" <thafunkypresident@gmail.com>',
+      subject: 'Accepted: Test an event with organizers, attendees @ Thu Nov 10',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec517c9208aa5f104b2d812d6@google.com>',
+      timestamp: new Date('Mon Nov 28 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Test calendar)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec51d212c85365104b2d81266@google.com>',
+      timestamp: new Date('Mon Nov 28 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 29 6:30am - 7:50am (Takeout',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec51d255eaee00304be713937@google.com>',
+      timestamp: new Date('Tue Apr 24 2012 14:50:15 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Q1 2012 Board of NerfWarriors All Hands @ Tue Apr 24 2pm -',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec5299be37797a904bea961a1@google.com>',
+      timestamp: new Date('Fri Apr 27 2012 09:50:00 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Noogler Takes Day off for Moving @ Fri Apr 27 9am - 10am (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec5299fefa1506404b24b41ee@google.com>',
+      timestamp: new Date('Mon Nov 21 2011 23:30:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Breakfast at Macy\'s @ Tue Nov 22 6:30am - 7:50am (Test calendar)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec53d5bdde4412404c3510c0b@google.com>',
+      timestamp: new Date('Mon Jun 25 2012 15:33:02 GMT-0400 (EDT)'),
+      from: 'noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Ihr Google Datenexport-Archiv ist fertig.',
+      labels: 
+      [
+         'Personal',
+         'Retention5'
+      ],
+      body: '\nIhr Google Datenexport-Archiv ist fertig und steht bis zum 02.07.2012 unter\nhttps://takeout-qual.corp.google.com/takeout/#downloads zum Download\nbereit. Vielen Dank, dass Sie Google Datenexport verwenden.\n\n--bcaec53d5bdde4411904c3510c08\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<bcaec554029020b0cd04b44c82a8@google.com>',
+      timestamp: new Date('Sat Dec 17 2011 11:50:00 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Lunch break @ Sat Dec 17 11am - 1pm (thafunkypresident@gmail.com)',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<e89a8f2354859f367104c260115b@google.com>',
+      timestamp: new Date('Wed Jun 13 2012 16:02:55 GMT-0400 (EDT)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nHi there,\n\nThanks for signing up for Google Voice!  Your new Google number is (773)\n609-3865.\nHere are some things you can do to get started with Google Voice:\n1. Read transcriptions of voicemails.\nhttp://www.youtube.com/watch?v=fHuai7-jVlY\n2. Customize which phones ring. http://www.youtube.com/watch?v=1KSoxdtyc58\n3. Personalize greetings for different callers.\nhttp://www.youtube.com/watch?v=W1AHzu7CLkk\n4. Make cheap international calls.\nhttp://www.youtube.com/watch?v=y6Zy-Ande6I\n5. Forward SMS to email. http://www.youtube.com/watch?v=Ka3T0RXwIbw\n6. Share voicemails with friends. http://www.youtube.com/watch?v=LpX0wbNtkC4\n7. Block unwanted callers. http://www.youtube.com/watch?v=hZwtQNKdWzk\n8. Screen callers before answering.\nhttp://www.youtube.com/watch?v=eF-7UTvwAXs\n9. Access the mobile app on your phone.\nhttp://www.youtube.com/watch?v=YSk9szCUDqA\n10. Conference call with co-workers.\nhttp://www.youtube.com/watch?v=QkNEntf6qdw\n\nYou can see all these videos at http://www.youtube.com/googlevoice .  And\nfor the latest news, check out our blog\nhttp://googlevoiceblog.blogspot.com/ .\n\n- The Google Voice Team\n\n--e89a8f2354859f366804c2601158\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<e89a8f503824334bdc04c24d278d@google.com>',
+      timestamp: new Date('Tue Jun 12 2012 17:28:52 GMT-0400 (EDT)'),
+      from: 'Google Voice <voice-noreply@google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Welcome to Google Voice',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nHi there,\n\nThanks for signing up for Google Voice!  Your new Google number is (773)\n609-3865.\nHere are some things you can do to get started with Google Voice:\n1. Read transcriptions of voicemails.\nhttp://www.youtube.com/watch?v=fHuai7-jVlY\n2. Customize which phones ring. http://www.youtube.com/watch?v=1KSoxdtyc58\n3. Personalize greetings for different callers.\nhttp://www.youtube.com/watch?v=W1AHzu7CLkk\n4. Make cheap international calls.\nhttp://www.youtube.com/watch?v=y6Zy-Ande6I\n5. Forward SMS to email. http://www.youtube.com/watch?v=Ka3T0RXwIbw\n6. Share voicemails with friends. http://www.youtube.com/watch?v=LpX0wbNtkC4\n7. Block unwanted callers. http://www.youtube.com/watch?v=hZwtQNKdWzk\n8. Screen callers before answering.\nhttp://www.youtube.com/watch?v=eF-7UTvwAXs\n9. Access the mobile app on your phone.\nhttp://www.youtube.com/watch?v=YSk9szCUDqA\n10. Conference call with co-workers.\nhttp://www.youtube.com/watch?v=QkNEntf6qdw\n\nYou can see all these videos at http://www.youtube.com/googlevoice .  And\nfor the latest news, check out our blog\nhttp://googlevoiceblog.blogspot.com/ .\n\n- The Google Voice Team\n\n--e89a8f503824334bd404c24d278a\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<e89a8f646d8d39d31304cc848366@google.com>',
+      timestamp: new Date('Sat Oct 20 2012 17:43:36 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 21, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Oct 21, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…NGYzZDZkM2U5Yzg1N2Q0NTVlNjE0NzMzZQ&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--e89a8f646d8d39d30304cc848363\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<e89a8fb209020c517b04cd1160d6@google.com>',
+      timestamp: new Date('Sat Oct 27 2012 17:46:56 GMT-0400 (EDT)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Oct 28, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Oct 28, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…MWQ2MmEyNzE0NDM5MTZjZjQ5NTUyNmI0ZQ&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--e89a8fb209020c516d04cd1160d3\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<e89a8fb209024f1dee04ce2bcb79@google.com>',
+      timestamp: new Date('Sat Nov 10 2012 17:43:16 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Croissants! @ Sun Nov 11, 2012 (thafunkypresident@gmail.com)',
+      body: '\nThis is a reminder for:\n\nTitle: Croissants!\nWhen: Sun Nov 11, 2012\nCalendar: thafunkypresident@gmail.com\nWho:\n     * thafunkypresident@gmail.com - organizer\n\nEvent details:\nhttps://www.google.com/calendar/event?action=VIEW&eid=dHNscWFxNzZtOWhlOG9u…ODZiOWRlOTcxZjlkNjNkZWQ4MjAyNmE2Yw&ctz=America/Chicago&hl=en\n\nInvitation from Google Calendar: https://www.google.com/calendar/\n\nYou are receiving this email at the account thafunkypresident@gmail.com\nbecause you are subscribed for reminders on calendar\nthafunkypresident@gmail.com.\n\nTo stop receiving these notifications, please log in to\nhttps://www.google.com/calendar/ and change your notification settings for\nthis calendar.\n\n--e89a8fb209024f1de304ce2bcb76\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<f46d0447a119a8202004cee29ced@google.com>',
+      timestamp: new Date('Mon Nov 19 2012 19:49:53 GMT-0500 (EST)'),
+      from: 'Google Calendar <calendar-notification@google.com>',
+      to: 'Chuck Finley <thafunkypresident@gmail.com>',
+      subject: 'Reminder: Dinner! @ Mon Nov 19 7pm - 9pm (thafunkypresident@gmail.com)'
+   },
+   {
+      model_: 'EMail',
+      id: '<lUgZ3Ci8JG5CBa1yZhhUag@notifications.google.com>',
+      timestamp: new Date('Sun Sep 30 2012 07:02:09 GMT-0400 (EDT)'),
+      from: 'wmt-noreply@google.com',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Email notifications from Google Webmaster Tools'
+   },
+   {
+      model_: 'EMail',
+      id: '<z124fdhydsj5iptzm04cfv3yqmnhcjkhlkc0k@plus.google.com>',
+      timestamp: new Date('Fri May 04 2012 14:16:42 GMT-0400 (EDT)'),
+      from: '"Google+" <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Presidentia?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<z12rc1hhzrqseniqt04ch3xrztzhgtngdog0k@plus.google.com>',
+      timestamp: new Date('Wed Mar 21 2012 17:28:33 GMT-0400 (EDT)'),
+      from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: If anyone is reading this, please bring me...',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nChuck Finley commented on your post.\n\n"Yup!"\n\nView the full post to comment:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=103411841840063…%2Fposts%2FC9i5VEt17EA&dt=1332365313886\n\n------------------------\nClick here to mute this post:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=103411841840063…tngdog0k%3Fmute%3Dz12lshbacufoybp22234sbc5oniqzx1h404&dt=1332365313886\nOr follow this link to update your Google+ notifications settings:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=103411841840063…d=CPj2-sn3-K4CFQ5Q3godzwYAAA&path=%2Fsettings%2Fplus&dt=1332365313886\nYou can\'t reply to this email.\nView the post to add a comment:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=103411841840063…s%2FC9i5VEt17EA&dt=1332365313886\n\n\n\n\n--0015174bdfdc3ee13c04bbc779bc\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<z12wfbjwjpjxs1gw004cfv3yqmnhcjkhlkc0k@plus.google.com>',
+      timestamp: new Date('Fri May 04 2012 14:16:46 GMT-0400 (EDT)'),
+      from: '"Google+" <noreply-3467b12d@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: '=?ISO-8859-1?Q?K=E1ri_Ragnarsson_is_now_a_manager_of_the_Funky_presi?=',
+      labels: 
+      [
+         'Retention5'
+      ]
+   },
+   {
+      model_: 'EMail',
+      id: '<z130i32htrqgfvc0g23czhzyjvfagv2h304@plus.google.com>',
+      timestamp: new Date('Wed Mar 21 2012 17:28:50 GMT-0400 (EDT)'),
+      from: '"Chuck Finley (Google+)" <noreply-138cdc6f@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Re: I could really use a generously crafter bologna...',
+      labels: 
+      [
+         'Retention5'
+      ],
+      body: '\nChuck Finley commented on your post.\n\n"Get back to work!"\n\nView the full post to comment:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=115339915056926…%2Fposts%2FD1KWzqD6RRN&dt=1332365330385\n\n------------------------\nClick here to mute this post:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=115339915056926…agv2h304%3Fmute%3Dz12qwpz5blfbuvsub22rfl4ipmrjvfgr104&dt=1332365330385\nOr follow this link to update your Google+ notifications settings:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=115339915056926…d=CICJ6tH3-K4CFcQaQAod13cAAA&path=%2Fsettings%2Fplus&dt=1332365330385\nYou can\'t reply to this email.\nView the post to add a comment:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=115339915056926…s%2FD1KWzqD6RRN&dt=1332365330385\n\n\n\n\n--e89a8f3ba1793a95e504bbc77a13\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<z130v3mqmui1spu0g23xensaly3zu1y3d@plus.google.com>',
+      timestamp: new Date('Mon Sep 24 2012 17:33:06 GMT-0400 (EDT)'),
+      from: '"Google+" <noreply-1670dad1@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'Brian Willard added you on Google+',
+      body: '\nFollow and share with Brian by adding him to a circle.\n\nDon\'t know some of these people? You don\'t have to add them back (they\'ll\njust see the stuff you share publicly). Learn more:\nhttp://www.google.com/support/+/bin/answer.py?answer=1047805\n\nAdd to circles:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…9780586379900038&dt=1348522386261&ub=1\n\n------------------------\nChange what email Google+ sends you:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…ta6Vz7ICFfQiQAodCTkAAA&path=%2Fsettings%2Fplus&dt=1348522386261&ub=1\nView Brian\'s profile:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…CFfQiQAodCTkAAA&path=%2F109179780586379900038&dt=1348522386261&ub=1\nBlock Brian completely:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…2Fop%2Fblock&dt=1348522386261&ub=1\n\n\n\n--14dae9341269ce1af604ca795562\n'
+   },
+   {
+      model_: 'EMail',
+      id: '<z13wjl1plujcftb0323xensaly3zu1y3d@plus.google.com>',
+      timestamp: new Date('Tue Sep 25 2012 11:35:49 GMT-0400 (EDT)'),
+      from: '"Brian Willard (Google+)" <replyto-7b45ec87@plus.google.com>',
+      to: 'thafunkypresident@gmail.com',
+      subject: 'July 10, 2012 (5 photos)',
+      body: '\nBrian Willard shared Chuck Finley\'s post with you.\n\n"Just a test Re-share"\n\nChuck Finley\'s post:\n\nView the full post to comment:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…ts%2FYLTpH3WvJRQ&dt=1348587349800&ub=21\n\n------------------------\nClick here to mute this post:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…Fmute%3Dz131xf0q2yzdjdexv04cjpej0ubsjzcbsh4&dt=1348587349800&ub=21\n\nMute Brian Willard to stop receiving notifications from him.\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…AAA&path=%2F109179780586379900038%2Fop%2Fmute&dt=1348587349800&ub=21\n\nOr follow this link to update your Google+ notifications settings:\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…0bICFQZu3AodThkAAA&path=%2Fsettings%2Fplus&dt=1348587349800&ub=21\n\nReply to this email to comment, or view post.\nhttps://plus.google.com/_/notifications/emlink?emrecipient=114004332105602…179780586379900038%2Fposts%2FYLTpH3WvJRQ&dt=1348587349800&ub=21\n\nPrivacy tip: Protect your info. Remove your email signature before you\nreply.\n\n\n\n\n--e89a8ff1cadeef09ec04ca88752b\n'
+   }
+]);
+
+
+    var dao = IDAO.create({model: EMail});
+    dao.addIndex(EMail.TIMESTAMP);
+    dao.addIndex(EMail.TO);
+    dao.addIndex(EMail.FROM);
+    dao.addIndex(EMail.SUBJECT);
+
+    var d1 = dao;
+    var d2 = emails;
+
+    // Quick hack to make search work on each keystroke
+    // TODO: make option of TextSearchView
+    DomValue.DEFAULT_EVENT = 'keyup';
+
+    table = ScrollBorder.create({
+      view: TableView2.create({
+        model: EMail,
+        dao: dao,
+        rows: 20
+      }),
+      dao: dao
+    });
+
+    var searchSubject = TextSearchView.create({width:57, label: 'Search', property: CONCAT(EMail.SUBJECT, EMail.BODY)});
+    var byTo     = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
+    var byFrom   = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
+    var byLabel  = GroupBySearchView.create({size: 6, dao: dao, property: EMail.LABELS});
+
+    browse.innerHTML = table.toHTML();
+    searchSubject.insertInElement('subjectSearch');
+    byTo.insertInElement('toSearch');
+    byFrom.insertInElement('fromSearch');
+    byLabel.insertInElement('labelSearch');
+
+    table.initHTML();
+
+    table.view.selection.addListener(function (src, property, oldValue, newValue) {
+       if ( ! newValue ) return;
+       var editView = SummaryView.create(table.view.selection);
+       editView.model = EMail;
+       edit.innerHTML = editView.toHTML();
+       editView.initHTML();
+    });
+
+    table.view.selection.set(table.view.objs[0]);
+
+    layout();
+
+    function updateQuery() {
+      var predicate = AND(
+        searchSubject.predicate,
+        byFrom.predicate,
+        byTo.predicate,
+        byLabel.predicate).partialEval();
+
+      // console.log('query: ', predicate.toSQL());
+
+      table.scrollbar.value = 0;
+      table.dao = dao.where(predicate);
+
+      byFrom.filter  = AND(searchSubject.predicate, byTo.predicate,   byLabel.predicate).partialEval();
+      byTo.filter    = AND(searchSubject.predicate, byFrom.predicate, byLabel.predicate).partialEval();
+      byLabel.filter = AND(searchSubject.predicate, byTo.predicate,   byFrom.predicate).partialEval();
+    }
+
+    Events.dynamic(function() {
+      searchSubject.predicate;
+      byFrom.predicate;
+      byTo.predicate;
+      byLabel.predicate;
+    },
+    updateQuery);
+
+    function resetSearch() {
+      byFrom.view.value.set(''); byTo.view.value.set(''); byLabel.view.value.set('');
+      byFrom.filter = byTo.filter = byLabel.filter = TRUE;
+      table.dao = dao;
+    }
+
+    function switchHands() { reversed = ! reversed; layout(); }
+
+    function loadmbox(event) {
+      emails.remove(TRUE); // this only works with storagedao because its synchronous
+      var file = event.target.files[0];
+
+      MBOXLoader.dao = emails;
+      SourceBlob(file, BlobToText(TextToLines(MBOXLoader)));
+    }
+
+    var a = [];
+    emails.select(a)(function() {
+      console.log('********************************************** loaded');
+      // Copy values from the array into the dao in an order
+      // which will cause a balanced tree to be created.
+      function bcopy(s,e) {
+        if ( s == e ) dao.put(a[s]);
+        if ( e <= s ) return;
+        var m = Math.floor((s+e)/2);
+        dao.put(a[m]);
+        bcopy(s,m-1);
+        bcopy(m+1,e);
+      }
+      bcopy(0, a.length-1);
+      a = undefined;
+
+      console.log('********************************************** inserted');
+      layout();
+      byTo.dao = byTo.dao;
+      byFrom.dao = byFrom.dao;
+      byLabel.dao = byLabel.dao;
+      resetSearch();
+    });
+
+
+  </script>
+</body>
+</html>
