@@ -48,3 +48,7 @@ IDAO
 ??? What does it mean to order by a multi-value field?
   Does the record appear once for each value?
 ??? What if a record has value for a multi-value field?
+
+Need a case-insensitive Index
+  could be done with a Property decorator
+  ie. TreeIndex(CI(Issue.status)), not good enough
