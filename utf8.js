@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
+String.fromCharCode = (function() {
+  var oldLookup = String.fromCharCode;
+  var lookupTable = [];
+  return function(a) {
+    if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    var result = "";
+    for (var i = 0; i < arguments.length; i++) {
+      result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
+    }
+    return result;
+  };
+})();
+
 // WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
 function utf8tostring(bytes) {
     var first;
-    var chars = [];
+    var chars = "";
     var j = 0;
     for (var i = 0; i < bytes.length; i++) {
         var charcode = 0;
@@ -45,12 +58,12 @@ function utf8tostring(bytes) {
         for (var j = 0; j < remaining && j + i < bytes.length; j++) {
             charcode |= (bytes[i+j] & 0x7f) << (6 * j);
         }
-        chars.push(charcode);
+        // NOTE: Turns out fromCharCode can't handle all unicode code points.
+        // We need fromCodePoint from ES 6 before this will work properly.
+        // However it should be good enough for most cases.
+        chars += String.fromCharCode(charcode);
     }
-    // NOTE: Turns out fromCharCode can't handle all unicode code points.
-    // We need fromCodePoint from ES 6 before this will work properly.
-    // However it should be good enough for most cases.
-    return String.fromCharCode.apply(undefined, chars);
+    return chars;
 }
 
 function stringtoutf8(str) {

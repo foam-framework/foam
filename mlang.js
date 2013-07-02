@@ -103,6 +103,15 @@ var FALSE = (FOAM.create({
    }
 })).create();
 
+var IDENTITY = (FOAM.create({
+    model_: 'Model',
+    extendsModel: 'EXPR',
+    name: 'IDENT',
+    methods: {
+        f: function(obj) { return obj; },
+        toString: function() { return 'IDENTITY'; }
+    }
+})).create();
 
 /** An n-ary function. **/
 var NARY = FOAM.create({

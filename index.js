@@ -642,7 +642,7 @@ var IDAO = FOAM.create({
 
     put: function(obj, sink) {
       this.root = this.index.put(this.root, obj);
-      // TODO: notify
+      this.notify_('put', obj);
     },
 
     find: function(key, sink) {
@@ -665,4 +665,3 @@ var IDAO = FOAM.create({
 
    }
 });
-

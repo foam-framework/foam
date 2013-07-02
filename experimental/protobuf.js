@@ -83,7 +83,7 @@ function varintstring(opt_value) {
       if (str.length == 1) str = "0" + str;
       parts.push(str);
       ps = ps.tail;
-      if (!(b & 0x80)) break;
+      if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
     }
     var result = parts.join('');
     if (opt_value && result !== opt_value) return undefined;

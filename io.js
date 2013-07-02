@@ -145,8 +145,7 @@ var TextReader = {
     create: function(reader) {
         return {
             __proto__: this,
-            reader: reader,
-            sink: sink
+            reader: reader
         }
     },
 

@@ -376,7 +376,7 @@ String.prototype.intern = (function() {
 })();
 
 /**
- * And an afunc send to XMLHttpRequest
+ * Add an afunc send to XMLHttpRequest
  */
 XMLHttpRequest.prototype.asend = function(ret, opt_data) {
     var xhr = this;

@@ -114,7 +114,7 @@ var ProtoBufGrammar = {
 
   hexEscape: seq('\\', alt('x', 'X'), repeat(alt(range('A','F'), range('a', 'f'), range('0', '9'), undefined, 1,2))), 
 
-  octEscape: seq('\\0', repeat(range('0', '7'), undefined, 1, 3)), 
+  octEscape: seq('\\0', repeat(range('0', '7'), undefined, 1, 3)),
 
   charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')),
 
@@ -137,9 +137,10 @@ console.log('enumField', a[0], a[2]);
     var values = a[3];
     for ( var i = 0 ; i < values.length ; i++ ) {
       var value = values[i];
-      e[value[0]] = parseInt(value[1]);
-    } 
-    (this.ctx || GLOBAL)[name] = e; 
+      e[value[0]] = value[1][1];
+    }
+    e.type = 'Enum';
+    (this.ctx || GLOBAL)[name] = e;
   },
 
   userType: function(a) {
@@ -162,10 +163,12 @@ console.log('enumField', a[0], a[2]);
         properties.push(a[2][i]);
       }
     }
-    return Model.create({
+    var model = Model.create({
       name: a[1],
       properties: properties
     });
+    (this.ctx || GLOBAL)[a[1]] = model;
+    return model;
   },
 
   messageBody: function(a) { return a[1]; },
