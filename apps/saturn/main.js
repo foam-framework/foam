@@ -4,6 +4,18 @@ var searchField = TextFieldView.create({
 });
 searchField.insertInElement('searchField');
 
+// TODO: set real query strings
+var searchChoice = ChoiceView.create({
+   choices:[
+     ["",                    "Inbox"],
+     ["labels:Personal",     "Starred"],
+     ["labels:Retention5",   "Drafts"],
+     ["subject:star",        "Spam"],
+     ["subject:lunch",       "Trash"]
+   ]
+});
+searchChoice.insertInElement('searchChoice');
+
 EMail.ATTACHMENTS.compare = function(o1, o2) {
    return this.f(o1).length - this.f(o2).length;
 };
@@ -93,10 +105,11 @@ table.view.selection.addListener(function (src, property, oldValue, newValue) {
 var queryParser = QueryParserFactory(EMail);
 
 function performQuery() {
-   console.log('********************************* query: ', searchField.value.get());
-   var predicate =
-      (queryParser.parseString(searchField.value.get()) || TRUE)
-      .partialEval();;
+   console.log('********************************* query: ', searchChoice.value.get(), searchField.value.get());
+   var predicate = AND(
+      queryParser.parseString(searchChoice.value.get()) || TRUE,
+      queryParser.parseString(searchField.value.get()) || TRUE)
+      .partialEval();
 
    console.log('query: ', predicate.toSQL());
 
@@ -107,6 +120,7 @@ function performQuery() {
 }
 
 searchField.value.addListener(performQuery);
+searchChoice.value.addListener(performQuery);
 
 layout();
 
