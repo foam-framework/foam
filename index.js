@@ -436,6 +436,32 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
 
 };
 
+/** Case-Insensitive TreeIndex **/ 
+var CITreeIndex = {
+  __proto__: TreeIndex,
+
+  create: function(prop, tail) {
+    tail = tail || ValueIndex;
+
+    return {
+      __proto__: this,
+      prop: prop,
+      tail: tail
+    };
+  },
+
+  put: function(s, newValue) {
+    return this.putKeyValue(s, this.prop.f(newValue).toLowerCase(), newValue);
+  },
+
+  remove: function(s, value) {
+     return this.removeKeyValue(s, this.prop.f(value).toLowerCase(), value);
+  },
+
+
+};
+
+
 var SetIndex = {
   __proto__: TreeIndex,
 
@@ -468,45 +494,6 @@ var SetIndex = {
   }
 
 };
-
-/*
-
-var SetIndex = {
-  create: function(prop, tail) {
-    tail = tail || UniqueIndex;
-    return {
-      __proto__: this,
-      prop: prop,
-      tail: tail,
-      set: {
-        __proto__: OrderedSet.create(prop),
-        createValue_: function(obj) { return [obj[0], tail.createValue_(obj[1])]; },
-        updateValue_: function(oldObj, newObj) { oldObj[1] =  tail.updateValue_(oldObj[1], newObj[1]); return oldObj; },
-	selectValue_: function(obj, sink) { tail.selectValue_(obj[1], sink); },
-	getValue_: function(obj) { return tail.getValue_(obj[1]); },
-	valueSize_: function(obj) { return tail.valueSize_(obj[1]); },
-        compare: function(o1, o2) { return o1[0].compareTo(o2[0]); }
-      }
-    };
-  },
-
-  put: function(obj) { this.put_(this.set.root, obj); },
-  select: function(sink) { this.select_(this.set.root, sink); },
-
-  put_: function(s, obj) {
-    var l = this.prop.f(obj);
-    for ( var i = 0 ; i < l.length ; i++ ) {
-      this.set.put_(s, [l[i], obj]);
-    }
-  },
-  select_: function(s, sink) {
-     // TODO: this will only be called with a 'SetIndex' query
-    this.set.select_(s, sink);
-  },
-  get_: function(s) { return s[0]; }
-};
-
- */
 
 
 var AltIndex = {
