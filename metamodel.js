@@ -699,7 +699,7 @@ var Action = FOAM.create({
 	   type: 'String',
 	   displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
+	   defaultValueFn: function() { return this.name.labelize(); },
 	   help: 'The display label for the action.'
        },
        {
