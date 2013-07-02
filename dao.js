@@ -519,6 +519,23 @@ for ( var key in AbstractDAO.methods ) {
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {
+  removeF: function(p) {
+    var a = this.clone();
+    for (var i = 0; i < a.length; i++) {
+      if (p(a[i])) a.splice(i, 1);
+    }
+    return a;
+  },
+  removeI: function(p) {
+    for (var i = 0; i < a.length; i++) {
+      if (p(this[i])) this.splice(i, 1);
+    }
+    return this;
+  },
+  pushF: function(obj) {
+    var a = this.clone();
+    return a.push(obj);
+  },
   clone: function() {
     var a = this.slice(0);
     for ( var i = 0 ; i < a.length ; i++ ) {

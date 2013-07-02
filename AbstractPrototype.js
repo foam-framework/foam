@@ -212,47 +212,48 @@ console.log(i, k, v);
       var prop = this.model_.properties[i];
       var tag = prop.prototag;
       if (typeof(tag) !== 'number') continue; // Skip properties with no protobuf tag.
-      var value = this[prop.name];
+      var values = this[prop.name];
+      if (!Array.isArray(values)) {
+        values = [values];
+      }
 
-      // Skip unset values, this may need to be revisited if some protos
-      // require an empty string be present for whatever reason.
-      if (value === "") continue;
+      for (var j = 0; j < values.length; j++) {
+        var value = values[j];
+        // Skip unset values, this may need to be revisited if some protos
+        // require an empty string be present for whatever reason.
+        if (value === "") continue;
 
-      var bytes;
-      var data;
-      switch(prop.type) {
-        case 'string':
-          out.varint((tag << 3) | 2);
-          bytes = stringtoutf8(value);
-          out.varint(bytes.length);
-          out.bytes(bytes);
-          break;
-        case 'uint32':
-        case 'uint64':
-        case 'int32':
-        case 'int64':
-          out.varint(tag << 3);
-          out.varint(value);
-          break;
-        case 'bool':
-          out.varint(tag << 3);
-          out.varint(Number(value));
-          break;
-        case 'ByteString':
-          out.varint(tag << 3);
-          out.bytestring(value);
-          break;
-        default: // Sub messages must be modelled.
-          if (!value) {
-          } else if (Array.isArray(value)) {
-            for (var j = 0; j < value.length; j++) {
-              out.varint(tag << 3 | 2);
-              out.message(value[i]);
-            }
-          } else if (value.model_) {
+        var bytes;
+        var data;
+        switch(prop.type) {
+          case 'string':
             out.varint((tag << 3) | 2);
-            out.message(value);
-          }
+            bytes = stringtoutf8(value);
+            out.varint(bytes.length);
+            out.bytes(bytes);
+            break;
+          case 'uint64':
+          case 'int64':
+          case 'uint32':
+          case 'int32':
+            out.varint(tag << 3);
+            if (value instanceof String || typeof value == 'string') out.bytestring(value);
+            else out.varint(value);
+            break;
+          case 'bool':
+            out.varint(tag << 3);
+            out.varint(Number(value));
+            break;
+          case 'ByteString':
+            out.varint(tag << 3);
+            out.bytestring(value);
+            break;
+          default: // Sub messages must be modelled.
+            if (value && value.model_) {
+              out.varint((tag << 3) | 2);
+              out.message(value);
+            }
+        }
       }
     }
   },

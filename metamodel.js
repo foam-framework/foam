@@ -269,20 +269,32 @@ var Model = {
                var p;
                switch(prop.type) {
                  case 'uint32':
-                 case 'uint64':
                  case 'int32':
-                 case 'int64':
                  p = protouint32(prop.prototag);
                  break;
+                 case 'uint64':
+                 case 'int64':
+                 p = protovarintstring(prop.prototag);
+                 break;
                  case 'boolean':
+                 case 'bool':
                  p = protobool(prop.prototag);
                  break;
                  case 'string':
                  p = protostring(prop.prototag);
                  break;
+                 case 'bytes':
+                 p = protobytes(prop.prototag);
+                 break;
                  default:
                  var model = GLOBAL[prop.type];
                  if (!model) throw "Could not find model for " + prop.type;
+
+                 // HUGE HACK UNTIL ENUMS ARE BETTER IMPLEMENTED
+                 if (model.type == 'Enum') {
+                     p = protouint32(prop.prototag);
+                     break;
+                 }
                  p = protomessage(prop.prototag, model.protoparser.export('START'));
                }
 
@@ -301,7 +313,12 @@ var Model = {
                var createArgs = {};
                for (var i = 0, field; field = a[i]; i++) {
                  if (!field[0] || field[0].TYPE != 'Property') continue;
-                 createArgs[field[0].name] = field[1];
+                 if (createArgs[field[0].name]) {
+                   if (!Array.isArray(createArgs[field[0].name])) createArgs[field[0].name] = [createArgs[field[0].name]];
+                   else createArgs[field[0].name].push(field[1]);
+                 } else {
+                   createArgs[field[0].name] = field[1];
+                 }
                }
                return self.create(createArgs);
              });
