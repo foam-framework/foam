@@ -8,15 +8,11 @@ Finish moving to AbstractView Model.
 
 fix uses of 'eid'
 Replace getID() with .id
-Replace element() with element
 add isInitialized() to AbstractView
 
 Model all views.
 Rename View.get/setValue to 'value' property.
-Add 'super' support.
 
-Implement type support.
-Support for generating default values (like 'label').
 Add asserts to methods (including type-checking?).
 Move extension methods out of context.js
 
@@ -31,9 +27,9 @@ sub-contexts?
 Add 'Constants' to Model.  (Currently can be defined as methods.)
 
 
-Fix up CView hierarchy.  Do we need an AbsstractCView that 
+Fix up CView hierarchy.  (DONE: Do we need an AbstractCView that 
 implements 'View' so individual CViews can be used without
-a Canvas container.  Also, standardize position, size, rotation, 
+a Canvas container.)  Also, standardize position, size, rotation, 
 etc.
 
 
@@ -53,19 +49,15 @@ Need a case-insensitive Index
   ie. TreeIndex(CI(Issue.status)), not good enough
 
 
-
 ability to bind any property to a formula/function
   with decorators for things like memoization, TTL, etc.
 
 TO-Reader
 attachments
 html bodies
-FileDAO of Messages
-Apps V2 App
-test WebWorker performance for top-level DAO
+FileDAO of Messages or Merge like Saturn
 full-text search
-L&F, including Logo
-make own stylesheet
+Needs Logo
 internationalization
 parse multiple addresses in 'to'
 needs better end-of-attachment handling so it doesn't detect and parse emails embeded as attachments in other emails
@@ -77,17 +69,12 @@ AbstractView2 migration
 Node.js boot hack
 Client/Server DAO
 MDAO
-DAO2 Unit Tests
+DAO Unit Tests
 Feature-Oriented Migration
 Generic Search Controller
 Scroll-Wheel Support
-<Type>Properties
 
-
-
-Fix/Finish AltView CSS
 Fix reloading Models in modeller.html
-FOAM.create is not the same as Model.create because M.c doesn't FOAM-ify inner-objects
 
 experiment: have models be constructor functions
 
@@ -96,28 +83,17 @@ UnitTest.test() doesn't appear to run on the real Object.
 Finish and switch to FunctionView2
 
 Allow view prototypes to be defined in the model.
-Support 'super' methods.
 
 Add 'units' support to DetailView.
 
 
 Support HTML5 form types:
   http://html5doctor.com/html5-forms-input-types/
-
-
-SetIndex & OrderBy bug
-
+  http://www.w3schools.com/html/html5_form_input_types.asp
 
 Sandbox body webview in Saturn and allow for JS executables (ie. games)
 
-
 Index: could have a distribution type which doesn't actually index the data but helps to improve plan costing
-
-http://www.w3schools.com/html/html5_form_input_types.asp
-
-
-BUG: @ index.js line 225 doesn't remove the whole sub-tree
-
 
 implement default model_ for array properties
 
