@@ -132,9 +132,9 @@ function layout() {
 window.onresize = layout;
 layout();
 
-    emails = IndexedDBDAO.create({model: EMail});
+    emails = IDBDAO.create({model: EMail});
 
-    var dao = IDAO.create({model: EMail});
+    var dao = MDAO.create({model: EMail});
     dao.addIndex(EMail.TIMESTAMP);
     // dao.addIndex(EMail.CONV_ID);
     dao.addIndex(EMail.TO);
@@ -188,7 +188,7 @@ layout();
          asynchronized(aseq(
 //          alog('select ', sink, options && options.query && options.query.toSQL() || 'TRUE', options && options.skip, options && options.limit),
 //          atime('indexedDB', arepeat(1, function(ret) { d2.select(s, options)(ret); }), function(p) { idbPerf = p; }),
-//          alog('indexedDB to IDAO'),
+//          alog('indexedDB to MDAO'),
 //          atime('idao', arepeat(100, function(ret) { d1.select(s, options)(ret); }), function(p) { console.log(idbPerf + ',' + (p/1000)); }),
           function(ret) { d1.select(sink, options)(function(v) { future.set(sink); ret(); }); }
         ),lock)(anop);
@@ -318,7 +318,7 @@ layout();
       resetSearch();
     });
 
-
+   TemplateUtil = undefined;
   </script>
 </body>
 </html>

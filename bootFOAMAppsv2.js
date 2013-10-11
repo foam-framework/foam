@@ -18,15 +18,22 @@ var files = [
     'FOAMmodels'
 ];
 
-var withFOAM = function(cb) {
+if ( ! this.FOAM_BOOT_DIR ) FOAM_BOOT_DIR = '/';
+
+var withFOAM = function(extra, cb) {
+   var script;
     (function loadNextFile() {
+        if ( script ) document.body.removeChild(script);
         var file = files.shift();
         if (!file) {
-            cb();
-            return;
+            file = extra.shift();
+            if (!file) {
+                cb();
+                return;
+            }
         }
         var script = document.createElement('script');
-        script.src = file + '.js';
+        script.src = FOAM_BOOT_DIR + file + '.js';
         script.onload = loadNextFile;
         document.body.appendChild(script);
     })();

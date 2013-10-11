@@ -1,18 +1,76 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+function KeyboardShortcutController(win, view) {
+  this.contexts_ = {};
+  this.body_ = {};
+
+  this.processView_(view);
+
+  win.addEventListener('keydown', this.processKey_.bind(this));
+}
+
+KeyboardShortcutController.prototype.processView_ = function(view) {
+  var keyShortcuts = view.shortcuts;
+  if (keyShortcuts) {
+    keyShortcuts.forEach(function(nav) {
+      var key = nav[0];
+      var cb = nav[1];
+      var context = nav[2];
+      this.addAccelerator(key, cb, context);
+    }.bind(this));
+  }
+
+  try {
+    var children = view.children;
+    children.forEach(this.processView_.bind(this));
+  } catch(e) { console.log(e); }
+};
+
+KeyboardShortcutController.prototype.addAccelerator = function(key,
+                                                               callback,
+                                                               context) {
+  if (context) {
+    if (typeof(context) != 'string')
+      throw "Context must be an identifier for a DOM node.";
+    if (!(context in this.contexts_))
+      this.contexts_[context] = {};
+
+    this.contexts_[context][key] = callback;
+  } else {
+    this.body_[key] = callback;
+  }
+};
+
+KeyboardShortcutController.prototype.shouldIgnoreKeyEventsForTarget_ = function(event) {
+  var target = event.target;
+  if (target.isContentEditable)
+    return true;
+  return target.tagName == 'INPUT' ||
+         target.tagName == 'TEXTAREA';
+};
+
+KeyboardShortcutController.prototype.processKey_ = function(event) {
+  if (this.shouldIgnoreKeyEventsForTarget_(event))
+    return;
+
+  for (var node = event.target; node && node != document.body; node =
+       node.parentNode) {
+    var id = node.id;
+    if (id && (id in this.contexts_)) {
+      var cbs =  this.contexts_[id];
+      if (event.keyIdentifier in cbs) {
+        var cb = cbs[event.keyIdentifier];
+        cb(event);
+        event.preventDefault();
+        return;
+      }
+    }
+  }
+  console.log('Looking for ' + event.keyIdentifier);
+  if (event.keyIdentifier in this.body_) {
+    var cb = this.body_[event.keyIdentifier];
+    cb(event);
+    event.preventDefault();
+  }
+};
 
 var DOM = {
   setClass: function(e, className, opt_enabled) {
@@ -27,8 +85,7 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // TODO: model, document
 // properties: children, parent, value, eid,
-var AbstractView =
-{
+var AbstractView = {
    __proto__: AbstractPrototype,
 
     init: function() {
@@ -98,9 +155,15 @@ var AbstractView =
 
     write: function(document) {
        // Write the View's HTML to the provided document and then initialize.
-
        document.writeln(this.toHTML());
        this.initHTML();
+    },
+
+    /** Insert this View's toHTML into the Element of the supplied name. **/
+    insertInElement: function(name) {
+      var e = $(name);
+      e.innerHTML = this.toHTML();
+      this.initHTML();
     },
 
     initHTML: function() {
@@ -143,13 +206,18 @@ var AbstractView =
 
 // ??? Should this have a 'value'?
 // Or maybe a ValueView and ModelView
-var AbstractView2 = FOAM.create({
+var AbstractView2 = FOAM({
    model_: 'Model',
 
    name: 'AbstractView2',
    label: 'AbstractView',
 
    properties: [
+      {
+	 name:  'elementId',
+	 label: 'Element ID',
+         type:  'String'
+      },
       {
 	 name:  'parent',
 	 type:  'View',
@@ -161,10 +229,9 @@ var AbstractView2 = FOAM.create({
 	 valueFactory: function() { return []; }
       },
       {
-	 name:  'id',
-	 label: 'Element ID',
-         type:  'String',
-         view:  'IntFieldView'
+        name:   'shortcuts',
+        type:   'Array[Shortcut]',
+        valueFactory: function() { return []; }
       }
    ],
 
@@ -196,14 +263,19 @@ var AbstractView2 = FOAM.create({
       return this;
     },
 
+    addShortcut: function(key, callback, context) {
+      this.shortcuts.push([key, callback, context]);
+    },
+
     nextID: function() {
       return "view2_" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     getID: function() {
       // @return this View's unique DOM element-id
-
-      return this.id || ( this.id = this.nextID() );
+// console.log('getID', this.elementId);
+      if ( this.elementId ) return this.elementId;
+      return this.elementId || ( this.elementId = this.nextID() );
     },
 
     element: function() {
@@ -278,46 +350,48 @@ var AbstractView2 = FOAM.create({
 });
 
 
-var DomValue =
-{
-    DEFAULT_EVENT:    'change',
-    DEFAULT_PROPERTY: 'value',
+var DomValue = {
+   DEFAULT_EVENT:    'change',
+   DEFAULT_PROPERTY: 'value',
 
-    create: function(element, opt_event, opt_property) {
-	return {
-	    __proto__: this,
-	    element:   element,
-	    event:     opt_event    || this.DEFAULT_EVENT,
-	    property:  opt_property || this.DEFAULT_PROPERTY };
-    },
-
-    setElement: function ( element ) {
-      this.element = element;
-    },
-
-    get: function() {
-      return this.element[this.property];
-    },
-
-    set: function(value) {
-      this.element[this.property] = value;
-    },
-
-    addListener: function(listener) {
-      this.element.addEventListener(this.event, listener, false);
-    },
-
-    removeListener: function(listener) {
-      try {
-        this.element.removeEventListener(this.event, listener, false);
-      } catch (x) {
-	// could be that the element has been removed
+   create: function(element, opt_event, opt_property) {
+      if ( ! element ) {
+         throw "Missing Element in DomValue";
       }
-    },
 
-    toString: function() {
-	return "DomValue(" + this.event + ", " + this.property + ")";
-    }
+      return {
+         __proto__: this,
+	 element:   element,
+	 event:     opt_event    || this.DEFAULT_EVENT,
+	 property:  opt_property || this.DEFAULT_PROPERTY };
+   },
+
+   setElement: function ( element ) { this.element = element; },
+
+   get: function() { return this.element[this.property]; },
+
+   set: function(value) { this.element[this.property] = value; },
+
+   addListener: function(listener) {
+      if ( ! this.event ) return;
+      try {
+         this.element.addEventListener(this.event, listener, false);
+      } catch (x) {
+      }
+   },
+
+   removeListener: function(listener) {
+      if ( ! this.event ) return;
+      try {
+         this.element.removeEventListener(this.event, listener, false);
+      } catch (x) {
+	 // could be that the element has been removed
+      }
+   },
+
+   toString: function() {
+      return "DomValue(" + this.event + ", " + this.property + ")";
+   }
 };
 
 
@@ -355,8 +429,7 @@ var Canvas = Model.create({
 
    methods: {
       init: function() {
-	 this.__super__.init.call(this);
-         // AbstractView2.getPrototype().init.call(this);
+         this.SUPER();
 
 	 this.repaint = EventService.animate(function() {
 	   this.paint();
@@ -372,8 +445,7 @@ var Canvas = Model.create({
       },
 
       addChild: function(child) {
-//	 AbstractView2.addChild.call(this, child);
-	 AbstractView2.getPrototype().addChild.call(this, child);
+         this.SUPER(child);
 
 	 try {
 	    child.addListener(this.repaint);
@@ -511,7 +583,7 @@ var circleModel = Model.create({
 });
 
 
-var ImageModel = FOAM.create({
+var ImageModel = FOAM({
 
    model_: 'Model',
 
@@ -554,11 +626,10 @@ var ImageModel = FOAM.create({
    methods: {
 
       init: function() {
-        // TODO: Why is this calling AbstractView
-        AbstractView.init.call(this);
+         this.SUPER();
 
-        this.image_ = new Image();
-        this.image_.src = this.src;
+         this.image_ = new Image();
+         this.image_.src = this.src;
       },
 
       paint: function() {
@@ -573,7 +644,7 @@ var ImageModel = FOAM.create({
 });
 
 
-var Rectangle = FOAM.create({
+var Rectangle = FOAM({
 
    model_: 'Model',
 
@@ -623,7 +694,7 @@ var Rectangle = FOAM.create({
 });
 
 
-var Label = FOAM.create({
+var Label = FOAM({
 
    model_: 'Model',
 
@@ -687,13 +758,13 @@ var Label = FOAM.create({
          canvas.fillText(this.text, this.x, this.y);
 
          canvas.font = oldFont;
-         canvas.textAlign = oldAlign
+         canvas.textAlign = oldAlign;
       }
    }
 });
 
 
-var Box = FOAM.create({
+var Box = FOAM({
 
    model_: 'Model',
 
@@ -765,7 +836,7 @@ var Box = FOAM.create({
           this.y+this.height/2+10);
 
         c.font = oldFont;
-        c.textAlign = oldAlign
+        c.textAlign = oldAlign;
 
         var grad = c.createLinearGradient(this.x, this.y, this.x+this.width, this.y+this.height);
 
@@ -781,7 +852,7 @@ var Box = FOAM.create({
 });
 
 
-var TextFieldView = FOAM.create({
+var TextFieldView = FOAM({
 
    model_: 'Model',
    name:  'TextFieldView',
@@ -801,6 +872,16 @@ var TextFieldView = FOAM.create({
 	 defaultValue: 30
       },
       {
+         mode_: 'StringProperty',
+	 name:  'type',
+         defaultValue: 'text'
+      },
+      {
+         mode_: 'BooleanProperty',
+	 name:  'onKeyMode',
+         help: 'If true, value is updated on each keystroke.'
+      },
+      {
 	 name:  'mode',
          type:  'String',
 	 defaultValue: 'read-write',
@@ -815,9 +896,10 @@ var TextFieldView = FOAM.create({
          valueFactory: function() { return new SimpleValue(); },
          postSet: function(newValue, oldValue) {
            if ( this.mode === 'read-write' ) {
-	     Events.unlink(this.domValue, oldValue);
+	     Events.unlink(oldValue, this.domValue);
 	     Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
            } else {
+             Events.unfollow(newValue, this.domValue);
              Events.follow(newValue, this.domValue);
              /*
 	     value.addListener(function() {
@@ -832,24 +914,20 @@ var TextFieldView = FOAM.create({
    methods: {
     toHTML: function() {
 	return ( this.mode === 'read-write' ) ?
-	  '<input id="' + this.getID() + '" type="text" name="' + this.name + '" size=' + this.displayWidth + '/>' :
+	  '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
 	  '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     },
 
-    getValue: function() {
-// console.log('getValue');
-        return this.value;
-     },
+    // TODO: deprecate
+    getValue: function() { return this.value; },
 
-    setValue: function(value) {
-// console.log('setValue');
-      this.value = value;
-    },
+    // TODO: deprecate
+    setValue: function(value) { this.value = value; },
 
     initHTML: function() {
        var e = this.element();
 
-       this.domValue = DomValue.create(e);
+       this.domValue = this.mode === 'read-write' ? DomValue.create(e, this.onKeyMode ? 'input' : undefined) : DomValue.create(e, undefined, 'innerHTML');
 
        this.setValue(this.value);
 //       Events.link(this.model, this.domValue);
@@ -863,14 +941,128 @@ var TextFieldView = FOAM.create({
 
     valueToText: function(value) { return value;},
 
-    destroy: function() {
-       Events.unlink(this.domValue, this.value);
-    }
+    destroy: function() { Events.unlink(this.domValue, this.value); }
   }
 });
 
 
-var ChoiceView = FOAM.create({
+var DateFieldView = FOAM({
+
+   model_: 'Model',
+   name:  'DateFieldView',
+   label: 'Date Field',
+
+   extendsModel: 'TextFieldView',
+
+   properties: [
+      {
+         mode_: 'StringProperty',
+	 name:  'type',
+         defaultValue: 'date'
+      }
+   ],
+
+   methods: {
+
+    initHTML: function() {
+       var e = this.element();
+
+       this.domValue = DomValue.create(e, undefined, 'valueAsDate');
+
+       this.setValue(this.value);
+    }
+
+  }
+});
+
+
+var DateTimeFieldView = FOAM({
+
+   model_: 'Model',
+   name:  'DateTimeFieldView',
+   label: 'Date-Time Field',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
+    textToValue: function(text) { return new Date(text); },
+
+    valueToText: function(value) { return value.toString(); },
+
+    toHTML: function() {
+	return ( this.mode === 'read-write' ) ?
+	  '<input id="' + this.getID() + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
+	  '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+    }
+   }
+});
+
+
+var HTMLView = FOAM({
+
+   model_: 'Model',
+   name:  'HTMLView',
+   label: 'HTML Field',
+
+   extendsModel: 'AbstractView2',
+
+   properties: [
+      {
+	 name:  'name',
+         type:  'String',
+	 defaultValue: ''
+      },
+      {
+         model_: 'StringProperty',
+	 name:  'tag',
+	 defaultValue: 'span'
+      },
+      {
+	 name:  'value',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); },
+         postSet: function(newValue, oldValue) {
+           if ( this.mode === 'read-write' ) {
+	     Events.unlink(this.domValue, oldValue);
+	     Events.link(newValue, this.domValue);
+           } else {
+             Events.follow(newValue, this.domValue);
+           }
+         }
+      }
+   ],
+
+   methods: {
+    toHTML: function() {
+       var s = '<' + this.tag + ' id="' + this.getID() + '"';
+       if ( this.name ) s+= ' name="' + this.name + '"';
+       s += '></' + this.tag + '>';
+       return s;
+    },
+
+    // TODO: deprecate
+    getValue: function() { return this.value; },
+
+    // TODO: deprecate
+    setValue: function(value) { this.value = value; },
+
+    initHTML: function() {
+       var e = this.element();
+
+       if ( ! e ) {
+          console.log('stale HTMLView');
+          return;
+       }
+       this.domValue = DomValue.create(e,undefined,'innerHTML');
+       this.setValue(this.value);
+    },
+
+    destroy: function() { Events.unlink(this.domValue, this.value); }
+  }
+});
+
+
+var ChoiceView = FOAM({
 
    model_: 'Model',
 
@@ -954,8 +1146,7 @@ var ChoiceView = FOAM.create({
          if ( Array.isArray(choice) ) {
 //           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 //           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
-
-	   if ( this.value && choice[0] == this.value.get() ) out.push(' selected');
+	   if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
            out.push(' value="');
 	   out.push(i + '">');
            out.push(choice[1].toString());
@@ -994,7 +1185,7 @@ var ChoiceView = FOAM.create({
 	   }
 	   return v;
          },
-	 function (v) { console.log('fp:',v,'->',self.indexToValue(v)); return self.indexToValue(v); }
+	 function (v) { return self.indexToValue(v); }
        );
      },
 
@@ -1066,8 +1257,7 @@ var ChoiceView = FOAM.create({
 
 });
 
-
-var RadioBoxView = FOAM.create({
+var RadioBoxView = FOAM({
 
    model_: 'Model',
 
@@ -1138,7 +1328,7 @@ var RadioBoxView = FOAM.create({
 });
 
 
-var RoleView = FOAM.create({
+var RoleView = FOAM({
 
    model_: 'Model',
 
@@ -1206,10 +1396,9 @@ var RoleView = FOAM.create({
 });
 
 
-var BooleanView = {
-   __proto__: ModelProto,
+var BooleanView = FOAM({
+    model_: 'Model',
 
-//   extendsPrototype: 'AbstractView',
    extendsModel: 'AbstractView2',
 
    name:  'BooleanView',
@@ -1254,10 +1443,10 @@ var BooleanView = {
 	Events.unlink(this.domValue, this.value);
     }
    }
-};
+});
 
 
-var TextAreaView = FOAM.create({
+var TextAreaView = FOAM({
 
    model_: 'Model',
 
@@ -1280,6 +1469,11 @@ var TextAreaView = FOAM.create({
 	 defaultValue: 70
       },
       {
+         mode_: 'BooleanProperty',
+	 name:  'onKeyMode',
+         help: 'If true, value is updated on each keystroke.'
+      },
+      {
 	 name:  'value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); },
@@ -1298,7 +1492,7 @@ var TextAreaView = FOAM.create({
 
    methods: {
       init: function(args) {
-       AbstractView2.init.call(this, args);
+         this.SUPER(args);
 
        this.cols = (args && args.displayWidth)  || 70;
        this.rows = (args && args.displayHeight) || 10;
@@ -1313,7 +1507,7 @@ var TextAreaView = FOAM.create({
     },
 
     initHTML: function() {
-      this.domValue = DomValue.create(this.element(), 'change', 'value');
+       this.domValue = DomValue.create(this.element(), this.onKeyMode ? 'input' : 'change', 'value');
 
       // Events.follow(this.model, this.domValue);
       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
@@ -1332,8 +1526,7 @@ var TextAreaView = FOAM.create({
 });
 
 
-// TODO: finish, extend text area, add error
-var FunctionView2 = FOAM.create({
+var FunctionView = FOAM({
 
    model_: 'Model',
 
@@ -1342,132 +1535,54 @@ var FunctionView2 = FOAM.create({
    extendsModel: 'TextAreaView',
 
    methods: {
-    init: function(args) {
-       TextAreaView.init.call(this, args);
+      init: function(args) {
+         this.SUPER(args);
 
-       this.cols = args.displayWidth  || 80;
-       this.rows = args.displayHeight || 8;
-       this.errorView = TextFieldView.create({mode:'read-only'});
-    },
+         this.cols = args.displayWidth  || 80;
+         this.rows = args.displayHeight || 8;
+         this.onKeyMode = true;
+         this.errorView = TextFieldView.create({mode:'read-only'});
+      },
 
-    initHTML: function() {
-      TextAreaView.getPrototype().initHTML.call(this);
-      
-      this.errorView.initHTML();
-    },
+      initHTML: function() {
+         this.SUPER();
 
-    toHTML: function() {
-       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.getPrototype().toHTML.call(this);
-    },
+         this.errorView.initHTML();
+      },
 
-     setError: function(err) {
-       if ( err ) console.log("Javascript Error: ", err);
+      toHTML: function() {
+         return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + this.SUPER();
+      },
 
+      setError: function(err) {
        this.errorView.getValue().set(err || "");
-     },
+      },
 
-     textToValue: function(text) {
-       this.setError('foobar');
+      textToValue: function(text) {
+         if ( ! text ) return null;
 
-       if ( ! text ) return null;
+         try {
+	    var ret = eval("(" + text + ")");
 
-       try {
-	 return eval("(" + text + ")");
-       } catch (x) {
-         console.log("JS Error: ", x, text);
-	 this.setError(x);
-       }
+            this.setError(undefined);
 
-       return text;
-     },
+            return ret;
+         } catch (x) {
+            console.log("JS Error: ", x, text);
+	    this.setError(x);
 
-     valueToText: function(value) {
-       return value ? value.toString() : "";
-     }
+            return text;
+         }
+      },
+
+      valueToText: function(value) {
+         return value ? value.toString() : "";
+      }
    }
 });
 
 
-// TODO: finish modelled replacement
-var FunctionView =
-{
-
-    __proto__: TextAreaView,
-
-    init: function(args) {
-       TextAreaView.init.call(this, args);
-
-       this.cols = args.displayWidth  || 80;
-       this.rows = args.displayHeight || 8;
-       this.errorView = TextFieldView.create({mode:'read-only'});
-    },
-
-    toHTML: function() {
-       return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + TextAreaView.toHTML.call(this);
-    },
-
-    initHTML: function() {
-       this.domValue = DomValue.create(this.element(), 'keyup', 'value');
-
-//       TextAreaView.initHTML.call(this);
-       this.errorView.initHTML();
-
-       this.setValue(this.value);
-       /*
-       editAreaLoader.init({
-         id : this.getID(),
-         syntax: "js",
-         allow_toggle: false,
-	 start_highlight: true,
-         change_listener: this.onChange.bind(this)
-       });
-	*/
-    },
-
-    setError: function(err) {
-       if ( err ) console.log("Javascript Error: ", err);
-
-       this.errorView.getModel().set(err || "");
-    },
-
-    setValue: function(value) {
-	Events.unlink(this.domValue, this.value);
-	this.value = value;
-
-        var setError = this.setError.bind(this);
-
-	Events.relate(
-	   this.value,
-	   this.domValue,
-	   // function->string
-	   function(f) {
-	      return f ? f.toString() : "";
-	   },
-	   // string->function
-	   function(str) {
-	      setError("");
-
-	      if ( ! str ) return null;
-
-	      try
-	      {
-		 return eval("(" + str + ")");
-	      }
-	      catch (x)
-	      {
-                 console.log("JS Error: ", str);
-		 setError(x);
-	      }
-
-	      return str;
-           }
-	);
-    }
-
-};
-
-
-var JSView = FOAM.create({
+var JSView = FOAM({
 
    model_: 'Model',
 
@@ -1477,10 +1592,10 @@ var JSView = FOAM.create({
 
     methods: {
       init: function(args) {
-        TextAreaView.init.call(this, args);
+         this.SUPER();
 
-        this.cols = (args && args.displayWidth)  || 100;
-        this.rows = (args && args.displayHeight) || 50;
+         this.cols = (args && args.displayWidth)  || 100;
+         this.rows = (args && args.displayHeight) || 50;
       },
 
       textToValue: function(text) {
@@ -1499,7 +1614,7 @@ var JSView = FOAM.create({
 });
 
 
-var XMLView = FOAM.create({
+var XMLView = FOAM({
 
    model_: 'Model',
 
@@ -1510,10 +1625,10 @@ var XMLView = FOAM.create({
 
     methods: {
       init: function(args) {
-        TextAreaView.init.call(this, args);
+         this.SUPER();
 
-        this.cols = (args && args.displayWidth)  || 100;
-        this.rows = (args && args.displayHeight) || 50;
+         this.cols = (args && args.displayWidth)  || 100;
+         this.rows = (args && args.displayHeight) || 50;
       },
 
       textToValue: function(text) {
@@ -1528,8 +1643,7 @@ var XMLView = FOAM.create({
 });
 
 
-var DetailView =
-{
+var DetailView = {
 
    __proto__: AbstractView,
 
@@ -1562,14 +1676,50 @@ var DetailView =
 
    /** Create the sub-view from property info. **/
    createView: function(prop) {
-      var view =
+      var proto =
          ! prop.view                   ? TextFieldView     :
          typeof prop.view === 'string' ? GLOBAL[prop.view] :
          prop.view ;
 
-      if ( ! view ) console.log("Missing view for: ", prop);
+      var view = proto.create(prop);
 
-      return view.create(prop);
+      try {
+	 view.setValue(this.get().propertyValue(prop.name));
+      } catch (x) { }
+
+      view.prop = prop;
+      view.toString = function () { return this.prop.name + "View"; };
+      this.addChild(view);
+
+      return view;
+   },
+
+   titleHTML: function() {
+      return '<tr><th colspan=2 class="heading">' +
+         'Edit ' + this.model.label +
+         '</th></tr>';
+   },
+
+   startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
+   nextColumn:   function() { return '</table></td><td valign=top><table valign=top>'; },
+   endColumns:   function() { return '</table></td></tr></table></td></tr>'; },
+
+   rowToHTML: function(prop, view) {
+      var str = "";
+
+      str += prop.detailViewPreRow(this);
+
+      // TODO: add class to tr
+      str += '<tr class="detail-' + prop.name + '">';
+      str += "<td class='label'>" + prop.label + "</td>";
+      str += '<td>';
+      str += view.toHTML();
+      str += '</td>';
+      str += '</tr>';
+
+      str += prop.detailViewPostRow(this);
+
+      return str;
    },
 
    toHTML: function() {
@@ -1577,30 +1727,16 @@ var DetailView =
       var model = this.model;
       var str  = "";
 
-      str += '<div id="' + this.getID() + '" class="detailView" name="form" method="post">';
-      str += '<table><tr><th colspan=2 class="heading">';
-      str += 'Edit ' + model.label;
-      str += '</th></tr>';
+      str += '<div id="' + this.getID() + '" class="detailView" name="form">';
+      str += '<table>';
+      str += this.titleHTML();
 
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
 	 var prop = model.properties[i];
 
 	 if ( prop.hidden ) continue;
 
-	 var view = this.createView(prop);
-	 try {
-	    view.setValue(this.get().propertyValue[prop.name]);
-   	 } catch (x) { }
-	 view.prop = prop;
-	 view.toString = function () { return this.prop.name + "View"; };
-         this.addChild(view);
-
-         str += '<tr>';
-	 str += "<td class='label'>" + prop.label + "</td>";
-	 str += '<td>';
-	 str += view.toHTML();
-	 str += '</td>';
-         str += '</tr>';
+         str += this.rowToHTML(prop, this.createView(prop));
       }
 
       str += '</table>';
@@ -1699,6 +1835,7 @@ var DetailView2 = {
          ! prop.view                   ? TextFieldView     :
          typeof prop.view === 'string' ? GLOBAL[prop.view] :
          prop.view ;
+
       return view.create(prop);
    },
 
@@ -1724,7 +1861,7 @@ var DetailView2 = {
 	 var view = this.createView(prop);
 
 	 try {
-	    view.setValue(this.get().propertyValue[prop.name]);
+	    view.setValue(this.get().propertyValue(prop.name));
    	 } catch (x) {
 	 }
 
@@ -1876,7 +2013,7 @@ var SummaryView =
 
 
 /** A display-only on-line help view. **/
-var HelpView = FOAM.create({
+var HelpView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',
@@ -1945,7 +2082,7 @@ var HelpView = FOAM.create({
 });
 
 
-var TableView = FOAM.create({
+var TableView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',
@@ -2017,7 +2154,7 @@ var TableView = FOAM.create({
 
 	    if ( prop.hidden ) continue;
 
-	    str.push('<th scope=col>' + prop.label + '</th>');
+	    str.push('<th scope=col>' + prop.tableLabel + '</th>');
 
 	    props.push(prop);
 	}
@@ -2055,7 +2192,7 @@ var TableView = FOAM.create({
     },
 
     initHTML: function() {
-	var es = document.getElementsByClassName('tr-' + this.getID());
+	var es = $$('tr-' + this.getID());
 
 	for ( var i = 0 ; i < es.length ; i++ ) {
 	    var e = es[i];
@@ -2091,7 +2228,7 @@ var TableView = FOAM.create({
 });
 
 
-var TableView2 = FOAM.create({
+var TableView2 = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',
@@ -2110,6 +2247,11 @@ var TableView2 = FOAM.create({
          defaultValueFn: function() {
            return this.model.tableProperties;
          }
+      },
+      {
+	 name:  'hardSelection',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); }
       },
       {
 	 name:  'selection',
@@ -2145,6 +2287,10 @@ var TableView2 = FOAM.create({
         postSet: function(val, oldValue) {
 	   this.repaint();
         }
+      },
+      {
+        model_: 'IntegerProperty',
+        name: 'height'
       }
    ],
 
@@ -2152,7 +2298,9 @@ var TableView2 = FOAM.create({
 
      layout: function() {
        var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
-       this.rows = Math.floor((toNum(parent.height) - 22) / 26);
+       // TODO:  We shouldn't be hard-coding the height of the
+       // table row here!
+       this.rows = Math.floor((toNum(parent.height) - 22) / 40);
 /*
        var style = window.getComputedStyle(this.element().children[0]);
 
@@ -2176,7 +2324,7 @@ style = window.getComputedStyle(this.element().children[0]);
     DOUBLE_CLICK: "double-click", // event topic
 
      init: function() {
-       AbstractView2.getPrototype().init.call(this);
+        this.SUPER();
 
        var self = this;
        this.repaint_ = EventService.animate(this.repaint.bind(this));
@@ -2193,14 +2341,18 @@ style = window.getComputedStyle(this.element().children[0]);
 // if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
       var self = this;
       var objs = [];
+      var selection = this.selection && this.selection.get();
 //console.log('*********** TableView2.rows:', this.rows);
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({put:function(o) {objs.push(o); }} )(function() {
-        self.objs = objs;
-        if ( self.element() ) {
-          self.element().innerHTML = self.tableToHTML();
-          self.initHTML_();
-        }
-      });
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
+         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
+            self.objs = objs;
+            if ( self.element() ) {
+               self.element().innerHTML = self.tableToHTML();
+               self.initHTML_();
+               self.height = toNum(window.getComputedStyle(self.element().children[0]).height);
+            }
+            self.selection && self.selection.set(selection);
+         });
 // console.timeEnd('redraw');
     },
 
@@ -2216,8 +2368,9 @@ style = window.getComputedStyle(this.element().children[0]);
 	var model = this.model;
 
 	if ( this.callbacks_ ) {
-	  console.log('Warning: TableView2.tableToHTML called twice without initHTML');
+// console.log('Warning: TableView2.tableToHTML called twice without initHTML');
 	  delete this['callbacks_'];
+          this.children = [];
         }
 
 	var str = [];
@@ -2240,9 +2393,24 @@ style = window.getComputedStyle(this.element().children[0]);
                 this.registerCallback(
                   'click',
                   (function(table, prop) { return function() {
-                    table.sortOrder = prop; table.repaint(); };})(this, prop)));
+                    if ( table.sortOrder === prop ) {
+                       table.sortOrder = DESC(prop);
+                    } else {
+                       table.sortOrder = prop;
+                    }
+                    table.repaint();
+                  };})(this, prop)));
             if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
-            str.push('>' + prop.label + '</th>');
+
+            var arrow = '';
+
+            if ( this.sortOrder === prop ) {
+               arrow = ' <span class="indicator">&#9650;</span>';
+            } else if ( this.sortOrder && this.sortOrder.isDESC && this.sortOrder.c === prop ) {
+               arrow = ' <span class="indicator">&#9660;</span>';
+            }
+
+            str.push('>' + prop.tableLabel + arrow + '</th>');
 
 	    props.push(prop);
 	}
@@ -2250,8 +2418,14 @@ style = window.getComputedStyle(this.element().children[0]);
         if ( this.objs )
 	for ( var i = 0 ; i < this.objs.length; i++ ) {
 	    var obj = this.objs[i];
+            var className = "tr-" + this.getID();
 
-	    str.push('<tr class="tr-' + this.getID() + '">');
+            if ( this.selection.get() && obj.id == this.selection.get().id ) {
+               this.selection.set(obj);
+               className += " rowSelected";
+            }
+
+	    str.push('<tr class="' + className + '">');
 
 	    for ( var j = 0 ; j < props.length ; j++ ) {
 		var prop = props[j];
@@ -2285,7 +2459,9 @@ style = window.getComputedStyle(this.element().children[0]);
 
     initHTML_: function() {
       AbstractView.initHTML.call(this);
-      var es = document.getElementsByClassName('tr-' + this.getID());
+
+      var es = $$('tr-' + this.getID());
+      var self = this;
 
       for ( var i = 0 ; i < es.length ; i++ ) {
 	var e = es[i];
@@ -2300,18 +2476,22 @@ style = window.getComputedStyle(this.element().children[0]);
             delete value['prevValue'];
 	}; }(this.selection, this.objs[i]);
 	e.onclick = function(value, obj) { return function(evt) {
+           self.hardSelection.set(obj);
 	   value.set(obj);
            delete value['prevValue'];
            var siblings = evt.srcElement.parentNode.parentNode.childNodes;
 	   for ( var i = 0 ; i < siblings.length ; i++ ) {
-              siblings[i].className = "";
+              siblings[i].classList.remove("rowSelected");
 	   }
-           evt.srcElement.parentNode.className = 'rowSelected';
+           evt.srcElement.parentNode.classList.add('rowSelected');
 	}; }(this.selection, this.objs[i]);
-	e.ondblclick = function(me, value, obj) { return function(evt) {
-           me.publish(me.DOUBLE_CLICK, obj, value);
-	}; }(this, this.selection, this.objs[i]);
+	e.ondblclick = function(value, obj) { return function(evt) {
+           self.publish(me.DOUBLE_CLICK, obj, value);
+	}; }(this.selection, this.objs[i]);
       }
+
+      delete this['callbacks_'];
+      this.children = [];
     },
 
 
@@ -2321,8 +2501,9 @@ style = window.getComputedStyle(this.element().children[0]);
 });
 
 
-var ActionButton =
-{
+// TODO: extend from AbstractView2
+// TODO: add ability to set CSS class and/or id
+var ActionButton = {
    __proto__: AbstractView,
 
    create: function(action, value) {
@@ -2350,9 +2531,133 @@ var ActionButton =
          };}(this.action),
          this.getID());
 
-      return '<button class="myButton" id="' + this.eid_ + '">' + this.action.label + '</button>';
+      var out = [];
+      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '">');
+      if (this.action.iconUrl) {
+        out.push('<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />');
+      }
+      if ( this.action.showLabel ) {
+        out.push(this.action.label);
+      }
+      out.push('</button>');
+
+      return out.join('');
    }
 };
+
+// TODO: ActionBorder should use this.
+// Maybe replace this with a generic ToolbarView which supports adding Actions
+// and other types of views as well (and springs and struts).
+var ActionToolbarView = FOAM({
+
+   model_: 'Model',
+
+   name:  'ActionToolbarView',
+   label: 'Action Toolbar',
+
+   extendsModel: 'AbstractView2',
+
+   properties: [
+      {
+	 name: 'actions',
+	 type: 'Array[Action]',
+         subType: 'Action',
+	 view: 'ArrayView',
+	 valueFactory: function() { return []; },
+	 defaultValue: [],
+	 help: 'Actions to be shown on this toolbar.'
+      },
+      {
+         model_: 'BooleanProperty',
+         name: 'horizontal',
+         defaultValue: true
+      },
+      {
+	 name:  'value',
+         type:  'Value',
+         valueFactory: function() { return new SimpleValue(); },
+         postSet: function(newValue, oldValue) {
+         }
+      }
+   ],
+
+   methods: {
+      preButton: function(button) { return ' '; },
+      postButton: function() { return this.horizontal ? ' ' : '<br>'; },
+
+      openAsMenu: function(document) {
+         var div = document.createElement('div');
+
+         div.id = this.nextID();
+         div.style.position = 'absolute';
+         div.style.border = '2px solid grey';
+         div.style.top = 15;
+         div.style.background = 'white';
+         div.style.left = document.body.clientWidth-162;
+         div.style.width = '150px';
+         div.innerHTML = this.toHTML(true);
+
+         // Close window when clicked
+         div.onclick = function() {
+            div.parentNode.removeChild(div);
+         };
+
+         div.onmouseout = function(e) {
+            if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
+               div.parentNode.removeChild(div);
+            }
+         };
+
+         document.body.appendChild(div);
+         this.initHTML();
+      },
+
+      toHTML: function(opt_menuMode) {
+	 var str = '';
+         var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
+
+	 str += '<div id="' + this.getID() + '" class="' + cls + '">';
+
+	 for ( var i = 0 ; i < this.actions.length ; i++ ) {
+	    var action = this.actions[i];
+	    var button = ActionButton.create(action, this.value);
+	    str += this.preButton(button) + button.toHTML() + this.postButton(button);
+
+	    this.addChild(button);
+	 }
+
+	 str += '</div>';
+
+	 return str;
+      },
+
+      initHTML: function() {
+         this.SUPER();
+
+         // this.value.addListener(function() { console.log('****ActionToolBar'); });
+         // When the focus is in the toolbar, left/right arrows should move the
+         // focus in the direction.
+         this.addShortcut('Right', function(e) {
+           var i = 0;
+           for (; i < this.children.length; ++i) {
+             if (e.target == this.children[i].element())
+               break;
+           }
+           i = (i + 1) % this.children.length;
+           this.children[i].element().focus();
+         }.bind(this), this.getID());
+         this.addShortcut('Left', function(e) {
+           var i = 0;
+           for (; i < this.children.length; ++i) {
+             if (e.target == this.children[i].element())
+               break;
+           }
+           i = (i + this.children.length - 1) % this.children.length;
+           this.children[i].element().focus();
+         }.bind(this), this.getID());
+      }
+  }
+});
 
 
 /** Add Action Buttons to a decorated View. **/
@@ -2422,7 +2727,7 @@ var ActionBorder = {
 };
 
 
-var ProgressView = FOAM.create({
+var ProgressView = FOAM({
 
    model_: 'Model',
 
@@ -2481,14 +2786,14 @@ var ArrayView = {
 };
 
 
-var ModelAlternateView = FOAM.create({
+var ModelAlternateView = FOAM({
    model_: 'Model',
    name: 'ModelAlternateView',
    extendsModel: 'AlternateView',
    methods: {
       init: function() {
          // TODO: super.init
-	 this.views = FOAM.create([
+	 this.views = FOAM([
                      {
 			model_: 'ViewChoice',
 			label:  'GUI',
@@ -2521,7 +2826,7 @@ var ModelAlternateView = FOAM.create({
 });
 
 
-var GridView = FOAM.create({
+var GridView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',
@@ -2580,9 +2885,9 @@ var GridView = FOAM.create({
        this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
        this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
-       console.log('update: ' , this.col.value.get(), this.row.value.get(), this.acc.value.get());
        this.dao.select(this.grid/*.clone()*/)(function(g) {
          self.element().innerHTML = g.toHTML();
+         g.initHTML();
        });
      },
 
@@ -2604,18 +2909,12 @@ var GridView = FOAM.create({
        this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
        this.grid.addListener(function() {
-         console.log('Grid Grid Update');
 	 this.repaint_();
        });
 
-       this.grid.addListener(function() {
-         console.log('Grid DAO Update');
-	 this.repaint_();
-       });
-
-       this.row.value.addListener(this.repaint_);       
-       this.col.value.addListener(this.repaint_);       
-       this.acc.value.addListener(this.repaint_);       
+       this.row.value.addListener(this.repaint_);
+       this.col.value.addListener(this.repaint_);
+       this.acc.value.addListener(this.repaint_);
 
        this.updateHTML();
      }
@@ -2631,4 +2930,3 @@ var GridView = FOAM.create({
      }
    ]
 });
-

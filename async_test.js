@@ -1,4 +1,3 @@
-/*
 var f1 = amemo(function(ret) { console.log('f1'); ret(1); });
 var f2 = function(ret, a) { console.log('f2'); ret(a,2); };
 var f3 = function(a, b) { console.log(a,b); };
@@ -36,6 +35,11 @@ apar(
 )(f4);
 
 console.log('test9');
+arepeatpar(5,
+  function(ret, a, b) { console.log(a); ret(1); }
+)(f4);
+
+console.log('test10');
 aseq(
   function(ret) { console.log('fA'); ret(1); },
   apar(
@@ -45,7 +49,6 @@ aseq(
   f4
 )();
 
-*/
 
 
 var tlock = {};
@@ -55,7 +58,7 @@ function atest() {
 var f1 = aseq(
    alog('f1 start'),
    asleep(2000),
-   alog('f1 end')  
+   alog('f1 end')
 );
 
 // atime('test1', alog('foobar'))();
@@ -86,11 +89,17 @@ aseq(
     alog('on time')
   )
 )();
- 
+
 apar(
   arepeat(10, aseq(alog('A'), ayield())),
   arepeat(10, aseq(alog('B'), ayield()))
 )();
 
 
+  var functionFuture = afuture();
+  var fn = futurefn(functionFuture);
+
+  fn("hello");
+  setTimeout(function() { fn(" world!"); }, 1000);
+  setTimeout(function() { functionFuture.set(console.log.bind(console)); }, 100);
 }

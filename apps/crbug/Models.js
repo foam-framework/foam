@@ -8,7 +8,7 @@ var labelToProperty = {
 };
 
 
-var CIssue = FOAM.create({
+var CIssue = FOAM({
     model_: 'Model',
     extendsModel: 'GeneratedCIssue',
 
@@ -41,9 +41,9 @@ var CIssue = FOAM.create({
             name: 'priority',
 	    shortName: 'p',
 	    aliases: ['pr', 'pri', 'prior'],
-            label: 'Pri',
+            tableLabel: 'Pri',
             type: 'Integer',
-            tableWidth: '35px',
+            tableWidth: '30px',
             // TODO: move this to IntegerProperty
             preSet: function(val) {
                return parseInt(val);
@@ -54,9 +54,9 @@ var CIssue = FOAM.create({
             name: 'milestone',
 	    shortName: 'm',
 	    aliases: ['mstone'],
-            label: 'M',
+            tableLabel: 'M',
             type: 'Integer',
-            tableWidth: '29px',
+            tableWidth: '40px',
             defaultValue: ''
         },
         {
@@ -150,45 +150,12 @@ var CIssue = FOAM.create({
             type: 'String'
         },
         {
-         model_: 'Property',
+         model_: 'DateTimeProperty',
          name: 'updated',
 	 shortName: 'mod',
-         type: 'Date',
          mode: 'read-write',
          required: true,
-         displayWidth: 50,
-         displayHeight: 1,
-         view: 'TextFieldView',
          tableWidth: '100',
-         preSet: function (d) {
-           return typeof d === 'string' ? new Date(d) : d;
-	 },
-         tableFormatter: function(d) {
-	   // TODO: put this somewhere reusable
-           var now = new Date();
-           var seconds = Math.floor((now - d)/1000);
-           if (seconds < 60) return 'moments ago';
-           var minutes = Math.floor((seconds)/60);
-           if (minutes == 1) {
-             return '1 minute ago';
-           } else if (minutes < 60) {
-             return minutes + ' minutes ago';
-           } else {
-             var hours = Math.floor(minutes/60);
-             if (hours < 24) {
-               return hours + ' hours ago';
-             }
-             var days = Math.floor(hours / 24);
-             if (days < 7) {
-               return days + ' days ago';
-             } else if (days < 365) {
-               var year = 1900+d.getYear();
-               var noyear = d.toDateString().replace(" " + year, "")
-               return /....(.*)/.exec(noyear)[1]
-             }
-           }
-           return d.toDateString();
-         },
          valueFactory: function() { return new Date(); }
       },
       {
@@ -216,7 +183,7 @@ CIssue.properties.forEach(function(p) {
   }
 });
 
-var CIssueTileView = FOAM.create({
+var CIssueTileView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',
@@ -246,7 +213,7 @@ var CIssueTileView = FOAM.create({
 
         name: 'toHTML',
         description: 'TileView',
-        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="../../chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="../../chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.summary %></a></div></td></tr></tbody></table></div>'
+        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.summary %></a></div></td></tr></tbody></table></div>'
      }
    ]
 });

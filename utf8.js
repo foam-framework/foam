@@ -1,24 +1,9 @@
-/*
- * Copyright 2013 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 String.fromCharCode = (function() {
   var oldLookup = String.fromCharCode;
   var lookupTable = [];
   return function(a) {
     if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+console.log('.');
     var result = "";
     for (var i = 0; i < arguments.length; i++) {
       result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
@@ -26,6 +11,59 @@ String.fromCharCode = (function() {
     return result;
   };
 })();
+
+var IncrementalUtf8 = {
+  create: function() {
+    return {
+      __proto__: this,
+      charcode: undefined,
+      remaining: 0,
+      string: ''
+    };
+  },
+
+  reset: function() {
+    this.string = '';
+    this.remaining = 0;
+    this.charcode = undefined;
+  },
+
+  put: function(byte) {
+    if (this.charcode == undefined) {
+      this.charcode = byte;
+      if (!(this.charcode & 0x80)) {
+        this.remaining = 0;
+        this.charcode &= 0x7f;
+      } else if ((this.charcode & 0xe0) == 0xc0) {
+        this.remaining = 1;
+        this.charcode &= 0x1f;
+      } else if ((this.charcode & 0xf0) == 0xe0) {
+        this.remaining = 2;
+        this.charcode &= 0x0f;
+      } else if ((this.charcode & 0xf8) == 0xf0) {
+        this.remaining = 3;
+        this.charcode &= 0x07;
+      } else if ((this.charcode & 0xfc) == 0xf8) {
+        this.remaining = 4;
+        this.charcode &= 0x03;
+      } else if ((this.charcode & 0xfe) == 0xfc) {
+        this.remaining = 5;
+        this.charcode &= 0x01;
+      } else throw "Bad charcode value";
+    }
+
+    if (this.remaining > 0) {
+      this.charcode |= (byte & 0x7f) << (6 * (5 - this.remaining));
+      this.remaining--;
+    } else {
+      // NOTE: Turns out fromCharCode can't handle all unicode code points.
+      // We need fromCodePoint from ES 6 before this will work properly.
+      // However it should be good enough for most cases.
+      this.string += String.fromCharCode(this.charcode);
+      this.charcode = undefined;
+    }
+  }
+};
 
 // WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
 function utf8tostring(bytes) {

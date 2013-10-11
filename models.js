@@ -1,24 +1,8 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  * Only completely modelled models here.
  * All models in this file can be stored and loaded in a DAO.
  **/
-var Timer = FOAM.create({
+var Timer = FOAM({
    model_: 'Model',
 
    name: 'Timer',
@@ -101,7 +85,7 @@ var Timer = FOAM.create({
 
 	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return ! this.isStarted; },
-	 action:      function() { this.isStarted = true; this.tick(); }
+	 action:      function() { if ( this.isStarted ) return; this.isStarted = true; this.tick(); }
       },
       {
          model_: 'Action',
@@ -125,23 +109,29 @@ var Timer = FOAM.create({
 
 	 isAvailable: function() { return true; },
 	 isEnabled: function()   { return this.isStarted; },
-	 action: function()      { this.isStarted = false; }
+	 action: function()      {
+           this.isStarted = false;
+           if ( this.timeout ) {
+               clearTimeout(this.timeout);
+               this.timeout = undefined;
+            }
+         }
       }
    ],
 
    methods: {
-      tick: function()
-      {
+      tick: function() {
+         this.timeout = undefined;
 	 if ( ! this.isStarted ) return;
 
 	 this.step();
-	 setTimeout(this.tick.bind(this), this.interval);
+	 this.timeout = setTimeout(this.tick.bind(this), this.interval);
       }
    }
 });
 
 
-var Mouse = FOAM.create({
+var Mouse = FOAM({
    model_: 'Model',
 
    name: 'Mouse',
@@ -182,7 +172,7 @@ var Mouse = FOAM.create({
 
 
 /** A Panel is a container of other CViews. **/
-var PanelCView = FOAM.create({
+var PanelCView = FOAM({
    model_: 'Model',
 
    name:  'PanelCView',
@@ -263,7 +253,7 @@ var PanelCView = FOAM.create({
 
 
 /** Abstract CViews. **/
-var CView = FOAM.create({
+var CView = FOAM({
    model_: 'Model',
 
    name:  'CView',
@@ -331,6 +321,7 @@ var CView = FOAM.create({
 
          // If being added to HTML directly, then needs to create own Canvas as parent.
 	 this.parent = Canvas.create();
+         this.resizeParent();
 	 return this.parent.toHTML();
       },
 
@@ -390,7 +381,7 @@ var CView = FOAM.create({
 });
 
 
-var ProgressCView = FOAM.create({
+var ProgressCView = FOAM({
 
    model_: 'Model',
 
@@ -439,7 +430,7 @@ var ProgressCView = FOAM.create({
 
 
 /*
-var FilteredModel = FOAM.create({
+var FilteredModel = FOAM({
 
    model_: 'Model',
 
@@ -510,7 +501,7 @@ var FilteredModel = FOAM.create({
 
 
 
-var Graph = FOAM.create({
+var Graph = FOAM({
    model_: 'Model',
 
    extendsModel: 'PanelCView',
@@ -844,7 +835,7 @@ var Graph = FOAM.create({
 });
 
 
-var ViewChoice = FOAM.create({
+var ViewChoice = FOAM({
 
    model_: 'Model',
 
@@ -874,7 +865,7 @@ var ViewChoice = FOAM.create({
 });
 
 
-var AlternateView = FOAM.create({
+var AlternateView = FOAM({
 
    model_: 'Model',
 
@@ -884,7 +875,7 @@ var AlternateView = FOAM.create({
 
     properties: [
        {
-	  name:  'selection',
+	  name:  'selection'
        },
        {
 	   name: 'views',
@@ -947,11 +938,9 @@ var AlternateView = FOAM.create({
 	 for ( var i = 0 ; i < this.views.length ; i++ ) {
 	    var view = this.views[i];
             var listener = function(altView, view) { return function (e) {
-	       console.log("evt: ", e);
-
                altView.view = view;
 
-	       // This is a bit hackish, each element should listen on a 'selected' 
+	       // This is a bit hackish, each element should listen on a 'selected'
 	       // property and update themselves
 	       for ( var j = 0 ; j < buttons.length ; j++ ) {
 	         console.log($(buttons[j]));
@@ -997,7 +986,7 @@ var AlternateView = FOAM.create({
 
 
 
-var FloatFieldView = FOAM.create({
+var FloatFieldView = FOAM({
 
    model_: 'Model',
 
@@ -1013,7 +1002,7 @@ var FloatFieldView = FOAM.create({
 });
 
 
-var IntFieldView = FOAM.create({
+var IntFieldView = FOAM({
 
    model_: 'Model',
 
@@ -1029,7 +1018,7 @@ var IntFieldView = FOAM.create({
 });
 
 
-var StringArrayView = FOAM.create({
+var StringArrayView = FOAM({
 
    model_: 'Model',
 
@@ -1048,7 +1037,7 @@ var StringArrayView = FOAM.create({
 });
 
 
-var SplitView = FOAM.create({
+var SplitView = FOAM({
 
    model_: 'Model',
 
@@ -1112,3 +1101,104 @@ var SplitView = FOAM.create({
   }
 
 });
+
+
+
+var Binding = FOAM({
+
+   model_: 'Model',
+
+   name: 'Binding',
+
+   properties: [
+      // TODO: add support for named sub-contexts
+      {
+         name:  'id',
+	 hidden: true
+      },
+      {
+	 name:  'value',
+	 hidden: true
+      }
+   ]
+});
+
+
+var PersistentContext = FOAM({
+
+   model_: 'Model',
+
+   name: 'PersistentContext',
+
+   properties: [
+      {
+         name:  'dao',
+         label: 'DAO',
+         type: 'DAO',
+	 hidden: true
+      },
+      {
+	 name:  'context',
+	 hidden: true
+      },
+      {
+          name: 'predicate',
+          type: 'EXPR',
+          defaultValueFn: function() { return TRUE; },
+          hidden: true
+      }
+   ],
+
+   methods: {
+      /**
+       * Manage persistene for an object.
+       * Resave it in the DAO whenever it first propertyChange events.
+       **/
+      manage: function(name, obj) {
+         obj.addListener(EventService.merged((function() {
+            console.log('PersistentContext', 'updating', name);
+            this.dao.put(Binding.create({
+               id:    name,
+               value: JSONUtil.compact.where(this.predicate).stringify(obj)
+             }));
+         }).bind(this)));
+      },
+      bindObjects: function(a) {
+         // TODO: implement
+      },
+      bindObject: function(name, model, createArgs) {
+         console.log('PersistentContext', 'binding', name);
+        var future = afuture();
+        createArgs = createArgs || {};
+
+         if ( this.context[name] ) {
+            future.set(this.context[name]);
+         } else {
+            this.dao.find(name, {
+               put: function (binding) {
+                  console.log('PersistentContext', 'existingInit', name);
+//                  var obj = JSONUtil.parse(binding.value);
+//                  var obj = JSON.parse(binding.value);
+                  var json = JSON.parse(binding.value);
+                  json.__proto__ = createArgs;
+                  var obj = JSONUtil.mapToObj(json);
+                  this.context[name] = obj;
+                  this.manage(name, obj);
+                  future.set(obj);
+               }.bind(this),
+               error: function() {
+                  console.log('PersistentContext', 'newInit', name);
+                  var obj = model.create(createArgs);
+                  this.context[name] = obj;
+                  this.manage(name, obj);
+                  future.set(obj);
+               }.bind(this)
+            });
+         }
+
+         return future.get;
+      }
+  }
+
+});
+

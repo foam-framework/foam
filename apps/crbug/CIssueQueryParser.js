@@ -10,7 +10,8 @@ var CIssueQueryParser = {
     return GTE({
       f:function(i) { return i.stars.length;},
       partialEval: function() {return this;},
-      outSQL: function(out) { out.push("stars > " + v[1]); }
+      toSQL: function() { return 'stars > ' + v[1]; },
+      toMQL: function() { return 'stars > ' + v[1]; }
     }, v[1]);
   },
 

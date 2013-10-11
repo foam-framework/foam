@@ -1,4 +1,4 @@
-var ME = "s...@chromium.org";
+var ME = "";
 
 /**
  * Generic Mustang-like query-language parser generator.
@@ -35,12 +35,12 @@ var QueryParserFactory = function(model) {
 
   expr: alt(
     sym('negate'),
-    sym('id'),
     sym('has'),
     sym('is'),
     sym('equals'),
     sym('before'),
-    sym('after')
+    sym('after'),
+    sym('id')
   ),
 
   paren: seq('(', sym('query'), ')'),
@@ -79,9 +79,15 @@ var QueryParserFactory = function(model) {
 
     'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
-  string: plus(sym('char')),
+  string: alt(
+     sym('word'),
+     sym('quoted string')),
 
-  'char': alt(range('a','z'), range('A', 'Z'), '-'),
+    'quoted string': seq('"', repeat(alt(literal('\\"', '"'), notChar('"'))), '"'),
+
+    word: plus(sym('char')),
+
+    'char': alt(range('a','z'), range('A', 'Z'), range('0', '9'), '-', '^', '_', '@', '%', '.'),
 
   number: seq(plus(range('0', '9')))
 
@@ -158,7 +164,9 @@ var QueryParserFactory = function(model) {
     return or;
   },
 
-  string: function(v) { return v.join(''); },
+  'quoted string': function(v) { return v[1].join(''); },
+
+  word: function(v) { return v.join(''); },
 
   'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
 

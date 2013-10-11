@@ -55,7 +55,7 @@ withFOAM(function() {
 
     //    var dao = StorageDAO.create({model: EMail});
 
-    emails = IndexedDBDAO.create({model: EMail});
+    emails = IDBDAO.create({model: EMail});
 
     $('loadmbox').onchange = function (event) {
         emails.remove(TRUE); // this only works with storagedao2 because its synchronous
@@ -87,7 +87,7 @@ withFOAM(function() {
 
     var emailarray = [];
     emailarray.eof = function() {
-       var dao = IDAO.create({model: EMail});
+       var dao = MDAO.create({model: EMail});
 
         dao.bulkLoad(emailarray);
         dao.addIndex(EMail.TO);

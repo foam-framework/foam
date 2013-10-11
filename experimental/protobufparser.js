@@ -21,37 +21,37 @@ var ProtoBufGrammar = {
     sym('syntax'), ';')),
 
   syntax: seq("syntax", "=", sym('strLit'), ";"),
- 
-  import: seq("import", sym('strLit'), ";"), 
 
-  package: seq("package", sym('ident'), ";"), 
+  import: seq("import", sym('strLit'), ";"),
 
-  option: seq("option", sym('optionBody'), ";"), 
+  package: seq("package", sym('ident'), ";"),
 
-  optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')), 
+  option: seq("option", sym('optionBody'), ";"),
 
-  message: seq("message", sym('ident'), sym('messageBody')), 
+  optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')),
 
-  extend: seq("extend", sym('userType'), sym('messageBody')), 
+  message: seq("message", sym('ident'), sym('messageBody')),
 
-  enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"), 
+  extend: seq("extend", sym('userType'), sym('messageBody')),
 
-  enumField: seq(sym('ident'), "=", sym('sintLit'), ";"), 
+  enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"),
 
-  service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"), 
+  enumField: seq(sym('ident'), "=", sym('sintLit'), ";"),
 
-  rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"), 
+  service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"),
+
+  rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"),
 
   messageBody: seq(
     "{",
       repeat(
         alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
       ),
-    "}"), 
+    "}"),
 
-  group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')), 
+  group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')),
 
-  // tag number must be 2^28-1 or lower 
+  // tag number must be 2^28-1 or lower
   field: seq(
     sym('modifier'),
     sym('type'),
@@ -59,29 +59,29 @@ var ProtoBufGrammar = {
     "=",
     sym('intLit'),
     optional(seq("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]")),
-    ";"), 
+    ";"),
 
-  fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))), 
+  fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))),
 
-  extensions: seq("extensions", sym('intLit'), "to", alt(sym('intLit'), "max"), ";"), 
+  extensions: seq("extensions", sym('intLit'), "to", alt(sym('intLit'), "max"), ";"),
 
-  modifier: alt("required", "optional", "repeated"), 
+  modifier: alt("required", "optional", "repeated"),
 
   type: alt(
-      "double", "float", "int32", "int64", "uint32", "uint64", 
-      "sint32", "sint64", "fixed32", "fixed64", "sfixed32", 
+      "double", "float", "int32", "int64", "uint32", "uint64",
+      "sint32", "sint64", "fixed32", "fixed64", "sfixed32",
       "sfixed64", "bool", "string", "bytes", sym('userType')),
 
-  // leading dot for identifiers means they're fully qualified 
-  userType: noskip(plus(seq(optional("."), sym('ident')))), 
+  // leading dot for identifiers means they're fully qualified
+  userType: noskip(plus(seq(optional("."), sym('ident')))),
 
   constant: alt(sym('ident'), sym('sintLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
 
   ident: seq(sym('a'), repeat(sym('w'))),
 
-  // according to parser.cc, group names must start with a capital letter as a 
-  // hack for backwards-compatibility 
-  camelIdent: seq(range('A', 'Z'), repeat(sym('w'))), 
+  // according to parser.cc, group names must start with a capital letter as a
+  // hack for backwards-compatibility
+  camelIdent: seq(range('A', 'Z'), repeat(sym('w'))),
 
   intLit: alt(sym('decInt'), sym('hexInt'), sym('octInt')),
 
@@ -89,7 +89,7 @@ var ProtoBufGrammar = {
       seq(optional(alt('+', '-')), sym('decInt')),
       sym('intLit')),
 
-  decInt: plus(sym('d')), 
+  decInt: plus(sym('d')),
 
   hexInt: seq('/0', alt('x', 'X'), plus(alt(range('A','F'), range('a', 'f'), range('0', '9')))),
 
@@ -106,13 +106,13 @@ var ProtoBufGrammar = {
                 optional(alt('+', '-')),
                 sym('decInt')))),
 
-  boolLit: alt("true", "false"), 
+  boolLit: alt("true", "false"),
 
-  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), sym('quoteEscape'), not(sym('quote'), anyChar))) ,sym('quote'))), 
+  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), sym('quoteEscape'), not(sym('quote'), anyChar))) ,sym('quote'))),
 
-  quote: alt('"', "'"), 
+  quote: alt('"', "'"),
 
-  hexEscape: seq('\\', alt('x', 'X'), repeat(alt(range('A','F'), range('a', 'f'), range('0', '9'), undefined, 1,2))), 
+  hexEscape: seq('\\', alt('x', 'X'), repeat(alt(range('A','F'), range('a', 'f'), range('0', '9'), undefined, 1,2))),
 
   octEscape: seq('\\0', repeat(range('0', '7'), undefined, 1, 3)),
 
@@ -127,7 +127,6 @@ var ProtoBufGrammar = {
   },
 
   enumField: function(a) {
-console.log('enumField', a[0], a[2]);
     return [a[0], a[2]];
   },
 
@@ -148,18 +147,26 @@ console.log('enumField', a[0], a[2]);
   },
 
   field: function(a) {
-    return Property.create({
-      type: a[1],
-      name: a[2],
-      prototag: a[4],
-      required: a[0] === 'required'
-    });
+    if (a[0] === 'repeated') {
+        return ArrayProperty.create({
+            subType: a[1],
+            name: a[2],
+            prototag: a[4]
+        });
+    } else {
+        return Property.create({
+            type: a[1],
+            name: a[2],
+            prototag: a[4],
+            required: a[0] === 'required'
+        });
+    }
   },
 
   message: function(a) {
     var properties = [];
     for (var i = 0; i < a[2].length; i++) {
-      if (a[2][i] && a[2][i].TYPE == "Property") {
+      if (a[2][i] && Property.isInstance(a[2][i])) {
         properties.push(a[2][i]);
       }
     }

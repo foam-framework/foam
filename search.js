@@ -1,4 +1,4 @@
-var GroupBySearchView = FOAM.create({
+var GroupBySearchView = FOAM({
 
    model_: 'Model',
 
@@ -122,7 +122,7 @@ var GroupBySearchView = FOAM.create({
 });
 
 
-var TextSearchView = FOAM.create({
+var TextSearchView = FOAM({
 
    model_: 'Model',
 

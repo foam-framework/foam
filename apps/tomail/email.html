@@ -12,11 +12,11 @@
     var ModelDAO = ModelDAO.create(this, StorageDAO.create({ model: Model }));
 
 //    var EMailDAO = [];
-    var EMailDAO = IndexedDBDAO.create({model: EMail});
+    var EMailDAO = IDBDAO.create({model: EMail});
 
     // Add Caching
     EMailDAO = CachingDAO.create(
-      IDAO.create({model: EMail}),
+      MDAO.create({model: EMail}),
       EMailDAO);
 
     // This doesn't work, some async weirdness going on

@@ -1,19 +1,3 @@
-/*
- * Copyright 2013 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 // TODO: time-travelling debugger, ala:
 //    "Debugging Standard ML Without Reverse Engineering"
 
@@ -30,23 +14,64 @@ function alog() {
   };
 }
 
+/** console.profile an afunc. **/
+function aprofile(afunc) {
+  return function(ret) {
+     var a = argsToArray(arguments);
+     console.profile();
+     var ret2 = function () {
+        console.profileEnd();
+        ret && ret(arguments);
+     };
+     aapply_(afunc, ret2, a);
+  };
+}
+
 
 /** Create an afunc which always returns the supplied constant value. **/
-function aconstant(v) { return function(ret) { ret && ret(v); } }
+function aconstant(v) { return function(ret) { ret && ret(v); }; }
 
 
 /** Execute the supplied afunc N times. **/
 function arepeat(n, afunc) {
   return function(ret) {
     var a = argsToArray(arguments);
+    a.splice(1, 0, 0, n); // insert (0, n) after 'ret' argument
+    var next = atramp(function() {
+      if ( a[1] == n-1 ) { a[0] = ret; afunc.apply(this, a); return; };
+      afunc.apply(this, a);
+      a[1]++;
+    });
+
+    a[0] = next;
+    next.apply(this, a);
+  };
+}
+
+
+/** Execute the supplied afunc until cond() returns false. */
+function awhile(cond, afunc) {
+  return function(ret) {
+    var a = argsToArray(arguments);
 
     var g = function() {
-      if ( n-- == 1 ) { a[0] = ret; afunc.apply(this, a); return; };
+      if (!cond()) { ret.apply(undefined, arguments); return; }
       afunc.apply(this, a);
     };
 
     a[0] = g;
     g.apply(this, a);
+  };
+}
+
+/** Execute the supplied afunc if cond. */
+function aif(cond, afunc) {
+  return function(ret) {
+    if ( cond ) {
+       afunc.apply(this, arguments);
+    } else {
+       ret();
+    }
   };
 }
 
@@ -56,14 +81,21 @@ var atime = (function() {
   // Add a unique suffix to timer names in case multiple instances
   // of the same timing are active at once.
   var id = 1;
-
+  var activeOps = {};
   return function (str, afunc, opt_callback) {
     return function(ret) {
-      var name = str + "-" + id++;
+      var name = str;
+      if ( activeOps[str] ) {
+         name += "-" + id++;
+         activeOps[str]++;
+      } else {
+         activeOps[str] = 1;
+      }
       var start = performance.now();
       console.time(name);
       var a = arguments;
       var args = [function() {
+        activeOps[str]--;
         var end = performance.now();
         if ( opt_callback ) opt_callback(end-start);
         console.timeEnd(name);
@@ -113,7 +145,8 @@ function afuture() {
 
 
 function aapply_(f, ret, args) {
-  f.apply(this, args.unshift(ret));
+  args.unshift(ret);
+  f.apply(this, args);
 }
 
 
@@ -214,7 +247,7 @@ Function.prototype.ao = function(f2) {
   var f1 = this;
   return function(ret) {
     var args = argsToArray(arguments);
-    args.unshift(f1.bind(this, ret));
+    args[0] = f1.bind(this, ret);
     f2.apply(this, args);
   };
 };
@@ -279,6 +312,54 @@ function apar(/* ... afuncs */) {
   };
 }
 
+/** Convert the supplied afunc into a trampolined-afunc. **/
+var atramp = (function() {
+   var active = false;
+   var jobs = [];
+
+   return function(afunc) {
+      return function() {
+         jobs.push([afunc, arguments]);
+         if ( ! active ) {
+if ( jobs.length > 1 ) debugger;
+           active = true;
+           var job;
+           // Take responsibility for bouncing
+           while ( (job = jobs.pop()) != null ) {
+             job[0].apply(this, job[1]);
+           }
+           active = false;
+         }
+      };
+   };
+})();
+
+/** Execute the supplied afunc concurrently n times. **/
+function arepeatpar(n, afunc) {
+  var aargs = [];
+  var count = 0;
+
+  return function(ret /* opt_args */) {
+    var opt_args = Array.prototype.splice.call(arguments, 1);
+    var join = function (i) {
+      aargs[i] = Array.prototype.splice.call(arguments, 1);
+      if ( ++count == n ) {
+        var a = [];
+        for ( var j = 0 ; j < n ; j++ )
+          for ( var k = 0 ; k < aargs[j].length ; k++ )
+            a.push(aargs[j][k]);
+        ret && ret.apply(null, a);
+      }
+    };
+
+    afunc = atramp(afunc);
+    for ( var i = 0 ; i < n ; i++ ) {
+      afunc.apply(null, [join.bind(null, i)].concat([i, n]).concat(opt_args));
+    }
+  };
+}
+
+// Note: this doesn't work for packaged-apps
 var __JSONP_CALLBACKS__ = {};
 var ajsonp = (function() {
   var nextID = 0;
@@ -304,3 +385,12 @@ var ajsonp = (function() {
     };
   };
 })();
+
+function futurefn(future) {
+  return function() {
+    var args = arguments;
+    future.get(function(f) {
+      f.apply(undefined, args);
+    });
+  };
+}

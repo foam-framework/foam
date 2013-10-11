@@ -1,21 +1,4 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
-var DAOController = FOAM.create({
+var DAOController = FOAM({
    model_: 'Model',
 
    name:  'DAOController',
@@ -25,10 +8,10 @@ var DAOController = FOAM.create({
 
    properties: [
       {
-	 name:  'selection',
+	 name:  'selection'
       },
       {
-	 name:  'model',
+	 name:  'model'
       },
       {
 	 name:  'dao',
@@ -212,7 +195,7 @@ var DAOController = FOAM.create({
 	    if ( obj )
 	    {
 /*
-	       var view = FOAM.create({
+	       var view = FOAM({
 		  model_: 'AlternateView',
 
                   selection: 'GUI',
@@ -256,7 +239,7 @@ var DAOController = FOAM.create({
 });
 
 
-var DAOCreateController = FOAM.create({
+var DAOCreateController = FOAM({
    model_: 'Model',
 
    name:  'DAOCreateController',
@@ -292,7 +275,7 @@ var DAOCreateController = FOAM.create({
 	    this.dao.put(this.obj, {
               put: function(value) {
                 console.log("Created: ", value);
-                self.stackView.back();
+                (self.stackView || stack).back();
               },
               error: function() {
                 console.error("Error creating value: ", arguments);
@@ -308,7 +291,7 @@ var DAOCreateController = FOAM.create({
 	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return true; },
 	 action:      function() {
-	    this.stackView.back();
+	    (this.stackView || stack).back();
 	 }
       },
       {
@@ -368,7 +351,7 @@ var DAOCreateController = FOAM.create({
 });
 
 
-var DAOUpdateController = FOAM.create({
+var DAOUpdateController = FOAM({
    model_: 'Model',
 
    name:  'DAOUpdateController',
@@ -404,7 +387,7 @@ var DAOUpdateController = FOAM.create({
 	    this.dao.put(obj, {
               put: function() {
                 console.log("Saving: ", obj.toJSON());
-                self.stackView.back();
+                (self.stackView || stack).back();
               },
               error: function() {
                 console.error("Error saving", arguments);
@@ -430,7 +413,7 @@ var DAOUpdateController = FOAM.create({
 	 isAvailable: function() { return true; },
 	 isEnabled:   function() { return true; },
 	 action:      function() {
-	    this.stackView.back();
+	    (this.stackView || stack).back();
 	 }
       },
       {
@@ -464,7 +447,7 @@ var DAOUpdateController = FOAM.create({
 
 	 this.view2 = DetailView2.create();
 
-	 this.view = FOAM.create({
+	 this.view = FOAM({
 		  model_: 'AlternateView',
 
                   selection: 'GUI',
@@ -527,7 +510,7 @@ var DAOUpdateController = FOAM.create({
 //    __proto__: AbstractView,
 
 
-var DAOControllerView = FOAM.create({
+var DAOControllerView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView2',

@@ -1,0 +1,447 @@
+<html>
+ <head>
+  <style type="text/css">
+    .graph {
+       left:200;
+       margin-bottom:0px;
+       margin-left:6px;
+       margin-top:0px;
+       position: relative;
+       top:-10;
+    }
+    .graphLabel {
+       color: black;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: bold;
+       height:3px;
+       left: 205;
+       margin-bottom:0px;
+       margin-left:12px;
+       margin-top:0px;
+       position: relative;
+       text-shadow: gray 0px 2px 1px;
+       top:-9;
+       width:170px;
+       z-index: 1;
+    }
+    #batteryStatus {
+       font-family: Arial, sans-serif;
+       font-size: 16px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+       text-shadow: #6374AB 2px 2px 2px;
+    }
+    #worstTime {
+       color: red;
+       font-weight: bold;
+    }
+    #currentTime {
+       color: green;
+       font-size: 20px;
+       font-weight: bold;
+    }
+    #bestTime {
+       color: orange;
+       font-weight: bold;
+    }
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="../../foam.css" />
+
+  <script>var FOAM_BOOT_DIR="../../";</script>
+  <script language="javascript" src="../../bootFOAM.js"></script> 
+  <script language="javascript" src="power.js"></script>
+
+  <title>Power</title>
+ </head>
+
+ <body>
+
+   <div id="backlite" style="pointer-events: none;background:rgba(0,0,0,0.0);width:150%;height:3000; position: absolute;left:-500;top:0;z-index:5"> </div>
+
+  <div id="navbar-container">
+    <h1 style="text-align:center;" id="navbar-content-title">Power</h1><br/>
+  <script language="javascript">
+
+  function getJSONP(url, success) {
+    var req = new XMLHttpRequest();
+
+    req.onreadystatechange = function(){
+       if ( req.status == 200 ) {
+          var jsondata = eval("("+req.responseText+")");
+          console.log(jsondata);
+       }
+    };
+
+    req.open("POST", url, true);
+    req.send(null);
+  }
+
+    var power = Power.create();
+    var timer = Timer.getPrototype().create({interval:1000,timeWarp:1});
+
+    var batteryMeter = BatteryMeter.create({
+       width: 45,
+       height: 135
+    });
+
+    batteryMeter.link(power);
+
+    var wattMeter = NeedleMeter.create({
+       width:  160,
+       height: 110,
+       label:  'W'
+    });
+
+    wattMeter.link(power);
+
+    document.write("<center>");
+    batteryMeter.write(document);
+    document.write("<div id=\"batteryStatus\">--</div>");
+
+    document.write("<div style=\"height:50;\"> </div>");
+
+    document.write("<b><a href=\"#\">12 hours</a></b> | <a href=\"#\">1 hour</a> | <a href=\"#\">5 mins.</a>");
+    document.write("<div style=\"height:450;\"> </div>");
+    document.write("<div id=\"wattMeter\">"); 
+    wattMeter.write(document);
+    document.write("</div></center>");
+
+    power.propertyValue("battery").addListener(function(power) {
+      var estimate = estimateBatteryLife(data);
+    
+      var str = power.recharging ?
+         Math.round(power.battery) + '% - Charging' : 
+         Math.round(power.battery) + '% - Discharging' ;
+
+      str += "<br/><br/>";
+
+      str += "Time Remaining: <br/>";
+      if ( power.recharging )
+      {
+	 var lastData = this.data[this.data.length-1].battery;
+	 var drain = calcBatteryUse(data);
+         var life = (lastData-100)/drain[1];
+    
+         if ( life > 0 )
+            str += "<span id=currentTime>" + formatTimeEstimate(life) + "</span>";
+         else
+            str = "";
+      }
+      else
+      {
+         str += "<span id=worstTime>" + formatTimeEstimate(estimate[0]) + "</span> | ";
+         str += "<span id=currentTime>" + formatTimeEstimate(estimate[1]) + "</span> | ";
+         str += "<span id=bestTime>" + formatTimeEstimate(estimate[2]) + "</span>";
+      
+         str += "<br/><font size=-1.5>worst-case | current | best-case</font>";
+      }
+
+      $('batteryStatus').innerHTML = str;
+    });
+
+    
+  </script>
+  </div>
+  <div id="browserPage" class="page">
+  <script language="javascript">
+
+    power.applications = [
+       ApplicationPower.create({
+          name: 'GMail',
+          state: 'Background'
+       }),
+       ApplicationPower.create({
+          name: 'Angry Birds',
+          state: 'Foreground'
+       }),
+       ApplicationPower.create({
+          name: 'App ABC',
+          state: 'Open'
+       }),
+       ApplicationPower.create({
+          name: 'App XYZ',
+          state: 'Closed'
+       })
+    ];
+
+
+    // +/- a value by 20%
+    var randomize = function(x) { return x * (1.1 - Math.random()*0.2); };
+    var width = innerWidth-240;// innerWidth-50; //window.width-120;
+
+    var POINTS       = 60*12;
+    var data         = [];
+    var batteryGraph = BatteryGraph.create({
+       axisSize:5,
+       width:width,
+       height:200,
+       maxValue:100,
+       capColor:'green',
+       graphColor:'lightGray',
+       axisColor:'#d0d0d0',
+       xAxisInterval:60,
+       yAxisInterval:10,
+       data:data,
+       f: function(p) { return p.battery; }
+    });
+    var powerGraph   = Graph.create({
+       axisSize:0,
+       width:width,
+       height:60,
+       axisColor:'black',
+       graphColor:'red',
+       data:data,
+       f: function(p) { return p.watts; }
+    });
+    var wattsGraph   = Graph.create({
+       capColor:'yellow',
+       gridColor: '#cccccc',
+       graphColor:'lightGray',
+       xAxisInterval:60,
+       yAxisInterval:10,
+       axisSize:5,
+       style: 'Point',
+       axisColor:'#d0d0d0',
+       width:width,
+       height:200,
+       data:data,
+       f: function(p) { return p.watts*10; }
+    });
+
+    document.writeln("<br/><div class=graphLabel>Battery</div><div class=graph>");
+    document.writeln(batteryGraph.toHTML());
+    batteryGraph.initHTML();
+       var bgrad = batteryGraph.canvas.createLinearGradient(0,0,width,180);
+       bgrad.addColorStop(0, '#909090');
+       bgrad.addColorStop(1, '#bdbdbd');
+    batteryGraph.graphColor = bgrad;
+    document.writeln("</div>");
+
+    var hardware = [
+       { label: 'Charging',    f: function(p) { return p.recharging?100:0; }, color: '#dd0000', backgroundColor: '#fff5f5' },
+       { label: 'CPU',         f: function(p) { return p.CPU*1000; } },
+       { label: 'Graphics',    f: function(p) { return p.GPU*1000; } },
+       { label: 'Display',     f: function(p) { return p.backlite*100; } },
+       { label: 'WiFi',        f: function(p) { return p.wifi ? 100 : 0; } },
+       { label: '3G',          f: function(p) { return p.cell*100; } },
+       { label: 'USB',         f: function(p) { return p.USB*100; } },
+/*
+       { label: 'GMail',       f: function(p) { return p.applications[0].active; }, color: 'red' },
+       { label: 'Angry Birds', f: function(p) { return p.applications[1].active; }, color: 'red' },
+       { label: 'App ABC',     f: function(p) { return p.applications[2].active; }, color: 'red' },
+       { label: 'App XYZ',     f: function(p) { return p.applications[3].active; }, color: 'red' }*/ 
+    ];
+
+    document.writeln("<div id=\"subGraphs\" hidden>");
+
+    for ( var i = 0 ; i < hardware.length ; i++ )
+    {
+        var h = hardware[i];
+
+	document.writeln("<div class=graphLabel>" + h.label + "</div><div class=graph>");
+	h.graph = Graph.create({
+	   style: 'Bar',
+	   width: width,
+	   height: 18,
+           axisColor: '',
+           axisSize: 0,
+           graphColor: h.color || '#5060e0',
+	   backgroundColor: h.backgroundColor || '#f0f0ff',
+           data: data,
+           f: h.f
+        });
+        document.writeln(h.graph.toHTML());
+        document.writeln("</div>");
+        h.graph.initHTML();
+    }
+
+    document.writeln("<div id=\"wattsGraph\" hidden><div class=graphLabel>Wattage</div><div class=graph>");
+    document.writeln(wattsGraph.toHTML());
+    wattsGraph.initHTML();
+    document.writeln("</div></div>");
+    console.log(wattsGraph);
+
+    document.writeln("<div id=\"powerGraph\"><div class=graphLabel>Drain</div><div class=graph>");
+    document.writeln(powerGraph.toHTML());
+    powerGraph.initHTML();
+    var powerGrad = powerGraph.canvas.createLinearGradient(0,0,0,powerGraph.height);
+    powerGrad.addColorStop(0.2, 'red');
+    powerGrad.addColorStop(1, 'yellow');
+    powerGraph.graphColor = powerGrad;
+    document.writeln("</div></div>");
+
+    document.writeln("</div>");
+
+    function addData(d) {
+      var w = 0.01+Math.random()*0.02;
+ 
+      if ( power.recharging ) power.battery = Math.min(100, Math.max(0.01, power.battery + randomize(2)));
+      if ( power.cell ) w += power.cell/1000;
+      if ( power.cell ) w += power.cell/1000;
+      if ( power.wifi ) w += 0.04;
+      if ( power.CPU )  w += power.CPU/2000;
+      if ( power.GPU )  w += power.GPU/2000;
+      w += 0.01*power.backlite;
+
+      power.watts = w*20;
+
+      power.battery = Math.min(100, Math.max(0.01, power.battery - w));
+
+      data.push(power.deepClone());
+      
+      if ( data.length > POINTS ) data.shift();
+
+      batteryGraph.canvasView.paint();
+      powerGraph.canvasView.paint();
+      wattsGraph.canvasView.paint();
+
+      for ( var i = 0 ; i < hardware.length ; i++ )
+      {
+        var h = hardware[i];
+
+        h.graph.canvasView.paint();
+      }
+    }
+
+    function requestData() {
+       // console.log("queryData()");
+       // getJSONP('/read', addData);
+       addData();
+    }; 
+
+//    timer.propertyValue('second').addListener(requestData);
+    timer.propertyValue('i').addListener(requestData);
+    
+    timer.start();
+
+    var powerlets = [
+	Screen.create({name: 'Dim Screen'}),
+	CloseApp.create({name: 'GMail',      image: 'GMail'}),
+	CloseApp.create({name: 'WiFi',       image: 'WiFi'}),
+	CloseApp.create({name: 'YouTube',    image: 'YouTube'}),
+	CloseApp.create({name: 'AngryBirds', image: 'AngryBirds'}),
+	CloseApp.create({name: 'GPS',        image: 'GPS', enabled: false}),
+    ];
+
+    document.writeln("<br/><br/><br/><center>");
+
+    document.writeln('<table cellpadding=20><tr>');
+    for ( var i = 0 ; i < powerlets.length ; i++ )
+    {
+       var p = powerlets[i];
+
+       document.writeln('<td>');
+   
+       document.writeln('<table><tr><td>');
+       document.writeln(p.toHTML());
+       document.writeln("</td></tr><tr><td>");
+       document.writeln('<span style="color:black;font-size: 22px;pointer-events: none;">' + p.toString() + '</span><br/>');
+       document.writeln("</td></tr><tr><td>");
+       document.writeln('<span style="font-size: 16px;">Extend Battery: </span>');
+       if ( p.enabled )
+          document.writeln('<span style="color:green;font-size: 16px;">' + "23 mins" + '</span>');
+       else
+          document.writeln('<span style="color:red;font-size: 16px;">' + "-23 mins" + '</span>');
+       document.writeln('</td></tr></table>');
+       p.initHTML();
+       p.paint();
+
+       document.writeln('</td>');
+    }
+    document.writeln('</tr></table>');
+    document.writeln("</center>");
+    
+    /*power.propertyValue('backlite')*/powerlets[0].propertyValue('level').addListener(function() {
+       var a = [
+          'rgba(0,0,0,0.18)',
+          'rgba(0,0,0,0.16)',
+          'rgba(0,0,0,0.14)',
+          'rgba(0,0,0,0.12)',
+          'rgba(0,0,0,0.10)',
+          'rgba(0,0,0,0.08)',
+          'rgba(0,0,0,0.06)',
+          'rgba(0,0,0,0.04)',
+          'rgba(0,0,0,0.02)',
+          'rgba(0,0,0,0.0)'
+       ];
+
+       var l = Math.max(1, Math.min(power.backlite, 10))-1;
+       $('backlite').style.background = a[l];
+
+    });
+
+       powerlets[0].propertyValue('level').addListener(function() {
+          power.backlite = powerlets[0].level;
+			  console.log('level:', powerlets[0].level);
+       var a = [
+          'rgba(0,0,0,0.18)',
+          'rgba(0,0,0,0.16)',
+          'rgba(0,0,0,0.14)',
+          'rgba(0,0,0,0.12)',
+          'rgba(0,0,0,0.10)',
+          'rgba(0,0,0,0.08)',
+          'rgba(0,0,0,0.06)',
+          'rgba(0,0,0,0.04)',
+          'rgba(0,0,0,0.02)',
+          'rgba(0,0,0,0.0)'
+       ];
+
+       var l = Math.max(1, Math.min(power.backlite, 10))-1;
+       $('backlite').style.background = a[l];
+
+   });
+
+
+    document.write("<div style=\"height:700;\"> </div>");
+    document.write("<table style=\"position:relative;left:220;\"><tr><td valign=top>");
+
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
+    document.writeln(timerView.toHTML());
+    timerView.set(timer);
+    timerView.initHTML();
+
+    document.write("</td><td valign=top>");
+
+    var powerView = DetailView.create(Power);
+    document.writeln(powerView.toHTML());
+    powerView.set(power);
+    powerView.initHTML();
+
+    var bv1 = BooleanView.create();
+    bv1.setValue(power.applications[0].propertyValue('active'));
+    bv1.write(document);
+    var bv2 = BooleanView.create();
+    bv2.setValue(power.applications[1].propertyValue('active'));
+    bv2.write(document);
+    var bv3 = BooleanView.create();
+    bv3.setValue(power.applications[2].propertyValue('active'));
+    bv3.write(document);
+    var bv4 = BooleanView.create();
+    bv4.setValue(power.applications[3].propertyValue('active'));
+    bv4.write(document);
+    document.write("</td></tr></table>");
+
+    batteryGraph.canvasView.element().onclick = function() {
+       batteryGraph.displayProjection = ! batteryGraph.displayProjection;
+       $("subGraphs").hidden = batteryGraph.displayProjection;
+    };
+    
+    wattsGraph.canvasView.element().onclick = function() {
+       $("wattsGraph").hidden = true;
+       $("powerGraph").hidden = false;
+    
+    };
+
+    powerGraph.canvasView.element().onclick = function() {
+       $("wattsGraph").hidden = false;
+       $("powerGraph").hidden = true;
+    };
+</script>
+</div>
+ </body>
+</html>

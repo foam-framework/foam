@@ -1,4 +1,4 @@
-var SplitDAO = FOAM.create({
+var SplitDAO = FOAM({
    model_: 'Model',
    extendsModel: 'AbstractDAO',
 
@@ -57,7 +57,7 @@ var SplitDAO = FOAM.create({
             this.activeQuery = query;
 	    console.log('new Query');
 
-	    var buf = this.buf = IDAO.create({model: this.model});
+	    var buf = this.buf = MDAO.create({model: this.model});
 
             // Add an index for the specified sort order if one is provided
             if ( options && options.order ) this.buf.addIndex(options.order);
@@ -77,56 +77,6 @@ var SplitDAO = FOAM.create({
 });
 
 
-var ProxyDAO = FOAM.create({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
-
-   name: 'ProxyDAO',
-
-   properties: [
-      {
-         name: 'delegate',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true,
-         postSet: function(newDAO, oldDAO) {
-            if ( ! this.relay_ ) return;
-            if ( oldDAO ) oldDAO.unlisten(this.relay_);
-            newDAO.listen(this.relay_);
-         }
-      }
-   ],
-
-   methods: {
-      init: function() {
-         AbstractPrototype.init.call(this);
-
-         this.relay_ =  {
-            put:    function() { this.notify_('put', arguments);   }.bind(this),
-            remove: function() {this.notify_('remove', arguments); }.bind(this)
-         };
-
-         this.delegate.listen(this.relay_);
-      },
-
-      put: function(value, sink) {
-         this.delegate.put(value, sink);
-      },
-
-      remove: function(query, sink) {
-         this.delegate.remove(query, sink);
-      },
-
-      find: function(key, sink) {
-         this.delegate.find(key, sink);
-      },
-
-      select: function(sink, options) {
-         this.delegate.select(sink, options);
-      }
-   }
-});
 
 /*
 var dao = ProxyDAO.create({delegate: []});
@@ -138,7 +88,7 @@ dao.put("bar")
 */
 
 
-var DelayedDAO = FOAM.create({
+var DelayedDAO = FOAM({
    model_: 'Model',
    extendsModel: 'ProxyDAO',
 

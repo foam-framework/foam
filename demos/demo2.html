@@ -1,0 +1,35 @@
+<html>
+ <head>
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <title>FOAM Circles</title>
+ </head>
+ <body bgcolor='black'>
+  <script language="javascript">
+    var space   = Canvas.create({width: 2000, height: 1700, background:'black'});
+    var mouse   = Mouse.create();
+    var colours = ['#33f','#f00','#fc0','#33f', '#cf0' ];
+
+    space.write(document);
+    mouse.connect(space.element());
+
+    Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+       var circle = circleModel.create({
+         x: mouse.x,
+         y: mouse.y,
+         r: 0,
+         color: undefined,
+         borderWidth: 12,
+         border: colours[(mouse.x+mouse.y)%colours.length]});
+
+       space.addChild(circle);
+
+       Movement.animate(
+         4000,
+         function() { circle.r = 100; circle.alpha = 0; },
+         Math.sqrt,
+         function() { space.removeChild(circle); })();
+    });
+  </script>
+ </body>
+</html>

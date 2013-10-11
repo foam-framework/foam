@@ -921,7 +921,7 @@ emails = JSONUtil.mapToObj([
 ]);
 
 
-    var dao = IDAO.create({model: EMail});
+    var dao = MDAO.create({model: EMail});
     dao.addIndex(EMail.TIMESTAMP);
     dao.addIndex(EMail.TO);
     dao.addIndex(EMail.FROM);
