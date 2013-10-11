@@ -823,11 +823,12 @@ var Graph = FOAM({
          if ( this.data.length > maxNumValues ) this.data.shift();
       },
 
-      watch: function(model, opt_maxNumValues) {
+      watch: function(value, opt_maxNumValues) {
          var graph = this;
 
-         model.addListener(function() {
-           graph.addData(model.get(), opt_maxNumValues);
+         value.addListener(function() {
+console.log('**** ', value.get());
+           graph.addData(value.get(), opt_maxNumValues);
          });
       }
 

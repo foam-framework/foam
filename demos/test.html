@@ -470,14 +470,13 @@ o = Model;
 
     var eye = EyeCView.create({x:60,y:60,r:50,color:'red'});
     space.addChild(eye);
-    eye.watch(mars);	  
+    eye.watch(mars);
 
     var graph = Graph.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
     space.addChild(graph);
+    graph.watch(apollo.propertyValue('y'));
 
-    // graph.watch(apollo.propertyValue('y'));
-
-    var pie = PieGraph.create({lineColor: 'white', r:100, x:20, y:150});
+    var pie = PieGraph.create({lineColor: 'white', r:50, x:20, y:150});
     space.addChild(pie);
 
     var eyes = EyesCView.create({x:600,y:470});

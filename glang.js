@@ -58,7 +58,8 @@ var PieGraph = FOAM({
         return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);
       },
       paint: function() {
-         this.erase();
+//         this.erase();
+
 	 var c = this.canvas;
 	 var x = this.x;
 	 var y = this.y;
