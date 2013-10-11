@@ -1,20 +1,4 @@
 /*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
 var ErrorReportingPS = {
   create: function(delegate, opt_pos) {
 console.log('ERPS:',delegate.head);
@@ -177,17 +161,17 @@ function repeat(p, opt_delim, opt_min, opt_max) {
     var ret = [];
 
     for ( var i = 0 ; ! opt_max || i < opt_max ; i++ ) {
-      var res;
+       var res;
 
-      if ( opt_delim && ret.length != 0 ) {
-        if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
-        ps = res;
-      }
+       if ( opt_delim && ret.length != 0 ) {
+          if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
+          ps = res;
+       }
 
-      if ( ! ( res = this.parse(p,ps) ) ) break;
+       if ( ! ( res = this.parse(p,ps) ) ) break;
 
-      ret.push(res.value);
-      ps = res;
+       ret.push(res.value);
+       ps = res;
     }
 
     if ( opt_min && ret.length < opt_min ) return undefined;
@@ -319,13 +303,13 @@ function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {
-    for ( var i = 0 ; i < args.length ; i++ ) {
-      var res = this.parse(args[i], ps);
+     for ( var i = 0 ; i < args.length ; i++ ) {
+        var res = this.parse(args[i], ps);
 
-      if ( res ) return res;
-    }
+        if ( res ) return res;
+     }
 
-    return undefined;
+     return undefined;
   };
 
   f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
@@ -370,9 +354,8 @@ function sym(name) {
 var DEBUG_PARSE = false;
 
 var grammar = {
-  parseString: function(str) {
-    if ( ! this.hasOwnProperty('stringPS') ) this.stringPS = StringPS.create("");
 
+  parseString: function(str) {
     var ps = this.stringPS;
     ps.str = str;
     var res = this.parse(this.START, ps);
@@ -382,13 +365,13 @@ var grammar = {
 
   parse: function(parser, pstream) {
 //    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
-    if ( DEBUG_PARSE ) {
+    if ( DEBUG_PARSE && pstream.str_ ) {
 //      console.log(new Array(pstream.pos).join(' '), pstream.head);
         console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
     if ( DEBUG_PARSE ) {
-      console.log(parser + ' ==> ' + (!!ret));
+      console.log(parser + ' ==> ' + (!!ret) + '  ' + (ret && ret.value));
     }
     return ret;
   },
@@ -401,9 +384,10 @@ var grammar = {
   addAction: function(sym, action) {
     var p = this[sym];
     this[sym] = function(ps) {
+      var val = ps.value;
       var ps2 = this.parse(p, ps);
 
-      return ps2 && ps2.setValue(action.call(this, ps2.value, ps.value));
+      return ps2 && ps2.setValue(action.call(this, ps2.value, val));
     };
 
     this[sym].toString = function() { return '<<' + sym + '>>'; };
@@ -415,6 +399,43 @@ var grammar = {
     return this;
   }
 };
+
+function defineTTLProperty(obj, name, ttl, f) {
+   Object.defineProperty(obj, name, {
+     get: function() {
+        var accessed;
+        var value = undefined;
+        Object.defineProperty(this, name, {
+           get: function() {
+              function scheduleTimer() {
+                 setTimeout(function() {
+                   if ( accessed ) {
+                      scheduleTimer();
+                   } else {
+                      value = undefined;
+                   }
+                   accessed = false;
+                 }, ttl);
+              }
+              if ( ! value ) {
+                 accessed = false;
+                 value = f();
+                 scheduleTimer();
+              } else {
+                 accessed = true;
+              }
+
+              return value;
+           }
+        });
+
+        return this[name];
+     }
+   });
+}
+
+defineTTLProperty(grammar, 'stringPS', 5000, function() { return StringPS.create(""); });
+
 
 var SkipGrammar = {
   create: function(gramr, skipp) {
@@ -431,4 +452,4 @@ var SkipGrammar = {
       skip: skipp
     };
   }
-}
+};

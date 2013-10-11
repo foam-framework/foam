@@ -15,6 +15,7 @@
  */
 
 /** The Prototype for all Generated Prototypes. **/
+// TODO: Rename FOAMObject or FObject
 var AbstractPrototype = {
   __proto__: PropertyChangeSupport,
 
@@ -31,6 +32,7 @@ console.log(i, k, v);
       }
     }
 */
+
     var obj = {
       __proto__: this,
       TYPE: "AbstractPrototype", // for debug, remove
@@ -47,7 +49,7 @@ console.log(i, k, v);
   },
 
 
-  init: function(unused_args) {
+  init: function(_) {
     if ( ! this.model_ ) return;
 
     for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
@@ -89,7 +91,8 @@ console.log(i, k, v);
 
   toString: function() {
 // console.log(this.model_.name + "Prototype");
-    return this.model_.name + "Prototype";
+    // return this.model_.name + "Prototype";
+    return this.toJSON();
   },
 
 
@@ -97,6 +100,15 @@ console.log(i, k, v);
     return this.instance_.hasOwnProperty(name);
   },
 
+  writeActions: function(other, out) {
+      for (var i = 0, property; property = this.model_.properties[i]; i++) {
+          if (property.actionFactory) {
+              var actions = property.actionFactory(this, property.f(this), property.f(other));
+              for (var j = 0; j < actions.length; j++)
+                  out(actions[j]);
+          }
+      }
+  },
 
   clearProperty: function(name) {
     delete this.instance_[name];
@@ -139,7 +151,7 @@ console.log(i, k, v);
         var oldValue = this[name];
 
         if ( prop.preSet )
-          newValue = prop.preSet.call(this, newValue, oldValue);
+          newValue = prop.preSet.call(this, newValue, oldValue, prop);
 
         // todo: fix
         if ( prop.type == 'int' || prop.type == 'float' )
@@ -210,51 +222,7 @@ console.log(i, k, v);
   outProtobuf: function(out) {
     for ( var i = 0; i < this.model_.properties.length; i++ ) {
       var prop = this.model_.properties[i];
-      var tag = prop.prototag;
-      if (typeof(tag) !== 'number') continue; // Skip properties with no protobuf tag.
-      var values = this[prop.name];
-      if (!Array.isArray(values)) {
-        values = [values];
-      }
-
-      for (var j = 0; j < values.length; j++) {
-        var value = values[j];
-        // Skip unset values, this may need to be revisited if some protos
-        // require an empty string be present for whatever reason.
-        if (value === "") continue;
-
-        var bytes;
-        var data;
-        switch(prop.type) {
-          case 'string':
-            out.varint((tag << 3) | 2);
-            bytes = stringtoutf8(value);
-            out.varint(bytes.length);
-            out.bytes(bytes);
-            break;
-          case 'uint64':
-          case 'int64':
-          case 'uint32':
-          case 'int32':
-            out.varint(tag << 3);
-            if (value instanceof String || typeof value == 'string') out.bytestring(value);
-            else out.varint(value);
-            break;
-          case 'bool':
-            out.varint(tag << 3);
-            out.varint(Number(value));
-            break;
-          case 'ByteString':
-            out.varint(tag << 3);
-            out.bytestring(value);
-            break;
-          default: // Sub messages must be modelled.
-            if (value && value.model_) {
-              out.varint((tag << 3) | 2);
-              out.message(value);
-            }
-        }
-      }
+      prop.outProtobuf(this, out);
     }
   },
 
@@ -299,6 +267,7 @@ console.log(i, k, v);
         var prop = this.model_.properties[i];
 
         if ( prop.name in src ) this[prop.name] = src[prop.name];
+//         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) this[prop.name] = src[prop.name];
       }
     }
 
@@ -325,12 +294,24 @@ console.log(i, k, v);
     document.writeln(view.toHTML());
     view.set(this);
     view.initHTML();
-  }
+  },
 
-
+/*
+   SUPER: function() {
+      debugger;
+      return arguments.callee.caller.super_.bind(this);
+   }
+*/
 };
 
 
 AbstractPrototype.__defineGetter__('__super__', function() {
   return this.__proto__.__proto__;
+});
+
+
+Object.defineProperty(AbstractPrototype, 'SUPER', {
+  get: function() {
+     return arguments.callee.caller.super_.bind(this);
+  }
 });

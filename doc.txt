@@ -141,7 +141,7 @@ Async Functions
       asleep()        - sleep for a specified duration
       atimeout()      - perform an action if an afunc times-out
       asynchronized() - like Java's synchronized block (binary semaphore)
-      anop()          - no-opeation
+      anop()          - no-operation
       atime()         - time/benchmark an afunc's execution
       afuture()       - a future value
       ayield()	      - yield
@@ -213,7 +213,7 @@ Arrays		- Normal arrays ([]) support the full DAO interface.
 IndexedDBDAO	- Adapts the IndexedDB API.
 StorageDAO	- Adapts the Web Storage API.
 JSONFileDAO	- Stores data in JSON format in flat-files.
-IDAO		- Very efficient query optimizing DAO implementation.
+MDAO		- Very efficient query optimizing DAO implementation.
 
 
 DAO Decorators

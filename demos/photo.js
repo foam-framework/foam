@@ -1,0 +1,203 @@
+var NUM_ALBUMS = 1000;
+var NUM_PHOTOS = 10000;
+
+var DEBUG = false;
+
+if ( DEBUG ) {
+  NUM_ALBUMS = 5;
+  NUM_PHOTOS = 5;
+  Function.prototype.put = function() {
+    console.log.apply(console, arguments);
+    this.apply(this, arguments);
+  };
+}
+
+function randomBoolean() { return Math.random() > 0.5; }
+
+function randomDate() { return new Date(Date.now() - Math.random()*1000*60*60*24*365*3); }
+
+function randomAlbum(i) {
+  return Album.create({
+    id: i.toString(),
+    timestamp: randomDate(),
+    isLocal: randomBoolean()
+  });
+}
+
+function randomPhoto(albumId, i) {
+  return Photo.create({
+     id:      i.toString(),
+     albumId: albumId.toString(),
+     hash:    Math.floor(Math.random()*10000),
+     timestamp: randomDate(),
+     isLocal: randomBoolean()
+   });
+}
+
+function atest(name, test) {
+  return atime(name, aseq(test, function(ret, arg) {
+     if ( DEBUG ) console.log('result: ', arg);
+     ret();
+  }));
+}
+
+function CachedIDB(dao) {
+  var name = dao.model.name;
+  var idb = IDBDAO.create({model: dao.model});
+  dao = CachingDAO.create(dao, idb);
+  // if ( DEBUG ) dao = TimingDAO.create(name, dao);
+  return dao;
+}
+
+var Photo = Model.create({
+  model_: 'Model',
+  name: 'Photo',
+  properties: [
+    { name: 'id' },
+    { name: 'hash' },
+    { model_: 'BooleanProperty', name: 'isLocal' },
+    { model_: 'BooleanProperty', name: 'byAction' },
+    { model_: 'DateTimeProperty', name: 'timestamp' },
+    { name: 'albumId' },
+    { model_: 'BooleanProperty', name: 'isCoverPhoto' },
+    { name: 'jspb', hidden: true }
+  ]
+});
+
+var Album = Model.create({
+  model_: 'Model',
+  name: 'Album',
+  properties: [
+    { name: 'id', name: 'id' },
+    { model_: 'BooleanProperty', name: 'isLocal' },
+    { model_: 'BooleanProperty', name: 'byAction' },
+    { model_: 'DateTimeProperty', name: 'timestamp' },
+    { name: 'jspb', hidden: true }
+  ],
+  relationships: [
+    { model_: 'Relationship', relatedModel: 'Photo', relatedProperty: 'albumId' }
+  ]
+});
+
+var PhotoDetail = FOAM({
+  model_: 'Model',
+  name: 'PhotoDetail',
+  properties: [
+    { model_: 'IntegerProperty', name: 'id' },
+    { name: 'photoId' },
+    { name: 'albumId' },
+    { name: 'hash' },
+    { model_: 'IntegerProperty', name: 'totalComments' }
+  ]
+});
+
+var AlbumDAO, PhotoDAO, PhotoDetailDAO;
+var albums = [], photos = [];
+
+function MultiKeyQuery(ret, i, n) {
+  PhotoDAO.find((Math.floor(NUM_PHOTOS/n)*i).toString(), ret);
+}
+
+var SUM_PHOTO_COUNT = SUM({f:function(photo) { return photo.jspb[9] || 0; }});
+
+PhotoDetailDAO = CachedIDB(MDAO.create({model: PhotoDetail})
+  .addIndex(PhotoDetail.PHOTO_ID)
+  .addIndex(PhotoDetail.ALBUM_ID));
+PhotoDAO = CachedIDB(MDAO.create({model: Photo})
+//  This index isn't worthwhile with only 10 photos / album
+//  .addRawIndex(TreeIndex.create(Photo.ALBUM_ID, mLangIndex.create(SUM_PHOTO_COUNT)))
+  .addIndex(Photo.ALBUM_ID)
+  .addIndex(Photo.TIMESTAMP)
+  .addIndex(Photo.IS_LOCAL));
+AlbumDAO = CachedIDB(MDAO.create({model: Album})
+ .addIndex(Album.IS_LOCAL)
+ .addIndex(Album.TIMESTAMP)
+);
+
+AlbumDAO = CascadingRemoveDAO.create({
+  delegate: AlbumDAO,
+  childDAO: PhotoDAO,
+  property: Photo.ALBUM_ID});
+
+var avgKey = Math.floor(NUM_PHOTOS/2).toString();
+
+console.clear();
+
+aseq(
+  atest('CreateTestAlbums' + NUM_ALBUMS, arepeat(NUM_ALBUMS, function (ret, i) {
+    testData.albums[i].isLocal = !!testData.albums[i].isLocal;
+    albums.push(Album.create(testData.albums[i]));
+    ret();
+  })),
+  atest('CreateTestPhotos' + NUM_PHOTOS, arepeat(NUM_PHOTOS, function (ret, i) {
+    testData.photos[i].isLocal = !!testData.photos[i].isLocal;
+    photos.push(Photo.create(testData.photos[i]));
+    ret();
+  })),
+  function(ret) { testData = undefined; ret(); },
+  arepeat(DEBUG ? 1 : 3, aseq(
+  alog('Benchmark...'),
+  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeat(NUM_ALBUMS, function (ret, i) {
+    AlbumDAO.put(albums[i], ret);
+  }))),
+  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeat(NUM_PHOTOS, function (ret, i) {
+    PhotoDAO.put(photos[i], ret);
+  }))),
+  atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select([])(ret); }),
+  atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select([])(ret); }),
+  atest('2bSingleKeyQuery',       function(ret) { PhotoDAO.find(avgKey,ret); }),
+  atest('2bSingleKeyQuery(X10)',  arepeat(10, function(ret) { PhotoDAO.find(avgKey,ret); })),
+  atest('2cMultiKeyQuery10',      arepeat(10,    MultiKeyQuery)),
+  aif(!DEBUG, aseq(
+    atest('2cMultiKeyQuery100',     arepeat(100,   MultiKeyQuery)),
+    atest('2cMultiKeyQuery1000',    arepeat(1000,  MultiKeyQuery)),
+    atest('2cMultiKeyQuery5000',    arepeat(5000,  MultiKeyQuery))
+  )),
+  atest('2dIndexedFieldQuery',    function(ret) {
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
+  }),
+  atest('2dIndexedFieldQuery(X10)', arepeat(10,function(ret) {
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
+  })),
+  atest('2eAdHocFieldQuery',      function(ret) {
+    PhotoDAO.where(EQ(Photo.IS_LOCAL, true)).select(MAP(Photo.HASH, []))(ret);
+  }),
+  atest('2fSimpleInnerJoinQuery', function(ret) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, true)).select(MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, []), []))(ret);
+  }),
+  atest('2gSimpleInnerJoinAggregationQuery', function(ret) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
+        MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
+  }),
+  atest('2gSimpleInnerJoinAggregationQuery(X10)', arepeat(1000, function(ret) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
+        MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
+  })),
+  atest('2hSimpleOrderByQuery', function(ret) {
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+  }),
+  atest('2hSimpleOrderByQuery(X10)', arepeat(10, function(ret) {
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+  })),
+  atest('2iSimpleOrderAndGroupByQuery', function(ret) {
+    PhotoDAO
+      .where(AND(GTE(Photo.TIMESTAMP, new Date(96, 0, 1)), LT(Photo.TIMESTAMP, new Date(96, 2, 1))))
+      .orderBy(DESC(Photo.TIMESTAMP))
+      .select(GROUP_BY(MONTH(Photo.TIMESTAMP), []))(ret);
+  }),
+  atest('2jSimpleAggregationQuery', function(ret) { PhotoDAO.select(GROUP_BY(Photo.ALBUM_ID, []))(ret); }),
+/*
+  atest('3aCreateAndUpdate', atxn(arepeat(DEBUG ? 10 : 1000, function (ret, i) { AlbumDAO.put(randomAlbum(i*2), ret); }))),
+  atest('3bSetup', atxn(function(ret) {
+    AlbumDAO.put(randomAlbum('test')),
+    arepeat(DEBUG ? 10 : 1000, function(ret, i) { PhotoDAO.put(randomPhoto('test', i), ret); })(ret);
+  })),
+  atest('3bCascadingDelete', atxn(function(ret) { AlbumDAO.remove('3', ret); })),
+  */
+  atest('Cleanup', atxn(function(ret) {
+    AlbumDAO.removeAll();
+    PhotoDAO.removeAll();
+    ret();
+  })),
+  asleep(5000)
+)))(alog('Done.'));

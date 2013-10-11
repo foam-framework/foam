@@ -1,0 +1,23 @@
+<html>
+ <head>
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <title>FOAM </title>
+ </head>
+
+ <body>
+
+  <script language="javascript">
+    var value    = new SimpleValue("<b>bold</b> <i>italic</i> plain");
+    var text     = TextAreaView.create({value:value, displayWidth:98, onKeyMode:true});
+    var richText = RichTextView.create({value:value, height:200, onKeyMode:true});
+
+    document.writeln('<br>Rich<br>');
+    richText.write(document);
+
+    document.writeln('Poor<br>');
+    text.write(document);
+  </script>
+
+ </body>
+</html>

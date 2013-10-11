@@ -1,0 +1,40 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../foam.css" />
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <title>FOAM</title>
+ </head>
+
+ <body>
+
+  <script language="javascript">
+    var timer     = Timer.create({});
+    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
+    var space     = Canvas.create({width: 1000, height: 700, background:'#fff'});
+    var mouse     = Mouse.create();
+    var clock1    = ClockView.create({x:300, y:300, r:60, color:'red'});
+    var clock2    = ClockView.create({x:0, y:0, r:60, color:'green'});
+
+    timer.write(document);
+    space.write(document);
+
+    mouse.connect(space.element());
+
+    space.addChildren(clock1, clock2);
+
+    Events.dynamic(function () {
+       clock1.x = mouse.x;
+       clock1.y = mouse.y;
+    });
+
+    Events.dynamic(function () {
+       clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+       clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+    });
+
+    timer.start();
+  </script>
+
+ </body>
+</html>

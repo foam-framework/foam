@@ -1,4 +1,4 @@
-var SyncManager = FOAM.create({
+var SyncManager = FOAM({
    model_: 'Model',
 
    name: 'SyncManager',
@@ -46,7 +46,7 @@ var SyncManager = FOAM.create({
       {
          model_: 'IntegerProperty',
 	 name:  'batchSize',
-	 defaultValue: 500
+	 defaultValue: 100
       },
       {
          model_: 'StringProperty',
@@ -107,7 +107,7 @@ var SyncManager = FOAM.create({
 	 label: 'Stop',
 	 help:  'Stop the timer.',
 
-	 isEnabled: function()   { return this.enabled },
+	 isEnabled: function()   { return this.enabled; },
 	 action: function()      { this.enabled = false; clearTimeout(this.timer); }
       }
    ],

@@ -1,19 +1,3 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 // todo: add enabled/disabled support
 // todo: bind
 // todo: generateTopic()
@@ -93,6 +77,7 @@ var EventService = {
      * Merge all notifications occuring until the next animation frame.
      * Only the last notification is delivered.
      **/
+// TODO: execute immediately from within a requestAnimationFrame
     animate: function(listener) {
        return function() {
 	  var triggered = false;
@@ -103,6 +88,7 @@ var EventService = {
 
 	     if ( ! triggered ) {
 		triggered = true;
+                var window = $documents[$documents.length-1].defaultView;
 
 		window.requestAnimationFrame(
 		   function() {
@@ -143,7 +129,7 @@ var EventService = {
      * @return number of subscriptions notified
      **/
     publish: function (topic) {
-       return this.pub_(this.subs_, 0, topic, this.appendArguments([this, topic], arguments, 1));
+       return this.subs_ ? this.pub_(this.subs_, 0, topic, this.appendArguments([this, topic], arguments, 1)) : 0;
     },
 
 
@@ -216,7 +202,6 @@ var EventService = {
     sub_: function(map, topicIndex, topic, listener) {
 	if ( topicIndex == topic.length ) {
 	   if ( ! map[null] ) map[null] = [];
-
 	   map[null].push(listener);
 	} else {
 	   var key = topic[topicIndex];
@@ -280,10 +265,7 @@ var EventService = {
        return a;
     }
 
-}
-
-GLOBAL['EventService'] = EventService;
-
+};
 
 /** Extend EventService with support for dealing with property-change notification. **/
 var PropertyChangeSupport = {
@@ -303,6 +285,9 @@ var PropertyChangeSupport = {
 
    /** Indicate that a specific property has changed. **/
    propertyChange: function (property, oldValue, newValue) {
+      // don't bother firing event if there are no listeners
+      if ( ! this.subs_ ) return;
+
       // don't fire event if value didn't change
       if ( property != null && oldValue === newValue ) return;
 
@@ -334,15 +319,16 @@ var PropertyChangeSupport = {
 
 
    removePropertyListener: function(property, listener) {
-      // TODO
+      this.unsubscribe(this.propertyTopic(property), listener);
    },
 
 
    /** Create a Value for the specified property. **/
    propertyValue: function(property) {
       var obj = this;
-
       return {
+         $UID: obj.$UID + "." + property,
+
 	 get: function() { return obj[property]; },
 
 	 set: function(val) { obj[property] = val; },
@@ -361,7 +347,7 @@ var PropertyChangeSupport = {
       };
    }
 
-}
+};
 
 
 /** Static support methods for working with Events. **/
@@ -772,4 +758,15 @@ var Movement = {
 
 };
 
-GLOBAL['PropertyChangeSupport'] = PropertyChangeSupport;
+
+var originalRequestAnimationFrame = window.requestAnimationFrame;
+
+window.requestAnimationFrame = function(f) {
+   this.setTimeout(f, 16);
+};
+
+window.requestAnimationFrame && window.requestAnimationFrame(contextize(function() {
+  X.requestAnimationFrame = function(f) {
+    return window.requestAnimationFrame(f);
+  };
+}));

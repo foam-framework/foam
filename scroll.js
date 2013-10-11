@@ -1,4 +1,4 @@
-var ScrollCView = FOAM.create({
+var ScrollCView = FOAM({
 
    model_: 'Model',
 
@@ -78,15 +78,15 @@ var ScrollCView = FOAM.create({
      mouseDown: function(e) {
 //       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
        this.startY = e.y - e.offsetY;
-       window.addEventListener('mouseup', this.mouseUp, true);
-       window.addEventListener('mousemove', this.mouseMove, true);
-       window.addEventListener('touchstart', this.touchstart, true);
+       e.target.ownerDocument.defaultView.addEventListener('mouseup', this.mouseUp, true);
+       e.target.ownerDocument.defaultView.addEventListener('mousemove', this.mouseMove, true);
+       e.target.ownerDocument.defaultView.addEventListener('touchstart', this.touchstart, true);
        this.mouseMove(e);
      },
      mouseUp: function(e) {
        e.preventDefault();
-       window.removeEventListener('mousemove', this.mouseMove, true);
-       window.removeEventListener('mouseup', this.mouseUp, true);
+       e.target.ownerDocument.defaultView.removeEventListener('mousemove', this.mouseMove, true);
+       e.target.ownerDocument.defaultView.removeEventListener('mouseup', this.mouseUp, true);
 //       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
@@ -98,13 +98,13 @@ var ScrollCView = FOAM.create({
      touchStart: function(e) {
        this.startY = e.targetTouches[0].pageY;
        this.startValue = this.value;
-       window.addEventListener('touchmove', this.touchMove, false);
+       e.target.ownerDocument.defaultView.addEventListener('touchmove', this.touchMove, false);
 //       this.parent.element().addEventListener('touchmove', this.touchMove, false);
        this.touchMove(e);
      },
      touchEnd: function(e) {
-       window.removeEventListener('touchmove', this.touchMove, false);
-       window.removeEventListener('touchend', this.touchEnd, false);
+       e.target.ownerDocument.defaultView.removeEventListener('touchmove', this.touchMove, false);
+       e.target.ownerDocument.defaultView.removeEventListener('touchend', this.touchEnd, false);
 //       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
      },
      touchMove: function(e) {
@@ -162,7 +162,7 @@ var ScrollCView = FOAM.create({
 
 
 /** Add a scrollbar around an inner-view. **/
-var ScrollBorder = FOAM.create({
+var ScrollBorder = FOAM({
 
    model_: 'Model',
 
@@ -201,7 +201,8 @@ var ScrollBorder = FOAM.create({
 
            this.dao.select(COUNT())(function(c) {
                self.scrollbar.size = c.count;
-               self.scrollbar.value = 0;
+               self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
+               if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);
            });
            /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
@@ -215,7 +216,6 @@ var ScrollBorder = FOAM.create({
    methods: {
      layout: function() {
        this.view.layout();
-       this.scrollbar.height = toNum(window.getComputedStyle(this.view.element().children[0]).height)-36;
      },
      toHTML: function() {
        return '<table width=100% border=0><tr><td valign=top>' +
@@ -233,6 +233,13 @@ var ScrollBorder = FOAM.create({
        var scrollbar = this.scrollbar;
        var self = this;
 
+       view.element().onmousewheel = function(e) {
+          if ( e.wheelDeltaY > 0 && scrollbar.value ) {
+             scrollbar.value--;
+          } else if ( e.wheelDeltaY < 0 && scrollbar.value < scrollbar.size - scrollbar.extent ) {
+             scrollbar.value++;
+          }
+       };
        scrollbar.addPropertyListener('value', EventService.animate(function() {
          if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value);
        }));
@@ -243,8 +250,9 @@ var ScrollBorder = FOAM.create({
        Events.dynamic(function() {view.rows;}, function() {
          scrollbar.extent = view.rows;
        });
+       Events.dynamic(function() {view.height;}, function() {
+         scrollbar.height = Math.max(view.height - 36, 0);
+       });
      }
    }
 });
-
-

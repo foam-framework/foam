@@ -1,0 +1,339 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../foam.css" />
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <title>DAO</title>
+  <style>
+    code {color:blue;}
+  </style>
+ </head>
+
+ <body>
+
+<script id='demo' language="xjavascript">
+// DAO Sample
+
+// First, create a Model (like a schema)
+var Person = FOAM({
+  model_: 'Model',
+  name: 'Person',
+  properties: [
+    { name: 'id' },
+    { name: 'name' },
+    { name: 'sex', defaultValue: 'M' },
+    { model_: 'IntegerProperty', name: 'age' }
+  ]
+});
+
+var dao;
+
+// Create a DAO, any one of these should work the same:
+
+// IndexedDB DAO
+// dao = IDBDAO.create({model: Person});
+
+// In-memory Transient DAO
+// dao = DAO.create({model: Person});
+
+// In-memory Transient DAO, with indices
+dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME).addIndex(Person.SEX, Person.AGE).addRawIndex(mLangIndex.create(SUM(Person.AGE)));
+
+// Local-storage DAO
+// dao = StorageDAO.create({model: Person});
+
+// Arrays are full DAO's
+// dao = [];
+
+// An IndexedDB DAO Cached in an in-memory DAO
+// dao = CachingDAO.create(
+//     MDAO.create({mode: Person}, IDBDAO.create({model: Person}));
+
+// Add logging to DAO
+// dao = LoggingDAO.create(console.log.bind(console, 'log: '), dao);
+ 
+// Set DAO's default sort-order
+// dao = dao.orderBy(Person.NAME);
+
+// Add some People
+dao.put(Person.create({id:'1', name:'John',  age:21}));
+dao.put(Person.create({id:'2', name:'Dave',  age:20}));
+dao.put(Person.create({id:'3', name:'Steve', age:19}));
+dao.put(Person.create({id:'4', name:'Andy',  age:18}));
+  
+// Select to a 'sink'
+dao.select({put: function(p) { console.log('person: ', p.name); }});
+
+// Console.log is also a valid sink
+dao.select(console.log);
+
+// Console.log.json is a valid sink that formats the results as JSON 
+dao.select(console.log.json);
+
+// Select directly to an Array
+var a = [];
+dao.select(a);
+console.log(a);
+
+// Select from one dao to another (a full copy)
+dao2 = MDAO.create({model: Person});
+dao.select(dao2);
+dao2.select(COUNT())(console.log);
+
+// Find Examples
+
+// Find by primary key
+dao.find('2', console.log.json);
+
+// Find by mLang query
+dao.find(EQ(Person.NAME, 'Dave'), console.log.json);
+
+// Another
+dao.find(GT(Person.AGE, 19), console.log.json);
+
+// Add more data
+[
+  Person.create({id:'5', name:'Jane',  age:18, sex:'F'}),
+  Person.create({id:'6', name:'Daniel',age:19, sex:'F'}),
+  Person.create({id:'7', name:'Suzy',  age:20, sex:'F'}),
+  Person.create({id:'8', name:'Alice', age:16, sex:'F'}),
+  Person.create({id:'9', name:'Kim',   age:18, sex:'F'}),
+].select(dao);
+
+dao.select(COUNT())(console.log);
+
+
+// More Select Examples
+
+// Contains text
+dao.where(CONTAINS(Person.NAME, 'A')).select(console.log.json);
+
+// Contains text, ignoring Case
+dao.where(CONTAINS_IC(Person.NAME, 'A')).select(console.log.json);
+
+// OrderBy
+dao.orderBy(Person.AGE).select(console.log.json);
+
+// OrderBy multiple fields, including descending
+dao.orderBy(DESC(Person.AGE), Person.NAME).select(console.log.json);
+
+// Limit
+dao.limit(2).select(console.log.json);
+
+// Limit + Skip
+dao.skip(1).limit(2).select(console.log.json);
+
+// Where, Less-Than
+dao.where(LT(Person.AGE, 18)).select(console.log.json);
+
+// Where, Less-Than-or-Equal
+dao.where(LTE(Person.AGE, 18)).select(console.log.json);
+
+// Where, with AND
+dao.where(AND(GTE(Person.AGE, 18), LTE(Person.AGE, 20))).select(console.log.json);
+
+// Accumulators
+
+// MIN
+dao.select(MIN(Person.AGE))(console.log);
+
+// MAX
+dao.select(MAX(Person.AGE))(console.log);
+
+// Multiple
+dao.select(SEQ(MIN(Person.AGE), SUM(Person.AGE), AVG(Person.AGE), MAX(Person.AGE), COUNT()))(console.log);
+
+// Group By
+dao.select(GROUP_BY(Person.AGE, MAP(Person.NAME, [])))(console.log.json);
+
+// Group By, with COUNT
+dao.select(GROUP_BY(Person.AGE, COUNT()))(console.log.json);
+
+// Pie Graph
+dao.select(PIE(Person.AGE,{r:120}))(function(p) { p.write(console); });
+
+// Live Pie Graph, notice that it shows data added after
+var pie = PIE(Person.AGE);
+dao.pipe(pie);
+pie.write(console);
+
+// Group+Pies
+dao.select(GROUP_BY(Person.AGE, PIE(Person.SEX, {colorMap: {M: 'lightblue', F: 'pink'}})))(function(g) { console.log(g.toHTML()); g.initHTML(); });
+
+// Grid By, like 2-dimensional Group By
+// works, but produces lots of JSON output
+// dao.select(GRID_BY(Person.SEX, Person.AGE, COUNT()))(console.log.json);
+
+// So lets output as HTML instead:
+dao.select(GRID_BY(Person.SEX, Person.AGE, COUNT()))(function(g) { console.log(g.toHTML()); });
+
+// Or:
+dao.select(GRID_BY(Person.SEX, Person.AGE, MAP(Person.NAME, [])))(function(g) { console.log(g.toHTML()); g.initHTML(); });
+
+// MAP
+dao.select(MAP(Person.NAME, []))(console.log);
+
+// DESCRIBE
+
+dao.select(DESCRIBE([]))(console.log);
+
+dao.orderBy(Person.AGE).select(DESCRIBE([]))(console.log);
+
+dao.orderBy(Person.SEX).select(DESCRIBE([]))(console.log);
+
+dao.orderBy(Person.SEX).select(DESCRIBE([]))(console.log);
+
+dao.select(DESCRIBE(COUNT()))(console.log);
+
+
+// Remove
+
+// Remove by Primary Key
+dao.remove('3');
+dao.select(COUNT())(console.log);
+
+// Remove by mLang query
+dao.remove(LT(Person.AGE, 20));
+dao.select(MAP(Person.AGE, []))(console.log);
+
+
+// Materialized Views / mLang Indices
+dao.select(SUM(Person.AGE))(console.log);
+
+dao.select(DESCRIBE(SUM(Person.AGE)))(console.log);
+
+
+// Concurrency
+
+// 'apar' to execute queries concurrently
+apar(
+  dao.where(EQ(Person.NAME, 'Dave')).select([]),
+  dao.where(EQ(Person.NAME, 'Suzy')).select([])
+)(function(q1, q2) {
+  console.log('q1: ', q1[0].name, ' q2: ', q2[0].name);
+}); 
+
+
+// Listen
+
+// Arrays are full DAO's
+var newDAO = [];
+
+// Pipe from old DAO to newDAO
+dao.pipe(newDAO);
+newDAO.select(MAP(Person.NAME, []))(console.log);
+
+// Listen for all future updates
+dao.listen({
+  put: function(o) { console.log('person added: ', o.name); },
+  remove: function(o) { console.log('person removed: ', o.name); }
+});
+
+// Listen only for filtered updates
+dao.where(AND(EQ(Person.SEX, 'F'), GTE(Person.AGE, 18))).listen({
+  put: function(o) { console.log('woman added: ', o.name,' ', o.age); },
+  remove: function(o) { console.log('woman removed: ', o.name); }
+});
+
+dao.put(Person.create({id:'10', name:'Robert',  age:21}));
+dao.put(Person.create({id:'11', name:'Janet',   age:14, sex:'F'}));
+dao.put(Person.create({id:'12', name:'Angelina',age:22, sex:'F'}));
+dao.remove('11');
+
+// New DAO should contain updates made to dao
+newDAO.select(MAP(Person.NAME, []))(console.log);
+
+var PayStub = FOAM({
+  model_: 'Model',
+  name: 'PayStub',
+  properties: [
+    { name: 'id' },
+    { name: 'pid' },
+    { model_: 'IntegerProperty', name: 'year' },
+    { model_: 'IntegerProperty', name: 'month' },
+    { model_: 'IntegerProperty', name: 'amount' }
+  ]
+});
+
+dao = MDAO.create({model: Person});
+dao.put(Person.create({id:'1', name:'John',  age:21}));
+dao.put(Person.create({id:'2', name:'Dave',  age:21}));
+
+var PayStubDAO = MDAO.create({model: PayStub});
+
+[
+  PayStub.create({id:'1', pid:'1', year: 2013, month: 6, amount: 100}),  
+  PayStub.create({id:'2', pid:'1', year: 2013, month: 6, amount: 110}),  
+  PayStub.create({id:'3', pid:'1', year: 2013, month: 6, amount: 98}),  
+  PayStub.create({id:'4', pid:'1', year: 2013, month: 6, amount: 101}),
+  PayStub.create({id:'5', pid:'2', year: 2013, month: 6, amount: 200}),  
+  PayStub.create({id:'6', pid:'2', year: 2013, month: 6, amount: 210}),  
+  PayStub.create({id:'7', pid:'2', year: 2013, month: 6, amount: 198}),  
+  PayStub.create({id:'8', pid:'2', year: 2013, month: 6, amount: 201}),
+  PayStub.create({id:'11', pid:'1', year: 2013, month: 7, amount: 100}),  
+  PayStub.create({id:'12', pid:'1', year: 2013, month: 7, amount: 110}),  
+  PayStub.create({id:'13', pid:'1', year: 2013, month: 7, amount: 98}),  
+  PayStub.create({id:'14', pid:'1', year: 2013, month: 7, amount: 101}),
+  PayStub.create({id:'15', pid:'2', year: 2013, month: 7, amount: 200}),  
+  PayStub.create({id:'16', pid:'2', year: 2013, month: 7, amount: 210}),  
+  PayStub.create({id:'17', pid:'2', year: 2013, month: 7, amount: 198}),  
+  PayStub.create({id:'18', pid:'2', year: 2013, month: 7, amount: 201})  
+].select(PayStubDAO)
+
+dao.select(MAP(JOIN(
+  PayStubDAO.where(AND(EQ(PayStub.YEAR, 2013), EQ(PayStub.MONTH, 6))),
+  PayStub.PID,
+  SUM(PayStub.AMOUNT)), []))(console.log);
+
+// 'distinct'
+PayStubDAO.select(DISTINCT(PayStub.PID, []))(console.log);
+
+// 'distinct' multi-part
+PayStubDAO.select(DISTINCT(SEQ(PayStub.PID, PayStub.YEAR,PayStub.MONTH), []))(console.log);
+
+// System Tables
+
+// Models are also Modelled, so can be also be stored in a DAO
+var ModelDAO = MDAO.create({model: Model});
+ModelDAO.put(Person);
+ModelDAO.put(PayStub);
+ModelDAO.select(console.log.json);
+
+// WEB UI
+
+// Output in a TableView
+TableView2.create({model: Person, dao: dao}).write(document);
+
+// Document is also a Sink
+dao.select(document);
+
+
+</script>
+
+  <div id='output'></div>
+
+  <script language="javascript">
+    var demo = $('demo');
+    var out  = $('output');
+    var log_ = function(o) {
+      if ( o.indexOf('<') != 0 ) o = o.replace(/\n/g, '<br>').replace(/ /g,'&nbsp;');
+//      out.innerHTML = out.innerHTML + o + '<br/>';
+      document.writeln(o + '<br/>');
+    }
+    var oldLog = console.log;
+    console.log = function() { log_([].join.call(arguments, '')); };
+    console.log.put = console.log.bind(console);
+    console.log.str = oldLog.str;
+    console.log.json = oldLog.json;
+    var log = function(o) { log_(' <b>&gt;</b> ' + o); }
+
+    var s = demo.innerText.split('\n\n');
+    for ( var i = 0 ; i < s.length ; i++ ) {
+      var l = s[i];
+      log_(' <br><code>' + l + '<code>');
+      eval(l);
+    }
+  </script>
+
+ </body>
+</html>

@@ -34,7 +34,7 @@ var smodels;
     ps[p.id] = Property.create({
       name: p.id,
       label: p.label,
-      help: p.comment_plain,
+      help: p.comment_plain
     });
 
     console.log(p.id);

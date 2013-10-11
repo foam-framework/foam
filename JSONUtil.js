@@ -1,43 +1,45 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+var AbstractFormatter = {
+   /** @param p an predicate function or an mLang **/
+   where: function(p) {
+      return {
+         __proto__: this,
+         p: ( p.f && p.f.bind(p) ) || p
+      };
+   },
 
-var JSONUtil =
-{
+   p: function() { return true; }
+};
+
+
+var JSONUtil = {
 
    keyify: function(str) {
      // TODO: check if contains single-quote or other characters
-     return ( str.indexOf(' ') != -1 || str.indexOf(':') != -1 ) ?
-       "'" + str + "'" : str;
+     return '"' + str + '"';
    },
 
    escape: function(str) {
+     // function replace() { // ???: why is this here?
+     // }
      return str
-      .replace(/\n/g, '\\n')
-      .replace(/'/g, "\\'");
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/[\x00-\x1f]/g, function(c) {
+        return "\\u00" + ((c.charCodeAt(0) < 0x10) ?
+                          "0" + c.charCodeAt(0).toString(16) :
+                          c.charCodeAt(0).toString(16));
+      });
    },
 
    parse: function(str) {
-     return this.mapToObj(eval('(' + str + ')'));
+     return this.mapToObj(JSON.parse(str));
    },
 
    /**
     * Convert JS-Maps which contain the 'model_' property, into
     * instances of that model.
     **/
-   mapToObj: function(obj, opt_modelLoader) {
+   mapToObj: function(obj, opt_defaultModel) {
       if ( obj instanceof Array ) {
 	 for ( var i = 0 ; i < obj.length ; i++ ) {
 	    obj[i] = this.mapToObj(obj[i]);
@@ -51,52 +53,50 @@ var JSONUtil =
 
       if ( obj instanceof Object ) {
 	 for ( var key in obj ) {
-	    if ( key != 'model_' ) obj[key] = this.mapToObj(obj[key]);
+	    if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
 	 }
 
-	 if ( typeof obj.model_ == 'string' ) {
-	    if ( ! GLOBAL[obj.model_] ) {
-	       // console.log("Missing class: ", obj);
+         if ( ! GLOBAL[obj.model_] ) {
+            // console.log("Missing class: ", obj);
 
-	       if ( opt_modelLoader ) return opt_modelLoader(obj.model_);
+            //    if ( opt_modelLoader ) return opt_modelLoader(obj.model_);
 
-	       return obj;
-	    }
-	    return GLOBAL[obj.model_].create(obj);
-	 }
-
-	 return obj;
+            return obj;
+         }
+	 return GLOBAL[obj.model_].create(obj);
       }
 
       return obj;
    },
 
-
-   compact:
-   {
+   compact: {
+      __proto__: AbstractFormatter,
 
       stringify: function(obj) {
-	 var buf = [];
+          var buf = "";
 
-	 this.output(buf.push.bind(buf), obj);
+          this.output(function() {
+              for (var i = 0; i < arguments.length; i++)
+                buf += arguments[i];
+          }, obj);
 
-	 return buf.join('');
+          return buf;
       },
 
       output: function(out, obj) {
 	 if ( obj instanceof Array) {
 	    this.outputArray_(out, obj);
 	 }
-	 else if ( typeof obj == 'string' ) {
-	    out("'");
+	 else if ( typeof obj === 'string' ) {
+	    out("\"");
 	    out(JSONUtil.escape(obj));
-	    out("'");
+	    out("\"");
 	 }
 	 else if ( obj instanceof Function ) {
 	    out(obj);
 	 }
 	 else if ( obj instanceof Date ) {
-	    out("new Date('", obj, "')");
+            out(obj.getTime());
 	 }
 	 else if ( obj instanceof Object ) {
 	    try {
@@ -109,7 +109,12 @@ var JSONUtil =
 	       console.log("toJSONError: ", x, obj);
 	    }
 	 }
+         else if (typeof obj === "number") {
+           if (!Number.isFinite(obj)) obj = null;
+           out(obj);
+         }
 	 else {
+	    if (obj === undefined) obj = null;
 	    out(obj);
 	 }
       },
@@ -117,12 +122,14 @@ var JSONUtil =
       outputObject_: function(out, obj) {
        var str = "";
 
-       out('{', "model_:'", obj.model_.name, "'");
+       out('{', '"model_":"', obj.model_.name, '"');
 
        for ( var key in obj.model_.properties ) {
 	  var prop = obj.model_.properties[key];
 
-	  if ( prop.name in obj.instance_ /*&& prop.name != 'extendsPrototype'*/ && obj[prop.name] ) {
+          if ( ! this.p(prop) ) continue;
+
+	  if ( prop.name in obj.instance_ ) {
              var val = obj[prop.name];
 
 	     if ( val instanceof Array && val.length == 0 ) continue;
@@ -139,54 +146,57 @@ var JSONUtil =
 
 
       outputMap_: function(out, obj) {
-       var str   = "";
-       var first = true;
+         var str   = "";
+         var first = true;
 
-       out('{');
+         out('{');
 
-       for ( var key in obj ) {
-	  var val = obj[key];
+         for ( var key in obj ) {
+	    var val = obj[key];
 
-	  if ( ! first ) out(",");
-	  out(JSONUtil.keyify(key), ':');
-	  this.output(out, val);
+	    if ( ! first ) out(",");
+	    out(JSONUtil.keyify(key), ':');
+	    this.output(out, val);
 
-	  first = false;
-       }
+	    first = false;
+         }
 
-       out('}');
+         out('}');
       },
 
       outputArray_: function(out, a) {
-       if ( a.length == 0 ) { out('[]'); return out; }
+         if ( a.length == 0 ) { out('[]'); return out; }
 
-       var str   = "";
-       var first = true;
+         var str   = "";
+         var first = true;
 
-       out('[');
+         out('[');
 
-       for ( var i = 0 ; i < a.length ; i++, first = false ) {
-	  var obj = a[i];
+         for ( var i = 0 ; i < a.length ; i++, first = false ) {
+	    var obj = a[i];
 
-	  if ( ! first ) out(',');
+	    if ( ! first ) out(',');
 
-	  this.output(out, obj);
-       }
+	    this.output(out, obj);
+         }
 
-       out(']');
+         out(']');
       }
    },
 
 
-   pretty:
-   {
+   pretty: {
+      __proto__: AbstractFormatter,
 
       stringify: function(obj) {
-	 var buf = [];
+          var buf = "";
 
-	 this.output(buf.push.bind(buf), obj);
+          this.output(function() {
+              for (var i = 0; i < arguments.length; i++)
+                buf += arguments[i];
+          }, obj);
 
-	 return buf.join('');
+          return buf;
       },
 
       output: function(out, obj, opt_indent) {
@@ -196,9 +206,9 @@ var JSONUtil =
 	    this.outputArray_(out, obj, indent);
 	 }
 	 else if ( typeof obj == 'string' ) {
-	    out("'");
+	    out("\"");
 	    out(JSONUtil.escape(obj));
-	    out("'");
+	    out("\"");
 	 }
 	 else if ( obj instanceof Function ) {
 	    out(obj);
@@ -216,37 +226,41 @@ var JSONUtil =
 	    catch (x) {
 	       console.log("toJSONError: ", x, obj);
 	    }
-	 }
-	 else {
-	    out(obj);
+         } else if (typeof obj === "number") {
+           if (!Number.isFinite(obj)) obj = null;
+           out(obj);
+         } else {
+           if (obj === undefined) obj = null;
+           out(obj);
 	 }
       },
 
       outputObject_: function(out, obj, opt_indent) {
-      var indent       = opt_indent || "";
-       var nestedIndent = indent + "   ";
-       var str          = "";
+         var indent       = opt_indent || "";
+         var nestedIndent = indent + "   ";
+         var str          = "";
 
-       out(/*"\n", */indent, '{\n', nestedIndent, "model_: '", obj.model_.name, "'");
+         out(/*"\n", */indent, '{\n', nestedIndent, '"model_": "', obj.model_.name, '"');
 
-       for ( var key in obj.model_.properties ) {
-	  var prop = obj.model_.properties[key];
+         for ( var key in obj.model_.properties ) {
+	    var prop = obj.model_.properties[key];
 
-if ( prop.name === 'parent' ) continue;
-	  if ( prop.name in obj.instance_ /* && prop.name != 'extendsPrototype'*/ && obj[prop.name])
-	  {
-             var val = obj[prop.name];
+            if ( ! this.p(prop) ) continue;
 
-	     if ( val instanceof Array && val.length == 0 ) continue;
+            if ( prop.name === 'parent' ) continue;
+	    if ( prop.name in obj.instance_ ) {
+               var val = obj[prop.name];
 
-//	     if ( val == prop.defaultValue ) continue;
+	       if ( val instanceof Array && val.length == 0 ) continue;
 
-	     out(",\n", nestedIndent, prop.name, ': ');
-	     this.output(out, val, nestedIndent);
-	  }
-       }
+               //	     if ( val == prop.defaultValue ) continue;
 
-       out("\n", indent, '}');
+	       out(",\n", nestedIndent, "\"", prop.name, "\"", ': ');
+	       this.output(out, val, nestedIndent);
+	    }
+         }
+
+         out("\n", indent, '}');
       },
 
       outputMap_: function(out, obj, opt_indent) {
@@ -272,35 +286,39 @@ if ( prop.name === 'parent' ) continue;
       },
 
       outputArray_: function(out, a, opt_indent) {
-       if ( a.length == 0 ) { out('[]'); return out; }
+         if ( a.length == 0 ) { out('[]'); return out; }
 
-       var indent       = opt_indent || "";
-       var nestedIndent = indent + "   ";
-       var str          = "";
-       var first        = true;
+         var indent       = opt_indent || "";
+         var nestedIndent = indent + "   ";
+         var str          = "";
+         var first        = true;
 
-       out("\n", indent, '[\n');
+         out("\n", indent, '[\n');
 
-       for ( var i = 0 ; i < a.length ; i++, first = false )
-       {
-	  var obj = a[i];
+         for ( var i = 0 ; i < a.length ; i++, first = false )
+         {
+	    var obj = a[i];
 
-	  if ( ! first ) out(',\n');
+	    if ( ! first ) out(',\n');
 
-	  if ( typeof obj == 'string' )
-	  {
-	     out(nestedIndent);
-	  }
+	    if ( typeof obj == 'string' ) {
+	       out(nestedIndent);
+	    }
 
-	  this.output(out, obj, nestedIndent);
-       }
+	    this.output(out, obj, nestedIndent);
+         }
 
-       out("\n", indent, ']');
+         out("\n", indent, ']');
       }
    },
 
-   compressed:
-   {
+   moreCompact: {
+      __proto__: AbstractFormatter,
+     // TODO: use short-names
+   },
+
+   compressed: {
+      __proto__: AbstractFormatter,
 
       stringify: function(obj) {
 	 return Iuppiter.Base64.encode(Iuppiter.compress(JSONUtil.compact.stringify(obj),true));
@@ -311,3 +329,6 @@ if ( prop.name === 'parent' ) continue;
 
 JSONUtil.stringify = JSONUtil.pretty.stringify.bind(JSONUtil.pretty);
 JSONUtil.output = JSONUtil.pretty.output.bind(JSONUtil.pretty);;
+JSONUtil.where = JSONUtil.pretty.where.bind(JSONUtil.pretty);;
+
+var NOT_TRANSIENT = function(prop) { return ! prop.transient; };

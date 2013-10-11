@@ -28,7 +28,7 @@ FOAM Browser</font>
 </div>
 <script>
 
-var Feature = FOAM.create({
+var Feature = FOAM({
    model_: 'Model',
 
    name: 'Feature',
@@ -176,7 +176,7 @@ layout();
     });
 
 /*
-    var dao = IDAO.create({model: EMail});
+    var dao = MDAO.create({model: EMail});
     emails.select(dao);
     dao.bulkLoad(dao);
     dao.addIndex(EMail.TO);

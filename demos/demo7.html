@@ -1,0 +1,61 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../foam.css" />
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="dragon.js"></script> 
+  <title>FOAM Dragon</title>
+ </head>
+ <body>
+  <h1>Dragon</h1>
+  <script language="javascript">
+    var timer   = Timer.create({});
+    var tt = Turntable.create();
+    var dragon  = Dragon.create({
+      width: 1000,
+      height: 800,
+      timer:timer
+    });
+
+    Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
+
+    var stack = StackView.create();
+    stack.setPreview = function() {};
+
+    document.writeln("<table><tr><td>");
+    document.write("<div>");
+    stack.write(document);
+    document.write("</div>");
+    Dragon.write(document);
+    document.writeln("</td><td valign=top><div>");
+    dragon.write(document);
+    document.writeln("<table><tr><td>");
+    timer.write(document);
+    document.writeln("</td><td>");
+    tt.write(document);
+    document.writeln("</td></tr></table>");
+    document.writeln("</div></td></tr></tabel>");
+
+    tt.paint();
+    dragon.paint();
+
+    var dmouse = Mouse.create();
+    dmouse.connect(dragon.canvasView.element());
+    dragon.eyes.watch(dmouse);
+
+    Dragon.methods.forEach(function(meth) {
+      Events.dynamic(function() {
+// console.log('update', meth.name);
+console.log(meth.name);
+try
+{
+        Dragon.getPrototype()[meth.name] = eval(meth.code);
+} catch (e)
+{
+console.log(e);
+}
+      });
+    });
+  </script>
+ </body>
+</html>

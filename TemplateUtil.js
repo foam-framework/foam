@@ -1,19 +1,3 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  * Simple template system modelled after JSP's.
  *
@@ -22,6 +6,8 @@
  *    <%= comma-separated-values %>: all values are appended to template output
  *    \<new-line>: ignored
  *    %value<whitespace>: TODO: output a single value to the template output
+ *
+ * TODO: add support for arguments
  */
 
 var TemplateParser = {
@@ -74,19 +60,14 @@ var TemplateCompiler = {
 });
 
 
-var TemplateUtil =
-{
+var TemplateUtil = {
 
    compile: function(str) {
-// console.time('compile-1');
-//      var code = TemplateCompiler.parseString(str);
-// console.timeEnd('compile-1');
-// console.time('compile');
+      // TODO: eval hack for PackagedApps
      var code = TemplateCompiler.parseString(str);
-// console.timeEnd('compile');
 
      try {
-      return new Function("opt_out", code);
+        return new Function("opt_out", code);
      } catch (err) {
        console.log("Template Error: ", err);
        console.log(code);
@@ -98,8 +79,7 @@ var TemplateUtil =
     * Combinator which takes a template which expects an output parameter and
     * converts it into a function which returns a string.
     */
-   stringifyTemplate: function (template)
-   {
+   stringifyTemplate: function (template) {
       return function()
       {
 	 var buf = [];

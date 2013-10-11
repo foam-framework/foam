@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,158 @@
        emails embeded as attachments in other emails
 */
 
-var Attachment = FOAM.create({
+function lazyEval(fn) {
+   var result;
+   return function() {
+      if ( ! result ) {
+         result = fn.call(this);
+      }
+      return result;
+   };
+};
+
+var EMailLabel = FOAM({
+    model_: 'Model',
+    name: 'EMailLabel',
+    label: 'EMailLabel',
+
+    ids: [ 'id' ],
+
+    properties: [
+        {
+            model_: 'StringProperty',
+            name: 'id',
+            label: 'Label ID'
+        },
+        {
+            model_: 'StringProperty',
+            name: 'displayName',
+            label: 'Display Name'
+        },
+        {
+            model_: 'IntegerProperty',
+            name: 'color',
+            label: 'color',
+            defaultValue: 0
+        }
+    ],
+
+    methods: {
+        // TODO:  Not an exhaustive list
+        SystemLabels: {
+          ALL:       '^all',
+          DRAFT:     '^r',
+          IMPORTANT: '^io_im',
+          INBOX:     '^i',
+          MUTED:     '^g', // 'g' is second letter of 'ignored'
+          OPENED:    '^o',
+          REPLIED:   '^io_re', // User has replied to this message
+          SENT:      '^f',
+          SPAM:      '^s',
+          STARRED:   '^t', // 't' originall stood for TODO
+          TRASH:     '^k',
+          UNREAD:    '^u'
+        },
+
+        RENDERABLE_SYSTEM_LABELS: lazyEval(function() {
+          var result = {};
+          var SystemLabels = this.SystemLabels;
+          result[SystemLabels.INBOX]     = true;
+          result[SystemLabels.STARRED]   = true;
+          result[SystemLabels.IMPORTANT] = true;
+          result[SystemLabels.SPAM]      = true;
+          result[SystemLabels.TRASH]     = true;
+          result[SystemLabels.DRAFT]     = true;
+          result[SystemLabels.SENT]      = true;
+          result[SystemLabels.MUTED]     = true;
+          result[SystemLabels.UNREAD]    = true;
+          return result;
+        }),
+
+        SYSTEM_LABEL_RENDER_NAMES: lazyEval(function() {
+          var result = {};
+          var SystemLabels = this.SystemLabels;
+          result[SystemLabels.ALL]       = 'All Mail';
+          result[SystemLabels.INBOX]     = 'Inbox';
+          result[SystemLabels.STARRED]   = 'Starred';
+          result[SystemLabels.IMPORTANT] = 'Important';
+          result[SystemLabels.SPAM]      = 'Spam';
+          result[SystemLabels.TRASH]     = 'Trash';
+          result[SystemLabels.DRAFT]     = 'Draft';
+          result[SystemLabels.SENT]      = 'Sent';
+          result[SystemLabels.MUTED]     = 'Muted';
+          result[SystemLabels.UNREAD]    = 'Unread';
+          result[SystemLabels.REPLIED]   = 'Replied';
+          result[SystemLabels.OPENED]    = 'Opened';
+          return result;
+        }),
+
+        SEARCHABLE_SYSTEM_LABELS: lazyEval(function() {
+          var result = {};
+          var SystemLabels = this.SystemLabels;
+          result[SystemLabels.ALL]       = true;
+          result[SystemLabels.INBOX]     = true;
+          result[SystemLabels.STARRED]   = true;
+          result[SystemLabels.IMPORTANT] = true;
+          result[SystemLabels.SPAM]      = true;
+          result[SystemLabels.TRASH]     = true;
+          result[SystemLabels.DRAFT]     = true;
+          result[SystemLabels.SENT]      = true;
+          return result;
+        }),
+
+        isSystemLabel: function() {
+          return this.displayName.charAt(0) == '^';
+        },
+
+        isRenderable: function() {
+          return !this.isSystemLabel() || this.RENDERABLE_SYSTEM_LABELS()[this.displayName];
+        },
+
+        getRenderName: function() {
+          var displayName = this.displayName;
+          return this.SYSTEM_LABEL_RENDER_NAMES()[displayName] || displayName;
+        },
+
+        isSearchable: function() {
+          return !this.isSystemLabel() || this.SEARCHABLE_SYSTEM_LABELS()[this.displayName];
+        },
+
+        getSearch: function() {
+          switch(this.displayName) {
+           case this.SystemLabels.ALL:
+            return '-label:^r,^s,^k';
+           case this.SystemLabels.SENT:
+            return 'f:me';
+           default:
+            return 'label:"' + this.displayName + '"';
+          }
+        }
+    }
+});
+
+var EMailPreference = FOAM({
+    model_: 'Model',
+    name: 'EMailPreference',
+    label: 'EMailPreference',
+
+    ids: [ 'name' ],
+
+    properties: [
+        {
+            model_: 'StringProperty',
+            name: 'name',
+            label: 'Preference Name'
+        },
+        {
+            model_: 'StringProperty',
+            name: 'value',
+            label: 'Preference Value'
+        }
+    ]
+});
+
+var Attachment = FOAM({
    model_: 'Model',
    name: 'Attachment',
    plural: 'Attachments',
@@ -62,7 +213,7 @@ var Attachment = FOAM.create({
          type: 'int',
          displayWidth: 10,
          view: 'TextFieldView'
-      },
+      }
    ],
    actions:
    [
@@ -77,7 +228,7 @@ var Attachment = FOAM.create({
 });
 
 
-var EMail = FOAM.create({
+var EMail = FOAM({
    model_: 'Model',
    name: 'EMail',
    plural: 'EMail',
@@ -85,9 +236,9 @@ var EMail = FOAM.create({
    tableProperties:
    [
       'from',
-      'to',
+//      'to',
       'subject',
-      'attachments',
+//      'attachments',
       'timestamp'
    ],
    properties:
@@ -106,43 +257,65 @@ var EMail = FOAM.create({
          name: 'convId',
          label: 'Conversation ID',
          mode: 'read-write',
+	 hidden: true,
          displayWidth: 30
       },
       {
-         model_: 'Property',
+         model_: 'DateProperty',
          name: 'timestamp',
+	 aliases: ['time', 'modified', 't'],
          label: 'Date',
          type: 'String',
          mode: 'read-write',
          required: true,
-         displayWidth: 50,
+         displayWidth: 45,
          displayHeight: 1,
          view: 'TextFieldView',
          tableWidth: '100',
          preSet: function (d) {
-           return typeof d === 'string' ? new Date(d) : d;
+           if (typeof d === 'string' || typeof d === 'number')
+             return new Date(d);
+           return d;
 	 },
-         tableFormatter: function(d) {
-           return d.toDateString();
-         },
          valueFactory: function() { return new Date(); }
       },
       {
          model_: 'StringProperty',
          name: 'from',
+         shortName: 'f',
          mode: 'read-write',
          required: true,
-         displayWidth: 60,
+         displayWidth: 90,
+         tableWidth: '120',
          tableFormatter: function(t) {
            return t.replace(/"/g, '').replace(/<.*/, '');
          },
          valueFactory: function() { return GLOBAL.user || ""; }
       },
       {
-         model_: 'StringProperty',
+         model_: 'StringArrayProperty',
          name: 'to',
+         shortName: 't',
          required: true,
-         displayWidth: 60,
+         displayWidth: 90,
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         }
+      },
+      {
+         model_: 'StringArrayProperty',
+         name: 'cc',
+         required: true,
+         displayWidth: 90,
+         tableFormatter: function(t) {
+           return t.replace(/"/g, '').replace(/<.*/, '');
+         }
+      },
+      {
+         model_: 'StringArrayProperty',
+         name: 'bcc',
+         required: true,
+         displayWidth: 90,
          tableFormatter: function(t) {
            return t.replace(/"/g, '').replace(/<.*/, '');
          }
@@ -150,20 +323,18 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
          name: 'subject',
+         shortName: 's',
          type: 'String',
          mode: 'read-write',
          required: true,
-         displayWidth: 70,
-         displayHeight: 1,
+         displayWidth: 100,
          tableWidth: '45%',
          view: 'TextFieldView'
       },
       {
-         model_: 'Property',
+         model_: 'StringArrayProperty',
          name: 'labels',
-	 type: 'Array[String]',
-	 view: 'StringArrayView',
-	 valueFactory: function() { return []; },
+	 view: 'LabelView',
          postSet: function(a) {
 	   for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
          },
@@ -172,7 +343,8 @@ var EMail = FOAM.create({
       {
          model_: 'Property',
 	 name: 'attachments',
-	 label: 'Attachments', // TODO: switch to paperclip icon
+	 label: 'Attachments',
+         tableLabel: '@',
 	 type: 'Array[Attachment]',
          subType: 'Attachment',
 	 view: 'ArrayView',
@@ -186,15 +358,42 @@ var EMail = FOAM.create({
       {
          model_: 'StringProperty',
          name: 'body',
+         shortName: 'b',
          label: '',
+//         view: 'RichTextView',
          displayWidth: 70,
-         displayHeight: 15,
+         displayHeight: 20,
          help: 'Email message body.',
          summaryFormatter: function(t) {
            return '<div class="messageBody">' + t.replace(/\n/g,'<br/>') + '</div>';
          }
       }
    ],
+
+   methods: {
+      updateLabelByName: function(id) {
+         var self = this;
+         EMailLabels.find(EQ(EMailLabel.DISPLAY_NAME, id), {put: function(label) {
+            var mail = self.clone(); mail.toggleLabel(label.id); EMails.put(mail);
+         }});
+      },
+      hasLabel: function(l) { return this.labels.indexOf(l) != -1; },
+      toggleLabel: function(l) { this.hasLabel(l) ? this.removeLabel(l) : this.addLabel(l); },
+      addLabel: function(l) { this.labels = this.labels.deleteF(l).pushF(l); },
+      removeLabel: function(l) { this.labels = this.labels.deleteF(l); },
+      toMimeBody: function() {
+        return (
+            "From: " + this.from + "\r\n" +
+            "To: " + this.to.join(', ') + "\r\n" +
+            (this.cc.length ? "Cc: " + this.cc.join(", ") + "\r\n" : "") +
+            (this.bcc.length ? "Bcc: " + this.bcc.join(", ") + "\r\n" : "") +
+            "Subject: " + this.subject + "\r\n" +
+            "Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes\r\n" +
+            this.body +
+            "\r\n\r\n");
+      }
+   },
+
    actions:
    [
       {
@@ -213,11 +412,31 @@ var EMail = FOAM.create({
          action: function () {
            var replyMail = EMail.create({
              to: this.from,
-             from: this.to,
+             from: ME || this.to,
              subject: "Re.: " + this.subject,
-             body: this.body.replace(/^|\n/g, '\n>')
+             body: this.body.replace(/^|\n/g, '\n>'),
+             id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(replyMail, EMailDAO);
+           DAOCreateController.getPrototype().newObj(replyMail, EMails);
+         }
+      },
+      {
+         model_: 'Action',
+         name: 'replyAll',
+         help: 'Reply to all recipients of an email.',
+         action: function () {
+           var replyMail = EMail.create({
+             to: this.from,
+             from: ME || this.to,
+             subject: "Re.: " + this.subject,
+             body: this.body.replace(/^|\n/g, '\n>'),
+             id: Math.floor(Math.random() * 0xffffff).toVarintString()
+           });
+
+           for ( var i = 0 ; i < this.to ; i++ ) {
+              replyMail.to.push(this.to[i]);
+           }
+           DAOCreateController.getPrototype().newObj(replyMail, EMails);
          }
       },
       {
@@ -226,11 +445,72 @@ var EMail = FOAM.create({
          help: 'Forward an email.',
          action: function () {
            var forwardedMail = EMail.create({
-             from: 'me',
+             from: ME,
              subject: "Fwd.: " + this.subject,
-             body: this.body.replace(/^|\n/g, '\n>')
+             body: this.body.replace(/^|\n/g, '\n>'),
+             id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(forwardedMail, EMailDAO);
+           DAOCreateController.getPrototype().newObj(forwardedMail, EMails);
+         }
+      },
+      {
+         model_: 'Action',
+         name: 'star',
+         help: 'Star an email.',
+         action: function () { this.updateLabelByName('^t'); }
+      },
+      {
+         model_: 'Action',
+         name: 'archive',
+         help: 'Archive an email.',
+         action: function () { this.updateLabelByName('^i'); }
+      },
+      {
+         model_: 'Action',
+         name: 'spam',
+         help: 'Report an email as SPAM.',
+         action: function () {
+             var mail = this;
+             apar(
+               function(ret) {
+                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
+                   put: ret
+                 });
+               },
+               function(ret) {
+                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^s")).select({
+                   put: ret
+                 });
+               })(function(inbox, spam) {
+                 mail = mail.clone();
+                 mail.removeLabel(inbox.id);
+                 mail.addLabel(spam.id);
+                 EMails.put(mail);
+               });
+         }
+      },
+      {
+         model_: 'Action',
+         name: 'trash',
+         help: 'Move an email to the trash.',
+         action: function () {
+             var mail = this;
+             apar(
+               function(ret) {
+                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
+                   put: ret
+                 });
+               },
+               function(ret) {
+                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^k")).select({
+                   put: ret
+                 });
+               })(function(inbox, trash) {
+                 mail = mail.clone();
+                 mail.removeLabel(inbox.id);
+                 mail.addLabel(trash.id);
+                 EMails.put(mail);
+               });
          }
       }
    ]
@@ -257,7 +537,7 @@ var EmailAddressParser = {
   'simple address': seq(repeat(notChar('@')), '@', repeat(notChars('\r>,')))
 }.addActions({
   'labelled address': function(v) { return v[0].join('') + v[1] + v[2] + v[3]; },
-  'simple address': function(v) { return v[0].join('') + v[1] + v[2].join(''); } 
+  'simple address': function(v) { return v[0].join('') + v[1] + v[2].join(''); }
 });
 
 
@@ -358,21 +638,21 @@ var MBOXLoader = {
   SKIP_ATTACHMENT_STATE: function ATTACHMENT(str) {
     var att = this.email.attachments[this.email.attachments.length-1];
     if ( str.slice(0, 5) === 'From ' ) {
-      att.size = att.pos - att.position; 
+      att.size = att.pos - att.position;
       this.state = this.PARSE_HEADERS_STATE;
       this.state(str);
       return;
     }
 
     if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
-      att.size = att.pos - att.position; 
+      att.size = att.pos - att.position;
       this.state = this.PARSE_HEADERS_STATE;
       this.blockId = undefined;
     }
   },
 
   created: 0, // No of Emails created
- 
+
   lineNo: 0,  // Current Line Number in mbox file
 
   pos: 0,     // Current byte position in mbox file
@@ -409,7 +689,7 @@ var MBOXLoader = {
 
       this.segStartTime = Date.now();
       this.segPos = this.pos;
-    } 
+    }
 
     this.state(str);
   },
@@ -456,8 +736,8 @@ var MBOXLoader = {
 
   'conversation id': function(v) { this.email.convId = v[1].join('').trim(); },
 
-  to: function(v) { 
-    this.email.to = v[1].join('').trim(); 
+  to: function(v) {
+    this.email.to = v[1].join('').trim();
     var i = this.email.to.indexOf(',');
     if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
 },
@@ -489,7 +769,7 @@ var MBOXLoader = {
 
     this.email.attachments.push(attachment);
     this.state = this.SKIP_ATTACHMENT_STATE;
-  },
+  }
 
   // TODO: timestamp, message-id, body, attachments
   // TODO: internalize common strings to save memory (or maybe do it at the DAO level)
@@ -497,7 +777,7 @@ var MBOXLoader = {
 });
 
 
-var EMailBody = FOAM.create({
+var EMailBody = FOAM({
     model_: 'Model',
     name: 'EMailBody',
     label: 'EMailBody',

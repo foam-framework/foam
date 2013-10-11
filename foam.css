@@ -70,7 +70,7 @@ p, h1, form, button{
 /* ----------- summaryView ----------- */
 
 .summaryView {
-    background:'white';
+    background: white;
     width:100%;
     height: 100%;
     overflow-y: scroll;
@@ -145,6 +145,14 @@ option[selected]{
   text-align:right;
 }
 
+.ActionMenu .actionButton {
+  background:white;
+  border:none;
+  border-radius:0;
+  text-align:left;
+  width:100%;
+}
+
 /* ----------- stylized ----------- */
 #stylized {
     border:solid 2px #b7ddf2;
@@ -215,7 +223,6 @@ option[selected]{
 {
 	width: 800px;
 }
-<!-- margin was 45 above -->
 .foamTable caption
 {
 	font-size: 16px;
@@ -258,7 +265,7 @@ option[selected]{
 }
 
 
-.myButton {
+.actionButton {
 	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
 	box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -278,12 +285,12 @@ option[selected]{
 	padding:4px 16px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #ffffff;
-}.myButton:hover {
+}.actionButton:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
 	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
 	background-color:#dfdfdf;
-}.myButton:active {
+}.actionButton:active {
 	position:relative;
 	top:1px;
 }

@@ -1,25 +1,15 @@
 /*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
  * Index Interface:
  *   put(state, value) -> new state
  *   remove(state, value) -> new state
+ *   removeAll(state) -> new state // TODO
  *   plan(state, sink, options) -> {cost: int, toString: fn, execute: fn}
  *   size(state) -> int
+ * Add:
+ *   get(key) -> obj
+ *   update(oldValue, newValue)
+ *
+ * TODO: reuse plans
  */
 
 /** Plan indicating that there are no matching records. **/
@@ -43,6 +33,7 @@ function dump(o) {
 }
 
 
+/** An Index which holds only a single value. **/
 var ValueIndex = {
   put: function(s, newValue) { return newValue; },
   remove: function() { return undefined; },
@@ -57,6 +48,7 @@ var ValueIndex = {
 
     return function() { return plan; };
   })(),
+  get: function(value, key) { return value; },
   select: function(value, sink, options) {
     if ( options ) {
       if ( options.query && ! options.query.f(value) ) return;
@@ -65,10 +57,11 @@ var ValueIndex = {
     }
     sink.put(value);
   },
-  selectReverse: function(value, sink) { sink.put(value); },
+  selectReverse: function(value, sink, options) { this.select(value, sink, options); },
   size:   function(obj) { return 1; },
   toString: function() { return 'value'; }
 };
+
 
 var KEY   = 0;
 var VALUE = 1;
@@ -81,7 +74,7 @@ var RIGHT = 5;
 
 // [0 key, 1 value, 2 size, 3 level, 4 left, 5 right]
 
-// AATree -- balanced binary search tree.
+/** An AATree (balanced binary search tree) Index. **/
 var TreeIndex = {
   create: function(prop, tail) {
     tail = tail || ValueIndex;
@@ -124,6 +117,12 @@ var TreeIndex = {
     return tree;
   },
 
+  // Set the value's property to be the same as the key in the index.
+  // This saves memory by sharing objects.
+  dedup: function(obj, value) {
+    obj[this.prop.name] = value;
+  },
+
   put: function(s, newValue) {
     return this.putKeyValue(s, this.prop.f(newValue), newValue);
   },
@@ -136,9 +135,7 @@ var TreeIndex = {
     var r = this.compare(s[KEY], key);
 
     if ( r === 0 ) {
-      // Set the value's property to be the same as the key in the index.
-      // This saves memory by sharing objects.
-      value[this.prop.name] = s[KEY];
+       this.dedup(value, s[KEY]);
 
       s[SIZE] -= this.tail.size(s[VALUE]);
       s[VALUE] = this.tail.put(s[VALUE], value);
@@ -215,10 +212,10 @@ var TreeIndex = {
       // delete this node.
       if ( s[VALUE] ) {
          s[SIZE] += this.tail.size(s[VALUE]);
-         return;
+         return s;
       }
 
-      // If we're a leaf, easy, otherwise reduce to leaf case. 
+      // If we're a leaf, easy, otherwise reduce to leaf case.
       if ( ! s[LEFT] && ! s[RIGHT] ) return undefined;
 
       // TODO: add a unit test to verify that the size
@@ -229,13 +226,13 @@ var TreeIndex = {
       // the entry at the same time in order to prevent two traversals.
       // But, this would also duplicate the delete logic.
       var l = side === LEFT ?
-        this.successor(s)   :
-        this.predecessor(s) ;
+        this.predecessor(s) :
+        this.successor(s)   ;
 
-      s[SIZE] -= this.tail.size(s[VALUE]);
-      s[side] = this.removeKeyValue(s[side], l[KEY], value);
       s[KEY] = l[KEY];
       s[VALUE] = l[VALUE];
+
+      s[side] = this.removeNode(s[side], l[KEY]);
     } else {
       var side = r > 0 ? LEFT : RIGHT;
 
@@ -257,14 +254,32 @@ var TreeIndex = {
     return s;
   },
 
+  removeNode: function(s, key) {
+     if ( ! s ) return s;
+
+     var r = this.compare(s[KEY], key);
+
+     if ( r === 0 ) return s[LEFT] ? s[LEFT] : s[RIGHT];
+
+     var side = r > 0 ? LEFT : RIGHT;
+
+     s[SIZE] -= this.size(s[side]);
+     s[side] = this.removeNode(s[side], key);
+     s[SIZE] += this.size(s[side]);
+
+     return s;
+  },
+
   predecessor: function(s) {
-    for ( s = s[LEFT] ; s[RIGHT] ; s = s[RIGHT] );
-    return s;
+     if ( ! s[LEFT] ) return s;
+     for ( s = s[LEFT] ; s[RIGHT] ; s = s[RIGHT] );
+        return s;
   },
 
   successor: function(s) {
-    for ( s = s[RIGHT] ; s[LEFT] ; s = s[LEFT] );
-    return s;
+     if ( ! s[RIGHT] ) return s;
+     for ( s = s[RIGHT] ; s[LEFT] ; s = s[LEFT] );
+        return s;
   },
 
   // input: T, a tree for which we want to remove links that skip levels.
@@ -274,7 +289,7 @@ var TreeIndex = {
 
     if ( expectedLevel < s[LEVEL] ) {
       s[LEVEL] = expectedLevel;
-      if ( expectedLevel < s[RIGHT][LEVEL] ) {
+      if ( s[RIGHT] && expectedLevel < s[RIGHT][LEVEL] ) {
         s[RIGHT][LEVEL] = expectedLevel;
       }
     }
@@ -310,11 +325,22 @@ var TreeIndex = {
     this.select(s[RIGHT], sink, options);
   },
 
-  selectReverse: function(s, sink) {
+  selectReverse: function(s, sink, options) {
     if ( ! s ) return;
-    this.selectReverse(s[RIGHT], sink);
-    this.tail.selectReverse(s[VALUE], sink);
-    this.selectReverse(s[LEFT], sink);
+
+    if ( options ) {
+      if ( 'limit' in options && options.limit <= 0 ) return;
+
+      var size = this.size(s);
+      if ( options.skip >= size ) {
+        options.skip -= size;
+        return;
+      }
+    }
+
+    this.selectReverse(s[RIGHT], sink, options);
+    this.tail.selectReverse(s[VALUE], sink, options);
+    this.selectReverse(s[LEFT], sink, options);
   },
 
   size: function(s) { return s ? s[SIZE] : 0; },
@@ -323,40 +349,18 @@ var TreeIndex = {
     return o1.compareTo(o2); //this.prop.compare(o1, o2);
   },
 
-  plan: function(s, sink, options) {
-    var query = options && options.query;
-
-    if ( ! query && sink.model_ === CountExpr ) {
-//       console.log('**************** COUNT SHORT-CIRCUIT ****************');
-      var count = this.size(s);
-      return {
-	 cost: 0,
-         execute: function(unused, sink, options) { sink.count = count; },
-	 toString: function() { return 'count(' + count + ')'; }
-      };
-    }
-
-    var prop = this.prop;
-
-    if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
-       // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
-       // TODO:
-    }
-
-    var index = this;
-
-    var getEQKey = function (query) {
+    getEQKey_: function (query, prop) {
       if ( query.model_ === EqExpr && query.arg1 === prop ) {
         return query.arg2.f();
       }
       return undefined;
-    };
+    },
 
-    var getAndKey = function () {
+    getAndKey_: function (query, prop) {
       if ( query.model_ === AndExpr ) {
         for ( var i = 0 ; i < query.args.length ; i++ ) {
           var q = query.args[i];
-          var k = getEQKey(q);
+          var k = this.getEQKey_(q, prop);
           if ( k ) {
             query = query.deepClone();
             query.args[i] = TRUE;
@@ -366,15 +370,39 @@ var TreeIndex = {
         }
       }
       return undefined;
-    };
+    },
+
+  plan: function(s, sink, options) {
+    var query = options && options.query;
+
+    if ( query === FALSE ) return NOT_FOUND;
+
+    if ( ! query && sink.model_ === CountExpr ) {
+      var count = this.size(s);
+//        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
+      return {
+	 cost: 0,
+         execute: function(unused, sink, options) { sink.count = count; },
+	 toString: function() { return 'short-circuit-count(' + count + ')'; }
+      };
+    }
+
+    var prop = this.prop;
+
+    // if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
+       // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
+       // TODO:
+    // }
+
+    var index = this;
 
     if ( query ) {
-      var key;
-      if ( key = getEQKey(query) ) {
-	 query = null;
+      var key = this.getEQKey_(query, prop);
+      if ( key ) {
+         query = null;
       } else {
-	 key = getAndKey();
-	 if ( query === TRUE ) query = null;
+         key = this.getAndKey_(query, prop);
+         if ( query === TRUE ) query = null;
       }
 
       if ( key ) {
@@ -388,22 +416,29 @@ if ( 'limit' in options ) newOptions.limit = options.limit;
 if ( 'skip' in options ) newOptions.skip = options.skip;
 
         var subPlan = this.tail.plan(result, sink, newOptions);
+
         return {
           cost: 1 + subPlan.cost,
           execute: function(s2, sink, options) {
-            subPlan.execute(result[VALUE], sink, newOptions);
+            subPlan.execute(result, sink, newOptions);
           },
-          toString: function() { return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString(); }
+          toString: function() {
+             return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
+          }
         };
       }
     }
 
     var cost = this.size(s);
     var sortRequired = false;
+    var reverseSort = false;
 
     if ( options && options.order ) {
       if ( options.order === prop ) {
          // sort not required
+      } else if ( options.order.isDESC && options.order.c == prop ) {
+         // reverse-sort, sort not required
+         reverseSort = true;
       } else {
         sortRequired = true;
         cost *= Math.log(cost) / Math.log(2);
@@ -423,7 +458,9 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
           index.select(s, a, {query: options.query});
           a.select(sink, options);
         } else {
-          index.select(s, sink, options);
+          reverseSort ?
+              index.selectReverse(s, sink, options) :
+              index.select(s, sink, options) ;
         }
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
@@ -436,7 +473,8 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
 
 };
 
-/** Case-Insensitive TreeIndex **/ 
+
+/** Case-Insensitive TreeIndex **/
 var CITreeIndex = {
   __proto__: TreeIndex,
 
@@ -456,12 +494,12 @@ var CITreeIndex = {
 
   remove: function(s, value) {
      return this.removeKeyValue(s, this.prop.f(value).toLowerCase(), value);
-  },
-
+  }
 
 };
 
 
+/** An Index for storing multi-valued properties. **/
 var SetIndex = {
   __proto__: TreeIndex,
 
@@ -475,20 +513,27 @@ var SetIndex = {
     };
   },
 
+  // TODO: see if this can be done some other way
+  dedup: function(obj, value) {
+     // NOP, not safe to do here
+  },
+
   put: function(s, newValue) {
     var a = this.prop.f(newValue);
- 
-    for ( var i = 0 ; i < a.length ; i++ )
+
+    for ( var i = 0 ; i < a.length ; i++ ) {
       s = this.putKeyValue(s, a[i], newValue);
+    }
 
     return s;
   },
 
   remove: function(s, value) {
     var a = this.prop.f(value);
- 
-    for ( var i = 0 ; i < a.length ; i++ )
+
+    for ( var i = 0 ; i < a.length ; i++ ) {
       s = this.removeKeyValue(s, a[i], value);
+    }
 
     return s;
   }
@@ -496,9 +541,10 @@ var SetIndex = {
 };
 
 
+
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
-  GOOD_ENOUGH_PLAN: 1, // put to 10 or more when not testing
+  GOOD_ENOUGH_PLAN: 8, // put to 10 or more when not testing
 
   create: function() {
     return {
@@ -508,18 +554,24 @@ var AltIndex = {
   },
 
   addIndex: function(s, index) {
-    // Populate the index
-    var a = [];
-    this.plan(s, a).execute(s, a);
+     // Populate the index
+     var a = [];
+     this.plan(s, a).execute(s, a);
 
-    s.push(index.bulkLoad(a));
-    this.delegates.push(index);
+     s.push(index.bulkLoad(a));
+     this.delegates.push(index);
+
+     return this;
   },
 
   bulkLoad: function(a) {
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       this.root[i] = this.delegates[i].bulkLoad(a);
     }
+  },
+
+  get: function(s, key) {
+     return this.delegates[0].get(s[0], key);
   },
 
   put: function(s, newValue) {
@@ -531,36 +583,107 @@ var AltIndex = {
     return s;
   },
 
+  remove: function(s, obj) {
+    s = s || [];
+    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+      s[i] = this.delegates[i].remove(s[i], obj);
+    }
+
+    return s;
+  },
+
   plan: function(s, sink, options) {
     var bestPlan;
-
-//     console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
+    var bestPlanI = 0;
+//    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
 // console.log('  plan ' + i + ': ' + plan);
-      if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) { bestPlan = plan; break; }
+      if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) {
+         bestPlanI = i;
+         bestPlan = plan;
+         break;
+      }
 
       if ( ! bestPlan || plan.cost < bestPlan.cost ) {
-	 // curry the proper state
-	 bestPlan = (function(plan, s) { return {__proto__: plan, execute: function(unused, sink, options) { plan.execute(s, sink, options);}};})(plan, s[i]);
+         bestPlanI = i;
+         bestPlan = plan;
       }
     }
 
 //    console.log('Best Plan: ' + bestPlan);
 
-    return bestPlan;
+     return {
+        __proto__: bestPlan,
+        execute: function(unused, sink, options) { bestPlan.execute(s[bestPlanI], sink, options); }
+     };
   },
 
-  size: function(obj) { return this.delegates[0].size(obj[0]); }
+  size: function(obj) { return this.delegates[0].size(obj[0]); },
+
+  toString: function() {
+     return 'Alt(' + this.delegates.join(',') + ')';
+  }
 };
 
 
-var IDAO = FOAM.create({
+var mLangIndex = {
+  create: function(mlang) {
+     return {
+        __proto__: this,
+        mlang: mlang,
+        PLAN: {
+	   cost: 0,
+           execute: function(s, sink, options) { sink.copyFrom(s); },
+	   toString: function() { return 'mLangIndex(' + this.s + ')'; }
+        }
+     };
+  },
+
+  bulkLoad: function(a) {
+    a.select(this.mlang);
+    return this.mlang;
+  },
+
+  put: function(s, newValue) {
+    s = s || this.mlang.clone();
+    s.put(newValue);
+    return s;
+  },
+
+  remove: function(s, obj) {
+    s = s || this.mlang.clone();
+    s.remove && s.remove(obj);
+    return s;
+  },
+
+  size: function(s) { return Number.MAX_VALUE; },
+
+  plan: function(s, sink, options) {
+// console.log('s');
+    if ( options && options.query ) return NO_PLAN;
+
+    if ( sink.model_ && s.model_ === sink.model_ && s.arg1 === sink.arg1 ) {
+       this.PLAN.s = s;
+       return this.PLAN;
+    }
+
+    return NO_PLAN;
+  },
+
+  toString: function() {
+     return 'mLangIndex(' + this.mlang + ')';
+  }
+
+};
+
+
+var MDAO = FOAM({
    model_: 'Model',
    extendsModel: 'AbstractDAO',
 
-   name: 'IDAO',
+   name: 'MDAO',
    label: 'Indexed DAO',
 
    properties: [
@@ -584,14 +707,15 @@ var IDAO = FOAM.create({
       * args: one or more properties
       **/
      addIndex: function() {
-       var props = argsToArray(arguments);
+        var props = argsToArray(arguments);
 
-       // Add on the primary key(s) to make the index unique.
-       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
-         props.push(this.model.getProperty(this.model.ids[i]));
-       }
+        // Add on the primary key(s) to make the index unique.
+        for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
+           props.push(this.model.getProperty(this.model.ids[i]));
+           if (!props[props.length - 1]) throw "Undefined index property";
+        }
 
-       this.addUniqueIndex.apply(this, props);
+        return this.addUniqueIndex.apply(this, props);
      },
 
      /**
@@ -599,20 +723,30 @@ var IDAO = FOAM.create({
       * args: one or more properties
       **/
      addUniqueIndex: function() {
+       var index = ValueIndex;
+
+       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
+         var prop = arguments[i];
+         // TODO: the index prototype should be in the property
+         var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
+         index = proto.create(prop, index);
+       }
+
+       return this.addRawIndex(index);
+     },
+
+    // TODO: name 'addIndex' and renamed addIndex
+    addRawIndex: function(index) {
        // Upgrade single Index to an AltIndex if required.
        if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
          this.index = AltIndex.create(this.index);
          this.root = [this.root];
        }
 
-       var index = ValueIndex;
-
-       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
-         index = TreeIndex.create(arguments[i], index);
-       }
-
        this.index.addIndex(this.root, index);
-     },
+
+       return this;
+    },
 
     /**
      * Bulk load data from another DAO.
@@ -628,27 +762,89 @@ var IDAO = FOAM.create({
     },
 
     put: function(obj, sink) {
-      this.root = this.index.put(this.root, obj);
-      this.notify_('put', obj);
+       var oldValue = this.index.get(this.root, key);
+       if ( oldValue ) {
+          this.root = this.index.put(this.index.remove(this.root, obj), obj);
+          this.notify_('remove', [obj]);
+       } else {
+          this.root = this.index.put(this.root, obj);
+       }
+       this.notify_('put', [obj]);
+       sink && sink.put && sink.put(obj);
+    },
+
+    findObj_: function(key, sink) {
+       var obj = this.index.get(this.root, key);
+       if ( obj ) {
+          sink.put(obj);
+       } else {
+          sink.error && sink.error('find', key);
+       }
     },
 
     find: function(key, sink) {
-      // TODO:
+      if ( ! key.f ) { // TODO: make better test, use model
+        this.findObj_(key, sink);
+        return;
+      }
+      // How to handle multi value primary keys?
+      var found = false;
+      this.where(key).limit(1).select({
+          // ???: Is 'put' needed?
+          put: function(obj) {
+              found = true;
+              sink && sink.put && sink.put(obj);
+          },
+          eof: function() {
+              if ( ! found ) sink && sink.error && sink.error('find', key);
+          }
+      });
     },
 
+    // TODO: this isn't correct, this is actually removeAll()
     remove: function(query, sink) {
-      this.root = this.index.remove(this.root, query);
-      // TODO: notify
+      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
+/*
+       if ( ! query.f ) {
+          this.root = this.index.remove(this.root, query);
+          sink && sink.remove && sink.remove(query);
+
+          return;
+       }*/
+
+       this.where(query).select([])(function(a) {
+         for ( var i = 0 ; i < a.length ; i++ ) {
+            this.root = this.index.remove(this.root, a[i]);
+            sink && sink.remove && sink.remove(a[i]);
+            this.notify_('remove', [a[i]]);
+         }
+       }.bind(this));
     },
-      
+
+    removeAll: function(callback) {
+      this.root = [];
+      callback && callback();
+    },
+
     select: function(sink, options) {
       // Clone the options to prevent 'limit' from being mutated in the original.
-      if ( options ) options = {__proto__:options};
-      var plan = this.index.plan(this.root, sink, options);
-      plan.execute(this.root, sink, options);
+      if ( options ) options = {__proto__: options};
+
+      if ( DescribeExpr.isInstance(sink) ) {
+         var plan = this.index.plan(this.root, sink.arg1, options);
+         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
+      } else {
+         var plan = this.index.plan(this.root, sink, options);
+         plan.execute(this.root, sink, options);
+      }
+
       sink && sink.eof && sink.eof();
       return aconstant(sink);
-    }
+    },
 
+    toString: function() {
+       return 'MDAO(' + this.model.name + ',' + this.index + ')';
+    }
    }
 });
+

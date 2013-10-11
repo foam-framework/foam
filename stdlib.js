@@ -1,20 +1,3 @@
-/*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
@@ -34,8 +17,7 @@ String.prototype.constantize = function() {
     return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
 };
 
-
-/** Give all objects a Unique ID. **/ 
+/** Give all objects a Unique ID. **/
 Object.defineProperty(Object.prototype, '$UID', {
   get: (function() {
     var id = 1;
@@ -48,7 +30,7 @@ Object.defineProperty(Object.prototype, '$UID', {
 
 
 /** Create a function which always returns the supplied constant value. **/
-function constantFn(v) { return function() { return v; } }
+function constantFn(v) { return function() { return v; }; }
 
 
 /**
@@ -59,7 +41,11 @@ function constantFn(v) { return function() { return v; } }
 Function.prototype.bind = (function() {
   var oldBind    = Function.prototype.bind;
   var simpleBind = function(f, self) {
-    return function() { return f.apply(self, arguments); };
+    var ret = function() { return f.apply(self, arguments); };
+    ret.toString = function() {
+      return f.toString();
+    };
+    return ret;
   };
 
   return function() {
@@ -86,6 +72,10 @@ String.prototype.compareTo = function(o) {
 Number.prototype.compareTo = function(o) {
   if ( o === this ) return 0;
   return this < o ? -1 : 1;
+};
+
+Boolean.prototype.compareTo = function(o) {
+  return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
 };
 
 var argsToArray = function(args) {
@@ -144,9 +134,20 @@ Object.defineProperty(Array.prototype, 'reduce', {
 
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
-  c = toCompare(c);
-  return function(o1, o2) { return c(o2,o1); };
+  if ( c.isDESC ) return toCompare(c.c);
+
+  var p = toCompare(c);
+
+  if ( typeof p !== 'function' ) throw 'Invalid comparator in DESC';
+
+  var f = function(o1, o2) { return p(o2,o1); };
+  f.c = c;
+  f.isDESC = true;
+
+  return f;
 };
+
+
 
 var CompoundComparator = function() {
   var cs = arguments;
@@ -248,11 +249,16 @@ Object.defineProperty(Array.prototype, 'remove', {
  * ForEach operator on Objects.
  * Calls function with arguments (obj, key).
  **/
-
+/*
 Object.defineProperty(Object.prototype, 'forEach', {
   value: function(fn) {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
-}});
+}});*/
+
+// Workaround for crbug.com/258522
+function Object_forEach(obj, fn) {
+  for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
+}
 
 /*
 Object.defineProperty(Object.prototype, 'put', {
@@ -366,7 +372,10 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
-Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
+
+if (window.Blob) {
+  Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
+}
 
 /** Convert a string to an internal canonical copy. **/
 String.prototype.intern = (function() {
@@ -375,13 +384,15 @@ String.prototype.intern = (function() {
   return function() { return map[this] || (map[this] = this.toString()); };
 })();
 
-/**
- * Add an afunc send to XMLHttpRequest
- */
-XMLHttpRequest.prototype.asend = function(ret, opt_data) {
+if (window.XMLHttpRequest) {
+  /**
+      * Add an afunc send to XMLHttpRequest
+  */
+  XMLHttpRequest.prototype.asend = function(ret, opt_data) {
     var xhr = this;
     xhr.onloadend = function() {
-        ret(xhr.response);
+      ret(xhr.response, xhr);
     };
     xhr.send(opt_data);
-};
+  };
+}

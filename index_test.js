@@ -71,9 +71,9 @@ m.select(console.log);
 
 if ( false ) {
 
-console.log('\nIDAO Test');
+console.log('\nMDAO Test');
 
-var d = IDAO.create({model:Issue});
+var d = MDAO.create({model:Issue});
 
 // d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
 

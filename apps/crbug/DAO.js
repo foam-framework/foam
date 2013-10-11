@@ -1,4 +1,4 @@
-var IssueRestDAO = FOAM.create({
+var IssueRestDAO = FOAM({
   model_: 'Model',
   extendsModel: 'RestDAO',
 
@@ -29,6 +29,7 @@ var IssueRestDAO = FOAM.create({
     }
   }
 });
+
 
 var IssueNetworkDAO = IssueRestDAO.create({
   url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/chromium/issues',

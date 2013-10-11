@@ -1,5 +1,4 @@
-.title
-{
+.title {
   color: #666;
   font-family: arial, sans-serif;
   font-size: 39px;
@@ -8,8 +7,7 @@
   font-weight: normal;
 }
 
-.subtitle
-{
+.subtitle {
   color: #666;
   font-family: arial, sans-serif;
   font-size: 13px;
@@ -18,24 +16,34 @@
   font-weight: normal;
 }
 
-.searchBar
-{
-color: black;
-font-family: arial, sans-serif;
-font-size: 13px;
-font-style: normal;
-font-variant: normal;
-font-weight: bold;
+.searchBar {
+  color: black;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
 }
 
+.CIssueTableHeader {
+  background:rgb(235, 239, 249);
+  border-color: rgb(187, 187, 187);
+  border-style: solid;
+  border-width: 1px;
+  height:28px;
+  margin-left:6px;
+  width:99.4%;
+}
 
-.CIssueTable
-{
+.CIssueTable {
   background: #fff;
   border: 1px solid #ccc;
   font-family: arial, sans-serif;
   font-size: 13px;
+  margin-left:6px;
+  margin-top:0;
   min-width: 1200px;
+  width:99.6%;
 }
 
 .CIssueTable thead {
@@ -60,6 +68,7 @@ font-weight: bold;
   white-space: normal;
   overflow: auto;
 }
+
 .CIssueTable .summary {
   white-space: normal;
   overflow: auto;
