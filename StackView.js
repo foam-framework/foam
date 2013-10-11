@@ -77,19 +77,19 @@ var StackView = FOAM({
       },
 
       navBarElement: function() {
-	 return this.element().childNodes[0];
+	 return this.$.childNodes[0];
       },
 
       navActionsElement: function() {
-         return this.element().childNodes[1];
+         return this.$.childNodes[1];
       },
 
       viewAreaElement: function () {
-	 return this.element().childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+	 return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
       },
 
       previewAreaElement: function() {
-	 return this.element().childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+	 return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
       },
 
       updateNavBar: function() {

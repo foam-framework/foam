@@ -419,7 +419,7 @@ o = Model;
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
   
     var dmouse = Mouse.create();
-    dmouse.connect(dragon.canvasView.element());
+    dmouse.connect(dragon.canvasView.$);
     dragon.eyes.watch(dmouse);
 
     document.writeln("<br/><h2>MoveTowards</h2>");  
@@ -447,7 +447,7 @@ o = Model;
 //    Movement.moveTowards(timer, bug4, bug1, 0.22);
 
     var mouse = Mouse.create();
-    mouse.connect(field.element());
+    mouse.connect(field.$);
     Movement.orbit(timer, mouse, bug1, 80, 1500);
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 

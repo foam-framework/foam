@@ -40,7 +40,7 @@
     dragon.paint();
 
     var dmouse = Mouse.create();
-    dmouse.connect(dragon.canvasView.element());
+    dmouse.connect(dragon.canvasView.$);
     dragon.eyes.watch(dmouse);
 
     Dragon.methods.forEach(function(meth) {

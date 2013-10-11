@@ -313,7 +313,7 @@ var Screen = Model.create({
       initHTML: function() {
        var me = this;
        PanelCView.getPrototype().initHTML.call(this);
-       this.canvasView.element().addEventListener('click', function(evt) {
+       this.canvasView.$.addEventListener('click', function(evt) {
 	  me.level = Math.max(1, Math.min(10, me.level + ((evt.offsetX > 100) ? 1 : -1)));
 	  me.paint();
 //	  evt.stopPropagation();
@@ -321,7 +321,7 @@ var Screen = Model.create({
 //evt.preventDefault();
 	  console.log(evt);
        }, true);
-       this.canvasView.element().addEventListener('mousedown', function(evt) {
+       this.canvasView.$.addEventListener('mousedown', function(evt) {
 	  evt.stopPropagation();
 evt.preventDefault();
 	  evt.cancelBubble = true;

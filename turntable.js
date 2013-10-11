@@ -96,9 +96,9 @@ var Turntable = Model.create({
       // this.__super__.paint.call(this);
       // this.canvasView.erase();
 
-      this.canvasView.element().onmousedown = this.mouseDown;
-      this.canvasView.element().onmouseup   = this.mouseUp;
-      this.canvasView.element().onmousemove = this.mouseMove;
+      this.canvasView.$.onmousedown = this.mouseDown;
+      this.canvasView.$.onmouseup   = this.mouseUp;
+      this.canvasView.$.onmousemove = this.mouseMove;
 
       var c = this.canvas;
 

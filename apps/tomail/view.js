@@ -36,7 +36,7 @@ var LabelView = FOAM({
 
 	 name: 'updateHTML',
 	 code: function() {
-            var e = this.element();
+            var e = this.$;
             if ( e ) e.innerHTML = this.labelsToHTML();
  	 }
       }

@@ -23,9 +23,9 @@
   <script language="javascript">
     var canvas = Canvas.create({width: 2000, height: 2000, background:'white'});
     canvas.write(document);
-    var ctx = canvas.element().getContext('2d');
+    var ctx = canvas.$.getContext('2d');
     var mouse   = Mouse.create();
-    mouse.connect(canvas.element());
+    mouse.connect(canvas.$);
     Events.dynamic(function() { console.log(mouse.x, mouse.y); });
   
     var WIDTH  = 80;

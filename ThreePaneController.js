@@ -257,8 +257,8 @@ var ThreePaneController = FOAM({
        this.countField.initHTML();
        this.toolbar.initHTML();
 
-       this.searchField.element().style.display = 'table-cell';
-       this.searchField.element().style.width = '100%';
+       this.searchField.$.style.display = 'table-cell';
+       this.searchField.$.style.width = '100%';
 
        this.table.view.selection.addListener(EventService.merged(function (value) {
          var newValue = value.get();
@@ -300,11 +300,11 @@ var ThreePaneController = FOAM({
       name: 'layout',
       merged: true,
       code: function() {
-        if ( !this.element() ) return;
+        if ( !this.$ ) return;
 
         var hideTable = this.table.scrollbar.size == 1;
-        var W         = this.element().offsetWidth; //window.innerWidth;
-        var H         = this.element().offsetHeight; //window.innerHeight;
+        var W         = this.$.offsetWidth; //window.innerWidth;
+        var H         = this.$.offsetHeight; //window.innerHeight;
         var SEARCH_H  = H - this.headerHeight - this.footerHeight;
         var RIGHT_W   = W - this.searchWidth-1;
 

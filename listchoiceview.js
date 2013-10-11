@@ -150,9 +150,9 @@ var ListChoiceView = FOAM({
          out.push(this.renderer.choice(name, choice, id, i, isCurrentSelection));
        }
 
-       this.element().innerHTML = out.join('');
+       this.$.innerHTML = out.join('');
 
-       selectedAsList = this.element().getElementsByClassName(this.selectedCssClass);
+       selectedAsList = this.$.getElementsByClassName(this.selectedCssClass);
        if (selectedAsList && selectedAsList.length) {
          this.selectedElement = selectedAsList[0];
        }
@@ -183,7 +183,7 @@ var ListChoiceView = FOAM({
      },
 
      initHTML: function() {
-       var e = this.element();
+       var e = this.$;
 
        Events.dynamic(function() { this.choices; }.bind(this), this.listToHTML.bind(this));
 

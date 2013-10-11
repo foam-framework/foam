@@ -14,7 +14,7 @@ var ScrollCView = FOAM({
          postSet: function(newValue, oldValue) {
 //	   oldValue && oldValue.removeListener(this.updateValue);
 //	   newValue.addListener(this.updateValue);
-           var e = newValue.element();
+           var e = newValue.$;
            if ( ! e ) return;
            e.addEventListener('mousedown', this.mouseDown, false);
            e.addEventListener('touchstart', this.touchStart, false);
@@ -76,7 +76,7 @@ var ScrollCView = FOAM({
 
    listeners: {
      mouseDown: function(e) {
-//       this.parent.element().addEventListener('mousemove', this.mouseMove, false);
+//       this.parent.$.addEventListener('mousemove', this.mouseMove, false);
        this.startY = e.y - e.offsetY;
        e.target.ownerDocument.defaultView.addEventListener('mouseup', this.mouseUp, true);
        e.target.ownerDocument.defaultView.addEventListener('mousemove', this.mouseMove, true);
@@ -87,7 +87,7 @@ var ScrollCView = FOAM({
        e.preventDefault();
        e.target.ownerDocument.defaultView.removeEventListener('mousemove', this.mouseMove, true);
        e.target.ownerDocument.defaultView.removeEventListener('mouseup', this.mouseUp, true);
-//       this.parent.element().removeEventListener('mousemove', this.mouseMove, false);
+//       this.parent.$.removeEventListener('mousemove', this.mouseMove, false);
      },
      mouseMove: function(e) {
        var y = e.y - this.startY;
@@ -99,13 +99,13 @@ var ScrollCView = FOAM({
        this.startY = e.targetTouches[0].pageY;
        this.startValue = this.value;
        e.target.ownerDocument.defaultView.addEventListener('touchmove', this.touchMove, false);
-//       this.parent.element().addEventListener('touchmove', this.touchMove, false);
+//       this.parent.$.addEventListener('touchmove', this.touchMove, false);
        this.touchMove(e);
      },
      touchEnd: function(e) {
        e.target.ownerDocument.defaultView.removeEventListener('touchmove', this.touchMove, false);
        e.target.ownerDocument.defaultView.removeEventListener('touchend', this.touchEnd, false);
-//       this.parent.element().removeEventListener('touchmove', this.touchMove, false);
+//       this.parent.$.removeEventListener('touchmove', this.touchMove, false);
      },
      touchMove: function(e) {
        var y = e.targetTouches[0].pageY;
@@ -233,7 +233,7 @@ var ScrollBorder = FOAM({
        var scrollbar = this.scrollbar;
        var self = this;
 
-       view.element().onmousewheel = function(e) {
+       view.$.onmousewheel = function(e) {
           if ( e.wheelDeltaY > 0 && scrollbar.value ) {
              scrollbar.value--;
           } else if ( e.wheelDeltaY < 0 && scrollbar.value < scrollbar.size - scrollbar.extent ) {

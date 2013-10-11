@@ -137,9 +137,8 @@ var AbstractView = {
       return this.eid_;
     },
 
-    element: function() {
-      // @return this View's DOM element
-      return $(this.getID());
+    get $() {
+      return $(this.eid_);
     },
 
     registerCallback: function(event, listener, opt_elementId) {
@@ -232,6 +231,12 @@ var AbstractView2 = FOAM({
         name:   'shortcuts',
         type:   'Array[Shortcut]',
         valueFactory: function() { return []; }
+      },
+      {
+        name:   '$',
+        mode:   "read-only",
+        getter: function() { return $(this.getID()); },
+        help:   'DOM Element.'
       }
    ],
 
@@ -276,12 +281,6 @@ var AbstractView2 = FOAM({
 // console.log('getID', this.elementId);
       if ( this.elementId ) return this.elementId;
       return this.elementId || ( this.elementId = this.nextID() );
-    },
-
-    element: function() {
-      // @return this View's DOM element
-
-      return $(this.getID());
     },
 
     registerCallback: function(event, listener, opt_elementId) {
@@ -414,7 +413,7 @@ var Canvas = Model.create({
          type:  'int',
 	 defaultValue: 100,
          postSet: function(width) {
-           if ( this.element() ) this.element().width = width;
+           if ( this.$ ) this.$.width = width;
          }
       },
       {
@@ -422,7 +421,7 @@ var Canvas = Model.create({
 	 type:  'int',
 	 defaultValue: 100,
          postSet: function(height) {
-           if ( this.element() ) this.element().height = height;
+           if ( this.$ ) this.$.height = height;
          }
       }
    ],
@@ -441,7 +440,7 @@ var Canvas = Model.create({
       },
 
       initHTML: function() {
-	 this.canvas = this.element().getContext('2d');
+	 this.canvas = this.$.getContext('2d');
       },
 
       addChild: function(child) {
@@ -903,7 +902,7 @@ var TextFieldView = FOAM({
              Events.follow(newValue, this.domValue);
              /*
 	     value.addListener(function() {
-	                         this.element().innerHTML = newValue.get();
+	                         this.$.innerHTML = newValue.get();
 	                       }.bind(this));
               */
            }
@@ -925,7 +924,7 @@ var TextFieldView = FOAM({
     setValue: function(value) { this.value = value; },
 
     initHTML: function() {
-       var e = this.element();
+       var e = this.$;
 
        this.domValue = this.mode === 'read-write' ? DomValue.create(e, this.onKeyMode ? 'input' : undefined) : DomValue.create(e, undefined, 'innerHTML');
 
@@ -965,7 +964,7 @@ var DateFieldView = FOAM({
    methods: {
 
     initHTML: function() {
-       var e = this.element();
+       var e = this.$;
 
        this.domValue = DomValue.create(e, undefined, 'valueAsDate');
 
@@ -1047,7 +1046,7 @@ var HTMLView = FOAM({
     setValue: function(value) { this.value = value; },
 
     initHTML: function() {
-       var e = this.element();
+       var e = this.$;
 
        if ( ! e ) {
           console.log('stale HTMLView');
@@ -1158,7 +1157,7 @@ var ChoiceView = FOAM({
          out.push('</option>');
        }
 
-       this.element().innerHTML = out.join('');
+       this.$.innerHTML = out.join('');
        AbstractView2.getPrototype().initHTML.call(this);
      },
 
@@ -1190,7 +1189,7 @@ var ChoiceView = FOAM({
      },
 
      initHTML: function() {
-       var e = this.element();
+       var e = this.$;
 
        Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
 
@@ -1302,7 +1301,7 @@ var RadioBoxView = FOAM({
          out.push('</option>');
        }
 
-       this.element().innerHTML = out.join('');
+       this.$.innerHTML = out.join('');
        AbstractView2.getPrototype().initHTML.call(this);
      },
 
@@ -1360,7 +1359,7 @@ var RoleView = FOAM({
 
    methods: {
     initHTML: function() {
-	var e = this.element();
+	var e = this.$;
 
 	this.domValue = DomValue.create(e);
 
@@ -1422,7 +1421,7 @@ var BooleanView = FOAM({
     },
 
     initHTML: function() {
-	var e = this.element();
+	var e = this.$;
 
 	this.domValue = DomValue.create(e, 'change', 'checked');
 
@@ -1507,7 +1506,7 @@ var TextAreaView = FOAM({
     },
 
     initHTML: function() {
-       this.domValue = DomValue.create(this.element(), this.onKeyMode ? 'input' : 'change', 'value');
+       this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
 
       // Events.follow(this.model, this.domValue);
       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
@@ -1879,7 +1878,7 @@ var DetailView2 = {
 
       str += '</table>';
 
-      this.element().innerHTML = str;
+      this.$.innerHTML = str;
       AbstractView.initHTML.call(this);
    },
 
@@ -2174,8 +2173,8 @@ var TableView = FOAM({
 
     setValue: function(value) {
        this.objs = value.get();
-       if ( ! this.element() ) return this;
-       this.element().innerHTML = this.tableToHTML();
+       if ( ! this.$ ) return this;
+       this.$.innerHTML = this.tableToHTML();
        this.initHTML();
        return this;
     },
@@ -2286,26 +2285,37 @@ var TableView2 = FOAM({
    methods: {
 
      layout: function() {
-       var parent = window.getComputedStyle(this.element().parentNode.parentNode.parentNode.parentNode.parentNode);
+       var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
        // TODO:  We shouldn't be hard-coding the height of the
        // table row here!
-       this.rows = Math.floor((toNum(parent.height) - 22) / 40);
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+//       this.rows = Math.floor((toNum(parent.height) - 22) / 40);
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+
+// Need to find first row
+var style = window.getComputedStyle(this.$.children[0].children[0].children[0]);
+var height = toNum(style.height);
+console.log('height: ',height);
+height = 40;
+       this.rows = Math.floor((toNum(parent.height) - 22) / height);
 /*
-       var style = window.getComputedStyle(this.element().children[0]);
+       var style = window.getComputedStyle(this.$.children[0]);
 
        var prevHeight = 0;
        while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
          prevHeight = toNum(style.height);
          this.rows = this.rows+1;
-	 style = window.getComputedStyle(this.element().children[0]);
+	 style = window.getComputedStyle(this.$.children[0]);
        }
        while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
          this.rows = this.rows-1;
-style = window.getComputedStyle(this.element().children[0]);
+style = window.getComputedStyle(this.$.children[0]);
        }
 */
 //       this.scrollbar.height = (parent.style.height - 50) + 'px';
-//       this.scrollbar.height = toNum(this.element().style.width)-50;
+//       this.scrollbar.height = toNum(this.$.style.width)-50;
      },
 
     // Not actually a method, but still works
@@ -2327,7 +2337,7 @@ style = window.getComputedStyle(this.element().children[0]);
     repaint: function() {
       if ( ! this.dao ) return;
 // console.time('redraw');
-// if (this.element() && this.element().firstChild) this.element().firstChild = undefined;
+// if (this.$ && this.$.firstChild) this.$.firstChild = undefined;
       var self = this;
       var objs = [];
       var selection = this.selection && this.selection.get();
@@ -2335,10 +2345,10 @@ style = window.getComputedStyle(this.element().children[0]);
       (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
          put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
             self.objs = objs;
-            if ( self.element() ) {
-               self.element().innerHTML = self.tableToHTML();
+            if ( self.$ ) {
+               self.$.innerHTML = self.tableToHTML();
                self.initHTML_();
-               self.height = toNum(window.getComputedStyle(self.element().children[0]).height);
+               self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
             }
             self.selection && self.selection.set(selection);
          });
@@ -2479,7 +2489,6 @@ style = window.getComputedStyle(this.element().children[0]);
       delete this['callbacks_'];
       this.children = [];
     },
-
 
     destroy: function() {
     }
@@ -2626,20 +2635,20 @@ var ActionToolbarView = FOAM({
          this.addShortcut('Right', function(e) {
            var i = 0;
            for (; i < this.children.length; ++i) {
-             if (e.target == this.children[i].element())
+             if (e.target == this.children[i].$)
                break;
            }
            i = (i + 1) % this.children.length;
-           this.children[i].element().focus();
+           this.children[i].$.focus();
          }.bind(this), this.getID());
          this.addShortcut('Left', function(e) {
            var i = 0;
            for (; i < this.children.length; ++i) {
-             if (e.target == this.children[i].element())
+             if (e.target == this.children[i].$)
                break;
            }
            i = (i + this.children.length - 1) % this.children.length;
-           this.children[i].element().focus();
+           this.children[i].$.focus();
          }.bind(this), this.getID());
       }
   }
@@ -2743,13 +2752,13 @@ var ProgressView = FOAM({
     },
 
     updateValue: function() {
-	var e = this.element();
+	var e = this.$;
 
 	e.value = parseInt(this.value.get());
     },
 
     initHTML: function() {
-	var e = this.element();
+	var e = this.$;
 
         // TODO: move to modelled listener
 	this.listener_ = this.updateValue.bind(this);
@@ -2872,7 +2881,7 @@ var GridView = FOAM({
        this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
        this.dao.select(this.grid/*.clone()*/)(function(g) {
-         self.element().innerHTML = g.toHTML();
+         self.$.innerHTML = g.toHTML();
          g.initHTML();
        });
      },

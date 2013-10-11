@@ -922,7 +922,7 @@ var AlternateView = FOAM({
 	 // first guard when fixed.
          if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
 
-	 this.element().innerHTML = view.toHTML();
+	 this.$.innerHTML = view.toHTML();
 	 view.initHTML();
          view.value && view.value.set(this.value.get());
 //	 if ( view.set ) view.set(this.model.get());

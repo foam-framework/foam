@@ -111,7 +111,7 @@ var RichTextView = FOAM({
 
       initHTML: function() {
          this.toolbar.initHTML();
-         this.domValue = DomValue.create(this.element(), 'input', 'innerHTML');
+         this.domValue = DomValue.create(this.$, 'input', 'innerHTML');
           this.value = this.value;
       },
 

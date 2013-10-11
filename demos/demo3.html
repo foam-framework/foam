@@ -20,7 +20,7 @@
     space.write(document);
 
     var mouse = Mouse.create();
-    mouse.connect(space.element());
+    mouse.connect(space.$);
 
     var M = Movement;
     var is = [
@@ -75,7 +75,7 @@
 
 // graphs[2].width = 900; graphs[2].height= 500; graphs[2].x = 300;
 
-    space.element().onmousedown = function(evt) {
+    space.$.onmousedown = function(evt) {
       for ( var i = 0 ; i < is.length ; i++ )
       {
 //        console.log(ms[i]);

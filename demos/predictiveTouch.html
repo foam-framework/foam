@@ -24,7 +24,7 @@
     space.write(document);
     space.addChild(c1);
     space.addChild(c2);
-    mouse.connect(space.element());
+    mouse.connect(space.$);
 
     function ema() {
        var avg = undefined;
@@ -81,7 +81,7 @@
     var f1 = handleTouch(c1);
     var f2 = predictor(handleTouch(c2));
 
-    space.element().addEventListener('touchmove', function(e) {
+    space.$.addEventListener('touchmove', function(e) {
        // console.log(e);
        e.preventDefault();
        var x = e.changedTouches[0].pageX;
