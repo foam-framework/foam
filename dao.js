@@ -92,6 +92,11 @@ var DAO = FOAM({
        ]
     },
     {
+       name: 'removeAll',
+       args: [
+       ]
+    },
+    {
        name: 'select',
        args: [
           { name: 'sink', type: 'SinkI' },

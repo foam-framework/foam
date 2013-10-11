@@ -1940,8 +1940,7 @@ var DetailView2 = {
 
 
 /** A display-only summary view. **/
-var SummaryView =
-{
+var SummaryView = {
 
    __proto__: AbstractView,
 
@@ -1967,6 +1966,8 @@ var SummaryView =
       out.push('<div id="' + this.getID() + '" class="summaryView">');
       out.push('<table>');
 
+      // TODO: Either make behave like DetailView or else
+      // make a mode of DetailView.
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
 	 var prop = model.properties[i];
 
@@ -1976,27 +1977,15 @@ var SummaryView =
 
 	 if ( ! value ) continue;
 
-	 if ( prop.subType && value instanceof Array ) {
-	    if ( value.length === 0 ) continue;
-
-	    var tableView = TableView.create(value[0].model_);
-	    tableView.objs = value;
-
-	    out.push("<tr><th colspan=2 class='label'>" + prop.label + "</th></tr>");
-	    out.push('<tr><td colspan=2>');
-	    out.push(tableView.toHTML());
-	    out.push('</td></tr>');
-	 } else {
-            out.push('<tr>');
-	    out.push('<td class="label">' + prop.label + '</td>');
-	    out.push('<td class="value">');
-            if ( prop.summaryFormatter ) {
-               out.push(prop.summaryFormatter(this.strToHTML(value)));
-            } else {
-	       out.push(this.strToHTML(value));
-            }
-	    out.push('</td></tr>');
-	 }
+         out.push('<tr>');
+	 out.push('<td class="label">' + prop.label + '</td>');
+	 out.push('<td class="value">');
+         if ( prop.summaryFormatter ) {
+            out.push(prop.summaryFormatter(this.strToHTML(value)));
+         } else {
+	    out.push(this.strToHTML(value));
+         }
+	 out.push('</td></tr>');
       }
 
       out.push('</table>');
@@ -2467,13 +2456,10 @@ style = window.getComputedStyle(this.element().children[0]);
 	var e = es[i];
 
 	e.onmouseover = function(value, obj) { return function() {
-          value.prevValue = value.get();
 	  value.set(obj);
 	}; }(this.selection, this.objs[i]);
 	e.onmouseout = function(value, obj) { return function() {
-	  if ( ! value.prevValue ) return;
-            value.set(value.prevValue);
-            delete value['prevValue'];
+          value.set(self.hardSelection.get());
 	}; }(this.selection, this.objs[i]);
 	e.onclick = function(value, obj) { return function(evt) {
            self.hardSelection.set(obj);

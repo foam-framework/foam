@@ -227,6 +227,7 @@ layout();
     table.initHTML();
 
     table.view.selection.addListener(function (src, property, oldValue, newValue) {
+console.log('selection: ', newValue, table.view.selection.get());
        if ( ! newValue ) return;
        var editView = SummaryView.create(table.view.selection);
        editView.model = EMail;
