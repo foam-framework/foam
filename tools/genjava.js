@@ -14,7 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if ( ! this.FOAM_BOOT_DIR ) FOAM_BOOT_DIR = '';
 
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'bootFOAMMain.js"></script>\n');
+/**
+ * Generates the java source for a model and writes it to a file.
+ */
+
+var modeldata = fs.readFileSync(argv[0]);
+var model = vm.runInThisContext(modeldata);
+var outfile = argv[1];
+
+fs.writeFileSync(outfile, model.javaSource());
+process.exit();
