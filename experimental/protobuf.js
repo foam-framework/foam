@@ -18,22 +18,22 @@
 // Experimental protocol buffer support, including binary parsing.
 
 Number.prototype.toVarintString = function() {
-  var result = "";
+  var result = '';
   var int = this;
   while (int > 0x7f) {
     var str = ((int & 0x7f) | 0x80).toString(16);
-    if (str.length == 1) str = "0" + str;
+    if (str.length == 1) str = '0' + str;
     result += str;
     int = int >> 7;
   }
   str = int.toString(16);
-  if (str.length == 1) str = "0" + str;
+  if (str.length == 1) str = '0' + str;
   result += str;
   return result;
 };
 
 function outProtobufPrimitive(type, tag, value, out) {
-  switch(type) {
+  switch (type) {
   case 'String':
   case 'string':
   case 'bytes':
@@ -64,7 +64,7 @@ function outProtobufPrimitive(type, tag, value, out) {
 }
 
 Property.getPrototype().outProtobuf = function(obj, out) {
-  if (this.f(obj) === "") return;
+  if (this.f(obj) === '') return;
   outProtobufPrimitive(this.type, this.prototag, this.f(obj), out);
 };
 
@@ -109,7 +109,7 @@ var BinaryPS = {
         },
         // Imperative Tail - destroys the current PS
         get itail() {
-           if ( this.tail_ ) return this.tail_;
+           if (this.tail_) return this.tail_;
 
            this.pos++;
            this.value = this.head;
@@ -119,13 +119,13 @@ var BinaryPS = {
         destroy: function() { view = undefined; },
         limit: function(eof) { var ret = eof_; eof_ = eof; return ret; },
         get head() {
-           if ( eof_ && this.pos >= eof_ ) return null;
+           if (eof_ && this.pos >= eof_) return null;
            return this.pos >= view.length ? null : view[this.pos];
         },
         get tail() {
-           return this.tail_ || ( this.tail_ = this.create(this.pos+1, undefined, NO_VALUE) );
+           return this.tail_ || (this.tail_ = this.create(this.pos + 1, undefined, NO_VALUE));
         },
-        setValue: function (value) {
+        setValue: function(value) {
            return this.create(this.pos, this.tail, value);
         }
      };
@@ -140,7 +140,7 @@ function varint(opt_value) {
   var f = function(ps) {
     var parts = [];
     var rest = 0;
-    while(ps) {
+    while (ps) {
       var b = ps.head;
       if (b == null) return undefined;
       parts.push(b & 0x7f);
@@ -165,13 +165,13 @@ function varint(opt_value) {
 // for js to handle as Numbers.
 function varintstring(opt_value) {
   var f = function(ps) {
-    var result = "";
+    var result = '';
     var rest = 0;
-    while(ps) {
+    while (ps) {
       var b = ps.head;
       if (b == null) return undefined;
       var str = b.toString(16);
-      if (str.length == 1) str = "0" + str;
+      if (str.length == 1) str = '0' + str;
       result += str;
       ps = ps.tail;
       if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
@@ -206,8 +206,8 @@ function varintkey(opt_value, opt_type) {
 
 function toboolean(p) {
    return function(ps) {
-      if ( ! (ps = this.parse(p, ps)) ) return undefined;
-      return ps.setValue( !! ps.value);
+      if (! (ps = this.parse(p, ps))) return undefined;
+      return ps.setValue(!! ps.value);
    };
 }
 
@@ -237,10 +237,10 @@ function protobool(tag) {
 function protobytes(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
-    if ( ! (ps = this.parse(repeat(anyChar, undefined, length, length), ps))) return undefined;
+    if (! (ps = this.parse(repeat(anyChar, undefined, length, length), ps))) return undefined;
     return ps.setValue([oldvalue[0], ps.value]);
   };
 
@@ -252,10 +252,10 @@ function protobytes(tag) {
 function protobytes0(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
-    while(length--) ps = ps.itail;
+    while (length--) ps = ps.itail;
     return ps.setValue([oldvalue, undefined]);
   };
 
@@ -268,7 +268,7 @@ function protostring(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var decoder = IncrementalUtf8.create();
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
     for (var i = 0; i < length; i++) {
@@ -294,9 +294,9 @@ function protomessage(tag, opt_p) {
      var key = ps.value[0];
      var length = ps.value[1];
      opt_p = opt_p || repeat(anyChar);
-     var eof = ps.limit(ps.pos + length+1);
+     var eof = ps.limit(ps.pos + length + 1);
      var ps2 = this.parse(opt_p, ps);
-     if ( ! ps2 ) { ps.limit(eof); return undefined; }
+     if (! ps2) { ps.limit(eof); return undefined; }
      ps2.limit(eof);
      return ps2.setValue([key, ps2.value]);
   };

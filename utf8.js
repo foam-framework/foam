@@ -18,11 +18,13 @@ String.fromCharCode = (function() {
   var oldLookup = String.fromCharCode;
   var lookupTable = [];
   return function(a) {
-    if (arguments.length == 1) return lookupTable[a] || (lookupTable[a] = oldLookup(a));
-console.log('.');
-    var result = "";
+    if (arguments.length == 1)
+      return lookupTable[a] || (lookupTable[a] = oldLookup(a));
+    console.log('.');
+    var result = '';
     for (var i = 0; i < arguments.length; i++) {
-      result += lookupTable[arguments[i]] || (lookupTable[arguments[i]] = oldLookup(arguments[i]));
+      result += lookupTable[arguments[i]] ||
+          (lookupTable[arguments[i]] = oldLookup(arguments[i]));
     }
     return result;
   };
@@ -65,7 +67,7 @@ var IncrementalUtf8 = {
       } else if ((this.charcode & 0xfe) == 0xfc) {
         this.remaining = 5;
         this.charcode &= 0x01;
-      } else throw "Bad charcode value";
+      } else throw 'Bad charcode value';
     }
 
     if (this.remaining > 0) {
@@ -84,7 +86,7 @@ var IncrementalUtf8 = {
 // WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
 function utf8tostring(bytes) {
     var first;
-    var chars = "";
+    var chars = '';
     var j = 0;
     for (var i = 0; i < bytes.length; i++) {
         var charcode = 0;
@@ -110,7 +112,7 @@ function utf8tostring(bytes) {
             charcode &= 0x01;
         } else return undefined;
         for (var j = 0; j < remaining && j + i < bytes.length; j++) {
-            charcode |= (bytes[i+j] & 0x7f) << (6 * j);
+            charcode |= (bytes[i + j] & 0x7f) << (6 * j);
         }
         // NOTE: Turns out fromCharCode can't handle all unicode code points.
         // We need fromCodePoint from ES 6 before this will work properly.
@@ -126,7 +128,7 @@ function stringtoutf8(str) {
         var code = str.charCodeAt(i);
 
         var count = 0;
-        if ( code < 0x80 ) {
+        if (code < 0x80) {
             res.push(code);
             continue;
         }

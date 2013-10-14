@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var ME = "";
+var ME = '';
 
 /**
  * Generic Mustang-like query-language parser generator.
@@ -72,7 +72,7 @@ var QueryParserFactory = function(model) {
   equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
   // TODO: merge with 'equals'
-  before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
+  before: seq(sym('fieldname'), alt('<', '-before:'), sym('value')),
 
   // TODO: merge with 'equals'
   after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
@@ -93,17 +93,21 @@ var QueryParserFactory = function(model) {
 
     'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')),
 
-    'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
+    'relative date':
+        seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
   string: alt(
      sym('word'),
      sym('quoted string')),
 
-    'quoted string': seq('"', repeat(alt(literal('\\"', '"'), notChar('"'))), '"'),
+    'quoted string':
+        seq('"', repeat(alt(literal('\\"', '"'), notChar('"'))), '"'),
 
     word: plus(sym('char')),
 
-    'char': alt(range('a','z'), range('A', 'Z'), range('0', '9'), '-', '^', '_', '@', '%', '.'),
+    'char':
+        alt(range('a', 'z'), range('A', 'Z'), range('0', '9'),
+            '-', '^', '_', '@', '%', '.'),
 
   number: seq(plus(range('0', '9')))
 
@@ -111,32 +115,32 @@ var QueryParserFactory = function(model) {
 
    var fields = [];
 
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+   for (var i = 0; i < model.properties.length; i++) {
       var prop = model.properties[i];
       fields.push(literal_ic(prop.name, prop));
    }
 
    // Aliases
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+   for (var i = 0; i < model.properties.length; i++) {
       var prop = model.properties[i];
 
-      for ( var j = 0 ; j < prop.aliases.length ; j++ )
-         if ( prop.aliases[j] ) fields.push(literal_ic(prop.aliases[j], prop));
+      for (var j = 0; j < prop.aliases.length; j++)
+         if (prop.aliases[j]) fields.push(literal_ic(prop.aliases[j], prop));
    }
 
    // ShortName
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
+   for (var i = 0; i < model.properties.length; i++) {
       var prop = model.properties[i];
 
-      if ( prop.shortName ) fields.push(literal_ic(prop.shortName, prop));
+      if (prop.shortName) fields.push(literal_ic(prop.shortName, prop));
    }
 
    fields.sort(function(a, b) {
      var d = a.length - b.length;
 
-     if ( d !== 0 ) return d;
+     if (d !== 0) return d;
 
-     if ( a == b ) return 0;
+     if (a == b) return 0;
 
      return a < b ? 1 : -1;
    });
@@ -152,7 +156,7 @@ var QueryParserFactory = function(model) {
 
   negate: function(v) { return NOT(v[1]); },
 
-  number: function(v) { return  parseInt(v[0].join('')); },
+  number: function(v) { return parseInt(v[0].join('')); },
 
   me: function() { return ME; },
 
@@ -172,7 +176,7 @@ var QueryParserFactory = function(model) {
 
     var or = OR();
     var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
+    for (var i = 0; i < values.length; i++) {
       or.args.push(v[1] == ':' && v[0].type === 'String' ?
         CONTAINS_IC(v[0], values[i]) :
         EQ(v[0], values[i]));
@@ -184,11 +188,11 @@ var QueryParserFactory = function(model) {
 
   word: function(v) { return v.join(''); },
 
-  'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
+  'literal date': function(v) { return new Date(v[0], v[2] - 1, v[4]); },
 
   'relative date': function(v) {
     var d = new Date();
-    if ( v[1] ) d.setDate(d.getDate() - v[1][1]);
+    if (v[1]) d.setDate(d.getDate() - v[1][1]);
     return d;
   }
   });

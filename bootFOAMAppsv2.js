@@ -19,12 +19,12 @@ var files = [
     'FOAMmodels'
 ];
 
-if ( ! this.FOAM_BOOT_DIR ) FOAM_BOOT_DIR = '/';
+if (! this.FOAM_BOOT_DIR) FOAM_BOOT_DIR = '/';
 
 var withFOAM = function(extra, cb) {
    var script;
     (function loadNextFile() {
-        if ( script ) document.body.removeChild(script);
+        if (script) document.body.removeChild(script);
         var file = files.shift();
         if (!file) {
             file = extra.shift();

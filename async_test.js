@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 var f1 = amemo(function(ret) { console.log('f1'); ret(1); });
-var f2 = function(ret, a) { console.log('f2'); ret(a,2); };
-var f3 = function(a, b) { console.log(a,b); };
+var f2 = function(ret, a) { console.log('f2'); ret(a, 2); };
+var f3 = function(a, b) { console.log(a, b); };
 var f4 = console.log.bind(console);
 
 console.log('test1');
@@ -29,13 +29,13 @@ console.log('test3');
 f1.aseq(f4)();
 
 console.log('test4');
-ao(f4,f2,f1)();
+ao(f4, f2, f1)();
 
 console.log('test5');
 aseq(f1, f4)();
 
 console.log('test6');
-aseq(f1,f2,f4)();
+aseq(f1, f2, f4)();
 
 console.log('test7');
 aseq(
@@ -115,7 +115,9 @@ apar(
   var functionFuture = afuture();
   var fn = futurefn(functionFuture);
 
-  fn("hello");
-  setTimeout(function() { fn(" world!"); }, 1000);
-  setTimeout(function() { functionFuture.set(console.log.bind(console)); }, 100);
+  fn('hello');
+  setTimeout(function() { fn(' world!'); }, 1000);
+  setTimeout(function() {
+    functionFuture.set(console.log.bind(console));
+  }, 100);
 }

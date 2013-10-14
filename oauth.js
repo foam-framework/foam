@@ -49,7 +49,7 @@ var OAuth2 = FOAM({
     {
       name: 'endpoint',
       type: 'String',
-      defaultValue: "https://accounts.google.com/o/oauth2/auth"
+      defaultValue: 'https://accounts.google.com/o/oauth2/auth'
     }
   ],
 
@@ -63,7 +63,7 @@ var OAuth2 = FOAM({
       ];
 
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", this.endpoint);
+      xhr.open('POST', this.endpoint);
       aseq(
         function(ret) {
           xhr.asend(ret, postdata.join('&'));

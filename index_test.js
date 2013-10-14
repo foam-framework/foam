@@ -27,7 +27,9 @@ var OrderedMap = {
   bulkLoad: function(a) { this.root = this.index.bulkLoad(a); },
   remove: function(value) { this.root = this.index.remove(this.root, value); },
   putObject: function(value) { this.root = this.index.put(this.root, value); },
-  put: function(key, value) { this.root = this.index.putKeyValue(this.root, key, value); },
+  put: function(key, value) {
+    this.root = this.index.putKeyValue(this.root, key, value);
+  },
   get: function(key) { return this.index.get(this.root, key); },
   select: function(sink) { this.index.select(this.root, sink); },
   selectReverse: function(sink) { this.index.selectReverse(this.root, sink); },
@@ -35,9 +37,10 @@ var OrderedMap = {
 };
 
 
-if ( true ) {
+if (true) {
 
-var m = OrderedMap.create({compare: StringComparator, f: function(x) { return x;}});
+var m = OrderedMap.create(
+    {compare: StringComparator, f: function(x) { return x;}});
 
 console.log('\nOrderedSet Test');
 m.putObject('a');
@@ -85,25 +88,26 @@ m.select(console.log);
 */
 }
 
-if ( false ) {
+if (false) {
 
 console.log('\nMDAO Test');
 
-var d = MDAO.create({model:Issue});
+var d = MDAO.create({model: Issue});
 
 // d.index = AltIndex.create(TreeIndex.create(Issue.SEVERITY));
 
 /*
-d.index = AltIndex.create(TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
+d.index = AltIndex.create(
+    TreeIndex.create(Issue.STATUS, TreeIndex.create(Issue.ID)));
 d.root = undefined;
 */
 
-d.put(Issue.create({id:1, severity:'Minor',   status:'Open'}));
-d.put(Issue.create({id:2, severity:'Major',   status:'Closed'}));
-d.put(Issue.create({id:3, severity:'Feature', status:'Accepted'}));
-d.put(Issue.create({id:4, severity:'Minor',   status:'Closed'}));
-d.put(Issue.create({id:5, severity:'Major',   status:'Accepted'}));
-d.put(Issue.create({id:6, severity:'Feature', status:'Open'}));
+d.put(Issue.create({id: 1, severity: 'Minor', status: 'Open'}));
+d.put(Issue.create({id: 2, severity: 'Major', status: 'Closed'}));
+d.put(Issue.create({id: 3, severity: 'Feature', status: 'Accepted'}));
+d.put(Issue.create({id: 4, severity: 'Minor', status: 'Closed'}));
+d.put(Issue.create({id: 5, severity: 'Major', status: 'Accepted'}));
+d.put(Issue.create({id: 6, severity: 'Feature', status: 'Open'}));
 
 var sink = {
   put: function(i) {

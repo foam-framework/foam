@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if ( ! this.FOAM_BOOT_DIR ) FOAM_BOOT_DIR = '';
+if (! this.FOAM_BOOT_DIR) FOAM_BOOT_DIR = '';
 
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'bootFOAMMain.js"></script>\n');
+document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR +
+    'FOAMmodels.js"></script>\n');
+document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR +
+    'bootFOAMMain.js"></script>\n');

@@ -23,7 +23,7 @@ var ProtoBufGrammar = {
 
   d: range('0', '9'),
 
-  w: alt(sym('d'), range('a', 'z'), range('A', 'Z'), "_"),
+  w: alt(sym('d'), range('a', 'z'), range('A', 'Z'), '_'),
 
   a: alt(range('a', 'z'), range('A', 'Z')),
 
@@ -36,60 +36,60 @@ var ProtoBufGrammar = {
     sym('option'),
     sym('syntax'), ';')),
 
-  syntax: seq("syntax", "=", sym('strLit'), ";"),
+  syntax: seq('syntax', '=', sym('strLit'), ';'),
 
-  import: seq("import", sym('strLit'), ";"),
+  import: seq('import', sym('strLit'), ';'),
 
-  package: seq("package", sym('ident'), ";"),
+  package: seq('package', sym('ident'), ';'),
 
-  option: seq("option", sym('optionBody'), ";"),
+  option: seq('option', sym('optionBody'), ';'),
 
-  optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')),
+  optionBody: seq(sym('ident'), repeat(seq('.', sym('ident'))), '=', sym('constant')),
 
-  message: seq("message", sym('ident'), sym('messageBody')),
+  message: seq('message', sym('ident'), sym('messageBody')),
 
-  extend: seq("extend", sym('userType'), sym('messageBody')),
+  extend: seq('extend', sym('userType'), sym('messageBody')),
 
-  enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"),
+  enum: seq('enum', sym('ident'), '{', repeat(alt(sym('option'), sym('enumField'), ';')), '}'),
 
-  enumField: seq(sym('ident'), "=", sym('sintLit'), ";"),
+  enumField: seq(sym('ident'), '=', sym('sintLit'), ';'),
 
-  service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"),
+  service: seq('service', sym('ident'), '{', repeat(seq(sym('option'), sym('rpc')), ';'), '}'),
 
-  rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"),
+  rpc: seq('rpc', sym('ident'), '(', sym('userType'), ')', 'returns', '(', sym('userType'), ')', ';'),
 
   messageBody: seq(
-    "{",
+    '{',
       repeat(
         alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
       ),
-    "}"),
+    '}'),
 
-  group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')),
+  group: seq(sym('modifier'), 'group', sym('camelIdent'), '=', sym('intLit'), sym('messageBody')),
 
   // tag number must be 2^28-1 or lower
   field: seq(
     sym('modifier'),
     sym('type'),
     sym('ident'),
-    "=",
+    '=',
     sym('intLit'),
-    optional(seq("[", sym('fieldOption'), repeat(",", sym('fieldOption') ), "]")),
-    ";"),
+    optional(seq('[', sym('fieldOption'), repeat(',', sym('fieldOption')), ']')),
+    ';'),
 
-  fieldOption: alt(sym('optionBody'), seq("default", "=", sym('constant'))),
+  fieldOption: alt(sym('optionBody'), seq('default', '=', sym('constant'))),
 
-  extensions: seq("extensions", sym('intLit'), "to", alt(sym('intLit'), "max"), ";"),
+  extensions: seq('extensions', sym('intLit'), 'to', alt(sym('intLit'), 'max'), ';'),
 
-  modifier: alt("required", "optional", "repeated"),
+  modifier: alt('required', 'optional', 'repeated'),
 
   type: alt(
-      "double", "float", "int32", "int64", "uint32", "uint64",
-      "sint32", "sint64", "fixed32", "fixed64", "sfixed32",
-      "sfixed64", "bool", "string", "bytes", sym('userType')),
+      'double', 'float', 'int32', 'int64', 'uint32', 'uint64',
+      'sint32', 'sint64', 'fixed32', 'fixed64', 'sfixed32',
+      'sfixed64', 'bool', 'string', 'bytes', sym('userType')),
 
   // leading dot for identifiers means they're fully qualified
-  userType: noskip(plus(seq(optional("."), sym('ident')))),
+  userType: noskip(plus(seq(optional('.'), sym('ident')))),
 
   constant: alt(sym('ident'), sym('sintLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
 
@@ -107,7 +107,7 @@ var ProtoBufGrammar = {
 
   decInt: plus(sym('d')),
 
-  hexInt: seq('/0', alt('x', 'X'), plus(alt(range('A','F'), range('a', 'f'), range('0', '9')))),
+  hexInt: seq('/0', alt('x', 'X'), plus(alt(range('A', 'F'), range('a', 'f'), range('0', '9')))),
 
   octInt: seq('/0', plus(range('0', '7'))),
 
@@ -122,19 +122,19 @@ var ProtoBufGrammar = {
                 optional(alt('+', '-')),
                 sym('decInt')))),
 
-  boolLit: alt("true", "false"),
+  boolLit: alt('true', 'false'),
 
-  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), sym('quoteEscape'), not(sym('quote'), anyChar))) ,sym('quote'))),
+  strLit: noskip(seq(sym('quote'), repeat(alt(sym('hexEscape'), sym('octEscape'), sym('charEscape'), sym('quoteEscape'), not(sym('quote'), anyChar))) , sym('quote'))),
 
   quote: alt('"', "'"),
 
-  hexEscape: seq('\\', alt('x', 'X'), repeat(alt(range('A','F'), range('a', 'f'), range('0', '9'), undefined, 1,2))),
+  hexEscape: seq('\\', alt('x', 'X'), repeat(alt(range('A', 'F'), range('a', 'f'), range('0', '9'), undefined, 1, 2))),
 
   octEscape: seq('\\0', repeat(range('0', '7'), undefined, 1, 3)),
 
-  charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')),
+  charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v', '?')),
 
-  quoteEscape: seq('\\"'),
+  quoteEscape: seq('\\"')
 
 }.addActions({
 
@@ -150,7 +150,7 @@ var ProtoBufGrammar = {
     var e = {};
     var name = a[1];
     var values = a[3];
-    for ( var i = 0 ; i < values.length ; i++ ) {
+    for (var i = 0; i < values.length; i++) {
       var value = values[i];
       e[value[0]] = value[1][1];
     }

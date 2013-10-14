@@ -18,7 +18,7 @@
 // todo: bind
 
 function SimpleValue(val) {
-    this.val_ = val || "";
+    this.val_ = val || '';
 
     return this;
 }
@@ -34,5 +34,5 @@ SimpleValue.prototype.get = function() {
     return this.val_;
 };
 SimpleValue.prototype.toString = function() {
-    return "SimpleValue(" + this.get() + ")";
+    return 'SimpleValue(' + this.get() + ')';
 };

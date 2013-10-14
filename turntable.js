@@ -18,56 +18,56 @@ var Turntable = Model.create({
 
   extendsModel: 'PanelCView',
 
-  name:  'Turntable',
+  name: 'Turntable',
 
   properties: [
     {
-      name:  'r',
+      name: 'r',
       label: 'Radius',
-      type:  'int',
-      view:  'IntFieldView',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 150
     },
     {
-      name:  'width',
-      type:  'int',
+      name: 'width',
+      type: 'int',
       defaultValue: 350
     },
     {
-      name:  'height',
-      type:  'int',
+      name: 'height',
+      type: 'int',
       defaultValue: 350
     },
     {
-      name:  'x',
-      type:  'int',
+      name: 'x',
+      type: 'int',
       defaultValue: 170
     },
     {
-      name:  'y',
-      type:  'int',
+      name: 'y',
+      type: 'int',
       defaultValue: 170
     },
     {
-      name:  'rpm',
+      name: 'rpm',
       label: 'RPM',
-      type:  'float',
-      view:  'FloatFieldView',
-      help:  'Rotations Per Minute. Standard values: 33, 45, and 78.',
+      type: 'float',
+      view: 'FloatFieldView',
+      help: 'Rotations Per Minute. Standard values: 33, 45, and 78.',
       defaultValue: 33
     },
     {
-      name:  'internalTime',
+      name: 'internalTime',
       preSet: function(newValue) {
-        if ( this.active ) this.time = newValue;
+        if (this.active) this.time = newValue;
         return newValue;
       }
     },
     {
-      name:  'time',
+      name: 'time',
       preSet: function(newValue) {
-        setTimeout(function(){
-          if ( this.active )
+        setTimeout(function() {
+          if (this.active)
             this.time = this.internalTime;
           else
             this.internalTime = this.time;
@@ -87,23 +87,23 @@ var Turntable = Model.create({
       this.active = false;
     },
     mouseMove: function(evt) {
-      if ( ! this.active ) return;
+      if (! this.active) return;
 
       var prevA = this.a;
       this.a = this.angle(evt.offsetX, evt.offsetY);
       var d = this.a - prevA;
-      if ( d > Math.PI*1.5 ) d -= Math.PI*2;
-      if ( d < -Math.PI*1.5 ) d += Math.PI*2;
-      if ( d == 0 ) return;
+      if (d > Math.PI * 1.5) d -= Math.PI * 2;
+      if (d < -Math.PI * 1.5) d += Math.PI * 2;
+      if (d == 0) return;
 
-      var dTime = d/(Math.PI*2)*36000/this.rpm;
+      var dTime = d / (Math.PI * 2) * 36000 / this.rpm;
       this.internalTime = this.internalTime + dTime;
     }
   },
 
   methods: {
     angle: function(x,y) {
-      return Math.atan2(y-this.y, x-this.x);
+      return Math.atan2(y - this.y, x - this.x);
     },
 
     paint: function() {
@@ -113,29 +113,29 @@ var Turntable = Model.create({
       // this.canvasView.erase();
 
       this.canvasView.$.onmousedown = this.mouseDown;
-      this.canvasView.$.onmouseup   = this.mouseUp;
+      this.canvasView.$.onmouseup = this.mouseUp;
       this.canvasView.$.onmousemove = this.mouseMove;
 
       var c = this.canvas;
 
-      c.font = "48pt Arial";
+      c.font = '48pt Arial';
 
       c.beginPath();
       c.fillStyle = 'black';
-      c.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+      c.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
       c.stroke();
 
       c.save();
-      c.translate(this.x,this.y);
-      c.rotate(this.rpm*this.time/36000*Math.PI*2);
-      c.translate(-this.x,-this.y);
+      c.translate(this.x, this.y);
+      c.rotate(this.rpm * this.time / 36000 * Math.PI * 2);
+      c.translate(-this.x, -this.y);
       c.fillStyle = '#999';
-      c.fillText("FOAM", this.x-92, this.y+25);
+      c.fillText('FOAM', this.x - 92, this.y + 25);
       c.restore();
 
       c.beginPath();
       c.fillStyle = 'black';
-      c.arc(this.x,this.y,8,0,Math.PI*2,true);
+      c.arc(this.x, this.y, 8, 0, Math.PI * 2, true);
       c.fill();
 
     }

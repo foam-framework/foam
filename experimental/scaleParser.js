@@ -56,11 +56,11 @@ var ScaleExprToJS = {
   'START': function(v) { return new Function('x', 'return ' + v + ';'); },
 
   'group': function(v) { return v[1]; },
-  'number': function(v) { return  (v[0] ? -1 : 1) * parseInt(v[1].join('')); },
+  'number': function(v) { return (v[0] ? -1 : 1) * parseInt(v[1].join('')); },
   'expr': function(v) {
     var val = v[0];
 
-    if ( v[1] ) {
+    if (v[1]) {
       var val2 = v[1][1];
       val = '(' + val + v[1][0] + val2 + ')';
     }
@@ -70,7 +70,7 @@ var ScaleExprToJS = {
   'expr1': function(v) {
     var val = v[0];
 
-    if ( v[1] ) {
+    if (v[1]) {
       var val2 = v[1][1];
       val = '(' + val + v[1][0] + val2 + ')';
     }
@@ -80,7 +80,7 @@ var ScaleExprToJS = {
   'expr2': function(v) {
     var val = v[0];
 
-    if ( v[1] ) {
+    if (v[1]) {
       var val2 = v[1][1];
       val = 'Math.pow(' + val + ',' + val2 + ')';
     }
@@ -90,9 +90,9 @@ var ScaleExprToJS = {
   'fun': function(v) {
     var val = v[2];
 
-    if ( v[0] == 'sqrt' ) return 'Math.pow(' + val + ',0.5)';
-    if ( ! v[3] ) return 'Math.log(' + val + ')';
-    return 'log2_(' + val + ',' + v[3][1] + ')'; 
+    if (v[0] == 'sqrt') return 'Math.pow(' + val + ',0.5)';
+    if (! v[3]) return 'Math.log(' + val + ')';
+    return 'log2_(' + val + ',' + v[3][1] + ')';
   }
 });
 
@@ -100,7 +100,7 @@ var ScaleExprToJS = {
 
 function test(expr, opt_x) {
   var x = opt_x || 1;
-  var fn = ScaleExprToJS.parseString(expr+' ');
+  var fn = ScaleExprToJS.parseString(expr + ' ');
   console.log(expr, fn, ' -> ', fn(x));
 }
 

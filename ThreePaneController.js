@@ -261,13 +261,13 @@ var ThreePaneController = FOAM({
        this.searchField.$.style.display = 'table-cell';
        this.searchField.$.style.width = '100%';
 
-       this.table.view.selection.addListener(EventService.merged(function (value) {
+       this.table.view.selection.addListener(EventService.merged(function(value) {
          var newValue = value.get();
          var oldValue = self.editView.value.get();
 
          // No need to reload from database if we're updating to same row
         // if ( ! newValue || oldValue && newValue === oldValue ) return;
-         if ( newValue === lastSelection ) return;
+         if (newValue === lastSelection) return;
 
          newValue && self.dao.find(newValue.id, {
             put: function(email) {
@@ -301,18 +301,18 @@ var ThreePaneController = FOAM({
       name: 'layout',
       merged: true,
       code: function() {
-        if ( !this.$ ) return;
+        if (!this.$) return;
 
         var hideTable = this.table.scrollbar.size == 1;
-        var W         = this.$.offsetWidth; //window.innerWidth;
-        var H         = this.$.offsetHeight; //window.innerHeight;
-        var SEARCH_H  = H - this.headerHeight - this.footerHeight;
-        var RIGHT_W   = W - this.searchWidth-1;
+        var W = this.$.offsetWidth; //window.innerWidth;
+        var H = this.$.offsetHeight; //window.innerHeight;
+        var SEARCH_H = H - this.headerHeight - this.footerHeight;
+        var RIGHT_W = W - this.searchWidth - 1;
 
         //  pos(header,null,null,W,HEADER_H-10);
         pos($('search-' + this.getID()), this.headerHeight, null, this.maxSearchWidth, SEARCH_H);
 
-        if ( W > this.minThreeColumnWidth ) {
+        if (W > this.minThreeColumnWidth) {
           pos($('browse-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1,
@@ -322,14 +322,14 @@ var ThreePaneController = FOAM({
           pos($('edit-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1 + RIGHT_W * this.threeColumnLeftPaneWeight,
-              RIGHT_W * 0.55-10,
-              SEARCH_H-10);
+              RIGHT_W * 0.55 - 10,
+              SEARCH_H - 10);
         } else {
           pos($('browse-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1,
               RIGHT_W,
-              SEARCH_H/2-4);
+              SEARCH_H / 2 - 4);
 
           pos($('edit-' + this.getID()),
               hideTable ? this.headerHeight : toNum($('browse-' + this.getID()).style.top) + toNum($('browse-' + this.getID()).style.height),
@@ -338,7 +338,7 @@ var ThreePaneController = FOAM({
               hideTable ? SEARCH_H : SEARCH_H / 2);
         }
         pos($('footer-' + this.getID()),
-            H-this.footerHeight+10,
+            H - this.footerHeight + 10,
             null,
             W,
             this.footerHeight);
@@ -351,7 +351,7 @@ var ThreePaneController = FOAM({
       merged: 100,
       code: function() {
          var self = this;
-         if ( this.table.view.selection.get() )
+         if (this.table.view.selection.get())
             this.dao.find(this.table.view.selection.get().id, {
                put: function(obj) {
                   self.table.view.selection.set(obj);

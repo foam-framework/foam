@@ -25,7 +25,7 @@ var ProtoWriter = {
    get value() { return new Uint8Array(this.value_); },
 
    varint: function(i) {
-      while(i > 0x7f) {
+      while (i > 0x7f) {
          this.value_.push((i & 0x7f) | 0x80);
          i = Math.floor(i / Math.pow(2, 7));
       }
