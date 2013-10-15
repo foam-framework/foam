@@ -17,6 +17,7 @@
 // TODO: time-travelling debugger, ala:
 //    "Debugging Standard ML Without Reverse Engineering"
 
+
 /** NOP afunc. **/
 function anop(ret) { ret && ret(undefined); }
 
@@ -30,16 +31,17 @@ function alog() {
   };
 }
 
+
 /** console.profile an afunc. **/
 function aprofile(afunc) {
   return function(ret) {
-     var a = argsToArray(arguments);
-     console.profile();
-     var ret2 = function() {
-        console.profileEnd();
-        ret && ret(arguments);
-     };
-     aapply_(afunc, ret2, a);
+    var a = argsToArray(arguments);
+    console.profile();
+    var ret2 = function() {
+      console.profileEnd();
+      ret && ret(arguments);
+    };
+    aapply_(afunc, ret2, a);
   };
 }
 
@@ -80,13 +82,14 @@ function awhile(cond, afunc) {
   };
 }
 
+
 /** Execute the supplied afunc if cond. */
 function aif(cond, afunc) {
   return function(ret) {
     if (cond) {
-       afunc.apply(this, arguments);
+      afunc.apply(this, arguments);
     } else {
-       ret();
+      ret();
     }
   };
 }
@@ -102,10 +105,10 @@ var atime = (function() {
     return function(ret) {
       var name = str;
       if (activeOps[str]) {
-         name += '-' + id++;
-         activeOps[str]++;
+        name += '-' + id++;
+        activeOps[str]++;
       } else {
-         activeOps[str] = 1;
+        activeOps[str] = 1;
       }
       var start = performance.now();
       console.time(name);
@@ -170,7 +173,7 @@ function aapply_(f, ret, args) {
  * A Binary Semaphore which only allows the delegate function to be
  * executed by a single thread of execution at once.
  * Like Java's synchronized blocks.
- * @param opt_lock an empty map {} to be used as a lock
+ * @param opt_lock an empty map {=} to be used as a lock
  *                 sharable across multiple asynchronized instances
  **/
 function asynchronized(f, opt_lock) {
@@ -192,8 +195,8 @@ function asynchronized(f, opt_lock) {
 
   return function(ret) {
     if (lock.active) {
-       lock.q.push(function() { f(onExit(ret)); onExit(ret); });
-       return;
+      lock.q.push(function() { f(onExit(ret)); onExit(ret); });
+      return;
     }
 
     lock.active = true;
@@ -223,10 +226,10 @@ function atimeout(delay, f, opt_timeoutF) {
     }, delay);
 
     f(aseq(
-      function(ret) {
-        if (! timedOut) completed = true;
-        if (completed) ret();
-      }, ret));
+        function(ret) {
+          if (! timedOut) completed = true;
+          if (completed) ret();
+        }, ret));
   };
 }
 
@@ -319,7 +322,7 @@ function apar(/* ... afuncs */) {
         for (var j = 0; j < fs.length; j++)
           for (var k = 0; k < aargs[j].length; k++)
             a.push(aargs[j][k]);
-        ret && ret.apply(null, a);
+          ret && ret.apply(null, a);
       }
     };
 
@@ -328,27 +331,29 @@ function apar(/* ... afuncs */) {
   };
 }
 
+
 /** Convert the supplied afunc into a trampolined-afunc. **/
 var atramp = (function() {
-   var active = false;
-   var jobs = [];
+  var active = false;
+  var jobs = [];
 
-   return function(afunc) {
-      return function() {
-         jobs.push([afunc, arguments]);
-         if (! active) {
-if (jobs.length > 1) debugger;
-           active = true;
-           var job;
-           // Take responsibility for bouncing
-           while ((job = jobs.pop()) != null) {
-             job[0].apply(this, job[1]);
-           }
-           active = false;
-         }
-      };
-   };
+  return function(afunc) {
+    return function() {
+      jobs.push([afunc, arguments]);
+      if (! active) {
+        if (jobs.length > 1) debugger;
+        active = true;
+        var job;
+        // Take responsibility for bouncing
+        while ((job = jobs.pop()) != null) {
+          job[0].apply(this, job[1]);
+        }
+        active = false;
+      }
+    };
+  };
 })();
+
 
 /** Execute the supplied afunc concurrently n times. **/
 function arepeatpar(n, afunc) {
@@ -364,7 +369,7 @@ function arepeatpar(n, afunc) {
         for (var j = 0; j < n; j++)
           for (var k = 0; k < aargs[j].length; k++)
             a.push(aargs[j][k]);
-        ret && ret.apply(null, a);
+          ret && ret.apply(null, a);
       }
     };
 

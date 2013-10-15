@@ -44,6 +44,7 @@ console.log('setValue:',value);
 };
 */
 
+
 /** String PStream **/
 var StringPS = {
   create: function(str) {
@@ -124,6 +125,7 @@ function literal(str, opt_value) {
   return f;
 }
 
+
 /**
  * Case-insensitive String literal.
  * Doesn't work for Unicode characters.
@@ -166,8 +168,8 @@ function not(p, opt_else) {
   opt_else = prep(opt_else);
   var f = function(ps) {
     return this.parse(p, ps) ? undefined :
-      opt_else ? this.parse(opt_else, ps) :
-      ps;
+        opt_else ? this.parse(opt_else, ps) :
+        ps;
   };
 
   f.toString = function() { return 'not(' + p + ')'; };
@@ -183,6 +185,7 @@ function optional(p) {
 
   return f;
 }
+
 
 /** Parses if the delegate parser parses, but doesn't advance the pstream. **/
 function lookahead(p) {
@@ -202,17 +205,17 @@ function repeat(p, opt_delim, opt_min, opt_max) {
     var ret = [];
 
     for (var i = 0; ! opt_max || i < opt_max; i++) {
-       var res;
+      var res;
 
-       if (opt_delim && ret.length != 0) {
-          if (! (res = this.parse(opt_delim, ps))) break;
-          ps = res;
-       }
+      if (opt_delim && ret.length != 0) {
+        if (! (res = this.parse(opt_delim, ps))) break;
+        ps = res;
+      }
 
-       if (! (res = this.parse(p, ps))) break;
+      if (! (res = this.parse(p, ps))) break;
 
-       ret.push(res.value);
-       ps = res;
+      ret.push(res.value);
+      ps = res;
     }
 
     if (opt_min && ret.length < opt_min) return undefined;
@@ -238,6 +241,7 @@ function noskip(p) {
     return ps;
   };
 }
+
 
 /** A simple repeat which doesn't build an array of parsed values. **/
 function repeat0(p) {
@@ -312,7 +316,7 @@ function alt(/* vargs */) {
 
     this.parse(p, trapPS);
 
-// console.log('*** TestParser:',p,c,goodChar);
+    // console.log('*** TestParser:',p,c,goodChar);
     return goodChar;
   }
 
@@ -330,8 +334,8 @@ function alt(/* vargs */) {
       }
 
       p = alts.length == 0 ? nullParser :
-        alts.length == 1 ? alts[0] :
-        simpleAlt.apply(null, alts);
+          alts.length == 1 ? alts[0] :
+          simpleAlt.apply(null, alts);
 
       map[c] = p;
     }
@@ -349,13 +353,13 @@ function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {
-     for (var i = 0; i < args.length; i++) {
-        var res = this.parse(args[i], ps);
+    for (var i = 0; i < args.length; i++) {
+      var res = this.parse(args[i], ps);
 
-        if (res) return res;
-     }
+      if (res) return res;
+    }
 
-     return undefined;
+    return undefined;
   };
 
   f.toString = function() {
@@ -419,12 +423,12 @@ var grammar = {
   },
 
   parse: function(parser, pstream) {
-//    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
+    // if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
     if (DEBUG_PARSE && pstream.str_) {
-//      console.log(new Array(pstream.pos).join(' '), pstream.head);
-        console.log(pstream.pos + '> ' +
-            pstream.str_[0].substring(0, pstream.pos) +
-            '(' + pstream.head + ')');
+      //      console.log(new Array(pstream.pos).join(' '), pstream.head);
+      console.log(pstream.pos + '> ' +
+          pstream.str_[0].substring(0, pstream.pos) +
+          '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
     if (DEBUG_PARSE) {
@@ -458,37 +462,37 @@ var grammar = {
 };
 
 function defineTTLProperty(obj, name, ttl, f) {
-   Object.defineProperty(obj, name, {
-     get: function() {
-        var accessed;
-        var value = undefined;
-        Object.defineProperty(this, name, {
-           get: function() {
-              function scheduleTimer() {
-                 setTimeout(function() {
-                   if (accessed) {
-                      scheduleTimer();
-                   } else {
-                      value = undefined;
-                   }
-                   accessed = false;
-                 }, ttl);
-              }
-              if (! value) {
-                 accessed = false;
-                 value = f();
-                 scheduleTimer();
+  Object.defineProperty(obj, name, {
+    get: function() {
+      var accessed;
+      var value = undefined;
+      Object.defineProperty(this, name, {
+        get: function() {
+          function scheduleTimer() {
+            setTimeout(function() {
+              if (accessed) {
+                scheduleTimer();
               } else {
-                 accessed = true;
+                value = undefined;
               }
+              accessed = false;
+            }, ttl);
+          }
+          if (! value) {
+            accessed = false;
+            value = f();
+            scheduleTimer();
+          } else {
+            accessed = true;
+          }
 
-              return value;
-           }
-        });
+          return value;
+        }
+      });
 
-        return this[name];
-     }
-   });
+      return this[name];
+    }
+  });
 }
 
 defineTTLProperty(grammar, 'stringPS', 5000, function() {

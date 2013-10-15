@@ -21,7 +21,7 @@ var AbstractPrototype = {
   __proto__: PropertyChangeSupport,
 
   create: function(args) {
-/*
+    /*
 console.log("args: ", args);
     if (arguments.length > 1) {
       args = {};
@@ -32,7 +32,7 @@ console.log(i, k, v);
         });
       }
     }
-*/
+    */
 
     var obj = {
       __proto__: this,
@@ -91,7 +91,7 @@ console.log(i, k, v);
 
 
   toString: function() {
-// console.log(this.model_.name + "Prototype");
+    // console.log(this.model_.name + "Prototype");
     // return this.model_.name + "Prototype";
     return this.toJSON();
   },
@@ -102,14 +102,14 @@ console.log(i, k, v);
   },
 
   writeActions: function(other, out) {
-      for (var i = 0, property; property = this.model_.properties[i]; i++) {
-          if (property.actionFactory) {
-              var actions = property.actionFactory(
-                  this, property.f(this), property.f(other));
-              for (var j = 0; j < actions.length; j++)
-                  out(actions[j]);
-          }
+    for (var i = 0, property; property = this.model_.properties[i]; i++) {
+      if (property.actionFactory) {
+        var actions = property.actionFactory(
+            this, property.f(this), property.f(other));
+        for (var j = 0; j < actions.length; j++)
+          out(actions[j]);
       }
+    }
   },
 
   clearProperty: function(name) {
@@ -138,14 +138,14 @@ console.log(i, k, v);
       this.__defineGetter__(name, prop.getter);
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
-        function() {
-          return this.hasOwnProperty(name) ?
-              this.instance_[name] : prop.defaultValueFn.call(this);
-        } :
-        function() {
-          return this.hasOwnProperty(name) ?
-              this.instance_[name] : prop.defaultValue;
-        };);
+          function() {
+            return this.hasOwnProperty(name) ?
+                this.instance_[name] : prop.defaultValueFn.call(this);
+          } :
+          function() {
+            return this.hasOwnProperty(name) ?
+                this.instance_[name] : prop.defaultValue;
+          };);
     }
 
     if (prop.setter) {

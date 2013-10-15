@@ -28,10 +28,10 @@ var ScaleExpr = {
   expr2: seq(sym('expr3'), optional(seq('^', sym('expr2')))),
 
   expr3: alt(
-    sym('fun'),
-    sym('variable'),
-    sym('number'),
-    sym('group')),
+      sym('fun'),
+      sym('variable'),
+      sym('number'),
+      sym('group')),
 
   variable: literal('x'),
 
@@ -41,7 +41,7 @@ var ScaleExpr = {
       sym('expr'),
       optional(seq(',', sym('expr'))),
       ')'
-    ),
+  ),
 
   group: seq('(', sym('expr'), ')'),
 

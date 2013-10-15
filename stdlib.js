@@ -31,11 +31,12 @@ String.prototype.labelize = function() {
 // switchFromCamelCaseToConstantFormat to
 // SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
-    return this.replace(/[a-z][^a-z]/g,
-        function(a) {
-          return a.substring(0, 1) + '_' + a.substring(1, 2);
-        }).toUpperCase();
+  return this.replace(/[a-z][^a-z]/g,
+      function(a) {
+        return a.substring(0, 1) + '_' + a.substring(1, 2);
+      }).toUpperCase();
 };
+
 
 /** Give all objects a Unique ID. **/
 Object.defineProperty(Object.prototype, '$UID', {
@@ -119,7 +120,7 @@ Object.defineProperty(Array.prototype, 'intern', {
     for (var i = 0; i < this.length; i++)
       if (this[i].intern) this[i] = this[i].intern();
 
-    return this;
+      return this;
   }
 });
 
@@ -152,6 +153,7 @@ Object.defineProperty(Array.prototype, 'reduce', {
     return result;
   }
 });
+
 
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
@@ -234,7 +236,7 @@ Object.defineProperty(Array.prototype, 'pushAll', {
   value: function(arr) {
     this.push.apply(this, arr);
     return this.length;
-}});
+  }});
 
 
 /**
@@ -350,21 +352,21 @@ function orderedSink(comparator, sink) {
 
 
 console.log.json = function() {
-   var args = [];
-   for (var i = 0; i < arguments.length; i++) {
-     var arg = arguments[i];
-     args.push(arg && arg.toJSON ? arg.toJSON() : arg);
-   }
-   console.log.apply(console, args);
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    args.push(arg && arg.toJSON ? arg.toJSON() : arg);
+  }
+  console.log.apply(console, args);
 };
 
 console.log.str = function() {
-   var args = [];
-   for (var i = 0; i < arguments.length; i++) {
-     var arg = arguments[i];
-     args.push(arg && arg.toString ? arg.toString() : arg);
-   }
-   console.log.apply(console, args);
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    args.push(arg && arg.toString ? arg.toString() : arg);
+  }
+  console.log.apply(console, args);
 };
 
 // Promote 'console.log' into a Sink
@@ -399,6 +401,7 @@ window.requestAnimationFrame =
 if (window.Blob) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
+
 
 /** Convert a string to an internal canonical copy. **/
 String.prototype.intern = (function() {

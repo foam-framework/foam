@@ -37,8 +37,8 @@ var Visitor = {
            (o === false) ? this.visitFalse() :
            (o === null) ? this.visitNull() :
            (o instanceof Object) ? (o.model_ ?
-             this.visitObject(o) :
-             this.visitMap(o)
+        this.visitObject(o) :
+        this.visitMap(o)
            ) : this.visitUndefined();
   },
 

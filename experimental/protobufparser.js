@@ -28,13 +28,13 @@ var ProtoBufGrammar = {
   a: alt(range('a', 'z'), range('A', 'Z')),
 
   proto: repeat(alt(
-    sym('message'),
-    sym('extend'),
-    sym('enum'),
-    sym('import'),
-    sym('package'),
-    sym('option'),
-    sym('syntax'), ';')),
+      sym('message'),
+      sym('extend'),
+      sym('enum'),
+      sym('import'),
+      sym('package'),
+      sym('option'),
+      sym('syntax'), ';')),
 
   syntax: seq('syntax', '=', sym('strLit'), ';'),
 
@@ -59,23 +59,23 @@ var ProtoBufGrammar = {
   rpc: seq('rpc', sym('ident'), '(', sym('userType'), ')', 'returns', '(', sym('userType'), ')', ';'),
 
   messageBody: seq(
-    '{',
+      '{',
       repeat(
-        alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
+      alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
       ),
-    '}'),
+      '}'),
 
   group: seq(sym('modifier'), 'group', sym('camelIdent'), '=', sym('intLit'), sym('messageBody')),
 
   // tag number must be 2^28-1 or lower
   field: seq(
-    sym('modifier'),
-    sym('type'),
-    sym('ident'),
-    '=',
-    sym('intLit'),
-    optional(seq('[', sym('fieldOption'), repeat(',', sym('fieldOption')), ']')),
-    ';'),
+      sym('modifier'),
+      sym('type'),
+      sym('ident'),
+      '=',
+      sym('intLit'),
+      optional(seq('[', sym('fieldOption'), repeat(',', sym('fieldOption')), ']')),
+      ';'),
 
   fieldOption: alt(sym('optionBody'), seq('default', '=', sym('constant'))),
 
@@ -112,15 +112,15 @@ var ProtoBufGrammar = {
   octInt: seq('/0', plus(range('0', '7'))),
 
   floatLit:
-    seq(
-        seq(
-            sym('decInt'),
-            optional('.', sym('decInt'))),
-        optional(
-            seq(
-                alt('E', 'e'),
-                optional(alt('+', '-')),
-                sym('decInt')))),
+      seq(
+      seq(
+      sym('decInt'),
+      optional('.', sym('decInt'))),
+      optional(
+      seq(
+      alt('E', 'e'),
+      optional(alt('+', '-')),
+      sym('decInt')))),
 
   boolLit: alt('true', 'false'),
 
@@ -139,7 +139,7 @@ var ProtoBufGrammar = {
 }.addActions({
 
   quoteEscape: function(a) {
-      return ['"'];
+    return ['"'];
   },
 
   enumField: function(a) {
@@ -164,18 +164,18 @@ var ProtoBufGrammar = {
 
   field: function(a) {
     if (a[0] === 'repeated') {
-        return ArrayProperty.create({
-            subType: a[1],
-            name: a[2],
-            prototag: a[4]
-        });
+      return ArrayProperty.create({
+        subType: a[1],
+        name: a[2],
+        prototag: a[4]
+      });
     } else {
-        return Property.create({
-            type: a[1],
-            name: a[2],
-            prototag: a[4],
-            required: a[0] === 'required'
-        });
+      return Property.create({
+        type: a[1],
+        name: a[2],
+        prototag: a[4],
+        required: a[0] === 'required'
+      });
     }
   },
 

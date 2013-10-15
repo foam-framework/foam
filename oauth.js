@@ -65,16 +65,16 @@ var OAuth2 = FOAM({
       var xhr = new XMLHttpRequest();
       xhr.open('POST', this.endpoint);
       aseq(
-        function(ret) {
-          xhr.asend(ret, postdata.join('&'));
-        },
-        function() {
-          console.log('auth result: ' + xhr.responseText);
-        })();
+          function(ret) {
+            xhr.asend(ret, postdata.join('&'));
+          },
+          function() {
+            console.log('auth result: ' + xhr.responseText);
+          })();
     },
 
     auth: function() {
-/*      var queryparams = [
+      /*      var queryparams = [
         '?response_type=code',
         'client_id=' + encodeURIComponent(this.clientid),
         'redirect_uri=urn:ietf:wg:oauth:2.0:oob',

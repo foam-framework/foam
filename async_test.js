@@ -39,30 +39,30 @@ aseq(f1, f2, f4)();
 
 console.log('test7');
 aseq(
-  function(ret) { console.log('fB'); ret(1); },
-  function(ret) { console.log('fC'); ret(2); },
-  f4
+    function(ret) { console.log('fB'); ret(1); },
+    function(ret) { console.log('fC'); ret(2); },
+    f4
 )();
 
 console.log('test8');
 apar(
-  function(ret, a) { console.log('fB'); ret(1); },
-  function(ret, a) { console.log('fC'); ret(2); }
+    function(ret, a) { console.log('fB'); ret(1); },
+    function(ret, a) { console.log('fC'); ret(2); }
 )(f4);
 
 console.log('test9');
 arepeatpar(5,
-  function(ret, a, b) { console.log(a); ret(1); }
+    function(ret, a, b) { console.log(a); ret(1); }
 )(f4);
 
 console.log('test10');
 aseq(
-  function(ret) { console.log('fA'); ret(1); },
-  apar(
+    function(ret) { console.log('fA'); ret(1); },
+    apar(
     function(ret, a) { console.log('fB', a); ret(1); },
     function(ret, a) { console.log('fC', a); ret(2); }
-  ),
-  f4
+    ),
+    f4
 )();
 
 
@@ -71,45 +71,45 @@ var tlock = {};
 
 function atest() {
 
-var f1 = aseq(
-   alog('f1 start'),
-   asleep(2000),
-   alog('f1 end')
-);
+  var f1 = aseq(
+      alog('f1 start'),
+      asleep(2000),
+      alog('f1 end')
+      );
 
-// atime('test1', alog('foobar'))();
-// atime('test1', aseq(alog('step 1'), alog('step 2')))();
+  // atime('test1', alog('foobar'))();
+  // atime('test1', aseq(alog('step 1'), alog('step 2')))();
 
-// aseq(alog('stepA'), alog('stepB1').aseq(alog('stepB2')), alog('stepC'))();
-// aseq(alog('stepA'), aseq(alog('stepB1'), alog('stepB2')), alog('stepC'))();
+  // aseq(alog('stepA'), alog('stepB1').aseq(alog('stepB2')), alog('stepC'))();
+  // aseq(alog('stepA'), aseq(alog('stepB1'), alog('stepB2')), alog('stepC'))();
 
-var f2 = aseq(asynchronized(atime('f2', f1), tlock), alog('END'));
+  var f2 = aseq(asynchronized(atime('f2', f1), tlock), alog('END'));
 
-// f1(anop);
-// f1(anop);
-/*
+  // f1(anop);
+  // f1(anop);
+  /*
 f2(anop);
 f2(anop);
 f2(anop);
-*/
+  */
 
-aseq(
   aseq(
-    alog('starting'),
-    atimeout(1000, asleep(500), alog('too slow')),
-    alog('on time')
-  ),
-  aseq(
-    alog('starting'),
-    atimeout(1000, asleep(1500), alog('too slow')),
-    alog('on time')
-  )
-)();
+      aseq(
+      alog('starting'),
+      atimeout(1000, asleep(500), alog('too slow')),
+      alog('on time')
+      ),
+      aseq(
+      alog('starting'),
+      atimeout(1000, asleep(1500), alog('too slow')),
+      alog('on time')
+      )
+  )();
 
-apar(
-  arepeat(10, aseq(alog('A'), ayield())),
-  arepeat(10, aseq(alog('B'), ayield()))
-)();
+  apar(
+      arepeat(10, aseq(alog('A'), ayield())),
+      arepeat(10, aseq(alog('B'), ayield()))
+  )();
 
 
   var functionFuture = afuture();
