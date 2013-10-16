@@ -2302,37 +2302,23 @@ var TableView2 = FOAM({
 
      layout: function() {
        var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
-       // TODO:  We shouldn't be hard-coding the height of the
-       // table row here!
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-//       this.rows = Math.floor((toNum(parent.height) - 22) / 40);
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
-// Need to find first row
-var style = window.getComputedStyle(this.$.children[0].children[0].children[0]);
-var height = toNum(style.height);
-console.log('height: ',height);
-height = 40;
-       this.rows = Math.floor((toNum(parent.height) - 22) / height);
-/*
-       var style = window.getComputedStyle(this.$.children[0]);
+       var top = 47;
+       var height = 20;
+       var rows = $$("tr-" + this.getID());
 
-       var prevHeight = 0;
-       while ( toNum(parent.height)-22 > toNum(style.height) && toNum(style.height) > prevHeight ) {
-         prevHeight = toNum(style.height);
-         this.rows = this.rows+1;
-	 style = window.getComputedStyle(this.$.children[0]);
-       }
-       while ( toNum(parent.height)-22 < toNum(style.height) && this.rows > 0 ) {
-         this.rows = this.rows-1;
-style = window.getComputedStyle(this.$.children[0]);
-       }
-*/
-//       this.scrollbar.height = (parent.style.height - 50) + 'px';
-//       this.scrollbar.height = toNum(this.$.style.width)-50;
-     },
+       // TODO: investigate how this is called on startup, it seems suspicious
+       if ( rows.length > 1 ) {
+         var row = rows[1];
+         var style = window.getComputedStyle(row);
+         // If the row is selected its height is less, so if we select two rows
+         // we're sure to get one that isn't selected.
+         height = Math.max(row.clientHeight, rows[0].clientHeight);
+         top = rows[0].offsetTop + rows[0].offsetParent.offsetTop;
+      }
+
+      this.rows = Math.floor((toNum(parent.height) - top) / height);
+    },
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
@@ -2352,12 +2338,9 @@ style = window.getComputedStyle(this.$.children[0]);
 
     repaint: function() {
       if ( ! this.dao ) return;
-// console.time('redraw');
-// if (this.$ && this.$.firstChild) this.$.firstChild = undefined;
       var self = this;
       var objs = [];
       var selection = this.selection && this.selection.get();
-//console.log('*********** TableView2.rows:', this.rows);
       (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
          put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
             self.objs = objs;
@@ -2368,7 +2351,6 @@ style = window.getComputedStyle(this.$.children[0]);
             }
             self.selection && self.selection.set(selection);
          });
-// console.timeEnd('redraw');
     },
 
    // TODO: it would be better if it were initiated with
@@ -2429,7 +2411,7 @@ style = window.getComputedStyle(this.$.children[0]);
 
 	    props.push(prop);
 	}
-	str.push('</tr></thead><tbody>');
+	str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
         if ( this.objs )
 	for ( var i = 0 ; i < this.objs.length; i++ ) {
 	    var obj = this.objs[i];
@@ -2478,6 +2460,15 @@ style = window.getComputedStyle(this.$.children[0]);
       var es = $$('tr-' + this.getID());
       var self = this;
 
+       if ( es.length ) {
+          if ( ! this.sized_ ) {
+             this.sized_ = true;
+             this.layout();
+             return;
+          }
+       }
+
+
       for ( var i = 0 ; i < es.length ; i++ ) {
 	var e = es[i];
 
@@ -2498,7 +2489,7 @@ style = window.getComputedStyle(this.$.children[0]);
            evt.srcElement.parentNode.classList.add('rowSelected');
 	}; }(this.selection, this.objs[i]);
 	e.ondblclick = function(value, obj) { return function(evt) {
-           self.publish(me.DOUBLE_CLICK, obj, value);
+           self.publish(self.DOUBLE_CLICK, obj, value);
 	}; }(this.selection, this.objs[i]);
       }
 

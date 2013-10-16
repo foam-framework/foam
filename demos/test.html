@@ -481,11 +481,11 @@ o = Model;
 
     var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
-    // eyes.watch(mars);	  
+    eyes.watch(earth);	  
 
     var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
-    // eyes2.watch(mouse);	  
+    eyes2.watch(mouse);	  
 
     // todo: fix 
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);

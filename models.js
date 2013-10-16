@@ -844,7 +844,6 @@ var Graph = FOAM({
          var graph = this;
 
          value.addListener(function() {
-console.log('**** ', value.get());
            graph.addData(value.get(), opt_maxNumValues);
          });
       }

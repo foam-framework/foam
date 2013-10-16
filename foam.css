@@ -231,14 +231,6 @@ option[selected]{
 	padding: 10px 8px;
 	text-align: left;
 }
-/*
-.foamTable tr
-{
-	border-left: 2px solid #fff;
-	border-right: 2px solid #fff;
-	border-top: 2px solid #fff;
-}
-*/
 .foamTable th
 {
 	font-size: 14px;
@@ -250,7 +242,7 @@ option[selected]{
 .foamTable td
 {
 	color: #669;
-	padding: 8px 8px 0 8px;
+	padding: 4px 8px 4px 8px;
 }
 .foamTable tbody tr:hover td
 {
