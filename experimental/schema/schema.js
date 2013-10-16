@@ -23,16 +23,16 @@ var smodels;
   function typeToModel(key) {
     var type = schemas.types[key];
 
-    if ( ! type.model_ ) {
+    if (! type.model_) {
       var mps = [];
 
-      for ( var i = 0 ; i < type.properties.length ; i++ ) {
+      for (var i = 0; i < type.properties.length; i++) {
         mps.push(ps[type.properties[i]]);
       }
 
       ms.push(Model.create({
         name: type.id,
-        extendsModel: type.ancestors.length ? type.ancestors[type.ancestors.length-1] : '',
+        extendsModel: type.ancestors.length ? type.ancestors[type.ancestors.length - 1] : '',
         label: type.label,
         help: type.comment_plain,
         properties: mps
@@ -44,7 +44,7 @@ var smodels;
     return type.model_;
   }
 
-  for ( var key in schemas.properties ) {
+  for (var key in schemas.properties) {
     var p = schemas.properties[key];
 
     ps[p.id] = Property.create({
@@ -56,7 +56,7 @@ var smodels;
     console.log(p.id);
   }
 
-  for ( var key in schemas.types ) typeToModel(key);
+  for (var key in schemas.types) typeToModel(key);
 
   smodels = ms;
 })();

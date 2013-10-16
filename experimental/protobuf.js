@@ -18,53 +18,56 @@
 // Experimental protocol buffer support, including binary parsing.
 
 Number.prototype.toVarintString = function() {
-  var result = "";
+  var result = '';
   var int = this;
   while (int > 0x7f) {
     var str = ((int & 0x7f) | 0x80).toString(16);
-    if (str.length == 1) str = "0" + str;
+    if (str.length == 1) str = '0' + str;
     result += str;
     int = int >> 7;
   }
   str = int.toString(16);
-  if (str.length == 1) str = "0" + str;
+  if (str.length == 1) str = '0' + str;
   result += str;
   return result;
 };
 
 function outProtobufPrimitive(type, tag, value, out) {
-  switch(type) {
-  case 'String':
-  case 'string':
-  case 'bytes':
-    out.varint((tag << 3) | 2);
-    bytes = stringtoutf8(value);
-    out.varint(bytes.length);
-    out.bytes(bytes);
-    break;
-  case 'uint64':
-  case 'int64':
-  case 'uint32':
-  case 'int32':
-    out.varint(tag << 3);
-    if (value instanceof String || typeof value == 'string') out.bytestring(value);
-    else out.varint(value);
-    break;
-  case 'bool':
-  case 'boolean':
-    out.varint(tag << 3);
-    out.varint(Number(value));
-    break;
-  default: // Sub messages must be modelled.
-    if (value && value.model_) {
+  switch (type) {
+    case 'String':
+    case 'string':
+    case 'bytes':
       out.varint((tag << 3) | 2);
-      out.message(value);
-    }
+      bytes = stringtoutf8(value);
+      out.varint(bytes.length);
+      out.bytes(bytes);
+      break;
+    case 'uint64':
+    case 'int64':
+    case 'uint32':
+    case 'int32':
+      out.varint(tag << 3);
+      if (value instanceof String || typeof value == 'string') {
+        out.bytestring(value);
+      } else {
+        out.varint(value);
+      }
+      break;
+    case 'bool':
+    case 'boolean':
+      out.varint(tag << 3);
+      out.varint(Number(value));
+      break;
+    default: // Sub messages must be modelled.
+      if (value && value.model_) {
+        out.varint((tag << 3) | 2);
+        out.message(value);
+      }
   }
 }
 
 Property.getPrototype().outProtobuf = function(obj, out) {
-  if (this.f(obj) === "") return;
+  if (this.f(obj) === '') return;
   outProtobufPrimitive(this.type, this.prototag, this.f(obj), out);
 };
 
@@ -87,50 +90,51 @@ IntegerProperty.getPrototype().outProtobuf = function(obj, out) {
 
 var BinaryPS = {
   create: function(view) {
-     var NO_VALUE = {};
-     var eof_;
+    var NO_VALUE = {};
+    var eof_;
 
-     if (view instanceof ArrayBuffer) view = new Uint8Array(view);
+    if (view instanceof ArrayBuffer) view = new Uint8Array(view);
 
-     var p = {
-        create: function(pos, tail, value) {
-           var ps = {
-              __proto__: p,
-              pos: pos,
-              tail_: tail
-           };
+    var p = {
+      create: function(pos, tail, value) {
+        var ps = {
+          __proto__: p,
+          pos: pos,
+          tail_: tail
+        };
 
-           ps.value = value === NO_VALUE ? ps.head : value;
+        ps.value = value === NO_VALUE ? ps.head : value;
 
-           return ps;
-        },
-        clone: function() {
-           return this.create(this.pos, this.tail_, this.value);
-        },
-        // Imperative Tail - destroys the current PS
-        get itail() {
-           if ( this.tail_ ) return this.tail_;
+        return ps;
+      },
+      clone: function() {
+        return this.create(this.pos, this.tail_, this.value);
+      },
+      // Imperative Tail - destroys the current PS
+      get itail() {
+        if (this.tail_) return this.tail_;
 
-           this.pos++;
-           this.value = this.head;
+        this.pos++;
+        this.value = this.head;
 
-           return this;
-        },
-        destroy: function() { view = undefined; },
-        limit: function(eof) { var ret = eof_; eof_ = eof; return ret; },
-        get head() {
-           if ( eof_ && this.pos >= eof_ ) return null;
-           return this.pos >= view.length ? null : view[this.pos];
-        },
-        get tail() {
-           return this.tail_ || ( this.tail_ = this.create(this.pos+1, undefined, NO_VALUE) );
-        },
-        setValue: function (value) {
-           return this.create(this.pos, this.tail, value);
-        }
-     };
+        return this;
+      },
+      destroy: function() { view = undefined; },
+      limit: function(eof) { var ret = eof_; eof_ = eof; return ret; },
+      get head() {
+        if (eof_ && this.pos >= eof_) return null;
+        return this.pos >= view.length ? null : view[this.pos];
+      },
+      get tail() {
+        return this.tail_ ||
+            (this.tail_ = this.create(this.pos + 1, undefined, NO_VALUE));
+      },
+      setValue: function(value) {
+        return this.create(this.pos, this.tail, value);
+      }
+    };
 
-     return p.create(0, undefined, NO_VALUE);
+    return p.create(0, undefined, NO_VALUE);
   }
 };
 
@@ -140,16 +144,18 @@ function varint(opt_value) {
   var f = function(ps) {
     var parts = [];
     var rest = 0;
-    while(ps) {
+    while (ps) {
       var b = ps.head;
       if (b == null) return undefined;
       parts.push(b & 0x7f);
       ps = ps.tail;
-      if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
+      if (!(b & 0x80)) {
+        break; // Break when MSB is not 1, indicating end of a varint.
+      }
     }
     var res = 0;
     for (var i = 0; i < parts.length; i++) {
-//      res |= parts[i] << (7 * i);  Workaround for no ints.
+      //      res |= parts[i] << (7 * i);  Workaround for no ints.
       res += parts[i] * Math.pow(2, 7 * i);
     }
     if ((opt_value != undefined) && res != opt_value) return undefined;
@@ -165,16 +171,18 @@ function varint(opt_value) {
 // for js to handle as Numbers.
 function varintstring(opt_value) {
   var f = function(ps) {
-    var result = "";
+    var result = '';
     var rest = 0;
-    while(ps) {
+    while (ps) {
       var b = ps.head;
       if (b == null) return undefined;
       var str = b.toString(16);
-      if (str.length == 1) str = "0" + str;
+      if (str.length == 1) str = '0' + str;
       result += str;
       ps = ps.tail;
-      if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
+      if (!(b & 0x80)) {
+        break; // Break when MSB is not 1, indicating end of a varint.
+      }
     }
     if (opt_value && result !== opt_value) return undefined;
     return ps.setValue(result);
@@ -182,7 +190,7 @@ function varintstring(opt_value) {
 
   f.toString = function() { return 'varintstring(' + opt_value + ')'; };
 
-   return f;
+  return f;
 }
 
 // Parses a varintkey which is (varint << 3) | type
@@ -198,24 +206,25 @@ function varintkey(opt_value, opt_type) {
     return ps.setValue([value, type]);
   };
 
-  f.toString = function() { return 'varintkey(' + opt_value + ', ' + opt_type + ')'; };
+  f.toString = function() {
+    return 'varintkey(' + opt_value + ', ' + opt_type + ')';
+  };
 
-
-   return f;
+  return f;
 }
 
 function toboolean(p) {
-   return function(ps) {
-      if ( ! (ps = this.parse(p, ps)) ) return undefined;
-      return ps.setValue( !! ps.value);
-   };
+  return function(ps) {
+    if (! (ps = this.parse(p, ps))) return undefined;
+    return ps.setValue(!! ps.value);
+  };
 }
 
 function index(i, p) {
-   return function(ps) {
-      if (!(ps = this.parse(p, ps))) return undefined;
-      return ps.setValue(ps.value[i]);
-   };
+  return function(ps) {
+    if (!(ps = this.parse(p, ps))) return undefined;
+    return ps.setValue(ps.value[i]);
+  };
 }
 
 function protouint32(tag) {
@@ -237,38 +246,40 @@ function protobool(tag) {
 function protobytes(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
-    if ( ! (ps = this.parse(repeat(anyChar, undefined, length, length), ps))) return undefined;
+    if (! (ps = this.parse(repeat(anyChar, undefined, length, length), ps))) {
+      return undefined;
+    }
     return ps.setValue([oldvalue[0], ps.value]);
   };
 
   f.toString = function() { return 'protobytes(' + tag + ')'; };
 
-   return f;
+  return f;
 }
 
 function protobytes0(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
-    while(length--) ps = ps.itail;
+    while (length--) ps = ps.itail;
     return ps.setValue([oldvalue, undefined]);
   };
 
   f.toString = function() { return 'protobytes0(' + tag + ')'; };
 
-   return f;
+  return f;
 }
 
 function protostring(tag) {
   var header = seq(varintkey(tag, 2), varint());
   var decoder = IncrementalUtf8.create();
   var f = function(ps) {
-    if ( ! (ps = this.parse(header, ps))) return undefined;
+    if (! (ps = this.parse(header, ps))) return undefined;
     var oldvalue = ps.value;
     var length = oldvalue[1];
     for (var i = 0; i < length; i++) {
@@ -284,26 +295,26 @@ function protostring(tag) {
 
   f.toString = function() { return 'protostring(' + tag + ')'; };
 
-   return f;
+  return f;
 }
 
 function protomessage(tag, opt_p) {
   var header = seq(varintkey(tag, 2), varint());
   var f = function(ps) {
-     if (!(ps = this.parse(header, ps))) return undefined;
-     var key = ps.value[0];
-     var length = ps.value[1];
-     opt_p = opt_p || repeat(anyChar);
-     var eof = ps.limit(ps.pos + length+1);
-     var ps2 = this.parse(opt_p, ps);
-     if ( ! ps2 ) { ps.limit(eof); return undefined; }
-     ps2.limit(eof);
-     return ps2.setValue([key, ps2.value]);
+    if (!(ps = this.parse(header, ps))) return undefined;
+    var key = ps.value[0];
+    var length = ps.value[1];
+    opt_p = opt_p || repeat(anyChar);
+    var eof = ps.limit(ps.pos + length + 1);
+    var ps2 = this.parse(opt_p, ps);
+    if (! ps2) { ps.limit(eof); return undefined; }
+    ps2.limit(eof);
+    return ps2.setValue([key, ps2.value]);
   };
 
   f.toString = function() { return 'protomessage(' + tag + ')'; };
 
-   return f;
+  return f;
 }
 
 /*
@@ -312,9 +323,12 @@ function varstring() {
   return function(ps) {
     if (! (ps = this.parse(size, ps)) ) return undefined;
     var length = ps.value;
-    if (! (ps = this.parse(repeat(anyChar, undefined, length, length)))) return undefined;
+    if (! (ps = this.parse(repeat(anyChar, undefined, length, length)))) {
+      return undefined;
+    }
     INCOMPLETE;
-    should be able to use unescape(encodeURIComponent(str)) if we can set each character of str to the \u#### code point.
+    should be able to use unescape(encodeURIComponent(str)) if we can set each
+    character of str to the \u#### code point.
   }
 }*/
 
@@ -325,7 +339,8 @@ var BinaryProtoGrammar = {
     var ps = BinaryPS.create(ab);
     var res = this.parse(this.START, ps);
     var val = res && res.value;
-    // This next line shouldn't change anything, but it does. Maybe a GC bug in Chrome 28.
+    // This next line shouldn't change anything, but it does. Maybe a GC bug in
+    // Chrome 28.
     ps.destroy();
     return val;
   },

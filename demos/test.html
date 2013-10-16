@@ -299,7 +299,7 @@ o = Model;
     dv1.write(document);
     document.writeln("</td>");
 
-	/*
+        /*
     var dv2 = DetailView.create(o.model_);
     dv2.set(o);
     document.writeln("<td width=500>");
@@ -307,7 +307,7 @@ o = Model;
     document.writeln("</td>");
 */
     var dv3 = TextAreaView.create({displayHeight:120});
-	// dv3.setModel(o.model_);
+        // dv3.setModel(o.model_);
     document.writeln("<td width=500 valign=top>");
     document.writeln(dv3.toHTML());
     document.writeln("</td>");
@@ -358,9 +358,9 @@ o = Model;
     var apollo = Planet.create({r:3, color:'white'});
     var mars   = Planet.create({r:8, color: 'red'});
     var mmoons = [
-	Planet.create({r:2, color: 'red'}),
-	Planet.create({r:3, color: 'red'}),
-	Planet.create({r:4, color: 'red'})
+        Planet.create({r:2, color: 'red'}),
+        Planet.create({r:3, color: 'red'}),
+        Planet.create({r:4, color: 'red'})
     ];
     space.addChild(sun);
     space.addChild(venus);
@@ -410,7 +410,7 @@ o = Model;
 
     var tt = Turntable.create();
 //    space.addChild(tt);
-	tt.write(document);
+        tt.write(document);
     tt.paint();
     dragon.write(document);
     dragon.paint();
@@ -426,7 +426,7 @@ o = Model;
     var field = Canvas.create({width:400, height:400, background:'#0d0'});
     document.writeln(field.toHTML());
     field.initHTML();
- 			  
+                          
     var bug1 = Planet.create({r:2, color: 'blue',   x: 50, y: 50});
     var bug2 = Planet.create({r:2, color: 'red',    x: 350, y: 50});
     var bug3 = Planet.create({r:2, color: 'yellow', x: 350, y: 350});
@@ -440,7 +440,7 @@ o = Model;
     field.paint();
     field.erase = function() {};
 
-			  
+                          
     Movement.moveTowards(timer, bug1, bug2, 1.2);
     Movement.moveTowards(timer, bug2, bug3, 0.8);
     Movement.moveTowards(timer, bug3, bug4, 0.4);
@@ -481,11 +481,11 @@ o = Model;
 
     var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
-    // eyes.watch(mars);	  
+    // eyes.watch(mars);          
 
     var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
-    // eyes2.watch(mouse);	  
+    // eyes2.watch(mouse);        
 
     // todo: fix 
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);

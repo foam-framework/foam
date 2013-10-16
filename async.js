@@ -17,6 +17,7 @@
 // TODO: time-travelling debugger, ala:
 //    "Debugging Standard ML Without Reverse Engineering"
 
+
 /** NOP afunc. **/
 function anop(ret) { ret && ret(undefined); }
 
@@ -24,22 +25,23 @@ function anop(ret) { ret && ret(undefined); }
 /** afunc log. **/
 function alog() {
   var args = arguments;
-  return function (ret) {
+  return function(ret) {
     console.log.apply(console, args);
     ret && ret.apply(this, [].shift.call(arguments));
   };
 }
 
+
 /** console.profile an afunc. **/
 function aprofile(afunc) {
   return function(ret) {
-     var a = argsToArray(arguments);
-     console.profile();
-     var ret2 = function () {
-        console.profileEnd();
-        ret && ret(arguments);
-     };
-     aapply_(afunc, ret2, a);
+    var a = argsToArray(arguments);
+    console.profile();
+    var ret2 = function() {
+      console.profileEnd();
+      ret && ret(arguments);
+    };
+    aapply_(afunc, ret2, a);
   };
 }
 
@@ -54,7 +56,7 @@ function arepeat(n, afunc) {
     var a = argsToArray(arguments);
     a.splice(1, 0, 0, n); // insert (0, n) after 'ret' argument
     var next = atramp(function() {
-      if ( a[1] == n-1 ) { a[0] = ret; afunc.apply(this, a); return; };
+      if (a[1] == n - 1) { a[0] = ret; afunc.apply(this, a); return; }
       afunc.apply(this, a);
       a[1]++;
     });
@@ -80,13 +82,14 @@ function awhile(cond, afunc) {
   };
 }
 
+
 /** Execute the supplied afunc if cond. */
 function aif(cond, afunc) {
   return function(ret) {
-    if ( cond ) {
-       afunc.apply(this, arguments);
+    if (cond) {
+      afunc.apply(this, arguments);
     } else {
-       ret();
+      ret();
     }
   };
 }
@@ -98,14 +101,14 @@ var atime = (function() {
   // of the same timing are active at once.
   var id = 1;
   var activeOps = {};
-  return function (str, afunc, opt_callback) {
+  return function(str, afunc, opt_callback) {
     return function(ret) {
       var name = str;
-      if ( activeOps[str] ) {
-         name += "-" + id++;
-         activeOps[str]++;
+      if (activeOps[str]) {
+        name += '-' + id++;
+        activeOps[str]++;
       } else {
-         activeOps[str] = 1;
+        activeOps[str] = 1;
       }
       var start = performance.now();
       console.time(name);
@@ -113,11 +116,11 @@ var atime = (function() {
       var args = [function() {
         activeOps[str]--;
         var end = performance.now();
-        if ( opt_callback ) opt_callback(end-start);
+        if (opt_callback) opt_callback(end - start);
         console.timeEnd(name);
         ret && ret.apply(this, [].shift.call(a));
       }];
-      for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
+      for (var i = 1; i < a.length; i++) args[i] = a[i];
       afunc.apply(this, args);
     };
   };
@@ -137,27 +140,27 @@ var ayield = asleep.bind(null, 0);
 
 /** Create a future value. **/
 function afuture() {
-  var set     = false;
-  var values  = undefined;
+  var set = false;
+  var values = undefined;
   var waiters = [];
 
   return {
     set: function() {
-      if ( set ) { console.log('ERROR: redundant set on future'); return; }
+      if (set) { console.log('ERROR: redundant set on future'); return; }
       values = arguments;
       set = true;
-      for (var i = 0 ; i < waiters.length; i++) {
+      for (var i = 0; i < waiters.length; i++) {
         waiters[i].apply(null, values);
       }
       waiters = undefined;
     },
 
     get: function(ret) {
-      if ( set ) { ret.apply(null, values); return; }
+      if (set) { ret.apply(null, values); return; }
       waiters.push(ret);
     }
   };
-};
+}
 
 
 function aapply_(f, ret, args) {
@@ -170,17 +173,17 @@ function aapply_(f, ret, args) {
  * A Binary Semaphore which only allows the delegate function to be
  * executed by a single thread of execution at once.
  * Like Java's synchronized blocks.
- * @param opt_lock an empty map {} to be used as a lock
+ * @param opt_lock an empty map {=} to be used as a lock
  *                 sharable across multiple asynchronized instances
  **/
 function asynchronized(f, opt_lock) {
   var lock = opt_lock || {};
-  if ( ! lock.q ) { lock.q = []; lock.active = false; }
+  if (! lock.q) { lock.q = []; lock.active = false; }
 
   function onExit(g) {
     return function(ret) {
       var next = lock.q.shift();
-      if ( next ) {
+      if (next) {
         setTimeout(next, 0);
       } else {
         lock.active = false;
@@ -191,9 +194,9 @@ function asynchronized(f, opt_lock) {
   }
 
   return function(ret) {
-    if ( lock.active ) {
-       lock.q.push(function() { f(onExit(ret)); onExit(ret); });
-       return;
+    if (lock.active) {
+      lock.q.push(function() { f(onExit(ret)); onExit(ret); });
+      return;
     }
 
     lock.active = true;
@@ -213,20 +216,20 @@ function asynchronized(f, opt_lock) {
 // gets to continue.
 function atimeout(delay, f, opt_timeoutF) {
   return function(ret) {
-    var timedOut  = false;
+    var timedOut = false;
     var completed = false;
     setTimeout(function() {
-      if ( completed ) return;
+      if (completed) return;
       timedOut = true;
       console.log('timeout');
       opt_timeoutF && opt_timeoutF();
     }, delay);
 
     f(aseq(
-      function(ret) {
-        if ( ! timedOut ) completed = true;
-	if ( completed ) ret();
-      }, ret));
+        function(ret) {
+          if (! timedOut) completed = true;
+          if (completed) ret();
+        }, ret));
   };
 }
 
@@ -237,20 +240,20 @@ function amemo(f) {
   var waiters;
 
   return function(ret) {
-    if ( values ) { ret.apply(null, values); return; }
+    if (values) { ret.apply(null, values); return; }
 
     var first = ! waiters;
 
-    if ( first ) waiters = [];
+    if (first) waiters = [];
 
     waiters.push(ret);
 
-    if ( first ) {
+    if (first) {
       f(function() {
-	values = arguments;
-	for (var i = 0 ; i < waiters.length; i++) {
-	  waiters[i].apply(null, values);
-	}
+        values = arguments;
+        for (var i = 0; i < waiters.length; i++) {
+          waiters[i].apply(null, values);
+        }
         waiters = [];
       });
     }
@@ -275,9 +278,9 @@ Function.prototype.aseq = function(f2) {
 
 /** Compose a variable number of async functions. **/
 function ao(/* ... afuncs */) {
-  var ret = arguments[arguments.length-1];
+  var ret = arguments[arguments.length - 1];
 
-  for ( var i = 0 ; i < arguments.length-1 ; i++ ) {
+  for (var i = 0; i < arguments.length - 1; i++) {
     ret = arguments[i].ao(ret);
   }
 
@@ -287,9 +290,9 @@ function ao(/* ... afuncs */) {
 
 /** Compose a variable number of async functions. **/
 function aseq(/* ... afuncs */) {
-  var f = arguments[arguments.length-1];
+  var f = arguments[arguments.length - 1];
 
-  for ( var i = arguments.length-2 ; i >= 0 ; i-- ) {
+  for (var i = arguments.length - 2; i >= 0; i--) {
     f = arguments[i].aseq(f);
   }
 
@@ -312,43 +315,45 @@ function apar(/* ... afuncs */) {
 
   return function(ret /* opt_args */) {
     var opt_args = Array.prototype.splice.call(arguments, 1);
-    var join = function (i) {
+    var join = function(i) {
       aargs[i] = Array.prototype.splice.call(arguments, 1);
-      if ( ++count == fs.length ) {
+      if (++count == fs.length) {
         var a = [];
-        for ( var j = 0 ; j < fs.length ; j++ )
-          for ( var k = 0 ; k < aargs[j].length ; k++ )
+        for (var j = 0; j < fs.length; j++)
+          for (var k = 0; k < aargs[j].length; k++)
             a.push(aargs[j][k]);
-        ret && ret.apply(null, a);
+          ret && ret.apply(null, a);
       }
     };
 
-    for ( var i = 0 ; i < fs.length ; i++ )
+    for (var i = 0; i < fs.length; i++)
       fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
   };
 }
 
+
 /** Convert the supplied afunc into a trampolined-afunc. **/
 var atramp = (function() {
-   var active = false;
-   var jobs = [];
+  var active = false;
+  var jobs = [];
 
-   return function(afunc) {
-      return function() {
-         jobs.push([afunc, arguments]);
-         if ( ! active ) {
-if ( jobs.length > 1 ) debugger;
-           active = true;
-           var job;
-           // Take responsibility for bouncing
-           while ( (job = jobs.pop()) != null ) {
-             job[0].apply(this, job[1]);
-           }
-           active = false;
-         }
-      };
-   };
+  return function(afunc) {
+    return function() {
+      jobs.push([afunc, arguments]);
+      if (! active) {
+        if (jobs.length > 1) debugger;
+        active = true;
+        var job;
+        // Take responsibility for bouncing
+        while ((job = jobs.pop()) != null) {
+          job[0].apply(this, job[1]);
+        }
+        active = false;
+      }
+    };
+  };
 })();
+
 
 /** Execute the supplied afunc concurrently n times. **/
 function arepeatpar(n, afunc) {
@@ -357,19 +362,19 @@ function arepeatpar(n, afunc) {
 
   return function(ret /* opt_args */) {
     var opt_args = Array.prototype.splice.call(arguments, 1);
-    var join = function (i) {
+    var join = function(i) {
       aargs[i] = Array.prototype.splice.call(arguments, 1);
-      if ( ++count == n ) {
+      if (++count == n) {
         var a = [];
-        for ( var j = 0 ; j < n ; j++ )
-          for ( var k = 0 ; k < aargs[j].length ; k++ )
+        for (var j = 0; j < n; j++)
+          for (var k = 0; k < aargs[j].length; k++)
             a.push(aargs[j][k]);
-        ret && ret.apply(null, a);
+          ret && ret.apply(null, a);
       }
     };
 
     afunc = atramp(afunc);
-    for ( var i = 0 ; i < n ; i++ ) {
+    for (var i = 0; i < n; i++) {
       afunc.apply(null, [join.bind(null, i)].concat([i, n]).concat(opt_args));
     }
   };
@@ -393,7 +398,8 @@ var ajsonp = (function() {
       };
 
       var script = document.createElement('script');
-      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&');
+      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + '&' +
+          params.join('&');
       script.onload = function() {
         document.body.removeChild(this);
       };

@@ -23,15 +23,20 @@ String.prototype.capitalize = function() {
 };
 
 String.prototype.labelize = function() {
-  return this.replace(/[a-z][A-Z]/g, function (a) {
+  return this.replace(/[a-z][A-Z]/g, function(a) {
     return a.charAt(0) + ' ' + a.charAt(1);
   }).capitalize();
 };
 
-// switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+// switchFromCamelCaseToConstantFormat to
+// SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
-    return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+  return this.replace(/[a-z][^a-z]/g,
+      function(a) {
+        return a.substring(0, 1) + '_' + a.substring(1, 2);
+      }).toUpperCase();
 };
+
 
 /** Give all objects a Unique ID. **/
 Object.defineProperty(Object.prototype, '$UID', {
@@ -55,7 +60,7 @@ function constantFn(v) { return function() { return v; }; }
  * where you're only binding 'this'.
  **/
 Function.prototype.bind = (function() {
-  var oldBind    = Function.prototype.bind;
+  var oldBind = Function.prototype.bind;
   var simpleBind = function(f, self) {
     var ret = function() { return f.apply(self, arguments); };
     ret.toString = function() {
@@ -65,7 +70,8 @@ Function.prototype.bind = (function() {
   };
 
   return function() {
-    return arguments.length == 1 ? simpleBind(this, arguments[0]) : oldBind.apply(this, arguments);
+    return arguments.length == 1 ?
+        simpleBind(this, arguments[0]) : oldBind.apply(this, arguments);
   };
 })();
 
@@ -75,18 +81,18 @@ Function.prototype.bind = (function() {
 // (Which needs to be fixed anyway.)
 
 Date.prototype.compareTo = function(o) {
-  if ( o === this ) return 0;
+  if (o === this) return 0;
   var d = this.getTime() - o.getTime();
   return d == 0 ? 0 : d > 0 ? 1 : -1;
 };
 
 String.prototype.compareTo = function(o) {
-  if ( o == this ) return 0;
+  if (o == this) return 0;
   return this < o ? -1 : 1;
 };
 
 Number.prototype.compareTo = function(o) {
-  if ( o === this ) return 0;
+  if (o === this) return 0;
   return this < o ? -1 : 1;
 };
 
@@ -99,22 +105,22 @@ var argsToArray = function(args) {
 };
 
 var StringComparator = function(s1, s2) {
-  if ( s1 == s2 ) return 0;
+  if (s1 == s2) return 0;
   return s1 < s2 ? -1 : 1;
 };
 
 var toCompare = function(c) {
-  if ( Array.isArray(c) ) return CompoundComparator.apply(null, c);
+  if (Array.isArray(c)) return CompoundComparator.apply(null, c);
 
   return c.compare ? c.compare.bind(c) : c;
 };
 
 Object.defineProperty(Array.prototype, 'intern', {
   value: function() {
-    for ( var i = 0 ; i < this.length ; i++ )
-      if ( this[i].intern ) this[i] = this[i].intern();
+    for (var i = 0; i < this.length; i++)
+      if (this[i].intern) this[i] = this[i].intern();
 
-    return this;
+      return this;
   }
 });
 
@@ -127,13 +133,13 @@ Object.defineProperty(Array.prototype, 'reduce', {
     var i = 0;
     var j = 0;
     var k = 0;
-    while(i < this.length && j < arr.length) {
+    while (i < this.length && j < arr.length) {
       var a = compare(this[i], arr[j]);
-      if ( a < 0 ) {
+      if (a < 0) {
         result[k++] = this[i++];
         continue;
       }
-      if ( a == 0) {
+      if (a == 0) {
         result[k++] = this[i++];
         result[k++] = arr[j++];
         continue;
@@ -141,22 +147,23 @@ Object.defineProperty(Array.prototype, 'reduce', {
       result[k++] = arr[j++];
     }
 
-    if ( i != this.length ) result = result.concat(this.slice(i));
-    if ( j != arr.length ) result = result.concat(arr.slice(j));
+    if (i != this.length) result = result.concat(this.slice(i));
+    if (j != arr.length) result = result.concat(arr.slice(j));
 
     return result;
   }
 });
 
+
 /** Reverse the direction of a comparator. **/
 var DESC = function(c) {
-  if ( c.isDESC ) return toCompare(c.c);
+  if (c.isDESC) return toCompare(c.c);
 
   var p = toCompare(c);
 
-  if ( typeof p !== 'function' ) throw 'Invalid comparator in DESC';
+  if (typeof p !== 'function') throw 'Invalid comparator in DESC';
 
-  var f = function(o1, o2) { return p(o2,o1); };
+  var f = function(o1, o2) { return p(o2, o1); };
   f.c = c;
   f.isDESC = true;
 
@@ -169,13 +176,13 @@ var CompoundComparator = function() {
   var cs = arguments;
 
   // Convert objects with .compare() methods to compare functions.
-  for ( var i = 0 ; i < cs.length ; i++ )
+  for (var i = 0; i < cs.length; i++)
     cs[i] = toCompare(cs[i]);
 
   return function(o1, o2) {
-    for ( var i = 0 ; i < cs.length ; i++ ) {
+    for (var i = 0; i < cs.length; i++) {
       var r = cs[i](o1, o2);
-      if ( r != 0 ) return r;
+      if (r != 0) return r;
     }
     return 0;
   };
@@ -190,14 +197,14 @@ var CompoundComparator = function() {
 // TODO: move this method somewhere better
 function randomAct() {
   var totalWeight = 0.0;
-  for ( var i = 0 ; i < arguments.length ; i += 2 ) totalWeight += arguments[i];
+  for (var i = 0; i < arguments.length; i += 2) totalWeight += arguments[i];
 
   var r = Math.random();
 
-  for ( var i = 0, weight = 0 ; i < arguments.length ; i += 2 ) {
+  for (var i = 0, weight = 0; i < arguments.length; i += 2) {
     weight += arguments[i];
-    if ( r <= weight / totalWeight ) {
-      arguments[i+1]();
+    if (r <= weight / totalWeight) {
+      arguments[i + 1]();
       return;
     }
   }
@@ -205,7 +212,7 @@ function randomAct() {
 
 
 function defineProperties(proto, fns) {
-  for ( var key in fns ) {
+  for (var key in fns) {
     try {
       Object.defineProperty(proto, key, {
         value: fns[key],
@@ -229,7 +236,7 @@ Object.defineProperty(Array.prototype, 'pushAll', {
   value: function(arr) {
     this.push.apply(this, arr);
     return this.length;
-}});
+  }});
 
 
 /**
@@ -287,12 +294,12 @@ Object.defineProperty(Object.prototype, 'put', {
 */
 
 function predicatedSink(predicate, sink) {
-  if ( predicate === TRUE ) return sink;
+  if (predicate === TRUE) return sink;
 
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
-      if ( sink && predicate.f(obj) ) sink.put(obj, s, fc);
+      if (sink && predicate.f(obj)) sink.put(obj, s, fc);
     }/*,
     eof: function() {
       sink && sink.eof && sink.eof();
@@ -305,7 +312,7 @@ function limitedSink(count, sink) {
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
-      if ( i++ >= count && fc ) {
+      if (i++ >= count && fc) {
         fc.stop();
       } else {
         sink.put(obj, s, fc);
@@ -322,7 +329,7 @@ function skipSink(skip, sink) {
   return {
     __proto__: sink,
     put: function(obj, s, fc) {
-      if ( i++ >= skip ) sink.put(obj, s, fc);
+      if (i++ >= skip) sink.put(obj, s, fc);
     }
   };
 }
@@ -345,37 +352,37 @@ function orderedSink(comparator, sink) {
 
 
 console.log.json = function() {
-   var args = [];
-   for ( var i = 0 ; i < arguments.length ; i++ ) {
-     var arg = arguments[i];
-     args.push(arg && arg.toJSON ? arg.toJSON() : arg);
-   }
-   console.log.apply(console, args);
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    args.push(arg && arg.toJSON ? arg.toJSON() : arg);
+  }
+  console.log.apply(console, args);
 };
 
 console.log.str = function() {
-   var args = [];
-   for ( var i = 0 ; i < arguments.length ; i++ ) {
-     var arg = arguments[i];
-     args.push(arg && arg.toString ? arg.toString() : arg);
-   }
-   console.log.apply(console, args);
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    args.push(arg && arg.toString ? arg.toString() : arg);
+  }
+  console.log.apply(console, args);
 };
 
 // Promote 'console.log' into a Sink
-console.log.put         = console.log.bind(console);
-console.log.remove      = console.log.bind(console, 'remove: ');
-console.log.error       = console.log.bind(console, 'error: ');
-console.log.json.put    = console.log.json.bind(console);
+console.log.put = console.log.bind(console);
+console.log.remove = console.log.bind(console, 'remove: ');
+console.log.error = console.log.bind(console, 'error: ');
+console.log.json.put = console.log.json.bind(console);
 console.log.json.reduceI = console.log.json.bind(console, 'reduceI: ');
 console.log.json.remove = console.log.json.bind(console, 'remove: ');
-console.log.json.error  = console.log.json.bind(console, 'error: ');
-console.log.str.put     = console.log.str.bind(console);
-console.log.str.remove  = console.log.str.bind(console, 'remove: ');
-console.log.str.error  = console.log.str.bind(console, 'error: ');
+console.log.json.error = console.log.json.bind(console, 'error: ');
+console.log.str.put = console.log.str.bind(console);
+console.log.str.remove = console.log.str.bind(console, 'remove: ');
+console.log.str.error = console.log.str.bind(console, 'error: ');
 
 document.put = function(obj) {
-  if ( obj.write ) {
+  if (obj.write) {
     obj.write(this);
   } else {
     this.write(obj.toString());
@@ -386,12 +393,15 @@ String.prototype.put = function(obj) { return this + obj.toJSON(); };
 
 // Promote webkit apis
 
-window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+window.requestFileSystem =
+    window.requestFileSystem || window.webkitRequestFileSystem;
+window.requestAnimationFrame =
+    window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 
 if (window.Blob) {
   Blob.prototype.slice = Blob.prototype.slice || Blob.prototype.webkitSlice;
 }
+
 
 /** Convert a string to an internal canonical copy. **/
 String.prototype.intern = (function() {

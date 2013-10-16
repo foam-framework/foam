@@ -32,13 +32,13 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
-    sym('values tag'),
-    sym('code tag'),
-    sym('ignored newline'),
-    sym('newline'),
-    sym('single quote'),
-    sym('text')
-  )),
+      sym('values tag'),
+      sym('code tag'),
+      sym('ignored newline'),
+      sym('newline'),
+      sym('single quote'),
+      sym('text')
+      )),
 
   'values tag': seq('<%=', repeat(not('%>', anyChar)), '%>'),
   'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
@@ -55,54 +55,55 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: "var out;" +
-    "if ( opt_out ) { out = opt_out; } else { var buf = []; out = buf.push.bind(buf); }\n" +
-    "out('",
+  header: 'var out;' +
+      'if ( opt_out ) { out = opt_out; } else { ' +
+      'var buf = []; out = buf.push.bind(buf); }\n' +
+      "out('",
 
   footer: "');" +
-    "if ( ! opt_out ) return buf.join('');"
+      "if ( ! opt_out ) return buf.join('');"
 
 }.addActions({
-   markup: function (v) {
-     var ret = this.header + this.out.join('') + this.footer;
-     this.out = [];
-     return ret;
-   },
-   'values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
-   'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },
-   'single quote': function () { this.push("\\'"); },
-   newline: function () { this.push("\\n"); },
-   text: function(v) { this.push(v); }
+  markup: function(v) {
+    var ret = this.header + this.out.join('') + this.footer;
+    this.out = [];
+    return ret;
+  },
+  'values tag': function(v) { this.push("',", v[1].join(''), ",'"); },
+  'code tag': function(v) { this.push("');", v[1].join(''), "out('"); },
+  'single quote': function() { this.push("\\'"); },
+  newline: function() { this.push('\\n'); },
+  text: function(v) { this.push(v); }
 });
 
 
 var TemplateUtil = {
 
-   compile: function(str) {
-      // TODO: eval hack for PackagedApps
-     var code = TemplateCompiler.parseString(str);
+  compile: function(str) {
+    // TODO: eval hack for PackagedApps
+    var code = TemplateCompiler.parseString(str);
 
-     try {
-        return new Function("opt_out", code);
-     } catch (err) {
-       console.log("Template Error: ", err);
-       console.log(code);
-       return function() {};
-     }
-   },
+    try {
+      return new Function('opt_out', code);
+    } catch (err) {
+      console.log('Template Error: ', err);
+      console.log(code);
+      return function() {};
+    }
+  },
 
-   /**
+  /**
     * Combinator which takes a template which expects an output parameter and
     * converts it into a function which returns a string.
     */
-   stringifyTemplate: function (template) {
-      return function()
-      {
-	 var buf = [];
+  stringifyTemplate: function(template) {
+    return function()
+    {
+      var buf = [];
 
-	 this.output(buf.push.bind(buf), obj);
+      this.output(buf.push.bind(buf), obj);
 
-	 return buf.join('');
-      };
-   }
+      return buf.join('');
+    };
+  }
 };

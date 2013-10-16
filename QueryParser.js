@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var ME = "";
+var ME = '';
+
 
 /**
  * Generic Mustang-like query-language parser generator.
@@ -38,159 +39,163 @@ var ME = "";
  * key:me                     key is the current user
  */
 var QueryParserFactory = function(model) {
-   var g = {
-  __proto__: grammar,
+  var g = {
+    __proto__: grammar,
 
-  START: sym('query'),
+    START: sym('query'),
 
-  query: sym('or'),
+    query: sym('or'),
 
-  or: repeat(sym('and'), literal_ic('OR '), 1),
+    or: repeat(sym('and'), literal_ic('OR '), 1),
 
-  and: repeat(sym('expr'), alt(literal_ic('AND '), ' '), 1),
+    and: repeat(sym('expr'), alt(literal_ic('AND '), ' '), 1),
 
-  expr: alt(
-    sym('negate'),
-    sym('has'),
-    sym('is'),
-    sym('equals'),
-    sym('before'),
-    sym('after'),
-    sym('id')
-  ),
+    expr: alt(
+        sym('negate'),
+        sym('has'),
+        sym('is'),
+        sym('equals'),
+        sym('before'),
+        sym('after'),
+        sym('id')
+    ),
 
-  paren: seq('(', sym('query'), ')'),
+    paren: seq('(', sym('query'), ')'),
 
-  negate: seq('-', sym('expr')),
+    negate: seq('-', sym('expr')),
 
-  id: sym('number'),
+    id: sym('number'),
 
-  has: seq(literal_ic('has:'), sym('fieldname')),
+    has: seq(literal_ic('has:'), sym('fieldname')),
 
-  is: seq(literal_ic('is:'), sym('fieldname')),
+    is: seq(literal_ic('is:'), sym('fieldname')),
 
-  equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
+    equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
-  // TODO: merge with 'equals'
-  before: seq(sym('fieldname'), alt('<','-before:'), sym('value')),
+    // TODO: merge with 'equals'
+    before: seq(sym('fieldname'), alt('<', '-before:'), sym('value')),
 
-  // TODO: merge with 'equals'
-  after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
+    // TODO: merge with 'equals'
+    after: seq(sym('fieldname'), alt('>', '-after:'), sym('value')),
 
-  value: alt(
-    sym('me'),
-    sym('date'),
-    sym('string'),
-    sym('number')),
+    value: alt(
+        sym('me'),
+        sym('date'),
+        sym('string'),
+        sym('number')),
 
-  valueList: repeat(sym('value'), ',', 1),
+    valueList: repeat(sym('value'), ',', 1),
 
-  me: seq(literal_ic('me'), lookahead(not(sym('char')))),
+    me: seq(literal_ic('me'), lookahead(not(sym('char')))),
 
-  date: alt(
-    sym('literal date'),
-    sym('relative date')),
+    date: alt(
+        sym('literal date'),
+        sym('relative date')),
 
     'literal date': seq(sym('number'), '/', sym('number'), '/', sym('number')),
 
-    'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
+    'relative date':
+        seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
-  string: alt(
-     sym('word'),
-     sym('quoted string')),
+    string: alt(
+        sym('word'),
+        sym('quoted string')),
 
-    'quoted string': seq('"', repeat(alt(literal('\\"', '"'), notChar('"'))), '"'),
+    'quoted string':
+        seq('"', repeat(alt(literal('\\"', '"'), notChar('"'))), '"'),
 
     word: plus(sym('char')),
 
-    'char': alt(range('a','z'), range('A', 'Z'), range('0', '9'), '-', '^', '_', '@', '%', '.'),
+    'char':
+        alt(range('a', 'z'), range('A', 'Z'), range('0', '9'),
+            '-', '^', '_', '@', '%', '.'),
 
-  number: seq(plus(range('0', '9')))
+    number: seq(plus(range('0', '9')))
 
-   };
+  };
 
-   var fields = [];
+  var fields = [];
 
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
-      var prop = model.properties[i];
-      fields.push(literal_ic(prop.name, prop));
-   }
-
-   // Aliases
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
-      var prop = model.properties[i];
-
-      for ( var j = 0 ; j < prop.aliases.length ; j++ )
-         if ( prop.aliases[j] ) fields.push(literal_ic(prop.aliases[j], prop));
-   }
-
-   // ShortName
-   for ( var i = 0 ; i < model.properties.length ; i++ ) {
-      var prop = model.properties[i];
-
-      if ( prop.shortName ) fields.push(literal_ic(prop.shortName, prop));
-   }
-
-   fields.sort(function(a, b) {
-     var d = a.length - b.length;
-
-     if ( d !== 0 ) return d;
-
-     if ( a == b ) return 0;
-
-     return a < b ? 1 : -1;
-   });
-
-   g.fieldname = alt.apply(null, fields);
-
-   g.addActions({
-  id: function(v) { return EQ(model.ID, v); },
-
-  or: function(v) { return OR.apply(OR, v); },
-
-  and: function(v) { return AND.apply(AND, v); },
-
-  negate: function(v) { return NOT(v[1]); },
-
-  number: function(v) { return  parseInt(v[0].join('')); },
-
-  me: function() { return ME; },
-
-  paren: function(v) { return v[1]; },
-
-  has: function(v) { return NEQ(v[1], ''); },
-
-  is: function(v) { return EQ(v[1], TRUE); },
-
-  before: function(v) { return LT(v[0], v[2]); },
-
-  after: function(v) { return GT(v[0], v[2]); },
-
-  equals: function(v) {
-    // Always treat an OR'ed value list and let the partial evalulator
-    // simplify it when it isn't.
-
-    var or = OR();
-    var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(v[1] == ':' && v[0].type === 'String' ?
-        CONTAINS_IC(v[0], values[i]) :
-        EQ(v[0], values[i]));
-    }
-    return or;
-  },
-
-  'quoted string': function(v) { return v[1].join(''); },
-
-  word: function(v) { return v.join(''); },
-
-  'literal date': function(v) { return new Date(v[0], v[2]-1, v[4]); },
-
-  'relative date': function(v) {
-    var d = new Date();
-    if ( v[1] ) d.setDate(d.getDate() - v[1][1]);
-    return d;
+  for (var i = 0; i < model.properties.length; i++) {
+    var prop = model.properties[i];
+    fields.push(literal_ic(prop.name, prop));
   }
+
+  // Aliases
+  for (var i = 0; i < model.properties.length; i++) {
+    var prop = model.properties[i];
+
+    for (var j = 0; j < prop.aliases.length; j++)
+      if (prop.aliases[j]) fields.push(literal_ic(prop.aliases[j], prop));
+  }
+
+  // ShortName
+  for (var i = 0; i < model.properties.length; i++) {
+    var prop = model.properties[i];
+
+    if (prop.shortName) fields.push(literal_ic(prop.shortName, prop));
+  }
+
+  fields.sort(function(a, b) {
+    var d = a.length - b.length;
+
+    if (d !== 0) return d;
+
+    if (a == b) return 0;
+
+    return a < b ? 1 : -1;
+  });
+
+  g.fieldname = alt.apply(null, fields);
+
+  g.addActions({
+    id: function(v) { return EQ(model.ID, v); },
+
+    or: function(v) { return OR.apply(OR, v); },
+
+    and: function(v) { return AND.apply(AND, v); },
+
+    negate: function(v) { return NOT(v[1]); },
+
+    number: function(v) { return parseInt(v[0].join('')); },
+
+    me: function() { return ME; },
+
+    paren: function(v) { return v[1]; },
+
+    has: function(v) { return NEQ(v[1], ''); },
+
+    is: function(v) { return EQ(v[1], TRUE); },
+
+    before: function(v) { return LT(v[0], v[2]); },
+
+    after: function(v) { return GT(v[0], v[2]); },
+
+    equals: function(v) {
+      // Always treat an OR'ed value list and let the partial evalulator
+      // simplify it when it isn't.
+
+      var or = OR();
+      var values = v[2];
+      for (var i = 0; i < values.length; i++) {
+        or.args.push(v[1] == ':' && v[0].type === 'String' ?
+            CONTAINS_IC(v[0], values[i]) :
+            EQ(v[0], values[i]));
+      }
+      return or;
+    },
+
+    'quoted string': function(v) { return v[1].join(''); },
+
+    word: function(v) { return v.join(''); },
+
+    'literal date': function(v) { return new Date(v[0], v[2] - 1, v[4]); },
+
+    'relative date': function(v) {
+      var d = new Date();
+      if (v[1]) d.setDate(d.getDate() - v[1][1]);
+      return d;
+    }
   });
 
   return g;

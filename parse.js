@@ -29,7 +29,8 @@ console.log('head:',this.pos, this.delegate.head);
     return this.delegate.head;
   },
   get tail() {
-    return this.tail_ || (this.tail_ = this.create(this.delegate.tail, this.pos+1));
+    return this.tail_ ||
+        (this.tail_ = this.create(this.delegate.tail, this.pos+1));
   },
   get value() {
     return this.delegate.value;
@@ -43,31 +44,55 @@ console.log('setValue:',value);
 };
 */
 
+
 /** String PStream **/
 var StringPS = {
   create: function(str) {
     return {
       __proto__: this,
-      pos:   0,
-      str_:  [str],
+      pos: 0,
+      str_: [str],
       tail_: []
     };
   },
   set str(str) { this.str_[0] = str; },
-  get head() { return this.pos >= this.str_[0].length ? null : this.str_[0].charAt(this.pos); },
-  get value() { return this.hasOwnProperty('value_') ? this.value_ : this.str_[0].charAt(this.pos-1); },
-  get tail() { return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] || ( this.tail_[0] = { __proto__: this.__proto__, str_: this.str_, pos: this.pos+1, tail_: [] } ); },
-  setValue: function(value) { return { __proto__: this.__proto__, str_: this.str_, pos: this.pos, tail_: this.tail_, value_: value }; }
+  get head() {
+    return this.pos >= this.str_[0].length ?
+        null : this.str_[0].charAt(this.pos);
+  },
+  get value() {
+    return this.hasOwnProperty('value_') ?
+        this.value_ : this.str_[0].charAt(this.pos - 1);
+  },
+  get tail() {
+    return /*this.pos >= this.str_[0].length ? this : */this.tail_[0] ||
+        (this.tail_[0] =
+        {
+          __proto__: this.__proto__,
+          str_: this.str_,
+          pos: this.pos + 1,
+          tail_: []
+        });
+  },
+  setValue: function(value) {
+    return {
+      __proto__: this.__proto__,
+      str_: this.str_,
+      pos: this.pos,
+      tail_: this.tail_,
+      value_: value
+    };
+  }
 };
 
 function prep(arg) {
-  if ( typeof arg === 'string' ) return literal(arg);
+  if (typeof arg === 'string') return literal(arg);
 
   return arg;
 }
 
 function prepArgs(args) {
-  for ( var i = 0 ; i < args.length ; i++ ) {
+  for (var i = 0; i < args.length; i++) {
     args[i] = prep(args[i]);
   }
 
@@ -76,8 +101,8 @@ function prepArgs(args) {
 
 function range(c1, c2) {
   var f = function(ps) {
-    if ( ! ps.head ) return undefined;
-    if ( ps.head < c1 || ps.head > c2 ) return undefined;
+    if (! ps.head) return undefined;
+    if (ps.head < c1 || ps.head > c2) return undefined;
     return ps.tail.setValue(ps.head);
   };
 
@@ -88,8 +113,8 @@ function range(c1, c2) {
 
 function literal(str, opt_value) {
   var f = function(ps) {
-    for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( str.charAt(i) !== ps.head ) return undefined;
+    for (var i = 0; i < str.length; i++, ps = ps.tail) {
+      if (str.charAt(i) !== ps.head) return undefined;
     }
 
     return ps.setValue(opt_value || str);
@@ -100,6 +125,7 @@ function literal(str, opt_value) {
   return f;
 }
 
+
 /**
  * Case-insensitive String literal.
  * Doesn't work for Unicode characters.
@@ -108,8 +134,8 @@ function literal_ic(str, opt_value) {
   str = str.toLowerCase();
 
   var f = function(ps) {
-    for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( ! ps.head || str.charAt(i) !== ps.head.toLowerCase() ) return undefined;
+    for (var i = 0; i < str.length; i++, ps = ps.tail) {
+      if (!ps.head || str.charAt(i) !== ps.head.toLowerCase()) return undefined;
     }
 
     return ps.setValue(opt_value || str);
@@ -132,7 +158,8 @@ function notChar(c) {
 
 function notChars(s) {
   return function(ps) {
-    return ps.head && s.indexOf(ps.head) == -1 ? ps.tail.setValue(ps.head) : undefined;
+    return ps.head && s.indexOf(ps.head) == -1 ?
+        ps.tail.setValue(ps.head) : undefined;
   };
 }
 
@@ -140,9 +167,9 @@ function not(p, opt_else) {
   p = prep(p);
   opt_else = prep(opt_else);
   var f = function(ps) {
-    return this.parse(p,ps) ? undefined :
-      opt_else ? this.parse(opt_else, ps) :
-      ps;
+    return this.parse(p, ps) ? undefined :
+        opt_else ? this.parse(opt_else, ps) :
+        ps;
   };
 
   f.toString = function() { return 'not(' + p + ')'; };
@@ -152,17 +179,18 @@ function not(p, opt_else) {
 
 function optional(p) {
   p = prep(p);
-  var f = function(ps) { return this.parse(p,ps) || ps.setValue(undefined); };
+  var f = function(ps) { return this.parse(p, ps) || ps.setValue(undefined); };
 
   f.toString = function() { return 'optional(' + p + ')'; };
 
   return f;
 }
 
+
 /** Parses if the delegate parser parses, but doesn't advance the pstream. **/
 function lookahead(p) {
   p = prep(p);
-  var f = function(ps) { return this.parse(p,ps) && ps; };
+  var f = function(ps) { return this.parse(p, ps) && ps; };
 
   f.toString = function() { return 'lookahead(' + p + ')'; };
 
@@ -176,26 +204,29 @@ function repeat(p, opt_delim, opt_min, opt_max) {
   var f = function(ps) {
     var ret = [];
 
-    for ( var i = 0 ; ! opt_max || i < opt_max ; i++ ) {
-       var res;
+    for (var i = 0; ! opt_max || i < opt_max; i++) {
+      var res;
 
-       if ( opt_delim && ret.length != 0 ) {
-          if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
-          ps = res;
-       }
+      if (opt_delim && ret.length != 0) {
+        if (! (res = this.parse(opt_delim, ps))) break;
+        ps = res;
+      }
 
-       if ( ! ( res = this.parse(p,ps) ) ) break;
+      if (! (res = this.parse(p, ps))) break;
 
-       ret.push(res.value);
-       ps = res;
+      ret.push(res.value);
+      ps = res;
     }
 
-    if ( opt_min && ret.length < opt_min ) return undefined;
+    if (opt_min && ret.length < opt_min) return undefined;
 
     return ps.setValue(ret);
   };
 
-  f.toString = function() { return 'repeat(' + p + ', ' + opt_delim + ', ' + opt_min + ', ' + opt_max + ')'; };
+  f.toString = function() {
+    return 'repeat(' + p + ', ' + opt_delim + ', ' +
+        opt_min + ', ' + opt_max + ')';
+  };
 
   return f;
 }
@@ -211,15 +242,16 @@ function noskip(p) {
   };
 }
 
+
 /** A simple repeat which doesn't build an array of parsed values. **/
 function repeat0(p) {
   p = prep(p);
 
   return function(ps) {
-    while ( true ) {
+    while (true) {
       var res;
 
-      if ( ! ( res = this.parse(p,ps) ) ) break;
+      if (! (res = this.parse(p, ps))) break;
 
       ps = res;
     }
@@ -234,22 +266,24 @@ function seq(/* vargs */) {
   var f = function(ps) {
     var ret = [];
 
-    for ( var i = 0 ; i < args.length ; i++ ) {
-      if ( ! ( ps = this.parse(args[i], ps) ) ) return undefined;
+    for (var i = 0; i < args.length; i++) {
+      if (! (ps = this.parse(args[i], ps))) return undefined;
       ret.push(ps.value);
     }
 
     return ps.setValue(ret);
   };
 
-  f.toString = function() { return 'seq(' + argsToArray(args).join(',') + ')'; };
+  f.toString = function() {
+    return 'seq(' + argsToArray(args).join(',') + ')';
+  };
 
   return f;
 }
 
 function alt(/* vargs */) {
   var args = prepArgs(arguments);
-  var map  = {};
+  var map = {};
 
   function nullParser() { return undefined; }
 
@@ -282,7 +316,7 @@ function alt(/* vargs */) {
 
     this.parse(p, trapPS);
 
-// console.log('*** TestParser:',p,c,goodChar);
+    // console.log('*** TestParser:',p,c,goodChar);
     return goodChar;
   }
 
@@ -290,18 +324,18 @@ function alt(/* vargs */) {
     var c = ps.head;
     var p = map[c];
 
-    if ( ! p ) {
+    if (! p) {
       var alts = [];
 
-      for ( var i = 0 ; i < args.length ; i++ ) {
+      for (var i = 0; i < args.length; i++) {
         var parser = args[i];
 
-        if ( testParser.call(this, parser, ps) ) alts.push(parser);
+        if (testParser.call(this, parser, ps)) alts.push(parser);
       }
 
       p = alts.length == 0 ? nullParser :
-        alts.length == 1 ? alts[0] :
-        simpleAlt.apply(null, alts);
+          alts.length == 1 ? alts[0] :
+          simpleAlt.apply(null, alts);
 
       map[c] = p;
     }
@@ -319,16 +353,18 @@ function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {
-     for ( var i = 0 ; i < args.length ; i++ ) {
-        var res = this.parse(args[i], ps);
+    for (var i = 0; i < args.length; i++) {
+      var res = this.parse(args[i], ps);
 
-        if ( res ) return res;
-     }
+      if (res) return res;
+    }
 
-     return undefined;
+    return undefined;
   };
 
-  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
+  f.toString = function() {
+    return 'alt(' + argsToArray(args).join(' | ') + ')';
+  };
 
   return f;
 }
@@ -351,7 +387,7 @@ function sym(name) {
   var f = function(ps) {
     var p = this[name];
 
-    if ( ! p ) console.log('PARSE ERROR: Unknown Symbol <' + name + '>');
+    if (!p) console.log('PARSE ERROR: Unknown Symbol <' + name + '>');
 
     return this.parse(p, ps);
   };
@@ -362,10 +398,17 @@ function sym(name) {
 }
 
 // This isn't any faster because V8 does the same thing already.
-// function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
+// function sym(name) {
+//   var p;
+//   return function(ps) { return (p || ( p = this[name])).call(this, ps); };
+// }
 
 
-// function sym(name) { return function(ps) { var ret = this[name](ps); console.log('<' + name + '> -> ', !! ret); return ret; }; }
+// function sym(name) {
+// return function(ps) {
+//   var ret = this[name](ps);
+//   console.log('<' + name + '> -> ', !! ret); return ret; };
+// }
 
 var DEBUG_PARSE = false;
 
@@ -380,13 +423,15 @@ var grammar = {
   },
 
   parse: function(parser, pstream) {
-//    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
-    if ( DEBUG_PARSE && pstream.str_ ) {
-//      console.log(new Array(pstream.pos).join(' '), pstream.head);
-        console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
+    // if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
+    if (DEBUG_PARSE && pstream.str_) {
+      //      console.log(new Array(pstream.pos).join(' '), pstream.head);
+      console.log(pstream.pos + '> ' +
+          pstream.str_[0].substring(0, pstream.pos) +
+          '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
-    if ( DEBUG_PARSE ) {
+    if (DEBUG_PARSE) {
       console.log(parser + ' ==> ' + (!!ret) + '  ' + (ret && ret.value));
     }
     return ret;
@@ -410,48 +455,49 @@ var grammar = {
   },
 
   addActions: function(map) {
-    for ( var key in map ) this.addAction(key, map[key]);
+    for (var key in map) this.addAction(key, map[key]);
 
     return this;
   }
 };
 
 function defineTTLProperty(obj, name, ttl, f) {
-   Object.defineProperty(obj, name, {
-     get: function() {
-        var accessed;
-        var value = undefined;
-        Object.defineProperty(this, name, {
-           get: function() {
-              function scheduleTimer() {
-                 setTimeout(function() {
-                   if ( accessed ) {
-                      scheduleTimer();
-                   } else {
-                      value = undefined;
-                   }
-                   accessed = false;
-                 }, ttl);
-              }
-              if ( ! value ) {
-                 accessed = false;
-                 value = f();
-                 scheduleTimer();
+  Object.defineProperty(obj, name, {
+    get: function() {
+      var accessed;
+      var value = undefined;
+      Object.defineProperty(this, name, {
+        get: function() {
+          function scheduleTimer() {
+            setTimeout(function() {
+              if (accessed) {
+                scheduleTimer();
               } else {
-                 accessed = true;
+                value = undefined;
               }
+              accessed = false;
+            }, ttl);
+          }
+          if (! value) {
+            accessed = false;
+            value = f();
+            scheduleTimer();
+          } else {
+            accessed = true;
+          }
 
-              return value;
-           }
-        });
+          return value;
+        }
+      });
 
-        return this[name];
-     }
-   });
+      return this[name];
+    }
+  });
 }
 
-defineTTLProperty(grammar, 'stringPS', 5000, function() { return StringPS.create(""); });
-
+defineTTLProperty(grammar, 'stringPS', 5000, function() {
+  return StringPS.create('');
+});
 
 var SkipGrammar = {
   create: function(gramr, skipp) {

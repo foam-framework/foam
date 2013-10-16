@@ -21,7 +21,7 @@ var AbstractPrototype = {
   __proto__: PropertyChangeSupport,
 
   create: function(args) {
-/*
+    /*
 console.log("args: ", args);
     if (arguments.length > 1) {
       args = {};
@@ -32,16 +32,16 @@ console.log(i, k, v);
         });
       }
     }
-*/
+    */
 
     var obj = {
       __proto__: this,
-      TYPE: "AbstractPrototype", // for debug, remove
+      TYPE: 'AbstractPrototype', // for debug, remove
       instance_: {}
     };
 
     // for debugging
-    if ( this.model_ ) obj.TYPE = this.model_.name;
+    if (this.model_) obj.TYPE = this.model_.name;
 
     obj.copyFrom(args);
     obj.init(args);
@@ -51,9 +51,9 @@ console.log(i, k, v);
 
 
   init: function(_) {
-    if ( ! this.model_ ) return;
+    if (! this.model_) return;
 
-    for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+    for (var i = 0; i < this.model_.properties.length; i++) {
       var prop = this.model_.properties[i];
 
       // I'm not sure why I added this next line, but it isn't used
@@ -62,14 +62,14 @@ console.log(i, k, v);
 
       // If a value was explicitly provided in the create args
       // then don't call the valueFactory if it exists.
-      if ( prop.valueFactory && ! this.instance_[prop.name] )
+      if (prop.valueFactory && ! this.instance_[prop.name])
         this[prop.name] = prop.valueFactory.call(this);
     }
 
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
-    if ( this.model_ == Model && this.name != 'Model' )
+    if (this.model_ == Model && this.name != 'Model')
       this.create = ModelProto.create;
   },
 
@@ -84,14 +84,14 @@ console.log(i, k, v);
 
   defineFOAMSetter: function(name, setter) {
     this.__defineSetter__(name, function(newValue) {
-      if ( ! Events.onSet(this, name, newValue) ) return;
+      if (! Events.onSet(this, name, newValue)) return;
       setter.call(this, newValue);
     });
   },
 
 
   toString: function() {
-// console.log(this.model_.name + "Prototype");
+    // console.log(this.model_.name + "Prototype");
     // return this.model_.name + "Prototype";
     return this.toJSON();
   },
@@ -102,13 +102,14 @@ console.log(i, k, v);
   },
 
   writeActions: function(other, out) {
-      for (var i = 0, property; property = this.model_.properties[i]; i++) {
-          if (property.actionFactory) {
-              var actions = property.actionFactory(this, property.f(this), property.f(other));
-              for (var j = 0; j < actions.length; j++)
-                  out(actions[j]);
-          }
+    for (var i = 0, property; property = this.model_.properties[i]; i++) {
+      if (property.actionFactory) {
+        var actions = property.actionFactory(
+            this, property.f(this), property.f(other));
+        for (var j = 0; j < actions.length; j++)
+          out(actions[j]);
       }
+    }
   },
 
   clearProperty: function(name) {
@@ -133,34 +134,36 @@ console.log(i, k, v);
 
     var name = prop.name;
 
-    if ( prop.getter ) {
+    if (prop.getter) {
       this.__defineGetter__(name, prop.getter);
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
-        function() {
-          return this.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValueFn.call(this);
-        } :
-        function() {
-          return this.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValue;
-        });
+          function() {
+            return this.hasOwnProperty(name) ?
+                this.instance_[name] : prop.defaultValueFn.call(this);
+          } :
+          function() {
+            return this.hasOwnProperty(name) ?
+                this.instance_[name] : prop.defaultValue;
+          });
     }
 
-    if ( prop.setter ) {
+    if (prop.setter) {
       this.defineFOAMSetter(name, prop.setter);
-    } else if ( prop.preSet || prop.postSet ) {
+    } else if (prop.preSet || prop.postSet) {
       this.defineFOAMSetter(name, function(newValue) {
         var oldValue = this[name];
 
-        if ( prop.preSet )
+        if (prop.preSet)
           newValue = prop.preSet.call(this, newValue, oldValue, prop);
 
         // todo: fix
-        if ( prop.type == 'int' || prop.type == 'float' )
+        if (prop.type == 'int' || prop.type == 'float')
           newValue = Number(newValue);
 
         this.instance_[name] = newValue;
 
-        if ( prop.postSet )
+        if (prop.postSet)
           prop.postSet.call(this, newValue, oldValue);
 
         this.propertyChange(name, oldValue, newValue);
@@ -170,7 +173,7 @@ console.log(i, k, v);
         var oldValue = this[name];
 
         // todo: fix
-        if ( prop.type == 'int' || prop.type == 'float' )
+        if (prop.type == 'int' || prop.type == 'float')
           newValue = Number(newValue);
 
         this.instance_[name] = newValue;
@@ -187,10 +190,10 @@ console.log(i, k, v);
 
   getProperty: function(name) {
     // TODO: cache in map
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
+    for (var i = 0; i < this.properties.length; i++) {
       var prop = this.properties[i];
 
-      if ( prop.name == name ) return prop;
+      if (prop.name == name) return prop;
     }
 
     return undefined;
@@ -199,10 +202,10 @@ console.log(i, k, v);
   hashCode: function() {
     var hash = 17;
 
-    for ( var i = 0; i < this.model_.properties.length ; i++ ) {
+    for (var i = 0; i < this.model_.properties.length; i++) {
       var prop = this[this.model_.properties[i].name];
       var code = ! prop ? 0 :
-        prop.hashCode   ? prop.hashCode()
+        prop.hashCode ? prop.hashCode()
                         : prop.toString().hashCode();
 
       hash = ((hash << 5) - hash) + code;
@@ -221,7 +224,7 @@ console.log(i, k, v);
 
   // TODO: this should be monkey-patched from a 'ProtoBuf' library
   outProtobuf: function(out) {
-    for ( var i = 0; i < this.model_.properties.length; i++ ) {
+    for (var i = 0; i < this.model_.properties.length; i++) {
       var prop = this.model_.properties[i];
       prop.outProtobuf(this, out);
     }
@@ -229,7 +232,8 @@ console.log(i, k, v);
 
   /** Create a shallow copy of this object. **/
   clone: function() {
-    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
+    return (this.model_ && this.model_.create) ?
+        this.model_.create(this) : this;
   },
 
   /** Create a deep copy of this object. **/
@@ -237,17 +241,17 @@ console.log(i, k, v);
     var cln = this.clone();
 
     // now clone inner collections
-    for ( var key in cln.instance_ ) {
+    for (var key in cln.instance_) {
       var val = cln.instance_[key];
 
-      if ( val instanceof Array ) {
+      if (val instanceof Array) {
         val = val.slice(0);
         cln.instance_[key] = val;
 
-        for ( var i = 0 ; i < val.length ; i++ ) {
+        for (var i = 0; i < val.length; i++) {
           var obj = val[i];
 
-          if ( obj.deepClone )
+          if (obj.deepClone)
             val[i] = obj.deepClone();
         }
       }
@@ -263,8 +267,8 @@ console.log(i, k, v);
     // if ( src && src.instance_ ) src = src.instance_;
 
     // TODO: remove the 'this.model_' check when all classes modelled
-    if ( src && this.model_ ) {
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+    if (src && this.model_) {
+      for (var i = 0; i < this.model_.properties.length; i++) {
         var prop = this.model_.properties[i];
 
         // If the src is modelled, and it has an instance_
@@ -273,8 +277,10 @@ console.log(i, k, v);
         if ( src.model_ && src.instance_ &&
             !src.instance_.hasOwnProperty(prop.name) ) continue;
 
-        if ( prop.name in src ) this[prop.name] = src[prop.name];
-//         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) this[prop.name] = src[prop.name];
+        if (prop.name in src) this[prop.name] = src[prop.name];
+//         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) {
+//           this[prop.name] = src[prop.name];
+//         }
       }
     }
 
@@ -301,7 +307,7 @@ console.log(i, k, v);
     document.writeln(view.toHTML());
     view.set(this);
     view.initHTML();
-  },
+  }
 
 /*
    SUPER: function() {

@@ -15,81 +15,82 @@
  * limitations under the License.
  */
 var SplitDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
-   name: 'SplitDAO',
+  name: 'SplitDAO',
 
-   properties: [
-      {
-         model_: 'StringProperty',
-         name: 'activeQuery'
-      },
-      {
-         name:  'model',
-         label: 'Model',
-         type:  'Model',
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'local',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'remote',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'activeQuery'
+    },
+    {
+      name: 'model',
+      label: 'Model',
+      type: 'Model',
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'local',
+      type: 'DAO',
+      mode: 'read-only',
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'remote',
+      type: 'DAO',
+      mode: 'read-only',
+      hidden: true,
+      required: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      AbstractPrototype.init.call(this);
+    },
+
+    put: function(value, sink) {
+      this.local.put(value, sink);
+    },
+
+    remove: function(query, sink) {
+      this.local.remove(query, sink);
+    },
+
+    find: function(key, sink) {
+      // Assumes 'local' has all of the data
+      this.local.find(key, sink);
+    },
+
+    select: function(sink, options) {
+      var query = (options.query && options.query.toSQL()) || '';
+
+      if (query !== this.activeQuery) {
+        this.activeQuery = query;
+        console.log('new Query');
+
+        var buf = this.buf = MDAO.create({model: this.model});
+
+        // Add an index for the specified sort order if one is provided
+        if (options && options.order) this.buf.addIndex(options.order);
+
+        this.local.select(
+            sink, options.query ? {query: options.query} : {})((function() {
+          buf.select(sink, options);
+          this.remote.select(buf, options)(function() {
+            // Notify listeners that the DAO's data has changed
+            if (buf === this.buf) this.notify_('put');
+          });
+        }).bind(this));
+      } else {
+        this.buf.select(sink, options);
       }
-   ],
-
-   methods: {
-      init: function() {
-         AbstractPrototype.init.call(this);
-      },
-
-      put: function(value, sink) {
-         this.local.put(value, sink);
-      },
-
-      remove: function(query, sink) {
-         this.local.remove(query, sink);
-      },
-
-      find: function(key, sink) {
-         // Assumes 'local' has all of the data
-         this.local.find(key, sink);
-      },
-
-      select: function(sink, options) {
-         var query = ( options.query && options.query.toSQL() ) || "";
-
-         if ( query !== this.activeQuery ) {
-            this.activeQuery = query;
-	    console.log('new Query');
-
-	    var buf = this.buf = MDAO.create({model: this.model});
-
-            // Add an index for the specified sort order if one is provided
-            if ( options && options.order ) this.buf.addIndex(options.order);
-
-	    this.local.select(sink, options.query ? {query: options.query} : {})((function() {
-               buf.select(sink, options);
-               this.remote.select(buf, options)(function() {
-                 // Notify listeners that the DAO's data has changed
-                 if ( buf === this.buf ) this.notify_('put');
-               });
-            }).bind(this));
-         } else {
-            this.buf.select(sink, options);
-         }
-      }
-   }
+    }
+  }
 });
 
 
@@ -105,42 +106,43 @@ dao.put("bar")
 
 
 var DelayedDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'ProxyDAO',
+  model_: 'Model',
+  extendsModel: 'ProxyDAO',
 
-   name: 'DelayedDAO',
+  name: 'DelayedDAO',
 
-   properties: [
-      {
-         model_: 'IntegerProperty',
-         name: 'initialDelay'
-      },
-      {
-         model_: 'IntegerProperty',
-         name: 'rowDelay'
-      }
-   ],
+  properties: [
+    {
+      model_: 'IntegerProperty',
+      name: 'initialDelay'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'rowDelay'
+    }
+  ],
 
-   methods: {
-      select: function(sink, options) {
-         var i = 0;
-         var delayedSink = {
-            __proto__: sink,
-            put: function() {
-               var args = arguments;
-               setTimeout(function() {
-                  sink.put.apply(sink, args);
-               }, this.rowDelay * ++i);
-            }.bind(this)
-         };
-         setTimeout(function() {
-            this.delegate.select(delayedSink, options);
-         }.bind(this), this.initialDelay);
-      }
-   }
+  methods: {
+    select: function(sink, options) {
+      var i = 0;
+      var delayedSink = {
+        __proto__: sink,
+        put: function() {
+          var args = arguments;
+          setTimeout(function() {
+            sink.put.apply(sink, args);
+          }, this.rowDelay * ++i);
+        }.bind(this)
+      };
+      setTimeout(function() {
+        this.delegate.select(delayedSink, options);
+      }.bind(this), this.initialDelay);
+    }
+  }
 });
 
 /*
-var dao = DelayedDAO.create({delegate: [1,2,3], initialDelay: 5000, rowDelay: 2000});
+var dao = DelayedDAO.create(
+    {delegate: [1,2,3], initialDelay: 5000, rowDelay: 2000});
 dao.select(console.log);
 */

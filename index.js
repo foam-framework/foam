@@ -29,24 +29,26 @@
  * TODO: reuse plans
  */
 
+
 /** Plan indicating that there are no matching records. **/
 var NOT_FOUND = {
   cost: 0,
   execute: function() {},
-  toString: function() { return "no-match(cost=0)"; }
+  toString: function() { return 'no-match(cost=0)'; }
 };
+
 
 /** Plan indicating that an index has no plan for executing a query. **/
 var NO_PLAN = {
   cost: Number.MAX_VALUE,
   execute: function() {},
-  toString: function() { return "no-plan"; }
+  toString: function() { return 'no-plan'; }
 };
 
 
 function dump(o) {
-   if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
-   return o ? o.toString() : '<undefined>';
+  if (Array.isArray(o)) return '[' + o.map(dump).join(',') + ']';
+  return o ? o.toString() : '<undefined>';
 }
 
 
@@ -67,29 +69,32 @@ var ValueIndex = {
   })(),
   get: function(value, key) { return value; },
   select: function(value, sink, options) {
-    if ( options ) {
-      if ( options.query && ! options.query.f(value) ) return;
-      if ( 'skip' in options && options.skip-- > 0 ) return;
-      if ( 'limit' in options && options.limit-- < 1 ) return;
+    if (options) {
+      if (options.query && ! options.query.f(value)) return;
+      if ('skip' in options && options.skip-- > 0) return;
+      if ('limit' in options && options.limit-- < 1) return;
     }
     sink.put(value);
   },
-  selectReverse: function(value, sink, options) { this.select(value, sink, options); },
-  size:   function(obj) { return 1; },
+  selectReverse: function(value, sink, options) {
+    this.select(value, sink, options);
+  },
+  size: function(obj) { return 1; },
   toString: function() { return 'value'; }
 };
 
 
-var KEY   = 0;
+var KEY = 0;
 var VALUE = 1;
-var SIZE  = 2;
+var SIZE = 2;
 var LEVEL = 3;
-var LEFT  = 4;
+var LEFT = 4;
 var RIGHT = 5;
 
 // TODO: investigate how well V8 optimizes static classes
 
 // [0 key, 1 value, 2 size, 3 level, 4 left, 5 right]
+
 
 /** An AATree (balanced binary search tree) Index. **/
 var TreeIndex = {
@@ -108,27 +113,27 @@ var TreeIndex = {
    * Faster than loading individually, and produces a balanced tree.
    **/
   bulkLoad: function(a) {
-     // Only safe if children aren't themselves trees
-     if ( this.tail === ValueIndex ) {
-       a.sort(toCompare(this.prop));
-       return this.bulkLoad_(a, 0, a.length-1);
-     }
+    // Only safe if children aren't themselves trees
+    if (this.tail === ValueIndex) {
+      a.sort(toCompare(this.prop));
+      return this.bulkLoad_(a, 0, a.length - 1);
+    }
 
-     var s = undefined;
-     for ( var i = 0 ; i < a.length ; i++ ) {
-       s = this.put(s, a[i]);
-     }
-     return s;
+    var s = undefined;
+    for (var i = 0; i < a.length; i++) {
+      s = this.put(s, a[i]);
+    }
+    return s;
   },
 
   bulkLoad_: function(a, start, end) {
-    if ( end < start ) return undefined;
+    if (end < start) return undefined;
 
-    var m    = start + Math.floor((end-start+1) / 2);
+    var m = start + Math.floor((end - start + 1) / 2);
     var tree = this.put(undefined, a[m]);
 
-    tree[LEFT] = this.bulkLoad_(a, start, m-1);
-    tree[RIGHT] = this.bulkLoad_(a, m+1, end);
+    tree[LEFT] = this.bulkLoad_(a, start, m - 1);
+    tree[RIGHT] = this.bulkLoad_(a, m + 1, end);
     tree[SIZE] += this.size(tree[LEFT]) + this.size(tree[RIGHT]);
 
     return tree;
@@ -145,14 +150,14 @@ var TreeIndex = {
   },
 
   putKeyValue: function(s, key, value) {
-    if ( ! s ) {
+    if (! s) {
       return [key, this.tail.put(null, value), 1, 1];
     }
 
     var r = this.compare(s[KEY], key);
 
-    if ( r === 0 ) {
-       this.dedup(value, s[KEY]);
+    if (r === 0) {
+      this.dedup(value, s[KEY]);
 
       s[SIZE] -= this.tail.size(s[VALUE]);
       s[VALUE] = this.tail.put(s[VALUE], value);
@@ -160,7 +165,7 @@ var TreeIndex = {
     } else {
       var side = r > 0 ? LEFT : RIGHT;
 
-      if ( s[side] ) s[SIZE] -= s[side][SIZE];
+      if (s[side]) s[SIZE] -= s[side][SIZE];
       s[side] = this.putKeyValue(s[side], key, value);
       s[SIZE] += s[side][SIZE];
     }
@@ -168,11 +173,11 @@ var TreeIndex = {
     return this.split(this.skew(s));
   },
 
-//    input: T, a node representing an AA tree that needs to be rebalanced.
-//    output: Another node representing the rebalanced AA tree.
+  //    input: T, a node representing an AA tree that needs to be rebalanced.
+  //    output: Another node representing the rebalanced AA tree.
 
   skew: function(s) {
-    if ( s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL] ) {
+    if (s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL]) {
       // Swap the pointers of horizontal left links.
       var l = s[LEFT];
 
@@ -189,14 +194,17 @@ var TreeIndex = {
   },
 
   updateSize: function(s) {
-    s[SIZE] = this.size(s[LEFT]) + this.size(s[RIGHT]) + this.tail.size(s[VALUE]);
+    s[SIZE] = this.size(s[LEFT]) + this.size(s[RIGHT]) +
+        this.tail.size(s[VALUE]);
   },
 
   //  input: T, a node representing an AA tree that needs to be rebalanced.
   //  output: Another node representing the rebalanced AA tree.
   split: function(s) {
-    if ( s && s[RIGHT] && s[RIGHT][RIGHT] && s[LEVEL] === s[RIGHT][RIGHT][LEVEL] ) {
-      // We have two horizontal right links.  Take the middle node, elevate it, and return it.
+    if (s && s[RIGHT] && s[RIGHT][RIGHT] &&
+        s[LEVEL] === s[RIGHT][RIGHT][LEVEL]) {
+      // We have two horizontal right links.  Take the middle node, elevate it,
+      // and return it.
       var r = s[RIGHT];
 
       s[RIGHT] = r[LEFT];
@@ -213,27 +221,27 @@ var TreeIndex = {
   },
 
   remove: function(s, value) {
-     return this.removeKeyValue(s, this.prop.f(value), value);
+    return this.removeKeyValue(s, this.prop.f(value), value);
   },
 
   removeKeyValue: function(s, key, value) {
-    if ( ! s ) return s;
+    if (! s) return s;
 
     var r = this.compare(s[KEY], key);
 
-    if ( r === 0 ) {
+    if (r === 0) {
       s[SIZE] -= this.tail.size(s[VALUE]);
       s[VALUE] = this.tail.remove(s[VALUE], value);
 
       // If the sub-Index still has values, then don't
       // delete this node.
-      if ( s[VALUE] ) {
-         s[SIZE] += this.tail.size(s[VALUE]);
-         return s;
+      if (s[VALUE]) {
+        s[SIZE] += this.tail.size(s[VALUE]);
+        return s;
       }
 
       // If we're a leaf, easy, otherwise reduce to leaf case.
-      if ( ! s[LEFT] && ! s[RIGHT] ) return undefined;
+      if (! s[LEFT] && ! s[RIGHT]) return undefined;
 
       // TODO: add a unit test to verify that the size
       // adjusting logic is correct here.
@@ -243,8 +251,8 @@ var TreeIndex = {
       // the entry at the same time in order to prevent two traversals.
       // But, this would also duplicate the delete logic.
       var l = side === LEFT ?
-        this.predecessor(s) :
-        this.successor(s)   ;
+          this.predecessor(s) :
+          this.successor(s);
 
       s[KEY] = l[KEY];
       s[VALUE] = l[VALUE];
@@ -261,9 +269,9 @@ var TreeIndex = {
     // Rebalance the tree. Decrease the level of all nodes in this level if
     // necessary, and then skew and split all nodes in the new level.
     s = this.skew(this.decreaseLevel(s));
-    if ( s[RIGHT] ) {
+    if (s[RIGHT]) {
       s[RIGHT] = this.skew(s[RIGHT]);
-      if ( s[RIGHT][RIGHT] ) s[RIGHT][RIGHT] = this.skew(s[RIGHT][RIGHT]);
+      if (s[RIGHT][RIGHT]) s[RIGHT][RIGHT] = this.skew(s[RIGHT][RIGHT]);
     }
     s = this.split(s);
     s[RIGHT] = this.split(s[RIGHT]);
@@ -272,41 +280,42 @@ var TreeIndex = {
   },
 
   removeNode: function(s, key) {
-     if ( ! s ) return s;
+    if (! s) return s;
 
-     var r = this.compare(s[KEY], key);
+    var r = this.compare(s[KEY], key);
 
-     if ( r === 0 ) return s[LEFT] ? s[LEFT] : s[RIGHT];
+    if (r === 0) return s[LEFT] ? s[LEFT] : s[RIGHT];
 
-     var side = r > 0 ? LEFT : RIGHT;
+    var side = r > 0 ? LEFT : RIGHT;
 
-     s[SIZE] -= this.size(s[side]);
-     s[side] = this.removeNode(s[side], key);
-     s[SIZE] += this.size(s[side]);
+    s[SIZE] -= this.size(s[side]);
+    s[side] = this.removeNode(s[side], key);
+    s[SIZE] += this.size(s[side]);
 
-     return s;
+    return s;
   },
 
   predecessor: function(s) {
-     if ( ! s[LEFT] ) return s;
-     for ( s = s[LEFT] ; s[RIGHT] ; s = s[RIGHT] );
-        return s;
+    if (! s[LEFT]) return s;
+    for (s = s[LEFT]; s[RIGHT]; s = s[RIGHT]);
+    return s;
   },
 
   successor: function(s) {
-     if ( ! s[RIGHT] ) return s;
-     for ( s = s[RIGHT] ; s[LEFT] ; s = s[LEFT] );
-        return s;
+    if (! s[RIGHT]) return s;
+    for (s = s[RIGHT]; s[LEFT]; s = s[LEFT]);
+    return s;
   },
 
   // input: T, a tree for which we want to remove links that skip levels.
   // output: T with its level decreased.
   decreaseLevel: function(s) {
-    var expectedLevel = Math.min(s[LEFT] ? s[LEFT][LEVEL] : 0, s[RIGHT] ? s[RIGHT][LEVEL] : 0) + 1;
+    var expectedLevel = Math.min(s[LEFT] ? s[LEFT][LEVEL] : 0,
+        s[RIGHT] ? s[RIGHT][LEVEL] : 0) + 1;
 
-    if ( expectedLevel < s[LEVEL] ) {
+    if (expectedLevel < s[LEVEL]) {
       s[LEVEL] = expectedLevel;
-      if ( s[RIGHT] && expectedLevel < s[RIGHT][LEVEL] ) {
+      if (s[RIGHT] && expectedLevel < s[RIGHT][LEVEL]) {
         s[RIGHT][LEVEL] = expectedLevel;
       }
     }
@@ -315,23 +324,23 @@ var TreeIndex = {
   },
 
   get: function(s, key) {
-    if ( ! s ) return undefined;
+    if (! s) return undefined;
 
     var r = this.compare(s[KEY], key);
 
-    if ( r === 0 ) return s[VALUE];
+    if (r === 0) return s[VALUE];
 
     return this.get(r > 0 ? s[LEFT] : s[RIGHT], key);
   },
 
   select: function(s, sink, options) {
-    if ( ! s ) return;
+    if (! s) return;
 
-    if ( options ) {
-      if ( 'limit' in options && options.limit <= 0 ) return;
+    if (options) {
+      if ('limit' in options && options.limit <= 0) return;
 
       var size = this.size(s);
-      if ( options.skip >= size ) {
+      if (options.skip >= size) {
         options.skip -= size;
         return;
       }
@@ -343,13 +352,13 @@ var TreeIndex = {
   },
 
   selectReverse: function(s, sink, options) {
-    if ( ! s ) return;
+    if (! s) return;
 
-    if ( options ) {
-      if ( 'limit' in options && options.limit <= 0 ) return;
+    if (options) {
+      if ('limit' in options && options.limit <= 0) return;
 
       var size = this.size(s);
-      if ( options.skip >= size ) {
+      if (options.skip >= size) {
         options.skip -= size;
         return;
       }
@@ -366,71 +375,73 @@ var TreeIndex = {
     return o1.compareTo(o2); //this.prop.compare(o1, o2);
   },
 
-    getEQKey_: function (query, prop) {
-      if ( query.model_ === EqExpr && query.arg1 === prop ) {
-        return query.arg2.f();
-      }
-      return undefined;
-    },
+  getEQKey_: function(query, prop) {
+    if (query.model_ === EqExpr && query.arg1 === prop) {
+      return query.arg2.f();
+    }
+    return undefined;
+  },
 
-    getAndKey_: function (query, prop) {
-      if ( query.model_ === AndExpr ) {
-        for ( var i = 0 ; i < query.args.length ; i++ ) {
-          var q = query.args[i];
-          var k = this.getEQKey_(q, prop);
-          if ( k ) {
-            query = query.deepClone();
-            query.args[i] = TRUE;
-            query = query.partialEval();
-            return k;
-          }
+  getAndKey_: function(query, prop) {
+    if (query.model_ === AndExpr) {
+      for (var i = 0; i < query.args.length; i++) {
+        var q = query.args[i];
+        var k = this.getEQKey_(q, prop);
+        if (k) {
+          query = query.deepClone();
+          query.args[i] = TRUE;
+          query = query.partialEval();
+          return k;
         }
       }
-      return undefined;
-    },
+    }
+    return undefined;
+  },
 
   plan: function(s, sink, options) {
     var query = options && options.query;
 
-    if ( query === FALSE ) return NOT_FOUND;
+    if (query === FALSE) return NOT_FOUND;
 
-    if ( ! query && sink.model_ === CountExpr ) {
+    if (! query && sink.model_ === CountExpr) {
       var count = this.size(s);
-//        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
+      // console.log('**************** COUNT SHORT-CIRCUIT ****************',
+      //     count, this.toString());
       return {
-	 cost: 0,
-         execute: function(unused, sink, options) { sink.count = count; },
-	 toString: function() { return 'short-circuit-count(' + count + ')'; }
+        cost: 0,
+        execute: function(unused, sink, options) { sink.count = count; },
+        toString: function() { return 'short-circuit-count(' + count + ')'; }
       };
     }
 
     var prop = this.prop;
 
     // if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
-       // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
-       // TODO:
+    // console.log(
+    //     '**************** GROUP-BY SHORT-CIRCUIT ****************');
+    // TODO:
     // }
 
     var index = this;
 
-    if ( query ) {
+    if (query) {
       var key = this.getEQKey_(query, prop);
-      if ( key ) {
-         query = null;
+      if (key) {
+        query = null;
       } else {
-         key = this.getAndKey_(query, prop);
-         if ( query === TRUE ) query = null;
+        key = this.getAndKey_(query, prop);
+        if (query === TRUE) query = null;
       }
 
-      if ( key ) {
+      if (key) {
         var result = this.get(s, key);
 
-        if ( ! result ) return NOT_FOUND;
+        if (! result) return NOT_FOUND;
 
-//        var newOptions = {__proto__: options, query: query};
+        //        var newOptions = {__proto__: options, query: query};
         var newOptions = {query: query};
-if ( 'limit' in options ) newOptions.limit = options.limit;
-if ( 'skip' in options ) newOptions.skip = options.skip;
+        if ('limit' in options) newOptions.limit = options.limit;
+        if ('skip' in options) newOptions.skip = options.skip;
 
         var subPlan = this.tail.plan(result, sink, newOptions);
 
@@ -440,7 +451,9 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
             subPlan.execute(result, sink, newOptions);
           },
           toString: function() {
-             return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
+            return 'lookup(key=' + prop.name + ', cost=' + this.cost +
+                (query && query.toSQL ? ', query: ' + query.toSQL() : '') +
+                ') ' + subPlan.toString();
           }
         };
       }
@@ -450,12 +463,12 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
     var sortRequired = false;
     var reverseSort = false;
 
-    if ( options && options.order ) {
-      if ( options.order === prop ) {
-         // sort not required
-      } else if ( options.order.isDESC && options.order.c == prop ) {
-         // reverse-sort, sort not required
-         reverseSort = true;
+    if (options && options.order) {
+      if (options.order === prop) {
+      // sort not required
+      } else if (options.order.isDESC && options.order.c == prop) {
+        // reverse-sort, sort not required
+        reverseSort = true;
       } else {
         sortRequired = true;
         cost *= Math.log(cost) / Math.log(2);
@@ -465,22 +478,25 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
     return {
       cost: cost,
       execute: function() {
-	    /*
+        /*
         var o = options && (options.skip || options.limit) ?
           {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
           undefined;
-*/
-        if ( sortRequired ) {
+        */
+        if (sortRequired) {
           var a = [];
           index.select(s, a, {query: options.query});
           a.select(sink, options);
         } else {
           reverseSort ?
               index.selectReverse(s, sink, options) :
-              index.select(s, sink, options) ;
+              index.select(s, sink, options);
         }
       },
-      toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
+      toString: function() {
+        return 'scan(key=' + prop.name + ', cost=' + this.cost +
+            (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')';
+      }
     };
   },
 
@@ -510,7 +526,7 @@ var CITreeIndex = {
   },
 
   remove: function(s, value) {
-     return this.removeKeyValue(s, this.prop.f(value).toLowerCase(), value);
+    return this.removeKeyValue(s, this.prop.f(value).toLowerCase(), value);
   }
 
 };
@@ -532,13 +548,13 @@ var SetIndex = {
 
   // TODO: see if this can be done some other way
   dedup: function(obj, value) {
-     // NOP, not safe to do here
+    // NOP, not safe to do here
   },
 
   put: function(s, newValue) {
     var a = this.prop.f(newValue);
 
-    for ( var i = 0 ; i < a.length ; i++ ) {
+    for (var i = 0; i < a.length; i++) {
       s = this.putKeyValue(s, a[i], newValue);
     }
 
@@ -548,7 +564,7 @@ var SetIndex = {
   remove: function(s, value) {
     var a = this.prop.f(value);
 
-    for ( var i = 0 ; i < a.length ; i++ ) {
+    for (var i = 0; i < a.length; i++) {
       s = this.removeKeyValue(s, a[i], value);
     }
 
@@ -560,7 +576,8 @@ var SetIndex = {
 
 
 var AltIndex = {
-  // Maximum cost for a plan which is good enough to not bother looking at the rest.
+  // Maximum cost for a plan which is good enough to not bother looking at the
+  // rest.
   GOOD_ENOUGH_PLAN: 8, // put to 10 or more when not testing
 
   create: function() {
@@ -571,29 +588,29 @@ var AltIndex = {
   },
 
   addIndex: function(s, index) {
-     // Populate the index
-     var a = [];
-     this.plan(s, a).execute(s, a);
+    // Populate the index
+    var a = [];
+    this.plan(s, a).execute(s, a);
 
-     s.push(index.bulkLoad(a));
-     this.delegates.push(index);
+    s.push(index.bulkLoad(a));
+    this.delegates.push(index);
 
-     return this;
+    return this;
   },
 
   bulkLoad: function(a) {
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+    for (var i = 0; i < this.delegates.length; i++) {
       this.root[i] = this.delegates[i].bulkLoad(a);
     }
   },
 
   get: function(s, key) {
-     return this.delegates[0].get(s[0], key);
+    return this.delegates[0].get(s[0], key);
   },
 
   put: function(s, newValue) {
     s = s || [];
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+    for (var i = 0; i < this.delegates.length; i++) {
       s[i] = this.delegates[i].put(s[i], newValue);
     }
 
@@ -602,7 +619,7 @@ var AltIndex = {
 
   remove: function(s, obj) {
     s = s || [];
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+    for (var i = 0; i < this.delegates.length; i++) {
       s[i] = this.delegates[i].remove(s[i], obj);
     }
 
@@ -612,50 +629,54 @@ var AltIndex = {
   plan: function(s, sink, options) {
     var bestPlan;
     var bestPlanI = 0;
-//    console.log('Planning: ' + (options && options.query && options.query.toSQL && options.query.toSQL()));
-    for ( var i = 0 ; i < this.delegates.length ; i++ ) {
+    // console.log('Planning: ' +
+    //     (options && options.query && options.query.toSQL
+    //     && options.query.toSQL()));
+    for (var i = 0; i < this.delegates.length; i++) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-// console.log('  plan ' + i + ': ' + plan);
-      if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) {
-         bestPlanI = i;
-         bestPlan = plan;
-         break;
+      //    console.log('  plan ' + i + ': ' + plan);
+      if (plan.cost <= AltIndex.GOOD_ENOUGH_PLAN) {
+        bestPlanI = i;
+        bestPlan = plan;
+        break;
       }
 
-      if ( ! bestPlan || plan.cost < bestPlan.cost ) {
-         bestPlanI = i;
-         bestPlan = plan;
+      if (! bestPlan || plan.cost < bestPlan.cost) {
+        bestPlanI = i;
+        bestPlan = plan;
       }
     }
 
-//    console.log('Best Plan: ' + bestPlan);
+    //    console.log('Best Plan: ' + bestPlan);
 
-     return {
-        __proto__: bestPlan,
-        execute: function(unused, sink, options) { bestPlan.execute(s[bestPlanI], sink, options); }
-     };
+    return {
+      __proto__: bestPlan,
+      execute: function(unused, sink, options) {
+        bestPlan.execute(s[bestPlanI], sink, options);
+      }
+    };
   },
 
   size: function(obj) { return this.delegates[0].size(obj[0]); },
 
   toString: function() {
-     return 'Alt(' + this.delegates.join(',') + ')';
+    return 'Alt(' + this.delegates.join(',') + ')';
   }
 };
 
 
 var mLangIndex = {
   create: function(mlang) {
-     return {
-        __proto__: this,
-        mlang: mlang,
-        PLAN: {
-	   cost: 0,
-           execute: function(s, sink, options) { sink.copyFrom(s); },
-	   toString: function() { return 'mLangIndex(' + this.s + ')'; }
-        }
-     };
+    return {
+      __proto__: this,
+      mlang: mlang,
+      PLAN: {
+        cost: 0,
+        execute: function(s, sink, options) { sink.copyFrom(s); },
+        toString: function() { return 'mLangIndex(' + this.s + ')'; }
+      }
+    };
   },
 
   bulkLoad: function(a) {
@@ -678,91 +699,91 @@ var mLangIndex = {
   size: function(s) { return Number.MAX_VALUE; },
 
   plan: function(s, sink, options) {
-// console.log('s');
-    if ( options && options.query ) return NO_PLAN;
+    // console.log('s');
+    if (options && options.query) return NO_PLAN;
 
-    if ( sink.model_ && s.model_ === sink.model_ && s.arg1 === sink.arg1 ) {
-       this.PLAN.s = s;
-       return this.PLAN;
+    if (sink.model_ && s.model_ === sink.model_ && s.arg1 === sink.arg1) {
+      this.PLAN.s = s;
+      return this.PLAN;
     }
 
     return NO_PLAN;
   },
 
   toString: function() {
-     return 'mLangIndex(' + this.mlang + ')';
+    return 'mLangIndex(' + this.mlang + ')';
   }
 
 };
 
 
 var MDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
-   name: 'MDAO',
-   label: 'Indexed DAO',
+  name: 'MDAO',
+  label: 'Indexed DAO',
 
-   properties: [
-      {
-         name:  'model',
-         type:  'Model',
-         required: true
-      }
-   ],
+  properties: [
+    {
+      name: 'model',
+      type: 'Model',
+      required: true
+    }
+  ],
 
-   methods: {
+  methods: {
 
-     init: function() {
-       AbstractPrototype.init.call(this);
+    init: function() {
+      AbstractPrototype.init.call(this);
 
-       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
-     },
+      this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+    },
 
-     /**
+    /**
       * Add a non-unique index
       * args: one or more properties
       **/
-     addIndex: function() {
-        var props = argsToArray(arguments);
+    addIndex: function() {
+      var props = argsToArray(arguments);
 
-        // Add on the primary key(s) to make the index unique.
-        for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
-           props.push(this.model.getProperty(this.model.ids[i]));
-           if (!props[props.length - 1]) throw "Undefined index property";
-        }
+      // Add on the primary key(s) to make the index unique.
+      for (var i = 0; i < this.model.ids.length; i++) {
+        props.push(this.model.getProperty(this.model.ids[i]));
+        if (!props[props.length - 1]) throw 'Undefined index property';
+      }
 
-        return this.addUniqueIndex.apply(this, props);
-     },
+      return this.addUniqueIndex.apply(this, props);
+    },
 
-     /**
+    /**
       * Add a unique index
       * args: one or more properties
       **/
-     addUniqueIndex: function() {
-       var index = ValueIndex;
+    addUniqueIndex: function() {
+      var index = ValueIndex;
 
-       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
-         var prop = arguments[i];
-         // TODO: the index prototype should be in the property
-         var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
-         index = proto.create(prop, index);
-       }
+      for (var i = arguments.length - 1; i >= 0; i--) {
+        var prop = arguments[i];
+        // TODO: the index prototype should be in the property
+        var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
+        index = proto.create(prop, index);
+      }
 
-       return this.addRawIndex(index);
-     },
+      return this.addRawIndex(index);
+    },
 
     // TODO: name 'addIndex' and renamed addIndex
     addRawIndex: function(index) {
-       // Upgrade single Index to an AltIndex if required.
-       if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
-         this.index = AltIndex.create(this.index);
-         this.root = [this.root];
-       }
+      // Upgrade single Index to an AltIndex if required.
+      if (! /*AltIndex.isInstance(this.index)*/ this.index.delegates) {
+        this.index = AltIndex.create(this.index);
+        this.root = [this.root];
+      }
 
-       this.index.addIndex(this.root, index);
+      this.index.addIndex(this.root, index);
 
-       return this;
+      return this;
     },
 
     /**
@@ -779,49 +800,50 @@ var MDAO = FOAM({
     },
 
     put: function(obj, sink) {
-       var oldValue = this.index.get(this.root, key);
-       if ( oldValue ) {
-          this.root = this.index.put(this.index.remove(this.root, obj), obj);
-          this.notify_('remove', [obj]);
-       } else {
-          this.root = this.index.put(this.root, obj);
-       }
-       this.notify_('put', [obj]);
-       sink && sink.put && sink.put(obj);
+      var oldValue = this.index.get(this.root, key);
+      if (oldValue) {
+        this.root = this.index.put(this.index.remove(this.root, obj), obj);
+        this.notify_('remove', [obj]);
+      } else {
+        this.root = this.index.put(this.root, obj);
+      }
+      this.notify_('put', [obj]);
+      sink && sink.put && sink.put(obj);
     },
 
     findObj_: function(key, sink) {
-       var obj = this.index.get(this.root, key);
-       if ( obj ) {
-          sink.put(obj);
-       } else {
-          sink.error && sink.error('find', key);
-       }
+      var obj = this.index.get(this.root, key);
+      if (obj) {
+        sink.put(obj);
+      } else {
+        sink.error && sink.error('find', key);
+      }
     },
 
     find: function(key, sink) {
-      if ( ! key.f ) { // TODO: make better test, use model
+      if (! key.f) { // TODO: make better test, use model
         this.findObj_(key, sink);
         return;
       }
       // How to handle multi value primary keys?
       var found = false;
       this.where(key).limit(1).select({
-          // ???: Is 'put' needed?
-          put: function(obj) {
-              found = true;
-              sink && sink.put && sink.put(obj);
-          },
-          eof: function() {
-              if ( ! found ) sink && sink.error && sink.error('find', key);
-          }
+        // ???: Is 'put' needed?
+        put: function(obj) {
+          found = true;
+          sink && sink.put && sink.put(obj);
+        },
+        eof: function() {
+          if (! found) sink && sink.error && sink.error('find', key);
+        }
       });
     },
 
     // TODO: this isn't correct, this is actually removeAll()
     remove: function(query, sink) {
-      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
-/*
+      query = query.f ? query :
+          EQ(this.model.getProperty(this.model.ids[0]), query);
+      /*
        if ( ! query.f ) {
           this.root = this.index.remove(this.root, query);
           sink && sink.remove && sink.remove(query);
@@ -829,13 +851,13 @@ var MDAO = FOAM({
           return;
        }*/
 
-       this.where(query).select([])(function(a) {
-         for ( var i = 0 ; i < a.length ; i++ ) {
-            this.root = this.index.remove(this.root, a[i]);
-            sink && sink.remove && sink.remove(a[i]);
-            this.notify_('remove', [a[i]]);
-         }
-       }.bind(this));
+      this.where(query).select([])(function(a) {
+        for (var i = 0; i < a.length; i++) {
+          this.root = this.index.remove(this.root, a[i]);
+          sink && sink.remove && sink.remove(a[i]);
+          this.notify_('remove', [a[i]]);
+        }
+      }.bind(this));
     },
 
     removeAll: function(callback) {
@@ -844,15 +866,16 @@ var MDAO = FOAM({
     },
 
     select: function(sink, options) {
-      // Clone the options to prevent 'limit' from being mutated in the original.
-      if ( options ) options = {__proto__: options};
+      // Clone the options to prevent 'limit' from being mutated in the
+      // original.
+      if (options) options = {__proto__: options};
 
-      if ( DescribeExpr.isInstance(sink) ) {
-         var plan = this.index.plan(this.root, sink.arg1, options);
-         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
+      if (DescribeExpr.isInstance(sink)) {
+        var plan = this.index.plan(this.root, sink.arg1, options);
+        sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
       } else {
-         var plan = this.index.plan(this.root, sink, options);
-         plan.execute(this.root, sink, options);
+        var plan = this.index.plan(this.root, sink, options);
+        plan.execute(this.root, sink, options);
       }
 
       sink && sink.eof && sink.eof();
@@ -860,7 +883,7 @@ var MDAO = FOAM({
     },
 
     toString: function() {
-       return 'MDAO(' + this.model.name + ',' + this.index + ')';
+      return 'MDAO(' + this.model.name + ',' + this.index + ')';
     }
-   }
+  }
 });

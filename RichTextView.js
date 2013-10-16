@@ -27,117 +27,120 @@
 
 var RichTextView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView2',
 
-   name: 'RichTextView',
+  name: 'RichTextView',
 
-    properties: [
-      {
-	 name:  'height',
-         type:  'int',
-         view:  'IntFieldView',
-	 defaultValue: 400
-      },
-      {
-	 name:  'width',
-         type:  'int',
-         view:  'IntFieldView',
-	 defaultValue: 800
-      },
-      {
-	 name:  'mode',
-         type:  'String',
-	 defaultValue: 'read-write',
-         view: {
-	      create: function() { return ChoiceView.create({choices:[
-                 "read-only", "read-write", "final"
-              ]}); } }
-      },
-      {
-	 name:  'value',
-         type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
-         postSet: function(newValue, oldValue) {
-           Events.unlink(this.domValue, oldValue);
+  properties: [
+    {
+      name: 'height',
+      type: 'int',
+      view: 'IntFieldView',
+      defaultValue: 400
+    },
+    {
+      name: 'width',
+      type: 'int',
+      view: 'IntFieldView',
+      defaultValue: 800
+    },
+    {
+      name: 'mode',
+      type: 'String',
+      defaultValue: 'read-write',
+      view: {
+        create: function() { return ChoiceView.create({choices: [
+          'read-only', 'read-write', 'final'
+        ]}); } }
+    },
+    {
+      name: 'value',
+      type: 'Value',
+      valueFactory: function() { return new SimpleValue(); },
+      postSet: function(newValue, oldValue) {
+        Events.unlink(this.domValue, oldValue);
 
-	   //Events.follow(this.model, this.domValue);
-           try {
-	     Events.link(newValue, this.domValue);
-             // Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
-           } catch (x) {
-           }
-         }
+        //Events.follow(this.model, this.domValue);
+        try {
+          Events.link(newValue, this.domValue);
+          // Events.relate(newValue, this.domValue, this.valueToText.bind(this),
+          //     this.textToValue.bind(this));
+        } catch (x) {
+        }
       }
-    ],
+    }
+  ],
 
-   methods: {
-      init: function(args) {
-         AbstractView2.init.call(this, args);
-         this.toolbar = ActionToolbarView.create({actions:FOAM([
-            {
-               model_: 'Action',
-               name: 'bold',
-               label: '<b>B</b>',
-               help: 'Bold text.',
-               action: function () {
-                  console.log('bold');
-                  var s = window.getSelection();
-                  if ( s.rangeCount != 1 ) return;
-                  var r = s.getRangeAt(0);
-                  console.log('range:',r);
+  methods: {
+    init: function(args) {
+      AbstractView2.init.call(this, args);
+      this.toolbar = ActionToolbarView.create({actions: FOAM([
+        {
+          model_: 'Action',
+          name: 'bold',
+          label: '<b>B</b>',
+          help: 'Bold text.',
+          action: function() {
+            console.log('bold');
+            var s = window.getSelection();
+            if (s.rangeCount != 1) return;
+            var r = s.getRangeAt(0);
+            console.log('range:', r);
 
-                  var selectionContents = r.extractContents();
-                  var b = document.createElement("b");
-                  b.appendChild(selectionContents);
-                  r.insertNode(b);
-               }
-            },
-            {
-               model_: 'Action',
-               name: 'italic',
-               label: '<i>i</i>',
-               help: 'Italic text.',
-               action: function () {
-                  console.log('italic');
-                  var s = window.getSelection();
-                  if ( s.rangeCount != 1 ) return;
-                  var r = s.getRangeAt(0);
-                  console.log('range:',r);
+            var selectionContents = r.extractContents();
+            var b = document.createElement('b');
+            b.appendChild(selectionContents);
+            r.insertNode(b);
+          }
+        },
+        {
+          model_: 'Action',
+          name: 'italic',
+          label: '<i>i</i>',
+          help: 'Italic text.',
+          action: function() {
+            console.log('italic');
+            var s = window.getSelection();
+            if (s.rangeCount != 1) return;
+            var r = s.getRangeAt(0);
+            console.log('range:', r);
 
-                  var selectionContents = r.extractContents();
-                  var b = document.createElement("i");
-                  b.appendChild(selectionContents);
-                  r.insertNode(b);
-               }
-            }
+            var selectionContents = r.extractContents();
+            var b = document.createElement('i');
+            b.appendChild(selectionContents);
+            r.insertNode(b);
+          }
+        }
 
-         ])});
-      },
+      ])});
+    },
 
-      toHTML: function() {
-         var m = this.mode === 'read-write' ? ' contenteditable' : '';
-	 return '<div' + m + ' id="' + this.getID() + '" style="border:solid 2px #b7ddf2;width:' + this.width + ';height:' + this.height + '"/> </div>' + this.toolbar.toHTML();
-      },
+    toHTML: function() {
+      var m = this.mode === 'read-write' ? ' contenteditable' : '';
+      return '<div' + m + ' id="' + this.getID() +
+          '" style="border:solid 2px #b7ddf2;width:' + this.width +
+          ';height:' + this.height + '"/> </div>' + this.toolbar.toHTML();
+    },
 
-      setValue: function(value) {
-         this.value = value;
-      },
+    setValue: function(value) {
+      this.value = value;
+    },
 
-      initHTML: function() {
-         this.toolbar.initHTML();
-         this.domValue = DomValue.create(this.$, 'input', 'innerHTML');
-          this.value = this.value;
-      },
+    initHTML: function() {
+      this.toolbar.initHTML();
+      this.domValue = DomValue.create(this.$, 'input', 'innerHTML');
+      this.value = this.value;
+    },
 
-      destroy: function() {
-         Events.unlink(this.domValue, this.value);
-      },
+    destroy: function() {
+      Events.unlink(this.domValue, this.value);
+    },
 
-      textToValue: function(text) { return text; },
+    textToValue: function(text) { return text; },
 
-      valueToText: function(value) { return value; }
+    valueToText: function(value) { return value; }
   }
 
 });
