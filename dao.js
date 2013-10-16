@@ -1482,7 +1482,7 @@ var WorkerDAO = FOAM({
           'importScripts = function(scripts) { \n' +
           '  for (var i = 0; i < arguments.length; i++) \n' +
           '    a(url + arguments[i]); \n};\n',
-          "try { importScripts('bootFOAMWorker.js'); } ' +
+          'try { importScripts(\'bootFOAMWorker.js\'); } ' +
           'catch(e) { \n debugger; }\n',
           'WorkerDelegate.create({ dao: [] });\n'
         ];

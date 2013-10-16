@@ -145,7 +145,7 @@ console.log(i, k, v);
           function() {
             return this.hasOwnProperty(name) ?
                 this.instance_[name] : prop.defaultValue;
-          };);
+          });
     }
 
     if (prop.setter) {
