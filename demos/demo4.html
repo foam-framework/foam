@@ -48,7 +48,7 @@
       entities: sys.entities
     });
     space2.addChild(sys2); // KGR
-                              
+			      
     graphs.addChildren(
       sys.codeGraph,
       sys.utilityGraph,
@@ -71,10 +71,10 @@
       },
       function () {
         sys.tick(timer);
-        sys2.tick(timer);
+	sys2.tick(timer);
         space.repaint();
-        space2.repaint();                                                                                         
-                  
+	space2.repaint();											  
+		  
         if ( timer.i % 10 == 0 ) {
           sys.codeGraph.addData(sys.totalCode, 1000);
           sys.utilityGraph.addData(sys.totalUtility(), 1000);

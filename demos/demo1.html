@@ -31,8 +31,8 @@
        s[i] = circleModel.create({
           x: Math.random()*300+300,
           y: Math.random()*300+300,
-          r: Math.random()*20+2,
-          color: colours[i%colours.length]
+	  r: Math.random()*20+2,
+	  color: colours[i%colours.length]
        });
        space.addChild(s[i]);
     }
@@ -42,7 +42,7 @@
        Movement.moveTowards(timer, s[i-1], s[i], 7-6.7*i/COUNT);
 //       else
 //       Movement.orbit(timer, s[i-1], s[i], 10+Math.random(30), 1000);
-                          
+			  
     
 //    Movement.orbit(timer, mouse, s[0], 100, 800);
     Movement.moveTowards(timer, mouse, s[0], 3);

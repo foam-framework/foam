@@ -16,13 +16,13 @@
  */
 
 function pos(e, top, left, width, height) {
-  var s = e.style;
-  left = left || 0;
+   var s = e.style;
+   left = left || 0;
 
-  top != null && (e.style.top = toNum(top) + 'px');
-  left != null && (e.style.left = toNum(left) + 'px');
-  width != null && (e.style.width = toNum(width) + 'px');
-  height != null && (e.style.height = toNum(height) + 'px');
+   top != null && (e.style.top = toNum(top) + 'px');
+   left != null && (e.style.left = toNum(left) + 'px');
+   width != null && (e.style.width = toNum(width) + 'px');
+   height != null && (e.style.height = toNum(height) + 'px');
 }
 
 
@@ -208,95 +208,75 @@ var ThreePaneController = FOAM({
       $('logo-' + this.getID()).src = src;
     },
     toHTML: function() {
-      return;
-      '<div style="width: 100%; height: 100%;" id="' + this.getID() +
-          '">\n' +
-          '<table class="header" id="header-' + this.getID() + '">\n' +
-          '  <tr>\n' +
-          '  <td style="height: 49px; padding: 5px 0px">\n' +
-          '    <img id="logo-' + this.getID() +
-          '" height="49" style="margin-left: 10px" src="images/logo.png">\n' +
-          '  </td>\n' +
-          '  <td width="5%"></td>\n' +
-          '  <td width="45">' +
-          '<img src="images/search-icon.png" style="vertical-align:middle;">' +
-          '</td>\n' +
-          '  <td width=65% valign2="bottom">\n' +
-          '  <div class="titleBar">\n' +
-          this.searchField.toHTML() +
-          '  </div>\n' +
-          '  </td>\n' +
-          '  <td width="5%"></td>\n' +
-          '  <td width="20%" align=center valign2="bottom">\n' +
-          this.countField.toHTML() +
-          '  </td>\n' +
-          '  <td width="10%"></td>\n' +
-          '  <td align="right">\n' +
-          '    <div><img id="settings-' + this.getID() +
-          '" src="images/settings.svg"> &nbsp;</div>\n' +
-          '  </td>\n' +
-          '  </tr>\n' +
-          '</table>\n' +
-          '<span class="toolbar" id="toolbar-' + this.getID() +
-          '">' + this.toolbar.toHTML() + '</span>\n' +
-          '<div id="search-' + this.getID() +
-          '" style="position:absolute;background-color:#fff;' +
-          'overflow-y:auto;overflow-x:hidden">\n' +
-          '  <span class="searchChoice">' + this.searchChoice.toHTML() +
-          '</span>\n' +
-          '</div>\n' +
-          '<div class="browse" id="browse-' + this.getID() +
-          '" style="position:absolute;background-color:#FFF;float:left;">' +
-          this.table.toHTML() + '</div>\n' +
-          '<div class="edit" id="edit-' + this.getID() +
-          '" style="position:absolute;position:absolute;' +
-          'background-color:#FFF;">\n' +
-          this.editView.toHTML() +
-          '</div>\n' +
-          '<div id="footer-' + this.getID() +
-          '" style="position:absolute;text-align:right;' +
-          'padding-top:3px;width:100%"> \n' +
-          '  <a href="https://code.google.com/p/foam-framework/" ' +
-          'style="text-decoration: none" target="_blank">\n' +
-          '  <font size=-1 face="catull" style="padding-left:10px;' +
-          'text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\n' +
-          '  <font color="#3333FF">F</font><font color="#FF0000">O</font>' +
-          '<font color="#ddaa00">A</font><font color="#33CC00">M</font>\n\n' +
-          '  <font color2="#555555"> POWERED</font></a>\n' +
-          '</div>\n' +
-          '</div>';
+      return '<div style="width: 100%; height: 100%;" id="' + this.getID() + '">\n' +
+        '<table class="header" id="header-' + this.getID() + '">\n' +
+        '  <tr>\n' +
+        '  <td style="height: 49px; padding: 5px 0px">\n' +
+        '    <img id="logo-' + this.getID() + '" height="49" style="margin-left: 10px" src="images/logo.png">\n' +
+        '  </td>\n' +
+        '  <td width="5%"></td>\n' +
+        '  <td width="45"><img src="images/search-icon.png" style="vertical-align:middle;"></td>\n' +
+        '  <td width=65% valign2="bottom">\n' +
+        '  <div class="titleBar">\n' +
+        this.searchField.toHTML() +
+        '  </div>\n' +
+        '  </td>\n' +
+        '  <td width="5%"></td>\n' +
+        '  <td width="20%" align=center valign2="bottom">\n' +
+        this.countField.toHTML() +
+        '  </td>\n' +
+        '  <td width="10%"></td>\n' +
+        '  <td align="right">\n' +
+        '    <div><img id="settings-' + this.getID() + '" src="images/settings.svg"> &nbsp;</div>\n' +
+        '  </td>\n' +
+        '  </tr>\n' +
+        '</table>\n' +
+        '<span class="toolbar" id="toolbar-' + this.getID() + '">' + this.toolbar.toHTML() + '</span>\n' +
+        '<div id="search-' + this.getID() + '" style="position:absolute;background-color:#fff;overflow-y:auto;overflow-x:hidden">\n' +
+        '  <span class="searchChoice">' + this.searchChoice.toHTML() + '</span>\n' +
+        '</div>\n' +
+        '<div class="browse" id="browse-' + this.getID() + '" style="position:absolute;background-color:#FFF;float:left;">' + this.table.toHTML() + '</div>\n' +
+        '<div class="edit" id="edit-' + this.getID() + '" style="position:absolute;position:absolute;background-color:#FFF;">\n' +
+        this.editView.toHTML() +
+        '</div>\n' +
+        '<div id="footer-' + this.getID() + '" style="position:absolute;text-align:right;padding-top:3px;width:100%"> \n' +
+        '  <a href="https://code.google.com/p/foam-framework/" style="text-decoration: none" target="_blank">\n' +
+        '  <font size=-1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\n' +
+        '  <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#ddaa00">A</font><font color="#33CC00">M</font>\n\n' +
+        '  <font color2="#555555"> POWERED</font></a>\n' +
+        '</div>\n' +
+        '</div>';
     },
     initHTML: function() {
-      var self = this;
-      var lastSelection = undefined;
+       var self = this;
+       var lastSelection = undefined;
 
-      this.searchField.initHTML();
-      this.searchChoice.initHTML();
-      this.table.initHTML();
-      this.editView.initHTML();
-      this.countField.initHTML();
-      this.toolbar.initHTML();
+       this.searchField.initHTML();
+       this.searchChoice.initHTML();
+       this.table.initHTML();
+       this.editView.initHTML();
+       this.countField.initHTML();
+       this.toolbar.initHTML();
 
-      this.searchField.$.style.display = 'table-cell';
-      this.searchField.$.style.width = '100%';
+       this.searchField.$.style.display = 'table-cell';
+       this.searchField.$.style.width = '100%';
 
-      this.table.view.selection.addListener(
-          EventService.merged(function(value) {
-            var newValue = value.get();
-            var oldValue = self.editView.value.get();
+       this.table.view.selection.addListener(EventService.merged(function (value) {
+         var newValue = value.get();
+         var oldValue = self.editView.value.get();
 
-            // No need to reload from database if we're updating to same row
-            // if ( ! newValue || oldValue && newValue === oldValue ) return;
-            if (newValue === lastSelection) return;
+         // No need to reload from database if we're updating to same row
+        // if ( ! newValue || oldValue && newValue === oldValue ) return;
+         if ( newValue === lastSelection ) return;
 
-            newValue && self.dao.find(newValue.id, {
-              put: function(email) {
-                self.editView.value.set(email);
-                lastSelection = email;
-                self.table.view.selection.set(email);
-              }
-            });
-          }, 200));
+         newValue && self.dao.find(newValue.id, {
+            put: function(email) {
+               self.editView.value.set(email);
+               lastSelection = email;
+               self.table.view.selection.set(email);
+            }
+         });
+       }, 200));
     }
   },
 
@@ -305,8 +285,8 @@ var ThreePaneController = FOAM({
       name: 'performQuery',
       code: function() {
         var predicate = AND(
-            this.queryParser.parseString(this.searchChoice.value.get()) || TRUE,
-            this.queryParser.parseString(this.searchField.value.get()) || TRUE)
+          this.queryParser.parseString(this.searchChoice.value.get()) || TRUE,
+          this.queryParser.parseString(this.searchField.value.get()) || TRUE)
           .partialEval();
 
         console.log('query: ', predicate.toMQL());
@@ -321,19 +301,18 @@ var ThreePaneController = FOAM({
       name: 'layout',
       merged: true,
       code: function() {
-        if (!this.$) return;
+        if ( !this.$ ) return;
 
         var hideTable = this.table.scrollbar.size == 1;
-        var W = this.$.offsetWidth; //window.innerWidth;
-        var H = this.$.offsetHeight; //window.innerHeight;
-        var SEARCH_H = H - this.headerHeight - this.footerHeight;
-        var RIGHT_W = W - this.searchWidth - 1;
+        var W         = this.$.offsetWidth; //window.innerWidth;
+        var H         = this.$.offsetHeight; //window.innerHeight;
+        var SEARCH_H  = H - this.headerHeight - this.footerHeight;
+        var RIGHT_W   = W - this.searchWidth-1;
 
         //  pos(header,null,null,W,HEADER_H-10);
-        pos($('search-' + this.getID()), this.headerHeight, null,
-            this.maxSearchWidth, SEARCH_H);
+        pos($('search-' + this.getID()), this.headerHeight, null, this.maxSearchWidth, SEARCH_H);
 
-        if (W > this.minThreeColumnWidth) {
+        if ( W > this.minThreeColumnWidth ) {
           pos($('browse-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1,
@@ -343,25 +322,23 @@ var ThreePaneController = FOAM({
           pos($('edit-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1 + RIGHT_W * this.threeColumnLeftPaneWeight,
-              RIGHT_W * 0.55 - 10,
-              SEARCH_H - 10);
+              RIGHT_W * 0.55-10,
+              SEARCH_H-10);
         } else {
           pos($('browse-' + this.getID()),
               this.headerHeight,
               this.searchWidth + 1,
               RIGHT_W,
-              SEARCH_H / 2 - 4);
+              SEARCH_H/2-4);
 
           pos($('edit-' + this.getID()),
-              hideTable ? this.headerHeight :
-              toNum($('browse-' + this.getID()).style.top) +
-              toNum($('browse-' + this.getID()).style.height),
+              hideTable ? this.headerHeight : toNum($('browse-' + this.getID()).style.top) + toNum($('browse-' + this.getID()).style.height),
               this.searchWidth + 1,
               RIGHT_W,
               hideTable ? SEARCH_H : SEARCH_H / 2);
         }
         pos($('footer-' + this.getID()),
-            H - this.footerHeight + 10,
+            H-this.footerHeight+10,
             null,
             W,
             this.footerHeight);
@@ -373,16 +350,16 @@ var ThreePaneController = FOAM({
       name: 'onDaoUpdate',
       merged: 100,
       code: function() {
-        var self = this;
-        if (this.table.view.selection.get())
-          this.dao.find(this.table.view.selection.get().id, {
-            put: function(obj) {
-              self.table.view.selection.set(obj);
-              self.table.dao = self.table.dao;
-            }
-          });
-        else
-          this.table.dao = this.table.dao;
+         var self = this;
+         if ( this.table.view.selection.get() )
+            this.dao.find(this.table.view.selection.get().id, {
+               put: function(obj) {
+                  self.table.view.selection.set(obj);
+                  self.table.dao = self.table.dao;
+               }
+             });
+         else
+            this.table.dao = this.table.dao;
       }
     },
     {
@@ -392,7 +369,7 @@ var ThreePaneController = FOAM({
         var self = this;
         this.dao.select(COUNT())(function(c) {
           self.countField.value.set(
-              self.table.scrollbar.size + ' of ' + c.count + ' selected');
+            self.table.scrollbar.size + ' of ' + c.count + ' selected');
         });
       }
     }

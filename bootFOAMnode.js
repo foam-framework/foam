@@ -33,9 +33,9 @@ global.document = {
 vm.runInThisContext(modelsfiles);
 
 for (var i = 0; i < files.length; i++) {
-  console.log('loading ', FOAM_BOOT_DIR + files[i]);
-  var filedata = fs.readFileSync(FOAM_BOOT_DIR + files[i] + '.js', 'utf8');
-  vm.runInThisContext(filedata, files[i] + '.js');
+    console.log("loading ", FOAM_BOOT_DIR + files[i]);
+    var filedata = fs.readFileSync(FOAM_BOOT_DIR + files[i] + '.js', 'utf8');
+    vm.runInThisContext(filedata, files[i] + ".js");
 }
 
 // For command line processing, run as
@@ -47,7 +47,6 @@ if (process.argv[3]) {
   global.argv = process.argv.slice(4);
   global.fs = fs;
   global.vm = vm;
-  filedata = fs.readFileSync(
-      FOAM_BOOT_DIR + 'tools/' + command + '.js', 'utf8');
-  vm.runInThisContext(filedata, 'tools/' + command + '.js');
+  filedata = fs.readFileSync(FOAM_BOOT_DIR + "tools/" + command + ".js", 'utf8');
+  vm.runInThisContext(filedata, "tools/" + command + ".js");
 }

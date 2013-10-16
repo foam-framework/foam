@@ -31,24 +31,24 @@ idao.addIndex(Issue.ASSIGNED_TO);
 idao.addIndex(Issue.STATUS);
 
 var severities = [
-  'Minor',
-  'Major',
-  'Feature',
-  'Question'
+  "Minor",
+  "Major",
+  "Feature",
+  "Question"
 ];
 
 var assignee = [
-  'kgr',
-  'adamvy',
-  'alice',
-  'bob'
+  "kgr",
+  "adamvy",
+  "alice",
+  "bob"
 ];
 
 var statuses = [
-  'Open',
-  'Accepted',
-  'Complete',
-  'Closed'
+  "Open",
+  "Accepted",
+  "Complete",
+  "Closed"
 ];
 
 for (var j = 0; j < 10; j++) {
@@ -76,12 +76,12 @@ function benchmark(sink, dao) {
       1000,
       function(ret) {
         starttime = Date.now();
-        dao.select(sink)(function(sink) {
+        dao.select(sink)(function(sink){
           endtime = Date.now();
           totaltime += endtime - starttime;
           ret();
         });
       })(function() {
-        console.log('average: ', totaltime / 1000, 'ms');
+        console.log('average: ', totaltime / 1000, "ms");
       });
 }

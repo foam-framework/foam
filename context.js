@@ -17,25 +17,25 @@
 var GLOBAL = GLOBAL || this;
 
 var Context = {
-  __proto__: GLOBAL,
-  clone: function() {
-    return { __proto__: this };
-  }
+    __proto__: GLOBAL,
+    clone: function() {
+	return { __proto__: this };
+    }
 };
 
 var X = Context.clone();
 var XXX = X;
 
 function contextize(fn) {
-  return (function(ctx) {
+  return (function (ctx) {
     return function() {
       var ret;
       var old = X;
       X = ctx;
       try {
-        ret = fn.apply(this, arguments);
+         ret = fn.apply(this, arguments);
       } catch (x) {
-        X = old;
+         X = old;
       }
       return ret;
     };

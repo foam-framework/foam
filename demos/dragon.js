@@ -18,90 +18,90 @@ var Dragon = Model.create({
 
   extendsModel: 'PanelCView',
 
-  name: 'Dragon',
+  name:  'Dragon',
 
   properties: [
     {
-      name: 'eyes',
-      type: 'EyesCView',
+      name:  'eyes',
+      type:  'EyesCView',
       paint: true,
       valueFactory: function() {
-        return EyesCView.create({x: 500, y: 500, r: this.r * 10, parent: this});
+        return EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
       }
     },
     {
-      name: 'color',
-      type: 'String',
+      name:  'color',
+      type:  'String',
       defaultValue: 'red'
     },
     {
-      name: 'r',
+      name:  'r',
       label: 'Radius',
-      type: 'int',
-      view: 'IntFieldView',
+      type:  'int',
+      view:  'IntFieldView',
       defaultValue: 10
     },
     {
-      name: 'width',
-      type: 'int',
+      name:  'width',
+      type:  'int',
       defaultValue: 200
     },
     {
-      name: 'height',
-      type: 'int',
+      name:  'height',
+      type:  'int',
       defaultValue: 200
     },
     {
-      name: 'backgroundColor',
+      name:  'backgroundColor',
       label: 'Background',
-      type: 'String',
+      type:  'String',
       defaultValue: 'gray'
     },
     {
-      name: 'timer'
+      name:  'timer'
     }
   ],
 
   methods: {
-    colours: ['#33f', '#f00', '#fc0', '#33f', '#3c0'],
+    colours: ['#33f','#f00','#fc0','#33f','#3c0'],
 
     dot: function(r) {
       var c = this.canvas;
       c.beginPath();
       c.fillStyle = this.colours[this.i = (this.i + 1) % this.colours.length];//'rgb(245,50,50)';
-      c.arc(0, 0, r, 0, Math.PI * 2, true);
+      c.arc(0,0,r,0,Math.PI*2,true);
       c.fill();
     },
 
     tail: function(r) {
-      if (r < 1) return;
+      if ( r < 1 ) return;
 
       var c = this.canvas;
       this.dot(r);
-      c.rotate(Math.sin(this.timer.time / 2000 * (Math.PI * 2)) * Math.PI / 10);
-      c.translate(0, r * 2.2);
-      this.tail(r * 0.975);
+      c.rotate(Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/10);
+      c.translate(0,r*2.2);
+      this.tail(r*0.975);
     },
 
     wing: function(r) {
-      if (r < 1) return;
+      if ( r < 1 ) return;
 
       var c = this.canvas;
-      c.save();c.rotate(Math.PI / 2);this.feather(r * 0.4);c.restore();
+      c.save();c.rotate(Math.PI/2);this.feather(r*0.4);c.restore();
       this.dot(r);
-      c.rotate(Math.sin(this.timer.time / 2000 * (Math.PI * 2)) * Math.PI / 31.5);
-      c.translate(r * 2.2, 0);
-      this.wing(r * 0.945);
+      c.rotate(Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/31.5);
+      c.translate(r*2.2,0);
+      this.wing(r*0.945);
     },
 
     feather: function(r) {
-      if (r < 1.9) return;
+      if ( r < 1.9 ) return;
 
       var c = this.canvas;
       this.dot(r);
-      c.rotate(0.05 * Math.sin(this.timer.time / 2000 * (Math.PI * 2)));
-      c.translate(r * 2.2, 0);
-      this.feather(r * 0.92);
+      c.rotate(0.05 * Math.sin(this.timer.time/2000*(Math.PI*2)));
+      c.translate(r*2.2,0);
+      this.feather(r*0.92);
     },
 
     init: function() {
@@ -113,7 +113,7 @@ var Dragon = Model.create({
     },
 
     paint: function() {
-      if (! this.canvasView) return;
+      if ( ! this.canvasView ) return;
       this.canvasView.erase();
       this.__super__.paint.call(this);
 
@@ -123,8 +123,8 @@ var Dragon = Model.create({
       try
       {
 
-      c.translate(500, 250);
-      c.translate(0, -30 * Math.sin(this.timer.time / 2000 * (Math.PI * 2)));
+      c.translate(500,250);
+      c.translate(0, -30*Math.sin(this.timer.time/2000*(Math.PI*2)));
 
       // tail
       c.save();this.tail(this.r);c.restore();
@@ -133,29 +133,29 @@ var Dragon = Model.create({
       c.save();c.rotate(-0.4);this.wing(this.r);c.restore();
 
       // left wing
-      c.save();c.scale(-1, 1);c.rotate(-0.4);this.wing(this.r);c.restore();
+      c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r);c.restore();
 
       // neck
-      c.translate(0, 2 * -this.r);
+      c.translate(0,2*-this.r);
       this.dot(this.r);
-      c.translate(0, 2 * -this.r);
-      this.dot(this.r * .8);
+      c.translate(0,2*-this.r);
+      this.dot(this.r*.8);
 
       // eyes
       c.scale(0.38, 0.38);
-      c.translate(-80, -140);
-      c.translate(-500, -500);
+      c.translate(-80,-140);
+      c.translate(-500,-500);
       this.eyes.paint();
 
       }
-      catch (x) {
+      catch(x) {
         console.log(x);
       }
       c.restore();
 
-      if (Math.random() > 0.1) return;
+      if ( Math.random() > 0.1 ) return;
 
-      var Y = 210 - 30 * Math.sin(this.timer.time / 2000 * (Math.PI * 2));
+      var Y = 210-30*Math.sin(this.timer.time/2000*(Math.PI*2));
 
        var circle = circleModel.create({
          x: 500,
@@ -163,7 +163,7 @@ var Dragon = Model.create({
          r: 0,
          color: undefined,
          borderWidth: 4,
-         border: this.colours[timer.time / 10 % this.colours.length]});
+         border: this.colours[timer.time/10%this.colours.length]});
 
        this.addChild(circle);
 
@@ -172,7 +172,7 @@ var Dragon = Model.create({
        M.compile([
           [
             [4000, function() {
-               circle.x = 350 - Math.random() * 150;
+               circle.x = 350 - Math.random()*150;
                circle.alpha = 0;
              },
              Math.sqrt

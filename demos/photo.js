@@ -19,7 +19,7 @@ var NUM_PHOTOS = 10000;
 
 var DEBUG = false;
 
-if (DEBUG) {
+if ( DEBUG ) {
   NUM_ALBUMS = 5;
   NUM_PHOTOS = 5;
   Function.prototype.put = function() {
@@ -30,7 +30,7 @@ if (DEBUG) {
 
 function randomBoolean() { return Math.random() > 0.5; }
 
-function randomDate() { return new Date(Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 365 * 3); }
+function randomDate() { return new Date(Date.now() - Math.random()*1000*60*60*24*365*3); }
 
 function randomAlbum(i) {
   return Album.create({
@@ -42,9 +42,9 @@ function randomAlbum(i) {
 
 function randomPhoto(albumId, i) {
   return Photo.create({
-     id: i.toString(),
+     id:      i.toString(),
      albumId: albumId.toString(),
-     hash: Math.floor(Math.random() * 10000),
+     hash:    Math.floor(Math.random()*10000),
      timestamp: randomDate(),
      isLocal: randomBoolean()
    });
@@ -52,7 +52,7 @@ function randomPhoto(albumId, i) {
 
 function atest(name, test) {
   return atime(name, aseq(test, function(ret, arg) {
-     if (DEBUG) console.log('result: ', arg);
+     if ( DEBUG ) console.log('result: ', arg);
      ret();
   }));
 }
@@ -111,10 +111,10 @@ var AlbumDAO, PhotoDAO, PhotoDetailDAO;
 var albums = [], photos = [];
 
 function MultiKeyQuery(ret, i, n) {
-  PhotoDAO.find((Math.floor(NUM_PHOTOS / n) * i).toString(), ret);
+  PhotoDAO.find((Math.floor(NUM_PHOTOS/n)*i).toString(), ret);
 }
 
-var SUM_PHOTO_COUNT = SUM({f: function(photo) { return photo.jspb[9] || 0; }});
+var SUM_PHOTO_COUNT = SUM({f:function(photo) { return photo.jspb[9] || 0; }});
 
 PhotoDetailDAO = CachedIDB(MDAO.create({model: PhotoDetail})
   .addIndex(PhotoDetail.PHOTO_ID)
@@ -135,17 +135,17 @@ AlbumDAO = CascadingRemoveDAO.create({
   childDAO: PhotoDAO,
   property: Photo.ALBUM_ID});
 
-var avgKey = Math.floor(NUM_PHOTOS / 2).toString();
+var avgKey = Math.floor(NUM_PHOTOS/2).toString();
 
 console.clear();
 
 aseq(
-  atest('CreateTestAlbums' + NUM_ALBUMS, arepeat(NUM_ALBUMS, function(ret, i) {
+  atest('CreateTestAlbums' + NUM_ALBUMS, arepeat(NUM_ALBUMS, function (ret, i) {
     testData.albums[i].isLocal = !!testData.albums[i].isLocal;
     albums.push(Album.create(testData.albums[i]));
     ret();
   })),
-  atest('CreateTestPhotos' + NUM_PHOTOS, arepeat(NUM_PHOTOS, function(ret, i) {
+  atest('CreateTestPhotos' + NUM_PHOTOS, arepeat(NUM_PHOTOS, function (ret, i) {
     testData.photos[i].isLocal = !!testData.photos[i].isLocal;
     photos.push(Photo.create(testData.photos[i]));
     ret();
@@ -153,29 +153,29 @@ aseq(
   function(ret) { testData = undefined; ret(); },
   arepeat(DEBUG ? 1 : 3, aseq(
   alog('Benchmark...'),
-  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeat(NUM_ALBUMS, function(ret, i) {
+  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeat(NUM_ALBUMS, function (ret, i) {
     AlbumDAO.put(albums[i], ret);
   }))),
-  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeat(NUM_PHOTOS, function(ret, i) {
+  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeat(NUM_PHOTOS, function (ret, i) {
     PhotoDAO.put(photos[i], ret);
   }))),
   atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select([])(ret); }),
   atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select([])(ret); }),
-  atest('2bSingleKeyQuery', function(ret) { PhotoDAO.find(avgKey, ret); }),
-  atest('2bSingleKeyQuery(X10)', arepeat(10, function(ret) { PhotoDAO.find(avgKey, ret); })),
-  atest('2cMultiKeyQuery10', arepeat(10, MultiKeyQuery)),
+  atest('2bSingleKeyQuery',       function(ret) { PhotoDAO.find(avgKey,ret); }),
+  atest('2bSingleKeyQuery(X10)',  arepeat(10, function(ret) { PhotoDAO.find(avgKey,ret); })),
+  atest('2cMultiKeyQuery10',      arepeat(10,    MultiKeyQuery)),
   aif(!DEBUG, aseq(
-    atest('2cMultiKeyQuery100', arepeat(100, MultiKeyQuery)),
-    atest('2cMultiKeyQuery1000', arepeat(1000, MultiKeyQuery)),
-    atest('2cMultiKeyQuery5000', arepeat(5000, MultiKeyQuery))
+    atest('2cMultiKeyQuery100',     arepeat(100,   MultiKeyQuery)),
+    atest('2cMultiKeyQuery1000',    arepeat(1000,  MultiKeyQuery)),
+    atest('2cMultiKeyQuery5000',    arepeat(5000,  MultiKeyQuery))
   )),
-  atest('2dIndexedFieldQuery', function(ret) {
+  atest('2dIndexedFieldQuery',    function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
   }),
-  atest('2dIndexedFieldQuery(X10)', arepeat(10, function(ret) {
+  atest('2dIndexedFieldQuery(X10)', arepeat(10,function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
   })),
-  atest('2eAdHocFieldQuery', function(ret) {
+  atest('2eAdHocFieldQuery',      function(ret) {
     PhotoDAO.where(EQ(Photo.IS_LOCAL, true)).select(MAP(Photo.HASH, []))(ret);
   }),
   atest('2fSimpleInnerJoinQuery', function(ret) {
