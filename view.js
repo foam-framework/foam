@@ -2429,7 +2429,7 @@ style = window.getComputedStyle(this.$.children[0]);
 
 	    props.push(prop);
 	}
-	str.push('</tr></thead><tbody>');
+	str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
         if ( this.objs )
 	for ( var i = 0 ; i < this.objs.length; i++ ) {
 	    var obj = this.objs[i];
