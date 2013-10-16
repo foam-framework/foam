@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var f1 = amemo(function(ret) { console.log('f1'); ret(1); });
 var f2 = function(ret, a) { console.log('f2'); ret(a,2); };
 var f3 = function(a, b) { console.log(a,b); };
