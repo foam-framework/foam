@@ -267,6 +267,12 @@ console.log(i, k, v);
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
         var prop = this.model_.properties[i];
 
+        // If the src is modelled, and it has an instance_
+        //   BUT the instance doesn't have a value for the property,
+        //   then don't copy this value over since it's a default value.
+        if ( src.model_ && src.instance_ &&
+            !src.instance_.hasOwnProperty(prop.name) ) continue;
+
         if ( prop.name in src ) this[prop.name] = src[prop.name];
 //         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) this[prop.name] = src[prop.name];
       }

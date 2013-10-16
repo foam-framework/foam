@@ -65,7 +65,7 @@ var ModelProto = {
 //        this.models && this.models.forEach(function(m) {
 //          cls[m.name] = JSONUtil.mapToObj(m);
 //        });
-      // Workaround for crbug.com/258522
+      // Workaround for crbug.com/258552
       this.models && Object_forEach(this.models, function(m) {
         cls[m.name] = JSONUtil.mapToObj(m);
       });

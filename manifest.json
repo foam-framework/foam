@@ -44,6 +44,7 @@
               "mm3Types.js",
               "mm4Method.js",
               "mm5Misc.js",
+              "mm6Protobuf.js",
               "view.js",
               "RichTextView.js",
               "listchoiceview.js",
