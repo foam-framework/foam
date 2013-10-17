@@ -688,7 +688,7 @@ var LteExpr = FOAM({
    name: 'LteExpr',
 
    methods: {
-      toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
+      toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
       toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
 
       partialEval: function() {
@@ -716,7 +716,7 @@ var GteExpr = FOAM({
    name: 'GteExpr',
 
    methods: {
-      toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
+      toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
       toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
 
       partialEval: function() {
