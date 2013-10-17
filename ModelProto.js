@@ -210,7 +210,7 @@ var ModelProto = {
 
     isSubModel: function(model) {
       try {
-        return model && ( model == this || this.isSubModel(model.getPrototype().__proto__.model_) );
+        return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
       } catch (x) {
         return false;
       }
