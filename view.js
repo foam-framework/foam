@@ -598,11 +598,11 @@ var circleModel = Model.create({
 });
 
 
-var ImageModel = FOAM({
+var ImageView = FOAM({
 
    model_: 'Model',
 
-   name:  'Image',
+   name:  'ImageView',
 
    properties: [
       {
