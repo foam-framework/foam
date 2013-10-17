@@ -64,7 +64,7 @@ var files = [
   'glang',
   'demos/demos',
   'oauth',
-  'apps/tomail/view',
-  'apps/tomail/email',
+  'apps/mailreader/view',
+  'apps/mailreader/email',
   'turntable'
 ];

@@ -2313,7 +2313,7 @@ var TableView2 = FOAM({
          var style = window.getComputedStyle(row);
          // If the row is selected its height is less, so if we select two rows
          // we're sure to get one that isn't selected.
-         height = Math.max(row.clientHeight, rows[0].clientHeight);
+         height = Math.max(row.clientHeight, rows[0].clientHeight)+1;
          top = rows[0].offsetTop + rows[0].offsetParent.offsetTop;
       }
 
