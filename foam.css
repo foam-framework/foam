@@ -67,6 +67,14 @@ p, h1, form, button{
     margin:2px 0 0px 10px;
 }
 
+.detailView textarea{
+    float:left;
+    font-size:12px;
+    padding:4px 2px;
+    border:solid 1px #aacfe4;
+    margin:2px 0 0px 10px;
+}
+
 /* ----------- summaryView ----------- */
 
 .summaryView {
