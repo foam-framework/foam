@@ -87,14 +87,14 @@ function layout() {
   var FOOTER_H  = 0;
   var SEARCH_W  = 300;
   var SEARCH_H  = H - HEADER_H - FOOTER_H;
-  var RIGHT_W   = W - SEARCH_W - 5;
+  var RIGHT_W   = W - SEARCH_W;
 
   pos(header,null,null,W,HEADER_H-10);
   pos(search, HEADER_H, null, SEARCH_W, SEARCH_H);
 
   if ( W > MIN_THREE_COLUMN_W ) {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W * 0.3, SEARCH_H);
-    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.3, RIGHT_W * 0.7-10, SEARCH_H-15);
+    pos(edit, HEADER_H, SEARCH_W + 10 + RIGHT_W * 0.3, RIGHT_W * 0.7, SEARCH_H-15);
   } else {
     pos(browse, HEADER_H, SEARCH_W + 10, RIGHT_W, SEARCH_H/2);
     pos(edit,
