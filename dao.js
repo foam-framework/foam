@@ -15,50 +15,48 @@
  * limitations under the License.
  */
 
-/* DAO Interface
- * put(obj, callback(newObj)) - either create or update (required?)
- *   insert(obj, callback(newObj)) - create a new record
- *   update(obj, callback(newObj)) - update an existing record
- * find(index, callback) - like pipe but only finds one value
- *    could be merged with pipe?
- *    what values for 'index': primary-key, object, query?
- * select(sink[, options]) - select multipe records
- * remove(obj, callback) - remove one object
- * removeAll(query, callback)
- *    Are both remove and removeAll needed?
- * has(callback)
- *    Internal only?
- * pipe(callback[, {map of options, including 'query', 'order', 'limit'}])
- *   bind() = pipe + listen
- *   listen()
- * where(query) -> DAO
- *   synchronous
- * orderBy(map) -> DAO
- *   synchronous
- * limit(count[,start]) -> DAO
- *   synchronous
- *
- * future:
- * drop() (rare enough to be handled by cmd()?)
- * cmd()
- *
- * query: obj or predicate or primary-key
- *   If you allow 'obj' how do you tell the difference
- *   between mLang's stored in a DAO?
- *
- * Strange Ideas:
- *   What if DAO only supported cmd() method and other 'methods'
- *
- * Usage:
- * dao.where(AND(...)).limit(100).orderBy(User.LAST_NAME).pipe(fn);
- *
- * OR
- *
- * dao.pipe(fn, { query: AND(...), limit: 100, orderBy: User.LAST_NAME });
- * (doesn't read well when pipelined; reverse arg order?)
- * dao.pipe({ query: AND(...), limit: 100, orderBy: User.LAST_NAME }, fn);
- *
- */
+// ???: Is there any point in making this an Interface, or just a Concrete Model
+var FlowControl = FOAM({
+  model_: 'Interface',
+
+  package: 'dao',
+  name: 'FlowControl',
+  description: 'DAO FLow Control.  Used to control select() behavior.',
+
+  methods: [
+    {
+       name: 'stop'
+    },
+    {
+       name: 'error',
+       args: [
+          { name: 'e', type: 'Object' }
+       ]
+    },
+    {
+       name: 'isStopped',
+       description: 'Returns true iff this selection has been stopped.',
+       returnType: 'Boolean'
+    },
+    {
+       name: 'getError',
+       description: 'Returns error passed to error(), or undefined if error() never called',
+       returnType: 'Object'
+    }
+/*
+    // For future use.
+    {
+       name: 'advance',
+       description: 'Advance selection to the specified key.',
+       args: [
+          { name: 'key', type: 'Object' },
+          { name: 'inclusive', type: 'Object', optional: true, defaultValue: true },
+
+       ]
+    }*/
+  ]
+});
+
 
 var Sink = FOAM({
   model_: 'Interface',
@@ -70,6 +68,7 @@ var Sink = FOAM({
   methods: [
     {
        name: 'put',
+       description: 'Put (add) an object to the Sink.',
        args: [
           { name: 'obj', type: 'Object' },
           { name: 'sink', type: 'Sink' }
@@ -77,6 +76,7 @@ var Sink = FOAM({
     },
     {
        name: 'remove',
+       description: 'Remove a single object.',
        args: [
           { name: 'obj', type: 'Object' },
           { name: 'sink', type: 'Sink' }
@@ -84,13 +84,59 @@ var Sink = FOAM({
     },
     {
        name: 'error',
+       description: 'Report an error.',
        args: [
           { name: 'obj', type: 'Object' }
        ]
+    },
+    {
+       name: 'eof',
+       description: 'Indicate that no more operations will be performed on the Sink.'
     }
   ]
 });
 
+
+var Predicate = FOAM({
+  model_: 'Interface',
+
+  name: 'Predicate',
+  description: 'A boolean Predicate.',
+
+  methods: [
+    {
+       name: 'f',
+       description: 'Find a single object, using either a Predicate or the primary-key.',
+       returnType: 'Boolean',
+       args: [
+          { name: 'o', description: 'The object to be predicated.' }
+       ]
+    },
+  ]
+});
+
+
+var Comparator = FOAM({
+  model_: 'Interface',
+
+  name: 'Comparator',
+  description: 'A strategy for comparing pairs of Objects.',
+
+  methods: [
+    {
+       name: 'compare',
+       description: 'Compare two objects, returning 0 if they are equal, > 0 if the first is larger, and < 0 if the second is.',
+       returnType: 'Integer',
+       args: [
+          { name: 'o1', description: 'The first object to be compared.' },
+          { name: 'o2', description: 'The second object to be compared.' }
+       ]
+    },
+  ]
+});
+
+
+// 'options': Map including 'query', 'order', and 'limit', all optional
 
 var DAO = FOAM({
   model_: 'Interface',
@@ -103,18 +149,23 @@ var DAO = FOAM({
   methods: [
     {
        name: 'find',
+       description: 'Find a single object, using either a Predicate or the primary-key.',
        args: [
-          { name: 'key', type: 'Object' },
+          { name: 'key', type: 'Predicate|Object' },
           { name: 'sink', type: 'Sink' }
        ]
     },
     {
        name: 'removeAll',
+       description: 'Remove all (scoped) objects.',
        args: [
+//          { name: 'sink', type: 'Sink' }, // TODO: implement in DAO's
+          { name: 'options', type: 'Object', optional: true }
        ]
     },
     {
        name: 'select',
+       description: 'Select all (scoped) objects.',
        args: [
           { name: 'sink', type: 'SinkI' },
           { name: 'options', type: 'Object', optional: true }
@@ -122,24 +173,66 @@ var DAO = FOAM({
     },
     {
        name: 'pipe',
+       description: 'The equivalent of doing a select() followed by a listen().',
        args: [
-          { name: 'sink', type: 'SinkI' },
+          { name: 'sink', type: 'Sink' },
           { name: 'options', type: 'Object', optional: true }
        ]
     },
     {
        name: 'listen',
+       description: 'Listen for future (scoped) updates to the DAO.',
        args: [
-          { name: 'sink', type: 'SinkI' },
+          { name: 'sink', type: 'Sink' },
           { name: 'options', type: 'Object', optional: true }
        ]
     },
     {
        name: 'unlisten',
+       description: 'Remove a previously registered listener.',
        args: [
-          { name: 'sink', type: 'SinkI' }
+          { name: 'sink', type: 'Sink' }
+       ]
+    },
+    {
+       name: 'where',
+       description: 'Return a DAO that will be filtered to the specified predicate.',
+       returnValue: 'DAO',
+       args: [
+          { name: 'query', type: 'Predicate' }
+       ]
+    },
+    {
+       name: 'limit',
+       description: 'Return a DAO that will limit future select()\'s to the specified number of results.',
+       returnValue: 'DAO',
+       args: [
+          { name: 'count', type: 'Integer' }
+       ]
+    },
+    {
+       name: 'skip',
+       description: 'Return a DAO that will skip the specified number of objects from future select()\'s',
+       returnValue: 'DAO',
+       args: [
+          { name: 'skip', type: 'Integer' }
+       ]
+    },
+    {
+       name: 'orderBy',
+       description: 'Return a DAO that will order future selection()\'s by the specified sort order.',
+       returnValue: 'DAO',
+       args: [
+          {
+             name: 'comparators',
+             rest: true,
+             type: 'Comparator',
+             description: 'One or more comparators that specify the sort-order.'
+          }
        ]
     }
+    // Future: drop() - drop/remove the DAO
+    //         cmd()  - handle extension operations 
   ]
 });
 
