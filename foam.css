@@ -59,7 +59,7 @@ p, h1, form, button{
     float:left;
 }
 
-.detailView input{
+.detailView input {
     float:left;
     font-size:12px;
     padding:4px 2px;
@@ -67,8 +67,15 @@ p, h1, form, button{
     margin:2px 0 0px 10px;
 }
 
-.detailView textarea{
+.detailView textarea {
     float:left;
+    font-size:12px;
+    padding:4px 2px;
+    border:solid 1px #aacfe4;
+    margin:2px 0 0px 10px;
+}
+
+.detailView select {
     font-size:12px;
     padding:4px 2px;
     border:solid 1px #aacfe4;
@@ -85,7 +92,7 @@ p, h1, form, button{
 }
 
 .summaryView .table {
-    table-layout:fixed;
+    table-layout: fixed;
 }
 
 /* Temp for gmail demo. */
