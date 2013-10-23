@@ -143,21 +143,18 @@ var features = [
       var get = this.getter || function() {
         if ( !this.static_.hasOwnProperty(prop.name) ) return prop.defaultValue;
         return this.static_[prop.name];
-      }
-    var set = this.setter ||
-        function(value) {
-          this.static_[prop.name] = value;
-        };
-
+      };
+      var set = this.setter || function(value) {
+        this.static_[prop.name] = value;
+      };
     } else {
       var get = this.getter || function() {
         if ( !this.instance_.hasOwnProperty(prop.name) ) return prop.defaultValue;
         return this.instance_[prop.name];
-      }
-      var set = this.setter ||
-          function(value) {
-            this.instance_[prop.name] = value;
-          };
+      };
+      var set = this.setter || function(value) {
+        this.instance_[prop.name] = value;
+      };
     }
 
     Object.defineProperty(o.prototype, this.name, {
