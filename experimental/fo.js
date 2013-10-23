@@ -19,14 +19,12 @@
 var CTX = {
   __proto__: window,
 
-  FObject: { name: 'FObject', prototype: {}, features: [], instance_: {} },
-  Model:  { name: 'Model', prototype: {}, features: [], instance_: {} },
+  FObject: { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} },
+  Model:  { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} },
   Method: {
     prototype: {
       create: function(args) {
         args.install = function(o) {
-          if ( !o.features ) o.features = [this];
-          else o.features = o.features.concat(this);
           o.prototype[this.name] = this;
           if (o.prototype.__proto__[this.name]) {
             o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
@@ -47,6 +45,18 @@ CTX.FObject.__proto__ = CTX.Model.prototype;
 
 var features = [
   //  [null,         'Model', { name: 'FObject' }],
+  ['FObject', 'Method',
+   function addFeature(f) {
+     for ( var i = 0; i < this.features.length; i++ ) {
+       if (this.features[i].name === f.name) {
+         var old = this.features[i];
+         this.features[i] = f;
+         break;
+       }
+     }
+     if ( i == this.features.length ) this.features.push(f);
+     f.install(this, old);
+   }],
   ['FObject',    'Method',  function copyFrom(src) {
     for ( var key in src ) {
       // This is a workaround.  We should define model_ as a non-cloneable property.
@@ -62,7 +72,7 @@ var features = [
       __super__: this.prototype.__proto__,
       TYPE: this.name,
       features: [],
-      prototype: { __proto__: CTX['FObject'].prototype },
+      prototype: { __proto__: CTX['FObject'].prototype, static_: {} },
       instance_: {}
     };
     obj.copyFrom(args);
@@ -114,13 +124,14 @@ var features = [
   }],
   [null,       'Model', { name: 'Property' }],
   ['String',   'Method', function constantize() { return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase(); } ],
-  ['Property', 'Method', function install(o) {
-    var existing = o.getProperty(this.name);
-
-    if ( ! existing ) {
-      if ( ! o.features ) o.features = [this];
-      else o.features = o.features.concat(this);
-    } else {
+  ['String',   'Method', function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
+  ['String',   'Method', function labelize() {
+    return this.replace(/[a-z][A-Z]/g, function(a) {
+      return a.charAt(0) + ' ' + a.charAt(1);
+    }).capitalize();
+  }],
+  ['Property', 'Method', function install(o, existing) {
+    if ( existing ) {
       this.copyFrom(existing.clone().copyFrom(this));
     }
 
@@ -128,15 +139,27 @@ var features = [
 
     var prop = this;
 
-    var get = this.getter ||
-        function() {
-          if ( !this.instance_.hasOwnProperty(prop.name) ) return prop.defaultValue;
-          return this.instance_[prop.name];
-        };
+    if ( this.scope === 'static' ) {
+      var get = this.getter || function() {
+        if ( !this.static_.hasOwnProperty(prop.name) ) return prop.defaultValue;
+        return this.static_[prop.name];
+      }
     var set = this.setter ||
         function(value) {
-          this.instance_[prop.name] = value;
+          this.static_[prop.name] = value;
         };
+
+    } else {
+      var get = this.getter || function() {
+        if ( !this.instance_.hasOwnProperty(prop.name) ) return prop.defaultValue;
+        return this.instance_[prop.name];
+      }
+      var set = this.setter ||
+          function(value) {
+            this.instance_[prop.name] = value;
+          };
+    }
+
     Object.defineProperty(o.prototype, this.name, {
       configurable: true,
       enumerable: this.enumerable === undefined ? true : this.enumerable,
@@ -146,8 +169,10 @@ var features = [
     });
   }],
   ['Property', 'Property', { name: 'defaultValue', defaultValue: '' }],
+  ['Property', 'Property', { name: 'defaultValueFn', defaultValue: '' }],
   ['Property', 'Property', { name: 'valueFactory', defaultValue: '' }],
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
+  ['Property', 'Property', { name: 'scope', defaultValue: '' }],
   ['Property', 'Method', function initialize(o) {
     if ( ! o.instance_.hasOwnProperty(this.name) &&
         this.valueFactory ) o.instance_[this.name] = this.valueFactory();
@@ -168,7 +193,6 @@ var features = [
     return this.SUPER({ model: CTX[model] });
   }],
   ['Extends',  'Method',  function install(o) {
-    o.features = o.features.concat(this);
     for ( var i = 0; i < this.model.features.length; i++ ) {
       this.model.features[i].clone().install(o);
     }
@@ -199,14 +223,12 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
-      if ( !o.features ) o.features = [this];
-      else o.features = o.features.concat(this)
       o.prototype[this.name] = this.jsCode;
       if (o.prototype.__proto__[this.name]) {
         o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
       }
     }
-  }, true],
+  }],
   ['Method', 'Method', {
     name: 'create',
     jsCode: function(args) {
@@ -220,18 +242,32 @@ var features = [
   }],
   ['Method', 'Extends', 'Feature'],
 
-  [null, 'Model', { name: 'AMail' }],
-  ['AMail', 'Property', {
-    name: 'from',
-    defaultValue: "adamvy@google.com",
-    help: "say what" }],
-  ['AMail', 'Method', function send() { console.log('sending from: ' + this.from); }],
+  // Standard lib stuff.
+  ['Object',  'Property', {
+    name: '$UID',
+    enumerable: false,
+    getter: (function() { var id = 1; return function() { return this.$UID__ || (this.$UID__ = id++); } })()
+  }],
+  ['Date', 'Method', function compareTo(o) {
+    if ( o === this ) return 0;
+    var d = this.getTime() - o.getTime();
+    return d == 0 ? 0 : d > 0 ? 1 : -1;
+  }],
+  ['String', 'Method', function compareTo(o) {
+    if ( o == this ) return 0;
+    return this < 0 ? -1 : 1;
+  }],
+  ['Number', 'Method', function compareTo(o) {
+    if ( o == this ) return 0;
+    return this < 0 ? -1 : 1;
+  }],
+  ['Boolean', 'Method', function compareTo(o) {
+    return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
+  }],
 
-  [null, 'Model', { name: 'KMail' }],
-  ['KMail', 'Extends', 'AMail'],
-  ['KMail', 'Property', {
-    name: 'from',
-    defaultValue: "kgr@google.com" }],
+  [null, 'Model', { name: 'EMail' }],
+  ['EMail', 'Property', { name: 'sender', scope: 'static', defaultValue: 'adamvy' }],
+  ['EMail', 'Method', function send() { console.log(this.sender); }],
 ];
 
 function expandFeatures(f, opt_prefix) {
@@ -250,7 +286,8 @@ function expandFeature(f, a, prefix) {
 function build(scope, opt_whereModel) {
    for ( var i = 0 ; i < features.length ; i++ ) {
       var f = features[i];
-     if (f[3]) debugger;
+      if (f[3]) debugger;
+
       if ( opt_whereModel && f[0] !== opt_whereModel ) continue;
       var model = f[0] ? scope[f[0]] : scope;
 
@@ -261,15 +298,16 @@ function build(scope, opt_whereModel) {
 
       var args = f[2];
       var feature = scope[fname].prototype.create.call(scope[fname], args);
-      feature.install(model);
+      model.addFeature ? model.addFeature(feature) : feature.install(model);
    }
 }
 
 
 build(CTX);
 
-var amail = CTX.AMail.create();
-var kmail = CTX.KMail.create();
-
-amail.send();
-kmail.send();
+var mail = CTX.EMail.create();
+mail.send();
+var mail2 = CTX.EMail.create({ sender: 'kgr' });
+mail.send();
+mail.sender = 'mike';
+mail2.send();
