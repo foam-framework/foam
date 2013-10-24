@@ -26,6 +26,7 @@ var CTX = {
     Boolean: Boolean,
     Number: Number,
     Date: Date,
+    Function: Function,
 
     FObject: { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} },
     Model:  { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} },
@@ -233,10 +234,8 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
+      if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
       o.prototype[this.name] = this.jsCode;
-      if (o.prototype.__proto__[this.name]) {
-        o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-      }
     }
   }],
   ['Method', 'Method', {
@@ -267,6 +266,22 @@ var features = [
   ['String', 'Method', function compareTo(o) {
     if ( o == this ) return 0;
     return this < 0 ? -1 : 1;
+  }],
+  [null, 'Method', function constantFn(v) { return function() { return v; }; }],
+  ['Function', 'Method', function simpleBind(f, self) {
+    var ret = function() { return f.apply(self, arguments); };
+    ret.toString = function() {
+      return f.toString();
+    };
+    return ret;
+  }],
+  ['Function', 'Method', function bind(f, self) {
+    return arguments.length == 1 ?
+      Function.prototype.simpleBind(this, arguments[0]) :
+      arguments.callee.super_.apply(this, arguments);
+  }],
+  ['String', 'Method', function equalsIC(o) {
+    return other && this.toUpperCase() === other.toUpperCase();
   }],
   ['Number', 'Method', function compareTo(o) {
     if ( o == this ) return 0;
@@ -331,6 +346,10 @@ build(CTX);
 var env = CTX.create();
 
 with (env) {
+  var a = function() {console.log(this.a);};
+  var b = {a: 12};
+  var c = a.bind(b);
+  c();
   var mails = Mail.create();
 
   var mail = mails.EMail.create();
