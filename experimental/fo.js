@@ -15,10 +15,24 @@
  * limitations under the License.
  */
 
+Object.name = 'Object';
+String.name = 'Object';
+Boolean.name = 'Object';
+Number.name = 'Number';
+Date.name = 'Date';
+Function.name = 'Function';
+
 var CTX = {
   name: 'ROOT',
   instance_: {},
-  features: [],
+  features: [
+    Object,
+    String,
+    Boolean,
+    Number,
+    Date,
+    Function,
+  ],
 
   prototype: {
     Object: Object,
@@ -26,36 +40,47 @@ var CTX = {
     Boolean: Boolean,
     Number: Number,
     Date: Date,
-    Function: Function,
-
-    FObject: { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} },
-    Model:  { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} },
-    Method: {
-      prototype: {
-        create: function(args) {
-          args.install = function(o) {
-            o.prototype[this.name] = this;
-            if (o.prototype.__proto__[this.name]) {
-              o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-            }
-          };
-          args.initialize = function(){};
-          return args;
-        }
-      }
-    }
+    Function: Function
   }
 };
 
-CTX.prototype.Model.__proto__ = CTX.prototype.Model.prototype;
-CTX.prototype.Model.__proto__.__proto__ = CTX.prototype.FObject.prototype;
-CTX.prototype.Model.model_ = CTX.prototype.Model;
-CTX.prototype.FObject.model_ = CTX.prototype.Model;
-CTX.prototype.FObject.__proto__ = CTX.prototype.Model.prototype;
+(function() {
+  var FObject = { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} };
+  var Model = { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} };
+  var Method = {
+    name: 'Method',
+    prototype: {
+      create: function(args) {
+        args.install = function(o) {
+          o.prototype[this.name] = this;
+          if (o.prototype.__proto__[this.name]) {
+            o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
+          }
+        };
+        args.initialize = function(){};
+        return args;
+      }
+    }
+  };
 
-CTX.__proto__ = CTX.prototype.Model.prototype;
-CTX.model_ = CTX.prototype.Model;
-CTX.prototype.__proto__ = CTX.prototype.FObject.prototype;
+  CTX.features.push(FObject);
+  CTX.features.push(Model);
+  CTX.features.push(Method);
+
+  CTX.prototype.Model = Model;
+  CTX.prototype.FObject = FObject;
+  CTX.prototype.Method = Method;
+
+  Model.__proto__ = Model.prototype;
+  Model.prototype.__proto__ = FObject.prototype;
+  Model.model_ = Model;
+  FObject.model_ = Model;
+  FObject.__proto__ = Model.prototype;
+
+  CTX.__proto__ = Model.prototype;
+  CTX.model_ = Model;
+  CTX.prototype.__proto__ = FObject.prototype;
+})();
 
 var features = [
   //  [null,         'Model', { name: 'FObject' }],
@@ -98,7 +123,7 @@ var features = [
     if ( ! features ) return;
     for (var i = 0; i < features.length; i++) {
       var feature = features[i];
-      feature.initialize(this, args);
+      feature.initialize && feature.initialize(this, args);
     }
   }],
   ['FObject',    'Method',  function initialize() {} ],
@@ -314,13 +339,24 @@ function expandFeature(f, a, prefix) {
    return f;
 }
 
-function lookup(address, start) {
-  address = address ? address.split('.') : [];
-  var model = start;
-  for (var j = 0; model && j < address.length; j++) {
-    model = model.prototype[address[j]];
+function lookup(address, model) {
+  if ( ! address ) return model;
+
+  var split = address.indexOf('.');
+  if ( split > 0 ) {
+    var rest = address.substring(split + 1);
+    address = address.substring(0, split);
   }
-  return model;
+
+  if ( ! model.features ) return;
+  for ( var i = 0; i < model.features.length; i++ ) {
+    if ( model.features[i].name === address ) {
+      var feature = model.features[i];
+      break;
+    }
+  }
+  if ( rest ) return lookup(rest, feature);
+  return feature;
 }
 
 function build(scope) {
