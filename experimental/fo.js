@@ -14,34 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO: bootstrap 'install'
 
 var CTX = {
-  __proto__: window,
+  name: 'ROOT',
+  instance_: {},
+  features: [],
 
-  FObject: { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} },
-  Model:  { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} },
-  Method: {
-    prototype: {
-      create: function(args) {
-        args.install = function(o) {
-          o.prototype[this.name] = this;
-          if (o.prototype.__proto__[this.name]) {
-            o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-          }
-        };
-        args.initialize = function(){};
-        return args;
+  prototype: {
+    Object: Object,
+    String: String,
+    Boolean: Boolean,
+    Number: Number,
+    Date: Date,
+
+    FObject: { name: 'FObject', prototype: {static_: {}}, features: [], instance_: {} },
+    Model:  { name: 'Model', prototype: {static_: {}}, features: [], instance_: {} },
+    Method: {
+      prototype: {
+        create: function(args) {
+          args.install = function(o) {
+            o.prototype[this.name] = this;
+            if (o.prototype.__proto__[this.name]) {
+              o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
+            }
+          };
+          args.initialize = function(){};
+          return args;
+        }
       }
     }
   }
 };
 
-CTX.Model.__proto__ = CTX.Model.prototype;
-CTX.Model.__proto__.__proto__ = CTX.FObject.prototype;
-CTX.Model.model_ = CTX.Model;
-CTX.FObject.model_ = CTX.Model;
-CTX.FObject.__proto__ = CTX.Model.prototype;
+CTX.prototype.Model.__proto__ = CTX.prototype.Model.prototype;
+CTX.prototype.Model.__proto__.__proto__ = CTX.prototype.FObject.prototype;
+CTX.prototype.Model.model_ = CTX.prototype.Model;
+CTX.prototype.FObject.model_ = CTX.prototype.Model;
+CTX.prototype.FObject.__proto__ = CTX.prototype.Model.prototype;
+
+CTX.__proto__ = CTX.prototype.Model.prototype;
+CTX.model_ = CTX.prototype.Model;
+CTX.prototype.__proto__ = CTX.prototype.FObject.prototype;
 
 var features = [
   //  [null,         'Model', { name: 'FObject' }],
@@ -72,7 +85,7 @@ var features = [
       __super__: this.prototype.__proto__,
       TYPE: this.name,
       features: [],
-      prototype: { __proto__: CTX['FObject'].prototype, static_: {} },
+      prototype: { __proto__: CTX.prototype['FObject'].prototype, static_: {} },
       instance_: {}
     };
     obj.copyFrom(args);
@@ -98,7 +111,7 @@ var features = [
     if ( ! this.features ) return;
     for ( var i = 0; i < this.features.length; i++ ) {
       var feature = this.features[i];
-      if ( CTX['Property'].isInstance(feature) &&
+      if ( CTX.prototype['Property'].isInstance(feature) &&
           feature.name === name ) return feature;
     }
   }],
@@ -106,11 +119,11 @@ var features = [
     if ( ! this.features ) return;
     for ( var i = 0; i < this.features.length; i++ ) {
       var feature = this.features[i];
-      if ( CTX['Extends'] && CTX['Extends'].isInstance(feature) ) return feature;
+      if ( CTX.prototype['Extends'] && CTX.prototype['Extends'].isInstance(feature) ) return feature;
     }
   }],
   ['Model',    'Method',  function install(o) {
-    o[this.name] = this;
+    o.prototype[this.name] = this;
   }],
   ['Model',    'Method',  function isSubModel(model) {
     try {
@@ -187,7 +200,7 @@ var features = [
   [null,       'Model', { name: 'Extends' }],
   ['Extends',  'Property', { name: 'model' }],
   ['Extends',  'Method', function create(model) {
-    return this.SUPER({ model: CTX[model] });
+    return this.SUPER({ model: CTX.prototype[model] });
   }],
   ['Extends',  'Method',  function install(o) {
     for ( var i = 0; i < this.model.features.length; i++ ) {
@@ -202,10 +215,10 @@ var features = [
   [null, 'Model', {
     name: 'Method',
     prototype: {
-      __proto__: CTX['FObject'].prototype,
+      __proto__: CTX.prototype['FObject'].prototype,
 
       create: function(args) {
-        var obj = CTX['FObject'].create(args);
+        var obj = CTX.prototype['FObject'].create(args);
         obj.install = function(o) {
           o.prototype[this.name] = this.jsCode;
           if (o.prototype.__proto__[this.name]) {
@@ -238,13 +251,14 @@ var features = [
     }
   }],
   ['Method', 'Extends', 'Feature'],
-
-  // Standard lib stuff.
-  ['Object',  'Property', {
-    name: '$UID',
-    enumerable: false,
-    getter: (function() { var id = 1; return function() { return this.$UID__ || (this.$UID__ = id++); } })()
+  [null, 'Model', { name: 'Constant' }],
+  ['Constant', 'Extends', 'Feature'],
+  ['Constant', 'Property', { name: 'value' }],
+  ['Constant', 'Method', function install(o, old) {
+    if ( old ) console.warn('Variable constant: ' + this.name);
+    o.prototype[this.name] = this.value;
   }],
+
   ['Date', 'Method', function compareTo(o) {
     if ( o === this ) return 0;
     var d = this.getTime() - o.getTime();
@@ -262,9 +276,14 @@ var features = [
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
 
-  [null, 'Model', { name: 'EMail' }],
-  ['EMail', 'Property', { name: 'sender', scope: 'static', defaultValue: 'adamvy' }],
-  ['EMail', 'Method', function send() { console.log(this.sender); }],
+  // Events
+
+
+  // Some test models.
+  [null, 'Model', { name: 'Mail' }],
+  ['Mail', 'Model', { name: 'EMail' }],
+  ['Mail.EMail', 'Property', { name: 'sender', scope: 'static', defaultValue: 'adamvy' }],
+  ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
 ];
 
 function expandFeatures(f, opt_prefix) {
@@ -280,21 +299,28 @@ function expandFeature(f, a, prefix) {
    return f;
 }
 
-function build(scope, opt_whereModel) {
+function lookup(address, start) {
+  address = address ? address.split('.') : [];
+  var model = start;
+  for (var j = 0; model && j < address.length; j++) {
+    model = model.prototype[address[j]];
+  }
+  return model;
+}
+
+function build(scope) {
    for ( var i = 0 ; i < features.length ; i++ ) {
       var f = features[i];
       if (f[3]) debugger;
 
-      if ( opt_whereModel && f[0] !== opt_whereModel ) continue;
-      var model = f[0] ? scope[f[0]] : scope;
-
+      var model = lookup(f[0], scope);
       if ( ! model ) throw "Model not found: " + f[0];
 
-      var fname = f[1];
-      if ( !scope[fname] ) continue;
+      var feature = lookup(f[1], scope);
+      if ( !feature ) throw "Feature not found: " + f[1];
 
       var args = f[2];
-      var feature = scope[fname].prototype.create.call(scope[fname], args);
+      var feature = feature.prototype.create.call(feature, args);
       model.addFeature ? model.addFeature(feature) : feature.install(model);
    }
 }
@@ -302,9 +328,15 @@ function build(scope, opt_whereModel) {
 
 build(CTX);
 
-var mail = CTX.EMail.create();
-mail.send();
-var mail2 = CTX.EMail.create({ sender: 'kgr' });
-mail.send();
-mail.sender = 'mike';
-mail2.send();
+var env = CTX.create();
+
+with (env) {
+  var mails = Mail.create();
+
+  var mail = mails.EMail.create();
+  mail.send();
+  var mail2 = mails.EMail.create({ sender: 'kgr' });
+  mail.send();
+  mail.sender = 'mike';
+  mail2.send();
+}
