@@ -16,8 +16,8 @@
  */
 
 Object.name = 'Object';
-String.name = 'Object';
-Boolean.name = 'Object';
+String.name = 'Object';  // ???: Why is this 'Object'?
+Boolean.name = 'Object';  // ???: Why is this 'Object'?
 Number.name = 'Number';
 Date.name = 'Date';
 Function.name = 'Function';
@@ -178,6 +178,8 @@ var features = [
 
     var prop = this;
 
+    // ???: This isn't extensible.
+    // Why not have scope be 'static_' or 'instance_' and do: this[prop.scope][prop.name]
     if ( this.scope === 'static' ) {
       var get = this.getter || function() {
         if ( !this.static_.hasOwnProperty(prop.name) ) return prop.defaultValue;
@@ -208,7 +210,7 @@ var features = [
   ['Property', 'Property', { name: 'defaultValueFn', defaultValue: '' }],
   ['Property', 'Property', { name: 'valueFactory', defaultValue: '' }],
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
-  ['Property', 'Property', { name: 'scope', defaultValue: '' }],
+  ['Property', 'Property', { name: 'scope', defaultValue: '' }], // ???: make the defaultValue = 'instance_'?
   ['Property', 'Method', function initialize(o) {
     if ( ! o.instance_.hasOwnProperty(this.name) &&
         this.valueFactory ) o.instance_[this.name] = this.valueFactory();
