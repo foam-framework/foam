@@ -251,11 +251,7 @@ var AbstractView2 = FOAM({
       {
         name:   '$',
         mode:   "read-only",
-        getter: function() {
-           if ( ! this.elementId )
-              this.elementId = this.nextID();
-           return $(this.getID());
-        },
+        getter: function() { return $(this.getID()); },
         help:   'DOM Element.'
       }
    ],
@@ -297,7 +293,6 @@ var AbstractView2 = FOAM({
       return "view2_" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
-    // deprecated, use $() instead
     getID: function() {
       // @return this View's unique DOM element-id
 // console.log('getID', this.elementId);
@@ -2045,6 +2040,7 @@ var HelpView = FOAM({
    // would be nice if I could mark properties as mandatory
    // if they were required to be initialized
    create: function(model) {
+debugger;
       var obj = AbstractView.create.call(this);
 
       obj.model = model;
@@ -2461,7 +2457,7 @@ var TableView2 = FOAM({
     },
 
     initHTML_: function() {
-      AbstractView.initHTML.call(this);
+      this.__super__.initHTML.apply(this);
 
       var es = $$('tr-' + this.getID());
       var self = this;
@@ -2509,49 +2505,54 @@ var TableView2 = FOAM({
 });
 
 
-// TODO: extend from AbstractView2
 // TODO: add ability to set CSS class and/or id
-var ActionButton = {
-   __proto__: AbstractView,
+var ActionButton = Model.create({
+  name: 'ActionButton',
 
-   create: function(action, value) {
-      var obj = {
-	 __proto__: this,
-	 action:    action,
-	 value:     value,
-	 instance_: {} // todo: fix
-      };
-
-      value.addListener(this.subjectUpdate.bind(this));
-
-      return obj;
-   },
-
-   subjectUpdate: function() {
+  extendsModel: 'AbstractView2',
+  
+  properties: [
+    {
+      name:  'action'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return new SimpleValue(); }
+    }
+  ],
+  
+  methods: {
+    
+    // TODO: implement and make a listener
+    subjectUpdate: function() {
       // console.log('subject update: ' + this.value);
-   },
-
-   toHTML: function() {
+    },
+    
+    toHTML: function() {
       this.registerCallback(
-	 'click',
-	 function(action) { return function() {
-	    action.action.apply(this.value.get());
-         };}(this.action),
-         this.getID());
-
+	'click',
+	function(action) { return function() {
+	  action.action.apply(this.value.get());
+        };}(this.action),
+        this.getID());
+      
       var out = [];
       out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '">');
+
       if (this.action.iconUrl) {
         out.push('<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />');
       }
+
       if ( this.action.showLabel ) {
         out.push(this.action.label);
       }
       out.push('</button>');
-
+      
       return out.join('');
-   }
-};
+    }
+  }
+});
 
 // TODO: ActionBorder should use this.
 // Maybe replace this with a generic ToolbarView which supports adding Actions
@@ -2628,7 +2629,7 @@ var ActionToolbarView = FOAM({
 
 	 for ( var i = 0 ; i < this.actions.length ; i++ ) {
 	    var action = this.actions[i];
-	    var button = ActionButton.create(action, this.value);
+	   var button = ActionButton.create({action: action, value: this.value});
 	    str += this.preButton(button) + button.toHTML() + this.postButton(button);
 
 	    this.addChild(button);
@@ -2702,7 +2703,7 @@ var ActionBorder = {
 
 		for ( var i = 0 ; i < this.actions.length ; i++ ) {
 		   var action = this.actions[i];
-		   var button = ActionButton.create(action, this.getValue());
+		  var button = ActionButton.create({action: action, value: this.getValue()});
 		   str += " " + button.toHTML() + " ";
 
 		   this.addChild(button);

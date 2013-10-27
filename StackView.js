@@ -34,14 +34,14 @@ var StackView = FOAM({
         type:  'ActionButton',
         valueFactory: function() {
           // TODO: What's the right value for the action button.
-          return ActionButton.create(StackView.actions[0], new SimpleValue(this));
+          return ActionButton.create({action: StackView.actions[0], value: new SimpleValue(this)});
         }
       },
       {
         name:   'forwardButton',
         type:   'ActionButton',
         valueFactory: function() {
-          return ActionButton.create(StackView.actions[1], new SimpleValue(this));
+          return ActionButton.create({action: StackView.actions[1], value: new SimpleValue(this)});
         }
       }
    ],
