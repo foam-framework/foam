@@ -83,7 +83,7 @@ activity area
 document.writeln("=======================================");
 
     document.writeln("<table><tr><td valign=top>");
-    var tv1 = TableView.create(Model);
+    var tv1 = TableView.create({model: Model});
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.initHTML();
@@ -107,7 +107,7 @@ document.writeln("=======================================");
     console.log("<br/><br/>BookmarkModel");
     console.log(BookmarkModel);
 
-    var tvbm = TableView.create(BookmarkModel);
+    var tvbm = TableView.create({model: BookmarkModel});
     tvbm.objs = bookmarks;
     document.writeln(tvbm.toHTML());
     tvbm.initHTML();
@@ -272,7 +272,7 @@ document.writeln("=======================================");
 console.log('************************************', mmodels.length);
 
     var stv = ScrollBorder.create({
-      view: TableView2.create({
+      view: TableView.create({
         model: Model,
         dao: mmodels,
         rows: 20

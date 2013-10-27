@@ -95,7 +95,7 @@ var altView = AlternateView.create({
       label: 'List',
       view: function() {
          return /*ScrollBorder.create({view:*/ Model.create({
-           extendsModel: 'TableView2',
+           extendsModel: 'TableView',
            methods: {
               toHTML: function() {
                  return '<div class="CIssueTableHeader"></div>' + this.SUPER();

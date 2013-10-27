@@ -111,7 +111,7 @@ withFOAM(function() {
         dao.addIndex(EMail.SUBJECT);
 
         table = ScrollBorder.create({
-            view: TableView2.create({
+            view: TableView.create({
                 model: EMail,
                 dao: dao,
                 rows: 20

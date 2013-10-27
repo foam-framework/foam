@@ -302,7 +302,7 @@ ModelDAO.select(console.log.json);
 // WEB UI
 
 // Output in a TableView
-TableView2.create({model: Person, dao: dao}).write(document);
+TableView.create({model: Person, dao: dao}).write(document);
 
 // Document is also a Sink
 dao.select(document);

@@ -172,7 +172,7 @@ layout();
     dao.addIndex(EMail.SUBJECT);
 */
     var table = ScrollBorder.create({
-      view: TableView2.create({
+      view: TableView.create({
         model: Feature,
         dao: dao,
         rows: 20

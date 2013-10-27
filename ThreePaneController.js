@@ -151,7 +151,7 @@ var ThreePaneController = FOAM({
       type: 'AbstractView',
       valueFactory: function() {
         return ScrollBorder.create({
-          view: TableView2.create({
+          view: TableView.create({
             model: this.model,
             dao: this.dao,
             rows: 20

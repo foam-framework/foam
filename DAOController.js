@@ -156,7 +156,7 @@ var DAOController = FOAM({
         
         var model = this.model;
         var dao = this.dao;
-	this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
+	this.tableView = TableView.create({ model: model, dao: dao, rows: 30 });
         this.scrollBorder = ScrollBorder.create({ view: this.tableView });
       },
 
