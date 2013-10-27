@@ -301,14 +301,7 @@ console.log(i, k, v);
     document.writeln(view.toHTML());
     view.set(this);
     view.initHTML();
-  },
-
-/*
-   SUPER: function() {
-      debugger;
-      return arguments.callee.caller.super_.bind(this);
-   }
-*/
+  }
 };
 
 

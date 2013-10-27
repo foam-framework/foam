@@ -2192,23 +2192,6 @@ var TableView = FOAM({
        };
      },
 
-    repaint: function() {
-      if ( ! this.dao ) return;
-      var self = this;
-      var objs = [];
-      var selection = this.selection && this.selection.get();
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
-         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
-            self.objs = objs;
-            if ( self.$ ) {
-               self.$.innerHTML = self.tableToHTML();
-               self.initHTML_();
-               self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
-            }
-            self.selection && self.selection.set(selection);
-         });
-    },
-
    // TODO: it would be better if it were initiated with
    // .create({model: model}) instead of just .create(model)
     toHTML: function() {
@@ -2310,24 +2293,40 @@ var TableView = FOAM({
       this.repaint();
     },
 
+    repaint: function() {
+      if ( ! this.dao ) return;
+      var self = this;
+      var objs = [];
+      var selection = this.selection && this.selection.get();
+      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
+         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
+            self.objs = objs;
+            if ( self.$ ) {
+               self.$.innerHTML = self.tableToHTML();
+               self.initHTML_();
+               self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
+            }
+            // self.selection && self.selection.set(selection);
+         });
+    },
+
     initHTML_: function() {
-      this.__super__.initHTML.apply(this);
+      this.initHTML.super_.call(this);
 
       var es = $$('tr-' + this.getID());
       var self = this;
 
-       if ( es.length ) {
-          if ( ! this.sized_ ) {
-             this.sized_ = true;
-             this.layout();
-             return;
-          }
-       }
-
-
+      if ( es.length ) {
+        if ( ! this.sized_ ) {
+          this.sized_ = true;
+          this.layout();
+          return;
+        }
+      }
+      
       for ( var i = 0 ; i < es.length ; i++ ) {
 	var e = es[i];
-
+        
 	e.onmouseover = function(value, obj) { return function() {
 	  value.set(obj);
 	}; }(this.selection, this.objs[i]);
@@ -2522,7 +2521,13 @@ var ActionToolbarView = FOAM({
   }
 });
 
-
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO: Model
 /** Add Action Buttons to a decorated View. **/
 /* TODO:
    The view needs a standard interface to determine it's Model (getModel())
@@ -2551,7 +2556,7 @@ var ActionBorder = {
 
 		str += '<table class="actionBorder"><tr><td>';
 
-		str += this.__proto__.toHTML.apply(this);
+		str += this.__proto__.toHTML.call(this);
 
 		str += '</td></tr><tr><td class="actionBorderActions">';
 
