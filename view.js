@@ -251,7 +251,11 @@ var AbstractView2 = FOAM({
       {
         name:   '$',
         mode:   "read-only",
-        getter: function() { return $(this.getID()); },
+        getter: function() {
+           if ( ! this.elementId )
+              this.elementId = this.nextID();
+           return $(this.getID());
+        },
         help:   'DOM Element.'
       }
    ],
@@ -288,10 +292,12 @@ var AbstractView2 = FOAM({
       this.shortcuts.push([key, callback, context]);
     },
 
+    // TODO: make use new static_ scope when available
     nextID: function() {
       return "view2_" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
+    // deprecated, use $() instead
     getID: function() {
       // @return this View's unique DOM element-id
 // console.log('getID', this.elementId);

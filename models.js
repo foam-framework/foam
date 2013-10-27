@@ -886,7 +886,7 @@ var AlternateView = FOAM({
 
    model_: 'Model',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    name: 'AlternateView',
 
@@ -917,7 +917,7 @@ var AlternateView = FOAM({
        {
 	  name:  'view',
 	  postSet: function(viewChoice) {
-	     if ( this.eid_ ) this.installSubView(viewChoice);
+	     if ( this.elementId ) this.installSubView(viewChoice);
 	  },
 	  hidden: true
        }
@@ -925,7 +925,8 @@ var AlternateView = FOAM({
 
    methods: {
       init: function() {
-	 AbstractPrototype.init.call(this);
+         this.SUPER()
+
 	 this.value = new SimpleValue("");
 	 this.view = this.views[0];
      },
@@ -988,7 +989,8 @@ var AlternateView = FOAM({
 
 
       initHTML: function() {
-         AbstractView.initHTML.call(this);
+         this.SUPER();
+
 	 if ( ! this.view ) this.view = this.views[0];
 	 this.installSubView(this.view);
 
@@ -1058,7 +1060,7 @@ var SplitView = FOAM({
 
    model_: 'Model',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    name: 'SplitView',
 
