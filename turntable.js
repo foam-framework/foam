@@ -108,7 +108,8 @@ var Turntable = Model.create({
 
     paint: function() {
       this.canvasView.erase();
-      this.__super__.paint.call(this);
+      this.SUPER();
+      //this.__super__.paint.call(this);
       // this.__super__.paint.call(this);
       // this.canvasView.erase();
 
