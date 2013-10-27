@@ -20,7 +20,7 @@ var DAOController = FOAM({
    name:  'DAOController',
    label: 'DAO Controller',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    properties: [
       {
@@ -150,14 +150,14 @@ var DAOController = FOAM({
 
    methods: {
       init: function() {
-         var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
-
-         var model = this.model;
-         var dao = this.dao;
-	 this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
-         this.scrollBorder = ScrollBorder.create({ view: this.tableView });
+        var tmp = this.model;
+        this.SUPER();
+	this.model = tmp;
+        
+        var model = this.model;
+        var dao = this.dao;
+	this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
+        this.scrollBorder = ScrollBorder.create({ view: this.tableView });
       },
 
       toHTML: function() {
@@ -166,7 +166,7 @@ var DAOController = FOAM({
       },
 
       initHTML: function() {
-         AbstractView.initHTML.call(this);
+        this.SUPER();
 //	 this.scrollBorder.initHTML(); // could this just be added to children?
 	 this.scrollBorder.view.initHTML();
 
@@ -261,7 +261,7 @@ var DAOCreateController = FOAM({
    name:  'DAOCreateController',
    label: 'DAO Create',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    properties: [
       {
@@ -347,7 +347,7 @@ var DAOCreateController = FOAM({
 
       init: function() {
          var tmp = this.model;
-	 AbstractView.init.call(this);
+        this.SUPER();
 	 this.model = tmp;
 
 	 this.obj = this.model.create();
@@ -360,7 +360,7 @@ var DAOCreateController = FOAM({
       },
 
       initHTML: function() {
-	 AbstractView.initHTML.call(this);
+        this.SUPER();
 	 this.view.initHTML();
       }
    }
@@ -373,7 +373,7 @@ var DAOUpdateController = FOAM({
    name:  'DAOUpdateController',
    label: 'DAO Update',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView2',
 
    properties: [
       {
@@ -458,7 +458,7 @@ var DAOUpdateController = FOAM({
 
       init: function() {
          var tmp = this.model;
-	 AbstractView.init.call(this);
+        this.SUPER();
 	 this.model = tmp;
 
 	 this.view2 = DetailView2.create();
@@ -499,31 +499,16 @@ var DAOUpdateController = FOAM({
 	 this.view.value.set(this.obj);
       },
 
-      init2: function() {
-         var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
-
-	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
-//	 this.view.set(this);
-//	 this.view.set(this.obj);
-//	 this.view.updateSubViews();
-      },
-
       toHTML: function() {
 	return this.view.toHTML();
       },
 
       initHTML: function() {
-	 AbstractView.initHTML.call(this);
+        this.SUPER();
 	 this.view.initHTML();
       }
    }
 });
-
-
-//var DAOControllerView = {
-//    __proto__: AbstractView,
 
 
 var DAOControllerView = FOAM({
