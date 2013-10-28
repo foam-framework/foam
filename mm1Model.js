@@ -56,14 +56,6 @@ var Model = {
 	   help: 'The parent model of this model.'
        },
        {
-	   name: 'extendsPrototype',
-	   type: 'String',
-	   displayWidth: 70,
-           displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The parent prototype of this model\'s prototype.'
-       },
-       {
 	   name: 'plural',
 	   type: 'String',
 	   displayWidth: 70,

@@ -39,14 +39,9 @@ var ModelProto = {
 
     buildPrototype: function() {
        var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
-       // TODO: remove 'extendsPrototype' support when no longer used
        var cls = {
           instance_: {},
-	  __proto__:
-	     extendsModel                             ? extendsModel.getPrototype() :
-	     typeof this.extendsPrototype == 'object' ? this.extendsPrototype :
-	     this.extendsPrototype                    ? GLOBAL[this.extendsPrototype] :
-	                                                AbstractPrototype
+	 __proto__: extendsModel ? extendsModel.getPrototype() : AbstractPrototype
        };
 
        /** Add a method to 'cls' and set it's name. **/

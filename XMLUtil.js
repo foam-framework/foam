@@ -81,8 +81,7 @@ var XMLUtil = {
        for ( var key in obj.model_.properties ) {
 	  var prop = obj.model_.properties[key];
 
-	  if ( prop.name in obj.instance_ && prop.name != 'extendsPrototype' && obj[prop.name] )
-	  {
+	  if ( prop.name in obj.instance_ && obj[prop.name] ) {
              var val = obj[prop.name];
 
 	     if ( val instanceof Array && val.length == 0 ) continue;
@@ -188,8 +187,7 @@ var XMLUtil = {
 	  var prop = obj.model_.properties[key];
 
 if ( prop.name === 'parent' ) continue;
-	  if ( obj.instance_ && prop.name in obj.instance_ && prop.name != 'extendsPrototype' /* && obj[prop.name] */ )
-	  {
+	  if ( obj.instance_ && prop.name in obj.instance_ ) {
              var val = obj[prop.name];
 
 	     if ( val instanceof Array && val.length == 0 ) continue;
