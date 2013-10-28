@@ -886,7 +886,7 @@ var AlternateView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'AlternateView',
 
@@ -1060,7 +1060,7 @@ var SplitView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'SplitView',
 

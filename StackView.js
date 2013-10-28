@@ -18,7 +18,7 @@ var StackView = FOAM({
    model_: 'Model',
 
    name:  'StackView',
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -75,7 +75,7 @@ var StackView = FOAM({
 
    methods: {
       init: function() {
-        AbstractView2.getPrototype().init.call(this);
+        AbstractView.getPrototype().init.call(this);
         this.addChild(this.forwardButton);
         this.addChild(this.backButton);
       },

@@ -136,7 +136,7 @@ var ScrollCView = FOAM({
    methods: {
 
     init: function(args) {
-       AbstractView2.init.call(this, args);
+       AbstractView.init.call(this, args);
        this.addListener(EventService.animate(this.paint.bind(this)));
     },
 
@@ -182,7 +182,7 @@ var ScrollBorder = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'ScrollBorder',
 

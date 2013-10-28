@@ -32,7 +32,7 @@ var ListChoiceView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'ListChoiceView',
 
@@ -173,7 +173,7 @@ var ListChoiceView = FOAM({
          this.selectedElement = selectedAsList[0];
        }
 
-       AbstractView2.getPrototype().initHTML.call(this);
+       AbstractView.getPrototype().initHTML.call(this);
      },
 
      getValue: function() {

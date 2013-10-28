@@ -43,7 +43,7 @@ var ItemCount = Model.create({
      put: function(obj) {
        if ( ! this.obj ) {
          this.obj = obj;
-         this.eid = AbstractView2.getPrototype().nextID();
+         this.eid = AbstractView.getPrototype().nextID();
        }
        this.SUPER(obj);
      },

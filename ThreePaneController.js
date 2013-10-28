@@ -32,7 +32,7 @@ var ThreePaneController = FOAM({
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 
-  extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -194,7 +194,7 @@ var ThreePaneController = FOAM({
 
   methods: {
     init: function() {
-      AbstractView2.getPrototype().init.call(this);
+      AbstractView.getPrototype().init.call(this);
       var self = this;
       Events.dynamic(function() {
         self.headerHeight;

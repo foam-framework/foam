@@ -29,7 +29,7 @@ var RichTextView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'RichTextView',
 
@@ -74,7 +74,7 @@ var RichTextView = FOAM({
 
    methods: {
       init: function(args) {
-         AbstractView2.init.call(this, args);
+         AbstractView.init.call(this, args);
          this.toolbar = ActionToolbarView.create({actions:FOAM([
             {
                model_: 'Action',

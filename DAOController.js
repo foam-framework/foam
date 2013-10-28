@@ -20,7 +20,7 @@ var DAOController = FOAM({
    name:  'DAOController',
    label: 'DAO Controller',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -263,7 +263,7 @@ var DAOCreateController = FOAM({
    name:  'DAOCreateController',
    label: 'DAO Create',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -375,7 +375,7 @@ var DAOUpdateController = FOAM({
    name:  'DAOUpdateController',
    label: 'DAO Update',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -516,7 +516,7 @@ var DAOUpdateController = FOAM({
 var DAOControllerView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'DAOControllerView',
    label: 'DAOControllerView',

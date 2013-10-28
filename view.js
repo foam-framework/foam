@@ -99,132 +99,13 @@ var DOM = {
 
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
-// TODO: model, document
-// properties: children, parent, value, eid,
-var AbstractView = {
-   __proto__: AbstractPrototype,
-
-    init: function() {
-      AbstractPrototype.init.call(this);
-
-      this.children = [];
-      this.value    = new SimpleValue("");
-    },
-
-    strToHTML: function(str) {
-      return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    },
-
-    addChild: function(child) {
-      child.parent = this;
-      this.children.push(child);
-
-      return this;
-    },
-
-    removeChild: function(child) {
-      this.children.remove(child);
-      child.parent = undefined;
-
-      return this;
-    },
-
-    addChildren: function() {
-      Array.prototype.forEach.call(arguments, this.addChild.bind(this));
-
-      return this;
-    },
-
-    nextID: function() {
-        // @return a unique DOM element-id
-
-	var id = 0;
-
-	return function() {
-	    return "view" + (id++);
-	};
-    }(),
-
-    getID: function() {
-      // @return this View's unique DOM element-id
-
-      if ( ! this.eid_ ) this.eid_ = this.nextID();
-
-      return this.eid_;
-    },
-
-    get $() {
-      return $(this.eid_);
-    },
-
-    registerCallback: function(event, listener, opt_elementId) {
-	opt_elementId = opt_elementId || this.nextID();
-
-//	if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
-	if ( ! this.callbacks_ ) this.callbacks_ = [];
-
-	this.callbacks_.push([opt_elementId, event, listener]);
-
-	return opt_elementId;
-    },
-
-    write: function(document) {
-       // Write the View's HTML to the provided document and then initialize.
-       document.writeln(this.toHTML());
-       this.initHTML();
-    },
-
-    /** Insert this View's toHTML into the Element of the supplied name. **/
-    insertInElement: function(name) {
-      var e = $(name);
-      e.innerHTML = this.toHTML();
-      this.initHTML();
-    },
-
-    initHTML: function() {
-       // Initialize this View and all of it's children.
-       // This mostly involves attaching listeners.
-       // Must be called activate a view after it has been added to the DOM.
-
-       if ( this.callbacks_ ) {
-	  // hookup event listeners
-	  for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
-	     var callback  = this.callbacks_[i];
-	     var elementId = callback[0];
-	     var event     = callback[1];
-	     var listener  = callback[2];
-	     var e         = $(elementId);
-             if ( ! e ) {
-	        console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-	     } else {
-               e.addEventListener(event, listener.bind(this), false);
-             }
-	  }
-
-	  delete this['callbacks_'];
-       }
-
-       if ( this.children ) {
-	  // init children
-	  for ( var i = 0 ; i < this.children.length ; i++ ) {
-	     // console.log("init child: " + this.children[i]);
-	     try {
-		this.children[i].initHTML();
-   	     } catch (x) {
-		console.log("Error on AbstractView.child.initHTML", x, x.stack);
-	     }
-	  }
-       }
-    }
-
-};
 
 // ??? Should this have a 'value'?
 // Or maybe a ValueView and ModelView
-var AbstractView2 = FOAM({
+var AbstractView = FOAM({
    model_: 'Model',
 
-   name: 'AbstractView2',
+   name: 'AbstractView',
    label: 'AbstractView',
 
    properties: [
@@ -414,7 +295,7 @@ var DomValue = {
 
 var Canvas = Model.create({
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'Canvas',
 
@@ -874,7 +755,7 @@ var TextFieldView = FOAM({
    name:  'TextFieldView',
    label: 'Text Field',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -1020,7 +901,7 @@ var HTMLView = FOAM({
    name:  'HTMLView',
    label: 'HTML Field',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -1082,7 +963,7 @@ var ChoiceView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
 /*
  * <select size="">
@@ -1175,7 +1056,7 @@ var ChoiceView = FOAM({
        }
 
        this.$.innerHTML = out.join('');
-       AbstractView2.getPrototype().initHTML.call(this);
+       AbstractView.getPrototype().initHTML.call(this);
      },
 
      getValue: function() {
@@ -1319,7 +1200,7 @@ var RadioBoxView = FOAM({
        }
 
        this.$.innerHTML = out.join('');
-       AbstractView2.getPrototype().initHTML.call(this);
+       AbstractView.getPrototype().initHTML.call(this);
      },
 
      initHTML: function() {
@@ -1348,7 +1229,7 @@ var RoleView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'RoleView',
 
@@ -1415,7 +1296,7 @@ var RoleView = FOAM({
 var BooleanView = FOAM({
     model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'BooleanView',
 
@@ -1466,7 +1347,7 @@ var TextAreaView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'TextAreaView',
    label: 'Text-Area View',
@@ -1661,7 +1542,7 @@ var XMLView = FOAM({
 
 var DetailView = Model.create({
 
-  extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -1813,7 +1694,7 @@ var DetailView = Model.create({
 /** Version of DetailView which allows class of object to change. **/
 var DetailView2 = Model.create({
 
-  extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -1960,7 +1841,7 @@ var DetailView2 = Model.create({
 /** A display-only summary view. **/
 var SummaryView = Model.create({
 
-  extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -2028,7 +1909,7 @@ var SummaryView = Model.create({
 var HelpView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'HelpView',
 
@@ -2098,7 +1979,7 @@ debugger;
 var TableView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'TableView',
    label: 'Table View 2',
@@ -2369,7 +2250,7 @@ var TableView = FOAM({
 var ActionButton = Model.create({
   name: 'ActionButton',
 
-  extendsModel: 'AbstractView2',
+  extendsModel: 'AbstractView',
   
   properties: [
     {
@@ -2424,7 +2305,7 @@ var ActionToolbarView = FOAM({
    name:  'ActionToolbarView',
    label: 'Action Toolbar',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -2606,7 +2487,7 @@ var ProgressView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'ProgressView',
 
@@ -2704,7 +2585,7 @@ var ModelAlternateView = FOAM({
 var GridView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'GridView',
 
@@ -2780,7 +2661,7 @@ var GridView = FOAM({
        this.col.initHTML();
        this.acc.initHTML();
 
-       AbstractView2.getPrototype().initHTML.call(this);
+       AbstractView.getPrototype().initHTML.call(this);
        this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
        this.grid.addListener(function() {

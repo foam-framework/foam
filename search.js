@@ -18,7 +18,7 @@ var GroupBySearchView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'GroupBySearchView',
    label: 'GroupBy Search View',
@@ -142,7 +142,7 @@ var TextSearchView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'TextSearchView',
 
@@ -183,7 +183,7 @@ var TextSearchView = FOAM({
          '<div id=' + this.registerCallback('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
      },
      initHTML: function() {
-	AbstractView2.getPrototype().initHTML.call(this);
+	AbstractView.getPrototype().initHTML.call(this);
 	this.view.initHTML();
 
 	this.view.value.addListener(this.updateValue);

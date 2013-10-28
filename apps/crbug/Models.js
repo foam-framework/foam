@@ -202,7 +202,7 @@ CIssue.properties.forEach(function(p) {
 var CIssueTileView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name: 'CIssueTileView',
    label: 'CIssue Tile View',
