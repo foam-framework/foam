@@ -354,7 +354,7 @@ var DAOCreateController = FOAM({
 
 	 this.obj = this.model.create();
 
-	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
+	this.view = DetailView2.create({model: this.model, value: new SimpleValue(this.obj)});
       },
 
       toHTML: function() {
