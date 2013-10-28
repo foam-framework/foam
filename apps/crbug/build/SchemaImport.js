@@ -1151,7 +1151,7 @@ var typeModels = {
 
 function generateModel(schema) {
   var mps = [];
-  
+
   schema.properties.forEach(function(p, name) {
     if ( p.type == 'array' && p.items.$ref ) p.type = 'refArray';
     if ( p.type == 'array' && p.items.type == 'string' ) p.type = 'stringArray';
@@ -1182,7 +1182,7 @@ function generateModel(schema) {
   });
 }
 
-CIssueSchema.schemas.forEach(function(value, key) { 
+CIssueSchema.schemas.forEach(function(value, key) {
   console.log('key: ', key);
 });
 

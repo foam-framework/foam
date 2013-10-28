@@ -153,7 +153,7 @@ var DAOController = FOAM({
         var tmp = this.model;
         this.SUPER();
         this.model = tmp;
-        
+
         var model = this.model;
         var dao = this.dao;
         this.tableView = TableView.create({ model: model, dao: dao, rows: 30 });

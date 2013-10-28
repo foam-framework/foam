@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>Google Simulator</title>
  </head>
  <body>
@@ -18,7 +18,7 @@
 
     var oldAddCode = System.getPrototype().addCode;
     System.getPrototype().addCode = function() { };
-     
+
     var sys = [System.create({
       parent: space,
       title: 'Google',
@@ -70,7 +70,7 @@
      space.children.unshift(space.children.pop());
    }
 
-			   /*
+                           /*
    space.paint = function() {
      this.canvas.globalAlpha = 0.2;
      Canvas.getPrototype().paint.call(this);

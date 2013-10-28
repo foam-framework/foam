@@ -1,7 +1,7 @@
 <html>
  <head>
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>Predictive Touch</title>
  </head>
  <body bgcolor='black'>
@@ -49,7 +49,7 @@
 
       return function(v, ts) {
         if ( h.length && ts-h[0][1] > 25 ) h = [];
-        if ( h.length > 1 && ( v-h[0][0] > 0 ) != ( v-h[1][0] > 0 ) ) h = [];  
+        if ( h.length > 1 && ( v-h[0][0] > 0 ) != ( v-h[1][0] > 0 ) ) h = [];
         h.unshift([v,ts]);
         if ( h.length < SIZE ) return v;
         if ( h.length > SIZE ) h.pop();

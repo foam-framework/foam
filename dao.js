@@ -232,7 +232,7 @@ var DAO = FOAM({
        ]
     }
     // Future: drop() - drop/remove the DAO
-    //         cmd()  - handle extension operations 
+    //         cmd()  - handle extension operations
   ]
 });
 
