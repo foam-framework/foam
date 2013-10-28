@@ -229,7 +229,7 @@ var CIssueTileView = FOAM({
 
         name: 'toHTML',
         description: 'TileView',
-        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.summary %></a></div></td></tr></tbody></table></div>'
+        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.strToHTML(this.issue.summary) %></a></div></td></tr></tbody></table></div>'
      }
    ]
 });

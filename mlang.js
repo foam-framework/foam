@@ -1161,43 +1161,42 @@ var GridByExpr = FOAM({
      deepClone: function() {
      },
      toHTML: function() {
-       var out = [];
+       var out;
        var cols = this.cols.groups;
        var rows = this.rows.groups;
 
-       out.push('<table border=0 cellspacing=0 class="gridBy"><tr><th></th>');
+       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
        for ( var x in cols ) {
          var str = x.toHTML ? x.toHTML() : x;
-         out.push('<th>', str, '</th>');
+         out += '<th>', str, '</th>';
        }
-       out.push('</tr>');
+       out += '</tr>';
 
        for ( var y in rows ) {
-         out.push('<tr>');
-           out.push('<th>');
-             out.push(y);
-           out.push('</th>');
+         out += '<tr><th>' + y + '</th>';
 
          for ( var x in cols ) {
            var value = rows[y].groups[x];
            var str = value ? (value.toHTML ? value.toHTML() : value) : '';
-           out.push('<td>', str, '</td>');
+           out += '<td>' + str + '</td>';
          }
-         out.push('</tr>');
+         out += '</tr>';
        }
-       out.push('</table>');
+       out += '</table>';
 
-       return out.join('');
+       return out;
      },
+
      initHTML: function() {
        var rows = this.rows.groups;
 
-       for ( var y in rows )
+       for ( var y in rows ) {
          for ( var x in rows[y].groups ) {
             var value = rows[y].groups[x];
             value.initHTML && value.initHTML();
          }
+       }
      }
    }
 });

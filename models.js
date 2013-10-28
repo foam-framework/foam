@@ -961,7 +961,6 @@ var AlternateView = FOAM({
                // This is a bit hackish, each element should listen on a 'selected'
                // property and update themselves
                for ( var j = 0 ; j < buttons.length ; j++ ) {
-                 console.log($(buttons[j]));
                  DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
                }
 

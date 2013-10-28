@@ -2047,6 +2047,8 @@ var TableView = FOAM({
      layout: function() {
        var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
 
+       if ( ! parent ) return;
+
        var top = 47;
        var height = 20;
        var rows = $$("tr-" + this.getID());
@@ -2664,9 +2666,11 @@ var GridView = FOAM({
        AbstractView.getPrototype().initHTML.call(this);
        this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
+       /*
        this.grid.addListener(function() {
          this.repaint_();
-       });
+       }.bind(this));
+       */
 
        this.row.value.addListener(this.repaint_);
        this.col.value.addListener(this.repaint_);
