@@ -31,254 +31,254 @@ var Model = {
 
     properties: [
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The coding identifier for the entity.'
+           defaultValue: '',
+           help: 'The coding identifier for the entity.'
        },
        {
-	   name: 'label',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'label',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.labelize(); },
-	   help: 'The display label for the entity.'
+           defaultValueFn: function() { return this.name.labelize(); },
+           help: 'The display label for the entity.'
        },
        {
-	   name: 'extendsModel',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'extendsModel',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The parent model of this model.'
+           defaultValue: '',
+           help: 'The parent model of this model.'
        },
        {
-	   name: 'plural',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'plural',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name + 's'; },
-	   help: 'The plural form of this model\'s name.'
+           defaultValueFn: function() { return this.name + 's'; },
+           help: 'The plural form of this model\'s name.'
        },
        {
-	   name: 'version',
-	   type: 'int',
+           name: 'version',
+           type: 'int',
            defaultValue: 1,
-	   help: 'Version number of model.'
+           help: 'Version number of model.'
        },
        {
-	   name: 'ids',
-	   label: 'Key Properties',
-	   type: 'Array[String]',
-	   view: 'StringArrayView',
-	   defaultValueFn: function() {
+           name: 'ids',
+           label: 'Key Properties',
+           type: 'Array[String]',
+           view: 'StringArrayView',
+           defaultValueFn: function() {
              return this.properties.length ? [this.properties[0].name] : [];
            },
-	   help: 'Properties which make up unique id.'
+           help: 'Properties which make up unique id.'
        },
        {
-	   name: 'tableProperties',
-	   type: 'Array[String]',
-	   view: 'StringArrayView',
-	   valueFactory: function() {
+           name: 'tableProperties',
+           type: 'Array[String]',
+           view: 'StringArrayView',
+           valueFactory: function() {
              return this.properties.map(Property.NAME.f.bind(Property.NAME));
            },
-	   help: 'Properties to be displayed in table view. Defaults to all properties.'
+           help: 'Properties to be displayed in table view. Defaults to all properties.'
        },
        {
-	   name: 'properties',
-	   type: 'Array[Property]',
+           name: 'properties',
+           type: 'Array[Property]',
            subType: 'Property',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Properties associated with the entity.',
-	   preSet: function(newValue) {
-	      if ( ! Property ) return;
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Properties associated with the entity.',
+           preSet: function(newValue) {
+              if ( ! Property ) return;
 
-	      // Convert Maps to Properties if required
-	      for ( var i = 0 ; i < newValue.length ; i++ ) {
-	      	 var p = newValue[i];
+              // Convert Maps to Properties if required
+              for ( var i = 0 ; i < newValue.length ; i++ ) {
+                 var p = newValue[i];
 
-		 if ( ! p.model_ ) {
-		    newValue[i] = Property.create(p);
-		 } else if ( typeof p.model_ === 'string' ) {
-		    newValue[i] = FOAM(p);
+                 if ( ! p.model_ ) {
+                    newValue[i] = Property.create(p);
+                 } else if ( typeof p.model_ === 'string' ) {
+                    newValue[i] = FOAM(p);
                  }
 
                  // create property constant
                  this[p.name.constantize()] = newValue[i];
-	      }
+              }
 
               return newValue;
            }
        },
        {
-	   name: 'actions',
-	   type: 'Array[Action]',
+           name: 'actions',
+           type: 'Array[Action]',
            subType: 'Action',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Actions associated with the entity.',
-	   preSet: function(newValue) {
-	      if ( ! Action ) return newValue;
-	      var ret = JSONUtil.mapToObj(newValue);
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Actions associated with the entity.',
+           preSet: function(newValue) {
+              if ( ! Action ) return newValue;
+              var ret = JSONUtil.mapToObj(newValue);
 
               for ( var i = 0 ; i < ret.length ; i++ ) {
                  this[ret[i].name.constantize()] = ret[i];
               }
 
               return ret;
-	   }
+           }
        },
        {
-	   name: 'methods',
-	   type: 'Array[Method]',
+           name: 'methods',
+           type: 'Array[Method]',
            subType: 'Method',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Methods associated with the entity.',
-	   preSet: function(newValue) {
-	      if ( ! Method ) return;
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Methods associated with the entity.',
+           preSet: function(newValue) {
+              if ( ! Method ) return;
 
-	      if ( newValue instanceof Array ) return newValue;
+              if ( newValue instanceof Array ) return newValue;
 
-	      // convert a map of functions to an array of Method instances
-	      var methods = [];
+              // convert a map of functions to an array of Method instances
+              var methods = [];
 
-	      for ( var key in newValue )
-	      {
+              for ( var key in newValue )
+              {
                  var oldValue = newValue[key];
-		 var method   = Method.create({name: key, code: oldValue});
+                 var method   = Method.create({name: key, code: oldValue});
 
-		 methods.push(method);
-	      }
+                 methods.push(method);
+              }
 
-	      return methods;
-	   }
+              return methods;
+           }
        },
        {
-	   name: 'listeners',
-	   type: 'Array[Method]',
+           name: 'listeners',
+           type: 'Array[Method]',
            subType: 'Method',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Event listeners associated with the entity.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Event listeners associated with the entity.'
        },
        /*
        {
-	   name: 'topics',
-	   type: 'Array[topic]',
+           name: 'topics',
+           type: 'Array[topic]',
            subType: 'Topic',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Event topics associated with the entity.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Event topics associated with the entity.'
        },
        */
        {
-	   name: 'templates',
-	   type: 'Array[Template]',
+           name: 'templates',
+           type: 'Array[Template]',
            subType: 'Template',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-//	   defaultValueFn: function() { return []; },
-	   help: 'Templates associated with this entity.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+//         defaultValueFn: function() { return []; },
+           help: 'Templates associated with this entity.'
        },
        {
-	   name: 'models',
-	   type: 'Array[Model]',
+           name: 'models',
+           type: 'Array[Model]',
            subType: 'Model',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Sub-models embedded within this model.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Sub-models embedded within this model.'
        },
        {
-	   name: 'tests',
-	   label: 'Unit Tests',
-	   type: 'Array[Unit Test]',
+           name: 'tests',
+           label: 'Unit Tests',
+           type: 'Array[Unit Test]',
            subType: 'UnitTest',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Unit tests associated with this model.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Unit tests associated with this model.'
        },
        {
-	   name: 'relationships',
+           name: 'relationships',
            subType: 'Relationship',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Relationships of this model to other models.',
-	   preSet: function(newValue) {
-	      if ( ! Relationship ) return newValue;
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Relationships of this model to other models.',
+           preSet: function(newValue) {
+              if ( ! Relationship ) return newValue;
               // TODO: avoid need for 'model_'
-	      var ret = JSONUtil.mapToObj(newValue);
+              var ret = JSONUtil.mapToObj(newValue);
 
               for ( var i = 0 ; i < ret.length ; i++ ) {
                  this[ret[i].name.constantize()] = ret[i];
               }
 
               return ret;
-	   }
+           }
        },
        {
-	   name: 'issues',
-	   type: 'Array[Issue]',
+           name: 'issues',
+           type: 'Array[Issue]',
            subType: 'Issue',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Issues associated with this model.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Issues associated with this model.'
        },
        {
-	   name: 'help',
-	   label: 'Help Text',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'help',
+           label: 'Help Text',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 6,
-	   view: 'TextAreaView',
-	   defaultValue: '',
-	   help: 'Help text associated with the entity.'
+           view: 'TextAreaView',
+           defaultValue: '',
+           help: 'Help text associated with the entity.'
        },
        {
-	   name: 'notes',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'notes',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 6,
-	   view: 'TextAreaView',
-	   defaultValue: '',
-	   help: 'Internal documentation associated with this entity.'
+           view: 'TextAreaView',
+           defaultValue: '',
+           help: 'Internal documentation associated with this entity.'
        },
        {
-	   name: 'createActionFactory',
-	   type: 'Function',
+           name: 'createActionFactory',
+           type: 'Function',
            required: false,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 3,
-	   rows:3,
-	   view: 'FunctionView',
-	   defaultValue: '',
-	   help: 'Factory to create the action object for creating this object'
+           rows:3,
+           view: 'FunctionView',
+           defaultValue: '',
+           help: 'Factory to create the action object for creating this object'
        },
        {
-	   name: 'deleteActionFactory',
-	   type: 'Function',
+           name: 'deleteActionFactory',
+           type: 'Function',
            required: false,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 3,
-	   rows:3,
-	   view: 'FunctionView',
-	   defaultValue: '',
-	   help: 'Factory to create the action object for deleting this object'
+           rows:3,
+           view: 'FunctionView',
+           defaultValue: '',
+           help: 'Factory to create the action object for deleting this object'
        }
     ],
 

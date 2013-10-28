@@ -19,7 +19,7 @@ function drawUML(ctx, x, y, model, opt_width, opt_background) {
     var width = opt_width || 150;
     var i = 0;
     var outputText = function(txt) {
-	ctx.fillText(txt, x+10, y+i*20+15);
+        ctx.fillText(txt, x+10, y+i*20+15);
         i++;
     };
 

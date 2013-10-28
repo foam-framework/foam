@@ -100,11 +100,11 @@ var GroupBySearchView = FOAM({
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'updateDAO',
+         name: 'updateDAO',
 
-	 code: function() {
+         code: function() {
            var self = this;
 
            this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
@@ -120,17 +120,17 @@ var GroupBySearchView = FOAM({
              self.view.choices = options;
              // console.log(groups.groups, options);
            });
-	 }
+         }
       },
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'updateChoice',
+         name: 'updateChoice',
 
-	 code: function(newValue, oldValue) {
+         code: function(newValue, oldValue) {
            var choice = newValue.get();
            this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
-	 }
+         }
       }
 
    ]
@@ -183,39 +183,39 @@ var TextSearchView = FOAM({
          '<div id=' + this.registerCallback('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
      },
      initHTML: function() {
-	AbstractView.getPrototype().initHTML.call(this);
-	this.view.initHTML();
+        AbstractView.getPrototype().initHTML.call(this);
+        this.view.initHTML();
 
-	this.view.value.addListener(this.updateValue);
+        this.view.value.addListener(this.updateValue);
      }
    },
 
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'updateValue',
+         name: 'updateValue',
 
-	 code: function() {
-	    var value = this.view.getValue().get();
-	    if ( ! value ) {
-	       this.predicate = TRUE;
-	       return;
-	    }
-	   this.predicate = CONTAINS_IC(this.property, value);
-	 }
+         code: function() {
+            var value = this.view.getValue().get();
+            if ( ! value ) {
+               this.predicate = TRUE;
+               return;
+            }
+           this.predicate = CONTAINS_IC(this.property, value);
+         }
       },
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'clear',
+         name: 'clear',
 
-	 code: function() {
+         code: function() {
 console.log('**************************** clear');
-	   this.view.getValue().set('');
-	   this.predicate = TRUE;
-	 }
+           this.view.getValue().set('');
+           this.predicate = TRUE;
+         }
       }
 
    ]

@@ -25,68 +25,68 @@ var EyeCView = FOAM({
 
    properties: [
       {
-	 name:  'color',
-	 type:  'String',
-	 defaultValue: 'red'
+         name:  'color',
+         type:  'String',
+         defaultValue: 'red'
       },
       {
-	 name:  'r',
-	 label: 'Radius',
-	 type:  'int',
-	 view:  'IntFieldView',
-	 defaultValue: 100
+         name:  'r',
+         label: 'Radius',
+         type:  'int',
+         view:  'IntFieldView',
+         defaultValue: 100
       },
       {
-	 name:  'lid',
-	 type:  'Circle',
-	 paint: true,
-	 valueFactory: function() {
-	    return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
-	 }
+         name:  'lid',
+         type:  'Circle',
+         paint: true,
+         valueFactory: function() {
+            return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
+         }
       },
       {
-	 name:  'white',
-	 type:  'Circle',
-	 paint: true,
-	 valueFactory: function() {
-	    return circleModel.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
-	 }
+         name:  'white',
+         type:  'Circle',
+         paint: true,
+         valueFactory: function() {
+            return circleModel.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
+         }
       },
       {
-	 name:  'pupil',
-	 type:  'Circle',
-	 paint: true,
-	 valueFactory: function() {
-	    return circleModel.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
-	 }
+         name:  'pupil',
+         type:  'Circle',
+         paint: true,
+         valueFactory: function() {
+            return circleModel.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
+         }
       }
 
    ],
 
    methods: {
       watch: function(target) {
-	 this.target_ = target;
+         this.target_ = target;
       },
       paint: function()
       {
-	 this.pupil.x = this.lid.x = this.white.x = this.x;
-	 this.pupil.y = this.lid.y = this.white.y = this.y;
+         this.pupil.x = this.lid.x = this.white.x = this.x;
+         this.pupil.y = this.lid.y = this.white.y = this.y;
 
-	 // point pupil towards target
-	 if ( this.target_ )
-	    Movement.stepTowards(this.target_, this.pupil, this.r-26);
+         // point pupil towards target
+         if ( this.target_ )
+            Movement.stepTowards(this.target_, this.pupil, this.r-26);
 
-	 this.canvas.save();
-	 this.canvas.translate(this.x,this.y);
-	 this.canvas.rotate(-Math.PI/100);
-	 this.canvas.scale(1.0,1.3);
-	 this.canvas.translate(-this.x,-this.y);
+         this.canvas.save();
+         this.canvas.translate(this.x,this.y);
+         this.canvas.rotate(-Math.PI/100);
+         this.canvas.scale(1.0,1.3);
+         this.canvas.translate(-this.x,-this.y);
 
-	 this.lid.paint();
-	 this.white.paint();
-	 this.pupil.paint();
+         this.lid.paint();
+         this.white.paint();
+         this.pupil.paint();
 
-	 this.canvas.restore();
+         this.canvas.restore();
       }
    }
 });
@@ -103,34 +103,34 @@ var EyesCView = FOAM({
 
    properties: [
       {
-	 name:  'leftEye',
-	 label: 'Left',
-	 type:  'Eye',
-	 paint: true,
-	 valueFactory: function() {
-	    return EyeCView.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
-	 }
+         name:  'leftEye',
+         label: 'Left',
+         type:  'Eye',
+         paint: true,
+         valueFactory: function() {
+            return EyeCView.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
+         }
       },
       {
-	 name:  'rightEye',
-	 label: 'Right',
-	 type:  'Eye',
-	 paint: true,
-	 valueFactory: function() {
-	    return EyeCView.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
-	 }
+         name:  'rightEye',
+         label: 'Right',
+         type:  'Eye',
+         paint: true,
+         valueFactory: function() {
+            return EyeCView.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
+         }
       }
    ],
 
    methods: {
       watch: function(target) {
-	 this.leftEye.watch(target);
-	 this.rightEye.watch(target);
+         this.leftEye.watch(target);
+         this.rightEye.watch(target);
       },
       paint: function()
       {
-	 this.leftEye.paint();
-	 this.rightEye.paint();
+         this.leftEye.paint();
+         this.rightEye.paint();
       }
    }
 });
@@ -147,63 +147,63 @@ var ClockView = FOAM({
 
    properties: [
       {
-	 name:  'color',
-	 type:  'String',
-	 defaultValue: 'yellow'
+         name:  'color',
+         type:  'String',
+         defaultValue: 'yellow'
       },
       {
-	 name:  'lid',
-	 type:  'Circle',
-	 paint: true,
-	 valueFactory: function() {
-	    return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
-	 }
+         name:  'lid',
+         type:  'Circle',
+         paint: true,
+         valueFactory: function() {
+            return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
+         }
       },
       {
-	 name:  'white',
-	 type:  'Circle',
-	 paint: true,
-	 valueFactory: function() {
-	    return circleModel.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
-	 }
+         name:  'white',
+         type:  'Circle',
+         paint: true,
+         valueFactory: function() {
+            return circleModel.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
+         }
       },
       {
-	 name:  'r',
-	 label: 'Radius',
-	 type:  'int',
-	 view:  'IntFieldView',
-	 defaultValue: 100
+         name:  'r',
+         label: 'Radius',
+         type:  'int',
+         view:  'IntFieldView',
+         defaultValue: 100
       },
       {
-	 name:  'a',
-	 label: 'Rotation',
-	 type:  'float',
-	 view:  'IntFieldView',
-	 defaultValue: 0
+         name:  'a',
+         label: 'Rotation',
+         type:  'float',
+         view:  'IntFieldView',
+         defaultValue: 0
       },
       {
-	 name:  'hourHand',
-	 type:  'Hand',
-	 paint: true,
-	 valueFactory: function() {
-	    return this.Hand.create({x:this.x,y:this.y,r:this.r-15,width:7,color:'green',parent:this});
-	 }
+         name:  'hourHand',
+         type:  'Hand',
+         paint: true,
+         valueFactory: function() {
+            return this.Hand.create({x:this.x,y:this.y,r:this.r-15,width:7,color:'green',parent:this});
+         }
       },
       {
-	 name:  'minuteHand',
-	 type:  'Hand',
-	 paint: true,
-	 valueFactory: function() {
-	    return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:5,color:'blue',parent:this});
-	 }
+         name:  'minuteHand',
+         type:  'Hand',
+         paint: true,
+         valueFactory: function() {
+            return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:5,color:'blue',parent:this});
+         }
       },
       {
-	 name:  'secondHand',
-	 type:  'Hand',
-	 paint: true,
-	 valueFactory: function() {
-	    return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:3,color:'red',parent:this});
-	 }
+         name:  'secondHand',
+         type:  'Hand',
+         paint: true,
+         valueFactory: function() {
+            return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:3,color:'red',parent:this});
+         }
       }
 
    ],
@@ -211,28 +211,28 @@ var ClockView = FOAM({
    methods: {
       paint: function()
       {
-	 this.canvas.save();
+         this.canvas.save();
 
          this.canvas.translate(this.x, this.y);
          this.canvas.rotate(this.a);
          this.canvas.translate(-this.x, -this.y);
 
-	 var date = new Date();
+         var date = new Date();
 
-	 this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
-	 this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
+         this.secondHand.x = this.hourHand.x = this.minuteHand.x = this.lid.x = this.white.x = this.x;
+         this.secondHand.y = this.hourHand.y = this.minuteHand.y = this.lid.y = this.white.y = this.y;
 
-	 this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
-	 this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
-	 this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
+         this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
+         this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
+         this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
 
-	 this.lid.paint();
-	 this.white.paint();
-	 this.hourHand.paint();
-	 this.minuteHand.paint();
-	 this.secondHand.paint();
+         this.lid.paint();
+         this.white.paint();
+         this.hourHand.paint();
+         this.minuteHand.paint();
+         this.secondHand.paint();
 
-	 this.canvas.restore();
+         this.canvas.restore();
       }
    },
 
@@ -281,18 +281,18 @@ var ClockView = FOAM({
            model_: 'Method',
            name: 'paint',
            code: function ()
-	   {
-	      var canvas = this.parent.canvas;
+           {
+              var canvas = this.parent.canvas;
 
-	      canvas.beginPath();
-	      canvas.moveTo(this.x,this.y);
-	      canvas.lineTo(this.x+this.r*Math.cos(this.a),this.y-this.r*Math.sin(this.a));
-	      canvas.closePath();
+              canvas.beginPath();
+              canvas.moveTo(this.x,this.y);
+              canvas.lineTo(this.x+this.r*Math.cos(this.a),this.y-this.r*Math.sin(this.a));
+              canvas.closePath();
 
-	      canvas.lineWidth = this.width;
-	      canvas.strokeStyle = this.color;
-	      canvas.stroke();
-	   }
+              canvas.lineWidth = this.width;
+              canvas.strokeStyle = this.color;
+              canvas.stroke();
+           }
         }
      ]
    })
@@ -309,29 +309,29 @@ var System = FOAM({
 
    properties: [
       {
-	 name:  'parent',
+         name:  'parent',
          type:  'CView',
-	 hidden: true
+         hidden: true
       },
       {
-	 name:  'title',
+         name:  'title',
          type:  'String',
-	 defaultValue: ''
+         defaultValue: ''
       },
       {
-	 name:  'color',
+         name:  'color',
          type:  'String',
-	 defaultValue: 'black'
+         defaultValue: 'black'
       },
       {
-	 name:  'devColor',
-	 label: 'Color of Developers',
+         name:  'devColor',
+         label: 'Color of Developers',
          type:  'String',
-	 defaultValue: 'red'
+         defaultValue: 'red'
       },
       {
-	 name:  'numDev',
-	 label: 'Number of Developers',
+         name:  'numDev',
+         label: 'Number of Developers',
          type:  'int',
          postSet: function(devs) {
            if ( ! this.cIndex ) this.cIndex = 1;
@@ -344,67 +344,67 @@ var System = FOAM({
              this.devs[0].parent = this.parent;
            }
          },
-	 defaultValue: 10
+         defaultValue: 10
       },
       {
-	 name:  'totalCode',
-	 label: 'Code',
+         name:  'totalCode',
+         label: 'Code',
          type:  'int',
-	 defaultValue: 0
+         defaultValue: 0
       },
       {
          name: 'features',
-	 type: 'Array[String]',
-	 view: 'StringArrayView',
-	 defaultValue: [],
-	 help: 'Features to be implemented be Entity.'
+         type: 'Array[String]',
+         view: 'StringArrayView',
+         defaultValue: [],
+         help: 'Features to be implemented be Entity.'
       },
       {
          name: 'entities',
-	 type: 'Array[String]',
-	 view: 'StringArrayView',
-	 defaultValue: [],
-	 help: 'Data entities to be supported.'
+         type: 'Array[String]',
+         view: 'StringArrayView',
+         defaultValue: [],
+         help: 'Data entities to be supported.'
       },
       {
-	 name:  'x',
+         name:  'x',
          type:  'int',
-	 defaultValue: 0
+         defaultValue: 0
       },
       {
-	 name:  'y',
-	 type:  'int',
-	 defaultValue: 0
-      },
-      {
-	 name:  'selectedX',
+         name:  'y',
          type:  'int',
-	 defaultValue: 0
+         defaultValue: 0
       },
       {
-	 name:  'selectedY',
-	 type:  'int',
-	 defaultValue: 0
-      },
-      {
-	 name:  'width',
+         name:  'selectedX',
          type:  'int',
-	 defaultValue: 0
+         defaultValue: 0
       },
       {
-	 name:  'height',
-	 type:  'int',
-	 defaultValue: 0
+         name:  'selectedY',
+         type:  'int',
+         defaultValue: 0
       },
       {
-	 name:  'mouse',
-	 type:  'Mouse',
-	 view: {
-	   create: function() { return DetailView.create({model: Mouse}); }
+         name:  'width',
+         type:  'int',
+         defaultValue: 0
+      },
+      {
+         name:  'height',
+         type:  'int',
+         defaultValue: 0
+      },
+      {
+         name:  'mouse',
+         type:  'Mouse',
+         view: {
+           create: function() { return DetailView.create({model: Mouse}); }
          },
-	 valueFactory: function() {
-	    return Mouse.create();
-	 }
+         valueFactory: function() {
+            return Mouse.create();
+         }
       },
       {
          model_: 'Property',
@@ -635,11 +635,11 @@ var System = FOAM({
               var code = Math.min(h/es/5-2, this.cc(i, j)/300);
               var utility = Math.min(h/es/5-2, this.uc(i, j)/300);
 
-	      // Logarithmic Scale
+              // Logarithmic Scale
               /*
               var code = Math.log(this.cc(i, j));
               var utility = Math.log(this.uc(i, j));
-	      */
+              */
 
               c.fillStyle = 'orange';
               c.fillRect(i*w/(fs+1)+3,(j+1)*h/(es+1),w/(fs+1)-3,-utility*5);
@@ -653,14 +653,14 @@ var System = FOAM({
                 c.lineWidth = 3;
                 c.strokeRect(i*w/(fs+1)+4,(j+1)*h/(es+1)-1,w/(fs+1)-5,-h/(es+1)+5);
               }
-	   }
+           }
 
          c.strokeStyle = this.color;
          c.lineWidth = 3;
          c.strokeRect(2, 2, w, h-2);
 
- 	 for ( var i = 0 ; i < this.devs.length ; i++ )
-	   this.devs[i].paint();
+         for ( var i = 0 ; i < this.devs.length ; i++ )
+           this.devs[i].paint();
 
          c.restore();
       }
@@ -677,24 +677,24 @@ var Developer = FOAM({
 
    properties: [
       {
-	 name:  'parent',
+         name:  'parent',
          type:  'CView',
-	 hidden: true
+         hidden: true
       },
       {
-	 name:  'color',
+         name:  'color',
          type:  'String',
-	 defaultValue: 'white'
+         defaultValue: 'white'
       },
       {
-	 name:  'x',
+         name:  'x',
          type:  'int',
-	 defaultValue: 100
+         defaultValue: 100
       },
       {
-	 name:  'y',
-	 type:  'int',
-	 defaultValue: 100
+         name:  'y',
+         type:  'int',
+         defaultValue: 100
       }
    ],
 

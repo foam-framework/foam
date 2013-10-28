@@ -34,40 +34,40 @@ var Feature = FOAM({
 
     properties: [
        {
-	  name:  'model',
+          name:  'model',
           type:  'String'
        },
        {
-	   name:  'name',
-	   type:  'String',
-	   defaultValue: '',
-	   help: 'The coding identifier for the property.'
+           name:  'name',
+           type:  'String',
+           defaultValue: '',
+           help: 'The coding identifier for the property.'
        },
        {
-	   name: 'type',
-	   type: 'String',
+           name: 'type',
+           type: 'String',
            required: true,
-	   view: {
-	      create: function() { return ChoiceView.create({choices: [
+           view: {
+              create: function() { return ChoiceView.create({choices: [
                  'Property',
                  'Method',
                  'Listener',
                  'Template',
                  'Issue',
                  'Test'
-	      ]});}
-	   },
-	   defaultValue: 'Property',
-	   help: 'Type of a feature.'
+              ]});}
+           },
+           defaultValue: 'Property',
+           help: 'Type of a feature.'
        },
        {
-	   name: 'label',
-	   type: 'String',
+           name: 'label',
+           type: 'String',
            required: false,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.capitalize(); },
-	   help: 'The display label for the property.'
+           defaultValueFn: function() { return this.name.capitalize(); },
+           help: 'The display label for the property.'
        }
     ]
 });

@@ -25,7 +25,7 @@ var IssueRestDAO = FOAM({
       // Adapt IssuePerson types to just Strings
       if ( json.cc ) {
         for ( var i = 0 ; i < json.cc.length ; i++ )
-	  json.cc[i] = json.cc[i].name.intern();
+          json.cc[i] = json.cc[i].name.intern();
       }
       if ( json.owner ) json.owner = json.owner.name.intern();
       if ( json.author ) json.author = json.author.name.intern();

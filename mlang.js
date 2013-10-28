@@ -117,11 +117,11 @@ var NARY = FOAM({
 
    properties: [
       {
-	 name:  'args',
-	 label: 'Arguments',
-	 type:  'Expr[]',
-	 help:  'Sub-expressions',
-	 valueFactory: function() { return []; }
+         name:  'args',
+         label: 'Arguments',
+         type:  'Expr[]',
+         help:  'Sub-expressions',
+         valueFactory: function() { return []; }
       }
    ],
 
@@ -164,10 +164,10 @@ var UNARY = FOAM({
 
    properties: [
       {
-	 name:  'arg1',
-	 label: 'Argument',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'arg1',
+         label: 'Argument',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE
       }
    ],
@@ -193,10 +193,10 @@ var BINARY = FOAM({
 
    properties: [
       {
-	 name:  'arg2',
-	 label: 'Argument',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'arg2',
+         label: 'Argument',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE
       }
    ],
@@ -259,11 +259,11 @@ var AndExpr = FOAM({
           }
           else {
             if ( newA === TRUE ) {
-	       updated = true;
+               updated = true;
             } else {
-	       newArgs.push(newA);
+               newArgs.push(newA);
                if ( a !== newA ) updated = true;
-	    }
+            }
           }
         }
 
@@ -404,8 +404,8 @@ var DescribeExpr = FOAM({
 
    properties: [
       {
-	 name:  'plan',
-	 help:  'Execution Plan',
+         name:  'plan',
+         help:  'Execution Plan',
          defaultValue: ""
       }
    ],
@@ -473,10 +473,10 @@ var InExpr = FOAM({
 
    properties: [
       {
-	 name:  'arg2',
-	 label: 'Argument',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'arg2',
+         label: 'Argument',
+         type:  'Expr',
+         help:  'Sub-expression',
          preSet: function(a) {
             var s = {};
             for ( var i = 0 ; i < a.length ; i++ ) s[a[i]] = true;
@@ -548,16 +548,16 @@ var ContainsICExpr = FOAM({
 
    properties: [
       {
-	 name:  'arg2',
-	 label: 'Argument',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'arg2',
+         label: 'Argument',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE,
-	 preSet: function(oldValue) {
-	    return ConstantExpr.isInstance(oldValue) ?
-	       compile_(oldValue.f().toString().toLowerCase()) :
+         preSet: function(oldValue) {
+            return ConstantExpr.isInstance(oldValue) ?
+               compile_(oldValue.f().toString().toLowerCase()) :
                oldValue;
-	 }
+         }
       }
    ],
 
@@ -828,9 +828,9 @@ var SumExpr = FOAM({
 
    properties: [
       {
-	 name:  'sum',
-	 type:  'int',
-	 help:  'Sum of values.',
+         name:  'sum',
+         type:  'int',
+         help:  'Sum of values.',
          valueFactory: function() { return 0; }
       }
    ],
@@ -854,20 +854,20 @@ var AvgExpr = FOAM({
 
    properties: [
       {
-	 name:  'count',
-	 type:  'int',
+         name:  'count',
+         type:  'int',
          defaultValue: 0
       },
       {
-	 name:  'sum',
-	 type:  'int',
-	 help:  'Sum of values.',
+         name:  'sum',
+         type:  'int',
+         help:  'Sum of values.',
          defaultValue: 0
       },
       {
-	 name:  'avg',
-	 type:  'floag',
-	 help:  'Average of values.',
+         name:  'avg',
+         type:  'floag',
+         help:  'Average of values.',
          getter: function() { return this.sum / this.count; }
       }
    ],
@@ -890,9 +890,9 @@ var MaxExpr = FOAM({
 
    properties: [
       {
-	 name:  'max',
-	 type:  'int',
-	 help:  'Maximum value.',
+         name:  'max',
+         type:  'int',
+         help:  'Maximum value.',
          defaultValue: undefined
       }
    ],
@@ -924,9 +924,9 @@ var MinExpr = FOAM({
 
    properties: [
       {
-	 name:  'min',
-	 type:  'int',
-	 help:  'Minimum value.',
+         name:  'min',
+         type:  'int',
+         help:  'Minimum value.',
          defaultValue: undefined
       }
    ],
@@ -958,8 +958,8 @@ var DistinctExpr = FOAM({
 
    properties: [
       {
-	 name:  'values',
-	 help:  'Distinct values.',
+         name:  'values',
+         help:  'Distinct values.',
          valueFactory: function() { return {}; }
       }
    ],
@@ -993,9 +993,9 @@ var GroupByExpr = FOAM({
 
    properties: [
       {
-	 name:  'groups',
-	 type:  'Map[EXPR]',
-	 help:  'Groups.',
+         name:  'groups',
+         type:  'Map[EXPR]',
+         help:  'Groups.',
          valueFactory: function() { return {}; }
       }
    ],
@@ -1057,7 +1057,7 @@ var GroupByExpr = FOAM({
        out.push('<table border=1>');
        for ( var key in this.groups ) {
          var value = this.groups[key];
-	 var str = value.toHTML ? value.toHTML() : value;
+         var str = value.toHTML ? value.toHTML() : value;
          out.push('<tr><th>', key, '</th><td>', str, '</td></tr>');
        }
        out.push('</table>');
@@ -1067,7 +1067,7 @@ var GroupByExpr = FOAM({
      initHTML: function() {
        for ( var key in this.groups ) {
          var value = this.groups[key];
-	 value.initHTML && value.initHTML();
+         value.initHTML && value.initHTML();
        }
      }
    }
@@ -1083,37 +1083,37 @@ var GridByExpr = FOAM({
 
    properties: [
       {
-	 name:  'xFunc',
-	 label: 'X-Axis Function',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'xFunc',
+         label: 'X-Axis Function',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE
       },
       {
-	 name:  'yFunc',
-	 label: 'Y-Axis Function',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'yFunc',
+         label: 'Y-Axis Function',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE
       },
       {
-	 name:  'acc',
-	 label: 'Accumulator',
-	 type:  'Expr',
-	 help:  'Sub-expression',
+         name:  'acc',
+         label: 'Accumulator',
+         type:  'Expr',
+         help:  'Sub-expression',
          defaultValue: TRUE
       },
       {
-	 name:  'rows',
-	 type:  'Map[EXPR]',
-	 help:  'Rows.',
+         name:  'rows',
+         type:  'Map[EXPR]',
+         help:  'Rows.',
          valueFactory: function() { return {}; }
       },
       {
-	 name:  'cols',
-	 label: 'Columns',
-	 type:  'Map[EXPR]',
-	 help:  'Columns.',
+         name:  'cols',
+         label: 'Columns',
+         type:  'Map[EXPR]',
+         help:  'Columns.',
          valueFactory: function() { return {}; }
       }
    ],
@@ -1126,7 +1126,7 @@ var GridByExpr = FOAM({
       var f = function() {
           self.cols = GROUP_BY(self.xFunc, COUNT());
           self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
-	};
+        };
 
       self.addPropertyListener('xFunc', f);
       self.addPropertyListener('yFunc', f);
@@ -1135,10 +1135,10 @@ var GridByExpr = FOAM({
 /*
       Events.dynamic(
         function() { self.xFunc; self.yFunc; self.acc; },
-	function() {
+        function() {
           self.cols = GROUP_BY(self.xFunc, COUNT());
           self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
-	});
+        });
 */
     },
 
@@ -1168,7 +1168,7 @@ var GridByExpr = FOAM({
        out.push('<table border=0 cellspacing=0 class="gridBy"><tr><th></th>');
 
        for ( var x in cols ) {
-	 var str = x.toHTML ? x.toHTML() : x;
+         var str = x.toHTML ? x.toHTML() : x;
          out.push('<th>', str, '</th>');
        }
        out.push('</tr>');
@@ -1251,8 +1251,8 @@ var CountExpr = FOAM({
 
    properties: [
       {
-	 name:  'count',
-	 type:  'int',
+         name:  'count',
+         type:  'int',
          defaultValue: 0
       }
    ],
@@ -1519,21 +1519,21 @@ var ExpandableGroupByExpr = FOAM({
 
    properties: [
       {
-	 name:  'groups',
-	 type:  'Map[EXPR]',
-	 help:  'Groups.',
+         name:  'groups',
+         type:  'Map[EXPR]',
+         help:  'Groups.',
          valueFactory: function() { return {}; }
       },
       {
-	 name:  'expanded',
-	 type:  'Map',
-	 help:  'Expanded.',
+         name:  'expanded',
+         type:  'Map',
+         help:  'Expanded.',
          valueFactory: function() { return {}; }
       },
       {
-	 name:  'values',
-	 type:  'Object',
-	 help:  'Values',
+         name:  'values',
+         type:  'Object',
+         help:  'Values',
          valueFactory: function() { return []; }
       }
    ],
@@ -1557,8 +1557,8 @@ var ExpandableGroupByExpr = FOAM({
        this.values.select({put:function(o) {
          sink.put(o);
          var key = self.arg1.f(o);
-	 var a = o.children;
-	 if ( a ) for ( var i = 0 ; i < a.length ; i++ ) sink.put(a[i]);
+         var a = o.children;
+         if ( a ) for ( var i = 0 ; i < a.length ; i++ ) sink.put(a[i]);
        }}, options);
        return aconstant(sink);
      },

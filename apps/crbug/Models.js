@@ -48,15 +48,15 @@ var CIssue = FOAM({
     properties: [
         {
             name: 'id',
-	    shortName: 'i',
+            shortName: 'i',
             label: 'ID',
             required: true,
             tableWidth: '48px'
         },
         {
             name: 'priority',
-	    shortName: 'p',
-	    aliases: ['pr', 'pri', 'prior'],
+            shortName: 'p',
+            aliases: ['pr', 'pri', 'prior'],
             tableLabel: 'Pri',
             type: 'Integer',
             tableWidth: '30px',
@@ -68,8 +68,8 @@ var CIssue = FOAM({
         },
         {
             name: 'milestone',
-	    shortName: 'm',
-	    aliases: ['mstone'],
+            shortName: 'm',
+            aliases: ['mstone'],
             tableLabel: 'M',
             type: 'Integer',
             tableWidth: '40px',
@@ -77,23 +77,23 @@ var CIssue = FOAM({
         },
         {
             name: 'iteration',
-	    shortName: 'it',
-	    aliases: ['iter'],
+            shortName: 'it',
+            aliases: ['iter'],
             type: 'String',
             tableWidth: '69px'
         },
         {
             name: 'releaseBlock',
-	    shortName: 'rb',
-	    aliases: ['rBlock', 'release'],
+            shortName: 'rb',
+            aliases: ['rBlock', 'release'],
             type: 'String',
             tableWidth: '103px',
             defaultValue: ''
         },
         {
             name: 'category',
-	    shortName: 'c',
-	    aliases: ['cat', 'cr'],
+            shortName: 'c',
+            aliases: ['cat', 'cr'],
             label: 'Cr',
             tableWidth: '87px',
             type: 'String',
@@ -101,21 +101,21 @@ var CIssue = FOAM({
         },
         {
             name: 'status',
-	    shortName: 's',
-	    aliases: ['stat'],
+            shortName: 's',
+            aliases: ['stat'],
             type: 'String',
             tableWidth: '58px',
             defaultValue: ''
         },
         {
             name: 'owner',
-	    shortName: 'o',
+            shortName: 'o',
             tableWidth: '181px',
             type: 'String'
         },
         {
             name: 'summary',
-	    shortName: 'su',
+            shortName: 'su',
             label: 'Summary + Labels',
             type: 'String',
             tableWidth: '100%',
@@ -126,35 +126,35 @@ var CIssue = FOAM({
         },
         {
             name: 'labels',
-	    shortName: 'l',
-	    aliases: ['label'],
+            shortName: 'l',
+            aliases: ['label'],
             type: 'String',
-	    tableFormatter: function(value, row) {
+            tableFormatter: function(value, row) {
               var sb = [];
-	      // 	      var a = value.split(', ');
-	      var a = value;
-	      for ( var i = 0 ; i < a.length ; i++ ) {
+              //              var a = value.split(', ');
+              var a = value;
+              for ( var i = 0 ; i < a.length ; i++ ) {
                 // The the column is already being shown, then exclude it's label
-	        if ( row.model_.tableProperties.indexOf(labelToProperty[a[i].split('-')[0]]) == -1 ) {
-	          sb.push(' <span class="label">');
-		  sb.push(a[i]);
-		  sb.push('</span>');
-		}
+                if ( row.model_.tableProperties.indexOf(labelToProperty[a[i].split('-')[0]]) == -1 ) {
+                  sb.push(' <span class="label">');
+                  sb.push(a[i]);
+                  sb.push('</span>');
+                }
               }
-	      return sb.join('');
+              return sb.join('');
             },
-	    postSet: function(a) {
-	      for ( var i = 0 ; i < a.length ; i++ ) {
-	        for ( var key in labelToProperty ) {
-		  if ( a[i].substring(0, key.length) == key ) {
-		    var prop = labelToProperty[key];
-		    var val = a[i].substring(key.length+1).intern();
-		    // ???: Should be treated as last value or an array?
-		    this[prop] = val;
-//		    this[prop].push(val);
-		    a.splice(i,1);
-		    i--;
-		    break;
+            postSet: function(a) {
+              for ( var i = 0 ; i < a.length ; i++ ) {
+                for ( var key in labelToProperty ) {
+                  if ( a[i].substring(0, key.length) == key ) {
+                    var prop = labelToProperty[key];
+                    var val = a[i].substring(key.length+1).intern();
+                    // ???: Should be treated as last value or an array?
+                    this[prop] = val;
+//                  this[prop].push(val);
+                    a.splice(i,1);
+                    i--;
+                    break;
                   }
                 }
               }
@@ -168,7 +168,7 @@ var CIssue = FOAM({
         {
          model_: 'DateTimeProperty',
          name: 'updated',
-	 shortName: 'mod',
+         shortName: 'mod',
          mode: 'read-write',
          required: true,
          tableWidth: '100',
@@ -209,9 +209,9 @@ var CIssueTileView = FOAM({
 
    properties: [
       {
-	 name:  'issue',
-	 label: 'Issue',
-	 type:  'CIssue'
+         name:  'issue',
+         label: 'Issue',
+         type:  'CIssue'
       }
    ],
 

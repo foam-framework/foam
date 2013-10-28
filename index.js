@@ -398,9 +398,9 @@ var TreeIndex = {
       var count = this.size(s);
 //        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
       return {
-	 cost: 0,
+         cost: 0,
          execute: function(unused, sink, options) { sink.count = count; },
-	 toString: function() { return 'short-circuit-count(' + count + ')'; }
+         toString: function() { return 'short-circuit-count(' + count + ')'; }
       };
     }
 
@@ -465,7 +465,7 @@ if ( 'skip' in options ) newOptions.skip = options.skip;
     return {
       cost: cost,
       execute: function() {
-	    /*
+            /*
         var o = options && (options.skip || options.limit) ?
           {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
           undefined;
@@ -651,9 +651,9 @@ var mLangIndex = {
         __proto__: this,
         mlang: mlang,
         PLAN: {
-	   cost: 0,
+           cost: 0,
            execute: function(s, sink, options) { sink.copyFrom(s); },
-	   toString: function() { return 'mLangIndex(' + this.s + ')'; }
+           toString: function() { return 'mLangIndex(' + this.s + ')'; }
         }
      };
   },

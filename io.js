@@ -66,7 +66,7 @@ var TextToLines = function(sink) {
       var s = 0;
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( data.charCodeAt(i) == 10 ) {
-	  b.push(data.slice(s,i));
+          b.push(data.slice(s,i));
           s = i+1;
         }
       }
@@ -86,17 +86,17 @@ var TextToLines = function(sink) {
         var line;
 
         for ( i = 0 ; i < b.length-1 ; i++ ) {
-	  if ( buf ) {
-	    line = buf + b[i];
+          if ( buf ) {
+            line = buf + b[i];
             buf = undefined;
-	  } else {
-	    line = b[i];
-	  }
+          } else {
+            line = b[i];
+          }
 
-	  sink.put(line);
+          sink.put(line);
         }
 
-	buf = buf ? buf + ll : ll;
+        buf = buf ? buf + ll : ll;
       },
 
       eof: function() {

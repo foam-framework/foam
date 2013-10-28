@@ -30,57 +30,57 @@ var Action = FOAM({
 
     properties: [
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The coding identifier for the action.'
+           defaultValue: '',
+           help: 'The coding identifier for the action.'
        },
        {
-	   name: 'label',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'label',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.labelize(); },
-	   help: 'The display label for the action.'
+           defaultValueFn: function() { return this.name.labelize(); },
+           help: 'The display label for the action.'
        },
        {
-	   name: 'help',
-	   label: 'Help Text',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'help',
+           label: 'Help Text',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 6,
-	   defaultValue: '',
-	   help: 'Help text associated with the action.'
+           defaultValue: '',
+           help: 'Help text associated with the action.'
        },
        {
-	   name: 'default',
-	   type: 'Boolean',
-	   view: 'BooleanView',
-	   defaultValue: false,
-	   help: 'Indicates if this is the default action.'
+           name: 'default',
+           type: 'Boolean',
+           view: 'BooleanView',
+           defaultValue: false,
+           help: 'Indicates if this is the default action.'
        },
        {
-	   name: 'isAvailable',
-	   label: 'Available',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'isAvailable',
+           label: 'Available',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 3,
-	   view: 'FunctionView',
-	   defaultValue: function() { return true; },
-	   help: 'Function to determine if action is available.'
+           view: 'FunctionView',
+           defaultValue: function() { return true; },
+           help: 'Function to determine if action is available.'
        },
        {
-	   name: 'isEnabled',
-	   label: 'Enabled',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'isEnabled',
+           label: 'Enabled',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 3,
-	   view: 'FunctionView',
-	   defaultValue: function() { return true; },
-	   help: 'Function to determine if action is enabled.'
+           view: 'FunctionView',
+           defaultValue: function() { return true; },
+           help: 'Function to determine if action is enabled.'
        },
        {
            name: 'iconUrl',
@@ -95,13 +95,13 @@ var Action = FOAM({
            help: 'Property indicating whether the label should be rendered along side the icon'
        },
        {
-	   name: 'action',
-	   type: 'Function',
-	   displayWidth: 80,
+           name: 'action',
+           type: 'Function',
+           displayWidth: 80,
            displayHeight: 20,
-	   defaultValue: '',
-	   view: 'FunctionView',
-	   help: 'Function to implement action.'
+           defaultValue: '',
+           view: 'FunctionView',
+           help: 'Function to implement action.'
        }
    ]
 });
@@ -119,25 +119,25 @@ var Topic = FOAM({
 
     properties: [
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   // todo: test this
-	   preSet: function (newValue) {
-	      return newValue.toUpperCase();
-	   },
-	   help: 'The coding identifier for this topic.'
+           defaultValue: '',
+           // todo: test this
+           preSet: function (newValue) {
+              return newValue.toUpperCase();
+           },
+           help: 'The coding identifier for this topic.'
        },
        {
-	   name: 'description',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'description',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'A brief description of this topic.'
+           defaultValue: '',
+           help: 'A brief description of this topic.'
        }
    ]
 });
@@ -156,13 +156,13 @@ var Arg = FOAM({
 
     properties: [
        {
-	   name:  'type',
-	   type:  'String',
+           name:  'type',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: 'Object',
-	   help: 'The type of this argument.'
+           defaultValue: 'Object',
+           help: 'The type of this argument.'
        },
        {
           name: 'javaType',
@@ -179,13 +179,13 @@ var Arg = FOAM({
           help: 'The javascript type that represents the type of this property.',
        },
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The coding identifier for the entity.'
+           defaultValue: '',
+           help: 'The coding identifier for the entity.'
        },
        {
           model_: 'BooleanProperty',
@@ -193,25 +193,25 @@ var Arg = FOAM({
           default: true
        },
        {
-	   name:  'defaultValue',
-	   help: 'Default Value if not required and not provided.'
+           name:  'defaultValue',
+           help: 'Default Value if not required and not provided.'
        },
        {
-	   name: 'description',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'description',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'A brief description of this topic.'
+           defaultValue: '',
+           help: 'A brief description of this topic.'
        },
        {
-	   name: 'help',
-	   label: 'Help Text',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'help',
+           label: 'Help Text',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 6,
-	   defaultValue: '',
-	   help: 'Help text associated with the entity.'
+           defaultValue: '',
+           help: 'Help text associated with the entity.'
        }
    ],
    templates:[
@@ -252,53 +252,53 @@ Method = FOAM({
 
     properties: [
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The coding identifier for the entity.'
+           defaultValue: '',
+           help: 'The coding identifier for the entity.'
        },
        {
-	   name: 'description',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'description',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'A brief description of this topic.'
+           defaultValue: '',
+           help: 'A brief description of this topic.'
        },
        {
-	   name: 'help',
-	   label: 'Help Text',
-	   type: 'String',
-	   displayWidth: 70,
+           name: 'help',
+           label: 'Help Text',
+           type: 'String',
+           displayWidth: 70,
            displayHeight: 6,
-	   defaultValue: '',
-	   help: 'Help text associated with the entity.'
+           defaultValue: '',
+           help: 'Help text associated with the entity.'
        },
        {
-	   name: 'code',
-	   type: 'Function',
+           name: 'code',
+           type: 'Function',
            displayWidth: 80,
            displayHeight: 30,
-	   view: 'FunctionView',
-	   help: 'Javascript code to implement this method.'
+           view: 'FunctionView',
+           help: 'Javascript code to implement this method.'
        },
        {
-	   name:  'returnType',
+           name:  'returnType',
            defaultValue: '',
-	   help: 'Interface package.'
+           help: 'Interface package.'
        },
        {
            model_: 'ArrayProperty',
-	   name: 'args',
-	   type: 'Array[Arg]',
+           name: 'args',
+           type: 'Array[Arg]',
            subType: 'Arg',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Method arguments.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Method arguments.'
        }
    ],
    templates:[
@@ -357,46 +357,46 @@ var Interface = FOAM({
 
    properties: [
        {
-	   name:  'package',
-	   help: 'Interface package.'
+           name:  'package',
+           help: 'Interface package.'
        },
        {
-	   name: 'extends',
-	   type: 'Array[String]',
-	   view: 'StringArrayView',
-	   help: 'Interfaces extended by this interface.'
+           name: 'extends',
+           type: 'Array[String]',
+           view: 'StringArrayView',
+           help: 'Interfaces extended by this interface.'
        },
        {
-	   name:  'name',
+           name:  'name',
            required: true,
-	   help: 'Interface name.'
+           help: 'Interface name.'
        },
        {
-	   name:  'description',
-	   type:  'String',
+           name:  'description',
+           type:  'String',
            required: true,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The template\'s unique name.'
+           defaultValue: '',
+           help: 'The template\'s unique name.'
        },
        {
-	   name: 'help',
-	   label: 'Help Text',
-	   displayWidth: 70,
+           name: 'help',
+           label: 'Help Text',
+           displayWidth: 70,
            displayHeight: 6,
-	   view: 'TextAreaView',
-	   help: 'Help text associated with the argument.'
+           view: 'TextAreaView',
+           help: 'Help text associated with the argument.'
        },
        {
            model_: 'ArrayProperty',
-	   name: 'methods',
-	   type: 'Array[Method]',
+           name: 'methods',
+           type: 'Array[Method]',
            subType: 'Method',
-	   view: 'ArrayView',
-	   valueFactory: function() { return []; },
-	   defaultValue: [],
-	   help: 'Methods associated with the interface.'
+           view: 'ArrayView',
+           valueFactory: function() { return []; },
+           defaultValue: [],
+           help: 'Methods associated with the interface.'
        }
    ],
    methods: {
@@ -461,40 +461,40 @@ var Template = FOAM({
 
     properties: [
        {
-	   name:  'name',
-	   type:  'String',
+           name:  'name',
+           type:  'String',
            required: true,
-	   displayWidth: 30,
+           displayWidth: 30,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The template\'s unique name.'
+           defaultValue: '',
+           help: 'The template\'s unique name.'
        },
        {
-	   name:  'description',
-	   type:  'String',
+           name:  'description',
+           type:  'String',
            required: true,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValue: '',
-	   help: 'The template\'s unique name.'
+           defaultValue: '',
+           help: 'The template\'s unique name.'
        },
        {
-	   name: 'template',
-	   type: 'String',
-	   displayWidth: 180,
+           name: 'template',
+           type: 'String',
+           displayWidth: 180,
            displayHeight: 30,
-	   rows: 30, cols: 80,
-	   defaultValue: '',
-	   view: 'TextAreaView',
-	   help: 'Template text. <%= expr %> or <% out(...); %>'
+           rows: 30, cols: 80,
+           defaultValue: '',
+           view: 'TextAreaView',
+           help: 'Template text. <%= expr %> or <% out(...); %>'
        },
        {
-	   name: 'templates',
-	   type: 'Array[Template]',
+           name: 'templates',
+           type: 'Array[Template]',
            subType: 'Template',
-	   view: 'ArrayView',
-	   defaultValue: [],
-	   help: 'Sub-templates of this template.'
+           view: 'ArrayView',
+           defaultValue: [],
+           help: 'Sub-templates of this template.'
        }
    ]
 

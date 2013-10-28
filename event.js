@@ -38,9 +38,9 @@ var EventService = {
     /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
     oneTime: function(listener) {
        return function() {
-	  listener.apply(this, arguments);
+          listener.apply(this, arguments);
 
-	  throw EventService.UNSUBSCRIBE_EXCEPTION;
+          throw EventService.UNSUBSCRIBE_EXCEPTION;
        };
     },
 
@@ -48,9 +48,9 @@ var EventService = {
     /** Log all listener invocations to console. **/
     consoleLog: function(listener) {
        return function() {
-	  console.log(arguments);
+          console.log(arguments);
 
-	  listener.apply(this, arguments);
+          listener.apply(this, arguments);
        };
     },
 
@@ -66,26 +66,26 @@ var EventService = {
        var delay = opt_delay || 16;
 
        return function() {
-	  var triggered = false;
-	  var lastArgs  = null;
+          var triggered = false;
+          var lastArgs  = null;
 
-	  return function() {
-	     lastArgs = arguments;
+          return function() {
+             lastArgs = arguments;
 
-	     if ( ! triggered ) {
-		triggered = true;
+             if ( ! triggered ) {
+                triggered = true;
 
-		setTimeout(
-		   function() {
-		      triggered = false;
-		      var args = lastArgs;
-		      lastArgs = null;
+                setTimeout(
+                   function() {
+                      triggered = false;
+                      var args = lastArgs;
+                      lastArgs = null;
 
-		      listener.apply(this, args);
-		   },
-		   delay);
-	     }
-	  };
+                      listener.apply(this, args);
+                   },
+                   delay);
+             }
+          };
        }();
     },
 
@@ -97,26 +97,26 @@ var EventService = {
 // TODO: execute immediately from within a requestAnimationFrame
     animate: function(listener) {
        return function() {
-	  var triggered = false;
-	  var lastArgs  = null;
+          var triggered = false;
+          var lastArgs  = null;
 
-	  return function() {
-	     lastArgs = arguments;
+          return function() {
+             lastArgs = arguments;
 
-	     if ( ! triggered ) {
-		triggered = true;
+             if ( ! triggered ) {
+                triggered = true;
                 var window = $documents[$documents.length-1].defaultView;
 
-		window.requestAnimationFrame(
-		   function() {
-		      triggered = false;
-		      var args = lastArgs;
-		      lastArgs = null;
+                window.requestAnimationFrame(
+                   function() {
+                      triggered = false;
+                      var args = lastArgs;
+                      lastArgs = null;
 
-		      listener.apply(this, args);
-		   });
-	     }
-	  };
+                      listener.apply(this, args);
+                   });
+             }
+          };
        }();
     },
 
@@ -127,10 +127,10 @@ var EventService = {
 
     delay: function(delay, listener) {
        return function() {
-	  var args = arguments;
+          var args = arguments;
 
-	  // Is there a better way of doing this?
-	  setTimeout( function() { listener.apply(this, args); }, delay );
+          // Is there a better way of doing this?
+          setTimeout( function() { listener.apply(this, args); }, delay );
        };
     },
 
@@ -170,9 +170,9 @@ var EventService = {
 
     /** Subscribe to notifications for the specified topic. **/
     subscribe: function (topic, listener) {
-	if ( ! this.subs_ ) this.subs_ = {};
+        if ( ! this.subs_ ) this.subs_ = {};
 
-	this.sub_(this.subs_, 0, topic, listener);
+        this.sub_(this.subs_, 0, topic, listener);
     },
 
 
@@ -195,38 +195,38 @@ var EventService = {
     /////////////////////////////////////////////////////
 
     pub_: function(map, topicIndex, topic, msg) {
-	var count = 0;
+        var count = 0;
 
-	// There are no subscribers, so nothing to do
-	if ( map == null ) return 0;
+        // There are no subscribers, so nothing to do
+        if ( map == null ) return 0;
 
-	if ( topicIndex < topic.length ) {
-	   var t = topic[topicIndex];
+        if ( topicIndex < topic.length ) {
+           var t = topic[topicIndex];
 
-	   // wildcard publish, so notify all sub-topics, instead of just one
-	   if ( t == this.WILDCARD )
-	      return this.notifyListeners_(topic, map, msg);
+           // wildcard publish, so notify all sub-topics, instead of just one
+           if ( t == this.WILDCARD )
+              return this.notifyListeners_(topic, map, msg);
 
-	   if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
-	}
+           if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
+        }
 
-	count += this.notifyListeners_(topic, map[null], msg);
+        count += this.notifyListeners_(topic, map[null], msg);
 
-	return count;
+        return count;
     },
 
 
     sub_: function(map, topicIndex, topic, listener) {
-	if ( topicIndex == topic.length ) {
-	   if ( ! map[null] ) map[null] = [];
-	   map[null].push(listener);
-	} else {
-	   var key = topic[topicIndex];
+        if ( topicIndex == topic.length ) {
+           if ( ! map[null] ) map[null] = [];
+           map[null].push(listener);
+        } else {
+           var key = topic[topicIndex];
 
-	   if ( ! map[key] ) map[key] = {};
+           if ( ! map[key] ) map[key] = {};
 
-	   this.sub_(map[key], topicIndex+1, topic, listener);
-	}
+           this.sub_(map[key], topicIndex+1, topic, listener);
+        }
     },
 
     unsub_: function(map, topicIndex, topic, listener) {
@@ -253,24 +253,24 @@ var EventService = {
        if ( listeners == null ) return 0;
 
        if ( listeners instanceof Array ) {
-	  for ( var i = 0 ; i < listeners.length ; i++ ) {
-	     var listener = listeners[i];
+          for ( var i = 0 ; i < listeners.length ; i++ ) {
+             var listener = listeners[i];
 
              try {
-		listener.apply(null, msg);
-	     } catch ( err ) {
-		if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
-		   listeners.splice(i,1);
-		   i--;
-		}
-	     }
-	  }
+                listener.apply(null, msg);
+             } catch ( err ) {
+                if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
+                   listeners.splice(i,1);
+                   i--;
+                }
+             }
+          }
 
-	  return listeners.length;
+          return listeners.length;
        }
 
        for ( var key in listeners ) {
-	  return this.notifyListeners_(topic, listeners[key], msg);
+          return this.notifyListeners_(topic, listeners[key], msg);
        }
     },
 
@@ -346,21 +346,21 @@ var PropertyChangeSupport = {
       return {
          $UID: obj.$UID + "." + property,
 
-	 get: function() { return obj[property]; },
+         get: function() { return obj[property]; },
 
-	 set: function(val) { obj[property] = val; },
+         set: function(val) { obj[property] = val; },
 
-	 addListener: function(listener) {
-	    obj.addPropertyListener(property, listener);
-	 },
+         addListener: function(listener) {
+            obj.addPropertyListener(property, listener);
+         },
 
-	 removeListener: function(listener) {
-	    obj.removePropertyListener(property, listener);
-	 },
+         removeListener: function(listener) {
+            obj.removePropertyListener(property, listener);
+         },
 
- 	 toString: function () {
-	    return "PropertyValue(" + obj + "," + property + ")";
-	 }
+         toString: function () {
+            return "PropertyValue(" + obj + "," + property + ")";
+         }
       };
    }
 
@@ -382,7 +382,7 @@ var Events = {
        dstValue.set(srcValue.get());
 
        var listener = function () {
-	  dstValue.set(srcValue.get());
+          dstValue.set(srcValue.get());
        };
 
        this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -399,7 +399,7 @@ var Events = {
        if ( ! srcValue || ! dstValue ) return;
 
        var listener = function () {
-	  dstValue.set(f(srcValue.get()));
+          dstValue.set(f(srcValue.get()));
        };
 
        listener(); // copy initial value
@@ -738,14 +738,14 @@ var Movement = {
 
        t.addListener(function() {
          var dx = bodyX.get() - satX.get();
-	 var dy = (bodyY.get() - satY.get());
-	 var theta = Math.atan2(dy,dx);
-	 var r     = Math.sqrt(dx*dx+dy*dy);
+         var dy = (bodyY.get() - satY.get());
+         var theta = Math.atan2(dy,dx);
+         var r     = Math.sqrt(dx*dx+dy*dy);
 
-	 r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
+         r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
 
-	 satX.set(satX.get() + r*Math.cos(-theta));
-	 satY.set(satY.get() - r*Math.sin(-theta));
+         satX.set(satX.get() + r*Math.cos(-theta));
+         satY.set(satY.get() - r*Math.sin(-theta));
        });
     },
 
@@ -768,8 +768,8 @@ var Movement = {
 
        t.addListener(function() {
           var time = t.time;
-	  satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
-	  satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
+          satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
+          satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
        });
     }
 

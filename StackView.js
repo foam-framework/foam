@@ -22,12 +22,12 @@ var StackView = FOAM({
 
    properties: [
       {
-	 name:  'stack',
-	 valueFactory: function() { return []; }
+         name:  'stack',
+         valueFactory: function() { return []; }
       },
       {
-	 name:  'redo',
-	 valueFactory: function() { return []; }
+         name:  'redo',
+         valueFactory: function() { return []; }
       },
       {
         name:   'backButton',
@@ -49,25 +49,25 @@ var StackView = FOAM({
    actions: [
       {
          model_: 'Action',
-	 name:  'back',
-	 label: '<',
-	 help:  'Go to previous view',
+         name:  'back',
+         label: '<',
+         help:  'Go to previous view',
 
-	 isEnabled:   function() { return this.stack.length > 1; },
-	 action:      function() {
+         isEnabled:   function() { return this.stack.length > 1; },
+         action:      function() {
            if ( this.stack.length < 2 ) return;
 
-	   this.redo.push(this.stack.pop());
-	   this.pushView(this.stack.pop(), undefined, true);
-	 }
+           this.redo.push(this.stack.pop());
+           this.pushView(this.stack.pop(), undefined, true);
+         }
       },
       {
          model_: 'Action',
-	 name:  'forth',
-	 label: '>',
-	 help:  'Undo the previous back.',
+         name:  'forth',
+         label: '>',
+         help:  'Undo the previous back.',
 
-	 action:      function() {
+         action:      function() {
            this.pushView(this.redo.pop());
          }
       }
@@ -81,19 +81,19 @@ var StackView = FOAM({
       },
 
       toHTML: function() {
-	 return '<div class="stackview" style="width:100%;font-size:200%;font-family:sans-serif" id="' + this.getID() + '">' +
-	    '<div class="stackview_navbar"></div>' +
+         return '<div class="stackview" style="width:100%;font-size:200%;font-family:sans-serif" id="' + this.getID() + '">' +
+            '<div class="stackview_navbar"></div>' +
             '<div class="stackview_navactions">' + this.backButton.toHTML() + this.forwardButton.toHTML() + '</div>' +
             '<table width=100% style="table-layout:fixed;"><tr><td width=100% notwidth2=53% valign=top><div class="stackview-viewarea"></div></td><td notwidth2=43% valign=top><div class="stackview_previewarea"></div></td></tr></table></div>';
       },
 
       setTopView: function(view, opt_label) {
-	 this.stack = [];
-	 this.pushView(view);
+         this.stack = [];
+         this.pushView(view);
       },
 
       navBarElement: function() {
-	 return this.$.childNodes[0];
+         return this.$.childNodes[0];
       },
 
       navActionsElement: function() {
@@ -101,48 +101,48 @@ var StackView = FOAM({
       },
 
       viewAreaElement: function () {
-	 return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+         return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
       },
 
       previewAreaElement: function() {
-	 return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+         return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
       },
 
       updateNavBar: function() {
-	 var buf = [];
+         var buf = [];
 
-	 for ( var i = 0 ; i < this.stack.length ; i++ )
-	 {
-	    var view = this.stack[i];
+         for ( var i = 0 ; i < this.stack.length ; i++ )
+         {
+            var view = this.stack[i];
 
-	    if ( buf.length != 0 ) buf.push(' > ');
-	    buf.push(view.stackLabel);
-	 }
+            if ( buf.length != 0 ) buf.push(' > ');
+            buf.push(view.stackLabel);
+         }
 
-	 this.navBarElement().innerHTML = buf.join('');
+         this.navBarElement().innerHTML = buf.join('');
       },
 
       pushView: function (view, opt_label, opt_back) {
          if ( !opt_back ) this.redo.length = 0;
-	 this.setPreview(null);
-	 view.stackLabel = opt_label || view.stackLabel || view.label;
-	 this.stack.push(view);
-	 this.viewAreaElement().innerHTML = view.toHTML();
-	 this.updateNavBar();
-	 view.stackView = this;
-	 view.initHTML();
+         this.setPreview(null);
+         view.stackLabel = opt_label || view.stackLabel || view.label;
+         this.stack.push(view);
+         this.viewAreaElement().innerHTML = view.toHTML();
+         this.updateNavBar();
+         view.stackView = this;
+         view.initHTML();
       },
 
       setPreview: function(view) {
-	 if ( ! view ) {
+         if ( ! view ) {
            this.viewAreaElement().parentNode.width = '100%';
            this.previewAreaElement().innerHTML = '';
-	   return;
-	 }
+           return;
+         }
 
          this.viewAreaElement().parentNode.width = '65%';
-	 this.previewAreaElement().innerHTML = view.toHTML();
-	 view.initHTML();
+         this.previewAreaElement().innerHTML = view.toHTML();
+         view.initHTML();
       }
 
    }

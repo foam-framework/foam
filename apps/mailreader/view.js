@@ -31,10 +31,10 @@ var LabelView = FOAM({
          defaultValueFn: function() {
            return GLOBAL.EMailLabels;
          },
-	 hidden: true
+         hidden: true
       },
       {
-	 name:  'value',
+         name:  'value',
          type:  'Value',
          postSet: function(newValue, oldValue) {
             oldValue && oldValue.removeListener(this.updateHTML);
@@ -48,13 +48,13 @@ var LabelView = FOAM({
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'updateHTML',
-	 code: function() {
+         name: 'updateHTML',
+         code: function() {
             var e = this.$;
             if ( e ) e.innerHTML = this.labelsToHTML();
- 	 }
+         }
       }
    ],
 

@@ -22,29 +22,29 @@ var StringProperty = Model.create({
 
     properties: [
        {
-	   name: 'displayHeight',
-	   type: 'int',
-	   displayWidth: 8,
-	   defaultValue: 1,
-	   help: 'The display height of the property.'
+           name: 'displayHeight',
+           type: 'int',
+           displayWidth: 8,
+           defaultValue: 1,
+           help: 'The display height of the property.'
        },
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'String',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'String',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 70,
-	   defaultValue: 'String',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 70,
+           defaultValue: 'String',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   defaultValueFn: function() { return this.displayHeight > 1 ? 'TextAreaView' : 'TextFieldView'; }
+           name: 'view',
+           defaultValueFn: function() { return this.displayHeight > 1 ? 'TextAreaView' : 'TextFieldView'; }
        },
        {
            name: 'prototag',
@@ -64,26 +64,26 @@ var BooleanProperty = Model.create({
 
     properties: [
       {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Boolean',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Boolean',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 70,
-	   defaultValue: 'bool',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 70,
+           defaultValue: 'bool',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   defaultValue: 'BooleanView'
+           name: 'view',
+           defaultValue: 'BooleanView'
        },
        {
-	   name: 'defaultValue',
-	   defaultValue: false
+           name: 'defaultValue',
+           defaultValue: false
        },
        {
            name: 'prototag',
@@ -99,7 +99,7 @@ var BooleanProperty = Model.create({
 /*
          preSet: function (d) {
            return typeof d === 'string' ? new Date(d) : d;
-	 },
+         },
          tableFormatter: function(d) {
            return d.toDateString();
          },
@@ -116,26 +116,26 @@ var DateProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Date',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Date',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'displayWidth',
-	   defaultValue: 50
+           name: 'displayWidth',
+           defaultValue: 50
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   defaultValue: 'Date',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           defaultValue: 'Date',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   // TODO: create custom DateView
-	   defaultValue: 'DateFieldView'
+           name: 'view',
+           // TODO: create custom DateView
+           defaultValue: 'DateFieldView'
        },
        {
            name: 'prototag',
@@ -146,13 +146,13 @@ var DateProperty = Model.create({
        },
        {
            name: 'preSet',
-	   defaultValue: function (d) {
+           defaultValue: function (d) {
              return typeof d === 'string' ? new Date(d) : d;
-	   }
+           }
        },
        {
            name: 'tableFormatter',
-	   defaultValue2: function(d) {
+           defaultValue2: function(d) {
              return d.toDateString();
            },
           defaultValue: function(d) {
@@ -193,23 +193,23 @@ var DateTimeProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'datetime',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'datetime',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'preSet',
-	   defaultValue: function(d) {
+           name: 'preSet',
+           defaultValue: function(d) {
               if ( typeof d === 'number' ) return new Date(d);
               if ( typeof d === 'string' ) return new Date(d);
               return d;
            }
        },
        {
-	   name: 'view',
-	   defaultValue: 'DateTimeFieldView'
+           name: 'view',
+           defaultValue: 'DateTimeFieldView'
        }
     ]
 });
@@ -223,30 +223,30 @@ var IntegerProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Integer',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Integer',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'displayWidth',
-	   defaultValue: 10
+           name: 'displayWidth',
+           defaultValue: 10
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 10,
-	   defaultValue: 'int',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 10,
+           defaultValue: 'int',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   defaultValue: 'IntFieldView'
+           name: 'view',
+           defaultValue: 'IntFieldView'
        },
        {
-	   name: 'defaultValue',
-	   defaultValue: 0
+           name: 'defaultValue',
+           defaultValue: 0
        },
        {
            name: 'prototag',
@@ -267,26 +267,26 @@ var FloatProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Float',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Float',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 10,
-	   defaultValue: 'double',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 10,
+           defaultValue: 'double',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'displayWidth',
-	   defaultValue: 15
+           name: 'displayWidth',
+           defaultValue: 15
        },
        {
-	   name: 'view',
-	   defaultValue: 'FloatFieldView'
+           name: 'view',
+           defaultValue: 'FloatFieldView'
        },
        {
            name: 'prototag',
@@ -307,22 +307,22 @@ var ArrayProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Array',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Array',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'subType',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: '',
-	   help: 'The FOAM sub-type of this property.'
+           name: 'subType',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: '',
+           help: 'The FOAM sub-type of this property.'
        },
        {
-	   name: 'preSet',
-	   defaultValue: function(a, _, prop) {
+           name: 'preSet',
+           defaultValue: function(a, _, prop) {
               var m = GLOBAL[prop.subType];
 
               if ( ! m ) {
@@ -346,15 +346,15 @@ if ( a[i].model_ ) {
            }
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 10,
-	   defaultValueFn: function(p) { return p.subType + '[]'; },
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 10,
+           defaultValueFn: function(p) { return p.subType + '[]'; },
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   defaultValue: 'ArrayView'
+           name: 'view',
+           defaultValue: 'ArrayView'
        },
        {
            name: 'valueFactory',
@@ -379,31 +379,31 @@ var ReferenceProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Reference',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Reference',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'subType',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: '',
-	   help: 'The FOAM sub-type of this property.'
+           name: 'subType',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: '',
+           help: 'The FOAM sub-type of this property.'
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 10,
-	   // TODO: should obtain primary-key type from subType
-	   defaultValueFn: function(p) { return 'Object'; },
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 10,
+           // TODO: should obtain primary-key type from subType
+           defaultValueFn: function(p) { return 'Object'; },
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   // TODO: should be 'KeyView'
-	   defaultValue: 'TextFieldView'
+           name: 'view',
+           // TODO: should be 'KeyView'
+           defaultValue: 'TextFieldView'
        },
        {
            name: 'prototag',
@@ -424,37 +424,37 @@ var StringArrayProperty = Model.create({
 
     properties: [
        {
-	   name: 'type',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'Array[]',
-	   help: 'The FOAM type of this property.'
+           name: 'type',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'Array[]',
+           help: 'The FOAM type of this property.'
        },
        {
-	   name: 'subType',
-	   type: 'String',
-	   displayWidth: 20,
-	   defaultValue: 'String',
-	   help: 'The FOAM sub-type of this property.'
+           name: 'subType',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: 'String',
+           help: 'The FOAM sub-type of this property.'
        },
        {
-	   name: 'displayWidth',
-	   defaultValue: 50
+           name: 'displayWidth',
+           defaultValue: 50
        },
        {
            name: 'valueFactory',
            defaultValue: function() { return []; }
        },
        {
-	   name: 'javaType',
-	   type: 'String',
-	   displayWidth: 10,
-	   defaultValue: 'String[]',
-	   help: 'The Java type of this property.'
+           name: 'javaType',
+           type: 'String',
+           displayWidth: 10,
+           defaultValue: 'String[]',
+           help: 'The Java type of this property.'
        },
        {
-	   name: 'view',
-	   defaultValue: 'StringArrayView'
+           name: 'view',
+           defaultValue: 'StringArrayView'
        },
        {
            name: 'prototag',
