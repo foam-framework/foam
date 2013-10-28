@@ -200,7 +200,7 @@
            //setDisplay();
           break;
          case 15:
-           var dv = DetailView.create(Model, new SimpleValue(model)); setDisplay(dv.toHTML() ); dv.initHTML();
+           var dv = DetailView.create({model: Model, value: new SimpleValue(model)}); setDisplay(dv.toHTML() ); dv.initHTML();
          break;
       }
     });

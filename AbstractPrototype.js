@@ -296,10 +296,12 @@ console.log(i, k, v);
   },
 
   write: function(document) {
-    var view = ActionBorder.create(this.model_, DetailView.create(this.model_));
+    var view = ActionBorder.create(
+      this.model_,
+      DetailView.create({model: this.model_}));
 
     document.writeln(view.toHTML());
-    view.set(this);
+    view.value.set(this);
     view.initHTML();
   }
 };

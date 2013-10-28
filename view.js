@@ -1659,72 +1659,74 @@ var XMLView = FOAM({
 });
 
 
-var DetailView = {
+var DetailView = Model.create({
 
-   __proto__: AbstractView,
+  extendsModel: 'AbstractView2',
 
-   create: function(model, value) {
-      var obj = AbstractView.create.call(this);
+  properties: [
+    {
+      name:  'model',
+      type:  'Model'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return new SimpleValue(); }
+    }
+  ],
 
-      obj.model = model;
-      // TODO: this remembers the wrong 'this' when decorated with
-      // ActionBorder
-      obj.setValue(value || new SimpleValue());
-
-      return obj;
-   },
-
-   getValue: function() {
+  methods: {
+    getValue: function() {
       return this.value;
-   },
-
-   setValue: function (value) {
+    },
+    
+    setValue: function (value) {
       if ( this.getValue() ) {
-	 // todo:
-	 /// getValue().removeListener(???)
+	// todo:
+	/// getValue().removeListener(???)
       }
       this.value = value;
       this.updateSubViews();
       // TODO: model this class and make updateSubViews a listener
       // instead of bind()'ing
       value.addListener(this.updateSubViews.bind(this));
-   },
-
-   /** Create the sub-view from property info. **/
-   createView: function(prop) {
+    },
+    
+    /** Create the sub-view from property info. **/
+    createView: function(prop) {
       var proto =
-         ! prop.view                   ? TextFieldView     :
-         typeof prop.view === 'string' ? GLOBAL[prop.view] :
-         prop.view ;
-
+        ! prop.view                   ? TextFieldView     :
+        typeof prop.view === 'string' ? GLOBAL[prop.view] :
+        prop.view ;
+      
       var view = proto.create(prop);
-
+      
       try {
-	 view.setValue(this.get().propertyValue(prop.name));
+	view.setValue(this.get().propertyValue(prop.name));
       } catch (x) { }
-
+      
       view.prop = prop;
       view.toString = function () { return this.prop.name + "View"; };
       this.addChild(view);
-
+      
       return view;
-   },
-
-   titleHTML: function() {
+    },
+    
+    titleHTML: function() {
       return '<tr><th colspan=2 class="heading">' +
-         'Edit ' + this.model.label +
-         '</th></tr>';
-   },
-
-   startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
-   nextColumn:   function() { return '</table></td><td valign=top><table valign=top>'; },
-   endColumns:   function() { return '</table></td></tr></table></td></tr>'; },
-
-   rowToHTML: function(prop, view) {
+        'Edit ' + this.model.label +
+        '</th></tr>';
+    },
+    
+    startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
+    nextColumn:   function() { return '</table></td><td valign=top><table valign=top>'; },
+    endColumns:   function() { return '</table></td></tr></table></td></tr>'; },
+    
+    rowToHTML: function(prop, view) {
       var str = "";
-
+      
       str += prop.detailViewPreRow(this);
-
+      
       // TODO: add class to tr
       str += '<tr class="detail-' + prop.name + '">';
       str += "<td class='label'>" + prop.label + "</td>";
@@ -1732,80 +1734,80 @@ var DetailView = {
       str += view.toHTML();
       str += '</td>';
       str += '</tr>';
-
+      
       str += prop.detailViewPostRow(this);
-
+      
       return str;
-   },
-
-   toHTML: function() {
+    },
+    
+    toHTML: function() {
       this.children = [];
       var model = this.model;
       var str  = "";
-
+      
       str += '<div id="' + this.getID() + '" class="detailView" name="form">';
       str += '<table>';
       str += this.titleHTML();
-
+      
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
-	 var prop = model.properties[i];
-
-	 if ( prop.hidden ) continue;
-
-         str += this.rowToHTML(prop, this.createView(prop));
+	var prop = model.properties[i];
+        
+	if ( prop.hidden ) continue;
+        
+        str += this.rowToHTML(prop, this.createView(prop));
       }
-
+      
       str += '</table>';
       str += '</div>';
-
+      
       return str;
-   },
-
-   initHTML: function() {
-      AbstractView.initHTML.call(this);
-
+    },
+    
+    initHTML: function() {
+      this.SUPER();
+      
       // hooks sub-views upto sub-models
       this.updateSubViews();
-   },
-
-   set: function(obj) {
+    },
+    
+    set: function(obj) {
       this.getValue().set(obj);
-   },
-
-   get: function() {
+    },
+    
+    get: function() {
       return this.getValue().get();
-   },
-
-   updateSubViews: function() {
+    },
+    
+    updateSubViews: function() {
       var obj = this.get();
-
+      
       if ( obj === "" ) return;
-
+      
       for ( var i = 0 ; i < this.children.length ; i++ ) {
-	 var child = this.children[i];
-	 var prop  = child.prop;
-
-         if ( ! prop ) continue;
-
-	 try {
-	   child.setValue(obj.propertyValue(prop.name));
-	 } catch (x) {
-	   console.log("error: ", prop.name, " ", x);
-	 }
+	var child = this.children[i];
+	var prop  = child.prop;
+        
+        if ( ! prop ) continue;
+        
+	try {
+	  child.setValue(obj.propertyValue(prop.name));
+	} catch (x) {
+	  console.log("error: ", prop.name, " ", x);
+	}
       }
-   },
-
-   setModel: function(obj) {
+    },
+    
+    setModel: function(obj) {
       if ( ! obj ) return;
-
+      
       this.obj = obj;
-   },
-
-   destroy: function()
-   {
-   }
-
-}
+    },
+    
+    destroy: function()
+    {
+    }
+  }
+});
 
 
 /** Version of DetailView which allows class of object to change. **/
@@ -1960,16 +1962,17 @@ var SummaryView = Model.create({
 
   extendsModel: 'AbstractView2',
 
-   properties: [
-      {
-	 name:  'value',
-         type:  'Value',
-      },
-      {
-	 name:  'model',
-	 type:  'Model'
-      }
-   ],
+  properties: [
+    {
+      name:  'model',
+      type:  'Model'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return new SimpleValue(); }
+    }
+  ],
 
   methods: {
     getValue: function() {

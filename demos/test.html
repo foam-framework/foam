@@ -90,7 +90,7 @@ document.writeln("=======================================");
 
 
     document.writeln("</td><td><font size=-1>");
-    var dv = DetailView.create(Model);
+    var dv = DetailView.create({model: Model});
     document.writeln(dv.toHTML());
     dv.initHTML();
     document.writeln("</font></td></tr></table>");
@@ -253,7 +253,7 @@ document.writeln("=======================================");
     sview.write(document);
     sview.addChild(s1);
     s1.paint();
-    var sv1 = DetailView.create(s1.model_);
+    var sv1 = DetailView.create({model: s1.model_});
     sv1.set(s1);
     sv1.write(document);
 
@@ -293,14 +293,14 @@ console.log('************************************', mmodels.length);
 
     DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
-    var dv1 = DetailView.create(o.model_);
+    var dv1 = DetailView.create({model: o.model_});
     dv1.set(o);
     document.writeln("<td valign=top width=500>");
     dv1.write(document);
     document.writeln("</td>");
 
 	/*
-    var dv2 = DetailView.create(o.model_);
+    var dv2 = DetailView.create({model: o.model_});
     dv2.set(o);
     document.writeln("<td width=500>");
     dv2.write(document);
@@ -380,19 +380,19 @@ o = Model;
 
     document.writeln("<td valign=top>");
 
-    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
-//    var timerView = DetailView.create(timer.model_);
+    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
+//    var timerView = DetailView.create({model: timer.model_});
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();
 
     document.writeln("</td><td valign=top>");
-    var sunView = DetailView.create(sun.model_);
+    var sunView = DetailView.create({model: sun.model_});
     document.writeln(sunView.toHTML());
     sunView.set(sun);
     sunView.initHTML();
 
-    var earthView = DetailView.create(sun.model_);
+    var earthView = DetailView.create({model: sun.model_});
     document.writeln(earthView.toHTML());
     earthView.set(earth);
     earthView.initHTML();
@@ -452,14 +452,14 @@ o = Model;
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 
     document.writeln("<table><tr><td valign=top>");
-    var mouseView = DetailView.create(mouse.model_);
+    var mouseView = DetailView.create({model: mouse.model_});
     document.writeln(mouseView.toHTML());
     mouseView.set(mouse);
     mouseView.initHTML();
 
     document.writeln("</td><td>");
 
-    var bugView = DetailView.create(bug1.model_);
+    var bugView = DetailView.create({model: bug1.model_});
     document.writeln(bugView.toHTML());
     bugView.set(bug1);
     bugView.initHTML();

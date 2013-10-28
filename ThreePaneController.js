@@ -183,7 +183,7 @@ var ThreePaneController = FOAM({
       name: 'editView',
       type: 'AbstractView',
       valueFactory: function() {
-        return DetailView.create(this.model/*, this.table.view.selection*/);
+        return DetailView.create({model: this.model}/*, this.table.view.selection*/);
       },
       postSet: function(newValue, oldValue) {
         this.addChild(newValue);

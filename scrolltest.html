@@ -63,7 +63,7 @@ document.write('<h1>Rows: ', mmodels.length, '</h1>');
     stv.write(document);
     stv.layout();
 
-    DetailView.create(stv.scrollbar.model_, new SimpleValue(stv.scrollbar)).write(document);
+    DetailView.create({model: stv.scrollbar.model_, value: new SimpleValue(stv.scrollbar})).write(document);
 
 //    DetailView.create(stv.view.model_, new SimpleValue(stv.view)).write(document);
    "";

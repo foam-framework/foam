@@ -400,14 +400,14 @@
     document.write("<div style=\"height:700;\"> </div>");
     document.write("<table style=\"position:relative;left:220;\"><tr><td valign=top>");
 
-    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
+    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();
 
     document.write("</td><td valign=top>");
 
-    var powerView = DetailView.create(Power);
+    var powerView = DetailView.create({model: Power});
     document.writeln(powerView.toHTML());
     powerView.set(power);
     powerView.initHTML();

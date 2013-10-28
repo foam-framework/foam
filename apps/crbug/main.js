@@ -199,7 +199,7 @@ var syncManager = SyncManager.create({
   modifiedProperty: CIssue.UPDATED
 });
 
-var syncView = ActionBorder.create(SyncManager, DetailView.create(SyncManager));
+var syncView = ActionBorder.create(SyncManager, DetailView.create({model: SyncManager}));
 document.writeln(syncView.toHTML());
 syncView.set(syncManager);
 syncView.initHTML();

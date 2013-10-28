@@ -11,8 +11,7 @@
   <script language="javascript">
     var timer = Timer.create({});
 
-    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
-//    var timerView = DetailView.create(timer.model_);
+    var timerView = ActionBorder.create(Timer, DetailView.create({model:timer.model_}));
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();

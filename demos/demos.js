@@ -400,7 +400,7 @@ var System = FOAM({
 	 name:  'mouse',
 	 type:  'Mouse',
 	 view: {
-	    create: function() { return DetailView.create(Mouse); }
+	   create: function() { return DetailView.create({model: Mouse}); }
          },
 	 valueFactory: function() {
 	    return Mouse.create();
