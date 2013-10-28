@@ -958,8 +958,7 @@ emails = JSONUtil.mapToObj([
 
     table.view.selection.addListener(function (src, property, oldValue, newValue) {
        if ( ! newValue ) return;
-       var editView = SummaryView.create(table.view.selection);
-       editView.model = EMail;
+       var editView = SummaryView.create({model: EMail, value: table.view.selection});
        edit.innerHTML = editView.toHTML();
        editView.initHTML();
     });

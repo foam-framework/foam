@@ -241,8 +241,10 @@ var DAOController = FOAM({
 //	       view.model.set(obj);
 //	       (this.stackView || stack).setPreview(view);
 
-	       (this.stackView || stack).setPreview(SummaryView.create(this.tableView.selection));
-//	       (this.stackView || stack).setPreview(DetailView.create(obj.model_, new SimpleValue(obj)));
+	       (this.stackView || stack).setPreview(
+                 SummaryView.create({
+                   model: this.model,
+                   value: this.tableView.selection}));
 	    }
 	    else
 	    {

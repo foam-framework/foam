@@ -1956,65 +1956,69 @@ var DetailView2 = {
 
 
 /** A display-only summary view. **/
-var SummaryView = {
+var SummaryView = Model.create({
 
-   __proto__: AbstractView,
+  extendsModel: 'AbstractView2',
 
-   create: function(value) {
-      var obj = AbstractView.create.call(this);
+   properties: [
+      {
+	 name:  'value',
+         type:  'Value',
+      },
+      {
+	 name:  'model',
+	 type:  'Model'
+      }
+   ],
 
-      obj.model = value.get().model_;
-      obj.value = value;
-
-      return obj;
-   },
-
-   getValue: function() {
+  methods: {
+    getValue: function() {
       return this.value;
-   },
-
-   toHTML: function() {
+    },
+    
+    toHTML: function() {
       this.children = [];
       var model = this.model;
       var obj   = this.get();
       var out   = [];
-
+      
       out.push('<div id="' + this.getID() + '" class="summaryView">');
       out.push('<table>');
-
+      
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
-	 var prop = model.properties[i];
-
-	 if ( prop.hidden ) continue;
-
-	 var value = obj[prop.name];
-
-	 if ( ! value ) continue;
-
-         out.push('<tr>');
-	 out.push('<td class="label">' + prop.label + '</td>');
-	 out.push('<td class="value">');
-         if ( prop.summaryFormatter ) {
-            out.push(prop.summaryFormatter(this.strToHTML(value)));
-         } else {
-	    out.push(this.strToHTML(value));
-         }
-	 out.push('</td></tr>');
+	var prop = model.properties[i];
+        
+	if ( prop.hidden ) continue;
+        
+	var value = obj[prop.name];
+        
+	if ( ! value ) continue;
+        
+        out.push('<tr>');
+	out.push('<td class="label">' + prop.label + '</td>');
+	out.push('<td class="value">');
+        if ( prop.summaryFormatter ) {
+          out.push(prop.summaryFormatter(this.strToHTML(value)));
+        } else {
+	  out.push(this.strToHTML(value));
+        }
+	out.push('</td></tr>');
       }
-
+      
       out.push('</table>');
       out.push('</div>');
-
+      
       return out.join('');
-   },
-
-   get: function() {
-     return this.getValue().get();
-   }
-
-};
+    },
+    
+    get: function() {
+      return this.getValue().get();
+    }
+  }
+  
+});
 
 
 /** A display-only on-line help view. **/
