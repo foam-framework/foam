@@ -50,6 +50,7 @@ function aconstant(v) { return function(ret) { ret && ret(v); }; }
 
 /** Execute the supplied afunc N times. **/
 function arepeat(n, afunc) {
+  if ( ! n ) return anop;
   return function(ret) {
     var a = argsToArray(arguments);
     a.splice(1, 0, 0, n); // insert (0, n) after 'ret' argument
