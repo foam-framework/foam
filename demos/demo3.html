@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>FOAM </title>
  </head>
 
@@ -11,7 +11,7 @@
   <script language="javascript">
     var timer = Timer.create({});
 
-    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
+    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();

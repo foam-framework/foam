@@ -99,3 +99,9 @@ implement default model_ for array properties
 
 Add {{value}} style template binding
 
+
+Remove AbstractView
+Model ActionBorder
+Remove DetailView
+Merge SummaryView into mode of DetailView
+Remove old unused IO code

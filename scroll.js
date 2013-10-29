@@ -24,12 +24,12 @@ var ScrollCView = FOAM({
 
    properties: [
       {
-	 name:  'parent',
+         name:  'parent',
          type:  'CView',
-	 hidden: true,
+         hidden: true,
          postSet: function(newValue, oldValue) {
-//	   oldValue && oldValue.removeListener(this.updateValue);
-//	   newValue.addListener(this.updateValue);
+//         oldValue && oldValue.removeListener(this.updateValue);
+//         newValue.addListener(this.updateValue);
            var e = newValue.$;
            if ( ! e ) return;
            e.addEventListener('mousedown', this.mouseDown, false);
@@ -38,31 +38,31 @@ var ScrollCView = FOAM({
          }
       },
       {
-	name:  'vertical',
+        name:  'vertical',
         type:  'boolean',
         defaultValue: true
       },
       {
-	name:  'value',
+        name:  'value',
         type:  'int',
         help:  'The first element being shown, starting at zero.',
         defaultValue: 0
       },
       {
-	name:  'extent',
+        name:  'extent',
         help:  'Number of elements shown.',
         type:  'int',
         defaultValue: 10
       },
       {
-	 name:  'size',
+         name:  'size',
          type:  'int',
          defaultValue: 0,
          help:  'Total number of elements being scrolled through.',
          postSet: function() { this.paint(); }
       },
       {
-	 name:  'minHandleSize',
+         name:  'minHandleSize',
          type:  'int',
          defaultValue: 10,
          help:  'Minimum size to make the drag handle.'
@@ -79,14 +79,14 @@ var ScrollCView = FOAM({
         defaultValue: 0
       },
       {
-	 name:  'handleColor',
-	 type:  'String',
-	 defaultValue: 'rgb(107,136,173)'
+         name:  'handleColor',
+         type:  'String',
+         defaultValue: 'rgb(107,136,173)'
       },
       {
-	 name:  'borderColor',
-	 type:  'String',
-	 defaultValue: '#555'
+         name:  'borderColor',
+         type:  'String',
+         defaultValue: '#555'
       }
    ],
 
@@ -136,7 +136,7 @@ var ScrollCView = FOAM({
    methods: {
 
     init: function(args) {
-       AbstractView2.init.call(this, args);
+       AbstractView.init.call(this, args);
        this.addListener(EventService.animate(this.paint.bind(this)));
     },
 
@@ -160,7 +160,7 @@ var ScrollCView = FOAM({
 
       if ( handleSize < this.minHandleSize ) {
         h -= this.minHandleSize - handleSize;
-	handleSize = this.minHandleSize;
+        handleSize = this.minHandleSize;
       }
 
       c.fillRect(
@@ -182,34 +182,34 @@ var ScrollBorder = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'ScrollBorder',
 
    properties: [
        {
-	   name: 'view',
-	   type: 'view',
+           name: 'view',
+           type: 'view',
            postSet: function(view) {
              this.scrollbar.extent = this.view.rows;
            }
        },
        {
-	   name: 'scrollbar',
-	   type: 'ScrollCView',
+           name: 'scrollbar',
+           type: 'ScrollCView',
            valueFactory: function() {
              var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
 
-	     if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+             if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
-	     return sb;
+             return sb;
            }
        },
        {
          name:  'dao',
          label: 'DAO',
          type: 'DAO',
-	 hidden: true,
+         hidden: true,
          required: true,
          postSet: function(newValue, oldValue) {
           this.view.dao = newValue;

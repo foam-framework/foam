@@ -43,7 +43,7 @@ var ItemCount = Model.create({
      put: function(obj) {
        if ( ! this.obj ) {
          this.obj = obj;
-         this.eid = AbstractView2.getPrototype().nextID();
+         this.eid = AbstractView.getPrototype().nextID();
        }
        this.SUPER(obj);
      },
@@ -95,7 +95,7 @@ var altView = AlternateView.create({
       label: 'List',
       view: function() {
          return /*ScrollBorder.create({view:*/ Model.create({
-           extendsModel: 'TableView2',
+           extendsModel: 'TableView',
            methods: {
               toHTML: function() {
                  return '<div class="CIssueTableHeader"></div>' + this.SUPER();
@@ -129,9 +129,9 @@ var altView = AlternateView.create({
          });
 
          // Pre-set default values.  TODO: persist settings
-	 g.row.value.set(CIssue.OWNER);
-	 g.col.value.set(CIssue.STATUS);
-	 g.acc.value.set(g.accChoices[0][0]);
+         g.row.value.set(CIssue.OWNER);
+         g.col.value.set(CIssue.STATUS);
+         g.acc.value.set(g.accChoices[0][0]);
 
          return g;
       }
@@ -199,7 +199,7 @@ var syncManager = SyncManager.create({
   modifiedProperty: CIssue.UPDATED
 });
 
-var syncView = ActionBorder.create(SyncManager, DetailView.create(SyncManager));
+var syncView = ActionBorder.create(SyncManager, DetailView.create({model: SyncManager}));
 document.writeln(syncView.toHTML());
 syncView.set(syncManager);
 syncView.initHTML();

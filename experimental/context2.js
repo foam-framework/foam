@@ -23,7 +23,7 @@ var Context = {
        return ctx;;
     },
     subCtxForWindow: function(window, opt_map) {
-	return {
+        return {
            __proto__: opt_map ? this.subCtx(opt_map) : this,
            window: window,
            document: window.document,
@@ -43,7 +43,7 @@ var Context = {
         };
     },
     subCtxForGlobal: function(global, opt_map) {
-	return {
+        return {
            __proto__: opt_map ? this.subCtx(opt_map) : this,
            console: global.console,
            log: global.console.log.bind(global.console),

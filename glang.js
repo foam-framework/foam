@@ -27,38 +27,38 @@ var PieGraph = FOAM({
 
    properties: [
       {
-	 name:  'r',
-	 type:  'int',
-	 view:  'IntFieldView',
+         name:  'r',
+         type:  'int',
+         view:  'IntFieldView',
          postSet: function(r) {
             this.width = this.height = 2*r+2;
          },
-	 defaultValue: 50
+         defaultValue: 50
       },
       {
-	 name:  'lineColor',
-	 type:  'String',
-	 defaultValue: 'white'
+         name:  'lineColor',
+         type:  'String',
+         defaultValue: 'white'
       },
       {
-	 name:  'lineWidth',
-	 type:  'int',
-	 defaultValue: 1
+         name:  'lineWidth',
+         type:  'int',
+         defaultValue: 1
       },
       {
          name: 'colorMap',
          defaultValue: undefined
       },
       {
-	 name:  'data',
-	 type:  'Array[float]',
+         name:  'data',
+         type:  'Array[float]',
          valueFactory: function() {
             return [];
          }
       },
       {
-	 name: 'groups',
-	 label: 'Group Data',
+         name: 'groups',
+         label: 'Group Data',
          defaultValue: { Apples: 5, Oranges: 6, Bananas: 4 }
       }
    ],
@@ -76,10 +76,10 @@ var PieGraph = FOAM({
       paint: function() {
 //         this.erase();
 
-	 var c = this.canvas;
-	 var x = this.x;
-	 var y = this.y;
-	 var r = this.r;
+         var c = this.canvas;
+         var x = this.x;
+         var y = this.y;
+         var r = this.r;
 
          c.save();
 

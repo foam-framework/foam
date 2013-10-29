@@ -251,20 +251,20 @@ var EMail = FOAM({
          mode: 'read-write',
          required: true,
          displayWidth: 50,
-	 hidden: true
+         hidden: true
       },
       {
          model_: 'StringProperty',
          name: 'convId',
          label: 'Conversation ID',
          mode: 'read-write',
-	 hidden: true,
+         hidden: true,
          displayWidth: 30
       },
       {
          model_: 'DateProperty',
          name: 'timestamp',
-	 aliases: ['time', 'modified', 't'],
+         aliases: ['time', 'modified', 't'],
          label: 'Date',
          type: 'String',
          mode: 'read-write',
@@ -277,7 +277,7 @@ var EMail = FOAM({
            if (typeof d === 'string' || typeof d === 'number')
              return new Date(d);
            return d;
-	 },
+         },
          valueFactory: function() { return new Date(); }
       },
       {
@@ -335,26 +335,26 @@ var EMail = FOAM({
       {
          model_: 'StringArrayProperty',
          name: 'labels',
-	 view: 'LabelView',
+         view: 'LabelView',
          postSet: function(a) {
-	   for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
+           for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
          },
-	 help: 'Email labels.'
+         help: 'Email labels.'
       },
       {
          model_: 'Property',
-	 name: 'attachments',
-	 label: 'Attachments',
+         name: 'attachments',
+         label: 'Attachments',
          tableLabel: '@',
-	 type: 'Array[Attachment]',
+         type: 'Array[Attachment]',
          subType: 'Attachment',
-	 view: 'ArrayView',
-	 valueFactory: function() { return []; },
+         view: 'ArrayView',
+         valueFactory: function() { return []; },
          tableWidth: '20',
          tableFormatter: function(a) {
            return a.length ? a.length : "";
          },
-	 help: 'Email attachments.'
+         help: 'Email attachments.'
       },
       {
          model_: 'StringProperty',

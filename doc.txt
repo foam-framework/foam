@@ -226,7 +226,6 @@ Model Properties
 name
 label
 extendsModel
-extendsPrototype
 plural
 version
 ids

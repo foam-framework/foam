@@ -20,19 +20,19 @@ var DAOController = FOAM({
    name:  'DAOController',
    label: 'DAO Controller',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
-	 name:  'selection'
+         name:  'selection'
       },
       {
-	 name:  'model'
+         name:  'model'
       },
       {
-	 name:  'dao',
-	 label: 'DAO',
-	 postSet: function(val) {
+         name:  'dao',
+         label: 'DAO',
+         postSet: function(val) {
            if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
          }
       }
@@ -41,139 +41,139 @@ var DAOController = FOAM({
    actions: [
       /*
       {
-	 name:  'toggleView',
-	 label: 'Table/Detail',
-	 help:  'Toggle the display format between table and details views.',
+         name:  'toggleView',
+         label: 'Table/Detail',
+         help:  'Toggle the display format between table and details views.',
 
-	 action:      function() {  }
+         action:      function() {  }
       },*/
       {
          model_: 'Action',
-	 name:  'new',
-	 help:  'Create a new record.',
+         name:  'new',
+         help:  'Create a new record.',
 
-	 action:      function() {
-	    var createView = ActionBorder.create(
-	       DAOCreateController,
-	       DAOCreateController.create({
-		 model: this.model,
-		 dao:   this.dao
-	       }));
+         action:      function() {
+            var createView = ActionBorder.create(
+               DAOCreateController,
+               DAOCreateController.create({
+                 model: this.model,
+                 dao:   this.dao
+               }));
 
-	    createView.parentController = this;
+            createView.parentController = this;
 
-	    // todo: fix
-	    (this.stackView || stack).pushView(createView, 'New');
-	 }
+            // todo: fix
+            (this.stackView || stack).pushView(createView, 'New');
+         }
       },
       /*
       {
          model_: 'Action',
-	 name:  'view',
-	 help:  'View the current record.',
+         name:  'view',
+         help:  'View the current record.',
 
-	 action:      function() { }
+         action:      function() { }
       },
        */
       {
          model_: 'Action',
-	 name:  'edit',
-	 help:  'Edit the current record.',
-	 default: 'true',
+         name:  'edit',
+         help:  'Edit the current record.',
+         default: 'true',
 
-	 action:      function() {
-	    // Todo: fix, should already be connected
-	    this.selection = this.tableView.selection.get();
+         action:      function() {
+            // Todo: fix, should already be connected
+            this.selection = this.tableView.selection.get();
 
-	    var obj = this.selection;
-	    var actions = DAOUpdateController.actions.slice(0);
+            var obj = this.selection;
+            var actions = DAOUpdateController.actions.slice(0);
 
-	    for ( var i = 0 ; i < this.model.actions.length ; i++ )
-	    {
-	       var action = this.model.actions[i];
+            for ( var i = 0 ; i < this.model.actions.length ; i++ )
+            {
+               var action = this.model.actions[i];
 
-	       var newAction = Action.create(action);
-	       newAction.action = function (oldAction) {
-		  return function()
-		  {
-		     oldAction.call(obj);
-		  };
-	       }(action.action);
+               var newAction = Action.create(action);
+               newAction.action = function (oldAction) {
+                  return function()
+                  {
+                     oldAction.call(obj);
+                  };
+               }(action.action);
 
-	       actions.push(newAction);
-	    }
+               actions.push(newAction);
+            }
 
-	    console.log(["selection: ", this.selection]);
-	    var updateView = ActionBorder.create(
-	       actions,
-	       DAOUpdateController.create({
+            console.log(["selection: ", this.selection]);
+            var updateView = ActionBorder.create(
+               actions,
+               DAOUpdateController.create({
                  obj:   this.selection/*.deepClone()*/,
-		 model: this.model,
-		 dao:   this.dao
-	       }));
-	    // hack: fix
-	    (this.stackView || stack).pushView(updateView, 'Edit');
-	 }
+                 model: this.model,
+                 dao:   this.dao
+               }));
+            // hack: fix
+            (this.stackView || stack).pushView(updateView, 'Edit');
+         }
       },
       {
          model_: 'Action',
-	 name:  'delete',
-	 help:  'Delete the current record.',
+         name:  'delete',
+         help:  'Delete the current record.',
 
-	 isEnabled: function()   { return this.selected; },
-	 action: function()      {
-	    // Todo: fix, should already be connected
-	    this.selection = this.tableView.selection.get();
+         isEnabled: function()   { return this.selected; },
+         action: function()      {
+            // Todo: fix, should already be connected
+            this.selection = this.tableView.selection.get();
             var self = this;
-	    this.dao.remove(this.selection, {
-	      // Hack: shouldn't be needed
+            this.dao.remove(this.selection, {
+              // Hack: shouldn't be needed
               remove: function() {
                 self.refresh();
               }
             });
-	 }
+         }
       }/*,
       {
-	 name:  'prev',
-	 help:  'Select the previous record.',
+         name:  'prev',
+         help:  'Select the previous record.',
 
-	 action: function()      {  }
+         action: function()      {  }
       },
       {
-	 name:  'next',
-	 help:  'Select the next record.',
+         name:  'next',
+         help:  'Select the next record.',
 
-	 action: function()      {  }
+         action: function()      {  }
       }*/
 
    ],
 
    methods: {
       init: function() {
-         var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
+        var tmp = this.model;
+        this.SUPER();
+        this.model = tmp;
 
-         var model = this.model;
-         var dao = this.dao;
-	 this.tableView = TableView2.create({ model: model, dao: dao, rows: 30 });
-         this.scrollBorder = ScrollBorder.create({ view: this.tableView });
+        var model = this.model;
+        var dao = this.dao;
+        this.tableView = TableView.create({ model: model, dao: dao, rows: 30 });
+        this.scrollBorder = ScrollBorder.create({ view: this.tableView });
       },
 
       toHTML: function() {
-//	 return this.scrollBorder.toHTML();
+//       return this.scrollBorder.toHTML();
         return this.scrollBorder.view.toHTML();
       },
 
       initHTML: function() {
-         AbstractView.initHTML.call(this);
-//	 this.scrollBorder.initHTML(); // could this just be added to children?
-	 this.scrollBorder.view.initHTML();
+        this.SUPER();
+//       this.scrollBorder.initHTML(); // could this just be added to children?
+         this.scrollBorder.view.initHTML();
 
-	 this.dao = this.dao;
+         this.dao = this.dao;
          this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
-	 this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
-	 this.tableView.selection.addListener(this.onSelection);
+         this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
+         this.tableView.selection.addListener(this.onSelection);
       },
 
       refresh: function() {
@@ -184,71 +184,73 @@ var DAOController = FOAM({
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'onDoubleClick',
-	 code: function(evt) {
-	    for ( var i = 0 ; i < this.model_.actions.length ; i++ )
-	    {
-	       var action = this.model_.actions[i];
+         name: 'onDoubleClick',
+         code: function(evt) {
+            for ( var i = 0 ; i < this.model_.actions.length ; i++ )
+            {
+               var action = this.model_.actions[i];
 
-	       if ( action.default )
-	       {
-		  action.action.call(this);
+               if ( action.default )
+               {
+                  action.action.call(this);
 
-		  break;
-	       }
-	    }
-	 }
+                  break;
+               }
+            }
+         }
       },
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'onSelection',
-	 code: function(evt) {
-	    var obj = this.tableView.selection.get();
+         name: 'onSelection',
+         code: function(evt) {
+            var obj = this.tableView.selection.get();
 
-	    if ( obj )
-	    {
+            if ( obj )
+            {
 /*
-	       var view = FOAM({
-		  model_: 'AlternateView',
+               var view = FOAM({
+                  model_: 'AlternateView',
 
                   selection: 'GUI',
-		  views: [
+                  views: [
                      {
-			model_: 'ViewChoice',
-			label:  'GUI',
-			view:   'DetailView'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'GUI',
+                        view:   'DetailView'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'JS',
-			view:   'JSView'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'JS',
+                        view:   'JSView'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'XML',
-			view:   'XMLView'
-		     }
-		  ]
-	       });
+                        model_: 'ViewChoice',
+                        label:  'XML',
+                        view:   'XMLView'
+                     }
+                  ]
+               });
 */
-//	       var view = XMLView.create({});
-//	       view.rows = 50;
-//	       view.cols = 100;
-//	       view.model = new SimpleValue("");
-//	       view.model.set(obj);
-//	       (this.stackView || stack).setPreview(view);
+//             var view = XMLView.create({});
+//             view.rows = 50;
+//             view.cols = 100;
+//             view.model = new SimpleValue("");
+//             view.model.set(obj);
+//             (this.stackView || stack).setPreview(view);
 
-	       (this.stackView || stack).setPreview(SummaryView.create(this.tableView.selection));
-//	       (this.stackView || stack).setPreview(DetailView.create(obj.model_, new SimpleValue(obj)));
-	    }
-	    else
-	    {
-	       (this.stackView || stack).setPreview(null);
-	    }
-	 }
+               (this.stackView || stack).setPreview(
+                 SummaryView.create({
+                   model: this.model,
+                   value: this.tableView.selection}));
+            }
+            else
+            {
+               (this.stackView || stack).setPreview(null);
+            }
+         }
       }
    ]
 
@@ -261,34 +263,34 @@ var DAOCreateController = FOAM({
    name:  'DAOCreateController',
    label: 'DAO Create',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
-	 name:  'obj',
-	 label: 'New Object',
+         name:  'obj',
+         label: 'New Object',
       },
       {
-	 name:  'model'
+         name:  'model'
       },
       {
-	 name:  'dao',
-	 label: 'DAO',
+         name:  'dao',
+         label: 'DAO',
       }
    ],
 
    actions: [
       {
          model_: 'Action',
-	 name:  'save',
-	 label: 'Create',
-	 help:  'Create a new record.',
+         name:  'save',
+         label: 'Create',
+         help:  'Create a new record.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
             var self = this;
-	    this.dao.put(this.obj, {
+            this.dao.put(this.obj, {
               put: function(value) {
                 console.log("Created: ", value);
                 (self.stackView || stack).back();
@@ -297,34 +299,34 @@ var DAOCreateController = FOAM({
                 console.error("Error creating value: ", arguments);
               }
             });
-	 }
+         }
       },
       {
          model_: 'Action',
-	 name:  'cancel',
-	 help:  'Cancel creation.',
+         name:  'cancel',
+         help:  'Cancel creation.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
-	    (this.stackView || stack).back();
-	 }
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
+            (this.stackView || stack).back();
+         }
       },
       {
          model_: 'Action',
-	 name:  'help',
-	 help:  'View help.',
+         name:  'help',
+         help:  'View help.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
-	    var model = this.obj.model_;
-	    var helpView = HelpView.create(model);
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
+            var model = this.obj.model_;
+            var helpView = HelpView.create(model);
 
-	    // todo: fix
-	    (this.stackView || stack).pushView(helpView);
-//	    (this.stackView || stack).setPreview(helpView, 'Help');
-	 }
+            // todo: fix
+            (this.stackView || stack).pushView(helpView);
+//          (this.stackView || stack).setPreview(helpView, 'Help');
+         }
       }
    ],
 
@@ -335,33 +337,33 @@ var DAOCreateController = FOAM({
           create: function() { return obj; }
         };
         var createView = ActionBorder.create(
-	  DAOCreateController,
-	  DAOCreateController.create({
+          DAOCreateController,
+          DAOCreateController.create({
             model: model,
-	    dao:   dao
+            dao:   dao
         }));
 
-	createView.parentController = this;
-	(this.stackView || stack).pushView(createView, 'New');
+        createView.parentController = this;
+        (this.stackView || stack).pushView(createView, 'New');
       },
 
       init: function() {
          var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
+        this.SUPER();
+         this.model = tmp;
 
-	 this.obj = this.model.create();
+         this.obj = this.model.create();
 
-	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
+        this.view = DetailView2.create({model: this.model, value: new SimpleValue(this.obj)});
       },
 
       toHTML: function() {
-	return this.view.toHTML();
+        return this.view.toHTML();
       },
 
       initHTML: function() {
-	 AbstractView.initHTML.call(this);
-	 this.view.initHTML();
+        this.SUPER();
+         this.view.initHTML();
       }
    }
 });
@@ -373,34 +375,34 @@ var DAOUpdateController = FOAM({
    name:  'DAOUpdateController',
    label: 'DAO Update',
 
-   extendsPrototype: 'AbstractView',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
-	 name:  'obj',
-	 label: 'Edited Object',
+         name:  'obj',
+         label: 'Edited Object',
       },
       {
-	 name:  'model',
+         name:  'model',
       },
       {
-	 name:  'dao',
-	 label: 'DAO',
+         name:  'dao',
+         label: 'DAO',
       }
    ],
 
    actions: [
       {
          model_: 'Action',
-	 name:  'save',
-	 help:  'Save updates.',
+         name:  'save',
+         help:  'Save updates.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
             var self = this;
             var obj = this.obj;
-	    this.dao.put(obj, {
+            this.dao.put(obj, {
               put: function() {
                 console.log("Saving: ", obj.toJSON());
                 (self.stackView || stack).back();
@@ -409,127 +411,112 @@ var DAOUpdateController = FOAM({
                 console.error("Error saving", arguments);
               }
             });
-	 }
+         }
       },
       {
          model_: 'Action',
-	 name:  'copy',
-	 help:  'Create a new object which is a copy of this one.',
+         name:  'copy',
+         help:  'Create a new object which is a copy of this one.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
-	 }
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
+         }
       },
       {
          model_: 'Action',
-	 name:  'cancel',
-	 help:  'Cancel update.',
+         name:  'cancel',
+         help:  'Cancel update.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
-	    (this.stackView || stack).back();
-	 }
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
+            (this.stackView || stack).back();
+         }
       },
       {
          model_: 'Action',
-	 name:  'help',
-	 help:  'View help.',
+         name:  'help',
+         help:  'View help.',
 
-	 isAvailable: function() { return true; },
-	 isEnabled:   function() { return true; },
-	 action:      function() {
-	    var model = this.obj.model_;
-	    var helpView = HelpView.create(model);
+         isAvailable: function() { return true; },
+         isEnabled:   function() { return true; },
+         action:      function() {
+            var model = this.obj.model_;
+            var helpView = HelpView.create(model);
 
-	    // todo: fix
-	    (this.stackView || stack).pushView(helpView);
-//	    (this.stackView || stack).setPreview(helpView, 'Help');
-	 }
+            // todo: fix
+            (this.stackView || stack).pushView(helpView);
+//          (this.stackView || stack).setPreview(helpView, 'Help');
+         }
       }
    ],
 
    methods: {
 
       toHTML: function() {
-	 return '<div id="' + this.getID() + '">controller</div>';
+         return '<div id="' + this.getID() + '">controller</div>';
       },
 
       init: function() {
          var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
+        this.SUPER();
+         this.model = tmp;
 
-	 this.view2 = DetailView2.create();
+         this.view2 = DetailView2.create();
 
-	 this.view = FOAM({
-		  model_: 'AlternateView',
+         this.view = FOAM({
+                  model_: 'AlternateView',
 
                   selection: 'GUI',
-		  views: [
+                  views: [
                      {
-			model_: 'ViewChoice',
-			label:  'GUI',
-			view:   'DetailView2'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'GUI',
+                        view:   'DetailView2'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'JS',
-			view:   'JSView'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'JS',
+                        view:   'JSView'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'XML',
-			view:   'XMLView'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'XML',
+                        view:   'XMLView'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'UML',
-			view:   'XMLView'
-		     },
+                        model_: 'ViewChoice',
+                        label:  'UML',
+                        view:   'XMLView'
+                     },
                      {
-			model_: 'ViewChoice',
-			label:  'Split',
-			view:   'SplitView'
-		     }
-		  ]
-	       });
+                        model_: 'ViewChoice',
+                        label:  'Split',
+                        view:   'SplitView'
+                     }
+                  ]
+               });
 
-	 this.view.value.set(this.obj);
-      },
-
-      init2: function() {
-         var tmp = this.model;
-	 AbstractView.init.call(this);
-	 this.model = tmp;
-
-	 this.view = DetailView2.create(this.model, new SimpleValue(this.obj));
-//	 this.view.set(this);
-//	 this.view.set(this.obj);
-//	 this.view.updateSubViews();
+         this.view.value.set(this.obj);
       },
 
       toHTML: function() {
-	return this.view.toHTML();
+        return this.view.toHTML();
       },
 
       initHTML: function() {
-	 AbstractView.initHTML.call(this);
-	 this.view.initHTML();
+        this.SUPER();
+         this.view.initHTML();
       }
    }
 });
 
 
-//var DAOControllerView = {
-//    __proto__: AbstractView,
-
-
 var DAOControllerView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'DAOControllerView',
    label: 'DAOControllerView',
@@ -539,13 +526,13 @@ var DAOControllerView = FOAM({
     create: function(model, dao) {
        var ctrl = ActionBorder.create(DAOController, DAOController.create({
           model: model,
-	  dao:   dao
+          dao:   dao
        }));
 
        var obj = {
-	  __proto__: this,
+          __proto__: this,
           ctrl:      ctrl,
-	  model:     model
+          model:     model
        };
 
        return obj;

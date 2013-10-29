@@ -225,7 +225,7 @@ function atimeout(delay, f, opt_timeoutF) {
     f(aseq(
       function(ret) {
         if ( ! timedOut ) completed = true;
-	if ( completed ) ret();
+        if ( completed ) ret();
       }, ret));
   };
 }
@@ -247,10 +247,10 @@ function amemo(f) {
 
     if ( first ) {
       f(function() {
-	values = arguments;
-	for (var i = 0 ; i < waiters.length; i++) {
-	  waiters[i].apply(null, values);
-	}
+        values = arguments;
+        for (var i = 0 ; i < waiters.length; i++) {
+          waiters[i].apply(null, values);
+        }
         waiters = [];
       });
     }

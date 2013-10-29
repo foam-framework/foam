@@ -34,40 +34,40 @@ var Feature = FOAM({
 
     properties: [
        {
-	  name:  'model',
+          name:  'model',
           type:  'String'
        },
        {
-	   name:  'name',
-	   type:  'String',
-	   defaultValue: '',
-	   help: 'The coding identifier for the property.'
+           name:  'name',
+           type:  'String',
+           defaultValue: '',
+           help: 'The coding identifier for the property.'
        },
        {
-	   name: 'type',
-	   type: 'String',
+           name: 'type',
+           type: 'String',
            required: true,
-	   view: {
-	      create: function() { return ChoiceView.create({choices: [
+           view: {
+              create: function() { return ChoiceView.create({choices: [
                  'Property',
                  'Method',
                  'Listener',
                  'Template',
                  'Issue',
                  'Test'
-	      ]});}
-	   },
-	   defaultValue: 'Property',
-	   help: 'Type of a feature.'
+              ]});}
+           },
+           defaultValue: 'Property',
+           help: 'Type of a feature.'
        },
        {
-	   name: 'label',
-	   type: 'String',
+           name: 'label',
+           type: 'String',
            required: false,
-	   displayWidth: 70,
+           displayWidth: 70,
            displayHeight: 1,
-	   defaultValueFn: function() { return this.name.capitalize(); },
-	   help: 'The display label for the property.'
+           defaultValueFn: function() { return this.name.capitalize(); },
+           help: 'The display label for the property.'
        }
     ]
 });
@@ -172,7 +172,7 @@ layout();
     dao.addIndex(EMail.SUBJECT);
 */
     var table = ScrollBorder.create({
-      view: TableView2.create({
+      view: TableView.create({
         model: Feature,
         dao: dao,
         rows: 20
@@ -222,12 +222,12 @@ layout();
     table.initHTML();
 
     table.view.selection.addListener(function (src, property, oldValue, newValue) {
-       if ( ! newValue ) return;
-       var obj = table.view.selection.get().obj.clone();
-       var editView = DetailView2.create(null, new SimpleValue(obj));
-       editView.model = table.view.selection.get().obj.model_;
-       edit.innerHTML = editView.toHTML();
-       editView.initHTML();
+      if ( ! newValue ) return;
+      var obj = table.view.selection.get().obj.clone();
+      var editView = DetailView2.create({model: obj.model, value: new SimpleValue(obj)});
+      editView.model = table.view.selection.get().obj.model_;
+      edit.innerHTML = editView.toHTML();
+      editView.initHTML();
     });
     table.view.selection.set(table.view.objs[0]);
 

@@ -20,7 +20,7 @@ var LabelView = FOAM({
 
    name:  'LabelView',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -31,10 +31,10 @@ var LabelView = FOAM({
          defaultValueFn: function() {
            return GLOBAL.EMailLabels;
          },
-	 hidden: true
+         hidden: true
       },
       {
-	 name:  'value',
+         name:  'value',
          type:  'Value',
          postSet: function(newValue, oldValue) {
             oldValue && oldValue.removeListener(this.updateHTML);
@@ -48,13 +48,13 @@ var LabelView = FOAM({
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'updateHTML',
-	 code: function() {
+         name: 'updateHTML',
+         code: function() {
             var e = this.$;
             if ( e ) e.innerHTML = this.labelsToHTML();
- 	 }
+         }
       }
    ],
 
@@ -70,7 +70,7 @@ var LabelView = FOAM({
       },
 /*
       initHTML: function() {
-         AbstractView2.getPrototype().initHTML.call(this);
+         AbstractView.getPrototype().initHTML.call(this);
          // if ( this.value ) this.value.addListener(this.updateHTML.bind(this));
       },
 */

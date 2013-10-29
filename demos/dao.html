@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>DAO</title>
   <style>
     code {color:blue;}
@@ -51,7 +51,7 @@ dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME
 
 // Add logging to DAO
 // dao = LoggingDAO.create(console.log.bind(console, 'log: '), dao);
- 
+
 // Set DAO's default sort-order
 // dao = dao.orderBy(Person.NAME);
 
@@ -60,14 +60,14 @@ dao.put(Person.create({id:'1', name:'John',  age:21}));
 dao.put(Person.create({id:'2', name:'Dave',  age:20}));
 dao.put(Person.create({id:'3', name:'Steve', age:19}));
 dao.put(Person.create({id:'4', name:'Andy',  age:18}));
-  
+
 // Select to a 'sink'
 dao.select({put: function(p) { console.log('person: ', p.name); }});
 
 // Console.log is also a valid sink
 dao.select(console.log);
 
-// Console.log.json is a valid sink that formats the results as JSON 
+// Console.log.json is a valid sink that formats the results as JSON
 dao.select(console.log.json);
 
 // Select directly to an Array
@@ -211,7 +211,7 @@ apar(
   dao.where(EQ(Person.NAME, 'Suzy')).select([])
 )(function(q1, q2) {
   console.log('q1: ', q1[0].name, ' q2: ', q2[0].name);
-}); 
+});
 
 
 // Listen
@@ -262,22 +262,22 @@ dao.put(Person.create({id:'2', name:'Dave',  age:21}));
 var PayStubDAO = MDAO.create({model: PayStub});
 
 [
-  PayStub.create({id:'1', pid:'1', year: 2013, month: 6, amount: 100}),  
-  PayStub.create({id:'2', pid:'1', year: 2013, month: 6, amount: 110}),  
-  PayStub.create({id:'3', pid:'1', year: 2013, month: 6, amount: 98}),  
+  PayStub.create({id:'1', pid:'1', year: 2013, month: 6, amount: 100}),
+  PayStub.create({id:'2', pid:'1', year: 2013, month: 6, amount: 110}),
+  PayStub.create({id:'3', pid:'1', year: 2013, month: 6, amount: 98}),
   PayStub.create({id:'4', pid:'1', year: 2013, month: 6, amount: 101}),
-  PayStub.create({id:'5', pid:'2', year: 2013, month: 6, amount: 200}),  
-  PayStub.create({id:'6', pid:'2', year: 2013, month: 6, amount: 210}),  
-  PayStub.create({id:'7', pid:'2', year: 2013, month: 6, amount: 198}),  
+  PayStub.create({id:'5', pid:'2', year: 2013, month: 6, amount: 200}),
+  PayStub.create({id:'6', pid:'2', year: 2013, month: 6, amount: 210}),
+  PayStub.create({id:'7', pid:'2', year: 2013, month: 6, amount: 198}),
   PayStub.create({id:'8', pid:'2', year: 2013, month: 6, amount: 201}),
-  PayStub.create({id:'11', pid:'1', year: 2013, month: 7, amount: 100}),  
-  PayStub.create({id:'12', pid:'1', year: 2013, month: 7, amount: 110}),  
-  PayStub.create({id:'13', pid:'1', year: 2013, month: 7, amount: 98}),  
+  PayStub.create({id:'11', pid:'1', year: 2013, month: 7, amount: 100}),
+  PayStub.create({id:'12', pid:'1', year: 2013, month: 7, amount: 110}),
+  PayStub.create({id:'13', pid:'1', year: 2013, month: 7, amount: 98}),
   PayStub.create({id:'14', pid:'1', year: 2013, month: 7, amount: 101}),
-  PayStub.create({id:'15', pid:'2', year: 2013, month: 7, amount: 200}),  
-  PayStub.create({id:'16', pid:'2', year: 2013, month: 7, amount: 210}),  
-  PayStub.create({id:'17', pid:'2', year: 2013, month: 7, amount: 198}),  
-  PayStub.create({id:'18', pid:'2', year: 2013, month: 7, amount: 201})  
+  PayStub.create({id:'15', pid:'2', year: 2013, month: 7, amount: 200}),
+  PayStub.create({id:'16', pid:'2', year: 2013, month: 7, amount: 210}),
+  PayStub.create({id:'17', pid:'2', year: 2013, month: 7, amount: 198}),
+  PayStub.create({id:'18', pid:'2', year: 2013, month: 7, amount: 201})
 ].select(PayStubDAO)
 
 dao.select(MAP(JOIN(
@@ -302,7 +302,7 @@ ModelDAO.select(console.log.json);
 // WEB UI
 
 // Output in a TableView
-TableView2.create({model: Person, dao: dao}).write(document);
+TableView.create({model: Person, dao: dao}).write(document);
 
 // Document is also a Sink
 dao.select(document);

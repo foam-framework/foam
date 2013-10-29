@@ -98,11 +98,11 @@ var TemplateUtil = {
    stringifyTemplate: function (template) {
       return function()
       {
-	 var buf = [];
+         var buf = [];
 
-	 this.output(buf.push.bind(buf), obj);
+         this.output(buf.push.bind(buf), obj);
 
-	 return buf.join('');
+         return buf.join('');
       };
    }
 };

@@ -9,15 +9,15 @@
        font-style: normal;
        font-variant: normal;
        font-weight: normal;
-    } 
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
-  <script language="javascript" src="dragon.js"></script> 
-  <script language="javascript" src="../chrome.js"></script> 
-  <script language="javascript" src="../UML.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <script language="javascript" src="../chrome.js"></script>
+  <script language="javascript" src="../UML.js"></script>
   <title>FOAM Test</title>
  </head>
 
@@ -83,14 +83,14 @@ activity area
 document.writeln("=======================================");
 
     document.writeln("<table><tr><td valign=top>");
-    var tv1 = TableView.create(Model);
+    var tv1 = TableView.create({model: Model});
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.initHTML();
 
 
     document.writeln("</td><td><font size=-1>");
-    var dv = DetailView.create(Model);
+    var dv = DetailView.create({model: Model});
     document.writeln(dv.toHTML());
     dv.initHTML();
     document.writeln("</font></td></tr></table>");
@@ -107,7 +107,7 @@ document.writeln("=======================================");
     console.log("<br/><br/>BookmarkModel");
     console.log(BookmarkModel);
 
-    var tvbm = TableView.create(BookmarkModel);
+    var tvbm = TableView.create({model: BookmarkModel});
     tvbm.objs = bookmarks;
     document.writeln(tvbm.toHTML());
     tvbm.initHTML();
@@ -142,9 +142,9 @@ document.writeln("=======================================");
     drawUML(ctx,100,100,Model);
     drawUML(ctx,400,100,Property);
 
-    ctx.beginPath();  
-    ctx.moveTo(250,180);  
-    ctx.lineTo(400,180); 
+    ctx.beginPath();
+    ctx.moveTo(250,180);
+    ctx.lineTo(400,180);
     ctx.stroke();
 
     document.writeln("</br><h2>Test Events</h2>");
@@ -189,7 +189,7 @@ document.writeln("=======================================");
     e.subscribe(['property'], function (source,topic) { document.writeln("property: " + topic); });
     e.subscribe([], function (source,topic) { document.writeln("global: " + topic); });
     e.subscribe([], e.oneTime(function (source,topic) { document.writeln("one-time: " + topic); }));
-    
+
 //    document.writeln("subs: " + e.publishAsync(['property','age'], "************async***********", "*********async********"));
     document.writeln("subs: " + e.publish(['property','age'], "old", "new"));
     document.writeln("subs: " + e.publish(['property','lname'], "old", "new"));
@@ -199,13 +199,13 @@ document.writeln("=======================================");
     e.publish(['property','*'], "old", "new");
     e.publish(['property','*'], "old", "new");
 
-    e.propertyChange('age', 10, 11); 
+    e.propertyChange('age', 10, 11);
 
       /*
     e.subscribe(['test'], function (source,topic) { document.writeln("normal: " + topic); });
     e.subscribe(['test'], e.async(function (source,topic) { document.writeln("async: " + topic); }));
     e.subscribe(['test'], e.merged(function (source,topic) { document.writeln("merged: " + topic); }));
-    
+
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");
@@ -253,7 +253,7 @@ document.writeln("=======================================");
     sview.write(document);
     sview.addChild(s1);
     s1.paint();
-    var sv1 = DetailView.create(s1.model_);
+    var sv1 = DetailView.create({model: s1.model_});
     sv1.set(s1);
     sv1.write(document);
 
@@ -272,20 +272,20 @@ document.writeln("=======================================");
 console.log('************************************', mmodels.length);
 
     var stv = ScrollBorder.create({
-      view: TableView2.create({
+      view: TableView.create({
         model: Model,
         dao: mmodels,
         rows: 20
       }),
       dao: mmodels,
     });
-    
+
     stv.scrollbar.height=430;
     stv.write(document);
 */
     document.writeln("</br><h2>Test DetailView</h2>");
 
-    
+
 //    var user = new (o.getPrototype())();
 
     document.writeln("<table width=1600><tr>");
@@ -293,21 +293,21 @@ console.log('************************************', mmodels.length);
 
     DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
-    var dv1 = DetailView.create(o.model_);
+    var dv1 = DetailView.create({model: o.model_});
     dv1.set(o);
     document.writeln("<td valign=top width=500>");
     dv1.write(document);
     document.writeln("</td>");
 
-	/*
-    var dv2 = DetailView.create(o.model_);
+        /*
+    var dv2 = DetailView.create({model: o.model_});
     dv2.set(o);
     document.writeln("<td width=500>");
     dv2.write(document);
     document.writeln("</td>");
 */
     var dv3 = TextAreaView.create({displayHeight:120});
-	// dv3.setModel(o.model_);
+        // dv3.setModel(o.model_);
     document.writeln("<td width=500 valign=top>");
     document.writeln(dv3.toHTML());
     document.writeln("</td>");
@@ -358,9 +358,9 @@ o = Model;
     var apollo = Planet.create({r:3, color:'white'});
     var mars   = Planet.create({r:8, color: 'red'});
     var mmoons = [
-	Planet.create({r:2, color: 'red'}),
-	Planet.create({r:3, color: 'red'}),
-	Planet.create({r:4, color: 'red'})
+        Planet.create({r:2, color: 'red'}),
+        Planet.create({r:3, color: 'red'}),
+        Planet.create({r:4, color: 'red'})
     ];
     space.addChild(sun);
     space.addChild(venus);
@@ -380,19 +380,19 @@ o = Model;
 
     document.writeln("<td valign=top>");
 
-    var timerView = ActionBorder.create(Timer, DetailView.create(timer.model_));
-//    var timerView = DetailView.create(timer.model_);
+    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
+//    var timerView = DetailView.create({model: timer.model_});
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();
 
     document.writeln("</td><td valign=top>");
-    var sunView = DetailView.create(sun.model_);
+    var sunView = DetailView.create({model: sun.model_});
     document.writeln(sunView.toHTML());
     sunView.set(sun);
     sunView.initHTML();
 
-    var earthView = DetailView.create(sun.model_);
+    var earthView = DetailView.create({model: sun.model_});
     document.writeln(earthView.toHTML());
     earthView.set(earth);
     earthView.initHTML();
@@ -410,23 +410,23 @@ o = Model;
 
     var tt = Turntable.create();
 //    space.addChild(tt);
-	tt.write(document);
+        tt.write(document);
     tt.paint();
     dragon.write(document);
     dragon.paint();
 
     // timer.start();
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
-  
+
     var dmouse = Mouse.create();
     dmouse.connect(dragon.canvasView.$);
     dragon.eyes.watch(dmouse);
 
-    document.writeln("<br/><h2>MoveTowards</h2>");  
+    document.writeln("<br/><h2>MoveTowards</h2>");
     var field = Canvas.create({width:400, height:400, background:'#0d0'});
     document.writeln(field.toHTML());
     field.initHTML();
- 			  
+
     var bug1 = Planet.create({r:2, color: 'blue',   x: 50, y: 50});
     var bug2 = Planet.create({r:2, color: 'red',    x: 350, y: 50});
     var bug3 = Planet.create({r:2, color: 'yellow', x: 350, y: 350});
@@ -440,7 +440,7 @@ o = Model;
     field.paint();
     field.erase = function() {};
 
-			  
+
     Movement.moveTowards(timer, bug1, bug2, 1.2);
     Movement.moveTowards(timer, bug2, bug3, 0.8);
     Movement.moveTowards(timer, bug3, bug4, 0.4);
@@ -452,14 +452,14 @@ o = Model;
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 
     document.writeln("<table><tr><td valign=top>");
-    var mouseView = DetailView.create(mouse.model_);
+    var mouseView = DetailView.create({model: mouse.model_});
     document.writeln(mouseView.toHTML());
     mouseView.set(mouse);
     mouseView.initHTML();
 
     document.writeln("</td><td>");
 
-    var bugView = DetailView.create(bug1.model_);
+    var bugView = DetailView.create({model: bug1.model_});
     document.writeln(bugView.toHTML());
     bugView.set(bug1);
     bugView.initHTML();
@@ -481,13 +481,13 @@ o = Model;
 
     var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
-    eyes.watch(earth);	  
+    eyes.watch(earth);
 
     var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
-    eyes2.watch(mouse);	  
+    eyes2.watch(mouse);
 
-    // todo: fix 
+    // todo: fix
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);
 
 </script>

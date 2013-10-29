@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <script language="javascript" src="../apps/power/power.js"></script>
   <script language="javascript" src="../chrome.js"></script>
   <script language="javascript" src="../UML.js"></script>
@@ -79,7 +79,6 @@
         'Graph',
         'System',
         'Developer',
-        'Dragon',
         'Canvas',
         'Circle',
         'Rect',
@@ -96,7 +95,7 @@
         'Bookmark'
       ],
     });
-			      
+
     var M = Movement;
 
     var foam = function(system, dev)
@@ -112,10 +111,10 @@
 
        randomAct(
          10, function() {
-           system.moveDev(dev, nx, ny);				 
+           system.moveDev(dev, nx, ny);
          },
          5, function() {
-           system.moveDev(dev, dev.f, dev.e);				 
+           system.moveDev(dev, dev.f, dev.e);
          },
          50, function() {
            system.moveDev(dev, 0, ny);
@@ -151,8 +150,8 @@
       console.log(sys.selectedX, sys.selectedY);
     },
     function() {
-      var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue, 
-                    Timer, Mouse, PanelCView, EyeCView, EyesCView, ClockView, Graph, System, Developer, Dragon, Canvas, circleModel, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph, BookmarkModel ];
+      var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
+                    Timer, Mouse, PanelCView, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, circleModel, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph, BookmarkModel ];
       if ( sys.selectedY < 1 || sys.selectedX < 0 ) return;
 
       var model = MODELS[sys.selectedY-1];
@@ -160,7 +159,7 @@
       try {
        obj = model.create();
        for ( var key in model.properties ) {
-	  var prop = model.properties[key];
+          var prop = model.properties[key];
           obj.instance_[prop.name] = obj[prop.name];
        }
       } catch(x) { }
@@ -174,8 +173,8 @@
          break;
          case 1: setDisplay(HelpView.create(model).toHTML()); break;
          case 2: var dv = DetailView.create(model, value); setDisplay(dv.toHTML()); dv.initHTML(); break;
-         case 3: setDisplay(TableView.create(model).setValue(new SimpleValue(arr)).toHTML()); break;
-         case 4: setDisplay(SummaryView.create(value).toHTML()); break;
+         case 3: setDisplay(TableView.create({model: model, value: new SimpleValue(arr)}).toHTML()); break;
+         case 4: setDisplay(SummaryView.create({model: model, value: value}).toHTML()); break;
          case 5: setDisplay("<textarea rows=100 cols=80>" + obj.toXML() + "</textarea>"); break;
          case 6: setDisplay("<pre>" + obj.toJSON() + "</pre>"); break;
          case 7: setDisplay("<textarea rows=100 cols=80>" + protoToString(model.getPrototype()) + '</textarea>'); break;
@@ -190,7 +189,7 @@
          case 13:
             setDisplay('<canvas id="uml" width=800 height=1000> </canvas>');
             var ctx = $('uml').getContext('2d');
-	    drawUML(ctx,100,100,model);
+            drawUML(ctx,100,100,model);
          break;
          case 14:
            GLOBAL.stack = StackView.create();
@@ -201,7 +200,7 @@
            //setDisplay();
           break;
          case 15:
-           var dv = DetailView.create(Model, new SimpleValue(model)); setDisplay(dv.toHTML() ); dv.initHTML();
+           var dv = DetailView.create({model: Model, value: new SimpleValue(model)}); setDisplay(dv.toHTML() ); dv.initHTML();
          break;
       }
     });

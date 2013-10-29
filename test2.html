@@ -9,7 +9,7 @@
        font-style: normal;
        font-variant: normal;
        font-weight: normal;
-    } 
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -122,9 +122,9 @@ activity area
     drawUML(ctx,100,100,Model);
     drawUML(ctx,400,100,Property);
 
-    ctx.beginPath();  
-    ctx.moveTo(250,180);  
-    ctx.lineTo(400,180); 
+    ctx.beginPath();
+    ctx.moveTo(250,180);
+    ctx.lineTo(400,180);
     ctx.stroke();
 
     document.writeln("</br><h2>Test Events</h2>");
@@ -169,7 +169,7 @@ activity area
     e.subscribe(['property'], function (source,topic) { document.writeln("property: " + topic); });
     e.subscribe([], function (source,topic) { document.writeln("global: " + topic); });
     e.subscribe([], e.oneTime(function (source,topic) { document.writeln("one-time: " + topic); }));
-    
+
 //    document.writeln("subs: " + e.publishAsync(['property','age'], "************async***********", "*********async********"));
     document.writeln("subs: " + e.publish(['property','age'], "old", "new"));
     document.writeln("subs: " + e.publish(['property','lname'], "old", "new"));
@@ -179,13 +179,13 @@ activity area
     e.publish(['property','*'], "old", "new");
     e.publish(['property','*'], "old", "new");
 
-    e.propertyChange('age', 10, 11); 
+    e.propertyChange('age', 10, 11);
 
       /*
     e.subscribe(['test'], function (source,topic) { document.writeln("normal: " + topic); });
     e.subscribe(['test'], e.async(function (source,topic) { document.writeln("async: " + topic); }));
     e.subscribe(['test'], e.merged(function (source,topic) { document.writeln("merged: " + topic); }));
-    
+
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");

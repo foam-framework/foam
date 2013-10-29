@@ -71,14 +71,14 @@ var SplitDAO = FOAM({
 
          if ( query !== this.activeQuery ) {
             this.activeQuery = query;
-	    console.log('new Query');
+            console.log('new Query');
 
-	    var buf = this.buf = MDAO.create({model: this.model});
+            var buf = this.buf = MDAO.create({model: this.model});
 
             // Add an index for the specified sort order if one is provided
             if ( options && options.order ) this.buf.addIndex(options.order);
 
-	    this.local.select(sink, options.query ? {query: options.query} : {})((function() {
+            this.local.select(sink, options.query ? {query: options.query} : {})((function() {
                buf.select(sink, options);
                this.remote.select(buf, options)(function() {
                  // Notify listeners that the DAO's data has changed

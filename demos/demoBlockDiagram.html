@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>FOAM Diagram </title>
  </head>
  <body>
@@ -49,7 +49,7 @@
     var cpp       = Box.create({color: 'white', text: "C++", background: 'red', width: 50, height: 0, x:1150, y:550, font: '16pt Arial'});
     var future    = Box.create({color: 'white', text: "...", background: 'red', width: 100, height: 0, x:1200, y:550, font: '16pt Arial'});
     var dev       = circleModel.create({color:'red', r:15, x:800-15, y:-15});
-    
+
     space.addChildren(
       future, cpp, dart, java, js, ime, meta, animation, reactive, events, C, V, m, dev
     );
@@ -57,7 +57,7 @@
     var M = Movement;
     var B = M.bounce(0.2, 0.08, 3);
 
-    M.orbit(timer, V, m, 220, 535);  
+    M.orbit(timer, V, m, 220, 535);
     M.orbit(timer, V, C, -220, 535);
 
     // Add gravity to 'dev'
@@ -69,7 +69,7 @@
       dev.y += ++dev.v;
       space.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
     });
- 
+
     M.compile([
        [1000, function() { js.width = 300; }, B],
        [2000, function() { events.x = 750;  }, M.easeIn(0.3).o(M.oscillate(0.3, 0.02, 2))],

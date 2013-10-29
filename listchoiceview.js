@@ -32,20 +32,20 @@ var ListChoiceView = FOAM({
 
    model_: 'Model',
 
-   extendsModel: 'AbstractView2',
+   extendsModel: 'AbstractView',
 
    name:  'ListChoiceView',
 
    properties: [
       {
-	 name:  'name',
+         name:  'name',
          type:  'String',
-	 defaultValue: 'field'
+         defaultValue: 'field'
       },
       {
-	 name:  'helpText',
+         name:  'helpText',
          type:  'String',
-	 defaultValue: undefined
+         defaultValue: undefined
       },
       {
          name:  'cssClass',
@@ -58,7 +58,7 @@ var ListChoiceView = FOAM({
          defaultValue: 'foamListChoiceViewSelected'
       },
       {
-	 name:  'value',
+         name:  'value',
          type:  'Value',
          valueFactory: function() { return new SimpleValue(); }
       },
@@ -93,10 +93,10 @@ var ListChoiceView = FOAM({
          defaultValue: { f: function() { return true; } }
       },
       {
-	 name:  'choices',
+         name:  'choices',
          type:  'Array[StringField]',
-	 help: 'Array of choices or array of { n: name, v: value } pairs.',
-	 defaultValue: [],
+         help: 'Array of choices or array of { n: name, v: value } pairs.',
+         defaultValue: [],
          postSet: function() {
          }
       },
@@ -152,12 +152,12 @@ var ListChoiceView = FOAM({
          var id     = this.nextID();
          var name   = this.name;
 
-	 try {
+         try {
            this.registerCallback('click', this.onClick, id);
            this.registerCallback('mouseover', this.onMouseOver, id);
            this.registerCallback('mouseout', this.onMouseOut, id);
          } catch (x) {
-	 }
+         }
 
          var isCurrentSelection = this.prev ? choice.v == this.prev.get() :
              this.value ? choice.v == this.value.get() :
@@ -173,7 +173,7 @@ var ListChoiceView = FOAM({
          this.selectedElement = selectedAsList[0];
        }
 
-       AbstractView2.getPrototype().initHTML.call(this);
+       AbstractView.getPrototype().initHTML.call(this);
      },
 
      getValue: function() {
@@ -186,15 +186,15 @@ var ListChoiceView = FOAM({
        var self = this;
        Events.relate(
          value,
-	 this.domValue,
-	 function (v) {
-	   for ( var i = 0 ; i < self.choices.length ; i++ ) {
-	     var c = self.choices[i];
-	     if ( c.v === v ) return i;
-	   }
-	   return v;
+         this.domValue,
+         function (v) {
+           for ( var i = 0 ; i < self.choices.length ; i++ ) {
+             var c = self.choices[i];
+             if ( c.v === v ) return i;
+           }
+           return v;
          },
-	 function (v) { return self.indexToValue(v); }
+         function (v) { return self.indexToValue(v); }
        );
      },
 
@@ -227,34 +227,34 @@ var ListChoiceView = FOAM({
    listeners:
    [
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'onMouseOver',
-	 code: function(e) {
-	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+         name: 'onMouseOver',
+         code: function(e) {
+           if ( this.timer_ ) window.clearTimeout(this.timer_);
            this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
            this.value.set(this.evtToValue(e));
-	 }
+         }
       },
 
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'onMouseOut',
-	 code: function(e) {
-	   if ( this.timer_ ) window.clearTimeout(this.timer_);
+         name: 'onMouseOut',
+         code: function(e) {
+           if ( this.timer_ ) window.clearTimeout(this.timer_);
            this.timer_ = window.setTimeout(function() {
-	     this.value.set(this.prev || "");
+             this.value.set(this.prev || "");
              this.prev = undefined;
            }.bind(this), 1);
-	 }
+         }
       },
 
       {
-	 model_: 'Method',
+         model_: 'Method',
 
-	 name: 'onClick',
-	 code: function(e) {
+         name: 'onClick',
+         code: function(e) {
            this.prev = this.evtToValue(e);
            this.value.set(this.prev);
            if (this.selectedElement) {
@@ -262,7 +262,7 @@ var ListChoiceView = FOAM({
            }
            e.target.className = 'selected';
            this.selectedElement = e.target;
-	 }
+         }
       }
    ]
 });
