@@ -486,7 +486,7 @@ var InExpr = FOAM({
    ],
 
    methods: {
-      toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2.toSQL(); },
+      toSQL: function() { debugger; return this.arg1.toSQL() + ' IN ' + this.arg2; },
       toMQL: function() { return this.arg1.toMQL() + ' IN ' + this.arg2.toMQL(); },
 
       f: function(obj) {
