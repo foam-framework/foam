@@ -114,6 +114,19 @@ function MultiKeyQuery(ret, i, n) {
   PhotoDAO.find((Math.floor(NUM_PHOTOS/n)*i).toString(), ret);
 }
 
+function makeMultiPartKeys(n) {
+  var a = [];
+  for ( var i = 0 ; i < n ; i++ ) {
+    a.push((Math.floor(NUM_PHOTOS/n)*i).toString());
+  }
+  return a;
+}
+
+var KEYS_10 = makeMultiPartKeys(10);
+var KEYS_100 = makeMultiPartKeys(100);
+var KEYS_1000 = makeMultiPartKeys(1000);
+var KEYS_5000 = makeMultiPartKeys(5000);
+
 var SUM_PHOTO_COUNT = SUM({f:function(photo) { return photo.jspb[9] || 0; }});
 
 PhotoDetailDAO = CachedIDB(MDAO.create({model: PhotoDetail})
@@ -169,6 +182,12 @@ aseq(
     atest('2cMultiKeyQuery1000',    arepeat(1000,  MultiKeyQuery)),
     atest('2cMultiKeyQuery5000',    arepeat(5000,  MultiKeyQuery))
   )),
+  atest('2cMultiKeyQuery10b',      function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_10)).select([])(ret); }),
+  aif(!DEBUG, aseq(
+  atest('2cMultiKeyQuery100b',     function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_100)).select([])(ret); }),
+  atest('2cMultiKeyQuery1000b',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_1000)).select([])(ret); }),
+  atest('2cMultiKeyQuery5000b',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select([])(ret); })
+  )),
   atest('2dIndexedFieldQuery',    function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
   }),
@@ -185,10 +204,6 @@ aseq(
     AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
         MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
   }),
-  atest('2gSimpleInnerJoinAggregationQuery(X10)', arepeat(1000, function(ret) {
-    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
-        MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
-  })),
   atest('2hSimpleOrderByQuery', function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
   }),
