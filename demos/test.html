@@ -9,15 +9,15 @@
        font-style: normal;
        font-variant: normal;
        font-weight: normal;
-    } 
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
-  <script language="javascript" src="dragon.js"></script> 
-  <script language="javascript" src="../chrome.js"></script> 
-  <script language="javascript" src="../UML.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <script language="javascript" src="../chrome.js"></script>
+  <script language="javascript" src="../UML.js"></script>
   <title>FOAM Test</title>
  </head>
 
@@ -142,9 +142,9 @@ document.writeln("=======================================");
     drawUML(ctx,100,100,Model);
     drawUML(ctx,400,100,Property);
 
-    ctx.beginPath();  
-    ctx.moveTo(250,180);  
-    ctx.lineTo(400,180); 
+    ctx.beginPath();
+    ctx.moveTo(250,180);
+    ctx.lineTo(400,180);
     ctx.stroke();
 
     document.writeln("</br><h2>Test Events</h2>");
@@ -189,7 +189,7 @@ document.writeln("=======================================");
     e.subscribe(['property'], function (source,topic) { document.writeln("property: " + topic); });
     e.subscribe([], function (source,topic) { document.writeln("global: " + topic); });
     e.subscribe([], e.oneTime(function (source,topic) { document.writeln("one-time: " + topic); }));
-    
+
 //    document.writeln("subs: " + e.publishAsync(['property','age'], "************async***********", "*********async********"));
     document.writeln("subs: " + e.publish(['property','age'], "old", "new"));
     document.writeln("subs: " + e.publish(['property','lname'], "old", "new"));
@@ -199,13 +199,13 @@ document.writeln("=======================================");
     e.publish(['property','*'], "old", "new");
     e.publish(['property','*'], "old", "new");
 
-    e.propertyChange('age', 10, 11); 
+    e.propertyChange('age', 10, 11);
 
       /*
     e.subscribe(['test'], function (source,topic) { document.writeln("normal: " + topic); });
     e.subscribe(['test'], e.async(function (source,topic) { document.writeln("async: " + topic); }));
     e.subscribe(['test'], e.merged(function (source,topic) { document.writeln("merged: " + topic); }));
-    
+
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");
     e.publish(['test'], "foo", "bar");
@@ -279,13 +279,13 @@ console.log('************************************', mmodels.length);
       }),
       dao: mmodels,
     });
-    
+
     stv.scrollbar.height=430;
     stv.write(document);
 */
     document.writeln("</br><h2>Test DetailView</h2>");
 
-    
+
 //    var user = new (o.getPrototype())();
 
     document.writeln("<table width=1600><tr>");
@@ -299,7 +299,7 @@ o = Model;
     dv1.write(document);
     document.writeln("</td>");
 
-	/*
+        /*
     var dv2 = DetailView.create({model: o.model_});
     dv2.set(o);
     document.writeln("<td width=500>");
@@ -307,7 +307,7 @@ o = Model;
     document.writeln("</td>");
 */
     var dv3 = TextAreaView.create({displayHeight:120});
-	// dv3.setModel(o.model_);
+        // dv3.setModel(o.model_);
     document.writeln("<td width=500 valign=top>");
     document.writeln(dv3.toHTML());
     document.writeln("</td>");
@@ -358,9 +358,9 @@ o = Model;
     var apollo = Planet.create({r:3, color:'white'});
     var mars   = Planet.create({r:8, color: 'red'});
     var mmoons = [
-	Planet.create({r:2, color: 'red'}),
-	Planet.create({r:3, color: 'red'}),
-	Planet.create({r:4, color: 'red'})
+        Planet.create({r:2, color: 'red'}),
+        Planet.create({r:3, color: 'red'}),
+        Planet.create({r:4, color: 'red'})
     ];
     space.addChild(sun);
     space.addChild(venus);
@@ -410,23 +410,23 @@ o = Model;
 
     var tt = Turntable.create();
 //    space.addChild(tt);
-	tt.write(document);
+        tt.write(document);
     tt.paint();
     dragon.write(document);
     dragon.paint();
 
     // timer.start();
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
-  
+
     var dmouse = Mouse.create();
     dmouse.connect(dragon.canvasView.$);
     dragon.eyes.watch(dmouse);
 
-    document.writeln("<br/><h2>MoveTowards</h2>");  
+    document.writeln("<br/><h2>MoveTowards</h2>");
     var field = Canvas.create({width:400, height:400, background:'#0d0'});
     document.writeln(field.toHTML());
     field.initHTML();
- 			  
+
     var bug1 = Planet.create({r:2, color: 'blue',   x: 50, y: 50});
     var bug2 = Planet.create({r:2, color: 'red',    x: 350, y: 50});
     var bug3 = Planet.create({r:2, color: 'yellow', x: 350, y: 350});
@@ -440,7 +440,7 @@ o = Model;
     field.paint();
     field.erase = function() {};
 
-			  
+
     Movement.moveTowards(timer, bug1, bug2, 1.2);
     Movement.moveTowards(timer, bug2, bug3, 0.8);
     Movement.moveTowards(timer, bug3, bug4, 0.4);
@@ -481,13 +481,13 @@ o = Model;
 
     var eyes = EyesCView.create({x:600,y:470});
     space.addChild(eyes);
-    eyes.watch(earth);	  
+    eyes.watch(earth);
 
     var eyes2 = EyesCView.create({x:100,y:100});
     field.addChild(eyes2);
-    eyes2.watch(mouse);	  
+    eyes2.watch(mouse);
 
-    // todo: fix 
+    // todo: fix
 //    Movement.orbit(timer,   sun,  eyes,  180,  1007);
 
 </script>

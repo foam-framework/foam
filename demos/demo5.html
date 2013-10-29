@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <script language="javascript" src="../apps/power/power.js"></script>
   <script language="javascript" src="../chrome.js"></script>
   <script language="javascript" src="../UML.js"></script>
@@ -95,7 +95,7 @@
         'Bookmark'
       ],
     });
-			      
+
     var M = Movement;
 
     var foam = function(system, dev)
@@ -111,10 +111,10 @@
 
        randomAct(
          10, function() {
-           system.moveDev(dev, nx, ny);				 
+           system.moveDev(dev, nx, ny);
          },
          5, function() {
-           system.moveDev(dev, dev.f, dev.e);				 
+           system.moveDev(dev, dev.f, dev.e);
          },
          50, function() {
            system.moveDev(dev, 0, ny);
@@ -150,7 +150,7 @@
       console.log(sys.selectedX, sys.selectedY);
     },
     function() {
-      var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue, 
+      var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
                     Timer, Mouse, PanelCView, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, circleModel, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph, BookmarkModel ];
       if ( sys.selectedY < 1 || sys.selectedX < 0 ) return;
 
@@ -159,7 +159,7 @@
       try {
        obj = model.create();
        for ( var key in model.properties ) {
-	  var prop = model.properties[key];
+          var prop = model.properties[key];
           obj.instance_[prop.name] = obj[prop.name];
        }
       } catch(x) { }
@@ -189,7 +189,7 @@
          case 13:
             setDisplay('<canvas id="uml" width=800 height=1000> </canvas>');
             var ctx = $('uml').getContext('2d');
-	    drawUML(ctx,100,100,model);
+            drawUML(ctx,100,100,model);
          break;
          case 14:
            GLOBAL.stack = StackView.create();

@@ -2,7 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
   <title>Coding Simulator</title>
  </head>
 
@@ -48,7 +48,7 @@
       entities: sys.entities
     });
     space2.addChild(sys2); // KGR
-			      
+
     graphs.addChildren(
       sys.codeGraph,
       sys.utilityGraph,
@@ -71,10 +71,10 @@
       },
       function () {
         sys.tick(timer);
-	sys2.tick(timer);
+        sys2.tick(timer);
         space.repaint();
-	space2.repaint();											  
-		  
+        space2.repaint();
+
         if ( timer.i % 10 == 0 ) {
           sys.codeGraph.addData(sys.totalCode, 1000);
           sys.utilityGraph.addData(sys.totalUtility(), 1000);
@@ -95,21 +95,21 @@
 
    function makeIDE() {
      var entities = [
-        
+
      ];
      sys.title = "NetBeans";
-     sys2.entities = [ "Repositories", "Source", "Libraries", "HTML/CSS", "IDL's", "DB Schema", "GUI's", "???", "???" ]; 
+     sys2.entities = [ "Repositories", "Source", "Libraries", "HTML/CSS", "IDL's", "DB Schema", "GUI's", "???", "???" ];
 
      sys2.title = "CHIME";
-     sys2.entities = [ "Models", "Properties", "Actions", "Methods", "Listeners", "Topics", "Templates", "Unit Tests", "Issues" ]; 
+     sys2.entities = [ "Models", "Properties", "Actions", "Methods", "Listeners", "Topics", "Templates", "Unit Tests", "Issues" ];
    }
 
    function makeApps() {
      var entities = [
-        
+
      ];
      sys.title = "Google";
-     sys.entities = [ "Email", "Contacts", "ToDo's", "Calendar Evts", "Docs", "Spreadsheets", "Presentations", "Images", "..." ]; 
+     sys.entities = [ "Email", "Contacts", "ToDo's", "Calendar Evts", "Docs", "Spreadsheets", "Presentations", "Images", "..." ];
 
      sys2.title = "Google ???";
      sys2.entities = sys.entities;
@@ -117,7 +117,7 @@
      // change colours # number
      // create CRM strategy
      // change developer sizes
-     // create 3rd dimension 
+     // create 3rd dimension
    }
 
    function addPlatforms() {

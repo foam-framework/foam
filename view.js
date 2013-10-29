@@ -1560,7 +1560,7 @@ var DetailView = Model.create({
     getValue: function() {
       return this.value;
     },
-    
+
     setValue: function (value) {
       if ( this.getValue() ) {
         // todo:
@@ -1572,42 +1572,42 @@ var DetailView = Model.create({
       // instead of bind()'ing
       value.addListener(this.updateSubViews.bind(this));
     },
-    
+
     /** Create the sub-view from property info. **/
     createView: function(prop) {
       var proto =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
         prop.view ;
-      
+
       var view = proto.create(prop);
-      
+
       try {
         view.setValue(this.get().propertyValue(prop.name));
       } catch (x) { }
-      
+
       view.prop = prop;
       view.toString = function () { return this.prop.name + "View"; };
       this.addChild(view);
-      
+
       return view;
     },
-    
+
     titleHTML: function() {
       return '<tr><th colspan=2 class="heading">' +
         'Edit ' + this.model.label +
         '</th></tr>';
     },
-    
+
     startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
     nextColumn:   function() { return '</table></td><td valign=top><table valign=top>'; },
     endColumns:   function() { return '</table></td></tr></table></td></tr>'; },
-    
+
     rowToHTML: function(prop, view) {
       var str = "";
-      
+
       str += prop.detailViewPreRow(this);
-      
+
       // TODO: add class to tr
       str += '<tr class="detail-' + prop.name + '">';
       str += "<td class='label'>" + prop.label + "</td>";
@@ -1615,61 +1615,61 @@ var DetailView = Model.create({
       str += view.toHTML();
       str += '</td>';
       str += '</tr>';
-      
+
       str += prop.detailViewPostRow(this);
-      
+
       return str;
     },
-    
+
     toHTML: function() {
       this.children = [];
       var model = this.model;
       var str  = "";
-      
+
       str += '<div id="' + this.getID() + '" class="detailView" name="form">';
       str += '<table>';
       str += this.titleHTML();
-      
+
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
         var prop = model.properties[i];
-        
+
         if ( prop.hidden ) continue;
-        
+
         str += this.rowToHTML(prop, this.createView(prop));
       }
-      
+
       str += '</table>';
       str += '</div>';
-      
+
       return str;
     },
-    
+
     initHTML: function() {
       this.SUPER();
-      
+
       // hooks sub-views upto sub-models
       this.updateSubViews();
     },
-    
+
     set: function(obj) {
       this.getValue().set(obj);
     },
-    
+
     get: function() {
       return this.getValue().get();
     },
-    
+
     updateSubViews: function() {
       var obj = this.get();
-      
+
       if ( obj === "" ) return;
-      
+
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
         var prop  = child.prop;
-        
+
         if ( ! prop ) continue;
-        
+
         try {
           child.setValue(obj.propertyValue(prop.name));
         } catch (x) {
@@ -1677,13 +1677,13 @@ var DetailView = Model.create({
         }
       }
     },
-    
+
     setModel: function(obj) {
       if ( ! obj ) return;
-      
+
       this.obj = obj;
     },
-    
+
     destroy: function()
     {
     }
@@ -1712,62 +1712,62 @@ var DetailView2 = Model.create({
     getValue: function() {
       return this.value;
     },
-    
+
     setValue: function (value) {
       if ( this.getValue() ) {
         // todo:
         /// getValue().removeListener(???)
       }
-      
+
       this.value = value;
-      
+
       this.updateSubViews();
       value.addListener(this.updateSubViews.bind(this));
     },
-    
+
     toHTML: function() {
       this.children = [];
       return '<div id="' + this.getID() + '" class="detailView" name="form">dv2</div>';
     },
-       
+
     /** Create the sub-view from property info. **/
     createView: function(prop) {
       var view =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
         prop.view ;
-      
+
       return view.create(prop);
     },
-    
+
     updateHTML: function() {
       if ( ! this.elementId ) return;
-      
+
       this.children = [];
-      
+
       var model = this.model;
       var str  = "";
-      
+
       str += '<table><tr><th colspan=2 class="heading">';
       str += 'Edit ' + model.label;
       str += '</th></tr>';
-      
+
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
         var prop = model.properties[i];
-        
+
         if ( prop.hidden ) continue;
-        
+
         var view = this.createView(prop);
-        
+
         try {
           view.setValue(this.get().propertyValue(prop.name));
         } catch (x) {
         }
-        
+
         view.prop = prop;
         view.toString = function () { return this.prop.name + "View"; };
         this.addChild(view);
-        
+
         str += '<tr>';
         str += "<td class='propertyLabel'>" + prop.label + "</td>";
         str += '<td>';
@@ -1775,47 +1775,47 @@ var DetailView2 = Model.create({
         str += '</td>';
         str += '</tr>';
       }
-      
+
       str += '</table>';
-      
+
       this.$.innerHTML = str;
       this.initHTML.super_.call(this);
     },
-    
+
     initHTML: function() {
       this.SUPER();
-      
+
       if ( this.get() ) {
         this.updateHTML();
-        
+
         // hooks sub-views upto sub-models
         this.updateSubViews();
       }
     },
-    
+
     set: function(obj) {
       this.getValue().set(obj);
     },
-    
+
     get: function() {
       return this.getValue().get();
     },
-    
+
     updateSubViews: function() {
       // check if the Value's model has changed
       if ( this.get().model_ !== this.model ) {
         this.model = this.get().model_;
         this.updateHTML();
       }
-      
+
       var obj = this.get();
-      
+
       for ( var i = 0; i < this.children.length ; i++ ) {
         var child = this.children[i];
         var prop  = child.prop;
-        
+
         if ( ! prop ) continue;
-        
+
         try {
           //           console.log("updateSubView: " + child + " " + prop.name);
           //           console.log(obj.propertyValue(prop.name).get());
@@ -1825,13 +1825,13 @@ var DetailView2 = Model.create({
         }
       }
     },
-    
+
     setModel: function(obj) {
       if ( ! obj ) return;
-      
+
       this.obj = obj;
     },
-    
+
     destroy: function() {
     }
   }
@@ -1859,27 +1859,27 @@ var SummaryView = Model.create({
     getValue: function() {
       return this.value;
     },
-    
+
     toHTML: function() {
       this.children = [];
       var model = this.model;
       var obj   = this.get();
       var out   = [];
-      
+
       out.push('<div id="' + this.getID() + '" class="summaryView">');
       out.push('<table>');
-      
+
       // TODO: Either make behave like DetailView or else
       // make a mode of DetailView.
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
         var prop = model.properties[i];
-        
+
         if ( prop.hidden ) continue;
-        
+
         var value = obj[prop.name];
-        
+
         if ( ! value ) continue;
-        
+
         out.push('<tr>');
         out.push('<td class="label">' + prop.label + '</td>');
         out.push('<td class="value">');
@@ -1890,18 +1890,18 @@ var SummaryView = Model.create({
         }
         out.push('</td></tr>');
       }
-      
+
       out.push('</table>');
       out.push('</div>');
-      
+
       return out.join('');
     },
-    
+
     get: function() {
       return this.getValue().get();
     }
   }
-  
+
 });
 
 
@@ -2213,10 +2213,10 @@ var TableView = FOAM({
           return;
         }
       }
-      
+
       for ( var i = 0 ; i < es.length ; i++ ) {
         var e = es[i];
-        
+
         e.onmouseover = function(value, obj) { return function() {
           value.set(obj);
         }; }(this.selection, this.objs[i]);
@@ -2253,7 +2253,7 @@ var ActionButton = Model.create({
   name: 'ActionButton',
 
   extendsModel: 'AbstractView',
-  
+
   properties: [
     {
       name:  'action'
@@ -2264,14 +2264,14 @@ var ActionButton = Model.create({
       valueFactory: function() { return new SimpleValue(); }
     }
   ],
-  
+
   methods: {
-    
+
     // TODO: implement and make a listener
     subjectUpdate: function() {
       // console.log('subject update: ' + this.value);
     },
-    
+
     toHTML: function() {
       this.registerCallback(
         'click',
@@ -2279,7 +2279,7 @@ var ActionButton = Model.create({
           action.action.apply(this.value.get());
         };}(this.action),
         this.getID());
-      
+
       var out = [];
       out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '">');
 
@@ -2291,7 +2291,7 @@ var ActionButton = Model.create({
         out.push(this.action.label);
       }
       out.push('</button>');
-      
+
       return out.join('');
     }
   }
@@ -2411,12 +2411,12 @@ var ActionToolbarView = FOAM({
   }
 });
 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 // TODO: Model
 /** Add Action Buttons to a decorated View. **/
 /* TODO:

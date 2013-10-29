@@ -56,7 +56,7 @@ console.log('cleanup suffixes');
 cleanup(s);
 
 console.log('dedup prefixes');
-for ( var key in p ) { 
+for ( var key in p ) {
   var count = p[key];
 
   for ( var i = key.length-1 ; i > 1 ; i-- ) {
@@ -71,7 +71,7 @@ for ( var key in p ) {
 }
 
 console.log('dedup suffixes');
-for ( var key in s ) { 
+for ( var key in s ) {
   var count = s[key];
 
   for ( var i = key.length-1 ; i > 1 ; i-- ) {

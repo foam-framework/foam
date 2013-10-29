@@ -92,7 +92,7 @@ var ScaleExprToJS = {
 
     if ( v[0] == 'sqrt' ) return 'Math.pow(' + val + ',0.5)';
     if ( ! v[3] ) return 'Math.log(' + val + ')';
-    return 'log2_(' + val + ',' + v[3][1] + ')'; 
+    return 'log2_(' + val + ',' + v[3][1] + ')';
   }
 });
 
