@@ -389,7 +389,9 @@ var TreeIndex = {
     var index = this;
 
     if ( query ) {
-      if ( query.model_ === InExpr && query.arg1 === prop ) {
+      if ( query.model_ === InExpr && query.arg1 === prop &&
+         // Just scan if that would be faster.
+         Math.log(this.size(s))/Math.log(2) * query.arg2.length < this.size(s) ) {
         var keys = query.arg2;
         var subPlans = [];
         var results  = [];
@@ -399,8 +401,8 @@ var TreeIndex = {
         if ( 'limit' in options ) newOptions.limit = options.limit;
         if ( 'skip' in options ) newOptions.skip = options.skip;
 
-        for ( var key in keys ) {
-          var result = this.get(s, key);
+        for ( var i = 0 ; i < keys.length ; i++) {
+          var result = this.get(s, keys[i]);
 
           if ( result ) {
             var subPlan = this.tail.plan(result, sink, newOptions);
