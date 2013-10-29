@@ -181,10 +181,10 @@ var features = [
     var scope = this.scope;
     var get = this.getter || function() {
       if ( !this[scope].hasOwnProperty(prop.name) ) return prop.defaultValue;
-      return this.[scope][prop.name];
+      return this[scope][prop.name];
     };
     var set = this.setter || function(value) {
-      this.[scope][prop.name] = value;
+      this[scope][prop.name] = value;
     };
 
     Object.defineProperty(o.prototype, this.name, {
@@ -195,11 +195,11 @@ var features = [
       set: set
     });
   }],
+  ['Property', 'Property', { name: 'scope', scope: 'instance_', defaultValue: 'instance_' }],
   ['Property', 'Property', { name: 'defaultValue', defaultValue: '' }],
   ['Property', 'Property', { name: 'defaultValueFn', defaultValue: '' }],
   ['Property', 'Property', { name: 'valueFactory', defaultValue: '' }],
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
-  ['Property', 'Property', { name: 'scope', defaultValue: 'instance_' }],
   ['Property', 'Method', function initialize(o) {
     if ( ! o.instance_.hasOwnProperty(this.name) &&
         this.valueFactory ) o.instance_[this.name] = this.valueFactory();
