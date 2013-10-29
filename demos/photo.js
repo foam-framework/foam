@@ -110,10 +110,6 @@ var PhotoDetail = FOAM({
 var AlbumDAO, PhotoDAO, PhotoDetailDAO;
 var albums = [], photos = [];
 
-function MultiKeyQuery(ret, i, n) {
-  PhotoDAO.find((Math.floor(NUM_PHOTOS/n)*i).toString(), ret);
-}
-
 function makeMultiPartKeys(n) {
   var a = [];
   for ( var i = 0 ; i < n ; i++ ) {
@@ -176,17 +172,11 @@ aseq(
   atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select([])(ret); }),
   atest('2bSingleKeyQuery',       function(ret) { PhotoDAO.find(avgKey,ret); }),
   atest('2bSingleKeyQuery(X10)',  arepeat(10, function(ret) { PhotoDAO.find(avgKey,ret); })),
-  atest('2cMultiKeyQuery10',      arepeat(10,    MultiKeyQuery)),
+  atest('2cMultiKeyQuery10',      function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_10)).select([])(ret); }),
   aif(!DEBUG, aseq(
-    atest('2cMultiKeyQuery100',     arepeat(100,   MultiKeyQuery)),
-    atest('2cMultiKeyQuery1000',    arepeat(1000,  MultiKeyQuery)),
-    atest('2cMultiKeyQuery5000',    arepeat(5000,  MultiKeyQuery))
-  )),
-  atest('2cMultiKeyQuery10b',      function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_10)).select([])(ret); }),
-  aif(!DEBUG, aseq(
-  atest('2cMultiKeyQuery100b',     function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_100)).select([])(ret); }),
-  atest('2cMultiKeyQuery1000b',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_1000)).select([])(ret); }),
-  atest('2cMultiKeyQuery5000b',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select([])(ret); })
+  atest('2cMultiKeyQuery100',     function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_100)).select([])(ret); }),
+  atest('2cMultiKeyQuery1000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_1000)).select([])(ret); }),
+  atest('2cMultiKeyQuery5000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select([])(ret); })
   )),
   atest('2dIndexedFieldQuery',    function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
