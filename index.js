@@ -452,7 +452,8 @@ var TreeIndex = {
         if ( ! result ) return NOT_FOUND;
 
         //        var newOptions = {__proto__: options, query: query};
-        var newOptions = {query: query};
+        var newOptions = {};
+        if ( query ) newOptions.query = query;
         if ( 'limit' in options ) newOptions.limit = options.limit;
         if ( 'skip' in options ) newOptions.skip = options.skip;
 

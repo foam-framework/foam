@@ -1221,11 +1221,7 @@ var MapExpr = FOAM({
      put: function(obj) {
        var val = this.arg1.f(obj);
        var acc = this.arg2;
-       if ( Array.isArray(acc) ) {
-         acc.push(val);
-       } else {
-         acc.put(val);
-       }
+       acc.put(val);
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
