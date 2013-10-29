@@ -21,6 +21,21 @@ Boolean.name = 'Boolean';
 Number.name = 'Number';
 Date.name = 'Date';
 Function.name = 'Function';
+(function() {
+  var static_ = {};
+  Object.defineProperty(Object.prototype, 'static_', {
+    enumerable: false,
+    writeable: true,
+    configurable: true,
+    get: function() { 
+      return static_;
+    },
+    set: function(v) {
+      static_ = v;
+    }
+  });
+  Object.prototype.static_ = {};
+})();
 
 var CTX = {
   name: 'ROOT',
@@ -184,7 +199,10 @@ var features = [
       return this[scope][prop.name];
     };
     var set = this.setter || function(value) {
+      var oldValue = this[scope][prop.name];
       this[scope][prop.name] = value;
+
+      this.propertyChange && this.propertyChange(prop.name, oldValue, value);
     };
 
     Object.defineProperty(o.prototype, this.name, {
@@ -194,6 +212,10 @@ var features = [
       get: get,
       set: set
     });
+
+    if ( scope === "static_" && this.valueFactory ) {
+      o.prototype[this.name] = this.valueFactory();
+    }
   }],
   ['Property', 'Property', { name: 'scope', scope: 'instance_', defaultValue: 'instance_' }],
   ['Property', 'Property', { name: 'defaultValue', defaultValue: '' }],
@@ -306,14 +328,1032 @@ var features = [
   ['Boolean', 'Method', function compareTo(o) {
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
+  // TODO: This is not serializable
+  ['Object', 'Property', {
+    name: '$UID',
+    enumerable: false,
+    getter: function() {
+      return (this.$UID__ ||
+              (this.$UID__ = (
+                (++arguments.callee.count) ||
+                  (arguments.callee.count = 1))));
+    }
+  }],
+
 
   // Events
+  [null, "Model", { name: "EventService" }],
+  [
+    "EventService",
+    "Constant",
+    {
+      "name": "UNSUBSCRIBE_EXCEPTION",
+      "value": "unsubscribe"
+    }
+  ],
 
+  [
+    "EventService",
+    "Constant",
+    {
+      "name": "WILDCARD",
+      "value": "*"
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "oneTime",
+      "jsCode": function (listener) {
+        return function() {
+          listener.apply(this, arguments);
+
+          throw EventService.UNSUBSCRIBE_EXCEPTION;
+        };
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "consoleLog",
+      "jsCode": function (listener) {
+        return function() {
+          console.log(arguments);
+
+          listener.apply(this, arguments);
+        };
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "merged",
+      "jsCode": function (listener, opt_delay) {
+        var delay = opt_delay || 16;
+
+        return function() {
+          var triggered = false;
+          var lastArgs  = null;
+
+          return function() {
+            lastArgs = arguments;
+
+            if ( ! triggered ) {
+              triggered = true;
+
+              setTimeout(
+                function() {
+                  triggered = false;
+                  var args = lastArgs;
+                  lastArgs = null;
+
+                  listener.apply(this, args);
+                },
+                delay);
+            }
+          };
+        }();
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "animate",
+      "jsCode": function (listener) {
+        return function() {
+          var triggered = false;
+          var lastArgs  = null;
+
+          return function() {
+            lastArgs = arguments;
+
+            if ( ! triggered ) {
+              triggered = true;
+              var window = $documents[$documents.length-1].defaultView;
+
+              window.requestAnimationFrame(
+                function() {
+                  triggered = false;
+                  var args = lastArgs;
+                  lastArgs = null;
+
+                  listener.apply(this, args);
+                });
+            }
+          };
+        }();
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "async",
+      "jsCode": function (listener) {
+        return this.delay(0, listener);
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "delay",
+      "jsCode": function (delay, listener) {
+        return function() {
+          var args = arguments;
+
+          // Is there a better way of doing this?
+          setTimeout( function() { listener.apply(this, args); }, delay );
+        };
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "hasListeners",
+      "jsCode": function (topic) {
+        // todo:
+        return true;
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "publish",
+      "jsCode": function (topic) {
+        return this.subs_ ? this.pub_(this.subs_, 0, topic, this.appendArguments([this, topic], arguments, 1)) : 0;
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "publishAsync",
+      "jsCode": function (topic) {
+        var args = arguments;
+        var me   = this;
+
+        setTimeout( function() { me.publish.apply(me, args); }, 0 );
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "publishLazy",
+      "jsCode": function (topic, fn) {
+        if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
+
+        return 0;
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "subscribe",
+      "jsCode": function (topic, listener) {
+        if ( ! this.subs_ ) this.subs_ = {};
+
+        this.sub_(this.subs_, 0, topic, listener);
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "unsubscribe",
+      "jsCode": function (topic, listener) {
+        if ( ! this.subs_ ) return;
+
+        this.unsub_(this.subs_, 0, topic, listener);
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "unsubscribeAll",
+      "jsCode": function () {
+        this.sub_ = {};
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "pub_",
+      "jsCode": function (map, topicIndex, topic, msg) {
+        var count = 0;
+
+        // There are no subscribers, so nothing to do
+        if ( map == null ) return 0;
+
+        if ( topicIndex < topic.length ) {
+          var t = topic[topicIndex];
+
+          // wildcard publish, so notify all sub-topics, instead of just one
+          if ( t == this.WILDCARD )
+            return this.notifyListeners_(topic, map, msg);
+
+          if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
+        }
+
+        count += this.notifyListeners_(topic, map[null], msg);
+
+        return count;
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "sub_",
+      "jsCode": function (map, topicIndex, topic, listener) {
+        if ( topicIndex == topic.length ) {
+          if ( ! map[null] ) map[null] = [];
+          map[null].push(listener);
+        } else {
+          var key = topic[topicIndex];
+
+          if ( ! map[key] ) map[key] = {};
+
+          this.sub_(map[key], topicIndex+1, topic, listener);
+        }
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "unsub_",
+      "jsCode": function (map, topicIndex, topic, listener) {
+        if ( topicIndex == topic.length ) {
+          if ( ! map[null] ) return true;
+
+          map[null].remove(listener);
+
+          if ( ! map[null].length ) delete map[null];
+        } else {
+          var key = topic[topicIndex];
+
+          if ( ! map[key] ) return false;
+
+          if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
+            delete map[key];
+        }
+        return Object.keys(map).length == 0;
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "notifyListeners_",
+      "jsCode": function (topic, listeners, msg) {
+        if ( listeners == null ) return 0;
+
+        if ( listeners instanceof Array ) {
+          for ( var i = 0 ; i < listeners.length ; i++ ) {
+            var listener = listeners[i];
+
+            try {
+              listener.apply(null, msg);
+            } catch ( err ) {
+              if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
+                listeners.splice(i,1);
+                i--;
+              }
+            }
+          }
+
+          return listeners.length;
+        }
+
+        for ( var key in listeners ) {
+          return this.notifyListeners_(topic, listeners[key], msg);
+        }
+      }
+    }
+  ],
+
+  [
+    "EventService",
+    "Method",
+    {
+      "name": "appendArguments",
+      "jsCode": function (a, args, start) {
+        for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
+
+        return a;
+      }
+    }
+  ],
+  [null, "Model", { name: "PropertyChangeSupport" }],
+  ["PropertyChangeSupport", "Extends", "EventService"],
+  [
+    "PropertyChangeSupport",
+    "Constant",
+    {
+      "name": "PROPERTY_TOPIC",
+      "value": "property"
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "propertyTopic",
+      "jsCode": function (property) {
+        return [ this.PROPERTY_TOPIC, property ];
+      }
+    }
+  ],
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "propertyChange",
+      "jsCode": function (property, oldValue, newValue) {
+        // don't bother firing event if there are no listeners
+        if ( ! this.subs_ ) return;
+
+        // don't fire event if value didn't change
+        if ( property != null && oldValue === newValue ) return;
+
+        this.publish(this.propertyTopic(property), oldValue, newValue);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "globalChange",
+      "jsCode": function () {
+        this.publish(this.propertyTopic(this.WILDCARD), null, null);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "addListener",
+      "jsCode": function (listener) {
+        // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
+        this.addPropertyListener(null, listener);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "removeListener",
+      "jsCode": function (listener) {
+        this.removePropertyListener(null, listener);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "addPropertyListener",
+      "jsCode": function (property, listener) {
+        this.subscribe(this.propertyTopic(property), listener);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "removePropertyListener",
+      "jsCode": function (property, listener) {
+        this.unsubscribe(this.propertyTopic(property), listener);
+      }
+    }
+  ],
+
+  [
+    "PropertyChangeSupport",
+    "Method",
+    {
+      "name": "propertyValue",
+      "jsCode": function (property) {
+        var obj = this;
+        return {
+          $UID: obj.$UID + "." + property,
+
+          get: function() { return obj[property]; },
+
+          set: function(val) { obj[property] = val; },
+
+          addListener: function(listener) {
+            obj.addPropertyListener(property, listener);
+          },
+
+          removeListener: function(listener) {
+            obj.removePropertyListener(property, listener);
+          },
+
+          toString: function () {
+            return "PropertyValue(" + obj + "," + property + ")";
+          }
+        };
+      }
+    }
+  ],
+  ['FObject', 'Extends', 'PropertyChangeSupport'],
+  [null, "Model", { name: "Events" }],
+  ["Events", "Property", {
+    name: "listeners_",
+    scope: "static_",
+    valueFactory: function() { return {}; }
+  }],
+  [
+    "Events",
+    "Method",
+    {
+      "name": "identity",
+      "jsCode": function (x) { return x; }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "follow",
+      "jsCode": function (srcValue, dstValue) {
+        if ( ! srcValue || ! dstValue ) return;
+
+        dstValue.set(srcValue.get());
+
+        var listener = function () {
+          dstValue.set(srcValue.get());
+        };
+
+        this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+
+        srcValue.addListener(listener);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "map",
+      "jsCode": function (srcValue, dstValue, f) {
+        if ( ! srcValue || ! dstValue ) return;
+
+        var listener = function () {
+          dstValue.set(f(srcValue.get()));
+        };
+
+        listener(); // copy initial value
+
+        this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+
+        srcValue.addListener(listener);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "unfollow",
+      "jsCode": function (srcValue, dstValue) {
+        if ( ! srcValue || ! dstValue ) return;
+
+        var key      = [srcValue.$UID, dstValue.$UID];
+        var listener = this.listeners_[key];
+
+        delete this.listeners_[key];
+
+        srcValue.removeListener(listener);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "link",
+      "jsCode": function (value1, model2) {
+        this.follow(value1, model2);
+        this.follow(model2, value1);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "relate",
+      "jsCode": function (value1, value2, f, fprime) {
+        this.map(value1, value2, f);
+        this.map(value2, value1, fprime);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "unlink",
+      "jsCode": function (value1, value2) {
+        this.unfollow(value1, value2);
+        this.unfollow(value2, value1);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "dynamic",
+      "jsCode": function (fn, opt_fn) {
+        var fn2 = opt_fn ? function() { fn(opt_fn()); } : fn;
+        var oldOnGet = Events.onGet;
+        var listener = EventService.merged(fn2, 5);
+        Events.onGet = function(obj, name, value) {
+          obj.propertyValue(name).addListener(listener);
+        };
+        var ret = fn();
+        Events.onGet = oldOnGet;
+        opt_fn && opt_fn(ret);
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "onSet",
+      "jsCode": function (obj, name, newValue) {
+        return true;
+      }
+    }
+  ],
+
+  [
+    "Events",
+    "Method",
+    {
+      "name": "onGet",
+      "jsCode": function (obj, name, value) {
+      }
+    }
+  ],
+  ['Function', 'Method', function o(f2) {
+    var f1 = this;
+    return function() { return f1.call(this, f2.apply(this, arguments)); };
+  }],
+  [null, "Model", { name: "Movement" }],
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "distance",
+      "jsCode": function (x, y) { return Math.sqrt(x*x + y*y); }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "o",
+      "jsCode": function (f1, f2) { return function(x) { return f1(f2(x)); }; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "avg",
+      "jsCode": function (f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "linear",
+      "jsCode": function (x) { return x; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "back",
+      "jsCode": function (x) { return x < 0.5 ? 2*x : 2-2*x; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "accelerate",
+      "jsCode": function (x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "easeIn",
+      "jsCode": function (a) {
+        var v = 1/(1-a/2);
+        return function(x) {
+          var x1 = Math.min(x, a);
+          var x2 = Math.max(x-a, 0);
+          return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "reverse",
+      "jsCode": function (f) { return function(x) { return 1-f(1-x); }; }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "easeOut",
+      "jsCode": function (b) { return Movement.reverse(Movement.easeIn(b)); }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "oscillate",
+      "jsCode": function (b,a,opt_c) {
+        var c = opt_c || 3;
+        return function(x) {
+          if ( x < (1-b) ) return x/(1-b);
+          var t = (x-1+b)/b;
+          return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "bounce",
+      "jsCode": function (b,a,opt_c) {
+        var c = opt_c || 3;
+        return function(x) {
+          if ( x < (1-b) ) return x/(1-b);
+          var t = (x-1+b)/b;
+          return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "bounce2",
+      "jsCode": function (a) {
+        var v = 1 / (1-a);
+        return function(x) {
+          if ( x < (1-a) ) return v*x;
+          var p = (x-1+a)/a;
+          return 1-(x-1+a)*v/2;
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "stepBack",
+      "jsCode": function (a) {
+        return function(x) {
+          return ( x < a ) ? -x : -2*a+(1+2*a)*x;
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "ease",
+      "jsCode": function (a, b) {
+        return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "seq",
+      "jsCode": function (f1, f2) {
+        return ( f1 && f2 ) ? function() { f1.apply(this, arguments); f2(); } :
+        f1 ? f1
+          : f2 ;
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "animate",
+      "jsCode": function (duration, fn, opt_interp, opt_onEnd) {
+        if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
+
+        var interp = opt_interp || Movement.linear;
+
+        return function() {
+          var startTime = Date.now();
+          var oldOnSet  = Events.onSet;
+          var ranges = [];
+
+          Events.onSet = function(obj, name, value2) {
+            ranges.push([obj, name, obj[name], value2]);
+          };
+          fn && fn.apply(this, arguments);
+          Events.onSet = oldOnSet;
+
+          if ( ranges.length > 0 || true ) {
+            var timer = setInterval(function() {
+              var now = Math.min(Date.now(), startTime + duration);
+              var p   = interp((now-startTime)/duration);
+
+              for ( var i = 0 ; i < ranges.length ; i++ ) {
+                var r = ranges[i];
+                var obj = r[0];
+                var name = r[1];
+                var value1 = r[2];
+                var value2 = r[3];
+
+                obj[name] = value1 + (value2-value1) * p;
+              }
+
+              if ( now >= startTime + duration ) {
+                clearTimeout(timer);
+                opt_onEnd && opt_onEnd();
+              }
+            }, 30);
+          }
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "animate2",
+      "jsCode": function (timer, duration, fn) {
+        return function() {
+          var startTime = timer.time;
+          var oldOnSet  = Events.onSet;
+          Events.onSet = function(obj, name, value2)
+          {
+            var value1 = obj[name];
+
+            Events.dynamic(function() {
+              var now = timer.time;
+
+              obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
+
+              if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+            });
+
+            return false;
+          };
+          fn.apply(this, arguments);
+          Events.onSet = oldOnSet;
+          update();
+        };
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "compile",
+      "jsCode": function (a, opt_rest) {
+        function noop() {}
+
+        function isSimple(op) {
+          return Array.isArray(op) && typeof op[0] === 'number';
+        }
+
+        function compileSimple(op, rest) {
+          op[3] = Movement.seq(op[3], rest);
+          return function() { Movement.animate.apply(null, op)(); };
+        }
+
+        function isParallel(op) {
+          return Array.isArray(op) && Array.isArray(op[0]);
+        }
+
+        function compileParallel(op, rest) {
+          var join = (function(num) {
+            return function() { --num || rest(); };
+          })(op.length);
+
+          return function() {
+            for ( var i = 0 ; i < op.length ; i++ )
+              if ( isSimple(op[i]) )
+                Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
+            else
+              Movement.compile(op[i], join)();
+          };
+        }
+
+        function compileFn(fn, rest) {
+          return Movement.seq(fn, rest);
+        }
+
+        function compile_(a, i) {
+          if ( i >= a.length ) return opt_rest || noop;
+
+          var rest = compile_(a, i+1);
+          var op = a[i];
+
+          if ( isSimple(op)   ) return compileSimple(op, rest);
+          if ( isParallel(op) ) return compileParallel(op, rest);
+
+          return compileFn(op, rest);
+        }
+
+        return compile_(a, 0);
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "onIntersect",
+      "jsCode": function (o1, o2, fn) {
+
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "stepTowards",
+      "jsCode": function (src, dst, maxStep) {
+        var dx = src.x - dst.x;
+        var dy = src.y - dst.y;
+        var theta = Math.atan2(dy,dx);
+        var r     = Math.sqrt(dx*dx+dy*dy);
+        r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
+
+        dst.x += r*Math.cos(-theta);
+        dst.y -= r*Math.sin(-theta);
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "moveTowards",
+      "jsCode": function (t, body, sat, v) {
+        var bodyX = body.propertyValue('x');
+        var bodyY = body.propertyValue('y');
+        var satX  = sat.propertyValue('x');
+        var satY  = sat.propertyValue('y');
+
+        t.addListener(function() {
+          var dx = bodyX.get() - satX.get();
+          var dy = (bodyY.get() - satY.get());
+          var theta = Math.atan2(dy,dx);
+          var r     = Math.sqrt(dx*dx+dy*dy);
+
+          r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
+
+          satX.set(satX.get() + r*Math.cos(-theta));
+          satY.set(satY.get() - r*Math.sin(-theta));
+        });
+      }
+    }
+  ],
+
+  [
+    "Movement",
+    "Method",
+    {
+      "name": "orbit",
+      "jsCode": function (t, body, sat, r, p)
+      {
+        var bodyX = body.propertyValue('x');
+        var bodyY = body.propertyValue('y');
+        var satX  = sat.propertyValue('x');
+        var satY  = sat.propertyValue('y');
+
+        t.addListener(function() {
+          var time = t.time;
+          satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
+          satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
+        });
+      }
+    }
+  ],
 
   // Some test models.
   [null, 'Model', { name: 'Mail' }],
   ['Mail', 'Model', { name: 'EMail' }],
-  ['Mail.EMail', 'Property', { name: 'sender', scope: 'static_', defaultValue: 'adamvy' }],
+  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: 'adamvy' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
 ];
 
