@@ -16,8 +16,8 @@
  */
 
 Object.name = 'Object';
-String.name = 'Object';  // ???: Why is this 'Object'?
-Boolean.name = 'Object';  // ???: Why is this 'Object'?
+String.name = 'String';
+Boolean.name = 'Boolean';
 Number.name = 'Number';
 Date.name = 'Date';
 Function.name = 'Function';
@@ -178,25 +178,14 @@ var features = [
 
     var prop = this;
 
-    // ???: This isn't extensible.
-    // Why not have scope be 'static_' or 'instance_' and do: this[prop.scope][prop.name]
-    if ( this.scope === 'static' ) {
-      var get = this.getter || function() {
-        if ( !this.static_.hasOwnProperty(prop.name) ) return prop.defaultValue;
-        return this.static_[prop.name];
-      };
-      var set = this.setter || function(value) {
-        this.static_[prop.name] = value;
-      };
-    } else {
-      var get = this.getter || function() {
-        if ( !this.instance_.hasOwnProperty(prop.name) ) return prop.defaultValue;
-        return this.instance_[prop.name];
-      };
-      var set = this.setter || function(value) {
-        this.instance_[prop.name] = value;
-      };
-    }
+    var scope = this.scope;
+    var get = this.getter || function() {
+      if ( !this[scope].hasOwnProperty(prop.name) ) return prop.defaultValue;
+      return this.[scope][prop.name];
+    };
+    var set = this.setter || function(value) {
+      this.[scope][prop.name] = value;
+    };
 
     Object.defineProperty(o.prototype, this.name, {
       configurable: true,
@@ -210,7 +199,7 @@ var features = [
   ['Property', 'Property', { name: 'defaultValueFn', defaultValue: '' }],
   ['Property', 'Property', { name: 'valueFactory', defaultValue: '' }],
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
-  ['Property', 'Property', { name: 'scope', defaultValue: '' }], // ???: make the defaultValue = 'instance_'?
+  ['Property', 'Property', { name: 'scope', defaultValue: 'instance_' }],
   ['Property', 'Method', function initialize(o) {
     if ( ! o.instance_.hasOwnProperty(this.name) &&
         this.valueFactory ) o.instance_[this.name] = this.valueFactory();
@@ -324,7 +313,7 @@ var features = [
   // Some test models.
   [null, 'Model', { name: 'Mail' }],
   ['Mail', 'Model', { name: 'EMail' }],
-  ['Mail.EMail', 'Property', { name: 'sender', scope: 'static', defaultValue: 'adamvy' }],
+  ['Mail.EMail', 'Property', { name: 'sender', scope: 'static_', defaultValue: 'adamvy' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
 ];
 
