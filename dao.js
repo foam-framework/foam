@@ -423,7 +423,6 @@ var TimingDAO = {
 };
 
 
-
 var ObjectToJSON = {
   __proto__: Visitor.create(),
 
@@ -436,7 +435,9 @@ var ObjectToJSON = {
     this.__proto__.visitObject.call(this, o);
     return this.pop();
   },
-  visitProperty: function(o, prop) { this.top()[prop.name] = this.visit(o[prop.name]); },
+  visitProperty: function(o, prop) {
+    this.top()[prop.name] = this.visit(o[prop.name]);
+  },
 
   visitMap: function(o) {
     this.push({});
@@ -574,7 +575,9 @@ var AbstractDAO = FOAM({
     },
 
     orderBy: function() {
-      return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+      return orderedDAO(arguments.length == 1 ?
+          arguments[0] :
+          argsToArray(arguments), this);
     },
 
     unlisten: function(sink) {
@@ -776,8 +779,7 @@ function filteredDAO(query, dao) {
         query: options.query ?
           AND(query, options.query) :
           query
-      } :
-                        {query: query});
+      } : {query: query});
     },
     listen: function(sink, options) {
       return dao.listen(sink, options ? {
@@ -785,8 +787,7 @@ function filteredDAO(query, dao) {
         query: options.query ?
           AND(query, options.query) :
           query
-      } :
-                        {query: query});
+      } : {query: query});
     }
 
   };
@@ -801,7 +802,8 @@ function orderedDAO(comparator, dao) {
     __proto__: dao,
     select: function(sink, options) {
       if ( options ) {
-        if ( ! options.order ) options = { __proto__: options, order: comparator };
+        if ( ! options.order )
+          options = { __proto__: options, order: comparator };
       } else {
         options = {order: comparator};
       }
@@ -937,7 +939,8 @@ defineProperties(Array.prototype, {
   remove: function(query, callback) {
     var param = query;
     if (! EXPR.isInstance(query))
-      query = {f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
+      query = {
+        f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
 
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
@@ -961,7 +964,9 @@ defineProperties(Array.prototype, {
 
     var fc = this.createFlowControl_();
     var start = hasQuery ? 0 : options && options.skip || 0;
-    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
+    var end = hasQuery ?
+        this.length :
+        Math.min(this.length, start + (options && options.limit || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
@@ -1279,8 +1284,7 @@ var StorageDAO = FOAM({
 
   },
 
-  listeners:
-  [
+  listeners: [
     {
       model_: 'Method',
 
@@ -1536,7 +1540,9 @@ var WorkerDAO = FOAM({
       type: 'Worker',
       help: 'The web-worker to delegate all actions to.',
       valueFactory: function() {
-        var url = window.location.protocol + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+        var url = window.location.protocol +
+          window.location.host +
+          window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
         var workerscript = [
           "var url = '" + url + "';\n",
           "var a = importScripts;",
@@ -2061,7 +2067,9 @@ var ActionFactoryDAO = FOAM({
         },
         function(ret, existing) {
           if (existing) {
-            existing.writeActions(value, self.actionDao.put.bind(self.actionDao));
+            existing.writeActions(
+              value,
+              self.actionDao.put.bind(self.actionDao));
           } else if (value.model_.createActionFactory) {
             var actions = value.model_.createActionFactory(value);
             for (var j = 0; j < actions.length; j++)
@@ -2144,7 +2152,9 @@ var GDriveDAO = FOAM({
       var params = [
         'maxResults=10'
       ];
-      xhr.open('GET', "https://www.googleapis.com/drive/v2/files?" + params.join('&'));
+      xhr.open(
+        'GET',
+        "https://www.googleapis.com/drive/v2/files?" + params.join('&'));
       xhr.setRequestHeader('Authorization', 'Bearer ' + this.authtoken);
 
       xhr.onreadystatechange = function() {
