@@ -310,3 +310,61 @@ PartitionDAO
     Partition data across multiple DAO's.
 
 Reciprocol Search		 	 
+
+
+Interim Coding Style
+
+The FOAM coding style is only an 'interm' coding style because it is not the intent
+that FOAM code be formatted by hand.  It doesn't make anymore sense to have a FOAM
+coding style than it does to have an .xsl (Excel Spreadhsheet) coding style.  In both
+cases, it should be the responsibility of the tool to properly create and format the
+file.  If one developer prefers to view the FOAM code formatted with a particular tab width,
+while another prefers another, this is just a characteristic of the view, just
+like font face, size, and colours, and shouldn't affect the underlying data-model.  This
+is the normal MVC pattern applied to code.
+
+However, until FOAM transitions over to be fully feature-oriented, has all code Modelled,
+and stored in DAO(s), the following coding standard will be used.
+
+Indentation:
+2 spaces, no tab characters
+
+Comments:
+User documentation should be modelled rather than appear as Javascript comments.
+This is so that documentation can be easily searched via DAO queriers and made
+available and searchable in the FOAM Modeller.
+
+Type declarations should be modelled rather than relying on comment annotations.
+This is so that type information can be easily searched via DAO queries, made 
+available and searchable in the FOAM Modeller, and be used for type-checking.
+
+Spacing:
+Preferred spacing shown below, but is optional if you have your editor configured
+to work with the regular Google coding style.
+
+for ( var i = 0 ; i < SIZE ; i++ ) {
+
+}
+
+if ( condition ) {
+
+}
+
+function f(a, b, c) {
+  ...
+}
+
+f(a, b, c);
+
+var a = 42;
+
+Naming
+Model names should be capitalized camelCase. Ex. Model, Photo, EMail
+Acronyms should have all letters capitalized: Ex. DAO
+Properties should start with a lower-case character and be camelCase. Ex. parent, firstName
+Non-public properties and methods can end with an underscore ('_'). Ex. listeners_
+
+Modelling
+All code should be modelled rather than created as conventional JS prototypes.
+There currently exists some non-modelled code in the FOAM code-base, but this code is being
+converted.
