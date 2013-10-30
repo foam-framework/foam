@@ -86,6 +86,11 @@ var BooleanProperty = Model.create({
            defaultValue: false
        },
        {
+           name: 'preSet',
+           defaultValue: function (v) { return !!v; },
+           help: 'The Java type of this property.'
+       },
+       {
            name: 'prototag',
            label: 'Protobuf tag',
            type: 'Integer',
