@@ -20,8 +20,8 @@ var NUM_PHOTOS = 10000;
 var DEBUG = false;
 
 if ( DEBUG ) {
-  NUM_ALBUMS = 5;
-  NUM_PHOTOS = 5;
+//  NUM_ALBUMS = 2;
+//  NUM_PHOTOS = 25;
   Function.prototype.put = function() {
     console.log.apply(console, arguments);
     this.apply(this, arguments);
@@ -145,6 +145,7 @@ AlbumDAO = CascadingRemoveDAO.create({
   property: Photo.ALBUM_ID});
 
 var avgKey = Math.floor(NUM_PHOTOS/2).toString();
+var avgAlbumKey = Math.floor(NUM_ALBUMS/2).toString();
 
 console.clear();
 
@@ -195,10 +196,10 @@ aseq(
         MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
   }),
   atest('2hSimpleOrderByQuery', function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
   }),
   atest('2hSimpleOrderByQuery(X10)', arepeat(10, function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
   })),
   atest('2iSimpleOrderAndGroupByQuery', function(ret) {
     PhotoDAO
