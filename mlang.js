@@ -477,23 +477,24 @@ var InExpr = FOAM({
          label: 'Argument',
          type:  'Expr',
          help:  'Sub-expression',
-         preSet: function(a) {
-            var s = {};
-            for ( var i = 0 ; i < a.length ; i++ ) s[a[i]] = true;
-            return s;
-         }
+         postSet: function() { this.valueSet_ = undefined; }
       }
    ],
 
    methods: {
-      toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2.toSQL(); },
+      valueSet: function() {
+        if ( ! this.valueSet_ ) {
+            var s = {};
+            for ( var i = 0 ; i < this.arg2.length ; i++ ) s[this.arg2[i]] = true;
+            this.valueSet_ = s;
+        }
+        return this.valueSet_;
+      },
+      toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
       toMQL: function() { return this.arg1.toMQL() + ' IN ' + this.arg2.toMQL(); },
 
       f: function(obj) {
-        var arg1 = this.arg1.f(obj);
-        var arg2 = this.arg2       ;
-
-        return arg2.hasOwnProperty(arg1);
+        return this.valueSet().hasOwnProperty(this.arg1.f(obj));
       }
    }
 });
@@ -1220,11 +1221,7 @@ var MapExpr = FOAM({
      put: function(obj) {
        var val = this.arg1.f(obj);
        var acc = this.arg2;
-       if ( Array.isArray(acc) ) {
-         acc.push(val);
-       } else {
-         acc.put(val);
-       }
+       acc.put(val);
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
