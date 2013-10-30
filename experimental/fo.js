@@ -184,6 +184,19 @@ var features = [
       return a.charAt(0) + ' ' + a.charAt(1);
     }).capitalize();
   }],
+  ['String', 'Method', function hashCode() {
+    var hash = 0;
+    if ( this.length == 0 ) return hash;
+
+    for (i = 0; i < this.length; i++) {
+      var code = this.charCodeAt(i);
+      hash = ((hash << 5) - hash) + code;
+      hash &= hash;
+    }
+
+    return hash;
+  }],
+
   ['Property', 'Method', function install(o, existing) {
     if ( existing ) {
       this.copyFrom(existing.clone().copyFrom(this));
@@ -328,7 +341,6 @@ var features = [
   ['Boolean', 'Method', function compareTo(o) {
     return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
   }],
-  // TODO: This is not serializable
   ['Object', 'Property', {
     name: '$UID',
     enumerable: false,
@@ -1349,6 +1361,33 @@ var features = [
       }
     }
   ],
+
+  // Finish up FObject
+  ['FObject', 'Method', function hasOwnProperty(name) {
+    return this.instance_.hasOwnProperty(name);
+  }],
+  // Should this really be here?  It skips all the property stuff.
+  ['FObject', 'Method', function clearProperty(name) {
+    delete this.instance_[name];
+  }],
+  ['FObject', 'Method', function hashCode() {
+    var hash = 17;
+
+    for ( var i = 0; i < this.model_.features.length ; i++ ) {
+      var feature = this.model_.features[i].name;
+      if ( !Property.isInstance(feature) ) continue;
+
+      var prop = this[feature.name];
+      var code = ! prop ? 0 :
+        prop.hashCode   ? prop.hashCode()
+                        : prop.toString().hashCode();
+
+      hash = ((hash << 5) - hash) + code;
+      hash &= hash;
+    }
+
+    return hash;
+  }],
 
   // Some test models.
   [null, 'Model', { name: 'Mail' }],
