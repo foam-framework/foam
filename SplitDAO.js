@@ -50,7 +50,7 @@ var SplitDAO = FOAM({
 
    methods: {
       init: function() {
-         AbstractPrototype.init.call(this);
+        this.SUPER();
       },
 
       put: function(value, sink) {

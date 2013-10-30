@@ -1076,22 +1076,22 @@ var SplitView = FOAM({
 
    methods: {
       init: function() {
-         AbstractPrototype.init.call(this);
+        this.SUPER();
 /*
          this.view1 = AlternateView.create();
          this.view2 = AlternateView.create();
 */
-         this.view1 = DetailView2.create();
-         this.view2 = JSView.create();
+        this.view1 = DetailView2.create();
+        this.view2 = JSView.create();
 
-         this.setValue(new SimpleValue(""));
+        this.setValue(new SimpleValue(""));
       },
 
       // Sets the Data-Model
       setValue: function(value) {
-         this.value = value;
-         if ( this.view1 ) this.view1.setValue(value);
-         if ( this.view2 ) this.view2.setValue(value);
+        this.value = value;
+        if ( this.view1 ) this.view1.setValue(value);
+        if ( this.view2 ) this.view2.setValue(value);
       },
 
       set: function(obj) {

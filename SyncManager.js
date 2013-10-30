@@ -130,7 +130,7 @@ var SyncManager = FOAM({
 
    methods: {
       init: function() {
-        AbstractPrototype.init.call(this);
+        this.SUPER();
         var self = this;
 
         this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {

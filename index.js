@@ -739,7 +739,7 @@ var MDAO = Model.create({
   methods: {
 
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
     },

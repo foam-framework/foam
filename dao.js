@@ -1036,7 +1036,7 @@ var IDBDAO = FOAM({
    methods: {
 
    init: function() {
-     AbstractPrototype.init.call(this);
+     this.SUPER();
 
      this.withDB = amemo(this.openDB.bind(this));
     },
@@ -1247,7 +1247,7 @@ var StorageDAO = FOAM({
    methods: {
 
    init: function() {
-     AbstractPrototype.init.call(this);
+     this.SUPER();
 
      this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
     },
@@ -1331,7 +1331,7 @@ var AbstractFileDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       var self = this;
 
@@ -1736,7 +1736,7 @@ var WorkerDelegate = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       self.addEventListener('message', this.onMessage);
     },
@@ -1938,7 +1938,7 @@ var PartitionDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       for ( var i = 0; i < this.partitions.length; i++) {
         var part = this.partitions[i];
