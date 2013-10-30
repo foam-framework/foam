@@ -1446,7 +1446,7 @@ var JSONFileDAO = FOAM({
 
    methods: {
      init: function() {
-       AbstractFileDAO.getPrototype().init.call(this);
+       this.SUPER();
 
        this.withWriter((function(writer) {
          writer.addEventListener(
@@ -1579,7 +1579,7 @@ var WorkerDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractDAO.getPrototype().init.call(this);
+      this.SUPER();
       this.delegate.postMessage("");
     },
     destroy: function() {

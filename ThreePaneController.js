@@ -194,7 +194,7 @@ var ThreePaneController = FOAM({
 
   methods: {
     init: function() {
-      AbstractView.getPrototype().init.call(this);
+      this.SUPER();
       var self = this;
       Events.dynamic(function() {
         self.headerHeight;

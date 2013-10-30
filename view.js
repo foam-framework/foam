@@ -2663,7 +2663,7 @@ var GridView = FOAM({
        this.col.initHTML();
        this.acc.initHTML();
 
-       AbstractView.getPrototype().initHTML.call(this);
+       this.SUPER();
        this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
        /*

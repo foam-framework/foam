@@ -136,8 +136,8 @@ var ScrollCView = FOAM({
    methods: {
 
     init: function(args) {
-       AbstractView.init.call(this, args);
-       this.addListener(EventService.animate(this.paint.bind(this)));
+      this.SUPER(args);
+      this.addListener(EventService.animate(this.paint.bind(this)));
     },
 
     paint: function() {
