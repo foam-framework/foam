@@ -167,7 +167,7 @@ var DAO = FOAM({
        name: 'select',
        description: 'Select all (scoped) objects.',
        args: [
-          { name: 'sink', type: 'SinkI' },
+          { name: 'sink', type: 'SinkI', optional: true, help: 'Defaults to [].' },
           { name: 'options', type: 'Object', optional: true }
        ]
     },
@@ -948,6 +948,7 @@ defineProperties(Array.prototype, {
     }
   },
   select: function(sink, options) {
+    sink = sink || [];
     var hasQuery = options && ( options.query || options.order );
     var originalsink = sink;
     sink = this.decorateSink_(sink, options, false, ! hasQuery);
@@ -1162,6 +1163,7 @@ var IDBDAO = FOAM({
     },
 
     select: function(sink, options) {
+      sink = sink || [];
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
@@ -1265,6 +1267,7 @@ var StorageDAO = FOAM({
     },
 
     select: function(sink, options) {
+      sink = sink || [];
       this.storage.select(sink, options);
       return aconstant(sink);
     },
@@ -1627,6 +1630,7 @@ var WorkerDAO = FOAM({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
+      sink = sink || [];
       // Cases:
       // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
       // 2) Non-cloneable reducable sink -- treat same as case 2.
@@ -1965,6 +1969,7 @@ var PartitionDAO = FOAM({
       }
     },
     select: function(sink, options) {
+      sink = sink || [];
       var myoptions = {};
       var originalsink = sink;
       options = options || {};
@@ -2100,6 +2105,7 @@ var BlobReaderDAO = FOAM({
         },
 
         select: function(query, sink) {
+	   sink = sink || [];
            sink && sink.error && sink.error("Unsupported");
         },
 
@@ -2133,6 +2139,7 @@ var GDriveDAO = FOAM({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
+      sink = sink || [];
       var xhr = new XMLHttpRequest();
       var params = [
         'maxResults=10'
@@ -2191,6 +2198,7 @@ var RestDAO = FOAM({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
+      sink = sink || [];
       var params = ['sort=modified'];
 
       if ( options ) {

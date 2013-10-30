@@ -169,15 +169,15 @@ aseq(
   atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeat(NUM_PHOTOS, function (ret, i) {
     PhotoDAO.put(photos[i], ret);
   }))),
-  atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select([])(ret); }),
-  atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select([])(ret); }),
+  atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select()(ret); }),
+  atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select()(ret); }),
   atest('2bSingleKeyQuery',       function(ret) { PhotoDAO.find(avgKey,ret); }),
   atest('2bSingleKeyQuery(X10)',  arepeat(10, function(ret) { PhotoDAO.find(avgKey,ret); })),
-  atest('2cMultiKeyQuery10',      function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_10)).select([])(ret); }),
+  atest('2cMultiKeyQuery10',      function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_10)).select()(ret); }),
   aif(!DEBUG, aseq(
-  atest('2cMultiKeyQuery100',     function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_100)).select([])(ret); }),
-  atest('2cMultiKeyQuery1000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_1000)).select([])(ret); }),
-  atest('2cMultiKeyQuery5000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select([])(ret); })
+  atest('2cMultiKeyQuery100',     function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_100)).select()(ret); }),
+  atest('2cMultiKeyQuery1000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_1000)).select()(ret); }),
+  atest('2cMultiKeyQuery5000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select()(ret); })
   )),
   atest('2dIndexedFieldQuery',    function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
@@ -196,10 +196,10 @@ aseq(
         MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
   }),
   atest('2hSimpleOrderByQuery', function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select()(ret);
   }),
   atest('2hSimpleOrderByQuery(X10)', arepeat(10, function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select([])(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select()(ret);
   })),
   atest('2iSimpleOrderAndGroupByQuery', function(ret) {
     PhotoDAO
