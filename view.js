@@ -378,7 +378,7 @@ var Canvas = Model.create({
 });
 
 
-var circleModel = Model.create({
+var Circle = Model.create({
 
    name:  'Circle',
 

@@ -157,7 +157,7 @@ var Dragon = Model.create({
 
       var Y = 210-30*Math.sin(this.timer.time/2000*(Math.PI*2));
 
-       var circle = circleModel.create({
+       var circle = Circle.create({
          x: 500,
          y: Y,
          r: 0,

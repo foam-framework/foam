@@ -20,8 +20,8 @@ var NUM_PHOTOS = 10000;
 var DEBUG = false;
 
 if ( DEBUG ) {
-//  NUM_ALBUMS = 2;
-//  NUM_PHOTOS = 25;
+  NUM_ALBUMS = 5;
+  NUM_PHOTOS = 25;
   Function.prototype.put = function() {
     console.log.apply(console, arguments);
     this.apply(this, arguments);

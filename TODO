@@ -1,12 +1,8 @@
 s/Canvas/CanvasView/
-s/circleModel/Circle???/
 
 
 Standardize use of create/init in Views.  Should argument be optional value?
 
-Finish moving to AbstractView Model.
-
-fix uses of 'eid'
 Replace getID() with .id
 add isInitialized() to AbstractView
 
@@ -23,8 +19,6 @@ had been overriden and could show which features have
 enough model information to be generated.  Would be an
 actual view into the Feature-Manager.  How to show for
 sub-contexts?
-
-Add 'Constants' to Model.  (Currently can be defined as methods.)
 
 
 Fix up CView hierarchy.  (DONE: Do we need an AbstractCView that 
@@ -65,14 +59,11 @@ needs better end-of-attachment handling so it doesn't detect and parse emails em
 
 FOAM
 finish IndexedDB
-AbstractView2 migration
 Node.js boot hack
 Client/Server DAO
-MDAO
 DAO Unit Tests
 Feature-Oriented Migration
 Generic Search Controller
-Scroll-Wheel Support
 
 Fix reloading Models in modeller.html
 
@@ -80,12 +71,10 @@ experiment: have models be constructor functions
 
 
 UnitTest.test() doesn't appear to run on the real Object.
-Finish and switch to FunctionView2
 
 Allow view prototypes to be defined in the model.
 
 Add 'units' support to DetailView.
-
 
 Support HTML5 form types:
   http://html5doctor.com/html5-forms-input-types/

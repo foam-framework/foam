@@ -41,7 +41,7 @@ var EyeCView = FOAM({
          type:  'Circle',
          paint: true,
          valueFactory: function() {
-            return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
+            return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
          }
       },
       {
@@ -49,7 +49,7 @@ var EyeCView = FOAM({
          type:  'Circle',
          paint: true,
          valueFactory: function() {
-            return circleModel.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
+            return Circle.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
          }
       },
       {
@@ -57,7 +57,7 @@ var EyeCView = FOAM({
          type:  'Circle',
          paint: true,
          valueFactory: function() {
-            return circleModel.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
+            return Circle.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
          }
       }
 
@@ -156,7 +156,7 @@ var ClockView = FOAM({
          type:  'Circle',
          paint: true,
          valueFactory: function() {
-            return circleModel.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
+            return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
          }
       },
       {
@@ -164,7 +164,7 @@ var ClockView = FOAM({
          type:  'Circle',
          paint: true,
          valueFactory: function() {
-            return circleModel.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
+            return Circle.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
          }
       },
       {

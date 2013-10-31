@@ -14,7 +14,7 @@
     mouse.connect(space.$);
 
     Events.dynamic(function() { mouse.x; mouse.y; }, function() {
-       var circle = circleModel.create({
+       var circle = Circle.create({
          x: mouse.x,
          y: mouse.y,
          r: 0,
