@@ -11,78 +11,21 @@
        font-weight: normal;
     }
   </style>
-
-  <link rel="stylesheet" type="text/css" href="foam.css" />
-
-  <script language="javascript" src="context.js"></script>
-  <script language="javascript" src="event.js"></script>
-  <script language="javascript" src="SimpleValue.js"></script>
-  <script language="javascript" src="AbstractPrototype.js"></script>
-  <script language="javascript" src="ModelProto.js"></script>
-  <script language="javascript" src="view.js"></script>
-  <script language="javascript" src="metamodel.js"></script>
-  <script language="javascript" src="models.js"></script>
-  <script language="javascript" src="facets.js"></script>
-  <script language="javascript" type="text/javascript">
-
-   function loaded()
-   {
-   }
-
-  </script>
-  <title>FOAM Test</title>
+  <link rel="stylesheet" type="text/css" href="../foam.css" />
+  <script>var FOAM_BOOT_DIR="../";</script>
+  <script language="javascript" src="../bootFOAM.js"></script>
+  <title>FOAM Test2</title>
  </head>
-
- <body onload="loaded()">
-   <div style="background:black; height:25px; padding-top: 8px">
-   <span class="bar" style="color: white; font-weight:bold;" gray;">Models</span>
-     <span class="bar">Interfaces</span>
-     <span class="bar">Activities</span>
-     <span class="bar">Views</span>
-     <span class="bar">Types</span>
-     <span class="bar">Actions</span>
-   </div>
-
-<!--<div style="height:40px;background:-webkit-gradient(radial,100 36,0,100 -40,120,from(white),to(whiteSmoke));"> -->
-<div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;">
-<font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.5) 3px 3px 4px;">
-  <font color="#3333FF">C</font><font color="#FF0000">H</font><font color="#FFCC00">A</font><font color="#3333FF">O</font><font color="#33CC00">S</font></font>
-</div>
-
-<br/>
-
-<div id="activity-area" style="width:100%;height:85%;background-color:#eee">
-activity area
-</div>
-<div style="width:100%" id="status-bar">
-   <span id="status1" style="min-width:10%;background-color:#fff;float:center;">status1</span>
-   <span id="status2" style="min-width:70%;max-width:2000px;background-color:#fff;float:right;">status2</span>
-   <span id="status3" style="min-width:20%;;max-width:4000px;background-color:#fff;float:right;">status3</span>
-</div>
-
-<canvas id="uml" width="900" height="400">
-</canvas>
-
-
-</br>
-</br>
-</br>
-
+ <body>
   <script language="javascript">
     var models = [Model, Property];
 
-    document.writeln(toHTML("id", Model, Model));
-    document.write("<br/>");
-    document.writeln(toHTML("id2", Model.properties[0], Property));
-    document.write("<br/>");
-//    document.writeln(toHTMLTable("id3", Property.properties, Property, Property.tableProperties));
-
-    var tv1 = TableView.create(Model);
+    var tv1 = TableView.create({model: Model});
     tv1.objs = models;
     document.writeln(tv1.toHTML());
     tv1.init();
 
-    var dv = DetailView.create(Model);
+    var dv = DetailView.create({model: Model});
     document.writeln(dv.toHTML());
     dv.init();
 
@@ -94,18 +37,6 @@ activity area
     // Events.follow(tv1.selection, dv);
     // dv.setModel(tv1.selection);
 
-
-    document.write("<pre>");
-    document.write(toJSON(Model, Model));
-    document.write("\r\n");
-    document.write(toMultiLineJSON(Model, Model));
-    document.write("\r\n");
-    document.write("<textarea cols=120 rows=20>");
-    document.write(toXML(Model, Model));
-    document.write("\r\n");
-    document.write(toXML(models, Model));
-    document.writeln("</textarea>");
-
     document.writeln(Model);
     document.writeln(Model.getPrototype());
     document.writeln(Model.getPrototype().create());
@@ -116,20 +47,8 @@ activity area
     document.writeln("Model: " + o.model_);
     document.writeln("Model.name: " + o.name_);
 
-    var example = $('uml');
-    var ctx     = example.getContext('2d');
-
-    drawUML(ctx,100,100,Model);
-    drawUML(ctx,400,100,Property);
-
-    ctx.beginPath();
-    ctx.moveTo(250,180);
-    ctx.lineTo(400,180);
-    ctx.stroke();
-
     document.writeln("</br><h2>Test Events</h2>");
-    var l = function(obj, property, oldValue, newValue)
-    {
+    var l = function(obj, property, oldValue, newValue) {
        document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
     }
 
@@ -159,7 +78,6 @@ activity area
     document.writeln(sm.get());
     sm.set("bar");
     document.writeln(sm.get());
-
 
     document.writeln("</br><h2>Test New Events</h2>");
     var e = { __proto__: PropertyChangeSupport };
@@ -194,20 +112,11 @@ activity area
     e.publish(['test'], "foo", "bar");
 
       */
-  </script>
-
-<canvas id="view" width="300" height="30">
-</canvas>
-
-  <script language="javascript">
-
     example = $('view');
-    ctx     = example.getContext('2d');
 
     var v1 = TextFieldView.create();
     var v2 = TextFieldView.create();
     var v3 = ProgressView.create();
-    var v4 = { __proto__: ProgressCView };
 
     document.writeln("<br/>");
 
@@ -220,17 +129,10 @@ activity area
     document.writeln(v3.toHTML());
     v3.init();
 
-    v4.init(ctx);
-
     v2.setValue(v1.value);
     v3.setValue(v1.value);
-    v4.setValue(v1.value);
 
     document.writeln("<br/>subs: " + e.subs_);
-
-
   </script>
-
-
  </body>
 </html>
