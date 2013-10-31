@@ -1756,7 +1756,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.elementId ) return;
+      if ( ! this.elementId ) { debugger; return; }
 
       this.children = [];
 
@@ -1783,12 +1783,9 @@ var DetailView2 = Model.create({
         view.toString = function () { return this.prop.name + "View"; };
         this.addChild(view);
 
-        str += '<tr>';
-        str += "<td class='propertyLabel'>" + prop.label + "</td>";
-        str += '<td>';
+        str += "<tr><td class='propertyLabel'>" + prop.label + "</td><td>";
         str += view.toHTML();
-        str += '</td>';
-        str += '</tr>';
+        str += '</td></tr>';
       }
 
       str += '</table>';
@@ -2444,58 +2441,50 @@ var ActionBorder = {
 
     /** @arg actions either a model or an array of actions **/
     create: function(actions, delegate) {
-        var obj = {
-            __proto__: delegate,
-            TYPE:      'ActionBorder',
-            actions:   actions.actions || actions,
-            // This is a bit hacking, but it prevents
-            // both this wrapper and the delegate from
-            // having separate element ID's
-            // try removing in future
-            getID: function() {
-                return this.__proto__.getID();
-            },
-            toHTML: function() {
-                var model = this.model;
-                var str   = "";
+      var obj = {
+        __proto__: delegate,
+        TYPE:      'ActionBorder',
+        actions:   actions.actions || actions,
+        // This is a bit hacking, but it prevents
+        // both this wrapper and the delegate from
+        // having separate element ID's
+        // try removing in future
+        getID: function() {
+          return this.__proto__.getID();
+        },
+        toHTML: function() {
+          var model = this.model;
+          var str   = "";
 
-                str += '<table class="actionBorder"><tr><td>';
+          str += '<table class="actionBorder"><tr><td>';
+          str += this.__proto__.toHTML.call(this);
+          str += '</td></tr><tr><td class="actionBorderActions">';
 
-                str += this.__proto__.toHTML.call(this);
+          for ( var i = 0 ; i < this.actions.length ; i++ ) {
+            var action = this.actions[i];
+            var button = ActionButton.create({action: action, value: this.getValue()});
+            str += " " + button.toHTML() + " ";
 
-                str += '</td></tr><tr><td class="actionBorderActions">';
+            this.addChild(button);
+          }
 
-                for ( var i = 0 ; i < this.actions.length ; i++ ) {
-                   var action = this.actions[i];
-                  var button = ActionButton.create({action: action, value: this.getValue()});
-                   str += " " + button.toHTML() + " ";
+          str += '</td></tr></table>';
 
-                   this.addChild(button);
-                }
+          return str;
+        }
+      };
 
-                str += '</td></tr></table>';
-
-                return str;
-            }
-        };
+      obj.value && obj.value.set(obj.value.get);
 
       // if delegate doesn't have a getValue method, then add one
-      // TODO: remember why I do this and either document or remove
-      try {
-        obj.value.set(obj.value.get);
-        //        obj.setValue(obj.getValue());
-      } catch (x) {
-        console.log('error: ', x);
+      if ( ! obj.getValue ) {
+        var dm = SimpleValue.create(obj);
+        obj.getValue = function() {
+          return dm;
+        };
       }
 
-      // todo: this is breaking timer
-        if ( ! obj.getValue ) {
-           var dm = SimpleValue.create(obj);
-           obj.getValue = function() {
-              return dm;
-           };
-        }
-        return obj;
+      return obj;
     }
 };
 
