@@ -16,7 +16,7 @@
  */
 
 (function() {
-  var static_ = {};
+  var static_;
   Object.defineProperty(Object.prototype, 'static_', {
     enumerable: false,
     writeable: true,
@@ -279,10 +279,6 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
-      with ( this.prototype ) {
-        this.jsCode = eval('(' + this.jsCode + ')');
-      }
-
       if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
       o.prototype[this.name] = this.jsCode;
     }
@@ -297,7 +293,16 @@ var features = [
         };
       }
 
-      return this.SUPER(args);
+      var obj = this.SUPER(args);
+
+      // Capture the model's prototype as the context for the
+      // method.  This allows sub-features to be accessed as if they're
+      // globals.
+      with ( obj.prototype ) {
+        obj.jsCode = eval('(' + obj.jsCode + ')');
+      }
+
+      return obj;
     }
   }],
   ['Method', 'Extends', 'Feature'],
