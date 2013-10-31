@@ -285,6 +285,10 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
+      with ( this.prototype ) {
+        this.jsCode = eval('(' + this.jsCode + ')');
+      }
+
       if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
       o.prototype[this.name] = this.jsCode;
     }
@@ -292,10 +296,12 @@ var features = [
   ['Method', 'Method', {
     name: 'create',
     jsCode: function(args) {
-      if ( args instanceof Function ) args = {
-        name: args.name,
-        jsCode: args
-      };
+      if ( args instanceof Function ) {
+        args = {
+          name: args.name,
+          jsCode: args
+        };
+      }       
 
       return this.SUPER(args);
     }
@@ -1394,6 +1400,8 @@ var features = [
   ['Mail', 'Model', { name: 'EMail' }],
   ['Mail.EMail', 'Property', { name: 'sender', defaultValue: 'adamvy' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
+  ['Mail.EMail', 'Method', function test() { console.log(testHelper()); }],
+  ['Mail.EMail.test', 'Method', function testHelper() { return 12; }],
 ];
 
 function expandFeatures(f, opt_prefix) {
@@ -1452,16 +1460,13 @@ build(CTX);
 var env = CTX.create();
 
 with (env) {
-  var a = function() {console.log(this.a);};
-  var b = {a: 12};
-  var c = a.bind(b);
-  c();
   var mails = Mail.create();
-
   var mail = mails.EMail.create();
   mail.send();
+  mail.test();
   var mail2 = mails.EMail.create({ sender: 'kgr' });
   mail.send();
   mail.sender = 'mike';
   mail2.send();
+  mail2.test();
 }
