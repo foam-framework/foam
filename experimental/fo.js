@@ -66,6 +66,9 @@ var CTX = {
             o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
           }
         };
+        args.clone = function() {
+          return this;
+        };
         args.initialize = function(){};
         return args;
       }
@@ -356,7 +359,6 @@ var features = [
                   (arguments.callee.count = 1))));
     }
   }],
-
 
   // Events
   [null, "Model", { name: "EventService" }],
@@ -1392,6 +1394,30 @@ var features = [
     }
 
     return hash;
+  }],
+
+
+  [null, 'Model', { name: 'StringProperty' }],
+  ['StringProperty', 'Extends', 'Property'],
+  ['StringProperty', 'Property', {
+    name: 'type',
+    defaultValue: 'String',
+    displayWidth: 20
+  }],
+
+  ['Feature', 'StringProperty', { name: 'help' }],
+
+  ['Property', 'StringProperty', {
+    name: 'type',
+    help: 'The FOAM type of this property.'
+  }],
+  ['Property', 'StringProperty', {
+    name: 'javaType',
+    help: 'The Java type of this property.'
+  }],
+  ['StringProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValue: 'String'
   }],
 
   // Some test models.
