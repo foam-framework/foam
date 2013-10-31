@@ -25,34 +25,34 @@ var FlowControl = FOAM({
 
   methods: [
     {
-       name: 'stop'
+      name: 'stop'
     },
     {
-       name: 'error',
-       args: [
-          { name: 'e', type: 'Object' }
-       ]
+      name: 'error',
+      args: [
+        { name: 'e', type: 'Object' }
+      ]
     },
     {
-       name: 'isStopped',
-       description: 'Returns true iff this selection has been stopped.',
-       returnType: 'Boolean'
+      name: 'isStopped',
+      description: 'Returns true iff this selection has been stopped.',
+      returnType: 'Boolean'
     },
     {
-       name: 'getError',
-       description: 'Returns error passed to error(), or undefined if error() never called',
-       returnType: 'Object'
+      name: 'getError',
+      description: 'Returns error passed to error(), or undefined if error() never called',
+      returnType: 'Object'
     }
-/*
+    /*
     // For future use.
     {
-       name: 'advance',
-       description: 'Advance selection to the specified key.',
-       args: [
-          { name: 'key', type: 'Object' },
-          { name: 'inclusive', type: 'Object', optional: true, defaultValue: true },
+    name: 'advance',
+    description: 'Advance selection to the specified key.',
+    args: [
+    { name: 'key', type: 'Object' },
+    { name: 'inclusive', type: 'Object', optional: true, defaultValue: true },
 
-       ]
+    ]
     }*/
   ]
 });
@@ -67,31 +67,31 @@ var Sink = FOAM({
 
   methods: [
     {
-       name: 'put',
-       description: 'Put (add) an object to the Sink.',
-       args: [
-          { name: 'obj', type: 'Object' },
-          { name: 'sink', type: 'Sink' }
-         ]
+      name: 'put',
+      description: 'Put (add) an object to the Sink.',
+      args: [
+        { name: 'obj', type: 'Object' },
+        { name: 'sink', type: 'Sink' }
+      ]
     },
     {
-       name: 'remove',
-       description: 'Remove a single object.',
-       args: [
-          { name: 'obj', type: 'Object' },
-          { name: 'sink', type: 'Sink' }
-       ]
+      name: 'remove',
+      description: 'Remove a single object.',
+      args: [
+        { name: 'obj', type: 'Object' },
+        { name: 'sink', type: 'Sink' }
+      ]
     },
     {
-       name: 'error',
-       description: 'Report an error.',
-       args: [
-          { name: 'obj', type: 'Object' }
-       ]
+      name: 'error',
+      description: 'Report an error.',
+      args: [
+        { name: 'obj', type: 'Object' }
+      ]
     },
     {
-       name: 'eof',
-       description: 'Indicate that no more operations will be performed on the Sink.'
+      name: 'eof',
+      description: 'Indicate that no more operations will be performed on the Sink.'
     }
   ]
 });
@@ -105,12 +105,12 @@ var Predicate = FOAM({
 
   methods: [
     {
-       name: 'f',
-       description: 'Find a single object, using either a Predicate or the primary-key.',
-       returnType: 'Boolean',
-       args: [
-          { name: 'o', description: 'The object to be predicated.' }
-       ]
+      name: 'f',
+      description: 'Find a single object, using either a Predicate or the primary-key.',
+      returnType: 'Boolean',
+      args: [
+        { name: 'o', description: 'The object to be predicated.' }
+      ]
     },
   ]
 });
@@ -124,13 +124,13 @@ var Comparator = FOAM({
 
   methods: [
     {
-       name: 'compare',
-       description: 'Compare two objects, returning 0 if they are equal, > 0 if the first is larger, and < 0 if the second is.',
-       returnType: 'Integer',
-       args: [
-          { name: 'o1', description: 'The first object to be compared.' },
-          { name: 'o2', description: 'The second object to be compared.' }
-       ]
+      name: 'compare',
+      description: 'Compare two objects, returning 0 if they are equal, > 0 if the first is larger, and < 0 if the second is.',
+      returnType: 'Integer',
+      args: [
+        { name: 'o1', description: 'The first object to be compared.' },
+        { name: 'o2', description: 'The second object to be compared.' }
+      ]
     },
   ]
 });
@@ -148,88 +148,88 @@ var DAO = FOAM({
 
   methods: [
     {
-       name: 'find',
-       description: 'Find a single object, using either a Predicate or the primary-key.',
-       args: [
-          { name: 'key', type: 'Predicate|Object' },
-          { name: 'sink', type: 'Sink' }
-       ]
+      name: 'find',
+      description: 'Find a single object, using either a Predicate or the primary-key.',
+      args: [
+        { name: 'key', type: 'Predicate|Object' },
+        { name: 'sink', type: 'Sink' }
+      ]
     },
     {
-       name: 'removeAll',
-       description: 'Remove all (scoped) objects.',
-       args: [
-//          { name: 'sink', type: 'Sink' }, // TODO: implement in DAO's
-          { name: 'options', type: 'Object', optional: true }
-       ]
+      name: 'removeAll',
+      description: 'Remove all (scoped) objects.',
+      args: [
+        //          { name: 'sink', type: 'Sink' }, // TODO: implement in DAO's
+        { name: 'options', type: 'Object', optional: true }
+      ]
     },
     {
-       name: 'select',
-       description: 'Select all (scoped) objects.',
-       args: [
-          { name: 'sink', type: 'SinkI' },
-          { name: 'options', type: 'Object', optional: true }
-       ]
+      name: 'select',
+      description: 'Select all (scoped) objects.',
+      args: [
+        { name: 'sink', type: 'SinkI', optional: true, help: 'Defaults to [].' },
+        { name: 'options', type: 'Object', optional: true }
+      ]
     },
     {
-       name: 'pipe',
-       description: 'The equivalent of doing a select() followed by a listen().',
-       args: [
-          { name: 'sink', type: 'Sink' },
-          { name: 'options', type: 'Object', optional: true }
-       ]
+      name: 'pipe',
+      description: 'The equivalent of doing a select() followed by a listen().',
+      args: [
+        { name: 'sink', type: 'Sink' },
+        { name: 'options', type: 'Object', optional: true }
+      ]
     },
     {
-       name: 'listen',
-       description: 'Listen for future (scoped) updates to the DAO.',
-       args: [
-          { name: 'sink', type: 'Sink' },
-          { name: 'options', type: 'Object', optional: true }
-       ]
+      name: 'listen',
+      description: 'Listen for future (scoped) updates to the DAO.',
+      args: [
+        { name: 'sink', type: 'Sink' },
+        { name: 'options', type: 'Object', optional: true }
+      ]
     },
     {
-       name: 'unlisten',
-       description: 'Remove a previously registered listener.',
-       args: [
-          { name: 'sink', type: 'Sink' }
-       ]
+      name: 'unlisten',
+      description: 'Remove a previously registered listener.',
+      args: [
+        { name: 'sink', type: 'Sink' }
+      ]
     },
     {
-       name: 'where',
-       description: 'Return a DAO that will be filtered to the specified predicate.',
-       returnValue: 'DAO',
-       args: [
-          { name: 'query', type: 'Predicate' }
-       ]
+      name: 'where',
+      description: 'Return a DAO that will be filtered to the specified predicate.',
+      returnValue: 'DAO',
+      args: [
+        { name: 'query', type: 'Predicate' }
+      ]
     },
     {
-       name: 'limit',
-       description: 'Return a DAO that will limit future select()\'s to the specified number of results.',
-       returnValue: 'DAO',
-       args: [
-          { name: 'count', type: 'Integer' }
-       ]
+      name: 'limit',
+      description: 'Return a DAO that will limit future select()\'s to the specified number of results.',
+      returnValue: 'DAO',
+      args: [
+        { name: 'count', type: 'Integer' }
+      ]
     },
     {
-       name: 'skip',
-       description: 'Return a DAO that will skip the specified number of objects from future select()\'s',
-       returnValue: 'DAO',
-       args: [
-          { name: 'skip', type: 'Integer' }
-       ]
+      name: 'skip',
+      description: 'Return a DAO that will skip the specified number of objects from future select()\'s',
+      returnValue: 'DAO',
+      args: [
+        { name: 'skip', type: 'Integer' }
+      ]
     },
     {
-       name: 'orderBy',
-       description: 'Return a DAO that will order future selection()\'s by the specified sort order.',
-       returnValue: 'DAO',
-       args: [
-          {
-             name: 'comparators',
-             rest: true,
-             type: 'Comparator',
-             description: 'One or more comparators that specify the sort-order.'
-          }
-       ]
+      name: 'orderBy',
+      description: 'Return a DAO that will order future selection()\'s by the specified sort order.',
+      returnValue: 'DAO',
+      args: [
+        {
+          name: 'comparators',
+          rest: true,
+          type: 'Comparator',
+          description: 'One or more comparators that specify the sort-order.'
+        }
+      ]
     }
     // Future: drop() - drop/remove the DAO
     //         cmd()  - handle extension operations
@@ -271,18 +271,18 @@ var FutureDAO = {
           return f.get;
         },
         put: function() {
-            var a = arguments;
-            futureDelegate(function(delegate) {
-              setupFuture(delegate);
-              delegate.put.apply(delegate, a);
-            });
+          var a = arguments;
+          futureDelegate(function(delegate) {
+            setupFuture(delegate);
+            delegate.put.apply(delegate, a);
+          });
         },
         find: function() {
-            var a = arguments;
-            futureDelegate(function(delegate) {
-              setupFuture(delegate);
-              delegate.find.apply(delegate, a);
-            });
+          var a = arguments;
+          futureDelegate(function(delegate) {
+            setupFuture(delegate);
+            delegate.find.apply(delegate, a);
+          });
         },
         where: function(query) {
           if ( arguments.length > 1 ) query = CompoundComparator.apply(null, arguments);
@@ -308,7 +308,7 @@ var FutureDAO = {
             }
           }
         }
-    }};
+      }};
     return ret;
   }
 };
@@ -423,12 +423,11 @@ var TimingDAO = {
 };
 
 
-
 var ObjectToJSON = {
   __proto__: Visitor.create(),
 
   visitFunction: function(o) {
-     return o.toString();
+    return o.toString();
   },
 
   visitObject: function(o) {
@@ -436,7 +435,9 @@ var ObjectToJSON = {
     this.__proto__.visitObject.call(this, o);
     return this.pop();
   },
-  visitProperty: function(o, prop) { this.top()[prop.name] = this.visit(o[prop.name]); },
+  visitProperty: function(o, prop) {
+    this.top()[prop.name] = this.visit(o[prop.name]);
+  },
 
   visitMap: function(o) {
     this.push({});
@@ -458,21 +459,21 @@ var JSONToObject = {
   __proto__: ObjectToJSON.create(),
 
   visitString: function(o) {
-     try {
-        return o.substr(0, 8) === 'function' ?
-           eval('(' + o + ')') :
-           o ;
-     } catch (x) {
-        console.log(x, o);
-        return o;
-     }
+    try {
+      return o.substr(0, 8) === 'function' ?
+        eval('(' + o + ')') :
+        o ;
+    } catch (x) {
+      console.log(x, o);
+      return o;
+    }
   },
 
   visitObject: function(o) {
     var model   = GLOBAL[o.model_];
     var obj     = model.create();
 
-//    o.forEach((function(value, key) {
+    //    o.forEach((function(value, key) {
     // Workaround for crbug.com/258522
     Object_forEach(o, (function(value, key) {
       if ( key !== 'model_' ) obj[key] = this.visit(value);
@@ -488,180 +489,182 @@ var JSONToObject = {
 
 
 var AbstractDAO = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   name: 'AbstractDAO',
+  name: 'AbstractDAO',
 
-   methods: {
+  methods: {
 
-  listen: function(sink, options) {
-    sink = this.decorateSink_(sink, options, true);
-    if ( ! this.daoListeners_ ) {
-      Object.defineProperty(this, 'daoListeners_', {
-        enumerable: false,
-        value: []
-      });
-    }
-    this.daoListeners_.push(sink);
-  },
+    listen: function(sink, options) {
+      sink = this.decorateSink_(sink, options, true);
+      if ( ! this.daoListeners_ ) {
+        Object.defineProperty(this, 'daoListeners_', {
+          enumerable: false,
+          value: []
+        });
+      }
+      this.daoListeners_.push(sink);
+    },
 
-  pipe: function(sink, options) {
-    sink = this.decorateSink_(sink, options, true);
+    pipe: function(sink, options) {
+      sink = this.decorateSink_(sink, options, true);
 
-    var fc   = this.createFlowControl_();
-    var self = this;
+      var fc   = this.createFlowControl_();
+      var self = this;
 
-    this.select({
-      put: function() {
-         sink.put && sink.put.apply(sink, arguments);
-      },
-      remove: function() {
-         sink.remove && sink.remove.apply(sink, arguments);
-      },
-      err: function() {
-         sink.err && sink.err.apply(sink, arguments);
-      },
-      eof: function() {
-        if ( fc.stopped ) {
-          sink.eof && sink.eof();
-        } else {
-          self.listen(sink, options);
+      this.select({
+        put: function() {
+          sink.put && sink.put.apply(sink, arguments);
+        },
+        remove: function() {
+          sink.remove && sink.remove.apply(sink, arguments);
+        },
+        err: function() {
+          sink.err && sink.err.apply(sink, arguments);
+        },
+        eof: function() {
+          if ( fc.stopped ) {
+            sink.eof && sink.eof();
+          } else {
+            self.listen(sink, options);
+          }
+        }
+      }, options, fc);
+    },
+
+    decorateSink_: function(sink, options, isListener, disableLimit) {
+      if ( options ) {
+        if ( ! disableLimit ) {
+          if ( options.limit ) sink = limitedSink(options.limit, sink);
+          if ( options.skip )  sink = skipSink(options.skip, sink);
+        }
+
+        if ( options.order && ! isListener ) {
+          sink = orderedSink(options.order, sink);
+        }
+
+        if ( options.query ) {
+          sink = predicatedSink(
+            options.query.partialEval ?
+              options.query.partialEval() :
+              options.query,
+            sink) ;
         }
       }
-      }, options, fc);
-  },
 
-  decorateSink_: function(sink, options, isListener, disableLimit) {
-    if ( options ) {
-      if ( ! disableLimit ) {
-        if ( options.limit ) sink = limitedSink(options.limit, sink);
-        if ( options.skip )  sink = skipSink(options.skip, sink);
-      }
+      return sink;
+    },
 
-      if ( options.order && ! isListener ) {
-        sink = orderedSink(options.order, sink);
-      }
+    createFlowControl_: function() {
+      return {
+        stop: function() { this.stopped = true; },
+        error: function(e) { this.errorEvt = e; }
+      };
+    },
 
-      if ( options.query ) {
-        sink = predicatedSink(
-            options.query.partialEval ?
-                options.query.partialEval() :
-                options.query,
-            sink) ;
-      }
-    }
+    where: function(query) {
+      return filteredDAO(query, this);
+    },
 
-    return sink;
-  },
+    limit: function(count) {
+      return limitedDAO(count, this);
+    },
 
-  createFlowControl_: function() {
-    return {
-      stop: function() { this.stopped = true; },
-      error: function(e) { this.errorEvt = e; }
-    };
-  },
+    skip: function(skip) {
+      return skipDAO(skip, this);
+    },
 
-  where: function(query) {
-    return filteredDAO(query, this);
-  },
+    orderBy: function() {
+      return orderedDAO(arguments.length == 1 ?
+          arguments[0] :
+          argsToArray(arguments), this);
+    },
 
-  limit: function(count) {
-    return limitedDAO(count, this);
-  },
+    unlisten: function(sink) {
+      this.daoListeners_ && this.daoListeners_.remove(sink);
+    },
 
-  skip: function(skip) {
-    return skipDAO(skip, this);
-  },
+    /**
+     * Notify all listeners of update to DAO.
+     * @param fName the name of the method in the listeners to call.
+     *        possible values: 'put', 'remove'
+     **/
+    notify_: function(fName, args) {
+      if ( ! this.daoListeners_ ) return;
 
-  orderBy: function() {
-    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
-  },
-
-  unlisten: function(sink) {
-    this.daoListeners_ && this.daoListeners_.remove(sink);
-  },
-
-  /**
-   * Notify all listeners of update to DAO.
-   * @param fName the name of the method in the listeners to call.
-   *        possible values: 'put', 'remove'
-   **/
-  notify_: function(fName, args) {
-    if ( ! this.daoListeners_ ) return;
-
-    for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
-      var l = this.daoListeners_[i];
-      var fn = l[fName];
-      if ( fn ) {
-        // Create flow-control object
-        args[2] = {
-          stop: (function(fn, l) {
-            return function() { fn(l); };
-          })(this.unlisten.bind(this), l),
-          error: function(e) { /* Don't care. */ }
-        };
-        fn.apply(l, args);
+      for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
+        var l = this.daoListeners_[i];
+        var fn = l[fName];
+        if ( fn ) {
+          // Create flow-control object
+          args[2] = {
+            stop: (function(fn, l) {
+              return function() { fn(l); };
+            })(this.unlisten.bind(this), l),
+            error: function(e) { /* Don't care. */ }
+          };
+          fn.apply(l, args);
+        }
       }
     }
   }
-   }
 });
 
 var ProxyDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
-   name: 'ProxyDAO',
+  name: 'ProxyDAO',
 
-   properties: [
-      {
-         name: 'delegate',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true,
-         transient: true,
-         postSet: function(newDAO, oldDAO) {
-            this.model = newDAO.model;
-            if ( ! this.relay_ ) return;
-            if ( oldDAO ) oldDAO.unlisten(this.relay_);
-            newDAO.listen(this.relay_);
-         }
+  properties: [
+    {
+      name: 'delegate',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true,
+      transient: true,
+      postSet: function(newDAO, oldDAO) {
+        this.model = newDAO.model;
+        if ( ! this.relay_ ) return;
+        if ( oldDAO ) oldDAO.unlisten(this.relay_);
+        newDAO.listen(this.relay_);
       }
-   ],
+    }
+  ],
 
-   methods: {
-      init: function() {
-         this.SUPER();
+  methods: {
+    init: function() {
+      this.SUPER();
 
-         this.relay_ =  {
-            put:    function() { this.notify_('put', arguments);   }.bind(this),
-            remove: function() {this.notify_('remove', arguments); }.bind(this)
-         };
+      this.relay_ =  {
+        put:    function() { this.notify_('put', arguments);   }.bind(this),
+        remove: function() {this.notify_('remove', arguments); }.bind(this)
+      };
 
-         this.delegate.listen(this.relay_);
-      },
+      this.delegate.listen(this.relay_);
+    },
 
-      put: function(value, sink) {
-         this.delegate.put(value, sink);
-      },
+    put: function(value, sink) {
+      this.delegate.put(value, sink);
+    },
 
-      remove: function(query, sink) {
-         this.delegate.remove(query, sink);
-      },
+    remove: function(query, sink) {
+      this.delegate.remove(query, sink);
+    },
 
-      removeAll: function() {
-         this.delegate.removeAll.apply(this.delegate, arguments);
-      },
+    removeAll: function() {
+      this.delegate.removeAll.apply(this.delegate, arguments);
+    },
 
-      find: function(key, sink) {
-         this.delegate.find(key, sink);
-      },
+    find: function(key, sink) {
+      this.delegate.find(key, sink);
+    },
 
-      select: function(sink, options) {
-         return this.delegate.select(sink, options);
-      }
-   }
+    select: function(sink, options) {
+      return this.delegate.select(sink, options);
+    }
+  }
 });
 
 /**
@@ -670,53 +673,53 @@ var ProxyDAO = FOAM({
  * is set to the properties default value.
  */
 var SeqNoDAO = FOAM({
-    model_: 'Model',
-    name: 'SeqNoDAO',
-    label: 'SeqNoDAO',
+  model_: 'Model',
+  name: 'SeqNoDAO',
+  label: 'SeqNoDAO',
 
-    extendsModel: 'ProxyDAO',
+  extendsModel: 'ProxyDAO',
 
-    properties: [
-        {
-            name: 'property',
-            type: 'Property',
-            required: true,
-            hidden: true,
-            defaultValueFn: function() { return this.delegate.model.ID; },
-            transient: true
-        },
-        {
-            model_: 'IntegerProperty',
-            name: 'sequenceValue',
-            defaultValue: 0
-        }
-    ],
-
-    methods: {
-      init: function() {
-         this.SUPER();
-
-         var future = afuture();
-         this.WHEN_READY = future.get;
-
-         // Scan all DAO values to find the
-         this.delegate.select(MAX(this.property))(function(max) {
-           if ( max.max ) this.sequenceValue = max.max + 1;
-           future.set(true);
-         });
-      },
-      put: function(obj, sink) {
-        this.WHEN_READY(function() {
-          var val = this.property.f(obj);
-
-          if ( val == this.property.defaultValue ) {
-            obj[this.property.name] = this.sequenceValue++;
-          }
-
-          this.delegate.put(obj, sink);
-        }.bind(this));
-      }
+  properties: [
+    {
+      name: 'property',
+      type: 'Property',
+      required: true,
+      hidden: true,
+      defaultValueFn: function() { return this.delegate.model.ID; },
+      transient: true
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'sequenceValue',
+      defaultValue: 0
     }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var future = afuture();
+      this.WHEN_READY = future.get;
+
+      // Scan all DAO values to find the
+      this.delegate.select(MAX(this.property))(function(max) {
+        if ( max.max ) this.sequenceValue = max.max + 1;
+        future.set(true);
+      });
+    },
+    put: function(obj, sink) {
+      this.WHEN_READY(function() {
+        var val = this.property.f(obj);
+
+        if ( val == this.property.defaultValue ) {
+          obj[this.property.name] = this.sequenceValue++;
+        }
+
+        this.delegate.put(obj, sink);
+      }.bind(this));
+    }
+  }
 });
 
 
@@ -726,41 +729,41 @@ var SeqNoDAO = FOAM({
  * removed from the delegate DAO.
  */
 var CascadingRemoveDAO = FOAM({
-    model_: 'Model',
-    name: 'CascadingRemoveDAO',
-    label: 'SeqNoDAO',
+  model_: 'Model',
+  name: 'CascadingRemoveDAO',
+  label: 'SeqNoDAO',
 
-    extendsModel: 'ProxyDAO',
+  extendsModel: 'ProxyDAO',
 
-    properties: [
-      {
-         name: 'childDAO',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true,
-         transient: true
-      },
-      {
-         name: 'property',
-         type: 'Property',
-         required: true,
-         hidden: true,
-         transient: true
-      }
-    ],
-
-    methods: {
-      remove: function(query, sink) {
-        this.childDAO.where(EQ(this.property, query)).removeAll();
-        this.delegate.remove(query, sink);
-      },
-      removeAll: function() {
-        this.childDAO.removeAll();
-        this.delegate.removeAll.apply(this.delegate, arguments);
-      }
-
+  properties: [
+    {
+      name: 'childDAO',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true,
+      transient: true
+    },
+    {
+      name: 'property',
+      type: 'Property',
+      required: true,
+      hidden: true,
+      transient: true
     }
+  ],
+
+  methods: {
+    remove: function(query, sink) {
+      this.childDAO.where(EQ(this.property, query)).removeAll();
+      this.delegate.remove(query, sink);
+    },
+    removeAll: function() {
+      this.childDAO.removeAll();
+      this.delegate.removeAll.apply(this.delegate, arguments);
+    }
+
+  }
 });
 
 
@@ -776,8 +779,7 @@ function filteredDAO(query, dao) {
         query: options.query ?
           AND(query, options.query) :
           query
-        } :
-        {query: query});
+      } : {query: query});
     },
     listen: function(sink, options) {
       return dao.listen(sink, options ? {
@@ -785,8 +787,7 @@ function filteredDAO(query, dao) {
         query: options.query ?
           AND(query, options.query) :
           query
-        } :
-        {query: query});
+      } : {query: query});
     }
 
   };
@@ -794,14 +795,15 @@ function filteredDAO(query, dao) {
 
 
 function orderedDAO(comparator, dao) {
-//  comparator = toCompare(comparator);
-//  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
+  //  comparator = toCompare(comparator);
+  //  if ( comparator.compare ) comparator = comparator.compare.bind(comparator);
 
   return {
     __proto__: dao,
     select: function(sink, options) {
       if ( options ) {
-        if ( ! options.order ) options = { __proto__: options, order: comparator };
+        if ( ! options.order )
+          options = { __proto__: options, order: comparator };
       } else {
         options = {order: comparator};
       }
@@ -901,15 +903,15 @@ defineProperties(Array.prototype, {
     // With this block of code an [] is a real DAO
     // but is much slower for collecting results.
     /*
-    for (var idx in this) {
+      for (var idx in this) {
       if (this[idx].id === obj.id) {
-        this[idx] = obj;
-        sink && sink.put && sink.put(obj);
-        this.notify_('put', arguments);
-        //        sink && sink.error && sink.error('put', obj, duplicate);
-        return;
+      this[idx] = obj;
+      sink && sink.put && sink.put(obj);
+      this.notify_('put', arguments);
+      //        sink && sink.error && sink.error('put', obj, duplicate);
+      return;
       }
-    }
+      }
     */
     this.push(obj);
     sink && sink.put && sink.put(obj);
@@ -937,7 +939,8 @@ defineProperties(Array.prototype, {
   remove: function(query, callback) {
     var param = query;
     if (! EXPR.isInstance(query))
-      query = {f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
+      query = {
+        f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
 
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
@@ -948,6 +951,7 @@ defineProperties(Array.prototype, {
     }
   },
   select: function(sink, options) {
+    sink = sink || [];
     var hasQuery = options && ( options.query || options.order );
     var originalsink = sink;
     sink = this.decorateSink_(sink, options, false, ! hasQuery);
@@ -960,7 +964,9 @@ defineProperties(Array.prototype, {
 
     var fc = this.createFlowControl_();
     var start = hasQuery ? 0 : options && options.skip || 0;
-    var end = hasQuery ? this.length : Math.min(this.length, start + (options && options.limit || this.length));
+    var end = hasQuery ?
+        this.length :
+        Math.min(this.length, start + (options && options.limit || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
@@ -977,20 +983,20 @@ defineProperties(Array.prototype, {
 });
 
 function atxn(afunc) {
-   // yield is necessary to commit txn
-   return /*ayield(*/function(ret) {
-     if ( GLOBAL.__TXN__ ) {
-       afunc.apply(this, arguments);
-     } else {
-       GLOBAL.__TXN__ = {};
-       var a = argsToArray(arguments);
-       a[0] = function() {
-         GLOBAL.__TXN__ = undefined;
-         ret();
-       };
-       afunc.apply(this, a);
-     }
-   }/*)*/;
+  // yield is necessary to commit txn
+  return /*ayield(*/function(ret) {
+    if ( GLOBAL.__TXN__ ) {
+      afunc.apply(this, arguments);
+    } else {
+      GLOBAL.__TXN__ = {};
+      var a = argsToArray(arguments);
+      a[0] = function() {
+        GLOBAL.__TXN__ = undefined;
+        ret();
+      };
+      afunc.apply(this, a);
+    }
+  }/*)*/;
 }
 
 /* Usage:
@@ -1009,35 +1015,35 @@ function atxn(afunc) {
  * of data in the database.
  */
 var IDBDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
-   name: 'IDBDAO',
-   label: 'IndexedDB DAO',
+  name: 'IDBDAO',
+  label: 'IndexedDB DAO',
 
-   properties: [
-      {
-         name:  'model',
-         label: 'Model',
-         type:  'Model',
-         required: true
-      },
-      {
-         name:  'name',
-         label: 'Store Name',
-         type:  'String',
-         defaultValueFn: function() {
-           return this.model.plural;
-         }
+  properties: [
+    {
+      name:  'model',
+      label: 'Model',
+      type:  'Model',
+      required: true
+    },
+    {
+      name:  'name',
+      label: 'Store Name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
       }
-   ],
+    }
+  ],
 
-   methods: {
+  methods: {
 
-   init: function() {
-     AbstractPrototype.init.call(this);
+    init: function() {
+      this.SUPER();
 
-     this.withDB = amemo(this.openDB.bind(this));
+      this.withDB = amemo(this.openDB.bind(this));
     },
 
     openDB: function(cc) {
@@ -1162,6 +1168,7 @@ var IDBDAO = FOAM({
     },
 
     select: function(sink, options) {
+      sink = sink || [];
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
@@ -1197,57 +1204,57 @@ var IDBDAO = FOAM({
     },
 
     removeAll: function(callback) {
-       this.withStore("readwrite", function(store) {
-         var request = store.clear();
-         request.onsuccess = callback;
-       });
+      this.withStore("readwrite", function(store) {
+        var request = store.clear();
+        request.onsuccess = callback;
+      });
     }
-   },
+  },
 
-   listeners:
-   [
-      {
-         model_: 'Method',
+  listeners:
+  [
+    {
+      model_: 'Method',
 
-         name: 'updated',
-         code: function(evt) {
-           console.log('updated: ', evt);
-           this.publish('updated');
-         }
+      name: 'updated',
+      code: function(evt) {
+        console.log('updated: ', evt);
+        this.publish('updated');
       }
-   ]
+    }
+  ]
 
 });
 
 
 var StorageDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractDAO',
 
-   name: 'StorageDAO',
+  name: 'StorageDAO',
 
-   properties: [
-      {
-         name:  'model',
-         type:  'Model',
-         required: true
-      },
-      {
-         name:  'name',
-         label: 'Store Name',
-         type:  'String',
-         defaultValueFn: function() {
-           return this.model.plural;
-         }
+  properties: [
+    {
+      name:  'model',
+      type:  'Model',
+      required: true
+    },
+    {
+      name:  'name',
+      label: 'Store Name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
       }
-   ],
+    }
+  ],
 
-   methods: {
+  methods: {
 
-   init: function() {
-     AbstractPrototype.init.call(this);
+    init: function() {
+      this.SUPER();
 
-     this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
+      this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
     },
 
     put: function(obj, sink) {
@@ -1265,6 +1272,7 @@ var StorageDAO = FOAM({
     },
 
     select: function(sink, options) {
+      sink = sink || [];
       this.storage.select(sink, options);
       return aconstant(sink);
     },
@@ -1274,20 +1282,19 @@ var StorageDAO = FOAM({
       this.publish('updated');
     }
 
-   },
+  },
 
-   listeners:
-   [
-      {
-         model_: 'Method',
+  listeners: [
+    {
+      model_: 'Method',
 
-         name: 'updated',
-         code: function(evt) {
-           console.log('updated: ', evt);
-           this.publish('updated');
-         }
+      name: 'updated',
+      code: function(evt) {
+        console.log('updated: ', evt);
+        this.publish('updated');
       }
-   ]
+    }
+  ]
 
 });
 
@@ -1328,7 +1335,7 @@ var AbstractFileDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       var self = this;
 
@@ -1425,71 +1432,71 @@ var AbstractFileDAO = FOAM({
 
 
 var JSONFileDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractFileDAO',
+  model_: 'Model',
+  extendsModel: 'AbstractFileDAO',
 
-   name: 'JSONFileDAO',
-   label: 'JSON File DAO',
+  name: 'JSONFileDAO',
+  label: 'JSON File DAO',
 
-   properties: [
-     {
-       name:  'writeQueue',
-       type:  'Array[String]',
-       defaultValueFn: function() {
-         return [];
-       }
-     }
-   ],
+  properties: [
+    {
+      name:  'writeQueue',
+      type:  'Array[String]',
+      defaultValueFn: function() {
+        return [];
+      }
+    }
+  ],
 
-   methods: {
-     init: function() {
-       AbstractFileDAO.getPrototype().init.call(this);
+  methods: {
+    init: function() {
+      this.SUPER();
 
-       this.withWriter((function(writer) {
-         writer.addEventListener(
-             'writeend',
-             (function(e) {
-               this.writeOne_(e.target);
-             }).bind(this));
-       }).bind(this));
-     },
+      this.withWriter((function(writer) {
+        writer.addEventListener(
+          'writeend',
+          (function(e) {
+            this.writeOne_(e.target);
+          }).bind(this));
+      }).bind(this));
+    },
 
-     readFile_: function(reader, file) {
-       reader.readAsText(file);
-     },
+    readFile_: function(reader, file) {
+      reader.readAsText(file);
+    },
 
-     parseContents_: function(ret, contents, storage) {
-       with (storage) { eval(contents); }
-       ret(storage);
-     },
+    parseContents_: function(ret, contents, storage) {
+      with (storage) { eval(contents); }
+      ret(storage);
+    },
 
-     writeOne_: function(writer) {
-       if ( writer.readyState == 1 ) return;
-       if ( this.writeQueue.length == 0 ) return;
+    writeOne_: function(writer) {
+      if ( writer.readyState == 1 ) return;
+      if ( this.writeQueue.length == 0 ) return;
 
-       writer.seek(writer.length);
-       var queue = this.writeQueue;
-       var blob = queue.shift();
-       this.writeQueue = queue;
-       writer.write(blob);
-     },
+      writer.seek(writer.length);
+      var queue = this.writeQueue;
+      var blob = queue.shift();
+      this.writeQueue = queue;
+      writer.write(blob);
+    },
 
-     update_: function(mutation, obj) {
-       var parts = [];
+    update_: function(mutation, obj) {
+      var parts = [];
 
-       if (mutation === 'put') {
-         parts.push("put(" + JSONUtil.compact.stringify(obj) + ");\n");
-       } else if (mutation === 'remove') {
-         parts.push("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
-       }
+      if (mutation === 'put') {
+        parts.push("put(" + JSONUtil.compact.stringify(obj) + ");\n");
+      } else if (mutation === 'remove') {
+        parts.push("remove(" + JSONUtil.compact.stringify(obj.id) + ");\n");
+      }
 
-       this.writeQueue = this.writeQueue.concat(new Blob(parts));
+      this.writeQueue = this.writeQueue.concat(new Blob(parts));
 
-       this.withWriter((function(writer) {
-         this.writeOne_(writer);
-       }).bind(this));
-     }
-   }
+      this.withWriter((function(writer) {
+        this.writeOne_(writer);
+      }).bind(this));
+    }
+  }
 });
 
 
@@ -1533,7 +1540,9 @@ var WorkerDAO = FOAM({
       type: 'Worker',
       help: 'The web-worker to delegate all actions to.',
       valueFactory: function() {
-        var url = window.location.protocol + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+        var url = window.location.protocol +
+          window.location.host +
+          window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
         var workerscript = [
           "var url = '" + url + "';\n",
           "var a = importScripts;",
@@ -1542,7 +1551,7 @@ var WorkerDAO = FOAM({
           "WorkerDelegate.create({ dao: [] });\n"
         ];
         return new Worker(window.URL.createObjectURL(
-            new Blob(workerscript, { type: "text/javascript" })));
+          new Blob(workerscript, { type: "text/javascript" })));
       },
       postSet: function(val, oldVal) {
         if ( oldVal ) {
@@ -1576,7 +1585,7 @@ var WorkerDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractDAO.getPrototype().init.call(this);
+      this.SUPER();
       this.delegate.postMessage("");
     },
     destroy: function() {
@@ -1586,8 +1595,8 @@ var WorkerDAO = FOAM({
     makeRequest_: function(method, params, callback, error) {
       var reqid = this.nextRequest_++;
       params = params ?
-          ObjectToJSON.visit(params) :
-          {};
+        ObjectToJSON.visit(params) :
+        {};
       var message = {
         method: method,
         params: params,
@@ -1627,6 +1636,7 @@ var WorkerDAO = FOAM({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
+      sink = sink || [];
       // Cases:
       // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
       // 2) Non-cloneable reducable sink -- treat same as case 2.
@@ -1641,13 +1651,13 @@ var WorkerDAO = FOAM({
         };
 
         this.makeRequest_(
-            "select", request,
-            (function(response) {
-              var responsesink = JSONToObject.visit(response.sink);
-              sink.reduceI(responsesink);
-              sink.eof && sink.eof();
-            }).bind(this),
-            sink && sink.error && sink.error.bind(sink));
+          "select", request,
+          (function(response) {
+            var responsesink = JSONToObject.visit(response.sink);
+            sink.reduceI(responsesink);
+            sink.eof && sink.eof();
+          }).bind(this),
+          sink && sink.error && sink.error.bind(sink));
       } else {
         var mysink = KeyCollector.create();
         request = {
@@ -1656,22 +1666,22 @@ var WorkerDAO = FOAM({
         };
 
         this.makeRequest_(
-            "select", request,
-            (function(response) {
-              var responsesink = JSONToObject.visit(response.sink);
-              for (var i = 0; i < responsesink.keys.length; i++) {
-                var key = responsesink.keys[i];
-                if ( fc.stopped ) break;
-                if ( fc.errorEvt ) {
-                  sink.error && sink.error(fc.errorEvt);
-                  break;
-                }
-                var obj = this.storage_[key];
-                sink.put(obj);
+          "select", request,
+          (function(response) {
+            var responsesink = JSONToObject.visit(response.sink);
+            for (var i = 0; i < responsesink.keys.length; i++) {
+              var key = responsesink.keys[i];
+              if ( fc.stopped ) break;
+              if ( fc.errorEvt ) {
+                sink.error && sink.error(fc.errorEvt);
+                break;
               }
-              sink.eof && sink.eof();
-            }).bind(this),
-            sink && sink.error && sink.error.bind(sink));
+              var obj = this.storage_[key];
+              sink.put(obj);
+            }
+            sink.eof && sink.eof();
+          }).bind(this),
+          sink && sink.error && sink.error.bind(sink));
       }
     },
     handleNotification_: function(message) {
@@ -1732,7 +1742,7 @@ var WorkerDelegate = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       self.addEventListener('message', this.onMessage);
     },
@@ -1760,8 +1770,8 @@ var WorkerDelegate = FOAM({
         if ( !message.method ) return;
         var me = this;
         var params = message.params.model_ ?
-              JSONToObject.visitObject(message.params) :
-              message.params;
+          JSONToObject.visitObject(message.params) :
+          message.params;
         if (message.method == "put") {
           this.dao.put(params, {
             put: function() {
@@ -1818,49 +1828,49 @@ var WorkerDelegate = FOAM({
 
 
 var ModelDAO = {
-    create: function(namespace, dao) {
-        var res = {
-            __proto__: dao,
-            namespace: namespace,
-            dao:       dao,
-            created:   { },
+  create: function(namespace, dao) {
+    var res = {
+      __proto__: dao,
+      namespace: namespace,
+      dao:       dao,
+      created:   { },
 
-            init_: function() {
-              var self = this;
-              this.pipe({
-                put: self.add_.bind(this),
-                remove: self.del_.bind(this)
-              });
-            },
+      init_: function() {
+        var self = this;
+        this.pipe({
+          put: self.add_.bind(this),
+          remove: self.del_.bind(this)
+        });
+      },
 
-            add_: function(obj) {
-               if ( obj.name == 'Model' ) return;
+      add_: function(obj) {
+        if ( obj.name == 'Model' ) return;
 
-               var dao = this;
+        var dao = this;
 
-               this.namespace[obj.name] = obj;
+        this.namespace[obj.name] = obj;
 
-               FOAM.putFactory(this.namespace, obj.name + "Proto", function() {
-                  return this.namespace[obj.name].getPrototype();
-               });
+        FOAM.putFactory(this.namespace, obj.name + "Proto", function() {
+          return this.namespace[obj.name].getPrototype();
+        });
 
-               FOAM.putFactory(this.namespace, obj.name + 'DAO', function() {
-                  console.log("Creating '" + obj.name + "DAO'");
-                  return StorageDAO.create({ model: obj });
-               });
-            },
+        FOAM.putFactory(this.namespace, obj.name + 'DAO', function() {
+          console.log("Creating '" + obj.name + "DAO'");
+          return StorageDAO.create({ model: obj });
+        });
+      },
 
-            del_: function() {
-                for (var objID in this.created) {
-                    delete this.namespace[objID];
-                }
-            }
+      del_: function() {
+        for (var objID in this.created) {
+          delete this.namespace[objID];
+        }
+      }
 
-            //TODO: remove models from namespace on remove()
-        };
-        res.init_();
-        return res;
-    }
+      //TODO: remove models from namespace on remove()
+    };
+    res.init_();
+    return res;
+  }
 };
 
 
@@ -1934,7 +1944,7 @@ var PartitionDAO = FOAM({
 
   methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       for ( var i = 0; i < this.partitions.length; i++) {
         var part = this.partitions[i];
@@ -1965,6 +1975,7 @@ var PartitionDAO = FOAM({
       }
     },
     select: function(sink, options) {
+      sink = sink || [];
       var myoptions = {};
       var originalsink = sink;
       options = options || {};
@@ -2028,93 +2039,96 @@ var PartitionDAO = FOAM({
 });
 
 var ActionFactoryDAO = FOAM({
-    model_: 'Model',
-    extendsModel: 'ProxyDAO',
-    name: 'ActionFactoryDAO',
-    label: 'ActionFactoryDAO',
+  model_: 'Model',
+  extendsModel: 'ProxyDAO',
+  name: 'ActionFactoryDAO',
+  label: 'ActionFactoryDAO',
 
-    properties: [
-        {
-            name: 'actionDao',
-            type: 'DAO',
-            hidden: true,
-            required: true
-        }
-    ],
-
-    methods: {
-        put: function(value, sink) {
-            var self = this;
-            aseq(
-                function(ret) {
-                    self.delegate.find(value.id, {
-                        put: function(obj) {
-                            ret(obj);
-                        },
-                        error: function() { ret(); }
-                    });
-                },
-                function(ret, existing) {
-                    if (existing) {
-                        existing.writeActions(value, self.actionDao.put.bind(self.actionDao));
-                    } else if (value.model_.createActionFactory) {
-                        var actions = value.model_.createActionFactory(value);
-                        for (var j = 0; j < actions.length; j++)
-                            self.actionDao.put(actions[j]);
-                    }
-                    self.delegate.put(value, sink);
-                    ret();
-                })(function() {});
-        },
-        remove: function(value, sink) {
-            if (value.model_.deleteActionFactory) {
-                var actions = value.model_.deleteActionFactory(value);
-                for (var j = 0; j < actions.length; j++)
-                    this.actionDao.put(actions[j]);
-            }
-            this.delegate.remove(value, sink);
-        }
+  properties: [
+    {
+      name: 'actionDao',
+      type: 'DAO',
+      hidden: true,
+      required: true
     }
+  ],
+
+  methods: {
+    put: function(value, sink) {
+      var self = this;
+      aseq(
+        function(ret) {
+          self.delegate.find(value.id, {
+            put: function(obj) {
+              ret(obj);
+            },
+            error: function() { ret(); }
+          });
+        },
+        function(ret, existing) {
+          if (existing) {
+            existing.writeActions(
+              value,
+              self.actionDao.put.bind(self.actionDao));
+          } else if (value.model_.createActionFactory) {
+            var actions = value.model_.createActionFactory(value);
+            for (var j = 0; j < actions.length; j++)
+              self.actionDao.put(actions[j]);
+          }
+          self.delegate.put(value, sink);
+          ret();
+        })(function() {});
+    },
+    remove: function(value, sink) {
+      if (value.model_.deleteActionFactory) {
+        var actions = value.model_.deleteActionFactory(value);
+        for (var j = 0; j < actions.length; j++)
+          this.actionDao.put(actions[j]);
+      }
+      this.delegate.remove(value, sink);
+    }
+  }
 });
 
 
 // TODO Why is this even a DAO, it literally only does find.
 var BlobReaderDAO = FOAM({
-    model_: 'Model',
-    name: 'BlobReaderDAO',
+  model_: 'Model',
+  name: 'BlobReaderDAO',
 
-    properties: [
-        {
-            name: 'blob',
-            type: 'Blob',
-            required: true
-        }
-    ],
-    methods: {
-        put: function(value, sink) {
-           sink && sink.error && sink.error("Unsupported");
-        },
-
-        remove: function(query, sink) {
-           sink && sink.error && sink.error("Unsupported");
-        },
-
-        select: function(query, sink) {
-           sink && sink.error && sink.error("Unsupported");
-        },
-
-        find: function(key, sink) {
-            var slice = this.blob.slice(key[0], key[0] + key[1]);
-            var reader = new FileReader();
-            reader.readAsText(slice);
-            reader.onload = function(e) {
-                sink && sink.put && sink.put(reader.result);
-            };
-            reader.onerror = function(e) {
-                sink && sink.error && sink.error("find", e);
-            };
-        }
+  properties: [
+    {
+      name: 'blob',
+      type: 'Blob',
+      required: true
     }
+  ],
+  methods: {
+    put: function(value, sink) {
+      sink && sink.error && sink.error("Unsupported");
+    },
+
+    remove: function(query, sink) {
+      sink && sink.error && sink.error("Unsupported");
+    },
+
+    select: function(query, sink) {
+      sink = sink || [];
+      sink && sink.error && sink.error("Unsupported");
+    },
+
+    find: function(key, sink) {
+      var slice = this.blob.slice(key[0], key[0] + key[1]);
+      var reader = new FileReader();
+      reader.readAsText(slice);
+      reader.onload = function(e) {
+        sink && sink.put && sink.put(reader.result);
+      };
+      reader.onerror = function(e) {
+        sink && sink.error && sink.error("find", e);
+      };
+    }
+  }
 });
 
 var GDriveDAO = FOAM({
@@ -2133,11 +2147,14 @@ var GDriveDAO = FOAM({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
+      sink = sink || [];
       var xhr = new XMLHttpRequest();
       var params = [
         'maxResults=10'
       ];
-      xhr.open('GET', "https://www.googleapis.com/drive/v2/files?" + params.join('&'));
+      xhr.open(
+        'GET',
+        "https://www.googleapis.com/drive/v2/files?" + params.join('&'));
       xhr.setRequestHeader('Authorization', 'Bearer ' + this.authtoken);
 
       xhr.onreadystatechange = function() {
@@ -2191,6 +2208,7 @@ var RestDAO = FOAM({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
+      sink = sink || [];
       var params = ['sort=modified'];
 
       if ( options ) {

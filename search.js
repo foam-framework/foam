@@ -183,10 +183,10 @@ var TextSearchView = FOAM({
          '<div id=' + this.registerCallback('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
      },
      initHTML: function() {
-        AbstractView.getPrototype().initHTML.call(this);
-        this.view.initHTML();
-
-        this.view.value.addListener(this.updateValue);
+       this.SUPER();
+       this.view.initHTML();
+       
+       this.view.value.addListener(this.updateValue);
      }
    },
 

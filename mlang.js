@@ -1121,7 +1121,7 @@ var GridByExpr = FOAM({
 
    methods: {
     init: function() {
-      AbstractPrototype.init.call(this);
+      this.SUPER();
 
       var self = this;
       var f = function() {

@@ -77,7 +77,6 @@ var ValueIndex = {
   toString: function() { return 'value'; }
 };
 
-
 var KEY   = 0;
 var VALUE = 1;
 var SIZE  = 2;
@@ -723,171 +722,171 @@ var mLangIndex = {
 };
 
 
-var MDAO = FOAM({
-                  model_: 'Model',
-                  extendsModel: 'AbstractDAO',
+var MDAO = Model.create({
+  extendsModel: 'AbstractDAO',
 
-                  name: 'MDAO',
-                  label: 'Indexed DAO',
+  name: 'MDAO',
+  label: 'Indexed DAO',
 
-                  properties: [
-                    {
-                      name:  'model',
-                      type:  'Model',
-                      required: true
-                    }
-                  ],
+  properties: [
+    {
+      name:  'model',
+      type:  'Model',
+      required: true
+    }
+  ],
 
-                  methods: {
+  methods: {
 
-                    init: function() {
-                      AbstractPrototype.init.call(this);
+    init: function() {
+      this.SUPER();
 
-                      this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
-                    },
+      this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+    },
 
-                    /**
-                     * Add a non-unique index
-                     * args: one or more properties
-                     **/
-                    addIndex: function() {
-                      var props = argsToArray(arguments);
+    /**
+     * Add a non-unique index
+     * args: one or more properties
+     **/
+    addIndex: function() {
+      var props = argsToArray(arguments);
 
-                      // Add on the primary key(s) to make the index unique.
-                      for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
-                        props.push(this.model.getProperty(this.model.ids[i]));
-                        if (!props[props.length - 1]) throw "Undefined index property";
-                      }
+      // Add on the primary key(s) to make the index unique.
+      for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
+	props.push(this.model.getProperty(this.model.ids[i]));
+	if (!props[props.length - 1]) throw "Undefined index property";
+      }
 
-                      return this.addUniqueIndex.apply(this, props);
-                    },
+      return this.addUniqueIndex.apply(this, props);
+    },
 
-                    /**
-                     * Add a unique index
-                     * args: one or more properties
-                     **/
-                    addUniqueIndex: function() {
-                      var index = ValueIndex;
+    /**
+     * Add a unique index
+     * args: one or more properties
+     **/
+    addUniqueIndex: function() {
+      var index = ValueIndex;
 
-                      for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
-                        var prop = arguments[i];
-                        // TODO: the index prototype should be in the property
-                        var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
-                        index = proto.create(prop, index);
-                      }
+      for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
+	var prop = arguments[i];
+	// TODO: the index prototype should be in the property
+	var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
+	index = proto.create(prop, index);
+      }
 
-                      return this.addRawIndex(index);
-                    },
+      return this.addRawIndex(index);
+    },
 
-                    // TODO: name 'addIndex' and renamed addIndex
-                    addRawIndex: function(index) {
-                      // Upgrade single Index to an AltIndex if required.
-                      if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
-                        this.index = AltIndex.create(this.index);
-                        this.root = [this.root];
-                      }
+    // TODO: name 'addIndex' and renamed addIndex
+    addRawIndex: function(index) {
+      // Upgrade single Index to an AltIndex if required.
+      if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
+	this.index = AltIndex.create(this.index);
+	this.root = [this.root];
+      }
 
-                      this.index.addIndex(this.root, index);
+      this.index.addIndex(this.root, index);
 
-                      return this;
-                    },
+      return this;
+    },
 
-                    /**
-                     * Bulk load data from another DAO.
-                     * Any data already loaded into this DAO will be lost.
-                     * @arg sink (optional) eof is called when loading is complete.
-                     **/
-                    bulkLoad: function(dao, sink) {
-                      var self = this;
-                      dao.select({ __proto__: [], eof: function() {
-                                     self.root = self.index.bulkLoad(this);
-                                     sink && sink.eof && sink.eof();
-                                   }});
-                    },
+    /**
+     * Bulk load data from another DAO.
+     * Any data already loaded into this DAO will be lost.
+     * @arg sink (optional) eof is called when loading is complete.
+     **/
+    bulkLoad: function(dao, sink) {
+      var self = this;
+      dao.select({ __proto__: [], eof: function() {
+	self.root = self.index.bulkLoad(this);
+	sink && sink.eof && sink.eof();
+      }});
+    },
 
-                    put: function(obj, sink) {
-                      var oldValue = this.index.get(this.root, key);
-                      if ( oldValue ) {
-                        this.root = this.index.put(this.index.remove(this.root, obj), obj);
-                        this.notify_('remove', [obj]);
-                      } else {
-                        this.root = this.index.put(this.root, obj);
-                      }
-                      this.notify_('put', [obj]);
-                      sink && sink.put && sink.put(obj);
-                    },
+    put: function(obj, sink) {
+      var oldValue = this.index.get(this.root, key);
+      if ( oldValue ) {
+	this.root = this.index.put(this.index.remove(this.root, obj), obj);
+	this.notify_('remove', [obj]);
+      } else {
+	this.root = this.index.put(this.root, obj);
+      }
+      this.notify_('put', [obj]);
+      sink && sink.put && sink.put(obj);
+    },
 
-                    findObj_: function(key, sink) {
-                      var obj = this.index.get(this.root, key);
-                      if ( obj ) {
-                        sink.put(obj);
-                      } else {
-                        sink.error && sink.error('find', key);
-                      }
-                    },
+    findObj_: function(key, sink) {
+      var obj = this.index.get(this.root, key);
+      if ( obj ) {
+	sink.put(obj);
+      } else {
+	sink.error && sink.error('find', key);
+      }
+    },
 
-                    find: function(key, sink) {
-                      if ( ! key.f ) { // TODO: make better test, use model
-                        this.findObj_(key, sink);
-                        return;
-                      }
-                      // How to handle multi value primary keys?
-                      var found = false;
-                      this.where(key).limit(1).select({
-                                                        // ???: Is 'put' needed?
-                                                        put: function(obj) {
-                                                          found = true;
-                                                          sink && sink.put && sink.put(obj);
-                                                        },
-                                                        eof: function() {
-                                                          if ( ! found ) sink && sink.error && sink.error('find', key);
-                                                        }
-                                                      });
-                    },
+    find: function(key, sink) {
+      if ( ! key.f ) { // TODO: make better test, use model
+	this.findObj_(key, sink);
+	return;
+      }
+      // How to handle multi value primary keys?
+      var found = false;
+      this.where(key).limit(1).select({
+	// ???: Is 'put' needed?
+	put: function(obj) {
+	  found = true;
+	  sink && sink.put && sink.put(obj);
+	},
+	eof: function() {
+	  if ( ! found ) sink && sink.error && sink.error('find', key);
+	}
+      });
+    },
 
-                    // TODO: this isn't correct, this is actually removeAll()
-                    remove: function(query, sink) {
-                      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
-                      /*
-                       if ( ! query.f ) {
-                       this.root = this.index.remove(this.root, query);
-                       sink && sink.remove && sink.remove(query);
+    // TODO: this isn't correct, this is actually removeAll()
+    remove: function(query, sink) {
+      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
+      /*
+	if ( ! query.f ) {
+	this.root = this.index.remove(this.root, query);
+	sink && sink.remove && sink.remove(query);
 
-                       return;
-                       }*/
+	return;
+	}*/
 
-                      this.where(query).select([])(function(a) {
-                                                     for ( var i = 0 ; i < a.length ; i++ ) {
-                                                       this.root = this.index.remove(this.root, a[i]);
-                                                       sink && sink.remove && sink.remove(a[i]);
-                                                       this.notify_('remove', [a[i]]);
-                                                     }
-                                                   }.bind(this));
-                    },
+      this.where(query).select([])(function(a) {
+	for ( var i = 0 ; i < a.length ; i++ ) {
+	  this.root = this.index.remove(this.root, a[i]);
+	  sink && sink.remove && sink.remove(a[i]);
+	  this.notify_('remove', [a[i]]);
+	}
+      }.bind(this));
+    },
 
-                    removeAll: function(callback) {
-                      this.root = [];
-                      callback && callback();
-                    },
+    removeAll: function(callback) {
+      this.root = [];
+      callback && callback();
+    },
 
-                    select: function(sink, options) {
-                      // Clone the options to prevent 'limit' from being mutated in the original.
-                      if ( options ) options = {__proto__: options};
+    select: function(sink, options) {
+      sink = sink || [];
+      // Clone the options to prevent 'limit' from being mutated in the original.
+      if ( options ) options = {__proto__: options};
 
-                      if ( DescribeExpr.isInstance(sink) ) {
-                        var plan = this.index.plan(this.root, sink.arg1, options);
-                        sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
-                      } else {
-                        var plan = this.index.plan(this.root, sink, options);
-                        plan.execute(this.root, sink, options);
-                      }
+      if ( DescribeExpr.isInstance(sink) ) {
+	var plan = this.index.plan(this.root, sink.arg1, options);
+	sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
+      } else {
+	var plan = this.index.plan(this.root, sink, options);
+	plan.execute(this.root, sink, options);
+      }
 
-                      sink && sink.eof && sink.eof();
-                      return aconstant(sink);
-                    },
+      sink && sink.eof && sink.eof();
+      return aconstant(sink);
+    },
 
-                    toString: function() {
-                      return 'MDAO(' + this.model.name + ',' + this.index + ')';
-                    }
-                  }
-                });
+    toString: function() {
+      return 'MDAO(' + this.model.name + ',' + this.index + ')';
+    }
+  }
+});

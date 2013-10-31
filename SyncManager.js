@@ -130,7 +130,7 @@ var SyncManager = FOAM({
 
    methods: {
       init: function() {
-        AbstractPrototype.init.call(this);
+        this.SUPER();
         var self = this;
 
         this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
@@ -147,7 +147,7 @@ var SyncManager = FOAM({
         this.srcDAO
           .limit(batchSize)
           .where(GT(this.modifiedProperty, this.lastModified))
-          .select([])(function(issues) {
+          .select()(function(issues) {
             self.syncStatus = 'processing sync data';
             self.timesSynced++;
             self.lastBatchSize = issues.length;

@@ -423,7 +423,7 @@ var System = FOAM({
 
       init: function(values)
       {
-        AbstractPrototype.init.call(this, values);
+        this.SUPER(values);
 
         this.parent.addChild(this);
 

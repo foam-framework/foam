@@ -75,7 +75,7 @@ var StackView = FOAM({
 
    methods: {
       init: function() {
-        AbstractView.getPrototype().init.call(this);
+        this.SUPER();
         this.addChild(this.forwardButton);
         this.addChild(this.backButton);
       },
