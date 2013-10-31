@@ -15,19 +15,13 @@
  * limitations under the License.
  */
 
-Object.name = 'Object';
-String.name = 'String';
-Boolean.name = 'Boolean';
-Number.name = 'Number';
-Date.name = 'Date';
-Function.name = 'Function';
 (function() {
   var static_ = {};
   Object.defineProperty(Object.prototype, 'static_', {
     enumerable: false,
     writeable: true,
     configurable: true,
-    get: function() { 
+    get: function() {
       return static_;
     },
     set: function(v) {
@@ -301,7 +295,7 @@ var features = [
           name: args.name,
           jsCode: args
         };
-      }       
+      }
 
       return this.SUPER(args);
     }
