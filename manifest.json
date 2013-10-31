@@ -32,7 +32,6 @@
               "parse.js",
               "context.js",
               "event.js",
-              "SimpleValue.js",
               "JSONUtil.js",
               "XMLUtil.js",
               "FOAM.js",

@@ -27,7 +27,6 @@ var files = [
   'context',
 //  'context2',
   'event',
-  'SimpleValue',
   'JSONUtil',
   'XMLUtil',
   'FOAM',

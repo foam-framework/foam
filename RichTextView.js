@@ -58,7 +58,7 @@ var RichTextView = FOAM({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return new SimpleValue(); },
+      valueFactory: function() { return SimpleValue.create(); },
       postSet: function(newValue, oldValue) {
         Events.unlink(this.domValue, oldValue);
 

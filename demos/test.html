@@ -173,7 +173,7 @@ document.writeln("=======================================");
 
     document.writeln(o);
 
-    var sm = new SimpleValue("foo");
+    var sm = SimpleValue.create("foo");
     sm.addPropertyListener(l);
 
     document.writeln(sm.get());

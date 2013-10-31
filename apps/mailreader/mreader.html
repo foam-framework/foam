@@ -214,7 +214,7 @@ layout();
     var byTo     = GroupBySearchView.create({size: 9, dao: dao, property: EMail.TO});
     var byFrom   = GroupBySearchView.create({size: 11, dao: dao, property: EMail.FROM});
     var byLabel  = GroupBySearchView.create({size: 6, dao: dao, property: EMail.LABELS});
-    var viewMode = RadioBoxView.create({value:new SimpleValue('Message'), choices: ['Message', 'Conversation']});
+    var viewMode = RadioBoxView.create({value:SimpleValue.create('Message'), choices: ['Message', 'Conversation']});
 
     browse.innerHTML = table.toHTML();
     searchSubject.insertInElement('subjectSearch');

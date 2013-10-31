@@ -41,7 +41,7 @@ var LabelView = FOAM({
             newValue.addListener(this.updateHTML);
             this.updateHTML();
          },
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       }
    ],
 

@@ -88,6 +88,21 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
   }
 };
 
+
+var SimpleValue = Model.create({
+  name: 'SimpleValue',
+
+  properties: [ { name: 'value' } ],
+
+  methods: {
+    init: function(value) { this.value = value || ""; },
+    get: function() { return this.value; },
+    set: function(val) { this.value = val; },
+    toString: function() { return "SimpleValue(" + this.value + ")"; }
+  }
+});
+
+
 var DOM = {
   setClass: function(e, className, opt_enabled) {
     var oldClassName = e.className || '';
@@ -790,7 +805,7 @@ var TextFieldView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
+         valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
            if ( this.mode === 'read-write' ) {
              Events.unlink(oldValue, this.domValue);
@@ -917,7 +932,7 @@ var HTMLView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
+         valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
            if ( this.mode === 'read-write' ) {
              Events.unlink(this.domValue, oldValue);
@@ -998,7 +1013,7 @@ var ChoiceView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'choices',
@@ -1247,7 +1262,7 @@ var RoleView = FOAM({
       {
          name:  'selection',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'model',
@@ -1373,7 +1388,7 @@ var TextAreaView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
+         valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
            Events.unlink(this.domValue, oldValue);
 
@@ -1552,7 +1567,7 @@ var DetailView = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return new SimpleValue(); }
+      valueFactory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -1704,7 +1719,7 @@ var DetailView2 = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return new SimpleValue(); }
+      valueFactory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -1851,7 +1866,7 @@ var SummaryView = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return new SimpleValue(); }
+      valueFactory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -1999,12 +2014,12 @@ var TableView = FOAM({
       {
          name:  'hardSelection',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'selection',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'children',
@@ -2261,7 +2276,7 @@ var ActionButton = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return new SimpleValue(); }
+      valueFactory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -2327,7 +2342,7 @@ var ActionToolbarView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
+         valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
          }
       }
@@ -2475,7 +2490,7 @@ var ActionBorder = {
 
       // todo: this is breaking timer
         if ( ! obj.getValue ) {
-           var dm = new SimpleValue(obj);
+           var dm = SimpleValue.create(obj);
            obj.getValue = function() {
               return dm;
            };
@@ -2497,7 +2512,7 @@ var ProgressView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       }
    ],
 

@@ -224,7 +224,7 @@ layout();
     table.view.selection.addListener(function (src, property, oldValue, newValue) {
       if ( ! newValue ) return;
       var obj = table.view.selection.get().obj.clone();
-      var editView = DetailView2.create({model: obj.model, value: new SimpleValue(obj)});
+      var editView = DetailView2.create({model: obj.model, value: SimpleValue.create(obj)});
       editView.model = table.view.selection.get().obj.model_;
       edit.innerHTML = editView.toHTML();
       editView.initHTML();

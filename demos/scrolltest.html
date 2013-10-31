@@ -44,7 +44,7 @@
     stv.write(document);
     stv.layout();
 
-    DetailView.create({model: stv.scrollbar.model_, value: new SimpleValue(stv.scrollbar)}).write(document);
+    DetailView.create({model: stv.scrollbar.model_, value: SimpleValue.create(stv.scrollbar)}).write(document);
 
     "";
 </script>

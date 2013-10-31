@@ -237,7 +237,7 @@ var DAOController = FOAM({
 //             var view = XMLView.create({});
 //             view.rows = 50;
 //             view.cols = 100;
-//             view.model = new SimpleValue("");
+//             view.model = SimpleValue.create("");
 //             view.model.set(obj);
 //             (this.stackView || stack).setPreview(view);
 
@@ -354,7 +354,7 @@ var DAOCreateController = FOAM({
 
          this.obj = this.model.create();
 
-        this.view = DetailView2.create({model: this.model, value: new SimpleValue(this.obj)});
+        this.view = DetailView2.create({model: this.model, value: SimpleValue.create(this.obj)});
       },
 
       toHTML: function() {

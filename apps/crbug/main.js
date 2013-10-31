@@ -72,7 +72,7 @@ var idFormatter = {
 };
 
 // Listen for table selection and go to crbug page
-var rowSelection = new SimpleValue();
+var rowSelection = SimpleValue.create();
 rowSelection.addListener(function(_,_,_,issue) {
    document.location = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
 });

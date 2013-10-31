@@ -60,7 +60,7 @@ var ListChoiceView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'choicesDao',
@@ -103,7 +103,7 @@ var ListChoiceView = FOAM({
       {
          name:  'initialSelectionValue',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); }
+         valueFactory: function() { return SimpleValue.create(); }
       },
       {
          name:  'renderer',

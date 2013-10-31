@@ -411,7 +411,7 @@ var ProgressCView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return new SimpleValue(); },
+         valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
            oldValue && oldValue.removeListener(this.updateValue);
            newValue.addListener(this.updateValue);
@@ -927,7 +927,7 @@ var AlternateView = FOAM({
       init: function() {
          this.SUPER()
 
-         this.value = new SimpleValue("");
+         this.value = SimpleValue.create("");
          this.view = this.views[0];
      },
 
@@ -1084,7 +1084,7 @@ var SplitView = FOAM({
         this.view1 = DetailView2.create();
         this.view2 = JSView.create();
 
-        this.setValue(new SimpleValue(""));
+        this.setValue(SimpleValue.create(""));
       },
 
       // Sets the Data-Model
