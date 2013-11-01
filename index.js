@@ -380,6 +380,32 @@ var TreeIndex = {
 
     var prop = this.prop;
 
+    var isExprMatch = function(model) {
+      if ( query ) {
+
+        if ( query.model_ === model && query.arg1 === prop ) {
+          var arg2 = query.arg2;
+          query = undefined;
+          return arg2;
+        }
+
+        if ( query.model_ === AndExpr ) {
+          for ( var i = 0 ; i < query.args.length ; i++ ) {
+            var q = query.args[i];
+            if ( q.model_ === EqExpr && q.arg1 === prop ) {
+              query = query.deepClone();
+              query.args[i] = TRUE;
+              query = query.partialEval();
+              if ( query === TRUE ) query = null;
+              return q.arg2.f();
+            }
+          }
+        }
+      }
+
+      return undefined;
+    };
+
     // if ( sink.model_ === GroupByExpr && sink.arg1 === prop ) {
     // console.log('**************** GROUP-BY SHORT-CIRCUIT ****************');
     // TODO:
@@ -387,89 +413,84 @@ var TreeIndex = {
 
     var index = this;
 
-    if ( query ) {
-      if ( query.model_ === InExpr && query.arg1 === prop &&
+    var arg2 = isExprMatch(InExpr);
+    if ( key &&
          // Just scan if that would be faster.
          Math.log(this.size(s))/Math.log(2) * query.arg2.length < this.size(s) ) {
-        var keys = query.arg2;
-        var subPlans = [];
-        var results  = [];
-        var cost = 1;
+      var keys = arg2;
+      var subPlans = [];
+      var results  = [];
+      var cost = 1;
 
-        var newOptions = {};
-        if ( 'limit' in options ) newOptions.limit = options.limit;
-        if ( 'skip' in options ) newOptions.skip = options.skip;
-        if ( 'order' in options ) newOptions.order = options.order;
+      var newOptions = {};
+      if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'skip' in options ) newOptions.skip = options.skip;
+      if ( 'order' in options ) newOptions.order = options.order;
 
-        for ( var i = 0 ; i < keys.length ; i++) {
-          var result = this.get(s, keys[i]);
+      for ( var i = 0 ; i < keys.length ; i++) {
+        var result = this.get(s, keys[i]);
 
-          if ( result ) {
-            var subPlan = this.tail.plan(result, sink, newOptions);
+        if ( result ) {
+          var subPlan = this.tail.plan(result, sink, newOptions);
 
-            cost += subPlan.cost;
-            subPlans.push(subPlan);
-            results.push(result);
-          }
-        }
-
-        if ( subPlans.length == 0 ) return NOT_FOUND;
-
-        return {
-          cost: 1 + cost,
-          execute: function(s2, sink, options) {
-            for ( var i = 0 ; i < subPlans.length ; i++ ) {
-              subPlans[i].execute(results[i], sink, newOptions);
-            }
-          },
-          toString: function() {
-            return 'IN(key=' + prop.name + ', size=' + results.length + ')';
-          }
-        };
-      }
-
-      var key = query.model_ === EqExpr && query.arg1 === prop ? query.arg2.f() : undefined;
-      if ( key ) {
-        query = null;
-      } else if ( query.model_ === AndExpr ) {
-        for ( var i = 0 ; i < query.args.length ; i++ ) {
-          var q = query.args[i];
-          var k = q.model_ === EqExpr && q.arg1 === prop ? q.arg2.f() : undefined;
-          if ( k ) {
-            query = query.deepClone();
-            query.args[i] = TRUE;
-            query = query.partialEval();
-            if ( query === TRUE ) query = null;
-            key = k;
-            break;
-          }
+          cost += subPlan.cost;
+          subPlans.push(subPlan);
+          results.push(result);
         }
       }
 
-      if ( key ) {
-        var result = this.get(s, key);
+      if ( subPlans.length == 0 ) return NOT_FOUND;
 
-        if ( ! result ) return NOT_FOUND;
-
-        //        var newOptions = {__proto__: options, query: query};
-        var newOptions = {};
-        if ( query ) newOptions.query = query;
-        if ( 'limit' in options ) newOptions.limit = options.limit;
-        if ( 'skip' in options ) newOptions.skip = options.skip;
-        if ( 'order' in options ) newOptions.order = options.order;
-
-        var subPlan = this.tail.plan(result, sink, newOptions);
-
-        return {
-          cost: 1 + subPlan.cost,
-          execute: function(s2, sink, options) {
-            subPlan.execute(result, sink, newOptions);
-          },
-          toString: function() {
-            return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
+      return {
+        cost: 1 + cost,
+        execute: function(s2, sink, options) {
+          for ( var i = 0 ; i < subPlans.length ; i++ ) {
+            subPlans[i].execute(results[i], sink, newOptions);
           }
-        };
-      }
+        },
+        toString: function() {
+          return 'IN(key=' + prop.name + ', size=' + results.length + ')';
+        }
+      };
+    }
+
+    arg2 = isExprMatch(EqExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var result = this.get(s, key);
+
+      if ( ! result ) return NOT_FOUND;
+
+      //        var newOptions = {__proto__: options, query: query};
+      var newOptions = {};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'skip' in options ) newOptions.skip = options.skip;
+      if ( 'order' in options ) newOptions.order = options.order;
+
+      var subPlan = this.tail.plan(result, sink, newOptions);
+
+      return {
+        cost: 1 + subPlan.cost,
+        execute: function(s2, sink, options) {
+          subPlan.execute(result, sink, newOptions);
+        },
+        toString: function() {
+          return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
+        }
+      };
+    }
+
+    arg2 = isExprMatch(GtExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key);
+
+      var newOptions = {skip: options.skip || 0 + pos};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
     }
 
     var cost = this.size(s);
