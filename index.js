@@ -427,7 +427,7 @@ var TreeIndex = {
     var index = this;
 
     var arg2 = isExprMatch(InExpr);
-    if ( key &&
+    if ( arg2 &&
          // Just scan if that would be faster.
          Math.log(this.size(s))/Math.log(2) * arg2.length < this.size(s) ) {
       var keys = arg2;
