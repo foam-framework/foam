@@ -826,8 +826,8 @@ var MDAO = Model.create({
 
       // Add on the primary key(s) to make the index unique.
       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
-	props.push(this.model.getProperty(this.model.ids[i]));
-	if (!props[props.length - 1]) throw "Undefined index property";
+        props.push(this.model.getProperty(this.model.ids[i]));
+        if (!props[props.length - 1]) throw "Undefined index property";
       }
 
       return this.addUniqueIndex.apply(this, props);
@@ -841,10 +841,10 @@ var MDAO = Model.create({
       var index = ValueIndex;
 
       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
-	var prop = arguments[i];
-	// TODO: the index prototype should be in the property
-	var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
-	index = proto.create(prop, index);
+        var prop = arguments[i];
+        // TODO: the index prototype should be in the property
+        var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
+        index = proto.create(prop, index);
       }
 
       return this.addRawIndex(index);
@@ -854,8 +854,8 @@ var MDAO = Model.create({
     addRawIndex: function(index) {
       // Upgrade single Index to an AltIndex if required.
       if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
-	this.index = AltIndex.create(this.index);
-	this.root = [this.root];
+        this.index = AltIndex.create(this.index);
+        this.root = [this.root];
       }
 
       this.index.addIndex(this.root, index);
@@ -871,18 +871,18 @@ var MDAO = Model.create({
     bulkLoad: function(dao, sink) {
       var self = this;
       dao.select({ __proto__: [], eof: function() {
-	self.root = self.index.bulkLoad(this);
-	sink && sink.eof && sink.eof();
+        self.root = self.index.bulkLoad(this);
+        sink && sink.eof && sink.eof();
       }});
     },
 
     put: function(obj, sink) {
       var oldValue = this.index.get(this.root, key);
       if ( oldValue ) {
-	this.root = this.index.put(this.index.remove(this.root, obj), obj);
-	this.notify_('remove', [obj]);
+        this.root = this.index.put(this.index.remove(this.root, obj), obj);
+        this.notify_('remove', [obj]);
       } else {
-	this.root = this.index.put(this.root, obj);
+        this.root = this.index.put(this.root, obj);
       }
       this.notify_('put', [obj]);
       sink && sink.put && sink.put(obj);
@@ -891,28 +891,28 @@ var MDAO = Model.create({
     findObj_: function(key, sink) {
       var obj = this.index.get(this.root, key);
       if ( obj ) {
-	sink.put(obj);
+        sink.put(obj);
       } else {
-	sink.error && sink.error('find', key);
+        sink.error && sink.error('find', key);
       }
     },
 
     find: function(key, sink) {
       if ( ! key.f ) { // TODO: make better test, use model
-	this.findObj_(key, sink);
-	return;
+        this.findObj_(key, sink);
+        return;
       }
       // How to handle multi value primary keys?
       var found = false;
       this.where(key).limit(1).select({
-	// ???: Is 'put' needed?
-	put: function(obj) {
-	  found = true;
-	  sink && sink.put && sink.put(obj);
-	},
-	eof: function() {
-	  if ( ! found ) sink && sink.error && sink.error('find', key);
-	}
+        // ???: Is 'put' needed?
+        put: function(obj) {
+          found = true;
+          sink && sink.put && sink.put(obj);
+        },
+        eof: function() {
+          if ( ! found ) sink && sink.error && sink.error('find', key);
+        }
       });
     },
 
@@ -920,19 +920,19 @@ var MDAO = Model.create({
     remove: function(query, sink) {
       query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
       /*
-	if ( ! query.f ) {
-	this.root = this.index.remove(this.root, query);
-	sink && sink.remove && sink.remove(query);
+        if ( ! query.f ) {
+        this.root = this.index.remove(this.root, query);
+        sink && sink.remove && sink.remove(query);
 
-	return;
-	}*/
+        return;
+        }*/
 
       this.where(query).select([])(function(a) {
-	for ( var i = 0 ; i < a.length ; i++ ) {
-	  this.root = this.index.remove(this.root, a[i]);
-	  sink && sink.remove && sink.remove(a[i]);
-	  this.notify_('remove', [a[i]]);
-	}
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          this.root = this.index.remove(this.root, a[i]);
+          sink && sink.remove && sink.remove(a[i]);
+          this.notify_('remove', [a[i]]);
+        }
       }.bind(this));
     },
 
@@ -947,11 +947,11 @@ var MDAO = Model.create({
       if ( options ) options = {__proto__: options};
 
       if ( DescribeExpr.isInstance(sink) ) {
-	var plan = this.index.plan(this.root, sink.arg1, options);
-	sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
+        var plan = this.index.plan(this.root, sink.arg1, options);
+        sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
       } else {
-	var plan = this.index.plan(this.root, sink, options);
-	plan.execute(this.root, sink, options);
+        var plan = this.index.plan(this.root, sink, options);
+        plan.execute(this.root, sink, options);
       }
 
       sink && sink.eof && sink.eof();
