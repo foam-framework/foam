@@ -357,6 +357,19 @@ var TreeIndex = {
     this.selectReverse(s[LEFT], sink, options);
   },
 
+  findPos: function(s, key, incl) {
+    if ( ! s ) return 0;
+    var r = this.compare(s[KEY], key);
+    if ( r === 0 ) {
+      return incl ?
+        this.size(s[LEFT]) :
+        this.size(s) - this.size(s[RIGHT]);
+    }
+    return r > 0 ?
+      this.findPos(s[LEFT], key, incl) :
+      this.findPos(s[RIGHT], key, incl) + this.size(s) - this.size(s[RIGHT]);
+  },
+
   size: function(s) { return s ? s[SIZE] : 0; },
 
   compare: function(o1, o2) {
@@ -392,12 +405,12 @@ var TreeIndex = {
         if ( query.model_ === AndExpr ) {
           for ( var i = 0 ; i < query.args.length ; i++ ) {
             var q = query.args[i];
-            if ( q.model_ === EqExpr && q.arg1 === prop ) {
+            if ( q.model_ === model && q.arg1 === prop ) {
               query = query.deepClone();
               query.args[i] = TRUE;
               query = query.partialEval();
               if ( query === TRUE ) query = null;
-              return q.arg2.f();
+              return q.arg2;
             }
           }
         }
@@ -416,7 +429,7 @@ var TreeIndex = {
     var arg2 = isExprMatch(InExpr);
     if ( key &&
          // Just scan if that would be faster.
-         Math.log(this.size(s))/Math.log(2) * query.arg2.length < this.size(s) ) {
+         Math.log(this.size(s))/Math.log(2) * arg2.length < this.size(s) ) {
       var keys = arg2;
       var subPlans = [];
       var results  = [];
@@ -484,11 +497,45 @@ var TreeIndex = {
     arg2 = isExprMatch(GtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key);
-
-      var newOptions = {skip: options.skip || 0 + pos};
+      var pos = this.findPos(s, key, false);
+      var newOptions = {skip: ((options && options.skip) || 0) + pos};
       if ( query ) newOptions.query = query;
       if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(GteExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, true);
+      var newOptions = {skip: ((options && options.skip) || 0) + pos};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(LtExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, true);
+      var newOptions = {limit: (pos - (options && options.skip) || 0)};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
+      if ( 'skip' in options ) newOptions.skip = options.skip;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(LteExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, false);
+      var newOptions = {limit: (pos - (options && options.skip) || 0)};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
+      if ( 'skip' in options ) newOptions.skip = options.skip;
       if ( 'order' in options ) newOptions.order = options.order;
       options = newOptions;
     }
@@ -507,6 +554,11 @@ var TreeIndex = {
         sortRequired = true;
         cost *= Math.log(cost) / Math.log(2);
       }
+    }
+
+    if ( options ) {
+      if ( options.skip ) cost -= options.skip;
+      if ( options.limit ) cost = Math.min(cost, options.limit);
     }
 
     return {
