@@ -9,13 +9,14 @@
        font-style: normal;
        font-variant: normal;
        font-weight: normal;
-    }
+    } 
   </style>
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script>
-  <script language="javascript" src="../UML.js"></script>
+  <script language="javascript" src="../bootFOAM.js"></script> 
+  <script language="javascript" src="../UML.js"></script> 
+  <script language="javascript" src="UML.js"></script> 
   <title>FOAM Test</title>
  </head>
 
@@ -23,93 +24,11 @@
   <script language="javascript">
     var canvas = Canvas.create({width: 2000, height: 2000, background:'white'});
     canvas.write(document);
-    var ctx = canvas.$.getContext('2d');
+    var ctx = canvas.element().getContext('2d');
     var mouse   = Mouse.create();
-    mouse.connect(canvas.$);
+    mouse.connect(canvas.element());
     Events.dynamic(function() { console.log(mouse.x, mouse.y); });
-
-    var WIDTH  = 80;
-    var HEIGHT = 105;
-    var XS     = 115;
-    var YS     = 180;
-
-    var ms = {};
-    function line() {
-      var a = arguments;
-      ctx.beginPath();
-      ctx.moveTo(a[0], a[1]);
-      for ( var i = 2; i < a.length ; i += 2 ) {
-        ctx.lineTo(a[i], a[i+1]);
-      }
-      ctx.stroke();
-    }
-    function label(x, y, txt) {
-      ctx.fillText(txt, x, y);
-    }
-    function solidArrow(x, y) {
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x+8, y+8);
-          ctx.lineTo(x-8, y+8);
-          ctx.lineTo(x, y);
-          ctx.fill();
-    }
-    function arrow(x, y, d) {
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x-8*d, y-8);
-          ctx.lineTo(x, y);
-          ctx.lineTo(x-8*d, y+8);
-          ctx.stroke();
-    }
-    function extend(x1, y1, x2, y2) {
-          ctx.beginPath();
-          ctx.moveTo(x1*XS+WIDTH/2, y1*YS);
-          ctx.lineTo(x1*XS+WIDTH/2, y1*YS-20);
-          ctx.lineTo(x2*XS+WIDTH/2, y1*YS-20);
-          ctx.lineTo(x2*XS+WIDTH/2, y2*YS+HEIGHT);
-          ctx.stroke();
-
-          solidArrow(x2*XS+WIDTH/2, y2*YS+HEIGHT);
-    }
-    function uses(c1, c2, opt_s1, opt_s2) {
-          var x1 = ms[c1].x;
-          var y1 = ms[c1].y;
-          var x2 = ms[c2].x;
-          var y2 = ms[c2].y;
-
-          var s1 = opt_s1 != undefined ? opt_s1 : x2 > x1 ? 1 : 0;
-          var s2 = opt_s2 != undefined ? opt_s2 : x2 > x1 ? 0 : 1;
-          var d = s2 ? -1 : 1;
-          var d2 = s1 ? 1 : -1;
-
-          ctx.beginPath();
-          ctx.moveTo(x1*XS+s1*WIDTH, y1*YS+HEIGHT/2);
-          ctx.lineTo(x1*XS+s1*WIDTH+20*d2, y1*YS+HEIGHT/2);
-          ctx.lineTo(x1*XS+s1*WIDTH+20*d2, y2*YS+HEIGHT/2);
-          ctx.lineTo(x2*XS+s2*WIDTH, y2*YS+HEIGHT/2);
-          ctx.stroke();
-
-          arrow(x2*XS+s2*WIDTH, y2*YS+HEIGHT/2, d);
-    }
-    function model(name, color, x, y, opt_extends, opt_methods) {
-      if ( x >= 5 ) x -= 0.5;
-      ms[name] = {x:x, y:y};
-      var m = {name: name, properties:[{name:''},{name:''},{name:''}]};
-      if ( opt_methods ) {
-        var meths = opt_methods.split('/');
-        for ( var i = 0 ; i < meths.length ; i++ ) m.properties[i].name = meths[i];
-      }
-      drawUML(ctx, x*XS, y*YS, m, WIDTH, color);
-      if ( opt_extends ) {
-        var parents = opt_extends.split('/');
-        for ( var i = 0 ; i < parents.length ; i++ ) {
-          var p = ms[parents[i]];
-          extend(x, y, p.x, p.y);
-        }
-      }
-    }
-
+  
 //    var ic = '#f3fff3';
 //    var oc = '#e8e8e8';
 //    var cc = '#f3f3ff';
@@ -117,9 +36,9 @@
     var ic = '#f3fff3';
     var oc = '#e8e8e8';
     var cc = '#fafaff';
+                   
 
-
-    model('Client',      oc, 2.5, 0, null, 'getA()/setA()');
+    model('Client',      oc, 2.5, 0, null, 'getA()/setA()');  
     model('Interface',   ic, 5, 0);
     model('Mediator',    cc, 2.5, 1, 'Client');
     model('MVC',         cc, 2.5, 5);

@@ -255,6 +255,7 @@ var features = [
     for ( var i = 0; i < this.model.features.length; i++ ) {
       this.model.features[i].clone().install(o);
     }
+    o.prototype.__proto__ = this.model.prototype;
   }],
 
 

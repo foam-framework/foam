@@ -1,31 +1,15 @@
-/**
- * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 function drawUML(ctx, x, y, model, opt_width, opt_background) {
     var background = opt_background || 'white';
     var width = opt_width || 150;
     var i = 0;
     var outputText = function(txt) {
-        ctx.fillText(txt, x+10, y+i*20+15);
+	ctx.fillText(txt, x+10, y+i*18+15);
         i++;
     };
 
     i = model.properties.length+1;
     ctx.fillStyle   = background;
-    ctx.fillRect(x, y, width, (i+1)*20+5);
+    ctx.fillRect(x, y, width, (i+1)*18);
     i = 0;
 
     ctx.fillStyle   = '#000';
@@ -41,7 +25,7 @@ function drawUML(ctx, x, y, model, opt_width, opt_background) {
         outputText(prop.name);
     }
 
-    ctx.strokeRect(x, y, width, (i+1)*20+5);
+    ctx.strokeRect(x, y, width, (i+1)*18);
 
     ctx.beginPath();
     ctx.moveTo(x,y+20);
@@ -59,3 +43,6 @@ function copy(src, dest, model) {
 
     return dest;
 }
+
+
+

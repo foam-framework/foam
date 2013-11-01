@@ -1,8 +1,5 @@
 s/Canvas/CanvasView/
 
-
-Standardize use of create/init in Views.  Should argument be optional value?
-
 Replace getID() with .id
 add isInitialized() to AbstractView
 
@@ -25,13 +22,6 @@ Fix up CView hierarchy.  (DONE: Do we need an AbstractCView that
 implements 'View' so individual CViews can be used without
 a Canvas container.)  Also, standardize position, size, rotation, 
 etc.
-
-
-MDAO
-   remove()
-   notify on update
-   SetIndex
-   find()
 
 
 ??? What does it mean to order by a multi-value field?

@@ -1611,4 +1611,4 @@ var JOIN = function(dao, key, sink) {
 
 
 // TODO: add other Date functions
-var MONTH = function(p) { return {f: function (o) { return o._month = p.f(o).getMonth(); }}; };
+var MONTH = function(p) { return {f: function (o) { return p.f(o).getMonth(); } }; };
