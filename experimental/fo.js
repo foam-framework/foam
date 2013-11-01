@@ -1399,7 +1399,7 @@ var features = [
 
   [null, 'Model', { name: 'StringProperty' }],
   ['StringProperty', 'Extends', 'Property'],
-  ['StringProperty', 'Property', {
+  ['StringProperty', 'StringProperty', {
     name: 'type',
     defaultValue: 'String',
     displayWidth: 20
