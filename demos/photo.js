@@ -163,10 +163,10 @@ aseq(
   function(ret) { testData = undefined; ret(); },
   arepeat(DEBUG ? 1 : 3, aseq(
   alog('Benchmark...'),
-  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeat(NUM_ALBUMS, function (ret, i) {
+  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeatpar(NUM_ALBUMS, function (ret, i) {
     AlbumDAO.put(albums[i], ret);
   }))),
-  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeat(NUM_PHOTOS, function (ret, i) {
+  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeatpar(NUM_PHOTOS, function (ret, i) {
     PhotoDAO.put(photos[i], ret);
   }))),
   atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select()(ret); }),
@@ -199,6 +199,10 @@ aseq(
     AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
         MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
   }),
+  atest('2gSimpleInnerJoinAggregationQuery(Version 2)', function(ret) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID, []))(function (ids) {
+      PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select()(ret);
+  })}),
   atest('2hSimpleOrderByQuery', function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select()(ret);
   }),
@@ -225,5 +229,5 @@ aseq(
     PhotoDAO.removeAll();
     ret();
   })),
-  asleep(5000)
+  asleep(10000)
 )))(alog('Done.'));

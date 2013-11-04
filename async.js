@@ -353,10 +353,10 @@ if ( jobs.length > 1 ) debugger;
 
 /** Execute the supplied afunc concurrently n times. **/
 function arepeatpar(n, afunc) {
+  return function(ret /* opt_args */) {
   var aargs = [];
   var count = 0;
 
-  return function(ret /* opt_args */) {
     var opt_args = Array.prototype.splice.call(arguments, 1);
     var join = function (i) {
       aargs[i] = Array.prototype.splice.call(arguments, 1);
