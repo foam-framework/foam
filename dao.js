@@ -1088,26 +1088,21 @@ var IDBDAO = FOAM({
     withStore: function(mode, fn) {
       if ( mode !== 'readwrite' ) return this.withStore_(mode, fn);
 
-      if ( ! this.locked_ ) {
-        this.locked_ = true;
-        this.withStore_(mode, function (store) {
-          fn(store);
-          if ( ! this.q_ ) this.locked_ = false;
+      var self = this;
+
+      if ( ! this.q_ ) {
+        this.q_ = [fn];
+        window.setTimeout(function() {
+        self.withStore_(mode, function(store) {
+          var q = self.q_;
+          self.q_ = undefined;
+          for ( var i = 0 ; i < q.length ; i++ ) {
+            q[i](store);
+          }
         });
+        }, 0);
       } else {
-// console.log('*** queued', this.q_ ? this.q_.length : ' new');
-        if ( ! this.q_ ) {
-          this.q_ = [];
-          this.withStore_(mode, function(store) {
-            var q = this.q_;
-// console.log('*** batch', q.length);
-            this.q_ = undefined;
-            for ( var i = 0 ; i < q.length ; i++ ) {
-              q[i](store);
-            }
-            this.locked_ = false;
-          });
-        }
+//        console.log('*********** Q', this.q_.length);
         this.q_.push(fn);
       }
     },

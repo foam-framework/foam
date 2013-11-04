@@ -229,5 +229,5 @@ aseq(
     PhotoDAO.removeAll();
     ret();
   })),
-  asleep(5000)
+  asleep(10000)
 )))(alog('Done.'));
