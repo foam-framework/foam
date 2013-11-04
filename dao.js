@@ -471,6 +471,7 @@ var JSONToObject = {
 
   visitObject: function(o) {
     var model   = GLOBAL[o.model_];
+    if ( ! model ) throw ('Unknown Model: ', o.model_);
     var obj     = model.create();
 
     //    o.forEach((function(value, key) {
@@ -1042,7 +1043,26 @@ var IDBDAO = FOAM({
     init: function() {
       this.SUPER();
 
+      this.serialize = this.SimpleSerialize;
+      this.deserialize = this.SimpleDeserialize;
+
       this.withDB = amemo(this.openDB.bind(this));
+    },
+
+    FOAMDeserialize: function(json) {
+      return JSONToObject.visitObject(json);
+    },
+
+    FOAMSerialize: function(obj) {
+      return ObjectToJSON.visitObject(obj);
+    },
+
+    SimpleDeserialize: function(json) {
+      return this.model.create(json);
+    },
+
+    SimpleSerialize: function(obj) {
+      return obj.instance_;
     },
 
     openDB: function(cc) {
@@ -1108,9 +1128,7 @@ console.log('*** batch', q.length);
     put: function(value, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-value.jspb = "";
-//        var request = store.put(ObjectToJSON.visitObject(value), value.id);
-        var request = store.put(value.instance_, value.id);
+        var request = store.put(self.serialize(value), value.id);
 
         request.onsuccess = function(e) {
           sink && sink.put && sink.put(value);
@@ -1124,6 +1142,7 @@ value.jspb = "";
     },
 
     find: function(key, sink) {
+      var self = this;
       this.withStore("readonly", function(store) {
         var request = store.get(key);
         request.onsuccess = function() {
@@ -1131,7 +1150,7 @@ value.jspb = "";
             sink && sink.error && sink.error('find', key);
             return;
           }
-          var result = JSONToObject.visitObject(request.result);
+          var result = self.deserialize(request.result);
           sink && sink.put && sink.put(result);
         };
         request.onerror = function(e) {
@@ -1153,7 +1172,7 @@ value.jspb = "";
               sink && sink.error && sink.error('remove', query);
               return;
             }
-            var result = JSONToObject.visitObject(getRequest.result);
+            var result = self.deserialize(getRequest.result);
             var delRequest = store.delete(key);
             delRequest.onsuccess = function(e) {
               sink && sink.remove && sink.remove(result);
@@ -1175,7 +1194,7 @@ value.jspb = "";
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {
-            var value = JSONToObject.visitObject(cursor.value);
+            var value = self.deserialize(cursor.value);
             if (query.f(value)) {
               var deleteReq = cursor.delete();
               deleteReq.onsuccess = function() {
@@ -1201,6 +1220,7 @@ value.jspb = "";
 
       var fc = this.createFlowControl_();
       var future = afuture();
+      var self = this;
 
       this.withStore("readonly", function(store) {
         var request = store.openCursor();
@@ -1219,7 +1239,7 @@ value.jspb = "";
             return;
           }
 
-          var value = JSONToObject.visitObject(cursor.value);
+          var value = self.deserialize(cursor.value);
           sink.put(value);
           cursor.continue();
         };
