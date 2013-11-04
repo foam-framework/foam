@@ -1092,7 +1092,6 @@ var IDBDAO = FOAM({
 
       if ( ! this.q_ ) {
         this.q_ = [fn];
-        window.setTimeout(function() {
         self.withStore_(mode, function(store) {
           var q = self.q_;
           self.q_ = undefined;
@@ -1100,7 +1099,6 @@ var IDBDAO = FOAM({
             q[i](store);
           }
         });
-        }, 0);
       } else {
 //        console.log('*********** Q', this.q_.length);
         this.q_.push(fn);
