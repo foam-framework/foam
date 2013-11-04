@@ -87,7 +87,7 @@ var RichTextView = FOAM({
             if ( s.rangeCount != 1 ) return;
             var r = s.getRangeAt(0);
             console.log('range:',r);
-            
+
             var selectionContents = r.extractContents();
             var b = document.createElement("b");
             b.appendChild(selectionContents);
@@ -105,7 +105,7 @@ var RichTextView = FOAM({
             if ( s.rangeCount != 1 ) return;
             var r = s.getRangeAt(0);
             console.log('range:',r);
-            
+
             var selectionContents = r.extractContents();
             var b = document.createElement("i");
             b.appendChild(selectionContents);

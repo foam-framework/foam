@@ -357,6 +357,19 @@ var TreeIndex = {
     this.selectReverse(s[LEFT], sink, options);
   },
 
+  findPos: function(s, key, incl) {
+    if ( ! s ) return 0;
+    var r = this.compare(s[KEY], key);
+    if ( r === 0 ) {
+      return incl ?
+        this.size(s[LEFT]) :
+        this.size(s) - this.size(s[RIGHT]);
+    }
+    return r > 0 ?
+      this.findPos(s[LEFT], key, incl) :
+      this.findPos(s[RIGHT], key, incl) + this.size(s) - this.size(s[RIGHT]);
+  },
+
   size: function(s) { return s ? s[SIZE] : 0; },
 
   compare: function(o1, o2) {
@@ -392,12 +405,12 @@ var TreeIndex = {
         if ( query.model_ === AndExpr ) {
           for ( var i = 0 ; i < query.args.length ; i++ ) {
             var q = query.args[i];
-            if ( q.model_ === EqExpr && q.arg1 === prop ) {
+            if ( q.model_ === model && q.arg1 === prop ) {
               query = query.deepClone();
               query.args[i] = TRUE;
               query = query.partialEval();
               if ( query === TRUE ) query = null;
-              return q.arg2.f();
+              return q.arg2;
             }
           }
         }
@@ -414,9 +427,9 @@ var TreeIndex = {
     var index = this;
 
     var arg2 = isExprMatch(InExpr);
-    if ( key &&
+    if ( arg2 &&
          // Just scan if that would be faster.
-         Math.log(this.size(s))/Math.log(2) * query.arg2.length < this.size(s) ) {
+         Math.log(this.size(s))/Math.log(2) * arg2.length < this.size(s) ) {
       var keys = arg2;
       var subPlans = [];
       var results  = [];
@@ -484,11 +497,45 @@ var TreeIndex = {
     arg2 = isExprMatch(GtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key);
-
-      var newOptions = {skip: options.skip || 0 + pos};
+      var pos = this.findPos(s, key, false);
+      var newOptions = {skip: ((options && options.skip) || 0) + pos};
       if ( query ) newOptions.query = query;
       if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(GteExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, true);
+      var newOptions = {skip: ((options && options.skip) || 0) + pos};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = options.limit;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(LtExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, true);
+      var newOptions = {limit: (pos - (options && options.skip) || 0)};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
+      if ( 'skip' in options ) newOptions.skip = options.skip;
+      if ( 'order' in options ) newOptions.order = options.order;
+      options = newOptions;
+    }
+
+    arg2 = isExprMatch(LteExpr);
+    if ( arg2 != undefined ) {
+      var key = arg2.f();
+      var pos = this.findPos(s, key, false);
+      var newOptions = {limit: (pos - (options && options.skip) || 0)};
+      if ( query ) newOptions.query = query;
+      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
+      if ( 'skip' in options ) newOptions.skip = options.skip;
       if ( 'order' in options ) newOptions.order = options.order;
       options = newOptions;
     }
@@ -509,6 +556,11 @@ var TreeIndex = {
       }
     }
 
+    if ( options ) {
+      if ( options.skip ) cost -= options.skip;
+      if ( options.limit ) cost = Math.min(cost, options.limit);
+    }
+
     return {
       cost: cost,
       execute: function() {
@@ -522,6 +574,12 @@ var TreeIndex = {
           index.select(s, a, {query: options.query});
           a.select(sink, options);
         } else {
+          if ( reverseSort && options && options.skip )
+            // TODO: temporary fix, should include range in select and selectReverse calls instead.
+            options = {
+              __proto__: options,
+              skip: index.size(s) - options.skip - (options.limit || index.size(s)-options.skip)
+            };
           reverseSort ?
             index.selectReverse(s, sink, options) :
             index.select(s, sink, options) ;
@@ -762,6 +820,7 @@ var MDAO = Model.create({
     init: function() {
       this.SUPER();
 
+      this.map = {};
       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
     },
 
@@ -774,8 +833,8 @@ var MDAO = Model.create({
 
       // Add on the primary key(s) to make the index unique.
       for ( var i = 0 ; i < this.model.ids.length ; i++ ) {
-	props.push(this.model.getProperty(this.model.ids[i]));
-	if (!props[props.length - 1]) throw "Undefined index property";
+        props.push(this.model.getProperty(this.model.ids[i]));
+        if (!props[props.length - 1]) throw "Undefined index property";
       }
 
       return this.addUniqueIndex.apply(this, props);
@@ -789,10 +848,10 @@ var MDAO = Model.create({
       var index = ValueIndex;
 
       for ( var i = arguments.length-1 ; i >= 0 ; i-- ) {
-	var prop = arguments[i];
-	// TODO: the index prototype should be in the property
-	var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
-	index = proto.create(prop, index);
+        var prop = arguments[i];
+        // TODO: the index prototype should be in the property
+        var proto = prop.type == 'Array[]' ? SetIndex : TreeIndex;
+        index = proto.create(prop, index);
       }
 
       return this.addRawIndex(index);
@@ -802,8 +861,8 @@ var MDAO = Model.create({
     addRawIndex: function(index) {
       // Upgrade single Index to an AltIndex if required.
       if ( ! /*AltIndex.isInstance(this.index)*/ this.index.delegates ) {
-	this.index = AltIndex.create(this.index);
-	this.root = [this.root];
+        this.index = AltIndex.create(this.index);
+        this.root = [this.root];
       }
 
       this.index.addIndex(this.root, index);
@@ -819,73 +878,79 @@ var MDAO = Model.create({
     bulkLoad: function(dao, sink) {
       var self = this;
       dao.select({ __proto__: [], eof: function() {
-	self.root = self.index.bulkLoad(this);
-	sink && sink.eof && sink.eof();
+        self.root = self.index.bulkLoad(this);
+        sink && sink.eof && sink.eof();
       }});
     },
 
     put: function(obj, sink) {
-      var oldValue = this.index.get(this.root, key);
+      var oldValue = this.map[obj.id];
       if ( oldValue ) {
-	this.root = this.index.put(this.index.remove(this.root, obj), obj);
-	this.notify_('remove', [obj]);
+        this.root = this.index.put(this.index.remove(this.root, obj), obj);
+        this.notify_('remove', [obj]);
       } else {
-	this.root = this.index.put(this.root, obj);
+        this.root = this.index.put(this.root, obj);
       }
+      this.map[obj.id] = obj;
       this.notify_('put', [obj]);
       sink && sink.put && sink.put(obj);
     },
 
     findObj_: function(key, sink) {
-      var obj = this.index.get(this.root, key);
+      var obj = this.map[key];
+      // var obj = this.index.get(this.root, key);
       if ( obj ) {
-	sink.put(obj);
+        sink.put(obj);
       } else {
-	sink.error && sink.error('find', key);
+        sink.error && sink.error('find', key);
       }
     },
 
     find: function(key, sink) {
       if ( ! key.f ) { // TODO: make better test, use model
-	this.findObj_(key, sink);
-	return;
+        this.findObj_(key, sink);
+        return;
       }
       // How to handle multi value primary keys?
       var found = false;
       this.where(key).limit(1).select({
-	// ???: Is 'put' needed?
-	put: function(obj) {
-	  found = true;
-	  sink && sink.put && sink.put(obj);
-	},
-	eof: function() {
-	  if ( ! found ) sink && sink.error && sink.error('find', key);
-	}
+        // ???: Is 'put' needed?
+        put: function(obj) {
+          found = true;
+          sink && sink.put && sink.put(obj);
+        },
+        eof: function() {
+          if ( ! found ) sink && sink.error && sink.error('find', key);
+        }
       });
     },
 
     // TODO: this isn't correct, this is actually removeAll()
     remove: function(query, sink) {
-      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
+      query = query.f ?
+        query :
+        EQ(this.model.getProperty(this.model.ids[0]), query);
       /*
-	if ( ! query.f ) {
-	this.root = this.index.remove(this.root, query);
-	sink && sink.remove && sink.remove(query);
+        if ( ! query.f ) {
+        this.root = this.index.remove(this.root, query);
+        sink && sink.remove && sink.remove(query);
 
-	return;
-	}*/
+        return;
+        }*/
 
       this.where(query).select([])(function(a) {
-	for ( var i = 0 ; i < a.length ; i++ ) {
-	  this.root = this.index.remove(this.root, a[i]);
-	  sink && sink.remove && sink.remove(a[i]);
-	  this.notify_('remove', [a[i]]);
-	}
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          this.root = this.index.remove(this.root, a[i]);
+          delete this.map[a[i]];
+          sink && sink.remove && sink.remove(a[i]);
+          this.notify_('remove', [a[i]]);
+        }
       }.bind(this));
     },
 
     removeAll: function(callback) {
       this.root = [];
+      this.map = {};
       callback && callback();
     },
 
@@ -895,11 +960,11 @@ var MDAO = Model.create({
       if ( options ) options = {__proto__: options};
 
       if ( DescribeExpr.isInstance(sink) ) {
-	var plan = this.index.plan(this.root, sink.arg1, options);
-	sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
+        var plan = this.index.plan(this.root, sink.arg1, options);
+        sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
       } else {
-	var plan = this.index.plan(this.root, sink, options);
-	plan.execute(this.root, sink, options);
+        var plan = this.index.plan(this.root, sink, options);
+        plan.execute(this.root, sink, options);
       }
 
       sink && sink.eof && sink.eof();

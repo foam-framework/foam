@@ -9,14 +9,14 @@
        font-style: normal;
        font-variant: normal;
        font-weight: normal;
-    } 
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <script>var FOAM_BOOT_DIR="../";</script>
-  <script language="javascript" src="../bootFOAM.js"></script> 
-  <script language="javascript" src="../UML.js"></script> 
-  <script language="javascript" src="UML.js"></script> 
+  <script language="javascript" src="../bootFOAM.js"></script>
+  <script language="javascript" src="../UML.js"></script>
+  <script language="javascript" src="UML.js"></script>
   <title>FOAM Test</title>
  </head>
 
@@ -28,7 +28,7 @@
     var mouse   = Mouse.create();
     mouse.connect(canvas.element());
     Events.dynamic(function() { console.log(mouse.x, mouse.y); });
-  
+
 //    var ic = '#f3fff3';
 //    var oc = '#e8e8e8';
 //    var cc = '#f3f3ff';
@@ -36,9 +36,9 @@
     var ic = '#f3fff3';
     var oc = '#e8e8e8';
     var cc = '#fafaff';
-                   
 
-    model('Client',      oc, 2.5, 0, null, 'getA()/setA()');  
+
+    model('Client',      oc, 2.5, 0, null, 'getA()/setA()');
     model('Interface',   ic, 5, 0);
     model('Mediator',    cc, 2.5, 1, 'Client');
     model('MVC',         cc, 2.5, 5);

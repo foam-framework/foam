@@ -185,7 +185,7 @@ var TextSearchView = FOAM({
      initHTML: function() {
        this.SUPER();
        this.view.initHTML();
-       
+
        this.view.value.addListener(this.updateValue);
      }
    },
