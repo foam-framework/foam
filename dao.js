@@ -983,8 +983,7 @@ defineProperties(Array.prototype, {
 });
 
 function atxn(afunc) {
-  // yield is necessary to commit txn
-  return /*ayield(*/function(ret) {
+  return function(ret) {
     if ( GLOBAL.__TXN__ ) {
       afunc.apply(this, arguments);
     } else {
@@ -996,7 +995,7 @@ function atxn(afunc) {
       };
       afunc.apply(this, a);
     }
-  }/*)*/;
+  };
 }
 
 /* Usage:
@@ -1109,7 +1108,9 @@ console.log('*** batch', q.length);
     put: function(value, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var request = store.put(ObjectToJSON.visitObject(value), value.id);
+value.jspb = "";
+//        var request = store.put(ObjectToJSON.visitObject(value), value.id);
+        var request = store.put(value.instance_, value.id);
 
         request.onsuccess = function(e) {
           sink && sink.put && sink.put(value);

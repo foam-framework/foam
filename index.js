@@ -820,6 +820,7 @@ var MDAO = Model.create({
     init: function() {
       this.SUPER();
 
+      this.map = {};
       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
     },
 
@@ -883,19 +884,21 @@ var MDAO = Model.create({
     },
 
     put: function(obj, sink) {
-      var oldValue = this.index.get(this.root, key);
+      var oldValue = this.map[obj.id];
       if ( oldValue ) {
         this.root = this.index.put(this.index.remove(this.root, obj), obj);
         this.notify_('remove', [obj]);
       } else {
         this.root = this.index.put(this.root, obj);
       }
+      this.map[obj.id] = obj;
       this.notify_('put', [obj]);
       sink && sink.put && sink.put(obj);
     },
 
     findObj_: function(key, sink) {
-      var obj = this.index.get(this.root, key);
+      var obj = this.map[key];
+      // var obj = this.index.get(this.root, key);
       if ( obj ) {
         sink.put(obj);
       } else {
@@ -924,7 +927,9 @@ var MDAO = Model.create({
 
     // TODO: this isn't correct, this is actually removeAll()
     remove: function(query, sink) {
-      query = query.f ? query : EQ(this.model.getProperty(this.model.ids[0]), query);
+      query = query.f ?
+        query :
+        EQ(this.model.getProperty(this.model.ids[0]), query);
       /*
         if ( ! query.f ) {
         this.root = this.index.remove(this.root, query);
@@ -936,6 +941,7 @@ var MDAO = Model.create({
       this.where(query).select([])(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
+          delete this.map[a[i]];
           sink && sink.remove && sink.remove(a[i]);
           this.notify_('remove', [a[i]]);
         }
@@ -944,6 +950,7 @@ var MDAO = Model.create({
 
     removeAll: function(callback) {
       this.root = [];
+      this.map = {};
       callback && callback();
     },
 
