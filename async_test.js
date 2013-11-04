@@ -55,6 +55,11 @@ arepeatpar(5,
   function(ret, a, b) { console.log(a); ret(1); }
 )(f4);
 
+console.log('test9.5');
+arepeat(5,
+  function(ret, a, b) { console.log(a); ret(1); }
+)(f4);
+
 console.log('test10');
 aseq(
   function(ret) { console.log('fA'); ret(1); },
@@ -68,8 +73,6 @@ aseq(
 
 
 var tlock = {};
-
-function atest() {
 
 var f1 = aseq(
    alog('f1 start'),
@@ -118,4 +121,3 @@ apar(
   fn("hello");
   setTimeout(function() { fn(" world!"); }, 1000);
   setTimeout(function() { functionFuture.set(console.log.bind(console)); }, 100);
-}
