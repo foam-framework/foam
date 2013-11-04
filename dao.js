@@ -1100,7 +1100,7 @@ var IDBDAO = FOAM({
           this.q_ = [];
           this.withStore_(mode, function(store) {
             var q = this.q_;
-console.log('*** batch', q.length);
+// console.log('*** batch', q.length);
             this.q_ = undefined;
             for ( var i = 0 ; i < q.length ; i++ ) {
               q[i](store);
