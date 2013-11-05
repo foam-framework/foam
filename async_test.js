@@ -51,8 +51,11 @@ apar(
 )(f4);
 
 console.log('test9');
-arepeatpar(5,
-  function(ret, a, b) { console.log(a); ret(1); }
+aseq(
+  arepeatpar(5, aseq(ayield(), function(ret, a, b) { console.log('a', a); ret(1); })),
+  ayield(),
+  arepeatpar(5, function(ret, a, b) { console.log('b', a); ret(1); }),
+  ayield()
 )(f4);
 
 console.log('test9.5');
