@@ -190,20 +190,20 @@ aseq(
     PhotoDAO.where(EQ(Photo.IS_LOCAL, true)).select(MAP(Photo.HASH, []))(ret);
   }),
   atest('2fSimpleInnerJoinQuery', function(ret) {
-    AlbumDAO.where(EQ(Album.IS_LOCAL, true)).select(MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, []), []))(ret);
-  }),
-  atest('2fSimpleInnerJoinQuery(Version 2)', function(ret) {
     AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID, []))(function (ids) {
       PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select()(ret);
   })}),
+//  atest('2fSimpleInnerJoinQuery(Simpler+Slower Version)', function(ret) {
+//    AlbumDAO.where(EQ(Album.IS_LOCAL, true)).select(MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, []), []))(ret);
+//  }),
   atest('2gSimpleInnerJoinAggregationQuery', function(ret) {
-    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
-        MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
-  }),
-  atest('2gSimpleInnerJoinAggregationQuery(Version 2)', function(ret) {
     AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID, []))(function (ids) {
-      PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select()(ret);
+      PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select(GROUP_BY(Photo.ALBUM_ID, SUM_PHOTO_COUNT))(ret);
   })}),
+//  atest('2gSimpleInnerJoinAggregationQuery(Simpler+Slower Version', function(ret) {
+//    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(
+//        MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, SUM_PHOTO_COUNT), []))(ret);
+//  }),
   atest('2hSimpleOrderByQuery', function(ret) {
     PhotoDAO.where(EQ(Photo.ALBUM_ID, avgAlbumKey)).orderBy(DESC(Photo.TIMESTAMP)).select()(ret);
   }),
