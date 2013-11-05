@@ -942,8 +942,8 @@ var MDAO = Model.create({
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
           delete this.map[a[i]];
-          sink && sink.remove && sink.remove(a[i]);
           this.notify_('remove', [a[i]]);
+          sink && sink.remove && sink.remove(a[i]);
         }
       }.bind(this));
     },

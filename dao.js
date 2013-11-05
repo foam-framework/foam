@@ -918,8 +918,8 @@ defineProperties(Array.prototype, {
       }
     */
     this.push(obj);
-    sink && sink.put && sink.put(obj);
     this.notify_('put', arguments);
+    sink && sink.put && sink.put(obj);
   },
   find: function(query, sink) {
     if ( query.f ) {
@@ -1197,8 +1197,8 @@ console.log('remove', query);
             if (query.f(value)) {
               var deleteReq = cursor.delete();
               deleteReq.onsuccess = function() {
-                sink && sink.remove && sink.remove(value);
                 self.notify_('remove', [value]);
+                sink && sink.remove && sink.remove(value);
               };
               deleteReq.onerror = function(e) {
                 sink && sink.error && sink.error('remove', e);
