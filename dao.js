@@ -327,7 +327,10 @@ var CachingDAO = {
       model: cache.model || source.model,
       put: function(obj, sink) { source.put(obj, sink); },
       remove: function(query, sink) { source.remove(query, sink); },
-      removeAll: function() { source.removeAll.apply(source, arguments); }
+      removeAll: function() {
+        cache.removeAll();
+        source.removeAll.apply(source, arguments);
+      }
     };
   }
 
@@ -1091,17 +1094,19 @@ var IDBDAO = FOAM({
       var self = this;
 
       if ( ! this.q_ ) {
-        this.q_ = [fn];
-        self.withStore_(mode, function(store) {
-          var q = self.q_;
-          self.q_ = undefined;
-          for ( var i = 0 ; i < q.length ; i++ ) {
-            q[i](store);
-          }
-        });
+        var q = [fn];
+        this.q_ = q;
+        setTimeout(function() {
+          self.withStore_(mode, function(store) {
+            // console.log('q length: ', q.length);
+            if ( self.q_ == q ) self.q_ = undefined;
+            for ( var i = 0 ; i < q.length ; i++ ) q[i](store);
+          });
+        },0);
       } else {
-//        console.log('*********** Q', this.q_.length);
         this.q_.push(fn);
+        // Diminishing returns after 10000 per batch
+        if ( this.q_.length == 10000 ) this.q_ = undefined;
       }
     },
 
@@ -1124,8 +1129,8 @@ var IDBDAO = FOAM({
         var request = store.put(self.serialize(value), value.id);
 
         request.onsuccess = function(e) {
-          sink && sink.put && sink.put(value);
           self.notify_('put', [value]);
+          sink && sink.put && sink.put(value);
         };
         request.onerror = function(e) {
           // TODO: Parse a better error mesage out of e
@@ -1154,6 +1159,7 @@ var IDBDAO = FOAM({
     },
 
     remove: function(query, sink) {
+console.log('remove', query);
       this.withStore("readwrite", function(store) {
         var self = this;
 
@@ -1168,8 +1174,8 @@ var IDBDAO = FOAM({
             var result = self.deserialize(getRequest.result);
             var delRequest = store.delete(key);
             delRequest.onsuccess = function(e) {
-              sink && sink.remove && sink.remove(result);
               self.notify_('remove', [result]);
+              sink && sink.remove && sink.remove(result);
             };
             delRequest.onerror = function(e) {
               sink && sink.error && sink.error('remove', e);
@@ -1252,8 +1258,7 @@ var IDBDAO = FOAM({
     }
   },
 
-  listeners:
-  [
+  listeners: [
     {
       model_: 'Method',
 
@@ -1655,8 +1660,8 @@ var WorkerDAO = FOAM({
         "put", obj,
         (function(response) {
           this.storage_[obj.id] = obj;
-          sink && sink.put && sink.put(obj);
           this.notify_("put", [obj]);
+          sink && sink.put && sink.put(obj);
         }).bind(this),
         sink && sink.error && sink.error.bind(sink));
     },
