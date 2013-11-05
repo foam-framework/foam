@@ -139,15 +139,14 @@ AlbumDAO = CachedIDB(MDAO.create({model: Album})
  .addIndex(Album.TIMESTAMP)
 );
 
+/*
 AlbumDAO = CascadingRemoveDAO.create({
   delegate: AlbumDAO,
   childDAO: PhotoDAO,
   property: Photo.ALBUM_ID});
-
+*/
 var avgKey = Math.floor(NUM_PHOTOS/2).toString();
 var avgAlbumKey = Math.floor(NUM_ALBUMS/2).toString();
-
-console.clear();
 
 aseq(
   atest('CreateTestAlbums' + NUM_ALBUMS, arepeat(NUM_ALBUMS, function (ret, i) {
@@ -160,15 +159,17 @@ aseq(
     photos.push(Photo.create(testData.photos[i]));
     ret();
   })),
-  function(ret) { testData = undefined; ret(); },
+  function(ret) { console.clear(); testData = undefined; ret(); },
   arepeat(DEBUG ? 1 : 3, aseq(
   alog('Benchmark...'),
-  atest('1aCreateAlbums' + NUM_ALBUMS, atxn(arepeatpar(NUM_ALBUMS, function (ret, i) {
+  atest('1aCreateAlbums' + NUM_ALBUMS, arepeatpar(NUM_ALBUMS, function (ret, i) {
     AlbumDAO.put(albums[i], ret);
-  }))),
-  atest('1bCreatePhotos' + NUM_PHOTOS, atxn(arepeatpar(NUM_PHOTOS, function (ret, i) {
+  })),
+  asleep(2000),
+  atest('1bCreatePhotos' + NUM_PHOTOS, arepeatpar(NUM_PHOTOS, function (ret, i) {
     PhotoDAO.put(photos[i], ret);
-  }))),
+  })),
+  asleep(5000),
   atest('2aSelectAllAlbumsQuery', function(ret) { AlbumDAO.select()(ret); }),
   atest('2aSelectAllPhotosQuery', function(ret) { PhotoDAO.select()(ret); }),
   atest('2bSingleKeyQuery',       function(ret) { PhotoDAO.find(avgKey,ret); }),
@@ -224,10 +225,10 @@ aseq(
   })),
   atest('3bCascadingDelete', atxn(function(ret) { AlbumDAO.remove('3', ret); })),
   */
-  atest('Cleanup', atxn(function(ret) {
+  atest('Cleanup', function(ret) {
     AlbumDAO.removeAll();
     PhotoDAO.removeAll();
     ret();
-  })),
+  }),
   asleep(10000)
 )))(alog('Done.'));
