@@ -43,7 +43,7 @@ console.log(i, k, v);
     // for debugging
     if ( this.model_ ) obj.TYPE = this.model_.name;
 
-    obj.copyFrom(args);
+    if ( typeof args === 'object' ) obj.copyFrom(args);
     obj.init(args);
 
     return obj;
