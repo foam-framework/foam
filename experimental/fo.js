@@ -83,14 +83,14 @@ var CTX = {
     Function,
   ],
 
-  prototype: {
-    Object: Object,
-    String: String,
-    Boolean: Boolean,
-    Number: Number,
-    Date: Date,
-    Function: Function
-  }
+  prototype:{},
+
+  Object: Object,
+  String: String,
+  Boolean: Boolean,
+  Number: Number,
+  Date: Date,
+  Function: Function
 };
 
 (function() {
@@ -100,23 +100,12 @@ var CTX = {
     name: 'Method',
     features: [],
     create: function(args) {
-      with ( CTX.prototype ) {
-        args.install = function(o) {
-          // Capture the model's prototype as the context for the
-          // method.  This allows sub-features to be accessed as if they're
-          // globals.
-          with ( o.prototype ) {
-            with ( this.prototype ) {
-              var fn = eval('(' + this + ')');
-            }
-          }
-
-          o.prototype[this.name] = fn;
-          if (o.prototype.__proto__[this.name]) {
-            o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-          }
-        };
-      }
+      args.install = function(o) {
+        o.prototype[this.name] = this;
+        if (o.prototype.__proto__[this.name]) {
+          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
+        }
+      };
       args.clone = function() {
         return this;
       };
@@ -132,9 +121,9 @@ var CTX = {
   CTX.features.push(Model);
   CTX.features.push(Method);
 
-  CTX.prototype.Model = Model;
-  CTX.prototype.FObject = FObject;
-  CTX.prototype.Method = Method;
+  CTX.Model = Model;
+  CTX.FObject = FObject;
+  CTX.Method = Method;
 
   Model.__proto__ = Model.prototype;
   Model.prototype.__proto__ = FObject.prototype;
@@ -171,8 +160,10 @@ var features = [
       __proto__: this.prototype,
       TYPE: this.name,
       features: [],
-      prototype: { __proto__: FObject.prototype, static_: {} },
-      instance_: {}
+      // TODO: A better way to lookup FObject.
+      prototype: { __proto__: CTX.FObject.prototype, static_: {} },
+      instance_: {},
+      ctx_: {},
     };
     obj.copyFrom(args);
     obj.init(args);
@@ -191,7 +182,7 @@ var features = [
   ['FObject',    'Method',  function clone() {
     var self = this;
     this.model_.features.forEach(function(f) {
-      if ( Property.isInstance(f) ) {
+      if ( CTX.Property.isInstance(f) ) {
         if ( Object.prototype.hasOwnProperty.call(self, f.name) ) {
           var value = self[f.name];
           delete self[f.name];
@@ -208,16 +199,14 @@ var features = [
     return this.features && this.features.get(name);
   }],
   ['Model',    'Method',  function install(o) {
-    try { 
-      var prop = Property.create({
-        name: this.name,
-        defaultValue: this
-      });
-      prop.install(o);
-    } catch(e) {
-      console.log("Failed to build property, installing in to prototype");
-      o.prototype[this.name] = this;
-    }
+    o[this.name] = this;
+      // TODO Better way to lookup CTX.Property.
+    var prop = CTX.Property.create({
+      name: this.name,
+      scope: 'ctx_',
+      defaultValue: this
+    });
+    prop.install && prop.install(o);
   }],
   ['Model',    'Method',  function isSubModel(model) {
     try {
@@ -273,12 +262,12 @@ var features = [
     var get = this.getter || (
       defaultValueFn ?
         (function() {
-          if ( ! this[scope] || this[scope][name] === undefined )
+          if ( this[scope][name] === undefined )
             return defaultValueFn.call(this, prop);
           return this[scope][name];
         }) :
         (function() {
-          if ( !this[scope] || this[scope][name] === undefined )
+          if ( this[scope][name] === undefined )
             return defaultValue;
           return this[scope][name]
         }));
@@ -310,7 +299,6 @@ var features = [
   }],
   ['Property', 'Property', { name: 'scope', scope: 'instance_', defaultValue: 'instance_' }],
   ['Property', 'Property', { name: 'name' }],
-  [null, 'Model', { name: 'FunctionProperty' }],
   ['Property', 'Property', {
     name: 'defaultValue',
     defaultValue: '',
@@ -329,6 +317,11 @@ var features = [
      getter: function f() { return f.caller.super_.bind(this); },
      setter: function() {},
      enumerable: false }],
+/*  ['FObject', 'Property', {
+    name: 'ctx_',
+    scope: 'this_',
+    valueFactory: function() { return {}; }
+  }],*/
   ['Model',    'Property', { name: 'features',
                              valueFactory: function() { return []; } }],
   [null,       'Model',    { name: 'Feature' }],
@@ -353,7 +346,7 @@ var features = [
   ['Extends',  'Factory', {
     factory: function(model) {
       return this.SUPER({
-        model: CTX.prototype[model],
+        model: CTX[model],
         name: 'extends'
       });
     }
@@ -376,18 +369,9 @@ var features = [
   [null, 'Model', {
     name: 'Method',
     create: function(args) {
-      var obj = CTX.prototype['Model'].create(args);
+      var obj = CTX['Model'].create(args);
       obj.install = function(o) {
-        // Capture the model's prototype as the context for the
-        // method.  This allows sub-features to be accessed as if they're
-        // globals.
-        with ( o.prototype ) {
-          with ( this.model_.prototype ) {
-            var fn = eval('(' + this.jsCode + ')');
-          }
-        }
-
-        o.prototype[this.name] = fn;
+        o.prototype[this.name] = this.jsCode;
         if (o.prototype.__proto__[this.name]) {
           o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
         }
@@ -399,13 +383,8 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
-      with ( o.prototype ) {
-        with ( this.model_.prototype ) {
-          var fn = eval('(' + this.jsCode + ')');
-        }
-      }
-      if ( o.prototype[this.name] ) fn.super_ = o.prototype[this.name];
-      o.prototype[this.name] = fn;
+      if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
+      o.prototype[this.name] = this.jsCode;
     }
   }],
   ['Method', 'Factory', function(args) {
@@ -1592,6 +1571,7 @@ var features = [
     name: 'required',
     defaultValue: false
   }],
+  [null, 'Model', { name: 'FunctionProperty' }],
   ['FunctionProperty', 'Extends', 'Property'],
   ['Property', 'FunctionProperty', {
     name: 'defaultValueFn',
@@ -1753,11 +1733,13 @@ var features = [
   [null, 'Model', { name: 'Mail' }],
   ['Mail', 'Model', { name: 'EMail' }],
   ['Mail', 'Method', function test() {
-    var mail = EMail.create({ sender: 'adamvy' });
+    var mail = this.EMail.create({ sender: 'adamvy' });
     mail.send();
   }],
   ['Mail.EMail', 'Property', { name: 'sender', defaultValue: '' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
+  ['Mail', 'Model', { name: 'TestEMail' }],
+  ['Mail.TestEMail', 'Method', function send() { console.log("DEBUG VERSION: " + this.sender); }],
 ];
 
 function lookup(address, model) {
@@ -1807,6 +1789,11 @@ build(CTX);
 var env = CTX.create();
 
 with (env) {
+  var context = {
+    EMail: Mail.TestEMail
+  };
   var mails = Mail.create();
+  mails.test();
+  mails.ctx_ = context;
   mails.test();
 }
