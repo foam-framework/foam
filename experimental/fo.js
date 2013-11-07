@@ -72,6 +72,7 @@ Array.prototype.pipe = function(l) {
 
 var CTX = {
   name: 'ROOT',
+  context_: {},
   instance_: {},
   features: [
     Object,
@@ -92,8 +93,6 @@ var CTX = {
   }
 };
 
-var GLOBAL = CTX.prototype;
-
 (function() {
   var FObject = { name: 'FObject', prototype: { static_: {} }, features: [], instance_: {} };
   var Model = { name: 'Model', prototype: { static_: {} }, features: [], instance_: {} };
@@ -101,21 +100,23 @@ var GLOBAL = CTX.prototype;
     name: 'Method',
     features: [],
     create: function(args) {
-      args.install = function(o) {
-        // Capture the model's prototype as the context for the
-        // method.  This allows sub-features to be accessed as if they're
-        // globals.
-        with ( GLOBAL ) {
+      with ( CTX.prototype ) {
+        args.install = function(o) {
+          // Capture the model's prototype as the context for the
+          // method.  This allows sub-features to be accessed as if they're
+          // globals.
           with ( o.prototype ) {
-            var fn = eval('(' + this + ')');
+            with ( this.prototype ) {
+              var fn = eval('(' + this + ')');
+            }
           }
-        }
 
-        o.prototype[this.name] = fn;
-        if (o.prototype.__proto__[this.name]) {
-          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-        }
-      };
+          o.prototype[this.name] = fn;
+          if (o.prototype.__proto__[this.name]) {
+            o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
+          }
+        };
+      }
       args.clone = function() {
         return this;
       };
@@ -207,7 +208,16 @@ var features = [
     return this.features && this.features.get(name);
   }],
   ['Model',    'Method',  function install(o) {
-    o.prototype[this.name] = this;
+    try { 
+      var prop = Property.create({
+        name: this.name,
+        defaultValue: this
+      });
+      prop.install(o);
+    } catch(e) {
+      console.log("Failed to build property, installing in to prototype");
+      o.prototype[this.name] = this;
+    }
   }],
   ['Model',    'Method',  function isSubModel(model) {
     try {
@@ -263,12 +273,12 @@ var features = [
     var get = this.getter || (
       defaultValueFn ?
         (function() {
-          if ( this[scope][name] === undefined )
+          if ( ! this[scope] || this[scope][name] === undefined )
             return defaultValueFn.call(this, prop);
           return this[scope][name];
         }) :
         (function() {
-          if ( this[scope][name] === undefined )
+          if ( !this[scope] || this[scope][name] === undefined )
             return defaultValue;
           return this[scope][name]
         }));
@@ -371,8 +381,8 @@ var features = [
         // Capture the model's prototype as the context for the
         // method.  This allows sub-features to be accessed as if they're
         // globals.
-        with ( GLOBAL ) {
-          with ( o.prototype ) {
+        with ( o.prototype ) {
+          with ( this.model_.prototype ) {
             var fn = eval('(' + this.jsCode + ')');
           }
         }
@@ -389,8 +399,13 @@ var features = [
   ['Method', 'Method', {
     name: 'install',
     jsCode: function(o) {
-      if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
-      o.prototype[this.name] = this.jsCode;
+      with ( o.prototype ) {
+        with ( this.model_.prototype ) {
+          var fn = eval('(' + this.jsCode + ')');
+        }
+      }
+      if ( o.prototype[this.name] ) fn.super_ = o.prototype[this.name];
+      o.prototype[this.name] = fn;
     }
   }],
   ['Method', 'Factory', function(args) {
@@ -400,19 +415,7 @@ var features = [
         jsCode: args
       };
     }
-
-    var obj = this.SUPER(args);
-
-    // Capture the model's prototype as the context for the
-    // method.  This allows sub-features to be accessed as if they're
-    // globals.
-    with ( GLOBAL ) {
-      with ( obj.prototype ) {
-        obj.jsCode = eval('(' + obj.jsCode + ')');
-      }
-    }
-
-    return obj;
+    return this.SUPER(args);
   }],
   ['Method', 'Extends', 'Feature'],
   [null, 'Model', { name: 'Constant' }],
@@ -1648,7 +1651,8 @@ var features = [
   ['ArrayProperty', 'FunctionProperty', {
     name: 'preSet',
     defaultValue: function(value, oldValue, prop) {
-      var m = GLOBAL[prop.subType];
+      // TODO There is no GLOBAL currently
+      var m;// = GLOBAL[prop.subType];
 
       if ( ! m ) {
         return value;
@@ -1748,10 +1752,12 @@ var features = [
   // Some test models.
   [null, 'Model', { name: 'Mail' }],
   ['Mail', 'Model', { name: 'EMail' }],
-  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: 'adamvy' }],
+  ['Mail', 'Method', function test() {
+    var mail = EMail.create({ sender: 'adamvy' });
+    mail.send();
+  }],
+  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: '' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
-  ['Mail.EMail', 'Method', function test() { console.log(testHelper()); }],
-  ['Mail.EMail.test', 'Method', function testHelper() { return 12; }],
 ];
 
 function lookup(address, model) {
@@ -1802,12 +1808,5 @@ var env = CTX.create();
 
 with (env) {
   var mails = Mail.create();
-  var mail = mails.EMail.create();
-  mail.send();
-  mail.test();
-  var mail2 = mails.EMail.create({ sender: 'kgr' });
-  mail.send();
-  mail.sender = 'mike';
-  mail2.send();
-  mail2.test();
+  mails.test();
 }
