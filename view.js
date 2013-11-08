@@ -2655,7 +2655,7 @@ var GridView = FOAM({
 
      initHTML: function() {
        var choices = [];
-       this.model.properties.select({put:function(p) {
+       this.model.properties.orderBy(Property.LABEL).select({put:function(p) {
          choices.push([p, p.label]);
        }});
        this.row.choices = choices;
