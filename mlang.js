@@ -1124,9 +1124,9 @@ var GridByExpr = FOAM({
 
       var self = this;
       var f = function() {
-          self.cols = GROUP_BY(self.xFunc, COUNT());
-          self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
-        };
+        self.cols = GROUP_BY(self.xFunc, COUNT());
+        self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
+      };
 
       self.addPropertyListener('xFunc', f);
       self.addPropertyListener('yFunc', f);
@@ -1169,7 +1169,7 @@ var GridByExpr = FOAM({
 
        for ( var x in cols ) {
          var str = x.toHTML ? x.toHTML() : x;
-         out += '<th>', str, '</th>';
+         out += '<th>' + str + '</th>';
        }
        out += '</tr>';
 

@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-Array.prototype.Ifind = function(name) {
+Array.prototype.get = function(name) {
   for ( var idx = 0; idx < this.length; idx++ ) {
     if ( this[idx].name === name ) return this[idx];
   }
-  return this.__super__ && this.__super__.Ifind(name);
+  return this.__super__ && this.__super__.get(name);
 };
 
 Array.prototype.listen = function(listener) {
@@ -28,6 +28,7 @@ Array.prototype.listen = function(listener) {
 };
 
 Array.prototype.unlisten = function(l) {
+  if ( ! this.listeners_ ) return;
   this.listeners_ =
     this.listeners_.filter(function(l2) { return l === l2; });
 };
@@ -71,6 +72,7 @@ Array.prototype.pipe = function(l) {
 
 var CTX = {
   name: 'ROOT',
+  context_: {},
   instance_: {},
   features: [
     Object,
@@ -81,17 +83,15 @@ var CTX = {
     Function,
   ],
 
-  prototype: {
-    Object: Object,
-    String: String,
-    Boolean: Boolean,
-    Number: Number,
-    Date: Date,
-    Function: Function
-  }
-};
+  prototype:{},
 
-var GLOBAL = CTX.prototype;
+  Object: Object,
+  String: String,
+  Boolean: Boolean,
+  Number: Number,
+  Date: Date,
+  Function: Function
+};
 
 (function() {
   var FObject = { name: 'FObject', prototype: { static_: {} }, features: [], instance_: {} };
@@ -101,16 +101,7 @@ var GLOBAL = CTX.prototype;
     features: [],
     create: function(args) {
       args.install = function(o) {
-        // Capture the model's prototype as the context for the
-        // method.  This allows sub-features to be accessed as if they're
-        // globals.
-        with ( GLOBAL ) {
-          with ( o.prototype ) {
-            var fn = eval('(' + this + ')');
-          }
-        }
-
-        o.prototype[this.name] = fn;
+        o.prototype[this.name] = this;
         if (o.prototype.__proto__[this.name]) {
           o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
         }
@@ -130,9 +121,9 @@ var GLOBAL = CTX.prototype;
   CTX.features.push(Model);
   CTX.features.push(Method);
 
-  CTX.prototype.Model = Model;
-  CTX.prototype.FObject = FObject;
-  CTX.prototype.Method = Method;
+  CTX.Model = Model;
+  CTX.FObject = FObject;
+  CTX.Method = Method;
 
   Model.__proto__ = Model.prototype;
   Model.prototype.__proto__ = FObject.prototype;
@@ -169,8 +160,10 @@ var features = [
       __proto__: this.prototype,
       TYPE: this.name,
       features: [],
-      prototype: { __proto__: FObject.prototype, static_: {} },
-      instance_: {}
+      // TODO: A better way to lookup FObject.
+      prototype: { __proto__: CTX.FObject.prototype, static_: {} },
+      instance_: {},
+      ctx_: {},
     };
     obj.copyFrom(args);
     obj.init(args);
@@ -189,7 +182,7 @@ var features = [
   ['FObject',    'Method',  function clone() {
     var self = this;
     this.model_.features.forEach(function(f) {
-      if ( Property.isInstance(f) ) {
+      if ( CTX.Property.isInstance(f) ) {
         if ( Object.prototype.hasOwnProperty.call(self, f.name) ) {
           var value = self[f.name];
           delete self[f.name];
@@ -203,10 +196,17 @@ var features = [
     return this.TYPE;
   }],
   ['FObject',  'Method',  function getFeature(name) {
-    return this.features && this.features.Ifind(name);
+    return this.features && this.features.get(name);
   }],
   ['Model',    'Method',  function install(o) {
-    o.prototype[this.name] = this;
+    o[this.name] = this;
+      // TODO Better way to lookup CTX.Property.
+    var prop = CTX.Property.create({
+      name: this.name,
+      scope: 'ctx_',
+      defaultValue: this
+    });
+    prop.install && prop.install(o);
   }],
   ['Model',    'Method',  function isSubModel(model) {
     try {
@@ -240,9 +240,9 @@ var features = [
   }],
 
   ['Property', 'Method', function install(o, existing) {
-    var parent = o.features && o.features.Ifind('extends');
+    var parent = o.features && o.features.get('extends');
     if ( parent ) {
-      var parentFeature = parent.model.features.Ifind(this.name);
+      var parentFeature = parent.model.features.get(this.name);
       if ( parentFeature ) {
         this.instance_.__proto__ = parentFeature.instance_;
       }
@@ -256,12 +256,14 @@ var features = [
     var name = this.name;
     var defaultValueFn = this.defaultValueFn;
     var defaultValue = this.defaultValue;
+    var preSet = this.preSet;
+    var postSet = this.postSet;
 
     var get = this.getter || (
       defaultValueFn ?
         (function() {
           if ( this[scope][name] === undefined )
-            return defaultValueFn();
+            return defaultValueFn.call(this, prop);
           return this[scope][name];
         }) :
         (function() {
@@ -273,7 +275,12 @@ var features = [
     var set = this.setter || function(value) {
       // Do we want to restirct oldValue to just the local instance, not parent instances_?
       var oldValue = this[scope][prop.name];
+
+      if ( preSet ) value = preSet.call(this, value, oldValue, prop);
+
       this[scope][prop.name] = value;
+
+      if ( postSet ) postSet.call(this, value, oldValue, prop)
 
       this.propertyChange && this.propertyChange(prop.name, oldValue, value);
     };
@@ -292,9 +299,11 @@ var features = [
   }],
   ['Property', 'Property', { name: 'scope', scope: 'instance_', defaultValue: 'instance_' }],
   ['Property', 'Property', { name: 'name' }],
-  ['Property', 'Property', { name: 'defaultValue', defaultValue: '' }],
-  ['Property', 'Property', { name: 'defaultValueFn' }],
-  ['Property', 'Property', { name: 'valueFactory' }],
+  ['Property', 'Property', {
+    name: 'defaultValue',
+    defaultValue: '',
+    help: 'The property\'s default value.'
+  }],
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
   ['Property', 'Method', function f(o) {
     return o[this.name];
@@ -308,6 +317,11 @@ var features = [
      getter: function f() { return f.caller.super_.bind(this); },
      setter: function() {},
      enumerable: false }],
+/*  ['FObject', 'Property', {
+    name: 'ctx_',
+    scope: 'this_',
+    valueFactory: function() { return {}; }
+  }],*/
   ['Model',    'Property', { name: 'features',
                              valueFactory: function() { return []; } }],
   [null,       'Model',    { name: 'Feature' }],
@@ -332,7 +346,7 @@ var features = [
   ['Extends',  'Factory', {
     factory: function(model) {
       return this.SUPER({
-        model: CTX.prototype[model],
+        model: CTX[model],
         name: 'extends'
       });
     }
@@ -355,18 +369,9 @@ var features = [
   [null, 'Model', {
     name: 'Method',
     create: function(args) {
-      var obj = CTX.prototype['Model'].create(args);
+      var obj = CTX['Model'].create(args);
       obj.install = function(o) {
-        // Capture the model's prototype as the context for the
-        // method.  This allows sub-features to be accessed as if they're
-        // globals.
-        with ( GLOBAL ) {
-          with ( o.prototype ) {
-            var fn = eval('(' + this.jsCode + ')');
-          }
-        }
-
-        o.prototype[this.name] = fn;
+        o.prototype[this.name] = this.jsCode;
         if (o.prototype.__proto__[this.name]) {
           o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
         }
@@ -389,19 +394,7 @@ var features = [
         jsCode: args
       };
     }
-
-    var obj = this.SUPER(args);
-
-    // Capture the model's prototype as the context for the
-    // method.  This allows sub-features to be accessed as if they're
-    // globals.
-    with ( GLOBAL ) {
-      with ( obj.prototype ) {
-        obj.jsCode = eval('(' + obj.jsCode + ')');
-      }
-    }
-
-    return obj;
+    return this.SUPER(args);
   }],
   ['Method', 'Extends', 'Feature'],
   [null, 'Model', { name: 'Constant' }],
@@ -1487,21 +1480,40 @@ var features = [
     return hash;
   }],
 
-
+  // Finish property model and add types.
   [null, 'Model', { name: 'StringProperty' }],
   ['StringProperty', 'Extends', 'Property'],
-  ['Feature', 'StringProperty', { name: 'help' }],
-
+  ['Feature', 'StringProperty', {
+    name: 'help',
+    help: 'Help text associated with the feature.'
+  }],
+  ['Feature', 'StringProperty', {
+    name: 'name',
+    help: 'The name of the feature.'
+  }],
+  ['Property', 'StringProperty', {
+    name: 'name',
+    help: 'The coding identifier for the property'
+  }],
+  ['Feature', 'StringProperty', {
+    name: 'label',
+    help: 'The display label for the feature.',
+    defaultValueFn: function() { return this.name.labelize(); }
+  }],
+  ['Feature', 'StringProperty', {
+    name: 'tableLabel',
+    help: 'The table display label for the feature.',
+    defaultValueFn: function() { return this.name.labelize(); }
+  }],
   ['Property', 'StringProperty', {
     name: 'type',
+    required: true,
     help: 'The FOAM type of this property.'
   }],
   ['StringProperty', 'StringProperty', {
     name: 'type',
     defaultValue: 'String',
-    displayWidth: 20
-  }, true],
-
+  }],
   ['Property', 'StringProperty', {
     name: 'javaType',
     help: 'The Java type of this property.'
@@ -1511,13 +1523,223 @@ var features = [
     defaultValue: 'String'
   }],
 
+  [null, 'Model', { name: 'IntegerProperty' }],
+  ['IntegerProperty', 'Extends', 'Property'],
+  ['IntegerProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Integer'
+  }],
+  ['IntegerProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValue: 'int'
+  }],
+  ['IntegerProperty', 'IntegerProperty', {
+    name: 'defaultValue',
+    defaultValue: 0
+  }],
+  ['Property', 'IntegerProperty', {
+    name: 'displayWidth',
+    defaultValue: 30,
+    help: 'The display width of the property.'
+  }],
+  ['Property', 'IntegerProperty', {
+    name: 'displayHeight',
+    defaultValue: 1,
+    help: 'The display height of the property.'
+  }],
+  ['IntegerProperty', 'IntegerProperty', {
+    name: 'displayWidth',
+    defaultValue: 8
+  }],
+  ['StringProperty', 'IntegerProperty', {
+    name: 'displayHeight',
+    displayWidth: 8,
+    defaultValue: 1,
+  }],
+
+  [null, 'Model', { name: 'BooleanProperty' }],
+  ['BooleanProperty', 'Extends', 'Property'],
+  ['BooleanProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Boolean'
+  }],
+  ['BooleanProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValue: 'Boolean'
+  }],
+  ['Property', 'BooleanProperty', {
+    name: 'required',
+    defaultValue: false
+  }],
+  [null, 'Model', { name: 'FunctionProperty' }],
+  ['FunctionProperty', 'Extends', 'Property'],
+  ['Property', 'FunctionProperty', {
+    name: 'defaultValueFn',
+    help: 'The property\'s default value function.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'valueFactory',
+    help: 'Factory for creating inital value when object instantiated.'
+  }],
+
+  ['FunctionProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Function'
+  }],
+  ['FunctionProperty', 'StringProperty', {
+    name: 'view',
+    defaultValue: 'FunctionView'
+  }],
+
+  ['Property', 'FunctionProperty', {
+    name: 'preSet',
+    help: 'An adapter function called before normal setter logic.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'postSet',
+    help: 'A function called after normal setter logic, but before property change event fired.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'setter',
+    help: 'The property\'s setter function.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'getter',
+    help: 'The prpoerty\'s getter function.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'tableFormatter',
+    label: 'Table View Cell Formatter',
+    help: 'Function to format value for display in TableView'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'summaryFormatter',
+    label: 'Summary View Formatter',
+    help: 'Function to format value for display in SummarView'
+  }],
+
+  [null, 'Model', { name: 'ArrayProperty' }],
+  ['ArrayProperty', 'Extends', 'Property'],
+  ['ArrayProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Array'
+  }],
+  ['ArrayProperty', 'StringProperty', {
+    name: 'subType',
+    help: 'The FOAM sub-type of this property'
+  }],
+  ['ArrayProperty', 'FunctionProperty', {
+    name: 'preSet',
+    defaultValue: function(value, oldValue, prop) {
+      // TODO There is no GLOBAL currently
+      var m;// = GLOBAL[prop.subType];
+
+      if ( ! m ) {
+        return value;
+      }
+
+      for ( var i = 0; i < value.length; i++ ) {
+        if ( ! m.isInstance(value[i]) ) {
+          value[i] = m.create(value[i]);
+        }
+      }
+    }
+  }],
+  ['ArrayProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValueFn: function(p) { return p.subType + '[]'; }
+  }],
+  ['ArrayProperty', 'StringProperty', {
+    name: 'view',
+    defaultvlaue: 'ArrayView'
+  }],
+  ['ArrayProperty', 'FunctionProperty', {
+    name: 'valueFactory',
+    defaultValue: function() { return []; }
+  }],
+
+  [null, 'Model', {
+    name: 'ReferenceProperty',
+    help: 'A foreign key reference to another Entity.'
+  }],
+  ['ReferenceProperty', 'Extends', 'Property'],
+  ['ReferenceProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Reference'
+  }],
+  ['ReferenceProperty', 'StringProperty', {
+    name: 'javaType',
+    // TODO: should obtain primary-key type from subType
+    defaultValueFn: function(p) { return 'Object'; },
+  }],
+  ['ReferenceProperty', 'StringProperty', {
+    name: 'view',
+    // TODO: should be 'KeyView'
+    defaultValue: 'TextFieldView'
+  }],
+
+  [null, 'Model', {
+    name: 'StringArrayProperty',
+    help: 'An array of String values.'
+  }],
+  ['StringArrayProperty', 'Extends', 'ArrayProperty'],
+  ['StringArrayProperty', 'StringProperty', {
+    name: 'subType',
+    defaultValue: 'String'
+  }],
+  ['StringArrayProperty', 'StringProperty', {
+    name: 'view',
+    defaultValue: 'StringArrayView'
+  }],
+
+  // Actions
+  [null, 'Model', { name: 'Action' }],
+  ['Action', 'BooleanProperty', {
+    name: 'default',
+    help: 'Indicates if this is the default action.'
+  }],
+  ['Action', 'FunctionProperty', {
+    name: 'isAvailable',
+    help: 'Function to determine if the action is available.',
+    defaultValue: function() { return true; }
+  }],
+  ['Action', 'FunctionProperty', {
+    name: 'isEnabled',
+    help: 'Function to determine if the action is enabled.',
+    defaultValue: function() { return true; }
+  }],
+  ['Action', 'Extends', 'Method'],
+
+  [null, 'Model', { name: 'Template' }],
+  ['Template', 'StringProperty', {
+    name: 'template',
+    displayWidth: 180,
+    displayHeight: 30,
+    help: 'The template text for this template',
+  }],
+  ['Template', 'ArrayProperty', {
+    name: 'templates',
+    subType: 'Template',
+    help: 'Sub-templates of this template'
+  }],
+  ['Template', 'Extends', 'Feature'],
+
+
+  ['Template', 'Method', function install(o) {
+    // TODO: finish this once we have templateutil.
+  }],
+
   // Some test models.
   [null, 'Model', { name: 'Mail' }],
   ['Mail', 'Model', { name: 'EMail' }],
-  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: 'adamvy' }],
+  ['Mail', 'Method', function test() {
+    var mail = this.EMail.create({ sender: 'adamvy' });
+    mail.send();
+  }],
+  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: '' }],
   ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
-  ['Mail.EMail', 'Method', function test() { console.log(testHelper()); }],
-  ['Mail.EMail.test', 'Method', function testHelper() { return 12; }],
+  ['Mail', 'Model', { name: 'TestEMail' }],
+  ['Mail.TestEMail', 'Method', function send() { console.log("DEBUG VERSION: " + this.sender); }],
 ];
 
 function lookup(address, model) {
@@ -1567,13 +1789,11 @@ build(CTX);
 var env = CTX.create();
 
 with (env) {
+  var context = {
+    EMail: Mail.TestEMail
+  };
   var mails = Mail.create();
-  var mail = mails.EMail.create();
-  mail.send();
-  mail.test();
-  var mail2 = mails.EMail.create({ sender: 'kgr' });
-  mail.send();
-  mail.sender = 'mike';
-  mail2.send();
-  mail2.test();
+  mails.test();
+  mails.ctx_ = context;
+  mails.test();
 }
