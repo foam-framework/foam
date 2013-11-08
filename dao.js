@@ -2289,6 +2289,6 @@ var RestDAO = FOAM({
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
-Function.prototype.remove = function() { this.apply(this, arguments); };
-Function.prototype.error  = function() { this.apply(this, arguments); };
-Function.prototype.eof    = function() { this.apply(this, arguments); };
+//Function.prototype.remove = function() { this.apply(this, arguments); };
+//Function.prototype.error  = function() { this.apply(this, arguments); };
+//Function.prototype.eof    = function() { this.apply(this, arguments); };

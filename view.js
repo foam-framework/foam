@@ -1994,7 +1994,7 @@ var TableView = FOAM({
    extendsModel: 'AbstractView',
 
    name: 'TableView',
-   label: 'Table View 2',
+   label: 'Table View',
 
    properties: [
       {
@@ -2057,7 +2057,12 @@ var TableView = FOAM({
    methods: {
 
      layout: function() {
-       var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+       var parent;
+       try {
+         var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+       } catch (x) {
+         return;
+       }
 
        if ( ! parent ) return;
 
