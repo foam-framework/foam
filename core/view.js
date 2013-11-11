@@ -1756,7 +1756,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.elementId ) { debugger; return; }
+      if ( ! this.elementId ) { return; }
 
       this.children = [];
 

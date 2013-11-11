@@ -932,19 +932,22 @@ var AlternateView = FOAM({
      },
 
       installSubView: function(viewChoice) {
-         var view = typeof(viewChoice.view) === 'function' ?
-           viewChoice.view(this.value.get().model_, this.value) :
-           GLOBAL[viewChoice.view].create(this.value.get().model_, this.value);
-
-         // TODO: some views are broken and don't have model_, remove
-         // first guard when fixed.
-         if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
-
-         this.$.innerHTML = view.toHTML();
-         view.initHTML();
-         view.value && view.value.set(this.value.get());
-//       if ( view.set ) view.set(this.model.get());
-//       Events.link(this.model, this.view.model);
+        var view = typeof(viewChoice.view) === 'function' ?
+          viewChoice.view(this.value.get().model_, this.value) :
+          GLOBAL[viewChoice.view].create({
+            model: this.value.get().model_,
+            value: this.value
+          });
+        
+        // TODO: some views are broken and don't have model_, remove
+        // first guard when fixed.
+        if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
+        
+        this.$.innerHTML = view.toHTML();
+        view.initHTML();
+        view.value && view.value.set(this.value.get());
+        //       if ( view.set ) view.set(this.model.get());
+        //       Events.link(this.model, this.view.model);
       },
 
       toHTML: function() {

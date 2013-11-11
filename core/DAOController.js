@@ -474,7 +474,7 @@ var DAOUpdateController = FOAM({
                      {
                         model_: 'ViewChoice',
                         label:  'GUI',
-                        view:   'DetailView2'
+                        view:   'DetailView'
                      },
                      {
                         model_: 'ViewChoice',
@@ -508,7 +508,7 @@ var DAOUpdateController = FOAM({
 
       initHTML: function() {
         this.SUPER();
-         this.view.initHTML();
+        this.view.initHTML();
       }
    }
 });
