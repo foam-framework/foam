@@ -1756,7 +1756,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.elementId ) { debugger; return; }
+      if ( ! this.elementId ) { return; }
 
       this.children = [];
 
@@ -1994,7 +1994,7 @@ var TableView = FOAM({
    extendsModel: 'AbstractView',
 
    name: 'TableView',
-   label: 'Table View 2',
+   label: 'Table View',
 
    properties: [
       {
@@ -2057,7 +2057,12 @@ var TableView = FOAM({
    methods: {
 
      layout: function() {
-       var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+       var parent;
+       try {
+         var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+       } catch (x) {
+         return;
+       }
 
        if ( ! parent ) return;
 
@@ -2655,7 +2660,7 @@ var GridView = FOAM({
 
      initHTML: function() {
        var choices = [];
-       this.model.properties.select({put:function(p) {
+       this.model.properties.orderBy(Property.LABEL).select({put:function(p) {
          choices.push([p, p.label]);
        }});
        this.row.choices = choices;

@@ -7,12 +7,10 @@
 - Update to full Issue Model
 - TableView Column Features
 - Add scrollbar
-- Add header to TableView
 - Header + Footer
 - EQ_IC
 
 IDAO
-  - efficient REVERSE
   - efficient OR
 
 Sync

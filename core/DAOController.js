@@ -348,13 +348,14 @@ var DAOCreateController = FOAM({
       },
 
       init: function() {
-         var tmp = this.model;
+        var tmp = this.model;
         this.SUPER();
-         this.model = tmp;
-
-         this.obj = this.model.create();
-
-        this.view = DetailView2.create({model: this.model, value: SimpleValue.create(this.obj)});
+        this.model = tmp;
+        
+        this.obj = this.model.create();
+        
+        //        this.view = DetailView2.create({model: this.model, value: SimpleValue.create(this.obj)});
+        this.view = DetailView.create({model: this.model, value: this.propertyValue('name')});
       },
 
       toHTML: function() {
@@ -363,7 +364,7 @@ var DAOCreateController = FOAM({
 
       initHTML: function() {
         this.SUPER();
-         this.view.initHTML();
+        this.view.initHTML();
       }
    }
 });
@@ -473,7 +474,7 @@ var DAOUpdateController = FOAM({
                      {
                         model_: 'ViewChoice',
                         label:  'GUI',
-                        view:   'DetailView2'
+                        view:   'DetailView'
                      },
                      {
                         model_: 'ViewChoice',
@@ -507,7 +508,7 @@ var DAOUpdateController = FOAM({
 
       initHTML: function() {
         this.SUPER();
-         this.view.initHTML();
+        this.view.initHTML();
       }
    }
 });

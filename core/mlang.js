@@ -840,8 +840,7 @@ var SumExpr = FOAM({
      pipe: function(sink) { sink.put(this); },
      put: function(obj) { this.instance_.sum += this.arg1.f(obj); },
      remove: function(obj) { this.sum -= this.arg1.f(obj); },
-     toString: function() { return this.sum; },
-     clone: function() { return this; var c = SumExpr.create(); c.instance_.sum = this.instance_.sum; return c; }
+     toString: function() { return this.sum; }
    }
 });
 
