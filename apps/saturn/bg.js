@@ -157,7 +157,7 @@ var MIN_SEARCH_W = 40;
 var stack = {
   openWindow: function(view, width, height, opt_cb) {
      var self = this;
-     chrome.app.window.create('apps/saturn/empty.html', {width: width, height: height}, function(w) {
+     chrome.app.window.create('empty.html', {width: width, height: height}, function(w) {
        w.contentWindow.onload = function() {
          self.window = w.contentWindow;
          $addWindow(w.contentWindow);
