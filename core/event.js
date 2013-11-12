@@ -262,6 +262,8 @@ var EventService = {
                 if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
                    listeners.splice(i,1);
                    i--;
+                } else {
+                  throw err;
                 }
              }
           }
