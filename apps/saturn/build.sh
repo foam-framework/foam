@@ -45,7 +45,10 @@ cat \
   EMailBodyDAO.js \
   contacts.js \
   Storage.js \
-  bg.js \
-  | sed 's/;$//' \
-  | sed 's/\/\*/\n\/\*\n/' | sed 's/\*\//\n\*\/\n/' | sed '/\/\*/,/\*\//d' \
-  | sed '/^$/ d' | sed '/\/\/.*$/ d' | sed 's/^ *//g' > foam.js
+  bg.js > foam.js
+
+#  | sed 's/[^:]\/\/.*$//' \
+#  | sed 's/^\/\/.*$//' \
+#  | sed 's/;$//' \
+#  | sed 's/\/\*/\n\/\*\n/' | sed 's/\*\//\n\*\/\n/' | sed '/\/\*/,/\*\//d' \
+#  | sed '/^$/ d' | sed 's/^ *//g' > foam.js
