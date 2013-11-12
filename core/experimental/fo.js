@@ -15,44 +15,64 @@
  * limitations under the License.
  */
 
-Array.prototype.get = function(name) {
-  for ( var idx = 0; idx < this.length; idx++ ) {
-    if ( this[idx].name === name ) return this[idx];
-  }
-  return this.__super__ && this.__super__.get(name);
-};
-
-Array.prototype.listen = function(listener) {
-  if ( ! this.listeners_ ) this.listeners_ = [];
-  this.listeners_.push(listener);
-};
-
-Array.prototype.unlisten = function(l) {
-  if ( ! this.listeners_ ) return;
-  this.listeners_ =
-    this.listeners_.filter(function(l2) { return l === l2; });
-};
-
-Array.prototype.put = function(obj) {
-  for ( var i = 0; i < this.length; i++) {
-    // TODO this should be id
-    if ( this[i].name === obj.name ) {
-      var old = this[i];
-      this[i] = obj;
-      break;
+function defineProperties(proto, fns) {
+  for ( var key in fns ) {
+    try {
+      Object.defineProperty(proto, key, {
+        value: fns[key],
+        configurable: true,
+        writable: true
+      });
+    } catch (x) {
+      console.log('Warning: ' + x);
     }
   }
-  if ( i == this.length ) this.push(obj);
+}
 
-  this.listeners_ && this.listeners_.forEach(function(l) {
-    l.put(obj, old);
-  });
-};
+defineProperties(Array.prototype, {
+  get: function(name) {
+    for ( var idx = 0; idx < this.length; idx++ ) {
+      if ( this[idx].name === name ) return this[idx];
+    }
+    return this.__super__ && this.__super__.get(name);
+  },
 
-Array.prototype.pipe = function(l) {
-  this.forEach(function(o) { l.put(o); });
-  this.listen(l);
-};
+  listen: function(listener) {
+    if ( ! this.listeners_ ) this.listeners_ = [];
+    this.listeners_.push(listener);
+  },
+
+  unlisten: function(l) {
+    if ( ! this.listeners_ ) return;
+    this.listeners_ =
+      this.listeners_.filter(function(l2) { return l === l2; });
+  },
+
+  put: function(obj) {
+    for ( var i = 0; i < this.length; i++) {
+      // TODO this should be id
+      if ( this[i].name === obj.name ) {
+        var old = this[i];
+        this[i] = obj;
+        break;
+      }
+    }
+    if ( i == this.length ) this.push(obj);
+
+    this.listeners_ && this.listeners_.forEach(function(l) {
+      l.put(obj, old);
+    });
+  },
+
+  select: function(sink) {
+    this.forEach(function(item) { sink.put(item); });
+  },
+
+  pipe: function(sink) {
+    this.select(sink);
+    this.listen(sink);
+  }
+});
 
 (function() {
   var static_;
@@ -70,114 +90,179 @@ Array.prototype.pipe = function(l) {
   Object.prototype.static_ = {};
 })();
 
-var CTX = {
-  name: 'ROOT',
-  context_: {},
-  instance_: {},
-  features: [
-    Object,
-    String,
-    Boolean,
-    Number,
-    Date,
-    Function,
-  ],
-
-  prototype:{},
-
-  Object: Object,
-  String: String,
-  Boolean: Boolean,
-  Number: Number,
-  Date: Date,
-  Function: Function
-};
+var CTX;
 
 (function() {
-  var FObject = { name: 'FObject', prototype: { static_: {} }, features: [], instance_: {} };
-  var Model = { name: 'Model', prototype: { static_: {} }, features: [], instance_: {} };
-  var Method = {
-    name: 'Method',
-    features: [],
-    create: function(args) {
-      args.install = function(o) {
-        o.prototype[this.name] = this;
-        if (o.prototype.__proto__[this.name]) {
-          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-        }
-      };
-      args.clone = function() {
-        return this;
-      };
-      args.initialize = function(){};
-      return args;
-    },
+  var FObject, Model, Method, Property;
 
-    prototype: {
+  FObject = {
+    instance_: {
+      name: 'FObject',
+      prototype: {
+        TYPE_: 'FObjectPrototype',
+        instance_: {},
+        create: function (args) {
+          var obj = {
+            __proto__: this,
+            instance_: {}
+          };
+          obj.model_ = this.model_;
+          obj.copyFrom(args);
+          obj.init(args);
+          return obj;
+        },
+        copyFrom: function(src) {
+          if ( src && src.instance_ ) src = src.instance_;
+
+          for ( var key in src ) {
+            this[key] = src[key];
+          }
+          return this;
+        },
+        init: function(args) {
+          var features = this.model_.features;
+          if ( ! features ) return;
+          for (var i = 0; i < features.length; i++) {
+            var feature = features[i];
+            feature.initialize && feature.initialize(this, args);
+          }
+        }
+      },
+      features: []
+    }
+  };
+
+  Model = {
+    instance_: {
+      TYPE_: 'ModelPrototype',
+      name: 'Model',
+      features: []
+    }
+  };
+
+  function simpleProperty(obj, name) {
+    Object.defineProperty(obj, name, {
+      configurable: true,
+      writeable: true,
+      enumerable: false,
+      get: function() { return this.instance_[name]; },
+      set: function(v) { this.instance_[name] = v; }
+    });
+  }
+
+  simpleProperty(Model, "prototype");
+  simpleProperty(Model, "features");
+  Model.prototype = Model;
+
+  FObject.__proto__ = Model.prototype;
+  Model.__proto__ = FObject.prototype;
+
+  simpleProperty(FObject.prototype, "name");
+  simpleProperty(FObject.prototype, "model_");
+
+  FObject.model_ = Model;
+  Model.prototype.model_ = Model;
+  FObject.prototype.model_ = Model;
+
+  Method = {
+    __proto__: Model.prototype,
+    instance_: {
+      name: 'Method',
+      prototype: {
+        __proto__: FObject.prototype,
+        TYPE_: 'MethodPrototype',
+        instance_: {},
+        install: function(o) {
+          o.prototype[this.name] = this.code;
+          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
+        },
+        create: function(args) {
+          if ( args instanceof Function ) {
+            args = {
+              name: args.name,
+              code: args
+            }
+          }
+          return FObject.prototype.create.call(this, args);
+        }
+      },
+      features: []
+    }
+  };
+
+  Method.model_ = Model;
+  Method.prototype.model_ = Method;
+
+  simpleProperty(Method.prototype, "code");
+
+  Property = {
+    __proto__: Model.prototype,
+    instance_: {
+      name: 'Property',
+      prototype: {
+        __proto__: FObject.prototype,
+        TYPE_: 'PropertyPrototype',
+        instance_: {},
+      },
+      features: [],
+    }
+  };
+
+  Property.model_ = Model;
+  Property.prototype.model_ = Property;
+
+  CTX = {
+    __proto__: Model.prototype,
+    instance_: {
+      name: "name",
+      features: [
+        String,
+        Object,
+        Date,
+        Number,
+        Boolean,
+        Function,
+      ],
+      prototype: {
+        __proto__: FObject.prototype,
+        TYPE_: 'CTXPrototype',
+      }
     }
   };
 
   CTX.features.push(FObject);
   CTX.features.push(Model);
   CTX.features.push(Method);
+  CTX.features.push(Property);
 
   CTX.Model = Model;
   CTX.FObject = FObject;
   CTX.Method = Method;
+  CTX.Property = Property;
 
-  Model.__proto__ = Model.prototype;
-  Model.prototype.__proto__ = FObject.prototype;
-  Model.model_ = Model;
-  FObject.model_ = Model;
-  FObject.__proto__ = Model.prototype;
-  Method.prototype.__proto__ = Model.prototype;
-
-  CTX.__proto__ = Model.prototype;
-  CTX.model_ = Model;
-  CTX.prototype.__proto__ = FObject.prototype;
+  [FObject, Model, Method, Property].forEach(function(m) {
+    Object.defineProperty(CTX.prototype, m.name, {
+      configurable: true,
+      writeable: true,
+      enumerable: true,
+      get: function() {
+        return m
+      }
+    });
+  });
 
   FObject.prototype.onFeatureInstall = function(f, old) {
     f.install && f.install(this, old);
   };
+
   Model.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Model) });
   CTX.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(CTX) });
   FObject.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(FObject) });
   Method.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Method) });
+  Property.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Property) });
 })();
 
 var features = [
-  ['FObject',    'Method',  function copyFrom(src) {
-    if ( src && src.instance_ ) src = src.instance_;
-
-    for ( var key in src ) {
-      this[key] = src[key];
-    }
-    return this;
-  }],
-  ['FObject',    'Method',  function create(args) {
-    var obj = {
-      model_: this,
-      __proto__: this.prototype,
-      TYPE: this.name,
-      features: [],
-      // TODO: A better way to lookup FObject.
-      prototype: { __proto__: CTX.FObject.prototype, static_: {} },
-      instance_: {},
-      ctx_: {},
-    };
-    obj.copyFrom(args);
-    obj.init(args);
-    obj.features.pipe({ put: obj.onFeatureInstall.bind(obj) });
-    return obj;
-  }],
-  ['FObject',    'Method',  function init(args) {
-    var features = this.model_.features;
-    if ( ! features ) return;
-    for (var i = 0; i < features.length; i++) {
-      var feature = features[i];
-      feature.initialize && feature.initialize(this, args);
-    }
-  }],
   ['FObject',    'Method',  function initialize() {} ],
   ['FObject',    'Method',  function clone() {
     var self = this;
@@ -190,27 +275,48 @@ var features = [
         }
       }
     });
-    return this.model_.create ? this.model_.create(this) : this;
+    return this.model_.prototype.create ? this.model_.prototype.create(this) : this;
   }],
   ['FObject',    'Method',  function toString() {
-    return this.TYPE;
+    return this.TYPE_;
   }],
   ['FObject',  'Method',  function getFeature(name) {
     return this.features && this.features.get(name);
   }],
+  ['Model', 'Method', function create(args) {
+    var obj = CTX.FObject.prototype.create.call(this, args);
+    obj.prototype = {
+      // TODO: A better way to lookup FObject.
+      __proto__: CTX.FObject.prototype,
+      TYPE_: obj.name + "Prototype",
+      instance_: {},
+    }
+    obj.prototype.model_ = obj;
+
+    obj.features.pipe({ put: obj.onFeatureInstall.bind(obj) });
+    return obj;
+  }],
   ['Model',    'Method',  function install(o) {
     o[this.name] = this;
-      // TODO Better way to lookup CTX.Property.
-    var prop = CTX.Property.create({
+    // TODO Better way to lookup CTX.Property.
+    var name = this.name;
+    var prop = CTX.Property.prototype.create({
       name: this.name,
-      scope: 'ctx_',
-      defaultValue: this
+      defaultValue: this,
+      getter: function() {
+        if ( this.ctx_ ) return this.ctx_.$get(name);
+        return prop.defaultValue;
+      },
+      setter: function(v) {
+        if ( this.ctx_ ) this.ctx_.$set(name, v);
+      },
     });
     prop.install && prop.install(o);
   }],
   ['Model',    'Method',  function isSubModel(model) {
     try {
-      return model && (model === this || this.isSubModel(model.prototype.__proto__.model_) );
+      return model && (model === this || this.isSubModel(
+        (model.features.get("extends") || {}).model) );
     } catch(x) {
       return false;
     }
@@ -218,7 +324,7 @@ var features = [
   ['Model',    'Method',  function isInstance(obj) {
     return obj && obj.model_ && this.isSubModel(obj.model_);
   }],
-  [null,       'Model', { name: 'Property' }],
+//  [null,       'Model', { name: 'Property' }],
   ['String',   'Method', function constantize() { return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase(); } ],
   ['String',   'Method', function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
   ['String',   'Method', function labelize() {
@@ -248,44 +354,54 @@ var features = [
       }
     }
 
-    o[this.name.constantize()] = this;
+    o[this.scopeName.constantize()] = this;
 
     var prop = this;
 
     var scope = this.scope;
+    var scopeName = this.scopeName;
     var name = this.name;
     var defaultValueFn = this.defaultValueFn;
     var defaultValue = this.defaultValue;
+    var valueFactory = this.valueFactory;
     var preSet = this.preSet;
     var postSet = this.postSet;
 
     var get = this.getter || (
       defaultValueFn ?
         (function() {
-          if ( this[scope][name] === undefined )
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
             return defaultValueFn.call(this, prop);
-          return this[scope][name];
+          }
+          return this[scope][scopeName];
         }) :
         (function() {
-          if ( this[scope][name] === undefined )
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
             return defaultValue;
-          return this[scope][name]
+          }
+          return this[scope][scopeName]
         }));
 
     var set = this.setter || function(value) {
       // Do we want to restirct oldValue to just the local instance, not parent instances_?
-      var oldValue = this[scope][prop.name];
+      var oldValue = this[scope][scopeName];
 
       if ( preSet ) value = preSet.call(this, value, oldValue, prop);
 
-      this[scope][prop.name] = value;
+      this[scope][scopeName] = value;
 
       if ( postSet ) postSet.call(this, value, oldValue, prop)
 
-      this.propertyChange && this.propertyChange(prop.name, oldValue, value);
+      this.propertyChange && this.propertyChange(scopeName, oldValue, value);
     };
 
-    Object.defineProperty(o.prototype, this.name, {
+    Object.defineProperty(o.prototype, this.scopeName, {
       configurable: true,
       enumerable: this.enumerable === undefined ? true : this.enumerable,
       writeable: true,
@@ -297,13 +413,23 @@ var features = [
       o.prototype[this.name] = this.valueFactory();
     }
   }],
-  ['Property', 'Property', { name: 'scope', scope: 'instance_', defaultValue: 'instance_' }],
+  ['Property', 'Property', { name: 'scope', scope: 'instance_', scopeName: 'scope', defaultValue: 'instance_' }],
+  ['Property', 'Property', { name: 'scopeName', scopeName: 'scopeName', defaultValueFn: function() { return this.name } }],
   ['Property', 'Property', { name: 'name' }],
   ['Property', 'Property', {
     name: 'defaultValue',
     defaultValue: '',
     help: 'The property\'s default value.'
   }],
+
+  ['Property', 'Property', {
+    name: 'defaultValueFn'
+  }],
+
+  ['Property', 'Property', {
+    name: 'valueFactory'
+  }],
+
   ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
   ['Property', 'Method', function f(o) {
     return o[this.name];
@@ -312,91 +438,52 @@ var features = [
     if ( ! o.instance_.hasOwnProperty(this.name) &&
         this.valueFactory ) o.instance_[this.name] = this.valueFactory();
   }],
+
+  ['Method', 'Property', {
+    name: 'name',
+  }],
+  ['Method', 'Property', {
+    name: 'code'
+  }],
+
   ['FObject',  'Property',
    { name: 'SUPER',
      getter: function f() { return f.caller.super_.bind(this); },
      setter: function() {},
      enumerable: false }],
-/*  ['FObject', 'Property', {
-    name: 'ctx_',
-    scope: 'this_',
-    valueFactory: function() { return {}; }
-  }],*/
+
   ['Model',    'Property', { name: 'features',
                              valueFactory: function() { return []; } }],
   [null,       'Model',    { name: 'Feature' }],
   ['Feature',  'Property', { name: 'name' }],
 
-  [null, 'Model', { name: 'Factory' }],
-  ['Factory', 'Property', { name: 'factory' }],
-  ['Factory', 'Property', { name: 'name', defaultValue: 'factory' }],
-  ['Factory', 'Method', function install(o) {
-    o.create = this.factory;
-    if ( o.__proto__.create ) o.create.super_ = o.__proto__.create;
-  }],
-  ['Factory', 'Factory', {
-    factory: function(args) {
-      if ( args instanceof Function ) args = { factory: args };
-      return this.SUPER(args);
-    }
-  }],
-
   [null,       'Model', { name: 'Extends' }],
   ['Extends',  'Property', { name: 'model' }],
-  ['Extends',  'Factory', {
-    factory: function(model) {
-      return this.SUPER({
-        model: CTX[model],
-        name: 'extends'
-      });
-    }
+  ['Extends',  'Method', function create(model) {
+    // TODO this can be cleand up.
+    var model = CTX[model] || GLOBAL[model];
+    return this.SUPER({
+      model: model,
+      name: 'extends'
+    });
   }],
   ['Extends',  'Method',  function install(o) {
-    this.model.features.pipe({
+/*    this.model.features.pipe({
       put: function(f) {
         if ( f.name == "extends" ) return;
         var feature = f.clone();
         feature.__parent__ = f;
         o.features.put(feature);
       }
-    });
+    });*/
+    o.prototype.__proto__ = this.model.prototype;
   }],
 
   ['Property', 'Extends', 'Feature'],
   ['Model', 'Extends', 'Feature'],
   ['Extends', 'Extends', 'Feature'],
-
-  [null, 'Model', {
-    name: 'Method',
-    create: function(args) {
-      var obj = CTX['Model'].create(args);
-      obj.install = function(o) {
-        o.prototype[this.name] = this.jsCode;
-        if (o.prototype.__proto__[this.name]) {
-          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-        }
-      };
-      return obj;
-    }
-  }],
-  ['Method', 'Property', { name: 'jsCode' }],
-  ['Method', 'Method', {
-    name: 'install',
-    jsCode: function(o) {
-      if ( o.prototype[this.name] ) this.jsCode.super_ = o.prototype[this.name];
-      o.prototype[this.name] = this.jsCode;
-    }
-  }],
-  ['Method', 'Factory', function(args) {
-    if ( args instanceof Function ) {
-      args = {
-        name: args.name,
-        jsCode: args
-      };
-    }
-    return this.SUPER(args);
-  }],
   ['Method', 'Extends', 'Feature'],
+
   [null, 'Model', { name: 'Constant' }],
   ['Constant', 'Extends', 'Feature'],
   ['Constant', 'Property', { name: 'value' }],
@@ -472,7 +559,7 @@ var features = [
     "Method",
     {
       "name": "oneTime",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         return function() {
           listener.apply(this, arguments);
 
@@ -487,7 +574,7 @@ var features = [
     "Method",
     {
       "name": "consoleLog",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         return function() {
           console.log(arguments);
 
@@ -502,7 +589,7 @@ var features = [
     "Method",
     {
       "name": "merged",
-      "jsCode": function (listener, opt_delay) {
+      "code": function (listener, opt_delay) {
         var delay = opt_delay || 16;
 
         return function() {
@@ -536,7 +623,7 @@ var features = [
     "Method",
     {
       "name": "animate",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         return function() {
           var triggered = false;
           var lastArgs  = null;
@@ -568,7 +655,7 @@ var features = [
     "Method",
     {
       "name": "async",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         return this.delay(0, listener);
       }
     }
@@ -579,7 +666,7 @@ var features = [
     "Method",
     {
       "name": "delay",
-      "jsCode": function (delay, listener) {
+      "code": function (delay, listener) {
         return function() {
           var args = arguments;
 
@@ -595,7 +682,7 @@ var features = [
     "Method",
     {
       "name": "hasListeners",
-      "jsCode": function (topic) {
+      "code": function (topic) {
         // todo:
         return true;
       }
@@ -607,7 +694,7 @@ var features = [
     "Method",
     {
       "name": "publish",
-      "jsCode": function (topic) {
+      "code": function (topic) {
         return this.subs_ ? this.pub_(this.subs_, 0, topic, this.appendArguments([this, topic], arguments, 1)) : 0;
       }
     }
@@ -618,7 +705,7 @@ var features = [
     "Method",
     {
       "name": "publishAsync",
-      "jsCode": function (topic) {
+      "code": function (topic) {
         var args = arguments;
         var me   = this;
 
@@ -632,7 +719,7 @@ var features = [
     "Method",
     {
       "name": "publishLazy",
-      "jsCode": function (topic, fn) {
+      "code": function (topic, fn) {
         if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
 
         return 0;
@@ -645,7 +732,7 @@ var features = [
     "Method",
     {
       "name": "subscribe",
-      "jsCode": function (topic, listener) {
+      "code": function (topic, listener) {
         if ( ! this.subs_ ) this.subs_ = {};
 
         this.sub_(this.subs_, 0, topic, listener);
@@ -658,7 +745,7 @@ var features = [
     "Method",
     {
       "name": "unsubscribe",
-      "jsCode": function (topic, listener) {
+      "code": function (topic, listener) {
         if ( ! this.subs_ ) return;
 
         this.unsub_(this.subs_, 0, topic, listener);
@@ -671,7 +758,7 @@ var features = [
     "Method",
     {
       "name": "unsubscribeAll",
-      "jsCode": function () {
+      "code": function () {
         this.sub_ = {};
       }
     }
@@ -682,7 +769,7 @@ var features = [
     "Method",
     {
       "name": "pub_",
-      "jsCode": function (map, topicIndex, topic, msg) {
+      "code": function (map, topicIndex, topic, msg) {
         var count = 0;
 
         // There are no subscribers, so nothing to do
@@ -710,7 +797,7 @@ var features = [
     "Method",
     {
       "name": "sub_",
-      "jsCode": function (map, topicIndex, topic, listener) {
+      "code": function (map, topicIndex, topic, listener) {
         if ( topicIndex == topic.length ) {
           if ( ! map[null] ) map[null] = [];
           map[null].push(listener);
@@ -730,7 +817,7 @@ var features = [
     "Method",
     {
       "name": "unsub_",
-      "jsCode": function (map, topicIndex, topic, listener) {
+      "code": function (map, topicIndex, topic, listener) {
         if ( topicIndex == topic.length ) {
           if ( ! map[null] ) return true;
 
@@ -755,7 +842,7 @@ var features = [
     "Method",
     {
       "name": "notifyListeners_",
-      "jsCode": function (topic, listeners, msg) {
+      "code": function (topic, listeners, msg) {
         if ( listeners == null ) return 0;
 
         if ( listeners instanceof Array ) {
@@ -787,7 +874,7 @@ var features = [
     "Method",
     {
       "name": "appendArguments",
-      "jsCode": function (a, args, start) {
+      "code": function (a, args, start) {
         for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
 
         return a;
@@ -808,7 +895,7 @@ var features = [
     "Method",
     {
       "name": "propertyTopic",
-      "jsCode": function (property) {
+      "code": function (property) {
         return [ this.PROPERTY_TOPIC, property ];
       }
     }
@@ -818,7 +905,7 @@ var features = [
     "Method",
     {
       "name": "propertyChange",
-      "jsCode": function (property, oldValue, newValue) {
+      "code": function (property, oldValue, newValue) {
         // don't bother firing event if there are no listeners
         if ( ! this.subs_ ) return;
 
@@ -835,7 +922,7 @@ var features = [
     "Method",
     {
       "name": "globalChange",
-      "jsCode": function () {
+      "code": function () {
         this.publish(this.propertyTopic(this.WILDCARD), null, null);
       }
     }
@@ -846,7 +933,7 @@ var features = [
     "Method",
     {
       "name": "addListener",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
         this.addPropertyListener(null, listener);
       }
@@ -858,7 +945,7 @@ var features = [
     "Method",
     {
       "name": "removeListener",
-      "jsCode": function (listener) {
+      "code": function (listener) {
         this.removePropertyListener(null, listener);
       }
     }
@@ -869,7 +956,7 @@ var features = [
     "Method",
     {
       "name": "addPropertyListener",
-      "jsCode": function (property, listener) {
+      "code": function (property, listener) {
         this.subscribe(this.propertyTopic(property), listener);
       }
     }
@@ -880,7 +967,7 @@ var features = [
     "Method",
     {
       "name": "removePropertyListener",
-      "jsCode": function (property, listener) {
+      "code": function (property, listener) {
         this.unsubscribe(this.propertyTopic(property), listener);
       }
     }
@@ -891,7 +978,7 @@ var features = [
     "Method",
     {
       "name": "propertyValue",
-      "jsCode": function (property) {
+      "code": function (property) {
         var obj = this;
         return {
           $UID: obj.$UID + "." + property,
@@ -926,7 +1013,7 @@ var features = [
     "Method",
     {
       "name": "identity",
-      "jsCode": function (x) { return x; }
+      "code": function (x) { return x; }
     }
   ],
 
@@ -935,7 +1022,7 @@ var features = [
     "Method",
     {
       "name": "follow",
-      "jsCode": function (srcValue, dstValue) {
+      "code": function (srcValue, dstValue) {
         if ( ! srcValue || ! dstValue ) return;
 
         dstValue.set(srcValue.get());
@@ -956,7 +1043,7 @@ var features = [
     "Method",
     {
       "name": "map",
-      "jsCode": function (srcValue, dstValue, f) {
+      "code": function (srcValue, dstValue, f) {
         if ( ! srcValue || ! dstValue ) return;
 
         var listener = function () {
@@ -977,7 +1064,7 @@ var features = [
     "Method",
     {
       "name": "unfollow",
-      "jsCode": function (srcValue, dstValue) {
+      "code": function (srcValue, dstValue) {
         if ( ! srcValue || ! dstValue ) return;
 
         var key      = [srcValue.$UID, dstValue.$UID];
@@ -995,7 +1082,7 @@ var features = [
     "Method",
     {
       "name": "link",
-      "jsCode": function (value1, model2) {
+      "code": function (value1, model2) {
         this.follow(value1, model2);
         this.follow(model2, value1);
       }
@@ -1007,7 +1094,7 @@ var features = [
     "Method",
     {
       "name": "relate",
-      "jsCode": function (value1, value2, f, fprime) {
+      "code": function (value1, value2, f, fprime) {
         this.map(value1, value2, f);
         this.map(value2, value1, fprime);
       }
@@ -1019,7 +1106,7 @@ var features = [
     "Method",
     {
       "name": "unlink",
-      "jsCode": function (value1, value2) {
+      "code": function (value1, value2) {
         this.unfollow(value1, value2);
         this.unfollow(value2, value1);
       }
@@ -1031,7 +1118,7 @@ var features = [
     "Method",
     {
       "name": "dynamic",
-      "jsCode": function (fn, opt_fn) {
+      "code": function (fn, opt_fn) {
         var fn2 = opt_fn ? function() { fn(opt_fn()); } : fn;
         var oldOnGet = Events.prototype.onGet;
         var listener = FObject.prototype.merged(fn2, 5);
@@ -1050,7 +1137,7 @@ var features = [
     "Method",
     {
       "name": "onSet",
-      "jsCode": function (obj, name, newValue) {
+      "code": function (obj, name, newValue) {
         return true;
       }
     }
@@ -1061,7 +1148,7 @@ var features = [
     "Method",
     {
       "name": "onGet",
-      "jsCode": function (obj, name, value) {
+      "code": function (obj, name, value) {
       }
     }
   ],
@@ -1075,7 +1162,7 @@ var features = [
     "Method",
     {
       "name": "distance",
-      "jsCode": function (x, y) { return Math.sqrt(x*x + y*y); }
+      "code": function (x, y) { return Math.sqrt(x*x + y*y); }
     }
   ],
 
@@ -1084,7 +1171,7 @@ var features = [
     "Method",
     {
       "name": "o",
-      "jsCode": function (f1, f2) { return function(x) { return f1(f2(x)); }; }
+      "code": function (f1, f2) { return function(x) { return f1(f2(x)); }; }
     }
   ],
 
@@ -1093,7 +1180,7 @@ var features = [
     "Method",
     {
       "name": "avg",
-      "jsCode": function (f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; }
+      "code": function (f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; }
     }
   ],
 
@@ -1102,7 +1189,7 @@ var features = [
     "Method",
     {
       "name": "linear",
-      "jsCode": function (x) { return x; }
+      "code": function (x) { return x; }
     }
   ],
 
@@ -1111,7 +1198,7 @@ var features = [
     "Method",
     {
       "name": "back",
-      "jsCode": function (x) { return x < 0.5 ? 2*x : 2-2*x; }
+      "code": function (x) { return x < 0.5 ? 2*x : 2-2*x; }
     }
   ],
 
@@ -1120,7 +1207,7 @@ var features = [
     "Method",
     {
       "name": "accelerate",
-      "jsCode": function (x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; }
+      "code": function (x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; }
     }
   ],
 
@@ -1129,7 +1216,7 @@ var features = [
     "Method",
     {
       "name": "easeIn",
-      "jsCode": function (a) {
+      "code": function (a) {
         var v = 1/(1-a/2);
         return function(x) {
           var x1 = Math.min(x, a);
@@ -1145,7 +1232,7 @@ var features = [
     "Method",
     {
       "name": "reverse",
-      "jsCode": function (f) { return function(x) { return 1-f(1-x); }; }
+      "code": function (f) { return function(x) { return 1-f(1-x); }; }
     }
   ],
 
@@ -1154,7 +1241,7 @@ var features = [
     "Method",
     {
       "name": "easeOut",
-      "jsCode": function (b) { return Movement.reverse(Movement.easeIn(b)); }
+      "code": function (b) { return Movement.reverse(Movement.easeIn(b)); }
     }
   ],
 
@@ -1163,7 +1250,7 @@ var features = [
     "Method",
     {
       "name": "oscillate",
-      "jsCode": function (b,a,opt_c) {
+      "code": function (b,a,opt_c) {
         var c = opt_c || 3;
         return function(x) {
           if ( x < (1-b) ) return x/(1-b);
@@ -1179,7 +1266,7 @@ var features = [
     "Method",
     {
       "name": "bounce",
-      "jsCode": function (b,a,opt_c) {
+      "code": function (b,a,opt_c) {
         var c = opt_c || 3;
         return function(x) {
           if ( x < (1-b) ) return x/(1-b);
@@ -1195,7 +1282,7 @@ var features = [
     "Method",
     {
       "name": "bounce2",
-      "jsCode": function (a) {
+      "code": function (a) {
         var v = 1 / (1-a);
         return function(x) {
           if ( x < (1-a) ) return v*x;
@@ -1211,7 +1298,7 @@ var features = [
     "Method",
     {
       "name": "stepBack",
-      "jsCode": function (a) {
+      "code": function (a) {
         return function(x) {
           return ( x < a ) ? -x : -2*a+(1+2*a)*x;
         };
@@ -1224,7 +1311,7 @@ var features = [
     "Method",
     {
       "name": "ease",
-      "jsCode": function (a, b) {
+      "code": function (a, b) {
         return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
       }
     }
@@ -1235,7 +1322,7 @@ var features = [
     "Method",
     {
       "name": "seq",
-      "jsCode": function (f1, f2) {
+      "code": function (f1, f2) {
         return ( f1 && f2 ) ? function() { f1.apply(this, arguments); f2(); } :
         f1 ? f1
           : f2 ;
@@ -1248,7 +1335,7 @@ var features = [
     "Method",
     {
       "name": "animate",
-      "jsCode": function (duration, fn, opt_interp, opt_onEnd) {
+      "code": function (duration, fn, opt_interp, opt_onEnd) {
         if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
 
         var interp = opt_interp || Movement.linear;
@@ -1295,7 +1382,7 @@ var features = [
     "Method",
     {
       "name": "animate2",
-      "jsCode": function (timer, duration, fn) {
+      "code": function (timer, duration, fn) {
         return function() {
           var startTime = timer.time;
           var oldOnSet  = Events.prototype.onSet;
@@ -1326,7 +1413,7 @@ var features = [
     "Method",
     {
       "name": "compile",
-      "jsCode": function (a, opt_rest) {
+      "code": function (a, opt_rest) {
         function noop() {}
 
         function isSimple(op) {
@@ -1382,7 +1469,7 @@ var features = [
     "Method",
     {
       "name": "onIntersect",
-      "jsCode": function (o1, o2, fn) {
+      "code": function (o1, o2, fn) {
 
       }
     }
@@ -1393,7 +1480,7 @@ var features = [
     "Method",
     {
       "name": "stepTowards",
-      "jsCode": function (src, dst, maxStep) {
+      "code": function (src, dst, maxStep) {
         var dx = src.x - dst.x;
         var dy = src.y - dst.y;
         var theta = Math.atan2(dy,dx);
@@ -1411,7 +1498,7 @@ var features = [
     "Method",
     {
       "name": "moveTowards",
-      "jsCode": function (t, body, sat, v) {
+      "code": function (t, body, sat, v) {
         var bodyX = body.propertyValue('x');
         var bodyY = body.propertyValue('y');
         var satX  = sat.propertyValue('x');
@@ -1437,7 +1524,7 @@ var features = [
     "Method",
     {
       "name": "orbit",
-      "jsCode": function (t, body, sat, r, p)
+      "code": function (t, body, sat, r, p)
       {
         var bodyX = body.propertyValue('x');
         var bodyY = body.propertyValue('y');
@@ -1479,8 +1566,25 @@ var features = [
 
     return hash;
   }],
+  ['FObject', 'Method', function output(out) {
+    JSONUtil.output(out, this);
+  }],
+  ['FObject', 'Method', function toJSON() {
+    return JSONUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function toXML() {
+    return XMLUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function write() {
+    var view = ActionBorder.create(
+      this.model_,
+      DetailView.create({model: this.model_}));
 
-  // Finish property model and add types.
+    document.wrintln(view.toHTML());
+    view.value.set(this);
+    view.initHTML();
+  }],
+
   [null, 'Model', { name: 'StringProperty' }],
   ['StringProperty', 'Extends', 'Property'],
   ['Feature', 'StringProperty', {
@@ -1640,7 +1744,7 @@ var features = [
 
       for ( var i = 0; i < value.length; i++ ) {
         if ( ! m.isInstance(value[i]) ) {
-          value[i] = m.create(value[i]);
+          value[i] = m.prototype.create(value[i]);
         }
       }
     }
@@ -1691,6 +1795,99 @@ var features = [
     name: 'view',
     defaultValue: 'StringArrayView'
   }],
+  [null, 'Model', { name: 'DateProperty' }],
+  ['DateProperty', 'Extends', 'Property'],
+  ['DateProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Date',
+  }],
+  ['DateProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValue: 'Date'
+  }],
+  ['DateProperty', 'StringProperty', {
+    name: 'view',
+    defaultValue: 'DateFieldView'
+  }],
+  ['DateProperty', 'FunctionProperty', {
+    name: 'preSet',
+    defaultValue: function(d) {
+      return typeof d === 'string' ? new Date(d) : d;
+    }
+  }],
+  ['DateProperty', 'FunctionProperty', {
+    name: 'tableFormatter',
+    defaultValue: function(d) {
+      var now = new Date();
+      var seconds = Math.floor((now - d)/1000);
+      if (seconds < 60) return 'moments ago';
+      var minutes = Math.floor((seconds)/60);
+      if (minutes == 1) {
+        return '1 minute ago';
+      } else if (minutes < 60) {
+        return minutes + ' minutes ago';
+      } else {
+        var hours = Math.floor(minutes/60);
+        if (hours < 24) {
+          return hours + ' hours ago';
+        }
+        var days = Math.floor(hours / 24);
+        if (days < 7) {
+          return days + ' days ago';
+        } else if (days < 365) {
+          var year = 1900+d.getYear();
+          var noyear = d.toDateString().replace(" " + year, "");
+          return /....(.*)/.exec(noyear)[1];
+        }
+      }
+      return d.toDateString();
+    }
+  }],
+
+  [null, 'Model', { name: 'DateTimeProperty' }],
+  ['DateTimeProperty', 'Extends', 'DateProperty'],
+  ['DateTimeProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'datetime'
+  }],
+  ['DateTimeProperty', 'StringProperty', {
+    name: 'view',
+    defaultValue: 'DateTimeFieldView'
+  }],
+
+  [null, 'Model', { name: 'FloatProperty' }],
+  ['FloatProperty', 'Extends', 'Property'],
+  ['FloatProperty', 'StringProperty', {
+    name: 'type',
+    defaultValue: 'Float'
+  }],
+  ['FloatProperty', 'StringProperty', {
+    name: 'javaType',
+    defaultValue: 'double'
+  }],
+  ['FloatProperty', 'IntegerProperty', {
+    name: 'displayWidth',
+    defaultValue: 15
+  }],
+
+  [null, 'Model', { name: 'ReferenceArrayProperty' }],
+  ['ReferenceArrayProperty', 'Extends', 'StringArrayProperty'],
+  [null, 'Model', { name: 'EMailProperty' }],
+  ['EMailProperty', 'Extends', 'StringProperty'],
+  [null, 'Model', { name: 'URLProperty' }],
+  ['URLProperty', 'Extends', 'StringProperty'],
+
+  ['Property', 'FunctionProperty', {
+    name: 'detailViewPreRow',
+    defaultValue: function() { return ""; },
+    help: 'Inject HTML before row in DetailView.'
+  }],
+  ['Property', 'FunctionProperty', {
+    name: 'detailViewPostRow',
+    defaultValue: function() { return ""; },
+    help: 'Inject HTML before row in DetailView.'
+  }],
+
 
   // Actions
   [null, 'Model', { name: 'Action' }],
@@ -1708,7 +1905,46 @@ var features = [
     help: 'Function to determine if the action is enabled.',
     defaultValue: function() { return true; }
   }],
+  ['Action', 'FunctionProperty', {
+    name: 'action',
+    getter: function() {
+      return this.code;
+    }
+  }],
   ['Action', 'Extends', 'Method'],
+  ['Action', 'Method', function create(args) {
+    args.code = args.action || args.code;
+    return this.SUPER(args);
+  }],
+
+  [null, 'Model', { name: 'Listener' }],
+  ['Listener', 'Extends', 'Method'],
+  ['Listener', 'IntegerProperty', {
+    name: 'merged',
+    preSet: function ( value ) {
+      if ( value === true ) return 16;
+    },
+    help: 'If greater than zero, the listener will be merged to this value.  Set to true to merge to 16ms'
+  }],
+  ['Listener', 'BooleanProperty', {
+    name: 'animate',
+    help: 'If true, this listener will be animated.'
+  }],
+  ['Listener', 'Method', function install(o) {
+    var listener = this;
+    Object.defineProperty(o.prototype, listener.name, {
+      get: function() {
+        var l = listener.code.bind(this);
+        if ( listener.animate )
+          l = FObject.animate(l);
+        else if ( listener.merged > 0 )
+          l = FObject.merged(l, listener.merged);
+        Object.defineProperty(this, listener.name, { value: l });
+        return l;
+      },
+      configurable: true
+    });
+  }],
 
   [null, 'Model', { name: 'Template' }],
   ['Template', 'StringProperty', {
@@ -1726,20 +1962,110 @@ var features = [
 
 
   ['Template', 'Method', function install(o) {
-    // TODO: finish this once we have templateutil.
+    this.code = TemplateUtil.compile(this.template);
+    this.SUPER(o);
   }],
 
-  // Some test models.
-  [null, 'Model', { name: 'Mail' }],
-  ['Mail', 'Model', { name: 'EMail' }],
-  ['Mail', 'Method', function test() {
-    var mail = this.EMail.create({ sender: 'adamvy' });
-    mail.send();
+
+  ['Model', 'ArrayProperty', {
+    name: 'properties',
+    subType: 'Property',
+    setter: function(value) {
+      for ( var i = 0; i < value.length; i++ ) {
+        if ( value[i].model_ != Property )
+          value[i] = Property.prototype.create(value[i]);
+
+        this.features.put(value[i]);
+      }
+    },
+    getter: function() {
+      return this.features.filter(function(f) {
+        return Property.isInstance(f);
+      });
+    }
   }],
-  ['Mail.EMail', 'Property', { name: 'sender', defaultValue: '' }],
-  ['Mail.EMail', 'Method', function send() { console.log(this.sender); }],
-  ['Mail', 'Model', { name: 'TestEMail' }],
-  ['Mail.TestEMail', 'Method', function send() { console.log("DEBUG VERSION: " + this.sender); }],
+  ['Model', 'ArrayProperty', {
+    name: 'methods',
+    subType: 'Method',
+    setter: function(value) {
+      if ( ! Method ) return;
+
+      if ( value instanceof Array ) {
+        value.select(this.features);
+        return;
+      }
+
+      // convert a map of functions
+      for ( var key in value )
+      {
+        var oldValue = value[key];
+        var method   = Method.prototype.create({name: key, code: oldValue});
+
+        this.features.put(method);
+      }
+    },
+    getter: function() {
+      return this.features.filter(Method.isInstance.bind(Method));
+    }
+  }],
+  ['Model', 'StringProperty', {
+    name: 'extendsModel',
+    help: 'Name of the model that this model extends.',
+    setter: function(value) {
+      if ( ! value ) return;
+      this.features.put(Extends.prototype.create(value));
+    },
+    getter: function() {
+      var parent = this.features.get('extends');
+      return parent && parent.model.name;
+    }
+  }],
+  ['Model', 'ArrayProperty', {
+    name: 'models',
+    subType: 'Model',
+    help: 'Sub-models of this model.',
+    setter: function(value) {
+      value.select(this.features);
+    },
+    getter: function() {
+      return this.features.filter(function(f) {
+        f.TYPE === 'Model';
+      });
+    }
+  }],
+  ['Model', 'ArrayProperty', {
+    name: 'listeners',
+    setter: function(value) {
+      if ( Array.isArray(value) ) {
+        value.select(this.features);
+        return;
+      }
+
+      for ( var key in value )
+      {
+        var oldValue = value[key];
+        var method   = Listener.prototype.create({name: key, code: oldValue});
+
+        this.features.put(method);
+      }
+    },
+    getter: function() {
+      return this.features.filter(Listener.isInstance.bind(Listener));
+    }
+  }],
+  ['Model', 'StringArrayProperty', {
+    name: 'tableProperties',
+    defaultValueFn: function() {
+      return this.properties.map(Property.NAME.f.bind(Property.NAME));
+    }
+  }],
+  ['FObject', 'Method', function getProperty(name) {
+    var feat = this.features.get(name);
+    if ( Property.isInstance(feat) ) return feat.f(this);
+  }],
+  ['Model', 'Method', function getPrototype() {
+    return this.prototype;
+  }],
 ];
 
 function lookup(address, model) {
@@ -1774,7 +2100,7 @@ function build(scope) {
       if ( !feature ) throw "Feature not found: " + f[1];
 
       var args = f[2];
-      var feature = feature.create(args);
+      var feature = feature.prototype.create(args);
       if ( model.features ) {
         model.features.put(feature);
       } else {
@@ -1786,14 +2112,61 @@ function build(scope) {
 
 build(CTX);
 
-var env = CTX.create();
+var GLOBAL = this;
 
-with (env) {
-  var context = {
-    EMail: Mail.TestEMail
-  };
-  var mails = Mail.create();
-  mails.test();
-  mails.ctx_ = context;
-  mails.test();
-}
+(function() {
+  var env = CTX.prototype.create();
+
+  with (env) {
+    CTX.features.forEach(function(f) {
+      if ( Model.isInstance(f) ) {
+        GLOBAL[f.name] = f;
+      }
+    });
+  }
+
+  GLOBAL['Events'] = Events.prototype.create({});
+  GLOBAL['Movement'] = Movement.prototype.create({});
+  GLOBAL['EventService'] = FObject;
+
+  var EMail = Model.prototype.create({
+    name: 'EMail',
+
+    properties: [
+      {
+        name: 'to'
+      }
+    ],
+
+    methods: {
+      send: function() {
+        var sender = this.Sender.prototype.create({
+          recipient: this.to
+        });
+        sender.send();
+      }
+    },
+
+    models: [
+      Model.prototype.create({
+        name: 'Sender',
+        properties: [
+          {
+            name: 'recipient'
+          }
+        ],
+        methods: [
+          Method.prototype.create({
+            name: 'send',
+            code: function() {
+              console.log("Sending to: " + this.recipient);
+            }
+          })
+        ]
+      })
+    ]
+  });
+
+  var mail = EMail.prototype.create({ to: 'adamvy' });
+  mail.send();
+})();
