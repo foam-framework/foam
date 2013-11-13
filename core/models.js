@@ -173,8 +173,7 @@ var Mouse = FOAM({
       }
    },
 
-   listeners:
-   [
+   listeners: [
       {
          model_: 'Method',
 
@@ -938,11 +937,11 @@ var AlternateView = FOAM({
             model: this.value.get().model_,
             value: this.value
           });
-        
+
         // TODO: some views are broken and don't have model_, remove
         // first guard when fixed.
         if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
-        
+
         this.$.innerHTML = view.toHTML();
         view.initHTML();
         view.value && view.value.set(this.value.get());

@@ -2058,7 +2058,7 @@ var TableView = FOAM({
      layout: function() {
        var parent;
        try {
-         var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+         parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
        } catch (x) {
          return;
        }

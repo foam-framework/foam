@@ -14,6 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+if ( ! String.prototype.startsWith ) {
+  String.prototype.startsWith = function (a) { return 0 == this.lastIndexOf(a, 0); };
+}
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
