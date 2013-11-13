@@ -173,8 +173,7 @@ var Mouse = FOAM({
       }
    },
 
-   listeners:
-   [
+   listeners: [
       {
          model_: 'Method',
 
@@ -938,11 +937,11 @@ var AlternateView = FOAM({
             model: this.value.get().model_,
             value: this.value
           });
-        
+
         // TODO: some views are broken and don't have model_, remove
         // first guard when fixed.
         if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
-        
+
         this.$.innerHTML = view.toHTML();
         view.initHTML();
         view.value && view.value.set(this.value.get());
@@ -1221,4 +1220,113 @@ var PersistentContext = FOAM({
       }
   }
 
+});
+
+var ListView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'ListView',
+
+  properties: [
+    {
+      name: 'dao',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.unlisten(this.paint);
+        newValue.listen(this.paint);
+        this.paint();
+      },
+      hidden: true
+    },
+    {
+      name: 'value',
+      hidden: true,
+      valueFactory: function() { return SimpleValue.create({}); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.paint);
+        newValue.addListener(this.paint);
+      }
+    },
+    {
+      name: 'model',
+      hidden: true
+    },
+    {
+      name: 'innerView',
+      type: 'AbstractView',
+      preSet: function(value) {
+        if ( typeof value === "string" ) value = GLOBAL[value];
+        return value;
+      },
+      defaultValueFn: function() {
+        return this.model.listView;
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'count'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'painting',
+      defaultValue: false
+    },
+  ],
+
+  methods: {
+    setValue: function(value) {
+      this.value = value;
+    },
+
+    toHTML: function() {
+      return '<div class="listView" id="' + this.getID() + '"></div>';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
+        // TODO Determine if its worth double buffering the dom.
+
+        // Don't start a new paint if we're in the middle of one.
+        if ( this.painting) {
+          this.paint();
+          return;
+        }
+
+        // Clear old list
+        this.$.innerHTML = '';
+        this.painting = true;
+        var self = this;
+
+        this.dao.limit(this.count).select({
+          put: function(obj) {
+            var view = self.innerView.create({});
+            var container = document.createElement('div');
+            container.onclick = function() {
+              self.value.set(obj.id);
+            };
+            container.className = 'listItem';
+            if ( obj.id === self.value.get() ) {
+              container.className += ' selectedListItem';
+            }
+            self.$.appendChild(container);
+            container.innerHTML = view.toHTML();
+            view.initHTML();
+            view.value.set(obj);
+          },
+          eof: function() {
+            self.painting = false;
+          },
+          error: function() {
+            console.error.apply(console, arguments);
+            self.painting = false;
+          }
+        });
+      }
+    }
+  ]
 });

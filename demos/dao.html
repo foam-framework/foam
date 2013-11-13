@@ -105,8 +105,11 @@ dao.select(COUNT())(console.log);
 
 // More Select Examples
 
+// Starts With
+dao.where(STARTS_WITH(Person.NAME, 'A')).select(console.log.json);
+
 // Contains text
-dao.where(CONTAINS(Person.NAME, 'A')).select(console.log.json);
+dao.where(CONTAINS(Person.NAME, 'a')).select(console.log.json);
 
 // Contains text, ignoring Case
 dao.where(CONTAINS_IC(Person.NAME, 'A')).select(console.log.json);

@@ -812,7 +812,7 @@ var TextFieldView = FOAM({
              Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
            } else {
              Events.unfollow(newValue, this.domValue);
-             Events.follow(newValue, this.domValue);
+             Events.map(newValue, this.domValue, this.valueToText);
              /*
              value.addListener(function() {
                                  this.$.innerHTML = newValue.get();
@@ -1940,7 +1940,6 @@ var HelpView = FOAM({
    // would be nice if I could mark properties as mandatory
    // if they were required to be initialized
    create: function(model) {
-debugger;
       var obj = AbstractView.create.call(this);
 
       obj.model = model;
@@ -2059,7 +2058,7 @@ var TableView = FOAM({
      layout: function() {
        var parent;
        try {
-         var parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+         parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
        } catch (x) {
          return;
        }
