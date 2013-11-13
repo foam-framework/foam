@@ -558,7 +558,7 @@ var TreeIndex = {
 
     if ( options ) {
       if ( options.skip ) cost -= options.skip;
-      if ( options.limit ) cost = Math.min(cost, options.limit);
+      if ( options.limit && ! sortRequired ) cost = Math.min(cost, options.limit);
     }
 
     return {
