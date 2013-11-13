@@ -738,6 +738,7 @@ var GteExpr = FOAM({
 });
 
 
+// TODO: A TrieIndex would be ideal for making this very fast.
 var StartsWithExpr = FOAM({
    model_: 'Model',
 
