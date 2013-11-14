@@ -1,6 +1,10 @@
 function launchController() {
   chrome.app.window.create('main.html', {width: 800, height: 600}, function(w) {
     w.contentWindow.onload = function() {
+      self.window = w.contentWindow;
+      var b = CIssueBrowser.create({window: self.window});
+      b.write(self.window.document);
+      w.focus();
 /*
       self.window = w.contentWindow;
       $addWindow(w.contentWindow);
