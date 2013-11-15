@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-var IssueBrowser = Model.create({
-  name: 'IssueBrowser',
+var CIssueBrowser = Model.create({
+  name: 'CIssueBrowser',
 
   properties: [
     {
@@ -95,12 +95,21 @@ var IssueBrowser = Model.create({
   ],
 
   methods: {
-    init: function() {
+    init2: function() {
+      this.SUPER();
+    },
+
+    initHTML: function() {
+      // TODO: add these as part of the Template
+      this.searchChoice.insertInElement('searchChoice');
+      this.searchField.insertInElement('searchField');
+      this.view.insertInElement('view');
+
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
 
       this.syncManager.propertyValue('isSyncing').addListener(function() {
-        if ( syncManager.isSyncing ) {
+        if ( this.syncManager.isSyncing ) {
           this.timer.step();
           this.timer.start();
         } else {
@@ -114,10 +123,11 @@ var IssueBrowser = Model.create({
       });
 
       var logo = $('logo');
-      logo.onclick = syncManager.forceSync.bind(syncManager);
+      logo.onclick = this.syncManager.forceSync.bind(this.syncManager);
 
+      var timer = this.timer;
       Events.dynamic(function() {
-        logo.style.webkitTransform = 'rotate(' + -this.timer.i + 'deg)';
+        logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
       });
     },
 
@@ -126,5 +136,13 @@ var IssueBrowser = Model.create({
       if ( p ) console.log('SEARCH: ', p.toSQL());
       this.view.dao = p ? IssueDAO.where(p) : IssueDAO;
     }
-  }
+  },
+
+  templates: [
+    {
+      name: "toHTML",
+      description: "",
+      template: "<html>\u000a <head>\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"../../core/foam.css\" />\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"crbug.css\" />\u000a  <title>Chromium Issues</title>\u000a </head>\u000a <body>\u000a<table>\u000a  <tr>\u000a  <td>\u000a    <img id=\"logo\" src=\"images/logo.png\">\u000a  </td>\u000a  <td>\u000a    <span class=\"title\">cr<sup><font size=-0.5>2</font></sup>bug</span>\u000a    <div class=\"subtitle\">Chromium issue tracker in Chromium.</div>\u000a  </td>\u000a  <td width=150></td>\u000a  <td valign=\"bottom\">\u000a  <div class=\"searchBar\">\u000a  Search <span id=\"searchChoice\"></span> for <span id=\"searchField\"></span>\u000a  </div>\u000a  </td>\u000a  </tr>\u000a</table>\u000a<hr color=\"#9BC0FA\">\u000a<span id=\"view\"></span></body>\u000a</html>"
+    }
+  ]
 });

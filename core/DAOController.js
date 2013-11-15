@@ -289,6 +289,7 @@ var DAOCreateController = FOAM({
          isAvailable: function() { return true; },
          isEnabled:   function() { return true; },
          action:      function() {
+           debugger;
             var self = this;
             this.dao.put(this.obj, {
               put: function(value) {
@@ -355,7 +356,7 @@ var DAOCreateController = FOAM({
         this.obj = this.model.create();
         
         //        this.view = DetailView2.create({model: this.model, value: SimpleValue.create(this.obj)});
-        this.view = DetailView.create({model: this.model, value: this.propertyValue('name')});
+        this.view = DetailView.create({model: this.model, value: this.propertyValue('obj')});
       },
 
       toHTML: function() {
@@ -551,13 +552,13 @@ var DAOControllerView = FOAM({
     setValue: function(value) {
        // value.get() returns an array which implements DAO
        this.dao = value.get();
-
+/*
        this.listener = {
          put: function() {
-           model.set(this.dao);
+           value.set(this.dao);
          },
          remove: function() {
-           model.set(this.dao);
+           value.set(this.dao);
          },
          error: function() {
            console.error(arguments);
@@ -565,12 +566,13 @@ var DAOControllerView = FOAM({
        };
 
        this.dao.listen(this.listener);
+*/
        this.ctrl.__proto__.dao = this.dao;
        this.ctrl.scrollBorder.dao = this.dao;
     },
 
     destroy: function() {
-      this.dao.unlisten(this.listener);
+  //    this.dao.unlisten(this.listener);
     }
    }
 

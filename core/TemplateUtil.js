@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,26 +78,30 @@ var TemplateCompiler = {
 
 var TemplateUtil = {
 
-   compile: function(str) {
-      // TODO: eval hack for PackagedApps
-     var code = TemplateCompiler.parseString(str);
+   compile: chrome.app.runtime ?
+     function() {
+       return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+     } :
+     function(str) {
 
-     try {
-        return new Function("opt_out", code);
-     } catch (err) {
-       console.log("Template Error: ", err);
-       console.log(code);
-       return function() {};
-     }
-   },
+       // TODO: eval hack for PackagedApps
+       var code = TemplateCompiler.parseString(str);
+
+       try {
+         return new Function("opt_out", code);
+       } catch (err) {
+         console.log("Template Error: ", err);
+         console.log(code);
+         return function() {};
+       }
+     },
 
    /**
     * Combinator which takes a template which expects an output parameter and
     * converts it into a function which returns a string.
     */
    stringifyTemplate: function (template) {
-      return function()
-      {
+      return function() {
          var buf = [];
 
          this.output(buf.push.bind(buf), obj);

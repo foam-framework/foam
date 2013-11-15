@@ -13,6 +13,7 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
+  ../../core/ChromeApp.js \
   ../../core/AbstractPrototype.js \
   ../../core/ModelProto.js \
   ../../core/mm1Model.js \
@@ -40,13 +41,9 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/SyncManager.js \
-  ImportedModels.js \
-  Models.js \
-  DAO.js \
-  Storage.js \
-  View.js \
-  CIssueQueryParser.js \
-  bg.js > foam.js
+  > foam.js
+
+cp ../../core/foam.css .
 
 #  | sed 's/[^:]\/\/.*$//' \
 #  | sed 's/^\/\/.*$//' \

@@ -547,7 +547,7 @@ var TreeIndex = {
     if ( options && options.order ) {
       if ( options.order === prop ) {
         // sort not required
-      } else if ( options.order.isDESC && options.order.c == prop ) {
+      } else if ( options.order.isDESC && options.order.c === prop ) {
         // reverse-sort, sort not required
         reverseSort = true;
       } else {
@@ -556,7 +556,7 @@ var TreeIndex = {
       }
     }
 
-    if ( options ) {
+    if ( options && ! sortRequired ) {
       if ( options.skip ) cost -= options.skip;
       if ( options.limit ) cost = Math.min(cost, options.limit);
     }
