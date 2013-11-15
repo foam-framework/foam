@@ -101,7 +101,6 @@ var CIssueBrowser = Model.create({
 
     initHTML: function() {
       // TODO: add these as part of the Template
-      debugger;
       this.searchChoice.insertInElement('searchChoice');
       this.searchField.insertInElement('searchField');
       this.view.insertInElement('view');

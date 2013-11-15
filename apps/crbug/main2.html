@@ -10,13 +10,16 @@
   <script language="javascript" src="View.js"></script>
   <script language="javascript" src="CIssueQueryParser.js"></script>
   <script language="javascript" src="Browser.js"></script>
+  <script language="javascript" src="../../core/ChromeApp.js"></script>
  </head>
  <body>
 <script language="javascript">
-  $addWindow(window);
-  var b = CIssueBrowser.create({window: window});
-  document.body.innerHTML = b.toHTML();
-  b.initHTML();
+  arequire('CIssueBrowser')(function(CIssueBrowser) {
+    $addWindow(window);
+    var b = CIssueBrowser.create({window: window});
+    document.body.innerHTML = b.toHTML();
+    b.initHTML();
+  });
 </script>
  </body>
 </html>

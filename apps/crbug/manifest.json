@@ -23,6 +23,7 @@
               "DAO.js",
               "Storage.js",
               "View.js",
+              "Browser.js",
               "CIssueQueryParser.js",
               "bg.js"
             ]

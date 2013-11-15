@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,6 @@ var TemplateCompiler = {
 var TemplateUtil = {
 
    compile: function(str) {
-      // TODO: eval hack for PackagedApps
      var code = TemplateCompiler.parseString(str);
 
      try {
@@ -96,8 +95,7 @@ var TemplateUtil = {
     * converts it into a function which returns a string.
     */
    stringifyTemplate: function (template) {
-      return function()
-      {
+      return function() {
          var buf = [];
 
          this.output(buf.push.bind(buf), obj);
