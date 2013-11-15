@@ -803,21 +803,32 @@ var TextFieldView = FOAM({
               ]}); } }
       },
       {
+        name: 'softValue',
+        valueFactory: function() { return SimpleValue.create(); },
+        postSet: function(newValue, oldValue) {
+          if ( this.mode === 'read-write' ) {
+            Events.unlink(oldValue, this.domValue);
+            Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
+          } else {
+            Events.unfollow(oldValue, this.domValue);
+            Events.map(newValue, this.domValue, this.valueToText);
+          }
+        }
+      },
+      {
+        name: 'domValue'
+      },
+      {
          name:  'value',
          type:  'Value',
          valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
-           if ( this.mode === 'read-write' ) {
-             Events.unlink(oldValue, this.domValue);
-             Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
+           if ( this.onKeyMode ) {
+             Events.unlink(oldValue, this.softValue);
+             Events.link(newValue, this.softValue);
            } else {
-             Events.unfollow(newValue, this.domValue);
-             Events.map(newValue, this.domValue, this.valueToText);
-             /*
-             value.addListener(function() {
-                                 this.$.innerHTML = newValue.get();
-                               }.bind(this));
-              */
+             Events.unfollow(oldValue, this.softValue);
+             Events.follow(newValue, this.softValue);
            }
          }
       }
@@ -825,24 +836,35 @@ var TextFieldView = FOAM({
 
    methods: {
     toHTML: function() {
-        return ( this.mode === 'read-write' ) ?
-          '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
-          '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+      if ( this.mode === 'read-write' ) {
+        this.registerCallback('change', this.onChange, this.getID());
+
+        return '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
+      }
+
+      return '<span id="' + this.getID() + '" name="' + this.name + '"></span>';
     },
 
     // TODO: deprecate
     getValue: function() { return this.value; },
 
     // TODO: deprecate
-    setValue: function(value) { this.value = value; },
+    setValue: function(value) {
+      this.value = value;
+    },
 
     initHTML: function() {
-       var e = this.$;
+      this.SUPER();
+      var e = this.$;
 
-       this.domValue = this.mode === 'read-write' ? DomValue.create(e, this.onKeyMode ? 'input' : undefined) : DomValue.create(e, undefined, 'innerHTML');
+      if ( this.mode === 'read-write' ) {
+        this.domValue = DomValue.create(e, 'input');
+      } else {
+        this.domValue = DomValue.create(e, 'undefined', 'textContent');
+      }
 
-       this.setValue(this.value);
-//       Events.link(this.model, this.domValue);
+      this.setValue(this.value);
+      this.softValue = this.softValue;
     },
 
 //    textToValue: Events.identity,
@@ -854,7 +876,16 @@ var TextFieldView = FOAM({
     valueToText: function(value) { return value;},
 
     destroy: function() { Events.unlink(this.domValue, this.value); }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'onChange',
+      code: function(e) {
+        this.value.set(this.softValue.get());
+      }
+    },
+  ]
 });
 
 

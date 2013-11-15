@@ -1219,7 +1219,159 @@ var PersistentContext = FOAM({
          return future.get;
       }
   }
+});
 
+var ListValueView = FOAM({
+  model_: 'Model',
+
+  name: 'ListValueView',
+  help: 'Combines an input view with a value view for the edited value.',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'valueView',
+    },
+    {
+      name: 'inputView'
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create({ value: [] }); },
+      postSet: function(newValue, oldValue) {
+        this.inputView.value = newValue;
+        this.valueView.value = newValue;
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return this.valueView.toHTML() + this.inputView.toHTML();
+    },
+    setValue: function(value) {
+      this.value = value;
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.valueView.initHTML();
+      this.inputView.initHTML();
+    }
+  }
+});
+
+var ListInputView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'ListInputView',
+
+  properties: [
+    {
+      name: 'dao',
+      help: 'The DAO to fetch autocomplete objects from.',
+    },
+    {
+      name: 'property',
+      help: 'The property model to map autocomplete objecst to values with.'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'searchProperties',
+      help: 'The properties with which to construct the autocomplete query with.'
+    },
+    {
+      name: 'autocompleteView',
+    },
+    {
+      name: 'value',
+      help: 'The array value we are editing.',
+      valueFactory: function() {
+        return SimpleValue.create({
+          value: []
+        });
+      }
+    },
+    {
+      name: 'domInputValue',
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.registerCallback('keydown', this.onKeyDown, this.getID());
+
+      return '<input id="' + this.getID() + '">' + this.autocompleteView.toHTML();
+    },
+    setValue: function(value) {
+      this.value = value;
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.autocompleteView.initHTML();
+      this.domInputValue = DomValue.create(this.$, 'input');
+      this.domInputValue.addListener(this.onInput);
+    },
+    pushValue: function(v) {
+      this.value.set(this.value.get().concat(v));
+      this.domInputValue.set('');
+      // Previous line doesn't trigger listeners.
+      this.onInput();
+    },
+    popValue: function() {
+      var value = this.value.get().slice();
+      value.pop();
+      this.value.set(value);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onInput',
+      code: function() {
+        var value = this.domInputValue.get();
+
+        if ( value.charAt(value.length - 1) === ',' ) {
+          this.pushValue(value.substring(0, value.length - 1));
+          return;
+        }
+
+        if ( value === '' ) {
+          this.autocompleteView.dao = this.dao.where(FALSE);
+          return;
+        }
+
+        var predicate = OR();
+        var value = this.domInputValue.get();
+        for ( var i = 0; i < this.searchProperties.length; i++ ) {
+          predicate.args.push(STARTS_WITH(this.searchProperties[i], value));
+        }
+        this.autocompleteView.dao = this.dao.where(predicate);
+      }
+    },
+    {
+      name: 'onKeyDown',
+      code: function(e) {
+        if ( e.keyCode === 40 /* down */) {
+          this.autocompleteView.nextSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 38 /* up */ ) {
+          this.autocompleteView.prevSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 13 /* RET */ ) {
+          if ( this.autocompleteView.value.get() ) {
+            this.pushValue(
+              this.property.f(this.autocompleteView.value.get()));
+            e.preventDefault();
+          }
+        } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
+          this.popValue();
+        }
+      }
+    },
+  ]
 });
 
 var ListView = FOAM({
@@ -1235,16 +1387,25 @@ var ListView = FOAM({
       postSet: function(newValue, oldValue) {
         oldValue && oldValue.unlisten(this.paint);
         newValue.listen(this.paint);
+        this.value.set('');
         this.paint();
       },
       hidden: true
     },
     {
+      name: 'next'
+    },
+    {
+      name: 'prev'
+    },
+    {
       name: 'value',
       hidden: true,
-      valueFactory: function() { return SimpleValue.create({}); },
+      valueFactory: function() { return SimpleValue.create(); },
       postSet: function(newValue, oldValue) {
-        oldValue && oldValue.removeListener(this.paint);
+        if ( oldValue ) {
+          oldValue.removeListener(this.paint);
+        }
         newValue.addListener(this.paint);
       }
     },
@@ -1281,6 +1442,14 @@ var ListView = FOAM({
 
     toHTML: function() {
       return '<div class="listView" id="' + this.getID() + '"></div>';
+    },
+
+    nextSelection: function() {
+      this.value.set(this.next);
+    },
+
+    prevSelection: function() {
+      this.value.set(this.prev);
     }
   },
 
@@ -1302,24 +1471,63 @@ var ListView = FOAM({
         this.painting = true;
         var self = this;
 
+        var found = false;
+        var first;
+        var second;
+        self.next = '';
+        self.prev = '';
+
         this.dao.limit(this.count).select({
           put: function(obj) {
+            if ( found && ! self.next ) {
+              self.next = obj;
+            }
+
+            if ( obj.id === self.value.get().id ) {
+              found = true;
+            }
+
+            if ( ! found && self.value.get() ) {
+              self.prev = obj;
+            }
+
+            if ( ! self.value.get() ) {
+              self.value.set(obj);
+              found = true;
+            }
+
             var view = self.innerView.create({});
             var container = document.createElement('div');
             container.onclick = function() {
-              self.value.set(obj.id);
+              self.value.set(obj);
             };
             container.className = 'listItem';
-            if ( obj.id === self.value.get() ) {
+            if ( obj.id === self.value.get().id ) {
               container.className += ' selectedListItem';
             }
             self.$.appendChild(container);
             container.innerHTML = view.toHTML();
             view.initHTML();
             view.value.set(obj);
+            if ( ! first ) {
+              first = [obj, container];
+            }
+            if ( first && ! second ) {
+              second = obj;
+            }
           },
           eof: function() {
             self.painting = false;
+            if ( ! found ) {
+              if ( ! first ) {
+                self.value.set('');
+              } else {
+                self.value.set(first[0]);
+                first[1].className += 'selectedListItem';
+                self.prev = '';
+                self.next = second;
+              }
+            }
           },
           error: function() {
             console.error.apply(console, arguments);

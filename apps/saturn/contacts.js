@@ -107,6 +107,38 @@ var ContactPhoto = FOAM({
      ]
 });
 
+var ContactListTileView = Model.create({
+  name: 'ContactListTileView',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.paint);
+        newValue.addListener(this.paint);
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div class="contactTile" id="' + this.getID() + '"><div class="contactTileAvatar"></div><div class="contactTileDetails"></div></div>';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'paint',
+      code: function() {
+        this.$.children[1].textContent = this.value.get().first + ' ' + this.value.get().last + ' <' + this.value.get().email + '>';
+      }
+    }
+  ]
+});
+
 
 var Contact = FOAM({
     model_: 'Model',
@@ -175,6 +207,14 @@ var Contact = FOAM({
             model_: 'URLProperty',
             displayWidth: 70,
             name: 'url'
+        },
+        {
+            model_: 'URLProperty',
+            name: 'avatarUrl',
+            defaultValueFn: function() {
+              return "https://www.google.com/m8/feeds/photos/media/" +
+                this.email + "/" + this.id;
+            }
         },
         {
             model_: 'StringProperty',

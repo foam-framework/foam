@@ -5,27 +5,10 @@ var dao = [
   Contact.create({ id: 4, first: 'Bob', email: 'bob@bob.org' })
 ];
 
-var ContactListItem = Model.create({
-  extendsModel: 'TextFieldView',
-  properties: [
-    {
-      name: 'mode',
-      defaultValue: 'read-only'
-    }
-  ],
-
-  methods: {
-    valueToText: function(v) {
-      return v ?
-        v.first + ' ' + v.last + ' <' + v.email + '>'
-        : '';
-    }
-  }
-});
 
 var list = ListView.create({
   model: Contact,
-  innerView: ContactListItem
+  innerView: ContactListTileView
 });
 
 document.body.innerHTML = list.toHTML();
@@ -33,4 +16,7 @@ list.initHTML();
 
 list.dao = dao;
 
-
+document.body.onkeydown = function(e) {
+  if ( e.keyCode === 40 ) list.nextSelection();
+  else if ( e.keyCode === 38 ) list.prevSelection();
+};
