@@ -27,7 +27,7 @@ var withFOAM = function(extra, cb) {
         if ( script ) document.body.removeChild(script);
         var file = files.shift();
         if (!file) {
-            file = extra.shift();
+            file = extra ? extra.shift() : undefined;
             if (!file) {
                 cb();
                 return;

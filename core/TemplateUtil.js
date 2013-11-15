@@ -79,6 +79,10 @@ var TemplateCompiler = {
 var TemplateUtil = {
 
    compile: function(str) {
+     if (chrome.app.runtime) {
+       return function() {};  // Chrome app disallows dynamic code creation.
+     }
+
      var code = TemplateCompiler.parseString(str);
 
      try {
