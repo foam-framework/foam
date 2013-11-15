@@ -134,6 +134,7 @@ var ContactListTileView = Model.create({
       name: 'paint',
       code: function() {
         this.$.children[1].textContent = this.value.get().first + ' ' + this.value.get().last + ' <' + this.value.get().email + '>';
+        this.$.children[1].title = this.value.get().email;
       }
     }
   ]

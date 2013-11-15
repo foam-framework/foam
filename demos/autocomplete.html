@@ -11,10 +11,12 @@
       }
 
       .listItem {
+      border: 1px solid transparent;
+      display:inline-block;
       }
 
       .selectedListItem {
-        border: 1px solid blue
+        border: 1px solid blue;
       }
 
       .contactTile {
@@ -22,20 +24,29 @@
       border-radius: 4px;
       height: 32px;
       margin-top: 4px;
+      width: 300px;
       }
 
       .contactTileAvatar {
       width: 24px;
       height: 24px;
-      margin-right: 4px;
-      border-right: 1px solid;
+      background-color: black;
+      margin: 4px;
       display: inline-block;
       }
 
       .contactTileDetails {
-      margin: 8px;
+      position: absolute;
+      padding: 8px;
+      height: 16px;
       display: inline-block;
-      font-size: small;
+      font: sans;
+      font-size: smaller;
+      border-left: 1px solid grey;
+      width: 259px;
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
       }
     </style>
   </head>
