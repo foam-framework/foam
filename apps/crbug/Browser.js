@@ -116,7 +116,7 @@ var CIssueBrowser = Model.create({
           this.timer.stop();
           this.view.view = this.view.view;
         }
-      });
+      }.bind(this));
 
       this.rowSelection.addListener(function(_,_,_,issue) {
         document.location = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;

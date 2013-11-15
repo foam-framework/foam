@@ -5,6 +5,7 @@
 
     "permissions": [
       "storage",
+      "<all_urls>",
       "https://*/",
       "http://*/",
       "identity"

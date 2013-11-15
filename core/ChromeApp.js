@@ -91,12 +91,12 @@ function axhr(url, opt_op, opt_params) {
   return function(ret) {
     var xhr = new XMLHttpRequest();
     xhr.open(op, url);
-    xhr.asend(ret, params.join('&'));
+    xhr.asend(function(ret, xhr) { ret(JSON.parse(xhr.response)); }, params.join('&'));
   };
 }
 
 
-function ajsonp(url, params) {
+ajsonp = function(url, params) {
   return axhr(url, 'GET', params);
 };
 

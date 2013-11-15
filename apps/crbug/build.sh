@@ -13,6 +13,7 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
+  ../../core/async.js \
   ../../core/ChromeApp.js \
   ../../core/AbstractPrototype.js \
   ../../core/ModelProto.js \
@@ -28,7 +29,6 @@ cat \
   ../../core/mlang.js \
   ../../core/QueryParser.js \
   ../../core/search.js \
-  ../../core/async.js \
   ../../core/visitor.js \
   ../../core/dao.js \
   ../../core/diff.js \

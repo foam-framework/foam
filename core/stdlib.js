@@ -410,6 +410,9 @@ if (window.XMLHttpRequest) {
   */
   XMLHttpRequest.prototype.asend = function(ret, opt_data) {
     var xhr = this;
+    xhr.onerror = function() {
+      console.log('XHR Error: ', arguments);
+    };
     xhr.onloadend = function() {
       ret(xhr.response, xhr);
     };
