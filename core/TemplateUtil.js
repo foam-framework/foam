@@ -80,7 +80,9 @@ var TemplateUtil = {
 
    compile: chrome.app.runtime ?
      function() {
-       return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+       return function() {
+         return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+       };
      } :
      function(str) {
 

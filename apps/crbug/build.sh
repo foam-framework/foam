@@ -27,6 +27,7 @@ cat \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
+  ../../core/glang.js \
   ../../core/QueryParser.js \
   ../../core/search.js \
   ../../core/visitor.js \

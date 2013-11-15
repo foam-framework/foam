@@ -52,7 +52,7 @@ var CIssueBrowser = Model.create({
         return SyncManager.create({
           srcDAO: IssueNetworkDAO,
           dstDAO: IssueDAO,
-          lastModified: new Date(2013,01,01),
+          lastModified: new Date(2012,01,01),
           modifiedProperty: CIssue.UPDATED
         });
       }
@@ -142,7 +142,7 @@ var CIssueBrowser = Model.create({
     {
       name: "toHTML",
       description: "",
-      template: "<html>\u000a <head>\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"../../core/foam.css\" />\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"crbug.css\" />\u000a  <title>Chromium Issues</title>\u000a </head>\u000a <body>\u000a<table>\u000a  <tr>\u000a  <td>\u000a    <img id=\"logo\" src=\"images/logo.png\">\u000a  </td>\u000a  <td>\u000a    <span class=\"title\">cr<sup><font size=-0.5>2</font></sup>bug</span>\u000a    <div class=\"subtitle\">Chromium issue tracker in Chromium.</div>\u000a  </td>\u000a  <td width=150></td>\u000a  <td valign=\"bottom\">\u000a  <div class=\"searchBar\">\u000a  Search <span id=\"searchChoice\"></span> for <span id=\"searchField\"></span>\u000a  </div>\u000a  </td>\u000a  </tr>\u000a</table>\u000a<hr color=\"#9BC0FA\">\u000a<span id=\"view\"></span></body>\u000a</html>"
+      template: "<html>\u000a <head>\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" />\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"crbug.css\" />\u000a  <title>Chromium Issues</title>\u000a </head>\u000a <body>\u000a<table>\u000a  <tr>\u000a  <td>\u000a    <img id=\"logo\" src=\"images/logo.png\">\u000a  </td>\u000a  <td>\u000a    <span class=\"title\">cr<sup><font size=-0.5>2</font></sup>bug</span>\u000a    <div class=\"subtitle\">Chromium issue tracker in Chromium.</div>\u000a  </td>\u000a  <td width=150></td>\u000a  <td valign=\"bottom\">\u000a  <div class=\"searchBar\">\u000a  Search <span id=\"searchChoice\"></span> for <span id=\"searchField\"></span>\u000a  </div>\u000a  </td>\u000a  </tr>\u000a</table>\u000a<hr color=\"#9BC0FA\">\u000a<span id=\"view\"></span></body>\u000a</html>"
     }
   ]
 });

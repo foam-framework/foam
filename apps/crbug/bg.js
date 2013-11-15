@@ -1,8 +1,12 @@
 function launchController() {
-  chrome.app.window.create('empty.html', {width: 800, height: 600}, function(w) {
+  chrome.app.window.create('empty.html', {width: 1000, height: 800}, function(w) {
     w.contentWindow.onload = function() {
       var window = self.window = w.contentWindow;
-      arequire('CIssueBrowser')(function (CIssueBrowser) {
+      apar(
+        arequire('GridView'),
+        arequire('CIssueTileView'),
+        arequire('CIssueBrowser')
+      )(function (_, _, CIssueBrowser) {
         var b = CIssueBrowser.create({window: window});
         window.browser = b; // for debugging
         $addWindow(window);

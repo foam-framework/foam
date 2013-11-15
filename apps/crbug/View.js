@@ -100,6 +100,7 @@ function createView(rowSelection) {
         label: 'Grid',
         view: function() {
            var g = Model.create({
+              name: 'CIssueGridView',
               extendsModel: 'GridView',
               properties: [
                 {
