@@ -78,17 +78,23 @@ var TemplateCompiler = {
 
 var TemplateUtil = {
 
-   compile: function(str) {
-     var code = TemplateCompiler.parseString(str);
+   compile: chrome.app.runtime ?
+     function() {
+       return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
+     } :
+     function(str) {
 
-     try {
-        return new Function("opt_out", code);
-     } catch (err) {
-       console.log("Template Error: ", err);
-       console.log(code);
-       return function() {};
-     }
-   },
+       // TODO: eval hack for PackagedApps
+       var code = TemplateCompiler.parseString(str);
+
+       try {
+         return new Function("opt_out", code);
+       } catch (err) {
+         console.log("Template Error: ", err);
+         console.log(code);
+         return function() {};
+       }
+     },
 
    /**
     * Combinator which takes a template which expects an output parameter and

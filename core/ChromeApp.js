@@ -28,17 +28,6 @@
 
 /** Code Specific to Chrome Apps. **/
 
-/**
- *  Override because it will fail because of the lack of eval(),
- *  but only after wasting time compiling.
- **/
-TemplateUtil.compile = function() {
-  return function() {
-    return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
-  };
-};
-
-
 var __EVAL_CALLBACKS__ = {};
 var aeval = (function() {
   var nextID = 0;
@@ -95,4 +84,19 @@ function arequire(modelName) {
   return aseq(apar.apply(apar, args), aconstant(model));
 }
 
+function axhr(url, opt_op, opt_params) {
+  var op = opt_op || "GET";
+  var params = opt_params || [];
+
+  return function(ret) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(op, url);
+    xhr.asend(ret, params.join('&'));
+  };
+}
+
+
+function ajsonp(url, params) {
+  return axhr(url, 'GET', params);
+};
 
