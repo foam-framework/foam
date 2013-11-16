@@ -62,6 +62,11 @@ var CIssue = FOAM({
           aliases: ['pr', 'pri', 'prior'],
           tableLabel: 'Pri',
           tableWidth: '60px',
+          compareProperty: function(p1, p2) {
+            var priorities = ['Low', 'Medium', 'High'];
+            var r = priorities.indexOf(p1) - priorities.indexOf(p2);
+            return r === 0 ? 0 : r < 0 ? -1 : 1;
+          },
           required: true
         },
         {
