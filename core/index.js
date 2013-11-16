@@ -232,8 +232,6 @@ var TreeIndex = {
       // If we're a leaf, easy, otherwise reduce to leaf case.
       if ( ! s[LEFT] && ! s[RIGHT] ) return undefined;
 
-      // TODO: add a unit test to verify that the size
-      // adjusting logic is correct here.
       var side = s[LEFT] ? LEFT : RIGHT;
 
       // TODO: it would be faster if successor and predecessor also deleted
@@ -373,7 +371,7 @@ var TreeIndex = {
   size: function(s) { return s ? s[SIZE] : 0; },
 
   compare: function(o1, o2) {
-    return o1.compareTo(o2); //this.prop.compare(o1, o2);
+    return this.prop.compareProperty(o1, o2);
   },
 
   plan: function(s, sink, options) {

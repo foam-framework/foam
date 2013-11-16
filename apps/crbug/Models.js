@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 var labelToProperty = {
+  App:          'app',
   Priority:     'priority',
   M:            'milestone',
   Cr:           'category',
@@ -47,11 +48,12 @@ var CIssue = FOAM({
 
     properties: [
         {
-            name: 'id',
-            shortName: 'i',
-            label: 'ID',
-            required: true,
-            tableWidth: '48px'
+          model_: 'IntegerProperty',
+          name: 'id',
+          shortName: 'i',
+          label: 'ID',
+          required: true,
+          tableWidth: '48px'
         },
         {
           model_: 'StringProperty',
@@ -61,6 +63,11 @@ var CIssue = FOAM({
           tableLabel: 'Pri',
           tableWidth: '60px',
           required: true
+        },
+        {
+          model_: 'StringProperty',
+          name: 'app',
+          tableWidth: '60px',
         },
         {
             name: 'milestone',

@@ -221,10 +221,10 @@ var DateTimeProperty = Model.create({
 
 
 var IntegerProperty = Model.create({
-    extendsModel: 'Property',
+  extendsModel: 'Property',
 
-    name:  'IntegerProperty',
-    help:  "Describes a properties of type Integer.",
+  name:  'IntegerProperty',
+  help:  "Describes a properties of type Integer.",
 
     properties: [
        {
@@ -260,7 +260,14 @@ var IntegerProperty = Model.create({
            required: false,
            help: 'The protobuf tag number for this field.'
        }
-    ]
+    ],
+
+  methods: {
+    compareProperty: function(o1, o2) {
+      return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+    }
+  }
+
 });
 
 
