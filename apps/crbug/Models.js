@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var labelToProperty = {
-  Pri:          'priority',
+  Priority:     'priority',
   M:            'milestone',
   Cr:           'category',
   Iteration:    'iteration',
@@ -54,17 +54,13 @@ var CIssue = FOAM({
             tableWidth: '48px'
         },
         {
-            name: 'priority',
-            shortName: 'p',
-            aliases: ['pr', 'pri', 'prior'],
-            tableLabel: 'Pri',
-            type: 'Integer',
-            tableWidth: '30px',
-            // TODO: move this to IntegerProperty
-            preSet: function(val) {
-               return parseInt(val);
-            },
-            required: true
+          model_: 'StringProperty',
+          name: 'priority',
+          shortName: 'p',
+          aliases: ['pr', 'pri', 'prior'],
+          tableLabel: 'Pri',
+          tableWidth: '60px',
+          required: true
         },
         {
             name: 'milestone',
