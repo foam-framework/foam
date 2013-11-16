@@ -1,3 +1,7 @@
+export BUILD_DIR=~/Downloads/crbug
+rm -rf $BUILD_DIR
+cp -r . $BUILD_DIR
+cp ../../core/foam.css $BUILD_DIR
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
@@ -42,12 +46,7 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/SyncManager.js \
-  > foam.js
+  > "$BUILD_DIR/foam.js"
 
-cp ../../core/foam.css .
-
-#  | sed 's/[^:]\/\/.*$//' \
-#  | sed 's/^\/\/.*$//' \
-#  | sed 's/;$//' \
-#  | sed 's/\/\*/\n\/\*\n/' | sed 's/\*\//\n\*\/\n/' | sed '/\/\*/,/\*\//d' \
-#  | sed '/^$/ d' | sed 's/^ *//g' > foam.js
+# For code compression, uncomment the following line:
+# ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
