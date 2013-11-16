@@ -329,29 +329,22 @@ var Property = {
            view: 'FunctionView',
            defaultValue: '',
            help: 'Factory to create the action objects for taking this property from value A to value B'
-       }/*,
+       },
        {
-           name: 'compare',
+           name: 'compareProperty',
            type: 'Function',
            view: 'FunctionView',
            defaultValue: function(o1, o2) {
-             o1 = this.f(o1);
-             o2 = this.f(o2);
-             return o1.localeCompare ?
-               o1.localeCompare(o2) :
-               o1 - o2 ;
+             return (o1.localeCompare || o1.compareTo).call(o1, o2);
            },
            help: 'Comparator function.'
-       }*/
+       }
     ],
 
     methods: {
       f: function(obj) { return obj[this.name] || obj; },
       compare: function(o1, o2) {
         return this.compareProperty(this.f(o1), this.f(o2));
-      },
-      compareProperty: function(o1, o2) {
-        return (o1.localeCompare || o1.compareTo).call(o1, o2);
       },
       toSQL: function() { return this.name; },
       toMQL: function() { return this.name; }

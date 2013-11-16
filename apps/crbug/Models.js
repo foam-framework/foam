@@ -63,7 +63,7 @@ var CIssue = FOAM({
           tableLabel: 'Pri',
           tableWidth: '60px',
           compareProperty: function(p1, p2) {
-            var priorities = ['Low', 'Medium', 'High'];
+            var priorities = ['Low', 'Medium', 'High', 'Critical'];
             var r = priorities.indexOf(p1) - priorities.indexOf(p2);
             return r === 0 ? 0 : r < 0 ? -1 : 1;
           },

@@ -259,15 +259,14 @@ var IntegerProperty = Model.create({
            type: 'Integer',
            required: false,
            help: 'The protobuf tag number for this field.'
+       },
+       {
+           name: 'compareProperty',
+           defaultValue: function(o1, o2) {
+             return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+           }
        }
-    ],
-
-  methods: {
-    compareProperty: function(o1, o2) {
-      return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
-    }
-  }
-
+    ]
 });
 
 

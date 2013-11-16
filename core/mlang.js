@@ -29,13 +29,6 @@ Property.getPrototype().compare = function(o1, o2) {
   return this.compareProperty(this.f(o1), this.f(o2));
 };
 
-Property.getPrototype().compareProperty = function(o1, o2) {
-  return (o1.localeCompare || o1.compareTo).call(o1, o2);
-};
-
-IntegerProperty.getPrototype().compareProperty = function(o1, o2) {
-  return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
-};
 
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
