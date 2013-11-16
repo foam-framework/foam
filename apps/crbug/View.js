@@ -69,12 +69,11 @@ var idFormatter = {
 
 var priColorMap = {
   colorMap: {
-     '0': 'red',
-     '1': 'orange',
-     '2': 'yellow',
-     '3': 'lightyellow',
-     '': 'lightgray',
-     'NaN': 'lightgray'
+     'Critical': 'red',
+     'High':     'orange',
+     'Medium':   'yellow',
+     'Low':      'lightyellow',
+     '':         'lightgray'
   }
 };
 
