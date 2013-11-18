@@ -148,6 +148,7 @@ AlbumDAO = CascadingRemoveDAO.create({
 var avgKey = Math.floor(NUM_PHOTOS/2).toString();
 var avgAlbumKey = Math.floor(NUM_ALBUMS/2).toString();
 
+function runPhotoBenchmarks() {
 aseq(
   atest('CreateTestAlbums' + NUM_ALBUMS, arepeat(NUM_ALBUMS, function (ret, i) {
     testData.albums[i].isLocal = !!testData.albums[i].isLocal;
@@ -232,3 +233,4 @@ aseq(
   }),
   asleep(10000)
 )))(alog('Done.'));
+}

@@ -1159,7 +1159,6 @@ var IDBDAO = FOAM({
     },
 
     remove: function(query, sink) {
-console.log('remove', query);
       this.withStore("readwrite", function(store) {
         var self = this;
 
