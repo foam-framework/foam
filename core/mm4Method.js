@@ -105,7 +105,7 @@ var Action = FOAM({
        {
            name: 'parent',
            type: 'String',
-           help: 'The parent action of this action'o
+           help: 'The parent action of this action'
        },
        {
            name: 'action',
