@@ -1654,10 +1654,8 @@ var TreeExpr = FOAM({
             this.actions_.put(o);
         },
         eof: function() {
-            debugger;
             var pprop = this.parentProperty;
             var cprop = this.childrenProperty;
-            var self = this;
 
             var next = [];
 
