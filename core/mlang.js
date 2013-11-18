@@ -1626,84 +1626,62 @@ var ExpandableGroupByExpr = FOAM({
 });
 
 var TreeExpr = FOAM({
-    model_: 'Model',
+  model_: 'Model',
 
-    extendsModel: 'EXPR',
+  extendsModel: 'EXPR',
 
-    name: 'TreeExpr',
+  name: 'TreeExpr',
 
-    properties: [
-        {
-            name: 'parentProperty',
-        },
-        {
-            name: 'childrenProperty',
-        },
-        {
-            model_: 'ArrayProperty',
-            name: 'actions_'
-        },
-        {
-            model_: 'ArrayProperty',
-            name: 'root'
-        }
-    ],
-
-    methods: {
-        put: function(o) {
-            this.actions_.put(o);
-        },
-        eof: function() {
-            var pprop = this.parentProperty;
-            var cprop = this.childrenProperty;
-
-            var next = [];
-
-            var innerPut = function(parent, o) {
-                if ( parent.id === pprop.f(o) ) {
-                    parent[cprop.name] = cprop.f(parent).concat(o);
-                    return true;
-                }
-                var children = cprop.f(parent);
-                for ( var i = 0; i < children.length; i++ ) {
-                    if ( innerPut(children[i], o) ) {
-                        parent[cprop.name] = children;
-                        return true;
-                    }
-                }
-            };
-
-            for ( var i = 0; i < this.actions_.length; i++ ) {
-                var a = this.actions_[i];
-
-                if ( ! pprop.f(a) ) {
-                    this.root.push(a);
-                    continue;
-                }
-                next.push(a);
-            }
-
-            var tmp = [];
-            while ( next.length !== tmp.length ) {
-                tmp = next;
-                next = [];
-                for ( i = 0; i < tmp.length; i++ ) {
-                    a = tmp[i];
-                    for ( var j = 0; j < this.root.length; j++ ) {
-                        if ( innerPut(this.root[j], a) ) break;
-                    }
-                    if ( j === this.root.length ) next.push(i);
-                }
-            }
-        },
+  properties: [
+    {
+      name: 'parentProperty',
+    },
+    {
+      name: 'childrenProperty',
+    },
+    {
+      name: 'items_',
+      help: 'Temporary map to store collected objects.',
+      valueFactory: function() { return {}; },
+      transient: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'roots'
     }
+  ],
+
+  methods: {
+    put: function(o) {
+      this.items_[o.id] = o;
+      if ( ! this.parentProperty.f(o) ) {
+        this.roots.push(o);
+      }
+    },
+    eof: function() {
+      var pprop = this.parentProperty;
+      var cprop = this.childrenProperty;
+
+      for ( var key in this.items_ ) {
+        var item = this.items_[key];
+        var parentId = pprop.f(item);
+        if ( ! parentId ) continue;
+        var parent = this.items_[parentId];
+
+        parent[cprop.name] = cprop.f(parent).concat(item);
+      }
+
+      // Remove temporary holder this.items_.
+      this.items_ = {};
+    },
+  }
 });
 
 function TREE(parentProperty, childrenProperty) {
-    return TreeExpr.create({
-        parentProperty: parentProperty,
-        childrenProperty: childrenProperty
-    });
+  return TreeExpr.create({
+    parentProperty: parentProperty,
+    childrenProperty: childrenProperty
+  });
 }
 
 

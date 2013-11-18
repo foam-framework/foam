@@ -100,7 +100,8 @@ var Action = FOAM({
            valueFactory: function() { return []; },
            subType: 'Action',
            view: 'ArrayView',
-           help: 'Child actions of this action.'
+           help: 'Child actions of this action.',
+           persistent: false
        },
        {
            name: 'parent',
