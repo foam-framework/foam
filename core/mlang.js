@@ -1625,6 +1625,89 @@ var ExpandableGroupByExpr = FOAM({
    }
 });
 
+var TreeExpr = FOAM({
+    model_: 'Model',
+
+    extendsModel: 'EXPR',
+
+    name: 'TreeExpr',
+
+    properties: [
+        {
+            name: 'parentProperty',
+        },
+        {
+            name: 'childrenProperty',
+        },
+        {
+            model_: 'ArrayProperty',
+            name: 'actions_'
+        },
+        {
+            model_: 'ArrayProperty',
+            name: 'root'
+        }
+    ],
+
+    methods: {
+        put: function(o) {
+            this.actions_.put(o);
+        },
+        eof: function() {
+            debugger;
+            var pprop = this.parentProperty;
+            var cprop = this.childrenProperty;
+            var self = this;
+
+            var next = [];
+
+            var innerPut = function(parent, o) {
+                if ( parent.id === pprop.f(o) ) {
+                    parent[cprop.name] = cprop.f(parent).concat(o);
+                    return true;
+                }
+                var children = cprop.f(parent);
+                for ( var i = 0; i < children.length; i++ ) {
+                    if ( innerPut(children[i], o) ) {
+                        parent[cprop.name] = children;
+                        return true;
+                    }
+                }
+            };
+
+            for ( var i = 0; i < this.actions_.length; i++ ) {
+                var a = this.actions_[i];
+
+                if ( ! pprop.f(a) ) {
+                    this.root.push(a);
+                    continue;
+                }
+                next.push(a);
+            }
+
+            var tmp = [];
+            while ( next.length !== tmp.length ) {
+                tmp = next;
+                next = [];
+                for ( i = 0; i < tmp.length; i++ ) {
+                    a = tmp[i];
+                    for ( var j = 0; j < this.root.length; j++ ) {
+                        if ( innerPut(this.root[j], a) ) break;
+                    }
+                    if ( j === this.root.length ) next.push(i);
+                }
+            }
+        },
+    }
+});
+
+function TREE(parentProperty, childrenProperty) {
+    return TreeExpr.create({
+        parentProperty: parentProperty,
+        childrenProperty: childrenProperty
+    });
+}
+
 
 var JOIN = function(dao, key, sink) {
   return {

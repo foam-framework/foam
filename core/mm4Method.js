@@ -95,6 +95,19 @@ var Action = FOAM({
            help: 'Property indicating whether the label should be rendered along side the icon'
        },
        {
+           name: 'children',
+           type: 'Array',
+           valueFactory: function() { return []; },
+           subType: 'Action',
+           view: 'ArrayView',
+           help: 'Child actions of this action.'
+       },
+       {
+           name: 'parent',
+           type: 'String',
+           help: 'The parent action of this action'o
+       },
+       {
            name: 'action',
            type: 'Function',
            displayWidth: 80,
