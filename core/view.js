@@ -2345,31 +2345,27 @@ var ActionButton = Model.create({
 });
 
 // TODO: ActionBorder should use this.
-// Maybe replace this with a generic ToolbarView which supports adding Actions
-// and other types of views as well (and springs and struts).
-var ActionToolbarView = FOAM({
+var ToolbarView = FOAM({
 
    model_: 'Model',
 
-   name:  'ActionToolbarView',
-   label: 'Action Toolbar',
+   name:  'ToolbarView',
+   label: 'Toolbar',
 
    extendsModel: 'AbstractView',
 
    properties: [
       {
-         name: 'actions',
-         type: 'Array[Action]',
-         subType: 'Action',
-         view: 'ArrayView',
-         valueFactory: function() { return []; },
-         defaultValue: [],
-         help: 'Actions to be shown on this toolbar.'
-      },
-      {
          model_: 'BooleanProperty',
          name: 'horizontal',
          defaultValue: true
+      },
+      {
+         model_: 'BooleanProperty',
+         name: 'icons',
+         defaultValueFn: function() {
+            return this.horizontal;
+         }
       },
       {
          name:  'value',
@@ -2377,6 +2373,21 @@ var ActionToolbarView = FOAM({
          valueFactory: function() { return SimpleValue.create(); },
          postSet: function(newValue, oldValue) {
          }
+      },
+      {
+         name: 'left'
+      },
+      {
+         name: 'top'
+      },
+      {
+         name: 'bottom'
+      },
+      {
+         name: 'right'
+      },
+      {
+         name: 'document'
       }
    ],
 
@@ -2384,15 +2395,16 @@ var ActionToolbarView = FOAM({
       preButton: function(button) { return ' '; },
       postButton: function() { return this.horizontal ? ' ' : '<br>'; },
 
-      openAsMenu: function(document) {
-         var div = document.createElement('div');
+      openAsMenu: function() {
+         // TODO
+         var div = this.document.createElement('div');
 
          div.id = this.nextID();
          div.style.position = 'absolute';
          div.style.border = '2px solid grey';
-         div.style.top = 15;
+         this.top ? div.style.top = this.top : div.style.bottom = this.bottom;
+         this.left ? div.style.left = this.left : div.style.right = this.right;
          div.style.background = 'white';
-         div.style.left = document.body.clientWidth-162;
          div.style.width = '150px';
          div.innerHTML = this.toHTML(true);
 
@@ -2407,7 +2419,7 @@ var ActionToolbarView = FOAM({
             }
          };
 
-         document.body.appendChild(div);
+         this.document.body.appendChild(div);
          this.initHTML();
       },
 
@@ -2417,12 +2429,10 @@ var ActionToolbarView = FOAM({
 
          str += '<div id="' + this.getID() + '" class="' + cls + '">';
 
-         for ( var i = 0 ; i < this.actions.length ; i++ ) {
-            var action = this.actions[i];
-           var button = ActionButton.create({action: action, value: this.value});
-            str += this.preButton(button) + button.toHTML() + this.postButton(button);
-
-            this.addChild(button);
+         for ( var i = 0 ; i < this.children.length ; i++ ) {
+           str += this.preButton(this.children[i]) +
+             this.children[i].toHTML() +
+             this.postButton(this.children[i]);
          }
 
          str += '</div>';
@@ -2454,7 +2464,29 @@ var ActionToolbarView = FOAM({
            i = (i + this.children.length - 1) % this.children.length;
            this.children[i].$.focus();
          }.bind(this), this.getID());
-      }
+      },
+
+     addAction: function(a) {
+       var view = ActionButton.create({ action: a, value: this.value });
+       if ( a.children.length > 0 ) {
+         var self = this;
+         view.action = a.clone();
+         view.action.action = function() {
+           var toolbar = ToolbarView.create({
+              value: self.value,
+              document: this.document,
+              left: view.$.offsetLeft,
+              top: view.$.offsetTop
+           });
+           toolbar.addActions(a.children);
+           toolbar.openAsMenu(view);
+         };
+       }
+       this.addChild(view);
+     },
+     addActions: function(actions) {
+       actions.forEach(this.addAction.bind(this));
+     }
   }
 });
 

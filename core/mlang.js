@@ -1625,6 +1625,65 @@ var ExpandableGroupByExpr = FOAM({
    }
 });
 
+var TreeExpr = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'EXPR',
+
+  name: 'TreeExpr',
+
+  properties: [
+    {
+      name: 'parentProperty',
+    },
+    {
+      name: 'childrenProperty',
+    },
+    {
+      name: 'items_',
+      help: 'Temporary map to store collected objects.',
+      valueFactory: function() { return {}; },
+      transient: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'roots'
+    }
+  ],
+
+  methods: {
+    put: function(o) {
+      this.items_[o.id] = o;
+      if ( ! this.parentProperty.f(o) ) {
+        this.roots.push(o);
+      }
+    },
+    eof: function() {
+      var pprop = this.parentProperty;
+      var cprop = this.childrenProperty;
+
+      for ( var key in this.items_ ) {
+        var item = this.items_[key];
+        var parentId = pprop.f(item);
+        if ( ! parentId ) continue;
+        var parent = this.items_[parentId];
+
+        parent[cprop.name] = cprop.f(parent).concat(item);
+      }
+
+      // Remove temporary holder this.items_.
+      this.items_ = {};
+    },
+  }
+});
+
+function TREE(parentProperty, childrenProperty) {
+  return TreeExpr.create({
+    parentProperty: parentProperty,
+    childrenProperty: childrenProperty
+  });
+}
+
 
 var JOIN = function(dao, key, sink) {
   return {

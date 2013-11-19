@@ -1349,6 +1349,10 @@ var ListInputView = FOAM({
         for ( var i = 0; i < this.searchProperties.length; i++ ) {
           predicate.args.push(STARTS_WITH(this.searchProperties[i], value));
         }
+        value = this.value.get();
+        if ( value.length > 0 ) {
+          predicate = AND(NOT(IN(this.property, value)), predicate);
+        }
         this.autocompleteView.dao = this.dao.where(predicate);
       }
     },
