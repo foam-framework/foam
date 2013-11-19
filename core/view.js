@@ -2474,7 +2474,7 @@ var ToolbarView = FOAM({
          view.action.action = function() {
            var toolbar = ToolbarView.create({
               value: self.value,
-              document: this.document,
+              document: self.document,
               left: view.$.offsetLeft,
               top: view.$.offsetTop
            });
