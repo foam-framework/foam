@@ -34,6 +34,7 @@ var CIssue = FOAM({
     tableProperties:
     [
       'id',
+'app',
       'priority',
       'milestone',
       'iteration',
@@ -60,7 +61,7 @@ var CIssue = FOAM({
           name: 'priority',
           shortName: 'p',
           aliases: ['pr', 'pri', 'prior'],
-          tableLabel: 'Pri',
+          tableLabel: 'Priority',
           tableWidth: '60px',
           compareProperty: function(p1, p2) {
             var priorities = ['Low', 'Medium', 'High', 'Critical'];

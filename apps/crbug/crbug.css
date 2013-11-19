@@ -1,3 +1,5 @@
+body { overflow: hidden; }
+
 .scrollSpacer { height: 24px }
 
 .title {
@@ -12,7 +14,7 @@
 .subtitle {
   color: #666;
   font-family: arial, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-style: normal;
   font-variant: normal;
   font-weight: normal;
@@ -85,4 +87,10 @@
 .altViewButtons {
   margin-right: 7px;
   margin-top: 24px;
+}
+
+#countField {
+  margin-left: 30px;
+  margin-right: 5px;
+  font-weight: normal;
 }
