@@ -50,3 +50,7 @@ cat \
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
+
+#  ../../core/ChromeStorage.js \
+#  ../../demos/benchmark_data.json \
+#  ../../demos/photo.js \

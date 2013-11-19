@@ -974,7 +974,7 @@ var AlternateView = FOAM({
             str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
             if ( view.label == this.selected ) viewChoice = view;
          }
-         str.push('</div></div>');
+         str.push('</div>');
          buttons = this.callbacks_;
          this.buttons_ = buttons;
 
@@ -984,7 +984,8 @@ var AlternateView = FOAM({
 //       Events.link(this.model, this.view.model);
 
 //       str.push(this.view.toHTML());
-         str.push('<div id="' + this.getID() + '" class="altView"> </div>');
+         str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+        str.push('</div>');
          return str.join('');
       },
 

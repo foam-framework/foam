@@ -8,7 +8,8 @@
       "<all_urls>",
       "https://*/",
       "http://*/",
-      "identity"
+      "identity",
+      "unlimitedStorage"
     ],
 
     "icons": {
