@@ -169,7 +169,7 @@ var ThreePaneController = FOAM({
       name: 'toolbar',
       type: 'AbstractView',
       valueFactory: function() {
-        return ActionToolbarView.create({
+        return ToolbarView.create({
           actions: this.model.actions,
           value: this.table.view.selection
         });

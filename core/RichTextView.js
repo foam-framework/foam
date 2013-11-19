@@ -119,9 +119,10 @@ var RichTextView = FOAM({
 
   methods: {
     toHTML: function() {
-      var m = this.mode === 'read-write' ? ' contenteditable' : '';
+      var sandbox = this.mode === 'read-write' ? '' :
+          ' sandbox="allow-same-origin"';
       var id = this.getID();
-      return '<iframe style="border:solid 2px #b7ddf2;width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"></iframe>';
+      return '<iframe style="border:solid 2px #b7ddf2;width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
     },
 
     setValue: function(value) {
@@ -131,7 +132,9 @@ var RichTextView = FOAM({
     initHTML: function() {
       this.SUPER();
       this.document = this.$.contentDocument;
-      this.document.body.contentEditable = true;
+      if ( this.mode === 'read-write') {
+        this.document.body.contentEditable = true;
+      }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
       this.value = this.value;
     },

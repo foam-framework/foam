@@ -16,10 +16,8 @@
  */
 EMail.ATTACHMENTS.tableLabel = '<img src="images/paperclip.gif">';
 
-var menu = FOAM({
-  model_: 'ActionToolbarView',
-
-  actions: [
+var menu = ToolbarView.create({});
+menu.addActions(FOAM([
    {
       model_: 'Action',
       name: 'newWindow',
@@ -53,8 +51,7 @@ var menu = FOAM({
          console.log('labels');
       }
    }
-  ]
-});
+]));
 
 var actions = FOAM([
    {
@@ -185,8 +182,12 @@ var stack = {
 };
 
 function openMenu(e) {
+   debugger;
   var doc = e.toElement.ownerDocument;
-  menu.openAsMenu(doc);
+  menu.document = doc;
+  menu.left = doc.body.clientWidth - 162;
+  menu.top = 15;
+  menu.openAsMenu();
 }
 
 function openSettings() {
@@ -216,7 +217,7 @@ function launchController(_, callback) {
     searchChoice: searchChoice,
     searchWidth: MIN_SEARCH_W
   });
-  controller.toolbar.actions = actions;
+  controller.toolbar.addActions(actions);
   controller.editView.toHTML = function() {
     this.children = [];
     var model = this.model;
@@ -308,7 +309,7 @@ function launchController(_, callback) {
 
      // 'c' to open the compose window.
      controller.addShortcut('U+0043', function() {
-       this.toolbar.actions[0].action();
+       this.toolbar.children[0].action.action();
      }.bind(controller));
 
      // 't' to focus the first item in the toolbar.
