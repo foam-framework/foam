@@ -39,7 +39,7 @@ cat \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
-  ../../core/StackView.js \
+  ../../core/RichTextView.js \
   ../../core/DAOController.js \
   ../../core/ThreePaneController.js \
   ../../core/experimental/protobufparser.js \

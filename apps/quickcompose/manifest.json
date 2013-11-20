@@ -21,6 +21,7 @@
             "scripts": [
               "foam.js",
               "QuickCompose.js",
+              "Storage.js",
               "bg.js"
             ]
         }
