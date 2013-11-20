@@ -49,7 +49,6 @@ cat \
   ../mailreader/email.js \
   ../saturn/EMailBodyDAO.js \
   ../saturn/contacts.js \
-  ../saturn/Storage.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:

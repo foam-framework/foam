@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 
-var QuickEMail = Model.create({
+var QuickEMail = FOAM({
+  model_: 'Model',
   name: 'QuickEMail',
+  properties: [
+    { name: 'to' },
+    { name: 'subject' },
+    { name: 'body' }
+  ]
 });
 
 
@@ -28,12 +34,11 @@ var QuickEMailView = Model.create({
   templates: [
     {
       name: "toHTML",
-      description: "",
       template: '<div id="<%= this.getID() %>">' +
-        '<%= this.createView(QuickEMail.TO).toHTML() %>' +
-        '<%= this.createView(QuickEMail.SUBJECT).toHTML() %>' +
-        '<%= this.createView(QuickEMail.BODY).toHTML() %>' +
-        '</div>';
+        '<%= this.createView(EMail.TO).toHTML() %>' +
+        '<%= this.createView(EMail.SUBJECT).toHTML() %>' +
+        '<%= this.createView(EMail.BODY).toHTML() %>' +
+        '</div>'
     }
   ]
 });
@@ -53,7 +58,7 @@ var QuickCompose = Model.create({
     {
       name: 'view',
       valueFactory: function() {
-        return QuickEmailView.create({
+        return QuickEMailView.create({
           model: QuickEMail
         });
       }

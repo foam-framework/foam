@@ -2,8 +2,9 @@ function launchComposer() {
   chrome.app.window.create('empty.html', {width: 400, height: 500}, function(w) {
     w.contentWindow.onload = function() {
       var window = self.window = w.contentWindow;
-      apar(
-        arequire('QuickCompose'),
+      aseq(
+        arequire('QuickEMailView'),
+        arequire('QuickCompose')
       )(function () {
         var b = QuickCompose.create({window: window});
         window.browser = b; // for debugging
@@ -20,5 +21,5 @@ function launchComposer() {
 }
 
 if ( chrome.app.runtime ) {
-  chrome.app.runtime.onLaunched.addListener(launchComposer));
+  chrome.app.runtime.onLaunched.addListener(launchComposer);
 }
