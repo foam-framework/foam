@@ -270,6 +270,16 @@ var FutureDAO = {
           });
           return f.get;
         },
+        pipe: function() {
+          var a = arguments;
+          var f = afuture();
+          futureDelegate(function(delegate) {
+            // This removes this code from the delegate-chain and replaces the real delegate.
+            setupFuture(delegate);
+            delegate.pipe.apply(delegate, a)(f.set);
+          });
+          return f.get;
+        },
         put: function() {
           var a = arguments;
           futureDelegate(function(delegate) {

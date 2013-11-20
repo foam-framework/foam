@@ -34,4 +34,5 @@ if ( chrome.app.runtime ) {
     console.log('launched');
     launchController();
   });
+
 }

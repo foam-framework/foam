@@ -33,7 +33,9 @@ var CIssue = FOAM({
 
     tableProperties:
     [
+      'starred',
       'id',
+'app',
       'priority',
       'milestone',
       'iteration',
@@ -60,7 +62,7 @@ var CIssue = FOAM({
           name: 'priority',
           shortName: 'p',
           aliases: ['pr', 'pri', 'prior'],
-          tableLabel: 'Pri',
+          tableLabel: 'Priority',
           tableWidth: '60px',
           compareProperty: function(p1, p2) {
             var priorities = ['Low', 'Medium', 'High', 'Critical'];
@@ -72,7 +74,7 @@ var CIssue = FOAM({
         {
           model_: 'StringProperty',
           name: 'app',
-          tableWidth: '60px',
+          tableWidth: '60px'
         },
         {
             name: 'milestone',
@@ -185,6 +187,28 @@ var CIssue = FOAM({
       {
          model_: 'BooleanProperty',
          name: 'starred',
+         tableLabel: '',
+         tableFormatter: function(val, obj, tableView) {
+           var view = ImageBooleanView.create({
+               trueImage: 'images/star_on.gif',
+               falseImage: 'images/star_off.gif',
+               value: SimpleValue.create(val)
+             });
+
+           tableView.addChild(view);
+
+           return view.toHTML();
+         },
+         view: {
+           // TODO: make it so that initialized objects can be used as factories
+           create: function() {
+             return ImageBooleanView.create({
+               trueImage: 'images/star_on.gif',
+               falseImage: 'images/star_off.gif'
+             });
+           }
+         },
+         tableWidth: '20',
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
@@ -237,7 +261,7 @@ var CIssueTileView = FOAM({
 
         name: 'toHTML',
         description: 'TileView',
-        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.strToHTML(this.issue.summary) %></a></div></td></tr></tbody></table></div>'
+        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.strToHTML(this.issue.summary) %></a></div></td></tr></tbody></table></div>'
      }
    ]
 });

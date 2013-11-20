@@ -1357,11 +1357,7 @@ var BooleanView = FOAM({
 
    methods: {
     toHTML: function() {
-       var str = "";
-
-       str += '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
-
-       return str;
+       return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
     },
 
     initHTML: function() {
@@ -1384,6 +1380,69 @@ var BooleanView = FOAM({
 
     destroy: function() {
         Events.unlink(this.domValue, this.value);
+    }
+   }
+});
+
+
+var ImageBooleanView = FOAM({
+    model_: 'Model',
+
+   extendsModel: 'AbstractView',
+
+   name:  'BooleanView',
+
+   properties: [
+      {
+         name:  'name',
+         label: 'Name',
+         type:  'String',
+         defaultValue: 'field'
+      },
+      {
+        name: 'value'
+      },
+      {
+        name: 'trueImage'
+      },
+      {
+        name: 'falseImage'
+      }
+   ],
+
+   methods: {
+    image: function() {
+      return this.value.value ? this.trueImage : this.falseImage;
+    },
+    toHTML: function() {
+      return '<img id="' + this.getID() + '" name="' + this.name + '" src="' + this.image() + '">';
+    },
+
+    initHTML: function() {
+      if ( ! this.$ ) return;
+      this.$.addEventListener('click', function(evt) {
+        evt.stopPropagation();
+        this.value.value = ! this.value.value;
+        return false;
+      }.bind(this), true);
+
+      this.value.addListener(function() {
+        this.$.src = this.image();
+      }.bind(this));
+    },
+
+    getValue: function() {
+      return this.value;
+    },
+
+    setValue: function(value) {
+      Events.unlink(this.domValue, this.value);
+      this.value = value;
+      Events.link(value, this.domValue);
+    },
+
+    destroy: function() {
+      Events.unlink(this.domValue, this.value);
     }
    }
 });
