@@ -20,6 +20,10 @@ body { overflow: hidden; }
   font-weight: normal;
 }
 
+#settings {
+  margin-left: 15px;
+}
+
 .searchBar {
   color: black;
   font-family: arial, sans-serif;
