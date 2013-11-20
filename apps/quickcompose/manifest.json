@@ -1,0 +1,34 @@
+{
+    "name": "QuickCompose",
+    "version": "1.0",
+    "manifest_version": 2,
+
+    "permissions": [
+      "storage",
+      "<all_urls>",
+      "https://*/",
+      "http://*/",
+      "identity",
+      "unlimitedStorage"
+    ],
+
+    "icons": {
+      "64": "images/logo.png"
+    },
+
+    "app": {
+        "background": {
+            "scripts": [
+              "foam.js",
+              "bg.js"
+            ]
+        }
+    },
+
+  "oauth2": {
+    "client_id": "945476427475-regc9kqo9qgtqbmoj5m69qdut8qc1a3s.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  }
+}
