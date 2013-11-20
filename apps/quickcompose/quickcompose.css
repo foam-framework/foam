@@ -1,3 +1,24 @@
 * {
     margin: 0 0 0 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.actionButton-send {
+    background: red;
+    color: white;
+    text-shadown: none;
+}
+
+input[type="text"] {
+    height: 30px;
+}
+
+input[type="String"] {
+    height: 30px;
+}
+
+.actionButton-bold, .actionButton-italic, .actionButton-underline {
+    background: none;
+    border: none;
 }
