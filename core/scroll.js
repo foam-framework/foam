@@ -229,18 +229,26 @@ var ScrollBorder = FOAM({
        }
    ],
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'layout',
+      code: function() {
+        this.view.layout();
+      }
+    }
+  ],
+
    methods: {
-     layout: function() {
-       this.view.layout();
-     },
      toHTML: function() {
-       return '<table width=100% border=0><tr><td valign=top>' +
+       return '<table id="' + this.getID() + '" width=100% height=100% border=0><tr><td valign=top>' +
          this.view.toHTML() +
          '</td><td valign=top><div class="scrollSpacer"></div>' +
          this.scrollbar.toHTML() +
          '</td></tr></table>';
      },
      initHTML: function() {
+       window.addEventListener('resize', this.layout, false);
        this.view.initHTML();
        this.scrollbar.initHTML();
        this.scrollbar.paint();
@@ -267,8 +275,10 @@ var ScrollBorder = FOAM({
          scrollbar.extent = view.rows;
        });
        Events.dynamic(function() {view.height;}, function() {
-         scrollbar.height = Math.max(view.height - 36, 0);
+         scrollbar.height = Math.max(view.height - 26, 0);
        });
+
+       this.layout();
      }
    }
 });

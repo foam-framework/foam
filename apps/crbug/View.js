@@ -85,14 +85,14 @@ function createView(rowSelection) {
       ViewChoice.create({
         label: 'List',
         view: function() {
-           return /*ScrollBorder.create({view:*/ Model.create({
-             extendsModel: 'TableView',
+          return Model.create({
+             extendsModel: 'ScrollBorder',
              methods: {
-                toHTML: function() {
-                   return '<div class="CIssueTableHeader"></div>' + this.SUPER();
-                }
+               toHTML: function() {
+                 return '<div class="CIssueTableHeader"></div>' + this.SUPER();
+               }
              }
-             }).create({ model: CIssue, hardSelection: rowSelection})/*})*/;
+          }).create({view: TableView.create({model: CIssue, hardSelection: rowSelection})});
         }
       }),
       ViewChoice.create({
