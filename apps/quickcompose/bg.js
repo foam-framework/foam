@@ -1,5 +1,5 @@
 function launchComposer() {
-  chrome.app.window.create('empty.html', {width: 400, height: 500}, function(w) {
+  chrome.app.window.create('empty.html', {width: 365, height: 472}, function(w) {
     w.contentWindow.onload = function() {
       var window = self.window = w.contentWindow;
       aseq(

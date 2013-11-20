@@ -20,9 +20,9 @@ var QuickEMail = FOAM({
   extendsModel: 'EMail',
   name: 'QuickEMail',
   properties: [
-    { name: 'to' },
-    { name: 'subject' },
-    { name: 'body', displayWidth: 25, view: 'RichTextView' }
+    { name: 'to',      displayWidth: 55 },
+    { name: 'subject', displayWidth: 55 },
+    { name: 'body',    view: 'RichTextView' }
   ]
 });
 
@@ -35,7 +35,11 @@ var QuickEMailView = Model.create({
   properties: [
     {
       name: 'bodyView',
-      valueFactory: function() { return this.createView(QuickEMail.BODY); }
+      valueFactory: function() {
+        var v = this.createView(QuickEMail.BODY);
+        v.width = 362;
+        return v;
+      }
     }
   ],
 
@@ -49,10 +53,11 @@ var QuickEMailView = Model.create({
   templates: [
     {
       name: "toHTML",
-      template: '<div id="<%= this.getID() %>">' +
+      template:
+        '<div id="<%= this.getID() %>">' +
         '<%= this.createView(QuickEMail.TO).toHTML() %>' +
-        '<%= this.createView(QuickEMail.SUBJECT).toHTML() %>' +
-        '<%= this.bodyView.toHTML() %>' +
+        '<%= this.createView(QuickEMail.SUBJECT).toHTML() %><br>' +
+        '<%= this.bodyView.toHTML() %><br>' +
         '</div>'
     }
   ]
