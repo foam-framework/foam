@@ -1419,6 +1419,7 @@ var ImageBooleanView = FOAM({
     },
 
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.$.addEventListener('click', function(evt) {
         evt.stopPropagation();
         this.value.value = ! this.value.value;
