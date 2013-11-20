@@ -789,6 +789,11 @@ var TextFieldView = FOAM({
          defaultValue: 'text'
       },
       {
+         mode_: 'StringProperty',
+         name:  'placeholder',
+         defaultValue: undefined
+      },
+      {
          mode_: 'BooleanProperty',
          name:  'onKeyMode',
          help: 'If true, value is updated on each keystroke.'
@@ -855,12 +860,13 @@ var TextFieldView = FOAM({
 
     initHTML: function() {
       this.SUPER();
-      var e = this.$;
+
+      if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
       if ( this.mode === 'read-write' ) {
-        this.domValue = DomValue.create(e, 'input');
+        this.domValue = DomValue.create(this.$, 'input');
       } else {
-        this.domValue = DomValue.create(e, 'undefined', 'textContent');
+        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
       }
 
       this.setValue(this.value);
