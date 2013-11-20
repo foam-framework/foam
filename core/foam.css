@@ -168,6 +168,20 @@ option[selected]{
   width:100%;
 }
 
+/* ----------- ImageView ---------- */
+.imageViewContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.imageView {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* ----------- stylized ----------- */
 #stylized {
     border:solid 2px #b7ddf2;

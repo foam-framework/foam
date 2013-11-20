@@ -1241,7 +1241,7 @@ var ListValueView = FOAM({
       name: 'value',
       valueFactory: function() { return SimpleValue.create({ value: [] }); },
       postSet: function(newValue, oldValue) {
-        this.inputView.value = newValue;
+        this.inputView.setValue(newValue);
         this.valueView.value = newValue;
       }
     }
@@ -1379,6 +1379,64 @@ var ListInputView = FOAM({
   ]
 });
 
+var TileArrayView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'TileArrayView',
+
+  properties: [
+    {
+      name: 'value',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.paint);
+        newValue.addListener(this.paint);
+      }
+    },
+    {
+      name: 'dao'
+    },
+    {
+      name: 'property'
+    },
+    {
+      name: 'tileView',
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<ul id="' + this.getID() + '" class="tileListView"></ul>';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
+        var list = this.value.get();
+        var str = "";
+        var views = [];
+        var self = this;
+        this.dao.where(IN(this.property, list)).select({
+          put: function(obj) {
+            var view = self.tileView.create({});
+            view.value.set(obj);
+            str += '<li class="tileListItem">' + view.toHTML() + '</li>';
+            views.push(view);
+          },
+          eof: function() {
+            self.$.innerHTML = str;
+            views.forEach(function(v) { v.initHTML(); });
+          }
+        });
+      }
+    }
+  ]
+});
+
 var ListView = FOAM({
   model_: 'Model',
 
@@ -1438,6 +1496,18 @@ var ListView = FOAM({
       name: 'painting',
       defaultValue: false
     },
+    {
+      model_: 'IntegerProperty',
+      name: 'left',
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'top'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'float'
+    },
   ],
 
   methods: {
@@ -1446,7 +1516,22 @@ var ListView = FOAM({
     },
 
     toHTML: function() {
-      return '<div class="listView" id="' + this.getID() + '"></div>';
+      return '<ul class="listView" id="' + this.getID() + '"></ul>';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.$.style.display = 'none';
+      if ( this.float ) {
+        this.$.className = 'listViewFloat';
+        var self = this;
+        this.propertyValue('left').addListener(function(v) {
+          self.$.left = v;
+        });
+        this.propertyValue('top').addListener(function(v) {
+          self.$.top = v;
+        });
+      }
     },
 
     nextSelection: function() {
@@ -1502,7 +1587,7 @@ var ListView = FOAM({
             }
 
             var view = self.innerView.create({});
-            var container = document.createElement('div');
+            var container = document.createElement('li');
             container.onclick = function() {
               self.value.set(obj);
             };
@@ -1511,9 +1596,9 @@ var ListView = FOAM({
               container.className += ' selectedListItem';
             }
             self.$.appendChild(container);
+            view.value.set(obj);
             container.innerHTML = view.toHTML();
             view.initHTML();
-            view.value.set(obj);
             if ( ! first ) {
               first = [obj, container];
             }
@@ -1523,9 +1608,13 @@ var ListView = FOAM({
           },
           eof: function() {
             self.painting = false;
+            if ( ! first ) self.$.style.display = 'none';
+            else self.$.style.display = '';
+
             if ( ! found ) {
               if ( ! first ) {
                 self.value.set('');
+                self.$.style.display = 'none';
               } else {
                 self.value.set(first[0]);
                 first[1].className += 'selectedListItem';

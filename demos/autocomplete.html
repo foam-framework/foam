@@ -5,48 +5,83 @@
     <script src="../apps/mailreader/email.js"></script>
     <script src="../apps/saturn/contacts.js"></script>
     <title>FOAM </title>
+    <link rel="stylesheet" type="text/css" href="../core/foam.css" />
     <style>
       body {
       font-family: sans;
       }
 
+      .tileListView {
+      margin: 0px;
+      padding: 0px;
+      display: inline-block;
+      }
+
+      .tileListItem {
+      display: inline-block;
+      margin: 0px 1px;
+      }
+
+      .contactSmallName {
+      display: inline;
+      vertical-align: 5px;
+      margin: 0px 2px;
+      }
+
+      .listView {
+      }
+
+      .listViewFloat {
+      position: absolute;
+      padding: 8px;
+      margin: 0px;
+      width: 300px;
+      background: white;
+      border-radius: 5px;
+      border: 1px solid lightgrey;
+      }
+
       .listItem {
       border: 1px solid transparent;
-      display:inline-block;
+      border-radius: 5px;
+      list-style-type: none;
+      overflow: hidden;
       }
 
       .selectedListItem {
-        border: 1px solid blue;
+      border-radius: 5px;
+      border: 1px solid blue;
       }
 
       .contactTile {
       background-color: lightblue;
-      border-radius: 4px;
+      border-radius: 5px;
       height: 32px;
-      margin-top: 4px;
-      width: 300px;
       }
 
       .contactTileAvatar {
-      width: 24px;
-      height: 24px;
-      background-color: black;
-      margin: 4px;
+      width: 32px;
+      height: 32px;
       display: inline-block;
       }
 
       .contactTileDetails {
+      list-style-type: none;
       position: absolute;
-      padding: 8px;
-      height: 16px;
+      padding: 0px;
+      margin-left: 8px;
+      margin-top: 4px;
       display: inline-block;
-      font: sans;
       font-size: smaller;
-      border-left: 1px solid grey;
-      width: 259px;
-      overflow: hidden;
       text-overflow:ellipsis;
       white-space: nowrap;
+      }
+
+      .contactSmallTile {
+      background: lightblue;
+      border-radius: 2px;
+      display: inline-block;
+      overflow: hidden;
       }
     </style>
   </head>
