@@ -17,6 +17,7 @@
 
 var QuickEMail = FOAM({
   model_: 'Model',
+  extendsModel: 'EMail',
   name: 'QuickEMail',
   properties: [
     { name: 'to' },
@@ -35,9 +36,9 @@ var QuickEMailView = Model.create({
     {
       name: "toHTML",
       template: '<div id="<%= this.getID() %>">' +
-        '<%= this.createView(EMail.TO).toHTML() %>' +
-        '<%= this.createView(EMail.SUBJECT).toHTML() %>' +
-        '<%= this.createView(EMail.BODY).toHTML() %>' +
+        '<%= this.createView(QuickEMail.TO).toHTML() %>' +
+        '<%= this.createView(QuickEMail.SUBJECT).toHTML() %>' +
+        '<%= this.createView(QuickEMail.BODY).toHTML() %>' +
         '</div>'
     }
   ]
