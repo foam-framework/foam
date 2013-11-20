@@ -168,7 +168,7 @@ var QuickCompose = FOAM({
     {
       name: "toHTML",
       description: "",
-      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><title>Quick Compose</title></head><body><%= this.view.toHTML() %><%= this.sendButton.toHTML() %><%= this.boldButton.toHTML() %><%= this.italicButton.toHTML() %><%= this.underlineButton.toHTML() %><%= this.discardButton.toHTML() %></body></html>"
+      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><%= this.sendButton.toHTML() %><%= this.boldButton.toHTML() %><%= this.italicButton.toHTML() %><%= this.underlineButton.toHTML() %><%= this.discardButton.toHTML() %></body></html>"
     }
   ]
 });
