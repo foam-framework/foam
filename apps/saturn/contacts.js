@@ -177,7 +177,9 @@ var Contact = FOAM({
             name: 'displayName',
             defaultValueFn: function() {
                // TODO: i18n and add middle/prefix/suffix when applicable.
-               return this.first + ' ' + this.last;
+               var name = this.first + ' ' + this.last;
+               if ( name.length == 1 ) return this.email;
+               return name
             }
         },
         {
@@ -211,7 +213,7 @@ var Contact = FOAM({
             displayHeight: 21,
             view:  'ImageView',
             defaultValueFn: function() {
-               return 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + this.first[0] + '</text></svg>';
+               return 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + (this.first ? this.first[0] : this.email[0]) + '</text></svg>';
             }
         },
         {

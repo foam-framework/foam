@@ -5,18 +5,19 @@ var dao = [
   Contact.create({ id: 4, first: 'Bob', email: 'bob@bob.org' })
 ];
 
-
-var list = ListView.create({
-  model: Contact,
-  innerView: ContactListTileView
+var list = ArrayTileView.create({
+  tileView: ContactSmallTileView,
+  dao: DefaultObjectDAO.create({
+    delegate: dao,
+    factory: function(q) {
+      var obj = Contact.create({});
+      obj[q.arg1.name] = q.arg2.arg1;
+      return obj;
+    }
+  }),
+  property: Contact.EMAIL
 });
-
-document.body.innerHTML = list.toHTML();
+document.writeln(list.toHTML());
 list.initHTML();
 
-list.dao = dao;
-
-document.body.onkeydown = function(e) {
-  if ( e.keyCode === 40 ) list.nextSelection();
-  else if ( e.keyCode === 38 ) list.prevSelection();
-};
+list.value.set(['alice@alice.org', 'bob@bob.org', 'adamvy@google.com']);

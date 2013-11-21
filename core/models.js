@@ -1335,7 +1335,8 @@ var ListInputView = FOAM({
         var value = this.domInputValue.get();
 
         if ( value.charAt(value.length - 1) === ',' ) {
-          this.pushValue(value.substring(0, value.length - 1));
+          if ( value.length > 1 ) this.pushValue(value.substring(0, value.length - 1));
+          else this.domInputValue.set('');
           return;
         }
 
@@ -1379,36 +1380,42 @@ var ListInputView = FOAM({
   ]
 });
 
-var TileArrayView = FOAM({
+var ArrayTileView = FOAM({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
 
-  name: 'TileArrayView',
+  name: 'ArrayTileView',
 
   properties: [
     {
+      name: 'dao',
+    },
+    {
+      name: 'property',
+    },
+    {
+      name: 'tileView',
+    },
+    {
       name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
       postSet: function(newValue, oldValue) {
         oldValue && oldValue.removeListener(this.paint);
         newValue.addListener(this.paint);
       }
     },
     {
-      name: 'dao'
-    },
-    {
-      name: 'property'
-    },
-    {
-      name: 'tileView',
-    },
+      model_: 'BooleanProperty',
+      name: 'painting',
+      defaultValue: false
+    }
   ],
 
   methods: {
     toHTML: function() {
-      return '<ul id="' + this.getID() + '" class="tileListView"></ul>';
-    }
+      return '<ul id="' + this.getID() + '" class="arrayTileView"></ul>';
+    },
   },
 
   listeners: [
@@ -1416,33 +1423,52 @@ var TileArrayView = FOAM({
       name: 'paint',
       animate: true,
       code: function() {
-        var list = this.value.get();
-        var str = "";
-        var views = [];
+        if ( this.painting ) {
+          this.paint();
+          return;
+        }
+
+        this.painting = true;
+        this.children = [];
+        var value = this.value.get();
+        var count = value.length;
         var self = this;
-        this.dao.where(IN(this.property, list)).select({
-          put: function(obj) {
-            var view = self.tileView.create({});
-            view.value.set(obj);
-            str += '<li class="tileListItem">' + view.toHTML() + '</li>';
-            views.push(view);
-          },
-          eof: function() {
-            self.$.innerHTML = str;
-            views.forEach(function(v) { v.initHTML(); });
-          }
-        });
+        var render = function() {
+          self.$.innerHTML = self.children.map(
+            function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
+          self.children.forEach(
+            function(c) { c.initHTML(); });
+          self.painting = false;
+        };
+
+        if ( value.length == 0 ) render();
+        for ( var i = 0; i < value.length; i++ ) {
+          this.dao.find(EQ(this.property, value[i]), {
+            put: function(obj) {
+              var view = self.tileView.create();
+              view.value.set(obj);
+              self.addChild(view);
+              count--;
+              if ( count == 0 ) render();
+            },
+            error: function() {
+              // Ignore missing values
+              count--;
+              if ( count == 0 ) render();
+            },
+          });
+        }
       }
     }
   ]
 });
 
-var ListView = FOAM({
+var AutocompleteListView = FOAM({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
 
-  name: 'ListView',
+  name: 'AutocompleteListView',
 
   properties: [
     {
