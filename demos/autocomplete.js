@@ -19,13 +19,20 @@ EMail.TO.view = {
         property: Contact.EMAIL,
         searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
         valueView: StringArrayView.create({}),
-        autocompleteView: ListView.create({
+        autocompleteView: AutocompleteListView.create({
           innerView: ContactListTileView,
           float: true
         })
       }),
-      valueView: TileArrayView.create({
-        dao: dao,
+      valueView: ArrayTileView.create({
+        dao: DefaultObjectDAO.create({
+          delegate: dao,
+          factory: function(q) {
+            var obj = Contact.create({});
+            obj[q.arg1.name] = q.arg2.arg1;
+            return obj;
+          }
+        }),
         property: Contact.EMAIL,
         tileView: ContactSmallTileView
       })

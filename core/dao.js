@@ -2295,6 +2295,32 @@ var RestDAO = FOAM({
   }
 });
 
+var DefaultObjectDAO = FOAM({
+  model_: 'Model',
+
+  name: 'DefaultObjectDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'factory',
+    }
+  ],
+
+  methods: {
+    find: function(q, sink) {
+      var self = this;
+      var mysink = {
+        put: sink.put.bind(sink),
+        error: function() {
+          sink.put(self.factory(q));
+        },
+      };
+      this.delegate.find(q, mysink);
+    }
+  }
+});
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
