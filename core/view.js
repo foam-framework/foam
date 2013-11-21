@@ -495,11 +495,11 @@ var Circle = Model.create({
 });
 
 
-var ImageView = FOAM({
+var ImageCView = FOAM({
 
    model_: 'Model',
 
-   name:  'ImageView',
+   name:  'ImageCView',
 
    properties: [
       {
@@ -553,6 +553,81 @@ var ImageView = FOAM({
          c.drawImage(this.image_, this.x, this.y);
       }
    }
+});
+
+var ImageView = FOAM({
+   model_: 'Model',
+
+   extendsModel: 'AbstractView',
+
+   properties: [
+      {
+         name: 'value',
+         valueFactory: function() { return SimpleValue.create(); },
+         postSet: function(newValue, oldValue) {
+            oldValue && Events.unfollow(oldValue, this.domValue);
+            Events.follow(newValue, this.domValue);
+         }
+      },
+      {
+         name: 'domValue',
+         postSet: function(newValue, oldValue) {
+            oldValue && Events.unfollow(this.value, oldValue);
+            Events.follow(this.value, newValue);
+         }
+      },
+      {
+         name: 'placeHolder',
+         postSet: function(newValue) {
+            if ( this.$ ) {
+               this.$.children[0].style.backgroundImage = newValue;
+            }
+         }
+      },
+      {
+         name: 'displayWidth',
+         postSet: function(newValue) {
+            if ( this.$ ) {
+               this.$.style.width = newValue;
+            }
+         }
+      },
+      {
+         name: 'displayHeight',
+         postSet: function(newValue) {
+            if ( this.$ ) {
+               this.$.style.height = newValue;
+            }
+         }
+      }
+   ],
+
+   methods: {
+      setValue: function(value) {
+         this.value = value;
+      },
+      toHTML: function() {
+         return '<div class="imageViewContainer" id="' + this.getID() + '"><div class="imageView"></div>' +
+            '<img class="imageView" id="' + this.registerCallback('load', this.onLoad) + '"></div>';
+      },
+      initHTML: function() {
+         this.SUPER();
+         this.displayWidth = this.displayWidth;
+         this.displayHeight = this.displayHeight;
+         this.$.children[1].style.opacity = 0;
+         this.domValue = DomValue.create(this.$.children[1], undefined, 'src');
+      }
+   },
+   
+   listeners: [
+      {
+         name: 'onLoad',
+         code: function() {
+            this.$.children[0].style.opacity = 0;
+            this.$.children[1].style.opacity = 0.99;
+         }
+      }
+   ]
 });
 
 
@@ -789,6 +864,11 @@ var TextFieldView = FOAM({
          defaultValue: 'text'
       },
       {
+         mode_: 'StringProperty',
+         name:  'placeholder',
+         defaultValue: undefined
+      },
+      {
          mode_: 'BooleanProperty',
          name:  'onKeyMode',
          help: 'If true, value is updated on each keystroke.'
@@ -855,12 +935,13 @@ var TextFieldView = FOAM({
 
     initHTML: function() {
       this.SUPER();
-      var e = this.$;
+
+      if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
       if ( this.mode === 'read-write' ) {
-        this.domValue = DomValue.create(e, 'input');
+        this.domValue = DomValue.create(this.$, 'input');
       } else {
-        this.domValue = DomValue.create(e, 'undefined', 'textContent');
+        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
       }
 
       this.setValue(this.value);

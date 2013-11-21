@@ -20,16 +20,32 @@ EMail.TO.view = {
         searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
         valueView: StringArrayView.create({}),
         autocompleteView: ListView.create({
-          innerView: ContactListTileView
+          innerView: ContactListTileView,
+          float: true
         })
       }),
-      valueView: StringArrayView.create({})
+      valueView: TileArrayView.create({
+        dao: dao,
+        property: Contact.EMAIL,
+        tileView: ContactSmallTileView
+      })
     });
     return view;
   }
 };
 
+var list = EMail.TO.view.create(EMail.TO);
+document.writeln(list.toHTML());
+list.value.set([]);
+list.initHTML();
+
 var detail = DetailView.create({model: EMail});
 var mail = EMail.create({})
 detail.value.set(mail);
 detail.write(document);
+
+var smallview = ContactSmallTileView.create({});
+document.writeln(smallview.toHTML());
+smallview.value.set(dao[1]);
+smallview.initHTML();
+

@@ -88,58 +88,46 @@ var Address = FOAM({
     ]
 });
 
+var ContactSmallTileView = FOAM({
+   model_: 'Model',
 
-var ContactPhoto = FOAM({
-    model_: 'Model',
+   extendsModel: 'DetailView',
 
-    name: 'Contact',
+   name: 'ContactSmallTileView',
 
-    properties: [
-        {
-            model_: 'StringProperty',
-            name: 'id'
-        },
-        {
-            model_: 'StringProperty',
-            // TODO: switch to ImageView
-            name: 'photo'
-        }
-     ]
+   methods: {
+      toHTML: function() {
+         var name = this.createView(Contact.DISPLAY_NAME);
+         name.mode = 'read-only';
+         return '<div id="' + this.getID() + '" class="contactSmallTile">' +
+            this.createView(Contact.AVATAR_URL).toHTML() +
+            '<div class="contactSmallName">' + name.toHTML() + '</div>' +
+            '</div>';
+      }
+   },
 });
 
 var ContactListTileView = Model.create({
   name: 'ContactListTileView',
 
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
-        oldValue && oldValue.removeListener(this.paint);
-        newValue.addListener(this.paint);
-      }
-    }
-  ],
+  extendsModel: 'DetailView',
 
   methods: {
     toHTML: function() {
-      return '<div class="contactTile" id="' + this.getID() + '"><div class="contactTileAvatar"></div><div class="contactTileDetails"></div></div>';
+      var avatar = this.createView(Contact.AVATAR_URL);
+      avatar.displayWidth = 32;
+      avatar.displayHeight = 32;
+      var name = this.createView(Contact.DISPLAY_NAME);
+      name.mode = 'read-only';
+      var address = this.createView(Contact.EMAIL);
+      address.mode = 'read-only';
+      return '<div class="contactTile" id="' + this.getID() + '">' +
+        '<div class="contactTileAvatar">' + avatar.toHTML() + '</div>' +
+        '<ul class="contactTileDetails"><li>' +
+        name.toHTML() + '</li><li class="contactTileAddress">' + address.toHTML() + '</li></ul></div></div>'
     }
-  },
-
-  listeners: [
-    {
-      name: 'paint',
-      code: function() {
-        this.$.children[1].textContent = this.value.get().first + ' ' + this.value.get().last + ' <' + this.value.get().email + '>';
-        this.$.children[1].title = this.value.get().email;
-      }
-    }
-  ]
+  }
 });
-
 
 var Contact = FOAM({
     model_: 'Model',
@@ -184,7 +172,14 @@ var Contact = FOAM({
             model_: 'StringProperty',
             name: 'suffix'
         },
-
+        {
+            model_: 'StringProperty',
+            name: 'displayName',
+            defaultValueFn: function() {
+               // TODO: i18n and add middle/prefix/suffix when applicable.
+               return this.first + ' ' + this.last;
+            }
+        },
         {
             model_: 'EMailProperty',
             name: 'email',
@@ -212,9 +207,11 @@ var Contact = FOAM({
         {
             model_: 'URLProperty',
             name: 'avatarUrl',
+            displayWidth: 21,
+            displayHeight: 21,
+            view:  'ImageView',
             defaultValueFn: function() {
-              return "https://www.google.com/m8/feeds/photos/media/" +
-                this.email + "/" + this.id;
+               return 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + this.first[0] + '</text></svg>';
             }
         },
         {
