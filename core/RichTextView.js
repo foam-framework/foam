@@ -172,7 +172,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'italic',
-      label: '<i>i</i>',
+      label: '<b><i>I</i></b>',
       help: 'Italic text.',
       action: function () {
         this.$.contentWindow.focus();
@@ -182,7 +182,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'underline',
-      label: '<u>u</u>',
+      label: '<b><u>U</u></b>',
       help: 'Underline text.',
       action: function () {
         this.$.contentWindow.focus();

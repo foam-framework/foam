@@ -174,8 +174,11 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      description: "",
-      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><%= this.sendButton.toHTML() %><%= this.boldButton.toHTML() %><%= this.italicButton.toHTML() %><%= this.underlineButton.toHTML() %><%= this.discardButton.toHTML() %></body></html>"
+      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
+    },
+    {
+      name: "toolbar",
+      template: "<table width=100% class=toolbar><tr><td><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
     }
   ]
 });

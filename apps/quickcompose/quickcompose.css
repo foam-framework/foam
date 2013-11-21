@@ -1,6 +1,9 @@
-* {
+body {
+    margin: 0;
+}
+
+input {
     margin: 0 0 0 0;
-    padding-left: 0;
     padding-right: 0;
 }
 
@@ -10,15 +13,17 @@
     text-shadow: none;
 }
 
-input[type="text"] {
+input[type="text"], input[type="String"]  {
+    padding-left: 8px;
     height: 30px;
 }
 
-input[type="String"] {
-    height: 30px;
-}
-
-.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-discard {
+.actionButton-bold, .actionButton-italic, .actionButton-underline {
     background: none;
     border: none;
+    box-shadow: none;
+}
+
+.toolbar {
+    background: #f1f1f1
 }
