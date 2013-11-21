@@ -267,12 +267,9 @@ var AndExpr = FOAM({
       },
 
       f: function(obj) {
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
-
-          if ( ! a.f(obj) ) return false;
-        }
-        return true;
+        return this.args.every(function(arg) {
+          return arg.f(obj);
+        }, this);
       }
    }
 });
@@ -341,12 +338,9 @@ var OrExpr = FOAM({
       },
 
       f: function(obj) {
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
-
-          if ( a.f(obj) ) return true;
-        }
-        return false;
+        return this.args.some(function(arg) {
+          return arg.f(obj);
+        }, this);
       }
    }
 });
@@ -446,10 +440,9 @@ var EqExpr = FOAM({
         var arg2 = this.arg2.f(obj);
 
         if ( Array.isArray(arg1) ) {
-          for ( var i = 0 ; i < arg1.length ; i++ ) {
-            if ( arg1[i] === arg2 ) return true;
-          }
-          return false;
+          return arg1.some(function(arg) {
+            return arg === arg2;
+          }, this);
         }
 
         return arg1 === arg2;
@@ -521,10 +514,9 @@ var ContainsExpr = FOAM({
         var arg2 = this.arg2.f(obj);
 
         if ( Array.isArray(arg1) ) {
-          for ( var i = 0 ; i < arg1.length ; i++ ) {
-            if ( arg1.indexOf(arg2) != -1 ) return true;
-          }
-          return false;
+          return arg1.some(function(arg) {
+            return arg.indexOf(arg2) != -1;
+          }, this);
         }
 
         return arg1.indexOf(arg2) != -1;
@@ -578,10 +570,9 @@ var ContainsICExpr = FOAM({
         var arg2 = this.arg2.f(obj);
 
         if ( Array.isArray(arg1) ) {
-          for ( var i = 0 ; i < arg1.length ; i++ ) {
-            if ( arg1[i].toLowerCase().indexOf(arg2) != -1 ) return true;
-          }
-          return false;
+          return arg1.some(function(arg) {
+            return arg.toLowerCase().indexOf(arg2) != -1;
+          }, this);
         }
 
         return arg1.toLowerCase().indexOf(arg2) != -1;
