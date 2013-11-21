@@ -1188,19 +1188,24 @@ var GridByExpr = FOAM({
        var out;
        var cols = this.cols.groups;
        var rows = this.rows.groups;
+       var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
+       var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
 
        out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
-       for ( var x in cols ) {
+       for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+         var x = sortedCols[i];
          var str = x.toHTML ? x.toHTML() : x;
          out += '<th>' + str + '</th>';
        }
        out += '</tr>';
 
-       for ( var y in rows ) {
+       for ( var j = 0 ; j < sortedRows.length ; j++ ) {
+         var y = sortedRows[j];
          out += '<tr><th>' + y + '</th>';
-
-         for ( var x in cols ) {
+         
+         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+           var x = sortedCols[i];
            var value = rows[y].groups[x];
            var str = value ? (value.toHTML ? value.toHTML() : value) : '';
            out += '<td>' + str + '</td>';
