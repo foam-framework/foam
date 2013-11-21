@@ -18,7 +18,7 @@ input[type="String"] {
     height: 30px;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline {
+.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-discard {
     background: none;
     border: none;
 }

@@ -161,6 +161,8 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'discard',
+       label: '',
+       iconUrl: '/images/trash.svg',
        help:  'Discard the current email.',
        
        action: function() {
