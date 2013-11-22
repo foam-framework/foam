@@ -66,7 +66,7 @@ var ColorPickerView = FOAM({
       cell(0, 0, 255);
       cell(153, 0, 255);
       cell(255, 0, 255);
-      out += '</tr></table>'
+      out += '</tr></table>';
       return out;
     }
   }
@@ -122,7 +122,7 @@ var RichTextView = FOAM({
       var sandbox = this.mode === 'read-write' ? '' :
           ' sandbox="allow-same-origin"';
       var id = this.getID();
-      return '<iframe style="border:solid 2px #b7ddf2;width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
+      return '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
     },
 
     setValue: function(value) {
@@ -172,22 +172,31 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'italic',
-      label: '<b><i>I</i></b>',
+      label: '<i>I</i>',
       help: 'Italic text.',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("italic");
-      },
+      }
     },
     {
       model_: 'Action',
       name: 'underline',
-      label: '<b><u>U</u></b>',
+      label: '<u>U</u>',
       help: 'Underline text.',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("underline");
-      },
+      }
+    },
+    {
+      model_: 'Action',
+      name: 'link',
+      label: 'Link',
+      help: 'Insert a hypertext link.',
+      action: function () {
+        // TODO: implement
+      }
     },
     {
       model_: 'Action',

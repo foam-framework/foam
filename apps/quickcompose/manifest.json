@@ -4,7 +4,6 @@
     "manifest_version": 2,
 
     "permissions": [
-      "experimental",
       "storage",
       "<all_urls>",
       "https://*/",
