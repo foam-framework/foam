@@ -1,29 +1,57 @@
+iframe {
+  border: none;
+}
+
 body {
-    margin: 0;
+  margin: 0;
 }
 
 input {
-    margin: 0 0 0 0;
-    padding-right: 0;
-}
-
-.actionButton-send {
-    background: red;
-    color: white;
-    text-shadow: none;
+  margin: 0 0 0 0;
+  padding-right: 0;
 }
 
 input[type="text"], input[type="String"]  {
-    padding-left: 8px;
-    height: 30px;
+  height: 38px;
+  padding-left: 8px;
+  border-left-width: 0px;
+  border-right-width: 0px;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline {
-    background: none;
-    border: none;
-    box-shadow: none;
+input[name="subject"] {
+  border-top-width: 0px;
 }
 
 .toolbar {
-    background: #f1f1f1
+  background: #f1f1f1;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  padding-top: 4px;
 }
+
+.actionButton-send {
+  background: #dd4b39;
+  border-radius: 3px;
+  box-shadow: none;
+  color: white;
+  margin-right: 8px;
+  padding: 6px 15px;
+  text-shadow: none;
+}
+
+.actionButton-bold, .actionButton-italic, .actionButton-underline {
+  background: none;
+  border: none;
+  box-shadow: none;
+  font-family: serif;
+  font-size: 14px;
+  padding: 4px 10px;
+}
+
+.actionButton-discard {
+  border-radius: 3px;
+  background: none;
+  padding: 3px 7px;
+}
+
+

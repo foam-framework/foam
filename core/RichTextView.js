@@ -122,7 +122,7 @@ var RichTextView = FOAM({
       var sandbox = this.mode === 'read-write' ? '' :
           ' sandbox="allow-same-origin"';
       var id = this.getID();
-      return '<iframe style="border:solid 2px #b7ddf2;width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
+      return '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
     },
 
     setValue: function(value) {

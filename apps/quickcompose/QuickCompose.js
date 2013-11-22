@@ -37,7 +37,8 @@ var QuickEMailView = Model.create({
       name: 'bodyView',
       valueFactory: function() {
         var v = this.createView(QuickEMail.BODY);
-        v.width = 362;
+        v.width = 335;
+        v.height = 331;
         return v;
       }
     }
@@ -148,8 +149,9 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'send',
+       label: 'SEND',
        help:  'Send the current email.',
-       
+
        // TODO: Don't enable send unless subject, to, and body set
        isEnabled:   function() { debugger; return true; },
        action:      function() {
@@ -164,7 +166,7 @@ var QuickCompose = FOAM({
        label: '',
        iconUrl: '/images/trash.svg',
        help:  'Discard the current email.',
-       
+
        action: function() {
          this.window.close();
        }
