@@ -6,6 +6,15 @@ body {
   margin: 0;
 }
 
+.header {
+  background: #f1f1f1;
+  padding-bottom: 0;
+  margin-left: 0;
+  padding-left: 6px;
+  font: 90% ariel, sans-serif;
+  opacity: 0.5;
+}
+
 input {
   margin: 0 0 0 0;
   padding-right: 0;
@@ -39,7 +48,7 @@ input[name="subject"] {
   text-shadow: none;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard {
+.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard, .actionButton-close {
   background: none;
   border: none;
   box-shadow: none;

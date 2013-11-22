@@ -162,6 +162,10 @@ var QuickCompose = FOAM({
       valueFactory: function() { return ActionButton.create({action: this.model_.DISCARD, value: SimpleValue.create(this)}); }
     },
     {
+      name: 'closeButton',
+      valueFactory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
+    },
+    {
       name: 'EMailDAO',
       defaultValueFn: function() { return EMailDAO; }
     },
@@ -181,6 +185,7 @@ var QuickCompose = FOAM({
       this.underlineButton.initHTML();
       this.linkButton.initHTML();
       this.discardButton.initHTML();
+      this.closeButton.initHTML();
     }
   },
 
@@ -192,7 +197,7 @@ var QuickCompose = FOAM({
        help:  'Send the current email.',
 
        // TODO: Don't enable send unless subject, to, and body set
-       isEnabled:   function() { debugger; return true; },
+       isEnabled:   function() { return true; },
        action:      function() {
          this.email.timeStamp = new Date();
          this.EMailDAO.put(this.email);
@@ -207,7 +212,21 @@ var QuickCompose = FOAM({
        help:  'Discard the current email.',
 
        action: function() {
-         this.window.close();
+         debugger;
+         this.email.to = [];
+         this.email.subject = '';
+         this.email.body = '';
+         this.close();
+       }
+     },
+     {
+       model_: 'Action',
+       name:  'close',
+       label: 'x',
+       help:  'Close the window.',
+
+       action: function() {
+         this.appWindow.minimize();
        }
      }
    ],
@@ -215,7 +234,11 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
+      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>New message</title></head><body><% this.header(out); %><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
+    },
+    {
+      name: "header",
+      template: "<table width=100% class=header><tr><td>New message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
     },
     {
       name: "toolbar",
