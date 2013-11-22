@@ -2299,12 +2299,14 @@ var DefaultObjectDAO = FOAM({
   model_: 'Model',
 
   name: 'DefaultObjectDAO',
+  help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
   extendsModel: 'ProxyDAO',
 
   properties: [
     {
       name: 'factory',
+      help: 'A factory method to construct the default object.'
     }
   ],
 
