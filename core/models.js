@@ -1423,6 +1423,10 @@ var ArrayTileView = FOAM({
       name: 'paint',
       animate: true,
       code: function() {
+        // If we're currently painting, don't actually paint now,
+        // queue up another paint on the next animation frame.
+        // This doesn't spin infinitely because paint is set to animate: true,
+        // meaning that it's merged to the next animation frame.
         if ( this.painting ) {
           this.paint();
           return;
