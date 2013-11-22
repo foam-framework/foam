@@ -39,19 +39,12 @@ input[name="subject"] {
   text-shadow: none;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link {
+.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard {
   background: none;
   border: none;
   box-shadow: none;
   opacity: 0.5;
   padding: 4px 5px;
-}
-
-.actionButton-discard {
-  border-radius: 3px;
-  background: none;
-  opacity: 0.5;
-  padding: 3px 7px;
 }
 
 
