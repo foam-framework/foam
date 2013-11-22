@@ -107,8 +107,8 @@ var RichTextView = FOAM({
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
       postSet: function(newValue, oldValue) {
-        Events.unfollow(this.domValue, oldValue);
-        Events.follow(this.domValue, newValue);
+        Events.unlink(this.domValue, oldValue);
+        Events.link(this.domValue, newValue);
       }
     },
     {
@@ -136,7 +136,7 @@ var RichTextView = FOAM({
         this.document.body.contentEditable = true;
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
-      this.value = this.value;
+      this.value = this.value; // connects listeners
     },
 
     destroy: function() {

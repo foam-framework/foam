@@ -212,7 +212,6 @@ var QuickCompose = FOAM({
        help:  'Discard the current email.',
 
        action: function() {
-         debugger;
          this.email.to = [];
          this.email.subject = '';
          this.email.body = '';
