@@ -514,3 +514,39 @@ border-bottom-right-radius: 0;
   margin-right: 17px;
   float: right;
 }
+
+/* ----------- ArrayTileView ----------- */
+.arrayTileView {
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+}
+
+.arrayTileItem {
+    display: inline-block;
+    list-style-type: none;
+    margin: 0px 1px;
+}
+
+/* ----------- AutocompleteListView ----------- */
+.autocompleteListView {
+    position: absolute;
+    padding: 8px;
+    margin: 0px;
+    width: 300px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid lightgrey;
+}
+
+.autocompleteListItem {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    list-style-type: none;
+    overflow: hidden;
+}
+
+.autocompleteSelectedItem {
+    border-radius: 5px;
+    border: 1px solid blue;
+}

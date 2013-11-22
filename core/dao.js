@@ -1150,6 +1150,20 @@ var IDBDAO = FOAM({
     },
 
     find: function(key, sink) {
+      if ( EXPR.isInstance(key) ) {
+        var found = false;
+        this.limit(1).where(key).select({
+          put: function() {
+            found = true;
+            sink.put.apply(sink, arguments);
+          },
+          eof: function() {
+            found || sink.error('find', key);
+          }
+        });
+        return;
+      }
+
       var self = this;
       this.withStore("readonly", function(store) {
         var request = store.get(key);

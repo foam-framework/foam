@@ -20,7 +20,37 @@ var QuickEMail = FOAM({
   extendsModel: 'EMail',
   name: 'QuickEMail',
   properties: [
-    { name: 'to',      displayWidth: 55 },
+    {
+      name: 'to',
+      displayWidth: 55,
+      view: {
+        // TODO: Fetch this dependencies via context.
+        create: function() {
+          return ListValueView.create({
+            inputView: ListInputView.create({
+              dao: ContactDAO,
+              property: Contact.EMAIL,
+              searchProperty: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
+              autocompleteView: AutocompleteListView.create({
+                innerView: ContactListTileView
+              })
+            }),
+            valueView: ArrayTileView.create({
+              dao: DefaultObjectDAO.create({
+                delegate: ContactDAO,
+                factory: function(q) {
+                  var obj = Contact.create({});
+                  obj[q.arg1.name] = q.arg2.arg1;
+                  return obj;
+                }
+              }),
+              property: Contact.EMAIL,
+              tileView: ContactSmallTileView
+            })
+          });
+        }
+      }
+    },
     { name: 'subject', displayWidth: 55 },
     { name: 'body',    view: 'RichTextView' }
   ]
@@ -174,7 +204,7 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
+      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>New message</title></head><body><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
     },
     {
       name: "toolbar",

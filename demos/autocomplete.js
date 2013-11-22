@@ -18,7 +18,6 @@ EMail.TO.view = {
         dao: dao,
         property: Contact.EMAIL,
         searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
-        valueView: StringArrayView.create({}),
         autocompleteView: AutocompleteListView.create({
           innerView: ContactListTileView,
           float: true
@@ -26,7 +25,7 @@ EMail.TO.view = {
       }),
       valueView: ArrayTileView.create({
         dao: DefaultObjectDAO.create({
-          delegate: dao,
+          delegate: IDBDAO.create({ model: Contact }),
           factory: function(q) {
             var obj = Contact.create({});
             obj[q.arg1.name] = q.arg2.arg1;

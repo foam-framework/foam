@@ -1238,6 +1238,12 @@ var ListValueView = FOAM({
       name: 'inputView'
     },
     {
+      name: 'placeholder',
+      postSet: function(newValue) {
+        this.inputView.placeholder = newValue;
+      }
+    },
+    {
       name: 'value',
       valueFactory: function() { return SimpleValue.create({ value: [] }); },
       postSet: function(newValue, oldValue) {
@@ -1287,6 +1293,9 @@ var ListInputView = FOAM({
       name: 'autocompleteView',
     },
     {
+      name: 'placeholder',
+    },
+    {
       name: 'value',
       help: 'The array value we are editing.',
       valueFactory: function() {
@@ -1304,13 +1313,14 @@ var ListInputView = FOAM({
     toHTML: function() {
       this.registerCallback('keydown', this.onKeyDown, this.getID());
 
-      return '<input id="' + this.getID() + '">' + this.autocompleteView.toHTML();
+      return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
     },
     initHTML: function() {
       this.SUPER();
+      if ( this.placeholder ) this.$.placeholder = this.placeholder;
       this.autocompleteView.initHTML();
       this.domInputValue = DomValue.create(this.$, 'input');
       this.domInputValue.addListener(this.onInput);
@@ -1518,10 +1528,6 @@ var AutocompleteListView = FOAM({
       }
     },
     {
-      model_: 'IntegerProperty',
-      name: 'count'
-    },
-    {
       model_: 'BooleanProperty',
       name: 'painting',
       defaultValue: false
@@ -1534,10 +1540,6 @@ var AutocompleteListView = FOAM({
       model_: 'IntegerProperty',
       name: 'top'
     },
-    {
-      model_: 'BooleanProperty',
-      name: 'float'
-    },
   ],
 
   methods: {
@@ -1546,22 +1548,19 @@ var AutocompleteListView = FOAM({
     },
 
     toHTML: function() {
-      return '<ul class="listView" id="' + this.getID() + '"></ul>';
+      return '<ul class="autocompleteListView" id="' + this.getID() + '"></ul>';
     },
 
     initHTML: function() {
       this.SUPER();
       this.$.style.display = 'none';
-      if ( this.float ) {
-        this.$.className = 'listViewFloat';
-        var self = this;
-        this.propertyValue('left').addListener(function(v) {
-          self.$.left = v;
-        });
-        this.propertyValue('top').addListener(function(v) {
-          self.$.top = v;
-        });
-      }
+      var self = this;
+      this.propertyValue('left').addListener(function(v) {
+        self.$.left = v;
+      });
+      this.propertyValue('top').addListener(function(v) {
+        self.$.top = v;
+      });
     },
 
     nextSelection: function() {
@@ -1597,7 +1596,7 @@ var AutocompleteListView = FOAM({
         self.next = '';
         self.prev = '';
 
-        this.dao.limit(this.count).select({
+        this.dao.select({
           put: function(obj) {
             if ( found && ! self.next ) {
               self.next = obj;
@@ -1621,9 +1620,9 @@ var AutocompleteListView = FOAM({
             container.onclick = function() {
               self.value.set(obj);
             };
-            container.className = 'listItem';
+            container.className = 'autocompleteListItem';
             if ( obj.id === self.value.get().id ) {
-              container.className += ' selectedListItem';
+              container.className += ' autocompleteSelectedItem';
             }
             self.$.appendChild(container);
             view.value.set(obj);

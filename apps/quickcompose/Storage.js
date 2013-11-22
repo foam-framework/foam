@@ -16,3 +16,4 @@
  */
 
 var EMailDAO = IDBDAO.create({model: EMail});
+var ContactDAO = IDBDAO.create({ model: Contact });
