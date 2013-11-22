@@ -40,9 +40,10 @@ var QuickEMail = FOAM({
             inputView: ListInputView.create({
               dao: ContactDAO,
               property: Contact.EMAIL,
-              searchProperty: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
+              searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
               autocompleteView: AutocompleteListView.create({
-                innerView: ContactListTileView
+                innerView: ContactListTileView,
+                count: 8
               })
             }),
             valueView: ArrayTileView.create({

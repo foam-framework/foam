@@ -19,7 +19,6 @@ cat \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
-  ../../core/ChromeApp.js \
   ../../core/AbstractPrototype.js \
   ../../core/ModelProto.js \
   ../../core/mm1Model.js \
@@ -46,6 +45,7 @@ cat \
   ../../core/experimental/protobufparser.js \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
+  ../../core/ChromeApp.js \
   ../mailreader/view.js \
   ../mailreader/email.js \
   ../saturn/EMailBodyDAO.js \

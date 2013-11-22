@@ -16,4 +16,23 @@
  */
 
 var EMailDAO = IDBDAO.create({model: EMail});
-var ContactDAO = IDBDAO.create({ model: Contact });
+var ContactDAO = MDAO.create({ model: Contact });
+ContactDAO.addIndex(Contact.EMAIL);
+ContactDAO.addIndex(Contact.FIRST);
+ContactDAO.addIndex(Contact.LAST);
+
+var XhrFactory = OAuthXhrFactory.create({
+  authAgent: ChromeAuthAgent.create({}),
+  responseType: "json"
+});
+
+ContactDAO = CachingDAO.create(
+  ContactDAO,
+  IDBDAO.create({ model: Contact }));
+
+ContactDAO.select(COUNT())(function(c) {
+  if ( c.count === 0 ) {
+    console.log('Importing contacts...');
+    importContacts(ContactDAO, XhrFactory);
+  }
+});

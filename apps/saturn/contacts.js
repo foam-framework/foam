@@ -177,9 +177,11 @@ var Contact = FOAM({
             name: 'displayName',
             defaultValueFn: function() {
                // TODO: i18n and add middle/prefix/suffix when applicable.
-               var name = this.first + ' ' + this.last;
-               if ( name.length == 1 ) return this.email;
-               return name
+              if ( this.title.length > 0 )
+                return this.title;
+              else if ( this.first.length > 0 || this.last.length > 0 )
+                return this.first + ' ' + this.last;
+              else return this.email;
             }
         },
         {
@@ -224,23 +226,20 @@ var Contact = FOAM({
     ]
 });
 
-
-function importContacts() {
+function importContacts(dao, xhrFactory) {
   var xhr2 = xhrFactory.make();
-  // TODO: use real email address
-//  var url = 'https://www.google.com/m8/feeds/contacts/kgrgreer@gmail.com/full';
-  var url = 'https://www.google.com/m8/feeds/contacts/kgr@google.com/full';
+  var url = 'https://www.google.com/m8/feeds/contacts/default/full';
   var params = [ 'alt=json', 'max-results=10000' ];
   var f = function(data) {
 // TODO: gContact$groupMembershipInfo
-     var contacts = JSON.parse(data).feed.entry;
+     var contacts = data.feed.entry;
      console.log('contacts', contacts);
      contacts.forEach(function(c) {
        var contact = Contact.create({
-          id:    c.id && c.id.$t.split('/').pop(),
-          title: c.title && c.title.$t,
-          email: c.gd$email && c.gd$email[0].address,
-          updated: c.updated && c.updated.$t
+          id:    c.id ? c.id.$t.split('/').pop() : '',
+          title: c.title ? c.title.$t : '',
+          email: c.gd$email ? c.gd$email[0].address : '',
+          updated: c.updated ? c.updated.$t : '',
        });
        c.gd$phoneNumber && c.gd$phoneNumber.forEach(function(p) {
          contact.phoneNumbers.push(PhoneNumber.create({
@@ -270,6 +269,6 @@ function importContacts() {
        ContactDAO.put(contact);
      });
   };
-  xhr2.responseType = 'text';
+//  xhr2.responseType = 'text';
   xhr2.asend(f, 'GET', url + '?' + params.join('&'));
 }

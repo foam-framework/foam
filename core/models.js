@@ -1534,6 +1534,11 @@ var AutocompleteListView = FOAM({
     },
     {
       model_: 'IntegerProperty',
+      name: 'count',
+      defaultValue: 20
+    },
+    {
+      model_: 'IntegerProperty',
       name: 'left',
     },
     {
@@ -1596,7 +1601,7 @@ var AutocompleteListView = FOAM({
         self.next = '';
         self.prev = '';
 
-        this.dao.select({
+        this.dao.limit(this.count).select({
           put: function(obj) {
             if ( found && ! self.next ) {
               self.next = obj;
