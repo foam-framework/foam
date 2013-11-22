@@ -1,5 +1,5 @@
 function launchComposer() {
-  chrome.app.window.create('empty.html', {width: 335, height: 452, type: 'panel'}, function(w) {
+  chrome.app.window.create('empty.html', {width: 335, height: 478, type: 'panel', frame: 'none'}, function(w) {
     w.contentWindow.onload = function() {
       var window = self.window = w.contentWindow;
       aseq(
@@ -7,6 +7,7 @@ function launchComposer() {
         arequire('QuickCompose')
       )(function () {
         var b = QuickCompose.create({window: window});
+        b.appWindow = w;
         window.browser = b; // for debugging
         $addWindow(window);
         window.document.body.innerHTML = b.toHTML();
