@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
+RichTextView.BOLD.iconUrl      = '/images/bold.svg';
+RichTextView.ITALIC.iconUrl    = '/images/italics.svg';
+RichTextView.UNDERLINE.iconUrl = '/images/underline.svg';
+RichTextView.LINK.iconUrl      = '/images/insert_link.svg';
+RichTextView.BOLD.label        = '';
+RichTextView.ITALIC.label      = '';
+RichTextView.UNDERLINE.label   = '';
+RichTextView.LINK.label        = '';
+
+
 var QuickEMail = FOAM({
   model_: 'Model',
   extendsModel: 'EMail',
@@ -114,8 +124,7 @@ var QuickCompose = FOAM({
     {
       name: 'linkButton',
       valueFactory: function() {
-        // TODO: switch to LINK when available
-        return ActionButton.create({action: RichTextView.BOLD, value: SimpleValue.create(this.view.bodyView) });
+        return ActionButton.create({action: RichTextView.LINK, value: SimpleValue.create(this.view.bodyView) });
       }
     },
     {
@@ -180,7 +189,7 @@ var QuickCompose = FOAM({
     },
     {
       name: "toolbar",
-      template: "<table width=100% class=toolbar><tr><td><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
+      template: "<table width=100% class=toolbar><tr><td width=1><%= this.sendButton.toHTML() %></td><td><%= this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
     }
   ]
 });

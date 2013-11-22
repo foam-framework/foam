@@ -9,7 +9,7 @@
 	 xml:space="preserve">
 <defs>
 </defs>
-<polygon points="11.997,4 11.997,3 8.003,3 8.003,4 4,4 4,6 16,6 16,4 "/>
-<rect x="5" y="7" width="10" height="11"/>
+<path d="M10,14c2,0,4-1.5,4-4V5h-1.801v5c0,1.5-0.699,2.25-2.199,2.25S7.8,11.5,7.8,10V5H6v5C6,12.5,8,14,10,14z M5,15v1h10v-1H5z"
+	/>
 <rect opacity="0" fill="#4387FD" width="21" height="21"/>
 </svg>

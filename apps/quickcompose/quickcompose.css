@@ -34,23 +34,23 @@ input[name="subject"] {
   border-radius: 3px;
   box-shadow: none;
   color: white;
-  margin-right: 8px;
+  margin-right: 10px;
   padding: 6px 15px;
   text-shadow: none;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline {
+.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link {
   background: none;
   border: none;
   box-shadow: none;
-  font-family: serif;
-  font-size: 14px;
-  padding: 4px 10px;
+  opacity: 0.5;
+  padding: 4px 5px;
 }
 
 .actionButton-discard {
   border-radius: 3px;
   background: none;
+  opacity: 0.5;
   padding: 3px 7px;
 }
 
