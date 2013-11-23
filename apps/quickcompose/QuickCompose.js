@@ -187,6 +187,18 @@ var QuickCompose = FOAM({
       this.linkButton.initHTML();
       this.discardButton.initHTML();
       this.closeButton.initHTML();
+
+      // This doesn't work when the view is a RichTextView because the 
+      // iframe is prevented from receiving the file.
+      var dropzone = this.view.$;
+      console.log('adding dropzone ', this.view.$);
+      dropzone.ondrop = function(e) {
+        var length = e.dataTransfer.files.length;
+        for ( var i = 0 ; i < length ; i++ ) {
+          var file = e.dataTransfer.files[i];
+console.log('dropped file: ' + file);
+        }
+      };
     }
   },
 
