@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// Replace the RichTextView labels with icons.
+// TODO: move this to RichTextView.js as the default.
 RichTextView.BOLD.iconUrl      = '/images/bold.svg';
 RichTextView.ITALIC.iconUrl    = '/images/italics.svg';
 RichTextView.UNDERLINE.iconUrl = '/images/underline.svg';
@@ -190,14 +192,18 @@ var QuickCompose = FOAM({
 
       // This doesn't work when the view is a RichTextView because the 
       // iframe is prevented from receiving the file.
-      var dropzone = this.view.$;
+      // var dropzone = this.view.$;
+      var dropzone = this.window.document.body;
       console.log('adding dropzone ', this.view.$);
       dropzone.ondrop = function(e) {
+        console.log('onDrop ', e);
+        /*
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
 console.log('dropped file: ' + file);
         }
+        */
       };
     }
   },
@@ -206,7 +212,6 @@ console.log('dropped file: ' + file);
      {
        model_: 'Action',
        name:  'send',
-       label: 'SEND',
        help:  'Send the current email.',
 
        // TODO: Don't enable send unless subject, to, and body set

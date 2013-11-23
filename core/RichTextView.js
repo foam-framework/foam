@@ -25,6 +25,97 @@
  *    add an optional HTML-sanitizer for hosted apps
  */
 
+var Link = FOAM({
+  model_: 'Model',
+  name: 'Link',
+  properties: [
+    {
+      name: 'richTextView'
+    },
+    {
+      name: 'label',
+      displayWidth: 35
+    },
+    {
+      name: 'link',
+      displayWidth: 26
+    }
+  ],
+  methods: {
+    open: function(x, y) {
+      var view = LinkView.create({model: Link, value: SimpleValue.create(this)});
+      this.richTextView.$.insertAdjacentHTML('beforebegin', view.toHTML());
+      view.$.style.left = x;
+      view.$.style.top = y;
+      view.initHTML();
+      this.view = view;
+    }
+  },
+  actions: [
+    {
+      model_: 'Action',
+      name:  'insert',
+      label: 'Apply',
+      help:  'Insert this link into the document.',
+      
+      action: function() {
+        console.log('insert link', this.label, this.link);
+        var window = this.richTextView.$.contentWindow;
+        var document = window.document;
+        var range = window.getSelection().getRangeAt(0);
+        var a = document.createElement('a');
+        var txt = document.createTextNode(this.label);
+        a.href = this.link;
+        a.appendChild(txt);
+        range.insertNode(a);
+
+        this.view.$.remove();
+      }
+    }
+  ]
+});
+
+
+var LinkView = Model.create({
+  name: 'LinkView',
+
+  extendsModel: 'DetailView',
+
+  properties: [
+    {
+      name: 'insertButton',
+      valueFactory: function() {
+        return ActionButton.create({
+          action: Link.INSERT,
+          value: SimpleValue.create(this.value.get())
+        });
+      }
+    },
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.addChild(this.insertButton);
+    }
+  },
+
+  templates: [
+    {
+      name: "toHTML",
+      template:
+        '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">' +
+        '<table><tr>' +
+        '<th>Text</th><td><%= this.createView(Link.LABEL).toHTML() %></td></tr><tr>' +
+        '<th>Link</th><td><% var v = this.createView(Link.LINK); v.placeholder = "Type or paste a link."; out(v.toHTML()); %>' +
+        '<%= this.insertButton.toHTML() %></td>' +
+        '</tr></table>' +
+        '</div>'
+    }
+  ]
+});
+
+
 var ColorPickerView = FOAM({
   model_: 'Model',
   extendsModel: 'AbstractView',
@@ -195,7 +286,8 @@ var RichTextView = FOAM({
       label: 'Link',
       help: 'Insert a hypertext link.',
       action: function () {
-        // TODO: implement
+        // TODO: determine the actual location to position
+        Link.create({richTextView: this}).open(20,100);
       }
     },
     {
