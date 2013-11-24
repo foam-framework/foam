@@ -34,19 +34,19 @@ var Link = FOAM({
     },
     {
       name: 'label',
-      displayWidth: 35
+      displayWidth: 28
     },
     {
       name: 'link',
-      displayWidth: 26
+      displayWidth: 19
     }
   ],
   methods: {
     open: function(x, y) {
       var view = LinkView.create({model: Link, value: SimpleValue.create(this)});
-      this.richTextView.$.insertAdjacentHTML('beforebegin', view.toHTML());
-      view.$.style.left = x;
-      view.$.style.top = y;
+      this.richTextView.$.parentNode.insertAdjacentHTML('beforebegin', view.toHTML());
+      view.$.style.left = x + this.richTextView.$.offsetLeft;
+      view.$.style.top = y + this.richTextView.$.offsetTop;
       view.initHTML();
       this.view = view;
     }
@@ -107,7 +107,7 @@ var LinkView = Model.create({
         '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">' +
         '<table><tr>' +
         '<th>Text</th><td><%= this.createView(Link.LABEL).toHTML() %></td></tr><tr>' +
-        '<th>Link</th><td><% var v = this.createView(Link.LINK); v.placeholder = "Type or paste a link."; out(v.toHTML()); %>' +
+        '<th>Link</th><td><% var v = this.createView(Link.LINK); v.placeholder = "Type or paste link."; out(v.toHTML()); %>' +
         '<%= this.insertButton.toHTML() %></td>' +
         '</tr></table>' +
         '</div>'
@@ -287,7 +287,7 @@ var RichTextView = FOAM({
       help: 'Insert a hypertext link.',
       action: function () {
         // TODO: determine the actual location to position
-        Link.create({richTextView: this}).open(20,100);
+        Link.create({richTextView: this}).open(5,60);
       }
     },
     {

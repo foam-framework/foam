@@ -4,7 +4,8 @@ function launchComposer() {
       var window = self.window = w.contentWindow;
       aseq(
         arequire('QuickEMailView'),
-        arequire('QuickCompose')
+        arequire('QuickCompose'),
+        arequire('LinkView')
       )(function () {
         var b = QuickCompose.create({window: window});
         b.appWindow = w;

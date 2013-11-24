@@ -15,19 +15,19 @@ body {
   opacity: 0.5;
 }
 
-input {
+.quickcompose input {
   margin: 0 0 0 0;
   padding-right: 0;
 }
 
-input[type="text"], input[type="String"]  {
+.quickcompose input[type="text"], input[type="String"]  {
   height: 38px;
   padding-left: 8px;
   border-left-width: 0px;
   border-right-width: 0px;
 }
 
-input[name="subject"] {
+.quickcompose input[name="subject"] {
   border-top-width: 0px;
 }
 
