@@ -1058,6 +1058,8 @@ var IDBDAO = FOAM({
 
       this.serialize = this.SimpleSerialize;
       this.deserialize = this.SimpleDeserialize;
+//      this.serialize = this.FOAMSerialize;
+//      this.deserialize = this.FOAMDeserialize;
 
       this.withDB = amemo(this.openDB.bind(this));
     },

@@ -87,13 +87,6 @@ var QuickEMailView = Model.create({
     }
   ],
 
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.addChild(this.bodyView);
-    }
-  },
-
   templates: [
     {
       name: "toHTML",
@@ -190,7 +183,7 @@ var QuickCompose = FOAM({
       this.discardButton.initHTML();
       this.closeButton.initHTML();
 
-      // This doesn't work when the view is a RichTextView because the 
+      // This doesn't work when the view is a RichTextView because the
       // iframe is prevented from receiving the file.
       // var dropzone = this.view.$;
       var dropzone = this.window.document.body;
