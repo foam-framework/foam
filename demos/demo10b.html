@@ -38,9 +38,8 @@
     var innoweek12  = box('gray',   20,     'Innovation Week 2012');
     var innoweek13  = box('gray',   20,     'Innovation Week 2013');
     var dao         = box('blue',   620,    'DAO'); 
+    var search      = box('blue',   620,    'Search'); 
 
-    dao.height *= 2;
-    dao.y -= 20;
     innoweek11.width *= 5;
     innoweek11.height = 35;
     innoweek12.height = 35;
@@ -58,8 +57,7 @@
     ui_tm.height = ui_table.height = ui_detail.height = ui_ctrl.height = ui_model.height = 80;
 
     space.addChildren(
-      sql, jdbc, java, skeleton, proto, stub, js, ui, html, css,
-      ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao
+      sql, jdbc, java, skeleton, proto, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao, search
     );
 
     var M = Movement;
@@ -90,7 +88,7 @@
        [0],
        [
          [1000, function() { stub.x += 120; ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120; middle.width += 120; innoweek11.width += 120; }],
-         [1000, function() { dao.y  = 300;   }]
+         [1000, function() { dao.y  = 400; search.y = 300;  }]
        ],
        [500],
        [1000, function() { model.y -= 700;   }, B],
