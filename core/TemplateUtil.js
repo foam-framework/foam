@@ -78,7 +78,7 @@ var TemplateCompiler = {
 
 var TemplateUtil = {
 
-   compile: chrome.app.runtime ?
+   compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
      function() {
        return function() {
          return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
