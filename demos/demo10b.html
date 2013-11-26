@@ -3,7 +3,7 @@
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script>var FOAM_BOOT_DIR="../core/";</script>
   <script language="javascript" src="../core/bootFOAM.js"></script>
-  <title>FOAM Diagram </title>
+  <title>FOAM Innovation Week</title>
  </head>
  <body>
   <script language="javascript">
@@ -34,11 +34,20 @@
     var html      = box('orange', x+=120, 'Issue.html');
     var css       = box('pink',   x+=120, 'Issue.css');
     var middle    = box('black',  380,    'Middleware');
-    var innoweek  = box('gold',   20,    'Innovation Week 2013');
+    var innoweek11  = box('gold',   20,    'Innovation Week 2011');
+    var innoweek12  = box('gold',   20,    '2012');
+    var innoweek13  = box('gold',   20,    'Innovation Week 2013');
+    var dao = box('blue', 740, 'DAO'); 
 
-    innoweek.width *= 4;
-    innoweek.height = 35;
+    innoweek11.width *= 5;
+    innoweek11.height = 35;
+    innoweek12.height = 35;
+    innoweek13.width *= 4;
+    innoweek13.height = 35;
+    innoweek13.y -= 150;
+    innoweek13.a = Math.PI/2;
     model.height *= 2;
+    model.y -= 10;
 
     middle.y = 500;
     middle.width = 360;
@@ -49,7 +58,7 @@
 
     space.addChildren(
       sql, jdbc, java, skeleton, proto, stub, js, ui, html, css,
-      ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek
+      ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao
     );
 
     var M = Movement;
@@ -75,13 +84,21 @@
        function() { middle.text = 'FOAM'; },
        [
          [1000, function() { ui_tm.y = 0; ui_table.y = 100; ui_detail.y = 200; ui_ctrl.y = 300; ui_model.y = 400;  }],
-         [1000, function() { middle.width += 120;   }]
+         [1000, function() { middle.x += 120;   }]
        ],
-       [3000, function() { middle.width += 360;   }, B],
+       [3000, function() { middle.width += 240;   }, B],
+       [1000, function() { innoweek11.y = 535; innoweek11.x = 500; innoweek11.a = 0;  }],
+
+       [
+         [1000, function() { ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120;  }],
+         [1000, function() { dao.y  = 400;   }]
+       ],
+       [1000, function() { innoweek12.y = 535; innoweek12.a = 0; innoweek12.x = dao.x;  }],
+
        [1000],
-       [3000, function() { middle.width += 360; middle.x -= 360; }, B],
+       [3000, function() { middle.width += 480; middle.x -= 480; }, B],
        function() { middle.text = 'FOAM'; },
-       [1000, function() { innoweek.y = 365;   }, B],
+       [1000, function() { innoweek13.y = 535; innoweek13.a = 0;  }],
 
     ])();
   </script>
