@@ -66,9 +66,13 @@
        [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
        [1000],
        [1000, function() { proto.y -= 100; }], 
-       [1500, function() { proto.x = 1000; proto.y = -100; proto.a = Math.PI*6; }, M.easeIn(0.9)], 
-       [1000],
+       [
+         [1500, function() { proto.y = -200; }, M.easeOut(0.5)], 
+         [1500, function() { proto.x = 1500; proto.a = Math.PI*6; }, M.easeIn(0.5)]
+       ], 
+       [500],
        [1000, function() { model.y = 300;   }, B],
+       function() { middle.text = 'FOAM'; },
        [
          [1000, function() { ui_tm.y = 0; ui_table.y = 100; ui_detail.y = 200; ui_ctrl.y = 300; ui_model.y = 400;  }],
          [1000, function() { middle.width += 120;   }]
@@ -76,7 +80,7 @@
        [3000, function() { middle.width += 360;   }, B],
        [1000],
        [3000, function() { middle.width += 360; middle.x -= 360; }, B],
-       function() { middle.text = 'Everyware'; },
+       function() { middle.text = 'FOAM'; },
        [1000, function() { innoweek.y = 365;   }, B],
 
     ])();
