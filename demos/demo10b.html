@@ -37,7 +37,7 @@
     var innoweek11  = box('gold',   20,    'Innovation Week 2011');
     var innoweek12  = box('gold',   20,    '2012');
     var innoweek13  = box('gold',   20,    'Innovation Week 2013');
-    var dao = box('blue', 740, 'DAO'); 
+    var dao = box('blue', 620, 'DAO'); 
 
     innoweek11.width *= 5;
     innoweek11.height = 35;
@@ -73,6 +73,7 @@
        [1000, function() { html.y = 400;   }, B],
        [1000, function() { css.y = 400;   }, B],
        [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
+
        [1000],
        [1000, function() { proto.y -= 100; }], 
        [
@@ -90,14 +91,13 @@
        [1000, function() { innoweek11.y = 535; innoweek11.x = 500; innoweek11.a = 0;  }],
 
        [
-         [1000, function() { ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120;  }],
+         [1000, function() { stub.x += 120; ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120;  }],
          [1000, function() { dao.y  = 400;   }]
        ],
-       [1000, function() { innoweek12.y = 535; innoweek12.a = 0; innoweek12.x = dao.x;  }],
+       [1000, function() { innoweek12.y = 570; innoweek12.a = 0; innoweek12.x = dao.x;  }],
 
        [1000],
        [3000, function() { middle.width += 480; middle.x -= 480; }, B],
-       function() { middle.text = 'FOAM'; },
        [1000, function() { innoweek13.y = 535; innoweek13.a = 0;  }],
 
     ])();
