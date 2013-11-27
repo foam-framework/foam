@@ -583,7 +583,6 @@ var System = FOAM({
       return System.getPrototype().multics(system, dev);
     },
 
-
       paint: function() {
          if ( ! this.parent ) return;
          var c = this.parent.canvas;
