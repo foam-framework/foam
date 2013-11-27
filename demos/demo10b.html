@@ -56,6 +56,21 @@
     middle.height = 0;
     ui_tm.height = ui_table.height = ui_detail.height = ui_ctrl.height = ui_model.height = 80;
 
+var d = 10;
+       function addPlatform() {
+         var a = [sql, jdbc, java, skeleton, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, dao, search ];
+         var b = [];
+         for ( var i = 0 ; i < a.length ; i++ ) {
+           var c = a[i].clone();
+
+           space.addChild(c);
+           space.children.unshift(space.children.pop());
+           c.x += d;
+           c.y -= d;
+         }
+         d += 10;
+       }                                                     
+
     space.addChildren(
       sql, jdbc, java, skeleton, proto, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao, search
     );
@@ -100,6 +115,27 @@
        [0],
        [3000, function() { middle.width += 480; middle.x -= 480; }, B],
        [1000, function() { innoweek13.y = 535; innoweek13.a = 0;  }],
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform
 
     ])();
   </script>

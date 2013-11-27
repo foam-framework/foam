@@ -592,7 +592,6 @@ var Movement = {
 
    animate: function(duration, fn, opt_interp, opt_onEnd) {
      if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
-
      var interp = opt_interp || Movement.linear;
 
      return function() {
