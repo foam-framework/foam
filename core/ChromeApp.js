@@ -141,7 +141,7 @@ var OAuthXhr = {
             return;
           }
           finished = true;
-          ret(self.xhr.response);
+          ret(self.xhr.response, self.xhr.status);
         }))(ret);
   }
 };

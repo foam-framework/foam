@@ -7,7 +7,10 @@ function launchComposer() {
         arequire('QuickCompose'),
         arequire('LinkView')
       )(function () {
-        var b = QuickCompose.create({window: window});
+        var b = QuickCompose.create({
+          window: window,
+          userInfo: userInfo
+        });
         b.appWindow = w;
         window.browser = b; // for debugging
         $addWindow(window);

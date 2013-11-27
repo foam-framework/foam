@@ -15,14 +15,30 @@
  * limitations under the License.
  */
 
+var UserInfo = FOAM({
+  model_: 'Model',
+
+  name: 'UserInfo',
+  label: 'UserInfo',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'email'
+    }
+  ]
+});
+
 var EMailDAO = IDBDAO.create({model: EMail});
 var ContactDAO = MDAO.create({ model: Contact });
 ContactDAO.addIndex(Contact.EMAIL);
 ContactDAO.addIndex(Contact.FIRST);
 ContactDAO.addIndex(Contact.LAST);
 
-var XhrFactory = OAuthXhrFactory.create({
-  authAgent: ChromeAuthAgent.create({}),
+var authAgent = ChromeAuthAgent.create({});
+
+var JsonXhrFactory = OAuthXhrFactory.create({
+  authAgent: authAgent,
   responseType: "json"
 });
 
@@ -33,6 +49,25 @@ ContactDAO = CachingDAO.create(
 ContactDAO.select(COUNT())(function(c) {
   if ( c.count === 0 ) {
     console.log('Importing contacts...');
-    importContacts(ContactDAO, XhrFactory);
+    importContacts(ContactDAO, JsonXhrFactory);
   }
 });
+
+var persistentContext = PersistentContext.create({
+  dao: IDBDAO.create({model: Binding}),
+  predicate: NOT_TRANSIENT,
+  context: GLOBAL
+});
+
+// Load and persist user info.
+persistentContext.bindObject('userInfo', UserInfo, {})(
+  aseq(
+    function(ret) {
+      var xhr = JsonXhrFactory.make();
+      xhr.asend(ret, "GET", "https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
+    },
+    function(ret, response) {
+      if ( response ) {
+        userInfo.email = response.email;
+      }
+    }));
