@@ -226,8 +226,10 @@ var RichTextView = FOAM({
       this.SUPER();
       var drop = $(this.dropId);
       this.dropzone = drop;
+/*
       drop.style.width  = (this.$.clientWidth-20) + 'px';
       drop.style.height = (this.$.clientHeight-20) + 'px';
+*/
       drop.style.lineHeight = drop.style.height;
       drop.ondragenter = function(e) {
         drop.style.opacity = "0.3";
