@@ -30,23 +30,6 @@ if (chrome.app.runtime) {
    chrome.app.runtime.onLaunched.addListener(function() { console.log('launched'); launchController(); });
 }
 
-var UserInfo = FOAM({
-  model_: 'Model',
-
-  name: 'UserInfo',
-  label: 'UserInfo',
-
-  properties: [
-    {
-      model_: 'StringProperty',
-      name: 'email',
-      postSet: function(newValue, oldValue) {
-        ME = newValue;
-      }
-    }
-  ]
-});
-
 var pc = PersistentContext.create({
   dao: IDBDAO.create({model: Binding}),
   predicate: NOT_TRANSIENT,
@@ -99,7 +82,8 @@ var StorageFuture = afuture();
 if (chrome.app.runtime) {
    var auth = ChromeAuthAgent.create({});
    var xhrFactory = OAuthXhrFactory.create({
-      authAgent: auth
+     authAgent: auth,
+     responseType: "json"
    });
 
      aseq(
@@ -108,13 +92,11 @@ if (chrome.app.runtime) {
        },
        function(ret) {
          var xhr = xhrFactory.make();
-         xhr.responseType = "text";
          xhr.asend(ret, "GET", "https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
        },
        function(ret, response) {
          if (response) {
-           var info = JSON.parse(response);
-           userInfo.email = info.email;
+           userInfo.email = response.email;
          }
          StorageFuture.set();
        }

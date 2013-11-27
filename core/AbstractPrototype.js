@@ -223,7 +223,8 @@ console.log(i, k, v);
   outProtobuf: function(out) {
     for ( var i = 0; i < this.model_.properties.length; i++ ) {
       var prop = this.model_.properties[i];
-      prop.outProtobuf(this, out);
+      if ( Number.isFinite(prop.prototag) )
+        prop.outProtobuf(this, out);
     }
   },
 
