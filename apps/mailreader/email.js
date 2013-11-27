@@ -389,7 +389,7 @@ var EMail = FOAM({
             (this.cc.length ? "Cc: " + this.cc.join(", ") + "\r\n" : "") +
             (this.bcc.length ? "Bcc: " + this.bcc.join(", ") + "\r\n" : "") +
             "Subject: " + this.subject + "\r\n" +
-            "Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes\r\n" +
+            "Content-Type: text/html; charset=ISO-8859-1; format=flowed; delsp=yes\r\n" +
             this.body +
             "\r\n\r\n");
       }
