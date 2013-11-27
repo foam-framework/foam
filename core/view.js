@@ -282,7 +282,10 @@ var DomValue = {
 
    get: function() { return this.element[this.property]; },
 
-   set: function(value) { this.element[this.property] = value; },
+   set: function(value) {
+     if ( this.element[this.property] != value )
+       this.element[this.property] = value;
+   },
 
    addListener: function(listener) {
       if ( ! this.event ) return;
