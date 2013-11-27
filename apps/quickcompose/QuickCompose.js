@@ -87,13 +87,6 @@ var QuickEMailView = Model.create({
     }
   ],
 
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.addChild(this.bodyView);
-    }
-  },
-
   templates: [
     {
       name: "toHTML",
@@ -193,21 +186,17 @@ var QuickCompose = FOAM({
       this.discardButton.initHTML();
       this.closeButton.initHTML();
 
-      // This doesn't work when the view is a RichTextView because the 
-      // iframe is prevented from receiving the file.
-      // var dropzone = this.view.$;
-      var dropzone = this.window.document.body;
-      console.log('adding dropzone ', this.view.$);
-      dropzone.ondrop = function(e) {
-        console.log('onDrop ', e);
-        /*
+/*
+      dropzone.ondragover = function(e) {
+  e.preventDefault();
+        console.log('drag ', e);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
 console.log('dropped file: ' + file);
         }
-        */
       };
+*/
     }
   },
 

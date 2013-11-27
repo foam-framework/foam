@@ -13,35 +13,37 @@
     space.write(document);
 
     function box(color, x, text) {
-      return Box.create({color: 'white', width: 120, height:100, font: '10pt Arial', y: -200, background: color, x: x, text: text});
+      return Box.create({color: 'white', width: 120, height:100, font: 'bold 10pt Arial', y: -200, background: color, x: x, text: text});
     }
 
     var x = -100;
-    var sql       = box('green',  x+=120, 'Issue.sql');
-    var jdbc      = box('red',    x+=120, 'IssueDB.java');
-    var java      = box('red',    x+=120, 'Issue.java');
-    var skeleton  = box('red',    x+=120, 'IssueSkeleton.java');
-    var proto     = box('black',  x+=120, 'Issue.proto');
-    var model     = box('black',  x,      'Issue.model');
-    var stub      = box('blue',   x+=120, 'IssueStub.js');
-    var js        = box('blue',   x+=120, 'Issue.js');
-    var ui        = box('blue',   x+=120, 'Issue_UI.js');
-    var ui_tm     = box('blue',   x,      'IssueColumns.js');
-    var ui_table  = box('blue',   x,      'IssueTable.js');
-    var ui_detail = box('blue',   x,      'IssueDetail.js');
-    var ui_ctrl   = box('blue',   x,      'IssueController.js');
-    var ui_model  = box('blue',   x,      'IssueModel.js');
-    var html      = box('orange', x+=120, 'Issue.html');
-    var css       = box('pink',   x+=120, 'Issue.css');
-    var middle    = box('black',  380,    'Middleware');
-    var innoweek11  = box('gold',   20,    'Innovation Week 2011');
-    var innoweek12  = box('gold',   20,    '2012');
-    var innoweek13  = box('gold',   20,    'Innovation Week 2013');
-    var dao = box('blue', 620, 'DAO'); 
+    var sql         = box('green',  x+=120, 'Issue.sql');
+    var jdbc        = box('red',    x+=120, 'IssueDB.java');
+    var java        = box('red',    x+=120, 'Issue.java');
+    var skeleton    = box('red',    x+=120, 'IssueSkeleton.java');
+    var proto       = box('black',  x+=120, 'Issue.proto');
+    var model       = box('black',  x,      'Issue.model');
+    var stub        = box('blue',   x+=120, 'IssueStub.js');
+    var js          = box('blue',   x+=120, 'Issue.js');
+    var ui          = box('blue',   x+=120, 'Issue_UI.js');
+    var ui_tm       = box('blue',   x,      'IssueColumns.js');
+    var ui_table    = box('blue',   x,      'IssueTable.js');
+    var ui_detail   = box('blue',   x,      'IssueDetail.js');
+    var ui_ctrl     = box('blue',   x,      'IssueController.js');
+    var ui_model    = box('blue',   x,      'IssueModel.js');
+    var html        = box('orange', x+=120, 'Issue.html');
+    var css         = box('pink',   x+=120, 'Issue.css');
+    var middle      = box('black',  380,    'Middleware');
+    var innoweek11  = box('gray',   20,     'Innovation Week 2011');
+    var innoweek12  = box('gray',   20,     'Innovation Week 2012');
+    var innoweek13  = box('gray',   20,     'Innovation Week 2013');
+    var dao         = box('blue',   620,    'DAO'); 
+    var search      = box('blue',   620,    'Search'); 
 
     innoweek11.width *= 5;
     innoweek11.height = 35;
     innoweek12.height = 35;
+    innoweek12.width *= 2;
     innoweek13.width *= 4;
     innoweek13.height = 35;
     innoweek13.y -= 150;
@@ -52,13 +54,25 @@
     middle.y = 500;
     middle.width = 360;
     middle.height = 0;
-/*
-    var  = box('', x+=50, 'Issue');
-*/
+    ui_tm.height = ui_table.height = ui_detail.height = ui_ctrl.height = ui_model.height = 80;
+
+var d = 10;
+       function addPlatform() {
+         var a = [sql, jdbc, java, skeleton, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, dao, search ];
+         var b = [];
+         for ( var i = 0 ; i < a.length ; i++ ) {
+           var c = a[i].clone();
+
+           space.addChild(c);
+           space.children.unshift(space.children.pop());
+           c.x += d;
+           c.y -= d;
+         }
+         d += 10;
+       }                                                     
 
     space.addChildren(
-      sql, jdbc, java, skeleton, proto, stub, js, ui, html, css,
-      ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao
+      sql, jdbc, java, skeleton, proto, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao, search
     );
 
     var M = Movement;
@@ -72,33 +86,56 @@
        [1000, function() { middle.height = 35;   }, B],
        [1000, function() { html.y = 400;   }, B],
        [1000, function() { css.y = 400;   }, B],
-       [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
+       [1000, function() { ui_tm.y = 0; ui_table.y = 80; ui_detail.y = 160; ui_ctrl.y = 240; ui_model.y = 320;  }, B],
 
-       [1000],
+       [0],
        [1000, function() { proto.y -= 100; }], 
        [
          [1500, function() { proto.y = -200; }, M.easeOut(0.5)], 
-         [1500, function() { proto.x = 1500; proto.a = Math.PI*6; }, M.easeIn(0.5)]
+         [1500, function() { proto.x = -200; proto.a = -Math.PI*6; }, M.easeIn(0.5)]
        ], 
        [500],
        [1000, function() { model.y = 300;   }, B],
        function() { middle.text = 'FOAM'; },
-       [
-         [1000, function() { ui_tm.y = 0; ui_table.y = 100; ui_detail.y = 200; ui_ctrl.y = 300; ui_model.y = 400;  }],
-         [1000, function() { middle.x += 120;   }]
-       ],
-       [3000, function() { middle.width += 240;   }, B],
+       [3000, function() { middle.width += 240; middle.x += 120;   }, B],
        [1000, function() { innoweek11.y = 535; innoweek11.x = 500; innoweek11.a = 0;  }],
 
+       [0],
        [
-         [1000, function() { stub.x += 120; ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120;  }],
-         [1000, function() { dao.y  = 400;   }]
+         [1000, function() { stub.x += 120; ui.x += 120; js.x += 120; ui_tm.x += 120; ui_table.x += 120; ui_detail.x += 120; ui_ctrl.x += 120; ui_model.x += 120; html.x += 120; css.x += 120; middle.width += 120; innoweek11.width += 120; }],
+         [1000, function() { dao.y  = 400; search.y = 300;  }]
        ],
-       [1000, function() { innoweek12.y = 570; innoweek12.a = 0; innoweek12.x = dao.x;  }],
+       [500],
+       [1000, function() { model.y -= 700;   }, B],
+       function() { model.text = 'EMail.model'; },
+       [1000, function() { model.y += 700;   }, B],
+       function() { var a = space.children; for ( var i = 0 ; i < a.length ; i++ ) a[i].text = a[i].text.replace('Issue', 'EMail'); },
+       [1000, function() { innoweek12.y = 570; innoweek12.a = 0; innoweek12.x = model.x;  }],
 
-       [1000],
+       [0],
        [3000, function() { middle.width += 480; middle.x -= 480; }, B],
        [1000, function() { innoweek13.y = 535; innoweek13.a = 0;  }],
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform,
+
+       [0],
+       addPlatform
 
     ])();
   </script>

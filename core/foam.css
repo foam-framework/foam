@@ -552,6 +552,13 @@ border-bottom-right-radius: 0;
 }
 
 /* ----------- Rich Text View ----------- */
+.dropzone {
+    border: 5px dashed;
+    margin: 5px;
+    font: 270% arial,sans-serif;
+    text-align: center;
+}
+
 .linkDialog {
     border: 1px solid;
     border-color: #bbb #bbb #a8a8a8;

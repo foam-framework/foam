@@ -57,7 +57,7 @@ var Link = FOAM({
       name:  'insert',
       label: 'Apply',
       help:  'Insert this link into the document.',
-      
+
       action: function() {
         console.log('insert link', this.label, this.link);
         var window = this.richTextView.$.contentWindow;
@@ -90,7 +90,7 @@ var LinkView = Model.create({
           value: SimpleValue.create(this.value.get())
         });
       }
-    },
+    }
   ],
 
   methods: {
@@ -148,7 +148,7 @@ var ColorPickerView = FOAM({
         var shade = Math.floor(255 * col / 7);
         cell(shade, shade, shade);
       }
-      out += '</tr><tr>'
+      out += '</tr><tr>';
       cell(255, 0, 0);
       cell(255, 153, 0);
       cell(255, 255, 0);
@@ -213,7 +213,9 @@ var RichTextView = FOAM({
       var sandbox = this.mode === 'read-write' ? '' :
           ' sandbox="allow-same-origin"';
       var id = this.getID();
-      return '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
+      this.dropId = this.nextID();
+      return '<div id="' + this.dropId + '" class="dropzone" style="position:absolute;opacity:0;z-index:10">Drop files here</div>' +
+        '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
     },
 
     setValue: function(value) {
@@ -222,6 +224,24 @@ var RichTextView = FOAM({
 
     initHTML: function() {
       this.SUPER();
+      var drop = $(this.dropId);
+      this.dropzone = drop;
+      drop.style.width  = (this.$.clientWidth-20) + 'px';
+      drop.style.height = (this.$.clientHeight-20) + 'px';
+      drop.style.lineHeight = drop.style.height;
+      drop.ondragenter = function(e) {
+        drop.style.opacity = "0.3";
+      };
+      drop.ondragover = function(e) {
+        e.preventDefault();
+      };
+      drop.ondragleave = function(e) {
+        drop.style.opacity = "0";
+      };
+      drop.ondrop = function(e) {
+        drop.style.opacity = "0";
+        console.log('drop ', e);
+      };
       this.document = this.$.contentDocument;
       if ( this.mode === 'read-write') {
         this.document.body.contentEditable = true;

@@ -592,7 +592,6 @@ var Movement = {
 
    animate: function(duration, fn, opt_interp, opt_onEnd) {
      if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
-
      var interp = opt_interp || Movement.linear;
 
      return function() {
@@ -659,6 +658,19 @@ var Movement = {
    compile: function (a, opt_rest) {
      function noop() {}
 
+     function isPause(op) {
+       return Array.isArray(op) && op[0] == 0;
+     }
+
+     function compilePause(op, rest) {
+       return function() {
+         document.onclick = function() {
+           document.onclick = null;
+           rest();
+         };
+       };
+     }
+
      function isSimple(op) {
        return Array.isArray(op) && typeof op[0] === 'number';
      }
@@ -696,6 +708,7 @@ var Movement = {
        var rest = compile_(a, i+1);
        var op = a[i];
 
+       if ( isPause(op)    ) return compilePause(op, rest);
        if ( isSimple(op)   ) return compileSimple(op, rest);
        if ( isParallel(op) ) return compileParallel(op, rest);
 
