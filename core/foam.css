@@ -553,7 +553,7 @@ border-bottom-right-radius: 0;
 
 /* ----------- Rich Text View ----------- */
 .dropzone {
-    border: 5px dashed;
+    border: 4px dashed;
     margin: 5px;
     font: 270% arial,sans-serif;
     text-align: center;
