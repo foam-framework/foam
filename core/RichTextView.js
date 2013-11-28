@@ -236,6 +236,7 @@ var RichTextView = FOAM({
       var body = this.document.body;
       var el = this.$;
       body.ondrop = function(e) {
+        e.preventDefault();
         el.style.opacity = 1;
         console.log('drop ', e);
         var length = e.dataTransfer.files.length;

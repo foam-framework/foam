@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,104 +15,104 @@
  */
 
 body{
-    font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
-    font-size:12px;
+  font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-size:12px;
 }
 p, h1, form, button{
-    border:0; margin:0; padding:0;
+  border:0; margin:0; padding:0;
 }
 
 .spacer {clear:both; height:1px;}
 
 .foamform{
-    margin:0 auto;
-    width:450px;
-    padding:14px;
+  margin:0 auto;
+  width:450px;
+  padding:14px;
 }
 
 .stackview-viewarea {
-    width:100%;
+  width:100%;
 }
 
 /* ----------- detailView ----------- */
 
 .detailView {
-    border2:solid 2px #dddddd;
-    border:solid 2px #b7ddf2;
-    background:#ebebeb;
-    background2:#ebf4fb;
-    width:98%;
+  border2:solid 2px #dddddd;
+  border:solid 2px #b7ddf2;
+  background:#ebebeb;
+  background2:#ebf4fb;
+  width:98%;
 }
 
 .detailView .heading {
-    float:left;
-    font-size:14px;
-    font-weight:bold;
-    margin-bottom:8px;
+  float:left;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:8px;
 }
 
 .detailView .propertyLabel {
-    font-size:14px;
-    display:block;
-    font-weight:bold;
-    text-align:right;
-    float:left;
+  font-size:14px;
+  display:block;
+  font-weight:bold;
+  text-align:right;
+  float:left;
 }
 
 .detailView input {
-    float:left;
-    font-size:12px;
-    padding:4px 2px;
-    border:solid 1px #aacfe4;
-    margin:2px 0 0px 10px;
+  float:left;
+  font-size:12px;
+  padding:4px 2px;
+  border:solid 1px #aacfe4;
+  margin:2px 0 0px 10px;
 }
 
 .detailView textarea {
-    float:left;
-    font-size:12px;
-    padding:4px 2px;
-    border:solid 1px #aacfe4;
-    margin:2px 0 0px 10px;
+  float:left;
+  font-size:12px;
+  padding:4px 2px;
+  border:solid 1px #aacfe4;
+  margin:2px 0 0px 10px;
 }
 
 .detailView select {
-    font-size:12px;
-    padding:4px 2px;
-    border:solid 1px #aacfe4;
-    margin:2px 0 0px 10px;
+  font-size:12px;
+  padding:4px 2px;
+  border:solid 1px #aacfe4;
+  margin:2px 0 0px 10px;
 }
 
 /* ----------- summaryView ----------- */
 
 .summaryView {
-    background: white;
-    width:100%;
-    height: 100%;
-    overflow-y: scroll;
+  background: white;
+  width:100%;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .summaryView .table {
-    table-layout: fixed;
+  table-layout: fixed;
 }
 
 /* Temp for gmail demo. */
 .summaryView td:first-child { width: 50px; }
 
 .summaryView .label{
-    font-size:14px;
-    display:block;
-    font-weight:bold;
-    text-align:right;
-    width:120px;
-    float:left;
+  font-size:14px;
+  display:block;
+  font-weight:bold;
+  text-align:right;
+  width:120px;
+  float:left;
 }
 
 .summaryView .value{
-    float:left;
-    font-size:12px;
-    padding-left: 8px;
-    border2:solid 1px #aacfe4;
-    margin:2px 15px 2px 0px;
+  float:left;
+  font-size:12px;
+  padding-left: 8px;
+  border2:solid 1px #aacfe4;
+  margin:2px 15px 2px 0px;
 }
 
 
@@ -129,30 +129,30 @@ option[selected]{
 /* ----------- summaryView ----------- */
 
 .helpView {
-    width:100%;
+  width:100%;
 }
 
 .helpView .intro{
-    padding-top:10px;
-    font-size:16px;
-    font-weight:bold;
+  padding-top:10px;
+  font-size:16px;
+  font-weight:bold;
 }
 
 .helpView .label{
-    padding-top:10px;
-    font-size:14px;
-    font-weight:bold;
+  padding-top:10px;
+  font-size:14px;
+  font-weight:bold;
 }
 
 .helpView .text{
-    width:100%;
-    font-size:14px;
-    padding-left: 8px;
-    margin:2px 15px 2px 0px;
+  width:100%;
+  font-size:14px;
+  padding-left: 8px;
+  margin:2px 15px 2px 0px;
 }
 
 .actionBorder {
-    width:95%;
+  width:95%;
 }
 
 .actionBorderActions {
@@ -170,69 +170,69 @@ option[selected]{
 
 /* ----------- ImageView ---------- */
 .imageViewContainer {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .imageView {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* ----------- stylized ----------- */
 #stylized {
-    border:solid 2px #b7ddf2;
-    background:#ebf4fb;
+  border:solid 2px #b7ddf2;
+  background:#ebf4fb;
 }
 #stylized h1 {
-    font-size:14px;
-    font-weight:bold;
-    margin-bottom:8px;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:8px;
 }
 #stylized p{
-    font-size:11px;
-    color:#666666;
-    margin-bottom:20px;
-    border-bottom:solid 1px #b7ddf2;
-    padding-bottom:10px;
+  font-size:11px;
+  color:#666666;
+  margin-bottom:20px;
+  border-bottom:solid 1px #b7ddf2;
+  padding-bottom:10px;
 }
 #stylized label{
-    display:block;
-    font-weight:bold;
-    text-align:right;
-    width:140px;
-    float:left;
+  display:block;
+  font-weight:bold;
+  text-align:right;
+  width:140px;
+  float:left;
 }
 #stylized .small{
-    color:#666666;
-    display:block;
-    font-size:11px;
-    font-weight:normal;
-    text-align:right;
-    width:140px;
+  color:#666666;
+  display:block;
+  font-size:11px;
+  font-weight:normal;
+  text-align:right;
+  width:140px;
 }
 #stylized input{
-    float:left;
-    font-size:12px;
-    padding:4px 2px;
-    border:solid 1px #aacfe4;
-    margin:2px 0 20px 10px;
-    width:200px;
+  float:left;
+  font-size:12px;
+  padding:4px 2px;
+  border:solid 1px #aacfe4;
+  margin:2px 0 20px 10px;
+  width:200px;
 }
 #stylized button{
-    background:#666666;
-    clear:both;
-    color:#FFFFFF;
-    font-size:11px;
-    font-weight:bold;
-    height:31px;
-    line-height:31px;
-    margin-left:150px;
-    text-align:center;
-    width:125px;
+  background:#666666;
+  clear:both;
+  color:#FFFFFF;
+  font-size:11px;
+  font-weight:bold;
+  height:31px;
+  line-height:31px;
+  margin-left:150px;
+  text-align:center;
+  width:125px;
 }
 
 
@@ -276,12 +276,12 @@ option[selected]{
 .foamTable tbody tr:hover td
 {
 	color: #009;
-        background: #eee;
+    background: #eee;
 }
 .foamTable tr.rowSelected
 {
 	color: #900;
-        background: #eee;
+    background: #eee;
 	border: 2px solid #f00;
 }
 
@@ -318,7 +318,7 @@ option[selected]{
 
 
 .scrollSpacer {
-    height:52;
+  height:52;
 }
 
 
@@ -517,60 +517,60 @@ border-bottom-right-radius: 0;
 
 /* ----------- ArrayTileView ----------- */
 .arrayTileView {
-    margin: 0px;
-    padding: 0px;
-    display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
 }
 
 .arrayTileItem {
-    display: inline-block;
-    list-style-type: none;
-    margin: 0px 1px;
+  display: inline-block;
+  list-style-type: none;
+  margin: 0px 1px;
 }
 
 /* ----------- AutocompleteListView ----------- */
 .autocompleteListView {
-    position: absolute;
-    padding: 8px;
-    margin: 0px;
-    width: 300px;
-    background: white;
-    border-radius: 5px;
-    border: 1px solid lightgrey;
+  position: absolute;
+  padding: 8px;
+  margin: 0px;
+  width: 300px;
+  background: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
 }
 
 .autocompleteListItem {
-    border: 1px solid transparent;
-    border-radius: 5px;
-    list-style-type: none;
-    overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  list-style-type: none;
+  overflow: hidden;
 }
 
 .autocompleteSelectedItem {
-    border-radius: 5px;
-    border: 1px solid blue;
+  border-radius: 5px;
+  border: 1px solid blue;
 }
 
 /* ----------- Rich Text View ----------- */
 iframe {
-    background: white;
+  background: white;
 }
 
 .dropzone {
-    width: 95%;
-    opacity: 0.5;
-    z-index: -10;
-    position: absolute;
-    border: 5px dashed;
-    margin: 5px;
-    font: 270% arial,sans-serif;
-    text-align: center;
+  border: 4px dashed;
+  font: 270% arial,sans-serif;
+  margin: 5px;
+  opacity: 0.5;
+  position: absolute;
+  text-align: center;
+  width: 95%;
+  z-index: -10;
 }
 
 .linkDialog {
-    border: 1px solid;
-    border-color: #bbb #bbb #a8a8a8;
-    padding: 8px;
+  border: 1px solid;
+  border-color: #bbb #bbb #a8a8a8;
+  padding: 8px;
 }
 
 
@@ -592,6 +592,6 @@ iframe {
 }
 
 .linkDialog th {
-    font: normal 15px arial,sans-serif;
-    padding-right: 10px;
+  font: normal 15px arial,sans-serif;
+  padding-right: 10px;
 }
