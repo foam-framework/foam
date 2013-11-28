@@ -236,7 +236,6 @@ var RichTextView = FOAM({
         el.style.opacity = 1;
         console.log('drop ', e);
         e.preventDefault();
-        drop.style.opacity = "0";
         console.log('drop ', e);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
