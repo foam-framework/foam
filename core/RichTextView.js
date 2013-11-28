@@ -59,15 +59,12 @@ var Link = FOAM({
       help:  'Insert this link into the document.',
 
       action: function() {
-        console.log('insert link', this.label, this.link);
-        var window = this.richTextView.$.contentWindow;
-        var document = window.document;
-        var range = window.getSelection().getRangeAt(0);
-        var a = document.createElement('a');
+        var a   = document.createElement('a');
         var txt = document.createTextNode(this.label);
         a.href = this.link;
         a.appendChild(txt);
-        range.insertNode(a);
+
+        this.richTextView.insertElement(a);
 
         this.view.$.remove();
       }
@@ -222,6 +219,12 @@ var RichTextView = FOAM({
       this.value = value;
     },
 
+    insertElement: function(e) {
+      var window = this.$.contentWindow;
+      var range = window.getSelection().getRangeAt(0);
+      range.insertNode(e);
+    },
+
     initHTML: function() {
       this.SUPER();
       var drop = $(this.dropId);
@@ -235,14 +238,22 @@ var RichTextView = FOAM({
       body.ondrop = function(e) {
         el.style.opacity = 1;
         console.log('drop ', e);
-      };
+        var length = e.dataTransfer.files.length;
+        for ( var i = 0 ; i < length ; i++ ) {
+          var file = e.dataTransfer.files[i];
+          var img   = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+
+          this.insertElement(img);
+        }
+      }.bind(this);
       body.ondragenter = function(e) {
         el.style.opacity = 0;
       };
       body.ondragleave = function(e) {
         el.style.opacity = 1;
       };
-      if ( this.mode === 'read-write') {
+      if ( this.mode === 'read-write' ) {
         this.document.body.contentEditable = true;
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');

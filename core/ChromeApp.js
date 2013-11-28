@@ -14,17 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Simple template system modelled after JSP's.
- *
- * Syntax:
- *    <% code %>: code inserted into template, but nothing implicitly output
- *    <%= comma-separated-values %>: all values are appended to template output
- *    \<new-line>: ignored
- *    %value<whitespace>: TODO: output a single value to the template output
- *
- * TODO: add support for arguments
- */
 
 /** Code Specific to Chrome Apps. **/
 
