@@ -214,7 +214,7 @@ var RichTextView = FOAM({
           ' sandbox="allow-same-origin"';
       var id = this.getID();
       this.dropId = this.nextID();
-      return '<div id="' + this.dropId + '" class="dropzone" style="position:absolute;opacity:0;z-index:10">Drop files here</div>' +
+      return '<div id="' + this.dropId + '" class="dropzone">Drop files here</div>' +
         '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
     },
 
@@ -226,27 +226,22 @@ var RichTextView = FOAM({
       this.SUPER();
       var drop = $(this.dropId);
       this.dropzone = drop;
-      drop.style.width  = 0;
-      drop.style.height = 0;
-/*
       drop.style.width  = (this.$.clientWidth-20) + 'px';
       drop.style.height = (this.$.clientHeight-20) + 'px';
-*/
       drop.style.lineHeight = drop.style.height;
-      drop.ondragenter = function(e) {
-        drop.style.opacity = "0.3";
-      };
-      drop.ondragover = function(e) {
-        e.preventDefault();
-      };
-      drop.ondragleave = function(e) {
-        drop.style.opacity = "0";
-      };
-      drop.ondrop = function(e) {
-        drop.style.opacity = "0";
+      this.document = this.$.contentDocument;
+      var body = this.document.body;
+      var el = this.$;
+      body.ondrop = function(e) {
+        el.style.opacity = 1;
         console.log('drop ', e);
       };
-      this.document = this.$.contentDocument;
+      body.ondragenter = function(e) {
+        el.style.opacity = 0;
+      };
+      body.ondragleave = function(e) {
+        el.style.opacity = 1;
+      };
       if ( this.mode === 'read-write') {
         this.document.body.contentEditable = true;
       }

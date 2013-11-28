@@ -552,7 +552,15 @@ border-bottom-right-radius: 0;
 }
 
 /* ----------- Rich Text View ----------- */
+iframe {
+    background: white;
+}
+
 .dropzone {
+    width: 95%;
+    opacity: 0.5;
+    z-index: -10;
+    position: absolute;
     border: 5px dashed;
     margin: 5px;
     font: 270% arial,sans-serif;
