@@ -111,10 +111,13 @@ var QuickCompose = FOAM({
       name: 'window'
     },
     {
+      name: 'userInfo'
+    },
+    {
       name: 'email',
       valueFactory: function() {
         // TODO: Look for a draft in the EMailDAO
-        return QuickEMail.create({id: 'tmp' + Date.now()});
+        return QuickEMail.create({from: this.userInfo.email, id: Date.now()});
       }
     },
     {

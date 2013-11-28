@@ -42,6 +42,7 @@ function outProtobufPrimitive(type, tag, value, out) {
     out.varint(bytes.length);
     out.bytes(bytes);
     break;
+  case 'Integer':
   case 'uint64':
   case 'int64':
   case 'uint32':
@@ -52,6 +53,7 @@ function outProtobufPrimitive(type, tag, value, out) {
     break;
   case 'bool':
   case 'boolean':
+  case 'Boolean':
     out.varint(tag << 3);
     out.varint(Number(value));
     break;
