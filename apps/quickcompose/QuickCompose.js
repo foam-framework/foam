@@ -92,7 +92,7 @@ var QuickEMailView = Model.create({
       name: "toHTML",
       template:
         '<div id="<%= this.getID() %>" class="quickcompose">' +
-        '<% var v = this.createView(QuickEMail.TO); v.placeholder = QuickEMail.TO.label; out(v.toHTML()); %>' +
+        '<% var v = this.createView(QuickEMail.TO); v.placeholder = QuickEMail.TO.label; out(v.toHTML()); %><br>' +
         '<%     v = this.createView(QuickEMail.SUBJECT); v.placeholder = QuickEMail.SUBJECT.label; out(v.toHTML()); %>' +
         '<%= this.bodyView.toHTML() %><br>' +
         '</div>'
