@@ -80,7 +80,7 @@ var QuickEMailView = Model.create({
       name: 'bodyView',
       valueFactory: function() {
         var v = this.createView(QuickEMail.BODY);
-        v.width = 335;
+        // v.width = 335;
         v.height = 331;
         return v;
       }

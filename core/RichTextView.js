@@ -170,16 +170,14 @@ var RichTextView = FOAM({
 
   properties: [
     {
+      model_: 'StringProperty',
       name:  'height',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 400
+      defaultValue: '400'
     },
     {
+      model_: 'StringProperty',
       name:  'width',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 800
+      defaultValue: '100%'
     },
     {
       name:  'mode',
