@@ -4,6 +4,8 @@ iframe {
 }
 
 body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical; 
   margin: 0;
 }
 
@@ -16,19 +18,25 @@ body {
   opacity: 0.5;
 }
 
-.quickcompose input {
+.richtext {
+  -webkit-box-flex: 1;
+  box-flex: 1;
+}
+
+body input {
   margin: 0 0 0 0;
   padding-right: 0;
 }
 
-.quickcompose input[type="text"], input[type="String"]  {
+body input[type="text"], input[type="String"]  {
+  width: 100%;
   height: 38px;
   padding-left: 8px;
   border-left-width: 0px;
   border-right-width: 0px;
 }
 
-.quickcompose input[name="subject"] {
+body input[name="subject"] {
   border-top-width: 0px;
 }
 

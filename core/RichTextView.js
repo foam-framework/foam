@@ -209,8 +209,8 @@ var RichTextView = FOAM({
           ' sandbox="allow-same-origin"';
       var id = this.getID();
       this.dropId = this.nextID();
-      return '<div id="' + this.dropId + '" class="dropzone">Drop files here</div>' +
-        '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe>';
+      return '<div class="richtext"><div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
+        '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe></div>';
     },
 
     setValue: function(value) {
@@ -227,15 +227,12 @@ var RichTextView = FOAM({
       this.SUPER();
       var drop = $(this.dropId);
       this.dropzone = drop;
-      drop.style.width  = (this.$.clientWidth-20) + 'px';
-      drop.style.height = (this.$.clientHeight-20) + 'px';
-      drop.style.lineHeight = drop.style.height;
       this.document = this.$.contentDocument;
       var body = this.document.body;
       var el = this.$;
       body.ondrop = function(e) {
         e.preventDefault();
-        el.style.opacity = 1;
+        el.style.opacity = '1';
         console.log('drop ', e);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
@@ -247,10 +244,10 @@ var RichTextView = FOAM({
         }
       }.bind(this);
       body.ondragenter = function(e) {
-        el.style.opacity = 0;
+        el.style.opacity = '0';
       };
       body.ondragleave = function(e) {
-        el.style.opacity = 1;
+        el.style.opacity = '1';
       };
       if ( this.mode === 'read-write' ) {
         this.document.body.contentEditable = true;

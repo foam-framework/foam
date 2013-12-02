@@ -552,19 +552,33 @@ border-bottom-right-radius: 0;
 }
 
 /* ----------- Rich Text View ----------- */
-iframe {
+.richtext {
+  overflow: hidden;
+  position: relative;
+}
+
+.richtext iframe {
   background: white;
+  height: 100%;
+  position: absolute;
 }
 
 .dropzone {
-  border: 4px dashed;
+  -webkit-box-orient: vertical; 
+  border: 4px dashed #999;
+  color: #999;
+  display: -webkit-box;
   font: 270% arial,sans-serif;
+  height: 95%;
   margin: 5px;
-  opacity: 0.5;
   position: absolute;
   text-align: center;
   width: 95%;
-  z-index: -10;
+  z-index: -1;
+}
+
+.dropzone .spacer {
+  -webkit-box-flex: 1;
 }
 
 .linkDialog {
