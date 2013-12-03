@@ -16,37 +16,39 @@
  */
 var fs = require('fs');
 var vm = require('vm');
+var path = require('path');
 
+// Initializing FOAM_BOOT_DIR.
+var FOAM_BOOT_DIR = '';
 if (process.argv[2]) {
-  var FOAM_BOOT_DIR = process.argv[2] + '/';
-} else {
-  FOAM_BOOT_DIR = '';
+  FOAM_BOOT_DIR = path.normalize(process.argv[2]);
 }
-
-var modelsfiles = fs.readFileSync(FOAM_BOOT_DIR + 'FOAMmodels.js', 'utf8');
 
 global.window = global;
 global.document = {
   window: global
 };
 
+
+// Loading all FOAM models.
+var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
 vm.runInThisContext(modelsfiles);
 
 for (var i = 0; i < files.length; i++) {
-    console.log("loading ", FOAM_BOOT_DIR + files[i]);
-    var filedata = fs.readFileSync(FOAM_BOOT_DIR + files[i] + '.js', 'utf8');
-    vm.runInThisContext(filedata, files[i] + ".js");
+  var filename = files[i] + '.js';
+  var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  vm.runInThisContext(filedata, filename);
 }
 
+// Needed so that scripts can require other nodejs modules.
+global.require = require;
+
 // For command line processing, run as
-// $ node bootFOAMnode.js <FOAM_BOOT_DIR> <command> <args>
-// Commands are located in the tools subdirectory
-// Arguments are passed to the command as a global argv array
+// $ node bootFOAMnode.js <FOAM_BOOT_DIR> <script> <script args>
+// Arguments are passed to the script as a global.argv array.
 if (process.argv[3]) {
-  var command = process.argv[3];
+  var scriptPathname = path.normalize(process.argv[3]);
   global.argv = process.argv.slice(4);
-  global.fs = fs;
-  global.vm = vm;
-  filedata = fs.readFileSync(FOAM_BOOT_DIR + "tools/" + command + ".js", 'utf8');
-  vm.runInThisContext(filedata, "tools/" + command + ".js");
+  filedata = fs.readFileSync(scriptPathname);
+  vm.runInThisContext(filedata, scriptPathname);
 }
