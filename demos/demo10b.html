@@ -37,8 +37,8 @@
     var innoweek11  = box('gray',   20,     'Innovation Week 2011');
     var innoweek12  = box('gray',   20,     'Innovation Week 2012');
     var innoweek13  = box('gray',   20,     'Innovation Week 2013');
-    var dao         = box('blue',   620,    'DAO'); 
-    var search      = box('blue',   620,    'Search'); 
+    var dao         = box('blue',   620,    'DAO');
+    var search      = box('blue',   620,    'Search');
 
     innoweek11.width *= 5;
     innoweek11.height = 35;
@@ -69,7 +69,7 @@ var d = 10;
            c.y -= d;
          }
          d += 10;
-       }                                                     
+       }
 
     space.addChildren(
       sql, jdbc, java, skeleton, proto, stub, js, ui, html, css, ui_tm, ui_table, ui_detail, ui_ctrl, ui_model, middle, model, innoweek11, innoweek12, innoweek13, dao, search
@@ -89,11 +89,11 @@ var d = 10;
        [1000, function() { ui_tm.y = 0; ui_table.y = 80; ui_detail.y = 160; ui_ctrl.y = 240; ui_model.y = 320;  }, B],
 
        [0],
-       [1000, function() { proto.y -= 100; }], 
+       [1000, function() { proto.y -= 100; }],
        [
-         [1500, function() { proto.y = -200; }, M.easeOut(0.5)], 
+         [1500, function() { proto.y = -200; }, M.easeOut(0.5)],
          [1500, function() { proto.x = -200; proto.a = -Math.PI*6; }, M.easeIn(0.5)]
-       ], 
+       ],
        [500],
        [1000, function() { model.y = 300;   }, B],
        function() { middle.text = 'FOAM'; },

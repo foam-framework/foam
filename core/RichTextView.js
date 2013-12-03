@@ -238,7 +238,7 @@ console.log('drop ', e);
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
 
-console.log('file: ', file);    
+console.log('file: ', file);
 
           if ( file.type.startsWith("image/") ) {
             var img   = document.createElement('img');

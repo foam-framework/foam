@@ -80,7 +80,7 @@ var ChromeStorageDAO = FOAM({
           sink && sink.put && sink.put(value);
           if ( batch.length ) {
             var obj = {};
-            for ( var i = 0 ; i < batch.length ; i++ ) 
+            for ( var i = 0 ; i < batch.length ; i++ )
               obj[batch[i].id] = batch[i];
             self.store.set(obj, function() {
               for ( var i = 0 ; i < sinks.length ; i++ )

@@ -1194,7 +1194,7 @@ var GridByExpr = FOAM({
        for ( var j = 0 ; j < sortedRows.length ; j++ ) {
          var y = sortedRows[j];
          out += '<tr><th>' + y + '</th>';
-         
+
          for ( var i = 0 ; i < sortedCols.length ; i++ ) {
            var x = sortedCols[i];
            var value = rows[y].groups[x];
