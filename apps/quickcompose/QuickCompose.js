@@ -37,28 +37,31 @@ var AttachmentView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(value) { value.addListener(this.redraw.bind(this)); console.log('postSet');
- }
+      postSet: function(value) {
+        value.addListener(this.redraw.bind(this));
+      }
     }
   ],
 
   methods: {
+    // TODO: deprecate and remove
+    setValue: function(value) {
+      this.value = value;
+    },
+
     toHTML: function() {
-      return 'Attachments <div id="' + this.getID() + '">none</div>';
+      return '<div id="' + this.getID() + '"></div>';
     },
 
     initHTML: function() {
       this.SUPER();
 
-console.log('initHTML');
       this.value = this.value;
-value.addListener(function() { console.log('fire ', arguments); });
-      value.addListener(this.redraw.bind(this));
+      // this.value.addListener(this.redraw.bind(this));
       this.redraw();
     },
 
     redraw: function() {
-console.log('redraw');
       var out = "";
 
       for ( var i = 0 ; i < this.value.get().length ; i++ ) {
