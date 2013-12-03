@@ -181,17 +181,7 @@ var QuickCompose = FOAM({
       this.discardButton.initHTML();
       this.closeButton.initHTML();
 
-/*
-      dropzone.ondragover = function(e) {
-  e.preventDefault();
-        console.log('drag ', e);
-        var length = e.dataTransfer.files.length;
-        for ( var i = 0 ; i < length ; i++ ) {
-          var file = e.dataTransfer.files[i];
-console.log('dropped file: ' + file);
-        }
-      };
-*/
+      this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
     }
   },
 
@@ -233,6 +223,24 @@ console.log('dropped file: ' + file);
          this.appWindow.minimize();
        }
      }
+   ],
+
+   listeners: [
+      {
+        model_: 'Method',
+         name: 'addAttachment',
+         code: function(file) {
+           console.log('add attachment: ', file);
+           var att = Attachment.create({
+             filename: file.name,
+             type: file.type,
+             position: this.email.attachments.length,
+             size: file.size
+           });
+           console.log(att);
+           this.email.attachments = this.email.attachments.concat(att);
+         }
+      }
    ],
 
   templates: [

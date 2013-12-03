@@ -233,14 +233,20 @@ var RichTextView = FOAM({
       body.ondrop = function(e) {
         e.preventDefault();
         el.style.opacity = '1';
-        console.log('drop ', e);
+console.log('drop ', e);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
-          var img   = document.createElement('img');
-          img.src = URL.createObjectURL(file);
 
-          this.insertElement(img);
+console.log('file: ', file);    
+
+          if ( file.type.startsWith("image/") ) {
+            var img   = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            this.insertElement(img);
+          }
+
+          this.publish('attachmentAdded', file);
         }
       }.bind(this);
       body.ondragenter = function(e) {
