@@ -64,9 +64,16 @@ var AttachmentView = FOAM({
     redraw: function() {
       var out = "";
 
-      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
-        var att = this.value.get()[i];
-        out += '<div class="attachment"><span class="filename">' + att.filename + '</span><span class="type">' + att.type + '</span><span class="size">' + att.size + '</span></div>';
+      if ( this.value.get().length ) {
+        out += '<hr>';
+        out += '<table width=100%>';
+        for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+          var att = this.value.get()[i];
+          var size = Math.round(att.size/1000).toLocaleString() + 'k';
+          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="type">' + att.type + '</td><td class="size">' + size + '</td><td>x</td></tr>';
+        }
+        out += '</table>';
+        out += '<hr>';
       }
 
       this.$.innerHTML = out;
