@@ -123,7 +123,7 @@ Object.defineProperty(Array.prototype, 'intern', {
 });
 
 
-Object.defineProperty(Array.prototype, 'reduce', {
+Object.defineProperty(Array.prototype, 'fReduce', {
   value: function(comparator, arr) {
     compare = toCompare(comparator);
     var result = [];
