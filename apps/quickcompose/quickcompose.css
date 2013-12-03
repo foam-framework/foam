@@ -65,4 +65,23 @@ body input[name="subject"] {
   padding: 4px 5px;
 }
 
+.attachments table {
+  table-layout: fixed;
+  margin-left: 5px;
+}
 
+.attachments .filename {
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.attachments .size {
+  text-align: right;
+  padding-right: 10px;
+  width: 65px;
+}
+
+.attachments .remove {
+  width: 25px;
+}
