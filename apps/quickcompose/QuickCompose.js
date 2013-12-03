@@ -26,6 +26,52 @@ RichTextView.ITALIC.label      = '';
 RichTextView.UNDERLINE.label   = '';
 RichTextView.LINK.label        = '';
 
+var AttachmentView = FOAM({
+  model_: 'Model',
+  extendsModel: 'AbstractView',
+
+  name: 'AttachmentView',
+
+  properties: [
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(value) { value.addListener(this.redraw.bind(this)); console.log('postSet');
+ }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return 'Attachments <div id="' + this.getID() + '">none</div>';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+console.log('initHTML');
+      this.value = this.value;
+value.addListener(function() { console.log('fire ', arguments); });
+      value.addListener(this.redraw.bind(this));
+      this.redraw();
+    },
+
+    redraw: function() {
+console.log('redraw');
+      var out = "";
+
+      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+        var att = this.value.get()[i];
+        out += '<div class="attachment"><span class="filename">' + att.filename + '</span><span class="type">' + att.type + '</span><span class="size">' + att.size + '</span></div>';
+      }
+
+      this.$.innerHTML = out;
+    }
+  }
+});
+
+
 
 var QuickEMail = FOAM({
   model_: 'Model',
@@ -65,6 +111,7 @@ var QuickEMail = FOAM({
       }
     },
     { name: 'subject', displayWidth: 55 },
+    { name: 'attachments', view: 'AttachmentView' },
     { name: 'body',    view: 'RichTextView' }
   ]
 });
@@ -90,7 +137,8 @@ var QuickEMailView = Model.create({
       template:
         '<% var v = this.createView(QuickEMail.TO); v.placeholder = QuickEMail.TO.label; out(v.toHTML()); %>' +
         '<%     v = this.createView(QuickEMail.SUBJECT); v.placeholder = QuickEMail.SUBJECT.label; out(v.toHTML()); %>' +
-        '<%= this.bodyView.toHTML() %>'
+        '<%= this.bodyView.toHTML() %>' +
+        '<%= this.createView(QuickEMail.ATTACHMENTS).toHTML() %>'
     }
   ]
 });
@@ -229,7 +277,7 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
          name: 'addAttachment',
-         code: function(file) {
+         code: function(_, _, file) {
            console.log('add attachment: ', file);
            var att = Attachment.create({
              filename: file.name,

@@ -565,8 +565,8 @@ border-bottom-right-radius: 0;
 
 .dropzone {
   -webkit-box-orient: vertical; 
-  border: 4px dashed #999;
-  color: #999;
+  border: 4px dashed #ddd;
+  color: #ddd;
   display: -webkit-box;
   font: 270% arial,sans-serif;
   height: 95%;
