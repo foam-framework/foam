@@ -67,26 +67,34 @@ body input[name="subject"] {
 
 .attachments table {
   table-layout: fixed;
-  margin-left: 5px;
+  margin-left: 0;
 }
 
 .attachments .filename {
-  text-overflow:ellipsis;
-  overflow:hidden;
-  white-space:nowrap;
+  font-size: 80%;
+  margin-left: 5px;
+  overflow: hidden;
+  padding-left: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .attachments .size {
-  text-align: right;
+  font-size: 80%;
   padding-right: 10px;
+  text-align: right;
   width: 65px;
 }
 
 .attachments .remove {
-  width: 25px;
+  width: 12px;
 }
 
 .attachments button {
-  padding: 4px;
-  background-color: white;
+  padding: 0;
+  background-color: inherit;
+}
+
+.attachments hr {
+  margin: 0;
 }
