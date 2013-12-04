@@ -61,7 +61,7 @@ describe('aseq test', function() {
     };
 
     aseq(asyncTester, asyncTester, asyncTester, asyncTester)(function() {
-      assert.equal('01234', sequence);
+      assert.equal('0123', sequence);
       done();
     });
   });
