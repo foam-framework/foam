@@ -280,7 +280,10 @@ var QuickCompose = FOAM({
          this.email.subject = '';
          this.email.body = '';
          this.email.attachments = [];
-         this.close();
+
+         // This is required rather than just calling this.close() because
+         // DOM updates don't appear to work once the window is minimized.
+         EventService.animate(EventService.animate(this.close.bind(this)))();
        }
      },
      {
