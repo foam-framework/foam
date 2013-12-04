@@ -279,6 +279,7 @@ var QuickCompose = FOAM({
          this.email.to = [];
          this.email.subject = '';
          this.email.body = '';
+         this.email.attachments = [];
          this.close();
        }
      },
