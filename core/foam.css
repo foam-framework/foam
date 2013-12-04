@@ -585,6 +585,8 @@ border-bottom-right-radius: 0;
   border: 1px solid;
   border-color: #bbb #bbb #a8a8a8;
   padding: 8px;
+  z-index: 2;
+  background: white;
 }
 
 

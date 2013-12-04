@@ -23,12 +23,12 @@ body {
   box-flex: 1;
 }
 
-body input {
+body > input {
   margin: 0 0 0 0;
   padding-right: 0;
 }
 
-body input[type="text"], input[type="String"]  {
+body > input[type="text"], input[type="String"] {
   width: 100%;
   height: 38px;
   padding-left: 8px;
@@ -36,7 +36,11 @@ body input[type="text"], input[type="String"]  {
   border-right-width: 0px;
 }
 
-body input[name="subject"] {
+body > input[name="subject"] {
+  border-top-width: 0px;
+}
+
+body > input[name="subject"] {
   border-top-width: 0px;
 }
 

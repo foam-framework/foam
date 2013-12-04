@@ -319,7 +319,7 @@ console.log('file: ', file);
       help: 'Insert a hypertext link.',
       action: function () {
         // TODO: determine the actual location to position
-        Link.create({richTextView: this}).open(5,60);
+        Link.create({richTextView: this}).open(5,120);
       }
     },
     {
