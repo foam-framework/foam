@@ -43,6 +43,16 @@ var AttachmentView = FOAM({
     }
   ],
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'onRemove',
+      code: function(attr) {
+        this.value.set(this.value.get().removeF(EQ(Attachment.POSITION, attr.position)));
+      }
+    }
+  ],
+
   methods: {
     // TODO: deprecate and remove
     setValue: function(value) {
@@ -54,7 +64,7 @@ var AttachmentView = FOAM({
     },
 
     initHTML: function() {
-      this.SUPER();
+      // this.SUPER();
 
       this.value = this.value;
       // this.value.addListener(this.redraw.bind(this));
@@ -70,13 +80,14 @@ var AttachmentView = FOAM({
         for ( var i = 0 ; i < this.value.get().length ; i++ ) {
           var att = this.value.get()[i];
           var size = Math.round(att.size/1000).toLocaleString() + 'k';
-          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove">x</td></tr>';
+          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></td></tr>';
         }
         out += '</table>';
         out += '<hr>';
       }
 
       this.$.innerHTML = out;
+      this.registerCallbacks();
     }
   }
 });

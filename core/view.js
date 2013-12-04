@@ -221,41 +221,45 @@ var AbstractView = FOAM({
        this.initHTML();
     },
 
-    initHTML: function() {
+     initHTML: function() {
        // Initialize this View and all of it's children.
        // This mostly involves attaching listeners.
        // Must be called activate a view after it has been added to the DOM.
-
-       if ( this.callbacks_ ) {
-          // hookup event listeners
-          for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
-             var callback  = this.callbacks_[i];
-             var elementId = callback[0];
-             var event     = callback[1];
-             var listener  = callback[2];
-             var e         = $(elementId);
-             if ( ! e ) {
-                console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-             } else {
-               e.addEventListener(event, listener.bind(this), false);
-             }
-          }
-
-          delete this['callbacks_'];
-       }
+       
+       this.registerCallbacks();
 
        if ( this.children ) {
-          // init children
-          for ( var i = 0 ; i < this.children.length ; i++ ) {
-             // console.log("init child: " + this.children[i]);
-             try {
-                this.children[i].initHTML();
-             } catch (x) {
-                console.log("Error on AbstractView.child.initHTML", x, x.stack);
-             }
-          }
+         // init children
+         for ( var i = 0 ; i < this.children.length ; i++ ) {
+           // console.log("init child: " + this.children[i]);
+           try {
+             this.children[i].initHTML();
+           } catch (x) {
+             console.log("Error on AbstractView.child.initHTML", x, x.stack);
+           }
+         }
        }
-    }
+     },
+     
+     registerCallbacks: function() {
+       if ( this.callbacks_ ) {
+         // hookup event listeners
+         for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
+           var callback  = this.callbacks_[i];
+           var elementId = callback[0];
+           var event     = callback[1];
+           var listener  = callback[2];
+           var e         = $(elementId);
+           if ( ! e ) {
+             console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+           } else {
+             e.addEventListener(event, listener.bind(this), false);
+           }
+         }
+         
+         delete this['callbacks_'];
+       }
+     }
 
    }
 
@@ -2391,7 +2395,7 @@ var TableView = FOAM({
     },
 
     initHTML_: function() {
-      this.initHTML.super_.call(this);
+      this.SUPER();
 
       var es = $$('tr-' + this.getID());
       var self = this;

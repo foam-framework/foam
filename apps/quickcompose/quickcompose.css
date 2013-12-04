@@ -85,3 +85,8 @@ body input[name="subject"] {
 .attachments .remove {
   width: 25px;
 }
+
+.attachments button {
+  padding: 4px;
+  background-color: white;
+}
