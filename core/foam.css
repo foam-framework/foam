@@ -537,6 +537,7 @@ border-bottom-right-radius: 0;
   background: white;
   border-radius: 5px;
   border: 1px solid lightgrey;
+  z-index: 10;
 }
 
 .autocompleteListItem {
