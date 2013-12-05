@@ -637,6 +637,63 @@ var ImageView = FOAM({
    ]
 });
 
+var BlobImageView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'BlobImageView',
+  help: 'Image view for rendering a blob as an image.',
+
+  properties: [
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.onValueChange);
+        newValue.addListener(this.onValueChange);
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'displayWidth'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'displayHeight'
+    }
+  ],
+
+  methods: {
+    setValue: function(value) {
+      this.value = value;
+    },
+
+    toHTML: function() {
+      return '<img id="' + this.getID() + '">';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      var self = this;
+      this.$.style.width = self.displayWidth;
+      this.$.style.height = self.displayHeight;
+      this.onValueChange();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+        if ( ! this.value.get() ) return;
+        if ( this.$ )
+          this.$.src = URL.createObjectURL(this.value.get());
+      }
+    }
+  ]
+});
+
 
 var Rectangle = FOAM({
 

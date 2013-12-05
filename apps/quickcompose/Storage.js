@@ -41,10 +41,32 @@ var JsonXhrFactory = OAuthXhrFactory.create({
   authAgent: authAgent,
   responseType: "json"
 });
+var BlobXhrFactory = OAuthXhrFactory.create({
+  authAgent: authAgent,
+  responseType: "blob"
+});
+
+var ContactAvatarDAO = LazyCacheDAO.create({
+  cache: BlobSerializeDAO.create({
+    delegate: IDBDAO.create({ model: Contact, name: 'ContactAvatars' }),
+    properties: [Contact.AVATAR]
+  }),
+  delegate: ContactAvatarNetworkDAO.create({
+    xhrFactory: BlobXhrFactory
+  })
+});
 
 ContactDAO = CachingDAO.create(
   ContactDAO,
   IDBDAO.create({ model: Contact }));
+
+ContactAvatarDAO = AvatarPlaceholderDAO.create({
+  property: Contact.AVATAR,
+  model: Contact,
+  offloadDAO: ContactAvatarDAO,
+  delegate: ContactDAO,
+  loadOnSelect: true
+});
 
 ContactDAO.select(COUNT())(function(c) {
   if ( c.count === 0 ) {

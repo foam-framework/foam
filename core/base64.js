@@ -36,7 +36,7 @@ var Base64Decoder = {
 
     put: function(data) {
         var tmp = 0;
-        var view = new DataView(this.buffer);
+        this.view = new DataView(this.buffer);
 
         for(var i = 0; i < data.length; i++) {
             if (data[i] == '=') break;
@@ -46,7 +46,7 @@ var Base64Decoder = {
 
             tmp = tmp | (value << (6*this.chunk));
             if (this.chunk == 0) {
-                this.emit(3, view, tmp);
+                this.emit(3, tmp);
                 tmp = 0;
                 this.chunk = 3;
             } else {
@@ -58,22 +58,23 @@ var Base64Decoder = {
             i++;
             if (i < data.length) {
                 if (data[i] == '=') {
-                    this.emit(1, view, tmp);
+                    this.emit(1, tmp);
                 }
             } else {
-                this.emit(2, view, tmp);
+                this.emit(2, tmp);
             }
         }
     },
 
-    emit: function(bytes, view, tmp) {
+    emit: function(bytes, tmp) {
         for(var j = 0; j < bytes; j++) {
-            view.setUint8(this.pos,
+            this.view.setUint8(this.pos,
                           (tmp >> ((2-j)*8)) & 0xFF);
             this.pos++;
             if (this.pos >= this.buffer.byteLength ) {
                 this.sink.put(this.buffer);
                 this.buffer = new ArrayBuffer(this.bufsize);
+                this.view = new DataView(this.buffer);
                 this.pos = 0;
             }
         }
@@ -83,4 +84,35 @@ var Base64Decoder = {
         this.sink.put(this.buffer.slice(0, this.pos));
         this.sink.eof && this.sink.eof();
     }
+};
+
+var Base64Encoder = {
+  table: [
+    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+    'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+    'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+    'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'],
+
+  encode: function(b) {
+    var out = "";
+    for ( var i = 0; i + 3 < b.byteLength; i += 3 ) {
+      out += this.table[b[i] >>> 2];
+      out += this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)];
+      out += this.table[((b[i+1] & 15) << 2) | (b[i+2] >>> 6)];
+      out += this.table[b[i+2] & 63];
+    }
+
+    if ( i < b.byteLength ) {
+      out += this.table[b[i] >>> 2];
+      if ( i + 1 < b.byteLength ) {
+        out += this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)];
+        out += this.table[((b[i+1] & 15) << 2)];
+      } else {
+        out += this.table[((b[i] & 3) << 4)];
+        out += '=';
+      }
+      out += '=';
+    }
+    return out;
+  }
 };

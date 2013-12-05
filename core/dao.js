@@ -1197,7 +1197,7 @@ var IDBDAO = FOAM({
               sink && sink.error && sink.error('remove', query);
               return;
             }
-            var result = self.deserialize(getRequest.result);
+            var data = self.deserialize(getRequest.result);
             var delRequest = store.delete(key);
             delRequest.transaction.addEventListener(
               'complete',
@@ -2339,6 +2339,201 @@ var DefaultObjectDAO = FOAM({
         error: function() {
           sink.put(self.factory(q));
         },
+      };
+      this.delegate.find(q, mysink);
+    }
+  }
+});
+
+var LazyCacheDAO = FOAM({
+  model_: 'Model',
+
+  name: 'LazyCacheDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'cache'
+    }
+  ],
+
+  methods: {
+    find: function(id, sink) {
+      var self = this;
+
+      var mysink = {
+        put: sink.put.bind(sink),
+        error: function() {
+          self.delegate.find(id, {
+            put: function(obj) {
+              var args = arguments;
+              self.cache.put(obj, {
+                put: function() { sink.put.apply(sink, args); }
+              });
+            },
+            error: function() {
+              sink && sink.error && sink.error.apply(sink, arguments);
+            }
+          });
+        }
+      };
+
+      this.cache.find(id, mysink);
+    }
+  }
+});
+
+var AbstractPropertyOffloadDAO = FOAM({
+  model_: 'Model',
+
+  name: 'AbstractPropertyOffloadDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'property'
+    },
+    {
+      name: 'model'
+    },
+    {
+      name: 'offloadDAO'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'loadOnSelect'
+    },
+  ],
+
+  methods: {
+    put: function(obj, sink) {
+      var offload = this.model.create({ id: obj.id });
+      offload[this.property.name] = this.property.f(obj);
+      obj[this.property.name] = '';
+      this.delegate.put(obj, sink);
+
+      // TODO: Store offload property in offloadDAO iff
+      // it's not a placeholder value.
+      // this.offloadDAO.put(offload);
+    },
+
+    select: function(sink, options) {
+      if ( ! this.loadOnSelect ) return this.delegate.select(sink, options);
+
+      var mysink = this.offloadSink(sink);
+      return this.delegate.select(mysink, options);
+    },
+
+    offloadSink: function(sink) {
+      var self = this;
+      return {
+        __proto__: sink,
+        put: function(obj) {
+          obj[self.property.name] = self.placeholder(obj);
+          sink.put && sink.put.apply(sink, arguments);
+          self.offloadDAO.find(obj.id, {
+            put: function(offload) {
+              if ( offload[self.property.name] )
+                obj[self.property.name] = offload[self.property.name];
+            }
+          });
+        },
+      };
+    },
+
+    find: function(id, sink) {
+      this.delegate.find(id, this.offloadSink(sink));
+    }
+  }
+});
+
+var BlobSerializeDAO = FOAM({
+  model_: 'Model',
+  name: 'BlobSerializeDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'properties',
+      subType: 'Property'
+    }
+  ],
+
+  methods: {
+    serialize: function(ret, obj) {
+      obj = obj.clone();
+      var afuncs = [];
+      for ( var i = 0, prop; prop = this.properties[i]; i++ ) {
+        afuncs.push((function(prop) {
+          return (function(ret) {
+            if ( !obj[prop.name] ) {
+              ret();
+              return;
+            }
+
+            var reader = new FileReader();
+            reader.onloadend = function() {
+              var type = obj[prop.name].type;
+              obj[prop.name] = type + ';' + Base64Encoder.encode(new Uint8Array(reader.result));
+              ret();
+            }
+
+            reader.readAsArrayBuffer(obj[prop.name]);
+          });
+        })(prop));
+      }
+
+      apar.apply(undefined, afuncs)(function() {
+        ret(obj);
+      });
+    },
+
+    deserialize: function(obj) {
+      for ( var i = 0, prop; prop = this.properties[i]; i++ ) {
+        var value = prop.f(obj);
+        if ( !value ) continue;
+        var type = value.substring(0, value.indexOf(';'));
+        value = value.substring(value.indexOf(';') + 1);
+        var decoder = Base64Decoder.create([]);
+        decoder.put(value);
+        decoder.eof();
+        obj[prop.name] = new Blob(decoder.sink, { type: type });
+      }
+    },
+
+    put: function(o, sink) {
+      var self = this;
+      this.serialize(function(obj) {
+        self.delegate.put(obj, sink);
+      }, o)
+    },
+
+    select: function(sink, options) {
+      var self = this;
+      var mysink = {
+        __proto__: sink,
+        put: function() {
+          var args = Array.prototype.slice.call(arguments);
+          self.deserialize(args[0]);
+          sink.put.apply(sink, args);
+        }
+      };
+      var args = Array.prototype.slice.call(arguments);
+      args[0] = mysink;
+      this.delegate.select.apply(this.delegate, args);
+    },
+
+    find: function(q, sink) {
+      var self = this;
+      var mysink = {
+        __proto__: sink,
+        put: function() {
+          var args = Array.prototype.slice.call(arguments);
+          self.deserialize(args[0]);
+          sink.put.apply(sink, args);
+        }
       };
       this.delegate.find(q, mysink);
     }

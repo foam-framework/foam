@@ -107,7 +107,7 @@ var QuickEMail = FOAM({
         create: function() {
           return ListValueView.create({
             inputView: ListInputView.create({
-              dao: ContactDAO,
+              dao: ContactAvatarDAO,
               property: Contact.EMAIL,
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
               autocompleteView: AutocompleteListView.create({
@@ -117,7 +117,7 @@ var QuickEMail = FOAM({
             }),
             valueView: ArrayTileView.create({
               dao: DefaultObjectDAO.create({
-                delegate: ContactDAO,
+                delegate: ContactAvatarDAO,
                 factory: function(q) {
                   var obj = Contact.create({});
                   obj[q.arg1.name] = q.arg2.arg1;
