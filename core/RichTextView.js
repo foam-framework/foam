@@ -218,8 +218,9 @@ var RichTextView = FOAM({
     },
 
     insertElement: function(e) {
-      var window = this.$.contentWindow;
+      var window    = this.$.contentWindow;
       var selection = window.getSelection();
+
       if ( selection.rangeCount ) {
         selection.getRangeAt(0).insertNode(e);
       } else {
@@ -228,6 +229,10 @@ var RichTextView = FOAM({
         range.selectNodeContents(window.document.body);
         range.insertNode(e);
       }
+
+      // Update the value directly because modifying the DOM programatically
+      // doesn't fire an update event.
+      this.value.set(this.document.body.innerHTML);
     },
 
     initHTML: function() {

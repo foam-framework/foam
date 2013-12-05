@@ -1017,11 +1017,6 @@ function atxn(afunc) {
  * var dao = IDBDAO.create({model: Issue, name: 'ImportantIssues'});
  *
  * TODO:
- * We notify the sinks as soon as each request returns onsuccess, this is
- * wrong, we need to wait until the transaction object fires oncomplete
- * as the transaction could still be rolled back if an error happens
- * later.
- *
  * Optimization.  This DAO doesn't use an indexes in indexeddb yet, which
  * means for any query other than a single find/remove we iterate the entire
  * data store.  Obviously this will get slow if you store large amounts
@@ -1140,14 +1135,18 @@ var IDBDAO = FOAM({
       this.withStore("readwrite", function(store) {
         var request = store.put(self.serialize(value), value.id);
 
-        request.onsuccess = function(e) {
-          self.notify_('put', [value]);
-          sink && sink.put && sink.put(value);
-        };
-        request.onerror = function(e) {
-          // TODO: Parse a better error mesage out of e
-          sink && sink.error && sink.error('put', value);
-        };
+        request.transaction.addEventListener(
+          'complete',
+          function(e) {
+            self.notify_('put', [value]);
+            sink && sink.put && sink.put(value);
+          });
+        request.transaction.addEventListener(
+          'error',
+          function(e) {
+            // TODO: Parse a better error mesage out of e
+            sink && sink.error && sink.error('put', value);
+          });
       });
     },
 
@@ -1169,14 +1168,16 @@ var IDBDAO = FOAM({
       var self = this;
       this.withStore("readonly", function(store) {
         var request = store.get(key);
-        request.onsuccess = function() {
-          if (!request.result) {
-            sink && sink.error && sink.error('find', key);
-            return;
-          }
-          var result = self.deserialize(request.result);
-          sink && sink.put && sink.put(result);
-        };
+        request.transaction.addEventListener(
+          'complete',
+          function() {
+            if (!request.result) {
+              sink && sink.error && sink.error('find', key);
+              return;
+            }
+            var result = self.deserialize(request.result);
+            sink && sink.put && sink.put(result);
+          });
         request.onerror = function(e) {
           // TODO: Parse a better error out of e
           sink && sink.error && sink.error('find', key);
@@ -1198,10 +1199,12 @@ var IDBDAO = FOAM({
             }
             var result = self.deserialize(getRequest.result);
             var delRequest = store.delete(key);
-            delRequest.onsuccess = function(e) {
-              self.notify_('remove', [result]);
-              sink && sink.remove && sink.remove(result);
-            };
+            delRequest.transaction.addEventListener(
+              'complete',
+              function(e) {
+                self.notify_('remove', [result]);
+                sink && sink.remove && sink.remove(result);
+              });
             delRequest.onerror = function(e) {
               sink && sink.error && sink.error('remove', e);
             };
@@ -1221,10 +1224,12 @@ var IDBDAO = FOAM({
             var value = self.deserialize(cursor.value);
             if (query.f(value)) {
               var deleteReq = cursor.delete();
-              deleteReq.onsuccess = function() {
-                self.notify_('remove', [value]);
-                sink && sink.remove && sink.remove(value);
-              };
+              deleteReq.transaction.addEventListener(
+                'complete',
+                function() {
+                  self.notify_('remove', [value]);
+                  sink && sink.remove && sink.remove(value);
+                });
               deleteReq.onerror = function(e) {
                 sink && sink.error && sink.error('remove', e);
               };
@@ -1278,7 +1283,7 @@ var IDBDAO = FOAM({
     removeAll: function(callback) {
       this.withStore("readwrite", function(store) {
         var request = store.clear();
-        request.onsuccess = callback;
+        request.transaction.oncomplete = callback;
       });
     }
   },
