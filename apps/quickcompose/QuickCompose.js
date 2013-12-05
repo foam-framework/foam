@@ -131,9 +131,9 @@ var QuickEMail = FOAM({
         }
       }
     },
-    { name: 'subject', displayWidth: 55 },
+    { name: 'subject',     displayWidth: 55 },
     { name: 'attachments', view: 'AttachmentView' },
-    { name: 'body',    view: 'RichTextView' }
+    { name: 'body',        view: 'RichTextView' }
   ]
 });
 
@@ -147,7 +147,11 @@ var QuickEMailView = Model.create({
     {
       name: 'bodyView',
       valueFactory: function() {
-        return this.createView(QuickEMail.BODY);
+        var v = this.createView(QuickEMail.BODY);
+
+        v.height = 100;
+
+        return v;
       }
     }
   ],

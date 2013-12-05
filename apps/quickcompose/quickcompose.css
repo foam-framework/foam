@@ -20,7 +20,6 @@ body {
 
 .richtext {
   -webkit-box-flex: 1;
-  box-flex: 1;
 }
 
 body > input {
@@ -102,3 +101,4 @@ body > input[name="subject"] {
 .attachments hr {
   margin: 0;
 }
+

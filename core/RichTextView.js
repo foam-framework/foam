@@ -229,6 +229,11 @@ var RichTextView = FOAM({
       this.dropzone = drop;
       this.document = this.$.contentDocument;
       var body = this.document.body;
+
+      body.style.overflow = 'auto';
+      body.style.margin = '0 0 0 5px';
+      body.style.height = '100%';
+
       var el = this.$;
       body.ondrop = function(e) {
         e.preventDefault();
