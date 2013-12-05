@@ -221,6 +221,7 @@ var RichTextView = FOAM({
       var window = this.$.contentWindow;
       var range = window.getSelection().getRangeAt(0);
       range.insertNode(e);
+      this.value.set(this.document.body.innerHTML);
     },
 
     initHTML: function() {
