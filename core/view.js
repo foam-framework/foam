@@ -225,7 +225,7 @@ var AbstractView = FOAM({
        // Initialize this View and all of it's children.
        // This mostly involves attaching listeners.
        // Must be called activate a view after it has been added to the DOM.
-       
+
        this.registerCallbacks();
 
        if ( this.children ) {
@@ -240,7 +240,7 @@ var AbstractView = FOAM({
          }
        }
      },
-     
+
      registerCallbacks: function() {
        if ( this.callbacks_ ) {
          // hookup event listeners
@@ -256,7 +256,7 @@ var AbstractView = FOAM({
              e.addEventListener(event, listener.bind(this), false);
            }
          }
-         
+
          delete this['callbacks_'];
        }
      }
