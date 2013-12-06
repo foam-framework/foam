@@ -1,0 +1,68 @@
+var assert = require('assert');
+var vm = require('vm');
+var fs = require('fs');
+
+global.document = {};
+global.window = global;
+
+var stdlibJs = fs.readFileSync('../core/stdlib.js');
+vm.runInThisContext(stdlibJs);
+var asyncJs = fs.readFileSync('../core/async.js');
+vm.runInThisContext(asyncJs);
+
+describe('aconstant test', function() {
+  it('should return the given number 7', function(done) {
+    aconstant(7)(function(n) {
+      assert.equal(7, n);
+      done();
+    });
+  });
+});
+
+var count;
+var sequence;
+
+describe('arepeat test', function() {
+  it('should repeat 5 times', function(done) {
+    count = 0;
+    sequence = '';
+    arepeat(5, function(ret) {
+      ++count;
+      sequence += count.toString();
+      ret();
+    })(function() {
+      assert.equal(5, count);
+      assert.equal('12345', sequence);
+      done();
+    });
+  });
+});
+
+describe('arepeatpar test', function() {
+  it('should repeat 6 times', function(done) {
+    count = 0;
+    arepeatpar(6, function(ret) {
+      ++count;
+      ret();
+    })(function() {
+      assert.equal(6, count);
+      done();
+    });
+  });
+});
+
+describe('aseq test', function() {
+  it('should run function in sequence', function(done) {
+    count = 0;
+    sequence = '';
+    var asyncTester = function(ret) {
+      sequence += count.toString();
+      ret(++count);
+    };
+
+    aseq(asyncTester, asyncTester, asyncTester, asyncTester)(function() {
+      assert.equal('0123', sequence);
+      done();
+    });
+  });
+});
