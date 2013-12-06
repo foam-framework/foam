@@ -395,13 +395,14 @@ var EMail = FOAM({
       addLabel: function(l) { this.labels = this.labels.deleteF(l).pushF(l); },
       removeLabel: function(l) { this.labels = this.labels.deleteF(l); },
       toMimeBody: function() {
+        debugger;
         return (
             "From: " + this.from + "\r\n" +
             "To: " + this.to.join(', ') + "\r\n" +
             (this.cc.length ? "Cc: " + this.cc.join(", ") + "\r\n" : "") +
             (this.bcc.length ? "Bcc: " + this.bcc.join(", ") + "\r\n" : "") +
             "Subject: " + this.subject + "\r\n" +
-            "Content-Type: text/html; charset=ISO-8859-1; format=flowed; delsp=yes\r\n" +
+            "Content-Type: text/html; charset=UTF-8\r\n\r\n" +
             this.body +
             "\r\n\r\n");
       }
