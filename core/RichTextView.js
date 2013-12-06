@@ -281,8 +281,11 @@ console.log('file: ', file, id);
     },
 
     removeImage: function(imageID) {
-      var e = this.$.contentWindow.window.document.getElementById(imageID);
-      if ( e ) e.outerHTML = '';
+      var e = this.document.getElementById(imageID);
+      if ( e ) {
+        e.outerHTML = '';
+        this.value.set(this.document.body.innerHTML);
+      }
     },
 
     destroy: function() {
