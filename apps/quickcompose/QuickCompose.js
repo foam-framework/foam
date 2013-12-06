@@ -48,7 +48,7 @@ var AttachmentView = FOAM({
       model_: 'Method',
       name: 'onRemove',
       code: function(attr) {
-        this.value.set(this.value.get().removeF(EQ(Attachment.POSITION, attr.position)));
+        this.value.set(this.value.get().removeF(EQ(Attachment.ID, attr.id)));
       }
     }
   ],
@@ -91,7 +91,6 @@ var AttachmentView = FOAM({
     }
   }
 });
-
 
 
 var QuickEMail = FOAM({
@@ -255,6 +254,16 @@ var QuickCompose = FOAM({
       this.closeButton.initHTML();
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
+
+      // Remove images when their attachments are removed.
+      this.email.propertyValue('attachments').addListener(function(_, _, oldAtts, newAtts) {
+         for ( var i = 0 ; i < oldAtts.length ; i++ ) {
+           var a = oldAtts[i];
+           if ( newAtts.indexOf(a) == -1 ) {
+             this.view.bodyView.removeImage(a.id);
+           }
+         }
+      }.bind(this));
     }
   },
 
@@ -306,13 +315,13 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
          name: 'addAttachment',
-         code: function(_, _, file) {
+         code: function(_, _, file, id) {
            console.log('add attachment: ', file);
            var att = Attachment.create({
+             id:       id,
              filename: file.name,
-             type: file.type,
-             position: this.email.attachments.length,
-             size: file.size
+             type:     file.type,
+             size:     file.size
            });
            console.log(att);
            this.email.attachments = this.email.attachments.concat(att);

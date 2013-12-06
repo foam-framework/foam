@@ -254,16 +254,17 @@ console.log('drop ', e);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
-
-console.log('file: ', file);
+          var id   = 'att' + {}.$UID;
+console.log('file: ', file, id);
 
           if ( file.type.startsWith("image/") ) {
             var img   = document.createElement('img');
+            img.id = id;
             img.src = URL.createObjectURL(file);
             this.insertElement(img);
           }
 
-          this.publish('attachmentAdded', file);
+          this.publish('attachmentAdded', file, id);
         }
       }.bind(this);
       body.ondragenter = function(e) {
@@ -277,6 +278,11 @@ console.log('file: ', file);
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
       this.value = this.value; // connects listeners
+    },
+
+    removeImage: function(imageID) {
+      var e = this.$.contentWindow.window.document.getElementById(imageID);
+      if ( e ) e.outerHTML = '';
     },
 
     destroy: function() {
