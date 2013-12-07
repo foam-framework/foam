@@ -2452,7 +2452,7 @@ var TableView = FOAM({
     },
 
     initHTML_: function() {
-      this.SUPER();
+      this.initHTML.super_.call(this);
 
       var es = $$('tr-' + this.getID());
       var self = this;
@@ -2532,9 +2532,10 @@ var ActionButton = Model.create({
         this.getID());
 
       var out = [];
-      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '">');
+      var tooltip = this.action.help ? ' data-tip="' + this.action.help + '" ' : '';
+      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '"' + tooltip + '>');
 
-      if (this.action.iconUrl) {
+      if ( this.action.iconUrl ) {
         out.push('<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />');
       }
 
