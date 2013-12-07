@@ -312,7 +312,7 @@ console.log('file: ', file, id);
       model_: 'Action',
       name: 'bold',
       label: '<b>B</b>',
-      help: 'Bold text.',
+      help: 'Bold (Ctrl-B)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("bold");
@@ -322,7 +322,7 @@ console.log('file: ', file, id);
       model_: 'Action',
       name: 'italic',
       label: '<i>I</i>',
-      help: 'Italic text.',
+      help: 'Italic (Ctrl-I)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("italic");
@@ -332,7 +332,7 @@ console.log('file: ', file, id);
       model_: 'Action',
       name: 'underline',
       label: '<u>U</u>',
-      help: 'Underline text.',
+      help: 'Underline (Ctrl-U)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("underline");
@@ -342,7 +342,7 @@ console.log('file: ', file, id);
       model_: 'Action',
       name: 'link',
       label: 'Link',
-      help: 'Insert a hypertext link.',
+      help: 'Insert link (Ctrl-K)',
       action: function () {
         // TODO: determine the actual location to position
         Link.create({richTextView: this}).open(5,120);

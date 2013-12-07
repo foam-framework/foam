@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@import "css-tooltips.css";
+
 body{
   font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size:12px;
@@ -239,95 +241,95 @@ option[selected]{
 
 .foamTable
 {
-	background: #fff;
-	border-collapse: collapse;
-	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-	font-size: 12px;
-	margin: 10px; 
-	table-layout:fixed;
-	text-align: left;
-	width: 98%;
+  background: #fff;
+  border-collapse: collapse;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 12px;
+  margin: 10px; 
+  table-layout:fixed;
+  text-align: left;
+  width: 98%;
 }
 .BookmarkTable
 {
-	width: 800px;
+  width: 800px;
 }
 .foamTable caption
 {
-	font-size: 16px;
-	font-weight: bold;
-	color: #039;
-	padding: 10px 8px;
-	text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+  color: #039;
+  padding: 10px 8px;
+  text-align: left;
 }
 .foamTable th
 {
-	font-size: 14px;
-	font-weight: normal;
-	color: #039;
-	padding: 10px 8px;
-	border-bottom: 2px solid #6678b1;
+  font-size: 14px;
+  font-weight: normal;
+  color: #039;
+  padding: 10px 8px;
+  border-bottom: 2px solid #6678b1;
 }
 .foamTable td
 {
-	color: #669;
-	padding: 4px 8px 4px 8px;
+  color: #669;
+  padding: 4px 8px 4px 8px;
 }
 .foamTable tbody tr:hover td
 {
-	color: #009;
-    background: #eee;
+  color: #009;
+  background: #eee;
 }
 .foamTable tr.rowSelected
 {
-	color: #900;
-    background: #eee;
-	border: 2px solid #f00;
+  color: #900;
+  background: #eee;
+  border: 2px solid #f00;
 }
 
 
 .actionButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	box-shadow:inset 0px 1px 0px 0px #ffffff;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-	background-color:#ededed;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #dcdcdc;
-	display:inline-block;
-	color:#777777;
-	font-family:arial;
-	font-size:12px;
-	font-weight:bold;
-	padding:4px 16px;
-	text-decoration:none;
-	text-shadow:1px 1px 0px #ffffff;
-}.actionButton:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
-	background-color:#dfdfdf;
-}.actionButton:active {
-	position:relative;
-	top:1px;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  box-shadow:inset 0px 1px 0px 0px #ffffff;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+  background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+  background-color:#ededed;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  border:1px solid #dcdcdc;
+  display:inline-block;
+  color:#777777;
+  font-family:arial;
+  font-size:12px;
+  font-weight:bold;
+  padding:4px 16px;
+  text-decoration:none;
+  text-shadow:1px 1px 0px #ffffff;
 }
 
+.actionButton:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+  background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+  background-color:#dfdfdf;
+}
+
+.actionButton:active {
+  position:relative;
+  top:1px;
+}
 
 .scrollSpacer {
   height:52;
 }
-
 
 td, th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow:ellipsis;
 }
-
 
 select {
   background-color:rgb(240,240,240);
@@ -382,6 +384,7 @@ div.gridtile {
   float: left;
   margin: 2px;
 }
+
 div.gridtile {
   border: 2px solid #c3d9ff;
   border-radius: 6px;
@@ -478,36 +481,36 @@ div.gridViewControl select {
 
 
 .buttonify {
-font-size: 100%;
-background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left top #e3e3e3;
-background: -webkit-gradient(linear,0% 40%,0% 70%,from(#f9f9f9),to(#e3e3e3));
-background: -moz-linear-gradient(top,#fff,#ddd);
-vertical-align: baseline;
-padding: 1px 3px 1px 3px;
-border: 1px solid #aaa;
-border-top-color: #ccc;
-border-bottom-color: #888;
-border-radius: 3px;
-cursor: pointer;
-text-decoration: none;
+  font-size: 100%;
+  background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left top #e3e3e3;
+  background: -webkit-gradient(linear,0% 40%,0% 70%,from(#f9f9f9),to(#e3e3e3));
+  background: -moz-linear-gradient(top,#fff,#ddd);
+  vertical-align: baseline;
+  padding: 1px 3px 1px 3px;
+  border: 1px solid #aaa;
+  border-top-color: #ccc;
+  border-bottom-color: #888;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .mode_button_active
 {
-background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left bottom #bbb;
-background: -webkit-gradient(linear,0% 40%,0% 70%,from(#e3e3e3),to(#f9f9f9));
-background: -moz-linear-gradient(top,#e3e3e3,#f9f9f9);
-border-color: #aaa;
+  background: url("//ssl.gstatic.com/codesite/ph/images/button-bg.gif") repeat-x scroll left bottom #bbb;
+  background: -webkit-gradient(linear,0% 40%,0% 70%,from(#e3e3e3),to(#f9f9f9));
+  background: -moz-linear-gradient(top,#e3e3e3,#f9f9f9);
+  border-color: #aaa;
 }
 
 .capsule_right {
-border-top-left-radius: 0;
-border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 .capsule_left {
-border-right: 0;
-border-top-right-radius: 0;
-border-bottom-right-radius: 0;
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .altViewButtons {

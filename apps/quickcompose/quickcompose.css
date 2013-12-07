@@ -47,7 +47,7 @@ body > input[name="subject"] {
   background: #f1f1f1;
   padding-bottom: 8px;
   padding-left: 8px;
-  padding-top: 4px;
+  padding-top: 8px;
 }
 
 .actionButton-send {
@@ -55,7 +55,8 @@ body > input[name="subject"] {
   border-radius: 3px;
   box-shadow: none;
   color: white;
-  margin-right: 10px;
+  float: left;
+  margin-right: 25px;
   padding: 6px 15px;
   text-shadow: none;
 }
@@ -64,8 +65,16 @@ body > input[name="subject"] {
   background: none;
   border: none;
   box-shadow: none;
-  opacity: 0.5;
+  text-shadow: none;
   padding: 4px 5px;
+}
+
+.actionButton-discard {
+  float: right;
+}
+
+.actionButton-discard[data-tip]:after {
+  left: -65px;
 }
 
 .attachments table {

@@ -2728,9 +2728,10 @@ var ActionBorder = {
           var model = this.model;
           var str   = "";
 
-          str += '<table class="actionBorder"><tr><td>';
+//          str += '<table class="actionBorder"><tr><td>';
           str += this.__proto__.toHTML.call(this);
-          str += '</td></tr><tr><td class="actionBorderActions">';
+//          str += '</td></tr><tr><td class="actionBorderActions">';
+          str += '<div class="actionToolbar">';
 
           for ( var i = 0 ; i < this.actions.length ; i++ ) {
             var action = this.actions[i];
@@ -2740,7 +2741,8 @@ var ActionBorder = {
             this.addChild(button);
           }
 
-          str += '</td></tr></table>';
+          str += '</div>';
+//          str += '</td></tr></table>';
 
           return str;
         }
