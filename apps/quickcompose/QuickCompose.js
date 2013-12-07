@@ -60,7 +60,7 @@ var AttachmentView = FOAM({
     },
 
     toHTML: function() {
-      return '<div id="' + this.getID() + '" class="attachments"></div>';
+      return '<div id="' + this.getID() + '" class="attachments2"></div>';
     },
 
     initHTML: function() {
@@ -71,22 +71,40 @@ var AttachmentView = FOAM({
       this.redraw();
     },
 
-    redraw: function() {
+    old_toInnerHTML: function() {
+      if ( ! this.value.get().length ) return "";
+      
       var out = "";
 
-      if ( this.value.get().length ) {
-        out += '<hr>';
-        out += '<table width=100%>';
-        for ( var i = 0 ; i < this.value.get().length ; i++ ) {
-          var att = this.value.get()[i];
-          var size = Math.round(att.size/1000).toLocaleString() + 'k';
-          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></td></tr>';
-        }
-        out += '</table>';
-        out += '<hr>';
+      out += '<hr>';
+      out += '<table width=100%>';
+      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+        var att = this.value.get()[i];
+        var size = Math.round(att.size/1000).toLocaleString() + 'k';
+        out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></td></tr>';
+      }
+      out += '</table>';
+      out += '<hr>';
+
+      return out;
+    },
+
+    toInnerHTML: function() {
+      this.$.style.display = this.value.get().length ? 'block' : 'none';
+
+      var out = "";
+
+      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+        var att = this.value.get()[i];
+        var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
+        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></span></div>';
       }
 
-      this.$.innerHTML = out;
+      return out;
+    },
+
+    redraw: function() {
+      this.$.innerHTML = this.toInnerHTML();
       this.registerCallbacks();
     }
   }
