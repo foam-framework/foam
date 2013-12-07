@@ -395,7 +395,6 @@ var EMail = FOAM({
       addLabel: function(l) { this.labels = this.labels.deleteF(l).pushF(l); },
       removeLabel: function(l) { this.labels = this.labels.deleteF(l); },
       toMimeBody: function() {
-        debugger;
         return (
             "From: " + this.from + "\r\n" +
             "To: " + this.to.join(', ') + "\r\n" +
