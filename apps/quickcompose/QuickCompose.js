@@ -339,10 +339,6 @@ var QuickCompose = FOAM({
       template: "<table width=100% class=header><tr><td>New message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
     },
     {
-      name: "oldtoolbar",
-      template: "<table width=100% class=toolbar><tr><td width=1><%= this.sendButton.toHTML() %></td><td><%= this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
-    },
-    {
       name: "toolbar",
       template: "<div class=toolbar><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML(), this.discardButton.toHTML() %></div>"
     }
