@@ -12,7 +12,7 @@ function launchComposer() {
         )(function () {
           var b = QuickCompose.create({
             window: dialog,
-            userInfo: userInfo
+            userInfo: userInfo || undefined
           });
           b.appWindow = w;
           dialog.browser = window.browser = b; // for debugging
