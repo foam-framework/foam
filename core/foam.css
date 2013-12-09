@@ -570,10 +570,11 @@ div.gridViewControl select {
 .dropzone {
   -webkit-box-orient: vertical; 
   border: 4px dashed #ddd;
+  box-sizing: border-box;
   color: #ddd;
   display: -webkit-box;
   font: 270% arial,sans-serif;
-  height: 95%;
+  height: 94%;
   margin: 7px;
   position: absolute;
   text-align: center;
