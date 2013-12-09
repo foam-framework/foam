@@ -69,6 +69,11 @@ body > input[name="subject"] {
   padding: 4px 5px;
 }
 
+.actionButton-bold:hover, .actionButton-italic:hover, .actionButton-underline:hover, .actionButton-link:hover, .actionButton-discard:hover, .actionButton-close:hover {
+  background: none;
+  background-color: transparent;
+}
+
 .actionButton-discard {
   float: right;
 }
