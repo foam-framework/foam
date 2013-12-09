@@ -218,10 +218,25 @@ var RichTextView = FOAM({
     },
 
     insertElement: function(e) {
-      var window = this.$.contentWindow;
-      var range = window.getSelection().getRangeAt(0);
-      range.insertNode(e);
+      var window    = this.$.contentWindow;
+      var selection = window.getSelection();
+
+      if ( selection.rangeCount ) {
+        selection.getRangeAt(0).insertNode(e);
+      } else {
+        // just insert into the body if no range selected
+        var range = window.document.createRange();
+        range.selectNodeContents(window.document.body);
+        range.insertNode(e);
+      }
+
+      // Update the value directly because modifying the DOM programatically
+      // doesn't fire an update event.
       this.value.set(this.document.body.innerHTML);
+    },
+
+    showDropMessage: function(show) {
+      this.$.style.opacity = show ? '0' : '1';
     },
 
     initHTML: function() {
@@ -235,37 +250,46 @@ var RichTextView = FOAM({
       body.style.margin = '0 0 0 5px';
       body.style.height = '100%';
 
-      var el = this.$;
+      var self = this;
       body.ondrop = function(e) {
         e.preventDefault();
-        el.style.opacity = '1';
-console.log('drop ', e);
+        self.showDropMessage(false);
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
-
-console.log('file: ', file);
+          var id   = 'att' + {}.$UID;
+console.log('file: ', file, id);
 
           if ( file.type.startsWith("image/") ) {
             var img   = document.createElement('img');
+            img.id = id;
             img.src = URL.createObjectURL(file);
             this.insertElement(img);
           }
 
-          this.publish('attachmentAdded', file);
+          this.publish('attachmentAdded', file, id);
         }
       }.bind(this);
       body.ondragenter = function(e) {
-        el.style.opacity = '0';
+        self.dragging_++;
+        self.showDropMessage(true);
       };
       body.ondragleave = function(e) {
-        el.style.opacity = '1';
+        if ( --self.dragging_ == 0 ) self.showDropMessage(false);
       };
       if ( this.mode === 'read-write' ) {
         this.document.body.contentEditable = true;
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
       this.value = this.value; // connects listeners
+    },
+
+    removeImage: function(imageID) {
+      var e = this.document.getElementById(imageID);
+      if ( e ) {
+        e.outerHTML = '';
+        this.value.set(this.document.body.innerHTML);
+      }
     },
 
     destroy: function() {
@@ -292,7 +316,7 @@ console.log('file: ', file);
       model_: 'Action',
       name: 'bold',
       label: '<b>B</b>',
-      help: 'Bold text.',
+      help: 'Bold (Ctrl-B)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("bold");
@@ -302,7 +326,7 @@ console.log('file: ', file);
       model_: 'Action',
       name: 'italic',
       label: '<i>I</i>',
-      help: 'Italic text.',
+      help: 'Italic (Ctrl-I)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("italic");
@@ -312,7 +336,7 @@ console.log('file: ', file);
       model_: 'Action',
       name: 'underline',
       label: '<u>U</u>',
-      help: 'Underline text.',
+      help: 'Underline (Ctrl-U)',
       action: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("underline");
@@ -322,7 +346,7 @@ console.log('file: ', file);
       model_: 'Action',
       name: 'link',
       label: 'Link',
-      help: 'Insert a hypertext link.',
+      help: 'Insert link (Ctrl-K)',
       action: function () {
         // TODO: determine the actual location to position
         Link.create({richTextView: this}).open(5,120);

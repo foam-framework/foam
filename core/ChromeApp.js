@@ -39,6 +39,7 @@ var aeval = (function() {
       script.src = url;
       script.onload = function() {
         this.remove();
+        window.URL.revokeObjectURL(url);
 //        document.body.removeChild(this);
       };
       document.body.appendChild(script);

@@ -48,7 +48,7 @@ var AttachmentView = FOAM({
       model_: 'Method',
       name: 'onRemove',
       code: function(attr) {
-        this.value.set(this.value.get().removeF(EQ(Attachment.POSITION, attr.position)));
+        this.value.set(this.value.get().removeF(EQ(Attachment.ID, attr.id)));
       }
     }
   ],
@@ -60,7 +60,7 @@ var AttachmentView = FOAM({
     },
 
     toHTML: function() {
-      return '<div id="' + this.getID() + '" class="attachments"></div>';
+      return '<div id="' + this.getID() + '" class="attachments2"></div>';
     },
 
     initHTML: function() {
@@ -71,7 +71,9 @@ var AttachmentView = FOAM({
       this.redraw();
     },
 
-    redraw: function() {
+    old_toInnerHTML: function() {
+      if ( ! this.value.get().length ) return "";
+      
       var out = "";
 
       if ( this.value.get().length ) {
@@ -86,13 +88,32 @@ var AttachmentView = FOAM({
         out += '</table>';
         out += '<hr>';
       }
+      out += '</table>';
+      out += '<hr>';
 
-      this.$.innerHTML = out;
+      return out;
+    },
+
+    toInnerHTML: function() {
+      this.$.style.display = this.value.get().length ? 'block' : 'none';
+
+      var out = "";
+
+      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+        var att = this.value.get()[i];
+        var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
+        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></span></div>';
+      }
+
+      return out;
+    },
+
+    redraw: function() {
+      this.$.innerHTML = this.toInnerHTML();
       this.registerCallbacks();
     }
   }
 });
-
 
 
 var QuickEMail = FOAM({
@@ -108,7 +129,7 @@ var QuickEMail = FOAM({
         create: function() {
           return ListValueView.create({
             inputView: ListInputView.create({
-              dao: ContactDAO,
+              dao: ContactAvatarDAO,
               property: Contact.EMAIL,
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
               autocompleteView: AutocompleteListView.create({
@@ -118,7 +139,7 @@ var QuickEMail = FOAM({
             }),
             valueView: ArrayTileView.create({
               dao: DefaultObjectDAO.create({
-                delegate: ContactDAO,
+                delegate: ContactAvatarDAO,
                 factory: function(q) {
                   var obj = Contact.create({});
                   obj[q.arg1.name] = q.arg2.arg1;
@@ -256,6 +277,16 @@ var QuickCompose = FOAM({
       this.closeButton.initHTML();
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
+
+      // Remove images when their attachments are removed.
+      this.email.propertyValue('attachments').addListener(function(_, _, oldAtts, newAtts) {
+         for ( var i = 0 ; i < oldAtts.length ; i++ ) {
+           var a = oldAtts[i];
+           if ( newAtts.indexOf(a) == -1 ) {
+             this.view.bodyView.removeImage(a.id);
+           }
+         }
+      }.bind(this));
     }
   },
 
@@ -263,7 +294,7 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'send',
-       help:  'Send the current email.',
+       help:  'Send (Ctrl-Enter)',
 
        // TODO: Don't enable send unless subject, to, and body set
        isEnabled:   function() { return true; },
@@ -278,7 +309,7 @@ var QuickCompose = FOAM({
        name:  'discard',
        label: '',
        iconUrl: '/images/trash.svg',
-       help:  'Discard the current email.',
+       help:  'Discard draft',
 
        action: function() {
          this.email.to = [];
@@ -307,13 +338,13 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
          name: 'addAttachment',
-         code: function(_, _, file) {
+         code: function(_, _, file, id) {
            console.log('add attachment: ', file);
            var att = Attachment.create({
+             id:       id,
              filename: file.name,
-             type: file.type,
-             position: this.email.attachments.length,
-             size: file.size
+             type:     file.type,
+             size:     file.size
            });
            console.log(att);
            this.email.attachments = this.email.attachments.concat(att);
@@ -332,7 +363,7 @@ var QuickCompose = FOAM({
     },
     {
       name: "toolbar",
-      template: "<table width=100% class=toolbar><tr><td width=1><%= this.sendButton.toHTML() %></td><td><%= this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
+      template: "<div class=toolbar><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML(), this.discardButton.toHTML() %></div>"
     }
   ]
 });

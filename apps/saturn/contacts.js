@@ -89,22 +89,26 @@ var Address = FOAM({
 });
 
 var ContactSmallTileView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'DetailView',
+  extendsModel: 'DetailView',
 
-   name: 'ContactSmallTileView',
+  name: 'ContactSmallTileView',
 
-   methods: {
-      toHTML: function() {
-         var name = this.createView(Contact.DISPLAY_NAME);
-         name.mode = 'read-only';
-         return '<div id="' + this.getID() + '" class="contactSmallTile">' +
-            this.createView(Contact.AVATAR_URL).toHTML() +
-            '<div class="contactSmallName">' + name.toHTML() + '</div>' +
-            '</div>';
-      }
-   },
+  methods: {
+    toHTML: function() {
+      var name = this.createView(Contact.DISPLAY_NAME);
+      name.mode = 'read-only';
+      var avatar = this.createView(Contact.AVATAR);
+      avatar.displayWidth = 21;
+      avatar.displayHeight = 21;
+
+      return '<div id="' + this.getID() + '" class="contactSmallTile">' +
+        avatar.toHTML() +
+        '<div class="contactSmallName">' + name.toHTML() + '</div>' +
+        '</div>';
+    }
+  },
 });
 
 var ContactListTileView = Model.create({
@@ -114,7 +118,7 @@ var ContactListTileView = Model.create({
 
   methods: {
     toHTML: function() {
-      var avatar = this.createView(Contact.AVATAR_URL);
+      var avatar = this.createView(Contact.AVATAR);
       avatar.displayWidth = 32;
       avatar.displayHeight = 32;
       var name = this.createView(Contact.DISPLAY_NAME);
@@ -126,6 +130,75 @@ var ContactListTileView = Model.create({
         '<ul class="contactTileDetails"><li>' +
         name.toHTML() + '</li><li class="contactTileAddress">' + address.toHTML() + '</li></ul></div></div>'
     }
+  }
+});
+
+var AvatarPlaceholderDAO = FOAM({
+  model_: 'Model',
+
+  name: 'AvatarPlaceholderDAO',
+
+  extendsModel: 'AbstractPropertyOffloadDAO',
+
+  methods: {
+    placeholder: function(contact) {
+      // TODO: Should this come from a DAO?  A placeholder DAO?
+      if ( ! this.placeholders_ ) this.placeholders_ = {};
+      var key = contact.first ? contact.first[0] : contact.email[0];
+      if ( ! this.placeholders_[key] ) {
+        this.placeholders_[key] = new Blob([
+          '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + (contact.first ? contact.first[0] : contact.email[0]) + '</text></svg>'], { type: 'image/svg+xml' });
+      }
+      return this.placeholders_[key];
+    }
+  }
+});
+
+var ContactAvatarNetworkDAO = FOAM({
+  model_: 'Model',
+
+  name: 'ContactAvatarNetworkDAO',
+
+  extendsModel: 'AbstractDAO',
+
+  properties: [
+    {
+      name: 'xhrFactory',
+      required: 'true'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'baseUrl',
+      defaultValue: 'https://www.google.com/m8/feeds/photos/media/default/'
+    },
+  ],
+
+  methods: {
+    find: function(id, sink) {
+      var xhr = this.xhrFactory.make();
+      var self = this;
+      aseq(
+        function(ret) {
+          xhr.asend(ret, "GET", self.baseUrl + id);
+        },
+        function(ret, blob, code) {
+          if ( code === 404 ) {
+            blob = '';
+          }
+
+          if ( code !== 200 && code !== 404 ) {
+            sink && sink.error && sink.error('find', id);
+            ret();
+            return;
+          }
+
+          sink && sink.put && sink.put(Contact.create({
+            id: id,
+            avatar: blob
+          }));
+          ret();
+        })(function(){});
+    },
   }
 });
 
@@ -209,14 +282,9 @@ var Contact = FOAM({
             name: 'url'
         },
         {
-            model_: 'URLProperty',
-            name: 'avatarUrl',
-            displayWidth: 21,
-            displayHeight: 21,
-            view:  'ImageView',
-            defaultValueFn: function() {
-               return 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + (this.first ? this.first[0] : this.email[0]) + '</text></svg>';
-            }
+            name: 'avatar',
+            type: 'Blob',
+            view:  'BlobImageView',
         },
         {
             model_: 'StringProperty',

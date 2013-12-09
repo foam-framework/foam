@@ -47,7 +47,7 @@ body > input[name="subject"] {
   background: #f1f1f1;
   padding-bottom: 8px;
   padding-left: 8px;
-  padding-top: 4px;
+  padding-top: 8px;
 }
 
 .actionButton-send {
@@ -55,7 +55,8 @@ body > input[name="subject"] {
   border-radius: 3px;
   box-shadow: none;
   color: white;
-  margin-right: 10px;
+  float: left;
+  margin-right: 25px;
   padding: 6px 15px;
   text-shadow: none;
 }
@@ -64,8 +65,16 @@ body > input[name="subject"] {
   background: none;
   border: none;
   box-shadow: none;
-  opacity: 0.5;
+  text-shadow: none;
   padding: 4px 5px;
+}
+
+.actionButton-discard {
+  float: right;
+}
+
+.actionButton-discard[data-tip]:after {
+  left: -65px;
 }
 
 .attachments table {
@@ -102,3 +111,41 @@ body > input[name="subject"] {
   margin: 0;
 }
 
+
+.attachments2 {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.attachment2 {
+  background-color: #f5f5f5;
+  border: 1px solid #dcdcdc;
+  font-weight: bold;
+  margin: 0 7px 4px;
+  overflow-y: hidden;
+  padding: 4px 4px 4px 8px;
+  max-width: 448px;
+}
+
+.attachment2 .filename {
+  color: #15c;
+  font-size: 80%;
+  overflow: hidden;
+  padding-left: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment2 .size {
+  font-size: 80%;
+  margin-left: 10px;
+  color: #777;
+}
+
+.attachment2 .remove {
+  float: right;
+}
+
+.attachment2 .remove button {
+  background-color: #f5f5f5;
+}

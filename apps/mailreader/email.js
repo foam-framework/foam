@@ -176,7 +176,6 @@ var Attachment = FOAM({
    model_: 'Model',
    name: 'Attachment',
    plural: 'Attachments',
-   ids: [ 'filename' ],
    tableProperties:
    [
       'type',
@@ -186,6 +185,15 @@ var Attachment = FOAM({
    ],
    properties:
    [
+      {
+         model_: 'StringProperty',
+         name: 'id',
+         label: 'Identifier',
+         displayWidth: 50,
+         valueFactory: function() {
+           return this.$UID;
+         }
+      },
       {
          model_: 'Property',
          name: 'filename',
@@ -208,6 +216,10 @@ var Attachment = FOAM({
          displayWidth: 10,
          view: 'TextFieldView'
       },
+      /**
+       * Used in the MBOX reader to point to the position in the MBOX, but
+       * for other uses, this doesn't make sense.
+       **/
       {
          model_: 'Property',
          name: 'position',
@@ -389,7 +401,7 @@ var EMail = FOAM({
             (this.cc.length ? "Cc: " + this.cc.join(", ") + "\r\n" : "") +
             (this.bcc.length ? "Bcc: " + this.bcc.join(", ") + "\r\n" : "") +
             "Subject: " + this.subject + "\r\n" +
-            "Content-Type: text/html; charset=ISO-8859-1; format=flowed; delsp=yes\r\n" +
+            "Content-Type: text/html; charset=UTF-8\r\n\r\n" +
             this.body +
             "\r\n\r\n");
       }

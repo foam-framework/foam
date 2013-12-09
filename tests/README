@@ -1,0 +1,15 @@
+The unit tests here uses node.js and mocha for non-UI DAO tests. Please refer to
+http://nodejs.org regarding how to install node.js.
+
+For Ubuntu users, quick cheat sheet:
+
+sudo apt-get install nodejs
+sudo npm install -g mocha
+
+To run the tests, simply run
+
+mocha <test file path>
+
+e.g.
+
+mocha async_mocha.js

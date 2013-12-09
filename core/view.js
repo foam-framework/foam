@@ -225,7 +225,7 @@ var AbstractView = FOAM({
        // Initialize this View and all of it's children.
        // This mostly involves attaching listeners.
        // Must be called activate a view after it has been added to the DOM.
-       
+
        this.registerCallbacks();
 
        if ( this.children ) {
@@ -240,7 +240,7 @@ var AbstractView = FOAM({
          }
        }
      },
-     
+
      registerCallbacks: function() {
        if ( this.callbacks_ ) {
          // hookup event listeners
@@ -256,7 +256,7 @@ var AbstractView = FOAM({
              e.addEventListener(event, listener.bind(this), false);
            }
          }
-         
+
          delete this['callbacks_'];
        }
      }
@@ -635,6 +635,63 @@ var ImageView = FOAM({
          }
       }
    ]
+});
+
+var BlobImageView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'BlobImageView',
+  help: 'Image view for rendering a blob as an image.',
+
+  properties: [
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.onValueChange);
+        newValue.addListener(this.onValueChange);
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'displayWidth'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'displayHeight'
+    }
+  ],
+
+  methods: {
+    setValue: function(value) {
+      this.value = value;
+    },
+
+    toHTML: function() {
+      return '<img id="' + this.getID() + '">';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      var self = this;
+      this.$.style.width = self.displayWidth;
+      this.$.style.height = self.displayHeight;
+      this.onValueChange();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+        if ( ! this.value.get() ) return;
+        if ( this.$ )
+          this.$.src = URL.createObjectURL(this.value.get());
+      }
+    }
+  ]
 });
 
 
@@ -2395,7 +2452,7 @@ var TableView = FOAM({
     },
 
     initHTML_: function() {
-      this.SUPER();
+      this.initHTML.super_.call(this);
 
       var es = $$('tr-' + this.getID());
       var self = this;
@@ -2475,9 +2532,10 @@ var ActionButton = Model.create({
         this.getID());
 
       var out = [];
-      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '">');
+      var tooltip = this.action.help ? ' data-tip="' + this.action.help + '" ' : '';
+      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '"' + tooltip + '>');
 
-      if (this.action.iconUrl) {
+      if ( this.action.iconUrl ) {
         out.push('<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />');
       }
 
@@ -2670,9 +2728,10 @@ var ActionBorder = {
           var model = this.model;
           var str   = "";
 
-          str += '<table class="actionBorder"><tr><td>';
+//          str += '<table class="actionBorder"><tr><td>';
           str += this.__proto__.toHTML.call(this);
-          str += '</td></tr><tr><td class="actionBorderActions">';
+//          str += '</td></tr><tr><td class="actionBorderActions">';
+          str += '<div class="actionToolbar">';
 
           for ( var i = 0 ; i < this.actions.length ; i++ ) {
             var action = this.actions[i];
@@ -2682,7 +2741,8 @@ var ActionBorder = {
             this.addChild(button);
           }
 
-          str += '</td></tr></table>';
+          str += '</div>';
+//          str += '</td></tr></table>';
 
           return str;
         }
