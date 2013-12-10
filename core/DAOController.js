@@ -290,7 +290,6 @@ var DAOCreateController = FOAM({
          isAvailable: function() { return true; },
          isEnabled:   function() { return true; },
          action:      function() {
-           debugger;
             var self = this;
             this.dao.put(this.obj, {
               put: function(value) {
@@ -383,7 +382,7 @@ var DAOUpdateController = FOAM({
    properties: [
       {
          name:  'obj',
-         label: 'Edited Object',
+         label: 'Edited Object'
       },
       {
          name:  'model',
