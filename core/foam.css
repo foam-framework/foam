@@ -385,10 +385,7 @@ select {
   width: 30%;
 }
 
-textarea { width: 94%; overflow: auto; }
-
-
-
+textarea { width: 98%; overflow: auto; }
 
 body {
   font: 82% arial,sans-serif;
