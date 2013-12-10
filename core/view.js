@@ -1029,7 +1029,7 @@ var TextFieldView = FOAM({
       code: function(e) {
         this.value.set(this.softValue.get());
       }
-    },
+    }
   ]
 });
 
@@ -1692,17 +1692,20 @@ var FunctionView = FOAM({
       },
 
       initHTML: function() {
-         this.SUPER();
+        this.SUPER();
 
-         this.errorView.initHTML();
+        this.errorView.initHTML();
+        this.errorView.$.style.color = 'red';
+        this.errorView.$.style.display = 'none';
       },
 
       toHTML: function() {
-         return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + this.SUPER();
+         return this.errorView.toHTML() + ' ' + this.SUPER();
       },
 
       setError: function(err) {
        this.errorView.getValue().set(err || "");
+       this.errorView.$.style.display = err ? 'block' : 'none';
       },
 
       textToValue: function(text) {

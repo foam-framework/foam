@@ -92,6 +92,10 @@ p, h1, form, button{
   margin:2px 0 0px 10px;
 }
 
+.detailView .label {
+  vertical-align: top;
+}
+
 .detailArrayLabel {
   font-size: medium;
 }
