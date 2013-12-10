@@ -40,6 +40,10 @@ p, h1, form, button{
   height: 100%;
 }
 
+.stackview-previewarea .actionToolbar {
+  display: none;
+}
+
 /* ----------- detailView ----------- */
 
 .detailView {
