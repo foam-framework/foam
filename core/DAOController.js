@@ -81,7 +81,7 @@ var DAOController = FOAM({
          help:  'Edit the current record.',
          default: 'true',
 
-         action:      function() {
+         action: function() {
             // Todo: fix, should already be connected
             this.selection = this.tableView.selection.get();
 
@@ -242,13 +242,14 @@ var DAOController = FOAM({
 //             (this.stackView || stack).setPreview(view);
 
                (this.stackView || stack).setPreview(
-                 SummaryView.create({
+                 DetailView.create({
                    model: this.model,
                    value: this.tableView.selection}));
             }
             else
             {
-               (this.stackView || stack).setPreview(null);
+              // Don't erase selection, just keep last selected
+//               (this.stackView || stack).setPreview(null);
             }
          }
       }
