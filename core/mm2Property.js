@@ -334,6 +334,8 @@ var Property = {
            name: 'compareProperty',
            type: 'Function',
            view: 'FunctionView',
+           displayWidth: 70,
+           displayHeight: 5,
            defaultValue: function(o1, o2) {
              return (o1.localeCompare || o1.compareTo).call(o1, o2);
            },

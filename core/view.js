@@ -1856,7 +1856,7 @@ var DetailView = Model.create({
     rowToHTML: function(prop, view) {
       var str = "";
 
-      str += prop.detailViewPreRow(this);
+      if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
       str += '<tr class="detail-' + prop.name + '">';
       if ( view.model_ === DAOControllerView ) {
@@ -1871,7 +1871,7 @@ var DetailView = Model.create({
       }
       str += '</tr>';
 
-      str += prop.detailViewPostRow(this);
+      if ( prop.detailViewPostRow ) str += prop.detailViewPostRow(this);
 
       return str;
     },
