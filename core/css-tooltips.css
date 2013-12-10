@@ -7,7 +7,6 @@ https://github.com/AdamWhitcroft/CSS.Tooltips
 /*==================================================*/
 [data-tip] {
 	position:relative;
-	cursor:help;
 }
 [data-tip]:before {
 	content:'';
