@@ -92,6 +92,15 @@ p, h1, form, button{
   margin:2px 0 0px 10px;
 }
 
+.detailArrayLabel {
+  font-size: medium;
+}
+
+.detailArrayLabel .foamTable {
+  margin: 1px;
+  width: 99%;
+}
+
 /* ----------- summaryView ----------- */
 
 .summaryView {

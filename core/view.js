@@ -1858,12 +1858,17 @@ var DetailView = Model.create({
 
       str += prop.detailViewPreRow(this);
 
-      // TODO: add class to tr
       str += '<tr class="detail-' + prop.name + '">';
-      str += "<td class='label'>" + prop.label + "</td>";
-      str += '<td>';
-      str += view.toHTML();
-      str += '</td>';
+      if ( view.model_ === DAOControllerView ) {
+        str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
+        str += view.toHTML();
+        str += '</td>';
+      } else {
+        str += "<td class='label'>" + prop.label + "</td>";
+        str += '<td>';
+        str += view.toHTML();
+        str += '</td>';
+      }
       str += '</tr>';
 
       str += prop.detailViewPostRow(this);
