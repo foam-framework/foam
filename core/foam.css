@@ -47,11 +47,9 @@ p, h1, form, button{
 /* ----------- detailView ----------- */
 
 .detailView {
-  border2:solid 2px #dddddd;
-  border:solid 2px #b7ddf2;
-//  background:#ebebeb;
-  background: lightgray;
-  width:100%;
+  border:solid 2px #dddddd;
+  background: #fafafa;
+  width:99%;
 }
 
 .detailView .heading {
