@@ -487,7 +487,7 @@ var DAOUpdateController = FOAM({
                         model_: 'ViewChoice',
                         label:  'XML',
                         view:   'XMLView'
-                     },
+                     }/*,
                      {
                         model_: 'ViewChoice',
                         label:  'UML',
@@ -497,7 +497,7 @@ var DAOUpdateController = FOAM({
                         model_: 'ViewChoice',
                         label:  'Split',
                         view:   'SplitView'
-                     }
+                     }*/
                   ]
                });
 
