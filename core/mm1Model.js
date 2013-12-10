@@ -83,6 +83,7 @@ var Model = {
            name: 'tableProperties',
            type: 'Array[String]',
            view: 'StringArrayView',
+           displayWidth: 70,
            valueFactory: function() {
              return this.properties.map(Property.NAME.f.bind(Property.NAME));
            },
