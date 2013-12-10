@@ -73,7 +73,7 @@ var AttachmentView = FOAM({
 
     old_toInnerHTML: function() {
       if ( ! this.value.get().length ) return "";
-      
+
       var out = "";
 
       if ( this.value.get().length ) {
@@ -83,7 +83,7 @@ var AttachmentView = FOAM({
         for ( var i = 0 ; i < attachments.length ; i++ ) {
           var att = attachments[i];
           var size = Math.round(att.size/1000).toLocaleString() + 'k';
-          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></td></tr>';
+          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></td></tr>';
         }
         out += '</table>';
         out += '<hr>';
@@ -102,7 +102,7 @@ var AttachmentView = FOAM({
       for ( var i = 0 ; i < this.value.get().length ; i++ ) {
         var att = this.value.get()[i];
         var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
-        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></span></div>';
+        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></span></div>';
       }
 
       return out;
@@ -325,7 +325,8 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'close',
-       label: 'x',
+       label: '',
+       iconUrl: 'images/x_8px.png',
        help:  'Close the window.',
 
        action: function() {
