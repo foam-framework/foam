@@ -1005,7 +1005,8 @@ var TextFieldView = FOAM({
       if ( this.mode === 'read-write' ) {
         this.domValue = DomValue.create(this.$, 'input');
       } else {
-        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
+//        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
+        this.domValue = DomValue.create(this.$, 'undefined', 'innerHTML');
       }
 
       this.setValue(this.value);

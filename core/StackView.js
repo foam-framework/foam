@@ -50,7 +50,8 @@ var StackView = FOAM({
       {
          model_: 'Action',
          name:  'back',
-         label: '<',
+         label: '',
+         iconUrl: 'images/Navigation_Left_Arrow.svg',
          help:  'Go to previous view',
 
          isEnabled:   function() { return this.stack.length > 1; },
@@ -64,7 +65,8 @@ var StackView = FOAM({
       {
          model_: 'Action',
          name:  'forth',
-         label: '>',
+         label: '',
+         iconUrl: 'images/Navigation_Right_Arrow.svg',
          help:  'Undo the previous back.',
 
          action:      function() {

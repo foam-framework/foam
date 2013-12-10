@@ -636,3 +636,8 @@ div.gridViewControl select {
   font: normal 15px arial,sans-serif;
   padding-right: 10px;
 }
+
+
+.actionButton-back, .actionButton-forth { border: none; background: transparent; padding: 4px; }
+.actionButton-back img { width: 32px; }
+.actionButton-forth img { width: 32px; }
