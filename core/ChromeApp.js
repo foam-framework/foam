@@ -65,7 +65,7 @@ function arequire(modelName) {
        (function(t) { return function(ret, m) {
          model.getPrototype()[t.name] = m;
          ret();
-       }})(t)
+       };})(t)
     ));
   }
 
@@ -196,3 +196,9 @@ var ChromeAuthAgent = FOAM({
     }
   }
 });
+
+
+// The default implementation uses eval(), which isn't supported in Chrome Apps.
+JSONUtil.parseToMap = function(str) {
+  return JSON.parse(str);
+};

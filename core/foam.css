@@ -49,8 +49,8 @@ p, h1, form, button{
 .detailView {
   border2:solid 2px #dddddd;
   border:solid 2px #b7ddf2;
-  background:#ebebeb;
-  background2:#ebf4fb;
+//  background:#ebebeb;
+  background: lightgray;
   width:98%;
 }
 

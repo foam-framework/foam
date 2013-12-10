@@ -1638,36 +1638,36 @@ var TextAreaView = FOAM({
     ],
 
    methods: {
-      init: function(args) {
-         this.SUPER(args);
+     init: function(args) {
+       this.SUPER(args);
 
        this.cols = (args && args.displayWidth)  || 70;
        this.rows = (args && args.displayHeight) || 10;
-      },
+     },
 
-      toHTML: function() {
-        return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-      },
+     toHTML: function() {
+       return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
+     },
 
-    setValue: function(value) {
-      this.value = value;
-    },
+     setValue: function(value) {
+       this.value = value;
+     },
 
-    initHTML: function() {
+     initHTML: function() {
        this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
 
-      // Events.follow(this.model, this.domValue);
-      // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
-      this.value = this.value;
-    },
+       // Events.follow(this.model, this.domValue);
+       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
+       this.value = this.value;
+     },
 
-    destroy: function() {
+     destroy: function() {
        Events.unlink(this.domValue, this.value);
-    },
+     },
 
-    textToValue: function(text) { return text; },
+     textToValue: function(text) { return text; },
 
-    valueToText: function(value) { return value; }
+     valueToText: function(value) { return value; }
   }
 
 });
@@ -1755,7 +1755,7 @@ var JSView = FOAM({
       },
 
       valueToText: function(val) {
-        return JSONUtil.stringify(val);
+        return JSONUtil.pretty.stringify(val);
       }
     }
 });
