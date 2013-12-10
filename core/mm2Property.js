@@ -272,7 +272,7 @@ var Property = {
        },
        {
            name: 'tableFormatter',
-           label: 'Table View Cell Formatter',
+           label: 'Table Cell Formatter',
            type: 'Function',
            required: false,
            displayWidth: 70,
@@ -284,7 +284,7 @@ var Property = {
        },
        {
            name: 'summaryFormatter',
-           label: 'Summary View Cell Formatter',
+           label: 'Summary Formatter',
            type: 'Function',
            required: false,
            displayWidth: 70,
