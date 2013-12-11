@@ -632,6 +632,10 @@ div.gridViewControl select {
   border: 1px solid #d9d9d9 !important;
 }
 
+.linkDialog input[name="label"] {
+  width: 99%;
+}
+
 .linkDialog th {
   font: normal 15px arial,sans-serif;
   padding-right: 10px;
