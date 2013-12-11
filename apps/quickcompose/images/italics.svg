@@ -9,6 +9,6 @@
 	 xml:space="preserve">
 <defs>
 </defs>
-<polygon points="9,6 9,7 10.9,7 6.9,14 5,14 5,15 11.25,15 11.25,14 9.1,14 13.1,7 15,7 15,6 "/>
+<polygon fill="#888" points="9,6 9,7 10.9,7 6.9,14 5,14 5,15 11.25,15 11.25,14 9.1,14 13.1,7 15,7 15,6 "/>
 <rect opacity="0" fill="#4387FD" width="21" height="21"/>
 </svg>

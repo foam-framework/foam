@@ -20,15 +20,15 @@
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
 
     var stack = StackView.create();
-    stack.setPreview = function() {};
 
-    document.writeln("<table><tr><td>");
-    document.write("<div>");
+    document.writeln("<table><tr><td width=100% colspan=2>");
     stack.write(document);
-    document.write("</div>");
+    document.writeln("</td></tr><tr><td>");
     Dragon.write(document);
-    document.writeln("</td><td valign=top><div>");
-    dragon.write(document);
+    document.writeln("</td><td width=60% valign=top><div>");
+//    dragon.write(document);
+    stack.setPreview(dragon);
+    stack.setPreview = function() {};
     document.writeln("<table><tr><td>");
     timer.write(document);
     document.writeln("</td><td>");

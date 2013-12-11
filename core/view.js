@@ -938,6 +938,11 @@ var TextFieldView = FOAM({
          help: 'If true, value is updated on each keystroke.'
       },
       {
+         mode_: 'BooleanProperty',
+         name:  'escapeHTML',
+         help: 'If true, HTML content is excaped in display mode.'
+      },
+      {
          name:  'mode',
          type:  'String',
          defaultValue: 'read-write',
@@ -1005,7 +1010,8 @@ var TextFieldView = FOAM({
       if ( this.mode === 'read-write' ) {
         this.domValue = DomValue.create(this.$, 'input');
       } else {
-        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
+//        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
+        this.domValue = DomValue.create(this.$, 'undefined', this.escapeHTML ? 'textContent' : 'innerHTML');
       }
 
       this.setValue(this.value);
@@ -1029,7 +1035,7 @@ var TextFieldView = FOAM({
       code: function(e) {
         this.value.set(this.softValue.get());
       }
-    },
+    }
   ]
 });
 
@@ -1638,36 +1644,36 @@ var TextAreaView = FOAM({
     ],
 
    methods: {
-      init: function(args) {
-         this.SUPER(args);
+     init: function(args) {
+       this.SUPER(args);
 
        this.cols = (args && args.displayWidth)  || 70;
        this.rows = (args && args.displayHeight) || 10;
-      },
+     },
 
-      toHTML: function() {
-        return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-      },
+     toHTML: function() {
+       return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
+     },
 
-    setValue: function(value) {
-      this.value = value;
-    },
+     setValue: function(value) {
+       this.value = value;
+     },
 
-    initHTML: function() {
+     initHTML: function() {
        this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
 
-      // Events.follow(this.model, this.domValue);
-      // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
-      this.value = this.value;
-    },
+       // Events.follow(this.model, this.domValue);
+       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
+       this.value = this.value;
+     },
 
-    destroy: function() {
+     destroy: function() {
        Events.unlink(this.domValue, this.value);
-    },
+     },
 
-    textToValue: function(text) { return text; },
+     textToValue: function(text) { return text; },
 
-    valueToText: function(value) { return value; }
+     valueToText: function(value) { return value; }
   }
 
 });
@@ -1692,17 +1698,20 @@ var FunctionView = FOAM({
       },
 
       initHTML: function() {
-         this.SUPER();
+        this.SUPER();
 
-         this.errorView.initHTML();
+        this.errorView.initHTML();
+        this.errorView.$.style.color = 'red';
+        this.errorView.$.style.display = 'none';
       },
 
       toHTML: function() {
-         return '<pre style="color:red">' + this.errorView.toHTML() + '</pre>' + this.SUPER();
+         return this.errorView.toHTML() + ' ' + this.SUPER();
       },
 
       setError: function(err) {
        this.errorView.getValue().set(err || "");
+       this.errorView.$.style.display = err ? 'block' : 'none';
       },
 
       textToValue: function(text) {
@@ -1755,7 +1764,7 @@ var JSView = FOAM({
       },
 
       valueToText: function(val) {
-        return JSONUtil.stringify(val);
+        return JSONUtil.pretty.stringify(val);
       }
     }
 });
@@ -1856,17 +1865,22 @@ var DetailView = Model.create({
     rowToHTML: function(prop, view) {
       var str = "";
 
-      str += prop.detailViewPreRow(this);
+      if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
-      // TODO: add class to tr
       str += '<tr class="detail-' + prop.name + '">';
-      str += "<td class='label'>" + prop.label + "</td>";
-      str += '<td>';
-      str += view.toHTML();
-      str += '</td>';
+      if ( view.model_ === DAOControllerView ) {
+        str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
+        str += view.toHTML();
+        str += '</td>';
+      } else {
+        str += "<td class='label'>" + prop.label + "</td>";
+        str += '<td>';
+        str += view.toHTML();
+        str += '</td>';
+      }
       str += '</tr>';
 
-      str += prop.detailViewPostRow(this);
+      if ( prop.detailViewPostRow ) str += prop.detailViewPostRow(this);
 
       return str;
     },
@@ -2728,9 +2742,10 @@ var ActionBorder = {
           var model = this.model;
           var str   = "";
 
-          str += '<table class="actionBorder"><tr><td>';
+//          str += '<table class="actionBorder"><tr><td>';
           str += this.__proto__.toHTML.call(this);
-          str += '</td></tr><tr><td class="actionBorderActions">';
+//          str += '</td></tr><tr><td class="actionBorderActions">';
+          str += '<div class="actionToolbar">';
 
           for ( var i = 0 ; i < this.actions.length ; i++ ) {
             var action = this.actions[i];
@@ -2740,7 +2755,8 @@ var ActionBorder = {
             this.addChild(button);
           }
 
-          str += '</td></tr></table>';
+          str += '</div>';
+//          str += '</td></tr></table>';
 
           return str;
         }

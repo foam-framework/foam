@@ -2404,7 +2404,7 @@ var AbstractPropertyOffloadDAO = FOAM({
     {
       model_: 'BooleanProperty',
       name: 'loadOnSelect'
-    },
+    }
   ],
 
   methods: {

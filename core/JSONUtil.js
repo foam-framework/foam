@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var AbstractFormatter = {
-   /** @param p an predicate function or an mLang **/
+   /** @param p a predicate function or an mLang **/
    where: function(p) {
       return {
          __proto__: this,
@@ -35,8 +35,6 @@ var JSONUtil = {
    },
 
    escape: function(str) {
-     // function replace() { // ???: why is this here?
-     // }
      return str
       .replace(/\\/g, '\\\\')
       .replace(/"/g, '\\"')
@@ -47,8 +45,12 @@ var JSONUtil = {
       });
    },
 
+   parseToMap: function(str) {
+     return eval('(' + str + ')');
+   },
+
    parse: function(str) {
-     return this.mapToObj(JSON.parse(str));
+     return this.mapToObj(this.parseToMap(str));
    },
 
    /**
@@ -309,7 +311,7 @@ var JSONUtil = {
          var str          = "";
          var first        = true;
 
-         out("\n", indent, '[\n');
+         out('[\n');
 
          for ( var i = 0 ; i < a.length ; i++, first = false )
          {

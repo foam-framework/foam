@@ -81,7 +81,7 @@ var DAOController = FOAM({
          help:  'Edit the current record.',
          default: 'true',
 
-         action:      function() {
+         action: function() {
             // Todo: fix, should already be connected
             this.selection = this.tableView.selection.get();
 
@@ -242,13 +242,14 @@ var DAOController = FOAM({
 //             (this.stackView || stack).setPreview(view);
 
                (this.stackView || stack).setPreview(
-                 SummaryView.create({
+                 DetailView.create({
                    model: this.model,
                    value: this.tableView.selection}));
             }
             else
             {
-               (this.stackView || stack).setPreview(null);
+              // Don't erase selection, just keep last selected
+//               (this.stackView || stack).setPreview(null);
             }
          }
       }
@@ -289,7 +290,6 @@ var DAOCreateController = FOAM({
          isAvailable: function() { return true; },
          isEnabled:   function() { return true; },
          action:      function() {
-           debugger;
             var self = this;
             this.dao.put(this.obj, {
               put: function(value) {
@@ -382,7 +382,7 @@ var DAOUpdateController = FOAM({
    properties: [
       {
          name:  'obj',
-         label: 'Edited Object',
+         label: 'Edited Object'
       },
       {
          name:  'model',
@@ -486,7 +486,7 @@ var DAOUpdateController = FOAM({
                         model_: 'ViewChoice',
                         label:  'XML',
                         view:   'XMLView'
-                     },
+                     }/*,
                      {
                         model_: 'ViewChoice',
                         label:  'UML',
@@ -496,7 +496,7 @@ var DAOUpdateController = FOAM({
                         model_: 'ViewChoice',
                         label:  'Split',
                         view:   'SplitView'
-                     }
+                     }*/
                   ]
                });
 

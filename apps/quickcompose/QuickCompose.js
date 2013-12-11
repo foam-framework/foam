@@ -60,7 +60,7 @@ var AttachmentView = FOAM({
     },
 
     toHTML: function() {
-      return '<div id="' + this.getID() + '" class="attachments"></div>';
+      return '<div id="' + this.getID() + '" class="attachments2"></div>';
     },
 
     initHTML: function() {
@@ -71,22 +71,45 @@ var AttachmentView = FOAM({
       this.redraw();
     },
 
-    redraw: function() {
+    old_toInnerHTML: function() {
+      if ( ! this.value.get().length ) return "";
+
       var out = "";
 
       if ( this.value.get().length ) {
         out += '<hr>';
         out += '<table width=100%>';
-        for ( var i = 0 ; i < this.value.get().length ; i++ ) {
-          var att = this.value.get()[i];
+        var attachments = this.value.get().sort(Attachment.FILENAME);
+        for ( var i = 0 ; i < attachments.length ; i++ ) {
+          var att = attachments[i];
           var size = Math.round(att.size/1000).toLocaleString() + 'k';
-          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '">x</button></td></tr>';
+          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></td></tr>';
         }
         out += '</table>';
         out += '<hr>';
       }
+      out += '</table>';
+      out += '<hr>';
 
-      this.$.innerHTML = out;
+      return out;
+    },
+
+    toInnerHTML: function() {
+      this.$.style.display = this.value.get().length ? 'block' : 'none';
+
+      var out = "";
+
+      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
+        var att = this.value.get()[i];
+        var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
+        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></span></div>';
+      }
+
+      return out;
+    },
+
+    redraw: function() {
+      this.$.innerHTML = this.toInnerHTML();
       this.registerCallbacks();
     }
   }
@@ -271,7 +294,7 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'send',
-       help:  'Send the current email.',
+       help:  'Send (Ctrl-Enter)',
 
        // TODO: Don't enable send unless subject, to, and body set
        isEnabled:   function() { return true; },
@@ -286,7 +309,7 @@ var QuickCompose = FOAM({
        name:  'discard',
        label: '',
        iconUrl: '/images/trash.svg',
-       help:  'Discard the current email.',
+       help:  'Discard draft',
 
        action: function() {
          this.email.to = [];
@@ -302,7 +325,8 @@ var QuickCompose = FOAM({
      {
        model_: 'Action',
        name:  'close',
-       label: 'x',
+       label: '',
+       iconUrl: 'images/x_8px.png',
        help:  'Close the window.',
 
        action: function() {
@@ -333,15 +357,15 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>New message</title></head><body><% this.header(out); %><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
+      template: "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>Quick Message</title></head><body><% this.header(out); %><%= this.view.toHTML() %><% this.toolbar(out); %></body></html>"
     },
     {
       name: "header",
-      template: "<table width=100% class=header><tr><td>New message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
+      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
     },
     {
       name: "toolbar",
-      template: "<table width=100% class=toolbar><tr><td width=1><%= this.sendButton.toHTML() %></td><td><%= this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML() %></td><td align=right><%= this.discardButton.toHTML() %></td></tr></table>"
+      template: "<div class=toolbar><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML(), this.discardButton.toHTML() %></div>"
     }
   ]
 });
