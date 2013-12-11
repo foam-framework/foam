@@ -28,8 +28,9 @@
     space2.write(document);
     document.writeln("</td><tr></table>");
 
+    document.writeln('<div style="display:inline-block">');
     timer.write(document);
-    document.writeln("<br>");
+    document.writeln('</div>');
 
     var sys = System.create({
       parent: space,
