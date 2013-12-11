@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO:
 
 var PhoneNumber = FOAM({
     model_: 'Model',
@@ -128,7 +127,7 @@ var ContactListTileView = Model.create({
       return '<div class="contactTile" id="' + this.getID() + '">' +
         '<div class="contactTileAvatar">' + avatar.toHTML() + '</div>' +
         '<ul class="contactTileDetails"><li>' +
-        name.toHTML() + '</li><li class="contactTileAddress">' + address.toHTML() + '</li></ul></div></div>'
+        name.toHTML() + '</li><li class="contactTileAddress">' + address.toHTML() + '</li></ul></div></div>';
     }
   }
 });
@@ -170,7 +169,7 @@ var ContactAvatarNetworkDAO = FOAM({
       model_: 'StringProperty',
       name: 'baseUrl',
       defaultValue: 'https://www.google.com/m8/feeds/photos/media/default/'
-    },
+    }
   ],
 
   methods: {
@@ -198,7 +197,7 @@ var ContactAvatarNetworkDAO = FOAM({
           }));
           ret();
         })(function(){});
-    },
+    }
   }
 });
 
@@ -252,9 +251,9 @@ var Contact = FOAM({
                // TODO: i18n and add middle/prefix/suffix when applicable.
               if ( this.title.length > 0 )
                 return this.title;
-              else if ( this.first.length > 0 || this.last.length > 0 )
+              if ( this.first.length > 0 || this.last.length > 0 )
                 return this.first + ' ' + this.last;
-              else return this.email;
+              return this.email;
             }
         },
         {
@@ -284,7 +283,7 @@ var Contact = FOAM({
         {
             name: 'avatar',
             type: 'Blob',
-            view:  'BlobImageView',
+            view:  'BlobImageView'
         },
         {
             model_: 'StringProperty',
@@ -307,7 +306,7 @@ function importContacts(dao, xhrFactory) {
           id:    c.id ? c.id.$t.split('/').pop() : '',
           title: c.title ? c.title.$t : '',
           email: c.gd$email ? c.gd$email[0].address : '',
-          updated: c.updated ? c.updated.$t : '',
+          updated: c.updated ? c.updated.$t : ''
        });
        c.gd$phoneNumber && c.gd$phoneNumber.forEach(function(p) {
          contact.phoneNumbers.push(PhoneNumber.create({
