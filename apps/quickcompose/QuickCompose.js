@@ -282,9 +282,9 @@ var QuickCompose = FOAM({
       this.email.propertyValue('attachments').addListener(function(_, _, oldAtts, newAtts) {
          for ( var i = 0 ; i < oldAtts.length ; i++ ) {
            var a = oldAtts[i];
-           if ( newAtts.indexOf(a) == -1 ) {
+           newAtts.find(a.id, {error: function() {
              this.view.bodyView.removeImage(a.id);
-           }
+           }.bind(this)});
          }
       }.bind(this));
     }
