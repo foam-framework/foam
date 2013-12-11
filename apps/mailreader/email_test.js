@@ -54,3 +54,37 @@ test("kgr@foo.com, kgr@bar.com, Kevin Greer <kgr@foo.com>, \"Kevin Greer\" <kgr@
 
 console.log(EmailAddressParser.address(StringPS.create('kgr@foo.com')).value);
 console.log(MBOXParser.address(StringPS.create('kgr@foo.com')).value);
+
+
+var blob = new Blob(["hello, world!"], { type: 'text/plain' });
+
+var att = Attachment.create({
+  filename: 'message.txt',
+  file: blob,
+  type: blob.type,
+  size: blob.size
+});
+
+var blob2 = new Blob(["foobar"], { type: 'image/jpeg' });
+
+var inlineAtt = Attachment.create({
+  filename: 'image.png',
+  file: blob2,
+  type: blob2.type,
+  size: blob2.size,
+  inline: true
+})
+
+var msg = EMail.create({
+  attachments: [att, inlineAtt],
+  from: 'adamvy@google.com',
+  to: ['kgr@google.com'],
+  subject: 'test msg',
+  body: 'hello<b>&nbsp;world!</b>'
+});
+
+aseq(
+  msg.atoMime.bind(msg),
+  function(ret, output) {
+    ret();
+  })(function(){});

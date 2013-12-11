@@ -93,26 +93,37 @@ var Base64Encoder = {
     'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
     'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'],
 
-  encode: function(b) {
-    var out = "";
-    for ( var i = 0; i + 3 < b.byteLength; i += 3 ) {
-      out += this.table[b[i] >>> 2];
-      out += this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)];
-      out += this.table[((b[i+1] & 15) << 2) | (b[i+2] >>> 6)];
-      out += this.table[b[i+2] & 63];
+  encode: function(b, opt_break) {
+    var result = "";
+    if ( opt_break >= 0 ) {
+      var count = 0;
+      var out = function(c) {
+        result += c;
+        count = (count + 1) % opt_break;
+        if ( count == 0 ) result += "\r\n";
+      }
+    } else {
+      out = function(c) { result += c; };
+    }
+
+    for ( var i = 0; i + 2 < b.byteLength; i += 3 ) {
+      out(this.table[b[i] >>> 2]);
+      out(this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)]);
+      out(this.table[((b[i+1] & 15) << 2) | (b[i+2] >>> 6)]);
+      out(this.table[b[i+2] & 63]);
     }
 
     if ( i < b.byteLength ) {
-      out += this.table[b[i] >>> 2];
+      out(this.table[b[i] >>> 2]);
       if ( i + 1 < b.byteLength ) {
-        out += this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)];
-        out += this.table[((b[i+1] & 15) << 2)];
+        out(this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)]);
+        out(this.table[((b[i+1] & 15) << 2)]);
       } else {
-        out += this.table[((b[i] & 3) << 4)];
-        out += '=';
+        out(this.table[((b[i] & 3) << 4)]);
+        out('=');
       }
-      out += '=';
+      out('=');
     }
-    return out;
+    return result;
   }
 };

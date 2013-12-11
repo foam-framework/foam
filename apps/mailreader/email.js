@@ -226,8 +226,49 @@ var Attachment = FOAM({
          type: 'int',
          displayWidth: 10,
          view: 'TextFieldView'
+      },
+      {
+        name: 'file',
+        type: 'File',
+        hidden: true
+      },
+      {
+        model_: 'BooleanProperty',
+        name: 'inline',
+        defaultValue: false
       }
    ],
+   methods: {
+     atoMime: function(ret) {
+       if ( !this.file ) {
+         ret();
+         return;
+       }
+
+       var self = this;
+
+       var reader = new FileReader();
+       reader.onloadend = function() {
+         var data = Base64Encoder.encode(new Uint8Array(reader.result), 78);
+
+         if ( data[data.length-1] !== '\n' ) data += '\r\n';
+
+         var sanitizedName = self.filename
+           .replace(/[\x00-\x1f]/g, '')
+           .replace(/"/g, '');
+
+         // TODO: Content disposition 
+         ret(
+           "Content-Type: " + self.type + "; name=\"" + sanitizedName + '"\r\n' +
+             (self.inline ? '' : 'Content-Disposition: attachment; filename=\"' + sanitizedName + '\"\r\n') +
+             "Content-Transfer-Encoding: base64\r\n" +
+             "Content-ID: <" + self.id + ">\r\n" +
+             "X-Attachment-Id: " + self.id + "\r\n\r\n" +
+             data);
+       };
+       reader.readAsArrayBuffer(this.file);
+     }
+   },
    actions:
    [
       {
@@ -394,17 +435,76 @@ var EMail = FOAM({
       toggleLabel: function(l) { this.hasLabel(l) ? this.removeLabel(l) : this.addLabel(l); },
       addLabel: function(l) { this.labels = this.labels.deleteF(l).pushF(l); },
       removeLabel: function(l) { this.labels = this.labels.deleteF(l); },
-      toMimeBody: function() {
-        debugger;
-        return (
-            "From: " + this.from + "\r\n" +
-            "To: " + this.to.join(', ') + "\r\n" +
-            (this.cc.length ? "Cc: " + this.cc.join(", ") + "\r\n" : "") +
-            (this.bcc.length ? "Bcc: " + this.bcc.join(", ") + "\r\n" : "") +
-            "Subject: " + this.subject + "\r\n" +
-            "Content-Type: text/html; charset=UTF-8\r\n\r\n" +
-            this.body +
-            "\r\n\r\n");
+      atoMime: function(ret) {
+        // Filter attachments into inline and non-inline attachments.
+        var inline = [];
+        var attachments = []
+        for ( var i = 0; i < this.attachments.length; i++ ) {
+          if ( this.attachments[i].inline )
+            inline.push(this.attachments[i]);
+          else
+            attachments.push(this.attachments[i]);
+        }
+
+        // Utility function for defining unique bounday values.
+        var newBoundary = (function() {
+          var boundary = Math.floor(Math.random() * 10000);
+          return function() {
+            return (boundary += 1).toString(16);
+          };
+        })();
+
+        var body = "Content-Type: text/html; charset=UTF-8\r\n\r\n";
+        body += this.body + "\r\n";
+
+        var i;
+        var self = this;
+
+        var addAttachments = function(attachments, inline) {
+          return aseq(
+            function(ret) {
+              boundary = newBoundary();
+
+              body = "Content-Type: multipart/" +
+                ( inline ? 'related' : 'mixed' ) + "; boundary=" + boundary + "\r\n\r\n"
+                + "--" + boundary + "\r\n"
+                + body
+                + "\r\n--" + boundary;
+              i = 0;
+              ret();
+            },
+            awhile(
+              function() { return i < attachments.length; },
+              aseq(
+                function(ret) {
+                  var att = attachments[i];
+                  i++;
+                  att.atoMime(ret);
+                },
+                function(ret, data) {
+                  body += "\r\n" + data;
+                  body += "--" + boundary;
+                  ret();
+                })),
+            function(ret) {
+              body += "--";
+              ret();
+            });
+        };
+
+        aseq(
+          aif(inline.length > 0,
+              addAttachments(inline, true)),
+          aif(attachments.length > 0,
+              addAttachments(attachments, false)))(function() {
+                body = "From: " + self.from + "\r\n" +
+                  "To: " + self.to.join(', ') + "\r\n" +
+                  (self.cc.length ? "Cc: " + self.cc.join(", ") + "\r\n" : "") +
+                  (self.bcc.length ? "Bcc: " + self.bcc.join(", ") + "\r\n" : "") +
+                  "Subject: " + self.subject + "\r\n" +
+                  body;
+                ret(body);
+              });
       }
    },
 

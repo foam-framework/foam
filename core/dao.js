@@ -2147,9 +2147,10 @@ var ActionFactoryDAO = FOAM({
               value,
               self.actionDao.put.bind(self.actionDao));
           } else if (value.model_.createActionFactory) {
-            var actions = value.model_.createActionFactory(value);
-            for (var j = 0; j < actions.length; j++)
-              self.actionDao.put(actions[j]);
+            value.model_.createActionFactory(function(actions) {
+              for (var j = 0; j < actions.length; j++)
+                self.actionDao.put(actions[j]);
+            }, value);
           }
           self.delegate.put(value, sink);
           ret();

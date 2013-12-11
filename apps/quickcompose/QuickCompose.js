@@ -319,6 +319,7 @@ var QuickCompose = FOAM({
            console.log('add attachment: ', file);
            var att = Attachment.create({
              id:       id,
+             file:     file,
              filename: file.name,
              type:     file.type,
              size:     file.size
