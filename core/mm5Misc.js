@@ -59,7 +59,7 @@ var UnitTest = FOAM({
            mode: 'read-only',
            required: true,
            view: {
-              create: function() { return TextFieldView.create({mode:'read-only'}); } },
+              create: function() { return TextFieldView.create({mode:'read-only', escapeHTML: false}); } },
            displayWidth: 80,
            displayHeight: 20
         },

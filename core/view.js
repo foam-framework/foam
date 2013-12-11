@@ -938,6 +938,11 @@ var TextFieldView = FOAM({
          help: 'If true, value is updated on each keystroke.'
       },
       {
+         mode_: 'BooleanProperty',
+         name:  'escapeHTML',
+         help: 'If true, HTML content is excaped in display mode.'
+      },
+      {
          name:  'mode',
          type:  'String',
          defaultValue: 'read-write',
@@ -1006,7 +1011,7 @@ var TextFieldView = FOAM({
         this.domValue = DomValue.create(this.$, 'input');
       } else {
 //        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
-        this.domValue = DomValue.create(this.$, 'undefined', 'innerHTML');
+        this.domValue = DomValue.create(this.$, 'undefined', this.escapeHTML ? 'textContent' : 'innerHTML');
       }
 
       this.setValue(this.value);
