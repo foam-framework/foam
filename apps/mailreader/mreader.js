@@ -134,7 +134,7 @@ withFOAM(function() {
 
         table.view.selection.addListener(function (src, property, oldValue, newValue) {
             if ( ! newValue ) return;
-            var editView = SummaryView.create(table.view.selection);
+            var editView = SummaryView.create({value: table.view.selection});
             editView.model = EMail;
             edit.innerHTML = editView.toHTML();
             editView.initHTML();
