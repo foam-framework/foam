@@ -455,7 +455,16 @@ var EMail = FOAM({
         })();
 
         var body = "Content-Type: text/html; charset=UTF-8\r\n\r\n";
-        body += this.body + "\r\n";
+
+        var fragment = new DocumentFragment();
+        fragment.appendChild(document.createElement('body'));
+        fragment.firstChild.innerHTML = this.body;
+        var images = fragment.querySelectorAll('img');
+        for ( var i = 0; i < images.length; i++ ) {
+          images[i].src = 'cid:' + images[i].id;
+          images[i].removeAttribute('id');
+        }
+        body += fragment.firstChild.innerHTML + "\r\n";
 
         var i;
         var self = this;
