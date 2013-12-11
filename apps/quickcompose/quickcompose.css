@@ -86,47 +86,12 @@ body > input[name="subject"] {
   left: -65px;
 }
 
-.attachments table {
-  table-layout: fixed;
-  margin-left: 0;
-}
-
-.attachments .filename {
-  font-size: 80%;
-  margin-left: 5px;
-  overflow: hidden;
-  padding-left: 5px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.attachments .size {
-  font-size: 80%;
-  padding-right: 10px;
-  text-align: right;
-  width: 65px;
-}
-
-.attachments .remove {
-  width: 12px;
-}
-
-.attachments button {
-  padding: 0;
-  background-color: inherit;
-}
-
-.attachments hr {
-  margin: 0;
-}
-
-
-.attachments2 {
+.attachments {
   margin-top: 4px;
   margin-bottom: 4px;
 }
 
-.attachment2 {
+.attachment {
   background-color: #f5f5f5;
   border: 1px solid #dcdcdc;
   font-weight: bold;
@@ -134,27 +99,36 @@ body > input[name="subject"] {
   overflow-y: hidden;
   padding: 4px 4px 4px 8px;
   max-width: 448px;
+
+ display: -webkit-flex;
 }
 
-.attachment2 .filename {
+.attachment .filename {
   color: #15c;
   font-size: 80%;
   overflow: hidden;
-  padding-left: 5px;
+  padding-left: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
+min-width:240px;
 }
 
-.attachment2 .size {
+.attachment .spacer {
+  -webkit-box-flex: 1;
+  width: 100%;
+}
+
+.attachment .size {
   font-size: 80%;
   margin-left: 10px;
   color: #777;
 }
 
-.attachment2 .remove {
+.attachment .remove {
+  margin-top: -4px;
   float: right;
 }
 
-.attachment2 .remove button {
+.attachment .remove button {
   background-color: #f5f5f5;
 }

@@ -60,7 +60,7 @@ var AttachmentView = FOAM({
     },
 
     toHTML: function() {
-      return '<div id="' + this.getID() + '" class="attachments2"></div>';
+      return '<div id="' + this.getID() + '" class="attachments"></div>';
     },
 
     initHTML: function() {
@@ -71,29 +71,6 @@ var AttachmentView = FOAM({
       this.redraw();
     },
 
-    old_toInnerHTML: function() {
-      if ( ! this.value.get().length ) return "";
-
-      var out = "";
-
-      if ( this.value.get().length ) {
-        out += '<hr>';
-        out += '<table width=100%>';
-        var attachments = this.value.get().sort(Attachment.FILENAME);
-        for ( var i = 0 ; i < attachments.length ; i++ ) {
-          var att = attachments[i];
-          var size = Math.round(att.size/1000).toLocaleString() + 'k';
-          out += '<tr class="attachment"><td class="filename">' + att.filename + '</td><td class="size">' + size + '</td><td class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></td></tr>';
-        }
-        out += '</table>';
-        out += '<hr>';
-      }
-      out += '</table>';
-      out += '<hr>';
-
-      return out;
-    },
-
     toInnerHTML: function() {
       this.$.style.display = this.value.get().length ? 'block' : 'none';
 
@@ -102,7 +79,7 @@ var AttachmentView = FOAM({
       for ( var i = 0 ; i < this.value.get().length ; i++ ) {
         var att = this.value.get()[i];
         var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
-        out += '<div class="attachment2"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></span></div>';
+        out += '<div class="attachment"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span><span class="spacer"/><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></span></div>';
       }
 
       return out;
@@ -282,9 +259,9 @@ var QuickCompose = FOAM({
       this.email.propertyValue('attachments').addListener(function(_, _, oldAtts, newAtts) {
          for ( var i = 0 ; i < oldAtts.length ; i++ ) {
            var a = oldAtts[i];
-           if ( newAtts.indexOf(a) == -1 ) {
+           newAtts.find(a.id, {error: function() {
              this.view.bodyView.removeImage(a.id);
-           }
+           }.bind(this)});
          }
       }.bind(this));
     }
