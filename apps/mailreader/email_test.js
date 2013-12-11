@@ -68,6 +68,7 @@ var att = Attachment.create({
 var blob2 = new Blob(["foobar"], { type: 'image/jpeg' });
 
 var inlineAtt = Attachment.create({
+  id: 12,
   filename: 'image.png',
   file: blob2,
   type: blob2.type,
@@ -80,7 +81,7 @@ var msg = EMail.create({
   from: 'adamvy@google.com',
   to: ['kgr@google.com'],
   subject: 'test msg',
-  body: 'hello<b>&nbsp;world!</b>'
+  body: 'hello<b>&nbsp;world!<img id="12" src="asdfasdfasdf"></b>'
 });
 
 aseq(
