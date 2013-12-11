@@ -99,8 +99,13 @@ body > input[name="subject"] {
   overflow-y: hidden;
   padding: 4px 4px 4px 8px;
   max-width: 448px;
+  display: -webkit-flex;
+}
 
- display: -webkit-flex;
+.attachment .filenameandsize {
+  display: inline-flex;
+  min-width:240px;
+  width:500%
 }
 
 .attachment .filename {
@@ -110,7 +115,6 @@ body > input[name="subject"] {
   padding-left: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-min-width:240px;
 }
 
 .attachment .spacer {
