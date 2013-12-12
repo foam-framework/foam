@@ -269,6 +269,14 @@ console.log('file: ', file, id);
 
           this.publish('attachmentAdded', file, id);
         }
+
+        length = e.dataTransfer.items.length;
+        if ( length ) {
+          var div = document.createElement('div');
+
+          this.insertElement(div);
+          div.outerHTML = e.dataTransfer.getData('text/html');
+        }
       }.bind(this);
       body.ondragenter = function(e) {
         self.dragging_++;
