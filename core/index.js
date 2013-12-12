@@ -939,7 +939,7 @@ var MDAO = Model.create({
       this.where(query).select([])(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
-          delete this.map[a[i]];
+          delete this.map[a[i].id];
           this.notify_('remove', [a[i]]);
           sink && sink.remove && sink.remove(a[i]);
         }
