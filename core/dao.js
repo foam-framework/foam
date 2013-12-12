@@ -533,8 +533,8 @@ var AbstractDAO = FOAM({
         remove: function() {
           sink.remove && sink.remove.apply(sink, arguments);
         },
-        err: function() {
-          sink.err && sink.err.apply(sink, arguments);
+        error: function() {
+          sink.error && sink.error.apply(sink, arguments);
         },
         eof: function() {
           if ( fc.stopped ) {
