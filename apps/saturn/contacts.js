@@ -107,7 +107,7 @@ var ContactSmallTileView = FOAM({
         '<div class="contactSmallName">' + name.toHTML() + '</div>' +
         '</div>';
     }
-  },
+  }
 });
 
 var ContactListTileView = Model.create({
@@ -251,8 +251,10 @@ var Contact = FOAM({
                // TODO: i18n and add middle/prefix/suffix when applicable.
               if ( this.title.length > 0 )
                 return this.title;
+
               if ( this.first.length > 0 || this.last.length > 0 )
                 return this.first + ' ' + this.last;
+
               return this.email;
             }
         },
@@ -293,6 +295,7 @@ var Contact = FOAM({
     ]
 });
 
+
 function importContacts(dao, xhrFactory) {
   var xhr2 = xhrFactory.make();
   var url = 'https://www.google.com/m8/feeds/contacts/default/full';
@@ -303,10 +306,10 @@ function importContacts(dao, xhrFactory) {
      console.log('contacts', contacts);
      contacts.forEach(function(c) {
        var contact = Contact.create({
-          id:    c.id ? c.id.$t.split('/').pop() : '',
-          title: c.title ? c.title.$t : '',
-          email: c.gd$email ? c.gd$email[0].address : '',
-          updated: c.updated ? c.updated.$t : ''
+          id:      c.id       ? c.id.$t.split('/').pop() : '',
+          title:   c.title    ? c.title.$t : '',
+          email:   c.gd$email ? c.gd$email[0].address : '',
+          updated: c.updated  ? c.updated.$t : ''
        });
        c.gd$phoneNumber && c.gd$phoneNumber.forEach(function(p) {
          contact.phoneNumbers.push(PhoneNumber.create({
