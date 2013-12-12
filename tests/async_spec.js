@@ -14,17 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var assert = require('assert');
-var vm = require('vm');
-var fs = require('fs');
-
-global.document = {};
-global.window = global;
-
-var stdlibJs = fs.readFileSync('../core/stdlib.js');
-vm.runInThisContext(stdlibJs);
-var asyncJs = fs.readFileSync('../core/async.js');
-vm.runInThisContext(asyncJs);
+var assert = require('assert')
 
 describe('aconstant test', function() {
   it('should return the given number 7', function(done) {
