@@ -18,9 +18,9 @@
 /**
  * Generates the java source for a model and writes it to a file.
  */
+var fs = require('fs');
 
-var modeldata = fs.readFileSync(argv[0]);
-var model = vm.runInThisContext(modeldata);
+var model = GLOBAL[argv[0]];
 var outfile = argv[1];
 
 fs.writeFileSync(outfile, model.javaSource());
