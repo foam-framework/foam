@@ -128,7 +128,7 @@ var JSONUtil = {
             }
          }
          else if (typeof obj === "number") {
-           if (!Number.isFinite(obj)) obj = null;
+           if (!isFinite(obj)) obj = null;
            out(obj);
          }
          else {
@@ -245,7 +245,7 @@ var JSONUtil = {
                console.log("toJSONError: ", x, obj);
             }
          } else if (typeof obj === "number") {
-           if (!Number.isFinite(obj)) obj = null;
+           if (!isFinite(obj)) obj = null;
            out(obj);
          } else {
            if (obj === undefined) obj = null;
