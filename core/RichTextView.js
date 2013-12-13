@@ -210,7 +210,7 @@ var RichTextView = FOAM({
       var id = this.getID();
       this.dropId = this.nextID();
       return '<div class="richtext"><div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
-        '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + '></iframe></div>';
+        '<iframe style="/*border:solid 2px #b7ddf2;*/width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + ' img-src="*"></iframe></div>';
     },
 
     setValue: function(value) {
