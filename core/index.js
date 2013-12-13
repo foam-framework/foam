@@ -884,7 +884,7 @@ var MDAO = Model.create({
     put: function(obj, sink) {
       var oldValue = this.map[obj.id];
       if ( oldValue ) {
-        this.root = this.index.put(this.index.remove(this.root, obj), obj);
+        this.root = this.index.put(this.index.remove(this.root, oldValue), obj);
         this.notify_('remove', [obj]);
       } else {
         this.root = this.index.put(this.root, obj);
