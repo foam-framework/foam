@@ -307,7 +307,13 @@ var QuickCompose = FOAM({
        help:  'Close the window.',
 
        action: function() {
-         this.appWindow.minimize();
+         var isChromeOS = navigator.userAgent.indexOf('CrOS') != -1;
+
+         if ( isChromeOS ) {
+           this.appWindow.minimize();
+         } else {
+           this.appWindow.close();
+         }
        }
      }
    ],
