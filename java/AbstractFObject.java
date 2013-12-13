@@ -1,44 +1,35 @@
+package foam.core;
+
 public abstract class AbstractFObject {
 
-  public int equals(String o1, String o2) {
-    if ( o1 == o2 ) return 0;
-    if ( o1 == null ) return -1;
-    if ( o2 == null ) return 1;
-    
-    return o1.compareTo(o2);
+  public int compare(boolean o1, boolean o2) {
+    return o1 == o2 ? 0 : o1 ? 1 : 0;
+  }
+
+  public int compare(String o1, String o2) {
+    return o1 == o2 ? 0 : o1 == null ? -1 : o2 == null ? 1 : o1.compareTo(o2);
   }
   
-  public int equals(short o1, short o2) {
-    short diff = o1 - o2;
-    return diff == 0 ? 0 : diff > 0 ? 1 : -1;
+  public int compare(short  o1, short  o2) { return Short.compare(o1, o2);   }
+  public int compare(int    o1, int    o2) { return Integer.compare(o1, o2); }
+  public int compare(long   o1, long   o2) { return Long.compare(o1, o2);    }
+  public int compare(float  o1, float  o2) { return Float.compare(o1, o2);   }
+  public int compare(double o1, double o2) { return Double.compare(o1, o2);  }
+  
+  
+  public int hash(Boolean b) { return b ? 1 ? 0; }
+  public int hash(String s)  { return s == null ? 0 : s.hashCode(); }
+  public int hash(short s)   { return s; }
+  public int hash(int i)     { return i; }
+  public int hash(long l)    { return (int)(l^(l>>>32)); }
+  public int hash(float f)   { return hash(Float.floatToIntBits(f)); }
+  public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
+
+
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    append(sb);
+    return sb;
   }
-  
-  public int equals(int o1, int o2) {
-    int diff = o1 - o2;
-    return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-  }
-  
-  public int equals(long o1, long o2) {
-    long diff = o1 - o2;
-    return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-  }
-  
-  public int equals(float o1, float o2) {
-    float diff = o1 - o2;
-    return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-  }
-  
-  public int equals(double o1, double o2) {
-    double diff = o1 - o2;
-    return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-  }
-  
-  
-  public int hash(String s) { return s == null ? 0 : s.hashCode(); }
-  public int hash(short s) { return i; }
-  public int hash(int i) { return i; }
-  public int hash(long l) { return (int)(l^(l>>>32)); }
-  public int hash(float f) { return i; }
-  public int hash(double d) { return hash(Double.doubleToLongBits(d)); }
-  
+
 }
