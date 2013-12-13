@@ -18,16 +18,16 @@ var fs = require('fs');
 var vm = require('vm');
 var path = require('path');
 
-// Initializing FOAM_BOOT_DIR.
-var FOAM_BOOT_DIR = '';
-if (process.argv[2]) {
-  FOAM_BOOT_DIR = path.normalize(process.argv[2]);
-}
-
 global.window = global;
 global.document = {
   window: global
 };
+
+// Initializing FOAM_BOOT_DIR.
+global.FOAM_BOOT_DIR = '';
+if (process.argv[2]) {
+  global.FOAM_BOOT_DIR = path.normalize(process.argv[2]);
+}
 
 
 // Loading all FOAM models.
