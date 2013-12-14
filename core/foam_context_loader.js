@@ -17,30 +17,19 @@
 var fs = require('fs');
 var vm = require('vm');
 var path = require('path');
-var minijasminelib = require('minijasminenode');
 
-global.FOAM_BOOT_DIR = path.resolve('../core');
+// Initializing FOAM_BOOT_DIR.
+var FOAM_BOOT_DIR = global.FOAM_BOOT_DIR || '';
 
-// Needed so that scripts can require other nodejs modules.
-global.require = require;
+global.window = global;
+global.document = global;
 
-var foamLoader = fs.readFileSync(
-    path.join(global.FOAM_BOOT_DIR, 'foam_context_loader.js'));
-vm.runInThisContext(foamLoader);
+// Loading all FOAM models.
+var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
+vm.runInThisContext(modelsfiles);
 
-var options = {
-  specs: process.argv.slice(2),
-  onComplete: function(runner, log) {
-    if (runner.results().failedCount == 0) {
-      console.log('All tests succeeded.');
-      process.exit(0);
-    } else {
-      process.exit(1);
-    }
-  },
-  isVerbose: false,
-  showColors: true,
-  includeStackTrace: true
-};
-
-minijasminelib.executeSpecs(options);
+for (var i = 0; i < files.length; i++) {
+  var filename = files[i] + '.js';
+  var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  vm.runInThisContext(filedata, filename);
+}
