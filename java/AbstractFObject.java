@@ -26,6 +26,10 @@ public abstract class AbstractFObject {
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
 
 
+  public equals(Object o) {
+    return this.compareTo(o) == 0;
+  }
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
     append(sb);
