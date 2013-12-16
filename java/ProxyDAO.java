@@ -18,7 +18,7 @@
 package foam.core;
 
 public class ProxyDAO
-    implements DAO
+    extends AbstractDAO
 {
     protected DAO delegate_;
 
@@ -34,5 +34,22 @@ public class ProxyDAO
         delegate_ = delegate;
     }
 
+    public Object find(X x, Object where)
+        throws DAOException, DAOInternalException
+    {
+        return getDelegate().find(x, where);
+    }
+
+    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException
+    {
+        return getDelegate().select_(x, sink, p, c, skip, limit);
+    }
+
+    public void removeAll_(X x, Sink sink, Predicate p)
+        throws DAOException, DAOInternalException
+    {
+        getDelegate().removeAll_(x, sink, p);
+    }
 
 }

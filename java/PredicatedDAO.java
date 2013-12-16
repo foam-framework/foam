@@ -20,5 +20,31 @@ package foam.core;
 public class PredicatedDAO
     extends ProxyDAO
 {
+    protected Predicate predicate_;
+
+    public PredicatedDAO(Predicate p, DAO delegate)
+    {
+        super(delegate);
+
+        setPredicate(predicate);
+    }
+
+    public Predicate getPredicate()
+    {
+        return predicate_;
+    }
+
+    public void setPredicate(Predicate predicate)
+    {
+        predicate_ = predicate;
+    }
+
+    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException
+    {
+        Predicate p2 = AND(getPredicate(), p).partialEval();
+
+        return getDelegate().select_(x, sink, p2, c, skip, limit);
+    }
 
 }

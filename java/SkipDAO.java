@@ -21,4 +21,32 @@ public class SkipDAO
     extends ProxyDAO
 {
 
+    protected long skip_;
+
+    public LimitdDAO(long skip, DAO delegate)
+    {
+        super(delegate);
+
+        setSkip(skip);
+    }
+
+    public long getSkip()
+    {
+        return skip_;
+    }
+
+    public void setSkip(long skip)
+    {
+        skip_ = skip;
+    }
+
+    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+        throws DAOException, DAOInternalException
+    {
+        long s2 = skip + getSkip();
+
+        return getDelegate().select_(x, sink, p, c, s2, limit);
+    }
+
+
 }

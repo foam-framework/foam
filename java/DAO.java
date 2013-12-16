@@ -24,10 +24,10 @@ public interface DAO
     public Object find(X x, Object where)
         throws DAOException, DAOInternalException;
 
-    public void select(X x, Sink sink)
+    public Sink select(X x, Sink sink)
         throws DAOException, DAOInternalException;
 
-    public void select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
         throws DAOException, DAOInternalException;
 
     public void removeAll(X x, Sink sink)
