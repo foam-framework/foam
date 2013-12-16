@@ -21,7 +21,7 @@ public abstract class AbstractFObject
     implements FCloneable
 {
 
-  public Model MODEL();
+  public abstract Model MODEL();
 
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
@@ -38,7 +38,7 @@ public abstract class AbstractFObject
   public int compare(double o1, double o2) { return Double.compare(o1, o2);  }
   
   
-  public int hash(Boolean b) { return b ? 1 ? 0; }
+  public int hash(boolean b) { return b ? 1 : 0; }
   public int hash(String s)  { return s == null ? 0 : s.hashCode(); }
   public int hash(short s)   { return s; }
   public int hash(int i)     { return i; }
@@ -47,17 +47,21 @@ public abstract class AbstractFObject
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
 
 
-  public equals(Object o) {
-    return this.compareTo(o) == 0;
+  public abstract int compareTo(Object other);
+
+  public boolean equals(Object o) {
+    return compareTo(o) == 0;
   }
+
+  public abstract StringBuilder append(StringBuilder sb);
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     append(sb);
-    return sb;
+    return sb.toString();
   }
 
-  public appendToJSON(StringBuilder b) {
+  public StringBuilder appendToJSON(StringBuilder b) {
     b.append("{");
     b.append("model_:");
     b.append(toJSON(MODEL().getName()));
@@ -75,7 +79,7 @@ public abstract class AbstractFObject
   public String toJSON() {
     StringBuilder sb = new StringBuilder();
     appendToJSON(sb);
-    return sb;
+    return sb.toString();
   }
 
   public AbstractFObject set(Property p, Object value) {
