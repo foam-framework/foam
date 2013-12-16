@@ -14,17 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var fs = require('fs');
+var vm = require('vm');
+var path = require('path');
 
-package foam.core;
+// Initializing FOAM_BOOT_DIR.
+var FOAM_BOOT_DIR = global.FOAM_BOOT_DIR || '';
 
-/** 
- * Interface to dependencies.
- * 'X' is pronounced 'Context'.
- **/
-public interface X
-{
-    public Object get(String name);
-    public Object get(X x, String name);
-    public X put(String name, Object value);
-    public X putFactory(String name, XFactory factory);
+global.window = global;
+global.document = global;
+
+// Loading all FOAM models.
+var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
+vm.runInThisContext(modelsfiles);
+
+for (var i = 0; i < files.length; i++) {
+  var filename = files[i] + '.js';
+  var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  vm.runInThisContext(filedata, filename);
 }

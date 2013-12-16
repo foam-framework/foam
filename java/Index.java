@@ -20,4 +20,12 @@ package foam.core;
 public interface Index
 {
 
+    public State put(State state, Object value);
+
+    public State remove(State state, Object value);
+
+    public Plan plan(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
+
+    public long size(State state);
+
 }

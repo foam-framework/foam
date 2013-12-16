@@ -17,14 +17,12 @@
 
 package foam.core;
 
-/** 
- * Interface to dependencies.
- * 'X' is pronounced 'Context'.
- **/
-public interface X
+public interface Plan
 {
-    public Object get(String name);
-    public Object get(X x, String name);
-    public X put(String name, Object value);
-    public X putFactory(String name, XFactory factory);
+
+    public long cost();
+
+    public String toString();
+
+    public Sink execute(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
 }
