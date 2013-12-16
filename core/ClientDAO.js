@@ -38,7 +38,9 @@ var ClientDAO = FOAM({
 
   methods: {
     oneShot_: function(method, params, sink) {
+      var self = this;
       this.asend(function(resp) {
+        if ( !sink ) return;
         if ( resp.put ) sink.put(resp.put);
         else if ( resp.remove ) sink.remove(resp.remove);
         else if ( resp.error ) sink.error(resp.error);
@@ -47,7 +49,7 @@ var ClientDAO = FOAM({
         method: method,
         params: params
       });
-    }
+    },
     put: function(obj, sink) {
       this.oneShot_('put', [obj], sink);
     },
@@ -55,7 +57,7 @@ var ClientDAO = FOAM({
       this.oneShot_('remove', [obj], sink);
     },
     find: function(q, sink) {
-      this.oneShot_('find', [obj], sink);
+      this.oneShot_('find', [q], sink);
     },
     select: function(sink, options) {
       sink = sink || [];
@@ -77,7 +79,7 @@ var ClientDAO = FOAM({
           future.set(response);
         }, {
           subject: self.subject,
-          mehtod: 'select',
+          method: 'select',
           params: [sink, options]
         });
       } else {

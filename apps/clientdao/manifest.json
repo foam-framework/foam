@@ -1,0 +1,24 @@
+{
+    "name": "Client DAO Test",
+    "version": "0.1",
+    "manifest_version": 2,
+
+    "permissions": [
+      "storage",
+      "<all_urls>",
+      "https://*/",
+      "http://*/",
+      "identity",
+      "unlimitedStorage"
+    ],
+
+    "app": {
+        "background": {
+            "scripts": [
+              "foam.js",
+              "Storage.js",
+              "bg.js"
+            ]
+        }
+    }
+}

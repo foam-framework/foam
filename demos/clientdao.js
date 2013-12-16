@@ -1,4 +1,6 @@
-var remoteDao = [
+var remoteDao = [];
+
+var contacts = [
   Contact.create({ id: 1, first: 'Adam', last: 'Van Ymeren', email: 'adamvy@google.com' }),
   Contact.create({ id: 2, first: 'Kevin', last: 'Greer', email: 'kgr@google.com' }),
   Contact.create({ id: 3, first: 'Alice', email: 'alice@alice.org' }),
@@ -20,6 +22,26 @@ function asend(ret, msg) {
         ret(c);
       });
       break;
+    case 'put':
+    case 'remove':
+    case 'find':
+      remoteDao[msg.method](msg.params[0], {
+        put: function(o) {
+          ret({
+            put: o
+          });
+        },
+        remove: function(o) {
+          ret({
+            remove: o
+          });
+        },
+        error: function(o) {
+          ret({
+            error: o
+          })
+        }
+      });
     }
   }, true);
 }
@@ -28,6 +50,12 @@ var dao = ClientDAO.create({
   model: Contact,
   asend: asend
 });
+
+for ( var i = 0; i < contacts.length; i++ ) {
+  dao.put(contacts[i], console.log);
+}
+
+dao.remove(5);
 
 dao.select(COUNT())(function(c) { console.log(c.count); });
 dao.select(GROUP_BY(Contact.EMAIL, COUNT()))(console.log.json);
@@ -39,3 +67,5 @@ dao.select({
     console.log('eof');
   }
 });
+
+dao.find(3, console.log.json);
