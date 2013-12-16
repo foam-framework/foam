@@ -17,6 +17,10 @@
 
 package foam.core;
 
+/** 
+ * Interface to dependencies.
+ * 'X' is pronounced 'Context'.
+ **/
 public interface X
 {
     public Object get(String name);
