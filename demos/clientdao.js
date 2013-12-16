@@ -25,7 +25,7 @@ function asend(ret, msg) {
 }
 
 var dao = ClientDAO.create({
-  model: 'Contact',
+  model: Contact,
   asend: asend
 });
 
