@@ -50,6 +50,7 @@ var files = [
 //  'async_test',
   'visitor',
   'dao',
+  'ClientDAO',
   'diff',
   'SplitDAO',
   'index',

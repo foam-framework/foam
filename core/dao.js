@@ -1715,7 +1715,7 @@ var WorkerDAO = FOAM({
       sink = sink || [];
       // Cases:
       // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
-      // 2) Non-cloneable reducable sink -- treat same as case 2.
+      // 2) Non-cloneable reducable sink -- treat same as case 3.
       // 3) Non-cloneable non-reducable sink -- Use key-creator, just put into sink
 
       var fc = this.createFlowControl_();
