@@ -20,6 +20,7 @@ package foam.core;
 public interface X
 {
     public Object get(String name);
+    public Object get(X x, String name);
     public X put(String name, Object value);
     public X putFactory(String name, XFactory factory);
 }
