@@ -57,8 +57,28 @@ public abstract class AbstractFObject
     return sb;
   }
 
-  public AbstractFObject set(Property p, Object value)
-  {
+  public appendToJSON(StringBuilder b) {
+    b.append("{");
+    b.append("model_:");
+    b.append(toJSON(MODEL().getName()));
+    for ( Property p : MODEL().getProperties() ) {
+      // TODO: do not output default values
+      b.append(",");
+      b.append(p.getName());
+      b.append(":");
+      b.append(p.get(this)); // TODO: escape propertly, maybe p.toJSON()
+    }
+    b.append("}");
+    return b;
+  }
+
+  public String toJSON() {
+    StringBuilder sb = new StringBuilder();
+    appendToJSON(sb);
+    return sb;
+  }
+
+  public AbstractFObject set(Property p, Object value) {
     p.set(this, value);
     return this;
   }
