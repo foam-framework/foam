@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,17 @@ var vm = require('vm');
 var path = require('path');
 
 // Initializing FOAM_BOOT_DIR.
-global.FOAM_BOOT_DIR = __dirname;
+var FOAM_BOOT_DIR = global.FOAM_BOOT_DIR || '';
 
-// Needed so that scripts run through runInThisContext can require other nodejs
-// modules.
-global.require = require;
+global.window = global;
+global.document = global;
 
-var foamLoader = fs.readFileSync(
-    path.join(global.FOAM_BOOT_DIR, 'foam_context_loader.js'));
-vm.runInThisContext(foamLoader);
+// Loading all FOAM models.
+var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
+vm.runInThisContext(modelsfiles);
 
+for (var i = 0; i < files.length; i++) {
+  var filename = files[i] + '.js';
+  var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  vm.runInThisContext(filedata, filename);
+}

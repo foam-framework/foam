@@ -22,7 +22,7 @@
               "foam.js",
               "QuickCompose.js",
               "Storage.js",
-              "gmail.js",
+//              "gmail.js",
               "bg.js"
             ]
         }

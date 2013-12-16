@@ -1,6 +1,25 @@
+/**
+ * @license
+ * Copyright 2013 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package foam.core;
 
-public abstract class AbstractFObject {
+public abstract class AbstractFObject
+    implements FCloneable
+{
 
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
@@ -25,6 +44,10 @@ public abstract class AbstractFObject {
   public int hash(float f)   { return hash(Float.floatToIntBits(f)); }
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
 
+
+  public equals(Object o) {
+    return this.compareTo(o) == 0;
+  }
 
   public String toString() {
     StringBuilder sb = new StringBuilder();

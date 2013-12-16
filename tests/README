@@ -1,4 +1,8 @@
+How to run tests?
+=================
 The unit tests here uses node.js and minijasminenode for non-UI DAO tests.
+To run the unit tests locally, you need to install node.js and minijasminenode.
+
 Please refer to http://nodejs.org regarding how to install node.js.
 
 For Ubuntu users, quick cheat sheet:
@@ -13,5 +17,13 @@ To run the tests, simply run
 
 node test_loader.js <test cases to run>
 
-The test cases are named *_spec.js to comply to Jasmine testing framework
-convention.
+The test cases are named *_spec.js to comply to Jasmine convention.
+
+
+How to write tests?
+===================
+The test bots are hosted by Google and they'll run the nodejs-based unit tests.
+The bots run nodejs 0.8.14 and minijasminenode 0.2.5 (jasmine 1.3.1).
+
+Currently only nodejs built-in modules and minijasminenode are supported. Please
+use only these modules to make the unit tests bot friendly, thank you! 

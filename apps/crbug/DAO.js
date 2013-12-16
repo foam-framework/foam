@@ -49,8 +49,8 @@ var IssueRestDAO = FOAM({
 
 var IssueNetworkDAO = IssueRestDAO.create({
 // TODO: make this configurable
-//  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/chromium/issues',
-  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/foam-framework/issues',
+  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/chromium/issues',
+//  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/foam-framework/issues',
   model: CIssue
 });
 
