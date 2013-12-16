@@ -24,11 +24,7 @@ global.document = {
 };
 
 // Initializing FOAM_BOOT_DIR.
-global.FOAM_BOOT_DIR = '';
-if (process.argv[2]) {
-  global.FOAM_BOOT_DIR = path.normalize(process.argv[2]);
-}
-
+global.FOAM_BOOT_DIR = __dirname;
 
 // Loading all FOAM models.
 var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
@@ -40,15 +36,3 @@ for (var i = 0; i < files.length; i++) {
   vm.runInThisContext(filedata, filename);
 }
 
-// Needed so that scripts can require other nodejs modules.
-global.require = require;
-
-// For command line processing, run as
-// $ node bootFOAMnode.js <FOAM_BOOT_DIR> <script> <script args>
-// Arguments are passed to the script as a global.argv array.
-if (process.argv[3]) {
-  var scriptPathname = path.normalize(process.argv[3]);
-  global.argv = process.argv.slice(4);
-  filedata = fs.readFileSync(scriptPathname);
-  vm.runInThisContext(filedata, scriptPathname);
-}
