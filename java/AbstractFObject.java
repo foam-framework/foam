@@ -21,6 +21,8 @@ public abstract class AbstractFObject
     implements FCloneable
 {
 
+  public Model MODEL();
+
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
   }
@@ -55,4 +57,9 @@ public abstract class AbstractFObject
     return sb;
   }
 
+  public AbstractFObject set(Property p, Object value)
+  {
+    p.set(this, value);
+    return this;
+  }
 }

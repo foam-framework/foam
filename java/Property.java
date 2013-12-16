@@ -20,5 +20,12 @@ package foam.core;
 public interface Property
     implements Function, Comparator
 {
+    public String  getName();
+    public String  getLabel();
+    public void    set(Object obj, Object value);
+    public Object  get(Object obj);
+    public boolean hasDefaultValue();
+    public Object  createDefaultValue();
+    public int     compareValues(Object v1, Object v2);
 
 }

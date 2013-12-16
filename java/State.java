@@ -17,14 +17,8 @@
 
 package foam.core;
 
-// TODO: NotFoundPlan, NoPlan
-
-public interface Plan
+/** Marker interface for MDAO states. **/
+public interface State
 {
 
-    public long cost();
-
-    public String toString();
-
-    public Sink execute(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
 }
