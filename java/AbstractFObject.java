@@ -17,6 +17,8 @@
 
 package foam.core;
 
+import java.util.Comparator;
+
 public abstract class AbstractFObject
     implements FCloneable
 {
@@ -63,8 +65,9 @@ public abstract class AbstractFObject
 
   public StringBuilder appendToJSON(StringBuilder b) {
     b.append("{");
-    b.append("model_:");
-    b.append(toJSON(MODEL().getName()));
+    b.append("model_:\"");
+    b.append(MODEL().getName());
+    b.append("\"");
     for ( Property p : MODEL().getProperties() ) {
       // TODO: do not output default values
       b.append(",");
