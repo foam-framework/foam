@@ -17,15 +17,12 @@
 
 package foam.core;
 
-public interface Index
+public interface Plan
 {
 
-    public State put(State state, Object value);
+    public long cost();
 
-    public State remove(State state, Object value);
+    public String toString();
 
-    public Plan plan(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
-
-    public long size(State state);
-
+    public Sink execute(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
 }
