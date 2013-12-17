@@ -17,7 +17,6 @@
 
 package foam.core;
 
-public class DAOInternalException extends Exception
+interface Map
 {
-
 }

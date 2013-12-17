@@ -14,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package foam.core;
 
-public class DAOInternalException extends Exception
-{
-
+class AbstractProperty {
 }

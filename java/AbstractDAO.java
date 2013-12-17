@@ -15,19 +15,11 @@
  * limitations under the License.
  */
 
-public class AbstractDAO
-    implments DAO
+package foam.core;
+
+public abstract class AbstractDAO
+    implements DAO
 {
-public interface DAO 
-    extends DAOListener
-{
-
-    public Object find(X x, Object where)
-        throws DAOException, DAOInternalException
-    {
-
-    }
-
     public Sink select(X x, Sink sink)
         throws DAOException, DAOInternalException
     {
@@ -66,19 +58,19 @@ public interface DAO
 
     public void listen(DAOListener listener)
     {
-        throw UnsupportedOperationException('listen');
+        throw new UnsupportedOperationException("listen");
     }
 
 
     public void unlisten(DAOListener listener)
     {
-        throw UnsupportedOperationException('unlisten');
+        throw new UnsupportedOperationException("unlisten");
     }
 
 
     public void pipe(DAOListener listener)
     {
-        throw UnsupportedOperationException('pipe');
+        throw new UnsupportedOperationException("pipe");
     }
 
 }

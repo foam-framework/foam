@@ -18,7 +18,7 @@
 package foam.core;
 
 public class ReverseComparator
-    extends Comparator
+    implements Comparator
 {
     
     public final Comparator delegate_;

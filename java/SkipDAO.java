@@ -23,7 +23,7 @@ public class SkipDAO
 
     protected long skip_;
 
-    public LimitdDAO(long skip, DAO delegate)
+    public SkipDAO(long skip, DAO delegate)
     {
         super(delegate);
 

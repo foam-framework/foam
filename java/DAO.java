@@ -17,7 +17,7 @@
 
 package foam.core;
 
-public interface DAO 
+public interface DAO
     extends DAOListener
 {
 

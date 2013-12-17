@@ -22,7 +22,7 @@ public class LimitedDAO
 {
     protected long limit_;
 
-    public LimitdDAO(long limit, DAO delegate)
+    public LimitedDAO(long limit, DAO delegate)
     {
         super(delegate);
 
