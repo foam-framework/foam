@@ -17,19 +17,6 @@
 
 package foam.core;
 
-public class ReverseComparator
-    implements Comparator
-{
-    
-    public final Comparator delegate_;
-
-    public ReverseComparator(Comparator delegate)
-    {
-        delegate_ = delegate;
-    }
-
-    public int compare(Object o1, Object o2)
-    {
-        return delegate_.compare(o2, o1);
-    }
+public interface Comparator {
+    public int compare(Object o1, Object o2);
 }

@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+package foam.core;
+
 public class AbstractDAO
     implements DAO
 {
