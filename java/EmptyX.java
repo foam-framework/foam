@@ -73,7 +73,7 @@ class FactoryXI
     final String   name_;
     final XFactory factory_;
 
-    FactoryXI(X parent, String name, Factory factory)
+    FactoryXI(X parent, String name, XFactory factory)
     {
         parent_  = parent;
         name_    = name;
