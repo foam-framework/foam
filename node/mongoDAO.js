@@ -1,14 +1,6 @@
 // Expects FOAM to already be loaded globally, and MongoDB's Node module to be installed.
 var mongo = require('mongodb');
 
-function withSink(sink) {
-  return function(err, result) {
-    debugger;
-    if (err) sink && sink.error && sink.error(err);
-    else sink && sink.put && sink.put(result);
-  };
-}
-
 global.MongoDAO = FOAM({
   model_: 'Model',
   extendsModel: 'AbstractDAO',
@@ -44,6 +36,17 @@ global.MongoDAO = FOAM({
       this.SUPER();
 
       this.withDB = amemo(this.openDB.bind(this));
+
+      this.serialize = this.FOAMSerialize;
+      this.deserialize = this.FOAMDeserialize;
+    },
+
+    FOAMDeserialize: function(json) {
+      return JSONToObject.visitObject(json);
+    },
+
+    FOAMSerialize: function(obj) {
+      return ObjectToJSON.visitObject(obj);
     },
 
     // NB: Returns the collection, not the database connection.
@@ -58,11 +61,21 @@ global.MongoDAO = FOAM({
       });
     },
 
+    withSink: function(sink) {
+      var self = this;
+      return function(err, result) {
+        if (err) sink && sink.error && sink.error(err);
+        else result && sink && sink.put && sink.put(self.deserialize(result));
+      };
+    },
+
     put: function(value, sink) {
-      value._id = value.id;
+      var serialized = this.serialize(value);
+      serialized._id = value.id;
+      var self = this;
       this.withDB(function(db) {
         // Use an "upsert" to either overwrite or insert.
-        db.save(value, {w:1}, function(err, result) {
+        db.save(serialized, {w:1}, function(err, result) {
           if (err) {
             sink && sink.error && sink.error(err);
           } else {
@@ -73,14 +86,110 @@ global.MongoDAO = FOAM({
     },
 
     find: function(query, sink) {
-      // Query is either an mLang query or a key.
-      // TODO: Assuming its a key for now.
+      query = EXPR.isInstance(query) ? query.toMongo() : { _id: query };
+      var self = this;
       this.withDB(function(db) {
-        db.findOne({ _id: query }, withSink(sink));
+        db.findOne(query, self.withSink(sink));
+      });
+    },
+
+    remove: function(query, sink) {
+      query = EXPR.isInstance(query) ? query.toMongo() : { _id: query };
+      var self = this;
+      this.withDB(function(db) {
+        db.remove(query, self.withSink(sink));
+      });
+    },
+
+    select: function(sink, options) {
+      var self = this;
+      this.withDB(function(db) {
+        db.find(function(err, cursor) {
+          if (err) return sink && sink.error && sink.error(err);
+          var sinkFunc = self.withSink(sink);
+          cursor.each(sinkFunc);
+        });
       });
     }
   }
 });
 
 
+// Mix-in toMongo to the various expression models, so that mLang expressions can be
+// converted easily to Mongo query objects.
+TRUE.toMongo = function() { return {}; };
+FALSE.toMongo = function() { return { ___nonexistent___: 0 }; };
+AndExpr.methods.toMongo = function() {
+  var total = {};
+  this.args.forEach(function(arg) {
+    Object_forEach(arg.toMongo(), function(val, key) {
+      if (!total[key]) {
+        total[key] = val;
+      } else {
+        console.warn('Query collision: two values for "' + key + '": "' + total[key] + '" and "' + val + '"');
+      }
+    });
+  });
+  return total;
+};
+
+OrExpr.methods.toMongo = function() {
+  return { $or: this.args.map(function(arg) { return arg.toMongo(); }) };
+};
+
+NotExpr.methods.toMongo = function() {
+  return { $not: this.arg1.toMongo() };
+};
+
+DescribeExpr.methods.toMongo = function() { return this.arg1.toMongo(); };
+
+// TODO: These binary expressions assume the left-hand-side value is the field.
+EqExpr.methods.toMongo = function() {
+  var ret = {};
+  ret[this.arg1.toMongo()] = this.arg2.toMongo();
+  return ret;
+};
+InExpr.methods.toMongo = function() {
+  var ret = {};
+  ret[this.arg1.toMongo()] = { $in: this.arg2 };
+  return ret;
+};
+
+
+function binOp(name) {
+  return function() {
+    var inner = {};
+    inner[name] = this.arg2.toMongo();
+    var ret = {};
+    ret[this.arg1.toMongo()] = inner;
+    return ret;
+  };
+}
+
+NeqExpr.methods.toMongo = binOp('$ne');
+LtExpr.methods.toMongo = binOp('$lt');
+GtExpr.methods.toMongo = binOp('$gt');
+LteExpr.methods.toMongo = binOp('$lte');
+GteExpr.methods.toMongo = binOp('$gte');
+
+ContainsExpr.methods.toMongo = function() {
+  var field = this.arg1.toMongo();
+  var value = this.arg2.toMongo();
+  return { $where: function() { return obj[field].indexOf(value) >= 0; } };
+};
+ContainsICExpr.methods.toMongo = function() {
+  var field = this.arg1.toMongo();
+  var value = this.arg2.toMongo().toLowerCase();
+  return { $where: function() { return obj[field].toLowerCase().indexOf(value) >= 0; } };
+};
+
+StartsWithExpr.methods.toMongo = function() {
+  var field = this.arg1.toMongo();
+  var value = this.arg2.toMongo();
+  return { $where: function() { return obj[field].indexOf(value) == 0; } };
+};
+
+ConstantExpr.methods.toMongo = function() { return this.arg1; };
+
+Property.getPrototype().toMongo = function() { return this.name; };
 
