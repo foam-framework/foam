@@ -61,11 +61,14 @@ global.MongoDAO = FOAM({
       });
     },
 
-    withSink: function(sink) {
+    withSink: function(sink, future) {
       var self = this;
       return function(err, result) {
         if (err) sink && sink.error && sink.error(err);
-        else if (result == null) sink && sink.eof && sink.eof();
+        else if (result == null) {
+          sink && sink.eof && sink.eof();
+          future.set(sink, err);
+        }
         else sink && sink.put && sink.put(self.deserialize(result));
       };
     },
@@ -106,18 +109,43 @@ global.MongoDAO = FOAM({
       var self = this;
       var opts = {};
       var query = null;
+      options = options || {};
       if (typeof options.limit !== 'undefined') opts.limit = options.limit;
       if (typeof options.skip  !== 'undefined') opts.skip = options.skip;
       if (typeof options.query !== 'undefined') query = options.query.toMongo();
       // TODO: Sort in Mongo instead of JS.
+      // Special handling for SUM, AVG, MIN and MAX.
+      // They extract a single field and then process it.
+      if (SumExpr.isInstance(sink) || AvgExpr.isInstance(sink)) {
+        opts.fields = { model_: 1 };
+        opts.fields[sink.arg1.toMongo()] = 1;
+      }
+      if (MinExpr.isInstance(sink) || MaxExpr.isInstance(sink)) {
+        opts.fields = { model_: 1 };
+        var field = sink.arg1.toMongo();
+        opts.fields[field] = 1;
+        opts.sort = [ [field, MinExpr.isInstance(sink) ? 1 : -1 ] ];
+        opts.limit = 1;
+      }
+
+      var future = afuture();
       this.withDB(function(db) {
         db.find(query, opts, function(err, cursor) {
           if (err) return sink && sink.error && sink.error(err);
+          if (CountExpr.isInstance(sink)) {
+            cursor.count(true, function(err, count) {
+              if (err) sink && sink.err && sink.err(err);
+              sink.count = count;
+              future.set(sink);
+            });
+            return;
+          }
           var decorated = self.decorateSink_(sink, { order: options.order });
-          var sinkFunc = self.withSink(decorated);
+          var sinkFunc = self.withSink(decorated, future);
           cursor.each(sinkFunc);
         });
       });
+      return future.get;
     }
   }
 });
