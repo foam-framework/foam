@@ -40,6 +40,18 @@ public class ProxyDAO
         return getDelegate().find(x, where);
     }
 
+    public void put(X x, Object obj)
+        throws DAOException, DAOInternalException
+    {
+        getDelegate().put(x, obj);
+    }
+
+    public void remove(X x, Object obj)
+        throws DAOException, DAOInternalException
+    {
+        getDelegate().remove(x, obj);
+    }
+
     public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
         throws DAOException, DAOInternalException
     {
