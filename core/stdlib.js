@@ -419,3 +419,7 @@ if (window.XMLHttpRequest) {
     xhr.send(opt_data);
   };
 }
+
+RegExp.quote = function(str) {
+  return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
+};
