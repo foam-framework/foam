@@ -65,7 +65,8 @@ global.MongoDAO = FOAM({
       var self = this;
       return function(err, result) {
         if (err) sink && sink.error && sink.error(err);
-        else result && sink && sink.put && sink.put(self.deserialize(result));
+        else if (result == null) sink && sink.eof && sink.eof();
+        else sink && sink.put && sink.put(self.deserialize(result));
       };
     },
 
@@ -103,10 +104,17 @@ global.MongoDAO = FOAM({
 
     select: function(sink, options) {
       var self = this;
+      var opts = {};
+      var query = null;
+      if (typeof options.limit !== 'undefined') opts.limit = options.limit;
+      if (typeof options.skip  !== 'undefined') opts.skip = options.skip;
+      if (typeof options.query !== 'undefined') query = options.query.toMongo();
+      // TODO: Sort in Mongo instead of JS.
       this.withDB(function(db) {
-        db.find(function(err, cursor) {
+        db.find(query, opts, function(err, cursor) {
           if (err) return sink && sink.error && sink.error(err);
-          var sinkFunc = self.withSink(sink);
+          var decorated = self.decorateSink_(sink, { order: options.order });
+          var sinkFunc = self.withSink(decorated);
           cursor.each(sinkFunc);
         });
       });
