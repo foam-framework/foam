@@ -67,7 +67,7 @@ global.MongoDAO = FOAM({
         if (err) sink && sink.error && sink.error(err);
         else if (result == null) {
           sink && sink.eof && sink.eof();
-          future.set(sink, err);
+          future.set(sink, err || undefined);
         }
         else sink && sink.put && sink.put(self.deserialize(result));
       };
@@ -106,10 +106,12 @@ global.MongoDAO = FOAM({
     },
 
     select: function(sink, options) {
+      options = options || {};
+      sink = sink || [];
+
       var self = this;
       var opts = {};
       var query = null;
-      options = options || {};
       if (typeof options.limit !== 'undefined') opts.limit = options.limit;
       if (typeof options.skip  !== 'undefined') opts.skip = options.skip;
       if (typeof options.query !== 'undefined') query = options.query.toMongo();
@@ -127,6 +129,8 @@ global.MongoDAO = FOAM({
         opts.sort = [ [field, MinExpr.isInstance(sink) ? 1 : -1 ] ];
         opts.limit = 1;
       }
+
+      console.log(options, opts);
 
       var future = afuture();
       this.withDB(function(db) {
@@ -211,18 +215,24 @@ GteExpr.methods.toMongo = binOp('$gte');
 ContainsExpr.methods.toMongo = function() {
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo();
-  return { $where: function() { return obj[field].indexOf(value) >= 0; } };
+  var ret = {};
+  ret[field] = new RegExp(RegExp.quote(value));
+  return ret;
 };
 ContainsICExpr.methods.toMongo = function() {
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo().toLowerCase();
-  return { $where: function() { return obj[field].toLowerCase().indexOf(value) >= 0; } };
+  var ret = {};
+  ret[field] = new RegExp(RegExp.quote(value), 'i');
+  return ret;
 };
 
 StartsWithExpr.methods.toMongo = function() {
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo();
-  return { $where: function() { return obj[field].indexOf(value) == 0; } };
+  var ret = {};
+  ret[field] = new RegExp('^' + RegExp.quote(value));
+  return ret;
 };
 
 ConstantExpr.methods.toMongo = function() { return this.arg1; };

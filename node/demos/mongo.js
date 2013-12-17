@@ -32,5 +32,5 @@ dao.put(Person.create({ id: 3, name: 'Amie', age: 25, sex: 'F' }));
 dao.put(Person.create({ id: 4, name: 'Mike', age: 19 }));
 */
 
-dao.select(MAX(Person.AGE))(console.log);
+dao.where(CONTAINS_IC(Person.NAME, 'a')).select()(console.log);
 
