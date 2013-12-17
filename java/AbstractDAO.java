@@ -17,7 +17,7 @@
 
 package foam.core;
 
-public class AbstractDAO
+public abstract class AbstractDAO
     implements DAO
 {
     public Sink select(X x, Sink sink)
@@ -58,19 +58,19 @@ public class AbstractDAO
 
     public void listen(DAOListener listener)
     {
-        throw UnsupportedOperationException("listen");
+        throw new UnsupportedOperationException("listen");
     }
 
 
     public void unlisten(DAOListener listener)
     {
-        throw UnsupportedOperationException("unlisten");
+        throw new UnsupportedOperationException("unlisten");
     }
 
 
     public void pipe(DAOListener listener)
     {
-        throw UnsupportedOperationException("pipe");
+        throw new UnsupportedOperationException("pipe");
     }
 
 }

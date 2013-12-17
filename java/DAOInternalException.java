@@ -17,7 +17,7 @@
 
 package foam.core;
 
-public class DAOInternalException
+public class DAOInternalException extends Exception
 {
 
 }
