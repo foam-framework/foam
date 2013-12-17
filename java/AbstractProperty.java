@@ -14,37 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package foam.core;
 
-public class LimitedDAO
-    extends ProxyDAO
-{
-    protected long limit_;
-
-    public LimitedDAO(long limit, DAO delegate)
-    {
-        super(delegate);
-
-        setLimit(limit);
-    }
-
-    public long getLimit()
-    {
-        return limit_;
-    }
-
-    public void setLimit(long limit)
-    {
-        limit_ = limit;
-    }
-
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-    {
-        long l2 = limit == -1 ? getLimit() : Math.min(limit, getLimit());
-
-        return getDelegate().select_(x, sink, p, c, skip, l2);
-    }
-
+class AbstractProperty {
 }

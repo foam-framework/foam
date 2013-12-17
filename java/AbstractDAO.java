@@ -16,18 +16,8 @@
  */
 
 public class AbstractDAO
-    implments DAO
+    implements DAO
 {
-public interface DAO 
-    extends DAOListener
-{
-
-    public Object find(X x, Object where)
-        throws DAOException, DAOInternalException
-    {
-
-    }
-
     public Sink select(X x, Sink sink)
         throws DAOException, DAOInternalException
     {
@@ -66,19 +56,19 @@ public interface DAO
 
     public void listen(DAOListener listener)
     {
-        throw UnsupportedOperationException('listen');
+        throw UnsupportedOperationException("listen");
     }
 
 
     public void unlisten(DAOListener listener)
     {
-        throw UnsupportedOperationException('unlisten');
+        throw UnsupportedOperationException("unlisten");
     }
 
 
     public void pipe(DAOListener listener)
     {
-        throw UnsupportedOperationException('pipe');
+        throw UnsupportedOperationException("pipe");
     }
 
 }
