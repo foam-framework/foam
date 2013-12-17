@@ -17,7 +17,9 @@
 
 package foam.core;
 
-public class MDAO
+// TODO:  Abstract for now, so the code will compile.
+// Need to finish the implementation of MDAO.
+public abstract class MDAO
     implements DAO
 {
 
