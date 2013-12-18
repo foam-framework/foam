@@ -90,7 +90,7 @@ String.prototype.compareTo = function(o) {
 };
 
 Number.prototype.compareTo = function(o) {
-  if ( o === this ) return 0;
+  if ( o == this ) return 0;
   return this < o ? -1 : 1;
 };
 
