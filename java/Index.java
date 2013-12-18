@@ -17,6 +17,8 @@
 
 package foam.core;
 
+import java.util.Comparator;
+
 public interface Index
 {
 
