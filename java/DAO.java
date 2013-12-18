@@ -52,6 +52,7 @@ public interface DAO
 
     public void unlisten(DAOListener listener);
 
-    public void pipe(DAOListener listener);
+    public void pipe(DAOListener listener)
+        throws DAOException, DAOInternalException;
 
 }
