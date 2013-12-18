@@ -338,8 +338,10 @@ var CachingDAO = {
       put: function(obj, sink) { source.put(obj, sink); },
       remove: function(query, sink) { source.remove(query, sink); },
       removeAll: function() {
-        cache.removeAll();
-        source.removeAll.apply(source, arguments);
+        return apar(
+          cache.removeAll(),
+          source.removeAll.apply(source, arguments)
+        );
       }
     };
   }
@@ -376,7 +378,7 @@ var LoggingDAO = {
       },
       removeAll: function(query, sink) {
         logger('removeAll', query);
-        delegate.remove(query, sink);
+        return delegate.remove(query, sink);
       }
     };
   }
@@ -606,12 +608,16 @@ var AbstractDAO = FOAM({
     // calls remove() for all returned values.
     removeAll: function(sink, options) {
       var self = this;
+      var future = afuture();
       this.select({
         put: function(obj) {
           self.remove(obj, { remove: sink && sink.remove });
-        },
-        eof: sink && sink.eof
+        }
+      })(function() {
+        sink && sink.eof();
+        future.set();
       });
+      return future.get;
     },
 
     /**
@@ -684,7 +690,7 @@ var ProxyDAO = FOAM({
     },
 
     removeAll: function() {
-      this.delegate.removeAll.apply(this.delegate, arguments);
+      return this.delegate.removeAll.apply(this.delegate, arguments);
     },
 
     find: function(key, sink) {
@@ -789,8 +795,10 @@ var CascadingRemoveDAO = FOAM({
       this.delegate.remove(query, sink);
     },
     removeAll: function(sink, options) {
-      this.childDAO.removeAll(null, options); // TODO: Sane?
-      this.delegate.removeAll(sink, options);
+      return apar(
+        this.childDAO.removeAll(null, options), // TODO: Sane?
+        this.delegate.removeAll(sink, options)
+      );
     }
   }
 });
@@ -972,9 +980,10 @@ defineProperties(Array.prototype, {
     }
     sink && sink.error && sink.error('find', query);
   },
-  remove: function(query, callback) {
-    var id = query.id ? query.id : query; // Query is always an ID now.
-    this.removeAll(callback, { query: { f: function(obj) { return obj.id === id; } } });
+  remove: function(query, sink) {
+    var id = query.id ? query.id : query;
+    this.removeAll({ remove: sink && sink.remove },
+       { query: { f: function(obj) { return obj.id === id; } } });
   },
   removeAll: function(sink, options) {
     if (!options) options = {};
@@ -983,13 +992,14 @@ defineProperties(Array.prototype, {
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
       if (options.query.f(obj)) {
-        var rem = this.splice(i,1)[0]
+        var rem = this.splice(i,1)[0];
         this.notify_('remove', rem);
         sink && sink.remove && sink.remove(rem);
         i--;
       }
     }
     sink && sink.eof && sink.eof();
+    return anop();
   },
   select: function(sink, options) {
     sink = sink || [];
@@ -1245,6 +1255,7 @@ var IDBDAO = FOAM({
       var query = (options && options.query && options.query.partialEval()) ||
           { f: function() { return true; } };
 
+      var future = afuture();
       var self = this;
       this.withStore('readwrite', function(store) {
         var request = store.openCursor();
@@ -1267,12 +1278,14 @@ var IDBDAO = FOAM({
             cursor.continue();
           } else {
             sink && sink.eof && sink.eof();
+            future.set();
           }
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
         };
       });
+      return future.get;
     },
 
     select: function(sink, options) {
@@ -1373,8 +1386,9 @@ var StorageDAO = FOAM({
     },
 
     removeAll: function(sink, options) {
-      this.storage.removeAll(sink, options);
+      var ret = this.storage.removeAll(sink, options);
       this.flush_();
+      return ret;
     },
 
     select: function(sink, options) {
@@ -1530,8 +1544,9 @@ var AbstractFileDAO = FOAM({
 
     removeAll: function(sink, options) {
       var self = this;
+      var future = afuture();
       this.withStorage(function(s) {
-        s.removeAll({
+        var fut = s.removeAll({
           __proto__: sink,
           remove: function(obj) {
             self.__proto__.remove && self.__proto__.remove(obj);
@@ -1539,7 +1554,9 @@ var AbstractFileDAO = FOAM({
             self.update_('remove', obj);
           }
         }, options);
+        fut(future.set);
       });
+      return future.get;
     },
 
     select: function(sink, options) {

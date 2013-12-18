@@ -926,12 +926,13 @@ var MDAO = Model.create({
     remove: function(obj, sink) {
       var id = obj.id ? obj.id : obj;
       var query = EQ(this.model.getProperty(this.model.ids[0]), id);
-      this.removeAll({ remove: sink && sink.remove, eof: function() { } }, { query: query });
+      this.removeAll({ remove: sink && sink.remove }, { query: query });
     },
 
     removeAll: function(sink, options) {
       if (!options) options = {};
       if (!options.query) options.query = TRUE;
+      var future = afuture();
       this.where(query).select([])(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
@@ -939,7 +940,10 @@ var MDAO = Model.create({
           this.notify_('remove', [a[i]]);
           sink && sink.remove && sink.remove(a[i]);
         }
+        sink && sink.eof && sink.eof();
+        future.set();
       }.bind(this));
+      return future.get;
     },
 
     select: function(sink, options) {

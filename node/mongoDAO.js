@@ -98,13 +98,17 @@ global.MongoDAO = FOAM({
     },
 
     removeAll: function(sink, options) {
+      var future = afuture();
       var doRemove = function() {
         var query = null;
         if (options.query) query = options.query.toMongo();
         this.withDB(function(db) {
           db.remove(query, function(err, result) {
             if (err) sink && sink.error && sink.error(err);
-            else sink && sink.eof && sink.eof();
+            else {
+              sink && sink.eof && sink.eof();
+              future.set();
+            }
           });
         });
       };
@@ -115,6 +119,8 @@ global.MongoDAO = FOAM({
       } else {
         doRemove();
       }
+
+      return future.get;
     },
 
     remove: function(obj, sink) {
