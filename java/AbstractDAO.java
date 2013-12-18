@@ -113,7 +113,6 @@ public abstract class AbstractDAO
 
         public T next()
         {
-            assertHasNext();
             return delegate_.next();
         }
 
@@ -192,6 +191,7 @@ public abstract class AbstractDAO
         public T next()
         {
             maybeSkip();
+            assertHasNext();
             return super.next();
         }
 
@@ -210,9 +210,7 @@ public abstract class AbstractDAO
         private void maybeSkip()
         {
             while (skip_ > 0 && super.hasNext()) {
-                // Cannot call super.next(), because it calls assertHasNext(),
-                // which calls maybeSkip(), and we get a stack overflow.
-                delegate_.next();
+                super.next();
                 skip_--;
             }
         }
