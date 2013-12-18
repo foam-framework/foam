@@ -132,7 +132,6 @@ p, h1, form, button{
   float:left;
   font-size:12px;
   padding-left: 8px;
-  border2:solid 1px #aacfe4;
   margin:2px 15px 2px 0px;
 }
 
@@ -329,7 +328,6 @@ option[selected]{
   font-weight:bold;
   padding:4px 16px;
   text-decoration:none;
-//  text-shadow:1px 1px 0px #ffffff;
 }
 
 .actionButton:hover {
