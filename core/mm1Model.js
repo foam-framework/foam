@@ -190,6 +190,23 @@ var Model = {
            view: 'ArrayView',
            valueFactory: function() { return []; },
            defaultValue: [],
+           postSet: function(templates) {
+             // Load templates from an external file
+             // if their 'template' property isn't set 
+             for ( var i = 0 ; i < templates.length ; i++ ) {
+               var t = templates[i];
+               if ( ! t.template ) {
+                 var path = document.currentScript.src;
+                 path = path.substring(0, path.lastIndexOf('/')+1);
+                 path += this.name + '_' + t.name + '.ft';
+                 var xhr = new XMLHttpRequest();
+                 xhr.open("GET", path);
+                 xhr.asend((function(t) { return function(data) {
+                   t.template = data;
+                 }})(t));
+               } 
+             }
+           },
 //         defaultValueFn: function() { return []; },
            help: 'Templates associated with this entity.'
        },

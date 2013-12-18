@@ -17,21 +17,6 @@
 
 package foam.core;
 
-public class OrderedDAO
-    extends ProxyDAO
-{
-    protected Comparator compare_;
-
-    public OrderedDAO(Comparator compare, DAO delegate) {
-        super(delegate);
-        compare_ = compare;
-    }
-
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-    {
-        Comparator compare = (c == null) ? compare_ :
-            new CompoundComparator(c, compare_);
-        return super.select_(x, sink, p, compare, skip, limit);
-    }
+public interface Comparator {
+    public int compare(Object o1, Object o2);
 }

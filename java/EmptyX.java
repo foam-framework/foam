@@ -19,7 +19,7 @@ package foam.core;
 
 // TODO: make this a function tree rather than a linked list. (for performance)
 
-class AbstractX
+abstract class AbstractX
     implements X
 {
     public Object get(String name)
@@ -44,9 +44,9 @@ class XI
 {
     final X      parent_;
     final String name_;
-    final String value_;
+    final Object value_;
 
-    XI(X parent, String name, String value)
+    XI(X parent, String name, Object value)
     {
         parent_ = parent;
         name_   = name;
@@ -73,7 +73,7 @@ class FactoryXI
     final String   name_;
     final XFactory factory_;
 
-    XI(X parent, String name, Factory factory)
+    FactoryXI(X parent, String name, XFactory factory)
     {
         parent_  = parent;
         name_    = name;

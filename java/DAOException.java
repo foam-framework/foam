@@ -17,7 +17,7 @@
 
 package foam.core;
 
-public class DAOException
+public class DAOException extends Exception
 {
 
 }
