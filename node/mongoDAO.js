@@ -67,7 +67,7 @@ global.MongoDAO = FOAM({
         if (err) sink && sink.error && sink.error(err);
         else if (result == null) {
           sink && sink.eof && sink.eof();
-          future.set(sink, err || undefined);
+          future && future.set(sink, err || undefined);
         }
         else sink && sink.put && sink.put(self.deserialize(result));
       };
