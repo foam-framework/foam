@@ -307,7 +307,7 @@ var order = CompositeService.create({
         }),
       ],
       exclusive: false
-    }),
+    })
   ],
   exclusive: false
 });
