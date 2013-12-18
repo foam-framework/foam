@@ -17,6 +17,8 @@
 
 package foam.core;
 
+import java.util.Comparator;
+
 public class ProxyDAO
     extends AbstractDAO
 {
@@ -38,6 +40,18 @@ public class ProxyDAO
         throws DAOException, DAOInternalException
     {
         return getDelegate().find(x, where);
+    }
+
+    public Object put(X x, Object obj)
+        throws DAOException, DAOInternalException
+    {
+        return getDelegate().put(x, obj);
+    }
+
+    public void remove(X x, Object obj)
+        throws DAOException, DAOInternalException
+    {
+        getDelegate().remove(x, obj);
     }
 
     public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)

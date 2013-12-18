@@ -17,6 +17,8 @@
 
 package foam.core;
 
+import java.util.Comparator;
+
 public interface DAO
     extends DAOListener
 {
@@ -50,6 +52,7 @@ public interface DAO
 
     public void unlisten(DAOListener listener);
 
-    public void pipe(DAOListener listener);
+    public void pipe(DAOListener listener)
+        throws DAOException, DAOInternalException;
 
 }

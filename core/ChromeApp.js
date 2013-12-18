@@ -74,17 +74,6 @@ function arequire(modelName) {
   return aseq(apar.apply(apar, args), aconstant(model));
 }
 
-function axhr(url, opt_op, opt_params) {
-  var op = opt_op || "GET";
-  var params = opt_params || [];
-
-  return function(ret) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(op, url);
-    xhr.asend(function(json) { ret(JSON.parse(json)); }, params.join('&'));
-  };
-}
-
 
 ajsonp = function(url, params) {
   return axhr(url, 'GET', params);

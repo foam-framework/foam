@@ -377,6 +377,17 @@ function arepeatpar(n, afunc) {
   };
 }
 
+function axhr(url, opt_op, opt_params) {
+  var op = opt_op || "GET";
+  var params = opt_params || [];
+
+  return function(ret) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(op, url);
+    xhr.asend(function(json) { ret(JSON.parse(json)); }, params && params.join('&'));
+  };
+}
+
 // Note: this doesn't work for packaged-apps
 var __JSONP_CALLBACKS__ = {};
 var ajsonp = (function() {
@@ -395,7 +406,7 @@ var ajsonp = (function() {
       };
 
       var script = document.createElement('script');
-      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + '&' + params.join('&');
+      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + (params ? '&' + params.join('&') : '');
       script.onload = function() {
         document.body.removeChild(this);
       };

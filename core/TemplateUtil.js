@@ -40,7 +40,11 @@ var TemplateParser = {
     sym('text')
   )),
 
-  'values tag': seq('<%=', repeat(not('%>', anyChar)), '%>'),
+  'values tag': alt(
+    seq('<%=', repeat(not('%>', anyChar)), '%>'),
+    seq('{{', repeat(not('}}', anyChar)), '}}')
+  ),
+
   'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
   'ignored newline': literal('\\\n'),
   newline: literal('\n'),
