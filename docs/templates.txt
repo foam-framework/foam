@@ -1,0 +1,42 @@
+Template Syntax
+ <% code %>: code inserted into template, but nothing implicitly output
+ <%= comma-separated-values %>: all values are appended to template output
+ {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax
+ \<new-line>: ignored
+
+Defined in Models
+
+ Templates can be defined in-line in Models.  Example:
+
+   templates:[
+     {
+        model_: 'Template',
+
+        name: 'toHTML',
+        description: 'TileView',
+        template: '<div class="gridtile"><table cellspacing="0" cellpadding="0"><tbody><tr><td class="id"><img src="https://ssl.gstatic.com/codesite/ph/images/star_off.gif"><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.id %></a></td><td class="status"><%= this.issue.status %></td></tr><tr><td colspan="2"><div><a href="https://code.google.com/p/chromium/issues/detail?id=<%= this.issue.id %>"><%= this.issue.summary %></a></div></td></tr></tbody></table></div>'
+     }
+   ]
+
+The best way to edit templates is to use the FOAM Modeller (modeller.html) as it allows you to edit templates
+across multiple-lines without having to escape newline characters or concatenate strings.
+
+External Templates
+
+If you prefer to edit templates using your favourite editor, rather than the FOAM modeller, then storing the
+templates external to the model file may be prefered.  To do this, just leave out the 'template:' portion of the template JSON and instead put the template in an external file named: <Model Name>_<Template Name>.ft.  For example, the aboe template, taken from teh CIssueTileView model, would appear in a file named 'CIssueTileView_toHTML.ft'.
+
+Limitations of External Templates
+
+Attempting to use external templates when loading files using the file: protocol, will not work.  To work around this problem, either serve your files from a local HTTP server (Ex. python -m SimpleHTTPServer), or else run chrome with the --allow-file-access-from-files option.
+
+Editor Support
+
+FOAM templates use the standard JSP syntax, so syntax highlighting is available for many common editors.
+
+For Emacs, see:
+   http://www.emacswiki.org/emacs/JspMode
+
+Also, you should generally have very little code in your templates, so HTML highlighting should normally
+be sufficient.
+

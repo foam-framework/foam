@@ -22,6 +22,8 @@ import static foam.core.MLang.AND;
 import static foam.core.PredicateUtils.toExpr;
 import static foam.core.PredicateUtils.toPredicate;
 
+import java.util.Comparator;
+
 public class PredicatedDAO
     extends ProxyDAO
 {
