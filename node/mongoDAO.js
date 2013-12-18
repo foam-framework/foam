@@ -97,11 +97,32 @@ global.MongoDAO = FOAM({
       });
     },
 
-    remove: function(query, sink) {
-      query = EXPR.isInstance(query) ? query.toMongo() : { _id: query };
-      var self = this;
+    removeAll: function(sink, options) {
+      var doRemove = function() {
+        var query = null;
+        if (options.query) query = options.query.toMongo();
+        this.withDB(function(db) {
+          db.remove(query, function(err, result) {
+            if (err) sink && sink.error && sink.error(err);
+            else sink && sink.eof && sink.eof();
+          });
+        });
+      };
+
+      if (sink && sink.remove) {
+        var arr = [];
+        this.select({ put: sink.remove, error: sink.error, eof: doRemove }, options);
+      } else {
+        doRemove();
+      }
+    },
+
+    remove: function(obj, sink) {
       this.withDB(function(db) {
-        db.remove(query, self.withSink(sink));
+        db.remove({ _id: obj.id }, function(err, result) {
+          if (err) sink && sink.error && sink.error(err);
+          else sink && sink.remove && sink.remove(obj);
+        });
       });
     },
 

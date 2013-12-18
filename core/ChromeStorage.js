@@ -108,8 +108,7 @@ var ChromeStorageDAO = FOAM({
     },
 
     remove: function(obj, sink) {
-      var id = obj.id || obj;
-      this.store.remove({id: id}, { remove: sink && sink.remove });
+      this.store.remove(obj, sink);
     },
 
     select: function(sink, options) {

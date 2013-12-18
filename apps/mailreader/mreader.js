@@ -74,7 +74,7 @@ withFOAM(function() {
     emails = IDBDAO.create({model: EMail});
 
     $('loadmbox').onchange = function (event) {
-        emails.remove(TRUE); // this only works with storagedao2 because its synchronous
+        emails.removeAll(); // this only works with storagedao2 because its synchronous
         var file = event.target.files[0];
         var reader =
             FullReader.create(
@@ -86,7 +86,7 @@ withFOAM(function() {
     };
 
     $('socketload').onclick = function(event) {
-        emails.remove(TRUE);
+        emails.removeAll();
         var sockets = SocketManager.create();
         var withSocket = sockets.get('tcp:localhost:1234');
         withSocket(function(socket) {
