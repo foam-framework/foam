@@ -40,10 +40,10 @@ public class ProxyDAO
         return getDelegate().find(x, where);
     }
 
-    public void put(X x, Object obj)
+    public Object put(X x, Object obj)
         throws DAOException, DAOInternalException
     {
-        getDelegate().put(x, obj);
+        return getDelegate().put(x, obj);
     }
 
     public void remove(X x, Object obj)

@@ -1,4 +1,5 @@
 /**
+ *
  * @license
  * Copyright 2013 Google Inc. All Rights Reserved.
  *
@@ -17,6 +18,10 @@
 
 package foam.core;
 
+import static foam.core.MLang.AND;
+import static foam.core.PredicateUtils.toExpr;
+import static foam.core.PredicateUtils.toPredicate;
+
 public class PredicatedDAO
     extends ProxyDAO
 {
@@ -26,7 +31,7 @@ public class PredicatedDAO
     {
         super(delegate);
 
-        setPredicate(predicate);
+        setPredicate(p);
     }
 
     public Predicate getPredicate()
@@ -42,7 +47,7 @@ public class PredicatedDAO
     public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
         throws DAOException, DAOInternalException
     {
-        Predicate p2 = AND(getPredicate(), p).partialEval();
+        Predicate p2 = toPredicate(AND(toExpr(getPredicate()), toExpr(p)).partialEval());
 
         return getDelegate().select_(x, sink, p2, c, skip, limit);
     }
