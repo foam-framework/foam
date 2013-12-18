@@ -17,6 +17,8 @@
 
 package foam.core;
 
+import java.util.Comparator;
+
 // TODO: NotFoundPlan, NoPlan
 
 public interface Plan
