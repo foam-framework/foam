@@ -11,7 +11,7 @@ var Service = FOAM({
     },
     {
       model_: 'BooleanProperty',
-      name: 'selected',
+      name: 'selected'
     },
     {
       model_: 'StringProperty',
@@ -20,8 +20,8 @@ var Service = FOAM({
     {
       model_: 'IntegerProperty',
       name: 'cost',
-      mode: 'read-only',
-    },
+      mode: 'read-only'
+    }
   ],
 
   methods: {
@@ -52,7 +52,7 @@ var CompositeService = FOAM({
           for ( var i = 0; i < value.length; i++ ) {
             var subSelected = value[i].selected;
             var subCost = value[i].cost;
-            selected = selected || subSelected
+            selected = selected || subSelected;
             if ( subSelected ) {
               cost += subCost;
             }
@@ -65,7 +65,7 @@ var CompositeService = FOAM({
     {
       model_: 'BooleanProperty',
       name: 'exclusive'
-    },
+    }
   ],
 
   methods: {
@@ -168,7 +168,7 @@ var CompositeServiceView = FOAM({
 
           subView = OptionalServiceView.create({
             children: [],
-            delegate: subView,
+            delegate: subView
           });
 
           html += subView.toHTML();
