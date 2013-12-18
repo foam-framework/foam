@@ -60,8 +60,14 @@ public class PredicateUtils {
         }
 
         public ExprPredicate partialEval() {
-             return pDelegate_ != null ? this :
-                 new ExprPredicate(eDelegate_.partialEval());
+             if (eDelegate_ == null) {
+                 return this;
+             }
+
+             EXPR<Boolean> result = eDelegate_.partialEval();
+             return (result instanceof ExprPredicate) ?
+                 (ExprPredicate) result :
+                 new ExprPredicate(result);
         }
     }
 }
