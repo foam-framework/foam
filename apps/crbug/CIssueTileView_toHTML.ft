@@ -9,7 +9,7 @@
     </tr>
     <tr>
       <td colspan="2">
-        <div><a href="https://code.google.com/p/chromium/issues/detail?id={{this.issue.id}}">{{this.strToHTML(this.issue.summary)}}</a></div>
+        <div><a href="https://code.google.com/p/chromium/issues/detail?id={{this.issue.id}}">{{this.issue.summary}}</a></div>
       </td>
     </tr>
   </tbody></table>
