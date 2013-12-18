@@ -61,15 +61,21 @@ global.MongoDAO = FOAM({
       });
     },
 
-    withSink: function(sink, future) {
+    withSink: function(sink, future, query) {
       var self = this;
       return function(err, result) {
         if (err) sink && sink.error && sink.error(err);
-        else if (result == null) {
+        else if (result === null) {
           sink && sink.eof && sink.eof();
           future && future.set(sink, err || undefined);
         }
-        else sink && sink.put && sink.put(self.deserialize(result));
+        else {
+          if (query && query.f && !query.f(result)) {
+            console.log('rejecting', result);
+            return;
+          }
+          sink && sink.put && sink.put(self.deserialize(result));
+        }
       };
     },
 
@@ -99,10 +105,11 @@ global.MongoDAO = FOAM({
 
     removeAll: function(sink, options) {
       var future = afuture();
+      var self = this;
       var doRemove = function() {
         var query = null;
-        if (options.query) query = options.query.toMongo();
-        this.withDB(function(db) {
+        if (options && options.query) query = options.query.toMongo();
+        self.withDB(function(db) {
           db.remove(query, function(err, result) {
             if (err) sink && sink.error && sink.error(err);
             else {
@@ -157,8 +164,6 @@ global.MongoDAO = FOAM({
         opts.limit = 1;
       }
 
-      console.log(options, opts);
-
       var future = afuture();
       this.withDB(function(db) {
         db.find(query, opts, function(err, cursor) {
@@ -172,7 +177,7 @@ global.MongoDAO = FOAM({
             return;
           }
           var decorated = self.decorateSink_(sink, { order: options.order });
-          var sinkFunc = self.withSink(decorated, future);
+          var sinkFunc = self.withSink(decorated, future, options && options.query);
           cursor.each(sinkFunc);
         });
       });
@@ -184,6 +189,8 @@ global.MongoDAO = FOAM({
 
 // Mix-in toMongo to the various expression models, so that mLang expressions can be
 // converted easily to Mongo query objects.
+// Note that queries we don't understand, such as EQ(Model.FOO, Model.BAR), get
+// turned into TRUE.
 TRUE.toMongo = function() { return {}; };
 FALSE.toMongo = function() { return { ___nonexistent___: 0 }; };
 AndExpr.methods.toMongo = function() {
@@ -205,18 +212,38 @@ OrExpr.methods.toMongo = function() {
 };
 
 NotExpr.methods.toMongo = function() {
+  if (this.arg1 === FALSE) return TRUE.toMongo();
   return { $not: this.arg1.toMongo() };
 };
 
 DescribeExpr.methods.toMongo = function() { return this.arg1.toMongo(); };
 
+function validArgs(expr) {
+  // The only valid case is LHS is a Property, RHS is a Constant.
+  if (Property.isInstance(expr.arg1) && ConstantExpr.isInstance(expr.arg2)) {
+    return true;
+  }
+  // Check if it's backwards.
+  if (Property.isInstance(expr.arg2) && ConstantExpr.isInstance(expr.arg1)) {
+    var temp = expr.arg1;
+    expr.arg1 = expr.arg2;
+    expr.arg2 = temp;
+    return true;
+  }
+
+  return false;
+}
+
+
 // TODO: These binary expressions assume the left-hand-side value is the field.
 EqExpr.methods.toMongo = function() {
+  if(!validArgs(this)) return TRUE.toMongo();
   var ret = {};
   ret[this.arg1.toMongo()] = this.arg2.toMongo();
   return ret;
 };
 InExpr.methods.toMongo = function() {
+  if (!(Property.isInstance(this.arg1) && this.arg2 instanceof Array)) return TRUE.toMongo();
   var ret = {};
   ret[this.arg1.toMongo()] = { $in: this.arg2 };
   return ret;
@@ -225,6 +252,7 @@ InExpr.methods.toMongo = function() {
 
 function binOp(name) {
   return function() {
+    if (!validArgs(this)) return TRUE.toMongo();
     var inner = {};
     inner[name] = this.arg2.toMongo();
     var ret = {};
@@ -240,6 +268,7 @@ LteExpr.methods.toMongo = binOp('$lte');
 GteExpr.methods.toMongo = binOp('$gte');
 
 ContainsExpr.methods.toMongo = function() {
+  if (!validArgs(this)) return TRUE.toMongo();
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo();
   var ret = {};
@@ -247,6 +276,7 @@ ContainsExpr.methods.toMongo = function() {
   return ret;
 };
 ContainsICExpr.methods.toMongo = function() {
+  if (!validArgs(this)) return TRUE.toMongo();
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo().toLowerCase();
   var ret = {};
@@ -255,6 +285,7 @@ ContainsICExpr.methods.toMongo = function() {
 };
 
 StartsWithExpr.methods.toMongo = function() {
+  if (!validArgs(this)) return TRUE.toMongo();
   var field = this.arg1.toMongo();
   var value = this.arg2.toMongo();
   var ret = {};
