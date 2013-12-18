@@ -186,12 +186,15 @@ Data persistance abstraction.
 
 Methods:
 	put(obj, opt_sink)
-	remove(query, callback)
+	remove(object, sink)
 
 	find(query, sink)
+
 	select(sink)
-	listen(sink)
+        removeAll(sink)
+
 	pipe(sink)
+	listen(sink)
 	unlisten(sink)
 
 	where(query) -> DAO

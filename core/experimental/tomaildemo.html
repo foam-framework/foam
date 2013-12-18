@@ -1001,7 +1001,7 @@ emails = JSONUtil.mapToObj([
     function switchHands() { reversed = ! reversed; layout(); }
 
     function loadmbox(event) {
-      emails.remove(TRUE); // this only works with storagedao because its synchronous
+      emails.removeAll(); // this only works with storagedao because its synchronous
       var file = event.target.files[0];
 
       MBOXLoader.dao = emails;
