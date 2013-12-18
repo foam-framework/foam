@@ -76,8 +76,11 @@ public abstract class AbstractDAO
 
 
     public void pipe(DAOListener listener)
+        throws DAOException, DAOInternalException
     {
-        throw new UnsupportedOperationException("pipe");
+        // TODO:  Create an EmptyX?  Allow a supplied X?
+        select(null, listener);
+        listen(listener);
     }
 
     protected <T> Iterable<T> iterableSelectHelper(Iterable<T> ts, Predicate p, Comparator<T> c, final long skip, final long limit) {
