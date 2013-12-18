@@ -84,66 +84,203 @@ public abstract class AbstractDAO
     }
 
     protected <T> Iterable<T> iterableSelectHelper(Iterable<T> ts, Predicate p, Comparator<T> c, final long skip, final long limit) {
-        if (skip <= 0 && limit < 0 && c == null) {
-            return ts;
-        }
-
         if (limit == 0) {
             return Collections.<T>emptyList();
         }
 
-        if (c != null) {
-            PriorityQueue<T> ordered = new PriorityQueue<T>(limit >= 0 ? (int) limit : 10, c);
-            for (T t : ts) {
-                ordered.add(t);
-            }
-            ts = ordered;
+        if (c != null) ts = new OrderedIterable<T>(ts, c);
+        if (p != null) ts = new PredicatedIterable<T>(ts, p);
+        if (skip > 0) ts = new SkipIterable<T>(ts, skip);
+        if (limit >= 0) ts = new LimitIterable<T>(ts, limit);
+
+        return ts;
+    }
+
+    private static abstract class DelegatingIterableIterator<T>
+        implements Iterable<T>, Iterator<T>
+    {
+        protected final Iterator<T> delegate_;
+
+        public DelegatingIterableIterator(Iterable<T> delegate)
+        {
+            delegate_ = delegate.iterator();
         }
 
-        if (skip <= 0 && limit < 0) {
-          return ts;
+        public Iterator<T> iterator()
+        {
+            return this;
         }
 
-        final Iterator<T> input = ts.iterator();
-        final Iterator<T> iter = new Iterator<T>() {
-            int index = 0;
+        public T next()
+        {
+            assertHasNext();
+            return delegate_.next();
+        }
 
-            @Override
-            public T next() {
-                maybeSkip();
+        public boolean hasNext()
+        {
+            return delegate_.hasNext();
+        }
 
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
+        public void remove()
+        {
+            delegate_.remove();
+        }
+
+        protected void assertHasNext()
+        {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    private static class PredicatedIterable<T>
+        extends DelegatingIterableIterator<T>
+    {
+        final Predicate predicate_;
+        T next_ = null;
+
+        public PredicatedIterable(Iterable<T> delegate, Predicate predicate)
+        {
+            super(delegate);
+            predicate_ = predicate;
+        }
+
+        public T next()
+        {
+            if (next_ == null) {
+                attemptFetchNext();
+            }
+            assertHasNext();
+            T result = next_;
+            next_ = null;
+            return result;
+        }
+
+        public boolean hasNext()
+        {
+            if (next_ == null) {
+                attemptFetchNext();
+            }
+            return next_ != null;
+        }
+
+        private void attemptFetchNext()
+        {
+            while (next_ == null && super.hasNext()) {
+                T maybeNext = super.next();
+                if (predicate_.p(maybeNext)) {
+                    next_ = maybeNext;
                 }
-
-                index++;
-                return input.next();
             }
+        }
+    }
 
-            @Override
-            public boolean hasNext() {
-                maybeSkip();
-                return index < skip + limit && input.hasNext();
-            }
+    private static class SkipIterable<T>
+        extends DelegatingIterableIterator<T>
+    {
+        private long skip_;
+        private boolean hasSkipped_ = false;
 
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
+        public SkipIterable(Iterable<T> delegate, long skip)
+        {
+            super(delegate);
+            skip_ = skip;
+        }
 
-            private void maybeSkip() {
-                while (index < skip && input.hasNext()) {
-                    input.next();
-                    index++;
-                }
-            }
-        };
+        public T next()
+        {
+            maybeSkip();
+            return super.next();
+        }
 
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return iter;
+        public boolean hasNext()
+        {
+            maybeSkip();
+            return super.hasNext();
+        }
+
+        public void remove()
+        {
+            maybeSkip();
+            super.remove();
+        }
+
+        private void maybeSkip()
+        {
+            while (skip_ > 0 && super.hasNext()) {
+                super.next();
+                skip_--;
             }
-        };
+        }
+    }
+
+    private static class LimitIterable<T>
+        extends DelegatingIterableIterator<T>
+    {
+        private long limit_;
+
+        public LimitIterable(Iterable<T> delegate, long limit)
+        {
+            super(delegate);
+            limit_ = limit;
+        }
+
+        public T next()
+        {
+            assertHasNext();
+            limit_--;
+            return super.next();
+        }
+
+        public boolean hasNext() {
+            return limit_ > 0 && super.hasNext();
+        }
+    }
+
+    private static class OrderedIterable<T>
+        extends DelegatingIterableIterator<T>
+    {
+        private final PriorityQueue<T> queue_;
+        private boolean initialized_ = false;
+
+        public OrderedIterable(Iterable<T> delegate, Comparator<T> comparator)
+        {
+            super(delegate);
+            // 16 is an arbitrary size because the constructor forces you
+            // to pick a size.
+            queue_ = new PriorityQueue<T>(16, comparator);
+        }
+
+        public T next()
+        {
+            if (!initialized_) {
+                initialize();
+            }
+            assertHasNext();
+            return queue_.poll();
+        }
+
+        public boolean hasNext()
+        {
+            if (!initialized_) {
+                initialize();
+            }
+            return !queue_.isEmpty();
+        }
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        private void initialize()
+        {
+            while (super.hasNext()) {
+                queue_.add(super.next());
+            }
+            initialized_ = true;
+        }
     }
 }
