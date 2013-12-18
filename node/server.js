@@ -44,6 +44,18 @@ module.exports.launchServer = function(daoMap, port) {
             dao.select.apply(dao, msg.params)(function(sink) {
               send(res, 200, JSONUtil.stringify(sink));
             });
+          } else if (msg.method == 'removeAll') {
+            if (msg.params[0]) { // hasSink
+              var arr = [];
+              dao.removeAll({
+                remove: arr.push,
+                eof: function() {
+                  send(res, 200, JSONUtil.stringify(arr));
+                }
+              }, msg.params[1]);
+            } else {
+              dao.removeAll({ eof: function() { send(res, 200, []); } });
+            }
           } else {
             // TODO: Handle cases where the argument is missing.
             dao[msg.method](msg.params[0], {

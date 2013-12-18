@@ -923,19 +923,15 @@ var MDAO = Model.create({
       });
     },
 
-    // TODO: this isn't correct, this is actually removeAll()
-    remove: function(query, sink) {
-      query = query.f ?
-        query :
-        EQ(this.model.getProperty(this.model.ids[0]), query);
-      /*
-        if ( ! query.f ) {
-        this.root = this.index.remove(this.root, query);
-        sink && sink.remove && sink.remove(query);
+    remove: function(obj, sink) {
+      var id = obj.id ? obj.id : obj;
+      var query = EQ(this.model.getProperty(this.model.ids[0]), id);
+      this.removeAll({ remove: sink && sink.remove, eof: function() { } }, { query: query });
+    },
 
-        return;
-        }*/
-
+    removeAll: function(sink, options) {
+      if (!options) options = {};
+      if (!options.query) options.query = TRUE;
       this.where(query).select([])(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
@@ -944,12 +940,6 @@ var MDAO = Model.create({
           sink && sink.remove && sink.remove(a[i]);
         }
       }.bind(this));
-    },
-
-    removeAll: function(callback) {
-      this.root = [];
-      this.map = {};
-      callback && callback();
     },
 
     select: function(sink, options) {

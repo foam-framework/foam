@@ -59,6 +59,21 @@ var ClientDAO = FOAM({
     find: function(q, sink) {
       this.oneShot_('find', [q], sink);
     },
+    removeAll: function(sink, options) {
+      // If sink.remove is not defined, we can skip the expensive returning of data.
+      // If we need results back, the server returns an array of removed values.
+      var hasSink = !!(sink && sink.remove);
+      this.asend(function(response) {
+        if (hasSink && response) {
+          if (sink.remove) response.forEach(sink.remove);
+        }
+        sink && sink.eof && sink.eof();
+      }, {
+        subject: self.subject,
+        method: 'removeAll',
+        params: [hasSink, options]
+      });
+    },
     select: function(sink, options) {
       sink = sink || [];
       var future = afuture();

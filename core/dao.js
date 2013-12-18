@@ -159,7 +159,7 @@ var DAO = FOAM({
       name: 'removeAll',
       description: 'Remove all (scoped) objects.',
       args: [
-        //          { name: 'sink', type: 'Sink' }, // TODO: implement in DAO's
+        { name: 'sink', type: 'Sink' },
         { name: 'options', type: 'Object', optional: true }
       ]
     },
@@ -373,6 +373,10 @@ var LoggingDAO = {
       select: function(sink, options) {
         logger('select', options || "");
         return delegate.select(sink, options);
+      },
+      removeAll: function(query, sink) {
+        logger('removeAll', query);
+        delegate.remove(query, sink);
       }
     };
   }
@@ -598,6 +602,18 @@ var AbstractDAO = FOAM({
       this.daoListeners_ && this.daoListeners_.remove(sink);
     },
 
+    // Default removeAll: calls select() with the same options and
+    // calls remove() for all returned values.
+    removeAll: function(sink, options) {
+      var self = this;
+      this.select({
+        put: function(obj) {
+          self.remove(obj, { remove: sink && sink.remove });
+        },
+        eof: sink && sink.eof
+      });
+    },
+
     /**
      * Notify all listeners of update to DAO.
      * @param fName the name of the method in the listeners to call.
@@ -745,7 +761,7 @@ var SeqNoDAO = FOAM({
 var CascadingRemoveDAO = FOAM({
   model_: 'Model',
   name: 'CascadingRemoveDAO',
-  label: 'SeqNoDAO',
+  label: 'SeqNoDAO', // TODO: Copy-paste error?
 
   extendsModel: 'ProxyDAO',
 
@@ -772,11 +788,10 @@ var CascadingRemoveDAO = FOAM({
       this.childDAO.where(EQ(this.property, query)).removeAll();
       this.delegate.remove(query, sink);
     },
-    removeAll: function() {
-      this.childDAO.removeAll();
-      this.delegate.removeAll.apply(this.delegate, arguments);
+    removeAll: function(sink, options) {
+      this.childDAO.removeAll(null, options); // TODO: Sane?
+      this.delegate.removeAll(sink, options);
     }
-
   }
 });
 
@@ -789,6 +804,14 @@ function filteredDAO(query, dao) {
     __proto__: dao,
     select: function(sink, options) {
       return dao.select(sink, options ? {
+        __proto__: options,
+        query: options.query ?
+          AND(query, options.query) :
+          query
+      } : {query: query});
+    },
+    removeAll: function(sink, options) {
+      return dao.removeAll(sink, options ? {
         __proto__: options,
         query: options.query ?
           AND(query, options.query) :
@@ -949,20 +972,24 @@ defineProperties(Array.prototype, {
     }
     sink && sink.error && sink.error('find', query);
   },
-  // TODO: distinguish between remove() and removeAll()?
   remove: function(query, callback) {
-    var param = query;
-    if (! EXPR.isInstance(query))
-      query = {
-        f:function(obj) { return obj.id ? obj.id === param : obj === param; }};
+    var id = query.id ? query.id : query; // Query is always an ID now.
+    this.removeAll(callback, { query: { f: function(obj) { return obj.id === id; } } });
+  },
+  removeAll: function(sink, options) {
+    if (!options) options = {};
+    if (!options.query) options.query = { f: function() { return true; } };
 
     for (var i = 0; i < this.length; i++) {
       var obj = this[i];
-      if (query.f(obj)) {
-        this.notify_('remove', this.splice(i,1)[0]);
+      if (options.query.f(obj)) {
+        var rem = this.splice(i,1)[0]
+        this.notify_('remove', rem);
+        sink && sink.remove && sink.remove(rem);
         i--;
       }
     }
+    sink && sink.eof && sink.eof();
   },
   select: function(sink, options) {
     sink = sink || [];
@@ -1185,38 +1212,41 @@ var IDBDAO = FOAM({
       });
     },
 
-    remove: function(query, sink) {
+    remove: function(obj, sink) {
+      var id = obj.id ? obj.id : obj;
       this.withStore("readwrite", function(store) {
         var self = this;
 
-        if (! EXPR.isInstance(query)) {
-          var key = query.id ? query.id : query;
-          var getRequest = store.get(key);
-          getRequest.onsuccess = function(e) {
-            if (!getRequest.result) {
-              sink && sink.error && sink.error('remove', query);
-              return;
-            }
-            var data = self.deserialize(getRequest.result);
-            var delRequest = store.delete(key);
-            delRequest.transaction.addEventListener(
-              'complete',
-              function(e) {
-                self.notify_('remove', [result]);
-                sink && sink.remove && sink.remove(result);
-              });
-            delRequest.onerror = function(e) {
-              sink && sink.error && sink.error('remove', e);
-            };
-          };
-          getRequest.onerror = function(e) {
+        var getRequest = store.get(key);
+        getRequest.onsuccess = function(e) {
+          if (!getRequest.result) {
+            sink && sink.error && sink.error('remove', obj);
+            return;
+          }
+          var data = self.deserialize(getRequest.result);
+          var delRequest = store.delete(key);
+          delRequest.transaction.addEventListener('complete', function(e) {
+            self.notify_('remove', [delRequest.result]);
+            sink && sink.remove && sink.remove(delRequest);
+          });
+
+          delRequest.onerror = function(e) {
             sink && sink.error && sink.error('remove', e);
           };
-          return;
-        }
+        };
+        getRequest.onerror = function(e) {
+          sink && sink.error && sink.error('remove', e);
+        };
+        return;
+      });
+    },
 
-        query = query.partialEval();
+    removeAll: function(sink, options) {
+      var query = (options && options.query && options.query.partialEval()) ||
+          { f: function() { return true; } };
 
+      var self = this;
+      this.withStore('readwrite', function(store) {
         var request = store.openCursor();
         request.onsuccess = function(e) {
           var cursor = e.target.result;
@@ -1235,6 +1265,8 @@ var IDBDAO = FOAM({
               };
             }
             cursor.continue();
+          } else {
+            sink && sink.eof && sink.eof();
           }
         };
         request.onerror = function(e) {
@@ -1278,13 +1310,6 @@ var IDBDAO = FOAM({
       });
 
       return future.get;
-    },
-
-    removeAll: function(callback) {
-      this.withStore("readwrite", function(store) {
-        var request = store.clear();
-        request.transaction.oncomplete = callback;
-      });
     }
   },
 
@@ -1342,8 +1367,13 @@ var StorageDAO = FOAM({
       this.storage.find(key, sink);
     },
 
-    remove: function(query, sink) {
-      this.storage.remove(query, sink);
+    remove: function(obj, sink) {
+      this.storage.remove(obj, sink);
+      this.flush_();
+    },
+
+    removeAll: function(sink, options) {
+      this.storage.removeAll(sink, options);
       this.flush_();
     },
 
@@ -1484,10 +1514,10 @@ var AbstractFileDAO = FOAM({
       });
     },
 
-    remove: function(query, sink) {
+    remove: function(obj, sink) {
       var self = this;
       this.withStorage(function(s) {
-        s.remove(query, {
+        s.remove(obj, {
           __proto__: sink,
           remove: function(obj) {
             self.__proto__.remove && self.__proto__.remove(obj);
@@ -1495,6 +1525,20 @@ var AbstractFileDAO = FOAM({
             self.update_('remove', obj);
           }
         });
+      });
+    },
+
+    removeAll: function(sink, options) {
+      var self = this;
+      this.withStorage(function(s) {
+        s.removeAll({
+          __proto__: sink,
+          remove: function(obj) {
+            self.__proto__.remove && self.__proto__.remove(obj);
+            self.notify_('remove', [obj]);
+            self.update_('remove', obj);
+          }
+        }, options);
       });
     },
 
@@ -1707,6 +1751,7 @@ var WorkerDAO = FOAM({
         }).bind(this),
         sink && sink.error && sink.error.bind(sink));
     },
+    // TODO: Implement removeAll()
     find: function(id, sink) {
       // No need to go to worker.
       this.storage_.find(id, sink);
@@ -2041,8 +2086,13 @@ var PartitionDAO = FOAM({
     put: function(value, sink) {
       this.getPartition_(value).put(value, sink);
     },
-    remove: function(query, sink) {
-      this.getPartition_(value).remove(value, sink);
+    remove: function(obj, sink) {
+      if (obj.id) {
+        this.getPartition_(obj).remove(obj, sink);
+      } else {
+        var self = this;
+        this.find(obj, { put: function(obj) { self.remove(obj, sink); }, error: sink && sink.error });
+      }
     },
     find: function(key, sink) {
       // Assumes no data redundancy

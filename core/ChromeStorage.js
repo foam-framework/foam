@@ -108,9 +108,8 @@ var ChromeStorageDAO = FOAM({
     },
 
     remove: function(obj, sink) {
-      this.store.remove({id: value.id}, function() {
-        sink && sink.put && sink.put(value);
-      });
+      var id = obj.id || obj;
+      this.store.remove({id: id}, { remove: sink && sink.remove });
     },
 
     select: function(sink, options) {
@@ -119,10 +118,6 @@ var ChromeStorageDAO = FOAM({
         console.log('select ', arguments);
       });
       return future.get;
-    },
-
-    removeAll: function(callback) {
-      this.store.clear(callback);
     }
   }
 });
