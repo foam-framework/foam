@@ -227,7 +227,10 @@ var AbstractView = FOAM({
        // Must be called activate a view after it has been added to the DOM.
 
        this.registerCallbacks();
+       this.initChildren();
+     },
 
+     initChildren: function() {
        if ( this.children ) {
          // init children
          for ( var i = 0 ; i < this.children.length ; i++ ) {
