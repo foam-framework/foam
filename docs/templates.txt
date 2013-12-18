@@ -1,7 +1,8 @@
 Template Syntax
  <% code %>: code inserted into template, but nothing implicitly output
  <%= comma-separated-values %>: all values are appended to template output
- {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax
+ {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax, output is escaped
+ {{{comma-separated-values}}}: same as <%= but one character shorter, uses handlebars syntax, output is not escaped
  \<new-line>: ignored
 
 Defined in Models
@@ -24,7 +25,7 @@ across multiple-lines without having to escape newline characters or concatenate
 External Templates
 
 If you prefer to edit templates using your favourite editor, rather than the FOAM modeller, then storing the
-templates external to the model file may be prefered.  To do this, just leave out the 'template:' portion of the template JSON and instead put the template in an external file named: <Model Name>_<Template Name>.ft.  For example, the aboe template, taken from teh CIssueTileView model, would appear in a file named 'CIssueTileView_toHTML.ft'.
+templates external to the model file may be preferred.  To do this, just leave out the 'template:' portion of the template JSON and instead put the template in an external file named: <Model Name>_<Template Name>.ft.  For example, the above template, taken from the CIssueTileView model, would appear in a file named 'CIssueTileView_toHTML.ft'.
 
 Limitations of External Templates
 
