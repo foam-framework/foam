@@ -196,7 +196,7 @@ dao.remove('3');
 dao.select(COUNT())(console.log);
 
 // Remove by mLang query
-dao.remove(LT(Person.AGE, 20));
+dao.where(LT(Person.AGE, 20)).removeAll();
 dao.select(MAP(Person.AGE, []))(console.log);
 
 
