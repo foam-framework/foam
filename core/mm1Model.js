@@ -203,7 +203,7 @@ var Model = {
                  xhr.open("GET", path);
                  xhr.asend((function(t) { return function(data) {
                    t.template = data;
-                 }})(t));
+                 };})(t));
                }
              }
            },
@@ -302,24 +302,16 @@ var Model = {
 
    templates:[
      {
-        model_: 'Template',
-
-        name: 'javaSource',
-        description: 'Java Source',
-        template: "<% if ( this.package ) { %>package <%= this.package %>;\u000a<%}%>import foam.core.*;\u000a\u000apublic class <% out(this.name); %>\u000a   extends AbstractFObject\u000a{\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   public final static Property <%= prop.name.constantize() %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\u000a     public String getName() { return \"<%= prop.name %>\"; }\u000a     public String getLabel() { return \"<%= prop.label %>\"; }\u000a     public Object get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\u000a     public Object set(Object o, Object v) { return ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }\u000a     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }\u000a   };\u000a   <% } %>\u000a\u000a   final static Model model__ = new Model() {\u000a     Property[] properties_ = {\u000a      <% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %>\u000a     };\u000a     public String getName() { return \"<%= this.name %>\"; }\u000a     public String getLabel() { return \"<%= this.label %>\"; }\u000a     public getID() { return <%= this.ids.length ? this.ids[0].constantize() : 'null' %>; }\u000a     public Property[] getProperties() { return properties_; }\u000a   };\u000a\u000a   public static Model MODEL() {\u000a     return model__;\u000a   }\u000a\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   private <%= prop.type %> <%= prop.name %>_;   <% } %>\u000a\u000a   public <%= this.name %>()\u000a   {\u000a   }\u000a\u000a   public <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.type, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)\u000a   {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      <%= prop.name %>_ = <%= prop.name %>;   <% } %>\u000a   }\u000a\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a   public <%= prop.type %> get<%= prop.name.capitalize() %>() {\u000a       return <%= prop.name %>;\u000a   };\u000a   public void set<%= prop.name.capitalize() %>(<%= prop.type, ' ',prop.name %>) {\u000a       <%= prop.name %>_ = <%= prop.name %>;\u000a   };\u000a   <% } %>\u000a\u000a   public int hashCode() { \u000a      int hash = 1;\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      hash = hash * 31 + hash(<%= prop.name %>);   <% } %>\u000a\u000a      return hash;\u000a   }\u000a\u000a   public int compareTo(Object obj) {\u000a      if ( obj == this ) return 0;\u000a      if ( obj == null ) return 1;\u000a\u000a      <%= this.name %> other = (<%= this.name %>) obj;\u000a \u000a      int cmp;\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\u000a      if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;   <% } %>\n\n      return 0;\u000a   }\u000a\u000a   public StringBuilder append(StringBuilder b) {\u000a      return b\u000a   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\\\u000a      .append(\"<%= prop.name %>=\").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(\", \")' : '' %> \u000a   <% } %>      ;\u000a   }\u000a\u000a   public Object fClone() {\u000a      return new <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.name + '_', key < this.properties.length-1 ? ', ': '' %><% } %>);\u000a   }\u000a\u000a}"
+       model_: 'Template',
+       name: 'javaSource',
+       description: 'Java Source',
+       template: "<% if ( this.package ) { %>package <%= this.package %>;\n<%}%>import foam.core.*;\n\npublic class <% out(this.name); %>\n   extends AbstractFObject\n{\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n   public final static Property <%= prop.name.constantize() %> = new Abstract<%= prop.javaType.capitalize() %>Property() {\n     public String getName() { return \"<%= prop.name %>\"; }\n     public String getLabel() { return \"<%= prop.label %>\"; }\n     public Object get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }\n     public Object set(Object o, Object v) { return ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }\n     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }\n   };\n   <% } %>\n\n   final static Model model__ = new Model() {\n     Property[] properties_ = {\n      <% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %>\n     };\n     public String getName() { return \"<%= this.name %>\"; }\n     public String getLabel() { return \"<%= this.label %>\"; }\n     public getID() { return <%= this.ids.length ? this.ids[0].constantize() : 'null' %>; }\n     public Property[] getProperties() { return properties_; }\n   };\n\n   public static Model MODEL() {\n     return model__;\n   }\n\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n   private <%= prop.type %> <%= prop.name %>_;   <% } %>\n\n   public <%= this.name %>()\n   {\n   }\n\n   public <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.type, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)\n   {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n      <%= prop.name %>_ = <%= prop.name %>;   <% } %>\n   }\n\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n   public <%= prop.type %> get<%= prop.name.capitalize() %>() {\n       return <%= prop.name %>;\n   };\n   public void set<%= prop.name.capitalize() %>(<%= prop.type, ' ',prop.name %>) {\n       <%= prop.name %>_ = <%= prop.name %>;\n   };\n   <% } %>\n\n   public int hashCode() { \n      int hash = 1;\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n      hash = hash * 31 + hash(<%= prop.name %>);   <% } %>\n\n      return hash;\n   }\n\n   public int compareTo(Object obj) {\n      if ( obj == this ) return 0;\n      if ( obj == null ) return 1;\n\n      <%= this.name %> other = (<%= this.name %>) obj;\n \n      int cmp;\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\n      if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;   <% } %>\n\n      return 0;\n   }\n\n   public StringBuilder append(StringBuilder b) {\n      return b\n   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\\\n      .append(\"<%= prop.name %>=\").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(\", \")' : '' %> \n   <% } %>      ;\n   }\n\n   public Object fClone() {\n      return new <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.name + '_', key < this.properties.length-1 ? ', ': '' %><% } %>);\n   }\n}"
   },
       {
-         model_: 'Template',
-         name: 'dartSource',
-         description: 'Dart Class Source',
-         template: '<% out(this.name); %>\n{\n<% for ( var key in this.properties ) { var prop = this.properties[key]; %>   var <%= prop.name %>;\n<% } %>\n\n   <%= this.name %>()\n   {\n\n   }\n\n   <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %>this.<%= prop.name, key < this.properties.length-1 ? ", ": "" %><% } %>)\n}'
-      },
-      {
-         model_: 'Template',
-         name: 'closureExterns',
-         description: 'Closure Externs JavaScript Source',
-         template:
-            '/**\n' +
+        model_: 'Template',
+        name: 'closureExterns',
+        description: 'Closure Externs JavaScript Source',
+        template: '/**\n' +
             ' * @constructor\n' +
             ' */\n' +
             '<%= this.name %> = function() {};\n' +
@@ -329,7 +321,13 @@ var Model = {
             '<% for ( var i = 0 ; i < this.methods.length ; i++ ) { var meth = this.methods[i]; %>' +
             '\n<%= meth.closureSource(undefined, this.name) %>\n' +
             '<% } %>'
-}
+      },
+      {
+        model_: 'Template',
+        name: 'dartSource',
+        description: 'Dart Class Source',
+        template: '<% out(this.name); %>\n{\n<% for ( var key in this.properties ) { var prop = this.properties[key]; %>   var <%= prop.name %>;\n<% } %>\n\n   <%= this.name %>()\n   {\n\n   }\n\n   <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %>this.<%= prop.name, key < this.properties.length-1 ? ", ": "" %><% } %>)\n}'
+      }
    ],
 
     toString: function() { return "Model"; }
