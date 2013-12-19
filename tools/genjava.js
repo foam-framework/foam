@@ -24,5 +24,6 @@ var fs = require('fs');
 var model = GLOBAL[process.argv[2]];
 var outfile = process.argv[3];
 
+model.create();
 fs.writeFileSync(outfile, model.javaSource());
 process.exit();
