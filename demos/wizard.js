@@ -304,7 +304,7 @@ var order = CompositeService.create({
           name: 'Option B',
           cost: 60,
           description: 'Optional component B'
-        }),
+        })
       ],
       exclusive: false
     })

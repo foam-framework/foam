@@ -414,14 +414,15 @@ var Events = {
 
     /** Have the dstValue stop listening for changes to the srcValue. **/
     unfollow: function (srcValue, dstValue) {
-       if ( ! srcValue || ! dstValue ) return;
+      if ( ! srcValue || ! dstValue ) return;
 
-       var key      = [srcValue.$UID, dstValue.$UID];
-       var listener = this.listeners_[key];
+      var key      = [srcValue.$UID, dstValue.$UID];
+      var listener = this.listeners_[key];
 
-       delete this.listeners_[key];
-
-       srcValue.removeListener(listener);
+      if ( listener ) {
+        delete this.listeners_[key];
+        srcValue.removeListener(listener);
+      }
     },
 
 

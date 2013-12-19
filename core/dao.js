@@ -2575,7 +2575,7 @@ var BlobSerializeDAO = FOAM({
       var self = this;
       this.serialize(function(obj) {
         self.delegate.put(obj, sink);
-      }, o)
+      }, o);
     },
 
     select: function(sink, options) {

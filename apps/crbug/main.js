@@ -75,9 +75,8 @@ var syncManager = SyncManager.create({
   modifiedProperty: CIssue.UPDATED
 });
 
-var syncView = ActionBorder.create(SyncManager, DetailView.create({model: SyncManager}));
+var syncView = ActionBorder.create(SyncManager, DetailView.create({model: SyncManager, value: SimpleValue.create(syncManager)}));
 document.writeln(syncView.toHTML());
-syncView.set(syncManager);
 syncView.initHTML();
 
 var space = Canvas.create({width: 1300, height: 100, background:'#000'});
