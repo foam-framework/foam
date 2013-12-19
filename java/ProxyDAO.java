@@ -20,50 +20,52 @@ package foam.core;
 import java.util.Comparator;
 
 public class ProxyDAO
-    extends AbstractDAO
+  extends AbstractDAO
 {
-    protected DAO delegate_;
+  protected DAO delegate_;
 
-    public ProxyDAO(DAO delegate) {
-        setDelegate(delegate);
-    }
+  public ProxyDAO(DAO delegate) {
+    super(delegate.getModel());
 
-    public DAO getDelegate() {
-        return delegate_;
-    }
+    setDelegate(delegate);
+  }
 
-    public void setDelegate(DAO delegate) {
-        delegate_ = delegate;
-    }
+  public DAO getDelegate() {
+    return delegate_;
+  }
 
-    public Object find(X x, Object where)
-        throws DAOException, DAOInternalException
-    {
-        return getDelegate().find(x, where);
-    }
+  public void setDelegate(DAO delegate) {
+    delegate_ = delegate;
+  }
 
-    public Object put(X x, Object obj)
-        throws DAOException, DAOInternalException
-    {
-        return getDelegate().put(x, obj);
-    }
+  public Object find(X x, Object where)
+    throws DAOException, DAOInternalException
+  {
+    return getDelegate().find(x, where);
+  }
 
-    public void remove(X x, Object obj)
-        throws DAOException, DAOInternalException
-    {
-        getDelegate().remove(x, obj);
-    }
+  public Object put(X x, Object obj)
+    throws DAOException, DAOInternalException
+  {
+    return getDelegate().put(x, obj);
+  }
 
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException
-    {
-        return getDelegate().select_(x, sink, p, c, skip, limit);
-    }
+  public void remove(X x, Object obj)
+    throws DAOException, DAOInternalException
+  {
+    getDelegate().remove(x, obj);
+  }
 
-    public void removeAll_(X x, Sink sink, Predicate p)
-        throws DAOException, DAOInternalException
-    {
-        getDelegate().removeAll_(x, sink, p);
-    }
+  public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+    throws DAOException, DAOInternalException
+  {
+    return getDelegate().select_(x, sink, p, c, skip, limit);
+  }
+
+  public void removeAll_(X x, Predicate p)
+    throws DAOException, DAOInternalException
+  {
+    getDelegate().removeAll_(x, p);
+  }
 
 }

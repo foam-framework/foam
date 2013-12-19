@@ -17,8 +17,25 @@
 
 package foam.core;
 
-/** Marker interface for MDAO states. **/
-public interface State
+public class FindSink
+  implements Sink
 {
+  Object value = null;
+
+  public FindSink()
+  {
+  }
+
+  public Object put(X x, Object obj)
+    throws DAOException, DAOInternalException
+  {
+    value = obj;
+    return obj;
+  }
+
+  public Object getValue()
+  {
+    return value;
+  }
 
 }

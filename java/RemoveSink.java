@@ -17,17 +17,22 @@
 
 package foam.core;
 
-import java.util.Comparator;
-
-public interface Index
+public class RemoveSink
+  implements Sink
 {
+  final DAO dao_;
 
-  public Object put(Object state, Object value);
+  public RemoveSink(DAO dao)
+  {
+    dao_ = dao;
+  }
 
-  public Object remove(Object state, Object value);
-  
-  public Plan plan(Object state, Sink sink, Predicate p, Comparator c, long skip, long limit);
+  public Object put(X x, Object obj)
+    throws DAOException, DAOInternalException
+  {
+    dao_.remove(x, obj);
 
-  public long size(Object state);
+    return obj;
+  }
 
 }

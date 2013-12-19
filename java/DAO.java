@@ -19,40 +19,43 @@ package foam.core;
 
 import java.util.Comparator;
 
+
 public interface DAO
-    extends DAOListener
+  extends DAOListener
 {
 
-    public Object find(X x, Object where)
-        throws DAOException, DAOInternalException;
+  public Model getModel();
 
-    public Sink select(X x, Sink sink)
-        throws DAOException, DAOInternalException;
-
-    public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
-        throws DAOException, DAOInternalException;
-
-    public void removeAll(X x, Sink sink)
-        throws DAOException, DAOInternalException;
-
-    public void removeAll_(X x, Sink sink, Predicate p)
-        throws DAOException, DAOInternalException;
-
-    /*****************************/
-
-    public DAO where(Predicate p);
-
-    public DAO limit(long i);
-
-    public DAO skip(long i);
-
-    /*****************************/
-
-    public void listen(DAOListener listener);
-
-    public void unlisten(DAOListener listener);
-
-    public void pipe(DAOListener listener)
-        throws DAOException, DAOInternalException;
+  public Object find(X x, Object where)
+    throws DAOException, DAOInternalException;
+  
+  public Sink select(X x, Sink sink)
+    throws DAOException, DAOInternalException;
+  
+  public Sink select_(X x, Sink sink, Predicate p, Comparator c, long skip, long limit)
+    throws DAOException, DAOInternalException;
+  
+  public void removeAll(X x)
+    throws DAOException, DAOInternalException;
+  
+  public void removeAll_(X x, Predicate p)
+    throws DAOException, DAOInternalException;
+  
+  /*****************************/
+  
+  public DAO where(Predicate p);
+  
+  public DAO limit(long i);
+  
+  public DAO skip(long i);
+  
+  /*****************************/
+  
+  public void listen(DAOListener listener);
+  
+  public void unlisten(DAOListener listener);
+  
+  public void pipe(DAOListener listener)
+    throws DAOException, DAOInternalException;
 
 }

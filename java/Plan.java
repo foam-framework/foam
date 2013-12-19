@@ -24,9 +24,18 @@ import java.util.Comparator;
 public interface Plan
 {
 
-    public long cost();
+  public long cost();
 
-    public String toString();
+  public String toString();
 
-    public Sink execute(State state, Sink sink, Predicate p, Comparator c, long skip, long limit);
+  public void execute(
+      X          x,
+      Object      state,
+      Sink       sink,
+      Predicate  p,
+      Comparator c,
+      long       skip,
+      long       limit)
+    throws DAOException, DAOInternalException;
+
 }
