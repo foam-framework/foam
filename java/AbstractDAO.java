@@ -79,6 +79,8 @@ public abstract class AbstractDAO
         throws DAOException, DAOInternalException
     {
         // TODO:  Create an EmptyX?  Allow a supplied X?
+        // KGR: We'll have to add X as a parameter to pipe() and listen(), but we don't need
+        // to do it until we have authentication
         select(null, listener);
         listen(listener);
     }
@@ -242,6 +244,7 @@ public abstract class AbstractDAO
     private static class OrderedIterable<T>
         extends DelegatingIterableIterator<T>
     {
+        // TODO: this would be more efficient as a SortedSet 
         private final PriorityQueue<T> queue_;
         private boolean initialized_ = false;
 
