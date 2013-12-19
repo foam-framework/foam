@@ -318,253 +318,6 @@ var DomValue = {
 
 
 
-var Canvas = Model.create({
-
-   extendsModel: 'AbstractView',
-
-   name:  'Canvas',
-
-   properties: [
-      {
-         name:  'background',
-         label: 'Background Color',
-         type:  'String',
-         defaultValue: 'white'
-      },
-      {
-         name:  'width',
-         type:  'int',
-         defaultValue: 100,
-         postSet: function(width) {
-           if ( this.$ ) this.$.width = width;
-         }
-      },
-      {
-         name:  'height',
-         type:  'int',
-         defaultValue: 100,
-         postSet: function(height) {
-           if ( this.$ ) this.$.height = height;
-         }
-      }
-   ],
-
-   methods: {
-      init: function() {
-         this.SUPER();
-
-         this.repaint = EventService.animate(function() {
-           this.paint();
-         }.bind(this));
-      },
-
-      toHTML: function() {
-         return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
-      },
-
-      initHTML: function() {
-         this.canvas = this.$.getContext('2d');
-      },
-
-      addChild: function(child) {
-         this.SUPER(child);
-
-         try {
-            child.addListener(this.repaint);
-         } catch (x) { }
-
-         try {
-            child.parent = this;
-         } catch (x) { }
-
-         return this;
-      },
-
-      erase: function() {
-         this.canvas.fillStyle = this.background;
-         this.canvas.fillRect(0, 0, this.width, this.height);
-      },
-
-      paintChildren: function() {
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-            var child = this.children[i];
-            this.canvas.save();
-            child.paint();
-            this.canvas.restore();
-         }
-      },
-
-      paint: function() {
-         this.erase();
-         this.paintChildren();
-      }
-
-   }
-});
-
-
-var Circle = Model.create({
-
-   name:  'Circle',
-
-   ids: [],
-
-   properties: [
-      {
-         name:  'parent',
-         type:  'CView',
-         hidden: true
-      },
-      {
-         name:  'color',
-         type:  'String',
-         defaultValue: 'white'
-      },
-      {
-         name:  'border',
-         label: 'Border Color',
-         type:  'String',
-         defaultValue: undefined
-      },
-      {
-         name:  'borderWidth',
-         type:  'int',
-         defaultValue: 1
-      },
-      {
-         name:  'alpha',
-         type:  'int',
-         defaultValue: 1
-      },
-      {
-         name:  'x',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name:  'y',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name: 'r',
-         label: 'Radius',
-         type: 'int',
-         defaultValue: 20
-      }
-   ],
-
-
-   methods: {
-
-      paint3d: function() {
-         var canvas = this.parent.canvas;
-
-         var radgrad = canvas.createRadialGradient(this.x+this.r/6,this.y+this.r/6,this.r/3,this.x+2,this.y,this.r);
-         radgrad.addColorStop(0, '#a7a7a7'/*'#A7D30C'*/);
-         radgrad.addColorStop(0.9, this.color /*'#019F62'*/);
-         radgrad.addColorStop(1, 'black');
-
-         canvas.fillStyle = radgrad;;
-
-         canvas.beginPath();
-         canvas.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
-         canvas.closePath();
-         canvas.fill();
-
-      },
-
-      paint: function() {
-         var canvas = this.parent.canvas;
-
-         canvas.save();
-
-         canvas.globalAlpha = this.alpha;
-
-         canvas.fillStyle = this.color;
-
-          if ( this.border && this.r ) {
-            canvas.lineWidth = this.borderWidth;
-            canvas.strokeStyle = this.border;
-            canvas.beginPath();
-            canvas.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
-            canvas.closePath();
-            canvas.stroke();
-          }
-
-         if ( this.color ) {
-           canvas.beginPath();
-           canvas.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
-           canvas.closePath();
-           canvas.fill();
-         }
-
-         canvas.restore();
-      }
-   }
-});
-
-
-var ImageCView = FOAM({
-
-   model_: 'Model',
-
-   name:  'ImageCView',
-
-   properties: [
-      {
-         name:  'parent',
-         type:  'CView',
-         hidden: true
-      },
-      {
-         name:  'alpha',
-         type:  'int',
-         defaultValue: 1
-      },
-      {
-         name:  'x',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name:  'y',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name:  'scale',
-         type:  'int',
-         defaultValue: 1
-      },
-      {
-         name: 'src',
-         label: 'Source',
-         type: 'String'
-      }
-   ],
-
-
-   methods: {
-
-      init: function() {
-         this.SUPER();
-
-         this.image_ = new Image();
-         this.image_.src = this.src;
-      },
-
-      paint: function() {
-         var c = this.parent.canvas;
-
-         c.translate(this.x, this.y);
-         c.scale(this.scale, this.scale);
-         c.translate(-this.x, -this.y);
-         c.drawImage(this.image_, this.x, this.y);
-      }
-   }
-});
-
 var ImageView = FOAM({
    model_: 'Model',
 
@@ -695,56 +448,6 @@ var BlobImageView = FOAM({
       }
     }
   ]
-});
-
-
-var Rectangle = FOAM({
-
-   model_: 'Model',
-
-   name:  'Rectangle',
-
-   properties: [
-      {
-         name:  'parent',
-         type:  'CView',
-         hidden: true
-      },
-      {
-         name:  'color',
-         type:  'String',
-         defaultValue: 'white',
-      },
-      {
-         name:  'x',
-         type:  'int',
-         defaultValue: 1000
-      },
-      {
-         name:  'y',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name:  'width',
-         type:  'int',
-         defaultValue: 100
-      },
-      {
-         name:  'height',
-         type:  'int',
-         defaultValue: 100
-      }
-   ],
-
-   methods: {
-      paint: function() {
-         var canvas = this.parent.canvas;
-
-         canvas.fillStyle = this.color;
-         canvas.fillRect(this.x, this.y, this.width, this.height);
-      }
-   }
 });
 
 
@@ -2985,4 +2688,760 @@ var GridView = FOAM({
         template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
      }
    ]
+});
+
+var Mouse = FOAM({
+   model_: 'Model',
+
+   name: 'Mouse',
+
+   properties: [
+      {
+         name:  'x',
+         type:  'int',
+         view:  'IntFieldView',
+         defaultValue: 10
+      },
+      {
+         name:  'y',
+         type:  'int',
+         view:  'IntFieldView',
+         defaultValue: 10
+      }
+   ],
+   methods: {
+      connect: function(e) {
+         e.addEventListener('mousemove', EventService.merged(this.onMouseMove,1));
+      }
+   },
+
+   listeners: [
+      {
+         model_: 'Method',
+
+         name: 'onMouseMove',
+         code: function(evt) {
+            this.x = evt.offsetX;
+            this.y = evt.offsetY;
+         }
+      }
+   ]
+});
+
+
+var ViewChoice = FOAM({
+
+   model_: 'Model',
+
+   name: 'ViewChoice',
+
+   tableProperties: [
+      'label',
+      'view'
+   ],
+
+    properties: [
+       {
+           name: 'label',
+           type: 'String',
+           displayWidth: 20,
+           defaultValue: '',
+           help: "View's label."
+       },
+       {
+           name: 'view',
+           type: 'view',
+           defaultValue: 'DetailView',
+           help: 'View factory.'
+       }
+    ]
+
+});
+
+
+var AlternateView = FOAM({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView',
+
+   name: 'AlternateView',
+
+    properties: [
+       {
+          name:  'selection'
+       },
+       {
+           name: 'views',
+           type: 'Array[ViewChoice]',
+           subType: 'ViewChoice',
+           view: 'ArrayView',
+           defaultValue: [],
+           help: 'View choices.'
+       },
+       {
+           name:  'dao',
+           label: 'DAO',
+           type: 'DAO',
+           postSet: function(dao) {
+             // HACK: we should just update the dao of the current view,
+             // but not all views currently redraw on DAO update.  Swtich
+             // once the views are fixed/finished.
+             if ( this.view ) this.installSubView(this.view);
+//           if (this.view && this.view.model_ && this.view.model_.getProperty('dao')) this.view.dao = dao;
+           }
+       },
+       {
+          name:  'view',
+          postSet: function(viewChoice) {
+             if ( this.elementId ) this.installSubView(viewChoice);
+          },
+          hidden: true
+       }
+    ],
+
+   methods: {
+      init: function() {
+         this.SUPER();
+
+         this.value = SimpleValue.create("");
+         this.view = this.views[0];
+     },
+
+      installSubView: function(viewChoice) {
+        var view = typeof(viewChoice.view) === 'function' ?
+          viewChoice.view(this.value.get().model_, this.value) :
+          GLOBAL[viewChoice.view].create({
+            model: this.value.get().model_,
+            value: this.value
+          });
+
+        // TODO: some views are broken and don't have model_, remove
+        // first guard when fixed.
+        if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
+
+        this.$.innerHTML = view.toHTML();
+        view.initHTML();
+        view.value && view.value.set(this.value.get());
+        //       if ( view.set ) view.set(this.model.get());
+        //       Events.link(this.model, this.view.model);
+      },
+
+      toHTML: function() {
+         var str  = [];
+         var viewChoice = this.views[0];
+         var buttons;
+
+         str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
+         for ( var i = 0 ; i < this.views.length ; i++ ) {
+            var view = this.views[i];
+            var listener = function(altView, view) { return function (e) {
+               altView.view = view;
+
+               // This is a bit hackish, each element should listen on a 'selected'
+               // property and update themselves
+               for ( var j = 0 ; j < buttons.length ; j++ ) {
+                 DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
+               }
+
+               DOM.setClass(e.toElement, 'mode_button_active');
+
+               return false;
+            };}(this,view);
+//          str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+            str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+            if ( view.label == this.selected ) viewChoice = view;
+         }
+         str.push('</div>');
+         buttons = this.callbacks_;
+         this.buttons_ = buttons;
+
+         str.push('<br/>');
+// console.log("viewChoice: ", viewChoice);
+
+//       Events.link(this.model, this.view.model);
+
+//       str.push(this.view.toHTML());
+         str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+        str.push('</div>');
+         return str.join('');
+      },
+
+
+      initHTML: function() {
+         this.SUPER();
+
+         if ( ! this.view ) this.view = this.views[0];
+         this.installSubView(this.view);
+
+         DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
+         DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
+         DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
+      }
+
+  }
+
+});
+
+
+
+var FloatFieldView = FOAM({
+
+   model_: 'Model',
+
+   name:  'FloatFieldView',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
+     textToValue: function(text) {
+       return parseFloat(text);
+     }
+   }
+});
+
+
+var IntFieldView = FOAM({
+
+   model_: 'Model',
+
+   name:  'IntFieldView',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
+     textToValue: function(text) {
+       return parseInt(text);
+     }
+   }
+});
+
+
+var StringArrayView = FOAM({
+
+   model_: 'Model',
+
+   name:  'StringArrayView',
+
+   extendsModel: 'TextFieldView',
+
+   methods: {
+     textToValue: function(text) {
+       return text.replace(/\s/g,'').split(',');
+     },
+     valueToText: function(value) {
+       return value ? value.toString() : "";
+     }
+   }
+});
+
+
+var SplitView = FOAM({
+
+   model_: 'Model',
+
+   extendsModel: 'AbstractView',
+
+   name: 'SplitView',
+
+    properties: [
+       {
+          name:  'view1',
+          label: 'View 1'
+       },
+       {
+          name:  'view2',
+          label: 'View 2'
+       }
+    ],
+
+   methods: {
+      init: function() {
+        this.SUPER();
+/*
+         this.view1 = AlternateView.create();
+         this.view2 = AlternateView.create();
+*/
+        this.view1 = DetailView2.create();
+        this.view2 = JSView.create();
+
+        this.setValue(SimpleValue.create(""));
+      },
+
+      // Sets the Data-Model
+      setValue: function(value) {
+        this.value = value;
+        if ( this.view1 ) this.view1.setValue(value);
+        if ( this.view2 ) this.view2.setValue(value);
+      },
+
+      set: function(obj) {
+         this.value.set(obj);
+      },
+
+      get: function() {
+         return this.value.get();
+      },
+
+      toHTML: function() {
+         var str  = [];
+         str.push('<table width=80%><tr><td width=40%>');
+         str.push(this.view1.toHTML());
+         str.push('</td><td>');
+         str.push(this.view2.toHTML());
+         str.push('</td></tr></table><tr><td width=40%>');
+         return str.join('');
+      },
+
+      initHTML: function() {
+         this.view1.initHTML();
+         this.view2.initHTML();
+      }
+  }
+
+});
+
+var ListValueView = FOAM({
+  model_: 'Model',
+
+  name: 'ListValueView',
+  help: 'Combines an input view with a value view for the edited value.',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'valueView'
+    },
+    {
+      name: 'inputView'
+    },
+    {
+      name: 'placeholder',
+      postSet: function(newValue) {
+        this.inputView.placeholder = newValue;
+      }
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create({ value: [] }); },
+      postSet: function(newValue, oldValue) {
+        this.inputView.setValue(newValue);
+        this.valueView.value = newValue;
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return this.valueView.toHTML() + this.inputView.toHTML();
+    },
+    setValue: function(value) {
+      this.value = value;
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.valueView.initHTML();
+      this.inputView.initHTML();
+    }
+  }
+});
+
+var ListInputView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'ListInputView',
+
+  properties: [
+    {
+      name: 'dao',
+      help: 'The DAO to fetch autocomplete objects from.',
+    },
+    {
+      name: 'property',
+      help: 'The property model to map autocomplete objecst to values with.'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'searchProperties',
+      help: 'The properties with which to construct the autocomplete query with.'
+    },
+    {
+      name: 'autocompleteView'
+    },
+    {
+      name: 'placeholder'
+    },
+    {
+      name: 'value',
+      help: 'The array value we are editing.',
+      valueFactory: function() {
+        return SimpleValue.create({
+          value: []
+        });
+      }
+    },
+    {
+      name: 'domInputValue'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.registerCallback('keydown', this.onKeyDown, this.getID());
+
+      return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
+    },
+    setValue: function(value) {
+      this.value = value;
+    },
+    initHTML: function() {
+      this.SUPER();
+      if ( this.placeholder ) this.$.placeholder = this.placeholder;
+      this.autocompleteView.initHTML();
+      this.domInputValue = DomValue.create(this.$, 'input');
+      this.domInputValue.addListener(this.onInput);
+    },
+    pushValue: function(v) {
+      this.value.set(this.value.get().concat(v));
+      this.domInputValue.set('');
+      // Previous line doesn't trigger listeners.
+      this.onInput();
+    },
+    popValue: function() {
+      var value = this.value.get().slice();
+      value.pop();
+      this.value.set(value);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onInput',
+      code: function() {
+        var value = this.domInputValue.get();
+
+        if ( value.charAt(value.length - 1) === ',' ) {
+          if ( value.length > 1 ) this.pushValue(value.substring(0, value.length - 1));
+          else this.domInputValue.set('');
+          return;
+        }
+
+        if ( value === '' ) {
+          this.autocompleteView.dao = this.dao.where(FALSE);
+          return;
+        }
+
+        var predicate = OR();
+        value = this.domInputValue.get();
+        for ( var i = 0; i < this.searchProperties.length; i++ ) {
+          predicate.args.push(STARTS_WITH(this.searchProperties[i], value));
+        }
+        value = this.value.get();
+        if ( value.length > 0 ) {
+          predicate = AND(NOT(IN(this.property, value)), predicate);
+        }
+        this.autocompleteView.dao = this.dao.where(predicate);
+      }
+    },
+    {
+      name: 'onKeyDown',
+      code: function(e) {
+        if ( e.keyCode === 40 /* down */) {
+          this.autocompleteView.nextSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 38 /* up */ ) {
+          this.autocompleteView.prevSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 13 /* RET */ ) {
+          if ( this.autocompleteView.value.get() ) {
+            this.pushValue(
+              this.property.f(this.autocompleteView.value.get()));
+            e.preventDefault();
+          }
+        } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
+          this.popValue();
+        }
+      }
+    }
+  ]
+});
+
+var ArrayTileView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'ArrayTileView',
+
+  properties: [
+    {
+      name: 'dao'
+    },
+    {
+      name: 'property'
+    },
+    {
+      name: 'tileView'
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.paint);
+        newValue.addListener(this.paint);
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'painting',
+      defaultValue: false
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<ul id="' + this.getID() + '" class="arrayTileView"></ul>';
+    },
+  },
+
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
+        // If we're currently painting, don't actually paint now,
+        // queue up another paint on the next animation frame.
+        // This doesn't spin infinitely because paint is set to animate: true,
+        // meaning that it's merged to the next animation frame.
+        if ( this.painting ) {
+          this.paint();
+          return;
+        }
+
+        this.painting = true;
+        this.children = [];
+        var value = this.value.get();
+        var count = value.length;
+        var self = this;
+        var render = function() {
+          self.$.innerHTML = self.children.map(
+            function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
+          self.children.forEach(
+            function(c) { c.initHTML(); });
+          self.painting = false;
+        };
+
+        if ( value.length == 0 ) render();
+        for ( var i = 0; i < value.length; i++ ) {
+          this.dao.find(EQ(this.property, value[i]), {
+            put: function(obj) {
+              var view = self.tileView.create();
+              view.value.set(obj);
+              self.addChild(view);
+              count--;
+              if ( count == 0 ) render();
+            },
+            error: function() {
+              // Ignore missing values
+              count--;
+              if ( count == 0 ) render();
+            },
+          });
+        }
+      }
+    }
+  ]
+});
+
+var AutocompleteListView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  name: 'AutocompleteListView',
+
+  properties: [
+    {
+      name: 'dao',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.unlisten(this.paint);
+        newValue.listen(this.paint);
+        this.value.set('');
+        this.paint();
+      },
+      hidden: true
+    },
+    {
+      name: 'next'
+    },
+    {
+      name: 'prev'
+    },
+    {
+      name: 'value',
+      hidden: true,
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        if ( oldValue ) {
+          oldValue.removeListener(this.paint);
+        }
+        newValue.addListener(this.paint);
+      }
+    },
+    {
+      name: 'model',
+      hidden: true
+    },
+    {
+      name: 'innerView',
+      type: 'AbstractView',
+      preSet: function(value) {
+        if ( typeof value === "string" ) value = GLOBAL[value];
+        return value;
+      },
+      defaultValueFn: function() {
+        return this.model.listView;
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'painting',
+      defaultValue: false
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'count',
+      defaultValue: 20
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'left'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'top'
+    },
+  ],
+
+  methods: {
+    setValue: function(value) {
+      this.value = value;
+    },
+
+    toHTML: function() {
+      return '<ul class="autocompleteListView" id="' + this.getID() + '"></ul>';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.$.style.display = 'none';
+      var self = this;
+      this.propertyValue('left').addListener(function(v) {
+        self.$.left = v;
+      });
+      this.propertyValue('top').addListener(function(v) {
+        self.$.top = v;
+      });
+    },
+
+    nextSelection: function() {
+      this.value.set(this.next);
+    },
+
+    prevSelection: function() {
+      this.value.set(this.prev);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
+        // TODO Determine if its worth double buffering the dom.
+
+        // Don't start a new paint if we're in the middle of one.
+        if ( this.painting) {
+          this.paint();
+          return;
+        }
+
+        // Clear old list
+        this.$.innerHTML = '';
+        this.painting = true;
+        var self = this;
+
+        var found = false;
+        var first;
+        var second;
+        self.next = '';
+        self.prev = '';
+
+        this.dao.limit(this.count).select({
+          put: function(obj) {
+            if ( found && ! self.next ) {
+              self.next = obj;
+            }
+
+            if ( obj.id === self.value.get().id ) {
+              found = true;
+            }
+
+            if ( ! found && self.value.get() ) {
+              self.prev = obj;
+            }
+
+            if ( ! self.value.get() ) {
+              self.value.set(obj);
+              found = true;
+            }
+
+            var view = self.innerView.create({});
+            var container = document.createElement('li');
+            container.onclick = function() {
+              self.value.set(obj);
+            };
+            container.className = 'autocompleteListItem';
+            if ( obj.id === self.value.get().id ) {
+              container.className += ' autocompleteSelectedItem';
+            }
+            self.$.appendChild(container);
+            view.value.set(obj);
+            container.innerHTML = view.toHTML();
+            view.initHTML();
+            if ( ! first ) {
+              first = [obj, container];
+            }
+            if ( first && ! second ) {
+              second = obj;
+            }
+          },
+          eof: function() {
+            self.painting = false;
+            if ( ! first ) self.$.style.display = 'none';
+            else self.$.style.display = '';
+
+            if ( ! found ) {
+              if ( ! first ) {
+                self.value.set('');
+                self.$.style.display = 'none';
+              } else {
+                self.value.set(first[0]);
+                first[1].className += 'selectedListItem';
+                self.prev = '';
+                self.next = second;
+              }
+            }
+          },
+          error: function() {
+            console.error.apply(console, arguments);
+            self.painting = false;
+          }
+        });
+      }
+    }
+  ]
 });

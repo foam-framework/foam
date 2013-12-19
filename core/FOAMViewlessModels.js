@@ -37,11 +37,6 @@ var files = [
   'mm4Method',
   'mm5Misc',
   'mm6Protobuf',
-  'view',
-  'cview',
-  'RichTextView',
-  'listchoiceview',
-  'scroll',
   'mlang',
   'QueryParser',
   'search',
@@ -52,17 +47,8 @@ var files = [
   'diff',
   'SplitDAO',
   'index',
-  'StackView',
-  'DAOController',
-  'ThreePaneController',
   'experimental/protobufparser',
   'experimental/protobuf',
-  // remove below here
   'models',
-  'glang',
-  '../demos/demos',
-  'oauth',
-  '../apps/mailreader/view',
-  '../apps/mailreader/email',
-  'turntable'
+  'oauth'
 ];
