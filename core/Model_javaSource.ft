@@ -32,22 +32,22 @@ public class <% out(this.name); %>
    }
 
    <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
-   private <%= prop.type %> <%= prop.name %>_;   <% } %>
+   private <%= prop.javaType %> <%= prop.name %>_;   <% } %>
 
    public <%= this.name %>()
    {
    }
 
-   public <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.type, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)
+   public <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.javaType, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)
    {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
       <%= prop.name %>_ = <%= prop.name %>;   <% } %>
    }
 
    <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
-   public <%= prop.type %> get<%= prop.name.capitalize() %>() {
+   public <%= prop.javaType %> get<%= prop.name.capitalize() %>() {
        return <%= prop.name %>;
    };
-   public void set<%= prop.name.capitalize() %>(<%= prop.type, ' ',prop.name %>) {
+   public void set<%= prop.name.capitalize() %>(<%= prop.javaType, ' ', prop.name %>) {
        <%= prop.name %>_ = <%= prop.name %>;
    };
    <% } %>
