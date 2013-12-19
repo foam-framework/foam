@@ -28,7 +28,7 @@ public abstract class AbstractModel
 
   void setProperties(Property[] properties) {
     properties_ = properties;
-    for ( Property p : properties ) pMap_.put(p.name, p);
+    for ( Property p : properties ) pMap_.put(p.getName(), p);
   }
 
   public Property[] getProperties()
