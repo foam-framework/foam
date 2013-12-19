@@ -2765,7 +2765,8 @@ var ActionBorder = {
         }
       };
 
-      obj.value && obj.value.set(obj.value.get);
+      // TODO: document why this is needed or remove
+      obj.value && obj.value.set(obj.value.get());
 
       // if delegate doesn't have a getValue method, then add one
       if ( ! obj.getValue ) {
