@@ -27,3 +27,23 @@ The bots run nodejs 0.8.14 and minijasminenode 0.2.5 (jasmine 1.3.1).
 
 Currently only nodejs built-in modules and minijasminenode are supported. Please
 use only these modules to make the unit tests bot friendly, thank you! 
+
+
+How to debug tests?
+===================
+You can use the built-in debugger of node, or just use node-inspector.
+
+For Linux users:
+
+sudo npm install -g node-inspector
+node --debug-brk test_loader.js <your test spec>
+
+In another console window, run
+
+node-inspector&
+
+Now browse http://127.0.0.1:8080/debug?port=5858 in Chrome.
+
+For other platforms or detailed usage of node-inspector, see
+
+https://github.com/node-inspector/node-inspector
