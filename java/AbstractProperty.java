@@ -16,5 +16,10 @@
  */
 package foam.core;
 
-class AbstractProperty {
+public abstract class AbstractProperty
+  implements Property
+{
+
+  public Object f(Object o) { return get(o); }
+
 }

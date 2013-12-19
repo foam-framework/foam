@@ -23,13 +23,17 @@ import java.util.Map;
 public abstract class AbstractModel
   implements Model
 {
-  Property[]            properties_;
-  Map<String, Property> pMap_ = new HashMap<String, Property>();
+  final Property[]            properties_;
+  final Map<String, Property> pMap_ = new HashMap<String, Property>();
 
-  void setProperties(Property[] properties) {
+  public AbstractModel(Property[] properties) {
     properties_ = properties;
     for ( Property p : properties ) pMap_.put(p.getName(), p);
   }
+  /*  protected void setProperties(Property[] properties) {
+    properties_ = properties;
+    for ( Property p : properties ) pMap_.put(p.getName(), p);
+    }*/
 
   public Property[] getProperties()
   {

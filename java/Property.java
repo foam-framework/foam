@@ -27,7 +27,6 @@ public interface Property
   public String  getLabel();
   public void    set(Object obj, Object value);
   public Object  get(Object obj);
-  public boolean hasDefaultValue();
-  public Object  createDefaultValue();
-  public int     compareValues(Object v1, Object v2);
+  // public boolean hasDefaultValue();
+  //  public Object  createDefaultValue();
 }

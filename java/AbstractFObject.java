@@ -23,7 +23,7 @@ public abstract class AbstractFObject
     implements FCloneable
 {
 
-  public abstract Model MODEL();
+  public abstract Model model();
 
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
@@ -66,9 +66,9 @@ public abstract class AbstractFObject
   public StringBuilder appendToJSON(StringBuilder b) {
     b.append("{");
     b.append("model_:\"");
-    b.append(MODEL().getName());
+    b.append(model().getName());
     b.append("\"");
-    for ( Property p : MODEL().getProperties() ) {
+    for ( Property p : model().getProperties() ) {
       // TODO: do not output default values
       b.append(",");
       b.append(p.getName());

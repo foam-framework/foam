@@ -21,4 +21,17 @@ public abstract class AbstractStringProperty
     extends AbstractProperty
 {
 
+  public int compareValues(String s1, String s2)
+  {
+    if ( s1 == s2 ) return 0;
+    if ( s1 == null ) return -1;
+    if ( s2 == null ) return 11;
+    return s1.compareTo(s2);
+  }
+
+  public String toNative(Object o)
+  {
+    return (String) o;
+  }
+
 }

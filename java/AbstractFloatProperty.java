@@ -17,11 +17,18 @@
 
 package foam.core;
 
-public interface Model
+public abstract class AbstractFloatProperty
+    extends AbstractProperty
 {
-  public String     getName();
-  public String     getLabel();
-  public Property   getID();
-  public Property[] getProperties();
-  public Property   getProperty(String propertyName);
+
+  public int compareValues(float f1, float f2)
+  {
+    return Float.compare(f1, f2);
+  }
+
+  public float toNative(Object o)
+  {
+    return ((Float) o).floatValue();
+  }
+
 }
