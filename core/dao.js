@@ -1223,9 +1223,9 @@ var IDBDAO = FOAM({
     },
 
     remove: function(obj, sink) {
-      var id = obj.id ? obj.id : obj;
+      var self = this;
       this.withStore("readwrite", function(store) {
-        var self = this;
+        var key = obj.id ? obj.id : obj;
 
         var getRequest = store.get(key);
         getRequest.onsuccess = function(e) {
@@ -2610,6 +2610,6 @@ var BlobSerializeDAO = FOAM({
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
-//Function.prototype.remove = function() { this.apply(this, arguments); };
+Function.prototype.remove = function() { this.apply(this, arguments); };
 //Function.prototype.error  = function() { this.apply(this, arguments); };
 //Function.prototype.eof    = function() { this.apply(this, arguments); };
