@@ -20,10 +20,8 @@ package foam.core;
 import java.util.Comparator;
 
 public abstract class AbstractFObject
-    implements FCloneable
+    implements FObject
 {
-
-  public abstract Model model();
 
   public int compare(boolean o1, boolean o2) {
     return o1 == o2 ? 0 : o1 ? 1 : 0;
@@ -48,8 +46,6 @@ public abstract class AbstractFObject
   public int hash(float f)   { return hash(Float.floatToIntBits(f)); }
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
 
-
-  public abstract int compareTo(Object other);
 
   public boolean equals(Object o) {
     return compareTo(o) == 0;
