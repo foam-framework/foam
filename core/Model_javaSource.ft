@@ -1,5 +1,7 @@
-<% if ( this.package ) { %>package <%= this.package %>;
-<%}%>import foam.core.*;
+<% if ( this.package ) { %>\
+package <%= this.package %>;
+<%}%>\
+import foam.core.*;
 
 public class <% out(this.name); %>
    extends AbstractFObject
@@ -14,14 +16,15 @@ public class <% out(this.name); %>
    };
    <% } %>
 
-   final static Model model__ = new Model() {
-     Property[] properties_ = {
-      <% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %>
-     };
+   final static Model model__ = new AbstractModel() {
+     static {
+       setProperties(Property[] {
+         <% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %>
+       });
+     }
      public String getName() { return "<%= this.name %>"; }
      public String getLabel() { return "<%= this.label %>"; }
      public getID() { return <%= this.ids.length ? this.ids[0].constantize() : 'null' %>; }
-     public Property[] getProperties() { return properties_; }
    };
 
    public static Model MODEL() {
