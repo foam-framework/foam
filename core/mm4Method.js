@@ -183,14 +183,14 @@ var Arg = FOAM({
           type: 'String',
           required: false,
           defaultValueFn: function() { return this.type; },
-          help: 'The java type that represents the type of this property.',
+          help: 'The java type that represents the type of this property.'
        },
        {
           name: 'javascriptType',
           type: 'String',
           required: false,
           defaultValueFn: function() { return this.type; },
-          help: 'The javascript type that represents the type of this property.',
+          help: 'The javascript type that represents the type of this property.'
        },
        {
            name:  'name',

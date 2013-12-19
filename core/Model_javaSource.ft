@@ -1,0 +1,84 @@
+<% if ( this.package ) { %>package <%= this.package %>;
+<%}%>import foam.core.*;
+
+public class <% out(this.name); %>
+   extends AbstractFObject
+{
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+   public final static Property <%= prop.name.constantize() %> = new Abstract<%= prop.javaType.capitalize() %>Property() {
+     public String getName() { return "<%= prop.name %>"; }
+     public String getLabel() { return "<%= prop.label %>"; }
+     public Object get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }
+     public Object set(Object o, Object v) { return ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }
+     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }
+   };
+   <% } %>
+
+   final static Model model__ = new Model() {
+     Property[] properties_ = {
+      <% for ( var key in this.properties ) { var prop = this.properties[key]; %> <%= prop.name.constantize() %>,<% } %>
+     };
+     public String getName() { return "<%= this.name %>"; }
+     public String getLabel() { return "<%= this.label %>"; }
+     public getID() { return <%= this.ids.length ? this.ids[0].constantize() : 'null' %>; }
+     public Property[] getProperties() { return properties_; }
+   };
+
+   public static Model MODEL() {
+     return model__;
+   }
+
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+   private <%= prop.type %> <%= prop.name %>_;   <% } %>
+
+   public <%= this.name %>()
+   {
+   }
+
+   public <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.type, ' ', prop.name, key < this.properties.length-1 ? ', ': '' %><% } %>)
+   {   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+      <%= prop.name %>_ = <%= prop.name %>;   <% } %>
+   }
+
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+   public <%= prop.type %> get<%= prop.name.capitalize() %>() {
+       return <%= prop.name %>;
+   };
+   public void set<%= prop.name.capitalize() %>(<%= prop.type, ' ',prop.name %>) {
+       <%= prop.name %>_ = <%= prop.name %>;
+   };
+   <% } %>
+
+   public int hashCode() { 
+      int hash = 1;
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+      hash = hash * 31 + hash(<%= prop.name %>);   <% } %>
+
+      return hash;
+   }
+
+   public int compareTo(Object obj) {
+      if ( obj == this ) return 0;
+      if ( obj == null ) return 1;
+
+      <%= this.name %> other = (<%= this.name %>) obj;
+ 
+      int cmp;
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>
+      if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;   <% } %>
+
+      return 0;
+   }
+
+   public StringBuilder append(StringBuilder b) {
+      return b
+   <% for ( var key in this.properties ) { var prop = this.properties[key]; %>\
+      .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= key < this.properties.length-1 ? '.append(", ")' : '' %> 
+   <% } %>      ;
+   }
+
+   public Object fClone() {
+      return new <%= this.name %>(<% for ( var key in this.properties ) { var prop = this.properties[key]; %><%= prop.name + '_', key < this.properties.length-1 ? ', ': '' %><% } %>);
+   }
+
+}

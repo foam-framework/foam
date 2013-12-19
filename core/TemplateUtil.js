@@ -86,6 +86,19 @@ var TemplateCompiler = {
 
 var TemplateUtil = {
 
+   /** Create a method which only compiles the template when first used. **/
+   lazyCompile: function(t) {
+     var delegate;
+
+     return function() {
+       if ( ! delegate ) {
+         delegate = TemplateUtil.compile(t.template);
+       }
+
+       return delegate.apply(this, arguments);
+     };
+   },
+
    compile: window.chrome && window.chrome.app && window.chrome.app.runtime ?
      function() {
        return function() {
@@ -93,8 +106,6 @@ var TemplateUtil = {
        };
      } :
      function(str) {
-
-       // TODO: eval hack for PackagedApps
        var code = TemplateCompiler.parseString(str);
 
        try {

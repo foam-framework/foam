@@ -84,7 +84,16 @@ var ModelProto = {
         // templates
 //        this.templates && this.templates.forEach(function(t) { addMethod(t.name, TemplateUtil.compile(t.template)); });
         // Workaround for crbug.com/258522
-        this.templates && Object_forEach(this.templates, function(t) { addMethod(t.name, TemplateUtil.compile(t.template)); });
+        this.templates && Object_forEach(this.templates, function(t) {
+          addMethod(t.name, TemplateUtil.lazyCompile(t));
+          /*
+          if ( t.template ) {
+            addMethod(t.name, TemplateUtil.compile(t.template));
+          } else {
+            addMethod(t.name, t.createLazyTemplate());
+          }
+          */
+        });
 
         // mix-in mixins
         // Workaround for crbug.com/258522
