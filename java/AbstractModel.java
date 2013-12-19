@@ -17,12 +17,28 @@
 
 package foam.core;
 
-public interface Model
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class AbstractModel
+  implements Model
 {
-  public String     getName();
-  public String     getLabel();
-  public Property   getID();
-  public Property[] getProperties();
-  public Property   getProperty(String propertyName);
+  Property[]            properties_;
+  Map<String, Property> pMap_ = new HashMap<String, Property>();
+
+  void setProperties(Property[] properties) {
+    properties_ = properties;
+    for ( Property p : properties ) pMap_.put(p.name, p);
+  }
+
+  public Property[] getProperties()
+  {
+    return properties_;
+  }
+
+  public Property getProperty(String propertyName)
+  {
+    return pMap_.get(propertyName);
+  }
 
 }
