@@ -187,7 +187,7 @@ var PersistentContext = FOAM({
       },
       {
           name: 'predicate',
-          type: 'EXPR',
+          type: 'Expr',
           defaultValueFn: function() { return TRUE; },
           hidden: true
       }

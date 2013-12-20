@@ -224,6 +224,10 @@ var QuickCompose = FOAM({
       }
     },
     {
+      name: 'minimizeButton',
+      valueFactory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
+    },
+    {
       name: 'discardButton',
       valueFactory: function() { return ActionButton.create({action: this.model_.DISCARD, value: SimpleValue.create(this)}); }
     },
@@ -307,15 +311,21 @@ var QuickCompose = FOAM({
        help:  'Close the window.',
 
        action: function() {
-         var isChromeOS = navigator.userAgent.indexOf('CrOS') != -1;
+         this.appWindow.close();
+       }
+     },
+     {
+       model_: 'Action',
+       name:  'minimize',
+       label: '',
+       iconUrl: 'images/minimize.png',
+       help:  'Minimize the window.',
 
-         if ( isChromeOS ) {
-           this.appWindow.minimize();
-         } else {
-           this.appWindow.close();
-         }
+       action: function() {
+         this.appWindow.minimize();
        }
      }
+
    ],
 
    listeners: [
@@ -344,7 +354,7 @@ var QuickCompose = FOAM({
     },
     {
       name: "header",
-      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
+      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></td></tr></table>"
     },
     {
       name: "toolbar",
