@@ -1,0 +1,83 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script>var FOAM_BOOT_DIR="../core/";</script>
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <title>FOAM Diagram </title>
+ </head>
+ <body>
+  <script language="javascript">
+    var timer = Timer.create({});
+    var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
+
+    space.write(document);
+
+    function box(color, x, text) {
+      return Box.create({color: 'white', width: 120, height:100, font: '10pt Arial', y: -200, background: color, x: x, text: text});
+    }
+
+    var x = -100;
+    var sql       = box('green',  x+=120, 'MegaStore.mdl');
+    var jdbc      = box('red',    x+=120, 'MegaStoreDAO.java');
+    var java      = box('red',    x+=120, '<Entity>.java');
+    var skel  = box('red',    x+=120, 'DAOServer.java');
+    var stub      = box('blue',    x+=120, 'DAOClient.js');
+    var mdao      = box('blue',   x+=120, 'Caching DAO');
+    var js        = box('blue',   x+=120, '<Entity>.js');
+    var ui_table  = box('blue',   x+=120, 'TableView');
+    var ui_detail = box('blue',   x,      'DetailView');
+    var ui_ctrl   = box('blue',   x,      'Controller');
+    var foam      = box('black',  620,    'FOAM');
+    var client    = box('lightgray',  620,    'Client');
+    var server    = box('lightgray',  20,    'Server');
+
+    var skel2, java2, jdbc2, server2;
+    var skel3, java3, jdbc3, server3;
+
+    client.y = server.y = 500;
+    client.width = 360;
+    client.height = 40;
+    server.height = 0;
+    server.width = 480;
+    foam.y = 540;
+    foam.width = 360;
+    foam.height = 0;
+
+    space.addChildren(
+      sql, jdbc, java, stub, skel, mdao, js,
+      ui_table, ui_detail, ui_ctrl, foam, client, server
+    );
+
+    var M = Movement;
+    var B = M.bounce(0.2, 0.08, 3);
+
+    M.compile([
+       [1000, function() { mdao.y = js.y = 400;   }, B],
+       [1000, function() { foam.height = 35;   }, B],
+       [1000, function() { ui_table.y = 200; ui_detail.y = 300; ui_ctrl.y = 400; }, B],
+       [0],
+       [1000, function() { client.width += 120; client.x -= 120; server.height = 40; foam.x -= 600; foam.width += 600; sql.y = 400; stub.y = 400; jdbc.y = java.y = skel.y = 400;   }, B],
+       [0],
+       function() {
+         server2 = server.clone(); server2.text = 'Node.js Server';
+         skel2 = skel.clone(); skel2.text = 'DAOServer.js';
+         java2 = java.clone(); java2.text = '<Entity>.js';
+         jdbc2 = jdbc.clone(); jdbc2.text = 'MongoDBDAO.js';
+         server2.x += 120; server2.width -= 120;
+         space.addChildren(skel2, java2, jdbc2, server2);
+       },
+       [1000, function() { server2.y -= 140; skel2.y -= 140; java2.y -= 140; jdbc2.y -= 140; }],
+       [0],
+       function() {
+         server3 = server.clone(); server3.text = 'AppEngine Ringo Server';
+         skel3 = skel.clone(); skel3.text = 'DAOServer.js';
+         java3 = java.clone(); java3.text = '<Entity>.js';
+         jdbc3 = jdbc.clone(); jdbc3.text = '<TODO>DAO.js';
+         server3.x += 120; server3.width -= 120;
+         space.addChildren(skel3, java3, jdbc3, server3);
+       },
+       [1000, function() { server3.y -= 280; skel3.y -= 280; java3.y -= 280; jdbc3.y -= 280; }],
+    ])();
+  </script>
+ </body>
+</html>
