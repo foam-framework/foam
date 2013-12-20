@@ -245,3 +245,13 @@ var PersistentContext = FOAM({
   }
 });
 
+var Person = FOAM({
+  model_: 'Model',
+  name: 'Person',
+  properties: [
+    { model_: 'IntegerProperty', name: 'id' },
+    { name: 'name' },
+    { name: 'sex', defaultValue: 'M' },
+    { model_: 'IntegerProperty', name: 'age' }
+  ]
+});

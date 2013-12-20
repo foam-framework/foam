@@ -150,7 +150,7 @@ var JSONUtil = {
           if ( prop.name in obj.instance_ ) {
              var val = obj[prop.name];
 
-             if ( val instanceof Array && val.length == 0 ) continue;
+//             if ( val instanceof Array && val.length == 0 ) continue;
 
              if ( val == prop.defaultValue ) continue;
 
@@ -269,7 +269,7 @@ var JSONUtil = {
             if ( prop.name in obj.instance_ ) {
                var val = obj[prop.name];
 
-               if ( val instanceof Array && val.length == 0 ) continue;
+//               if ( val instanceof Array && val.length == 0 ) continue;
 
                //            if ( val == prop.defaultValue ) continue;
 

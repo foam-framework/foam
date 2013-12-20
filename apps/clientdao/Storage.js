@@ -1,6 +1,6 @@
 var RemoteSend = function(path) {
   return function(ret, msg) {
-    var data = JSONUtil.stringify(msg);
+    var data = JSONUtil.compact.stringify(msg);
     var xhr = new XMLHttpRequest();
     xhr.responseType = "json";
     xhr.open("POST", path);
@@ -15,19 +15,7 @@ var RemoteSend = function(path) {
   };
 };
 
-var Person = FOAM({
-  model_: 'Model',
-  name: 'Person',
-
-  properties: [
-    { name: 'id' },
-    { name: 'name' },
-    { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntegerProperty', name: 'age' }
-  ]
-});
-
 var PersonDAO = ClientDAO.create({
   model: Person,
-  asend: RemoteSend('http://172.23.181.171:8080/api')
+  asend: RemoteSend('http://127.0.0.1:8080/api')
 });
