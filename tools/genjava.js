@@ -16,14 +16,17 @@
  */
 
 /**
- * Generates the java source for a model and writes it to a file.
+ * Generates the java source for models specified on command-line and writes them to files.
  */
 require('../core/bootFOAMnode.js');
 var fs = require('fs');
 
-var model = GLOBAL[process.argv[2]];
-var outfile = process.argv[3];
+for ( var i = 2 ; i < process.argv.length ; i++ ) {
+  var model = GLOBAL[process.argv[i]];
+  var outfile = model.javaClassName + ".java";
 
-model.create();
-fs.writeFileSync(outfile, model.javaSource());
+  model.create();
+  fs.writeFileSync(outfile, model.javaSource());
+}
+
 process.exit();

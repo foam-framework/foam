@@ -2895,7 +2895,7 @@ var FloatFieldView = FOAM({
 
    methods: {
      textToValue: function(text) {
-       return parseFloat(text || "0.0");
+       return parseFloat(text) || "0.0";
      }
    }
 });
@@ -2911,7 +2911,7 @@ var IntFieldView = FOAM({
 
    methods: {
      textToValue: function(text) {
-       return parseInt(text || "0");
+       return parseInt(text) || "0";
      }
    }
 });

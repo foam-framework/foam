@@ -33,13 +33,12 @@ Property.getPrototype().compare = function(o1, o2) {
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-var EXPR = FOAM({
+var Expr = FOAM({
    model_: 'Model',
 
-   name: 'EXPR',
+   name: 'Expr',
 
    package: 'foam.mlang',
-   abstract: true,
 
    methods: {
      // Mustang Query Language
@@ -67,7 +66,7 @@ var EXPR = FOAM({
 var TRUE = (FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
 
    name: 'TRUE',
 
@@ -82,7 +81,7 @@ var TRUE = (FOAM({
 var FALSE = (FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
 
    name: 'FALSE',
 
@@ -95,7 +94,7 @@ var FALSE = (FOAM({
 
 var IDENTITY = (FOAM({
     model_: 'Model',
-    extendsModel: 'EXPR',
+    extendsModel: 'Expr',
     name: 'IDENT',
     methods: {
         f: function(obj) { return obj; },
@@ -107,7 +106,7 @@ var IDENTITY = (FOAM({
 var NARY = FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
    abstract: true,
 
    name: 'NARY',
@@ -155,7 +154,7 @@ var NARY = FOAM({
 var UNARY = FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
    abstract: true,
 
    name: 'UNARY',
@@ -286,6 +285,7 @@ var OrExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'NARY',
+   abstract: true,
 
    name: 'OrExpr',
 
@@ -357,6 +357,7 @@ var NotExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'UNARY',
+   abstract: true,
 
    name: 'NotExpr',
 
@@ -593,6 +594,7 @@ var NeqExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'NeqExpr',
 
@@ -621,6 +623,7 @@ var LtExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'LtExpr',
 
@@ -649,6 +652,7 @@ var GtExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'GtExpr',
 
@@ -677,6 +681,7 @@ var LteExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'LteExpr',
 
@@ -705,6 +710,7 @@ var GteExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'GteExpr',
 
@@ -824,7 +830,7 @@ var ConcatExpr = FOAM({
 
 
 function compile_(a) {
-  return /*EXPR.isInstance(a) || Property.isInstance(a)*/ a.f ? a :
+  return /*Expr.isInstance(a) || Property.isInstance(a)*/ a.f ? a :
       a === true  ? TRUE        :
       a === false ? FALSE       :
       ConstantExpr.create({arg1:a});
@@ -1017,7 +1023,7 @@ var GroupByExpr = FOAM({
    properties: [
       {
          name:  'groups',
-         type:  'Map[EXPR]',
+         type:  'Map[Expr]',
          help:  'Groups.',
          valueFactory: function() { return {}; }
       }
@@ -1100,7 +1106,7 @@ var GroupByExpr = FOAM({
 var GridByExpr = FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
 
    name: 'GridByExpr',
 
@@ -1128,14 +1134,14 @@ var GridByExpr = FOAM({
       },
       {
          name:  'rows',
-         type:  'Map[EXPR]',
+         type:  'Map[Expr]',
          help:  'Rows.',
          valueFactory: function() { return {}; }
       },
       {
          name:  'cols',
          label: 'Columns',
-         type:  'Map[EXPR]',
+         type:  'Map[Expr]',
          help:  'Columns.',
          valueFactory: function() { return {}; }
       }
@@ -1268,7 +1274,7 @@ var MapExpr = FOAM({
 var CountExpr = FOAM({
    model_: 'Model',
 
-   extendsModel: 'EXPR',
+   extendsModel: 'Expr',
 
    name: 'CountExpr',
 
@@ -1547,7 +1553,7 @@ var ExpandableGroupByExpr = FOAM({
    properties: [
       {
          name:  'groups',
-         type:  'Map[EXPR]',
+         type:  'Map[Expr]',
          help:  'Groups.',
          valueFactory: function() { return {}; }
       },
@@ -1632,16 +1638,16 @@ var ExpandableGroupByExpr = FOAM({
 var TreeExpr = FOAM({
   model_: 'Model',
 
-  extendsModel: 'EXPR',
+  extendsModel: 'Expr',
 
   name: 'TreeExpr',
 
   properties: [
     {
-      name: 'parentProperty',
+      name: 'parentProperty'
     },
     {
-      name: 'childrenProperty',
+      name: 'childrenProperty'
     },
     {
       name: 'items_',
