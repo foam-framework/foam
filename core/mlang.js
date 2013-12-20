@@ -1694,6 +1694,23 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
+var DescExpr = FOAM({
+  model_: 'Model',
+  name: 'DescExpr',
+
+  extendsModel: 'UNARY',
+
+  methods: {
+    compare: function(o1, o2) {
+      return -1 * this.arg1.compare(o1, o2);
+    }
+  }
+});
+
+function DESC(arg1) {
+  if ( DescExpr.isInstance(arg1) ) return arg1.arg1;
+  return DescExpr.create({ arg1: arg1 });
+}
 
 var JOIN = function(dao, key, sink) {
   return {

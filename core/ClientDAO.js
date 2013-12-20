@@ -41,9 +41,14 @@ var ClientDAO = FOAM({
       var self = this;
       this.asend(function(resp) {
         if ( !sink ) return;
-        if ( resp.put ) sink.put(resp.put);
-        else if ( resp.remove ) sink.remove(resp.remove);
-        else if ( resp.error ) sink.error(resp.error);
+        if ( ! resp ) sink && sink.error && sink.error(method, params[0]);
+        if ( resp.put ) {
+          self.notify_('put', params[0]);
+          sink && sink.put && sink.put(resp.put);
+        } else if ( resp.remove ) {
+          self.notify_('remove', params[0]);
+          sink && sink.remove && sink.remove(resp.remove);
+        } else if ( resp.error ) sink.error(resp.error);
       }, {
         subject: self.subject,
         method: method,
@@ -83,18 +88,10 @@ var ClientDAO = FOAM({
 
       var self = this;
 
-      if ( sink.model_ && sink.reduceI) {
+      if ( sink.model_ || Array.isArray(sink) ) {
         this.asend(function(response) {
-          sink.reduceI(response);
-          future.set(response);
-        }, {
-          subject: self.subject,
-          method: 'select',
-          params: [sink, options]
-        });
-      } else if ( Array.isArray(sink) ) {
-        this.asend(function(response) {
-          future.set(response);
+          if ( ! response ) sink && sink.error && sink.error();
+          future.set(response || sink);
         }, {
           subject: self.subject,
           method: 'select',
@@ -104,6 +101,11 @@ var ClientDAO = FOAM({
         var fc = this.createFlowControl_();
 
         this.asend(function(response) {
+          if ( ! response ) {
+            sink && sink.error && sink.error('');
+            future.set(sink);
+            return;
+          }
           for ( var i = 0; i < response.length; i++ ) {
             if ( fc.stopped ) break;
             if ( fc.errorEvt ) {

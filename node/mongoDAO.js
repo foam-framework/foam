@@ -166,10 +166,11 @@ global.MongoDAO = FOAM({
 
       var future = afuture();
       this.withDB(function(db) {
+        console.log(query, opts);
         db.find(query, opts, function(err, cursor) {
           if (err) return sink && sink.error && sink.error(err);
           if (CountExpr.isInstance(sink)) {
-            cursor.count(true, function(err, count) {
+            cursor.count(function(err, count) {
               if (err) sink && sink.err && sink.err(err);
               sink.count = count;
               future.set(sink);
