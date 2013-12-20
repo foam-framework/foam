@@ -312,6 +312,10 @@ function apar(/* ... afuncs */) {
   var fs = arguments;
 
   return function(ret /* opt_args */) {
+    if ( aargs.length == 0 ) {
+      ret && ret();
+      return;
+    }
     var opt_args = Array.prototype.splice.call(arguments, 1);
     var join = function (i) {
       aargs[i] = Array.prototype.splice.call(arguments, 1);

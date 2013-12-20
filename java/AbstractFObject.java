@@ -45,6 +45,7 @@ public abstract class AbstractFObject
   public int hash(long l)    { return (int)(l^(l>>>32)); }
   public int hash(float f)   { return hash(Float.floatToIntBits(f)); }
   public int hash(double d)  { return hash(Double.doubleToLongBits(d)); }
+  public int hash(Object o)  { return o == null ? 0 : o.hashCode(); }
 
 
   public boolean equals(Object o) {
