@@ -16,7 +16,6 @@
         "background": {
             "scripts": [
               "foam.js",
-              "Storage.js",
               "bg.js"
             ]
         }

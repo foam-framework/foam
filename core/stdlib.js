@@ -153,21 +153,6 @@ Object.defineProperty(Array.prototype, 'fReduce', {
 });
 
 /** Reverse the direction of a comparator. **/
-var DESC = function(c) {
-  if ( c.isDESC ) return toCompare(c.c);
-
-  var p = toCompare(c);
-
-  if ( typeof p !== 'function' ) throw 'Invalid comparator in DESC';
-
-  var f = function(o1, o2) { return p(o2,o1); };
-  f.c = c;
-  f.isDESC = true;
-
-  return f;
-};
-
-
 
 var CompoundComparator = function() {
   var cs = arguments;

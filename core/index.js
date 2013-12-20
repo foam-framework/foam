@@ -545,7 +545,7 @@ var TreeIndex = {
     if ( options && options.order ) {
       if ( options.order === prop ) {
         // sort not required
-      } else if ( options.order.isDESC && options.order.c === prop ) {
+      } else if ( DescExpr.isInstance(options.order) && options.order.arg1 === prop ) {
         // reverse-sort, sort not required
         reverseSort = true;
       } else {

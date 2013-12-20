@@ -2103,7 +2103,7 @@ var TableView = FOAM({
 
             if ( this.sortOrder === prop ) {
                arrow = ' <span class="indicator">&#9650;</span>';
-            } else if ( this.sortOrder && this.sortOrder.isDESC && this.sortOrder.c === prop ) {
+            } else if ( this.sortOrder && DescExpr.isInstance(this.sortOrder) && this.sortOrder.arg1 === prop ) {
                arrow = ' <span class="indicator">&#9660;</span>';
             }
 
