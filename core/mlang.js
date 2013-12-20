@@ -38,6 +38,9 @@ var EXPR = FOAM({
 
    name: 'EXPR',
 
+   package: 'foam.mlang',
+   abstract: true,
+
    methods: {
      // Mustang Query Language
      toMQL: function() {
@@ -105,6 +108,7 @@ var NARY = FOAM({
    model_: 'Model',
 
    extendsModel: 'EXPR',
+   abstract: true,
 
    name: 'NARY',
 
@@ -152,6 +156,7 @@ var UNARY = FOAM({
    model_: 'Model',
 
    extendsModel: 'EXPR',
+   abstract: true,
 
    name: 'UNARY',
 
@@ -181,6 +186,7 @@ var BINARY = FOAM({
    model_: 'Model',
 
    extendsModel: 'UNARY',
+   abstract: true,
 
    name: 'BINARY',
 
@@ -209,6 +215,7 @@ var AndExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'NARY',
+   abstract: true,
 
    name: 'AndExpr',
 
@@ -415,6 +422,7 @@ var EqExpr = FOAM({
    model_: 'Model',
 
    extendsModel: 'BINARY',
+   abstract: true,
 
    name: 'EqExpr',
 
