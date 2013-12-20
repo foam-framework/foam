@@ -248,6 +248,8 @@ var QuickCompose = FOAM({
   methods: {
     initHTML: function() {
       this.view.value = this.propertyValue('email');
+
+      // TODO: this child initialization should all be automatic
       this.view.initHTML();
       this.sendButton.initHTML();
       this.boldButton.initHTML();
@@ -256,6 +258,7 @@ var QuickCompose = FOAM({
       this.linkButton.initHTML();
       this.discardButton.initHTML();
       this.closeButton.initHTML();
+      this.minimizeButton.initHTML();
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
 
@@ -308,7 +311,7 @@ var QuickCompose = FOAM({
        name:  'close',
        label: '',
        iconUrl: 'images/x_8px.png',
-       help:  'Close the window.',
+//       help:  'Close the window.',
 
        action: function() {
          this.appWindow.close();
@@ -319,7 +322,7 @@ var QuickCompose = FOAM({
        name:  'minimize',
        label: '',
        iconUrl: 'images/minimize.png',
-       help:  'Minimize the window.',
+//       help:  'Minimize the window.',
 
        action: function() {
          this.appWindow.minimize();
