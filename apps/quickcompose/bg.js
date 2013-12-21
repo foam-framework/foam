@@ -1,4 +1,13 @@
+var openWindow;
+
 function launchComposer() {
+  // This block implements the feature which disables launching multiple
+  // instances and instead un-minimizes the existing instance when attempting
+  // to launch a new one.
+  if ( openWindow ) {
+    openWindow.open();
+    return;
+  }
   chrome.app.window.create(
     'empty.html',
     {top: 0, left: 0, width: 335, height: 478, type: 'panel', frame: 'none'},
@@ -14,6 +23,7 @@ function launchComposer() {
             window: dialog,
             userInfo: userInfo || undefined
           });
+          openWindow = w;
           b.appWindow = w;
           dialog.browser = window.browser = b; // for debugging
           $addWindow(dialog);
@@ -24,6 +34,7 @@ function launchComposer() {
       };
       w.onClosed.addListener(function() {
         $removeWindow(self.dialog);
+        openWindow = undefined;
       });
     });
 }
