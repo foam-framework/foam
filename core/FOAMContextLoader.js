@@ -25,7 +25,8 @@ global.window = global;
 global.document = global;
 
 // Loading all FOAM models.
-var modelsfiles = fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMmodels.js'));
+var modelsfiles =
+    fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMViewlessModels.js'));
 vm.runInThisContext(modelsfiles);
 
 for (var i = 0; i < files.length; i++) {

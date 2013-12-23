@@ -3155,7 +3155,7 @@ var ListInputView = FOAM({
         } else if ( e.keyCode === 38 /* up */ ) {
           this.autocompleteView.prevSelection();
           e.preventDefault();
-        } else if ( e.keyCode === 13 /* RET */ ) {
+        } else if ( e.keyCode === 13 /* RET */ || e.keyCode === 9 /* TAB */ ) {
           if ( this.autocompleteView.value.get() ) {
             this.pushValue(
               this.property.f(this.autocompleteView.value.get()));

@@ -79,7 +79,7 @@ var AttachmentView = FOAM({
       for ( var i = 0 ; i < this.value.get().length ; i++ ) {
         var att = this.value.get()[i];
         var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
-        out += '<div class="attachment"><div class="filenameandsize"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span></div><span class="spacer"/><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '"><img src="images/x_8px.png"></button></span></div>';
+        out += '<div class="attachment"><div class="filenameandsize"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span></div><span class="spacer"/><span class="remove"><button id="' + this.registerCallback('click', this.onRemove.bind(this, att)) + '" tabindex="99"><img src="images/x_8px.png"></button></span></div>';
       }
 
       return out;
@@ -224,6 +224,10 @@ var QuickCompose = FOAM({
       }
     },
     {
+      name: 'minimizeButton',
+      valueFactory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
+    },
+    {
       name: 'discardButton',
       valueFactory: function() { return ActionButton.create({action: this.model_.DISCARD, value: SimpleValue.create(this)}); }
     },
@@ -244,6 +248,8 @@ var QuickCompose = FOAM({
   methods: {
     initHTML: function() {
       this.view.value = this.propertyValue('email');
+
+      // TODO: this child initialization should all be automatic
       this.view.initHTML();
       this.sendButton.initHTML();
       this.boldButton.initHTML();
@@ -252,6 +258,7 @@ var QuickCompose = FOAM({
       this.linkButton.initHTML();
       this.discardButton.initHTML();
       this.closeButton.initHTML();
+      this.minimizeButton.initHTML();
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
 
@@ -304,18 +311,24 @@ var QuickCompose = FOAM({
        name:  'close',
        label: '',
        iconUrl: 'images/x_8px.png',
-       help:  'Close the window.',
+//       help:  'Close the window.',
 
        action: function() {
-         var isChromeOS = navigator.userAgent.indexOf('CrOS') != -1;
+         this.appWindow.close();
+       }
+     },
+     {
+       model_: 'Action',
+       name:  'minimize',
+       label: '',
+       iconUrl: 'images/minimize.png',
+//       help:  'Minimize the window.',
 
-         if ( isChromeOS ) {
-           this.appWindow.minimize();
-         } else {
-           this.appWindow.close();
-         }
+       action: function() {
+         this.appWindow.minimize();
        }
      }
+
    ],
 
    listeners: [
@@ -344,7 +357,7 @@ var QuickCompose = FOAM({
     },
     {
       name: "header",
-      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.closeButton.toHTML() %></td></tr></table>"
+      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></td></tr></table>"
     },
     {
       name: "toolbar",

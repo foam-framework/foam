@@ -25,7 +25,7 @@ global.FOAM_BOOT_DIR = path.resolve('../core');
 global.require = require;
 
 var foamLoader = fs.readFileSync(
-    path.join(global.FOAM_BOOT_DIR, 'foam_context_loader.js'));
+    path.join(global.FOAM_BOOT_DIR, 'FOAMContextLoader.js'));
 vm.runInThisContext(foamLoader);
 
 var options = {
