@@ -1188,7 +1188,7 @@ var IDBDAO = FOAM({
     },
 
     find: function(key, sink) {
-      if ( EXPR.isInstance(key) ) {
+      if ( Expr.isInstance(key) ) {
         var found = false;
         this.limit(1).where(key).select({
           put: function() {

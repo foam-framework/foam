@@ -96,7 +96,7 @@ global.MongoDAO = FOAM({
     },
 
     find: function(query, sink) {
-      query = EXPR.isInstance(query) ? query.toMongo() : { _id: query };
+      query = Expr.isInstance(query) ? query.toMongo() : { _id: query };
       var self = this;
       this.withDB(function(db) {
         db.findOne(query, self.withSink(sink));
