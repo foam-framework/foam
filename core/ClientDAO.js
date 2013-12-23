@@ -43,7 +43,10 @@ var ClientDAO = FOAM({
         if ( !sink ) return;
         if ( ! resp ) sink && sink.error && sink.error(method, params[0]);
         if ( resp.put ) {
-          self.notify_('put', params[0]);
+          if ( resp.put.model_ )
+            self.notify_('put', resp.put);
+          else
+            self.notify_('put', params[0]);
           sink && sink.put && sink.put(resp.put);
         } else if ( resp.remove ) {
           self.notify_('remove', params[0]);
