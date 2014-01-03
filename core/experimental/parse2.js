@@ -70,10 +70,10 @@ function seq(a, b) {
   };
 }
 
-function optional(a) {
-  var args = prepArgs(arguments);
+function optional(parser) {
+  parser = prep(parser);
   return function(state) {
-    return [args[0], state[STREAM], state[SUCCESS], state[SUCCESS]];
+    return [parser, state[STREAM], state[SUCCESS], state[SUCCESS]];
   };
 }
 
