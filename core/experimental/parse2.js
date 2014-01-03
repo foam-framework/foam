@@ -64,9 +64,10 @@ function literal(c, opt_value) {
 }
 
 function seq(a, b) {
-  var args = prepArgs(arguments);
+  a = prep(a);
+  b = prep(b);
   return function(state) {
-    return [args[0], state[STREAM], [args[1], undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
+    return [a, state[STREAM], [b, undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
   };
 }
 
@@ -84,9 +85,10 @@ function sym(name) {
 }
 
 function alt(a, b) {
-  var args = prepArgs(arguments);
+  a = prep(a);
+  b = prep(b);
   return function(state) {
-    return [args[0], state[STREAM], state[SUCCESS], [args[1], undefined, state[SUCCESS], state[FAIL]]];
+    return [a, state[STREAM], state[SUCCESS], [b, undefined, state[SUCCESS], state[FAIL]]];
   };
 }
 
