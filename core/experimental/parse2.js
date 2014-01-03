@@ -43,7 +43,7 @@ function prepArgs(args) {
 
 function literal(c, opt_value) {
   return function(state) {
-    var ps = state[STREAM]
+    var ps = state[STREAM];
     for ( var i = 0; i < c.length; i++ ) {
       if ( ps.head === null ) {
         return [literal(c.substring(i), opt_value || c), ps, state[SUCCESS], state[FAIL]];
@@ -56,38 +56,38 @@ function literal(c, opt_value) {
     }
     if ( i === c.length ) {
       state[SUCCESS][STREAM] = ps.setValue(opt_value || c);
-      return state[SUCCESS]
+      return state[SUCCESS];
     }
     state[FAIL][STREAM] = state[STREAM];
     return state[FAIL];
-  }
+  };
 }
 
 function seq(a, b) {
   var args = prepArgs(arguments);
   return function(state) {
     return [args[0], state[STREAM], [args[1], undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
-  }
+  };
 }
 
 function optional(a) {
   var args = prepArgs(arguments);
   return function(state) {
     return [args[0], state[STREAM], state[SUCCESS], state[SUCCESS]];
-  }
+  };
 }
 
 function sym(name) {
   return function(state) {
     return this[name](state);
-  }
+  };
 }
 
 function alt(a, b) {
   var args = prepArgs(arguments);
   return function(state) {
     return [args[0], state[STREAM], state[SUCCESS], [args[1], undefined, state[SUCCESS], state[FAIL]]];
-  }
+  };
 }
 
 // TODO: Resuming in the middle of a literal
@@ -108,7 +108,7 @@ var grammar = {
   },
   // Pumps the state machine until termination or more data needed.
   parse: function() {
-    while (this.state) {
+    while ( this.state ) {
       if ( this.state === this.END ) {
         break;
       }
@@ -131,7 +131,7 @@ var grammar = {
 
     this[sym] = function(state) {
       return [old, state[STREAM], [wrapper, undefined, state[SUCCESS], undefined], [state[FAIL]]];
-    }
+    };
     return this;
   },
   addActions: function(map) {
