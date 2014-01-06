@@ -1,9 +1,5 @@
 FOAM Templates
 
-FOAM's template system uses the standard Java Server Pages (JSP) template format, with the exception that code segments
-are expressed in Javascript instead of Java.  Additionally, the {{ and {{{ syntax from the Mustache template system is 
-also supported.
-
 Introduction
 Perhaps no other area of software development has been as immune to positive advancement as templating systems.
 Most templating systems have not advanced beyond 60's-era macro processing systems; favouring 'partials' instead
@@ -18,6 +14,10 @@ As a result, FOAM Templates are extensible, high-performance, memory-efficient, 
 
 
 Template Syntax
+FOAM's template system uses the standard Java Server Pages (JSP) template format, with the exception that code segments
+are expressed in Javascript instead of Java.  Additionally, the {{ and {{{ syntax from the Mustache template system is 
+also supported.
+
  <% code %>: code inserted into template, but nothing implicitly output
  <%= comma-separated-values %>: all values are appended to template output
  {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax, output is escaped
@@ -27,6 +27,8 @@ Template Syntax
 The standard JSP syntax of <%! %> for declarations is not used because Javascript does not have different modes for
 declaring variables and code.  Just us the <% %> tag for declaring local variables.  (Declare class variables and methods
 in your model, just as you normally would.)
+
+<%= value1, value2, ... valueN %> is the same as: <% out(value1, value2, ..., valueN); %>
 
 
 Defined in Models
