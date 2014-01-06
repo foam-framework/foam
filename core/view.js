@@ -196,7 +196,7 @@ var AbstractView = FOAM({
       return this.elementId || ( this.elementId = this.nextID() );
     },
 
-    registerCallback: function(event, listener, opt_elementId) {
+    on: function(event, listener, opt_elementId) {
         opt_elementId = opt_elementId || this.nextID();
 
 //      if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
@@ -226,7 +226,7 @@ var AbstractView = FOAM({
        // This mostly involves attaching listeners.
        // Must be called activate a view after it has been added to the DOM.
 
-       this.registerCallbacks();
+       this.ons();
        this.initChildren();
      },
 
@@ -244,7 +244,7 @@ var AbstractView = FOAM({
        }
      },
 
-     registerCallbacks: function() {
+     ons: function() {
        if ( this.callbacks_ ) {
          // hookup event listeners
          for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
@@ -371,7 +371,7 @@ var ImageView = FOAM({
       },
       toHTML: function() {
          return '<div class="imageViewContainer" id="' + this.getID() + '"><div class="imageView"></div>' +
-            '<img class="imageView" id="' + this.registerCallback('load', this.onLoad) + '"></div>';
+            '<img class="imageView" id="' + this.on('load', this.onLoad) + '"></div>';
       },
       initHTML: function() {
          this.SUPER();
@@ -692,7 +692,7 @@ var TextFieldView = FOAM({
    methods: {
     toHTML: function() {
       if ( this.mode === 'read-write' ) {
-        this.registerCallback('change', this.onChange, this.getID());
+        this.on('change', this.onChange, this.getID());
 
         return '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
       }
@@ -933,9 +933,9 @@ var ChoiceView = FOAM({
          var id     = this.nextID();
 
          try {
-           this.registerCallback('click', this.onClick, id);
-           this.registerCallback('mouseover', this.onMouseOver, id);
-           this.registerCallback('mouseout', this.onMouseOut, id);
+           this.on('click', this.onClick, id);
+           this.on('mouseover', this.onMouseOver, id);
+           this.on('mouseout', this.onMouseOut, id);
          } catch (x) {
            // Fails on iPad, which is okay, because this feature doesn't make
            // sense on the iPad anyway.
@@ -1095,7 +1095,7 @@ var RadioBoxView = FOAM({
            out.push(choice.toString());
            out.push('"');
            var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
-           out.push('id="' + this.registerCallback('click', callback) + '"');
+           out.push('id="' + this.on('click', callback) + '"');
            if ( this.value && choice == this.value.get() ) out.push(' checked');
            out.push('/> ');
          }
@@ -2089,7 +2089,7 @@ var TableView = FOAM({
 
             str.push('<th scope=col ');
             str.push('id=' +
-                this.registerCallback(
+                this.on(
                   'click',
                   (function(table, prop) { return function() {
                     if ( table.sortOrder === prop ) {
@@ -2246,7 +2246,7 @@ var ActionButton = Model.create({
     },
 
     toHTML: function() {
-      this.registerCallback(
+      this.on(
         'click',
         function(action) { return function() {
           action.action.apply(this.value.get());
@@ -2850,8 +2850,8 @@ var AlternateView = FOAM({
 
                return false;
             };}(this,view);
-//          str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
-            str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+//          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
+            str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + view.label + '</a>');
             if ( view.label == this.selected ) viewChoice = view;
          }
          str.push('</div>');
@@ -3092,7 +3092,7 @@ var ListInputView = FOAM({
 
   methods: {
     toHTML: function() {
-      this.registerCallback('keydown', this.onKeyDown, this.getID());
+      this.on('keydown', this.onKeyDown, this.getID());
 
       return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
     },

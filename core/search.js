@@ -180,7 +180,7 @@ var TextSearchView = FOAM({
            this.label +
          '</div>' +
          this.view.toHTML() + '</div>' +
-         '<div id=' + this.registerCallback('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
+         '<div id=' + this.on('click', this.clear) + ' style="text-align:right;width:100%;float:right;margin-bottom:20px;" class="searchTitle"><font size=-1><u>Clear</u></font></div>';
      },
      initHTML: function() {
        this.SUPER();
