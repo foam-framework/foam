@@ -55,7 +55,15 @@ var CIssue = FOAM({
           shortName: 'i',
           label: 'ID',
           required: true,
-          tableWidth: '48px'
+          tableWidth: '48px',
+          tableFormatter: function(value, row, table) {
+            var id = table.nextID();
+
+            table.registerCallback('mouseover', function() { console.log('mouseover'); }, id);
+            table.registerCallback('mouseout',  function() { console.log('mouseout');  }, id);
+
+            return '<div id="' + id + '">' + value + '</div>';
+          }
         },
         {
           model_: 'StringProperty',

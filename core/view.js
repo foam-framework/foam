@@ -2131,7 +2131,7 @@ var TableView = FOAM({
 
                 str.push('<td class="' + prop.name + '">');
                 var val = obj[prop.name];
-                if ( prop.tableFormatter ) {
+		if ( prop.tableFormatter ) {
                   str.push(prop.tableFormatter(val, obj, this));
                 } else {
                   str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
