@@ -99,7 +99,9 @@ Boolean.prototype.compareTo = function(o) {
 };
 
 var argsToArray = function(args) {
-  return Array.prototype.slice.call(args);
+  var array = new Array(args.length);
+  for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
+  return array;
 };
 
 var StringComparator = function(s1, s2) {
