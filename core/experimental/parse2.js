@@ -63,6 +63,41 @@ function literal(c, opt_value) {
   }
 }
 
+function literal_ic(c, opt_value) {
+  c = c.toLowerCase();
+  return function(state) {
+    var ps = state[STREAM]
+    for ( var i = 0; i < c.length; i++ ) {
+      if ( ps.head === null ) {
+        return [literal(c.substring(i), opt_value || c), ps, state[SUCCESS], state[FAIL]];
+      }
+
+      if ( ps.head.toLowerCase() === c[i] )
+        ps = ps.tail;
+      else
+        break;
+    }
+    if ( i === c.length ) {
+      state[SUCCESS][STREAM] = ps.setValue(opt_value || c);
+      return state[SUCCESS]
+    }
+    state[FAIL][STREAM] = state[STREAM];
+    return state[FAIL];
+  }
+}
+
+function anyChar(state) {
+  state[SUCCESS][STREAM] = state[STREAM].tail.setValue(state[STREAM].head);
+  return state[SUCCESS];
+}
+
+function notChar(c) {
+  return function(state) {
+    var next = state[STREAM].head !== c ? state[SUCCESS] : state[FAIL];
+    next[STREAM] = state[STREAM].tail.setValue(c);
+  }
+}
+
 function seq(a, b) {
   var args = prepArgs(arguments);
   return function(state) {
