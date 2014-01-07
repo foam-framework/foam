@@ -340,14 +340,6 @@ var ImageView = FOAM({
          }
       },
       {
-         name: 'placeHolder',
-         postSet: function(newValue) {
-            if ( this.$ ) {
-               this.$.children[0].style.backgroundImage = newValue;
-            }
-         }
-      },
-      {
          name: 'displayWidth',
          postSet: function(newValue) {
             if ( this.$ ) {
@@ -370,27 +362,15 @@ var ImageView = FOAM({
          this.value = value;
       },
       toHTML: function() {
-         return '<div class="imageViewContainer" id="' + this.getID() + '"><div class="imageView"></div>' +
-            '<img class="imageView" id="' + this.registerCallback('load', this.onLoad) + '"></div>';
+         return '<img class="imageView" id="' + this.getID() + '">';
       },
       initHTML: function() {
          this.SUPER();
-         this.displayWidth = this.displayWidth;
+         this.domValue = DomValue.create(this.$, undefined, 'src');
          this.displayHeight = this.displayHeight;
-         this.$.children[1].style.opacity = 0;
-         this.domValue = DomValue.create(this.$.children[1], undefined, 'src');
+         this.displayWidth = this.displayWidth;
       }
-   },
-
-   listeners: [
-      {
-         name: 'onLoad',
-         code: function() {
-            this.$.children[0].style.opacity = 0;
-            this.$.children[1].style.opacity = 0.99;
-         }
-      }
-   ]
+   }
 });
 
 var BlobImageView = FOAM({

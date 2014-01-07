@@ -193,17 +193,8 @@ option[selected]{
 }
 
 /* ----------- ImageView ---------- */
-.imageViewContainer {
-  position: relative;
-  display: inline-block;
-}
-
 .imageView {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+  display: inline-block;
 }
 
 /* ----------- stylized ----------- */
