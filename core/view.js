@@ -3073,6 +3073,8 @@ var ListInputView = FOAM({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.getID());
+      this.on('blur', this.onBlur, this.getID());
+      this.on('focus', this.onInput, this.getID());
 
       return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
     },
@@ -3146,6 +3148,12 @@ var ListInputView = FOAM({
         } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
           this.popValue();
         }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        this.autocompleteView.dao = this.dao.where(FALSE);
       }
     }
   ]
