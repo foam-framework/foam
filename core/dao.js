@@ -2712,7 +2712,7 @@ var BlobSerializeDAO = FOAM({
             var reader = new FileReader();
             reader.onloadend = function() {
               var type = obj[prop.name].type;
-              obj[prop.name] = type + ';' + Base64Encoder.encode(new Uint8Array(reader.result));
+              obj[prop.name] = 'data:' + type + ';base64,' + Base64Encoder.encode(new Uint8Array(reader.result));
               ret();
             }
 
@@ -2730,8 +2730,9 @@ var BlobSerializeDAO = FOAM({
       for ( var i = 0, prop; prop = this.properties[i]; i++ ) {
         var value = prop.f(obj);
         if ( !value ) continue;
-        var type = value.substring(0, value.indexOf(';'));
-        value = value.substring(value.indexOf(';') + 1);
+        var type = value.substring(value.indexOf(':') + 1,
+                                   value.indexOf(';'));
+        value = value.substring(value.indexOf(';base64') + 7);
         var decoder = Base64Decoder.create([]);
         decoder.put(value);
         decoder.eof();
