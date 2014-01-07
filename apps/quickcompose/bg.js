@@ -17,7 +17,9 @@ function launchComposer() {
         aseq(
           arequire('QuickEMailView'),
           arequire('QuickCompose'),
-          arequire('LinkView')
+          arequire('LinkView'),
+          arequire('ContactListTileView'),
+          arequire('AutocompleteListView')
         )(function () {
           var b = QuickCompose.create({
             window: dialog,
