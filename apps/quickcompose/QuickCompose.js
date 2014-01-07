@@ -108,7 +108,7 @@ var QuickEMail = FOAM({
             inputView: ListInputView.create({
               dao: ContactAvatarDAO,
               property: Contact.EMAIL,
-              searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST],
+              searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST, Contact.TITLE],
               autocompleteView: AutocompleteListView.create({
                 innerView: ContactListTileView,
                 count: 8

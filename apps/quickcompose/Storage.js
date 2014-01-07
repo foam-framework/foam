@@ -46,13 +46,13 @@ var BlobXhrFactory = OAuthXhrFactory.create({
   responseType: "blob"
 });
 
-var ContactAvatarDAO = LazyCacheDAO.create({
-  cache: BlobSerializeDAO.create({
-    delegate: IDBDAO.create({ model: Contact, name: 'ContactAvatars' }),
-    properties: [Contact.AVATAR]
-  }),
-  delegate: ContactAvatarNetworkDAO.create({
-    xhrFactory: BlobXhrFactory
+var ContactAvatarDAO = LRUCachingDAO.create({
+  maxSize: 50,
+  delegate: LazyCacheDAO.create({
+    cache: IDBDAO.create({ model: Contact, name: 'ContactAvatars2' }),
+    delegate: ContactAvatarNetworkDAO.create({
+      xhrFactory: BlobXhrFactory
+    })
   })
 });
 

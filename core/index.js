@@ -924,16 +924,24 @@ var MDAO = Model.create({
     },
 
     remove: function(obj, sink) {
-      var id = obj.id ? obj.id : obj;
-      var query = EQ(this.model.getProperty(this.model.ids[0]), id);
-      this.removeAll({ remove: sink && sink.remove }, { query: query });
+      var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
+      var self = this;
+      this.find(id, {
+        put: function(obj) {
+          self.root = self.index.remove(self.root, obj);
+          sink && sink.remove && sink.remove(obj);
+        },
+        error: function() {
+          sink && sink.error && sink.error('remove', obj);
+        }
+      });
     },
 
     removeAll: function(sink, options) {
       if (!options) options = {};
       if (!options.query) options.query = TRUE;
       var future = afuture();
-      this.where(query).select([])(function(a) {
+      this.where(options.query).select([])(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
           delete this.map[a[i].id];
