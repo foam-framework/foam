@@ -16,6 +16,7 @@
    <script language="javascript">
      $addWindow(window);
      var b = CIssueBrowser.create({window: window});
+     window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
    </script>

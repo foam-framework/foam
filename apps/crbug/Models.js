@@ -59,8 +59,12 @@ var CIssue = FOAM({
           tableFormatter: function(value, row, table) {
             var id = table.nextID();
 
-            table.on('mouseover', function() { console.log('mouseover'); }, id);
-            table.on('mouseout',  function() { console.log('mouseout');  }, id);
+            table.on('mouseover', function(e) {
+              window.browser.preview(e, value);
+            }, id);
+            table.on('mouseout',  function() {
+              window.browser.preview(null);
+            }, id);
 
             return '<div id="' + id + '">' + value + '</div>';
           }
