@@ -41,7 +41,7 @@
 <br/>
 
   <script language="javascript">
-localStorage.removeItem('Models');
+// localStorage.removeItem('Models');
     // to re-load models into local storage run the follow from JS shell: localStorage.removeItem('models');
     var models = [
        Action,
@@ -83,25 +83,9 @@ localStorage.removeItem('Models');
 //       EMail
     ];
 
-/*
-
-    var ModelDAO = ModelDAO.create(this,StorageDAO.create({ model: Model }));
-    ModelDAO.find("Model", {
-      found: false,
-      put: function(ignore, ignore, fc) { this.found = true; },
-      eof: function() {
-        if (!this.found) {
-          for ( var i = 0 ; i < models.length ; i++ ) {
-            ModelDAO.put(models[i]);
-          }
-        }
-      },
-      error: function() {
-        this.eof();
-      }
-    })
-*/
-var ModelDAO = models;
+    var ModelDAO = IDBDAO.create({model: Model});
+    models.select(ModelDAO);
+//var ModelDAO = models;
 
     var stack = StackView.create();
     stack.write(document);
