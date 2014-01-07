@@ -135,7 +135,7 @@ var ColorPickerView = FOAM({
         var value = 'rgb(' + r + ',' + g + ',' + b + ')';
 
         out += '<td class="pickerCell"><div id="' +
-          self.registerCallback('click', function(e) {
+          self.on('click', function(e) {
             self.value.set(value);
             e.preventDefault();
           }) +

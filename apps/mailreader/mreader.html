@@ -57,7 +57,7 @@ ThreadedEMail.properties.push(Property.create({
       if ( c == 1 ) return "&nbsp;&nbsp;&nbsp;&nbsp;1";
       var isExpanded = expanded[GROUP_PROPERTY.f(email)];
       var icon = isExpanded ? "&nbsp;-" : "+";
-      var id = table.registerCallback('click', (function(isExpanded) { return function() {
+      var id = table.on('click', (function(isExpanded) { return function() {
         if ( isExpanded ) {
           delete expanded[GROUP_PROPERTY.f(email)];
         } else {

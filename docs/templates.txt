@@ -1,9 +1,49 @@
+FOAM Templates
+
+Introduction
+
+Perhaps no other area of software development has been as
+immune to positive advancement as templating systems.  Most templating
+systems have not advanced beyond 60's-era macro processing systems;
+favouring 'partials' instead of procedures or methods as a method of
+reuse, maps of key-value pairs instead of sturctures or objects, and
+cryptic single-character control characters like #, /, !, &, %, $,
+etc., instead of modern if's and for loops.  Modern methods for
+structuring code for reusability and maintainability, such as
+encapsulation, polymorphism, inheritance, and composition, are
+ususally completely absent.
+
+FOAM Templates bring templating into the modern object-oriented era.
+This helps to make them easier to use and allows for the creation of
+maintainable and reusable templates.  Modern software-engineering best
+practices, such as: structured-programming, code-reuse, encapsulation,
+inheritance, polymorphism, composition, decoration, etc. are all
+available with FOAM Templates.  As a result, FOAM Templates are
+extensible, high-performance, memory-efficient, reusable,
+maintainable, and offer improved developer productivity.
+
+
 Template Syntax
+
+FOAM's template system uses the standard Java Server
+Pages (JSP) template format, with the exception that code segments are
+expressed in Javascript instead of Java.  Additionally, the {{ and {{{
+syntax from the Mustache template system is also supported.
+
  <% code %>: code inserted into template, but nothing implicitly output
  <%= comma-separated-values %>: all values are appended to template output
  {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax, output is escaped
  {{{comma-separated-values}}}: same as <%= but one character shorter, uses handlebars syntax, output is not escaped
  \<new-line>: ignored
+
+The standard JSP syntax of <%! %> for declarations is not used because
+Javascript does not have different modes for declaring variables and
+code.  Just us the <% %> tag for declaring local variables.  (Declare
+class variables and methods in your model, just as you normally
+would.)
+
+<%= value1, value2, ... valueN %> is the same as: <% out(value1, value2, ..., valueN); %>
+
 
 Defined in Models
 
@@ -19,25 +59,266 @@ Defined in Models
      }
    ]
 
-The best way to edit templates is to use the FOAM Modeller (modeller.html) as it allows you to edit templates
-across multiple-lines without having to escape newline characters or concatenate strings.
+The best way to edit templates is to use the FOAM Modeller
+(modeller.html) as it allows you to edit templates across
+multiple-lines without having to escape newline characters or
+concatenate strings.
+
 
 External Templates
 
-If you prefer to edit templates using your favourite editor, rather than the FOAM modeller, then storing the
-templates external to the model file may be preferred.  To do this, just leave out the 'template:' portion of the template JSON and instead put the template in an external file named: <Model Name>_<Template Name>.ft.  For example, the above template, taken from the CIssueTileView model, would appear in a file named 'CIssueTileView_toHTML.ft'.
+If you prefer to edit templates using your favourite editor, rather
+than the FOAM modeller, then storing the templates external to the
+model file may be preferred.  To do this, just leave out the
+'template:' portion of the template JSON and instead put the template
+in an external file named: <Model Name>_<Template Name>.ft.  For
+example, the above template, taken from the CIssueTileView model,
+would appear in a file named 'CIssueTileView_toHTML.ft'.
+
+Ex. The following template adds the 'toHTML' method to the
+CIssueTileView model, so appears in a file called
+'CIssueTileView_toHTML.ft'.
+
+from: https://code.google.com/p/foam-framework/source/browse/apps/crbug/CIssueTileView_toHTML.ft
+
+<%
+  var starView = CIssue.STARRED.view.create();
+  starView.value = this.issue.propertyValue('starred');
+  this.addChild(starView);
+%>
+<div class="gridtile">
+  <table cellspacing="0" cellpadding="0"><tbody>
+    <tr>
+      <td class="id">
+        {{{ starView.toHTML() }}}
+        <a href="https://code.google.com/p/chromium/issues/detail?id={{this.issue.id}}">{{this.issue.id}}</a>
+      </td>
+      <td class="status">{{this.issue.status}}</td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div><a href="https://code.google.com/p/chromium/issues/detail?id={{this.issue.id}}">{{this.issue.summary}}</a></div>
+      </td>
+    </tr>
+  </tbody></table>
+</div>
+
 
 Limitations of External Templates
 
-Attempting to use external templates when loading files using the file: protocol, will not work.  To work around this problem, either serve your files from a local HTTP server (Ex. python -m SimpleHTTPServer), or else run chrome with the --allow-file-access-from-files option.
+Attempting to use external templates when loading files using the
+file: protocol, will not work.  To work around this problem, either
+serve your files from a local HTTP server (Ex. python -m
+SimpleHTTPServer), or else run chrome with the
+--allow-file-access-from-files option.
+
+
+Control Structures
+
+JSP's do not try to invent their own limited and proprietary control
+structures, but instead reuse the more powerful built-in controls
+structures of the host language (in our case: Javascript).  This saves
+the developer from having to learn and remember new incompatible and
+unusually more limited syntax.
+
+Conditionals
+
+<% if ( this.enabled ) { %>Enabled<% } %>
+
+or
+
+<% if ( this.enabled ) { %>
+  Enabled
+<% } %>
+
+or
+
+<% if ( this.enabled ) { %>
+  Enabled
+<% } else { %>
+  Disabled
+<% } %>
+
+or
+
+<%= this.enabled ? 'Enabled' : 'Disabled' %>
+
+Loops
+
+The following two examples output the numbers from one to ten.
+
+<% var i = 0; while ( i++ < 10 ) { %>
+  <%= i %>
+<% } %>
+
+or 
+
+<% for ( var i = 0 ; i < 10 ; i++ ) { %>
+  <%= i %>
+<% } %>
+
+Recursion is also supported.
+
+
+Nesting Templates
+
+Templates are compiled to regular methods, so hacks like includes,
+partial-templates, etc. are not required.  To call a second template
+from the first, it's just a simple method call.
+
+Ex.
+
+template1
+blah blah blah
+<% this.template2(out) %>
+blah blah blah
+
+Note that the following would also work:
+
+<%= this.template2() %>
+
+But this has the disadvantage, common to many templating systems, that
+it would result in re-copying generated output once for each level of
+nesting.  This would mean that your template would perform and
+generate garbage in O(size*depth).  FOAM Templates' approach of
+passing the output stream down instead, means that it is only O(size).
+
+Escaping HTML
+
+The simples way to escape your output as HTML is the use the {{ }} tag.
+
+Ex.
+
+{{"<b>bold</b>"}}
+
+Will generate:
+
+&lt;b&gt;bold&lt;b&gt;
+
+Another method is to do:
+
+<%= this.strToHTML("<b>bold</b>") %>
+
 
 Editor Support
 
-FOAM templates use the standard JSP syntax, so syntax highlighting is available for many common editors.
+FOAM templates use the standard JSP syntax, so syntax highlighting is
+available for many common editors.
 
 For Emacs, see:
    http://www.emacswiki.org/emacs/JspMode
 
-Also, you should generally have very little code in your templates, so HTML highlighting should normally
-be sufficient.
+Also, you should generally have very little code in your templates, so
+HTML highlighting should normally be sufficient.
 
+
+Advantages
+
+Small Size
+The implementation of FOAM templates is only 104 lines of code, making
+it much smaller than other templating systems.  This decreases
+download sizes and memory usage.
+
+Low Download Size
+FOAM Templates are compiled on the client-side, which means that the
+smaller template source, rather than the larger compiled template is
+transfered.  This saves bandwidth which improves application load and
+start times.
+
+Extensible
+FOAM Templates are built using FOAM's modular parsing framework.  This
+means that the grammar is open to extension without requiring
+modification to the default grammar.  This allows the templating
+system to be extended at the library level.  New tags can be easily
+added as needed by libraries or applications.  As an example, it only
+required three extra lines of code to add the Handlebars-like {{ }}
+and {{{ }}} tags.
+
+Object-Oriented 
+Most templating systems are not object-oriented, and
+as a result, are not as easy to use as they could be, and incur an
+impedence-mismatch when working with objects.  It is common for
+templating systems to be passed in a map/hash/scope/context of data to
+be used to populate the data.  FOAM Templates on the other hand, just
+use 'this'.  This avoids extra work on the part of both the
+develelopers writing the code, and the computers executing it.
+Furthermore, it allows easy access to other methods of the object,
+without the need for the methods to be bound and copied one-by-one
+into a map.
+
+O(size) Nesting
+As mentioned above under "Template Nesting", FOAM allows you to nest
+templates without generating extra garbage or incurring extra copying.
+This is important, not only for performance reasons, but also for
+maintainability reasons.  You can properly factor you templates
+without having to worry about performance degredation.
+
+Garbage-Free
+FOAM Templates OO design eliminates the needless generation of scope
+objects, which reduces garbage generation.  FOAM's ability to nest
+templates without incurring extra coping also eliminates the
+generation of extra garbage at each level.  Garbage elimination is
+important because garbage takes CPU resources to both generate and
+then subsequently correct, slowing down your program.
+
+High-Performance
+FOAM, in general, is a very high-performance framework, and as a
+result, FOAM Templates need to be equally fast in order to not become
+the bottleneck.
+
+FOAM Templates achieve their high-level of performance from a number
+of design decisions:
+1. FOAM Templates are compiled, not interpreted.
+2. FOAM's O(size) template nesting.
+3. Minimizing garbage-generation.
+4. JIT-able.  Because FOAM templates are compiled directly to methods,
+and calls to other templates are also methods, the Javascript JIT can
+in-line the code and eliminate dynamic dispatch in most cases, which
+of course, greatly improves performance.  Templating systems which
+rely on non-Object scopes for supplying data, can not be JITed and can
+suffer dramatically worse performance as a result.
+
+Inheritance Friendly
+If a FOAM Template nests calls to other templates, those sub-templates
+can be overridden in sub-classes without requiring the top-level
+template to be changed.
+
+Polymorphism
+If a FOAM Template nests calls to templates belonging to other
+objects, then the template selection will be polymorphic with respect
+to that other object's class.  Just like with "inheritance", this
+approach contributes to template reuse and maintainability.
+
+Lazy Compilation
+For hosted-apps, FOAM can defer template compilation until they are
+first used, which saves memory.
+
+Packaged-Application Compatible
+FOAM Templates are the only dynamic templating system to work with
+Chrome packaged-apps.  Given that Chrome apps are an important
+use-case for FOAM, this is of critical importance.
+
+Simplified Build Process
+Since templates are dynamically compiled at run-time, no build step is
+required, which shortens the development cycle and increases developer
+productivity.
+
+Simple
+FOAM Templates are much simpler to use that other templating systems.
+The control-structures are the standard Javascript structures that
+developers already know, and templates are called as just regular
+methods.  No knowledge of compiling or binding to templates is needed.
+
+Standard
+FOAM Templates are based on the extremely popular JSP standard, which
+means that the syntax is already familiar to many developers, and most
+programming editors will have a mode for editing and providing
+syntax-colouring.  There are litterally dozens of books available on
+JSP's.
+
+
+
+References:
+JSP's: http://www.oracle.com/technetwork/java/javaee/jsp/index.html
+Books on JSP's: http://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Dstripbooks&field-keywords=java%20server%20pages
+Mustache: http://mustache.github.io/

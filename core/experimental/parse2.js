@@ -1,4 +1,21 @@
 /**
+ * @license
+ * Copyright 2012 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
  * State:
  */
 var CONDITION = 0;
@@ -43,7 +60,7 @@ function prepArgs(args) {
 
 function literal(c, opt_value) {
   return function(state) {
-    var ps = state[STREAM]
+    var ps = state[STREAM];
     for ( var i = 0; i < c.length; i++ ) {
       if ( ps.head === null ) {
         return [literal(c.substring(i), opt_value || c), ps, state[SUCCESS], state[FAIL]];
@@ -56,11 +73,11 @@ function literal(c, opt_value) {
     }
     if ( i === c.length ) {
       state[SUCCESS][STREAM] = ps.setValue(opt_value || c);
-      return state[SUCCESS]
+      return state[SUCCESS];
     }
     state[FAIL][STREAM] = state[STREAM];
     return state[FAIL];
-  }
+  };
 }
 
 function literal_ic(c, opt_value) {
@@ -99,30 +116,32 @@ function notChar(c) {
 }
 
 function seq(a, b) {
-  var args = prepArgs(arguments);
+  a = prep(a);
+  b = prep(b);
   return function(state) {
-    return [args[0], state[STREAM], [args[1], undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
-  }
+    return [a, state[STREAM], [b, undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
+  };
 }
 
-function optional(a) {
-  var args = prepArgs(arguments);
+function optional(parser) {
+  parser = prep(parser);
   return function(state) {
-    return [args[0], state[STREAM], state[SUCCESS], state[SUCCESS]];
-  }
+    return [parser, state[STREAM], state[SUCCESS], state[SUCCESS]];
+  };
 }
 
 function sym(name) {
   return function(state) {
     return this[name](state);
-  }
+  };
 }
 
 function alt(a, b) {
-  var args = prepArgs(arguments);
+  a = prep(a);
+  b = prep(b);
   return function(state) {
-    return [args[0], state[STREAM], state[SUCCESS], [args[1], undefined, state[SUCCESS], state[FAIL]]];
-  }
+    return [a, state[STREAM], state[SUCCESS], [b, undefined, state[SUCCESS], state[FAIL]]];
+  };
 }
 
 // TODO: Resuming in the middle of a literal
@@ -143,7 +162,7 @@ var grammar = {
   },
   // Pumps the state machine until termination or more data needed.
   parse: function() {
-    while (this.state) {
+    while ( this.state ) {
       if ( this.state === this.END ) {
         break;
       }
@@ -166,7 +185,7 @@ var grammar = {
 
     this[sym] = function(state) {
       return [old, state[STREAM], [wrapper, undefined, state[SUCCESS], undefined], [state[FAIL]]];
-    }
+    };
     return this;
   },
   addActions: function(map) {

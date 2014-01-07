@@ -55,7 +55,19 @@ var CIssue = FOAM({
           shortName: 'i',
           label: 'ID',
           required: true,
-          tableWidth: '48px'
+          tableWidth: '48px',
+          tableFormatter: function(value, row, table) {
+            var id = table.nextID();
+
+            table.on('mouseover', function(e) {
+              window.browser.preview(e, value);
+            }, id);
+            table.on('mouseout',  function() {
+              window.browser.preview(null);
+            }, id);
+
+            return '<div id="' + id + '">' + value + '</div>';
+          }
         },
         {
           model_: 'StringProperty',

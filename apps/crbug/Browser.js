@@ -78,14 +78,14 @@ var CIssueBrowser = Model.create({
         return ChoiceView.create({
           helpText: 'Search within:',
           choices:[
-            ["",                            "&nbsp;All issues"],
-            ["-status=Closed,Fixed,Done",              "&nbsp;Open issues"], // Should this be just 'Closed'?
-            ["owner=me -status=Closed",     "&nbsp;Open and owned by me"],
-            ["-status=Closed reporter=me",  "&nbsp;Open and reported by me"],
-            ["-status=Closed is:starred",   "&nbsp;Open and starred by me"],
-            ["-status=Closed commentby:me", "&nbsp;Open and comment by me"],
-            ["status=New",                  "&nbsp;New issues"],
-            ["status=Fixed,Done",           "&nbsp;Issues to verify"]
+            ['',                            '&nbsp;All issues'],
+            ['-status=Closed,Fixed,Done',   '&nbsp;Open issues'], // Should this be just 'Closed'?
+            ['owner=me -status=Closed',     '&nbsp;Open and owned by me'],
+            ['-status=Closed reporter=me',  '&nbsp;Open and reported by me'],
+            ['-status=Closed is:starred',   '&nbsp;Open and starred by me'],
+            ['-status=Closed commentby:me', '&nbsp;Open and comment by me'],
+            ['status=New',                  '&nbsp;New issues'],
+            ['status=Fixed,Done',           '&nbsp;Issues to verify']
           ]});
       }
     },
@@ -110,7 +110,7 @@ var CIssueBrowser = Model.create({
       model_: 'Method',
       name: 'layout',
       code: function() {
-        var H         = window.innerHeight;
+        var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
       }
     }
@@ -160,6 +160,11 @@ var CIssueBrowser = Model.create({
 
       this.layout();
       this.search(TRUE);
+    },
+
+    /** Open a preview window when the user hovers over an issue id. **/
+    preview: function(e, id) {
+      console.log('preview', e, id);
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
