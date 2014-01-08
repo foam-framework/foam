@@ -609,22 +609,22 @@ var TextFieldView = FOAM({
          defaultValue: 30
       },
       {
-         mode_: 'StringProperty',
+         model_: 'StringProperty',
          name:  'type',
          defaultValue: 'text'
       },
       {
-         mode_: 'StringProperty',
+         model_: 'StringProperty',
          name:  'placeholder',
          defaultValue: undefined
       },
       {
-         mode_: 'BooleanProperty',
+         model_: 'BooleanProperty',
          name:  'onKeyMode',
          help: 'If true, value is updated on each keystroke.'
       },
       {
-         mode_: 'BooleanProperty',
+         model_: 'BooleanProperty',
          name:  'escapeHTML',
          help: 'If true, HTML content is excaped in display mode.'
       },
@@ -736,7 +736,7 @@ var DateFieldView = FOAM({
 
    properties: [
       {
-         mode_: 'StringProperty',
+         model_: 'StringProperty',
          name:  'type',
          defaultValue: 'date'
       }
@@ -1310,7 +1310,7 @@ var TextAreaView = FOAM({
          defaultValue: 70
       },
       {
-         mode_: 'BooleanProperty',
+         model_: 'BooleanProperty',
          name:  'onKeyMode',
          help: 'If true, value is updated on each keystroke.'
       },
@@ -1938,11 +1938,11 @@ var TableView = FOAM({
          type:  'Model'
       },
       {
-         name:  'properties',
-         type:  'Array[String]',
-         defaultValueFn: function() {
-           return this.model.tableProperties;
-         }
+        model_: StringArrayProperty,
+        name:  'properties',
+        defaultValueFn: function() {
+          return this.model.tableProperties;
+        }
       },
       {
          name:  'hardSelection',
@@ -1987,7 +1987,29 @@ var TableView = FOAM({
       {
         model_: 'IntegerProperty',
         name: 'height'
+      },
+      {
+         model_: 'BooleanProperty',
+         name: 'editColumnsEnabled',
+         defaultValue: false
       }
+   ],
+
+   listeners: [
+     {
+       model_: 'Method',
+       
+       name: 'onEditColumns',
+       code: function(evt) {
+         console.log('onEditColumns');
+         var v = EditColumnsView.create({
+           properties:          this.properties,
+           availableProperties: this.model.properties
+         });
+         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
+         v.initHTML();
+       }
+     }
    ],
 
    methods: {
@@ -2093,6 +2115,9 @@ var TableView = FOAM({
 
             props.push(prop);
         }
+      if ( this.editColumnsEnabled ) {
+        str.push('<th width=15 id="' + this.registerCallback('click', this.onEditColumns) + '">...</th>');
+      }
         str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
         if ( this.objs )
         for ( var i = 0 ; i < this.objs.length; i++ ) {
@@ -2109,7 +2134,11 @@ var TableView = FOAM({
             for ( var j = 0 ; j < props.length ; j++ ) {
                 var prop = props[j];
 
+              if ( j == props.length - 1 && this.editColumnsEnabled ) {
+                str.push('<td colspan=2 class="' + prop.name + '">');
+              } else {
                 str.push('<td class="' + prop.name + '">');
+              }
                 var val = obj[prop.name];
 		if ( prop.tableFormatter ) {
                   str.push(prop.tableFormatter(val, obj, this));
@@ -2199,6 +2228,73 @@ var TableView = FOAM({
     }
   }
 });
+
+var EditColumnsView = FOAM({
+
+  model_: 'Model',
+  
+  name: 'EditColumnsView',
+  
+  extendsModel: 'AbstractView',
+  
+  properties: [
+    {
+      model_: StringArrayProperty,
+      name:  'properties'
+    },
+    {
+      model_: StringArrayProperty,
+      name:  'availableProperties'
+    }
+  ],
+
+  listeners: [
+     {
+       model_: 'Method',
+       
+       name: 'onAddColumn',
+       code: function(prop) {
+         console.log('onAddColumn', prop);
+       }
+     },
+     {
+       model_: 'Method',
+       
+       name: 'onRemoveColumn',
+       code: function(prop) {
+         console.log('onRemoveColumn', prop);
+       }
+     }
+
+  ],
+
+  methods: {
+    toHTML: function() {
+      var s = '<span id="' + this.getID() + '">'
+      
+      s += 'Show columns:';
+      s += '<table>';
+
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var p = this.properties[i];
+        s += '<tr><td id="' + this.registerCallback('click', this.onRemoveColumn.bind(this, p)) + '">&nbsp;&#x2666;&nbsp;' + p + '</td></tr>';
+      }
+
+      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
+        var p = this.availableProperties[i];
+        if ( this.properties.indexOf(p.label) == -1 ) {
+          s += '<tr><td id="' + this.registerCallback('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
+        }
+      }
+
+      s += '</table>';
+      s += '</span>';
+      
+      return s;
+    }
+  }
+});
+
 
 
 // TODO: add ability to set CSS class and/or id

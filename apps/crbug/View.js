@@ -98,7 +98,11 @@ function createView(rowSelection) {
                  return '<div class="CIssueTableHeader"></div>' + this.SUPER();
                }
              }
-          }).create({view: TableView.create({model: CIssue, hardSelection: rowSelection})});
+          }).create({view: TableView.create({
+            model: CIssue,
+            hardSelection: rowSelection,
+            editColumnsEnabled: true
+          })});
         }
       }),
       ViewChoice.create({
