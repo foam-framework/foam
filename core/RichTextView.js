@@ -239,6 +239,95 @@ var RichTextView = FOAM({
       this.$.style.opacity = show ? '0' : '1';
     },
 
+    sanitizeDroppedHtml: function(html) {
+      var allowedElements = [
+        {
+          name: 'B',
+          attributes: []
+        },
+        {
+          name: 'I',
+          attributes: []
+        },
+        {
+          name: 'U',
+          attributes: []
+        },
+        {
+          name: 'P',
+          attributes: []
+        },
+        {
+          name: 'SECTION',
+          attributes: []
+        },
+        {
+          name: 'BR',
+          attributes: []
+        },
+        {
+          name: 'BLOCKQUOTE',
+          attributes: []
+        },
+        {
+          name: 'DIV',
+          attributes: []
+        },
+        {
+          name: 'IMG',
+          attributes: ['src']
+        },
+        {
+          name: 'A',
+          attributes: ['href']
+        },
+        {
+          name: '#TEXT',
+          attributes: []
+        },
+      ];
+
+      function copyNodes(parent, node) {
+        for ( var i = 0; i < allowedElements.length; i++ ) {
+          if ( allowedElements[i].name === node.nodeName ) {
+            if ( node.nodeType === Node.ELEMENT_NODE ) {
+              newNode = document.createElement(node.nodeName);
+              for ( var j = 0; j < allowedElements[i].attributes.length; j++ ) {
+                if ( node.hasAttribute(allowedElements[i].attributes[j]) ) {
+                  newNode.setAttribute(allowedElements[i].attributes[j],
+                                       node.getAttribute(allowedElements[i].attributes[j]));
+                }
+              }
+            } else if ( node.nodeType === Node.TEXT_NODE ) {
+              newNode = document.creatTextNode(node.nodeValue);
+            } else {
+              newNode = document.createTextNode('');
+            }
+            parent.appendChild(newNode);
+          }
+        }
+        if ( i === allowedElements.length ) {
+          newNode = document.createElement('div');
+        }
+        for ( j = 0; j < node.children.length; j++ ) {
+          copyNodes(newNode, node.children[j]);
+        }
+      }
+
+      var frame = document.createElement('iframe');
+      frame.sandbox = 'allow-same-origin';
+      frame.style.display = 'none';
+      document.body.appendChild(frame);
+      frame.contentDocument.body.innerHTML = html;
+
+      var sanitizedContent = new DocumentFragment();
+      for ( var i = 0; i < frame.contentDocument.body.children.length; i++ ) {
+        copyNodes(sanitizedContent, frame.contentDocument.body.children[i]);
+      }
+      document.body.removeChild(frame);
+      return sanitizedContent;
+    },
+
     initHTML: function() {
       this.SUPER();
       var drop = $(this.dropId);
@@ -272,10 +361,8 @@ console.log('file: ', file, id);
 
         length = e.dataTransfer.items.length;
         if ( length ) {
-          var div = document.createElement('div');
-
+          var div = this.sanitizeDroppedHtml(e.dataTransfer.getData('text/html'));
           this.insertElement(div);
-          div.outerHTML = e.dataTransfer.getData('text/html');
         }
       }.bind(this);
       body.ondragenter = function(e) {
