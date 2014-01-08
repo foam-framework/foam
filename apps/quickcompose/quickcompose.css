@@ -83,7 +83,7 @@ body > input[name="subject"] {
 
 .actionButton-discard {
   float: right;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .actionButton-discard[data-tip]:after {
