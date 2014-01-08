@@ -14,6 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/** Create a memoized version of a function. **/
+function memoize(f) {
+  var cache = {};
+
+  return function() {
+    var key = arguments.toString();
+    if ( ! cache.hasOwnProperty(key) ) {
+      cache[key] = f.apply(null, arguments);
+    }
+    return cache[key];
+  };
+}
+
+
 if ( ! String.prototype.startsWith ) {
   String.prototype.startsWith = function (a) { return 0 == this.lastIndexOf(a, 0); };
 }
