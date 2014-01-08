@@ -60,7 +60,7 @@ ContactDAO = CachingDAO.create(
   ContactDAO,
   IDBDAO.create({ model: Contact }));
 
-ContactAvatarDAO = AvatarPlaceholderDAO.create({
+ContactAvatarDAO = PropertyOffloadDAO.create({
   property: Contact.AVATAR,
   model: Contact,
   offloadDAO: ContactAvatarDAO,

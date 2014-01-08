@@ -3147,7 +3147,11 @@ var ListInputView = FOAM({
       help: 'The properties with which to construct the autocomplete query with.'
     },
     {
-      name: 'autocompleteView'
+      name: 'autocompleteView',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.unsubscribe('selected', this.selected);
+        newValue.subscribe('selected', this.selected);
+      }
     },
     {
       name: 'placeholder'
@@ -3169,7 +3173,7 @@ var ListInputView = FOAM({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.getID());
-//      this.on('blur', this.onBlur, this.getID());
+      this.on('blur', this.onBlur, this.getID());
       this.on('focus', this.onInput, this.getID());
 
       return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
@@ -3198,6 +3202,15 @@ var ListInputView = FOAM({
   },
 
   listeners: [
+    {
+      name: 'selected',
+      code: function() {
+        if ( this.autocompleteView.value.get() ) {
+          this.pushValue(
+            this.property.f(this.autocompleteView.value.get()));
+        }
+      }
+    },
     {
       name: 'onInput',
       code: function() {
@@ -3249,7 +3262,13 @@ var ListInputView = FOAM({
     {
       name: 'onBlur',
       code: function(e) {
-        this.autocompleteView.dao = this.dao.where(FALSE);
+        var self = this;
+        window.setTimeout(function() {
+          var value = self.domInputValue.get();
+          if ( value.length > 1 ) self.pushValue(value);
+          else self.domInputValue.set('');
+          self.autocompleteView.dao = self.dao.where(FALSE);
+        }, 100);
       }
     }
   ]
@@ -3496,11 +3515,10 @@ var AutocompleteListView = FOAM({
               var obj = objs[i];
               var view = self.innerView.create({});
               var container = document.createElement('li');
-              container.onclick = (function(i) {
+              container.onclick = (function(index) {
                 return function(e) {
-                  debugger;
-                  self.selection = i;
-                  e.preventDefault();
+                  self.selection = index;
+                  self.publish('selected');
                 };
               })(i);
               container.className = 'autocompleteListItem';
