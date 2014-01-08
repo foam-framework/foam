@@ -115,21 +115,21 @@ var ContactListTileView = Model.create({
 
   extendsModel: 'DetailView',
 
-  methods: {
-    toHTML: function() {
-      var avatar = this.createView(Contact.AVATAR);
-      avatar.displayWidth = 32;
-      avatar.displayHeight = 32;
-      var name = this.createView(Contact.DISPLAY_NAME);
-      name.mode = 'read-only';
-      var address = this.createView(Contact.EMAIL);
-      address.mode = 'read-only';
-      return '<div class="contactTile" id="' + this.getID() + '">' +
-        '<div class="contactTileAvatar">' + avatar.toHTML() + '</div>' +
-        '<ul class="contactTileDetails"><li>' +
-        name.toHTML() + '</li><li class="contactTileAddress">' + address.toHTML() + '</li></ul></div></div>';
+  templates: [
+    {
+      name: 'toHTML',
+      template: '<% var avatar = this.createView(Contact.AVATAR);' +
+        'avatar.displayWidth = 32; avatar.displayHeight = 32;' +
+        'var name = this.createView(Contact.DISPLAY_NAME);' +
+        'name.mode = "read-only";' +
+        'var address = this.createView(Contact.EMAIL);' +
+        'address.mode = "read-only"; %>' +
+        '<div class="contactTile" id="<%= this.getID() %>">' +
+        '<%= avatar.toHTML() %>' +
+        '<ul class="contactTileDetails"><li><%= name.toHTML() %></li>' +
+        '<li class="contactTileAddress"><%= address.toHTML() %><li></ul></div>'
     }
-  }
+  ]
 });
 
 var AvatarPlaceholderDAO = FOAM({
@@ -145,8 +145,7 @@ var AvatarPlaceholderDAO = FOAM({
       if ( ! this.placeholders_ ) this.placeholders_ = {};
       var key = contact.first ? contact.first[0] : contact.email[0];
       if ( ! this.placeholders_[key] ) {
-        this.placeholders_[key] = new Blob([
-          '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + (contact.first ? contact.first[0] : contact.email[0]) + '</text></svg>'], { type: 'image/svg+xml' });
+        this.placeholders_[key] = 'data:image/svg+xml;utf-8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="21" height="21"><rect width="21" height="21" x="0" y="0" style="fill:#d40000"/><text x="10" y="18" style="text-anchor:middle;font-size:19;font-style:normal;font-family:sans;fill:#fff">' + (contact.title ? contact.title[0] : contact.email[0]) + '</text></svg>';
       }
       return this.placeholders_[key];
     }
@@ -191,9 +190,20 @@ var ContactAvatarNetworkDAO = FOAM({
             return;
           }
 
+          if ( blob ) {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+              ret(reader.result);
+            };
+            reader.readAsDataURL(blob);
+            return;
+          }
+          ret();
+        },
+        function(ret, data) {
           sink && sink.put && sink.put(Contact.create({
             id: id,
-            avatar: blob
+            avatar: data
           }));
           ret();
         })(function(){});
@@ -284,8 +294,8 @@ var Contact = FOAM({
         },
         {
             name: 'avatar',
-            type: 'Blob',
-            view:  'BlobImageView'
+            type: 'String',
+            view: 'ImageView'
         },
         {
             model_: 'StringProperty',

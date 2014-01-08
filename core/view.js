@@ -196,7 +196,7 @@ var AbstractView = FOAM({
       return this.elementId || ( this.elementId = this.nextID() );
     },
 
-    registerCallback: function(event, listener, opt_elementId) {
+    on: function(event, listener, opt_elementId) {
         opt_elementId = opt_elementId || this.nextID();
 
 //      if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
@@ -226,7 +226,7 @@ var AbstractView = FOAM({
        // This mostly involves attaching listeners.
        // Must be called activate a view after it has been added to the DOM.
 
-       this.registerCallbacks();
+       this.ons();
        this.initChildren();
      },
 
@@ -244,7 +244,7 @@ var AbstractView = FOAM({
        }
      },
 
-     registerCallbacks: function() {
+     ons: function() {
        if ( this.callbacks_ ) {
          // hookup event listeners
          for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
@@ -340,14 +340,6 @@ var ImageView = FOAM({
          }
       },
       {
-         name: 'placeHolder',
-         postSet: function(newValue) {
-            if ( this.$ ) {
-               this.$.children[0].style.backgroundImage = newValue;
-            }
-         }
-      },
-      {
          name: 'displayWidth',
          postSet: function(newValue) {
             if ( this.$ ) {
@@ -370,27 +362,15 @@ var ImageView = FOAM({
          this.value = value;
       },
       toHTML: function() {
-         return '<div class="imageViewContainer" id="' + this.getID() + '"><div class="imageView"></div>' +
-            '<img class="imageView" id="' + this.registerCallback('load', this.onLoad) + '"></div>';
+         return '<img class="imageView" id="' + this.getID() + '">';
       },
       initHTML: function() {
          this.SUPER();
-         this.displayWidth = this.displayWidth;
+         this.domValue = DomValue.create(this.$, undefined, 'src');
          this.displayHeight = this.displayHeight;
-         this.$.children[1].style.opacity = 0;
-         this.domValue = DomValue.create(this.$.children[1], undefined, 'src');
+         this.displayWidth = this.displayWidth;
       }
-   },
-
-   listeners: [
-      {
-         name: 'onLoad',
-         code: function() {
-            this.$.children[0].style.opacity = 0;
-            this.$.children[1].style.opacity = 0.99;
-         }
-      }
-   ]
+   }
 });
 
 var BlobImageView = FOAM({
@@ -692,7 +672,7 @@ var TextFieldView = FOAM({
    methods: {
     toHTML: function() {
       if ( this.mode === 'read-write' ) {
-        this.registerCallback('change', this.onChange, this.getID());
+        this.on('change', this.onChange, this.getID());
 
         return '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
       }
@@ -933,9 +913,9 @@ var ChoiceView = FOAM({
          var id     = this.nextID();
 
          try {
-           this.registerCallback('click', this.onClick, id);
-           this.registerCallback('mouseover', this.onMouseOver, id);
-           this.registerCallback('mouseout', this.onMouseOut, id);
+           this.on('click', this.onClick, id);
+           this.on('mouseover', this.onMouseOver, id);
+           this.on('mouseout', this.onMouseOut, id);
          } catch (x) {
            // Fails on iPad, which is okay, because this feature doesn't make
            // sense on the iPad anyway.
@@ -1095,7 +1075,7 @@ var RadioBoxView = FOAM({
            out.push(choice.toString());
            out.push('"');
            var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
-           out.push('id="' + this.registerCallback('click', callback) + '"');
+           out.push('id="' + this.on('click', callback) + '"');
            if ( this.value && choice == this.value.get() ) out.push(' checked');
            out.push('/> ');
          }
@@ -2111,7 +2091,7 @@ var TableView = FOAM({
 
             str.push('<th scope=col ');
             str.push('id=' +
-                this.registerCallback(
+                this.on(
                   'click',
                   (function(table, prop) { return function() {
                     if ( table.sortOrder === prop ) {
@@ -2160,7 +2140,7 @@ var TableView = FOAM({
                 str.push('<td class="' + prop.name + '">');
               }
                 var val = obj[prop.name];
-                if ( prop.tableFormatter ) {
+		if ( prop.tableFormatter ) {
                   str.push(prop.tableFormatter(val, obj, this));
                 } else {
                   str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
@@ -2342,7 +2322,7 @@ var ActionButton = Model.create({
     },
 
     toHTML: function() {
-      this.registerCallback(
+      this.on(
         'click',
         function(action) { return function() {
           action.action.apply(this.value.get());
@@ -2946,8 +2926,8 @@ var AlternateView = FOAM({
 
                return false;
             };}(this,view);
-//          str.push('<a href="#top" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
-            str.push('<a class="buttonify" id="' + this.registerCallback('click', listener) + '">' + view.label + '</a>');
+//          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
+            str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + view.label + '</a>');
             if ( view.label == this.selected ) viewChoice = view;
          }
          str.push('</div>');
@@ -3188,7 +3168,9 @@ var ListInputView = FOAM({
 
   methods: {
     toHTML: function() {
-      this.registerCallback('keydown', this.onKeyDown, this.getID());
+      this.on('keydown', this.onKeyDown, this.getID());
+      this.on('blur', this.onBlur, this.getID());
+      this.on('focus', this.onInput, this.getID());
 
       return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
     },
@@ -3262,6 +3244,12 @@ var ListInputView = FOAM({
         } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
           this.popValue();
         }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        this.autocompleteView.dao = this.dao.where(FALSE);
       }
     }
   ]
@@ -3373,21 +3361,9 @@ var AutocompleteListView = FOAM({
       hidden: true
     },
     {
-      name: 'next'
-    },
-    {
-      name: 'prev'
-    },
-    {
       name: 'value',
       hidden: true,
-      valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
-        if ( oldValue ) {
-          oldValue.removeListener(this.paint);
-        }
-        newValue.addListener(this.paint);
-      }
+      valueFactory: function() { return SimpleValue.create(); }
     },
     {
       name: 'model',
@@ -3405,9 +3381,21 @@ var AutocompleteListView = FOAM({
       }
     },
     {
-      model_: 'BooleanProperty',
-      name: 'painting',
-      defaultValue: false
+      model_: 'ArrayProperty',
+      name: 'objs'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'selection',
+      defaultValue: 0,
+      postSet: function(newValue, oldValue) {
+        this.value.set(this.objs[newValue]);
+        if ( this.$ ) {
+          if ( this.$.children[oldValue] )
+            this.$.children[oldValue].className = 'autocompleteListItem';
+          this.$.children[newValue].className += ' autocompleteSelectedItem';
+        }
+      }
     },
     {
       model_: 'IntegerProperty',
@@ -3429,10 +3417,6 @@ var AutocompleteListView = FOAM({
       this.value = value;
     },
 
-    toHTML: function() {
-      return '<ul class="autocompleteListView" id="' + this.getID() + '"></ul>';
-    },
-
     initHTML: function() {
       this.SUPER();
       this.$.style.display = 'none';
@@ -3446,13 +3430,28 @@ var AutocompleteListView = FOAM({
     },
 
     nextSelection: function() {
-      this.value.set(this.next);
+      if ( this.objs.length === 0 ) return;
+      var next = this.selection + 1;
+      if ( next >= this.objs.length )
+        next = 0;
+      this.selection = next;
     },
 
     prevSelection: function() {
-      this.value.set(this.prev);
+      if ( this.objs.length === 0 ) return;
+      var next = this.selection - 1;
+      if ( next < 0 )
+        next = this.objs.length - 1;
+      this.selection = next;
     }
   },
+
+  templates: [
+    {
+      name: 'toHTML',
+      template: '<ul class="autocompleteListView" id="<%= this.getID() %>"></ul>'
+    }
+  ],
 
   listeners: [
     {
@@ -3460,83 +3459,43 @@ var AutocompleteListView = FOAM({
       animate: true,
       code: function() {
         // TODO Determine if its worth double buffering the dom.
-
-        // Don't start a new paint if we're in the middle of one.
-        if ( this.painting) {
-          this.paint();
-          return;
-        }
-
-        // Clear old list
-        this.$.innerHTML = '';
-        this.painting = true;
+        var objs = [];
+        var newSelection = 0;
+        var value = this.value.get();
         var self = this;
-
-        var found = false;
-        var first;
-        var second;
-        self.next = '';
-        self.prev = '';
 
         this.dao.limit(this.count).select({
           put: function(obj) {
-            if ( found && ! self.next ) {
-              self.next = obj;
-            }
-
-            if ( obj.id === self.value.get().id ) {
-              found = true;
-            }
-
-            if ( ! found && self.value.get() ) {
-              self.prev = obj;
-            }
-
-            if ( ! self.value.get() ) {
-              self.value.set(obj);
-              found = true;
-            }
-
-            var view = self.innerView.create({});
-            var container = document.createElement('li');
-            container.onclick = function() {
-              self.value.set(obj);
-            };
-            container.className = 'autocompleteListItem';
-            if ( obj.id === self.value.get().id ) {
-              container.className += ' autocompleteSelectedItem';
-            }
-            self.$.appendChild(container);
-            view.value.set(obj);
-            container.innerHTML = view.toHTML();
-            view.initHTML();
-            if ( ! first ) {
-              first = [obj, container];
-            }
-            if ( first && ! second ) {
-              second = obj;
-            }
+            objs.push(obj);
+            if ( obj.id === value.id )
+              newSelection = objs.length - 1;
           },
           eof: function() {
-            self.painting = false;
-            if ( ! first ) self.$.style.display = 'none';
-            else self.$.style.display = '';
+            // Clear old list
+            self.$.innerHTML = '';
+            self.objs = objs;
 
-            if ( ! found ) {
-              if ( ! first ) {
-                self.value.set('');
-                self.$.style.display = 'none';
-              } else {
-                self.value.set(first[0]);
-                first[1].className += 'selectedListItem';
-                self.prev = '';
-                self.next = second;
-              }
+            if ( objs.length === 0 ) {
+              self.$.style.display = 'none';
+              return;
             }
-          },
-          error: function() {
-            console.error.apply(console, arguments);
-            self.painting = false;
+
+            for ( var i = 0; i < objs.length; i++ ) {
+              var obj = objs[i];
+              var view = self.innerView.create({});
+              var container = document.createElement('li');
+              container.onclick = function() {
+                self.selection = i;
+              };
+              container.className = 'autocompleteListItem';
+              self.$.appendChild(container);
+              view.value.set(obj);
+              container.innerHTML = view.toHTML();
+              view.initHTML();
+            }
+
+            self.selection = newSelection;
+            self.$.style.display = '';
           }
         });
       }
