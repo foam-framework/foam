@@ -271,6 +271,9 @@ var QuickCompose = FOAM({
            }.bind(this)});
          }
       }.bind(this));
+
+      this.window.document.addEventListener('keyup', this.keyPress);
+      this.view.bodyView.$.contentDocument.addEventListener('keyup', this.keyPress);
     }
   },
 
@@ -347,7 +350,16 @@ var QuickCompose = FOAM({
            console.log(att);
            this.email.attachments = this.email.attachments.concat(att);
          }
+      },
+      {
+        model_: 'Method',
+         name: 'keyPress',
+         code: function(e) {
+           console.log(e);
+           if ( e.keyCode == 27 ) this.minimize();
+         }
       }
+
    ],
 
   templates: [
