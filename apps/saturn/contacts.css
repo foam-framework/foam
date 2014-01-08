@@ -12,6 +12,16 @@
     margin: 0px 2px;
 }
 
+.contactSmallX {
+    display: inline;
+    vertical-align: 5px;
+    margin: 0px 5px 0px 2px;
+    width: 8px;
+    height: 8px;
+    color: grey;
+    font-size: smaller;
+}
+
 /* ----------- ContactTileView ----------- */
 .contactTile {
     background-color: lightblue;

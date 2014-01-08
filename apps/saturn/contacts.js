@@ -95,6 +95,8 @@ var ContactSmallTileView = FOAM({
   name: 'ContactSmallTileView',
 
   methods: {
+    REMOVE: 'remove',
+
     toHTML: function() {
       var name = this.createView(Contact.DISPLAY_NAME);
       name.mode = 'read-only';
@@ -105,9 +107,19 @@ var ContactSmallTileView = FOAM({
       return '<div id="' + this.getID() + '" class="contactSmallTile">' +
         avatar.toHTML() +
         '<div class="contactSmallName">' + name.toHTML() + '</div>' +
+        '<div id="' + this.on('click', this.onRemove) + '" class="contactSmallX">X</div>'
         '</div>';
     }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'onRemove',
+      code: function() {
+        this.publish(this.REMOVE, this.value.get());
+      }
+    }
+  ]
 });
 
 var ContactListTileView = Model.create({
