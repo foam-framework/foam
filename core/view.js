@@ -1972,7 +1972,7 @@ var TableView = FOAM({
          hidden: true,
          postSet: function(val, oldValue) {
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
-           this.listener && val.listen(this.listener);
+           this.listener && val && val.listen(this.listener);
            this.repaint_ && this.repaint_();
          }
       },
