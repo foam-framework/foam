@@ -3147,7 +3147,11 @@ var ListInputView = FOAM({
       help: 'The properties with which to construct the autocomplete query with.'
     },
     {
-      name: 'autocompleteView'
+      name: 'autocompleteView',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.unsubscribe('selected', this.selected);
+        newValue.subscribe('selected', this.selected);
+      }
     },
     {
       name: 'placeholder'
@@ -3199,6 +3203,15 @@ var ListInputView = FOAM({
 
   listeners: [
     {
+      name: 'selected',
+      code: function() {
+        if ( this.autocompleteView.value.get() ) {
+          this.pushValue(
+            this.property.f(this.autocompleteView.value.get()));
+        }
+      }
+    },
+    {
       name: 'onInput',
       code: function() {
         var value = this.domInputValue.get();
@@ -3249,7 +3262,13 @@ var ListInputView = FOAM({
     {
       name: 'onBlur',
       code: function(e) {
-        this.autocompleteView.dao = this.dao.where(FALSE);
+        var self = this;
+        window.setTimeout(function() {
+          var value = self.domInputValue.get();
+          if ( value.length > 1 ) self.pushValue(value);
+          else self.domInputValue.set('');
+          self.autocompleteView.dao = self.dao.where(FALSE);
+        }, 100);
       }
     }
   ]
@@ -3326,6 +3345,7 @@ var ArrayTileView = FOAM({
             put: function(obj) {
               var view = self.tileView.create();
               view.value.set(obj);
+              view.subscribe('remove', self.onRemove);
               self.addChild(view);
               count--;
               if ( count == 0 ) render();
@@ -3337,6 +3357,17 @@ var ArrayTileView = FOAM({
             },
           });
         }
+      }
+    },
+    {
+      name: 'onRemove',
+      code: function(src, topic, obj) {
+        var self = this;
+        this.value.set(this.value.get().removeF({
+          f: function(o) {
+            return o === self.property.f(obj);
+          }
+        }));
       }
     }
   ]
@@ -3484,9 +3515,12 @@ var AutocompleteListView = FOAM({
               var obj = objs[i];
               var view = self.innerView.create({});
               var container = document.createElement('li');
-              container.onclick = function() {
-                self.selection = i;
-              };
+              container.onclick = (function(index) {
+                return function(e) {
+                  self.selection = index;
+                  self.publish('selected');
+                };
+              })(i);
               container.className = 'autocompleteListItem';
               self.$.appendChild(container);
               view.value.set(obj);

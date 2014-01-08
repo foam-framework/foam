@@ -2628,10 +2628,10 @@ var LazyCacheDAO = FOAM({
   }
 });
 
-var AbstractPropertyOffloadDAO = FOAM({
+var PropertyOffloadDAO = FOAM({
   model_: 'Model',
 
-  name: 'AbstractPropertyOffloadDAO',
+  name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
   properties: [
@@ -2652,14 +2652,13 @@ var AbstractPropertyOffloadDAO = FOAM({
 
   methods: {
     put: function(obj, sink) {
-      var offload = this.model.create({ id: obj.id });
-      offload[this.property.name] = this.property.f(obj);
-      obj[this.property.name] = '';
+      if ( obj.hasOwnProperty(this.property.name) ) {
+        var offload = this.model.create({ id: obj.id });
+        offload[this.property.name] = this.property.f(obj);
+        obj[this.property.name] = '';
+        this.offloadDAO.put(offload);
+      }
       this.delegate.put(obj, sink);
-
-      // TODO: Store offload property in offloadDAO iff
-      // it's not a placeholder value.
-      // this.offloadDAO.put(offload);
     },
 
     select: function(sink, options) {
@@ -2674,7 +2673,6 @@ var AbstractPropertyOffloadDAO = FOAM({
       return {
         __proto__: sink,
         put: function(obj) {
-          obj[self.property.name] = self.placeholder(obj);
           sink.put && sink.put.apply(sink, arguments);
           self.offloadDAO.find(obj.id, {
             put: function(offload) {

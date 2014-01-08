@@ -33,9 +33,31 @@ var withFOAM = function(extra, cb) {
                 return;
             }
         }
-        var script = document.createElement('script');
-        script.src = FOAM_BOOT_DIR + file + '.js';
-        script.onload = loadNextFile;
-        document.body.appendChild(script);
+        var src = FOAM_BOOT_DIR + file + '.js';
+        var onLoadError = function() {
+          // Trying an alternative src location (by flattening the file path).
+          // Required for use by external build systems which flatten the
+          // directory structure.
+          var parts = (file + '.js').split('/');
+          var alternativeSrc = FOAM_BOOT_DIR + parts[parts.length - 1];
+          loadScript(alternativeSrc, loadNextFile);
+        }
+        loadScript(src, loadNextFile, onLoadError);
     })();
 };
+
+
+/**
+ * @param {string} src The source of the script to be loaded.
+ * @param {!Function} callbackFn The function to call after the script has been
+ *     loaded.
+ * @param {!Function} errbackFn The function to call after the script has been
+ *     failed to load.
+ */
+function loadScript(src, callbackFn, errbackFn) {
+  var script = document.createElement('script');
+  script.onload = callbackFn;
+  script.onerror = errbackFn;
+  script.src = src;
+  document.body.appendChild(script);
+}
