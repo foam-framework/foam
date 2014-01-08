@@ -1080,6 +1080,11 @@ var IDBDAO = FOAM({
       defaultValueFn: function() {
         return this.model.plural;
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'useSimpleSerialization',
+      defaultValue: true
     }
   ],
 
@@ -1088,10 +1093,13 @@ var IDBDAO = FOAM({
     init: function() {
       this.SUPER();
 
-      this.serialize = this.SimpleSerialize;
-      this.deserialize = this.SimpleDeserialize;
-//      this.serialize = this.FOAMSerialize;
-//      this.deserialize = this.FOAMDeserialize;
+      if ( this.useSimpleSerialization ) {
+        this.serialize = this.SimpleSerialize;
+        this.deserialize = this.SimpleDeserialize;
+      } else {
+        this.serialize = this.FOAMSerialize;
+        this.deserialize = this.FOAMDeserialize;
+      }
 
       this.withDB = amemo(this.openDB.bind(this));
     },
@@ -1398,7 +1406,7 @@ var StorageDAO = FOAM({
     },
 
     flush_: function() {
-      localStorage.setItem(this.name, JSONUtil.stringify(this.storage));
+      localStorage.setItem(this.name, JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.storage));
       this.publish('updated');
     }
 
