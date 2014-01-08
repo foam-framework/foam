@@ -51,7 +51,7 @@ body > input[name="subject"] {
 }
 
 .actionButton-send {
-  background: #357ae8;
+  background: #4d90fe;
   border-radius: 3px;
   box-shadow: none;
   color: white;
@@ -59,6 +59,10 @@ body > input[name="subject"] {
   margin-right: 25px;
   padding: 6px 15px;
   text-shadow: none;
+}
+
+.actionButton-send:hover {
+  background: #357ae8;
 }
 
 .actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard, .actionButton-close, .actionButton-minimize {
