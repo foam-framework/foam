@@ -20,7 +20,7 @@ function memoize(f) {
   var cache = {};
 
   return function() {
-    var key = arguments.toString();
+    var key = argsToArray(arguments).toString();
     if ( ! cache.hasOwnProperty(key) ) {
       cache[key] = f.apply(null, arguments);
     }
