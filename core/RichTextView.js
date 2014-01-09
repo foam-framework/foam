@@ -336,7 +336,7 @@ var RichTextView = FOAM({
       var body = this.document.body;
 
       body.style.overflow = 'auto';
-      body.style.margin = '0 0 0 5px';
+      body.style.margin = '5px';
       body.style.height = '100%';
 
       var self = this;

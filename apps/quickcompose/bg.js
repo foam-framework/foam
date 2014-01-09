@@ -10,10 +10,20 @@ function launchComposer() {
   }
   chrome.app.window.create(
     'empty.html',
-    {top: 0, left: 0, width: 335, height: 478, type: 'panel', frame: 'none'},
+    {
+      top: 0,
+      left: 0,
+      width: 335,
+      height: 478,
+      type: 'panel',
+      frame: 'none'
+    },
     function(w) {
       w.contentWindow.onload = function() {
         var dialog = self.dialog = w.contentWindow;
+        var screen = dialog.screen;
+        var bounds = w.getBounds();
+        w.moveTo(screen.availWidth-150-bounds.width, screen.availHeight-bounds.height);
         aseq(
           arequire('QuickEMailView'),
           arequire('QuickCompose'),
