@@ -66,7 +66,7 @@ var Link = FOAM({
 
         this.richTextView.insertElement(a);
 
-        this.view.$.remove();
+        this.view.close();
       }
     }
   ]
@@ -94,9 +94,25 @@ var LinkView = Model.create({
     init: function() {
       this.SUPER();
       this.addChild(this.insertButton);
-    }
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.$.addEventListener('keyup', this.keyUp);
+    },
+    close: function() { this.$.remove(); }
   },
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'keyUp',
+      code: function(e) {
+        console.log(e);
+        if ( e.keyCode == 27 ) this.close();
+      }
+    }
+  ],
+  
   templates: [
     {
       name: "toHTML",

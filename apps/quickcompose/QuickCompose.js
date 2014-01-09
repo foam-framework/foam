@@ -274,7 +274,7 @@ var QuickCompose = FOAM({
       }.bind(this));
 
       this.window.document.addEventListener('keyup', this.keyPress);
-      this.view.bodyView.$.contentDocument.addEventListener('keyup', this.keyPress);
+      this.view.bodyView.$.contentDocument.addEventListener('keyup', this.keyUp);
     }
   },
 
@@ -354,13 +354,12 @@ var QuickCompose = FOAM({
       },
       {
         model_: 'Method',
-         name: 'keyPress',
+         name: 'keyUp',
          code: function(e) {
            console.log(e);
            if ( e.keyCode == 27 ) this.minimize();
          }
       }
-
    ],
 
   templates: [
