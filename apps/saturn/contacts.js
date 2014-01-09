@@ -101,13 +101,13 @@ var ContactSmallTileView = FOAM({
       var name = this.createView(Contact.DISPLAY_NAME);
       name.mode = 'read-only';
       var avatar = this.createView(Contact.AVATAR);
-      avatar.displayWidth = 21;
-      avatar.displayHeight = 21;
+      avatar.displayWidth = 27;
+      avatar.displayHeight = 27;
 
       return '<div id="' + this.getID() + '" class="contactSmallTile">' +
-        avatar.toHTML() +
+        '<div class="contactSmallAvatar">' + avatar.toHTML() + '</div>' +
         '<div class="contactSmallName">' + name.toHTML() + '</div>' +
-        '<button id="' + this.on('click', this.onRemove) + '" class="contactSmallX">X</button>'
+        '<button id="' + this.on('click', this.onRemove) + '" class="contactSmallX">x</button>'
         '</div>';
     }
   },

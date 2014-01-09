@@ -16,6 +16,7 @@ body {
   padding-left: 6px;
   font: 90% ariel, sans-serif;
   opacity: 0.5;
+  border-bottom: 2px outset;
 }
 
 .richtext {
@@ -39,7 +40,7 @@ body > input[name="subject"] {
   border-top-width: 0px;
 }
 
-body > input[name="subject"] {
+body > input[name="to"] {
   border-top-width: 0px;
 }
 

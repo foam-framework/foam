@@ -3134,6 +3134,9 @@ var ListInputView = FOAM({
 
   properties: [
     {
+      name: 'name'
+    },
+    {
       name: 'dao',
       help: 'The DAO to fetch autocomplete objects from.',
     },
@@ -3176,7 +3179,7 @@ var ListInputView = FOAM({
       this.on('blur', this.onBlur, this.getID());
       this.on('focus', this.onInput, this.getID());
 
-      return '<input type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
+      return '<input name="' + this.name + '" type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
@@ -3265,7 +3268,7 @@ var ListInputView = FOAM({
         var self = this;
         window.setTimeout(function() {
           var value = self.domInputValue.get();
-          if ( value.length > 1 ) self.pushValue(value);
+          if ( value.length > 0 ) self.pushValue(value);
           else self.domInputValue.set('');
           self.autocompleteView.dao = self.dao.where(FALSE);
         }, 100);
@@ -3310,6 +3313,10 @@ var ArrayTileView = FOAM({
     toHTML: function() {
       return '<ul id="' + this.getID() + '" class="arrayTileView"></ul>';
     },
+    initHTML: function() {
+      this.SUPER();
+      this.paint();
+    }
   },
 
   listeners: [
@@ -3339,7 +3346,13 @@ var ArrayTileView = FOAM({
           self.painting = false;
         };
 
-        if ( value.length == 0 ) render();
+        if ( value.length == 0 ) {
+          render();
+          self.$.style.display = 'none';
+        } else {
+          self.$.style.display = 'inline-block';
+        }
+
         for ( var i = 0; i < value.length; i++ ) {
           this.dao.find(EQ(this.property, value[i]), {
             put: function(obj) {

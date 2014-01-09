@@ -103,9 +103,10 @@ var QuickEMail = FOAM({
       displayWidth: 55,
       view: {
         // TODO: Fetch this dependencies via context.
-        create: function() {
+        create: function(prop) {
           return ListValueView.create({
             inputView: ListInputView.create({
+              name: prop.name,
               dao: ContactAvatarDAO,
               property: Contact.EMAIL,
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST, Contact.TITLE],

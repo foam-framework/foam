@@ -529,7 +529,7 @@ div.gridViewControl select {
 
 /* ----------- ArrayTileView ----------- */
 .arrayTileView {
-  margin: 0px;
+  margin: 9px 6px;
   padding: 0px;
   display: inline-block;
 }
@@ -537,7 +537,7 @@ div.gridViewControl select {
 .arrayTileItem {
   display: inline-block;
   list-style-type: none;
-  margin: 0px 1px;
+  margin: 2px 2px;
 }
 
 /* ----------- AutocompleteListView ----------- */
@@ -554,14 +554,13 @@ div.gridViewControl select {
 
 .autocompleteListItem {
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 3px;
   list-style-type: none;
   overflow: hidden;
 }
 
 .autocompleteSelectedItem {
-  border-radius: 5px;
-  border: 1px solid blue;
+  border: 1px solid #99e;
 }
 
 /* ----------- Rich Text View ----------- */
