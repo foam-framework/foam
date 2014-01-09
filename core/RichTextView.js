@@ -87,6 +87,18 @@ var LinkView = Model.create({
           value: SimpleValue.create(this.value.get())
         });
       }
+    },
+    {
+      name: 'textView',
+      valueFactory: function() { return this.createView(Link.LABEL); }
+    },
+    {
+      name: 'urlView',
+      valueFactory: function() {
+        var v = this.createView(Link.LINK);
+        v.placeholder = "Type or paste link.";
+        return v;
+      }
     }
   ],
 
@@ -98,6 +110,7 @@ var LinkView = Model.create({
     initHTML: function() {
       this.SUPER();
       this.$.addEventListener('keyup', this.keyUp);
+      this.textView.$.focus();
     },
     close: function() { this.$.remove(); }
   },
@@ -119,8 +132,8 @@ var LinkView = Model.create({
       template:
         '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">' +
         '<table><tr>' +
-        '<th>Text</th><td><%= this.createView(Link.LABEL).toHTML() %></td></tr><tr>' +
-        '<th>Link</th><td><% var v = this.createView(Link.LINK); v.placeholder = "Type or paste link."; out(v.toHTML()); %>' +
+        '<th>Text</th><td><%= this.textView.toHTML() %></td></tr><tr>' +
+        '<th>Link</th><td><%= this.urlView.toHTML() %>' +
         '<%= this.insertButton.toHTML() %></td>' +
         '</tr></table>' +
         '</div>'
