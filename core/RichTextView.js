@@ -246,12 +246,25 @@ var RichTextView = FOAM({
       this.value = value;
     },
 
+    getSelectionText: function() {
+      var window    = this.$.contentWindow;
+      var selection = window.getSelection();
+
+      if ( selection.rangeCount ) {
+        return selection.getRangeAt(0).toLocaleString();
+      }
+
+      return '';
+    },
+
     insertElement: function(e) {
       var window    = this.$.contentWindow;
       var selection = window.getSelection();
 
       if ( selection.rangeCount ) {
-        selection.getRangeAt(0).insertNode(e);
+        var r = selection.getRangeAt(0);
+        r.deleteContents();
+        r.insertNode(e);
       } else {
         // just insert into the body if no range selected
         var range = window.document.createRange();
@@ -473,7 +486,9 @@ console.log('file: ', file, id);
       help: 'Insert link (Ctrl-K)',
       action: function () {
         // TODO: determine the actual location to position
-        Link.create({richTextView: this}).open(5,120);
+        Link.create({
+          richTextView: this,
+          label: this.getSelectionText()}).open(5,120);
       }
     },
     {
