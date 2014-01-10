@@ -797,9 +797,3 @@ var originalRequestAnimationFrame = window.requestAnimationFrame;
 window.requestAnimationFrame = function(f) {
    this.setTimeout(f, 16);
 };
-
-window.requestAnimationFrame && window.requestAnimationFrame(contextize(function() {
-  X.requestAnimationFrame = function(f) {
-    return window.requestAnimationFrame(f);
-  };
-}));

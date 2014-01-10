@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+var GLOBAL = GLOBAL || this;
+
 /** Create a memoized version of a function. **/
 function memoize(f) {
   var cache = {};

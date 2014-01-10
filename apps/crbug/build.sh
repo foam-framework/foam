@@ -11,7 +11,6 @@ cat \
   ../../core/base64.js \
   ../../core/utf8.js \
   ../../core/parse.js \
-  ../../core/context.js \
   ../../core/event.js \
   ../../core/JSONUtil.js \
   ../../core/XMLUtil.js \

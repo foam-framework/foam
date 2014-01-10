@@ -23,7 +23,6 @@ var files = [
   'base64',
   'utf8',
   'parse',
-  'context',
   'event',
   'JSONUtil',
   'XMLUtil',
