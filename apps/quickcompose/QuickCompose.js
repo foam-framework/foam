@@ -273,7 +273,7 @@ var QuickCompose = FOAM({
          }
       }.bind(this));
 
-      this.window.document.addEventListener('keyup', this.keyPress);
+      this.window.document.addEventListener('keyup', this.keyUp);
       this.view.bodyView.$.contentDocument.addEventListener('keyup', this.keyUp);
     }
   },
