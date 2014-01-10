@@ -993,7 +993,7 @@ defineProperties(Array.prototype, {
       var obj = this[i];
       if (options.query.f(obj)) {
         var rem = this.splice(i,1)[0];
-        this.notify_('remove', rem);
+        this.notify_('remove', [rem]);
         sink && sink.remove && sink.remove(rem);
         i--;
       }
@@ -1080,6 +1080,11 @@ var IDBDAO = FOAM({
       defaultValueFn: function() {
         return this.model.plural;
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'useSimpleSerialization',
+      defaultValue: true
     }
   ],
 
@@ -1088,10 +1093,13 @@ var IDBDAO = FOAM({
     init: function() {
       this.SUPER();
 
-      this.serialize = this.SimpleSerialize;
-      this.deserialize = this.SimpleDeserialize;
-//      this.serialize = this.FOAMSerialize;
-//      this.deserialize = this.FOAMDeserialize;
+      if ( this.useSimpleSerialization ) {
+        this.serialize = this.SimpleSerialize;
+        this.deserialize = this.SimpleDeserialize;
+      } else {
+        this.serialize = this.FOAMSerialize;
+        this.deserialize = this.FOAMDeserialize;
+      }
 
       this.withDB = amemo(this.openDB.bind(this));
     },
@@ -1188,7 +1196,7 @@ var IDBDAO = FOAM({
     },
 
     find: function(key, sink) {
-      if ( EXPR.isInstance(key) ) {
+      if ( Expr.isInstance(key) ) {
         var found = false;
         this.limit(1).where(key).select({
           put: function() {
@@ -1398,7 +1406,7 @@ var StorageDAO = FOAM({
     },
 
     flush_: function() {
-      localStorage.setItem(this.name, JSONUtil.stringify(this.storage));
+      localStorage.setItem(this.name, JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.storage));
       this.publish('updated');
     }
 
@@ -2413,6 +2421,174 @@ var DefaultObjectDAO = FOAM({
   }
 });
 
+var LRUCachingDAO = FOAM({
+  model_: 'Model',
+  name: 'LRUMemoryDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      model_: 'IntegerProperty',
+      name: 'maxSize',
+      defaultValue: 30
+    },
+    {
+      name: 'cacheFactory',
+      defaultValueFn: function() { return MDAO; }
+    },
+    {
+      name: 'cache',
+      hidden: true
+    },
+  ],
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'LRUCacheItem',
+      ids: ['id'],
+      properties: [
+        {
+          name: 'id',
+        },
+        {
+          name: 'obj',
+        },
+        {
+          model_: 'DateTimeProperty',
+          name: 'timestamp'
+        }
+      ]
+    }
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER();
+      this.cache = this.cacheFactory.create({
+        model: this.LRUCacheItem
+      });
+      var self = this;
+      this.delegate.listen({
+        remove: function(obj) {
+          self.cache.remove(obj);
+        }
+      });
+    },
+    find: function(id, sink) {
+      var self = this;
+      this.cache.find(id, {
+        put: function(obj) {
+          obj.timestamp = new Date();
+          self.cache.put(obj, {
+            put: function() {
+              sink && sink.put && sink.put(obj.obj);
+            }
+          });
+        },
+        error: function() {
+          self.delegate.find(id, {
+            put: function(obj) {
+              self.cache.put(self.LRUCacheItem.create({
+                id: id,
+                timestamp: new Date(),
+                obj: obj
+              }), {
+                put: function(obj) {
+                  sink && sink.put && sink.put(obj.obj);
+                  self.cleanup_();
+                },
+                error: function() {
+                  sink && sink.error && sink.error.apply(sink, arguments);
+                }
+              });
+            },
+            error: function() {
+              sink && sink.error && sink.error.apply(sink, arguments);
+            }
+          });
+        }
+      });
+    },
+    put: function(obj, sink) {
+      var self = this;
+      this.cache.find(obj.id, {
+        put: function(obj) {
+          obj.timestamp = new Date();
+          self.cache.put(obj, {
+            put: function(obj) {
+              self.delegate.put(obj.obj, sink);
+            },
+            error: function() {
+              sink && sink.error && sink.error.apply(this, arguments);
+            }
+          });
+        },
+        error: function() {
+          self.cache.put(self.LRUCacheItem.create({
+            timestamp: new Date(),
+            id: obj.id,
+            obj: obj
+          }), {
+            put: function() {
+              self.delegate.put(obj, sink);
+              self.cleanup_();
+            },
+            error: function() {
+              sink && sink.error && sink.error.apply(this, arguments);
+            }
+          });
+        }
+      });
+    },
+    remove: function(obj, sink) {
+      if ( obj.id ) var id = obj.id;
+      else id = obj;
+
+      var self = this;
+      this.cache.remove(obj.id, {
+        put: function() {
+          self.delegate.remove(obj, sink);
+        },
+        error: function() {
+          sink && sink.error && sink.error('remove', obj);
+        }
+      });
+    },
+    removeAll: function(sink, options) {
+      var self = this;
+      this.delegate.removeAll({
+        remove: function(obj) {
+          self.cache.remove(obj.id, {
+            remove: function() {
+              sink && sink.remove && sink.remove(obj);
+            },
+            error: function() {
+              // TODO: what's the right course of action here?
+            }
+          });
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      }, options);
+    },
+    cleanup_: function() {
+      // TODO: Use removeAll instead of select when
+      // all DAOs respect skip in removeAll.
+      var self = this;
+      this.cache
+        .orderBy(DESC(this.LRUCacheItem.TIMESTAMP))
+        .skip(this.maxSize).select({
+        put: function(obj) {
+          self.cache.remove(obj);
+        }
+      });
+    }
+  }
+});
+
 var LazyCacheDAO = FOAM({
   model_: 'Model',
 
@@ -2452,10 +2628,10 @@ var LazyCacheDAO = FOAM({
   }
 });
 
-var AbstractPropertyOffloadDAO = FOAM({
+var PropertyOffloadDAO = FOAM({
   model_: 'Model',
 
-  name: 'AbstractPropertyOffloadDAO',
+  name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
   properties: [
@@ -2476,14 +2652,13 @@ var AbstractPropertyOffloadDAO = FOAM({
 
   methods: {
     put: function(obj, sink) {
-      var offload = this.model.create({ id: obj.id });
-      offload[this.property.name] = this.property.f(obj);
-      obj[this.property.name] = '';
+      if ( obj.hasOwnProperty(this.property.name) ) {
+        var offload = this.model.create({ id: obj.id });
+        offload[this.property.name] = this.property.f(obj);
+        obj[this.property.name] = '';
+        this.offloadDAO.put(offload);
+      }
       this.delegate.put(obj, sink);
-
-      // TODO: Store offload property in offloadDAO iff
-      // it's not a placeholder value.
-      // this.offloadDAO.put(offload);
     },
 
     select: function(sink, options) {
@@ -2498,7 +2673,6 @@ var AbstractPropertyOffloadDAO = FOAM({
       return {
         __proto__: sink,
         put: function(obj) {
-          obj[self.property.name] = self.placeholder(obj);
           sink.put && sink.put.apply(sink, arguments);
           self.offloadDAO.find(obj.id, {
             put: function(offload) {
@@ -2544,7 +2718,7 @@ var BlobSerializeDAO = FOAM({
             var reader = new FileReader();
             reader.onloadend = function() {
               var type = obj[prop.name].type;
-              obj[prop.name] = type + ';' + Base64Encoder.encode(new Uint8Array(reader.result));
+              obj[prop.name] = 'data:' + type + ';base64,' + Base64Encoder.encode(new Uint8Array(reader.result));
               ret();
             }
 
@@ -2562,8 +2736,9 @@ var BlobSerializeDAO = FOAM({
       for ( var i = 0, prop; prop = this.properties[i]; i++ ) {
         var value = prop.f(obj);
         if ( !value ) continue;
-        var type = value.substring(0, value.indexOf(';'));
-        value = value.substring(value.indexOf(';') + 1);
+        var type = value.substring(value.indexOf(':') + 1,
+                                   value.indexOf(';'));
+        value = value.substring(value.indexOf(';base64') + 7);
         var decoder = Base64Decoder.create([]);
         decoder.put(value);
         decoder.eof();

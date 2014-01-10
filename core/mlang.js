@@ -1227,8 +1227,8 @@ var GridByExpr = FOAM({
 
        for ( var y in rows ) {
          for ( var x in rows[y].groups ) {
-            var value = rows[y].groups[x];
-            value.initHTML && value.initHTML();
+           var value = rows[y].groups[x];
+           value && value.initHTML && value.initHTML();
          }
        }
      }
@@ -1266,6 +1266,9 @@ var MapExpr = FOAM({
      },
      toHTML: function() {
        return this.arg2.toHTML ? this.arg2.toHTML() : this.toString();
+     },
+     initHTML: function() {
+       this.arg2.initHTML && this.arg2.initHTML();
      }
    }
 });

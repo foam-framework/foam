@@ -1,8 +1,13 @@
+<%
+  var starView = CIssue.STARRED.view.create();
+  starView.value = this.issue.propertyValue('starred');
+  this.addChild(starView);
+%>
 <div class="gridtile">
   <table cellspacing="0" cellpadding="0"><tbody>
     <tr>
       <td class="id">
-        <img src="images/star_off.gif">
+        {{{ starView.toHTML() }}}
         <a href="https://code.google.com/p/chromium/issues/detail?id={{this.issue.id}}">{{this.issue.id}}</a>
       </td>
       <td class="status">{{this.issue.status}}</td>

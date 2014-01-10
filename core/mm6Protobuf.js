@@ -21,6 +21,7 @@ Model.properties = Model.properties.concat(
         label: 'ProtoParser',
         type: 'Grammar',
         hidden: true,
+        transient: true,
         // TODO: this will be regenerated for each use, fix
         defaultValueFn: function() {
           var parser = {

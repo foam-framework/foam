@@ -311,10 +311,3 @@ console.log(i, k, v);
 AbstractPrototype.__defineGetter__('__super__', function() {
   return this.__proto__.__proto__;
 });
-
-
-Object.defineProperty(AbstractPrototype, 'SUPER', {
-  get: function() {
-     return arguments.callee.caller.super_.bind(this);
-  }
-});

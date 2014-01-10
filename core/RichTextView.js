@@ -66,7 +66,7 @@ var Link = FOAM({
 
         this.richTextView.insertElement(a);
 
-        this.view.$.remove();
+        this.view.close();
       }
     }
   ]
@@ -87,6 +87,18 @@ var LinkView = Model.create({
           value: SimpleValue.create(this.value.get())
         });
       }
+    },
+    {
+      name: 'textView',
+      valueFactory: function() { return this.createView(Link.LABEL); }
+    },
+    {
+      name: 'urlView',
+      valueFactory: function() {
+        var v = this.createView(Link.LINK);
+        v.placeholder = "Type or paste link.";
+        return v;
+      }
     }
   ],
 
@@ -94,17 +106,34 @@ var LinkView = Model.create({
     init: function() {
       this.SUPER();
       this.addChild(this.insertButton);
-    }
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.$.addEventListener('keyup', this.keyUp);
+      this.textView.$.focus();
+    },
+    close: function() { this.$.remove(); }
   },
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'keyUp',
+      code: function(e) {
+        console.log(e);
+        if ( e.keyCode == 27 ) this.close();
+      }
+    }
+  ],
+  
   templates: [
     {
       name: "toHTML",
       template:
         '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">' +
         '<table><tr>' +
-        '<th>Text</th><td><%= this.createView(Link.LABEL).toHTML() %></td></tr><tr>' +
-        '<th>Link</th><td><% var v = this.createView(Link.LINK); v.placeholder = "Type or paste link."; out(v.toHTML()); %>' +
+        '<th>Text</th><td><%= this.textView.toHTML() %></td></tr><tr>' +
+        '<th>Link</th><td><%= this.urlView.toHTML() %>' +
         '<%= this.insertButton.toHTML() %></td>' +
         '</tr></table>' +
         '</div>'
@@ -135,7 +164,7 @@ var ColorPickerView = FOAM({
         var value = 'rgb(' + r + ',' + g + ',' + b + ')';
 
         out += '<td class="pickerCell"><div id="' +
-          self.registerCallback('click', function(e) {
+          self.on('click', function(e) {
             self.value.set(value);
             e.preventDefault();
           }) +
@@ -217,12 +246,25 @@ var RichTextView = FOAM({
       this.value = value;
     },
 
+    getSelectionText: function() {
+      var window    = this.$.contentWindow;
+      var selection = window.getSelection();
+
+      if ( selection.rangeCount ) {
+        return selection.getRangeAt(0).toLocaleString();
+      }
+
+      return '';
+    },
+
     insertElement: function(e) {
       var window    = this.$.contentWindow;
       var selection = window.getSelection();
 
       if ( selection.rangeCount ) {
-        selection.getRangeAt(0).insertNode(e);
+        var r = selection.getRangeAt(0);
+        r.deleteContents();
+        r.insertNode(e);
       } else {
         // just insert into the body if no range selected
         var range = window.document.createRange();
@@ -239,6 +281,95 @@ var RichTextView = FOAM({
       this.$.style.opacity = show ? '0' : '1';
     },
 
+    sanitizeDroppedHtml: function(html) {
+      var allowedElements = [
+        {
+          name: 'B',
+          attributes: []
+        },
+        {
+          name: 'I',
+          attributes: []
+        },
+        {
+          name: 'U',
+          attributes: []
+        },
+        {
+          name: 'P',
+          attributes: []
+        },
+        {
+          name: 'SECTION',
+          attributes: []
+        },
+        {
+          name: 'BR',
+          attributes: []
+        },
+        {
+          name: 'BLOCKQUOTE',
+          attributes: []
+        },
+        {
+          name: 'DIV',
+          attributes: []
+        },
+        {
+          name: 'IMG',
+          attributes: ['src']
+        },
+        {
+          name: 'A',
+          attributes: ['href']
+        },
+        {
+          name: '#TEXT',
+          attributes: []
+        },
+      ];
+
+      function copyNodes(parent, node) {
+        for ( var i = 0; i < allowedElements.length; i++ ) {
+          if ( allowedElements[i].name === node.nodeName ) {
+            if ( node.nodeType === Node.ELEMENT_NODE ) {
+              newNode = document.createElement(node.nodeName);
+              for ( var j = 0; j < allowedElements[i].attributes.length; j++ ) {
+                if ( node.hasAttribute(allowedElements[i].attributes[j]) ) {
+                  newNode.setAttribute(allowedElements[i].attributes[j],
+                                       node.getAttribute(allowedElements[i].attributes[j]));
+                }
+              }
+            } else if ( node.nodeType === Node.TEXT_NODE ) {
+              newNode = document.creatTextNode(node.nodeValue);
+            } else {
+              newNode = document.createTextNode('');
+            }
+            parent.appendChild(newNode);
+          }
+        }
+        if ( i === allowedElements.length ) {
+          newNode = document.createElement('div');
+        }
+        for ( j = 0; j < node.children.length; j++ ) {
+          copyNodes(newNode, node.children[j]);
+        }
+      }
+
+      var frame = document.createElement('iframe');
+      frame.sandbox = 'allow-same-origin';
+      frame.style.display = 'none';
+      document.body.appendChild(frame);
+      frame.contentDocument.body.innerHTML = html;
+
+      var sanitizedContent = new DocumentFragment();
+      for ( var i = 0; i < frame.contentDocument.body.children.length; i++ ) {
+        copyNodes(sanitizedContent, frame.contentDocument.body.children[i]);
+      }
+      document.body.removeChild(frame);
+      return sanitizedContent;
+    },
+
     initHTML: function() {
       this.SUPER();
       var drop = $(this.dropId);
@@ -247,7 +378,7 @@ var RichTextView = FOAM({
       var body = this.document.body;
 
       body.style.overflow = 'auto';
-      body.style.margin = '0 0 0 5px';
+      body.style.margin = '5px';
       body.style.height = '100%';
 
       var self = this;
@@ -272,10 +403,8 @@ console.log('file: ', file, id);
 
         length = e.dataTransfer.items.length;
         if ( length ) {
-          var div = document.createElement('div');
-
+          var div = this.sanitizeDroppedHtml(e.dataTransfer.getData('text/html'));
           this.insertElement(div);
-          div.outerHTML = e.dataTransfer.getData('text/html');
         }
       }.bind(this);
       body.ondragenter = function(e) {
@@ -357,7 +486,9 @@ console.log('file: ', file, id);
       help: 'Insert link (Ctrl-K)',
       action: function () {
         // TODO: determine the actual location to position
-        Link.create({richTextView: this}).open(5,120);
+        Link.create({
+          richTextView: this,
+          label: this.getSelectionText()}).open(5,120);
       }
     },
     {

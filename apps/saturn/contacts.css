@@ -1,27 +1,45 @@
 /* ----------- ContactSmallTileView ----------- */
 .contactSmallTile {
-    background: lightblue;
+    background: #f8f8f8;
     border-radius: 2px;
-    display: inline-block;
-    overflow: hidden;
+    border: 1px solid #ddd;
 }
 
 .contactSmallName {
     display: inline;
-    vertical-align: 5px;
-    margin: 0px 2px;
+    color: #000;
+    vertical-align: 9px;
+    margin: 0px 1px 0px 7px;
+    font-family: Arial, sans;
+}
+
+.contactSmallX {
+    vertical-align: 6px;
+    margin: 0px 5px 0px 2px;
+    color: #8b8b8b;
+    background: #f8f8f8;
+    font-size: smaller;
+    padding: 0px 2px;
+}
+
+.contactSmallAvatar {
+    display: inline-block;
+    border-right: 1px solid #ddd;
 }
 
 /* ----------- ContactTileView ----------- */
 .contactTile {
-    background-color: lightblue;
-    border-radius: 5px;
+    background: #f8f8f8;
+    border-radius: 3px;
+    border: 1px solid #ddd;
     height: 32px;
+    overflow: hidden;
 }
 
 .contactTileAvatar {
     width: 32px;
     height: 32px;
+    border-right: 1px solid #ddd
     display: inline-block;
 }
 
@@ -33,6 +51,6 @@
     margin-top: 4px;
     display: inline-block;
     font-size: smaller;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }

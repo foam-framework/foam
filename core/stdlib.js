@@ -14,6 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/** Create a memoized version of a function. **/
+function memoize(f) {
+  var cache = {};
+
+  return function() {
+    var key = argsToArray(arguments).toString();
+    if ( ! cache.hasOwnProperty(key) ) {
+      cache[key] = f.apply(null, arguments);
+    }
+    return cache[key];
+  };
+}
+
+
 if ( ! String.prototype.startsWith ) {
   String.prototype.startsWith = function (a) { return 0 == this.lastIndexOf(a, 0); };
 }
@@ -99,7 +114,9 @@ Boolean.prototype.compareTo = function(o) {
 };
 
 var argsToArray = function(args) {
-  return Array.prototype.slice.call(args);
+  var array = new Array(args.length);
+  for ( var i = 0; i < args.length; i++ ) array[i] = args[i];
+  return array;
 };
 
 var StringComparator = function(s1, s2) {

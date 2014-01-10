@@ -31,6 +31,30 @@
 
 var Method, Action, Relationship;
 
+/**
+ * Override a method, making calling the overridden method possible by
+ * calling this.SUPER();
+ **/
+function override(cls, methodName, method) {
+  var super_ = cls[methodName];
+
+  var SUPER = function() { return super_.apply(this, arguments); };
+
+  var f = function() {
+    var OLD_SUPER = this.SUPER;
+    this.SUPER = SUPER;
+    try {
+      return method.apply(this, arguments);
+    } finally {
+      this.SUPER = OLD_SUPER;
+    }
+  };
+
+  f.super_ = super_;
+
+  cls[methodName] = f;
+}
+
 var ModelProto = {
 
    __proto__: PropertyChangeSupport,
@@ -46,15 +70,16 @@ var ModelProto = {
 
        /** Add a method to 'cls' and set it's name. **/
        function addMethod(name, method) {
-          cls[name] = method;
-          method.name = name;
-          if ( cls.__proto__[name] ) {
-             method.super_ = cls.__proto__[name];
-          }
+         if ( cls.__proto__[name] ) {
+           override(cls, name, method);
+         } else {
+           cls[name] = method;
+           method.name = name;
+         }
        }
 
-       cls.name_  = this.name;
-       cls.TYPE   = this.name + "Prototype";
+      cls.name_  = this.name;
+      cls.TYPE   = this.name + "Prototype";
 
         // add sub-models
 //        this.models && this.models.forEach(function(m) {
@@ -85,14 +110,11 @@ var ModelProto = {
 //        this.templates && this.templates.forEach(function(t) { addMethod(t.name, TemplateUtil.compile(t.template)); });
         // Workaround for crbug.com/258522
         this.templates && Object_forEach(this.templates, function(t) {
-          addMethod(t.name, TemplateUtil.lazyCompile(t));
-          /*
           if ( t.template ) {
             addMethod(t.name, TemplateUtil.compile(t.template));
           } else {
-            addMethod(t.name, t.createLazyTemplate());
+            addMethod(t.name, TemplateUtil.lazyCompile(t));
           }
-          */
         });
 
         // mix-in mixins

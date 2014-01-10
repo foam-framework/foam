@@ -16,6 +16,7 @@ body {
   padding-left: 6px;
   font: 90% ariel, sans-serif;
   opacity: 0.5;
+  border-bottom: 2px outset;
 }
 
 .richtext {
@@ -39,7 +40,7 @@ body > input[name="subject"] {
   border-top-width: 0px;
 }
 
-body > input[name="subject"] {
+body > input[name="to"] {
   border-top-width: 0px;
 }
 
@@ -51,17 +52,21 @@ body > input[name="subject"] {
 }
 
 .actionButton-send {
-  background: #357ae8;
+  background: #4d90fe;
   border-radius: 3px;
   box-shadow: none;
   color: white;
   float: left;
-  margin-right: 25px;
+  margin-right: 10px;
   padding: 6px 15px;
   text-shadow: none;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard, .actionButton-close {
+.actionButton-send:hover {
+  background: #357ae8;
+}
+
+.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard, .actionButton-close, .actionButton-minimize {
   background: none;
   border: none;
   box-shadow: none;
@@ -69,7 +74,7 @@ body > input[name="subject"] {
   text-shadow: none;
 }
 
-.actionButton-bold:hover, .actionButton-italic:hover, .actionButton-underline:hover, .actionButton-link:hover, .actionButton-discard:hover, .actionButton-close:hover {
+.actionButton-bold:hover, .actionButton-italic:hover, .actionButton-underline:hover, .actionButton-link:hover, .actionButton-discard:hover, .actionButton-close:hover, .actionButton-minimize:hover {
   background-color: #eee;
   background-image: -webkit-linear-gradient(top,#eee,#e0e0e0);
   border-color: #ccc;
@@ -77,9 +82,13 @@ body > input[name="subject"] {
   box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
 }
 
+.actionButton-minimize img {
+  padding: 4.5px;
+}
+
 .actionButton-discard {
   float: right;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .actionButton-discard[data-tip]:after {

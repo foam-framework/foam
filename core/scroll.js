@@ -215,7 +215,7 @@ var ScrollBorder = FOAM({
           this.view.dao = newValue;
            var self = this;
 
-           this.dao.select(COUNT())(function(c) {
+           if ( this.dao ) this.dao.select(COUNT())(function(c) {
                self.scrollbar.size = c.count;
                self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
                if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);

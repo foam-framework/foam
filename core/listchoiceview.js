@@ -153,9 +153,9 @@ var ListChoiceView = FOAM({
          var name   = this.name;
 
          try {
-           this.registerCallback('click', this.onClick, id);
-           this.registerCallback('mouseover', this.onMouseOver, id);
-           this.registerCallback('mouseout', this.onMouseOut, id);
+           this.on('click', this.onClick, id);
+           this.on('mouseover', this.onMouseOver, id);
+           this.on('mouseout', this.onMouseOut, id);
          } catch (x) {
          }
 

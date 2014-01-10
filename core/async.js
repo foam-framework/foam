@@ -312,7 +312,7 @@ function apar(/* ... afuncs */) {
   var fs = arguments;
 
   return function(ret /* opt_args */) {
-    if ( aargs.length == 0 ) {
+    if ( fs.length == 0 ) {
       ret && ret();
       return;
     }

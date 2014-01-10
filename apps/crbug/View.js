@@ -20,6 +20,12 @@ var COL = {
   create: function() { return { __proto__: this, values: [] }; },
   put: function(v) { this.values.push(v); },
   toHTML: function() { return this.values.join('<br/>'); },
+  initHTML: function() {
+    for ( var i in this.values ) {
+      var o = this.values[i];
+      o.initHTML && o.initHTML();
+    }
+  },
   clone: function() { return this.create(); }
 };
 
@@ -92,7 +98,11 @@ function createView(rowSelection) {
                  return '<div class="CIssueTableHeader"></div>' + this.SUPER();
                }
              }
-          }).create({view: TableView.create({model: CIssue, hardSelection: rowSelection})});
+          }).create({view: TableView.create({
+            model: CIssue,
+            hardSelection: rowSelection,
+            editColumnsEnabled: true
+          })});
         }
       }),
       ViewChoice.create({

@@ -55,7 +55,19 @@ var CIssue = FOAM({
           shortName: 'i',
           label: 'ID',
           required: true,
-          tableWidth: '48px'
+          tableWidth: '48px',
+          tableFormatter: function(value, row, table) {
+            var id = table.nextID();
+
+            table.on('mouseover', function(e) {
+              window.browser.preview(e, value);
+            }, id);
+            table.on('mouseout',  function() {
+              window.browser.preview(null);
+            }, id);
+
+            return '<div id="' + id + '">' + value + '</div>';
+          }
         },
         {
           model_: 'StringProperty',
@@ -229,38 +241,4 @@ CIssue.properties.forEach(function(p) {
       return ('' + v).length ? v : '----';
     };
   }
-});
-
-var CIssueTileView = FOAM({
-   model_: 'Model',
-
-   extendsModel: 'AbstractView',
-
-   name: 'CIssueTileView',
-   label: 'CIssue Tile View',
-
-   properties: [
-      {
-         name:  'issue',
-         label: 'Issue',
-         type:  'CIssue'
-      }
-   ],
-
-   methods: {
-     // Implement Sink
-     put: function(issue) { this.issue = issue; },
-
-     // Implement Adapter
-     f: function(issue) { this.issue = issue; return this.toHTML(); }
-   },
-
-   templates:[
-     {
-        model_: 'Template',
-
-        name: 'toHTML',
-        description: 'TileView'
-     }
-   ]
 });
