@@ -357,18 +357,15 @@ var QuickCompose = FOAM({
       },
       {
         model_: 'Method',
-         name: 'keyUp',
-         code: function(e) {
-           if ( e.keyCode == 27 ) this.minimize();
-         }
+        name: 'keyUp',
+        code: function(e) { if ( e.keyCode == 27 ) this.minimize(); }
       },
       {
         model_: 'Method',
-         name: 'keyPress',
-         code: function(e) {
-           console.log(e.ctrlKey, e.keyCode, e);
-           if ( e.ctrlKey && e.keyCode == 10 ) this.send(); // Ctrl-Enter
-         }
+        name: 'keyPress',
+        code: function(e) {
+          if ( e.ctrlKey && e.keyCode == 10 /* Ctrl-Enter */ ) this.send();
+        }
       }
    ],
 
