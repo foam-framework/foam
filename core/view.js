@@ -3157,7 +3157,19 @@ var ListInputView = FOAM({
       }
     },
     {
-      name: 'placeholder'
+      name: 'placeholder',
+      postSet: function(newValue, oldValue) {
+        if ( this.$ && this.usePlaceholer ) this.$.placeholder = newValue;
+      }
+    },
+    {
+      model_: 'BooleanValue',
+      name: 'usePlaceholder',
+      defaultValue: true,
+      postSet: function(newValue) {
+        if ( this.$ ) this.$.placeholder = newValue ?
+          this.placeholder : '';
+      }
     },
     {
       name: 'value',
@@ -3166,6 +3178,10 @@ var ListInputView = FOAM({
         return SimpleValue.create({
           value: []
         });
+      },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.onValueChange);
+        newValue.addListener(this.onValueChange);
       }
     },
     {
@@ -3186,7 +3202,8 @@ var ListInputView = FOAM({
     },
     initHTML: function() {
       this.SUPER();
-      if ( this.placeholder ) this.$.placeholder = this.placeholder;
+      if ( this.usePlaceholder && this.placeholder )
+        this.$.placeholder = this.placeholder;
       this.autocompleteView.initHTML();
       this.domInputValue = DomValue.create(this.$, 'input');
       this.domInputValue.addListener(this.onInput);
@@ -3272,6 +3289,12 @@ var ListInputView = FOAM({
           else self.domInputValue.set('');
           self.autocompleteView.dao = self.dao.where(FALSE);
         }, 100);
+      }
+    },
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.usePlaceholder = this.value.get().length == 0;
       }
     }
   ]
