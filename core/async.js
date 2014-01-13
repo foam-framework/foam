@@ -250,7 +250,7 @@ function amemo(f) {
       f(function() {
         values = arguments;
         for (var i = 0 ; i < waiters.length; i++) {
-          waiters[i].apply(null, values);
+          waiters[i] && waiters[i].apply(null, values);
         }
         waiters = [];
       });
