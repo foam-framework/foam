@@ -12,7 +12,7 @@ var req = amemo(atime('requireModels', aseq(
   arequire('AutocompleteListView')
 )));
 
-req();
+req(function(){});
 
 
 function launchComposer() {

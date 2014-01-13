@@ -39,7 +39,7 @@
 .contactTileAvatar {
     width: 32px;
     height: 32px;
-    border-right: 1px solid #ddd
+    border-right: 1px solid #ddd;
     display: inline-block;
 }
 

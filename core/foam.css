@@ -529,15 +529,33 @@ div.gridViewControl select {
 
 /* ----------- ArrayTileView ----------- */
 .arrayTileView {
-  margin: 9px 6px;
+  margin: 0;
+  width: 100%;
   padding: 0px;
   display: inline-block;
+  border-bottom: 2px inset;
 }
 
 .arrayTileItem {
   display: inline-block;
   list-style-type: none;
   margin: 2px 2px;
+}
+
+.arrayTileLastView {
+  display: inline-block;
+  margin: 0;
+  list-style-type: none;
+  vertical-align: 7px;
+}
+
+/* ----------- ListInputView ----------- */
+.listInputView {
+  width: 100%;
+  border: none;
+  padding: 1px 0 1px 8px;
+  outline: none;
+  height: 36px;
 }
 
 /* ----------- AutocompleteListView ----------- */
