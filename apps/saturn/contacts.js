@@ -323,7 +323,6 @@ function importContacts(dao, xhrFactory) {
   var f = function(data) {
 // TODO: gContact$groupMembershipInfo
      var contacts = data.feed.entry;
-     console.log('contacts', contacts);
      contacts.forEach(function(c) {
        var contact = Contact.create({
           id:      c.id       ? c.id.$t.split('/').pop() : '',
@@ -346,16 +345,8 @@ function importContacts(dao, xhrFactory) {
          }));
        });
 
-       delete c['id'];
-       delete c['title'];
-       delete c['gd$email'];
-       delete c['updated'];
-       delete c['link'];
-       delete c['category'];
-       delete c['gd$phoneNumber'];
-       delete c['gd$postalAddress'];
+       c.length = 0;
 
-       console.log(contact.toJSON(), c);
        ContactDAO.put(contact);
      });
   };
