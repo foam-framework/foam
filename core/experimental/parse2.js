@@ -144,7 +144,36 @@ function alt(a, b) {
   };
 }
 
-// TODO: Resuming in the middle of a literal
+function fail(state) {
+  state[FAIL][STREAM] = state[STREAM]
+  return state[FAIL];
+}
+
+function repeat(a, opt_delim, opt_min, opt_max, i) {
+  a = prep(a);
+  opt_delim = prep(opt_delim) || fail;
+  opt_min = opt_min || 0;
+  i = i || 0;
+
+  return function(state) {
+    var fail = (i >= opt_min) ? state[SUCCESS] : state[FAIL];
+    var success = (opt_max !== undefined && i === opt_max - 1) ?
+      state[SUCCESS] :
+      [repeat(a, opt_delim, opt_min, opt_max, i + 1),
+       null, state[SUCCESS], state[FAIL]];
+
+    return [
+      opt_delim,
+      state[STREAM],
+      fail,
+      [a,
+       state[STREAM],
+       success,
+       fail
+       ]
+    ];
+  };
+}
 
 var grammar = {
   // Special end state indicator
@@ -197,7 +226,9 @@ var grammar = {
 var TestGrammar = {
   __proto__: grammar,
 
-  START: seq("aaaa", seq(sym('middle'), sym('end'))),
+  START: seq(repeat("a", "delim"),
+             seq('a',
+                 seq(sym('middle'), sym('end')))),
   middle: alt("b", "c"),
   end: literal("dddd")
 }.addActions({
@@ -207,9 +238,7 @@ var TestGrammar = {
 });
 
 //log(TestGrammar.parseString("aaaabdddd"));
-
-TestGrammar.parseString("aa");
-TestGrammar.parseMore("aa");
+TestGrammar.parseString("aadelima");
 TestGrammar.parseMore("bd");
 TestGrammar.parseMore("dd");
 log(TestGrammar.parseMore("d"));
