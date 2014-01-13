@@ -334,14 +334,11 @@ var ArrayProperty = Model.create({
        {
            name: 'preSet',
            defaultValue: function(a, _, prop) {
-              var m = GLOBAL[prop.subType];
+             var m = GLOBAL[prop.subType];
 
-              if ( ! m ) {
-                 console.log('********************** UNKNOWN Array subType: ', this.subType);
-                 return a;
-              }
+             if ( ! m ) return a;
 
-              for ( var i = 0 ; i < a.length ; i++ ) {
+             for ( var i = 0 ; i < a.length ; i++ ) {
 // TODO: remove when 'redundant model_'s removed
 if ( a[i].model_ ) {
    if ( a[i].model_ == prop.subType ) {
@@ -350,10 +347,10 @@ if ( a[i].model_ ) {
       console.log('*');
    }
 }
-                 a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
-              }
-
-              return a;
+               a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
+             }
+             
+             return a;
            }
        },
        {
