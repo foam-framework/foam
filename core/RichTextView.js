@@ -282,6 +282,7 @@ var RichTextView = FOAM({
     },
 
     sanitizeDroppedHtml: function(html) {
+      var self = this;
       var allowedElements = [
         {
           name: 'B',
@@ -317,7 +318,36 @@ var RichTextView = FOAM({
         },
         {
           name: 'IMG',
-          attributes: ['src']
+          attributes: ['src'],
+          clone: function(node) {
+            var newNode = document.createElement('img');
+            if ( node.src.startsWith('http') ) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", node.src);
+              xhr.responseType = 'blob';
+              xhr.asend(function(blob) {
+                blob.name = 'dropped image';
+                if ( blob ) {
+                  newNode.id = self.addAttachment(blob);
+                  newNode.src = URL.createObjectURL(blob);
+                } else {
+                  blob.parent.removeChild(blob);
+                }
+              });
+            } else if ( node.src.startsWith('data:') ) {
+              var type = node.src.substring(5, node.src.indexOf(';'));
+              var decoder = Base64Decoder.create([], node.src.length);
+              decoder.put(node.src.substring(node.src.indexOf('base64,') + 7));
+              decoder.eof();
+
+              var blob = new Blob(decoder.sink, { type: type });
+              blob.name = 'dropped image';
+              newNode.id = self.addAttachment(blob);
+              newNode.src = URL.createObjectURL(blob);
+            }
+
+            return newNode;
+          }
         },
         {
           name: 'A',
@@ -332,7 +362,9 @@ var RichTextView = FOAM({
       function copyNodes(parent, node) {
         for ( var i = 0; i < allowedElements.length; i++ ) {
           if ( allowedElements[i].name === node.nodeName ) {
-            if ( node.nodeType === Node.ELEMENT_NODE ) {
+            if ( allowedElements[i].clone ) {
+              newNode = allowedElements[i].clone(node);
+            } else if ( node.nodeType === Node.ELEMENT_NODE ) {
               newNode = document.createElement(node.nodeName);
               for ( var j = 0; j < allowedElements[i].attributes.length; j++ ) {
                 if ( node.hasAttribute(allowedElements[i].attributes[j]) ) {
@@ -370,6 +402,13 @@ var RichTextView = FOAM({
       return sanitizedContent;
     },
 
+    addAttachment: function(file) {
+      var id   = 'att' + {}.$UID;
+      console.log('file: ', file, id);
+      this.publish('attachmentAdded', file, id);
+      return id;
+    },
+
     initHTML: function() {
       this.SUPER();
       var drop = $(this.dropId);
@@ -388,17 +427,13 @@ var RichTextView = FOAM({
         var length = e.dataTransfer.files.length;
         for ( var i = 0 ; i < length ; i++ ) {
           var file = e.dataTransfer.files[i];
-          var id   = 'att' + {}.$UID;
-console.log('file: ', file, id);
-
+          var id = this.addAttachment(file);
           if ( file.type.startsWith("image/") ) {
             var img   = document.createElement('img');
             img.id = id;
             img.src = URL.createObjectURL(file);
             this.insertElement(img);
           }
-
-          this.publish('attachmentAdded', file, id);
         }
 
         length = e.dataTransfer.items.length;
@@ -407,6 +442,7 @@ console.log('file: ', file, id);
           this.insertElement(div);
         }
       }.bind(this);
+      self.dragging_ = 0;
       body.ondragenter = function(e) {
         self.dragging_++;
         self.showDropMessage(true);
