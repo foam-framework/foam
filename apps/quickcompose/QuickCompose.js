@@ -287,9 +287,14 @@ var QuickCompose = FOAM({
        name:  'send',
        help:  'Send (Ctrl-Enter)',
 
-       // TODO: Don't enable send unless subject, to, and body set
-       isEnabled:   function() { return true; },
-       action:      function() {
+       // TODO: Don't enable send unless to and subject or body set
+       isEnabled: function(obj, ret) {
+         var email = obj.email;
+         Events.dynamic(function() { email.to; email.subject; email.body; }, function() {
+           ret(email.to.length && ( email.subject || email.body ));
+         });
+       },
+       action: function() {
          this.email.timeStamp = new Date();
          this.EMailDAO.put(this.email);
          this.window.close();

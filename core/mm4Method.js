@@ -79,7 +79,7 @@ var Action = FOAM({
            displayWidth: 70,
            displayHeight: 3,
            view: 'FunctionView',
-           defaultValue: function() { return true; },
+           defaultValue: function(ret) { ret(true); },
            help: 'Function to determine if action is enabled.'
        },
        {

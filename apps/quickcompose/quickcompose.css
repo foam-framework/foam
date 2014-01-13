@@ -73,6 +73,10 @@ body > input[name="to"] {
   padding-top: 8px;
 }
 
+.actionButton-send:disabled {
+  background: gray;
+}
+
 .actionButton-send {
   background: #4d90fe;
   border-radius: 3px;

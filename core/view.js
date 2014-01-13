@@ -2310,17 +2310,33 @@ var ActionButton = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener && oldValue.removeListener(this.onValueChange);
+        newValue.addListener(this.onValueChange);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'onValueChange',
+      code: function() {
+        this.action.isEnabled(this.value.get(), this.onEnabled);
+      }
+    },
+    {
+      model_: 'Method',
+      name: 'onEnabled',
+      code: function(enabled) {
+        if ( ! this.$ ) return;
+        this.$.disabled = enabled ? undefined : 'disabled';
+      }
     }
   ],
 
   methods: {
-
-    // TODO: implement and make a listener
-    subjectUpdate: function() {
-      // console.log('subject update: ' + this.value);
-    },
-
     toHTML: function() {
       this.on(
         'click',
@@ -2340,9 +2356,16 @@ var ActionButton = Model.create({
       if ( this.action.showLabel ) {
         out.push(this.action.label);
       }
+
       out.push('</button>');
 
       return out.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      this.onValueChange();
     }
   }
 });
