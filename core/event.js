@@ -474,7 +474,6 @@ var Events = {
      opt_fn && opt_fn(ret);
    },
 
-
    onSet: function(obj, name, newValue) {
      return true;
    },
