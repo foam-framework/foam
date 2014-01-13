@@ -318,7 +318,7 @@ var QuickCompose = FOAM({
        name:  'close',
        label: '',
        iconUrl: 'images/x_8px.png',
-//       help:  'Close the window.',
+       // help:  'Discard & Close',
 
        action: function() {
          this.appWindow.close();
@@ -329,7 +329,7 @@ var QuickCompose = FOAM({
        name:  'minimize',
        label: '',
        iconUrl: 'images/minimize.png',
-//       help:  'Minimize the window.',
+       // help:  'Minimize',
 
        action: function() {
          this.appWindow.minimize();

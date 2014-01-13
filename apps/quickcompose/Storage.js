@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+console.time('Storage');
+
 var UserInfo = FOAM({
   model_: 'Model',
 
@@ -35,26 +37,36 @@ ContactDAO.addIndex(Contact.EMAIL);
 ContactDAO.addIndex(Contact.FIRST);
 ContactDAO.addIndex(Contact.LAST);
 
+console.time('authAgent');
 var authAgent = ChromeAuthAgent.create({});
+console.timeEnd('authAgent');
 
+console.time('JsonXhrFactory');
 var JsonXhrFactory = OAuthXhrFactory.create({
   authAgent: authAgent,
   responseType: "json"
 });
+console.timeEnd('JsonXhrFactory');
+console.time('BlobXhrFactory');
 var BlobXhrFactory = OAuthXhrFactory.create({
   authAgent: authAgent,
   responseType: "blob"
 });
+console.timeEnd('BlobXhrFactory');
 
+console.time('ContactAvatarDAO');
 var ContactAvatarDAO = LRUCachingDAO.create({
   maxSize: 50,
-  delegate: LazyCacheDAO.create({
-    cache: IDBDAO.create({ model: Contact, name: 'ContactAvatars2' }),
-    delegate: ContactAvatarNetworkDAO.create({
-      xhrFactory: BlobXhrFactory
-    })
-  })
+  delegate: FutureDAO.create(aseq(asleep(200), function(ret) {
+    ret(LazyCacheDAO.create({
+      cache: IDBDAO.create({ model: Contact, name: 'ContactAvatars2' }),
+      delegate: ContactAvatarNetworkDAO.create({
+        xhrFactory: BlobXhrFactory
+      })
+    }));
+  }))
 });
+console.timeEnd('ContactAvatarDAO');
 
 ContactDAO = CachingDAO.create(
   ContactDAO,
@@ -68,12 +80,14 @@ ContactAvatarDAO = PropertyOffloadDAO.create({
   loadOnSelect: true
 });
 
-ContactDAO.select(COUNT())(function(c) {
-  if ( c.count === 0 ) {
-    console.log('Importing contacts...');
-    importContacts(ContactDAO, JsonXhrFactory);
-  }
-});
+aseq(asleep(500), function() {
+  ContactDAO.select(COUNT())(function(c) {
+    if ( c.count === 0 ) {
+      console.log('Importing contacts...');
+      importContacts(ContactDAO, JsonXhrFactory);
+    }
+  });
+})();
 
 var persistentContext = PersistentContext.create({
   dao: IDBDAO.create({model: Binding}),
@@ -93,3 +107,5 @@ persistentContext.bindObject('userInfo', UserInfo, {})(
         userInfo.email = response.email;
       }
     }));
+
+console.timeEnd('Storage');
