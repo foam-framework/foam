@@ -36,8 +36,30 @@ body > input[type="text"], input[type="String"] {
   border-right-width: 0px;
 }
 
+.contactTileDetails {
+  width: 250px;
+  margin-top: 2px;
+}
+
+.contactTileDetails > li {
+  display: block;
+}
+
+.contactTileDetails > li > span {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.autocompleteListView {
+  left: 8px;
+}
+
 body > input[name="subject"] {
   border-top-width: 0px;
+  outline: none;
 }
 
 body > input[name="to"] {

@@ -138,8 +138,10 @@ var ContactListTileView = Model.create({
         'address.mode = "read-only"; %>' +
         '<div class="contactTile" id="<%= this.getID() %>">' +
         '<%= avatar.toHTML() %>' +
-        '<ul class="contactTileDetails"><li><%= name.toHTML() %></li>' +
-        '<li class="contactTileAddress"><%= address.toHTML() %><li></ul></div>'
+        '<ul class="contactTileDetails">' +
+        '<li><%= name.toHTML() %></li>' +
+        '<li><%= address.toHTML() %></li>' +
+        '</ul></div>'
     }
   ]
 });

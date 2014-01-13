@@ -12,7 +12,7 @@ var req = amemo(aseq(
   arequire('AutocompleteListView')
 ));
 
-req();
+req(function(){});
 
 function launchComposer() {
   // This block implements the feature which disables launching multiple

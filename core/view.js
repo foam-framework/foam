@@ -3112,7 +3112,8 @@ var ListValueView = FOAM({
 
   methods: {
     toHTML: function() {
-      return this.valueView.toHTML() + this.inputView.toHTML();
+      this.valueView.lastView = this.inputView;
+      return this.valueView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
@@ -3120,7 +3121,6 @@ var ListValueView = FOAM({
     initHTML: function() {
       this.SUPER();
       this.valueView.initHTML();
-      this.inputView.initHTML();
     }
   }
 });
@@ -3179,7 +3179,7 @@ var ListInputView = FOAM({
       this.on('blur', this.onBlur, this.getID());
       this.on('focus', this.onInput, this.getID());
 
-      return '<input name="' + this.name + '" type="text" id="' + this.getID() + '">' + this.autocompleteView.toHTML();
+      return '<input name="' + this.name + '" type="text" id="' + this.getID() + '" class="listInputView">' + this.autocompleteView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
@@ -3295,6 +3295,9 @@ var ArrayTileView = FOAM({
       name: 'tileView'
     },
     {
+      name: 'lastView'
+    },
+    {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
       postSet: function(newValue, oldValue) {
@@ -3311,10 +3314,12 @@ var ArrayTileView = FOAM({
 
   methods: {
     toHTML: function() {
-      return '<ul id="' + this.getID() + '" class="arrayTileView"></ul>';
+      return '<ul id="' + this.getID() + '" class="arrayTileView"><li class="arrayTileLastView">' +
+        this.lastView.toHTML() + '</li></ul>';
     },
     initHTML: function() {
       this.SUPER();
+      this.lastView.initHTML();
       this.paint();
     }
   },
@@ -3339,18 +3344,29 @@ var ArrayTileView = FOAM({
         var count = value.length;
         var self = this;
         var render = function() {
-          self.$.innerHTML = self.children.map(
+          while ( self.$.firstChild !== self.$.lastChild ) {
+            self.$.removeChild(self.$.firstChild);
+          }
+
+          var temp = document.createElement('div');
+          temp.style.display = 'none';
+          self.$.insertBefore(temp, self.$.lastChild);
+          temp.outerHTML = self.children.map(
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
           self.children.forEach(
             function(c) { c.initHTML(); });
+
+          var last = self.$.lastChild;
+          last.style.width = '100px';
+          last.style.width = 100 + last.parentNode.clientWidth -
+            (last.offsetWidth + last.offsetLeft) - 4 /* margin */;
           self.painting = false;
         };
 
         if ( value.length == 0 ) {
           render();
-          self.$.style.display = 'none';
         } else {
-          self.$.style.display = 'inline-block';
+          self.$.style.display = '';
         }
 
         for ( var i = 0; i < value.length; i++ ) {
