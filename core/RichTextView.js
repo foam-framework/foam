@@ -442,6 +442,7 @@ var RichTextView = FOAM({
           this.insertElement(div);
         }
       }.bind(this);
+      self.dragging_ = 0;
       body.ondragenter = function(e) {
         self.dragging_++;
         self.showDropMessage(true);
