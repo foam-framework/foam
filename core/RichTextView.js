@@ -274,6 +274,11 @@ var RichTextView = FOAM({
 
       // Update the value directly because modifying the DOM programatically
       // doesn't fire an update event.
+      this.updateValue();
+    },
+
+    // Force updating the value after mutating the DOM directly.
+    updateValue: function() {
       this.value.set(this.document.body.innerHTML);
     },
 
@@ -333,6 +338,7 @@ var RichTextView = FOAM({
                 } else {
                   blob.parent.removeChild(blob);
                 }
+                self.updateValue();
               });
             } else if ( node.src.startsWith('data:') ) {
               var type = node.src.substring(5, node.src.indexOf(';'));
