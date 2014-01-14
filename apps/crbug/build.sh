@@ -27,6 +27,7 @@ cat \
   ../../core/mm5Misc.js \
   ../../core/mm6Protobuf.js \
   ../../core/view.js \
+  ../../core/cview.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
@@ -38,12 +39,12 @@ cat \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
-  ../../core/StackView.js \
   ../../core/DAOController.js \
   ../../core/ThreePaneController.js \
   ../../core/experimental/protobufparser.js \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
+  ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   > "$BUILD_DIR/foam.js"
 
