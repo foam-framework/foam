@@ -1,38 +1,24 @@
 <html>
  <head>
-  <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
-  <link rel="stylesheet" type="text/css" href="crbug.css" />
   <script>var FOAM_BOOT_DIR="../../core/";</script>
   <script language="javascript" src="../../core/bootFOAM.js"></script>
   <script language="javascript" src="../../core/SyncManager.js"></script>
   <script language="javascript" src="ImportedModels.js"></script>
   <script language="javascript" src="Models.js"></script>
+  <script language="javascript" src="CIssueTileView.js"></script>
   <script language="javascript" src="DAO.js"></script>
   <script language="javascript" src="Storage.js"></script>
-  <script language="javascript" src="CIssueTileView.js"></script>
   <script language="javascript" src="View.js"></script>
   <script language="javascript" src="CIssueQueryParser.js"></script>
-  <title>Chromium Issues</title>
+  <script language="javascript" src="Browser.js"></script>
  </head>
  <body>
-<table>
-  <tr>
-  <td>
-    <img id="logo" src="images/logo.png">
-  </td>
-  <td>
-    <span class="title">cr<sup><font size=-0.5>2</font></sup>bug</span>
-    <div class="subtitle">Chromium issue tracker in Chromium.</div>
-  </td>
-  <td width=150></td>
-  <td valign="bottom">
-  <div class="searchBar">
-  Search <span id="searchChoice"></span> for <span id="searchField"></span>
-  </div>
-  </td>
-  </tr>
-</table>
-<hr color="#9BC0FA">
-<script language="javascript" src="main.js"></script>
+   <script language="javascript">
+     $addWindow(window);
+     var b = CIssueBrowser.create({window: window});
+     window.browser = b;
+     document.body.innerHTML = b.toHTML();
+     b.initHTML();
+   </script>
  </body>
 </html>
