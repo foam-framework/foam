@@ -14,11 +14,14 @@
  </head>
  <body>
    <script language="javascript">
+     // TODO: fix async template loading and remove this timeout
+     setTimeout(function() {
      $addWindow(window);
      var b = CIssueBrowser.create({window: window});
      window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
+     }, 400);
    </script>
  </body>
 </html>
