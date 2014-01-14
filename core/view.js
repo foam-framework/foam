@@ -2000,11 +2000,19 @@ var TableView = FOAM({
        
        name: 'onEditColumns',
        code: function(evt) {
-         console.log('onEditColumns');
          var v = EditColumnsView.create({
+           model:               this.model,
            properties:          this.properties,
            availableProperties: this.model.properties
          });
+
+         v.addPropertyListener('properties', function() {
+           v.close();
+           this.properties = v.properties;
+           v.removePropertyListener('properties', arguments.callee);
+           this.repaint();
+         }.bind(this));
+
          this.$.insertAdjacentHTML('beforebegin', v.toHTML());
          v.initHTML();
        }
@@ -2115,7 +2123,7 @@ var TableView = FOAM({
             props.push(prop);
         }
       if ( this.editColumnsEnabled ) {
-        str.push('<th width=15 id="' + this.registerCallback('click', this.onEditColumns) + '">...</th>');
+        str.push('<th width=15 id="' + this.on('click', this.onEditColumns) + '">...</th>');
       }
         str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
         if ( this.objs )
@@ -2228,6 +2236,7 @@ var TableView = FOAM({
   }
 });
 
+
 var EditColumnsView = FOAM({
 
   model_: 'Model',
@@ -2237,6 +2246,10 @@ var EditColumnsView = FOAM({
   extendsModel: 'AbstractView',
   
   properties: [
+    {
+      name:  'model',
+      type: 'Model'
+    },
     {
       model_: StringArrayProperty,
       name:  'properties'
@@ -2253,7 +2266,7 @@ var EditColumnsView = FOAM({
        
        name: 'onAddColumn',
        code: function(prop) {
-         console.log('onAddColumn', prop);
+         this.properties = this.properties.concat([prop]);
        }
      },
      {
@@ -2261,7 +2274,7 @@ var EditColumnsView = FOAM({
        
        name: 'onRemoveColumn',
        code: function(prop) {
-         console.log('onRemoveColumn', prop);
+         this.properties = this.properties.removeF({f: function(o) { return prop == o; }});
        }
      }
 
@@ -2269,20 +2282,22 @@ var EditColumnsView = FOAM({
 
   methods: {
     toHTML: function() {
-      var s = '<span id="' + this.getID() + '">'
+      var s = '<span id="' + this.getID() + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
       
       s += 'Show columns:';
       s += '<table>';
 
+      // Currently Selected Properties 
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var p = this.properties[i];
-        s += '<tr><td id="' + this.registerCallback('click', this.onRemoveColumn.bind(this, p)) + '">&nbsp;&#x2666;&nbsp;' + p + '</td></tr>';
+        var p = this.model.getProperty(this.properties[i]);
+        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
       }
 
+      // Available but not Selected Properties
       for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
         var p = this.availableProperties[i];
-        if ( this.properties.indexOf(p.label) == -1 ) {
-          s += '<tr><td id="' + this.registerCallback('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
+        if ( this.properties.indexOf(p.name) == -1 ) {
+          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
         }
       }
 
@@ -2290,6 +2305,9 @@ var EditColumnsView = FOAM({
       s += '</span>';
       
       return s;
+    },
+    close: function() {
+      this.$.outerHTML = '';
     }
   }
 });

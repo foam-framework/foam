@@ -646,3 +646,15 @@ div.gridViewControl select {
 .actionButton-back, .actionButton-forth { border: none; background: transparent; padding: 4px; }
 .actionButton-back img { width: 32px; }
 .actionButton-forth img { width: 32px; }
+
+.editColumnView {
+  font-size: 80%;
+  font-weight: normal;
+}
+.editColumnView td {
+  color: #0000cc;
+  font-size: 80%;
+  font-weight: normal;
+  padding: 1px;
+  text-align2: left;
+}
