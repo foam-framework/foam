@@ -27,7 +27,7 @@ import java.util.PriorityQueue;
 public class IterableSelectHelper
 {
 
-  protected static <T> Iterable<T> decorate(Iterable<T> ts, Predicate p, Comparator<T> c, final long skip, final long limit) {
+  public static <T> Iterable<T> decorate(Iterable<T> ts, Predicate p, Comparator<T> c, final long skip, final long limit) {
     if (limit == 0) {
       return Collections.<T>emptyList();
     }
