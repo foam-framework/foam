@@ -1521,17 +1521,17 @@ var DetailView = Model.create({
     },
 
     /** Create the sub-view from property info. **/
-    createView: function(prop) {
+    createView: function(prop, opt_args) {
       var proto =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
         prop.view ;
 
-      var view = proto.create(prop);
+      var view = proto.create(prop).copyFrom(opt_args);
 
-      try {
+      if ( this.get() ) {
         view.setValue(this.get().propertyValue(prop.name));
-      } catch (x) { }
+      }
 
       view.prop = prop;
       view.toString = function () { return this.prop.name + "View"; };
@@ -1683,13 +1683,13 @@ var DetailView2 = Model.create({
     },
 
     /** Create the sub-view from property info. **/
-    createView: function(prop) {
+    createView: function(prop, opt_args) {
       var view =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
         prop.view ;
 
-      return view.create(prop);
+      return view.create(prop).copyFrom(opt_args);
     },
 
     updateHTML: function() {
@@ -1711,9 +1711,8 @@ var DetailView2 = Model.create({
 
         var view = this.createView(prop);
 
-        try {
+        if ( this.get() ) {
           view.setValue(this.get().propertyValue(prop.name));
-        } catch (x) {
         }
 
         view.prop = prop;

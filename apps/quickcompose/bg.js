@@ -1,4 +1,5 @@
 var openWindow;
+var launched = false;
 
 var WIDTH = 335;
 var HEIGHT = 478;
@@ -24,6 +25,10 @@ function launchComposer() {
     openWindow.restore();
     return;
   }
+
+  if ( launched ) return;
+  launched = true;
+
   req(function() {
     var screen = window.screen;
     chrome.app.window.create(
@@ -66,6 +71,7 @@ function launchComposer() {
         w.onClosed.addListener(function() {
           $removeWindow(self.dialog);
           openWindow = undefined;
+          launched = false;
         });
       });
   });

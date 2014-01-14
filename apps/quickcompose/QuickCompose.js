@@ -145,13 +145,25 @@ var QuickEMailView = Model.create({
 
   properties: [
     {
+      name: 'toView',
+      valueFactory: function() {
+        return this.createView(
+          QuickEMail.TO,
+          { placeholder: QuickEMail.TO.label });
+      }
+    },
+    {
+      name: 'subjectView',
+      valueFactory: function() {
+        return this.createView(
+          QuickEMail.SUBJECT,
+          { placeholder: QuickEMail.SUBJECT.label, onKeyMode: true });
+      }
+    },
+    {
       name: 'bodyView',
       valueFactory: function() {
-        var v = this.createView(QuickEMail.BODY);
-
-        v.height = 100;
-
-        return v;
+        return this.createView(QuickEMail.BODY, { height: 100, onKeyMode: true });
       }
     }
   ],
@@ -160,8 +172,8 @@ var QuickEMailView = Model.create({
     {
       name: "toHTML",
       template:
-        '<% var v = this.createView(QuickEMail.TO); v.placeholder = QuickEMail.TO.label; out(v.toHTML()); %>' +
-        '<%     v = this.createView(QuickEMail.SUBJECT); v.placeholder = QuickEMail.SUBJECT.label; out(v.toHTML()); %>' +
+        '<%= this.toView.toHTML() %>' +
+        '<%= this.subjectView.toHTML() %>' +
         '<%= this.bodyView.toHTML() %>' +
         '<%= this.createView(QuickEMail.ATTACHMENTS).toHTML() %>'
     }
@@ -260,6 +272,9 @@ var QuickCompose = FOAM({
       this.discardButton.initHTML();
       this.closeButton.initHTML();
       this.minimizeButton.initHTML();
+
+      this.closeButton.$.tabIndex = -1;
+      this.minimizeButton.$.tabIndex = -1;
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
 
