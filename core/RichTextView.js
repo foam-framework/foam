@@ -120,8 +120,10 @@ var LinkView = Model.create({
       model_: 'Method',
       name: 'keyUp',
       code: function(e) {
-        console.log(e);
-        if ( e.keyCode == 27 ) this.close();
+        if ( e.keyCode == 27 /* Esc */ ) {
+          e.stopPropagation();
+          this.close();
+        }
       }
     }
   ],

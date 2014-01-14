@@ -2307,7 +2307,7 @@ var EditColumnsView = FOAM({
       return s;
     },
     close: function() {
-      this.$.outerHTML = '';
+      this.$.remove();
     }
   }
 });
