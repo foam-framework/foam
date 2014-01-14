@@ -378,13 +378,14 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
         name: 'keyUp',
-        code: function(e) { if ( e.keyCode == 27 ) this.minimize(); }
+        code: function(e) { if ( e.keyCode == 27 /* Esc */ ) this.minimize(); }
       },
       {
         model_: 'Method',
         name: 'keyPress',
         code: function(e) {
           if ( e.ctrlKey && e.keyCode == 10 /* Ctrl-Enter */ ) this.send();
+          if ( e.ctrlKey && e.keyCode == 11 /* Ctrl-K     */ ) RichTextView.LINK.action.call(this.view.bodyView);
         }
       }
    ],
