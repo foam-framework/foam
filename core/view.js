@@ -3366,10 +3366,23 @@ var ArrayTileView = FOAM({
       this.SUPER();
       this.lastView.initHTML();
       this.paint();
-    }
+      this.$.ownerDocument.defaultView.addEventListener('resize', this.layout);
+    },
   },
 
   listeners: [
+    {
+      name: 'layout',
+      isAnimated: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        var last = this.$.lastChild;
+        last.style.width = '100px';
+        last.style.width = 100 + last.parentNode.clientWidth -
+          (last.offsetWidth + last.offsetLeft) - 4 /* margin */;
+        this.painting = false;
+      }
+    },
     {
       name: 'paint',
       isAnimated: true,
@@ -3400,12 +3413,7 @@ var ArrayTileView = FOAM({
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
           self.children.forEach(
             function(c) { c.initHTML(); });
-
-          var last = self.$.lastChild;
-          last.style.width = '100px';
-          last.style.width = 100 + last.parentNode.clientWidth -
-            (last.offsetWidth + last.offsetLeft) - 4 /* margin */;
-          self.painting = false;
+          self.layout();
         };
 
         if ( value.length == 0 ) {
