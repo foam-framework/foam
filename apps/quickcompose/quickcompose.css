@@ -1,3 +1,13 @@
+input:focus {
+  outline: none;
+}
+
+button:focus {
+  outline: 1px solid #4d90fe;
+}
+
+img:focus { border: 5px solid orange; }
+
 iframe {
   border: none;
   width: 100%;
