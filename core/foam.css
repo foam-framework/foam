@@ -328,11 +328,6 @@ option[selected]{
   background-color:#dfdfdf;
 }
 
-.actionButton:active {
-  position:relative;
-  top:1px;
-}
-
 .scrollSpacer {
   height:52;
 }
