@@ -257,7 +257,7 @@ console.log(i, k, v);
     return cln;
   },
 
-
+  /** @return this **/
   copyFrom: function(src) {
     // Faster and doesn't copy default values from modelled objects.
     // Doesn't work when src is modelled and has default values
