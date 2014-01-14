@@ -165,6 +165,11 @@ var CIssueBrowser = Model.create({
     /** Open a preview window when the user hovers over an issue id. **/
     preview: function(e, id) {
       console.log('preview', e, id);
+      if ( ! id ) return;
+      var src = this.url + '/issues/peek?id=' + id;
+      debugger;
+      var v = '<webview sandbox="allow-same-origin" style="position:absolute;height:500px;width:500px" src="' + src + '"></webview>';
+      this.view.$.insertAdjacentHTML('beforebegin', v);
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
