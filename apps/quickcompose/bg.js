@@ -56,7 +56,7 @@ function launchComposer() {
           dialog.browser = window.browser = b; // for debugging
           $addWindow(dialog);
           console.time('QuickCompose::toHTML');
-          dialog.document.body.innerHTML = b.toHTML();
+          dialog.document.firstChild.innerHTML = b.toHTML();
           console.timeEnd('QuickCompose::toHTML');
           b.initHTML();
           w.setBounds({
