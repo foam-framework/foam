@@ -153,7 +153,7 @@ var ModelProto = {
         }
 
         // todo: move this somewhere better
-        var createListenerTrampoline = function(cls, name, fn, merged, animate) {
+        var createListenerTrampoline = function(cls, name, fn, isMerged, isAnimated) {
            // bind a trampoline to the function which
            // re-binds a bound version of the function
            // when first called
@@ -162,11 +162,11 @@ var ModelProto = {
            Object.defineProperty(cls, name, {
              get: function () {
                var l = fn.bind(this);
-               if (animate)
+               if (isAnimated)
                  l = EventService.animate(l);
-               else if (merged) {
-                 var merge = (merged === true) ? undefined : merged;
-                 l = EventService.merged(l, merge);
+               else if (isMerged) {
+                 l = EventService.merged(l,
+                   (isMerged === true) ? undefined : isMerged);
                }
 
                Object.defineProperty(this, name, { value: l});
@@ -181,7 +181,7 @@ var ModelProto = {
         if ( Array.isArray(this.listeners) ) {
           for ( var i = 0 ; i < this.listeners.length ; i++ ) {
              var l = this.listeners[i];
-             createListenerTrampoline(cls, l.name, l.code, l.merged, l.animate);
+             createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isAnimated);
           }
         } else if ( this.listeners )
 //          this.listeners.forEach(function(l, key) {

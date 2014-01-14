@@ -156,7 +156,7 @@ var CompositeServiceView = FOAM({
   listeners: [
     {
       name: 'renderChoices',
-//      animate: true,
+//      isAnimated: true,
       code: function() {
         if ( ! this.$ ) return;
 
@@ -252,7 +252,7 @@ var CompositeServiceSummaryView = FOAM({
     },
     {
       name: 'render',
-//      animate: true,
+//      isAnimated: true,
       code: function() {
         if ( ! this.$ ) return;
 

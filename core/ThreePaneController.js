@@ -299,7 +299,7 @@ var ThreePaneController = FOAM({
     },
     {
       name: 'layout',
-      merged: true,
+      isMerged: true,
       code: function() {
         if ( !this.$ ) return;
 
@@ -348,7 +348,7 @@ var ThreePaneController = FOAM({
     },
     {
       name: 'onDaoUpdate',
-      merged: 100,
+      isMerged: 100,
       code: function() {
          var self = this;
          if ( this.table.view.selection.get() )
@@ -364,7 +364,7 @@ var ThreePaneController = FOAM({
     },
     {
       name: 'updateCount',
-      merged: true,
+      isMerged: true,
       code: function() {
         var self = this;
         this.dao.select(COUNT())(function(c) {

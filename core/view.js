@@ -3372,7 +3372,7 @@ var ArrayTileView = FOAM({
   listeners: [
     {
       name: 'paint',
-      animate: true,
+      isAnimated: true,
       code: function() {
         // If we're currently painting, don't actually paint now,
         // queue up another paint on the next animation frame.
@@ -3561,7 +3561,7 @@ var AutocompleteListView = FOAM({
   listeners: [
     {
       name: 'paint',
-      animate: true,
+      isAnimated: true,
       code: function() {
         // TODO Determine if its worth double buffering the dom.
         var objs = [];

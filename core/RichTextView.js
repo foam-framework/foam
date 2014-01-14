@@ -344,6 +344,9 @@ var RichTextView = FOAM({
               blob.name = 'dropped image';
               newNode.id = self.addAttachment(blob);
               newNode.src = URL.createObjectURL(blob);
+            } else {
+              // Unsupported image scheme dropped in.
+              return null;
             }
 
             return newNode;
@@ -377,12 +380,13 @@ var RichTextView = FOAM({
             } else {
               newNode = document.createTextNode('');
             }
-            parent.appendChild(newNode);
+            break;
           }
         }
         if ( i === allowedElements.length ) {
           newNode = document.createElement('div');
         }
+        if ( newNode ) parent.appendChild(newNode);
         for ( j = 0; j < node.children.length; j++ ) {
           copyNodes(newNode, node.children[j]);
         }

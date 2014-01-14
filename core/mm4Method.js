@@ -313,7 +313,17 @@ Method = FOAM({
            valueFactory: function() { return []; },
            defaultValue: [],
            help: 'Method arguments.'
-       }
+       },
+       {
+           name: 'isMerged',
+           help: 'As a listener, should this be merged?'
+       },
+       {
+           model_: 'BooleanProperty',
+           name: 'isAnimated',
+           help: 'As a listener, should this be animated?',
+           defaultValue: false
+       },
    ],
    templates:[
      {
