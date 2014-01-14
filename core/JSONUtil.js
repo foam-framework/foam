@@ -68,9 +68,10 @@ var JSONUtil = {
       if ( obj instanceof Function ) return obj;
 
       if ( obj instanceof Date ) return obj;
-
+     
       if ( obj instanceof Object ) {
-         for ( var key in obj ) {
+         var keys = Object.keys(obj);
+         for ( var j = 0, key; key = keys[j]; j++ ) {
             if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
          }
 
