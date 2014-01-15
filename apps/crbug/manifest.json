@@ -28,6 +28,7 @@
               "Storage.js",
               "View.js",
               "Browser.js",
+              "PreviewView.js",
               "CIssueQueryParser.js",
               "bg.js"
             ]

@@ -262,6 +262,10 @@ var AbstractView = FOAM({
 
          delete this['callbacks_'];
        }
+     },
+
+     close: function() {
+       this.$ && this.$.remove();
      }
 
    }
@@ -2305,9 +2309,6 @@ var EditColumnsView = FOAM({
       s += '</span>';
       
       return s;
-    },
-    close: function() {
-      this.$.remove();
     }
   }
 });

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -166,9 +166,10 @@ var CIssueBrowser = Model.create({
     preview: function(e, id) {
       console.log('preview', e, id);
       if ( ! id ) return;
-      var src = this.url + '/issues/peek?id=' + id;
-      var v = '<webview sandbox2="allow-same-origin" class="CIssuePreview" style="position:absolute;height:500px;width:500px;background:red;" src="' + src + '"></webview>';
-      this.view.$.insertAdjacentHTML('beforebegin', v);
+      if ( this.currentPreview ) this.currentPreview.close();
+      this.currentPreview = PreviewView.create({url: this.url, id: id});
+      this.view.$.insertAdjacentHTML('beforebegin', this.currentPreview.toHTML());
+      this.currentPreview.$.style.left = e.x + 20;
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
