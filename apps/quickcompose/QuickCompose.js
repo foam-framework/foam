@@ -293,6 +293,8 @@ var QuickCompose = FOAM({
 
       this.window.document.addEventListener('keypress', this.keyPress);
       this.view.bodyView.$.contentDocument.addEventListener('keypress', this.keyPress);
+      
+      this.view.toView.inputView.$.focus();
     }
   },
 
