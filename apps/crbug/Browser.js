@@ -167,9 +167,14 @@ var CIssueBrowser = Model.create({
       console.log('preview', e, id);
       if ( ! id ) return;
       if ( this.currentPreview ) this.currentPreview.close();
-      this.currentPreview = PreviewView.create({url: this.url, id: id});
-      this.view.$.insertAdjacentHTML('beforebegin', this.currentPreview.toHTML());
-      this.currentPreview.$.style.left = e.x + 20;
+
+      var v = this.currentPreview = PreviewView.create({url: this.url, id: id});
+      this.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
+      v.$.style.left = e.x + 15;
+      var viewHeight = v.$.style.height.replace('px','');
+      var screenHeight = this.view.$.ownerDocument.defaultView.innerHeight;
+      var top = e.y - viewHeight/2;
+      v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top)); 
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
