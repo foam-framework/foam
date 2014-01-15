@@ -165,12 +165,12 @@ var CIssueBrowser = Model.create({
     /** Open a preview window when the user hovers over an issue id. **/
     preview: function(e, id) {
       console.log('preview', e, id);
-      if ( ! id ) return;
       if ( this.currentPreview ) this.currentPreview.close();
+      if ( ! id ) return;
 
       var v = this.currentPreview = PreviewView.create({url: this.url, id: id});
       this.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
-      v.$.style.left = e.x + 15;
+      v.$.style.left = e.x + 20;
       var viewHeight = v.$.style.height.replace('px','');
       var screenHeight = this.view.$.ownerDocument.defaultView.innerHeight;
       var top = e.y - viewHeight/2;
