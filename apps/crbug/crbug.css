@@ -98,3 +98,7 @@ body { overflow: hidden; }
   margin-right: 5px;
   font-weight: normal;
 }
+
+.CIssuePreview {
+    border: 2px solid black;
+}

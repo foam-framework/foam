@@ -4,12 +4,13 @@
     "manifest_version": 2,
 
     "permissions": [
-      "storage",
       "<all_urls>",
-      "https://*/",
       "http://*/",
+      "https://*/",
       "identity",
-      "unlimitedStorage"
+      "storage",
+      "unlimitedStorage",
+      "webview"
     ],
 
     "icons": {

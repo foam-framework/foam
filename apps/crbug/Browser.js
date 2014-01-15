@@ -48,7 +48,7 @@ var CIssueBrowser = Model.create({
     },
     {
       name: 'view',
-      valueFactory: function() { return createView(this.rowSelection); }
+      valueFactory: function() { return createView(this.rowSelection, this); }
     },
     {
       name: 'countField',
@@ -167,8 +167,7 @@ var CIssueBrowser = Model.create({
       console.log('preview', e, id);
       if ( ! id ) return;
       var src = this.url + '/issues/peek?id=' + id;
-      debugger;
-      var v = '<webview sandbox="allow-same-origin" style="position:absolute;height:500px;width:500px" src="' + src + '"></webview>';
+      var v = '<webview sandbox2="allow-same-origin" class="CIssuePreview" style="position:absolute;height:500px;width:500px;background:red;" src="' + src + '"></webview>';
       this.view.$.insertAdjacentHTML('beforebegin', v);
     },
 
