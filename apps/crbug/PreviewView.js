@@ -32,7 +32,7 @@ var PreviewView = Model.create({
   methods: {
     toHTML: function() {
       var src = this.url + '/issues/peek?id=' + this.id;
-      return '<webview id="' + this.getID() + '" class="CIssuePreview" style="position:absolute;height:500px;width:500px;" src="' + src + '"></webview>';
+      return '<webview id="' + this.getID() + '" class="CIssuePreview" style="position:absolute;height:375px;width:875px;" src="' + src + '"></webview>';
     }
   }
 
