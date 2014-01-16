@@ -21,12 +21,8 @@ var PreviewView = Model.create({
   name: 'PreviewView',
 
   properties: [
-    {
-      name: 'id'
-    },
-    {
-      name: 'url'
-    }
+    { name: 'id'  },
+    { name: 'url' }
   ],
 
   methods: {
