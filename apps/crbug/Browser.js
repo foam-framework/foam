@@ -20,27 +20,35 @@ var Browser = Model.create({
 
   properties: [
     {
+      name: 'project'
+    },
+    {
+      name: 'projectName',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.projectName; }
+    },
+    {
+      name: 'url',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.url; }
+    },
+    {
+      name: 'IssueDAO',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.IssueDAO; }
+    },
+    {
+      name: 'syncManager',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.syncManager; }
+    },
+
+    {
       name: 'rowSelection',
       valueFactory: function() { return SimpleValue.create(); }
     },
     {
       name: 'window'
-    },
-    {
-      name: 'baseURL',
-      defaultValue: 'https://code.google.com/p/'
-    },
-    {
-      name: 'projectName',
-      defaultValue: 'chromium'
-    },
-    {
-      name: 'IssueDAO',
-      defaultValueFn: function() { return IssueDAO; }
-    },
-    {
-      name: 'url',
-      defaultValueFn: function() { return this.baseURL + this.projectName; }
     },
     {
       name: 'timer',
@@ -58,17 +66,6 @@ var Browser = Model.create({
           name: 'count',
           mode: 'read-only',
           displayWidth: 40
-        });
-      }
-    },
-    {
-      name: 'syncManager',
-      valueFactory: function() {
-        return SyncManager.create({
-          srcDAO: IssueNetworkDAO,
-          dstDAO: IssueDAO,
-          lastModified: new Date(2011,01,01),
-          modifiedProperty: CIssue.UPDATED
         });
       }
     },
@@ -118,14 +115,8 @@ var Browser = Model.create({
   ],
 
   methods: {
-    /*
-    init: function() {
-      this.SUPER();
-    },
-    */
-
     initHTML: function() {
-      window.addEventListener('resize', this.layout, false);
+      this.window.addEventListener('resize', this.layout, false);
 
       // TODO: add these as part of the Template
       this.searchChoice.insertInElement('searchChoice');
@@ -147,7 +138,7 @@ var Browser = Model.create({
       }.bind(this));
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-        var url = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
+        var url = this.url + '/issues/detail?id=' + issue.id;
         this.openURL(url);
       }.bind(this));
 
@@ -185,8 +176,7 @@ var Browser = Model.create({
 
   templates: [
     {
-      name: "toHTML",
-      description: ""
+      name: "toHTML"
     }
   ]
 });

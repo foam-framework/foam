@@ -47,35 +47,6 @@ var IssueRestDAO = FOAM({
 });
 
 
-var IssueNetworkDAO = IssueRestDAO.create({
-// TODO: make this configurable
-  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/chromium/issues',
-//  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/foam-framework/issues',
-  model: CIssue
-});
-
-// IssueNetworkDAO = IssueNetworkDAO.limit(10);
-
-
-var IssueCommentNetworkDAO = RestDAO.create({
-  url:'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/chromium/issues/',
-  model: IssueComment
-});
-
-IssueCommentNetworkDAO.buildURL = function(options) {
-  return this.url + options.query.arg2.f() + '/comments';
-};
-IssueCommentNetworkDAO.jsonToObj = function(json) {
-  if ( json.author ) json.author = json.author.name;
-
-  return this.model.create(json);
-};
-
-
-// Usage:
-
-var FIVE_MINS = 10 * 60 * 1000;
-
 /*
 IssueNetworkDAO
   .where(GT(CIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))

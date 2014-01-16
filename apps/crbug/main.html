@@ -7,17 +7,19 @@
   <script language="javascript" src="Models.js"></script>
   <script language="javascript" src="CIssueTileView.js"></script>
   <script language="javascript" src="DAO.js"></script>
-  <script language="javascript" src="Storage.js"></script>
   <script language="javascript" src="View.js"></script>
   <script language="javascript" src="CIssueQueryParser.js"></script>
+  <script language="javascript" src="Project.js"></script>
   <script language="javascript" src="Browser.js"></script>
  </head>
  <body>
    <script language="javascript">
+     var p = Project.create();
+
      // TODO: fix async template loading and remove this timeout
      setTimeout(function() {
      $addWindow(window);
-     var b = Browser.create({window: window});
+     var b = p.createBrowser(window);
      window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
