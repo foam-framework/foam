@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-var CIssueBrowser = Model.create({
-  name: 'CIssueBrowser',
+var Browser = Model.create({
+  name: 'Browser',
 
   properties: [
     {
@@ -147,8 +147,9 @@ var CIssueBrowser = Model.create({
       }.bind(this));
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-        document.location = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
-      });
+        var url = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
+        this.openURL(url);
+      }.bind(this));
 
       var logo = $('logo');
       logo.onclick = this.syncManager.forceSync.bind(this.syncManager);
@@ -160,6 +161,46 @@ var CIssueBrowser = Model.create({
 
       this.layout();
       this.search(TRUE);
+    },
+
+    preview: function() {},
+
+    /** Filter data with the supplied predicate, or select all data if null. **/
+    search: function(p) {
+      if ( p ) console.log('SEARCH: ', p.toSQL());
+      this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
+      var self = this;
+      apar(
+        this.view.dao.select(COUNT()),
+        this.IssueDAO.select(COUNT()))(function(x, y) {
+          self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
+        }
+      );
+    },
+
+    openURL: function(url) {
+      document.location = url;
+    }
+  },
+
+  templates: [
+    {
+      name: "toHTML",
+      description: ""
+    }
+  ]
+});
+
+
+var ChromeAppBrowser = Model.create({
+  name: 'ChromeAppBrowser',
+
+  extendsModel: 'Browser',
+
+  methods: {
+    openURL: function(url) {
+      console.log('openURL: ', url);
+      window.open(url);
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -175,26 +216,7 @@ var CIssueBrowser = Model.create({
       var screenHeight = this.view.$.ownerDocument.defaultView.innerHeight;
       var top = e.y - viewHeight/2;
       v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top)); 
-    },
-
-    /** Filter data with the supplied predicate, or select all data if null. **/
-    search: function(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL());
-      this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
-      var self = this;
-      apar(
-        this.view.dao.select(COUNT()),
-        this.IssueDAO.select(COUNT()))(function(x, y) {
-          self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
-        }
-      );
     }
-  },
+  }
 
-  templates: [
-    {
-      name: "toHTML",
-      description: ""
-    }
-  ]
 });

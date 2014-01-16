@@ -17,7 +17,7 @@
      // TODO: fix async template loading and remove this timeout
      setTimeout(function() {
      $addWindow(window);
-     var b = CIssueBrowser.create({window: window});
+     var b = Browser.create({window: window});
      window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
