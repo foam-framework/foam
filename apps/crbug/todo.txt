@@ -5,8 +5,6 @@
 - Network DAO
   - improve
 - Update to full Issue Model
-- TableView Column Features
-- Add scrollbar
 - Header + Footer
 - EQ_IC
 

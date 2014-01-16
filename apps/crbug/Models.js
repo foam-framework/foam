@@ -60,10 +60,10 @@ var CIssue = FOAM({
             var id = table.nextID();
 
             table.on('mouseover', function(e) {
-              window.browser.preview(e, value);
+              table.browser.preview(e, value);
             }, id);
             table.on('mouseout',  function() {
-              window.browser.preview(null);
+              table.browser.preview(null);
             }, id);
 
             return '<div id="' + id + '">' + value + '</div>';

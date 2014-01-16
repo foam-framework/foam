@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-var CIssueBrowser = Model.create({
-  name: 'CIssueBrowser',
+var Browser = Model.create({
+  name: 'Browser',
 
   properties: [
     {
@@ -48,7 +48,7 @@ var CIssueBrowser = Model.create({
     },
     {
       name: 'view',
-      valueFactory: function() { return createView(this.rowSelection); }
+      valueFactory: function() { return createView(this.rowSelection, this); }
     },
     {
       name: 'countField',
@@ -147,8 +147,9 @@ var CIssueBrowser = Model.create({
       }.bind(this));
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-        document.location = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
-      });
+        var url = 'https://code.google.com/p/chromium/issues/detail?id=' + issue.id;
+        this.openURL(url);
+      }.bind(this));
 
       var logo = $('logo');
       logo.onclick = this.syncManager.forceSync.bind(this.syncManager);
@@ -162,10 +163,7 @@ var CIssueBrowser = Model.create({
       this.search(TRUE);
     },
 
-    /** Open a preview window when the user hovers over an issue id. **/
-    preview: function(e, id) {
-      console.log('preview', e, id);
-    },
+    preview: function() {},
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
@@ -178,14 +176,47 @@ var CIssueBrowser = Model.create({
           self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
         }
       );
+    },
+
+    openURL: function(url) {
+      document.location = url;
     }
   },
 
   templates: [
     {
       name: "toHTML",
-      description: "",
-      template: "<html>\u000a <head>\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" />\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"../../core/foam.css\" />\u000a  <link rel=\"stylesheet\" type=\"text/css\" href=\"crbug.css\" />\u000a  <title>Chromium Issues</title>\u000a </head>\u000a <body><div id=\"header\">\u000a<table>\u000a  <tr>\u000a  <td>\u000a    <img id=\"logo\" src=\"images/logo.png\">\u000a  </td>\u000a  <td>\u000a    <span class=\"title\">cr<sup><font size=-0.5>2</font></sup>bug</span>\u000a    <div class=\"subtitle\">Chromium issue tracker in Chromium.</div>\u000a  </td>\u000a  <td width=150></td>\u000a  <td valign=\"bottom\">\u000a  <div class=\"searchBar\">\u000a  Search <span id=\"searchChoice\"></span> for <span id=\"searchField\"></span> <span id=\"countField\"></span>\u000a  <img id=settings src=\"images/settings.svg\"></div>\u000a  </td>\u000a  </tr>\u000a</table>\u000a<hr color=\"#9BC0FA\">\u000a</div><span id=\"view\"></span></body>\u000a</html>"
+      description: ""
     }
   ]
+});
+
+
+var ChromeAppBrowser = Model.create({
+  name: 'ChromeAppBrowser',
+
+  extendsModel: 'Browser',
+
+  methods: {
+    openURL: function(url) {
+      console.log('openURL: ', url);
+      window.open(url);
+    },
+
+    /** Open a preview window when the user hovers over an issue id. **/
+    preview: function(e, id) {
+      console.log('preview', e, id);
+      if ( this.currentPreview ) this.currentPreview.close();
+      if ( ! id ) return;
+
+      var v = this.currentPreview = PreviewView.create({url: this.url, id: id});
+      this.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
+      v.$.style.left = e.x + 20;
+      var viewHeight = v.$.style.height.replace('px','');
+      var screenHeight = this.view.$.ownerDocument.defaultView.innerHeight;
+      var top = e.y - viewHeight/2;
+      v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top)); 
+    }
+  }
+
 });

@@ -5,10 +5,11 @@ function launchController() {
       apar(
         arequire('GridView'),
         arequire('CIssueTileView'),
-        arequire('CIssueBrowser')
-      )(function (_, _, CIssueBrowser) {
-        var b = CIssueBrowser.create({window: window});
+        arequire('Browser')
+      )(function (_, _, Browser) {
+        var b = ChromeAppBrowser.create({window: window});
         window.browser = b; // for debugging
+        w.browser = b;
         $addWindow(window);
         window.document.body.innerHTML = b.toHTML();
         b.initHTML();

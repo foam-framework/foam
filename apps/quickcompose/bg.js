@@ -66,7 +66,6 @@ function launchComposer() {
             height: HEIGHT
           });
           w.restore();
-          w.focus();
         };
         w.onClosed.addListener(function() {
           $removeWindow(self.dialog);

@@ -107,14 +107,13 @@ var ModelProto = {
         }
 
         // templates
-//        this.templates && this.templates.forEach(function(t) { addMethod(t.name, TemplateUtil.compile(t.template)); });
-        // Workaround for crbug.com/258522
         this.templates && Object_forEach(this.templates, function(t) {
-          if ( t.template ) {
-            addMethod(t.name, TemplateUtil.compile(t.template));
-          } else {
+//          if ( t.template ) {
+//            addMethod(t.name, TemplateUtil.compile(t.template));
+//          } else {
+            // Why not just always lazyCompile?  If I figure it out, add a comment and uncomment the 'if'.
             addMethod(t.name, TemplateUtil.lazyCompile(t));
-          }
+//          }
         });
 
         // mix-in mixins
@@ -199,7 +198,7 @@ var ModelProto = {
 
         // copy parent model's properties and actions into this model
         if ( extendsModel ) {
-           for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
+           for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
              var p = extendsModel.properties[i];
              if ( ! ( this.getProperty && this.getProperty(p.name) ) ) this.properties.unshift(p);
            }

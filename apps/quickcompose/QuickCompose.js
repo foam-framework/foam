@@ -293,6 +293,8 @@ var QuickCompose = FOAM({
 
       this.window.document.addEventListener('keypress', this.keyPress);
       this.view.bodyView.$.contentDocument.addEventListener('keypress', this.keyPress);
+      
+      this.view.toView.inputView.$.focus();
     }
   },
 
@@ -302,7 +304,6 @@ var QuickCompose = FOAM({
        name:  'send',
        help:  'Send (Ctrl-Enter)',
 
-       // TODO: Don't enable send unless to and subject or body set
        isEnabled: function(obj, ret) {
          var email = obj.email;
          Events.dynamic(function() { email.to; email.subject; email.body; }, function() {

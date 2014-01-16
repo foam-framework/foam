@@ -84,7 +84,7 @@ var priColorMap = {
 };
 
 
-function createView(rowSelection) {
+function createView(rowSelection, browser) {
   return AlternateView.create({
     dao: IssueDAO,
     views: [
@@ -94,6 +94,10 @@ function createView(rowSelection) {
           return Model.create({
              extendsModel: 'ScrollBorder',
              methods: {
+               init: function() {
+                 this.SUPER();
+                 this.view.browser = browser;
+               },
                toHTML: function() {
                  return '<div class="CIssueTableHeader"></div>' + this.SUPER();
                }
