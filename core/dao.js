@@ -2783,6 +2783,26 @@ var BlobSerializeDAO = FOAM({
   }
 });
 
+var NullDAO = FOAM({
+    model_: 'Model',
+    name: 'NullDAO',
+    help: 'A DAO that stores nothing and does nothing.',
+    methods: {
+        put: function(obj, sink) { sink && sink.put && sink.put(obj); },
+        remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
+        select: function(sink) {
+            sink && sink.eof && sink.eof();
+            return aconstant(sink);
+        },
+        find: function(q, sink) { sink && sink.error && sink.error('find', q); },
+        listen: function() {},
+        removeAll: function() {},
+        unlisten: function() {},
+        pipe: function() {},
+    }
+});
+
+
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };
