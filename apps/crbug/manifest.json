@@ -1,39 +1,48 @@
 {
-    "name": "Cr2Bug",
-    "version": "1.0",
-    "manifest_version": 2,
+  "name": "Cr2Bug",
+  "version": "1.0",
+  "manifest_version": 2,
 
-    "permissions": [
-      "<all_urls>",
-      "http://*/",
-      "https://*/",
-      "identity",
-      "storage",
-      "unlimitedStorage",
-      "webview"
-    ],
+  "permissions": [
+    "<all_urls>",
+    "http://*/",
+    "https://*/",
+    "identity",
+    "storage",
+    "unlimitedStorage",
+    "webview"
+  ],
 
-    "icons": {
-      "64": "images/logo.png"
-    },
+  "icons": {
+    "64": "images/logo.png"
+  },
 
-    "app": {
-        "background": {
-            "scripts": [
-              "foam.js",
-              "ImportedModels.js",
-              "Models.js",
-              "CIssueTileView.js",
-              "DAO.js",
-              "Storage.js",
-              "View.js",
-              "Browser.js",
-              "PreviewView.js",
-              "CIssueQueryParser.js",
-              "bg.js"
-            ]
-        }
-    },
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        "ImportedModels.js",
+        "Models.js",
+        "CIssueTileView.js",
+        "DAO.js",
+        "Storage.js",
+        "View.js",
+        "Browser.js",
+        "PreviewView.js",
+        "CIssueQueryParser.js",
+        "bg.js"
+      ]
+    }
+  },
+
+  "url_handlers": {
+    "google_code_issues": {
+      "matches": [
+        "https://code.google.com/p/*/issues"
+      ],
+      "title": "Google Code Issues"
+    }
+  },
 
   "oauth2": {
     "client_id": "945476427475-regc9kqo9qgtqbmoj5m69qdut8qc1a3s.apps.googleusercontent.com",
