@@ -198,7 +198,7 @@ var ModelProto = {
 
         // copy parent model's properties and actions into this model
         if ( extendsModel ) {
-           for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
+           for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
              var p = extendsModel.properties[i];
              if ( ! ( this.getProperty && this.getProperty(p.name) ) ) this.properties.unshift(p);
            }
