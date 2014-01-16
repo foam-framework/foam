@@ -338,7 +338,7 @@ var QuickCompose = FOAM({
        model_: 'Action',
        name:  'close',
        label: '',
-       iconUrl: 'images/x_8px.png',
+       iconUrl: 'images/window_control_icon_flat_close.png',
        // help:  'Discard & Close',
 
        action: function() {
@@ -349,7 +349,7 @@ var QuickCompose = FOAM({
        model_: 'Action',
        name:  'minimize',
        label: '',
-       iconUrl: 'images/minimize.png',
+       iconUrl: 'images/window_control_icon_flat_minimize.png',
        // help:  'Minimize',
 
        action: function() {
@@ -398,7 +398,7 @@ var QuickCompose = FOAM({
     },
     {
       name: "header",
-      template: "<table width=100% class=header><tr><td>Quick Message</td><td align=right><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></td></tr></table>"
+      template: "<div id=\"header\"><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></div>"
     },
     {
       name: "toolbar",
