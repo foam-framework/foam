@@ -4,6 +4,7 @@
     "manifest_version": 2,
 
     "permissions": [
+      "alarms",
       "storage",
       "<all_urls>",
       "https://*/",
