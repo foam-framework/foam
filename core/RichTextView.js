@@ -227,6 +227,7 @@ var RichTextView = FOAM({
         Events.unlink(this.domValue, oldValue);
         Events.link(this.domValue, newValue);
         newValue.addListener(this.maybeShowPlaceholder);
+        newValue.addListener(console.log.bind(console));
       }
     },
     {
@@ -243,12 +244,10 @@ var RichTextView = FOAM({
     {
       model_: 'Method',
       name: 'maybeShowPlaceholder',
-      code: function() { 
+      code: function() {
         var e = $(this.placeholderId);
         if ( e ) {
-          e.style.visibility = this.value ? 'visible' : 'hidden';
-        } else {
-          console.log('***************** missing element');
+          e.style.visibility = this.value.get() == '' ? 'visible' : 'hidden';
         }
       }
     }
