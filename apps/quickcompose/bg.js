@@ -5,7 +5,7 @@ var WIDTH = 335;
 var HEIGHT = 478;
 
 /** Requirements. **/
-var req = amemo(atime('requireModels', aseq(
+var req = amemo(ametric('init', aseq(
   arequire('QuickEMailView'),
   arequire('QuickCompose'),
   arequire('LinkView'),
@@ -31,7 +31,7 @@ function launchComposer() {
   launched = true;
   var loadTimer = metricsSrv.startTiming('Composer', 'Loading');
 
-  req(function() {
+  req(ametric('launch', function(ret) {
     var screen = window.screen;
     var sessionTimer;
 
@@ -73,6 +73,7 @@ function launchComposer() {
           loadTimer.send();
           metricsSrv.sendAppView('Composer');
           sessionTimer = metricsSrv.startTiming('Composer', 'Session');
+          ret();
         };
         w.onClosed.addListener(function() {
           sessionTimer.send();
@@ -81,8 +82,7 @@ function launchComposer() {
           launched = false;
         });
       });
-  });
-  console.timeEnd('LaunchComposer');
+  }));
 }
 
 if ( chrome.app.runtime ) {
