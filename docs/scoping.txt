@@ -4,7 +4,6 @@ They assume that requirements can be fulfilled synchronously, but
 since most JS libraries are asynchronous, this greatly limits their
 options for fulfilling dependency requests.
 
-
 The solution to this problem is to use an asynchronous API for
 requirements acquisition.  This allows for dependencies to be lazily
 loaded from databases or from the network.  This essentially provides
@@ -20,14 +19,12 @@ alteration) of the parent.  However, if a new sub-component has new
 dependencies that were not explicit dependencies of the parent
 component, then the parent component has no means of injecting the
 unknown value.
-
   
 The solution is to use store dependencies in hierarchical context
 objects.  Contexts contain all available exported services and are
 passed down from a component to its sub-components.  This allows a
 sub-component to access dependencies from the Context which were not
 dependencies of the parent.
-
 
 Ex. Suppose that you have an AddressView with a 'state' field which
 uses a 'TextFieldView'.  If some user of this Model wants to replace
@@ -70,7 +67,7 @@ properties: [
   },
   {
     name: 'fromParent',
-    scope: 'system'
+    scope: 'parent'
   },
 
   // A facade for a property actually stored in a child component
@@ -102,7 +99,6 @@ re-composability.  Once you use a global, you restrict yourself to
 only having a single instance of that item and whatever else depends
 on it.
 
-
 The software industry has long hoped to establish a level of software
 re-use through componentization, much like the electronics and other
 industries. Unfortunately software components haven't succeeded as
@@ -126,12 +122,10 @@ holding back the entire software industry (or rather, the people who
 use them are).
 
 
-
 External Dependencies
 
 External dependencies are added as scoped properties and then treated
 as regular properties of the object.
-
 
 
 Internal Facades
@@ -145,7 +139,6 @@ be added to the Dragon model with the scope of 'eyes' (and the alias:
 'color').  Then, users would call dragon.eyeColor = 'blue' instead.
 This allows Models to hide their internal structure from external
 users.
-
 
 
 Contexts
@@ -162,7 +155,6 @@ this.Person.create().
 This allows for Person, or just the Person.create() factory to be
 overwritten for individual Models.  This allows for Model or Model
 object creation to be specified 
-
 
 
 FOAM.arequire()
