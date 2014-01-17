@@ -5,13 +5,16 @@ var WIDTH = 335;
 var HEIGHT = 478;
 
 /** Requirements. **/
-var req = amemo(ametric('init', aseq(
-  arequire('QuickEMailView'),
-  arequire('QuickCompose'),
-  arequire('LinkView'),
-  arequire('ContactListTileView'),
-  arequire('AutocompleteListView')
-)));
+var req = amemo(aseq(
+  this['InstallEMailDriver'] || anop,
+  ametric('init', aseq(
+    arequire('QuickEMailView'),
+    arequire('QuickCompose'),
+    arequire('LinkView'),
+    arequire('ContactListTileView'),
+    arequire('AutocompleteListView')
+  ))
+));
 
 req(function(){});
 
