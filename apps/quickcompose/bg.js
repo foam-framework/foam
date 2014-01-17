@@ -29,7 +29,6 @@ function launchComposer() {
 
   if ( launched ) return;
   launched = true;
-  var loadTimer = metricsSrv.startTiming('Composer', 'Loading');
 
   req(ametric('launch', function(ret) {
     var screen = window.screen;
@@ -70,7 +69,6 @@ function launchComposer() {
             height: HEIGHT
           });
           w.restore();
-          loadTimer.send();
           metricsSrv.sendAppView('Composer');
           sessionTimer = metricsSrv.startTiming('Composer', 'Session');
           ret();
