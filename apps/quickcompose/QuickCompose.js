@@ -163,7 +163,11 @@ var QuickEMailView = Model.create({
     {
       name: 'bodyView',
       valueFactory: function() {
-        return this.createView(QuickEMail.BODY, { height: 100, onKeyMode: true });
+        return this.createView(QuickEMail.BODY, {
+          height: 100,
+          onKeyMode: true,
+          placeholder: 'Message'
+        });
       }
     }
   ],
@@ -210,7 +214,7 @@ var QuickCompose = FOAM({
     },
     {
       name: 'sendButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this)}); }
+      valueFactory: function() { return ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this) }); }
     },
     {
       name: 'boldButton',
