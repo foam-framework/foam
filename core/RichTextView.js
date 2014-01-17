@@ -38,7 +38,13 @@ var Link = FOAM({
     },
     {
       name: 'link',
-      displayWidth: 19
+      displayWidth: 19,
+      preSet: function(value) {
+        value = value.trim();
+        // Disallow javascript URL's
+        if ( value.toLowerCase().startsWith('javascript:') ) value = '';
+        return value;
+      }
     }
   ],
   methods: {
