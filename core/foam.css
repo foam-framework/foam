@@ -611,7 +611,7 @@ div.gridViewControl select {
   color: black;
   font-family: Arial;
   font-size: 13px;
-  padding-left: 6px;
+  padding: 6px;
   position: absolute;
   z-index: 2;
 }
