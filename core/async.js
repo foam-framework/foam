@@ -125,6 +125,9 @@ var atime = (function() {
 })();
 
 
+/** Time an afunc and record its time as a metric. **/
+var ametric = atime;
+
 /** Sleep for the specified delay. **/
 function asleep(ms) {
   return function(ret) {

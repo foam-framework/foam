@@ -5,7 +5,7 @@ var WIDTH = 335;
 var HEIGHT = 478;
 
 /** Requirements. **/
-var req = amemo(atime('requireModels', aseq(
+var req = amemo(ametric('init', aseq(
   arequire('QuickEMailView'),
   arequire('QuickCompose'),
   arequire('LinkView'),
@@ -17,7 +17,6 @@ req(function(){});
 
 
 function launchComposer() {
-  console.time('LaunchComposer');
   // This block implements the feature which disables launching multiple
   // instances and instead un-minimizes the existing instance when attempting
   // to launch a new one.
@@ -29,7 +28,7 @@ function launchComposer() {
   if ( launched ) return;
   launched = true;
 
-  req(function() {
+  req(ametric('launch', function(ret) {
     var screen = window.screen;
     chrome.app.window.create(
       'empty.html',
@@ -66,6 +65,7 @@ function launchComposer() {
             height: HEIGHT
           });
           w.restore();
+          ret();
         };
         w.onClosed.addListener(function() {
           $removeWindow(self.dialog);
@@ -73,8 +73,7 @@ function launchComposer() {
           launched = false;
         });
       });
-  });
-  console.timeEnd('LaunchComposer');
+  }));
 }
 
 if ( chrome.app.runtime ) {
