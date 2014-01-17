@@ -144,6 +144,18 @@ users.
 Contexts
 
 Contexts are objects which contain bindings.  They replace the global namespace.
+When creating an object, unless explicitly provided, an object is
+supplied with the Context of creating object.
+
+Ex.
+
+this.Address.create();
+
+is the same as
+
+this.Address.create({ctx_: this.ctx_});
+
+Every Object has a ctx_ property.
 
 
 Factories
@@ -259,7 +271,7 @@ Method FOAM.acreate()
          Asynchronously create an instance from a FOAM Model.
 
 Property Property.readScope
-         Read scope for a property.  Defaults to default_ || instance_;
+         Read scope for a property.  Defaults to instance_ || default_;
 
 Property Property.writeScope
          Write scope for a property. Defaults to instance_;
