@@ -1,6 +1,6 @@
 {
     "name": "QuickCompose",
-    "version": "1.19",
+    "version": "1.20",
     "manifest_version": 2,
 
     "permissions": [
@@ -10,7 +10,8 @@
       "https://*/",
       "http://*/",
       "identity",
-      "unlimitedStorage"
+      "unlimitedStorage",
+      "https://www.google-analytics.com/"
     ],
 
     "icons": {
@@ -20,6 +21,8 @@
     "app": {
         "background": {
             "scripts": [
+              "google-analytics-bundle.js",
+              "analytics.js",
               "foam.js",
               "QuickCompose.js",
               "Storage.js",

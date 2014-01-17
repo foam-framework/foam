@@ -17,6 +17,7 @@ req(function(){});
 
 
 function launchComposer() {
+  metricsSrv.sendEvent('Composer', 'Launch');
   console.time('LaunchComposer');
   // This block implements the feature which disables launching multiple
   // instances and instead un-minimizes the existing instance when attempting
@@ -28,9 +29,12 @@ function launchComposer() {
 
   if ( launched ) return;
   launched = true;
+  var loadTimer = metricsSrv.startTiming('Composer', 'Loading');
 
   req(function() {
     var screen = window.screen;
+    var sessionTimer;
+
     chrome.app.window.create(
       'empty.html',
       {
@@ -66,8 +70,12 @@ function launchComposer() {
             height: HEIGHT
           });
           w.restore();
+          loadTimer.send();
+          metricsSrv.sendAppView('Composer');
+          sessionTimer = metricsSrv.startTiming('Composer', 'Session');
         };
         w.onClosed.addListener(function() {
+          sessionTimer.send();
           $removeWindow(self.dialog);
           openWindow = undefined;
           launched = false;

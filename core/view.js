@@ -3590,6 +3590,8 @@ var AutocompleteListView = FOAM({
       name: 'paint',
       isAnimated: true,
       code: function() {
+        if ( ! this.$ ) return;
+
         // TODO Determine if its worth double buffering the dom.
         var objs = [];
         var newSelection = 0;
