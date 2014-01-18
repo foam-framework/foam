@@ -608,10 +608,10 @@ div.gridViewControl select {
 }
 
 .richtext .placeholder {
-  color: black;
+  color: #999;
   font-family: Arial;
   font-size: 13px;
-  padding-left: 6px;
+  padding: 6px;
   position: absolute;
   z-index: 2;
 }

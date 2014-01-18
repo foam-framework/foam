@@ -100,6 +100,7 @@ var ContactSmallTileView = FOAM({
     toHTML: function() {
       var name = this.createView(Contact.DISPLAY_NAME);
       name.mode = 'read-only';
+      name.escapeHTML = true;
       var avatar = this.createView(Contact.AVATAR);
       avatar.displayWidth = 27;
       avatar.displayHeight = 27;
@@ -134,6 +135,7 @@ var ContactListTileView = Model.create({
         'avatar.displayWidth = 32; avatar.displayHeight = 32;' +
         'var name = this.createView(Contact.DISPLAY_NAME);' +
         'name.mode = "read-only";' +
+        'name.escapeHTML = true;' +
         'var address = this.createView(Contact.EMAIL);' +
         'address.mode = "read-only"; %>' +
         '<div class="contactTile" id="<%= this.getID() %>">' +
