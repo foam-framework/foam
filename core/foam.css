@@ -607,6 +607,16 @@ div.gridViewControl select {
   -webkit-box-flex: 1;
 }
 
+.richtext .placeholder {
+  color: #999;
+  font-family: Arial;
+  font-size: 13px;
+  padding: 6px;
+  position: absolute;
+  z-index: 2;
+}
+
+
 .linkDialog {
   border: 1px solid;
   border-color: #bbb #bbb #a8a8a8;

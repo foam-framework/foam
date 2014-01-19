@@ -79,7 +79,7 @@ var AttachmentView = FOAM({
       for ( var i = 0 ; i < this.value.get().length ; i++ ) {
         var att = this.value.get()[i];
         var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
-        out += '<div class="attachment"><div class="filenameandsize"><span class="filename">' + att.filename + '</span><span class="size">' + size + '</span></div><span class="spacer"/><span class="remove"><button id="' + this.on('click', this.onRemove.bind(this, att)) + '" tabindex="99"><img src="images/x_8px.png"></button></span></div>';
+        out += '<div class="attachment"><div class="filenameandsize"><span class="filename">' + this.strToHTML(att.filename) + '</span><span class="size">' + size + '</span></div><span class="spacer"/><span class="remove"><button id="' + this.on('click', this.onRemove.bind(this, att)) + '" tabindex="99"><img src="images/x_8px.png"></button></span></div>';
       }
 
       return out;
@@ -163,7 +163,11 @@ var QuickEMailView = Model.create({
     {
       name: 'bodyView',
       valueFactory: function() {
-        return this.createView(QuickEMail.BODY, { height: 100, onKeyMode: true });
+        return this.createView(QuickEMail.BODY, {
+          height: 100,
+          onKeyMode: true,
+          placeholder: 'Message'
+        });
       }
     }
   ],
@@ -210,7 +214,7 @@ var QuickCompose = FOAM({
     },
     {
       name: 'sendButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this)}); }
+      valueFactory: function() { return ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this) }); }
     },
     {
       name: 'boldButton',

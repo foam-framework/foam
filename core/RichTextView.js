@@ -38,7 +38,13 @@ var Link = FOAM({
     },
     {
       name: 'link',
-      displayWidth: 19
+      displayWidth: 19,
+      preSet: function(value) {
+        value = value.trim();
+        // Disallow javascript URL's
+        if ( value.toLowerCase().startsWith('javascript:') ) value = '';
+        return value;
+      }
     }
   ],
   methods: {
@@ -226,6 +232,8 @@ var RichTextView = FOAM({
       postSet: function(newValue, oldValue) {
         Events.unlink(this.domValue, oldValue);
         Events.link(this.domValue, newValue);
+        newValue.addListener(this.maybeShowPlaceholder);
+        newValue.addListener(console.log.bind(console));
       }
     },
     {
@@ -238,15 +246,34 @@ var RichTextView = FOAM({
     }
   ],
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'maybeShowPlaceholder',
+      code: function() {
+        var e = $(this.placeholderId);
+        if ( e ) {
+          e.style.visibility = this.value.get() == '' ? 'visible' : 'hidden';
+        }
+      }
+    }
+  ],
+  
   methods: {
     toHTML: function() {
       var sandbox = this.mode === 'read-write' ?
         '' :
         ' sandbox="allow-same-origin"';
+
       var id = this.getID();
       this.dropId = this.nextID();
-      return '<div class="richtext"><div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
-        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + ' img-src="*"></iframe></div>';
+      this.placeholderId = this.nextID();
+
+      return '<div class="richtext">' +
+        '<div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
+        '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' + 
+        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + ' img-src="*"></iframe>' +
+        '</div>';
     },
 
     setValue: function(value) {
@@ -472,6 +499,7 @@ var RichTextView = FOAM({
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
       this.value = this.value; // connects listeners
+      this.maybeShowPlaceholder();
     },
 
     removeImage: function(imageID) {
