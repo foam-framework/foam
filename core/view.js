@@ -2888,7 +2888,7 @@ var AlternateView = FOAM({
 
     properties: [
        {
-          name:  'selection'
+          name: 'selection'
        },
        {
            name: 'views',
@@ -2906,100 +2906,100 @@ var AlternateView = FOAM({
              // HACK: we should just update the dao of the current view,
              // but not all views currently redraw on DAO update.  Swtich
              // once the views are fixed/finished.
-             if ( this.view ) this.installSubView(this.view);
+             if ( this.choice ) this.installSubView(this.choice);
 //           if (this.view && this.view.model_ && this.view.model_.getProperty('dao')) this.view.dao = dao;
            }
        },
        {
-          name:  'view',
+          name:  'choice',
           postSet: function(viewChoice) {
-             if ( this.elementId ) this.installSubView(viewChoice);
+            if ( this.elementId ) this.installSubView(viewChoice);
           },
           hidden: true
        }
     ],
 
    methods: {
-      init: function() {
-         this.SUPER();
+     init: function() {
+       this.SUPER();
 
-         this.value = SimpleValue.create("");
-         this.view = this.views[0];
+       this.value = SimpleValue.create("");
+       this.choice = this.views[0];
      },
 
-      installSubView: function(viewChoice) {
-        var view = typeof(viewChoice.view) === 'function' ?
-          viewChoice.view(this.value.get().model_, this.value) :
-          GLOBAL[viewChoice.view].create({
-            model: this.value.get().model_,
-            value: this.value
-          });
+     installSubView: function(viewChoice) {
+       var view = typeof(viewChoice.view) === 'function' ?
+         viewChoice.view(this.value.get().model_, this.value) :
+         GLOBAL[viewChoice.view].create({
+           model: this.value.get().model_,
+           value: this.value
+         });
 
-        // TODO: some views are broken and don't have model_, remove
-        // first guard when fixed.
-        if (view.model_ && view.model_.getProperty('dao')) view.dao = this.dao;
+       // TODO: some views are broken and don't have model_, remove
+       // first guard when fixed.
+       if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
+       
+       this.$.innerHTML = view.toHTML();
+       view.initHTML();
+       view.value && view.value.set(this.value.get());
+       //       if ( view.set ) view.set(this.model.get());
+       //       Events.link(this.model, this.view.model);
+       
+       this.view = view;
+     },
 
-        this.$.innerHTML = view.toHTML();
-        view.initHTML();
-        view.value && view.value.set(this.value.get());
-        //       if ( view.set ) view.set(this.model.get());
-        //       Events.link(this.model, this.view.model);
-      },
+     toHTML: function() {
+       var str  = [];
+       var viewChoice = this.views[0];
+       var buttons;
+       
+       str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
+       for ( var i = 0 ; i < this.views.length ; i++ ) {
+         var view = this.views[i];
+         var listener = function(altView, view) { return function (e) {
+           altView.view = view;
+           
+           // This is a bit hackish, each element should listen on a 'selected'
+           // property and update themselves
+           for ( var j = 0 ; j < buttons.length ; j++ ) {
+             DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
+           }
+           
+           DOM.setClass(e.toElement, 'mode_button_active');
+           
+           return false;
+         };}(this, view);
+         //          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
+         str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + view.label + '</a>');
+         if ( view.label == this.selected ) viewChoice = view;
+       }
+       str.push('</div>');
+       buttons = this.callbacks_;
+       this.buttons_ = buttons;
+       
+       str.push('<br/>');
+       // console.log("viewChoice: ", viewChoice);
+       
+       //       Events.link(this.model, this.view.model);
+       
+       //       str.push(this.view.toHTML());
+       str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+       str.push('</div>');
+       
+       return str.join('');
+     },
 
-      toHTML: function() {
-         var str  = [];
-         var viewChoice = this.views[0];
-         var buttons;
-
-         str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
-         for ( var i = 0 ; i < this.views.length ; i++ ) {
-            var view = this.views[i];
-            var listener = function(altView, view) { return function (e) {
-               altView.view = view;
-
-               // This is a bit hackish, each element should listen on a 'selected'
-               // property and update themselves
-               for ( var j = 0 ; j < buttons.length ; j++ ) {
-                 DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
-               }
-
-               DOM.setClass(e.toElement, 'mode_button_active');
-
-               return false;
-            };}(this,view);
-//          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-            str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-            if ( view.label == this.selected ) viewChoice = view;
-         }
-         str.push('</div>');
-         buttons = this.callbacks_;
-         this.buttons_ = buttons;
-
-         str.push('<br/>');
-// console.log("viewChoice: ", viewChoice);
-
-//       Events.link(this.model, this.view.model);
-
-//       str.push(this.view.toHTML());
-         str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
-        str.push('</div>');
-         return str.join('');
-      },
-
-
-      initHTML: function() {
-         this.SUPER();
-
-         if ( ! this.view ) this.view = this.views[0];
-         this.installSubView(this.view);
-
-         DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
-         DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
-         DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
-      }
-
-  }
-
+     initHTML: function() {
+       this.SUPER();
+       
+       if ( ! this.choice ) this.choice = this.views[0];
+       this.installSubView(this.choice);
+       
+       DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
+       DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
+       DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
+     }
+   }
 });
 
 
