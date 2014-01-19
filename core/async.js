@@ -237,11 +237,12 @@ function atimeout(delay, f, opt_timeoutF) {
 
 /** Memoize an async function. **/
 function amemo(f) {
+  var memoized = false;
   var values;
   var waiters;
 
   return function(ret) {
-    if ( values ) { ret.apply(null, values); return; }
+    if ( memoized ) { ret.apply(null, values); return; }
 
     var first = ! waiters;
 
@@ -255,7 +256,8 @@ function amemo(f) {
         for (var i = 0 ; i < waiters.length; i++) {
           waiters[i] && waiters[i].apply(null, values);
         }
-        waiters = [];
+        memoized = true;
+        waiters = undefined;
       });
     }
   };
