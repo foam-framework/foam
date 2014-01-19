@@ -109,6 +109,8 @@ var Browser = Model.create({
       code: function() {
         var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
+
+        console.log(this.legacyURL());
       }
     }
 
@@ -167,6 +169,22 @@ var Browser = Model.create({
           self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
         }
       );
+
+      console.log(this.legacyURL());
+    },
+
+    legacyURL: function() {
+      var url = this.url + '/issues/list?source=cr2bug';
+
+      if ( this.view.choice.label == 'Grid' ) {
+        url += '&mode=grid';
+        url += '&cells=tiles';
+      } else if ( this.view.choice.label == 'List' ) {
+        debugger;
+        url += '&sort='; // -field1+field2
+      }
+
+      return url;
     },
 
     openURL: function(url) {
