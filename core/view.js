@@ -3397,8 +3397,11 @@ var ArrayTileView = FOAM({
         if ( ! this.$ ) return;
         var last = this.$.lastChild;
         last.style.width = '100px';
+        // Extra padding for the first line to wrap around window controls.
+        var extra = last.offsetTop > this.$.firstChild.offsetTop ?
+          0 : 70;
         last.style.width = 100 + last.parentNode.clientWidth -
-          (last.offsetWidth + last.offsetLeft) - 4 /* margin */;
+          (last.offsetWidth + last.offsetLeft) - 4 /* margin */ - extra;
         this.painting = false;
       }
     },
