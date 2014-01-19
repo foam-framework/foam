@@ -1,12 +1,21 @@
-var metricsSrv = analytics.getService('Quick Compose').getTracker('UA-47217230-1');
-var loadStartTiming = metricsSrv.startTiming('Load');
+var foamDone = performance.now();
 
-var ametric = function(name, afunc) {
+var metricsSrv = analytics.getService('Quick Compose').getTracker('UA-47217230-1');
+metricsSrv.sendTiming('Load', 'analytics', Math.floor(analyticsDone - loadStartTime));
+metricsSrv.sendTiming('Load', 'foam', Math.floor(foamDone - analyticsDone));
+
+
+ametric = function(name, afunc) {
   return function(ret) {
-    var metric = metricsSrv.startTiming(name);
-    afunc(function() {
+    var args = argsToArray(arguments);
+    args[0] = function() {
+      console.timeEnd(name);
       metric.send();
-      ret();
-    })
+      ret && ret.apply(null, arguments);
+    };
+
+    var metric = metricsSrv.startTiming('Load', name);
+    console.time(name);
+    afunc.apply(null, args);
   };
 };

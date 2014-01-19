@@ -21,9 +21,10 @@
     "app": {
         "background": {
             "scripts": [
+              "load_start.js",
               "google-analytics-bundle.js",
-              "analytics.js",
               "foam.js",
+              "analytics.js",
               "QuickCompose.js",
               "Storage.js",
 //              "gmail.js",

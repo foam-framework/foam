@@ -5,18 +5,21 @@ var WIDTH = 335;
 var HEIGHT = 478;
 
 /** Requirements. **/
-var req = amemo(aseq(
-  this['InstallEMailDriver'] || anop,
-  ametric('init', aseq(
-    arequire('QuickEMailView'),
-    arequire('QuickCompose'),
-    arequire('LinkView'),
-    arequire('ContactListTileView'),
-    arequire('AutocompleteListView')
-  ))
+var req = amemo(ametric('init', aseq(
+    this['InstallEMailDriver'] || anop,
+    ametric('requires', aseq(
+      arequire('QuickEMailView'),
+      arequire('QuickCompose'),
+      arequire('LinkView'),
+      arequire('ContactListTileView'),
+      arequire('AutocompleteListView')
+    )))
 ));
 
-req(function(){});
+req(function(){
+  console.timeEnd('page load');
+  metricsSrv.sendTiming('Load', 'total', Math.floor(performance.now() - loadStartTime));
+});
 
 
 function launchComposer() {

@@ -231,7 +231,7 @@ var RichTextView = FOAM({
     {
       name: 'placeholder',
       help: 'Placeholder text to appear when no text is entered.'
-    }
+    },
     {
       name: 'document',
       hidden: true
