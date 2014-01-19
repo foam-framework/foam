@@ -129,6 +129,7 @@ body > input[name="to"] {
 
 .arrayTileView {
 	box-sizing: border-box;
+        padding-right: 70px;
 	border: 0px;
 }
 
