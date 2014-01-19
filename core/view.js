@@ -2899,14 +2899,14 @@ var AlternateView = FOAM({
            help: 'View choices.'
        },
        {
-           name:  'dao',
-           label: 'DAO',
-           type: 'DAO',
-           postSet: function(dao) {
+         name:  'dao',
+         label: 'DAO',
+         type: 'DAO',
+         postSet: function(dao, oldValue) {
              // HACK: we should just update the dao of the current view,
              // but not all views currently redraw on DAO update.  Swtich
              // once the views are fixed/finished.
-             if ( this.choice ) this.installSubView(this.choice);
+             if ( this.choice && ! oldValue) this.installSubView(this.choice);
 //           if (this.view && this.view.model_ && this.view.model_.getProperty('dao')) this.view.dao = dao;
            }
        },
@@ -2955,9 +2955,9 @@ var AlternateView = FOAM({
        
        str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
        for ( var i = 0 ; i < this.views.length ; i++ ) {
-         var view = this.views[i];
-         var listener = function(altView, view) { return function (e) {
-           altView.view = view;
+         var choice = this.views[i];
+         var listener = function(altView, choice) { return function (e) {
+           altView.choice = choice;
            
            // This is a bit hackish, each element should listen on a 'selected'
            // property and update themselves
@@ -2968,10 +2968,10 @@ var AlternateView = FOAM({
            DOM.setClass(e.toElement, 'mode_button_active');
            
            return false;
-         };}(this, view);
+         };}(this, choice);
          //          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-         str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-         if ( view.label == this.selected ) viewChoice = view;
+         str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + choice.label + '</a>');
+         if ( choice.label == this.selected ) viewChoice = choice
        }
        str.push('</div>');
        buttons = this.callbacks_;
