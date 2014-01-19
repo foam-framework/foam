@@ -7,7 +7,7 @@ var HEIGHT = 478;
 /** Requirements. **/
 var req = amemo(ametric('init', aseq(
     this['InstallEMailDriver'] || anop,
-    ametric('requires', aseq(
+    ametric('requires', aseq(          // should this be 'apar' instead?
       arequire('QuickEMailView'),
       arequire('QuickCompose'),
       arequire('LinkView'),
@@ -36,10 +36,10 @@ function launchComposer() {
   if ( launched ) return;
   launched = true;
 
-  req(ametric('launch', function(ret) {
+  function launch(ret) {
     var screen = window.screen;
     var sessionTimer;
-
+    
     chrome.app.window.create(
       'empty.html',
       {
@@ -49,7 +49,7 @@ function launchComposer() {
         height: 1, //HEIGHT,
         type: 'panel',
         frame: 'none'
-//        state: 'minimized' // Doesn't work with type: panel
+        //        state: 'minimized' // Doesn't work with type: panel
       },
       function(w) {
         w.contentWindow.onload = function() {
@@ -86,7 +86,9 @@ function launchComposer() {
           launched = false;
         });
       });
-  }));
+  }
+
+  aseq(req, ametric('launch', launch))();
 }
 
 if ( chrome.app.runtime ) {
