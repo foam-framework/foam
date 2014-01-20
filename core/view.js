@@ -2917,12 +2917,14 @@ var AlternateView = FOAM({
          label: 'DAO',
          type: 'DAO',
          postSet: function(dao, oldValue) {
-             // HACK: we should just update the dao of the current view,
-             // but not all views currently redraw on DAO update.  Swtich
-             // once the views are fixed/finished.
-             if ( this.choice && ! oldValue) this.installSubView(this.choice);
-//           if (this.view && this.view.model_ && this.view.model_.getProperty('dao')) this.view.dao = dao;
+           if ( this.choice ) {
+             if ( this.view ) {
+               this.view.dao = dao;
+             } else {
+               this.installSubView(this.choice);
+             }
            }
+         }
        },
        {
           name:  'choice',
