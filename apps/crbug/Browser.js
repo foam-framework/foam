@@ -135,7 +135,7 @@ var Browser = Model.create({
           this.timer.start();
         } else {
           this.timer.stop();
-          this.view.view = this.view.view;
+          this.view.choice = this.view.choice;
         }
       }.bind(this));
 
@@ -180,8 +180,9 @@ var Browser = Model.create({
         url += '&mode=grid';
         url += '&cells=tiles';
       } else if ( this.view.choice.label == 'List' ) {
-        debugger;
-        url += '&sort='; // -field1+field2
+        if ( this.view.view.view.sortOrder ) {
+          url += '&sort=' + this.view.view.view.sortOrder.toMQL();
+        }
       }
 
       return url;
