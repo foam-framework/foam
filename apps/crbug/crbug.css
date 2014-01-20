@@ -100,5 +100,10 @@ body { overflow: hidden; }
 }
 
 .CIssuePreview {
-    border: 1px solid #666;
+  border: 1px solid #666;
+}
+
+.actionButton-link, .actionButton-link:hover{
+  border: none;
+  background: white;
 }

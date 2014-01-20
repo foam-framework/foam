@@ -116,6 +116,22 @@ var Browser = Model.create({
 
   ],
 
+  actions: [
+    {
+      model_: 'Action',
+      name:  'link',
+      label: '',
+      iconUrl: 'images/link.svg',
+      help:  'Link',
+      
+      action: function() {
+        var url = this.legacyURL();
+        console.log(url);
+        this.openURL(url);
+      }
+    }
+  ],
+
   methods: {
     initHTML: function() {
       this.window.addEventListener('resize', this.layout, false);
@@ -128,6 +144,10 @@ var Browser = Model.create({
 
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
+
+      ActionButton.create({
+        action: this.model_.LINK,
+        value: SimpleValue.create(this) }).insertInElement('link');
 
       this.syncManager.propertyValue('isSyncing').addListener(function() {
         if ( this.syncManager.isSyncing ) {
@@ -195,7 +215,11 @@ var Browser = Model.create({
         }
         url += colspec;
       }
-      // q=
+
+      var q = this.searchField.value.get();
+      if ( q ) {
+        url += '&q=' + encodeURIComponent(q);
+      }
 
       // ???: Should I create a Memento Model?
 

@@ -18,7 +18,7 @@
   <td width=150></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search <span id="searchChoice"></span> for <span id="searchField"></span> <span id="countField"></span>
+  Search <span id="searchChoice"></span> for <span id="searchField"></span> <span id="link"></span> <span id="countField"></span>
   <img id="settings" src="images/settings.svg"></div>
   </td>
   </tr>
