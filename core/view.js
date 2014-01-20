@@ -913,6 +913,14 @@ var ChoiceView = FOAM({
    ],
 
    methods: {
+     findChoiceIC: function(name) {
+       name = name.toLowerCase();
+       for ( var i = 0 ; i < this.choices.length ; i++ ) {
+         if ( this.choices[i][1].toLowerCase == name )
+           return this.choices[i];
+       }
+     },
+
      toHTML: function() {
        return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
      },
@@ -2009,7 +2017,45 @@ var TableView = FOAM({
          model_: 'BooleanProperty',
          name: 'editColumnsEnabled',
          defaultValue: false
-      }
+      },
+     {
+       name: 'memento',
+       setter: function(m) {
+         if ( m.sort ) {
+           var ps = m.sort.split(' ');
+           for ( var i = 0 ; i < ps.length ; i++ ) {
+             var p = ps[i];
+             if ( p.charAt('0') == '-' ) {
+               ps[i] = DESC(this.model.getProperty(p.substring(1)));
+             } else {
+               ps[i] = this.model.getProperty(p);
+             }
+           }
+           if ( ps.length ) {
+             if ( ps.length == 1 ) {
+               this.sortOrder = ps[0];
+             } else {
+               this.sortOrder = CompoundComparator.apply(null, ps);
+             }
+           }
+         }
+
+         if ( m.colspec ) {
+           this.properties = m.colspec.split(' ');
+         }
+       },
+       getter: function() {
+         var m = {};
+
+         if ( this.sortOrder ) m.sort = this.sortOrder.toMQL();
+
+         if ( this.hasOwnProperty('properties') ) {
+           m.colspec = this.properties.join(' ');
+         }
+
+         return m;
+       }
+     }
    ],
 
    listeners: [
@@ -2760,7 +2806,32 @@ var GridView = FOAM({
          name:  'grid',
          type:  'GridByExpr',
          valueFactory: function() { return GridByExpr.create(); }
+      },
+     {
+        name: 'memento',
+        setter: function(m) {
+          if ( m.x ) {
+            var c = this.col.findChoiceIC(m.x);
+            if ( c ) this.col.choice = c;
+          }
+          if ( m.y ) {
+            var c = this.row.findChoiceIC(m.y);
+            if ( c ) this.row.choice = c;
+          }
+          if ( m.cells ) {
+            var c = this.acc.findChoiceIC(m.cells);
+            if ( c ) this.acc.choice = c;
+          }
+        },
+        getter: function() {
+          return {
+            x: this.col.value.get().name,
+            y: this.row.value.get().name,
+            cells: this.acc.choice[1].toLowerCase()
+          };
+        }
       }
+
    ],
 
    // TODO: need an 'onChange:' property to handle both value
@@ -2932,7 +3003,31 @@ var AlternateView = FOAM({
             if ( this.elementId ) this.installSubView(viewChoice);
           },
           hidden: true
-       }
+       },
+      {
+        name: 'memento',
+        setter: function(m) {
+          if ( m.mode ) {
+            for ( var i = 0 ; i < this.views.length ; i++ ) {
+              if ( this.views[i].label.toLowerCase() == m.mode ) {
+                this.choice = this.views[i];
+                break;
+              }
+            }
+          }
+          if ( this.view ) this.view.memento = m;
+        },
+        getter: function() {
+          if ( this.view ) {
+            var m = this.view.memento;
+            m.mode = this.choice.label.toLowerCase();
+            return m;
+          }
+
+          return {};
+        }
+      }
+
     ],
 
    methods: {
