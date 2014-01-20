@@ -1704,6 +1704,9 @@ var DescExpr = FOAM({
   extendsModel: 'UNARY',
 
   methods: {
+    toMQL: function() {
+      return '-' + this.arg1.toMQL();
+    },
     compare: function(o1, o2) {
       return -1 * this.arg1.compare(o1, o2);
     }
