@@ -178,12 +178,26 @@ var Browser = Model.create({
 
       if ( this.view.choice.label == 'Grid' ) {
         url += '&mode=grid';
-        url += '&cells=tiles';
+        url += '&cells=' + this.view.view.acc.choice[1].toLowerCase();
+        url += '&x=' + this.view.view.col.value.get().name;
+        url += '&y=' + this.view.view.row.value.get().name;
+
       } else if ( this.view.choice.label == 'List' ) {
         if ( this.view.view.view.sortOrder ) {
           url += '&sort=' + this.view.view.view.sortOrder.toMQL();
         }
+        var properties = this.view.view.view.properties;
+        var colspec = '&colspec=';
+        for ( var i = 0 ; i < properties.length ; i++ ) {
+          var property = properties[i];
+          if ( i > 0 ) colspec += '+';
+          colspec += property;
+        }
+        url += colspec;
       }
+      // q=
+
+      // ???: Should I create a Memento Model?
 
       return url;
     },
