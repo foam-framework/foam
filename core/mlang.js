@@ -1183,7 +1183,7 @@ var GridByExpr = FOAM({
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
-       return GroupByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
+       return GridByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; },
