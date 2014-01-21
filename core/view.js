@@ -3509,7 +3509,7 @@ var ArrayTileView = FOAM({
         var last = this.$.lastChild;
         last.style.width = '100px';
         last.style.width = 100 + last.parentNode.clientWidth -
-          (last.offsetWidth + last.offsetLeft) - 4 /* margin */ - 70;
+          (last.offsetWidth + last.offsetLeft) - 4 /* margin */ - 75;
         this.painting = false;
       }
     },

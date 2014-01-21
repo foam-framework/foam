@@ -129,8 +129,12 @@ body > input[name="to"] {
 
 .arrayTileView {
 	box-sizing: border-box;
-        padding-right: 70px;
+        padding: 5px 70px 0px 5px;
 	border: 0px;
+}
+
+.listInputView {
+  padding-left: 2px;
 }
 
 .actionButton-close:hover, .actionButton-minimize:hover {
