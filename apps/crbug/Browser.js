@@ -59,6 +59,18 @@ var Browser = Model.create({
       valueFactory: function() { return createView(this.rowSelection, this); }
     },
     {
+      name: 'memento',
+      setter: function(m) {
+        m.hasOwnProperty('q') && this.searchField.value.set(m.q);
+        this.view.memento = m;
+      },
+      getter: function() {
+        var m = this.view.memento;
+        m.q = this.searchField.value.get();
+        return m;
+      }
+    },
+    {
       name: 'countField',
       type: 'TextFieldView',
       valueFactory: function() {
@@ -97,6 +109,8 @@ var Browser = Model.create({
       model_: 'Method',
       name: 'performQuery',
       code: function(evt) {
+        this.maybeImportCrbugUrl(this.searchField.value.get());
+
         this.search(AND(
           CIssueQueryParser.parseString(this.searchChoice.value.get()) || TRUE,
           CIssueQueryParser.parseString(this.searchField.value.get()) || TRUE
@@ -110,10 +124,26 @@ var Browser = Model.create({
         var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
 
-        console.log(this.legacyURL());
+        console.log(this.crbugUrl());
       }
     }
 
+  ],
+
+  actions: [
+    {
+      model_: 'Action',
+      name:  'link',
+      label: '',
+      iconUrl: 'images/link.svg',
+      help:  'Link',
+      
+      action: function() {
+        var url = this.crbugUrl();
+        console.log(url);
+        this.openURL(url);
+      }
+    }
   ],
 
   methods: {
@@ -128,6 +158,10 @@ var Browser = Model.create({
 
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
+
+      ActionButton.create({
+        action: this.model_.LINK,
+        value: SimpleValue.create(this) }).insertInElement('link');
 
       this.syncManager.propertyValue('isSyncing').addListener(function() {
         if ( this.syncManager.isSyncing ) {
@@ -158,6 +192,28 @@ var Browser = Model.create({
 
     preview: function() {},
 
+    /** Import a cr(1)bug URL. **/
+    maybeImportCrbugUrl: function(url) {
+      url = url.trim();
+      if ( ! url ) return;
+      if ( ! url.startsWith('http') ) return;
+
+      var idx = url.indexOf('?');
+      if ( idx == -1 ) return;
+
+      url = url.substring(idx+1);
+      var params = url.split('&');
+      var memento = {};
+      for ( var i = 0 ; i < params.length ; i++ ) {
+        var param = params[i];
+        var keyValue = param.split('=');
+        memento[decodeURIComponent(keyValue[0])] =
+          decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+      }
+
+      this.memento = memento;
+    },
+
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
       if ( p ) console.log('SEARCH: ', p.toSQL());
@@ -170,22 +226,24 @@ var Browser = Model.create({
         }
       );
 
-      console.log(this.legacyURL());
+      console.log(this.crbugUrl());
     },
 
-    legacyURL: function() {
-      var url = this.url + '/issues/list?source=cr2bug';
-
-      if ( this.view.choice.label == 'Grid' ) {
-        url += '&mode=grid';
-        url += '&cells=tiles';
-      } else if ( this.view.choice.label == 'List' ) {
-        if ( this.view.view.view.sortOrder ) {
-          url += '&sort=' + this.view.view.view.sortOrder.toMQL();
-        }
+    /** Convert current state to a cr(1)bug URL. **/
+    crbugUrl: function() {
+      var u = this.url + '/issues/list';
+      var m = this.memento;
+      var d = '?';
+      for ( var key in m ) {
+        u += d;
+        
+        u += key + '=' + encodeURIComponent(m[key]);
+        d = '&';
       }
 
-      return url;
+      console.log('*****************URL ', u);
+
+      return u;
     },
 
     openURL: function(url) {

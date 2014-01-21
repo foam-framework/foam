@@ -226,7 +226,16 @@ var ScrollBorder = FOAM({
            this.repaint_ && this.repaint_();
             */
          }
+       },
+     {
+       name: 'memento',
+       setter: function(m) {
+         if ( this.view ) this.view.memento = m;
+       },
+       getter: function() {
+         return this.view ? this.view.memento : {};
        }
+     }
    ],
 
   listeners: [
