@@ -60,6 +60,7 @@ function launchComposer() {
       function(w) {
         w.contentWindow.onload = function() {
           var dialog = self.dialog = w.contentWindow;
+          $addWindow(dialog);
           console.time('CreateQuickCompose');
           var b = QuickCompose.create({
             window: dialog,
@@ -69,8 +70,7 @@ function launchComposer() {
           openWindow = w;
           b.appWindow = w;
           dialog.browser = window.browser = b; // for debugging
-          $addWindow(dialog);
-          console.time('QuickCompose::toHTML');
+                console.time('QuickCompose::toHTML');
           dialog.document.firstChild.innerHTML = b.toHTML();
           console.timeEnd('QuickCompose::toHTML');
           b.initHTML();
