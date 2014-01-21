@@ -1,6 +1,3 @@
-- Search:
-  URL Import
-
 - IFrame/Webview DetailView
 - Network DAO
   - improve

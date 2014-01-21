@@ -18,11 +18,11 @@
   <td width=150></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search <span id="searchChoice"></span> for <span id="searchField"></span> <span id="link"></span> <span id="countField"></span>
+  Search <%= this.searchChoice.toHTML() %> for <%= this.searchField.toHTML() %>  <%= this.linkButton.toHTML() %> <%= this.countField.toHTML() %>
   <img id="settings" src="images/settings.svg"></div>
   </td>
   </tr>
 </table>
 <hr color="#9BC0FA">
-</div><span id="view"></span></body>
+</div><%= this.view.toHTML() %></body>
 </html>

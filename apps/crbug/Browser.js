@@ -70,6 +70,16 @@ var Browser = Model.create({
         return m;
       }
     },
+
+    {
+      name: 'linkButton',
+      valueFactory: function() {
+        return ActionButton.create({
+          action: this.model_.LINK,
+          value: SimpleValue.create(this)
+        });
+      }
+    },
     {
       name: 'countField',
       type: 'TextFieldView',
@@ -150,18 +160,14 @@ var Browser = Model.create({
     initHTML: function() {
       this.window.addEventListener('resize', this.layout, false);
 
-      // TODO: add these as part of the Template
-      this.searchChoice.insertInElement('searchChoice');
-      this.searchField.insertInElement('searchField');
-      this.countField.insertInElement('countField');
-      this.view.insertInElement('view');
+      this.searchChoice.initHTML();
+      this.searchField.initHTML();
+      this.countField.initHTML();
+      this.view.initHTML();
+      this.linkButton.initHTML();
 
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
-
-      ActionButton.create({
-        action: this.model_.LINK,
-        value: SimpleValue.create(this) }).insertInElement('link');
 
       this.syncManager.propertyValue('isSyncing').addListener(function() {
         if ( this.syncManager.isSyncing ) {
