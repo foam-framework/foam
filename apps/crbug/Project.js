@@ -18,6 +18,11 @@
 var Project = Model.create({
   name: 'Project',
 
+  tableProperties: [
+    'projectName',
+    'baseURL'
+  ],
+
   properties: [
     {
       name: 'baseURL',
@@ -49,7 +54,8 @@ var Project = Model.create({
         });
 
         return CachingDAO.create(IssueMDAO, IssueIDBDAO);
-      }
+      },
+      transient: true
     },
     {
       name: 'IssueNetworkDAO',
@@ -58,7 +64,8 @@ var Project = Model.create({
           url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           model: CIssue
         });
-      }
+      },
+      transient: true
     },
     {
       name: 'IssueCommentNetworkDAO',
@@ -79,7 +86,8 @@ var Project = Model.create({
         };
 
         return dao;
-      }
+      },
+      transient: true
     },
     {
       name: 'url',
@@ -87,7 +95,8 @@ var Project = Model.create({
     },
     {
       name: 'timer',
-      valueFactory: function() { return Timer.create(); }
+      valueFactory: function() { return Timer.create(); },
+      transient: true
     },
     {
       name: 'syncManager',
@@ -115,10 +124,10 @@ var Project = Model.create({
             arequire('CIssueTileView'),
             arequire('Browser')
           )(function () {
+            $addWindow(window);
             var b = ChromeAppBrowser.create({project: self, window: window});
             window.browser = b; // for debugging
             w.browser = b;
-            $addWindow(window);
             window.document.body.innerHTML = b.toHTML();
             b.initHTML();
             w.focus();
