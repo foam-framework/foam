@@ -2798,9 +2798,12 @@ var GridView = FOAM({
          type: 'Model'
       },
       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO'
+        name:  'dao',
+        label: 'DAO',
+        type: 'DAO',
+        postSet: function() {
+          this.updateHTML();
+        }
       },
       {
          name:  'grid',
@@ -2841,12 +2844,14 @@ var GridView = FOAM({
    // or updatable on 'animate', ie. specify decorators
    methods: {
      updateHTML: function() {
+       if ( ! this.$ ) return;
+
        var self = this;
        this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
        this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
        this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
-       this.dao.select(this.grid/*.clone()*/)(function(g) {
+       this.dao.select(this.grid.clone())(function(g) {
          self.$.innerHTML = g.toHTML();
          g.initHTML();
        });
