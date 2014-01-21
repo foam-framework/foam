@@ -607,6 +607,13 @@ div.gridViewControl select {
   -webkit-box-flex: 1;
 }
 
+::-webkit-input-placeholder {
+  color: #999;
+  font-family: Arial;
+  font-size: 13px;
+  font-weight: normal;
+}
+
 .richtext .placeholder {
   color: #999;
   font-family: Arial;

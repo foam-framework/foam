@@ -14,34 +14,34 @@ iframe {
 }
 
 body {
-  display: -webkit-box;
   -webkit-box-orient: vertical; 
+  display: -webkit-box;
   margin: 0;
 }
 
 .header {
   background: #f1f1f1;
   border-bottom: 0px;
-  padding-bottom: 0;
-  margin-left: 0;
-  padding-left: 6px;
   font: 13pt sans-serif;
+  margin-left: 0;
   opacity: 0.5;
+  padding-bottom: 0;
+  padding-left: 6px;
 }
 
 .listInputView {
-	font-size: 13px;
+  font-size: 13px;
 }
 
 .richtext {
   -webkit-box-flex: 1;
-	padding-left: 3px;
+  padding-left: 3px;
 }
 
 body > input {
   margin: 0 0 0 0;
   padding-right: 0;
-	font-size: 13px;
+  font-size: 13px;
 }
 
 body > input[type="text"], input[type="String"] {
@@ -74,15 +74,16 @@ body > input[type="text"], input[type="String"] {
 }
 
 #header {
-	position: absolute;
-	top: 0px;
-	right: 0px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }
 
 body > input[name="subject"] {
   border: 0px;
+  font-size: 13px;
+  font-weight: bold;
   outline: none;
-	font-size: 13px;
 }
 
 body > input[name="to"] {
@@ -116,21 +117,18 @@ body > input[name="to"] {
 }
 
 .actionButton-close, .actionButton-minimize {
-	background: none;
+  background: none;
   border: none;
   box-shadow: none;
-	padding-top: 12px;
-	padding-bottom: 12px;
-	padding-left: 12px;
-	padding-right: 12px;
+  padding: 10px;
   text-shadow: none;
-	opacity: 0.5;
+  opacity: 0.5;
 }
 
 .arrayTileView {
-	box-sizing: border-box;
-        padding: 5px 70px 0px 5px;
-	border: 0px;
+  box-sizing: border-box;
+  padding: 5px 70px 0px 5px;
+  border: 0px;
 }
 
 .listInputView {
@@ -138,8 +136,8 @@ body > input[name="to"] {
 }
 
 .actionButton-close:hover, .actionButton-minimize:hover {
-	opacity: 1.0;
-	background: #ffffff;
+  opacity: 1.0;
+  background: #ffffff;
   background-color: #ffffff;
 }
 
@@ -186,8 +184,8 @@ body > input[name="to"] {
 
 .attachment .filenameandsize {
   display: inline-flex;
-  min-width:240px;
-  width:500%
+  min-width: 240px;
+  width: 500%
 }
 
 .attachment .filename {
