@@ -23,6 +23,12 @@ req(function(){
 
 
 function launchComposer() {
+  if ( ! authAgent.accessToken ) {
+    console.log("No access token, refreshing and suppressing launch");
+    authAgent.refresh();
+    return;
+  }
+
   metricsSrv.sendEvent('Composer', 'Launch');
   console.time('LaunchComposer');
   // This block implements the feature which disables launching multiple

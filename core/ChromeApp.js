@@ -167,21 +167,23 @@ var ChromeAuthAgent = FOAM({
     // 'interactive: true' the first time?
     refresh: function(ret) {
       var self = this;
-      chrome.identity.getAuthToken({
-        interactive: false
-      }, function(t) {
-        if (!t) {
-          chrome.identity.getAuthToken({
-            interactive: true
-          }, function(t) {
-            self.accessToken = t;
-            ret && ret(t);
-          });
-        } else {
-          self.accessToken = t;
-          ret && ret(t);
-        }
-      });
+      aseq(
+        function(ret) {
+          if ( self.accessToken ) {
+            chrome.identity.removeCachedAuthToken(
+              { token: self.accessToken },
+              ret);
+            return;
+          }
+          ret();
+        }, function(ret) {
+          chrome.identity.getAuthToken(
+            { interactive: true },
+            function(t) {
+              self.accessToken = t;
+              ret && ret(t);
+            });
+        })(ret);
     }
   }
 });
