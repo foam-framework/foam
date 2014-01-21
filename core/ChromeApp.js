@@ -55,23 +55,29 @@ var aevalTemplate = function(t) {
 function arequire(modelName) {
   var model = GLOBAL[modelName];
 
-  if ( model.required__ ) { return aconstant(model); }
-  // TODO: eventually this should just call the arequire() method on the Model
-  var args = [];
-  for ( var i = 0 ; i < model.templates.length ; i++ ) {
-    var t = model.templates[i];
-    args.push(aseq(
-       aevalTemplate(model.templates[i]),
-       (function(t) { return function(ret, m) {
-         model.getPrototype()[t.name] = m;
-         ret();
-       };})(t)
-    ));
+  /** This is so that if the model is arequire'd concurrently the
+   *  initialization isn't done more than once.
+   **/
+  if ( ! model.required__ ) {
+    // TODO: eventually this should just call the arequire() method on the Model
+    var args = [];
+    for ( var i = 0 ; i < model.templates.length ; i++ ) {
+      var t = model.templates[i];
+      args.push(aseq(
+        aevalTemplate(model.templates[i]),
+        (function(t) { return function(ret, m) {
+          model.getPrototype()[t.name] = m;
+          ret();
+        };})(t)
+      ));
+    }
+
+    model.required__ = amemo(aseq(
+      apar.apply(apar, args),
+      aconstant(model)));
   }
 
-  model.required__ = true;
-
-  return aseq(apar.apply(apar, args), aconstant(model));
+  return model.required__;
 }
 
 
