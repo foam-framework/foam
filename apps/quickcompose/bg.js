@@ -25,7 +25,7 @@ req(function(){
 function launchComposer() {
   if ( ! authAgent.accessToken ) {
     console.log("No access token, refreshing and suppressing launch");
-    authAgent.refresh();
+    authAgent.refresh(launchComposer);
     return;
   }
 
