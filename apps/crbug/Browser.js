@@ -18,6 +18,8 @@
 var Browser = Model.create({
   name: 'Browser',
 
+  extendsModel: 'AbstractView',
+
   properties: [
     {
       name: 'project'
@@ -158,13 +160,9 @@ var Browser = Model.create({
 
   methods: {
     initHTML: function() {
-      this.window.addEventListener('resize', this.layout, false);
+      this.SUPER();
 
-      this.searchChoice.initHTML();
-      this.searchField.initHTML();
-      this.countField.initHTML();
-      this.view.initHTML();
-      this.linkButton.initHTML();
+      this.window.addEventListener('resize', this.layout, false);
 
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);

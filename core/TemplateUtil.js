@@ -56,6 +56,27 @@ var TemplateParser = {
   text: anyChar
 };
 
+// Object.prototype.toHTML = function() { return this.toString(); }
+
+var TemplateOutput = {
+  create: function(obj) {
+    console.log('*************** create: ', obj);
+    var buf = '';
+    var f = function(/* arguments */) {
+//    console.log('*******', arguments, buf);
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var o = arguments[i];
+        buf += o.toHTML ? o.toHTML() : o;
+        if ( o.initHTML && obj.addChild ) obj.addChild(o);
+      }
+    };
+
+    f.toString = function() { return buf; };
+
+    return f;
+  }
+};
+
 var TemplateCompiler = {
   __proto__: TemplateParser,
 
@@ -63,12 +84,11 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: "var out;" +
-    "if ( opt_out ) { out = opt_out; } else { var buf = []; out = buf.push.bind(buf); }\n" +
+  header: 'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
-    "if ( ! opt_out ) return buf.join('');"
+    "return out.toString();"
 
 }.addActions({
    markup: function (v) {
