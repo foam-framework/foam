@@ -169,14 +169,12 @@ var ChromeAuthAgent = FOAM({
   ],
 
   listeners: {
-    // ???: Why do we do this this way?  Why not just once with
-    // 'interactive: true' the first time?
     refresh: function(ret) {
       var self = this;
       chrome.identity.getAuthToken(
         { interactive: true },
         function(t) {
-          if ( self.accessToken === t ) {
+          if ( t && self.accessToken === t ) {
             chrome.identity.removeCachedAuthToken(
               { token: self.accessToken },
               function() {
