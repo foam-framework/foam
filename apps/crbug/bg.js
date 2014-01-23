@@ -5,9 +5,8 @@ function launch() {
 }
 
 if ( chrome.app.runtime ) {
-  chrome.app.runtime.onLaunched.addListener(function(opt_launchData) {
+  chrome.app.runtime.onLaunched.addListener(function() {
     console.log('launched');
-    if ( opt_launchData ) console.log(opt_launchData.url);
     launch();
   });
 }
