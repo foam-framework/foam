@@ -415,15 +415,15 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      template: "<head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>Quick Message</title></head><body><% this.header(out); %><%= this.view.toHTML() %><% this.toolbar(out); %></body>"
+      template: "<head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>Quick Message</title></head><body><% this.header(out); %>%%view <% this.toolbar(out); %></body>"
     },
     {
       name: "header",
-      template: "<div id=\"header\"><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></div>"
+      template: "<div id=\"header\">%%minimizeButton %%closeButton</div>"
     },
     {
       name: "toolbar",
-      template: "<div class=toolbar><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML(), this.discardButton.toHTML() %></div>"
+      template: "<div class=toolbar>%%sendButton %%boldButton %%italicButton %%underlineButton %%linkButton %%discardButton</div>"
     }
   ]
 });

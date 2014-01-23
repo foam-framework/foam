@@ -232,7 +232,6 @@ var RichTextView = FOAM({
         Events.unlink(this.domValue, oldValue);
         Events.link(this.domValue, newValue);
         newValue.addListener(this.maybeShowPlaceholder);
-        newValue.addListener(console.log.bind(console));
       }
     },
     {

@@ -22,7 +22,7 @@
  *    <% code %>: code inserted into template, but nothing implicitly output
  *    <%= comma-separated-values %>: all values are appended to template output
  *    \<new-line>: ignored
- *    %value<whitespace>: TODO: output a single value to the template output
+ *    %%value(<whitespace>|<): output a single value to the template output
  *
  * TODO: add support for arguments
  */
@@ -58,8 +58,6 @@ var TemplateParser = {
   'single quote': literal("'"),
   text: anyChar
 };
-
-// Object.prototype.toHTML = function() { return this.toString(); }
 
 var TemplateOutput = {
   create: function(obj) {
