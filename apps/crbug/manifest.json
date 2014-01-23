@@ -44,12 +44,14 @@
     }
   },
 
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwgElXI4RpyJCGpTP+vqOl8tEmm1vgnSv9XR+O1Zk0dC9aOuNvBFdAWgc0ufh/0ypaRh8/x84q6EfeMU611UB3kT4VUZRqPOH++s4ZI7PIEB74k4MbPGv+I0jK6nb154MxiXRa1M0Q9xw2V9oRd8p4MUX0xz9A2wmhCsIrArgRk0la39oPLvH+vIxlFgkffsT3lR9pcc2EuviT/uLfbgPbDZDTT930Rjshqi+JbIsV0Gpp2r2rYMD8jAIPv9xwsTS8yWgwpWf2G0Z//KyX4HjZEN4IEm+E9d9709nH3SXDIHtqqboFn/29z3XYICIR8IObBWfyIctf2Ow4tXW/Oe4lQIDAQAB",
+
   "oauth2": {
-    "client_id": "945476427475-regc9kqo9qgtqbmoj5m69qdut8qc1a3s.apps.googleusercontent.com",
+    "client_id": "18229540903-c1cku6fscof2takj43gedatapd7c33m9.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.google.com/m8/feeds",
-      "https://code.google.com"
+      "https://www.googleapis.com/auth/projecthosting"
     ]
   }
 }
