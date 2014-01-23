@@ -113,6 +113,12 @@ var Browser = Model.create({
     {
       name: 'searchField',
       valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 60 }); }
+    },
+    {
+      name: 'logo',
+      valueFactory: function() {
+        return ImageView.create({value: SimpleValue.create(this.url + '/logo')});
+      }
     }
   ],
 
@@ -182,13 +188,12 @@ var Browser = Model.create({
         this.openURL(url);
       }.bind(this));
 
-      var logo = $('logo');
-      logo.onclick = this.syncManager.forceSync.bind(this.syncManager);
+      this.logo.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
 
       var timer = this.timer;
       Events.dynamic(function() {
-        logo.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
-      });
+        this.logo.$.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
+      }.bind(this));
 
       this.layout();
       this.search(TRUE);
