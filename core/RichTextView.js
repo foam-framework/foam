@@ -615,7 +615,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'huge',
-      help: 'Set\'s the font size to small.',
+      help: 'Set\'s the font size to huge.',
       label: 'huge',
       parent: 'fontSize',
       action: function() {
@@ -757,6 +757,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'leftJustify',
       parent: 'justification',
+      // Ctrl-Shift-L
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyLeft");
@@ -766,6 +767,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'centerJustify',
       parent: 'justification',
+      // Ctrl-Shift-E
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyCenter");
@@ -775,6 +777,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'rightJustify',
       parent: 'justification',
+      // Ctrl-Shift-R
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('justifyRight');
@@ -783,6 +786,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'numberedList',
+      // Ctrl-Shift-7
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertOrderedList');
@@ -791,6 +795,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'bulletList',
+      // Ctrl-Shift-8
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertUnorderedList');
@@ -799,6 +804,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'decreaseIndentation',
+      // Ctrl-[
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('outdent');
@@ -807,6 +813,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'increaseIndentation',
+      // Ctrl-]
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('indent');
@@ -815,6 +822,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'blockQuote',
+      // Ctrl-Shift-9
       action: function() {
         this.$.contentWindow.focus();
       }
