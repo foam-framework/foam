@@ -22,7 +22,7 @@
  *    <% code %>: code inserted into template, but nothing implicitly output
  *    <%= comma-separated-values %>: all values are appended to template output
  *    \<new-line>: ignored
- *    %value<whitespace>: TODO: output a single value to the template output
+ *    %%value(<whitespace>|<): output a single value to the template output
  *
  * TODO: add support for arguments
  */
@@ -33,6 +33,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
+    sym('simple value'),
     sym('raw values tag'),
     sym('values tag'),
     sym('code tag'),
@@ -41,6 +42,8 @@ var TemplateParser = {
     sym('single quote'),
     sym('text')
   )),
+
+  'simple value': seq('%%', repeat(not(alt(' ','\n','<'), anyChar))),
 
   'raw values tag': alt(
     seq('<%=', repeat(not('%>', anyChar)), '%>'),
@@ -56,6 +59,23 @@ var TemplateParser = {
   text: anyChar
 };
 
+var TemplateOutput = {
+  create: function(obj) {
+    var buf = '';
+    var f = function(/* arguments */) {
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var o = arguments[i];
+        buf += o.toHTML ? o.toHTML() : o;
+        if ( o.initHTML && obj.addChild ) obj.addChild(o);
+      }
+    };
+
+    f.toString = function() { return buf; };
+
+    return f;
+  }
+};
+
 var TemplateCompiler = {
   __proto__: TemplateParser,
 
@@ -63,12 +83,11 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: "var out;" +
-    "if ( opt_out ) { out = opt_out; } else { var buf = []; out = buf.push.bind(buf); }\n" +
+  header: 'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
-    "if ( ! opt_out ) return buf.join('');"
+    "return out.toString();"
 
 }.addActions({
    markup: function (v) {
@@ -76,6 +95,7 @@ var TemplateCompiler = {
      this.out = [];
      return ret;
    },
+   'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
    'values tag': function (v) { this.push("',", AbstractView.getPrototype().strToHTML(v[1].join('')), ",'"); },
    'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },

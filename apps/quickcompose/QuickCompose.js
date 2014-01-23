@@ -383,7 +383,24 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
         name: 'keyUp',
-        code: function(e) { if ( e.keyCode == 27 /* Esc */ ) this.minimize(); }
+        code: function(e) {
+          if ( e.shiftKey && e.ctrlKey ) {
+            var action = {
+               55: RichTextView.NUMBERED_LIST,
+               56: RichTextView.BULLET_LIST,
+              219: RichTextView.DECREASE_INDENTATION,
+              221: RichTextView.INCREASE_INDENTATION,
+               57: RichTextView.BLOCK_QUOTE,
+               87: RichTextView.LEFT_JUSTIFY,
+               69: RichTextView.CENTER_JUSTIFY,
+               82: RichTextView.RIGHT_JUSTIFY,
+               48: RichTextView.REMOVE_FORMATTING
+            }[e.keyCode];
+
+            if ( action ) action.action.apply(this.view.bodyView);
+          }
+          if ( e.keyCode == 27 /* Esc */ ) this.minimize();
+        }
       },
       {
         model_: 'Method',
@@ -398,15 +415,15 @@ var QuickCompose = FOAM({
   templates: [
     {
       name: "toHTML",
-      template: "<head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>Quick Message</title></head><body><% this.header(out); %><%= this.view.toHTML() %><% this.toolbar(out); %></body>"
+      template: "<head><link rel=\"stylesheet\" type=\"text/css\" href=\"foam.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"quickcompose.css\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"contacts.css\" /><title>Quick Message</title></head><body><% this.header(out); %>%%view <% this.toolbar(out); %></body>"
     },
     {
       name: "header",
-      template: "<div id=\"header\"><%= this.minimizeButton.toHTML(), this.closeButton.toHTML() %></div>"
+      template: "<div id=\"header\">%%minimizeButton %%closeButton</div>"
     },
     {
       name: "toolbar",
-      template: "<div class=toolbar><%= this.sendButton.toHTML(), this.boldButton.toHTML(), this.italicButton.toHTML(), this.underlineButton.toHTML(), this.linkButton.toHTML(), this.discardButton.toHTML() %></div>"
+      template: "<div class=toolbar>%%sendButton %%boldButton %%italicButton %%underlineButton %%linkButton %%discardButton</div>"
     }
   ]
 });

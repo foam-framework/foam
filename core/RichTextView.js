@@ -22,7 +22,6 @@
  *    check that the selected text is actually part of the element
  *    add the rest of the common styling options
  *    improve L&F
- *    add an optional HTML-sanitizer for hosted apps
  */
 
 var Link = FOAM({
@@ -233,7 +232,6 @@ var RichTextView = FOAM({
         Events.unlink(this.domValue, oldValue);
         Events.link(this.domValue, newValue);
         newValue.addListener(this.maybeShowPlaceholder);
-        newValue.addListener(console.log.bind(console));
       }
     },
     {
@@ -460,6 +458,10 @@ var RichTextView = FOAM({
       this.document = this.$.contentDocument;
       var body = this.document.body;
 
+      body.insertAdjacentHTML(
+        'beforebegin',
+        '<style>blockquote{border-left-color:#ccc;border-left-style:solid;padding-left:1ex;}</style>');
+
       body.style.overflow = 'auto';
       body.style.margin = '5px';
       body.style.height = '100%';
@@ -615,7 +617,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'huge',
-      help: 'Set\'s the font size to small.',
+      help: 'Set\'s the font size to huge.',
       label: 'huge',
       parent: 'fontSize',
       action: function() {
@@ -757,6 +759,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'leftJustify',
       parent: 'justification',
+      // Ctrl-Shift-L
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyLeft");
@@ -766,6 +769,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'centerJustify',
       parent: 'justification',
+      // Ctrl-Shift-E
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyCenter");
@@ -775,6 +779,7 @@ var RichTextView = FOAM({
       model_: 'Action',
       name: 'rightJustify',
       parent: 'justification',
+      // Ctrl-Shift-R
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('justifyRight');
@@ -783,6 +788,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'numberedList',
+      // Ctrl-Shift-7
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertOrderedList');
@@ -791,6 +797,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'bulletList',
+      // Ctrl-Shift-8
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertUnorderedList');
@@ -799,6 +806,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'decreaseIndentation',
+      // Ctrl-[
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('outdent');
@@ -807,6 +815,7 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'increaseIndentation',
+      // Ctrl-]
       action: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('indent');
@@ -815,8 +824,10 @@ var RichTextView = FOAM({
     {
       model_: 'Action',
       name: 'blockQuote',
+      // Ctrl-Shift-9
       action: function() {
         this.$.contentWindow.focus();
+        this.document.execCommand('formatBlock', false, '<blockquote>');
       }
     }
   ]
