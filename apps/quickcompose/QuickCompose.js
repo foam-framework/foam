@@ -383,7 +383,24 @@ var QuickCompose = FOAM({
       {
         model_: 'Method',
         name: 'keyUp',
-        code: function(e) { if ( e.keyCode == 27 /* Esc */ ) this.minimize(); }
+        code: function(e) {
+          if ( e.shiftKey && e.ctrlKey ) {
+            var action = {
+               55: RichTextView.NUMBERED_LIST,
+               56: RichTextView.BULLET_LIST,
+              219: RichTextView.DECREASE_INDENTATION,
+              221: RichTextView.INCREASE_INDENTATION,
+               57: RichTextView.BLOCK_QUOTE,
+               87: RichTextView.LEFT_JUSTIFY,
+               69: RichTextView.CENTER_JUSTIFY,
+               82: RichTextView.RIGHT_JUSTIFY,
+               48: RichTextView.REMOVE_FORMATTING
+            }[e.keyCode];
+
+            if ( action ) action.action.apply(this.view.bodyView);
+          }
+          if ( e.keyCode == 27 /* Esc */ ) this.minimize();
+        }
       },
       {
         model_: 'Method',

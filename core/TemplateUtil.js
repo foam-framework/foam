@@ -60,10 +60,8 @@ var TemplateParser = {
 
 var TemplateOutput = {
   create: function(obj) {
-    console.log('*************** create: ', obj);
     var buf = '';
     var f = function(/* arguments */) {
-//    console.log('*******', arguments, buf);
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
         buf += o.toHTML ? o.toHTML() : o;
