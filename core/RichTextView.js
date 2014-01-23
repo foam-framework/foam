@@ -22,7 +22,6 @@
  *    check that the selected text is actually part of the element
  *    add the rest of the common styling options
  *    improve L&F
- *    add an optional HTML-sanitizer for hosted apps
  */
 
 var Link = FOAM({
@@ -459,6 +458,10 @@ var RichTextView = FOAM({
       this.dropzone = drop;
       this.document = this.$.contentDocument;
       var body = this.document.body;
+
+      body.insertAdjacentHTML(
+        'beforebegin',
+        '<style>blockquote{border-left-color:#ccc;border-left-style:solid;padding-left:1ex;}</style>');
 
       body.style.overflow = 'auto';
       body.style.margin = '5px';
