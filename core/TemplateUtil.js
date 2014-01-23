@@ -33,6 +33,7 @@ var TemplateParser = {
   START: sym('markup'),
 
   markup: repeat0(alt(
+    sym('simple value'),
     sym('raw values tag'),
     sym('values tag'),
     sym('code tag'),
@@ -41,6 +42,8 @@ var TemplateParser = {
     sym('single quote'),
     sym('text')
   )),
+
+  'simple value': seq('%%', repeat(not(alt(' ','\n','<'), anyChar))),
 
   'raw values tag': alt(
     seq('<%=', repeat(not('%>', anyChar)), '%>'),
@@ -94,6 +97,7 @@ var TemplateCompiler = {
      this.out = [];
      return ret;
    },
+   'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
    'values tag': function (v) { this.push("',", AbstractView.getPrototype().strToHTML(v[1].join('')), ",'"); },
    'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },

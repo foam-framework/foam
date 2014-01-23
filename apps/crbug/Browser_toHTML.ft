@@ -18,11 +18,11 @@
   <td width=150></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search <%= this.searchChoice %> for <%= this.searchField %>  <%= this.linkButton %> <%= this.countField %>
+  Search %%searchChoice for %%searchField %%linkButton %%countField
   <img id="settings" src="images/settings.svg"></div>
   </td>
   </tr>
 </table>
 <hr color="#9BC0FA">
-</div><%= this.view %></body>
+</div>%%view</body>
 </html>
