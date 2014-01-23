@@ -371,13 +371,12 @@ var ImageView = FOAM({
     initHTML: function() {
       this.SUPER();
       
-      if ( chrome.app ) {
+      if ( chrome.app.runtime ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
         xhr.responseType = 'blob';
         xhr.asend(function(blob) {
-          blob.name = 'dropped image';
           if ( blob ) {
             self.$.src = URL.createObjectURL(blob);
           }
