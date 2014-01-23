@@ -308,11 +308,12 @@ var QuickCompose = FOAM({
        name:  'send',
        help:  'Send (Ctrl-Enter)',
 
-       isEnabled: function(obj, ret) {
-         var email = obj.email;
-         Events.dynamic(function() { email.to; email.subject; email.body; }, function() {
-           ret(email.to.length && ( email.subject || email.body ));
-         });
+       isEnabled: function(obj) {
+         var email   = obj.email;
+         var length  = email.to.length;
+         var subject = email.subject;
+         var body    = email.body;
+         return length && ( subject || body );
        },
        action: function() {
          this.email.timeStamp = new Date();

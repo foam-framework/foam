@@ -79,7 +79,7 @@ var Action = FOAM({
            displayWidth: 70,
            displayHeight: 3,
            view: 'FunctionView',
-           defaultValue: function(obj, ret) { ret(true); },
+           defaultValue: function() { return true; },
            help: 'Function to determine if action is enabled.'
        },
        {
@@ -117,7 +117,14 @@ var Action = FOAM({
            view: 'FunctionView',
            help: 'Function to implement action.'
        }
-   ]
+    ]
+/*
+  methods: {
+    listenIsEnabled: function(ret) {
+      Events.dynamic(function() { ret(this.isEnabled()); });
+    }
+  }
+*/
 });
 
 /* Not used yet
