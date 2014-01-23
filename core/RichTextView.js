@@ -825,6 +825,7 @@ var RichTextView = FOAM({
       // Ctrl-Shift-9
       action: function() {
         this.$.contentWindow.focus();
+        this.document.execCommand('formatBlock', false, '<blockquote>');
       }
     }
   ]
