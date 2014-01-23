@@ -323,59 +323,74 @@ var DomValue = {
 
 
 var ImageView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
-
-   properties: [
-      {
-         name: 'value',
-         valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
-            oldValue && Events.unfollow(oldValue, this.domValue);
-            Events.follow(newValue, this.domValue);
-         }
-      },
-      {
-         name: 'domValue',
-         postSet: function(newValue, oldValue) {
-            oldValue && Events.unfollow(this.value, oldValue);
-            Events.follow(this.value, newValue);
-         }
-      },
-      {
-         name: 'displayWidth',
-         postSet: function(newValue) {
-            if ( this.$ ) {
-               this.$.style.width = newValue;
-            }
-         }
-      },
-      {
-         name: 'displayHeight',
-         postSet: function(newValue) {
-            if ( this.$ ) {
-               this.$.style.height = newValue;
-            }
-         }
+  extendsModel: 'AbstractView',
+  
+  properties: [
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        oldValue && Events.unfollow(oldValue, this.domValue);
+        Events.follow(newValue, this.domValue);
       }
-   ],
-
-   methods: {
-      setValue: function(value) {
-         this.value = value;
-      },
-      toHTML: function() {
-         return '<img class="imageView" id="' + this.getID() + '">';
-      },
-      initHTML: function() {
-         this.SUPER();
-         this.domValue = DomValue.create(this.$, undefined, 'src');
-         this.displayHeight = this.displayHeight;
-         this.displayWidth = this.displayWidth;
+    },
+    {
+      name: 'domValue',
+      postSet: function(newValue, oldValue) {
+        oldValue && Events.unfollow(this.value, oldValue);
+        Events.follow(this.value, newValue);
       }
-   }
+    },
+    {
+      name: 'displayWidth',
+      postSet: function(newValue) {
+        if ( this.$ ) {
+          this.$.style.width = newValue;
+        }
+      }
+    },
+    {
+      name: 'displayHeight',
+      postSet: function(newValue) {
+        if ( this.$ ) {
+          this.$.style.height = newValue;
+        }
+      }
+    }
+  ],
+  
+  methods: {
+    setValue: function(value) {
+      this.value = value;
+    },
+    toHTML: function() {
+      return '<img class="imageView" id="' + this.getID() + '">';
+    },
+    initHTML: function() {
+      this.SUPER();
+      
+      if ( chrome.app ) {
+        var self = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", this.value.get());
+        xhr.responseType = 'blob';
+        xhr.asend(function(blob) {
+          blob.name = 'dropped image';
+          if ( blob ) {
+            self.$.src = URL.createObjectURL(blob);
+          }
+        });
+      } else {
+        this.domValue = DomValue.create(this.$, undefined, 'src');
+        this.displayHeight = this.displayHeight;
+        this.displayWidth = this.displayWidth;
+      }
+    }
+  }
 });
+
 
 var BlobImageView = FOAM({
   model_: 'Model',
