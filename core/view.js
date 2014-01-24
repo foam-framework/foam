@@ -1283,7 +1283,7 @@ var ImageBooleanView = FOAM({
 
    extendsModel: 'AbstractView',
 
-   name:  'BooleanView',
+   name:  'ImageBooleanView',
 
    properties: [
       {
@@ -1306,24 +1306,19 @@ var ImageBooleanView = FOAM({
    methods: {
     image: function() {
       return this.value.get() ? this.trueImage : this.falseImage;
-//      return this.value.value ? this.trueImage : this.falseImage;
     },
     toHTML: function() {
-      return '<img id="' + this.getID() + '" name="' + this.name + '" src="' + this.image() + '">';
+      return '<img id="' + this.getID() + '" name="' + this.name + '">';
     },
 
     initHTML: function() {
       if ( ! this.$ ) return;
       this.$.addEventListener('click', function(evt) {
         evt.stopPropagation();
-//        this.value.value = ! this.value.value;
         this.value.set(! this.value.get());
         return false;
       }.bind(this), true);
-
-      this.value.addListener(function() {
-        this.$.src = this.image();
-      }.bind(this));
+      this.update();
     },
 
     getValue: function() {
@@ -1331,15 +1326,24 @@ var ImageBooleanView = FOAM({
     },
 
     setValue: function(value) {
-      Events.unlink(this.domValue, this.value);
+      this.value && this.value.removeListener(this.update);
       this.value = value;
-      Events.link(value, this.domValue);
+      value.addListener(this.update);
     },
 
     destroy: function() {
-      Events.unlink(this.domValue, this.value);
+      this.value.removeListener(this.update);
     }
-   }
+   },
+
+  listeners: [
+    {
+      name: 'update',
+      code: function() {
+        this.$.src = this.image();
+      }
+    }
+  ]
 });
 
 

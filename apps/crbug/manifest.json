@@ -23,6 +23,7 @@
         "foam.js",
         "ImportedModels.js",
         "Models.js",
+        "QIssuePreviewView.js",
         "QIssueTileView.js",
         "DAO.js",
         "View.js",
