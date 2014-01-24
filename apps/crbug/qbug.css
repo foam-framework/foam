@@ -33,7 +33,7 @@ body { overflow: hidden; }
   font-weight: bold;
 }
 
-.CIssueTableHeader {
+.QIssueTableHeader {
   background:rgb(235, 239, 249);
   border-color: rgb(187, 187, 187);
   border-style: solid;
@@ -43,7 +43,7 @@ body { overflow: hidden; }
   width:99.4%;
 }
 
-.CIssueTable {
+.QIssueTable {
   background: #fff;
   border: 1px solid #ccc;
   font-family: arial, sans-serif;
@@ -54,35 +54,35 @@ body { overflow: hidden; }
   width:99.6%;
 }
 
-.CIssueTable thead {
+.QIssueTable thead {
   background-color: #eee;
   height: 90px;
 }
 
-.CIssueTable th {
+.QIssueTable th {
   font-weight: bold;
   padding: 2px;
   color: #00c;
   border: 1px solid #ccc;
 }
 
-.CIssueTable td {
+.QIssueTable td {
   color: #000;
   padding: 2px;
   border-top: 1px solid #ccc;
 }
 
-.CIssueTable .OS {
+.QIssueTable .OS {
   white-space: normal;
   overflow: auto;
 }
 
-.CIssueTable .summary {
+.QIssueTable .summary {
   white-space: normal;
   overflow: auto;
 }
 
-.CIssueTable .label {
+.QIssueTable .label {
   color: green!important;
   font: 80% arial,sans-serif;
   white-space: nowrap;
@@ -99,7 +99,7 @@ body { overflow: hidden; }
   font-weight: normal;
 }
 
-.CIssuePreview {
+.QIssuePreview {
   border: 1px solid #666;
 }
 

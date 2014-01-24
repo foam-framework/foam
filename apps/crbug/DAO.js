@@ -49,7 +49,7 @@ var IssueRestDAO = FOAM({
 
 /*
 IssueNetworkDAO
-  .where(GT(CIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
+  .where(GT(QIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
   .limit(10)
   .select(console.log.json);
 

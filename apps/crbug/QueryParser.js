@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var QueryParser = {
-  __proto__: QueryParserFactory(CIssue),
+  __proto__: QueryParserFactory(QIssue),
 
   stars: seq(literal_ic('stars:'), sym('number')),
 
@@ -35,7 +35,7 @@ var QueryParser = {
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(CONTAINS_IC(CIssue.LABELS, v[0] + '-' + values[i]));
+      or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
     }
     return or;
   }

@@ -25,11 +25,11 @@ var labelToProperty = {
 };
 
 
-var CIssue = FOAM({
+var QIssue = FOAM({
     model_: 'Model',
-    extendsModel: 'GeneratedCIssue',
+    extendsModel: 'GeneratedQIssue',
 
-    name: 'CIssue',
+    name: 'QIssue',
 
     tableProperties:
     [
@@ -143,7 +143,7 @@ var CIssue = FOAM({
             tableWidth: '100%',
             tableFormatter: function(value, row) {
               return value +
-                CIssue.LABELS.tableFormatter(row.labels, row);
+                QIssue.LABELS.tableFormatter(row.labels, row);
             }
         },
         {
@@ -235,7 +235,7 @@ var CIssue = FOAM({
     }
 });
 
-CIssue.properties.forEach(function(p) {
+QIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
     p["tableFormatter"] = function(v) {
       return ('' + v).length ? v : '----';

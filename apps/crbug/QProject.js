@@ -35,22 +35,22 @@ var QProject = Model.create({
     {
       name: 'IssueDAO',
       valueFactory: function() {
-        var IssueMDAO  = MDAO.create({model: CIssue})
-          .addIndex(CIssue.ID)
-          .addIndex(CIssue.PRIORITY)
-          .addIndex(CIssue.MILESTONE)
-          .addIndex(CIssue.ITERATION)
-          .addIndex(CIssue.RELEASE_BLOCK)
-          .addIndex(CIssue.CATEGORY)
-          .addIndex(CIssue.STATUS)
-          .addIndex(CIssue.OWNER)
-          .addIndex(CIssue.SUMMARY)
-          .addIndex(CIssue.OS)
-          .addIndex(CIssue.UPDATED);
+        var IssueMDAO  = MDAO.create({model: QIssue})
+          .addIndex(QIssue.ID)
+          .addIndex(QIssue.PRIORITY)
+          .addIndex(QIssue.MILESTONE)
+          .addIndex(QIssue.ITERATION)
+          .addIndex(QIssue.RELEASE_BLOCK)
+          .addIndex(QIssue.CATEGORY)
+          .addIndex(QIssue.STATUS)
+          .addIndex(QIssue.OWNER)
+          .addIndex(QIssue.SUMMARY)
+          .addIndex(QIssue.OS)
+          .addIndex(QIssue.UPDATED);
         
         var IssueIDBDAO = IDBDAO.create({
-          model: CIssue,
-          name: this.projectName + '_' + CIssue.plural
+          model: QIssue,
+          name: this.projectName + '_' + QIssue.plural
         });
 
         return CachingDAO.create(IssueMDAO, IssueIDBDAO);
@@ -62,7 +62,7 @@ var QProject = Model.create({
       valueFactory: function() {
         return IssueRestDAO.create({
           url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          model: CIssue
+          model: QIssue
         });
       },
       transient: true
@@ -105,7 +105,7 @@ var QProject = Model.create({
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueDAO,
           lastModified: new Date(2011,01,01),
-          modifiedProperty: CIssue.UPDATED
+          modifiedProperty: QIssue.UPDATED
         });
       }
     }
@@ -121,7 +121,7 @@ var QProject = Model.create({
           var window = self.window = w.contentWindow;
           apar(
             arequire('GridView'),
-            arequire('CIssueTileView'),
+            arequire('QIssueTileView'),
             arequire('Browser')
           )(function () {
             $addWindow(window);
