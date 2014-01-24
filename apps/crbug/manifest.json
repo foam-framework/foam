@@ -29,7 +29,7 @@
         "QProject.js",
         "Browser.js",
         "PreviewView.js",
-        "CIssueQueryParser.js",
+        "QueryParser.js",
         "bg.js"
       ]
     }

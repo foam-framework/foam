@@ -52,7 +52,7 @@ var ItemCount = Model.create({
           var col = altView.views[1].view().col.value.get();
           var row = altView.views[1].view().row.value.get();
           var q = AND(
-             CIssueQueryParser.parseString(searchField.value.get()),
+             QueryParser.parseString(searchField.value.get()),
              EQ(col, col.f(this.obj)),
              EQ(row, row.f(this.obj))).partialEval();
           searchField.value.set(q.toMQL());

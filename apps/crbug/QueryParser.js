@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var CIssueQueryParser = {
+var QueryParser = {
   __proto__: QueryParserFactory(CIssue),
 
   stars: seq(literal_ic('stars:'), sym('number')),
@@ -41,8 +41,8 @@ var CIssueQueryParser = {
   }
 });
 
-CIssueQueryParser.expr = alt(
-  CIssueQueryParser.export('expr'),
+QueryParser.expr = alt(
+  QueryParser.export('expr'),
   sym('stars'),
   sym('labelMatch')
 );
@@ -50,7 +50,7 @@ CIssueQueryParser.expr = alt(
 /*
 function test(query) {
   console.log('QueryParserTest: ' + query);
-  var res = CIssueQueryParser.parseString(query);
+  var res = QueryParser.parseString(query);
   console.log('query: ', query, ' -> ', res && res.toSQL());
 }
 

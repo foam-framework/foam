@@ -71,7 +71,7 @@ var Browser = Model.create({
         var m = this.view.memento;
         m.can = this.searchChoice.memento;
         // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
-        m.q = (CIssueQueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
+        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
         return m;
       }
     },
@@ -133,8 +133,8 @@ var Browser = Model.create({
         this.maybeImportCrbugUrl(this.searchField.value.get());
 
         this.search(AND(
-          CIssueQueryParser.parseString(this.searchChoice.value.get()) || TRUE,
-          CIssueQueryParser.parseString(this.searchField.value.get()) || TRUE
+          QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
+          QueryParser.parseString(this.searchField.value.get()) || TRUE
         ).partialEval());
       }
     },
