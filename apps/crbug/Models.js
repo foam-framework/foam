@@ -204,8 +204,13 @@ var QIssue = FOAM({
            var view = ImageBooleanView.create({
                trueImage: 'images/star_on.gif',
                falseImage: 'images/star_off.gif',
-               value: SimpleValue.create(val)
+               value: obj.propertyValue('starred')
              });
+
+           // TODO: Fix when we have contexts.
+           obj.addPropertyListener('starred', function() {
+             tableView.browser.IssueDAO.put(obj.clone());
+           });
 
            tableView.addChild(view);
 
@@ -226,8 +231,7 @@ var QIssue = FOAM({
       {
          model_: 'IntegerProperty',
          name: 'stars',
-         help: 'Number of stars this issue has.',
-         valueFactory: function() { return []; }
+         help: 'Number of stars this issue has.'
       }
     ],
 
