@@ -27,6 +27,7 @@
         "QIssueTileView.js",
         "DAO.js",
         "View.js",
+        "QBug.js",
         "QProject.js",
         "Browser.js",
         "PreviewView.js",
