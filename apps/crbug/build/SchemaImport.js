@@ -1152,7 +1152,7 @@ var typeModels = {
 function generateModel(schema) {
   var mps = [];
 
-  schema.properties.forEach(function(p, name) {
+  Object_forEach(schema.properties, function(p, name) {
     if ( p.type == 'array' && p.items.$ref ) p.type = 'refArray';
     if ( p.type == 'array' && p.items.type == 'string' ) p.type = 'stringArray';
     if ( p.format == 'date-time' ) p.type = 'dateTime';
@@ -1182,7 +1182,7 @@ function generateModel(schema) {
   });
 }
 
-CIssueSchema.schemas.forEach(function(value, key) {
+Object_forEach(CIssueSchema.schemas, function(value, key) {
   console.log('key: ', key);
 });
 
@@ -1192,3 +1192,4 @@ var IssueComment = generateModel(CIssueSchema.schemas.IssueComment);
 console.log(generateModel(CIssueSchema.schemas.Issue).toJSON());
 console.log(generateModel(CIssueSchema.schemas.IssueComment).toJSON());
 console.log(generateModel(CIssueSchema.schemas.IssuePerson).toJSON());
+console.log(generateModel(CIssueSchema.schemas.Project).toJSON());
