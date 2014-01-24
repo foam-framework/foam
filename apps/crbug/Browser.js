@@ -70,7 +70,8 @@ var Browser = Model.create({
       getter: function() {
         var m = this.view.memento;
         m.can = this.searchChoice.memento;
-        m.q = this.searchField.value.get();
+        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
+        m.q = (CIssueQueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
         return m;
       }
     },
