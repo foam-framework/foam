@@ -23,13 +23,14 @@
         "foam.js",
         "ImportedModels.js",
         "Models.js",
-        "CIssueTileView.js",
+        "QIssueTileView.js",
         "DAO.js",
         "View.js",
-        "Project.js",
+        "QBug.js",
+        "QProject.js",
         "Browser.js",
         "PreviewView.js",
-        "CIssueQueryParser.js",
+        "QueryParser.js",
         "bg.js"
       ]
     }

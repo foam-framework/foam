@@ -1,5 +1,5 @@
 <%
-  var starView = CIssue.STARRED.view.create();
+  var starView = QIssue.STARRED.view.create();
   starView.value = this.issue.propertyValue('starred');
   this.addChild(starView);
 %>

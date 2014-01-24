@@ -368,10 +368,14 @@ var ImageView = FOAM({
     toHTML: function() {
       return '<img class="imageView" id="' + this.getID() + '">';
     },
+    isSupportedUrl: function(url) {
+      url = url.trim().toLowerCase();
+      return url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('filesystem:');
+    },
     initHTML: function() {
       this.SUPER();
       
-      if ( chrome.app.runtime ) {
+      if ( chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
@@ -902,6 +906,18 @@ var ChoiceView = FOAM({
          valueFactory: function() { return SimpleValue.create(); }
       },
      {
+       name: 'memento',
+       getter: function() {
+         var value = this.value.get();
+         for ( var i = 0 ; i < this.choices.length ; i++ ) {
+           var choice = this.choices[i];
+           if ( value === choice[0] ) return i;
+         }
+         return undefined;
+       },
+       setter: function(m) { if ( m ) this.value.set(this.choices[m][0]); }
+     },
+     {
        name: 'choice',
        getter: function() {
          var value = this.value.get();
@@ -930,7 +946,7 @@ var ChoiceView = FOAM({
      findChoiceIC: function(name) {
        name = name.toLowerCase();
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-         if ( this.choices[i][1].toLowerCase == name )
+         if ( this.choices[i][1].toLowerCase() == name )
            return this.choices[i];
        }
      },

@@ -46,10 +46,37 @@ var IssueRestDAO = FOAM({
   }
 });
 
+var QIssueStarringDAO = FOAM({
+  model_: 'Model',
+  name: 'QIssueStarringDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'url'
+    }
+  ],
+
+  methods: {
+    put: function(obj, sink) {
+      var star = obj.starred ? '/star' : '/unstar';
+      var self = this;
+      ajsonp(this.url + '/' + obj.id + star, undefined, 'POST')(
+        function(resp, status){
+          if ( status >= 200 && status < 300 ) {
+            self.delegate.put(obj, sink);
+          } else {
+            sink && sink.error && sink.error('put', obj);
+          }
+        });
+    }
+  }
+});
+
 
 /*
 IssueNetworkDAO
-  .where(GT(CIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
+  .where(GT(QIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
   .limit(10)
   .select(console.log.json);
 

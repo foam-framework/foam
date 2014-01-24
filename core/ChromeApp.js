@@ -81,8 +81,8 @@ function arequire(modelName) {
 }
 
 
-ajsonp = function(url, params) {
-  return axhr(url, 'GET', params);
+ajsonp = function(url, params, opt_method) {
+  return axhr(url, opt_method ? opt_method : 'GET', params);
 };
 
 var OAuthXhr = {

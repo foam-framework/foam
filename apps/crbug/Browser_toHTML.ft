@@ -2,8 +2,8 @@
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
-  <link rel="stylesheet" type="text/css" href="crbug.css" />
-  <title>Chromium Issues</title>
+  <link rel="stylesheet" type="text/css" href="qbug.css" />
+  <title>QuickBug</title>
  </head>
  <body><div id="header">
 <table>

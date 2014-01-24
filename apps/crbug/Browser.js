@@ -63,12 +63,15 @@ var Browser = Model.create({
     {
       name: 'memento',
       setter: function(m) {
-        m.hasOwnProperty('q') && this.searchField.value.set(m.q);
+        this.searchChoice.memento = m.can;
+        if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
         this.view.memento = m;
       },
       getter: function() {
         var m = this.view.memento;
-        m.q = this.searchField.value.get();
+        m.can = this.searchChoice.memento;
+        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
+        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
         return m;
       }
     },
@@ -130,8 +133,8 @@ var Browser = Model.create({
         this.maybeImportCrbugUrl(this.searchField.value.get());
 
         this.search(AND(
-          CIssueQueryParser.parseString(this.searchChoice.value.get()) || TRUE,
-          CIssueQueryParser.parseString(this.searchField.value.get()) || TRUE
+          QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
+          QueryParser.parseString(this.searchField.value.get()) || TRUE
         ).partialEval());
       }
     },
@@ -201,6 +204,25 @@ var Browser = Model.create({
 
     preview: function() {},
 
+    /** Filter data with the supplied predicate, or select all data if null. **/
+    search: function(p) {
+      if ( p ) console.log('SEARCH: ', p.toSQL());
+      this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
+      var self = this;
+      apar(
+        this.view.dao.select(COUNT()),
+        this.IssueDAO.select(COUNT()))(function(x, y) {
+          self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
+        }
+      );
+
+      console.log(this.crbugUrl());
+    },
+
+    // Crbug doesn't order canned-queries sequentially
+    idToCrbugCan: [1, 2, 3, 4, 5, 8, 6, 7],
+    crbugCanToId: [0, 0, 1, 2, 3, 4, 6, 7, 5],
+
     /** Import a cr(1)bug URL. **/
     maybeImportCrbugUrl: function(url) {
       url = url.trim();
@@ -220,22 +242,9 @@ var Browser = Model.create({
           decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
       }
 
+      if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
+
       this.memento = memento;
-    },
-
-    /** Filter data with the supplied predicate, or select all data if null. **/
-    search: function(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL());
-      this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
-      var self = this;
-      apar(
-        this.view.dao.select(COUNT()),
-        this.IssueDAO.select(COUNT()))(function(x, y) {
-          self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
-        }
-      );
-
-      console.log(this.crbugUrl());
     },
 
     /** Convert current state to a cr(1)bug URL. **/
@@ -243,6 +252,9 @@ var Browser = Model.create({
       var u = this.url + '/issues/list';
       var m = this.memento;
       var d = '?';
+
+      if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
+
       for ( var key in m ) {
         u += d;
         

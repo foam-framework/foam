@@ -1,6 +1,6 @@
 var p;
 function launch() {
-  if ( ! p ) p = Project.create();
+  if ( ! p ) p = QProject.create();
   p.launchBrowser();
 }
 
@@ -11,10 +11,10 @@ if ( chrome.app.runtime ) {
       responseType: "json"
     });
 
-    return function(url, params) {
+    return function(url, params, opt_method) {
       return function(ret) {
         var xhr = factory.make();
-        return xhr.asend(ret, "GET", url + (params ? '?' + params.join('&') : ''));
+        return xhr.asend(ret, opt_method ? opt_method : "GET", url + (params ? '?' + params.join('&') : ''));
       };
     };
   })();

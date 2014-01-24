@@ -52,7 +52,7 @@ var ItemCount = Model.create({
           var col = altView.views[1].view().col.value.get();
           var row = altView.views[1].view().row.value.get();
           var q = AND(
-             CIssueQueryParser.parseString(searchField.value.get()),
+             QueryParser.parseString(searchField.value.get()),
              EQ(col, col.f(this.obj)),
              EQ(row, row.f(this.obj))).partialEval();
           searchField.value.set(q.toMQL());
@@ -99,11 +99,11 @@ function createView(rowSelection, browser) {
                  this.view.browser = browser;
                },
                toHTML: function() {
-                 return '<div class="CIssueTableHeader"></div>' + this.SUPER();
+                 return '<div class="QIssueTableHeader"></div>' + this.SUPER();
                }
              }
           }).create({view: TableView.create({
-            model: CIssue,
+            model: QIssue,
             hardSelection: rowSelection,
             editColumnsEnabled: true
           })});
@@ -113,7 +113,7 @@ function createView(rowSelection, browser) {
         label: 'Grid',
         view: function() {
            var g = Model.create({
-              name: 'CIssueGridView',
+              name: 'QIssueGridView',
               extendsModel: 'GridView',
               properties: [
                 {
@@ -122,21 +122,21 @@ function createView(rowSelection, browser) {
                    preSet: function(dao) { return dao.limit(6000); }
                 }
               ]}).create({
-                model: CIssue,
+                model: QIssue,
                 accChoices: [
-                   [ MAP(CIssueTileView.create(), COL.create()), "Tiles"  ],
+                   [ MAP(QIssueTileView.create(), COL.create()), "Tiles"  ],
                    [ MAP(idFormatter, COL.create()),             "IDs"    ],
                    [ ItemCount.create(),                         "Counts" ],
-                   [ PIE(CIssue.STATUS),                         "PIE(Status)" ],
-                   [ PIE(CIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
-//                 [ PIE(CIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                   [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
+                   [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
+//                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: GridByExpr.create()
            });
 
            // Pre-set default values.  TODO: persist settings
-           g.row.value.set(CIssue.OWNER);
-           g.col.value.set(CIssue.STATUS);
+           g.row.value.set(QIssue.OWNER);
+           g.col.value.set(QIssue.STATUS);
            g.acc.choice = g.accChoices[0];
 
            return g;

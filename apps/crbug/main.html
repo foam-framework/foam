@@ -5,16 +5,17 @@
   <script language="javascript" src="../../core/SyncManager.js"></script>
   <script language="javascript" src="ImportedModels.js"></script>
   <script language="javascript" src="Models.js"></script>
-  <script language="javascript" src="CIssueTileView.js"></script>
+  <script language="javascript" src="QIssueTileView.js"></script>
   <script language="javascript" src="DAO.js"></script>
   <script language="javascript" src="View.js"></script>
-  <script language="javascript" src="CIssueQueryParser.js"></script>
-  <script language="javascript" src="Project.js"></script>
+  <script language="javascript" src="QueryParser.js"></script>
+  <script language="javascript" src="QBug.js"></script>
+  <script language="javascript" src="QProject.js"></script>
   <script language="javascript" src="Browser.js"></script>
  </head>
  <body>
    <script language="javascript">
-     var p = Project.create();
+     var p = QProject.create();
 
      // TODO: fix async template loading and remove this timeout
      setTimeout(function() {

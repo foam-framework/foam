@@ -1,16 +1,16 @@
-var CIssueTileView = FOAM({
+var QIssueTileView = FOAM({
    model_: 'Model',
 
    extendsModel: 'AbstractView',
 
-   name: 'CIssueTileView',
-   label: 'CIssue Tile View',
+   name: 'QIssueTileView',
+   label: 'QIssue Tile View',
 
    properties: [
       {
          name:  'issue',
          label: 'Issue',
-         type:  'CIssue'
+         type:  'QIssue'
       }
    ],
 
@@ -19,7 +19,7 @@ var CIssueTileView = FOAM({
      put: function(issue) { this.issue = issue; },
 
      // Implement Adapter
-     f: function(issue) { return CIssueTileView.create({issue: issue}); },
+     f: function(issue) { return QIssueTileView.create({issue: issue}); },
 
      toString: function() { return this.toHTML(); }
    },
