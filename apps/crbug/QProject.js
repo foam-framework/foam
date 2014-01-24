@@ -25,6 +25,12 @@ var QProject = Model.create({
 
   properties: [
     {
+      name: 'qbug',
+    },
+    {
+      name: 'project',
+    },
+    {
       name: 'baseURL',
       defaultValue: 'https://code.google.com/p/'
     },
