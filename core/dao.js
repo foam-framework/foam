@@ -2354,7 +2354,9 @@ var RestDAO = FOAM({
     buildURL: function(options) {
       return this.url;
     },
-
+    buildFindURL: function(key) {
+      return this.url;
+    },
     put: function(value, sink) {
     },
     remove: function(query, sink) {
@@ -2388,6 +2390,10 @@ var RestDAO = FOAM({
       return fut.get;
     },
     find: function(key, sink) {
+      var self = this;
+      ajsonp(this.buildFindURL(key))(function(data) {
+        sink && sink.put && sink.put(self.jsonToObj(data));
+      });
     }
   }
 });
