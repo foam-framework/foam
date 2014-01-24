@@ -37,9 +37,8 @@ var QBug = Model.create({
           model: Project
         });
 
-        dao.buildURL = function(options) {
-console.log('*********** url', this.url + options.query.arg2.f());
-          return this.url + options.query.arg2.f();
+        dao.buildFindURL = function(options) {
+          return this.url + options;
         };
 
           /*
@@ -76,7 +75,7 @@ console.log('*********** url', this.url + options.query.arg2.f());
         put: function(project) {
           var p = QProject.create({qbug: self, name: projectName, project: project});
 
-          this.projects_[projectName] = p;
+          self.projects_[projectName] = p;
 
           sink.put(p);
         }

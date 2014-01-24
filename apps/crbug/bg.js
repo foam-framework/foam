@@ -1,7 +1,7 @@
-var p;
+var qb;
 function launch() {
-  if ( ! p ) p = QProject.create();
-  p.launchBrowser();
+  if ( ! qb ) qb = QBug.create();
+  qb.launchBrowser();
 }
 
 if ( chrome.app.runtime ) {
