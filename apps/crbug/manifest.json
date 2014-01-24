@@ -26,7 +26,7 @@
         "CIssueTileView.js",
         "DAO.js",
         "View.js",
-        "Project.js",
+        "QProject.js",
         "Browser.js",
         "PreviewView.js",
         "CIssueQueryParser.js",

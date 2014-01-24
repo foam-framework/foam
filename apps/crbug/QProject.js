@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-var Project = Model.create({
-  name: 'Project',
+var QProject = Model.create({
+  name: 'QProject',
 
   tableProperties: [
     'projectName',

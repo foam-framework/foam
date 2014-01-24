@@ -1,6 +1,6 @@
 var p;
 function launch() {
-  if ( ! p ) p = Project.create();
+  if ( ! p ) p = QProject.create();
   p.launchBrowser();
 }
 
