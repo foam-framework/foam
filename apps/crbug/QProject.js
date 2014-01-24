@@ -53,7 +53,12 @@ var QProject = Model.create({
           name: this.projectName + '_' + QIssue.plural
         });
 
-        return CachingDAO.create(IssueMDAO, IssueIDBDAO);
+        var IssueCachingDAO = CachingDAO.create(IssueMDAO, IssueIDBDAO);
+
+        return QIssueStarringDAO.create({
+          delegate: IssueCachingDAO,
+          url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues'
+        });
       },
       transient: true
     },
@@ -103,7 +108,7 @@ var QProject = Model.create({
       valueFactory: function() {
         return SyncManager.create({
           srcDAO: this.IssueNetworkDAO,
-          dstDAO: this.IssueDAO,
+          dstDAO: this.IssueDAO.delegate,
           lastModified: new Date(2011,01,01),
           modifiedProperty: QIssue.UPDATED
         });
