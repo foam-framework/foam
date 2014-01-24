@@ -368,10 +368,14 @@ var ImageView = FOAM({
     toHTML: function() {
       return '<img class="imageView" id="' + this.getID() + '">';
     },
+    isSupportedUrl: function(url) {
+      url = url.trim().toLowerCase();
+      return url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('filesystem:');
+    },
     initHTML: function() {
       this.SUPER();
       
-      if ( chrome.app.runtime ) {
+      if ( chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());

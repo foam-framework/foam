@@ -190,6 +190,8 @@ var QuickCompose = FOAM({
 
   name: 'QuickCompose',
 
+  extendsModel: 'AbstractView',
+
   properties: [
     {
       name: 'window'
@@ -266,16 +268,7 @@ var QuickCompose = FOAM({
     initHTML: function() {
       this.view.value = this.propertyValue('email');
 
-      // TODO: this child initialization should all be automatic
-      this.view.initHTML();
-      this.sendButton.initHTML();
-      this.boldButton.initHTML();
-      this.italicButton.initHTML();
-      this.underlineButton.initHTML();
-      this.linkButton.initHTML();
-      this.discardButton.initHTML();
-      this.closeButton.initHTML();
-      this.minimizeButton.initHTML();
+      this.SUPER();
 
       this.closeButton.$.tabIndex = -1;
       this.minimizeButton.$.tabIndex = -1;
