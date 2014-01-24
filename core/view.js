@@ -942,7 +942,7 @@ var ChoiceView = FOAM({
      findChoiceIC: function(name) {
        name = name.toLowerCase();
        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-         if ( this.choices[i][1].toLowerCase == name )
+         if ( this.choices[i][1].toLowerCase() == name )
            return this.choices[i];
        }
      },
