@@ -902,6 +902,18 @@ var ChoiceView = FOAM({
          valueFactory: function() { return SimpleValue.create(); }
       },
      {
+       name: 'memento',
+       getter: function() {
+         var value = this.value.get();
+         for ( var i = 0 ; i < this.choices.length ; i++ ) {
+           var choice = this.choices[i];
+           if ( value === choice[0] ) return i;
+         }
+         return undefined;
+       },
+       setter: function(m) { if ( m ) this.value.set(this.choices[m][0]); }
+     },
+     {
        name: 'choice',
        getter: function() {
          var value = this.value.get();
