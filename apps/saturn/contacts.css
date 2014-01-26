@@ -3,6 +3,7 @@
     background: #f8f8f8;
     border-radius: 2px;
     border: 1px solid #ddd;
+    white-space: nowrap;
 }
 
 .contactSmallName {
