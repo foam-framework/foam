@@ -919,6 +919,12 @@ defineProperties(Array.prototype, {
     }
     return a;
   },
+  deleteI: function(v) {
+    for (var i = 0; i < this.length; i++) {
+      if ( this[i] === v ) { this.splice(i, 1); i--; }
+    }
+    return this;
+  },
   removeF: function(p) {
     var a = this.clone();
     for (var i = 0; i < a.length; i++) {
@@ -927,7 +933,7 @@ defineProperties(Array.prototype, {
     return a;
   },
   removeI: function(p) {
-    for (var i = 0; i < a.length; i++) {
+    for (var i = 0; i < this.length; i++) {
       if (p.f(this[i])) { this.splice(i, 1); i--;}
     }
     return this;
