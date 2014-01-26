@@ -107,3 +107,58 @@ body { overflow: hidden; }
   border: none;
   background: white;
 }
+
+/* QIssuePreviewView*/
+.qmaincol {
+    padding: 3px;
+    background: white;
+}
+
+.qissueheader {
+    margin: 0.5em 0 0 0;
+    border: 3px solid #e5ecf9;
+    background: #e5ecf9;
+}
+
+.qpreviewtable {
+    border-collapse: separate;
+}
+
+.qh3 {
+    font-size: 130%;
+    font-width: bolder;
+}
+
+.qvt {
+    vertical-align: top;
+}
+
+.qissuepage {
+    margin-top: 0;
+}
+
+.qissuemeta {
+    width: 12em;
+    border-right: 3px solid #e5ecf9;
+    font-size: 95%;
+    vertical-align: top;
+}
+
+.qissuepage td {
+    padding: 0.5em .5em .5em 0;
+}
+
+.qissuemeta table td, .qissuemeta table th {
+    margin: 0;
+    padding: 0;
+    padding-top: 5px;
+}
+
+.qmaincol td td, .qmaincol th th, .qmaincol th td, .qmaincol td th {
+    font-size: 100%
+}
+
+.qlabel {
+    color: green;
+    text-decoration: none;
+}

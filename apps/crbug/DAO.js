@@ -29,6 +29,8 @@ var IssueRestDAO = FOAM({
       }
       if ( json.owner ) json.owner = json.owner.name.intern();
       if ( json.author ) json.author = json.author.name.intern();
+      if ( json.blocking ) json.blocking = json.blocking.map(function(b) { return b.issueId });
+      if ( json.blockedOn ) json.blockedOn = json.blockedOn.map(function(b) { return b.issueId });
 
       if ( json.mergedInto ) json.mergedInto = json.mergedInto.issueId;
       json.state = json.state.intern();

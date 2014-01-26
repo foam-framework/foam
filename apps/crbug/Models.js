@@ -35,7 +35,7 @@ var QIssue = FOAM({
     [
       'starred',
       'id',
-'app',
+      'app',
       'priority',
       'milestone',
       'iteration',
@@ -236,6 +236,9 @@ var QIssue = FOAM({
     ],
 
     methods: {
+      createPreviewView: function() {
+        return QIssuePreviewView.create({ model: QIssue });
+      }
     }
 });
 

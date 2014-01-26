@@ -302,13 +302,23 @@ var ChromeAppBrowser = Model.create({
       if ( this.currentPreview ) this.currentPreview.close();
       if ( ! id ) return;
 
-      var v = this.currentPreview = PreviewView.create({url: this.url, id: id});
-      this.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
-      v.$.style.left = e.x + 40;
-      var viewHeight = v.$.style.height.replace('px','');
-      var screenHeight = this.view.$.ownerDocument.defaultView.innerHeight;
-      var top = e.y - viewHeight/2;
-      v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top)); 
+      var self = this;
+      console.log('finding ', id);
+      this.IssueDAO.find(id, {
+        put: function(obj) {
+          console.log('found');
+          var v = self.currentPreview =
+            obj.createPreviewView();
+          v.value = SimpleValue.create(obj);
+          self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
+          v.$.style.left = e.x + 40;
+          var viewHeight = v.$.style.height.replace('px','');
+          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
+          var top = e.y - viewHeight/2;
+          v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top));
+          v.initHTML();
+        }
+      });
     }
   }
 
