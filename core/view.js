@@ -3386,7 +3386,7 @@ var ListInputView = FOAM({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.getID());
-      this.on('blur', this.onBlur, this.getID());
+      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.getID());
       this.on('focus', this.onInput, this.getID());
 
       return '<input name="' + this.name + '" type="text" id="' + this.getID() + '" class="listInputView">' + this.autocompleteView.toHTML();
@@ -3476,13 +3476,13 @@ var ListInputView = FOAM({
     {
       name: 'onBlur',
       code: function(e) {
-        var self = this;
-        window.setTimeout(function() {
-          var value = self.domInputValue.get();
-          if ( value.length > 0 ) self.pushValue(value);
-          else self.domInputValue.set('');
-          self.autocompleteView.dao = self.dao.where(FALSE);
-        }, 100);
+        var value = this.domInputValue.get();
+        if ( value.length > 0 ) {
+          this.pushValue(value);
+        } else {
+          this.domInputValue.set('');
+        }
+        this.autocompleteView.dao = this.dao.where(FALSE);
       }
     },
     {
