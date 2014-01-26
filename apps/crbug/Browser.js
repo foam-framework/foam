@@ -35,6 +35,11 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.projectName; }
     },
     {
+      name: 'summary',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.summary; }
+    },
+    {
       name: 'url',
       scope: 'project',
       defaultValueFn: function() { return this.project.url; }

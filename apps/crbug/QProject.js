@@ -36,9 +36,13 @@ var QProject = Model.create({
     },
     {
       name: 'projectName',
-      defaultValueFn: function() {
-        return this.project ? this.project.name : 'foam-framework';
-      } 
+      scope: 'project',
+      defaultValueFn: function() { return this.project.name; }
+    },
+    {
+      name: 'summary',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.summary; }
     },
     {
       name: 'IssueDAO',
