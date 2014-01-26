@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+var BROWSERS = []; // for debugging
+
+
 /** QuickBug Top-Level Object. **/
 var QBug = Model.create({
   name: 'QBug',
@@ -37,8 +40,8 @@ var QBug = Model.create({
           model: Project
         });
 
-        dao.buildFindURL = function(options) {
-          return this.url + options;
+        dao.buildFindURL = function(key) {
+          return this.url + key;
         };
 
           /*
@@ -62,7 +65,7 @@ var QBug = Model.create({
   ],
 
   methods: {
-    getProject: function(projectName, sink) {
+    findProject: function(projectName, sink) {
       if ( this.projects_[projectName] ) {
         sink.put(this.projects_[projectName]);
         return;
@@ -70,12 +73,11 @@ var QBug = Model.create({
 
       var self = this;
 
-      this.ProjectNetworkDAO.find(EQ(Project.NAME, projectName), {
+      this.ProjectNetworkDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
-          var p = QProject.create({qbug: self, name: projectName, project: project});
+          var p = QProject.create({qbug: self, project: project});
 
-console.log('project: ', p);
           self.projects_[projectName] = p;
 
           sink.put(p);
@@ -84,11 +86,11 @@ console.log('project: ', p);
     },
 
     getDefaultProject: function(sink) {
-      this.getProject(this.defaultProjectName, sink);
+      this.findProject(this.defaultProjectName, sink);
     },
 
     launchBrowser: function(opt_projectName) {
-      this.getProject(opt_projectName || this.defaultProjectName, {put: function(p) {
+      this.findProject(opt_projectName || this.defaultProjectName, {put: function(p) {
         console.log('launch: ', p);
         p.launchBrowser();
       }});

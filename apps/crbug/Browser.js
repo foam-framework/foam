@@ -278,13 +278,12 @@ var Browser = Model.create({
   },
 
   templates: [
-    {
-      name: "toHTML"
-    }
+    { name: "toHTML" }
   ]
 });
 
 
+/** A subclass of Browser which works as a Chrome-App. **/
 var ChromeAppBrowser = Model.create({
   name: 'ChromeAppBrowser',
 

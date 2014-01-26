@@ -36,7 +36,9 @@ var QProject = Model.create({
     },
     {
       name: 'projectName',
-      defaultValue: 'foam-framework'
+      defaultValueFn: function() {
+        return this.project ? this.project.name : 'foam-framework';
+      } 
     },
     {
       name: 'IssueDAO',
@@ -139,6 +141,7 @@ var QProject = Model.create({
             $addWindow(window);
             var b = ChromeAppBrowser.create({project: self, window: window});
             window.browser = b; // for debugging
+            BROWSERS.push(b); // for debugging
             w.browser = b;
             window.document.body.innerHTML = b.toHTML();
             b.initHTML();
@@ -147,6 +150,8 @@ var QProject = Model.create({
         };
         w.onClosed.addListener(function() {
           $removeWindow(self.window);
+          // for debugging
+          BROWSERS.deleteI(self.window);
         });
       });
     },
