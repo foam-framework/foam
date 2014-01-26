@@ -25,6 +25,11 @@ var Browser = Model.create({
       name: 'project'
     },
     {
+      name: 'qbug',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.qbug; }
+    },
+    {
       name: 'projectName',
       scope: 'project',
       defaultValueFn: function() { return this.project.projectName; }

@@ -75,6 +75,7 @@ var QBug = Model.create({
         put: function(project) {
           var p = QProject.create({qbug: self, name: projectName, project: project});
 
+console.log('project: ', p);
           self.projects_[projectName] = p;
 
           sink.put(p);
@@ -86,8 +87,8 @@ var QBug = Model.create({
       this.getProject(this.defaultProjectName, sink);
     },
 
-    launchBrowser: function() {
-      this.getDefaultProject({put: function(p) {
+    launchBrowser: function(opt_projectName) {
+      this.getProject(opt_projectName || this.defaultProjectName, {put: function(p) {
         console.log('launch: ', p);
         p.launchBrowser();
       }});
