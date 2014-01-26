@@ -68,8 +68,8 @@ var TemplateOutput = {
     var f = function(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
-        buf += o.toHTML ? o.toHTML() : o;
-        if ( o.initHTML && obj.addChild ) obj.addChild(o);
+        buf += o && o.toHTML ? o.toHTML() : o;
+        if ( o && o.initHTML && obj.addChild ) obj.addChild(o);
       }
     };
 
