@@ -55,6 +55,7 @@ function override(cls, methodName, method) {
   cls[methodName] = f;
 }
 
+
 var ModelProto = {
 
    __proto__: PropertyChangeSupport,
@@ -222,12 +223,12 @@ var ModelProto = {
           var primaryKey = this.ids;
 
           if (primaryKey.length == 1) {
-            cls.__defineGetter__("id", function() { return this[primaryKey[0]]; });
-            cls.__defineSetter__("id", function(val) { this[primaryKey[0]] = val; });
+            cls.__defineGetter__('id', function() { return this[primaryKey[0]]; });
+            cls.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
           } else if (primaryKey.length > 1) {
-            cls.__defineGetter__("id", function() {
+            cls.__defineGetter__('id', function() {
                 return primaryKey.map(function(key) { return this[key]; }); });
-            cls.__defineSetter__("id", function(val) {
+            cls.__defineSetter__('id', function(val) {
                 primaryKey.map(function(key, i) { this[key] = val[i]; }); });
           }
        }

@@ -36,13 +36,12 @@ console.log(i, k, v);
     }
 */
 
+    if ( this.__objProto__ != this ) debugger;
+
     var obj = {
-      __proto__: this,
+      __proto__: this.__objProto__ || this,
       instance_: {}
     };
-
-    // for debugging
-    if ( this.model_ ) obj.TYPE = this.model_.name;
 
     if ( typeof args === 'object' ) obj.copyFrom(args);
     obj.init(args);
@@ -308,7 +307,8 @@ console.log(i, k, v);
   }
 };
 
-
+/*
 AbstractPrototype.__defineGetter__('__super__', function() {
   return this.__proto__.__proto__;
 });
+*/

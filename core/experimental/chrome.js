@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var BookmarkModel = Model.create({
+var Bookmark = Model.create({
 
    name: 'Bookmark',
 
@@ -99,11 +99,11 @@ var ntp4 = {
      {
         var bookmark = bookmarks.items[i];
 
-        console.log("bookmarks.push(BookmarkModel.create({" +
+        console.log("bookmarks.push(Bookmark.create({" +
           "index: " + bookmark.index +
           ", title: '" + bookmark.title + "'" +
           ", url: '" + bookmark.url + "'" + "}));");
-        // bookmarks.push(BookmarkModel.create(bookmark));
+        // bookmarks.push(Bookmark.create(bookmark));
      }
    }
 };
@@ -112,7 +112,4 @@ if ( chrome && chrome.send ) chrome.send('getBookmarksData');
 */
 
 
-bookmarks.push(BookmarkModel.getPrototype().create({index: 1, title: 'Google Blog', url: 'http://googleblog.blogspot.com/2011/09/happy-third-birthday-chrome.html'}));
-
-
-var Bookmark = BookmarkModel.getPrototype();
+bookmarks.push(Bookmark.create({index: 1, title: 'Google Blog', url: 'http://googleblog.blogspot.com/2011/09/happy-third-birthday-chrome.html'}));

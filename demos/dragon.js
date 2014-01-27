@@ -105,7 +105,7 @@ var Dragon = Model.create({
     },
 
     init: function() {
-      this.__super__.init.apply(this, arguments);
+      this.SUPER();
       var me = this;
       this.i = 0;
       Events.dynamic(function() { timer.time; }, function() { me.paint(); });
@@ -115,7 +115,7 @@ var Dragon = Model.create({
     paint: function() {
       if ( ! this.canvasView ) return;
       this.canvasView.erase();
-      this.__super__.paint.call(this);
+      this.SUPER();
 
       var c = this.canvas;
       c.save();
