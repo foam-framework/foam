@@ -64,8 +64,11 @@ var ModelProto = {
     buildPrototype: function() {
        var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
        var cls = {
-          instance_: {},
-         __proto__: extendsModel ? extendsModel.getPrototype() : AbstractPrototype
+         __proto__: extendsModel ? extendsModel.getPrototype() : AbstractPrototype,
+         instance_: {},
+         model_: this,
+         name_: this.name,
+         TYPE: this.name + "Prototype"
        };
 
        /** Add a method to 'cls' and set it's name. **/
@@ -77,9 +80,6 @@ var ModelProto = {
            method.name = name;
          }
        }
-
-      cls.name_  = this.name;
-      cls.TYPE   = this.name + "Prototype";
 
         // add sub-models
 //        this.models && this.models.forEach(function(m) {
@@ -231,8 +231,6 @@ var ModelProto = {
                 primaryKey.map(function(key, i) { this[key] = val[i]; }); });
           }
        }
-
-       cls.model_ = this;
 
        return cls;
     },

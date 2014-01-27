@@ -20,6 +20,8 @@
 var AbstractPrototype = {
   __proto__: PropertyChangeSupport,
 
+  TYPE: 'AbstractPrototype',
+
   create: function(args) {
 /*
 console.log("args: ", args);
@@ -36,7 +38,6 @@ console.log(i, k, v);
 
     var obj = {
       __proto__: this,
-      TYPE: "AbstractPrototype", // for debug, remove
       instance_: {}
     };
 
