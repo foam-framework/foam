@@ -109,6 +109,7 @@ var QuickEMail = FOAM({
               name: prop.name,
               dao: ContactAvatarDAO,
               property: Contact.EMAIL,
+              placeholder: 'To',
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST, Contact.TITLE],
               autocompleteView: AutocompleteListView.create({
                 innerView: ContactListTileView,
@@ -131,9 +132,9 @@ var QuickEMail = FOAM({
         }
       }
     },
-    { name: 'subject',     displayWidth: 55 },
+    { name: 'subject',     displayWidth: 55, view: { model_: 'TextFieldView', placeholder: 'Subject', onKeyMode: true } },
     { name: 'attachments', view: 'AttachmentView' },
-    { name: 'body',        view: 'RichTextView' }
+    { name: 'body',        view: { model_: 'RichTextView', height: 100, onKeyMode: true, placeholder: 'Message' } }
   ]
 });
 
@@ -143,43 +144,10 @@ var QuickEMailView = Model.create({
 
   extendsModel: 'DetailView',
 
-  properties: [
-    {
-      name: 'toView',
-      valueFactory: function() {
-        return this.createView(
-          QuickEMail.TO,
-          { placeholder: QuickEMail.TO.label });
-      }
-    },
-    {
-      name: 'subjectView',
-      valueFactory: function() {
-        return this.createView(
-          QuickEMail.SUBJECT,
-          { placeholder: QuickEMail.SUBJECT.label, onKeyMode: true });
-      }
-    },
-    {
-      name: 'bodyView',
-      valueFactory: function() {
-        return this.createView(QuickEMail.BODY, {
-          height: 100,
-          onKeyMode: true,
-          placeholder: 'Message'
-        });
-      }
-    }
-  ],
-
   templates: [
     {
       name: "toHTML",
-      template:
-        '<%= this.toView.toHTML() %>' +
-        '<%= this.subjectView.toHTML() %>' +
-        '<%= this.bodyView.toHTML() %>' +
-        '<%= this.createView(QuickEMail.ATTACHMENTS).toHTML() %>'
+      template: '$$to $$subject $$body $$attachments'
     }
   ]
 });
