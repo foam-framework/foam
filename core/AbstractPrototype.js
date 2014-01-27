@@ -36,10 +36,8 @@ console.log(i, k, v);
     }
 */
 
-    if ( this.__objProto__ != this ) debugger;
-
     var obj = {
-      __proto__: this.__objProto__ || this,
+      __proto__: this,
       instance_: {}
     };
 
