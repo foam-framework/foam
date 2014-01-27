@@ -106,6 +106,16 @@ var ModelProto = {
           }
         }
 
+      // Copy parent Model's Property Contants to this Model.
+      if ( extendsModel ) {
+        for ( var i = 0 ; i < extendsModel.properties.length ; i++ ) {
+          var p = extendsModel.properties[i];
+          var name = p.name.constantize();
+
+          if ( ! this[name] ) this[name] = p;
+        }
+      } 
+
         // templates
         this.templates && Object_forEach(this.templates, function(t) {
 //          if ( t.template ) {

@@ -36,8 +36,8 @@
                     </td></tr>
                 </tbody></table>
                 <div>
-                  <%= this.createView(GeneratedQIssue.BLOCKING).toHTML() %>
-                  <%= this.createView(GeneratedQIssue.BLOCKED_ON).toHTML() %>
+                  $$BLOCKING
+                  $$BLOCKED_ON
                 </div>
                 <br><br>
               </div>&nbsp;
