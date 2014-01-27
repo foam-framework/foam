@@ -66,11 +66,11 @@ var Canvas = Model.create({
          this.SUPER(child);
 
          try {
-            child.addListener(this.repaint);
+            child.parent = this;
          } catch (x) { }
 
          try {
-            child.parent = this;
+            child.addListener(this.repaint);
          } catch (x) { }
 
          return this;
@@ -377,7 +377,7 @@ var PanelCView = FOAM({
       },
 
       removeChild: function(child) {
-         this.children.remove(child);
+         this.children.deleteI(child);
          child.parent = undefined;
          return this;
       },
