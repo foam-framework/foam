@@ -16,7 +16,10 @@
  </head>
  <body>
    <script language="javascript">
-     var p = QProject.create();
+     var p = QProject.create({
+       projectName: 'foam-framework',
+       summary: 'Feature-Oriented Active Modeller'
+     });
 
      // TODO: fix async template loading and remove this timeout
      setTimeout(function() {

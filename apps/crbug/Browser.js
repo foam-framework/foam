@@ -165,8 +165,8 @@ var Browser = Model.create({
     {
       model_: 'Action',
       name:  'link',
-      label: '',
-      iconUrl: 'images/link.svg',
+//      label: '',
+//      iconUrl: 'images/link.svg',
       help:  'Link',
       
       action: function() {

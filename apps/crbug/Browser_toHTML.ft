@@ -5,7 +5,11 @@
   <link rel="stylesheet" type="text/css" href="qbug.css" />
   <title>QuickBug</title>
  </head>
- <body><div id="header">
+ <body>
+<div class="topHeader">
+  <span>kgr@chromium.org</span> | <a href="#favs">My favorites</a> | <a href="#link">Link</a> <!-- %%linkButton --> | <a href="#sync">Sync</a> | <a href="#newBrowser">New Browser</a>  
+</div>
+<div id="header">
 <table>
   <tr>
   <td>%%logo</td>
@@ -16,8 +20,8 @@
   <td width=150></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search %%searchChoice for %%searchField %%linkButton %%countField
-  <img id="settings" src="images/settings.svg"></div>
+  Search %%searchChoice for %%searchField %%countField
+<!--  <img id="settings" src="images/settings.svg"></div> -->
   </td>
   </tr>
 </table>
