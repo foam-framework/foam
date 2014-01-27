@@ -54,7 +54,7 @@ var StackView = FOAM({
          iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
          help:  'Go to previous view',
 
-         isEnabled:   function() { return this.stack.length > 1; },
+         isEnabled:   function(stack) { return stack.length > 1; },
          action:      function() {
            if ( this.stack.length < 2 ) return;
 
