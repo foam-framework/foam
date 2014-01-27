@@ -157,6 +157,8 @@ var AbstractView = FOAM({
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
+    focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
+
     addChild: function(child) {
       child.parent = this;
 
@@ -3273,6 +3275,7 @@ var SplitView = FOAM({
 
 });
 
+
 var ListValueView = FOAM({
   model_: 'Model',
 
@@ -3318,6 +3321,7 @@ var ListValueView = FOAM({
     }
   }
 });
+
 
 var ListInputView = FOAM({
   model_: 'Model',
@@ -3531,11 +3535,14 @@ var ArrayTileView = FOAM({
 
   methods: {
     toHTML: function() {
+      this.on('click', this.onClick, this.getID());
+
       return '<ul id="' + this.getID() + '" class="arrayTileView"><li class="arrayTileLastView">' +
         this.lastView.toHTML() + '</li></ul>';
     },
     initHTML: function() {
       this.SUPER();
+
       this.lastView.initHTML();
       this.paint();
       this.$.ownerDocument.defaultView.addEventListener('resize', this.layout);
@@ -3543,6 +3550,14 @@ var ArrayTileView = FOAM({
   },
 
   listeners: [
+    {
+      // Clicking anywhere in the View should give focus to the
+      // lastView.
+      name: 'onClick',
+      code: function() {
+        this.lastView.focus();
+      }
+    },
     {
       name: 'layout',
       isAnimated: true,
