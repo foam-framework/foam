@@ -338,7 +338,7 @@ o = Model;
     document.writeln("</br><h2>Test Property Linking</h2>");
 
 
-    var planetModel = Circle;
+    var Planet = Circle;
 
     var space = Canvas.create({width: 800, height: 600, background:'#000'});
     document.writeln("<table><tr>");
@@ -348,8 +348,6 @@ o = Model;
 
     var timer = Timer.create({});
     // timer.start();
-
-    var Planet = planetModel.getPrototype();
 
     var sun    = Planet.create({r:30,x:400,y:300,color:'yellow'});
     var venus  = Planet.create({r:6, color: 'green'});
@@ -427,10 +425,10 @@ o = Model;
     document.writeln(field.toHTML());
     field.initHTML();
 
-    var bug1 = Planet.create({r:2, color: 'blue',   x: 50, y: 50});
-    var bug2 = Planet.create({r:2, color: 'red',    x: 350, y: 50});
-    var bug3 = Planet.create({r:2, color: 'yellow', x: 350, y: 350});
-    var bug4 = Planet.create({r:2, color: 'orange', x: 50, y: 350});
+    var bug1 = Circle.create({r:2, color: 'blue',   x: 50, y: 50});
+    var bug2 = Circle.create({r:2, color: 'red',    x: 350, y: 50});
+    var bug3 = Circle.create({r:2, color: 'yellow', x: 350, y: 350});
+    var bug4 = Circle.create({r:2, color: 'orange', x: 50, y: 350});
 
     field.addChild(bug1);
     field.addChild(bug2);
