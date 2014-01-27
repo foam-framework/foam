@@ -458,8 +458,8 @@ var RichTextView = FOAM({
       this.document = this.$.contentDocument;
       var body = this.document.body;
 
-      body.insertAdjacentHTML(
-        'beforebegin',
+      this.document.head.insertAdjacentHTML(
+        'afterbegin',
         '<style>blockquote{border-left-color:#ccc;border-left-style:solid;padding-left:1ex;}</style>');
 
       body.style.overflow = 'auto';
