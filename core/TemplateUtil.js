@@ -98,7 +98,7 @@ var TemplateCompiler = {
      this.out = [];
      return ret;
    },
-   'create child': function(v) { this.push("', this.createView(this.model.", v[1].join(''), "), '"); },
+   'create child': function(v) { this.push("', this.createView(this.model.", v[1].join('').constantize(), "), '"); },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
    'values tag': function (v) { this.push("',", AbstractView.getPrototype().strToHTML(v[1].join('')), ",'"); },

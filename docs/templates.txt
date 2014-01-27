@@ -33,6 +33,7 @@ syntax from the Mustache template system is also supported.
  <% code %>: code inserted into template, but nothing implicitly output
  <%= comma-separated-values %>: all values are appended to template output
  %%<value> short for for <%= this<value> %>, where <value> can be either a property or a method call
+ $$<propertyName> short for <%= this.createView(this.model_.getProperty('propertyName')).toHTML() %>, used to embed sub-views
  {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax, output is escaped
  {{{comma-separated-values}}}: same as <%= but one character shorter, uses handlebars syntax, output is not escaped
  \<new-line>: ignored

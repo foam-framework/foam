@@ -7,11 +7,11 @@
         <table cellpadding="0" cellspacing="0" width="100%" class="qpreviewtable"><tbody>
             <tr>
               <td class="qvt qh3" nowrap="nowrap" style="padding:0 5px">
-                $$STARRED
-                Issue $$ID
+                $$starred
+                Issue $$id
               </td>
               <td width="90%" class=".qvt">
-                $$SUMMARY
+                $$summary
               </td>
             </tr>
         </tbody></table>
@@ -28,16 +28,16 @@
                       </td>
                     </tr>
                     <tr><th align="left">Owner:&nbsp;</th><td>
-                        $$OWNER
+                        $$owner
                       </td>
                     </tr>
                     <tr><td colspan="2">
-                        $$LABELS
+                        $$labels
                     </td></tr>
                 </tbody></table>
                 <div>
-                  $$BLOCKING
-                  $$BLOCKED_ON
+                  $$blocking
+                  $$blockedOn
                 </div>
                 <br><br>
               </div>&nbsp;
