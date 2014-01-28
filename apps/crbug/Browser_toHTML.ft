@@ -7,7 +7,7 @@
  </head>
  <body>
 <div class="topHeader">
-  %%user | <a href="#favs">My favorites</a> <small>▼</small> | <a href="#link">Link</a> <!-- %%linkButton --> | <a href="#sync">Sync</a> | <a href="#newBrowser">New Browser</a>  
+  %%user | <a href="#favs">My favorites</a> <small>▼</small> | <a href="#link">Link</a> <!-- %%linkButton --> | <a href="#sync">Sync</a> | <a href="#" id="<%=this.on('click', this.launchBrowser)%>">New Browser</a>  
 </div>
 <div id="header">
 <table>

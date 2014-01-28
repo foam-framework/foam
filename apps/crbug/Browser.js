@@ -162,8 +162,14 @@ var Browser = Model.create({
 
         console.log(this.crbugUrl());
       }
+    },
+    {
+      model_: 'Method',
+      name: 'launchBrowser',
+      code: function() {
+        this.project.launchBrowser();
+      }
     }
-
   ],
 
   actions: [
