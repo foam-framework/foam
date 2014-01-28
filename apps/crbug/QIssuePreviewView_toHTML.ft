@@ -8,41 +8,55 @@
             <tr>
               <td class="qvt qh3" nowrap="nowrap" style="padding:0 5px">
                 $$starred
-                Issue $$id
+                Issue $$id{ mode: 'read-only' }
               </td>
-              <td width="90%" class=".qvt">
-                $$summary
+              <td width="90%" class="qvt">
+                $$summary{ mode: 'read-only' }
               </td>
             </tr>
         </tbody></table>
       </div>
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" class="qissuepage" id="meta-container">
-        <tbody class="collapse"> 
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" class="qissuepage">
+        <tbody>
           <tr>
             <td class="qissuemeta">
               <div>
                 <table class="qpreviewtable" cellspacing="0" cellpadding="0">
                   <tbody><tr><th align="left">Status:&nbsp;</th>
                       <td width="100%">
-                        <span title="Problem reproduced / Need acknowledged">Accepted</span>
+                        $$status{ mode: 'read-only' }
                       </td>
                     </tr>
                     <tr><th align="left">Owner:&nbsp;</th><td>
-                        $$owner
+                        $$owner{ mode: 'read-only' }
                       </td>
                     </tr>
-                    <tr><td colspan="2">
-                        $$labels
+                    <tr><td class="qissuelabels" colspan="2">
+                        $$labels{ mode: 'read-only' }
                     </td></tr>
                 </tbody></table>
                 <div>
-                  $$blocking
-                  $$blockedOn
+                  <br>
+                  <b>Blocked on:</b>
+                  <br>
+                  <div class="qissuerelated">
+                  %%blockedOn()
+                  </div>
+                  <br>
+                  <br>
+                  <b>Blocking:</b>
+                  <br>
+                  <div class="qissuerelated">
+                  %%blocking()
+                  </div>
+                  <br>
                 </div>
                 <br><br>
               </div>&nbsp;
             </td>
-            <!-- Comments go here -->
+            <td class="qvt">
+              %%commentView()
+            </td>
           </tr>
         </tbody>
       </table>

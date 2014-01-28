@@ -151,6 +151,7 @@ var QIssue = FOAM({
             shortName: 'l',
             aliases: ['label'],
             type: 'String',
+            view: 'QIssueLabelsView',
             tableFormatter: function(value, row) {
               var sb = [];
               //              var a = value.split(', ');
@@ -248,4 +249,38 @@ QIssue.properties.forEach(function(p) {
       return ('' + v).length ? v : '----';
     };
   }
+});
+
+var QIssueComment = FOAM({
+  model_: 'Model',
+  name: 'QIssueComment',
+  extendsModel: 'IssueComment',
+
+  properties: [
+    {
+      name: 'author',
+      view: 'QIssueCommentAuthorView',
+      preSet: function(newValue, _, prop) {
+        if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
+        return newValue;
+      }
+    },
+    {
+      // Array propety provides a nice preSet for us.
+      name: 'updates',
+      view: 'QIssueCommentUpdateView',
+      preSet: function(newValue, _, prop) {
+        if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
+        return newValue;
+      }
+    },
+    {
+      name: 'published',
+      view: 'RelativeDateTimeFieldView'
+    },
+    {
+      name: 'content',
+      view: 'PreformattedTextFieldView'
+    }
+  ]
 });

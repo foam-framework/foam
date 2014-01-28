@@ -1,0 +1,8 @@
+<div class="qvt qissuecomment" id="<%= this.getID() %>">
+  <div class="qissuecommentdate">
+    $$published{ mode: 'read-only' }
+  </div>
+  <span style="padding-left:.7em">By </span>$$author
+  $$content{ mode: 'read-only', placeholder: '(No comment was entered for this change.)' }
+  $$updates
+</div>

@@ -1,0 +1,3 @@
+<div id="<%= this.getID() %>" class="qissuecommentauthor">
+  <a>$$name{ mode: 'read-only' }</a>
+</div>

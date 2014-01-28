@@ -318,6 +318,9 @@ var ChromeAppBrowser = Model.create({
           console.log('found');
           var v = self.currentPreview =
             obj.createPreviewView();
+          // TODO take this from relationships
+          v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
+          v.QIssueDAO = self.IssueDAO;
           v.value = SimpleValue.create(obj);
           self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
           v.$.style.left = e.x + 40;

@@ -128,7 +128,10 @@ var QProject = Model.create({
             arequire('GridView'),
             arequire('QIssueTileView'),
             arequire('Browser'),
-            arequire('QIssuePreviewView')
+            arequire('QIssuePreviewView'),
+            arequire('QIssueCommentView'),
+            arequire('QIssueCommentAuthorView'),
+            arequire('QIssueCommentUpdateView')
           )(function () {
             $addWindow(window);
             var b = ChromeAppBrowser.create({project: self, window: window});
