@@ -10,24 +10,12 @@
 <div class="qupdatesround2"></div>
 <div class="qupdatesround1"></div>
 <div class="qissueinnerupdates">
-<% if ( value.summary ) { %>
-<b>Summary:</b>{{value.summary}}<br>
-<% } %>
-<% if ( value.status ) { %>
-<b>Status:</b>{{value.status}}<br>
-<% } %>
-<% if ( value.cc.length > 0 ) { %>
-<b>Cc:</b>{{value.cc.join(' ')}}<br>
-<% } %>
-<% if ( value.labels.length > 0 ) { %>
-<b>Labels:</b>{{value.labels.join(' ')}}<br>
-<% } %>
-<% if ( value.blockedOn.length > 0 ) { %>
-<b>Blocked on:</b>{{value.blockedOn.join(' ')}}<br>
-<% } %>
-<% if ( value.blocking.length > 0 ) { %>
-<b>Blocking:</b>{{value.blocking.join(' ')}}<br>
-<% } %>
+<% if ( value.summary ) { %><b>Summary:</b>{{value.summary}}<br><% } %>
+<% if ( value.status ) { %><b>Status:</b>{{value.status}}<br><% } %>
+<% if ( value.cc.length ) { %><b>Cc:</b>{{value.cc.join(' ')}}<br><% } %>
+<% if ( value.labels.length ) { %><b>Labels:</b>{{value.labels.join(' ')}}<br><% } %>
+<% if ( value.blockedOn.length ) { %><b>Blocked on:</b>{{value.blockedOn.join(' ')}}<br><% } %>
+<% if ( value.blocking.length ) { %><b>Blocking:</b>{{value.blocking.join(' ')}}<br><% } %>
 </div>
 <div class="qupdatesround1"></div>
 <div class="qupdatesround2"></div>
