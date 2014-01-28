@@ -44,7 +44,8 @@ var TemplateParser = {
     sym('text')
   )),
 
-  'create child': seq('$$', repeat(not(alt(' ','\n','<'), anyChar))),
+  'create child': seq('$$', repeat(not(alt(' ','\n','<', '{'), anyChar)),
+                      optional(seq('{', repeat(not('}'), anyChar), '}'))),
 
   'simple value': seq('%%', repeat(not(alt(' ','\n','<'), anyChar))),
 
@@ -98,7 +99,11 @@ var TemplateCompiler = {
      this.out = [];
      return ret;
    },
-   'create child': function(v) { this.push("', this.createView(this.model.", v[1].join('').constantize(), "), '"); },
+   'create child': function(v) {
+     this.push("', this.createView(this.model.",
+               v[1].join('').constantize(),
+               v[2] ? ', ' + v[2][1].join('') + '}' : '',
+               "), '"); },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
    'values tag': function (v) { this.push("',", AbstractView.getPrototype().strToHTML(v[1].join('')), ",'"); },
