@@ -22,14 +22,11 @@
        user: 'kgr@chromium.org'
      });
 
-     // TODO: fix async template loading and remove this timeout
-     setTimeout(function() {
      $addWindow(window);
      var b = p.createBrowser(window);
      window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
-     }, 400);
    </script>
  </body>
 </html>
