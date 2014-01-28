@@ -45,6 +45,11 @@ var QProject = Model.create({
       defaultValueFn: function() { return this.project.summary; }
     },
     {
+      name: 'user',
+      scope: 'qbug',
+      defaultValueFn: function() { return this.qbug.user; }
+    },
+    {
       name: 'IssueDAO',
       valueFactory: function() {
         var IssueMDAO  = MDAO.create({model: QIssue})

@@ -7,7 +7,7 @@
  </head>
  <body>
 <div class="topHeader">
-  <span>kgr@chromium.org</span> | <a href="#favs">My favorites</a> | <a href="#link">Link</a> <!-- %%linkButton --> | <a href="#sync">Sync</a> | <a href="#newBrowser">New Browser</a>  
+  %%user | <a href="#favs">My favorites</a> | <a href="#link">Link</a> <!-- %%linkButton --> | <a href="#sync">Sync</a> | <a href="#newBrowser">New Browser</a>  
 </div>
 <div id="header">
 <table>

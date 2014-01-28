@@ -45,6 +45,11 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.url; }
     },
     {
+      name: 'user',
+      scope: 'qbug',
+      defaultValueFn: function() { return this.project.user; }
+    },
+    {
       name: 'IssueDAO',
       scope: 'project',
       defaultValueFn: function() { return this.project.IssueDAO; }
