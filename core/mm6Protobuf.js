@@ -116,3 +116,4 @@ Model.methods = {
 // re-creating Model we need to rebuild it's prototype.
 Model = Model.getPrototype().create(Model);
 Model.model_ = Model;
+Model.create = ModelProto.create;
