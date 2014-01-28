@@ -266,7 +266,6 @@ var QIssueComment = FOAM({
       }
     },
     {
-      // Array propety provides a nice preSet for us.
       name: 'updates',
       view: 'QIssueCommentUpdateView',
       preSet: function(newValue, _, prop) {
