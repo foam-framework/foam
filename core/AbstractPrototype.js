@@ -20,6 +20,8 @@
 var AbstractPrototype = {
   __proto__: PropertyChangeSupport,
 
+  TYPE: 'AbstractPrototype',
+
   create: function(args) {
 /*
 console.log("args: ", args);
@@ -36,12 +38,8 @@ console.log(i, k, v);
 
     var obj = {
       __proto__: this,
-      TYPE: "AbstractPrototype", // for debug, remove
       instance_: {}
     };
-
-    // for debugging
-    if ( this.model_ ) obj.TYPE = this.model_.name;
 
     if ( typeof args === 'object' ) obj.copyFrom(args);
     obj.init(args);
@@ -307,7 +305,8 @@ console.log(i, k, v);
   }
 };
 
-
+/*
 AbstractPrototype.__defineGetter__('__super__', function() {
   return this.__proto__.__proto__;
 });
+*/

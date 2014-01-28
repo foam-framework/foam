@@ -1,3 +1,8 @@
+<%
+  var browserLink = ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
+  var linkLink    = ActionLink.create({action: this.model_.LINK,           value: SimpleValue.create(this)});
+  var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
+%>
 <html>
  <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -5,7 +10,11 @@
   <link rel="stylesheet" type="text/css" href="qbug.css" />
   <title>QuickBug</title>
  </head>
- <body><div id="header">
+ <body>
+<div class="topHeader">
+  %%user | <a href="#favs">My favorites</a> <small>▼</small> | <%= linkLink %> | <%= syncLink %> | <%= browserLink %>  
+</div>
+<div id="header">
 <table>
   <tr>
   <td>%%logo</td>
@@ -16,11 +25,12 @@
   <td width=150></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search %%searchChoice for %%searchField %%linkButton %%countField
-  <img id="settings" src="images/settings.svg"></div>
+  Search %%searchChoice for %%searchField %%countField
+<!--  <img id="settings" src="images/settings.svg"></div> -->
   </td>
   </tr>
 </table>
 <hr color="#9BC0FA">
 </div>%%view</body>
+<div class="footer"><%= FOAM_POWERED %></div>
 </html>

@@ -1656,12 +1656,19 @@ var DetailView = Model.create({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var proto =
-        ! prop.view                   ? TextFieldView     :
-        typeof prop.view === 'string' ? GLOBAL[prop.view] :
-        prop.view ;
+      var view;
 
-      var view = proto.create(prop).copyFrom(opt_args);
+      if ( ! prop.view ) {
+        view = TextFieldView.create(prop);
+      } else if ( typeof prop.view === 'string' ) {
+        view = GLOBAL[prop.view].create(prop);
+      } else if ( prop.view.model_ ) {
+        view = prop.view.deepClone().copyFrom(prop);
+      } else {
+        view = prop.view.create(prop);
+      }
+
+      view.copyFrom(opt_args);
 
       if ( this.get() ) {
         view.setValue(this.get().propertyValue(prop.name));
@@ -1670,6 +1677,8 @@ var DetailView = Model.create({
       view.prop = prop;
       view.toString = function () { return this.prop.name + "View"; };
       this.addChild(view);
+
+      this[prop.name + 'View'] = view;
 
       return view;
     },
@@ -2527,13 +2536,6 @@ var ActionButton = Model.create({
 
   methods: {
     toHTML: function() {
-      this.on(
-        'click',
-        function(action) { return function() {
-          action.action.apply(this.value.get());
-        };}(this.action),
-        this.getID());
-
       var out = [];
       var tooltip = this.action.help ? ' data-tip="' + this.action.help + '" ' : '';
       out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '"' + tooltip + '>');
@@ -2554,10 +2556,43 @@ var ActionButton = Model.create({
     initHTML: function() {
       this.SUPER();
 
+      var self = this;
+      this.$.addEventListener(
+        'click',
+        function(action) {
+          self.action.action.apply(self.value.get());
+        });
+
       this.onValueChange();
     }
   }
 });
+
+
+var ActionLink = Model.create({
+  name: 'ActionLink',
+
+  extendsModel: 'ActionButton',
+
+  methods: {
+    toHTML: function() {
+      var out = '<a href="#" class="actionLink actionLink-' + this.action.name + '" id="' + this.getID() + '">';
+
+      if ( this.action.iconUrl ) {
+        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
+      }
+
+      if ( this.action.showLabel ) {
+        out += this.action.label;
+      }
+
+      out += '</a>';
+
+      return out;
+    }
+  }
+});
+
 
 // TODO: ActionBorder should use this.
 var ToolbarView = FOAM({
@@ -4058,3 +4093,5 @@ var AutocompleteListView = FOAM({
     }
   ]
 });
+
+

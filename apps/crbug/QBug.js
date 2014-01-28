@@ -33,6 +33,9 @@ var QBug = Model.create({
       defaultValue: 'foam-framework'
     },
     {
+      name: 'user'
+    },
+    {
       name: 'ProjectNetworkDAO',
       valueFactory: function() {
         var dao = RestDAO.create({
@@ -58,6 +61,7 @@ var QBug = Model.create({
     },
 
     {
+      // Cache of QProject objects
       name: 'projects_',
       defaultValue: [],
       transient: true

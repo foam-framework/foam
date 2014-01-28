@@ -217,6 +217,8 @@ var Model = {
              for ( var i = 0 ; i < templates.length ; i++ ) {
                var t = templates[i];
                if ( ! t.template ) {
+                 var future = afuture();
+                 t.futureTemplate = future.get;
                  var path = document.currentScript.src;
                  path = path.substring(0, path.lastIndexOf('/')+1);
                  path += this.name + '_' + t.name + '.ft';
@@ -224,6 +226,8 @@ var Model = {
                  xhr.open("GET", path);
                  xhr.asend((function(t) { return function(data) {
                    t.template = data;
+                   future.set(data);
+                   t.futureTemplate = undefined;
                  };})(t));
                }
              }

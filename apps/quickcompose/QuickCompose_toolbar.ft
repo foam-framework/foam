@@ -1,0 +1,16 @@
+<%
+  var sendButton = ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this) });
+
+  var boldButton = ActionButton.create({action: RichTextView.BOLD, value: SimpleValue.create(this.view.bodyView)});
+
+var italicButton = ActionButton.create({action: RichTextView.ITALIC, value: SimpleValue.create(this.view.bodyView) });
+
+var underlineButton = ActionButton.create({action: RichTextView.UNDERLINE, value: SimpleValue.create(this.view.bodyView) });
+
+var linkButton = ActionButton.create({action: RichTextView.LINK, value: SimpleValue.create(this.view.bodyView) });
+
+var discardButton = ActionButton.create({action: this.model_.DISCARD, value: SimpleValue.create(this)});
+%>
+<div class=toolbar>
+  <%= sendButton, boldButton, italicButton, underlineButton, linkButton, discardButton %>
+</div>

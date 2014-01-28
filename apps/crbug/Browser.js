@@ -45,6 +45,11 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.url; }
     },
     {
+      name: 'user',
+      scope: 'qbug',
+      defaultValueFn: function() { return this.project.user; }
+    },
+    {
       name: 'IssueDAO',
       scope: 'project',
       defaultValueFn: function() { return this.project.IssueDAO; }
@@ -88,16 +93,6 @@ var Browser = Model.create({
         // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
         m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
         return m;
-      }
-    },
-
-    {
-      name: 'linkButton',
-      valueFactory: function() {
-        return ActionButton.create({
-          action: this.model_.LINK,
-          value: SimpleValue.create(this)
-        });
       }
     },
     {
@@ -163,21 +158,36 @@ var Browser = Model.create({
         console.log(this.crbugUrl());
       }
     }
-
   ],
 
   actions: [
     {
       model_: 'Action',
       name:  'link',
-      label: '',
-      iconUrl: 'images/link.svg',
+//      label: '',
+//      iconUrl: 'images/link.svg',
       help:  'Link',
-      
       action: function() {
         var url = this.crbugUrl();
         console.log(url);
         this.openURL(url);
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'launchBrowser',
+//      iconUrl: 'images/link.svg',
+      help:  'Link',
+      action: function() {
+        this.project.launchBrowser();
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'launchSync',
+      label: 'Sync',
+      action: function() {
+        console.log('launch sync');
       }
     }
   ],

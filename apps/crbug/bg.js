@@ -2,7 +2,7 @@ var qb;
 function launch() {
   if ( ! qb ) qb = QBug.create();
   qb.launchBrowser();
-  qb.launchBrowser('chromium');
+//  qb.launchBrowser('chromium');
 }
 
 if ( chrome.app.runtime ) {
