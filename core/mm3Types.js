@@ -161,29 +161,7 @@ var DateProperty = Model.create({
              return d.toDateString();
            },
           defaultValue: function(d) {
-           var now = new Date();
-           var seconds = Math.floor((now - d)/1000);
-           if (seconds < 60) return 'moments ago';
-           var minutes = Math.floor((seconds)/60);
-           if (minutes == 1) {
-             return '1 minute ago';
-           } else if (minutes < 60) {
-             return minutes + ' minutes ago';
-           } else {
-             var hours = Math.floor(minutes/60);
-             if (hours < 24) {
-               return hours + ' hours ago';
-             }
-             var days = Math.floor(hours / 24);
-             if (days < 7) {
-               return days + ' days ago';
-             } else if (days < 365) {
-               var year = 1900+d.getYear();
-               var noyear = d.toDateString().replace(" " + year, "");
-               return /....(.*)/.exec(noyear)[1];
-             }
-           }
-           return d.toDateString();
+            return d.toRelativeDateString();
          }
        }
     ]
