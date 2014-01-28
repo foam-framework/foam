@@ -2496,6 +2496,39 @@ var ActionButton = Model.create({
   }
 });
 
+
+var ActionLink = Model.create({
+  name: 'ActionLink',
+
+  extendsModel: 'ActionButton',
+
+  methods: {
+    toHTML: function() {
+      this.on(
+        'click',
+        function(action) { return function() {
+          action.action.apply(this.value.get());
+        };}(this.action),
+        this.getID());
+
+      var out = '<a href="#" class="actionLink actionLink-' + this.action.name + '" id="' + this.getID() + '">';
+
+      if ( this.action.iconUrl ) {
+        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
+      }
+
+      if ( this.action.showLabel ) {
+        out += this.action.label;
+      }
+
+      out += '</a>';
+
+      return out;
+    }
+  }
+});
+
+
 // TODO: ActionBorder should use this.
 var ToolbarView = FOAM({
 
