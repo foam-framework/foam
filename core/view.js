@@ -749,6 +749,61 @@ var TextFieldView = FOAM({
   ]
 });
 
+var PreformattedTextFieldView = FOAM({
+  model_: 'Model',
+  name: 'PreformattedTextFieldView',
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'mode',
+      defaultValue: 'read-only'
+    },
+    {
+      name: 'value',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.update);
+        newValue.addListener(this.update);
+        this.update();
+      }
+    },
+    {
+      name: 'escapeHTML',
+      defaultValue: true
+    },
+    {
+      model_: 'StringProperty',
+      name: 'placeholder'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<pre id="' + this.getID() + '"></pre>';
+    },
+    setValue: function(value) {
+      this.value = value;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      animate: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        var value = this.value.get();
+        if ( value ) {
+          this.$.innerHTML = '';
+          this.$.textContent = value;
+        } else {
+          this.$.innerHTML = '<i>' + this.strToHTML(this.placeholder) + '</i>';
+        }
+      }
+    }
+  ]
+});
+
 
 var DateFieldView = FOAM({
 
@@ -801,6 +856,23 @@ var DateTimeFieldView = FOAM({
    }
 });
 
+var RelativeDateTimeFieldView = FOAM({
+   model_: 'Model',
+   name:  'RelativeDateTimeFieldView',
+   label: 'Relative Date-Time Field',
+
+   extendsModel: 'DateTimeFieldView',
+
+   methods: {
+    valueToText: function(value) {
+      return value.toRelativeDateString();
+    },
+
+    toHTML: function() {
+      return '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+    }
+   }
+});
 
 var HTMLView = FOAM({
 
@@ -3209,7 +3281,6 @@ var StringArrayView = FOAM({
    }
 });
 
-
 var SplitView = FOAM({
 
    model_: 'Model',
@@ -3637,6 +3708,186 @@ var ArrayTileView = FOAM({
             return o === self.property.f(obj);
           }
         }));
+      }
+    }
+  ]
+});
+
+var ArrayListView = FOAM({
+  model_: 'Model',
+  extendsModel: 'AbstractView',
+  name: 'ArrayListView',
+
+  properties: [
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create([]) },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.update);
+        newValue.addListener(this.update);
+        this.update();
+      }
+    },
+    {
+      name: 'listView'
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.getID() + '"></div>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.update();
+    },
+    setValue: function(value) {
+      this.value = value;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      animate: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        this.$.innerHTML = '';
+
+        var objs = this.value.get();
+        var children = new Array(objs.length);
+
+        for ( var i = 0; i < objs.length; i++ ) {
+          var view = this.listView.create();
+          children.push(view);
+          view.value = SimpleValue.create(objs[i]);
+        }
+
+        this.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
+        children.forEach(function(c) { c.initHTML(); });
+      }
+    }
+  ]
+});
+
+var DAOKeyView = FOAM({
+  model_: 'Model',
+  extendsModel: 'AbstractView',
+  name: 'DAOKeyView',
+
+  properties: [
+    {
+      name: 'innerValue',
+      valueFactory: function() { return SimpleValue.create(''); }
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(""); },
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.update);
+        newValue.addListener(this.update);
+        this.update();
+      }
+    },
+    {
+      name: 'model',
+    },
+    {
+      name: 'dao',
+      valueFactory: function() { return GLOBAL[this.model.name + 'DAO']; }
+    },
+    {
+      name: 'view',
+      defaultValueFn: function() { return DetailView; }
+    },
+    {
+      name: 'innerView',
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.innerView = this.view.create({ model: this.model });
+      this.innerView.value = this.innerValue;
+      return this.innerView.toHTML();
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.innerView.initHTML();
+      this.update();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      animate: true,
+      code: function() {
+        var self = this;
+        if ( ! this.dao ) return;
+        this.dao.find(this.value.get(), {
+          put: function(obj) {
+            self.innerValue.set(obj);
+          },
+          error: function() {
+            self.innerValue.set('');
+          }
+        });
+      }
+    }
+  ]
+});
+
+var ListView = FOAM({
+  model_: 'Model',
+  extendsModel: 'AbstractView',
+  name: 'ListView',
+
+  properties: [
+    {
+      name: 'dao',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.unlisten(this.update);
+        newValue.listen(this.update);
+        this.update();
+      }
+    },
+    {
+      name: 'view'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.getID() + '"></div>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.update();
+    }
+  },
+
+  listeners: [
+    {
+      name: "update",
+      animate: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        var self = this;
+
+        this.dao.select()(function(objs) {
+          self.$.innerHTML = '';
+          var children = new Array(objs.length);
+
+          for ( var i = 0; i < objs.length; i++ ) {
+            var view = self.view.create();
+            children.push(view);
+            view.value = SimpleValue.create(objs[i]);
+          }
+
+          self.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
+          children.forEach(function(c) { c.initHTML(); });
+        });
       }
     }
   ]
