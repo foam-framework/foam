@@ -75,6 +75,20 @@ var QIssueStarringDAO = FOAM({
   }
 });
 
+var QIssueCommentNetworkDAO = FOAM({
+  model_: 'Model',
+  name: 'QIssueCommentNetworkDAO',
+  extendsModel: 'RestDAO',
+
+  methods: {
+    buildURL: function(options) {
+      if ( EqExpr.isInstance(options.query) ) {
+        return this.url + '/' + options.query.arg2.f() + '/comments';
+      }
+      return this.url;
+    }
+  }
+});
 
 /*
 IssueNetworkDAO

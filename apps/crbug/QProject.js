@@ -85,24 +85,12 @@ var QProject = Model.create({
       transient: true
     },
     {
-      name: 'IssueCommentNetworkDAO',
+      name: 'IssueCommentDAO',
       valueFactory: function() {
-        var dao = RestDAO.create({
+        return QIssueCommentNetworkDAO.create({
           url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          model: IssueComment
+          model: QIssueComment
         });
-
-        dao.buildURL = function(options) {
-          return this.url + options.query.arg2.f() + '/comments';
-        };
-
-        dao.jsonToObj = function(json) {
-          if ( json.author ) json.author = json.author.name;
-          
-          return this.model.create(json);
-        };
-
-        return dao;
       },
       transient: true
     },
