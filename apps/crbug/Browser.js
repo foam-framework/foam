@@ -90,16 +90,6 @@ var Browser = Model.create({
         return m;
       }
     },
-
-    {
-      name: 'linkButton',
-      valueFactory: function() {
-        return ActionButton.create({
-          action: this.model_.LINK,
-          value: SimpleValue.create(this)
-        });
-      }
-    },
     {
       name: 'countField',
       type: 'TextFieldView',
@@ -162,13 +152,6 @@ var Browser = Model.create({
 
         console.log(this.crbugUrl());
       }
-    },
-    {
-      model_: 'Method',
-      name: 'launchBrowser',
-      code: function() {
-        this.project.launchBrowser();
-      }
     }
   ],
 
@@ -179,11 +162,27 @@ var Browser = Model.create({
 //      label: '',
 //      iconUrl: 'images/link.svg',
       help:  'Link',
-      
       action: function() {
         var url = this.crbugUrl();
         console.log(url);
         this.openURL(url);
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'launchBrowser',
+//      iconUrl: 'images/link.svg',
+      help:  'Link',
+      action: function() {
+        this.project.launchBrowser();
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'launchSync',
+      label: 'Sync',
+      action: function() {
+        console.log('launch sync');
       }
     }
   ],
