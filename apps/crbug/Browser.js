@@ -50,6 +50,11 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.IssueDAO; }
     },
     {
+      name: 'IssueCommentDAO',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.IssueCommentDAO; }
+    },
+    {
       name: 'syncManager',
       scope: 'project',
       defaultValueFn: function() { return this.project.syncManager; }
