@@ -2464,13 +2464,6 @@ var ActionButton = Model.create({
 
   methods: {
     toHTML: function() {
-      this.on(
-        'click',
-        function(action) { return function() {
-          action.action.apply(this.value.get());
-        };}(this.action),
-        this.getID());
-
       var out = [];
       var tooltip = this.action.help ? ' data-tip="' + this.action.help + '" ' : '';
       out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '"' + tooltip + '>');
@@ -2491,6 +2484,13 @@ var ActionButton = Model.create({
     initHTML: function() {
       this.SUPER();
 
+      var self = this;
+      this.$.addEventListener(
+        'click',
+        function(action) {
+          self.action.action.apply(self.value.get());
+        });
+
       this.onValueChange();
     }
   }
@@ -2504,13 +2504,6 @@ var ActionLink = Model.create({
 
   methods: {
     toHTML: function() {
-      this.on(
-        'click',
-        function(action) { return function() {
-          action.action.apply(this.value.get());
-        };}(this.action),
-        this.getID());
-
       var out = '<a href="#" class="actionLink actionLink-' + this.action.name + '" id="' + this.getID() + '">';
 
       if ( this.action.iconUrl ) {
@@ -3849,3 +3842,5 @@ var AutocompleteListView = FOAM({
     }
   ]
 });
+
+
