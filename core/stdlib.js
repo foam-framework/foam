@@ -91,6 +91,32 @@ Function.prototype.bind = (function() {
 })();
 
 
+Date.prototype.toRelativeDateString = function() {
+  var now = new Date();
+  var seconds = Math.floor((now - this)/1000);
+  if (seconds < 60) return 'moments ago';
+  var minutes = Math.floor((seconds)/60);
+  if (minutes == 1) {
+    return '1 minute ago';
+  } else if (minutes < 60) {
+    return minutes + ' minutes ago';
+  } else {
+    var hours = Math.floor(minutes/60);
+    if (hours < 24) {
+      return hours + ' hours ago';
+    }
+    var days = Math.floor(hours / 24);
+    if (days < 7) {
+      return days + ' days ago';
+    } else if (days < 365) {
+      var year = 1900+this.getYear();
+      var noyear = this.toDateString().replace(" " + year, "");
+      return /....(.*)/.exec(noyear)[1];
+    }
+  }
+  return this.toDateString();
+};
+
 // Define extensions to built-in prototypes as non-enumerable properties so
 // that they don't mess up with Array or Object iteration code.
 // (Which needs to be fixed anyway.)

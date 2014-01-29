@@ -183,40 +183,8 @@ var QuickCompose = FOAM({
       }
     },
     {
-      name: 'sendButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.SEND, value: SimpleValue.create(this) }); }
-    },
-    {
-      name: 'boldButton',
-      valueFactory: function() {
-        return ActionButton.create({action: RichTextView.BOLD, value: SimpleValue.create(this.view.bodyView) });
-      }
-    },
-    {
-      name: 'italicButton',
-      valueFactory: function() {
-        return ActionButton.create({action: RichTextView.ITALIC, value: SimpleValue.create(this.view.bodyView) });
-      }
-    },
-    {
-      name: 'underlineButton',
-      valueFactory: function() {
-        return ActionButton.create({action: RichTextView.UNDERLINE, value: SimpleValue.create(this.view.bodyView) });
-      }
-    },
-    {
-      name: 'linkButton',
-      valueFactory: function() {
-        return ActionButton.create({action: RichTextView.LINK, value: SimpleValue.create(this.view.bodyView) });
-      }
-    },
-    {
       name: 'minimizeButton',
       valueFactory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
-    },
-    {
-      name: 'discardButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.DISCARD, value: SimpleValue.create(this)}); }
     },
     {
       name: 'closeButton',
@@ -384,8 +352,7 @@ var QuickCompose = FOAM({
       template: "<div id=\"header\">%%minimizeButton %%closeButton</div>"
     },
     {
-      name: "toolbar",
-      template: "<div class=toolbar>%%sendButton %%boldButton %%italicButton %%underlineButton %%linkButton %%discardButton</div>"
+      name: "toolbar"
     }
   ]
 });

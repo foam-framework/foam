@@ -48,7 +48,15 @@ var aeval = (function() {
 })();
 
 var aevalTemplate = function(t) {
-  return aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}');
+  if ( t.template ) {
+    return aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}');
+  }
+
+  return aseq(
+    t.futureTemplate,
+    function(ret, template) {
+      aeval('function (opt_out) {' + TemplateCompiler.parseString(template) + '}')(ret);
+    });
 };
 
 

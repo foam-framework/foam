@@ -45,6 +45,11 @@ var QProject = Model.create({
       defaultValueFn: function() { return this.project.summary; }
     },
     {
+      name: 'user',
+      scope: 'qbug',
+      defaultValueFn: function() { return this.qbug.user; }
+    },
+    {
       name: 'IssueDAO',
       valueFactory: function() {
         var IssueMDAO  = MDAO.create({model: QIssue})
@@ -85,24 +90,12 @@ var QProject = Model.create({
       transient: true
     },
     {
-      name: 'IssueCommentNetworkDAO',
+      name: 'IssueCommentDAO',
       valueFactory: function() {
-        var dao = RestDAO.create({
+        return QIssueCommentNetworkDAO.create({
           url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          model: IssueComment
+          model: QIssueComment
         });
-
-        dao.buildURL = function(options) {
-          return this.url + options.query.arg2.f() + '/comments';
-        };
-
-        dao.jsonToObj = function(json) {
-          if ( json.author ) json.author = json.author.name;
-          
-          return this.model.create(json);
-        };
-
-        return dao;
       },
       transient: true
     },
@@ -140,7 +133,10 @@ var QProject = Model.create({
             arequire('GridView'),
             arequire('QIssueTileView'),
             arequire('Browser'),
-            arequire('QIssuePreviewView')
+            arequire('QIssuePreviewView'),
+            arequire('QIssueCommentView'),
+            arequire('QIssueCommentAuthorView'),
+            arequire('QIssueCommentUpdateView')
           )(function () {
             $addWindow(window);
             var b = ChromeAppBrowser.create({project: self, window: window});

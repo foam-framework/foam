@@ -1193,3 +1193,4 @@ console.log(generateModel(CIssueSchema.schemas.Issue).toJSON());
 console.log(generateModel(CIssueSchema.schemas.IssueComment).toJSON());
 console.log(generateModel(CIssueSchema.schemas.IssuePerson).toJSON());
 console.log(generateModel(CIssueSchema.schemas.Project).toJSON());
+console.log(generateModel(CIssueSchema.schemas.IssueCommentUpdate).toJSON());

@@ -38,6 +38,7 @@ var Link = FOAM({
     {
       name: 'link',
       displayWidth: 19,
+      view: { model_: 'TextFieldView', placeholder: 'Type or paste link.' },
       preSet: function(value) {
         value = value.trim();
         // Disallow javascript URL's
@@ -89,20 +90,8 @@ var LinkView = Model.create({
       valueFactory: function() {
         return ActionButton.create({
           action: Link.INSERT,
-          value: SimpleValue.create(this.value.get())
+          value: this.value
         });
-      }
-    },
-    {
-      name: 'textView',
-      valueFactory: function() { return this.createView(Link.LABEL); }
-    },
-    {
-      name: 'urlView',
-      valueFactory: function() {
-        var v = this.createView(Link.LINK);
-        v.placeholder = "Type or paste link.";
-        return v;
       }
     }
   ],
@@ -115,7 +104,7 @@ var LinkView = Model.create({
     initHTML: function() {
       this.SUPER();
       this.$.addEventListener('keyup', this.keyUp);
-      this.textView.$.focus();
+      this.labelView.focus();
     },
     close: function() { this.$.remove(); }
   },
@@ -137,13 +126,13 @@ var LinkView = Model.create({
     {
       name: "toHTML",
       template:
-        '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">' +
-        '<table><tr>' +
-        '<th>Text</th><td><%= this.textView.toHTML() %></td></tr><tr>' +
-        '<th>Link</th><td><%= this.urlView.toHTML() %>' +
-        '<%= this.insertButton.toHTML() %></td>' +
-        '</tr></table>' +
-        '</div>'
+        '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">\
+        <table><tr>\
+        <th>Text</th><td>$$label</td></tr><tr>\
+        <th>Link</th><td>$$link\
+        %%insertButton</td>\
+        </tr></table>\
+        </div>'
     }
   ]
 });

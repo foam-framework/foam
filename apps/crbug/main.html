@@ -16,16 +16,17 @@
  </head>
  <body>
    <script language="javascript">
-     var p = QProject.create();
+     var p = QProject.create({
+       projectName: 'foam-framework',
+       summary: 'Feature-Oriented Active Modeller',
+       user: 'kgr@chromium.org'
+     });
 
-     // TODO: fix async template loading and remove this timeout
-     setTimeout(function() {
      $addWindow(window);
      var b = p.createBrowser(window);
      window.browser = b;
      document.body.innerHTML = b.toHTML();
      b.initHTML();
-     }, 400);
    </script>
  </body>
 </html>
