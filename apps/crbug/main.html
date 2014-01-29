@@ -19,7 +19,7 @@
      var p = QProject.create({
        projectName: 'foam-framework',
        summary: 'Feature-Oriented Active Modeller',
-       user: 'kgr@chromium.org'
+       user: QUser.create({ email: 'kgr@chromium.org' })
      });
 
      $addWindow(window);

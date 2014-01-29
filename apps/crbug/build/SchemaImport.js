@@ -1186,8 +1186,16 @@ Object_forEach(CIssueSchema.schemas, function(value, key) {
 var CrIssue = generateModel(CIssueSchema.schemas.Issue);
 var IssueComment = generateModel(CIssueSchema.schemas.IssueComment);
 
-console.log(generateModel(CIssueSchema.schemas.Issue).toJSON());
-console.log(generateModel(CIssueSchema.schemas.IssueComment).toJSON());
-console.log(generateModel(CIssueSchema.schemas.IssuePerson).toJSON());
-console.log(generateModel(CIssueSchema.schemas.Project).toJSON());
-console.log(generateModel(CIssueSchema.schemas.IssueCommentUpdate).toJSON());
+var exports = [
+   CIssueSchema.schemas.Issue,
+   CIssueSchema.schemas.IssueComment,
+   CIssueSchema.schemas.IssuePerson,
+   CIssueSchema.schemas.Project,
+   CIssueSchema.schemas.IssueCommentUpdate,
+   CIssueSchema.schemas.User
+];
+
+console.log(
+   exports.map(function(m) {
+      var model = generateModel(m);
+      return 'var Generated' + model.name + ' = FOAM(' + model.toJSON() + ');'; }).join('\n\n'));
