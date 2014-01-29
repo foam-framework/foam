@@ -114,7 +114,7 @@ var QProject = Model.create({
         return SyncManager.create({
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueDAO.delegate,
-          lastModified: new Date(2011,01,01),
+          lastModified: new Date(2013,01,01),
           modifiedProperty: QIssue.UPDATED
         });
       }
@@ -161,6 +161,32 @@ var QProject = Model.create({
       var b = Browser.create({project: this, window: window});
       window.browser = b;
       return b;
+    },
+
+    launchSync: function() {
+      var self = this;
+
+      chrome.app.window.create('empty.html', {width: 430, height: 440}, function(w) {
+        w.contentWindow.onload = function() {
+          var window = w.contentWindow;
+          $addWindow(window);
+          var b = ActionBorder.create(
+            SyncManager,
+            DetailView.create({
+              model: SyncManager,
+              title: 'Sync Manager',
+              value: SimpleValue.create(self.syncManager)}));
+          window.document.body.innerHTML = b.toHTML();
+          b.initHTML();
+          w.focus();
+        };
+        w.onClosed.addListener(function() {
+          debugger;
+          // $removeWindow(self.window);
+        });
+      });
     }
-  }
+
+  },
+
 });

@@ -188,6 +188,7 @@ var Browser = Model.create({
       label: 'Sync',
       action: function() {
         console.log('launch sync');
+        this.project.launchSync();
       }
     }
   ],
