@@ -85,8 +85,10 @@ Function.prototype.bind = (function() {
     return ret;
   };
 
-  return function() {
-    return arguments.length == 1 ? simpleBind(this, arguments[0]) : oldBind.apply(this, arguments);
+  return function(arg) {
+    return arguments.length == 1 ?
+      simpleBind(this, arg) :
+      oldBind.apply(this, argsToArray(arguments));
   };
 })();
 
