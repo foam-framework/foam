@@ -694,12 +694,12 @@ var TextFieldView = FOAM({
       {
          model_: 'StringProperty',
          name: 'readWriteTagName',
-         defaultValue: function() { return 'input'; }
+         defaultValueFn: function() { return 'input'; }
       },
       {
          model_: 'StringProperty',
          name: 'readOnlyTagName',
-         defaultValue: function() { return 'span'; }
+         defaultValueFn: function() { return 'span'; }
       }
    ],
 
