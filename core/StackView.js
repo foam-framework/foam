@@ -54,12 +54,11 @@ var StackView = FOAM({
          iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
          help:  'Go to previous view',
 
-         isEnabled:   function(stack) { return stack.length > 1; },
+         isEnabled:   function() { return this.stack.length > 1; },
          action:      function() {
-           if ( this.stack.length < 2 ) return;
-
            this.redo.push(this.stack.pop());
            this.pushView(this.stack.pop(), undefined, true);
+           this.propertyChange('stack', this.stack, this.stack);
          }
       },
       {
@@ -71,6 +70,7 @@ var StackView = FOAM({
 
          action:      function() {
            this.pushView(this.redo.pop());
+           this.propertyChange('stack', this.stack, this.stack);
          }
       }
    ],
@@ -95,56 +95,56 @@ var StackView = FOAM({
       },
 
       navBarElement: function() {
-         return this.$.childNodes[0];
+        return this.$.childNodes[0];
       },
 
       navActionsElement: function() {
-         return this.$.childNodes[1];
+        return this.$.childNodes[1];
       },
 
       viewAreaElement: function () {
-         return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+        return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
       },
 
       previewAreaElement: function() {
-         return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+        return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
       },
 
       updateNavBar: function() {
-         var buf = [];
+        var buf = [];
 
-         for ( var i = 0 ; i < this.stack.length ; i++ )
-         {
-            var view = this.stack[i];
+        for ( var i = 0 ; i < this.stack.length ; i++ ) {
+          var view = this.stack[i];
 
-            if ( buf.length != 0 ) buf.push(' > ');
-            buf.push(view.stackLabel);
-         }
+          if ( buf.length != 0 ) buf.push(' > ');
+          buf.push(view.stackLabel);
+        }
 
-         this.navBarElement().innerHTML = buf.join('');
+        this.navBarElement().innerHTML = buf.join('');
       },
 
       pushView: function (view, opt_label, opt_back) {
-         if ( !opt_back ) this.redo.length = 0;
-         this.setPreview(null);
-         view.stackLabel = opt_label || view.stackLabel || view.label;
-         this.stack.push(view);
-         this.viewAreaElement().innerHTML = view.toHTML();
-         this.updateNavBar();
-         view.stackView = this;
-         view.initHTML();
+        if ( !opt_back ) this.redo.length = 0;
+        this.setPreview(null);
+        view.stackLabel = opt_label || view.stackLabel || view.label;
+        this.stack.push(view);
+        this.viewAreaElement().innerHTML = view.toHTML();
+        this.updateNavBar();
+        view.stackView = this;
+        view.initHTML();
+        this.propertyChange('stack', this.stack, this.stack);
       },
 
       setPreview: function(view) {
-         if ( ! view ) {
-           this.viewAreaElement().parentNode.width = '100%';
-           this.previewAreaElement().innerHTML = '';
-           return;
-         }
+        if ( ! view ) {
+          this.viewAreaElement().parentNode.width = '100%';
+          this.previewAreaElement().innerHTML = '';
+          return;
+        }
 
-         this.viewAreaElement().parentNode.width = '65%';
-         this.previewAreaElement().innerHTML = view.toHTML();
-         view.initHTML();
+        this.viewAreaElement().parentNode.width = '65%';
+        this.previewAreaElement().innerHTML = view.toHTML();
+        view.initHTML();
       }
 
    }

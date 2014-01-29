@@ -2480,8 +2480,7 @@ var ActionButton = Model.create({
       code: function() {
         var value = this.value.get();
         var action = this.action;
-        Events.dynamic(function() { this.onEnabled(action.isEnabled(value)); }.bind(this)); 
-        // this.action.listenIsEnabled(this.value.get(), this.onEnabled);
+        Events.dynamic(action.isEnabled.bind(value), function(enabled) { this.onEnabled(enabled); }.bind(this));
       }
     },
     {
@@ -2516,12 +2515,9 @@ var ActionButton = Model.create({
     initHTML: function() {
       this.SUPER();
 
-      var self = this;
       this.$.addEventListener(
         'click',
-        function(action) {
-          self.action.action.apply(self.value.get());
-        });
+        this.value.get()[this.action.name].bind(this.value.get()));
 
       this.onValueChange();
     }
