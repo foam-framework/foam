@@ -25,30 +25,28 @@ function $addWindow(w) {
    $documents.push(w.document);
 }
 function $removeWindow(w) {
-   for ( var i = $documents.length - 1 ; i >= 0 ; i-- ) {
-      if ( $documents[i].defaultView === w )
-         $documents.splice(i,1);
-   }
+  for ( var i = $documents.length - 1 ; i >= 0 ; i-- ) {
+    if ( $documents[i].defaultView === w )
+      $documents.splice(i,1);
+  }
 }
 /** Replacement for getElementById **/
-var $ = function () {
-   for ( var i = 0 ; i < $documents.length ; i++ ) {
-      var d = $documents[i];
-      var ret = d.getElementById.apply(d, arguments);
+var $ = function (id) {
+  for ( var i = 0 ; i < $documents.length ; i++ ) {
+    var ret = $documents[i].getElementById(id);
 
-      if ( ret ) return ret;
-   }
-   return undefined;
+    if ( ret ) return ret;
+  }
+  return undefined;
 };
 /** Replacement for getElementByClassName **/
-var $$ = function () {
-   for ( var i = 0 ; i < $documents.length ; i++ ) {
-      var d = $documents[i];
-      var ret = d.getElementsByClassName.apply(d, arguments);
+var $$ = function (cls) {
+  for ( var i = 0 ; i < $documents.length ; i++ ) {
+    var ret = $documents[i].getElementsByClassName(cls);
 
-      if ( ret.length > 0 ) return ret;
-   }
-   return [];
+    if ( ret.length > 0 ) return ret;
+  }
+  return [];
 };
 
 
