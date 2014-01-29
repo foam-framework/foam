@@ -276,10 +276,6 @@ var QIssueComment = FOAM({
     {
       name: 'published',
       view: 'RelativeDateTimeFieldView'
-    },
-    {
-      name: 'content',
-      view: 'PreformattedTextFieldView'
     }
   ]
 });
