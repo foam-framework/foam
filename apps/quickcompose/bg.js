@@ -45,7 +45,7 @@ function launchComposer() {
   function launch(ret) {
     var screen = window.screen;
     var sessionTimer;
-    
+
     chrome.app.window.create(
       'empty.html',
       {

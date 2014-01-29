@@ -293,7 +293,7 @@ var Browser = Model.create({
 
       for ( var key in m ) {
         u += d;
-        
+
         u += key + '=' + encodeURIComponent(m[key]);
         d = '&';
       }

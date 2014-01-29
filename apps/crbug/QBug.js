@@ -75,7 +75,7 @@ var QBug = Model.create({
           /*
         dao.jsonToObj = function(json) {
           if ( json.author ) json.author = json.author.name;
-          
+
           return this.model.create(json);
         };
         */

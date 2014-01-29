@@ -68,7 +68,7 @@ var JSONUtil = {
       if ( obj instanceof Function ) return obj;
 
       if ( obj instanceof Date ) return obj;
-     
+
       if ( obj instanceof Object ) {
          var keys = Object.keys(obj);
          for ( var j = 0, key; key = keys[j]; j++ ) {

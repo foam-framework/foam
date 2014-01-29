@@ -328,7 +328,7 @@ var ImageView = FOAM({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
-  
+
   properties: [
     {
       name: 'value',
@@ -362,7 +362,7 @@ var ImageView = FOAM({
       }
     }
   ],
-  
+
   methods: {
     setValue: function(value) {
       this.value = value;
@@ -376,7 +376,7 @@ var ImageView = FOAM({
     },
     initHTML: function() {
       this.SUPER();
-      
+
       if ( chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
@@ -2138,7 +2138,7 @@ var TableView = FOAM({
    listeners: [
      {
        model_: 'Method',
-       
+
        name: 'onEditColumns',
        code: function(evt) {
          var v = EditColumnsView.create({
@@ -2288,7 +2288,7 @@ var TableView = FOAM({
                 str.push('<td class="' + prop.name + '">');
               }
                 var val = obj[prop.name];
-		if ( prop.tableFormatter ) {
+                if ( prop.tableFormatter ) {
                   str.push(prop.tableFormatter(val, obj, this));
                 } else {
                   str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
@@ -2381,11 +2381,11 @@ var TableView = FOAM({
 var EditColumnsView = FOAM({
 
   model_: 'Model',
-  
+
   name: 'EditColumnsView',
-  
+
   extendsModel: 'AbstractView',
-  
+
   properties: [
     {
       name:  'model',
@@ -2404,7 +2404,7 @@ var EditColumnsView = FOAM({
   listeners: [
      {
        model_: 'Method',
-       
+
        name: 'onAddColumn',
        code: function(prop) {
          this.properties = this.properties.concat([prop]);
@@ -2412,7 +2412,7 @@ var EditColumnsView = FOAM({
      },
      {
        model_: 'Method',
-       
+
        name: 'onRemoveColumn',
        code: function(prop) {
          this.properties = this.properties.removeF({f: function(o) { return prop == o; }});
@@ -2424,11 +2424,11 @@ var EditColumnsView = FOAM({
   methods: {
     toHTML: function() {
       var s = '<span id="' + this.getID() + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
-      
+
       s += 'Show columns:';
       s += '<table>';
 
-      // Currently Selected Properties 
+      // Currently Selected Properties
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
         var p = this.model.getProperty(this.properties[i]);
         s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
@@ -2444,7 +2444,7 @@ var EditColumnsView = FOAM({
 
       s += '</table>';
       s += '</span>';
-      
+
       return s;
     }
   }
@@ -2480,7 +2480,7 @@ var ActionButton = Model.create({
       code: function() {
         var value = this.value.get();
         var action = this.action;
-        Events.dynamic(function() { this.onEnabled(action.isEnabled(value)); }.bind(this)); 
+        Events.dynamic(function() { this.onEnabled(action.isEnabled(value)); }.bind(this));
         // this.action.listenIsEnabled(this.value.get(), this.onEnabled);
       }
     },
@@ -3160,13 +3160,13 @@ var AlternateView = FOAM({
        // TODO: some views are broken and don't have model_, remove
        // first guard when fixed.
        if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
-       
+
        this.$.innerHTML = view.toHTML();
        view.initHTML();
        view.value && view.value.set(this.value.get());
        //       if ( view.set ) view.set(this.model.get());
        //       Events.link(this.model, this.view.model);
-       
+
        this.view = view;
      },
 
@@ -3174,21 +3174,21 @@ var AlternateView = FOAM({
        var str  = [];
        var viewChoice = this.views[0];
        var buttons;
-       
+
        str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
        for ( var i = 0 ; i < this.views.length ; i++ ) {
          var choice = this.views[i];
          var listener = function(altView, choice) { return function (e) {
            altView.choice = choice;
-           
+
            // This is a bit hackish, each element should listen on a 'selected'
            // property and update themselves
            for ( var j = 0 ; j < buttons.length ; j++ ) {
              DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
            }
-           
+
            DOM.setClass(e.toElement, 'mode_button_active');
-           
+
            return false;
          };}(this, choice);
          //          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
@@ -3198,25 +3198,25 @@ var AlternateView = FOAM({
        str.push('</div>');
        buttons = this.callbacks_;
        this.buttons_ = buttons;
-       
+
        str.push('<br/>');
        // console.log("viewChoice: ", viewChoice);
-       
+
        //       Events.link(this.model, this.view.model);
-       
+
        //       str.push(this.view.toHTML());
        str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
        str.push('</div>');
-       
+
        return str.join('');
      },
 
      initHTML: function() {
        this.SUPER();
-       
+
        if ( ! this.choice ) this.choice = this.views[0];
        this.installSubView(this.choice);
-       
+
        DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
        DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
        DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');

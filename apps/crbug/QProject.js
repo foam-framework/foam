@@ -64,7 +64,7 @@ var QProject = Model.create({
           .addIndex(QIssue.SUMMARY)
           .addIndex(QIssue.OS)
           .addIndex(QIssue.UPDATED);
-        
+
         var IssueIDBDAO = IDBDAO.create({
           model: QIssue,
           name: this.projectName + '_' + QIssue.plural
@@ -122,7 +122,7 @@ var QProject = Model.create({
   ],
 
   methods: {
-    /** Open a Browser in a Window for a Chome Packaged App. **/ 
+    /** Open a Browser in a Window for a Chome Packaged App. **/
     launchBrowser: function() {
       var self = this;
 
