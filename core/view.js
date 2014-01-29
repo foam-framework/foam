@@ -1562,6 +1562,10 @@ var DetailView = Model.create({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name:  'title',
+      defaultValueFn: function() { return "Edit " + this.model.label; }
     }
   ],
 
@@ -1612,9 +1616,11 @@ var DetailView = Model.create({
     },
 
     titleHTML: function() {
-      return '<tr><th colspan=2 class="heading">' +
+      var title = this.title;
+
+      return title ? '<tr><th colspan=2 class="heading">' +
         'Edit ' + this.model.label +
-        '</th></tr>';
+        '</th></tr>' : '';
     },
 
     startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
