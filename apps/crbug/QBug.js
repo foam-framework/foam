@@ -33,10 +33,12 @@ var QBug = Model.create({
       defaultValue: 'foam-framework'
     },
     {
-      model_: 'StringProperty',
       name: 'user',
-      postSet: function(newValue) {
-        QueryParser.ME = newValue;
+      type: 'QUser',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removePropertyListener('email', this.onUserUpdate);
+        newValue.addPropertyListener('email', this.onUserUpdate);
+        this.onUserUpdate();
       }
     },
     {
@@ -48,16 +50,6 @@ var QBug = Model.create({
           }),
           context: this
         });
-      }
-    },
-    {
-      name: 'userInfo',
-      type: 'UserInfo',
-      postSet: function(newValue, oldValue) {
-        // TODO clean this up when scopes are implemented.
-        oldValue && oldValue.removePropertyListener('email', this.userInfoUpdate);
-        newValue.addPropertyListener('email', this.userInfoUpdate);
-        this.userInfoUpdate();
       }
     },
     {
@@ -96,12 +88,17 @@ var QBug = Model.create({
   methods: {
     init: function(args) {
       this.SUPER(args);
-      this.persistentContext.bindObject('userInfo', UserInfo)(function(userInfo) {
-        ajsonp("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")(
+      this.persistentContext.bindObject('user', QUser)(function(user) {
+        ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
           function(response) {
             if ( response ) {
-              userInfo.copyFrom(response);
+              user.email = response.email;
             }
+          });
+
+        ajsonp("https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/users/me")(
+          function(response) {
+            response && user.copyFrom(response);
           });
       });
     },
@@ -140,9 +137,9 @@ var QBug = Model.create({
 
   listeners: [
     {
-      name: 'userInfoUpdate',
+      name: 'onUserUpdate',
       code: function() {
-        this.user = this.userInfo.email;
+        QueryParser.ME = this.user.email;
       }
     }
   ]

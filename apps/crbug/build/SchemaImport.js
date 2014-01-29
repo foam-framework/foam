@@ -1143,7 +1143,7 @@ var typeModels = {
   float: FloatProperty,
   integer: IntegerProperty,
   ref: ReferenceProperty,
-  refArray: ReferenceArrayProperty,
+  refArray: ArrayProperty,
   string: StringProperty,
   stringArray: StringArrayProperty
 };
@@ -1156,13 +1156,10 @@ function generateModel(schema) {
     if ( p.type == 'array' && p.items.$ref ) p.type = 'refArray';
     if ( p.type == 'array' && p.items.type == 'string' ) p.type = 'stringArray';
     if ( p.format == 'date-time' ) p.type = 'dateTime';
+    if ( ! p.type && p.ref ) p.type = 'ref';
 
-    var ref = p.$ref;
-    if ( ref ) {
-      if ( ref == 'IssueRef' ) ref = 'Issue';
-      // Should just be a reference to the ref Property
-      p.type = 'ref';
-    }
+    var ref = p.$ref || (p.items && p.items.$ref);
+    if ( ref == 'IssueRef' ) ref = 'Issue';
 
     var pModel = typeModels[p.type] || Property;
     var prop = pModel.create({
