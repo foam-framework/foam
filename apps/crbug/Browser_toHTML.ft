@@ -12,7 +12,7 @@
  </head>
  <body>
 <div class="topHeader">
-  %%user | <a href="#favs">My favorites</a> <small>▼</small> | <%= linkLink %> | <%= syncLink %> | <%= browserLink %>  
+  %%userView | <a href="#favs">My favorites</a> <small>▼</small> | <%= linkLink %> | <%= syncLink %> | <%= browserLink %>  
 </div>
 <div id="header">
 <table>

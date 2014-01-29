@@ -33,7 +33,32 @@ var QBug = Model.create({
       defaultValue: 'foam-framework'
     },
     {
-      name: 'user'
+      model_: 'StringProperty',
+      name: 'user',
+      postSet: function(newValue) {
+        QueryParser.ME = newValue;
+      }
+    },
+    {
+      name: 'persistentContext',
+      valueFactory: function() {
+        return PersistentContext.create({
+          dao: IDBDAO.create({
+            model: Binding
+          }),
+          context: this
+        });
+      }
+    },
+    {
+      name: 'userInfo',
+      type: 'UserInfo',
+      postSet: function(newValue, oldValue) {
+        // TODO clean this up when scopes are implemented.
+        oldValue && oldValue.removePropertyListener('email', this.userInfoUpdate);
+        newValue.addPropertyListener('email', this.userInfoUpdate);
+        this.userInfoUpdate();
+      }
     },
     {
       name: 'ProjectNetworkDAO',
@@ -69,6 +94,18 @@ var QBug = Model.create({
   ],
 
   methods: {
+    init: function(args) {
+      this.SUPER(args);
+      this.persistentContext.bindObject('userInfo', UserInfo)(function(userInfo) {
+        ajsonp("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")(
+          function(response) {
+            if ( response ) {
+              userInfo.copyFrom(response);
+            }
+          });
+      });
+    },
+
     findProject: function(projectName, sink) {
       if ( this.projects_[projectName] ) {
         sink.put(this.projects_[projectName]);
@@ -99,5 +136,14 @@ var QBug = Model.create({
         p.launchBrowser();
       }});
     }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'userInfoUpdate',
+      code: function() {
+        this.user = this.userInfo.email;
+      }
+    }
+  ]
 });

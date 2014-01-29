@@ -690,6 +690,16 @@ var TextFieldView = FOAM({
              Events.follow(newValue, this.softValue);
            }
          }
+      },
+      {
+         model_: 'StringProperty',
+         name: 'readWriteTagName',
+         defaultValue: function() { return 'input'; }
+      },
+      {
+         model_: 'StringProperty',
+         name: 'readOnlyTagName',
+         defaultValue: function() { return 'span'; }
       }
    ],
 
@@ -698,10 +708,10 @@ var TextFieldView = FOAM({
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
 
-        return '<input id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
+        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
       }
 
-      return '<span id="' + this.getID() + '" name="' + this.name + '"></span>';
+      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '" name="' + this.name + '"></' + this.readOnlyTagName + '>';
     },
 
     // TODO: deprecate
@@ -748,62 +758,6 @@ var TextFieldView = FOAM({
     }
   ]
 });
-
-var PreformattedTextFieldView = FOAM({
-  model_: 'Model',
-  name: 'PreformattedTextFieldView',
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name: 'mode',
-      defaultValue: 'read-only'
-    },
-    {
-      name: 'value',
-      postSet: function(newValue, oldValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
-      }
-    },
-    {
-      name: 'escapeHTML',
-      defaultValue: true
-    },
-    {
-      model_: 'StringProperty',
-      name: 'placeholder'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      return '<pre id="' + this.getID() + '"></pre>';
-    },
-    setValue: function(value) {
-      this.value = value;
-    }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      animate: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var value = this.value.get();
-        if ( value ) {
-          this.$.innerHTML = '';
-          this.$.textContent = value;
-        } else {
-          this.$.innerHTML = '<i>' + this.strToHTML(this.placeholder) + '</i>';
-        }
-      }
-    }
-  ]
-});
-
 
 var DateFieldView = FOAM({
 

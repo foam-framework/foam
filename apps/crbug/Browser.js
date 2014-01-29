@@ -45,9 +45,19 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.url; }
     },
     {
-      name: 'user',
-      scope: 'qbug',
-      defaultValueFn: function() { return this.project.user; }
+      name: 'userView',
+      valueFactory: function() {
+        var view = TextFieldView.create(QBug.USER);
+        view.copyFrom({
+          mode: 'read-only',
+          escapeHtml: true
+        });
+        return view;
+      },
+      postSet: function(newValue, oldValue) {
+        // TODO clean this up when scopes are implemented.
+        newValue.setValue(this.project.qbug.propertyValue('user'));
+      }
     },
     {
       name: 'IssueDAO',
