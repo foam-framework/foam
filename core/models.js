@@ -255,3 +255,17 @@ var Person = FOAM({
     { model_: 'IntegerProperty', name: 'age' }
   ]
 });
+
+var UserInfo = FOAM({
+  model_: 'Model',
+
+  name: 'UserInfo',
+  label: 'UserInfo',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'email'
+    }
+  ]
+});

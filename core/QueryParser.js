@@ -154,7 +154,7 @@ var QueryParserFactory = function(model) {
 
   number: function(v) { return  parseInt(v[0].join('')); },
 
-  me: function() { return ME; },
+  me: function() { return this.ME || ME; },
 
   paren: function(v) { return v[1]; },
 

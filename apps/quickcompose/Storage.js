@@ -17,20 +17,6 @@
 
 console.time('Storage');
 
-var UserInfo = FOAM({
-  model_: 'Model',
-
-  name: 'UserInfo',
-  label: 'UserInfo',
-
-  properties: [
-    {
-      model_: 'StringProperty',
-      name: 'email'
-    }
-  ]
-});
-
 var EMailDAO = IDBDAO.create({model: EMail});
 var ContactDAO = MDAO.create({ model: Contact });
 ContactDAO.addIndex(Contact.EMAIL);
