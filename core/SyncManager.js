@@ -79,11 +79,11 @@ var SyncManager = FOAM({
       },
       {
          model_: 'BooleanProperty',
-         name:  'isSyncing'
+         name:  'enabled'
       },
       {
          model_: 'BooleanProperty',
-         name:  'enabled'
+         name:  'isSyncing'
       },
       {
          model_: 'StringProperty',

@@ -1690,9 +1690,9 @@ var DetailView = Model.create({
     titleHTML: function() {
       var title = this.title;
 
-      return title ? '<tr><th colspan=2 class="heading">' +
-        'Edit ' + this.model.label +
-        '</th></tr>' : '';
+      return title ?
+        '<tr><th colspan=2 class="heading">' + title + '</th></tr>' :
+        '';
     },
 
     startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
