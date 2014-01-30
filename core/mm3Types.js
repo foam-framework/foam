@@ -327,7 +327,7 @@ if ( a[i].model_ ) {
 }
                a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
              }
-             
+
              return a;
            }
        },

@@ -257,7 +257,7 @@ var Attachment = FOAM({
            .replace(/[\x00-\x1f]/g, '')
            .replace(/"/g, '');
 
-         // TODO: Content disposition 
+         // TODO: Content disposition
          ret(
            "Content-Type: " + self.type + "; name=\"" + sanitizedName + '"\r\n' +
              (self.inline ? '' : 'Content-Disposition: attachment; filename=\"' + sanitizedName + '\"\r\n') +

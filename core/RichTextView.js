@@ -121,7 +121,7 @@ var LinkView = Model.create({
       }
     }
   ],
-  
+
   templates: [
     {
       name: "toHTML",
@@ -245,7 +245,7 @@ var RichTextView = FOAM({
       }
     }
   ],
-  
+
   methods: {
     toHTML: function() {
       var sandbox = this.mode === 'read-write' ?
@@ -258,7 +258,7 @@ var RichTextView = FOAM({
 
       return '<div class="richtext">' +
         '<div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
-        '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' + 
+        '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' +
         '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + ' img-src="*"></iframe>' +
         '</div>';
     },

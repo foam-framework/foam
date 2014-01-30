@@ -115,7 +115,7 @@ var ModelProto = {
 
           if ( ! this[name] ) this[name] = p;
         }
-      } 
+      }
 
         // templates
         this.templates && Object_forEach(this.templates, function(t) {

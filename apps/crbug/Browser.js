@@ -47,7 +47,7 @@ var Browser = Model.create({
     {
       name: 'userView',
       valueFactory: function() {
-        var view = TextFieldView.create(QBug.USER);
+        var view = TextFieldView.create(QUser.EMAIL);
         view.copyFrom({
           mode: 'read-only',
           escapeHtml: true
@@ -56,7 +56,7 @@ var Browser = Model.create({
       },
       postSet: function(newValue, oldValue) {
         // TODO clean this up when scopes are implemented.
-        newValue.setValue(this.project.qbug.propertyValue('user'));
+        newValue.setValue(this.project.user.propertyValue('email'));
       }
     },
     {
@@ -293,7 +293,7 @@ var Browser = Model.create({
 
       for ( var key in m ) {
         u += d;
-        
+
         u += key + '=' + encodeURIComponent(m[key]);
         d = '&';
       }

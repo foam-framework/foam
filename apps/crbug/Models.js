@@ -279,3 +279,16 @@ var QIssueComment = FOAM({
     }
   ]
 });
+
+var QUser = FOAM({
+  model_: 'Model',
+  name: 'QUser',
+  extendsModel: 'User',
+
+  properties: [
+    {
+      model_: 'StringArrayProperty',
+      name: 'email'
+    }
+  ]
+});
