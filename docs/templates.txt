@@ -219,6 +219,11 @@ Another method is to do:
 <%= this.strToHTML("<b>bold</b>") %>
 
 
+Debugging
+
+To set a breakpoint in a template, add the following: <% debugger; %>
+
+
 Editor Support
 
 FOAM templates use the standard JSP syntax, so syntax highlighting is
