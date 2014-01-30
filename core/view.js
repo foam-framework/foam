@@ -2557,9 +2557,10 @@ var ActionButton = Model.create({
     initHTML: function() {
       this.SUPER();
 
+      var self = this;
       this.$.addEventListener(
         'click',
-        this.value.get()[this.action.name].bind(this.value.get()));
+        function() { self.action.callIfEnabled(self.value.get()); });
 
       this.onValueChange();
     }

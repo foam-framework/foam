@@ -117,15 +117,18 @@ var Action = FOAM({
            view: 'FunctionView',
            help: 'Function to implement action.'
        }
-    ]
-/*
+    ],
   methods: {
-    listenIsEnabled: function(ret) {
-      Events.dynamic(function() { ret(this.isEnabled()); });
+    callIfEnabled: function(that) {
+      if ( this.isEnabled.call(that) ) this.action.call(that);
     }
   }
-*/
 });
+
+Action.getPrototype().callIfEnabled = function(that) {
+  if ( this.isEnabled.call(that) ) this.action.call(that);
+};
+
 
 /* Not used yet
 var Topic = FOAM({
