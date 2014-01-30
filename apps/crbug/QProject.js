@@ -129,6 +129,7 @@ var QProject = Model.create({
       chrome.app.window.create('empty.html', {width: 1000, height: 800}, function(w) {
         w.contentWindow.onload = function() {
           var window = self.window = w.contentWindow;
+
           apar(
             arequire('GridView'),
             arequire('QIssueTileView'),
@@ -148,6 +149,7 @@ var QProject = Model.create({
             w.focus();
           });
         };
+
         w.onClosed.addListener(function() {
           $removeWindow(self.window);
           // for debugging

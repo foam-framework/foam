@@ -138,12 +138,12 @@ function createView(rowSelection, browser) {
               ]}).create({
                 model: QIssue,
                 accChoices: [
-                   [ MAP(QIssueTileView.create(), COL.create()), "Tiles"  ],
-                   [ MAP(idFormatter, COL.create()),             "IDs"    ],
-                   [ ItemCount.create(),                         "Counts" ],
-                   [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
-                   [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
-//                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles"  ],
+                  [ MAP(idFormatter, COL.create()),             "IDs"    ],
+                  [ ItemCount.create(),                         "Counts" ],
+                  [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
+                  [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
+                  //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: GridByExpr.create()
            });

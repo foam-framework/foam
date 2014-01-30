@@ -8,8 +8,10 @@ var QIssueTileView = FOAM({
 
    properties: [
       {
+         name:  'browser'
+      },
+      {
          name:  'issue',
-         label: 'Issue',
          type:  'QIssue'
       }
    ],
@@ -19,17 +21,16 @@ var QIssueTileView = FOAM({
      put: function(issue) { this.issue = issue; },
 
      // Implement Adapter
-     f: function(issue) { return QIssueTileView.create({issue: issue}); },
+     f: function(issue) {
+       return QIssueTileView.create({
+         issue: issue,
+         browser: this.browser});
+     },
 
      toString: function() { return this.toHTML(); }
    },
 
    templates:[
-     {
-        model_: 'Template',
-
-        name: 'toHTML',
-        description: 'TileView'
-     }
+     { name: 'toHTML' }
    ]
 });
