@@ -134,7 +134,7 @@ var ModelProto = {
         // add action
         // Workaround for crbug.com/258522
       this.actions && Object_forEach(this.actions, function(a) {
-        addMethod(a.name, function() { if ( a.isEnabled(this) ) a.action.apply(this); });
+        addMethod(a.name, function() { if ( a.isEnabled.call(this) ) a.action.call(this); });
       });
 
         // add methods

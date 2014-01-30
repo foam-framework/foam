@@ -2520,10 +2520,9 @@ var ActionButton = Model.create({
       model_: 'Method',
       name: 'onValueChange',
       code: function() {
-        var value = this.value.get();
+        var value  = this.value.get();
         var action = this.action;
-        Events.dynamic(function() { this.onEnabled(action.isEnabled(value)); }.bind(this));
-        // this.action.listenIsEnabled(this.value.get(), this.onEnabled);
+        Events.dynamic(action.isEnabled.bind(value), this.onEnabled);
       }
     },
     {
@@ -2558,12 +2557,9 @@ var ActionButton = Model.create({
     initHTML: function() {
       this.SUPER();
 
-      var self = this;
       this.$.addEventListener(
         'click',
-        function(action) {
-          self.action.action.apply(self.value.get());
-        });
+        this.value.get()[this.action.name].bind(this.value.get()));
 
       this.onValueChange();
     }

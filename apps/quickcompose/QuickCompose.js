@@ -237,8 +237,8 @@ var QuickCompose = FOAM({
        name:  'send',
        help:  'Send (Ctrl-Enter)',
 
-       isEnabled: function(obj) {
-         var email   = obj.email;
+       isEnabled: function() {
+         var email   = this.email;
          var length  = email.to.length;
          var subject = email.subject;
          var body    = email.body;

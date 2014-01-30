@@ -409,10 +409,8 @@ var ChromeAppBrowser = Model.create({
       if ( ! id ) return;
 
       var self = this;
-      console.log('finding ', id);
       this.IssueDAO.find(id, {
         put: function(obj) {
-          console.log('found');
           var v = self.currentPreview = obj.createPreviewView();
 
           // TODO take this from relationships

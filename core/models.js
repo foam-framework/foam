@@ -91,59 +91,63 @@ var Timer = FOAM({
          help:  'The hour of the current day.',
          view:  'IntFieldView',
          defaultValue: 0
+      },
+      {
+        name: 'isStarted',
+        defaultValue: false,
+        hidden: true
       }
    ],
 
    actions: [
-      {
-         model_: 'Action',
-         name:  'start',
-         help:  'Start the timer.',
+     {
+       model_: 'Action',
+       name:  'start',
+       help:  'Start the timer.',
 
-         isAvailable: function() { return true; },
-         isEnabled:   function() { return ! this.isStarted; },
-         action:      function() { if ( this.isStarted ) return; this.isStarted = true; this.tick(); }
-      },
-      {
-         model_: 'Action',
-         name:  'step',
-         help:  'Step the timer.',
+       isAvailable: function() { return true; },
+       isEnabled:   function() { return ! this.isStarted; },
+       action:      function() { this.isStarted = true; this.tick(); }
+     },
+     {
+       model_: 'Action',
+       name:  'step',
+       help:  'Step the timer.',
 
-         isAvailable: function() { return true; },
-         isEnabled: function()   { return ! this.isStarted; },
-         action: function()      {
-            this.i++;
-            this.time  += this.interval * this.timeWarp;
-            this.second = this.time /    1000 % 60 << 0;
-            this.minute = this.time /   60000 % 60 << 0;
-            this.hour   = this.time / 3600000 % 24 << 0;
+       isAvailable: function() { return true; },
+       action: function()      {
+         this.i++;
+         this.time  += this.interval * this.timeWarp;
+         this.second = this.time /    1000 % 60 << 0;
+         this.minute = this.time /   60000 % 60 << 0;
+         this.hour   = this.time / 3600000 % 24 << 0;
+       }
+     },
+     {
+       model_: 'Action',
+       name:  'stop',
+       help:  'Stop the timer.',
+
+       isAvailable: function() { return true; },
+       isEnabled: function() { return this.isStarted; },
+       action: function() {
+         this.isStarted = false;
+         if ( this.timeout ) {
+           clearTimeout(this.timeout);
+           this.timeout = undefined;
          }
-      },
-      {
-         model_: 'Action',
-         name:  'stop',
-         help:  'Stop the timer.',
-
-         isAvailable: function() { return true; },
-         isEnabled: function()   { return this.isStarted; },
-         action: function()      {
-           this.isStarted = false;
-           if ( this.timeout ) {
-               clearTimeout(this.timeout);
-               this.timeout = undefined;
-            }
-         }
-      }
+       }
+     }
    ],
 
    methods: {
-      tick: function() {
-         this.timeout = undefined;
-         if ( ! this.isStarted ) return;
+     tick: function() {
+       this.timeout = undefined;
+       if ( ! this.isStarted ) return;
 
-         this.step();
-         this.timeout = setTimeout(this.tick.bind(this), this.interval);
-      }
+       this.step();
+       this.timeout = setTimeout(this.tick.bind(this), this.interval);
+     }
    }
 });
 
