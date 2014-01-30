@@ -353,10 +353,15 @@ var ChromeAppBrowser = Model.create({
 
           self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
           v.$.style.left = e.x + 25;
+          v.$.style.height = '400px';
           var viewHeight = v.$.style.height.replace('px','');
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
           var top = e.y - viewHeight/2;
-          v.$.style.top = Math.max(100, Math.min(screenHeight-viewHeight-15, top));
+          v.$.style.top = Math.min(
+            screenHeight-15-viewHeight,
+            Math.max(
+              100,
+              Math.min(screenHeight-viewHeight-15, top)));
 
           v.initHTML();
         }
