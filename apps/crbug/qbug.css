@@ -246,3 +246,24 @@ body { overflow: hidden; }
   color: #00c;
   white-space: nowrap;
 }
+
+.ActionMenuPopup {
+  border-color: #c9d7f1 #36c #36c #a2bae7
+  border-style: solid;
+  border-width: 1px;
+  width: 175px;
+}
+
+.actionButton {
+  color: #00c;
+  padding: 3px;
+  text-decoration: none;
+  font-weight: normal;
+  box-shadow: none;
+}
+
+.menuSeparator {
+  margin: 0 0.5em;
+  border: 0;
+  border-top: 1px solid #c9d7f1
+}

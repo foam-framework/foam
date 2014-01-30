@@ -184,6 +184,13 @@ option[selected]{
   text-align:right;
 }
 
+.ActionMenuPopup {
+  position: absolute;
+  width: 150px;
+  border: 2px solid grey;
+  background: white;
+}
+
 .ActionMenu .actionButton {
   background:white;
   border:none;

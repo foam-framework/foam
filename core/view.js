@@ -273,12 +273,49 @@ var AbstractView = FOAM({
      close: function() {
        this.$ && this.$.remove();
        this.destroy();
+       this.publish('closed');
      }
 
    }
 
 });
 
+var StaticHTML = FOAM({
+  model_: 'Model',
+  name: 'StaticHTML',
+  extendsModel: 'AbstractView',
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'content'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'escapeHTML',
+      defaultValue: false
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      if ( this.escapeHTML ) {
+        return this.strToHTML(this.content);
+      }
+      return this.content;
+    }
+  }
+});
+
+var MenuSeparator = FOAM({
+  model_: 'Model',
+  extendsModel: 'StaticHTML',
+  properties: [
+    {
+      name: 'content',
+      defaultValue: '<hr class="menuSeparator">'
+    }
+  ]
+});
 
 var DomValue = {
    DEFAULT_EVENT:    'change',
@@ -2603,6 +2640,11 @@ var ToolbarView = FOAM({
       },
       {
          name: 'document'
+      },
+      {
+        model_: 'BooleanPropery',
+        name: 'openedAsMenu',
+        defaultValue: false
       }
    ],
 
@@ -2613,14 +2655,12 @@ var ToolbarView = FOAM({
       openAsMenu: function() {
          // TODO
          var div = this.document.createElement('div');
+         this.openedAsMenu = true;
 
          div.id = this.nextID();
-         div.style.position = 'absolute';
-         div.style.border = '2px solid grey';
+         div.className = 'ActionMenuPopup';
          this.top ? div.style.top = this.top : div.style.bottom = this.bottom;
          this.left ? div.style.left = this.left : div.style.right = this.right;
-         div.style.background = 'white';
-         div.style.width = '150px';
          div.innerHTML = this.toHTML(true);
 
          // Close window when clicked
@@ -2628,14 +2668,26 @@ var ToolbarView = FOAM({
             div.parentNode.removeChild(div);
          };
 
+         var self = this;
          div.onmouseout = function(e) {
             if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
-               div.parentNode.removeChild(div);
+               self.close();
             }
          };
 
          this.document.body.appendChild(div);
          this.initHTML();
+      },
+
+      close: function() {
+        if ( ! this.openedAsMenu ) {
+          return this.SUPER();
+        }
+
+        this.openedAsMenu = false;
+        this.$.parentNode.remove();
+        this.destroy();
+        this.publish('closed');
       },
 
       toHTML: function(opt_menuMode) {
@@ -2647,7 +2699,8 @@ var ToolbarView = FOAM({
          for ( var i = 0 ; i < this.children.length ; i++ ) {
            str += this.preButton(this.children[i]) +
              this.children[i].toHTML() +
-             this.postButton(this.children[i]);
+             (MenuSeparator.isInstance(this.children[i]) ?
+               '' : this.postButton(this.children[i]));
          }
 
          str += '</div>';
@@ -2701,6 +2754,9 @@ var ToolbarView = FOAM({
      },
      addActions: function(actions) {
        actions.forEach(this.addAction.bind(this));
+     },
+     addSeparator: function() {
+       this.addChild(MenuSeparator.create());
      }
   }
 });

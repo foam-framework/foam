@@ -142,6 +142,15 @@ var Browser = Model.create({
       valueFactory: function() {
         return ImageView.create({value: SimpleValue.create(this.url + '/logo')});
       }
+    },
+    {
+      name: 'favouritesLink',
+      valueFactory: function() {
+        return ActionLink.create({action: this.model_.FAVOURITES, value: SimpleValue.create(this)});
+      }
+    },
+    {
+      name: 'favouritesMenu'
     }
   ],
 
@@ -199,6 +208,66 @@ var Browser = Model.create({
       action: function() {
         console.log('launch sync');
         this.project.launchSync();
+      }
+    },
+    {
+      model_: 'Action',
+      name: 'favourites',
+      label: 'My Favourites <small>▼</small>',
+      action: function() {
+        if ( this.favouritesMenu ) {
+          this.favouritesMenu.close();
+          return;
+        }
+
+        var view = ToolbarView.create({
+          horizontal: false,
+          value: SimpleValue.create(this),
+          document: this.window.document
+        });
+
+        view.addChild(
+          StaticHTML.create({ content: '<b>Projects</b>' }));
+        view.addActions(
+          this.project.user.projects.map(function(p) {
+            return Action.create({
+              name: p.name,
+              action: function() {
+                this.qbug.launchBrowser(p.name);
+              }
+            });
+          }));
+
+        view.addSeparator();
+        view.addAction(this.model_.FIND_PROJECTS);
+        view.addAction(this.model_.CREATE_PROJECT);
+
+        view.left = this.favouritesLink.$.offsetLeft;
+        view.top = this.favouritesLink.$.offsetTop + this.favouritesLink.$.offsetHeight;
+        view.openAsMenu();
+
+        var self = this;
+        view.subscribe('close', function() {
+          self.favouritesMenu = '';
+        });
+
+        this.favouritesMenu = view;
+      }
+    },
+    {
+      model_: 'Action',
+      name: 'findProjects',
+      label: 'Find open source projects...',
+      action: function() {
+        this.openURL('https://code.google.com/hosting/');
+      }
+    },
+    {
+      model_: 'Action',
+      name: 'createProject',
+      label: 'Create a project...',
+      action: function() {
+        this.openURL('https://code.google.com/hosting/createProject');
       }
     }
   ],
