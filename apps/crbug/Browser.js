@@ -195,7 +195,7 @@ var Browser = Model.create({
     {
       model_: 'Action',
       name:  'launchSync',
-      label: 'Sync',
+      label: 'Sync Status',
       action: function() {
         console.log('launch sync');
         this.project.launchSync();
@@ -319,6 +319,12 @@ var ChromeAppBrowser = Model.create({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',
+  
+  properties: [
+    {
+      name: 'previewID'
+    }
+  ],
 
   methods: {
     openURL: function(url) {
@@ -328,8 +334,9 @@ var ChromeAppBrowser = Model.create({
 
     /** Open a preview window when the user hovers over an issue id. **/
     preview: function(e, id) {
-      console.log('preview', e, id);
-      if ( this.currentPreview ) this.currentPreview.close();
+      if ( id === this.previewID ) return;
+      if ( this.previewID ) this.currentPreview.close();
+      this.previewID = id;
       if ( ! id ) return;
 
       var self = this;
@@ -345,7 +352,7 @@ var ChromeAppBrowser = Model.create({
           v.value = SimpleValue.create(obj);
 
           self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
-          v.$.style.left = e.x + 40;
+          v.$.style.left = e.x + 25;
           var viewHeight = v.$.style.height.replace('px','');
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
           var top = e.y - viewHeight/2;
