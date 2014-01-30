@@ -169,8 +169,8 @@ var QProject = Model.create({
       var self = this;
 
       chrome.app.window.create('empty.html', {width: 430, height: 440}, function(w) {
+        var window = w.contentWindow;
         w.contentWindow.onload = function() {
-          var window = w.contentWindow;
           $addWindow(window);
           var b = ActionBorder.create(
             SyncManager,
@@ -183,10 +183,31 @@ var QProject = Model.create({
           w.focus();
         };
         w.onClosed.addListener(function() {
-          debugger;
-          // $removeWindow(self.window);
+          $removeWindow(window);
         });
       });
+    },
+
+    launchConfigProjects: function() {
+      var self = this;
+
+      chrome.app.window.create('empty.html', {width: 430, height: 440}, function(w) {
+        var window = w.contentWindow;
+        w.contentWindow.onload = function() {
+          $addWindow(window);
+          var b = StringArrayView.create({
+            value: self.user.propertyValue('preferredProjects')
+          });
+
+          window.document.body.innerHTML =
+            '<b>Preferred projects: </b>' + b.toHTML();
+          b.initHTML();
+          w.focus();
+        };
+        w.onClosed.addListener(function() {
+          $removeWindow(window);
+        });
+      });      
     }
 
   },

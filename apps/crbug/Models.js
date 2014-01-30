@@ -288,8 +288,20 @@ var QUser = FOAM({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      model_: 'StringProperty',
       name: 'email'
-    }
+    },
+    {
+      name: 'projects',
+      postSet: function(newValue) {
+        if ( this.preferredProjects.length == 0 ) {
+          this.preferredProjects = newValue.map(function(p) { return p.name; });
+        }
+      }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'preferredProjects'
+    },
   ]
 });

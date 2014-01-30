@@ -229,11 +229,11 @@ var Browser = Model.create({
         view.addChild(
           StaticHTML.create({ content: '<b>Projects</b>' }));
         view.addActions(
-          this.project.user.projects.map(function(p) {
+          this.project.user.preferredProjects.map(function(p) {
             return Action.create({
-              name: p.name,
+              name: p,
               action: function() {
-                this.qbug.launchBrowser(p.name);
+                this.qbug.launchBrowser(p);
               }
             });
           }));
@@ -241,6 +241,9 @@ var Browser = Model.create({
         view.addSeparator();
         view.addAction(this.model_.FIND_PROJECTS);
         view.addAction(this.model_.CREATE_PROJECT);
+
+        view.addSeparator();
+        view.addAction(this.model_.CONFIG_PROJECTS);
 
         view.left = this.favouritesLink.$.offsetLeft;
         view.top = this.favouritesLink.$.offsetTop + this.favouritesLink.$.offsetHeight;
@@ -269,7 +272,15 @@ var Browser = Model.create({
       action: function() {
         this.openURL('https://code.google.com/hosting/createProject');
       }
-    }
+    },
+    {
+      model_: 'Action',
+      name: 'configProjects',
+      label: 'Configure projects...',
+      action: function() {
+        this.project.launchConfigProjects();
+      }
+    },
   ],
 
   methods: {

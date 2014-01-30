@@ -2502,20 +2502,20 @@ var ToolbarView = FOAM({
          this.left ? div.style.left = this.left : div.style.right = this.right;
          div.innerHTML = this.toHTML(true);
 
+         var self = this;
          // Close window when clicked
          div.onclick = function() {
-            div.parentNode.removeChild(div);
+            self.close();
          };
 
-         var self = this;
          div.onmouseout = function(e) {
-            if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
-               self.close();
-            }
-         };
+           if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
+              self.close();
+           }
+        };
 
-         this.document.body.appendChild(div);
-         this.initHTML();
+        this.document.body.appendChild(div);
+        this.initHTML();
       },
 
       close: function() {
