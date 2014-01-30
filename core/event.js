@@ -463,7 +463,7 @@ var Events = {
     *        but its own dependencies are not tracked.
     */
    dynamic: function(fn, opt_fn) {
-     var fn2 = opt_fn ? function() { fn(opt_fn()); } : fn;
+     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
      var oldOnGet = Events.onGet;
      var listener = EventService.merged(fn2, 5);
      Events.onGet = function(obj, name, value) {

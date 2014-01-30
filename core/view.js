@@ -2483,11 +2483,9 @@ var ActionButton = Model.create({
       model_: 'Method',
       name: 'onValueChange',
       code: function() {
-        var value = this.value.get();
+        var value  = this.value.get();
         var action = this.action;
-        Events.dynamic(
-          action.isEnabled.bind(value),
-          this.onEnabled);
+        Events.dynamic(action.isEnabled.bind(value), this.onEnabled);
       }
     },
     {
