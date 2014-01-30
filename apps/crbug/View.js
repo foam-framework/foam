@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,6 +98,20 @@ function createView(rowSelection, browser) {
                  this.SUPER();
                  this.view.browser = browser;
                },
+               initHTML: function() {
+                 this.SUPER();
+
+                 this.view.$.addEventListener('mouseout', function(e) {
+                   if ( e.fromElement === this.view.$ && e.toElement !== browser.currentPreview ) {
+                     browser.preview(null);
+                   }
+                 }.bind(this));
+
+                 this.view.selection.addListener(function(_,_,_,obj) {
+                   if ( obj.id && obj.id !== browser.previewID ) browser.preview(null);
+                 });
+               },
+               
                toHTML: function() {
                  return '<div class="QIssueTableHeader"></div>' + this.SUPER();
                }

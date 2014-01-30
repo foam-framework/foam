@@ -101,6 +101,7 @@ body { overflow: hidden; }
 
 .QIssuePreview {
   border: 1px solid #666;
+  overflow: auto;
 }
 
 .actionButton-link, .actionButton-link:hover{
@@ -110,68 +111,72 @@ body { overflow: hidden; }
 
 /* QIssuePreviewView*/
 .qmaincol {
-    padding: 3px;
-    background: white;
-}
-
-.qissuepage td {
-    white-space: normal;
-}
-
-.qissueheader {
-    margin: 0.5em 0 0 0;
-    border: 3px solid #e5ecf9;
-    background: #e5ecf9;
-}
-
-.qpreviewtable {
-    border-collapse: separate;
-    font: 12px arial, sans-serif;
-}
-
-.qh3 {
-    font-size: 130%;
-    font-width: bolder;
-}
-
-.qvt {
-    vertical-align: top;
+  padding: 3px;
+  background: white;
 }
 
 .qissuepage {
-    margin-top: 0;
-    font: 12px arial, sans-serif;
-}
-
-.qissuemeta {
-    width: 12em;
-    border-right: 3px solid #e5ecf9;
-    font-size: 95%;
-    vertical-align: top;
+  height:100%;
 }
 
 .qissuepage td {
-    padding: 0.5em .5em .5em 0;
+  white-space: normal;
+}
+
+.qissueheader {
+  margin: 0.5em 0 0 0;
+  border: 3px solid #e5ecf9;
+  background: #e5ecf9;
+}
+
+.qpreviewtable {
+  border-collapse: separate;
+  font: 12px arial, sans-serif;
+}
+
+.qh3 {
+  font-size: 130%;
+  font-width: bolder;
+}
+
+.qvt {
+  vertical-align: top;
+}
+
+.qissuepage {
+  margin-top: 0;
+  font: 12px arial, sans-serif;
+}
+
+.qissuemeta {
+  width: 12em;
+  border-right: 3px solid #e5ecf9;
+  font-size: 95%;
+  vertical-align: top;
+}
+
+.qissuepage td {
+  padding: 0.5em .5em .5em 0;
 }
 
 .qissuemeta table td, .qissuemeta table th {
-    margin: 0;
-    padding: 0;
-    padding-top: 5px;
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
 }
 
 .qlabel {
-    color: green;
-    text-decoration: none;
+  color: green;
+  text-decoration: none;
 }
 
 .topHeader {
-    width: 100%;
-    text-align: right;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    font: 13px arial, sans-serif;
-    border-bottom: 2px solid rgb(150,192,250);
+  width: 100%;
+  text-align: right;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  font: 13px arial, sans-serif;
+  border-bottom: 2px solid rgb(150,192,250);
 }
 
 .qissueupdates {
@@ -182,62 +187,62 @@ body { overflow: hidden; }
 }
 
 .qupdatesround1, .qupdatesround2, .qupdatesround4 {
-    font-size: 0;
-    margin: 0;
-    padding: 0;
-    height: 1px;
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  height: 1px;
 }
 
 .qupdatesround1 {
-    border-left: 1px solid #fff;
-    border-right: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
 }
 
 .qupdatesround2 {
-    border-left: 2px solid #fff;
-    border-right: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #fff;
 }
 
 .qupdatesround4 {
-    border-left: 4px solid #fff;
-    border-right: 4px solid #fff;
+  border-left: 4px solid #fff;
+  border-right: 4px solid #fff;
 }
 
 .qissueinnerupdates {
-    margin: 0;
-    padding: 0 13px 0 13px;
+  margin: 0;
+  padding: 0 13px 0 13px;
 }
 
 .qissuecomment {
-    border-top: 3px solid #e5ecf9;
-    padding-top: 0.5em;
-    font-size: 13px;
+  border-top: 3px solid #e5ecf9;
+  padding-top: 0.5em;
+  font-size: 13px;
 }
 
 .qissuecomment pre {
-    white-space: pre-wrap;
-    max-width: 80em;
-    padding-left: .7em;
+  white-space: pre-wrap;
+  max-width: 80em;
+  padding-left: .7em;
 }
 
 .qissuecommentdate {
-    float: right;
-    margin-right: .3em;
-    text-align: right;
+  float: right;
+  margin-right: .3em;
+  text-align: right;
 }
 
 .qissuecommentauthor {
-    margin-bottom: 1em;
-    display: inline;
+  margin-bottom: 1em;
+  display: inline;
 }
 
 .qissuelabels {
-    text-decoration: none;
-    color: green;
-    white-space: nowrap;
+  text-decoration: none;
+  color: green;
+  white-space: nowrap;
 }
 
 .qissuerelated {
-    color: #00c;
-    white-space: nowrap;
+  color: #00c;
+  white-space: nowrap;
 }

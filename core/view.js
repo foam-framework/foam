@@ -266,8 +266,13 @@ var AbstractView = FOAM({
        }
      },
 
+     destroy: function() {
+       // TODO: remove listeners
+     },
+
      close: function() {
        this.$ && this.$.remove();
+       this.destroy();
      }
 
    }
@@ -3869,6 +3874,8 @@ var ListView = FOAM({
         var self = this;
 
         this.dao.select()(function(objs) {
+          if ( ! self.$ ) { self.destroy(); return; }
+
           self.$.innerHTML = '';
           var children = new Array(objs.length);
 
