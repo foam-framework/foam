@@ -18,17 +18,31 @@ var QIssueTileView = FOAM({
 
    methods: {
      // Implement Sink
-     put: function(issue) { this.issue = issue; },
+     put: function(issue) {
+       if ( this.issue ) { this.issue.removeListener(this.onChange); }
+
+       this.issue = issue.clone();
+       this.issue.addListener(this.onChange);
+     },
 
      // Implement Adapter
      f: function(issue) {
-       return QIssueTileView.create({
-         issue: issue,
-         browser: this.browser});
+       var view = QIssueTileView.create({ browser: this.browser });
+       view.put(issue);
+       return view;
      },
 
      toString: function() { return this.toHTML(); }
    },
+
+   listeners: [
+      {
+         name: 'onChange',
+         code: function() {
+            this.browser.IssueDAO.put(this.issue);
+         }
+      }
+   ],
 
    templates:[
      { name: 'toHTML' }

@@ -7,13 +7,13 @@
     <tr>
       <td class="id">
         <%= starView %>
-        <a target="_blank" href="<%= this.browser.url %>/detail?id={{this.issue.id}}">{{this.issue.id}}</a>
+        <a target="_blank" href="<%= this.browser.url %>/issues/detail?id={{this.issue.id}}">{{this.issue.id}}</a>
       </td>
       <td class="status">{{this.issue.status}}</td>
     </tr>
     <tr>
       <td colspan="2">
-        <div><a href="<%= this.browser.url %>/detail?id={{this.issue.id}}">{{this.issue.summary}}</a></div>
+        <div><a href="<%= this.browser.url %>/issues/detail?id={{this.issue.id}}">{{this.issue.summary}}</a></div>
       </td>
     </tr>
   </tbody></table>

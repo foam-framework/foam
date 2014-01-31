@@ -1259,7 +1259,12 @@ var ImageBooleanView = FOAM({
          defaultValue: 'field'
       },
       {
-        name: 'value'
+        name: 'value',
+        postSet: function(newValue, oldValue) {
+           oldValue && oldValue.removeListener(this.update);
+           newValue.addListener(this.update);
+           this.update();
+        }
       },
       {
         name: 'trueImage'
@@ -1289,10 +1294,7 @@ var ImageBooleanView = FOAM({
     },
 
     setValue: function(value) {
-      this.value && this.value.removeListener(this.update);
-      this.value = value;
-      value.addListener(this.update);
-      this.update();
+       this.value = value;
     },
 
     destroy: function() {
