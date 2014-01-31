@@ -164,8 +164,8 @@ var QIssueQuickStatusView = FOAM({
         if ( this.currentPreview ) return;
 
         this.currentPreview = PopupView.create({
-          x: e.x+25,
-          y: e.y-15,
+          x: e.x+30,
+          y: e.y-20,
           view: QIssueTileView.create({
             issue: this.value.value,
             browser: {url: ''}})

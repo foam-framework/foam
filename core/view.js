@@ -297,6 +297,14 @@ var PopupView = FOAM({
     },
     {
       name:  'y'
+    },
+    {
+      name:  'width',
+      defaultValue: undefined
+    },
+    {
+      name:  'height',
+      defaultValue: undefined
     }
   ],
 
@@ -306,12 +314,14 @@ var PopupView = FOAM({
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
       div.style.top = this.y + 'px';
+      if ( this.width ) div.style.width = this.width + 'px';
+      if ( this.height ) div.style.height = this.height + 'px';
       div.style.position = 'absolute';
       div.id = this.getID();
       div.innerHTML = this.view.toHTML();
-      this.view.initHTML();
 
       document.body.appendChild(div);
+      this.view.initHTML();
     }
   }
 });

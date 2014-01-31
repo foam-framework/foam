@@ -431,27 +431,26 @@ var ChromeAppBrowser = Model.create({
       var self = this;
       this.IssueDAO.find(id, {
         put: function(obj) {
-          var v = self.currentPreview = obj.createPreviewView();
+          var HEIGHT = 400;
+          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
-          // TODO take this from relationships
+          var v = obj.createPreviewView();
           v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
           v.QIssueDAO = self.IssueDAO;
           v.value = SimpleValue.create(obj);
 
-          self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
+          var popup = self.currentPreview = PopupView.create({
+            x: e.x + 25,
+            y: Math.min(
+              screenHeight-15-HEIGHT,
+              Math.max(
+                100,
+                Math.min(screenHeight-HEIGHT-15, e.y - HEIGHT/2))),
+            height: HEIGHT,
+            view: v
+          });
 
-          v.$.style.left = e.x + 25;
-          v.$.style.height = '400px';
-          var viewHeight = v.$.style.height.replace('px','');
-          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
-          var top = e.y - viewHeight/2;
-          v.$.style.top = Math.min(
-            screenHeight-15-viewHeight,
-            Math.max(
-              100,
-              Math.min(screenHeight-viewHeight-15, top)));
-
-          v.initHTML();
+          popup.open(self.view);
         }
       });
     }
