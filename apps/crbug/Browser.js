@@ -282,6 +282,9 @@ var Browser = Model.create({
         this.project.launchConfigProjects();
       }
     },
+    {
+      name: 'previewID'
+    }
   ],
 
   methods: {
@@ -326,7 +329,43 @@ var Browser = Model.create({
       this.searchChoice.choice = this.searchChoice.choices[1];
     },
 
-    preview: function() {},
+    /** Open a preview window when the user hovers over an issue id. **/
+    preview: function(e, id) {
+      if ( id === this.previewID ) return;
+      if ( this.currentPreview ) this.currentPreview.close();
+      this.previewID = id;
+      if ( ! id ) {
+        this.currentPreview = null;
+        return;
+      }
+
+      var self = this;
+      this.IssueDAO.find(id, {
+        put: function(obj) {
+          obj = obj.clone();
+          var HEIGHT = 400;
+          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
+
+          var v = obj.createPreviewView();
+          v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
+          v.QIssueDAO = self.IssueDAO;
+          v.value = SimpleValue.create(obj);
+
+          var popup = self.currentPreview = PopupView.create({
+            x: e.x + 25,
+            y: Math.min(
+              screenHeight-15-HEIGHT,
+              Math.max(
+                100,
+                Math.min(screenHeight-HEIGHT-15, e.y - HEIGHT/2))),
+            height: HEIGHT,
+            view: v
+          });
+
+          popup.open(self.view);
+        }
+      });
+    },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
@@ -408,55 +447,11 @@ var ChromeAppBrowser = Model.create({
 
   extendsModel: 'Browser',
   
-  properties: [
-    {
-      name: 'previewID'
-    }
-  ],
-
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
       window.open(url);
     },
-
-    /** Open a preview window when the user hovers over an issue id. **/
-    preview: function(e, id) {
-      if ( id === this.previewID ) return;
-      if ( this.previewID ) this.currentPreview.close();
-      this.previewID = id;
-      if ( ! id ) {
-        this.currentPreview = null;
-        return;
-      }
-
-      var self = this;
-      this.IssueDAO.find(id, {
-        put: function(obj) {
-          obj = obj.clone();
-          var HEIGHT = 400;
-          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
-
-          var v = obj.createPreviewView();
-          v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
-          v.QIssueDAO = self.IssueDAO;
-          v.value = SimpleValue.create(obj);
-
-          var popup = self.currentPreview = PopupView.create({
-            x: e.x + 25,
-            y: Math.min(
-              screenHeight-15-HEIGHT,
-              Math.max(
-                100,
-                Math.min(screenHeight-HEIGHT-15, e.y - HEIGHT/2))),
-            height: HEIGHT,
-            view: v
-          });
-
-          popup.open(self.view);
-        }
-      });
-    }
   }
-
+  
 });
