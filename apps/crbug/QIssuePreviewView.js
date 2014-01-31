@@ -25,6 +25,10 @@ var QIssuePreviewView = FOAM({
       var value = this.value.get();
       this.blockingView.value = value.propertyValue('blocking');
       this.blockedOnView.value = value.propertyValue('blockedOn');
+      var dao = this.QIssueDAO;
+      value.addListener(function(v) {
+        dao.put(v);
+      });
     },
     commentView: function() {
       return ListView.create({
