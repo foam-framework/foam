@@ -186,7 +186,7 @@ var Browser = Model.create({
       name:  'link',
       label: '',
       iconUrl: 'images/link.svg',
-      help:  'Link',
+      // help:  'Link', // disable until tooltips work better
       action: function() {
         var url = this.crbugUrl();
         console.log(url);
