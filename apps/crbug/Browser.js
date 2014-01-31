@@ -123,7 +123,7 @@ var Browser = Model.create({
           helpText: 'Search within:',
           choices:[
             ['',                            '&nbsp;All issues'],
-            ['-status=Closed,Fixed,Done',   '&nbsp;Open issues'], // Should this be just 'Closed'?
+            ['status=New,Accepted,Started', '&nbsp;Open issues'],
             ['owner=me -status=Closed',     '&nbsp;Open and owned by me'],
             ['-status=Closed reporter=me',  '&nbsp;Open and reported by me'],
             ['-status=Closed is:starred',   '&nbsp;Open and starred by me'],
@@ -321,7 +321,8 @@ var Browser = Model.create({
       }.bind(this));
 
       this.layout();
-      this.search(TRUE);
+
+      this.searchChoice.choice = this.searchChoice.choices[1];
     },
 
     preview: function() {},
