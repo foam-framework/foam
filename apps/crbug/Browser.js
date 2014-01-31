@@ -303,6 +303,12 @@ var Browser = Model.create({
         this.logo.$.style.webkitTransform = 'rotate(' + -timer.i + 'deg)';
       }.bind(this));
 
+      this.window.document.addEventListener('mousemove', function(evt) {
+        if ( ! this.view.$.contains(evt.target) ) {
+          this.preview(null);
+        }
+      }.bind(this));
+
       this.layout();
       this.search(TRUE);
     },
@@ -419,6 +425,7 @@ var ChromeAppBrowser = Model.create({
           v.value = SimpleValue.create(obj);
 
           self.view.$.insertAdjacentHTML('beforebegin', v.toHTML());
+
           v.$.style.left = e.x + 25;
           v.$.style.height = '400px';
           var viewHeight = v.$.style.height.replace('px','');

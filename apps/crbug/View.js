@@ -101,12 +101,6 @@ function createView(rowSelection, browser) {
                initHTML: function() {
                  this.SUPER();
 
-                 this.view.$.addEventListener('mouseout', function(e) {
-                   if ( e.fromElement === this.view.$ && e.toElement !== browser.currentPreview ) {
-                     browser.preview(null);
-                   }
-                 }.bind(this));
-
                  this.view.selection.addListener(function(_,_,_,obj) {
                    if ( obj.id && obj.id !== browser.previewID ) browser.preview(null);
                  });
