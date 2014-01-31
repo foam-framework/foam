@@ -559,6 +559,11 @@ var TextFieldView = FOAM({
          defaultValue: 'field'
       },
       {
+         name:  'className',
+         type:  'String',
+         defaultValue: 'field'
+      },
+      {
          name:  'displayWidth',
          type:  'int',
          defaultValue: 30
@@ -636,13 +641,15 @@ var TextFieldView = FOAM({
 
    methods: {
     toHTML: function() {
+      var className = this.className ? ' class="' + this.className + '"' : '';
+
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
 
-        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '" name="' + this.name + '" size=' + this.displayWidth + '/>';
+        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + className + ' name="' + this.name + '" size="' + this.displayWidth + '"/>';
       }
 
-      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '" name="' + this.name + '"></' + this.readOnlyTagName + '>';
+      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '"' + className + ' name="' + this.name + '"></' + this.readOnlyTagName + '>';
     },
 
     // TODO: deprecate
@@ -3090,8 +3097,12 @@ var AlternateView = FOAM({
 
           return {};
         }
+      },
+      {
+        name: 'headerView',
+        help: 'Optional View to be displayed in header.',
+        defaultValue: null
       }
-
     ],
 
    methods: {
@@ -3128,7 +3139,12 @@ var AlternateView = FOAM({
        var viewChoice = this.views[0];
        var buttons;
 
-       str.push('<div style="width:100%;margin-bottom:5px;"><div class="altViewButtons">');
+       str.push('<div style="width:100%;margin-bottom:5px;">');
+       str.push('<div class="altViewButtons">');
+       if ( this.headerView ) {
+         str.push(this.headerView.toHTML());
+         this.addChild(this.headerView);
+       }
        for ( var i = 0 ; i < this.views.length ; i++ ) {
          var choice = this.views[i];
          var listener = function(altView, choice) { return function (e) {
