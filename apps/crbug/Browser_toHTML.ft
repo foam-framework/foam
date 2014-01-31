@@ -1,7 +1,7 @@
 <%
   var browserLink = ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
-  var linkLink    = ActionLink.create({action: this.model_.LINK,           value: SimpleValue.create(this)});
   var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
+  var linkButton   = ActionButton.create({action: this.model_.LINK,        value: SimpleValue.create(this)});
 %>
 <html>
  <head>
@@ -12,7 +12,7 @@
  </head>
  <body>
 <div class="topHeader">
-  %%userView | %%favouritesLink | <%= linkLink %> | <%= syncLink %> | <%= browserLink %>
+  %%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %>
 </div>
 <div id="header">
 <table>
@@ -22,11 +22,10 @@
     <span class="title">%%projectName</span>
     <div class="subtitle">%%summary</div>
   </td>
-  <td width=150></td>
+  <td width=80></td>
   <td valign="bottom">
   <div class="searchBar">
-  Search %%searchChoice for %%searchField <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a> <%/* %%countField*/%> 
-<!--  <img id="settings" src="images/settings.svg"></div> -->
+  Search %%searchChoice for %%searchField <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a>
   </td>
   </tr>
 </table>
