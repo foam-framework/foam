@@ -267,3 +267,7 @@ body { overflow: hidden; }
   border: 0;
   border-top: 1px solid #c9d7f1
 }
+
+.gridtile {
+  background: white;
+}

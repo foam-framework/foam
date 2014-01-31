@@ -280,6 +280,53 @@ var AbstractView = FOAM({
 
 });
 
+
+var PopupView = FOAM({
+  model_: 'Model',
+  name: 'PopupView',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name:  'view',
+      type:  'View',
+    },
+    {
+      name:  'x'
+    },
+    {
+      name:  'y'
+    },
+    {
+      name:  'width',
+      defaultValue: undefined
+    },
+    {
+      name:  'height',
+      defaultValue: undefined
+    }
+  ],
+
+  methods: {
+    open: function(e, opt_delay) {
+      var document = (e.$ || e).ownerDocument;
+      var div      = document.createElement('div');
+      div.style.left = this.x + 'px';
+      div.style.top = this.y + 'px';
+      if ( this.width ) div.style.width = this.width + 'px';
+      if ( this.height ) div.style.height = this.height + 'px';
+      div.style.position = 'absolute';
+      div.id = this.getID();
+      div.innerHTML = this.view.toHTML();
+
+      document.body.appendChild(div);
+      this.view.initHTML();
+    }
+  }
+});
+
+
 var StaticHTML = FOAM({
   model_: 'Model',
   name: 'StaticHTML',
