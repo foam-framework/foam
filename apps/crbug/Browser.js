@@ -87,6 +87,18 @@ var Browser = Model.create({
       valueFactory: function() { return Timer.create(); }
     },
     {
+      name: 'countField',
+      type: 'TextFieldView',
+      valueFactory: function() {
+        return TextFieldView.create({
+          name: 'count',
+          className: 'crbugCount',
+          mode: 'read-only',
+          displayWidth: 40
+        });
+      }
+    },
+    {
       name: 'view',
       valueFactory: function() { return createView(this.rowSelection, this); }
     },
@@ -103,17 +115,6 @@ var Browser = Model.create({
         // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
         m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
         return m;
-      }
-    },
-    {
-      name: 'countField',
-      type: 'TextFieldView',
-      valueFactory: function() {
-        return TextFieldView.create({
-          name: 'count',
-          mode: 'read-only',
-          displayWidth: 40
-        });
       }
     },
     {

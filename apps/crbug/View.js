@@ -87,6 +87,7 @@ var priColorMap = {
 function createView(rowSelection, browser) {
   return AlternateView.create({
     dao: browser.IssueDAO,
+    headerView: browser.countField,
     views: [
       ViewChoice.create({
         label: 'List',

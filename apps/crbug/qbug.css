@@ -271,3 +271,7 @@ body { overflow: hidden; }
 .gridtile {
   background: white;
 }
+
+.crbugCount {
+  margin-right: 25px;
+}
