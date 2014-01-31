@@ -19,7 +19,9 @@ var QueryParser = {
 
   stars: seq(literal_ic('stars:'), sym('number')),
 
-  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList'))
+  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
+
+  summary: plus(anyChar)
 
 }.addActions({
   stars: function(v) {
@@ -38,13 +40,18 @@ var QueryParser = {
       or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
     }
     return or;
+  },
+
+  summary: function(v) {
+    return CONTAINS_IC(QIssue.SUMMARY, v.join(''));
   }
 });
 
 QueryParser.expr = alt(
   QueryParser.export('expr'),
   sym('stars'),
-  sym('labelMatch')
+  sym('labelMatch'),
+  sym('summary')
 );
 
 /*
