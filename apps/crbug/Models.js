@@ -17,7 +17,7 @@
 var labelToProperty = {
   App:          'app',
   Priority:     'priority',
-  M:            'milestone',
+  Milestone:    'milestone',
   Cr:           'category',
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
@@ -83,7 +83,7 @@ var QIssue = FOAM({
         {
           model_: 'StringProperty',
           name: 'app',
-          tableWidth: '60px'
+          tableWidth: '70px'
         },
         {
             name: 'milestone',
@@ -91,7 +91,7 @@ var QIssue = FOAM({
             aliases: ['mstone'],
             tableLabel: 'M',
             type: 'Integer',
-            tableWidth: '40px',
+            tableWidth: '70px',
             defaultValue: ''
         },
         {
