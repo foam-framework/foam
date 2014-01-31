@@ -1304,7 +1304,6 @@ var ImageBooleanView = FOAM({
     {
       name: 'onClick',
       code: function(e) {
-        console.log('click');
         e.stopPropagation();
         this.value.set(! this.value.get());
       }
