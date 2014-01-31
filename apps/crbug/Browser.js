@@ -431,6 +431,7 @@ var ChromeAppBrowser = Model.create({
       var self = this;
       this.IssueDAO.find(id, {
         put: function(obj) {
+          obj = obj.clone();
           var HEIGHT = 400;
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 

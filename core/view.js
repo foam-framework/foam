@@ -1267,16 +1267,13 @@ var ImageBooleanView = FOAM({
       return this.value.get() ? this.trueImage : this.falseImage;
     },
     toHTML: function() {
-      return '<img id="' + this.getID() + '" name="' + this.name + '">';
+      var id = this.getID();
+      this.on('click', this.onClick, id);
+      return '<img id="' + id + '" name="' + this.name + '">';
     },
 
     initHTML: function() {
-      if ( ! this.$ ) return;
-      this.$.addEventListener('click', function(evt) {
-        evt.stopPropagation();
-        this.value.set(! this.value.get());
-        return false;
-      }.bind(this), true);
+      this.registerCallbacks();
       this.update();
     },
 
@@ -1288,6 +1285,7 @@ var ImageBooleanView = FOAM({
       this.value && this.value.removeListener(this.update);
       this.value = value;
       value.addListener(this.update);
+      this.update();
     },
 
     destroy: function() {
@@ -1299,7 +1297,16 @@ var ImageBooleanView = FOAM({
     {
       name: 'update',
       code: function() {
+        if ( ! this.$ ) return;
         this.$.src = this.image();
+      }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        console.log('click');
+        e.stopPropagation();
+        this.value.set(! this.value.get());
       }
     }
   ]

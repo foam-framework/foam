@@ -199,15 +199,15 @@ var QIssue = FOAM({
          name: 'starred',
          tableLabel: '',
          tableFormatter: function(val, obj, tableView) {
+           var temp = obj.clone();
            var view = ImageBooleanView.create({
-               trueImage: 'images/star_on.gif',
-               falseImage: 'images/star_off.gif',
-               value: obj.propertyValue('starred')
+               trueImage: 'data:image/gif;base64,R0lGODlhDwAPAMQfAF9h4RYVnZeQJC0u0lRQU42R6P/7Fv74L05NrRkZxi4tW52XXv71D8nAIWxnjnRxr3NuMJKOluXbBe7kCa2x7UFD1vPoB77D8Jqe6n6B5tvTUr62BMrP8lJPh1xbuv///yH5BAEAAB8ALAAAAAAPAA8AAAWD4CeOWQKMaDpESepi3tFlLgpExlK9RT9ohkYi08N8KhWP8nEwMBwIDyJRSTgO2CaDYcBOCAlMgtDYmhmTDSFQ+HAqgbLZIlAMLqiKw7m1EAYuFQsGEhITEwItKBc/EgIEAhINAUYkCBIQAQMBEGonIwAKa21iCgo7IxQDFRQjF1VtHyEAOw==', //'images/star_on.gif',
+               falseImage: 'data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=', //'images/star_off.gif',
+               value: temp.propertyValue('starred')
              });
 
-           // TODO: Fix when we have contexts.
-           obj.addPropertyListener('starred', function() {
-             tableView.browser.IssueDAO.put(obj.clone());
+           temp.addPropertyListener('starred', function() {
+             tableView.browser.IssueDAO.put(temp);
            });
 
            tableView.addChild(view);
