@@ -315,7 +315,7 @@ var Browser = Model.create({
       }.bind(this));
 
       this.window.document.addEventListener('mousemove', function(evt) {
-        if ( ! this.view.$.contains(evt.target) ) {
+        if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
           this.preview(null);
         }
       }.bind(this));
