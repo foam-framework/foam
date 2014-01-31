@@ -423,7 +423,10 @@ var ChromeAppBrowser = Model.create({
       if ( id === this.previewID ) return;
       if ( this.previewID ) this.currentPreview.close();
       this.previewID = id;
-      if ( ! id ) return;
+      if ( ! id ) {
+        this.currentPreview = null;
+        return;
+      }
 
       var self = this;
       this.IssueDAO.find(id, {

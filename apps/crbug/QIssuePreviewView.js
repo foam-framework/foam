@@ -149,11 +149,39 @@ var QIssueQuickStatusView = FOAM({
     },
     initHTML: function() {
       this.SUPER();
+
+      this.$.addEventListener('mouseover', this.startPreview);
+      this.$.addEventListener('mouseout', this.endPreview);
+
       this.update();
     }
   },
 
   listeners: [
+    {
+      name: 'startPreview',
+      code: function(e) {
+        if ( this.currentPreview ) return;
+
+        this.currentPreview = PopupView.create({
+          x: e.x+25,
+          y: e.y-15,
+          view: QIssueTileView.create({
+            issue: this.value.value,
+            browser: {url: ''}})
+        });
+
+        this.currentPreview.open(this);
+      }
+    },
+    {
+      name: 'endPreview',
+      code: function() {
+        if ( ! this.currentPreview ) return;
+        this.currentPreview.close();
+        this.currentPreview = null;
+      }
+    },
     {
       name: 'update',
       animate: true,

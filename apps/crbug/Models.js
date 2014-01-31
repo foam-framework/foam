@@ -62,11 +62,7 @@ var QIssue = FOAM({
             table.on('mouseover', function(e) {
               table.browser.preview(e, value);
             }, id);
-            /*
-            table.on('mouseout',  function() {
-              table.browser.preview(null);
-            }, id);
-            */
+
             return '<div id="' + id + '">' + value + '</div>';
           }
         },
