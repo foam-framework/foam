@@ -195,7 +195,7 @@ var QProject = Model.create({
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
-          var b = StringArrayView.create({
+          var b = MultiLineStringArrayView.create({
             value: self.user.propertyValue('preferredProjects')
           });
 

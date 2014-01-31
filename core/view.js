@@ -3176,6 +3176,155 @@ var StringArrayView = FOAM({
    }
 });
 
+var MultiLineStringArrayView = FOAM({
+  model_: 'Model',
+  name: 'MultiLineStringArrayView',
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'type',
+      defaultValue: 'text'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'displayWidth',
+      defaultValue: 30
+    },
+    {
+      name: 'softValue',
+      valueFactory: function() { return SimpleValue.create([]); }
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create([]); },
+      postSet: function(newValue, oldValue) {
+        if ( oldValue ) {
+          oldValue.removeListener(this.update);
+        }
+        newValue.addListener(this.update);
+        this.update();
+      }
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      var toolbar = ToolbarView.create({
+        value: SimpleValue.create(this)
+      });
+      toolbar.addActions([this.model_.ADD, this.model_.SAVE]);
+      this.children = [toolbar];
+
+      return '<div id="' + this.getID() + '"><div></div>' +
+        toolbar.toHTML() +
+        '</div>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.update();
+    },
+    row: function() {
+      return '<div><input id="' + this.on('input', this.onInput) +
+            '" name="' + this.name + '" type="' + this.type + '" ' +
+            'size="' + this.displayWidth + '"/>' +
+        '<input type="button" id="' +
+            this.on('click', this.onRemove) +
+            '" class="multiLineStringRemove" value="X"></div>';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      code: function() {
+        if ( ! this.$ ) return;
+
+        var inputs = this.$.firstElementChild;
+        var value = this.value.get();
+        var out = ""
+
+        for ( var i = 0 ; i < value.length; i++ ) {
+          out += this.row();
+        }
+
+        inputs.innerHTML = out;
+
+        for ( i = 0; i < inputs.children.length; i++ ) {
+          inputs.children[i].firstElementChild.value = value[i];
+        }
+
+        this.registerCallbacks();
+        this.onInput();
+      }
+    },
+    {
+      name: 'onRemove',
+      code: function(e) {
+        var inputs = this.$.firstElementChild.children;
+        for ( var i = 0; i < inputs.length; i++ ) {
+          if ( inputs[i].lastChild === e.target ) {
+            inputs[i].remove();
+            break;
+          }
+        }
+        this.onInput();
+      }
+    },
+    {
+      name: 'onInput',
+      code: function(e) {
+        if ( ! this.$ ) return;
+
+        var inputs = this.$.firstElementChild.children;
+        var newValue = [];
+
+        for ( var i = 0; i < inputs.length; i++ ) {
+          newValue.push(inputs[i].firstElementChild.value);
+        }
+        this.softValue.set(newValue);
+      }
+    }
+  ],
+
+  actions: [
+    {
+      model_: 'Action',
+      name: 'add',
+      label: 'Add',
+      action: function() {
+        this.$.firstElementChild.insertAdjacentHTML(
+          'beforeend', this.row());
+        this.registerCallbacks();
+        this.onInput();
+      }
+    },
+    {
+      model_: 'Action',
+      name: 'save',
+      label: 'Save',
+      isEnabled: function() {
+        var value = this.value.get();
+        var softValue = this.softValue.get();
+        if ( value.length !== softValue.length ) return true;
+        
+        for ( var i = 0; i < value.length; i++ ) {
+          if ( value[i] !== softValue[i] ) return true;
+        }
+        return false;
+      },
+      action: function() {
+        this.value.set(this.softValue.get());
+      }
+    }
+  ]
+});
+
 var SplitView = FOAM({
 
    model_: 'Model',

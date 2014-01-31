@@ -681,3 +681,7 @@ div.gridViewControl select {
   padding: 1px;
   text-align2: left;
 }
+
+.multiLineStringRemove {
+    float: right;
+}
