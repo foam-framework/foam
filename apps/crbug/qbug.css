@@ -173,7 +173,7 @@ body { overflow: hidden; }
 .topHeader {
   width: 100%;
   text-align: right;
-  padding-bottom: 5px;
+  padding-bottom: 1px;
   margin-bottom: 10px;
   font: 13px arial, sans-serif;
   border-bottom: 2px solid rgb(150,192,250);

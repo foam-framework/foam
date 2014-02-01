@@ -11,8 +11,8 @@
   <title>QuickBug</title>
  </head>
  <body>
-<div class="topHeader">
-  %%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %>
+<div  class="topHeader" style="display:flex;width:100%;">
+  %%refreshImg <span style="flex-grow:1;"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
 </div>
 <div id="header">
 <table>
