@@ -289,3 +289,7 @@ input[name="search"] {
   padding-right: 10px;
   vertical-align: middle;
 }
+
+.actionButton-link[data-tip]:after {
+  left: -65px;
+}
