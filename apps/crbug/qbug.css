@@ -173,7 +173,7 @@ body { overflow: hidden; }
 .topHeader {
   width: 100%;
   text-align: right;
-  padding-bottom: 1px;
+  padding-bottom: 2px;
   margin: 0;
   margin-bottom: 5px;
   font: 13px arial, sans-serif;
@@ -286,6 +286,6 @@ input[name="search"] {
 }
 
 .logo img {
-    padding-right: 10px;
-    vertical-align: middle;
+  padding-right: 10px;
+  vertical-align: middle;
 }
