@@ -136,7 +136,7 @@ var Browser = Model.create({
     },
     {
       name: 'searchField',
-      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 60 }); }
+      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20 }); }
     },
     {
       name: 'refreshImg',

@@ -11,24 +11,20 @@
   <title>QuickBug</title>
  </head>
  <body>
-<div  class="topHeader" style="display:flex;width:100%;">
+<div class="topHeader" style="display:flex;width:100%;">
   %%refreshImg <span style="flex-grow:1;"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
 </div>
-<div id="header">
-<table>
-  <tr>
-  <td>%%logo</td>
-  <td>
+<div style="display:flex;align-items:baseline;" id="header">
+  <span class="logo">%%logo</span>
+  <div>
     <span class="title">%%projectName</span>
     <div class="subtitle">%%summary</div>
-  </td>
-  <td width=80></td>
-  <td valign="bottom">
-  <div class="searchBar">
-  Search %%searchChoice for %%searchField <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a>
-  </td>
-  </tr>
-</table>
+  </div>
+  <span style="width:60px;"></span>
+  <span>Search %%searchChoice for </span>
+  <span style="flex-grow:1;padding-left:4px;">%%searchField</span>
+  <span> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a></span>
+</div>
 <hr color="#9BC0FA">
 </div>%%view</body>
 <div class="footer"><%= FOAM_POWERED %></div>
