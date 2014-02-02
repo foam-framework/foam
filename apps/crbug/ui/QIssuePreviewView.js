@@ -13,9 +13,37 @@ var QIssuePreviewView = FOAM({
     },
     {
       name: 'blockingView',
+      valueFactory: function() {
+        var self = this;
+        return ArrayListView.create({
+          listView: {
+            create: function() {
+              return DAOKeyView.create({
+                model: QIssue,
+                dao: self.QIssueDAO,
+                view: QIssueQuickStatusView
+              });
+            }
+          }
+        });
+      }
     },
     {
-      name: 'blockedOnView'
+      name: 'blockedOnView',
+      valueFactory: function() {
+        var self = this;
+        return ArrayListView.create({
+          listView: {
+            create: function() {
+              return DAOKeyView.create({
+                model: QIssue,
+                dao: self.QIssueDAO,
+                view: QIssueQuickStatusView
+              });
+            }
+          }
+        });
+      }
     }
   ],
 
@@ -41,36 +69,6 @@ var QIssuePreviewView = FOAM({
           }
         }
       });
-    },
-    blocking: function() {
-      var dao = this.QIssueDAO;
-      this.blockingView = ArrayListView.create({
-        listView: {
-          create: function() {
-            return DAOKeyView.create({
-              model: QIssue,
-              dao: dao,
-              view: QIssueQuickStatusView
-            });
-          }
-        }
-      });
-      return this.blockingView;
-    },
-    blockedOn: function() {
-      var dao = this.QIssueDAO;
-      this.blockedOnView = ArrayListView.create({
-        listView: {
-          create: function() {
-            return DAOKeyView.create({
-              model: QIssue,
-              dao: dao,
-              view: QIssueQuickStatusView
-            });
-          }
-        }
-      });
-      return this.blockedOnView;
     }
   },
 

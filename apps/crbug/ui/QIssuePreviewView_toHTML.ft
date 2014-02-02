@@ -40,14 +40,14 @@
                   <b>Blocked on:</b>
                   <br>
                   <div class="qissuerelated">
-                  %%blockedOn()
+                  %%blockedOnView
                   </div>
                   <br>
                   <br>
                   <b>Blocking:</b>
                   <br>
                   <div class="qissuerelated">
-                  %%blocking()
+                  %%blockingView
                   </div>
                   <br>
                 </div>
