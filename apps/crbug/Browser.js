@@ -123,14 +123,14 @@ var Browser = Model.create({
         return ChoiceView.create({
           helpText: 'Search within:',
           choices:[
-            ['',                            '&nbsp;All issues'],
-            ['status=New,Accepted,Started', '&nbsp;Open issues'],
-            ['owner=me -status=Closed',     '&nbsp;Open and owned by me'],
-            ['-status=Closed reporter=me',  '&nbsp;Open and reported by me'],
-            ['-status=Closed is:starred',   '&nbsp;Open and starred by me'],
-            ['-status=Closed commentby:me', '&nbsp;Open and comment by me'],
-            ['status=New',                  '&nbsp;New issues'],
-            ['status=Fixed,Done',           '&nbsp;Issues to verify']
+            ['',                                         '&nbsp;All issues'],
+            ['status=New,Accepted,Started',              '&nbsp;Open issues'],
+            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me'],
+            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me'],
+            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me'],
+            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me'],
+            ['status=New',                               '&nbsp;New issues'],
+            ['status=Fixed,Done',                        '&nbsp;Issues to verify']
           ]});
       }
     },
