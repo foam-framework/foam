@@ -1568,6 +1568,8 @@ var DetailView = Model.create({
         view = GLOBAL[prop.view].create(prop);
       } else if ( prop.view.model_ ) {
         view = prop.view.deepClone().copyFrom(prop);
+      } else if ( typeof prop.view === 'function' ) {
+        view = prop.view(prop);
       } else {
         view = prop.view.create(prop);
       }
