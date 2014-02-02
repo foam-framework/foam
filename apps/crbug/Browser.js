@@ -178,6 +178,7 @@ var Browser = Model.create({
       model_: 'Method',
       name: 'layout',
       code: function() {
+// TODO: fix
         var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
 

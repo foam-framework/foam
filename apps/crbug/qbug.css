@@ -293,3 +293,9 @@ input[name="search"] {
 .actionButton-link[data-tip]:after {
   left: -65px;
 }
+
+.gridViewArea {
+  height: 100%;
+  overflow: auto;
+  width: 100%;
+}

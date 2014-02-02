@@ -11,6 +11,7 @@
   <title>QuickBug</title>
  </head>
  <body>
+<div style="display:flex;flex-direction:column;">
 <div class="topHeader" style="display:flex;width:100%;">
   %%refreshImg <span style="flex-grow:1;"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
 </div>
@@ -26,6 +27,9 @@
   <span> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a></span>
 </div>
 <hr color="#9BC0FA">
-</div>%%view</body>
+</div>
+<div style="flex-grow:1;">%%view</div>
 <div class="footer"><%= FOAM_POWERED %></div>
+</div>
+</body>
 </html>
