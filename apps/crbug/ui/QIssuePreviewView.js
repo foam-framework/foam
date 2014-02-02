@@ -21,7 +21,13 @@ var QIssuePreviewView = FOAM({
               return DAOKeyView.create({
                 model: QIssue,
                 dao: self.QIssueDAO,
-                view: QIssueQuickStatusView
+                view: {
+                  create:function() {
+                    return QIssueQuickStatusView.create({
+                      property: QIssue.BLOCKING
+                    });
+                  }
+                }
               });
             }
           }
@@ -38,7 +44,13 @@ var QIssuePreviewView = FOAM({
               return DAOKeyView.create({
                 model: QIssue,
                 dao: self.QIssueDAO,
-                view: QIssueQuickStatusView
+                view: {
+                  create:function() {
+                    return QIssueQuickStatusView.create({
+                      property: QIssue.BLOCKED_ON
+                    });
+                  }
+                }
               });
             }
           }
@@ -125,12 +137,26 @@ var QIssueLabelsView = FOAM({
   ]
 });
 
+
+/**
+ * Display an Issue ID.
+ * Draw the ID with style line-through if issue closed.
+ * Display a TileView hover preview.
+ **/
 var QIssueQuickStatusView = FOAM({
   model_: 'Model',
   name: 'QIssueQuickStatusView',
   extendsModel: 'AbstractView',
 
   properties: [
+    {
+      name: 'property',
+      help: 'Property to recurse on.'
+    },
+    {
+      name: 'visited',
+      valueFactory: function() { return {}; }
+    },
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(''); },
@@ -203,12 +229,10 @@ var QIssueQuickStatusView = FOAM({
         Events.map(value.propertyValue('id'), domText, function(value) {
           return 'issue ' + value;
         });
-        // TODO handle all possible Closed statuses.
         var updateStatus = function(obj) {
-          if ( obj.status === 'Fixed' )
-            self.$.style.textDecoration = 'line-through';
-          else
-            self.$.style.textDecoration = '';
+          self.$.style.textDecoration = obj.isOpen() ?
+            '' :
+            'line-through' ;
         }
         value.addPropertyListener('status', updateStatus);
         updateStatus(value);

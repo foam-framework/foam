@@ -236,6 +236,14 @@ var QIssue = FOAM({
     methods: {
       createPreviewView: function() {
         return QIssuePreviewView.create({ model: QIssue });
+      },
+
+      isOpen: function() {
+        return !! ({
+          'New':      true,
+          'Accepted': true,
+          'Started':  true
+        }[this.status]);
       }
     }
 });
