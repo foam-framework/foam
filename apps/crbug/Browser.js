@@ -356,7 +356,6 @@ var Browser = Model.create({
           var v = obj.createPreviewView();
           v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
           v.QIssueDAO = self.IssueDAO;
-          v.value = SimpleValue.create(obj);
 
           var popup = self.currentPreview = PopupView.create({
             x: e.x + 25,

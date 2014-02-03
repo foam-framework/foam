@@ -235,7 +235,7 @@ var QIssue = FOAM({
 
     methods: {
       createPreviewView: function() {
-        return QIssuePreviewView.create({ model: QIssue });
+        return QIssuePreviewView.create({ model: QIssue, value: SimpleValue.create(this) });
       },
 
       isOpen: function() {

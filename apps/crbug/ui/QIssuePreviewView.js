@@ -14,47 +14,19 @@ var QIssuePreviewView = FOAM({
     {
       name: 'blockingView',
       valueFactory: function() {
-        var self = this;
-        return ArrayListView.create({
-          listView: {
-            create: function() {
-              return DAOKeyView.create({
-                model: QIssue,
-                dao: self.QIssueDAO,
-                view: {
-                  create:function() {
-                    return QIssueQuickStatusView.create({
-                      property: QIssue.BLOCKING
-                    });
-                  }
-                }
-              });
-            }
-          }
-        });
+        return BlockView.create({
+          ctx: this,
+          property: QIssue.BLOCKING,
+          ids: this.value.get().blocking});
       }
     },
     {
       name: 'blockedOnView',
       valueFactory: function() {
-        var self = this;
-        return ArrayListView.create({
-          listView: {
-            create: function() {
-              return DAOKeyView.create({
-                model: QIssue,
-                dao: self.QIssueDAO,
-                view: {
-                  create:function() {
-                    return QIssueQuickStatusView.create({
-                      property: QIssue.BLOCKED_ON
-                    });
-                  }
-                }
-              });
-            }
-          }
-        });
+        return BlockView.create({
+          ctx: this,
+          property: QIssue.BLOCKED_ON,
+          ids: this.value.get().blockedOn});
       }
     }
   ],
@@ -63,8 +35,6 @@ var QIssuePreviewView = FOAM({
     updateSubViews: function() {
       this.SUPER();
       var value = this.value.get();
-      this.blockingView.value = value.propertyValue('blocking');
-      this.blockedOnView.value = value.propertyValue('blockedOn');
       var dao = this.QIssueDAO;
       value.addListener(function(v) {
         dao.put(v);
@@ -85,11 +55,10 @@ var QIssuePreviewView = FOAM({
   },
 
   templates: [
-    {
-      name: 'toHTML'
-    }
+    { name: 'toHTML' }
   ]
 });
+
 
 var QIssueLabelsView = FOAM({
   model_: 'Model',
@@ -139,67 +108,101 @@ var QIssueLabelsView = FOAM({
 
 
 /**
- * Display an Issue ID.
+ * Display a heirarchical Issue blocking/blocked-on list.
  * Draw the ID with style line-through if issue closed.
  * Display a TileView hover preview.
  **/
-var QIssueQuickStatusView = FOAM({
+var BlockView = FOAM({
   model_: 'Model',
   name: 'QIssueQuickStatusView',
   extendsModel: 'AbstractView',
 
   properties: [
     {
+      name: 'ctx'
+    },
+    {
+      name: 'QIssueDAO',
+      scope: 'ctx',
+      defaultValueFn: function() { return this.ctx.QIssueDAO; }
+    },
+    {
       name: 'property',
       help: 'Property to recurse on.'
     },
     {
-      name: 'visited',
+      name: 'idSet',
+      help: "Set of Issue ID's that have already been seen.",
       valueFactory: function() { return {}; }
     },
     {
-      name: 'value',
-      valueFactory: function() { return SimpleValue.create(''); },
-      postSet: function(newValue, oldValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
-      }
+      name: 'maxDepth',
+      defaultValue: 3
+    },
+    {
+      name: 'ids'
     }
   ],
 
   methods: {
-    toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+    toHTML: function(opt_depth) {
+      if ( ( opt_depth || 0 ) > this.maxDepth ) return '';
+
+      var s = '<div class="blockList">';
+
+      for ( var i = 0 ; i < this.ids.length ; i++ ) {
+        var issue = this.ids[i];
+        var id = this.nextID();
+
+        if ( this.idSet[issue] ) continue;
+
+        this.idSet[issue] = id;
+
+        s += '<div id="' + id + '">Issue ' + issue + '</div>';
+
+        this.on('mouseover', this.startPreview.bind(this, issue), id);
+        this.on('mouseout',  this.endPreview,                     id);
+      }
+
+      s += '</div>';
+
+      return s;
     },
-    setValue: function(value) {
-      this.value = value;
-    },
+
     initHTML: function() {
       this.SUPER();
 
-      this.$.addEventListener('mouseover', this.startPreview);
-      this.$.addEventListener('mouseout', this.endPreview);
+      var self = this;
 
-      this.update();
+      for ( var i = 0 ; i < this.ids.length ; i++ ) {
+        var id = this.ids[i];
+        this.QIssueDAO.find(id, { put: function(issue) {
+          if ( ! issue.isOpen() ) {
+            $(self.idSet[id]).style.textDecoration = 'line-through';
+          }
+        }});
+      }
     }
   },
 
   listeners: [
     {
       name: 'startPreview',
-      code: function(e) {
+      code: function(id, e) {
         if ( this.currentPreview ) return;
 
-        this.currentPreview = PopupView.create({
-          x: e.x+30,
-          y: e.y-20,
-          view: QIssueTileView.create({
-            issue: this.value.value,
-            browser: {url: ''}})
-        });
+        var self = this;
+        this.QIssueDAO.find(id, { put: function(issue) {
+          self.currentPreview = PopupView.create({
+            x: e.x+30,
+            y: e.y-20,
+            view: QIssueTileView.create({
+              issue: issue,
+              browser: {url: ''}})
+          });
 
-        this.currentPreview.open(this);
+          self.currentPreview.open(self.ctx);
+        }});
       }
     },
     {
@@ -208,34 +211,6 @@ var QIssueQuickStatusView = FOAM({
         if ( ! this.currentPreview ) return;
         this.currentPreview.close();
         this.currentPreview = null;
-      }
-    },
-    {
-      name: 'update',
-      animate: true,
-      code: function() {
-        if ( ! this.$ ) return;
-
-        var value = this.value.get();
-
-        if ( ! value ) return;
-
-        var domTitle = DomValue.create(this.$, undefined, 'title');
-        var domText = DomValue.create(this.$, undefined, 'textContent');
-
-        var self = this;
-
-        Events.link(value.propertyValue('summary', domTitle));
-        Events.map(value.propertyValue('id'), domText, function(value) {
-          return 'issue ' + value;
-        });
-        var updateStatus = function(obj) {
-          self.$.style.textDecoration = obj.isOpen() ?
-            '' :
-            'line-through' ;
-        }
-        value.addPropertyListener('status', updateStatus);
-        updateStatus(value);
       }
     }
   ]
