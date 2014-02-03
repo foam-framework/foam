@@ -186,6 +186,12 @@ var QIssue = FOAM({
             type: 'String'
         },
         {
+          model_: 'BooleanProperty',
+          name: 'blocked',
+          tableWidth: '20px',
+          getter: function() { return !! this.blockedOn.length; }
+        },
+        {
          model_: 'DateTimeProperty',
          name: 'updated',
          shortName: 'mod',
