@@ -35,33 +35,41 @@ var COL = {
  * a query for only the selected data when clicked.
  */
 var ItemCount = Model.create({
-   extendsModel: 'CountExpr',
-   methods: {
-     put: function(obj) {
-       if ( ! this.obj ) {
-         this.obj = obj;
-         this.eid = AbstractView.getPrototype().nextID();
-       }
-       this.SUPER(obj);
-     },
-     toHTML: function() {
-       return '<span id="' + this.eid + '" class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
-     },
-     initHTML: function() {
-        var f = function() {
-          var col = altView.views[1].view().col.value.get();
-          var row = altView.views[1].view().row.value.get();
-          var q = AND(
-             QueryParser.parseString(searchField.value.get()),
-             EQ(col, col.f(this.obj)),
-             EQ(row, row.f(this.obj))).partialEval();
-          searchField.value.set(q.toMQL());
-          // Switch to TableView
-          altView.view = altView.views[0];
-        }.bind(this);
-        $(this.eid).addEventListener('click', f, false);
-     }
-   }
+  extendsModel: 'CountExpr',
+
+  properties: [
+    {
+      name: 'browser'
+    }
+  ],
+
+  methods: {
+    put: function(obj) {
+      if ( ! this.obj ) {
+        this.obj = obj;
+        this.eid = AbstractView.getPrototype().nextID();
+      }
+      this.SUPER(obj);
+    },
+    toHTML: function() {
+      return '<span id="' + this.eid + '" class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
+    },
+    initHTML: function() {
+      var f = function() {
+        var searchField = this.browser.searchField;
+        var altView = this.browser.view;
+        debugger;
+        var col = altView.views[1].view().col.value.get();
+        var row = altView.views[1].view().row.value.get();
+        var q = AND(
+          QueryParser.parseString(searchField.value.get()),
+          EQ(col, col.f(this.obj)),
+          EQ(row, row.f(this.obj))).partialEval();
+        this.browser.memento = { mode: 'list', q: q.toMQL() }
+      }.bind(this);
+      $(this.eid).addEventListener('click', f, false);
+    }
+  }
 });
 
 
@@ -135,7 +143,7 @@ function createView(rowSelection, browser) {
                 accChoices: [
                   [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles"  ],
                   [ MAP(idFormatter, COL.create()),             "IDs"    ],
-                  [ ItemCount.create(),                         "Counts" ],
+                  [ ItemCount.create({browser: browser}),       "Counts" ],
                   [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
                   [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
