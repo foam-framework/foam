@@ -26,7 +26,7 @@ var QueryParser = {
 }.addActions({
   stars: function(v) {
     return GTE({
-      f:function(i) { return i.stars.length;},
+      f: function(i) { return i.stars; },
       partialEval: function() {return this;},
       toSQL: function() { return 'stars > ' + v[1]; },
       toMQL: function() { return 'stars > ' + v[1]; }
