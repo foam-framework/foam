@@ -180,6 +180,11 @@ body { overflow: hidden; }
   border-bottom: 2px solid rgb(150,192,250);
 }
 
+.header {
+  border-bottom: 2px solid rgb(150,192,250);
+  padding-bottom: 4px;
+}
+
 .qissueupdates {
   margin: 1em 0 .5em .7em;
   background: #e5ecf9;

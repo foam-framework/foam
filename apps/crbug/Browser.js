@@ -76,6 +76,14 @@ var Browser = Model.create({
     },
 
     {
+      name: 'zoom',
+      help: 'Zoom ratio of Browser contents.',
+      defaultValue: '1',
+      postSet: function() {
+        this.updateZoom();
+      }
+    },
+    {
       name: 'rowSelection',
       valueFactory: function() { return SimpleValue.create(); }
     },
@@ -184,10 +192,41 @@ var Browser = Model.create({
 
         console.log(this.crbugUrl());
       }
+    },
+    {
+      model_: 'Method',
+      name: 'keyPress',
+      code: function(e) {
+        if ( e.ctrlKey && e.shiftKey ) {
+          if ( e.keyCode == 189 ) this.zoomOut();
+          if ( e.keyCode == 187 ) this.zoomIn();
+        }
+      }
     }
   ],
 
   actions: [
+    {
+      model_: 'Action',
+      name:  'zoomIn',
+      action: function() {
+        this.zoom *= 1.1;
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'zoomOut',
+      action: function() {
+        this.zoom *= 0.9;
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'zoomReset',
+      action: function() {
+        this.zoom = 1.0;
+      }
+    },
     {
       model_: 'Action',
       name:  'link',
@@ -334,6 +373,8 @@ var Browser = Model.create({
       this.layout();
 
       this.searchChoice.choice = this.searchChoice.choices[1];
+
+      this.window.document.addEventListener('keyup', this.keyPress);
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -371,6 +412,11 @@ var Browser = Model.create({
           popup.open(self.view);
         }
       });
+    },
+
+    updateZoom: function() {
+      this.window.document.body.style.zoom = this.zoom;
+      this.layout();
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
