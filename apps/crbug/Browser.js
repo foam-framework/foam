@@ -394,9 +394,13 @@ var Browser = Model.create({
           var HEIGHT = 400;
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
-          var v = obj.createPreviewView();
-          v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
-          v.QIssueDAO = self.IssueDAO;
+          var v = QIssuePreviewView.create({
+            model: QIssue,
+            value: SimpleValue.create(obj),
+            QIssueCommentDAO: self.IssueCommentDAO.where(EQ(QIssue.ID, id)),
+            QIssueDAO: self.IssueDAO,
+            url: self.url
+          });
 
           var popup = self.currentPreview = PopupView.create({
             x: e.x + 25,

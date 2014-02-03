@@ -6,10 +6,17 @@ var QIssuePreviewView = FOAM({
 
   properties: [
     {
+      name: 'model',
+      valueFactory: function() { return QIssue; }
+    },
+    {
       name: 'QIssueCommentDAO'
     },
     {
       name: 'QIssueDAO'
+    },
+    {
+      name: 'url'
     },
     {
       name: 'blockingView',
@@ -122,6 +129,11 @@ var BlockView = FOAM({
       name: 'ctx'
     },
     {
+      name: 'url',
+      scope: 'ctx',
+      defaultValueFn: function() { return this.ctx.url; }
+    },
+    {
       name: 'QIssueDAO',
       scope: 'ctx',
       defaultValueFn: function() { return this.ctx.QIssueDAO; }
@@ -156,7 +168,9 @@ var BlockView = FOAM({
 
         this.idSet[issue] = id;
 
-        s += '<div id="' + id + '">Issue ' + issue + '</div>';
+        var url = this.url + '/issues/detail?id=' + issue;
+
+        s += '<div><a href="' + url + '" id="' + id + '">Issue ' + issue + '</a><div>';
 
         this.on('mouseover', this.startPreview.bind(this, issue), id);
         this.on('mouseout',  this.endPreview,                     id);
