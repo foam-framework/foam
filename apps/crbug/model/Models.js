@@ -191,13 +191,14 @@ var QIssue = FOAM({
          shortName: 'mod',
          mode: 'read-write',
          required: true,
-         tableWidth: '100',
+         tableWidth: '100px',
          valueFactory: function() { return new Date(); }
       },
       {
          model_: 'BooleanProperty',
          name: 'starred',
          tableLabel: '',
+         tableWidth: '20px',
          tableFormatter: function(val, obj, tableView) {
            var temp = obj.clone();
            var view = ImageBooleanView.create({
@@ -223,7 +224,7 @@ var QIssue = FOAM({
              });
            }
          },
-         tableWidth: '20',
+         tableWidth: '20px',
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
@@ -253,6 +254,17 @@ QIssue.properties.forEach(function(p) {
     p["tableFormatter"] = function(v) {
       return ('' + v).length ? v : '----';
     };
+  }
+});
+
+GeneratedQIssue.properties.forEach(function(p) {
+  if ( ! p["tableFormatter"] ) {
+    p["tableFormatter"] = function(v) {
+      return ('' + v).length ? v : '----';
+    };
+  }
+  if ( ! p["tableWidth"] ) {
+    p["tableWidth"] = '80px;'
   }
 });
 
