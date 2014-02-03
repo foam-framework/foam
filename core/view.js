@@ -3039,7 +3039,6 @@ var ViewChoice = FOAM({
 
 
 var AlternateView = FOAM({
-
    model_: 'Model',
 
    extendsModel: 'AbstractView',
@@ -3141,7 +3140,6 @@ var AlternateView = FOAM({
      toHTML: function() {
        var str  = [];
        var viewChoice = this.views[0];
-       var buttons;
 
        str.push('<div style="width:100%;margin-bottom:5px;">');
        str.push('<div class="altViewButtons">');
@@ -3151,33 +3149,27 @@ var AlternateView = FOAM({
        }
        for ( var i = 0 ; i < this.views.length ; i++ ) {
          var choice = this.views[i];
-         var listener = function(altView, choice) { return function (e) {
-           altView.choice = choice;
-
-           // This is a bit hackish, each element should listen on a 'selected'
-           // property and update themselves
-           for ( var j = 0 ; j < buttons.length ; j++ ) {
-             DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
-           }
-
-           DOM.setClass(e.toElement, 'mode_button_active');
-
+         var listener = function (choice) {
+           this.choice = choice;
            return false;
-         };}(this, choice);
-         //          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-         str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + choice.label + '</a>');
+         }.bind(this, choice);
+
+         var id = this.nextID();
+
+         this.addPropertyListener('choice', function(choice, id) {
+           DOM.setClass($(id), 'mode_button_active', this.choice === choice);
+         }.bind(this, choice, id));
+
+         var cls = 'buttonify';
+         if ( i == 0 ) cls += ' capsule_left';
+         if ( i == this.views.length - 1 ) cls += ' capsule_right';
+         if ( choice == this.choice ) cls += ' mode_button_active';
+         str.push('<a class="' + cls + '" id="' + this.on('click', listener, id) + '">' + choice.label + '</a>');
          if ( choice.label == this.selected ) viewChoice = choice
        }
        str.push('</div>');
-       buttons = this.callbacks_;
-       this.buttons_ = buttons;
 
        str.push('<br/>');
-       // console.log("viewChoice: ", viewChoice);
-
-       //       Events.link(this.model, this.view.model);
-
-       //       str.push(this.view.toHTML());
        str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
        str.push('</div>');
 
@@ -3187,12 +3179,8 @@ var AlternateView = FOAM({
      initHTML: function() {
        this.SUPER();
 
-       if ( ! this.choice ) this.choice = this.views[0];
+       this.choice = this.choice || this.views[0];
        this.installSubView(this.choice);
-
-       DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
-       DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
-       DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
      }
    }
 });
