@@ -429,7 +429,11 @@ var EqExpr = FOAM({
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
+      toMQL: function() {
+        return this.arg2 === TRUE ?
+          'is:' + this.arg1.toMQL() :
+          this.arg1.toMQL() + '=' + this.arg2.toMQL();
+      },
 
       partialEval: function() {
         var newArg1 = this.arg1.partialEval();
@@ -439,7 +443,7 @@ var EqExpr = FOAM({
           return compile_(newArg1.f() === newArg2.f());
         }
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
           EqExpr.create({arg1: newArg1, arg2: newArg2}) :
           this;
       },
@@ -453,6 +457,9 @@ var EqExpr = FOAM({
             return arg === arg2;
           }, this);
         }
+
+        if ( arg2 === TRUE ) return !! arg1;
+        if ( arg2 === FALSE ) return ! arg1;
 
         return arg1 === arg2;
       }
