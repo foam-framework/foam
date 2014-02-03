@@ -395,7 +395,6 @@ var Browser = Model.create({
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
           var v = QIssuePreviewView.create({
-            model: QIssue,
             value: SimpleValue.create(obj),
             QIssueCommentDAO: self.IssueCommentDAO.where(EQ(QIssue.ID, id)),
             QIssueDAO: self.IssueDAO,
@@ -444,26 +443,30 @@ var Browser = Model.create({
 
     /** Import a cr(1)bug URL. **/
     maybeImportCrbugUrl: function(url) {
-      url = url.trim();
-      if ( ! url ) return;
-      if ( ! url.startsWith('http') ) return;
+      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var match = regex.exec(url);
 
-      var idx = url.indexOf('?');
-      if ( idx == -1 ) return;
+      if ( ! match ) return;
 
-      url = url.substring(idx+1);
-      var params = url.split('&');
-      var memento = {};
-      for ( var i = 0 ; i < params.length ; i++ ) {
-        var param = params[i];
-        var keyValue = param.split('=');
-        memento[decodeURIComponent(keyValue[0])] =
-          decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+      var project = match[1];
+
+      if ( project == this.projectName ) {
+        var params = match[3].split('&');
+
+        var memento = {};
+        for ( var i = 0 ; i < params.length ; i++ ) {
+          var param = params[i];
+          var keyValue = param.split('=');
+          memento[decodeURIComponent(keyValue[0])] =
+            decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+        }
+
+        if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
+
+        this.memento = memento;
+      } else {
+        this.qbug.launchBrowser(project, url)
       }
-
-      if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
-
-      this.memento = memento;
     },
 
     /** Convert current state to a cr(1)bug URL. **/

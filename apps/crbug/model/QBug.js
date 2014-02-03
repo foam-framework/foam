@@ -127,10 +127,10 @@ var QBug = Model.create({
       this.findProject(this.defaultProjectName, sink);
     },
 
-    launchBrowser: function(opt_projectName) {
+    launchBrowser: function(opt_projectName, opt_url) {
       this.findProject(opt_projectName || this.defaultProjectName, {put: function(p) {
         console.log('launch: ', p);
-        p.launchBrowser();
+        p.launchBrowser(opt_url);
       }});
     }
   },
