@@ -146,8 +146,6 @@ var BlockView = FOAM({
 
   methods: {
     toHTML: function(opt_depth) {
-      if ( ( opt_depth || 0 ) > this.maxDepth ) return '';
-
       var s = '<div class="blockList">';
 
       for ( var i = 0 ; i < this.ids.length ; i++ ) {
@@ -179,6 +177,18 @@ var BlockView = FOAM({
         this.QIssueDAO.find(id, { put: function(issue) {
           if ( ! issue.isOpen() ) {
             $(self.idSet[id]).style.textDecoration = 'line-through';
+          }
+          if ( self.maxDepth > 1 ) {
+            var ids = issue[self.property.name];
+
+            if ( ids.length ) {
+              var subView = self.clone().copyFrom({
+                maxDepth: self.maxDepth-1,
+                ids:      ids
+              });
+              $(self.idSet[id]).insertAdjacentHTML('afterend', '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
+              subView.initHTML();
+            }
           }
         }});
       }
