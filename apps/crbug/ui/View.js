@@ -58,7 +58,6 @@ var ItemCount = Model.create({
       var f = function() {
         var searchField = this.browser.searchField;
         var altView = this.browser.view;
-        debugger;
         var col = altView.views[1].view().col.value.get();
         var row = altView.views[1].view().row.value.get();
         var q = AND(

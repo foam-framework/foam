@@ -881,7 +881,7 @@ var ChoiceView = FOAM({
          }
          return undefined;
        },
-       setter: function(m) { this.value.set(this.choices[m][0]); }
+       setter: function(m) { if ( m !== undefined ) this.value.set(this.choices[m][0]); }
      },
      {
        name: 'choice',
