@@ -112,17 +112,18 @@ var Browser = Model.create({
     },
     {
       name: 'memento',
-      setter: function(m) {
+      postSet: function(m, oldM) {
+        if ( m.toString() === oldM.toString() ) return;
         this.searchChoice.memento = m.can;
         if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
         this.view.memento = m;
-      },
-      getter: function() {
-        var m = this.view.memento;
-        m.can = this.searchChoice.memento;
-        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
-        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
-        return m;
+      }
+    },
+    {
+      name: 'mementoMgr',
+      valueFactory: function() {
+//        return new MementoMgr({memorable: this});
+        return '';
       }
     },
     {
@@ -170,6 +171,18 @@ var Browser = Model.create({
   ],
 
   listeners: [
+    {
+      model_: 'Method',
+      name: 'updateMemento',
+      code: function() {
+        var m = this.view.memento;
+        m.can = this.searchChoice.memento;
+        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
+        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
+        this.memento = m;
+console.log('BROWSER Udpate Memento: ', m);
+      }
+    },
     {
       model_: 'Method',
       name: 'performQuery',
@@ -375,6 +388,9 @@ var Browser = Model.create({
       this.searchChoice.choice = this.searchChoice.choices[1];
 
       this.window.document.addEventListener('keyup', this.keyPress);
+
+      this.searchChoice.value.addListener(this.updateMemento);
+      this.view.addPropertyListener('memento', this.updateMemento);
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -483,8 +499,6 @@ var Browser = Model.create({
         u += key + '=' + encodeURIComponent(m[key]);
         d = '&';
       }
-
-      console.log('*****************URL ', u);
 
       return u;
     },
