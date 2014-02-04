@@ -180,7 +180,7 @@ console.log('BROWSER Udpate Memento: ', m);
       model_: 'Method',
       name: 'updateMemento',
       code: function() {
-        var m = this.view.memento;
+        var m = {__proto__: this.view.memento};
         m.can = this.searchChoice.memento;
         m.q = this.searchField.value.get();
         this.memento = m;
