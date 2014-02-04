@@ -123,7 +123,7 @@ var QProject = Model.create({
 
   methods: {
     /** Open a Browser in a Window for a Chome Packaged App. **/
-    launchBrowser: function() {
+    launchBrowser: function(opt_url) {
       var self = this;
 
       chrome.app.window.create('empty.html', {width: 1000, height: 800}, function(w) {
@@ -146,6 +146,7 @@ var QProject = Model.create({
             w.browser = b;
             window.document.body.innerHTML = b.toHTML();
             b.initHTML();
+            if ( opt_url ) b.maybeImportCrbugUrl(opt_url);
             w.focus();
           });
         };

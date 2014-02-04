@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+MementoMgr.BACK.iconUrl = 'images/back.png';
+MementoMgr.FORTH.iconUrl = 'images/forth.png';
+MementoMgr.BACK.label = '';
+MementoMgr.FORTH.label = '';
+MementoMgr.BACK.help = '';
+MementoMgr.FORTH.help = '';
+
 var Browser = Model.create({
   name: 'Browser',
 
@@ -76,6 +83,14 @@ var Browser = Model.create({
     },
 
     {
+      name: 'zoom',
+      help: 'Zoom ratio of Browser contents.',
+      defaultValue: '1',
+      postSet: function() {
+        this.updateZoom();
+      }
+    },
+    {
       name: 'rowSelection',
       valueFactory: function() { return SimpleValue.create(); }
     },
@@ -104,18 +119,17 @@ var Browser = Model.create({
     },
     {
       name: 'memento',
-      setter: function(m) {
+      postSet: function(m, oldM) {
+        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+console.log('BROWSER Udpate Memento: ', m);
         this.searchChoice.memento = m.can;
         if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
         this.view.memento = m;
-      },
-      getter: function() {
-        var m = this.view.memento;
-        m.can = this.searchChoice.memento;
-        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
-        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
-        return m;
       }
+    },
+    {
+      name: 'mementoMgr',
+      valueFactory: function() { return this.mementoMgr = MementoMgr.create({memorable: this}); }
     },
     {
       name: 'searchChoice',
@@ -164,6 +178,16 @@ var Browser = Model.create({
   listeners: [
     {
       model_: 'Method',
+      name: 'updateMemento',
+      code: function() {
+        var m = {__proto__: this.view.memento};
+        m.can = this.searchChoice.memento;
+        m.q = this.searchField.value.get();
+        this.memento = m;
+      }
+    },
+    {
+      model_: 'Method',
       name: 'performQuery',
       code: function(evt) {
         this.maybeImportCrbugUrl(this.searchField.value.get());
@@ -184,10 +208,41 @@ var Browser = Model.create({
 
         console.log(this.crbugUrl());
       }
+    },
+    {
+      model_: 'Method',
+      name: 'keyPress',
+      code: function(e) {
+        if ( e.ctrlKey && e.shiftKey ) {
+          if ( e.keyCode == 189 ) this.zoomOut();
+          if ( e.keyCode == 187 ) this.zoomIn();
+        }
+      }
     }
   ],
 
   actions: [
+    {
+      model_: 'Action',
+      name:  'zoomIn',
+      action: function() {
+        this.zoom *= 1.1;
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'zoomOut',
+      action: function() {
+        this.zoom *= 0.9;
+      }
+    },
+    {
+      model_: 'Action',
+      name:  'zoomReset',
+      action: function() {
+        this.zoom = 1.0;
+      }
+    },
     {
       model_: 'Action',
       name:  'link',
@@ -334,6 +389,13 @@ var Browser = Model.create({
       this.layout();
 
       this.searchChoice.choice = this.searchChoice.choices[1];
+
+      this.window.document.addEventListener('keyup', this.keyPress);
+
+      this.searchChoice.value.addListener(this.updateMemento);
+      this.view.addPropertyListener('memento', this.updateMemento);
+
+      this.updateMemento();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -353,9 +415,12 @@ var Browser = Model.create({
           var HEIGHT = 400;
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
-          var v = obj.createPreviewView();
-          v.QIssueCommentDAO = self.IssueCommentDAO.where(EQ(QIssue.ID, id));
-          v.QIssueDAO = self.IssueDAO;
+          var v = QIssuePreviewView.create({
+            value: SimpleValue.create(obj),
+            QIssueCommentDAO: self.IssueCommentDAO.where(EQ(QIssue.ID, id)),
+            QIssueDAO: self.IssueDAO,
+            url: self.url
+          });
 
           var popup = self.currentPreview = PopupView.create({
             x: e.x + 25,
@@ -371,6 +436,11 @@ var Browser = Model.create({
           popup.open(self.view);
         }
       });
+    },
+
+    updateZoom: function() {
+      this.window.document.body.style.zoom = this.zoom;
+      this.layout();
     },
 
     /** Filter data with the supplied predicate, or select all data if null. **/
@@ -394,34 +464,42 @@ var Browser = Model.create({
 
     /** Import a cr(1)bug URL. **/
     maybeImportCrbugUrl: function(url) {
-      url = url.trim();
-      if ( ! url ) return;
-      if ( ! url.startsWith('http') ) return;
+      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var match = regex.exec(url);
 
-      var idx = url.indexOf('?');
-      if ( idx == -1 ) return;
+      if ( ! match ) return;
 
-      url = url.substring(idx+1);
-      var params = url.split('&');
-      var memento = {};
-      for ( var i = 0 ; i < params.length ; i++ ) {
-        var param = params[i];
-        var keyValue = param.split('=');
-        memento[decodeURIComponent(keyValue[0])] =
-          decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+      var project = match[1];
+
+      if ( project == this.projectName ) {
+        var params = match[3].split('&');
+
+        var memento = {};
+        for ( var i = 0 ; i < params.length ; i++ ) {
+          var param = params[i];
+          var keyValue = param.split('=');
+          memento[decodeURIComponent(keyValue[0])] =
+            decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+        }
+
+        if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
+
+        this.memento = memento;
+      } else {
+        this.qbug.launchBrowser(project, url)
       }
-
-      if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
-
-      this.memento = memento;
     },
 
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
       var u = this.url + '/issues/list';
-      var m = this.memento;
+      var m = {};
       var d = '?';
 
+      for ( key in this.memento ) m[key] = this.memento[key];
+
+      // Replace short-names will fullnames that crbug will understand
+      if ( this.memento.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
       if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
 
       for ( var key in m ) {
@@ -430,8 +508,6 @@ var Browser = Model.create({
         u += key + '=' + encodeURIComponent(m[key]);
         d = '&';
       }
-
-      console.log('*****************URL ', u);
 
       return u;
     },

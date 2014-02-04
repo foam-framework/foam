@@ -6,10 +6,17 @@ var QIssuePreviewView = FOAM({
 
   properties: [
     {
+      name: 'model',
+      valueFactory: function() { return QIssue; }
+    },
+    {
       name: 'QIssueCommentDAO'
     },
     {
       name: 'QIssueDAO'
+    },
+    {
+      name: 'url'
     },
     {
       name: 'blockingView',
@@ -122,6 +129,11 @@ var BlockView = FOAM({
       name: 'ctx'
     },
     {
+      name: 'url',
+      scope: 'ctx',
+      defaultValueFn: function() { return this.ctx.url; }
+    },
+    {
       name: 'QIssueDAO',
       scope: 'ctx',
       defaultValueFn: function() { return this.ctx.QIssueDAO; }
@@ -146,8 +158,6 @@ var BlockView = FOAM({
 
   methods: {
     toHTML: function(opt_depth) {
-      if ( ( opt_depth || 0 ) > this.maxDepth ) return '';
-
       var s = '<div class="blockList">';
 
       for ( var i = 0 ; i < this.ids.length ; i++ ) {
@@ -158,7 +168,9 @@ var BlockView = FOAM({
 
         this.idSet[issue] = id;
 
-        s += '<div id="' + id + '">Issue ' + issue + '</div>';
+        var url = this.url + '/issues/detail?id=' + issue;
+
+        s += '<div><a href="' + url + '" id="' + id + '">Issue ' + issue + '</a><div>';
 
         this.on('mouseover', this.startPreview.bind(this, issue), id);
         this.on('mouseout',  this.endPreview,                     id);
@@ -179,6 +191,18 @@ var BlockView = FOAM({
         this.QIssueDAO.find(id, { put: function(issue) {
           if ( ! issue.isOpen() ) {
             $(self.idSet[id]).style.textDecoration = 'line-through';
+          }
+          if ( self.maxDepth > 1 ) {
+            var ids = issue[self.property.name];
+
+            if ( ids.length ) {
+              var subView = self.clone().copyFrom({
+                maxDepth: self.maxDepth-1,
+                ids:      ids
+              });
+              $(self.idSet[id]).insertAdjacentHTML('afterend', '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
+              subView.initHTML();
+            }
           }
         }});
       }

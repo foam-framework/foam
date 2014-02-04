@@ -186,18 +186,25 @@ var QIssue = FOAM({
             type: 'String'
         },
         {
+          model_: 'BooleanProperty',
+          name: 'blocked',
+          tableWidth: '20px',
+          getter: function() { return !! this.blockedOn.length; }
+        },
+        {
          model_: 'DateTimeProperty',
          name: 'updated',
          shortName: 'mod',
          mode: 'read-write',
          required: true,
-         tableWidth: '100',
+         tableWidth: '100px',
          valueFactory: function() { return new Date(); }
       },
       {
          model_: 'BooleanProperty',
          name: 'starred',
          tableLabel: '',
+         tableWidth: '20px',
          tableFormatter: function(val, obj, tableView) {
            var temp = obj.clone();
            var view = ImageBooleanView.create({
@@ -223,21 +230,18 @@ var QIssue = FOAM({
              });
            }
          },
-         tableWidth: '20',
+         tableWidth: '20px',
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
          model_: 'IntegerProperty',
          name: 'stars',
+         tableWidth: '20px',
          help: 'Number of stars this issue has.'
       }
     ],
 
     methods: {
-      createPreviewView: function() {
-        return QIssuePreviewView.create({ model: QIssue, value: SimpleValue.create(this) });
-      },
-
       isOpen: function() {
         return !! ({
           'New':      true,
@@ -253,6 +257,17 @@ QIssue.properties.forEach(function(p) {
     p["tableFormatter"] = function(v) {
       return ('' + v).length ? v : '----';
     };
+  }
+});
+
+GeneratedQIssue.properties.forEach(function(p) {
+  if ( ! p["tableFormatter"] ) {
+    p["tableFormatter"] = function(v) {
+      return ('' + v).length ? v : '----';
+    };
+  }
+  if ( ! p["tableWidth"] ) {
+    p["tableWidth"] = '80px;'
   }
 });
 

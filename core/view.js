@@ -60,7 +60,7 @@ KeyboardShortcutController.prototype.shouldIgnoreKeyEventsForTarget_ = function(
   if (target.isContentEditable)
     return true;
   return target.tagName == 'INPUT' ||
-         target.tagName == 'TEXTAREA';
+    target.tagName == 'TEXTAREA';
 };
 
 KeyboardShortcutController.prototype.processKey_ = function(event) {
@@ -118,41 +118,41 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 // ??? Should this have a 'value'?
 // Or maybe a ValueView and ModelView
 var AbstractView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   name: 'AbstractView',
-   label: 'AbstractView',
+  name: 'AbstractView',
+  label: 'AbstractView',
 
-   properties: [
-      {
-         name:  'elementId',
-         label: 'Element ID',
-         type:  'String'
-      },
-      {
-         name:  'parent',
-         type:  'View',
-         hidden: true
-      },
-      {
-         name:  'children',
-         type:  'Array[View]',
-         valueFactory: function() { return []; }
-      },
-      {
-        name:   'shortcuts',
-        type:   'Array[Shortcut]',
-        valueFactory: function() { return []; }
-      },
-      {
-        name:   '$',
-        mode:   "read-only",
-        getter: function() { return $(this.getID()); },
-        help:   'DOM Element.'
-      }
-   ],
+  properties: [
+    {
+      name:  'elementId',
+      label: 'Element ID',
+      type:  'String'
+    },
+    {
+      name:  'parent',
+      type:  'View',
+      hidden: true
+    },
+    {
+      name:  'children',
+      type:  'Array[View]',
+      valueFactory: function() { return []; }
+    },
+    {
+      name:   'shortcuts',
+      type:   'Array[Shortcut]',
+      valueFactory: function() { return []; }
+    },
+    {
+      name:   '$',
+      mode:   "read-only",
+      getter: function() { return $(this.getID()); },
+      help:   'DOM Element.'
+    }
+  ],
 
-   methods: {
+  methods: {
     strToHTML: function(str) {
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
@@ -193,20 +193,20 @@ var AbstractView = FOAM({
 
     getID: function() {
       // @return this View's unique DOM element-id
-// console.log('getID', this.elementId);
+      // console.log('getID', this.elementId);
       if ( this.elementId ) return this.elementId;
       return this.elementId || ( this.elementId = this.nextID() );
     },
 
     on: function(event, listener, opt_elementId) {
-        opt_elementId = opt_elementId || this.nextID();
+      opt_elementId = opt_elementId || this.nextID();
 
-//      if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
-        if ( ! this.callbacks_ ) this.callbacks_ = [];
+      //      if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
+      if ( ! this.callbacks_ ) this.callbacks_ = [];
 
-        this.callbacks_.push([opt_elementId, event, listener]);
+      this.callbacks_.push([opt_elementId, event, listener]);
 
-        return opt_elementId;
+      return opt_elementId;
     },
 
     /** Insert this View's toHTML into the Element of the supplied name. **/
@@ -217,66 +217,66 @@ var AbstractView = FOAM({
     },
 
     write: function(document) {
-       // Write the View's HTML to the provided document and then initialize.
+      // Write the View's HTML to the provided document and then initialize.
 
-       document.writeln(this.toHTML());
-       this.initHTML();
+      document.writeln(this.toHTML());
+      this.initHTML();
     },
 
-     initHTML: function() {
-       // Initialize this View and all of it's children.
-       // This mostly involves attaching listeners.
-       // Must be called activate a view after it has been added to the DOM.
+    initHTML: function() {
+      // Initialize this View and all of it's children.
+      // This mostly involves attaching listeners.
+      // Must be called activate a view after it has been added to the DOM.
 
-       this.registerCallbacks();
-       this.initChildren();
-     },
+      this.registerCallbacks();
+      this.initChildren();
+    },
 
-     initChildren: function() {
-       if ( this.children ) {
-         // init children
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-           // console.log("init child: " + this.children[i]);
-           try {
-             this.children[i].initHTML();
-           } catch (x) {
-             console.log("Error on AbstractView.child.initHTML", x, x.stack);
-           }
-         }
-       }
-     },
+    initChildren: function() {
+      if ( this.children ) {
+        // init children
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          // console.log("init child: " + this.children[i]);
+          try {
+            this.children[i].initHTML();
+          } catch (x) {
+            console.log("Error on AbstractView.child.initHTML", x, x.stack);
+          }
+        }
+      }
+    },
 
-     registerCallbacks: function() {
-       if ( this.callbacks_ ) {
-         // hookup event listeners
-         for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
-           var callback  = this.callbacks_[i];
-           var elementId = callback[0];
-           var event     = callback[1];
-           var listener  = callback[2];
-           var e         = $(elementId);
-           if ( ! e ) {
-             console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-           } else {
-             e.addEventListener(event, listener.bind(this), false);
-           }
-         }
+    registerCallbacks: function() {
+      if ( this.callbacks_ ) {
+        // hookup event listeners
+        for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
+          var callback  = this.callbacks_[i];
+          var elementId = callback[0];
+          var event     = callback[1];
+          var listener  = callback[2];
+          var e         = $(elementId);
+          if ( ! e ) {
+            console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+          } else {
+            e.addEventListener(event, listener.bind(this), false);
+          }
+        }
 
-         delete this['callbacks_'];
-       }
-     },
+        delete this['callbacks_'];
+      }
+    },
 
-     destroy: function() {
-       // TODO: remove listeners
-     },
+    destroy: function() {
+      // TODO: remove listeners
+    },
 
-     close: function() {
-       this.$ && this.$.remove();
-       this.destroy();
-       this.publish('closed');
-     }
+    close: function() {
+      this.$ && this.$.remove();
+      this.destroy();
+      this.publish('closed');
+    }
 
-   }
+  }
 
 });
 
@@ -365,50 +365,50 @@ var MenuSeparator = FOAM({
 });
 
 var DomValue = {
-   DEFAULT_EVENT:    'change',
-   DEFAULT_PROPERTY: 'value',
+  DEFAULT_EVENT:    'change',
+  DEFAULT_PROPERTY: 'value',
 
-   create: function(element, opt_event, opt_property) {
-      if ( ! element ) {
-         throw "Missing Element in DomValue";
-      }
+  create: function(element, opt_event, opt_property) {
+    if ( ! element ) {
+      throw "Missing Element in DomValue";
+    }
 
-      return {
-         __proto__: this,
-         element:   element,
-         event:     opt_event    || this.DEFAULT_EVENT,
-         property:  opt_property || this.DEFAULT_PROPERTY };
-   },
+    return {
+      __proto__: this,
+      element:   element,
+      event:     opt_event    || this.DEFAULT_EVENT,
+      property:  opt_property || this.DEFAULT_PROPERTY };
+  },
 
-   setElement: function ( element ) { this.element = element; },
+  setElement: function ( element ) { this.element = element; },
 
-   get: function() { return this.element[this.property]; },
+  get: function() { return this.element[this.property]; },
 
-   set: function(value) {
-     if ( this.element[this.property] != value )
-       this.element[this.property] = value;
-   },
+  set: function(value) {
+    if ( this.element[this.property] != value )
+      this.element[this.property] = value;
+  },
 
-   addListener: function(listener) {
-      if ( ! this.event ) return;
-      try {
-         this.element.addEventListener(this.event, listener, false);
-      } catch (x) {
-      }
-   },
+  addListener: function(listener) {
+    if ( ! this.event ) return;
+    try {
+      this.element.addEventListener(this.event, listener, false);
+    } catch (x) {
+    }
+  },
 
-   removeListener: function(listener) {
-      if ( ! this.event ) return;
-      try {
-         this.element.removeEventListener(this.event, listener, false);
-      } catch (x) {
-         // could be that the element has been removed
-      }
-   },
+  removeListener: function(listener) {
+    if ( ! this.event ) return;
+    try {
+      this.element.removeEventListener(this.event, listener, false);
+    } catch (x) {
+      // could be that the element has been removed
+    }
+  },
 
-   toString: function() {
-      return "DomValue(" + this.event + ", " + this.property + ")";
-   }
+  toString: function() {
+    return "DomValue(" + this.event + ", " + this.property + ")";
+  }
 };
 
 
@@ -546,100 +546,100 @@ var BlobImageView = FOAM({
 
 var TextFieldView = FOAM({
 
-   model_: 'Model',
-   name:  'TextFieldView',
-   label: 'Text Field',
+  model_: 'Model',
+  name:  'TextFieldView',
+  label: 'Text Field',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   properties: [
-      {
-         name:  'name',
-         type:  'String',
-         defaultValue: 'field'
-      },
-      {
-         name:  'className',
-         type:  'String',
-         defaultValue: 'field'
-      },
-      {
-         name:  'displayWidth',
-         type:  'int',
-         defaultValue: 30
-      },
-      {
-         model_: 'StringProperty',
-         name:  'type',
-         defaultValue: 'text'
-      },
-      {
-         model_: 'StringProperty',
-         name:  'placeholder',
-         defaultValue: undefined
-      },
-      {
-         model_: 'BooleanProperty',
-         name:  'onKeyMode',
-         help: 'If true, value is updated on each keystroke.'
-      },
-      {
-         model_: 'BooleanProperty',
-         name:  'escapeHTML',
-         help: 'If true, HTML content is excaped in display mode.'
-      },
-      {
-         name:  'mode',
-         type:  'String',
-         defaultValue: 'read-write',
-         view: {
-              create: function() { return ChoiceView.create({choices:[
-                 "read-only", "read-write", "final"
-              ]}); } }
-      },
-      {
-        name: 'softValue',
-        valueFactory: function() { return SimpleValue.create(); },
-        postSet: function(newValue, oldValue) {
-          if ( this.mode === 'read-write' ) {
-            Events.unlink(oldValue, this.domValue);
-            Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
-          } else {
-            Events.unfollow(oldValue, this.domValue);
-            Events.map(newValue, this.domValue, this.valueToText);
-          }
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name:  'className',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name:  'displayWidth',
+      type:  'int',
+      defaultValue: 30
+    },
+    {
+      model_: 'StringProperty',
+      name:  'type',
+      defaultValue: 'text'
+    },
+    {
+      model_: 'StringProperty',
+      name:  'placeholder',
+      defaultValue: undefined
+    },
+    {
+      model_: 'BooleanProperty',
+      name:  'onKeyMode',
+      help: 'If true, value is updated on each keystroke.'
+    },
+    {
+      model_: 'BooleanProperty',
+      name:  'escapeHTML',
+      help: 'If true, HTML content is excaped in display mode.'
+    },
+    {
+      name:  'mode',
+      type:  'String',
+      defaultValue: 'read-write',
+      view: {
+        create: function() { return ChoiceView.create({choices:[
+          "read-only", "read-write", "final"
+        ]}); } }
+    },
+    {
+      name: 'softValue',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        if ( this.mode === 'read-write' ) {
+          Events.unlink(oldValue, this.domValue);
+          Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
+        } else {
+          Events.unfollow(oldValue, this.domValue);
+          Events.map(newValue, this.domValue, this.valueToText);
         }
-      },
-      {
-        name: 'domValue'
-      },
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
-           if ( this.onKeyMode ) {
-             Events.unlink(oldValue, this.softValue);
-             Events.link(newValue, this.softValue);
-           } else {
-             Events.unfollow(oldValue, this.softValue);
-             Events.follow(newValue, this.softValue);
-           }
-         }
-      },
-      {
-         model_: 'StringProperty',
-         name: 'readWriteTagName',
-         defaultValueFn: function() { return 'input'; }
-      },
-      {
-         model_: 'StringProperty',
-         name: 'readOnlyTagName',
-         defaultValueFn: function() { return 'span'; }
       }
-   ],
+    },
+    {
+      name: 'domValue'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        if ( this.onKeyMode ) {
+          Events.unlink(oldValue, this.softValue);
+          Events.link(newValue, this.softValue);
+        } else {
+          Events.unfollow(oldValue, this.softValue);
+          Events.follow(newValue, this.softValue);
+        }
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'readWriteTagName',
+      defaultValueFn: function() { return 'input'; }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'readOnlyTagName',
+      defaultValueFn: function() { return 'span'; }
+    }
+  ],
 
-   methods: {
+  methods: {
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
 
@@ -668,7 +668,7 @@ var TextFieldView = FOAM({
       if ( this.mode === 'read-write' ) {
         this.domValue = DomValue.create(this.$, 'input');
       } else {
-//        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
+        //        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
         this.domValue = DomValue.create(this.$, 'undefined', this.escapeHTML ? 'textContent' : 'innerHTML');
       }
 
@@ -676,9 +676,9 @@ var TextFieldView = FOAM({
       this.softValue = this.softValue;
     },
 
-//    textToValue: Events.identity,
+    //    textToValue: Events.identity,
 
-//    valueToText: Events.identity,
+    //    valueToText: Events.identity,
 
     textToValue: function(text) { return text;},
 
@@ -699,28 +699,28 @@ var TextFieldView = FOAM({
 
 var DateFieldView = FOAM({
 
-   model_: 'Model',
-   name:  'DateFieldView',
-   label: 'Date Field',
+  model_: 'Model',
+  name:  'DateFieldView',
+  label: 'Date Field',
 
-   extendsModel: 'TextFieldView',
+  extendsModel: 'TextFieldView',
 
-   properties: [
-      {
-         model_: 'StringProperty',
-         name:  'type',
-         defaultValue: 'date'
-      }
-   ],
+  properties: [
+    {
+      model_: 'StringProperty',
+      name:  'type',
+      defaultValue: 'date'
+    }
+  ],
 
-   methods: {
+  methods: {
 
     initHTML: function() {
-       var e = this.$;
+      var e = this.$;
 
-       this.domValue = DomValue.create(e, undefined, 'valueAsDate');
+      this.domValue = DomValue.create(e, undefined, 'valueAsDate');
 
-       this.setValue(this.value);
+      this.setValue(this.value);
     }
 
   }
@@ -729,33 +729,33 @@ var DateFieldView = FOAM({
 
 var DateTimeFieldView = FOAM({
 
-   model_: 'Model',
-   name:  'DateTimeFieldView',
-   label: 'Date-Time Field',
+  model_: 'Model',
+  name:  'DateTimeFieldView',
+  label: 'Date-Time Field',
 
-   extendsModel: 'TextFieldView',
+  extendsModel: 'TextFieldView',
 
-   methods: {
+  methods: {
     textToValue: function(text) { return new Date(text); },
 
     valueToText: function(value) { return value.toString(); },
 
     toHTML: function() {
-        return ( this.mode === 'read-write' ) ?
-          '<input id="' + this.getID() + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
-          '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+      return ( this.mode === 'read-write' ) ?
+        '<input id="' + this.getID() + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
+        '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     }
-   }
+  }
 });
 
 var RelativeDateTimeFieldView = FOAM({
-   model_: 'Model',
-   name:  'RelativeDateTimeFieldView',
-   label: 'Relative Date-Time Field',
+  model_: 'Model',
+  name:  'RelativeDateTimeFieldView',
+  label: 'Relative Date-Time Field',
 
-   extendsModel: 'DateTimeFieldView',
+  extendsModel: 'DateTimeFieldView',
 
-   methods: {
+  methods: {
     valueToText: function(value) {
       return value.toRelativeDateString();
     },
@@ -763,49 +763,49 @@ var RelativeDateTimeFieldView = FOAM({
     toHTML: function() {
       return '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     }
-   }
+  }
 });
 
 var HTMLView = FOAM({
 
-   model_: 'Model',
-   name:  'HTMLView',
-   label: 'HTML Field',
+  model_: 'Model',
+  name:  'HTMLView',
+  label: 'HTML Field',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   properties: [
-      {
-         name:  'name',
-         type:  'String',
-         defaultValue: ''
-      },
-      {
-         model_: 'StringProperty',
-         name:  'tag',
-         defaultValue: 'span'
-      },
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
-           if ( this.mode === 'read-write' ) {
-             Events.unlink(this.domValue, oldValue);
-             Events.link(newValue, this.domValue);
-           } else {
-             Events.follow(newValue, this.domValue);
-           }
-         }
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      defaultValue: ''
+    },
+    {
+      model_: 'StringProperty',
+      name:  'tag',
+      defaultValue: 'span'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        if ( this.mode === 'read-write' ) {
+          Events.unlink(this.domValue, oldValue);
+          Events.link(newValue, this.domValue);
+        } else {
+          Events.follow(newValue, this.domValue);
+        }
       }
-   ],
+    }
+  ],
 
-   methods: {
+  methods: {
     toHTML: function() {
-       var s = '<' + this.tag + ' id="' + this.getID() + '"';
-       if ( this.name ) s+= ' name="' + this.name + '"';
-       s += '></' + this.tag + '>';
-       return s;
+      var s = '<' + this.tag + ' id="' + this.getID() + '"';
+      if ( this.name ) s+= ' name="' + this.name + '"';
+      s += '></' + this.tag + '>';
+      return s;
     },
 
     // TODO: deprecate
@@ -815,14 +815,14 @@ var HTMLView = FOAM({
     setValue: function(value) { this.value = value; },
 
     initHTML: function() {
-       var e = this.$;
+      var e = this.$;
 
-       if ( ! e ) {
-          console.log('stale HTMLView');
-          return;
-       }
-       this.domValue = DomValue.create(e,undefined,'innerHTML');
-       this.setValue(this.value);
+      if ( ! e ) {
+        console.log('stale HTMLView');
+        return;
+      }
+      this.domValue = DomValue.create(e,undefined,'innerHTML');
+      this.setValue(this.value);
     },
 
     destroy: function() { Events.unlink(this.domValue, this.value); }
@@ -832,449 +832,449 @@ var HTMLView = FOAM({
 
 var ChoiceView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-/*
- * <select size="">
- *    <choice value="" selected></choice>
- * </select>
- *
- *
- */
-   name:  'ChoiceView',
+  /*
+   * <select size="">
+   *    <choice value="" selected></choice>
+   * </select>
+   *
+   *
+   */
+  name:  'ChoiceView',
 
-   properties: [
-      {
-         name:  'name',
-         type:  'String',
-         defaultValue: 'field'
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name:  'helpText',
+      type:  'String',
+      defaultValue: undefined
+    },
+    {
+      name: 'cssClass',
+      type: 'String',
+      defaultValue: 'foamChoiceView'
+    },
+    {
+      name:  'size',
+      type:  'int',
+      defaultValue: 1
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name: 'memento',
+      getter: function() {
+        var value = this.value.get();
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          var choice = this.choices[i];
+          if ( value === choice[0] ) return i;
+        }
+        return undefined;
       },
-      {
-         name:  'helpText',
-         type:  'String',
-         defaultValue: undefined
+      setter: function(m) { if ( m !== undefined ) this.value.set(this.choices[m][0]); }
+    },
+    {
+      name: 'choice',
+      getter: function() {
+        var value = this.value.get();
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          var choice = this.choices[i];
+          if ( value === choice[0] ) return choice;
+        }
+        return undefined;
       },
-      {
-         name: 'cssClass',
-         type: 'String',
-         defaultValue: 'foamChoiceView'
-      },
-      {
-         name:  'size',
-         type:  'int',
-         defaultValue: 1
-      },
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
-      },
-     {
-       name: 'memento',
-       getter: function() {
-         var value = this.value.get();
-         for ( var i = 0 ; i < this.choices.length ; i++ ) {
-           var choice = this.choices[i];
-           if ( value === choice[0] ) return i;
-         }
-         return undefined;
-       },
-       setter: function(m) { if ( m ) this.value.set(this.choices[m][0]); }
-     },
-     {
-       name: 'choice',
-       getter: function() {
-         var value = this.value.get();
-         for ( var i = 0 ; i < this.choices.length ; i++ ) {
-           var choice = this.choices[i];
-           if ( value === choice[0] ) return choice;
-         }
-         return undefined;
-       },
-       setter: function(choice) {
-         this.value.set(choice[0]);
-       }
-     },
-      {
-         name:  'choices',
-         type:  'Array[StringField]',
-         help: 'Array of choices or array of [value, label] pairs.',
-         defaultValue: [],
-         postSet: function() {
-//           if ( this.eid_ ) this.updateHTML();
-         }
+      setter: function(choice) {
+        this.value.set(choice[0]);
       }
-   ],
-
-   methods: {
-     findChoiceIC: function(name) {
-       name = name.toLowerCase();
-       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-         if ( this.choices[i][1].toLowerCase() == name )
-           return this.choices[i];
-       }
-     },
-
-     toHTML: function() {
-       return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
-     },
-
-     updateHTML: function() {
-       var out = [];
-
-       if ( this.helpText ) {
-         out.push('<option disabled="disabled">');
-         out.push(this.helpText);
-         out.push('</option>');
-       }
-
-       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-         var choice = this.choices[i];
-         var id     = this.nextID();
-
-         try {
-           this.on('click', this.onClick, id);
-           this.on('mouseover', this.onMouseOver, id);
-           this.on('mouseout', this.onMouseOut, id);
-         } catch (x) {
-           // Fails on iPad, which is okay, because this feature doesn't make
-           // sense on the iPad anyway.
-         }
-
-         out.push('\t<option id="' + id + '"');
-
-         if ( Array.isArray(choice) ) {
-//           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-//           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
-           if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
-           out.push(' value="');
-           out.push(i + '">');
-           out.push(choice[1].toString());
-         } else {
-           if ( this.value && choice == this.value.get() ) out.push(' selected');
-           out.push('>');
-           out.push(choice.toString());
-         }
-         out.push('</option>');
-       }
-
-       this.$.innerHTML = out.join('');
-       AbstractView.getPrototype().initHTML.call(this);
-     },
-
-     getValue: function() {
-       return this.value;
-     },
-
-     setValue: function(value) {
-       Events.unlink(this.domValue, this.value);
-       this.value = value;
-//       Events.link(value, this.domValue);
-       var self = this;
-       Events.relate(
-         value,
-         this.domValue,
-         function (v) {
-           for ( var i = 0 ; i < self.choices.length ; i++ ) {
-             var c = self.choices[i];
-             if ( Array.isArray(c) ) {
-               if ( c[0] === v ) return i;
-             } else {
-               if ( v == c ) return v;
-             }
-           }
-           return v;
-         },
-         function (v) { return self.indexToValue(v); }
-       );
-     },
-
-     initHTML: function() {
-       var e = this.$;
-
-       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
-
-       this.updateHTML();
-
-       this.domValue = DomValue.create(e);
-
-       this.setValue(this.value);
-//       Events.link(this.value, this.domValue);
-     },
-
-     destroy: function() {
-       Events.unlink(this.domValue, this.value);
-     },
-
-     indexToValue: function(v) {
-       var i = parseInt(v);
-       if ( isNaN(i) ) return v;
-
-       if ( Array.isArray(this.choices[i]) ) return this.choices[i][0];
-
-       return v;
-     },
-
-     evtToValue: function(e) { return this.indexToValue(e.target.value); }
-   },
-
-   listeners:
-   [
-      {
-         model_: 'Method',
-
-         name: 'onMouseOver',
-         code: function(e) {
-           if ( this.timer_ ) window.clearTimeout(this.timer_);
-           this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
-           this.value.set(this.evtToValue(e));
-         }
-      },
-
-      {
-         model_: 'Method',
-
-         name: 'onMouseOut',
-         code: function(e) {
-           if ( this.timer_ ) window.clearTimeout(this.timer_);
-           this.timer_ = window.setTimeout(function() {
-             this.value.set(this.prev || "");
-             this.prev = undefined;
-           }.bind(this), 1);
-         }
-      },
-
-      {
-         model_: 'Method',
-
-         name: 'onClick',
-         code: function(e) {
-           this.prev = this.evtToValue(e);
-           this.value.set(this.prev);
-         }
+    },
+    {
+      name:  'choices',
+      type:  'Array[StringField]',
+      help: 'Array of choices or array of [value, label] pairs.',
+      defaultValue: [],
+      postSet: function() {
+        //           if ( this.eid_ ) this.updateHTML();
       }
-   ]
+    }
+  ],
+
+  methods: {
+    findChoiceIC: function(name) {
+      name = name.toLowerCase();
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        if ( this.choices[i][1].toLowerCase() == name )
+          return this.choices[i];
+      }
+    },
+
+    toHTML: function() {
+      return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
+    },
+
+    updateHTML: function() {
+      var out = [];
+
+      if ( this.helpText ) {
+        out.push('<option disabled="disabled">');
+        out.push(this.helpText);
+        out.push('</option>');
+      }
+
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        var choice = this.choices[i];
+        var id     = this.nextID();
+
+        try {
+          this.on('click', this.onClick, id);
+          this.on('mouseover', this.onMouseOver, id);
+          this.on('mouseout', this.onMouseOut, id);
+        } catch (x) {
+          // Fails on iPad, which is okay, because this feature doesn't make
+          // sense on the iPad anyway.
+        }
+
+        out.push('\t<option id="' + id + '"');
+
+        if ( Array.isArray(choice) ) {
+          //           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          //           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
+          if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
+          out.push(' value="');
+          out.push(i + '">');
+          out.push(choice[1].toString());
+        } else {
+          if ( this.value && choice == this.value.get() ) out.push(' selected');
+          out.push('>');
+          out.push(choice.toString());
+        }
+        out.push('</option>');
+      }
+
+      this.$.innerHTML = out.join('');
+      AbstractView.getPrototype().initHTML.call(this);
+    },
+
+    getValue: function() {
+      return this.value;
+    },
+
+    setValue: function(value) {
+      Events.unlink(this.domValue, this.value);
+      this.value = value;
+      //       Events.link(value, this.domValue);
+      var self = this;
+      Events.relate(
+        value,
+        this.domValue,
+        function (v) {
+          for ( var i = 0 ; i < self.choices.length ; i++ ) {
+            var c = self.choices[i];
+            if ( Array.isArray(c) ) {
+              if ( c[0] === v ) return i;
+            } else {
+              if ( v == c ) return v;
+            }
+          }
+          return v;
+        },
+        function (v) { return self.indexToValue(v); }
+      );
+    },
+
+    initHTML: function() {
+      var e = this.$;
+
+      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+
+      this.updateHTML();
+
+      this.domValue = DomValue.create(e);
+
+      this.setValue(this.value);
+      //       Events.link(this.value, this.domValue);
+    },
+
+    destroy: function() {
+      Events.unlink(this.domValue, this.value);
+    },
+
+    indexToValue: function(v) {
+      var i = parseInt(v);
+      if ( isNaN(i) ) return v;
+
+      if ( Array.isArray(this.choices[i]) ) return this.choices[i][0];
+
+      return v;
+    },
+
+    evtToValue: function(e) { return this.indexToValue(e.target.value); }
+  },
+
+  listeners:
+  [
+    {
+      model_: 'Method',
+
+      name: 'onMouseOver',
+      code: function(e) {
+        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
+        this.value.set(this.evtToValue(e));
+      }
+    },
+
+    {
+      model_: 'Method',
+
+      name: 'onMouseOut',
+      code: function(e) {
+        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        this.timer_ = window.setTimeout(function() {
+          this.value.set(this.prev || "");
+          this.prev = undefined;
+        }.bind(this), 1);
+      }
+    },
+
+    {
+      model_: 'Method',
+
+      name: 'onClick',
+      code: function(e) {
+        this.prev = this.evtToValue(e);
+        this.value.set(this.prev);
+      }
+    }
+  ]
 
 });
 
 var RadioBoxView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'ChoiceView',
+  extendsModel: 'ChoiceView',
 
-   name:  'RadioBoxView',
+  name:  'RadioBoxView',
 
-   properties: [
-   ],
+  properties: [
+  ],
 
-   methods: {
-     toHTML: function() {
-       return '<span id="' + this.getID() + '"/></span>';
-     },
+  methods: {
+    toHTML: function() {
+      return '<span id="' + this.getID() + '"/></span>';
+    },
 
-     updateHTML: function() {
-       var out = [];
+    updateHTML: function() {
+      var out = [];
 
-       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-         var choice = this.choices[i];
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        var choice = this.choices[i];
 
-         if ( Array.isArray(choice) ) {
-/*
-           var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if ( Array.isArray(choice) ) {
+          /*
+            var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-           out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
-           out.push(encodedValue + '">');
-           out.push(choice[1].toString());
-*/
-         } else {
-           out.push(choice.toString());
-           out.push(': <input type="radio" name="');
-           out.push(this.name);
-           out.push('" value="');
-           out.push(choice.toString());
-           out.push('"');
-           var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
-           out.push('id="' + this.on('click', callback) + '"');
-           if ( this.value && choice == this.value.get() ) out.push(' checked');
-           out.push('/> ');
-         }
-         out.push('</option>');
-       }
-
-       this.$.innerHTML = out.join('');
-       AbstractView.getPrototype().initHTML.call(this);
-     },
-
-     initHTML: function() {
-       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
-
-//       this.updateHTML();
-     }
-   },
-
-   listeners:
-   [
-      {
-         model_: 'Method',
-
-         name: 'onClick',
-         code: function(evt) {
-           console.log('****************', evt, arguments);
-         }
+            out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+            out.push(encodedValue + '">');
+            out.push(choice[1].toString());
+          */
+        } else {
+          out.push(choice.toString());
+          out.push(': <input type="radio" name="');
+          out.push(this.name);
+          out.push('" value="');
+          out.push(choice.toString());
+          out.push('"');
+          var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
+          out.push('id="' + this.on('click', callback) + '"');
+          if ( this.value && choice == this.value.get() ) out.push(' checked');
+          out.push('/> ');
+        }
+        out.push('</option>');
       }
-   ]
+
+      this.$.innerHTML = out.join('');
+      AbstractView.getPrototype().initHTML.call(this);
+    },
+
+    initHTML: function() {
+      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+
+      //       this.updateHTML();
+    }
+  },
+
+  listeners:
+  [
+    {
+      model_: 'Method',
+
+      name: 'onClick',
+      code: function(evt) {
+        console.log('****************', evt, arguments);
+      }
+    }
+  ]
 
 });
 
 
 var RoleView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name:  'RoleView',
+  name:  'RoleView',
 
-   properties: [
-      {
-         name:  'roleName',
-         type:  'String',
-         defaultValue: ''
-      },
-      {
-         name:  'models',
-         type:  'Array[String]',
-         defaultValue: []
-      },
-      {
-         name:  'selection',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
-      },
-      {
-         name:  'model',
-         type:  'Model'
-      }
-   ],
+  properties: [
+    {
+      name:  'roleName',
+      type:  'String',
+      defaultValue: ''
+    },
+    {
+      name:  'models',
+      type:  'Array[String]',
+      defaultValue: []
+    },
+    {
+      name:  'selection',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name:  'model',
+      type:  'Model'
+    }
+  ],
 
-   methods: {
+  methods: {
     initHTML: function() {
-        var e = this.$;
+      var e = this.$;
 
-        this.domValue = DomValue.create(e);
+      this.domValue = DomValue.create(e);
 
-        Events.link(this.value, this.domValue);
+      Events.link(this.value, this.domValue);
     },
 
     toHTML: function() {
-       var str = "";
+      var str = "";
 
-       str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
-       for ( var i = 0 ; i < this.choices.length ; i++ ) {
-          str += "\t<option>" + this.choices[i].toString() + "</option>";
-       }
-       str += '</select>';
+      str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        str += "\t<option>" + this.choices[i].toString() + "</option>";
+      }
+      str += '</select>';
 
-       return str;
+      return str;
     },
 
     getValue: function() {
-        return this.value;
+      return this.value;
     },
 
     setValue: function(value) {
-        Events.unlink(this.domValue, this.value);
-        this.value = value;
-        Events.link(value, this.domValue);
+      Events.unlink(this.domValue, this.value);
+      this.value = value;
+      Events.link(value, this.domValue);
     },
 
     destroy: function() {
-        Events.unlink(this.domValue, this.value);
+      Events.unlink(this.domValue, this.value);
     }
-   }
+  }
 });
 
 
 var BooleanView = FOAM({
-    model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name:  'BooleanView',
+  name:  'BooleanView',
 
-   properties: [
-      {
-         name:  'name',
-         label: 'Name',
-         type:  'String',
-         defaultValue: 'field'
-      }
-   ],
+  properties: [
+    {
+      name:  'name',
+      label: 'Name',
+      type:  'String',
+      defaultValue: 'field'
+    }
+  ],
 
-   methods: {
+  methods: {
     toHTML: function() {
-       return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
+      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
     },
 
     initHTML: function() {
-        var e = this.$;
+      var e = this.$;
 
-        this.domValue = DomValue.create(e, 'change', 'checked');
+      this.domValue = DomValue.create(e, 'change', 'checked');
 
-        Events.link(this.value, this.domValue);
+      Events.link(this.value, this.domValue);
     },
 
     getValue: function() {
-        return this.value;
+      return this.value;
     },
 
     setValue: function(value) {
-        Events.unlink(this.domValue, this.value);
-        this.value = value;
-        Events.link(value, this.domValue);
+      Events.unlink(this.domValue, this.value);
+      this.value = value;
+      Events.link(value, this.domValue);
     },
 
     destroy: function() {
-        Events.unlink(this.domValue, this.value);
+      Events.unlink(this.domValue, this.value);
     }
-   }
+  }
 });
 
 
 var ImageBooleanView = FOAM({
-    model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name:  'ImageBooleanView',
+  name:  'ImageBooleanView',
 
-   properties: [
-      {
-         name:  'name',
-         label: 'Name',
-         type:  'String',
-         defaultValue: 'field'
-      },
-      {
-        name: 'value',
-        postSet: function(newValue, oldValue) {
-           oldValue && oldValue.removeListener(this.update);
-           newValue.addListener(this.update);
-           this.update();
-        }
-      },
-      {
-        name: 'trueImage'
-      },
-      {
-        name: 'falseImage'
+  properties: [
+    {
+      name:  'name',
+      label: 'Name',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name: 'value',
+      postSet: function(newValue, oldValue) {
+        oldValue && oldValue.removeListener(this.update);
+        newValue.addListener(this.update);
+        this.update();
       }
-   ],
+    },
+    {
+      name: 'trueImage'
+    },
+    {
+      name: 'falseImage'
+    }
+  ],
 
-   methods: {
+  methods: {
     image: function() {
       return this.value.get() ? this.trueImage : this.falseImage;
     },
@@ -1294,13 +1294,13 @@ var ImageBooleanView = FOAM({
     },
 
     setValue: function(value) {
-       this.value = value;
+      this.value = value;
     },
 
     destroy: function() {
       this.value.removeListener(this.update);
     }
-   },
+  },
 
   listeners: [
     {
@@ -1323,79 +1323,79 @@ var ImageBooleanView = FOAM({
 
 var TextAreaView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name: 'TextAreaView',
-   label: 'Text-Area View',
+  name: 'TextAreaView',
+  label: 'Text-Area View',
 
-    properties: [
-      {
-         name:  'rows',
-         type:  'int',
-         view:  'IntFieldView',
-         defaultValue: 5
-      },
-      {
-         name:  'cols',
-         type:  'int',
-         view:  'IntFieldView',
-         defaultValue: 70
-      },
-      {
-         model_: 'BooleanProperty',
-         name:  'onKeyMode',
-         help: 'If true, value is updated on each keystroke.'
-      },
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
-           Events.unlink(this.domValue, oldValue);
+  properties: [
+    {
+      name:  'rows',
+      type:  'int',
+      view:  'IntFieldView',
+      defaultValue: 5
+    },
+    {
+      name:  'cols',
+      type:  'int',
+      view:  'IntFieldView',
+      defaultValue: 70
+    },
+    {
+      model_: 'BooleanProperty',
+      name:  'onKeyMode',
+      help: 'If true, value is updated on each keystroke.'
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+        Events.unlink(this.domValue, oldValue);
 
-           //Events.follow(this.model, this.domValue);
-           try {
-             // Events.link(newValue, this.domValue);
-             Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
-           } catch (x) {
-           }
-         }
+        //Events.follow(this.model, this.domValue);
+        try {
+          // Events.link(newValue, this.domValue);
+          Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
+        } catch (x) {
+        }
       }
-    ],
+    }
+  ],
 
-   methods: {
-     init: function(args) {
-       this.SUPER(args);
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
 
-       this.cols = (args && args.displayWidth)  || 70;
-       this.rows = (args && args.displayHeight) || 10;
-     },
+      this.cols = (args && args.displayWidth)  || 70;
+      this.rows = (args && args.displayHeight) || 10;
+    },
 
-     toHTML: function() {
-       return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-     },
+    toHTML: function() {
+      return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
+    },
 
-     setValue: function(value) {
-       this.value = value;
-     },
+    setValue: function(value) {
+      this.value = value;
+    },
 
-     initHTML: function() {
-       this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
+    initHTML: function() {
+      this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
 
-       // Events.follow(this.model, this.domValue);
-       // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
-       this.value = this.value;
-     },
+      // Events.follow(this.model, this.domValue);
+      // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
+      this.value = this.value;
+    },
 
-     destroy: function() {
-       Events.unlink(this.domValue, this.value);
-     },
+    destroy: function() {
+      Events.unlink(this.domValue, this.value);
+    },
 
-     textToValue: function(text) { return text; },
+    textToValue: function(text) { return text; },
 
-     valueToText: function(value) { return value; }
+    valueToText: function(value) { return value; }
   }
 
 });
@@ -1403,121 +1403,121 @@ var TextAreaView = FOAM({
 
 var FunctionView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'FunctionView',
+  name:  'FunctionView',
 
-   extendsModel: 'TextAreaView',
+  extendsModel: 'TextAreaView',
 
-   methods: {
-      init: function(args) {
-         this.SUPER(args);
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
 
-         this.cols = args.displayWidth  || 80;
-         this.rows = args.displayHeight || 8;
-         this.onKeyMode = true;
-         this.errorView = TextFieldView.create({mode:'read-only'});
-      },
+      this.cols = args.displayWidth  || 80;
+      this.rows = args.displayHeight || 8;
+      this.onKeyMode = true;
+      this.errorView = TextFieldView.create({mode:'read-only'});
+    },
 
-      initHTML: function() {
-        this.SUPER();
+    initHTML: function() {
+      this.SUPER();
 
-        this.errorView.initHTML();
-        this.errorView.$.style.color = 'red';
-        this.errorView.$.style.display = 'none';
-      },
+      this.errorView.initHTML();
+      this.errorView.$.style.color = 'red';
+      this.errorView.$.style.display = 'none';
+    },
 
-      toHTML: function() {
-         return this.errorView.toHTML() + ' ' + this.SUPER();
-      },
+    toHTML: function() {
+      return this.errorView.toHTML() + ' ' + this.SUPER();
+    },
 
-      setError: function(err) {
-       this.errorView.getValue().set(err || "");
-       this.errorView.$.style.display = err ? 'block' : 'none';
-      },
+    setError: function(err) {
+      this.errorView.getValue().set(err || "");
+      this.errorView.$.style.display = err ? 'block' : 'none';
+    },
 
-      textToValue: function(text) {
-         if ( ! text ) return null;
+    textToValue: function(text) {
+      if ( ! text ) return null;
 
-         try {
-            var ret = eval("(" + text + ")");
+      try {
+        var ret = eval("(" + text + ")");
 
-            this.setError(undefined);
+        this.setError(undefined);
 
-            return ret;
-         } catch (x) {
-            console.log("JS Error: ", x, text);
-            this.setError(x);
+        return ret;
+      } catch (x) {
+        console.log("JS Error: ", x, text);
+        this.setError(x);
 
-            return text;
-         }
-      },
-
-      valueToText: function(value) {
-         return value ? value.toString() : "";
+        return text;
       }
-   }
+    },
+
+    valueToText: function(value) {
+      return value ? value.toString() : "";
+    }
+  }
 });
 
 
 var JSView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'JSView',
+  name:  'JSView',
 
-   extendsModel: 'TextAreaView',
+  extendsModel: 'TextAreaView',
 
-    methods: {
-      init: function(args) {
-         this.SUPER();
+  methods: {
+    init: function(args) {
+      this.SUPER();
 
-         this.cols = (args && args.displayWidth)  || 100;
-         this.rows = (args && args.displayHeight) || 50;
-      },
+      this.cols = (args && args.displayWidth)  || 100;
+      this.rows = (args && args.displayHeight) || 50;
+    },
 
-      textToValue: function(text) {
-        try {
-          return JSONUtil.parse(text);
-        } catch (x) {
-          console.log("error");
-        }
-        return text;
-      },
-
-      valueToText: function(val) {
-        return JSONUtil.pretty.stringify(val);
+    textToValue: function(text) {
+      try {
+        return JSONUtil.parse(text);
+      } catch (x) {
+        console.log("error");
       }
+      return text;
+    },
+
+    valueToText: function(val) {
+      return JSONUtil.pretty.stringify(val);
     }
+  }
 });
 
 
 var XMLView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'XMLView',
-   label: 'XML View',
+  name:  'XMLView',
+  label: 'XML View',
 
-   extendsModel: 'TextAreaView',
+  extendsModel: 'TextAreaView',
 
-    methods: {
-      init: function(args) {
-         this.SUPER();
+  methods: {
+    init: function(args) {
+      this.SUPER();
 
-         this.cols = (args && args.displayWidth)  || 100;
-         this.rows = (args && args.displayHeight) || 50;
-      },
+      this.cols = (args && args.displayWidth)  || 100;
+      this.rows = (args && args.displayHeight) || 50;
+    },
 
-      textToValue: function(text) {
-        // TODO: parse XML
-        return text;
-      },
+    textToValue: function(text) {
+      // TODO: parse XML
+      return text;
+    },
 
-      valueToText: function(val) {
-        return XMLUtil.stringify(val);
-      }
+    valueToText: function(val) {
+      return XMLUtil.stringify(val);
     }
+  }
 });
 
 
@@ -1906,36 +1906,36 @@ var SummaryView = Model.create({
 
 /** A display-only on-line help view. **/
 var HelpView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name: 'HelpView',
+  name: 'HelpView',
 
-   properties: [
-      {
-         name:  'model',
-         type:  'Model'
-      }
-   ],
+  properties: [
+    {
+      name:  'model',
+      type:  'Model'
+    }
+  ],
 
-   methods: {
+  methods: {
 
-   // TODO: it would be better if it were initiated with
-   // .create({model: model}) instead of just .create(model)
-   // TODO:
-   // would be nice if I could mark properties as mandatory
-   // if they were required to be initialized
-   create: function(model) {
+    // TODO: it would be better if it were initiated with
+    // .create({model: model}) instead of just .create(model)
+    // TODO:
+    // would be nice if I could mark properties as mandatory
+    // if they were required to be initialized
+    create: function(model) {
       var obj = AbstractView.create.call(this);
 
       obj.model = model;
 
       return obj;
-   },
+    },
 
-   // TODO: make this a template?
-   toHTML: function() {
+    // TODO: make this a template?
+    toHTML: function() {
       var model = this.model;
       var out   = [];
 
@@ -1946,28 +1946,28 @@ var HelpView = FOAM({
       out.push('</div>');
 
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
-         var prop = model.properties[i];
+        var prop = model.properties[i];
 
-         if ( prop.hidden ) continue;
+        if ( prop.hidden ) continue;
 
-         out.push('<div class="label">');
-         out.push(prop.label);
-         out.push('</div><div class="text">');
-         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
-            var subModel = GLOBAL[prop.subType];
-            var subView  = HelpView.create(subModel);
-            if ( subModel != model )
-               out.push(subView.toHTML());
-         } else {
-            out.push(prop.help);
-         }
-         out.push('</div>');
+        out.push('<div class="label">');
+        out.push(prop.label);
+        out.push('</div><div class="text">');
+        if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
+          var subModel = GLOBAL[prop.subType];
+          var subView  = HelpView.create(subModel);
+          if ( subModel != model )
+            out.push(subView.toHTML());
+        } else {
+          out.push(prop.help);
+        }
+        out.push('</div>');
       }
 
       out.push('</div>');
 
       return out.join('');
-   }
+    }
 
   }
 
@@ -1975,163 +1975,172 @@ var HelpView = FOAM({
 
 
 var TableView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name: 'TableView',
-   label: 'Table View',
+  name: 'TableView',
+  label: 'Table View',
 
-   properties: [
-      {
-         name:  'model',
-         type:  'Model'
-      },
-      {
-        model_: StringArrayProperty,
-        name:  'properties',
-        defaultValueFn: function() {
-          return this.model.tableProperties;
+  properties: [
+    {
+      name:  'model',
+      type:  'Model'
+    },
+    {
+      model_: StringArrayProperty,
+      name:  'properties',
+      defaultValueFn: function() {
+        return this.model.tableProperties;
+      }
+    },
+    {
+      name:  'hardSelection',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name:  'selection',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name:  'children',
+      type:  'Array[View]',
+      valueFactory: function() { return []; }
+    },
+    {
+      name:  'sortOrder',
+      type:  'Comparator',
+      defaultValue: undefined
+    },
+    {
+      name:  'dao',
+      label: 'DAO',
+      type: 'DAO',
+      required: true,
+      hidden: true,
+      postSet: function(val, oldValue) {
+        if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
+        this.listener && val && val.listen(this.listener);
+        this.repaint_ && this.repaint_();
+      }
+    },
+    {
+      name: 'rows',
+      type:  'Integer',
+      defaultValue: 30,
+      postSet: function(val, oldValue) {
+        this.repaint();
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'height'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'editColumnsEnabled',
+      defaultValue: false
+    },
+    {
+      name: 'memento',
+      postSet: function(m, oldM) {
+        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+
+console.log('TABLE VIEW Update Memento: ', m);
+        if ( m.sort ) {
+          var ps = m.sort.split(' ');
+          for ( var i = 0 ; i < ps.length ; i++ ) {
+            var p = ps[i];
+            if ( p.charAt('0') == '-' ) {
+              ps[i] = DESC(this.model.getProperty(p.substring(1)));
+            } else {
+              ps[i] = this.model.getProperty(p);
+            }
+          }
+          if ( ps.length ) {
+            if ( ps.length == 1 ) {
+              this.sortOrder = ps[0];
+            } else {
+              this.sortOrder = CompoundComparator.apply(null, ps);
+            }
+          }
         }
-      },
-      {
-         name:  'hardSelection',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
-      },
-      {
-         name:  'selection',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
-      },
-      {
-         name:  'children',
-         type:  'Array[View]',
-         valueFactory: function() { return []; }
-      },
-      {
-         name:  'sortOrder',
-         type:  'Comparator',
-         defaultValue: undefined
-      },
-      {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-         required: true,
-         hidden: true,
-         postSet: function(val, oldValue) {
-           if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
-           this.listener && val && val.listen(this.listener);
-           this.repaint_ && this.repaint_();
-         }
-      },
-      {
-        name: 'rows',
-        type:  'Integer',
-        defaultValue: 30,
-        postSet: function(val, oldValue) {
-           this.repaint();
+
+        if ( m.colspec ) {
+          this.properties = m.colspec.split(' ');
         }
-      },
-      {
-        model_: 'IntegerProperty',
-        name: 'height'
-      },
-      {
-         model_: 'BooleanProperty',
-         name: 'editColumnsEnabled',
-         defaultValue: false
-      },
-     {
-       name: 'memento',
-       setter: function(m) {
-         if ( m.sort ) {
-           var ps = m.sort.split(' ');
-           for ( var i = 0 ; i < ps.length ; i++ ) {
-             var p = ps[i];
-             if ( p.charAt('0') == '-' ) {
-               ps[i] = DESC(this.model.getProperty(p.substring(1)));
-             } else {
-               ps[i] = this.model.getProperty(p);
-             }
-           }
-           if ( ps.length ) {
-             if ( ps.length == 1 ) {
-               this.sortOrder = ps[0];
-             } else {
-               this.sortOrder = CompoundComparator.apply(null, ps);
-             }
-           }
-         }
+      }
+    }
+  ],
 
-         if ( m.colspec ) {
-           this.properties = m.colspec.split(' ');
-         }
-       },
-       getter: function() {
-         var m = {};
+  listeners: [
+    {
+      model_: 'Method',
 
-         if ( this.sortOrder ) m.sort = this.sortOrder.toMQL();
+      name: 'onEditColumns',
+      code: function(evt) {
+        var v = EditColumnsView.create({
+          model:               this.model,
+          properties:          this.properties,
+          availableProperties: this.model.properties
+        });
 
-         if ( this.hasOwnProperty('properties') ) {
-           m.colspec = this.properties.join(' ');
-         }
+        v.addPropertyListener('properties', function() {
+          v.close();
+          this.properties = v.properties;
+          v.removePropertyListener('properties', arguments.callee);
+          this.repaint();
+        }.bind(this));
 
-         return m;
-       }
-     }
-   ],
+        this.$.insertAdjacentHTML('beforebegin', v.toHTML());
+        v.initHTML();
+      }
+    },
+    {
+      model_: 'Method',
 
-   listeners: [
-     {
-       model_: 'Method',
+      name: 'updateMemento',
+      code: function() {
+console.log('TableView.updateMemento');
+       var m = {};
+        
+        if ( this.sortOrder ) m.sort = this.sortOrder.toMQL();
+        
+        if ( this.hasOwnProperty('properties') ) {
+          m.colspec = this.properties.join(' ');
+        }
+        
+        this.memento = m;
+      }
+    }
+  ],
 
-       name: 'onEditColumns',
-       code: function(evt) {
-         var v = EditColumnsView.create({
-           model:               this.model,
-           properties:          this.properties,
-           availableProperties: this.model.properties
-         });
+  methods: {
 
-         v.addPropertyListener('properties', function() {
-           v.close();
-           this.properties = v.properties;
-           v.removePropertyListener('properties', arguments.callee);
-           this.repaint();
-         }.bind(this));
+    layout: function() {
+      var parent;
+      try {
+        parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
+      } catch (x) {
+        return;
+      }
 
-         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
-         v.initHTML();
-       }
-     }
-   ],
+      if ( ! parent ) return;
 
-   methods: {
+      var top = 47;
+      var height = 20;
+      var rows = $$("tr-" + this.getID());
 
-     layout: function() {
-       var parent;
-       try {
-         parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
-       } catch (x) {
-         return;
-       }
-
-       if ( ! parent ) return;
-
-       var top = 47;
-       var height = 20;
-       var rows = $$("tr-" + this.getID());
-
-       // TODO: investigate how this is called on startup, it seems suspicious
-       if ( rows.length > 1 ) {
-         var row = rows[1];
-         var style = window.getComputedStyle(row);
-         // If the row is selected its height is less, so if we select two rows
-         // we're sure to get one that isn't selected.
-         height = Math.max(row.clientHeight, rows[0].clientHeight)+1;
-         top = rows[0].offsetTop + rows[0].offsetParent.offsetTop;
+      // TODO: investigate how this is called on startup, it seems suspicious
+      if ( rows.length > 1 ) {
+        var row = rows[1];
+        var style = window.getComputedStyle(row);
+        // If the row is selected its height is less, so if we select two rows
+        // we're sure to get one that isn't selected.
+        height = Math.max(row.clientHeight, rows[0].clientHeight)+1;
+        top = rows[0].offsetTop + rows[0].offsetParent.offsetTop;
       }
 
       this.rows = Math.floor((toNum(parent.height) - top) / height);
@@ -2141,20 +2150,20 @@ var TableView = FOAM({
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
 
-     init: function() {
-        this.SUPER();
+    init: function() {
+      this.SUPER();
 
-       var self = this;
-       this.repaint_ = EventService.animate(this.repaint.bind(this));
+      var self = this;
+      this.repaint_ = EventService.animate(this.repaint.bind(this));
 
-       this.listener = {
-         put: self.repaint_,
-         remove: self.repaint_
-       };
-     },
+      this.listener = {
+        put: self.repaint_,
+        remove: self.repaint_
+      };
+    },
 
-   // TODO: it would be better if it were initiated with
-   // .create({model: model}) instead of just .create(model)
+    // TODO: it would be better if it were initiated with
+    // .create({model: model}) instead of just .create(model)
     toHTML: function() {
       return '<span id="' + this.getID() + '">' +
         this.tableToHTML() +
@@ -2162,103 +2171,105 @@ var TableView = FOAM({
     },
 
     tableToHTML: function() {
-        var model = this.model;
+      var model = this.model;
 
-        if ( this.callbacks_ ) {
-// console.log('Warning: TableView.tableToHTML called twice without initHTML');
-          delete this['callbacks_'];
-          this.children = [];
-        }
+      if ( this.callbacks_ ) {
+        // console.log('Warning: TableView.tableToHTML called twice without initHTML');
+        delete this['callbacks_'];
+        this.children = [];
+      }
 
-        var str = [];
-        var props = [];
+      var str = [];
+      var props = [];
 
-        str.push('<table class="foamTable ' + model.name + 'Table">');
+      str.push('<table class="foamTable ' + model.name + 'Table">');
 
-        //str += '<!--<caption>' + model.plural + '</caption>';
-        str.push('<thead><tr>');
-        for ( var i = 0 ; i < this.properties.length ; i++ ) {
-            var key  = this.properties[i];
-            var prop = model.getProperty(key);
+      //str += '<!--<caption>' + model.plural + '</caption>';
+      str.push('<thead><tr>');
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var key  = this.properties[i];
+        var prop = model.getProperty(key);
 
-            if ( ! prop ) continue;
+        if ( ! prop ) continue;
 
-            if ( prop.hidden ) continue;
+        if ( prop.hidden ) continue;
 
-            str.push('<th scope=col ');
-            str.push('id=' +
-                this.on(
-                  'click',
-                  (function(table, prop) { return function() {
-                    if ( table.sortOrder === prop ) {
+        str.push('<th scope=col ');
+        str.push('id=' +
+                 this.on(
+                   'click',
+                   (function(table, prop) { return function() {
+                     if ( table.sortOrder === prop ) {
                        table.sortOrder = DESC(prop);
-                    } else {
+                     } else {
                        table.sortOrder = prop;
-                    }
-                    table.repaint();
-                  };})(this, prop)));
-            if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
+                     }
+                     table.repaint();
+                   };})(this, prop)));
+        if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
 
-            var arrow = '';
+        var arrow = '';
 
-            if ( this.sortOrder === prop ) {
-               arrow = ' <span class="indicator">&#9650;</span>';
-            } else if ( this.sortOrder && DescExpr.isInstance(this.sortOrder) && this.sortOrder.arg1 === prop ) {
-               arrow = ' <span class="indicator">&#9660;</span>';
-            }
-
-            str.push('>' + prop.tableLabel + arrow + '</th>');
-
-            props.push(prop);
+        if ( this.sortOrder === prop ) {
+          arrow = ' <span class="indicator">&#9650;</span>';
+        } else if ( this.sortOrder && DescExpr.isInstance(this.sortOrder) && this.sortOrder.arg1 === prop ) {
+          arrow = ' <span class="indicator">&#9660;</span>';
         }
+
+        str.push('>' + prop.tableLabel + arrow + '</th>');
+
+        props.push(prop);
+      }
       if ( this.editColumnsEnabled ) {
         str.push('<th width=15 id="' + this.on('click', this.onEditColumns) + '">...</th>');
       }
-        str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
-        if ( this.objs )
+      str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
+      if ( this.objs )
         for ( var i = 0 ; i < this.objs.length; i++ ) {
-            var obj = this.objs[i];
-            var className = "tr-" + this.getID();
+          var obj = this.objs[i];
+          var className = "tr-" + this.getID();
 
-            if ( this.selection.get() && obj.id == this.selection.get().id ) {
-               this.selection.set(obj);
-               className += " rowSelected";
+          if ( this.selection.get() && obj.id == this.selection.get().id ) {
+            this.selection.set(obj);
+            className += " rowSelected";
+          }
+
+          str.push('<tr class="' + className + '">');
+
+          for ( var j = 0 ; j < props.length ; j++ ) {
+            var prop = props[j];
+
+            if ( j == props.length - 1 && this.editColumnsEnabled ) {
+              str.push('<td colspan=2 class="' + prop.name + '">');
+            } else {
+              str.push('<td class="' + prop.name + '">');
             }
-
-            str.push('<tr class="' + className + '">');
-
-            for ( var j = 0 ; j < props.length ; j++ ) {
-                var prop = props[j];
-
-              if ( j == props.length - 1 && this.editColumnsEnabled ) {
-                str.push('<td colspan=2 class="' + prop.name + '">');
-              } else {
-                str.push('<td class="' + prop.name + '">');
-              }
-                var val = obj[prop.name];
-                if ( prop.tableFormatter ) {
-                  str.push(prop.tableFormatter(val, obj, this));
-                } else {
-                  str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
-                }
-                str.push('</td>');
+            var val = obj[prop.name];
+            if ( prop.tableFormatter ) {
+              str.push(prop.tableFormatter(val, obj, this));
+            } else {
+              str.push(( val == null ) ? '&nbsp;' : this.strToHTML(val));
             }
+            str.push('</td>');
+          }
 
-            str.push('</tr>');
+          str.push('</tr>');
         }
 
-        str.push('</tbody></table>');
+      str.push('</tbody></table>');
 
-        return str.join('');
+      return str.join('');
     },
 
     setValue: function(value) {
-       this.dao = value.get();
-       return this;
+      this.dao = value.get();
+      return this;
     },
 
     initHTML: function() {
       this.repaint();
+
+      this.updateMemento();
     },
 
     repaint: function() {
@@ -2267,15 +2278,17 @@ var TableView = FOAM({
       var objs = [];
       var selection = this.selection && this.selection.get();
       (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
-         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
-            self.objs = objs;
-            if ( self.$ ) {
-               self.$.innerHTML = self.tableToHTML();
-               self.initHTML_();
-               self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
-            }
-            // self.selection && self.selection.set(selection);
-         });
+        put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
+          self.objs = objs;
+          if ( self.$ ) {
+            self.$.innerHTML = self.tableToHTML();
+            self.initHTML_();
+            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
+          }
+          // self.selection && self.selection.set(selection);
+        });
+      
+      this.updateMemento();
     },
 
     initHTML_: function() {
@@ -2302,17 +2315,17 @@ var TableView = FOAM({
           value.set(self.hardSelection.get());
         }; }(this.selection, this.objs[i]);
         e.onclick = function(value, obj) { return function(evt) {
-           self.hardSelection.set(obj);
-           value.set(obj);
-           delete value['prevValue'];
-           var siblings = evt.srcElement.parentNode.parentNode.childNodes;
-           for ( var i = 0 ; i < siblings.length ; i++ ) {
-              siblings[i].classList.remove("rowSelected");
-           }
-           evt.srcElement.parentNode.classList.add('rowSelected');
+          self.hardSelection.set(obj);
+          value.set(obj);
+          delete value['prevValue'];
+          var siblings = evt.srcElement.parentNode.parentNode.childNodes;
+          for ( var i = 0 ; i < siblings.length ; i++ ) {
+            siblings[i].classList.remove("rowSelected");
+          }
+          evt.srcElement.parentNode.classList.add('rowSelected');
         }; }(this.selection, this.objs[i]);
         e.ondblclick = function(value, obj) { return function(evt) {
-           self.publish(self.DOUBLE_CLICK, obj, value);
+          self.publish(self.DOUBLE_CLICK, obj, value);
         }; }(this.selection, this.objs[i]);
       }
 
@@ -2350,22 +2363,22 @@ var EditColumnsView = FOAM({
   ],
 
   listeners: [
-     {
-       model_: 'Method',
+    {
+      model_: 'Method',
 
-       name: 'onAddColumn',
-       code: function(prop) {
-         this.properties = this.properties.concat([prop]);
-       }
-     },
-     {
-       model_: 'Method',
+      name: 'onAddColumn',
+      code: function(prop) {
+        this.properties = this.properties.concat([prop]);
+      }
+    },
+    {
+      model_: 'Method',
 
-       name: 'onRemoveColumn',
-       code: function(prop) {
-         this.properties = this.properties.removeF({f: function(o) { return prop == o; }});
-       }
-     }
+      name: 'onRemoveColumn',
+      code: function(prop) {
+        this.properties = this.properties.removeF({f: function(o) { return prop == o; }});
+      }
+    }
 
   ],
 
@@ -2502,165 +2515,165 @@ var ActionLink = Model.create({
 // TODO: ActionBorder should use this.
 var ToolbarView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'ToolbarView',
-   label: 'Toolbar',
+  name:  'ToolbarView',
+  label: 'Toolbar',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   properties: [
-      {
-         model_: 'BooleanProperty',
-         name: 'horizontal',
-         defaultValue: true
-      },
-      {
-         model_: 'BooleanProperty',
-         name: 'icons',
-         defaultValueFn: function() {
-            return this.horizontal;
-         }
-      },
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
-         }
-      },
-      {
-         name: 'left'
-      },
-      {
-         name: 'top'
-      },
-      {
-         name: 'bottom'
-      },
-      {
-         name: 'right'
-      },
-      {
-         name: 'document'
-      },
-      {
-        model_: 'BooleanPropery',
-        name: 'openedAsMenu',
-        defaultValue: false
+  properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'horizontal',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'icons',
+      defaultValueFn: function() {
+        return this.horizontal;
       }
-   ],
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(newValue, oldValue) {
+      }
+    },
+    {
+      name: 'left'
+    },
+    {
+      name: 'top'
+    },
+    {
+      name: 'bottom'
+    },
+    {
+      name: 'right'
+    },
+    {
+      name: 'document'
+    },
+    {
+      model_: 'BooleanPropery',
+      name: 'openedAsMenu',
+      defaultValue: false
+    }
+  ],
 
-   methods: {
-      preButton: function(button) { return ' '; },
-      postButton: function() { return this.horizontal ? ' ' : '<br>'; },
+  methods: {
+    preButton: function(button) { return ' '; },
+    postButton: function() { return this.horizontal ? ' ' : '<br>'; },
 
-      openAsMenu: function() {
-         // TODO
-         var div = this.document.createElement('div');
-         this.openedAsMenu = true;
+    openAsMenu: function() {
+      // TODO
+      var div = this.document.createElement('div');
+      this.openedAsMenu = true;
 
-         div.id = this.nextID();
-         div.className = 'ActionMenuPopup';
-         this.top ? div.style.top = this.top : div.style.bottom = this.bottom;
-         this.left ? div.style.left = this.left : div.style.right = this.right;
-         div.innerHTML = this.toHTML(true);
+      div.id = this.nextID();
+      div.className = 'ActionMenuPopup';
+      this.top ? div.style.top = this.top : div.style.bottom = this.bottom;
+      this.left ? div.style.left = this.left : div.style.right = this.right;
+      div.innerHTML = this.toHTML(true);
 
-         var self = this;
-         // Close window when clicked
-         div.onclick = function() {
-            self.close();
-         };
+      var self = this;
+      // Close window when clicked
+      div.onclick = function() {
+        self.close();
+      };
 
-         div.onmouseout = function(e) {
-           if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
-              self.close();
-           }
-        };
-
-        this.document.body.appendChild(div);
-        this.initHTML();
-      },
-
-      close: function() {
-        if ( ! this.openedAsMenu ) {
-          return this.SUPER();
+      div.onmouseout = function(e) {
+        if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
+          self.close();
         }
+      };
 
-        this.openedAsMenu = false;
-        this.$.parentNode.remove();
-        this.destroy();
-        this.publish('closed');
-      },
+      this.document.body.appendChild(div);
+      this.initHTML();
+    },
 
-      toHTML: function(opt_menuMode) {
-         var str = '';
-         var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
+    close: function() {
+      if ( ! this.openedAsMenu ) {
+        return this.SUPER();
+      }
 
-         str += '<div id="' + this.getID() + '" class="' + cls + '">';
+      this.openedAsMenu = false;
+      this.$.parentNode.remove();
+      this.destroy();
+      this.publish('closed');
+    },
 
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-           str += this.preButton(this.children[i]) +
-             this.children[i].toHTML() +
-             (MenuSeparator.isInstance(this.children[i]) ?
-               '' : this.postButton(this.children[i]));
-         }
+    toHTML: function(opt_menuMode) {
+      var str = '';
+      var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
 
-         str += '</div>';
+      str += '<div id="' + this.getID() + '" class="' + cls + '">';
 
-         return str;
-      },
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        str += this.preButton(this.children[i]) +
+          this.children[i].toHTML() +
+          (MenuSeparator.isInstance(this.children[i]) ?
+           '' : this.postButton(this.children[i]));
+      }
 
-      initHTML: function() {
-         this.SUPER();
+      str += '</div>';
 
-         // this.value.addListener(function() { console.log('****ActionToolBar'); });
-         // When the focus is in the toolbar, left/right arrows should move the
-         // focus in the direction.
-         this.addShortcut('Right', function(e) {
-           var i = 0;
-           for (; i < this.children.length; ++i) {
-             if (e.target == this.children[i].$)
-               break;
-           }
-           i = (i + 1) % this.children.length;
-           this.children[i].$.focus();
-         }.bind(this), this.getID());
-         this.addShortcut('Left', function(e) {
-           var i = 0;
-           for (; i < this.children.length; ++i) {
-             if (e.target == this.children[i].$)
-               break;
-           }
-           i = (i + this.children.length - 1) % this.children.length;
-           this.children[i].$.focus();
-         }.bind(this), this.getID());
-      },
+      return str;
+    },
 
-     addAction: function(a) {
-       var view = ActionButton.create({ action: a, value: this.value });
-       if ( a.children.length > 0 ) {
-         var self = this;
-         view.action = a.clone();
-         view.action.action = function() {
-           var toolbar = ToolbarView.create({
-              value: self.value,
-              document: self.document,
-              left: view.$.offsetLeft,
-              top: view.$.offsetTop
-           });
-           toolbar.addActions(a.children);
-           toolbar.openAsMenu(view);
-         };
-       }
-       this.addChild(view);
-     },
-     addActions: function(actions) {
-       actions.forEach(this.addAction.bind(this));
-     },
-     addSeparator: function() {
-       this.addChild(MenuSeparator.create());
-     }
+    initHTML: function() {
+      this.SUPER();
+
+      // this.value.addListener(function() { console.log('****ActionToolBar'); });
+      // When the focus is in the toolbar, left/right arrows should move the
+      // focus in the direction.
+      this.addShortcut('Right', function(e) {
+        var i = 0;
+        for (; i < this.children.length; ++i) {
+          if (e.target == this.children[i].$)
+            break;
+        }
+        i = (i + 1) % this.children.length;
+        this.children[i].$.focus();
+      }.bind(this), this.getID());
+      this.addShortcut('Left', function(e) {
+        var i = 0;
+        for (; i < this.children.length; ++i) {
+          if (e.target == this.children[i].$)
+            break;
+        }
+        i = (i + this.children.length - 1) % this.children.length;
+        this.children[i].$.focus();
+      }.bind(this), this.getID());
+    },
+
+    addAction: function(a) {
+      var view = ActionButton.create({ action: a, value: this.value });
+      if ( a.children.length > 0 ) {
+        var self = this;
+        view.action = a.clone();
+        view.action.action = function() {
+          var toolbar = ToolbarView.create({
+            value: self.value,
+            document: self.document,
+            left: view.$.offsetLeft,
+            top: view.$.offsetTop
+          });
+          toolbar.addActions(a.children);
+          toolbar.openAsMenu(view);
+        };
+      }
+      this.addChild(view);
+    },
+    addActions: function(actions) {
+      actions.forEach(this.addAction.bind(this));
+    },
+    addSeparator: function() {
+      this.addChild(MenuSeparator.create());
+    }
   }
 });
 
@@ -2677,576 +2690,594 @@ var ToolbarView = FOAM({
    listen for changes to Model and change buttons displayed and enabled
    use isAvailable and isEnabled
    Buttons should be own View with enabled = true/false and own listeners, don't use <button> directly
- */
+*/
 var ActionBorder = {
 
-    /** @arg actions either a model or an array of actions **/
-    create: function(actions, delegate) {
-      var obj = {
-        __proto__: delegate,
-        TYPE:      'ActionBorder',
-        actions:   actions.actions || actions,
-        // This is a bit hacking, but it prevents
-        // both this wrapper and the delegate from
-        // having separate element ID's
-        // try removing in future
-        getID: function() {
-          return this.__proto__.getID();
-        },
-        toHTML: function() {
-          var model = this.model;
-          var str   = "";
+  /** @arg actions either a model or an array of actions **/
+  create: function(actions, delegate) {
+    var obj = {
+      __proto__: delegate,
+      TYPE:      'ActionBorder',
+      actions:   actions.actions || actions,
+      // This is a bit hacking, but it prevents
+      // both this wrapper and the delegate from
+      // having separate element ID's
+      // try removing in future
+      getID: function() {
+        return this.__proto__.getID();
+      },
+      toHTML: function() {
+        var model = this.model;
+        var str   = "";
 
-//          str += '<table class="actionBorder"><tr><td>';
-          str += this.__proto__.toHTML.call(this);
-//          str += '</td></tr><tr><td class="actionBorderActions">';
-          str += '<div class="actionToolbar">';
+        //          str += '<table class="actionBorder"><tr><td>';
+        str += this.__proto__.toHTML.call(this);
+        //          str += '</td></tr><tr><td class="actionBorderActions">';
+        str += '<div class="actionToolbar">';
 
-          for ( var i = 0 ; i < this.actions.length ; i++ ) {
-            var action = this.actions[i];
-            var button = ActionButton.create({action: action, value: this.getValue()});
-            str += " " + button.toHTML() + " ";
+        for ( var i = 0 ; i < this.actions.length ; i++ ) {
+          var action = this.actions[i];
+          var button = ActionButton.create({action: action, value: this.getValue()});
+          str += " " + button.toHTML() + " ";
 
-            this.addChild(button);
-          }
-
-          str += '</div>';
-//          str += '</td></tr></table>';
-
-          return str;
+          this.addChild(button);
         }
-      };
 
-      // TODO: document why this is needed or remove
-      obj.value && obj.value.set(obj.value.get());
+        str += '</div>';
+        //          str += '</td></tr></table>';
 
-      // if delegate doesn't have a getValue method, then add one
-      if ( ! obj.getValue ) {
-        var dm = SimpleValue.create(obj);
-        obj.getValue = function() {
-          return dm;
-        };
+        return str;
       }
+    };
 
-      return obj;
+    // TODO: document why this is needed or remove
+    obj.value && obj.value.set(obj.value.get());
+
+    // if delegate doesn't have a getValue method, then add one
+    if ( ! obj.getValue ) {
+      var dm = SimpleValue.create(obj);
+      obj.getValue = function() {
+        return dm;
+      };
     }
+
+    return obj;
+  }
 };
 
 
 var ProgressView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name:  'ProgressView',
+  name:  'ProgressView',
 
-   properties: [
-      {
-         name:  'value',
-         type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
-      }
-   ],
+  properties: [
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); }
+    }
+  ],
 
-   methods: {
+  methods: {
 
     toHTML: function() {
-        return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
+      return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
     },
 
     setValue: function(value) {
-        this.value.removeListener(this.listener_);
+      this.value.removeListener(this.listener_);
 
-        this.value = value;
-        value.addListener(this.listener_);
+      this.value = value;
+      value.addListener(this.listener_);
     },
 
     updateValue: function() {
-        var e = this.$;
+      var e = this.$;
 
-        e.value = parseInt(this.value.get());
+      e.value = parseInt(this.value.get());
     },
 
     initHTML: function() {
-        var e = this.$;
+      var e = this.$;
 
-        // TODO: move to modelled listener
-        this.listener_ = this.updateValue.bind(this);
+      // TODO: move to modelled listener
+      this.listener_ = this.updateValue.bind(this);
 
-        this.value.addListener(this.listener_);
+      this.value.addListener(this.listener_);
     },
 
     destroy: function() {
-        this.value.removeListener(this.listener_);
+      this.value.removeListener(this.listener_);
     }
   }
 });
 
 
 var ArrayView = {
-   create: function(prop) {
-      var view = DAOControllerView.create(GLOBAL[prop.subType]);
-      return view;
-   }
+  create: function(prop) {
+    var view = DAOControllerView.create(GLOBAL[prop.subType]);
+    return view;
+  }
 };
 
 
 var ModelAlternateView = FOAM({
-   model_: 'Model',
-   name: 'ModelAlternateView',
-   extendsModel: 'AlternateView',
-   methods: {
-      init: function() {
-         // TODO: super.init
-         this.views = FOAM([
-                     {
-                        model_: 'ViewChoice',
-                        label:  'GUI',
-                        view:   'DetailView'
-                     },
-                     {
-                        model_: 'ViewChoice',
-                        label:  'JS',
-                        view:   'JSView'
-                     },
-                     {
-                        model_: 'ViewChoice',
-                        label:  'XML',
-                        view:   'XMLView'
-                     },
-                     {
-                        model_: 'ViewChoice',
-                        label:  'UML',
-                        view:   'XMLView'
-                     },
-                     {
-                        model_: 'ViewChoice',
-                        label:  'Split',
-                        view:   'SplitView'
-                     }
-                  ]
-               );
-      }
-   }
+  model_: 'Model',
+  name: 'ModelAlternateView',
+  extendsModel: 'AlternateView',
+  methods: {
+    init: function() {
+      // TODO: super.init
+      this.views = FOAM([
+        {
+          model_: 'ViewChoice',
+          label:  'GUI',
+          view:   'DetailView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'JS',
+          view:   'JSView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'XML',
+          view:   'XMLView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'UML',
+          view:   'XMLView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'Split',
+          view:   'SplitView'
+        }
+      ]
+                       );
+    }
+  }
 });
 
 
 var GridView = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name: 'GridView',
+  name: 'GridView',
 
-   properties: [
-      {
-         name:  'row',
-         type: 'ChoiceView',
-         valueFactory: function() { return ChoiceView.create(); }
-      },
-      {
-         name:  'col',
-         label: 'column',
-         type: 'ChoiceView',
-         valueFactory: function() { return ChoiceView.create(); }
-      },
-      {
-         name:  'acc',
-         label: 'accumulator',
-         type: 'ChoiceView',
-         valueFactory: function() { return ChoiceView.create(); }
-      },
-      {
-         name:  'accChoices',
-         label: 'Accumulator Choices',
-         type: 'Array',
-         valueFactory: function() { return []; }
-      },
-      {
-         name:  'model',
-         type: 'Model'
-      },
-      {
-        name:  'dao',
-        label: 'DAO',
-        type: 'DAO',
-        postSet: function() {
-          this.updateHTML();
+  properties: [
+    {
+      name:  'row',
+      type: 'ChoiceView',
+      valueFactory: function() { return ChoiceView.create(); }
+    },
+    {
+      name:  'col',
+      label: 'column',
+      type: 'ChoiceView',
+      valueFactory: function() { return ChoiceView.create(); }
+    },
+    {
+      name:  'acc',
+      label: 'accumulator',
+      type: 'ChoiceView',
+      valueFactory: function() { return ChoiceView.create(); }
+    },
+    {
+      name:  'accChoices',
+      label: 'Accumulator Choices',
+      type: 'Array',
+      valueFactory: function() { return []; }
+    },
+    {
+      name:  'model',
+      type: 'Model'
+    },
+    {
+      name:  'dao',
+      label: 'DAO',
+      type: 'DAO',
+      postSet: function() {
+        this.updateHTML();
+      }
+    },
+    {
+      name:  'grid',
+      type:  'GridByExpr',
+      valueFactory: function() { return GridByExpr.create(); }
+    },
+    {
+      name: 'memento',
+      postSet: function(m, oldM) {
+        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+        console.log('Grid VIEW Update Memento: ', m, oldM);
+        if ( m.x ) {
+          var c = this.col.findChoiceIC(m.x);
+          if ( c ) this.col.choice = c;
         }
-      },
-      {
-         name:  'grid',
-         type:  'GridByExpr',
-         valueFactory: function() { return GridByExpr.create(); }
-      },
-     {
-        name: 'memento',
-        setter: function(m) {
-          if ( m.x ) {
-            var c = this.col.findChoiceIC(m.x);
-            if ( c ) this.col.choice = c;
-          }
-          if ( m.y ) {
-            var c = this.row.findChoiceIC(m.y);
-            if ( c ) this.row.choice = c;
-          }
-          if ( m.cells ) {
-            var c = this.acc.findChoiceIC(m.cells);
-            if ( c ) this.acc.choice = c;
-          }
-        },
-        getter: function() {
-          return {
-            x: this.col.value.get().name,
-            y: this.row.value.get().name,
-            cells: this.acc.choice[1].toLowerCase()
-          };
+        if ( m.y ) {
+          var c = this.row.findChoiceIC(m.y);
+          if ( c ) this.row.choice = c;
+        }
+        if ( m.cells ) {
+          var c = this.acc.findChoiceIC(m.cells);
+          if ( c ) this.acc.choice = c;
         }
       }
+    }
+  ],
 
-   ],
+  listeners: [
+    {
+      model_: 'Method',
+      
+      name: 'updateMemento',
+      code: function() {
+        console.log('GRID VIEW updating memento...');
+        this.memento = {
+          x: this.col.value.get().name,
+          y: this.row.value.get().name,
+          cells: this.acc.choice[1].toLowerCase()
+        };
+      }
+    }
+  ],
 
-   // TODO: need an 'onChange:' property to handle both value
-   // changing and values in the value changing
+  // TODO: need an 'onChange:' property to handle both value
+  // changing and values in the value changing
 
-   // TODO: listeners should be able to mark themselves as mergable
-   // or updatable on 'animate', ie. specify decorators
-   methods: {
-     updateHTML: function() {
-       if ( ! this.$ ) return;
+  // TODO: listeners should be able to mark themselves as mergable
+  // or updatable on 'animate', ie. specify decorators
+  methods: {
+    updateHTML: function() {
+      if ( ! this.$ ) return;
 
-       var self = this;
-       this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
-       this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
-       this.grid.acc   = this.acc.value.get() || this.grid.acc;
+      var self = this;
+      this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
+      this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
+      this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
-       this.dao.select(this.grid.clone())(function(g) {
-         self.$.innerHTML = g.toHTML();
-         g.initHTML();
-       });
-     },
+      this.dao.select(this.grid.clone())(function(g) {
+        self.$.innerHTML = g.toHTML();
+        g.initHTML();
+        self.updateMemento();
+      });
+    },
 
-     initHTML: function() {
-       var choices = [];
-       this.model.properties.orderBy(Property.LABEL).select({put:function(p) {
-         choices.push([p, p.label]);
-       }});
-       this.row.choices = choices;
-       this.col.choices = choices;
+    initHTML: function() {
+      var choices = [];
+      this.model.properties.orderBy(Property.LABEL).select({put:function(p) {
+        choices.push([p, p.label]);
+      }});
+      this.row.choices = choices;
+      this.col.choices = choices;
 
-       this.acc.choices = this.accChoices;
+      this.acc.choices = this.accChoices;
 
-       this.row.initHTML();
-       this.col.initHTML();
-       this.acc.initHTML();
+      this.row.initHTML();
+      this.col.initHTML();
+      this.acc.initHTML();
 
-       this.SUPER();
-       this.repaint_ = EventService.animate(this.updateHTML.bind(this));
+      this.SUPER();
+      this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
-       /*
-       this.grid.addListener(function() {
-         this.repaint_();
-       }.bind(this));
-       */
+      /*
+        this.grid.addListener(function() {
+        this.repaint_();
+        }.bind(this));
+      */
 
-       this.row.value.addListener(this.repaint_);
-       this.col.value.addListener(this.repaint_);
-       this.acc.value.addListener(this.repaint_);
+      this.row.value.addListener(this.repaint_);
+      this.col.value.addListener(this.repaint_);
+      this.acc.value.addListener(this.repaint_);
 
-       this.updateHTML();
-     }
-   },
+      this.updateHTML();
+    }
+  },
 
-   templates:[
-     {
-        model_: 'Template',
+  templates:[
+    {
+      model_: 'Template',
 
-        name: 'toHTML',
-        description: 'TileView',
-        template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
-     }
-   ]
+      name: 'toHTML',
+      description: 'TileView',
+      template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
+    }
+  ]
 });
 
+
 var Mouse = FOAM({
-   model_: 'Model',
+  model_: 'Model',
 
-   name: 'Mouse',
+  name: 'Mouse',
 
-   properties: [
-      {
-         name:  'x',
-         type:  'int',
-         view:  'IntFieldView',
-         defaultValue: 10
-      },
-      {
-         name:  'y',
-         type:  'int',
-         view:  'IntFieldView',
-         defaultValue: 10
+  properties: [
+    {
+      name:  'x',
+      type:  'int',
+      view:  'IntFieldView',
+      defaultValue: 10
+    },
+    {
+      name:  'y',
+      type:  'int',
+      view:  'IntFieldView',
+      defaultValue: 10
+    }
+  ],
+  methods: {
+    connect: function(e) {
+      e.addEventListener('mousemove', EventService.merged(this.onMouseMove,1));
+    }
+  },
+
+  listeners: [
+    {
+      model_: 'Method',
+
+      name: 'onMouseMove',
+      code: function(evt) {
+        this.x = evt.offsetX;
+        this.y = evt.offsetY;
       }
-   ],
-   methods: {
-      connect: function(e) {
-         e.addEventListener('mousemove', EventService.merged(this.onMouseMove,1));
-      }
-   },
-
-   listeners: [
-      {
-         model_: 'Method',
-
-         name: 'onMouseMove',
-         code: function(evt) {
-            this.x = evt.offsetX;
-            this.y = evt.offsetY;
-         }
-      }
-   ]
+    }
+  ]
 });
 
 
 var ViewChoice = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name: 'ViewChoice',
+  name: 'ViewChoice',
 
-   tableProperties: [
-      'label',
-      'view'
-   ],
+  tableProperties: [
+    'label',
+    'view'
+  ],
 
-    properties: [
-       {
-           name: 'label',
-           type: 'String',
-           displayWidth: 20,
-           defaultValue: '',
-           help: "View's label."
-       },
-       {
-           name: 'view',
-           type: 'view',
-           defaultValue: 'DetailView',
-           help: 'View factory.'
-       }
-    ]
+  properties: [
+    {
+      name: 'label',
+      type: 'String',
+      displayWidth: 20,
+      defaultValue: '',
+      help: "View's label."
+    },
+    {
+      name: 'view',
+      type: 'view',
+      defaultValue: 'DetailView',
+      help: 'View factory.'
+    }
+  ]
 
 });
 
 
 var AlternateView = FOAM({
+  model_: 'Model',
 
-   model_: 'Model',
+  extendsModel: 'AbstractView',
 
-   extendsModel: 'AbstractView',
+  name: 'AlternateView',
 
-   name: 'AlternateView',
+  properties: [
+    {
+      name: 'selection'
+    },
+    {
+      name: 'views',
+      type: 'Array[ViewChoice]',
+      subType: 'ViewChoice',
+      view: 'ArrayView',
+      defaultValue: [],
+      help: 'View choices.'
+    },
+    {
+      name:  'dao',
+      label: 'DAO',
+      type: 'DAO',
+      postSet: function(dao, oldValue) {
+        if ( this.choice ) {
+          if ( this.view ) {
+            this.view.dao = dao;
+          } else {
+            this.installSubView(this.choice);
+          }
+        }
 
-    properties: [
-       {
-          name: 'selection'
-       },
-       {
-           name: 'views',
-           type: 'Array[ViewChoice]',
-           subType: 'ViewChoice',
-           view: 'ArrayView',
-           defaultValue: [],
-           help: 'View choices.'
-       },
-       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-         postSet: function(dao, oldValue) {
-           if ( this.choice ) {
-             if ( this.view ) {
-               this.view.dao = dao;
-             } else {
-               this.installSubView(this.choice);
-             }
-           }
-         }
-       },
-       {
-          name:  'choice',
-          postSet: function(viewChoice) {
-            if ( this.elementId ) this.installSubView(viewChoice);
-          },
-          hidden: true
-       },
-      {
-        name: 'memento',
-        setter: function(m) {
-          if ( m.mode ) {
-            for ( var i = 0 ; i < this.views.length ; i++ ) {
-              if ( this.views[i].label.toLowerCase() == m.mode ) {
-                this.choice = this.views[i];
-                break;
-              }
+        this.updateMemento();
+      }
+    },
+    {
+      name:  'choice',
+      postSet: function(viewChoice) {
+        if ( this.elementId ) this.installSubView(viewChoice);
+      },
+      hidden: true
+    },
+    {
+      name: 'memento',
+      postSet: function(m, oldM) {
+        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+        console.log('ALT VIEW Update Memento: ', m);
+        if ( m.mode ) {
+          for ( var i = 0 ; i < this.views.length ; i++ ) {
+            if ( this.views[i].label.toLowerCase() == m.mode ) {
+              this.choice = this.views[i];
+              break;
             }
           }
-          if ( this.view ) this.view.memento = m;
-        },
-        getter: function() {
-          if ( this.view ) {
-            var m = this.view.memento;
-            m.mode = this.choice.label.toLowerCase();
-            return m;
-          }
-
-          return {};
         }
-      },
-      {
-        name: 'headerView',
-        help: 'Optional View to be displayed in header.',
-        defaultValue: null
+        if ( this.view ) this.view.memento = m;
       }
-    ],
+    },
+    {
+      name: 'headerView',
+      help: 'Optional View to be displayed in header.',
+      defaultValue: null
+    }
+  ],
 
-   methods: {
-     init: function() {
-       this.SUPER();
+  listeners: [
+    {
+      model_: 'Method',
 
-       this.value = SimpleValue.create("");
-       this.choice = this.views[0];
-     },
+      name: 'updateMemento',
+      code: function() {
+        var m;
+        if ( this.view ) {
+          m = {__proto__: this.view.memento};
+          m.mode = this.choice.label.toLowerCase();
+        } else {
+          m = {};
+        }
+        
+        this.memento = m;
+      }
+    }
+  ],
 
-     installSubView: function(viewChoice) {
-       var view = typeof(viewChoice.view) === 'function' ?
-         viewChoice.view(this.value.get().model_, this.value) :
-         GLOBAL[viewChoice.view].create({
-           model: this.value.get().model_,
-           value: this.value
-         });
+  methods: {
+    init: function() {
+      this.SUPER();
 
-       // TODO: some views are broken and don't have model_, remove
-       // first guard when fixed.
-       if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
+      this.value = SimpleValue.create("");
+      this.choice = this.views[0];
+    },
 
-       this.$.innerHTML = view.toHTML();
-       view.initHTML();
-       view.value && view.value.set(this.value.get());
-       //       if ( view.set ) view.set(this.model.get());
-       //       Events.link(this.model, this.view.model);
+    installSubView: function(viewChoice) {
+      var view = typeof(viewChoice.view) === 'function' ?
+        viewChoice.view(this.value.get().model_, this.value) :
+        GLOBAL[viewChoice.view].create({
+          model: this.value.get().model_,
+          value: this.value
+        });
 
-       this.view = view;
-     },
+      // TODO: some views are broken and don't have model_, remove
+      // first guard when fixed.
+      if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
 
-     toHTML: function() {
-       var str  = [];
-       var viewChoice = this.views[0];
-       var buttons;
+      this.$.innerHTML = view.toHTML();
+      view.initHTML();
+      view.value && view.value.set(this.value.get());
+      //       if ( view.set ) view.set(this.model.get());
+      //       Events.link(this.model, this.view.model);
 
-       str.push('<div style="width:100%;margin-bottom:5px;">');
-       str.push('<div class="altViewButtons">');
-       if ( this.headerView ) {
-         str.push(this.headerView.toHTML());
-         this.addChild(this.headerView);
-       }
-       for ( var i = 0 ; i < this.views.length ; i++ ) {
-         var choice = this.views[i];
-         var listener = function(altView, choice) { return function (e) {
-           altView.choice = choice;
+      if ( this.view ) this.view.removePropertyListener('memento', this.updateMemento);
+      this.view = view;
+      this.view.addPropertyListener('memento', this.updateMemento);
 
-           // This is a bit hackish, each element should listen on a 'selected'
-           // property and update themselves
-           for ( var j = 0 ; j < buttons.length ; j++ ) {
-             DOM.setClass($(buttons[j][0]), 'mode_button_active', false);
-           }
+      this.updateMemento();
+    },
 
-           DOM.setClass(e.toElement, 'mode_button_active');
+    toHTML: function() {
+      var str  = [];
+      var viewChoice = this.views[0];
 
-           return false;
-         };}(this, choice);
-         //          str.push('<a href="#top" id="' + this.on('click', listener) + '">' + view.label + '</a>');
-         str.push('<a class="buttonify" id="' + this.on('click', listener) + '">' + choice.label + '</a>');
-         if ( choice.label == this.selected ) viewChoice = choice
-       }
-       str.push('</div>');
-       buttons = this.callbacks_;
-       this.buttons_ = buttons;
+      str.push('<div style="width:100%;margin-bottom:5px;">');
+      str.push('<div class="altViewButtons">');
+      if ( this.headerView ) {
+        str.push(this.headerView.toHTML());
+        this.addChild(this.headerView);
+      }
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        var choice = this.views[i];
+        var listener = function (choice) {
+          this.choice = choice;
+          return false;
+        }.bind(this, choice);
 
-       str.push('<br/>');
-       // console.log("viewChoice: ", viewChoice);
+        var id = this.nextID();
 
-       //       Events.link(this.model, this.view.model);
+        this.addPropertyListener('choice', function(choice, id) {
+          DOM.setClass($(id), 'mode_button_active', this.choice === choice);
+        }.bind(this, choice, id));
 
-       //       str.push(this.view.toHTML());
-       str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
-       str.push('</div>');
+        var cls = 'buttonify';
+        if ( i == 0 ) cls += ' capsule_left';
+        if ( i == this.views.length - 1 ) cls += ' capsule_right';
+        if ( choice == this.choice ) cls += ' mode_button_active';
+        str.push('<a class="' + cls + '" id="' + this.on('click', listener, id) + '">' + choice.label + '</a>');
+        if ( choice.label == this.selected ) viewChoice = choice
+      }
+      str.push('</div>');
 
-       return str.join('');
-     },
+      str.push('<br/>');
+      str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+      str.push('</div>');
 
-     initHTML: function() {
-       this.SUPER();
+      return str.join('');
+    },
 
-       if ( ! this.choice ) this.choice = this.views[0];
-       this.installSubView(this.choice);
+    initHTML: function() {
+      this.SUPER();
 
-       DOM.setClass($(this.buttons_[0][0]), 'mode_button_active');
-       DOM.setClass($(this.buttons_[0][0]), 'capsule_left');
-       DOM.setClass($(this.buttons_[this.buttons_.length-1][0]), 'capsule_right');
-     }
-   }
+      this.choice = this.choice || this.views[0];
+      this.installSubView(this.choice);
+    }
+  }
 });
 
 
 
 var FloatFieldView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'FloatFieldView',
+  name:  'FloatFieldView',
 
-   extendsModel: 'TextFieldView',
+  extendsModel: 'TextFieldView',
 
-   methods: {
-     textToValue: function(text) {
-       return parseFloat(text) || "0.0";
-     }
-   }
+  methods: {
+    textToValue: function(text) {
+      return parseFloat(text) || "0.0";
+    }
+  }
 });
 
 
 var IntFieldView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'IntFieldView',
+  name:  'IntFieldView',
 
-   extendsModel: 'TextFieldView',
+  extendsModel: 'TextFieldView',
 
-   methods: {
-     textToValue: function(text) {
-       return parseInt(text) || "0";
-     }
-   }
+  methods: {
+    textToValue: function(text) {
+      return parseInt(text) || "0";
+    }
+  }
 });
 
 
 var StringArrayView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   name:  'StringArrayView',
+  name:  'StringArrayView',
 
-   extendsModel: 'TextFieldView',
+  extendsModel: 'TextFieldView',
 
-   methods: {
-     textToValue: function(text) {
-       return text.replace(/\s/g,'').split(',');
-     },
-     valueToText: function(value) {
-       return value ? value.toString() : "";
-     }
-   }
+  methods: {
+    textToValue: function(text) {
+      return text.replace(/\s/g,'').split(',');
+    },
+    valueToText: function(value) {
+      return value ? value.toString() : "";
+    }
+  }
 });
 
 var MultiLineStringArrayView = FOAM({
@@ -3304,11 +3335,11 @@ var MultiLineStringArrayView = FOAM({
     },
     row: function() {
       return '<div><input id="' + this.on('input', this.onInput) +
-            '" name="' + this.name + '" type="' + this.type + '" ' +
-            'size="' + this.displayWidth + '"/>' +
+        '" name="' + this.name + '" type="' + this.type + '" ' +
+        'size="' + this.displayWidth + '"/>' +
         '<input type="button" id="' +
-            this.on('click', this.onRemove) +
-            '" class="multiLineStringRemove" value="X"></div>';
+        this.on('click', this.onRemove) +
+        '" class="multiLineStringRemove" value="X"></div>';
     }
   },
 
@@ -3400,65 +3431,65 @@ var MultiLineStringArrayView = FOAM({
 
 var SplitView = FOAM({
 
-   model_: 'Model',
+  model_: 'Model',
 
-   extendsModel: 'AbstractView',
+  extendsModel: 'AbstractView',
 
-   name: 'SplitView',
+  name: 'SplitView',
 
-    properties: [
-       {
-          name:  'view1',
-          label: 'View 1'
-       },
-       {
-          name:  'view2',
-          label: 'View 2'
-       }
-    ],
+  properties: [
+    {
+      name:  'view1',
+      label: 'View 1'
+    },
+    {
+      name:  'view2',
+      label: 'View 2'
+    }
+  ],
 
-   methods: {
-      init: function() {
-        this.SUPER();
-/*
-         this.view1 = AlternateView.create();
-         this.view2 = AlternateView.create();
-*/
-        this.view1 = DetailView2.create();
-        this.view2 = JSView.create();
+  methods: {
+    init: function() {
+      this.SUPER();
+      /*
+        this.view1 = AlternateView.create();
+        this.view2 = AlternateView.create();
+      */
+      this.view1 = DetailView2.create();
+      this.view2 = JSView.create();
 
-        this.setValue(SimpleValue.create(""));
-      },
+      this.setValue(SimpleValue.create(""));
+    },
 
-      // Sets the Data-Model
-      setValue: function(value) {
-        this.value = value;
-        if ( this.view1 ) this.view1.setValue(value);
-        if ( this.view2 ) this.view2.setValue(value);
-      },
+    // Sets the Data-Model
+    setValue: function(value) {
+      this.value = value;
+      if ( this.view1 ) this.view1.setValue(value);
+      if ( this.view2 ) this.view2.setValue(value);
+    },
 
-      set: function(obj) {
-         this.value.set(obj);
-      },
+    set: function(obj) {
+      this.value.set(obj);
+    },
 
-      get: function() {
-         return this.value.get();
-      },
+    get: function() {
+      return this.value.get();
+    },
 
-      toHTML: function() {
-         var str  = [];
-         str.push('<table width=80%><tr><td width=40%>');
-         str.push(this.view1.toHTML());
-         str.push('</td><td>');
-         str.push(this.view2.toHTML());
-         str.push('</td></tr></table><tr><td width=40%>');
-         return str.join('');
-      },
+    toHTML: function() {
+      var str  = [];
+      str.push('<table width=80%><tr><td width=40%>');
+      str.push(this.view1.toHTML());
+      str.push('</td><td>');
+      str.push(this.view2.toHTML());
+      str.push('</td></tr></table><tr><td width=40%>');
+      return str.join('');
+    },
 
-      initHTML: function() {
-         this.view1.initHTML();
-         this.view2.initHTML();
-      }
+    initHTML: function() {
+      this.view1.initHTML();
+      this.view2.initHTML();
+    }
   }
 
 });

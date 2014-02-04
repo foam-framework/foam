@@ -670,6 +670,8 @@ div.gridViewControl select {
 .actionButton-back img { width: 32px; }
 .actionButton-forth img { width: 32px; }
 
+.actionButton:disabled { -webkit-filter: grayscale(0.8); }
+
 .editColumnView {
   font-size: 80%;
   font-weight: normal;

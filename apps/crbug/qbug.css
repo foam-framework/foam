@@ -171,13 +171,23 @@ body { overflow: hidden; }
 }
 
 .topHeader {
-  width: 100%;
-  text-align: right;
-  padding-bottom: 2px;
-  margin: 0;
-  margin-bottom: 5px;
-  font: 13px arial, sans-serif;
   border-bottom: 2px solid rgb(150,192,250);
+  font: 13px arial, sans-serif;
+  margin: 0;
+  margin-bottom: 2px;
+  text-align: right;
+  width: 100%;
+}
+
+.topHeader img { padding: 2px; }
+
+.topHeader .imageView {
+  margin-left: 10px;
+}
+
+.header {
+  border-bottom: 2px solid rgb(150,192,250);
+  padding-bottom: 4px;
 }
 
 .qissueupdates {
@@ -298,4 +308,12 @@ input[name="search"] {
   height: 100%;
   overflow: auto;
   width: 100%;
+}
+
+
+.actionButton-back img { width: 22px; }
+.actionButton-forth img { width: 22px; }
+
+body {
+  margin-top: 0;
 }

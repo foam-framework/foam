@@ -115,7 +115,6 @@ var Dragon = Model.create({
     paint: function() {
       if ( ! this.canvasView ) return;
       this.canvasView.erase();
-      this.SUPER();
 
       var c = this.canvas;
       c.save();
