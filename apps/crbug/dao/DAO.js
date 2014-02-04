@@ -33,8 +33,8 @@ var IssueRestDAO = FOAM({
       if ( json.blockedOn ) json.blockedOn = json.blockedOn.map(function(b) { return b.issueId });
 
       if ( json.mergedInto ) json.mergedInto = json.mergedInto.issueId;
-      json.state = json.state.intern();
-      json.status = json.status.intern();
+      if ( json.state ) json.state = json.state.intern();
+      if ( json.status ) json.status = json.status.intern();
       if ( json.summary == json.title ) json.summary = json.title;
       delete json['kind'];
       delete json['projectId'];
