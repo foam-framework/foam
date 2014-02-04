@@ -27,6 +27,7 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/view.js \
   ../../core/cview.js \
+  ../../core/MementoMgr.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \

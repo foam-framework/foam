@@ -26,7 +26,7 @@ var MementoMgr = FOAM({
     {
       name: 'memento',
       getter: function() { return this.memorable.memento; },
-      setter: function(m) { this.memorable.memento = m; }
+      setter: function(m) { console.log('********* MEMENTO: ', m); this.ignore_ = true; this.memorable.memento = m; this.ignore_ = false; }
     },
     {
       name:  'stack',
@@ -42,14 +42,14 @@ var MementoMgr = FOAM({
     {
       model_: 'Action',
       name:  'back',
-      label: '',
-      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
+      label: ' <-- ',
+//      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
       help:  'Go to previous view',
 
-      isEnabled:   function() { return this.stack.length > 1; },
+      isEnabled:   function() { return this.stack.length; },
       action:      function() {
       this.dumpState('preBack');
-        this.redo.push(this.stack.pop());
+        this.redo.push(this.memento);
         this.restore(this.stack.pop());
         this.propertyChange('stack', this.stack, this.stack);
         this.propertyChange('redo', this.redo, this.redo);
@@ -59,11 +59,11 @@ var MementoMgr = FOAM({
     {
       model_: 'Action',
       name:  'forth',
-      label: '',
-      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Right_Arrow.svg',
+      label: ' --> ',
+//      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Right_Arrow.svg',
       help:  'Undo the previous back.',
 
-      isEnabled:   function() { return this.redo.length > 1; },
+      isEnabled:   function() { return this.redo.length; },
       action:      function() {
       this.dumpState('preForth');
         this.remember(this.memento);
@@ -78,11 +78,13 @@ var MementoMgr = FOAM({
   listeners: [
     {
       name: 'onMementoChange',
-      code: function() {
-      this.dumpState('preChange');
-        this.remember(this.memento);
-        this.saveMemento();
-      this.dumpState('postChange');
+      code: function(_, _, oldValue) {
+      //this.dumpState('preChange');
+        if ( ! oldValue || this.ignore_ ) return;
+        this.remember(oldValue);
+        this.redo = [];
+        this.propertyChange('redo', this.redo, this.redo);
+      //this.dumpState('postChange');
       }
     }
   ],
@@ -95,9 +97,10 @@ var MementoMgr = FOAM({
     },
 
     remember: function(memento) {
-      this.dumpState('remember');
+      this.dumpState('preRemember');
       this.stack.push(memento);
       this.propertyChange('stack', this.stack, this.stack);
+      this.dumpState('postRemember');
     },
 
     restore: function(memento) {
@@ -107,8 +110,8 @@ var MementoMgr = FOAM({
 
     dumpState: function(spot) {
       console.log('--- ', spot);
-      console.log('stack: ', this.stack);
-      console.log('redo: ', this.redo);
+      console.log('stack: ', JSON.stringify(this.stack));
+      console.log('redo: ', JSON.stringify(this.redo));
     }
   }
 });

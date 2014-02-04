@@ -881,7 +881,7 @@ var ChoiceView = FOAM({
          }
          return undefined;
        },
-       setter: function(m) { if ( m ) this.value.set(this.choices[m][0]); }
+       setter: function(m) { this.value.set(this.choices[m][0]); }
      },
      {
        name: 'choice',
@@ -3083,7 +3083,8 @@ var AlternateView = FOAM({
       {
         name: 'memento',
         postSet: function(m, oldM) {
-          if ( m.toString() === oldM.toString() ) return;
+          if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+console.log('ALT VIEW Update Memento: ', m);
           if ( m.mode ) {
             for ( var i = 0 ; i < this.views.length ; i++ ) {
               if ( this.views[i].label.toLowerCase() == m.mode ) {
@@ -3119,7 +3120,6 @@ var AlternateView = FOAM({
          m = {};
        }
 
-console.log('ALT VIEW Update Memento: ', m);
        this.memento = m;
      },
 

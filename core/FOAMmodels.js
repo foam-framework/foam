@@ -52,6 +52,7 @@ var files = [
   'SplitDAO',
   'index',
   'StackView',
+  'MementoMgr',
   'DAOController',
   'ThreePaneController',
   'experimental/protobufparser',

@@ -113,7 +113,8 @@ var Browser = Model.create({
     {
       name: 'memento',
       postSet: function(m, oldM) {
-        if ( m.toString() === oldM.toString() ) return;
+        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
+console.log('BROWSER Udpate Memento: ', m);
         this.searchChoice.memento = m.can;
         if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
         this.view.memento = m;
@@ -121,10 +122,7 @@ var Browser = Model.create({
     },
     {
       name: 'mementoMgr',
-      valueFactory: function() {
-//        return new MementoMgr({memorable: this});
-        return '';
-      }
+      valueFactory: function() { return this.mementoMgr = MementoMgr.create({memorable: this}); }
     },
     {
       name: 'searchChoice',
@@ -177,10 +175,8 @@ var Browser = Model.create({
       code: function() {
         var m = this.view.memento;
         m.can = this.searchChoice.memento;
-        // Parse and reformat the query so that it doesn't use shortnames that cr1bug won't understand
-        m.q = (QueryParser.parseString(this.searchField.value.get()) || TRUE).partialEval().toMQL();
+        m.q = this.searchField.value.get();
         this.memento = m;
-console.log('BROWSER Udpate Memento: ', m);
       }
     },
     {
@@ -391,6 +387,8 @@ console.log('BROWSER Udpate Memento: ', m);
 
       this.searchChoice.value.addListener(this.updateMemento);
       this.view.addPropertyListener('memento', this.updateMemento);
+
+      this.updateMemento();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -488,9 +486,13 @@ console.log('BROWSER Udpate Memento: ', m);
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
       var u = this.url + '/issues/list';
-      var m = this.memento;
+      var m = {};
       var d = '?';
 
+      for ( key in this.memento ) m[key] = this.memento[key];
+
+      // Replace short-names will fullnames that crbug will understand
+      if ( this.memento.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
       if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
 
       for ( var key in m ) {
