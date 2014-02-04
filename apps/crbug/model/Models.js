@@ -236,6 +236,7 @@ var QIssue = FOAM({
       {
          model_: 'IntegerProperty',
          name: 'stars',
+         tableWidth: '20px',
          help: 'Number of stars this issue has.'
       }
     ],
