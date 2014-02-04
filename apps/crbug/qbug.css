@@ -174,10 +174,15 @@ body { overflow: hidden; }
   border-bottom: 2px solid rgb(150,192,250);
   font: 13px arial, sans-serif;
   margin: 0;
-  margin-bottom: 5px;
-  padding-bottom: 2px;
+  margin-bottom: 2px;
   text-align: right;
   width: 100%;
+}
+
+.topHeader img { padding: 2px; }
+
+.topHeader .imageView {
+  padding-left: 10px;
 }
 
 .header {
@@ -308,3 +313,7 @@ input[name="search"] {
 
 .actionButton-back img { width: 22px; }
 .actionButton-forth img { width: 22px; }
+
+body {
+  margin-top: 0;
+}
