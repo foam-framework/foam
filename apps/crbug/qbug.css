@@ -182,7 +182,7 @@ body { overflow: hidden; }
 .topHeader img { padding: 2px; }
 
 .topHeader .imageView {
-  padding-left: 10px;
+  margin-left: 10px;
 }
 
 .header {
