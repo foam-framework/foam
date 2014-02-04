@@ -2383,7 +2383,7 @@ var RestDAO = FOAM({
       var fut = afuture();
       var self = this;
       var limit;
-      var index = 1;
+      var index = 0;
       var fc = this.createFlowControl_();
 
       if ( options ) {
@@ -2446,11 +2446,11 @@ var RestDAO = FOAM({
             index += items.length;
 
             for ( var i = 0 ; i < items.length; i++ ) {
+              var item = self.jsonToObj(items[i])
+
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
-              if ( query && !query.f(items[i]) ) {
-                // If a single item didn't match.  That means that
-                // our skip was insufficient
+              if ( query && !query.f(item) ) {
                 continue;
               }
 
@@ -2467,9 +2467,9 @@ var RestDAO = FOAM({
               }
 
               sink && sink.put &&
-                sink.put(self.jsonToObj(items[i]), null, fc);
+                sink.put(item, null, fc);
             }
-            if ( limit === 0 ) finished = true;
+            if ( limit <= 0 ) finished = true;
             ret();
           });
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });
