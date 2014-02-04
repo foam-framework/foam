@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+MementoMgr.BACK.iconUrl = 'images/back.png';
+MementoMgr.FORTH.iconUrl = 'images/forth.png';
+MementoMgr.BACK.label = '';
+MementoMgr.FORTH.label = '';
+MementoMgr.BACK.help = '';
+MementoMgr.FORTH.help = '';
+
 var Browser = Model.create({
   name: 'Browser',
 

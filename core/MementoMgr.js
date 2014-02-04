@@ -51,8 +51,8 @@ var MementoMgr = FOAM({
       this.dumpState('preBack');
         this.redo.push(this.memento);
         this.restore(this.stack.pop());
-        this.propertyChange('stack', this.stack, this.stack);
-        this.propertyChange('redo', this.redo, this.redo);
+        this.propertyChange('stack', '', this.stack);
+        this.propertyChange('redo', '', this.redo);
       this.dumpState('postBack');
       }
     },
@@ -68,8 +68,8 @@ var MementoMgr = FOAM({
       this.dumpState('preForth');
         this.remember(this.memento);
         this.restore(this.redo.pop());
-        this.propertyChange('stack', this.stack, this.stack);
-        this.propertyChange('redo', this.redo, this.redo);
+        this.propertyChange('stack', '', this.stack);
+        this.propertyChange('redo', '', this.redo);
       this.dumpState('postForth');
       }
     }
@@ -83,7 +83,7 @@ var MementoMgr = FOAM({
         if ( ! oldValue || this.ignore_ ) return;
         this.remember(oldValue);
         this.redo = [];
-        this.propertyChange('redo', this.redo, this.redo);
+        this.propertyChange('redo', '', this.redo);
       //this.dumpState('postChange');
       }
     }
@@ -99,7 +99,7 @@ var MementoMgr = FOAM({
     remember: function(memento) {
       this.dumpState('preRemember');
       this.stack.push(memento);
-      this.propertyChange('stack', this.stack, this.stack);
+      this.propertyChange('stack', '', this.stack);
       this.dumpState('postRemember');
     },
 

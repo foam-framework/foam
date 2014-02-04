@@ -2,8 +2,8 @@
   var browserLink = ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
   var linkButton  = ActionButton.create({action: this.model_.LINK,         value: SimpleValue.create(this)});
   var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
-  var backButton  = ActionLink.create({action: MementoMgr.BACK,            value: SimpleValue.create(this.mementoMgr)});
-  var forthButton = ActionLink.create({action: MementoMgr.FORTH,           value: SimpleValue.create(this.mementoMgr)});
+  var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
+  var forthButton = ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
 %>
 <html>
  <head>
@@ -14,7 +14,7 @@
  </head>
  <body>
 <div style="display:flex;flex-direction:column;">
- <div class="topHeader" style="display:flex;width:100%;">
+ <div class="topHeader" style="display:flex;width:100%;align-items:center;">
   <%= backButton, forthButton %> %%refreshImg <span style="flex-grow:1;"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
  </div>
  <div class="header" style="display:flex;align-items:baseline;">
