@@ -3046,41 +3046,44 @@ var AlternateView = FOAM({
    name: 'AlternateView',
 
     properties: [
-       {
-          name: 'selection'
-       },
-       {
-           name: 'views',
-           type: 'Array[ViewChoice]',
-           subType: 'ViewChoice',
-           view: 'ArrayView',
-           defaultValue: [],
-           help: 'View choices.'
-       },
-       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-         postSet: function(dao, oldValue) {
-           if ( this.choice ) {
-             if ( this.view ) {
-               this.view.dao = dao;
-             } else {
-               this.installSubView(this.choice);
-             }
-           }
-         }
-       },
-       {
-          name:  'choice',
-          postSet: function(viewChoice) {
-            if ( this.elementId ) this.installSubView(viewChoice);
-          },
-          hidden: true
-       },
+      {
+        name: 'selection'
+      },
+      {
+        name: 'views',
+        type: 'Array[ViewChoice]',
+        subType: 'ViewChoice',
+        view: 'ArrayView',
+        defaultValue: [],
+        help: 'View choices.'
+      },
+      {
+        name:  'dao',
+        label: 'DAO',
+        type: 'DAO',
+        postSet: function(dao, oldValue) {
+          if ( this.choice ) {
+            if ( this.view ) {
+              this.view.dao = dao;
+            } else {
+              this.installSubView(this.choice);
+            }
+          }
+
+          this.updateMemento();
+        }
+      },
+      {
+        name:  'choice',
+        postSet: function(viewChoice) {
+          if ( this.elementId ) this.installSubView(viewChoice);
+        },
+        hidden: true
+      },
       {
         name: 'memento',
-        setter: function(m) {
+        postSet: function(m, oldM) {
+          if ( m.toString() === oldM.toString() ) return;
           if ( m.mode ) {
             for ( var i = 0 ; i < this.views.length ; i++ ) {
               if ( this.views[i].label.toLowerCase() == m.mode ) {
@@ -3090,15 +3093,6 @@ var AlternateView = FOAM({
             }
           }
           if ( this.view ) this.view.memento = m;
-        },
-        getter: function() {
-          if ( this.view ) {
-            var m = this.view.memento;
-            m.mode = this.choice.label.toLowerCase();
-            return m;
-          }
-
-          return {};
         }
       },
       {
@@ -3114,6 +3108,19 @@ var AlternateView = FOAM({
 
        this.value = SimpleValue.create("");
        this.choice = this.views[0];
+     },
+
+     updateMemento: function() {
+       var m;
+       if ( this.view ) {
+         m = this.view.memento;
+         m.mode = this.choice.label.toLowerCase();
+       } else {
+         m = {};
+       }
+
+console.log('ALT VIEW Update Memento: ', m);
+       this.memento = m;
      },
 
      installSubView: function(viewChoice) {
@@ -3135,6 +3142,8 @@ var AlternateView = FOAM({
        //       Events.link(this.model, this.view.model);
 
        this.view = view;
+
+       this.updateMemento();
      },
 
      toHTML: function() {
