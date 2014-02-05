@@ -80,12 +80,16 @@ var QIssueCommentNetworkDAO = FOAM({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
+  properties: [
+    {
+      name: 'issueId',
+      help: 'Id of the issue.'
+    }
+  ],
+
   methods: {
     buildURL: function(options) {
-      if ( EqExpr.isInstance(options.query) ) {
-        return this.url + '/' + options.query.arg2.f() + '/comments';
-      }
-      return this.url;
+      return this.url + '/' + this.issueId + '/comments';
     }
   }
 });

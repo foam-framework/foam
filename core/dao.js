@@ -2371,7 +2371,7 @@ var RestDAO = FOAM({
       return this.url;
     },
     buildFindURL: function(key) {
-      return this.url;
+      return this.url + '/' + key;
     },
     put: function(value, sink) {
     },
@@ -2385,6 +2385,7 @@ var RestDAO = FOAM({
       var limit;
       var index = 0;
       var fc = this.createFlowControl_();
+
 
       if ( options ) {
         index += options.skip || 0;
@@ -2470,6 +2471,7 @@ var RestDAO = FOAM({
                 sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
+            if ( index === data.totalResults ) finished = true;
             ret();
           });
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });

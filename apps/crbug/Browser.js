@@ -72,11 +72,6 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.IssueDAO; }
     },
     {
-      name: 'IssueCommentDAO',
-      scope: 'project',
-      defaultValueFn: function() { return this.project.IssueCommentDAO; }
-    },
-    {
       name: 'syncManager',
       scope: 'project',
       defaultValueFn: function() { return this.project.syncManager; }
@@ -417,7 +412,7 @@ console.log('BROWSER Udpate Memento: ', m);
 
           var v = QIssuePreviewView.create({
             value: SimpleValue.create(obj),
-            QIssueCommentDAO: self.IssueCommentDAO.where(EQ(QIssue.ID, id)),
+            QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             url: self.url
           });
