@@ -93,7 +93,8 @@ var MementoMgr = FOAM({
     init: function() {
       this.SUPER();
 
-      this.memorable.addPropertyListener('memento', this.onMementoChange);
+// TODO: uncomment
+//      this.memorable.addPropertyListener('memento', this.onMementoChange);
     },
 
     remember: function(memento) {

@@ -311,6 +311,7 @@ console.log(i, k, v);
         var prop = this.model_.properties[i];
 
         if ( prop.memorable ) {
+// TODO: get mementoValue instead
           m.addValue(prop.name, this.propertyValue(prop.name));
         }
       }

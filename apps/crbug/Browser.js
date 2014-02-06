@@ -118,11 +118,21 @@ var Browser = Model.create({
       valueFactory: function() { return this.mementoMgr = MementoMgr.create({memorable: this}); }
     },
     {
-      name: 'searchChoice',
+      name: 'can',
       memorable: true,
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name: 'q',
+      memorable: true,
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name: 'searchChoice',
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
+          value: this.can,
           choices:[
             ['',                                         '&nbsp;All issues'],
             ['status=New,Accepted,Started',              '&nbsp;Open issues'],
@@ -137,8 +147,7 @@ var Browser = Model.create({
     },
     {
       name: 'searchField',
-      memorable: true,
-      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20 }); }
+      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20, value: this.q }); }
     },
     {
       name: 'refreshImg',
@@ -466,6 +475,7 @@ var Browser = Model.create({
 
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
+return "";
       var u = this.url + '/issues/list';
       var m = this.memento;
       var d = '?';

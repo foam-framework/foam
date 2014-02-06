@@ -18,7 +18,12 @@
 var SimpleValue = Model.create({
   name: 'SimpleValue',
 
-  properties: [ { name: 'value' } ],
+  properties: [
+    {
+      name: 'value',
+      memorable: true
+    }
+  ],
 
   methods: {
     init: function(value) { this.value = value || ""; },
@@ -43,30 +48,42 @@ var CompoundValue = Model.create({
     }
   ],
 
+  methods: {
+    toMap: function() {
+      
+    }
+  },
+
   listeners: [
     {
       name: 'onSubValueChange',
-      code: function() {
-        debugger;
+      code: function(key) {
+        console.log('subChange: ', key);
+        this.value[key] = this.values[key].get();
+
+        this.firePropertyChange('value', undefined, this.value);
+        console.log('subChange value->: ', this.value);
       }
     }
   ],
 
   methods: {
     addValue: function(key, value) {
+      if ( ! value ) debugger;
+      value = ( value.get && value.get().get ) ? value.get() : value;
       this.values[key] = value;
       this.value[key] = value.get();
-      value.addListener(this.onSubValueChange);
+      value.addListener(this.onSubValueChange.bind(this, key));
     },
     get: function() { return this.value; },
-    set: function(val) {
-      for ( var key in val ) {
-        var value = this.values[key];
-
-        if ( value ) value.set(val[key]);
+    set: function(map) {
+      for ( var key in map ) {
+        this.values[key].set(map[key]);
       }
     },
-    toString: function() { return "CompoundValue(" + this.value + ")"; }
+    toString: function() {
+      return "CompoundValue(" + this.value + ")";
+    }
   }
 });
 

@@ -822,7 +822,6 @@ var HTMLView = FOAM({
 
 
 var ChoiceView = FOAM({
-
   model_: 'Model',
 
   extendsModel: 'AbstractView',
