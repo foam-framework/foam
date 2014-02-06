@@ -90,16 +90,6 @@ var QProject = Model.create({
       transient: true
     },
     {
-      name: 'IssueCommentDAO',
-      valueFactory: function() {
-        return QIssueCommentNetworkDAO.create({
-          url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          model: QIssueComment
-        });
-      },
-      transient: true
-    },
-    {
       name: 'url',
       defaultValueFn: function() { return this.baseURL + this.projectName; }
     },
@@ -209,6 +199,14 @@ var QProject = Model.create({
           $removeWindow(window);
         });
       });      
+    },
+
+    issueCommentDAO: function(id) {
+      return QIssueCommentNetworkDAO.create({
+        model: QIssueComment,
+        url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+        issueId: id
+      });
     }
 
   },
