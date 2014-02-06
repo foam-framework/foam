@@ -129,6 +129,10 @@ Date.prototype.compareTo = function(o) {
   return d == 0 ? 0 : d > 0 ? 1 : -1;
 };
 
+Date.prototype.toMQL = function() {
+  return this.getFullYear() + '/' + this.getMonth() + '/' + this.getDay();
+};
+
 String.prototype.compareTo = function(o) {
   if ( o == this ) return 0;
   return this < o ? -1 : 1;

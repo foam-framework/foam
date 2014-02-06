@@ -2335,7 +2335,6 @@ var GDriveDAO = FOAM({
   }
 });
 
-
 var RestDAO = FOAM({
   model_: 'Model',
   extendsModel: 'AbstractDAO',
@@ -2350,7 +2349,18 @@ var RestDAO = FOAM({
     {
       name: 'url',
       label: 'REST API URL.'
-    }
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'Property',
+      name: 'paramProperties',
+      help: 'Properties that are handled as separate paramters rather than in the query.'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'batchSize',
+      defaultValue: 100
+    },
   ],
 
   methods: {
@@ -2361,7 +2371,7 @@ var RestDAO = FOAM({
       return this.url;
     },
     buildFindURL: function(key) {
-      return this.url;
+      return this.url + '/' + key;
     },
     put: function(value, sink) {
     },
@@ -2369,29 +2379,102 @@ var RestDAO = FOAM({
     },
     select: function(sink, options) {
       sink = sink || [];
-      var params = ['sort=modified'];
+      var params = [];
+      var fut = afuture();
+      var self = this;
+      var limit;
+      var index = 0;
+      var fc = this.createFlowControl_();
+
 
       if ( options ) {
-        if ( options.query ) {
-          if ( GtExpr.isInstance(options.query) ) {
-            params.push('updatedMin=' + Math.floor(options.query.arg2.f().getTime()/1000));
-          }
+        index += options.skip || 0;
+
+        if ( options.order ) {
+          var sort = options.order.toMQL();
+          // Hack for updated/modified mis-match.
+          if ( sort === 'updated' ) sort = 'modified';
+          else if ( sort === '-updated' ) sort = '-modified';
+          params.push("sort=" + sort);
+        } else {
+          params.push['sort=modified'];
+        }
+
+        var query = options.query;
+        if ( query ) {
+          var remaining = [];
+          // Normalize query to DNF.
+          query = query.normalize();
+          params.push('q=' + encodeURIComponent(query.toMQL()));
         }
 
         if ( options.limit ) {
-          params.push('maxResults=' + options.limit);
+          limit = options.limit;
         }
       }
 
-      var fut = afuture();
-      var self = this;
-      ajsonp(this.buildURL(options), params)(function(data) {
-        var items = data.items || [];
-        for ( var i = 0 ; i < items.length ; i++ ) {
-          sink && sink.put && sink.put(self.jsonToObj(items[i]));
-        }
-        fut.set(sink);
-      });
+      var finished = false;
+      awhile(
+        function() { return !finished; },
+        function(ret) {
+          var batch = self.batchSize;
+
+          if ( Number.isFinite(limit) )
+            var batch = Math.min(batch, limit);
+
+          // No need to fetch items for count.
+          if ( CountExpr.isInstance(sink) ) {
+            batch = 0;
+          }
+
+          var myparams = params.slice();
+          myparams.push('maxResults=' + batch);
+          myparams.push('startIndex=' + index);
+
+          ajsonp(self.buildURL(options), myparams)(function(data) {
+            // Short-circuit count.
+            // TODO: This count is wrong for queries that use 
+            if ( CountExpr.isInstance(sink) ) {
+              sink.count = data.totalResults;
+              finished = true;
+              ret(); return;
+            }
+
+            var items = data.items || [];
+
+            // Fetching no items indicates EOF.
+            if ( items.length == 0 ) finished = true;
+            index += items.length;
+
+            for ( var i = 0 ; i < items.length; i++ ) {
+              var item = self.jsonToObj(items[i])
+
+              // Filter items that don't match due to
+              // low resolution of Date parameters in MQL
+              if ( query && !query.f(item) ) {
+                continue;
+              }
+
+              if ( Number.isFinite(limit) ) {
+                if ( limit <= 0 ) { finished = true; break; }
+                limit--;
+              }
+
+              if ( fc.stopped ) { finished = true; break; }
+              if ( fc.errorEvt ) {
+                sink.error && sink.error(fc.errorEvt);
+                finished = true;
+                break;
+              }
+
+              sink && sink.put &&
+                sink.put(item, null, fc);
+            }
+            if ( limit <= 0 ) finished = true;
+            if ( index === data.totalResults ) finished = true;
+            ret();
+          });
+        })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });
 
       return fut.get;
     },

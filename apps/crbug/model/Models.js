@@ -67,6 +67,10 @@ var QIssue = FOAM({
           }
         },
         {
+          name: 'author',
+          aliases: ['reporter']
+        },
+        {
           model_: 'StringProperty',
           name: 'priority',
           shortName: 'p',
@@ -251,6 +255,8 @@ var QIssue = FOAM({
       }
     }
 });
+
+QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
 
 QIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {

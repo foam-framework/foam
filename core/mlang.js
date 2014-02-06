@@ -48,8 +48,39 @@ var Expr = FOAM({
      toSQL: function() {
        return this.toString();
      },
+     collectInputs: function(terms) {
+       terms.push(this);
+     },
      partialEval: function() { return this; },
-     normalize: function() { return this; },
+     minterm: function(index, term) {
+       // True if this bit is set in the minterm number.
+       return !!((term >>> index[0]--) & 1 );
+     },
+     normalize: function() {
+       // Each input term to the expression.
+       var inputs = [];
+       this.collectInputs(inputs);
+
+       // Truth table for every minterm (combination of inputs).
+       var minterms = new Array(Math.pow(2, inputs.length));
+
+       for ( var i = 0; i < minterms.length; i++ ) {
+         minterms[i] = this.minterm([inputs.length - 1], i);
+       }
+
+       // TODO: Calculate prime implicants and reduce to minimal set.
+       var terms = [];
+       for ( i = 0; i < minterms.length; i++ ) {
+         if ( minterms[i] ) {
+           var subterms = [];
+           for ( var j = 0; j < inputs.length; j++ ) {
+             if ( i & (1 << (inputs.length - j - 1))) subterms.push(inputs[j]);
+           }
+           terms.push(AndExpr.create({ args: subterms }));
+         }
+       }
+       return OrExpr.create({ args: terms }).partialEval();
+     },
      toString: function() { return this.label_; },
      pipe: function(sink) {
        var expr = this;
@@ -233,10 +264,26 @@ var AndExpr = FOAM({
          var s = '';
          for ( var i = 0 ; i < this.args.length ; i++ ) {
             var a = this.args[i];
-            s += a.toMQL();
+            var sub = a.toMQL();
+            if ( OrExpr.isInstance(a) ) {
+              sub = '(' + sub + ')';
+            }
+            s += sub;
             if ( i < this.args.length-1 ) s += (' ');
          }
          return s;
+      },
+      collectInputs: function(terms) {
+         for ( var i = 0; i < this.args.length; i++ ) {
+            this.args[i].collectInputs(terms);
+         }
+      },
+      minterm: function(index, term) {
+         var out = true;
+         for ( var i = 0; i < this.args.length; i++ ) {
+            out = this.args[i].minterm(index, term) && out;
+         }
+         return out;
       },
 
       partialEval: function() {
@@ -302,15 +349,27 @@ var OrExpr = FOAM({
          return s;
       },
       toMQL: function() {
-         var s;
-         s = '(';
+         var s = '';
          for ( var i = 0 ; i < this.args.length ; i++ ) {
             var a = this.args[i];
             s += a.toMQL();
             if ( i < this.args.length-1 ) s += (' OR ');
          }
-         s += ')';
          return s;
+      },
+
+      collectInputs: function(terms) {
+         for ( var i = 0; i < this.args.length; i++ ) {
+            this.args[i].collectInputs(terms);
+         }
+      },
+
+      minterm: function(index, term) {
+         var out = false;
+         for ( var i = 0; i < this.args.length; i++ ) {
+            out = this.args[i].minterm(index, term) || out;
+         }
+         return out;
       },
 
       partialEval: function() {
@@ -367,6 +426,13 @@ var NotExpr = FOAM({
       },
       toMQL: function() {
          return '-( ' + this.arg1.toMQL() + ' )';
+      },
+      collectInputs: function(terms) {
+        this.arg1.collectInputs(terms);
+      },
+
+      minterm: function(index, term) {
+         return ! this.arg1.minterm(index, term);
       },
 
       partialEval: function() {
@@ -801,7 +867,8 @@ var ConstantExpr = FOAM({
       toMQL: function() {
          return ( typeof this.arg1 === 'string' ) ?
             this.escapeMQLString(this.arg1) :
-            this.arg1.toString() ;
+            (this.arg1.toMQL ? this.arg1.toMQL() :
+             this.arg1.toString());
       },
       f: function(obj) { return this.arg1; }
    }
