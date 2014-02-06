@@ -89,20 +89,6 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
 };
 
 
-var SimpleValue = Model.create({
-  name: 'SimpleValue',
-
-  properties: [ { name: 'value' } ],
-
-  methods: {
-    init: function(value) { this.value = value || ""; },
-    get: function() { return this.value; },
-    set: function(val) { this.value = val; },
-    toString: function() { return "SimpleValue(" + this.value + ")"; }
-  }
-});
-
-
 var DOM = {
   setClass: function(e, className, opt_enabled) {
     var oldClassName = e.className || '';

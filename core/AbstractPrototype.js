@@ -303,6 +303,24 @@ console.log(i, k, v);
     return this.model_.isMemorable_;
   },
 
+  mementoValue: function()  {
+    if ( ! this.memento_ ) {
+      var m = CompoundValue.create();
+
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+
+        if ( prop.memorable ) {
+          m.addValue(prop.name, this.propertyValue(prop.name));
+        }
+      }
+
+      this.memento_ = m;
+    }
+
+    return this.memento_;
+  },
+
   get memento() {
     console.log('get memento: ', this.model_.name);
     var m = {};
