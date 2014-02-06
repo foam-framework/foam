@@ -187,13 +187,14 @@ var ScrollBorder = FOAM({
    name:  'ScrollBorder',
 
    properties: [
-       {
-           name: 'view',
-           type: 'view',
-           postSet: function(view) {
-             this.scrollbar.extent = this.view.rows;
-           }
+     {
+       name: 'view',
+       type: 'view',
+       postSet: function(view) {
+         this.scrollbar.extent = this.view.rows;
        },
+       memorable: true
+     },
        {
            name: 'scrollbar',
            type: 'ScrollCView',

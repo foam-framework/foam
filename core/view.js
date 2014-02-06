@@ -628,6 +628,11 @@ var TextFieldView = FOAM({
       }
     },
     {
+      name: 'memento',
+      getter: function() { return this.value.get(); },
+      setter: function(m) { this.value.set(m); }
+    },
+    {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() { return 'input'; }
@@ -1990,6 +1995,9 @@ var TableView = FOAM({
     {
       model_: StringArrayProperty,
       name:  'properties',
+      memorable: true,
+      fromMemento: function(v) { return v.split(' '); },
+      toMemento: function(v) { return v.join(' '); },
       defaultValueFn: function() {
         return this.model.tableProperties;
       }
@@ -2012,6 +2020,20 @@ var TableView = FOAM({
     {
       name:  'sortOrder',
       type:  'Comparator',
+      memorable: true,
+      fromMemento: function(v) {
+        var ps = v.split(' ');
+        for ( var i = 0 ; i < ps.length ; i++ ) {
+          var p = ps[i];
+          if ( p.charAt('0') == '-' ) {
+            ps[i] = DESC(this.model.getProperty(p.substring(1)));
+          } else {
+            ps[i] = this.model.getProperty(p);
+          }
+        }
+        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
+      },
+      toMemento: function(v) { return v.toMQL(); },
       defaultValue: undefined
     },
     {
@@ -2042,36 +2064,6 @@ var TableView = FOAM({
       model_: 'BooleanProperty',
       name: 'editColumnsEnabled',
       defaultValue: false
-    },
-    {
-      name: 'memento',
-      postSet: function(m, oldM) {
-        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
-
-console.log('TABLE VIEW Update Memento: ', m);
-        if ( m.sort ) {
-          var ps = m.sort.split(' ');
-          for ( var i = 0 ; i < ps.length ; i++ ) {
-            var p = ps[i];
-            if ( p.charAt('0') == '-' ) {
-              ps[i] = DESC(this.model.getProperty(p.substring(1)));
-            } else {
-              ps[i] = this.model.getProperty(p);
-            }
-          }
-          if ( ps.length ) {
-            if ( ps.length == 1 ) {
-              this.sortOrder = ps[0];
-            } else {
-              this.sortOrder = CompoundComparator.apply(null, ps);
-            }
-          }
-        }
-
-        if ( m.colspec ) {
-          this.properties = m.colspec.split(' ');
-        }
-      }
     }
   ],
 
@@ -2097,29 +2089,16 @@ console.log('TABLE VIEW Update Memento: ', m);
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
-    },
-    {
-      model_: 'Method',
-
-      name: 'updateMemento',
-      code: function() {
-console.log('TableView.updateMemento');
-       var m = {};
-        
-        if ( this.sortOrder ) m.sort = this.sortOrder.toMQL();
-        
-        if ( this.hasOwnProperty('properties') ) {
-          m.colspec = this.properties.join(' ');
-        }
-        
-        this.memento = m;
-      }
     }
   ],
 
   methods: {
 
     layout: function() {
+      if ( ! this.$ ) {
+        console.warn('Attempt to layout() $-less TableView.');
+        return;
+      }
       var parent;
       try {
         parent = window.getComputedStyle(this.$.parentNode.parentNode.parentNode.parentNode.parentNode);
@@ -2268,8 +2247,6 @@ console.log('TableView.updateMemento');
 
     initHTML: function() {
       this.repaint();
-
-      this.updateMemento();
     },
 
     repaint: function() {
@@ -2287,8 +2264,6 @@ console.log('TableView.updateMemento');
           }
           // self.selection && self.selection.set(selection);
         });
-      
-      this.updateMemento();
     },
 
     initHTML_: function() {
@@ -2376,7 +2351,7 @@ var EditColumnsView = FOAM({
 
       name: 'onRemoveColumn',
       code: function(prop) {
-        this.properties = this.properties.removeF({f: function(o) { return prop == o; }});
+        this.properties = this.properties.deleteF(prop);
       }
     }
 
@@ -2805,46 +2780,6 @@ var ArrayView = {
 };
 
 
-var ModelAlternateView = FOAM({
-  model_: 'Model',
-  name: 'ModelAlternateView',
-  extendsModel: 'AlternateView',
-  methods: {
-    init: function() {
-      // TODO: super.init
-      this.views = FOAM([
-        {
-          model_: 'ViewChoice',
-          label:  'GUI',
-          view:   'DetailView'
-        },
-        {
-          model_: 'ViewChoice',
-          label:  'JS',
-          view:   'JSView'
-        },
-        {
-          model_: 'ViewChoice',
-          label:  'XML',
-          view:   'XMLView'
-        },
-        {
-          model_: 'ViewChoice',
-          label:  'UML',
-          view:   'XMLView'
-        },
-        {
-          model_: 'ViewChoice',
-          label:  'Split',
-          view:   'SplitView'
-        }
-      ]
-                       );
-    }
-  }
-});
-
-
 var GridView = FOAM({
   model_: 'Model',
 
@@ -2856,18 +2791,21 @@ var GridView = FOAM({
     {
       name:  'row',
       type: 'ChoiceView',
+      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
       name:  'col',
       label: 'column',
       type: 'ChoiceView',
+      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
       name:  'acc',
       label: 'accumulator',
       type: 'ChoiceView',
+      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
@@ -2892,41 +2830,6 @@ var GridView = FOAM({
       name:  'grid',
       type:  'GridByExpr',
       valueFactory: function() { return GridByExpr.create(); }
-    },
-    {
-      name: 'memento',
-      postSet: function(m, oldM) {
-        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
-        console.log('Grid VIEW Update Memento: ', m, oldM);
-        if ( m.x ) {
-          var c = this.col.findChoiceIC(m.x);
-          if ( c ) this.col.choice = c;
-        }
-        if ( m.y ) {
-          var c = this.row.findChoiceIC(m.y);
-          if ( c ) this.row.choice = c;
-        }
-        if ( m.cells ) {
-          var c = this.acc.findChoiceIC(m.cells);
-          if ( c ) this.acc.choice = c;
-        }
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      model_: 'Method',
-      
-      name: 'updateMemento',
-      code: function() {
-        console.log('GRID VIEW updating memento...');
-        this.memento = {
-          x: this.col.value.get().name,
-          y: this.row.value.get().name,
-          cells: this.acc.choice[1].toLowerCase()
-        };
-      }
     }
   ],
 
@@ -2947,7 +2850,6 @@ var GridView = FOAM({
       this.dao.select(this.grid.clone())(function(g) {
         self.$.innerHTML = g.toHTML();
         g.initHTML();
-        self.updateMemento();
       });
     },
 
@@ -3071,9 +2973,11 @@ var AlternateView = FOAM({
   name: 'AlternateView',
 
   properties: [
+    /*
     {
       name: 'selection'
     },
+    */
     {
       name: 'views',
       type: 'Array[ViewChoice]',
@@ -3094,8 +2998,6 @@ var AlternateView = FOAM({
             this.installSubView(this.choice);
           }
         }
-
-        this.updateMemento();
       }
     },
     {
@@ -3103,47 +3005,27 @@ var AlternateView = FOAM({
       postSet: function(viewChoice) {
         if ( this.elementId ) this.installSubView(viewChoice);
       },
-      hidden: true
-    },
-    {
-      name: 'memento',
-      postSet: function(m, oldM) {
-        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
-        console.log('ALT VIEW Update Memento: ', m);
-        if ( m.mode ) {
-          for ( var i = 0 ; i < this.views.length ; i++ ) {
-            if ( this.views[i].label.toLowerCase() == m.mode ) {
-              this.choice = this.views[i];
-              break;
-            }
+      memorable: true,
+      fromMemento: function(m) {
+        for ( var i = 0 ; i < this.views.length ; i++ ) {
+          if ( this.views[i].label.toLowerCase() === m ) {
+            return this.views[i];
           }
         }
-        if ( this.view ) this.view.memento = m;
-      }
+      },
+      toMemento: function(v) {
+        return v.label.toLowerCase();
+      },
+      hidden: true
     },
     {
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       defaultValue: null
-    }
-  ],
-
-  listeners: [
+    },
     {
-      model_: 'Method',
-
-      name: 'updateMemento',
-      code: function() {
-        var m;
-        if ( this.view ) {
-          m = {__proto__: this.view.memento};
-          m.mode = this.choice.label.toLowerCase();
-        } else {
-          m = {};
-        }
-        
-        this.memento = m;
-      }
+      name: 'view',
+      memorable: true
     }
   ],
 
@@ -3173,11 +3055,7 @@ var AlternateView = FOAM({
       //       if ( view.set ) view.set(this.model.get());
       //       Events.link(this.model, this.view.model);
 
-      if ( this.view ) this.view.removePropertyListener('memento', this.updateMemento);
       this.view = view;
-      this.view.addPropertyListener('memento', this.updateMemento);
-
-      this.updateMemento();
     },
 
     toHTML: function() {
@@ -3228,6 +3106,44 @@ var AlternateView = FOAM({
   }
 });
 
+
+var ModelAlternateView = FOAM({
+  model_: 'Model',
+  name: 'ModelAlternateView',
+  extendsModel: 'AlternateView',
+  methods: {
+    init: function() {
+      // TODO: super.init
+      this.views = FOAM([
+        {
+          model_: 'ViewChoice',
+          label:  'GUI',
+          view:   'DetailView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'JS',
+          view:   'JSView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'XML',
+          view:   'XMLView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'UML',
+          view:   'XMLView'
+        },
+        {
+          model_: 'ViewChoice',
+          label:  'Split',
+          view:   'SplitView'
+        }
+      ]);
+    }
+  }
+});
 
 
 var FloatFieldView = FOAM({

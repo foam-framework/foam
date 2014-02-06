@@ -294,6 +294,60 @@ console.log(i, k, v);
     return XMLUtil.stringify(this);
   },
 
+  get memorable() {
+    if ( this.model_.isMemorable_ === undefined ) {
+      this.model_.isMemorable_ = this.model_.properties.some(function(p) {
+        return p.memorable;
+      });
+    }
+    return this.model_.isMemorable_;
+  },
+
+  get memento() {
+    console.log('get memento: ', this.model_.name);
+    var m = {};
+    
+    for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+      var prop = this.model_.properties[i];
+
+      if ( prop.memorable ) {
+        wasMemorable = true;
+
+        if ( ! this.hasOwnProperty(prop.name) ) continue;
+
+        var value = this[prop.name];
+
+        if ( value !== undefined ) {
+          m[prop.name] = value.memorable ?
+            value.memento :
+            prop.toMemento.call(this, value) ;
+        }
+      }
+    }
+
+    return m;
+  },
+
+  set memento(m) {
+    console.log('set memento: ', m);
+    for ( var key in m ) {
+      if ( ! m.hasOwnProperty(key) ) continue;
+      var prop = this.model_.getProperty(key);
+      
+      if ( ! prop ) {
+        console.warn('Unknown key in memento: ', key);
+        continue;
+      }
+      if ( prop.memorable && prop.fromMemento ) {
+        if ( this[key] && this[key].memorable ) {
+          this[key].memento = m[key];
+        } else {
+          this[key] = prop.fromMemento.call(this, m[key]);
+        }
+      }
+    }
+  },
+
   write: function(document) {
     var view = ActionBorder.create(
       this.model_,
@@ -304,9 +358,3 @@ console.log(i, k, v);
     view.initHTML();
   }
 };
-
-/*
-AbstractPrototype.__defineGetter__('__super__', function() {
-  return this.__proto__.__proto__;
-});
-*/

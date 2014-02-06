@@ -115,17 +115,8 @@ var Browser = Model.create({
     },
     {
       name: 'view',
+      memorable: true,
       valueFactory: function() { return createView(this.rowSelection, this); }
-    },
-    {
-      name: 'memento',
-      postSet: function(m, oldM) {
-        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
-console.log('BROWSER Udpate Memento: ', m);
-        this.searchChoice.memento = m.can;
-        if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
-        this.view.memento = m;
-      }
     },
     {
       name: 'mementoMgr',
@@ -133,6 +124,7 @@ console.log('BROWSER Udpate Memento: ', m);
     },
     {
       name: 'searchChoice',
+      memorable: true,
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
@@ -150,6 +142,7 @@ console.log('BROWSER Udpate Memento: ', m);
     },
     {
       name: 'searchField',
+      memorable: true,
       valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20 }); }
     },
     {
@@ -178,17 +171,8 @@ console.log('BROWSER Udpate Memento: ', m);
   listeners: [
     {
       model_: 'Method',
-      name: 'updateMemento',
-      code: function() {
-        var m = {__proto__: this.view.memento};
-        m.can = this.searchChoice.memento;
-        m.q = this.searchField.value.get();
-        this.memento = m;
-      }
-    },
-    {
-      model_: 'Method',
       name: 'performQuery',
+      animate: true,
       code: function(evt) {
         this.maybeImportCrbugUrl(this.searchField.value.get());
 
@@ -391,11 +375,6 @@ console.log('BROWSER Udpate Memento: ', m);
       this.searchChoice.choice = this.searchChoice.choices[1];
 
       this.window.document.addEventListener('keyup', this.keyPress);
-
-      this.searchChoice.value.addListener(this.updateMemento);
-      this.view.addPropertyListener('memento', this.updateMemento);
-
-      this.updateMemento();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -493,13 +472,11 @@ console.log('BROWSER Udpate Memento: ', m);
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
       var u = this.url + '/issues/list';
-      var m = {};
+      var m = this.memento;
       var d = '?';
 
-      for ( key in this.memento ) m[key] = this.memento[key];
-
       // Replace short-names will fullnames that crbug will understand
-      if ( this.memento.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
+      if ( m.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
       if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
 
       for ( var key in m ) {

@@ -165,6 +165,35 @@ var Property = {
            help: 'Indicates if the property is transient.'
        },
        {
+           name: 'memorable',
+           type: 'Boolean',
+           view: 'BooleanView',
+           defaultValue: false,
+           help: 'Indicates if the property is to be included in mementos created from the object.'
+       },
+       {
+           name: 'toMemento',
+           type: 'Function',
+           required: false,
+           displayWidth: 70,
+           displayHeight: 3,
+           view: 'FunctionView',
+           defaultValue: function(value) {
+             return value.memento || value;
+           },
+           help: 'The property\'s default value function.'
+       },
+       {
+           name: 'fromMemento',
+           type: 'Function',
+           required: false,
+           displayWidth: 70,
+           displayHeight: 3,
+           view: 'FunctionView',
+           defaultValue: function(value) { return value; },
+           help: 'The property\'s default value function.'
+       },
+       {
            name: 'displayWidth',
            type: 'int',
            displayWidth: 8,
