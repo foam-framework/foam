@@ -134,14 +134,14 @@ var Browser = Model.create({
           helpText: 'Search within:',
           value: this.can,
           choices:[
-            ['',                                         '&nbsp;All issues'],
-            ['status=New,Accepted,Started',              '&nbsp;Open issues'],
-            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me'],
-            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me'],
-            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me'],
-            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me'],
-            ['status=New',                               '&nbsp;New issues'],
-            ['status=Fixed,Done',                        '&nbsp;Issues to verify']
+            ['',                                         '&nbsp;All issues', 1],
+            ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
+            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me', 3],
+            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me', 4],
+            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me', 5],
+            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me', 8],
+            ['status=New',                               '&nbsp;New issues', 6],
+            ['status=Fixed,Done',                        '&nbsp;Issues to verify', 7]
           ]});
       }
     },
@@ -441,9 +441,65 @@ var Browser = Model.create({
       console.log(this.crbugUrl());
     },
 
-    // Crbug doesn't order canned-queries sequentially
-    idToCrbugCan: [1, 2, 3, 4, 5, 8, 6, 7],
-    crbugCanToId: [0, 0, 1, 2, 3, 4, 6, 7, 5],
+    urlMap: [
+      [
+        ['q'],
+        'q',
+        function(q) {
+          // Replace short-names will fullnames that crbug will understand
+          return (QueryParser.parseString(q) || TRUE).partialEval().toMQL();
+        },
+        function(q) { return q; }
+      ],
+      [
+        ['can'],
+        'can',
+        // Crbug doesn't order canned-queries sequentially
+        function(c) { return this.searchChoice.choice[2]; },
+        function(c) {
+          for ( var i = 1 ; i < this.searchChoice.choices.length ; i++ )
+            if ( this.searchChoice.choices[i][2] == c )
+              return this.searchChoice.choices[i];
+          return this.searchChoice.choices[0];
+        }
+      ],
+      [
+        ['view', 'choice'],
+        'mode',
+        function(choice) { return choice.label.toLowerCase(); },
+        function(mode) {debugger;}
+      ],
+      [
+        'view view view properties'.split(' '),
+        'colspec',
+        function(properties) { return properties.join(' '); },
+        function(colspec) { return colspen.join(' '); }
+      ],
+      [
+        'view view view sortOrder'.split(' '),
+        'sort',
+        function(sortOrder) { return sortOrder.toMQL(); },
+        function(sort) {debugger;}
+      ],
+      [
+        'view view acc choice'.split(' '),
+        'tile',
+        function(choice) { return choice[1].toLowerCase(); },
+        function(title) {debugger;}
+      ],
+      [
+        'view view row choice'.split(' '),
+        'y',
+        function(choice) { return choice[1].toLowerCase(); },
+        function(y) {debugger;}
+      ],
+      [
+        'view view col choice'.split(' '),
+        'x',
+        function(choice) { return choice[1].toLowerCase(); },
+        function(x) {debugger;}
+      ]
+    ],
 
     /** Import a cr(1)bug URL. **/
     maybeImportCrbugUrl: function(url) {
@@ -475,20 +531,22 @@ var Browser = Model.create({
 
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
-return "";
       var u = this.url + '/issues/list';
-      var m = this.memento;
+      var m = this.memento2.value;
       var d = '?';
+      var urlMap = this.urlMap;
 
-      // Replace short-names will fullnames that crbug will understand
-      if ( m.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
-      if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
-
-      for ( var key in m ) {
-        u += d;
-
-        u += key + '=' + encodeURIComponent(m[key]);
-        d = '&';
+      for ( var i = 0 ; i < urlMap.length ; i++ ) {
+        var path = urlMap[i][0];
+        var value = m;
+        for ( var j = 0 ; j < path.length && value ; j++ ) {
+          value = value[path[j]];
+        }
+        if ( value ) {
+          u += d;
+          u += urlMap[i][1] + '=' + encodeURIComponent(urlMap[i][2].call(this, value));
+          d = '&';
+        }
       }
 
       return u;

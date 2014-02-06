@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+var prefix = '';
+
 /** The Prototype for all Generated Prototypes. **/
 // TODO: Rename FOAMObject or FObject
 var AbstractPrototype = {
@@ -303,68 +305,44 @@ console.log(i, k, v);
     return this.model_.isMemorable_;
   },
 
-  mementoValue: function()  {
-    if ( ! this.memento_ ) {
+  prefix: '',
+
+  get memento2() {
+    if ( ! this.memorable ) return null;
+
+    var oldPrefix = prefix;
+
+    prefix += '   ';
+
+    console.log(prefix, '*** memento2 ', this);
+    if ( this.memento_ === undefined || true ) {
       var m = CompoundValue.create();
 
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
         var prop = this.model_.properties[i];
 
-        if ( prop.memorable ) {
-// TODO: get mementoValue instead
-          m.addValue(prop.name, this.propertyValue(prop.name));
+        if ( prop.memorable ) console.log(prefix, '****** prop ', prop.name, this.hasOwnProperty(prop.name), this[prop.name]);
+        if ( prop.memorable && this.hasOwnProperty(prop.name) ) {
+          var v  = this[prop.name];
+
+          if ( v && v.memento2 ) {
+            m.addValue(prop.name, ValueValue.create({Value: this.propertyValue(prop.name)}));
+          } else if ( v && v.addListener ) {
+            m.addValue(prop.name, ValueValue.create({Value: this.propertyValue(prop.name)}));
+          } else {
+            m.addValue(prop.name, this.propertyValue(prop.name));
+          }
+
+          var v2 = ( v && v.memento2 ) ? ValueValue.create({Value: v}) : this.propertyValue(prop.name);
+          m.addValue(prop.name, v2);
         }
       }
 
+      prefix = oldPrefix;
       this.memento_ = m;
     }
 
     return this.memento_;
-  },
-
-  get memento() {
-    console.log('get memento: ', this.model_.name);
-    var m = {};
-    
-    for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-      var prop = this.model_.properties[i];
-
-      if ( prop.memorable ) {
-        wasMemorable = true;
-
-        if ( ! this.hasOwnProperty(prop.name) ) continue;
-
-        var value = this[prop.name];
-
-        if ( value !== undefined ) {
-          m[prop.name] = value.memorable ?
-            value.memento :
-            prop.toMemento.call(this, value) ;
-        }
-      }
-    }
-
-    return m;
-  },
-
-  set memento(m) {
-    console.log('set memento: ', m);
-    for ( var key in m ) {
-      if ( ! m.hasOwnProperty(key) ) continue;
-      var prop = this.model_.getProperty(key);
-      
-      if ( ! prop ) {
-        console.warn('Unknown key in memento: ', key);
-        continue;
-      }
-      if ( prop.memorable && prop.fromMemento ) {
-        if ( this[key] && this[key].memorable ) {
-          this[key].memento = m[key];
-        } else {
-          this[key] = prop.fromMemento.call(this, m[key]);
-        }
-      }
-    }
   },
 
   write: function(document) {
