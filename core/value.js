@@ -36,41 +36,6 @@ var SimpleValue = Model.create({
   }
 });
 
-/*
-var ValueValue = Model.create({
-  name: 'ValueValue',
-
-  properties: [
-    {
-      name: 'Value',
-      postSet: function(newValue, oldValue) {
-        if ( oldValue ) oldValue.removeListener(this.onValueChange);
-        newValue.addListener(this.onValueChange);
-//        this.value = newValue.get();
-      }
-    },
-    {
-      name: 'value'
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onValueChange',
-      code: function(_, _, oldValue, newValue) {
-console.log('ValueValueChange: ', oldValue, newValue);
-//        this.value = newValue.get();
-      }
-    }
-  ],
-
-  methods: {
-    get: function() { return this.value; },
-    set: function(val) { this.value = val; },
-    toString: function() { return "ValueValue(" + this.value + ")"; }
-  }
-});
-*/
 
 var MementoValue = Model.create({
   name: 'MementoValue',
@@ -101,12 +66,14 @@ var MementoValue = Model.create({
     {
       name: 'onValueChange',
       code: function(_, _, oldValue, newValue) {
+console.log('MementoValue.onValueChange', arguments);
         this.memento = newValue && newValue.memento;
       }
     },
     {
       name: 'onMementoChange',
       code: function(_, _, oldValue, newValue) {
+        console.log('MementoValue.onMementoChange', newValue, arguments);
         this.value = newValue;
       }
     }
@@ -129,18 +96,17 @@ var ValueValue = Model.create({
     {
       name: 'Value',
       postSet: function(newValue, oldValue) {
-//        if ( newValue && newValue.get && newValue.get() && newValue.get().memento ) newValue = MementoValueValue.create({Value: newValue}); 
-        if ( oldValue ) oldValue.removeListener(this.onChange1);
+        if ( oldValue ) oldValue.removeListener(this.onValueChange);
         this.subValue = newValue && newValue.get();
-        if ( newValue ) newValue.addListener(this.onChange1);
+        if ( newValue ) newValue.addListener(this.onValueChange);
       }
     },
     {
       name: 'subValue',
       postSet: function(newValue, oldValue) {
-        if ( oldValue ) oldValue.removeListener(this.onChange2);
+        if ( oldValue ) oldValue.removeListener(this.onSubValueChange);
         this.value = newValue && newValue.get();
-        if ( newValue ) newValue.addListener(this.onChange2);
+        if ( newValue ) newValue.addListener(this.onSubValueChange);
       }
     },
     {
@@ -150,15 +116,17 @@ var ValueValue = Model.create({
 
   listeners: [
     {
-      name: 'onChange1',
+      name: 'onValueChange',
       code: function(_, _, oldValue, newValue) {
-        this.subValue = newValue && newValue.get().memento;
+console.log('ValueValue.onValueChange', arguments);
+        this.subValue = newValue;
       }
     },
     {
-      name: 'onChange2',
+      name: 'onSubValueChange',
       code: function(_, _, oldValue, newValue) {
-        this.value = newValue && newValue.get();
+console.log('ValueValue.onSubValueChange', arguments);
+        this.value = newValue;
       }
     }
   ],
@@ -166,7 +134,9 @@ var ValueValue = Model.create({
   methods: {
     get: function() { return this.value; },
     set: function(val) { this.value = val; },
-    toString: function() { return "ValueValue(" + this.value + ")"; }
+    toString: function() {
+      return 'ValueValue(' + this.Value + ', ' + this.subValue + ' = "' + this.value + '")';
+    }
   }
 });
 
@@ -181,7 +151,24 @@ var CompoundValue = Model.create({
     },
     {
       name: 'value',
-      valueFactory: function() { return {}; }
+      setter: function(map) {
+console.log('CompoundValue.set()');
+        for ( var key in map ) {
+          this.values[key].set(map[key]);
+        }
+        var oldValue = this.instance_.value;
+        this.instance_.value = this.value;
+        this.propertyChange('value', oldValue, this.instance_.value);
+      },
+      getter: function() {
+        var m = {};
+        for ( var key in this.values ) {
+          var v = this.values[key].get();
+          if ( v ) m[key] = v;
+        }
+        return m;
+      }
+//      valueFactory: function() { return {}; }
     }
   ],
 
@@ -190,6 +177,8 @@ var CompoundValue = Model.create({
       name: 'onSubValueChange',
       code: function(key, newValue) {
         console.log('subChange: ', key, newValue);
+        if ( newValue.memento ) console.log('************************************************************');
+
         this.value[key] = this.values[key].get();
         this.propertyChange('value', undefined, this.value);
       }
@@ -204,11 +193,7 @@ var CompoundValue = Model.create({
       value.addListener(this.onSubValueChange.bind(this, key));
     },
     get: function() { return this.value; },
-    set: function(map) {
-      for ( var key in map ) {
-        this.values[key].set(map[key]);
-      }
-    },
+    set: function(val) { this.value = val; },
     toString: function() {
       var s = 'CompoundValue(';
       for ( var key in this.values ) 

@@ -21,12 +21,10 @@ var MementoMgr = FOAM({
   
   properties: [
     {
-      name: 'memorable'
+      name: 'memento'
     },
     {
-      name: 'memento',
-      getter: function() { return this.memorable.memento; },
-      setter: function(m) { console.log('********* MEMENTO: ', m); this.ignore_ = true; this.memorable.memento = m; this.ignore_ = false; }
+      name: 'value'
     },
     {
       name:  'stack',
@@ -49,7 +47,7 @@ var MementoMgr = FOAM({
       isEnabled:   function() { return this.stack.length; },
       action:      function() {
       this.dumpState('preBack');
-        this.redo.push(this.memento);
+        this.redo.push(this.memento.value);
         this.restore(this.stack.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -66,7 +64,7 @@ var MementoMgr = FOAM({
       isEnabled:   function() { return this.redo.length; },
       action:      function() {
       this.dumpState('preForth');
-        this.remember(this.memento);
+        this.remember(this.memento.value);
         this.restore(this.redo.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -78,8 +76,10 @@ var MementoMgr = FOAM({
   listeners: [
     {
       name: 'onMementoChange',
-      code: function(_, _, oldValue) {
-      //this.dumpState('preChange');
+      code: function(_, newValue, oldValue) {
+        console.log('MementoMgr.onChange', newValue, oldValue);
+        return;
+      // this.dumpState('preChange');
         if ( ! oldValue || this.ignore_ ) return;
         this.remember(oldValue);
         this.redo = [];
@@ -93,20 +93,19 @@ var MementoMgr = FOAM({
     init: function() {
       this.SUPER();
 
-// TODO: uncomment
-//      this.memorable.addPropertyListener('memento', this.onMementoChange);
+//      this.memento.addListener(this.onMementoChange);
     },
 
-    remember: function(memento) {
+    remember: function(value) {
       this.dumpState('preRemember');
-      this.stack.push(memento);
+      this.stack.push(value);
       this.propertyChange('stack', '', this.stack);
       this.dumpState('postRemember');
     },
 
-    restore: function(memento) {
+    restore: function(value) {
       this.dumpState('restore');
-      this.memento = memento;
+      this.value = value;
     },
 
     dumpState: function(spot) {

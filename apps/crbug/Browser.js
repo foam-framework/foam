@@ -114,25 +114,20 @@ var Browser = Model.create({
       valueFactory: function() { return createView(this.rowSelection, this); }
     },
     {
-      name: 'mementoMgr',
-      valueFactory: function() { return this.mementoMgr = MementoMgr.create({memorable: this}); }
-    },
-    {
       name: 'can',
       memorable: true,
-      valueFactory: function() { return SimpleValue.create(); }
+      defaultValue: 1
     },
     {
       name: 'q',
-      memorable: true,
-      valueFactory: function() { return SimpleValue.create(); }
+      memorable: true
     },
     {
       name: 'searchChoice',
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
-          value: this.can,
+          value: this.propertyValue('can'),
           choices:[
             ['',                                         '&nbsp;All issues', 1],
             ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
@@ -147,7 +142,10 @@ var Browser = Model.create({
     },
     {
       name: 'searchField',
-      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20, value: this.q }); }
+      valueFactory: function() { return TextFieldView.create({
+        name: 'search',
+        displayWidth: 20,
+        value: this.propertyValue('q') }); }
     },
     {
       name: 'refreshImg',
@@ -169,6 +167,10 @@ var Browser = Model.create({
     },
     {
       name: 'favouritesMenu'
+    },
+    {
+      name: 'mementoMgr',
+      valueFactory: function() { return MementoMgr.create({memento: QIssue.create().memento}); }
     }
   ],
 
@@ -193,8 +195,6 @@ var Browser = Model.create({
 // TODO: fix
         var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
-
-        console.log(this.crbugUrl());
       }
     },
     {
