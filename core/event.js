@@ -352,6 +352,10 @@ var PropertyChangeSupport = {
 
          set: function(val) { obj[property] = val; },
 
+         get value() { return this.get(); },
+
+         set value(val) { this.set(val); },
+
          addListener: function(listener) {
             obj.addPropertyListener(property, listener);
          },
