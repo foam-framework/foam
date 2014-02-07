@@ -862,18 +862,7 @@ var ChoiceView = FOAM({
     },
     {
       name: 'memento',
-      getter: function() { return ValueValue.create({value: this.propertyValue('value')}); }
-      /*
-      getter: function() {
-        var value = this.value.get();
-        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-          var choice = this.choices[i];
-          if ( value === choice[0] ) return i;
-        }
-        return undefined;
-      }
-      setter: function(m) { if ( m !== undefined ) this.value.set(this.choices[m][0]); }
-      */
+      getter: function() { return this.propertyValue('choice'); }
     },
     {
       name: 'choice',
@@ -886,7 +875,9 @@ var ChoiceView = FOAM({
         return undefined;
       },
       setter: function(choice) {
+        var oldValue = this.choice;
         this.value.set(choice[0]);
+        this.propertyChange('choice', oldValue, this.choice);
       }
     },
     {
@@ -3293,7 +3284,7 @@ var MultiLineStringArrayView = FOAM({
         var value = this.value.get();
         var softValue = this.softValue.get();
         if ( value.length !== softValue.length ) return true;
-        
+
         for ( var i = 0; i < value.length; i++ ) {
           if ( value[i] !== softValue[i] ) return true;
         }

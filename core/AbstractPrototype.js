@@ -323,18 +323,8 @@ console.log(i, k, v);
         var prop = this.model_.properties[i];
 
 //        if ( prop.memorable ) console.log(prefix, '****** prop ', prop.name, this.hasOwnProperty(prop.name), this[prop.name]);
-        if ( prop.memorable /* && this.hasOwnProperty(prop.name) */ ) {
-          var v  = this[prop.name];
-
-          if ( v && v.memento ) {
-            console.log('************ memento', prop.name);
-            m.addValue(prop.name, MementoValue.create({Value: this.propertyValue(prop.name)}));
-          } /*else  if ( v && v.get && v.set ) {
-            m.addValue(prop.name, ValueValue.create({Value: this.propertyValue(prop.name)}));
-          } */ else {
-          console.log('************ property', prop.name);
-            m.addValue(prop.name, this.propertyValue(prop.name));
-          }
+        if ( prop.memorable ) {
+          m.addValue(prop.name, MementoValue.create({Value: this.propertyValue(prop.name)}));
         }
       }
 

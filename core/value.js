@@ -45,7 +45,12 @@ var MementoValue = Model.create({
       name: 'Value',
       postSet: function(newValue, oldValue) {
         if ( oldValue ) oldValue.removeListener(this.onValueChange);
-        this.memento = newValue && newValue.get().memento;
+        var v = newValue && newValue.get();
+        if ( v && v.memento ) {
+          this.memento = v.memento;
+        } else {
+          this.value = v;
+        }
         if ( newValue ) newValue.addListener(this.onValueChange);
       }
     },
@@ -67,7 +72,11 @@ var MementoValue = Model.create({
       name: 'onValueChange',
       code: function(_, _, oldValue, newValue) {
 console.log('MementoValue.onValueChange', arguments);
-        this.memento = newValue && newValue.memento;
+        if ( newValue && newValue.memento ) {
+          this.memento = newValue.memento;
+        } else {
+          this.value = newValue;
+        }
       }
     },
     {
@@ -177,8 +186,6 @@ console.log('CompoundValue.set()');
       name: 'onSubValueChange',
       code: function(key, newValue) {
         console.log('subChange: ', key, newValue);
-        if ( newValue.memento ) console.log('************************************************************');
-
         this.value[key] = this.values[key].get();
         this.propertyChange('value', undefined, this.value);
       }
@@ -196,7 +203,7 @@ console.log('CompoundValue.set()');
     set: function(val) { this.value = val; },
     toString: function() {
       var s = 'CompoundValue(';
-      for ( var key in this.values ) 
+      for ( var key in this.values )
         s += key + '=' + this.values[key] + ' '
       return s + ')';
     }

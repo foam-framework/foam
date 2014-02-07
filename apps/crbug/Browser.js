@@ -482,19 +482,19 @@ var Browser = Model.create({
         function(sort) {debugger;}
       ],
       [
-        'view view acc choice'.split(' '),
+        'view view acc'.split(' '),
         'tile',
         function(choice) { return choice[1].toLowerCase(); },
         function(title) {debugger;}
       ],
       [
-        'view view row choice'.split(' '),
+        'view view row'.split(' '),
         'y',
         function(choice) { return choice[1].toLowerCase(); },
         function(y) {debugger;}
       ],
       [
-        'view view col choice'.split(' '),
+        'view view col'.split(' '),
         'x',
         function(choice) { return choice[1].toLowerCase(); },
         function(x) {debugger;}
