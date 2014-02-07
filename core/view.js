@@ -1983,9 +1983,7 @@ var TableView = FOAM({
       model_: StringArrayProperty,
       name:  'properties',
       memorable: true,
-      defaultValueFn: function() {
-        return this.model.tableProperties;
-      }
+      defaultValue: null
     },
     {
       name:  'hardSelection',
@@ -2047,7 +2045,7 @@ var TableView = FOAM({
       code: function(evt) {
         var v = EditColumnsView.create({
           model:               this.model,
-          properties:          this.properties,
+          properties:          this.properties || this.model.tableProperties,
           availableProperties: this.model.properties
         });
 
@@ -2137,8 +2135,9 @@ var TableView = FOAM({
 
       //str += '<!--<caption>' + model.plural + '</caption>';
       str.push('<thead><tr>');
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var key  = this.properties[i];
+      var properties = this.properties || this.model.tableProperties;
+      for ( var i = 0 ; i < properties.length ; i++ ) {
+        var key  = properties[i];
         var prop = model.getProperty(key);
 
         if ( ! prop ) continue;

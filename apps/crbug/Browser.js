@@ -470,13 +470,13 @@ var Browser = Model.create({
         function(mode) {debugger;}
       ],
       [
-        'view view view properties'.split(' '),
+        'view view properties'.split(' '),
         'colspec',
         function(properties) { return properties.join(' '); },
         function(colspec) { return colspen.join(' '); }
       ],
       [
-        'view view view sortOrder'.split(' '),
+        'view view sortOrder'.split(' '),
         'sort',
         function(sortOrder) { return sortOrder.toMQL(); },
         function(sort) {debugger;}
