@@ -615,8 +615,7 @@ var TextFieldView = FOAM({
     },
     {
       name: 'memento',
-      getter: function() { return this.value.get(); },
-      setter: function(m) { this.value.set(m); }
+      getter: function() { return ValueValue.create({value: this.propertyValue('value')}); },
     },
     {
       model_: 'StringProperty',
@@ -863,6 +862,8 @@ var ChoiceView = FOAM({
     },
     {
       name: 'memento',
+      getter: function() { return ValueValue.create({value: this.propertyValue('value')}); }
+      /*
       getter: function() {
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -870,8 +871,9 @@ var ChoiceView = FOAM({
           if ( value === choice[0] ) return i;
         }
         return undefined;
-      },
+      }
       setter: function(m) { if ( m !== undefined ) this.value.set(this.choices[m][0]); }
+      */
     },
     {
       name: 'choice',
@@ -1981,8 +1983,6 @@ var TableView = FOAM({
       model_: StringArrayProperty,
       name:  'properties',
       memorable: true,
-      fromMemento: function(v) { return v.split(' '); },
-      toMemento: function(v) { return v.join(' '); },
       defaultValueFn: function() {
         return this.model.tableProperties;
       }
@@ -2006,19 +2006,6 @@ var TableView = FOAM({
       name:  'sortOrder',
       type:  'Comparator',
       memorable: true,
-      fromMemento: function(v) {
-        var ps = v.split(' ');
-        for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p = ps[i];
-          if ( p.charAt('0') == '-' ) {
-            ps[i] = DESC(this.model.getProperty(p.substring(1)));
-          } else {
-            ps[i] = this.model.getProperty(p);
-          }
-        }
-        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
-      },
-      toMemento: function(v) { return v.toMQL(); },
       defaultValue: undefined
     },
     {
@@ -2991,16 +2978,6 @@ var AlternateView = FOAM({
         if ( this.elementId ) this.installSubView(viewChoice);
       },
       memorable: true,
-      fromMemento: function(m) {
-        for ( var i = 0 ; i < this.views.length ; i++ ) {
-          if ( this.views[i].label.toLowerCase() === m ) {
-            return this.views[i];
-          }
-        }
-      },
-      toMemento: function(v) {
-        return v.label.toLowerCase();
-      },
       hidden: true
     },
     {

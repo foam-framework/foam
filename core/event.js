@@ -365,7 +365,7 @@ var PropertyChangeSupport = {
          },
 
          toString: function () {
-            return "PropertyValue(" + obj + "," + property + ")";
+            return 'PropertyValue(' + property + ')';
          }
       };
    }

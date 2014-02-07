@@ -91,9 +91,10 @@ console.log(i, k, v);
 
 
   toString: function() {
+    // TODO: do something to detect loops which cause infinite recurrsions.
 // console.log(this.model_.name + "Prototype");
-    // return this.model_.name + "Prototype";
-    return this.toJSON();
+    return this.model_.name + "Prototype";
+    // return this.toJSON();
   },
 
 
@@ -307,34 +308,33 @@ console.log(i, k, v);
 
   prefix: '',
 
-  get memento2() {
+  get memento() {
     if ( ! this.memorable ) return null;
 
     var oldPrefix = prefix;
 
     prefix += '   ';
 
-    console.log(prefix, '*** memento2 ', this);
-    if ( this.memento_ === undefined || true ) {
+//    console.log(prefix, '*** memento ', this);
+    if ( this.memento_ === undefined ) {
       var m = CompoundValue.create();
 
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
         var prop = this.model_.properties[i];
 
-        if ( prop.memorable ) console.log(prefix, '****** prop ', prop.name, this.hasOwnProperty(prop.name), this[prop.name]);
-        if ( prop.memorable && this.hasOwnProperty(prop.name) ) {
+//        if ( prop.memorable ) console.log(prefix, '****** prop ', prop.name, this.hasOwnProperty(prop.name), this[prop.name]);
+        if ( prop.memorable /* && this.hasOwnProperty(prop.name) */ ) {
           var v  = this[prop.name];
 
-          if ( v && v.memento2 ) {
+          if ( v && v.memento ) {
+            console.log('************ memento', prop.name);
+            m.addValue(prop.name, MementoValue.create({Value: this.propertyValue(prop.name)}));
+          } /*else  if ( v && v.get && v.set ) {
             m.addValue(prop.name, ValueValue.create({Value: this.propertyValue(prop.name)}));
-          } else if ( v && v.addListener ) {
-            m.addValue(prop.name, ValueValue.create({Value: this.propertyValue(prop.name)}));
-          } else {
+          } */ else {
+          console.log('************ property', prop.name);
             m.addValue(prop.name, this.propertyValue(prop.name));
           }
-
-          var v2 = ( v && v.memento2 ) ? ValueValue.create({Value: v}) : this.propertyValue(prop.name);
-          m.addValue(prop.name, v2);
         }
       }
 

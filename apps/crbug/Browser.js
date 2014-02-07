@@ -532,7 +532,7 @@ var Browser = Model.create({
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
       var u = this.url + '/issues/list';
-      var m = this.memento2.value;
+      var m = this.memento.value;
       var d = '?';
       var urlMap = this.urlMap;
 
