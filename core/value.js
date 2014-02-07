@@ -37,6 +37,9 @@ var SimpleValue = Model.create({
 });
 
 
+/**
+ * A ValueValue which makes in transparent if the Value's value is a Memento.
+ **/
 var MementoValue = Model.create({
   name: 'MementoValue',
 
@@ -98,6 +101,9 @@ console.log('MementoValue.onValueChange', arguments);
 });
 
 
+/**
+ * A Value whose value is a Value but whose value appears to be that Value's value.
+ */
 var ValueValue = Model.create({
   name: 'ValueValue',
 
