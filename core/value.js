@@ -15,18 +15,11 @@
  * limitations under the License.
  */
 
+// TODO: standardize on either get()/set() or .value
 var SimpleValue = Model.create({
   name: 'SimpleValue',
 
-  properties: [
-    {
-      name: 'value'
-    },
-    {
-      name: 'memento',
-      getter: function() { return this; }
-    }
-  ],
+  properties: [ { name: 'value' } ],
 
   methods: {
     init: function(value) { this.value = value || ""; },
