@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-MementoMgr.BACK.iconUrl = 'images/back.png';
-MementoMgr.FORTH.iconUrl = 'images/forth.png';
-MementoMgr.BACK.label = '';
-MementoMgr.FORTH.label = '';
-MementoMgr.BACK.help = '';
-MementoMgr.FORTH.help = '';
-
 var Browser = Model.create({
   name: 'Browser',
 
@@ -169,8 +162,16 @@ var Browser = Model.create({
       name: 'favouritesMenu'
     },
     {
+      name: 'legacyUrl',
+      getter: function() { this.memento.update(); return this.memento.toParams(); }
+    },
+    {
+      name: 'memento',
+      valueFactory: function() { return BrowserMemento.create({root: this}); }
+    },
+    {
       name: 'mementoMgr',
-      valueFactory: function() { return MementoMgr.create({memento: QIssue.create().memento}); }
+      valueFactory: function() { return MementoMgr.create({memento: this.memento}); }
     }
   ],
 
@@ -464,10 +465,10 @@ var Browser = Model.create({
         }
       ],
       [
-        ['view', 'choice'],
+        ['view', 'mode'],
         'mode',
-        function(choice) { return choice.label.toLowerCase(); },
-        function(mode) {debugger;}
+        function(mode) { return mode.toLowerCase(); },
+        function(mode) { return mode.capitalize(); }
       ],
       [
         'view view properties'.split(' '),
@@ -479,7 +480,18 @@ var Browser = Model.create({
         'view view sortOrder'.split(' '),
         'sort',
         function(sortOrder) { return sortOrder.toMQL(); },
-        function(sort) {debugger;}
+        function(sort) {
+          var ps = sort.split(' ');
+          for ( var i = 0 ; i < ps.length ; i++ ) {
+            var p = ps[i];
+            if ( p.charAt('0') == '-' ) {
+              ps[i] = DESC(this.model.getProperty(p.substring(1)));
+            } else {
+              ps[i] = this.model.getProperty(p);
+            }
+          }
+          return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
+        }
       ],
       [
         'view view acc'.split(' '),
@@ -509,21 +521,10 @@ var Browser = Model.create({
       if ( ! match ) return;
 
       var project = match[1];
+      var params  = match[3];
 
       if ( project == this.projectName ) {
-        var params = match[3].split('&');
-
-        var memento = {};
-        for ( var i = 0 ; i < params.length ; i++ ) {
-          var param = params[i];
-          var keyValue = param.split('=');
-          memento[decodeURIComponent(keyValue[0])] =
-            decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
-        }
-
-        if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
-
-        this.memento = memento;
+        this.memento.fromParams(params);
       } else {
         this.qbug.launchBrowser(project, url)
       }
@@ -531,25 +532,8 @@ var Browser = Model.create({
 
     /** Convert current state to a cr(1)bug URL. **/
     crbugUrl: function() {
-      var u = this.url + '/issues/list';
-      var m = this.memento.value;
-      var d = '?';
-      var urlMap = this.urlMap;
-
-      for ( var i = 0 ; i < urlMap.length ; i++ ) {
-        var path = urlMap[i][0];
-        var value = m;
-        for ( var j = 0 ; j < path.length && value ; j++ ) {
-          value = value[path[j]];
-        }
-        if ( value ) {
-          u += d;
-          u += urlMap[i][1] + '=' + encodeURIComponent(urlMap[i][2].call(this, value));
-          d = '&';
-        }
-      }
-
-      return u;
+      this.memento.update();
+      return this.url + '/issues/list?' + this.memento.toParams();
     },
 
     openURL: function(url) {
@@ -568,12 +552,12 @@ var ChromeAppBrowser = Model.create({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',
-  
+
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
       window.open(url);
     },
   }
-  
+
 });

@@ -192,8 +192,7 @@ var ScrollBorder = FOAM({
        type: 'view',
        postSet: function(view) {
          this.scrollbar.extent = this.view.rows;
-       },
-       memorable: true
+       }
      },
        {
            name: 'scrollbar',
@@ -227,11 +226,7 @@ var ScrollBorder = FOAM({
            this.repaint_ && this.repaint_();
             */
          }
-       },
-     {
-       name: 'memento',
-       getter: function() { return this.view.memento; }
-     }
+       }
    ],
 
   listeners: [

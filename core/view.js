@@ -614,10 +614,6 @@ var TextFieldView = FOAM({
       }
     },
     {
-      name: 'memento',
-      getter: function() { return ValueValue.create({value: this.propertyValue('value')}); },
-    },
-    {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() { return 'input'; }
@@ -859,10 +855,6 @@ var ChoiceView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); }
-    },
-    {
-      name: 'memento',
-      getter: function() { return this.propertyValue('choice'); }
     },
     {
       name: 'choice',
@@ -1973,7 +1965,6 @@ var TableView = FOAM({
     {
       model_: StringArrayProperty,
       name:  'properties',
-      memorable: true,
       defaultValue: null
     },
     {
@@ -1994,7 +1985,6 @@ var TableView = FOAM({
     {
       name:  'sortOrder',
       type:  'Comparator',
-      memorable: true,
       defaultValue: undefined
     },
     {
@@ -2753,21 +2743,18 @@ var GridView = FOAM({
     {
       name:  'row',
       type: 'ChoiceView',
-      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
       name:  'col',
       label: 'column',
       type: 'ChoiceView',
-      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
       name:  'acc',
       label: 'accumulator',
       type: 'ChoiceView',
-      memorable: true,
       valueFactory: function() { return ChoiceView.create(); }
     },
     {
@@ -2967,8 +2954,23 @@ var AlternateView = FOAM({
       postSet: function(viewChoice) {
         if ( this.elementId ) this.installSubView(viewChoice);
       },
-      memorable: true,
       hidden: true
+    },
+    {
+      name: 'mode',
+      getter: function() { return this.choice.label; },
+      setter: function(label) {
+        for ( var i = 0 ; i < this.views.length ; i++ ) {
+          if ( this.views[i].label === label ) {
+            var oldValue = this.mode;
+
+            this.choice = this.views[i];
+
+            this.propertyChange('mode', oldValue, label);
+            return;
+          }
+        }
+      }
     },
     {
       name: 'headerView',
@@ -2976,8 +2978,7 @@ var AlternateView = FOAM({
       defaultValue: null
     },
     {
-      name: 'view',
-      memorable: true
+      name: 'view'
     }
   ],
 

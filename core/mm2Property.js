@@ -165,13 +165,6 @@ var Property = {
            help: 'Indicates if the property is transient.'
        },
        {
-           name: 'memorable',
-           type: 'Boolean',
-           view: 'BooleanView',
-           defaultValue: false,
-           help: 'Indicates if the property is to be included in mementos created from the object.'
-       },
-       {
            name: 'displayWidth',
            type: 'int',
            displayWidth: 8,

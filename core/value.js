@@ -47,6 +47,7 @@ var MementoValue = Model.create({
     {
       name: 'Value',
       postSet: function(newValue, oldValue) {
+        if ( this.ignore_ ) return;
         if ( oldValue ) oldValue.removeListener(this.onValueChange);
         var v = newValue && newValue.get();
         if ( v && v.memento ) {
@@ -60,13 +61,23 @@ var MementoValue = Model.create({
     {
       name: 'memento',
       postSet: function(newValue, oldValue) {
+        if ( this.ignore_ ) return;
         if ( oldValue ) oldValue.removeListener(this.onMementoChange);
         this.value = newValue && newValue.get();
         if ( newValue ) newValue.addListener(this.onMementoChange);
       }
     },
     {
-      name: 'value'
+      name: 'value',
+      postSet: function(newValue) {
+        this.ignore_ = true;
+        if ( this.memento ) {
+          this.memento.set(newValue);
+        } else {
+          this.Value.set(newValue);
+        }
+        this.ignore_ = false;
+      }
     }
   ],
 
@@ -74,6 +85,7 @@ var MementoValue = Model.create({
     {
       name: 'onValueChange',
       code: function(_, _, oldValue, newValue) {
+        if ( this.ignore_ ) return;
 console.log('MementoValue.onValueChange', arguments);
         if ( newValue && newValue.memento ) {
           this.memento = newValue.memento;
@@ -85,6 +97,7 @@ console.log('MementoValue.onValueChange', arguments);
     {
       name: 'onMementoChange',
       code: function(_, _, oldValue, newValue) {
+        if ( this.ignore_ ) return;
         console.log('MementoValue.onMementoChange', newValue, arguments);
         this.value = newValue;
       }
@@ -172,16 +185,19 @@ console.log('CompoundValue.set()');
           this.values[key].set(map[key]);
         }
         var oldValue = this.instance_.value;
-        this.instance_.value = this.value;
-        this.propertyChange('value', oldValue, this.instance_.value);
+        this.instance_.value = map;
+        this.propertyChange('value', oldValue, map);
       },
       getter: function() {
-        var m = {};
-        for ( var key in this.values ) {
-          var v = this.values[key].get();
-          if ( v ) m[key] = v;
+        if ( ! this.instance_.value ) {
+          var m = {};
+          for ( var key in this.values ) {
+            var v = this.values[key].get();
+            if ( v ) m[key] = v;
+          }
+          this.instance_.value = m;
         }
-        return m;
+        return this.instance_.value;
       }
 //      valueFactory: function() { return {}; }
     }

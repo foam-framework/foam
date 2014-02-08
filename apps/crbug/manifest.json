@@ -32,6 +32,7 @@
         "ui/View.js",
         "model/QBug.js",
         "model/QProject.js",
+        "BrowserMemento.js",
         "Browser.js",
         "ui/PreviewView.js",
         "QueryParser.js",

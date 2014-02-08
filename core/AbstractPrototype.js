@@ -297,44 +297,6 @@ console.log(i, k, v);
     return XMLUtil.stringify(this);
   },
 
-  get memorable() {
-    if ( this.model_.isMemorable_ === undefined ) {
-      this.model_.isMemorable_ = this.model_.properties.some(function(p) {
-        return p.memorable;
-      });
-    }
-    return this.model_.isMemorable_;
-  },
-
-  prefix: '',
-
-  get memento() {
-    if ( ! this.memorable ) return null;
-
-    var oldPrefix = prefix;
-
-    prefix += '   ';
-
-//    console.log(prefix, '*** memento ', this);
-    if ( this.memento_ === undefined ) {
-      var m = CompoundValue.create();
-
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var prop = this.model_.properties[i];
-
-//        if ( prop.memorable ) console.log(prefix, '****** prop ', prop.name, this.hasOwnProperty(prop.name), this[prop.name]);
-        if ( prop.memorable ) {
-          m.addValue(prop.name, MementoValue.create({Value: this.propertyValue(prop.name)}));
-        }
-      }
-
-      prefix = oldPrefix;
-      this.memento_ = m;
-    }
-
-    return this.memento_;
-  },
-
   write: function(document) {
     var view = ActionBorder.create(
       this.model_,
