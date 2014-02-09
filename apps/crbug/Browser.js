@@ -163,7 +163,25 @@ var Browser = Model.create({
     },
     {
       name: 'legacyUrl',
-      getter: function() { this.memento.update(); return this.memento.toParams(); }
+      getter: function() {
+        this.memento.update();
+        return this.url + '/issues/list?' + this.memento.toParams();
+      },
+      setter: function(url) {
+        var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+        var match = regex.exec(url);
+
+        if ( ! match ) return;
+
+        var project = match[1];
+        var params  = match[3];
+
+        if ( project == this.projectName ) {
+          this.memento.fromParams(params);
+        } else {
+          this.qbug.launchBrowser(project, url)
+        }
+      }
     },
     {
       name: 'memento',
@@ -181,7 +199,7 @@ var Browser = Model.create({
       name: 'performQuery',
       animate: true,
       code: function(evt) {
-        this.maybeImportCrbugUrl(this.searchField.value.get());
+        this.legacyUrl = this.searchField.value.get();
 
         this.search(AND(
           QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
@@ -239,7 +257,7 @@ var Browser = Model.create({
       iconUrl: 'images/link.svg',
       help:  'Link to code.google.com', // disable until tooltips work better
       action: function() {
-        var url = this.crbugUrl();
+        var url = this.legacyUrl;
         console.log(url);
         this.openURL(url);
       }
@@ -439,101 +457,7 @@ var Browser = Model.create({
         }
       );
 
-      console.log(this.crbugUrl());
-    },
-
-    urlMap: [
-      [
-        ['q'],
-        'q',
-        function(q) {
-          // Replace short-names will fullnames that crbug will understand
-          return (QueryParser.parseString(q) || TRUE).partialEval().toMQL();
-        },
-        function(q) { return q; }
-      ],
-      [
-        ['can'],
-        'can',
-        // Crbug doesn't order canned-queries sequentially
-        function(c) { return this.searchChoice.choice[2]; },
-        function(c) {
-          for ( var i = 1 ; i < this.searchChoice.choices.length ; i++ )
-            if ( this.searchChoice.choices[i][2] == c )
-              return this.searchChoice.choices[i];
-          return this.searchChoice.choices[0];
-        }
-      ],
-      [
-        ['view', 'mode'],
-        'mode',
-        function(mode) { return mode.toLowerCase(); },
-        function(mode) { return mode.capitalize(); }
-      ],
-      [
-        'view view properties'.split(' '),
-        'colspec',
-        function(properties) { return properties.join(' '); },
-        function(colspec) { return colspen.join(' '); }
-      ],
-      [
-        'view view sortOrder'.split(' '),
-        'sort',
-        function(sortOrder) { return sortOrder.toMQL(); },
-        function(sort) {
-          var ps = sort.split(' ');
-          for ( var i = 0 ; i < ps.length ; i++ ) {
-            var p = ps[i];
-            if ( p.charAt('0') == '-' ) {
-              ps[i] = DESC(this.model.getProperty(p.substring(1)));
-            } else {
-              ps[i] = this.model.getProperty(p);
-            }
-          }
-          return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
-        }
-      ],
-      [
-        'view view acc'.split(' '),
-        'tile',
-        function(choice) { return choice[1].toLowerCase(); },
-        function(title) {debugger;}
-      ],
-      [
-        'view view row'.split(' '),
-        'y',
-        function(choice) { return choice[1].toLowerCase(); },
-        function(y) {debugger;}
-      ],
-      [
-        'view view col'.split(' '),
-        'x',
-        function(choice) { return choice[1].toLowerCase(); },
-        function(x) {debugger;}
-      ]
-    ],
-
-    /** Import a cr(1)bug URL. **/
-    maybeImportCrbugUrl: function(url) {
-      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
-      var match = regex.exec(url);
-
-      if ( ! match ) return;
-
-      var project = match[1];
-      var params  = match[3];
-
-      if ( project == this.projectName ) {
-        this.memento.fromParams(params);
-      } else {
-        this.qbug.launchBrowser(project, url)
-      }
-    },
-
-    /** Convert current state to a cr(1)bug URL. **/
-    crbugUrl: function() {
-      this.memento.update();
-      return this.url + '/issues/list?' + this.memento.toParams();
+      console.log(this.legacyUrl);
     },
 
     openURL: function(url) {

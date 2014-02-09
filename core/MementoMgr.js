@@ -199,7 +199,7 @@ var CompoundMemento = FOAM({
 
       for ( var i = 0 ; i < rules.length ; i++ ) {
         var rule = rules[i];
-        var path = rules[i][0];
+        var path = rule[1];
         var value = this.path(path);
         if ( value ) {
           m[rule[0]] = rule[2].call(this.root, value);
