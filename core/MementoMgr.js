@@ -18,15 +18,13 @@ var MementoMgr = FOAM({
   model_: 'Model',
 
   name:  'MementoMgr',
-  
+
   properties: [
     {
-      name: 'memorable'
+      name: 'memento'
     },
     {
-      name: 'memento',
-      getter: function() { return this.memorable.memento; },
-      setter: function(m) { console.log('********* MEMENTO: ', m); this.ignore_ = true; this.memorable.memento = m; this.ignore_ = false; }
+      name: 'value'
     },
     {
       name:  'stack',
@@ -49,7 +47,7 @@ var MementoMgr = FOAM({
       isEnabled:   function() { return this.stack.length; },
       action:      function() {
       this.dumpState('preBack');
-        this.redo.push(this.memento);
+        this.redo.push(this.memento.value);
         this.restore(this.stack.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -66,7 +64,7 @@ var MementoMgr = FOAM({
       isEnabled:   function() { return this.redo.length; },
       action:      function() {
       this.dumpState('preForth');
-        this.remember(this.memento);
+        this.remember(this.memento.value);
         this.restore(this.redo.pop());
         this.propertyChange('stack', '', this.stack);
         this.propertyChange('redo', '', this.redo);
@@ -78,8 +76,9 @@ var MementoMgr = FOAM({
   listeners: [
     {
       name: 'onMementoChange',
-      code: function(_, _, oldValue) {
-      //this.dumpState('preChange');
+      code: function(_, _, newValue, oldValue) {
+        console.log('MementoMgr.onChange', newValue, oldValue);
+      // this.dumpState('preChange');
         if ( ! oldValue || this.ignore_ ) return;
         this.remember(oldValue);
         this.redo = [];
@@ -88,24 +87,24 @@ var MementoMgr = FOAM({
       }
     }
   ],
-  
+
   methods: {
     init: function() {
       this.SUPER();
 
-      this.memorable.addPropertyListener('memento', this.onMementoChange);
+      this.memento.addListener(this.onMementoChange);
     },
 
-    remember: function(memento) {
+    remember: function(value) {
       this.dumpState('preRemember');
-      this.stack.push(memento);
+      this.stack.push(value);
       this.propertyChange('stack', '', this.stack);
       this.dumpState('postRemember');
     },
 
-    restore: function(memento) {
+    restore: function(value) {
       this.dumpState('restore');
-      this.memento = memento;
+      this.value = value;
     },
 
     dumpState: function(spot) {
@@ -115,3 +114,100 @@ var MementoMgr = FOAM({
     }
   }
 });
+
+
+var CompoundMemento = FOAM({
+  model_: 'Model',
+
+  name:  'CompoundMemento',
+
+  properties: [
+    {
+      name: 'root'
+    },
+    {
+      name: 'map'
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return this.propertyValue('map'); }
+    },
+    {
+      name: 'rules',
+      help: 'Rules for creating the memento map.'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+      }
+    }
+  ],
+
+  methods: {
+    get: function() { this.update(); return this.map; },
+    set: function(map) {
+      var rules = this.rules;
+
+      for ( var i = 0 ; i < rules.length ; i++ ) {
+        var rule = rules[i];
+        var path = rule[1];
+        var value = this.path(path);
+        if ( value ) {
+          rule[3].call(this.root, value);
+        }
+      }
+    },
+
+    path: function(path) {
+      var value = this.root;
+      for ( var j = 0 ; j < path.length && value ; j++ ) {
+        value = value[path[j]];
+      }
+      return value;
+    },
+
+    toParams: function() {
+      var rules = this.rules;
+      var s = '';
+      var d = '';
+      for ( var key in this.map ) {
+        s += d;
+        s += key + '=' + encodeURIComponent(this.map[key]);
+        d = '&';
+      }
+      return s;
+    },
+
+    fromParams: function(url) {
+      var params = match[3].split('&');
+      var m = {};
+      for ( var i = 0 ; i < params.length ; i++ ) {
+        var param = params[i];
+        var keyValue = param.split('=');
+        m[decodeURIComponent(keyValue[0])] =
+          decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+      }
+      this.map = m;
+    },
+
+    update: function() {
+      var rules = this.rules;
+      var m = {};
+
+      for ( var i = 0 ; i < rules.length ; i++ ) {
+        var rule = rules[i];
+        var path = rule[1];
+        var value = this.path(path);
+        if ( value ) {
+          m[rule[0]] = rule[2].call(this.root, value);
+        }
+      }
+
+      this.map = m;
+    }
+  }
+});
+

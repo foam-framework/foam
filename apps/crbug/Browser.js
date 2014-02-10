@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-MementoMgr.BACK.iconUrl = 'images/back.png';
-MementoMgr.FORTH.iconUrl = 'images/forth.png';
-MementoMgr.BACK.label = '';
-MementoMgr.FORTH.label = '';
-MementoMgr.BACK.help = '';
-MementoMgr.FORTH.help = '';
-
 var Browser = Model.create({
   name: 'Browser',
 
@@ -110,42 +103,42 @@ var Browser = Model.create({
     },
     {
       name: 'view',
+      memorable: true,
       valueFactory: function() { return createView(this.rowSelection, this); }
     },
     {
-      name: 'memento',
-      postSet: function(m, oldM) {
-        if ( JSON.stringify(m) === JSON.stringify(oldM) ) return;
-console.log('BROWSER Udpate Memento: ', m);
-        this.searchChoice.memento = m.can;
-        if ( m.hasOwnProperty('q') ) this.searchField.value.set(m.q);
-        this.view.memento = m;
-      }
+      name: 'can',
+      memorable: true,
+      defaultValue: 1
     },
     {
-      name: 'mementoMgr',
-      valueFactory: function() { return this.mementoMgr = MementoMgr.create({memorable: this}); }
+      name: 'q',
+      memorable: true
     },
     {
       name: 'searchChoice',
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
+          value: this.propertyValue('can'),
           choices:[
-            ['',                                         '&nbsp;All issues'],
-            ['status=New,Accepted,Started',              '&nbsp;Open issues'],
-            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me'],
-            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me'],
-            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me'],
-            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me'],
-            ['status=New',                               '&nbsp;New issues'],
-            ['status=Fixed,Done',                        '&nbsp;Issues to verify']
+            ['',                                         '&nbsp;All issues', 1],
+            ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
+            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me', 3],
+            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me', 4],
+            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me', 5],
+            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me', 8],
+            ['status=New',                               '&nbsp;New issues', 6],
+            ['status=Fixed,Done',                        '&nbsp;Issues to verify', 7]
           ]});
       }
     },
     {
       name: 'searchField',
-      valueFactory: function() { return TextFieldView.create({ name: 'search', displayWidth: 20 }); }
+      valueFactory: function() { return TextFieldView.create({
+        name: 'search',
+        displayWidth: 20,
+        value: this.propertyValue('q') }); }
     },
     {
       name: 'refreshImg',
@@ -167,25 +160,46 @@ console.log('BROWSER Udpate Memento: ', m);
     },
     {
       name: 'favouritesMenu'
+    },
+    {
+      name: 'legacyUrl',
+      getter: function() {
+        this.memento.update();
+        return this.url + '/issues/list?' + this.memento.toParams();
+      },
+      setter: function(url) {
+        var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+        var match = regex.exec(url);
+
+        if ( ! match ) return;
+
+        var project = match[1];
+        var params  = match[3];
+
+        if ( project == this.projectName ) {
+          this.memento.fromParams(params);
+        } else {
+          this.qbug.launchBrowser(project, url)
+        }
+      }
+    },
+    {
+      name: 'memento',
+      valueFactory: function() { return BrowserMemento.create({root: this}); }
+    },
+    {
+      name: 'mementoMgr',
+      valueFactory: function() { return MementoMgr.create({memento: this.memento}); }
     }
   ],
 
   listeners: [
     {
       model_: 'Method',
-      name: 'updateMemento',
-      code: function() {
-        var m = {__proto__: this.view.memento};
-        m.can = this.searchChoice.memento;
-        m.q = this.searchField.value.get();
-        this.memento = m;
-      }
-    },
-    {
-      model_: 'Method',
       name: 'performQuery',
+      animate: true,
       code: function(evt) {
-        this.maybeImportCrbugUrl(this.searchField.value.get());
+        this.legacyUrl = this.searchField.value.get();
 
         this.search(AND(
           QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
@@ -200,8 +214,6 @@ console.log('BROWSER Udpate Memento: ', m);
 // TODO: fix
         var H = window.innerHeight;
         this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
-
-        console.log(this.crbugUrl());
       }
     },
     {
@@ -245,7 +257,7 @@ console.log('BROWSER Udpate Memento: ', m);
       iconUrl: 'images/link.svg',
       help:  'Link to code.google.com', // disable until tooltips work better
       action: function() {
-        var url = this.crbugUrl();
+        var url = this.legacyUrl;
         console.log(url);
         this.openURL(url);
       }
@@ -386,11 +398,6 @@ console.log('BROWSER Udpate Memento: ', m);
       this.searchChoice.choice = this.searchChoice.choices[1];
 
       this.window.document.addEventListener('keyup', this.keyPress);
-
-      this.searchChoice.value.addListener(this.updateMemento);
-      this.view.addPropertyListener('memento', this.updateMemento);
-
-      this.updateMemento();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -450,61 +457,7 @@ console.log('BROWSER Udpate Memento: ', m);
         }
       );
 
-      console.log(this.crbugUrl());
-    },
-
-    // Crbug doesn't order canned-queries sequentially
-    idToCrbugCan: [1, 2, 3, 4, 5, 8, 6, 7],
-    crbugCanToId: [0, 0, 1, 2, 3, 4, 6, 7, 5],
-
-    /** Import a cr(1)bug URL. **/
-    maybeImportCrbugUrl: function(url) {
-      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
-      var match = regex.exec(url);
-
-      if ( ! match ) return;
-
-      var project = match[1];
-
-      if ( project == this.projectName ) {
-        var params = match[3].split('&');
-
-        var memento = {};
-        for ( var i = 0 ; i < params.length ; i++ ) {
-          var param = params[i];
-          var keyValue = param.split('=');
-          memento[decodeURIComponent(keyValue[0])] =
-            decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
-        }
-
-        if ( memento.hasOwnProperty('can') ) memento.can = this.crbugCanToId[memento.can];
-
-        this.memento = memento;
-      } else {
-        this.qbug.launchBrowser(project, url)
-      }
-    },
-
-    /** Convert current state to a cr(1)bug URL. **/
-    crbugUrl: function() {
-      var u = this.url + '/issues/list';
-      var m = {};
-      var d = '?';
-
-      for ( key in this.memento ) m[key] = this.memento[key];
-
-      // Replace short-names will fullnames that crbug will understand
-      if ( this.memento.q ) m.q = (QueryParser.parseString(this.memento.q) || TRUE).partialEval().toMQL();
-      if ( m.hasOwnProperty('can') ) m.can = this.idToCrbugCan[m.can];
-
-      for ( var key in m ) {
-        u += d;
-
-        u += key + '=' + encodeURIComponent(m[key]);
-        d = '&';
-      }
-
-      return u;
+      console.log(this.legacyUrl);
     },
 
     openURL: function(url) {
@@ -523,12 +476,12 @@ var ChromeAppBrowser = Model.create({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',
-  
+
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
       window.open(url);
     },
   }
-  
+
 });

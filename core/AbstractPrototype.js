@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+var prefix = '';
+
 /** The Prototype for all Generated Prototypes. **/
 // TODO: Rename FOAMObject or FObject
 var AbstractPrototype = {
@@ -89,9 +91,10 @@ console.log(i, k, v);
 
 
   toString: function() {
+    // TODO: do something to detect loops which cause infinite recurrsions.
 // console.log(this.model_.name + "Prototype");
-    // return this.model_.name + "Prototype";
-    return this.toJSON();
+    return this.model_.name + "Prototype";
+    // return this.toJSON();
   },
 
 
@@ -304,9 +307,3 @@ console.log(i, k, v);
     view.initHTML();
   }
 };
-
-/*
-AbstractPrototype.__defineGetter__('__super__', function() {
-  return this.__proto__.__proto__;
-});
-*/

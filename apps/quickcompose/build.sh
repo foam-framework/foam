@@ -27,6 +27,7 @@ cat \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
   ../../core/mm6Protobuf.js \
+  ../../core/value.js \
   ../../core/view.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \

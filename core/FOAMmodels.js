@@ -36,6 +36,7 @@ var files = [
   'mm4Method',
   'mm5Misc',
   'mm6Protobuf',
+  'value',
   'view',
   'cview',
   'RichTextView',

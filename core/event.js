@@ -263,7 +263,7 @@ var EventService = {
                    listeners.splice(i,1);
                    i--;
                 } else {
-                  throw err;
+                  console.warn('Error delivering event: ', err);
                 }
              }
           }
@@ -344,26 +344,30 @@ var PropertyChangeSupport = {
 
    /** Create a Value for the specified property. **/
    propertyValue: function(property) {
-      var obj = this;
-      return {
-         $UID: obj.$UID + "." + property,
+     var obj = this;
+     return {
+       $UID: obj.$UID + "." + property,
 
-         get: function() { return obj[property]; },
+       get: function() { return obj[property]; },
 
-         set: function(val) { obj[property] = val; },
+       set: function(val) { console.log('set ',property, val); obj[property] = val; },
 
-         addListener: function(listener) {
-            obj.addPropertyListener(property, listener);
-         },
+       get value() { return this.get(); },
 
-         removeListener: function(listener) {
-            obj.removePropertyListener(property, listener);
-         },
+       set value(val) { this.set(val); },
 
-         toString: function () {
-            return "PropertyValue(" + obj + "," + property + ")";
-         }
-      };
+       addListener: function(listener) {
+         obj.addPropertyListener(property, listener);
+       },
+
+       removeListener: function(listener) {
+         obj.removePropertyListener(property, listener);
+       },
+
+       toString: function () {
+         return 'PropertyValue(' + property + ')';
+       }
+     };
    }
 
 };
