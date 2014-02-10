@@ -64,7 +64,7 @@ var ItemCount = Model.create({
           QueryParser.parseString(searchField.value.get()),
           EQ(col, col.f(this.obj)),
           EQ(row, row.f(this.obj))).partialEval();
-        this.browser.memento = { mode: 'list', q: q.toMQL() }
+        this.browser.location.copyFrom({ mode: 'list', q: q.toMQL() });
       }.bind(this);
       $(this.eid).addEventListener('click', f, false);
     }
@@ -92,6 +92,8 @@ var priColorMap = {
 
 
 function createView(rowSelection, browser) {
+  var location = browser.location;
+
   return AlternateView.create({
     dao: browser.IssueDAO,
     headerView: browser.countField,
@@ -105,8 +107,8 @@ function createView(rowSelection, browser) {
             editColumnsEnabled: true
           });
 
-          tableView.sortOrder$  = browser.memento.sort$;
-          tableView.properties$ = browser.memento.colspec$;
+          tableView.sortOrder$  = location.sort$;
+          tableView.properties$ = location.colspec$;
 
           return Model.create({
              extendsModel: 'ScrollBorder',
@@ -144,21 +146,33 @@ function createView(rowSelection, browser) {
               ]}).create({
                 model: QIssue,
                 accChoices: [
-                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles"  ],
-                  [ MAP(idFormatter, COL.create()),             "IDs"    ],
+                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
+                  [ MAP(idFormatter, COL.create()),             "IDs" ],
                   [ ItemCount.create({browser: browser}),       "Counts" ],
-                  [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
-                  [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
+                  [ PIE(QIssue.STATUS),                         "Pie(Status)"  ],
+                  [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: GridByExpr.create()
            });
 
-          g.row.value = browser.memento.y$;
-          g.col.value = browser.memento.x$;
-          g.acc.choice = g.accChoices[0];
+          g.row.value = location.y$;
+          g.col.value = location.x$;
 
-           return g;
+          // TODO: cleanup this block
+          function setAcc(title) {
+            var acc = g.accChoices[0];
+            for ( var i = 1 ; i < g.accChoices.length ; i++ ) {
+              if ( location.tile === g.accChoices[i][1].toLowerCase() ) acc = g.accChoices[i];
+            }
+            g.acc.choice = acc;
+          }
+          setAcc(location.title);
+
+          g.acc.value.addListener(function(choice) { location.tile = g.acc.choice[1].toLowerCase(); });
+          location.tile$.addListener(setAcc);
+
+          return g;
         }
       })
     ]

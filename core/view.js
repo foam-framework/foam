@@ -1963,6 +1963,8 @@ var TableView = FOAM({
     {
       model_: StringArrayProperty,
       name:  'properties',
+      preSet: function(a) { return ! a || a.length == 0 ? null : a; },
+      postSet: function() { this.repaint_(); },
       defaultValue: null
     },
     {
@@ -1983,6 +1985,7 @@ var TableView = FOAM({
     {
       name:  'sortOrder',
       type:  'Comparator',
+      postSet: function() { this.repaint_(); },
       defaultValue: undefined
     },
     {

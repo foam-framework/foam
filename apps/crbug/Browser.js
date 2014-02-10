@@ -30,8 +30,17 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.qbug; }
     },
     {
+      name: 'location',
+      valueFactory: function() { return Location.create(); }
+    },
+    {
       name: 'memento',
-      valueFactory: function() { return Memento.create(); }
+      valueFactory: function() { return this.location.toString(this); },
+      postSet: function (newValue, oldValue) {
+        if ( newValue !== oldValue ) {
+          this.location.fromString(this, newValue);
+        }
+      }
     },
     {
       name: 'projectName',
@@ -109,7 +118,7 @@ var Browser = Model.create({
       name: 'view',
       valueFactory: function() {
         var view = createView(this.rowSelection, this);
-        Events.link(view.choice$, this.memento.mode$);
+        Events.link(view.choice$, this.location.mode$);
         return view;
       }
     },
@@ -118,7 +127,7 @@ var Browser = Model.create({
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
-          value: this.memento.can$,
+          value: this.location.can$,
           choices:[
             ['',                                         '&nbsp;All issues', 1],
             ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
@@ -136,7 +145,7 @@ var Browser = Model.create({
       valueFactory: function() { return TextFieldView.create({
         name: 'search',
         displayWidth: 20,
-        value: this.memento.q$ }); }
+        value: this.location.q$ }); }
     },
     {
       name: 'refreshImg',
@@ -162,7 +171,7 @@ var Browser = Model.create({
     {
       name: 'legacyUrl',
       getter: function() {
-        return this.url + '/issues/list?' + this.memento.toString(this);
+        return this.url + '/issues/list?' + this.memento;
       },
       setter: function(url) {
         var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
@@ -174,7 +183,7 @@ var Browser = Model.create({
         var params  = match[3];
 
         if ( project == this.projectName ) {
-          this.memento.fromString(this, params);
+          this.location.fromString(this, params);
         } else {
           this.qbug.launchBrowser(project, url)
         }
@@ -182,7 +191,7 @@ var Browser = Model.create({
     },
     {
       name: 'mementoMgr',
-      valueFactory: function() { return MementoMgr.create({memento: this.memento}); }
+      valueFactory: function() { return MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -218,7 +227,15 @@ var Browser = Model.create({
           if ( e.keyCode == 187 ) this.zoomIn();
         }
       }
-    }
+    },
+    {
+      model_: 'Method',
+      name: 'onLocationUpdate',
+      animate: true,
+      code: function(evt) {
+        this.memento = this.location.toString(this);
+      }
+    },
   ],
 
   actions: [
@@ -391,6 +408,11 @@ var Browser = Model.create({
       this.searchChoice.choice = this.searchChoice.choices[1];
 
       this.window.document.addEventListener('keyup', this.keyPress);
+
+      this.location.addListener(this.onLocationUpdate);
+
+      this.memento = "mode=list&colspec=";
+      this.mementoMgr.stack = [];
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
