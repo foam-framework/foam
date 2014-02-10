@@ -1218,6 +1218,10 @@ var GridByExpr = FOAM({
          type:  'Map[Expr]',
          help:  'Columns.',
          valueFactory: function() { return {}; }
+      },
+      {
+        model_: 'ArrayProperty',
+        name: 'children'
       }
    ],
 
@@ -1257,14 +1261,20 @@ var GridByExpr = FOAM({
      },
      clone: function() {
        // Don't use default clone because we don't want to copy 'groups'
-       return GridByExpr.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
+       return this.model_.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
      },
      remove: function(obj) { /* TODO: */ },
      toString: function() { return this.groups; },
      deepClone: function() {
      },
+     renderCell: function(x, y, value) {
+       var str = value ? (value.toHTML ? value.toHTML() : value) : '';
+       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
+       return '<td>' + str + '</td>';
+     },
      toHTML: function() {
        var out;
+       this.children = [];
        var cols = this.cols.groups;
        var rows = this.rows.groups;
        var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
@@ -1286,9 +1296,9 @@ var GridByExpr = FOAM({
          for ( var i = 0 ; i < sortedCols.length ; i++ ) {
            var x = sortedCols[i];
            var value = rows[y].groups[x];
-           var str = value ? (value.toHTML ? value.toHTML() : value) : '';
-           out += '<td>' + str + '</td>';
+           out += this.renderCell(x, y, value);
          }
+
          out += '</tr>';
        }
        out += '</table>';
@@ -1297,13 +1307,8 @@ var GridByExpr = FOAM({
      },
 
      initHTML: function() {
-       var rows = this.rows.groups;
-
-       for ( var y in rows ) {
-         for ( var x in rows[y].groups ) {
-           var value = rows[y].groups[x];
-           value && value.initHTML && value.initHTML();
-         }
+       for ( var i = 0; i < this.children.length; i++ ) {
+         this.children[i].initHTML();
        }
      }
    }
