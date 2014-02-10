@@ -50,6 +50,15 @@ var QProject = Model.create({
       defaultValueFn: function() { return this.qbug.user; }
     },
     {
+      name: 'IssueCommentNetworkDAO',
+      valueFactory: function() {
+        return QIssueCommentNetworkDAO.create({
+          model: QIssueComment,
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+        });
+      }
+    },
+    {
       name: 'IssueDAO',
       valueFactory: function() {
         var IssueMDAO  = MDAO.create({model: QIssue})
@@ -202,13 +211,8 @@ var QProject = Model.create({
     },
 
     issueCommentDAO: function(id) {
-      return QIssueCommentNetworkDAO.create({
-        model: QIssueComment,
-        url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-        issueId: id
-      });
+      return this.IssueCommentNetworkDAO.where(EQ(QIssueComment.ISSUE_ID, id));
     }
-
   },
 
 });
