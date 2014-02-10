@@ -258,6 +258,8 @@ var QIssue = FOAM({
     }
 });
 
+QIssue.getPrototype();
+
 QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
 QIssue.UPDATED.toMQL = function() { return 'modified'; };
 
