@@ -99,6 +99,15 @@ function createView(rowSelection, browser) {
       ViewChoice.create({
         label: 'List',
         view: function() {
+          var tableView = TableView.create({
+            model: QIssue,
+            hardSelection: rowSelection,
+            editColumnsEnabled: true
+          });
+
+          tableView.sortOrder$  = browser.memento.sort$;
+          tableView.properties$ = browser.memento.colspec$;
+
           return Model.create({
              extendsModel: 'ScrollBorder',
              methods: {
@@ -117,11 +126,7 @@ function createView(rowSelection, browser) {
                  return '<div class="QIssueTableHeader"></div>' + this.SUPER();
                }
              }
-          }).create({view: TableView.create({
-            model: QIssue,
-            hardSelection: rowSelection,
-            editColumnsEnabled: true
-          })});
+          }).create({view: tableView});
         }
       }),
       ViewChoice.create({
@@ -149,10 +154,9 @@ function createView(rowSelection, browser) {
               grid: GridByExpr.create()
            });
 
-           // Pre-set default values.  TODO: persist settings
-           g.row.value.set(QIssue.OWNER);
-           g.col.value.set(QIssue.STATUS);
-           g.acc.choice = g.accChoices[0];
+          g.row.value = browser.memento.y$;
+          g.col.value = browser.memento.x$;
+          g.acc.choice = g.accChoices[0];
 
            return g;
         }

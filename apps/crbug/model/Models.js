@@ -48,6 +48,8 @@ var QIssue = FOAM({
       'updated'
     ],
 
+    ids: ['id'],
+
     properties: [
         {
           model_: 'IntegerProperty',
@@ -282,6 +284,8 @@ var QIssueComment = FOAM({
   name: 'QIssueComment',
   extendsModel: 'IssueComment',
 
+  ids: [ 'id' ],
+ 
   properties: [
     {
       name: 'author',

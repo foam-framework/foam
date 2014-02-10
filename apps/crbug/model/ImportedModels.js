@@ -23,6 +23,11 @@ var GeneratedQIssue = FOAM({
    properties:
    [
       {
+         model_: 'IntegerProperty',
+         name: 'id',
+         help: 'ID of the issue, unique to this project.'
+      },
+      {
          model_: 'ReferenceProperty',
          name: 'author',
          subType: 'IssuePerson',
@@ -53,11 +58,6 @@ var GeneratedQIssue = FOAM({
          model_: 'StringProperty',
          name: 'description',
          help: 'Description of the issue.'
-      },
-      {
-         model_: 'IntegerProperty',
-         name: 'id',
-         help: 'ID of the issue, unique to this project.'
       },
       {
          model_: 'StringArrayProperty',

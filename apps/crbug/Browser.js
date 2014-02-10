@@ -30,6 +30,10 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.qbug; }
     },
     {
+      name: 'memento',
+      valueFactory: function() { return Memento.create(); }
+    },
+    {
       name: 'projectName',
       scope: 'project',
       defaultValueFn: function() { return this.project.projectName; }
@@ -103,24 +107,18 @@ var Browser = Model.create({
     },
     {
       name: 'view',
-      memorable: true,
-      valueFactory: function() { return createView(this.rowSelection, this); }
-    },
-    {
-      name: 'can',
-      memorable: true,
-      defaultValue: 1
-    },
-    {
-      name: 'q',
-      memorable: true
+      valueFactory: function() {
+        var view = createView(this.rowSelection, this);
+        Events.link(view.choice$, this.memento.mode$);
+        return view;
+      }
     },
     {
       name: 'searchChoice',
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
-          value: this.can$,
+          value: this.memento.can$,
           choices:[
             ['',                                         '&nbsp;All issues', 1],
             ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
@@ -138,7 +136,7 @@ var Browser = Model.create({
       valueFactory: function() { return TextFieldView.create({
         name: 'search',
         displayWidth: 20,
-        value: this.q$ }); }
+        value: this.memento.q$ }); }
     },
     {
       name: 'refreshImg',
@@ -164,8 +162,7 @@ var Browser = Model.create({
     {
       name: 'legacyUrl',
       getter: function() {
-        this.memento.update();
-        return this.url + '/issues/list?' + this.memento.toParams();
+        return this.url + '/issues/list?' + this.memento.toString(this);
       },
       setter: function(url) {
         var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
@@ -177,15 +174,11 @@ var Browser = Model.create({
         var params  = match[3];
 
         if ( project == this.projectName ) {
-          this.memento.fromParams(params);
+          this.memento.fromString(this, params);
         } else {
           this.qbug.launchBrowser(project, url)
         }
       }
-    },
-    {
-      name: 'memento',
-      valueFactory: function() { return BrowserMemento.create({root: this}); }
     },
     {
       name: 'mementoMgr',

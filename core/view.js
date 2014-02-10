@@ -921,8 +921,6 @@ var ChoiceView = FOAM({
         out.push('\t<option id="' + id + '"');
 
         if ( Array.isArray(choice) ) {
-          //           var encodedValue = choice[0].replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          //           var encodedValue = choice[0].replace(/"/g, '*').replace(/</g, '*').replace(/>/g, '*');
           if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
           out.push(' value="');
           out.push(i + '">');
@@ -2922,11 +2920,10 @@ var AlternateView = FOAM({
   name: 'AlternateView',
 
   properties: [
-    /*
     {
-      name: 'selection'
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(''); }
     },
-    */
     {
       name: 'views',
       type: 'Array[ViewChoice]',
@@ -2986,7 +2983,6 @@ var AlternateView = FOAM({
     init: function() {
       this.SUPER();
 
-      this.value = SimpleValue.create("");
       this.choice = this.views[0];
     },
 
