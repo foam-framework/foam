@@ -23,7 +23,7 @@ MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
 
-var MementoProperty = FOAM({
+var LocationProperty = FOAM({
   model_: 'Model',
 
   name: 'MementoProperty',
@@ -37,14 +37,14 @@ var MementoProperty = FOAM({
 });
 
 
-var Memento = FOAM({
+var Location = FOAM({
   model_: 'Model',
 
-  name: 'Memento',
+  name: 'Location',
 
   properties: [
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'q',
       toString: function(q) {
         // Replace short-names will fullnames that crbug will understand
@@ -53,7 +53,7 @@ var Memento = FOAM({
       fromString: function(q) { return q; }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'can',
       toString: function(c) {
         for ( var i = 1 ; i < this.searchChoice.choices.length ; i++ )
@@ -69,20 +69,27 @@ var Memento = FOAM({
       }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'mode',
       toString: function(mode) { return mode.label.toLowerCase(); },
-      fromString: function(mode) { return mode.capitalize(); }
+      fromString: function(mode) {
+        var view = this.view.views[0];
+        for ( var i = 1 ; i < this.view.views.length ; i++ ) {
+          if ( this.view.views[i].label.toLowerCase() == mode ) return this.view.views[i];
+        }
+        return view;
+      }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'colspec',
-      defaultValue: null,
+//      defaultValue: null,
+      valueFactory: function() { return null; },
       toString: function(properties) { return properties.join(' '); },
-      fromString: function(colspec) { return colspen.join(' '); }
+      fromString: function(colspec) { return colspec ? colspec.split(' ') : null; }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'sort',
       toString: function(sortOrder) { return sortOrder.toMQL(); },
       fromString: function(sort) {
@@ -90,29 +97,29 @@ var Memento = FOAM({
         for ( var i = 0 ; i < ps.length ; i++ ) {
           var p = ps[i];
           if ( p.charAt('0') == '-' ) {
-            ps[i] = DESC(this.model.getProperty(p.substring(1)));
+            ps[i] = DESC(QIssue.getProperty(p.substring(1)));
           } else {
-            ps[i] = this.model.getProperty(p);
+            ps[i] = QIssue.getProperty(p);
           }
         }
         return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
       }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'tile',
       toString: function(choice) { return choice; },
       fromString: function(title) { return title; }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'y',
       valueFactory: function() { return QIssue.OWNER; },
       toString: function(y) { return y.name; },
       fromString: function(name) { return QIssue.getProperty(name); }
     },
     {
-      model_: 'MementoProperty',
+      model_: 'LocationProperty',
       name: 'x',
       valueFactory: function() { return QIssue.STATUS; },
       toString: function(x) { return x.name; },
@@ -127,11 +134,15 @@ var Memento = FOAM({
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
         var prop = this.model_.properties[i];
         var key = prop.name;
-        if ( this[key] ) {
+        var value = '';
+        try {
+          value = encodeURIComponent(prop.toString.call(browser, this[key]));
+        } catch (x) {}
+//        if ( this[key] ) {
           s += d;
-          s += key + '=' + encodeURIComponent(prop.toString.call(browser, this[key]));
+        s += key + '=' + value;
           d = '&';
-        }
+  //      }
       }
 
       return s;
@@ -145,7 +156,9 @@ var Memento = FOAM({
         var key      = decodeURIComponent(keyValue[0]);
         var value    = decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
         var prop     = this.model_.getProperty(key);
-        this[key] = prop.fromString.call(browser, value);
+        try {
+          this[key] = prop.fromString.call(browser, value);
+        } catch (x) {}
       }
       
       return this;

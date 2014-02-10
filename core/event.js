@@ -350,7 +350,7 @@ var PropertyChangeSupport = {
 
        get: function() { return obj[property]; },
 
-       set: function(val) { console.log('set ',property, val); obj[property] = val; },
+       set: function(val) { obj[property] = val; },
 
        get value() { return this.get(); },
 
@@ -364,9 +364,7 @@ var PropertyChangeSupport = {
          obj.removePropertyListener(property, listener);
        },
 
-       toString: function () {
-         return 'PropertyValue(' + property + ')';
-       }
+       toString: function () { return 'PropertyValue(' + property + ')'; }
      };
    }
 
