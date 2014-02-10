@@ -2392,9 +2392,6 @@ var RestDAO = FOAM({
 
         if ( options.order ) {
           var sort = options.order.toMQL();
-          // Hack for updated/modified mis-match.
-          if ( sort === 'updated' ) sort = 'modified';
-          else if ( sort === '-updated' ) sort = '-modified';
           params.push("sort=" + sort);
         } else {
           params.push['sort=modified'];
