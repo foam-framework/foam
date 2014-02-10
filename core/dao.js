@@ -2367,13 +2367,30 @@ var RestDAO = FOAM({
     jsonToObj: function(json) {
       return this.model.create(json);
     },
-    buildURL: function(options) {
+    objToJson: function(obj) {
+      return JSONUtil.compact.stringify(obj);
+    },
+    buildURL: function(query) {
       return this.url;
     },
     buildFindURL: function(key) {
       return this.url + '/' + key;
     },
+    buildPutURL: function(obj) {
+      return this.url;
+    },
+    buildPutParams: function(obj) {
+    },
     put: function(value, sink) {
+      var self = this;
+      ajsonp(this.buildPutURL(value),
+             this.buildPutParams(value),
+             "POST",
+             this.objToJson(value)
+            )(
+        function(resp) {
+          sink && sink.put && sink.put(self.jsonToObj(resp));
+        });
     },
     remove: function(query, sink) {
     },
@@ -2393,16 +2410,23 @@ var RestDAO = FOAM({
         if ( options.order ) {
           var sort = options.order.toMQL();
           params.push("sort=" + sort);
-        } else {
-          params.push['sort=modified'];
         }
 
         var query = options.query;
+        var url;
+
         if ( query ) {
-          var remaining = [];
-          // Normalize query to DNF.
           query = query.normalize();
-          params.push('q=' + encodeURIComponent(query.toMQL()));
+
+          var outquery = [query]
+          url = this.buildURL(outquery);
+
+          query = outquery[0];
+
+          var mql = query.toMQL();
+          if ( mql ) params.push('q=' + encodeURIComponent(query.toMQL()));
+        } else {
+          url = this.buildURL();
         }
 
         if ( options.limit ) {
@@ -2428,7 +2452,7 @@ var RestDAO = FOAM({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          ajsonp(self.buildURL(options), myparams)(function(data) {
+          ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use 
             if ( CountExpr.isInstance(sink) ) {

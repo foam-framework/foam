@@ -254,6 +254,54 @@ var QIssue = FOAM({
           'Accepted': true,
           'Started':  true
         }[this.status]);
+      },
+      writeActions: function(other, out) {
+        var diff = this.diff(other);
+        delete diff.starred;
+
+        if ( Object.keys(diff).length == 0 ) return;
+
+
+        function convertArray(key) {
+          if ( ! diff[key] ) {
+            diff[key] = [];
+            return;
+          }
+
+          var delta = diff[key].added;
+          for ( var i = 0; i < diff[key].removed.length; i++ )
+            delta.push("-" + diff[key].removed[i]);
+          diff[key] = delta;
+        }
+
+        convertArray('blockedOn');
+        convertArray('blocking');
+        convertArray('cc');
+        convertArray('labels');
+
+        function propToLabel(prop, label) {
+          if ( diff[prop] ) {
+            diff.labels = diff.labels.concat(
+              '-' + label + '-' + other[prop],
+              label + '-' + diff[prop]);
+            delete diff[prop];
+          }
+        }
+
+        propToLabel('priority', 'Priority');
+        propToLabel('app', 'App');
+        propToLabel('milestone', 'Milestone');
+        propToLabel('category', 'Cr');
+        propToLabel('iteration', 'Iteration');
+        propToLabel('releaseBlock', 'ReleaseBlock');
+        propToLabel('OS', 'OS');
+
+        var comment = QIssueComment.create({
+          issueId: this.id,
+          updates: IssueCommentUpdate.create(diff)
+        });
+
+        out(comment);
       }
     }
 });
@@ -309,6 +357,10 @@ var QIssueComment = FOAM({
     {
       name: 'published',
       view: 'RelativeDateTimeFieldView'
+    },
+    {
+      model_: 'ReferenceProperty',
+      name: 'issueId'
     }
   ]
 });
