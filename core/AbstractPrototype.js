@@ -139,6 +139,16 @@ console.log(i, k, v);
       name + '$',
       function() { return this.propertyValue(name); });
 
+    // Create <name>$ = value alias
+    this.__defineSetter__(
+      name + '$',
+      function(value) {
+        Events.link(
+          value,
+          this.propertyValue(name));
+      }
+    );
+
     if ( prop.getter ) {
       this.__defineGetter__(name, prop.getter);
     } else {
