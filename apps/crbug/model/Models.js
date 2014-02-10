@@ -259,6 +259,7 @@ var QIssue = FOAM({
 });
 
 QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
+QIssue.UPDATED.toMQL = function() { return 'modified'; };
 
 QIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
