@@ -113,7 +113,6 @@ function createView(rowSelection, browser) {
                    if ( obj.id && obj.id !== browser.previewID ) browser.preview(null);
                  });
                },
-               
                toHTML: function() {
                  return '<div class="QIssueTableHeader"></div>' + this.SUPER();
                }
@@ -133,7 +132,7 @@ function createView(rowSelection, browser) {
               extendsModel: 'GridView',
               properties: [
                 {
-                   name:  'dao',
+                   name: 'dao',
                    // crbug limits grid view to 6000 rows, so do the same
                    preSet: function(dao) { return dao.limit(6000); }
                 }

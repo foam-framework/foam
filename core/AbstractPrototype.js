@@ -134,6 +134,11 @@ console.log(i, k, v);
 
     var name = prop.name;
 
+    // Create <name>$ alias for propertyValue(<name>)
+    this.__defineGetter__(
+      name + '$',
+      function() { return this.propertyValue(name); });
+
     if ( prop.getter ) {
       this.__defineGetter__(name, prop.getter);
     } else {

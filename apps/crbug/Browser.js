@@ -56,7 +56,7 @@ var Browser = Model.create({
       },
       postSet: function(newValue, oldValue) {
         // TODO clean this up when scopes are implemented.
-        newValue.setValue(this.project.user.propertyValue('email'));
+        newValue.setValue(this.project.user.email$);
       }
     },
     {
@@ -120,7 +120,7 @@ var Browser = Model.create({
       valueFactory: function() {
         return ChoiceView.create({
           helpText: 'Search within:',
-          value: this.propertyValue('can'),
+          value: this.can$,
           choices:[
             ['',                                         '&nbsp;All issues', 1],
             ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
@@ -138,7 +138,7 @@ var Browser = Model.create({
       valueFactory: function() { return TextFieldView.create({
         name: 'search',
         displayWidth: 20,
-        value: this.propertyValue('q') }); }
+        value: this.q$ }); }
     },
     {
       name: 'refreshImg',
@@ -365,7 +365,7 @@ var Browser = Model.create({
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
 
-      this.syncManager.propertyValue('isSyncing').addListener(function() {
+      this.syncManager.isSyncing$.addListener(function() {
         if ( this.syncManager.isSyncing ) {
           this.timer.step();
           this.timer.start();
