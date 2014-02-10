@@ -101,13 +101,12 @@ var Memento = FOAM({
     {
       model_: 'MementoProperty',
       name: 'tile',
-      toString: function(choice) { return choice[1].toLowerCase(); },
-      fromString: function(title) {debugger;}
+      toString: function(choice) { return choice; },
+      fromString: function(title) { return title; }
     },
     {
       model_: 'MementoProperty',
       name: 'y',
-//      defaultValue: QIssue.OWNER,
       valueFactory: function() { return QIssue.OWNER; },
       toString: function(y) { return y.name; },
       fromString: function(name) { return QIssue.getProperty(name); }
@@ -115,7 +114,6 @@ var Memento = FOAM({
     {
       model_: 'MementoProperty',
       name: 'x',
-//      defaultValue: QIssue.STATUS,
       valueFactory: function() { return QIssue.STATUS; },
       toString: function(x) { return x.name; },
       fromString: function(name) { return QIssue.getProperty(name); }

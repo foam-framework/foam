@@ -144,11 +144,11 @@ function createView(rowSelection, browser) {
               ]}).create({
                 model: QIssue,
                 accChoices: [
-                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles"  ],
-                  [ MAP(idFormatter, COL.create()),             "IDs"    ],
+                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
+                  [ MAP(idFormatter, COL.create()),             "IDs" ],
                   [ ItemCount.create({browser: browser}),       "Counts" ],
-                  [ PIE(QIssue.STATUS),                         "PIE(Status)" ],
-                  [ PIE(QIssue.PRIORITY, priColorMap),          "PIE(Priority)" ]
+                  [ PIE(QIssue.STATUS),                         "Pie(Status)"  ],
+                  [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: GridByExpr.create()
@@ -156,9 +156,20 @@ function createView(rowSelection, browser) {
 
           g.row.value = browser.memento.y$;
           g.col.value = browser.memento.x$;
-          g.acc.choice = g.accChoices[0];
 
-           return g;
+          // TODO: cleanup this block
+          var acc = g.accChoices[0];
+          for ( var i = 1 ; i < g.accChoices.length ; i++ ) {
+            if ( browser.memento.tile === g.accChoices[i][1].toLowerCase() ) acc = g.accChoices[i];
+          }
+          if ( ! browser.memento.tile ) {
+            browser.memento.tile = g.accChoices[0][1];
+          }
+          g.acc.choice = acc;
+          browser.memento.tile = acc[1].toLowerCase();
+          g.acc.value.addListener(function(choice) { browser.memento.tile = g.acc.choice[1].toLowerCase(); });
+
+          return g;
         }
       })
     ]
