@@ -130,7 +130,7 @@ Date.prototype.compareTo = function(o) {
 };
 
 Date.prototype.toMQL = function() {
-  return this.getFullYear() + '/' + this.getMonth() + '/' + this.getDay();
+  return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
 };
 
 String.prototype.compareTo = function(o) {
