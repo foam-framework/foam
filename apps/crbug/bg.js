@@ -12,10 +12,14 @@ if ( chrome.app.runtime ) {
       responseType: "json"
     });
 
-    return function(url, params, opt_method) {
+    return function(url, params, opt_method, opt_payload) {
       return function(ret) {
         var xhr = factory.make();
-        return xhr.asend(ret, opt_method ? opt_method : "GET", url + (params ? '?' + params.join('&') : ''));
+        xhr.responseType = "json";
+        return xhr.asend(ret,
+                         opt_method ? opt_method : "GET",
+                         url + (params ? '?' + params.join('&') : ''),
+                         opt_payload);
       };
     };
   })();
