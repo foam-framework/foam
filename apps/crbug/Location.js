@@ -18,13 +18,14 @@
 var LocationProperty = FOAM({
   model_: 'Model',
 
-  name: 'MementoProperty',
+  name: 'LocationProperty',
 
   extendsModel: 'Property',
 
   properties: [
-    { name: 'toString'   },
-    { name: 'fromString' }
+    { name: 'toMemento',   defaultValue:   function(o) { return o; } },
+    { name: 'fromMemento', defaultValue:   function(o) { return o; } },
+    { name: 'toURL',       defaultValueFn: function()  { return this.toMemento; } }
   ]
 });
 
@@ -37,34 +38,38 @@ var Location = FOAM({
   properties: [
     {
       model_: 'LocationProperty',
-      name: 'q',
-      toString: function(q) {
-        // Replace short-names will fullnames that crbug will understand
-        return (QueryParser.parseString(q) || TRUE).partialEval().toMQL();
+      name: 'can',
+      // The memento is the can# stored in the 3rd element of the choice
+      // The value of 'can' is the value stored in the 1st element of the choice
+      toMemento: function(c) {
+        var choices = this.searchChoice.choices;
+        for ( var i = 0 ; i < choices.length ; i++ )
+          if ( choices[i][0] == c )
+            return choices[i][2];
+        return choices[1][2];
       },
-      fromString: function(q) { return q; }
+      fromMemento: function(c) {
+        var choices = this.searchChoice.choices;
+        for ( var i = 0 ; i < choices.length ; i++ )
+          if ( choices[i][2] == c )
+            return choices[i][0];
+        return choices[1][0];
+      }
     },
     {
       model_: 'LocationProperty',
-      name: 'can',
-      toString: function(c) {
-        for ( var i = 1 ; i < this.searchChoice.choices.length ; i++ )
-          if ( this.searchChoice.choices[i][0] === c )
-            return this.searchChoice.choices[i][2];
-        return 2;
-      },
-      fromString: function(c) {
-        for ( var i = 1 ; i < this.searchChoice.choices.length ; i++ )
-          if ( this.searchChoice.choices[i][2] == c )
-            return this.searchChoice.choices[i][0];
-        return this.searchChoice.choices[1][0];
+      name: 'q',
+      defaultValue: '',
+      toURL: function(q) {
+        // Replace short-names will fullnames that crbug will understand
+        return (QueryParser.parseString(q) || TRUE).partialEval().toMQL();
       }
     },
     {
       model_: 'LocationProperty',
       name: 'mode',
-      toString: function(mode) { return mode.label.toLowerCase(); },
-      fromString: function(mode) {
+      toMemento: function(mode) { return mode.label.toLowerCase(); },
+      fromMemento: function(mode) {
         var view = this.view.views[0];
         for ( var i = 1 ; i < this.view.views.length ; i++ ) {
           if ( this.view.views[i].label.toLowerCase() == mode ) return this.view.views[i];
@@ -75,16 +80,14 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'colspec',
-//      defaultValue: null,
-      valueFactory: function() { return null; },
-      toString: function(properties) { return properties.join(' '); },
-      fromString: function(colspec) { return colspec ? colspec.split(' ') : null; }
+      toMemento: function(properties) { return properties.join(' '); },
+      fromMemento: function(colspec) { return colspec ? colspec.split(' ') : null; }
     },
     {
       model_: 'LocationProperty',
       name: 'sort',
-      toString: function(sortOrder) { return sortOrder.toMQL(); },
-      fromString: function(sort) {
+      toMemento: function(sortOrder) { return sortOrder.toMQL(); },
+      fromMemento: function(sort) {
         var ps = sort.split(' ');
         for ( var i = 0 ; i < ps.length ; i++ ) {
           var p = ps[i];
@@ -100,56 +103,77 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'tile',
-      toString: function(choice) { return choice; },
-      fromString: function(title) { return title; }
+      defaultValue: 'Tiles'
     },
     {
       model_: 'LocationProperty',
       name: 'y',
-      valueFactory: function() { return QIssue.OWNER; },
-      toString: function(y) { return y.name; },
-      fromString: function(name) { return QIssue.getProperty(name); }
+      defaultValue: QIssue.OWNER,
+      toMemento: function(y) { return y.name; },
+      fromMemento: function(name) { return QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
-      valueFactory: function() { return QIssue.STATUS; },
-      toString: function(x) { return x.name; },
-      fromString: function(name) { return QIssue.getProperty(name); }
+      defaultValue: QIssue.STATUS,
+      toMemento: function(x) { return x.name; },
+      fromMemento: function(name) { return QIssue.getProperty(name); }
     }
   ],
 
   methods: {
-    toString: function(browser) {
+    toURL: function(browser) {
+      return this.toMemento(browser, 'toURL');
+    },
+
+    toMemento: function(browser, opt_methodName) {
+      var methodName = opt_methodName || 'toMemento';
       var s = '';
       var d = '';
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var prop = this.model_.properties[i];
-        var key = prop.name;
-        var value = '';
+        var prop  = this.model_.properties[i];
+        var key   = prop.name;
         try {
-          value = encodeURIComponent(prop.toString.call(browser, this[key]));
-        } catch (x) {}
-//        if ( this[key] ) {
-          s += d;
-        s += key + '=' + value;
-          d = '&';
-  //      }
+          if ( this.hasOwnProperty(key) ) {
+            var value = encodeURIComponent(prop[methodName].call(browser, this[key]));
+            s += d;
+            s += key + '=' + value;
+            d = '&';
+          }
+        } catch (x) {
+        }
       }
 
       return s;
     },
 
-    fromString: function(browser, s) {
+    fromMemento: function(browser, s) {
+      // Convert URL into a map
+      var m = {};
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
         var keyValue = param.split('=');
         var key      = decodeURIComponent(keyValue[0]);
         var value    = decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
-        var prop     = this.model_.getProperty(key);
+        m[key] = value;
+      }
+
+      // Set or reset each property value
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+        var key  = prop.name;
         try {
-          this[key] = prop.fromString.call(browser, value);
+          if ( m.hasOwnProperty(key) ) {
+            var value = prop.fromMemento.call(browser, m[key]);
+            this[key] = value;
+          } else {
+            // revert to the default value, making sure to still fire a propertyChange event
+            // TODO: would be better if the Object had a property reset value to do this instead
+            var oldValue = this[key];
+            delete this.instance_[key];
+            this.propertyChange(key, oldValue, this[key]);
+          }
         } catch (x) {}
       }
 

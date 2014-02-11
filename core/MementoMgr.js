@@ -76,7 +76,7 @@ var MementoMgr = FOAM({
       code: function(_, _, oldValue, newValue) {
         if ( this.ignore_ ) return;
 
-        console.log('MementoMgr.onChange', newValue, oldValue);
+        // console.log('MementoMgr.onChange', oldValue, newValue);
         this.remember(oldValue);
         this.redo = [];
         this.propertyChange('redo', '', this.redo);
@@ -106,11 +106,11 @@ var MementoMgr = FOAM({
     },
 
     dumpState: function(spot) {
-/*
+      /*
       console.log('--- ', spot);
       console.log('stack: ', JSON.stringify(this.stack));
       console.log('redo: ', JSON.stringify(this.redo));
-*/
+      */
     }
   }
 });
