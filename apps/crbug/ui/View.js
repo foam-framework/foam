@@ -247,10 +247,10 @@ function createView(rowSelection, browser) {
               extendsModel: 'GridView',
               properties: [
                 {
-                   name: 'dao',
-                   // crbug limits grid view to 6000 rows, so do the same
-                   preSet: function(dao) { return dao.limit(6000); },
-                  postSet: function(dao) { this.grid.dao = dao; },
+                  name: 'dao',
+                  // crbug limits grid view to 6000 rows, so do the same
+                  preSet: function(dao) { return dao.limit(6000); },
+                  postSet: function(_, dao) { this.grid.dao = dao; },
                 }
               ]}).create({
                 model: QIssue,

@@ -660,7 +660,7 @@ var ProxyDAO = FOAM({
       hidden: true,
       required: true,
       transient: true,
-      postSet: function(newDAO, oldDAO) {
+      postSet: function(oldDAO, newDAO) {
         this.model = newDAO.model;
         if ( ! this.relay_ ) return;
         if ( oldDAO ) oldDAO.unlisten(this.relay_);
@@ -1704,7 +1704,7 @@ var WorkerDAO = FOAM({
         return new Worker(window.URL.createObjectURL(
           new Blob(workerscript, { type: "text/javascript" })));
       },
-      postSet: function(val, oldVal) {
+      postSet: function(oldVal, val) {
         if ( oldVal ) {
           oldVal.terminate();
         }
@@ -1885,7 +1885,7 @@ var WorkerDelegate = FOAM({
       label: 'DAO',
       type:  'DAO',
       required: 'true',
-      postSet: function(val, oldVal) {
+      postSet: function(oldVal, val) {
         if (oldVal) oldVal.unlisten(this);
         val.listen(this);
       }
@@ -2454,7 +2454,7 @@ var RestDAO = FOAM({
 
           ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
-            // TODO: This count is wrong for queries that use 
+            // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
               sink.count = data.totalResults;
               finished = true;

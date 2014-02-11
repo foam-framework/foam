@@ -211,7 +211,7 @@ var Model = {
            view: 'ArrayView',
            valueFactory: function() { return []; },
            defaultValue: [],
-           postSet: function(templates) {
+         postSet: function(_, templates) {
              // Load templates from an external file
              // if their 'template' property isn't set
              for ( var i = 0 ; i < templates.length ; i++ ) {

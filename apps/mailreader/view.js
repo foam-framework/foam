@@ -36,7 +36,7 @@ var LabelView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         postSet: function(newValue, oldValue) {
+         postSet: function(oldValue, newValue) {
             oldValue && oldValue.removeListener(this.updateHTML);
             newValue.addListener(this.updateHTML);
             this.updateHTML();

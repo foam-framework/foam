@@ -197,7 +197,7 @@ console.log(i, k, v);
         this.instance_[name] = newValue;
 
         if ( prop.postSet )
-          prop.postSet.call(this, newValue, oldValue);
+          prop.postSet.call(this, oldValue, newValue);
 
         this.propertyChange(name, oldValue, newValue);
       });

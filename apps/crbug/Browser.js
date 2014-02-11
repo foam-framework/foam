@@ -43,7 +43,7 @@ var Browser = Model.create({
     {
       name: 'memento',
       defaultValue: 'mode=list',
-      postSet: function (newValue, oldValue) {
+      postSet: function (oldValue, newValue) {
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
       }
     },
@@ -72,7 +72,7 @@ var Browser = Model.create({
         });
         return view;
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         // TODO clean this up when scopes are implemented.
         newValue.setValue(this.project.user.email$);
       }
@@ -92,9 +92,7 @@ var Browser = Model.create({
       name: 'zoom',
       help: 'Zoom ratio of Browser contents.',
       defaultValue: '1',
-      postSet: function() {
-        this.updateZoom();
-      }
+      postSet: function() { this.updateZoom(); }
     },
     {
       name: 'rowSelection',

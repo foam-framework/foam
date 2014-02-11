@@ -32,7 +32,7 @@ var DAOController = FOAM({
       {
          name:  'dao',
          label: 'DAO',
-         postSet: function(val) {
+        postSet: function(_, val) {
            if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
          }
       }

@@ -30,7 +30,7 @@ var PieGraph = FOAM({
          name:  'r',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function(r) {
+        postSet: function(_, r) {
             this.width = this.height = 2*r+2;
          },
          defaultValue: 50

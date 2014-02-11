@@ -169,7 +169,7 @@ var QIssue = FOAM({
               }
               return sb.join('');
             },
-            postSet: function(a) {
+            postSet: function(_, a) {
               for ( var i = 0 ; i < a.length ; i++ ) {
                 for ( var key in labelToProperty ) {
                   if ( a[i].substring(0, key.length) == key ) {
@@ -336,7 +336,7 @@ var QIssueComment = FOAM({
   extendsModel: 'IssueComment',
 
   ids: [ 'id' ],
- 
+
   properties: [
     {
       name: 'author',
@@ -377,7 +377,7 @@ var QUser = FOAM({
     },
     {
       name: 'projects',
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         if ( this.preferredProjects.length == 0 ) {
           this.preferredProjects = newValue.map(function(p) { return p.name; });
         }

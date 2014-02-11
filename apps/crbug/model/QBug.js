@@ -35,7 +35,7 @@ var QBug = Model.create({
     {
       name: 'user',
       type: 'QUser',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removePropertyListener('email', this.onUserUpdate);
         newValue.addPropertyListener('email', this.onUserUpdate);
         this.onUserUpdate();
