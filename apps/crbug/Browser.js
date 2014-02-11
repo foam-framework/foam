@@ -296,7 +296,7 @@ var Browser = Model.create({
     {
       model_: 'Action',
       name: 'favourites',
-      label: 'My Favourites <small>▼</small>',
+      label: 'My Favourites &#x25BE;',
       action: function() {
         if ( this.favouritesMenu ) {
           this.favouritesMenu.close();
