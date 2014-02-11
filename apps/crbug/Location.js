@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-MementoMgr.BACK.iconUrl = 'images/back.png';
-MementoMgr.FORTH.iconUrl = 'images/forth.png';
-MementoMgr.BACK.label = '';
-MementoMgr.FORTH.label = '';
-MementoMgr.BACK.help = '';
-MementoMgr.FORTH.help = '';
-
-
 var LocationProperty = FOAM({
   model_: 'Model',
 
@@ -147,7 +139,7 @@ var Location = FOAM({
 
       return s;
     },
-    
+
     fromString: function(browser, s) {
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
@@ -160,7 +152,7 @@ var Location = FOAM({
           this[key] = prop.fromString.call(browser, value);
         } catch (x) {}
       }
-      
+
       return this;
     }
   }
