@@ -44,11 +44,13 @@ var SyncManager = FOAM({
     },
     {
       model_: 'IntegerProperty',
-      name:  'timesSynced'
+      name:  'timesSynced',
+      help: 'Number of times sync has been performed.'
     },
     {
       model_: 'IntegerProperty',
       name:  'syncInterval',
+      help: 'Delay after empty sync response.',
       units: 's',
       defaultValue: 60
     },
@@ -56,43 +58,53 @@ var SyncManager = FOAM({
       model_: 'IntegerProperty',
       name:  'delay',
       label: 'Delay',
-      help:  'Interval of time between repeating sync.',
+      help:  'Delay after a non-empty sync response.',
       units: 's',
       defaultValue: 0
     },
     {
       model_: 'IntegerProperty',
       name:  'batchSize',
-      defaultValue: 100
+      help: 'Maximum number of items per sync request.',
+      defaultValue: 500
     },
     {
       model_: 'StringProperty',
-      name:  'syncStatus'
+      name:  'syncStatus',
+      displayWidth: 40,
+      help: 'Current status of the sync process.'
     },
     {
       model_: 'IntegerProperty',
-      name:  'lastBatchSize'
+      name:  'lastBatchSize',
+      help: 'Number of item updates returned in last sync response.'
     },
     {
       model_: 'IntegerProperty',
       name:  'lastSyncDuration',
+      help: 'Duration of last sync request.',
       units: 'ms'
     },
     {
       model_: 'BooleanProperty',
-      name:  'enabled'
+      name:  'enabled',
+      help: 'If the Sync Manager is currently enabled to perform periodic sync requests.'
     },
     {
       model_: 'BooleanProperty',
-      name:  'isSyncing'
+      name:  'isSyncing',
+      help: 'If the Sync Manager is currently syncing.'
     },
     {
       model_: 'StringProperty',
-      name:  'lastId'
+      name:  'lastId',
+      help: 'The id of the last item synced.'
     },
     {
       model_: 'DateTimeProperty',
-      name:  'lastModified'
+      name:  'lastModified',
+      help: 'The last-modified timestamp of the most recently synced item.',
+      defaultValue: new Date(0)
     }
   ],
 
@@ -100,19 +112,18 @@ var SyncManager = FOAM({
     {
       model_: 'Action',
       name:  'start',
-      label: 'Start',
-      help:  'Start the timer.',
+      help:  'Start the Sync Manager.',
 
-      isEnabled:   function() { return ! this.enabled; },
-      action:      function() { this.enabled = true; this.sync(); }
+      isEnabled: function() { return ! this.enabled; },
+      action:    function() { this.enabled = true; this.sync(); }
     },
     {
       model_: 'Action',
       name:  'forceSync',
-      label: 'Force Sync',
-      help:  'Force a sync.',
+      help:  'Perform a single sync request.',
 
-      action: function()      {
+      isEnabled: function() { return ! this.enabled; },
+      action: function() {
         clearTimeout(this.timer);
         this.sync();
       }
@@ -120,11 +131,21 @@ var SyncManager = FOAM({
     {
       model_: 'Action',
       name:  'stop',
-      label: 'Stop',
       help:  'Stop the timer.',
 
-      isEnabled: function()   { return this.enabled; },
-      action: function()      { this.enabled = false; clearTimeout(this.timer); }
+      isEnabled: function() { return this.enabled; },
+      action: function() { this.enabled = false; clearTimeout(this.timer); }
+    },
+    {
+      model_: 'Action',
+      name:  'reset',
+      help:  'Reset the Sync Manager to force a re-sync of all data.',
+
+      isEnabled: function() { return ! this.enabled; },
+      action: function() {
+        this.copyFrom(SyncManager.create());
+        this.lastModified = SyncManager.LAST_MODIFIED.defaultValue;
+      }
     }
   ],
 
@@ -137,13 +158,14 @@ var SyncManager = FOAM({
         if ( max.max ) self.lastModified = max.max;
       });
     },
+
     sync: function() {
       var self = this;
       var batchSize = this.batchSize;
       var startTime = Date.now();
 
       this.isSyncing = true;
-      this.syncStatus = 'syncing...';
+      this.syncStatus = 'Requesting Sync...';
       this.srcDAO
         .limit(batchSize)
         .where(GT(this.modifiedProperty, this.lastModified))
@@ -155,7 +177,7 @@ var SyncManager = FOAM({
           // items.select(console.log.json); // TODO: for debugging, remove
           items.select(self.dstDAO)(function() {
             self.lastSyncDuration = Date.now() - startTime;
-            self.syncStatus = '';
+            self.syncStatus = 'Processing ' + items.length + ' Sync Response items...';
 
             self.itemsSynced += items.length;
 
@@ -168,12 +190,14 @@ var SyncManager = FOAM({
                   item.updated.getTime()));
             }
 
+            self.syncStatus = 'Finished Syncing ' + items.length + ' items at ' + new Date();;
             self.isSyncing = false;
 
             self.schedule(items.length ? self.delay : self.syncInterval);
           });
         });
     },
+
     schedule: function(syncInterval) {
       if ( ! this.enabled ) return;
 
