@@ -174,7 +174,7 @@ var QProject = Model.create({
     launchSync: function() {
       var self = this;
 
-      chrome.app.window.create('empty.html', {width: 430, height: 440}, function(w) {
+      chrome.app.window.create('empty.html', {width: 450, height: 460}, function(w) {
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
@@ -182,7 +182,7 @@ var QProject = Model.create({
             SyncManager,
             DetailView.create({
               model: SyncManager,
-              title: 'Sync Config: ' + self.projectName,
+              title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
               value: SimpleValue.create(self.syncManager)}));
           window.document.body.innerHTML = b.toHTML();
           b.initHTML();
