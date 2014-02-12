@@ -120,6 +120,8 @@ var OAuthXhr = {
         function(ret) {
           self.xhr.open(method, url);
           self.xhr.setRequestHeader('Authorization', 'Bearer ' + self.agent.accessToken);
+          // TODO: This should be added by a decorator, or via a parameter.
+          self.xhr.setRequestHeader("Content-Type", "application/json");
           self.xhr.asend(ret, payload);
         },
         function(ret) {

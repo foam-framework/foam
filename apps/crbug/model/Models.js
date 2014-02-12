@@ -169,7 +169,7 @@ var QIssue = FOAM({
               }
               return sb.join('');
             },
-            postSet: function(a) {
+            postSet: function(_, a) {
               for ( var i = 0 ; i < a.length ; i++ ) {
                 for ( var key in labelToProperty ) {
                   if ( a[i].substring(0, key.length) == key ) {
@@ -254,6 +254,54 @@ var QIssue = FOAM({
           'Accepted': true,
           'Started':  true
         }[this.status]);
+      },
+      writeActions: function(other, out) {
+        var diff = this.diff(other);
+        delete diff.starred;
+
+        if ( Object.keys(diff).length == 0 ) return;
+
+
+        function convertArray(key) {
+          if ( ! diff[key] ) {
+            diff[key] = [];
+            return;
+          }
+
+          var delta = diff[key].added;
+          for ( var i = 0; i < diff[key].removed.length; i++ )
+            delta.push("-" + diff[key].removed[i]);
+          diff[key] = delta;
+        }
+
+        convertArray('blockedOn');
+        convertArray('blocking');
+        convertArray('cc');
+        convertArray('labels');
+
+        function propToLabel(prop, label) {
+          if ( diff[prop] ) {
+            diff.labels = diff.labels.concat(
+              '-' + label + '-' + other[prop],
+              label + '-' + diff[prop]);
+            delete diff[prop];
+          }
+        }
+
+        propToLabel('priority', 'Priority');
+        propToLabel('app', 'App');
+        propToLabel('milestone', 'Milestone');
+        propToLabel('category', 'Cr');
+        propToLabel('iteration', 'Iteration');
+        propToLabel('releaseBlock', 'ReleaseBlock');
+        propToLabel('OS', 'OS');
+
+        var comment = QIssueComment.create({
+          issueId: this.id,
+          updates: IssueCommentUpdate.create(diff)
+        });
+
+        out(comment);
       }
     }
 });
@@ -288,7 +336,7 @@ var QIssueComment = FOAM({
   extendsModel: 'IssueComment',
 
   ids: [ 'id' ],
- 
+
   properties: [
     {
       name: 'author',
@@ -309,6 +357,10 @@ var QIssueComment = FOAM({
     {
       name: 'published',
       view: 'RelativeDateTimeFieldView'
+    },
+    {
+      model_: 'ReferenceProperty',
+      name: 'issueId'
     }
   ]
 });
@@ -325,7 +377,7 @@ var QUser = FOAM({
     },
     {
       name: 'projects',
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         if ( this.preferredProjects.length == 0 ) {
           this.preferredProjects = newValue.map(function(p) { return p.name; });
         }

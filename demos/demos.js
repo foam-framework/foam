@@ -333,7 +333,7 @@ var System = FOAM({
          name:  'numDev',
          label: 'Number of Developers',
          type:  'int',
-         postSet: function(devs) {
+        postSet: function(_, devs) {
            if ( ! this.cIndex ) this.cIndex = 1;
            var colours = ['#33f','#f00','#fc0','#33f','#3c0'];
 

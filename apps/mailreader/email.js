@@ -389,7 +389,7 @@ var EMail = FOAM({
          model_: 'StringArrayProperty',
          name: 'labels',
          view: 'LabelView',
-         postSet: function(a) {
+         postSet: function(_, a) {
            for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
          },
          help: 'Email labels.'

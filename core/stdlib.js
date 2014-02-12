@@ -173,6 +173,17 @@ Object.defineProperty(Array.prototype, 'intern', {
   }
 });
 
+Object.defineProperty(Array.prototype, 'compareTo', {
+  value: function(other) {
+    if ( this.length !== other.length ) return -1;
+
+    for ( var i = 0 ; i < this.length ; i++ ) {
+      var result = this[i].compareTo(other[i]);
+      if ( result !== 0 ) return result;
+    }
+    return 0;
+  }
+});
 
 Object.defineProperty(Array.prototype, 'fReduce', {
   value: function(comparator, arr) {

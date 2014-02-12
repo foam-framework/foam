@@ -2,7 +2,9 @@
   var starView = QIssue.STARRED.view.create();
   starView.value = this.issue.propertyValue('starred');
 %>
-<div class="gridtile">
+<div draggable="true"
+     id="<%= this.on('dragstart', this.dragStart, this.getID()) %>"
+     class="gridtile">
   <table cellspacing="0" cellpadding="0"><tbody>
     <tr>
       <td class="id">

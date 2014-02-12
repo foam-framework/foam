@@ -49,7 +49,7 @@ var ThreePaneController = FOAM({
           remove: this.onDaoUpdate
         };
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if (this.dao) {
           this.dao.unlisten(oldValue);
           this.dao.listen(newValue);
@@ -60,7 +60,7 @@ var ThreePaneController = FOAM({
       name: 'dao',
       type: 'DAO',
       required: true,
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if (oldValue) oldValue.unlisten(this.daoListener);
         newValue.listen(this.daoListener);
       }
@@ -82,7 +82,7 @@ var ThreePaneController = FOAM({
           displayWidth: 95
         });
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if (oldValue) oldValue.value.addListener(this.performQuery);
         newValue.value.addListener(this.performQuery);
       }
@@ -102,7 +102,7 @@ var ThreePaneController = FOAM({
       name: 'searchChoice',
       type: 'ListChoiceView',
       required: true,
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if (oldValue) oldValue.value.removeListener(this.performQuery);
         newValue.value.addListener(this.performQuery);
       }
@@ -158,7 +158,7 @@ var ThreePaneController = FOAM({
           })
         });
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if (oldValue) oldValue.scrollbar.removeListener(this.updateCount);
         newValue.scrollbar.addListener(this.updateCount);
         this.addChild(newValue);
@@ -174,7 +174,7 @@ var ThreePaneController = FOAM({
           value: this.table.view.selection
         });
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         this.addChild(newValue);
         this.removeChild(oldValue);
       }
@@ -185,7 +185,7 @@ var ThreePaneController = FOAM({
       valueFactory: function() {
         return DetailView.create({model: this.model}/*, this.table.view.selection*/);
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         this.addChild(newValue);
         this.removeChild(oldValue);
       }

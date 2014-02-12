@@ -50,6 +50,15 @@ var QProject = Model.create({
       defaultValueFn: function() { return this.qbug.user; }
     },
     {
+      name: 'IssueCommentNetworkDAO',
+      valueFactory: function() {
+        return QIssueCommentNetworkDAO.create({
+          model: QIssueComment,
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+        });
+      }
+    },
+    {
       name: 'IssueDAO',
       valueFactory: function() {
         var IssueMDAO  = MDAO.create({model: QIssue})
@@ -72,9 +81,15 @@ var QProject = Model.create({
 
         var IssueCachingDAO = CachingDAO.create(IssueMDAO, IssueIDBDAO);
 
-        return QIssueStarringDAO.create({
+        var actions = ActionFactoryDAO.create({
           delegate: IssueCachingDAO,
-          url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues'
+          actionDao: this.IssueCommentNetworkDAO
+        });
+
+        return QIssueStarringDAO.create({
+          delegate: actions,
+          project: this,
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
         });
       },
       transient: true
@@ -83,7 +98,7 @@ var QProject = Model.create({
       name: 'IssueNetworkDAO',
       valueFactory: function() {
         return IssueRestDAO.create({
-          url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           model: QIssue
         });
       },
@@ -103,7 +118,7 @@ var QProject = Model.create({
       valueFactory: function() {
         return SyncManager.create({
           srcDAO: this.IssueNetworkDAO,
-          dstDAO: this.IssueDAO.delegate,
+          dstDAO: this.IssueDAO.delegate.delegate,
           lastModified: new Date(2013,01,01),
           modifiedProperty: QIssue.UPDATED
         });
@@ -202,13 +217,8 @@ var QProject = Model.create({
     },
 
     issueCommentDAO: function(id) {
-      return QIssueCommentNetworkDAO.create({
-        model: QIssueComment,
-        url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-        issueId: id
-      });
+      return this.IssueCommentNetworkDAO.where(EQ(QIssueComment.ISSUE_ID, id));
     }
-
   },
 
 });

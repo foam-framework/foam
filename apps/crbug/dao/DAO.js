@@ -80,16 +80,63 @@ var QIssueCommentNetworkDAO = FOAM({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
-  properties: [
-    {
-      name: 'issueId',
-      help: 'Id of the issue.'
-    }
-  ],
-
   methods: {
-    buildURL: function(options) {
-      return this.url + '/' + this.issueId + '/comments';
+    buildURL: function(outquery) {
+      var query = outquery[0];
+
+      if ( ! query ) return this.url;
+
+      var id;
+
+      if ( EqExpr.isInstance(query) && query.arg1 === QIssueComment.ISSUE_ID ) {
+        id = query.arg2.arg1;
+        query = TRUE
+      }
+
+      if ( OrExpr.isInstance(query) ) {
+        for ( var i = 0; i < query.args.length; i++ ) {
+          var arg = query.args[i];
+
+          if ( AndExpr.isInstance(arg) ) {
+            for ( var j = 0; j < arg.args.length; j++ ) {
+              var subarg = arg.args[j];
+
+              if ( EqExpr.isInstance(subarg) && subarg.arg1 === QIssue.ISSUE_ID ) {
+                if ( id && subarg.arg2.arg1 === id ) id = subarg.arg2.arg1;
+                arg.args[j] = TRUE;
+              }
+            }
+          } else if ( EqExpr.isInstance(arg) && arg.arg1 === QIssue.ISSUE_ID ) {
+            id = arg.arg2.arg1;
+            query.args[i] = TRUE;
+          }
+        }
+      }
+
+      outquery[0] = query.partialEval();
+      return this.url + '/' + id + '/comments';
+    },
+    objToJson: function(obj) {
+      if ( ! obj.content ) obj.content = "(No comment was entered for this change.)";
+      var json = JSONUtil.compact.where(
+          IN(Property.NAME, [
+            'author',
+            'content',
+            'published',
+            'updates',
+            'blockedOn',
+            'blocking',
+            'cc',
+            'labels',
+            'mergedInto',
+            'owner',
+            'status',
+            'summary'
+          ])).stringify(obj);
+      return json;
+    },
+    buildPutURL: function(obj) {
+      return this.url + '/' + obj.issueId + '/comments';
     }
   }
 });

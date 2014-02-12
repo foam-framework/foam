@@ -112,6 +112,26 @@ console.log(i, k, v);
       }
   },
 
+  diff: function(other) {
+    var diff = {};
+
+    for ( var i = 0, property; property = this.model_.properties[i]; i++ ) {
+      if ( Array.isArray(property.f(this)) ) {
+        var subdiff = property.f(this).diff(property.f(other));
+        if ( subdiff.added.length !== 0 || subdiff.removed.length !== 0 ) {
+          diff[property.name] = subdiff;
+        }
+        continue;
+      }
+
+      if ( property.f(this).compareTo(property.f(other)) !== 0) {
+        diff[property.name] = property.f(other);
+      }
+    }
+
+    return diff;
+  },
+
   clearProperty: function(name) {
     delete this.instance_[name];
   },
@@ -177,7 +197,7 @@ console.log(i, k, v);
         this.instance_[name] = newValue;
 
         if ( prop.postSet )
-          prop.postSet.call(this, newValue, oldValue);
+          prop.postSet.call(this, oldValue, newValue);
 
         this.propertyChange(name, oldValue, newValue);
       });

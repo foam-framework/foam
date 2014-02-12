@@ -339,7 +339,12 @@ option[selected]{
   height:52;
 }
 
-td, th {
+.foamTable td,
+.foamTable th,
+.summaryView td,
+.summaryView th,
+.detailView td,
+.detailView th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow:ellipsis;

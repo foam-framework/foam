@@ -408,21 +408,21 @@ var ImageView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(oldValue, this.domValue);
         Events.follow(newValue, this.domValue);
       }
     },
     {
       name: 'domValue',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(this.value, oldValue);
         Events.follow(this.value, newValue);
       }
     },
     {
       name: 'displayWidth',
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         if ( this.$ ) {
           this.$.style.width = newValue;
         }
@@ -430,7 +430,7 @@ var ImageView = FOAM({
     },
     {
       name: 'displayHeight',
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         if ( this.$ ) {
           this.$.style.height = newValue;
         }
@@ -484,7 +484,7 @@ var BlobImageView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.onValueChange);
         newValue.addListener(this.onValueChange);
       }
@@ -586,7 +586,7 @@ var TextFieldView = FOAM({
     {
       name: 'softValue',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
           Events.unlink(oldValue, this.domValue);
           Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
@@ -603,7 +603,7 @@ var TextFieldView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if ( this.onKeyMode ) {
           Events.unlink(oldValue, this.softValue);
           Events.link(newValue, this.softValue);
@@ -775,7 +775,7 @@ var HTMLView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
           Events.unlink(this.domValue, oldValue);
           Events.link(newValue, this.domValue);
@@ -1233,7 +1233,7 @@ var ImageBooleanView = FOAM({
     },
     {
       name: 'value',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
         this.update();
@@ -1325,7 +1325,7 @@ var TextAreaView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         Events.unlink(this.domValue, oldValue);
 
         //Events.follow(this.model, this.domValue);
@@ -1994,7 +1994,7 @@ var TableView = FOAM({
       type: 'DAO',
       required: true,
       hidden: true,
-      postSet: function(val, oldValue) {
+      postSet: function(oldValue, val) {
         if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
         this.listener && val && val.listen(this.listener);
         this.repaint_ && this.repaint_();
@@ -2004,7 +2004,7 @@ var TableView = FOAM({
       name: 'rows',
       type:  'Integer',
       defaultValue: 30,
-      postSet: function(val, oldValue) {
+      postSet: function() {
         this.repaint();
       }
     },
@@ -2355,7 +2355,7 @@ var ActionButton = Model.create({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener && oldValue.removeListener(this.onValueChange);
         newValue.addListener(this.onValueChange);
       }
@@ -2467,7 +2467,7 @@ var ToolbarView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
       }
     },
     {
@@ -2939,7 +2939,7 @@ var AlternateView = FOAM({
       name:  'dao',
       label: 'DAO',
       type: 'DAO',
-      postSet: function(dao, oldValue) {
+      postSet: function(_, dao) {
         if ( this.choice ) {
           if ( this.view ) {
             this.view.dao = dao;
@@ -2951,7 +2951,7 @@ var AlternateView = FOAM({
     },
     {
       name:  'choice',
-      postSet: function(viewChoice) {
+      postSet: function(_, viewChoice) {
         if ( this.elementId ) this.installSubView(viewChoice);
       },
       hidden: true
@@ -3175,7 +3175,7 @@ var MultiLineStringArrayView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create([]); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if ( oldValue ) {
           oldValue.removeListener(this.update);
         }
@@ -3380,14 +3380,14 @@ var ListValueView = FOAM({
     },
     {
       name: 'placeholder',
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         this.inputView.placeholder = newValue;
       }
     },
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create({ value: [] }); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         this.inputView.setValue(newValue);
         this.valueView.value = newValue;
       }
@@ -3436,14 +3436,14 @@ var ListInputView = FOAM({
     },
     {
       name: 'autocompleteView',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.unsubscribe('selected', this.selected);
         newValue.subscribe('selected', this.selected);
       }
     },
     {
       name: 'placeholder',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         if ( this.$ && this.usePlaceholer ) this.$.placeholder = newValue;
       }
     },
@@ -3451,7 +3451,7 @@ var ListInputView = FOAM({
       model_: 'BooleanValue',
       name: 'usePlaceholder',
       defaultValue: true,
-      postSet: function(newValue) {
+      postSet: function(_, newValue) {
         if ( this.$ ) this.$.placeholder = newValue ?
           this.placeholder : '';
       }
@@ -3464,7 +3464,7 @@ var ListInputView = FOAM({
           value: []
         });
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.onValueChange);
         newValue.addListener(this.onValueChange);
       }
@@ -3608,7 +3608,7 @@ var ArrayTileView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.paint);
         newValue.addListener(this.paint);
       }
@@ -3738,7 +3738,7 @@ var ArrayListView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create([]) },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
         this.update();
@@ -3799,7 +3799,7 @@ var DAOKeyView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(""); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
         this.update();
@@ -3862,7 +3862,7 @@ var ListView = FOAM({
   properties: [
     {
       name: 'dao',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.unlisten(this.update);
         newValue.listen(this.update);
         this.update();
@@ -3921,7 +3921,7 @@ var AutocompleteListView = FOAM({
   properties: [
     {
       name: 'dao',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.unlisten(this.paint);
         newValue.listen(this.paint);
         this.value.set('');
@@ -3957,7 +3957,7 @@ var AutocompleteListView = FOAM({
       model_: 'IntegerProperty',
       name: 'selection',
       defaultValue: 0,
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         this.value.set(this.objs[newValue]);
         if ( this.$ ) {
           if ( this.$.children[oldValue] )

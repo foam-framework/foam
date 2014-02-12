@@ -41,7 +41,14 @@ var QIssueTileView = FOAM({
          code: function() {
             this.browser.IssueDAO.put(this.issue);
          }
-      }
+      },
+     {
+       name: 'dragStart',
+       code: function(e) {
+         e.dataTransfer.setData('application/x-foam-id', this.issue.id);
+         e.dataTransfer.effectAllowed = 'move';
+       },
+     },
    ],
 
    templates:[

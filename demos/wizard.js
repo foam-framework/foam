@@ -44,7 +44,7 @@ var CompositeService = FOAM({
     {
       model_: 'ArrayProperty',
       name: 'children',
-      postSet: function(value) {
+      postSet: function(_, value) {
         var self = this;
         Events.dynamic(function() {
           var selected = false;
@@ -88,7 +88,7 @@ var OptionalServiceView = FOAM({
   properties: [
     {
       name: 'delegate',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && this.removeChild(oldValue);
         this.addChild(newValue);
       }
@@ -96,7 +96,7 @@ var OptionalServiceView = FOAM({
     {
       name: 'innerView',
       valueFactory: function() { return BooleanView.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && this.removeChild(oldValue);
         this.addChild(newValue);
       }
@@ -132,7 +132,7 @@ var CompositeServiceView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.renderChoices);
         newValue.addListener(this.renderChoices);
       }
@@ -221,7 +221,7 @@ var CompositeServiceSummaryView = FOAM({
 /*    {
       name: 'value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.valueChange);
         newValue.addListener(this.valueChange);
       }

@@ -35,7 +35,7 @@ var QBug = Model.create({
     {
       name: 'user',
       type: 'QUser',
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removePropertyListener('email', this.onUserUpdate);
         newValue.addPropertyListener('email', this.onUserUpdate);
         this.onUserUpdate();
@@ -56,7 +56,7 @@ var QBug = Model.create({
       name: 'ProjectNetworkDAO',
       valueFactory: function() {
         var dao = RestDAO.create({
-          url: 'https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/',
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/',
           model: Project
         });
 
@@ -96,7 +96,7 @@ var QBug = Model.create({
             }
           });
 
-        ajsonp("https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/users/me")(
+        ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
           function(response) {
             response && user.copyFrom(response);
           });

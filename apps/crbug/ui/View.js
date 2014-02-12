@@ -29,6 +29,114 @@ var COL = {
   clone: function() { return this.create(); }
 };
 
+var DragAndDropGrid = FOAM({
+  model_: 'Model',
+  extendsModel: 'GridByExpr',
+
+  properties: [
+    {
+      name: 'dao'
+    }
+  ],
+
+  methods: {
+    renderCell: function(x, y, value) {
+      var cell = IssueDropCell.create({
+        value: value,
+        dao: this.dao,
+        props: [this.xFunc, this.yFunc],
+        values: [x, y]
+      });
+      this.children.push(cell);
+      return cell.toHTML();
+    },
+    clone: function() {
+      var clone = this.SUPER();
+      clone.dao = this.dao;
+      return clone;
+    }
+  }
+});
+
+var IssueDropCell = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'value'
+    },
+    {
+      name: 'dao',
+      hidden: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'props'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'values'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.on('dragenter', this.onDragEnter, this.getID());
+      this.on('dragover', this.onDragEnter, this.getID());
+      this.on('drop', this.onDrop, this.getID());
+      return '<td id="' + this.getID() + '">' +
+        (this.value ? (this.value.toHTML ? this.value.toHTML() : this.value) : '') + '</td>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.value && this.value.initHTML && this.value.initHTML();
+    },
+    put: function(obj) {
+      this.value.put(obj);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDragEnter',
+      code: function(e) {
+        for ( var i = 0; i < e.dataTransfer.types.length; i++ ) {
+          if ( e.dataTransfer.types[i] === 'application/x-foam-id' ) {
+            e.dataTransfer.dropEffect = "move";
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+    },
+    {
+      name: 'onDrop',
+      code: function(e) {
+        var data = e.dataTransfer.getData('application/x-foam-id');
+        if ( ! data ) return;
+
+        e.preventDefault();
+
+        var props = this.props;
+        var values = this.values;
+        var dao = this.dao;
+        dao.find(data, {
+          put: function(obj) {
+            obj = obj.clone();
+            for ( var i = 0; i < props.length; i++ ) {
+              var p = props[i];
+              var v = values[i];
+              obj[p.name] = v;
+            }
+            dao.put(obj);
+          }
+        });
+      }
+    }
+  ]
+});
 
 /*
  * An extension to COUNT() which turns count into a link which performs
@@ -139,9 +247,10 @@ function createView(rowSelection, browser) {
               extendsModel: 'GridView',
               properties: [
                 {
-                   name: 'dao',
-                   // crbug limits grid view to 6000 rows, so do the same
-                   preSet: function(dao) { return dao.limit(6000); }
+                  name: 'dao',
+                  // crbug limits grid view to 6000 rows, so do the same
+                  preSet: function(dao) { return dao.limit(6000); },
+                  postSet: function(_, dao) { this.grid.dao = dao; },
                 }
               ]}).create({
                 model: QIssue,
@@ -153,7 +262,7 @@ function createView(rowSelection, browser) {
                   [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-              grid: GridByExpr.create()
+              grid: DragAndDropGrid.create({})
            });
 
           g.row.value = location.y$;
