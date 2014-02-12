@@ -21,6 +21,10 @@ var SyncManager = FOAM({
 
   properties: [
     {
+      name:  'queryParser',
+      hidden: true
+    },
+    {
       name:  'srcDAO',
       label: 'Source DAO',
       type:  'DAO',
@@ -114,6 +118,13 @@ var SyncManager = FOAM({
       name:  'lastModified',
       help: 'The last-modified timestamp of the most recently synced item.',
       defaultValue: new Date(0)
+    },
+    {
+      model_: 'StringProperty',
+      name: 'query',
+      displayWidth: 33,
+      displayHeight: 4,
+      help: 'Only sync items which match this query.'
     }
   ],
 
@@ -142,7 +153,8 @@ var SyncManager = FOAM({
       name:  'stop',
       help:  'Stop the timer.',
 
-      isEnabled: function() { return this.enabled; },
+      // TODO: abort current sync
+      isEnabled: function() { return this.enabled || this.isSyncing; },
       action: function() { this.enabled = false; clearTimeout(this.timer); }
     },
     {
@@ -154,8 +166,8 @@ var SyncManager = FOAM({
       action: function() {
         this.itemsSynced = 0;
         this.timesSynced = 0;
-        this.lastSync = null;
-        this.lasSyncDuration = 0;
+        this.lastSync = '';
+        this.lastSyncDuration = 0;
         this.lastId = '';
         this.lastModified = SyncManager.LAST_MODIFIED.defaultValue;
       }
@@ -186,6 +198,15 @@ var SyncManager = FOAM({
       if ( this.batchSize ) dao = dao.limit(batchSize);
 
       var delay = this.syncInterval;
+
+      if ( this.queryParser && this.query ) {
+        var p = this.queryParser.parseString(this.query.replace(/\n/g, ' '));
+
+        if ( p ) {
+          console.log('sync query: ', p.toMQL());
+          dao = dao.where(p);
+        }
+      }
 
       dao
         .where(GT(this.modifiedProperty, this.lastModified))

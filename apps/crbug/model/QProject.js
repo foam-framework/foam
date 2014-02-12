@@ -117,6 +117,8 @@ var QProject = Model.create({
       name: 'syncManager',
       valueFactory: function() {
         return SyncManager.create({
+          queryParser: QueryParser,
+          query: 'status=New,Accepted,Started OR\nupdated-after:today-60 OR\nis:starred',
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueDAO.delegate.delegate,
           lastModified: new Date(2013,01,01),
@@ -174,7 +176,7 @@ var QProject = Model.create({
     launchSync: function() {
       var self = this;
 
-      chrome.app.window.create('empty.html', {width: 450, height: 460}, function(w) {
+      chrome.app.window.create('empty.html', {width: 450, height: 520}, function(w) {
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
