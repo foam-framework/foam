@@ -182,7 +182,7 @@ var QProject = Model.create({
             SyncManager,
             DetailView.create({
               model: SyncManager,
-              title: self.projectName + ' Sync Config',
+              title: 'Sync Config: ' + self.projectName,
               value: SimpleValue.create(self.syncManager)}));
           window.document.body.innerHTML = b.toHTML();
           b.initHTML();

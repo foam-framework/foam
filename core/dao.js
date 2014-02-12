@@ -2490,8 +2490,7 @@ var RestDAO = FOAM({
                 break;
               }
 
-              sink && sink.put &&
-                sink.put(item, null, fc);
+              sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
             if ( index === data.totalResults ) finished = true;
