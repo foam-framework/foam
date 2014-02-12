@@ -37,7 +37,7 @@ var AttachmentView = FOAM({
       name:  'value',
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(value) {
+      postSet: function(_, value) {
         value.addListener(this.redraw.bind(this));
       }
     }

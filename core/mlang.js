@@ -506,7 +506,7 @@ var EqExpr = FOAM({
         var newArg2 = this.arg2.partialEval();
 
         if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() === newArg2.f());
+          return compile_(newArg1.f() == newArg2.f());
         }
 
         return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
@@ -520,14 +520,14 @@ var EqExpr = FOAM({
 
         if ( Array.isArray(arg1) ) {
           return arg1.some(function(arg) {
-            return arg === arg2;
+            return arg == arg2;
           }, this);
         }
 
         if ( arg2 === TRUE ) return !! arg1;
         if ( arg2 === FALSE ) return ! arg1;
 
-        return arg1 === arg2;
+        return arg1 == arg2;
       }
    }
 });
@@ -680,7 +680,7 @@ var NeqExpr = FOAM({
         var newArg2 = this.arg2.partialEval();
 
         if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() !== newArg2.f());
+          return compile_(newArg1.f() != newArg2.f());
         }
 
         return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
@@ -688,7 +688,7 @@ var NeqExpr = FOAM({
           this;
       },
 
-      f: function(obj) { return this.arg1.f(obj) !== this.arg2.f(obj); }
+      f: function(obj) { return this.arg1.f(obj) != this.arg2.f(obj); }
    }
 });
 

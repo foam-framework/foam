@@ -660,7 +660,7 @@ var ProxyDAO = FOAM({
       hidden: true,
       required: true,
       transient: true,
-      postSet: function(newDAO, oldDAO) {
+      postSet: function(oldDAO, newDAO) {
         this.model = newDAO.model;
         if ( ! this.relay_ ) return;
         if ( oldDAO ) oldDAO.unlisten(this.relay_);
@@ -1704,7 +1704,7 @@ var WorkerDAO = FOAM({
         return new Worker(window.URL.createObjectURL(
           new Blob(workerscript, { type: "text/javascript" })));
       },
-      postSet: function(val, oldVal) {
+      postSet: function(oldVal, val) {
         if ( oldVal ) {
           oldVal.terminate();
         }
@@ -1885,7 +1885,7 @@ var WorkerDelegate = FOAM({
       label: 'DAO',
       type:  'DAO',
       required: 'true',
-      postSet: function(val, oldVal) {
+      postSet: function(oldVal, val) {
         if (oldVal) oldVal.unlisten(this);
         val.listen(this);
       }
@@ -2354,7 +2354,7 @@ var RestDAO = FOAM({
       model_: 'ArrayProperty',
       subType: 'Property',
       name: 'paramProperties',
-      help: 'Properties that are handled as separate paramters rather than in the query.'
+      help: 'Properties that are handled as separate parameters rather than in the query.'
     },
     {
       model_: 'IntegerProperty',
@@ -2381,6 +2381,9 @@ var RestDAO = FOAM({
     },
     buildPutParams: function(obj) {
     },
+    buildSelectParams: function(sink, options) {
+      return [];
+    },
     put: function(value, sink) {
       var self = this;
       ajsonp(this.buildPutURL(value),
@@ -2396,13 +2399,12 @@ var RestDAO = FOAM({
     },
     select: function(sink, options) {
       sink = sink || [];
-      var params = [];
+      var params = this.buildSelectParams(sink, options);
       var fut = afuture();
       var self = this;
       var limit;
       var index = 0;
       var fc = this.createFlowControl_();
-
 
       if ( options ) {
         index += options.skip || 0;
@@ -2454,7 +2456,7 @@ var RestDAO = FOAM({
 
           ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
-            // TODO: This count is wrong for queries that use 
+            // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
               sink.count = data.totalResults;
               finished = true;
@@ -2488,8 +2490,7 @@ var RestDAO = FOAM({
                 break;
               }
 
-              sink && sink.put &&
-                sink.put(item, null, fc);
+              sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
             if ( index === data.totalResults ) finished = true;

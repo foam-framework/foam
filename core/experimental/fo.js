@@ -396,7 +396,7 @@ var features = [
 
       this[scope][scopeName] = value;
 
-      if ( postSet ) postSet.call(this, value, oldValue, prop)
+      if ( postSet ) postSet.call(this, oldValue, value, prop)
 
       this.propertyChange && this.propertyChange(scopeName, oldValue, value);
     };

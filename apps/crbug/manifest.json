@@ -4,13 +4,11 @@
   "manifest_version": 2,
 
   "permissions": [
-    "<all_urls>",
-    "http://*/",
-    "https://*/",
+    "https://www.googleapis.com/*",
+    "https://code.google.com/p/*",
     "identity",
     "storage",
-    "unlimitedStorage",
-    "webview"
+    "unlimitedStorage"
   ],
 
   "icons": {
@@ -32,7 +30,7 @@
         "ui/View.js",
         "model/QBug.js",
         "model/QProject.js",
-        "BrowserMemento.js",
+        "Location.js",
         "Browser.js",
         "ui/PreviewView.js",
         "QueryParser.js",

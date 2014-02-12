@@ -67,7 +67,7 @@ var ListChoiceView = FOAM({
          type:  'DAO',
          help:  'A DAO providing choices to populate the list.',
          defaultValue: undefined,
-         postSet: function(newValue) {
+         postSet: function(_, newValue) {
            newValue.listen({
               put: EventService.merged(this.updateHTML.bind(this), 500),
               remove: EventService.merged(this.updateHTML.bind(this), 500)

@@ -189,7 +189,7 @@ var Canvas = Model.create({
          name:  'width',
          type:  'int',
          defaultValue: 100,
-         postSet: function(width) {
+        postSet: function(_, width) {
            if ( this.$ ) this.$.width = width;
          }
       },
@@ -197,7 +197,7 @@ var Canvas = Model.create({
          name:  'height',
          type:  'int',
          defaultValue: 100,
-         postSet: function(height) {
+        postSet: function(_, height) {
            if ( this.$ ) this.$.height = height;
          }
       }
@@ -695,7 +695,7 @@ var ProgressCView = FOAM({
          name:  'value',
          type:  'Value',
          valueFactory: function() { return SimpleValue.create(); },
-         postSet: function(newValue, oldValue) {
+         postSet: function(oldValue, newValue) {
            oldValue && oldValue.removeListener(this.updateValue);
            newValue.addListener(this.updateValue);
          }

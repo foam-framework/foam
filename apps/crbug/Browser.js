@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+MementoMgr.BACK.iconUrl = 'images/back.png';
+MementoMgr.FORTH.iconUrl = 'images/forth.png';
+MementoMgr.BACK.label = '';
+MementoMgr.FORTH.label = '';
+MementoMgr.BACK.help = '';
+MementoMgr.FORTH.help = '';
+
 var Browser = Model.create({
   name: 'Browser',
 
@@ -35,11 +42,9 @@ var Browser = Model.create({
     },
     {
       name: 'memento',
-      valueFactory: function() { return this.location.toString(this); },
-      postSet: function (newValue, oldValue) {
-        if ( newValue !== oldValue ) {
-          this.location.fromString(this, newValue);
-        }
+      defaultValue: 'mode=list',
+      postSet: function (oldValue, newValue) {
+        if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
       }
     },
     {
@@ -67,7 +72,7 @@ var Browser = Model.create({
         });
         return view;
       },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         // TODO clean this up when scopes are implemented.
         newValue.setValue(this.project.user.email$);
       }
@@ -87,9 +92,7 @@ var Browser = Model.create({
       name: 'zoom',
       help: 'Zoom ratio of Browser contents.',
       defaultValue: '1',
-      postSet: function() {
-        this.updateZoom();
-      }
+      postSet: function() { this.updateZoom(); }
     },
     {
       name: 'rowSelection',
@@ -118,7 +121,7 @@ var Browser = Model.create({
       name: 'view',
       valueFactory: function() {
         var view = createView(this.rowSelection, this);
-        Events.link(view.choice$, this.location.mode$);
+        this.location.mode$ = view.choice$
         return view;
       }
     },
@@ -129,14 +132,14 @@ var Browser = Model.create({
           helpText: 'Search within:',
           value: this.location.can$,
           choices:[
-            ['',                                         '&nbsp;All issues', 1],
-            ['status=New,Accepted,Started',              '&nbsp;Open issues', 2],
-            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me', 3],
+            ['',                                         '&nbsp;All issues',              1],
+            ['status=New,Accepted,Started',              '&nbsp;Open issues',             2],
+            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me',    3],
             ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me', 4],
-            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me', 5],
-            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me', 8],
-            ['status=New',                               '&nbsp;New issues', 6],
-            ['status=Fixed,Done',                        '&nbsp;Issues to verify', 7]
+            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me',  5],
+            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me',  8],
+            ['status=New',                               '&nbsp;New issues',              6],
+            ['status=Fixed,Done',                        '&nbsp;Issues to verify',        7]
           ]});
       }
     },
@@ -171,7 +174,7 @@ var Browser = Model.create({
     {
       name: 'legacyUrl',
       getter: function() {
-        return this.url + '/issues/list?' + this.memento;
+        return this.url + '/issues/list?' + this.location.toURL(this);
       },
       setter: function(url) {
         var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
@@ -183,7 +186,7 @@ var Browser = Model.create({
         var params  = match[3];
 
         if ( project == this.projectName ) {
-          this.location.fromString(this, params);
+          this.location.fromMemento(this, params);
         } else {
           this.qbug.launchBrowser(project, url)
         }
@@ -233,7 +236,7 @@ var Browser = Model.create({
       name: 'onLocationUpdate',
       animate: true,
       code: function(evt) {
-        this.memento = this.location.toString(this);
+        this.memento = this.location.toMemento(this);
       }
     },
   ],
@@ -293,7 +296,7 @@ var Browser = Model.create({
     {
       model_: 'Action',
       name: 'favourites',
-      label: 'My Favourites <small>▼</small>',
+      label: 'My Favourites &#x25BE;',
       action: function() {
         if ( this.favouritesMenu ) {
           this.favouritesMenu.close();
@@ -410,9 +413,6 @@ var Browser = Model.create({
       this.window.document.addEventListener('keyup', this.keyPress);
 
       this.location.addListener(this.onLocationUpdate);
-
-      this.memento = "mode=list&colspec=";
-      this.mementoMgr.stack = [];
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -471,8 +471,6 @@ var Browser = Model.create({
           self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
         }
       );
-
-      console.log(this.legacyUrl);
     },
 
     openURL: function(url) {

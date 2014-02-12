@@ -76,7 +76,7 @@ var QIssueLabelsView = FOAM({
     {
       name: 'value',
       valueFactory: function() { return SimpleValue.create([]); },
-      postSet: function(newValue, oldValue) {
+      postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
         this.update();

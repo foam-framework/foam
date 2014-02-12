@@ -27,7 +27,7 @@ var ScrollCView = FOAM({
          name:  'parent',
          type:  'CView',
          hidden: true,
-         postSet: function(newValue, oldValue) {
+         postSet: function(oldValue, newValue) {
 //         oldValue && oldValue.removeListener(this.updateValue);
 //         newValue.addListener(this.updateValue);
            var e = newValue.$;
@@ -190,7 +190,7 @@ var ScrollBorder = FOAM({
      {
        name: 'view',
        type: 'view',
-       postSet: function(view) {
+       postSet: function(_, view) {
          this.scrollbar.extent = this.view.rows;
        }
      },
@@ -211,7 +211,7 @@ var ScrollBorder = FOAM({
          type: 'DAO',
          hidden: true,
          required: true,
-         postSet: function(newValue, oldValue) {
+         postSet: function(oldValue, newValue) {
           this.view.dao = newValue;
            var self = this;
 

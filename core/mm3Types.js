@@ -178,7 +178,7 @@ var DateTimeProperty = Model.create({
        {
            name: 'type',
            type: 'String',
-           displayWidth: 20,
+           displayWidth: 25,
            defaultValue: 'datetime',
            help: 'The FOAM type of this property.'
        },
