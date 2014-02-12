@@ -118,7 +118,7 @@ var Browser = Model.create({
       name: 'view',
       valueFactory: function() {
         var view = createView(this.rowSelection, this);
-        Events.link(view.choice$, this.location.mode$);
+        this.location.mode$ = view.choice$
         return view;
       }
     },
