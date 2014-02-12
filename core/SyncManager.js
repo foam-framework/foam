@@ -40,11 +40,13 @@ var SyncManager = FOAM({
     {
       model_: 'IntegerProperty',
       name: 'itemsSynced',
+      mode2: 'read-only',
       help: 'Number of items synced.'
     },
     {
       model_: 'IntegerProperty',
       name:  'timesSynced',
+      mode2: 'read-only',
       help: 'Number of times sync has been performed.'
     },
     {
@@ -80,6 +82,11 @@ var SyncManager = FOAM({
       help: 'Number of item updates returned in last sync response.'
     },
     {
+      model_: 'DateTimeProperty',
+      name:  'lastSync',
+      help: 'The time of the last sync.'
+    },
+    {
       model_: 'IntegerProperty',
       name:  'lastSyncDuration',
       help: 'Duration of last sync request.',
@@ -88,11 +95,13 @@ var SyncManager = FOAM({
     {
       model_: 'BooleanProperty',
       name:  'enabled',
+      mode2: 'read-only',
       help: 'If the Sync Manager is currently enabled to perform periodic sync requests.'
     },
     {
       model_: 'BooleanProperty',
       name:  'isSyncing',
+      mode2: 'read-only',
       help: 'If the Sync Manager is currently syncing.'
     },
     {
@@ -143,7 +152,11 @@ var SyncManager = FOAM({
 
       isEnabled: function() { return ! this.enabled; },
       action: function() {
-        this.copyFrom(SyncManager.create());
+        this.itemsSynced = 0;
+        this.timesSynced = 0;
+        this.lastSync = null;
+        this.lasSyncDuration = 0;
+        this.lastId = '';
         this.lastModified = SyncManager.LAST_MODIFIED.defaultValue;
       }
     }
@@ -164,38 +177,41 @@ var SyncManager = FOAM({
       var batchSize = this.batchSize;
       var startTime = Date.now();
 
+      this.lastBatchSize = 0;
       this.isSyncing = true;
-      this.syncStatus = 'Requesting Sync...';
-      this.srcDAO
-        .limit(batchSize)
+      this.syncStatus = 'Syncing...';
+
+      var dao = this.srcDAO;
+
+      if ( this.batchSize ) dao = dao.limit(batchSize);
+
+      var delay = this.syncInterval;
+
+      dao
         .where(GT(this.modifiedProperty, this.lastModified))
-        .select()(function(items) {
-          self.syncStatus = 'processing sync data';
-          self.timesSynced++;
-          self.lastBatchSize = items.length;
-
-          // items.select(console.log.json); // TODO: for debugging, remove
-          items.select(self.dstDAO)(function() {
-            self.lastSyncDuration = Date.now() - startTime;
-            self.syncStatus = 'Processing ' + items.length + ' Sync Response items...';
-
-            self.itemsSynced += items.length;
-
-            if ( items.length ) {
-              var item = items[items.length-1];
+        .orderBy(this.modifiedProperty)
+        .select({
+            put: function(item) {
+              self.itemsSynced++;
               self.lastId = item.id;
-              self.lastModified = new Date(
-                Math.max(
-                  self.lastModified.getTime() + 1000,
-                  item.updated.getTime()));
+              self.lastModified = item.updated;
+              self.lastBatchSize++;
+              self.dstDAO.put(item);
+              delay = self.delay;
+            },
+            error: function() {
+              debugger;
             }
+          })(function() {
+            self.timesSynced++;
+            self.lastSyncDuration = Date.now() - startTime;
 
-            self.syncStatus = 'Finished Syncing ' + items.length + ' items at ' + new Date();;
+            self.syncStatus = '';
+            self.lastSync = new Date().toString();
             self.isSyncing = false;
 
-            self.schedule(items.length ? self.delay : self.syncInterval);
+            self.schedule(delay);
           });
-        });
     },
 
     schedule: function(syncInterval) {
