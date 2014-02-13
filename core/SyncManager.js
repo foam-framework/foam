@@ -200,7 +200,7 @@ var SyncManager = FOAM({
       var delay = this.syncInterval;
 
       if ( this.queryParser && this.query ) {
-        var p = this.queryParser.parseString(this.query.replace(/\n/g, ' '));
+        var p = this.queryParser.parseString(this.query.replace(/\s+/g, ' '));
 
         if ( p ) {
           console.log('sync query: ', p.toMQL());
