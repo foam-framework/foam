@@ -224,7 +224,7 @@ var SyncManager = FOAM({
 
         if ( p ) {
           p = p.partialEval();
-          console.log('sync query: ', p.toMQL());
+          // console.log('sync query: ', p.toMQL());
           dao = dao.where(p);
         }
       }
