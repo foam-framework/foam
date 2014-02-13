@@ -241,10 +241,12 @@ var SyncManager = FOAM({
 
             self.itemsSynced++;
             self.lastId = item.id;
-            self.lastModified = item.updated;
+            if ( item.updated.compareTo(self.lastModified) > 0 ) {
+              self.lastModified = item.updated;
+              delay = self.delay;
+            }
             lastBatchSize++;
             self.dstDAO.put(item);
-            delay = self.delay;
           },
           error: function() {
             debugger;
