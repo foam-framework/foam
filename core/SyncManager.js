@@ -71,8 +71,8 @@ var SyncManager = FOAM({
     {
       model_: 'IntegerProperty',
       name:  'batchSize',
-      help: 'Maximum number of items per sync request.',
-      defaultValue: 500
+      help: 'Maximum number of items per sync request; 0 for unlimited.',
+      defaultValue: 0
     },
     {
       model_: 'StringProperty',
@@ -207,9 +207,9 @@ var SyncManager = FOAM({
       var self = this;
       var batchSize = this.batchSize;
       var startTime = Date.now();
+      var lastBatchSize = 0;
 
       this.abortRequest_ = false;
-      this.lastBatchSize = 0;
       this.isSyncing = true;
       this.syncStatus = 'Syncing...';
 
@@ -241,7 +241,7 @@ var SyncManager = FOAM({
             self.itemsSynced++;
             self.lastId = item.id;
             self.lastModified = item.updated;
-            self.lastBatchSize++;
+            lastBatchSize++;
             self.dstDAO.put(item);
             delay = self.delay;
           },
@@ -251,6 +251,7 @@ var SyncManager = FOAM({
         })(function() {
           self.timesSynced++;
           self.lastSyncDuration = Date.now() - startTime;
+          self.lastBatchSize = lastBatchSize;
 
           self.syncStatus = '';
           self.lastSync = new Date().toString();
