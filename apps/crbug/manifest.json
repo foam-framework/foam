@@ -4,13 +4,11 @@
   "manifest_version": 2,
 
   "permissions": [
-    "<all_urls>",
-    "http://*/",
-    "https://*/",
+    "https://www.googleapis.com/*",
+    "https://code.google.com/p/*",
     "identity",
     "storage",
-    "unlimitedStorage",
-    "webview"
+    "unlimitedStorage"
   ],
 
   "icons": {
@@ -56,7 +54,6 @@
     "client_id": "18229540903-c1cku6fscof2takj43gedatapd7c33m9.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.google.com/m8/feeds",
       "https://www.googleapis.com/auth/projecthosting"
     ]
   }

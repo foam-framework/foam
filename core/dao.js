@@ -2354,7 +2354,7 @@ var RestDAO = FOAM({
       model_: 'ArrayProperty',
       subType: 'Property',
       name: 'paramProperties',
-      help: 'Properties that are handled as separate paramters rather than in the query.'
+      help: 'Properties that are handled as separate parameters rather than in the query.'
     },
     {
       model_: 'IntegerProperty',
@@ -2381,6 +2381,9 @@ var RestDAO = FOAM({
     },
     buildPutParams: function(obj) {
     },
+    buildSelectParams: function(sink, options) {
+      return [];
+    },
     put: function(value, sink) {
       var self = this;
       ajsonp(this.buildPutURL(value),
@@ -2396,13 +2399,12 @@ var RestDAO = FOAM({
     },
     select: function(sink, options) {
       sink = sink || [];
-      var params = [];
+      var params = this.buildSelectParams(sink, options);
       var fut = afuture();
       var self = this;
       var limit;
       var index = 0;
       var fc = this.createFlowControl_();
-
 
       if ( options ) {
         index += options.skip || 0;
@@ -2488,8 +2490,7 @@ var RestDAO = FOAM({
                 break;
               }
 
-              sink && sink.put &&
-                sink.put(item, null, fc);
+              sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
             if ( index === data.totalResults ) finished = true;

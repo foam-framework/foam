@@ -21,6 +21,13 @@ var IssueRestDAO = FOAM({
   name: 'IssueRestDAO',
 
   methods: {
+    /*
+      Isn't working for some reason.
+    buildSelectParams: function(sink, options) {
+      return ['fields=summary,stars,starred,status,state,labels,author,owner,updated,published,blockedOn,blocking')];
+    },
+    */
+
     jsonToObj: function(json) {
       // Adapt IssuePerson types to just Strings
       if ( json.cc ) {
@@ -48,6 +55,7 @@ var IssueRestDAO = FOAM({
   }
 });
 
+
 var QIssueStarringDAO = FOAM({
   model_: 'Model',
   name: 'QIssueStarringDAO',
@@ -74,6 +82,7 @@ var QIssueStarringDAO = FOAM({
     }
   }
 });
+
 
 var QIssueCommentNetworkDAO = FOAM({
   model_: 'Model',

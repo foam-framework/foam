@@ -572,6 +572,7 @@ var TextFieldView = FOAM({
     {
       model_: 'BooleanProperty',
       name:  'escapeHTML',
+      // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },
     {
@@ -683,6 +684,7 @@ var TextFieldView = FOAM({
   ]
 });
 
+
 var DateFieldView = FOAM({
 
   model_: 'Model',
@@ -721,6 +723,13 @@ var DateTimeFieldView = FOAM({
 
   extendsModel: 'TextFieldView',
 
+  properties: [
+    {
+      name:  'displayWidth',
+      defaultValue: 40
+    }
+  ],
+
   methods: {
     textToValue: function(text) { return new Date(text); },
 
@@ -733,6 +742,7 @@ var DateTimeFieldView = FOAM({
     }
   }
 });
+
 
 var RelativeDateTimeFieldView = FOAM({
   model_: 'Model',
@@ -751,6 +761,7 @@ var RelativeDateTimeFieldView = FOAM({
     }
   }
 });
+
 
 var HTMLView = FOAM({
 
@@ -1031,6 +1042,7 @@ var ChoiceView = FOAM({
   ]
 
 });
+
 
 var RadioBoxView = FOAM({
 
@@ -1941,7 +1953,6 @@ var HelpView = FOAM({
 
       return out.join('');
     }
-
   }
 
 });
