@@ -21,13 +21,6 @@ var IssueRestDAO = FOAM({
   name: 'IssueRestDAO',
 
   methods: {
-    /*
-      Isn't working for some reason.
-    buildSelectParams: function(sink, options) {
-      return ['fields=summary,stars,starred,status,state,labels,author,owner,updated,published,blockedOn,blocking')];
-    },
-    */
-
     jsonToObj: function(json) {
       // Adapt IssuePerson types to just Strings
       if ( json.cc ) {
@@ -51,6 +44,45 @@ var IssueRestDAO = FOAM({
       if ( json.published ) json.published = new Date(json.published).getTime()/1000;
 
       return this.model.create(json);
+    },
+
+    buildSelectParams: function(sink, outquery) {
+      var query = outquery[0];
+
+      if ( ! query ) return this.url;
+
+      var updatedMin;
+
+      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.UPDATED ) {
+        updatedMin = query.arg2.arg1.getTime();
+        query = TRUE
+      }
+
+      // TODO, this assumes that any presence of GT(QIssue.UPDATED, foo) is the same.
+      if ( OrExpr.isInstance(query) ) {
+        for ( var i = 0; i < query.args.length; i++ ) {
+          var arg = query.args[i];
+
+          if ( AndExpr.isInstance(arg) ) {
+            for ( var j = 0; j < arg.args.length; j++ ) {
+              var subarg = arg.args[j];
+
+              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.UPDATED ) {
+                updatedMin = subarg.arg2.arg1.getTime();
+                arg.args[j] = TRUE;
+              }
+            }
+          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
+            updatedMin = arg.arg2.arg1.getTime();
+            query.args[i] = TRUE;
+          }
+        }
+      }
+
+      outquery[0] = query.partialEval();
+
+      if ( updatedMin ) return ["updatedMin=" + updatedMin/1000];
+      return [];
     }
   }
 });

@@ -318,6 +318,7 @@ var ArrayProperty = Model.create({
 
              for ( var i = 0 ; i < a.length ; i++ ) {
 // TODO: remove when 'redundant model_'s removed
+/*
 if ( a[i].model_ ) {
    if ( a[i].model_ == prop.subType ) {
       console.log('********* redundant model_ ', prop.subType)
@@ -325,6 +326,7 @@ if ( a[i].model_ ) {
       console.log('*');
    }
 }
+*/
                a[i] = a[i].model_ ? FOAM(a[i]) : m.create(a[i]);
              }
 
