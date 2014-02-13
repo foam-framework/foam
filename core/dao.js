@@ -2381,7 +2381,7 @@ var RestDAO = FOAM({
     },
     buildPutParams: function(obj) {
     },
-    buildSelectParams: function(sink, options) {
+    buildSelectParams: function(sink, query) {
       return [];
     },
     put: function(value, sink) {
@@ -2399,7 +2399,6 @@ var RestDAO = FOAM({
     },
     select: function(sink, options) {
       sink = sink || [];
-      var params = this.buildSelectParams(sink, options);
       var fut = afuture();
       var self = this;
       var limit;
@@ -2409,18 +2408,16 @@ var RestDAO = FOAM({
       if ( options ) {
         index += options.skip || 0;
 
-        if ( options.order ) {
-          var sort = options.order.toMQL();
-          params.push("sort=" + sort);
-        }
-
         var query = options.query;
         var url;
 
         if ( query ) {
           query = query.normalize();
 
-          var outquery = [query]
+          var outquery = [query];
+
+          var params = this.buildSelectParams(sink, outquery);
+
           url = this.buildURL(outquery);
 
           query = outquery[0];
@@ -2429,6 +2426,11 @@ var RestDAO = FOAM({
           if ( mql ) params.push('q=' + encodeURIComponent(query.toMQL()));
         } else {
           url = this.buildURL();
+        }
+
+        if ( options.order ) {
+          var sort = options.order.toMQL();
+          params.push("sort=" + sort);
         }
 
         if ( options.limit ) {

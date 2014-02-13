@@ -183,7 +183,7 @@ var SyncManager = FOAM({
 
       var dao = this.srcDAO;
 
-      if ( this.batchSize ) dao = dao.limit(batchSize);
+      if ( this.batchSize > 0 ) dao = dao.limit(batchSize);
 
       var delay = this.syncInterval;
 
