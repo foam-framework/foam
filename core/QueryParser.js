@@ -24,6 +24,8 @@ var ME = "";
  * key:value1,value2          key contains "value1" OR "value2"
  * key1:value key2:value      key1 contains value AND key2 contains "value"
  * key1:value AND key2:value  "
+ * key1:value OR key2:value   key1 contains value OR key2 contains "value"
+ * key1:value or key2:value   "
  * (expr)                     groups expression
  * -expr                      not expression, ie. -pri:1
  * has:key                    key has a value
@@ -45,9 +47,12 @@ var QueryParserFactory = function(model) {
 
   query: sym('or'),
 
-  or: repeat(sym('and'), literal_ic('OR '), 1),
+  or: repeat(sym('and'), literal_ic(' OR '), 1),
 
-  and: repeat(sym('expr'), alt(literal_ic('AND '), ' '), 1),
+  and: repeat(
+    sym('expr'),
+    alt(literal_ic('AND '), not(literal_ic(' OR'), ' ')),
+    1),
 
   expr: alt(
     sym('negate'),

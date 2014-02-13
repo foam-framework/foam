@@ -21,7 +21,7 @@ var QueryParser = {
 
   labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
-  summary: plus(anyChar)
+  summary: plus(notChar(' '))
 
 }.addActions({
   stars: function(v) {
@@ -47,6 +47,7 @@ var QueryParser = {
   }
 });
 
+
 QueryParser.expr = alt(
   QueryParser.export('expr'),
   sym('stars'),
@@ -56,7 +57,6 @@ QueryParser.expr = alt(
 
 /*
 function test(query) {
-  console.log('QueryParserTest: ' + query);
   var res = QueryParser.parseString(query);
   console.log('query: ', query, ' -> ', res && res.toSQL());
 }
@@ -70,6 +70,7 @@ test('status:Assigned priority:0');
 test('Iteration:29');
 test('Type:Bug');
 test('');
+test('priority=0 or priority=1');
 */
 
 // label:Priority-High = Priority:High
@@ -84,7 +85,6 @@ test('');
 // attachment:screenshot or attachment:png
 
 // consider
-//  < and > support (done)
 //  limit:# support
 //  format:table/grid/csv/xml/json
 //  orderBy:((-)field)+
