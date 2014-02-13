@@ -134,7 +134,12 @@ var SyncManager = FOAM({
       name:  'start',
       help:  'Start the Sync Manager.',
 
-      isEnabled: function() { return ! this.enabled; },
+      isEnabled: function() {
+        var enabled = this.enabled;
+        var isSyncing = this.isSyncing;
+
+        return ! this.enabled && ! isSyncing;
+      },
       action:    function() { this.enabled = true; this.sync(); }
     },
     {
@@ -142,7 +147,12 @@ var SyncManager = FOAM({
       name:  'forceSync',
       help:  'Perform a single sync request.',
 
-      isEnabled: function() { return ! this.enabled; },
+      isEnabled: function() {
+        var enabled = this.enabled;
+        var isSyncing = this.isSyncing;
+
+        return ! this.enabled && ! isSyncing;
+      },
       action: function() {
         clearTimeout(this.timer);
         this.sync();
@@ -154,8 +164,17 @@ var SyncManager = FOAM({
       help:  'Stop the timer.',
 
       // TODO: abort current sync
-      isEnabled: function() { return this.enabled || this.isSyncing; },
-      action: function() { this.enabled = false; clearTimeout(this.timer); }
+      isEnabled: function() {
+        var enabled = this.enabled;
+        var isSyncing = this.isSyncing;
+
+        return enabled || isSyncing;
+      },
+      action: function() {
+        this.enabled = false;
+        this.abortRequest_ = true;
+        clearTimeout(this.timer);
+      }
     },
     {
       model_: 'Action',
@@ -189,6 +208,7 @@ var SyncManager = FOAM({
       var batchSize = this.batchSize;
       var startTime = Date.now();
 
+      this.abortRequest_ = false;
       this.lastBatchSize = 0;
       this.isSyncing = true;
       this.syncStatus = 'Syncing...';
@@ -212,27 +232,32 @@ var SyncManager = FOAM({
         .where(GT(this.modifiedProperty, this.lastModified))
         .orderBy(this.modifiedProperty)
         .select({
-            put: function(item) {
-              self.itemsSynced++;
-              self.lastId = item.id;
-              self.lastModified = item.updated;
-              self.lastBatchSize++;
-              self.dstDAO.put(item);
-              delay = self.delay;
-            },
-            error: function() {
-              debugger;
+          put: function(item, _, fc) {
+            if ( self.abortRequest_ ) {
+              fc.stop();
+              self.abortRequest_ = false;
             }
-          })(function() {
-            self.timesSynced++;
-            self.lastSyncDuration = Date.now() - startTime;
 
-            self.syncStatus = '';
-            self.lastSync = new Date().toString();
-            self.isSyncing = false;
+            self.itemsSynced++;
+            self.lastId = item.id;
+            self.lastModified = item.updated;
+            self.lastBatchSize++;
+            self.dstDAO.put(item);
+            delay = self.delay;
+          },
+          error: function() {
+            debugger;
+          }
+        })(function() {
+          self.timesSynced++;
+          self.lastSyncDuration = Date.now() - startTime;
 
-            self.schedule(delay);
-          });
+          self.syncStatus = '';
+          self.lastSync = new Date().toString();
+          self.isSyncing = false;
+
+          self.schedule(delay);
+        });
     },
 
     schedule: function(syncInterval) {
