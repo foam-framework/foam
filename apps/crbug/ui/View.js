@@ -250,8 +250,32 @@ function createView(rowSelection, browser) {
                   name: 'dao',
                   // crbug limits grid view to 6000 rows, so do the same
                   preSet: function(dao) { return dao.limit(6000); },
-                  postSet: function(_, dao) { this.grid.dao = dao; },
-                }
+                  postSet: function(old, dao) {
+                     if ( this.listener ) {
+                        old && old.unlisten(this.listener);
+                        dao.listen(this.listener);
+                     }
+                     this.grid.dao = dao;
+                     this.updateHTML();
+                  },
+                },
+              ],
+              methods: {
+                 init: function(args) {
+                    this.SUPER(args);
+                    this.listener = {
+                       put: this.daoUpdate,
+                       remove: this.daoUpdate
+                    };
+                 }
+              },
+              listeners: [
+                 {
+                    name: 'daoUpdate',
+                    code: function() {
+                       this.updateHTML();
+                    }
+                 }
               ]}).create({
                 model: QIssue,
                 accChoices: [

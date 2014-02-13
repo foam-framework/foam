@@ -59,9 +59,9 @@ var QProject = Model.create({
       }
     },
     {
-      name: 'IssueDAO',
+      name: 'IssueMDAO',
       valueFactory: function() {
-        var IssueMDAO  = MDAO.create({model: QIssue})
+        return MDAO.create({model: QIssue})
           .addIndex(QIssue.ID)
           .addIndex(QIssue.PRIORITY)
           .addIndex(QIssue.MILESTONE)
@@ -73,16 +73,25 @@ var QProject = Model.create({
           .addIndex(QIssue.SUMMARY)
           .addIndex(QIssue.OS)
           .addIndex(QIssue.UPDATED);
-
+      }
+    },
+    {
+      name: 'IssueCachingDAO',
+      valueFactory: function() {
         var IssueIDBDAO = IDBDAO.create({
           model: QIssue,
           name: this.projectName + '_' + QIssue.plural
         });
 
-        var IssueCachingDAO = CachingDAO.create(IssueMDAO, IssueIDBDAO);
-
+        return CachingDAO.create(this.IssueMDAO, IssueIDBDAO);
+      },
+      transient: true
+    },
+    {
+      name: 'IssueDAO',
+      valueFactory: function() {
         var actions = ActionFactoryDAO.create({
-          delegate: IssueCachingDAO,
+          delegate: this.IssueMDAO,
           actionDao: this.IssueCommentNetworkDAO
         });
 
@@ -118,7 +127,7 @@ var QProject = Model.create({
       valueFactory: function() {
         return SyncManager.create({
           srcDAO: this.IssueNetworkDAO,
-          dstDAO: this.IssueDAO.delegate.delegate,
+          dstDAO: this.IssueCachingDAO,
           lastModified: new Date(2013,01,01),
           modifiedProperty: QIssue.UPDATED
         });

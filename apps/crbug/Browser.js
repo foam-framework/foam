@@ -384,7 +384,8 @@ var Browser = Model.create({
           this.timer.start();
         } else {
           this.timer.stop();
-          this.view.choice = this.view.choice;
+// Should no longer be necessary since both views listen for dao updates.
+//          this.view.choice = this.view.choice;
         }
       }.bind(this));
 
