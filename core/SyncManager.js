@@ -223,6 +223,7 @@ var SyncManager = FOAM({
         var p = this.queryParser.parseString(this.query.replace(/\s+/g, ' '));
 
         if ( p ) {
+          p = p.partialEval();
           console.log('sync query: ', p.toMQL());
           dao = dao.where(p);
         }
