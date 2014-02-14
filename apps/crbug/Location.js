@@ -80,6 +80,9 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'colspec',
+      postSet: function(oldValue, newValue) {
+        console.log('colspec ', oldValue, newValue);
+      }
       toMemento: function(properties) { return properties.join(' '); },
       fromMemento: function(colspec) { return colspec ? colspec.split(' ') : null; }
     },
@@ -153,9 +156,10 @@ var Location = FOAM({
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
-        var keyValue = param.split('=');
-        var key      = decodeURIComponent(keyValue[0]);
-        var value    = decodeURIComponent(keyValue[1]).replace(/\+/g, ' ');
+        var keyValue = param.match(/([^=]*)=(.*)/);
+        var key      = decodeURIComponent(keyValue[1]);
+        var value    = decodeURIComponent(keyValue[2]).replace(/\+/g, ' ');
+console.log('***************key ', key, ' ', value);
         m[key] = value;
       }
 
