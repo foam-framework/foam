@@ -30,7 +30,8 @@ var QBug = Model.create({
     },
     {
       name: 'defaultProjectName',
-      defaultValue: 'foam-framework'
+      defaultValue: 'chromium'
+//      defaultValue: 'foam-framework'
     },
     {
       name: 'user',
