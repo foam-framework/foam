@@ -241,8 +241,8 @@ var SyncManager = FOAM({
 
             self.itemsSynced++;
             self.lastId = item.id;
-            if ( item.updated.compareTo(self.lastModified) > 0 ) {
-              self.lastModified = item.updated;
+            if ( item[self.modifiedProperty.name].compareTo(self.lastModified) > 0 ) {
+              self.lastModified = item[self.modifiedProperty.name];
               delay = self.delay;
             }
             lastBatchSize++;
