@@ -755,10 +755,10 @@ var DateTimeFieldView = FOAM({
 
       this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
 
-      Events.relate(this.domValue, this.value, this.domToValue, this.valueToDom);
+      Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
     },
 
-    valueToDom: function(value) { return value.getTime() || 0; },
+    valueToDom: function(value) { return value.getTime(); },
     domToValue: function(dom) { return new Date(dom); },
     setValue: function(value) { this.value = value; },
 
