@@ -721,24 +721,62 @@ var DateTimeFieldView = FOAM({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'TextFieldView',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
-      name:  'displayWidth',
-      defaultValue: 40
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'mode',
+      defaultValue: 'read-write'
+    },
+    {
+      name: 'domValue',
+      postSet: function(oldValue) {
+        if ( oldValue && this.value ) {
+          Events.unlink(oldValue, this.value);
+        }
+      }
+    },
+    {
+      name: 'value',
+      valueFactory: function() { return SimpleValue.create(new Date()); },
+      postSet: function(oldValue, newValue) {
+        if ( oldValue && this.domValue ) {
+          Events.unlink(this.domValue, oldValue);
+        }
+        this.linkValues();
+      }
     }
   ],
 
   methods: {
-    textToValue: function(text) { return new Date(text); },
+    linkValues: function() {
+      if ( ! this.$ ) return;
+      if ( ! this.value ) return;
 
-    valueToText: function(value) { return value.toString(); },
+      this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
+
+      Events.relate(this.domValue, this.value, this.domToValue, this.valueToDom);
+    },
+
+    valueToDom: function(value) { return value.getTime() || 0; },
+    domToValue: function(dom) { return new Date(dom); },
+    setValue: function(value) { this.value = value; },
 
     toHTML: function() {
+      // TODO: Switch type to just datetime when supported.
       return ( this.mode === 'read-write' ) ?
-        '<input id="' + this.getID() + '" name="' + this.name + '" size=' + this.displayWidth + '/>' :
+        '<input id="' + this.getID() + '" type="datetime-local" name="' + this.name + '"/>' :
         '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.linkValues();
     }
   }
 });
@@ -754,10 +792,6 @@ var RelativeDateTimeFieldView = FOAM({
   methods: {
     valueToText: function(value) {
       return value.toRelativeDateString();
-    },
-
-    toHTML: function() {
-      return '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
     }
   }
 });
