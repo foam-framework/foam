@@ -51,37 +51,70 @@ var IssueRestDAO = FOAM({
 
       if ( ! query ) return this.url;
 
+      var candidates = [];
       var updatedMin;
+      var required = 1;
 
+      // TODO: Generify this and move it to a helper function.
+      // When mLangs have compareTo this will be much easier.
       if ( GtExpr.isInstance(query) && query.arg1 === QIssue.UPDATED ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
-      }
+      } else if ( AndExpr.isInstance(query) ) {
+        for ( var j = 0; j < query.args.length; j++ ) {
+          var arg = query.args[j];
 
-      // TODO, this assumes that any presence of GT(QIssue.UPDATED, foo) is the same.
-      if ( OrExpr.isInstance(query) ) {
+          if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
+            candidates.push([arg.arg2.arg1.getTime(), [[query, j]]]);
+          }
+        }
+      } else if ( OrExpr.isInstance(query) ) {
+        required = query.args.length;
+
         for ( var i = 0; i < query.args.length; i++ ) {
           var arg = query.args[i];
 
           if ( AndExpr.isInstance(arg) ) {
-            for ( var j = 0; j < arg.args.length; j++ ) {
+            for ( j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
               if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.UPDATED ) {
-                updatedMin = subarg.arg2.arg1.getTime();
-                arg.args[j] = TRUE;
+                for ( var k = 0; k < candidates.length; k++ ) {
+                  if ( candidates[k][0] === subarg.arg2.arg1.getTime() ) {
+                    candidates[k][1].push([arg, j]);
+                  }
+                }
+                if ( k === candidates.length ) {
+                  candidates.push([subarg.arg2.arg1.getTime(), [[arg, j]]]);
+                }
               }
             }
           } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
-            updatedMin = arg.arg2.arg1.getTime();
-            query.args[i] = TRUE;
+            for ( k = 0; k < candidates.length; k++ ) {
+              if ( candidates[k][0] === arg.arg2.arg1.getTime() ) {
+                candidates[k][1].push([query, i]);
+              }
+            }
+            if ( k === candidates.length ) {
+              candidates.push([arg.arg2.arg1.getTime(), [[query, i]]]);
+            }
           }
+        }
+      }
+
+      for ( k = 0; k < candidates.length; k++ ) {
+        if ( candidates[k][1].length === required ) {
+          updatedMin = candidates[k][0];
+          for ( i = 0; i < candidates[k][1].length; i++ ) {
+            candidates[k][1][i][0].args[candidates[k][1][i][1]] = TRUE;
+          }
+          break;
         }
       }
 
       outquery[0] = query.partialEval();
 
-      if ( updatedMin ) return ["updatedMin=" + updatedMin/1000];
+      if ( updatedMin ) return ["updatedMin=" + Math.floor(updatedMin/1000)];
       return [];
     }
   }

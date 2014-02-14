@@ -2359,7 +2359,7 @@ var RestDAO = FOAM({
     {
       model_: 'IntegerProperty',
       name: 'batchSize',
-      defaultValue: 100
+      defaultValue: 200
     },
   ],
 
@@ -2412,6 +2412,7 @@ var RestDAO = FOAM({
         var url;
 
         if ( query ) {
+          var origQuery = query;
           query = query.normalize();
 
           var outquery = [query];
@@ -2476,7 +2477,7 @@ var RestDAO = FOAM({
 
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
-              if ( query && !query.f(item) ) {
+              if ( origQuery && !origQuery.f(item) ) {
                 continue;
               }
 
