@@ -175,21 +175,6 @@ var Browser = Model.create({
       name: 'legacyUrl',
       getter: function() {
         return this.url + '/issues/list?' + this.location.toURL(this);
-      },
-      setter: function(url) {
-        var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
-        var match = regex.exec(url);
-
-        if ( ! match ) return;
-
-        var project = match[1];
-        var params  = match[3];
-
-        if ( project == this.projectName ) {
-          this.location.fromMemento(this, params);
-        } else {
-          this.qbug.launchBrowser(project, url)
-        }
       }
     },
     {
@@ -201,15 +186,30 @@ var Browser = Model.create({
   listeners: [
     {
       model_: 'Method',
+      name: 'onSyncManagerUpdate',
+      animate: true,
+      code: function(evt) {
+        if ( this.syncManager.isSyncing ) {
+          this.timer.step();
+          this.timer.start();
+        } else {
+          this.timer.stop();
+          // Should no longer be necessary since both views listen for dao updates.
+          // this.view.choice = this.view.choice;
+        }
+      }
+    },
+    {
+      model_: 'Method',
       name: 'performQuery',
       animate: true,
       code: function(evt) {
-        this.legacyUrl = this.searchField.value.get();
-
-        this.search(AND(
-          QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
-          QueryParser.parseString(this.searchField.value.get()) || TRUE
-        ).partialEval());
+        if ( ! this.maybeSetLegacyUrl(this.searchField.value.get()) ) {
+          this.search(AND(
+            QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
+            QueryParser.parseString(this.searchField.value.get()) || TRUE
+          ).partialEval());
+        }
       }
     },
     {
@@ -236,7 +236,6 @@ var Browser = Model.create({
       name: 'onLocationUpdate',
       animate: true,
       code: function(evt) {
-console.log('**************onLocationUpdate', arguments);
         this.memento = this.location.toMemento(this);
       }
     },
@@ -379,17 +378,6 @@ console.log('**************onLocationUpdate', arguments);
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
 
-      this.syncManager.isSyncing$.addListener(function() {
-        if ( this.syncManager.isSyncing ) {
-          this.timer.step();
-          this.timer.start();
-        } else {
-          this.timer.stop();
-// Should no longer be necessary since both views listen for dao updates.
-//          this.view.choice = this.view.choice;
-        }
-      }.bind(this));
-
       this.rowSelection.addListener(function(_,_,_,issue) {
         var url = this.url + '/issues/detail?id=' + issue.id;
         this.openURL(url);
@@ -415,6 +403,9 @@ console.log('**************onLocationUpdate', arguments);
       this.window.document.addEventListener('keyup', this.keyPress);
 
       this.location.addListener(this.onLocationUpdate);
+
+      this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      this.onSyncManagerUpdate();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
@@ -455,6 +446,26 @@ console.log('**************onLocationUpdate', arguments);
           popup.open(self.view);
         }
       });
+    },
+
+    // return true iff url was a legacy URL
+    maybeSetLegacyUrl: function(url) {
+      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var match = regex.exec(url);
+
+      if ( ! match ) return false;
+
+      var project = match[1];
+      var params  = match[3];
+
+      if ( project == this.projectName ) {
+        this.location.fromURL(this, params);
+      } else {
+        this.searchField.value.set('');
+        this.qbug.launchBrowser(project, url)
+      }
+
+      return true;
     },
 
     updateZoom: function() {

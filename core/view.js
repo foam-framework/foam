@@ -40,9 +40,7 @@ KeyboardShortcutController.prototype.processView_ = function(view) {
   } catch(e) { console.log(e); }
 };
 
-KeyboardShortcutController.prototype.addAccelerator = function(key,
-                                                               callback,
-                                                               context) {
+KeyboardShortcutController.prototype.addAccelerator = function(key, callback, context) {
   if (context) {
     if (typeof(context) != 'string')
       throw "Context must be an identifier for a DOM node.";
@@ -57,22 +55,18 @@ KeyboardShortcutController.prototype.addAccelerator = function(key,
 
 KeyboardShortcutController.prototype.shouldIgnoreKeyEventsForTarget_ = function(event) {
   var target = event.target;
-  if (target.isContentEditable)
-    return true;
-  return target.tagName == 'INPUT' ||
-    target.tagName == 'TEXTAREA';
+  return target.isContentEditable || target.tagName == 'INPUT' || target.tagName == 'TEXTAREA';
 };
 
 KeyboardShortcutController.prototype.processKey_ = function(event) {
   if (this.shouldIgnoreKeyEventsForTarget_(event))
     return;
 
-  for (var node = event.target; node && node != document.body; node =
-       node.parentNode) {
+  for ( var node = event.target; node && node != document.body; node = node.parentNode ) {
     var id = node.id;
-    if (id && (id in this.contexts_)) {
+    if ( id && (id in this.contexts_) ) {
       var cbs =  this.contexts_[id];
-      if (event.keyIdentifier in cbs) {
+      if ( event.keyIdentifier in cbs ) {
         var cb = cbs[event.keyIdentifier];
         cb(event);
         event.preventDefault();
@@ -81,7 +75,7 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
     }
   }
   console.log('Looking for ' + event.keyIdentifier);
-  if (event.keyIdentifier in this.body_) {
+  if ( event.keyIdentifier in this.body_ ) {
     var cb = this.body_[event.keyIdentifier];
     cb(event);
     event.preventDefault();
@@ -98,6 +92,7 @@ var DOM = {
   }
 };
 
+// TODO: document and make non-global
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 

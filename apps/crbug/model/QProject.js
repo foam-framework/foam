@@ -126,6 +126,7 @@ var QProject = Model.create({
       name: 'syncManager',
       valueFactory: function() {
         return SyncManager.create({
+          syncInterval: 60*5,
           queryParser: QueryParser,
           query: 'status=New,Accepted,Started OR\nupdated-after:today-60 OR\nis:starred',
           srcDAO: this.IssueNetworkDAO,
@@ -141,6 +142,8 @@ var QProject = Model.create({
     /** Open a Browser in a Window for a Chome Packaged App. **/
     launchBrowser: function(opt_url) {
       var self = this;
+
+      this.syncManager.start();
 
       chrome.app.window.create('empty.html', {width: 1000, height: 800}, function(w) {
         w.contentWindow.onload = function() {
