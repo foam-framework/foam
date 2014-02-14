@@ -53,12 +53,12 @@ var IssueRestDAO = FOAM({
 
       var updatedMin;
 
-      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.UPDATED ) {
+      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.MODIFIED ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
       }
 
-      // TODO, this assumes that any presence of GT(QIssue.UPDATED, foo) is the same.
+      // TODO, this assumes that any presence of GT(QIssue.MODIFIED, foo) is the same.
       if ( OrExpr.isInstance(query) ) {
         for ( var i = 0; i < query.args.length; i++ ) {
           var arg = query.args[i];
@@ -67,12 +67,12 @@ var IssueRestDAO = FOAM({
             for ( var j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.UPDATED ) {
+              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.MODIFIED ) {
                 updatedMin = subarg.arg2.arg1.getTime();
                 arg.args[j] = TRUE;
               }
             }
-          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
+          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.MODIFIED ) {
             updatedMin = arg.arg2.arg1.getTime();
             query.args[i] = TRUE;
           }
@@ -184,7 +184,7 @@ var QIssueCommentNetworkDAO = FOAM({
 
 /*
 IssueNetworkDAO
-  .where(GT(QIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
+  .where(GT(QIssue.MODIFIED, new Date(Date.now() - FIVE_MINS)))
   .limit(10)
   .select(console.log.json);
 
