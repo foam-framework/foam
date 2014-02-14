@@ -16,6 +16,7 @@
  */
 var labelToProperty = {
   App:          'app',
+  Type:         'type',
   Priority:     'priority',
   Milestone:    'milestone',
   Cr:           'category',
@@ -31,8 +32,7 @@ var QIssue = FOAM({
 
     name: 'QIssue',
 
-    tableProperties:
-    [
+    tableProperties: [
       'starred',
       'id',
       'app',
@@ -89,6 +89,11 @@ var QIssue = FOAM({
         {
           model_: 'StringProperty',
           name: 'app',
+          tableWidth: '70px'
+        },
+        {
+          model_: 'StringProperty',
+          name: 'type',
           tableWidth: '70px'
         },
         {
