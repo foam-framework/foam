@@ -35,7 +35,7 @@ var QIssue = FOAM({
     tableProperties: [
       'starred',
       'id',
-      'app',
+//      'app',
       'priority',
       'milestone',
       'iteration',
@@ -45,7 +45,7 @@ var QIssue = FOAM({
       'owner',
       'summary',
       'OS',
-      'updated'
+      'modified'
     ],
 
     ids: ['id'],
@@ -204,12 +204,17 @@ var QIssue = FOAM({
         },
         {
          model_: 'DateTimeProperty',
-         name: 'updated',
+         name: 'modified',
          shortName: 'mod',
          mode: 'read-write',
          required: true,
          tableWidth: '100px',
          valueFactory: function() { return new Date(); }
+      },
+      {
+        name: 'updated',
+        hidden: true,
+        setter: function(v) { this.modified = v; }
       },
       {
          model_: 'BooleanProperty',
@@ -312,9 +317,6 @@ var QIssue = FOAM({
 });
 
 QIssue.getPrototype();
-
-QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
-QIssue.UPDATED.toMQL = function() { return 'modified'; };
 
 QIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {

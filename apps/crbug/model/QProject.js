@@ -72,7 +72,7 @@ var QProject = Model.create({
           .addIndex(QIssue.OWNER)
           .addIndex(QIssue.SUMMARY)
           .addIndex(QIssue.OS)
-          .addIndex(QIssue.UPDATED);
+          .addIndex(QIssue.MODIFIED);
       }
     },
     {
@@ -133,7 +133,7 @@ var QProject = Model.create({
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
           lastModified: new Date(2014,01,01),
-          modifiedProperty: QIssue.UPDATED
+          modifiedProperty: QIssue.MODIFIED
         });
       }
     }

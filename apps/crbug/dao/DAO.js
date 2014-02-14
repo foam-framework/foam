@@ -57,7 +57,7 @@ var IssueRestDAO = FOAM({
 
       // TODO: Generify this and move it to a helper function.
       // When mLangs have compareTo this will be much easier.
-      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.UPDATED ) {
+      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.MODIFIEDn ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
       } else if ( AndExpr.isInstance(query) ) {
@@ -78,7 +78,7 @@ var IssueRestDAO = FOAM({
             for ( j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.UPDATED ) {
+              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.MODIFIED ) {
                 for ( var k = 0; k < candidates.length; k++ ) {
                   if ( candidates[k][0] === subarg.arg2.arg1.getTime() ) {
                     candidates[k][1].push([arg, j]);
@@ -89,7 +89,7 @@ var IssueRestDAO = FOAM({
                 }
               }
             }
-          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
+          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.MODIFIED ) {
             for ( k = 0; k < candidates.length; k++ ) {
               if ( candidates[k][0] === arg.arg2.arg1.getTime() ) {
                 candidates[k][1].push([query, i]);
@@ -217,7 +217,7 @@ var QIssueCommentNetworkDAO = FOAM({
 
 /*
 IssueNetworkDAO
-  .where(GT(QIssue.UPDATED, new Date(Date.now() - FIVE_MINS)))
+  .where(GT(QIssue.MODIFIED, new Date(Date.now() - FIVE_MINS)))
   .limit(10)
   .select(console.log.json);
 
