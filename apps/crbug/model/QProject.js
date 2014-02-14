@@ -127,11 +127,12 @@ var QProject = Model.create({
       valueFactory: function() {
         return SyncManager.create({
           syncInterval: 60*5,
+          batchSize: 500,
           queryParser: QueryParser,
-          query: 'status=New,Accepted,Started OR\nupdated-after:today-60 OR\nis:starred',
+//          query: 'status=New,Accepted,Started OR\nupdated-after:today-60 OR\nis:starred',
           srcDAO: this.IssueNetworkDAO,
           dstDAO: this.IssueCachingDAO,
-          lastModified: new Date(2013,01,01),
+          lastModified: new Date(2014,01,01),
           modifiedProperty: QIssue.UPDATED
         });
       }

@@ -110,8 +110,7 @@ var QueryParserFactory = function(model) {
 
     'char': alt(range('a','z'), range('A', 'Z'), range('0', '9'), '-', '^', '_', '@', '%', '.'),
 
-  number: seq(plus(range('0', '9')))
-
+     number: seq(plus(range('0', '9')))
    };
 
    var fields = [];
