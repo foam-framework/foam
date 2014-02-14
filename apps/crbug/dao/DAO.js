@@ -155,7 +155,7 @@ var QIssueCommentNetworkDAO = FOAM({
   extendsModel: 'RestDAO',
 
   methods: {
-    buildURL: function(outquery) {
+    buildURL: function(outquery, extra) {
       var query = outquery[0];
 
       if ( ! query ) return this.url;
@@ -187,8 +187,15 @@ var QIssueCommentNetworkDAO = FOAM({
         }
       }
 
+      extra.issueId = id;
+
       outquery[0] = query.partialEval();
       return this.url + '/' + id + '/comments';
+    },
+    jsonToObj: function(obj, extra) {
+      var obj = this.SUPER(obj);
+      obj.issueId = extra.issueId;
+      return obj;
     },
     objToJson: function(obj) {
       if ( ! obj.content ) obj.content = "(No comment was entered for this change.)";

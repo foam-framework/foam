@@ -2404,6 +2404,10 @@ var RestDAO = FOAM({
       var limit;
       var index = 0;
       var fc = this.createFlowControl_();
+      // TODO: This is a very ugly way of passing additional data
+      // from buildURL to jsonToObj, used by the IssueCommentNetworkDAO
+      // Clean this up.
+      var extra = {};
 
       if ( options ) {
         index += options.skip || 0;
@@ -2419,7 +2423,7 @@ var RestDAO = FOAM({
 
           var params = this.buildSelectParams(sink, outquery);
 
-          url = this.buildURL(outquery);
+          url = this.buildURL(outquery, extra);
 
           query = outquery[0];
 
@@ -2473,7 +2477,7 @@ var RestDAO = FOAM({
             index += items.length;
 
             for ( var i = 0 ; i < items.length; i++ ) {
-              var item = self.jsonToObj(items[i])
+              var item = self.jsonToObj(items[i], extra)
 
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
