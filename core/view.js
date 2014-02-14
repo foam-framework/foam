@@ -758,7 +758,7 @@ var DateTimeFieldView = FOAM({
       Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
     },
 
-    valueToDom: function(value) { return value.getTime(); },
+    valueToDom: function(value) { return value ? value.getTime() : 0; },
     domToValue: function(dom) { return new Date(dom); },
     setValue: function(value) { this.value = value; },
 
