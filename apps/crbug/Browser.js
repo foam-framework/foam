@@ -186,6 +186,21 @@ var Browser = Model.create({
   listeners: [
     {
       model_: 'Method',
+      name: 'onSyncManagerUpdate',
+      animate: true,
+      code: function(evt) {
+        if ( this.syncManager.isSyncing ) {
+          this.timer.step();
+          this.timer.start();
+        } else {
+          this.timer.stop();
+          // Should no longer be necessary since both views listen for dao updates.
+          // this.view.choice = this.view.choice;
+        }
+      }
+    },
+    {
+      model_: 'Method',
       name: 'performQuery',
       animate: true,
       code: function(evt) {
@@ -363,17 +378,6 @@ var Browser = Model.create({
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
 
-      this.syncManager.isSyncing$.addListener(function() {
-        if ( this.syncManager.isSyncing ) {
-          this.timer.step();
-          this.timer.start();
-        } else {
-          this.timer.stop();
-// Should no longer be necessary since both views listen for dao updates.
-//          this.view.choice = this.view.choice;
-        }
-      }.bind(this));
-
       this.rowSelection.addListener(function(_,_,_,issue) {
         var url = this.url + '/issues/detail?id=' + issue.id;
         this.openURL(url);
@@ -399,6 +403,9 @@ var Browser = Model.create({
       this.window.document.addEventListener('keyup', this.keyPress);
 
       this.location.addListener(this.onLocationUpdate);
+
+      this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      this.onSyncManagerUpdate();
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
