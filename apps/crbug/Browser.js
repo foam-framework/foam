@@ -387,6 +387,10 @@ var Browser = Model.create({
 
       var timer = this.timer;
       Events.dynamic(function() {
+        // TODO: This doesn't work because the listener is merged()' which doesn't cascade the Exception,
+        // but it should
+        //        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if ( ! this.refreshImg.$ ) return;
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
