@@ -23,9 +23,10 @@ var LocationProperty = FOAM({
   extendsModel: 'Property',
 
   properties: [
-    { name: 'toMemento',   defaultValue:   function(o) { return o; } },
-    { name: 'fromMemento', defaultValue:   function(o) { return o; } },
-    { name: 'toURL',       defaultValueFn: function()  { return this.toMemento; } }
+    { name: 'toMemento',      defaultValue:   function(o) { return o; } },
+    { name: 'fromMemento',    defaultValue:   function(o) { return o; } },
+    { name: 'toURL',          defaultValueFn: function()  { return this.toMemento; } },
+    { name: 'defaultMemento', defaultValue:   null }
   ]
 });
 
@@ -68,7 +69,8 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'mode',
-      toMemento: function(mode) { return mode.label.toLowerCase(); },
+      defaultMemento: 'List',
+      toMemento: function(mode) { return mode ? mode.label.toLowerCase() : 'list'; },
       fromMemento: function(mode) {
         var view = this.view.views[0];
         for ( var i = 1 ; i < this.view.views.length ; i++ ) {
@@ -80,9 +82,22 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'colspec',
-      postSet: function(oldValue, newValue) {
-        console.log('colspec ', oldValue, newValue);
-      }
+      preSet: function(a) {
+        if ( a ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            var prop = this.getPropertyIC(a[i]);
+
+            if ( prop ) {
+              a[i] = prop.name;
+            } else {
+              a.splice(i,1);
+              i--;
+            }
+          }
+        }
+
+        return a;
+      },
       toMemento: function(properties) { return properties.join(' '); },
       fromMemento: function(colspec) { return colspec ? colspec.split(' ') : null; }
     },
@@ -125,8 +140,23 @@ var Location = FOAM({
   ],
 
   methods: {
+    getPropertyIC: function(propName) {
+      propName = propName.toLowerCase();
+      for ( var i = 0 ; i < QIssue.properties.length ; i++ ) {
+        var prop = QIssue.properties[i];
+
+        if ( prop.name.toLowerCase() === propName ) return prop;
+      }
+
+      return undefined;
+    },
+
     toURL: function(browser) {
       return this.toMemento(browser, 'toURL');
+    },
+
+    fromURL: function(browser, params) {
+      return this.fromMemento(browser, decodeURIComponent(params));
     },
 
     toMemento: function(browser, opt_methodName) {
@@ -138,7 +168,8 @@ var Location = FOAM({
         var key   = prop.name;
         try {
           if ( this.hasOwnProperty(key) ) {
-            var value = encodeURIComponent(prop[methodName].call(browser, this[key]));
+            var value = prop[methodName].call(browser, this[key]);
+            if ( methodName === 'toURL' ) value = encodeURIComponent(value);
             s += d;
             s += key + '=' + value;
             d = '&';
@@ -157,9 +188,8 @@ var Location = FOAM({
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
         var keyValue = param.match(/([^=]*)=(.*)/);
-        var key      = decodeURIComponent(keyValue[1]);
-        var value    = decodeURIComponent(keyValue[2]).replace(/\+/g, ' ');
-console.log('***************key ', key, ' ', value);
+        var key      = keyValue[1];
+        var value    = keyValue[2];
         m[key] = value;
       }
 
@@ -171,6 +201,9 @@ console.log('***************key ', key, ' ', value);
           if ( m.hasOwnProperty(key) ) {
             var value = prop.fromMemento.call(browser, m[key]);
             this[key] = value;
+          } else if ( prop.defaultMemento ) {
+            var value = prop.fromMemento.call(browser, prop.defaultMemento);
+            this[key] = value;
           } else {
             // revert to the default value, making sure to still fire a propertyChange event
             // TODO: would be better if the Object had a property reset value to do this instead
@@ -178,7 +211,8 @@ console.log('***************key ', key, ' ', value);
             delete this.instance_[key];
             this.propertyChange(key, oldValue, this[key]);
           }
-        } catch (x) {}
+        } catch (x) {
+        }
       }
 
       return this;

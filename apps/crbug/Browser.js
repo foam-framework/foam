@@ -175,21 +175,6 @@ var Browser = Model.create({
       name: 'legacyUrl',
       getter: function() {
         return this.url + '/issues/list?' + this.location.toURL(this);
-      },
-      setter: function(url) {
-        var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
-        var match = regex.exec(url);
-
-        if ( ! match ) return;
-
-        var project = match[1];
-        var params  = match[3];
-
-        if ( project == this.projectName ) {
-          this.location.fromMemento(this, params);
-        } else {
-          this.qbug.launchBrowser(project, url)
-        }
       }
     },
     {
@@ -204,12 +189,12 @@ var Browser = Model.create({
       name: 'performQuery',
       animate: true,
       code: function(evt) {
-        this.legacyUrl = this.searchField.value.get();
-
-        this.search(AND(
-          QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
-          QueryParser.parseString(this.searchField.value.get()) || TRUE
-        ).partialEval());
+        if ( ! this.maybeSetLegacyUrl(this.searchField.value.get()) ) {
+          this.search(AND(
+            QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
+            QueryParser.parseString(this.searchField.value.get()) || TRUE
+          ).partialEval());
+        }
       }
     },
     {
@@ -236,7 +221,6 @@ var Browser = Model.create({
       name: 'onLocationUpdate',
       animate: true,
       code: function(evt) {
-console.log('**************onLocationUpdate', arguments);
         this.memento = this.location.toMemento(this);
       }
     },
@@ -455,6 +439,26 @@ console.log('**************onLocationUpdate', arguments);
           popup.open(self.view);
         }
       });
+    },
+
+    // return true iff url was a legacy URL
+    maybeSetLegacyUrl: function(url) {
+      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var match = regex.exec(url);
+
+      if ( ! match ) return false;
+
+      var project = match[1];
+      var params  = match[3];
+
+      if ( project == this.projectName ) {
+        this.location.fromURL(this, params);
+      } else {
+        this.searchField.value.set('');
+        this.qbug.launchBrowser(project, url)
+      }
+
+      return true;
     },
 
     updateZoom: function() {
