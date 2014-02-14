@@ -272,6 +272,7 @@ function createView(rowSelection, browser) {
               listeners: [
                  {
                     name: 'daoUpdate',
+                    isMerged: 1000,
                     code: function() {
                        this.updateHTML();
                     }
