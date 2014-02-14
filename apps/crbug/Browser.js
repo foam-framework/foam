@@ -236,6 +236,7 @@ var Browser = Model.create({
       name: 'onLocationUpdate',
       animate: true,
       code: function(evt) {
+console.log('**************onLocationUpdate', arguments);
         this.memento = this.location.toMemento(this);
       }
     },
