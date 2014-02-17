@@ -23,5 +23,15 @@ var OAM = {
       console.timeEnd(name);
       return ret;
     };
+  },
+
+  profile: function(fn) {
+    return function() {
+      console.profile();
+      var ret = fn.apply(this, arguments);
+      console.profileEnd();
+      return ret;
+    };
   }
+
 };
