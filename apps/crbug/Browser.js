@@ -106,6 +106,14 @@ var Browser = Model.create({
       valueFactory: function() { return Timer.create(); }
     },
     {
+      mode_: 'IntegerProperty',
+      name: 'issueCount'
+    },
+    {
+      mode_: 'IntegerProperty',
+      name: 'selectedIssueCount'
+    },
+    {
       name: 'countField',
       type: 'TextFieldView',
       valueFactory: function() {
@@ -184,6 +192,15 @@ var Browser = Model.create({
   ],
 
   listeners: [
+    {
+      model_: 'Method',
+      name: 'onDAOUpdate',
+      animate: true,
+      code: function(evt) {
+        var self = this;
+        this.view.dao.select(COUNT())(function (c) { self.selectedIssueCount = c.count; });
+      }
+    },
     {
       model_: 'Method',
       name: 'onSyncManagerUpdate',
@@ -373,6 +390,15 @@ var Browser = Model.create({
     initHTML: function() {
       this.SUPER();
 
+      Events.follow(this.project.issueCount$, this.issueCount$);
+
+      Events.dynamic(
+        function() { this.issueCount; this.selectedIssueCount; }.bind(this),
+        function() {
+          this.countField.value.value =
+            this.selectedIssueCount.toLocaleString() + ' of ' + this.issueCount.toLocaleString() + ' selected';
+        }.bind(this));
+
       this.window.addEventListener('resize', this.layout, false);
 
       this.searchChoice.value.addListener(this.performQuery);
@@ -407,6 +433,8 @@ var Browser = Model.create({
       this.window.document.addEventListener('keyup', this.keyPress);
 
       this.location.addListener(this.onLocationUpdate);
+
+      this.IssueDAO.listen(this.onDAOUpdate);
 
       this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
       this.onSyncManagerUpdate();
@@ -481,13 +509,7 @@ var Browser = Model.create({
     search: function(p) {
       if ( p ) console.log('SEARCH: ', p.toSQL());
       this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
-      var self = this;
-      apar(
-        this.view.dao.select(COUNT()),
-        this.IssueDAO.select(COUNT()))(function(x, y) {
-          self.countField.value.value = x.count.toLocaleString() + ' of ' + y.count.toLocaleString() + ' selected';
-        }
-      );
+      this.onDAOUpdate();
     },
 
     openURL: function(url) {

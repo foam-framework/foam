@@ -114,6 +114,10 @@ var QProject = Model.create({
       transient: true
     },
     {
+      mode_: 'IntegerProperty',
+      name: 'issueCount'
+    },
+    {
       name: 'url',
       defaultValueFn: function() { return this.baseURL + this.projectName; }
     },
@@ -139,7 +143,25 @@ var QProject = Model.create({
     }
   ],
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'onDAOUpdate',
+      animate: true,
+      code: function(evt) {
+        var self = this;
+        this.IssueMDAO.select(COUNT())(function (c) { self.issueCount = c.count; });
+      }
+    }
+  ],
+
   methods: {
+    init: function() {
+      this.SUPER();
+
+      this.IssueDAO.listen(this.onDAOUpdate);
+    },
+
     /** Open a Browser in a Window for a Chome Packaged App. **/
     launchBrowser: function(opt_url) {
       var self = this;

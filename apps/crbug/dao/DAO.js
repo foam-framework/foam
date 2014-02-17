@@ -259,8 +259,8 @@ var MergedNotifyDAO = FOAM({
 //      this.SUPER();
 
       this.relay_ =  {
-        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 5000),
-        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 5000)
+        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 1000),
+        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
       };
 
       this.delegate.listen(this.relay_);
