@@ -224,11 +224,11 @@ var Model = {
                  path += this.name + '_' + t.name + '.ft';
                  var xhr = new XMLHttpRequest();
                  xhr.open("GET", path);
-                 xhr.asend((function(t) { return function(data) {
+                 xhr.asend((function(t, future) { return function(data) {
                    t.template = data;
                    future.set(data);
                    t.futureTemplate = undefined;
-                 };})(t));
+                 };})(t, future));
                }
              }
            },
