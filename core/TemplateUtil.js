@@ -69,8 +69,16 @@ var TemplateOutput = {
     var f = function(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
-        buf += o && o.toHTML ? o.toHTML() : o;
-        if ( o && o.initHTML && obj.addChild ) obj.addChild(o);
+        if ( o ) {
+          if ( o.appendHTML ) {
+            o.appendHTML(this);
+          } else if ( o.toHTML ) {
+            buf += o.toHTML();
+          } else {
+            buf += o;
+          }
+          if ( o.initHTML && obj.addChild ) obj.addChild(o);
+        }
       }
     };
 
@@ -87,7 +95,7 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var escapeHTML = AbstractView.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
@@ -106,7 +114,7 @@ var TemplateCompiler = {
                "), '"); },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
-   'values tag': function (v) { this.push("',", AbstractView.getPrototype().strToHTML(v[1].join('')), ",'"); },
+   'values tag': function (v) { this.push("',escapeHTML(", v[1].join(''), "),'"); },
    'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },
