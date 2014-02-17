@@ -8,7 +8,8 @@
     "https://code.google.com/p/*",
     "identity",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "webview"
   ],
 
   "icons": {
