@@ -46,6 +46,7 @@ var files = [
   'QueryParser',
   'search',
   'async',
+  'oam',
   'visitor',
   'dao',
   'ClientDAO',

@@ -2243,7 +2243,7 @@ var TableView = FOAM({
     },
 
     repaint: function() {
-      if ( ! this.dao ) return;
+      if ( ! this.dao || ! this.$ ) return;
       var self = this;
       var objs = [];
       var selection = this.selection && this.selection.get();

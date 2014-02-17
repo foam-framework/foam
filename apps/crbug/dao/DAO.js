@@ -230,3 +230,46 @@ IssueNetworkDAO
 
 IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
 */
+
+var MergedNotifyDAO = FOAM({
+  model_: 'Model',
+
+  name: 'MergedNotifyDAO',
+
+  help: 'A DAO decorator which removes update notification.',
+
+  extendsModel: 'ProxyDAO',
+
+  /*
+  properties: [
+    {
+      name: 'delegate',
+      postSet: function(oldDAO, newDAO) {
+        this.model = newDAO.model;
+        if ( ! this.relay_ ) return;
+        if ( oldDAO ) oldDAO.unlisten(this.relay_);
+        newDAO.listen(this.relay_);
+      }
+    }
+  ],
+  */
+
+  methods: {
+    init: function() {
+//      this.SUPER();
+
+      this.relay_ =  {
+        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 5000),
+        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 5000)
+      };
+
+      this.delegate.listen(this.relay_);
+    }/*,
+    put: function(obj, sink) {
+      this.SUPER(obj, sink);
+      this.notify_('put', arguments);
+    }*/
+  }
+});
+
+

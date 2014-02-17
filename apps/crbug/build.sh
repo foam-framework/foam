@@ -17,6 +17,7 @@ cat \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
+  ../../core/oam.js \
   ../../core/AbstractPrototype.js \
   ../../core/ModelProto.js \
   ../../core/mm1Model.js \

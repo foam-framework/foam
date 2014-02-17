@@ -646,6 +646,7 @@ var AbstractDAO = FOAM({
   }
 });
 
+
 var ProxyDAO = FOAM({
   model_: 'Model',
   extendsModel: 'AbstractDAO',
@@ -2195,6 +2196,7 @@ var PartitionDAO = FOAM({
   }
 });
 
+
 var ActionFactoryDAO = FOAM({
   model_: 'Model',
   extendsModel: 'ProxyDAO',
@@ -2516,6 +2518,7 @@ var RestDAO = FOAM({
   }
 });
 
+
 var DefaultObjectDAO = FOAM({
   model_: 'Model',
 
@@ -2544,6 +2547,7 @@ var DefaultObjectDAO = FOAM({
     }
   }
 });
+
 
 var LRUCachingDAO = FOAM({
   model_: 'Model',
@@ -2753,6 +2757,7 @@ var LazyCacheDAO = FOAM({
   }
 });
 
+
 var PropertyOffloadDAO = FOAM({
   model_: 'Model',
 
@@ -2814,6 +2819,7 @@ var PropertyOffloadDAO = FOAM({
     }
   }
 });
+
 
 var BlobSerializeDAO = FOAM({
   model_: 'Model',
@@ -2907,6 +2913,7 @@ var BlobSerializeDAO = FOAM({
     }
   }
 });
+
 
 var NullDAO = FOAM({
     model_: 'Model',

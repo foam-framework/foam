@@ -32,3 +32,7 @@ if ( chrome.app.runtime ) {
     launch();
   });
 }
+
+TableView.getPrototype().repaint = OAM.time('TableView.repaint', TableView.getPrototype().repaint);
+
+GridView.getPrototype().updateHTML = OAM.time('GridView.updateHTML', GridView.getPrototype().updateHTML);

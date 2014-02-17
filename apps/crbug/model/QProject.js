@@ -95,11 +95,11 @@ var QProject = Model.create({
           actionDao: this.IssueCommentNetworkDAO
         });
 
-        return QIssueStarringDAO.create({
+        return MergedNotifyDAO.create({delegate: QIssueStarringDAO.create({
           delegate: actions,
           project: this,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
-        });
+        })});
       },
       transient: true
     },
@@ -228,7 +228,7 @@ var QProject = Model.create({
         w.onClosed.addListener(function() {
           $removeWindow(window);
         });
-      });      
+      });
     },
 
     issueCommentDAO: function(id) {
