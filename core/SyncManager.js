@@ -148,10 +148,9 @@ var SyncManager = FOAM({
       help:  'Perform a single sync request.',
 
       isEnabled: function() {
-        var enabled = this.enabled;
         var isSyncing = this.isSyncing;
 
-        return ! this.enabled && ! isSyncing;
+        return ! isSyncing;
       },
       action: function() {
         clearTimeout(this.timer);
