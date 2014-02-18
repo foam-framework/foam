@@ -8,8 +8,7 @@
     "https://code.google.com/p/*",
     "identity",
     "storage",
-    "unlimitedStorage",
-    "webview"
+    "unlimitedStorage"
   ],
 
   "icons": {
@@ -33,7 +32,6 @@
         "model/QProject.js",
         "Location.js",
         "Browser.js",
-        "ui/PreviewView.js",
         "QueryParser.js",
         "bg.js"
       ]
