@@ -81,7 +81,7 @@ var QBug = Model.create({
     {
       // Cache of QProject objects
       name: 'projects_',
-      defaultValue: [],
+      valueFactory: function() { return {}; },
       transient: true
     }
   ],

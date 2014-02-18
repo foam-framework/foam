@@ -271,7 +271,6 @@ var QIssue = FOAM({
 
         if ( Object.keys(diff).length == 0 ) return;
 
-
         function convertArray(key) {
           if ( ! diff[key] ) {
             diff[key] = [];
