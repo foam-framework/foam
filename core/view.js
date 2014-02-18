@@ -3815,7 +3815,7 @@ var ArrayListView = FOAM({
 
         for ( var i = 0; i < objs.length; i++ ) {
           var view = this.listView.create();
-          children.push(view);
+          children[i] = view;
           view.value = SimpleValue.create(objs[i]);
         }
 
@@ -3939,7 +3939,7 @@ var ListView = FOAM({
 
           for ( var i = 0; i < objs.length; i++ ) {
             var view = self.view.create();
-            children.push(view);
+            children[i] = view;
             view.value = SimpleValue.create(objs[i]);
           }
 
