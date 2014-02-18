@@ -1,6 +1,6 @@
 <div id="<%= this.getID() %>"
      class="QIssuePreview"
-     style="position:absolute;height375px;width:875px;background:white">
+     style="position:absolute;height:500px;width:875px;background:white">
   <div class="qmaincol">
     <div>
       <div class="qissueheader">
