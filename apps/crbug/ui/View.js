@@ -287,7 +287,7 @@ function createView(rowSelection, browser) {
                   [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-              grid: DragAndDropGrid.create({})
+              grid: /*GridByExpr*/DragAndDropGrid.create({})
            });
 
           g.row.value = location.y$;

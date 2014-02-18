@@ -33,6 +33,6 @@ if ( chrome.app.runtime ) {
   });
 }
 
-TableView.getPrototype().repaint = OAM.time('TableView.repaint', TableView.getPrototype().repaint);
-
-GridView.getPrototype().updateHTML = OAM.time('GridView.updateHTML', GridView.getPrototype().updateHTML);
+GridView.getPrototype().updateHTML = OAM.time('GridView.updateHTML', OAM.profile(GridView.getPrototype().updateHTML));
+TableView.getPrototype().repaint   = OAM.time('TableView.repaint', TableView.getPrototype().repaint);
+GridByExpr.getPrototype().initHTML = OAM.time('GridByExpr.initHTML', GridByExpr.getPrototype().initHTML);

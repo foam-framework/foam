@@ -1307,9 +1307,11 @@ var GridByExpr = FOAM({
      },
 
      initHTML: function() {
+       console.log('GridByExpr*******************init ', this.children.length);
        for ( var i = 0; i < this.children.length; i++ ) {
          this.children[i].initHTML();
        }
+       this.children = [];
      }
    }
 });

@@ -63,12 +63,12 @@ var QProject = Model.create({
       valueFactory: function() {
         return MDAO.create({model: QIssue})
           .addIndex(QIssue.ID)
+          .addIndex(QIssue.STATUS)
           .addIndex(QIssue.PRIORITY)
           .addIndex(QIssue.MILESTONE)
           .addIndex(QIssue.ITERATION)
           .addIndex(QIssue.RELEASE_BLOCK)
           .addIndex(QIssue.CATEGORY)
-          .addIndex(QIssue.STATUS)
           .addIndex(QIssue.OWNER)
           .addIndex(QIssue.SUMMARY)
           .addIndex(QIssue.OS)

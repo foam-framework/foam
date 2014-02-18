@@ -147,7 +147,10 @@ function afuture() {
 
   return {
     set: function() {
-      if ( set ) { console.log('ERROR: redundant set on future'); return; }
+      if ( set ) {
+        console.log('ERROR: redundant set on future');
+        return;
+      }
       values = arguments;
       set = true;
       for (var i = 0 ; i < waiters.length; i++) {
