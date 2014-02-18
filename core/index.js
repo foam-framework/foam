@@ -906,7 +906,7 @@ var MDAO = Model.create({
 
     find: function(key, sink) {
       if (!key) {
-        sink && sink.error && sink.error('find nothing');
+        sink && sink.error && sink.error('missing key');
         return;
       }
       if ( ! key.f ) { // TODO: make better test, use model
@@ -929,7 +929,7 @@ var MDAO = Model.create({
 
     remove: function(obj, sink) {
       if (!obj) {
-        sink && sink.error && sink.error('remove nothing');
+        sink && sink.error && sink.error('missing key');
         return;
       }
       var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
