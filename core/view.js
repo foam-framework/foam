@@ -141,6 +141,8 @@ var AbstractView = FOAM({
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
+      if ( child.parent ) return;
+
       child.parent = this;
 
       var children = this.children;
@@ -918,7 +920,7 @@ var ChoiceView = FOAM({
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
       postSet: function() {
-        //           if ( this.eid_ ) this.updateHTML();
+        if ( this.$ ) this.updateHTML();
       }
     }
   ],
@@ -1006,8 +1008,6 @@ var ChoiceView = FOAM({
 
     initHTML: function() {
       var e = this.$;
-
-      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
 
       this.updateHTML();
 
