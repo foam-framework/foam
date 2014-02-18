@@ -140,7 +140,7 @@ var SyncManager = FOAM({
 
         return ! this.enabled && ! isSyncing;
       },
-      action:    function() { this.enabled = true; this.sync(); }
+      action: function() { this.enabled = true; this.sync(); }
     },
     {
       model_: 'Action',
@@ -199,6 +199,8 @@ var SyncManager = FOAM({
 
       this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
         if ( max.max ) self.lastModified = max.max;
+        // Postpone starting until we have the lastModified timestamp
+        self.start();
       });
     },
 

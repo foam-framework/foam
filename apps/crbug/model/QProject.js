@@ -166,8 +166,6 @@ var QProject = Model.create({
     launchBrowser: function(opt_url) {
       var self = this;
 
-      this.syncManager.start();
-
       chrome.app.window.create('empty.html', {width: 1000, height: 800}, function(w) {
         w.contentWindow.onload = function() {
           var window = self.window = w.contentWindow;
