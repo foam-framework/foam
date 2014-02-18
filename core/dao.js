@@ -241,7 +241,7 @@ var DAO = FOAM({
 var FutureDAO= {
   create: function(/* future */ futureDelegate) {
 
-    // This is kind-of tricky.  We actually return an object whose proto is the future-proxy
+    // This is kind-of-tricky.  We actually return an object whose proto is the future-proxy
     // code.  This is so that once the future-delegate is set, that we can rewrite the proto
     // to be that delegate.  This removes the future related code so that we no longer have
     // pay the overhead once the delegate has been set.
@@ -329,7 +329,12 @@ var CachingDAO = {
   create: function(cache, source) {
     var futureDelegate = afuture();
 
-    source.select(cache)(function() { source.listen(cache); futureDelegate.set(cache); });
+    console.time('CachingDAO-' + source.model.name);
+    source.select(cache)(function() {
+      console.timeEnd('CachingDAO-' + source.model.name);
+      source.listen(cache);
+      futureDelegate.set(cache);
+    });
 
     return {
       __proto__: FutureDAO.create(futureDelegate.get),
