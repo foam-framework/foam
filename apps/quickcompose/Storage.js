@@ -66,7 +66,7 @@ ContactAvatarDAO = PropertyOffloadDAO.create({
   loadOnSelect: true
 });
 
-aseq(asleep(500), function() {
+aseq(asleep(1000), function() {
   ContactDAO.select(COUNT())(function(c) {
     if ( c.count === 0 ) {
       console.log('Importing contacts...');
@@ -84,6 +84,7 @@ var persistentContext = PersistentContext.create({
 // Load and persist user info.
 persistentContext.bindObject('userInfo', UserInfo, {})(
   aseq(
+    asleep(250),
     function(ret) {
       var xhr = JsonXhrFactory.make();
       xhr.asend(ret, "GET", "https://www.googleapis.com/oauth2/v1/userinfo?alt=json");

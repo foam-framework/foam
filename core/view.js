@@ -3568,7 +3568,7 @@ var ListInputView = FOAM({
         }
 
         if ( value === '' ) {
-          this.autocompleteView.dao = this.dao.where(FALSE);
+          this.autocompleteView.dao = [];
           return;
         }
 
@@ -3613,7 +3613,7 @@ var ListInputView = FOAM({
         } else {
           this.domInputValue.set('');
         }
-        this.autocompleteView.dao = this.dao.where(FALSE);
+        this.autocompleteView.dao = [];
       }
     },
     {
@@ -3950,6 +3950,7 @@ var ListView = FOAM({
     }
   ]
 });
+
 
 var AutocompleteListView = FOAM({
   model_: 'Model',
