@@ -329,9 +329,9 @@ var CachingDAO = {
   create: function(cache, source) {
     var futureDelegate = afuture();
 
-    console.time('CachingDAO-' + source.model.name);
+//    console.time('CachingDAO-' + source.model.name);
     source.select(cache)(function() {
-      console.timeEnd('CachingDAO-' + source.model.name);
+//      console.timeEnd('CachingDAO-' + source.model.name);
       source.listen(cache);
       futureDelegate.set(cache);
     });
