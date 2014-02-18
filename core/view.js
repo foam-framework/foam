@@ -2991,8 +2991,8 @@ var AlternateView = FOAM({
     },
     {
       name:  'choice',
-      postSet: function(_, viewChoice) {
-        if ( this.elementId ) this.installSubView(viewChoice);
+      postSet: function(oldValue, viewChoice) {
+        if ( this.elementId && oldValue != viewChoice ) this.installSubView(viewChoice);
       },
       hidden: true
     },
