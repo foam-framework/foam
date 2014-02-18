@@ -1295,22 +1295,13 @@ var ImageBooleanView = FOAM({
     toHTML: function() {
       var id = this.getID();
       this.on('click', this.onClick, id);
-      return '<img id="' + id + '" name="' + this.name + '">';
+      return '<img id="' + id + '" name="' + this.name + '" src="' + this.image() + '">';
     },
-
     initHTML: function() {
       this.registerCallbacks();
-      this.update();
     },
-
-    getValue: function() {
-      return this.value;
-    },
-
-    setValue: function(value) {
-      this.value = value;
-    },
-
+    getValue: function() { return this.value; },
+    setValue: function(value) { this.value = value; },
     destroy: function() {
       this.value.removeListener(this.update);
     }
@@ -2838,8 +2829,17 @@ var GridView = FOAM({
       this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
       this.dao.select(this.grid.clone())(function(g) {
-        self.$.innerHTML = g.toHTML();
+        console.time('toHTML');
+        var html = g.toHTML();
+        console.timeEnd('toHTML');
+
+        console.time('setInnerHTML');
+        self.$.innerHTML = html;
+        console.timeEnd('setInnerHTML');
+
+        console.time('initHTML');
         g.initHTML();
+        console.time('initHTML');
       });
     },
 
