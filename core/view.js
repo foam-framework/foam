@@ -141,6 +141,10 @@ var AbstractView = FOAM({
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
+      // Check prevents duplicate addChild() calls,
+      // which can happen when you use creatView() to create a sub-view (and it calls addChild)
+      // and then you write the View using TemplateOutput (which also calls addChild).
+      // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
       if ( child.parent ) return;
 
       child.parent = this;
