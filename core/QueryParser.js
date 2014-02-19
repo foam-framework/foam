@@ -177,7 +177,7 @@ var QueryParserFactory = function(model) {
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(v[1] == ':' && v[0].type === 'String' ?
+      or.args.push(v[1] == ':' && ( v[0].type === 'String' || v[0].subType === 'String' ) ?
         CONTAINS_IC(v[0], values[i]) :
         EQ(v[0], values[i]));
     }
