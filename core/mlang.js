@@ -643,7 +643,7 @@ var ContainsICExpr = FOAM({
         }
 
         return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          ContainsExpr.create({arg1: newArg1, arg2: newArg2}) :
+          ContainsICExpr.create({arg1: newArg1, arg2: newArg2}) :
           this;
       },
 
