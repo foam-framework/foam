@@ -322,7 +322,7 @@ var AndExpr = FOAM({
       f: function(obj) {
         return this.args.every(function(arg) {
           return arg.f(obj);
-        }, this);
+        });
       }
    }
 });
@@ -406,7 +406,7 @@ var OrExpr = FOAM({
       f: function(obj) {
         return this.args.some(function(arg) {
           return arg.f(obj);
-        }, this);
+        });
       }
    }
 });
@@ -521,7 +521,7 @@ var EqExpr = FOAM({
         if ( Array.isArray(arg1) ) {
           return arg1.some(function(arg) {
             return arg == arg2;
-          }, this);
+          });
         }
 
         if ( arg2 === TRUE ) return !! arg1;
@@ -598,7 +598,7 @@ var ContainsExpr = FOAM({
         if ( Array.isArray(arg1) ) {
           return arg1.some(function(arg) {
             return arg.indexOf(arg2) != -1;
-          }, this);
+          });
         }
 
         return arg1.indexOf(arg2) != -1;
@@ -621,7 +621,11 @@ var ContainsICExpr = FOAM({
          type:  'Expr',
          help:  'Sub-expression',
          defaultValue: TRUE,
-         preSet: function(oldValue) {
+        postSet: function(_, value) {
+          // Escape Regex escape characters
+          this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+        },
+         preSet2: function(oldValue) {
             return ConstantExpr.isInstance(oldValue) ?
                compile_(oldValue.f().toString().toLowerCase()) :
                oldValue;
@@ -649,15 +653,16 @@ var ContainsICExpr = FOAM({
 
       f: function(obj) {
         var arg1 = this.arg1.f(obj);
-        var arg2 = this.arg2.f(obj);
 
         if ( Array.isArray(arg1) ) {
+          var pattern = this.pattern_;
+
           return arg1.some(function(arg) {
-            return arg.toLowerCase().indexOf(arg2) != -1;
-          }, this);
+            return pattern.test(arg);
+          });
         }
 
-        return arg1.toLowerCase().indexOf(arg2) != -1;
+        return this.pattern_.test(arg1);
       }
    }
 });
