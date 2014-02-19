@@ -14,6 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+var DefaultQuery = FOAM({
+   model_: 'Model',
+
+   extendsModel: 'UNARY',
+
+   name: 'DefaultQuery',
+
+   properties: [
+      {
+        name:  'arg1',
+        preSet: function(value) {
+          // Escape Regex escape characters
+          this.pattern_ = new RegExp(value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+          return value.toLowerCase();
+        }
+      }
+   ],
+
+   methods: {
+      // No different that the non IC-case
+      toSQL: function() { return this.arg1; },
+      toMQL: function() { return this.arg1; },
+
+      f: function(obj) {
+        if ( this.pattern_.test(obj.summary) ) return true;
+        if ( obj.owner.indexOf(this.arg1) != -1 ) return true;
+        for ( var i = 0 ; i < obj.cc.length ; i++ ) if ( obj.cc[i].indexOf(this.arg1) != -1 ) return true;
+        return false;
+      }
+   }
+});
+
+
 var QueryParser = {
   __proto__: QueryParserFactory(QIssue),
 
@@ -43,7 +77,7 @@ var QueryParser = {
   },
 
   summary: function(v) {
-    return CONTAINS_IC(QIssue.SUMMARY, v.join(''));
+    return DefaultQuery.create({arg1: v.join('')});
   }
 });
 
