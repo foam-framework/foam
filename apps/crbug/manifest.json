@@ -39,15 +39,6 @@
     }
   },
 
-  "url_handlers": {
-    "google_code_issues": {
-      "matches": [
-        "https://code.google.com/p/*/issues"
-      ],
-      "title": "Google Code Issues"
-    }
-  },
-
    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwgElXI4RpyJCGpTP+vqOl8tEmm1vgnSv9XR+O1Zk0dC9aOuNvBFdAWgc0ufh/0ypaRh8/x84q6EfeMU611UB3kT4VUZRqPOH++s4ZI7PIEB74k4MbPGv+I0jK6nb154MxiXRa1M0Q9xw2V9oRd8p4MUX0xz9A2wmhCsIrArgRk0la39oPLvH+vIxlFgkffsT3lR9pcc2EuviT/uLfbgPbDZDTT930Rjshqi+JbIsV0Gpp2r2rYMD8jAIPv9xwsTS8yWgwpWf2G0Z//KyX4HjZEN4IEm+E9d9709nH3SXDIHtqqboFn/29z3XYICIR8IObBWfyIctf2Ow4tXW/Oe4lQIDAQAB",
 
   "oauth2": {
