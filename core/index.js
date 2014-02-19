@@ -905,6 +905,10 @@ var MDAO = Model.create({
     },
 
     find: function(key, sink) {
+      if (!key) {
+        sink && sink.error && sink.error('missing key');
+        return;
+      }
       if ( ! key.f ) { // TODO: make better test, use model
         this.findObj_(key, sink);
         return;
@@ -924,6 +928,10 @@ var MDAO = Model.create({
     },
 
     remove: function(obj, sink) {
+      if (!obj) {
+        sink && sink.error && sink.error('missing key');
+        return;
+      }
       var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
       var self = this;
       this.find(id, {

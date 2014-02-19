@@ -329,9 +329,9 @@ var CachingDAO = {
   create: function(cache, source) {
     var futureDelegate = afuture();
 
-    console.time('CachingDAO-' + source.model.name);
+//    console.time('CachingDAO-' + source.model.name);
     source.select(cache)(function() {
-      console.timeEnd('CachingDAO-' + source.model.name);
+//      console.timeEnd('CachingDAO-' + source.model.name);
       source.listen(cache);
       futureDelegate.set(cache);
     });
@@ -1176,8 +1176,12 @@ var IDBDAO = FOAM({
 
     withStore_: function(mode, fn) {
       if ( GLOBAL.__TXN__ && GLOBAL.__TXN__.store ) {
-        fn.call(this, __TXN__.store);
-        return;
+        try {
+          fn.call(this, __TXN__.store);
+          return;
+        } catch (x) {
+          GLOBAL.__TXN__ = undefined;
+        }
       }
       this.withDB((function (db) {
         var tx = db.transaction([this.name], mode);
