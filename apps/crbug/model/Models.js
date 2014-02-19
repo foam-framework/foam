@@ -392,7 +392,13 @@ var QUser = FOAM({
     },
     {
       model_: 'StringArrayProperty',
-      name: 'preferredProjects'
+      name: 'preferredProjects',
+      view: 'MultiLineStringArrayView'
     },
+    {
+      model_: 'StringProperty',
+      name: 'defaultProject',
+      defaultValue: 'chromium'
+    }
   ]
 });

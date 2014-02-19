@@ -3248,6 +3248,9 @@ var MultiLineStringArrayView = FOAM({
         '<input type="button" id="' +
         this.on('click', this.onRemove) +
         '" class="multiLineStringRemove" value="X"></div>';
+    },
+    setValue: function(value) {
+      this.value = value;
     }
   },
 

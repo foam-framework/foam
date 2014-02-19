@@ -29,11 +29,6 @@ var QBug = Model.create({
       defaultValue: 'https://code.google.com/p/'
     },
     {
-      name: 'defaultProjectName',
-      defaultValue: 'chromium'
-//      defaultValue: 'foam-framework'
-    },
-    {
       name: 'user',
       type: 'QUser',
       postSet: function(oldValue, newValue) {
@@ -41,6 +36,10 @@ var QBug = Model.create({
         newValue.addPropertyListener('email', this.onUserUpdate);
         this.onUserUpdate();
       }
+    },
+    {
+      name: 'userFuture',
+      valueFactory: function() { return afuture(); }
     },
     {
       name: 'persistentContext',
@@ -89,7 +88,10 @@ var QBug = Model.create({
   methods: {
     init: function(args) {
       this.SUPER(args);
+      var self = this;
       this.persistentContext.bindObject('user', QUser)(function(user) {
+        self.userFuture.set(user);
+
         ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
           function(response) {
             if ( response ) {
@@ -129,10 +131,13 @@ var QBug = Model.create({
     },
 
     launchBrowser: function(opt_projectName, opt_url) {
-      this.findProject(opt_projectName || this.defaultProjectName, {put: function(p) {
-        console.log('launch: ', p);
-        p.launchBrowser(opt_url);
-      }});
+      var self = this;
+      this.userFuture.get(function(user) {
+        self.findProject(opt_projectName || user.defaultProject, {put: function(p) {
+          console.log('launch: ', p);
+          p.launchBrowser(opt_url);
+        }});
+      });
     }
   },
 
