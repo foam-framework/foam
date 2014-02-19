@@ -177,7 +177,8 @@ var QProject = Model.create({
             arequire('QIssuePreviewView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
-            arequire('QIssueCommentUpdateView')
+            arequire('QIssueCommentUpdateView'),
+            arequire('ConfigureProjectsView')
           )(function () {
             $addWindow(window);
             var b = ChromeAppBrowser.create({project: self, window: window});
@@ -236,13 +237,14 @@ var QProject = Model.create({
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
-          var b = MultiLineStringArrayView.create({
-            value: self.user.propertyValue('preferredProjects')
-          });
 
-          window.document.body.innerHTML =
-            '<b>Preferred projects: </b>' + b.toHTML();
-          b.initHTML();
+
+          var view = ConfigureProjectsView.create({ model: QUser });
+          view.value.set(self.user);
+
+          window.document.body.innerHTML = view.toHTML();
+          view.initHTML();
+
           w.focus();
         };
         w.onClosed.addListener(function() {

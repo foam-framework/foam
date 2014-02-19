@@ -26,6 +26,7 @@
         "ui/QIssueCommentAuthorView.js",
         "ui/QIssueCommentUpdateView.js",
         "ui/QIssueTileView.js",
+        "ui/ConfigureProjectsView.js",
         "dao/DAO.js",
         "ui/View.js",
         "model/QBug.js",
