@@ -621,14 +621,9 @@ var ContainsICExpr = FOAM({
          type:  'Expr',
          help:  'Sub-expression',
          defaultValue: TRUE,
-        postSet: function(_, value) {
-          // Escape Regex escape characters
-          this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-        },
-         preSet2: function(oldValue) {
-            return ConstantExpr.isInstance(oldValue) ?
-               compile_(oldValue.f().toString().toLowerCase()) :
-               oldValue;
+         postSet: function(_, value) {
+           // Escape Regex escape characters
+           this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
          }
       }
    ],
