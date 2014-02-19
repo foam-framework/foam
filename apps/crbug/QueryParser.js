@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+/** Perform text search on 'summary' field and prefix searches on 'cc' and 'owner' fields. */
 var DefaultQuery = FOAM({
    model_: 'Model',
 
@@ -27,7 +28,9 @@ var DefaultQuery = FOAM({
         name:  'arg1',
         preSet: function(value) {
           // Escape Regex escape characters
-          this.pattern_ = new RegExp(value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+          var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          this.pattern_ = new RegExp(pattern, 'i');
+          this.prefixPattern_ = new RegExp('^' + pattern, 'i');
           return value.toLowerCase();
         }
       }
@@ -40,8 +43,8 @@ var DefaultQuery = FOAM({
 
       f: function(obj) {
         if ( this.pattern_.test(obj.summary) ) return true;
-        if ( obj.owner.indexOf(this.arg1) != -1 ) return true;
-        for ( var i = 0 ; i < obj.cc.length ; i++ ) if ( obj.cc[i].indexOf(this.arg1) != -1 ) return true;
+        if ( this.prefixPattern_.test(obj.owner) ) return true;
+        for ( var i = 0 ; i < obj.cc.length ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
         return false;
       }
    }

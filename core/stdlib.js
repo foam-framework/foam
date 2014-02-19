@@ -32,7 +32,17 @@ function memoize(f) {
 
 
 if ( ! String.prototype.startsWith ) {
+  // This implementation is very slow for some reason
   String.prototype.startsWith = function (a) { return 0 == this.lastIndexOf(a, 0); };
+  /*
+    But this one isn't any faster.
+  String.prototype.startsWith = function (a) {
+    if ( a.length > this.length ) return false;
+    var l = a.length;
+    for ( var i = 0 ; i < l ; i++ ) if ( this.charCodeAt(i) !== a.charCodeAt(i) ) return false;
+    return true;
+  };
+  */
 }
 
 String.prototype.equalsIC = function(other) {
