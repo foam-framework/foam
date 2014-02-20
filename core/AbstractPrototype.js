@@ -25,25 +25,13 @@ var AbstractPrototype = {
   TYPE: 'AbstractPrototype',
 
   create: function(args) {
-/*
-console.log("args: ", args);
-    if (arguments.length > 1) {
-      args = {};
-      for (var i = 0 ; i < arguments.length; i++) {
-        arguments[i].forEach(function (k,v) {
-console.log(i, k, v);
-          args[k] = v;
-        });
-      }
-    }
-*/
-
     var obj = {
       __proto__: this,
       instance_: {}
     };
 
     if ( typeof args === 'object' ) obj.copyFrom(args);
+
     obj.init(args);
 
     return obj;
@@ -57,11 +45,13 @@ console.log(i, k, v);
       var prop = this.model_.properties[i];
 
       // I'm not sure why I added this next line, but it isn't used
-      // so I've disabled it
+      // so I've disabled it.  There is no 'init' property on Property
+      // but maybe it would be a good idea.
       //     if ( prop.init ) prop.init.call(this);
 
       // If a value was explicitly provided in the create args
       // then don't call the valueFactory if it exists.
+      // ???: Should this be .hasOwnProperty() instead?
       if ( prop.valueFactory && ! this.instance_[prop.name] )
         this[prop.name] = prop.valueFactory.call(this);
     }
@@ -89,7 +79,6 @@ console.log(i, k, v);
     });
   },
 
-
   toString: function() {
     // TODO: do something to detect loops which cause infinite recurrsions.
 // console.log(this.model_.name + "Prototype");
@@ -97,19 +86,18 @@ console.log(i, k, v);
     // return this.toJSON();
   },
 
-
   hasOwnProperty: function(name) {
     return this.instance_.hasOwnProperty(name);
   },
 
   writeActions: function(other, out) {
-      for (var i = 0, property; property = this.model_.properties[i]; i++) {
-          if (property.actionFactory) {
-              var actions = property.actionFactory(this, property.f(this), property.f(other));
-              for (var j = 0; j < actions.length; j++)
-                  out(actions[j]);
-          }
+    for ( var i = 0, property ; property = this.model_.properties[i] ; i++ ) {
+      if ( property.actionFactory ) {
+        var actions = property.actionFactory(this, property.f(this), property.f(other));
+        for (var j = 0; j < actions.length; j++)
+          out(actions[j]);
       }
+    }
   },
 
   diff: function(other) {
@@ -132,22 +120,10 @@ console.log(i, k, v);
     return diff;
   },
 
+  /** Reset a property to its default value. **/
   clearProperty: function(name) {
     delete this.instance_[name];
   },
-
-
-  // todo:
-  become: function(other) {
-
-  },
-
-
-  // todo:
-  becomeClone: function(other) {
-
-  },
-
 
   defineProperty: function(prop) {
     // this method might be a good candidate for a decision table
@@ -220,16 +196,19 @@ console.log(i, k, v);
     }
   },
 
-
   getProperty: function(name) {
-    // TODO: cache in map
-    for ( var i = 0 ; i < this.properties.length ; i++ ) {
-      var prop = this.properties[i];
+    if ( ! this.propertyMap_ ) {
+      var m = {};
 
-      if ( prop.name == name ) return prop;
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var prop = this.properties[i];
+        m[prop.name] = prop;
+      }
+
+      this.propertyMap_ = m;
     }
 
-    return undefined;
+    return this.propertyMap_[name];
   },
 
   hashCode: function() {
