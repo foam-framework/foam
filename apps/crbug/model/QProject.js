@@ -210,7 +210,7 @@ var QProject = Model.create({
     launchSync: function() {
       var self = this;
 
-      chrome.app.window.create('empty.html', {width: 450, height: 520}, function(w) {
+      chrome.app.window.create('empty.html', {width: 600, height: 600}, function(w) {
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
@@ -220,8 +220,17 @@ var QProject = Model.create({
               model: SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
               value: SimpleValue.create(self.syncManager)}));
-          window.document.body.innerHTML = b.toHTML();
+          window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
           b.initHTML();
+          var extrax = window.outerWidth - window.innerWidth + 16;
+          var extray = window.outerHeight - window.innerHeight + 16;
+
+          window.resizeTo(
+            window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
+            window.document.body.firstChild.offsetHeight + extray);
+          window.resizeTo(
+            window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
+            window.document.body.firstChild.offsetHeight + extray); 
           w.focus();
         };
         w.onClosed.addListener(function() {
