@@ -147,7 +147,9 @@ var AbstractView = FOAM({
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
       if ( child.parent ) return;
 
-      child.parent = this;
+      try {
+        child.parent = this;
+      } catch (x) { console.log(x); }
 
       var children = this.children;
       children.push(child);

@@ -189,7 +189,7 @@ var Canvas = Model.create({
          name:  'width',
          type:  'int',
          defaultValue: 100,
-        postSet: function(_, width) {
+         postSet: function(_, width) {
            if ( this.$ ) this.$.width = width;
          }
       },
@@ -197,62 +197,57 @@ var Canvas = Model.create({
          name:  'height',
          type:  'int',
          defaultValue: 100,
-        postSet: function(_, height) {
+         postSet: function(_, height) {
            if ( this.$ ) this.$.height = height;
          }
       }
    ],
 
-   methods: {
-      init: function() {
-         this.SUPER();
-
-         this.repaint = EventService.animate(function() {
-           this.paint();
-         }.bind(this));
-      },
-
-      toHTML: function() {
-         return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
-      },
-
-      initHTML: function() {
-         this.canvas = this.$.getContext('2d');
-      },
-
-      addChild: function(child) {
-         this.SUPER(child);
-
-         try {
-            child.parent = this;
-         } catch (x) { }
-
-         try {
-            child.addListener(this.repaint);
-         } catch (x) { }
-
-         return this;
-      },
-
-      erase: function() {
-         this.canvas.fillStyle = this.background;
-         this.canvas.fillRect(0, 0, this.width, this.height);
-      },
-
-      paintChildren: function() {
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-            var child = this.children[i];
-            this.canvas.save();
-            child.paint();
-            this.canvas.restore();
-         }
-      },
-
-      paint: function() {
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
          this.erase();
          this.paintChildren();
       }
+    }
+  ],
 
+   methods: {
+      toHTML: function() {
+        return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      },
+
+      initHTML: function() {
+        this.canvas = this.$.getContext('2d');
+      },
+
+      addChild: function(child) {
+        child.parent = null; // needed because super.addChild() skips childen with parents already
+
+        this.SUPER(child);
+
+        try {
+          child.addListener(this.paint);
+        } catch (x) { }
+
+        return this;
+      },
+
+      erase: function() {
+        this.canvas.fillStyle = this.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
+      },
+
+      paintChildren: function() {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          this.canvas.save();
+          child.paint();
+          this.canvas.restore();
+        }
+      }
    }
 });
 
@@ -618,28 +613,28 @@ var CView = FOAM({
 
    methods: {
       toHTML: function() {
-
-         // If being added to HTML directly, then needs to create own Canvas as parent.
-         this.parent = Canvas.create();
-         this.resizeParent();
-         return this.parent.toHTML();
-      },
-
-      resizeParent: function() {
-        this.parent.width  = this.x + this.width + 1;
-        this.parent.height = this.y + this.height + 2;
+        // If being added to HTML directly, then needs to create own Canvas as parent.
+        // Calling addChild() will set this.parent = canvas.
+        this.parent = Canvas.create();
+        this.resizeParent();
+        return this.parent.toHTML();
       },
 
       initHTML: function() {
          var self = this;
          var parent = this.parent;
 
+        parent.addChild(this);
          parent.initHTML();
-         parent.addChild(this);
          Events.dynamic(
            function() { self.background; }, function() {
              parent.background = self.background;
            });
+      },
+
+      resizeParent: function() {
+        this.parent.width  = this.x + this.width + 1;
+        this.parent.height = this.y + this.height + 2;
       },
 
       write: function(document) {

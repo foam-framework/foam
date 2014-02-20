@@ -30,7 +30,7 @@ var ScrollCView = FOAM({
          postSet: function(oldValue, newValue) {
 //         oldValue && oldValue.removeListener(this.updateValue);
 //         newValue.addListener(this.updateValue);
-           var e = newValue.$;
+           var e = newValue && newValue.$;
            if ( ! e ) return;
            e.addEventListener('mousedown', this.mouseDown, false);
            e.addEventListener('touchstart', this.touchStart, false);
@@ -127,18 +127,10 @@ var ScrollCView = FOAM({
        var y = e.targetTouches[0].pageY;
        e.preventDefault();
        this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(this.startValue + (y - this.startY) / (this.height-4) * this.size )));
-     },
-     updateValue: function() {
-       this.paint();
      }
    },
 
    methods: {
-
-    init: function(args) {
-      this.SUPER(args);
-      this.addListener(EventService.animate(this.paint.bind(this)));
-    },
 
     paint: function() {
       if ( ! this.size ) return;
