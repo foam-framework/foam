@@ -908,13 +908,15 @@ var ChoiceView = FOAM({
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           var choice = this.choices[i];
-          if ( value === choice[0] ) return choice;
+          if ( Array.isArray(value) && value === choice[0] ) return choice;
+          else if ( value === choice ) return choice;
         }
         return undefined;
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        this.value.set(choice[0]);
+        if ( Array.isArray(choice) ) this.value.set(choice[0])
+        else this.value.set(choice);
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
@@ -923,8 +925,23 @@ var ChoiceView = FOAM({
       type:  'Array[StringField]',
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
-      postSet: function() {
-        if ( this.$ ) this.updateHTML();
+      postSet: function(oldValue, newValue) {
+        if ( this.$ ) {
+          this.updateHTML();
+
+          var value = this.value.get();
+
+          for ( var i = 0; i < oldValue.length; i++ ) {
+            var choice = oldValue[i];
+
+            if ( (Array.isArray(choice) && value[0] === choice[0]) ||
+                 (!Array.isArray(choice) && value === choice) ) {
+                   if ( newValue[i] )
+                     this.choice = newValue[i];
+                 }
+          }
+          if ( i === oldValue.length ) this.choice = newValue[0];
+        }
       }
     }
   ],
@@ -3234,7 +3251,7 @@ var MultiLineStringArrayView = FOAM({
       var toolbar = ToolbarView.create({
         value: SimpleValue.create(this)
       });
-      toolbar.addActions([this.model_.ADD, this.model_.SAVE]);
+      toolbar.addActions([this.model_.ADD]);
       this.children = [toolbar];
 
       return '<div id="' + this.getID() + '"><div></div>' +
@@ -3266,20 +3283,30 @@ var MultiLineStringArrayView = FOAM({
 
         var inputs = this.$.firstElementChild;
         var value = this.value.get();
-        var out = ""
 
-        for ( var i = 0 ; i < value.length; i++ ) {
-          out += this.row();
+        var extra = "";
+
+        // Add/remove rows as necessary.
+        if ( inputs.children.length > value.length ) {
+          for ( var i = value.length - 1; i < inputs.children.length; i++ ) {
+            inputs.children[i].remove();
+          }
+        } else {
+          for ( i = inputs.children.length; i < value.length; i++ )
+            extra += this.row();
+
+          if ( extra.length > 0 ) {
+            inputs.insertAdjacentHTML('beforeend', extra);
+          }
         }
 
-        inputs.innerHTML = out;
-
-        for ( i = 0; i < inputs.children.length; i++ ) {
-          inputs.children[i].firstElementChild.value = value[i];
+        // Only update the value for a row if it does not match.
+        for ( i = 0; i < value.length; i++ ) {
+          if ( inputs.children[i].firstElementChild.value !== value[i] )
+            inputs.children[i].firstElementChild.value = value[i];
         }
 
         this.registerCallbacks();
-        this.onInput();
       }
     },
     {
@@ -3306,7 +3333,7 @@ var MultiLineStringArrayView = FOAM({
         for ( var i = 0; i < inputs.length; i++ ) {
           newValue.push(inputs[i].firstElementChild.value);
         }
-        this.softValue.set(newValue);
+        this.value.set(newValue);
       }
     }
   ],
@@ -3321,24 +3348,6 @@ var MultiLineStringArrayView = FOAM({
           'beforeend', this.row());
         this.registerCallbacks();
         this.onInput();
-      }
-    },
-    {
-      model_: 'Action',
-      name: 'save',
-      label: 'Save',
-      isEnabled: function() {
-        var value = this.value.get();
-        var softValue = this.softValue.get();
-        if ( value.length !== softValue.length ) return true;
-
-        for ( var i = 0; i < value.length; i++ ) {
-          if ( value[i] !== softValue[i] ) return true;
-        }
-        return false;
-      },
-      action: function() {
-        this.value.set(this.softValue.get());
       }
     }
   ]
