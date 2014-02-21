@@ -15,7 +15,7 @@ var TableView2 = FOAM({
       model_: StringArrayProperty,
       name:  'properties',
       preSet: function(a) { return ! a || a.length == 0 ? null : a; },
-      postSet: function() { this.repaint_(); },
+      postSet: function() { this.repaint(); },
       defaultValue: null
     },
     {
@@ -36,7 +36,7 @@ var TableView2 = FOAM({
     {
       name:  'sortOrder',
       type:  'Comparator',
-      postSet: function() { this.repaint_(); },
+      postSet: function() { this.repaint(); },
       defaultValue: undefined
     },
     {
@@ -48,13 +48,13 @@ var TableView2 = FOAM({
       postSet: function(oldValue, val) {
         if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
         this.listener && val && val.listen(this.listener);
-        this.repaint_ && this.repaint_();
+        this.repaint();
       }
     },
     {
       name: 'rows',
       type:  'Integer',
-      defaultValue: 30,
+      defaultValue: 50,
       postSet: function() {
         this.repaint();
       }
@@ -81,12 +81,43 @@ var TableView2 = FOAM({
 
         if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
+        sb.value$.addListener(this.repaint);
+
         return sb;
       }
     }
   ],
 
   listeners: [
+    {
+      model_: 'Method',
+
+      name: 'repaint',
+      animate: true,
+      code: function() {
+        var dao = this.dao;
+
+        if ( ! dao || ! this.$ ) return;
+
+        dao = dao.skip(this.scrollbar.value);
+
+        var self = this;
+        var objs = [];
+        var selection = this.selection && this.selection.get();
+        if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
+
+        dao.limit(this.rows).select({
+          put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
+            self.objs = objs;
+            if ( self.$ ) {
+              self.$.innerHTML = self.tableToHTML();
+              self.initHTML_();
+              self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
+            }
+            // self.selection && self.selection.set(selection);
+          });
+      }
+    },
     {
       model_: 'Method',
 
@@ -163,11 +194,10 @@ var TableView2 = FOAM({
       this.SUPER();
 
       var self = this;
-      this.repaint_ = EventService.animate(this.repaint.bind(this));
 
       this.listener = {
-        put: self.repaint_,
-        remove: self.repaint_
+        put: self.repaint,
+        remove: self.repaint
       };
     },
 
@@ -287,26 +317,11 @@ var TableView2 = FOAM({
       return str.join('');
     },
 
+// TODO: delete?
     setValue: function(value) {
+debugger;
       this.dao = value.get();
       return this;
-    },
-
-    repaint: function() {
-      if ( ! this.dao || ! this.$ ) return;
-      var self = this;
-      var objs = [];
-      var selection = this.selection && this.selection.get();
-      (this.sortOrder ? this.dao.orderBy(this.sortOrder) : this.dao).limit(this.rows).select({
-        put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
-          self.objs = objs;
-          if ( self.$ ) {
-            self.$.innerHTML = self.tableToHTML();
-            self.initHTML_();
-            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
-          }
-          // self.selection && self.selection.set(selection);
-        });
     },
 
     initHTML_: function() {
