@@ -45,9 +45,11 @@ var TableView2 = FOAM({
       type: 'DAO',
       required: true,
       hidden: true,
-      postSet: function(oldValue, val) {
-        if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
-        this.listener && val && val.listen(this.listener);
+      postSet: function(oldValue, newValue) {
+        if ( this.daoListener ) {
+          if ( oldValue ) oldValue.unlisten(this.daoListener);
+          if ( newValue ) newValue.listen(this.daoListener);
+        }
         this.repaint();
       }
     },
@@ -193,11 +195,9 @@ var TableView2 = FOAM({
     init: function() {
       this.SUPER();
 
-      var self = this;
-
-      this.listener = {
-        put: self.repaint,
-        remove: self.repaint
+      this.daoListener = {
+        put:    this.repaint,
+        remove: this.repaint
       };
     },
 
