@@ -234,8 +234,8 @@ var Browser = Model.create({
       name: 'layout',
       code: function() {
 // TODO: fix
-        var H = window.innerHeight;
-        this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
+//        var H = window.innerHeight;
+//        this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
       }
     },
     {

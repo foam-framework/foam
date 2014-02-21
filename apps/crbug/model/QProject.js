@@ -185,7 +185,7 @@ var QProject = Model.create({
             window.browser = b; // for debugging
             BROWSERS.push(b); // for debugging
             w.browser = b;
-            window.document.body.innerHTML = b.toHTML();
+            window.document.firstChild.innerHTML = b.toHTML();
             b.initHTML();
             if ( opt_url ) b.maybeImportCrbugUrl(opt_url);
             w.focus();
@@ -230,7 +230,7 @@ var QProject = Model.create({
             window.document.body.firstChild.offsetHeight + extray);
           window.resizeTo(
             window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
-            window.document.body.firstChild.offsetHeight + extray); 
+            window.document.body.firstChild.offsetHeight + extray);
           w.focus();
         };
         w.onClosed.addListener(function() {
