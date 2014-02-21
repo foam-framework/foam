@@ -93,6 +93,7 @@ var DOM = {
 };
 
 // TODO: document and make non-global
+/** Convert a style size to an Integer.  Ex. '10px' to 10. **/
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 
@@ -2886,7 +2887,10 @@ var GridView = FOAM({
 
       name: 'toHTML',
       description: 'TileView',
-      template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
+      template: '<div class="column expand">' +
+        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div>' +
+        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '</div>'
     }
   ]
 });
@@ -3060,7 +3064,7 @@ var AlternateView = FOAM({
       var str  = [];
       var viewChoice = this.views[0];
 
-      str.push('<div style="width:100%;margin-bottom:5px;">');
+      str.push('<div class="AltViewOuter column expand" style="margin-bottom:5px;">');
       str.push('<div class="altViewButtons">');
       if ( this.headerView ) {
         str.push(this.headerView.toHTML());
@@ -3087,9 +3091,8 @@ var AlternateView = FOAM({
         if ( choice.label == this.selected ) viewChoice = choice
       }
       str.push('</div>');
-
       str.push('<br/>');
-      str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+      str.push('<div class="column expand" id="' + this.getID() + '" class="altView"> </div>');
       str.push('</div>');
 
       return str.join('');
