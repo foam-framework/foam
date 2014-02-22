@@ -1,3 +1,31 @@
+/**
+ * @license
+ * Copyright 2014 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+
+  onResize:
+    resize scrollbar
+    repaint
+
+  onDAOUpdate
+    reCount size
+    repaint
+
+*/
 var TableView2 = FOAM({
   model_: 'Model',
 
@@ -50,7 +78,7 @@ var TableView2 = FOAM({
           if ( oldValue ) oldValue.unlisten(this.daoListener);
           if ( newValue ) newValue.listen(this.daoListener);
         }
-        this.repaint();
+        this.onDAOUpdate();
       }
     },
     {
@@ -81,7 +109,7 @@ var TableView2 = FOAM({
       valueFactory: function() {
         var sb = ScrollCView.create({height:800, width: 20, x: 2, y: 2, size: 200, extent: 10});
 
-        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+//        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
         sb.value$.addListener(this.repaint);
 
@@ -94,30 +122,37 @@ var TableView2 = FOAM({
     {
       model_: 'Method',
 
+      name: 'onResize',
+      animate: true,
+      code: function() {
+        console.log('*************** onResize');
+        // this.repaintNow();
+        var h = this.$.offsetHeight;
+        console.log('resize height: ', h, this.$.offsetHeight);
+        this.scrollbar.height = h-4; // - this.$.firstChild.tHead.clientHeight;
+      }
+    },
+
+    {
+      model_: 'Method',
+
+      name: 'onDAOUpdate',
+      // animate: true,
+      code: function() {
+        this.dao.select(COUNT())(function(c) {
+          this.scrollbar.size = c.count;
+          this.repaintNow();
+        }.bind(this));
+      }
+    },
+
+    {
+      model_: 'Method',
+
       name: 'repaint',
       animate: true,
       code: function() {
-        var dao = this.dao;
-
-        if ( ! dao || ! this.$ ) return;
-
-        dao = dao.skip(this.scrollbar.value);
-
-        var self = this;
-        var objs = [];
-        var selection = this.selection && this.selection.get();
-        if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
-
-        dao.limit(this.rows).select({
-          put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
-            self.objs = objs;
-            if ( self.$ ) {
-              self.$.innerHTML = self.tableToHTML();
-              self.initHTML_();
-              self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
-            }
-            // self.selection && self.selection.set(selection);
-          });
+        this.repaintNow();
       }
     },
     {
@@ -142,12 +177,14 @@ var TableView2 = FOAM({
         v.initHTML();
       }
     },
+// TODO: remove
     {
       model_: 'Method',
 
       name: 'layout',
       animate: true,
       code: function() {
+        return;
         if ( ! this.$ ) {
           console.warn('Attempt to layout() $-less TableView.');
           return;
@@ -196,8 +233,8 @@ var TableView2 = FOAM({
       this.SUPER();
 
       this.daoListener = {
-        put:    this.repaint,
-        remove: this.repaint
+        put:    this.onDAOUpdate,
+        remove: this.onDAOUpdate
       };
     },
 
@@ -211,7 +248,7 @@ var TableView2 = FOAM({
         this.tableToHTML() +
         '</span>' +
         '<span style="width:1px;flex-shrink:0;"></span>' +
-        '<span style="width:15px;background:lightgray;flex-shrink:0;margin-top:25px;overflow:hidden;">' +
+        '<span style="width:15px;background:lightgray;flex-shrink:0;overflow:hidden;">' +
         this.scrollbar.toHTML() +
         '</span>' +
         '</div>';
@@ -219,12 +256,39 @@ var TableView2 = FOAM({
 
     initHTML: function() {
       this.scrollbar.initHTML();
-      this.scrollbar.paint();
-      this.repaint();
+      this.onResize();
+// TODO: remove next line
+//      this.scrollbar.paint();
+      this.repaintNow();
 
-      (this.window || window).addEventListener('resize', this.layout, false);
+      (this.window || window).addEventListener('resize', this.onResize, false);
     },
 
+    /** Call repaint() instead to repaint on next animation frame. **/
+    repaintNow: function() {
+      var dao = this.dao;
+
+      if ( ! dao || ! this.$ ) return;
+      
+      dao = dao.skip(this.scrollbar.value);
+      
+      var self = this;
+      var objs = [];
+      var selection = this.selection && this.selection.get();
+      if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
+      
+      dao.limit(this.rows).select({
+        put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
+          self.objs = objs;
+          if ( self.$ ) {
+            self.$.innerHTML = self.tableToHTML();
+            self.initHTML_();
+            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
+          }
+          // self.selection && self.selection.set(selection);
+        });
+    },
+    
     tableToHTML: function() {
       var model = this.model;
 
@@ -260,7 +324,7 @@ var TableView2 = FOAM({
                      } else {
                        table.sortOrder = prop;
                      }
-                     table.repaint();
+                     table.repaintNow();
                    };})(this, prop)));
         if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
 
