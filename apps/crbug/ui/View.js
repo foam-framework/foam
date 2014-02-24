@@ -263,7 +263,7 @@ function createView(rowSelection, browser) {
                 {
                   name: 'dao',
                   // crbug limits grid view to 6000 rows, so do the same
-                  preSet: function(dao) { return dao.limit(6000); },
+                  preSet: function(dao) { return dao.limit(2000); },
                   postSet: function(old, dao) {
                      if ( this.listener ) {
                         old && old.unlisten(this.listener);
