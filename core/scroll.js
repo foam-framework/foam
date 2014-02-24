@@ -146,7 +146,7 @@ var ScrollCView = FOAM({
       if ( this.extent >= this.size ) return;
 
       c.strokeStyle = this.borderColor;
-      c.strokeRect(this.x, this.y, this.width-2, this.height);
+      c.strokeRect(this.x, this.y, this.width-7, this.height);
 
       c.fillStyle = this.handleColor;
 
@@ -159,10 +159,10 @@ var ScrollCView = FOAM({
       }
 
       c.fillRect(
-        this.x + 2,
+        this.x+2,
         this.y + 2 + this.value / this.size * h,
-        this.width - 6,
-        this.y + 2 + handleSize);
+        this.width - 11,
+        this.y + 4 + handleSize);
     },
 
     destroy: function() {
@@ -189,39 +189,39 @@ var ScrollBorder = FOAM({
          this.scrollbar.extent = this.view.rows;
        }
      },
-       {
-           name: 'scrollbar',
-           type: 'ScrollCView',
-           valueFactory: function() {
-             var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
-
-             if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
-
-             return sb;
-           }
-       },
-       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-         hidden: true,
-         required: true,
-         postSet: function(oldValue, newValue) {
-          this.view.dao = newValue;
-           var self = this;
-
-           if ( this.dao ) this.dao.select(COUNT())(function(c) {
-               self.scrollbar.size = c.count;
-               self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
-               if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);
-           });
-           /*
+     {
+       name: 'scrollbar',
+       type: 'ScrollCView',
+       valueFactory: function() {
+         var sb = ScrollCView.create({height:1800, width: 20, x: 0, y: 0, extent: 10});
+         
+         if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+         
+         return sb;
+       }
+     },
+     {
+       name:  'dao',
+       label: 'DAO',
+       type: 'DAO',
+       hidden: true,
+       required: true,
+       postSet: function(oldValue, newValue) {
+         this.view.dao = newValue;
+         var self = this;
+         
+         if ( this.dao ) this.dao.select(COUNT())(function(c) {
+           self.scrollbar.size = c.count;
+           self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
+           if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);
+         });
+         /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
            this.repaint_ && this.repaint_();
-            */
-         }
+         */
        }
+     }
    ],
 
   listeners: [

@@ -3081,8 +3081,8 @@ var AlternateView = FOAM({
       var str  = [];
       var viewChoice = this.views[0];
 
-      str.push('<div class="AltViewOuter column expand" style="margin-bottom:5px;">');
-      str.push('<div class="altViewButtons">');
+      str.push('<div class="AltViewOuter column" style="margin-bottom:5px;">');
+      str.push('<div class="altViewButtons rigid">');
       if ( this.headerView ) {
         str.push(this.headerView.toHTML());
         this.addChild(this.headerView);
@@ -3109,7 +3109,7 @@ var AlternateView = FOAM({
       }
       str.push('</div>');
       str.push('<br/>');
-      str.push('<div class="column expand" id="' + this.getID() + '" class="altView"> </div>');
+      str.push('<div class="altView column" style="flex: 1 1 100%" id="' + this.getID() + '"> </div>');
       str.push('</div>');
 
       return str.join('');

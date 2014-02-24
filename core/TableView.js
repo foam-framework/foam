@@ -84,7 +84,7 @@ var TableView2 = FOAM({
     {
       name: 'rows',
       type:  'Integer',
-      defaultValue: 50,
+      defaultValue: 65,
       postSet: function() {
         this.repaint();
       }
@@ -107,7 +107,7 @@ var TableView2 = FOAM({
       name: 'scrollbar',
       type: 'ScrollCView',
       valueFactory: function() {
-        var sb = ScrollCView.create({height:800, width: 20, x: 2, y: 2, size: 200, extent: 10});
+        var sb = ScrollCView.create({height:800, width: 20, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -129,7 +129,7 @@ var TableView2 = FOAM({
         // this.repaintNow();
         var h = this.$.offsetHeight;
         console.log('resize height: ', h, this.$.offsetHeight);
-        this.scrollbar.height = h-4; // - this.$.firstChild.tHead.clientHeight;
+        this.scrollbar.height = h-1; // - this.$.firstChild.tHead.clientHeight;
         this.scrollbar.paint();
       }
     },
@@ -177,7 +177,7 @@ var TableView2 = FOAM({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
-    },
+    }/*
 // TODO: remove
     {
       model_: 'Method',
@@ -206,7 +206,7 @@ var TableView2 = FOAM({
 
         console.log('scrollbar height ', this.scrollbar.height, 'width', this.scrollbar.width);
 
-        /*
+        / *
         var top = 47;
         var height = 20;
         var rows = $$("tr-" + this.getID());
@@ -222,9 +222,10 @@ var TableView2 = FOAM({
         }
 
         this.rows = Math.floor((toNum(parent.height) - top) / height);
-        */
+        * /
       }
     }
+*/
 
   ],
 
@@ -245,11 +246,10 @@ var TableView2 = FOAM({
 
     toHTML: function() {
       return '<div style="display:flex;width:100%">' +
-        '<span id="' + this.getID() + '" style="flex-grow:1;overflow-x:auto;overflow-y:hidden;">' +
+        '<span id="' + this.getID() + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
-        '<span style="width:1px;flex-shrink:0;"></span>' +
-        '<span style="width:15px;background:lightgray;flex-shrink:0;overflow:hidden;">' +
+        '<span style="width:15px;background:lightgray;flex:none;overflow:hidden;">' +
         this.scrollbar.toHTML() +
         '</span>' +
         '</div>';
@@ -259,8 +259,8 @@ var TableView2 = FOAM({
       this.scrollbar.initHTML();
 // TODO: remove next line
 //      this.scrollbar.paint();
-      this.repaintNow();
-      this.onResize();
+      this.onDAOUpdate();
+      // this.repaintNow();
 
       (this.window || window).addEventListener('resize', this.onResize, false);
     },
@@ -285,8 +285,10 @@ console.log('skip: ' , this.scrollbar.value);
           if ( self.$ ) {
             self.$.innerHTML = self.tableToHTML();
             self.initHTML_();
-            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
+            // TODO: use to set 'extent'
+//            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
           }
+          self.onResize();
           // self.selection && self.selection.set(selection);
         });
     },
@@ -383,19 +385,13 @@ console.log('skip: ' , this.scrollbar.value);
       return str.join('');
     },
 
-// TODO: delete?
-    setValue: function(value) {
-debugger;
-      this.dao = value.get();
-      return this;
-    },
-
     initHTML_: function() {
       this.initHTML.super_.call(this);
 
       var es = $$('tr-' + this.getID());
       var self = this;
 
+      /*
       if ( es.length ) {
         if ( ! this.sized_ ) {
           this.sized_ = true;
@@ -403,6 +399,7 @@ debugger;
           return;
         }
       }
+      */
 
       for ( var i = 0 ; i < es.length ; i++ ) {
         var e = es[i];

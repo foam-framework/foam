@@ -706,3 +706,7 @@ div.gridViewControl select {
 .expand {
   flex: 1 1 auto;
 }
+
+.rigid {
+  flex: none;
+}
