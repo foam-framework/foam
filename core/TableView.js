@@ -107,7 +107,7 @@ var TableView2 = FOAM({
       name: 'scrollbar',
       type: 'ScrollCView',
       valueFactory: function() {
-        var sb = ScrollCView.create({height:800, width: 20, x: 1, y: 0, size: 200, extent: 10});
+        var sb = ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -249,7 +249,7 @@ var TableView2 = FOAM({
         '<span id="' + this.getID() + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
-        '<span style="width:15px;background:lightgray;flex:none;overflow:hidden;">' +
+        '<span style="width:19px;flex:none;overflow:hidden;">' +
         this.scrollbar.toHTML() +
         '</span>' +
         '</div>';
