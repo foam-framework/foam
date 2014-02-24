@@ -125,6 +125,8 @@ var TableView2 = FOAM({
       name: 'onResize',
       animate: true,
       code: function() {
+        if ( ! this.$ ) return;
+
         var h = this.$.offsetHeight;
         this.scrollbar.height = h-1;
         this.scrollbar.paint();
