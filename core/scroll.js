@@ -135,7 +135,6 @@ var ScrollCView = FOAM({
    methods: {
 
     paint: function() {
-      console.log('**** paint: ', this.value, this.extent, this.size, this.height);
       if ( ! this.size ) return;
 
       var c = this.canvas;
@@ -194,9 +193,9 @@ var ScrollBorder = FOAM({
        type: 'ScrollCView',
        valueFactory: function() {
          var sb = ScrollCView.create({height:1800, width: 20, x: 0, y: 0, extent: 10});
-         
+
          if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
-         
+
          return sb;
        }
      },
@@ -209,7 +208,7 @@ var ScrollBorder = FOAM({
        postSet: function(oldValue, newValue) {
          this.view.dao = newValue;
          var self = this;
-         
+
          if ( this.dao ) this.dao.select(COUNT())(function(c) {
            self.scrollbar.size = c.count;
            self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));

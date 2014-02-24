@@ -125,11 +125,8 @@ var TableView2 = FOAM({
       name: 'onResize',
       animate: true,
       code: function() {
-        console.log('*************** onResize');
-        // this.repaintNow();
         var h = this.$.offsetHeight;
-        console.log('resize height: ', h, this.$.offsetHeight);
-        this.scrollbar.height = h-1; // - this.$.firstChild.tHead.clientHeight;
+        this.scrollbar.height = h-1;
         this.scrollbar.paint();
       }
     },
@@ -231,15 +228,6 @@ var TableView2 = FOAM({
 
   methods: {
 
-    init: function() {
-      this.SUPER();
-
-      this.daoListener = {
-        put:    this.onDAOUpdate,
-        remove: this.onDAOUpdate
-      };
-    },
-
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
@@ -257,12 +245,17 @@ var TableView2 = FOAM({
 
     initHTML: function() {
       this.scrollbar.initHTML();
-// TODO: remove next line
-//      this.scrollbar.paint();
+
       this.onDAOUpdate();
-      // this.repaintNow();
 
       (this.window || window).addEventListener('resize', this.onResize, false);
+
+      this.daoListener = {
+        put:    this.onDAOUpdate,
+        remove: this.onDAOUpdate
+      };
+
+      this.dao.listen(this.daoListener);
     },
 
     /** Call repaint() instead to repaint on next animation frame. **/
@@ -271,7 +264,6 @@ var TableView2 = FOAM({
 
       if ( ! dao || ! this.$ ) return;
 
-console.log('skip: ' , this.scrollbar.value);
       dao = dao.skip(this.scrollbar.value);
 
       var self = this;
