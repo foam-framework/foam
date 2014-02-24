@@ -88,28 +88,37 @@ var QProject = Model.create({
       transient: true
     },
     {
-      name: 'IssueDAO',
-      valueFactory: function() {
-        var actions = ActionFactoryDAO.create({
-          delegate: this.IssueMDAO,
-          actionDao: this.IssueCommentNetworkDAO
-        });
-
-        return MergedNotifyDAO.create({delegate: QIssueStarringDAO.create({
-          delegate: actions,
-          project: this,
-          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
-        })});
-      },
-      transient: true
-    },
-    {
       name: 'IssueNetworkDAO',
       valueFactory: function() {
         return IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           model: QIssue
         });
+      },
+      transient: true
+    },
+    {
+      name: 'IssueDAO',
+      valueFactory: function() {
+        var dao = this.IssueMDAO;
+        
+        dao = QIssueSplitDAO.create({
+          local: dao,
+          remote: this.IssueNetworkDAO
+        });
+
+        dao = ActionFactoryDAO.create({
+          delegate: dao,
+          actionDao: this.IssueCommentNetworkDAO
+        });
+
+        dao = QIssueStarringDAO.create({
+          delegate: dao,
+          project: this,
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
+        });
+
+        return dao;
       },
       transient: true
     },
