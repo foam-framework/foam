@@ -83,11 +83,18 @@ var Browser = Model.create({
       defaultValueFn: function() { return this.project.IssueDAO; }
     },
     {
+      name: 'filteredIssueDAO',
+      defaultValueFn: function() { return this.IssueDAO; },
+      postSet: function(_, dao) {
+        this.view.dao = dao;
+        this.onDAOUpdate();
+      }
+    },
+    {
       name: 'syncManager',
       scope: 'project',
       defaultValueFn: function() { return this.project.syncManager; }
     },
-
     {
       name: 'zoom',
       help: 'Zoom ratio of Browser contents.',
@@ -221,10 +228,10 @@ var Browser = Model.create({
       name: 'performQuery',
       animate: true,
       code: function(evt) {
-        if ( ! this.maybeSetLegacyUrl(this.searchField.value.get()) ) {
+        if ( ! this.maybeSetLegacyUrl(this.location.q) ) {
           this.search(AND(
-            QueryParser.parseString(this.searchChoice.value.get()) || TRUE,
-            QueryParser.parseString(this.searchField.value.get()) || TRUE
+            QueryParser.parseString(this.location.can) || TRUE,
+            QueryParser.parseString(this.location.q) || TRUE
           ).partialEval());
         }
       }
@@ -297,7 +304,6 @@ var Browser = Model.create({
       name:  'launchSync',
       label: 'Sync Status',
       action: function() {
-        console.log('launch sync');
         this.project.launchSync();
       }
     },
@@ -390,8 +396,8 @@ var Browser = Model.create({
             this.selectedIssueCount.toLocaleString() + ' of ' + this.issueCount.toLocaleString() + ' selected';
         }.bind(this));
 
-      this.searchChoice.value.addListener(this.performQuery);
-      this.searchField.value.addListener(this.performQuery);
+      this.location.q$.addListener(this.performQuery);
+      this.location.can$.addListener(this.performQuery);
 
       this.rowSelection.addListener(function(_,_,_,issue) {
         var url = this.url + '/issues/detail?id=' + issue.id;
@@ -495,8 +501,7 @@ var Browser = Model.create({
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
       if ( p ) console.log('SEARCH: ', p.toSQL());
-      this.view.dao = p ? this.IssueDAO.where(p) : this.IssueDAO;
-      this.onDAOUpdate();
+      this.filteredIssueDAO = p ? this.IssueDAO.where(p) : this.IssueDAO;
     },
 
     openURL: function(url) {

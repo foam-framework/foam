@@ -230,7 +230,7 @@ function createView(rowSelection, browser) {
   var location = browser.location;
 
   return AlternateView.create({
-    dao: browser.IssueDAO,
+    dao: browser.filteredIssueDAO,
     headerView: browser.countField,
     views: [
       ViewChoice.create({
@@ -238,7 +238,7 @@ function createView(rowSelection, browser) {
         view: function() {
           var tableView = QIssueTableView.create({
             model: QIssue,
-            dao: browser.IssueDAO,
+            dao: browser.filteredIssueDAO,
             browser: browser,
             hardSelection: rowSelection,
             scrollEnabled: true,
