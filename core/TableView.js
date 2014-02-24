@@ -130,6 +130,7 @@ var TableView2 = FOAM({
         var h = this.$.offsetHeight;
         console.log('resize height: ', h, this.$.offsetHeight);
         this.scrollbar.height = h-4; // - this.$.firstChild.tHead.clientHeight;
+        this.scrollbar.paint();
       }
     },
 
@@ -256,10 +257,10 @@ var TableView2 = FOAM({
 
     initHTML: function() {
       this.scrollbar.initHTML();
-      this.onResize();
 // TODO: remove next line
 //      this.scrollbar.paint();
       this.repaintNow();
+      this.onResize();
 
       (this.window || window).addEventListener('resize', this.onResize, false);
     },
@@ -269,14 +270,15 @@ var TableView2 = FOAM({
       var dao = this.dao;
 
       if ( ! dao || ! this.$ ) return;
-      
+
+console.log('skip: ' , this.scrollbar.value);
       dao = dao.skip(this.scrollbar.value);
-      
+
       var self = this;
       var objs = [];
       var selection = this.selection && this.selection.get();
       if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
-      
+
       dao.limit(this.rows).select({
         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
           self.objs = objs;
@@ -288,7 +290,7 @@ var TableView2 = FOAM({
           // self.selection && self.selection.set(selection);
         });
     },
-    
+
     tableToHTML: function() {
       var model = this.model;
 

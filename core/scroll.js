@@ -46,12 +46,14 @@ var ScrollCView = FOAM({
         name:  'value',
         type:  'int',
         help:  'The first element being shown, starting at zero.',
+        preSet: function(value) { return Math.min(this.size-this.extent, value); },
         defaultValue: 0
       },
       {
         name:  'extent',
         help:  'Number of elements shown.',
         type:  'int',
+        minValue: 1,
         defaultValue: 10
       },
       {
@@ -109,7 +111,7 @@ var ScrollCView = FOAM({
        var y = e.y - this.startY;
        e.preventDefault();
 
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round((y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
        this.startY = e.targetTouches[0].pageY;
@@ -133,6 +135,7 @@ var ScrollCView = FOAM({
    methods: {
 
     paint: function() {
+      console.log('**** paint: ', this.value, this.extent, this.size, this.height);
       if ( ! this.size ) return;
 
       var c = this.canvas;
@@ -151,8 +154,8 @@ var ScrollCView = FOAM({
       var handleSize = this.extent / this.size * h;
 
       if ( handleSize < this.minHandleSize ) {
-        h -= this.minHandleSize - handleSize;
         handleSize = this.minHandleSize;
+        h -= this.minHandleSize - handleSize;
       }
 
       c.fillRect(
