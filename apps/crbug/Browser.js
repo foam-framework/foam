@@ -155,7 +155,7 @@ var Browser = Model.create({
       name: 'searchField',
       valueFactory: function() { return TextFieldView.create({
         name: 'search',
-        displayWidth: 20,
+        displayWidth: 5,
         value: this.location.q$ }); }
     },
     {
@@ -227,15 +227,6 @@ var Browser = Model.create({
             QueryParser.parseString(this.searchField.value.get()) || TRUE
           ).partialEval());
         }
-      }
-    },
-    {
-      model_: 'Method',
-      name: 'layout',
-      code: function() {
-// TODO: fix
-//        var H = window.innerHeight;
-//        this.view.$.style.height = (H-this.view.$.offsetTop-30) + 'px';
       }
     },
     {
@@ -399,8 +390,6 @@ var Browser = Model.create({
             this.selectedIssueCount.toLocaleString() + ' of ' + this.issueCount.toLocaleString() + ' selected';
         }.bind(this));
 
-      this.window.addEventListener('resize', this.layout, false);
-
       this.searchChoice.value.addListener(this.performQuery);
       this.searchField.value.addListener(this.performQuery);
 
@@ -425,8 +414,6 @@ var Browser = Model.create({
           this.preview(null);
         }
       }.bind(this));
-
-      this.layout();
 
       this.searchChoice.choice = this.searchChoice.choices[1];
 
