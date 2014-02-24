@@ -928,23 +928,28 @@ var ChoiceView = FOAM({
       type:  'Array[StringField]',
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
-      postSet: function(oldValue, newValue) {
-        if ( this.$ ) {
-          this.updateHTML();
+      postSet: function(_, newValue) {
+        var value = this.value.get();
 
-          var value = this.value.get();
+        for ( var i = 0; i < newValue.length; i++ ) {
+          var choice = newValue[i];
 
-          for ( var i = 0; i < oldValue.length; i++ ) {
-            var choice = oldValue[i];
-
-            if ( (Array.isArray(choice) && value[0] === choice[0]) ||
-                 (!Array.isArray(choice) && value === choice) ) {
-                   if ( newValue[i] )
-                     this.choice = newValue[i];
-                 }
+          if ( Array.isArray(choice) ) {
+            if ( value === choice[0] ) {
+              this.choice = choice;
+              break;
+            }
+          } else {
+            if ( value === choice ) {
+              this.choice = choice;
+              break;
+            }
           }
-          if ( i === oldValue.length ) this.choice = newValue[0];
         }
+
+        if ( i === newValue.length ) this.choice = newValue[0];
+
+        if ( this.$ ) this.updateHTML();
       }
     }
   ],
