@@ -182,10 +182,13 @@ var ItemCount = Model.create({
 
 
 // Formats Issue ID's as links to the main crbug.com site.
-var idFormatter = {
-  f: function(i) {
-    return '<a href="https://code.google.com/p/chromium/issues/detail?id=' + i.id + '">' + i.id + '</a>';
-  }
+var IdFormatter = function(browser) {
+  return {
+    f: function(i) {
+      var url = browser.url + '/issues/detail?id=' + i.id;
+      return '<a target="_blank" href="' + url + '">' + i.id + '</a>';
+    }
+  };
 };
 
 
@@ -296,7 +299,7 @@ function createView(rowSelection, browser) {
                 model: QIssue,
                 accChoices: [
                   [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
-                  [ MAP(idFormatter, COL.create()),             "IDs" ],
+                  [ MAP(IdFormatter(browser), COL.create()),             "IDs" ],
                   [ ItemCount.create({browser: browser}),       "Counts" ],
                   [ PIE(QIssue.STATUS),                         "Pie(Status)"  ],
                   [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
