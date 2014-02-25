@@ -135,7 +135,7 @@ var EventService = {
     },
 
     hasListeners: function (topic) {
-       // todo:
+       // TODO:
        return true;
     },
 
@@ -146,7 +146,13 @@ var EventService = {
      * @return number of subscriptions notified
      **/
     publish: function (topic) {
-       return this.subs_ ? this.pub_(this.subs_, 0, topic, this.appendArguments([this, topic], arguments, 1)) : 0;
+       return this.subs_ ?
+        this.pub_(
+          this.subs_,
+          0,
+          topic,
+          this.appendArguments([this, topic], arguments, 1)) :
+        0;
     },
 
 
@@ -155,7 +161,7 @@ var EventService = {
        var args = arguments;
        var me   = this;
 
-       setTimeout( function() { me.publish.apply(me, args); }, 0 );
+       setTimeout( function() { me.publish.apply(me, args); }, 0);
     },
 
 

@@ -533,7 +533,7 @@ var BlobImageView = FOAM({
   ]
 });
 
-
+// TODO: document the difference between softValue and value
 var TextFieldView = FOAM({
 
   model_: 'Model',
@@ -911,15 +911,17 @@ var ChoiceView = FOAM({
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           var choice = this.choices[i];
-          if ( Array.isArray(value) && value === choice[0] ) return choice;
-          else if ( value === choice ) return choice;
+          if ( Array.isArray(choice) ) {
+            if ( value === choice[0] ) return choice;
+          } else {
+            if ( value === choice ) return choice;
+          }
         }
         return undefined;
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        if ( Array.isArray(choice) ) this.value.set(choice[0])
-        else this.value.set(choice);
+        this.value.set(Array.isArray(choice) ? choice[0] : choice);
         this.propertyChange('choice', oldValue, this.choice);
       }
     },

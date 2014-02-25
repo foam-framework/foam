@@ -44,8 +44,11 @@ var Browser = Model.create({
       name: 'memento',
       defaultValue: 'mode=list',
       postSet: function (oldValue, newValue) {
+        // Avoid feedback by temporarily unsubscribing
+        this.location.removeListener(this.onLocationUpdate);
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
-      }
+        this.location.addListener(this.onLocationUpdate);
+     }
     },
     {
       name: 'projectName',
@@ -136,7 +139,8 @@ var Browser = Model.create({
       name: 'view',
       valueFactory: function() {
         var view = createView(this.rowSelection, this);
-        this.location.mode$ = view.choice$
+//        this.location.mode$ = view.choice$
+        view.choice$ = this.location.mode$;
         return view;
       }
     },
@@ -163,6 +167,7 @@ var Browser = Model.create({
       valueFactory: function() { return TextFieldView.create({
         name: 'search',
         displayWidth: 5,
+        type: 'search',
         value: this.location.q$ }); }
     },
     {
@@ -202,7 +207,7 @@ var Browser = Model.create({
     {
       model_: 'Method',
       name: 'onDAOUpdate',
-      animate: true,
+      isAnimated: true,
       code: function(evt) {
         var self = this;
         this.view.dao.select(COUNT())(function (c) { self.selectedIssueCount = c.count; });
@@ -211,7 +216,7 @@ var Browser = Model.create({
     {
       model_: 'Method',
       name: 'onSyncManagerUpdate',
-      animate: true,
+      isAnimated: true,
       code: function(evt) {
         if ( this.syncManager.isSyncing ) {
           this.timer.step();
@@ -226,7 +231,7 @@ var Browser = Model.create({
     {
       model_: 'Method',
       name: 'performQuery',
-      animate: true,
+      isAnimated: true,
       code: function(evt) {
         if ( ! this.maybeSetLegacyUrl(this.location.q) ) {
           this.search(AND(
@@ -249,7 +254,7 @@ var Browser = Model.create({
     {
       model_: 'Method',
       name: 'onLocationUpdate',
-      animate: true,
+      isAnimated: true,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
       }
@@ -387,6 +392,8 @@ var Browser = Model.create({
     initHTML: function() {
       this.SUPER();
 
+      this.memento = '';
+
       Events.follow(this.project.issueCount$, this.issueCount$);
 
       Events.dynamic(
@@ -486,7 +493,7 @@ var Browser = Model.create({
       if ( project == this.projectName ) {
         this.location.fromURL(this, params);
       } else {
-        this.searchField.value.set('');
+        this.location.q = '';
         this.qbug.launchBrowser(project, url)
       }
 
@@ -525,7 +532,7 @@ var ChromeAppBrowser = Model.create({
     openURL: function(url) {
       console.log('openURL: ', url);
       window.open(url);
-    },
+    }
   }
 
 });

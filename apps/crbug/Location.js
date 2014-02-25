@@ -69,12 +69,12 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'mode',
-      defaultMemento: 'List',
+      defaultMemento: 'list',
       toMemento: function(mode) { return mode ? mode.label.toLowerCase() : 'list'; },
       fromMemento: function(mode) {
         var view = this.view.views[0];
         for ( var i = 1 ; i < this.view.views.length ; i++ ) {
-          if ( this.view.views[i].label.toLowerCase() == mode ) return this.view.views[i];
+          if ( this.view.views[i].label.toLowerCase() === mode ) return this.view.views[i];
         }
         return view;
       }
@@ -120,8 +120,8 @@ var Location = FOAM({
     },
     {
       model_: 'LocationProperty',
-      name: 'tile',
-      defaultValue: 'Tiles'
+      name: 'cells',
+      defaultMemento: 'tiles'
     },
     {
       model_: 'LocationProperty',

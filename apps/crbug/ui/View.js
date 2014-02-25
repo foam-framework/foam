@@ -172,7 +172,8 @@ var ItemCount = Model.create({
           QueryParser.parseString(searchField.value.get()),
           EQ(col, col.f(this.obj)),
           EQ(row, row.f(this.obj))).partialEval();
-        this.browser.location.copyFrom({ mode: 'list', q: q.toMQL() });
+        this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
+        this.browser.location.q = q.toMQL();
       }.bind(this);
       $(this.eid).addEventListener('click', f, false);
     }
@@ -308,17 +309,17 @@ function createView(rowSelection, browser) {
           g.col.value = location.x$;
 
           // TODO: cleanup this block
-          function setAcc(title) {
+          function setAcc() {
             var acc = g.accChoices[0];
             for ( var i = 1 ; i < g.accChoices.length ; i++ ) {
-              if ( location.tile === g.accChoices[i][1].toLowerCase() ) acc = g.accChoices[i];
+              if ( location.cells === g.accChoices[i][1].toLowerCase() ) acc = g.accChoices[i];
             }
             g.acc.choice = acc;
           }
-          setAcc(location.title);
+          setAcc(location.cells);
 
-          g.acc.value.addListener(function(choice) { location.tile = g.acc.choice[1].toLowerCase(); });
-          location.tile$.addListener(setAcc);
+          g.acc.value.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
+          location.cells$.addListener(setAcc);
 
           return g;
         }
