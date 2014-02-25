@@ -452,7 +452,7 @@ div.gridViewControl {
 }
 
 div.gridViewControl select {
-  margin-bottom:0;
+  margin-bottom: 6px;
   font-family: arial, sans-serif;
   font-size: 10px;
   font-style: normal;
