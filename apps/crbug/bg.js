@@ -35,5 +35,5 @@ if ( chrome.app.runtime ) {
 
 GridView.getPrototype().updateHTML = OAM.time('GridView.updateHTML', OAM.profile(GridView.getPrototype().updateHTML));
 TableView.getPrototype().repaint   = OAM.time('TableView.repaint',   TableView.getPrototype().repaint);
-TableView2.getPrototype().repaint  = OAM.time('TableView.repaint',   TableView2.getPrototype().repaint);
+TableView2.getPrototype().repaintNow  = OAM.time('TableView.repaint',   TableView2.getPrototype().repaintNow);
 GridByExpr.getPrototype().initHTML = OAM.time('GridByExpr.initHTML', GridByExpr.getPrototype().initHTML);

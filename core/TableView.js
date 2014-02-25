@@ -84,7 +84,7 @@ var TableView2 = FOAM({
     {
       name: 'rows',
       type:  'Integer',
-      defaultValue: 65,
+      defaultValue: 50,
       postSet: function() {
         this.repaint();
       }
