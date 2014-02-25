@@ -257,6 +257,18 @@ var TableView2 = FOAM({
         remove: this.onDAOUpdate
       };
 
+      if ( this.scrollEnabled ) {
+        var sb = this.scrollbar;
+
+        this.$.onmousewheel = function(e) {
+          if ( e.wheelDeltaY > 0 && sb.value ) {
+            sb.value--;
+          } else if ( e.wheelDeltaY < 0 && sb.value < sb.size - sb.extent ) {
+            sb.value++;
+          }
+        };
+      }
+
       this.dao.listen(this.daoListener);
     },
 
