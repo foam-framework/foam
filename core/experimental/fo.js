@@ -15,131 +15,31 @@
  * limitations under the License.
  */
 
-function defineProperties(proto, fns) {
-  for ( var key in fns ) {
+/**
+ * Override a method, making calling the overridden method possible by
+ * calling this.SUPER();
+ **/
+function override(cls, methodName, method) {
+  var super_ = cls[methodName];
+
+  var SUPER = function() { return super_.apply(this, arguments); };
+
+  var f = function() {
+    var OLD_SUPER = this.SUPER;
+    this.SUPER = SUPER;
     try {
-      Object.defineProperty(proto, key, {
-        value: fns[key],
-        configurable: true,
-        writable: true
-      });
-    } catch (x) {
-      console.log('Warning: ' + x);
+      return method.apply(this, arguments);
+    } finally {
+      this.SUPER = OLD_SUPER;
     }
-  }
+  };
+
+  f.super_ = super_;
+
+  cls[methodName] = f;
 }
 
-defineProperties(Array.prototype, {
-  get: function(name) {
-    for ( var idx = 0; idx < this.length; idx++ ) {
-      if ( this[idx].name === name ) return this[idx];
-    }
-    return this.__super__ && this.__super__.get(name);
-  },
-
-  listen: function(listener) {
-    if ( ! this.listeners_ ) this.listeners_ = [];
-    this.listeners_.push(listener);
-  },
-
-  unlisten: function(l) {
-    if ( ! this.listeners_ ) return;
-    this.listeners_ =
-      this.listeners_.filter(function(l2) { return l === l2; });
-  },
-
-  put: function(obj) {
-    for ( var i = 0; i < this.length; i++) {
-      // TODO this should be id
-      if ( this[i].name === obj.name ) {
-        var old = this[i];
-        this[i] = obj;
-        break;
-      }
-    }
-    if ( i == this.length ) this.push(obj);
-
-    this.listeners_ && this.listeners_.forEach(function(l) {
-      l.put(obj, old);
-    });
-  },
-
-  select: function(sink) {
-    this.forEach(function(item) { sink.put(item); });
-  },
-
-  pipe: function(sink) {
-    this.select(sink);
-    this.listen(sink);
-  }
-});
-
-(function() {
-  var static_;
-  Object.defineProperty(Object.prototype, 'static_', {
-    enumerable: false,
-    writeable: true,
-    configurable: true,
-    get: function() {
-      return static_;
-    },
-    set: function(v) {
-      static_ = v;
-    }
-  });
-  Object.prototype.static_ = {};
-})();
-
-var CTX;
-
-(function() {
-  var FObject, Model, Method, Property;
-
-  FObject = {
-    instance_: {
-      name: 'FObject',
-      prototype: {
-        TYPE_: 'FObjectPrototype',
-        instance_: {},
-        create: function (args) {
-          var obj = {
-            __proto__: this,
-            instance_: {}
-          };
-          obj.model_ = this.model_;
-          obj.copyFrom(args);
-          obj.init(args);
-          return obj;
-        },
-        copyFrom: function(src) {
-          if ( src && src.instance_ ) src = src.instance_;
-
-          for ( var key in src ) {
-            this[key] = src[key];
-          }
-          return this;
-        },
-        init: function(args) {
-          var features = this.model_.features;
-          if ( ! features ) return;
-          for (var i = 0; i < features.length; i++) {
-            var feature = features[i];
-            feature.initialize && feature.initialize(this, args);
-          }
-        }
-      },
-      features: []
-    }
-  };
-
-  Model = {
-    instance_: {
-      TYPE_: 'ModelPrototype',
-      name: 'Model',
-      features: []
-    }
-  };
-
+function bootstrap(scope) {
   function simpleProperty(obj, name) {
     Object.defineProperty(obj, name, {
       configurable: true,
@@ -150,389 +50,166 @@ var CTX;
     });
   }
 
-  simpleProperty(Model, "prototype");
-  simpleProperty(Model, "features");
-  Model.prototype = Model;
+  // Make function objects act like Method instances.
+  Object.defineProperty(Function.prototype, 'code', {
+    configurable: true,
+    writeable: false,
+    enumerable: true,
+    get: function() { return this; },
+  });
 
-  FObject.__proto__ = Model.prototype;
-  Model.__proto__ = FObject.prototype;
+  var ModelProto = {};
+  simpleProperty(ModelProto, "features");
+  simpleProperty(ModelProto, "prototype");
 
-  simpleProperty(FObject.prototype, "name");
+  var Model = { instance_: {} };
+  scope.set('Model', Model);
+  Model.__proto__ = ModelProto;
+  Model.prototype = ModelProto;
+  Model.features = [];
+
+  var FObject = { instance_: {} };
+  scope.set('FObject', FObject);
+  FObject.__proto__ = ModelProto;
+  FObject.features = [];
+  FObject.prototype = {};
+  Model.prototype.__proto__ = FObject.prototype;
   simpleProperty(FObject.prototype, "model_");
 
   FObject.model_ = Model;
-  Model.prototype.model_ = Model;
-  FObject.prototype.model_ = Model;
+  Model.model_ = Model;
 
-  Method = {
-    __proto__: Model.prototype,
-    instance_: {
-      name: 'Method',
-      prototype: {
-        __proto__: FObject.prototype,
-        TYPE_: 'MethodPrototype',
-        instance_: {},
-        install: function(o) {
-          o.prototype[this.name] = this.code;
-          o.prototype[this.name].super_ = o.prototype.__proto__[this.name];
-        },
-        create: function(args) {
-          if ( args instanceof Function ) {
-            args = {
-              name: args.name,
-              code: args
-            }
-          }
-          return FObject.prototype.create.call(this, args);
-        }
-      },
-      features: []
-    }
+  Model.prototype.create = function(args) {
+    return this.prototype.create(args);
   };
 
-  Method.model_ = Model;
-  Method.prototype.model_ = Method;
+  FObject.prototype.create = function create(args) {
+    var proto = this.prototype || this.model_.prototype;
 
-  simpleProperty(Method.prototype, "code");
+    var obj = {
+      __proto__: proto,
+      instance_: {}
+    };
 
-  Property = {
-    __proto__: Model.prototype,
-    instance_: {
-      name: 'Property',
-      prototype: {
-        __proto__: FObject.prototype,
-        TYPE_: 'PropertyPrototype',
-        instance_: {},
-      },
-      features: [],
+    // If we're not a Model, then pass along our model_ value.
+    if ( this.model_ !== Model ) {
+      obj.model_ = this.model_;
+    } else {
+      // Otherwise we just created an instance of ourself.
+      obj.model_ = this;
+    }
+      
+    if ( args ) obj.copyFrom(args);
+
+    // Copy from this as well, if we're initialize off an instance of a Model
+    // rather than a model itself.  This allows objects to act as templates/factories
+    if ( this.model_ !== Model ) {
+      obj.copyFrom(this);
+    }
+
+    obj.initialize();
+
+    return obj;
+  };
+  FObject.prototype.copyFrom = function copyFrom(args) {
+    for ( var i = 0; i < this.model_.features.length; i++ ) {
+      this.model_.features[i].copy &&
+        this.model_.features[i].copy(this, args);
     }
   };
-
+  FObject.prototype.initialize = function initialize() {
+    for ( var i = 0; i < this.model_.features.length; i++ ) {
+      this.model_.features[i].init &&
+        this.model_.features[i].init(this);
+    }
+  };
+  var Property = { instance_: {} };
+  scope.set('Property', Property);
+  Property.__proto__ = ModelProto;
+  Property.features = [];
   Property.model_ = Model;
-  Property.prototype.model_ = Property;
-
-  CTX = {
-    __proto__: Model.prototype,
-    instance_: {
-      name: "name",
-      features: [
-        String,
-        Object,
-        Date,
-        Number,
-        Boolean,
-        Function,
-      ],
-      prototype: {
-        __proto__: FObject.prototype,
-        TYPE_: 'CTXPrototype',
-      }
-    }
+  Property.prototype = { __proto__: FObject.prototype };
+  simpleProperty(Property.prototype, "valueFactory");
+  Property.prototype.install = function(o) {
+    simpleProperty(o.prototype, this.name);
   };
+  Property.prototype.init = function init(obj) {
+    if ( this.valueFactory && ! obj.instance_[this.name] )
+      obj[this.name] = this.valueFactory.call(obj);
+  };
+  Property.prototype.copy = function(obj, args) {
+    // Don't copy default values.
+    if ( args.instance_ && !args.instance_.hasOwnProperty(this.name) ) return;
 
-  CTX.features.push(FObject);
-  CTX.features.push(Model);
-  CTX.features.push(Method);
-  CTX.features.push(Property);
+    if ( this.name in args ) obj[this.name] = args[this.name];
+  };
+  simpleProperty(Property.prototype, "name");
 
-  CTX.Model = Model;
-  CTX.FObject = FObject;
-  CTX.Method = Method;
-  CTX.Property = Property;
 
-  [FObject, Model, Method, Property].forEach(function(m) {
-    Object.defineProperty(CTX.prototype, m.name, {
+  var tmp = Property.create();
+  tmp.name = "name"
+  Property.features.push(tmp);
+  tmp.install(Property);
+
+  tmp = Property.create({ name: 'valueFactory' });
+  Property.features.push(tmp);
+  tmp.install(Property);
+
+  tmp = Property.create({
+    name: 'prototype',
+    valueFactory: function() {
+      return { __proto__: FObject.prototype };
+    }
+  });
+  Model.features.push(tmp);
+  tmp.install(Model);
+
+  tmp = Property.create({
+    name: 'features',
+    valueFactory: function() { return []; }
+  });
+  Model.features.push(tmp);
+  tmp.install(Model);
+
+  tmp = Property.create({
+    name: 'name',
+  });
+  Model.features.push(tmp);
+  tmp.install(Model);
+
+  var Method = Model.create({ name: 'Method' });
+  scope.set('Method', Method);
+  Method.prototype.install = function(m) {
+    if ( m.prototype[this.name] )
+      override(m.prototype, this.name, this.code)
+    else
+      m.prototype[this.name] = this.code;
+  };
+};
+
+var features = [
+  ['Method', 'Property', { name: 'name' }],
+  ['Method', 'Property', { name: 'code' }],
+
+  ['Model', 'Method', function install(o) {
+    o[this.name] = this;
+  }],
+
+  [null, 'Model', { name: 'Constant' }],
+  ['Constant', 'Property', { name: 'name' }],
+  ['Constant', 'Property', { name: 'value' }],
+  ['Constant', 'Method', function install(o) {
+    var value = this.value;
+    Object.defineProperty(o.prototype, this.name, {
       configurable: true,
       writeable: true,
       enumerable: true,
-      get: function() {
-        return m
+      get: function() { return value },
+      set: function(v) {
+	console.warn('Changing constant value');
+	value = v;
       }
     });
-  });
-
-  FObject.prototype.onFeatureInstall = function(f, old) {
-    f.install && f.install(this, old);
-  };
-
-  Model.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Model) });
-  CTX.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(CTX) });
-  FObject.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(FObject) });
-  Method.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Method) });
-  Property.features.pipe({ put: FObject.prototype.onFeatureInstall.bind(Property) });
-})();
-
-var features = [
-  ['FObject',    'Method',  function initialize() {} ],
-  ['FObject',    'Method',  function clone() {
-    var self = this;
-    this.model_.features.forEach(function(f) {
-      if ( CTX.Property.isInstance(f) ) {
-        if ( Object.prototype.hasOwnProperty.call(self, f.name) ) {
-          var value = self[f.name];
-          delete self[f.name];
-          self[f.name] = value;
-        }
-      }
-    });
-    return this.model_.prototype.create ? this.model_.prototype.create(this) : this;
-  }],
-  ['FObject',    'Method',  function toString() {
-    return this.TYPE_;
-  }],
-  ['FObject',  'Method',  function getFeature(name) {
-    return this.features && this.features.get(name);
-  }],
-  ['Model', 'Method', function create(args) {
-    var obj = CTX.FObject.prototype.create.call(this, args);
-    obj.prototype = {
-      // TODO: A better way to lookup FObject.
-      __proto__: CTX.FObject.prototype,
-      TYPE_: obj.name + "Prototype",
-      instance_: {},
-    }
-    obj.prototype.model_ = obj;
-
-    obj.features.pipe({ put: obj.onFeatureInstall.bind(obj) });
-    return obj;
-  }],
-  ['Model',    'Method',  function install(o) {
-    o[this.name] = this;
-    // TODO Better way to lookup CTX.Property.
-    var name = this.name;
-    var prop = CTX.Property.prototype.create({
-      name: this.name,
-      defaultValue: this,
-      getter: function() {
-        if ( this.ctx_ ) return this.ctx_.$get(name);
-        return prop.defaultValue;
-      },
-      setter: function(v) {
-        if ( this.ctx_ ) this.ctx_.$set(name, v);
-      },
-    });
-    prop.install && prop.install(o);
-  }],
-  ['Model',    'Method',  function isSubModel(model) {
-    try {
-      return model && (model === this || this.isSubModel(
-        (model.features.get("extends") || {}).model) );
-    } catch(x) {
-      return false;
-    }
-  }],
-  ['Model',    'Method',  function isInstance(obj) {
-    return obj && obj.model_ && this.isSubModel(obj.model_);
-  }],
-//  [null,       'Model', { name: 'Property' }],
-  ['String',   'Method', function constantize() { return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase(); } ],
-  ['String',   'Method', function capitalize() { return this.charAt(0).toUpperCase() + this.slice(1); }],
-  ['String',   'Method', function labelize() {
-    return this.replace(/[a-z][A-Z]/g, function(a) {
-      return a.charAt(0) + ' ' + a.charAt(1);
-    }).capitalize();
-  }],
-  ['String', 'Method', function hashCode() {
-    var hash = 0;
-    if ( this.length == 0 ) return hash;
-
-    for (i = 0; i < this.length; i++) {
-      var code = this.charCodeAt(i);
-      hash = ((hash << 5) - hash) + code;
-      hash &= hash;
-    }
-
-    return hash;
-  }],
-
-  ['Property', 'Method', function install(o, existing) {
-    var parent = o.features && o.features.get('extends');
-    if ( parent ) {
-      var parentFeature = parent.model.features.get(this.name);
-      if ( parentFeature ) {
-        this.instance_.__proto__ = parentFeature.instance_;
-      }
-    }
-
-    o[this.scopeName.constantize()] = this;
-
-    var prop = this;
-
-    var scope = this.scope;
-    var scopeName = this.scopeName;
-    var name = this.name;
-    var defaultValueFn = this.defaultValueFn;
-    var defaultValue = this.defaultValue;
-    var valueFactory = this.valueFactory;
-    var preSet = this.preSet;
-    var postSet = this.postSet;
-
-    var get = this.getter || (
-      defaultValueFn ?
-        (function() {
-          if ( this[scope][scopeName] === undefined ) {
-            if ( valueFactory ) {
-              return this[scope][scopeName] = valueFactory.call(this);
-            }
-            return defaultValueFn.call(this, prop);
-          }
-          return this[scope][scopeName];
-        }) :
-        (function() {
-          if ( this[scope][scopeName] === undefined ) {
-            if ( valueFactory ) {
-              return this[scope][scopeName] = valueFactory.call(this);
-            }
-            return defaultValue;
-          }
-          return this[scope][scopeName]
-        }));
-
-    var set = this.setter || function(value) {
-      // Do we want to restirct oldValue to just the local instance, not parent instances_?
-      var oldValue = this[scope][scopeName];
-
-      if ( preSet ) value = preSet.call(this, value, oldValue, prop);
-
-      this[scope][scopeName] = value;
-
-      if ( postSet ) postSet.call(this, oldValue, value, prop)
-
-      this.propertyChange && this.propertyChange(scopeName, oldValue, value);
-    };
-
-    Object.defineProperty(o.prototype, this.scopeName, {
-      configurable: true,
-      enumerable: this.enumerable === undefined ? true : this.enumerable,
-      writeable: true,
-      get: get,
-      set: set
-    });
-
-    if ( scope === "static_" && this.valueFactory ) {
-      o.prototype[this.name] = this.valueFactory();
-    }
-  }],
-  ['Property', 'Property', { name: 'scope', scope: 'instance_', scopeName: 'scope', defaultValue: 'instance_' }],
-  ['Property', 'Property', { name: 'scopeName', scopeName: 'scopeName', defaultValueFn: function() { return this.name } }],
-  ['Property', 'Property', { name: 'name' }],
-  ['Property', 'Property', {
-    name: 'defaultValue',
-    defaultValue: '',
-    help: 'The property\'s default value.'
-  }],
-
-  ['Property', 'Property', {
-    name: 'defaultValueFn'
-  }],
-
-  ['Property', 'Property', {
-    name: 'valueFactory'
-  }],
-
-  ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
-  ['Property', 'Method', function f(o) {
-    return o[this.name];
-  }],
-  ['Property', 'Method', function initialize(o) {
-    if ( ! o.instance_.hasOwnProperty(this.name) &&
-        this.valueFactory ) o.instance_[this.name] = this.valueFactory();
-  }],
-
-  ['Method', 'Property', {
-    name: 'name',
-  }],
-  ['Method', 'Property', {
-    name: 'code'
-  }],
-
-  ['FObject',  'Property',
-   { name: 'SUPER',
-     getter: function f() { return f.caller.super_.bind(this); },
-     setter: function() {},
-     enumerable: false }],
-
-  ['Model',    'Property', { name: 'features',
-                             valueFactory: function() { return []; } }],
-  [null,       'Model',    { name: 'Feature' }],
-  ['Feature',  'Property', { name: 'name' }],
-
-  [null,       'Model', { name: 'Extends' }],
-  ['Extends',  'Property', { name: 'model' }],
-  ['Extends',  'Method', function create(model) {
-    // TODO this can be cleand up.
-    var model = CTX[model] || GLOBAL[model];
-    return this.SUPER({
-      model: model,
-      name: 'extends'
-    });
-  }],
-  ['Extends',  'Method',  function install(o) {
-/*    this.model.features.pipe({
-      put: function(f) {
-        if ( f.name == "extends" ) return;
-        var feature = f.clone();
-        feature.__parent__ = f;
-        o.features.put(feature);
-      }
-    });*/
-    o.prototype.__proto__ = this.model.prototype;
-  }],
-
-  ['Property', 'Extends', 'Feature'],
-  ['Model', 'Extends', 'Feature'],
-  ['Extends', 'Extends', 'Feature'],
-  ['Method', 'Extends', 'Feature'],
-
-  [null, 'Model', { name: 'Constant' }],
-  ['Constant', 'Extends', 'Feature'],
-  ['Constant', 'Property', { name: 'value' }],
-  ['Constant', 'Method', function install(o, old) {
-    if ( old ) console.warn('Variable constant: ' + this.name);
-    o.prototype[this.name] = this.value;
-  }],
-
-  ['Date', 'Method', function compareTo(o) {
-    if ( o === this ) return 0;
-    var d = this.getTime() - o.getTime();
-    return d == 0 ? 0 : d > 0 ? 1 : -1;
-  }],
-  ['String', 'Method', function compareTo(o) {
-    if ( o == this ) return 0;
-    return this < 0 ? -1 : 1;
-  }],
-  [null, 'Method', function constantFn(v) { return function() { return v; }; }],
-  ['Function', 'Method', function simpleBind(f, self) {
-    var ret = function() { return f.apply(self, arguments); };
-    ret.toString = function() {
-      return f.toString();
-    };
-    return ret;
-  }],
-  ['Function', 'Method', function bind(f, self) {
-    return arguments.length == 1 ?
-      Function.prototype.simpleBind(this, arguments[0]) :
-      arguments.callee.super_.apply(this, arguments);
-  }],
-  ['String', 'Method', function equalsIC(o) {
-    return other && this.toUpperCase() === other.toUpperCase();
-  }],
-  ['Number', 'Method', function compareTo(o) {
-    if ( o == this ) return 0;
-    return this < 0 ? -1 : 1;
-  }],
-  ['Boolean', 'Method', function compareTo(o) {
-    return (this.valueOf() ? 1 : 0) - (o ? 1 : 0);
-  }],
-  ['Object', 'Property', {
-    name: '$UID',
-    enumerable: false,
-    getter: function() {
-      return (this.$UID__ ||
-              (this.$UID__ = (
-                (++arguments.callee.count) ||
-                  (arguments.callee.count = 1))));
-    }
   }],
 
   // Events
@@ -544,7 +221,6 @@ var features = [
       "value": "unsubscribe"
     }
   ],
-
   [
     "FObject",
     "Constant",
@@ -1002,6 +678,230 @@ var features = [
       }
     }
   ],
+
+  ['Property', 'Property', { name: 'defaultValue' }],
+  ['Property', 'Property', { name: 'scope', defaultValue: 'instance_' }],
+  ['Property', 'Property', { name: 'defaultValueFn' }],
+  ['Property', 'Property', { name: 'scopeName' }],
+  ['Property', 'Property', { name: 'postSet' }],
+  ['Property', 'Property', { name: 'preSet' }],
+  ['Property', 'Property', { name: 'getter' }],
+  ['Property', 'Property', { name: 'setter' }],
+  ['Property', 'Method', function install(obj) {
+    // TODO: Inheritence of parent model property
+    o[this.scopeName.constantize()] = this;
+
+    var prop = this;
+
+    var scope = this.scope;
+    var scopeName = this.scopeName;
+    var name = this.name;
+    var defaultValueFn = this.defaultValueFn;
+    var defaultValue = this.defaultValue;
+    var valueFactory = this.valueFactory;
+    var preSet = this.preSet;
+    var postSet = this.postSet;
+
+    var get = this.getter || (
+      defaultValueFn ?
+        (function() {
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
+            return defaultValueFn.call(this, prop);
+          }
+          return this[scope][scopeName];
+        }) :
+        (function() {
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
+            return defaultValue;
+          }
+          return this[scope][scopeName]
+        }));
+
+    var set = this.setter || function(value) {
+      // Do we want to restirct oldValue to just the local instance, not parent instances_?
+      var oldValue = this[scope][scopeName];
+
+      if ( preSet ) value = preSet.call(this, value, oldValue, prop);
+
+      this[scope][scopeName] = value;
+
+      if ( postSet ) postSet.call(this, oldValue, value, prop)
+
+      this.propertyChange && this.propertyChange(scopeName, oldValue, value);
+    };
+
+    Object.defineProperty(o.prototype, this.scopeName, {
+      configurable: true,
+      enumerable: this.enumerable === undefined ? true : this.enumerable,
+      writeable: true,
+      get: get,
+      set: set
+    });
+
+    if ( scope === "static_" && this.valueFactory ) {
+      o.prototype[this.name] = this.valueFactory();
+    }
+  }],
+  ['Model',    'Method',  function isSubModel(model) {
+    // TODO: inheritence
+    return model && (model === this)
+  }],
+  ['Model',    'Method',  function isInstance(obj) {
+    return obj && obj.model_ && this.isSubModel(obj.model_);
+  }],
+  ['Model',    'Method',  function getPrototype() {
+    return this.prototype;
+  }],
+  ['Model',    'Method',  function hashCode(obj) {
+    return obj && obj.model_ && this.isSubModel(obj.model_);
+  }],
+  ['Property', 'Method', function create(adsf) { debugger; }],
+  ['Property', 'Property', { name: 'wat' }],
+/*  ['Property', 'Method', function install(o, existing) {
+    var parent = o.features && o.features.get('extends');
+    if ( parent ) {
+      var parentFeature = parent.model.features.get(this.name);
+      if ( parentFeature ) {
+        this.instance_.__proto__ = parentFeature.instance_;
+      }
+    }
+
+    o[this.scopeName.constantize()] = this;
+
+    var prop = this;
+
+    var scope = this.scope;
+    var scopeName = this.scopeName;
+    var name = this.name;
+    var defaultValueFn = this.defaultValueFn;
+    var defaultValue = this.defaultValue;
+    var valueFactory = this.valueFactory;
+    var preSet = this.preSet;
+    var postSet = this.postSet;
+
+    var get = this.getter || (
+      defaultValueFn ?
+        (function() {
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
+            return defaultValueFn.call(this, prop);
+          }
+          return this[scope][scopeName];
+        }) :
+        (function() {
+          if ( this[scope][scopeName] === undefined ) {
+            if ( valueFactory ) {
+              return this[scope][scopeName] = valueFactory.call(this);
+            }
+            return defaultValue;
+          }
+          return this[scope][scopeName]
+        }));
+
+    var set = this.setter || function(value) {
+      // Do we want to restirct oldValue to just the local instance, not parent instances_?
+      var oldValue = this[scope][scopeName];
+
+      if ( preSet ) value = preSet.call(this, value, oldValue, prop);
+
+      this[scope][scopeName] = value;
+
+      if ( postSet ) postSet.call(this, oldValue, value, prop)
+
+      this.propertyChange && this.propertyChange(scopeName, oldValue, value);
+    };
+
+    Object.defineProperty(o.prototype, this.scopeName, {
+      configurable: true,
+      enumerable: this.enumerable === undefined ? true : this.enumerable,
+      writeable: true,
+      get: get,
+      set: set
+    });
+
+    if ( scope === "static_" && this.valueFactory ) {
+      o.prototype[this.name] = this.valueFactory();
+    }
+  }],
+  ['Property', 'Property', { name: 'scope', scope: 'instance_', scopeName: 'scope', defaultValue: 'instance_' }],
+  ['Property', 'Property', { name: 'scopeName', scopeName: 'scopeName', defaultValueFn: function() { return this.name } }],
+  ['Property', 'Property', { name: 'name' }],
+  ['Property', 'Property', {
+    name: 'defaultValue',
+    defaultValue: '',
+    help: 'The property\'s default value.'
+  }],
+
+  ['Property', 'Property', {
+    name: 'defaultValueFn'
+  }],
+
+  ['Property', 'Property', {
+    name: 'valueFactory'
+  }],
+
+  ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
+  ['Property', 'Method', function f(o) {
+    return o[this.name];
+  }],
+  ['Property', 'Method', function initialize(o) {
+    if ( ! o.instance_.hasOwnProperty(this.name) &&
+        this.valueFactory ) o.instance_[this.name] = this.valueFactory();
+  }],
+
+  ['Method', 'Property', {
+    name: 'name',
+  }],
+  ['Method', 'Property', {
+    name: 'code'
+  }],
+
+  ['FObject',  'Property',
+   { name: 'SUPER',
+     getter: function f() { return f.caller.super_.bind(this); },
+     setter: function() {},
+     enumerable: false }],
+
+  ['Model',    'Property', { name: 'features',
+                             valueFactory: function() { return []; } }],
+  [null,       'Model',    { name: 'Feature' }],
+  ['Feature',  'Property', { name: 'name' }],
+
+  [null,       'Model', { name: 'Extends' }],
+  ['Extends',  'Property', { name: 'model' }],
+  ['Extends',  'Method', function create(model) {
+    // TODO this can be cleand up.
+    var model = CTX[model] || GLOBAL[model];
+    return this.SUPER({
+      model: model,
+      name: 'extends'
+    });
+  }],
+  ['Extends',  'Method',  function install(o) {
+    // this.model.features.pipe({
+    //   put: function(f) {
+    //     if ( f.name == "extends" ) return;
+    //     var feature = f.clone();
+    //     feature.__parent__ = f;
+    //     o.features.put(feature);
+    //   }
+    // });
+    o.prototype.__proto__ = this.model.prototype;
+  }],
+
+  ['Property', 'Extends', 'Feature'],
+  ['Model', 'Extends', 'Feature'],
+  ['Extends', 'Extends', 'Feature'],
+  ['Method', 'Extends', 'Feature'],
+
   [null, "Model", { name: "Events" }],
   ["Events", "Property", {
     name: "listeners_",
@@ -2066,50 +1966,44 @@ var features = [
   ['Model', 'Method', function getPrototype() {
     return this.prototype;
   }],
-];
+*/];
 
-function lookup(address, model) {
-  if ( ! address ) return model;
+function lookup(address, scope) {
+  if ( ! address ) return scope;
 
-  var split = address.indexOf('.');
-  if ( split > 0 ) {
-    var rest = address.substring(split + 1);
-    address = address.substring(0, split);
+  var split = address.split('.');
+  for ( var i = 0; i < split.length && scope; i++ ) {
+    scope = scope.get(split[i]);
   }
-
-  if ( ! model.features ) return;
-  for ( var i = 0; i < model.features.length; i++ ) {
-    if ( model.features[i].name === address ) {
-      var feature = model.features[i];
-      break;
-    }
-  }
-  if ( rest ) return lookup(rest, feature);
-  return feature;
+  return scope;
 }
 
 function build(scope) {
-   for ( var i = 0 ; i < features.length ; i++ ) {
-      var f = features[i];
-      if (f[3]) debugger;
+  for ( var i = 0 ; i < features.length ; i++ ) {
+    var f = features[i];
+    if (f[3]) debugger;
 
-      var model = lookup(f[0], scope);
-      if ( ! model ) throw "Model not found: " + f[0];
+    var model = lookup(f[0], scope);
+    if ( ! model ) throw "Model not found: " + f[0];
 
-      var feature = lookup(f[1], scope);
-      if ( !feature ) throw "Feature not found: " + f[1];
+    var feature = lookup(f[1], scope);
+    if ( !feature ) throw "Feature not found: " + f[1];
 
-      var args = f[2];
-      var feature = feature.prototype.create(args);
-      if ( model.features ) {
-        model.features.put(feature);
-      } else {
-        // Workaround for builtin non-modelled objects.
-        feature.install(model);
-      }
-   }
+    var args = f[2];
+    var feature = feature.create(args);
+    model.features.push(feature);
+    feature.install(model);
+  }
 }
 
+var scope = {};
+scope.set = function(key, value) { this[key] = value; };
+scope.get = function(key) { return this[key]; };
+scope.features = [];
+bootstrap(scope);
+build(scope);
+
+/*
 build(CTX);
 
 var GLOBAL = this;
@@ -2170,3 +2064,4 @@ var GLOBAL = this;
   var mail = EMail.prototype.create({ to: 'adamvy' });
   mail.send();
 })();
+*/
