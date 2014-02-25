@@ -328,7 +328,7 @@ QIssue.properties.forEach(function(p) {
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
     p["tableFormatter"] = function(v, _, tableView) {
-      return ('' + tableView.strToHTML(v)).length ? v : '----';
+      return ('' + v).length ? v : '----';
     };
   }
   if ( ! p["tableWidth"] ) {
