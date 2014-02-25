@@ -123,7 +123,7 @@ var TableView2 = FOAM({
       model_: 'Method',
 
       name: 'onResize',
-      animate: true,
+      isAnimated: true,
       code: function() {
         if ( ! this.$ ) return;
 
@@ -137,7 +137,7 @@ var TableView2 = FOAM({
       model_: 'Method',
 
       name: 'onDAOUpdate',
-      // animate: true,
+      // isAnimated: true,
       code: function() {
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
@@ -150,7 +150,7 @@ var TableView2 = FOAM({
       model_: 'Method',
 
       name: 'repaint',
-      animate: true,
+      isAnimated: true,
       code: function() {
         this.repaintNow();
       }
