@@ -5,19 +5,17 @@
   var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
   var forthButton = ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
 %>
-<html>
- <head>
+<head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
   <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
   <link rel="stylesheet" type="text/css" href="qbug.css" />
   <title>QuickBug</title>
- </head>
- <body>
-<div style="display:flex;flex-direction:column;">
- <div class="topHeader" style="display:flex;width:100%;align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span style="flex-grow:1;"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
+</head>
+<body class="column"><div class="column expand" style="height:100%;">
+ <div class="topHeader row" style="align-items:center;">
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>%%userView | %%favouritesLink | <%= syncLink %> | <%= browserLink %></span>
  </div>
- <div class="header" style="display:flex;align-items:baseline;">
+ <div class="header row" style="align-items:baseline;">
   <span class="logo">%%logo</span>
   <div>
     <span class="title">%%projectName</span>
@@ -25,12 +23,9 @@
   </div>
   <span style="width:60px;"></span>
   <span>Search %%searchChoice for </span>
-  <span style="flex-grow:1;padding-left:4px;">%%searchField</span>
+  <span class="expand" style="padding-left:4px;">%%searchField</span>
   <span> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a></span>
  </div>
-</div>
-<div style="flex-grow:1;">%%view</div>
-<div class="footer"><%= FOAM_POWERED %></div>
-</div>
-</body>
-</html>
+ <div class="BrowserView expand column">%%view</div>
+ <div class="footer"><%= FOAM_POWERED %></div>
+</div></body>

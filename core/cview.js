@@ -320,7 +320,6 @@ var Circle = Model.create({
          canvas.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
          canvas.closePath();
          canvas.fill();
-
       },
 
       paint: function() {
@@ -499,7 +498,7 @@ var PanelCView = FOAM({
          name:  'canvas',
          type:  'CView',
          getter: function() {
-           return this.parent.canvas;
+           return this.parent && this.parent.canvas;
          },
          setter: undefined
       }
@@ -604,7 +603,7 @@ var CView = FOAM({
          name:  'canvas',
          type:  'CView',
          getter: function() {
-           return this.parent.canvas;
+           return this.parent && this.parent.canvas;
          },
          setter: undefined,
          hidden: true

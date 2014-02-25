@@ -93,6 +93,7 @@ var DOM = {
 };
 
 // TODO: document and make non-global
+/** Convert a style size to an Integer.  Ex. '10px' to 10. **/
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 
@@ -927,23 +928,28 @@ var ChoiceView = FOAM({
       type:  'Array[StringField]',
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
-      postSet: function(oldValue, newValue) {
-        if ( this.$ ) {
-          this.updateHTML();
+      postSet: function(_, newValue) {
+        var value = this.value.get();
 
-          var value = this.value.get();
+        for ( var i = 0; i < newValue.length; i++ ) {
+          var choice = newValue[i];
 
-          for ( var i = 0; i < oldValue.length; i++ ) {
-            var choice = oldValue[i];
-
-            if ( (Array.isArray(choice) && value[0] === choice[0]) ||
-                 (!Array.isArray(choice) && value === choice) ) {
-                   if ( newValue[i] )
-                     this.choice = newValue[i];
-                 }
+          if ( Array.isArray(choice) ) {
+            if ( value === choice[0] ) {
+              this.choice = choice;
+              break;
+            }
+          } else {
+            if ( value === choice ) {
+              this.choice = choice;
+              break;
+            }
           }
-          if ( i === oldValue.length ) this.choice = newValue[0];
         }
+
+        if ( i === newValue.length ) this.choice = newValue[0];
+
+        if ( this.$ ) this.updateHTML();
       }
     }
   ],
@@ -2903,7 +2909,10 @@ var GridView = FOAM({
 
       name: 'toHTML',
       description: 'TileView',
-      template: '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div><div id="<%= this.getID()%>" class="gridViewArea"></div>'
+      template: '<div class="column expand">' +
+        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div>' +
+        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '</div>'
     }
   ]
 });
@@ -3077,8 +3086,8 @@ var AlternateView = FOAM({
       var str  = [];
       var viewChoice = this.views[0];
 
-      str.push('<div style="width:100%;margin-bottom:5px;">');
-      str.push('<div class="altViewButtons">');
+      str.push('<div class="AltViewOuter column" style="margin-bottom:5px;">');
+      str.push('<div class="altViewButtons rigid">');
       if ( this.headerView ) {
         str.push(this.headerView.toHTML());
         this.addChild(this.headerView);
@@ -3104,9 +3113,8 @@ var AlternateView = FOAM({
         if ( choice.label == this.selected ) viewChoice = choice
       }
       str.push('</div>');
-
       str.push('<br/>');
-      str.push('<div style="width:100%" id="' + this.getID() + '" class="altView"> </div>');
+      str.push('<div class="altView column" style="flex: 1 1 100%" id="' + this.getID() + '"> </div>');
       str.push('</div>');
 
       return str.join('');

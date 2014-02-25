@@ -198,45 +198,59 @@ var priColorMap = {
   }
 };
 
+var QIssueTableView = FOAM({
+  model_: 'Model',
+
+  name: 'QIssueTableView',
+
+  extendsModel: 'TableView2',
+
+  properties: [
+    { name: 'browser' }
+  ],
+
+  methods: {
+    /*
+    initHTML: function() {
+      this.SUPER();
+
+      this.selection.addListener(function(_,_,_,obj) {
+        if ( obj.id && obj.id !== this.browser.previewID ) this.browser.preview(null);
+      });
+    },
+    */
+    toHTML: function() {
+      return '<div class="QIssueTableHeader"></div>' + this.SUPER();
+    }
+  }
+});
+
 
 function createView(rowSelection, browser) {
   var location = browser.location;
 
   return AlternateView.create({
-    dao: browser.IssueDAO,
+    dao: browser.filteredIssueDAO,
     headerView: browser.countField,
     views: [
       ViewChoice.create({
         label: 'List',
         view: function() {
-          var tableView = TableView.create({
+          var tableView = QIssueTableView.create({
             model: QIssue,
+            dao: browser.filteredIssueDAO,
+            browser: browser,
             hardSelection: rowSelection,
+            scrollEnabled: true,
             editColumnsEnabled: true
           });
 
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;
 
-          return Model.create({
-             extendsModel: 'ScrollBorder',
-             methods: {
-               init: function() {
-                 this.SUPER();
-                 this.view.browser = browser;
-               },
-               initHTML: function() {
-                 this.SUPER();
+          tableView.window = browser.window;
 
-                 this.view.selection.addListener(function(_,_,_,obj) {
-                   if ( obj.id && obj.id !== browser.previewID ) browser.preview(null);
-                 });
-               },
-               toHTML: function() {
-                 return '<div class="QIssueTableHeader"></div>' + this.SUPER();
-               }
-             }
-          }).create({view: tableView});
+          return tableView;
         }
       }),
       ViewChoice.create({
@@ -249,7 +263,7 @@ function createView(rowSelection, browser) {
                 {
                   name: 'dao',
                   // crbug limits grid view to 6000 rows, so do the same
-                  preSet: function(dao) { return dao.limit(6000); },
+                  preSet: function(dao) { return dao.limit(2000); },
                   postSet: function(old, dao) {
                      if ( this.listener ) {
                         old && old.unlisten(this.listener);

@@ -28,6 +28,7 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/TableView.js \
   ../../core/cview.js \
   ../../core/MementoMgr.js \
   ../../core/listchoiceview.js \

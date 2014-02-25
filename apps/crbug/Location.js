@@ -127,6 +127,7 @@ var Location = FOAM({
       model_: 'LocationProperty',
       name: 'y',
       defaultValue: QIssue.OWNER,
+//      defaultMemento: 'owner',
       toMemento: function(y) { return y.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     },
@@ -134,6 +135,7 @@ var Location = FOAM({
       model_: 'LocationProperty',
       name: 'x',
       defaultValue: QIssue.STATUS,
+//      defaultMemento: 'status',
       toMemento: function(x) { return x.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     }
@@ -188,9 +190,11 @@ var Location = FOAM({
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
         var keyValue = param.match(/([^=]*)=(.*)/);
-        var key      = keyValue[1];
-        var value    = keyValue[2];
-        m[key] = value;
+        if ( keyValue ) {
+          var key      = keyValue[1];
+          var value    = keyValue[2];
+          m[key] = value;
+        }
       }
 
       // Set or reset each property value

@@ -231,6 +231,83 @@ IssueNetworkDAO
 IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
 */
 
+/**
+ * Merge data from the local and network Issue DAO's.
+ * Remote data is stored non-permanently in the local MDAO.
+ * Also merges DAO update events so as to not force the GUI to update on every frame.
+ **/
+var QIssueSplitDAO = FOAM({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO',
+
+   name: 'QIssueSplitDAO',
+
+   properties: [
+      {
+         model_: 'StringProperty',
+         name: 'activeQuery'
+      },
+      {
+         name: 'local',
+         type: 'DAO',
+         mode: "read-only",
+         hidden: true,
+         required: true
+      },
+      {
+         name: 'remote',
+         type: 'DAO',
+         mode: "read-only",
+         hidden: true,
+         required: true
+      }
+   ],
+
+   methods: {
+    init: function() {
+      this.relay_ =  {
+        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 500),
+        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 500)
+      };
+
+      this.local.listen(this.relay_);
+    },
+
+      put: function(value, sink) {
+         this.local.put(value, sink);
+      },
+
+      remove: function(query, sink) {
+         this.local.remove(query, sink);
+      },
+
+      find: function(key, sink) {
+         // Assumes 'local' has all of the data
+         this.local.find(key, sink);
+      },
+
+     select: function(sink, options) {
+       try {
+         if ( CountExpr !== sink.model_ ) {
+           var query = ( options && options.query && options.query.toSQL() ) || "";
+
+           if ( query && query !== this.activeQuery ) {
+             this.activeQuery = query;
+             this.remote.limit(250).select(this.local, {query: options.query});
+           }
+         }
+       } catch (x) {
+         console.log(x);
+       }
+
+       return this.local.select.apply(this.local, arguments);
+     }
+   }
+});
+
+
+/*
+  Merge DAO update events.  Merged into QIssueSplitDAO.
 var MergedNotifyDAO = FOAM({
   model_: 'Model',
 
@@ -240,36 +317,18 @@ var MergedNotifyDAO = FOAM({
 
   extendsModel: 'ProxyDAO',
 
-  /*
-  properties: [
-    {
-      name: 'delegate',
-      postSet: function(oldDAO, newDAO) {
-        this.model = newDAO.model;
-        if ( ! this.relay_ ) return;
-        if ( oldDAO ) oldDAO.unlisten(this.relay_);
-        newDAO.listen(this.relay_);
-      }
-    }
-  ],
-  */
-
   methods: {
     init: function() {
-//      this.SUPER();
-
       this.relay_ =  {
         put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 1000),
         remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
       };
 
       this.delegate.listen(this.relay_);
-    }/*,
-    put: function(obj, sink) {
-      this.SUPER(obj, sink);
-      this.notify_('put', arguments);
-    }*/
+    }
   }
 });
+*/
+
 
 

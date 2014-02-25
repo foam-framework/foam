@@ -11,7 +11,7 @@
                 Issue $$id{ mode: 'read-only' }
               </td>
               <td width="90%" class="qvt">
-                $$summary{ mode: 'read-only' }
+                $$summary{ mode: 'read-only', escapeHTML: true }
               </td>
             </tr>
         </tbody></table>

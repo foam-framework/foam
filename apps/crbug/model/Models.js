@@ -149,8 +149,8 @@ var QIssue = FOAM({
             label: 'Summary + Labels',
             type: 'String',
             tableWidth: '100%',
-            tableFormatter: function(value, row) {
-              return value +
+            tableFormatter: function(value, row, tableView) {
+              return tableView.strToHTML(value) +
                 QIssue.LABELS.tableFormatter(row.labels, row);
             }
         },
@@ -160,7 +160,7 @@ var QIssue = FOAM({
             aliases: ['label'],
             type: 'String',
             view: 'QIssueLabelsView',
-            tableFormatter: function(value, row) {
+          tableFormatter: function(value, row) {
               var sb = [];
               //              var a = value.split(', ');
               var a = value;
@@ -327,8 +327,8 @@ QIssue.properties.forEach(function(p) {
 
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
-    p["tableFormatter"] = function(v) {
-      return ('' + v).length ? v : '----';
+    p["tableFormatter"] = function(v, _, tableView) {
+      return ('' + tableView.strToHTML(v)).length ? v : '----';
     };
   }
   if ( ! p["tableWidth"] ) {

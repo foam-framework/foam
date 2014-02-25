@@ -46,12 +46,14 @@ var ScrollCView = FOAM({
         name:  'value',
         type:  'int',
         help:  'The first element being shown, starting at zero.',
+        preSet: function(value) { return Math.min(this.size-this.extent, value); },
         defaultValue: 0
       },
       {
         name:  'extent',
         help:  'Number of elements shown.',
         type:  'int',
+        minValue: 1,
         defaultValue: 10
       },
       {
@@ -109,7 +111,7 @@ var ScrollCView = FOAM({
        var y = e.y - this.startY;
        e.preventDefault();
 
-       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round(( y - this.y ) / (this.height-4) * this.size)));
+       this.value = Math.max(0, Math.min(this.size - this.extent, Math.round((y - this.y ) / (this.height-4) * this.size)));
      },
      touchStart: function(e) {
        this.startY = e.targetTouches[0].pageY;
@@ -143,7 +145,7 @@ var ScrollCView = FOAM({
       if ( this.extent >= this.size ) return;
 
       c.strokeStyle = this.borderColor;
-      c.strokeRect(this.x, this.y, this.width-2, this.height);
+      c.strokeRect(this.x, this.y, this.width-7, this.height);
 
       c.fillStyle = this.handleColor;
 
@@ -151,15 +153,15 @@ var ScrollCView = FOAM({
       var handleSize = this.extent / this.size * h;
 
       if ( handleSize < this.minHandleSize ) {
-        h -= this.minHandleSize - handleSize;
         handleSize = this.minHandleSize;
+        h -= this.minHandleSize - handleSize;
       }
 
       c.fillRect(
-        this.x + 2,
+        this.x+2,
         this.y + 2 + this.value / this.size * h,
-        this.width - 6,
-        this.y + 2 + handleSize);
+        this.width - 11,
+        this.y + 4 + handleSize);
     },
 
     destroy: function() {
@@ -186,39 +188,39 @@ var ScrollBorder = FOAM({
          this.scrollbar.extent = this.view.rows;
        }
      },
-       {
-           name: 'scrollbar',
-           type: 'ScrollCView',
-           valueFactory: function() {
-             var sb = ScrollCView.create({height:1800, width: 20, x: 2, y: 2, extent: 10});
+     {
+       name: 'scrollbar',
+       type: 'ScrollCView',
+       valueFactory: function() {
+         var sb = ScrollCView.create({height:1800, width: 20, x: 0, y: 0, extent: 10});
 
-             if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
+         if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
-             return sb;
-           }
-       },
-       {
-         name:  'dao',
-         label: 'DAO',
-         type: 'DAO',
-         hidden: true,
-         required: true,
-         postSet: function(oldValue, newValue) {
-          this.view.dao = newValue;
-           var self = this;
+         return sb;
+       }
+     },
+     {
+       name:  'dao',
+       label: 'DAO',
+       type: 'DAO',
+       hidden: true,
+       required: true,
+       postSet: function(oldValue, newValue) {
+         this.view.dao = newValue;
+         var self = this;
 
-           if ( this.dao ) this.dao.select(COUNT())(function(c) {
-               self.scrollbar.size = c.count;
-               self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
-               if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);
-           });
-           /*
+         if ( this.dao ) this.dao.select(COUNT())(function(c) {
+           self.scrollbar.size = c.count;
+           self.scrollbar.value = Math.max(0, Math.min(self.scrollbar.value, self.scrollbar.size - self.scrollbar.extent));
+           if ( self.dao ) self.view.dao = self.dao.skip(self.scrollbar.value);
+         });
+         /*
            if ( oldValue && this.listener ) oldValue.unlisten(this.listener);
            this.listener && val.listen(this.listener);
            this.repaint_ && this.repaint_();
-            */
-         }
+         */
        }
+     }
    ],
 
   listeners: [
