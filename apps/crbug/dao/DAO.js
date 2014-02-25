@@ -273,31 +273,40 @@ var QIssueSplitDAO = FOAM({
       this.local.listen(this.relay_);
     },
 
-      put: function(value, sink) {
-         this.local.put(value, sink);
-      },
+     put: function(value, sink) {
+       this.local.put(value, sink);
+     },
 
-      remove: function(query, sink) {
-         this.local.remove(query, sink);
-      },
+     remove: function(query, sink) {
+       this.local.remove(query, sink);
+     },
 
-      find: function(key, sink) {
-         // Assumes 'local' has all of the data
-         this.local.find(key, sink);
-      },
+     // If we don't find the data locally, then look in the remote DAO (and cache locally)
+     find: function(key, sink) {
+       var local  = this.local;
+       var remote = this.remote;
+
+       local.find(key, {
+         __proto__: sink,
+         error: function() {
+           remote.find(key, {
+             put: function(issue) {
+               sink.put(issue);
+               local.put(issue);
+             }
+           });
+         }
+       });
+     },
 
      select: function(sink, options) {
-       try {
-         if ( CountExpr !== sink.model_ ) {
-           var query = ( options && options.query && options.query.toSQL() ) || "";
+       if ( CountExpr !== sink.model_ ) {
+         var query = ( options && options.query && options.query.toSQL() ) || "";
 
-           if ( query && query !== this.activeQuery ) {
-             this.activeQuery = query;
-             this.remote.limit(250).select(this.local, {query: options.query});
-           }
+         if ( query && query !== this.activeQuery ) {
+           this.activeQuery = query;
+           this.remote.limit(250).select(this.local, {query: options.query});
          }
-       } catch (x) {
-         console.log(x);
        }
 
        return this.local.select.apply(this.local, arguments);
