@@ -85,8 +85,8 @@ var TableView2 = FOAM({
       name: 'rows',
       type:  'Integer',
       defaultValue: 50,
-      postSet: function() {
-        this.repaint();
+      postSet: function(oldValue, newValue) {
+        if ( oldValue !== newValue ) this.repaint();
       }
     },
     {
@@ -123,11 +123,15 @@ var TableView2 = FOAM({
       model_: 'Method',
 
       name: 'onResize',
-      isAnimated: true,
+      isMerged: 200,
       code: function() {
         if ( ! this.$ ) return;
 
-        var h = this.$.offsetHeight;
+        var h = this.$.parentElement.offsetHeight;
+        var rows = Math.ceil((h - 47)/21)+1;
+        // TODO: update the extent somehow
+//        this.scrollbar.extent = rows;
+        this.rows = rows;
         this.scrollbar.height = h-1;
         this.scrollbar.paint();
       }
@@ -235,7 +239,7 @@ var TableView2 = FOAM({
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
-      return '<div style="display:flex;width:100%">' +
+      return '<div style="display:flex;width:100%;height:100%">' +
         '<span id="' + this.getID() + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
@@ -260,7 +264,7 @@ var TableView2 = FOAM({
       if ( this.scrollEnabled ) {
         var sb = this.scrollbar;
 
-        this.$.onmousewheel = function(e) {
+        this.$.parentElement.onmousewheel = function(e) {
           if ( e.wheelDeltaY > 0 && sb.value ) {
             sb.value--;
           } else if ( e.wheelDeltaY < 0 && sb.value < sb.size - sb.extent ) {
@@ -294,7 +298,7 @@ var TableView2 = FOAM({
             // TODO: use to set 'extent'
 //            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
           }
-          self.onResize();
+//          self.onResize();
           // self.selection && self.selection.set(selection);
         });
     },
