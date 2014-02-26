@@ -83,7 +83,12 @@ var Browser = Model.create({
     {
       name: 'IssueDAO',
       scope: 'project',
-      defaultValueFn: function() { return this.project.IssueDAO; }
+      valueFactory: function() {
+        return WaitCursorDAO.create({
+          delegate: this.project.IssueDAO,
+          window:   this.window
+        });
+      }
     },
     {
       name: 'filteredIssueDAO',

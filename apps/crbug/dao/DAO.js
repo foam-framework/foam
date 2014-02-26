@@ -340,4 +340,44 @@ var MergedNotifyDAO = FOAM({
 */
 
 
+var WaitCursorDAO = FOAM({
+  model_: 'Model',
+  name: 'WaitCursorDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'count',
+      defaultValue: 0,
+      postSet: function(oldValue, newValue) {
+        if ( ! this.window ) return;
+        if ( oldValue == 0 ) DOM.setClass(this.window.document.body, 'waiting');
+        else if ( newValue == 0 ) DOM.setClass(this.window.document.body, 'waiting', false);
+      }
+    },
+    {
+      name: 'window'
+    }
+  ],
+
+  methods: {
+    select: function(sink, options) {
+      var self = this;
+
+      this.count++;
+
+      var future = afuture();
+
+      this.window.setTimeout(function() {
+        self.delegate.select(sink, options)(function(sink) {
+          self.count--;
+          future.set(sink);
+        });
+      }, 0);
+
+      return future.get;
+    }
+  }
+});
+
 

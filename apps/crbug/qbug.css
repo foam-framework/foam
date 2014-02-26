@@ -1,3 +1,7 @@
+.waiting * {
+  cursor: wait;
+}
+
 body {
   margin-bottom: 5px;
   margin-top: 0;
