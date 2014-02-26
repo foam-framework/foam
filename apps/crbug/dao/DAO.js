@@ -266,7 +266,7 @@ var QIssueSplitDAO = FOAM({
    methods: {
     init: function() {
       this.relay_ =  {
-        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 500),
+        put:    EventService.merged(function() { this.notify_('put',    arguments); }.bind(this), 500),
         remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 500)
       };
 
@@ -279,6 +279,14 @@ var QIssueSplitDAO = FOAM({
 
      remove: function(query, sink) {
        this.local.remove(query, sink);
+     },
+
+     putIfMissing: function(issue) {
+       var local = this.local;
+
+       local.find(issue.id, {
+         error: function() { local.put(issue); }
+       });
      },
 
      // If we don't find the data locally, then look in the remote DAO (and cache locally)
@@ -305,7 +313,7 @@ var QIssueSplitDAO = FOAM({
 
          if ( query && query !== this.activeQuery ) {
            this.activeQuery = query;
-           this.remote.limit(250).select(this.local, {query: options.query});
+           this.remote.limit(250).select({put: this.putIfMissing.bind(this)}, {query: options.query});
          }
        }
 

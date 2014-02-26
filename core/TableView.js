@@ -141,11 +141,11 @@ var TableView2 = FOAM({
       model_: 'Method',
 
       name: 'onDAOUpdate',
-      // isAnimated: true,
+      isAnimated: true,
       code: function() {
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
-          this.repaintNow();
+          this.repaint();
         }.bind(this));
       }
     },
@@ -180,56 +180,7 @@ var TableView2 = FOAM({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
-    }/*
-// TODO: remove
-    {
-      model_: 'Method',
-
-      name: 'layout',
-      animate: true,
-      code: function() {
-        return;
-        if ( ! this.$ ) {
-          console.warn('Attempt to layout() $-less TableView.');
-          return;
-        }
-
-        var style;
-        try {
-          style = window.getComputedStyle(this.$);
-        } catch (x) {
-          return;
-        }
-
-        console.log('height ', this.height, 'width', this.width);
-        console.log('style height ', style.height, 'width', style.width);
-        var height = toNum(style.height);
-        this.scrollbar.height = height-150;
-        this.scrollbar.parent.height = height-150;
-
-        console.log('scrollbar height ', this.scrollbar.height, 'width', this.scrollbar.width);
-
-        / *
-        var top = 47;
-        var height = 20;
-        var rows = $$("tr-" + this.getID());
-
-        // TODO: investigate how this is called on startup, it seems suspicious
-        if ( rows.length > 1 ) {
-          var row = rows[1];
-          var style = window.getComputedStyle(row);
-          // If the row is selected its height is less, so if we select two rows
-        // we're sure to get one that isn't selected.
-          height = Math.max(row.clientHeight, rows[0].clientHeight)+1;
-          top = rows[0].offsetTop + rows[0].offsetParent.offsetTop;
-        }
-
-        this.rows = Math.floor((toNum(parent.height) - top) / height);
-        * /
-      }
     }
-*/
-
   ],
 
   methods: {
@@ -254,14 +205,14 @@ var TableView2 = FOAM({
 
       this.onDAOUpdate();
 
-      (this.window || window).addEventListener('resize', this.onResize, false);
-
       this.daoListener = {
         put:    this.onDAOUpdate,
         remove: this.onDAOUpdate
       };
 
       if ( this.scrollEnabled ) {
+        (this.window || window).addEventListener('resize', this.onResize, false);
+
         var sb = this.scrollbar;
 
         this.$.parentElement.onmousewheel = function(e) {
@@ -271,6 +222,8 @@ var TableView2 = FOAM({
             sb.value++;
           }
         };
+
+        this.onResize();
       }
 
       this.dao.listen(this.daoListener);
@@ -299,8 +252,6 @@ var TableView2 = FOAM({
 //            console.time('TableView2.initHTML');
             self.initHTML_();
 //            console.timeEnd('TableView2.initHTML');
-            // TODO: use to set 'extent'
-//            self.height = toNum(window.getComputedStyle(self.$.children[0]).height);
           }
 //          self.onResize();
           // self.selection && self.selection.set(selection);
