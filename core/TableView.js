@@ -78,6 +78,7 @@ var TableView2 = FOAM({
           if ( oldValue ) oldValue.unlisten(this.daoListener);
           if ( newValue ) newValue.listen(this.daoListener);
         }
+        this.scrollbar.value = 0;
         this.onDAOUpdate();
       }
     },
