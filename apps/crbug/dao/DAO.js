@@ -266,8 +266,8 @@ var QIssueSplitDAO = FOAM({
    methods: {
     init: function() {
       this.relay_ =  {
-        put:    EventService.merged(function() { this.notify_('put',    arguments); }.bind(this), 500),
-        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 500)
+        put:    EventService.merged(function() { this.notify_('put',    arguments); }.bind(this), 1000),
+        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
       };
 
       this.local.listen(this.relay_);

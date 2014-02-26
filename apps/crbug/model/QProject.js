@@ -61,19 +61,11 @@ var QProject = Model.create({
     {
       name: 'IssueMDAO',
       valueFactory: function() {
-        // TODO: replace with lazy indices
-        return MDAO.create({model: QIssue})
-          .addIndex(QIssue.ID)
-          .addIndex(QIssue.STATUS)
-          .addIndex(QIssue.PRIORITY)
-          .addIndex(QIssue.MILESTONE)
-          .addIndex(QIssue.ITERATION)
-          .addIndex(QIssue.RELEASE_BLOCK)
-          .addIndex(QIssue.CATEGORY)
-          .addIndex(QIssue.OWNER)
-          .addIndex(QIssue.SUMMARY)
-          .addIndex(QIssue.OS)
-          .addIndex(QIssue.MODIFIED);
+        var dao = MDAO.create({model: QIssue});
+
+        dao.addRawIndex(AutoIndex.create(dao));
+
+        return dao;
       }
     },
     {
