@@ -664,7 +664,7 @@ var SetIndex = {
 
 var AltIndex = {
   // Maximum cost for a plan which is good enough to not bother looking at the rest.
-  GOOD_ENOUGH_PLAN: 8, // put to 10 or more when not testing
+  GOOD_ENOUGH_PLAN: 10, // put to 10 or more when not testing
 
   create: function() {
     return {
@@ -796,6 +796,45 @@ var mLangIndex = {
     return 'mLangIndex(' + this.mlang + ')';
   }
 
+};
+
+
+/** An Index which adds other indices as needed. **/
+var AutoIndex = {
+  create: function(mdao) {
+    return {
+      __proto__: this,
+      properties: {},
+      mdao: mdao
+    };
+  },
+
+  put: function(s, newValue) { return s; },
+
+  remove: function(s, obj) { return s; },
+
+  bulkLoad: function(a) {
+    return 'auto';
+  },
+
+  plan: function(s, sink, options) {
+    if ( options ) {
+      if ( options.order && Property.isInstance(options.order) && ! this.properties[options.order.name] ) {
+        var prop = options.order;
+        console.log('******************************************* Adding Index : ', prop.name);
+        this.properties[prop.name] = true;
+        this.mdao.addIndex(prop);
+      } else if ( options.query ) {
+        // TODO: check for property in query
+      }
+    }
+
+    return NO_PLAN;
+  },
+
+  toString: function() {
+    return 'AutoIndex()';
+  }
 };
 
 
