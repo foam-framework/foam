@@ -898,7 +898,7 @@ var MDAO = Model.create({
       var obj = this.map[key];
       // var obj = this.index.get(this.root, key);
       if ( obj ) {
-        sink.put(obj);
+        sink.put && sink.put(obj);
       } else {
         sink.error && sink.error('find', key);
       }
