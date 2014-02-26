@@ -61,6 +61,7 @@ var QProject = Model.create({
     {
       name: 'IssueMDAO',
       valueFactory: function() {
+        // TODO: replace with lazy indices
         return MDAO.create({model: QIssue})
           .addIndex(QIssue.ID)
           .addIndex(QIssue.STATUS)
@@ -101,7 +102,7 @@ var QProject = Model.create({
       name: 'IssueDAO',
       valueFactory: function() {
         var dao = this.IssueMDAO;
-        
+
         dao = QIssueSplitDAO.create({
           local: dao,
           remote: this.IssueNetworkDAO
