@@ -326,12 +326,10 @@ var TreeIndex = {
       if ( 'limit' in options && options.limit <= 0 ) return;
 
       var size = this.size(s);
-/*
-      if ( options.skip >= size ) {
+      if ( options.skip >= size && ! options.query ) {
         options.skip -= size;
         return;
       }
-*/
     }
 
     this.select(s[LEFT], sink, options);
