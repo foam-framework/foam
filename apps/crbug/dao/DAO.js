@@ -313,7 +313,7 @@ var QIssueSplitDAO = FOAM({
 
          if ( query && query !== this.activeQuery ) {
            this.activeQuery = query;
-           this.remote.limit(250).select({put: this.putIfMissing.bind(this)}, {query: options.query});
+           this.remote.limit(500).select({put: this.putIfMissing.bind(this)}, {query: options.query});
          }
        }
 
