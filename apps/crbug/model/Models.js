@@ -91,6 +91,7 @@ var QIssue = FOAM({
         },
         {
           name: 'author',
+          preSet: function(a) { return a.intern(); },
           aliases: ['reporter']
         },
         {
@@ -159,10 +160,15 @@ var QIssue = FOAM({
             defaultValue: ''
         },
         {
+          name: 'cc',
+          preSet: function(a) { return a.intern(); }
+        },
+        {
             name: 'owner',
             shortName: 'o',
             tableWidth: '181px',
-            type: 'String'
+            type: 'String',
+            preSet: function(a) { return a.intern(); }
         },
         {
             name: 'summary',
