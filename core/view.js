@@ -129,7 +129,7 @@ var AbstractView = FOAM({
     {
       name:   '$',
       mode:   "read-only",
-      getter: function() { return $(this.getID()); },
+      getter: function() { return this.elementId && $(this.elementId); },
       help:   'DOM Element.'
     }
   ],
@@ -1331,7 +1331,9 @@ var ImageBooleanView = FOAM({
     initHTML: function() {
       this.registerCallbacks();
     },
+    // deprecated: remove
     getValue: function() { return this.value; },
+    // deprecated: remove
     setValue: function(value) { this.value = value; },
     destroy: function() {
       this.value.removeListener(this.update);
