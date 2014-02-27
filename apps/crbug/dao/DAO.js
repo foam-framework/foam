@@ -43,7 +43,7 @@ var IssueRestDAO = FOAM({
     buildSelectParams: function(sink, outquery) {
       var query = outquery[0];
 
-      if ( ! query ) return this.url;
+      if ( ! query ) return [];
 
       var candidates = [];
       var updatedMin;
@@ -117,7 +117,7 @@ var IssueRestDAO = FOAM({
       function stripDefaultQuery(m) {
 	if ( DefaultQuery.isInstance(m) ) return TRUE;
 	if ( m.args ) {
-	  for ( var i = 0; i < m.args.length; m++ ) {
+	  for ( var i = 0; i < m.args.length; i++ ) {
 	    m.args[i] = stripDefaultQuery(m.args[i]);
 	  }
 	}
@@ -260,6 +260,10 @@ var QIssueSplitDAO = FOAM({
          name: 'activeQuery'
       },
       {
+         model_: 'StringProperty',
+         name: 'activeOrder'
+      },
+      {
          name: 'local',
          type: 'DAO',
          mode: "read-only",
@@ -272,7 +276,10 @@ var QIssueSplitDAO = FOAM({
          mode: "read-only",
          hidden: true,
          required: true
-      }
+      },
+      {
+         name: 'model'
+      },
    ],
 
    methods: {
@@ -319,17 +326,88 @@ var QIssueSplitDAO = FOAM({
        });
      },
 
-     select: function(sink, options) {
-       if ( CountExpr !== sink.model_ ) {
-         var query = ( options && options.query && options.query.toSQL() ) || "";
+     newQuery: function(sink, options, query, order, bufOptions, future) {
+       if ( (query && query !== this.activeQuery) ||
+            (order && order !== this.activeOrder) ) return;
 
-         if ( query && query !== this.activeQuery ) {
-           this.activeQuery = query;
-           this.remote.limit(500).select({put: this.putIfMissing.bind(this)}, {query: options.query});
-         }
+       var buf = this.buf = MDAO.create({ model: this.model });
+       var auto = AutoIndex.create(buf);
+
+       // Auto index the buffer, but set an initial index for the current
+       // sort order.
+       if ( options.order) auto.addIndex(options.order);
+       buf.addRawIndex(auto);
+
+       this.activeQuery = query;
+
+       this.local.select(buf, options.query ? { query: options.query } : {})(
+         (function() {
+           buf.select(sink, bufOptions)(function(s) { future.set(s); });
+
+           var remoteOptions = {};
+           if ( options.query ) remoteOptions.query = options.query;
+           if ( options.order ) remoteOptions.order = options.order;
+
+           this.remote.limit(500).select({
+             put: (function(obj) {
+               // Put the object in the buffer, but also cache it in the local DAO
+               buf.put(obj);
+               this.putIfMissing(obj);
+
+               // Sometimes the item might not be missing, but the local
+               // query processing didn't match it, so force a notification
+               // regardless.  These are merged to 1s, so no harm done.
+               this.relay_.put(obj);
+             }).bind(this)
+           }, remoteOptions);
+         }).bind(this));
+     },
+
+     select: function(sink, options) {
+       // Don't pass QUERY to buf, it always contains only the items
+       // which match the query.  This allows us offload full text searches
+       // to a server, where we can't necessarily do keyword matches locally
+       // with the available data.
+       var bufOptions = {};
+       if ( options ) {
+         if ( options.order ) bufOptions.order = options.order;
+         if ( options.skip ) bufOptions.skip = options.skip;
+         if ( options.limit ) bufOptions.limit = options.limit;
        }
 
-       return this.local.select.apply(this.local, arguments);
+       if ( ! CountExpr.isInstance(sink) ) {
+         var query = ( options && options.query && options.query.toSQL() ) || "";
+         var order = ( options && options.order && options.order.toSQL() ) || "";
+
+         var future = afuture();
+
+         if ( this.buf && query === this.activeQuery ) {
+           if ( order && order !== this.activeOrder ) {
+             this.activeOrder = order;
+
+             this.buf.select(COUNT())((function(c) {
+               if ( c.count < 500 ) {
+                 this.buf.select(sink, bufOptions)(function(s) {
+                   future.set(s);
+                 });
+               } else {
+                 this.newQuery(sink, options, query, order, bufOptions, future);
+               }
+             }).bind(this))
+           } else {
+             return this.buf.select(sink, bufOptions);
+           }
+         } else {
+           this.activeQuery = query;
+           this.activeOrder = order;
+           this.newQuery(sink, options, query, order, bufOptions, future);
+         }
+
+         return future.get;
+       } else {
+         if ( this.buf ) return this.buf.select(sink, bufOptions);
+         else return this.local.select(sink, options);
+       }
      }
    }
 });

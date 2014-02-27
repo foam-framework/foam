@@ -99,6 +99,7 @@ var QProject = Model.create({
 
         dao = QIssueSplitDAO.create({
           local: dao,
+          model: QIssue,
           remote: this.IssueNetworkDAO
         });
 
