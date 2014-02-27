@@ -22,6 +22,13 @@ var IssueRestDAO = FOAM({
 
   methods: {
     jsonToObj: function(json) {
+      if ( json.cc ) {
+	for ( var i = 0 ; i < json.cc.length ; i++ )
+	  json.cc[i] = json.cc[i].name.intern;
+      }
+      if ( json.owner  ) json.owner  = json.owner.name;
+      if ( json.author ) json.author = json.author.name;
+
       // Adapt IssuePerson types to just Strings
       if ( json.blocking ) json.blocking = json.blocking.map(function(b) { return b.issueId });
       if ( json.blockedOn ) json.blockedOn = json.blockedOn.map(function(b) { return b.issueId });
