@@ -129,7 +129,7 @@ var TableView2 = FOAM({
         if ( ! this.$ ) return;
 
         var h = this.$.parentElement.offsetHeight;
-        var rows = Math.ceil((h - 47)/21)+1;
+        var rows = Math.ceil((h - 47)/20)+1;
         // TODO: update the extent somehow
 //        this.scrollbar.extent = rows;
         this.rows = rows;
