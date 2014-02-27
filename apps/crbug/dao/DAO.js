@@ -24,7 +24,7 @@ var IssueRestDAO = FOAM({
     jsonToObj: function(json) {
       if ( json.cc ) {
 	for ( var i = 0 ; i < json.cc.length ; i++ )
-	  json.cc[i] = json.cc[i].name.intern;
+	  json.cc[i] = json.cc[i].name;
       }
       if ( json.owner  ) json.owner  = json.owner.name;
       if ( json.author ) json.author = json.author.name;
