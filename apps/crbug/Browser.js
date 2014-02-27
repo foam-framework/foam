@@ -474,10 +474,10 @@ var Browser = Model.create({
           var popup = self.currentPreview = PopupView.create({
             x: e.x + 25,
             y: Math.min(
-              screenHeight-15-HEIGHT,
+              screenHeight-HEIGHT-180,
               Math.max(
-                100,
-                Math.min(screenHeight-HEIGHT-15, e.y - HEIGHT/2))),
+                70,
+                Math.min(screenHeight-HEIGHT-180, e.y - HEIGHT/2))),
             height: HEIGHT,
             view: v
           });
