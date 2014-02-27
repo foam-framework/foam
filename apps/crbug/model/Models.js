@@ -196,6 +196,8 @@ var QIssue = FOAM({
                 this[kv[0]] = kv[1];
                 a.splice(i,1);
                 i--;
+              } else {
+                a[i] = a[i].intern();
               }
             }
           }
