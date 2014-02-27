@@ -62,8 +62,10 @@ var QProject = Model.create({
       name: 'IssueMDAO',
       valueFactory: function() {
         var dao = MDAO.create({model: QIssue});
+        var auto = AutoIndex.create(dao);
 
-        dao.addRawIndex(AutoIndex.create(dao));
+        auto.addIndex(QIssue.STATUS);
+        dao.addRawIndex(auto);
 
         return dao;
       }

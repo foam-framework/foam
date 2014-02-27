@@ -804,7 +804,7 @@ var AutoIndex = {
   create: function(mdao) {
     return {
       __proto__: this,
-      properties: {},
+      properties: { id: true },
       mdao: mdao
     };
   },
@@ -817,13 +817,16 @@ var AutoIndex = {
     return 'auto';
   },
 
+  addIndex: function(prop) {
+    console.log('******************************************* Adding Index : ', prop.name);
+    this.properties[prop.name] = true;
+    this.mdao.addIndex(prop);
+  },
+
   plan: function(s, sink, options) {
     if ( options ) {
       if ( options.order && Property.isInstance(options.order) && ! this.properties[options.order.name] ) {
-        var prop = options.order;
-        console.log('******************************************* Adding Index : ', prop.name);
-        this.properties[prop.name] = true;
-        this.mdao.addIndex(prop);
+        this.addIndex(options.order);
       } else if ( options.query ) {
         // TODO: check for property in query
       }
