@@ -17,14 +17,35 @@
 var labelToProperty = {
   App:          'app',
   Type:         'type',
-  Priority:     'priority',
-  Milestone:    'milestone',
+  Pri:          'priority',
+  Mstone:       'milestone',
+  M:            'milestone',
   Cr:           'category',
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
   OS:           'OS'
 };
 
+var propertyLabels_ = {};
+
+function isPropertyLabel(l) {
+  if ( l in propertyLabels_ ) return propertyLabels_[l];
+
+  var keyValue = l.match(/([^\-]*)\-(.*)/);
+  if ( keyValue ) {
+    var key   = labelToProperty[keyValue[1]];
+    var value = keyValue[2];
+
+    if ( key ) {
+      var kv = [key, value.intern()];
+      propertyLabels_[l] = kv;
+      return kv;
+    }
+  }
+
+  propertyLabels_[l] = false;
+  return false;
+}
 
 var QIssue = FOAM({
     model_: 'Model',
@@ -155,43 +176,6 @@ var QIssue = FOAM({
             }
         },
         {
-            name: 'labels',
-            shortName: 'l',
-            aliases: ['label'],
-            type: 'String',
-            view: 'QIssueLabelsView',
-          tableFormatter: function(value, row) {
-              var sb = [];
-              //              var a = value.split(', ');
-              var a = value;
-              for ( var i = 0 ; i < a.length ; i++ ) {
-                // The the column is already being shown, then exclude it's label
-                if ( row.model_.tableProperties.indexOf(labelToProperty[a[i].split('-')[0]]) == -1 ) {
-                  sb.push(' <span class="label">');
-                  sb.push(a[i]);
-                  sb.push('</span>');
-                }
-              }
-              return sb.join('');
-            },
-            postSet: function(_, a) {
-              for ( var i = 0 ; i < a.length ; i++ ) {
-                for ( var key in labelToProperty ) {
-                  if ( a[i].substring(0, key.length) == key ) {
-                    var prop = labelToProperty[key];
-                    var val = a[i].substring(key.length+1).intern();
-                    // ???: Should be treated as last value or an array?
-                    this[prop] = val;
-//                  this[prop].push(val);
-                    a.splice(i,1);
-                    i--;
-                    break;
-                  }
-                }
-              }
-            }
-        },
-        {
             name: 'OS',
             tableWidth: '61px',
             type: 'String'
@@ -255,7 +239,33 @@ var QIssue = FOAM({
          name: 'stars',
          tableWidth: '20px',
          help: 'Number of stars this issue has.'
-      }
+      },
+        {
+          name: 'labels',
+          shortName: 'l',
+          aliases: ['label'],
+          type: 'String',
+          view: 'QIssueLabelsView',
+          tableFormatter: function(a, row) {
+            var s = '';
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              s += ' <span class="label">' + a[i] + '</span>';
+            }
+            return s;
+          },
+          postSet: function(_, a) {
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              var kv = isPropertyLabel(a[i]);
+              if ( kv ) {
+                this[kv[0]] = kv[1];
+                a.splice(i,1);
+                i--;
+              } else {
+                a[i] = a[i].intern();
+              }
+            }
+          }
+        }
     ],
 
     methods: {
