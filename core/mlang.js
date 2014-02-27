@@ -559,7 +559,7 @@ var InExpr = FOAM({
         return this.valueSet_;
       },
       toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
-      toMQL: function() { return this.arg1.toMQL() + ' IN ' + this.arg2.toMQL(); },
+      toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.join(',') },
 
       f: function(obj) {
         return this.valueSet().hasOwnProperty(this.arg1.f(obj));

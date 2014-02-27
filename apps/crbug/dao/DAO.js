@@ -57,14 +57,14 @@ var IssueRestDAO = FOAM({
 
       // TODO: Generify this and move it to a helper function.
       // When mLangs have compareTo this will be much easier.
-      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.MODIFIEDn ) {
+      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.MODIFIED ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
       } else if ( AndExpr.isInstance(query) ) {
         for ( var j = 0; j < query.args.length; j++ ) {
           var arg = query.args[j];
 
-          if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.UPDATED ) {
+          if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.MODIFIED ) {
             candidates.push([arg.arg2.arg1.getTime(), [[query, j]]]);
           }
         }
@@ -113,6 +113,24 @@ var IssueRestDAO = FOAM({
       }
 
       outquery[0] = query.partialEval();
+
+      // Strip out DefaultQuery from the original query, we will
+      // assume that the server does a perfect match for these fields and not
+      // apply is locally.  The server does a full text search of keywords
+      // and we don't have that data to process it locally, so we don't want to filter
+      // those results.
+
+      function stripDefaultQuery(m) {
+	if ( DefaultQuery.isInstance(m) ) return TRUE;
+	if ( m.args ) {
+	  for ( var i = 0; i < m.args.length; m++ ) {
+	    m.args[i] = stripDefaultQuery(m.args[i]);
+	  }
+	}
+	return m;
+      }
+
+      outquery[1] = stripDefaultQuery(outquery[1]).partialEval();
 
       if ( updatedMin ) return ["updatedMin=" + Math.floor(updatedMin/1000)];
       return [];
@@ -313,7 +331,7 @@ var QIssueSplitDAO = FOAM({
 
          if ( query && query !== this.activeQuery ) {
            this.activeQuery = query;
-           this.remote.limit(250).select({put: this.putIfMissing.bind(this)}, {query: options.query});
+           this.remote.limit(500).select({put: this.putIfMissing.bind(this)}, {query: options.query});
          }
        }
 

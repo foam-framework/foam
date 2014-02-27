@@ -2430,7 +2430,7 @@ var RestDAO = FOAM({
           var origQuery = query;
           query = query.normalize();
 
-          var outquery = [query];
+          var outquery = [query, origQuery];
 
           var params = this.buildSelectParams(sink, outquery);
 
