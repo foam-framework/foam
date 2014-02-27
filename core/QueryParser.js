@@ -174,12 +174,16 @@ var QueryParserFactory = function(model) {
     // Always treat an OR'ed value list and let the partial evalulator
     // simplify it when it isn't.
 
+    if ( v[1] === '=' ) {
+      return IN(v[0], v[2]);
+    }
+
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
       or.args.push(v[1] == ':' && ( v[0].type === 'String' || v[0].subType === 'String' ) ?
-        CONTAINS_IC(v[0], values[i]) :
-        EQ(v[0], values[i]));
+                   CONTAINS_IC(v[0], values[i]) :
+                   EQ(v[0], values[i]));
     }
     return or;
   },
