@@ -384,7 +384,7 @@ var TreeIndex = {
       //        console.log('**************** COUNT SHORT-CIRCUIT ****************', count, this.toString());
       return {
         cost: 0,
-        execute: function(unused, sink, options) { sink.count = count; },
+        execute: function(unused, sink, options) { sink.count += count; },
         toString: function() { return 'short-circuit-count(' + count + ')'; }
       };
     }
