@@ -321,15 +321,15 @@ QIssue.getPrototype();
 QIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
     p["tableFormatter"] = function(v) {
-      return ('' + v).length ? v : '----';
+      return v || '----';
     };
   }
 });
 
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
-    p["tableFormatter"] = function(v, _, tableView) {
-      return ('' + v).length ? v : '----';
+    p["tableFormatter"] = function(v) {
+      return v || '----';
     };
   }
   if ( ! p["tableWidth"] ) {
