@@ -156,14 +156,14 @@ var Browser = Model.create({
           helpText: 'Search within:',
           value: this.location.can$,
           choices:[
-            ['',                                         '&nbsp;All issues',              1],
-            ['status=New,Accepted,Started',              '&nbsp;Open issues',             2],
-            ['owner=me status=New,Accepted,Started',     '&nbsp;Open and owned by me',    3],
-            ['status=New,Accepted,Started reporter=me',  '&nbsp;Open and reported by me', 4],
-            ['status=New,Accepted,Started is:starred',   '&nbsp;Open and starred by me',  5],
-            ['status=New,Accepted,Started commentby:me', '&nbsp;Open and comment by me',  8],
-            ['status=New',                               '&nbsp;New issues',              6],
-            ['status=Fixed,Done',                        '&nbsp;Issues to verify',        7]
+            ['',                                                   '&nbsp;All issues',              1],
+            ['status=New,Accepted,Started,Untriaged',              '&nbsp;Open issues',             2],
+            ['owner=me status=New,Accepted,Started,Untriaged',     '&nbsp;Open and owned by me',    3],
+            ['status=New,Accepted,Started,Untriaged reporter=me',  '&nbsp;Open and reported by me', 4],
+            ['status=New,Accepted,Started,Untriaged is:starred',   '&nbsp;Open and starred by me',  5],
+            ['status=New,Accepted,Started,Untriaged commentby:me', '&nbsp;Open and comment by me',  8],
+            ['status=New',                                         '&nbsp;New issues',              6],
+            ['status=Fixed,Done',                                  '&nbsp;Issues to verify',        7]
           ]});
       }
     },

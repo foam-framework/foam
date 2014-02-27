@@ -261,9 +261,10 @@ var QIssue = FOAM({
     methods: {
       isOpen: function() {
         return !! ({
-          'New':      true,
-          'Accepted': true,
-          'Started':  true
+          'New':       true,
+          'Accepted':  true,
+          'Started':   true,
+          'Untriaged': true
         }[this.status]);
       },
       writeActions: function(other, out) {
