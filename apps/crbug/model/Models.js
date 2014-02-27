@@ -19,6 +19,7 @@ var labelToProperty = {
   Type:         'type',
   Pri:          'priority',
   Mstone:       'milestone',
+  M:            'milestone',
   Cr:           'category',
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
@@ -30,18 +31,16 @@ var propertyLabels_ = {};
 function isPropertyLabel(l) {
   if ( l in propertyLabels_ ) return propertyLabels_[l];
 
-  var keyValue = l.match(/([^-]*)-(.*)/);
+  var keyValue = l.match(/([^\-]*)\-(.*)/);
   if ( keyValue ) {
-    var key      = keyValue[1];
-    var value    = keyValue[2];
-    if ( labelToProperty[key] ) {
-      propertyLabels_[l] = false;
-      return false;
-    }
+    var key   = labelToProperty[keyValue[1]];
+    var value = keyValue[2];
 
-    var kv = [key, value.intern()];
-    propertyLabels_[l] = kv;
-    return kv;
+    if ( key ) {
+      var kv = [key, value.intern()];
+      propertyLabels_[l] = kv;
+      return kv;
+    }
   }
 
   propertyLabels_[l] = false;
@@ -177,32 +176,6 @@ var QIssue = FOAM({
             }
         },
         {
-          name: 'labels',
-          shortName: 'l',
-          aliases: ['label'],
-          type: 'String',
-          view: 'QIssueLabelsView',
-          tableFormatter: function(a, row) {
-            var s = '';
-            for ( var i = 0 ; i < a.length ; i++ ) {
-              s += ' <span class="label">' + a[i] + '</span>';
-            }
-            return s;
-          },
-          postSet: function(_, a) {
-            for ( var i = 0 ; i < a.length ; i++ ) {
-              var kv = isPropertyLabel(a[i]);
-              if ( kv ) {
-                this[kv[0]] = kv[1];
-                a.splice(i,1);
-                i--;
-              } else {
-                a[i] = a[i].intern();
-              }
-            }
-          }
-        },
-        {
             name: 'OS',
             tableWidth: '61px',
             type: 'String'
@@ -266,7 +239,33 @@ var QIssue = FOAM({
          name: 'stars',
          tableWidth: '20px',
          help: 'Number of stars this issue has.'
-      }
+      },
+        {
+          name: 'labels',
+          shortName: 'l',
+          aliases: ['label'],
+          type: 'String',
+          view: 'QIssueLabelsView',
+          tableFormatter: function(a, row) {
+            var s = '';
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              s += ' <span class="label">' + a[i] + '</span>';
+            }
+            return s;
+          },
+          postSet: function(_, a) {
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              var kv = isPropertyLabel(a[i]);
+              if ( kv ) {
+                this[kv[0]] = kv[1];
+                a.splice(i,1);
+                i--;
+              } else {
+                a[i] = a[i].intern();
+              }
+            }
+          }
+        }
     ],
 
     methods: {
