@@ -2419,6 +2419,7 @@ var RestDAO = FOAM({
       // from buildURL to jsonToObj, used by the IssueCommentNetworkDAO
       // Clean this up.
       var extra = {};
+      var params = [];
 
       if ( options ) {
         index += options.skip || 0;
@@ -2430,13 +2431,14 @@ var RestDAO = FOAM({
           var origQuery = query;
           query = query.normalize();
 
-          var outquery = [query, origQuery];
+          var outquery = [query, origQuery.deepClone()];
 
-          var params = this.buildSelectParams(sink, outquery);
+          params = this.buildSelectParams(sink, outquery);
 
           url = this.buildURL(outquery, extra);
 
           query = outquery[0];
+          origQuery = outquery[1];
 
           var mql = query.toMQL();
           if ( mql ) params.push('q=' + encodeURIComponent(query.toMQL()));
