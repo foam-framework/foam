@@ -87,7 +87,8 @@ var QProject = Model.create({
       valueFactory: function() {
         return IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-          model: QIssue
+          model: QIssue,
+          batchSize: 500
         });
       },
       transient: true
