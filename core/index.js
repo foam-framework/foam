@@ -434,8 +434,9 @@ var TreeIndex = {
       var cost = 1;
 
       var newOptions = {};
+      if ( query ) newOptions.query = query;
       if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'skip' in options ) newOptions.skip = options.skip;
+      if ( 'skip'  in options ) newOptions.skip  = options.skip;
       if ( 'order' in options ) newOptions.order = options.order;
 
       for ( var i = 0 ; i < keys.length ; i++) {
