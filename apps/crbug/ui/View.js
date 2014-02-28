@@ -266,8 +266,6 @@ function createView(rowSelection, browser) {
               properties: [
                 {
                   name: 'dao',
-                  // crbug limits grid view to 6000 rows, so do the same
-                  preSet: function(dao) { return dao.limit(2000); },
                   postSet: function(old, dao) {
                      if ( this.listener ) {
                         old && old.unlisten(this.listener);
@@ -276,13 +274,19 @@ function createView(rowSelection, browser) {
                      this.grid.dao = dao;
                      this.updateHTML();
                   },
+                  // crbug limits grid view to 6000 rows, so do the same
+                  getter: function() {
+                    return ( this.acc.choice && this.acc.choice[1] === 'Tiles' && this.instance_.dao ) ?
+                      this.instance_.dao.limit(2000) :
+                      this.instance_.dao ;
+                  }
                 },
               ],
               methods: {
                  init: function(args) {
                     this.SUPER(args);
                     this.listener = {
-                       put: this.daoUpdate,
+                       put:    this.daoUpdate,
                        remove: this.daoUpdate
                     };
                  }
@@ -291,18 +295,16 @@ function createView(rowSelection, browser) {
                  {
                     name: 'daoUpdate',
                     isMerged: 1000,
-                    code: function() {
-                       this.updateHTML();
-                    }
+                    code: function() { this.updateHTML(); }
                  }
               ]}).create({
                 model: QIssue,
                 accChoices: [
                   [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
-                  [ MAP(IdFormatter(browser), COL.create()),             "IDs" ],
-                  [ ItemCount.create({browser: browser}),       "Counts" ],
-                  [ PIE(QIssue.STATUS),                         "Pie(Status)"  ],
-                  [ PIE(QIssue.PRIORITY, priColorMap),          "Pie(Priority)" ]
+                  [ MAP(IdFormatter(browser), COL.create()),                      "IDs" ],
+                  [ ItemCount.create({browser: browser}),                         "Counts" ],
+                  [ PIE(QIssue.STATUS),                                           "Pie(Status)"  ],
+                  [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
                   //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: /*GridByExpr*/DragAndDropGrid.create({})
