@@ -1,3 +1,5 @@
+cp ../../core/foam.css .
+cp ../../core/css-tooltips.css .
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
@@ -12,6 +14,7 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
+  ../../core/async.js \
   ../../core/AbstractPrototype.js \
   ../../core/ModelProto.js \
   ../../core/mm1Model.js \
@@ -20,25 +23,26 @@ cat \
   ../../core/mm4Method.js \
   ../../core/mm5Misc.js \
   ../../core/mm6Protobuf.js \
+  ../../core/value.js \
   ../../core/view.js \
-  ../../core/RichTextView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
+  ../../core/glang.js \
   ../../core/QueryParser.js \
   ../../core/search.js \
-  ../../core/async.js \
   ../../core/visitor.js \
   ../../core/dao.js \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
-  ../../core/StackView.js \
+  ../../core/RichTextView.js \
   ../../core/DAOController.js \
   ../../core/ThreePaneController.js \
   ../../core/experimental/protobufparser.js \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
+  ../../core/ChromeApp.js \
   ../mailreader/view.js \
   ../mailreader/email.js \
   EMailBodyDAO.js \
