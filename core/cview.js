@@ -15,6 +15,221 @@
  * limitations under the License.
  */
 
+
+var Canvas = Model.create({
+
+   extendsModel: 'AbstractView',
+
+   name: 'Canvas',
+
+   properties: [
+      {
+         name:  'background',
+         label: 'Background Color',
+         type:  'String',
+         defaultValue: 'white'
+      },
+      {
+         name:  'width',
+         type:  'int',
+         defaultValue: 100,
+         postSet: function(_, width) {
+           if ( this.$ ) this.$.width = width;
+         }
+      },
+      {
+         name:  'height',
+         type:  'int',
+         defaultValue: 100,
+         postSet: function(_, height) {
+           if ( this.$ ) this.$.height = height;
+         }
+      }
+   ],
+
+  listeners: [
+    {
+      name: 'paint',
+      animate: true,
+      code: function() {
+         this.erase();
+         this.paintChildren();
+      }
+    }
+  ],
+
+   methods: {
+      toHTML: function() {
+        return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      },
+
+      initHTML: function() {
+        this.canvas = this.$.getContext('2d');
+      },
+
+      addChild: function(child) {
+        child.parent = null; // needed because super.addChild() skips childen with parents already
+
+        this.SUPER(child);
+
+        try {
+          child.addListener(this.paint);
+        } catch (x) { }
+
+        return this;
+      },
+
+      erase: function() {
+        this.canvas.fillStyle = this.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
+      },
+
+      paintChildren: function() {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          this.canvas.save();
+          child.paint();
+          this.canvas.restore();
+        }
+      }
+   }
+});
+
+
+/**
+ * Abstract Canvas View (CView).
+ *
+ * CView's can also be used as regular (DOM) Views because if you call
+ * toHTML() on them they will create their own 'Canvas' View parent.
+ **/
+var CView = FOAM({
+   model_: 'Model',
+
+   name:  'CView',
+   label: 'Panel',
+
+   properties: [
+      {
+         name:  'parent',
+         type:  'CView',
+         hidden: true
+      },
+      {
+         name:  'x',
+         type:  'int',
+         view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
+         defaultValue: 10
+      },
+      {
+         name:  'y',
+         type:  'int',
+         view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
+         defaultValue: 10
+      },
+      {
+         name:  'width',
+         type:  'int',
+         view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
+         defaultValue: 10
+      },
+      {
+         name:  'height',
+         type:  'int',
+         view:  'IntFieldView',
+         postSet: function() { this.resizeParent(); },
+         defaultValue: 10
+      },
+      {
+         name:  'children',
+         type:  'CView[]',
+         valueFactory: function() { return []; },
+         hidden: true
+      },
+      {
+         name:  'background',
+         label: 'Background Color',
+         type:  'String',
+         defaultValue: 'white'
+      },
+      {
+         name:  'canvas',
+         type:  'Canvas',
+         getter: function() {
+           return this.parent && this.parent.canvas;
+         },
+         setter: undefined,
+         hidden: true
+      }
+   ],
+
+   methods: {
+      toHTML: function() {
+        // If being added to HTML directly, then needs to create own Canvas as parent.
+        // Calling addChild() will set this.parent = canvas.
+        this.parent = Canvas.create();
+        this.resizeParent();
+        return this.parent.toHTML();
+      },
+
+      initHTML: function() {
+         var self = this;
+         var parent = this.parent;
+
+        parent.addChild(this);
+         parent.initHTML();
+         Events.dynamic(
+           function() { self.background; }, function() {
+             parent.background = self.background;
+           });
+      },
+
+      resizeParent: function() {
+        this.parent.width  = this.x + this.width + 1;
+        this.parent.height = this.y + this.height + 2;
+      },
+
+      write: function(document) {
+         document.writeln(this.toHTML());
+         this.initHTML();
+      },
+
+      addChild: function(child) {
+         this.children.push(child);
+         child.parent = this;
+         return this;
+      },
+
+      removeChild: function(child) {
+         this.children.remove(child);
+         child.parent = undefined;
+         return this;
+      },
+
+      erase: function() {
+         this.canvas.fillStyle = this.background;
+         this.canvas.fillRect(0, 0, this.width, this.height);
+      },
+
+      paintChildren: function() {
+         for ( var i = 0 ; i < this.children.length ; i++ ) {
+            var child = this.children[i];
+            this.canvas.save();
+            child.paint();
+            this.canvas.restore();
+         }
+      },
+
+      paint: function() {
+         this.erase();
+         this.paintChildren();
+      }
+   }
+});
+
+
 var Label = FOAM({
    model_: 'Model',
 
@@ -167,86 +382,6 @@ var Box = FOAM({
         c.fillRect(this.x, this.y, this.width, this.height);
 
         c.restore();
-      }
-   }
-});
-
-
-var Canvas = Model.create({
-
-   extendsModel: 'AbstractView',
-
-   name:  'Canvas',
-
-   properties: [
-      {
-         name:  'background',
-         label: 'Background Color',
-         type:  'String',
-         defaultValue: 'white'
-      },
-      {
-         name:  'width',
-         type:  'int',
-         defaultValue: 100,
-         postSet: function(_, width) {
-           if ( this.$ ) this.$.width = width;
-         }
-      },
-      {
-         name:  'height',
-         type:  'int',
-         defaultValue: 100,
-         postSet: function(_, height) {
-           if ( this.$ ) this.$.height = height;
-         }
-      }
-   ],
-
-  listeners: [
-    {
-      name: 'paint',
-      animate: true,
-      code: function() {
-         this.erase();
-         this.paintChildren();
-      }
-    }
-  ],
-
-   methods: {
-      toHTML: function() {
-        return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
-      },
-
-      initHTML: function() {
-        this.canvas = this.$.getContext('2d');
-      },
-
-      addChild: function(child) {
-        child.parent = null; // needed because super.addChild() skips childen with parents already
-
-        this.SUPER(child);
-
-        try {
-          child.addListener(this.paint);
-        } catch (x) { }
-
-        return this;
-      },
-
-      erase: function() {
-        this.canvas.fillStyle = this.background;
-        this.canvas.fillRect(0, 0, this.width, this.height);
-      },
-
-      paintChildren: function() {
-        for ( var i = 0 ; i < this.children.length ; i++ ) {
-          var child = this.children[i];
-          this.canvas.save();
-          child.paint();
-          this.canvas.restore();
-        }
       }
    }
 });
@@ -540,136 +675,6 @@ var PanelCView = FOAM({
 
             child.paint();
          }
-      }
-   }
-});
-
-
-
-/** Abstract CViews. **/
-var CView = FOAM({
-   model_: 'Model',
-
-   name:  'CView',
-   label: 'Panel',
-
-   properties: [
-      {
-         name:  'parent',
-         type:  'CView',
-         hidden: true
-      },
-      {
-         name:  'x',
-         type:  'int',
-         view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
-         defaultValue: 10
-      },
-      {
-         name:  'y',
-         type:  'int',
-         view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
-         defaultValue: 10
-      },
-      {
-         name:  'width',
-         type:  'int',
-         view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
-         defaultValue: 10
-      },
-      {
-         name:  'height',
-         type:  'int',
-         view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
-         defaultValue: 10
-      },
-      {
-         name:  'children',
-         type:  'CView[]',
-         valueFactory: function() { return []; },
-         hidden: true
-      },
-      {
-         name:  'background',
-         label: 'Background Color',
-         type:  'String',
-         defaultValue: 'white'
-      },
-      {
-         name:  'canvas',
-         type:  'CView',
-         getter: function() {
-           return this.parent && this.parent.canvas;
-         },
-         setter: undefined,
-         hidden: true
-      }
-   ],
-
-   methods: {
-      toHTML: function() {
-        // If being added to HTML directly, then needs to create own Canvas as parent.
-        // Calling addChild() will set this.parent = canvas.
-        this.parent = Canvas.create();
-        this.resizeParent();
-        return this.parent.toHTML();
-      },
-
-      initHTML: function() {
-         var self = this;
-         var parent = this.parent;
-
-        parent.addChild(this);
-         parent.initHTML();
-         Events.dynamic(
-           function() { self.background; }, function() {
-             parent.background = self.background;
-           });
-      },
-
-      resizeParent: function() {
-        this.parent.width  = this.x + this.width + 1;
-        this.parent.height = this.y + this.height + 2;
-      },
-
-      write: function(document) {
-         document.writeln(this.toHTML());
-         this.initHTML();
-      },
-
-      addChild: function(child) {
-         this.children.push(child);
-         child.parent = this;
-         return this;
-      },
-
-      removeChild: function(child) {
-         this.children.remove(child);
-         child.parent = undefined;
-         return this;
-      },
-
-      erase: function() {
-         this.canvas.fillStyle = this.background;
-         this.canvas.fillRect(0, 0, this.width, this.height);
-      },
-
-      paintChildren: function() {
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-            var child = this.children[i];
-            this.canvas.save();
-            child.paint();
-            this.canvas.restore();
-         }
-      },
-
-      paint: function() {
-         this.erase();
-         this.paintChildren();
       }
    }
 });
@@ -1054,4 +1059,52 @@ var Graph = FOAM({
       }
 
    }
+});
+
+
+var GridCView = FOAM({
+  model_: 'Model',
+
+  extendsModel: 'CView',
+
+  name:  'GridCView',
+  label: 'GridCView',
+
+  properties: [
+    {
+      name: 'grid',
+      type: 'GridByExpr',
+    }
+  ],
+
+  methods: {
+    // TODO: move to CView
+    line: function(x1, y1, x2, y2) {
+      c.beginPath();
+      c.moveTo(x, 0);
+      c.lineTo(x, this.height);
+      c.closePath();
+      c.stroke();
+    },
+
+    paint: function() {
+      var c = this.canvas;
+
+      var g = this.grid;
+      var cols = g.cols.groups;
+      var rows = g.rows.groups;
+      var sortedCols = Object.getOwnPropertyNames(cols).sort(g.xFunc.compareProperty);
+      var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
+
+      c.lineWidth = 1;
+      c.strokeStyle = '#000';
+
+      for ( var j = 0 ; j < sortedRows.length ; j++ ) {
+        var x = this.width * j / ( sortedRows.length + 1);
+
+        this.line(x, 0, x, this.height);
+      }
+      this.line(this.width, 0, this.width, this.height);
+    }
+  }
 });

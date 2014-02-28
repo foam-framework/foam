@@ -108,8 +108,8 @@ var TemplateCompiler = {
      return ret;
    },
    'create child': function(v) {
-     this.push("', this.createView(this.model.",
-               v[1].join('').constantize(),
+     this.push("', this.createView(this.viewModel()['",
+               v[1].join('').constantize(), "']",
                v[2] ? ', ' + v[2][1].join('') + '}' : '',
                "), '"); },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },

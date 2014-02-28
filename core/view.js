@@ -139,6 +139,42 @@ var AbstractView = FOAM({
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
+    /** Bind a sub-View to a sub-Value. **/
+    bindSubView: function(view, prop) {
+      view.setValue(this.propertyValue(prop.name));
+    },
+
+    viewModel: function() { return this.model_; },
+
+    /** Create the sub-view from property info. **/
+    createView: function(prop, opt_args) {
+      var view;
+
+      if ( ! prop.view ) {
+        view = TextFieldView.create(prop);
+      } else if ( typeof prop.view === 'string' ) {
+        view = GLOBAL[prop.view].create(prop);
+      } else if ( prop.view.model_ ) {
+        view = prop.view.deepClone().copyFrom(prop);
+      } else if ( typeof prop.view === 'function' ) {
+        view = prop.view(prop);
+      } else {
+        view = prop.view.create(prop);
+      }
+
+      view.copyFrom(opt_args);
+
+      this.bindSubView(view, prop);
+
+      view.prop = prop;
+      view.toString = function () { return this.prop.name + "View"; };
+      this.addChild(view);
+
+      this[prop.name + 'View'] = view;
+
+      return view;
+    },
+
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
@@ -903,6 +939,7 @@ var ChoiceView = FOAM({
     {
       name:  'value',
       type:  'Value',
+ postSet: function() { console.log(arguments); },
       valueFactory: function() { return SimpleValue.create(); }
     },
     {
@@ -931,6 +968,8 @@ var ChoiceView = FOAM({
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
       postSet: function(_, newValue) {
+        if ( ! this.value.get ) return;
+
         var value = this.value.get();
 
         for ( var i = 0; i < newValue.length; i++ ) {
@@ -1015,6 +1054,7 @@ var ChoiceView = FOAM({
     },
 
     setValue: function(value) {
+console.log('setValue: ', value);
       Events.unlink(this.domValue, this.value);
       this.value = value;
       //       Events.link(value, this.domValue);
@@ -1580,6 +1620,15 @@ var DetailView = Model.create({
   ],
 
   methods: {
+    bindSubView: function(view, prop) {
+      if ( this.get() ) {
+        // TODO: setValue is deprecated
+        view.setValue(this.get().propertyValue(prop.name));
+      }
+    },
+
+    viewModel: function() { return this.model; },
+
     getValue: function() {
       return this.value;
     },
@@ -1594,37 +1643,6 @@ var DetailView = Model.create({
       // TODO: model this class and make updateSubViews a listener
       // instead of bind()'ing
       value.addListener(this.updateSubViews.bind(this));
-    },
-
-    /** Create the sub-view from property info. **/
-    createView: function(prop, opt_args) {
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = GLOBAL[prop.view].create(prop);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
-
-      view.copyFrom(opt_args);
-
-      if ( this.get() ) {
-        view.setValue(this.get().propertyValue(prop.name));
-      }
-
-      view.prop = prop;
-      view.toString = function () { return this.prop.name + "View"; };
-      this.addChild(view);
-
-      this[prop.name + 'View'] = view;
-
-      return view;
     },
 
     titleHTML: function() {
@@ -2829,6 +2847,16 @@ var GridView = FOAM({
       valueFactory: function() { return []; }
     },
     {
+      name:  'scrollMode',
+      type:  'String',
+      defaultValue: 'Bars',
+      view: {
+        create: function() { return ChoiceView.create({choices:[
+          "Bars", "Warp"
+        ]}); }
+      }
+    },
+    {
       name:  'model',
       type: 'Model'
     },
@@ -2893,15 +2921,10 @@ var GridView = FOAM({
       this.SUPER();
       this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
-      /*
-        this.grid.addListener(function() {
-        this.repaint_();
-        }.bind(this));
-      */
-
       this.row.value.addListener(this.repaint_);
       this.col.value.addListener(this.repaint_);
       this.acc.value.addListener(this.repaint_);
+      this.scrollMode$.addListener(this.repaint_);
 
       this.updateHTML();
     }
@@ -2914,7 +2937,17 @@ var GridView = FOAM({
       name: 'toHTML',
       description: 'TileView',
       template: '<div class="column expand">' +
-        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> <br/></div>' +
+        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
+        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '</div>'
+    },
+    {
+      model_: 'Template',
+
+      name: 'toHTML2',
+      description: 'TileView',
+      template: '<div class="column expand">' +
+        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
         '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     }

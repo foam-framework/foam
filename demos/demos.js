@@ -276,7 +276,6 @@ var ClockView = FOAM({
      ],
      methods:
      [
-
         {
            model_: 'Method',
            name: 'paint',
