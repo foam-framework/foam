@@ -18,6 +18,7 @@ var labelToProperty = {
   App:          'app',
   Type:         'type',
   Pri:          'priority',
+  Priority:     'priority',
   Mstone:       'milestone',
   M:            'milestone',
   Cr:           'category',
