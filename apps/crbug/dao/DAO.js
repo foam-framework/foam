@@ -342,18 +342,18 @@ var QIssueSplitDAO = FOAM({
 
        // Auto index the buffer, but set an initial index for the current
        // sort order.
-       if ( options.order) auto.addIndex(options.order);
+       if ( options && options.order) auto.addIndex(options.order);
        buf.addRawIndex(auto);
 
        this.activeQuery = query;
 
-       this.local.select(buf, options.query ? { query: options.query } : {})(
+       this.local.select(buf, options && options.query ? { query: options.query } : {})(
          (function() {
            buf.select(sink, bufOptions)(function(s) { future.set(s); });
 
            var remoteOptions = {};
-           if ( options.query ) remoteOptions.query = options.query;
-           if ( options.order ) remoteOptions.order = options.order;
+           if ( options && options.query ) remoteOptions.query = options.query;
+           if ( options && options.order ) remoteOptions.order = options.order;
 
            this.remote.limit(500).select({
              put: (function(obj) {
