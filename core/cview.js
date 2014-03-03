@@ -1061,6 +1061,63 @@ var Graph = FOAM({
    }
 });
 
+var WarpedCanvas = {
+  create: function(c, mx, my, w, h) {
+    return {
+      __proto__: c,
+      warp: function(x, y) {
+        var dx = x-mx;
+        var dy = y-my;
+        var r = Math.sqrt(dx*dx + dy*dy);
+        var t = Math.atan2(dy, dx);
+
+        if ( r > 250 ) { this.x = x; this.y = y; return; }
+
+        // Method 1
+//        r = r + r * Math.sin(r/200*Math.PI)/4;
+
+        // Method 2
+        r = r/250.0;
+        r = Math.pow(r,.2);
+        r = r*250.0;
+
+        // Method 3
+/*
+        var ZOOM_RADIUS = 400;
+        var SQUARE_RADIUS = 0.05;
+        var ZOOM = 2;
+        r = r/ZOOM_RADIUS;
+        if ( r < ZOOM_RADIUS * SQUARE_RADIUS )  { r *= ZOOM; } else {
+          var p = Math.pow((r - SQUARE_RADIUS) / ( 1 - SQUARE_RADIUS), .5);
+          var r2 = r; // Math.pow(r,.25);
+          r = r * ZOOM * (1-p) + r2 * p;
+        }
+        r = r*ZOOM_RADIUS;
+*/
+        this.x = mx + Math.cos(t) * r;
+        this.y = my + Math.sin(t) * r;
+      },
+      moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); },
+      lineTo: function(x, y) { this.warp(x, y); c.lineTo(this.x, this.y); },
+      line_: function(x1, y1, x2, y2) {
+        c.beginPath();
+        this.moveTo(x1, y1);
+        this.lineTo(x2, y2);
+        c.closePath();
+        c.stroke();
+      },
+     line: function(x1, y1, x2, y2) {
+        var N = 150;
+        var dx = (x2 - x1)/N;
+        var dy = (y2 - y1)/N;
+        var x = x1, y = y1;
+        for ( var i = 0 ; i < N ; i++ ) {
+          this.line_(x, y, x += dx, y += dy);
+        }
+      },
+    };
+  }
+};
 
 var GridCView = FOAM({
   model_: 'Model',
@@ -1074,37 +1131,92 @@ var GridCView = FOAM({
     {
       name: 'grid',
       type: 'GridByExpr',
+    },
+    {
+      name: 'mouse',
+      valueFactory: function() { return Mouse.create(); }
+    }
+  ],
+
+  listeners: [
+    {
+      model_: 'Method',
+
+      name: 'onMouseMove',
+      code: function(evt) {
+        this.parent.paint()
+      }
     }
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      this.mouse.connect(this.parent.$);
+      this.mouse.addListener(this.onMouseMove);
+    },
+
+    // TODO: There should be a mode to auto-resize this CView to it's parent's size.
+//    resizeParent: function() {},
+
     // TODO: move to CView
     line: function(x1, y1, x2, y2) {
+      var c = this.canvas;
+
       c.beginPath();
-      c.moveTo(x, 0);
-      c.lineTo(x, this.height);
+      c.moveTo(x1, y1);
+      c.lineTo(x2, y2);
       c.closePath();
       c.stroke();
     },
 
     paint: function() {
+      this.width  = this.parent.$.parentElement.clientWidth;
+      this.height = this.parent.$.parentElement.clientHeight;
+
       var c = this.canvas;
 
+      this.line(this.mouse.x-10, this.mouse.y, this.mouse.x+10, this.mouse.y);
+      this.line(this.mouse.x, this.mouse.y-10, this.mouse.x, this.mouse.y+10);
+
+      var ROW_LABEL_WIDTH = 100;4
+      var COL_LABEL_HEIGHT = 40;
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
       var sortedCols = Object.getOwnPropertyNames(cols).sort(g.xFunc.compareProperty);
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
+      var w = this.width;
+      var h = this.height;
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h);
 
       c.lineWidth = 1;
       c.strokeStyle = '#000';
 
-      for ( var j = 0 ; j < sortedRows.length ; j++ ) {
-        var x = this.width * j / ( sortedRows.length + 1);
+      // Vertical Grid Lines
+      for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+        var x = ROW_LABEL_WIDTH + (w-ROW_LABEL_WIDTH) * i / sortedCols.length;
 
-        this.line(x, 0, x, this.height);
+        wc.line(x, 0, x, h);
       }
-      this.line(this.width, 0, this.width, this.height);
+      // First line
+      wc.line(0, 0, 0, h);
+      // Last line
+      wc.line(w, 0, w, h);
+
+      // Horizontal Grid Lines
+      for ( var i = 0 ; i < sortedRows.length ; i++ ) {
+        var y = COL_LABEL_HEIGHT + (h-COL_LABEL_HEIGHT) * i / sortedRows.length;
+
+        wc.line(0, y, w, y);
+      }
+
+      // First line
+      wc.line(0, 0, w, 0);
+      // Last line
+      wc.line(0, h, w, h);
+
     }
   }
 });

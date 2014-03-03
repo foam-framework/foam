@@ -939,7 +939,6 @@ var ChoiceView = FOAM({
     {
       name:  'value',
       type:  'Value',
- postSet: function() { console.log(arguments); },
       valueFactory: function() { return SimpleValue.create(); }
     },
     {
@@ -1054,7 +1053,6 @@ var ChoiceView = FOAM({
     },
 
     setValue: function(value) {
-console.log('setValue: ', value);
       Events.unlink(this.domValue, this.value);
       this.value = value;
       //       Events.link(value, this.domValue);
@@ -2890,17 +2888,24 @@ var GridView = FOAM({
       this.grid.acc   = this.acc.value.get() || this.grid.acc;
 
       this.dao.select(this.grid.clone())(function(g) {
-        console.time('toHTML');
-        var html = g.toHTML();
-        console.timeEnd('toHTML');
+        if ( self.scrollMode === 'Bars' ) {
+          console.time('toHTML');
+          var html = g.toHTML();
+          console.timeEnd('toHTML');
 
-        console.time('setInnerHTML');
-        self.$.innerHTML = html;
-        console.timeEnd('setInnerHTML');
+          console.time('setInnerHTML');
+          self.$.innerHTML = html;
+          console.timeEnd('setInnerHTML');
 
-        console.time('initHTML');
-        g.initHTML();
-        console.time('initHTML');
+          console.time('initHTML');
+          g.initHTML();
+          console.time('initHTML');
+        } else {
+          var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          self.$.innerHTML = cview.toHTML();
+          cview.initHTML();
+          cview.paint();
+        }
       });
     },
 
@@ -2934,7 +2939,7 @@ var GridView = FOAM({
     {
       model_: 'Template',
 
-      name: 'toHTML',
+      name: 'toHTML2',
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
@@ -2944,7 +2949,7 @@ var GridView = FOAM({
     {
       model_: 'Template',
 
-      name: 'toHTML2',
+      name: 'toHTML',
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
@@ -2976,7 +2981,8 @@ var Mouse = FOAM({
   ],
   methods: {
     connect: function(e) {
-      e.addEventListener('mousemove', EventService.merged(this.onMouseMove,1));
+      e.addEventListener('mousemove', this.onMouseMove);
+      return this;
     }
   },
 
@@ -2985,6 +2991,7 @@ var Mouse = FOAM({
       model_: 'Method',
 
       name: 'onMouseMove',
+      isAnimated: true,
       code: function(evt) {
         this.x = evt.offsetX;
         this.y = evt.offsetY;
