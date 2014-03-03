@@ -30,7 +30,7 @@ if (chrome.app.runtime) {
    chrome.app.runtime.onLaunched.addListener(function() { console.log('launched'); launchController(); });
 }
 
-var pc = PersistentContext.create({
+var persistentContext = PersistentContext.create({
   dao: IDBDAO.create({model: Binding}),
   predicate: NOT_TRANSIENT,
   context: GLOBAL
@@ -60,18 +60,18 @@ var EMailPreferences = CachingDAO.create(
 var EMailIDBDAO     = IDBDAO.create({model: EMail});
 var EMailBodyIDBDAO = IDBDAO.create({model: EMail, name: 'EMailBodies'});
 
-var EMailMDAO = MDAO.create({model: EMail})
-   .addIndex(EMail.TIMESTAMP);
+var EMailMDAO = MDAO.create({model: EMail});
+//   .addIndex(EMail.TIMESTAMP);
 //   .addIndex(EMail.SUBJECT);
 // .addIndex(EMail.CONV_ID);
 // .addIndex(EMail.TO);
 // .addIndex(EMail.LABELS);
 // .addIndex(EMail.FROM);
 
-var EMails = CachingDAO.create(EMailMDAO, EMailIDBDAO);
+var EMailDAO = CachingDAO.create(EMailMDAO, EMailIDBDAO);
 
-EMails = EMailBodyDAO.create({
-  delegate: EMails,
+EMailDAO = EMailBodyDAO.create({
+  delegate: EMailDAO,
   bodyDAO: EMailBodyIDBDAO
 });
 
@@ -80,15 +80,15 @@ var timer = Timer.create({});
 var StorageFuture = afuture();
 
 if (chrome.app.runtime) {
-   var auth = ChromeAuthAgent.create({});
+   var authAgent = ChromeAuthAgent.create({});
    var xhrFactory = OAuthXhrFactory.create({
-     authAgent: auth,
+     authAgent: authAgent,
      responseType: "json"
    });
 
      aseq(
        function(ret) {
-          pc.bindObject('userInfo', UserInfo, {})(ret);
+          persistentContext.bindObject('userInfo', UserInfo, {})(ret);
        },
        function(ret) {
          var xhr = xhrFactory.make();
@@ -108,3 +108,7 @@ var ContactDAO = CachingDAO.create(
    MDAO.create({model: Contact}),
    IDBDAO.create({model: Contact})
 );
+
+var ContactAvatarDAO = NullDAO.create({});
+
+InstallEMailDriver();

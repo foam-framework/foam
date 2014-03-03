@@ -2942,6 +2942,8 @@ var NullDAO = FOAM({
         removeAll: function() {},
         unlisten: function() {},
         pipe: function() {},
+        where: function() { return this; },
+        limit: function() { return this; },
     }
 });
 

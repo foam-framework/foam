@@ -1,5 +1,8 @@
 cp ../../core/foam.css .
 cp ../../core/css-tooltips.css .
+cp ../quickcompose/QuickCompose_*.ft .
+cp ../quickcompose/quickcompose.css .
+cp -r ../quickcompose/images .
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
@@ -25,8 +28,10 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/TableView.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
+  ../../core/cview.js \
   ../../core/mlang.js \
   ../../core/glang.js \
   ../../core/QueryParser.js \
@@ -43,8 +48,10 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/ChromeApp.js \
+  ../quickcompose/QuickCompose.js \
   ../mailreader/view.js \
   ../mailreader/email.js \
+  gmail.js \
   EMailBodyDAO.js \
   contacts.js \
   Storage.js \

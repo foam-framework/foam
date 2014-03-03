@@ -164,6 +164,7 @@ input[name=search] {
   height: 31px;
   line-height: 31px;
   padding: 4px 8px 4px 8px;
+  white-space: nowrap;
 }
 
 .EMailTable tbody tr td.from {

@@ -60,7 +60,7 @@ var ListChoiceView = FOAM({
       {
          name:  'value',
          type:  'Value',
-         valueFactory: function() { return SimpleValue.create(); }
+         valueFactory: function() { return SimpleValue.create(""); },
       },
       {
          name:  'choicesDao',
@@ -181,21 +181,7 @@ var ListChoiceView = FOAM({
      },
 
      setValue: function(value) {
-       Events.unlink(this.domValue, this.value);
        this.value = value;
-       var self = this;
-       Events.relate(
-         value,
-         this.domValue,
-         function (v) {
-           for ( var i = 0 ; i < self.choices.length ; i++ ) {
-             var c = self.choices[i];
-             if ( c.v === v ) return i;
-           }
-           return v;
-         },
-         function (v) { return self.indexToValue(v); }
-       );
      },
 
      initHTML: function() {
@@ -205,13 +191,7 @@ var ListChoiceView = FOAM({
 
        this.updateHTML();
 
-       this.domValue = DomValue.create(e);
-
        this.setValue(this.value);
-     },
-
-     destroy: function() {
-       Events.unlink(this.domValue, this.value);
      },
 
      indexToValue: function(v) {
@@ -221,7 +201,13 @@ var ListChoiceView = FOAM({
        return this.choices[i].v;
      },
 
-     evtToValue: function(e) { return this.indexToValue(e.target.getAttribute('value')); }
+     evtToValue: function(e) {
+       var labelView = e.target;
+       while (labelView.parentNode != this.$) {
+         labelView = labelView.parentNode;
+       }
+       return this.indexToValue(labelView.getAttribute('value'));
+     }
    },
 
    listeners:

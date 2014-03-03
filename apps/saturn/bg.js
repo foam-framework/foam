@@ -16,7 +16,9 @@
  */
 EMail.ATTACHMENTS.tableLabel = '<img src="images/paperclip.gif">';
 
-var menu = ToolbarView.create({});
+var menu = ToolbarView.create({
+  horizontal: false,
+});
 menu.addActions(FOAM([
    {
       model_: 'Action',
@@ -60,15 +62,21 @@ var actions = FOAM([
       label: '',
       help: 'Compose a new email.',
       action: function () {
-         var forwardedMail = EMail.create({
-            from: ME,
-            id: Math.floor(Math.random() * 0xffffff).toVarintString()
-         });
-         var ctrl = DAOCreateController.deepClone();
-         ctrl.actions[0].label = 'Send';
-         with ({DAOCreateController: ctrl}) {
-           DAOCreateController.getPrototype().newObj(forwardedMail, EMails);
-         }
+         aseq(arequire('QuickEMailView'),
+           arequire('QuickCompose'),
+           arequire('LinkView'),
+           arequire('RichTextView'),
+           arequire('ContactListTileView'),
+           arequire('AutocompleteListView'))(function() {
+             var forwardedMail = EMail.create({
+                from: ME,
+                id: Math.floor(Math.random() * 0xffffff).toVarintString()
+             });
+             var compose = QuickCompose.create({
+               email: forwardedMail,
+             });
+             stack.pushView(compose);
+           });
       }
    }
 ]).concat(EMail.actions);
@@ -158,6 +166,7 @@ var stack = {
        w.contentWindow.onload = function() {
          self.window = w.contentWindow;
          $addWindow(w.contentWindow);
+         view.window = w.contentWindow;
          self.window.document.body.innerHTML = view.toHTML();
          view.initHTML();
          w.focus();
@@ -182,7 +191,6 @@ var stack = {
 };
 
 function openMenu(e) {
-   debugger;
   var doc = e.toElement.ownerDocument;
   menu.document = doc;
   menu.left = doc.body.clientWidth - 162;
@@ -191,6 +199,14 @@ function openMenu(e) {
 }
 
 function openSettings() {
+  var detailView = DetailView.create({
+    model: emsAgent.model_
+  });
+  detailView.value.set(emsAgent);
+
+  var actionBorder = ActionBorder.create(emsAgent.model_, detailView);
+  stack.pushView(actionBorder);
+
 }
 
 function launchController(_, callback) {
@@ -212,7 +228,7 @@ function launchController(_, callback) {
 
   var controller = ThreePaneController.create({
     model: EMail,
-    dao: EMails,
+    dao: EMailDAO,
     queryParser: queryParser,
     searchChoice: searchChoice,
     searchWidth: MIN_SEARCH_W
@@ -238,7 +254,8 @@ function launchController(_, callback) {
     str += '<div class="timestamp">' + this.createView(EMail.TIMESTAMP).toHTML() + '</div>';
     str += '</div>';
     str += '<div class="details2">';
-    str += '<div class="to">to</div> ' + this.createView(EMail.TO).toHTML() + '</div>';
+    str += '<div class="to">to</div> ' + this.createView(EMail.TO).toHTML();
+    str += '<div class="to">cc</div> ' + this.createView(EMail.CC).toHTML();
     str += '</div>';
 
     str += '<div class="body">' + this.createView(EMail.BODY).toHTML() + '</div>';
@@ -249,7 +266,7 @@ function launchController(_, callback) {
   };
 
   controller.table.scrollbar.handleColor = '#e1e1e1';
-  controller.table.view.sortOrder = DESC(EMail.TIMESTAMP);
+  controller.table.sortOrder = DESC(EMail.TIMESTAMP);
 
   // Add support for expanding/shrinking the left-panel
   var States = {
@@ -386,7 +403,7 @@ chrome.runtime.onMessageExternal.addListener(function(message, sender, sendRespo
   if ( message.command == "search" ) {
      var predicate = queryParser.parseString(message.searchString).partialEval();
      var suggests = [];
-     EMails.limit(10).orderBy(DESC(EMail.TIMESTAMP)).where(predicate).select({
+     EMailDAO.limit(10).orderBy(DESC(EMail.TIMESTAMP)).where(predicate).select({
         put: function(x) {
            suggests.push({
               content: 'id:' + x.id,
@@ -402,7 +419,7 @@ chrome.runtime.onMessageExternal.addListener(function(message, sender, sendRespo
      launchController(undefined, function(controller) {
        // The next line prevents the onDaoUpdate listener from updating
        // the selection and showing the wrong email.
-       controller.table.view.selection.set(undefined);
+       controller.table.selection.set(undefined);
        controller.searchChoice.value.set('');
        controller.searchField.value.set(message.selectText);
        controller.layout();

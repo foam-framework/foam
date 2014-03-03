@@ -150,13 +150,12 @@ var ThreePaneController = FOAM({
       name: 'table',
       type: 'AbstractView',
       valueFactory: function() {
-        return ScrollBorder.create({
-          view: TableView.create({
+        return TableView2.create({
             model: this.model,
             dao: this.dao,
+            scrollEnabled: true,
             rows: 20
-          })
-        });
+          });
       },
       postSet: function(oldValue, newValue) {
         if (oldValue) oldValue.scrollbar.removeListener(this.updateCount);
@@ -171,7 +170,7 @@ var ThreePaneController = FOAM({
       valueFactory: function() {
         return ToolbarView.create({
           actions: this.model.actions,
-          value: this.table.view.selection
+          value: this.table.selection
         });
       },
       postSet: function(oldValue, newValue) {
@@ -183,11 +182,13 @@ var ThreePaneController = FOAM({
       name: 'editView',
       type: 'AbstractView',
       valueFactory: function() {
-        return DetailView.create({model: this.model}/*, this.table.view.selection*/);
+        return DetailView.create({model: this.model}/*, this.table.selection*/);
       },
       postSet: function(oldValue, newValue) {
         this.addChild(newValue);
         this.removeChild(oldValue);
+        oldValue && oldValue.value && oldValue.value.removeListener(this.onValueChange);
+        newValue.value.addListener(this.onValueChange);
       }
     }
   ],
@@ -261,7 +262,7 @@ var ThreePaneController = FOAM({
        this.searchField.$.style.display = 'table-cell';
        this.searchField.$.style.width = '100%';
 
-       this.table.view.selection.addListener(EventService.merged(function (value) {
+       this.table.selection.addListener(EventService.merged(function (value) {
          var newValue = value.get();
          var oldValue = self.editView.value.get();
 
@@ -273,7 +274,7 @@ var ThreePaneController = FOAM({
             put: function(email) {
                self.editView.value.set(email);
                lastSelection = email;
-               self.table.view.selection.set(email);
+               self.table.selection.set(email);
             }
          });
        }, 200));
@@ -281,6 +282,12 @@ var ThreePaneController = FOAM({
   },
 
   listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.editView.initHTML();
+      }
+    },
     {
       name: 'performQuery',
       code: function() {
@@ -293,7 +300,7 @@ var ThreePaneController = FOAM({
 
         this.table.scrollbar.value = 0;
 
-        this.table.view.model = this.model;
+        this.table.model = this.model;
         this.table.dao = this.dao.where(predicate);
       }
     },
@@ -342,8 +349,6 @@ var ThreePaneController = FOAM({
             null,
             W,
             this.footerHeight);
-
-        this.table && this.table.layout();
       }
     },
     {
@@ -351,10 +356,10 @@ var ThreePaneController = FOAM({
       isMerged: 100,
       code: function() {
          var self = this;
-         if ( this.table.view.selection.get() )
-            this.dao.find(this.table.view.selection.get().id, {
+         if ( this.table.selection.get() )
+            this.dao.find(this.table.selection.get().id, {
                put: function(obj) {
-                  self.table.view.selection.set(obj);
+                  self.table.selection.set(obj);
                   self.table.dao = self.table.dao;
                }
              });
