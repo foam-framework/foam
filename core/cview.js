@@ -175,15 +175,15 @@ var CView = FOAM({
       },
 
       initHTML: function() {
-         var self = this;
-         var parent = this.parent;
+        var self = this;
+        var parent = this.parent;
 
         parent.addChild(this);
-         parent.initHTML();
-         Events.dynamic(
-           function() { self.background; }, function() {
-             parent.background = self.background;
-           });
+        parent.initHTML();
+        Events.dynamic(
+          function() { self.background; }, function() {
+            parent.background = self.background;
+          });
       },
 
       resizeParent: function() {
@@ -192,39 +192,39 @@ var CView = FOAM({
       },
 
       write: function(document) {
-         document.writeln(this.toHTML());
-         this.initHTML();
+        document.writeln(this.toHTML());
+        this.initHTML();
       },
 
       addChild: function(child) {
-         this.children.push(child);
-         child.parent = this;
-         return this;
+        this.children.push(child);
+        child.parent = this;
+        return this;
       },
 
       removeChild: function(child) {
-         this.children.remove(child);
-         child.parent = undefined;
-         return this;
+        this.children.remove(child);
+        child.parent = undefined;
+        return this;
       },
 
       erase: function() {
-         this.canvas.fillStyle = this.background;
-         this.canvas.fillRect(0, 0, this.width, this.height);
+        this.canvas.fillStyle = this.background;
+        this.canvas.fillRect(0, 0, this.width, this.height);
       },
 
       paintChildren: function() {
-         for ( var i = 0 ; i < this.children.length ; i++ ) {
-            var child = this.children[i];
-            this.canvas.save();
-            child.paint();
-            this.canvas.restore();
-         }
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          this.canvas.save();
+          child.paint();
+          this.canvas.restore();
+        }
       },
 
       paint: function() {
-         this.erase();
-         this.paintChildren();
+        this.erase();
+        this.paintChildren();
       }
    }
 });
@@ -1071,29 +1071,27 @@ var WarpedCanvas = {
         var r = Math.sqrt(dx*dx + dy*dy);
         var t = Math.atan2(dy, dx);
 
-        if ( r > 250 ) { this.x = x; this.y = y; return; }
-
         // Method 1
 //        r = r + r * Math.sin(r/200*Math.PI)/4;
 
         // Method 2
-        r = r/250.0;
+/*        r = r/250.0;
         r = Math.pow(r,.2);
         r = r*250.0;
+*/
 
         // Method 3
-/*
+
         var ZOOM_RADIUS = 400;
-        var SQUARE_RADIUS = 0.05;
-        var ZOOM = 2;
+        var SQUARE_RADIUS = 0.04;
+        var ZOOM = 2.4;
         r = r/ZOOM_RADIUS;
-        if ( r < ZOOM_RADIUS * SQUARE_RADIUS )  { r *= ZOOM; } else {
-          var p = Math.pow((r - SQUARE_RADIUS) / ( 1 - SQUARE_RADIUS), .5);
-          var r2 = r; // Math.pow(r,.25);
-          r = r * ZOOM * (1-p) + r2 * p;
-        }
+        if ( r > 1 ) { this.x = x; this.y = y; return; }
+        r = Math.sqrt(r);
+        var z = ZOOM + Math.max(0, r-SQUARE_RADIUS) / (1-SQUARE_RADIUS)*(1-ZOOM);
+        r *= z;
         r = r*ZOOM_RADIUS;
-*/
+
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
       },
@@ -1107,7 +1105,7 @@ var WarpedCanvas = {
         c.stroke();
       },
      line: function(x1, y1, x2, y2) {
-        var N = 150;
+        var N = 300;
         var dx = (x2 - x1)/N;
         var dy = (y2 - y1)/N;
         var x = x1, y = y1;
@@ -1191,6 +1189,9 @@ var GridCView = FOAM({
       var h = this.height;
       var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h);
 
+      var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
+      var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;
+
       c.lineWidth = 1;
       c.strokeStyle = '#000';
 
@@ -1217,6 +1218,41 @@ var GridCView = FOAM({
       // Last line
       wc.line(0, h, w, h);
 
+      function wdist(x1, y1, x2, y2) {
+        wc.warp(x2, y2);
+        var dx = x1-wc.x;
+        var dy = y1-wc.y;
+        return dx*dx + dy*dy;
+      }
+
+      for ( var j = 0 ; j < sortedRows.length ; j++ ) {
+        var y = sortedRows[j];
+        for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+          var x = sortedCols[i];
+          var value = rows[y].groups[x];
+
+          if ( value && value.toCView ) {
+            var cv = value.toCView();
+
+            var cx = ROW_LABEL_WIDTH + xw * (i+0.5);
+            var cy = COL_LABEL_HEIGHT + yw * (j+0.5);
+            wc.warp(cx, cy);
+            cv.x = wc.x;
+            cv.y = wc.y;
+            cv.r = Math.sqrt(Math.min(
+              wdist(cv.x, cv.y, cx+xw/2, cy),
+              wdist(cv.x, cv.y, cx-xw/2, cy),
+              wdist(cv.x, cv.y, cx, cy+yw/2),
+              wdist(cv.x, cv.y, cx, cy-yw/2)))-4;
+            cv.x -= cv.r;
+            cv.y -= cv.r;
+
+            cv.parent = this.parent;
+
+            if ( cv.r > 3 ) cv.paint();
+          }
+        }
+      }
     }
   }
 });
