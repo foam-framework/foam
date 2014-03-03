@@ -6,7 +6,11 @@ var HEIGHT = 478;
 
 /** Requirements. **/
 var req = amemo(ametric('init', aseq(
-    this['InstallEMailDriver'] || anop,
+    function(ret) {
+      if (self.InstallEMailDriver)
+        self.InstallEMailDriver(ret, QuickEMail, self, false, false, true);
+      else ret();
+    },
     ametric('requires', aseq(          // should this be 'apar' instead?
       arequire('QuickEMailView'),
       arequire('QuickCompose'),

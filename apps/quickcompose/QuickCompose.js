@@ -138,6 +138,8 @@ var QuickEMail = FOAM({
   ]
 });
 
+// Create a dummy email so that the parent properties get constantized properly.
+QuickEMail.create({});
 
 var QuickEMailView = Model.create({
   name: 'QuickEMailView',

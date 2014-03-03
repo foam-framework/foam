@@ -17,7 +17,7 @@
 
 console.time('Storage');
 
-var EMailDAO = IDBDAO.create({model: EMail});
+var EMailDAO = NullDAO.create({});
 var ContactDAO = MDAO.create({ model: Contact });
 ContactDAO.addIndex(Contact.EMAIL);
 ContactDAO.addIndex(Contact.FIRST);
