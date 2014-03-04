@@ -118,28 +118,24 @@ var CView = FOAM({
          name:  'x',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'y',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'width',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'height',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
@@ -165,11 +161,29 @@ var CView = FOAM({
       }
    ],
 
+  listeners: [
+    {
+      model_: 'Method',
+
+      name: 'resizeParent',
+      code: function(evt) {
+        this.parent.width  = this.x + this.width + 1;
+        this.parent.height = this.y + this.height + 2;
+      }
+    }
+  ],
+
    methods: {
       toHTML: function() {
         // If being added to HTML directly, then needs to create own Canvas as parent.
         // Calling addChild() will set this.parent = canvas.
         this.parent = Canvas.create();
+
+        this.x$.addListener(this.resizeParent);
+        this.y$.addListener(this.resizeParent);
+        this.width$.addListener(this.resizeParent);
+        this.height$.addListener(this.resizeParent);
+
         this.resizeParent();
         return this.parent.toHTML();
       },
@@ -184,11 +198,6 @@ var CView = FOAM({
           function() { self.background; }, function() {
             parent.background = self.background;
           });
-      },
-
-      resizeParent: function() {
-        this.parent.width  = this.x + this.width + 1;
-        this.parent.height = this.y + this.height + 2;
       },
 
       write: function(document) {
