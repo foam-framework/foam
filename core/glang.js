@@ -152,7 +152,6 @@ var PieExpr = FOAM({
        return this.toCView().toHTML();
      },
      initHTML: function() {
-       debugger;
         this.graph_.initHTML();
         this.graph_.paint();
      },

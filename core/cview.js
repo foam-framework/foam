@@ -1071,10 +1071,12 @@ var Graph = FOAM({
 });
 
 var WarpedCanvas = {
-  create: function(c, mx, my, w, h) {
+  create: function(c, mx, my, w, h, enabled) {
     return {
       __proto__: c,
       warp: function(x, y) {
+        if ( ! enabled ) { this.x = x; this.y = y; return; }
+
         var dx = x-mx;
         var dy = y-my;
         var r = Math.sqrt(dx*dx + dy*dy);
@@ -1165,11 +1167,15 @@ var GridCView = FOAM({
       this.SUPER();
 
       this.mouse.connect(this.parent.$);
+      this.parent.$.addEventListener('mouseout', function() {
+        this.warpEnabled_ = false;
+        this.parent.paint();
+      }.bind(this));
+      this.parent.$.addEventListener('mouseenter', function() {
+        this.warpEnabled_ = true;
+      }.bind(this));
       this.mouse.addListener(this.onMouseMove);
     },
-
-    // TODO: There should be a mode to auto-resize this CView to it's parent's size.
-//    resizeParent: function() {},
 
     // TODO: move to CView
     line: function(x1, y1, x2, y2) {
@@ -1183,16 +1189,25 @@ var GridCView = FOAM({
     },
 
     paint: function() {
+      console.log('************paint: ', this.mouse.x, this.mouse.y, this.warpEnabled_);
+
+      var ROW_LABEL_WIDTH = 100;
+      var COL_LABEL_HEIGHT = 30;
+
       this.width  = this.parent.$.parentElement.clientWidth;
       this.height = this.parent.$.parentElement.clientHeight;
 
       var c = this.canvas;
 
+      this.canvas.fillStyle = '#eee';
+      this.canvas.fillRect(0, 0, this.width, COL_LABEL_HEIGHT);
+      this.canvas.fillRect(0, 0, ROW_LABEL_WIDTH, this.height);
+
+      /*
       this.line(this.mouse.x-10, this.mouse.y, this.mouse.x+10, this.mouse.y);
       this.line(this.mouse.x, this.mouse.y-10, this.mouse.x, this.mouse.y+10);
+      */
 
-      var ROW_LABEL_WIDTH = 100;4
-      var COL_LABEL_HEIGHT = 40;
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
@@ -1200,7 +1215,7 @@ var GridCView = FOAM({
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
       var w = this.width;
       var h = this.height;
-      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h);
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.warpEnabled_);
 
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;
