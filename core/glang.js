@@ -95,10 +95,12 @@ var PieGraph = FOAM({
          }
 
          // Drop shadown
+        if ( r > 10 ) {
          c.fillStyle = 'lightgray';
          c.beginPath();
          c.arc(r+2, r+2, r, 0, 2 * Math.PI);
          c.fill();
+        }
 
          c.lineWidth = this.lineWidth;
          c.strokeStyle = this.lineColor;
