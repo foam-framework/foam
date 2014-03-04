@@ -1189,8 +1189,6 @@ var GridCView = FOAM({
     },
 
     paint: function() {
-      console.log('************paint: ', this.mouse.x, this.mouse.y, this.warpEnabled_);
-
       var ROW_LABEL_WIDTH = 100;
       var COL_LABEL_HEIGHT = 30;
 
