@@ -3,6 +3,8 @@ cp ../../core/css-tooltips.css .
 cp ../quickcompose/QuickCompose_*.ft .
 cp ../quickcompose/quickcompose.css .
 cp -r ../quickcompose/images .
+cp ../quickcompose/gmail.* .
+
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
@@ -50,12 +52,23 @@ cat \
   ../../core/ChromeApp.js \
   ../quickcompose/QuickCompose.js \
   ../mailreader/view.js \
-  ../mailreader/email.js \
-  gmail.js \
-  EMailBodyDAO.js \
-  contacts.js \
-  Storage.js \
-  bg.js > foam.js
+  ../mailreader/email.js > tmp
+
+if [ -f gmail.js ]; then
+    cat tmp gmail.js > tmp2
+    mv tmp2 tmp
+fi
+
+cat \
+    tmp \
+    gmail.js \
+    EMailBodyDAO.js \
+    contacts.js \
+    Storage.js \
+    bg.js \
+    > foam.js
+
+rm tmp
 
 #  | sed 's/[^:]\/\/.*$//' \
 #  | sed 's/^\/\/.*$//' \

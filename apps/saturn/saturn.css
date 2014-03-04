@@ -315,3 +315,7 @@ tr.detail-attachments .actionBorderActions {
   padding: 10px;
   width: 100%;
 }
+
+.actionToolbar {
+  float: none;
+}

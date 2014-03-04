@@ -37,11 +37,11 @@ var persistentContext = PersistentContext.create({
 });
 
 
-var EMailLabels = MDAO.create({model: EMailLabel})
+var EMailLabelDAO = MDAO.create({model: EMailLabel})
    .addIndex(EMailLabel.DISPLAY_NAME);
 
-EMailLabels = CachingDAO.create(
-    EMailLabels,
+EMailLabelDAO = CachingDAO.create(
+    EMailLabelDAO,
     IDBDAO.create({model: EMailLabel})).orderBy(
        { compare: function(o1, o2) { return o1.displayName == EMailLabel.getPrototype().SystemLabels.INBOX ? -1 : o2.displayName == EMailLabel.getPrototype().SystemLabels.INBOX ? 1 : 0; } },
        { compare: function(o1, o2) { return -o1.isSystemLabel().compareTo(o2.isSystemLabel()); } },
@@ -111,4 +111,4 @@ var ContactDAO = CachingDAO.create(
 
 var ContactAvatarDAO = NullDAO.create({});
 
-InstallEMailDriver();
+InstallEMailDriver(function(){}, EMail, window, true, true, true);

@@ -16,6 +16,19 @@
  */
 EMail.ATTACHMENTS.tableLabel = '<img src="images/paperclip.gif">';
 
+var metricsSrv = {
+  send: function(){},
+  sendEvent: function() {},
+  sendAppView: function(){},
+  sendException:function(){},
+  sendSocial: function(){},
+  sendTiming: function(){},
+  set: function(){},
+  startTiming: function() {
+    return { send: function() {} };
+  }
+};
+
 var menu = ToolbarView.create({
   horizontal: false,
 });
@@ -115,7 +128,7 @@ var queryParser = {
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
-      EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, values[i])).select({put:function(el) {
+      EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, values[i])).select({put:function(el) {
          or.args.push(EQ(EMail.LABELS, el.id));
       }});
     }
@@ -214,7 +227,7 @@ function launchController(_, callback) {
   // TODO: have actions or DAO decorator remove emails from Inbox
   // when marked as Spam, Archive, Trash, etc.
   var searchChoice = ListChoiceView.create({
-    choicesDao: EMailLabels,
+    choicesDao: EMailLabelDAO,
     displayNameProperty: { f: function(self) {
       return EMailLabel.getPrototype().getRenderName.call(self); } },
     valueProperty: { f: function(self) {
@@ -385,7 +398,7 @@ function launchContactController(_, callback) {
 function editLabels(_, callback) {
    var controller = ThreePaneController.create({
       model: EMailLabel,
-      dao: EMailLabels,
+      dao: EMailLabelDAO,
       queryParser: QueryParserFactory(EMailLabel),
       searchChoice: TextFieldView.create(),
       searchWidth: 0
