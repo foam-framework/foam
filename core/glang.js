@@ -64,6 +64,8 @@ var PieGraph = FOAM({
    ],
 
    methods: {
+      resizeParent: function() {
+      },
       toCount: function(o) {
          return CountExpr.isInstance(o) ? o.count : o;
       },
@@ -140,13 +142,19 @@ var PieExpr = FOAM({
    name: 'PieExpr',
 
    methods: {
-     toHTML: function() {
-        this.graph_ = PieGraph.create({groups: this.groups, r: 50, x: 0});
-        this.graph_.copyFrom(this.opt_args);
+     toCView: function() {
+       if ( ! this.graph_ ) {
+         this.graph_ = PieGraph.create({groups: this.groups, r: 50, x: 0});
+         this.graph_.copyFrom(this.opt_args);
+       }
+       return this.graph_;
+     },
 
-        return this.graph_.toHTML();
+     toHTML: function() {
+       return toCView().toHTML();
      },
      initHTML: function() {
+       debugger;
         this.graph_.initHTML();
         this.graph_.paint();
      },
