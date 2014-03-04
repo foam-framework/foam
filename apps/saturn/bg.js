@@ -338,14 +338,14 @@ function launchController(_, callback) {
 
      w.controller = controller;
 
-     if ( navigator.offLine ) controller.setLogo('images/logo_offline.png');
+     if ( navigator.offLine ) controller.setLogo('images/saturn_offline.png');
 
      w.addEventListener('online', function(e) {
-        controller.setLogo('images/logo.png');
+        controller.setLogo('images/saturn.png');
      }, false);
 
      w.addEventListener('offline', function(e) {
-        controller.setLogo('images/logo_offline.png');
+        controller.setLogo('images/saturn_offline.png');
      }, false);
 
     // TODO: this should be a property of the controller
