@@ -680,6 +680,8 @@ var MBOXParser = {
     sym('id'),
     sym('conversation id'),
     sym('to'),
+    sym('cc'),
+    sym('bcc'),
     sym('from'),
     sym('subject'),
     sym('date'),
@@ -701,6 +703,8 @@ var MBOXParser = {
 
 //  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
+  cc: seq('Cc: ', sym('until eol')),
+  bcc: seq('Bcc: ', sym('until eol')),
   from: seq('From: ', sym('until eol')),
 
   labels: seq('X-Gmail-Labels: ', repeat(sym('label'), ',')),
@@ -866,6 +870,22 @@ var MBOXLoader = {
     var i = this.email.to.indexOf(',');
     if ( i != -1 ) this.email.to = this.email.to.substring(0, i);
 },
+
+  cc: function(v) {
+    var cc = v[1].join('').split(',');
+    for ( var i = 0; i < cc.length; i++ ) {
+      cc[i] = cc[i].trim();
+    }
+    this.email.cc = cc;
+  },
+
+  bcc: function(v) {
+    var bcc = v[1].join('').split(',');
+    for ( var i = 0; i < bcc.length; i++ ) {
+      bcc[i] = bcc[i].trim();
+    }
+    this.email.bcc = bcc;
+  },
 
   from: function(v) { this.email.from = v[1].join('').trim(); },
 
