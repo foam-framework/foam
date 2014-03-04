@@ -118,28 +118,24 @@ var CView = FOAM({
          name:  'x',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'y',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'width',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
          name:  'height',
          type:  'int',
          view:  'IntFieldView',
-         postSet: function() { this.resizeParent(); },
          defaultValue: 10
       },
       {
@@ -165,11 +161,29 @@ var CView = FOAM({
       }
    ],
 
+  listeners: [
+    {
+      model_: 'Method',
+
+      name: 'resizeParent',
+      code: function(evt) {
+        this.parent.width  = this.x + this.width + 1;
+        this.parent.height = this.y + this.height + 2;
+      }
+    }
+  ],
+
    methods: {
       toHTML: function() {
         // If being added to HTML directly, then needs to create own Canvas as parent.
         // Calling addChild() will set this.parent = canvas.
         this.parent = Canvas.create();
+
+        this.x$.addListener(this.resizeParent);
+        this.y$.addListener(this.resizeParent);
+        this.width$.addListener(this.resizeParent);
+        this.height$.addListener(this.resizeParent);
+
         this.resizeParent();
         return this.parent.toHTML();
       },
@@ -184,11 +198,6 @@ var CView = FOAM({
           function() { self.background; }, function() {
             parent.background = self.background;
           });
-      },
-
-      resizeParent: function() {
-        this.parent.width  = this.x + this.width + 1;
-        this.parent.height = this.y + this.height + 2;
       },
 
       write: function(document) {
@@ -1062,10 +1071,12 @@ var Graph = FOAM({
 });
 
 var WarpedCanvas = {
-  create: function(c, mx, my, w, h) {
+  create: function(c, mx, my, w, h, enabled) {
     return {
       __proto__: c,
       warp: function(x, y) {
+        if ( ! enabled ) { this.x = x; this.y = y; return; }
+
         var dx = x-mx;
         var dy = y-my;
         var r = Math.sqrt(dx*dx + dy*dy);
@@ -1075,13 +1086,17 @@ var WarpedCanvas = {
 //        r = r + r * Math.sin(r/200*Math.PI)/4;
 
         // Method 2
-/*        r = r/250.0;
-        r = Math.pow(r,.2);
-        r = r*250.0;
-*/
+        if ( r > 308 ) { this.x = x; this.y = y; return; }
+        r -= 8;
+        if ( r > 0 ) {
+          r = r/300.0;
+          r = Math.pow(r,.2);
+          r = r*300.0;
+        }
+        r += 8;
 
         // Method 3
-
+/*
         var ZOOM_RADIUS = 400;
         var SQUARE_RADIUS = 0.04;
         var ZOOM = 2.4;
@@ -1091,7 +1106,7 @@ var WarpedCanvas = {
         var z = ZOOM + Math.max(0, r-SQUARE_RADIUS) / (1-SQUARE_RADIUS)*(1-ZOOM);
         r *= z;
         r = r*ZOOM_RADIUS;
-
+*/
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
       },
@@ -1152,11 +1167,15 @@ var GridCView = FOAM({
       this.SUPER();
 
       this.mouse.connect(this.parent.$);
+      this.parent.$.addEventListener('mouseout', function() {
+        this.warpEnabled_ = false;
+        this.parent.paint();
+      }.bind(this));
+      this.parent.$.addEventListener('mouseenter', function() {
+        this.warpEnabled_ = true;
+      }.bind(this));
       this.mouse.addListener(this.onMouseMove);
     },
-
-    // TODO: There should be a mode to auto-resize this CView to it's parent's size.
-//    resizeParent: function() {},
 
     // TODO: move to CView
     line: function(x1, y1, x2, y2) {
@@ -1170,16 +1189,23 @@ var GridCView = FOAM({
     },
 
     paint: function() {
+      var ROW_LABEL_WIDTH = 100;
+      var COL_LABEL_HEIGHT = 30;
+
       this.width  = this.parent.$.parentElement.clientWidth;
       this.height = this.parent.$.parentElement.clientHeight;
 
       var c = this.canvas;
 
+      this.canvas.fillStyle = '#eee';
+      this.canvas.fillRect(0, 0, this.width, COL_LABEL_HEIGHT);
+      this.canvas.fillRect(0, 0, ROW_LABEL_WIDTH, this.height);
+
+      /*
       this.line(this.mouse.x-10, this.mouse.y, this.mouse.x+10, this.mouse.y);
       this.line(this.mouse.x, this.mouse.y-10, this.mouse.x, this.mouse.y+10);
+      */
 
-      var ROW_LABEL_WIDTH = 100;4
-      var COL_LABEL_HEIGHT = 40;
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
@@ -1187,7 +1213,7 @@ var GridCView = FOAM({
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
       var w = this.width;
       var h = this.height;
-      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h);
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.warpEnabled_);
 
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;

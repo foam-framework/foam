@@ -64,8 +64,6 @@ var PieGraph = FOAM({
    ],
 
    methods: {
-      resizeParent: function() {
-      },
       toCount: function(o) {
          return CountExpr.isInstance(o) ? o.count : o;
       },
@@ -76,8 +74,6 @@ var PieGraph = FOAM({
         return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);
       },
       paint: function() {
-//         this.erase();
-
          var c = this.canvas;
          var x = this.x;
          var y = this.y;
@@ -95,10 +91,12 @@ var PieGraph = FOAM({
          }
 
          // Drop shadown
+        if ( r > 10 ) {
          c.fillStyle = 'lightgray';
          c.beginPath();
          c.arc(r+2, r+2, r, 0, 2 * Math.PI);
          c.fill();
+        }
 
          c.lineWidth = this.lineWidth;
          c.strokeStyle = this.lineColor;
@@ -151,10 +149,9 @@ var PieExpr = FOAM({
      },
 
      toHTML: function() {
-       return toCView().toHTML();
+       return this.toCView().toHTML();
      },
      initHTML: function() {
-       debugger;
         this.graph_.initHTML();
         this.graph_.paint();
      },
