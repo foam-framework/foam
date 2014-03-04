@@ -58,7 +58,7 @@ function bootstrap(scope) {
     get: function() { return this; },
   });
 
-  var ModelProto = {};
+  var ModelProto = { static_: {} };
   simpleProperty(ModelProto, "features");
   simpleProperty(ModelProto, "prototype");
 
@@ -72,16 +72,12 @@ function bootstrap(scope) {
   scope.set('FObject', FObject);
   FObject.__proto__ = ModelProto;
   FObject.features = [];
-  FObject.prototype = {};
+  FObject.prototype = { static_: {} };
   Model.prototype.__proto__ = FObject.prototype;
   simpleProperty(FObject.prototype, "model_");
 
   FObject.model_ = Model;
   Model.model_ = Model;
-
-  Model.prototype.create = function(args) {
-    return this.prototype.create(args);
-  };
 
   FObject.prototype.create = function create(args) {
     var proto = this.prototype || this.model_.prototype;
@@ -98,14 +94,13 @@ function bootstrap(scope) {
       // Otherwise we just created an instance of ourself.
       obj.model_ = this;
     }
-      
-    if ( args ) obj.copyFrom(args);
-
     // Copy from this as well, if we're initialize off an instance of a Model
     // rather than a model itself.  This allows objects to act as templates/factories
     if ( this.model_ !== Model ) {
       obj.copyFrom(this);
     }
+
+    if ( args ) obj.copyFrom(args);
 
     obj.initialize();
 
@@ -123,12 +118,13 @@ function bootstrap(scope) {
         this.model_.features[i].init(this);
     }
   };
+
   var Property = { instance_: {} };
   scope.set('Property', Property);
   Property.__proto__ = ModelProto;
   Property.features = [];
   Property.model_ = Model;
-  Property.prototype = { __proto__: FObject.prototype };
+  Property.prototype = { __proto__: FObject.prototype, static_: {} };
   simpleProperty(Property.prototype, "valueFactory");
   Property.prototype.install = function(o) {
     simpleProperty(o.prototype, this.name);
@@ -158,7 +154,7 @@ function bootstrap(scope) {
   tmp = Property.create({
     name: 'prototype',
     valueFactory: function() {
-      return { __proto__: FObject.prototype };
+      return { __proto__: FObject.prototype, static_: {} };
     }
   });
   Model.features.push(tmp);
@@ -176,6 +172,7 @@ function bootstrap(scope) {
   });
   Model.features.push(tmp);
   tmp.install(Model);
+  Model.name = 'Model';
 
   var Method = Model.create({ name: 'Method' });
   scope.set('Method', Method);
@@ -187,13 +184,19 @@ function bootstrap(scope) {
   };
 };
 
-var features = [
+var featureDAO = [
   ['Method', 'Property', { name: 'name' }],
   ['Method', 'Property', { name: 'code' }],
 
   ['Model', 'Method', function install(o) {
     o[this.name] = this;
   }],
+  ['Model', 'Method', function create(args) {
+    if ( this.model_ === Model && this.name != 'Model' ) {
+      return this.prototype.create.call(this, args);
+    }
+    return this.SUPER(args);
+  }],    
 
   [null, 'Model', { name: 'Constant' }],
   ['Constant', 'Property', { name: 'name' }],
@@ -689,18 +692,18 @@ var features = [
   ['Property', 'Property', { name: 'setter' }],
   ['Property', 'Method', function install(obj) {
     // TODO: Inheritence of parent model property
-    o[this.scopeName.constantize()] = this;
-
     var prop = this;
 
-    var scope = this.scope;
-    var scopeName = this.scopeName;
+    var scope = this.scope || 'instance_';
+    var scopeName = this.scopeName || this.name;
     var name = this.name;
     var defaultValueFn = this.defaultValueFn;
     var defaultValue = this.defaultValue;
     var valueFactory = this.valueFactory;
     var preSet = this.preSet;
     var postSet = this.postSet;
+
+    obj[scopeName.constantize()] = this;
 
     var get = this.getter || (
       defaultValueFn ?
@@ -736,7 +739,7 @@ var features = [
       this.propertyChange && this.propertyChange(scopeName, oldValue, value);
     };
 
-    Object.defineProperty(o.prototype, this.scopeName, {
+    Object.defineProperty(obj.prototype, scopeName, {
       configurable: true,
       enumerable: this.enumerable === undefined ? true : this.enumerable,
       writeable: true,
@@ -745,12 +748,12 @@ var features = [
     });
 
     if ( scope === "static_" && this.valueFactory ) {
-      o.prototype[this.name] = this.valueFactory();
+      obj.prototype[this.name] = this.valueFactory();
     }
   }],
   ['Model',    'Method',  function isSubModel(model) {
-    // TODO: inheritence
-    return model && (model === this)
+    return model && (model === this ||
+                     this.isSubModel(model.prototype.extendsModel));
   }],
   ['Model',    'Method',  function isInstance(obj) {
     return obj && obj.model_ && this.isSubModel(obj.model_);
@@ -761,745 +764,29 @@ var features = [
   ['Model',    'Method',  function hashCode(obj) {
     return obj && obj.model_ && this.isSubModel(obj.model_);
   }],
-  ['Property', 'Method', function create(adsf) { debugger; }],
-  ['Property', 'Property', { name: 'wat' }],
-/*  ['Property', 'Method', function install(o, existing) {
-    var parent = o.features && o.features.get('extends');
-    if ( parent ) {
-      var parentFeature = parent.model.features.get(this.name);
-      if ( parentFeature ) {
-        this.instance_.__proto__ = parentFeature.instance_;
-      }
-    }
+  [null, 'Model', { name: 'Extends' }],
+  ['Extends', 'Property', { name: 'parent' }],
+  ['Extends', 'Method', function install(m) {
+    var parent = get(this.parent);
+    m.prototype.extendsModel = parent;
+    m.prototype.__proto__ = parent.prototype;
 
-    o[this.scopeName.constantize()] = this;
-
-    var prop = this;
-
-    var scope = this.scope;
-    var scopeName = this.scopeName;
-    var name = this.name;
-    var defaultValueFn = this.defaultValueFn;
-    var defaultValue = this.defaultValue;
-    var valueFactory = this.valueFactory;
-    var preSet = this.preSet;
-    var postSet = this.postSet;
-
-    var get = this.getter || (
-      defaultValueFn ?
-        (function() {
-          if ( this[scope][scopeName] === undefined ) {
-            if ( valueFactory ) {
-              return this[scope][scopeName] = valueFactory.call(this);
-            }
-            return defaultValueFn.call(this, prop);
-          }
-          return this[scope][scopeName];
-        }) :
-        (function() {
-          if ( this[scope][scopeName] === undefined ) {
-            if ( valueFactory ) {
-              return this[scope][scopeName] = valueFactory.call(this);
-            }
-            return defaultValue;
-          }
-          return this[scope][scopeName]
-        }));
-
-    var set = this.setter || function(value) {
-      // Do we want to restirct oldValue to just the local instance, not parent instances_?
-      var oldValue = this[scope][scopeName];
-
-      if ( preSet ) value = preSet.call(this, value, oldValue, prop);
-
-      this[scope][scopeName] = value;
-
-      if ( postSet ) postSet.call(this, oldValue, value, prop)
-
-      this.propertyChange && this.propertyChange(scopeName, oldValue, value);
-    };
-
-    Object.defineProperty(o.prototype, this.scopeName, {
-      configurable: true,
-      enumerable: this.enumerable === undefined ? true : this.enumerable,
-      writeable: true,
-      get: get,
-      set: set
-    });
-
-    if ( scope === "static_" && this.valueFactory ) {
-      o.prototype[this.name] = this.valueFactory();
-    }
-  }],
-  ['Property', 'Property', { name: 'scope', scope: 'instance_', scopeName: 'scope', defaultValue: 'instance_' }],
-  ['Property', 'Property', { name: 'scopeName', scopeName: 'scopeName', defaultValueFn: function() { return this.name } }],
-  ['Property', 'Property', { name: 'name' }],
-  ['Property', 'Property', {
-    name: 'defaultValue',
-    defaultValue: '',
-    help: 'The property\'s default value.'
+    // TODO: do we do this, or pipe the features DAO?
+    m.__proto__ = parent;
   }],
 
-  ['Property', 'Property', {
-    name: 'defaultValueFn'
-  }],
-
-  ['Property', 'Property', {
-    name: 'valueFactory'
-  }],
-
-  ['Property', 'Property', { name: 'enumerable', defaultValue: true }],
-  ['Property', 'Method', function f(o) {
-    return o[this.name];
-  }],
-  ['Property', 'Method', function initialize(o) {
-    if ( ! o.instance_.hasOwnProperty(this.name) &&
-        this.valueFactory ) o.instance_[this.name] = this.valueFactory();
-  }],
-
-  ['Method', 'Property', {
-    name: 'name',
-  }],
-  ['Method', 'Property', {
-    name: 'code'
-  }],
-
-  ['FObject',  'Property',
-   { name: 'SUPER',
-     getter: function f() { return f.caller.super_.bind(this); },
-     setter: function() {},
-     enumerable: false }],
-
-  ['Model',    'Property', { name: 'features',
-                             valueFactory: function() { return []; } }],
-  [null,       'Model',    { name: 'Feature' }],
-  ['Feature',  'Property', { name: 'name' }],
-
-  [null,       'Model', { name: 'Extends' }],
-  ['Extends',  'Property', { name: 'model' }],
-  ['Extends',  'Method', function create(model) {
-    // TODO this can be cleand up.
-    var model = CTX[model] || GLOBAL[model];
-    return this.SUPER({
-      model: model,
-      name: 'extends'
-    });
-  }],
-  ['Extends',  'Method',  function install(o) {
-    // this.model.features.pipe({
-    //   put: function(f) {
-    //     if ( f.name == "extends" ) return;
-    //     var feature = f.clone();
-    //     feature.__parent__ = f;
-    //     o.features.put(feature);
-    //   }
-    // });
-    o.prototype.__proto__ = this.model.prototype;
-  }],
-
-  ['Property', 'Extends', 'Feature'],
-  ['Model', 'Extends', 'Feature'],
-  ['Extends', 'Extends', 'Feature'],
-  ['Method', 'Extends', 'Feature'],
-
-  [null, "Model", { name: "Events" }],
-  ["Events", "Property", {
-    name: "listeners_",
-    scope: "static_",
-    valueFactory: function() { return {}; }
-  }],
-  [
-    "Events",
-    "Method",
-    {
-      "name": "identity",
-      "code": function (x) { return x; }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "follow",
-      "code": function (srcValue, dstValue) {
-        if ( ! srcValue || ! dstValue ) return;
-
-        dstValue.set(srcValue.get());
-
-        var listener = function () {
-          dstValue.set(srcValue.get());
-        };
-
-        this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-        srcValue.addListener(listener);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "map",
-      "code": function (srcValue, dstValue, f) {
-        if ( ! srcValue || ! dstValue ) return;
-
-        var listener = function () {
-          dstValue.set(f(srcValue.get()));
-        };
-
-        listener(); // copy initial value
-
-        this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-        srcValue.addListener(listener);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "unfollow",
-      "code": function (srcValue, dstValue) {
-        if ( ! srcValue || ! dstValue ) return;
-
-        var key      = [srcValue.$UID, dstValue.$UID];
-        var listener = this.listeners_[key];
-
-        delete this.listeners_[key];
-
-        srcValue.removeListener(listener);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "link",
-      "code": function (value1, model2) {
-        this.follow(value1, model2);
-        this.follow(model2, value1);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "relate",
-      "code": function (value1, value2, f, fprime) {
-        this.map(value1, value2, f);
-        this.map(value2, value1, fprime);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "unlink",
-      "code": function (value1, value2) {
-        this.unfollow(value1, value2);
-        this.unfollow(value2, value1);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "dynamic",
-      "code": function (fn, opt_fn) {
-        var fn2 = opt_fn ? function() { fn(opt_fn()); } : fn;
-        var oldOnGet = Events.prototype.onGet;
-        var listener = FObject.prototype.merged(fn2, 5);
-        Events.prototype.onGet = function(obj, name, value) {
-          obj.propertyValue(name).addListener(listener);
-        };
-        var ret = fn();
-        Events.prototype.onGet = oldOnGet;
-        opt_fn && opt_fn(ret);
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "onSet",
-      "code": function (obj, name, newValue) {
-        return true;
-      }
-    }
-  ],
-
-  [
-    "Events",
-    "Method",
-    {
-      "name": "onGet",
-      "code": function (obj, name, value) {
-      }
-    }
-  ],
-  ['Function', 'Method', function o(f2) {
-    var f1 = this;
-    return function() { return f1.call(this, f2.apply(this, arguments)); };
-  }],
-  [null, "Model", { name: "Movement" }],
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "distance",
-      "code": function (x, y) { return Math.sqrt(x*x + y*y); }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "o",
-      "code": function (f1, f2) { return function(x) { return f1(f2(x)); }; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "avg",
-      "code": function (f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "linear",
-      "code": function (x) { return x; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "back",
-      "code": function (x) { return x < 0.5 ? 2*x : 2-2*x; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "accelerate",
-      "code": function (x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "easeIn",
-      "code": function (a) {
-        var v = 1/(1-a/2);
-        return function(x) {
-          var x1 = Math.min(x, a);
-          var x2 = Math.max(x-a, 0);
-          return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "reverse",
-      "code": function (f) { return function(x) { return 1-f(1-x); }; }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "easeOut",
-      "code": function (b) { return Movement.reverse(Movement.easeIn(b)); }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "oscillate",
-      "code": function (b,a,opt_c) {
-        var c = opt_c || 3;
-        return function(x) {
-          if ( x < (1-b) ) return x/(1-b);
-          var t = (x-1+b)/b;
-          return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "bounce",
-      "code": function (b,a,opt_c) {
-        var c = opt_c || 3;
-        return function(x) {
-          if ( x < (1-b) ) return x/(1-b);
-          var t = (x-1+b)/b;
-          return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "bounce2",
-      "code": function (a) {
-        var v = 1 / (1-a);
-        return function(x) {
-          if ( x < (1-a) ) return v*x;
-          var p = (x-1+a)/a;
-          return 1-(x-1+a)*v/2;
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "stepBack",
-      "code": function (a) {
-        return function(x) {
-          return ( x < a ) ? -x : -2*a+(1+2*a)*x;
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "ease",
-      "code": function (a, b) {
-        return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "seq",
-      "code": function (f1, f2) {
-        return ( f1 && f2 ) ? function() { f1.apply(this, arguments); f2(); } :
-        f1 ? f1
-          : f2 ;
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "animate",
-      "code": function (duration, fn, opt_interp, opt_onEnd) {
-        if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
-
-        var interp = opt_interp || Movement.linear;
-
-        return function() {
-          var startTime = Date.now();
-          var oldOnSet  = Events.prototype.onSet;
-          var ranges = [];
-
-          Events.prototype.onSet = function(obj, name, value2) {
-            ranges.push([obj, name, obj[name], value2]);
-          };
-          fn && fn.apply(this, arguments);
-          Events.prototype.onSet = oldOnSet;
-
-          if ( ranges.length > 0 || true ) {
-            var timer = setInterval(function() {
-              var now = Math.min(Date.now(), startTime + duration);
-              var p   = interp((now-startTime)/duration);
-
-              for ( var i = 0 ; i < ranges.length ; i++ ) {
-                var r = ranges[i];
-                var obj = r[0];
-                var name = r[1];
-                var value1 = r[2];
-                var value2 = r[3];
-
-                obj[name] = value1 + (value2-value1) * p;
-              }
-
-              if ( now >= startTime + duration ) {
-                clearTimeout(timer);
-                opt_onEnd && opt_onEnd();
-              }
-            }, 30);
-          }
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "animate2",
-      "code": function (timer, duration, fn) {
-        return function() {
-          var startTime = timer.time;
-          var oldOnSet  = Events.prototype.onSet;
-          Events.prototype.onSet = function(obj, name, value2)
-          {
-            var value1 = obj[name];
-
-            Events.prototype.dynamic(function() {
-              var now = timer.time;
-
-              obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
-
-              if ( now > startTime + duration ) throw FObject.prototype.UNSUBSCRIBE_EXCEPTION;
-            });
-
-            return false;
-          };
-          fn.apply(this, arguments);
-          Events.prototype.onSet = oldOnSet;
-          update();
-        };
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "compile",
-      "code": function (a, opt_rest) {
-        function noop() {}
-
-        function isSimple(op) {
-          return Array.isArray(op) && typeof op[0] === 'number';
-        }
-
-        function compileSimple(op, rest) {
-          op[3] = Movement.seq(op[3], rest);
-          return function() { Movement.animate.apply(null, op)(); };
-        }
-
-        function isParallel(op) {
-          return Array.isArray(op) && Array.isArray(op[0]);
-        }
-
-        function compileParallel(op, rest) {
-          var join = (function(num) {
-            return function() { --num || rest(); };
-          })(op.length);
-
-          return function() {
-            for ( var i = 0 ; i < op.length ; i++ )
-              if ( isSimple(op[i]) )
-                Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
-            else
-              Movement.compile(op[i], join)();
-          };
-        }
-
-        function compileFn(fn, rest) {
-          return Movement.seq(fn, rest);
-        }
-
-        function compile_(a, i) {
-          if ( i >= a.length ) return opt_rest || noop;
-
-          var rest = compile_(a, i+1);
-          var op = a[i];
-
-          if ( isSimple(op)   ) return compileSimple(op, rest);
-          if ( isParallel(op) ) return compileParallel(op, rest);
-
-          return compileFn(op, rest);
-        }
-
-        return compile_(a, 0);
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "onIntersect",
-      "code": function (o1, o2, fn) {
-
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "stepTowards",
-      "code": function (src, dst, maxStep) {
-        var dx = src.x - dst.x;
-        var dy = src.y - dst.y;
-        var theta = Math.atan2(dy,dx);
-        var r     = Math.sqrt(dx*dx+dy*dy);
-        r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
-
-        dst.x += r*Math.cos(-theta);
-        dst.y -= r*Math.sin(-theta);
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "moveTowards",
-      "code": function (t, body, sat, v) {
-        var bodyX = body.propertyValue('x');
-        var bodyY = body.propertyValue('y');
-        var satX  = sat.propertyValue('x');
-        var satY  = sat.propertyValue('y');
-
-        t.addListener(function() {
-          var dx = bodyX.get() - satX.get();
-          var dy = (bodyY.get() - satY.get());
-          var theta = Math.atan2(dy,dx);
-          var r     = Math.sqrt(dx*dx+dy*dy);
-
-          r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
-
-          satX.set(satX.get() + r*Math.cos(-theta));
-          satY.set(satY.get() - r*Math.sin(-theta));
-        });
-      }
-    }
-  ],
-
-  [
-    "Movement",
-    "Method",
-    {
-      "name": "orbit",
-      "code": function (t, body, sat, r, p)
-      {
-        var bodyX = body.propertyValue('x');
-        var bodyY = body.propertyValue('y');
-        var satX  = sat.propertyValue('x');
-        var satY  = sat.propertyValue('y');
-
-        t.addListener(function() {
-          var time = t.time;
-          satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
-          satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
-        });
-      }
-    }
-  ],
-
-  // Finish up FObject
-  ['FObject', 'Method', function hasOwnProperty(name) {
-    return this.instance_.hasOwnProperty(name);
-  }],
-  // Should this really be here?  It skips all the property stuff.
-  ['FObject', 'Method', function clearProperty(name) {
-    delete this.instance_[name];
-  }],
-  ['FObject', 'Method', function hashCode() {
-    var hash = 17;
-
-    for ( var i = 0; i < this.model_.features.length ; i++ ) {
-      var feature = this.model_.features[i].name;
-      if ( !Property.isInstance(feature) ) continue;
-
-      var prop = this[feature.name];
-      var code = ! prop ? 0 :
-        prop.hashCode   ? prop.hashCode()
-                        : prop.toString().hashCode();
-
-      hash = ((hash << 5) - hash) + code;
-      hash &= hash;
-    }
-
-    return hash;
-  }],
-  ['FObject', 'Method', function output(out) {
-    JSONUtil.output(out, this);
-  }],
-  ['FObject', 'Method', function toJSON() {
-    return JSONUtil.stringify(this);
-  }],
-  ['FObject', 'Method', function toXML() {
-    return XMLUtil.stringify(this);
-  }],
-  ['FObject', 'Method', function write() {
-    var view = ActionBorder.create(
-      this.model_,
-      DetailView.create({model: this.model_}));
-
-    document.wrintln(view.toHTML());
-    view.value.set(this);
-    view.initHTML();
-  }],
-
+  // Types
   [null, 'Model', { name: 'StringProperty' }],
   ['StringProperty', 'Extends', 'Property'],
-  ['Feature', 'StringProperty', {
+  ['Property', 'StringProperty', {
     name: 'help',
-    help: 'Help text associated with the feature.'
-  }],
-  ['Feature', 'StringProperty', {
-    name: 'name',
-    help: 'The name of the feature.'
+    help: 'Help text associated with the property.'
   }],
   ['Property', 'StringProperty', {
     name: 'name',
-    help: 'The coding identifier for the property'
+    help: 'The coding identifier for the property.'
   }],
-  ['Feature', 'StringProperty', {
+  ['Property', 'StringProperty', {
     name: 'label',
     help: 'The display label for the feature.',
     defaultValueFn: function() { return this.name.labelize(); }
@@ -1789,6 +1076,71 @@ var features = [
   }],
 
 
+
+  // Model pseudo-properties for backwards compatability.
+  ['Model', 'Property', {
+    name: 'properties',
+    getter: function() {
+      var props = [];
+      for ( var i = 0; i < this.features.length; i++ ) {
+        if ( Property.isInstance(this.features[i]) )
+      }
+    }
+  }]
+
+  ['FObject', 'Method', function hasOwnProperty(name) {
+    return this.instance_.hasOwnProperty(name);
+  }],
+  // Should this really be here?  It skips all the property stuff.
+  ['FObject', 'Method', function clearProperty(name) {
+    delete this.instance_[name];
+  }],
+  ['FObject', 'Method', function writeActions(other, out) {
+    for ( var i = 0, property ; property = this.model_.properties[i] ; i++ ) {
+      if ( property.actionFactory ) {
+        var actions = property.actionFactory(this, property.f(this), property.f(other));
+        for (var j = 0; j < actions.length; j++)
+          out(actions[j]);
+      }
+    }
+  }],
+  ['FObject', 'Method', function hashCode() {
+    var hash = 17;
+
+    for ( var i = 0; i < this.model_.features.length ; i++ ) {
+      var feature = this.model_.features[i].name;
+      if ( !Property.isInstance(feature) ) continue;
+
+      var prop = this[feature.name];
+      var code = ! prop ? 0 :
+        prop.hashCode   ? prop.hashCode()
+                        : prop.toString().hashCode();
+
+      hash = ((hash << 5) - hash) + code;
+      hash &= hash;
+    }
+
+    return hash;
+  }],
+  ['FObject', 'Method', function output(out) {
+    JSONUtil.output(out, this);
+  }],
+  ['FObject', 'Method', function toJSON() {
+    return JSONUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function toXML() {
+    return XMLUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function write() {
+    var view = ActionBorder.create(
+      this.model_,
+      DetailView.create({model: this.model_}));
+
+    document.wrintln(view.toHTML());
+    view.value.set(this);
+    view.initHTML();
+  }],
+
   // Actions
   [null, 'Model', { name: 'Action' }],
   ['Action', 'BooleanProperty', {
@@ -1809,6 +1161,9 @@ var features = [
     name: 'action',
     getter: function() {
       return this.code;
+    },
+    setter: function(v) {
+      this.code = v;
     }
   }],
   ['Action', 'Extends', 'Method'],
@@ -1973,12 +1328,12 @@ function lookup(address, scope) {
 
   var split = address.split('.');
   for ( var i = 0; i < split.length && scope; i++ ) {
-    scope = scope.get(split[i]);
+    scope = scope.get ? scope.get(split[i]) : scope[split[i]];
   }
   return scope;
 }
 
-function build(scope) {
+function build(scope, features) {
   for ( var i = 0 ; i < features.length ; i++ ) {
     var f = features[i];
     if (f[3]) debugger;
@@ -1996,12 +1351,12 @@ function build(scope) {
   }
 }
 
-var scope = {};
+var scope = window;
 scope.set = function(key, value) { this[key] = value; };
 scope.get = function(key) { return this[key]; };
 scope.features = [];
 bootstrap(scope);
-build(scope);
+build(scope, featureDAO);
 
 /*
 build(CTX);
