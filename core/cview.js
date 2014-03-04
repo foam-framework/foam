@@ -1070,6 +1070,7 @@ var Graph = FOAM({
    }
 });
 
+
 var WarpedCanvas = {
   create: function(c, mx, my, w, h, enabled) {
     return {
@@ -1111,23 +1112,39 @@ var WarpedCanvas = {
         this.y = my + Math.sin(t) * r;
       },
       moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); },
-      lineTo: function(x, y) { this.warp(x, y); c.lineTo(this.x, this.y); },
-      line_: function(x1, y1, x2, y2) {
-        c.beginPath();
-        this.moveTo(x1, y1);
-        this.lineTo(x2, y2);
-        c.closePath();
-        c.stroke();
-      },
-     line: function(x1, y1, x2, y2) {
+      lineTo: function(x2, y2) {
         var N = 300;
+        var x1 = this.x;
+        var y1 = this.y;
         var dx = (x2 - x1)/N;
         var dy = (y2 - y1)/N;
         var x = x1, y = y1;
         for ( var i = 0 ; i < N ; i++ ) {
-          this.line_(x, y, x += dx, y += dy);
+          x += dx;
+          y += dy;
+          this.warp(x, y);
+          c.lineTo(this.x, this.y);
         }
       },
+      line: function(x1, y1, x2, y2) {
+        c.beginPath();
+        this.moveTo(x1, y1);
+        this.lineTo(x2, y2);
+        c.stroke();
+      },
+      fillRect: function(x, y, width, height) {
+        c.beginPath();
+        this.moveTo(x, y);
+        this.lineTo(x+width, y);
+        this.lineTo(x+width, y+height);
+        this.lineTo(x, y+height);
+        this.lineTo(x, y);
+        c.closePath();
+        c.fill();
+      },
+      get lineWidth()   { return c.linewidth },   set lineWidth(v)   { c.linewidth = v; },
+      get strokeStyle() { return c.strokeStyle }, set strokeStyle(v) { c.strokeStyle = v; },
+      get fillStyle()   { return c.fillStyle },   set fillStyle(v)   { c.fillStyle = v; }
     };
   }
 };
@@ -1197,15 +1214,6 @@ var GridCView = FOAM({
 
       var c = this.canvas;
 
-      this.canvas.fillStyle = '#eee';
-      this.canvas.fillRect(0, 0, this.width, COL_LABEL_HEIGHT);
-      this.canvas.fillRect(0, 0, ROW_LABEL_WIDTH, this.height);
-
-      /*
-      this.line(this.mouse.x-10, this.mouse.y, this.mouse.x+10, this.mouse.y);
-      this.line(this.mouse.x, this.mouse.y-10, this.mouse.x, this.mouse.y+10);
-      */
-
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
@@ -1218,8 +1226,12 @@ var GridCView = FOAM({
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;
 
-      c.lineWidth = 1;
-      c.strokeStyle = '#000';
+      wc.fillStyle = '#eee';
+      wc.fillRect(0, 0, this.width, COL_LABEL_HEIGHT);
+      wc.fillRect(0, 0, ROW_LABEL_WIDTH, this.height);
+
+      wc.lineWidth = 1;
+      wc.strokeStyle = '#000';
 
       // Vertical Grid Lines
       for ( var i = 0 ; i < sortedCols.length ; i++ ) {
