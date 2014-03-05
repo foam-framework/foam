@@ -1087,6 +1087,7 @@ var WarpedCanvas = {
 //        r = r + r * Math.sin(r/200*Math.PI)/4;
 
         // Method 2
+/*
         if ( r > 308 ) { this.x = x; this.y = y; return; }
         r -= 8;
         if ( r > 0 ) {
@@ -1095,7 +1096,7 @@ var WarpedCanvas = {
           r = r*300.0;
         }
         r += 8;
-
+*/
         // Method 3
 /*
         var ZOOM_RADIUS = 400;
@@ -1108,6 +1109,13 @@ var WarpedCanvas = {
         r *= z;
         r = r*ZOOM_RADIUS;
 */
+
+        // Method 4
+        if ( r > 500 ) { this.x = x; this.y = y; return; }
+        r = r/500.0;
+        r = r*(1+10*r*Math.pow(1-r,4));
+        r = r*500.0;
+
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
       },
@@ -1132,6 +1140,10 @@ var WarpedCanvas = {
         this.lineTo(x2, y2);
         c.stroke();
       },
+      fillText: function(t, x, y) {
+        this.warp(x, y);
+        c.fillText(t, this.x, this.y);
+      },
       fillRect: function(x, y, width, height) {
         c.beginPath();
         this.moveTo(x, y);
@@ -1142,9 +1154,11 @@ var WarpedCanvas = {
         c.closePath();
         c.fill();
       },
-      get lineWidth()   { return c.linewidth },   set lineWidth(v)   { c.linewidth = v; },
-      get strokeStyle() { return c.strokeStyle }, set strokeStyle(v) { c.strokeStyle = v; },
-      get fillStyle()   { return c.fillStyle },   set fillStyle(v)   { c.fillStyle = v; }
+      get font()        { return c.linewidth; },   set font(v)        { c.linewidth = v; },
+      get lineWidth()   { return c.linewidth; },   set lineWidth(v)   { c.linewidth = v; },
+      get strokeStyle() { return c.strokeStyle; }, set strokeStyle(v) { c.strokeStyle = v; },
+      get fillStyle()   { return c.fillStyle; },   set fillStyle(v)   { c.fillStyle = v; },
+      get textAlign()   { return c.textAlign; },   set textAlign(v)   { c.textAlign = v; }
     };
   }
 };
@@ -1206,7 +1220,7 @@ var GridCView = FOAM({
     },
 
     paint: function() {
-      var ROW_LABEL_WIDTH = 100;
+      var ROW_LABEL_WIDTH = 140;
       var COL_LABEL_HEIGHT = 30;
 
       this.width  = this.parent.$.parentElement.clientWidth;
@@ -1232,10 +1246,15 @@ var GridCView = FOAM({
 
       wc.lineWidth = 1;
       wc.strokeStyle = '#000';
+      wc.fillStyle = '#000';
+      wc.textAlign = 'left';
+      wc.font = 'bold 10px arial';
 
       // Vertical Grid Lines
       for ( var i = 0 ; i < sortedCols.length ; i++ ) {
-        var x = ROW_LABEL_WIDTH + (w-ROW_LABEL_WIDTH) * i / sortedCols.length;
+        var x = ROW_LABEL_WIDTH + i * xw;
+
+        wc.fillText(sortedCols[i], x+4, COL_LABEL_HEIGHT/2);
 
         wc.line(x, 0, x, h);
       }
@@ -1246,7 +1265,9 @@ var GridCView = FOAM({
 
       // Horizontal Grid Lines
       for ( var i = 0 ; i < sortedRows.length ; i++ ) {
-        var y = COL_LABEL_HEIGHT + (h-COL_LABEL_HEIGHT) * i / sortedRows.length;
+        var y = COL_LABEL_HEIGHT + i * yw;
+
+        wc.fillText(sortedRows[i], 5, y + yw/2);
 
         wc.line(0, y, w, y);
       }
