@@ -478,7 +478,7 @@ var DescribeExpr = FOAM({
       partialEval: function() {
         var newArg = this.arg1.partialEval();
 
-        return this.arg1 === newArg ? this : DESCRIBE(newArg);
+        return this.arg1 === newArg ? this : EXPLAIN(newArg);
       },
       f: function(obj) { return this.arg1.f(obj); }
    }
@@ -1571,7 +1571,7 @@ function NOT(arg) {
   return NotExpr.create({arg1: compile_(arg)});
 }
 
-function DESCRIBE(arg) {
+function EXPLAIN(arg) {
   return DescribeExpr.create({arg1: arg});
 }
 
