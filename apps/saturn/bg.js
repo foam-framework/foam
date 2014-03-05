@@ -353,6 +353,7 @@ function launchController(_, callback) {
 
      if ( navigator.offLine ) controller.setLogo('images/saturn_offline.png');
 
+      // TODO: use css instead and delete the second image -webkit-filter: grayscale(0.8);
      w.addEventListener('online', function(e) {
         controller.setLogo('images/saturn.png');
      }, false);

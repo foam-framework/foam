@@ -176,17 +176,17 @@ dao.select(GRID_BY(Person.SEX, Person.AGE, MAP(Person.NAME, [])))(function(g) { 
 // MAP
 dao.select(MAP(Person.NAME, []))(console.log);
 
-// DESCRIBE
+// EXPLAIN
 
-dao.select(DESCRIBE([]))(console.log);
+dao.select(EXPLAIN([]))(console.log);
 
-dao.orderBy(Person.AGE).select(DESCRIBE([]))(console.log);
+dao.orderBy(Person.AGE).select(EXPLAIN([]))(console.log);
 
-dao.orderBy(Person.SEX).select(DESCRIBE([]))(console.log);
+dao.orderBy(Person.SEX).select(EXPLAIN([]))(console.log);
 
-dao.orderBy(Person.SEX).select(DESCRIBE([]))(console.log);
+dao.orderBy(Person.SEX).select(EXPLAIN([]))(console.log);
 
-dao.select(DESCRIBE(COUNT()))(console.log);
+dao.select(EXPLAIN(COUNT()))(console.log);
 
 
 // Remove
@@ -203,7 +203,7 @@ dao.select(MAP(Person.AGE, []))(console.log);
 // Materialized Views / mLang Indices
 dao.select(SUM(Person.AGE))(console.log);
 
-dao.select(DESCRIBE(SUM(Person.AGE)))(console.log);
+dao.select(EXPLAIN(SUM(Person.AGE)))(console.log);
 
 
 // Concurrency
