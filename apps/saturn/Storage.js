@@ -75,6 +75,50 @@ EMailDAO = EMailBodyDAO.create({
   bodyDAO: EMailBodyIDBDAO
 });
 
+var CDAO = FOAM({
+  model_: 'Model',
+  name: 'CDAO',
+
+  properties: [
+  ],
+
+  extendsModel: 'ProxyDAO',
+  methods: {
+    select: function(sink, options) {
+      var future = afuture();
+
+      var tmp = MDAO.create({ model: Conversation });
+      var self = this;
+      options = options || {};
+      var queryoptions = {};
+      if ( options.query ) queryoptions.query = options.query;
+
+      this.delegate.select(DISTINCT(EMail.CONV_ID, []), queryoptions)(function(convs) {
+        self.delegate.where(IN(EMail.CONV_ID, Object.keys(convs.values))).select(GROUP_BY(EMail.CONV_ID, Conversation.create({})))(function(convs) {
+          for (var conv in convs.groups) {
+            tmp.put(convs.groups[conv]);
+          }
+
+          var finaloptions = {
+            __proto__: options,
+            query: undefined
+          };
+
+          tmp.select(sink, finaloptions)(function(s) {
+            future.set(s);
+          });
+        });
+      });
+      return future.get;
+    }
+  }
+});
+
+var ConversationDAO = CDAO.create({
+  delegate: EMailDAO,
+  model: Conversation
+});
+
 var timer = Timer.create({});
 
 var StorageFuture = afuture();

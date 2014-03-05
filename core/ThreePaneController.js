@@ -25,7 +25,6 @@ function pos(e, top, left, width, height) {
    height != null && (e.style.height = toNum(height) + 'px');
 }
 
-
 var ThreePaneController = FOAM({
   model_: 'Model',
 
@@ -237,7 +236,7 @@ var ThreePaneController = FOAM({
         '  <span class="searchChoice">' + this.searchChoice.toHTML() + '</span>\n' +
         '</div>\n' +
         '<div class="browse" id="browse-' + this.getID() + '" style="position:absolute;background-color:#FFF;float:left;">' + this.table.toHTML() + '</div>\n' +
-        '<div class="edit" id="edit-' + this.getID() + '" style="position:absolute;position:absolute;background-color:#FFF;">\n' +
+        '<div class="edit" id="edit-' + this.getID() + '" style="position:absolute;position:absolute;background-color:#FFF;overflow:scroll;">\n' +
         this.editView.toHTML() +
         '</div>\n' +
         '<div id="footer-' + this.getID() + '" style="position:absolute;text-align:right;padding-top:3px;width:100%"> \n' +
@@ -270,13 +269,7 @@ var ThreePaneController = FOAM({
         // if ( ! newValue || oldValue && newValue === oldValue ) return;
          if ( newValue === lastSelection ) return;
 
-         newValue && self.dao.find(newValue.id, {
-            put: function(email) {
-               self.editView.value.set(email);
-               lastSelection = email;
-               self.table.selection.set(email);
-            }
-         });
+         self.editView.value.set(newValue);
        }, 200));
     }
   },
