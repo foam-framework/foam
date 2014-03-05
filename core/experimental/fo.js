@@ -196,7 +196,7 @@ var featureDAO = [
       return this.prototype.create.call(this, args);
     }
     return this.SUPER(args);
-  }],    
+  }],
 
   [null, 'Model', { name: 'Constant' }],
   ['Constant', 'Property', { name: 'name' }],
@@ -209,8 +209,8 @@ var featureDAO = [
       enumerable: true,
       get: function() { return value },
       set: function(v) {
-	console.warn('Changing constant value');
-	value = v;
+        console.warn('Changing constant value');
+        value = v;
       }
     });
   }],

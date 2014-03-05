@@ -23,8 +23,8 @@ var IssueRestDAO = FOAM({
   methods: {
     jsonToObj: function(json) {
       if ( json.cc ) {
-	for ( var i = 0 ; i < json.cc.length ; i++ )
-	  json.cc[i] = json.cc[i].name;
+        for ( var i = 0 ; i < json.cc.length ; i++ )
+          json.cc[i] = json.cc[i].name;
       }
       if ( json.owner  ) json.owner  = json.owner.name;
       if ( json.author ) json.author = json.author.name;
@@ -122,13 +122,13 @@ var IssueRestDAO = FOAM({
       // those results.
 
       function stripDefaultQuery(m) {
-	if ( DefaultQuery.isInstance(m) ) return TRUE;
-	if ( m.args ) {
-	  for ( var i = 0; i < m.args.length; i++ ) {
-	    m.args[i] = stripDefaultQuery(m.args[i]);
-	  }
-	}
-	return m;
+        if ( DefaultQuery.isInstance(m) ) return TRUE;
+        if ( m.args ) {
+          for ( var i = 0; i < m.args.length; i++ ) {
+            m.args[i] = stripDefaultQuery(m.args[i]);
+          }
+        }
+        return m;
       }
 
       outquery[1] = stripDefaultQuery(outquery[1]).partialEval();

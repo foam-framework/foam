@@ -379,4 +379,4 @@ var User = FOAM({
          "subType": "Project"
       }
    ]
-}); 
+});
