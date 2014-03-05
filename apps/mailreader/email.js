@@ -721,7 +721,7 @@ var MBOXParser = {
     '--', sym('until eol')),
 
   'start of body': seq(
-    'Content-Type: text/plain; ',
+    'Content-Type: text/html; ',
     sym('until eol')
     ),
 
@@ -827,7 +827,7 @@ var MBOXLoader = {
 
   saveCurrentEmail: function() {
     if ( this.email ) {
-      this.email.body = this.b.join('\n');
+      this.email.body = QuotedPrintable.decode(this.b.join('\n'));
 
       var i = this.email.body.indexOf("Content-Type:");
       if ( i != -1 ) this.email.body = this.email.body.slice(0,i);

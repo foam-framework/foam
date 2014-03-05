@@ -27,6 +27,7 @@ String.fromCharCode = (function() {
   };
 })();
 
+// WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
 var IncrementalUtf8 = {
   create: function() {
     return {
@@ -48,29 +49,29 @@ var IncrementalUtf8 = {
       this.charcode = byte;
       if (!(this.charcode & 0x80)) {
         this.remaining = 0;
-        this.charcode &= 0x7f;
+        this.charcode = (byte & 0x7f) << (6 * this.remaining);
       } else if ((this.charcode & 0xe0) == 0xc0) {
         this.remaining = 1;
-        this.charcode &= 0x1f;
+        this.charcode = (byte & 0x1f) << (6 * this.remaining);
       } else if ((this.charcode & 0xf0) == 0xe0) {
         this.remaining = 2;
-        this.charcode &= 0x0f;
+        this.charcode = (byte & 0x0f) << (6 * this.remaining);
       } else if ((this.charcode & 0xf8) == 0xf0) {
         this.remaining = 3;
-        this.charcode &= 0x07;
+        this.charcode = (byte & 0x07) << (6 * this.remaining);
       } else if ((this.charcode & 0xfc) == 0xf8) {
         this.remaining = 4;
-        this.charcode &= 0x03;
+        this.charcode = (byte & 0x03) << (6 * this.remaining);
       } else if ((this.charcode & 0xfe) == 0xfc) {
         this.remaining = 5;
-        this.charcode &= 0x01;
+        this.charcode = (byte & 0x01) << (6 * this.remaining);
       } else throw "Bad charcode value";
+    } else if ( this.remaining > 0 ) {
+      this.remaining--;
+      this.charcode |= (byte & 0x3f) << (6 * this.remaining);
     }
 
-    if (this.remaining > 0) {
-      this.charcode |= (byte & 0x7f) << (6 * (5 - this.remaining));
-      this.remaining--;
-    } else {
+    if ( this.remaining == 0 ) {
       // NOTE: Turns out fromCharCode can't handle all unicode code points.
       // We need fromCodePoint from ES 6 before this will work properly.
       // However it should be good enough for most cases.
@@ -80,44 +81,18 @@ var IncrementalUtf8 = {
   }
 };
 
-// WARNING: This is a hastily written UTF-8 decoder it probably has bugs.
-function utf8tostring(bytes) {
-    var first;
-    var chars = "";
-    var j = 0;
-    for (var i = 0; i < bytes.length; i++) {
-        var charcode = 0;
-        charcode = bytes[i];
-        var remaining;
-        if (!(charcode & 0x80)) {
-            remaining = 0;
-            charcode &= 0x7f;
-        } else if ((charcode & 0xe0) == 0xc0) {
-            remaining = 1;
-            charcode &= 0x1f;
-        } else if ((charcode & 0xf0) == 0xe0) {
-            remaining = 2;
-            charcode &= 0x0f;
-        } else if ((charcode & 0xf8) == 0xf0) {
-            remaining = 3;
-            charcode &= 0x07;
-        } else if ((charcode & 0xfc) == 0xf8) {
-            remaining = 4;
-            charcode &= 0x03;
-        } else if ((charcode & 0xfe) == 0xfc) {
-            remaining = 5;
-            charcode &= 0x01;
-        } else return undefined;
-        for (var j = 0; j < remaining && j + i < bytes.length; j++) {
-            charcode |= (bytes[i+j] & 0x7f) << (6 * j);
-        }
-        // NOTE: Turns out fromCharCode can't handle all unicode code points.
-        // We need fromCodePoint from ES 6 before this will work properly.
-        // However it should be good enough for most cases.
-        chars += String.fromCharCode(charcode);
-    }
-    return chars;
-}
+var utf8tostring = (function() {
+  var decoder = IncrementalUtf8.create();
+
+  return function utf8tostring(bytes) {
+    for ( var i = 0; i < bytes.length; i++ ) decoder.put(bytes[i]);
+
+    var str = decoder.string;
+    decoder.reset();
+
+    return str;
+  };
+})();
 
 function stringtoutf8(str) {
     var res = [];
