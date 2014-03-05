@@ -1119,11 +1119,11 @@ var WarpedCanvas = {
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
       },
-      moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); },
+      moveTo: function(x, y) { this.warp(x, y); c.moveTo(this.x, this.y); this.X = x; this.Y = y; },
       lineTo: function(x2, y2) {
-        var N = 300;
-        var x1 = this.x;
-        var y1 = this.y;
+        var N = 100;
+        var x1 = this.X;
+        var y1 = this.Y;
         var dx = (x2 - x1)/N;
         var dy = (y2 - y1)/N;
         var x = x1, y = y1;
@@ -1133,6 +1133,8 @@ var WarpedCanvas = {
           this.warp(x, y);
           c.lineTo(this.x, this.y);
         }
+        this.X = x2;
+        this.Y = y2;
       },
       line: function(x1, y1, x2, y2) {
         c.beginPath();
@@ -1162,6 +1164,7 @@ var WarpedCanvas = {
     };
   }
 };
+
 
 var GridCView = FOAM({
   model_: 'Model',
@@ -1254,7 +1257,7 @@ var GridCView = FOAM({
       for ( var i = 0 ; i < sortedCols.length ; i++ ) {
         var x = ROW_LABEL_WIDTH + i * xw;
 
-        wc.fillText(sortedCols[i], x+4, COL_LABEL_HEIGHT/2);
+        wc.fillText(sortedCols[i], x+2, COL_LABEL_HEIGHT/2+2);
 
         wc.line(x, 0, x, h);
       }
