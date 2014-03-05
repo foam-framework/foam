@@ -18,7 +18,7 @@
 var QuotedPrintable = {
   encode: function(str) {
   },
-  decode: function(str) {
+  decode: function(str, decoder) {
     var result = "";
 
     var normal = function(s) {
@@ -29,7 +29,6 @@ var QuotedPrintable = {
     var quoted = (function() {
       var buffer = "";
       var index = 0;
-      var decoder = IncrementalUtf8.create();
 
       return function(s) {
         if ( s === '\r' || s === '\n' ) {

@@ -721,7 +721,7 @@ var MBOXParser = {
     '--', sym('until eol')),
 
   'start of body': seq(
-    'Content-Type: text/html; ',
+    'Content-Type: text/', alt('plain', 'html'), '; ',
     sym('until eol')
     ),
 
@@ -760,6 +760,10 @@ var MBOXLoader = {
       this.state = this.PARSE_HEADERS_STATE;
       this.blockId = undefined;
     }
+
+    var encoding = /Content-Transfer-Encoding: ([^\r\n])*/;
+    var match = encoding.exec(str);
+    if ( match && match[1] ) { this.encoding = match[1]; return; }
 
     this.b.push(str.trimRight());
   },
@@ -827,7 +831,32 @@ var MBOXLoader = {
 
   saveCurrentEmail: function() {
     if ( this.email ) {
-      this.email.body = QuotedPrintable.decode(this.b.join('\n'));
+      var b = this.b.join('\n');
+
+      if ( this.encoding && this.encoding == 'quoted-printable' ) {
+        var decoder = QuotedPrintable;
+
+        if ( this.charset && this.charset == 'UTF-8' ) {
+          var charset = IncrementalUtf8.create();
+        } else {
+          charset = {
+            string: "",
+            put: function(s) {
+              this.string += String.fromCharCode(s);
+            },
+            reset: function() {
+              this.string = "";
+            }
+          };
+        }
+
+        b = decoder.decode(this.b.join('\n'), charset);
+      }
+
+      this.email.body = b;
+
+      this.charset = "";
+      this.encoding = "";
 
       var i = this.email.body.indexOf("Content-Type:");
       if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
@@ -902,6 +931,17 @@ var MBOXLoader = {
    },
 
   'start of body': function(v) {
+    var params = v[3].join('');
+
+    if ( params ) {
+      var matcher = /charset=([^ \n;]+)/;
+      var results = matcher.exec(params);
+      if ( results[1] ) {
+        this.charset = results[1];
+      }
+    } else {
+      this.charset = 'ISO-8859-1';
+    }
     this.state = this.READ_BODY_STATE;
   },
 
