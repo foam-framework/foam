@@ -62,7 +62,6 @@ fi
 
 cat \
     tmp \
-    gmail.js \
     EMailBodyDAO.js \
     contacts.js \
     Storage.js \

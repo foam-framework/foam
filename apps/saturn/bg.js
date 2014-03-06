@@ -240,13 +240,15 @@ function launchController(_, callback) {
   });
 
   var controller = ThreePaneController.create({
-    model: EMail,
-    dao: EMailDAO,
+    model: Conversation,
+    dao: ConversationDAO,
     queryParser: queryParser,
     searchChoice: searchChoice,
     searchWidth: MIN_SEARCH_W
   });
   controller.toolbar.addActions(actions);
+  controller.editView = ConversationView.create({});
+  /*
   controller.editView.toHTML = function() {
     this.children = [];
     var model = this.model;
@@ -277,6 +279,7 @@ function launchController(_, callback) {
 
     return str;
   };
+  */
 
   controller.table.scrollbar.handleColor = '#e1e1e1';
   controller.table.sortOrder = DESC(EMail.TIMESTAMP);
@@ -443,4 +446,111 @@ chrome.runtime.onMessageExternal.addListener(function(message, sender, sendRespo
        actions[0].action();
      });
    }
+});
+
+var MessageView = FOAM({
+  model_: 'Model',
+  name: 'MessageView',
+  extendsModel: 'DetailView',
+
+  properties: [
+    {
+      name:  'model',
+      valueFactory: function() { return EMail; },
+    },
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(oldValue, newValue) {
+        if (oldValue && this.onValueChange) oldValue.removeListener(this.onValueChange);
+        this.onValueChange && newValue && newValue.addListener(this.onValueChange);
+      },
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      var fromView = this.createView(this.model.FROM);
+      this.addChild(fromView);
+
+      var toView = this.createView(this.model.TO);
+      this.addChild(toView);
+
+      var ccView = this.createView(this.model.CC);
+      this.addChild(ccView);
+
+      var bccView = this.createView(this.model.BCC);
+      this.addChild(bccView);
+
+      var bodyView = this.createView(this.model.BODY);
+      this.addChild(bodyView);
+      return '<div id="' + this.getID() + '">' +
+          '<div>From: ' + fromView.toHTML() + '</div>' +
+          '<div>To: ' + toView.toHTML() + '</div>' +
+          '<div>CC: ' + ccView.toHTML() + '</div>' +
+          '<div>BCC: ' + bccView.toHTML() + '</div>' +
+          bodyView.toHTML() +
+        '</div>';
+    }
+  }
+});
+
+var ConversationView = FOAM({
+  model_: 'Model',
+  name: 'ConversationView',
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name:  'value',
+      type:  'Value',
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(oldValue, newValue) {
+        if (oldValue && this.onValueChange) oldValue.removeListener(this.onValueChange);
+        this.onValueChange && newValue && newValue.addListener(this.onValueChange);
+      },
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.getID() + '"></div>';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+        var c = this.value.get();
+        if (!c) return;
+
+        this.children = [];
+
+        var html = "";
+
+        var self = this;
+        c.emails.forEach(function(m) {
+          var v = MessageView.create({});
+
+          v.value.set(m);
+          self.addChild(v);
+
+          // This is done to actually get the email bodies.
+          EMailDAO.find(m.id, {
+            put: function(m2) {
+              m.body = m2.body;
+            }
+          });
+        
+          html += v.toHTML();
+        });
+          
+        this.$.innerHTML = html;
+
+        this.initChildren();
+      }
+    }
+  ],
 });

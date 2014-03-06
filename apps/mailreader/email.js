@@ -342,7 +342,15 @@ var EMail = FOAM({
          displayWidth: 90,
          tableWidth: '120',
          tableFormatter: function(t) {
-           return t.replace(/"/g, '').replace(/<.*/, '');
+           var ret;
+           if (t.search('<.*>') != -1) {
+             // If it's a name followed by <email>, just use the name.
+             ret = t.replace(/<.*>/, '').replace(/"/g, '');
+           } else {
+             // If it's just an email, only use everything before the @.
+             ret = t.replace(/@.*/, '');
+           }
+           return ret.trim();
          },
          valueFactory: function() { return GLOBAL.user || ""; }
       },
@@ -992,4 +1000,87 @@ var EMailBody = FOAM({
 
     methods: {
     }
+});
+
+var Conversation = FOAM({
+  model_: 'Model',
+  name: 'Conversation',
+
+  tableProperties: [
+    'recipients',
+    'subject',
+    'timestamp',
+  ],
+
+  ids: [ 'id' ],
+
+  properties: [
+    {
+      name: 'id',
+    },
+    {
+      name: 'recipients',
+      tableWidth: '100',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'subject',
+      shortName: 's',
+      mode: 'read-write',
+      required: true,
+      displayWidth: 100,
+      tableWidth: '45%',
+      view: 'TextFieldView'
+    },
+    {
+      name: 'timestamp',
+    },
+    {
+      name: 'emails',
+    },
+  ],
+
+  listeners: [
+    {
+      // For some reason, when isAnimated is true, nothing renders.
+      //isAnimated: true,
+      name: 'update',
+      code: function() {
+        if (!this.emails) return;
+        // TODO the primary email should be the most recent email that matches the query
+        // that we haven't yet given this model.
+        var primaryEmail = this.emails[0];
+
+        this.subject = primaryEmail.subject;
+
+        var allSenders = [];
+        var seenSenders = {};
+        for (var i = 0, m; m = this.emails[i]; i++) {
+          // TODO this needs work:
+          // 1. bold unread
+          // 2. strip last names when more than one name
+          // 3. limit to 3 senders (first sender followed by last two i think)
+          // 4. dont dedupe senders that have an unread and a read message. They should show twice.
+          if (!seenSenders[m.from]) {
+            allSenders.push(EMail.FROM.tableFormatter(m.from));
+            seenSenders[m.from] = true;
+          }
+        }
+        this.recipients = allSenders.join(', ');
+        if (this.emails.length > 1) {
+          this.recipients += ' (' + this.emails.length + ')';
+        }
+        this.timestamp = primaryEmail.timestamp;
+      }
+    }
+  ],
+
+  methods: {
+    put: function(email) {
+      if (!this.emails) this.emails = [];
+      this.emails.put(email);
+      this.id = email.convId;
+      this.update();
+    }
+  }
 });
