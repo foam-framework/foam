@@ -421,6 +421,7 @@ var EMail = FOAM({
          shortName: 'b',
          label: '',
 //         view: 'RichTextView',
+        view: 'TextFieldView',
          displayWidth: 70,
          displayHeight: 20,
          help: 'Email message body.',
