@@ -155,4 +155,4 @@ var ContactDAO = CachingDAO.create(
 
 var ContactAvatarDAO = NullDAO.create({});
 
-InstallEMailDriver(function(){}, EMail, window, true, true, true);
+if ( this.InstallEMailDriver ) InstallEMailDriver(function(){}, EMail, window, true, true, true);
