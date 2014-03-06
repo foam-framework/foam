@@ -120,7 +120,7 @@ var Action = FOAM({
     ],
   methods: {
     callIfEnabled: function(that) {
-      if ( this.isEnabled.call(that) ) this.action.call(that);
+      if ( this.isEnabled.call(that) ) this.action.call(that, this);
     }
   }
 });
