@@ -102,23 +102,15 @@ var AttachmentView = FOAM({
 });
 
 
-var QuickEMail = FOAM({
-  model_: 'Model',
-  extendsModel: 'EMail',
-  name: 'QuickEMail',
-  properties: [
-    {
-      name: 'to',
-      displayWidth: 55,
-      view: {
-        // TODO: Fetch this dependencies via context.
+var ContactView = {
+        // TODO: Fetch dependencies via context.
         create: function(prop) {
           return ListValueView.create({
             inputView: ListInputView.create({
               name: prop.name,
               dao: ContactAvatarDAO,
               property: Contact.EMAIL,
-              placeholder: 'To',
+              placeholder: prop.name.capitalize(),
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST, Contact.TITLE],
               autocompleteView: AutocompleteListView.create({
                 innerView: ContactListTileView,
@@ -139,8 +131,16 @@ var QuickEMail = FOAM({
             })
           });
         }
-      }
-    },
+};
+
+var QuickEMail = FOAM({
+  model_: 'Model',
+  extendsModel: 'EMail',
+  name: 'QuickEMail',
+  properties: [
+    { name: 'to',  displayWidth: 55, view: ContactView },
+    { name: 'cc',  displayWidth: 55, view: ContactView },
+    { name: 'bcc', displayWidth: 55, view: ContactView },
     { name: 'subject',     displayWidth: 55, view: { model_: 'TextFieldView', placeholder: 'Subject', onKeyMode: true } },
     { name: 'attachments', view: 'AttachmentView' },
     { name: 'body',        view: { model_: 'RichTextView', height: 100, onKeyMode: true, placeholder: 'Message' } }
@@ -155,10 +155,18 @@ var QuickEMailView = Model.create({
 
   extendsModel: 'DetailView',
 
+  properties: [
+    {
+      name: 'isFull',
+      help: 'Determines if the full compose window is to be shown with cc and bcc fields.',
+      defaultValue: false
+    }
+  ],
+
   templates: [
     {
       name: "toHTML",
-      template: '$$to $$subject $$body $$attachments'
+      template: '$$to <% if ( this.isFull ) { %> $$cc $$bcc <% } %> $$subject $$body $$attachments'
     }
   ]
 });
@@ -189,7 +197,8 @@ var QuickCompose = FOAM({
       name: 'view',
       valueFactory: function() {
         return QuickEMailView.create({
-          model: QuickEMail
+          model: QuickEMail,
+          isFull: this.isFull
         });
       }
     },
@@ -202,7 +211,8 @@ var QuickCompose = FOAM({
       valueFactory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
     },
     {
-      name: 'isCompact',
+      name: 'isFull',
+      help: 'Determines if the full compose window is to be shown with cc and bcc fields.',
       defaultValue: false
     },
     {
