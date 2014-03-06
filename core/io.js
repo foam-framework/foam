@@ -66,7 +66,7 @@ var TextToLines = function(sink) {
       var s = 0;
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( data.charCodeAt(i) == 10 ) {
-          b.push(data.slice(s,i));
+          b.push(data.slice(s, i + 1));
           s = i+1;
         }
       }
