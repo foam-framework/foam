@@ -1002,6 +1002,53 @@ var EMailBody = FOAM({
     }
 });
 
+var ConversationAction = FOAM({
+  model_: 'Model',
+  extendsModel: 'Action',
+
+  properties: [
+    {
+      name: 'name',
+      defaultValueFn: function() {
+        return this.delegate.name;
+      },
+    },
+    {
+      name: 'iconUrl',
+      defaultValueFn: function() {
+        return this.delegate.iconUrl;
+      },
+    },
+    {
+      name: 'help',
+      defaultValueFn: function() {
+        return this.delegate.help;
+      },
+    },
+    {
+      name: 'delegate',
+    },
+    {
+      name: 'action',
+      defaultValue: function(action) {
+        var emails = this.emails;
+        if (action.applyOnAll) {
+          emails.forEach(function(e) {
+            action.delegate.action.call(e);
+          });
+        } else if (emails.length) {
+          var e = emails[emails.length - 1];
+          action.delegate.action.call(e);
+        }
+      },
+    },
+    {
+      name: 'applyOnAll',
+      defaultValue: true,
+    },
+  ],
+});
+
 var Conversation = FOAM({
   model_: 'Model',
   name: 'Conversation',
@@ -1082,5 +1129,40 @@ var Conversation = FOAM({
       this.id = email.convId;
       this.update();
     }
-  }
+  },
+
+  actions: [
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.REPLY,
+       applyOnAll: false,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.REPLY_ALL,
+       applyOnAll: false,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.FORWARD,
+       applyOnAll: false,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.STAR,
+       applyOnAll: false,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.ARCHIVE,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.SPAM,
+    },
+    {
+       model_: 'ConversationAction',
+       delegate: EMail.TRASH,
+    }
+  ]
 });

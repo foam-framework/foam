@@ -92,7 +92,7 @@ var actions = FOAM([
            });
       }
    }
-]).concat(EMail.actions);
+]).concat(Conversation.actions);
 
 actions[0].iconUrl = 'images/pencil.png';
 
@@ -103,9 +103,6 @@ EMail.STAR.iconUrl = 'images/star_full_large.svg';
 EMail.ARCHIVE.iconUrl = 'images/archive.svg';
 EMail.SPAM.iconUrl = 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21" xml:space="preserve"><defs></defs><polygon points="7.101,17 3,12.899 3,7.1 7.101,3 12.899,3 17,7.1 17,12.899 12.899,17 "/><circle fill="#F2F2F2" cx="10" cy="12.999" r="1.05"/><polygon fill="#F2F2F2" points="9,6 11,6 10.65,11 9.35,11 "/><rect opacity="0" fill="#4387FD" width="21" height="21"/></svg>';
 EMail.TRASH.iconUrl = 'data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21" xml:space="preserve"><defs></defs><polygon points="11.997,4 11.997,3 8.003,3 8.003,4 4,4 4,6 16,6 16,4 "/><rect x="5" y="7" width="10" height="11"/><rect opacity="0" fill="#4387FD" width="21" height="21"/></svg>';
-
-// remove 'Send' action
-actions.splice(1,1);
 
 actions.forEach(function(a) { a.showLabel = false; });
 
