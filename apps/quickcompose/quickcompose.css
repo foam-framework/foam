@@ -14,7 +14,7 @@ iframe {
 }
 
 body {
-  -webkit-box-orient: vertical; 
+  -webkit-box-orient: vertical;
   display: -webkit-box;
   margin: 0;
 }
@@ -141,7 +141,7 @@ body > input[name="to"] {
   background-color: #ffffff;
 }
 
-.actionButton-bold, .actionButton-italic, .actionButton-underline, .actionButton-link, .actionButton-discard {
+.toolbar .actionButton:not(.actionButton-send)  {
   background: none;
   border: none;
   box-shadow: none;
@@ -149,7 +149,7 @@ body > input[name="to"] {
   text-shadow: none;
 }
 
-.actionButton-bold:hover, .actionButton-italic:hover, .actionButton-underline:hover, .actionButton-link:hover, .actionButton-discard:hover {
+.toolbar .actionButton:hover:not(.actionButton-send)  {
   background-color: #eee;
   background-image: -webkit-linear-gradient(top,#eee,#e0e0e0);
   border-color: #ccc;

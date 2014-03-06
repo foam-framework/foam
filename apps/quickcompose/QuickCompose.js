@@ -17,14 +17,23 @@
 
 // Replace the RichTextView labels with icons.
 // TODO: move this to RichTextView.js as the default.
-RichTextView.BOLD.iconUrl      = '/images/bold.svg';
-RichTextView.ITALIC.iconUrl    = '/images/italics.svg';
-RichTextView.UNDERLINE.iconUrl = '/images/underline.svg';
-RichTextView.LINK.iconUrl      = '/images/insert_link.svg';
-RichTextView.BOLD.label        = '';
-RichTextView.ITALIC.label      = '';
-RichTextView.UNDERLINE.label   = '';
-RichTextView.LINK.label        = '';
+function installImage(name, img) {
+  RichTextView[name].iconUrl = '/images/' + img + '.svg';
+  RichTextView[name].label   = '';
+}
+installImage('BOLD',                 'bold');
+installImage('ITALIC',               'italics');
+installImage('UNDERLINE',            'underline');
+installImage('LINK',                 'insert_link');
+installImage('LEFT_JUSTIFY',         'text_align_left');
+installImage('CENTER_JUSTIFY',       'text_align_center');
+installImage('RIGHT_JUSTIFY',        'text_align_right');
+installImage('NUMBERED_LIST',        'list_numbered');
+installImage('BULLET_LIST',          'list_bulleted');
+installImage('DECREASE_INDENTATION', 'outdent');
+installImage('INCREASE_INDENTATION', 'indent');
+installImage('BLOCK_QUOTE',          'quote_text');
+
 
 var AttachmentView = FOAM({
   model_: 'Model',
@@ -191,6 +200,10 @@ var QuickCompose = FOAM({
     {
       name: 'closeButton',
       valueFactory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
+    },
+    {
+      name: 'isCompact',
+      defaultValue: false
     },
     {
       name: 'EMailDAO',
