@@ -86,7 +86,8 @@ var actions = FOAM([
                 id: Math.floor(Math.random() * 0xffffff).toVarintString()
              });
              var compose = QuickCompose.create({
-               email: forwardedMail,
+               isFull: true,
+               email: forwardedMail
              });
              stack.pushView(compose);
            });
@@ -540,10 +541,10 @@ var ConversationView = FOAM({
               m.body = m2.body;
             }
           });
-        
+
           html += v.toHTML();
         });
-          
+
         this.$.innerHTML = html;
 
         this.initChildren();
