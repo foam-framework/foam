@@ -17,14 +17,23 @@
 
 // Replace the RichTextView labels with icons.
 // TODO: move this to RichTextView.js as the default.
-RichTextView.BOLD.iconUrl      = '/images/bold.svg';
-RichTextView.ITALIC.iconUrl    = '/images/italics.svg';
-RichTextView.UNDERLINE.iconUrl = '/images/underline.svg';
-RichTextView.LINK.iconUrl      = '/images/insert_link.svg';
-RichTextView.BOLD.label        = '';
-RichTextView.ITALIC.label      = '';
-RichTextView.UNDERLINE.label   = '';
-RichTextView.LINK.label        = '';
+function installImage(name, img) {
+  RichTextView[name].iconUrl = '/images/' + img + '.svg';
+  RichTextView[name].label   = '';
+}
+installImage('BOLD',                 'bold');
+installImage('ITALIC',               'italics');
+installImage('UNDERLINE',            'underline');
+installImage('LINK',                 'insert_link');
+installImage('LEFT_JUSTIFY',         'text_align_left');
+installImage('CENTER_JUSTIFY',       'text_align_center');
+installImage('RIGHT_JUSTIFY',        'text_align_right');
+installImage('NUMBERED_LIST',        'list_numbered');
+installImage('BULLET_LIST',          'list_bulleted');
+installImage('DECREASE_INDENTATION', 'outdent');
+installImage('INCREASE_INDENTATION', 'indent');
+installImage('BLOCK_QUOTE',          'quote_text');
+
 
 var AttachmentView = FOAM({
   model_: 'Model',
@@ -93,23 +102,15 @@ var AttachmentView = FOAM({
 });
 
 
-var QuickEMail = FOAM({
-  model_: 'Model',
-  extendsModel: 'EMail',
-  name: 'QuickEMail',
-  properties: [
-    {
-      name: 'to',
-      displayWidth: 55,
-      view: {
-        // TODO: Fetch this dependencies via context.
+var ContactView = {
+        // TODO: Fetch dependencies via context.
         create: function(prop) {
           return ListValueView.create({
             inputView: ListInputView.create({
               name: prop.name,
               dao: ContactAvatarDAO,
               property: Contact.EMAIL,
-              placeholder: 'To',
+              placeholder: prop.name.capitalize(),
               searchProperties: [Contact.EMAIL, Contact.FIRST, Contact.LAST, Contact.TITLE],
               autocompleteView: AutocompleteListView.create({
                 innerView: ContactListTileView,
@@ -130,8 +131,16 @@ var QuickEMail = FOAM({
             })
           });
         }
-      }
-    },
+};
+
+var QuickEMail = FOAM({
+  model_: 'Model',
+  extendsModel: 'EMail',
+  name: 'QuickEMail',
+  properties: [
+    { name: 'to',  displayWidth: 55, view: ContactView },
+    { name: 'cc',  displayWidth: 55, view: ContactView },
+    { name: 'bcc', displayWidth: 55, view: ContactView },
     { name: 'subject',     displayWidth: 55, view: { model_: 'TextFieldView', placeholder: 'Subject', onKeyMode: true } },
     { name: 'attachments', view: 'AttachmentView' },
     { name: 'body',        view: { model_: 'RichTextView', height: 100, onKeyMode: true, placeholder: 'Message' } }
@@ -146,10 +155,18 @@ var QuickEMailView = Model.create({
 
   extendsModel: 'DetailView',
 
+  properties: [
+    {
+      name: 'isFull',
+      help: 'Determines if the full compose window is to be shown with cc and bcc fields.',
+      defaultValue: false
+    }
+  ],
+
   templates: [
     {
       name: "toHTML",
-      template: '$$to $$subject $$body $$attachments'
+      template: '$$to <% if ( this.isFull ) { %> $$cc $$bcc <% } %> $$subject $$body $$attachments'
     }
   ]
 });
@@ -180,7 +197,8 @@ var QuickCompose = FOAM({
       name: 'view',
       valueFactory: function() {
         return QuickEMailView.create({
-          model: QuickEMail
+          model: QuickEMail,
+          isFull: this.isFull
         });
       }
     },
@@ -191,6 +209,11 @@ var QuickCompose = FOAM({
     {
       name: 'closeButton',
       valueFactory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
+    },
+    {
+      name: 'isFull',
+      help: 'Determines if the full compose window is to be shown with cc and bcc fields.',
+      defaultValue: false
     },
     {
       name: 'EMailDAO',

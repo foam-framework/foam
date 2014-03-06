@@ -319,8 +319,8 @@ var TableView2 = FOAM({
           var obj = this.objs[i];
           var className = "tr-" + this.getID();
 
-          if ( this.selection.get() && obj.id == this.selection.get().id ) {
-            this.selection.set(obj);
+          if ( this.hardSelection.get() && obj.id == this.hardSelection.get().id ) {
+            this.hardSelection.set(obj);
             className += " rowSelected";
           }
 

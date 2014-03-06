@@ -62,7 +62,6 @@ fi
 
 cat \
     tmp \
-    gmail.js \
     EMailBodyDAO.js \
     contacts.js \
     Storage.js \
@@ -70,9 +69,3 @@ cat \
     > foam.js
 
 rm tmp
-
-#  | sed 's/[^:]\/\/.*$//' \
-#  | sed 's/^\/\/.*$//' \
-#  | sed 's/;$//' \
-#  | sed 's/\/\*/\n\/\*\n/' | sed 's/\*\//\n\*\/\n/' | sed '/\/\*/,/\*\//d' \
-#  | sed '/^$/ d' | sed 's/^ *//g' > foam.js

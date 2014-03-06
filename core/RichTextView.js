@@ -264,6 +264,60 @@ var RichTextView = FOAM({
         '</div>';
     },
 
+    initHTML: function() {
+      this.SUPER();
+      var drop = $(this.dropId);
+      this.dropzone = drop;
+      this.document = this.$.contentDocument;
+      var body = this.document.body;
+
+      $(this.placeholderId).addEventListener('click', function() { body.focus(); });
+      this.document.head.insertAdjacentHTML(
+        'afterbegin',
+        '<style>blockquote{border-left-color:#ccc;border-left-style:solid;padding-left:1ex;}</style>');
+
+      body.style.overflow = 'auto';
+      body.style.margin = '5px';
+      body.style.height = '100%';
+
+      var self = this;
+      body.ondrop = function(e) {
+        e.preventDefault();
+        self.showDropMessage(false);
+        var length = e.dataTransfer.files.length;
+        for ( var i = 0 ; i < length ; i++ ) {
+          var file = e.dataTransfer.files[i];
+          var id = this.addAttachment(file);
+          if ( file.type.startsWith("image/") ) {
+            var img   = document.createElement('img');
+            img.id = id;
+            img.src = URL.createObjectURL(file);
+            this.insertElement(img);
+          }
+        }
+
+        length = e.dataTransfer.items.length;
+        if ( length ) {
+          var div = this.sanitizeDroppedHtml(e.dataTransfer.getData('text/html'));
+          this.insertElement(div);
+        }
+      }.bind(this);
+      self.dragging_ = 0;
+      body.ondragenter = function(e) {
+        self.dragging_++;
+        self.showDropMessage(true);
+      };
+      body.ondragleave = function(e) {
+        if ( --self.dragging_ == 0 ) self.showDropMessage(false);
+      };
+      if ( this.mode === 'read-write' ) {
+        this.document.body.contentEditable = true;
+      }
+      this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
+      this.value = this.value; // connects listeners
+      this.maybeShowPlaceholder();
+    },
+
     setValue: function(value) {
       this.value = value;
     },
@@ -439,59 +493,6 @@ var RichTextView = FOAM({
       console.log('file: ', file, id);
       this.publish('attachmentAdded', file, id);
       return id;
-    },
-
-    initHTML: function() {
-      this.SUPER();
-      var drop = $(this.dropId);
-      this.dropzone = drop;
-      this.document = this.$.contentDocument;
-      var body = this.document.body;
-
-      this.document.head.insertAdjacentHTML(
-        'afterbegin',
-        '<style>blockquote{border-left-color:#ccc;border-left-style:solid;padding-left:1ex;}</style>');
-
-      body.style.overflow = 'auto';
-      body.style.margin = '5px';
-      body.style.height = '100%';
-
-      var self = this;
-      body.ondrop = function(e) {
-        e.preventDefault();
-        self.showDropMessage(false);
-        var length = e.dataTransfer.files.length;
-        for ( var i = 0 ; i < length ; i++ ) {
-          var file = e.dataTransfer.files[i];
-          var id = this.addAttachment(file);
-          if ( file.type.startsWith("image/") ) {
-            var img   = document.createElement('img');
-            img.id = id;
-            img.src = URL.createObjectURL(file);
-            this.insertElement(img);
-          }
-        }
-
-        length = e.dataTransfer.items.length;
-        if ( length ) {
-          var div = this.sanitizeDroppedHtml(e.dataTransfer.getData('text/html'));
-          this.insertElement(div);
-        }
-      }.bind(this);
-      self.dragging_ = 0;
-      body.ondragenter = function(e) {
-        self.dragging_++;
-        self.showDropMessage(true);
-      };
-      body.ondragleave = function(e) {
-        if ( --self.dragging_ == 0 ) self.showDropMessage(false);
-      };
-      if ( this.mode === 'read-write' ) {
-        this.document.body.contentEditable = true;
-      }
-      this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
-      this.value = this.value; // connects listeners
-      this.maybeShowPlaceholder();
     },
 
     removeImage: function(imageID) {
