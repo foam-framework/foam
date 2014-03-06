@@ -75,9 +75,9 @@ EMailDAO = EMailBodyDAO.create({
   bodyDAO: EMailBodyIDBDAO
 });
 
-var CDAO = FOAM({
+var EMailThreadingDAO = FOAM({
   model_: 'Model',
-  name: 'CDAO',
+  name: 'EMailThreadingDAO',
 
   properties: [
   ],
@@ -114,7 +114,7 @@ var CDAO = FOAM({
   }
 });
 
-var ConversationDAO = CDAO.create({
+var ConversationDAO = EMailThreadingDAO.create({
   delegate: EMailDAO,
   model: Conversation
 });

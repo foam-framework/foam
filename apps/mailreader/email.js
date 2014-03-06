@@ -1023,10 +1023,9 @@ var Conversation = FOAM({
       tableWidth: '100',
     },
     {
-      model_: 'Property',
+      model_: 'StringProperty',
       name: 'subject',
       shortName: 's',
-      type: 'String',
       mode: 'read-write',
       required: true,
       displayWidth: 100,

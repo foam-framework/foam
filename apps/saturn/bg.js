@@ -549,9 +549,7 @@ var ConversationView = FOAM({
           
         this.$.innerHTML = html;
 
-        this.children.forEach(function(v) {
-          v.initHTML();
-        });
+        this.initChildren();
       }
     }
   ],
