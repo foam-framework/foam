@@ -771,7 +771,7 @@ var MBOXParser = {
   'iso-8859-1': literal('ISO-8859-1'),
 
   'transfer encoding': seq(
-    'Content-Transfer-Encoding: ', 
+    'Content-Transfer-Encoding: ',
     alt(sym('quoted printable'),
         sym('base64'),
         sym('until eol'))),
@@ -1052,7 +1052,7 @@ var MBOXLoader = {
   'utf-8': function() {
     this.charset = 'UTF-8';
   },
-  
+
   'iso-8859-1': function() {
     this.charset = 'ISO-8859-1';
   },
@@ -1300,12 +1300,9 @@ var Conversation = FOAM({
         this.timestamp = primaryEmail.timestamp;
 
         // Concat all of the labels together.
-        // TODO: Dedupe!
-        var labels = [];
-        this.emails.forEach(function(e) {
-          labels = labels.concat(e.labels);
-        });
-        this.labels = labels;
+        var m = {};
+        this.emails.forEach(function(e) { e.labels.forEach(function(l) { m[l] = 1; }); });
+        this.labels = Object.keys(m);
       }
     }
   ],
