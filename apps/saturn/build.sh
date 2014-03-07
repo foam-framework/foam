@@ -1,6 +1,6 @@
 cp ../../core/foam.css .
 cp ../../core/css-tooltips.css .
-cp ../quickcompose/QuickCompose_*.ft .
+cp ../quickcompose/*.ft .
 cp ../quickcompose/quickcompose.css .
 cp -r ../quickcompose/images .
 cp ../quickcompose/gmail.* .
