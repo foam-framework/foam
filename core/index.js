@@ -551,6 +551,7 @@ var TreeIndex = {
         reverseSort = true;
       } else {
         sortRequired = true;
+        debugger;
         cost *= Math.log(cost) / Math.log(2);
       }
     }
@@ -571,7 +572,8 @@ var TreeIndex = {
         if ( sortRequired ) {
           var a = [];
           index.select(s, a, {query: options.query});
-          a.select(sink, options);
+          a.sort(toCompare(options.order));
+          a.select({ put: sink.put.bind(sink) });
         } else {
           if ( reverseSort && options && options.skip )
             // TODO: temporary fix, should include range in select and selectReverse calls instead.
