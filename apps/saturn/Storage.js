@@ -94,7 +94,7 @@ var EMailThreadingDAO = FOAM({
       if ( options.query ) queryoptions.query = options.query;
 
       this.delegate.select(DISTINCT(EMail.CONV_ID, []), queryoptions)(function(convs) {
-        self.delegate.where(IN(EMail.CONV_ID, Object.keys(convs.values))).select(GROUP_BY(EMail.CONV_ID, Conversation.create({})))(function(convs) {
+        self.delegate.orderBy(EMail.TIMESTAMP).where(IN(EMail.CONV_ID, Object.keys(convs.values))).select(GROUP_BY(EMail.CONV_ID, Conversation.create({})))(function(convs) {
           for (var conv in convs.groups) {
             tmp.put(convs.groups[conv]);
           }
