@@ -384,6 +384,10 @@ var EMail = FOAM({
          }
       },
       {
+        model_: 'StringArrayProperty',
+        name: 'replyTo'
+      },
+      {
          model_: 'Property',
          name: 'subject',
          shortName: 's',

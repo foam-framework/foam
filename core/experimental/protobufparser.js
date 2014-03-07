@@ -170,12 +170,21 @@ var ProtoBufGrammar = {
             prototag: a[4]
         });
     } else {
-        return Property.create({
+        var prop = Property.create({
             type: a[1],
             name: a[2],
             prototag: a[4],
             required: a[0] === 'required'
         });
+        // TODO: Hack for enums unti they're modelled.
+        var subtype = (this.ctx || GLOBAL)[prop.type];
+        if ( subtype && subtype.type === 'Enum' ) {
+            prop.outProtobuf = function(obj, out) {
+                if ( this.f(obj) === "" ) return;
+                outProtobufPrimitive('int32', this.prototag, this.f(obj), out);
+            };
+        }
+        return prop;
     }
   },
 
