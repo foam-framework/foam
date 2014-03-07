@@ -551,7 +551,6 @@ var TreeIndex = {
         reverseSort = true;
       } else {
         sortRequired = true;
-        debugger;
         cost *= Math.log(cost) / Math.log(2);
       }
     }
