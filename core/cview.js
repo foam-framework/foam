@@ -1080,41 +1080,12 @@ var WarpedCanvas = {
 
         var dx = x-mx;
         var dy = y-my;
-        var r = Math.sqrt(dx*dx + dy*dy);
-        var t = Math.atan2(dy, dx);
+        var r  = Math.sqrt(dx*dx + dy*dy);
+        var t  = Math.atan2(dy, dx);
 
-        // Method 1
-//        r = r + r * Math.sin(r/200*Math.PI)/4;
-
-        // Method 2
-/*
-        if ( r > 308 ) { this.x = x; this.y = y; return; }
-        r -= 8;
-        if ( r > 0 ) {
-          r = r/300.0;
-          r = Math.pow(r,.2);
-          r = r*300.0;
-        }
-        r += 8;
-*/
-        // Method 3
-/*
-        var ZOOM_RADIUS = 400;
-        var SQUARE_RADIUS = 0.04;
-        var ZOOM = 2.4;
-        r = r/ZOOM_RADIUS;
-        if ( r > 1 ) { this.x = x; this.y = y; return; }
-        r = Math.sqrt(r);
-        var z = ZOOM + Math.max(0, r-SQUARE_RADIUS) / (1-SQUARE_RADIUS)*(1-ZOOM);
-        r *= z;
-        r = r*ZOOM_RADIUS;
-*/
-
-        // Method 4
-        if ( r > 500 ) { this.x = x; this.y = y; return; }
-        r = r/500.0;
-        r = r*(1+mag*10*r*Math.pow(1-r,4));
-        r = r*500.0;
+        r = r/700.0;
+        if ( r < 1 ) r += mag*3*r*Math.pow(1-r, 4);
+        r = r*700.0;
 
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
