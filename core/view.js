@@ -3505,6 +3505,7 @@ var ListValueView = FOAM({
   ],
 
   methods: {
+    focus: function() { this.inputView.focus(); },
     toHTML: function() {
       this.valueView.lastView = this.inputView;
       return this.valueView.toHTML();
