@@ -42,6 +42,7 @@ Model.properties = Model.properties.concat(
               break;
               case 'uint64':
               case 'int64':
+              case 'fixed64':
               p = protovarintstring(prop.prototag);
               break;
               case 'boolean':
