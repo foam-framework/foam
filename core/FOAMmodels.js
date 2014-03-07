@@ -21,6 +21,7 @@ var files = [
   'socket',
   'hash',
   'base64',
+  'encodings',
   'utf8',
   'parse',
   'event',

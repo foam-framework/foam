@@ -68,6 +68,21 @@ menu.addActions(FOAM([
    }
 ]));
 
+openComposeView = function(email) {
+  aseq(arequire('QuickEMailView'),
+    arequire('QuickCompose'),
+    arequire('LinkView'),
+    arequire('RichTextView'),
+    arequire('ContactListTileView'),
+    arequire('AutocompleteListView'))(function() {
+      var compose = QuickCompose.create({
+        email: email,
+        isFull: true,
+      });
+      stack.pushView(compose);
+  });
+}
+
 var actions = FOAM([
    {
       model_: 'Action',
@@ -75,22 +90,11 @@ var actions = FOAM([
       label: '',
       help: 'Compose a new email.',
       action: function () {
-         aseq(arequire('QuickEMailView'),
-           arequire('QuickCompose'),
-           arequire('LinkView'),
-           arequire('RichTextView'),
-           arequire('ContactListTileView'),
-           arequire('AutocompleteListView'))(function() {
-             var forwardedMail = EMail.create({
-                from: ME,
-                id: Math.floor(Math.random() * 0xffffff).toVarintString()
-             });
-             var compose = QuickCompose.create({
-               isFull: true,
-               email: forwardedMail
-             });
-             stack.pushView(compose);
-           });
+        var email = EMail.create({
+          from: ME,
+        id: Math.floor(Math.random() * 0xffffff).toVarintString()
+        });
+        openComposeView(email);
       }
    }
 ]).concat(Conversation.actions);
@@ -469,19 +473,22 @@ var MessageView = FOAM({
 
   methods: {
     toHTML: function() {
-      var fromView = this.createView(this.model.FROM);
+      var fromView = this.createView(this.model.FROM, { mode: 'read-only' });
       this.addChild(fromView);
 
-      var toView = this.createView(this.model.TO);
+      var toView = this.createView(this.model.TO, { mode: 'read-only' });
       this.addChild(toView);
 
-      var ccView = this.createView(this.model.CC);
+      var ccView = this.createView(this.model.CC, { mode: 'read-only' });
       this.addChild(ccView);
 
-      var bccView = this.createView(this.model.BCC);
+      var bccView = this.createView(this.model.BCC, { mode: 'read-only' });
       this.addChild(bccView);
 
-      var bodyView = this.createView(this.model.BODY);
+      var bodyView = this.createView(this.model.BODY, {
+        mode: 'read-only',
+        escapeHTML: false
+      });
       this.addChild(bodyView);
       return '<div id="' + this.getID() + '">' +
           '<div>From: ' + fromView.toHTML() + '</div>' +

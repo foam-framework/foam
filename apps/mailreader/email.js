@@ -17,8 +17,6 @@
 
 /* TODO:
      - parse multiple addresses in 'to'
-     - needs better end-of-attachment handling so it doesn't detect and parse
-       emails embeded as attachments in other emails
 */
 
 function lazyEval(fn) {
@@ -281,6 +279,9 @@ var Attachment = FOAM({
    ]
 });
 
+var openComposeView = function(email) {
+  DAOCreateController.getPrototype().newObj(email, EMailDAO);
+}
 
 var EMail = FOAM({
    model_: 'Model',
@@ -423,6 +424,7 @@ var EMail = FOAM({
          shortName: 'b',
          label: '',
 //         view: 'RichTextView',
+        view: 'TextFieldView',
          displayWidth: 70,
          displayHeight: 20,
          help: 'Email message body.',
@@ -436,7 +438,7 @@ var EMail = FOAM({
       updateLabelByName: function(id) {
          var self = this;
          EMailLabels.find(EQ(EMailLabel.DISPLAY_NAME, id), {put: function(label) {
-            var mail = self.clone(); mail.toggleLabel(label.id); EMails.put(mail);
+            var mail = self.clone(); mail.toggleLabel(label.id); EMailDAO.put(mail);
          }});
       },
       hasLabel: function(l) { return this.labels.indexOf(l) != -1; },
@@ -544,13 +546,13 @@ var EMail = FOAM({
          help: 'Reply to an email.',
          action: function () {
            var replyMail = EMail.create({
-             to: this.from,
+             to: [this.from],
              from: ME || this.to,
              subject: "Re.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>'),
              id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(replyMail, EMails);
+           openComposeView(replyMail);
          }
       },
       {
@@ -559,7 +561,8 @@ var EMail = FOAM({
          help: 'Reply to all recipients of an email.',
          action: function () {
            var replyMail = EMail.create({
-             to: this.from,
+             to: [this.from],
+             cc: this.cc,
              from: ME || this.to,
              subject: "Re.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>'),
@@ -569,7 +572,7 @@ var EMail = FOAM({
            for ( var i = 0 ; i < this.to ; i++ ) {
               replyMail.to.push(this.to[i]);
            }
-           DAOCreateController.getPrototype().newObj(replyMail, EMails);
+           openComposeView(replyMail);
          }
       },
       {
@@ -583,7 +586,7 @@ var EMail = FOAM({
              body: this.body.replace(/^|\n/g, '\n>'),
              id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(forwardedMail, EMails);
+           openComposeView(forwardedMail);
          }
       },
       {
@@ -618,7 +621,7 @@ var EMail = FOAM({
                  mail = mail.clone();
                  mail.removeLabel(inbox.id);
                  mail.addLabel(spam.id);
-                 EMails.put(mail);
+                 EmailDAO.put(mail);
                });
          }
       },
@@ -642,7 +645,7 @@ var EMail = FOAM({
                  mail = mail.clone();
                  mail.removeLabel(inbox.id);
                  mail.addLabel(trash.id);
-                 EMails.put(mail);
+                 EMailDAO.put(mail);
                });
          }
       }
@@ -694,10 +697,14 @@ var MBOXParser = {
     sym('subject'),
     sym('date'),
     sym('labels'),
-    sym('start of block'),
-    sym('start of body'),
+    sym('block separator'),
+    sym('content type'),
+    sym('transfer encoding'),
+    sym('empty line'),
     sym('start of attachment')
   ),
+
+  'empty line': literal('\r\n'),
 
   'start of email': seq('From ', sym('until eol')),
 
@@ -709,7 +716,6 @@ var MBOXParser = {
 
   'address list': EmailAddressParser.export('address list'),
 
-//  to: seq('To: ', repeat(not(alt(',', '\r'))) /*sym('until eol')*/),
   to: seq('To: ', sym('until eol')),
   cc: seq('Cc: ', sym('until eol')),
   bcc: seq('Bcc: ', sym('until eol')),
@@ -725,18 +731,53 @@ var MBOXParser = {
 
   'other': sym('until eol'),
 
-  'start of block': seq(
-    '--', sym('until eol')),
+  'block separator': seq(
+    '--', repeat(notChars('-\r\n')), optional('--')),
 
-  'start of body': seq(
-    'Content-Type: text/', alt('plain', 'html'), '; ',
-    sym('until eol')
-    ),
+  'token': repeat(notChars(' ()<>@,;:\\"/[]?=')),
 
-  'end of body': alt(
-    seq('Content-Transfer-Encoding:', sym('until eol')),
-    '--',
-    '\n--'), // TODO: remove this line when reader fixed!
+  'type': alt(
+    sym('multipart type'),
+    sym('text/plain'),
+    sym('text/html'),
+    sym('unknown content type')),
+
+  'unknown content type': seq(sym('token'), '/', sym('token')),
+
+  'multipart type': seq(literal('multipart/'), sym('token')),
+
+  'text/plain': literal('text/plain'),
+  'text/html': literal('text/html'),
+
+  'content type': seq(
+    'Content-Type: ',
+    sym('type'),
+    optional(seq('; ', sym('params')))),
+
+  'params': repeat(alt(
+    sym('boundary declaration'),
+    sym('charset declaration'),
+    seq(sym('token'), '=', sym('token')))),
+
+  'boundary declaration': seq('boundary=', sym('token')),
+
+  'charset declaration': seq('charset=', alt(
+    sym('utf-8'),
+    sym('iso-8859-1'),
+    sym('token'))),
+
+
+  'utf-8': literal('UTF-8'),
+  'iso-8859-1': literal('ISO-8859-1'),
+
+  'transfer encoding': seq(
+    'Content-Transfer-Encoding: ', 
+    alt(sym('quoted printable'),
+        sym('base64'),
+        sym('until eol'))),
+
+  'quoted printable': literal_ic('quoted-printable'),
+  'base64': literal_ic('base64'),
 
   'start of attachment': seq(
     'Content-Type: ', repeat(notChar(';')), '; name="', sym("filename"), '"', sym('until eol')
@@ -753,25 +794,60 @@ var MBOXLoader = {
 
   ps: StringPS.create(""),
 
+  state: function(str) {
+    this.states[0].call(this, str);
+  },
+
   PARSE_HEADERS_STATE: function HEADERS(str) {
     this.parseString(str);
   },
 
-  READ_BODY_STATE: function BODY(str) {
+  IGNORE_SECTION_STATE: function IGNORE_SECTION(str) {
     if ( str.slice(0, 5) === 'From ' ) {
-      this.state = this.PARSE_HEADERS_STATE;
+      this.states.shift();
+      this.state(str);
+    } else if ( str.indexOf(this.blockIds[0]) == 2) {
+      this.states.shift();
+      if ( str.slice(-4, -2) == '--' ) {
+        this.blockIds.shift();
+      }
+    }
+  },
+
+  PLAIN_BODY_STATE: function PLAIN_BODY(str) {
+    if ( str.slice(0, 5) === 'From ' ) {
+      this.states.shift();
       this.state(str);
       return;
     }
 
-    if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
-      this.state = this.PARSE_HEADERS_STATE;
-      this.blockId = undefined;
+    if ( str.indexOf(this.blockIds[0]) == 2) {
+      this.states.shift();
+      if ( str.slice(-4, -2) == '--' ) {
+        this.blockIds.shift();
+      }
+      return;
     }
 
-    var encoding = /Content-Transfer-Encoding: ([^\r\n])*/;
-    var match = encoding.exec(str);
-    if ( match && match[1] ) { this.encoding = match[1]; return; }
+    if ( ! this.hasHtml ) {
+      this.b.push(str.trimRight());
+    }
+  },
+
+  HTML_BODY_STATE: function HTML_BODY(str) {
+    if ( str.slice(0, 5) === 'From ' ) {
+      this.states.shift();
+      this.state(str);
+      return;
+    }
+
+    if ( str.indexOf(this.blockIds[0]) == 2) {
+      this.states.shift();
+      if ( str.slice(-4, -2) == '--' ) {
+        this.blockIds.shift();
+      }
+      return;
+    }
 
     this.b.push(str.trimRight());
   },
@@ -780,15 +856,17 @@ var MBOXLoader = {
     var att = this.email.attachments[this.email.attachments.length-1];
     if ( str.slice(0, 5) === 'From ' ) {
       att.size = att.pos - att.position;
-      this.state = this.PARSE_HEADERS_STATE;
+      this.states.shift();
       this.state(str);
       return;
     }
 
-    if ( str.indexOf(this.blockId) == 2 && str.slice(-3, -1) == '--' ) {
-      att.size = att.pos - att.position;
-      this.state = this.PARSE_HEADERS_STATE;
-      this.blockId = undefined;
+    if ( str.indexOf(this.blockIds[0]) == 2) {
+      this.states.shift();
+      if ( str.slice(-4, -2) == '--' ) {
+        this.blockIds.shift();
+      }
+      return;
     }
   },
 
@@ -803,7 +881,7 @@ var MBOXLoader = {
   put: function(str) {
     if ( this.lineNo == 0 ) {
       this.segStartTime = this.startTime = Date.now();
-      this.state = this.PARSE_HEADERS_STATE;
+      this.states = [this.PARSE_HEADERS_STATE];
     }
 
     this.lineNo++;
@@ -826,7 +904,7 @@ var MBOXLoader = {
         '    TOTAL:',
         ' lps: ' + lps +
         'k bps: ' + bps + 'k ' +
-        'state: ' + this.state.name);
+        'state: ' + this.states[0].name);
 
       this.segStartTime = Date.now();
       this.segPos = this.pos;
@@ -839,16 +917,17 @@ var MBOXLoader = {
 
   saveCurrentEmail: function() {
     if ( this.email ) {
-      var b = this.b.join('\n');
-
-      if ( this.encoding && this.encoding == 'quoted-printable' ) {
+      // TODO: Standardize encoding and charset interfaces.
+      // Make them fetched from the context on demand.
+      if ( this.b.encoding && this.b.encoding == 'quoted-printable' ) {
         var decoder = QuotedPrintable;
 
-        if ( this.charset && this.charset == 'UTF-8' ) {
+        if ( this.b.charset && this.b.charset == 'UTF-8' ) {
           var charset = IncrementalUtf8.create();
         } else {
           charset = {
             string: "",
+            remaining: 0,
             put: function(s) {
               this.string += String.fromCharCode(s);
             },
@@ -858,21 +937,19 @@ var MBOXLoader = {
           };
         }
 
-        b = decoder.decode(this.b.join('\n'), charset);
+        var b = decoder.decode(this.b.join('\n'), charset);
+      } else {
+        b = this.b.join('\n');
       }
+
+
 
       this.email.body = b;
 
       this.charset = "";
       this.encoding = "";
-
-      var i = this.email.body.indexOf("Content-Type:");
-      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
-
-      i = this.email.body.indexOf("Content-Transfer-Encoding: base64");
-      if ( i != -1 ) this.email.body = this.email.body.slice(0,i);
-
       this.b = [];
+
       if ( this.email.to.length == 0 ) return;
       if ( this.email.to.indexOf('<<') != -1 ) return;
       if ( this.email.from.indexOf('<<') != -1 ) return;
@@ -895,6 +972,8 @@ var MBOXLoader = {
 
     this.email = EMail.create();
     this.b = [];
+    this.blockIds = [];
+    this.states = [this.PARSE_HEADERS_STATE];
   },
 
 //  id: function(v) { this.email.id = v[1].join('').trim(); },
@@ -932,28 +1011,63 @@ var MBOXLoader = {
 
   label: function(v) { this.email.labels.push(v.join('')); },
 
-  'start of block': function(v) {
-     var blockId = v[1].join('');
-     if ( blockId.slice(-2) == '--' ) return;
-     this.blockId = blockId;
-   },
+  'text/plain': function(v) {
+    this.nextState = this.PLAIN_BODY_STATE;
+  },
 
-  'start of body': function(v) {
-    var params = v[3].join('');
+  'text/html': function(v) {
+    this.b = [];
+    this.nextState = this.HTML_BODY_STATE;
+  },
 
-    if ( params ) {
-      var matcher = /charset=([^ \n;]+)/;
-      var results = matcher.exec(params);
-      if ( results[1] ) {
-        this.charset = results[1];
-      }
-    } else {
-      this.charset = 'ISO-8859-1';
+  'unknown content type': function() {
+    this.nextState = this.IGNORE_SECTION_STATE;
+  },
+
+  'multipart type': function(v) {
+    this.nextState = this.PARSE_HEADERS_STATE;
+  },
+
+  'empty line': function(v) {
+    if ( this.nextState === this.PLAIN_BODY_STATE ||
+         this.nextState === this.HTML_BODY_STATE ) {
+      this.b.encoding = this.encoding;
+      this.b.charset = this.charset;
     }
-    this.state = this.READ_BODY_STATE;
+    this.states.unshift(this.nextState);
+  },
+
+  'boundary declaration': function(v) {
+    this.blockIds.unshift(v[1].join('').trimRight());
+  },
+
+  'quoted printable': function() {
+    this.encoding = 'quoted-printable';
+  },
+
+  'base64': function() {
+    this.encoding = 'base64';
+  },
+
+  'utf-8': function() {
+    this.charset = 'UTF-8';
+  },
+  
+  'iso-8859-1': function() {
+    this.charset = 'ISO-8859-1';
+  },
+
+  'block separator': function(v) {
+    this.nextState = this.IGNORE_SECTION_STATE
+    if ( v[2] ) {
+      this.nextState = this.PARSE_HEADERS_STATE;
+      this.blockIds.shift();
+    }
   },
 
   'start of attachment': function(v, unused, pos) {
+    this.nextState = this.SKIP_ATTACHMENT_STATE;
+
     var attachment = Attachment.create({
       type: v[1].join(''),
       filename: v[3].join(''),
@@ -961,7 +1075,6 @@ var MBOXLoader = {
     });
 
     this.email.attachments.push(attachment);
-    this.state = this.SKIP_ATTACHMENT_STATE;
   }
 
   // TODO: timestamp, message-id, body, attachments
