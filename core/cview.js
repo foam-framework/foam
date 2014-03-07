@@ -1083,9 +1083,10 @@ var WarpedCanvas = {
         var r  = Math.sqrt(dx*dx + dy*dy);
         var t  = Math.atan2(dy, dx);
 
-        r = r/700.0;
+        var R = 400 * (1+mag);
+        r = r/R;
         if ( r < 1 ) r += mag*3*r*Math.pow(1-r, 4);
-        r = r*700.0;
+        r = r*R;
 
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
@@ -1152,7 +1153,7 @@ var GridCView = FOAM({
     },
     {
       name: 'mag',
-      defaultValue: 1.5
+      defaultValue: 0.6
     },
     {
       name: 'mouse',
@@ -1187,7 +1188,6 @@ var GridCView = FOAM({
       }.bind(this));
 
       this.parent.$.onmousewheel = function(e) {
-        console.log(e);
         if ( e.wheelDeltaY > 0 ) {
           this.mag += 0.2;
         } else {
