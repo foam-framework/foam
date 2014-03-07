@@ -1162,6 +1162,66 @@ var ConversationAction = FOAM({
   ],
 });
 
+var EMailsView = FOAM({
+   model_: 'Model',
+   name:  'EMailsView',
+
+   extendsModel: 'DetailView',
+
+   properties: [
+      {
+         name:  'value',
+         type:  'Value',
+         postSet: function(oldValue, newValue) {
+            oldValue && oldValue.removeListener(this.updateHTML);
+            newValue.addListener(this.updateHTML);
+            this.updateHTML();
+         },
+         valueFactory: function() { return SimpleValue.create(); }
+      }
+   ],
+
+   listeners:
+   [
+     {
+       model_: 'Method',
+       name: 'updateHTML',
+       code: function() {
+         var c = this.value.get();
+         if (!c) return;
+
+         var html = "";
+         this.children = [];
+
+         var self = this;
+         c.forEach(function(m) {
+           var v = MessageView.create({});
+           self.addChild(v);
+
+           // This is done to actually get the email bodies.
+           EMailDAO.find(m.id, {
+             put: function(m2) {
+               v.value.set(m2);
+             }
+           });
+
+           html += v.toHTML();
+         });
+
+        this.$.innerHTML = html;
+
+        this.initChildren();
+       }
+     }
+  ],
+
+   methods: {
+     toHTML: function() {
+       return '<div id="' + this.getID() + '"></div>';
+     },
+   }
+});
+
 var Conversation = FOAM({
   model_: 'Model',
   name: 'Conversation',
@@ -1197,6 +1257,13 @@ var Conversation = FOAM({
     },
     {
       name: 'emails',
+      view: 'EMailsView',
+    },
+    {
+       model_: 'StringArrayProperty',
+       name: 'labels',
+       view: 'LabelView',
+       help: 'Email labels.'
     },
   ],
 
@@ -1231,6 +1298,14 @@ var Conversation = FOAM({
           this.recipients += ' (' + this.emails.length + ')';
         }
         this.timestamp = primaryEmail.timestamp;
+
+        // Concat all of the labels together.
+        // TODO: Dedupe!
+        var labels = [];
+        this.emails.forEach(function(e) {
+          labels = labels.concat(e.labels);
+        });
+        this.labels = labels;
       }
     }
   ],

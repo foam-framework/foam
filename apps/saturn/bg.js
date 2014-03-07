@@ -249,7 +249,7 @@ function launchController(_, callback) {
     searchWidth: MIN_SEARCH_W
   });
   controller.toolbar.addActions(actions);
-  controller.editView = ConversationView.create({});
+  controller.editView = ConversationView.create({model: Conversation});
   /*
   controller.editView.toHTML = function() {
     this.children = [];
@@ -504,58 +504,26 @@ var MessageView = FOAM({
 var ConversationView = FOAM({
   model_: 'Model',
   name: 'ConversationView',
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name:  'value',
-      type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        if (oldValue && this.onValueChange) oldValue.removeListener(this.onValueChange);
-        this.onValueChange && newValue && newValue.addListener(this.onValueChange);
-      },
-    }
-  ],
+  extendsModel: 'DetailView',
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      var subjectView = this.createView(this.model.SUBJECT, { mode: 'read-only' });
+      this.addChild(subjectView);
+
+      var labelView = this.createView(this.model.LABELS, {
+        dao: EMailLabelDAO,
+      });
+      this.addChild(labelView);
+
+      var emailsView = this.createView(this.model.EMAILS);
+      this.addChild(emailsView);
+
+      return '<div id="' + this.getID() + '">' +
+               '<div>' + subjectView.toHTML() + '</div>' +
+               '<div>' + labelView.toHTML() + '</div>' +
+               '<div>' + emailsView.toHTML() + '</div>' +
+             '</div>';
     }
-  },
-
-  listeners: [
-    {
-      name: 'onValueChange',
-      code: function() {
-        var c = this.value.get();
-        if (!c) return;
-
-        this.children = [];
-
-        var html = "";
-
-        var self = this;
-        c.emails.forEach(function(m) {
-          var v = MessageView.create({});
-
-          v.value.set(m);
-          self.addChild(v);
-
-          // This is done to actually get the email bodies.
-          EMailDAO.find(m.id, {
-            put: function(m2) {
-              m.body = m2.body;
-            }
-          });
-
-          html += v.toHTML();
-        });
-
-        this.$.innerHTML = html;
-
-        this.initChildren();
-      }
-    }
-  ],
+  }
 });
