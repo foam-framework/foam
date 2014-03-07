@@ -1072,7 +1072,7 @@ var Graph = FOAM({
 
 
 var WarpedCanvas = {
-  create: function(c, mx, my, w, h, enabled) {
+  create: function(c, mx, my, w, h, mag, enabled) {
     return {
       __proto__: c,
       warp: function(x, y) {
@@ -1113,7 +1113,7 @@ var WarpedCanvas = {
         // Method 4
         if ( r > 500 ) { this.x = x; this.y = y; return; }
         r = r/500.0;
-        r = r*(1+10*r*Math.pow(1-r,4));
+        r = r*(1+mag*10*r*Math.pow(1-r,4));
         r = r*500.0;
 
         this.x = mx + Math.cos(t) * r;
@@ -1180,6 +1180,10 @@ var GridCView = FOAM({
       type: 'GridByExpr',
     },
     {
+      name: 'mag',
+      defaultValue: 1.5
+    },
+    {
       name: 'mouse',
       valueFactory: function() { return Mouse.create(); }
     }
@@ -1201,13 +1205,26 @@ var GridCView = FOAM({
       this.SUPER();
 
       this.mouse.connect(this.parent.$);
+
       this.parent.$.addEventListener('mouseout', function() {
         this.warpEnabled_ = false;
         this.parent.paint();
       }.bind(this));
+
       this.parent.$.addEventListener('mouseenter', function() {
         this.warpEnabled_ = true;
       }.bind(this));
+
+      this.parent.$.onmousewheel = function(e) {
+        console.log(e);
+        if ( e.wheelDeltaY > 0 ) {
+          this.mag += 0.2;
+        } else {
+          this.mag = Math.max(0, this.mag-0.2);
+        }
+        this.parent.paint();
+      }.bind(this);
+
       this.mouse.addListener(this.onMouseMove);
     },
 
@@ -1238,7 +1255,7 @@ var GridCView = FOAM({
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
       var w = this.width;
       var h = this.height;
-      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.warpEnabled_);
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag, this.warpEnabled_);
 
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;
