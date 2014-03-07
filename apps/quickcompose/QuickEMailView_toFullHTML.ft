@@ -1,6 +1,6 @@
 <table class="recipientRow">
-<tr><th>To</th><td>$$to{placeholder:""}</td></tr>
-<tr><th>CC</th><td>$$cc{placeholder:""}</td></tr>
-<tr><th>BCC</th><td>$$bcc{placeholder:""}</td></tr>
+<tr><th align=left>To</th><td>$$to{placeholder:""}</td></tr>
+<tr><th align=left>CC</th><td>$$cc{placeholder:""}</td></tr>
+<tr><th align=left>BCC</th><td>$$bcc{placeholder:""}</td></tr>
 </table>
 $$subject $$body $$attachments
