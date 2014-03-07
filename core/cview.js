@@ -1072,7 +1072,7 @@ var Graph = FOAM({
 
 
 var WarpedCanvas = {
-  create: function(c, mx, my, w, h, enabled) {
+  create: function(c, mx, my, w, h, mag, enabled) {
     return {
       __proto__: c,
       warp: function(x, y) {
@@ -1080,41 +1080,13 @@ var WarpedCanvas = {
 
         var dx = x-mx;
         var dy = y-my;
-        var r = Math.sqrt(dx*dx + dy*dy);
-        var t = Math.atan2(dy, dx);
+        var r  = Math.sqrt(dx*dx + dy*dy);
+        var t  = Math.atan2(dy, dx);
 
-        // Method 1
-//        r = r + r * Math.sin(r/200*Math.PI)/4;
-
-        // Method 2
-/*
-        if ( r > 308 ) { this.x = x; this.y = y; return; }
-        r -= 8;
-        if ( r > 0 ) {
-          r = r/300.0;
-          r = Math.pow(r,.2);
-          r = r*300.0;
-        }
-        r += 8;
-*/
-        // Method 3
-/*
-        var ZOOM_RADIUS = 400;
-        var SQUARE_RADIUS = 0.04;
-        var ZOOM = 2.4;
-        r = r/ZOOM_RADIUS;
-        if ( r > 1 ) { this.x = x; this.y = y; return; }
-        r = Math.sqrt(r);
-        var z = ZOOM + Math.max(0, r-SQUARE_RADIUS) / (1-SQUARE_RADIUS)*(1-ZOOM);
-        r *= z;
-        r = r*ZOOM_RADIUS;
-*/
-
-        // Method 4
-        if ( r > 500 ) { this.x = x; this.y = y; return; }
-        r = r/500.0;
-        r = r*(1+10*r*Math.pow(1-r,4));
-        r = r*500.0;
+        var R = 400 * (1+mag);
+        r = r/R;
+        if ( r < 1 ) r += mag*3*r*Math.pow(1-r, 4);
+        r = r*R;
 
         this.x = mx + Math.cos(t) * r;
         this.y = my + Math.sin(t) * r;
@@ -1180,6 +1152,10 @@ var GridCView = FOAM({
       type: 'GridByExpr',
     },
     {
+      name: 'mag',
+      defaultValue: 0.6
+    },
+    {
       name: 'mouse',
       valueFactory: function() { return Mouse.create(); }
     }
@@ -1201,13 +1177,25 @@ var GridCView = FOAM({
       this.SUPER();
 
       this.mouse.connect(this.parent.$);
+
       this.parent.$.addEventListener('mouseout', function() {
         this.warpEnabled_ = false;
         this.parent.paint();
       }.bind(this));
+
       this.parent.$.addEventListener('mouseenter', function() {
         this.warpEnabled_ = true;
       }.bind(this));
+
+      this.parent.$.onmousewheel = function(e) {
+        if ( e.wheelDeltaY > 0 ) {
+          this.mag += 0.2;
+        } else {
+          this.mag = Math.max(0, this.mag-0.2);
+        }
+        this.parent.paint();
+      }.bind(this);
+
       this.mouse.addListener(this.onMouseMove);
     },
 
@@ -1238,7 +1226,7 @@ var GridCView = FOAM({
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
       var w = this.width;
       var h = this.height;
-      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.warpEnabled_);
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag, this.warpEnabled_);
 
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;
