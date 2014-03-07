@@ -71,6 +71,7 @@ menu.addActions(FOAM([
 openComposeView = function(email) {
   aseq(arequire('QuickEMailView'),
     arequire('QuickCompose'),
+    arequire('QuickEMailView'),
     arequire('LinkView'),
     arequire('RichTextView'),
     arequire('ContactListTileView'),
