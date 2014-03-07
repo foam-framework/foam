@@ -279,6 +279,9 @@ var Attachment = FOAM({
    ]
 });
 
+var openComposeView = function(email) {
+  DAOCreateController.getPrototype().newObj(email, EMailDAO);
+}
 
 var EMail = FOAM({
    model_: 'Model',
@@ -435,7 +438,7 @@ var EMail = FOAM({
       updateLabelByName: function(id) {
          var self = this;
          EMailLabels.find(EQ(EMailLabel.DISPLAY_NAME, id), {put: function(label) {
-            var mail = self.clone(); mail.toggleLabel(label.id); EMails.put(mail);
+            var mail = self.clone(); mail.toggleLabel(label.id); EMailDAO.put(mail);
          }});
       },
       hasLabel: function(l) { return this.labels.indexOf(l) != -1; },
@@ -543,13 +546,13 @@ var EMail = FOAM({
          help: 'Reply to an email.',
          action: function () {
            var replyMail = EMail.create({
-             to: this.from,
+             to: [this.from],
              from: ME || this.to,
              subject: "Re.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>'),
              id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(replyMail, EMails);
+           openComposeView(replyMail);
          }
       },
       {
@@ -558,7 +561,8 @@ var EMail = FOAM({
          help: 'Reply to all recipients of an email.',
          action: function () {
            var replyMail = EMail.create({
-             to: this.from,
+             to: [this.from],
+             cc: this.cc,
              from: ME || this.to,
              subject: "Re.: " + this.subject,
              body: this.body.replace(/^|\n/g, '\n>'),
@@ -568,7 +572,7 @@ var EMail = FOAM({
            for ( var i = 0 ; i < this.to ; i++ ) {
               replyMail.to.push(this.to[i]);
            }
-           DAOCreateController.getPrototype().newObj(replyMail, EMails);
+           openComposeView(replyMail);
          }
       },
       {
@@ -582,7 +586,7 @@ var EMail = FOAM({
              body: this.body.replace(/^|\n/g, '\n>'),
              id: Math.floor(Math.random() * 0xffffff).toVarintString()
            });
-           DAOCreateController.getPrototype().newObj(forwardedMail, EMails);
+           openComposeView(forwardedMail);
          }
       },
       {
@@ -617,7 +621,7 @@ var EMail = FOAM({
                  mail = mail.clone();
                  mail.removeLabel(inbox.id);
                  mail.addLabel(spam.id);
-                 EMails.put(mail);
+                 EmailDAO.put(mail);
                });
          }
       },
@@ -641,7 +645,7 @@ var EMail = FOAM({
                  mail = mail.clone();
                  mail.removeLabel(inbox.id);
                  mail.addLabel(trash.id);
-                 EMails.put(mail);
+                 EMailDAO.put(mail);
                });
          }
       }

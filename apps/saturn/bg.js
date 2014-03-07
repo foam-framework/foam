@@ -68,6 +68,21 @@ menu.addActions(FOAM([
    }
 ]));
 
+openComposeView = function(email) {
+  aseq(arequire('QuickEMailView'),
+    arequire('QuickCompose'),
+    arequire('LinkView'),
+    arequire('RichTextView'),
+    arequire('ContactListTileView'),
+    arequire('AutocompleteListView'))(function() {
+      var compose = QuickCompose.create({
+        email: email,
+        isFull: true,
+      });
+      stack.pushView(compose);
+  });
+}
+
 var actions = FOAM([
    {
       model_: 'Action',
@@ -75,22 +90,11 @@ var actions = FOAM([
       label: '',
       help: 'Compose a new email.',
       action: function () {
-         aseq(arequire('QuickEMailView'),
-           arequire('QuickCompose'),
-           arequire('LinkView'),
-           arequire('RichTextView'),
-           arequire('ContactListTileView'),
-           arequire('AutocompleteListView'))(function() {
-             var forwardedMail = EMail.create({
-                from: ME,
-                id: Math.floor(Math.random() * 0xffffff).toVarintString()
-             });
-             var compose = QuickCompose.create({
-               isFull: true,
-               email: forwardedMail
-             });
-             stack.pushView(compose);
-           });
+        var email = EMail.create({
+          from: ME,
+        id: Math.floor(Math.random() * 0xffffff).toVarintString()
+        });
+        openComposeView(email);
       }
    }
 ]).concat(Conversation.actions);
