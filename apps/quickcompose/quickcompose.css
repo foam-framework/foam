@@ -217,6 +217,21 @@ body > input[name="to"] {
   background-color: #f5f5f5;
 }
 
+.recipientRow th {
+  color: #999;
+  padding: 6px;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.recipientRow td {
+  padding: 0;
+}
+
+.recipientRow .arrayTileView {
+  padding-top: 0;
+}
+
 @media (max-width: 350px) {
   .actionButton-leftJustify, .actionButton-centerJustify, .actionButton-rightJustify {
     display: none;

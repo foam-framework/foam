@@ -165,10 +165,19 @@ var QuickEMailView = Model.create({
 
   templates: [
     {
-      name: "toHTML",
-      template: '$$to <% if ( this.isFull ) { %> $$cc $$bcc <% } %> $$subject $$body $$attachments'
+      name: "toFullHTML",
+    },
+    {
+      name: "toSimpleHTML",
+      template: '$$to $$subject $$body $$attachments'
     }
-  ]
+  ],
+
+  methods: {
+    toHTML: function() {
+      return this.isFull ? this.toFullHTML() : this.toSimpleHTML();
+    }
+  }
 });
 
 
