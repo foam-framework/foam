@@ -1599,6 +1599,8 @@ var XMLView = FOAM({
 
 var DetailView = Model.create({
 
+  name: 'DetailView',
+
   extendsModel: 'AbstractView',
 
   properties: [
