@@ -1121,6 +1121,7 @@ var EMailBody = FOAM({
 
 var ConversationAction = FOAM({
   model_: 'Model',
+  name: 'ConversationAction',
   extendsModel: 'Action',
 
   properties: [
