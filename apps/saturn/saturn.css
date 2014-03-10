@@ -134,16 +134,19 @@ input[name=search] {
   padding: 0px;
 }
 
-.EMailTable {
+.EMailTable,
+.ConversationTable {
   border-right: 1px solid #E1E1E1;
   margin: 0;
 }
 
-.EMailTable thead tr  {
+.EMailTable thead tr,
+.ConversationTable thead tr{
   border-bottom: 1px solid #E1E1E1;
 }
 
-.EMailTable thead tr th {
+.EMailTable thead tr th,
+.ConversationTable thead tr th {
   border: none;
   color: #686868;
   font-family: 'helvetica neue', Arial, 'open sans' sans-serif;
@@ -151,12 +154,14 @@ input[name=search] {
   font-weight: bold;
 }
 
-.EMailTable tbody tr.rowSelected {
+.EMailTable tbody tr.rowSelected,
+.ConversationTable tbody tr.rowSelected {
   border: none;
   border-bottom: 1px solid #E1E1E1;
 }
 
-.EMailTable tbody tr td {
+.EMailTable tbody tr td,
+.ConversationTable tbody tr td {
   border-bottom: 1px solid #E1E1E1;
   color: #666666;
   font-family: 'helvetica neue', Arial, 'open sans' sans-serif;
@@ -167,22 +172,26 @@ input[name=search] {
   white-space: nowrap;
 }
 
-.EMailTable tbody tr td.from {
+.EMailTable tbody tr td.from,
+.ConversationTable tbody tr td.from {
   color: #5A5A5A;
   font-weight: bold;
   padding-left: 10px;
 }
 
-.EMailTable tbody tr:hover td {
+.EMailTable tbody tr:hover td,
+.ConversationTable tbody tr:hover td {
   background-color: #FAFAFA;
   color: #666666;
 }
 
-.EMailTable tbody tr.rowSelected td {
+.EMailTable tbody tr.rowSelected td,
+.ConversationTable tbody tr.rowSelected td {
   background-color: #F5F5F5;
 }
 
-.EMailTable tbody tr.rowSelected td.from {
+.EMailTable tbody tr.rowSelected td.from
+.ConversationTable tbody tr.rowSelected td.from {
   border-width: 0px 0px 0px 8px;
   border-color: #FF6060;
   border-style: solid;
@@ -192,7 +201,8 @@ input[name=search] {
 .scrollSpacer {
   height: 32px;
 }
-.EMailTable {
+.EMailTable,
+.ConversationTable {
   width: 100%
 }
 
