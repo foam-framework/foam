@@ -561,7 +561,8 @@ var Movement = {
 
    /**
     * Cause an bounce at the end of the movement.
-    * @param a percentage of time to to spend bouncing [0, 1)
+    * @param b percentage of time to to spend bouncing [0, 1]
+    * @param a amplitude of maximum bounce
     */
    bounce:  function(b,a,opt_c) {
      var c = opt_c || 3;
