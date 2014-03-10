@@ -25,10 +25,8 @@ var AbstractPrototype = {
   TYPE: 'AbstractPrototype',
 
   create: function(args) {
-    var obj = {
-      __proto__: this,
-      instance_: {}
-    };
+    var obj = Object.create(this);
+    obj.instance_ = {};
 
     if ( typeof args === 'object' ) obj.copyFrom(args);
 
@@ -187,11 +185,7 @@ var AbstractPrototype = {
 
         this.instance_[name] = newValue;
 
-        // TODO: remove
-        try {
-          this.propertyChange(name, oldValue, newValue);
-        } catch (x) {
-        }
+        this.propertyChange(name, oldValue, newValue);
       });
     }
   },
