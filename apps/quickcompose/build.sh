@@ -6,6 +6,8 @@ cp ../../core/css-tooltips.css $BUILD_DIR
 cp ../saturn/contacts.css $BUILD_DIR
 echo 'console.time("load_foam");' > prefix.js
 echo 'console.timeEnd("load_foam");' > postfix.js
+# echo 'console.profile();' > prefix.js
+# echo 'console.profileEnd();' > postfix.js
 
 cat \
   prefix.js \
@@ -63,4 +65,4 @@ rm prefix.js postfix.js
 # For code compression, uncomment the following line:
 # Install from: https://github.com/mishoo/UglifyJS
 # cd ~; git clone git://github.com/mishoo/UglifyJS.git
-~/UglifyJS/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
+#~/UglifyJS/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
