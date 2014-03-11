@@ -1259,6 +1259,8 @@ var Conversation = FOAM({
     },
     {
       name: 'timestamp',
+      model_: 'DateProperty',
+      tableWidth: '75',
     },
     {
       name: 'emails',
