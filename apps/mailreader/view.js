@@ -29,7 +29,7 @@ var LabelView = FOAM({
          label: 'DAO',
          type: 'DAO',
          defaultValueFn: function() {
-           return GLOBAL.EMailLabels;
+           return GLOBAL.EMailLabelDAO;
          },
          hidden: true
       },
