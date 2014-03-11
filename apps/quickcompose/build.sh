@@ -4,7 +4,13 @@ cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
 cp ../../core/css-tooltips.css $BUILD_DIR
 cp ../saturn/contacts.css $BUILD_DIR
+echo 'console.time("load_foam");' > prefix.js
+echo 'console.timeEnd("load_foam");' > postfix.js
+# echo 'console.profile();' > prefix.js
+# echo 'console.profileEnd();' > postfix.js
+
 cat \
+  prefix.js \
   ../../core/stdlib.js \
   ../../core/io.js \
   ../../core/writer.js \
@@ -51,7 +57,12 @@ cat \
   ../mailreader/email.js \
   ../saturn/EMailBodyDAO.js \
   ../saturn/contacts.js \
+  postfix.js \
   > "$BUILD_DIR/foam.js"
 
+rm prefix.js postfix.js
+
 # For code compression, uncomment the following line:
-# ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
+# Install from: https://github.com/mishoo/UglifyJS
+# cd ~; git clone git://github.com/mishoo/UglifyJS.git
+#~/UglifyJS/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

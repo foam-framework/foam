@@ -1072,11 +1072,11 @@ var Graph = FOAM({
 
 
 var WarpedCanvas = {
-  create: function(c, mx, my, w, h, mag, enabled) {
+  create: function(c, mx, my, w, h, mag) {
     return {
       __proto__: c,
       warp: function(x, y) {
-        if ( ! enabled ) { this.x = x; this.y = y; return; }
+        if ( Math.abs(mag) < 0.01 ) { this.x = x; this.y = y; return; }
 
         var dx = x-mx;
         var dy = y-my;
@@ -1153,6 +1153,12 @@ var GridCView = FOAM({
     },
     {
       name: 'mag',
+      help: 'The current magnification level.  Animates to desiredMag.',
+      defaultValue: 0.6
+    },
+    {
+      name: 'desiredMag',
+      postSet: function(_, mag) { this.mag = mag; },
       defaultValue: 0.6
     },
     {
@@ -1174,24 +1180,27 @@ var GridCView = FOAM({
 
   methods: {
     initHTML: function() {
+      var self = this;
+
       this.SUPER();
 
       this.mouse.connect(this.parent.$);
 
-      this.parent.$.addEventListener('mouseout', function() {
-        this.warpEnabled_ = false;
-        this.parent.paint();
-      }.bind(this));
+      this.parent.$.addEventListener('mouseout', Movement.animate(
+        800,
+        function() { self.mag = 0; },
+        Movement.oscillate(0.8, self.mag/4)));
 
-      this.parent.$.addEventListener('mouseenter', function() {
-        this.warpEnabled_ = true;
-      }.bind(this));
+      this.parent.$.addEventListener('mouseenter', Movement.animate(
+        800,
+        function() { self.mag = self.desiredMag; },
+        Movement.oscillate(0.3, self.desiredMag/6)));
 
       this.parent.$.onmousewheel = function(e) {
         if ( e.wheelDeltaY > 0 ) {
-          this.mag += 0.2;
+          this.desiredMag += 0.2;
         } else {
-          this.mag = Math.max(0, this.mag-0.2);
+          this.desiredMag = Math.max(0, this.desiredMag-0.2);
         }
         this.parent.paint();
       }.bind(this);
@@ -1226,7 +1235,7 @@ var GridCView = FOAM({
       var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
       var w = this.width;
       var h = this.height;
-      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag, this.warpEnabled_);
+      var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag);
 
       var xw = (w-ROW_LABEL_WIDTH) / sortedCols.length;
       var yw = (h-COL_LABEL_HEIGHT) / sortedRows.length;

@@ -442,6 +442,8 @@ var DomValue = {
 var ImageView = FOAM({
   model_: 'Model',
 
+  name: 'ImageView',
+
   extendsModel: 'AbstractView',
 
   properties: [
@@ -1598,6 +1600,8 @@ var XMLView = FOAM({
 
 
 var DetailView = Model.create({
+
+  name: 'DetailView',
 
   extendsModel: 'AbstractView',
 
