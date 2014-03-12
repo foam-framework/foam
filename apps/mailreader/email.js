@@ -614,12 +614,12 @@ var EMail = FOAM({
              apar(
                function(ret) {
                  EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
-                   put: ret
+                   put: function(o) { ret(o); }
                  });
                },
                function(ret) {
                  EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^s")).select({
-                   put: ret
+                   put: function(o) { ret(o); }
                  });
                })(function(inbox, spam) {
                  mail = mail.clone();
@@ -638,12 +638,12 @@ var EMail = FOAM({
              apar(
                function(ret) {
                  EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
-                   put: ret
+                   put: function(o) { ret(o); }
                  });
                },
                function(ret) {
                  EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^k")).select({
-                   put: ret
+                   put: function(o) { ret(o); }
                  });
                })(function(inbox, trash) {
                  mail = mail.clone();
@@ -652,7 +652,30 @@ var EMail = FOAM({
                  EMailDAO.put(mail);
                });
          }
-      }
+      },
+     {
+       model_: 'Action',
+       name: 'open',
+       action: function() {
+         var mail = this;
+         apar(
+           function(ret) {
+             EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^o")).select({
+               put: function(o) { ret(o); }
+             });
+           },
+           function(ret) {
+             EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^u")).select({
+               put: function(o) { ret(o); }
+             });
+           })(function(opened, unread) {
+             mail = mail.clone();
+             mail.removeLabel(unread.id);
+             mail.addLabel(opened.id);
+             EMailDAO.put(mail);
+           });
+       }
+     }
    ]
 });
 
@@ -1353,6 +1376,10 @@ var Conversation = FOAM({
     {
        model_: 'ConversationAction',
        delegate: EMail.TRASH,
+    },
+    {
+      model_: 'ConversationAction',
+      delegate: EMail.OPEN,
     }
   ]
 });

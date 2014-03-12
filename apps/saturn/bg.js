@@ -97,7 +97,7 @@ var actions = FOAM([
         openComposeView(email);
       }
    }
-]).concat(Conversation.actions);
+]).concat(Conversation.actions.filter(function(a) { return a.name !== "open"; });
 
 actions[0].iconUrl = 'images/pencil.png';
 
