@@ -114,11 +114,15 @@ Date.prototype.toRelativeDateString = function() {
     return minutes + ' minutes ago';
   } else {
     var hours = Math.floor(minutes/60);
-    if (hours < 24) {
+    if (hours == 1) {
+      return '1 hour ago';
+    } else if (hours < 24) {
       return hours + ' hours ago';
     }
     var days = Math.floor(hours / 24);
-    if (days < 7) {
+    if (days == 1) {
+      return '1 day ago';
+    } else if (days < 7) {
       return days + ' days ago';
     } else if (days < 365) {
       var year = 1900+this.getYear();

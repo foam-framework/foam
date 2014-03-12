@@ -75,47 +75,168 @@ EMailDAO = EMailBodyDAO.create({
   bodyDAO: EMailBodyIDBDAO
 });
 
-var EMailThreadingDAO = FOAM({
-  model_: 'Model',
-  name: 'EMailThreadingDAO',
+// TODO: this is a modified clone of the QIssueSplitDAO.
+// a common base should be able to be drived from these two.
+var EMailThreadingSplitDAO = FOAM({
+   model_: 'Model',
+   extendsModel: 'AbstractDAO',
 
-  properties: [
-  ],
+   name: 'EMailThreadingSplitDAO',
 
-  extendsModel: 'ProxyDAO',
-  methods: {
-    select: function(sink, options) {
-      var future = afuture();
+   properties: [
+      {
+         model_: 'StringProperty',
+         name: 'activeQuery'
+      },
+      {
+         model_: 'StringProperty',
+         name: 'activeOrder'
+      },
+      {
+         name: 'local',
+         type: 'DAO',
+         mode: "read-only",
+         hidden: true,
+         required: true
+      },
+      {
+         name: 'remote',
+         type: 'DAO',
+         mode: "read-only",
+         hidden: true,
+         required: true
+      },
+      {
+         name: 'model'
+      },
+   ],
 
-      var tmp = MDAO.create({ model: Conversation });
-      var self = this;
-      options = options || {};
+   methods: {
+    init: function() {
+      this.relay_ =  {
+        put:    EventService.merged(function() { this.notify_('put',    arguments); }.bind(this), 1000),
+        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
+      };
+
+      this.local.listen(this.relay_);
+    },
+
+     put: function(value, sink) {
+       this.local.put(value, sink);
+     },
+
+     remove: function(query, sink) {
+       this.local.remove(query, sink);
+     },
+
+     putIfMissing: function(issue) {
+       var local = this.local;
+
+       local.find(issue.id, {
+         error: function() { local.put(issue); }
+       });
+     },
+
+     // If we don't find the data locally, then look in the remote DAO (and cache locally)
+     find: function(key, sink) {
+       var local  = this.local;
+       var remote = this.remote;
+
+       local.find(key, {
+         __proto__: sink,
+         error: function() {
+           remote.find(key, {
+             put: function(issue) {
+               sink.put(issue);
+               local.put(issue);
+             }
+           });
+         }
+       });
+     },
+
+     newQuery: function(sink, options, query, order, bufOptions, future) {
+       if ( (query && query !== this.activeQuery) ||
+            (order && order !== this.activeOrder) ) return;
+
+       var buf = this.buf = MDAO.create({ model: this.model });
+       var auto = AutoIndex.create(buf);
+
+       // Auto index the buffer, but set an initial index for the current
+       // sort order.
+       if ( options && options.order) auto.addIndex(options.order);
+       buf.addRawIndex(auto);
+
+       this.activeQuery = query;
+
       var queryoptions = {};
-      if ( options.query ) queryoptions.query = options.query;
+      var self = this;
+      if ( options && options.query ) queryoptions.query = options.query;
 
-      this.delegate.select(DISTINCT(EMail.CONV_ID, []), queryoptions)(function(convs) {
-        self.delegate.orderBy(EMail.TIMESTAMP).where(IN(EMail.CONV_ID, Object.keys(convs.values))).select(GROUP_BY(EMail.CONV_ID, Conversation.create({})))(function(convs) {
-          for (var conv in convs.groups) {
-            tmp.put(convs.groups[conv]);
-          }
+       this.local.select(DISTINCT(EMail.CONV_ID, []), queryoptions)((function(convs) {
+         this.local
+           .orderBy(EMail.TIMESTAMP)
+           .where(IN(EMail.CONV_ID, Object.keys(convs.values)))
+           .select(GROUP_BY(EMail.CONV_ID, Conversation.create({})))((function(convs) {
+             for (var conv in convs.groups) {
+               buf.put(convs.groups[conv]);
+             }
 
-          var finaloptions = {
-            __proto__: options,
-            query: undefined
-          };
+             buf.select(sink, bufOptions)(function(s) { future.set(s); });
 
-          tmp.select(sink, finaloptions)(function(s) {
-            future.set(s);
-          });
-        });
-      });
-      return future.get;
-    }
-  }
+             var remoteOptions = {};
+             if ( options && options.query ) remoteOptions.query = options.query;
+             if ( options && options.order ) remoteOptions.order = options.order;
+
+             this.remote.limit(500).select({
+               put: (function(obj) {
+               }).bind(this)
+             }, remoteOptions);
+           }).bind(this));
+       }).bind(this));
+     },
+
+     select: function(sink, options) {
+       // Don't pass QUERY to buf, it always contains only the items
+       // which match the query.  This allows us offload full text searches
+       // to a server, where we can't necessarily do keyword matches locally
+       // with the available data.
+       var bufOptions = {};
+       if ( options ) {
+         if ( options.order ) bufOptions.order = options.order;
+         if ( options.skip ) bufOptions.skip = options.skip;
+         if ( options.limit ) bufOptions.limit = options.limit;
+       }
+
+       var query = ( options && options.query && options.query.toSQL() ) || "";
+       var order = ( options && options.order && options.order.toSQL() ) || "";
+
+       var future = afuture();
+
+       if ( this.buf && query === this.activeQuery ) {
+         if ( order && order !== this.activeOrder ) {
+           this.activeOrder = order;
+
+           this.buf.select(sink, bufOptions)(function(s) {
+             future.set(s);
+           });
+         } else {
+           return this.buf.select(sink, bufOptions);
+         }
+       } else {
+         this.activeQuery = query;
+         this.activeOrder = order;
+         this.newQuery(sink, options, query, order, bufOptions, future);
+       }
+
+       return future.get;
+     }
+   }
 });
 
-var ConversationDAO = EMailThreadingDAO.create({
-  delegate: EMailDAO,
+var ConversationDAO = EMailThreadingSplitDAO.create({
+  local: EMailDAO,
+  remote: NullDAO.create({}),
   model: Conversation
 });
 
