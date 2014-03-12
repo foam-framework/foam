@@ -65,6 +65,8 @@ var JSONUtil = {
    * instances of that model.
    **/
   mapToObj: function(obj, opt_defaultModel) {
+    if ( ! obj || typeof obj.model_ === 'object' ) return obj;
+
     if ( obj instanceof Array ) return this.arrayToObjArray(obj);
 
     if ( obj instanceof Function ) return obj;
