@@ -55,7 +55,6 @@ function override(cls, methodName, method) {
   cls[methodName] = f;
 }
 
-
 var ModelProto = {
 
    __proto__: PropertyChangeSupport,
@@ -63,14 +62,12 @@ var ModelProto = {
    TYPE: 'ModelProto <startup only, error if you see this>',
 
     buildPrototype: function() {
-       var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
-       var cls = {
-         __proto__: extendsModel ? extendsModel.getPrototype() : AbstractPrototype,
-         instance_: {},
-         model_: this,
-         name_: this.name,
-         TYPE: this.name + "Prototype"
-       };
+      var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
+      var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
+      cls.instance_ = {};
+      cls.model_    = this;
+      cls.name_     = this.name;
+      cls.TYPE      = this.name + "Prototype";
 
        /** Add a method to 'cls' and set it's name. **/
        function addMethod(name, method) {
