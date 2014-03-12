@@ -1260,8 +1260,8 @@ var IDBDAO = FOAM({
           var data = self.deserialize(getRequest.result);
           var delRequest = store.delete(key);
           delRequest.transaction.addEventListener('complete', function(e) {
-            self.notify_('remove', [delRequest.result]);
-            sink && sink.remove && sink.remove(delRequest);
+            self.notify_('remove', [data]);
+            sink && sink.remove && sink.remove(data);
           });
 
           delRequest.onerror = function(e) {

@@ -279,7 +279,7 @@ var QuickCompose = FOAM({
          return length && ( subject || body );
        },
        action: function() {
-         this.email.timeStamp = new Date();
+         this.email.timestamp = new Date();
          this.EMailDAO.put(this.email);
          this.window.close();
        }

@@ -226,6 +226,8 @@ JSONUtil.parseToMap = function(str) {
   return JSON.parse(str);
 };
 
+// TODO: I would rather have the default semantics be to open a window and then have that
+// revert to a stack in situations where it is necessary.
 var stack = {
   openWindow: function(view, width, height, opt_cb) {
      var self = this;
@@ -233,6 +235,7 @@ var stack = {
        w.contentWindow.onload = function() {
          self.window = w.contentWindow;
          $addWindow(w.contentWindow);
+         view.window = w.contentWindow;
          self.window.document.body.innerHTML = view.toHTML();
          view.initHTML();
          w.focus();

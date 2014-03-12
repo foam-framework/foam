@@ -147,14 +147,23 @@ var Model = {
            defaultValue: [],
            help: 'Actions associated with the entity.',
            preSet: function(newValue) {
-              if ( ! Action ) return newValue;
-              var ret = JSONUtil.mapToObj(newValue);
+              if ( ! Action ) return;
 
-              for ( var i = 0 ; i < ret.length ; i++ ) {
-                 this[ret[i].name.constantize()] = ret[i];
+              // Convert Maps to Properties if required
+              for ( var i = 0 ; i < newValue.length ; i++ ) {
+                 var p = newValue[i];
+
+                 if ( ! p.model_ ) {
+                    newValue[i] = Action.create(p);
+                 } else if ( typeof p.model_ === 'string' ) {
+                    newValue[i] = FOAM(p);
+                 }
+
+                 // create property constant
+                 this[p.name.constantize()] = newValue[i];
               }
 
-              return ret;
+              return newValue;
            }
        },
        {
@@ -262,15 +271,23 @@ var Model = {
            defaultValue: [],
            help: 'Relationships of this model to other models.',
            preSet: function(newValue) {
-              if ( ! Relationship ) return newValue;
-              // TODO: avoid need for 'model_'
-              var ret = JSONUtil.mapToObj(newValue);
+              if ( ! Relationship ) return;
 
-              for ( var i = 0 ; i < ret.length ; i++ ) {
-                 this[ret[i].name.constantize()] = ret[i];
+              // Convert Maps to Properties if required
+              for ( var i = 0 ; i < newValue.length ; i++ ) {
+                 var p = newValue[i];
+
+                 if ( ! p.model_ ) {
+                    newValue[i] = Relationship.create(p);
+                 } else if ( typeof p.model_ === 'string' ) {
+                    newValue[i] = FOAM(p);
+                 }
+
+                 // create property constant
+                 this[p.name.constantize()] = newValue[i];
               }
 
-              return ret;
+              return newValue;
            }
        },
        {

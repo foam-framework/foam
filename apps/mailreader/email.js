@@ -1277,7 +1277,15 @@ var Conversation = FOAM({
       required: true,
       displayWidth: 100,
       tableWidth: '45%',
-      view: 'TextFieldView'
+      view: 'TextFieldView',
+      tableFormatter: function(s, self, view) {
+        var sanitizedSubject = view.strToHTML(s);
+        if (self.isUnread) {
+          return '<b>' + sanitizedSubject + '</b>';
+        } else {
+          return sanitizedSubject;
+        }
+      },
     },
     {
       name: 'timestamp',
@@ -1289,10 +1297,25 @@ var Conversation = FOAM({
       view: 'EMailsView',
     },
     {
+      name: 'isUnread',
+    },
+    {
        model_: 'StringArrayProperty',
        name: 'labels',
        view: 'LabelView',
-       help: 'Email labels.'
+       help: 'Email labels.',
+       postSet: function(oldValue, newValue) {
+         if (!newValue || !newValue.length) return;
+         var self = this;
+         // TODO: Don't hardcode ^u here.
+         EMailLabelDAO.find(EQ(EMailLabel.DISPLAY_NAME, '^u'), {put: function(unreadLabel) {
+           newValue.forEach(function(label) {
+             if (label == unreadLabel.id) {
+               self.isUnread = true;
+             }
+           });
+         }});
+       },
     },
   ],
 
