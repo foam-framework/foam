@@ -314,13 +314,15 @@ var TableView2 = FOAM({
         str.push('<th width=15 id="' + this.on('click', this.onEditColumns) + '">...</th>');
       }
       str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
-      if ( this.objs )
-        for ( var i = 0 ; i < this.objs.length; i++ ) {
-          var obj = this.objs[i];
+      var objs = this.objs;
+      if ( objs ) {
+        var hselect = this.hardSelection.get();
+        for ( var i = 0 ; i < objs.length; i++ ) {
+          var obj = objs[i];
           var className = "tr-" + this.getID();
 
-          if ( this.hardSelection.get() && obj.id == this.hardSelection.get().id ) {
-            this.hardSelection.set(obj);
+          if ( hselect && obj.id == hselect.id ) {
+            if ( ! obj.equals(hselect) ) this.hardSelection.set(obj);
             className += " rowSelected";
           }
 
@@ -345,6 +347,7 @@ var TableView2 = FOAM({
 
           str.push('</tr>');
         }
+      }
 
       str.push('</tbody></table>');
 
