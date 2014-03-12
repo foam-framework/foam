@@ -235,6 +235,7 @@ var stack = {
        w.contentWindow.onload = function() {
          self.window = w.contentWindow;
          $addWindow(w.contentWindow);
+         view.window = w.contentWindow;
          self.window.document.body.innerHTML = view.toHTML();
          view.initHTML();
          w.focus();
