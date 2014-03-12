@@ -77,6 +77,7 @@ openComposeView = function(email) {
     arequire('AutocompleteListView'))(function() {
       var compose = QuickCompose.create({
         email: email,
+        userInfo: userInfo,
         isFull: true,
       });
       stack.pushView(compose);
@@ -90,9 +91,11 @@ var actions = FOAM([
       label: '',
       help: 'Compose a new email.',
       action: function () {
+        var id = Math.floor(Math.random() * 0xffffff).toVarintString();
         var email = EMail.create({
-          from: ME,
-        id: Math.floor(Math.random() * 0xffffff).toVarintString()
+          from: userInfo.email,
+          id: id,
+          convId: id
         });
         openComposeView(email);
       }
