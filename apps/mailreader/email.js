@@ -1278,11 +1278,12 @@ var Conversation = FOAM({
       displayWidth: 100,
       tableWidth: '45%',
       view: 'TextFieldView',
-      tableFormatter: function(s, self) {
+      tableFormatter: function(s, self, view) {
+        var sanitizedSubject = view.strToHTML(s);
         if (self.isUnread) {
-          return '<b>' + s + '</b>';
+          return '<b>' + sanitizedSubject + '</b>';
         } else {
-          return s;
+          return sanitizedSubject;
         }
       },
     },
