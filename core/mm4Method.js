@@ -214,7 +214,7 @@ var Arg = FOAM({
        {
           model_: 'BooleanProperty',
           name: 'required',
-          default: true
+          defaultValue: true
        },
        {
            name:  'defaultValue',
@@ -262,7 +262,6 @@ var Arg = FOAM({
      }
   ]
 });
-
 
 Method = FOAM({
     model_: 'Model',
