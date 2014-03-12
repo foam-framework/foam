@@ -599,6 +599,7 @@ var Movement = {
                          : f2 ;
    },
 
+   /** @return a latch function which can be called to stop the animation. **/
    animate: function(duration, fn, opt_interp, opt_onEnd) {
      if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
      var interp = opt_interp || Movement.linear;
@@ -607,6 +608,13 @@ var Movement = {
        var startTime = Date.now();
        var oldOnSet  = Events.onSet;
        var ranges = [];
+       var timer;
+
+       function stop() {
+         clearInterval(timer);
+         opt_onEnd && opt_onEnd();
+         opt_onEnd = null;
+       }
 
        Events.onSet = function(obj, name, value2) {
          ranges.push([obj, name, obj[name], value2]);
@@ -615,7 +623,7 @@ var Movement = {
        Events.onSet = oldOnSet;
 
        if ( ranges.length > 0 || true ) {
-         var timer = setInterval(function() {
+         timer = setInterval(function() {
            var now = Math.min(Date.now(), startTime + duration);
            var p   = interp((now-startTime)/duration);
 
@@ -629,12 +637,11 @@ var Movement = {
              obj[name] = value1 + (value2-value1) * p;
            }
 
-           if ( now >= startTime + duration ) {
-             clearTimeout(timer);
-             opt_onEnd && opt_onEnd();
-           }
+           if ( now >= startTime + duration ) stop();
          }, 30);
        }
+
+       return stop;
      };
    },
 
