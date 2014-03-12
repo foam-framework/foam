@@ -572,7 +572,14 @@ var TreeIndex = {
           var a = [];
           index.select(s, a, {query: options.query});
           a.sort(toCompare(options.order));
-          a.select({ put: sink.put.bind(sink) });
+
+          var skip = options.skip || 0;
+          var limit = Number.isFinite(options.limit) ? options.limit : a.length;
+          limit += skip;
+          limit = Math.min(a.length, limit);
+
+          for ( var i = skip; i < limit; i++ )
+            sink.put(a[i]);
         } else {
           if ( reverseSort && options && options.skip )
             // TODO: temporary fix, should include range in select and selectReverse calls instead.
