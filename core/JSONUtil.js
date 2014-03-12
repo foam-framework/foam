@@ -53,27 +53,35 @@ var JSONUtil = {
     return this.mapToObj(this.parseToMap(str));
   },
 
+  arrayToObjArray: function(a) {
+    for ( var i = 0 ; i < a.length ; i++ ) {
+      a[i] = this.mapToObj(a[i]);
+    }
+    return a;
+  },
+
   /**
    * Convert JS-Maps which contain the 'model_' property, into
    * instances of that model.
    **/
   mapToObj: function(obj, opt_defaultModel) {
-    if ( obj instanceof Array ) {
-      for ( var i = 0 ; i < obj.length ; i++ ) {
-        obj[i] = this.mapToObj(obj[i]);
-      }
-      return obj;
-    }
+    if ( obj instanceof Array ) return this.arrayToObjArray(obj);
 
     if ( obj instanceof Function ) return obj;
 
     if ( obj instanceof Date ) return obj;
 
     if ( obj instanceof Object ) {
-      var keys = Object.keys(obj);
+      var j = 0;
+      for ( var key in obj ) {
+        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
+        j++;
+      }
+/*      var keys = Object.keys(obj);
       for ( var j = 0, key; key = keys[j]; j++ ) {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
       }
+      */
 
       return GLOBAL[obj.model_] ? GLOBAL[obj.model_].create(obj) : obj;
     }
