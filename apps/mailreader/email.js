@@ -1121,14 +1121,13 @@ var EMailBody = FOAM({
 
 var ConversationAction = FOAM({
   model_: 'Model',
-  name: 'ConversationAction',
   extendsModel: 'Action',
 
   properties: [
     {
       name: 'name',
       defaultValueFn: function() {
-        return this.delegate.name;
+        return this.delegate ? this.delegate.name : 'ConversationAction';
       },
     },
     {
