@@ -324,33 +324,35 @@ function importContacts(dao, xhrFactory) {
   var params = [ 'alt=json', 'max-results=10000' ];
   var f = function(data) {
 // TODO: gContact$groupMembershipInfo
-     var contacts = data.feed.entry;
-     contacts.forEach(function(c) {
-       var contact = Contact.create({
-          id:      c.id       ? c.id.$t.split('/').pop() : '',
-          title:   c.title    ? c.title.$t : '',
-          email:   c.gd$email ? c.gd$email[0].address : '',
-          updated: c.updated  ? c.updated.$t : ''
-       });
-       c.gd$phoneNumber && c.gd$phoneNumber.forEach(function(p) {
-         contact.phoneNumbers.push(PhoneNumber.create({
-            type: p.rel   ? p.rel.replace(/^.*#/,'') :
-                  p.label ? p.label                  :
-                            'main'                   ,
-            number: p.$t
-         }));
-       });
-       c.gd$postalAddress && c.gd$postalAddress.forEach(function(a) {
-         contact.addresses.push(Address.create({
-            type: a.rel.replace(/^.*#/,''),
-            street: a.$t
-         }));
-       });
+    var contacts = data.feed.entry;
+    if ( ! contacts ) {
+      console.warn('Error loading contacts: ', data);
+      return;
+    }
+    contacts.forEach(function(c) {
+      var contact = Contact.create({
+        id:      c.id       ? c.id.$t.split('/').pop() : '',
+        title:   c.title    ? c.title.$t : '',
+        email:   c.gd$email ? c.gd$email[0].address : '',
+        updated: c.updated  ? c.updated.$t : ''
+      });
+      c.gd$phoneNumber && c.gd$phoneNumber.forEach(function(p) {
+        contact.phoneNumbers.push(PhoneNumber.create({
+          type:   p.rel ? p.rel.replace(/^.*#/,'') : p.label ? p.label : 'main',
+          number: p.$t
+        }));
+      });
+      c.gd$postalAddress && c.gd$postalAddress.forEach(function(a) {
+        contact.addresses.push(Address.create({
+          type: a.rel.replace(/^.*#/,''),
+          street: a.$t
+        }));
+      });
 
-       c.length = 0;
+      c.length = 0;
 
-       ContactDAO.put(contact);
-     });
+      ContactDAO.put(contact);
+    });
   };
 //  xhr2.responseType = 'text';
   xhr2.asend(f, 'GET', url + '?' + params.join('&'));
