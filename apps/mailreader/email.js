@@ -441,7 +441,7 @@ var EMail = FOAM({
    methods: {
       updateLabelByName: function(id) {
          var self = this;
-         EMailLabels.find(EQ(EMailLabel.DISPLAY_NAME, id), {put: function(label) {
+         EMailLabelDAO.find(EQ(EMailLabel.DISPLAY_NAME, id), {put: function(label) {
             var mail = self.clone(); mail.toggleLabel(label.id); EMailDAO.put(mail);
          }});
       },
@@ -613,12 +613,12 @@ var EMail = FOAM({
              var mail = this;
              apar(
                function(ret) {
-                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
+                 EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
                    put: ret
                  });
                },
                function(ret) {
-                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^s")).select({
+                 EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^s")).select({
                    put: ret
                  });
                })(function(inbox, spam) {
@@ -637,12 +637,12 @@ var EMail = FOAM({
              var mail = this;
              apar(
                function(ret) {
-                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
+                 EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^i")).select({
                    put: ret
                  });
                },
                function(ret) {
-                 EMailLabels.where(EQ(EMailLabel.DISPLAY_NAME, "^k")).select({
+                 EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, "^k")).select({
                    put: ret
                  });
                })(function(inbox, trash) {
@@ -1258,6 +1258,8 @@ var Conversation = FOAM({
     },
     {
       name: 'timestamp',
+      model_: 'DateProperty',
+      tableWidth: '75',
     },
     {
       name: 'emails',
