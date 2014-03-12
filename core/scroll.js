@@ -46,7 +46,7 @@ var ScrollCView = FOAM({
         name:  'value',
         type:  'int',
         help:  'The first element being shown, starting at zero.',
-        preSet: function(value) { return Math.min(this.size-this.extent, value); },
+        preSet: function(value) { return Math.max(0, Math.min(this.size-this.extent, value)); },
         defaultValue: 0
       },
       {

@@ -73,6 +73,10 @@ var JSONUtil = {
 
     if ( obj instanceof Object ) {
       var j = 0;
+
+      // If the object is already an instance of a model just return it.
+      if ( typeof obj.model_ !== "string" ) return obj;
+
       for ( var key in obj ) {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
         j++;
