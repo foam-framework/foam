@@ -1186,15 +1186,21 @@ var GridCView = FOAM({
 
       this.mouse.connect(this.parent.$);
 
-      this.parent.$.addEventListener('mouseout', Movement.animate(
-        800,
-        function() { self.mag = 0; },
-        Movement.oscillate(0.8, self.mag/4)));
+      this.parent.$.addEventListener('mouseout', function() {
+        this.animation_ && this.animation_();
+        this.animation_ = Movement.animate(
+          800,
+          function() { self.mag = 0; },
+          Movement.oscillate(0.8, self.mag/4))();
+      });
 
-      this.parent.$.addEventListener('mouseenter', Movement.animate(
-        800,
-        function() { self.mag = self.desiredMag; },
-        Movement.oscillate(0.3, self.desiredMag/6)));
+      this.parent.$.addEventListener('mouseenter', function() {
+        this.animation_ && this.animation_();
+        this.animation_ = Movement.animate(
+          400,
+          function() { self.mag = self.desiredMag; },
+          Movement.oscillate(0.3, self.desiredMag/6))();
+      });
 
       this.parent.$.onmousewheel = function(e) {
         if ( e.wheelDeltaY > 0 ) {
