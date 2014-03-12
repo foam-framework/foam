@@ -75,7 +75,6 @@ var ModelProto = {
            override(cls, name, method);
          } else {
            cls[name] = method;
-           method.name = name;
          }
        }
 

@@ -140,6 +140,7 @@ var AbstractPrototype = {
 
     var name = prop.name;
 
+    // TODO: add caching
     if ( ! AbstractPrototype.__lookupGetter__(name + '$') ) {
       Object.defineProperty(AbstractPrototype, name + '$', {
         get: function() { return this.propertyValue(name); },
