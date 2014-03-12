@@ -50,7 +50,7 @@ var Canvas = Model.create({
   listeners: [
     {
       name: 'paint',
-      animate: true,
+      isAnimated: true,
       code: function() {
          this.erase();
          this.paintChildren();
