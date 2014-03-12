@@ -643,8 +643,7 @@ var Movement = {
      return function() {
      var startTime = timer.time;
      var oldOnSet  = Events.onSet;
-     Events.onSet = function(obj, name, value2)
-     {
+     Events.onSet = function(obj, name, value2) {
        var value1 = obj[name];
 
        Events.dynamic(function() {

@@ -29,8 +29,7 @@
 document.writeln("=======================================");
 
     document.writeln("<table><tr><td valign=top>");
-    var tv1 = TableView.create({model: Model});
-    tv1.objs = models;
+    var tv1 = TableView2.create({model: Model, dao: models});
     document.writeln(tv1.toHTML());
     tv1.initHTML();
 

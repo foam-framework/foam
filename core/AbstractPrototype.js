@@ -39,8 +39,20 @@ var AbstractPrototype = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-      var prop = this.model_.properties[i];
+    if ( ! this.model_.hasOwnProperty('valueFactoryProperties_') ) {
+      this.model_.valueFactoryProperties_ = [];
+
+      var ps = this.model_.properties;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var prop = ps[i];
+
+        if ( prop.valueFactory ) this.model_.valueFactoryProperties_.push(prop);
+      }
+    }
+
+    var ps = this.model_.valueFactoryProperties_;
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
 
       // I'm not sure why I added this next line, but it isn't used
       // so I've disabled it.  There is no 'init' property on Property
@@ -49,9 +61,8 @@ var AbstractPrototype = {
 
       // If a value was explicitly provided in the create args
       // then don't call the valueFactory if it exists.
-      // ???: Should this be .hasOwnProperty() instead?
-      if ( prop.valueFactory && ! this.instance_[prop.name] )
-        this[prop.name] = prop.valueFactory.call(this);
+      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.valueFactory.call(this);
+      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.valueFactory.call(this);
     }
 
     // Add shortcut create() method to Models which allows them to be
@@ -85,7 +96,8 @@ var AbstractPrototype = {
   },
 
   hasOwnProperty: function(name) {
-    return this.instance_.hasOwnProperty(name);
+    return typeof this.instance_[name] !== 'undefined';
+//    return this.instance_.hasOwnProperty(name);
   },
 
   writeActions: function(other, out) {
@@ -128,30 +140,22 @@ var AbstractPrototype = {
 
     var name = prop.name;
 
-    // Create <name>$ alias for propertyValue(<name>)
-    this.__defineGetter__(
-      name + '$',
-      function() { return this.propertyValue(name); });
-
-    // Create <name>$ = value alias
-    this.__defineSetter__(
-      name + '$',
-      function(value) {
-        Events.link(
-          value,
-          this.propertyValue(name));
-      }
-    );
+    if ( ! AbstractPrototype.__lookupGetter__(name + '$') ) {
+      Object.defineProperty(AbstractPrototype, name + '$', {
+        get: function() { return this.propertyValue(name); },
+        set: function(value) { Events.link(value, this.propertyValue(name)); }
+      });
+    }
 
     if ( prop.getter ) {
       this.__defineGetter__(name, prop.getter);
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
         function() {
-          return this.instance_.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValueFn.call(this);
+          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this);
         } :
         function() {
-          return this.instance_.hasOwnProperty(name) ? this.instance_[name] : prop.defaultValue;
+          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
         });
     }
 
@@ -239,7 +243,11 @@ var AbstractPrototype = {
 
   /** Create a shallow copy of this object. **/
   clone: function() {
-    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
+    var c = Object.create(this.__proto__);
+    c.instance_ = {};
+    for ( var key in this.instance_ ) c.instance_[key] = this.instance_[key];
+    return c;
+//    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
 
   /** Create a deep copy of this object. **/
@@ -272,6 +280,7 @@ var AbstractPrototype = {
     // Doesn't work when src is modelled and has default values
     // if ( src && src.instance_ ) src = src.instance_;
 
+/*
     // TODO: remove the 'this.model_' check when all classes modelled
     if ( src && this.model_ ) {
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
@@ -285,6 +294,15 @@ var AbstractPrototype = {
 
         if ( prop.name in src ) this[prop.name] = src[prop.name];
 //         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) this[prop.name] = src[prop.name];
+      }
+    }
+      */
+
+    if ( src && this.model_ ) {
+      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+        var prop = this.model_.properties[i];
+
+        if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
       }
     }
 

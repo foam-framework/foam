@@ -1026,10 +1026,10 @@ defineProperties(Array.prototype, {
     }
 
     var fc = this.createFlowControl_();
-    var start = hasQuery ? 0 : options && options.skip || 0;
+    var start = Math.max(0, hasQuery ? 0 : ( options && options.skip ) || 0);
     var end = hasQuery ?
-        this.length :
-        Math.min(this.length, start + (options && options.limit || this.length));
+      this.length :
+      Math.min(this.length, start + ( ( options && options.limit ) || this.length));
     for ( var i = start ; i < end ; i++ ) {
       sink.put(this[i], null, fc);
       if ( fc.stopped ) break;
