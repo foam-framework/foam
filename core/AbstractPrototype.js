@@ -110,6 +110,20 @@ var AbstractPrototype = {
     }
   },
 
+  equals: function(other) { return this.compareTo(other) == 0; },
+
+  compareTo: function(other) {
+    var ps = this.model_.properties;
+
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var r = ps[i].compare(this, other);
+
+      if ( r ) return r;
+    }
+
+    return 0;
+  },
+
   diff: function(other) {
     var diff = {};
 
