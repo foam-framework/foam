@@ -92,6 +92,7 @@ FOAModel({
            defaultValue: true,
            help: 'Property indicating whether the label should be rendered along side the icon'
        },
+      /*
        {
            name: 'children',
            type: 'Array',
@@ -101,6 +102,7 @@ FOAModel({
            help: 'Child actions of this action.',
            persistent: false
        },
+       */
        {
            name: 'parent',
            type: 'String',
@@ -474,49 +476,49 @@ FOAModel({
 
 
 FOAModel({
-   name: 'Template',
+  name: 'Template',
 
-    tableProperties: [
-      'name', 'description'
-    ],
+  tableProperties: [
+    'name', 'description'
+  ],
 
-    properties: [
-       {
-           name:  'name',
-           type:  'String',
-           required: true,
-           displayWidth: 30,
-           displayHeight: 1,
-           defaultValue: '',
-           help: 'The template\'s unique name.'
-       },
-       {
-           name:  'description',
-           type:  'String',
-           required: true,
-           displayWidth: 70,
-           displayHeight: 1,
-           defaultValue: '',
-           help: 'The template\'s unique name.'
-       },
-       {
-           name: 'template',
-           type: 'String',
-           displayWidth: 180,
-           displayHeight: 30,
-           rows: 30, cols: 80,
-           defaultValue: '',
-           view: 'TextAreaView',
-           help: 'Template text. <%= expr %> or <% out(...); %>'
-       },
-       {
-           name: 'templates',
-           type: 'Array[Template]',
-           subType: 'Template',
-           view: 'ArrayView',
-           defaultValue: [],
-           help: 'Sub-templates of this template.'
-       }
-   ]
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The template\'s unique name.'
+    },
+    {
+      name:  'description',
+      type:  'String',
+      required: true,
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The template\'s unique name.'
+    },
+    {
+      name: 'template',
+      type: 'String',
+      displayWidth: 180,
+      displayHeight: 30,
+      rows: 30, cols: 80,
+      defaultValue: '',
+      view: 'TextAreaView',
+      help: 'Template text. <%= expr %> or <% out(...); %>'
+    }/*,
+    {
+      name: 'templates',
+      type: 'Array[Template]',
+      subType: 'Template',
+      view: 'ArrayView',
+      defaultValue: [],
+      help: 'Sub-templates of this template.'
+    }*/
+  ]
 
 });

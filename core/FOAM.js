@@ -55,14 +55,6 @@ var FOAM = function(map) {
    return obj;
 };
 
-var FOAModel = function(m) {
-  var model = Model.create(m);
-
-  GLOBAL[model.name] = model;
-
-  return model;
-}
-
 /**
  * Register a lazy factory for the specified name within a
  * specified context.
@@ -72,12 +64,35 @@ var FOAModel = function(m) {
  * value.
  **/
 FOAM.putFactory = function(ctx, name, factory) {
-   ctx.__defineGetter__(name, function() {
-      console.log("Bouncing Factory: ", name);
-      delete ctx[name]; // delete getter
-      return ctx[name] = factory();
-   });
+  ctx.__defineGetter__(name, function() {
+    console.log('Bouncing Factory: ', name);
+    delete ctx[name];
+    return ctx[name] = factory();
+  });
 };
+
+/*
+// Simple Immediate Model Definition
+var FOAModel = function(m) {
+  var model = Model.create(m);
+
+  GLOBAL[model.name] = model;
+}
+*/
+
+// Lazy Model Definition - Only creates Model when first referenced
+var FOAModel = function(m) {
+  Object.defineProperty(GLOBAL, m.name, {
+    get: function () {
+      // console.log('bounceFactory: ', m.name);
+      Object.defineProperty(GLOBAL, m.name, {value: null});
+      var model = JSONUtil.mapToObj(m, Model);
+      Object.defineProperty(GLOBAL, m.name, {value: model});
+      return model;
+    },
+    configurable: true
+  });
+}
 
 FOAM.browse = function(model, opt_dao) {
    var dao = opt_dao || GLOBAL[model.name + 'DAO'] || GLOBAL[model.plural];

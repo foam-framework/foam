@@ -29,7 +29,9 @@
  * the end of metamodel.js once the real Model is created.
  **/
 
-var Method, Action, Relationship;
+this.Method = null;
+this.Action = null;
+this.Relationship = null;
 
 /**
  * Override a method, making calling the overridden method possible by
