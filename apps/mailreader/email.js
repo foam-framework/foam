@@ -1365,6 +1365,15 @@ var Conversation = FOAM({
       this.emails.put(email);
       this.id = email.convId;
       this.update();
+    },
+    remove: function(email) {
+      if (!this.emails) this.emails = [];
+      for ( var i = 0; i < this.emails.length; i++ ) {
+        if ( email.id === this.emails[i].id ) {
+          this.emails.splice(i--, 1);
+        }
+      }
+      this.update();
     }
   },
 

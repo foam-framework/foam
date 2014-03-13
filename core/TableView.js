@@ -383,11 +383,16 @@ var TableView2 = FOAM({
           self.hardSelection.set(obj);
           value.set(obj);
           delete value['prevValue'];
-          var siblings = evt.srcElement.parentNode.parentNode.childNodes;
+          var row = evt.srcElement;
+          while ( row && row.tagName !== "TR") row = row.parentNode;
+          var table = row;
+          while (table && table.tagName !== "TBODY")  table = table.parentNode;
+
+          var siblings = table ? table.childNodes : [];
           for ( var i = 0 ; i < siblings.length ; i++ ) {
             siblings[i].classList.remove("rowSelected");
           }
-          evt.srcElement.parentNode.classList.add('rowSelected');
+          row && row.classList.add('rowSelected');
         }; }(this.selection, this.objs[i]);
         e.ondblclick = function(value, obj) { return function(evt) {
           self.publish(self.DOUBLE_CLICK, obj, value);
