@@ -55,11 +55,6 @@ var FOAM = function(map) {
    return obj;
 };
 
-FOAM.create = function(map) {
-   console.log('FOAM.create() is deprecated.  Use FOAM() instead.');
-   var obj = JSONUtil.mapToObj(map);
-   return obj;
-};
 /**
  * Register a lazy factory for the specified name within a
  * specified context.
