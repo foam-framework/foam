@@ -1307,7 +1307,7 @@ var Conversation = FOAM({
        postSet: function(oldValue, newValue) {
          if (!newValue || !newValue.length) return;
          var self = this;
-         // TODO: Don't hardcode ^u here.
+         this.isUnread = false;
          EMailLabelDAO.find(EQ(EMailLabel.DISPLAY_NAME, '^u'), {put: function(unreadLabel) {
            newValue.forEach(function(label) {
              if (label == unreadLabel.id) {
