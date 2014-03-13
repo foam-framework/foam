@@ -167,7 +167,7 @@ var AbstractPrototype = {
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
         function() {
-          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this);
+          return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
         } :
         function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
