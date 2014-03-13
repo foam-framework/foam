@@ -86,6 +86,8 @@ var JSONUtil = {
       }
       */
 
+      if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
+
       return GLOBAL[obj.model_] ? GLOBAL[obj.model_].create(obj) : obj;
     }
 
