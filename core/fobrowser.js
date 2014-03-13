@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var Feature = FOAM({
+FOAModel({
    model_: 'Model',
 
    name: 'Feature',

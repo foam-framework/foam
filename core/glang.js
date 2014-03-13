@@ -18,7 +18,7 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
-var PieGraph = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'CView',
@@ -132,7 +132,7 @@ var PieGraph = FOAM({
 });
 
 
-var PieExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'GroupByExpr',

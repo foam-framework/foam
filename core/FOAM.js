@@ -55,6 +55,14 @@ var FOAM = function(map) {
    return obj;
 };
 
+var FOAModel = function(m) {
+  var model = Model.create(m);
+
+  GLOBAL[model.name] = model;
+
+  return model;
+}
+
 /**
  * Register a lazy factory for the specified name within a
  * specified context.

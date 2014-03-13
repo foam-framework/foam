@@ -24,7 +24,7 @@
  *    improve L&F
  */
 
-var Link = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'Link',
   properties: [
@@ -138,7 +138,7 @@ var LinkView = Model.create({
 });
 
 
-var ColorPickerView = FOAM({
+FOAModel({
   model_: 'Model',
   extendsModel: 'AbstractView',
 
@@ -185,7 +185,7 @@ var ColorPickerView = FOAM({
   }
 });
 
-var RichTextView = FOAM({
+FOAModel({
 
   model_: 'Model',
 

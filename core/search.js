@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var GroupBySearchView = FOAM({
+FOAModel({
 
    model_: 'Model',
 
@@ -138,7 +138,7 @@ var GroupBySearchView = FOAM({
 });
 
 
-var TextSearchView = FOAM({
+FOAModel({
 
    model_: 'Model',
 

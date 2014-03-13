@@ -33,7 +33,7 @@ Property.getPrototype().compare = function(o1, o2) {
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-var Expr = FOAM({
+FOAModel({
    model_: 'Model',
 
    name: 'Expr',
@@ -134,7 +134,7 @@ var IDENTITY = (FOAM({
 })).create();
 
 /** An n-ary function. **/
-var NARY = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'Expr',
@@ -182,7 +182,7 @@ var NARY = FOAM({
 
 
 /** An unary function. **/
-var UNARY = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'Expr',
@@ -212,7 +212,7 @@ var UNARY = FOAM({
 
 
 /** An unary function. **/
-var BINARY = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -241,7 +241,7 @@ var BINARY = FOAM({
 });
 
 
-var AndExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'NARY',
@@ -328,7 +328,7 @@ var AndExpr = FOAM({
 });
 
 
-var OrExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'NARY',
@@ -412,7 +412,7 @@ var OrExpr = FOAM({
 });
 
 
-var NotExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -456,7 +456,7 @@ var NotExpr = FOAM({
 });
 
 
-var DescribeExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -485,7 +485,7 @@ var DescribeExpr = FOAM({
 });
 
 
-var EqExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -532,7 +532,7 @@ var EqExpr = FOAM({
    }
 });
 
-var InExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -567,7 +567,7 @@ var InExpr = FOAM({
    }
 });
 
-var ContainsExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -607,7 +607,7 @@ var ContainsExpr = FOAM({
 });
 
 
-var ContainsICExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -663,7 +663,7 @@ var ContainsICExpr = FOAM({
 });
 
 
-var NeqExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -692,7 +692,7 @@ var NeqExpr = FOAM({
    }
 });
 
-var LtExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -721,7 +721,7 @@ var LtExpr = FOAM({
    }
 });
 
-var GtExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -750,7 +750,7 @@ var GtExpr = FOAM({
    }
 });
 
-var LteExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -779,7 +779,7 @@ var LteExpr = FOAM({
    }
 });
 
-var GteExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -810,7 +810,7 @@ var GteExpr = FOAM({
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
-var StartsWithExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -840,7 +840,7 @@ var StartsWithExpr = FOAM({
 });
 
 
-var ConstantExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -875,7 +875,7 @@ var ConstantExpr = FOAM({
 });
 
 
-var ConcatExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'NARY',
@@ -923,7 +923,7 @@ function compileArray_(args) {
 };
 
 
-var SumExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -948,7 +948,7 @@ var SumExpr = FOAM({
 });
 
 
-var AvgExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -984,7 +984,7 @@ var AvgExpr = FOAM({
 });
 
 
-var MaxExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -1018,7 +1018,7 @@ var MaxExpr = FOAM({
 });
 
 
-var MinExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'UNARY',
@@ -1052,7 +1052,7 @@ var MinExpr = FOAM({
 });
 
 
-var DistinctExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -1087,7 +1087,7 @@ var DistinctExpr = FOAM({
 });
 
 
-var GroupByExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -1177,7 +1177,7 @@ var GroupByExpr = FOAM({
 });
 
 
-var GridByExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'Expr',
@@ -1316,7 +1316,7 @@ var GridByExpr = FOAM({
 });
 
 
-var MapExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -1354,7 +1354,7 @@ var MapExpr = FOAM({
 });
 
 
-var CountExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'Expr',
@@ -1384,7 +1384,7 @@ var CountExpr = FOAM({
 });
 
 
-var SeqExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'NARY',
@@ -1435,7 +1435,7 @@ var SeqExpr = FOAM({
    }
 });
 
-var UpdateExpr = FOAM({
+FOAModel({
     model_: 'Model',
 
     extendsModel: 'NARY',
@@ -1489,7 +1489,7 @@ var UpdateExpr = FOAM({
     }
 });
 
-var SetExpr = FOAM({
+FOAModel({
     model_: 'Model',
 
     name: 'SetExpr',
@@ -1626,7 +1626,7 @@ function CONCAT() {
 }
 
 
-var ExpandableGroupByExpr = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'BINARY',
@@ -1718,7 +1718,7 @@ var ExpandableGroupByExpr = FOAM({
    }
 });
 
-var TreeExpr = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'Expr',
@@ -1777,7 +1777,7 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
-var DescExpr = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'DescExpr',
 

@@ -102,7 +102,7 @@ var Canvas = Model.create({
  * CView's can also be used as regular (DOM) Views because if you call
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
-var CView = FOAM({
+FOAModel({
    model_: 'Model',
 
    name:  'CView',
@@ -239,7 +239,7 @@ var CView = FOAM({
 });
 
 
-var Label = FOAM({
+FOAModel({
    model_: 'Model',
 
    name:  'Label',
@@ -308,7 +308,7 @@ var Label = FOAM({
 });
 
 
-var Box = FOAM({
+FOAModel({
 
    model_: 'Model',
 
@@ -497,7 +497,7 @@ var Circle = Model.create({
 });
 
 
-var ImageCView = FOAM({
+FOAModel({
 
    model_: 'Model',
 
@@ -558,7 +558,7 @@ var ImageCView = FOAM({
 });
 
 
-var Rectangle = FOAM({
+FOAModel({
 
    model_: 'Model',
 
@@ -609,7 +609,7 @@ var Rectangle = FOAM({
 
 
 /** A Panel is a container of other CViews. **/
-var PanelCView = FOAM({
+FOAModel({
    model_: 'Model',
 
    name:  'PanelCView',
@@ -689,7 +689,7 @@ var PanelCView = FOAM({
 });
 
 
-var ProgressCView = FOAM({
+FOAModel({
 
    model_: 'Model',
 
@@ -737,7 +737,7 @@ var ProgressCView = FOAM({
 });
 
 
-var Graph = FOAM({
+FOAModel({
    model_: 'Model',
 
    extendsModel: 'PanelCView',
@@ -1138,7 +1138,7 @@ var WarpedCanvas = {
 };
 
 
-var GridCView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'CView',

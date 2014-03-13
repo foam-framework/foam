@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var ClientDAO = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'ClientDAO',
   extendsModel: 'AbstractDAO',

@@ -99,7 +99,7 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // ??? Should this have a 'value'?
 // Or maybe a ValueView and ModelView
-var AbstractView = FOAM({
+FOAModel({
   model_: 'Model',
 
   name: 'AbstractView',
@@ -307,7 +307,7 @@ var AbstractView = FOAM({
 });
 
 
-var PopupView = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'PopupView',
 
@@ -353,7 +353,7 @@ var PopupView = FOAM({
 });
 
 
-var StaticHTML = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'StaticHTML',
   extendsModel: 'AbstractView',
@@ -379,7 +379,7 @@ var StaticHTML = FOAM({
   }
 });
 
-var MenuSeparator = FOAM({
+FOAModel({
   model_: 'Model',
   extendsModel: 'StaticHTML',
   properties: [
@@ -439,7 +439,7 @@ var DomValue = {
 
 
 
-var ImageView = FOAM({
+FOAModel({
   model_: 'Model',
 
   name: 'ImageView',
@@ -514,7 +514,7 @@ var ImageView = FOAM({
 });
 
 
-var BlobImageView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -572,7 +572,7 @@ var BlobImageView = FOAM({
 });
 
 // TODO: document the difference between softValue and value
-var TextFieldView = FOAM({
+FOAModel({
 
   model_: 'Model',
   name:  'TextFieldView',
@@ -727,7 +727,7 @@ var TextFieldView = FOAM({
 });
 
 
-var DateFieldView = FOAM({
+FOAModel({
 
   model_: 'Model',
   name:  'DateFieldView',
@@ -757,7 +757,7 @@ var DateFieldView = FOAM({
 });
 
 
-var DateTimeFieldView = FOAM({
+FOAModel({
 
   model_: 'Model',
   name:  'DateTimeFieldView',
@@ -824,7 +824,7 @@ var DateTimeFieldView = FOAM({
 });
 
 
-var RelativeDateTimeFieldView = FOAM({
+FOAModel({
   model_: 'Model',
   name:  'RelativeDateTimeFieldView',
   label: 'Relative Date-Time Field',
@@ -839,7 +839,7 @@ var RelativeDateTimeFieldView = FOAM({
 });
 
 
-var HTMLView = FOAM({
+FOAModel({
 
   model_: 'Model',
   name:  'HTMLView',
@@ -903,7 +903,7 @@ var HTMLView = FOAM({
 });
 
 
-var ChoiceView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -1144,7 +1144,7 @@ var ChoiceView = FOAM({
 });
 
 
-var RadioBoxView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1215,7 +1215,7 @@ var RadioBoxView = FOAM({
 });
 
 
-var RoleView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1283,7 +1283,7 @@ var RoleView = FOAM({
 });
 
 
-var BooleanView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -1329,7 +1329,7 @@ var BooleanView = FOAM({
 });
 
 
-var ImageBooleanView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -1399,7 +1399,7 @@ var ImageBooleanView = FOAM({
 });
 
 
-var TextAreaView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1479,7 +1479,7 @@ var TextAreaView = FOAM({
 });
 
 
-var FunctionView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1538,7 +1538,7 @@ var FunctionView = FOAM({
 });
 
 
-var JSView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1570,7 +1570,7 @@ var JSView = FOAM({
 });
 
 
-var XMLView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -1963,7 +1963,7 @@ var SummaryView = Model.create({
 
 
 /** A display-only on-line help view. **/
-var HelpView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -2031,7 +2031,7 @@ var HelpView = FOAM({
 });
 
 
-var TableView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -2351,7 +2351,7 @@ var TableView = FOAM({
 });
 
 
-var EditColumnsView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -2525,7 +2525,7 @@ var ActionLink = Model.create({
 
 
 // TODO: ActionBorder should use this.
-var ToolbarView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -2758,7 +2758,7 @@ var ActionBorder = {
 };
 
 
-var ProgressView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -2817,7 +2817,7 @@ var ArrayView = {
 };
 
 
-var GridView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -2964,7 +2964,7 @@ var GridView = FOAM({
 });
 
 
-var Mouse = FOAM({
+FOAModel({
   model_: 'Model',
 
   name: 'Mouse',
@@ -3005,7 +3005,7 @@ var Mouse = FOAM({
 });
 
 
-var ViewChoice = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -3035,7 +3035,7 @@ var ViewChoice = FOAM({
 });
 
 
-var AlternateView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -3178,7 +3178,7 @@ var AlternateView = FOAM({
 });
 
 
-var ModelAlternateView = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'ModelAlternateView',
   extendsModel: 'AlternateView',
@@ -3217,7 +3217,7 @@ var ModelAlternateView = FOAM({
 });
 
 
-var FloatFieldView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -3233,7 +3233,7 @@ var FloatFieldView = FOAM({
 });
 
 
-var IntFieldView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -3249,7 +3249,7 @@ var IntFieldView = FOAM({
 });
 
 
-var StringArrayView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -3267,7 +3267,7 @@ var StringArrayView = FOAM({
   }
 });
 
-var MultiLineStringArrayView = FOAM({
+FOAModel({
   model_: 'Model',
   name: 'MultiLineStringArrayView',
   extendsModel: 'AbstractView',
@@ -3411,7 +3411,7 @@ var MultiLineStringArrayView = FOAM({
   ]
 });
 
-var SplitView = FOAM({
+FOAModel({
 
   model_: 'Model',
 
@@ -3477,7 +3477,7 @@ var SplitView = FOAM({
 });
 
 
-var ListValueView = FOAM({
+FOAModel({
   model_: 'Model',
 
   name: 'ListValueView',
@@ -3525,7 +3525,7 @@ var ListValueView = FOAM({
 });
 
 
-var ListInputView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -3700,7 +3700,7 @@ var ListInputView = FOAM({
   ]
 });
 
-var ArrayTileView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',
@@ -3844,7 +3844,7 @@ var ArrayTileView = FOAM({
   ]
 });
 
-var ArrayListView = FOAM({
+FOAModel({
   model_: 'Model',
   extendsModel: 'AbstractView',
   name: 'ArrayListView',
@@ -3901,7 +3901,7 @@ var ArrayListView = FOAM({
   ]
 });
 
-var DAOKeyView = FOAM({
+FOAModel({
   model_: 'Model',
   extendsModel: 'AbstractView',
   name: 'DAOKeyView',
@@ -3969,7 +3969,7 @@ var DAOKeyView = FOAM({
   ]
 });
 
-var ListView = FOAM({
+FOAModel({
   model_: 'Model',
   extendsModel: 'AbstractView',
   name: 'ListView',
@@ -4027,7 +4027,7 @@ var ListView = FOAM({
 });
 
 
-var AutocompleteListView = FOAM({
+FOAModel({
   model_: 'Model',
 
   extendsModel: 'AbstractView',

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var StackView = FOAM({
+FOAModel({
    model_: 'Model',
 
    name:  'StackView',
