@@ -33,9 +33,7 @@ Property.getPrototype().compare = function(o1, o2) {
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-var Expr = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name: 'Expr',
 
    package: 'foam.mlang',
@@ -95,52 +93,47 @@ var Expr = FOAM({
 
 
 var TRUE = (FOAM({
-   model_: 'Model',
+  model_: 'Model',
+  name: 'TRUE',
+  extendsModel: 'Expr',
 
-   extendsModel: 'Expr',
-
-   name: 'TRUE',
-
-   methods: {
-     toSQL: function() { return '( 1 = 1 )'; },
-     toMQL: function() { return ''; },
-     f:     function() { return true; }
-   }
+  methods: {
+    toSQL: function() { return '( 1 = 1 )'; },
+    toMQL: function() { return ''; },
+    f:     function() { return true; }
+  }
 })).create();
 
 
 var FALSE = (FOAM({
-   model_: 'Model',
+  model_: 'Model',
+  name: 'FALSE',
+  extendsModel: 'Expr',
 
-   extendsModel: 'Expr',
-
-   name: 'FALSE',
-
-   methods: {
-     toSQL: function(out) { return '( 1 <> 1 )'; },
-     toMQL: function(out) { return '<false>'; },
-     f:     function() { return false; }
-   }
+  methods: {
+    toSQL: function(out) { return '( 1 <> 1 )'; },
+    toMQL: function(out) { return '<false>'; },
+    f:     function() { return false; }
+  }
 })).create();
 
 var IDENTITY = (FOAM({
-    model_: 'Model',
-    extendsModel: 'Expr',
-    name: 'IDENT',
-    methods: {
-        f: function(obj) { return obj; },
-        toString: function() { return 'IDENTITY'; }
-    }
+  model_: 'Model',
+  name: 'IDENTITY',
+  extendsModel: 'Expr',
+
+  methods: {
+    f: function(obj) { return obj; },
+    toString: function() { return 'IDENTITY'; }
+  }
 })).create();
 
 /** An n-ary function. **/
-var NARY = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'NARY',
 
    extendsModel: 'Expr',
    abstract: true,
-
-   name: 'NARY',
 
    properties: [
       {
@@ -182,13 +175,11 @@ var NARY = FOAM({
 
 
 /** An unary function. **/
-var UNARY = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'UNARY',
 
    extendsModel: 'Expr',
    abstract: true,
-
-   name: 'UNARY',
 
    properties: [
       {
@@ -212,13 +203,11 @@ var UNARY = FOAM({
 
 
 /** An unary function. **/
-var BINARY = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'BINARY',
 
    extendsModel: 'UNARY',
    abstract: true,
-
-   name: 'BINARY',
 
    properties: [
       {
@@ -241,13 +230,11 @@ var BINARY = FOAM({
 });
 
 
-var AndExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'AndExpr',
 
    extendsModel: 'NARY',
    abstract: true,
-
-   name: 'AndExpr',
 
    methods: {
       // AND has a higher precedence than OR so doesn't need parenthesis
@@ -328,13 +315,11 @@ var AndExpr = FOAM({
 });
 
 
-var OrExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'OrExpr',
 
    extendsModel: 'NARY',
    abstract: true,
-
-   name: 'OrExpr',
 
    methods: {
       toSQL: function() {
@@ -412,13 +397,11 @@ var OrExpr = FOAM({
 });
 
 
-var NotExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'NotExpr',
 
    extendsModel: 'UNARY',
    abstract: true,
-
-   name: 'NotExpr',
 
    methods: {
       toSQL: function() {
@@ -456,12 +439,10 @@ var NotExpr = FOAM({
 });
 
 
-var DescribeExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'DescribeExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'DescribeExpr',
 
    properties: [
       {
@@ -485,13 +466,11 @@ var DescribeExpr = FOAM({
 });
 
 
-var EqExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'EqExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'EqExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
@@ -532,12 +511,10 @@ var EqExpr = FOAM({
    }
 });
 
-var InExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'InExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'InExpr',
 
    properties: [
       {
@@ -567,12 +544,10 @@ var InExpr = FOAM({
    }
 });
 
-var ContainsExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'ContainsExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ContainsExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
@@ -607,12 +582,10 @@ var ContainsExpr = FOAM({
 });
 
 
-var ContainsICExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'ContainsICExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ContainsICExpr',
 
    properties: [
       {
@@ -663,13 +636,11 @@ var ContainsICExpr = FOAM({
 });
 
 
-var NeqExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'NeqExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'NeqExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
@@ -692,13 +663,11 @@ var NeqExpr = FOAM({
    }
 });
 
-var LtExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'LtExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'LtExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
@@ -721,13 +690,11 @@ var LtExpr = FOAM({
    }
 });
 
-var GtExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'GtExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'GtExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
@@ -750,13 +717,11 @@ var GtExpr = FOAM({
    }
 });
 
-var LteExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'LteExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'LteExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
@@ -779,13 +744,11 @@ var LteExpr = FOAM({
    }
 });
 
-var GteExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'GteExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'GteExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
@@ -810,12 +773,10 @@ var GteExpr = FOAM({
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
-var StartsWithExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'StartsWithExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'StartsWithExpr',
 
    methods: {
      toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
@@ -840,12 +801,10 @@ var StartsWithExpr = FOAM({
 });
 
 
-var ConstantExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'ConstantExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'ConstantExpr',
 
    methods: {
       escapeSQLString: function(str) {
@@ -875,12 +834,10 @@ var ConstantExpr = FOAM({
 });
 
 
-var ConcatExpr = FOAM({
-   model_: 'Model',
-
+FOAModel({
+   name: 'ConcatExpr',
    extendsModel: 'NARY',
 
-   name: 'ConcatExpr',
    label: 'concat',
 
    methods: {
@@ -923,12 +880,10 @@ function compileArray_(args) {
 };
 
 
-var SumExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'SumExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'SumExpr',
 
    properties: [
       {
@@ -948,12 +903,10 @@ var SumExpr = FOAM({
 });
 
 
-var AvgExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'AvgExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'AvgExpr',
 
    properties: [
       {
@@ -984,12 +937,10 @@ var AvgExpr = FOAM({
 });
 
 
-var MaxExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'MaxExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'MaxExpr',
 
    properties: [
       {
@@ -1018,12 +969,10 @@ var MaxExpr = FOAM({
 });
 
 
-var MinExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'MinExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'MinExpr',
 
    properties: [
       {
@@ -1052,12 +1001,10 @@ var MinExpr = FOAM({
 });
 
 
-var DistinctExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'DistinctExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'DistinctExpr',
 
    properties: [
       {
@@ -1087,12 +1034,10 @@ var DistinctExpr = FOAM({
 });
 
 
-var GroupByExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'GroupByExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'GroupByExpr',
 
    properties: [
       {
@@ -1177,12 +1122,10 @@ var GroupByExpr = FOAM({
 });
 
 
-var GridByExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'GridByExpr',
 
    extendsModel: 'Expr',
-
-   name: 'GridByExpr',
 
    properties: [
       {
@@ -1316,12 +1259,10 @@ var GridByExpr = FOAM({
 });
 
 
-var MapExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'MapExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'MapExpr',
 
    methods: {
      reduce: function(other) {
@@ -1354,12 +1295,10 @@ var MapExpr = FOAM({
 });
 
 
-var CountExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'CountExpr',
 
    extendsModel: 'Expr',
-
-   name: 'CountExpr',
 
    properties: [
       {
@@ -1384,12 +1323,10 @@ var CountExpr = FOAM({
 });
 
 
-var SeqExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'SeqExpr',
 
    extendsModel: 'NARY',
-
-   name: 'SeqExpr',
 
    methods: {
       pipe: function(sink) { sink.put(this); },
@@ -1435,12 +1372,10 @@ var SeqExpr = FOAM({
    }
 });
 
-var UpdateExpr = FOAM({
-    model_: 'Model',
-
+FOAModel({
+    name: 'UpdateExpr',
     extendsModel: 'NARY',
 
-    name: 'UpdateExpr',
     label: 'UpdateExpr',
 
     properties: [
@@ -1489,9 +1424,7 @@ var UpdateExpr = FOAM({
     }
 });
 
-var SetExpr = FOAM({
-    model_: 'Model',
-
+FOAModel({
     name: 'SetExpr',
     label: 'SetExpr',
 
@@ -1626,12 +1559,10 @@ function CONCAT() {
 }
 
 
-var ExpandableGroupByExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'ExpandableGroupByExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ExpandableGroupByExpr',
 
    properties: [
       {
@@ -1718,12 +1649,10 @@ var ExpandableGroupByExpr = FOAM({
    }
 });
 
-var TreeExpr = FOAM({
-  model_: 'Model',
+FOAModel({
+  name: 'TreeExpr',
 
   extendsModel: 'Expr',
-
-  name: 'TreeExpr',
 
   properties: [
     {
@@ -1777,8 +1706,7 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
-var DescExpr = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'DescExpr',
 
   extendsModel: 'UNARY',

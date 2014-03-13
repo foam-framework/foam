@@ -26,12 +26,10 @@
     repaint
 
 */
-var TableView2 = FOAM({
-  model_: 'Model',
-
+FOAModel({
+  name: 'TableView2',
   extendsModel: 'AbstractView',
 
-  name: 'TableView2',
   label: 'Table View',
 
   properties: [

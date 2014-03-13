@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var DAOController = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'DAOController',
    label: 'DAO Controller',
 
@@ -211,7 +209,7 @@ var DAOController = FOAM({
             if ( obj )
             {
 /*
-               var view = FOAM({
+               FOAModel({
                   model_: 'AlternateView',
 
                   selection: 'GUI',
@@ -258,9 +256,7 @@ var DAOController = FOAM({
 });
 
 
-var DAOCreateController = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'DAOCreateController',
    label: 'DAO Create',
 
@@ -371,9 +367,7 @@ var DAOCreateController = FOAM({
 });
 
 
-var DAOUpdateController = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'DAOUpdateController',
    label: 'DAO Update',
 
@@ -515,12 +509,10 @@ var DAOUpdateController = FOAM({
 });
 
 
-var DAOControllerView = FOAM({
-   model_: 'Model',
-
+FOAModel({
+   name:  'DAOControllerView',
    extendsModel: 'AbstractView',
 
-   name:  'DAOControllerView',
    label: 'DAOControllerView',
 
    methods: {

@@ -18,12 +18,10 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
-var PieGraph = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'PieGraph',
 
    extendsModel: 'CView',
-
-   name: 'PieGraph',
 
    properties: [
       {
@@ -132,12 +130,10 @@ var PieGraph = FOAM({
 });
 
 
-var PieExpr = FOAM({
-   model_: 'Model',
+FOAModel({
+   name: 'PieExpr',
 
    extendsModel: 'GroupByExpr',
-
-   name: 'PieExpr',
 
    methods: {
      toCView: function() {

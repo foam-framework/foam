@@ -16,11 +16,9 @@
  */
 
 
-var Canvas = Model.create({
-
-   extendsModel: 'AbstractView',
-
+FOAModel({
    name: 'Canvas',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -102,9 +100,7 @@ var Canvas = Model.create({
  * CView's can also be used as regular (DOM) Views because if you call
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
-var CView = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'CView',
    label: 'Panel',
 
@@ -239,9 +235,7 @@ var CView = FOAM({
 });
 
 
-var Label = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'Label',
 
    properties: [
@@ -308,13 +302,9 @@ var Label = FOAM({
 });
 
 
-var Box = FOAM({
-
-   model_: 'Model',
-
-   extendsModel: 'Label',
-
+FOAModel({
    name:  'Box',
+   extendsModel: 'Label',
 
    properties: [
       {
@@ -497,10 +487,7 @@ var Circle = Model.create({
 });
 
 
-var ImageCView = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
    name:  'ImageCView',
 
    properties: [
@@ -558,10 +545,7 @@ var ImageCView = FOAM({
 });
 
 
-var Rectangle = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
    name:  'Rectangle',
 
    properties: [
@@ -609,9 +593,7 @@ var Rectangle = FOAM({
 
 
 /** A Panel is a container of other CViews. **/
-var PanelCView = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name:  'PanelCView',
    label: 'Panel',
 
@@ -689,13 +671,9 @@ var PanelCView = FOAM({
 });
 
 
-var ProgressCView = FOAM({
-
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
+FOAModel({
    name:  'ProgressCView',
+   extendsModel: 'PanelCView',
    label: 'ProgressCView',
 
    properties: [
@@ -737,12 +715,9 @@ var ProgressCView = FOAM({
 });
 
 
-var Graph = FOAM({
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
+FOAModel({
    name:  'Graph',
+   extendsModel: 'PanelCView',
 
    properties: [
       {
@@ -1138,12 +1113,9 @@ var WarpedCanvas = {
 };
 
 
-var GridCView = FOAM({
-  model_: 'Model',
-
-  extendsModel: 'CView',
-
+FOAModel({
   name:  'GridCView',
+  extendsModel: 'CView',
   label: 'GridCView',
 
   properties: [
@@ -1198,8 +1170,7 @@ var GridCView = FOAM({
         this.animation_ && this.animation_();
         this.animation_ = Movement.animate(
           400,
-          function() { self.mag = self.desiredMag; },
-          Movement.oscillate(0.3, self.desiredMag/6))();
+          function() { self.mag = self.desiredMag; })();
       });
 
       this.parent.$.onmousewheel = function(e) {

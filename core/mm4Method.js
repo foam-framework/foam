@@ -18,9 +18,7 @@
 // TODO: do this once no views use it directly
 // delete ModelProto;
 
-var Action = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Action',
 
     tableProperties: [
@@ -131,9 +129,7 @@ Action.getPrototype().callIfEnabled = function(that) {
 
 
 /* Not used yet
-var Topic = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Topic',
 
     tableProperties: [
@@ -167,9 +163,7 @@ var Topic = FOAM({
 });
 */
 
-var Arg = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Arg',
 
     tableProperties: [
@@ -263,9 +257,7 @@ var Arg = FOAM({
   ]
 });
 
-Method = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Method',
 
     tableProperties: [
@@ -379,9 +371,7 @@ Method = FOAM({
 });
 
 
-var Interface = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name: 'Interface',
 
     tableProperties: [
@@ -483,9 +473,7 @@ var Interface = FOAM({
 });
 
 
-var Template = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Template',
 
     tableProperties: [

@@ -28,13 +28,10 @@ var ListChoiceViewRenderer = {
   }
 };
 
-var ListChoiceView = FOAM({
-
-   model_: 'Model',
+FOAModel({
+   name:  'ListChoiceView',
 
    extendsModel: 'AbstractView',
-
-   name:  'ListChoiceView',
 
    properties: [
       {

@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var SplitDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
-
+FOAModel({
    name: 'SplitDAO',
+
+   extendsModel: 'AbstractDAO',
 
    properties: [
       {
@@ -104,11 +103,10 @@ dao.put("bar")
 */
 
 
-var DelayedDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'ProxyDAO',
-
+FOAModel({
    name: 'DelayedDAO',
+
+   extendsModel: 'ProxyDAO',
 
    properties: [
       {

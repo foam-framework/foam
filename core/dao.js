@@ -16,7 +16,7 @@
  */
 
 // ???: Is there any point in making this an Interface, or just a Concrete Model
-var FlowControl = FOAM({
+FOAModel({
   model_: 'Interface',
 
   package: 'dao',
@@ -58,7 +58,7 @@ var FlowControl = FOAM({
 });
 
 
-var Sink = FOAM({
+FOAModel({
   model_: 'Interface',
 
   package: 'dao',
@@ -97,7 +97,7 @@ var Sink = FOAM({
 });
 
 
-var Predicate = FOAM({
+FOAModel({
   model_: 'Interface',
 
   name: 'Predicate',
@@ -116,7 +116,7 @@ var Predicate = FOAM({
 });
 
 
-var Comparator = FOAM({
+FOAModel({
   model_: 'Interface',
 
   name: 'Comparator',
@@ -138,7 +138,7 @@ var Comparator = FOAM({
 
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
-var DAO = FOAM({
+FOAModel({
   model_: 'Interface',
 
   package: 'dao',
@@ -510,9 +510,7 @@ var JSONToObject = {
 };
 
 
-var AbstractDAO = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'AbstractDAO',
 
   methods: {
@@ -649,11 +647,10 @@ var AbstractDAO = FOAM({
 });
 
 
-var ProxyDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
+FOAModel({
   name: 'ProxyDAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -711,8 +708,7 @@ var ProxyDAO = FOAM({
  * sequence number on DAO.put() if the properties value
  * is set to the properties default value.
  */
-var SeqNoDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
@@ -767,8 +763,7 @@ var SeqNoDAO = FOAM({
  * Remove dependent children from a secondary DAO when parent is
  * removed from the delegate DAO.
  */
-var CascadingRemoveDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'CascadingRemoveDAO',
   label: 'SeqNoDAO', // TODO: Copy-paste error?
 
@@ -1068,8 +1063,7 @@ function atxn(afunc) {
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
  */
-var IDBDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   extendsModel: 'AbstractDAO',
 
   name: 'IDBDAO',
@@ -1362,8 +1356,7 @@ var IDBDAO = FOAM({
 });
 
 
-var StorageDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   extendsModel: 'AbstractDAO',
 
   name: 'StorageDAO',
@@ -1440,8 +1433,7 @@ var StorageDAO = FOAM({
 });
 
 
-var AbstractFileDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
@@ -1589,11 +1581,10 @@ var AbstractFileDAO = FOAM({
 });
 
 
-var JSONFileDAO = FOAM({
-  model_: 'Model',
+FOAModel({
+  name: 'JSONFileDAO',
   extendsModel: 'AbstractFileDAO',
 
-  name: 'JSONFileDAO',
   label: 'JSON File DAO',
 
   properties: [
@@ -1658,8 +1649,7 @@ var JSONFileDAO = FOAM({
 });
 
 
-var KeyCollector = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
@@ -1682,8 +1672,7 @@ var KeyCollector = FOAM({
 });
 
 
-var WorkerDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'WorkerDAO',
   extendsModel: 'AbstractDAO',
 
@@ -1881,8 +1870,7 @@ var WorkerDAO = FOAM({
 });
 
 
-var WorkerDelegate = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'WorkerDelegate',
   help:  'The client side of a web-worker DAO',
 
@@ -2033,9 +2021,7 @@ var ModelDAO = {
 };
 
 
-var OrderedCollectorSink = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'OrderedCollectorSink',
 
   properties: [
@@ -2062,9 +2048,7 @@ var OrderedCollectorSink = FOAM({
 });
 
 
-var CollectorSink = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'CollectorSink',
 
   properties: [
@@ -2086,11 +2070,9 @@ var CollectorSink = FOAM({
 });
 
 
-var PartitionDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
+FOAModel({
   name: 'ParitionDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -2203,10 +2185,9 @@ var PartitionDAO = FOAM({
 });
 
 
-var ActionFactoryDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'ProxyDAO',
+FOAModel({
   name: 'ActionFactoryDAO',
+  extendsModel: 'ProxyDAO',
   label: 'ActionFactoryDAO',
 
   properties: [
@@ -2258,8 +2239,7 @@ var ActionFactoryDAO = FOAM({
 
 
 // TODO Why is this even a DAO, it literally only does find.
-var BlobReaderDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'BlobReaderDAO',
 
   properties: [
@@ -2297,8 +2277,7 @@ var BlobReaderDAO = FOAM({
   }
 });
 
-var GDriveDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'GDriveDAO',
   properties: [
     {
@@ -2343,11 +2322,9 @@ var GDriveDAO = FOAM({
   }
 });
 
-var RestDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
+FOAModel({
   name: 'RestDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -2527,9 +2504,7 @@ var RestDAO = FOAM({
 });
 
 
-var DefaultObjectDAO = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'DefaultObjectDAO',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
@@ -2557,8 +2532,7 @@ var DefaultObjectDAO = FOAM({
 });
 
 
-var LRUCachingDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'LRUMemoryDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2726,9 +2700,7 @@ var LRUCachingDAO = FOAM({
 });
 
 
-var LazyCacheDAO = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'LazyCacheDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2766,9 +2738,7 @@ var LazyCacheDAO = FOAM({
 });
 
 
-var PropertyOffloadDAO = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2829,8 +2799,7 @@ var PropertyOffloadDAO = FOAM({
 });
 
 
-var BlobSerializeDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2923,8 +2892,7 @@ var BlobSerializeDAO = FOAM({
 });
 
 
-var NullDAO = FOAM({
-    model_: 'Model',
+FOAModel({
     name: 'NullDAO',
     help: 'A DAO that stores nothing and does nothing.',
     methods: {

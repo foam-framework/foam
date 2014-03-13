@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-var ChromeStorageDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
+FOAModel({
   name: 'ChromeStorageDAO',
+  extendsModel: 'AbstractDAO',
   label: 'Chrome Storage DAO',
 
   properties: [

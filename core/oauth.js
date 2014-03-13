@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var OAuth2 = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'OAuth2',
   label: 'OAuth 2.0',
 

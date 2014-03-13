@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var UnitTest = FOAM({
-     model_: 'Model',
+FOAModel({
      name: 'UnitTest',
      plural: 'Unit Tests',
      tableProperties:
@@ -125,8 +124,7 @@ var UnitTest = FOAM({
  });
 
 
-var Relationship = FOAM({
-     model_: 'Model',
+FOAModel({
      name: 'Relationship',
      tableProperties: [
         'name', 'label', 'relatedModel', 'relatedProperty'
@@ -193,9 +191,7 @@ var Relationship = FOAM({
  });
 
 
-var Issue = FOAM(
-{
-     model_: 'Model',
+FOAModel({
      name: 'Issue',
      plural: 'Issues',
      help: 'An issue describes a question, feature request, or defect.',

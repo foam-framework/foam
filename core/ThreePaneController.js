@@ -25,9 +25,7 @@ function pos(e, top, left, width, height) {
    height != null && (e.style.height = toNum(height) + 'px');
 }
 
-var ThreePaneController = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 

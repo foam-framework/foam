@@ -14,13 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var ScrollCView = FOAM({
-
-   model_: 'Model',
+FOAModel({
+   name:  'ScrollCView',
 
    extendsModel: 'CView',
-
-   name:  'ScrollCView',
 
    properties: [
       {
@@ -172,13 +169,10 @@ var ScrollCView = FOAM({
 
 
 /** Add a scrollbar around an inner-view. **/
-var ScrollBorder = FOAM({
-
-   model_: 'Model',
+FOAModel({
+   name:  'ScrollBorder',
 
    extendsModel: 'AbstractView',
-
-   name:  'ScrollBorder',
 
    properties: [
      {

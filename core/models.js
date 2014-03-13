@@ -19,9 +19,7 @@
  * Only completely modelled models here.
  * All models in this file can be stored and loaded in a DAO.
  **/
-var Timer = FOAM({
-   model_: 'Model',
-
+FOAModel({
    name: 'Timer',
 
    properties: [
@@ -152,10 +150,7 @@ var Timer = FOAM({
 });
 
 
-var Binding = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
    name: 'Binding',
 
    properties: [
@@ -172,10 +167,7 @@ var Binding = FOAM({
 });
 
 
-var PersistentContext = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
    name: 'PersistentContext',
 
    properties: [
@@ -249,8 +241,7 @@ var PersistentContext = FOAM({
   }
 });
 
-var Person = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'Person',
   properties: [
     { model_: 'IntegerProperty', name: 'id' },
@@ -260,9 +251,7 @@ var Person = FOAM({
   ]
 });
 
-var UserInfo = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'UserInfo',
   label: 'UserInfo',
 

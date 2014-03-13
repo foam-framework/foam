@@ -141,9 +141,7 @@ var OAuthXhr = {
   }
 };
 
-var OAuthXhrFactory = FOAM({
-  model_: 'Model',
-
+FOAModel({
   name: 'OAuthXhrFactory',
   label: 'OAuthXhrFactory',
 
@@ -166,8 +164,7 @@ var OAuthXhrFactory = FOAM({
   }
 });
 
-var ChromeAuthAgent = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'ChromeAuthAgent',
   label: 'ChromeAuthAgent',
 
