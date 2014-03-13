@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 FOAModel({
-   model_: 'Model',
-
    name:  'DAOController',
    label: 'DAO Controller',
 
@@ -259,8 +257,6 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
    name:  'DAOCreateController',
    label: 'DAO Create',
 
@@ -372,8 +368,6 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
    name:  'DAOUpdateController',
    label: 'DAO Update',
 
@@ -516,11 +510,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
+   name:  'DAOControllerView',
    extendsModel: 'AbstractView',
 
-   name:  'DAOControllerView',
    label: 'DAOControllerView',
 
    methods: {

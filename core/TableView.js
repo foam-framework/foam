@@ -27,11 +27,9 @@
 
 */
 FOAModel({
-  model_: 'Model',
-
+  name: 'TableView2',
   extendsModel: 'AbstractView',
 
-  name: 'TableView2',
   label: 'Table View',
 
   properties: [

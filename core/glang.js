@@ -19,11 +19,9 @@
 // See: https://developers.google.com/chart/interactive/docs/index
 
 FOAModel({
-   model_: 'Model',
+   name: 'PieGraph',
 
    extendsModel: 'CView',
-
-   name: 'PieGraph',
 
    properties: [
       {
@@ -133,11 +131,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'PieExpr',
 
    extendsModel: 'GroupByExpr',
-
-   name: 'PieExpr',
 
    methods: {
      toCView: function() {

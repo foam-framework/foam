@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 FOAModel({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
-
    name: 'SplitDAO',
+
+   extendsModel: 'AbstractDAO',
 
    properties: [
       {
@@ -105,10 +104,9 @@ dao.put("bar")
 
 
 FOAModel({
-   model_: 'Model',
-   extendsModel: 'ProxyDAO',
-
    name: 'DelayedDAO',
+
+   extendsModel: 'ProxyDAO',
 
    properties: [
       {

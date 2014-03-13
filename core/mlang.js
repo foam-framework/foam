@@ -34,8 +34,6 @@ Property.getPrototype().compare = function(o1, o2) {
 //  (type-checking is a subset of partial-eval)
 
 FOAModel({
-   model_: 'Model',
-
    name: 'Expr',
 
    package: 'foam.mlang',
@@ -95,52 +93,47 @@ FOAModel({
 
 
 var TRUE = (FOAM({
-   model_: 'Model',
+  model_: 'Model',
+  name: 'TRUE',
+  extendsModel: 'Expr',
 
-   extendsModel: 'Expr',
-
-   name: 'TRUE',
-
-   methods: {
-     toSQL: function() { return '( 1 = 1 )'; },
-     toMQL: function() { return ''; },
-     f:     function() { return true; }
-   }
+  methods: {
+    toSQL: function() { return '( 1 = 1 )'; },
+    toMQL: function() { return ''; },
+    f:     function() { return true; }
+  }
 })).create();
 
 
 var FALSE = (FOAM({
-   model_: 'Model',
+  model_: 'Model',
+  name: 'FALSE',
+  extendsModel: 'Expr',
 
-   extendsModel: 'Expr',
-
-   name: 'FALSE',
-
-   methods: {
-     toSQL: function(out) { return '( 1 <> 1 )'; },
-     toMQL: function(out) { return '<false>'; },
-     f:     function() { return false; }
-   }
+  methods: {
+    toSQL: function(out) { return '( 1 <> 1 )'; },
+    toMQL: function(out) { return '<false>'; },
+    f:     function() { return false; }
+  }
 })).create();
 
 var IDENTITY = (FOAM({
-    model_: 'Model',
-    extendsModel: 'Expr',
-    name: 'IDENT',
-    methods: {
-        f: function(obj) { return obj; },
-        toString: function() { return 'IDENTITY'; }
-    }
+  model_: 'Model',
+  name: 'IDENTITY',
+  extendsModel: 'Expr',
+
+  methods: {
+    f: function(obj) { return obj; },
+    toString: function() { return 'IDENTITY'; }
+  }
 })).create();
 
 /** An n-ary function. **/
 FOAModel({
-   model_: 'Model',
+   name: 'NARY',
 
    extendsModel: 'Expr',
    abstract: true,
-
-   name: 'NARY',
 
    properties: [
       {
@@ -183,12 +176,10 @@ FOAModel({
 
 /** An unary function. **/
 FOAModel({
-   model_: 'Model',
+   name: 'UNARY',
 
    extendsModel: 'Expr',
    abstract: true,
-
-   name: 'UNARY',
 
    properties: [
       {
@@ -213,12 +204,10 @@ FOAModel({
 
 /** An unary function. **/
 FOAModel({
-   model_: 'Model',
+   name: 'BINARY',
 
    extendsModel: 'UNARY',
    abstract: true,
-
-   name: 'BINARY',
 
    properties: [
       {
@@ -242,12 +231,10 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'AndExpr',
 
    extendsModel: 'NARY',
    abstract: true,
-
-   name: 'AndExpr',
 
    methods: {
       // AND has a higher precedence than OR so doesn't need parenthesis
@@ -329,12 +316,10 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'OrExpr',
 
    extendsModel: 'NARY',
    abstract: true,
-
-   name: 'OrExpr',
 
    methods: {
       toSQL: function() {
@@ -413,12 +398,10 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'NotExpr',
 
    extendsModel: 'UNARY',
    abstract: true,
-
-   name: 'NotExpr',
 
    methods: {
       toSQL: function() {
@@ -457,11 +440,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'DescribeExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'DescribeExpr',
 
    properties: [
       {
@@ -486,12 +467,10 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'EqExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'EqExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
@@ -533,11 +512,9 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'InExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'InExpr',
 
    properties: [
       {
@@ -568,11 +545,9 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'ContainsExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ContainsExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
@@ -608,11 +583,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'ContainsICExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ContainsICExpr',
 
    properties: [
       {
@@ -664,12 +637,10 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'NeqExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'NeqExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
@@ -693,12 +664,10 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'LtExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'LtExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
@@ -722,12 +691,10 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'GtExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'GtExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
@@ -751,12 +718,10 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'LteExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'LteExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
@@ -780,12 +745,10 @@ FOAModel({
 });
 
 FOAModel({
-   model_: 'Model',
+   name: 'GteExpr',
 
    extendsModel: 'BINARY',
    abstract: true,
-
-   name: 'GteExpr',
 
    methods: {
       toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
@@ -811,11 +774,9 @@ FOAModel({
 
 // TODO: A TrieIndex would be ideal for making this very fast.
 FOAModel({
-   model_: 'Model',
+   name: 'StartsWithExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'StartsWithExpr',
 
    methods: {
      toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
@@ -841,11 +802,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'ConstantExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'ConstantExpr',
 
    methods: {
       escapeSQLString: function(str) {
@@ -876,11 +835,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
+   name: 'ConcatExpr',
    extendsModel: 'NARY',
 
-   name: 'ConcatExpr',
    label: 'concat',
 
    methods: {
@@ -924,11 +881,9 @@ function compileArray_(args) {
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'SumExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'SumExpr',
 
    properties: [
       {
@@ -949,11 +904,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'AvgExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'AvgExpr',
 
    properties: [
       {
@@ -985,11 +938,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'MaxExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'MaxExpr',
 
    properties: [
       {
@@ -1019,11 +970,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'MinExpr',
 
    extendsModel: 'UNARY',
-
-   name: 'MinExpr',
 
    properties: [
       {
@@ -1053,11 +1002,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'DistinctExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'DistinctExpr',
 
    properties: [
       {
@@ -1088,11 +1035,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'GroupByExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'GroupByExpr',
 
    properties: [
       {
@@ -1178,11 +1123,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'GridByExpr',
 
    extendsModel: 'Expr',
-
-   name: 'GridByExpr',
 
    properties: [
       {
@@ -1317,11 +1260,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'MapExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'MapExpr',
 
    methods: {
      reduce: function(other) {
@@ -1355,11 +1296,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'CountExpr',
 
    extendsModel: 'Expr',
-
-   name: 'CountExpr',
 
    properties: [
       {
@@ -1385,11 +1324,9 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'SeqExpr',
 
    extendsModel: 'NARY',
-
-   name: 'SeqExpr',
 
    methods: {
       pipe: function(sink) { sink.put(this); },
@@ -1436,11 +1373,9 @@ FOAModel({
 });
 
 FOAModel({
-    model_: 'Model',
-
+    name: 'UpdateExpr',
     extendsModel: 'NARY',
 
-    name: 'UpdateExpr',
     label: 'UpdateExpr',
 
     properties: [
@@ -1490,8 +1425,6 @@ FOAModel({
 });
 
 FOAModel({
-    model_: 'Model',
-
     name: 'SetExpr',
     label: 'SetExpr',
 
@@ -1627,11 +1560,9 @@ function CONCAT() {
 
 
 FOAModel({
-   model_: 'Model',
+   name: 'ExpandableGroupByExpr',
 
    extendsModel: 'BINARY',
-
-   name: 'ExpandableGroupByExpr',
 
    properties: [
       {
@@ -1719,11 +1650,9 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
+  name: 'TreeExpr',
 
   extendsModel: 'Expr',
-
-  name: 'TreeExpr',
 
   properties: [
     {
@@ -1778,7 +1707,6 @@ function TREE(parentProperty, childrenProperty) {
 }
 
 FOAModel({
-  model_: 'Model',
   name: 'DescExpr',
 
   extendsModel: 'UNARY',

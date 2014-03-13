@@ -16,11 +16,9 @@
  */
 
 
-var Canvas = Model.create({
-
-   extendsModel: 'AbstractView',
-
+FOAModel({
    name: 'Canvas',
+   extendsModel: 'AbstractView',
 
    properties: [
       {
@@ -103,8 +101,6 @@ var Canvas = Model.create({
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
 FOAModel({
-   model_: 'Model',
-
    name:  'CView',
    label: 'Panel',
 
@@ -240,8 +236,6 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
    name:  'Label',
 
    properties: [
@@ -309,12 +303,8 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
-
-   extendsModel: 'Label',
-
    name:  'Box',
+   extendsModel: 'Label',
 
    properties: [
       {
@@ -498,9 +488,6 @@ var Circle = Model.create({
 
 
 FOAModel({
-
-   model_: 'Model',
-
    name:  'ImageCView',
 
    properties: [
@@ -559,9 +546,6 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
-
    name:  'Rectangle',
 
    properties: [
@@ -610,8 +594,6 @@ FOAModel({
 
 /** A Panel is a container of other CViews. **/
 FOAModel({
-   model_: 'Model',
-
    name:  'PanelCView',
    label: 'Panel',
 
@@ -690,12 +672,8 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
    name:  'ProgressCView',
+   extendsModel: 'PanelCView',
    label: 'ProgressCView',
 
    properties: [
@@ -738,11 +716,8 @@ FOAModel({
 
 
 FOAModel({
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
    name:  'Graph',
+   extendsModel: 'PanelCView',
 
    properties: [
       {
@@ -1139,11 +1114,8 @@ var WarpedCanvas = {
 
 
 FOAModel({
-  model_: 'Model',
-
-  extendsModel: 'CView',
-
   name:  'GridCView',
+  extendsModel: 'CView',
   label: 'GridCView',
 
   properties: [

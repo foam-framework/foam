@@ -26,8 +26,6 @@ function pos(e, top, left, width, height) {
 }
 
 FOAModel({
-  model_: 'Model',
-
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 

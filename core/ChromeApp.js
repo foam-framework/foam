@@ -142,8 +142,6 @@ var OAuthXhr = {
 };
 
 FOAModel({
-  model_: 'Model',
-
   name: 'OAuthXhrFactory',
   label: 'OAuthXhrFactory',
 
@@ -167,7 +165,6 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
   name: 'ChromeAuthAgent',
   label: 'ChromeAuthAgent',
 

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 FOAModel({
-     model_: 'Model',
      name: 'UnitTest',
      plural: 'Unit Tests',
      tableProperties:
@@ -126,7 +125,6 @@ FOAModel({
 
 
 FOAModel({
-     model_: 'Model',
      name: 'Relationship',
      tableProperties: [
         'name', 'label', 'relatedModel', 'relatedProperty'
@@ -193,9 +191,7 @@ FOAModel({
  });
 
 
-FOAModel(
-{
-     model_: 'Model',
+FOAModel({
      name: 'Issue',
      plural: 'Issues',
      help: 'An issue describes a question, feature request, or defect.',

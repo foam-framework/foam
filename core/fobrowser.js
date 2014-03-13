@@ -16,8 +16,6 @@
  */
 
 FOAModel({
-   model_: 'Model',
-
    name: 'Feature',
    plural:'Features',
    help:  "A feature of a Model.",

@@ -15,12 +15,9 @@
  * limitations under the License.
  */
 FOAModel({
-
-   model_: 'Model',
-
+   name:  'GroupBySearchView',
    extendsModel: 'AbstractView',
 
-   name:  'GroupBySearchView',
    label: 'GroupBy Search View',
 
    properties: [
@@ -139,12 +136,9 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
+   name:  'TextSearchView',
 
    extendsModel: 'AbstractView',
-
-   name:  'TextSearchView',
 
    properties: [
      {

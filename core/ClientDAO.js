@@ -16,7 +16,6 @@
  */
 
 FOAModel({
-  model_: 'Model',
   name: 'ClientDAO',
   extendsModel: 'AbstractDAO',
 

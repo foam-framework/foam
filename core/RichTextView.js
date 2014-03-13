@@ -25,7 +25,6 @@
  */
 
 FOAModel({
-  model_: 'Model',
   name: 'Link',
   properties: [
     {
@@ -139,10 +138,9 @@ var LinkView = Model.create({
 
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractView',
-
   name: 'ColorPickerView',
+
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -186,12 +184,9 @@ FOAModel({
 });
 
 FOAModel({
-
-  model_: 'Model',
+  name: 'RichTextView',
 
   extendsModel: 'AbstractView',
-
-  name: 'RichTextView',
 
   properties: [
     {

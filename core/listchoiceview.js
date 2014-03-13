@@ -29,12 +29,9 @@ var ListChoiceViewRenderer = {
 };
 
 FOAModel({
-
-   model_: 'Model',
+   name:  'ListChoiceView',
 
    extendsModel: 'AbstractView',
-
-   name:  'ListChoiceView',
 
    properties: [
       {

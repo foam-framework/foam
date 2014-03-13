@@ -15,12 +15,9 @@
  * limitations under the License.
  */
 FOAModel({
-
-   model_: 'Model',
+   name:  'ScrollCView',
 
    extendsModel: 'CView',
-
-   name:  'ScrollCView',
 
    properties: [
       {
@@ -173,12 +170,9 @@ FOAModel({
 
 /** Add a scrollbar around an inner-view. **/
 FOAModel({
-
-   model_: 'Model',
+   name:  'ScrollBorder',
 
    extendsModel: 'AbstractView',
-
-   name:  'ScrollBorder',
 
    properties: [
      {

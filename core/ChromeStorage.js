@@ -16,10 +16,8 @@
  */
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
   name: 'ChromeStorageDAO',
+  extendsModel: 'AbstractDAO',
   label: 'Chrome Storage DAO',
 
   properties: [

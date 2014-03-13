@@ -100,8 +100,6 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 // ??? Should this have a 'value'?
 // Or maybe a ValueView and ModelView
 FOAModel({
-  model_: 'Model',
-
   name: 'AbstractView',
   label: 'AbstractView',
 
@@ -308,7 +306,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'PopupView',
 
   extendsModel: 'AbstractView',
@@ -354,7 +351,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'StaticHTML',
   extendsModel: 'AbstractView',
   properties: [
@@ -380,7 +376,7 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
+  name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
   properties: [
     {
@@ -440,8 +436,6 @@ var DomValue = {
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'ImageView',
 
   extendsModel: 'AbstractView',
@@ -515,11 +509,10 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'BlobImageView',
 
   extendsModel: 'AbstractView',
 
-  name: 'BlobImageView',
   help: 'Image view for rendering a blob as an image.',
 
   properties: [
@@ -573,8 +566,6 @@ FOAModel({
 
 // TODO: document the difference between softValue and value
 FOAModel({
-
-  model_: 'Model',
   name:  'TextFieldView',
   label: 'Text Field',
 
@@ -728,8 +719,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
   name:  'DateFieldView',
   label: 'Date Field',
 
@@ -758,8 +747,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
@@ -825,7 +812,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name:  'RelativeDateTimeFieldView',
   label: 'Relative Date-Time Field',
 
@@ -840,8 +826,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
   name:  'HTMLView',
   label: 'HTML Field',
 
@@ -904,7 +888,7 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name:  'ChoiceView',
 
   extendsModel: 'AbstractView',
 
@@ -915,8 +899,6 @@ FOAModel({
    *
    *
    */
-  name:  'ChoiceView',
-
   properties: [
     {
       name:  'name',
@@ -1145,15 +1127,9 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
-  extendsModel: 'ChoiceView',
-
   name:  'RadioBoxView',
 
-  properties: [
-  ],
+  extendsModel: 'ChoiceView',
 
   methods: {
     toHTML: function() {
@@ -1216,12 +1192,9 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
+  name:  'RoleView',
 
   extendsModel: 'AbstractView',
-
-  name:  'RoleView',
 
   properties: [
     {
@@ -1284,11 +1257,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name:  'BooleanView',
 
   extendsModel: 'AbstractView',
-
-  name:  'BooleanView',
 
   properties: [
     {
@@ -1330,11 +1301,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name:  'ImageBooleanView',
 
   extendsModel: 'AbstractView',
-
-  name:  'ImageBooleanView',
 
   properties: [
     {
@@ -1400,12 +1369,10 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
+  name: 'TextAreaView',
 
   extendsModel: 'AbstractView',
 
-  name: 'TextAreaView',
   label: 'Text-Area View',
 
   properties: [
@@ -1480,9 +1447,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'FunctionView',
 
   extendsModel: 'TextAreaView',
@@ -1539,9 +1503,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'JSView',
 
   extendsModel: 'TextAreaView',
@@ -1571,9 +1532,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'XMLView',
   label: 'XML View',
 
@@ -1964,11 +1922,9 @@ var SummaryView = Model.create({
 
 /** A display-only on-line help view. **/
 FOAModel({
-  model_: 'Model',
+  name: 'HelpView',
 
   extendsModel: 'AbstractView',
-
-  name: 'HelpView',
 
   properties: [
     {
@@ -2032,11 +1988,10 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'TableView',
 
   extendsModel: 'AbstractView',
 
-  name: 'TableView',
   label: 'Table View',
 
   properties: [
@@ -2352,9 +2307,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name: 'EditColumnsView',
 
   extendsModel: 'AbstractView',
@@ -2526,9 +2478,6 @@ var ActionLink = Model.create({
 
 // TODO: ActionBorder should use this.
 FOAModel({
-
-  model_: 'Model',
-
   name:  'ToolbarView',
   label: 'Toolbar',
 
@@ -2759,12 +2708,9 @@ var ActionBorder = {
 
 
 FOAModel({
-
-  model_: 'Model',
+  name:  'ProgressView',
 
   extendsModel: 'AbstractView',
-
-  name:  'ProgressView',
 
   properties: [
     {
@@ -2818,11 +2764,9 @@ var ArrayView = {
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'GridView',
 
   extendsModel: 'AbstractView',
-
-  name: 'GridView',
 
   properties: [
     {
@@ -2965,8 +2909,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'Mouse',
 
   properties: [
@@ -3006,9 +2948,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name: 'ViewChoice',
 
   tableProperties: [
@@ -3036,11 +2975,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'AlternateView',
 
   extendsModel: 'AbstractView',
-
-  name: 'AlternateView',
 
   properties: [
     {
@@ -3179,7 +3116,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'ModelAlternateView',
   extendsModel: 'AlternateView',
   methods: {
@@ -3218,9 +3154,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'FloatFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3234,9 +3167,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'IntFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3250,9 +3180,6 @@ FOAModel({
 
 
 FOAModel({
-
-  model_: 'Model',
-
   name:  'StringArrayView',
 
   extendsModel: 'TextFieldView',
@@ -3268,7 +3195,6 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
   name: 'MultiLineStringArrayView',
   extendsModel: 'AbstractView',
 
@@ -3412,9 +3338,6 @@ FOAModel({
 });
 
 FOAModel({
-
-  model_: 'Model',
-
   extendsModel: 'AbstractView',
 
   name: 'SplitView',
@@ -3478,8 +3401,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
@@ -3526,8 +3447,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   extendsModel: 'AbstractView',
 
   name: 'ListInputView',
@@ -3701,11 +3620,9 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
+  name: 'ArrayTileView',
 
   extendsModel: 'AbstractView',
-
-  name: 'ArrayTileView',
 
   properties: [
     {
@@ -3845,9 +3762,8 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractView',
   name: 'ArrayListView',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -3902,9 +3818,8 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractView',
   name: 'DAOKeyView',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -3970,9 +3885,8 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractView',
   name: 'ListView',
+  extendsModel: 'AbstractView',
 
   properties: [
     {
@@ -4028,11 +3942,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'AutocompleteListView',
 
   extendsModel: 'AbstractView',
-
-  name: 'AutocompleteListView',
 
   properties: [
     {

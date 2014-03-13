@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 FOAModel({
-  model_: 'Model',
-
   name: 'OAuth2',
   label: 'OAuth 2.0',
 

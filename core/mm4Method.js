@@ -19,8 +19,6 @@
 // delete ModelProto;
 
 FOAModel({
-    model_: 'Model',
-
    name: 'Action',
 
     tableProperties: [
@@ -132,8 +130,6 @@ Action.getPrototype().callIfEnabled = function(that) {
 
 /* Not used yet
 FOAModel({
-    model_: 'Model',
-
    name: 'Topic',
 
     tableProperties: [
@@ -168,8 +164,6 @@ FOAModel({
 */
 
 FOAModel({
-    model_: 'Model',
-
    name: 'Arg',
 
     tableProperties: [
@@ -263,9 +257,7 @@ FOAModel({
   ]
 });
 
-Method = FOAM({
-    model_: 'Model',
-
+FOAModel({
    name: 'Method',
 
     tableProperties: [
@@ -380,8 +372,6 @@ Method = FOAM({
 
 
 FOAModel({
-   model_: 'Model',
-
    name: 'Interface',
 
     tableProperties: [
@@ -484,8 +474,6 @@ FOAModel({
 
 
 FOAModel({
-    model_: 'Model',
-
    name: 'Template',
 
     tableProperties: [

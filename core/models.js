@@ -20,8 +20,6 @@
  * All models in this file can be stored and loaded in a DAO.
  **/
 FOAModel({
-   model_: 'Model',
-
    name: 'Timer',
 
    properties: [
@@ -153,9 +151,6 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
-
    name: 'Binding',
 
    properties: [
@@ -173,9 +168,6 @@ FOAModel({
 
 
 FOAModel({
-
-   model_: 'Model',
-
    name: 'PersistentContext',
 
    properties: [
@@ -250,7 +242,6 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
   name: 'Person',
   properties: [
     { model_: 'IntegerProperty', name: 'id' },
@@ -261,8 +252,6 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
-
   name: 'UserInfo',
   label: 'UserInfo',
 

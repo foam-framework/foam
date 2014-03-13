@@ -514,8 +514,6 @@ var JSONToObject = {
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'AbstractDAO',
 
   methods: {
@@ -653,10 +651,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
   name: 'ProxyDAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -715,7 +712,6 @@ FOAModel({
  * is set to the properties default value.
  */
 FOAModel({
-  model_: 'Model',
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
@@ -771,7 +767,6 @@ FOAModel({
  * removed from the delegate DAO.
  */
 FOAModel({
-  model_: 'Model',
   name: 'CascadingRemoveDAO',
   label: 'SeqNoDAO', // TODO: Copy-paste error?
 
@@ -1072,7 +1067,6 @@ function atxn(afunc) {
  * of data in the database.
  */
 FOAModel({
-  model_: 'Model',
   extendsModel: 'AbstractDAO',
 
   name: 'IDBDAO',
@@ -1366,7 +1360,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   extendsModel: 'AbstractDAO',
 
   name: 'StorageDAO',
@@ -1444,7 +1437,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
@@ -1593,10 +1585,9 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
+  name: 'JSONFileDAO',
   extendsModel: 'AbstractFileDAO',
 
-  name: 'JSONFileDAO',
   label: 'JSON File DAO',
 
   properties: [
@@ -1662,7 +1653,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
@@ -1686,7 +1676,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'WorkerDAO',
   extendsModel: 'AbstractDAO',
 
@@ -1885,7 +1874,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'WorkerDelegate',
   help:  'The client side of a web-worker DAO',
 
@@ -2037,8 +2025,6 @@ var ModelDAO = {
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'OrderedCollectorSink',
 
   properties: [
@@ -2066,8 +2052,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'CollectorSink',
 
   properties: [
@@ -2090,10 +2074,8 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
   name: 'ParitionDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -2207,9 +2189,8 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'ProxyDAO',
   name: 'ActionFactoryDAO',
+  extendsModel: 'ProxyDAO',
   label: 'ActionFactoryDAO',
 
   properties: [
@@ -2262,7 +2243,6 @@ FOAModel({
 
 // TODO Why is this even a DAO, it literally only does find.
 FOAModel({
-  model_: 'Model',
   name: 'BlobReaderDAO',
 
   properties: [
@@ -2301,7 +2281,6 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
   name: 'GDriveDAO',
   properties: [
     {
@@ -2347,10 +2326,8 @@ FOAModel({
 });
 
 FOAModel({
-  model_: 'Model',
-  extendsModel: 'AbstractDAO',
-
   name: 'RestDAO',
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -2531,8 +2508,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'DefaultObjectDAO',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
@@ -2561,7 +2536,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'LRUMemoryDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2730,8 +2704,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'LazyCacheDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2770,8 +2742,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
-
   name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2833,7 +2803,6 @@ FOAModel({
 
 
 FOAModel({
-  model_: 'Model',
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2927,7 +2896,6 @@ FOAModel({
 
 
 FOAModel({
-    model_: 'Model',
     name: 'NullDAO',
     help: 'A DAO that stores nothing and does nothing.',
     methods: {

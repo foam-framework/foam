@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 FOAModel({
-  model_: 'Model',
-
   name:  'MementoMgr',
 
   properties: [
