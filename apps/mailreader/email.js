@@ -1307,7 +1307,7 @@ var Conversation = FOAM({
        postSet: function(oldValue, newValue) {
          if (!newValue || !newValue.length) return;
          var self = this;
-         // TODO: Don't hardcode ^u here.
+         this.isUnread = false;
          EMailLabelDAO.find(EQ(EMailLabel.DISPLAY_NAME, '^u'), {put: function(unreadLabel) {
            newValue.forEach(function(label) {
              if (label == unreadLabel.id) {
@@ -1325,7 +1325,7 @@ var Conversation = FOAM({
       //isAnimated: true,
       name: 'update',
       code: function() {
-        if (!this.emails) return;
+        if (!this.emails || this.emails.length === 0) return;
         // TODO the primary email should be the most recent email that matches the query
         // that we haven't yet given this model.
         var primaryEmail = this.emails[0];

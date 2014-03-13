@@ -92,7 +92,6 @@ FOAModel({
            defaultValue: true,
            help: 'Property indicating whether the label should be rendered along side the icon'
        },
-      /*
        {
            name: 'children',
            type: 'Array',
@@ -102,7 +101,6 @@ FOAModel({
            help: 'Child actions of this action.',
            persistent: false
        },
-       */
        {
            name: 'parent',
            type: 'String',
