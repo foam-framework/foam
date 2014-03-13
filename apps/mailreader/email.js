@@ -1325,7 +1325,7 @@ var Conversation = FOAM({
       //isAnimated: true,
       name: 'update',
       code: function() {
-        if (!this.emails) return;
+        if (!this.emails || this.emails.length === 0) return;
         // TODO the primary email should be the most recent email that matches the query
         // that we haven't yet given this model.
         var primaryEmail = this.emails[0];
