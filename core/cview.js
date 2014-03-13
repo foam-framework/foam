@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-
+/** A Canvas View for embedding CView's in. **/
+// TODO: add a 'mouse' property which creates and connects a Mouse model.
 FOAModel({
    name: 'Canvas',
    extendsModel: 'AbstractView',
@@ -102,7 +103,7 @@ FOAModel({
  **/
 FOAModel({
    name:  'CView',
-   label: 'Panel',
+   label: 'CView',
 
    properties: [
       {
@@ -386,11 +387,8 @@ FOAModel({
 });
 
 
-var Circle = Model.create({
-
+FOAModel({
    name:  'Circle',
-
-   ids: [],
 
    properties: [
       {
@@ -592,6 +590,7 @@ FOAModel({
 });
 
 
+// DEPRECATED TODO: Remove and replace with CView wherever used
 /** A Panel is a container of other CViews. **/
 FOAModel({
    name:  'PanelCView',
