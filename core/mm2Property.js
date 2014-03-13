@@ -131,7 +131,6 @@ var Property = {
            type: 'String',
            displayWidth: 30,
           // todo: keyView of Models
-           required: true,
            help: 'The type of the property.'
        },
        {

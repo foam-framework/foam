@@ -1198,8 +1198,7 @@ var GridCView = FOAM({
         this.animation_ && this.animation_();
         this.animation_ = Movement.animate(
           400,
-          function() { self.mag = self.desiredMag; },
-          Movement.oscillate(0.3, self.desiredMag/6))();
+          function() { self.mag = self.desiredMag; })();
       });
 
       this.parent.$.onmousewheel = function(e) {

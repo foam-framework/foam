@@ -291,10 +291,6 @@ var AbstractPrototype = {
 
   /** @return this **/
   copyFrom: function(src) {
-    // Faster and doesn't copy default values from modelled objects.
-    // Doesn't work when src is modelled and has default values
-    // if ( src && src.instance_ ) src = src.instance_;
-
 /*
     // TODO: remove the 'this.model_' check when all classes modelled
     if ( src && this.model_ ) {
@@ -308,10 +304,9 @@ var AbstractPrototype = {
             !src.instance_.hasOwnProperty(prop.name) ) continue;
 
         if ( prop.name in src ) this[prop.name] = src[prop.name];
-//         if ( src.instance_ && src.instance_.hasOwnProperty(name) ) this[prop.name] = src[prop.name];
       }
     }
-      */
+*/
 
     if ( src && this.model_ ) {
       for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
