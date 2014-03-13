@@ -2536,7 +2536,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'LRUMemoryDAO',
+  name: 'LRUCachingDAO',
 
   extendsModel: 'ProxyDAO',
 
