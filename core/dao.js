@@ -342,11 +342,8 @@ var CachingDAO = {
       model: cache.model || source.model,
       put: function(obj, sink) { source.put(obj, sink); },
       remove: function(query, sink) { source.remove(query, sink); },
-      removeAll: function() {
-        return apar(
-          cache.removeAll(),
-          source.removeAll.apply(source, arguments)
-        );
+      removeAll: function(sink, options) {
+        return source.removeAll(sink, options);
       }
     };
   }

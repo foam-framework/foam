@@ -272,9 +272,7 @@ FOAModel({
 
        if ( this.model.OPEN && Action.isInstance( this.model.OPEN ) ) {
          this.table.hardSelection.addListener(function(value) {
-// TODO: Uncomment this when TableView2 doesn't unnecessarily
-// set the hardSelection every render.
-//           value.get().open();
+           value.get().open();
          });
        }
     }
