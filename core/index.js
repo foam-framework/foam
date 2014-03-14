@@ -404,7 +404,7 @@ var TreeIndex = {
           for ( var i = 0 ; i < query.args.length ; i++ ) {
             var q = query.args[i];
             if ( q.model_ === model && q.arg1 === prop ) {
-              query = query.deepClone();
+              query = query.clone();
               query.args[i] = TRUE;
               query = query.partialEval();
               if ( query === TRUE ) query = null;
