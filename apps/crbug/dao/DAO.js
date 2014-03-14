@@ -290,14 +290,18 @@ var QIssueSplitDAO = FOAM({
    ],
 
    methods: {
-    init: function() {
-      this.relay_ =  {
-        put:    EventService.merged(function() { this.notify_('put',    arguments); }.bind(this), 1000),
-        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
-      };
+     init: function() {
+       this.relay_ =  {
+         put:    EventService.merged(function() { this.invalidate(); this.notify_('put',    arguments); }.bind(this), 1000),
+         remove: EventService.merged(function() { this.invalidate(); this.notify_('remove', arguments); }.bind(this), 1000)
+       };
 
-      this.local.listen(this.relay_);
-    },
+       this.local.listen(this.relay_);
+     },
+
+     invalidate: function() {
+       this.buf = this.query = undefined;
+     },
 
      put: function(value, sink) {
        this.local.put(value, sink);
@@ -378,7 +382,7 @@ var QIssueSplitDAO = FOAM({
        var bufOptions = {};
        if ( options ) {
          if ( options.order ) bufOptions.order = options.order;
-         if ( options.skip ) bufOptions.skip = options.skip;
+         if ( options.skip  ) bufOptions.skip  = options.skip;
          if ( options.limit ) bufOptions.limit = options.limit;
        }
 
