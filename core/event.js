@@ -473,7 +473,7 @@ var Events = {
    dynamic: function(fn, opt_fn) {
      var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
      var oldOnGet = Events.onGet;
-     var listener = EventService.animate(fn2);
+     var listener = EventService.merged(fn2, 5);
      Events.onGet = function(obj, name, value) {
        obj.propertyValue(name).addListener(listener);
      };
