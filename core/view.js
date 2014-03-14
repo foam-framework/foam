@@ -2902,13 +2902,13 @@ FOAModel({
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     },
     {
       name:  'y',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     }
   ],
   methods: {

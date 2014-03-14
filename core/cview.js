@@ -1050,7 +1050,7 @@ var WarpedCanvas = {
     return {
       __proto__: c,
       warp: function(x, y) {
-        if ( Math.abs(mag) < 0.01 ) { this.x = x; this.y = y; return; }
+        if ( Math.abs(mag) < 0.01 || ( mx < 1 && my < 1 ) ) { this.x = x; this.y = y; return; }
 
         var dx = x-mx;
         var dy = y-my;
