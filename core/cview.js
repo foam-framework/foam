@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-
+/** A Canvas View for embedding CView's in. **/
+// TODO: add a 'mouse' property which creates and connects a Mouse model.
 FOAModel({
    name: 'Canvas',
    extendsModel: 'AbstractView',
@@ -50,8 +51,9 @@ FOAModel({
       name: 'paint',
       isAnimated: true,
       code: function() {
-         this.erase();
-         this.paintChildren();
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        this.erase();
+        this.paintChildren();
       }
     }
   ],
@@ -102,7 +104,7 @@ FOAModel({
  **/
 FOAModel({
    name:  'CView',
-   label: 'Panel',
+   label: 'CView',
 
    properties: [
       {
@@ -386,11 +388,8 @@ FOAModel({
 });
 
 
-var Circle = Model.create({
-
+FOAModel({
    name:  'Circle',
-
-   ids: [],
 
    properties: [
       {
@@ -592,6 +591,7 @@ FOAModel({
 });
 
 
+// DEPRECATED TODO: Remove and replace with CView wherever used
 /** A Panel is a container of other CViews. **/
 FOAModel({
    name:  'PanelCView',
@@ -1051,7 +1051,7 @@ var WarpedCanvas = {
     return {
       __proto__: c,
       warp: function(x, y) {
-        if ( Math.abs(mag) < 0.01 ) { this.x = x; this.y = y; return; }
+        if ( Math.abs(mag) < 0.01 || ( mx < 1 && my < 1 ) ) { this.x = x; this.y = y; return; }
 
         var dx = x-mx;
         var dy = y-my;

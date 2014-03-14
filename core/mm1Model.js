@@ -126,9 +126,9 @@ var Model = {
                  var p = newValue[i];
 
                  if ( ! p.model_ ) {
-                    newValue[i] = Property.create(p);
+                    p = newValue[i] = Property.create(p);
                  } else if ( typeof p.model_ === 'string' ) {
-                    newValue[i] = FOAM(p);
+                    p = newValue[i] = FOAM(p);
                  }
 
                  // create property constant
@@ -278,9 +278,9 @@ var Model = {
                  var p = newValue[i];
 
                  if ( ! p.model_ ) {
-                    newValue[i] = Relationship.create(p);
+                    p = newValue[i] = Relationship.create(p);
                  } else if ( typeof p.model_ === 'string' ) {
-                    newValue[i] = FOAM(p);
+                    p = newValue[i] = FOAM(p);
                  }
 
                  // create property constant

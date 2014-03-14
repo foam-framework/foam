@@ -38,4 +38,4 @@ GridView.getPrototype().updateHTML   = OAM.time('GridView.updateHTML',  GridView
 TableView.getPrototype().repaint     = OAM.time('TableView.repaint',    TableView.getPrototype().repaint);
 // TableView2.getPrototype().repaintNow = OAM.time('TableView.repaintNow', TableView2.getPrototype().repaintNow);
 GridByExpr.getPrototype().initHTML   = OAM.time('GridByExpr.initHTML',  GridByExpr.getPrototype().initHTML);
-GridCView.getPrototype().paint       = OAM.time('GridCView.paint',      GridCView.getPrototype().paint);
+// GridCView.getPrototype().paint       = OAM.time('GridCView.paint',      GridCView.getPrototype().paint);

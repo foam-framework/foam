@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var Dragon = Model.create({
-
-  extendsModel: 'PanelCView',
-
+FOAModel({
   name:  'Dragon',
+  extendsModel: 'PanelCView',
 
   properties: [
     {

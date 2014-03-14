@@ -25,6 +25,7 @@
 // http://jquery.malsup.com/cycle/adv.html
 
 /** Publish and Subscribe Event Notification Service. **/
+// ??? Whould 'Observable' be a better name?
 var EventService = {
 
     /** If listener thows this exception, it will be removed. **/
@@ -96,28 +97,33 @@ var EventService = {
      **/
 // TODO: execute immediately from within a requestAnimationFrame
     animate: function(listener) {
-       return function() {
-          var triggered = false;
-          var lastArgs  = null;
+      return function() {
+        var triggered    = false;
+        var unsubscribed = false;
+        var lastArgs     = null;
 
-          return function() {
-             lastArgs = arguments;
+        return function() {
+          lastArgs = arguments;
 
-             if ( ! triggered ) {
-                triggered = true;
-                var window = $documents[$documents.length-1].defaultView;
+          if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
-                window.requestAnimationFrame(
-                   function() {
-                      triggered = false;
-                      var args = lastArgs;
-                      lastArgs = null;
-
-                      listener.apply(this, args);
-                   });
-             }
-          };
-       }();
+          if ( ! triggered ) {
+            triggered = true;
+            var window = $documents[$documents.length-1].defaultView;
+            window.requestAnimationFrame(
+              function() {
+                triggered = false;
+                var args = lastArgs;
+                lastArgs = null;
+                try {
+                  listener.apply(this, args);
+                } catch (x) {
+                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION) unsubscribed = true;
+                }
+              });
+          }
+        };
+      }();
     },
 
     /** Decroate a listener so that the event is delivered asynchronously. **/

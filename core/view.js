@@ -194,7 +194,7 @@ FOAModel({
     },
 
     removeChild: function(child) {
-      this.children.remove(child);
+      this.children.deleteI(child);
       child.parent = undefined;
 
       return this;
@@ -1934,20 +1934,6 @@ FOAModel({
   ],
 
   methods: {
-
-    // TODO: it would be better if it were initiated with
-    // .create({model: model}) instead of just .create(model)
-    // TODO:
-    // would be nice if I could mark properties as mandatory
-    // if they were required to be initialized
-    create: function(model) {
-      var obj = AbstractView.create.call(this);
-
-      obj.model = model;
-
-      return obj;
-    },
-
     // TODO: make this a template?
     toHTML: function() {
       var model = this.model;
@@ -1969,7 +1955,7 @@ FOAModel({
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
           var subModel = GLOBAL[prop.subType];
-          var subView  = HelpView.create(subModel);
+          var subView  = HelpView.create({model: subModel});
           if ( subModel != model )
             out.push(subView.toHTML());
         } else {
@@ -2916,13 +2902,13 @@ FOAModel({
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     },
     {
       name:  'y',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     }
   ],
   methods: {
