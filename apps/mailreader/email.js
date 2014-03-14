@@ -305,7 +305,8 @@ var EMail = FOAM({
          mode: 'read-write',
          required: true,
          displayWidth: 50,
-         hidden: true
+         hidden: true,
+         compareProperty: varintStringCompare
       },
       {
          model_: 'StringProperty',

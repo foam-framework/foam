@@ -36,6 +36,27 @@ var ProtoWriter = {
       this.value_ = this.value_.concat(b);
    },
 
+   varintstring: function(str) {
+     var bytes = [];
+     for ( var i = str.length - 2; i > -2; i -= 2 ) {
+       var sub = i < 0 ?
+         str.substr(0, 1) :
+         str.substr(i, 2);
+
+       bytes.push(parseInt(sub, 16));
+     }
+
+     var buf = 0;
+     for ( var i = 0; i < bytes.length - 1; i++ ) {
+       buf >>>= 7;
+       buf |= bytes[i] << (i)
+       this.value_.push((buf & 0x7f) | 0x80);
+     }
+     buf >>>= 7;
+     buf |= bytes[i] << i;
+     this.varint(buf);
+   },
+
    bytestring: function(str) {
       var bytes = [];
       for (var i = 0; i < str.length; i += 2) {

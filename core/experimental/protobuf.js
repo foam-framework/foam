@@ -32,6 +32,24 @@ Number.prototype.toVarintString = function() {
   return result;
 };
 
+var varintStringCompare = (function() {
+  var TABLE = "0123456789abcdef";
+
+  return function(a, b) {
+    if ( a.length !==  b.length ) return a.length < b.length ? -1 : 1;
+
+    for ( var i = 0; i < a.length; i++ ) {
+      var ia = TABLE.indexOf(a[i]);
+      var ib = TABLE.indexOf(b[i]);
+
+      if ( ia !== ib ) {
+        return ia < ib ? -1 : 1;
+      }
+    }
+    return 0;
+  };
+})();
+
 function outProtobufPrimitive(type, tag, value, out) {
   switch(type) {
   case 'String':
@@ -48,7 +66,7 @@ function outProtobufPrimitive(type, tag, value, out) {
   case 'uint32':
   case 'int32':
     out.varint(tag << 3);
-    if (value instanceof String || typeof value == 'string') out.bytestring(value);
+    if (value instanceof String || typeof value == 'string') out.varintstring(value);
     else out.varint(value);
     break;
   case 'bool':
@@ -167,19 +185,44 @@ function varint(opt_value) {
 // for js to handle as Numbers.
 function varintstring(opt_value) {
   var f = function(ps) {
-    var result = "";
+    var parts = [];
     var rest = 0;
     while(ps) {
       var b = ps.head;
       if (b == null) return undefined;
-      var str = b.toString(16);
-      if (str.length == 1) str = "0" + str;
-      result += str;
+      parts.push(b & 0x7f);
       ps = ps.tail;
       if (!(b & 0x80)) break; // Break when MSB is not 1, indicating end of a varint.
     }
-    if (opt_value && result !== opt_value) return undefined;
-    return ps.setValue(result);
+    var res = 0;
+    var out = [];
+    var shifts = 0;
+    for (var i = 0; i < parts.length; i++) {
+//      res |= parts[i] << (7 * i);  Workaround for no ints.
+      res += parts[i] * Math.pow(2, 7 * i - 8 * shifts);
+      while ( res > 0xff ) {
+        out.unshift((res & 0xff).toString(16));
+        if ( out[0].length == 0 ) {
+          out[0] = '00';
+        } else if ( out[0].length == 1 ) {
+          out[0] = '0' + out[0];
+        }
+        shifts++;
+        res >>= 8;
+      }
+    }
+    if ( res > 0 || out.length == 0) {
+     out.unshift(res.toString(16));
+      if ( out[0].length == 0 ) {
+        out[0] = '00';
+      } else if ( out[0].length == 1 ) {
+        out[0] = '0' + out[0];
+      }
+    }
+    out = out.join('');
+
+    if ((opt_value != undefined) && out != opt_value) return undefined;
+    return ps.setValue(out);
   };
 
   f.toString = function() { return 'varintstring(' + opt_value + ')'; };
