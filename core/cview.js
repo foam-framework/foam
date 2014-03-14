@@ -51,8 +51,9 @@ FOAModel({
       name: 'paint',
       isAnimated: true,
       code: function() {
-         this.erase();
-         this.paintChildren();
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        this.erase();
+        this.paintChildren();
       }
     }
   ],
