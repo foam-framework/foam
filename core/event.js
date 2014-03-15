@@ -38,57 +38,62 @@ var EventService = {
 
     /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
     oneTime: function(listener) {
-       return function() {
-          listener.apply(this, arguments);
+      return function() {
+        listener.apply(this, argsToArray(arguments));
 
-          throw EventService.UNSUBSCRIBE_EXCEPTION;
-       };
+        throw EventService.UNSUBSCRIBE_EXCEPTION;
+      };
     },
 
 
     /** Log all listener invocations to console. **/
     consoleLog: function(listener) {
        return function() {
-          console.log(arguments);
+         var args = argsToArray(arguments);
+         console.log(args);
 
-          listener.apply(this, arguments);
+         listener.apply(this, args);
        };
     },
 
 
-    /**
-     * Merge all notifications occuring in the specified time window into a single notification.
-     * Only the last notification is delivered.
-     *
-     * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
-     *        the smallest delay that humans aren't able to perceive.
-     **/
-    merged: function(listener, opt_delay) {
-       var delay = opt_delay || 16;
+  /**
+   * Merge all notifications occuring in the specified time window into a single notification.
+   * Only the last notification is delivered.
+   *
+   * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
+   *        the smallest delay that humans aren't able to perceive.
+   **/
+  merged: function(listener, opt_delay) {
+    var delay = opt_delay || 16;
 
-       return function() {
-          var triggered = false;
-          var lastArgs  = null;
+    return function() {
+      var triggered    = false;
+      var unsubscribed = false;
+      var lastArgs     = null;
 
-          return function() {
-             lastArgs = arguments;
+      return function() {
+        lastArgs = arguments;
 
-             if ( ! triggered ) {
-                triggered = true;
+        if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
-                setTimeout(
-                   function() {
-                      triggered = false;
-                      var args = lastArgs;
-                      lastArgs = null;
-
-                      listener.apply(this, args);
-                   },
-                   delay);
-             }
-          };
-       }();
-    },
+        if ( ! triggered ) {
+          triggered = true;
+          setTimeout(
+            function() {
+              triggered = false;
+              var args = argsToArray(lastArgs);
+              lastArgs = null;
+              try {
+                listener.apply(this, args);
+              } catch (x) {
+                if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
+              }
+            }, delay);
+        }
+      };
+    }();
+  },
 
 
     /**
@@ -113,12 +118,12 @@ var EventService = {
             window.requestAnimationFrame(
               function() {
                 triggered = false;
-                var args = lastArgs;
+                var args = argsToArray(lastArgs);
                 lastArgs = null;
                 try {
                   listener.apply(this, args);
                 } catch (x) {
-                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION) unsubscribed = true;
+                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
                 }
               });
           }
@@ -132,12 +137,12 @@ var EventService = {
     },
 
     delay: function(delay, listener) {
-       return function() {
-          var args = arguments;
+      return function() {
+        var args = argsToArray(arguments);
 
-          // Is there a better way of doing this?
-          setTimeout( function() { listener.apply(this, args); }, delay );
-       };
+        // Is there a better way of doing this?
+        setTimeout( function() { listener.apply(this, args); }, delay );
+      };
     },
 
     hasListeners: function (topic) {
@@ -164,10 +169,10 @@ var EventService = {
 
     /** Publish asynchronously. **/
     publishAsync: function (topic) {
-       var args = arguments;
-       var me   = this;
+      var args = argsToArray(arguments);
+      var me   = this;
 
-       setTimeout( function() { me.publish.apply(me, args); }, 0);
+      setTimeout( function() { me.publish.apply(me, args); }, 0);
     },
 
 
@@ -291,9 +296,9 @@ var EventService = {
 
     // convenience method to turn 'arguments' into a real array
     appendArguments: function (a, args, start) {
-       for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
+      for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
 
-       return a;
+      return a;
     }
 
 };
@@ -511,7 +516,7 @@ var Events = {
 
 Function.prototype.o = function(f2) {
   var f1 = this;
-  return function() { return f1.call(this, f2.apply(this, arguments)); };
+  return function() { return f1.call(this, f2.apply(this, argsToArray(arguments))); };
 };
 
 
@@ -600,7 +605,7 @@ var Movement = {
    },
 
    seq: function(f1, f2) {
-     return ( f1 && f2 ) ? function() { f1.apply(this, arguments); f2(); } :
+     return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
                       f1 ? f1
                          : f2 ;
    },
@@ -625,7 +630,7 @@ var Movement = {
        Events.onSet = function(obj, name, value2) {
          ranges.push([obj, name, obj[name], value2]);
        };
-       fn && fn.apply(this, arguments);
+       fn && fn.apply(this, argsToArray(arguments));
        Events.onSet = oldOnSet;
 
        if ( ranges.length > 0 || true ) {
@@ -654,24 +659,24 @@ var Movement = {
    // requires unsubscribe to work first
    animate2: function(timer, duration, fn) {
      return function() {
-     var startTime = timer.time;
-     var oldOnSet  = Events.onSet;
-     Events.onSet = function(obj, name, value2) {
-       var value1 = obj[name];
+       var startTime = timer.time;
+       var oldOnSet  = Events.onSet;
+       Events.onSet = function(obj, name, value2) {
+         var value1 = obj[name];
 
-       Events.dynamic(function() {
-         var now = timer.time;
+         Events.dynamic(function() {
+           var now = timer.time;
 
-         obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
+           obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
 
-         if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-       });
+           if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+         });
 
-       return false;
-     };
-     fn.apply(this, arguments);
-     Events.onSet = oldOnSet;
-     update();
+         return false;
+       };
+       fn.apply(this, argsToArray(arguments));
+       Events.onSet = oldOnSet;
+       update();
      };
    },
 
