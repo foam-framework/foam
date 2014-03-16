@@ -674,8 +674,8 @@ FOAModel({
       this.SUPER();
 
       this.relay_ =  {
-        put:    function() { this.notify_('put', arguments);   }.bind(this),
-        remove: function() {this.notify_('remove', arguments); }.bind(this)
+        put:    function() { this.notify_('put', arguments);    }.bind(this),
+        remove: function() { this.notify_('remove', arguments); }.bind(this)
       };
 
       this.delegate.listen(this.relay_);

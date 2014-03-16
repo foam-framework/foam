@@ -64,15 +64,17 @@ var EventService = {
    * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
    *        the smallest delay that humans aren't able to perceive.
    **/
-  merged: function(listener, opt_delay) {
+  merged:function(listener, opt_delay) {
     var delay = opt_delay || 16;
 
     return function() {
+      var STACK        = null;
       var triggered    = false;
       var unsubscribed = false;
       var lastArgs     = null;
 
       return function() {
+        STACK = DEBUG_STACK();
         lastArgs = arguments;
 
         if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -103,11 +105,13 @@ var EventService = {
 // TODO: execute immediately from within a requestAnimationFrame
     animate: function(listener) {
       return function() {
+        var STACK        = null;
         var triggered    = false;
         var unsubscribed = false;
         var lastArgs     = null;
 
         return function() {
+          STACK = DEBUG_STACK();
           lastArgs = arguments;
 
           if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -616,9 +620,10 @@ var Movement = {
      var interp = opt_interp || Movement.linear;
 
      return function() {
+       var STACK     = DEBUG_STACK();
        var startTime = Date.now();
        var oldOnSet  = Events.onSet;
-       var ranges = [];
+       var ranges    = [];
        var timer;
 
        function stop() {

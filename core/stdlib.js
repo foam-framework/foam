@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+var DEBUG = true;
+
+function DEBUG_STACK() {
+  return DEBUG ? new Error().stack : 'Set DEBUG = true in stdlib.js for stacktrace.';
+}
+
 var GLOBAL = GLOBAL || this;
 
 /** Create a memoized version of a function. **/
