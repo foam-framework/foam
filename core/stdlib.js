@@ -17,9 +17,9 @@
 
 var DEBUG = false;
 
-function DEBUG_STACK() {
-  return DEBUG ? new Error().stack : 'Set DEBUG = true in stdlib.js for stacktrace.';
-}
+var DEBUG_STACK = DEBUG ?
+  function() { return new Error().stack; } :
+  function() { return 'Set DEBUG = true in stdlib.js for stacktrace.'; } ;
 
 var GLOBAL = GLOBAL || this;
 
