@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var DEBUG = true;
+var DEBUG = false;
 
 function DEBUG_STACK() {
   return DEBUG ? new Error().stack : 'Set DEBUG = true in stdlib.js for stacktrace.';
