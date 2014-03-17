@@ -289,11 +289,26 @@ var QIssueSplitDAO = FOAM({
       },
    ],
 
+  listeners: [
+    {
+      model_: 'Method',
+      name: 'mergedPutNotify',
+      isMerged: 1000,
+      code: function() { this.notify_('put', []); }
+    },
+    {
+      model_: 'Method',
+      name: 'mergedRemoveNotify',
+      isMerged: 1000,
+      code: function() { this.notify_('remove', []); }
+    }
+  ],
+
    methods: {
      init: function() {
-       this.relay_ =  {
-         put:    EventService.merged(function() { this.invalidate(); this.notify_('put',    arguments); }.bind(this), 1000),
-         remove: EventService.merged(function() { this.invalidate(); this.notify_('remove', arguments); }.bind(this), 1000)
+       this.relay_ = {
+         put:    function() { this.invalidate(); this.mergedPutNotify();    }.bind(this),
+         remove: function() { this.invalidate(); this.mergedRemoveNotify(); }.bind(this)
        };
 
        this.local.listen(this.relay_);
@@ -368,7 +383,7 @@ var QIssueSplitDAO = FOAM({
                // Sometimes the item might not be missing, but the local
                // query processing didn't match it, so force a notification
                // regardless.  These are merged to 1s, so no harm done.
-               this.relay_.put(obj);
+               this.mergedPutNotify();
              }).bind(this)
            }, remoteOptions);
          }).bind(this));
@@ -386,39 +401,40 @@ var QIssueSplitDAO = FOAM({
          if ( options.limit ) bufOptions.limit = options.limit;
        }
 
-       if ( ! CountExpr.isInstance(sink) ) {
-         var query = ( options && options.query && options.query.toSQL() ) || "";
-         var order = ( options && options.order && options.order.toSQL() ) || "";
+       if ( CountExpr.isInstance(sink) ) {
+         // if ( this.buf ) return this.buf.select(sink, bufOptions);
 
-         var future = afuture();
-
-         if ( this.buf && query === this.activeQuery ) {
-           if ( order && order !== this.activeOrder ) {
-             this.activeOrder = order;
-
-             this.buf.select(COUNT())((function(c) {
-               if ( c.count < 500 ) {
-                 this.buf.select(sink, bufOptions)(function(s) {
-                   future.set(s);
-                 });
-               } else {
-                 this.newQuery(sink, options, query, order, bufOptions, future);
-               }
-             }).bind(this))
-           } else {
-             return this.buf.select(sink, bufOptions);
-           }
-         } else {
-           this.activeQuery = query;
-           this.activeOrder = order;
-           this.newQuery(sink, options, query, order, bufOptions, future);
-         }
-
-         return future.get;
-       } else {
-         if ( this.buf ) return this.buf.select(sink, bufOptions);
-         else return this.local.select(sink, options);
+         return this.local.select(sink, options);
        }
+
+       var query = ( options && options.query && options.query.toSQL() ) || "";
+       var order = ( options && options.order && options.order.toSQL() ) || "";
+
+       var future = afuture();
+
+       if ( this.buf && query === this.activeQuery ) {
+         if ( order && order !== this.activeOrder ) {
+           this.activeOrder = order;
+
+           this.buf.select(COUNT())((function(c) {
+             if ( c.count < 500 ) {
+               this.buf.select(sink, bufOptions)(function(s) {
+                 future.set(s);
+               });
+             } else {
+               this.newQuery(sink, options, query, order, bufOptions, future);
+             }
+           }).bind(this))
+         } else {
+           return this.buf.select(sink, bufOptions);
+         }
+       } else {
+         this.activeQuery = query;
+         this.activeOrder = order;
+         this.newQuery(sink, options, query, order, bufOptions, future);
+       }
+
+       return future.get;
      }
    }
 });
@@ -472,17 +488,20 @@ var WaitCursorDAO = FOAM({
   methods: {
     select: function(sink, options) {
       var self = this;
+      var future = afuture();
 
       this.count++;
 
-      var future = afuture();
-
-      this.window.setTimeout(function() {
+      var f = function() {
         self.delegate.select(sink, options)(function(sink) {
           self.count--;
+          // ???: Do we need to call this asynchronously if count == 0?
           future.set(sink);
         });
-      }, 0);
+      };
+
+      // Need to delay when turning on hourglass to give DOM a chance to update
+      if ( this.count > 1 ) { f(); } else { this.window.setTimeout(f, 0); };
 
       return future.get;
     }
