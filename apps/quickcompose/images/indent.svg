@@ -9,7 +9,7 @@
 	 xml:space="preserve">
 <defs>
 </defs>
-<path d="M3,16h14v-1H3V16z M8,8h9V7H8V8z M8,10h9V9H8V10z M8,12h9v-1H8V12z M8,14h9v-1H8V14z M3,5v1h14V5H3z"/>
+<path fill="#888" d="M3,16h14v-1H3V16z M8,8h9V7H8V8z M8,10h9V9H8V10z M8,12h9v-1H8V12z M8,14h9v-1H8V14z M3,5v1h14V5H3z"/>
 <polygon opacity="0.85" points="3,8 3,13 6,10.5 "/>
 <rect opacity="0" fill="#4387FD" width="21" height="21"/>
 </svg>

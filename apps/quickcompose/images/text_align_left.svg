@@ -9,6 +9,6 @@
 	 xml:space="preserve">
 <defs>
 </defs>
-<path d="M3,16h10v-1H3V16z M13,11H3v1h10V11z M13,7H3v1h10V7z M3,14h14v-1H3V14z M3,10h14V9H3V10z M3,5v1h14V5H3z"/>
+<path fill="#888" d="M3,16h10v-1H3V16z M13,11H3v1h10V11z M13,7H3v1h10V7z M3,14h14v-1H3V14z M3,10h14V9H3V10z M3,5v1h14V5H3z"/>
 <rect opacity="0" fill="#4387FD" width="21" height="21"/>
 </svg>

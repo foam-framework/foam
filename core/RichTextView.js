@@ -745,6 +745,7 @@ FOAModel({
       model_: 'Action',
       name: 'leftJustify',
       parent: 'justification',
+      help: 'Align Left (Ctrl-Shift-W)',
       // Ctrl-Shift-L
       action: function() {
         this.$.contentWindow.focus();
@@ -755,6 +756,7 @@ FOAModel({
       model_: 'Action',
       name: 'centerJustify',
       parent: 'justification',
+      help: 'Align Center (Ctrl-Shift-E)',
       // Ctrl-Shift-E
       action: function() {
         this.$.contentWindow.focus();
@@ -765,6 +767,7 @@ FOAModel({
       model_: 'Action',
       name: 'rightJustify',
       parent: 'justification',
+      help: 'Align Right (Ctrl-Shift-R)',
       // Ctrl-Shift-R
       action: function() {
         this.$.contentWindow.focus();
@@ -774,6 +777,7 @@ FOAModel({
     {
       model_: 'Action',
       name: 'numberedList',
+      help: 'Numbered List (Ctrl-Shift-7)',
       // Ctrl-Shift-7
       action: function() {
         this.$.contentWindow.focus();
@@ -783,6 +787,7 @@ FOAModel({
     {
       model_: 'Action',
       name: 'bulletList',
+      help: 'Bulleted List (Ctrl-Shift-7)',
       // Ctrl-Shift-8
       action: function() {
         this.$.contentWindow.focus();
@@ -792,6 +797,7 @@ FOAModel({
     {
       model_: 'Action',
       name: 'decreaseIndentation',
+      help: 'Indent Less (Ctrl-[)',
       // Ctrl-[
       action: function() {
         this.$.contentWindow.focus();
@@ -801,6 +807,7 @@ FOAModel({
     {
       model_: 'Action',
       name: 'increaseIndentation',
+      help: 'Indent More (Ctrl-])',
       // Ctrl-]
       action: function() {
         this.$.contentWindow.focus();
@@ -810,6 +817,7 @@ FOAModel({
     {
       model_: 'Action',
       name: 'blockQuote',
+      help: 'Quote (Ctrl-Shift-9)',
       // Ctrl-Shift-9
       action: function() {
         this.$.contentWindow.focus();
