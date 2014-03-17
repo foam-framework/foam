@@ -153,10 +153,9 @@ var QProject = Model.create({
     {
       model_: 'Method',
       name: 'onDAOUpdate',
-      animate: true,
-      code: function(evt) {
-        var self = this;
-        this.IssueMDAO.select(COUNT())(function (c) { self.issueCount = c.count; });
+      isAnimated: true,
+      code: function() {
+        this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
       }
     }
   ],
@@ -252,7 +251,6 @@ var QProject = Model.create({
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
-
 
           var view = ConfigureProjectsView.create({ model: QUser });
           view.value.set(self.user);
