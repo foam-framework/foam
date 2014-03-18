@@ -63,15 +63,12 @@ FOAModel({
            displayHeight: 20
         },
         {
-           model_: 'Property',
+           model_: 'FunctionProperty',
            name: 'code',
            label: 'Test Code',
-           type: 'Function',
            required: true,
            displayWidth: 80,
-           displayHeight: 30,
-           defaultValue: function() {},
-           view: 'FunctionView'
+           displayHeight: 30
         }
      ],
 
