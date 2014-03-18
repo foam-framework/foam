@@ -260,7 +260,10 @@ var AbstractPrototype = {
   clone: function() {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
-    for ( var key in this.instance_ ) c[key] = this[key];
+    for ( var key in this.instance_ ) {
+      var value = this[key];
+      c[key] = Array.isArray(value) ? value.clone() : value;
+    }
     return c;
 //    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
