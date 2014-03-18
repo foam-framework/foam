@@ -177,7 +177,7 @@ var Model = {
       preSet: function(newValue) {
         if ( ! Method ) return;
 
-        if ( Array.isArray(newValue) ) return newValue;
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(newValue, Method);
 
         // convert a map of functions to an array of Method instances
         var methods = [];
