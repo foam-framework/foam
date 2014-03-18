@@ -117,17 +117,12 @@ var ModelProto = {
 
     // templates
     this.templates && Object_forEach(this.templates, function(t) {
-      //          if ( t.template ) {
-      //            addMethod(t.name, TemplateUtil.compile(t.template));
-      //          } else {
-      // Why not just always lazyCompile?  If I figure it out, add a comment and uncomment the 'if'.
       addMethod(t.name, TemplateUtil.lazyCompile(t));
-      //          }
     });
 
     // mix-in mixins
     // Workaround for crbug.com/258522
-    this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
+    // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
 
     // add action
     // Workaround for crbug.com/258522
@@ -138,10 +133,11 @@ var ModelProto = {
     // add methods
     for ( var key in this.methods ) {
       var m = this.methods[key];
-      if ( Method && Method.isInstance(m) )
-        addMethod(m.name, m.code); //cls[m.name] = m.code;
-      else
-        addMethod(key, m); //cls[key] = m;
+      if ( Method && Method.isInstance(m) ) {
+        addMethod(m.name, m.generateFunction());
+      } else {
+        addMethod(key, m);
+      }
     }
 
     // add relationships

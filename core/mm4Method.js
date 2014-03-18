@@ -229,6 +229,27 @@ FOAModel({
       help: 'Help text associated with the entity.'
     }
   ],
+
+  methods: {
+    decorateFunction: function(f, i) {
+      if ( this.type === 'Object' ) return f;
+      var type = this.type;
+
+      return this.required ?
+        function() {
+          if ( arguments[i] === undefined   ) debugger;
+          if ( typeof arguments[i] !== type ) debugger;
+
+          return f.apply(this, arguments);
+        } :
+        function() {
+          if ( arguments[i] !== undefined && typeof arguments[i] !== type ) debugger;
+
+          return f.apply(this, arguments);
+        } ;
+    }
+  },
+
   templates:[
     {
       model_: 'Template',
@@ -304,6 +325,11 @@ FOAModel({
       help: 'Interface package.'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'returnTypeRequired',
+      defaultValue: true
+    },
+    {
       model_: 'ArrayProperty',
       name: 'args',
       type: 'Array[Arg]',
@@ -324,6 +350,7 @@ FOAModel({
       defaultValue: false
     },
   ],
+
   templates:[
     {
       model_: 'Template',
@@ -367,6 +394,29 @@ FOAModel({
     }
   ]
 });
+
+Method.getPrototype().decorateFunction = function(f) {
+  for ( var i = 0 ; i < this.args.length ; i++ ) {
+    var arg = this.args[i];
+
+    f = arg.decorateFunction(f, i);
+  }
+
+  var returnType = this.returnType;
+
+  return returnType ?
+    function() {
+      var ret = f.apply(this, arguments);
+
+      if ( typeof ret !== returnType ) debugger;
+
+      return ret;
+    } : f ;
+};
+
+Method.getPrototype().generateFunction = function() {
+  return DEBUG ? this.decorateFunction(this.code) : this.code;
+};
 
 
 FOAModel({
