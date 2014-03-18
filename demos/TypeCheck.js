@@ -11,7 +11,6 @@ FOAModel({
 
   methods: [
     {
-      model_: "Method",
       name: "setStatus",
       code: function (status) {
         this.status = status;
@@ -21,7 +20,6 @@ FOAModel({
       ]
     },
     {
-      model_: "Method",
       name: "deposit",
       code: function (amount) {
         this.balance += amount;
@@ -34,7 +32,6 @@ FOAModel({
       returnType: 'number',
     },
     {
-      model_: "Method",
       name: "withdraw",
       code: function (amount) {
         this.balance -= amount;
@@ -59,4 +56,3 @@ a.deposit(100);
 // Both Fail
 a.deposit('gold coins');
 a.withdraw(50);
-
