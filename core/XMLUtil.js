@@ -16,228 +16,228 @@
  */
 var XMLUtil = {
 
-   escape: function(str) {
-     return str
-       .replace(/&/g, '&amp;');
-//       .replace(/\</g, '&lt;')
-//       .replace(/\>/g, '&gt;');
-   },
+  escape: function(str) {
+    return str
+      .replace(/&/g, '&amp;');
+    //       .replace(/\</g, '&lt;')
+    //       .replace(/\>/g, '&gt;');
+  },
 
   escapeAttr: function(str) {
     return str
       .replace(/"/g, '&quot;');
   },
 
-   parse: function(str) {
-      // todo
-   },
+  parse: function(str) {
+    // todo
+  },
 
-   compact:
-   {
-      stringify: function(obj) {
-         var buf = [];
+  compact:
+  {
+    stringify: function(obj) {
+      var buf = [];
 
-         this.output(buf.push.bind(buf), obj);
+      this.output(buf.push.bind(buf), obj);
 
-         return buf.join('');
-      },
+      return buf.join('');
+    },
 
-      output: function(out, obj) {
-        if ( Array.isArray(obj) ) {
-            this.outputArray_(out, obj);
-         }
-         else if ( typeof obj == 'string' ) {
-            out("'");
-            out(XMLUtil.escape(obj));
-            out("'");
-         }
-         else if ( obj instanceof Function ) {
-            out(obj);
-         }
-         else if ( obj instanceof Object ) {
-            try {
-               if ( obj.model_ )
-                  this.outputObject_(out, obj);
-               else
-                  this.outputMap_(out, obj);
-            }
-            catch (x)
-            {
-               console.log("toXMLError: ", x, obj);
-            }
-         }
-         else {
-            out(obj);
-         }
-      },
+    output: function(out, obj) {
+      if ( Array.isArray(obj) ) {
+        this.outputArray_(out, obj);
+      }
+      else if ( typeof obj == 'string' ) {
+        out("'");
+        out(XMLUtil.escape(obj));
+        out("'");
+      }
+      else if ( obj instanceof Function ) {
+        out(obj);
+      }
+      else if ( obj instanceof Object ) {
+        try {
+          if ( obj.model_ )
+            this.outputObject_(out, obj);
+          else
+            this.outputMap_(out, obj);
+        }
+        catch (x)
+        {
+          console.log("toXMLError: ", x, obj);
+        }
+      }
+      else {
+        out(obj);
+      }
+    },
 
-      outputObject_: function(out, obj) {
-       var str          = "";
+    outputObject_: function(out, obj) {
+      var str          = "";
 
-       out('{', "model_:'", obj.model_.name, "'");
+      out('{', "model_:'", obj.model_.name, "'");
 
-       for ( var key in obj.model_.properties ) {
-          var prop = obj.model_.properties[key];
+      for ( var key in obj.model_.properties ) {
+        var prop = obj.model_.properties[key];
 
-          if ( prop.name in obj.instance_ && obj[prop.name] ) {
-             var val = obj[prop.name];
+        if ( prop.name in obj.instance_ && obj[prop.name] ) {
+          var val = obj[prop.name];
 
-            if ( Array.isArray(val) && val.length == 0 ) continue;
+          if ( Array.isArray(val) && val.length == 0 ) continue;
 
-             if ( val == prop.defaultValue ) continue;
+          if ( val == prop.defaultValue ) continue;
 
-             out(",", prop.name, ':');
-             this.output(out, val);
-          }
-       }
-
-       out('}');
-      },
-
-
-      outputMap_: function(out, obj) {
-       var str          = "";
-       var first        = true;
-
-       out('{');
-
-       for ( var key in obj ) {
-          var val = obj[key];
-
-          if ( ! first ) out(",");
-          out(key, ':');
+          out(",", prop.name, ':');
           this.output(out, val);
-
-          first = false;
-       }
-
-       out('}');
-      },
-
-      outputArray_: function(out, a) {
-       if ( a.length == 0 ) { out('[]'); return out; }
-
-       var str          = "";
-       var first        = true;
-
-       out('[');
-
-       for ( var i = 0 ; i < a.length ; i++, first = false ) {
-          var obj = a[i];
-
-          if ( ! first ) out(',');
-
-          this.output(out, obj);
-       }
-
-       out(']');
-      }
-   },
-
-
-   pretty:
-   {
-      stringify: function(obj) {
-         var buf = [];
-
-         this.output(buf.push.bind(buf), obj);
-
-         return buf.join('');
-      },
-
-      output: function(out, obj, opt_indent) {
-         var indent = opt_indent || "";
-
-        if ( Array.isArray(obj) ) {
-            this.outputArray_(out, obj, indent);
-         }
-         else if ( typeof obj == 'string' ) {
-            out(XMLUtil.escape(obj));
-         }
-         else if ( obj instanceof Function ) {
-            out(obj);
-         }
-         else if ( obj instanceof Object ) {
-            try {
-               if ( obj.model_ )
-                  this.outputObject_(out, obj, indent);
-               else
-                  this.outputMap_(out, obj, indent);
-            }
-            catch (x) {
-               console.log('toXMLError: ', x.toString(), obj);
-            }
-         }
-         else {
-            out(obj);
-         }
-      },
-
-      outputObject_: function(out, obj, opt_indent) {
-        var indent       = opt_indent || "";
-        var nestedIndent = indent + "   ";
-        var str          = "";
-
-        out(indent, '<', obj.model_.name, '>');
-
-        for ( var key in obj.model_.properties ) {
-          var prop = obj.model_.properties[key];
-
-if ( prop.name === 'parent' ) continue;
-          if ( obj.instance_ && prop.name in obj.instance_ ) {
-             var val = obj[prop.name];
-
-            if ( Array.isArray(val) && val.length == 0 ) continue;
-
-             if ( val == prop.defaultValue ) continue;
-
-             out("\n", nestedIndent, '<', prop.name, '>');
-             this.output(out, val, nestedIndent);
-             out('</', prop.name, '>');
-          }
         }
+      }
 
-        out('\n', indent, '</', obj.model_.name, '>');
-        out('\n',indent);
-      },
-
-      outputMap_: function(out, obj, opt_indent) {
-        var indent       = opt_indent || "";
-        var nestedIndent = indent + "   ";
-        var str          = "";
-
-        out(indent, '<map>');
-
-        for ( var key in obj ) {
-          var val = obj[key];
+      out('}');
+    },
 
 
-          out("\n", nestedIndent, '<', key, '>');
+    outputMap_: function(out, obj) {
+      var str          = "";
+      var first        = true;
+
+      out('{');
+
+      for ( var key in obj ) {
+        var val = obj[key];
+
+        if ( ! first ) out(",");
+        out(key, ':');
+        this.output(out, val);
+
+        first = false;
+      }
+
+      out('}');
+    },
+
+    outputArray_: function(out, a) {
+      if ( a.length == 0 ) { out('[]'); return out; }
+
+      var str          = "";
+      var first        = true;
+
+      out('[');
+
+      for ( var i = 0 ; i < a.length ; i++, first = false ) {
+        var obj = a[i];
+
+        if ( ! first ) out(',');
+
+        this.output(out, obj);
+      }
+
+      out(']');
+    }
+  },
+
+
+  pretty:
+  {
+    stringify: function(obj) {
+      var buf = [];
+
+      this.output(buf.push.bind(buf), obj);
+
+      return buf.join('');
+    },
+
+    output: function(out, obj, opt_indent) {
+      var indent = opt_indent || "";
+
+      if ( Array.isArray(obj) ) {
+        this.outputArray_(out, obj, indent);
+      }
+      else if ( typeof obj == 'string' ) {
+        out(XMLUtil.escape(obj));
+      }
+      else if ( obj instanceof Function ) {
+        out(obj);
+      }
+      else if ( obj instanceof Object ) {
+        try {
+          if ( obj.model_ )
+            this.outputObject_(out, obj, indent);
+          else
+            this.outputMap_(out, obj, indent);
+        }
+        catch (x) {
+          console.log('toXMLError: ', x.toString(), obj);
+        }
+      }
+      else {
+        out(obj);
+      }
+    },
+
+    outputObject_: function(out, obj, opt_indent) {
+      var indent       = opt_indent || "";
+      var nestedIndent = indent + "   ";
+      var str          = "";
+
+      out(indent, '<', obj.model_.name, '>');
+
+      for ( var key in obj.model_.properties ) {
+        var prop = obj.model_.properties[key];
+
+        if ( prop.name === 'parent' ) continue;
+        if ( obj.instance_ && prop.name in obj.instance_ ) {
+          var val = obj[prop.name];
+
+          if ( Array.isArray(val) && val.length == 0 ) continue;
+
+          if ( val == prop.defaultValue ) continue;
+
+          out("\n", nestedIndent, '<', prop.name, '>');
           this.output(out, val, nestedIndent);
-          out('</', key, '>');
+          out('</', prop.name, '>');
         }
-
-        out("\n", indent, '</map>');
-      },
-
-      outputArray_: function(out, a, opt_indent) {
-        if ( a.length == 0 ) return out;
-
-        var indent       = opt_indent || "";
-        var nestedIndent = indent + "   ";
-        var str          = "";
-
-        for ( var i = 0 ; i < a.length ; i++, first = false ) {
-          var obj = a[i];
-
-          out('\n');
-          if ( typeof obj == 'string' ) out(nestedIndent, '<i>');
-          this.output(out, obj, nestedIndent);
-          if ( typeof obj == 'string' ) out('</i>');
-        }
-        out('\n',indent);
       }
-   }
+
+      out('\n', indent, '</', obj.model_.name, '>');
+      out('\n',indent);
+    },
+
+    outputMap_: function(out, obj, opt_indent) {
+      var indent       = opt_indent || "";
+      var nestedIndent = indent + "   ";
+      var str          = "";
+
+      out(indent, '<map>');
+
+      for ( var key in obj ) {
+        var val = obj[key];
+
+
+        out("\n", nestedIndent, '<', key, '>');
+        this.output(out, val, nestedIndent);
+        out('</', key, '>');
+      }
+
+      out("\n", indent, '</map>');
+    },
+
+    outputArray_: function(out, a, opt_indent) {
+      if ( a.length == 0 ) return out;
+
+      var indent       = opt_indent || "";
+      var nestedIndent = indent + "   ";
+      var str          = "";
+
+      for ( var i = 0 ; i < a.length ; i++, first = false ) {
+        var obj = a[i];
+
+        out('\n');
+        if ( typeof obj == 'string' ) out(nestedIndent, '<i>');
+        this.output(out, obj, nestedIndent);
+        if ( typeof obj == 'string' ) out('</i>');
+      }
+      out('\n',indent);
+    }
+  }
 
 };
 

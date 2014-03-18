@@ -28,33 +28,33 @@
 // ??? Whould 'Observable' be a better name?
 var EventService = {
 
-    /** If listener thows this exception, it will be removed. **/
-    UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
+  /** If listener thows this exception, it will be removed. **/
+  UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
 
 
-    /** Used as topic suffix to specify broadcast to all sub-topics. **/
-    WILDCARD: "*",
+  /** Used as topic suffix to specify broadcast to all sub-topics. **/
+  WILDCARD: "*",
 
 
-    /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
-    oneTime: function(listener) {
-      return function() {
-        listener.apply(this, argsToArray(arguments));
+  /** Create a "one-time" listener which unsubscribes itself after its first invocation. **/
+  oneTime: function(listener) {
+    return function() {
+      listener.apply(this, argsToArray(arguments));
 
-        throw EventService.UNSUBSCRIBE_EXCEPTION;
-      };
-    },
+      throw EventService.UNSUBSCRIBE_EXCEPTION;
+    };
+  },
 
 
-    /** Log all listener invocations to console. **/
-    consoleLog: function(listener) {
-       return function() {
-         var args = argsToArray(arguments);
-         console.log(args);
+  /** Log all listener invocations to console. **/
+  consoleLog: function(listener) {
+    return function() {
+      var args = argsToArray(arguments);
+      console.log(args);
 
-         listener.apply(this, args);
-       };
-    },
+      listener.apply(this, args);
+    };
+  },
 
 
   /**
@@ -98,296 +98,296 @@ var EventService = {
   },
 
 
-    /**
-     * Merge all notifications occuring until the next animation frame.
-     * Only the last notification is delivered.
-     **/
-// TODO: execute immediately from within a requestAnimationFrame
-    animate: function(listener) {
+  /**
+   * Merge all notifications occuring until the next animation frame.
+   * Only the last notification is delivered.
+   **/
+  // TODO: execute immediately from within a requestAnimationFrame
+  animate: function(listener) {
+    return function() {
+      var STACK        = null;
+      var triggered    = false;
+      var unsubscribed = false;
+      var lastArgs     = null;
+
       return function() {
-        var STACK        = null;
-        var triggered    = false;
-        var unsubscribed = false;
-        var lastArgs     = null;
+        STACK = DEBUG_STACK();
+        lastArgs = arguments;
 
-        return function() {
-          STACK = DEBUG_STACK();
-          lastArgs = arguments;
+        if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
-          if ( unsubscribed ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-
-          if ( ! triggered ) {
-            triggered = true;
-            var window = $documents[$documents.length-1].defaultView;
-            window.requestAnimationFrame(
-              function() {
-                triggered = false;
-                var args = argsToArray(lastArgs);
-                lastArgs = null;
-                try {
-                  listener.apply(this, args);
-                } catch (x) {
-                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
-                }
-              });
-          }
-        };
-      }();
-    },
-
-    /** Decroate a listener so that the event is delivered asynchronously. **/
-    async: function(listener) {
-      return this.delay(0, listener);
-    },
-
-    delay: function(delay, listener) {
-      return function() {
-        var args = argsToArray(arguments);
-
-        // Is there a better way of doing this?
-        setTimeout( function() { listener.apply(this, args); }, delay );
+        if ( ! triggered ) {
+          triggered = true;
+          var window = $documents[$documents.length-1].defaultView;
+          window.requestAnimationFrame(
+            function() {
+              triggered = false;
+              var args = argsToArray(lastArgs);
+              lastArgs = null;
+              try {
+                listener.apply(this, args);
+              } catch (x) {
+                if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
+              }
+            });
+        }
       };
-    },
+    }();
+  },
 
-    hasListeners: function (topic) {
-       // TODO:
-       return true;
-    },
+  /** Decroate a listener so that the event is delivered asynchronously. **/
+  async: function(listener) {
+    return this.delay(0, listener);
+  },
 
-
-    /**
-     * Publish a notification to the specified topic.
-     *
-     * @return number of subscriptions notified
-     **/
-    publish: function (topic) {
-       return this.subs_ ?
-        this.pub_(
-          this.subs_,
-          0,
-          topic,
-          this.appendArguments([this, topic], arguments, 1)) :
-        0;
-    },
-
-
-    /** Publish asynchronously. **/
-    publishAsync: function (topic) {
+  delay: function(delay, listener) {
+    return function() {
       var args = argsToArray(arguments);
-      var me   = this;
 
-      setTimeout( function() { me.publish.apply(me, args); }, 0);
-    },
+      // Is there a better way of doing this?
+      setTimeout( function() { listener.apply(this, args); }, delay );
+    };
+  },
 
-
-    // TODO: alternate name: lazyPublish
-    // fn: function which returns array
-    publishLazy: function (topic, fn) {
-       if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
-
-       return 0;
-    },
+  hasListeners: function (topic) {
+    // TODO:
+    return true;
+  },
 
 
-    /** Subscribe to notifications for the specified topic. **/
-    subscribe: function (topic, listener) {
-        if ( ! this.subs_ ) this.subs_ = {};
-
-        this.sub_(this.subs_, 0, topic, listener);
-    },
-
-
-    /** Unsubscribe a listener from the specified topic. **/
-    unsubscribe: function (topic, listener) {
-        if ( ! this.subs_ ) return;
-
-        this.unsub_(this.subs_, 0, topic, listener);
-    },
-
-
-    /** Unsubscribe all listeners from this service. **/
-    unsubscribeAll: function () {
-       this.sub_ = {};
-    },
+  /**
+   * Publish a notification to the specified topic.
+   *
+   * @return number of subscriptions notified
+   **/
+  publish: function (topic) {
+    return this.subs_ ?
+      this.pub_(
+        this.subs_,
+        0,
+        topic,
+        this.appendArguments([this, topic], arguments, 1)) :
+      0;
+  },
 
 
-    ///////////////////////////////////////////////////////
-    //                                            Internal
-    /////////////////////////////////////////////////////
+  /** Publish asynchronously. **/
+  publishAsync: function (topic) {
+    var args = argsToArray(arguments);
+    var me   = this;
 
-    pub_: function(map, topicIndex, topic, msg) {
-        var count = 0;
-
-        // There are no subscribers, so nothing to do
-        if ( map == null ) return 0;
-
-        if ( topicIndex < topic.length ) {
-           var t = topic[topicIndex];
-
-           // wildcard publish, so notify all sub-topics, instead of just one
-           if ( t == this.WILDCARD )
-              return this.notifyListeners_(topic, map, msg);
-
-           if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
-        }
-
-        count += this.notifyListeners_(topic, map[null], msg);
-
-        return count;
-    },
+    setTimeout( function() { me.publish.apply(me, args); }, 0);
+  },
 
 
-    sub_: function(map, topicIndex, topic, listener) {
-        if ( topicIndex == topic.length ) {
-           if ( ! map[null] ) map[null] = [];
-           map[null].push(listener);
-        } else {
-           var key = topic[topicIndex];
+  // TODO: alternate name: lazyPublish
+  // fn: function which returns array
+  publishLazy: function (topic, fn) {
+    if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
 
-           if ( ! map[key] ) map[key] = {};
-
-           this.sub_(map[key], topicIndex+1, topic, listener);
-        }
-    },
-
-    unsub_: function(map, topicIndex, topic, listener) {
-        if ( topicIndex == topic.length ) {
-            if ( ! map[null] ) return true;
-
-            map[null].remove(listener);
-
-            if ( ! map[null].length ) delete map[null];
-        } else {
-            var key = topic[topicIndex];
-
-            if ( ! map[key] ) return false;
-
-            if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
-              delete map[key];
-        }
-        return Object.keys(map).length == 0;
-    },
+    return 0;
+  },
 
 
-    /** @return number of listeners notified **/
-    notifyListeners_: function(topic, listeners, msg) {
-       if ( listeners == null ) return 0;
+  /** Subscribe to notifications for the specified topic. **/
+  subscribe: function (topic, listener) {
+    if ( ! this.subs_ ) this.subs_ = {};
 
-      if ( Array.isArray(listeners) ) {
-          for ( var i = 0 ; i < listeners.length ; i++ ) {
-             var listener = listeners[i];
-
-             try {
-                listener.apply(null, msg);
-             } catch ( err ) {
-                if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
-                   listeners.splice(i,1);
-                   i--;
-                } else {
-                  console.warn('Error delivering event: ', err);
-                }
-             }
-          }
-
-          return listeners.length;
-       }
-
-       for ( var key in listeners ) {
-          return this.notifyListeners_(topic, listeners[key], msg);
-       }
-    },
+    this.sub_(this.subs_, 0, topic, listener);
+  },
 
 
-    // convenience method to turn 'arguments' into a real array
-    appendArguments: function (a, args, start) {
-      for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
+  /** Unsubscribe a listener from the specified topic. **/
+  unsubscribe: function (topic, listener) {
+    if ( ! this.subs_ ) return;
 
-      return a;
+    this.unsub_(this.subs_, 0, topic, listener);
+  },
+
+
+  /** Unsubscribe all listeners from this service. **/
+  unsubscribeAll: function () {
+    this.sub_ = {};
+  },
+
+
+  ///////////////////////////////////////////////////////
+  //                                            Internal
+  /////////////////////////////////////////////////////
+
+  pub_: function(map, topicIndex, topic, msg) {
+    var count = 0;
+
+    // There are no subscribers, so nothing to do
+    if ( map == null ) return 0;
+
+    if ( topicIndex < topic.length ) {
+      var t = topic[topicIndex];
+
+      // wildcard publish, so notify all sub-topics, instead of just one
+      if ( t == this.WILDCARD )
+        return this.notifyListeners_(topic, map, msg);
+
+      if ( t ) count += this.pub_(map[t], topicIndex+1, topic, msg);
     }
+
+    count += this.notifyListeners_(topic, map[null], msg);
+
+    return count;
+  },
+
+
+  sub_: function(map, topicIndex, topic, listener) {
+    if ( topicIndex == topic.length ) {
+      if ( ! map[null] ) map[null] = [];
+      map[null].push(listener);
+    } else {
+      var key = topic[topicIndex];
+
+      if ( ! map[key] ) map[key] = {};
+
+      this.sub_(map[key], topicIndex+1, topic, listener);
+    }
+  },
+
+  unsub_: function(map, topicIndex, topic, listener) {
+    if ( topicIndex == topic.length ) {
+      if ( ! map[null] ) return true;
+
+      map[null].remove(listener);
+
+      if ( ! map[null].length ) delete map[null];
+    } else {
+      var key = topic[topicIndex];
+
+      if ( ! map[key] ) return false;
+
+      if ( this.unsub_(map[key], topicIndex+1, topic, listener) )
+        delete map[key];
+    }
+    return Object.keys(map).length == 0;
+  },
+
+
+  /** @return number of listeners notified **/
+  notifyListeners_: function(topic, listeners, msg) {
+    if ( listeners == null ) return 0;
+
+    if ( Array.isArray(listeners) ) {
+      for ( var i = 0 ; i < listeners.length ; i++ ) {
+        var listener = listeners[i];
+
+        try {
+          listener.apply(null, msg);
+        } catch ( err ) {
+          if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
+            listeners.splice(i,1);
+            i--;
+          } else {
+            console.warn('Error delivering event: ', err);
+          }
+        }
+      }
+
+      return listeners.length;
+    }
+
+    for ( var key in listeners ) {
+      return this.notifyListeners_(topic, listeners[key], msg);
+    }
+  },
+
+
+  // convenience method to turn 'arguments' into a real array
+  appendArguments: function (a, args, start) {
+    for ( var i = start ; i < args.length ; i++ ) a.push(args[i]);
+
+    return a;
+  }
 
 };
 
 /** Extend EventService with support for dealing with property-change notification. **/
 var PropertyChangeSupport = {
 
-   __proto__: EventService,
+  __proto__: EventService,
 
 
-   /** Root for property topics. **/
-   PROPERTY_TOPIC: 'property',
+  /** Root for property topics. **/
+  PROPERTY_TOPIC: 'property',
 
 
-   /** Create a topic for the specified property name. **/
-   propertyTopic: function (property) {
-      return [ this.PROPERTY_TOPIC, property ];
-   },
+  /** Create a topic for the specified property name. **/
+  propertyTopic: function (property) {
+    return [ this.PROPERTY_TOPIC, property ];
+  },
 
 
-   /** Indicate that a specific property has changed. **/
-   propertyChange: function (property, oldValue, newValue) {
-      // don't bother firing event if there are no listeners
-      if ( ! this.subs_ ) return;
+  /** Indicate that a specific property has changed. **/
+  propertyChange: function (property, oldValue, newValue) {
+    // don't bother firing event if there are no listeners
+    if ( ! this.subs_ ) return;
 
-      // don't fire event if value didn't change
-      if ( property != null && oldValue === newValue ) return;
+    // don't fire event if value didn't change
+    if ( property != null && oldValue === newValue ) return;
 
-      this.publish(this.propertyTopic(property), oldValue, newValue);
-   },
-
-
-   /** Indicates that one or more unspecified properties have changed. **/
-   globalChange: function () {
-      this.publish(this.propertyTopic(this.WILDCARD), null, null);
-   },
+    this.publish(this.propertyTopic(property), oldValue, newValue);
+  },
 
 
-   addListener: function(listener) {
-      // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
-      this.addPropertyListener(null, listener);
-   },
+  /** Indicates that one or more unspecified properties have changed. **/
+  globalChange: function () {
+    this.publish(this.propertyTopic(this.WILDCARD), null, null);
+  },
 
 
-   removeListener: function(listener) {
-      this.removePropertyListener(null, listener);
-   },
+  addListener: function(listener) {
+    // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
+    this.addPropertyListener(null, listener);
+  },
 
 
-   /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
-   addPropertyListener: function(property, listener) {
-      this.subscribe(this.propertyTopic(property), listener);
-   },
+  removeListener: function(listener) {
+    this.removePropertyListener(null, listener);
+  },
 
 
-   removePropertyListener: function(property, listener) {
-      this.unsubscribe(this.propertyTopic(property), listener);
-   },
+  /** @arg property the name of the property to listen to or 'null' to listen to all properties. **/
+  addPropertyListener: function(property, listener) {
+    this.subscribe(this.propertyTopic(property), listener);
+  },
 
 
-   /** Create a Value for the specified property. **/
-   propertyValue: function(property) {
-     var obj = this;
-     return {
-       $UID: obj.$UID + "." + property,
+  removePropertyListener: function(property, listener) {
+    this.unsubscribe(this.propertyTopic(property), listener);
+  },
 
-       get: function() { return obj[property]; },
 
-       set: function(val) { obj[property] = val; },
+  /** Create a Value for the specified property. **/
+  propertyValue: function(property) {
+    var obj = this;
+    return {
+      $UID: obj.$UID + "." + property,
 
-       get value() { return this.get(); },
+      get: function() { return obj[property]; },
 
-       set value(val) { this.set(val); },
+      set: function(val) { obj[property] = val; },
 
-       addListener: function(listener) {
-         obj.addPropertyListener(property, listener);
-       },
+      get value() { return this.get(); },
 
-       removeListener: function(listener) {
-         obj.removePropertyListener(property, listener);
-       },
+      set value(val) { this.set(val); },
 
-       toString: function () { return 'PropertyValue(' + property + ')'; }
-     };
-   }
+      addListener: function(listener) {
+        obj.addPropertyListener(property, listener);
+      },
+
+      removeListener: function(listener) {
+        obj.removePropertyListener(property, listener);
+      },
+
+      toString: function () { return 'PropertyValue(' + property + ')'; }
+    };
+  }
 
 };
 
@@ -395,128 +395,128 @@ var PropertyChangeSupport = {
 /** Static support methods for working with Events. **/
 var Events = {
 
-    /** Collection of all 'following' listeners. **/
-    listeners_: {},
+  /** Collection of all 'following' listeners. **/
+  listeners_: {},
 
-    identity: function (x) { return x; },
+  identity: function (x) { return x; },
 
-    /** Have the dstValue listen to changes in the srcValue and update its value to be the same. **/
-    follow: function (srcValue, dstValue) {
-       if ( ! srcValue || ! dstValue ) return;
+  /** Have the dstValue listen to changes in the srcValue and update its value to be the same. **/
+  follow: function (srcValue, dstValue) {
+    if ( ! srcValue || ! dstValue ) return;
 
-       dstValue.set(srcValue.get());
+    dstValue.set(srcValue.get());
 
-       var listener = function () {
-          dstValue.set(srcValue.get());
-       };
+    var listener = function () {
+      dstValue.set(srcValue.get());
+    };
 
-       this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
-       srcValue.addListener(listener);
-    },
-
-
-    /**
-     * Maps values from one model to another.
-     * @param f maps values from srcValue to dstValue
-     */
-    map: function (srcValue, dstValue, f) {
-       if ( ! srcValue || ! dstValue ) return;
-
-       var listener = function () {
-          dstValue.set(f(srcValue.get()));
-       };
-
-       listener(); // copy initial value
-
-       this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-       srcValue.addListener(listener);
-    },
+    srcValue.addListener(listener);
+  },
 
 
-    /** Have the dstValue stop listening for changes to the srcValue. **/
-    unfollow: function (srcValue, dstValue) {
-      if ( ! srcValue || ! dstValue ) return;
+  /**
+   * Maps values from one model to another.
+   * @param f maps values from srcValue to dstValue
+   */
+  map: function (srcValue, dstValue, f) {
+    if ( ! srcValue || ! dstValue ) return;
 
-      var key      = [srcValue.$UID, dstValue.$UID];
-      var listener = this.listeners_[key];
+    var listener = function () {
+      dstValue.set(f(srcValue.get()));
+    };
 
-      if ( listener ) {
-        delete this.listeners_[key];
-        srcValue.removeListener(listener);
-      }
-    },
+    listener(); // copy initial value
 
+    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
-    /** Link the values of two models by having them follow each other.  Initial value is copied from value1 to model2. **/
-    link: function (value1, model2) {
-       this.follow(value1, model2);
-       this.follow(model2, value1);
-    },
+    srcValue.addListener(listener);
+  },
 
 
-    /**
-     * Relate the values of two models.
-     * @param f maps value1 to model2
-     * @param fprime maps model2 to value1
-     */
-    relate: function (value1, value2, f, fprime) {
-       this.map(value1, value2, f);
-       this.map(value2, value1, fprime);
-    },
+  /** Have the dstValue stop listening for changes to the srcValue. **/
+  unfollow: function (srcValue, dstValue) {
+    if ( ! srcValue || ! dstValue ) return;
+
+    var key      = [srcValue.$UID, dstValue.$UID];
+    var listener = this.listeners_[key];
+
+    if ( listener ) {
+      delete this.listeners_[key];
+      srcValue.removeListener(listener);
+    }
+  },
 
 
-    /** Unlink the values of two models by having them no longer follow each other. **/
-    unlink: function (value1, value2) {
-       this.unfollow(value1, value2);
-       this.unfollow(value2, value1);
-    },
+  /** Link the values of two models by having them follow each other.  Initial value is copied from value1 to model2. **/
+  link: function (value1, model2) {
+    this.follow(value1, model2);
+    this.follow(model2, value1);
+  },
 
 
-   //////////////////////////////////////////////////
-   //                                   FRP Support
-   //////////////////////////////////////////////////
+  /**
+   * Relate the values of two models.
+   * @param f maps value1 to model2
+   * @param fprime maps model2 to value1
+   */
+  relate: function (value1, value2, f, fprime) {
+    this.map(value1, value2, f);
+    this.map(value2, value1, fprime);
+  },
 
-   /**
-    * Trap the dependencies of 'fn' and re-invoke whenever
-    * their values change.  The return value of 'fn' is
-    * passed to 'opt_fn'.
-    * @param opt_fn also invoked when dependencies change,
-    *        but its own dependencies are not tracked.
-    */
-   dynamic: function(fn, opt_fn) {
-     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-     var oldOnGet = Events.onGet;
-     var listener = EventService.merged(fn2, 5);
-     Events.onGet = function(obj, name, value) {
-       obj.propertyValue(name).addListener(listener);
-     };
-     var ret = fn();
-     Events.onGet = oldOnGet;
-     opt_fn && opt_fn(ret);
-   },
 
-   onSet: function(obj, name, newValue) {
-     return true;
-   },
+  /** Unlink the values of two models by having them no longer follow each other. **/
+  unlink: function (value1, value2) {
+    this.unfollow(value1, value2);
+    this.unfollow(value2, value1);
+  },
 
-   onGet: function(obj, name, value) {
-   }
 
-    // ???: would be nice to have a removeValue method
-    // or maybe add an 'owner' property, combine with Janitor
+  //////////////////////////////////////////////////
+  //                                   FRP Support
+  //////////////////////////////////////////////////
+
+  /**
+   * Trap the dependencies of 'fn' and re-invoke whenever
+   * their values change.  The return value of 'fn' is
+   * passed to 'opt_fn'.
+   * @param opt_fn also invoked when dependencies change,
+   *        but its own dependencies are not tracked.
+   */
+  dynamic: function(fn, opt_fn) {
+    var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
+    var oldOnGet = Events.onGet;
+    var listener = EventService.merged(fn2, 5);
+    Events.onGet = function(obj, name, value) {
+      obj.propertyValue(name).addListener(listener);
+    };
+    var ret = fn();
+    Events.onGet = oldOnGet;
+    opt_fn && opt_fn(ret);
+  },
+
+  onSet: function(obj, name, newValue) {
+    return true;
+  },
+
+  onGet: function(obj, name, value) {
+  }
+
+  // ???: would be nice to have a removeValue method
+  // or maybe add an 'owner' property, combine with Janitor
 
 }
 
 // TODO: Janitor
 /*
-   subscribe(subject, topic, listener);
-   addCleanupTask(fn)
+  subscribe(subject, topic, listener);
+  addCleanupTask(fn)
 
-   cleanup();
+  cleanup();
 
- */
+*/
 
 Function.prototype.o = function(f2) {
   var f1 = this;
@@ -526,298 +526,298 @@ Function.prototype.o = function(f2) {
 
 var Movement = {
 
-   distance: function(x, y) { return Math.sqrt(x*x + y*y); },
+  distance: function(x, y) { return Math.sqrt(x*x + y*y); },
 
-   /** Combinator to create the composite of two functions. **/
-   o: function(f1, f2) { return function(x) { return f1(f2(x)); }; },
+  /** Combinator to create the composite of two functions. **/
+  o: function(f1, f2) { return function(x) { return f1(f2(x)); }; },
 
-   /** Combinator to create the average of two functions. **/
-   avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
+  /** Combinator to create the average of two functions. **/
+  avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
 
-   /** Constant speed. **/
-   linear: function(x) { return x; },
+  /** Constant speed. **/
+  linear: function(x) { return x; },
 
-   /** Move to target value and then return back to original value. **/
-   back: function(x) { return x < 0.5 ? 2*x : 2-2*x; },
+  /** Move to target value and then return back to original value. **/
+  back: function(x) { return x < 0.5 ? 2*x : 2-2*x; },
 
-   /** Start slow and accelerate until half-way, then start slowing down. **/
-   accelerate: function(x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; },
+  /** Start slow and accelerate until half-way, then start slowing down. **/
+  accelerate: function(x) { return (Math.sin(x * Math.PI - Math.PI/2)+1)/2; },
 
-   /** Start slow and ease-in to full speed. **/
-   easeIn: function(a) {
-     var v = 1/(1-a/2);
-     return function(x) {
-       var x1 = Math.min(x, a);
-       var x2 = Math.max(x-a, 0);
-       return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
-     };
-   },
+  /** Start slow and ease-in to full speed. **/
+  easeIn: function(a) {
+    var v = 1/(1-a/2);
+    return function(x) {
+      var x1 = Math.min(x, a);
+      var x2 = Math.max(x-a, 0);
+      return (a ? 0.5*x1*(x1/a)*v : 0) + x2*v;
+    };
+  },
 
-   /** Combinator to reverse behaviour of supplied function. **/
-   reverse: function(f) { return function(x) { return 1-f(1-x); }; },
+  /** Combinator to reverse behaviour of supplied function. **/
+  reverse: function(f) { return function(x) { return 1-f(1-x); }; },
 
-   /** Reverse of easeIn. **/
-   easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
+  /** Reverse of easeIn. **/
+  easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
 
-   /**
-    * Cause an oscilation at the end of the movement.
-    * @param b percentage of time to to spend bouncing [0, 1]
-    * @param a amplitude of maximum bounce
-    * @param opt_c number of cycles in bounce (default: 3)
-    */
-   oscillate:  function(b,a,opt_c) {
-     var c = opt_c || 3;
-     return function(x) {
-       if ( x < (1-b) ) return x/(1-b);
-       var t = (x-1+b)/b;
-       return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
-     };
-   },
+  /**
+   * Cause an oscilation at the end of the movement.
+   * @param b percentage of time to to spend bouncing [0, 1]
+   * @param a amplitude of maximum bounce
+   * @param opt_c number of cycles in bounce (default: 3)
+   */
+  oscillate:  function(b,a,opt_c) {
+    var c = opt_c || 3;
+    return function(x) {
+      if ( x < (1-b) ) return x/(1-b);
+      var t = (x-1+b)/b;
+      return 1+(1-t)*2*a*Math.sin(2*c*Math.PI * t);
+    };
+  },
 
-   /**
-    * Cause an bounce at the end of the movement.
-    * @param b percentage of time to to spend bouncing [0, 1]
-    * @param a amplitude of maximum bounce
-    */
-   bounce:  function(b,a,opt_c) {
-     var c = opt_c || 3;
-     return function(x) {
-       if ( x < (1-b) ) return x/(1-b);
-       var t = (x-1+b)/b;
-       return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
-     };
-   },
-   bounce2: function(a) {
-     var v = 1 / (1-a);
-     return function(x) {
-       if ( x < (1-a) ) return v*x;
-       var p = (x-1+a)/a;
-       return 1-(x-1+a)*v/2;
-     };
-   },
+  /**
+   * Cause an bounce at the end of the movement.
+   * @param b percentage of time to to spend bouncing [0, 1]
+   * @param a amplitude of maximum bounce
+   */
+  bounce:  function(b,a,opt_c) {
+    var c = opt_c || 3;
+    return function(x) {
+      if ( x < (1-b) ) return x/(1-b);
+      var t = (x-1+b)/b;
+      return 1-(1-t)*2*a*Math.abs(Math.sin(2*c*Math.PI * t));
+    };
+  },
+  bounce2: function(a) {
+    var v = 1 / (1-a);
+    return function(x) {
+      if ( x < (1-a) ) return v*x;
+      var p = (x-1+a)/a;
+      return 1-(x-1+a)*v/2;
+    };
+  },
 
-   /** Move backwards a% before continuing to end. **/
-   stepBack: function(a) {
-     return function(x) {
-       return ( x < a ) ? -x : -2*a+(1+2*a)*x;
-     };
-   },
+  /** Move backwards a% before continuing to end. **/
+  stepBack: function(a) {
+    return function(x) {
+      return ( x < a ) ? -x : -2*a+(1+2*a)*x;
+    };
+  },
 
-   /** Combination of easeIn and easeOut. **/
-   ease: function(a, b) {
-     return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
-   },
+  /** Combination of easeIn and easeOut. **/
+  ease: function(a, b) {
+    return Movement.o(Movement.easeIn(a), Movement.easeOut(b));
+  },
 
-   seq: function(f1, f2) {
-     return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
-                      f1 ? f1
-                         : f2 ;
-   },
+  seq: function(f1, f2) {
+    return ( f1 && f2 ) ? function() { f1.apply(this, argsToArray(arguments)); f2(); } :
+    f1 ? f1
+      : f2 ;
+  },
 
-   /** @return a latch function which can be called to stop the animation. **/
-   animate: function(duration, fn, opt_interp, opt_onEnd) {
-     if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
-     var interp = opt_interp || Movement.linear;
+  /** @return a latch function which can be called to stop the animation. **/
+  animate: function(duration, fn, opt_interp, opt_onEnd) {
+    if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
+    var interp = opt_interp || Movement.linear;
 
-     return function() {
-       var STACK     = DEBUG_STACK();
-       var startTime = Date.now();
-       var oldOnSet  = Events.onSet;
-       var ranges    = [];
-       var timer;
+    return function() {
+      var STACK     = DEBUG_STACK();
+      var startTime = Date.now();
+      var oldOnSet  = Events.onSet;
+      var ranges    = [];
+      var timer;
 
-       function stop() {
-         clearInterval(timer);
-         opt_onEnd && opt_onEnd();
-         opt_onEnd = null;
-       }
+      function stop() {
+        clearInterval(timer);
+        opt_onEnd && opt_onEnd();
+        opt_onEnd = null;
+      }
 
-       Events.onSet = function(obj, name, value2) {
-         ranges.push([obj, name, obj[name], value2]);
-       };
-       fn && fn.apply(this, argsToArray(arguments));
-       Events.onSet = oldOnSet;
+      Events.onSet = function(obj, name, value2) {
+        ranges.push([obj, name, obj[name], value2]);
+      };
+      fn && fn.apply(this, argsToArray(arguments));
+      Events.onSet = oldOnSet;
 
-       if ( ranges.length > 0 || true ) {
-         timer = setInterval(function() {
-           var now = Math.min(Date.now(), startTime + duration);
-           var p   = interp((now-startTime)/duration);
+      if ( ranges.length > 0 || true ) {
+        timer = setInterval(function() {
+          var now = Math.min(Date.now(), startTime + duration);
+          var p   = interp((now-startTime)/duration);
 
-           for ( var i = 0 ; i < ranges.length ; i++ ) {
-             var r = ranges[i];
-             var obj = r[0];
-             var name = r[1];
-             var value1 = r[2];
-             var value2 = r[3];
+          for ( var i = 0 ; i < ranges.length ; i++ ) {
+            var r = ranges[i];
+            var obj = r[0];
+            var name = r[1];
+            var value1 = r[2];
+            var value2 = r[3];
 
-             obj[name] = value1 + (value2-value1) * p;
-           }
+            obj[name] = value1 + (value2-value1) * p;
+          }
 
-           if ( now >= startTime + duration ) stop();
-         }, 30);
-       }
+          if ( now >= startTime + duration ) stop();
+        }, 30);
+      }
 
-       return stop;
-     };
-   },
+      return stop;
+    };
+  },
 
-   // requires unsubscribe to work first
-   animate2: function(timer, duration, fn) {
-     return function() {
-       var startTime = timer.time;
-       var oldOnSet  = Events.onSet;
-       Events.onSet = function(obj, name, value2) {
-         var value1 = obj[name];
+  // requires unsubscribe to work first
+  animate2: function(timer, duration, fn) {
+    return function() {
+      var startTime = timer.time;
+      var oldOnSet  = Events.onSet;
+      Events.onSet = function(obj, name, value2) {
+        var value1 = obj[name];
 
-         Events.dynamic(function() {
-           var now = timer.time;
+        Events.dynamic(function() {
+          var now = timer.time;
 
-           obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
+          obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
 
-           if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-         });
+          if ( now > startTime + duration ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        });
 
-         return false;
-       };
-       fn.apply(this, argsToArray(arguments));
-       Events.onSet = oldOnSet;
-       update();
-     };
-   },
+        return false;
+      };
+      fn.apply(this, argsToArray(arguments));
+      Events.onSet = oldOnSet;
+      update();
+    };
+  },
 
-   // TODO: if this were an object then you could sub-class to modify playback
-   compile: function (a, opt_rest) {
-     function noop() {}
+  // TODO: if this were an object then you could sub-class to modify playback
+  compile: function (a, opt_rest) {
+    function noop() {}
 
-     function isPause(op) {
-       return Array.isArray(op) && op[0] == 0;
-     }
+    function isPause(op) {
+      return Array.isArray(op) && op[0] == 0;
+    }
 
-     function compilePause(op, rest) {
-       return function() {
-         document.onclick = function() {
-           document.onclick = null;
-           rest();
-         };
-       };
-     }
+    function compilePause(op, rest) {
+      return function() {
+        document.onclick = function() {
+          document.onclick = null;
+          rest();
+        };
+      };
+    }
 
-     function isSimple(op) {
-       return Array.isArray(op) && typeof op[0] === 'number';
-     }
+    function isSimple(op) {
+      return Array.isArray(op) && typeof op[0] === 'number';
+    }
 
-     function compileSimple(op, rest) {
-       op[3] = Movement.seq(op[3], rest);
-       return function() { Movement.animate.apply(null, op)(); };
-     }
+    function compileSimple(op, rest) {
+      op[3] = Movement.seq(op[3], rest);
+      return function() { Movement.animate.apply(null, op)(); };
+    }
 
-     function isParallel(op) {
-       return Array.isArray(op) && Array.isArray(op[0]);
-     }
+    function isParallel(op) {
+      return Array.isArray(op) && Array.isArray(op[0]);
+    }
 
-     function compileParallel(op, rest) {
-       var join = (function(num) {
-         return function() { --num || rest(); };
-       })(op.length);
+    function compileParallel(op, rest) {
+      var join = (function(num) {
+        return function() { --num || rest(); };
+      })(op.length);
 
-       return function() {
-         for ( var i = 0 ; i < op.length ; i++ )
-           if ( isSimple(op[i]) )
-             Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
-           else
-             Movement.compile(op[i], join)();
-       };
-     }
+      return function() {
+        for ( var i = 0 ; i < op.length ; i++ )
+          if ( isSimple(op[i]) )
+            Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
+        else
+          Movement.compile(op[i], join)();
+      };
+    }
 
-     function compileFn(fn, rest) {
-       return Movement.seq(fn, rest);
-     }
+    function compileFn(fn, rest) {
+      return Movement.seq(fn, rest);
+    }
 
-     function compile_(a, i) {
-       if ( i >= a.length ) return opt_rest || noop;
+    function compile_(a, i) {
+      if ( i >= a.length ) return opt_rest || noop;
 
-       var rest = compile_(a, i+1);
-       var op = a[i];
+      var rest = compile_(a, i+1);
+      var op = a[i];
 
-       if ( isPause(op)    ) return compilePause(op, rest);
-       if ( isSimple(op)   ) return compileSimple(op, rest);
-       if ( isParallel(op) ) return compileParallel(op, rest);
+      if ( isPause(op)    ) return compilePause(op, rest);
+      if ( isSimple(op)   ) return compileSimple(op, rest);
+      if ( isParallel(op) ) return compileParallel(op, rest);
 
-       return compileFn(op, rest);
-     }
+      return compileFn(op, rest);
+    }
 
-     return compile_(a, 0);
-   },
-
-
-   onIntersect: function (o1, o2, fn) {
-
-   },
+    return compile_(a, 0);
+  },
 
 
-   stepTowards: function(src, dst, maxStep) {
-      var dx = src.x - dst.x;
-      var dy = src.y - dst.y;
+  onIntersect: function (o1, o2, fn) {
+
+  },
+
+
+  stepTowards: function(src, dst, maxStep) {
+    var dx = src.x - dst.x;
+    var dy = src.y - dst.y;
+    var theta = Math.atan2(dy,dx);
+    var r     = Math.sqrt(dx*dx+dy*dy);
+    r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
+
+    dst.x += r*Math.cos(-theta);
+    dst.y -= r*Math.sin(-theta);
+  },
+
+
+  /**
+   * Cause one object to move towards another at a specified rate.
+   *
+   * @arg t timer
+   * @arg body body to be orbitted
+   * @arg sat object to orbit body
+   * @arg r radius of orbit
+   * @arg p period of orbit
+   */
+  moveTowards: function (t, body, sat, v) {
+    var bodyX = body.propertyValue('x');
+    var bodyY = body.propertyValue('y');
+    var satX  = sat.propertyValue('x');
+    var satY  = sat.propertyValue('y');
+
+    t.addListener(function() {
+      var dx = bodyX.get() - satX.get();
+      var dy = (bodyY.get() - satY.get());
       var theta = Math.atan2(dy,dx);
       var r     = Math.sqrt(dx*dx+dy*dy);
-      r = r < 0 ? Math.max(-maxStep, r) : Math.min(maxStep, r);
 
-      dst.x += r*Math.cos(-theta);
-      dst.y -= r*Math.sin(-theta);
-   },
+      r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
 
-
-   /**
-    * Cause one object to move towards another at a specified rate.
-    *
-    * @arg t timer
-    * @arg body body to be orbitted
-    * @arg sat object to orbit body
-    * @arg r radius of orbit
-    * @arg p period of orbit
-    */
-    moveTowards: function (t, body, sat, v) {
-       var bodyX = body.propertyValue('x');
-       var bodyY = body.propertyValue('y');
-       var satX  = sat.propertyValue('x');
-       var satY  = sat.propertyValue('y');
-
-       t.addListener(function() {
-         var dx = bodyX.get() - satX.get();
-         var dy = (bodyY.get() - satY.get());
-         var theta = Math.atan2(dy,dx);
-         var r     = Math.sqrt(dx*dx+dy*dy);
-
-         r = r < 0 ? Math.max(-v, r) : Math.min(v, r);
-
-         satX.set(satX.get() + r*Math.cos(-theta));
-         satY.set(satY.get() - r*Math.sin(-theta));
-       });
-    },
+      satX.set(satX.get() + r*Math.cos(-theta));
+      satY.set(satY.get() - r*Math.sin(-theta));
+    });
+  },
 
 
-   /**
-    * Cause one object to orbit another.
-    *
-    * @arg t timer
-    * @arg body body to be orbitted
-    * @arg sat object to orbit body
-    * @arg r radius of orbit
-    * @arg p period of orbit
-    */
-    orbit: function (t, body, sat, r, p)
-    {
-       var bodyX = body.propertyValue('x');
-       var bodyY = body.propertyValue('y');
-       var satX  = sat.propertyValue('x');
-       var satY  = sat.propertyValue('y');
+  /**
+   * Cause one object to orbit another.
+   *
+   * @arg t timer
+   * @arg body body to be orbitted
+   * @arg sat object to orbit body
+   * @arg r radius of orbit
+   * @arg p period of orbit
+   */
+  orbit: function (t, body, sat, r, p)
+  {
+    var bodyX = body.propertyValue('x');
+    var bodyY = body.propertyValue('y');
+    var satX  = sat.propertyValue('x');
+    var satY  = sat.propertyValue('y');
 
-       t.addListener(function() {
-          var time = t.time;
-          satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
-          satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
-       });
-    }
+    t.addListener(function() {
+      var time = t.time;
+      satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
+      satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
+    });
+  }
 
 };
 
@@ -825,5 +825,5 @@ var Movement = {
 var originalRequestAnimationFrame = window.requestAnimationFrame;
 
 window.requestAnimationFrame = function(f) {
-   this.setTimeout(f, 16);
+  this.setTimeout(f, 16);
 };
