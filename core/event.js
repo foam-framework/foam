@@ -273,7 +273,7 @@ var EventService = {
     notifyListeners_: function(topic, listeners, msg) {
        if ( listeners == null ) return 0;
 
-       if ( listeners instanceof Array ) {
+      if ( Array.isArray(listeners) ) {
           for ( var i = 0 ; i < listeners.length ; i++ ) {
              var listener = listeners[i];
 

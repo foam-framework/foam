@@ -28,7 +28,7 @@ var Visitor = {
   },
 
   visit: function(o) {
-    return ( o instanceof Array )     ? this.visitArray(o)    :
+    return Array.isArray(o)           ? this.visitArray(o)    :
            ( typeof o === 'string' )  ? this.visitString(o)   :
            ( typeof o === 'number' )  ? this.visitNumber(o)   :
            ( o instanceof Function )  ? this.visitFunction(o) :

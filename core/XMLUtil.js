@@ -28,14 +28,12 @@ var XMLUtil = {
       .replace(/"/g, '&quot;');
   },
 
-
    parse: function(str) {
       // todo
    },
 
    compact:
    {
-
       stringify: function(obj) {
          var buf = [];
 
@@ -45,7 +43,7 @@ var XMLUtil = {
       },
 
       output: function(out, obj) {
-         if ( obj instanceof Array) {
+        if ( Array.isArray(obj) ) {
             this.outputArray_(out, obj);
          }
          else if ( typeof obj == 'string' ) {
@@ -84,7 +82,7 @@ var XMLUtil = {
           if ( prop.name in obj.instance_ && obj[prop.name] ) {
              var val = obj[prop.name];
 
-             if ( val instanceof Array && val.length == 0 ) continue;
+            if ( Array.isArray(val) && val.length == 0 ) continue;
 
              if ( val == prop.defaultValue ) continue;
 
@@ -139,7 +137,6 @@ var XMLUtil = {
 
    pretty:
    {
-
       stringify: function(obj) {
          var buf = [];
 
@@ -151,7 +148,7 @@ var XMLUtil = {
       output: function(out, obj, opt_indent) {
          var indent = opt_indent || "";
 
-         if ( obj instanceof Array) {
+        if ( Array.isArray(obj) ) {
             this.outputArray_(out, obj, indent);
          }
          else if ( typeof obj == 'string' ) {
@@ -190,7 +187,7 @@ if ( prop.name === 'parent' ) continue;
           if ( obj.instance_ && prop.name in obj.instance_ ) {
              var val = obj[prop.name];
 
-             if ( val instanceof Array && val.length == 0 ) continue;
+            if ( Array.isArray(val) && val.length == 0 ) continue;
 
              if ( val == prop.defaultValue ) continue;
 
@@ -241,7 +238,6 @@ if ( prop.name === 'parent' ) continue;
         out('\n',indent);
       }
    }
-
 
 };
 

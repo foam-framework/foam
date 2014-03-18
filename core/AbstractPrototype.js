@@ -276,7 +276,7 @@ var AbstractPrototype = {
     for ( var key in cln.instance_ ) {
       var val = cln.instance_[key];
 
-      if ( val instanceof Array ) {
+      if ( Array.isArray(val) ) {
         val = val.slice(0);
         cln.instance_[key] = val;
 
