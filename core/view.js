@@ -3292,7 +3292,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name: 'add',
       label: 'Add',
       action: function() {

@@ -99,7 +99,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'start',
       help:  'Start the timer.',
 
@@ -108,7 +107,6 @@ FOAModel({
       action:      function() { this.isStarted = true; this.tick(); }
     },
     {
-      model_: 'Action',
       name:  'step',
       help:  'Step the timer.',
 
@@ -122,7 +120,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'stop',
       help:  'Stop the timer.',
 

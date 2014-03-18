@@ -46,7 +46,6 @@ FOAModel({
 
    actions: [
       {
-         model_: 'Action',
          name:  'back',
          label: '',
          iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
@@ -60,7 +59,6 @@ FOAModel({
          }
       },
       {
-         model_: 'Action',
          name:  'forth',
          label: '',
          iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Right_Arrow.svg',

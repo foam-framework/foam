@@ -46,11 +46,10 @@ FOAModel({
       action:      function() {  }
       },*/
     {
-      model_: 'Action',
       name:  'new',
       help:  'Create a new record.',
 
-      action:      function() {
+      action: function() {
         var createView = ActionBorder.create(
           DAOCreateController,
           DAOCreateController.create({
@@ -66,7 +65,6 @@ FOAModel({
     },
     /*
       {
-      model_: 'Action',
       name:  'view',
       help:  'View the current record.',
 
@@ -74,7 +72,6 @@ FOAModel({
       },
     */
     {
-      model_: 'Action',
       name:  'edit',
       help:  'Edit the current record.',
     default: 'true',
@@ -113,7 +110,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'delete',
       help:  'Delete the current record.',
 
@@ -270,7 +266,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'save',
       label: 'Create',
       help:  'Create a new record.',
@@ -291,7 +286,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'cancel',
       help:  'Cancel creation.',
 
@@ -302,7 +296,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'help',
       help:  'View help.',
 
@@ -381,7 +374,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'save',
       help:  'Save updates.',
 
@@ -402,7 +394,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'copy',
       help:  'Create a new object which is a copy of this one.',
 
@@ -412,7 +403,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'cancel',
       help:  'Cancel update.',
 
@@ -423,7 +413,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'help',
       help:  'View help.',
 
