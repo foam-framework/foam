@@ -62,7 +62,7 @@ var Location = FOAM({
       name: 'q',
       defaultValue: '',
       toURL: function(q) {
-        // Replace short-names will fullnames that crbug will understand
+        // Replace short-names will fullnames that quickbug will understand
         return (QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
       }
     },

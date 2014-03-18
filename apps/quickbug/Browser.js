@@ -134,7 +134,7 @@ var Browser = Model.create({
       valueFactory: function() {
         return TextFieldView.create({
           name: 'count',
-          className: 'crbugCount',
+          className: 'qbugCount',
           mode: 'read-only',
           displayWidth: 40
         });
