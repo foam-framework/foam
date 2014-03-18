@@ -1343,8 +1343,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'updated',
       code: function(evt) {
         console.log('updated: ', evt);
@@ -1420,8 +1418,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'updated',
       code: function(evt) {
         console.log('updated: ', evt);
@@ -1847,7 +1843,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onMessage',
       help: 'Callback for message events from the delegate.',
       code: function(e) {
@@ -1909,7 +1904,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onMessage',
       code: function(e) {
         // This is a nightmare of a function, clean it up.

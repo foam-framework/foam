@@ -161,8 +161,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'resizeParent',
       code: function(evt) {
         this.parent.width  = this.x + this.width + 1;
@@ -1141,8 +1139,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onMouseMove',
       code: function(evt) {
         this.parent.paint()

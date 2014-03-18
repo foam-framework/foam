@@ -110,7 +110,6 @@ var LinkView = Model.create({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'keyUp',
       code: function(e) {
         if ( e.keyCode == 27 /* Esc */ ) {
@@ -231,7 +230,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'maybeShowPlaceholder',
       code: function() {
         var e = $(this.placeholderId);

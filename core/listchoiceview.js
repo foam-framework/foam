@@ -210,8 +210,6 @@ FOAModel({
    listeners:
    [
       {
-         model_: 'Method',
-
          name: 'onMouseOver',
          code: function(e) {
            if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -221,8 +219,6 @@ FOAModel({
       },
 
       {
-         model_: 'Method',
-
          name: 'onMouseOut',
          code: function(e) {
            if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -234,8 +230,6 @@ FOAModel({
       },
 
       {
-         model_: 'Method',
-
          name: 'onClick',
          code: function(e) {
            this.prev = this.evtToValue(e);

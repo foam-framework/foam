@@ -119,8 +119,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onResize',
       isMerged: 200,
       code: function() {
@@ -137,8 +135,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() {
@@ -150,8 +146,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'repaint',
       isAnimated: true,
       code: function() {
@@ -159,8 +153,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Method',
-
       name: 'onEditColumns',
       code: function(evt) {
         var v = EditColumnsView.create({

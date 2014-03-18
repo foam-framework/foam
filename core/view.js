@@ -1089,8 +1089,6 @@ FOAModel({
   listeners:
   [
     {
-      model_: 'Method',
-
       name: 'onMouseOver',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -1100,8 +1098,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'onMouseOut',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -1113,8 +1109,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'onClick',
       code: function(e) {
         this.prev = this.evtToValue(e);
@@ -1179,8 +1173,6 @@ FOAModel({
   listeners:
   [
     {
-      model_: 'Method',
-
       name: 'onClick',
       code: function(evt) {
         console.log('****************', evt, arguments);
@@ -2046,8 +2038,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onEditColumns',
       code: function(evt) {
         var v = EditColumnsView.create({
@@ -2314,16 +2304,12 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onAddColumn',
       code: function(prop) {
         this.properties = this.properties.concat([prop]);
       }
     },
     {
-      model_: 'Method',
-
       name: 'onRemoveColumn',
       code: function(prop) {
         this.properties = this.properties.deleteF(prop);
@@ -2386,7 +2372,6 @@ var ActionButton = Model.create({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onValueChange',
       code: function() {
         var value  = this.value.get();
@@ -2395,7 +2380,6 @@ var ActionButton = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'onEnabled',
       code: function(enabled) {
         if ( ! this.$ ) return;
@@ -2920,8 +2904,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onMouseMove',
       isAnimated: true,
       code: function(evt) {

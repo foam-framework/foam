@@ -97,8 +97,6 @@ FOAModel({
    listeners:
    [
       {
-         model_: 'Method',
-
          name: 'updateDAO',
 
          code: function() {
@@ -120,8 +118,6 @@ FOAModel({
          }
       },
       {
-         model_: 'Method',
-
          name: 'updateChoice',
 
          code: function(newValue, oldValue) {
@@ -187,10 +183,7 @@ FOAModel({
    listeners:
    [
       {
-         model_: 'Method',
-
          name: 'updateValue',
-
          code: function() {
             var value = this.view.getValue().get();
             if ( ! value ) {
@@ -201,10 +194,7 @@ FOAModel({
          }
       },
       {
-         model_: 'Method',
-
          name: 'clear',
-
          code: function() {
 console.log('**************************** clear');
            this.view.getValue().set('');

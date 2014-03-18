@@ -86,8 +86,7 @@ FOAModel({
             var obj = this.selection;
             var actions = DAOUpdateController.actions.slice(0);
 
-            for ( var i = 0 ; i < this.model.actions.length ; i++ )
-            {
+            for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
                var action = this.model.actions[i];
 
                var newAction = Action.create(action);
@@ -182,16 +181,12 @@ FOAModel({
    listeners:
    [
       {
-         model_: 'Method',
-
          name: 'onDoubleClick',
          code: function(evt) {
-            for ( var i = 0 ; i < this.model_.actions.length ; i++ )
-            {
+            for ( var i = 0 ; i < this.model_.actions.length ; i++ ) {
                var action = this.model_.actions[i];
 
-               if ( action.default )
-               {
+               if ( action.default ) {
                   action.action.call(this);
 
                   break;
@@ -200,14 +195,11 @@ FOAModel({
          }
       },
       {
-         model_: 'Method',
-
          name: 'onSelection',
          code: function(evt) {
             var obj = this.tableView.selection.get();
 
-            if ( obj )
-            {
+            if ( obj ) {
 /*
                FOAModel({
                   model_: 'AlternateView',

@@ -219,7 +219,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'layout',
       code: function() {
         this.view.layout();
