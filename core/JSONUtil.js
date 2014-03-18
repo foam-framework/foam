@@ -53,9 +53,9 @@ var JSONUtil = {
     return this.mapToObj(this.parseToMap(str));
   },
 
-  arrayToObjArray: function(a) {
+  arrayToObjArray: function(a, opt_defaultModel) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(a[i]);
+      a[i] = this.mapToObj(a[i], opt_defaultModel);
     }
     return a;
   },
