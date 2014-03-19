@@ -210,7 +210,7 @@ var AbstractPrototype = {
   },
 
   getProperty: function(name) {
-    if ( ! this.propertyMap_ ) {
+    if ( ! this.hasOwnProperty('propertyMap_') ) {
       var m = {};
 
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
