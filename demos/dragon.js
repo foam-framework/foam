@@ -71,25 +71,25 @@ FOAModel({
       c.fill();
     },
 
-    tail: function(r) {
+    tail: function(r, a) {
       if ( r < 1 ) return;
 
       var c = this.canvas;
       this.dot(r);
-      c.rotate(Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/10);
+      c.rotate(a);
       c.translate(0,r*2.2);
-      this.tail(r*0.975);
+      this.tail(r*0.975, a);
     },
 
-    wing: function(r) {
+    wing: function(r, a) {
       if ( r < 1 ) return;
 
       var c = this.canvas;
       c.save();c.rotate(Math.PI/2);this.feather(r*0.4);c.restore();
       this.dot(r);
-      c.rotate(Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/31.5);
+      c.rotate(a);
       c.translate(r*2.2,0);
-      this.wing(r*0.945);
+      this.wing(r*0.945, a);
     },
 
     feather: function(r) {
@@ -124,13 +124,13 @@ FOAModel({
       c.translate(0, -30*Math.sin(this.timer.time/2000*(Math.PI*2)));
 
       // tail
-      c.save();this.tail(this.r);c.restore();
+      c.save();this.tail(this.r, Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/10);c.restore();
 
+        var a = Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/31.5;
       // right wing
-      c.save();c.rotate(-0.4);this.wing(this.r);c.restore();
-
+      c.save();c.rotate(-0.4);this.wing(this.r, a);c.restore();
       // left wing
-      c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r);c.restore();
+      c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r, a);c.restore();
 
       // neck
       c.translate(0,2*-this.r);
