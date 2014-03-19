@@ -921,10 +921,12 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
+      help: "A Value of the current choice's value (ie. choice[0]).",
       valueFactory: function() { return SimpleValue.create(); }
     },
     {
       name: 'choice',
+      help: 'The current choice (ie. [value, label]).',
       getter: function() {
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -942,7 +944,7 @@ FOAModel({
     {
       name:  'choices',
       type:  'Array[StringField]',
-      help: 'Array of choices or array of [value, label] pairs.',
+      help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
       defaultValue: [],
       preSet: function(a) {
         // Upgrade single values to [value, value]
@@ -954,7 +956,8 @@ FOAModel({
 
         var value = this.value.get();
 
-        for ( var i = 0; i < newValue.length; i++ ) {
+        // Update current choice when choices update
+        for ( var i = 0 ; i < newValue.length ; i++ ) {
           var choice = newValue[i];
 
           if ( value === choice[0] ) {
