@@ -92,6 +92,7 @@ var DOM = {
   }
 };
 
+
 // TODO: document and make non-global
 /** Convert a style size to an Integer.  Ex. '10px' to 10. **/
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
@@ -299,9 +300,7 @@ FOAModel({
       this.destroy();
       this.publish('closed');
     }
-
   }
-
 });
 
 
@@ -375,6 +374,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
@@ -386,6 +386,8 @@ FOAModel({
   ]
 });
 
+
+// TODO: Model
 var DomValue = {
   DEFAULT_EVENT:    'change',
   DEFAULT_PROPERTY: 'value',
@@ -432,7 +434,6 @@ var DomValue = {
     return "DomValue(" + this.event + ", " + this.property + ")";
   }
 };
-
 
 
 FOAModel({
@@ -563,6 +564,7 @@ FOAModel({
     }
   ]
 });
+
 
 // TODO: document the difference between softValue and value
 FOAModel({
@@ -733,7 +735,6 @@ FOAModel({
   ],
 
   methods: {
-
     initHTML: function() {
       var e = this.$;
 
@@ -741,7 +742,6 @@ FOAModel({
 
       this.setValue(this.value);
     }
-
   }
 });
 
@@ -1063,9 +1063,7 @@ FOAModel({
       var e = this.$;
 
       this.updateHTML();
-
       this.domValue = DomValue.create(e);
-
       this.setValue(this.value);
       //       Events.link(this.value, this.domValue);
     },
@@ -1086,8 +1084,7 @@ FOAModel({
     evtToValue: function(e) { return this.indexToValue(e.target.value); }
   },
 
-  listeners:
-  [
+  listeners: [
     {
       name: 'onMouseOver',
       code: function(e) {
@@ -1116,7 +1113,6 @@ FOAModel({
       }
     }
   ]
-
 });
 
 
@@ -1846,7 +1842,8 @@ var DetailView2 = Model.create({
 
 
 /** A display-only summary view. **/
-var SummaryView = Model.create({
+FOAModel({
+  name: 'SummaryView',
 
   extendsModel: 'AbstractView',
 
@@ -1908,7 +1905,6 @@ var SummaryView = Model.create({
       return this.getValue().get();
     }
   }
-
 });
 
 
@@ -2350,7 +2346,7 @@ FOAModel({
 
 
 // TODO: add ability to set CSS class and/or id
-var ActionButton = Model.create({
+FOAModel({
   name: 'ActionButton',
 
   extendsModel: 'AbstractView',
@@ -2421,7 +2417,7 @@ var ActionButton = Model.create({
 });
 
 
-var ActionLink = Model.create({
+FOAModel({
   name: 'ActionLink',
 
   extendsModel: 'ActionButton',
@@ -2938,7 +2934,6 @@ FOAModel({
       help: 'View factory.'
     }
   ]
-
 });
 
 
@@ -3162,6 +3157,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'MultiLineStringArrayView',
   extendsModel: 'AbstractView',
@@ -3304,6 +3300,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   extendsModel: 'AbstractView',
 
@@ -3363,7 +3360,6 @@ FOAModel({
       this.view2.initHTML();
     }
   }
-
 });
 
 
@@ -3586,6 +3582,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'ArrayTileView',
 
@@ -3728,6 +3725,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'ArrayListView',
   extendsModel: 'AbstractView',
@@ -3783,6 +3781,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   name: 'DAOKeyView',
@@ -3850,6 +3849,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   name: 'ListView',
@@ -4071,5 +4071,3 @@ FOAModel({
     }
   ]
 });
-
-
