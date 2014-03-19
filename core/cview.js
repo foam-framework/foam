@@ -1171,9 +1171,9 @@ FOAModel({
 
       this.parent.$.onmousewheel = function(e) {
         if ( e.wheelDeltaY > 0 ) {
-          this.desiredMag += 0.2;
+          this.desiredMag += 0.05;
         } else {
-          this.desiredMag = Math.max(0, this.desiredMag-0.2);
+          this.desiredMag = Math.max(0, this.desiredMag-0.05);
         }
         this.parent.paint();
       }.bind(this);
