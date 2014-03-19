@@ -66,4 +66,4 @@ rm prefix.js postfix.js
 # Install from: https://github.com/mishoo/UglifyJS
 # cd ~; git clone git://github.com/mishoo/UglifyJS.git
 #~/UglifyJS/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
-~/UglifyJS/bin/uglifyjs --max-line-len 100 --no-seqs -nm -ns --overwrite "$BUILD_DIR/foam.js"
+#~/UglifyJS/bin/uglifyjs --max-line-len 100 --no-seqs -nm -ns --overwrite "$BUILD_DIR/foam.js"

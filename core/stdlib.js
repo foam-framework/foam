@@ -81,6 +81,15 @@ Object.defineProperty(Object.prototype, '$UID', {
   })()
 });
 
+Object.defineProperty(Object.prototype, 'clone', {
+  value: function() { return this; }
+});
+
+// Fallback to shallow clone() if deepClone() missing.
+Object.defineProperty(Object.prototype, 'deepClone', {
+  value: function() { return this.clone(); }
+});
+
 
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }

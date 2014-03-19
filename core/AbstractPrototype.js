@@ -277,14 +277,10 @@ var AbstractPrototype = {
       var val = cln.instance_[key];
 
       if ( Array.isArray(val) ) {
-        val = val.slice(0);
-        cln.instance_[key] = val;
-
         for ( var i = 0 ; i < val.length ; i++ ) {
           var obj = val[i];
 
-          if ( obj.deepClone )
-            val[i] = obj.deepClone();
+          obj = obj.deepClone();
         }
       }
     }

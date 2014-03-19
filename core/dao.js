@@ -942,9 +942,12 @@ defineProperties(Array.prototype, {
     return a;
   },
   clone: function() {
+    return this.slice(0);
+  },
+  deepClone: function() {
     var a = this.slice(0);
     for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( a[i].clone ) a[i] = a[i].clone();
+      a[i] = a[i].deepClone();
     }
     return a;
   },
