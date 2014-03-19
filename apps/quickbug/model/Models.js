@@ -390,6 +390,7 @@ var QIssueComment = FOAM({
   ]
 });
 
+
 var QUser = FOAM({
   model_: 'Model',
   name: 'QUser',
