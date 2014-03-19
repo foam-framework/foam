@@ -896,8 +896,6 @@ FOAModel({
    * <select size="">
    *    <choice value="" selected></choice>
    * </select>
-   *
-   *
    */
   properties: [
     {
@@ -931,17 +929,13 @@ FOAModel({
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           var choice = this.choices[i];
-          if ( Array.isArray(choice) ) {
-            if ( value === choice[0] ) return choice;
-          } else {
-            if ( value === choice ) return choice;
-          }
+          if ( value === choice[0] ) return choice;
         }
         return undefined;
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        this.value.set(Array.isArray(choice) ? choice[0] : choice);
+        this.value.set(choice[0]);
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
@@ -950,6 +944,11 @@ FOAModel({
       type:  'Array[StringField]',
       help: 'Array of choices or array of [value, label] pairs.',
       defaultValue: [],
+      preSet: function(a) {
+        // Upgrade single values to [value, value]
+        for ( var i = 0 ; i < a.length ; i++ ) if ( ! Array.isArray(a[i]) ) a[i] = [a[i], a[i]];
+        return a;
+      },
       postSet: function(_, newValue) {
         if ( ! this.value.get ) return;
 
@@ -958,16 +957,9 @@ FOAModel({
         for ( var i = 0; i < newValue.length; i++ ) {
           var choice = newValue[i];
 
-          if ( Array.isArray(choice) ) {
-            if ( value === choice[0] ) {
-              this.choice = choice;
-              break;
-            }
-          } else {
-            if ( value === choice ) {
-              this.choice = choice;
-              break;
-            }
+          if ( value === choice[0] ) {
+            this.choice = choice;
+            break;
           }
         }
 
@@ -1015,16 +1007,10 @@ FOAModel({
 
         out.push('\t<option id="' + id + '"');
 
-        if ( Array.isArray(choice) ) {
-          if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
-          out.push(' value="');
-          out.push(i + '">');
-          out.push(choice[1].toString());
-        } else {
-          if ( this.value && choice == this.value.get() ) out.push(' selected');
-          out.push('>');
-          out.push(choice.toString());
-        }
+        if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
+        out.push(' value="');
+        out.push(i + '">');
+        out.push(choice[1].toString());
         out.push('</option>');
       }
 
@@ -1047,11 +1033,7 @@ FOAModel({
         function (v) {
           for ( var i = 0 ; i < self.choices.length ; i++ ) {
             var c = self.choices[i];
-            if ( Array.isArray(c) ) {
-              if ( c[0] === v ) return i;
-            } else {
-              if ( v == c ) return v;
-            }
+            if ( c[0] === v ) return i;
           }
           return v;
         },
@@ -1076,9 +1058,7 @@ FOAModel({
       var i = parseInt(v);
       if ( isNaN(i) ) return v;
 
-      if ( Array.isArray(this.choices[i]) ) return this.choices[i][0];
-
-      return v;
+      return this.choices[i][0];
     },
 
     evtToValue: function(e) { return this.indexToValue(e.target.value); }
