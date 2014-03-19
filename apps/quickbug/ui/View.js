@@ -19,7 +19,12 @@
 var COL = {
   create: function() { return { __proto__: this, values: [] }; },
   put: function(v) { this.values.push(v); },
-  toHTML: function() { return this.values.join('<br/>'); },
+  toHTML: function() {
+    var s = '';
+    var vs = this.values;
+    for ( var i = 0 ; i < vs.length ; i++ ) s += vs[i].toHTML();
+    return s;
+  },
   initHTML: function() {
     for ( var i in this.values ) {
       var o = this.values[i];
@@ -28,6 +33,7 @@ var COL = {
   },
   clone: function() { return this.create(); }
 };
+
 
 var DragAndDropGrid = FOAM({
   model_: 'Model',
@@ -57,6 +63,7 @@ var DragAndDropGrid = FOAM({
     }
   }
 });
+
 
 var IssueDropCell = FOAM({
   model_: 'Model',
@@ -138,6 +145,7 @@ var IssueDropCell = FOAM({
   ]
 });
 
+
 /*
  * An extension to COUNT() which turns count into a link which performs
  * a query for only the selected data when clicked.
@@ -201,6 +209,7 @@ var priColorMap = {
     '':         'lightgray'
   }
 };
+
 
 var QIssueTableView = FOAM({
   model_: 'Model',
