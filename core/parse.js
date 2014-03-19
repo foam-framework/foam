@@ -15,32 +15,32 @@
  * limitations under the License.
  */
 /*
-var ErrorReportingPS = {
+  var ErrorReportingPS = {
   create: function(delegate, opt_pos) {
-console.log('ERPS:',delegate.head);
-    return {
-      __proto__: this,
-      pos: opt_pos || 0,
-      delegate: delegate
-    };
+  console.log('ERPS:',delegate.head);
+  return {
+  __proto__: this,
+  pos: opt_pos || 0,
+  delegate: delegate
+  };
   },
   get head() {
-console.log('head:',this.pos, this.delegate.head);
-    return this.delegate.head;
+  console.log('head:',this.pos, this.delegate.head);
+  return this.delegate.head;
   },
   get tail() {
-    return this.tail_ || (this.tail_ = this.create(this.delegate.tail, this.pos+1));
+  return this.tail_ || (this.tail_ = this.create(this.delegate.tail, this.pos+1));
   },
   get value() {
-    return this.delegate.value;
+  return this.delegate.value;
   },
   setValue: function(value) {
-console.log('setValue:',value);
-//    return ErrorReportingPS.create(this.delegate.setValue(value));
-    this.delegate = this.delegate.setValue(value);
-    return this;
+  console.log('setValue:',value);
+  //    return ErrorReportingPS.create(this.delegate.setValue(value));
+  this.delegate = this.delegate.setValue(value);
+  return this;
   }
-};
+  };
 */
 
 /** String PStream **/
@@ -177,17 +177,17 @@ function repeat(p, opt_delim, opt_min, opt_max) {
     var ret = [];
 
     for ( var i = 0 ; ! opt_max || i < opt_max ; i++ ) {
-       var res;
+      var res;
 
-       if ( opt_delim && ret.length != 0 ) {
-          if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
-          ps = res;
-       }
+      if ( opt_delim && ret.length != 0 ) {
+        if ( ! ( res = this.parse(opt_delim, ps) ) ) break;
+        ps = res;
+      }
 
-       if ( ! ( res = this.parse(p,ps) ) ) break;
+      if ( ! ( res = this.parse(p,ps) ) ) break;
 
-       ret.push(res.value);
-       ps = res;
+      ret.push(res.value);
+      ps = res;
     }
 
     if ( opt_min && ret.length < opt_min ) return undefined;
@@ -282,7 +282,7 @@ function alt(/* vargs */) {
 
     this.parse(p, trapPS);
 
-// console.log('*** TestParser:',p,c,goodChar);
+    // console.log('*** TestParser:',p,c,goodChar);
     return goodChar;
   }
 
@@ -319,13 +319,13 @@ function alt(/* vargs */) {
   var args = prepArgs(arguments);
 
   var f = function(ps) {
-     for ( var i = 0 ; i < args.length ; i++ ) {
-        var res = this.parse(args[i], ps);
+    for ( var i = 0 ; i < args.length ; i++ ) {
+      var res = this.parse(args[i], ps);
 
-        if ( res ) return res;
-     }
+      if ( res ) return res;
+    }
 
-     return undefined;
+    return undefined;
   };
 
   f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
@@ -380,10 +380,10 @@ var grammar = {
   },
 
   parse: function(parser, pstream) {
-//    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
+    //    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
     if ( DEBUG_PARSE && pstream.str_ ) {
-//      console.log(new Array(pstream.pos).join(' '), pstream.head);
-        console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
+      //      console.log(new Array(pstream.pos).join(' '), pstream.head);
+      console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
     if ( DEBUG_PARSE ) {
@@ -417,37 +417,37 @@ var grammar = {
 };
 
 function defineTTLProperty(obj, name, ttl, f) {
-   Object.defineProperty(obj, name, {
-     get: function() {
-        var accessed;
-        var value = undefined;
-        Object.defineProperty(this, name, {
-           get: function() {
-              function scheduleTimer() {
-                 setTimeout(function() {
-                   if ( accessed ) {
-                      scheduleTimer();
-                   } else {
-                      value = undefined;
-                   }
-                   accessed = false;
-                 }, ttl);
-              }
-              if ( ! value ) {
-                 accessed = false;
-                 value = f();
-                 scheduleTimer();
+  Object.defineProperty(obj, name, {
+    get: function() {
+      var accessed;
+      var value = undefined;
+      Object.defineProperty(this, name, {
+        get: function() {
+          function scheduleTimer() {
+            setTimeout(function() {
+              if ( accessed ) {
+                scheduleTimer();
               } else {
-                 accessed = true;
+                value = undefined;
               }
+              accessed = false;
+            }, ttl);
+          }
+          if ( ! value ) {
+            accessed = false;
+            value = f();
+            scheduleTimer();
+          } else {
+            accessed = true;
+          }
 
-              return value;
-           }
-        });
+          return value;
+        }
+      });
 
-        return this[name];
-     }
-   });
+      return this[name];
+    }
+  });
 }
 
 defineTTLProperty(grammar, 'stringPS', 5000, function() { return StringPS.create(""); });
