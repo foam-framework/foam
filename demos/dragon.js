@@ -72,7 +72,7 @@ FOAModel({
     },
 
     tail: function(r, a) {
-      if ( r < 1 ) return;
+      if ( r < 2 ) return;
 
       var c = this.canvas;
       this.dot(r);
