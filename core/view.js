@@ -92,6 +92,7 @@ var DOM = {
   }
 };
 
+
 // TODO: document and make non-global
 /** Convert a style size to an Integer.  Ex. '10px' to 10. **/
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
@@ -299,9 +300,7 @@ FOAModel({
       this.destroy();
       this.publish('closed');
     }
-
   }
-
 });
 
 
@@ -375,6 +374,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
@@ -386,6 +386,8 @@ FOAModel({
   ]
 });
 
+
+// TODO: Model
 var DomValue = {
   DEFAULT_EVENT:    'change',
   DEFAULT_PROPERTY: 'value',
@@ -432,7 +434,6 @@ var DomValue = {
     return "DomValue(" + this.event + ", " + this.property + ")";
   }
 };
-
 
 
 FOAModel({
@@ -563,6 +564,7 @@ FOAModel({
     }
   ]
 });
+
 
 // TODO: document the difference between softValue and value
 FOAModel({
@@ -733,7 +735,6 @@ FOAModel({
   ],
 
   methods: {
-
     initHTML: function() {
       var e = this.$;
 
@@ -741,7 +742,6 @@ FOAModel({
 
       this.setValue(this.value);
     }
-
   }
 });
 
@@ -896,8 +896,6 @@ FOAModel({
    * <select size="">
    *    <choice value="" selected></choice>
    * </select>
-   *
-   *
    */
   properties: [
     {
@@ -923,51 +921,48 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
+      help: "A Value of the current choice's value (ie. choice[0]).",
       valueFactory: function() { return SimpleValue.create(); }
     },
     {
       name: 'choice',
+      help: 'The current choice (ie. [value, label]).',
       getter: function() {
         var value = this.value.get();
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           var choice = this.choices[i];
-          if ( Array.isArray(choice) ) {
-            if ( value === choice[0] ) return choice;
-          } else {
-            if ( value === choice ) return choice;
-          }
+          if ( value === choice[0] ) return choice;
         }
         return undefined;
       },
       setter: function(choice) {
         var oldValue = this.choice;
-        this.value.set(Array.isArray(choice) ? choice[0] : choice);
+        this.value.set(choice[0]);
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
     {
       name:  'choices',
       type:  'Array[StringField]',
-      help: 'Array of choices or array of [value, label] pairs.',
+      help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
       defaultValue: [],
+      preSet: function(a) {
+        // Upgrade single values to [value, value]
+        for ( var i = 0 ; i < a.length ; i++ ) if ( ! Array.isArray(a[i]) ) a[i] = [a[i], a[i]];
+        return a;
+      },
       postSet: function(_, newValue) {
         if ( ! this.value.get ) return;
 
         var value = this.value.get();
 
-        for ( var i = 0; i < newValue.length; i++ ) {
+        // Update current choice when choices update
+        for ( var i = 0 ; i < newValue.length ; i++ ) {
           var choice = newValue[i];
 
-          if ( Array.isArray(choice) ) {
-            if ( value === choice[0] ) {
-              this.choice = choice;
-              break;
-            }
-          } else {
-            if ( value === choice ) {
-              this.choice = choice;
-              break;
-            }
+          if ( value === choice[0] ) {
+            this.choice = choice;
+            break;
           }
         }
 
@@ -1015,16 +1010,10 @@ FOAModel({
 
         out.push('\t<option id="' + id + '"');
 
-        if ( Array.isArray(choice) ) {
-          if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
-          out.push(' value="');
-          out.push(i + '">');
-          out.push(choice[1].toString());
-        } else {
-          if ( this.value && choice == this.value.get() ) out.push(' selected');
-          out.push('>');
-          out.push(choice.toString());
-        }
+        if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
+        out.push(' value="');
+        out.push(i + '">');
+        out.push(choice[1].toString());
         out.push('</option>');
       }
 
@@ -1047,11 +1036,7 @@ FOAModel({
         function (v) {
           for ( var i = 0 ; i < self.choices.length ; i++ ) {
             var c = self.choices[i];
-            if ( Array.isArray(c) ) {
-              if ( c[0] === v ) return i;
-            } else {
-              if ( v == c ) return v;
-            }
+            if ( c[0] === v ) return i;
           }
           return v;
         },
@@ -1063,9 +1048,7 @@ FOAModel({
       var e = this.$;
 
       this.updateHTML();
-
       this.domValue = DomValue.create(e);
-
       this.setValue(this.value);
       //       Events.link(this.value, this.domValue);
     },
@@ -1078,19 +1061,14 @@ FOAModel({
       var i = parseInt(v);
       if ( isNaN(i) ) return v;
 
-      if ( Array.isArray(this.choices[i]) ) return this.choices[i][0];
-
-      return v;
+      return this.choices[i][0];
     },
 
     evtToValue: function(e) { return this.indexToValue(e.target.value); }
   },
 
-  listeners:
-  [
+  listeners: [
     {
-      model_: 'Method',
-
       name: 'onMouseOver',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -1100,8 +1078,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'onMouseOut',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
@@ -1113,8 +1089,6 @@ FOAModel({
     },
 
     {
-      model_: 'Method',
-
       name: 'onClick',
       code: function(e) {
         this.prev = this.evtToValue(e);
@@ -1122,7 +1096,6 @@ FOAModel({
       }
     }
   ]
-
 });
 
 
@@ -1179,8 +1152,6 @@ FOAModel({
   listeners:
   [
     {
-      model_: 'Method',
-
       name: 'onClick',
       code: function(evt) {
         console.log('****************', evt, arguments);
@@ -1854,7 +1825,8 @@ var DetailView2 = Model.create({
 
 
 /** A display-only summary view. **/
-var SummaryView = Model.create({
+FOAModel({
+  name: 'SummaryView',
 
   extendsModel: 'AbstractView',
 
@@ -1916,7 +1888,6 @@ var SummaryView = Model.create({
       return this.getValue().get();
     }
   }
-
 });
 
 
@@ -2046,8 +2017,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onEditColumns',
       code: function(evt) {
         var v = EditColumnsView.create({
@@ -2314,16 +2283,12 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onAddColumn',
       code: function(prop) {
         this.properties = this.properties.concat([prop]);
       }
     },
     {
-      model_: 'Method',
-
       name: 'onRemoveColumn',
       code: function(prop) {
         this.properties = this.properties.deleteF(prop);
@@ -2364,7 +2329,7 @@ FOAModel({
 
 
 // TODO: add ability to set CSS class and/or id
-var ActionButton = Model.create({
+FOAModel({
   name: 'ActionButton',
 
   extendsModel: 'AbstractView',
@@ -2386,7 +2351,6 @@ var ActionButton = Model.create({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onValueChange',
       code: function() {
         var value  = this.value.get();
@@ -2395,7 +2359,6 @@ var ActionButton = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'onEnabled',
       code: function(enabled) {
         if ( ! this.$ ) return;
@@ -2437,7 +2400,7 @@ var ActionButton = Model.create({
 });
 
 
-var ActionLink = Model.create({
+FOAModel({
   name: 'ActionLink',
 
   extendsModel: 'ActionButton',
@@ -2920,8 +2883,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'onMouseMove',
       isAnimated: true,
       code: function(evt) {
@@ -2956,7 +2917,6 @@ FOAModel({
       help: 'View factory.'
     }
   ]
-
 });
 
 
@@ -3180,6 +3140,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'MultiLineStringArrayView',
   extendsModel: 'AbstractView',
@@ -3310,7 +3271,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name: 'add',
       label: 'Add',
       action: function() {
@@ -3322,6 +3282,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   extendsModel: 'AbstractView',
@@ -3382,7 +3343,6 @@ FOAModel({
       this.view2.initHTML();
     }
   }
-
 });
 
 
@@ -3605,6 +3565,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'ArrayTileView',
 
@@ -3747,6 +3708,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'ArrayListView',
   extendsModel: 'AbstractView',
@@ -3802,6 +3764,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   name: 'DAOKeyView',
@@ -3869,6 +3832,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   name: 'ListView',
@@ -4090,5 +4054,3 @@ FOAModel({
     }
   ]
 });
-
-

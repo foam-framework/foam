@@ -128,7 +128,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'start',
       help:  'Start the Sync Manager.',
 
@@ -141,7 +140,6 @@ FOAModel({
       action: function() { this.enabled = true; this.sync(); }
     },
     {
-      model_: 'Action',
       name:  'forceSync',
       help:  'Perform a single sync request.',
 
@@ -156,7 +154,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'stop',
       help:  'Stop the timer.',
 
@@ -174,7 +171,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'reset',
       help:  'Reset the Sync Manager to force a re-sync of all data.',
 
@@ -198,7 +194,7 @@ FOAModel({
       this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
         if ( max.max ) self.lastModified = max.max;
         // Postpone starting until we have the lastModified timestamp
-        // self.start();
+        self.start();
       });
     },
 

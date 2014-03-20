@@ -210,7 +210,7 @@ var AbstractPrototype = {
   },
 
   getProperty: function(name) {
-    if ( ! this.propertyMap_ ) {
+    if ( ! this.hasOwnProperty('propertyMap_') ) {
       var m = {};
 
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
@@ -260,7 +260,10 @@ var AbstractPrototype = {
   clone: function() {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
-    for ( var key in this.instance_ ) c[key] = this[key];
+    for ( var key in this.instance_ ) {
+      var value = this[key];
+      c[key] = Array.isArray(value) ? value.clone() : value;
+    }
     return c;
 //    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
   },
@@ -273,15 +276,11 @@ var AbstractPrototype = {
     for ( var key in cln.instance_ ) {
       var val = cln.instance_[key];
 
-      if ( val instanceof Array ) {
-        val = val.slice(0);
-        cln.instance_[key] = val;
-
+      if ( Array.isArray(val) ) {
         for ( var i = 0 ; i < val.length ; i++ ) {
           var obj = val[i];
 
-          if ( obj.deepClone )
-            val[i] = obj.deepClone();
+          obj = obj.deepClone();
         }
       }
     }

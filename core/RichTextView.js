@@ -58,7 +58,6 @@ FOAModel({
   },
   actions: [
     {
-      model_: 'Action',
       name:  'insert',
       label: 'Apply',
       help:  'Insert this link into the document.',
@@ -110,7 +109,6 @@ var LinkView = Model.create({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'keyUp',
       code: function(e) {
         if ( e.keyCode == 27 /* Esc */ ) {
@@ -231,7 +229,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'maybeShowPlaceholder',
       code: function() {
         var e = $(this.placeholderId);
@@ -519,7 +516,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name: 'bold',
       label: '<b>B</b>',
       help: 'Bold (Ctrl-B)',
@@ -529,7 +525,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'italic',
       label: '<i>I</i>',
       help: 'Italic (Ctrl-I)',
@@ -539,7 +534,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'underline',
       label: '<u>U</u>',
       help: 'Underline (Ctrl-U)',
@@ -549,7 +543,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'link',
       label: 'Link',
       help: 'Insert link (Ctrl-K)',
@@ -561,14 +554,12 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'fontSize',
       label: 'Font Size',
       help: 'Change the font size.',
       action: function(){}
     },
     {
-      model_: 'Action',
       name: 'small',
       help: 'Set\'s the font size to small.',
       label: 'small',
@@ -579,7 +570,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'normal',
       help: 'Set\'s the font size to normal.',
       label: 'normal',
@@ -590,7 +580,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'large',
       help: 'Set\'s the font size to small.',
       label: 'large',
@@ -601,7 +590,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'huge',
       help: 'Set\'s the font size to huge.',
       label: 'huge',
@@ -612,13 +600,11 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'fontFace',
       help: 'Set\'s the font face.',
       label: 'Font',
     },
     {
-      model_: 'Action',
       name: 'sansSerif',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -628,7 +614,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'serif',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -638,7 +623,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'wide',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -648,7 +632,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'narrow',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -658,7 +641,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'comicSans',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -668,7 +650,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'courierNew',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -678,7 +659,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'garamond',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -688,7 +668,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'georgia',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -698,7 +677,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'tahoma',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -708,7 +686,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'trebuchet',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -718,7 +695,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'verdana',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
@@ -728,7 +704,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'removeFormatting',
       help: 'Removes formatting from the current selection.',
       action: function() {
@@ -737,12 +712,10 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'justification',
       action: function(){}
     },
     {
-      model_: 'Action',
       name: 'leftJustify',
       parent: 'justification',
       help: 'Align Left (Ctrl-Shift-W)',
@@ -753,7 +726,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'centerJustify',
       parent: 'justification',
       help: 'Align Center (Ctrl-Shift-E)',
@@ -764,7 +736,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'rightJustify',
       parent: 'justification',
       help: 'Align Right (Ctrl-Shift-R)',
@@ -775,7 +746,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'numberedList',
       help: 'Numbered List (Ctrl-Shift-7)',
       // Ctrl-Shift-7
@@ -785,7 +755,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'bulletList',
       help: 'Bulleted List (Ctrl-Shift-7)',
       // Ctrl-Shift-8
@@ -795,7 +764,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'decreaseIndentation',
       help: 'Indent Less (Ctrl-[)',
       // Ctrl-[
@@ -805,7 +773,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'increaseIndentation',
       help: 'Indent More (Ctrl-])',
       // Ctrl-]
@@ -815,7 +782,6 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'blockQuote',
       help: 'Quote (Ctrl-Shift-9)',
       // Ctrl-Shift-9

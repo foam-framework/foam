@@ -34,61 +34,61 @@ Property.getPrototype().compare = function(o1, o2) {
 //  (type-checking is a subset of partial-eval)
 
 FOAModel({
-   name: 'Expr',
+  name: 'Expr',
 
-   package: 'foam.mlang',
+  package: 'foam.mlang',
 
-   methods: {
-     // Mustang Query Language
-     toMQL: function() {
-       return this.toString();
-     },
-     toSQL: function() {
-       return this.toString();
-     },
-     collectInputs: function(terms) {
-       terms.push(this);
-     },
-     partialEval: function() { return this; },
-     minterm: function(index, term) {
-       // True if this bit is set in the minterm number.
-       return !!((term >>> index[0]--) & 1 );
-     },
-     normalize: function() {
-       // Each input term to the expression.
-       var inputs = [];
-       this.collectInputs(inputs);
+  methods: {
+    // Mustang Query Language
+    toMQL: function() {
+      return this.toString();
+    },
+    toSQL: function() {
+      return this.toString();
+    },
+    collectInputs: function(terms) {
+      terms.push(this);
+    },
+    partialEval: function() { return this; },
+    minterm: function(index, term) {
+      // True if this bit is set in the minterm number.
+      return !!((term >>> index[0]--) & 1 );
+    },
+    normalize: function() {
+      // Each input term to the expression.
+      var inputs = [];
+      this.collectInputs(inputs);
 
-       // Truth table for every minterm (combination of inputs).
-       var minterms = new Array(Math.pow(2, inputs.length));
+      // Truth table for every minterm (combination of inputs).
+      var minterms = new Array(Math.pow(2, inputs.length));
 
-       for ( var i = 0; i < minterms.length; i++ ) {
-         minterms[i] = this.minterm([inputs.length - 1], i);
-       }
+      for ( var i = 0; i < minterms.length; i++ ) {
+        minterms[i] = this.minterm([inputs.length - 1], i);
+      }
 
-       // TODO: Calculate prime implicants and reduce to minimal set.
-       var terms = [];
-       for ( i = 0; i < minterms.length; i++ ) {
-         if ( minterms[i] ) {
-           var subterms = [];
-           for ( var j = 0; j < inputs.length; j++ ) {
-             if ( i & (1 << (inputs.length - j - 1))) subterms.push(inputs[j]);
-           }
-           terms.push(AndExpr.create({ args: subterms }));
-         }
-       }
-       return OrExpr.create({ args: terms }).partialEval();
-     },
-     toString: function() { return this.label_; },
-     pipe: function(sink) {
-       var expr = this;
-       return {
-         __proto__: sink,
-         put:    function(obj) { if ( expr.f(obj) ) sink.put(obj);   },
-         remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
-       };
-     }
-   }
+      // TODO: Calculate prime implicants and reduce to minimal set.
+      var terms = [];
+      for ( i = 0; i < minterms.length; i++ ) {
+        if ( minterms[i] ) {
+          var subterms = [];
+          for ( var j = 0; j < inputs.length; j++ ) {
+            if ( i & (1 << (inputs.length - j - 1))) subterms.push(inputs[j]);
+          }
+          terms.push(AndExpr.create({ args: subterms }));
+        }
+      }
+      return OrExpr.create({ args: terms }).partialEval();
+    },
+    toString: function() { return this.label_; },
+    pipe: function(sink) {
+      var expr = this;
+      return {
+        __proto__: sink,
+        put:    function(obj) { if ( expr.f(obj) ) sink.put(obj);   },
+        remove: function(obj) { if ( expr.f(obj) ) sink.remove(obj); }
+      };
+    }
+  }
 });
 
 
@@ -130,741 +130,741 @@ var IDENTITY = (FOAM({
 
 /** An n-ary function. **/
 FOAModel({
-   name: 'NARY',
+  name: 'NARY',
 
-   extendsModel: 'Expr',
-   abstract: true,
+  extendsModel: 'Expr',
+  abstract: true,
 
-   properties: [
-      {
-         name:  'args',
-         label: 'Arguments',
-         type:  'Expr[]',
-         help:  'Sub-expressions',
-         valueFactory: function() { return []; }
+  properties: [
+    {
+      name:  'args',
+      label: 'Arguments',
+      type:  'Expr[]',
+      help:  'Sub-expressions',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    toSQL: function() {
+      var s;
+      s = this.model_.label;
+      s += '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toSQL();
+        if ( i < this.args.length-1 ) out.push(',');
       }
-   ],
-
-   methods: {
-      toSQL: function() {
-         var s;
-         s = this.model_.label;
-         s += '(';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toSQL();
-            if ( i < this.args.length-1 ) out.push(',');
-         }
-         s += ')';
-         return s;
-      },
-      toMQL: function() {
-         var s;
-         s = this.model_.label;
-         s += '(';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toMQL();
-            if ( i < this.args.length-1 ) out.push(',');
-         }
-         s += ')';
-         return str;
+      s += ')';
+      return s;
+    },
+    toMQL: function() {
+      var s;
+      s = this.model_.label;
+      s += '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toMQL();
+        if ( i < this.args.length-1 ) out.push(',');
       }
-   }
+      s += ')';
+      return str;
+    }
+  }
 });
 
 
 /** An unary function. **/
 FOAModel({
-   name: 'UNARY',
+  name: 'UNARY',
 
-   extendsModel: 'Expr',
-   abstract: true,
+  extendsModel: 'Expr',
+  abstract: true,
 
-   properties: [
-      {
-         name:  'arg1',
-         label: 'Argument',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE
-      }
-   ],
+  properties: [
+    {
+      name:  'arg1',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE
+    }
+  ],
 
-   methods: {
-      toSQL: function() {
-         return this.label_ + '(' + this.arg1.toSQL() + ')';
-      },
-      toMQL: function() {
-         return this.label_ + '(' + this.arg1.toMQL() + ')';
-      }
-   }
+  methods: {
+    toSQL: function() {
+      return this.label_ + '(' + this.arg1.toSQL() + ')';
+    },
+    toMQL: function() {
+      return this.label_ + '(' + this.arg1.toMQL() + ')';
+    }
+  }
 });
 
 
 /** An unary function. **/
 FOAModel({
-   name: 'BINARY',
+  name: 'BINARY',
 
-   extendsModel: 'UNARY',
-   abstract: true,
+  extendsModel: 'UNARY',
+  abstract: true,
 
-   properties: [
-      {
-         name:  'arg2',
-         label: 'Argument',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE
-      }
-   ],
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE
+    }
+  ],
 
-   methods: {
-      toSQL: function() {
-         return this.arg1.toSQL() + ' ' + this.label_ + ' ' + this.arg2.toSQL();
-      },
-      toMQL: function() {
-         return this.arg1.toMQL() + ' ' + this.label_ + ' ' + this.arg2.toMQL();
-      }
-   }
+  methods: {
+    toSQL: function() {
+      return this.arg1.toSQL() + ' ' + this.label_ + ' ' + this.arg2.toSQL();
+    },
+    toMQL: function() {
+      return this.arg1.toMQL() + ' ' + this.label_ + ' ' + this.arg2.toMQL();
+    }
+  }
 });
 
 
 FOAModel({
-   name: 'AndExpr',
+  name: 'AndExpr',
 
-   extendsModel: 'NARY',
-   abstract: true,
+  extendsModel: 'NARY',
+  abstract: true,
 
-   methods: {
-      // AND has a higher precedence than OR so doesn't need parenthesis
-      toSQL: function() {
-         var s = '';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toSQL();
-            if ( i < this.args.length-1 ) s += (' AND ');
-         }
-         return s;
-      },
-      toMQL: function() {
-         var s = '';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            var sub = a.toMQL();
-            if ( OrExpr.isInstance(a) ) {
-              sub = '(' + sub + ')';
-            }
-            s += sub;
-            if ( i < this.args.length-1 ) s += (' ');
-         }
-         return s;
-      },
-      collectInputs: function(terms) {
-         for ( var i = 0; i < this.args.length; i++ ) {
-            this.args[i].collectInputs(terms);
-         }
-      },
-      minterm: function(index, term) {
-         var out = true;
-         for ( var i = 0; i < this.args.length; i++ ) {
-            out = this.args[i].minterm(index, term) && out;
-         }
-         return out;
-      },
-
-      partialEval: function() {
-        var newArgs = [];
-        var updated = false;
-
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a    = this.args[i];
-          var newA = this.args[i].partialEval();
-
-          if ( newA === FALSE ) return FALSE;
-
-          if ( AndExpr.isInstance(newA) ) {
-            // In-line nested AND clauses
-            for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA.args[j]);
-            }
-            updated = true;
-          }
-          else {
-            if ( newA === TRUE ) {
-               updated = true;
-            } else {
-               newArgs.push(newA);
-               if ( a !== newA ) updated = true;
-            }
-          }
+  methods: {
+    // AND has a higher precedence than OR so doesn't need parenthesis
+    toSQL: function() {
+      var s = '';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toSQL();
+        if ( i < this.args.length-1 ) s += (' AND ');
+      }
+      return s;
+    },
+    toMQL: function() {
+      var s = '';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        var sub = a.toMQL();
+        if ( OrExpr.isInstance(a) ) {
+          sub = '(' + sub + ')';
         }
-
-        if ( newArgs.length == 0 ) return TRUE;
-        if ( newArgs.length == 1 ) return newArgs[0];
-
-        return updated ? AndExpr.create({args: newArgs}) : this;
-      },
-
-      f: function(obj) {
-        return this.args.every(function(arg) {
-          return arg.f(obj);
-        });
+        s += sub;
+        if ( i < this.args.length-1 ) s += (' ');
       }
-   }
-});
+      return s;
+    },
+    collectInputs: function(terms) {
+      for ( var i = 0; i < this.args.length; i++ ) {
+        this.args[i].collectInputs(terms);
+      }
+    },
+    minterm: function(index, term) {
+      var out = true;
+      for ( var i = 0; i < this.args.length; i++ ) {
+        out = this.args[i].minterm(index, term) && out;
+      }
+      return out;
+    },
 
+    partialEval: function() {
+      var newArgs = [];
+      var updated = false;
 
-FOAModel({
-   name: 'OrExpr',
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a    = this.args[i];
+        var newA = this.args[i].partialEval();
 
-   extendsModel: 'NARY',
-   abstract: true,
+        if ( newA === FALSE ) return FALSE;
 
-   methods: {
-      toSQL: function() {
-         var s;
-         s = '(';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toSQL();
-            if ( i < this.args.length-1 ) s += (' OR ');
-         }
-         s += ')';
-         return s;
-      },
-      toMQL: function() {
-         var s = '';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toMQL();
-            if ( i < this.args.length-1 ) s += (' OR ');
-         }
-         return s;
-      },
-
-      collectInputs: function(terms) {
-         for ( var i = 0; i < this.args.length; i++ ) {
-            this.args[i].collectInputs(terms);
-         }
-      },
-
-      minterm: function(index, term) {
-         var out = false;
-         for ( var i = 0; i < this.args.length; i++ ) {
-            out = this.args[i].minterm(index, term) || out;
-         }
-         return out;
-      },
-
-      partialEval: function() {
-        var newArgs = [];
-        var updated = false;
-
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a    = this.args[i];
-          var newA = this.args[i].partialEval();
-
-          if ( newA === TRUE ) return TRUE;
-
-          if ( OrExpr.isInstance(newA) ) {
-            // In-line nested OR clauses
-            for ( var j = 0 ; j < newA.args.length ; j++ ) {
-              newArgs.push(newA.args[j]);
-            }
-            updated = true;
+        if ( AndExpr.isInstance(newA) ) {
+          // In-line nested AND clauses
+          for ( var j = 0 ; j < newA.args.length ; j++ ) {
+            newArgs.push(newA.args[j]);
           }
-          else {
-            if ( newA !== FALSE ) {
-              newArgs.push(newA);
-            }
+          updated = true;
+        }
+        else {
+          if ( newA === TRUE ) {
+            updated = true;
+          } else {
+            newArgs.push(newA);
             if ( a !== newA ) updated = true;
           }
         }
+      }
 
-        if ( newArgs.length == 0 ) return FALSE;
-        if ( newArgs.length == 1 ) return newArgs[0];
+      if ( newArgs.length == 0 ) return TRUE;
+      if ( newArgs.length == 1 ) return newArgs[0];
 
-        return updated ? OrExpr.create({args: newArgs}) : this;
-      },
+      return updated ? AndExpr.create({args: newArgs}) : this;
+    },
 
-      f: function(obj) {
-        return this.args.some(function(arg) {
-          return arg.f(obj);
+    f: function(obj) {
+      return this.args.every(function(arg) {
+        return arg.f(obj);
+      });
+    }
+  }
+});
+
+
+FOAModel({
+  name: 'OrExpr',
+
+  extendsModel: 'NARY',
+  abstract: true,
+
+  methods: {
+    toSQL: function() {
+      var s;
+      s = '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toSQL();
+        if ( i < this.args.length-1 ) s += (' OR ');
+      }
+      s += ')';
+      return s;
+    },
+    toMQL: function() {
+      var s = '';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toMQL();
+        if ( i < this.args.length-1 ) s += (' OR ');
+      }
+      return s;
+    },
+
+    collectInputs: function(terms) {
+      for ( var i = 0; i < this.args.length; i++ ) {
+        this.args[i].collectInputs(terms);
+      }
+    },
+
+    minterm: function(index, term) {
+      var out = false;
+      for ( var i = 0; i < this.args.length; i++ ) {
+        out = this.args[i].minterm(index, term) || out;
+      }
+      return out;
+    },
+
+    partialEval: function() {
+      var newArgs = [];
+      var updated = false;
+
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a    = this.args[i];
+        var newA = this.args[i].partialEval();
+
+        if ( newA === TRUE ) return TRUE;
+
+        if ( OrExpr.isInstance(newA) ) {
+          // In-line nested OR clauses
+          for ( var j = 0 ; j < newA.args.length ; j++ ) {
+            newArgs.push(newA.args[j]);
+          }
+          updated = true;
+        }
+        else {
+          if ( newA !== FALSE ) {
+            newArgs.push(newA);
+          }
+          if ( a !== newA ) updated = true;
+        }
+      }
+
+      if ( newArgs.length == 0 ) return FALSE;
+      if ( newArgs.length == 1 ) return newArgs[0];
+
+      return updated ? OrExpr.create({args: newArgs}) : this;
+    },
+
+    f: function(obj) {
+      return this.args.some(function(arg) {
+        return arg.f(obj);
+      });
+    }
+  }
+});
+
+
+FOAModel({
+  name: 'NotExpr',
+
+  extendsModel: 'UNARY',
+  abstract: true,
+
+  methods: {
+    toSQL: function() {
+      return 'not ( ' + this.arg1.toSQL() + ' )';
+    },
+    toMQL: function() {
+      return '-( ' + this.arg1.toMQL() + ' )';
+    },
+    collectInputs: function(terms) {
+      this.arg1.collectInputs(terms);
+    },
+
+    minterm: function(index, term) {
+      return ! this.arg1.minterm(index, term);
+    },
+
+    partialEval: function() {
+      var newArg = this.arg1.partialEval();
+
+      if ( newArg === TRUE ) return FALSE;
+      if ( newArg === FALSE ) return TRUE;
+      if ( NotExpr.isInstance(newArg) ) return newArg.arg1;
+      if ( EqExpr.isInstance(newArg)  ) return NeqExpr.create(newArg);
+      if ( NeqExpr.isInstance(newArg) ) return EqExpr.create(newArg);
+      if ( LtExpr.isInstance(newArg)  ) return GteExpr.create(newArg);
+      if ( GtExpr.isInstance(newArg)  ) return LteExpr.create(newArg);
+      if ( LteExpr.isInstance(newArg) ) return GtExpr.create(newArg);
+      if ( GteExpr.isInstance(newArg) ) return LtExpr.create(newArg);
+
+      return this.arg1 === newArg ? this : NOT(newArg);
+    },
+
+    f: function(obj) { return ! this.arg1.f(obj); }
+  }
+});
+
+
+FOAModel({
+  name: 'DescribeExpr',
+
+  extendsModel: 'UNARY',
+
+  properties: [
+    {
+      name:  'plan',
+      help:  'Execution Plan',
+      defaultValue: ""
+    }
+  ],
+
+  methods: {
+    toString: function() { return this.plan; },
+    toSQL: function() { return this.arg1.toSQL(); },
+    toMQL: function() { return this.arg1.toMQL(); },
+    partialEval: function() {
+      var newArg = this.arg1.partialEval();
+
+      return this.arg1 === newArg ? this : EXPLAIN(newArg);
+    },
+    f: function(obj) { return this.arg1.f(obj); }
+  }
+});
+
+
+FOAModel({
+  name: 'EqExpr',
+
+  extendsModel: 'BINARY',
+  abstract: true,
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
+    toMQL: function() {
+      return this.arg2 === TRUE ?
+        'is:' + this.arg1.toMQL() :
+        this.arg1.toMQL() + '=' + this.arg2.toMQL();
+    },
+
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() == newArg2.f());
+      }
+
+      return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
+        EqExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
+
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
+
+      if ( Array.isArray(arg1) ) {
+        return arg1.some(function(arg) {
+          return arg == arg2;
         });
       }
-   }
+
+      if ( arg2 === TRUE ) return !! arg1;
+      if ( arg2 === FALSE ) return ! arg1;
+
+      return arg1 == arg2;
+    }
+  }
 });
 
-
 FOAModel({
-   name: 'NotExpr',
+  name: 'InExpr',
 
-   extendsModel: 'UNARY',
-   abstract: true,
+  extendsModel: 'BINARY',
 
-   methods: {
-      toSQL: function() {
-         return 'not ( ' + this.arg1.toSQL() + ' )';
-      },
-      toMQL: function() {
-         return '-( ' + this.arg1.toMQL() + ' )';
-      },
-      collectInputs: function(terms) {
-        this.arg1.collectInputs(terms);
-      },
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      postSet: function() { this.valueSet_ = undefined; }
+    }
+  ],
 
-      minterm: function(index, term) {
-         return ! this.arg1.minterm(index, term);
-      },
-
-      partialEval: function() {
-        var newArg = this.arg1.partialEval();
-
-        if ( newArg === TRUE ) return FALSE;
-        if ( newArg === FALSE ) return TRUE;
-        if ( NotExpr.isInstance(newArg) ) return newArg.arg1;
-        if ( EqExpr.isInstance(newArg)  ) return NeqExpr.create(newArg);
-        if ( NeqExpr.isInstance(newArg) ) return EqExpr.create(newArg);
-        if ( LtExpr.isInstance(newArg)  ) return GteExpr.create(newArg);
-        if ( GtExpr.isInstance(newArg)  ) return LteExpr.create(newArg);
-        if ( LteExpr.isInstance(newArg) ) return GtExpr.create(newArg);
-        if ( GteExpr.isInstance(newArg) ) return LtExpr.create(newArg);
-
-        return this.arg1 === newArg ? this : NOT(newArg);
-      },
-
-      f: function(obj) { return ! this.arg1.f(obj); }
-   }
-});
-
-
-FOAModel({
-   name: 'DescribeExpr',
-
-   extendsModel: 'UNARY',
-
-   properties: [
-      {
-         name:  'plan',
-         help:  'Execution Plan',
-         defaultValue: ""
+  methods: {
+    valueSet: function() {
+      if ( ! this.valueSet_ ) {
+        var s = {};
+        for ( var i = 0 ; i < this.arg2.length ; i++ ) s[this.arg2[i]] = true;
+        this.valueSet_ = s;
       }
-   ],
+      return this.valueSet_;
+    },
+    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
+    toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.join(',') },
 
-   methods: {
-      toString: function() { return this.plan; },
-      toSQL: function() { return this.arg1.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL(); },
-      partialEval: function() {
-        var newArg = this.arg1.partialEval();
-
-        return this.arg1 === newArg ? this : EXPLAIN(newArg);
-      },
-      f: function(obj) { return this.arg1.f(obj); }
-   }
+    f: function(obj) {
+      return this.valueSet().hasOwnProperty(this.arg1.f(obj));
+    }
+  }
 });
 
-
 FOAModel({
-   name: 'EqExpr',
+  name: 'ContainsExpr',
 
-   extendsModel: 'BINARY',
-   abstract: true,
+  extendsModel: 'BINARY',
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
-      toMQL: function() {
-        return this.arg2 === TRUE ?
-          'is:' + this.arg1.toMQL() :
-          this.arg1.toMQL() + '=' + this.arg2.toMQL();
-      },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() == newArg2.f());
-        }
-
-        return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
-          EqExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
-
-      f: function(obj) {
-        var arg1 = this.arg1.f(obj);
-        var arg2 = this.arg2.f(obj);
-
-        if ( Array.isArray(arg1) ) {
-          return arg1.some(function(arg) {
-            return arg == arg2;
-          });
-        }
-
-        if ( arg2 === TRUE ) return !! arg1;
-        if ( arg2 === FALSE ) return ! arg1;
-
-        return arg1 == arg2;
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f().indexOf(newArg2.f()) != -1);
       }
-   }
-});
 
-FOAModel({
-   name: 'InExpr',
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        ContainsExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-   extendsModel: 'BINARY',
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
 
-   properties: [
-      {
-         name:  'arg2',
-         label: 'Argument',
-         type:  'Expr',
-         help:  'Sub-expression',
-         postSet: function() { this.valueSet_ = undefined; }
+      if ( Array.isArray(arg1) ) {
+        return arg1.some(function(arg) {
+          return arg.indexOf(arg2) != -1;
+        });
       }
-   ],
 
-   methods: {
-      valueSet: function() {
-        if ( ! this.valueSet_ ) {
-            var s = {};
-            for ( var i = 0 ; i < this.arg2.length ; i++ ) s[this.arg2[i]] = true;
-            this.valueSet_ = s;
-        }
-        return this.valueSet_;
-      },
-      toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
-      toMQL: function() { return this.arg1.toMQL() + '=' + this.arg2.join(',') },
+      return arg1.indexOf(arg2) != -1;
+    }
+  }
+});
 
-      f: function(obj) {
-        return this.valueSet().hasOwnProperty(this.arg1.f(obj));
+
+FOAModel({
+  name: 'ContainsICExpr',
+
+  extendsModel: 'BINARY',
+
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE,
+      postSet: function(_, value) {
+        // Escape Regex escape characters
+        this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
       }
-   }
-});
+    }
+  ],
 
-FOAModel({
-   name: 'ContainsExpr',
+  methods: {
+    // No different that the non IC-case
+    toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
 
-   extendsModel: 'BINARY',
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
-      toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
-
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
-
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f().indexOf(newArg2.f()) != -1);
-        }
-
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          ContainsExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
-
-      f: function(obj) {
-        var arg1 = this.arg1.f(obj);
-        var arg2 = this.arg2.f(obj);
-
-        if ( Array.isArray(arg1) ) {
-          return arg1.some(function(arg) {
-            return arg.indexOf(arg2) != -1;
-          });
-        }
-
-        return arg1.indexOf(arg2) != -1;
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f().toLowerCase().indexOf(newArg2.f()) != -1);
       }
-   }
-});
 
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        ContainsICExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-FOAModel({
-   name: 'ContainsICExpr',
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
 
-   extendsModel: 'BINARY',
+      if ( Array.isArray(arg1) ) {
+        var pattern = this.pattern_;
 
-   properties: [
-      {
-         name:  'arg2',
-         label: 'Argument',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE,
-         postSet: function(_, value) {
-           // Escape Regex escape characters
-           this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-         }
+        return arg1.some(function(arg) {
+          return pattern.test(arg);
+        });
       }
-   ],
 
-   methods: {
-      // No different that the non IC-case
-      toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
-      toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.toMQL(); },
+      return this.pattern_.test(arg1);
+    }
+  }
+});
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f().toLowerCase().indexOf(newArg2.f()) != -1);
-        }
+FOAModel({
+  name: 'NeqExpr',
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          ContainsICExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
+  extendsModel: 'BINARY',
+  abstract: true,
 
-      f: function(obj) {
-        var arg1 = this.arg1.f(obj);
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
+    toMQL: function() { return '-' + this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
 
-        if ( Array.isArray(arg1) ) {
-          var pattern = this.pattern_;
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-          return arg1.some(function(arg) {
-            return pattern.test(arg);
-          });
-        }
-
-        return this.pattern_.test(arg1);
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() != newArg2.f());
       }
-   }
-});
 
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-FOAModel({
-   name: 'NeqExpr',
-
-   extendsModel: 'BINARY',
-   abstract: true,
-
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '<>' + this.arg2.toSQL(); },
-      toMQL: function() { return '-' + this.arg1.toMQL() + '=' + this.arg2.toMQL(); },
-
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
-
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() != newArg2.f());
-        }
-
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
-
-      f: function(obj) { return this.arg1.f(obj) != this.arg2.f(obj); }
-   }
+    f: function(obj) { return this.arg1.f(obj) != this.arg2.f(obj); }
+  }
 });
 
 FOAModel({
-   name: 'LtExpr',
+  name: 'LtExpr',
 
-   extendsModel: 'BINARY',
-   abstract: true,
+  extendsModel: 'BINARY',
+  abstract: true,
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '<' + this.arg2.toSQL(); },
+    toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() < newArg2.f());
-        }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() < newArg2.f());
+      }
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          LtExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        LtExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-      f: function(obj) { return this.arg1.f(obj) < this.arg2.f(obj); }
-   }
+    f: function(obj) { return this.arg1.f(obj) < this.arg2.f(obj); }
+  }
 });
 
 FOAModel({
-   name: 'GtExpr',
+  name: 'GtExpr',
 
-   extendsModel: 'BINARY',
-   abstract: true,
+  extendsModel: 'BINARY',
+  abstract: true,
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '>' + this.arg2.toSQL(); },
+    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() > newArg2.f());
-        }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() > newArg2.f());
+      }
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          GtExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        GtExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-      f: function(obj) { return this.arg1.f(obj) > this.arg2.f(obj); }
-   }
+    f: function(obj) { return this.arg1.f(obj) > this.arg2.f(obj); }
+  }
 });
 
 FOAModel({
-   name: 'LteExpr',
+  name: 'LteExpr',
 
-   extendsModel: 'BINARY',
-   abstract: true,
+  extendsModel: 'BINARY',
+  abstract: true,
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '<=' + this.arg2.toSQL(); },
+    toMQL: function() { return this.arg1.toMQL() + '-before:' + this.arg2.toMQL(); },
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() <= newArg2.f());
-        }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() <= newArg2.f());
+      }
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          LtExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        LtExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-      f: function(obj) { return this.arg1.f(obj) <= this.arg2.f(obj); }
-   }
+    f: function(obj) { return this.arg1.f(obj) <= this.arg2.f(obj); }
+  }
 });
 
 FOAModel({
-   name: 'GteExpr',
+  name: 'GteExpr',
 
-   extendsModel: 'BINARY',
-   abstract: true,
+  extendsModel: 'BINARY',
+  abstract: true,
 
-   methods: {
-      toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
-      toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + '>=' + this.arg2.toSQL(); },
+    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
 
-      partialEval: function() {
-        var newArg1 = this.arg1.partialEval();
-        var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-        if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-          return compile_(newArg1.f() >= newArg2.f());
-        }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f() >= newArg2.f());
+      }
 
-        return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-          GtExpr.create({arg1: newArg1, arg2: newArg2}) :
-          this;
-      },
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        GtExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
 
-      f: function(obj) { return this.arg1.f(obj) >= this.arg2.f(obj); }
-   }
+    f: function(obj) { return this.arg1.f(obj) >= this.arg2.f(obj); }
+  }
 });
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
 FOAModel({
-   name: 'StartsWithExpr',
+  name: 'StartsWithExpr',
 
-   extendsModel: 'BINARY',
+  extendsModel: 'BINARY',
 
-   methods: {
-     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
-     // TODO: Does MQL support this operation?
-     toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
+    // TODO: Does MQL support this operation?
+    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
 
-     partialEval: function() {
-       var newArg1 = this.arg1.partialEval();
-       var newArg2 = this.arg2.partialEval();
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
 
-       if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-         return compile_(newArg1.f().startsWith(newArg2.f()));
-       }
-
-       return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
-         StartsWithExpr.create({arg1: newArg1, arg2: newArg2}) :
-         this;
-     },
-
-     f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
-   }
-});
-
-
-FOAModel({
-   name: 'ConstantExpr',
-
-   extendsModel: 'UNARY',
-
-   methods: {
-      escapeSQLString: function(str) {
-         return "'" +
-            str.replace(/\\/g, "\\\\").replace(/'/g, "\\'") +
-            "'";
-      },
-      escapeMQLString: function(str) {
-         if ( str.length > 0 && str.indexOf(' ') == -1 && str.indexOf('"') == -1 && str.indexOf(',') == -1 ) return str;
-         return '"' +
-            str.replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
-            '"';
-      },
-      toSQL: function() {
-         return ( typeof this.arg1 === 'string' ) ?
-            this.escapeSQLString(this.arg1) :
-            this.arg1.toString() ;
-      },
-      toMQL: function() {
-         return ( typeof this.arg1 === 'string' ) ?
-            this.escapeMQLString(this.arg1) :
-            (this.arg1.toMQL ? this.arg1.toMQL() :
-             this.arg1.toString());
-      },
-      f: function(obj) { return this.arg1; }
-   }
-});
-
-
-FOAModel({
-   name: 'ConcatExpr',
-   extendsModel: 'NARY',
-
-   label: 'concat',
-
-   methods: {
-
-      partialEval: function() {
-        // TODO: implement
-        return this;
-      },
-
-      f: function(obj) {
-        var str = [];
-
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          str.push(this.args[i].f(obj));
-        }
-
-        return str.join('');
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f().startsWith(newArg2.f()));
       }
-   }
+
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        StartsWithExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
+
+    f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
+  }
+});
+
+
+FOAModel({
+  name: 'ConstantExpr',
+
+  extendsModel: 'UNARY',
+
+  methods: {
+    escapeSQLString: function(str) {
+      return "'" +
+        str.replace(/\\/g, "\\\\").replace(/'/g, "\\'") +
+        "'";
+    },
+    escapeMQLString: function(str) {
+      if ( str.length > 0 && str.indexOf(' ') == -1 && str.indexOf('"') == -1 && str.indexOf(',') == -1 ) return str;
+      return '"' +
+        str.replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
+        '"';
+    },
+    toSQL: function() {
+      return ( typeof this.arg1 === 'string' ) ?
+        this.escapeSQLString(this.arg1) :
+        this.arg1.toString() ;
+    },
+    toMQL: function() {
+      return ( typeof this.arg1 === 'string' ) ?
+        this.escapeMQLString(this.arg1) :
+        (this.arg1.toMQL ? this.arg1.toMQL() :
+         this.arg1.toString());
+    },
+    f: function(obj) { return this.arg1; }
+  }
+});
+
+
+FOAModel({
+  name: 'ConcatExpr',
+  extendsModel: 'NARY',
+
+  label: 'concat',
+
+  methods: {
+
+    partialEval: function() {
+      // TODO: implement
+      return this;
+    },
+
+    f: function(obj) {
+      var str = [];
+
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        str.push(this.args[i].f(obj));
+      }
+
+      return str.join('');
+    }
+  }
 });
 
 
 function compile_(a) {
   return /*Expr.isInstance(a) || Property.isInstance(a)*/ a.f ? a :
-      a === true  ? TRUE        :
-      a === false ? FALSE       :
-      ConstantExpr.create({arg1:a});
+    a === true  ? TRUE        :
+    a === false ? FALSE       :
+    ConstantExpr.create({arg1:a});
 }
 
 function compileArray_(args) {
@@ -881,294 +881,294 @@ function compileArray_(args) {
 
 
 FOAModel({
-   name: 'SumExpr',
+  name: 'SumExpr',
 
-   extendsModel: 'UNARY',
+  extendsModel: 'UNARY',
 
-   properties: [
-      {
-         name:  'sum',
-         type:  'int',
-         help:  'Sum of values.',
-         valueFactory: function() { return 0; }
-      }
-   ],
+  properties: [
+    {
+      name:  'sum',
+      type:  'int',
+      help:  'Sum of values.',
+      valueFactory: function() { return 0; }
+    }
+  ],
 
-   methods: {
-     pipe: function(sink) { sink.put(this); },
-     put: function(obj) { this.instance_.sum += this.arg1.f(obj); },
-     remove: function(obj) { this.sum -= this.arg1.f(obj); },
-     toString: function() { return this.sum; }
-   }
+  methods: {
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) { this.instance_.sum += this.arg1.f(obj); },
+    remove: function(obj) { this.sum -= this.arg1.f(obj); },
+    toString: function() { return this.sum; }
+  }
 });
 
 
 FOAModel({
-   name: 'AvgExpr',
+  name: 'AvgExpr',
 
-   extendsModel: 'UNARY',
+  extendsModel: 'UNARY',
 
-   properties: [
-      {
-         name:  'count',
-         type:  'int',
-         defaultValue: 0
-      },
-      {
-         name:  'sum',
-         type:  'int',
-         help:  'Sum of values.',
-         defaultValue: 0
-      },
-      {
-         name:  'avg',
-         type:  'floag',
-         help:  'Average of values.',
-         getter: function() { return this.sum / this.count; }
-      }
-   ],
+  properties: [
+    {
+      name:  'count',
+      type:  'int',
+      defaultValue: 0
+    },
+    {
+      name:  'sum',
+      type:  'int',
+      help:  'Sum of values.',
+      defaultValue: 0
+    },
+    {
+      name:  'avg',
+      type:  'floag',
+      help:  'Average of values.',
+      getter: function() { return this.sum / this.count; }
+    }
+  ],
 
-   methods: {
-     pipe: function(sink) { sink.put(this); },
-     put: function(obj) { this.count++; this.sum += this.arg1.f(obj); },
-     remove: function(obj) { this.count--; this.sum -= this.arg1.f(obj); },
-     toString: function() { return this.avg; }
-   }
+  methods: {
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) { this.count++; this.sum += this.arg1.f(obj); },
+    remove: function(obj) { this.count--; this.sum -= this.arg1.f(obj); },
+    toString: function() { return this.avg; }
+  }
 });
 
 
 FOAModel({
-   name: 'MaxExpr',
+  name: 'MaxExpr',
 
-   extendsModel: 'UNARY',
+  extendsModel: 'UNARY',
 
-   properties: [
-      {
-         name:  'max',
-         type:  'int',
-         help:  'Maximum value.',
-         defaultValue: undefined
-      }
-   ],
+  properties: [
+    {
+      name:  'max',
+      type:  'int',
+      help:  'Maximum value.',
+      defaultValue: undefined
+    }
+  ],
 
-   methods: {
-     reduce: function(other) {
-       return MaxExpr.create({max: Math.max(this.max, other.max)});
-     },
-     reduceI: function(other) {
-       this.max = Math.max(this.max, other.max);
-     },
-     pipe: function(sink) { sink.put(this); },
-     put: function(obj) {
-       var v = this.arg1.f(obj);
-       this.max = this.max === undefined ? v : Math.max(this.max, v);
-     },
-     remove: function(obj) { },
-     toString: function() { return this.max; }
-   }
+  methods: {
+    reduce: function(other) {
+      return MaxExpr.create({max: Math.max(this.max, other.max)});
+    },
+    reduceI: function(other) {
+      this.max = Math.max(this.max, other.max);
+    },
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) {
+      var v = this.arg1.f(obj);
+      this.max = this.max === undefined ? v : Math.max(this.max, v);
+    },
+    remove: function(obj) { },
+    toString: function() { return this.max; }
+  }
 });
 
 
 FOAModel({
-   name: 'MinExpr',
+  name: 'MinExpr',
 
-   extendsModel: 'UNARY',
+  extendsModel: 'UNARY',
 
-   properties: [
-      {
-         name:  'min',
-         type:  'int',
-         help:  'Minimum value.',
-         defaultValue: undefined
-      }
-   ],
+  properties: [
+    {
+      name:  'min',
+      type:  'int',
+      help:  'Minimum value.',
+      defaultValue: undefined
+    }
+  ],
 
-   methods: {
-     reduce: function(other) {
-       return MinExpr.create({max: Math.min(this.min, other.min)});
-     },
-     reduceI: function(other) {
-       this.min = Math.min(this.min, other.min);
-     },
-     pipe: function(sink) { sink.put(this); },
-     put: function(obj) {
-       var v = this.arg1.f(obj);
-       this.min = this.min === undefined ? v : Math.min(this.min, v);
-     },
-     remove: function(obj) { },
-     toString: function() { return this.min; }
-   }
+  methods: {
+    reduce: function(other) {
+      return MinExpr.create({max: Math.min(this.min, other.min)});
+    },
+    reduceI: function(other) {
+      this.min = Math.min(this.min, other.min);
+    },
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) {
+      var v = this.arg1.f(obj);
+      this.min = this.min === undefined ? v : Math.min(this.min, v);
+    },
+    remove: function(obj) { },
+    toString: function() { return this.min; }
+  }
 });
 
 
 FOAModel({
-   name: 'DistinctExpr',
+  name: 'DistinctExpr',
 
-   extendsModel: 'BINARY',
+  extendsModel: 'BINARY',
 
-   properties: [
-      {
-         name:  'values',
-         help:  'Distinct values.',
-         valueFactory: function() { return {}; }
-      }
-   ],
+  properties: [
+    {
+      name:  'values',
+      help:  'Distinct values.',
+      valueFactory: function() { return {}; }
+    }
+  ],
 
-   methods: {
-     reduce: function(other) {
-       // TODO:
-     },
-     reduceI: function(other) {
-       // TODO:
-     },
-     put: function(obj) {
-       var key = this.arg1.f(obj);
-       if ( this.values.hasOwnProperty(key) ) return;
-       this.values[key] = true;
-       this.arg2.put(obj);
-     },
-     remove: function(obj) { /* TODO: */ },
-     toString: function() { return this.arg2.toString(); },
-     toHTML: function() { return this.arg2.toHTML(); }
-   }
+  methods: {
+    reduce: function(other) {
+      // TODO:
+    },
+    reduceI: function(other) {
+      // TODO:
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
+      if ( this.values.hasOwnProperty(key) ) return;
+      this.values[key] = true;
+      this.arg2.put(obj);
+    },
+    remove: function(obj) { /* TODO: */ },
+    toString: function() { return this.arg2.toString(); },
+    toHTML: function() { return this.arg2.toHTML(); }
+  }
 });
 
 
 FOAModel({
-   name: 'GroupByExpr',
+  name: 'GroupByExpr',
 
-   extendsModel: 'BINARY',
+  extendsModel: 'BINARY',
 
-   properties: [
-      {
-         name:  'groups',
-         type:  'Map[Expr]',
-         help:  'Groups.',
-         valueFactory: function() { return {}; }
+  properties: [
+    {
+      name:  'groups',
+      type:  'Map[Expr]',
+      help:  'Groups.',
+      valueFactory: function() { return {}; }
+    }
+  ],
+
+  methods: {
+    reduce: function(other) {
+      // TODO:
+    },
+    reduceI: function(other) {
+      for ( var i in other.groups ) {
+        if ( this.groups[i] ) this.groups[i].reduceI(other.groups[i]);
+        else this.groups[i] = other.groups[i].deepClone();
       }
-   ],
+    },
+    pipe: function(sink) {
+      for ( key in this.groups ) {
+        sink.push([key, this.groups[key].toString()]);
+      }
+      return sink;
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
+      if ( Array.isArray(key) ) {
+        for ( var i = 0 ; i < key.length ; i++ ) {
+          var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
+          if ( ! group ) {
+            group = this.arg2.clone();
+            this.groups[key[i]] = group;
+          }
+          group.put(obj);
+        }
+      } else {
+        var group = this.groups.hasOwnProperty(key) && this.groups[key];
+        if ( ! group ) {
+          group = this.arg2.clone();
 
-   methods: {
-     reduce: function(other) {
-       // TODO:
-     },
-     reduceI: function(other) {
-       for ( var i in other.groups ) {
-         if ( this.groups[i] ) this.groups[i].reduceI(other.groups[i]);
-         else this.groups[i] = other.groups[i].deepClone();
-       }
-     },
-     pipe: function(sink) {
-       for ( key in this.groups ) {
-         sink.push([key, this.groups[key].toString()]);
-       }
-       return sink;
-     },
-     put: function(obj) {
-       var key = this.arg1.f(obj);
-       if ( Array.isArray(key) ) {
-         for ( var i = 0 ; i < key.length ; i++ ) {
-           var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
-           if ( ! group ) {
-             group = this.arg2.clone();
-             this.groups[key[i]] = group;
-           }
-           group.put(obj);
-         }
-       } else {
-         var group = this.groups.hasOwnProperty(key) && this.groups[key];
-         if ( ! group ) {
-           group = this.arg2.clone();
+          this.groups[key] = group;
+        }
+        group.put(obj);
+      }
+    },
+    clone: function() {
+      // Don't use default clone because we don't want to copy 'groups'
+      return GroupByExpr.create({arg1: this.arg1, arg2: this.arg2});
+    },
+    remove: function(obj) { /* TODO: */ },
+    toString: function() { return this.groups; },
+    deepClone: function() {
+      var cl = this.clone();
+      cl.groups = {};
+      for ( var i in this.groups ) {
+        cl.groups[i] = this.groups[i].deepClone();
+      }
+      return cl;
+    },
+    toHTML: function() {
+      var out = [];
 
-           this.groups[key] = group;
-         }
-         group.put(obj);
-       }
-     },
-     clone: function() {
-       // Don't use default clone because we don't want to copy 'groups'
-       return GroupByExpr.create({arg1: this.arg1, arg2: this.arg2});
-     },
-     remove: function(obj) { /* TODO: */ },
-     toString: function() { return this.groups; },
-     deepClone: function() {
-       var cl = this.clone();
-       cl.groups = {};
-       for ( var i in this.groups ) {
-         cl.groups[i] = this.groups[i].deepClone();
-       }
-       return cl;
-     },
-     toHTML: function() {
-       var out = [];
+      out.push('<table border=1>');
+      for ( var key in this.groups ) {
+        var value = this.groups[key];
+        var str = value.toHTML ? value.toHTML() : value;
+        out.push('<tr><th>', key, '</th><td>', str, '</td></tr>');
+      }
+      out.push('</table>');
 
-       out.push('<table border=1>');
-       for ( var key in this.groups ) {
-         var value = this.groups[key];
-         var str = value.toHTML ? value.toHTML() : value;
-         out.push('<tr><th>', key, '</th><td>', str, '</td></tr>');
-       }
-       out.push('</table>');
-
-       return out.join('');
-     },
-     initHTML: function() {
-       for ( var key in this.groups ) {
-         var value = this.groups[key];
-         value.initHTML && value.initHTML();
-       }
-     }
-   }
+      return out.join('');
+    },
+    initHTML: function() {
+      for ( var key in this.groups ) {
+        var value = this.groups[key];
+        value.initHTML && value.initHTML();
+      }
+    }
+  }
 });
 
 
 FOAModel({
-   name: 'GridByExpr',
+  name: 'GridByExpr',
 
-   extendsModel: 'Expr',
+  extendsModel: 'Expr',
 
-   properties: [
-      {
-         name:  'xFunc',
-         label: 'X-Axis Function',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE
-      },
-      {
-         name:  'yFunc',
-         label: 'Y-Axis Function',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE
-      },
-      {
-         name:  'acc',
-         label: 'Accumulator',
-         type:  'Expr',
-         help:  'Sub-expression',
-         defaultValue: TRUE
-      },
-      {
-         name:  'rows',
-         type:  'Map[Expr]',
-         help:  'Rows.',
-         valueFactory: function() { return {}; }
-      },
-      {
-         name:  'cols',
-         label: 'Columns',
-         type:  'Map[Expr]',
-         help:  'Columns.',
-         valueFactory: function() { return {}; }
-      },
-      {
-        model_: 'ArrayProperty',
-        name: 'children'
-      }
-   ],
+  properties: [
+    {
+      name:  'xFunc',
+      label: 'X-Axis Function',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE
+    },
+    {
+      name:  'yFunc',
+      label: 'Y-Axis Function',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE
+    },
+    {
+      name:  'acc',
+      label: 'Accumulator',
+      type:  'Expr',
+      help:  'Sub-expression',
+      defaultValue: TRUE
+    },
+    {
+      name:  'rows',
+      type:  'Map[Expr]',
+      help:  'Rows.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      name:  'cols',
+      label: 'Columns',
+      type:  'Map[Expr]',
+      help:  'Columns.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'children'
+    }
+  ],
 
-   methods: {
+  methods: {
     init: function() {
       this.SUPER();
 
@@ -1182,262 +1182,262 @@ FOAModel({
       self.addPropertyListener('yFunc', f);
       self.addPropertyListener('acc', f);
       f();
-/*
-      Events.dynamic(
+      /*
+        Events.dynamic(
         function() { self.xFunc; self.yFunc; self.acc; },
         function() {
-          self.cols = GROUP_BY(self.xFunc, COUNT());
-          self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
+        self.cols = GROUP_BY(self.xFunc, COUNT());
+        self.rows = GROUP_BY(self.yFunc, GROUP_BY(self.xFunc, self.acc));
         });
-*/
+      */
     },
 
-     reduce: function(other) {
-     },
-     reduceI: function(other) {
-     },
-     pipe: function(sink) {
-     },
-     put: function(obj) {
-       this.rows.put(obj);
-       this.cols.put(obj);
-     },
-     clone: function() {
-       // Don't use default clone because we don't want to copy 'groups'
-       return this.model_.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
-     },
-     remove: function(obj) { /* TODO: */ },
-     toString: function() { return this.groups; },
-     deepClone: function() {
-     },
-     renderCell: function(x, y, value) {
-       var str = value ? (value.toHTML ? value.toHTML() : value) : '';
-       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
-       return '<td>' + str + '</td>';
-     },
-     toHTML: function() {
-       var out;
-       this.children = [];
-       var cols = this.cols.groups;
-       var rows = this.rows.groups;
-       var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
-       var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
+    reduce: function(other) {
+    },
+    reduceI: function(other) {
+    },
+    pipe: function(sink) {
+    },
+    put: function(obj) {
+      this.rows.put(obj);
+      this.cols.put(obj);
+    },
+    clone: function() {
+      // Don't use default clone because we don't want to copy 'groups'
+      return this.model_.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
+    },
+    remove: function(obj) { /* TODO: */ },
+    toString: function() { return this.groups; },
+    deepClone: function() {
+    },
+    renderCell: function(x, y, value) {
+      var str = value ? (value.toHTML ? value.toHTML() : value) : '';
+      if ( value && value.toHTML && value.initHTML ) this.children.push(value);
+      return '<td>' + str + '</td>';
+    },
+    toHTML: function() {
+      var out;
+      this.children = [];
+      var cols = this.cols.groups;
+      var rows = this.rows.groups;
+      var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
+      var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
 
-       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
+      out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
-       for ( var i = 0 ; i < sortedCols.length ; i++ ) {
-         var x = sortedCols[i];
-         var str = x.toHTML ? x.toHTML() : x;
-         out += '<th>' + str + '</th>';
-       }
-       out += '</tr>';
-
-       for ( var j = 0 ; j < sortedRows.length ; j++ ) {
-         var y = sortedRows[j];
-         out += '<tr><th>' + y + '</th>';
-
-         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
-           var x = sortedCols[i];
-           var value = rows[y].groups[x];
-           out += this.renderCell(x, y, value);
-         }
-
-         out += '</tr>';
-       }
-       out += '</table>';
-
-       return out;
-     },
-
-     initHTML: function() {
-       for ( var i = 0; i < this.children.length; i++ ) {
-         this.children[i].initHTML();
-       }
-       this.children = [];
-     }
-   }
-});
-
-
-FOAModel({
-   name: 'MapExpr',
-
-   extendsModel: 'BINARY',
-
-   methods: {
-     reduce: function(other) {
-       // TODO:
-     },
-     reduceI: function(other) {
-     },
-     pipe: function(sink) {
-     },
-     put: function(obj) {
-       var val = this.arg1.f(obj);
-       var acc = this.arg2;
-       acc.put(val);
-     },
-     clone: function() {
-       // Don't use default clone because we don't want to copy 'groups'
-       return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
-     },
-     remove: function(obj) { /* TODO: */ },
-     toString: function() { return this.arg2.toString(); },
-     deepClone: function() {
-     },
-     toHTML: function() {
-       return this.arg2.toHTML ? this.arg2.toHTML() : this.toString();
-     },
-     initHTML: function() {
-       this.arg2.initHTML && this.arg2.initHTML();
-     }
-   }
-});
-
-
-FOAModel({
-   name: 'CountExpr',
-
-   extendsModel: 'Expr',
-
-   properties: [
-      {
-         name:  'count',
-         type:  'int',
-         defaultValue: 0
+      for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+        var x = sortedCols[i];
+        var str = x.toHTML ? x.toHTML() : x;
+        out += '<th>' + str + '</th>';
       }
-   ],
+      out += '</tr>';
 
-   methods: {
-     reduce: function(other) {
-       return CountExpr.create({count: this.count + other.count});
-     },
-     reduceI: function(other) {
-       this.count = this.count + other.count;
-     },
-     pipe: function(sink) { sink.put(this); },
-     put: function(obj) { this.count++; },
-     remove: function(obj) { this.count--; },
-     toString: function() { return this.count; }
-   }
+      for ( var j = 0 ; j < sortedRows.length ; j++ ) {
+        var y = sortedRows[j];
+        out += '<tr><th>' + y + '</th>';
+
+        for ( var i = 0 ; i < sortedCols.length ; i++ ) {
+          var x = sortedCols[i];
+          var value = rows[y].groups[x];
+          out += this.renderCell(x, y, value);
+        }
+
+        out += '</tr>';
+      }
+      out += '</table>';
+
+      return out;
+    },
+
+    initHTML: function() {
+      for ( var i = 0; i < this.children.length; i++ ) {
+        this.children[i].initHTML();
+      }
+      this.children = [];
+    }
+  }
 });
 
 
 FOAModel({
-   name: 'SeqExpr',
+  name: 'MapExpr',
 
-   extendsModel: 'NARY',
+  extendsModel: 'BINARY',
 
-   methods: {
-      pipe: function(sink) { sink.put(this); },
-      put: function(obj) {
-        var ret = [];
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
-          a.put(obj);
-        }
-      },
-      f: function(obj) {
-        var ret = [];
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
+  methods: {
+    reduce: function(other) {
+      // TODO:
+    },
+    reduceI: function(other) {
+    },
+    pipe: function(sink) {
+    },
+    put: function(obj) {
+      var val = this.arg1.f(obj);
+      var acc = this.arg2;
+      acc.put(val);
+    },
+    clone: function() {
+      // Don't use default clone because we don't want to copy 'groups'
+      return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
+    },
+    remove: function(obj) { /* TODO: */ },
+    toString: function() { return this.arg2.toString(); },
+    deepClone: function() {
+    },
+    toHTML: function() {
+      return this.arg2.toHTML ? this.arg2.toHTML() : this.toString();
+    },
+    initHTML: function() {
+      this.arg2.initHTML && this.arg2.initHTML();
+    }
+  }
+});
 
-          ret.push(a.f(obj));
-        }
-        return ret;
-      },
-      clone: function() {
-        return SeqExpr.create({args:this.args.clone()});
-      },
-      toString: function(obj) {
-        var out = [];
-        out.push('(');
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
-          out.push(a.toString());
-          if ( i < this.args.length-1 ) out.push(',');
-        }
-        out.push(')');
-        return out.join('');
-      },
-      toHTML: function(obj) {
-        var out = [];
-        for ( var i = 0 ; i < this.args.length ; i++ ) {
-          var a = this.args[i];
-          out.push(a.toHTML ? a.toHTML() : a.toString());
-          if ( i < this.args.length-1 ) out.push('&nbsp;');
-        }
-        return out.join('');
+
+FOAModel({
+  name: 'CountExpr',
+
+  extendsModel: 'Expr',
+
+  properties: [
+    {
+      name:  'count',
+      type:  'int',
+      defaultValue: 0
+    }
+  ],
+
+  methods: {
+    reduce: function(other) {
+      return CountExpr.create({count: this.count + other.count});
+    },
+    reduceI: function(other) {
+      this.count = this.count + other.count;
+    },
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) { this.count++; },
+    remove: function(obj) { this.count--; },
+    toString: function() { return this.count; }
+  }
+});
+
+
+FOAModel({
+  name: 'SeqExpr',
+
+  extendsModel: 'NARY',
+
+  methods: {
+    pipe: function(sink) { sink.put(this); },
+    put: function(obj) {
+      var ret = [];
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        a.put(obj);
       }
-   }
+    },
+    f: function(obj) {
+      var ret = [];
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+
+        ret.push(a.f(obj));
+      }
+      return ret;
+    },
+    clone: function() {
+      return SeqExpr.create({args:this.args.clone()});
+    },
+    toString: function(obj) {
+      var out = [];
+      out.push('(');
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        out.push(a.toString());
+        if ( i < this.args.length-1 ) out.push(',');
+      }
+      out.push(')');
+      return out.join('');
+    },
+    toHTML: function(obj) {
+      var out = [];
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        out.push(a.toHTML ? a.toHTML() : a.toString());
+        if ( i < this.args.length-1 ) out.push('&nbsp;');
+      }
+      return out.join('');
+    }
+  }
 });
 
 FOAModel({
-    name: 'UpdateExpr',
-    extendsModel: 'NARY',
+  name: 'UpdateExpr',
+  extendsModel: 'NARY',
 
-    label: 'UpdateExpr',
+  label: 'UpdateExpr',
 
-    properties: [
-      {
-        name: 'dao',
-        type: 'DAO',
-        transient: true,
-        hidden: true
+  properties: [
+    {
+      name: 'dao',
+      type: 'DAO',
+      transient: true,
+      hidden: true
+    }
+  ],
+
+  methods: {
+    put: function(obj) {
+      var newObj = this.f(obj);
+      if (newObj.id !== obj.id) this.dao.remove(obj.id);
+      this.dao.put(newObj);
+    },
+    f: function(obj) {
+      var newObj = obj.clone();
+      for (var i = 0; i < this.args.length; i++) {
+        this.args[i].f(newObj);
       }
-    ],
+      return newObj;
+    },
+    reduce: function(other) {
+      return UpdateExpr.create({
+        args: this.args.concat(other.args),
+        dao: this.dao
+      });
+    },
+    reduceI: function(other) {
+      this.args = this.args.concat(other.args);
+    },
+    toString: function() {
+      return this.toSQL();
+    },
+    toSQL: function() {
+      var s = 'SET ';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toSQL();
+        if ( i < this.args.length-1 ) s += ', ';
+      }
+      return s;
+    }
+  }
+});
 
-    methods: {
-      put: function(obj) {
-        var newObj = this.f(obj);
-        if (newObj.id !== obj.id) this.dao.remove(obj.id);
-        this.dao.put(newObj);
-      },
-      f: function(obj) {
-        var newObj = obj.clone();
-        for (var i = 0; i < this.args.length; i++) {
-          this.args[i].f(newObj);
-        }
-        return newObj;
-      },
-      reduce: function(other) {
-        return UpdateExpr.create({
-          args: this.args.concat(other.args),
-          dao: this.dao
-        });
-      },
-      reduceI: function(other) {
-        this.args = this.args.concat(other.args);
-      },
-      toString: function() {
-        return this.toSQL();
-      },
-      toSQL: function() {
-         var s = 'SET ';
-         for ( var i = 0 ; i < this.args.length ; i++ ) {
-            var a = this.args[i];
-            s += a.toSQL();
-            if ( i < this.args.length-1 ) s += ', ';
-         }
-         return s;
+FOAModel({
+  name: 'SetExpr',
+  label: 'SetExpr',
+
+  extendsModel: 'BINARY',
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + ' = ' + this.arg2.toSQL(); },
+    f: function(obj) {
+      if (Property.isInstance(this.arg1) && ConstantExpr.isInstance(this.arg2)) {
+        obj[this.arg1.name] = this.arg2.f();
       }
     }
-});
-
-FOAModel({
-    name: 'SetExpr',
-    label: 'SetExpr',
-
-    extendsModel: 'BINARY',
-
-    methods: {
-      toSQL: function() { return this.arg1.toSQL() + ' = ' + this.arg2.toSQL(); },
-      f: function(obj) {
-        if (Property.isInstance(this.arg1) && ConstantExpr.isInstance(this.arg2)) {
-          obj[this.arg1.name] = this.arg2.f();
-        }
-      }
-    }
+  }
 });
 
 function SUM(expr) {
@@ -1461,14 +1461,14 @@ function COUNT() {
 }
 
 function SEQ() {
-//  return SeqExpr.create({args: compileArray_.call(null, arguments)});
+  //  return SeqExpr.create({args: compileArray_.call(null, arguments)});
   return SeqExpr.create({args: argsToArray(arguments)});
 }
 
 function UPDATE(expr, dao) {
   return UpdateExpr.create({
-      args: compileArray_.call(null, Array.prototype.slice.call(arguments, 0, -1)),
-      dao: arguments[arguments.length - 1]
+    args: compileArray_.call(null, Array.prototype.slice.call(arguments, 0, -1)),
+    dao: arguments[arguments.length - 1]
   });
 }
 
@@ -1517,7 +1517,7 @@ function EQ(arg1, arg2) {
   eq.instance_.arg1 = compile_(arg1);
   eq.instance_.arg2 = compile_(arg2);
   return eq;
-//  return EqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+  //  return EqExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
 
 // TODO: add EQ_ic
@@ -1560,93 +1560,93 @@ function CONCAT() {
 
 
 FOAModel({
-   name: 'ExpandableGroupByExpr',
+  name: 'ExpandableGroupByExpr',
 
-   extendsModel: 'BINARY',
+  extendsModel: 'BINARY',
 
-   properties: [
-      {
-         name:  'groups',
-         type:  'Map[Expr]',
-         help:  'Groups.',
-         valueFactory: function() { return {}; }
-      },
-      {
-         name:  'expanded',
-         type:  'Map',
-         help:  'Expanded.',
-         valueFactory: function() { return {}; }
-      },
-      {
-         name:  'values',
-         type:  'Object',
-         help:  'Values',
-         valueFactory: function() { return []; }
+  properties: [
+    {
+      name:  'groups',
+      type:  'Map[Expr]',
+      help:  'Groups.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      name:  'expanded',
+      type:  'Map',
+      help:  'Expanded.',
+      valueFactory: function() { return {}; }
+    },
+    {
+      name:  'values',
+      type:  'Object',
+      help:  'Values',
+      valueFactory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    reduce: function(other) {
+      // TODO:
+    },
+    reduceI: function(other) {
+      // TODO:
+    },
+    /*
+      pipe: function(sink) {
+      for ( key in this.groups ) {
+      sink.push([key, this.groups[key].toString()]);
       }
-   ],
+      return sink;
+      },*/
+    select: function(sink, options) {
+      var self = this;
+      this.values.select({put:function(o) {
+        sink.put(o);
+        var key = self.arg1.f(o);
+        var a = o.children;
+        if ( a ) for ( var i = 0 ; i < a.length ; i++ ) sink.put(a[i]);
+      }}, options);
+      return aconstant(sink);
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
 
-   methods: {
-     reduce: function(other) {
-       // TODO:
-     },
-     reduceI: function(other) {
-       // TODO:
-     },
-     /*
-     pipe: function(sink) {
-       for ( key in this.groups ) {
-         sink.push([key, this.groups[key].toString()]);
-       }
-       return sink;
-     },*/
-     select: function(sink, options) {
-       var self = this;
-       this.values.select({put:function(o) {
-         sink.put(o);
-         var key = self.arg1.f(o);
-         var a = o.children;
-         if ( a ) for ( var i = 0 ; i < a.length ; i++ ) sink.put(a[i]);
-       }}, options);
-       return aconstant(sink);
-     },
-     put: function(obj) {
-       var key = this.arg1.f(obj);
+      var group = this.groups.hasOwnProperty(key) && this.groups[key];
 
-       var group = this.groups.hasOwnProperty(key) && this.groups[key];
+      if ( ! group ) {
+        group = obj.clone();
+        if ( this.expanded[key] ) group.children = [];
+        this.groups[key] = group;
+        group.count = 1;
+        this.values.push(group);
+      } else {
+        group.count++;
+      }
 
-       if ( ! group ) {
-         group = obj.clone();
-         if ( this.expanded[key] ) group.children = [];
-         this.groups[key] = group;
-         group.count = 1;
-         this.values.push(group);
-       } else {
-         group.count++;
-       }
+      if ( group.children ) group.children.push(obj);
+    },
+    where: function(query) {
+      return filteredDAO(query, this);
+    },
+    limit: function(count) {
+      return limitedDAO(count, this);
+    },
+    skip: function(skip) {
+      return skipDAO(skip, this);
+    },
 
-       if ( group.children ) group.children.push(obj);
-     },
-  where: function(query) {
-    return filteredDAO(query, this);
-  },
-  limit: function(count) {
-    return limitedDAO(count, this);
-  },
-  skip: function(skip) {
-    return skipDAO(skip, this);
-  },
-
-  orderBy: function() {
-    return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
-  },
-  listen: function() {},
-  unlisten: function() {},
-     remove: function(obj) { /* TODO: */ },
-     toString: function() { return this.groups; },
-     deepClone: function() {
-       return this;
-     }
-   }
+    orderBy: function() {
+      return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
+    },
+    listen: function() {},
+    unlisten: function() {},
+    remove: function(obj) { /* TODO: */ },
+    toString: function() { return this.groups; },
+    deepClone: function() {
+      return this;
+    }
+  }
 });
 
 FOAModel({

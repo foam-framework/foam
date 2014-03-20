@@ -237,13 +237,22 @@ FOAModel({
 
       return this.required ?
         function() {
-          if ( arguments[i] === undefined   ) debugger;
-          if ( typeof arguments[i] !== type ) debugger;
+          if ( arguments[i] === undefined ) {
+            console.assert(false, 'Missing required argument# ' + i);
+            debugger;
+          }
+          if ( typeof arguments[i] !== type ) {
+            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
+            debugger;
+          }
 
           return f.apply(this, arguments);
         } :
         function() {
-          if ( arguments[i] !== undefined && typeof arguments[i] !== type ) debugger;
+          if ( arguments[i] !== undefined && typeof arguments[i] !== type ) {
+            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
+            debugger;
+          }
 
           return f.apply(this, arguments);
         } ;
@@ -408,7 +417,10 @@ Method.getPrototype().decorateFunction = function(f) {
     function() {
       var ret = f.apply(this, arguments);
 
-      if ( typeof ret !== returnType ) debugger;
+      if ( typeof ret !== returnType ) {
+        console.assert(false, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
+        debugger;
+      }
 
       return ret;
     } : f ;

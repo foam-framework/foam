@@ -329,9 +329,9 @@ var CachingDAO = {
   create: function(cache, source) {
     var futureDelegate = afuture();
 
-//    console.time('CachingDAO-' + source.model.name);
+    //    console.time('CachingDAO-' + source.model.name);
     source.select(cache)(function() {
-//      console.timeEnd('CachingDAO-' + source.model.name);
+      //      console.timeEnd('CachingDAO-' + source.model.name);
       source.listen(cache);
       futureDelegate.set(cache);
     });
@@ -596,8 +596,8 @@ FOAModel({
 
     orderBy: function() {
       return orderedDAO(arguments.length == 1 ?
-          arguments[0] :
-          argsToArray(arguments), this);
+                        arguments[0] :
+                        argsToArray(arguments), this);
     },
 
     unlisten: function(sink) {
@@ -942,9 +942,12 @@ defineProperties(Array.prototype, {
     return a;
   },
   clone: function() {
+    return this.slice(0);
+  },
+  deepClone: function() {
     var a = this.slice(0);
     for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( a[i].clone ) a[i] = a[i].clone();
+      a[i] = a[i].deepClone();
     }
     return a;
   },
@@ -987,7 +990,7 @@ defineProperties(Array.prototype, {
   remove: function(query, sink) {
     var id = query.id ? query.id : query;
     this.removeAll({ remove: sink && sink.remove },
-       { query: { f: function(obj) { return obj.id === id; } } });
+                   { query: { f: function(obj) { return obj.id === id; } } });
   },
   removeAll: function(sink, options) {
     if (!options) options = {};
@@ -1268,7 +1271,7 @@ FOAModel({
 
     removeAll: function(sink, options) {
       var query = (options && options.query && options.query.partialEval()) ||
-          { f: function() { return true; } };
+        { f: function() { return true; } };
 
       var future = afuture();
       var self = this;
@@ -1343,8 +1346,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'updated',
       code: function(evt) {
         console.log('updated: ', evt);
@@ -1420,8 +1421,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
-
       name: 'updated',
       code: function(evt) {
         console.log('updated: ', evt);
@@ -1847,7 +1846,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onMessage',
       help: 'Callback for message events from the delegate.',
       code: function(e) {
@@ -1909,7 +1907,6 @@ FOAModel({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onMessage',
       code: function(e) {
         // This is a nightmare of a function, clean it up.
@@ -2691,10 +2688,10 @@ FOAModel({
       this.cache
         .orderBy(DESC(this.LRUCacheItem.TIMESTAMP))
         .skip(this.maxSize).select({
-        put: function(obj) {
-          self.cache.remove(obj);
-        }
-      });
+          put: function(obj) {
+            self.cache.remove(obj);
+          }
+        });
     }
   }
 });
@@ -2893,23 +2890,23 @@ FOAModel({
 
 
 FOAModel({
-    name: 'NullDAO',
-    help: 'A DAO that stores nothing and does nothing.',
-    methods: {
-        put: function(obj, sink) { sink && sink.put && sink.put(obj); },
-        remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
-        select: function(sink) {
-            sink && sink.eof && sink.eof();
-            return aconstant(sink);
-        },
-        find: function(q, sink) { sink && sink.error && sink.error('find', q); },
-        listen: function() {},
-        removeAll: function() {},
-        unlisten: function() {},
-        pipe: function() {},
-        where: function() { return this; },
-        limit: function() { return this; },
-    }
+  name: 'NullDAO',
+  help: 'A DAO that stores nothing and does nothing.',
+  methods: {
+    put: function(obj, sink) { sink && sink.put && sink.put(obj); },
+    remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
+    select: function(sink) {
+      sink && sink.eof && sink.eof();
+      return aconstant(sink);
+    },
+    find: function(q, sink) { sink && sink.error && sink.error('find', q); },
+    listen: function() {},
+    removeAll: function() {},
+    unlisten: function() {},
+    pipe: function() {},
+    where: function() { return this; },
+    limit: function() { return this; },
+  }
 });
 
 

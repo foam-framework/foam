@@ -267,7 +267,6 @@ var QuickCompose = FOAM({
 
    actions: [
      {
-       model_: 'Action',
        name:  'send',
        help:  'Send (Ctrl-Enter)',
 
@@ -285,7 +284,6 @@ var QuickCompose = FOAM({
        }
      },
      {
-       model_: 'Action',
        name:  'discard',
        label: '',
        iconUrl: '/images/trash.svg',
@@ -303,7 +301,6 @@ var QuickCompose = FOAM({
        }
      },
      {
-       model_: 'Action',
        name:  'close',
        label: '',
        iconUrl: 'images/window_control_icon_flat_close.png',
@@ -314,7 +311,6 @@ var QuickCompose = FOAM({
        }
      },
      {
-       model_: 'Action',
        name:  'minimize',
        label: '',
        iconUrl: 'images/window_control_icon_flat_minimize.png',

@@ -401,18 +401,14 @@ var QIssueSplitDAO = FOAM({
          if ( options.limit ) bufOptions.limit = options.limit;
        }
 
-       if ( CountExpr.isInstance(sink) ) {
-         // if ( this.buf ) return this.buf.select(sink, bufOptions);
-
-         return this.local.select(sink, options);
-       }
-
        var query = ( options && options.query && options.query.toSQL() ) || "";
        var order = ( options && options.order && options.order.toSQL() ) || "";
 
        var future = afuture();
 
        if ( this.buf && query === this.activeQuery ) {
+         if ( CountExpr.isInstance(sink) ) return this.buf.select(sink, bufOptions);
+
          if ( order && order !== this.activeOrder ) {
            this.activeOrder = order;
 
@@ -429,6 +425,8 @@ var QIssueSplitDAO = FOAM({
            return this.buf.select(sink, bufOptions);
          }
        } else {
+         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
+
          this.activeQuery = query;
          this.activeOrder = order;
          this.newQuery(sink, options, query, order, bufOptions, future);

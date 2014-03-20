@@ -53,9 +53,9 @@ var JSONUtil = {
     return this.mapToObj(this.parseToMap(str));
   },
 
-  arrayToObjArray: function(a) {
+  arrayToObjArray: function(a, opt_defaultModel) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(a[i]);
+      a[i] = this.mapToObj(a[i], opt_defaultModel);
     }
     return a;
   },
@@ -67,7 +67,7 @@ var JSONUtil = {
   mapToObj: function(obj, opt_defaultModel) {
     if ( ! obj || typeof obj.model_ === 'object' ) return obj;
 
-    if ( obj instanceof Array ) return this.arrayToObjArray(obj);
+    if ( Array.isArray(obj) ) return this.arrayToObjArray(obj);
 
     if ( obj instanceof Function ) return obj;
 
@@ -109,7 +109,7 @@ var JSONUtil = {
     },
 
     output: function(out, obj) {
-      if ( obj instanceof Array) {
+      if ( Array.isArray(obj) ) {
         this.outputArray_(out, obj);
       }
       else if ( typeof obj === 'string' ) {
@@ -223,7 +223,7 @@ var JSONUtil = {
     output: function(out, obj, opt_indent) {
       var indent = opt_indent || "";
 
-      if ( obj instanceof Array) {
+      if ( Array.isArray(obj) ) {
         this.outputArray_(out, obj, indent);
       }
       else if ( typeof obj == 'string' ) {

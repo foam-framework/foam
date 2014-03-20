@@ -134,7 +134,7 @@ var Browser = Model.create({
       valueFactory: function() {
         return TextFieldView.create({
           name: 'count',
-          className: 'crbugCount',
+          className: 'qbugCount',
           mode: 'read-only',
           displayWidth: 40
         });
@@ -212,7 +212,6 @@ var Browser = Model.create({
 
   listeners: [
     {
-      model_: 'Method',
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function(evt) {
@@ -221,7 +220,6 @@ var Browser = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
@@ -236,7 +234,6 @@ var Browser = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'performQuery',
       isAnimated: true,
       code: function(evt) {
@@ -249,7 +246,6 @@ var Browser = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'keyPress',
       code: function(e) {
         if ( e.ctrlKey && e.shiftKey ) {
@@ -259,7 +255,6 @@ var Browser = Model.create({
       }
     },
     {
-      model_: 'Method',
       name: 'onLocationUpdate',
       isAnimated: true,
       code: function(evt) {
