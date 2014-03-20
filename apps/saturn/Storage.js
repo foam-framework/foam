@@ -199,10 +199,40 @@ if (chrome.app.runtime) {
 
 
 var ContactDAO = CachingDAO.create(
-   MDAO.create({model: Contact}),
-   IDBDAO.create({model: Contact})
+  MDAO.create({model: Contact}).addIndex(Contact.EMAIL).addIndex(Contact.FIRST).addIndex(Contact.LAST),
+  IDBDAO.create({model: Contact})
 );
 
-var ContactAvatarDAO = NullDAO.create({});
+var ContactAvatarDAO = LRUCachingDAO.create({
+  maxSize: 50,
+  delegate: FutureDAO.create(aseq(asleep(200), function(ret) {
+    ret(LazyCacheDAO.create({
+      cache: IDBDAO.create({ model: Contact, name: 'ContactAvatars2' }),
+      delegate: ContactAvatarNetworkDAO.create({
+        xhrFactory: OAuthXhrFactory.create({
+          authAgent: authAgent,
+          responseType: "blob"
+        })
+      })
+    }));
+  }))
+});
 
-if ( this.InstallEMailDriver ) InstallEMailDriver(function(){}, EMail, window, true, true, true, true);
+ContactAvatarDAO = PropertyOffloadDAO.create({
+  property: Contact.AVATAR,
+  model: Contact,
+  offloadDAO: ContactAvatarDAO,
+  delegate: ContactDAO,
+  loadOnSelect: true
+});
+
+aseq(asleep(1000), function() {
+  ContactDAO.select(COUNT())(function(c) {
+    if ( c.count === 0 ) {
+      console.log('Importing contacts...');
+      importContacts(ContactDAO, xhrFactory);
+    }
+  });
+})();
+
+if ( this.InstallEMailDriver ) InstallEMailDriver(function(){}, EMail, window, true, true, true, true, true);

@@ -217,6 +217,10 @@ body > input[name="to"] {
   background-color: #f5f5f5;
 }
 
+.recipientRow {
+  width: 100%;
+}
+
 .recipientRow th {
   color: #999;
   padding: 6px;

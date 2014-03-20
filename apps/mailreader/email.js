@@ -670,10 +670,12 @@ var EMail = FOAM({
                put: function(o) { ret(o); }
              });
            })(function(opened, unread) {
-             mail = mail.clone();
-             mail.removeLabel(unread.id);
-             mail.addLabel(opened.id);
-             EMailDAO.put(mail);
+             if ( mail.hasLabel(unread.id) ) {
+               mail = mail.clone();
+               mail.removeLabel(unread.id);
+               mail.addLabel(opened.id);
+               EMailDAO.put(mail);
+             }
            });
        }
      }
