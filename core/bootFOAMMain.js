@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-for ( var i = 0 ; i < files.length ; i++ ) {
-   console.log('loading: ', files[i]);
-   document.writeln('<script language="javascript" src="' + (FOAM_BOOT_DIR || "") + files[i] + '.js"></script>\n');
-}
+(function() {
+  for ( var i = 0 ; i < files.length ; i++ ) {
+    console.log('loading: ', files[i]);
+    document.writeln('<script language="javascript" src="' + (FOAM_BOOT_DIR || "") + files[i] + '.js"></script>\n');
+  }
+})();

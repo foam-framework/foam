@@ -60,10 +60,10 @@ var EMailPreferences = CachingDAO.create(
 var EMailIDBDAO     = IDBDAO.create({model: EMail});
 var EMailBodyIDBDAO = IDBDAO.create({model: EMail, name: 'EMailBodies'});
 
-var EMailMDAO = MDAO.create({model: EMail});
-//   .addIndex(EMail.TIMESTAMP);
+var EMailMDAO = MDAO.create({model: EMail})
+   .addIndex(EMail.TIMESTAMP)
 //   .addIndex(EMail.SUBJECT);
-// .addIndex(EMail.CONV_ID);
+  .addIndex(EMail.CONV_ID);
 // .addIndex(EMail.TO);
 // .addIndex(EMail.LABELS);
 // .addIndex(EMail.FROM);
@@ -167,6 +167,7 @@ var ConversationDAO = EMailThreadingDAO.create({
   emailDao: EMailDAO,
   model: Conversation
 });
+ConversationDAO.threadDao.addIndex(Conversation.TIMESTAMP);
 
 var timer = Timer.create({});
 

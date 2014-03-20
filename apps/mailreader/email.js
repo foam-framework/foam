@@ -306,7 +306,7 @@ var EMail = FOAM({
          required: true,
          displayWidth: 50,
          hidden: true,
-         compareProperty: varintStringCompare
+         compareProperty: hexStringCompare
       },
       {
          model_: 'StringProperty',
