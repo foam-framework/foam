@@ -402,7 +402,7 @@ var Browser = Model.create({
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.value.value =
-            this.selectedIssueCount.toLocaleString() + ' of ' + this.issueCount.toLocaleString() + ' selected';
+            this.selectedIssueCount.toLocaleString() + ' selected of ' + this.issueCount.toLocaleString();
         }.bind(this));
 
       this.location.q$.addListener(this.performQuery);
