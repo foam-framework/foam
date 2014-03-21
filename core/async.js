@@ -435,3 +435,15 @@ function futurefn(future) {
     });
   };
 }
+
+
+/** Decorate a Sink to turn on the Hourglass cursor while processing. **/
+function waitingSink(element, f) {
+  return function(s) {
+    DOM.setClass(element, 'waiting');
+    setTimeout(function() {
+      f(s);
+      DOM.setClass(element, 'waiting', false);
+    }, 0);
+  }
+}
