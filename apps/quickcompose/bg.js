@@ -8,7 +8,7 @@ var HEIGHT = 478;
 var req = amemo(ametric('init', aseq(
     function(ret) {
       if (self.InstallEMailDriver)
-        self.InstallEMailDriver(ret, QuickEMail, self, false, false, true, false);
+        self.InstallEMailDriver(ret, QuickEMail, self, false, false, true, false, false);
       else ret();
     },
     ametric('requires', aseq(          // should this be 'apar' instead?

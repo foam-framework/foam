@@ -32,7 +32,10 @@ Number.prototype.toVarintString = function() {
   return result;
 };
 
-var varintStringCompare = (function() {
+// Compares two hexidecimal numbers represented as
+// strings.  Compares them based upon their numerical
+// value.
+var hexStringCompare = (function() {
   var TABLE = "0123456789abcdef";
 
   return function(a, b) {
