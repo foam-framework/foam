@@ -158,7 +158,7 @@ var Location = FOAM({
     },
 
     fromURL: function(browser, params) {
-      return this.fromMemento(browser, decodeURIComponent(params));
+      return this.fromMemento(browser, decodeURIComponent(params).replace(/\+/g, ' '));
     },
 
     toMemento: function(browser, opt_methodName) {
