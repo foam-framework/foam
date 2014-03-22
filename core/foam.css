@@ -710,3 +710,11 @@ div.gridViewControl select {
 .rigid {
   flex: none;
 }
+
+.waiting * {
+  cursor: wait;
+  /* Without setting some other style attribute, the cursor doesn't show.
+     This seems like a bug.
+   */
+  x-unused: white;
+}

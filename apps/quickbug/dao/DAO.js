@@ -353,9 +353,6 @@ var QIssueSplitDAO = FOAM({
      },
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
-       if ( (query && query !== this.activeQuery) ||
-            (order && order !== this.activeOrder) ) return;
-
        var buf = this.buf = MDAO.create({ model: this.model });
        var auto = AutoIndex.create(buf);
 
@@ -436,74 +433,3 @@ var QIssueSplitDAO = FOAM({
      }
    }
 });
-
-
-/*
-  Merge DAO update events.  Merged into QIssueSplitDAO.
-var MergedNotifyDAO = FOAM({
-  model_: 'Model',
-
-  name: 'MergedNotifyDAO',
-
-  help: 'A DAO decorator which removes update notification.',
-
-  extendsModel: 'ProxyDAO',
-
-  methods: {
-    init: function() {
-      this.relay_ =  {
-        put:    EventService.merged(function() { this.notify_('put', arguments);    }.bind(this), 1000),
-        remove: EventService.merged(function() { this.notify_('remove', arguments); }.bind(this), 1000)
-      };
-
-      this.delegate.listen(this.relay_);
-    }
-  }
-});
-*/
-
-
-var WaitCursorDAO = FOAM({
-  model_: 'Model',
-  name: 'WaitCursorDAO',
-  extendsModel: 'ProxyDAO',
-
-  properties: [
-    {
-      name: 'count',
-      defaultValue: 0,
-      postSet: function(oldValue, newValue) {
-        if ( ! this.window ) return;
-        if ( oldValue == 0 ) DOM.setClass(this.window.document.body, 'waiting');
-        else if ( newValue == 0 ) DOM.setClass(this.window.document.body, 'waiting', false);
-      }
-    },
-    {
-      name: 'window'
-    }
-  ],
-
-  methods: {
-    select: function(sink, options) {
-      var self = this;
-      var future = afuture();
-
-      this.count++;
-
-      var f = function() {
-        self.delegate.select(sink, options)(function(sink) {
-          self.count--;
-          // ???: Do we need to call this asynchronously if count == 0?
-          future.set(sink);
-        });
-      };
-
-      // Need to delay when turning on hourglass to give DOM a chance to update
-      if ( this.count > 1 ) { f(); } else { this.window.setTimeout(f, 0); };
-
-      return future.get;
-    }
-  }
-});
-
-
