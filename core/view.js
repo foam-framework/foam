@@ -1144,7 +1144,6 @@ FOAModel({
 
     initHTML: function() {
       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
-
       //       this.updateHTML();
     }
   },
@@ -1192,9 +1191,7 @@ FOAModel({
   methods: {
     initHTML: function() {
       var e = this.$;
-
       this.domValue = DomValue.create(e);
-
       Events.link(this.value, this.domValue);
     },
 
@@ -1306,10 +1303,12 @@ FOAModel({
     toHTML: function() {
       var id = this.getID();
       this.on('click', this.onClick, id);
-      return '<img id="' + id + '" name="' + this.name + '" src="' + this.image() + '">';
+//      return '<img id="' + id + '" name="' + this.name + '" src="' + this.image() + '">';
+      return '<img id="' + id + '" name="' + this.name + '">';
     },
     initHTML: function() {
       this.registerCallbacks();
+      this.$.src = this.image();
     },
     // deprecated: remove
     getValue: function() { return this.value; },
@@ -2794,9 +2793,12 @@ FOAModel({
           self.$.innerHTML = html;
           console.timeEnd('setInnerHTML');
 
-          console.time('initHTML');
-          g.initHTML();
-          console.time('initHTML');
+          // Perform asynchronously so that it doesn't delay the displaying of the grid
+          setTimeout(function() {
+            console.time('initHTML');
+            g.initHTML();
+            console.timeEnd('initHTML');
+          }, 800);
         } else {
           var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
@@ -2833,6 +2835,7 @@ FOAModel({
   },
 
   templates:[
+    /*
     {
       model_: 'Template',
 
@@ -2843,6 +2846,7 @@ FOAModel({
         '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     },
+    */
     {
       model_: 'Template',
 
