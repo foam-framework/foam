@@ -210,7 +210,9 @@ var AbstractPrototype = {
   },
 
   getProperty: function(name) {
-    if ( ! this.hasOwnProperty('propertyMap_') ) {
+    // NOTE: propertyMap_ is invalidated in a few places
+    // when properties[] is updated.
+    if ( ! this.class_.propertyMap_ ) {
       var m = {};
 
       for ( var i = 0 ; i < this.properties.length ; i++ ) {
@@ -218,10 +220,10 @@ var AbstractPrototype = {
         m[prop.name] = prop;
       }
 
-      this.propertyMap_ = m;
+      this.class_.propertyMap_ = m;
     }
 
-    return this.propertyMap_[name];
+    return this.class_.propertyMap_[name];
   },
 
   hashCode: function() {

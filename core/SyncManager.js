@@ -194,7 +194,7 @@ FOAModel({
       this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
         if ( max.max ) self.lastModified = max.max;
         // Postpone starting until we have the lastModified timestamp
-        self.start();
+        // self.start();
       });
     },
 

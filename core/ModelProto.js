@@ -87,6 +87,7 @@ var ModelProto = {
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
     var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
     cls.instance_ = {};
+    cls.class_    = {};
     cls.model_    = this;
     cls.name_     = this.name;
     cls.TYPE      = this.name + "Prototype";
@@ -123,6 +124,8 @@ var ModelProto = {
         }
         cls.defineProperty(p);
       }
+      // Do this to invalidate the propertyMap_ cache
+      this.properties = this.properties;
     }
 
     // Copy parent Model's Property Contants to this Model.
@@ -230,6 +233,7 @@ var ModelProto = {
         var p = extendsModel.properties[i];
         if ( ! ( this.getProperty && this.getProperty(p.name) ) ) this.properties.unshift(p);
       }
+      this.class_.propertyMap_ = null;
       this.actions = extendsModel.actions.concat(this.actions);
     }
 

@@ -352,6 +352,7 @@ var Property = {
   },
 
   getProperty: function(name) {
+debugger; // Why is this here?  Is it ever called?
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
 

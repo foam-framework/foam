@@ -121,6 +121,8 @@ var Model = {
       preSet: function(newValue) {
         if ( ! Property ) return;
 
+        if ( this.class_.propertyMap_ ) { this.class_.propertyMap_ = null; }
+
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
