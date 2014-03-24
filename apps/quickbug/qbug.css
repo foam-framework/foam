@@ -322,3 +322,7 @@ input[name="search"] {
 .footer {
   flex: none;
 }
+
+.foamTable tr.rowSelected {
+  border: none;
+}
