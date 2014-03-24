@@ -2920,7 +2920,6 @@ var WaitCursorDAO = FOAM({
       name: 'count',
       defaultValue: 0,
       postSet: function(oldValue, newValue) {
-        console.log('************* ', oldValue, newValue);
         if ( ! this.window ) return;
         if ( oldValue == 0 ) DOM.setClass(this.window.document.body, 'waiting');
         else if ( newValue == 0 ) DOM.setClass(this.window.document.body, 'waiting', false);
