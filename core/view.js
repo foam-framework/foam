@@ -947,6 +947,7 @@ FOAModel({
       help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
       defaultValue: [],
       preSet: function(a) {
+        a = a.clone();
         // Upgrade single values to [value, value]
         for ( var i = 0 ; i < a.length ; i++ ) if ( ! Array.isArray(a[i]) ) a[i] = [a[i], a[i]];
         return a;
