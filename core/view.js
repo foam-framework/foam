@@ -1011,7 +1011,7 @@ FOAModel({
 
         out.push('\t<option id="' + id + '"');
 
-        if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
+        if ( this.value && choice[0] === this.value.get() ) out.push(' selected');
         out.push(' value="');
         out.push(i + '">');
         out.push(choice[1].toString());
