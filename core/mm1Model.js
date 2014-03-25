@@ -118,11 +118,8 @@ var Model = {
       valueFactory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
-      preSet: function(newValue) {
+      preSet: function(newValue, oldValue) {
         if ( ! Property ) return;
-
-        if ( this.class_.propertyMap_ ) { this.class_.propertyMap_ = null; }
-
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
@@ -136,6 +133,8 @@ var Model = {
           // create property constant
           this[p.name.constantize()] = newValue[i];
         }
+
+        this.propertyMap_ = null;
 
         return newValue;
       }

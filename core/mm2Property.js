@@ -381,11 +381,13 @@ debugger; // Why is this here?  Is it ever called?
 
 
 Model.methods = {
-  hashCode:       ModelProto.hashCode,
-  buildPrototype: ModelProto.buildPrototype,
-  getPrototype:   ModelProto.getPrototype,
-  isSubModel:     ModelProto.isSubModel,
-  isInstance:     ModelProto.isInstance
+  getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
+  getProperty:              ModelProto.getProperty,
+  hashCode:                 ModelProto.hashCode,
+  buildPrototype:           ModelProto.buildPrototype,
+  getPrototype:             ModelProto.getPrototype,
+  isSubModel:               ModelProto.isSubModel,
+  isInstance:               ModelProto.isInstance
 };
 
 // This is the coolest line of code that I've ever written
