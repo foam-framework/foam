@@ -48,6 +48,7 @@ function isPropertyLabel(l) {
   return false;
 }
 
+
 var QIssue = FOAM({
     model_: 'Model',
     extendsModel: 'GeneratedQIssue',
@@ -353,78 +354,4 @@ GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableWidth"] ) {
     p["tableWidth"] = '80px;'
   }
-});
-
-var QIssueComment = FOAM({
-  model_: 'Model',
-  name: 'QIssueComment',
-  extendsModel: 'IssueComment',
-
-  ids: [ 'id' ],
-
-  properties: [
-    {
-      name: 'author',
-      view: 'QIssueCommentAuthorView',
-      preSet: function(newValue, _, prop) {
-        if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
-        return newValue;
-      }
-    },
-    {
-      name: 'updates',
-      view: 'QIssueCommentUpdateView',
-      preSet: function(newValue, _, prop) {
-        if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
-        return newValue;
-      }
-    },
-    {
-      name: 'published',
-      view: 'RelativeDateTimeFieldView'
-    },
-    {
-      model_: 'ReferenceProperty',
-      name: 'issueId'
-    }
-  ]
-});
-
-
-var QUser = FOAM({
-  model_: 'Model',
-  name: 'QUser',
-  extendsModel: 'User',
-
-  properties: [
-    {
-      model_: 'StringProperty',
-      name: 'email'
-    },
-    {
-      name: 'projects',
-      postSet: function(_, newValue) {
-        if ( this.preferredProjects.length == 0 ) {
-          this.preferredProjects = newValue.map(function(p) { return p.name; });
-        }
-      }
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'preferredProjects',
-      view: 'MultiLineStringArrayView',
-// Temporary fix for QuickBug v.1.10 which broke the project list
-// TODO: remove next line after a while
-      preSet: function(a) {
-        return a.map(function(i) {
-          return Array.isArray(i) ? i[0] : i;
-        });
-      }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'defaultProject',
-      defaultValue: 'chromium'
-    }
-  ]
 });

@@ -607,6 +607,7 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name:  'escapeHTML',
+      // defaultValue: true,
       // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },

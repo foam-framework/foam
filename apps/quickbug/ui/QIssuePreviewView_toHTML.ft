@@ -37,6 +37,13 @@
                 </tbody></table>
                 <div>
                   <br>
+                  <b>Change Lists:</b>
+                  <br>
+                  <div>
+                  %%clView()
+                  </div>
+                  <br>
+                  <br>
                   <b>Blocked on:</b>
                   <br>
                   <div class="qissuerelated">
