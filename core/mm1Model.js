@@ -120,7 +120,6 @@ var Model = {
       help: 'Properties associated with the entity.',
       preSet: function(newValue, oldValue) {
         if ( ! Property ) return;
-        console.log(oldValue.length, newValue.length);
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
