@@ -237,9 +237,7 @@ FOAModel({
         put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
           self.objs = objs;
           if ( self.$ ) {
-            console.time('TableView2.paint');
             self.$.innerHTML = self.tableToHTML();
-            console.timeEnd('TableView2.paint');
 //            console.time('TableView2.initHTML');
             self.initHTML_();
 //            console.timeEnd('TableView2.initHTML');

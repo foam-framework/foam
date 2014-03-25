@@ -87,7 +87,6 @@ var ModelProto = {
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
     var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
     cls.instance_ = {};
-    cls.class_    = {};
     cls.model_    = this;
     cls.name_     = this.name;
     cls.TYPE      = this.name + "Prototype";
@@ -124,8 +123,7 @@ var ModelProto = {
         }
         cls.defineProperty(p);
       }
-      // Do this to invalidate the propertyMap_ cache
-      this.properties = this.properties;
+      this.propertyMap_ = null;
     }
 
     // Copy parent Model's Property Contants to this Model.
@@ -231,9 +229,10 @@ var ModelProto = {
     if ( extendsModel ) {
       for ( var i = extendsModel.properties.length-1 ; i >= 0 ; i-- ) {
         var p = extendsModel.properties[i];
-        if ( ! ( this.getProperty && this.getProperty(p.name) ) ) this.properties.unshift(p);
+        if ( ! ( this.getProperty && this.getPropertyWithoutCache_(p.name) ) )
+          this.properties.unshift(p);
       }
-      this.class_.propertyMap_ = null;
+      this.propertyMap_ = null;
       this.actions = extendsModel.actions.concat(this.actions);
     }
 
@@ -241,7 +240,7 @@ var ModelProto = {
     if ( this.properties.length > 0 && ! cls.__lookupGetter__('id') ) {
       var primaryKey = this.ids;
 
-      if (primaryKey.length == 1) {
+      if ( primaryKey.length == 1 ) {
         cls.__defineGetter__('id', function() { return this[primaryKey[0]]; });
         cls.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
       } else if (primaryKey.length > 1) {
@@ -269,6 +268,35 @@ var ModelProto = {
     } catch (x) {
       return false;
     }
+  },
+
+  getPropertyWithoutCache_: function(name) {
+    for ( var i = 0 ; i < this.properties.length ; i++ ) {
+      var p = this.properties[i];
+
+      if ( p.name === name ) return p;
+    }
+
+    return null;
+  },
+
+  getProperty: function(name) {
+    // NOTE: propertyMap_ is invalidated in a few places
+    // when properties[] is updated.
+    if ( ! this.propertyMap_ ) {
+      if ( ! this.properties.length ) return undefined;
+
+      var m = {};
+
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var prop = this.properties[i];
+        m[prop.name] = prop;
+      }
+
+      this.propertyMap_ = m;
+    }
+
+    return this.propertyMap_[name];
   },
 
   hashCode: function() {

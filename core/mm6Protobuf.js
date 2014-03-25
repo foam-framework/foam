@@ -104,11 +104,13 @@ Model.properties = Model.properties.concat(
 // into the bootstrapped one.  So we need to re-set the methods property here
 // before re-creating Model.
 Model.methods = {
-  hashCode:       ModelProto.hashCode,
-  buildPrototype: ModelProto.buildPrototype,
-  getPrototype:   ModelProto.getPrototype,
-  isSubModel:     ModelProto.isSubModel,
-  isInstance:     ModelProto.isInstance
+  getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
+  getProperty:              ModelProto.getProperty,
+  hashCode:                 ModelProto.hashCode,
+  buildPrototype:           ModelProto.buildPrototype,
+  getPrototype:             ModelProto.getPrototype,
+  isSubModel:               ModelProto.isSubModel,
+  isInstance:               ModelProto.isInstance
 };
 
 // We use getPrototype() because we need to re-create the Model prototype now
