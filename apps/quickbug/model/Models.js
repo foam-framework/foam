@@ -412,7 +412,14 @@ var QUser = FOAM({
     {
       model_: 'StringArrayProperty',
       name: 'preferredProjects',
-      view: 'MultiLineStringArrayView'
+      view: 'MultiLineStringArrayView',
+// Temporary fix for QuickBug v.1.10 which broke the project list
+// TODO: remove next line after a while
+      preSet: function(a) {
+        return a.map(function(i) {
+          return Array.isArray(i) ? i[0] : i;
+        });
+      }
     },
     {
       model_: 'StringProperty',
