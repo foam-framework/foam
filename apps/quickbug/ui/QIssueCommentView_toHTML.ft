@@ -3,6 +3,6 @@
     $$published{ mode: 'read-only' }
   </div>
   <span style="padding-left:.7em">By </span>$$author
-  $$content{ mode: 'read-only', placeholder: '(No comment was entered for this change.)', readOnlyTagName: 'pre' }
+  $$content{ mode: 'read-only', escapeHTML: true, placeholder: '(No comment was entered for this change.)', readOnlyTagName: 'pre' }
   $$updates
 </div>
