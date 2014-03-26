@@ -410,7 +410,7 @@ o = Model;
 
     var graph = Graph.create({x:10,y:450,width:200,height:100,axisColor:'white',data:[1,2,3,4,5,4,3,2,1,4,6,8,10]});
     space.addChild(graph);
-    graph.watch(apollo.propertyValue('y'));
+    graph.watch(apollo.y$);
 
     var pie = PieGraph.create({lineColor: 'white', r:50, x:20, y:150});
     space.addChild(pie);
