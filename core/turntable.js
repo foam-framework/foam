@@ -137,7 +137,7 @@ FOAModel({
       c.stroke();
 
       var r4 = (this.r-10)/4;
-      var p = -2*this.rpm*this.time/36000*Math.PI*2;
+      var p = -0.25*this.rpm*this.time/36000*Math.PI*2;
       c.beginPath();
       c.strokeStyle = 'black';
       c.arc(this.x+(10+r4)*Math.sin(p),this.y+(10+r4)*Math.cos(p),r4,0,Math.PI*2,true);
