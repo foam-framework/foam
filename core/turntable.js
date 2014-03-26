@@ -171,15 +171,16 @@ FOAModel({
         c.arc(this.touchX,this.touchY,r4,0,Math.PI*2,true);
         c.stroke();
 
-        c.lineWidth = 2;
+        c.lineWidth = 3;
         var dx = this.touchX - this.x;
         var dy = this.touchY - this.y;
         var r  = Math.sqrt(dx*dx + dy*dy);
         var a = Math.atan2(dy, dx);
 
+        r = Math.round(r / 20) * 20;
         c.beginPath();
         c.strokeStyle = 'blue';
-        c.arc(this.x,this.y,r,a+Math.PI*0.75,a-Math.PI*0.75,true);
+        c.arc(this.x,this.y,r,a+Math.PI*0.8,a-Math.PI*0.8,true);
         c.stroke();
       }
 
