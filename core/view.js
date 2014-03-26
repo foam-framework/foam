@@ -607,6 +607,7 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name:  'escapeHTML',
+      // defaultValue: true,
       // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },
@@ -947,6 +948,7 @@ FOAModel({
       help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
       defaultValue: [],
       preSet: function(a) {
+        a = a.clone();
         // Upgrade single values to [value, value]
         for ( var i = 0 ; i < a.length ; i++ ) if ( ! Array.isArray(a[i]) ) a[i] = [a[i], a[i]];
         return a;
@@ -1010,7 +1012,7 @@ FOAModel({
 
         out.push('\t<option id="' + id + '"');
 
-        if ( this.value && choice[0] === this.value.get()[0] ) out.push(' selected');
+        if ( this.value && choice[0] === this.value.get() ) out.push(' selected');
         out.push(' value="');
         out.push(i + '">');
         out.push(choice[1].toString());

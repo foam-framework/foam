@@ -1,6 +1,6 @@
 {
   "name": "QuickBug",
-  "version": "1.10",
+  "version": "1.12",
   "manifest_version": 2,
 
   "permissions": [
@@ -20,9 +20,12 @@
       "scripts": [
         "foam.js",
         "model/ImportedModels.js",
-        "model/Models.js",
+        "model/QIssue.js",
+        "model/QIssueComment.js",
+        "model/QUser.js",
         "ui/QIssuePreviewView.js",
         "ui/QIssueCommentView.js",
+        "ui/QIssueCLView.js",
         "ui/QIssueCommentAuthorView.js",
         "ui/QIssueCommentUpdateView.js",
         "ui/QIssueTileView.js",

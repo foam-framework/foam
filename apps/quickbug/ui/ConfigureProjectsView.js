@@ -32,7 +32,7 @@ var ConfigureProjectsView = FOAM({
       this.SUPER();
       var obj = this.get();
 
-      this.defaultProjectView.choices$ = obj.preferredProjects$;
+      Events.follow(obj.preferredProjects$, this.defaultProjectView.choices$);
       this.defaultProjectView.setValue(obj.defaultProject$);
     }
   },

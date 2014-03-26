@@ -2494,7 +2494,11 @@ FOAModel({
     find: function(key, sink) {
       var self = this;
       ajsonp(this.buildFindURL(key))(function(data) {
-        sink && sink.put && sink.put(self.jsonToObj(data));
+        if ( data ) {
+          sink && sink.put && sink.put(self.jsonToObj(data));
+        } else {
+          sink && sink.error && sink.error('No Network Response');
+        }
       });
     }
   }

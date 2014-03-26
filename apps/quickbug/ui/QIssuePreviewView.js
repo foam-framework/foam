@@ -53,12 +53,16 @@ var QIssuePreviewView = FOAM({
         view: {
           create: function() {
             return QIssueCommentView.create({
-              model: QIssueComment
+              model: QIssueComment // ???: Is this needed
             });
           }
         }
       });
+    },
+    clView: function() {
+      return QIssueCLView.create({dao: this.QIssueCommentDAO});
     }
+
   },
 
   templates: [
