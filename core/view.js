@@ -1370,7 +1370,7 @@ FOAModel({
       type:  'Value',
       valueFactory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
-        Events.unlink(this.domValue, oldValue);
+        oldValue && Events.unlink(this.domValue, oldValue);
 
         //Events.follow(this.model, this.domValue);
         try {
@@ -1518,11 +1518,13 @@ FOAModel({
     },
 
     textToValue: function(text) {
+      return this.val_; // Temporary hack until XML parsing is implemented
       // TODO: parse XML
       return text;
     },
 
     valueToText: function(val) {
+      this.val_ = val;  // Temporary hack until XML parsing is implemented
       return XMLUtil.stringify(val);
     }
   }
@@ -3065,7 +3067,7 @@ FOAModel({
       }
       str.push('</div>');
       str.push('<br/>');
-      str.push('<div class="altView column" style="flex: 1 1 100%" id="' + this.getID() + '"> </div>');
+      str.push('<div class="altView column" id="' + this.getID() + '"> </div>');
       str.push('</div>');
 
       return str.join('');
