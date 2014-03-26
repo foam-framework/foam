@@ -1543,11 +1543,25 @@ var DetailView = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      valueFactory: function() { return SimpleValue.create(); },
+      postSet: function(oldValue, newValue) {
+        if ( oldValue ) oldValue.removeListener(this.onValueChange);
+        if ( newValue ) newValue.addListener(this.onValueChange);
+        this.onValueChange();
+      }
     },
     {
       name:  'title',
       defaultValueFn: function() { return "Edit " + this.model.label; }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.updateSubViews();
+      }
     }
   ],
 
