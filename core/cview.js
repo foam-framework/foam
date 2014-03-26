@@ -880,7 +880,6 @@ FOAModel({
       }
     },
 
-
     paintPointData: function(canvas, x, y, xs, w, h, maxValue)
     {
       canvas.shadowOffsetX = 2;
@@ -921,7 +920,6 @@ FOAModel({
 
     },
 
-
     paintBarData: function(canvas, x, y, xs, w, h, maxValue)
     {
       canvas.fillStyle = this.graphColor;
@@ -936,8 +934,7 @@ FOAModel({
       }
     },
 
-    paint: function()
-    {
+    paint: function() {
       var canvas = this.canvas;
       var x  = this.x;
       var y  = this.y;
@@ -973,42 +970,41 @@ FOAModel({
         canvas.fillRect(x, y, xs, this.height-xs*1.5);
       }
 
-      if ( this.xAxisInterval )
-        for ( var i = this.xAxisInterval ; i <= this.data.length ; i += this.xAxisInterval )
-      {
-        var x2 = this.toX(i);
+      if ( this.xAxisInterval ) {
+        for ( var i = this.xAxisInterval ; i <= this.data.length ; i += this.xAxisInterval ) {
+          var x2 = this.toX(i);
 
-        if ( this.gridColor ) {
-          canvas.save();
-          canvas.shadowOffsetX = 0;
-          canvas.shadowOffsetY = 0;
-          canvas.shadowBlur = 0;
-          canvas.fillStyle = this.gridColor;
-          canvas.fillRect(x2+1.5, this.toY(0,1)-2*xs, 0.5, -this.height);
-          canvas.restore();
+          if ( this.gridColor ) {
+            canvas.save();
+            canvas.shadowOffsetX = 0;
+            canvas.shadowOffsetY = 0;
+            canvas.shadowBlur = 0;
+            canvas.fillStyle = this.gridColor;
+            canvas.fillRect(x2+1.5, this.toY(0,1)-2*xs, 0.5, -this.height);
+            canvas.restore();
+          }
+
+          canvas.fillRect(x2, this.toY(0,1)-2*xs, xs/2, -xs);
         }
-
-        canvas.fillRect(x2, this.toY(0,1)-2*xs, xs/2, -xs);
       }
 
-      if ( this.yAxisInterval )
-        for ( var i = this.yAxisInterval ; i <= maxValue ; i += this.yAxisInterval )
-      {
-        var y = this.toY(i, maxValue);
+      if ( this.yAxisInterval ) {
+        for ( var i = this.yAxisInterval ; i <= maxValue ; i += this.yAxisInterval ) {
+          var y = this.toY(i, maxValue);
 
-        if ( this.gridColor ) {
-          canvas.save();
-          canvas.shadowOffsetX = 0;
-          canvas.shadowOffsetY = 0;
-          canvas.shadowBlur = 0;
-          canvas.fillStyle = this.gridColor;
-          canvas.fillRect(x+xs, y+3, this.width, 0.5);
-          canvas.restore();
+          if ( this.gridColor ) {
+            canvas.save();
+            canvas.shadowOffsetX = 0;
+            canvas.shadowOffsetY = 0;
+            canvas.shadowBlur = 0;
+            canvas.fillStyle = this.gridColor;
+            canvas.fillRect(x+xs, y+3, this.width, 0.5);
+            canvas.restore();
+          }
+
+          canvas.fillRect(x+xs, y, xs, xs/2);
         }
-
-        canvas.fillRect(x+xs, y, xs, xs/2);
       }
-
     },
 
     toX: function(val) {
@@ -1028,8 +1024,8 @@ FOAModel({
     addData: function(value, opt_maxNumValues) {
       var maxNumValues = opt_maxNumValues || this.width;
 
+      if ( this.data.length == maxNumValues ) this.data.shift();
       this.data.push(value);
-      if ( this.data.length > maxNumValues ) this.data.shift();
     },
 
     watch: function(value, opt_maxNumValues) {
