@@ -1676,7 +1676,7 @@ var DetailView = Model.create({
         if ( ! prop ) continue;
 
         try {
-          child.setValue(obj.propertyValue(prop.name));
+          child.value = obj.propertyValue(prop.name);
         } catch (x) {
           console.log("error: ", prop.name, " ", x);
         }
