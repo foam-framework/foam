@@ -193,6 +193,27 @@ var toCompare = function(c) {
   return c.compare ? c.compare.bind(c) : c;
 };
 
+// binaryInsert into a sorted array, removing duplicates
+Object.defineProperty(Array.prototype, 'binaryInsert', {
+  value: function(item) {
+    var start = 0;
+    var end = this.length-1;
+
+    while ( end >= start ) {
+      var m = start + Math.floor((end-start) / 2);
+      var c = item.compareTo(this[m]);
+      if ( c == 0 ) return this; // already there, nothing to do
+      if ( c < 0 ) { end = m-1; } else { start = m+1; }
+    }
+
+    this.splice(start, 0, item);
+
+    return this;
+  }
+});
+
+// TODO: binarySearch
+
 Object.defineProperty(Array.prototype, 'intern', {
   value: function() {
     for ( var i = 0 ; i < this.length ; i++ )
