@@ -81,12 +81,17 @@ FOAModel({
     mouseDown: function(evt) {
       this.active = true;
       this.a = this.angle(evt.offsetX, evt.offsetY);
+      this.touchX = evt.offsetX;
+      this.touchY = evt.offsetY;
     },
     mouseUp: function(evt) {
       this.active = false;
     },
     mouseMove: function(evt) {
       if ( ! this.active ) return;
+
+      this.touchX = evt.offsetX;
+      this.touchY = evt.offsetY;
 
       var prevA = this.a;
       this.a = this.angle(evt.offsetX, evt.offsetY);
@@ -108,9 +113,6 @@ FOAModel({
     paint: function() {
       this.canvasView.erase();
       this.SUPER();
-      //this.__super__.paint.call(this);
-      // this.__super__.paint.call(this);
-      // this.canvasView.erase();
 
       this.canvasView.$.onmousedown = this.mouseDown;
       this.canvasView.$.onmouseup   = this.mouseUp;
@@ -118,13 +120,36 @@ FOAModel({
 
       var c = this.canvas;
 
+      c.save();
       c.font = "48pt Arial";
+
+      c.lineWidth = 12;
+      c.globalAlpha = 0.25;
 
       c.beginPath();
       c.fillStyle = 'black';
       c.arc(this.x,this.y,this.r,0,Math.PI*2,true);
       c.stroke();
 
+      c.beginPath();
+      c.fillStyle = 'black';
+      c.arc(this.x,this.y,5+this.r/2,0,Math.PI*2,true);
+      c.stroke();
+
+      var r4 = (this.r-10)/4;
+      var p = -0.25*this.rpm*this.time/36000*Math.PI*2;
+      c.beginPath();
+      c.strokeStyle = 'black';
+      c.arc(this.x+(10+r4)*Math.sin(p),this.y+(10+r4)*Math.cos(p),r4,0,Math.PI*2,true);
+      c.stroke();
+
+      var p = -this.rpm*this.time/36000*Math.PI*2;
+      c.beginPath();
+      c.fillStyle = 'black';
+      c.arc(this.x+(10+3*r4)*Math.sin(p),this.y+(10+3*r4)*Math.cos(p),r4,0,Math.PI*2,true);
+      c.stroke();
+
+      /*
       c.save();
       c.translate(this.x,this.y);
       c.rotate(this.rpm*this.time/36000*Math.PI*2);
@@ -132,12 +157,34 @@ FOAModel({
       c.fillStyle = '#999';
       c.fillText("FOAM", this.x-92, this.y+25);
       c.restore();
+      */
 
       c.beginPath();
       c.fillStyle = 'black';
       c.arc(this.x,this.y,8,0,Math.PI*2,true);
-      c.fill();
+      c.stroke();
 
+      if ( this.active ) {
+        c.lineWidth = 15;
+        c.strokeStyle = 'blue';
+        c.beginPath();
+        c.arc(this.touchX,this.touchY,r4,0,Math.PI*2,true);
+        c.stroke();
+
+        c.lineWidth = 3;
+        var dx = this.touchX - this.x;
+        var dy = this.touchY - this.y;
+        var r  = Math.sqrt(dx*dx + dy*dy);
+        var a = Math.atan2(dy, dx);
+
+        r = Math.round(r / 20) * 20;
+        c.beginPath();
+        c.strokeStyle = 'blue';
+        c.arc(this.x,this.y,r,a+Math.PI*0.8,a-Math.PI*0.8,true);
+        c.stroke();
+      }
+
+      c.restore();
     }
   }
 });

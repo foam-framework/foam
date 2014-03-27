@@ -21,7 +21,7 @@ var labelToProperty = {
   Priority:     'priority',
   Mstone:       'milestone',
   M:            'milestone',
-  Cr:           'category',
+  Cr:           'cr',
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
   OS:           'OS',
@@ -64,7 +64,7 @@ var QIssue = FOAM({
       'milestone',
       'iteration',
       'releaseBlock',
-      'category',
+      'cr',
       'status',
       'owner',
       'summary',
@@ -146,7 +146,7 @@ var QIssue = FOAM({
             defaultValue: ''
         },
         {
-            name: 'category',
+            name: 'cr',
             shortName: 'c',
             aliases: ['cat', 'cr'],
             label: 'Cr',
@@ -337,7 +337,7 @@ var QIssue = FOAM({
         propToLabel('priority', 'Priority');
         propToLabel('app', 'App');
         propToLabel('milestone', 'Milestone');
-        propToLabel('category', 'Cr');
+        propToLabel('cr', 'Cr');
         propToLabel('iteration', 'Iteration');
         propToLabel('releaseBlock', 'ReleaseBlock');
         propToLabel('OS', 'OS');
