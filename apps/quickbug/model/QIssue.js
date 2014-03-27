@@ -24,7 +24,8 @@ var labelToProperty = {
   Cr:           'category',
   Iteration:    'iteration',
   ReleaseBlock: 'releaseBlock',
-  OS:           'OS'
+  OS:           'OS',
+  MovedFrom:    'movedFrom'
 };
 
 var propertyLabels_ = {};
@@ -32,7 +33,7 @@ var propertyLabels_ = {};
 function isPropertyLabel(l) {
   if ( l in propertyLabels_ ) return propertyLabels_[l];
 
-  var keyValue = l.match(/([^\-]*)\-(.*)/);
+  var keyValue = l.match(/([^\-]*)\-(.*)/) || l.match(/(\D*)(.*)/);
   if ( keyValue ) {
     var key   = labelToProperty[keyValue[1]];
     var value = keyValue[2];
@@ -273,7 +274,23 @@ var QIssue = FOAM({
               }
             }
           }
+        },
+      {
+        model_: 'StringArrayProperty',
+        name: 'movedFrom',
+        tableWidth: '100px',
+        preSet: function(v) {
+          if ( Array.isArray(v) ) return v;
+          if ( ! v ) return undefined;
+
+          return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? Number(v.substring(1)) : Number(v));
+        },
+        compareProperty: function(o1, o2) {
+          o1 = o1.length ? o1[0] : 0;
+          o2 = o2.length ? o2[0] : 0;
+          return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
         }
+      }
     ],
 
     methods: {
