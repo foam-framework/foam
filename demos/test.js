@@ -339,9 +339,8 @@ o = Model;
 
     var dragon = Dragon.create({
       width: 1000,
-      height: 800,
-      backgroundColor: 'green',
-      timer:timer
+      height: 1000,
+      timer: timer
     });
 
     var tt = Turntable.create();
@@ -355,7 +354,7 @@ o = Model;
     Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
 
     var dmouse = Mouse.create();
-    dmouse.connect(dragon.canvasView.$);
+    dmouse.connect(dragon.parent.$);
     dragon.eyes.watch(dmouse);
 
     document.writeln("<br/><h2>MoveTowards</h2>");
