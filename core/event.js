@@ -402,6 +402,18 @@ var PropertyChangeSupport = {
 };
 
 
+var FunctionStack = {
+  create: function() {
+    var stack = [false];
+    return {
+      stack: stack,
+      push: function(f) { stack.unshift(f); },
+      pop: function() { stack.shift(); },
+    };
+  }
+};
+
+
 /** Static support methods for working with Events. **/
 var Events = {
 
@@ -497,22 +509,17 @@ var Events = {
    */
   dynamic: function(fn, opt_fn) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var oldOnGet = Events.onGet;
     var listener = EventService.merged(fn2, 5);
-    Events.onGet = function(obj, name, value) {
+    Events.onGet.push(function(obj, name, value) {
       obj.propertyValue(name).addListener(listener);
-    };
+    });
     var ret = fn();
-    Events.onGet = oldOnGet;
+    Events.onGet.pop();
     opt_fn && opt_fn(ret);
   },
 
-  onSet: function(obj, name, newValue) {
-    return true;
-  },
-
-  onGet: function(obj, name, value) {
-  }
+  onSet: FunctionStack.create(),
+  onGet: FunctionStack.create(),
 
   // ???: would be nice to have a removeValue method
   // or maybe add an 'owner' property, combine with Janitor
@@ -632,7 +639,6 @@ var Movement = {
     return function() {
       var STACK     = DEBUG_STACK();
       var startTime = Date.now();
-      var oldOnSet  = Events.onSet;
       var ranges    = [];
       var timer;
 
@@ -642,11 +648,13 @@ var Movement = {
         opt_onEnd = null;
       }
 
-      Events.onSet = function(obj, name, value2) {
-        ranges.push([obj, name, obj[name], value2]);
-      };
-      fn && fn.apply(this, argsToArray(arguments));
-      Events.onSet = oldOnSet;
+      if ( fn ) {
+        Events.onSet.push(function(obj, name, value2) {
+          ranges.push([obj, name, obj[name], value2]);
+        });
+        fn.apply(this, argsToArray(arguments));
+        Events.onSet.pop();
+      }
 
       if ( ranges.length > 0 || true ) {
         timer = setInterval(function() {
@@ -675,8 +683,7 @@ var Movement = {
   animate2: function(timer, duration, fn) {
     return function() {
       var startTime = timer.time;
-      var oldOnSet  = Events.onSet;
-      Events.onSet = function(obj, name, value2) {
+      Events.onSet.push(function(obj, name, value2) {
         var value1 = obj[name];
 
         Events.dynamic(function() {
@@ -688,9 +695,9 @@ var Movement = {
         });
 
         return false;
-      };
+      });
       fn.apply(this, argsToArray(arguments));
-      Events.onSet = oldOnSet;
+      Events.onSet.pop();
       update();
     };
   },
