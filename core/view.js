@@ -1974,7 +1974,7 @@ FOAModel({
       type:  'Model'
     },
     {
-      model_: StringArrayProperty,
+      model_: 'StringArrayProperty',
       name:  'properties',
       preSet: function(a) { return ! a || a.length == 0 ? null : a; },
       postSet: function() { this.repaint_(); },
@@ -2093,8 +2093,6 @@ FOAModel({
     DOUBLE_CLICK: "double-click", // event topic
 
     init: function() {
-      this.SUPER();
-
       var self = this;
       this.repaint_ = EventService.animate(this.repaint.bind(this));
 
@@ -2102,6 +2100,8 @@ FOAModel({
         put: self.repaint_,
         remove: self.repaint_
       };
+
+      this.SUPER();
     },
 
     // TODO: it would be better if it were initiated with
@@ -2289,11 +2289,11 @@ FOAModel({
       type: 'Model'
     },
     {
-      model_: StringArrayProperty,
+      model_: 'StringArrayProperty',
       name:  'properties'
     },
     {
-      model_: StringArrayProperty,
+      model_: 'StringArrayProperty',
       name:  'availableProperties'
     }
   ],

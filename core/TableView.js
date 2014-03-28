@@ -38,7 +38,7 @@ FOAModel({
       type:  'Model'
     },
     {
-      model_: StringArrayProperty,
+      model_: 'StringArrayProperty',
       name:  'properties',
       preSet: function(a) { return ! a || a.length == 0 ? null : a; },
       postSet: function() { this.repaint(); },

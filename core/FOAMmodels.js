@@ -30,6 +30,10 @@ var files = [
   'FOAM',
   'TemplateUtil',
   'AbstractPrototype',
+  // To use FO, uncomment the next line
+  // and comment out all lines from ModelProto to mm6Prototbuf
+  // inclusively
+//  'experimental/fo',
   'ModelProto',
   'mm1Model',
   'mm2Property',
