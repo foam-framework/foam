@@ -176,36 +176,41 @@ var AbstractPrototype = {
 
     if ( prop.setter ) {
       this.defineFOAMSetter(name, prop.setter);
-    } else if ( prop.preSet || prop.postSet ) {
-      this.defineFOAMSetter(name, function(newValue) {
-        var oldValue = this[name];
-
-        if ( prop.preSet )
-          newValue = prop.preSet.call(this, newValue, oldValue, prop);
-
-        // todo: fix
-        if ( prop.type == 'int' || prop.type == 'float' )
-          newValue = Number(newValue);
-
-        this.instance_[name] = newValue;
-
-        if ( prop.postSet )
-          prop.postSet.call(this, oldValue, newValue);
-
-        this.propertyChange(name, oldValue, newValue);
-      });
     } else {
-      this.defineFOAMSetter(name, function(newValue) {
-        var oldValue = this[name];
-
-        // todo: fix
-        if ( prop.type == 'int' || prop.type == 'float' )
-          newValue = Number(newValue);
-
+      var setter = function(oldValue, newValue) {
         this.instance_[name] = newValue;
+      };
 
-        this.propertyChange(name, oldValue, newValue);
-      });
+      if ( prop.type === 'int' || prop.type === 'float' ) {
+        setter = (function(setter) { return function(oldValue, newValue) {
+          setter.call(this, oldValue, typeof newValue !== 'number' ? Number(newValue) : newValue);
+        }; })(setter);
+      }
+
+      if ( prop.postSet ) {
+        setter = (function(setter, postSet) { return function(oldValue, newValue) {
+          setter.call(this, oldValue, newValue);
+          postSet.call(this, oldValue, newValue)
+        }; })(setter, prop.postSet);
+      }
+
+      var propertyTopic = PropertyChangeSupport.propertyTopic(name);
+      setter = (function(setter) { return function(oldValue, newValue) {
+        setter.call(this, oldValue, newValue);
+        this.propertyChange_(propertyTopic, oldValue, newValue);
+      }; })(setter);
+
+      if ( prop.preSet ) {
+        setter = (function(setter, preSet) { return function(oldValue, newValue) {
+          setter.call(this, oldValue, preSet.call(this, newValue, oldValue, prop));
+        }; })(setter, prop.preSet);
+      }
+
+      setter = (function(setter) { return function(newValue) {
+        setter.call(this, this[name], newValue);
+      }; })(setter);
+
+      this.defineFOAMSetter(name, setter);
     }
   },
 
@@ -293,8 +298,9 @@ var AbstractPrototype = {
 */
 
     if ( src && this.model_ ) {
-      for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-        var prop = this.model_.properties[i];
+      var ps = this.model_.properties;
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var prop = ps[i];
 
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
       }
