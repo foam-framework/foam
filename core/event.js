@@ -334,6 +334,16 @@ var PropertyChangeSupport = {
     this.publish(this.propertyTopic(property), oldValue, newValue);
   },
 
+  propertyChange_: function (propertyTopic, oldValue, newValue) {
+    // don't bother firing event if there are no listeners
+    if ( ! this.subs_ ) return;
+
+    // don't fire event if value didn't change
+    if ( oldValue === newValue ) return;
+
+    this.publish(propertyTopic, oldValue, newValue);
+  },
+
 
   /** Indicates that one or more unspecified properties have changed. **/
   globalChange: function () {
