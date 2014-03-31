@@ -1343,6 +1343,53 @@ FOAModel({
 
 
 FOAModel({
+  name:  'ImageBooleanView2',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name:  'name',
+      label: 'Name',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name: 'value',
+      postSet: function() { if ( this.$ ) this.$.src = this.image(); }
+    },
+    {
+      name: 'trueImage'
+    },
+    {
+      name: 'falseImage'
+    }
+  ],
+
+  methods: {
+    image: function() { return this.value ? this.trueImage : this.falseImage; },
+    toHTML: function() {
+      return '<img id="' + this.getID() + '" name="' + this.name + '">';
+    },
+    initHTML: function() {
+      this.$.addEventListener('click', this.onClick);
+      this.$.src = this.image();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(e) {
+        e.stopPropagation();
+        this.value = ! this.value;
+      }
+    }
+  ]
+});
+
+
+FOAModel({
   name: 'TextAreaView',
 
   extendsModel: 'AbstractView',
