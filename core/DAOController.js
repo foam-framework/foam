@@ -494,23 +494,33 @@ FOAModel({
   name:  'DAOControllerView',
   extendsModel: 'AbstractView',
 
+  properties: [
+    {
+      name: 'model'
+    },
+    {
+      name: 'dao'
+    },
+    {
+      name: 'ctrl',
+      valueFactory: function() {
+        return ActionBorder.create(DAOController, DAOController.create({
+          model: this.model,
+          dao: this.dao
+        }));
+      }
+    },
+  ],
+
   label: 'DAOControllerView',
 
   methods: {
 
     create: function(model, dao) {
-      var ctrl = ActionBorder.create(DAOController, DAOController.create({
+      return this.SUPER({
         model: model,
-        dao:   dao
-      }));
-
-      var obj = {
-        __proto__: this,
-        ctrl:      ctrl,
-        model:     model
-      };
-
-      return obj;
+        dao: dao
+      });
     },
 
     toHTML: function() {

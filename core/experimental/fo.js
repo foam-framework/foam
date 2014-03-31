@@ -17,7 +17,7 @@
 
 Object.defineProperty(Object.prototype, 'addFeature', {
   configurable: true,
-  enumerable: true,
+  enumerable: false,
   writable: true,
   value: function(f) {
     if ( this.prototype ) f.install(this, this.prototype);
@@ -400,6 +400,42 @@ var featureDAO = [
       proto[prop.name] = prop.valueFactory();
     }
   }],
+
+  ['Model', 'Property', {
+    name: 'ids',
+    type: 'Array',
+    subType: 'String',
+    defaultValueFn: function() {
+      var prop;
+      this.features.forEach(function(f) {
+        if ( !prop && Property.isInstance(f) ) {
+          prop = f;
+        }
+      });
+      return prop ? [prop.name] : [];
+    }
+  }],
+
+  [null, 'Model', {
+    name: 'IdFeature'
+  }],
+  ['IdFeature', 'Method', function install(model, proto) {
+    var primaryKey = model.ids;
+
+    if ( primaryKey.length === 0 || proto.__lookupGetter__('id') ) return;
+
+    if ( primaryKey.length === 1 ) {
+      proto.__defineGetter__('id', function() { return this[primaryKey[0]]; });
+      proto.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
+    } else if (primaryKey.length > 1) {
+      proto.__defineGetter__('id', function() {
+        return primaryKey.map(function(key) { return this[key]; }); });
+      proto.__defineSetter__('id', function(val) {
+        primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+    }
+  }],
+  ['Model', 'IdFeature'],
+    
 
   [null, 'Model', { name: 'Constant' }],
   ['Constant', 'Property', { name: 'name' }],
@@ -900,6 +936,7 @@ var featureDAO = [
   ['Action', 'Method', function install(model, proto) {
     var a = this;
     proto[this.name] = function() { a.callIfEnabled(this); };
+    model[this.name.constantize()] = this;
   }],
 
   [null, 'Model', { name: 'Arg' }],
@@ -1064,6 +1101,29 @@ var featureDAO = [
     defaultValue: [],
     help: 'Sub-templates of this template.'
     }]*/
+  ['Template', 'Method', function install(model, proto) {
+    var t = this;
+    if ( ! t.template ) {
+      var future = afuture();
+      t.futureTemplate = future.get;
+      var path = document.currentScript.src;
+      path = path.substring(0, path.lastIndexOf('/') + 1);
+      path += model.name + '_' + t.name + '.ft';
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", path);
+      xhr.asend(function(data) {
+        t.template = data;
+        future.set(data);
+        t.futureTemplate = undefined;
+      });
+    }
+
+    if ( proto.__proto__[this.name] ) {
+      override(proto, this.name, TemplateUtil.lazyCompile(this));
+    } else {
+      proto[this.name] = TemplateUtil.lazyCompile(t);
+    }
+  }],
   // Model pseudo-properties for backwards compatability.
   ['Model', 'Property', {
     name: 'properties',
@@ -1193,6 +1253,28 @@ var featureDAO = [
           value[i] = Model.create(value[i]);
         this.features.add(value[i]);
       }
+    }
+  }],
+  ['Model', 'ArrayProperty', {
+    name: 'templates',
+    subType: 'Template',
+    view: 'ArrayView',
+    getter: function() {
+      var ret = [];
+      // TODO sould this be a local forEach?
+      this.features.localForEach(function(f) {
+        if ( Template.isInstance(f) ) ret.push(f);
+      });
+      return ret;
+    },
+    setter: function(value) {
+      for ( var i = 0; i < value.length; i++ ) {
+        if ( ! Template.isInstance(value[i]) )
+          value[i] = Template.create(value[i]);
+        this.features.add(value[i]);
+      }
+      // Trigger prototype rebuild;
+      this.getPrototype();
     }
   }],
 ];
