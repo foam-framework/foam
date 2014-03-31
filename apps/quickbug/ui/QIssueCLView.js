@@ -1,6 +1,6 @@
 var QIssueCLView = FOAM({
   model_: 'Model',
-  
+
   name: 'QIssueCLView',
   extendsModel: 'AbstractView',
 
@@ -41,7 +41,7 @@ var QIssueCLView = FOAM({
           var lines = content.split('\n');
           for ( var j = 0 ; j < lines.length ; j++ ) {
             var res = lines[j].match(self.patterns[i][0]);
-            
+
             if ( res ) {
               var url = self.patterns[i][1](res);
               if ( ! urls[url] ) {
@@ -52,7 +52,7 @@ var QIssueCLView = FOAM({
           }
         }
       }})(function() {
-        self.$.innerHTML = out;
+        if ( self.$ ) self.$.innerHTML = out;
       });
     }
   }
