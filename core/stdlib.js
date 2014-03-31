@@ -90,6 +90,22 @@ Object.defineProperty(Object.prototype, 'deepClone', {
   value: function() { return this.clone(); }
 });
 
+Object.defineProperty(Object.prototype, 'become', {
+  value: function(other) {
+    var local = Object.getOwnPropertyNames(this);
+    for ( var i = 0; i < local.length; i++ ) {
+      delete this[local[i]];
+    }
+
+    var remote = Object.getOwnPropertyNames(other);
+    for ( i = 0; i < remote.length; i++ ) {
+      Object.defineProperty(this, remote[i],
+                            Object.getOwnPropertyDescriptor(other, remote[i]));
+    }
+    this.__proto__ = other.__proto__;
+  }
+})
+
 
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }

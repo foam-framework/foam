@@ -80,7 +80,6 @@ function bootstrap(scope) {
   function simpleProperty(obj, name) {
     Object.defineProperty(obj, name, {
       configurable: true,
-      writable: true,
       enumerable: false,
       get: function() { return this.instance_[name]; },
       set: function(v) { this.instance_[name] = v; }
@@ -90,7 +89,6 @@ function bootstrap(scope) {
   // Make function objects act like Method instances.
   Object.defineProperty(Function.prototype, 'code', {
     configurable: true,
-    writable: false,
     enumerable: true,
     get: function() { return this; },
   });
@@ -128,21 +126,7 @@ function bootstrap(scope) {
         f.install(model, proto);
       }, false);
 
-      currentProto.__proto__ = Object.prototype;
-      var props = Object.getOwnPropertyNames(currentProto);
-      for ( var i = 0; i < props.length; i++ ) {
-        delete currentProto[props[i]];
-      }
-
-      var tmp = proto.__proto__;
-      proto.__proto__ = Object.prototype;
-
-      props = Object.getOwnPropertyNames(proto);
-      for ( var i = 0; i < props.length; i++ ) {
-        Object.defineProperty(currentProto, props[i],
-                              Object.getOwnPropertyDescriptor(proto, props[i]));
-      }
-      currentProto.__proto__ = tmp;
+      currentProto.become(proto);
     }
   };
 
@@ -189,7 +173,6 @@ function bootstrap(scope) {
       Object.defineProperty(proto, this.name, {
         configurable: true,
         enumerable: true,
-        writable: true,
         get: function() {
           if ( ! this.instance_[name] ) {
             if ( valueFactory ) return this.instance_[name] = valueFactory.call(this);
@@ -269,7 +252,6 @@ function bootstrap(scope) {
   upgradeMethod(Model, 'create');
   upgradeMethod(Model, 'getPrototype');
   upgradeMethod(Model, 'rebuildPrototype');
-debugger;
   upgradeMethod(Model, 'addFeature');
   upgradeMethod(Property, 'install');
   upgradeMethod(Property, 'initialize');
@@ -285,7 +267,7 @@ var featureDAO = [
   ['Model', 'Method', function install(model, proto) {
     if ( proto ) proto[this.name] = this;
     else model[this.name] = this;
-  }, true],
+  }],
   ['Model', 'Method', function isSubModel(model) {
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
@@ -426,7 +408,6 @@ var featureDAO = [
     var value = this.value;
     Object.defineProperty(proto, this.name, {
       configurable: true,
-      writable: true,
       enumerable: true,
       get: function() { return value },
       set: function(v) {
