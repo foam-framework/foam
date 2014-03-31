@@ -420,21 +420,25 @@ var featureDAO = [
     name: 'IdFeature'
   }],
   ['IdFeature', 'Method', function install(model, proto) {
-    var primaryKey = model.ids;
+    proto.__defineGetter__('id', function() {
+      var primaryKey = this.model_.ids;
 
-    if ( primaryKey.length === 0 || proto.__lookupGetter__('id') ) return;
+      if ( primaryKey.length === 0 ) return [];
 
-    if ( primaryKey.length === 1 ) {
-      proto.__defineGetter__('id', function() { return this[primaryKey[0]]; });
-      proto.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
-    } else if (primaryKey.length > 1) {
-      proto.__defineGetter__('id', function() {
-        return primaryKey.map(function(key) { return this[key]; }); });
-      proto.__defineSetter__('id', function(val) {
-        primaryKey.map(function(key, i) { this[key] = val[i]; }); });
-    }
+      if ( primaryKey.length === 1 ) {
+        proto.__defineGetter__('id', function() { return this[primaryKey[0]]; });
+        proto.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
+      } else if (primaryKey.length > 1) {
+        proto.__defineGetter__('id', function() {
+          return primaryKey.map(function(key) { return this[key]; }); });
+        proto.__defineSetter__('id', function(val) {
+          primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+      }
+
+      return this.id;
+    })
   }],
-  ['Model', 'IdFeature'],
+  ['AbstractPrototype', 'IdFeature'],
     
 
   [null, 'Model', { name: 'Constant' }],
@@ -867,6 +871,11 @@ var featureDAO = [
   ['Model', 'StringProperty', {
     name: 'label',
     defaultValueFn: function() { return this.name.labelize(); }
+  }],
+  ['Model', 'StringProperty', {
+    name: 'plural',
+    help: 'The plural form of this model\'s name.',
+    defaultValueFn: function() { return this.name + 's'; }
   }],
 
   // mm4Methods
