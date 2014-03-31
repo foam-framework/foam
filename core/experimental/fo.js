@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
+Object.defineProperty(Object.prototype, 'addFeature', {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: function(f) {
+    if ( this.prototype ) f.install(this, this.prototype);
+    else f.install(this, this);
+  }
+});
+
 // Replace AbstractPrototype methods with FO versions.
 AbstractPrototype.create = function(args) {
   var obj = Object.create(this);
@@ -70,7 +80,7 @@ function bootstrap(scope) {
   function simpleProperty(obj, name) {
     Object.defineProperty(obj, name, {
       configurable: true,
-      writeable: true,
+      writable: true,
       enumerable: false,
       get: function() { return this.instance_[name]; },
       set: function(v) { this.instance_[name] = v; }
@@ -80,7 +90,7 @@ function bootstrap(scope) {
   // Make function objects act like Method instances.
   Object.defineProperty(Function.prototype, 'code', {
     configurable: true,
-    writeable: false,
+    writable: false,
     enumerable: true,
     get: function() { return this; },
   });
@@ -90,6 +100,9 @@ function bootstrap(scope) {
   Model.prototype_ = {
     __proto__: AbstractPrototype,
     model_: Model,
+    addFeature: function(f) {
+      this.features.add(f);
+    },
     create: function(args) {
       var proto = this.getPrototype();
       if ( this.model_ === this ) return proto.__proto__.create.call(proto, args);
@@ -176,7 +189,7 @@ function bootstrap(scope) {
       Object.defineProperty(proto, this.name, {
         configurable: true,
         enumerable: true,
-        writeable: true,
+        writable: true,
         get: function() {
           if ( ! this.instance_[name] ) {
             if ( valueFactory ) return this.instance_[name] = valueFactory.call(this);
@@ -256,6 +269,8 @@ function bootstrap(scope) {
   upgradeMethod(Model, 'create');
   upgradeMethod(Model, 'getPrototype');
   upgradeMethod(Model, 'rebuildPrototype');
+debugger;
+  upgradeMethod(Model, 'addFeature');
   upgradeMethod(Property, 'install');
   upgradeMethod(Property, 'initialize');
   upgradeMethod(Property, 'copy');
@@ -270,7 +285,7 @@ var featureDAO = [
   ['Model', 'Method', function install(model, proto) {
     if ( proto ) proto[this.name] = this;
     else model[this.name] = this;
-  }],
+  }, true],
   ['Model', 'Method', function isSubModel(model) {
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
@@ -411,7 +426,7 @@ var featureDAO = [
     var value = this.value;
     Object.defineProperty(proto, this.name, {
       configurable: true,
-      writeable: true,
+      writable: true,
       enumerable: true,
       get: function() { return value },
       set: function(v) {
@@ -1224,12 +1239,7 @@ function build(scope, features) {
 
     var args = f[2];
     var feature = feature.create(args);
-    model.features.add(feature);
-
-    // Auto-install to non-modelled targets
-    if ( ! model.model_ ) {
-      feature.install(model, model.prototype);
-    }
+    model.addFeature(feature);
   }
 }
 
