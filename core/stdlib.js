@@ -90,6 +90,22 @@ Object.defineProperty(Object.prototype, 'deepClone', {
   value: function() { return this.clone(); }
 });
 
+Object.defineProperty(Object.prototype, 'become', {
+  value: function(other) {
+    var local = Object.getOwnPropertyNames(this);
+    for ( var i = 0; i < local.length; i++ ) {
+      delete this[local[i]];
+    }
+
+    var remote = Object.getOwnPropertyNames(other);
+    for ( i = 0; i < remote.length; i++ ) {
+      Object.defineProperty(this, remote[i],
+                            Object.getOwnPropertyDescriptor(other, remote[i]));
+    }
+    this.__proto__ = other.__proto__;
+  }
+})
+
 
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }
@@ -119,33 +135,33 @@ Function.prototype.bind = (function() {
 
 
 Date.prototype.toRelativeDateString = function() {
-  var now = new Date();
-  var seconds = Math.floor((now - this)/1000);
-  if (seconds < 60) return 'moments ago';
+  var seconds = Math.floor((Date.now() - this.getTime())/1000);
+
+  if ( seconds < 60 ) return 'moments ago';
+
   var minutes = Math.floor((seconds)/60);
-  if (minutes == 1) {
-    return '1 minute ago';
-  } else if (minutes < 60) {
-    return minutes + ' minutes ago';
-  } else {
-    var hours = Math.floor(minutes/60);
-    if (hours == 1) {
-      return '1 hour ago';
-    } else if (hours < 24) {
-      return hours + ' hours ago';
-    }
-    var days = Math.floor(hours / 24);
-    if (days == 1) {
-      return '1 day ago';
-    } else if (days < 7) {
-      return days + ' days ago';
-    } else if (days < 365) {
-      var year = 1900+this.getYear();
-      var noyear = this.toDateString().replace(" " + year, "");
-      return /....(.*)/.exec(noyear)[1];
-    }
+
+  if ( minutes == 1 ) return '1 minute ago';
+
+  if ( minutes < 60 ) return minutes + ' minutes ago';
+
+  var hours = Math.floor(minutes/60);
+  if ( hours == 1 ) return '1 hour ago';
+
+  if ( hours < 24 ) return hours + ' hours ago';
+
+  var days = Math.floor(hours / 24);
+  if ( days == 1 ) return '1 day ago';
+
+  if ( days < 7 ) return days + ' days ago';
+
+  if ( days < 365 ) {
+    var year = 1900+this.getYear();
+    var noyear = this.toDateString().replace(" " + year, "");
+    return noyear.substring(4);
   }
-  return this.toDateString();
+
+  return this.toDateString().substring(4);
 };
 
 // Define extensions to built-in prototypes as non-enumerable properties so
