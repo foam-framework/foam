@@ -40,3 +40,4 @@ TableView.getPrototype().repaint     = OAM.time('TableView.repaint',    TableVie
 GridView.getPrototype().updateHTML   = OAM.profile(GridView.getPrototype().updateHTML);
 GridByExpr.getPrototype().initHTML   = OAM.time('GridByExpr.initHTML',  GridByExpr.getPrototype().initHTML);
 // GridCView.getPrototype().paint       = OAM.time('GridCView.paint',      GridCView.getPrototype().paint);
+TableView2.getPrototype().tableToHTML = OAM.profile(TableView2.getPrototype().tableToHTML);
