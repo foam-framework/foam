@@ -17,7 +17,7 @@
 FOAModel({
   name:  'Turntable',
 
-  extendsModel: 'PanelCView',
+  extendsModel: 'CView',
 
   properties: [
     {
@@ -110,13 +110,10 @@ FOAModel({
       return Math.atan2(y-this.y, x-this.x);
     },
 
-    paint: function() {
-      this.canvasView.erase();
-      this.SUPER();
-
-      this.canvasView.$.onmousedown = this.mouseDown;
-      this.canvasView.$.onmouseup   = this.mouseUp;
-      this.canvasView.$.onmousemove = this.mouseMove;
+    paintSelf: function() {
+      this.parent.$.onmousedown = this.mouseDown;
+      this.parent.$.onmouseup   = this.mouseUp;
+      this.parent.$.onmousemove = this.mouseMove;
 
       var c = this.canvas;
 

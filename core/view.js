@@ -1280,7 +1280,7 @@ FOAModel({
       name:  'name',
       label: 'Name',
       type:  'String',
-      defaultValue: 'field'
+      defaultValue: ''
     },
     {
       name: 'value',
@@ -1304,9 +1304,11 @@ FOAModel({
     },
     toHTML: function() {
       var id = this.getID();
+ // TODO: next line appears slow, check why
       this.on('click', this.onClick, id);
-//      return '<img id="' + id + '" name="' + this.name + '" src="' + this.image() + '">';
-      return '<img id="' + id + '" name="' + this.name + '">';
+      return this.name ?
+        '<img id="' + id + '" name="' + this.name + '">' :
+        '<img id="' + id + '">' ;
     },
     initHTML: function() {
       this.registerCallbacks();

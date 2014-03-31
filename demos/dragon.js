@@ -16,7 +16,7 @@
  */
 FOAModel({
   name:  'Dragon',
-  extendsModel: 'PanelCView',
+  extendsModel: 'CView',
 
   properties: [
     {
@@ -110,10 +110,7 @@ FOAModel({
 //      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
     },
 
-    paint: function() {
-      if ( ! this.canvasView ) return;
-      this.canvasView.erase();
-
+    paintSelf: function() {
       var c = this.canvas;
       c.save();
       this.i = 0;
@@ -176,7 +173,7 @@ FOAModel({
             ],
             [4000, function() {
                circle.y = Y - 150 - Math.random() * 50;
-               circle.r = 5 + Math.random() * 50;
+               circle.r = 15 + Math.random() * 50;
              },
              M.easeIn(0.5)
             ]

@@ -74,16 +74,20 @@ var AbstractPrototype = {
 
 
   defineFOAMGetter: function(name, getter) {
+    var stack = Events.onGet.stack;
     this.__defineGetter__(name, function() {
       var value = getter.call(this);
-      Events.onGet(this, name, value);
+      var f = stack[0];
+      f && f(this, name, value);
       return value;
     });
   },
 
   defineFOAMSetter: function(name, setter) {
+    var stack = Events.onSet.stack;
     this.__defineSetter__(name, function(newValue) {
-      if ( ! Events.onSet(this, name, newValue) ) return;
+      var f = stack[0];
+      if ( f && ! f(this, name, newValue) ) return;
       setter.call(this, newValue);
     });
   },

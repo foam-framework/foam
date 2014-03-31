@@ -208,7 +208,7 @@ FOAModel({
     },
 
     removeChild: function(child) {
-      this.children.remove(child);
+      this.children.deleteI(child);
       child.parent = undefined;
       return this;
     },
@@ -227,8 +227,12 @@ FOAModel({
       }
     },
 
+    paintSelf: function() {},
+
     paint: function() {
+      if ( ! this.parent.$ ) return;
       this.erase();
+      this.paintSelf();
       this.paintChildren();
     }
   }
