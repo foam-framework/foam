@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
+Object.defineProperty(Object.prototype, 'addFeature', {
+  configurable: true,
+  enumerable: false,
+  writable: true,
+  value: function(f) {
+    if ( this.prototype ) f.install(this, this.prototype);
+    else f.install(this, this);
+  }
+});
+
 // Replace AbstractPrototype methods with FO versions.
 AbstractPrototype.create = function(args) {
   var obj = Object.create(this);
@@ -70,7 +80,6 @@ function bootstrap(scope) {
   function simpleProperty(obj, name) {
     Object.defineProperty(obj, name, {
       configurable: true,
-      writeable: true,
       enumerable: false,
       get: function() { return this.instance_[name]; },
       set: function(v) { this.instance_[name] = v; }
@@ -80,7 +89,6 @@ function bootstrap(scope) {
   // Make function objects act like Method instances.
   Object.defineProperty(Function.prototype, 'code', {
     configurable: true,
-    writeable: false,
     enumerable: true,
     get: function() { return this; },
   });
@@ -90,6 +98,9 @@ function bootstrap(scope) {
   Model.prototype_ = {
     __proto__: AbstractPrototype,
     model_: Model,
+    addFeature: function(f) {
+      this.features.add(f);
+    },
     create: function(args) {
       var proto = this.getPrototype();
       if ( this.model_ === this ) return proto.__proto__.create.call(proto, args);
@@ -115,21 +126,7 @@ function bootstrap(scope) {
         f.install(model, proto);
       }, false);
 
-      currentProto.__proto__ = Object.prototype;
-      var props = Object.getOwnPropertyNames(currentProto);
-      for ( var i = 0; i < props.length; i++ ) {
-        delete currentProto[props[i]];
-      }
-
-      var tmp = proto.__proto__;
-      proto.__proto__ = Object.prototype;
-
-      props = Object.getOwnPropertyNames(proto);
-      for ( var i = 0; i < props.length; i++ ) {
-        Object.defineProperty(currentProto, props[i],
-                              Object.getOwnPropertyDescriptor(proto, props[i]));
-      }
-      currentProto.__proto__ = tmp;
+      currentProto.become(proto);
     }
   };
 
@@ -176,7 +173,6 @@ function bootstrap(scope) {
       Object.defineProperty(proto, this.name, {
         configurable: true,
         enumerable: true,
-        writeable: true,
         get: function() {
           if ( ! this.instance_[name] ) {
             if ( valueFactory ) return this.instance_[name] = valueFactory.call(this);
@@ -256,6 +252,7 @@ function bootstrap(scope) {
   upgradeMethod(Model, 'create');
   upgradeMethod(Model, 'getPrototype');
   upgradeMethod(Model, 'rebuildPrototype');
+  upgradeMethod(Model, 'addFeature');
   upgradeMethod(Property, 'install');
   upgradeMethod(Property, 'initialize');
   upgradeMethod(Property, 'copy');
@@ -404,6 +401,46 @@ var featureDAO = [
     }
   }],
 
+  ['Model', 'Property', {
+    name: 'ids',
+    type: 'Array',
+    subType: 'String',
+    defaultValueFn: function() {
+      var prop;
+      this.features.forEach(function(f) {
+        if ( !prop && Property.isInstance(f) ) {
+          prop = f;
+        }
+      });
+      return prop ? [prop.name] : [];
+    }
+  }],
+
+  [null, 'Model', {
+    name: 'IdFeature'
+  }],
+  ['IdFeature', 'Method', function install(model, proto) {
+    proto.__defineGetter__('id', function() {
+      var primaryKey = this.model_.ids;
+
+      if ( primaryKey.length === 0 ) return [];
+
+      if ( primaryKey.length === 1 ) {
+        proto.__defineGetter__('id', function() { return this[primaryKey[0]]; });
+        proto.__defineSetter__('id', function(val) { this[primaryKey[0]] = val; });
+      } else if (primaryKey.length > 1) {
+        proto.__defineGetter__('id', function() {
+          return primaryKey.map(function(key) { return this[key]; }); });
+        proto.__defineSetter__('id', function(val) {
+          primaryKey.map(function(key, i) { this[key] = val[i]; }); });
+      }
+
+      return this.id;
+    })
+  }],
+  ['AbstractPrototype', 'IdFeature'],
+    
+
   [null, 'Model', { name: 'Constant' }],
   ['Constant', 'Property', { name: 'name' }],
   ['Constant', 'Property', { name: 'value' }],
@@ -411,7 +448,6 @@ var featureDAO = [
     var value = this.value;
     Object.defineProperty(proto, this.name, {
       configurable: true,
-      writeable: true,
       enumerable: true,
       get: function() { return value },
       set: function(v) {
@@ -836,6 +872,11 @@ var featureDAO = [
     name: 'label',
     defaultValueFn: function() { return this.name.labelize(); }
   }],
+  ['Model', 'StringProperty', {
+    name: 'plural',
+    help: 'The plural form of this model\'s name.',
+    defaultValueFn: function() { return this.name + 's'; }
+  }],
 
   // mm4Methods
   [null, 'Model', {
@@ -904,6 +945,7 @@ var featureDAO = [
   ['Action', 'Method', function install(model, proto) {
     var a = this;
     proto[this.name] = function() { a.callIfEnabled(this); };
+    model[this.name.constantize()] = this;
   }],
 
   [null, 'Model', { name: 'Arg' }],
@@ -1068,6 +1110,29 @@ var featureDAO = [
     defaultValue: [],
     help: 'Sub-templates of this template.'
     }]*/
+  ['Template', 'Method', function install(model, proto) {
+    var t = this;
+    if ( ! t.template ) {
+      var future = afuture();
+      t.futureTemplate = future.get;
+      var path = document.currentScript.src;
+      path = path.substring(0, path.lastIndexOf('/') + 1);
+      path += model.name + '_' + t.name + '.ft';
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", path);
+      xhr.asend(function(data) {
+        t.template = data;
+        future.set(data);
+        t.futureTemplate = undefined;
+      });
+    }
+
+    if ( proto.__proto__[this.name] ) {
+      override(proto, this.name, TemplateUtil.lazyCompile(this));
+    } else {
+      proto[this.name] = TemplateUtil.lazyCompile(t);
+    }
+  }],
   // Model pseudo-properties for backwards compatability.
   ['Model', 'Property', {
     name: 'properties',
@@ -1199,6 +1264,28 @@ var featureDAO = [
       }
     }
   }],
+  ['Model', 'ArrayProperty', {
+    name: 'templates',
+    subType: 'Template',
+    view: 'ArrayView',
+    getter: function() {
+      var ret = [];
+      // TODO sould this be a local forEach?
+      this.features.localForEach(function(f) {
+        if ( Template.isInstance(f) ) ret.push(f);
+      });
+      return ret;
+    },
+    setter: function(value) {
+      for ( var i = 0; i < value.length; i++ ) {
+        if ( ! Template.isInstance(value[i]) )
+          value[i] = Template.create(value[i]);
+        this.features.add(value[i]);
+      }
+      // Trigger prototype rebuild;
+      this.getPrototype();
+    }
+  }],
 ];
 
 function lookup(address, scope) {
@@ -1224,12 +1311,7 @@ function build(scope, features) {
 
     var args = f[2];
     var feature = feature.create(args);
-    model.features.add(feature);
-
-    // Auto-install to non-modelled targets
-    if ( ! model.model_ ) {
-      feature.install(model, model.prototype);
-    }
+    model.addFeature(feature);
   }
 }
 
