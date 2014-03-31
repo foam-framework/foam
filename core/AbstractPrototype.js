@@ -39,7 +39,7 @@ var AbstractPrototype = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    if ( ! this.model_.hasOwnProperty('valueFactoryProperties_') ) {
+    if ( ! Object.hasOwnProperty.call(this.model_, 'valueFactoryProperties_') ) {
       this.model_.valueFactoryProperties_ = [];
 
       var ps = this.model_.properties;
