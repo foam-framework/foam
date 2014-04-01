@@ -104,9 +104,9 @@ FOAModel({
 
     init: function() {
       this.SUPER();
-      var me = this;
+      var self = this;
       this.i = 0;
-      Events.dynamic(function() { timer.time; }, function() { me.paint(); });
+      Events.dynamic(function() { self.timer.time; }, function() { self.paint(); });
 //      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
     },
 
@@ -157,7 +157,7 @@ FOAModel({
          r: 0,
          color: undefined,
          borderWidth: 4,
-         border: this.colours[timer.time/10%this.colours.length]});
+         border: this.colours[this.timer.time/10%this.colours.length]});
 
        this.addChild(circle);
 
