@@ -339,6 +339,11 @@ var Property = {
         return (o1.localeCompare || o1.compareTo).call(o1, o2);
       },
       help: 'Comparator function.'
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e) { return e.innerHTML; },
+      help: 'Function to extract from from DOM Element.'
     }
   ],
 

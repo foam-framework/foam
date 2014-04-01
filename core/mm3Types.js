@@ -321,6 +321,16 @@ var FunctionProperty = Model.create({
     {
       name: 'defaultValue',
       defaultValue: function() {}
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e) {
+        var txt = e.innerText;
+
+        return txt.startsWith('function') ?
+          eval(txt) :
+          new Function(txt) ;
+      }
     }
   ]
 });

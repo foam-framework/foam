@@ -89,7 +89,6 @@ var DOM = {
     if ( ! document.FOAM_OBJECTS ) document.FOAM_OBJECTS = {};
 
     var fs = document.querySelectorAll('foam');
-    console.log('fs: ', fs);
     for ( var i = 0 ; i < fs.length ; i++ ) {
       this.initElement(document, fs[i]);
     }
@@ -98,6 +97,7 @@ var DOM = {
   initElement: function(document, e) {
     var model = GLOBAL[e.getAttribute('model')];
     var args = {};
+
     for ( var i = 0 ; i < e.attributes.length ; i++ ) {
       var a   = e.attributes[i];
       var key = a.name;
@@ -109,23 +109,53 @@ var DOM = {
           val = val.substring(1);
           val = $(val);
         }
-
         args[key] = val;
       } else {
         console.log('unknown attribute: ', key);
       }
     }
 
+    function findProperty(name) {
+      for ( var j = 0 ; j < model.properties.length ; j++ ) {
+        var p = model.properties[j];
+
+        if ( p.name.toUpperCase() == name ) return p;
+      }
+
+      return null;
+    }
+
+    for ( var i = 0 ; i < e.children.length ; i++ ) {
+      var c = e.children[i];
+      var key = c.nodeName;
+      var p = findProperty(key);
+
+      if ( p ) {
+        console.log('setting ', p.name);
+        args[p.name] = p.fromElement(c);
+      } else {
+        console.log('unknown element: ', key);
+      }
+    }
+
     var obj = model.create(args);
+
+    var onLoad = e.getAttribute('oninit');
+    if ( onLoad ) {
+      console.log('onLoad', model.name);
+      Function(onLoad).bind(obj)();
+    }
 
     var view;
     // TODO: Check for view="" Attribute
     if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
       view = obj;
     } else {
+      var viewName = e.getAttribute('view');
+      var viewModel = viewName ? GLOBAL[viewName] : DetailView;
       view = ActionBorder.create(
         model,
-        DetailView.create({model: model, value: SimpleValue.create(obj)}));
+        viewModel.create({model: model, value: SimpleValue.create(obj)}));
     }
 
     if ( e.id ) document.FOAM_OBJECTS[e.id] = obj;
@@ -1671,7 +1701,11 @@ var DetailView = Model.create({
     bindSubView: function(view, prop) {
       if ( this.get() ) {
         // TODO: setValue is deprecated
-        view.setValue(this.get().propertyValue(prop.name));
+        if ( view.setValue ) {
+          view.setValue(this.get().propertyValue(prop.name));
+        } else {
+          view.value = this.get().propertyValue(prop.name);
+        }
       }
     },
 

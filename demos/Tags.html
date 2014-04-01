@@ -9,23 +9,34 @@
 
  <body>
 
-<h2>Timer</h2>
-<foam id="timer" model="Timer"></foam>
 
-<h2>Dragon</h2>
-<foam model="Dragon" timer="#timer" width="1000" height="1000"></foam>
+<table><tr>
+  <td valign=top>
+    <foam id="timer" model="Timer" onInit="this.start()"></foam>
+  </td>
+  <td>
+    <foam model="Dragon" timer="#timer" width="950" height="1000"></foam>
+  </td>
+  <td valign=top>
+    <foam id="tt" model="Turntable"></foam>
+  </td>
+</tr></table>
 
 <h2>Test</h2>
-<foam id="test1" model="UnitTest" description="A UnitTest embedded in DOM">
+<foam id="test1" model="UnitTest" view="SummaryView" description="A UnitTest embedded in DOM" onInit='this.test()'>
   <code>
-    log('Here I am');
+    this.log('Here I am');
   </code>
+  <x-tests>
+    <foam model="UnitTest" description="A test"><code>
+      this.log('Here again.');
+    </code></foam>
+  </x-tests>
 </foam>
 
 <script language="javascript">
   DOM.init(document);
-  $('timer').start();
-  $('test1').test();
+  Events.link($('timer').time$, $('tt').time$);
 </script>
 
  </body>
