@@ -57,8 +57,7 @@ FOAModel({
       type: 'String',
       mode: 'read-only',
       required: true,
-      view: {
-        create: function() { return TextFieldView.create({mode:'read-only', escapeHTML: false}); } },
+      view: 'StaticHTML',
       displayWidth: 80,
       displayHeight: 20
     },
@@ -69,6 +68,33 @@ FOAModel({
       required: true,
       displayWidth: 80,
       displayHeight: 30
+    },
+    {
+      model_: StringArrayProperty,
+      name:  'tags',
+      label: 'Tags'
+    },
+    {
+      name: 'tests',
+      label: 'Unit Tests',
+      type: 'Array[Unit Test]',
+      subType: 'UnitTest',
+      view: 'ArrayView',
+      fromElement: function(e) {
+        debugger;
+      },
+      preSet: function(tests) {
+        if ( Array.isArray(tests) ) return tests;
+
+        var a = [];
+        for ( key in tests ) {
+          a.push(UnitTest.create({name: key, code: tests[key]}));
+        }
+
+        return a;
+      },
+      valueFactory: function() { return []; },
+      help: 'Sub-tests of this test.'
     }
   ],
 
@@ -78,25 +104,36 @@ FOAModel({
       name:  'test',
       help:  'Run the unit tests.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function(obj) {
-        console.log("testing", this);
-        this.results = "<table border=1>";
+      action: function(obj) {
+        console.log('testing', this);
+        this.results = '<table border=1>';
 
         this.passed = 0;
         this.failed = 0;
+
         this.code();
 
-        this.append("</table>");
+        for ( var i = 0 ; i < this.tests.length ; i++ ) {
+          var test = this.tests[i];
+
+          test.test();
+          this.passed += test.passed;
+          this.failed += test.failed;
+
+          // this.append(test.results);
+        }
+
+        this.append('</table>');
       }
     }
   ],
 
   methods:{
-
+    log: function(str) {
+      this.results += str;
+    },
     append: function(str) {
-      this.results = this.results + str;
+      this.results += str;
     },
     addHeader: function(name) {
       this.append('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
