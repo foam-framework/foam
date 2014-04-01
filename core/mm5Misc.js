@@ -57,7 +57,6 @@ FOAModel({
       type: 'String',
       mode: 'read-only',
       required: true,
-      view: 'StaticHTML',
       displayWidth: 80,
       displayHeight: 20
     },
@@ -80,9 +79,7 @@ FOAModel({
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'ArrayView',
-      fromElement: function(e) {
-        debugger;
-      },
+      fromElement: function(e) { return DOM.initElementChildren(e); },
       preSet: function(tests) {
         if ( Array.isArray(tests) ) return tests;
 

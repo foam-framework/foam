@@ -90,14 +90,29 @@ var DOM = {
 
     var fs = document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
-      this.initElement(document, fs[i]);
+      this.initElement(fs[i], document);
     }
   },
 
-  initElement: function(document, e) {
+  initElementChildren: function(e) {
+    var a = [];
+
+    for ( var i = 0 ; i < e.children.length ; i++ ) {
+      var c = e.children[i];
+      
+      if ( c.tagName === 'FOAM' ) {
+        a.push(DOM.initElement(c));
+      }
+    }
+    
+    return a;
+  },
+
+  /** opt_document -- if supplied the object's view will be added to the document. **/
+  initElement: function(e, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
-    if ( ! document.contains(e) ) return;
+    if ( opt_document && ! opt_document.contains(e) ) return;
 
     var model = GLOBAL[e.getAttribute('model')];
     var args = {};
@@ -149,22 +164,26 @@ var DOM = {
       Function(onLoad).bind(obj)();
     }
 
-    var view;
-    // TODO: Check for view="" Attribute
-    if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
-      view = obj;
-    } else {
-      var viewName = e.getAttribute('view');
-      var viewModel = viewName ? GLOBAL[viewName] : DetailView;
-      view = ActionBorder.create(
-        model,
-        viewModel.create({model: model, value: SimpleValue.create(obj)}));
+    if ( opt_document ) {
+      var view;
+      // TODO: Check for view="" Attribute
+      if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
+        view = obj;
+      } else {
+        var viewName = e.getAttribute('view');
+        var viewModel = viewName ? GLOBAL[viewName] : DetailView;
+        view = ActionBorder.create(
+          model,
+          viewModel.create({model: model, value: SimpleValue.create(obj)}));
+      }
+      
+      if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
+      obj.view_ = view;
+      e.outerHTML = view.toHTML();
+      view.initHTML();
     }
 
-    if ( e.id ) document.FOAM_OBJECTS[e.id] = obj;
-    obj.view_ = view;
-    e.outerHTML = view.toHTML();
-    view.initHTML();
+    return obj;
   },
 
   setClass: function(e, className, opt_enabled) {
