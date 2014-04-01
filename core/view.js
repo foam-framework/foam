@@ -95,6 +95,10 @@ var DOM = {
   },
 
   initElement: function(document, e) {
+    // If was a sub-object for an object that has already been displayed,
+    // then it will no longer be in the DOM and doesn't need to be shown.
+    if ( ! document.contains(e) ) return;
+
     var model = GLOBAL[e.getAttribute('model')];
     var args = {};
 
@@ -142,7 +146,6 @@ var DOM = {
 
     var onLoad = e.getAttribute('oninit');
     if ( onLoad ) {
-      console.log('onLoad', model.name);
       Function(onLoad).bind(obj)();
     }
 
@@ -160,7 +163,6 @@ var DOM = {
 
     if ( e.id ) document.FOAM_OBJECTS[e.id] = obj;
     obj.view_ = view;
-
     e.outerHTML = view.toHTML();
     view.initHTML();
   },
