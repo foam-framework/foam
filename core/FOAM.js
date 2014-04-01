@@ -33,6 +33,9 @@ function $removeWindow(w) {
 /** Replacement for getElementById **/
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {
+    if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
+      return document.FOAM_OBJECTS[id];
+
     var ret = $documents[i].getElementById(id);
 
     if ( ret ) return ret;

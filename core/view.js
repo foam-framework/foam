@@ -84,6 +84,57 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
 
 
 var DOM = {
+  /** Instantiate FOAM Objects in a document. **/
+  init: function(document) {
+    if ( ! document.FOAM_OBJECTS ) document.FOAM_OBJECTS = {};
+
+    var fs = document.querySelectorAll('foam');
+    console.log('fs: ', fs);
+    for ( var i = 0 ; i < fs.length ; i++ ) {
+      this.initElement(document, fs[i]);
+    }
+  },
+
+  initElement: function(document, e) {
+    var model = GLOBAL[e.getAttribute('model')];
+    var args = {};
+    for ( var i = 0 ; i < e.attributes.length ; i++ ) {
+      var a   = e.attributes[i];
+      var key = a.name;
+      var val = a.textContent;
+      var p   = model.getProperty(key);
+
+      if ( p ) {
+        if ( val.startsWith('#') ) {
+          val = val.substring(1);
+          val = $(val);
+        }
+
+        args[key] = val;
+      } else {
+        console.log('unknown attribute: ', key);
+      }
+    }
+
+    var obj = model.create(args);
+
+    var view;
+    // TODO: Check for view="" Attribute
+    if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
+      view = obj;
+    } else {
+      view = ActionBorder.create(
+        model,
+        DetailView.create({model: model, value: SimpleValue.create(obj)}));
+    }
+
+    if ( e.id ) document.FOAM_OBJECTS[e.id] = obj;
+    obj.view_ = view;
+
+    e.outerHTML = view.toHTML();
+    view.initHTML();
+  },
+
   setClass: function(e, className, opt_enabled) {
     var oldClassName = e.className || '';
     var enabled = opt_enabled === undefined ? true : opt_enabled;
