@@ -375,7 +375,7 @@ FOAModel({
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
 
-      this.registerCallbacks();
+      this.invokeInitializers();
       this.initChildren();
     },
 
@@ -399,26 +399,6 @@ FOAModel({
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
 
       this.initializers_ = undefined;
-    },
-
-    registerCallbacks: function() {
-      if ( this.callbacks_ ) {
-        // hookup event listeners
-        for ( var i = 0 ; i < this.callbacks_.length ; i++ ) {
-          var callback  = this.callbacks_[i];
-          var elementId = callback[0];
-          var event     = callback[1];
-          var listener  = callback[2];
-          var e         = $(elementId);
-          if ( ! e ) {
-            console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
-          } else {
-            e.addEventListener(event, listener.bind(this), false);
-          }
-        }
-
-        delete this['callbacks_'];
-      }
     },
 
     destroy: function() {
@@ -1441,7 +1421,7 @@ FOAModel({
         '<img id="' + id + '">' ;
     },
     initHTML: function() {
-      this.registerCallbacks();
+      this.invokeInitializers();
       this.$.src = this.image();
     },
     // deprecated: remove
@@ -2298,9 +2278,9 @@ FOAModel({
     tableToHTML: function() {
       var model = this.model;
 
-      if ( this.callbacks_ ) {
+      if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
-        delete this['callbacks_'];
+        delete this['initializers_'];
         this.children = [];
       }
 
@@ -2451,7 +2431,7 @@ FOAModel({
         }; }(this.selection, this.objs[i]);
       }
 
-      delete this['callbacks_'];
+      delete this['initializers_'];
       this.children = [];
     },
 
@@ -3442,7 +3422,7 @@ FOAModel({
             inputs.children[i].firstElementChild.value = value[i];
         }
 
-        this.registerCallbacks();
+        this.invokeInitializers();
       }
     },
     {
@@ -3481,7 +3461,7 @@ FOAModel({
       action: function() {
         this.$.firstElementChild.insertAdjacentHTML(
           'beforeend', this.row());
-        this.registerCallbacks();
+        this.invokeInitializers();
         this.onInput();
       }
     }

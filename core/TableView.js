@@ -250,9 +250,9 @@ FOAModel({
     tableToHTML: function() {
       var model = this.model;
 
-      if ( this.callbacks_ ) {
+      if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
-        delete this['callbacks_'];
+        delete this['initializers_'];
         this.children = [];
       }
 
@@ -387,7 +387,7 @@ FOAModel({
         }; }(this.selection, this.objs[i]);
       }
 
-      delete this['callbacks_'];
+      delete this['initializers_'];
       this.children = [];
     },
 
