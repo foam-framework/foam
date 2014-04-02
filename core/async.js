@@ -66,13 +66,19 @@ function arepeat(n, afunc) {
 }
 
 
+/** Execute the supplied afunc on each element of an array. */
+function aforEach(arr, afunc) {
+  // TODO: implement
+}
+
+
 /** Execute the supplied afunc until cond() returns false. */
 function awhile(cond, afunc) {
   return function(ret) {
     var a = argsToArray(arguments);
 
     var g = function() {
-      if (!cond()) { ret.apply(undefined, arguments); return; }
+      if ( ! cond() ) { ret.apply(undefined, arguments); return; }
       afunc.apply(this, a);
     };
 
@@ -80,6 +86,7 @@ function awhile(cond, afunc) {
     g.apply(this, a);
   };
 }
+
 
 /** Execute the supplied afunc if cond. */
 function aif(cond, afunc) {
