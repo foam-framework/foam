@@ -47,48 +47,6 @@ var aeval = (function() {
   };
 })();
 
-var aevalTemplate = function(t) {
-  if ( t.template ) {
-    return aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}');
-  }
-
-  return aseq(
-    t.futureTemplate,
-    function(ret, template) {
-      aeval('function (opt_out) {' + TemplateCompiler.parseString(template) + '}')(ret);
-    });
-};
-
-
-function arequire(modelName) {
-  var model = GLOBAL[modelName];
-
-  /** This is so that if the model is arequire'd concurrently the
-   *  initialization isn't done more than once.
-   **/
-  if ( ! model.required__ ) {
-    // TODO: eventually this should just call the arequire() method on the Model
-    var args = [];
-    for ( var i = 0 ; i < model.templates.length ; i++ ) {
-      var t = model.templates[i];
-      args.push(aseq(
-        aevalTemplate(model.templates[i]),
-        (function(t) { return function(ret, m) {
-          model.getPrototype()[t.name] = m;
-          ret();
-        };})(t)
-      ));
-    }
-
-    model.required__ = amemo(aseq(
-      apar.apply(apar, args),
-      aconstant(model)));
-  }
-
-  return model.required__;
-}
-
-
 ajsonp = function(url, params, opt_method) {
   return axhr(url, opt_method ? opt_method : 'GET', params);
 };

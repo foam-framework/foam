@@ -114,6 +114,36 @@ FOAM.browse = function(model, opt_dao) {
    GLOBAL.stack.pushView(ctrl, model.plural);
 };
 
+
+function arequire(modelName) {
+  var model = GLOBAL[modelName];
+
+  /** This is so that if the model is arequire'd concurrently the
+   *  initialization isn't done more than once.
+   **/
+  if ( ! model.required__ ) {
+    // TODO: eventually this should just call the arequire() method on the Model
+    var args = [];
+    for ( var i = 0 ; i < model.templates.length ; i++ ) {
+      var t = model.templates[i];
+      args.push(aseq(
+        aevalTemplate(model.templates[i]),
+        (function(t) { return function(ret, m) {
+          model.getPrototype()[t.name] = m;
+          ret();
+        };})(t)
+      ));
+    }
+
+    model.required__ = amemo(aseq(
+      apar.apply(apar, args),
+      aconstant(model)));
+  }
+
+  return model.required__;
+}
+
+
 var FOAM_POWERED = '<a style="text-decoration:none;" href="http://code.google.com/p/foam-framework/" target="_blank">\
 <font size=+1 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\
 <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>\
