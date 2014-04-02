@@ -52,6 +52,14 @@ FOAModel({
       help: 'Number of sub-tests to fail.'
     },
     {
+      model_: 'FunctionProperty',
+      name: 'code',
+      label: 'Test Code',
+      required: true,
+      displayWidth: 80,
+      displayHeight: 30
+    },
+    {
       model_: 'Property',
       name: 'results',
       type: 'String',
@@ -59,14 +67,6 @@ FOAModel({
       required: true,
       displayWidth: 80,
       displayHeight: 20
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'code',
-      label: 'Test Code',
-      required: true,
-      displayWidth: 80,
-      displayHeight: 30
     },
     {
       model_: StringArrayProperty,
@@ -103,7 +103,7 @@ FOAModel({
 
       action: function(obj) {
         console.log('testing', this);
-        this.results = '<table border=1>';
+        this.results = ''; //'<table border=1>';
 
         this.passed = 0;
         this.failed = 0;
@@ -120,7 +120,7 @@ FOAModel({
           // this.append(test.results);
         }
 
-        this.append('</table>');
+//        this.append('</table>');
       }
     }
   ],
