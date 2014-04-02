@@ -323,13 +323,35 @@ FOAModel({
       return this.elementId || ( this.elementId = this.nextID() );
     },
 
+    addInitializer: function(f) {
+      (this.initializers_ || (this.initializers_ = [])).push(f);
+    },
+
     on: function(event, listener, opt_elementId) {
       opt_elementId = opt_elementId || this.nextID();
+      listener = listener.bind(this);
 
-      //      if ( ! this.hasOwnProperty('callbacks_') ) this.callbacks_ = [];
-      if ( ! this.callbacks_ ) this.callbacks_ = [];
+      this.addInitializer(function() {
+        var e = $(opt_elementId);
+        if ( ! e ) {
+          console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+        } else {
+          e.addEventListener(event, listener.bind(this), false);
+        }
+      });
 
-      this.callbacks_.push([opt_elementId, event, listener]);
+      return opt_elementId;
+    },
+
+    setClass: function(className, predicate, opt_elementId) {
+      opt_elementId = opt_elementId || this.nextID();
+      predicate = predicate.bind(this);
+
+      this.addInitializer(function() {
+        Events.dynamic(predicate, function() {
+          DOM.setClass($(opt_elementId), className, predicate());
+        });
+      });
 
       return opt_elementId;
     },
@@ -369,6 +391,14 @@ FOAModel({
           }
         }
       }
+    },
+
+    invokeInitializers: function() {
+      if ( ! this.initializers_ ) return;
+
+      for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
+
+      this.initializers_ = undefined;
     },
 
     registerCallbacks: function() {
