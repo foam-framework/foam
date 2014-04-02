@@ -130,6 +130,8 @@ var TemplateUtil = {
 
      return function() {
        if ( ! delegate ) {
+         if ( ! t.template )
+           throw 'Must arequire() template model before use for ' + t.name;
          delegate = TemplateUtil.compile(t.template);
        }
 
@@ -169,3 +171,24 @@ var TemplateUtil = {
       };
    }
 };
+
+
+/** Is actually synchronous but is replaced in ChromeApp with an async version. **/
+var aeval = function(src) {
+  return aconstant(eval('(' + src + ')'));
+};
+
+
+var aevalTemplate = function(t) {
+  if ( t.template ) {
+    return aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}');
+  }
+
+  return aseq(
+    t.futureTemplate,
+    function(ret, template) {
+      aeval('function (opt_out) {' + TemplateCompiler.parseString(template) + '}')(ret);
+    });
+};
+
+
