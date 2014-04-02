@@ -99,12 +99,12 @@ var DOM = {
 
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
-      
+
       if ( c.tagName === 'FOAM' ) {
         a.push(DOM.initElement(c));
       }
     }
-    
+
     return a;
   },
 
@@ -166,17 +166,15 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      // TODO: Check for view="" Attribute
       if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
-        view = ActionBorder.create(
-          model,
-          viewModel.create({model: model, value: SimpleValue.create(obj)}));
+        view = viewModel.create({model: model, value: SimpleValue.create(obj)});
+        if ( ! viewName ) view = ActionBorder.create(model, view);
       }
-      
+
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
       obj.view_ = view;
       e.outerHTML = view.toHTML();
