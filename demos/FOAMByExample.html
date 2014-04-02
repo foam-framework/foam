@@ -1,0 +1,51 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script>var FOAM_BOOT_DIR="../core/";</script>
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <title>FOAM DOM Objects</title>
+  <style>
+    .code {width:700px; white-space: pre;border: 1px solid; padding: 5px; font-family: monospace;}
+    .output {width:700px; white-space: pre; border: 1px solid; padding: 5px; color:blue;}
+  </style>
+ </head>
+
+ <body>
+
+
+<script language="javascript">
+FOAModel({
+  name: 'DemoView',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ]
+});
+</script>
+
+<!--
+<foam model="Model" name="DemoView" extendsModel="DetailView">
+  <templates>
+     <template name="toHTML"><code>
+       <h2>$$description{mode:'read-only'}<h2>
+       <div class="code">$$code{mode:'read-only'}</div>
+       <div class="results">$$results</div>
+     </code></template>
+  </templates>
+</foam>
+-->
+
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <description>A UnitTest embedded in DOM</description>
+  <code>
+    this.log('Here I am');
+  </code>
+</foam>
+
+<script language="javascript">
+  arequire('DemoView')(function() {
+    DOM.init(document);
+ });
+</script>
+
+ </body>
+</html>
