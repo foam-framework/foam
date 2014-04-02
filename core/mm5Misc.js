@@ -127,23 +127,26 @@ FOAModel({
 
   methods:{
     log: function(str) {
-      this.results += str;
+      this.append(str);
     },
     append: function(str) {
       this.results += str;
+      this.results += '\n';
     },
     addHeader: function(name) {
       this.append('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
     },
+    /*
     addRow: function(comment, condition) {
       this.append('<tr>' +
                   '<td>' + comment + '</td>' +
                   '<td>' + (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>") + '</td>' +
                   '</tr>');
-    },
+    },*/
     assert: function(condition, comment) {
       if ( condition ) this.passed++; else this.failed++;
-      this.addRow(comment, condition);
+      // this.addRow(comment, condition);
+      this.log(comment + ' ' + (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>"));
     },
     fail: function(comment) {
       this.assert(false, comment);
