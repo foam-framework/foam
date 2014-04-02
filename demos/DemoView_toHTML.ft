@@ -1,7 +1,12 @@
+<%
+  var ifError = function() {
+    return this.failed;
+  }.bind(this.value.value);
+%>
 <h3>$$description{mode:'read-only'}</h3>
 <div>Code:</div>
 <div class="code"><%= this.value.value.code.toString() %></div>
 <br>
 <div>Output:</div>
-<div class="output">$$results</div>
+<div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
 <br><br>

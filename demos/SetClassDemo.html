@@ -22,18 +22,6 @@ FOAModel({
 });
 </script>
 
-<!--
-<foam model="Model" name="DemoView" extendsModel="DetailView">
-  <templates>
-     <template name="toHTML"><code>
-       <h2>$$description{mode:'read-only'}<h2>
-       <div class="code">$$code{mode:'read-only'}</div>
-       <div class="results">$$results</div>
-     </code></template>
-  </templates>
-</foam>
--->
-
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
   <description>A UnitTest embedded in DOM</description>
   <code>
@@ -41,7 +29,7 @@ FOAModel({
   </code>
 </foam>
 
-<foam model="UnitTest" onInit="this.test()" view="DemoView">
+<foam id='test2' model="UnitTest" onInit="this.test()" view="DemoView">
   <description>A failed Test</description>
   <code>
     this.fail("Something's wrong.");
@@ -52,6 +40,7 @@ FOAModel({
   arequire('DemoView')(function() {
     DOM.init(document);
 
+    // Toggle test2.failed to see if the class updates
     setInterval(function() { $('test2').failed = $('test2').failed ? 0 : 1 }, 1000);
  });
 </script>
