@@ -7,8 +7,8 @@
   <title>FOAM DOM Objects</title>
   <style>
     h3 {color: #444;}
-    .code {width:700px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
-    .output {width:700px; white-space: pre; border: 1px solid; padding: 5px; color: blue;}
+    .code {width:900px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
+    .output {width:900px; white-space: pre; border: 1px solid; padding: 5px; color: blue;}
     .error {border: 2px solid red;}
   </style>
  </head>
@@ -38,16 +38,16 @@ FOAModel({
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
   <description>A UnitTest embedded in DOM</description>
   <code>
-    this.log('Here I am.');
-    this.log('And here.');
+    log('Here I am.');
+    log('And here.');
   </code>
   <tests>
     <foam model="UnitTest" description="SubTest1"><code>
-    this.log('sub test 1, part 1');
-    this.log('sub test 1, part 2');
+    log('sub test 1, part 1');
+    log('sub test 1, part 2');
     </code></foam>
     <foam model="UnitTest" description="SubTest2"><code>
-    this.log('sub test 2');
+    log('sub test 2');
     </code></foam>
   </tests>
 </foam>
@@ -55,7 +55,7 @@ FOAModel({
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
   <description>A failed Test</description>
   <code>
-    this.fail("Something's wrong.");
+    fail("Something's wrong.");
   </code>
 </foam>
 
@@ -63,24 +63,25 @@ FOAModel({
   <description>DAO Tests</description>
   <code>
     // First, create a Model (like a schema)
-    var Person = FOAM({
-    model_: 'Model',
-    name: 'Person',
-    properties: [
-    { name: 'id' },
-    { name: 'name' },
-    { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntegerProperty', name: 'age' }
-    ]
+    Person = FOAM({
+      model_: 'Model',
+      name: 'Person',
+      properties: [
+        { name: 'id' },
+        { name: 'name' },
+        { name: 'sex', defaultValue: 'M' },
+        { model_: 'IntegerProperty', name: 'age' }
+      ]
     });
     
-    var dao = MDAO.create({model: Person})
-    .addIndex(Person.NAME)
-    .addIndex(Person.SEX, Person.AGE);
+    dao = MDAO.create({model: Person})
+      .addIndex(Person.NAME)
+      .addIndex(Person.SEX, Person.AGE);
+
+    log(dao);
 </code>
   <tests>
     <foam model="UnitTest" description="SubTest1"><code>
-        var dao = [];
         // Add some People
         dao.put(Person.create({id:'1', name:'John',  age:21}));
         dao.put(Person.create({id:'2', name:'Dave',  age:20}));
@@ -88,15 +89,13 @@ FOAModel({
         dao.put(Person.create({id:'4', name:'Andy',  age:18}));
         
         // Select to a 'sink'
-        var log = this.log.bind(this);
-        dao.select({put: function(p) { log('person: ', p.name); }});
+        dao.select({put: function(p) { log('person: ' + p.name); }});
     </code></foam>
     <foam model="UnitTest" description="SubTest2"><code>
-        var dao = [];
         // Select directly to an Array
         var a = [];
         dao.select(a);
-        this.log(a);
+        log(JSONUtil.stringify(a));
     </code></foam>
   </tests>
 </foam>
