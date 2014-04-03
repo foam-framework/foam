@@ -38,7 +38,8 @@ FOAModel({
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
   <description>A UnitTest embedded in DOM</description>
   <code>
-    this.log('Here I am');
+    this.log('Here I am.');
+    this.log('And here.');
   </code>
   <tests>
     <foam model="UnitTest" description="SubTest1"><code>
@@ -58,11 +59,52 @@ FOAModel({
   </code>
 </foam>
 
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <description>DAO Tests</description>
+  <code>
+    // First, create a Model (like a schema)
+    var Person = FOAM({
+    model_: 'Model',
+    name: 'Person',
+    properties: [
+    { name: 'id' },
+    { name: 'name' },
+    { name: 'sex', defaultValue: 'M' },
+    { model_: 'IntegerProperty', name: 'age' }
+    ]
+    });
+    
+    var dao = MDAO.create({model: Person})
+    .addIndex(Person.NAME)
+    .addIndex(Person.SEX, Person.AGE);
+</code>
+  <tests>
+    <foam model="UnitTest" description="SubTest1"><code>
+        var dao = [];
+        // Add some People
+        dao.put(Person.create({id:'1', name:'John',  age:21}));
+        dao.put(Person.create({id:'2', name:'Dave',  age:20}));
+        dao.put(Person.create({id:'3', name:'Steve', age:19}));
+        dao.put(Person.create({id:'4', name:'Andy',  age:18}));
+        
+        // Select to a 'sink'
+        var log = this.log.bind(this);
+        dao.select({put: function(p) { log('person: ', p.name); }});
+    </code></foam>
+    <foam model="UnitTest" description="SubTest2"><code>
+        var dao = [];
+        // Select directly to an Array
+        var a = [];
+        dao.select(a);
+        this.log(a);
+    </code></foam>
+  </tests>
+</foam>
+
 <script language="javascript">
   arequire('DemoView')(function() {
     DOM.init(document);
  });
 </script>
-
  </body>
 </html>

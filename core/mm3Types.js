@@ -325,7 +325,7 @@ var FunctionProperty = Model.create({
     {
       name: 'fromElement',
       defaultValue: function(e) {
-        var txt = e.innerText;
+        var txt = e.innerHTML;
 
         return txt.startsWith('function') ?
           eval(txt) :

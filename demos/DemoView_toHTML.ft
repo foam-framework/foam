@@ -4,10 +4,12 @@
 %>
 <h3>$$description{mode:'read-only'}</h3>
 <div>Code:</div>
-<div class="code"><%= test.code.toString() %></div>
-<br>
-<div>Output:</div>
-<div class="output" id="<%= this.setClass('error', ifError) %>"><%= test.results %></div>
+<div class="code">{{test.code}}</div>
+<% if ( test.results.trim() ) { %>
+  <br>
+  <div>Output:</div>
+  <div class="output" id="<%= this.setClass('error', ifError) %>">{{test.results}}</div>
+<% } %>
 <% if ( test.tests.length ) { %>
   <blockquote>
   <% for ( var i = 0 ; i < test.tests.length ; i++ ) {
