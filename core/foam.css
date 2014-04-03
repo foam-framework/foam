@@ -709,3 +709,13 @@ div.gridViewControl select {
    */
   x-unused: white;
 }
+
+/* ChoiceListView */
+.foamChoiceListView .selected {
+  font-weight: bold;
+}
+
+.foamChoiceListView.horizontal .choice {
+  display: inline;
+  margin: 12px;
+}

@@ -1083,6 +1083,71 @@ FOAModel({
 
 
 FOAModel({
+  name:  'ChoiceListView',
+
+  extendsModel: 'AbstractChoiceView',
+
+  properties: [
+    {
+      name: 'orientation',
+      defaultValue: 'horizontal',
+      view: {
+        model_: 'ChoiceView',
+        choices: [
+          [ 'horizontal', 'Horizontal' ],
+          [ 'vertical',   'Vertical'   ]
+        ]
+      }
+    },
+    {
+      name: 'cssClass',
+      type: 'String',
+      defaultValue: 'foamChoiceListView'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.getID() + '" class="' + this.cssClass + ' ' + this.orientation + '"></div>';
+    },
+
+    updateHTML: function() {
+      var out = "";
+
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        var choice = this.choices[i];
+        var id     = this.nextID();
+
+        this.on(
+          'click',
+          function(choice) { this.choice = choice; }.bind(this, choice),
+          id);
+
+        this.setClass(
+          'selected',
+          function(choice) { return this.choice == choice; }.bind(this, choice),
+          id);
+
+        out += '<div class="choice" id="' + id + '">' + choice[1] + '</div>';
+      }
+
+      this.$.innerHTML = out;
+      this.invokeInitializers();
+    },
+
+    setValue: function(value) {
+      // ???: Is this ever called?
+      debugger;
+    },
+
+    initHTML: function() {
+      this.updateHTML();
+    }
+  }
+});
+
+
+FOAModel({
   name:  'ChoiceView',
 
   extendsModel: 'AbstractChoiceView',
@@ -1229,6 +1294,7 @@ FOAModel({
 });
 
 
+// TODO: Fix, doesn't work when choice is an array, which is always now
 FOAModel({
   name:  'RadioBoxView',
 
