@@ -1,12 +1,21 @@
 <%
-  var ifError = function() {
-    return this.failed;
-  }.bind(this.value.value);
+  var test = this.value.value;
+  var ifError = function() { return this.failed; }.bind(test);
 %>
 <h3>$$description{mode:'read-only'}</h3>
 <div>Code:</div>
-<div class="code"><%= this.value.value.code.toString() %></div>
+<div class="code"><%= test.code.toString() %></div>
 <br>
 <div>Output:</div>
-<div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
-<br><br>
+<div class="output" id="<%= this.setClass('error', ifError) %>"><%= test.results %></div>
+<% if ( test.tests.length ) { %>
+  <blockquote>
+  <% for ( var i = 0 ; i < test.tests.length ; i++ ) {
+    var t = test.tests[i];
+    this.value.value = t;
+    %>
+  <%= this.toHTML() %>
+  <% } %>
+  </blockquote>
+<% } %>
+<br>

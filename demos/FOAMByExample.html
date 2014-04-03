@@ -6,8 +6,9 @@
   <script language="javascript" src="dragon.js"></script>
   <title>FOAM DOM Objects</title>
   <style>
+    h3 {color: #444;}
     .code {width:700px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
-    .output {width:700px; white-space: pre; border: 1px solid; padding: 5px; color:blue;}
+    .output {width:700px; white-space: pre; border: 1px solid; padding: 5px; color: blue;}
     .error {border: 2px solid red;}
   </style>
  </head>
@@ -39,6 +40,15 @@ FOAModel({
   <code>
     this.log('Here I am');
   </code>
+  <tests>
+    <foam model="UnitTest" description="SubTest1"><code>
+    this.log('sub test 1, part 1');
+    this.log('sub test 1, part 2');
+    </code></foam>
+    <foam model="UnitTest" description="SubTest2"><code>
+    this.log('sub test 2');
+    </code></foam>
+  </tests>
 </foam>
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
@@ -51,8 +61,6 @@ FOAModel({
 <script language="javascript">
   arequire('DemoView')(function() {
     DOM.init(document);
-
-    setInterval(function() { $('test2').failed = $('test2').failed ? 0 : 1 }, 1000);
  });
 </script>
 
