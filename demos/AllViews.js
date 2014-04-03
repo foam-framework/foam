@@ -6,6 +6,14 @@ FOAModel({
       name: 'defaultEverything'
     },
     {
+      name: 'clickToEnableEdit',
+      defaultValue: 'click to enable edit',
+      view: {
+        model_: 'TextFieldView',
+        className: 'clickToEnableEdit'
+      }
+    },
+    {
       model_: 'StringProperty',
       name: 'stringProperty'
     },

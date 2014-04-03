@@ -710,6 +710,11 @@ div.gridViewControl select {
   x-unused: white;
 }
 
+input.clickToEnableEdit:not(:focus) {
+  border: none;
+  background-color: inherit;
+}
+
 /* ChoiceListView */
 .foamChoiceListView .selected {
   font-weight: bold;
