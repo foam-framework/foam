@@ -999,36 +999,11 @@ FOAModel({
 
 
 FOAModel({
-  name:  'ChoiceView',
+  name:  'AbstractChoiceView',
 
   extendsModel: 'AbstractView',
 
-  /*
-   * <select size="">
-   *    <choice value="" selected></choice>
-   * </select>
-   */
   properties: [
-    {
-      name:  'name',
-      type:  'String',
-      defaultValue: 'field'
-    },
-    {
-      name:  'helpText',
-      type:  'String',
-      defaultValue: undefined
-    },
-    {
-      name: 'cssClass',
-      type: 'String',
-      defaultValue: 'foamChoiceView'
-    },
-    {
-      name:  'size',
-      type:  'int',
-      defaultValue: 1
-    },
     {
       name:  'value',
       type:  'Value',
@@ -1093,7 +1068,54 @@ FOAModel({
           return this.choices[i];
       }
     },
+    getValue: function() {
+      return this.value;
+    },
 
+    indexToValue: function(v) {
+      var i = parseInt(v);
+      if ( isNaN(i) ) return v;
+
+      return this.choices[i][0];
+    }
+  }
+});
+
+
+FOAModel({
+  name:  'ChoiceView',
+
+  extendsModel: 'AbstractChoiceView',
+
+  /*
+   * <select size="">
+   *    <choice value="" selected></choice>
+   * </select>
+   */
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      defaultValue: 'field'
+    },
+    {
+      name:  'helpText',
+      type:  'String',
+      defaultValue: undefined
+    },
+    {
+      name: 'cssClass',
+      type: 'String',
+      defaultValue: 'foamChoiceView'
+    },
+    {
+      name:  'size',
+      type:  'int',
+      defaultValue: 1
+    }
+  ],
+
+  methods: {
     toHTML: function() {
       return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
     },
@@ -1131,10 +1153,6 @@ FOAModel({
 
       this.$.innerHTML = out.join('');
       AbstractView.getPrototype().initHTML.call(this);
-    },
-
-    getValue: function() {
-      return this.value;
     },
 
     setValue: function(value) {
@@ -2505,7 +2523,6 @@ FOAModel({
     }
   }
 });
-
 
 
 // TODO: add ability to set CSS class and/or id
