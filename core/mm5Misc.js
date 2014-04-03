@@ -52,6 +52,11 @@ FOAModel({
       help: 'Number of sub-tests to fail.'
     },
     {
+      name:  'scope',
+      hidden: true,
+      valueFactory: function() { return {}; }
+    },
+    {
       model_: 'FunctionProperty',
       name: 'code',
       label: 'Test Code',
@@ -102,30 +107,43 @@ FOAModel({
       help:  'Run the unit tests.',
 
       action: function(obj) {
-        console.log('testing', this);
+        this.scope.log    = this.log.bind(this);
+        this.scope.assert = this.assert.bind(this);
+        this.scope.fail   = this.fail.bind(this);
+        this.scope.ok     = this.ok.bind(this);
+
         this.results = ''; //'<table border=1>';
 
         this.passed = 0;
         this.failed = 0;
 
-        this.code();
+        var code;
+        with ( this.scope ) {
+          code = eval('(' + this.code.toString() + ')');
+        }
+        code.call(this);
+          
+        // this.code();
 
         for ( var i = 0 ; i < this.tests.length ; i++ ) {
           var test = this.tests[i];
 
+          // for ( var key in this.scope ) test.scope[key] = this.scope[key];
+          test.scope.__proto__ = this.scope;
           test.test();
           this.passed += test.passed;
           this.failed += test.failed;
 
           // this.append(test.results);
         }
-
 //        this.append('</table>');
       }
     }
   ],
 
   methods:{
+    // TODO: make take a variable number of arguments
+    // TODO: add jlog which logs arguments as JSON
     log: function(str) {
       this.append(str);
     },
