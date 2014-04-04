@@ -10,6 +10,7 @@
     .code {width:900px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
     .output {width:900px; white-space: pre; border: 1px solid; padding: 5px; color: blue;}
     .error {border: 2px solid red;}
+    .description { margin-left: 20px; font-size: 115%; }
   </style>
  </head>
 
@@ -27,7 +28,7 @@ FOAModel({
 <foam model="Model" name="DemoView" extendsModel="DetailView">
   <templates>
      <template name="toHTML"><code>
-       <h2>$$description{mode:'read-only'}<h2>
+       <h2>$$name{mode:'read-only'}<h2>
        <div class="code">$$code{mode:'read-only'}</div>
        <div class="results">$$results</div>
      </code></template>
@@ -36,33 +37,33 @@ FOAModel({
 -->
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
-  <description>A UnitTest embedded in DOM</description>
+  <name>A UnitTest embedded in DOM</name>
   <code>
     log('Here I am.');
     log('And here.');
   </code>
   <tests>
-    <foam model="UnitTest" description="SubTest1"><code>
+    <foam model="UnitTest" name="SubTest1"><code>
     log('sub test 1, part 1');
     log('sub test 1, part 2');
     </code></foam>
-    <foam model="UnitTest" description="SubTest2"><code>
+    <foam model="UnitTest" name="SubTest2"><code>
     log('sub test 2');
     </code></foam>
   </tests>
 </foam>
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
-  <description>A failed Test</description>
+  <name>A failed Test</name>
   <code>
     fail("Something's wrong.");
   </code>
 </foam>
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
-  <description>DAO Tests</description>
+  <name>DAO Tests</name>
+  <description>Define the Model (like a schema) and create a DAO.</description>
   <code>
-    // First, create a Model (like a schema)
     Person = FOAM({
       model_: 'Model',
       name: 'Person',
@@ -81,18 +82,19 @@ FOAModel({
     log(dao);
 </code>
   <tests>
-    <foam model="UnitTest" description="SubTest1"><code>
-        // Add some People
+    <foam model="UnitTest" name="SubTest1">
+      <description>Add some sample data and select ot a 'sink'.</description>
+      <code>
         dao.put(Person.create({id:'1', name:'John',  age:21}));
         dao.put(Person.create({id:'2', name:'Dave',  age:20}));
         dao.put(Person.create({id:'3', name:'Steve', age:19}));
         dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
-        // Select to a 'sink'
         dao.select({put: function(p) { log('person: ', p.name); }});
     </code></foam>
-    <foam model="UnitTest" description="SubTest2"><code>
-        // Select directly to an Array
+    <foam model="UnitTest" name="SubTest2">
+      <description>Select directly to an Array.</description>
+      <code>
         var a = [];
         dao.select(a);
         jlog(a);

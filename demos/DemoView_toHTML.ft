@@ -2,7 +2,13 @@
   var test = this.value.value;
   var ifError = function() { return this.failed; }.bind(test);
 %>
-<h3>$$description{mode:'read-only'}</h3>
+<h3>{{test.name}}</h3>
+<% if ( test.description ) { %>
+   <div class="description">
+     {{{test.description}}}
+   </div>
+   <br>
+<% } %>
 <div>Code:</div>
 <div class="code">{{test.code}}</div>
 <% if ( test.results.trim() ) { %>
