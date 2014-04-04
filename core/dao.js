@@ -990,7 +990,7 @@ defineProperties(Array.prototype, {
   remove: function(query, sink) {
     var id = query.id ? query.id : query;
     this.removeAll({ remove: sink && sink.remove },
-                   { query: { f: function(obj) { return obj.id === id; } } });
+                   { query: { f: function(obj) { return obj.id ? obj.id === id : obj === id; } } });
   },
   removeAll: function(sink, options) {
     if (!options) options = {};

@@ -230,6 +230,10 @@ FOAModel({
       mode:   "read-only",
       getter: function() { return this.elementId && $(this.elementId); },
       help:   'DOM Element.'
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
     }
   ],
 
@@ -370,7 +374,24 @@ FOAModel({
       this.initHTML();
     },
 
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+
+      this.$.innerHTML = this.toInnerHTML();
+      this.initInnerHTML();
+    },
+
+    toHTML: function() {
+      return '<' + this.tagName + ' id="' + this.getID() + '">' +
+        this.toInnerHTML() +
+        '</' + this.tagName + '>';
+    },
+
     initHTML: function() {
+      this.initInnerHTML();
+    },
+
+    initInnerHTML: function() {
       // Initialize this View and all of it's children.
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
@@ -4318,6 +4339,74 @@ FOAModel({
             self.$.style.display = '';
           }
         });
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'ViewSwitcher',
+  extendsModel: 'AbstractView',
+
+  help: 'A view which cycles between an array of views.',
+
+  properties: [
+    {
+      name: 'views',
+      valueFactory: function() { return []; },
+      postSet: function() {
+        this.viewIndex = this.viewIndex;
+      },
+    },
+    { name: 'value' },
+    {
+      name: 'activeView',
+      postSet: function(old, nu) {
+        if ( old ) {
+          old.unsubscribe('nextview', this.onNextView);
+          old.unsubscribe('prevview', this.onPrevView);
+        }
+        nu.subscribe('nextview', this.onNextView);
+        nu.subscribe('prevview', this.onPrevView);
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'viewIndex',
+      preSet: function(value) {
+        if ( value >= this.views.length ) return 0;
+        if ( value < 0 ) return this.views.length - 1;
+        return value;
+      },
+      postSet: function() {
+        this.activeView = this.views[this.viewIndex];
+      }
+    }
+  ],
+
+  methods: {
+    toInnerHTML: function() {
+      return this.activeView.toHTML();
+    },
+
+    initInnerHTML: function() {
+      this.activeView.initInnerHTML();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onNextView',
+      code: function() {
+        this.viewIndex = this.viewIndex + 1;
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'onPrevView',
+      code: function() {
+        this.viewIndex = this.viewIndex - 1;
+        this.updateHTML();
       }
     }
   ]
