@@ -4364,7 +4364,12 @@ FOAModel({
         this.viewIndex = this.viewIndex;
       },
     },
-    { name: 'value' },
+    {
+      name: 'value',
+      postSet: function(old, nu) {
+        this.activeView.value = nu;
+      }
+    },
     {
       name: 'activeView',
       postSet: function(old, nu) {
@@ -4374,6 +4379,7 @@ FOAModel({
         }
         nu.subscribe('nextview', this.onNextView);
         nu.subscribe('prevview', this.onPrevView);
+        nu.value = this.value;
       }
     },
     {
