@@ -234,6 +234,10 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'div'
+    },
+    {
+      name: 'cssClasses',
+      valueFactory: function() { return []; }
     }
   ],
 
@@ -338,7 +342,7 @@ FOAModel({
       this.addInitializer(function() {
         var e = $(opt_elementId);
         if ( ! e ) {
-          console.log('Error Missing element for id: ' + elementId + ' on event ' + event);
+          console.log('Error Missing element for id: ' + opt_elementId + ' on event ' + event);
         } else {
           e.addEventListener(event, listener.bind(this), false);
         }
@@ -384,7 +388,7 @@ FOAModel({
     },
 
     toHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '">' +
+      return '<' + this.tagName + ' id="' + this.getID() + '" class="' + this.cssClasses.join(' ') + '">' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
     },
@@ -4387,6 +4391,16 @@ FOAModel({
   ],
 
   methods: {
+    toHTML: function() {
+      return '<div id="' + this.getID() + '" style="display:none"></div>' + this.toInnerHTML();
+    },
+
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+      this.$.nextElementSibling.outerHTML = this.toInnerHTML();
+      this.initInnerHTML();
+    },
+
     toInnerHTML: function() {
       return this.activeView.toHTML();
     },
