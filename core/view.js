@@ -349,7 +349,9 @@ FOAModel({
 
       this.addInitializer(function() {
         Events.dynamic(predicate, function() {
-          DOM.setClass($(opt_elementId), className, predicate());
+          var e = $(opt_elementId);
+          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+          DOM.setClass(e, className, predicate());
         });
       });
 
