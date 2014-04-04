@@ -25,12 +25,19 @@ FOAModel({
   [
     {
       model_: 'Property',
-      name: 'description',
+      name: 'name',
       type: 'String',
       required: true,
+      displayWidth: 50,
+      help: "The unit test's name."
+    },
+    {
+      model_: 'Property',
+      name: 'description',
+      type: 'String',
       displayWidth: 70,
-      displayHeight: 1,
-      help: 'A one line description of the unit test.'
+      displayHeight: 5,
+      help: 'A multi-line description of the unit test.'
     },
     {
       model_: 'Property',
