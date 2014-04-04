@@ -108,6 +108,7 @@ FOAModel({
 
       action: function(obj) {
         this.scope.log    = this.log.bind(this);
+        this.scope.jlog   = this.jlog.bind(this);
         this.scope.assert = this.assert.bind(this);
         this.scope.fail   = this.fail.bind(this);
         this.scope.ok     = this.ok.bind(this);
@@ -122,7 +123,7 @@ FOAModel({
           code = eval('(' + this.code.toString() + ')');
         }
         code.call(this);
-          
+
         // this.code();
 
         for ( var i = 0 ; i < this.tests.length ; i++ ) {
@@ -142,17 +143,18 @@ FOAModel({
   ],
 
   methods:{
-    // TODO: make take a variable number of arguments
-    // TODO: add jlog which logs arguments as JSON
-    log: function(str) {
-      this.append(str);
+    log: function(/*arguments*/) {
+      for ( var i = 0 ; i < arguments.length ; i++ )
+        this.results += arguments[i];
+      this.results += '\n';
     },
-    append: function(str) {
-      this.results += str;
+    jlog: function(/*arguments*/) {
+      for ( var i = 0 ; i < arguments.length ; i++ )
+        this.results += JSONUtil.stringify(arguments[i]);
       this.results += '\n';
     },
     addHeader: function(name) {
-      this.append('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
+      this.log('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
     },
     /*
     addRow: function(comment, condition) {

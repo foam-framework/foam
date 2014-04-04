@@ -73,7 +73,7 @@ FOAModel({
         { model_: 'IntegerProperty', name: 'age' }
       ]
     });
-    
+
     dao = MDAO.create({model: Person})
       .addIndex(Person.NAME)
       .addIndex(Person.SEX, Person.AGE);
@@ -87,15 +87,15 @@ FOAModel({
         dao.put(Person.create({id:'2', name:'Dave',  age:20}));
         dao.put(Person.create({id:'3', name:'Steve', age:19}));
         dao.put(Person.create({id:'4', name:'Andy',  age:18}));
-        
+
         // Select to a 'sink'
-        dao.select({put: function(p) { log('person: ' + p.name); }});
+        dao.select({put: function(p) { log('person: ', p.name); }});
     </code></foam>
     <foam model="UnitTest" description="SubTest2"><code>
         // Select directly to an Array
         var a = [];
         dao.select(a);
-        log(JSONUtil.stringify(a));
+        jlog(a);
     </code></foam>
   </tests>
 </foam>
