@@ -34,7 +34,7 @@ var dao;
 // dao = IDBDAO.create({model: Person});
 
 // In-memory Transient DAO
-// dao = DAO.create({model: Person});
+// dao = MDAO.create({model: Person});
 
 // In-memory Transient DAO, with indices
 dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME).addIndex(Person.SEX, Person.AGE).addRawIndex(mLangIndex.create(SUM(Person.AGE)));
