@@ -4366,6 +4366,7 @@ FOAModel({
     },
     {
       name: 'value',
+      valueFactory: function() { return SimpleValue.create(""); },
       postSet: function(old, nu) {
         this.activeView.value = nu;
       }
