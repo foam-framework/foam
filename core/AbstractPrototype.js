@@ -335,5 +335,18 @@ var AbstractPrototype = {
     document.writeln(view.toHTML());
     view.value.set(this);
     view.initHTML();
+  },
+
+  addDecorators: function(map) {
+    for ( var name in map ) {
+      if ( ! this[name] || ! this[name] instanceof Function )
+        console.warn("Decorating a non-function or non-existant function.");
+
+      var func = map[name];
+      var delegate = this[name];
+      this[name] = function() {
+        return func.call(this, delegate.bind(this));
+      };
+    }
   }
 };

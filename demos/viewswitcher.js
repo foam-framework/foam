@@ -59,4 +59,11 @@ var view = ViewSwitcher.create({
   ]
 });
 
+view.addDecorators({
+  toHTML: function(d) {
+    console.log("Decorated toHTML");
+    return d();
+  }
+});
+
 view.write(document);
