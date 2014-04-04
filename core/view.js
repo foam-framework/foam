@@ -4366,7 +4366,6 @@ FOAModel({
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(""); },
       postSet: function(old, nu) {
         this.activeView.value = nu;
       }
@@ -4380,7 +4379,7 @@ FOAModel({
         }
         nu.subscribe('nextview', this.onNextView);
         nu.subscribe('prevview', this.onPrevView);
-        nu.value = this.value;
+        if ( this.value ) nu.value = this.value;
       }
     },
     {
