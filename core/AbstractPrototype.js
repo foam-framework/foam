@@ -35,6 +35,8 @@ var AbstractPrototype = {
     return obj;
   },
 
+  /** Context defaults to the global namespace by default. **/
+  X: GLOBAL,
 
   init: function(_) {
     if ( ! this.model_ ) return;

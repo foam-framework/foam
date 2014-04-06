@@ -37,6 +37,32 @@ FOAModel({
 -->
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <name>Context Examples</name>
+  <code>
+    X.a = 42;
+    log(X.a);
+    var Y = X.sub({a:1,b:2});
+    log(Y.a);
+    Mouse.create();
+    var m1 = Mouse.create();
+    var m2 = Y.Mouse.create();
+    console.log(m1.X.a);
+    console.log(m2.X.a);
+    var m3 = m2.X.Mouse.create();
+    log(m3.X.a);
+  </code>
+  <tests>
+    <foam model="UnitTest" name="SubTest1"><code>
+    log('sub test 1, part 1');
+    log('sub test 1, part 2');
+    </code></foam>
+    <foam model="UnitTest" name="SubTest2"><code>
+    log('sub test 2');
+    </code></foam>
+  </tests>
+</foam>
+
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
   <name>A UnitTest embedded in DOM</name>
   <code>
     log('Here I am.');

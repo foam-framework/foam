@@ -14,6 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/** Create a sub-context, populating with bindings from opt_args. **/
+function sub(opt_args) {
+  var sub = Object.create(this);
+  for ( key in opt_args ) sub[key] = opt_args[key];
+  return sub;
+}
+
+var X = this.sub();
+
 var $documents = [];
 
 if ( window ) $documents.push(window.document);
@@ -83,6 +93,7 @@ var FOAModel = function(m) {
 }
 */
 
+/*
 // Lazy Model Definition - Only creates Model when first referenced
 var FOAModel = function(m) {
   Object.defineProperty(GLOBAL, m.name, {
@@ -91,6 +102,35 @@ var FOAModel = function(m) {
       Object.defineProperty(GLOBAL, m.name, {value: null});
       var model = JSONUtil.mapToObj(m, Model);
       Object.defineProperty(GLOBAL, m.name, {value: model});
+      return model;
+    },
+    configurable: true
+  });
+}
+*/
+
+// Lazy Model Definition - Only creates Model when first referenced
+var FOAModel = function(m) {
+  Object.defineProperty(GLOBAL, m.name, {
+    get: function () {
+      // console.log('bounceFactory: ', m.name);
+      Object.defineProperty(GLOBAL, m.name, {value: null});
+      var model = JSONUtil.mapToObj(m, Model);
+      var create = function() {
+        var o = this.__proto__.create(arguments);
+        o.X = this.X;
+        return o;
+      };
+      Object.defineProperty(
+        GLOBAL,
+        m.name,
+        {
+          get: function() {
+            return this === GLOBAL ?
+              model :
+              { __proto__: model, X: this,   create: create } ;
+          }
+        });
       return model;
     },
     configurable: true
