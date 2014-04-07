@@ -27,6 +27,7 @@ var files = [
   'event',
   'JSONUtil',
   'XMLUtil',
+  'context',
   'FOAM',
   'TemplateUtil',
   'AbstractPrototype',

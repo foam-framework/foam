@@ -15,15 +15,6 @@
  * limitations under the License.
  */
 
-/** Create a sub-context, populating with bindings from opt_args. **/
-function sub(opt_args) {
-  var sub = Object.create(this);
-  for ( key in opt_args ) sub[key] = opt_args[key];
-  return sub;
-}
-
-var X = this.sub();
-
 var $documents = [];
 
 if ( window ) $documents.push(window.document);
