@@ -96,7 +96,7 @@ var AttachmentView = FOAM({
 
     redraw: function() {
       this.$.innerHTML = this.toInnerHTML();
-      this.registerCallbacks();
+      this.invokeInitializers();
     }
   }
 });
