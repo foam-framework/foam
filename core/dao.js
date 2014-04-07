@@ -276,6 +276,7 @@ var FutureDAO= {
           futureDelegate(function(delegate) {
             // This removes this code from the delegate-chain and replaces the real delegate.
             setupFuture(delegate);
+            debugger;
             delegate.pipe.apply(delegate, a)(f.set);
           });
           return f.get;
@@ -531,6 +532,7 @@ FOAModel({
 
       var fc   = this.createFlowControl_();
       var self = this;
+      var future = afuture(); // TODO: make sure this is set properly in all cases
 
       this.select({
         put: function() {
@@ -548,8 +550,11 @@ FOAModel({
           } else {
             self.listen(sink, options);
           }
+          future.set(sink);
         }
       }, options, fc);
+
+      return future.get;
     },
 
     decorateSink_: function(sink, options, isListener, disableLimit) {
