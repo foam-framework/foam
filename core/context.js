@@ -55,4 +55,10 @@ function subWindow(window) {
 
 var X = this.subWindow(window);
 
+X.registerModel = function(model) {
+  // TODO
+};
 
+X.registerFactory = function(model, factory) {
+  // TODO
+};
