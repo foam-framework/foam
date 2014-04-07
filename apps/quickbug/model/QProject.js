@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var QProject = Model.create({
+FOAModel({
   name: 'QProject',
 
   tableProperties: [
@@ -175,6 +175,8 @@ var QProject = Model.create({
         w.contentWindow.onload = function() {
           var window = self.window = w.contentWindow;
 
+          var Y = self.X.subWindow(window, 'Browser').sub({}, 'Browser Window');
+
           apar(
             arequire('GridView'),
             arequire('QIssueTileView'),
@@ -186,7 +188,8 @@ var QProject = Model.create({
             arequire('ConfigureProjectsView')
           )(function () {
             $addWindow(window);
-            var b = ChromeAppBrowser.create({project: self, window: window});
+            debugger;
+            var b = Y.ChromeAppBrowser.create({project: self});
             window.browser = b; // for debugging
             BROWSERS.push(b); // for debugging
             w.browser = b;

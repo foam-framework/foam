@@ -102,10 +102,19 @@ var FOAModel = function(m) {
 
 // Lazy Model Definition - Only creates Model when first referenced
 var FOAModel = function(m) {
+  // Templates need to access document.currentScript in order to know
+  // where to load the template from, so the instantiation of Models
+  // with templates can't be delayed (yet).
+  if ( m.templates ) {
+    registerModel.call(this, JSONUtil.mapToObj(m, Model));
+    return;
+  }
+
   Object.defineProperty(GLOBAL, m.name, {
     get: function () {
       Object.defineProperty(GLOBAL, m.name, {value: null});
-      return registerModel(JSONUtil.mapToObj(m, Model));
+      registerModel(JSONUtil.mapToObj(m, Model));
+      return this[m.name];
     },
     configurable: true
   });

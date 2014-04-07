@@ -261,7 +261,7 @@ function createView(rowSelection, browser) {
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;
 
-          tableView.window = browser.window;
+          tableView.window = browser.X.window;  // TODO: fix
 
           return tableView;
         }
