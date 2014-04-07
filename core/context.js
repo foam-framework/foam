@@ -59,10 +59,37 @@ function subWindow(window, opt_name) {
 
 var X = this.subWindow(window, 'DEFAULT WINDOW');
 
-X.registerModel = function(model) {
-  // TODO
+var registerModel = function(model) {
+  if ( model.X == this ) {
+    this[model.name] = model;
+    return;
+  }
+
+  var thisX = this;
+
+  var thisModel = this === GLOBAL ? model : {
+    __proto__: model,
+    create: function(args, opt_X) {
+      return this.__proto__.create(args, opt_X || thisX);
+    }
+  };
+
+  Object.defineProperty(
+    this,
+    model.name,
+    {
+      get: function() {
+        if ( this === thisX ) return thisModel;
+
+        this.registerModel(model);
+        return this[model.name];
+      }
+    }
+  );
+
+  return model;
 };
 
-X.registerFactory = function(model, factory) {
+var registerFactory = function(model, factory) {
   // TODO
 };

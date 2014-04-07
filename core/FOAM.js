@@ -104,23 +104,8 @@ var FOAModel = function(m) {
 var FOAModel = function(m) {
   Object.defineProperty(GLOBAL, m.name, {
     get: function () {
-      // console.log('bounceFactory: ', m.name);
       Object.defineProperty(GLOBAL, m.name, {value: null});
-      var model = JSONUtil.mapToObj(m, Model);
-      var create = function(args, X) {
-        return this.__proto__.create(args, this.X);
-      };
-      Object.defineProperty(
-        GLOBAL,
-        m.name,
-        {
-          get: function() {
-            return this === GLOBAL ?
-              model :
-              { __proto__: model, X: this, create: create } ;
-          }
-        });
-      return model;
+      return registerModel(JSONUtil.mapToObj(m, Model));
     },
     configurable: true
   });
