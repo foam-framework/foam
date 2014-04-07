@@ -1433,8 +1433,8 @@ FOAModel({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + ' = ' + this.arg2.toSQL(); },
     f: function(obj) {
-      if (Property.isInstance(this.arg1) && ConstantExpr.isInstance(this.arg2)) {
-        obj[this.arg1.name] = this.arg2.f();
+      if (Property.isInstance(this.arg1)) {
+        obj[this.arg1.name] = this.arg2.f(obj);
       }
     }
   }
