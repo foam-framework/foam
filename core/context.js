@@ -16,14 +16,18 @@
  */
 
 /** Create a sub-context, populating with bindings from opt_args. **/
-function sub(opt_args) {
+function sub(opt_args, opt_name) {
   var sub = Object.create(this);
   for ( key in opt_args ) sub[key] = opt_args[key];
+  if ( opt_name ) {
+    sub.NAME = opt_name;
+    sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
+  }
   return sub;
 }
 
 
-function subWindow(window) {
+function subWindow(window, opt_name) {
   if ( ! window ) return sub();
 
   var document = window.document;
@@ -50,10 +54,10 @@ function subWindow(window) {
     clearInterval: window.clearInterval.bind(window),
     requestAnimationFrame: window.requestAnimationFrame.bind(window),
     cancelAnimationFrame: window.cancelAnimationFrame.bind(window)
-  });
+  }, opt_name);
 }
 
-var X = this.subWindow(window);
+var X = this.subWindow(window, 'DEFAULT WINDOW');
 
 X.registerModel = function(model) {
   // TODO

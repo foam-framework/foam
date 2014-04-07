@@ -24,19 +24,19 @@ var AbstractPrototype = {
 
   TYPE: 'AbstractPrototype',
 
-  create: function(args) {
-    var obj = Object.create(this);
-    obj.instance_ = {};
+  create: function(args, opt_X) {
+    var o = Object.create(this);
+    o.instance_ = {};
+    if ( opt_X ) o.X = opt_X;
+    if ( typeof args === 'object' ) o.copyFrom(args);
 
-    if ( typeof args === 'object' ) obj.copyFrom(args);
+    o.init(args);
 
-    obj.init(args);
-
-    return obj;
+    return o;
   },
 
   /** Context defaults to the global namespace by default. **/
-  X: GLOBAL,
+  X: X,
 
   init: function(_) {
     if ( ! this.model_ ) return;

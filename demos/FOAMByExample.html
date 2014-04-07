@@ -41,14 +41,17 @@ FOAModel({
   <code>
     X.a = 42;
     log(X.a);
-    var Y = X.sub({a:1,b:2});
+    var Y = X.sub({a:1,b:2}, 'Y');
+    log(Y);
     log(Y.a);
     Mouse.create();
     var m1 = Mouse.create();
     var m2 = Y.Mouse.create();
-    console.log(m1.X.a);
-    console.log(m2.X.a);
+    log('m2.X ', m2.X);
+    log('m1.X ', m1.X);
+    log(m2.X.a);
     var m3 = m2.X.Mouse.create();
+    log(m3.X);
     log(m3.X.a);
   </code>
   <tests>

@@ -260,7 +260,7 @@ var ModelProto = {
       ( this.prototype_ = this.buildPrototype() );
   },
 
-  create: function(args) { return this.getPrototype().create(args); },
+  create: function(args, X) { return this.getPrototype().create(args, X); },
 
   isSubModel: function(model) {
     try {
