@@ -347,7 +347,7 @@ var AbstractPrototype = {
       var func = map[name];
       var delegate = this[name];
       this[name] = function() {
-        return func.call(this, delegate.bind(this));
+        return func.call(this, delegate.bind(this), arguments);
       };
     }
   }
