@@ -1833,6 +1833,7 @@ var DetailView = Model.create({
     {
       name: 'onValueChange',
       code: function() {
+        if ( ! this.$ ) return;
         this.updateSubViews();
       }
     }
