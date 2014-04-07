@@ -46,8 +46,7 @@ dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME
 // dao = [];
 
 // An IndexedDB DAO Cached in an in-memory DAO
-// dao = CachingDAO.create(
-//     MDAO.create({mode: Person}, IDBDAO.create({model: Person}));
+// dao = CachingDAO.create(MDAO.create({model: Person}), IDBDAO.create({model: Person}));
 
 // Add logging to DAO
 // dao = LoggingDAO.create(console.log.bind(console, 'log: '), dao);
