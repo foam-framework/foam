@@ -25,33 +25,6 @@ Object.defineProperty(Object.prototype, 'addFeature', {
   }
 });
 
-// Replace AbstractPrototype methods with FO versions.
-AbstractPrototype.create = function(args) {
-  var obj = Object.create(this);
-  obj.instance_ = {};
-
-  if ( args instanceof Object ) obj.copyFrom(args);
-
-  obj.init(args);
-
-  return obj;
-};
-
-AbstractPrototype.copyFrom = function(args) {
-  var self = this;
-  this.model_.features.forEach(function(f) {
-    f.copy && f.copy(self, args);
-  });
-  return this;
-};
-
-AbstractPrototype.init = function () {
-  var self = this;
-  this.model_.features.forEach(function(f) {
-    f.initialize && f.initialize(self);
-  });
-};
-
 /**
  * Override a method, making calling the overridden method possible by
  * calling this.SUPER();
@@ -96,9 +69,9 @@ function bootstrap(scope) {
   var Model = { instance_: {} };
   scope.set('Model', Model);
   Model.prototype_ = {
-    __proto__: AbstractPrototype,
     model_: Model,
     addFeature: function(f) {
+      if ( f.name === '' ) debugger;
       this.features.add(f);
     },
     create: function(args) {
@@ -107,13 +80,16 @@ function bootstrap(scope) {
       return proto.create(args);
     },
     getPrototype: function() {
-      if ( ! this.prototype_ ) this.prototype_ = Object.create(AbstractPrototype);
-      if ( this.prototype_.version_ !== this.features.version_ )
+      if ( ! this.prototype_ ) this.prototype_ = {};
+      if ( this.prototype_.building_ ) {
+        console.warn("Building a building prototype", this.prototype_.name_);
+      }
+      if ( this.prototype_.version_ !== this.features.version )
         this.rebuildPrototype(this.prototype_);
       return this.prototype_;
     },
     rebuildPrototype: function(currentProto) {
-      var proto = Object.create(AbstractPrototype);
+      var proto = {};
       proto.model_ = this;
       proto.name_ = this.name;
       proto.TYPE = this.name + "Prototype";
@@ -122,9 +98,8 @@ function bootstrap(scope) {
       var model = this;
       // Only install features local to this model.
       this.features.localForEach(function(f) {
-        if ( f.name === "" ) debugger;
         f.install(model, proto);
-      }, false);
+      });
 
       currentProto.become(proto);
     }
@@ -135,12 +110,68 @@ function bootstrap(scope) {
   Model.features = FeatureSet.create();
   Model.prototype_.version_ = Model.features.version;
 
+  var FObject = { instance_: {} };
+  scope.set('FObject', FObject);
+  FObject.__proto__ = Model.getPrototype();
+  FObject.features = FeatureSet.create();
+  FObject.features.add({
+    name: 'HACK FEATURE, add property change support to FObject, these should all be features later.',
+    install: function(model, proto) {
+      proto.__proto__ = PropertyChangeSupport;
+    }
+  });
+  FObject.prototype_ = {
+    __proto__: PropertyChangeSupport,
+    model_: FObject,
+    version_: FObject.features.version,
+    create: function(args) {
+      var obj = Object.create(this);
+      obj.instance_ = {};
+
+      if ( args instanceof Object ) obj.copyFrom(args);
+
+      obj.init(args);
+
+      return obj;
+    },
+    copyFrom: function(args) {
+      var self = this;
+      this.model_.features.forEach(function(f) {
+        f.copy && f.copy(self, args);
+      });
+      return this;
+    },
+    init: function() {
+      var self = this;
+      this.model_.features.forEach(function(f) {
+        f.initialize && f.initialize(self);
+      });
+    }
+  };
+
+  var Extends = { instance_: {} };
+  scope.set('Extends', Extends);
+  Extends.__proto__ = Model.getPrototype();
+  Extends.features = FeatureSet.create();
+  Extends.prototype_ = {
+    __proto__: FObject.getPrototype(),
+    version_: Extends.features.version,
+    model_: Extends,
+    install: function(model, proto) {
+      var parent = get(this.parent);
+      proto.__proto__ = parent.getPrototype();
+      model.features.parent = parent.features;
+      model.__proto__ = parent;
+    }
+  };
+  simpleProperty(Extends.prototype_, 'parent');
+
   var Method = { instance_: {} };
   scope.set('Method', Method);
   Method.__proto__ = Model.getPrototype();
   Method.features = FeatureSet.create();
   Method.prototype_ = {
-    __proto__: AbstractPrototype,
+    __proto__: FObject.getPrototype(),
     model_: Method,
     version_: Method.features.version,
     install: function(model, proto) {
@@ -161,7 +192,7 @@ function bootstrap(scope) {
   Property.__proto__ = Model.getPrototype();
   Property.features = FeatureSet.create();
   Property.prototype_ = {
-    __proto__: AbstractPrototype,
+    __proto__: FObject.getPrototype(),
     model_: Property,
     version_: Property.features.version,
     install: function(model, proto) {
@@ -207,8 +238,22 @@ function bootstrap(scope) {
     model.prototype_.version_ = model.features.version;
   }
 
+  // Set all initial models to extends FObject.
+  var tmp = Extends.create();
+  tmp.parent = 'FObject';
+  forceInstall(tmp, Model);
+  tmp = Extends.create();
+  tmp.parent = 'FObject';
+  forceInstall(tmp, Property);
+  tmp = Extends.create();
+  tmp.parent = 'FObject';
+  forceInstall(tmp, Extends);
+  tmp = Extends.create();
+  tmp.parent = 'FObject';
+  forceInstall(tmp, Method);
+  
   // Bootstreap the real property and method features we put in earlier.
-  var tmp = Property.create();
+  tmp = Property.create();
   tmp.name = "name"
   forceInstall(tmp, Property);
 
@@ -216,19 +261,30 @@ function bootstrap(scope) {
   forceInstall(tmp, Property);
 
   tmp = Property.create({
-    name: 'features',
-    valueFactory: function() { return FeatureSet.create(); }
-  });
-  forceInstall(tmp, Model);
-
-  tmp = Property.create({
     name: 'name',
   });
   forceInstall(tmp, Model);
 
+  tmp = Property.create({
+    name: 'parent'
+  });
+  forceInstall(tmp, Extends);
+
+  tmp = Property.create({
+    name: 'features',
+    valueFactory: function() {
+      var features = FeatureSet.create();
+      features.add(Extends.create({ parent: 'FObject' }));
+      return features;
+    }
+  });
+  forceInstall(tmp, Model);
+
   Model.name = 'Model';
+  FObject.name = 'FObject';
   Property.name = 'Property';
   Method.name = 'Method';
+  Extends.name = 'Extends';
 
   tmp = Property.create({
     name: 'name',
@@ -256,9 +312,14 @@ function bootstrap(scope) {
   upgradeMethod(Property, 'install');
   upgradeMethod(Property, 'initialize');
   upgradeMethod(Property, 'copy');
+  upgradeMethod(Extends, 'install');
+  upgradeMethod(FObject, 'create');
+  upgradeMethod(FObject, 'copyFrom');
+  upgradeMethod(FObject, 'init');
 
   // Invalidate current prototypes.
   Model.rebuildPrototype(Model.prototype_);
+  FObject.rebuildPrototype(FObject.prototype_);
   Method.rebuildPrototype(Method.prototype_);
   Property.rebuildPrototype(Property.prototype_);
 };
@@ -297,6 +358,127 @@ var featureDAO = [
     return obj && obj.model_ && this.isSubModel(obj.model_);
   }],
 
+  ['FObject', 'Method', function defineFOAMGetter(name, getter) {
+    var stack = Events.onGet.stack;
+    this.__defineGetter__(name, function() {
+      var value = getter.call(this);
+      var f = stack[0];
+      f && f(this, name, value);
+      return value;
+    });
+  }],
+  ['FObject', 'Method', function defineFOAMSetter(name, setter) {
+    var stack = Events.onSet.stack;
+    this.__defineSetter__(name, function(newValue) {
+      var f = stack[0];
+      if ( f && ! f(this, name, newValue) ) return;
+      setter.call(this, newValue);
+    });
+  }],
+  ['FObject', 'Method', function toString() {
+    return this.model_.name + "Prototype"
+  }],
+  ['FObject', 'Method', function hasOwnProperty(name) {
+    return typeof this.instance_[name] !== 'undefined';
+  }],
+  ['FObject', 'Method', function equals(other) {
+    return this.compareTo(other) == 0;
+  }],
+  ['FObject', 'Method', function compareTo(other) {
+    var ps = this.model_.properties;
+
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var r = ps[i].compare(this, other);
+
+      if ( r ) return r;
+    }
+
+    return 0;
+  }],
+  ['FObject', 'Method', function diff(other) {
+    var diff = {};
+
+    for ( var i = 0, property; property = this.model_.properties[i]; i++ ) {
+      if ( Array.isArray(property.f(this)) ) {
+        var subdiff = property.f(this).diff(property.f(other));
+        if ( subdiff.added.length !== 0 || subdiff.removed.length !== 0 ) {
+          diff[property.name] = subdiff;
+        }
+        continue;
+      }
+
+      if ( property.f(this).compareTo(property.f(other)) !== 0) {
+        diff[property.name] = property.f(other);
+      }
+    }
+
+    return diff;
+  }],
+  ['FObject', 'Method', function clearProperty(name) {
+    delete this.instance_[name];
+  }],
+  ['FObject', 'Method', function hashCode() {
+    var hash = 17;
+
+    for ( var i = 0; i < this.model_.properties.length ; i++ ) {
+      var prop = this[this.model_.properties[i].name];
+      var code = ! prop ? 0 :
+        prop.hashCode   ? prop.hashCode()
+                        : prop.toString().hashCode();
+
+      hash = ((hash << 5) - hash) + code;
+      hash &= hash;
+    }
+
+    return hash;
+  }],
+  ['FObject', 'Method', function clone() {
+    var c = Object.create(this.__proto__);
+    c.instance_ = {};
+    for ( var key in this.instance_ ) {
+      var value = this[key];
+      c[key] = Array.isArray(value) ? value.clone() : value;
+    }
+    return c;
+    //    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
+  }],
+  ['FObject', 'Method', function deepClone() {
+    var cln = this.clone();
+
+    // now clone inner collections
+    for ( var key in cln.instance_ ) {
+      var val = cln.instance_[key];
+
+      if ( Array.isArray(val) ) {
+        for ( var i = 0 ; i < val.length ; i++ ) {
+          var obj = val[i];
+
+          obj = obj.deepClone();
+        }
+      }
+    }
+
+    return cln;
+  }],
+  ['FObject', 'Method', function output(out) {
+    return JSONUtil.output(out, this);
+  }],
+  ['FObject', 'Method', function toJSON() {
+    return JSONUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function toXML() {
+    return XMLUtil.stringify(this);
+  }],
+  ['FObject', 'Method', function write(document) {
+    var view = ActionBorder.create(
+      this.model_,
+      DetailView.create({model: this.model_}));
+
+    document.writeln(view.toHTML());
+    view.value.set(this);
+    view.initHTML();
+  }],
+
   ['Property', 'Property', { name: 'defaultValue' }],
   ['Property', 'Property', { name: 'valueFactory' }],
   ['Property', 'Property', { name: 'scope', defaultValue: 'instance_' }],
@@ -326,9 +508,10 @@ var featureDAO = [
     var preSet = prop.preSet;
     var postSet = prop.postSet;
 
-    // TODO: add caching
-    if ( ! AbstractPrototype.__lookupGetter__(name + '$') ) {
-      Object.defineProperty(AbstractPrototype, name + '$', {
+    // TODO: add caching?
+    if ( ! proto.__lookupGetter__(name + '$') ) {
+      Object.defineProperty(proto, name + '$', {
+        configurable: true,
         get: function() { return this.propertyValue(name); },
         set: function(value) { Events.link(value, this.propertyValue(name)); }
       });
@@ -422,6 +605,7 @@ var featureDAO = [
   ['IdFeature', 'Method', function install(model, proto) {
     proto.__defineGetter__('id', function() {
       var primaryKey = this.model_.ids;
+      var proto = this.model_.getPrototype();
 
       if ( primaryKey.length === 0 ) return [];
 
@@ -438,7 +622,7 @@ var featureDAO = [
       return this.id;
     })
   }],
-  ['AbstractPrototype', 'IdFeature'],
+  ['FObject', 'IdFeature'],
     
 
   [null, 'Model', { name: 'Constant' }],
@@ -457,11 +641,11 @@ var featureDAO = [
     });
   }],
 
-  [null, 'Model', { name: 'Extends' }],
   ['Extends', 'Method', function create(args) {
     if ( typeof args === "string" ) return this.SUPER({ parent: args });
     return this.SUPER(args);
   }],
+/*  [null, 'Model', { name: 'Extends' }],
   ['Extends', 'Property', { name: 'parent' }],
   ['Extends', 'Method', function install(model, proto) {
     var parent = get(this.parent);
@@ -470,7 +654,7 @@ var featureDAO = [
 
     // TODO: Is this correct?
     model.__proto__ = parent;
-  }],
+  }],*/
 
   ['Property', 'Method', function f(obj) { return obj[this.name] || obj; }],
   ['Property', 'Property', {
@@ -1155,7 +1339,7 @@ var featureDAO = [
     name: 'extendsModel',
     getter: function() {
       var value;
-      this.features.forEach(function(f) {
+      this.features.localForEach(function(f) {
         if ( Extends.isInstance(f) ) value = f.parent;
       });
       return value;
@@ -1169,7 +1353,7 @@ var featureDAO = [
     name: 'methods',
     getter: function() {
       var ret = [];
-      this.features.forEach(function(f) {
+      this.features.localForEach(function(f) {
         if ( Method.isInstance(f) ) { ret.push(f); }
       });
       return ret;
@@ -1284,6 +1468,15 @@ var featureDAO = [
       }
       // Trigger prototype rebuild;
       this.getPrototype();
+    }
+  }],
+
+  [null, 'Model', { name: 'testModel' }],
+  ['testModel', 'Listener', {
+    name: 'testListener',
+    isAnimated: true,
+    code: function() {
+      console.log("Test Listener");
     }
   }],
 ];

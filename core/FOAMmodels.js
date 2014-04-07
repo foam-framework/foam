@@ -29,11 +29,12 @@ var files = [
   'XMLUtil',
   'FOAM',
   'TemplateUtil',
-  'AbstractPrototype',
   // To use FO, uncomment the next line
-  // and comment out all lines from ModelProto to mm6Prototbuf
+  // and comment out all lines from AbstractProtobuf to mm6Prototbuf
   // inclusively
 //  'experimental/fo',
+//  'experimental/protobuffeatures',
+  'AbstractPrototype',
   'ModelProto',
   'mm1Model',
   'mm2Property',

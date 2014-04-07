@@ -543,33 +543,64 @@ var FeatureSet = {
     obj.a_ = [];
     obj.version_ = 1;
     obj.parentVersion_ = 0;
+    obj.names_ = {};
     return obj;
   },
 
-  forEach: function(iterator) {
-    if ( this.parent ) this.parent.forEach(iterator);
+  where: function(p) {
+    var predicate = p;
+    if ( this.predicate_ ) {
+      var old = this.predicate_;
+      predicate = function(o) {
+        return old(o) && p(o);
+      };
+    }
+
+    return {
+      __proto__: this,
+      predicate_: predicate,
+      forEach: function(iterator) {
+        return this.__proto__.forEach.call(this, iterator, this.predicate_);
+      },
+      localForEach: function(iterator) {
+        return this.__proto__.localForEach.call(this, iterator, this.predicate_);
+      },
+    };
+  },
+
+  forEach: function(iterator, opt_predicate) {
+    var self = this;
+    if ( this.parent )
+      this.parent.where(function(f) {
+        return !f.name || !self.names_[f.name];
+      }).forEach(iterator);
     this.localForEach(iterator);
   },
 
-  localForEach: function(iterator) {
+  localForEach: function(iterator, opt_predicate) {
     for ( var i = 0; i < this.a_.length; i++ ) {
+      var f = this.a_[i];
+
+      if ( opt_predicate && ! opt_predicate(f) )
+        continue;
+
+      if ( f.name && f !== this.names_[f.name] )
+        continue;
+
       iterator(this.a_[i]);
     }
   },
 
   add: function(a) {
+    if ( a.name ) this.names_[a.name] = a;
     this.a_.push(a);
     this.version_++;
   },
 
   get parent() { return this.parent_; },
-  set parent(p)  { this.parent_ = p; this.parentVersion_ = 0; },
+  set parent(p)  { this.parent_ = p; },
 
   get version() { 
-    if ( this.parent && this.parent.version !== this.parentVersion_ ) {
-      this.version_++;
-      this.parentVersion_ = this.parentVersion_;
-    }
     return this.version_;
   }
 };
