@@ -85,12 +85,12 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
 
 var DOM = {
   /** Instantiate FOAM Objects in a document. **/
-  init: function(document) {
-    if ( ! document.FOAM_OBJECTS ) document.FOAM_OBJECTS = {};
+  init: function(X) {
+    if ( ! X.document.FOAM_OBJECTS ) X.document.FOAM_OBJECTS = {};
 
-    var fs = document.querySelectorAll('foam');
+    var fs = X.document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
-      this.initElement(fs[i], document);
+      this.initElement(fs[i], X.document);
     }
   },
 
@@ -108,6 +108,7 @@ var DOM = {
     return a;
   },
 
+  // TODO: Supply X and set on created children
   /** opt_document -- if supplied the object's view will be added to the document. **/
   initElement: function(e, opt_document) {
     // If was a sub-object for an object that has already been displayed,
