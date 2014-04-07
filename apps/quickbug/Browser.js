@@ -25,7 +25,7 @@ MementoMgr.FORTH.label = '';
 MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
-var Browser = Model.create({
+FOAModel({
   name: 'Browser',
 
   extendsModel: 'AbstractView',
@@ -89,7 +89,7 @@ var Browser = Model.create({
       valueFactory: function() {
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
-          window:   this.window
+          window:   this.X.window
         });
       }
     },
@@ -115,9 +115,6 @@ var Browser = Model.create({
     {
       name: 'rowSelection',
       valueFactory: function() { return SimpleValue.create(); }
-    },
-    {
-      name: 'window'
     },
     {
       name: 'timer',
@@ -330,7 +327,7 @@ var Browser = Model.create({
         var view = ToolbarView.create({
           horizontal: false,
           value: SimpleValue.create(this),
-          document: this.window.document
+          document: this.X.document
         });
 
         view.addChild(
@@ -427,7 +424,7 @@ var Browser = Model.create({
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
-      this.window.document.addEventListener('mousemove', function(evt) {
+      this.X.document.addEventListener('mousemove', function(evt) {
         if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
           this.preview(null);
         }
@@ -435,7 +432,7 @@ var Browser = Model.create({
 
       this.searchChoice.choice = this.searchChoice.choices[1];
 
-      this.window.document.addEventListener('keyup', this.keyPress);
+      this.X.document.addEventListener('keyup', this.keyPress);
 
       this.location.addListener(this.onLocationUpdate);
 
@@ -506,7 +503,7 @@ var Browser = Model.create({
     },
 
     updateZoom: function() {
-      this.window.document.body.style.zoom = this.zoom;
+      this.X.document.body.style.zoom = this.zoom;
       this.layout();
     },
 
@@ -517,7 +514,7 @@ var Browser = Model.create({
     },
 
     openURL: function(url) {
-      document.location = url;
+      this.X.document.location = url;
     }
   },
 
@@ -528,7 +525,7 @@ var Browser = Model.create({
 
 
 /** A subclass of Browser which works as a Chrome-App. **/
-var ChromeAppBrowser = Model.create({
+FOAModel({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',
@@ -536,7 +533,7 @@ var ChromeAppBrowser = Model.create({
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
-      window.open(url);
+      this.X.window.open(url);
     }
   }
 

@@ -19,7 +19,7 @@ var BROWSERS = []; // for debugging
 
 
 /** QuickBug Top-Level Object. **/
-var QBug = Model.create({
+FOAModel({
   name: 'QBug',
   label: 'Quick Bug',
 
@@ -117,7 +117,7 @@ var QBug = Model.create({
       this.ProjectNetworkDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
-          var p = QProject.create({qbug: self, project: project});
+          var p = self.X.QProject.create({qbug: self, project: project});
 
           self.projects_[projectName] = p;
 

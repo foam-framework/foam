@@ -1,6 +1,6 @@
 var qb;
 function launch() {
-  if ( ! qb ) qb = QBug.create();
+  if ( ! qb ) qb = X.QBug.create();
   qb.launchBrowser();
 //  qb.launchBrowser('chromium');
 }

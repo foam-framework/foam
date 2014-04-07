@@ -74,7 +74,7 @@ FOAModel({
     {
       name:  'edit',
       help:  'Edit the current record.',
-    default: 'true',
+      default: 'true',
 
       action: function() {
         // Todo: fix, should already be connected
