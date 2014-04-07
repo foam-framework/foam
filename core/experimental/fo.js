@@ -1409,6 +1409,13 @@ var featureDAO = [
       return this.properties.map(Property.NAME.f.bind(Property.NAME));
     }
   }],
+  ['Model', 'StringArrayProperty', {
+    name: 'searchProperties',
+    defaultValueFn: function() {
+      return this.tableProperties;
+    },
+    help: 'Properties display in a search view. Defaults to table properties.'
+  }],
   ['Model', 'Property', {
     name: 'actions',
     type: 'Array',

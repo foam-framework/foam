@@ -111,6 +111,16 @@ var Model = {
       help: 'Properties to be displayed in table view. Defaults to all properties.'
     },
     {
+      name: 'searchProperties',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      displayWidth: 70,
+      defaultValueFn: function() {
+        return this.tableProperties;
+      },
+      help: 'Properties display in a search view. Defaults to table properties.'
+    },
+    {
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',

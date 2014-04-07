@@ -32,7 +32,16 @@ FOAModel({
       label: 'DAO',
       postSet: function(_, val) {
         if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
+        if ( this.searchView && val ) this.searchView.dao = val;
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'useSearchView',
+      defaultValue: false
+    },
+    {
+      name: 'searchView'
     }
   ],
 
@@ -151,16 +160,24 @@ FOAModel({
       var dao = this.dao;
       this.tableView = TableView.create({ model: model, dao: dao, rows: 1000 });
       this.scrollBorder = ScrollBorder.create({ view: this.tableView });
+      if ( this.useSearchView && ! this.searchView )  {
+        this.searchView = SearchView.create({
+          model: this.model,
+          dao: this.dao
+        });
+      }
     },
 
     toHTML: function() {
       //       return this.scrollBorder.toHTML();
-      return this.scrollBorder.view.toHTML();
+      return (this.useSearchView ? this.searchView.toHTML() : '') +
+        this.scrollBorder.view.toHTML();
     },
 
     initHTML: function() {
       this.SUPER();
       //       this.scrollBorder.initHTML(); // could this just be added to children?
+      this.useSearchView && this.searchView.initHTML();
       this.scrollBorder.view.initHTML();
 
       this.dao = this.dao;
@@ -552,6 +569,7 @@ FOAModel({
       */
       this.ctrl.__proto__.dao = this.dao;
       this.ctrl.scrollBorder.dao = this.dao;
+      if ( this.ctrl.searchView ) this.ctrl.searchView.dao = this.dao;
     },
 
     destroy: function() {
