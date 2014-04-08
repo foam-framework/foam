@@ -262,7 +262,6 @@ function createView(rowSelection, browser) {
           tableView.properties$ = location.colspec$;
 
           tableView.window = browser.X.window;  // TODO: fix
-
           return tableView;
         }
       }),
