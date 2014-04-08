@@ -10,7 +10,7 @@
   <%= toggleButton %> $$input
   <%= list %>
   <div class="row">
-    <span class="count">$$activeCount{mode: 'read-only'}</span>&nbsp;<%= items %>&nbsp;left
+    <span class="todo-count"><strong>$$activeCount{mode: 'read-only'}</strong></span>&nbsp;<%= items %>&nbsp;left
     $$query
     <%= clearButton %>
   </div>
