@@ -104,8 +104,13 @@ Object.defineProperty(Object.prototype, 'become', {
     }
     this.__proto__ = other.__proto__;
   }
-})
+});
 
+Object.defineProperty(Array.prototype, 'clone', {
+  value: function() {
+    return this.slice();
+  }
+});
 
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }
