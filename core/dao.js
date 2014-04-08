@@ -724,7 +724,7 @@ FOAModel({
     {
       model_: 'IntegerProperty',
       name: 'sequenceValue',
-      defaultValue: 0
+      defaultValue: 1
     }
   ],
 
