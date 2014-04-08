@@ -339,16 +339,19 @@ var AbstractPrototype = {
     view.initHTML();
   },
 
-  addDecorators: function(map) {
-    for ( var name in map ) {
-      if ( ! this[name] || ! this[name] instanceof Function )
-        console.warn("Decorating a non-function or non-existant function.");
+  decorate: function(name, func, that) {
+    var delegate = this[name];
+    this[name] = function() {
+      return func.call(this, that, delegate.bind(this), arguments);
+    };
+    return this;
+  },
 
-      var func = map[name];
-      var delegate = this[name];
-      this[name] = function() {
-        return func.call(this, delegate.bind(this), arguments);
-      };
+  addDecorator: function(decorator) {
+    for ( var i = 0; i < decorator.model_.methods.length; i++ ) {
+      var method = decorator.model_.methods[i];
+      this.decorate(method.name, method.code, decorator);
     }
+    return this;
   }
 };
