@@ -388,6 +388,8 @@ FOAModel({
       this.initInnerHTML();
     },
 
+    toInnerHTML: function() { return ''; },
+
     toHTML: function() {
       return '<' + this.tagName + ' id="' + this.getID() + '" class="' + this.cssClasses.join(' ') + '">' +
         this.toInnerHTML() +
@@ -3419,6 +3421,9 @@ FOAModel({
   methods: {
     textToValue: function(text) {
       return parseInt(text) || "0";
+    },
+    valueToText: function(value) {
+      return value ? value : '0';
     }
   }
 });
@@ -4438,6 +4443,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'SearchView',
   extendsModel: 'AbstractView',
@@ -4466,4 +4472,65 @@ FOAModel({
       return str;
     }
   }
+});
+
+
+FOAModel({
+  name: 'DAOListController',
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'dao',
+      postSet: function(oldDAO, newDAO) {
+        this.X.DAO = newDAO;
+        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
+        newDAO.listen(this.onDAOUpdate);
+        this.updateHTML();
+      }
+    },
+    { name: 'rowView' }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X = this.X.sub();
+    },
+
+    initHTML: function() {
+      // this.SUPER();
+      this.updateHTML();
+    },
+
+    updateHTML: function() {
+      if ( ! this.dao || ! this.$ ) return;
+
+      var out = '';
+
+      this.dao.select({put: function(o) {
+        o = o.clone();
+        var view = this.rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
+        // TODO: Something isn't working with the Context, fix
+        view.DAO = this.dao;
+        o.addListener(function() {
+          this.dao.put(o);
+        }.bind(this, o));
+        this.addChild(view);
+        out += view.toHTML();
+      }.bind(this)})(function() {
+        console.log('DONE');
+        this.$.innerHTML = out;
+        this.initInnerHTML();
+      }.bind(this));
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isAnimated: true,
+      code: function() { this.updateHTML(); }
+    }
+  ]
 });
