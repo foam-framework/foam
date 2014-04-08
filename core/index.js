@@ -96,7 +96,8 @@ var TreeIndex = {
     return {
       __proto__: this,
       prop: prop,
-      tail: tail
+      tail: tail,
+      selectCount: 0
     };
   },
 
@@ -137,6 +138,11 @@ var TreeIndex = {
     obj[this.prop.name] = value;
   },
 
+  maybeClone: function(s) {
+    if ( this.selectCount > 0 ) return s.clone();
+    return s;
+  },
+
   put: function(s, newValue) {
     return this.putKeyValue(s, this.prop.f(newValue), newValue);
   },
@@ -144,9 +150,9 @@ var TreeIndex = {
   putKeyValue: function(s, key, value) {
     if ( ! s ) {
       return [key, this.tail.put(null, value), 1, 1];
-    } else {
-      s = s.slice();
     }
+
+    s = this.maybeClone(s);
 
     var r = this.compare(s[KEY], key);
 
@@ -218,7 +224,7 @@ var TreeIndex = {
   removeKeyValue: function(s, key, value) {
     if ( ! s ) return s;
 
-    s = s.slice();
+    s = this.maybeClone(s);
 
     var r = this.compare(s[KEY], key);
 
@@ -325,6 +331,7 @@ var TreeIndex = {
 
   select: function(s, sink, options) {
     if ( ! s ) return;
+    this.selectCount++;
 
     if ( options ) {
       if ( 'limit' in options && options.limit <= 0 ) return;
@@ -339,10 +346,12 @@ var TreeIndex = {
     this.select(s[LEFT], sink, options);
     this.tail.select(s[VALUE], sink, options);
     this.select(s[RIGHT], sink, options);
+    this.selectCount--;
   },
 
   selectReverse: function(s, sink, options) {
     if ( ! s ) return;
+    this.selectCount++;
 
     if ( options ) {
       if ( 'limit' in options && options.limit <= 0 ) return;
@@ -357,6 +366,7 @@ var TreeIndex = {
     this.selectReverse(s[RIGHT], sink, options);
     this.tail.selectReverse(s[VALUE], sink, options);
     this.selectReverse(s[LEFT], sink, options);
+    this.selectCount--;
   },
 
   findPos: function(s, key, incl) {
@@ -709,7 +719,7 @@ var AltIndex = {
   },
 
   put: function(s, newValue) {
-    s = s ? s.slice() : [];
+    s = s || [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].put(s[i], newValue);
     }
@@ -718,7 +728,7 @@ var AltIndex = {
   },
 
   remove: function(s, obj) {
-    s = s ? s.slice() : [];
+    s = s || [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].remove(s[i], obj);
     }
