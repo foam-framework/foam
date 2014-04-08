@@ -106,7 +106,6 @@ Object.defineProperty(Object.prototype, 'become', {
   }
 });
 
-
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }
 
