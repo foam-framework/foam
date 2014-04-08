@@ -599,7 +599,7 @@ var FeatureSet = {
   get parent() { return this.parent_; },
   set parent(p)  { this.parent_ = p; },
 
-  get version() { 
+  get version() {
     return this.version_;
   }
 };
