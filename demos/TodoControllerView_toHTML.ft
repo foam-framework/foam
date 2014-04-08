@@ -5,15 +5,13 @@
   var list = DAOListController.create({rowView: TodoView});
 
   list.dao$ = this.value.value.filteredDAO$;
-  // list.dao = this.value.value.filteredDAO;
 %>
-
 <div>
-<%= toggleButton %> $$input
-<%= list %>
-<div class="row">
-<span class="count">$$activeCount{mode: 'read-only'}</span>&nbsp;<%= items %>&nbsp;left
-$$query
-<%= clearButton %>
-</div>
+  <%= toggleButton %> $$input
+  <%= list %>
+  <div class="row">
+    <span class="count">$$activeCount{mode: 'read-only'}</span>&nbsp;<%= items %>&nbsp;left
+    $$query
+    <%= clearButton %>
+  </div>
 </div>
