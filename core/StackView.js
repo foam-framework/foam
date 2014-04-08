@@ -99,11 +99,11 @@ FOAModel({
     },
 
     viewAreaElement: function () {
-      return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+      return this.$.querySelector('.stackview-viewarea');
     },
 
     previewAreaElement: function() {
-      return this.$.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+      return this.$.querySelector('.stackview-previewarea');
     },
 
     updateNavBar: function() {
