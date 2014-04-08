@@ -2947,6 +2947,34 @@ var ActionBorder = {
   }
 };
 
+FOAModel({
+  name: 'ActionBorder2',
+
+  properties: [
+    {
+      name: 'actions'
+    }
+  ],
+
+  methods: {
+    toHTML: function(border, delegate, args) {
+      var str = "";
+      str += delegate.apply(this, args);
+      str += '<div class="actionToolbar">';
+      var actions = border.model ? border.model.actions : this.model.actions;
+      for ( var i = 0 ; i < actions.length; i++ ) {
+        var action = actions[i];
+        var button = ActionButton.create({ action: action });
+        button.value$ = this.value$;
+        str += " " + button.toHTML() + " ";
+        this.addChild(button);
+      }
+
+      str += '</div>';
+      return str;
+    }
+  }
+});
 
 FOAModel({
   name:  'ProgressView',
