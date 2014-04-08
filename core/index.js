@@ -144,6 +144,8 @@ var TreeIndex = {
   putKeyValue: function(s, key, value) {
     if ( ! s ) {
       return [key, this.tail.put(null, value), 1, 1];
+    } else {
+      s = s.slice();
     }
 
     var r = this.compare(s[KEY], key);
@@ -215,6 +217,8 @@ var TreeIndex = {
 
   removeKeyValue: function(s, key, value) {
     if ( ! s ) return s;
+
+    s = s.slice();
 
     var r = this.compare(s[KEY], key);
 
@@ -705,7 +709,7 @@ var AltIndex = {
   },
 
   put: function(s, newValue) {
-    s = s || [];
+    s = s ? s.slice() : [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].put(s[i], newValue);
     }
@@ -714,7 +718,7 @@ var AltIndex = {
   },
 
   remove: function(s, obj) {
-    s = s || [];
+    s = s ? s.slice() : [];
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].remove(s[i], obj);
     }
@@ -777,12 +781,18 @@ var mLangIndex = {
   },
 
   put: function(s, newValue) {
+    // TODO: Should we clone s here?  That would be more
+    // correct in terms of the purely functional interface
+    // but maybe we can get away with it.
     s = s || this.mlang.clone();
     s.put(newValue);
     return s;
   },
 
   remove: function(s, obj) {
+    // TODO: Should we clone s here?  That would be more
+    // correct in terms of the purely functional interface
+    // but maybe we can get away with it.
     s = s || this.mlang.clone();
     s.remove && s.remove(obj);
     return s;
