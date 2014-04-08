@@ -331,7 +331,6 @@ var TreeIndex = {
 
   select: function(s, sink, options) {
     if ( ! s ) return;
-    this.selectCount++;
 
     if ( options ) {
       if ( 'limit' in options && options.limit <= 0 ) return;
@@ -346,12 +345,10 @@ var TreeIndex = {
     this.select(s[LEFT], sink, options);
     this.tail.select(s[VALUE], sink, options);
     this.select(s[RIGHT], sink, options);
-    this.selectCount--;
   },
 
   selectReverse: function(s, sink, options) {
     if ( ! s ) return;
-    this.selectCount++;
 
     if ( options ) {
       if ( 'limit' in options && options.limit <= 0 ) return;
@@ -366,7 +363,6 @@ var TreeIndex = {
     this.selectReverse(s[RIGHT], sink, options);
     this.tail.selectReverse(s[VALUE], sink, options);
     this.selectReverse(s[LEFT], sink, options);
-    this.selectCount--;
   },
 
   findPos: function(s, key, incl) {
@@ -584,7 +580,9 @@ var TreeIndex = {
          */
         if ( sortRequired ) {
           var a = [];
+          index.selectCount++;
           index.select(s, a, {query: options.query});
+          index.selectCount--;
           a.sort(toCompare(options.order));
 
           var skip = options.skip || 0;
@@ -602,9 +600,11 @@ var TreeIndex = {
               __proto__: options,
               skip: index.size(s) - options.skip - (options.limit || index.size(s)-options.skip)
             };*/
+          index.selectCount++;
           reverseSort ?
             index.selectReverse(s, sink, options) :
             index.select(s, sink, options) ;
+          index.selectCount--;
         }
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
