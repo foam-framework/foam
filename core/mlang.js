@@ -1389,9 +1389,16 @@ FOAModel({
 
   methods: {
     put: function(obj) {
-      var newObj = this.f(obj);
-      if (newObj.id !== obj.id) this.dao.remove(obj.id);
-      this.dao.put(newObj);
+      (this.objs_ || (this.objs_ = [])).push(obj);
+    },
+    eof: function() {
+      for ( var i = 0 ; i < this.objs_.length ; i++ ) {
+        var obj = this.objs_[i];
+        var newObj = this.f(obj);
+        if (newObj.id !== obj.id) this.dao.remove(obj.id);
+        this.dao.put(newObj);
+      }
+      this.objs_ = undefined;
     },
     f: function(obj) {
       var newObj = obj.clone();
