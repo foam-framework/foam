@@ -4,18 +4,28 @@
   <script>var FOAM_BOOT_DIR="../core/";</script>
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="Todo.js"></script>
+  <style type="text/css">
+   .TodoRow:not(.editMode) .editView {
+      display: none;
+   }
+   .TodoRow.editMode .displayView {
+      display: none;
+   }
+   .TodoRow.editMode .completed {
+     visibility: hidden;
+   }
+   .TodoRow.editMode .remove {
+     visibility: hidden;
+   }
+  </style>
   <title>TODO</title>
 </head>
 <body>
-  <foam id='todo' model="Controller"></foam>
+  <foam id='todo' model="Controller" view="TodoControllerView"></foam>
   <script language="javascript">
-    var stack = StackView.create();
-    stack.write(document);
+  aseq(arequire('TodoView'), arequire('TodoControllerView'))(function() {
     DOM.init(X);
-
-    // for debugging:
-    var todo = $('todo');
-    var dao = todo.todoDAO;
+  });
   </script>
 </body>
 </html>

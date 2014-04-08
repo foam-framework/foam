@@ -37,9 +37,16 @@ FOAModel({
     },
     {
       name:  'value',
+      preSet: function() { debugger; },
       postSet: function(_, value) {
-        this.dao = value.get();
-        this.tableView && this.tableView.refresh();
+        debugger;
+        var f = function() {
+          this.dao = this.value.value;
+          this.tableView && this.tableView.refresh();
+          debugger;
+        }.bind(this);
+        value.addListener(f);
+        f();
       }
     },
     {

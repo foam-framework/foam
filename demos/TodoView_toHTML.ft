@@ -1,0 +1,25 @@
+<%
+  var remove    = this.DAO.remove.bind(this.DAO, this.value.value);
+  var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
+  var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
+%>
+<div class="TodoRow" id="{{this.getID()}}">
+  <span class="completed">$$completed</span>
+  <span class="displayView">{{this.value.value.text}}</span>
+  <span class="editView">$$text</span>
+  <span class="remove"><button id="<%= this.on('click', remove, this.nextID()) %>">X</button>
+</div>
+<%
+  this.on('dblclick', toEdit,    this.getID());
+  this.on('blur',     toDisplay, this.textView.elementId);
+  this.on(
+    'keydown',
+    function(e) {
+      if ( e.keyCode == 27 ) {
+        this.textView.domValue.set(this.value.value.text); // revert value
+        toDisplay();
+      }
+    }.bind(this),
+    this.textView.elementId);
+%>
+

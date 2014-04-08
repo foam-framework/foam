@@ -33,7 +33,7 @@ FOAModel({
     { model_: 'IntegerProperty', name: 'activeCount' },
     {
       name: 'query',
-      postSet: function(_, p) { this.filteredDAO = this.todoDAO.where(p); },
+      postSet: function(_, q) { this.filteredDAO = this.todoDAO.where(q); },
       defaultValue: TRUE,
       view: ChoiceListView.create({
         choices: [
@@ -46,7 +46,7 @@ FOAModel({
   ],
   actions: [
     {
-      name: 'toggleCompleted',
+      name: 'toggle',
       isEnabled: function() {
         var c1 = this.completedCount ? 1 : 0
         var c2 = this.activeCount ? 1 : 0
@@ -57,7 +57,7 @@ FOAModel({
       }
     },
     {
-      name: 'clearCompleted',
+      name: 'clear',
       action: function() {
         this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).select({put: function(todo) {
           this.todoDAO.remove(todo);
@@ -85,4 +85,28 @@ FOAModel({
       }
     }
   ]
+});
+
+FOAModel({
+  name: 'TodoView',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ]
+});
+
+FOAModel({
+  name: 'TodoControllerView',
+  extendsModel: 'DetailView',
+  properties: [
+    { name: 'itemLabel' }
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      Events.dynamic(function() {
+        this.itemLabel = this.value.value.activeCount == 1 ? 'item' : 'items';
+      }.bind(this));
+    }
+  },
+  templates: [ { name: 'toHTML' } ]
 });
