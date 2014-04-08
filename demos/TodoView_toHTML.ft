@@ -15,7 +15,7 @@
   this.on(
     'keydown',
     function(e) {
-      if ( e.keyCode == 27 ) {
+      if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
         this.textView.domValue.set(this.value.value.text); // revert value
         toDisplay();
       }
