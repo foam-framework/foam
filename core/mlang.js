@@ -1721,6 +1721,25 @@ FOAModel({
   }
 });
 
+FOAModel({
+  name: 'AddExpr',
+
+  extendsModel: 'BINARY',
+
+  methods: {
+    toSQL: function() {
+      return this.arg1.toSQL() + ' + ' + this.arg2.toSQL();
+    },
+    f: function(o) {
+      return this.arg1.f(o) + this.arg2.f(o);
+    }
+  }
+});
+
+function ADD(arg1, arg2) {
+  return AddExpr.create({ arg1: compile_(arg1), arg2: compile_(arg2) });
+}
+
 function DESC(arg1) {
   if ( DescExpr.isInstance(arg1) ) return arg1.arg1;
   return DescExpr.create({ arg1: arg1 });
