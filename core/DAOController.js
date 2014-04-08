@@ -36,6 +36,13 @@ FOAModel({
       }
     },
     {
+      name:  'value',
+      postSet: function(_, value) {
+        this.dao = value.get();
+        this.tableView && this.tableView.refresh();
+      }
+    },
+    {
       model_: 'BooleanProperty',
       name: 'useSearchView',
       defaultValue: false
@@ -122,7 +129,7 @@ FOAModel({
       name:  'delete',
       help:  'Delete the current record.',
 
-      isEnabled: function()   { return this.selected; },
+//      isEnabled: function()   { return this.selection; },
       action: function()      {
         // Todo: fix, should already be connected
         this.selection = this.tableView.selection.get();

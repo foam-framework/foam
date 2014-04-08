@@ -1163,10 +1163,12 @@ FOAModel({
       this.invokeInitializers();
     },
 
+    /*
     setValue: function(value) {
       // ???: Is this ever called?
       debugger;
     },
+    */
 
     initHTML: function() {
       this.updateHTML();

@@ -1000,7 +1000,7 @@ var MDAO = Model.create({
     },
 
     remove: function(obj, sink) {
-      if (!obj) {
+      if ( ! obj ) {
         sink && sink.error && sink.error('missing key');
         return;
       }
@@ -1009,6 +1009,7 @@ var MDAO = Model.create({
       this.find(id, {
         put: function(obj) {
           self.root = self.index.remove(self.root, obj);
+          self.notify_('remove', [obj]);
           sink && sink.remove && sink.remove(obj);
         },
         error: function() {

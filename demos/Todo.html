@@ -1,0 +1,21 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script>var FOAM_BOOT_DIR="../core/";</script>
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="Todo.js"></script>
+  <title>TODO</title>
+</head>
+<body>
+  <foam id='todo' model="Controller"></foam>
+  <script language="javascript">
+    var stack = StackView.create();
+    stack.write(document);
+    DOM.init(X);
+
+    // for debugging:
+    var todo = $('todo');
+    var dao = todo.todoDAO;
+  </script>
+</body>
+</html>
