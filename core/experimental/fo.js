@@ -73,6 +73,7 @@ function bootstrap(scope) {
     addFeature: function(f) {
       if ( f.name === '' ) debugger;
       this.features.add(f);
+      if ( this.prototype_ ) this.rebuildPrototype(this.prototype_);
     },
     create: function(args) {
       var proto = this.getPrototype();
@@ -124,9 +125,10 @@ function bootstrap(scope) {
     __proto__: PropertyChangeSupport,
     model_: FObject,
     version_: FObject.features.version,
-    create: function(args) {
+    create: function(args, opt_X) {
       var obj = Object.create(this);
       obj.instance_ = {};
+      if ( opt_X ) o.X = opt_X;
 
       if ( args instanceof Object ) obj.copyFrom(args);
 
@@ -623,6 +625,10 @@ var featureDAO = [
     })
   }],
   ['FObject', 'IdFeature'],
+  ['FObject', 'Property', {
+    name: 'X',
+    defaultValueFn: function() { return X; }
+  }],
     
 
   [null, 'Model', { name: 'Constant' }],
