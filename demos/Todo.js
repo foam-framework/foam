@@ -61,7 +61,7 @@ FOAModel({
     },
     {
       name: 'clear',
-      isEnabled: function(_, action) {
+      isEnabled: function(action) {
         action.label = 'Clear completed (' + this.completedCount + ')';
         return this.completedCount > 0;
       },

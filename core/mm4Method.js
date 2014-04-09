@@ -115,13 +115,13 @@ FOAModel({
   ],
   methods: {
     callIfEnabled: function(that) {
-      if ( this.isEnabled.call(that) ) this.action.call(that, this);
+      if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
     }
   }
 });
 
 Action.getPrototype().callIfEnabled = function(that) {
-  if ( this.isEnabled.call(that) ) this.action.call(that, this);
+  if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
 };
 
 
