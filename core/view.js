@@ -4536,6 +4536,9 @@ FOAModel({
 
       var out = '';
 
+      this.children = [];
+      this.initializers_ = [];
+
       this.dao.select({put: function(o) {
         o = o.clone();
         var view = this.rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
