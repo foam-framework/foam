@@ -352,6 +352,20 @@ FOAModel({
       return opt_elementId;
     },
 
+    setAttribute: function(attributeName, valueFn, opt_elementId) {
+      opt_elementId = opt_elementId || this.nextID();
+      valueFn = valueFn.bind(this);
+      this.addInitializer(function() {
+        Events.dynamic(valueFn, function() {
+          var e = $(opt_elementId);
+          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+          var newValue = valueFn(e.getAttribute(attributeName));
+          if ( newValue == undefined ) e.removeAttribute(attributeName);
+          else e.setAttribute(attributeName, newValue);
+        })
+      });
+    },
+
     setClass: function(className, predicate, opt_elementId) {
       opt_elementId = opt_elementId || this.nextID();
       predicate = predicate.bind(this);
@@ -1127,23 +1141,23 @@ FOAModel({
           [ 'horizontal', 'Horizontal' ],
           [ 'vertical',   'Vertical'   ]
         ]
+      },
+      postSet: function(old, nu) {
+        if ( this.$ ) {
+          DOM.setClass(this.$, old, false);
+          DOM.setClass(this.$, nu);
+        }
       }
     },
     {
-      name: 'cssClass',
-      type: 'String',
-      defaultValue: 'foamChoiceListView'
+      name: 'cssClasses',
+      valueFactory: function() { return ['foamChoiceListView', this.orientation]; }
     }
   ],
 
   methods: {
-    toHTML: function() {
-      return '<div id="' + this.getID() + '" class="' + this.cssClass + ' ' + this.orientation + '"></div>';
-    },
-
-    updateHTML: function() {
+    toInnerHTML: function() {
       var out = "";
-
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         var choice = this.choices[i];
         var id     = this.nextID();
@@ -1160,20 +1174,7 @@ FOAModel({
 
         out += '<div class="choice" id="' + id + '">' + choice[1] + '</div>';
       }
-
-      this.$.innerHTML = out;
-      this.invokeInitializers();
-    },
-
-    /*
-    setValue: function(value) {
-      // ???: Is this ever called?
-      debugger;
-    },
-    */
-
-    initHTML: function() {
-      this.updateHTML();
+      return out;
     }
   }
 });
@@ -2632,65 +2633,64 @@ FOAModel({
 
   properties: [
     {
-      name:  'action'
+      name:  'action',
+      postSet: function(old, nu) {
+        old && old.removeListener(this.render)
+        nu.addListener(this.render);
+      }
     },
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener && oldValue.removeListener(this.onValueChange);
-        newValue.addListener(this.onValueChange);
-      }
+      valueFactory: function() { return SimpleValue.create(); }
+    },
+    {
+      name: 'cssClasses',
+      valueFactory: function() { return ['actionButton', 'actionButton-' + this.action.name]; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'button'
     }
   ],
 
   listeners: [
     {
-      name: 'onValueChange',
+      name: 'render',
       code: function() {
-        var value  = this.value.get();
-        var action = this.action;
-        Events.dynamic(action.isEnabled.bind(value), this.onEnabled);
-      }
-    },
-    {
-      name: 'onEnabled',
-      code: function(enabled) {
-        if ( ! this.$ ) return;
-        this.$.disabled = enabled ? undefined : 'disabled';
+        this.updateHTML();
       }
     }
   ],
 
   methods: {
     toHTML: function() {
-      var out = [];
-      var tooltip = this.action.help ? ' data-tip="' + this.action.help + '" ' : '';
-      out.push('<button class="actionButton actionButton-' + this.action.name + '" id="' + this.getID() + '"' + tooltip + '>');
+      var self = this;
+      this.on('click',
+              function() { self.action.callIfEnabled(self.value.get()); },
+              this.getID());
+      this.setAttribute('data-tip',
+                        function() {
+                          return self.action.help || undefined;
+                        }, this.getID());
+      this.setAttribute('disabled', function() {
+        var value = self.value.get();
+        return self.action.isEnabled.call(value) ? undefined : 'disabled';
+      }, this.getID());
 
+      return this.SUPER();
+    },
+
+    toInnerHTML: function() {
+      var out = "";
       if ( this.action.iconUrl ) {
-        out.push('<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />');
+        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
       }
 
       if ( this.action.showLabel ) {
-        out.push(this.action.label);
+        out += this.action.label;
       }
-
-      out.push('</button>');
-
-      return out.join('');
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      var self = this;
-      this.$.addEventListener(
-        'click',
-        function() { self.action.callIfEnabled(self.value.get()); });
-
-      this.onValueChange();
+      return out;
     }
   }
 });
@@ -2965,7 +2965,7 @@ FOAModel({
       var str = "";
       str += delegate.apply(this, args);
       str += '<div class="actionToolbar">';
-      var actions = border.model ? border.model.actions : this.model.actions;
+      var actions = border.actions || this.model.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
         var button = ActionButton.create({ action: action });
