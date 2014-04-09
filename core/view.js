@@ -2651,7 +2651,7 @@ FOAModel({
       code: function() {
         var value  = this.value.get();
         var action = this.action;
-        Events.dynamic(action.isEnabled.bind(value), this.onEnabled);
+        Events.dynamic(action.isEnabled.bind(value, this, action), this.onEnabled);
       }
     },
     {
@@ -4517,6 +4517,13 @@ FOAModel({
         this.updateHTML();
       }
     },
+    {
+      name: 'value',
+      setter: function(value) {
+        this.dao = value.value;
+        value.addListener(function() { this.dao = value.value; }.bind(this));
+      }
+    },
     { name: 'rowView' }
   ],
 
@@ -4535,13 +4542,15 @@ FOAModel({
       if ( ! this.dao || ! this.$ ) return;
 
       var out = '';
+      var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView].create() : this.rowView;
 
       this.children = [];
       this.initializers_ = [];
 
+
       this.dao.select({put: function(o) {
         o = o.clone();
-        var view = this.rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
+        var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         o.addListener(function() {
