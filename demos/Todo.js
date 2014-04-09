@@ -24,7 +24,7 @@ FOAModel({
       valueFactory: function() {
         return SeqNoDAO.create({
           property: Todo.ID,
-          delegate: CachingDAO.create(MDAO.create({model: Todo}), IDBDAO.create({model: Todo}))
+          delegate: CachingDAO.create(MDAO.create({model: Todo})/*.addIndex(Todo.COMPLETED)*/, IDBDAO.create({model: Todo}))
         });
       }
     },
@@ -54,17 +54,13 @@ FOAModel({
     {
       name: 'clear',
       isEnabled: function() { return this.completedCount > 0; },
-      action: function() {
-        this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).select({put: function(todo) {
-          this.todoDAO.remove(todo);
-        }.bind(this)});
-      }
+      action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
     }
   ],
   methods: {
     init: function() {
       this.SUPER();
-      this.query = this.query;
+      this.query = this.query;  // causes filteredDAO to be set
       this.todoDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
@@ -73,32 +69,25 @@ FOAModel({
     {
       name: 'onDAOUpdate',
       isAnimated: true,
-      code: function(evt) {
+      code: function() {
         this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (counts) {
-          this.completedCount = counts.groups['true'] || 0;
-          this.activeCount    = counts.groups['false'] || 0;
+          this.completedCount = counts.groups['true'];
+          this.activeCount    = counts.groups['false'];
         }.bind(this));
       }
     }
   ]
 });
 
-FOAModel({
-  name: 'TodoView',
-  extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
-});
+FOAModel({ name: 'TodoView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 FOAModel({
   name: 'TodoControllerView',
   extendsModel: 'DetailView',
-  properties: [
-    { name: 'itemLabel' }
-  ],
+  properties: [ { name: 'itemLabel' } ],
   methods: {
     initHTML: function() {
       this.SUPER();
-
       Events.dynamic(function() {
         this.itemLabel = this.value.value.activeCount == 1 ? 'item' : 'items';
       }.bind(this));
