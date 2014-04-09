@@ -82,12 +82,14 @@ Object.defineProperty(Object.prototype, '$UID', {
 });
 
 Object.defineProperty(Object.prototype, 'clone', {
-  value: function() { return this; }
+  value: function() { return this; },
+  writable: true
 });
 
 // Fallback to shallow clone() if deepClone() missing.
 Object.defineProperty(Object.prototype, 'deepClone', {
-  value: function() { return this.clone(); }
+  value: function() { return this.clone(); },
+  writable: true
 });
 
 Object.defineProperty(Object.prototype, 'become', {
