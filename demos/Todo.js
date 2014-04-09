@@ -2,7 +2,7 @@ FOAModel({
   name: 'Todo',
   properties: [
     { name: 'id' },
-    { model_: 'BooleanProperty', name: 'completed' },
+    { name: 'completed', model_: 'BooleanProperty' },
     { name: 'text' }
   ]
 });
@@ -44,6 +44,14 @@ FOAModel({
       })
     }
   ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.query = this.query;  // causes filteredDAO to be set
+      this.todoDAO.listen(this.onDAOUpdate);
+      this.onDAOUpdate();
+    }
+  },
   actions: [
     {
       name: 'toggle',
@@ -60,14 +68,6 @@ FOAModel({
       action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
     }
   ],
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.query = this.query;  // causes filteredDAO to be set
-      this.todoDAO.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
-    }
-  },
   listeners: [
     {
       name: 'onDAOUpdate',
