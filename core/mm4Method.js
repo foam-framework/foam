@@ -82,7 +82,7 @@ FOAModel({
       model_: 'FunctionProperty',
       name: 'labelFn',
       label: 'Label Function',
-      defaultValue: function() { return this.label; },
+      defaultValue: function(action) { return action.label; },
       help: "Function to determine label. Defaults to 'this.label'."
     },
     {

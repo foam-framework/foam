@@ -2697,7 +2697,7 @@ FOAModel({
         return self.action.isEnabled.call(value, self, self.action) ? undefined : 'disabled';
       }, this.getID());
 
-      Events.dynamic(function() { self.action.labelFn.call(value); self.updateHTML(); });
+      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -2712,7 +2712,7 @@ FOAModel({
       if ( this.action.showLabel ) {
         var value = this.value.get();
         
-        out += value ? this.action.labelFn.call(value) : this.action.label;
+        out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
       }
 
       return out;
