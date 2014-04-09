@@ -2694,6 +2694,7 @@ FOAModel({
       }, this.getID());
 
       this.setAttribute('disabled', function() {
+        var value = self.value.get();
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.getID());
 
