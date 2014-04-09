@@ -1,9 +1,10 @@
-<% var items = TextFieldView.create({value: this.itemLabel$, mode: 'read-only'}); %>
 <div>
   $$toggle $$input
   $$filteredDAO
   <div class="row">
-    <span class="todo-count"><strong>$$activeCount{mode: 'read-only'}</strong></span>&nbsp;<%= items %>&nbsp;left
+    <span class="todo-count"><strong>$$activeCount{mode: 'read-only'}</strong></span>&nbsp;
+    <%= this.dynamicTag('span', function() { return this.value.value.activeCount == 1 ? 'item' : 'items' }.bind(this)) %>
+    &nbsp;left
     $$query
     $$clear
   </div>
