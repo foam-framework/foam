@@ -79,6 +79,13 @@ FOAModel({
       help: 'Function to determine if action is enabled.'
     },
     {
+      model_: 'FunctionProperty',
+      name: 'labelFn',
+      label: 'Label Function',
+      defaultValue: function(action) { return action.label; },
+      help: "Function to determine label. Defaults to 'this.label'."
+    },
+    {
       name: 'iconUrl',
       type: 'String',
       defaultValue: undefined,

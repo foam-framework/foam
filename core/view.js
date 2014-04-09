@@ -2683,6 +2683,7 @@ FOAModel({
   methods: {
     toHTML: function() {
       var self = this;
+      var value = self.value.get();
 
       this.on('click', function() {
         self.action.callIfEnabled(self.value.get());
@@ -2693,9 +2694,10 @@ FOAModel({
       }, this.getID());
 
       this.setAttribute('disabled', function() {
-        var value = self.value.get();
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.getID());
+
+      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -2708,7 +2710,9 @@ FOAModel({
       }
 
       if ( this.action.showLabel ) {
-        out += this.action.label;
+        var value = this.value.get();
+        
+        out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
       }
 
       return out;
@@ -4545,7 +4549,7 @@ FOAModel({
         value.addListener(function() { this.dao = value.value; }.bind(this));
       }
     },
-    { name: 'rowView' }
+    { name: 'rowView', defaultValue: 'DetailView' }
   ],
 
   methods: {
