@@ -4549,7 +4549,7 @@ FOAModel({
         value.addListener(function() { this.dao = value.value; }.bind(this));
       }
     },
-    { name: 'rowView' }
+    { name: 'rowView', defaultValue: 'DetailView' }
   ],
 
   methods: {
