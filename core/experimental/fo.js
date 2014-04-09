@@ -1477,15 +1477,6 @@ var featureDAO = [
       this.getPrototype();
     }
   }],
-
-  [null, 'Model', { name: 'testModel' }],
-  ['testModel', 'Listener', {
-    name: 'testListener',
-    isAnimated: true,
-    code: function() {
-      console.log("Test Listener");
-    }
-  }],
 ];
 
 function lookup(address, scope) {
