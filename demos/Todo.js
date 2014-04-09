@@ -60,7 +60,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.query = this.query;
+      this.query = this.query;  // causes filteredDAO to be set
       this.todoDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
@@ -69,10 +69,10 @@ FOAModel({
     {
       name: 'onDAOUpdate',
       isAnimated: true,
-      code: function(evt) {
+      code: function() {
         this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (counts) {
-          this.completedCount = counts.groups['true'] || 0;
-          this.activeCount    = counts.groups['false'] || 0;
+          this.completedCount = counts.groups['true'];
+          this.activeCount    = counts.groups['false'];
         }.bind(this));
       }
     }
@@ -84,13 +84,10 @@ FOAModel({ name: 'TodoView', extendsModel: 'DetailView', templates: [ { name: 't
 FOAModel({
   name: 'TodoControllerView',
   extendsModel: 'DetailView',
-  properties: [
-    { name: 'itemLabel' }
-  ],
+  properties: [ { name: 'itemLabel' } ],
   methods: {
     initHTML: function() {
       this.SUPER();
-
       Events.dynamic(function() {
         this.itemLabel = this.value.value.activeCount == 1 ? 'item' : 'items';
       }.bind(this));
