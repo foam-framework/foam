@@ -409,6 +409,9 @@ function predicatedSink(predicate, sink) {
     __proto__: sink,
     put: function(obj, s, fc) {
       if ( obj && sink && predicate.f(obj) ) sink.put(obj, s, fc);
+    },
+    remove: function(obj, s, fc) {
+      if ( obj && sink && predicate.f(obj) ) sink.remove(obj, s, fc);
     }/*,
     eof: function() {
       sink && sink.eof && sink.eof();
