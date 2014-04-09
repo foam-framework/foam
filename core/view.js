@@ -2672,13 +2672,15 @@ FOAModel({
   methods: {
     toHTML: function() {
       var self = this;
-      this.on('click',
-              function() { self.action.callIfEnabled(self.value.get()); },
-              this.getID());
-      this.setAttribute('data-tip',
-                        function() {
-                          return self.action.help || undefined;
-                        }, this.getID());
+
+      this.on('click', function() {
+        self.action.callIfEnabled(self.value.get());
+      }, this.getID());
+
+      this.setAttribute('data-tip', function() {
+        return self.action.help || undefined;
+      }, this.getID());
+
       this.setAttribute('disabled', function() {
         var value = self.value.get();
         return self.action.isEnabled.call(value, self, self.action) ? undefined : 'disabled';
@@ -2689,6 +2691,7 @@ FOAModel({
 
     toInnerHTML: function() {
       var out = "";
+
       if ( this.action.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
       }
@@ -2696,6 +2699,7 @@ FOAModel({
       if ( this.action.showLabel ) {
         out += this.action.label;
       }
+
       return out;
     }
   }
