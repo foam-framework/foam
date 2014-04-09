@@ -58,6 +58,7 @@ FOAModel({
     },
     {
       name: 'clear',
+      isEnabled: function() { return this.completedCount > 0; },
       action: function() {
         this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).select({put: function(todo) {
           this.todoDAO.remove(todo);
