@@ -283,6 +283,14 @@ FOAModel({
       return view;
     },
 
+    createTemplateView: function(o, opt_args) {
+      if ( Action.isInstance(o) ) {
+        return ActionButton.create({action: o, value: this.value});
+      }
+
+      return this.createView(o, opt_args);
+    },
+
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {

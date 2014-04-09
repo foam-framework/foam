@@ -108,7 +108,7 @@ var TemplateCompiler = {
      return ret;
    },
    'create child': function(v) {
-     this.push("', this.createView(this.viewModel()['",
+     this.push("', this.createTemplateView(this.viewModel()['",
                v[1].join('').constantize(), "']",
                v[2] ? ', {' + v[2][1].join('') + '}' : '',
                "), '"); },
