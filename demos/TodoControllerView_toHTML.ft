@@ -1,17 +1,10 @@
-<%
-  var toggleButton = ActionButton.create({action: Controller.TOGGLE, value: this.value});
-  var clearButton = ActionButton.create({action: Controller.CLEAR, value: this.value});
-  var items = TextFieldView.create({value: this.itemLabel$, mode: 'read-only'});
-  var list = DAOListController.create({rowView: TodoView});
-
-  list.dao$ = this.value.value.filteredDAO$;
-%>
+<% var items = TextFieldView.create({value: this.itemLabel$, mode: 'read-only'}); %>
 <div>
-  <%= toggleButton %> $$input
-  <%= list %>
+  $$toggle $$input
+  $$filteredDAO
   <div class="row">
     <span class="todo-count"><strong>$$activeCount{mode: 'read-only'}</strong></span>&nbsp;<%= items %>&nbsp;left
     $$query
-    <%= clearButton %>
+    $$clear
   </div>
 </div>

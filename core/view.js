@@ -283,6 +283,14 @@ FOAModel({
       return view;
     },
 
+    createTemplateView: function(o, opt_args) {
+      if ( Action.isInstance(o) ) {
+        return ActionButton.create({action: o, value: this.value});
+      }
+
+      return this.createView(o, opt_args);
+    },
+
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
@@ -2657,9 +2665,7 @@ FOAModel({
   listeners: [
     {
       name: 'render',
-      code: function() {
-        this.updateHTML();
-      }
+      code: function() { this.updateHTML(); }
     }
   ],
 
@@ -2675,7 +2681,7 @@ FOAModel({
                         }, this.getID());
       this.setAttribute('disabled', function() {
         var value = self.value.get();
-        return self.action.isEnabled.call(value) ? undefined : 'disabled';
+        return self.action.isEnabled.call(value, self, self.action) ? undefined : 'disabled';
       }, this.getID());
 
       return this.SUPER();
@@ -4517,6 +4523,13 @@ FOAModel({
         this.updateHTML();
       }
     },
+    {
+      name: 'value',
+      setter: function(value) {
+        this.dao = value.value;
+        value.addListener(function() { this.dao = value.value; }.bind(this));
+      }
+    },
     { name: 'rowView' }
   ],
 
@@ -4535,13 +4548,15 @@ FOAModel({
       if ( ! this.dao || ! this.$ ) return;
 
       var out = '';
+      var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView].create() : this.rowView;
 
       this.children = [];
       this.initializers_ = [];
 
+
       this.dao.select({put: function(o) {
         o = o.clone();
-        var view = this.rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
+        var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         o.addListener(function() {

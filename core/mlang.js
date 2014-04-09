@@ -1388,6 +1388,8 @@ FOAModel({
   ],
 
   methods: {
+    // TODO: put this back to process one at a time and then
+    // have MDAO wait until it's done before pushing all data.
     put: function(obj) {
       (this.objs_ || (this.objs_ = [])).push(obj);
     },
