@@ -61,10 +61,8 @@ FOAModel({
     },
     {
       name: 'clear',
-      isEnabled: function(_, action) {
-        action.label = 'Clear completed (' + this.completedCount + ')';
-        return this.completedCount > 0;
-      },
+      labelFn: function() { return 'Clear completed (' + this.completedCount + ')'; }, 
+      isEnabled: function() { return this.completedCount > 0; },
       action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
     }
   ],
