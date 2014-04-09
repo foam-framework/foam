@@ -2665,6 +2665,7 @@ FOAModel({
   listeners: [
     {
       name: 'render',
+      isAnimated: true,
       code: function() { this.updateHTML(); }
     }
   ],
