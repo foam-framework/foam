@@ -28,7 +28,7 @@ FOAModel({
         });
       }
     },
-    { name: 'filteredDAO', view: 'ArrayView', subType: 'Todo' },
+    { name: 'filteredDAO', view: { model_: 'DAOListController', rowView: 'TodoView' } },
     { model_: 'IntegerProperty', name: 'completedCount' },
     { model_: 'IntegerProperty', name: 'activeCount' },
     {
@@ -53,7 +53,10 @@ FOAModel({
     },
     {
       name: 'clear',
-      isEnabled: function() { return this.completedCount > 0; },
+      isEnabled: function(_, action) {
+        action.label = 'Clear completed (' + this.completedCount + ')';
+        return this.completedCount > 0;
+      },
       action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
     }
   ],
