@@ -24,7 +24,7 @@ FOAModel({
       valueFactory: function() {
         return SeqNoDAO.create({
           property: Todo.ID,
-          delegate: CachingDAO.create(MDAO.create({model: Todo}), IDBDAO.create({model: Todo}))
+          delegate: CachingDAO.create(MDAO.create({model: Todo})/*.addIndex(Todo.COMPLETED)*/, IDBDAO.create({model: Todo}))
         });
       }
     },
@@ -54,11 +54,7 @@ FOAModel({
     {
       name: 'clear',
       isEnabled: function() { return this.completedCount > 0; },
-      action: function() {
-        this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).select({put: function(todo) {
-          this.todoDAO.remove(todo);
-        }.bind(this)});
-      }
+      action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
     }
   ],
   methods: {
@@ -83,11 +79,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
-  name: 'TodoView',
-  extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
-});
+FOAModel({ name: 'TodoView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 FOAModel({
   name: 'TodoControllerView',
