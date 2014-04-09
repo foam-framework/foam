@@ -210,7 +210,7 @@ FOAModel({
 
     /** Create a Browser for use in a hosted app. **/
     createBrowser: function(window) {
-      var b = Browser.create({project: this, window: window});
+      var b = this.X.Browser.create({project: this, window: window});
       window.browser = b;
       return b;
     },
