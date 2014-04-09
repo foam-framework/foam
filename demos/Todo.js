@@ -29,8 +29,8 @@ FOAModel({
       }
     },
     { name: 'filteredDAO', view: { model_: 'DAOListController', rowView: 'TodoView' } },
-    { model_: 'IntegerProperty', name: 'completedCount' },
-    { model_: 'IntegerProperty', name: 'activeCount' },
+    { name: 'completedCount', model_: 'IntegerProperty' },
+    { name: 'activeCount',    model_: 'IntegerProperty' },
     {
       name: 'query',
       postSet: function(_, q) { this.filteredDAO = this.todoDAO.where(q); },
