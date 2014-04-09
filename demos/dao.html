@@ -69,6 +69,11 @@ dao.select(console.log);
 // Console.log.json is a valid sink that formats the results as JSON
 dao.select(console.log.json);
 
+// Update expression allows for easy bulk updates.
+dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 12)), dao));
+
+dao.select(console.log.json);
+
 // Select directly to an Array
 var a = [];
 dao.select(a);

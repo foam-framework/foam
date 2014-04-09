@@ -17,8 +17,16 @@
 
 /** Create a sub-context, populating with bindings from opt_args. **/
 function sub(opt_args, opt_name) {
-  var sub = Object.create(this);
-  for ( key in opt_args ) sub[key] = opt_args[key];
+//  var sub = Object.create(this);
+  var sub = {__proto__: this};
+
+  if ( opt_args ) for ( var key in opt_args ) {
+    if ( opt_args.hasOwnProperty(key) ) {
+      // It looks like the chrome debug console is overwriting sub.window
+      // but this prevents it.
+      Object.defineProperty(sub, key, {value: opt_args[key], writable: false});
+    }
+  }
   if ( opt_name ) {
     sub.NAME = opt_name;
     sub.toString = function() { return 'CONTEXT(' + opt_name + ')'; };
@@ -27,18 +35,18 @@ function sub(opt_args, opt_name) {
 }
 
 
-function subWindow(window, opt_name) {
-  if ( ! window ) return sub();
+function subWindow(w, opt_name) {
+  if ( ! w ) return sub();
 
-  var document = window.document;
+  var document = w.document;
   return sub({
-    window: window,
+    window: w,
     document: document,
-    console: window.console,
-    log: window.console.log.bind(console),
-    warn: window.console.warn.bind(console),
-    info: window.console.info.bind(console),
-    error: window.console.error.bind(console),
+    console: w.console,
+    log: w.console.log.bind(console),
+    warn: w.console.warn.bind(console),
+    info: w.console.info.bind(console),
+    error: w.console.error.bind(console),
     $: function(id) {
       if ( document.FOAM_OBJECTS && document.FOAM_OBJECTS[id] )
         return document.FOAM_OBJECTS[id];
@@ -48,12 +56,12 @@ function subWindow(window, opt_name) {
     $$: function(cls) {
       return document.getElementsByClassName(cls);
     },
-    setTimeout: window.setTimeout.bind(window),
-    clearTimeout: window.clearTimeout.bind(window),
-    setInterval: window.setInterval.bind(window),
-    clearInterval: window.clearInterval.bind(window),
-    requestAnimationFrame: window.requestAnimationFrame.bind(window),
-    cancelAnimationFrame: window.cancelAnimationFrame.bind(window)
+    setTimeout: w.setTimeout.bind(w),
+    clearTimeout: w.clearTimeout.bind(w),
+    setInterval: w.setInterval.bind(w),
+    clearInterval: w.clearInterval.bind(w),
+    requestAnimationFrame: w.requestAnimationFrame.bind(w),
+    cancelAnimationFrame: w.cancelAnimationFrame.bind(w)
   }, opt_name);
 }
 

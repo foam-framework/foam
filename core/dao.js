@@ -724,7 +724,7 @@ FOAModel({
     {
       model_: 'IntegerProperty',
       name: 'sequenceValue',
-      defaultValue: 0
+      defaultValue: 1
     }
   ],
 
@@ -739,7 +739,7 @@ FOAModel({
       this.delegate.select(MAX(this.property))(function(max) {
         if ( max.max ) this.sequenceValue = max.max + 1;
         future.set(true);
-      });
+      }.bind(this));
     },
     put: function(obj, sink) {
       this.WHEN_READY(function() {

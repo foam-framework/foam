@@ -1389,9 +1389,16 @@ FOAModel({
 
   methods: {
     put: function(obj) {
-      var newObj = this.f(obj);
-      if (newObj.id !== obj.id) this.dao.remove(obj.id);
-      this.dao.put(newObj);
+      (this.objs_ || (this.objs_ = [])).push(obj);
+    },
+    eof: function() {
+      for ( var i = 0 ; i < this.objs_.length ; i++ ) {
+        var obj = this.objs_[i];
+        var newObj = this.f(obj);
+        if (newObj.id !== obj.id) this.dao.remove(obj.id);
+        this.dao.put(newObj);
+      }
+      this.objs_ = undefined;
     },
     f: function(obj) {
       var newObj = obj.clone();
@@ -1433,8 +1440,8 @@ FOAModel({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + ' = ' + this.arg2.toSQL(); },
     f: function(obj) {
-      if (Property.isInstance(this.arg1) && ConstantExpr.isInstance(this.arg2)) {
-        obj[this.arg1.name] = this.arg2.f();
+      if (Property.isInstance(this.arg1)) {
+        obj[this.arg1.name] = this.arg2.f(obj);
       }
     }
   }
@@ -1720,6 +1727,25 @@ FOAModel({
     }
   }
 });
+
+FOAModel({
+  name: 'AddExpr',
+
+  extendsModel: 'BINARY',
+
+  methods: {
+    toSQL: function() {
+      return this.arg1.toSQL() + ' + ' + this.arg2.toSQL();
+    },
+    f: function(o) {
+      return this.arg1.f(o) + this.arg2.f(o);
+    }
+  }
+});
+
+function ADD(arg1, arg2) {
+  return AddExpr.create({ arg1: compile_(arg1), arg2: compile_(arg2) });
+}
 
 function DESC(arg1) {
   if ( DescExpr.isInstance(arg1) ) return arg1.arg1;

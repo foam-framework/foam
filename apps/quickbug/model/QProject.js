@@ -175,8 +175,6 @@ FOAModel({
         w.contentWindow.onload = function() {
           var window = self.window = w.contentWindow;
 
-          var Y = self.X.subWindow(window, 'Browser').sub({}, 'Browser Window');
-
           apar(
             arequire('GridView'),
             arequire('QIssueTileView'),
@@ -188,7 +186,7 @@ FOAModel({
             arequire('ConfigureProjectsView')
           )(function () {
             $addWindow(window);
-            debugger;
+            var Y = self.X.subWindow(window, 'Browser Window');
             var b = Y.ChromeAppBrowser.create({project: self});
             window.browser = b; // for debugging
             BROWSERS.push(b); // for debugging

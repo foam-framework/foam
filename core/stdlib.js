@@ -104,8 +104,7 @@ Object.defineProperty(Object.prototype, 'become', {
     }
     this.__proto__ = other.__proto__;
   }
-})
-
+});
 
 /** Create a function which always returns the supplied constant value. **/
 function constantFn(v) { return function() { return v; }; }
@@ -600,7 +599,7 @@ var FeatureSet = {
   get parent() { return this.parent_; },
   set parent(p)  { this.parent_ = p; },
 
-  get version() { 
+  get version() {
     return this.version_;
   }
 };

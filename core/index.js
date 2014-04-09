@@ -96,7 +96,8 @@ var TreeIndex = {
     return {
       __proto__: this,
       prop: prop,
-      tail: tail
+      tail: tail,
+      selectCount: 0
     };
   },
 
@@ -137,6 +138,11 @@ var TreeIndex = {
     obj[this.prop.name] = value;
   },
 
+  maybeClone: function(s) {
+    if ( this.selectCount > 0 ) return s.clone();
+    return s;
+  },
+
   put: function(s, newValue) {
     return this.putKeyValue(s, this.prop.f(newValue), newValue);
   },
@@ -145,6 +151,8 @@ var TreeIndex = {
     if ( ! s ) {
       return [key, this.tail.put(null, value), 1, 1];
     }
+
+    s = this.maybeClone(s);
 
     var r = this.compare(s[KEY], key);
 
@@ -215,6 +223,8 @@ var TreeIndex = {
 
   removeKeyValue: function(s, key, value) {
     if ( ! s ) return s;
+
+    s = this.maybeClone(s);
 
     var r = this.compare(s[KEY], key);
 
@@ -570,7 +580,9 @@ var TreeIndex = {
          */
         if ( sortRequired ) {
           var a = [];
+          index.selectCount++;
           index.select(s, a, {query: options.query});
+          index.selectCount--;
           a.sort(toCompare(options.order));
 
           var skip = options.skip || 0;
@@ -588,9 +600,11 @@ var TreeIndex = {
               __proto__: options,
               skip: index.size(s) - options.skip - (options.limit || index.size(s)-options.skip)
             };*/
+          index.selectCount++;
           reverseSort ?
             index.selectReverse(s, sink, options) :
             index.select(s, sink, options) ;
+          index.selectCount--;
         }
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
@@ -777,12 +791,18 @@ var mLangIndex = {
   },
 
   put: function(s, newValue) {
+    // TODO: Should we clone s here?  That would be more
+    // correct in terms of the purely functional interface
+    // but maybe we can get away with it.
     s = s || this.mlang.clone();
     s.put(newValue);
     return s;
   },
 
   remove: function(s, obj) {
+    // TODO: Should we clone s here?  That would be more
+    // correct in terms of the purely functional interface
+    // but maybe we can get away with it.
     s = s || this.mlang.clone();
     s.remove && s.remove(obj);
     return s;
@@ -980,7 +1000,7 @@ var MDAO = Model.create({
     },
 
     remove: function(obj, sink) {
-      if (!obj) {
+      if ( ! obj ) {
         sink && sink.error && sink.error('missing key');
         return;
       }
@@ -989,6 +1009,7 @@ var MDAO = Model.create({
       this.find(id, {
         put: function(obj) {
           self.root = self.index.remove(self.root, obj);
+          self.notify_('remove', [obj]);
           sink && sink.remove && sink.remove(obj);
         },
         error: function() {
