@@ -82,19 +82,5 @@ FOAModel({
   ]
 });
 
-FOAModel({ name: 'TodoView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-
-FOAModel({
-  name: 'TodoControllerView',
-  extendsModel: 'DetailView',
-  properties: [ { name: 'itemLabel' } ],
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-      Events.dynamic(function() {
-        this.itemLabel = this.value.value.activeCount == 1 ? 'item' : 'items';
-      }.bind(this));
-    }
-  },
-  templates: [ { name: 'toHTML' } ]
-});
+FOAModel({ name: 'TodoView',           extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'TodoControllerView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
