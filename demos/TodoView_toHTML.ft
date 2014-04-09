@@ -1,11 +1,12 @@
 <%
-  var remove    = this.DAO.remove.bind(this.DAO, this.value.value);
+  var todo      = this.value.value;
+  var remove    = this.DAO.remove.bind(this.DAO, todo);
   var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
   var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
 %>
-<div class="TodoRow" id="{{this.getID()}}">
+<div class="TodoRow<%= todo.completed ? ' completed' : '' %>" id="{{this.getID()}}">
   <span class="completed">$$completed</span>
-  <span class="displayView">{{this.value.value.text}}</span>
+  <span class="displayView">{{todo.text}}</span>
   <span class="editView">$$text</span>
   <span class="remove"><button id="<%= this.on('click', remove, this.nextID()) %>">X</button>
 </div>
@@ -16,7 +17,7 @@
     'keydown',
     function(e) {
       if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
-        this.textView.domValue.set(this.value.value.text); // revert value
+        this.textView.domValue.set(todo.text); // revert value
         toDisplay();
       }
     }.bind(this),
