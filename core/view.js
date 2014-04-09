@@ -4547,7 +4547,6 @@ FOAModel({
         this.addChild(view);
         out += view.toHTML();
       }.bind(this)})(function() {
-        console.log('DONE');
         this.$.innerHTML = out;
         this.initInnerHTML();
       }.bind(this));
