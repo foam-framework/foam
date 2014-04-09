@@ -47,13 +47,8 @@ FOAModel({
   actions: [
     {
       name: 'toggle',
-      isEnabled: function() {
-        var c1 = this.completedCount ? 1 : 0
-        var c2 = this.activeCount ? 1 : 0
-        return c1 != c2;
-      },
       action: function() {
-        this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, ! this.completedCount), this.todoDAO));
+        this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, this.activeCount), this.todoDAO));
       }
     },
     {
