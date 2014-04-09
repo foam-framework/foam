@@ -247,6 +247,16 @@ FOAModel({
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
+    dynamicTag: function(tagName, f) {
+      var id = this.nextID();
+      Events.dynamic(function() {
+        var html = f();
+        var e = $(id);
+        if ( e ) e.innerHTML = html; 
+      }.bind(this));
+      return '<' + tagName + ' id="' + id + '"></' + tagName + '>'; 
+    },
+    
     /** Bind a sub-View to a sub-Value. **/
     bindSubView: function(view, prop) {
       view.setValue(this.propertyValue(prop.name));
