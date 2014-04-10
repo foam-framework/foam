@@ -625,10 +625,12 @@ FOAModel({
      **/
     notify_: function(fName, args) {
       if ( ! this.daoListeners_ ) return;
-
+      var old = XYX;
+      XYX += '   ';
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
+        console.log(XYX, '****** ', fName, i, this.daoListeners_.length, fn);
         if ( fn ) {
           // Create flow-control object
           args[2] = {
@@ -640,10 +642,12 @@ FOAModel({
           fn.apply(l, args);
         }
       }
+      XYX = old;
     }
   }
 });
 
+var XYX = "";
 
 FOAModel({
   name: 'ProxyDAO',
