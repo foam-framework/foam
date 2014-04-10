@@ -13,14 +13,5 @@
 <%
   this.on('dblclick', toEdit,    this.getID());
   this.on('blur',     toDisplay, this.textView.elementId);
-  this.on(
-    'keydown',
-    function(e) {
-      if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
-        this.textView.domValue.set(todo.text); // revert value
-        toDisplay();
-      }
-    }.bind(this),
-    this.textView.elementId);
+  this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 %>
-
