@@ -252,11 +252,11 @@ FOAModel({
       Events.dynamic(function() {
         var html = f();
         var e = $(id);
-        if ( e ) e.innerHTML = html; 
+        if ( e ) e.innerHTML = html;
       }.bind(this));
-      return '<' + tagName + ' id="' + id + '"></' + tagName + '>'; 
+      return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
     },
-    
+
     /** Bind a sub-View to a sub-Value. **/
     bindSubView: function(view, prop) {
       view.setValue(this.propertyValue(prop.name));
@@ -835,6 +835,10 @@ FOAModel({
   ],
 
   methods: {
+    /** Escape topic published when user presses 'escape' key to abort edits. **/
+    // TODO: Model as a 'Topic'
+    ESCAPE: ['escape'],
+
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
 
@@ -854,7 +858,6 @@ FOAModel({
     setValue: function(value) {
       this.value = value;
     },
-
     initHTML: function() {
       this.SUPER();
 
@@ -869,6 +872,8 @@ FOAModel({
 
       this.setValue(this.value);
       this.softValue = this.softValue;
+
+      this.$.addEventListener('keydown', this.onKeyDown);
     },
 
     //    textToValue: Events.identity,
@@ -887,6 +892,15 @@ FOAModel({
       name: 'onChange',
       code: function(e) {
         this.value.set(this.softValue.get());
+      }
+    },
+    {
+      name: 'onKeyDown',
+      code: function(e) {
+        if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
+          this.domValue.set(this.value.get());
+          this.publish(this.ESCAPE);
+        }
       }
     }
   ]
@@ -2712,7 +2726,7 @@ FOAModel({
 
       if ( this.action.showLabel ) {
         var value = this.value.get();
-        
+
         out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
       }
 
