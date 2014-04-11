@@ -40,14 +40,6 @@ FOAModel({
       })
     }
   ],
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.query = this.query;  // causes filteredDAO to be set
-      this.todoDAO.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
-    }
-  },
   actions: [
     {
       name: 'toggle',
@@ -71,7 +63,15 @@ FOAModel({
         }.bind(this));
       }
     }
-  ]
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.query = this.query;  // causes filteredDAO to be set
+      this.todoDAO.listen(this.onDAOUpdate);
+      this.onDAOUpdate();
+    }
+  }
 });
 
 FOAModel({ name: 'View',           extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
