@@ -409,11 +409,15 @@ function predicatedSink(predicate, sink) {
 
   return {
     __proto__: sink,
+    $UID: sink.$UID,
     put: function(obj, s, fc) {
       if ( obj && sink && predicate.f(obj) ) sink.put(obj, s, fc);
     },
     remove: function(obj, s, fc) {
       if ( obj && sink && predicate.f(obj) ) sink.remove(obj, s, fc);
+    },
+    toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
+
     }/*,
     eof: function() {
       sink && sink.eof && sink.eof();
