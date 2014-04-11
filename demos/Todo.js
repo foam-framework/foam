@@ -36,7 +36,7 @@ FOAModel({
       postSet: function(_, q) { this.filteredDAO = this.todoDAO.where(q); },
       defaultValue: TRUE,
       view: ChoiceListView.create({
-        choices: [ [ TRUE, 'All' ], [ Todo.COMPLETED, 'Active' ], [ NOT(Todo.COMPLETED), 'Completed' ] ]
+        choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ]
       })
     }
   ],
