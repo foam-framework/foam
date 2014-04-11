@@ -139,7 +139,7 @@ var TreeIndex = {
   },
 
   maybeClone: function(s) {
-    if ( this.selectCount > 0 ) return s.clone();
+    if ( s && this.selectCount > 0 ) return s.clone();
     return s;
   },
 
@@ -179,7 +179,7 @@ var TreeIndex = {
   skew: function(s) {
     if ( s && s[LEFT] && s[LEFT][LEVEL] === s[LEVEL] ) {
       // Swap the pointers of horizontal left links.
-      var l = s[LEFT];
+      var l = this.maybeClone(s[LEFT]);
 
       s[LEFT] = l[RIGHT];
       l[RIGHT] = s;
@@ -202,7 +202,7 @@ var TreeIndex = {
   split: function(s) {
     if ( s && s[RIGHT] && s[RIGHT][RIGHT] && s[LEVEL] === s[RIGHT][RIGHT][LEVEL] ) {
       // We have two horizontal right links.  Take the middle node, elevate it, and return it.
-      var r = s[RIGHT];
+      var r = this.maybeClone(s[RIGHT]);
 
       s[RIGHT] = r[LEFT];
       r[LEFT] = s;
@@ -267,17 +267,19 @@ var TreeIndex = {
     // necessary, and then skew and split all nodes in the new level.
     s = this.skew(this.decreaseLevel(s));
     if ( s[RIGHT] ) {
-      s[RIGHT] = this.skew(s[RIGHT]);
-      if ( s[RIGHT][RIGHT] ) s[RIGHT][RIGHT] = this.skew(s[RIGHT][RIGHT]);
+      s[RIGHT] = this.skew(this.maybeClone(s[RIGHT]));
+      if ( s[RIGHT][RIGHT] ) s[RIGHT][RIGHT] = this.skew(this.maybeClone(s[RIGHT][RIGHT]));
     }
     s = this.split(s);
-    s[RIGHT] = this.split(s[RIGHT]);
+    s[RIGHT] = this.split(this.maybeClone(s[RIGHT]));
 
     return s;
   },
 
   removeNode: function(s, key) {
     if ( ! s ) return s;
+
+    s = this.maybeClone(s);
 
     var r = this.compare(s[KEY], key);
 
@@ -312,6 +314,7 @@ var TreeIndex = {
     if ( expectedLevel < s[LEVEL] ) {
       s[LEVEL] = expectedLevel;
       if ( s[RIGHT] && expectedLevel < s[RIGHT][LEVEL] ) {
+        s[RIGHT] = this.maybeClone(s[RIGHT]);
         s[RIGHT][LEVEL] = expectedLevel;
       }
     }
