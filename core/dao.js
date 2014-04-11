@@ -312,10 +312,10 @@ var FutureDAO = {
           for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
             if ( this.daoListeners_[i][0] === sink ) {
               this.daoListeners_.splice(i, 1);
-              i--;
               return;
             }
           }
+          console.warn('phantom DAO unlisten: ', sink);
         }
       }};
     return ret;
@@ -600,7 +600,16 @@ FOAModel({
     },
 
     unlisten: function(sink) {
-      this.daoListeners_ && this.daoListeners_.remove(sink);
+      var ls = this.daoListeners_;
+      if ( ls ) {
+        for ( var i = 0; i < ls.length ; i++ ) {
+          if ( ls[i].$UID === sink.$UID ) {
+            ls.splice(i, 1);
+            return true;
+          }
+        }
+        console.warn('Phantom DAO unlisten: ', this, sink);
+      }
     },
 
     // Default removeAll: calls select() with the same options and
@@ -626,12 +635,9 @@ FOAModel({
      **/
     notify_: function(fName, args) {
       if ( ! this.daoListeners_ ) return;
-      var old = XYX;
-      XYX += '   ';
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
-        console.log(XYX, '****** ', fName, i, this.daoListeners_.length, fn);
         if ( fn ) {
           // Create flow-control object
           args[2] = {
@@ -643,12 +649,9 @@ FOAModel({
           fn.apply(l, args);
         }
       }
-      XYX = old;
     }
   }
 });
-
-var XYX = "";
 
 FOAModel({
   name: 'ProxyDAO',
@@ -666,8 +669,11 @@ FOAModel({
       postSet: function(oldDAO, newDAO) {
         this.model = newDAO.model;
         if ( ! this.relay_ ) return;
-        if ( oldDAO ) oldDAO.unlisten(this.relay_);
-        newDAO.listen(this.relay_);
+        if ( this.daoListeners_ && this.daoListeners_.length ) {
+          if ( oldDAO ) oldDAO.unlisten(this.relay_);
+          newDAO.listen(this.relay_);
+          this.notify_('put', []);
+        }
       }
     }
   ],
@@ -676,12 +682,13 @@ FOAModel({
     init: function() {
       this.SUPER();
 
+      var self = this;
+
       this.relay_ =  {
         put:    function() { this.notify_('put', arguments);    }.bind(this),
-        remove: function() { this.notify_('remove', arguments); }.bind(this)
+        remove: function() { this.notify_('remove', arguments); }.bind(this),
+        toString: function() { return 'RELAY(' + this.$UID + ', ' + self.delegate + ')'; }
       };
-
-      this.delegate.listen(this.relay_);
     },
 
     put: function(value, sink) {
@@ -702,6 +709,24 @@ FOAModel({
 
     select: function(sink, options) {
       return this.delegate.select(sink, options);
+    },
+
+    listen: function(sink, options) {
+      // Adding first listener, so listen to delegate
+      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+        this.delegate.listen(this.relay_);
+      }
+
+      this.SUPER(sink, options);
+    },
+
+    unlisten: function(sink) {
+      this.SUPER(sink);
+
+      // Remove last listener, so unlisten to delegate
+      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+        this.delegate.unlisten(this.relay_);
+      }
     }
   }
 });
@@ -913,29 +938,36 @@ for ( var key in AbstractDAO.methods ) {
 defineProperties(Array.prototype, pmap);
 
 defineProperties(Array.prototype, {
+  // Clone this Array and remove 'v' (only 1 instance)
+  // TODO: make faster by copying in one pass, without splicing
   deleteF: function(v) {
     var a = this.clone();
     for (var i = 0; i < a.length; i++) {
-      if ( a[i] === v ) { a.splice(i, 1); i--; }
+      if ( a[i] === v ) { a.splice(i, 1); break; }
     }
     return a;
   },
+  // Remove 'v' from this array (only 1 instance removed)
+  // return true iff the value was removed
   deleteI: function(v) {
     for (var i = 0; i < this.length; i++) {
-      if ( this[i] === v ) { this.splice(i, 1); i--; }
+      if ( this[i] === v ) { this.splice(i, 1); return true; }
     }
-    return this;
+    return false;
   },
+  // Clone this Array and remove first object where predicate 'p' returns true
+  // TODO: make faster by copying in one pass, without splicing
   removeF: function(p) {
     var a = this.clone();
     for (var i = 0; i < a.length; i++) {
-      if (p.f(a[i])) { a.splice(i, 1); i--; }
+      if (p.f(a[i])) { a.splice(i, 1); break; }
     }
     return a;
   },
+  // Remove first object in this array where predicate 'p' returns true
   removeI: function(p) {
     for (var i = 0; i < this.length; i++) {
-      if (p.f(this[i])) { this.splice(i, 1); i--;}
+      if (p.f(this[i])) { this.splice(i, 1); breeak; }
     }
     return this;
   },
@@ -990,6 +1022,7 @@ defineProperties(Array.prototype, {
     }
     sink && sink.error && sink.error('find', query);
   },
+  // TODO: make this faster, should stop after finding first item.
   remove: function(query, sink) {
     var id = query.id ? query.id : query;
     this.removeAll({ remove: sink && sink.remove },
