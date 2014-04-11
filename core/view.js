@@ -4602,6 +4602,7 @@ FOAModel({
       }.bind(this)})(function() {
         this.$.innerHTML = out;
         this.initInnerHTML();
+        this.children = [];
         this.painting = false;
       }.bind(this));
     }
