@@ -19,15 +19,7 @@ FOAModel({
       },
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
-    {
-      name: 'todoDAO',
-      valueFactory: function() { // return EasyDAO.create({model: Todo, seqNo: true, cache: true, type: StorageDAO})
-        return SeqNoDAO.create({
-          property: Todo.ID,
-          delegate: CachingDAO.create(MDAO.create({model: Todo})/*.addIndex(Todo.COMPLETED)*/, IDBDAO.create({model: Todo}))
-        });
-      }
-    },
+    { name: 'todoDAO' },
     { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListController', rowView: 'View' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
@@ -67,6 +59,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
+      this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, cache: true, type: 'IDBDAO'});
       this.query = this.query;  // causes filteredDAO to be set
       this.todoDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
