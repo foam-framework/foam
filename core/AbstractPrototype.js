@@ -90,7 +90,7 @@ var AbstractPrototype = {
     this.__defineSetter__(name, function(newValue) {
       var f = stack[0];
       if ( f && ! f(this, name, newValue) ) return;
-      setter.call(this, newValue);
+      setter.call(this, newValue, name);
     });
   },
 
