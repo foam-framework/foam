@@ -2996,6 +2996,73 @@ var WaitCursorDAO = FOAM({
 });
 
 
+FOAModel({
+  name: 'EasyDAO',
+  extendsModel: 'ProxyDAO',
+
+  help: 'A facade for easy DAO setup.',
+
+  properties: [
+    {
+      name: 'model'
+    },
+    {
+      name: ''
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'seqNo',
+      defaultValue: false
+    },
+    {
+      name: 'seqProperty',
+      type: 'Property'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cache',
+      defaultValue: true
+    },
+    {
+      name: 'daoType',
+      defaultValue: 'IDBDAO'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autoIndex',
+      defaultValue: false
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
+      var params = { model: this.model, autoIndex: this.autoIndex };
+      if ( this.name ) params.name = this.name;
+      if ( this.seqNo ) params.property = this.seqProperty;
+
+      var dao = daoModel.create(params);
+
+      if ( this.cache && daoModel !== MDAO ) dao = CachingDAO.create(MDAO.create(params), dao);
+      if ( this.seqNo ) dao = SeqNoDAO.create({__proto__: params, delegate: dao});
+
+      this.delegate = dao;
+    },
+
+    addIndex: function() {
+      // TODO:
+    },
+
+    addRawIndex: function() {
+      // TODO:
+    },
+
+  }
+});
+
+
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
 Function.prototype.remove = function() { this.apply(this, arguments); };
