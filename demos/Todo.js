@@ -21,14 +21,14 @@ FOAModel({
     },
     {
       name: 'todoDAO',
-      valueFactory: function() {
+      valueFactory: function() { // return EasyDAO.create({model: Todo, seqNo: true, cache: true, type: StorageDAO})
         return SeqNoDAO.create({
           property: Todo.ID,
           delegate: CachingDAO.create(MDAO.create({model: Todo})/*.addIndex(Todo.COMPLETED)*/, IDBDAO.create({model: Todo}))
         });
       }
     },
-    { name: 'filteredDAO', view: { model_: 'DAOListController', rowView: 'TodoView' } },
+    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListController', rowView: 'TodoView' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
     {
@@ -36,11 +36,7 @@ FOAModel({
       postSet: function(_, q) { this.filteredDAO = this.todoDAO.where(q); },
       defaultValue: TRUE,
       view: ChoiceListView.create({
-        choices: [
-          [ TRUE,                      'All' ],
-          [ EQ(Todo.COMPLETED, FALSE), 'Active' ],
-          [ EQ(Todo.COMPLETED, TRUE),  'Completed' ]
-        ]
+        choices: [ [ TRUE, 'All' ], [ Todo.COMPLETED, 'Active' ], [ NOT(Todo.COMPLETED), 'Completed' ] ]
       })
     }
   ],
@@ -55,15 +51,13 @@ FOAModel({
   actions: [
     {
       name: 'toggle',
-      action: function() {
-        this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, this.activeCount), this.todoDAO));
-      }
+      action: function() { this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, this.activeCount), this.todoDAO)); }
     },
     {
       name: 'clear',
-      labelFn: function() { return 'Clear completed (' + this.completedCount + ')'; },
+      labelFn:   function() { return 'Clear completed (' + this.completedCount + ')'; },
       isEnabled: function() { return this.completedCount > 0; },
-      action: function() { this.todoDAO.where(EQ(Todo.COMPLETED, TRUE)).removeAll(); }
+      action:    function() { this.todoDAO.where(Todo.COMPLETED).removeAll(); }
     }
   ],
   listeners: [
@@ -71,9 +65,9 @@ FOAModel({
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() {
-        this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (counts) {
-          this.completedCount = counts.groups['true'];
-          this.activeCount    = counts.groups['false'];
+        this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
+          this.completedCount = q.groups['true'];
+          this.activeCount    = q.groups['false'];
         }.bind(this));
       }
     }
