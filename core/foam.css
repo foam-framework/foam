@@ -787,3 +787,30 @@ input.clickToEnableEdit:not(:focus) {
 .galleryImage {
   width: 100%;
 }
+
+/* UnitTestResultView */
+.foamTest {
+  border: 1px solid black;
+  border-radius: 5px;
+  line-height: 150%;
+  margin: 2px;
+  padding: 6px;
+}
+
+.foamTestPassed {
+  background-color: #cfc;
+}
+
+.foamTestFailed {
+  background-color: #fcc;
+}
+
+.foamInnerTests {
+  padding-left: 10px;
+}
+
+.foamTestOutput {
+  background-color: #e3e3e3;
+  margin: 4px;
+  padding: 5px;
+}
