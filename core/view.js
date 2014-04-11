@@ -234,7 +234,7 @@ FOAModel({
     },
     {
       name: 'tagName',
-      defaultValue: 'div'
+      defaultValue: 'span'
     },
     {
       name: 'cssClasses',
@@ -4588,7 +4588,6 @@ FOAModel({
 
       this.children = [];
       this.initializers_ = [];
-
 
       this.dao.select({put: function(o) {
         o = o.clone();
