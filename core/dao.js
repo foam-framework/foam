@@ -238,7 +238,7 @@ FOAModel({
 
 
 /** A DAO proxy that delays operations until the delegate is set in the future. **/
-var FutureDAO= {
+var FutureDAO = {
   create: function(/* future */ futureDelegate) {
 
     // This is kind-of-tricky.  We actually return an object whose proto is the future-proxy
@@ -309,10 +309,11 @@ var FutureDAO= {
           this.daoListeners_.push([sink, options]);
         },
         unlisten: function(sink) {
-          for (var i = 0; i < this.daoListeners_; i++) {
-            if ( this.daoListeners_[i][0] == sink ) {
+          for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
+            if ( this.daoListeners_[i][0] === sink ) {
               this.daoListeners_.splice(i, 1);
               i--;
+              return;
             }
           }
         }
@@ -625,10 +626,12 @@ FOAModel({
      **/
     notify_: function(fName, args) {
       if ( ! this.daoListeners_ ) return;
-
+      var old = XYX;
+      XYX += '   ';
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
+        console.log(XYX, '****** ', fName, i, this.daoListeners_.length, fn);
         if ( fn ) {
           // Create flow-control object
           args[2] = {
@@ -640,10 +643,12 @@ FOAModel({
           fn.apply(l, args);
         }
       }
+      XYX = old;
     }
   }
 });
 
+var XYX = "";
 
 FOAModel({
   name: 'ProxyDAO',

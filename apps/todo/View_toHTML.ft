@@ -4,23 +4,14 @@
   var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
   var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
 %>
-<div class="TodoRow<%= todo.completed ? ' completed' : '' %>" id="{{this.getID()}}">
+<div class="TodoRow{{{todo.completed ? ' completed' : ''}}}" id="{{{this.getID()}}}">
   <span class="completed">$$completed</span>
   <span class="displayView">{{todo.text}}</span>
   <span class="editView">$$text</span>
-  <span class="remove"><button id="<%= this.on('click', remove, this.nextID()) %>">X</button>
+  <span class="remove"><button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
 </div>
 <%
   this.on('dblclick', toEdit,    this.getID());
   this.on('blur',     toDisplay, this.textView.elementId);
-  this.on(
-    'keydown',
-    function(e) {
-      if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
-        this.textView.domValue.set(todo.text); // revert value
-        toDisplay();
-      }
-    }.bind(this),
-    this.textView.elementId);
+  this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 %>
-

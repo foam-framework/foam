@@ -21,8 +21,10 @@
  * Syntax:
  *    <% code %>: code inserted into template, but nothing implicitly output
  *    <%= comma-separated-values %>: all values are appended to template output
+ *    <%# expression %>: dynamic (auto-updating) expression is output
  *    \<new-line>: ignored
  *    %%value(<whitespace>|<): output a single value to the template output
+ *    $$feature(<whitespace>|<): output the View or Action for the current Value
  *
  * TODO: add support for arguments
  */
@@ -35,6 +37,7 @@ var TemplateParser = {
   markup: repeat0(alt(
     sym('create child'),
     sym('simple value'),
+    sym('live value tag'),
     sym('raw values tag'),
     sym('values tag'),
     sym('code tag'),
@@ -48,6 +51,8 @@ var TemplateParser = {
                       optional(seq('{', repeat(notChar('}')), '}'))),
 
   'simple value': seq('%%', repeat(notChars(' \n<'))),
+
+  'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 
   'raw values tag': alt(
     seq('<%=', repeat(not('%>', anyChar)), '%>'),
@@ -114,7 +119,8 @@ var TemplateCompiler = {
                "), '"); },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
-   'values tag': function (v) { this.push("',escapeHTML(", v[1].join(''), "),'"); },
+   'values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
+   'live value tag': function (v) { this.push("',this.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),'"); },
    'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },
