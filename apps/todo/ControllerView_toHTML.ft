@@ -1,0 +1,6 @@
+$$toggle $$input $$filteredDAO
+<div class="row">
+  <strong>$$activeCount{mode: 'read-only'}</strong>&nbsp;
+  <%# this.value.value.activeCount == 1 ? 'item' : 'items' %>
+  &nbsp;left $$query $$clear
+</div>
