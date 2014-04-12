@@ -3007,7 +3007,8 @@ FOAModel({
       name: 'model'
     },
     {
-      name: ''
+      name: 'name',
+      defaultValueFn: function() { return this.model.plural; }
     },
     {
       model_: 'BooleanProperty',
@@ -3022,6 +3023,16 @@ FOAModel({
       model_: 'BooleanProperty',
       name: 'cache',
       defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'logging',
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'timing',
+      defaultValue: false
     },
     {
       name: 'daoType',
@@ -3046,7 +3057,9 @@ FOAModel({
       var dao = daoModel.create(params);
 
       if ( this.cache && daoModel !== MDAO ) dao = CachingDAO.create(MDAO.create(params), dao);
-      if ( this.seqNo ) dao = SeqNoDAO.create({__proto__: params, delegate: dao});
+      if ( this.seqNo   ) dao = SeqNoDAO.create({__proto__: params, delegate: dao});
+      if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
+      if ( this.logging ) dao = LoggingDAO.create(dao);
 
       this.delegate = dao;
     },

@@ -58,7 +58,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, cache: true, type: 'IDBDAO'});
+      this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, cache: true});
       this.query = this.query;  // causes filteredDAO to be set
       this.todoDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
