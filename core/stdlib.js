@@ -411,10 +411,10 @@ function predicatedSink(predicate, sink) {
     __proto__: sink,
     $UID: sink.$UID,
     put: function(obj, s, fc) {
-      if ( ! obj || predicate.f(obj) ) sink.put(obj, s, fc);
+      if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
     },
     remove: function(obj, s, fc) {
-      if ( ! obj || predicate.f(obj) ) sink.remove(obj, s, fc);
+      if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
     },
     toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
 
@@ -424,6 +424,7 @@ function predicatedSink(predicate, sink) {
     }*/
   };
 }
+
 
 function limitedSink(count, sink) {
   var i = 0;
