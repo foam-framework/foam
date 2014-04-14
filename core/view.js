@@ -131,7 +131,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        console.log('unknown attribute: ', key);
+        if ( ! {model:true, view:true, id:true}[key] ) console.log('unknown attribute: ', key);
       }
     }
 
