@@ -1,15 +1,11 @@
 <html>
 <head>
-  <title>TODO</title>
-  <link rel="stylesheet" type="text/css" href="../../core/foam.css" /> <!-- remove this line when Todo.css done -->
-  <link rel="stylesheet" type="text/css" href="Todo.css" />
+  <meta charset="utf-8">
+  <title>Template • TodoMVC</title>
+  <link rel="stylesheet" href="bower_components/todomvc-common/base.css">
+  <link rel="stylesheet" href="app.css">
   <script language="javascript" src="../../core/bootFOAM.js"></script>
   <script language="javascript" src="Todo.js"></script>
 </head>
-<body>
-  <foam model="Controller" view="ControllerView"></foam>
-  <script language="javascript">
-    apar(arequire('View'), arequire('ControllerView'))(function() { DOM.init(X); });
-  </script>
-</body>
+<body><foam model="Controller" view="ControllerView"></foam></body>
 </html>
