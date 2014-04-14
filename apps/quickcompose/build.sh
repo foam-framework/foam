@@ -22,6 +22,7 @@ cat \
   ../../core/event.js \
   ../../core/JSONUtil.js \
   ../../core/XMLUtil.js \
+  ../../core/context.js \
   ../../core/FOAM.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \

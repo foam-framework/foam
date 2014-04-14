@@ -234,7 +234,7 @@ FOAModel({
     },
     {
       name: 'tagName',
-      defaultValue: 'div'
+      defaultValue: 'span'
     },
     {
       name: 'cssClasses',
@@ -4589,7 +4589,6 @@ FOAModel({
       this.children = [];
       this.initializers_ = [];
 
-
       this.dao.select({put: function(o) {
         o = o.clone();
         var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
@@ -4603,6 +4602,7 @@ FOAModel({
       }.bind(this)})(function() {
         this.$.innerHTML = out;
         this.initInnerHTML();
+        this.children = [];
         this.painting = false;
       }.bind(this));
     }

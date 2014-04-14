@@ -64,7 +64,7 @@ var EventService = {
    * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
    *        the smallest delay that humans aren't able to perceive.
    **/
-  merged:function(listener, opt_delay) {
+  merged: function(listener, opt_delay) {
     var delay = opt_delay || 16;
 
     return function() {
@@ -73,7 +73,7 @@ var EventService = {
       var unsubscribed = false;
       var lastArgs     = null;
 
-      return function() {
+      var f = function() {
         STACK = DEBUG_STACK();
         lastArgs = arguments;
 
@@ -94,6 +94,12 @@ var EventService = {
             }, delay);
         }
       };
+
+      f.toString = function() {
+        return 'MERGED(' + delay + ', ' + listener.$UID + ', ' + listener + ')';
+      };
+
+      return f;
     }();
   },
 
@@ -110,7 +116,7 @@ var EventService = {
       var unsubscribed = false;
       var lastArgs     = null;
 
-      return function() {
+      var f = function() {
         STACK = DEBUG_STACK();
         lastArgs = arguments;
 
@@ -132,6 +138,12 @@ var EventService = {
             });
         }
       };
+
+      f.toString = function() {
+        return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
+      };
+
+      return f;
     }();
   },
 
@@ -254,7 +266,11 @@ var EventService = {
     if ( topicIndex == topic.length ) {
       if ( ! map[null] ) return true;
 
-      map[null].remove(listener);
+      if ( ! map[null].deleteI(listener) ) {
+        console.warn('phantom unsubscribe');
+      } else {
+//        console.log('remove', topic);
+      }
 
       if ( ! map[null].length ) delete map[null];
     } else {

@@ -405,21 +405,26 @@ Object.defineProperty(Object.prototype, 'put', {
 */
 
 function predicatedSink(predicate, sink) {
-  if ( predicate === TRUE ) return sink;
+  if ( predicate === TRUE || ! sink ) return sink;
 
   return {
     __proto__: sink,
+    $UID: sink.$UID,
     put: function(obj, s, fc) {
-      if ( obj && sink && predicate.f(obj) ) sink.put(obj, s, fc);
+      if ( sink.put && ( ! obj || predicate.f(obj) ) ) sink.put(obj, s, fc);
     },
     remove: function(obj, s, fc) {
-      if ( obj && sink && predicate.f(obj) ) sink.remove(obj, s, fc);
+      if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
+    },
+    toString: function() { return 'PredicatedSink(' + sink.$UID + ', ' + predicate + ', ' + sink + ')';
+
     }/*,
     eof: function() {
       sink && sink.eof && sink.eof();
     }*/
   };
 }
+
 
 function limitedSink(count, sink) {
   var i = 0;

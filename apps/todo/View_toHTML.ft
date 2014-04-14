@@ -4,11 +4,11 @@
   var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
   var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
 %>
-<div class="TodoRow<%= todo.completed ? ' completed' : '' %>" id="{{this.getID()}}">
+<div class="TodoRow{{{todo.completed ? ' completed' : ''}}}" id="{{{this.getID()}}}">
   <span class="completed">$$completed</span>
   <span class="displayView">{{todo.text}}</span>
   <span class="editView">$$text</span>
-  <span class="remove"><button id="<%= this.on('click', remove, this.nextID()) %>">X</button>
+  <span class="remove"><button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
 </div>
 <%
   this.on('dblclick', toEdit,    this.getID());
