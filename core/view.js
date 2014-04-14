@@ -90,8 +90,21 @@ var DOM = {
 
     var fs = X.document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
-      this.initElement(fs[i], X.document);
+      var e = fs[i];
+      console.log(e.getAttribute('model'), e.getAttribute('view'));
+      GLOBAL[e.getAttribute('view')];
+      GLOBAL[e.getAttribute('model')];
     }
+    var models = [];
+    for ( var key in USED_MODELS ) {
+      models.push(arequire(key));
+    }
+
+    aseq(apar.apply(null, models), function(ret) {
+      for ( var i = 0 ; i < fs.length ; i++ ) {
+        this.initElement(fs[i], X.document);
+      }
+    }.bind(this))();
   },
 
   initElementChildren: function(e) {
@@ -131,7 +144,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        console.log('unknown attribute: ', key);
+        if ( ! {model:true, view:true, id:true}[key] ) console.log('unknown attribute: ', key);
       }
     }
 
@@ -192,6 +205,9 @@ var DOM = {
     if ( enabled ) e.className = e.className + ' ' + className;
   }
 };
+
+
+window.addEventListener('load', function() { DOM.init(X); }, false);
 
 
 // TODO: document and make non-global

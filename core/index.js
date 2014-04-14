@@ -26,7 +26,9 @@
  *   get(key) -> obj
  *   update(oldValue, newValue)
  *
- * TODO: reuse plans
+ * TODO:
+ *  reuse plans
+ *  add ability for indices to pre-populate data
  */
 
 /** Plan indicating that there are no matching records. **/

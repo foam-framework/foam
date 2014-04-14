@@ -323,6 +323,7 @@ var EventService = {
 
 };
 
+
 /** Extend EventService with support for dealing with property-change notification. **/
 var PropertyChangeSupport = {
 
@@ -448,7 +449,8 @@ var Events = {
       dstValue.set(srcValue.get());
     };
 
-    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
     srcValue.addListener(listener);
   },
@@ -467,7 +469,8 @@ var Events = {
 
     listener(); // copy initial value
 
-    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
     srcValue.addListener(listener);
   },

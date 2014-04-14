@@ -3057,7 +3057,10 @@ FOAModel({
       var dao = daoModel.create(params);
 
       if ( this.cache && daoModel !== MDAO ) dao = CachingDAO.create(MDAO.create(params), dao);
-      if ( this.seqNo   ) dao = SeqNoDAO.create({__proto__: params, delegate: dao});
+      if ( this.seqNo   ) {
+        dao = SeqNoDAO.create({__proto__: params, delegate: dao});
+        if ( this.seqProperty ) dao.property = this.seqProperty;
+      }
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
       if ( this.logging ) dao = LoggingDAO.create(dao);
 
