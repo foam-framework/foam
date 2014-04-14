@@ -199,6 +199,7 @@ FOAModel({
 });
 
 // Given a model and a DOM element, render test results into the element.
+// TODO: Put me into a method on models.
 function testModel(model, element) {
   if (!model.tests || !element) return;
   model.tests.forEach(function(t) {
