@@ -110,6 +110,7 @@ var FOAModel = function(m) {
   // with templates can't be delayed (yet).
   if ( m.templates ) {
     registerModel.call(this, JSONUtil.mapToObj(m, Model));
+    USED_MODELS[m.name] = true;
     return;
   }
 

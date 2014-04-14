@@ -20,3 +20,5 @@
     document.writeln('<script language="javascript" src="' + (FOAM_BOOT_DIR || "") + files[i] + '.js"></script>\n');
   }
 })();
+
+

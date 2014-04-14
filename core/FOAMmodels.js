@@ -70,7 +70,6 @@ var files = [
   // remove below here
   'models',
   'glang',
-  '../demos/demos',
   'oauth',
   '../apps/mailreader/view',
   '../apps/mailreader/email',
