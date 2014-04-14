@@ -1,3 +1,20 @@
-$$toggle $$input $$filteredDAO <br>
+<section id="todoapp">
+  <header id="header">
+    <h1>todos</h1>
+    $$input{elementId: 'new-todo'}
+  </header>
+  <section id="main">
+    $$toggle{elementId: 'toggle-all'}
+    $$filteredDAO
+  </section>
+  <footer id="footer">
 <strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
 $$query $$clear
+  </footer>
+</section>
+<footer id="info">
+  <p>Double-click to edit a todo</p>
+  <p>Created by <a href="https://code.google.com/p/foam-framework/">Kevin Greer</a></p>
+  <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+</footer>
+

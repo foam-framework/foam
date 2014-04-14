@@ -295,7 +295,7 @@ FOAModel({
 
     createTemplateView: function(o, opt_args) {
       if ( Action.isInstance(o) ) {
-        return ActionButton.create({action: o, value: this.value});
+        return ActionButton.create({action: o, value: this.value}).copyFrom(opt_args);
       }
 
       return this.createView(o, opt_args);
