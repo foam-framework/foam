@@ -514,6 +514,10 @@ FOAModel({
 
   methods: {
 
+    update: function(expr) {
+      return this.select(UPDATE(expr, this));
+    },
+
     listen: function(sink, options) {
       sink = this.decorateSink_(sink, options, true);
       if ( ! this.daoListeners_ ) {
