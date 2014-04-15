@@ -91,7 +91,7 @@ var DOM = {
     var fs = X.document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
-      console.log(e.getAttribute('model'), e.getAttribute('view'));
+      // console.log(e.getAttribute('model'), e.getAttribute('view'));
       GLOBAL[e.getAttribute('view')];
       GLOBAL[e.getAttribute('model')];
     }

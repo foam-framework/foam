@@ -16,6 +16,7 @@
   <div>Output:</div>
   <div class="output" id="<%= this.setClass('error', ifError) %>">{{test.results}}</div>
 <% } %>
+Results: $$results
 <% if ( test.tests.length ) { %>
   <blockquote>
   <% for ( var i = 0 ; i < test.tests.length ; i++ ) {
