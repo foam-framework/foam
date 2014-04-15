@@ -116,7 +116,7 @@ defaultValueFn
 	function used to provide a value for a property whose value hasn't
 	been set
 
-valueFactory
+factory
 	used when an object is init()'ialized to create the initial value
 
 
@@ -249,7 +249,7 @@ displayHeight
 view
 defaultValue
 defaultValueFn
-valueFactory
+factory
 getter
 preSet
 postSet

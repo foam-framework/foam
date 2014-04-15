@@ -41,18 +41,18 @@ var AbstractPrototype = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    if ( ! Object.hasOwnProperty.call(this.model_, 'valueFactoryProperties_') ) {
-      this.model_.valueFactoryProperties_ = [];
+    if ( ! Object.hasOwnProperty.call(this.model_, 'factoryProperties_') ) {
+      this.model_.factoryProperties_ = [];
 
       var ps = this.model_.properties;
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = ps[i];
 
-        if ( prop.valueFactory ) this.model_.valueFactoryProperties_.push(prop);
+        if ( prop.factory ) this.model_.factoryProperties_.push(prop);
       }
     }
 
-    var ps = this.model_.valueFactoryProperties_;
+    var ps = this.model_.factoryProperties_;
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
@@ -62,9 +62,9 @@ var AbstractPrototype = {
       //     if ( prop.init ) prop.init.call(this);
 
       // If a value was explicitly provided in the create args
-      // then don't call the valueFactory if it exists.
-      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.valueFactory.call(this);
-      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.valueFactory.call(this);
+      // then don't call the factory if it exists.
+      // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
+      if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
     }
 
     // Add shortcut create() method to Models which allows them to be

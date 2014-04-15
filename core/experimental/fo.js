@@ -288,7 +288,7 @@ function bootstrap(scope) {
     version_: Property.features.version,
     install: function(model, proto) {
       var name = this.name;
-      var valueFactory = this.valueFactory;
+      var factory = this.factory;
 
       model.define(this.name.constantize(), {
         value: this,
@@ -299,7 +299,7 @@ function bootstrap(scope) {
         enumerable: true,
         get: function() {
           if ( ! this.instance_[name] ) {
-            if ( valueFactory ) return this.instance_[name] = valueFactory.call(this);
+            if ( factory ) return this.instance_[name] = factory.call(this);
             return "";
           }
           return this.instance_[name];
@@ -310,8 +310,8 @@ function bootstrap(scope) {
       });
     },
     initialize: function initialize(obj) {
-      if ( this.valueFactory && ! obj.instance_[this.name] )
-        obj[this.name] = this.valueFactory.call(obj);
+      if ( this.factory && ! obj.instance_[this.name] )
+        obj[this.name] = this.factory.call(obj);
     },
     copy: function(obj, args) {
       // Don't copy default values.
@@ -325,7 +325,7 @@ function bootstrap(scope) {
     }
   };
   simpleProperty(Property.prototype_, "name");
-  simpleProperty(Property.prototype_, "valueFactory");
+  simpleProperty(Property.prototype_, "factory");
   Property.prototype_.copyFrom = override(
     FObject.prototype_.copyFrom,
     function(args) {
@@ -360,7 +360,7 @@ function bootstrap(scope) {
   tmp.name = "name"
   forceInstall(tmp, Property);
 
-  tmp = Property.create({ name: 'valueFactory' });
+  tmp = Property.create({ name: 'factory' });
   forceInstall(tmp, Property);
 
   tmp = Property.create({
@@ -375,7 +375,7 @@ function bootstrap(scope) {
 
   tmp = Property.create({
     name: 'features',
-    valueFactory: function() {
+    factory: function() {
       var features = FeatureSet.create();
       features.add(Extends.create({ parent: 'FObject' }));
       return features;
@@ -569,7 +569,7 @@ var featureDAO = [
   }],
 
   ['Property', 'Property', { name: 'defaultValue' }],
-  ['Property', 'Property', { name: 'valueFactory' }],
+  ['Property', 'Property', { name: 'factory' }],
   ['Property', 'Property', { name: 'scope', defaultValue: 'instance_' }],
   ['Property', 'Property', { name: 'defaultValueFn' }],
   ['Property', 'Property', { name: 'scopeName' }],
@@ -593,7 +593,7 @@ var featureDAO = [
     var name = prop.name;
     var defaultValueFn = prop.defaultValueFn;
     var defaultValue = prop.defaultValue;
-    var valueFactory = prop.valueFactory;
+    var factory = prop.factory;
     var preSet = prop.preSet;
     var postSet = prop.postSet;
 
@@ -617,13 +617,13 @@ var featureDAO = [
     } else {
       var get = defaultValueFn ? (function() {
         if ( this[scope][scopeName] === undefined ) {
-          if ( valueFactory ) return this[scope][scopeName] = valueFactory.call(this);
+          if ( factory ) return this[scope][scopeName] = factory.call(this);
           return defaultValueFn.call(this, prop);
         }
         return this[scope][scopeName];
       }) : (function() {
         if ( this[scope][scopeName] === undefined ) {
-          if ( valueFactory ) return this[scope][scopeName] = valueFactory.call(this);
+          if ( factory ) return this[scope][scopeName] = factory.call(this);
           return defaultValue;
         }
         return this[scope][scopeName]
@@ -690,8 +690,8 @@ var featureDAO = [
 
     proto.define(name, definition);
 
-    if ( scope === "static_" && prop.valueFactory ) {
-      prototype[prop.name] = prop.valueFactory();
+    if ( scope === "static_" && prop.factory ) {
+      prototype[prop.name] = prop.factory();
     }
   }],
 
@@ -799,7 +799,7 @@ var featureDAO = [
   }],
   ['Property', 'Property', {
     name: 'aliases',
-    valueFactory: function() { return []; }
+    factory: function() { return []; }
   }],
   ['Property', 'Property', {
     name: 'mode',
@@ -972,7 +972,7 @@ var featureDAO = [
     help: 'The property\'s default value function.'
   }],
   ['Property', 'FunctionProperty', {
-    name: 'valueFactory',
+    name: 'factory',
     help: 'Factory for creating inital value when object instantiated.'
   }],
 
@@ -1046,7 +1046,7 @@ var featureDAO = [
     defaultvlaue: 'ArrayView'
   }],
   ['ArrayProperty', 'FunctionProperty', {
-    name: 'valueFactory',
+    name: 'factory',
     defaultValue: function() { return []; }
   }],
 
@@ -1544,7 +1544,7 @@ var featureDAO = [
   }],
   ['Model', 'StringArrayProperty', {
     name: 'tableProperties',
-    valueFactory: function() {
+    factory: function() {
       return this.properties.map(Property.NAME.f.bind(Property.NAME));
     }
   }],

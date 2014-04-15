@@ -188,7 +188,7 @@ var Attachment = FOAM({
          name: 'id',
          label: 'Identifier',
          displayWidth: 50,
-         valueFactory: function() {
+         factory: function() {
            return this.$UID;
          }
       },
@@ -333,7 +333,7 @@ var EMail = FOAM({
              return new Date(d);
            return d;
          },
-         valueFactory: function() { return new Date(); }
+         factory: function() { return new Date(); }
       },
       {
          model_: 'StringProperty',
@@ -354,7 +354,7 @@ var EMail = FOAM({
            }
            return ret.trim();
          },
-         valueFactory: function() { return GLOBAL.user || ""; }
+         factory: function() { return GLOBAL.user || ""; }
       },
       {
          model_: 'StringArrayProperty',
@@ -416,7 +416,7 @@ var EMail = FOAM({
          type: 'Array[Attachment]',
          subType: 'Attachment',
          view: 'ArrayView',
-         valueFactory: function() { return []; },
+         factory: function() { return []; },
          tableWidth: '20',
          tableFormatter: function(a) {
            return a.length ? a.length : "";
@@ -1207,7 +1207,7 @@ var EMailsView = FOAM({
             newValue.addListener(this.updateHTML);
             this.updateHTML();
          },
-         valueFactory: function() { return SimpleValue.create(); }
+         factory: function() { return SimpleValue.create(); }
       }
    ],
 

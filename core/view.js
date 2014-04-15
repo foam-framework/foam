@@ -235,12 +235,12 @@ FOAModel({
     {
       name:  'children',
       type:  'Array[View]',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:   'shortcuts',
       type:   'Array[Shortcut]',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:   '$',
@@ -254,7 +254,7 @@ FOAModel({
     },
     {
       name: 'cssClasses',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 
@@ -632,7 +632,7 @@ FOAModel({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(oldValue, this.domValue);
         Events.follow(newValue, this.domValue);
@@ -707,7 +707,7 @@ FOAModel({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.onValueChange);
         newValue.addListener(this.onValueChange);
@@ -805,7 +805,7 @@ FOAModel({
     },
     {
       name: 'softValue',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
           Events.unlink(oldValue, this.domValue);
@@ -822,7 +822,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.onKeyMode ) {
           Events.unlink(oldValue, this.softValue);
@@ -970,7 +970,7 @@ FOAModel({
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(new Date()); },
+      factory: function() { return SimpleValue.create(new Date()); },
       postSet: function(oldValue, newValue) {
         if ( oldValue && this.domValue ) {
           Events.unlink(this.domValue, oldValue);
@@ -1043,7 +1043,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
           Events.unlink(this.domValue, oldValue);
@@ -1095,7 +1095,7 @@ FOAModel({
       name:  'value',
       type:  'Value',
       help: "A Value of the current choice's value (ie. choice[0]).",
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name: 'choice',
@@ -1456,7 +1456,7 @@ FOAModel({
     {
       name:  'selection',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'model',
@@ -1691,7 +1691,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && Events.unlink(this.domValue, oldValue);
 
@@ -1868,7 +1868,7 @@ var DetailView = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( oldValue ) oldValue.removeListener(this.onValueChange);
         if ( newValue ) newValue.addListener(this.onValueChange);
@@ -2039,7 +2039,7 @@ var DetailView2 = Model.create({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -2183,7 +2183,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -2311,17 +2311,17 @@ FOAModel({
     {
       name:  'hardSelection',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'selection',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'children',
       type:  'Array[View]',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'sortOrder',
@@ -2689,11 +2689,11 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name: 'cssClasses',
-      valueFactory: function() { return ['actionButton', 'actionButton-' + this.action.name]; }
+      factory: function() { return ['actionButton', 'actionButton-' + this.action.name]; }
     },
     {
       name: 'tagName',
@@ -2799,7 +2799,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
       }
     },
@@ -3044,7 +3044,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -3100,25 +3100,25 @@ FOAModel({
     {
       name:  'row',
       type: 'ChoiceView',
-      valueFactory: function() { return ChoiceView.create(); }
+      factory: function() { return ChoiceView.create(); }
     },
     {
       name:  'col',
       label: 'column',
       type: 'ChoiceView',
-      valueFactory: function() { return ChoiceView.create(); }
+      factory: function() { return ChoiceView.create(); }
     },
     {
       name:  'acc',
       label: 'accumulator',
       type: 'ChoiceView',
-      valueFactory: function() { return ChoiceView.create(); }
+      factory: function() { return ChoiceView.create(); }
     },
     {
       name:  'accChoices',
       label: 'Accumulator Choices',
       type: 'Array',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'scrollMode',
@@ -3145,7 +3145,7 @@ FOAModel({
     {
       name:  'grid',
       type:  'GridByExpr',
-      valueFactory: function() { return GridByExpr.create(); }
+      factory: function() { return GridByExpr.create(); }
     }
   ],
 
@@ -3312,7 +3312,7 @@ FOAModel({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(''); }
+      factory: function() { return SimpleValue.create(''); }
     },
     {
       name: 'views',
@@ -3549,11 +3549,11 @@ FOAModel({
     },
     {
       name: 'softValue',
-      valueFactory: function() { return SimpleValue.create([]); }
+      factory: function() { return SimpleValue.create([]); }
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create([]); },
+      factory: function() { return SimpleValue.create([]); },
       postSet: function(oldValue, newValue) {
         if ( oldValue ) {
           oldValue.removeListener(this.update);
@@ -3754,7 +3754,7 @@ FOAModel({
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create({ value: [] }); },
+      factory: function() { return SimpleValue.create({ value: [] }); },
       postSet: function(oldValue, newValue) {
         this.inputView.setValue(newValue);
         this.valueView.value = newValue;
@@ -3826,7 +3826,7 @@ FOAModel({
     {
       name: 'value',
       help: 'The array value we are editing.',
-      valueFactory: function() {
+      factory: function() {
         return SimpleValue.create({
           value: []
         });
@@ -3973,7 +3973,7 @@ FOAModel({
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.paint);
         newValue.addListener(this.paint);
@@ -4103,7 +4103,7 @@ FOAModel({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create([]) },
+      factory: function() { return SimpleValue.create([]) },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
@@ -4160,11 +4160,11 @@ FOAModel({
   properties: [
     {
       name: 'innerValue',
-      valueFactory: function() { return SimpleValue.create(''); }
+      factory: function() { return SimpleValue.create(''); }
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(""); },
+      factory: function() { return SimpleValue.create(""); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
@@ -4176,7 +4176,7 @@ FOAModel({
     },
     {
       name: 'dao',
-      valueFactory: function() { return GLOBAL[this.model.name + 'DAO']; }
+      factory: function() { return GLOBAL[this.model.name + 'DAO']; }
     },
     {
       name: 'view',
@@ -4297,7 +4297,7 @@ FOAModel({
     {
       name: 'value',
       hidden: true,
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name: 'model',
@@ -4451,7 +4451,7 @@ FOAModel({
   properties: [
     {
       name: 'views',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       postSet: function() {
         this.viewIndex = this.viewIndex;
       },

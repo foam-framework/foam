@@ -95,7 +95,7 @@ var OptionalServiceView = FOAM({
     },
     {
       name: 'innerView',
-      valueFactory: function() { return BooleanView.create(); },
+      factory: function() { return BooleanView.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && this.removeChild(oldValue);
         this.addChild(newValue);
@@ -103,7 +103,7 @@ var OptionalServiceView = FOAM({
     },
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     }
   ],
 
@@ -131,7 +131,7 @@ var CompositeServiceView = FOAM({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.renderChoices);
         newValue.addListener(this.renderChoices);
@@ -220,7 +220,7 @@ var CompositeServiceSummaryView = FOAM({
   properties: [
 /*    {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.valueChange);
         newValue.addListener(this.valueChange);

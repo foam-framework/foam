@@ -57,7 +57,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(""); },
+      factory: function() { return SimpleValue.create(""); },
     },
     {
       name:  'choicesDao',
@@ -100,7 +100,7 @@ FOAModel({
     {
       name:  'initialSelectionValue',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'renderer',

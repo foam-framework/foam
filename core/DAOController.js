@@ -534,7 +534,7 @@ FOAModel({
     },
     {
       name: 'ctrl',
-      valueFactory: function() {
+      factory: function() {
         return ActionBorder.create(DAOController, DAOController.create({
           model: this.model,
           dao: this.dao

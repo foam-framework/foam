@@ -31,7 +31,7 @@ FOAModel({
     },
     {
       name: 'subject',
-      valueFactory: function() { return this.model.name + 'DAO'; }
+      factory: function() { return this.model.name + 'DAO'; }
     },
   ],
 

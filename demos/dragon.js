@@ -23,7 +23,7 @@ FOAModel({
       name:  'eyes',
       type:  'EyesCView',
       paint: true,
-      valueFactory: function() {
+      factory: function() {
         return EyesCView.create({x:500,y:500,r:this.r*10,parent:this});
       }
     },

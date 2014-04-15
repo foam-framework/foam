@@ -47,17 +47,17 @@ FOAModel({
     {
       name:  'hardSelection',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'selection',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name:  'children',
       type:  'Array[View]',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'sortOrder',
@@ -105,7 +105,7 @@ FOAModel({
     {
       name: 'scrollbar',
       type: 'ScrollCView',
-      valueFactory: function() {
+      factory: function() {
         var sb = ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });

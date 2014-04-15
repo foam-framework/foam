@@ -51,7 +51,7 @@ FOAModel({
     },
     {
       name: 'IssueCommentNetworkDAO',
-      valueFactory: function() {
+      factory: function() {
         return QIssueCommentNetworkDAO.create({
           model: QIssueComment,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
@@ -60,7 +60,7 @@ FOAModel({
     },
     {
       name: 'IssueMDAO',
-      valueFactory: function() {
+      factory: function() {
         var dao = MDAO.create({model: QIssue});
         var auto = AutoIndex.create(dao);
 
@@ -72,7 +72,7 @@ FOAModel({
     },
     {
       name: 'IssueCachingDAO',
-      valueFactory: function() {
+      factory: function() {
         var IssueIDBDAO = IDBDAO.create({
           model: QIssue,
           name: this.projectName + '_' + QIssue.plural
@@ -84,7 +84,7 @@ FOAModel({
     },
     {
       name: 'IssueNetworkDAO',
-      valueFactory: function() {
+      factory: function() {
         return IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           model: QIssue,
@@ -95,7 +95,7 @@ FOAModel({
     },
     {
       name: 'IssueDAO',
-      valueFactory: function() {
+      factory: function() {
         var dao = this.IssueMDAO;
 
         dao = QIssueSplitDAO.create({
@@ -129,12 +129,12 @@ FOAModel({
     },
     {
       name: 'timer',
-      valueFactory: function() { return Timer.create(); },
+      factory: function() { return Timer.create(); },
       transient: true
     },
     {
       name: 'syncManager',
-      valueFactory: function() {
+      factory: function() {
         return SyncManager.create({
           syncInterval: 60*5,
           batchSize: 500,

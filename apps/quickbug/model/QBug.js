@@ -39,11 +39,11 @@ FOAModel({
     },
     {
       name: 'userFuture',
-      valueFactory: function() { return afuture(); }
+      factory: function() { return afuture(); }
     },
     {
       name: 'persistentContext',
-      valueFactory: function() {
+      factory: function() {
         return PersistentContext.create({
           dao: IDBDAO.create({
             model: Binding
@@ -54,7 +54,7 @@ FOAModel({
     },
     {
       name: 'ProjectNetworkDAO',
-      valueFactory: function() {
+      factory: function() {
         var dao = RestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/',
           model: Project
@@ -80,7 +80,7 @@ FOAModel({
     {
       // Cache of QProject objects
       name: 'projects_',
-      valueFactory: function() { return {}; },
+      factory: function() { return {}; },
       transient: true
     }
   ],

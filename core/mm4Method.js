@@ -100,7 +100,7 @@ FOAModel({
     {
       name: 'children',
       type: 'Array',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       subType: 'Action',
       view: 'ArrayView',
       help: 'Child actions of this action.',
@@ -351,7 +351,7 @@ FOAModel({
       type: 'Array[Arg]',
       subType: 'Arg',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Method arguments.'
     },
@@ -484,7 +484,7 @@ FOAModel({
       type: 'Array[Method]',
       subType: 'Method',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Methods associated with the interface.'
     }
