@@ -768,11 +768,6 @@ FOAModel({
       defaultValue: 'field'
     },
     {
-      name:  'className',
-      type:  'String',
-      defaultValue: 'field'
-    },
-    {
       name:  'displayWidth',
       type:  'int',
       defaultValue: 30
@@ -856,7 +851,7 @@ FOAModel({
     ESCAPE: ['escape'],
 
     toHTML: function() {
-      var className = this.className ? ' class="' + this.className + '"' : '';
+      var className = this.cssClasses ? ' class="' + this.cssClasses.join(' ') + '"' : '';
 
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
@@ -1199,7 +1194,11 @@ FOAModel({
     },
     {
       name: 'cssClasses',
-      valueFactory: function() { return ['foamChoiceListView', this.orientation]; }
+      defaultValueFn: function() { return ['foamChoiceListView', this.orientation]; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'ul'
     }
   ],
 
@@ -1220,7 +1219,7 @@ FOAModel({
           function(choice) { return this.choice == choice; }.bind(this, choice),
           id);
 
-        out += '<div class="choice" id="' + id + '">' + choice[1] + '</div>';
+        out += '<li id="' + id + '">' + choice[1] + '</li>';
       }
       return out;
     }
@@ -1517,7 +1516,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
+      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" class="' + this.cssClasses.join(' ') + '"/>';
     },
 
     initHTML: function() {
