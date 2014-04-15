@@ -10,8 +10,9 @@
 	<footer id="footer">
 		<span id="todo-count">
 			<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
-		 </span>
-		$$query{elementId: 'filters'} $$clear{elementId: 'clear-completed'}
+		</span>
+		$$query{elementId: 'filters'}
+                $$clear{elementId: 'clear-completed'}
 	</footer>
 </section>
 <footer id="info">

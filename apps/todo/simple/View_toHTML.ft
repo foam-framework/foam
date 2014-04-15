@@ -7,9 +7,9 @@
 <li class="{{{todo.completed ? ' completed' : ''}}}" id="{{{this.getID()}}}">
   <div class="view">
     $$completed{extraClasses: 'toggle']}
-    <span class="displayView">{{todo.text}}</span>
-    <span class="editView">$$text</span>
-    <span class="remove"><button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
+    {{todo.text}}
+    $$text
+    <button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
   </div>
 </li>
 <%
