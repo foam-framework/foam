@@ -1939,7 +1939,7 @@ var DetailView = Model.create({
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
       str += '<tr class="detail-' + prop.name + '">';
-      if ( view.model_ === DAOControllerView ) {
+      if ( view.model_ === DAOController ) {
         str += "<td colspan=2><div class=detailArrayLabel>" + prop.label + "</div>";
         str += view.toHTML();
         str += '</td>';
@@ -3012,6 +3012,9 @@ FOAModel({
   properties: [
     {
       name: 'actions'
+    },
+    {
+      name: 'value'
     }
   ],
 
@@ -3024,7 +3027,12 @@ FOAModel({
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
         var button = ActionButton.create({ action: action });
-        button.value$ = this.value$;
+        if ( border.value ) 
+          button.value$ = border.value$
+        else if ( this.value )
+          button.value$ = this.value$;
+        else
+          button.value = SimpleValue.create(this);
         str += " " + button.toHTML() + " ";
         this.addChild(button);
       }
@@ -3085,7 +3093,7 @@ FOAModel({
 
 var ArrayView = {
   create: function(prop) {
-    var view = DAOControllerView.create(GLOBAL[prop.subType]);
+    var view = DAOController.create(GLOBAL[prop.subType]);
     return view;
   }
 };
