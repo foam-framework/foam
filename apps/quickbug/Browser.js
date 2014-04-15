@@ -41,7 +41,7 @@ FOAModel({
     },
     {
       name: 'location',
-      valueFactory: function() { return Location.create(); }
+      factory: function() { return Location.create(); }
     },
     {
       name: 'memento',
@@ -70,7 +70,7 @@ FOAModel({
     },
     {
       name: 'userView',
-      valueFactory: function() {
+      factory: function() {
         var view = TextFieldView.create(QUser.EMAIL);
         view.copyFrom({
           mode: 'read-only',
@@ -86,7 +86,7 @@ FOAModel({
     {
       name: 'IssueDAO',
       scope: 'project',
-      valueFactory: function() {
+      factory: function() {
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
           window:   this.X.window
@@ -114,11 +114,11 @@ FOAModel({
     },
     {
       name: 'rowSelection',
-      valueFactory: function() { return SimpleValue.create(); }
+      factory: function() { return SimpleValue.create(); }
     },
     {
       name: 'timer',
-      valueFactory: function() { return Timer.create(); }
+      factory: function() { return Timer.create(); }
     },
     {
       mode_: 'IntegerProperty',
@@ -131,7 +131,7 @@ FOAModel({
     {
       name: 'countField',
       type: 'TextFieldView',
-      valueFactory: function() {
+      factory: function() {
         return TextFieldView.create({
           name: 'count',
           cssClasses: ['qbugCount'],
@@ -142,7 +142,7 @@ FOAModel({
     },
     {
       name: 'view',
-      valueFactory: function() {
+      factory: function() {
         var view = createView(this.rowSelection, this);
 //        this.location.mode$ = view.choice$
         view.choice$ = this.location.mode$;
@@ -151,7 +151,7 @@ FOAModel({
     },
     {
       name: 'searchChoice',
-      valueFactory: function() {
+      factory: function() {
         var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
 
         return ChoiceView.create({
@@ -171,7 +171,7 @@ FOAModel({
     },
     {
       name: 'searchField',
-      valueFactory: function() { return TextFieldView.create({
+      factory: function() { return TextFieldView.create({
         name: 'search',
         displayWidth: 5,
         type: 'search',
@@ -179,19 +179,19 @@ FOAModel({
     },
     {
       name: 'refreshImg',
-      valueFactory: function() {
+      factory: function() {
         return ImageView.create({value: SimpleValue.create('images/refresh.png')});
       }
     },
     {
       name: 'logo',
-      valueFactory: function() {
+      factory: function() {
         return ImageView.create({value: SimpleValue.create(this.url + '/logo')});
       }
     },
     {
       name: 'favouritesLink',
-      valueFactory: function() {
+      factory: function() {
         return ActionLink.create({action: this.model_.FAVOURITES, value: SimpleValue.create(this)});
       }
     },
@@ -206,7 +206,7 @@ FOAModel({
     },
     {
       name: 'mementoMgr',
-      valueFactory: function() { return MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return MementoMgr.create({memento: this.memento$}); }
     }
   ],
 

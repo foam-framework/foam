@@ -21,16 +21,16 @@ FOAModel({
   properties: [
     {
       name:  'stack',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'redo',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:   'backButton',
       type:  'ActionButton',
-      valueFactory: function() {
+      factory: function() {
         // TODO: What's the right value for the action button.
         return ActionButton.create({action: StackView.actions[0], value: SimpleValue.create(this)});
       }
@@ -38,7 +38,7 @@ FOAModel({
     {
       name:   'forwardButton',
       type:   'ActionButton',
-      valueFactory: function() {
+      factory: function() {
         return ActionButton.create({action: StackView.actions[1], value: SimpleValue.create(this)});
       }
     }

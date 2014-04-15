@@ -23,11 +23,11 @@ FOAModel({
     },
     {
       name:  'stack',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'redo',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 

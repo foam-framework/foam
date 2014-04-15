@@ -85,7 +85,7 @@ var EMailThreadingDAO = FOAM({
     },
     {
       name: 'threadDao',
-      valueFactory: function() {
+      factory: function() {
         return MDAO.create({ model: Conversation });
       }
     },

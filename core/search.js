@@ -24,7 +24,7 @@ FOAModel({
     {
       name: 'view',
       type: 'view',
-      valueFactory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
+      factory: function() { return ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'}); }
     },
     {
       name:  'width',
@@ -154,7 +154,7 @@ FOAModel({
     {
       name: 'view',
       type: 'view',
-      valueFactory: function() { return TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
+      factory: function() { return TextFieldView.create({displayWidth:this.width, cssClass: 'foamSearchTextField'}); }
     },
     {
       name: 'label',

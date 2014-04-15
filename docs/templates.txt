@@ -32,8 +32,11 @@ syntax from the Mustache template system is also supported.
 
  <% code %>: code inserted into template, but nothing implicitly output
  <%= comma-separated-values %>: all values are appended to template output
+ <%# dynamic value %>: the value is output and then dynamically updated if it changes
+   Ex. item<%# this.value.value.activeCount == 1 ? '' : 's' %>, will add or remove the 's' when activeCount changes
  %%<value> short for for <%= this<value> %>, where <value> can be either a property or a method call
  $$<propertyName> short for <%= this.createView(this.model_.getProperty('propertyName')).toHTML() %>, used to embed sub-views
+ $$<actionName> embeds an ActionButton for the named action
  {{comma-separated-values}}: same as <%= but one character shorter, uses handlebars syntax, output is escaped
  {{{comma-separated-values}}}: same as <%= but one character shorter, uses handlebars syntax, output is not escaped
  \<new-line>: ignored
@@ -46,6 +49,12 @@ would.)
 
 <%= value1, value2, ... valueN %> is the same as: <% out(value1, value2, ..., valueN); %>
 
+Configuring $$ Views and Actions
+
+Sub-Views or Actions defined with the $$ syntax can be configured by providing an optional parameter map.
+
+Ex.
+$$filteredDAO{tagName: 'ul', elementId: 'todo-list'}
 
 Defined in Models
 
@@ -153,7 +162,7 @@ The following two examples output the numbers from one to ten.
   <%= i %>
 <% } %>
 
-or 
+or
 
 <% for ( var i = 0 ; i < 10 ; i++ ) { %>
   <%= i %>
@@ -258,7 +267,7 @@ added as needed by libraries or applications.  As an example, it only
 required three extra lines of code to add the Handlebars-like {{ }}
 and {{{ }}} tags.
 
-Object-Oriented 
+Object-Oriented
 Most templating systems are not object-oriented, and
 as a result, are not as easy to use as they could be, and incur an
 impedence-mismatch when working with objects.  It is common for

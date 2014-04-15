@@ -85,7 +85,7 @@ var LinkView = Model.create({
   properties: [
     {
       name: 'insertButton',
-      valueFactory: function() {
+      factory: function() {
         return ActionButton.create({
           action: Link.INSERT,
           value: this.value
@@ -143,7 +143,7 @@ FOAModel({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create({}); }
+      factory: function() { return SimpleValue.create({}); }
     }
   ],
 
@@ -209,7 +209,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         Events.unlink(oldValue, this.domValue);
         Events.link(newValue, this.domValue);

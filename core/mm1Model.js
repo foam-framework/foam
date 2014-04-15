@@ -105,7 +105,7 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       displayWidth: 70,
-      valueFactory: function() {
+      factory: function() {
         return this.properties.map(Property.NAME.f.bind(Property.NAME));
       },
       help: 'Properties to be displayed in table view. Defaults to all properties.'
@@ -125,7 +125,7 @@ var Model = {
       type: 'Array[Property]',
       subType: 'Property',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
       preSet: function(newValue, oldValue) {
@@ -154,7 +154,7 @@ var Model = {
       type: 'Array[Action]',
       subType: 'Action',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Actions associated with the entity.',
       preSet: function(newValue) {
@@ -182,7 +182,7 @@ var Model = {
       type: 'Array[Method]',
       subType: 'Method',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Methods associated with the entity.',
       preSet: function(newValue) {
@@ -208,7 +208,7 @@ var Model = {
       type: 'Array[Method]',
       subType: 'Method',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Event listeners associated with the entity.'
     },
@@ -218,7 +218,7 @@ var Model = {
       type: 'Array[topic]',
       subType: 'Topic',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Event topics associated with the entity.'
       },
@@ -228,7 +228,7 @@ var Model = {
       type: 'Array[Template]',
       subType: 'Template',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       postSet: function(_, templates) {
         // Load templates from an external file
@@ -259,7 +259,7 @@ var Model = {
       type: 'Array[Model]',
       subType: 'Model',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Sub-models embedded within this model.'
     },
@@ -269,7 +269,7 @@ var Model = {
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Unit tests associated with this model.'
     },
@@ -277,7 +277,7 @@ var Model = {
       name: 'relationships',
       subType: 'Relationship',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Relationships of this model to other models.',
       preSet: function(newValue) {
@@ -305,7 +305,7 @@ var Model = {
       type: 'Array[Issue]',
       subType: 'Issue',
       view: 'ArrayView',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       defaultValue: [],
       help: 'Issues associated with this model.'
     },

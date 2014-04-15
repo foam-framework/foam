@@ -109,7 +109,7 @@ var BooleanProperty = Model.create({
   tableFormatter: function(d) {
   return d.toDateString();
   },
-  valueFactory: function() { return new Date(); }
+  factory: function() { return new Date(); }
 
 */
 
@@ -393,7 +393,7 @@ var ArrayProperty = Model.create({
       defaultValue: 'ArrayView'
     },
     {
-      name: 'valueFactory',
+      name: 'factory',
       defaultValue: function() { return []; }
     },
     {
@@ -478,7 +478,7 @@ var StringArrayProperty = Model.create({
       defaultValue: 50
     },
     {
-      name: 'valueFactory',
+      name: 'factory',
       defaultValue: function() { return []; }
     },
     {

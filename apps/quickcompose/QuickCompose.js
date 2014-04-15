@@ -45,7 +45,7 @@ var AttachmentView = FOAM({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(_, value) {
         value.addListener(this.redraw.bind(this));
       }
@@ -197,14 +197,14 @@ var QuickCompose = FOAM({
     },
     {
       name: 'email',
-      valueFactory: function() {
+      factory: function() {
         // TODO: Look for a draft in the EMailDAO
         return QuickEMail.create({from: this.userInfo.email, id: Date.now()});
       }
     },
     {
       name: 'view',
-      valueFactory: function() {
+      factory: function() {
         return QuickEMailView.create({
           model: QuickEMail,
           isFull: this.isFull
@@ -213,11 +213,11 @@ var QuickCompose = FOAM({
     },
     {
       name: 'minimizeButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
+      factory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
     },
     {
       name: 'closeButton',
-      valueFactory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
+      factory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
     },
     {
       name: 'isFull',
