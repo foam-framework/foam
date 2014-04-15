@@ -223,7 +223,7 @@ FOAModel({
 
   properties: [
     {
-      name:  'elementId',
+      name:  'id',
       label: 'Element ID',
       type:  'String'
     },
@@ -245,7 +245,7 @@ FOAModel({
     {
       name:   '$',
       mode:   "read-only",
-      getter: function() { return this.elementId && $(this.elementId); },
+      getter: function() { return this.id && $(this.id); },
       help:   'DOM Element.'
     },
     {
@@ -361,37 +361,37 @@ FOAModel({
 
     getID: function() {
       // @return this View's unique DOM element-id
-      // console.log('getID', this.elementId);
-      if ( this.elementId ) return this.elementId;
-      return this.elementId || ( this.elementId = this.nextID() );
+      // console.log('getID', this.id);
+      if ( this.id ) return this.id;
+      return this.id || ( this.id = this.nextID() );
     },
 
     addInitializer: function(f) {
       (this.initializers_ || (this.initializers_ = [])).push(f);
     },
 
-    on: function(event, listener, opt_elementId) {
-      opt_elementId = opt_elementId || this.nextID();
+    on: function(event, listener, opt_id) {
+      opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
 
       this.addInitializer(function() {
-        var e = $(opt_elementId);
+        var e = $(opt_id);
         if ( ! e ) {
-          console.log('Error Missing element for id: ' + opt_elementId + ' on event ' + event);
+          console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
         } else {
           e.addEventListener(event, listener.bind(this), false);
         }
       });
 
-      return opt_elementId;
+      return opt_id;
     },
 
-    setAttribute: function(attributeName, valueFn, opt_elementId) {
-      opt_elementId = opt_elementId || this.nextID();
+    setAttribute: function(attributeName, valueFn, opt_id) {
+      opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
         Events.dynamic(valueFn, function() {
-          var e = $(opt_elementId);
+          var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
@@ -400,19 +400,19 @@ FOAModel({
       });
     },
 
-    setClass: function(className, predicate, opt_elementId) {
-      opt_elementId = opt_elementId || this.nextID();
+    setClass: function(className, predicate, opt_id) {
+      opt_id = opt_id || this.nextID();
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
         Events.dynamic(predicate, function() {
-          var e = $(opt_elementId);
+          var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
       });
 
-      return opt_elementId;
+      return opt_id;
     },
 
     /** Insert this View's toHTML into the Element of the supplied name. **/
@@ -2076,7 +2076,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.elementId ) { return; }
+      if ( ! this.id ) { return; }
 
       this.children = [];
 
@@ -3339,7 +3339,7 @@ FOAModel({
     {
       name:  'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.elementId && oldValue != viewChoice ) this.installSubView(viewChoice);
+        if ( this.id && oldValue != viewChoice ) this.installSubView(viewChoice);
       },
       hidden: true
     },
