@@ -521,6 +521,7 @@ FOAModel({
 });
 
 
+// Just (finish) add(ing) a 'value' property to DAOController then remove this.
 FOAModel({
   name:  'DAOControllerView',
   extendsModel: 'AbstractView',
