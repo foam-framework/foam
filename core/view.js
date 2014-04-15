@@ -164,7 +164,6 @@ var DOM = {
       var p = findProperty(key);
 
       if ( p ) {
-        console.log('setting ', p.name);
         args[p.name] = p.fromElement(c);
       } else {
         console.log('unknown element: ', key);
@@ -3027,7 +3026,7 @@ FOAModel({
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
         var button = ActionButton.create({ action: action });
-        if ( border.value ) 
+        if ( border.value )
           button.value$ = border.value$
         else if ( this.value )
           button.value$ = this.value$;
