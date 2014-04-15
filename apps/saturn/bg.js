@@ -185,13 +185,11 @@ function openMenu(e) {
 
 function openSettings() {
   var detailView = DetailView.create({
-    model: emsAgent.model_
+    model: emsAgent.model_,
+    showActions: true
   });
   detailView.value.set(emsAgent);
-
-  var actionBorder = ActionBorder.create(emsAgent.model_, detailView);
   stack.pushView(actionBorder);
-
 }
 
 function launchController(_, callback) {
@@ -428,12 +426,12 @@ var MessageView = FOAM({
   properties: [
     {
       name:  'model',
-      valueFactory: function() { return EMail; },
+      factory: function() { return EMail; },
     },
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if (oldValue && this.onValueChange) oldValue.removeListener(this.onValueChange);
         this.onValueChange && newValue && newValue.addListener(this.onValueChange);

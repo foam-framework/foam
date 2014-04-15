@@ -61,15 +61,19 @@ FOAModel({
     {
       name:  'scope',
       hidden: true,
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       model_: 'FunctionProperty',
       name: 'code',
       label: 'Test Code',
-      required: true,
       displayWidth: 80,
       displayHeight: 30
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'synchronous',
+      defaultValue: true
     },
     {
       model_: 'Property',
@@ -102,7 +106,7 @@ FOAModel({
 
         return a;
       },
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       help: 'Sub-tests of this test.'
     }
   ],
@@ -321,7 +325,7 @@ FOAModel({
       required: true,
       displayWidth: 50,
       displayHeight: 1,
-      valueFactory: function() { return new Date(); },
+      factory: function() { return new Date(); },
       help: 'When this issue was created.'
     },
     {

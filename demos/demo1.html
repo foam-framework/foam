@@ -8,7 +8,7 @@
   <script language="javascript">
     var timer = Timer.create({});
 
-    var timerView = DetailView.create({ model: timer.model_ }).addDecorator(ActionBorder2.create());
+    var timerView = DetailView.create({ model: timer.model_, showActions: true });
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();

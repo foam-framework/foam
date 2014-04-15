@@ -37,16 +37,10 @@ FOAModel({
     },
     {
       name:  'value',
-      preSet: function() { debugger; },
-      postSet: function(_, value) {
-        debugger;
-        var f = function() {
-          this.dao = this.value.value;
-          this.tableView && this.tableView.refresh();
-          debugger;
-        }.bind(this);
-        value.addListener(f);
-        f();
+      postSet: function(old, value) {
+        old && old.removeListener(this.onValueChange);
+        value.addListener(this.onValueChange);
+        this.onValueChange();
       }
     },
     {
@@ -73,17 +67,16 @@ FOAModel({
       help:  'Create a new record.',
 
       action: function() {
-        var createView = ActionBorder.create(
-          DAOCreateController,
-          DAOCreateController.create({
-            model: this.model,
-            dao:   this.dao
-          }));
+        var createView = DAOCreateController.create({
+          model: this.model,
+          dao:   this.dao
+        }).addDecorator(ActionBorder.create({
+          actions: DAOCreateController.actions,
+        }));
 
         createView.parentController = this;
 
-        // todo: fix
-        (this.stackView || stack).pushView(createView, 'New');
+        this.X.stack.pushView(createView, 'New');
       }
     },
     /*
@@ -121,15 +114,15 @@ FOAModel({
         }
 
         console.log(["selection: ", this.selection]);
-        var updateView = ActionBorder.create(
-          actions,
-          DAOUpdateController.create({
-            obj:   this.selection/*.deepClone()*/,
-            model: this.model,
-            dao:   this.dao
-          }));
-        // hack: fix
-        (this.stackView || stack).pushView(updateView, 'Edit');
+        var updateView = DAOUpdateController.create({
+          obj:   this.selection/*.deepClone()*/,
+          model: this.model,
+          dao:   this.dao
+        }).addDecorator(ActionBorder.create({
+          actions: DAOUpdateController.actions,
+        }));
+
+        this.X.stack.pushView(updateView, 'Edit');
       }
     },
     {
@@ -258,7 +251,7 @@ FOAModel({
           //             view.model.set(obj);
           //             (this.stackView || stack).setPreview(view);
 
-          (this.stackView || stack).setPreview(
+          this.X.stack.setPreview(
             DetailView.create({
               model: this.model,
               value: this.tableView.selection}));
@@ -269,7 +262,13 @@ FOAModel({
           //               (this.stackView || stack).setPreview(null);
         }
       }
-    }
+    },
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.dao = this.value.value;
+      }
+    },
   ]
 
 });
@@ -308,7 +307,7 @@ FOAModel({
         this.dao.put(this.obj, {
           put: function(value) {
             console.log("Created: ", value);
-            (self.stackView || stack).back();
+            self.X.stack.back();
           },
           error: function() {
             console.error("Error creating value: ", arguments);
@@ -323,7 +322,7 @@ FOAModel({
       isAvailable: function() { return true; },
       isEnabled:   function() { return true; },
       action:      function() {
-        (this.stackView || stack).back();
+        this.X.stack.back();
       }
     },
     {
@@ -335,29 +334,26 @@ FOAModel({
       action:      function() {
         var model = this.obj.model_;
         var helpView = HelpView.create(model);
-
-        // todo: fix
-        (this.stackView || stack).pushView(helpView);
-        //          (this.stackView || stack).setPreview(helpView, 'Help');
+        this.X.stack.pushView(helpView);
       }
     }
   ],
 
   methods: {
     newObj: function(obj, dao) {
+      // TODO is this ever called?
+      debugger;
       var model = {
         __proto__: obj.model_,
         create: function() { return obj; }
       };
-      var createView = ActionBorder.create(
-        DAOCreateController,
-        DAOCreateController.create({
-          model: model,
-          dao:   dao
-        }));
+      var createView = DAOCreateController.create({
+        model: model,
+        dao:   dao
+      }).addDecorator(ActionBorder.create({ actions: DAOCreateController.actions }));
 
       createView.parentController = this;
-      (this.stackView || stack).pushView(createView, 'New');
+      this.X.stack.pushView(createView);
     },
 
     init: function() {
@@ -416,7 +412,8 @@ FOAModel({
         this.dao.put(obj, {
           put: function() {
             console.log("Saving: ", obj.toJSON());
-            (self.stackView || stack).back();
+            
+            self.X.stack.back();
           },
           error: function() {
             console.error("Error saving", arguments);
@@ -440,7 +437,7 @@ FOAModel({
       isAvailable: function() { return true; },
       isEnabled:   function() { return true; },
       action:      function() {
-        (this.stackView || stack).back();
+        this.X.stack.back();
       }
     },
     {
@@ -452,10 +449,7 @@ FOAModel({
       action:      function() {
         var model = this.obj.model_;
         var helpView = HelpView.create(model);
-
-        // todo: fix
-        (this.stackView || stack).pushView(helpView);
-        //          (this.stackView || stack).setPreview(helpView, 'Help');
+        this.X.stack.pushView(helpView);
       }
     }
   ],
@@ -518,77 +512,4 @@ FOAModel({
       this.view.initHTML();
     }
   }
-});
-
-
-FOAModel({
-  name:  'DAOControllerView',
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name: 'model'
-    },
-    {
-      name: 'dao'
-    },
-    {
-      name: 'ctrl',
-      valueFactory: function() {
-        return ActionBorder.create(DAOController, DAOController.create({
-          model: this.model,
-          dao: this.dao
-        }));
-      }
-    },
-  ],
-
-  label: 'DAOControllerView',
-
-  methods: {
-
-    create: function(model, dao) {
-      return this.SUPER({
-        model: model,
-        dao: dao
-      });
-    },
-
-    toHTML: function() {
-      return this.ctrl.toHTML();
-    },
-
-    initHTML: function() {
-      //       this.ctrl.tableView.initHTML();
-      this.ctrl.initHTML();
-    },
-
-    setValue: function(value) {
-      // value.get() returns an array which implements DAO
-      this.dao = value.get();
-      /*
-        this.listener = {
-        put: function() {
-        value.set(this.dao);
-        },
-        remove: function() {
-        value.set(this.dao);
-        },
-        error: function() {
-        console.error(arguments);
-        }
-        };
-
-        this.dao.listen(this.listener);
-      */
-      this.ctrl.__proto__.dao = this.dao;
-      this.ctrl.scrollBorder.dao = this.dao;
-      if ( this.ctrl.searchView ) this.ctrl.searchView.dao = this.dao;
-    },
-
-    destroy: function() {
-      //    this.dao.unlisten(this.listener);
-    }
-  }
-
 });

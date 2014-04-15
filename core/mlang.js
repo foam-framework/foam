@@ -141,7 +141,7 @@ FOAModel({
       label: 'Arguments',
       type:  'Expr[]',
       help:  'Sub-expressions',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 
@@ -890,7 +890,7 @@ FOAModel({
       name:  'sum',
       type:  'int',
       help:  'Sum of values.',
-      valueFactory: function() { return 0; }
+      factory: function() { return 0; }
     }
   ],
 
@@ -1010,7 +1010,7 @@ FOAModel({
     {
       name:  'values',
       help:  'Distinct values.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     }
   ],
 
@@ -1044,7 +1044,7 @@ FOAModel({
       name:  'groups',
       type:  'Map[Expr]',
       help:  'Groups.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     }
   ],
 
@@ -1153,14 +1153,14 @@ FOAModel({
       name:  'rows',
       type:  'Map[Expr]',
       help:  'Rows.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       name:  'cols',
       label: 'Columns',
       type:  'Map[Expr]',
       help:  'Columns.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       model_: 'ArrayProperty',
@@ -1578,19 +1578,19 @@ FOAModel({
       name:  'groups',
       type:  'Map[Expr]',
       help:  'Groups.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       name:  'expanded',
       type:  'Map',
       help:  'Expanded.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       name:  'values',
       type:  'Object',
       help:  'Values',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 
@@ -1673,7 +1673,7 @@ FOAModel({
     {
       name: 'items_',
       help: 'Temporary map to store collected objects.',
-      valueFactory: function() { return {}; },
+      factory: function() { return {}; },
       transient: true
     },
     {

@@ -226,7 +226,7 @@ var Contact = FOAM({
 
         {
             model_: 'DateTimeProperty',
-            valueFactory: function() { return new Date(); },
+            factory: function() { return new Date(); },
             name: 'updated'
         },
 

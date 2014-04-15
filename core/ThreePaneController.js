@@ -40,7 +40,7 @@ FOAModel({
     {
       name: 'daoListener',
       hidden: true,
-      valueFactory: function() {
+      factory: function() {
         return {
           put: this.onDaoUpdate,
           remove: this.onDaoUpdate
@@ -64,14 +64,14 @@ FOAModel({
     },
     {
       name: 'queryParser',
-      valueFactory: function() {
+      factory: function() {
         return QueryParserFactory(this.model);
       }
     },
     {
       name: 'searchField',
       type: 'TextFieldView',
-      valueFactory: function() {
+      factory: function() {
         return TextFieldView.create({
           name: 'search',
           type: 'search',
@@ -87,7 +87,7 @@ FOAModel({
     {
       name: 'countField',
       type: 'TextFieldView',
-      valueFactory: function() {
+      factory: function() {
         return TextFieldView.create({
           name: 'count',
           mode: 'read-only',
@@ -146,7 +146,7 @@ FOAModel({
     {
       name: 'table',
       type: 'AbstractView',
-      valueFactory: function() {
+      factory: function() {
         return TableView2.create({
             model: this.model,
             dao: this.dao,
@@ -164,7 +164,7 @@ FOAModel({
     {
       name: 'toolbar',
       type: 'AbstractView',
-      valueFactory: function() {
+      factory: function() {
         return ToolbarView.create({
           actions: this.model.actions,
           value: this.table.selection
@@ -178,7 +178,7 @@ FOAModel({
     {
       name: 'editView',
       type: 'AbstractView',
-      valueFactory: function() {
+      factory: function() {
         return DetailView.create({model: this.model}/*, this.table.selection*/);
       },
       postSet: function(oldValue, newValue) {

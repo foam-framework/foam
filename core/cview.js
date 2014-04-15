@@ -139,7 +139,7 @@ FOAModel({
     {
       name:  'children',
       type:  'CView[]',
-      valueFactory: function() { return []; },
+      factory: function() { return []; },
       hidden: true
     },
     {
@@ -620,7 +620,7 @@ FOAModel({
     {
       name:  'children',
       type:  'CView[]',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name:  'canvas',
@@ -682,7 +682,7 @@ FOAModel({
     {
       name:  'value',
       type:  'Value',
-      valueFactory: function() { return SimpleValue.create(); },
+      factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.updateValue);
         newValue.addListener(this.updateValue);
@@ -806,7 +806,7 @@ FOAModel({
     {
       name:  'data',
       type:  'Array[float]',
-      valueFactory: function() {
+      factory: function() {
         return [];
       }
       //       defaultValue: []
@@ -1133,7 +1133,7 @@ FOAModel({
     },
     {
       name: 'mouse',
-      valueFactory: function() { return Mouse.create(); }
+      factory: function() { return Mouse.create(); }
     }
   ],
 

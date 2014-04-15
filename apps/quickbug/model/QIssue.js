@@ -202,7 +202,7 @@ var QIssue = FOAM({
          mode: 'read-write',
          required: true,
          tableWidth: '100px',
-         valueFactory: function() { return new Date(); }
+         factory: function() { return new Date(); }
       },
       {
         name: 'updated',

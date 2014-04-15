@@ -14,6 +14,6 @@ var toDisplay = function() { DOM.setClass(this.$, 'editing', false); }.bind(this
 </li>
 <%
 this.on('dblclick', toEdit,		this.getID());
-this.on('blur',		 toDisplay, this.textView.elementId);
+this.on('blur',		 toDisplay, this.textView.id);
 this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 %>

@@ -219,7 +219,7 @@ var Property = {
       help: 'The property\'s default value function.'
     },
     {
-      name: 'valueFactory',
+      name: 'factory',
       type: 'Function',
       required: false,
       displayWidth: 70,

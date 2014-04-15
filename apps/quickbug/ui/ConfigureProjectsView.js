@@ -23,7 +23,7 @@ var ConfigureProjectsView = FOAM({
   properties: [
     {
       name: 'defaultProjectView',
-      valueFactory: function() { return ChoiceView.create({}); }
+      factory: function() { return ChoiceView.create({}); }
     }
   ],
 

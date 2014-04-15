@@ -1696,7 +1696,7 @@ FOAModel({
     {
       name: 'keys',
       type: 'Array',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 
@@ -1725,7 +1725,7 @@ FOAModel({
       name: 'delegate',
       type: 'Worker',
       help: 'The web-worker to delegate all actions to.',
-      valueFactory: function() {
+      factory: function() {
         var url = window.location.protocol +
           window.location.host +
           window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
@@ -1751,21 +1751,21 @@ FOAModel({
       type:  'Object',
       label: 'Requests',
       help:  'Map of pending requests to delegate.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       name:  'nextRequest_',
       type:  'Integer',
       label: 'Next Request',
       help:  'Id of the next request to the delegate.',
-      valueFactory: function() { return 1; }
+      factory: function() { return 1; }
     },
     { // Consider making this a DAO.  Challenge is keeping in sync if this throws errors after delegate has completed something.
       name:  'storage_',
       type:  'Object',
       label: 'Storage',
       help:  'Local cache of the data in the delegate.',
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     }
   ],
 
@@ -2065,7 +2065,7 @@ FOAModel({
     {
       name: 'storage',
       type: 'Array',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     },
     {
       name: 'comparator',
@@ -2092,7 +2092,7 @@ FOAModel({
     {
       name: 'storage',
       type: 'Array',
-      valueFactory: function() { return []; }
+      factory: function() { return []; }
     }
   ],
 

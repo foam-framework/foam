@@ -50,7 +50,7 @@ FOAModel({
     {
       name:  'data',
       type:  'Array[float]',
-      valueFactory: function() {
+      factory: function() {
         return [];
       }
     },

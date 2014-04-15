@@ -40,7 +40,7 @@ var EyeCView = FOAM({
          name:  'lid',
          type:  'Circle',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
          }
       },
@@ -48,7 +48,7 @@ var EyeCView = FOAM({
          name:  'white',
          type:  'Circle',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return Circle.create({x:this.x,y:this.y,r:this.r-10,color:'white',parent:this});
          }
       },
@@ -56,7 +56,7 @@ var EyeCView = FOAM({
          name:  'pupil',
          type:  'Circle',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return Circle.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
          }
       }
@@ -107,7 +107,7 @@ var EyesCView = FOAM({
          label: 'Left',
          type:  'Eye',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return EyeCView.create({x:this.x+50,y:this.y+50,r:50,color:'red',parent:this});
          }
       },
@@ -116,7 +116,7 @@ var EyesCView = FOAM({
          label: 'Right',
          type:  'Eye',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return EyeCView.create({x:this.x+120,y:this.y+65,r:48,color:'yellow',parent:this});
          }
       }
@@ -155,7 +155,7 @@ var ClockView = FOAM({
          name:  'lid',
          type:  'Circle',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return Circle.create({x:this.x,y:this.y,r:this.r,color:this.color,parent:this});
          }
       },
@@ -163,7 +163,7 @@ var ClockView = FOAM({
          name:  'white',
          type:  'Circle',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return Circle.create({x:this.x,y:this.y,r:this.r-3,color:'white',parent:this});
          }
       },
@@ -185,7 +185,7 @@ var ClockView = FOAM({
          name:  'hourHand',
          type:  'Hand',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return this.Hand.create({x:this.x,y:this.y,r:this.r-15,width:7,color:'green',parent:this});
          }
       },
@@ -193,7 +193,7 @@ var ClockView = FOAM({
          name:  'minuteHand',
          type:  'Hand',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:5,color:'blue',parent:this});
          }
       },
@@ -201,7 +201,7 @@ var ClockView = FOAM({
          name:  'secondHand',
          type:  'Hand',
          paint: true,
-         valueFactory: function() {
+         factory: function() {
             return this.Hand.create({x:this.x,y:this.y,r:this.r-6,width:3,color:'red',parent:this});
          }
       }
@@ -401,7 +401,7 @@ var System = FOAM({
          view: {
            create: function() { return DetailView.create({model: Mouse}); }
          },
-         valueFactory: function() {
+         factory: function() {
             return Mouse.create();
          }
       },

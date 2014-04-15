@@ -7,7 +7,7 @@ var QIssuePreviewView = FOAM({
   properties: [
     {
       name: 'model',
-      valueFactory: function() { return QIssue; }
+      factory: function() { return QIssue; }
     },
     {
       name: 'QIssueCommentDAO'
@@ -20,7 +20,7 @@ var QIssuePreviewView = FOAM({
     },
     {
       name: 'blockingView',
-      valueFactory: function() {
+      factory: function() {
         return BlockView.create({
           ctx: this,
           property: QIssue.BLOCKING,
@@ -29,7 +29,7 @@ var QIssuePreviewView = FOAM({
     },
     {
       name: 'blockedOnView',
-      valueFactory: function() {
+      factory: function() {
         return BlockView.create({
           ctx: this,
           property: QIssue.BLOCKED_ON,
@@ -79,7 +79,7 @@ var QIssueLabelsView = FOAM({
   properties: [
     {
       name: 'value',
-      valueFactory: function() { return SimpleValue.create([]); },
+      factory: function() { return SimpleValue.create([]); },
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.removeListener(this.update);
         newValue.addListener(this.update);
@@ -149,7 +149,7 @@ var BlockView = FOAM({
     {
       name: 'idSet',
       help: "Set of Issue ID's that have already been seen.",
-      valueFactory: function() { return {}; }
+      factory: function() { return {}; }
     },
     {
       name: 'maxDepth',

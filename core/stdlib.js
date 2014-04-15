@@ -546,6 +546,20 @@ RegExp.quote = function(str) {
   return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
 };
 
+function trampoline(installer, target, name, valueFn) {
+  var value;
+  installer.defineProperty(target, name, {
+    get: function() {
+      if ( value ) return value;
+      value = valueFn();
+      Object.defineProperty(target, name, value);
+      return value;
+    },
+    writable: true,
+    configurable: true
+  });
+}
+
 var FeatureSet = {
   create: function() {
     var obj = Object.create(this);
@@ -557,27 +571,22 @@ var FeatureSet = {
   },
 
   where: function(p) {
-    var predicate = p;
-    if ( this.predicate_ ) {
-      var old = this.predicate_;
-      predicate = function(o) {
-        return old(o) && p(o);
-      };
-    }
-
     return {
       __proto__: this,
-      predicate_: predicate,
       forEach: function(iterator) {
-        return this.__proto__.forEach.call(this, iterator, this.predicate_);
+        return this.__proto__.forEach.call(this, function(f) {
+          if ( p(f) ) iterator(f);
+        });
       },
       localForEach: function(iterator) {
-        return this.__proto__.localForEach.call(this, iterator, this.predicate_);
+        return this.__proto__.localForEach.call(this, function(f) {
+          if ( p(f) ) iterator(f);
+        });
       },
     };
   },
 
-  forEach: function(iterator, opt_predicate) {
+  forEach: function(iterator) {
     var self = this;
     if ( this.parent )
       this.parent.where(function(f) {
@@ -586,12 +595,9 @@ var FeatureSet = {
     this.localForEach(iterator);
   },
 
-  localForEach: function(iterator, opt_predicate) {
+  localForEach: function(iterator) {
     for ( var i = 0; i < this.a_.length; i++ ) {
       var f = this.a_[i];
-
-      if ( opt_predicate && ! opt_predicate(f) )
-        continue;
 
       if ( f.name && f !== this.names_[f.name] )
         continue;

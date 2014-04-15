@@ -73,7 +73,7 @@ properties: [
   // A facade for a property actually stored in a child component
   {
     name: 'child'
-    valueFactory: function() { return Child.create(); }
+    factory: function() { return Child.create(); }
   },
   { 
     name: 'fromChild',
