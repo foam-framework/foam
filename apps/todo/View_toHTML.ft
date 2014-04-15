@@ -1,15 +1,16 @@
 <%
   var todo      = this.value.value;
   var remove    = this.DAO.remove.bind(this.DAO, todo);
-  var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
-  var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
+  var toEdit    = function() { DOM.setClass(this.$, 'editing'); this.textView.$.focus(); }.bind(this);
+  var toDisplay = function() { DOM.setClass(this.$, 'editing', false); }.bind(this);
 %>
 <li id="<%= this.setClass('completed', function() { return this.value.value.completed; }.bind(this), this.getID()) %>">
   <div class="view">
-    $$completed{ extraClasses: ['toggle'] }
-    $$text{ mode: 'read-only', readOnlyTagName: 'label' }
-    <span class="remove"><button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
+    $$completed{cssClasses: ['toggle']}
+    $$text{mode: 'read-only', readOnlyTagName: 'label'}
+    <button class="destroy" id="{{{this.on('click', remove, this.nextID())}}}"></button>
   </div>
+  $$text{cssClasses: ['edit']}
 </li>
 <%
   this.on('dblclick', toEdit,    this.getID());
