@@ -316,8 +316,7 @@ o = Model;
 
     document.writeln("<td valign=top>");
 
-    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
-//    var timerView = DetailView.create({model: timer.model_});
+    var timerView = DetailView.create({model: timer.model_, showActions: true});;
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();
@@ -430,11 +429,11 @@ o = Model;
     document.writeln("<br/><h2>Controller</h2>");
 
     var bookmarksDAO = bookmarks;
-    var ctrl2 = ActionBorder.create(DAOController, DAOController.create({
+    var ctrl2 = DAOController.create({
       model: Bookmark,
       dao: bookmarksDAO,
       selection: bookmarks[0]
-    }));
+    }).addDecorator(ActionBorder.create({ actions: DAOController.actions }));
 
     var stack2 = StackView.create();
 
@@ -442,11 +441,11 @@ o = Model;
     ctrl2.__proto__.stackView = stack2;
     stack2.pushView(ctrl2, "Bookmarks");
 
-    var ctrl = ActionBorder.create(DAOController, DAOController.create({
+    var ctrl = DAOController.create({
       model: Model,
       dao: models,
       selection: Model
-    }));
+    }).addDecorator(ActionBorder.create({ actions: DAOController.actions }));
 
     var stack = StackView.create();
 

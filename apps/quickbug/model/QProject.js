@@ -220,12 +220,11 @@ FOAModel({
         var window = w.contentWindow;
         w.contentWindow.onload = function() {
           $addWindow(window);
-          var b = ActionBorder.create(
-            SyncManager,
-            DetailView.create({
+          var b = DetailView.create({
               model: SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
-              value: SimpleValue.create(self.syncManager)}));
+              value: SimpleValue.create(self.syncManager),
+              showActions: true });
           window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
           b.initHTML();
           var extrax = window.outerWidth - window.innerWidth + 16;

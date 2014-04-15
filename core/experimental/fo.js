@@ -559,9 +559,7 @@ var featureDAO = [
     return XMLUtil.stringify(this);
   }],
   ['FObject', 'Method', function write(document) {
-    var view = ActionBorder.create(
-      this.model_,
-      DetailView.create({model: this.model_}));
+    var view = DetailView.create({model: this.model_, showActions: true});
 
     document.writeln(view.toHTML());
     view.value.set(this);

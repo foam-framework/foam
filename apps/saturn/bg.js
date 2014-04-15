@@ -185,13 +185,11 @@ function openMenu(e) {
 
 function openSettings() {
   var detailView = DetailView.create({
-    model: emsAgent.model_
+    model: emsAgent.model_,
+    showActions: true
   });
   detailView.value.set(emsAgent);
-
-  var actionBorder = ActionBorder.create(emsAgent.model_, detailView);
   stack.pushView(actionBorder);
-
 }
 
 function launchController(_, callback) {

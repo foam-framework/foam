@@ -186,7 +186,7 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view = ActionBorder.create(model, view);
+        if ( ! viewName ) view.showActions = true;
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
@@ -1878,6 +1878,17 @@ var DetailView = Model.create({
     {
       name:  'title',
       defaultValueFn: function() { return "Edit " + this.model.label; }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: false,
+      postSet: function(old, nu) {
+        // TODO: No way to remove the decorator.
+        if ( nu ) {
+          this.addDecorator(ActionBorder.create());
+        }
+      }
     }
   ],
 
@@ -2938,76 +2949,16 @@ FOAModel({
   }
 });
 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// TODO: Model
 /** Add Action Buttons to a decorated View. **/
 /* TODO:
+   These are left over Todo's from the previous ActionBorder, not sure which still apply.
+
    The view needs a standard interface to determine it's Model (getModel())
    listen for changes to Model and change buttons displayed and enabled
-   use isAvailable and isEnabled
-   Buttons should be own View with enabled = true/false and own listeners, don't use <button> directly
+   isAvailable
 */
-var ActionBorder = {
-
-  /** @arg actions either a model or an array of actions **/
-  create: function(actions, delegate) {
-    var obj = {
-      __proto__: delegate,
-      TYPE:      'ActionBorder',
-      actions:   actions.actions || actions,
-      // This is a bit hacking, but it prevents
-      // both this wrapper and the delegate from
-      // having separate element ID's
-      // try removing in future
-      getID: function() {
-        return this.__proto__.getID();
-      },
-      toHTML: function() {
-        var model = this.model;
-        var str   = "";
-
-        //          str += '<table class="actionBorder"><tr><td>';
-        str += this.__proto__.toHTML.call(this);
-        //          str += '</td></tr><tr><td class="actionBorderActions">';
-        str += '<div class="actionToolbar">';
-
-        for ( var i = 0 ; i < this.actions.length ; i++ ) {
-          var action = this.actions[i];
-          var button = ActionButton.create({action: action, value: this.getValue()});
-          str += " " + button.toHTML() + " ";
-
-          this.addChild(button);
-        }
-
-        str += '</div>';
-        //          str += '</td></tr></table>';
-
-        return str;
-      }
-    };
-
-    // TODO: document why this is needed or remove
-    obj.value && obj.value.set(obj.value.get());
-
-    // if delegate doesn't have a getValue method, then add one
-    if ( ! obj.getValue ) {
-      var dm = SimpleValue.create(obj);
-      obj.getValue = function() {
-        return dm;
-      };
-    }
-
-    return obj;
-  }
-};
-
 FOAModel({
-  name: 'ActionBorder2',
+  name: 'ActionBorder',
 
   properties: [
     {
