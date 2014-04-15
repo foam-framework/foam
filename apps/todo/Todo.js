@@ -34,7 +34,7 @@ FOAModel({
   actions: [
     {
       name: 'toggle',
-      action: function() { this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, this.activeCount), this.todoDAO)); }
+      action: function() { this.todoDAO.update(SET(Todo.COMPLETED, this.activeCount)); }
     },
     {
       name: 'clear',

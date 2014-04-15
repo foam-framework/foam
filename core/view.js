@@ -90,8 +90,21 @@ var DOM = {
 
     var fs = X.document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
-      this.initElement(fs[i], X.document);
+      var e = fs[i];
+      console.log(e.getAttribute('model'), e.getAttribute('view'));
+      GLOBAL[e.getAttribute('view')];
+      GLOBAL[e.getAttribute('model')];
     }
+    var models = [];
+    for ( var key in USED_MODELS ) {
+      models.push(arequire(key));
+    }
+
+    aseq(apar.apply(null, models), function(ret) {
+      for ( var i = 0 ; i < fs.length ; i++ ) {
+        this.initElement(fs[i], X.document);
+      }
+    }.bind(this))();
   },
 
   initElementChildren: function(e) {
@@ -131,7 +144,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        console.log('unknown attribute: ', key);
+        if ( ! {model:true, view:true, id:true}[key] ) console.log('unknown attribute: ', key);
       }
     }
 
@@ -192,6 +205,9 @@ var DOM = {
     if ( enabled ) e.className = e.className + ' ' + className;
   }
 };
+
+
+window.addEventListener('load', function() { DOM.init(X); }, false);
 
 
 // TODO: document and make non-global
@@ -295,7 +311,7 @@ FOAModel({
 
     createTemplateView: function(o, opt_args) {
       if ( Action.isInstance(o) ) {
-        return ActionButton.create({action: o, value: this.value});
+        return ActionButton.create({action: o, value: this.value}).copyFrom(opt_args);
       }
 
       return this.createView(o, opt_args);
@@ -752,11 +768,6 @@ FOAModel({
       defaultValue: 'field'
     },
     {
-      name:  'className',
-      type:  'String',
-      defaultValue: 'field'
-    },
-    {
       name:  'displayWidth',
       type:  'int',
       defaultValue: 30
@@ -840,7 +851,7 @@ FOAModel({
     ESCAPE: ['escape'],
 
     toHTML: function() {
-      var className = this.className ? ' class="' + this.className + '"' : '';
+      var className = this.cssClasses ? ' class="' + this.cssClasses.join(' ') + '"' : '';
 
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
@@ -1183,7 +1194,11 @@ FOAModel({
     },
     {
       name: 'cssClasses',
-      valueFactory: function() { return ['foamChoiceListView', this.orientation]; }
+      defaultValueFn: function() { return ['foamChoiceListView', this.orientation]; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'ul'
     }
   ],
 
@@ -1204,7 +1219,7 @@ FOAModel({
           function(choice) { return this.choice == choice; }.bind(this, choice),
           id);
 
-        out += '<div class="choice" id="' + id + '">' + choice[1] + '</div>';
+        out += '<li id="' + id + '">' + choice[1] + '</li>';
       }
       return out;
     }
@@ -1501,7 +1516,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" />';
+      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" class="' + this.cssClasses.join(' ') + '"/>';
     },
 
     initHTML: function() {

@@ -266,6 +266,7 @@ function amemo(f) {
         for (var i = 0 ; i < waiters.length; i++) {
           waiters[i] && waiters[i].apply(null, values);
         }
+        f = undefined;
         memoized = true;
         waiters = undefined;
       });

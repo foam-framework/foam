@@ -134,7 +134,7 @@ FOAModel({
       valueFactory: function() {
         return TextFieldView.create({
           name: 'count',
-          className: 'qbugCount',
+          cssClasses: ['qbugCount'],
           mode: 'read-only',
           displayWidth: 40
         });

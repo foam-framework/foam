@@ -1,3 +1,23 @@
-$$toggle $$input $$filteredDAO <br>
-<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
-$$query $$clear
+<section id="todoapp">
+	<header id="header">
+		<h1>todos</h1>
+		$$input{elementId: 'new-todo'}
+	</header>
+	<section id="main">
+		$$toggle{elementId: 'toggle-all'}
+		$$filteredDAO{tagName: 'ul', elementId: 'todo-list'}
+	</section>
+	<footer id="footer">
+		<span id="todo-count">
+			<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
+		</span>
+		$$query{elementId: 'filters'}
+                $$clear{elementId: 'clear-completed'}
+	</footer>
+</section>
+<footer id="info">
+	<p>Double-click to edit a todo</p>
+	<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
+	{{{FOAM_POWERED}}}
+	<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+</footer>

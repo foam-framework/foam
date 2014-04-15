@@ -100,6 +100,9 @@ var FOAModel = function(m) {
 }
 */
 
+var UNUSED_MODELS = {};
+var USED_MODELS = {};
+
 // Lazy Model Definition - Only creates Model when first referenced
 var FOAModel = function(m) {
   // Templates need to access document.currentScript in order to know
@@ -107,11 +110,15 @@ var FOAModel = function(m) {
   // with templates can't be delayed (yet).
   if ( m.templates ) {
     registerModel.call(this, JSONUtil.mapToObj(m, Model));
+    USED_MODELS[m.name] = true;
     return;
   }
 
+  UNUSED_MODELS[m.name] = true;
   Object.defineProperty(GLOBAL, m.name, {
     get: function () {
+      USED_MODELS[m.name] = true;
+      delete UNUSED_MODELS[m.name];
       Object.defineProperty(GLOBAL, m.name, {value: null});
       registerModel(JSONUtil.mapToObj(m, Model));
       return this[m.name];
