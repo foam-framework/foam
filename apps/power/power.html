@@ -400,7 +400,7 @@
     document.write("<div style=\"height:700;\"> </div>");
     document.write("<table style=\"position:relative;left:220;\"><tr><td valign=top>");
 
-    var timerView = ActionBorder.create(Timer, DetailView.create({model: timer.model_}));
+    var timerView = DetailView.create({model: timer.model_, showActions: true});
     document.writeln(timerView.toHTML());
     timerView.set(timer);
     timerView.initHTML();

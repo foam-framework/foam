@@ -70,7 +70,7 @@ FOAModel({
         var createView = DAOCreateController.create({
           model: this.model,
           dao:   this.dao
-        }).addDecorator(ActionBorder2.create({
+        }).addDecorator(ActionBorder.create({
           actions: DAOCreateController.actions,
         }));
 
@@ -118,7 +118,7 @@ FOAModel({
           obj:   this.selection/*.deepClone()*/,
           model: this.model,
           dao:   this.dao
-        }).addDecorator(ActionBorder2.create({
+        }).addDecorator(ActionBorder.create({
           actions: DAOUpdateController.actions,
         }));
 
@@ -350,7 +350,7 @@ FOAModel({
       var createView = DAOCreateController.create({
         model: model,
         dao:   dao
-      }).addDecorator(ActionBorder2.create({ actions: DAOCreateController.actions }));
+      }).addDecorator(ActionBorder.create({ actions: DAOCreateController.actions }));
 
       createView.parentController = this;
       this.X.stack.pushView(createView);
