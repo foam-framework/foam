@@ -2769,6 +2769,13 @@ FOAModel({
 
   methods: {
     toHTML: function() {
+      var self = this;
+      var value = self.value.get();
+
+      this.on('click', function() {
+        self.action.callIfEnabled(self.value.get());
+      }, this.getID());
+
       var out = '<a href="#" class="actionLink actionLink-' + this.action.name + '" id="' + this.getID() + '">';
 
       if ( this.action.iconUrl ) {
