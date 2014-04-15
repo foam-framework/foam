@@ -3093,7 +3093,9 @@ FOAModel({
 
 var ArrayView = {
   create: function(prop) {
-    var view = DAOController.create(GLOBAL[prop.subType]);
+    var view = DAOController.create({
+      model: GLOBAL[prop.subType]
+    });
     return view;
   }
 };

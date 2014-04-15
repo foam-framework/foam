@@ -37,16 +37,10 @@ FOAModel({
     },
     {
       name:  'value',
-      preSet: function() { debugger; },
-      postSet: function(_, value) {
-        debugger;
-        var f = function() {
-          this.dao = this.value.value;
-          this.tableView && this.tableView.refresh();
-          debugger;
-        }.bind(this);
-        value.addListener(f);
-        f();
+      postSet: function(old, value) {
+        old && old.removeListener(this.onValueChange);
+        value.addListener(this.onValueChange);
+        this.onValueChange();
       }
     },
     {
@@ -268,7 +262,13 @@ FOAModel({
           //               (this.stackView || stack).setPreview(null);
         }
       }
-    }
+    },
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.dao = this.value.value;
+      }
+    },
   ]
 
 });
