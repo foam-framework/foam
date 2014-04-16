@@ -4567,3 +4567,145 @@ FOAModel({
     }
   ]
 });
+
+FOAModel({
+  name: 'TouchListView',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao'
+    },
+    {
+      name: 'rowView'
+    },
+    {
+      // TODO: Can we calculate this reliably?
+      model_: 'IntegerProperty',
+      name: 'rowViewHeight'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'height'
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'skip',
+      defaultValue: 0,
+      postSet: function(old, nu) {
+        if ( old !== nu ) this.onDAOUpdate();
+      }
+    },
+    {
+      model_: 'IntegerProperty',
+      name: 'offset',
+      defaultValue: 0,
+      postSet: function(old, nu) {
+        if ( old !== nu && this.$ ) {
+          console.log("Changing offset", nu);
+          this.$.lastElementChild.style.webkitTransform = 
+            'translatey(' + nu + 'px)';
+        }
+      }
+    },
+  ],
+
+  methods: {
+    init: function() {
+      this.dao.listen(this.onDAOUpdate);
+    },
+    toHTML: function() {
+      var id = this.getID();
+      var overlay = this.nextID();
+      this.on('touchstart', this.onTouchStart, overlay);
+      this.on('touchmove', this.onTouchMove, overlay);
+      console.log("overlay is ", overlay);
+
+      return '<div id="' + this.getID() + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.onDAOUpdate();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isAnimated: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        console.log("On dao update.", this.skip);
+        var objs = [];
+        var limit = Math.floor(this.height / this.rowViewHeight) + 1
+        this.dao.skip(this.skip).limit(limit).select(objs)((function() {
+          this.children = [];
+          this.initializers_ = [];
+          this.painting = false;
+
+          if ( ! this.$ ) return;
+
+          var html = "";
+
+          var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView] : this.rowView;
+          for (var i = 0; i < objs.length; i++ ) {
+            var view = rowView.create({
+              value: SimpleValue.create(objs[i]),
+              model: objs[i].model_
+            });
+            this.addChild(view);
+            html += view.toHTML();
+          }
+
+          this.$.lastElementChild.innerHTML = html;
+          this.initInnerHTML();
+        }).bind(this));
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(e) {
+        console.log("touch start.");
+        if ( e.changedTouches[0] )
+          this.startY = e.changedTouches[0].screenY;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      isAnimated: true,
+      code: function(e) {
+        if ( ! e.changedTouches[0] ) return;
+
+        var delta = e.changedTouches[0].screenY - this.startY;
+        this.startY = e.changedTouches[0].screenY;
+
+        var offset = this.offset;
+        var skip = this.skip;
+
+        offset += delta;
+        if ( Math.abs(offset) > this.rowViewHeight ) {
+          while ( offset >= this.rowViewHeight ) {
+            offset -= this.rowViewHeight;
+            skip--;
+          }
+          while ( offset <= 0 - this.rowViewHeight ) {
+            offset += this.rowViewHeight;
+            skip++;
+          }
+        }
+
+        if ( skip === 0 && offset > 0 ) offset = 0;
+
+        if ( skip < 0 ) {
+          skip = 0;
+          offset = 0;
+        }
+
+        this.offset = offset;
+        this.skip = skip;
+      }
+    },
+  ]
+});
