@@ -32,6 +32,7 @@ FOAModel({
       }
     },
     {
+      model_: 'DAOProperty',
       name:  'dao',
       label: 'DAO',
       view: 'TableView2', 
