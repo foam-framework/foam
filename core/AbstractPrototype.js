@@ -349,9 +349,13 @@ var AbstractPrototype = {
   },
 
   addDecorator: function(decorator) {
+    if ( decorator.decorateObject )
+      decorator.decorateObject(this);
+
     for ( var i = 0; i < decorator.model_.methods.length; i++ ) {
       var method = decorator.model_.methods[i];
-      this.decorate(method.name, method.code, decorator);
+      if ( method.name !== 'decorateObject' )
+        this.decorate(method.name, method.code, decorator);
     }
     return this;
   }

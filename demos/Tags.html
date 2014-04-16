@@ -2,6 +2,7 @@
  <head>
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="demos.js"></script>
   <script language="javascript" src="dragon.js"></script>
   <title>FOAM Tags</title>
  </head>
@@ -15,7 +16,7 @@
     <foam model="Dragon" timer="#timer" width="950" height="1000"></foam>
   </td>
   <td valign=top>
-    <foam id="tt" model="Turntable"></foam>
+    <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
   </td>
 </tr></table>
 
@@ -30,11 +31,5 @@
     </code></foam>
   </tests>
 </foam>
-
-<script language="javascript">
-  DOM.init(X);
-  Events.link($('timer').time$, $('tt').time$);
-</script>
-
  </body>
 </html>
