@@ -144,11 +144,7 @@ FOAModel({
       var afuncs = [];
 
       console.log(this.name + '   ' + this.async);
-      if ( this.async ) {
-        afuncs.push(code.bind(this));
-      } else {
-        afuncs.push(function(ret) { code.call(self); ret(); } );
-      }
+      afuncs.push(this.async ? code.bind(this) : code.abind(this));
 
       for ( var i = 0 ; i < this.tests.length ; i++ ) {
         var test = this.tests[i];

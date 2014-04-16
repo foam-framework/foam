@@ -145,6 +145,17 @@ FOAModel({
         function(ret) { log('anop'); aseq(alog('before'), anop, alog('after'))(ret); }
       </code>
     </foam>
+    <foam model="UnitTest" name="abind">
+      <description>Test abind.</description>
+      <async>true</async>
+      <code>
+        function(ret) {
+          function boo() { log('boo'); }
+          boo();
+          boo.abind(null)(ret);
+        }
+      </code>
+    </foam>
     <foam model="UnitTest" name="alog">
       <description>Test alog.</description>
       <async>true</async>
