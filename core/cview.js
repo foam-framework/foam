@@ -173,14 +173,16 @@ FOAModel({
     toHTML: function() {
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
-      this.parent = Canvas.create();
+      if ( ! this.parent ) {
+        this.parent = Canvas.create();
 
-      this.x$.addListener(this.resizeParent);
-      this.y$.addListener(this.resizeParent);
-      this.width$.addListener(this.resizeParent);
-      this.height$.addListener(this.resizeParent);
+        this.x$.addListener(this.resizeParent);
+        this.y$.addListener(this.resizeParent);
+        this.width$.addListener(this.resizeParent);
+        this.height$.addListener(this.resizeParent);
 
-      this.resizeParent();
+        this.resizeParent();
+      }
       return this.parent.toHTML();
     },
 
