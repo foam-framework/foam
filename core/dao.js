@@ -672,10 +672,9 @@ FOAModel({
       transient: true,
       postSet: function(oldDAO, newDAO) {
         this.model = newDAO.model;
-        if ( ! this.relay_ ) return;
         if ( this.daoListeners_ && this.daoListeners_.length ) {
-          if ( oldDAO ) oldDAO.unlisten(this.relay_);
-          newDAO.listen(this.relay_);
+          if ( oldDAO ) oldDAO.unlisten(this.relay());
+          newDAO.listen(this.relay());
           this.notify_('put', []);
         }
       }
@@ -683,16 +682,18 @@ FOAModel({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
+    relay: function() {
+      if ( ! this.relay_ ) {
+        var self = this;
 
-      var self = this;
+        this.relay_ = {
+          put:    function() { self.notify_('put', arguments);    },
+          remove: function() { self.notify_('remove', arguments); },
+          toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
+        };
+      }
 
-      this.relay_ =  {
-        put:    function() { this.notify_('put', arguments);    }.bind(this),
-        remove: function() { this.notify_('remove', arguments); }.bind(this),
-        toString: function() { return 'RELAY(' + this.$UID + ', ' + self.delegate + ')'; }
-      };
+      return this.relay_;
     },
 
     put: function(value, sink) {
@@ -718,7 +719,7 @@ FOAModel({
     listen: function(sink, options) {
       // Adding first listener, so listen to delegate
       if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
-        this.delegate.listen(this.relay_);
+        this.delegate.listen(this.relay());
       }
 
       this.SUPER(sink, options);
@@ -729,7 +730,7 @@ FOAModel({
 
       // Remove last listener, so unlisten to delegate
       if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
-        this.delegate.unlisten(this.relay_);
+        this.delegate.unlisten(this.relay());
       }
     }
   }
@@ -1398,16 +1399,11 @@ FOAModel({
 
 
 FOAModel({
-  extendsModel: 'AbstractDAO',
-
   name: 'StorageDAO',
 
+  extendsModel: 'MDAO',
+
   properties: [
-    {
-      name:  'model',
-      type:  'Model',
-      required: true
-    },
     {
       name:  'name',
       label: 'Store Name',
@@ -1419,56 +1415,34 @@ FOAModel({
   ],
 
   methods: {
-
     init: function() {
       this.SUPER();
 
-      this.storage = JSONUtil.parse(localStorage.getItem(this.name)) || [];
-    },
+      var objs = localStorage.getItem(this.name);
+      if ( objs ) JSONUtil.parse(objs).select(this);
 
-    put: function(obj, sink) {
-      this.storage.put(obj, sink);
-      this.flush_();
-    },
-
-    find: function(key, sink) {
-      this.storage.find(key, sink);
-    },
-
-    remove: function(obj, sink) {
-      this.storage.remove(obj, sink);
-      this.flush_();
-    },
-
-    removeAll: function(sink, options) {
-      var ret = this.storage.removeAll(sink, options);
-      this.flush_();
-      return ret;
-    },
-
-    select: function(sink, options) {
-      sink = sink || [];
-      this.storage.select(sink, options);
-      return aconstant(sink);
-    },
-
-    flush_: function() {
-      localStorage.setItem(this.name, JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.storage));
-      this.publish('updated');
+      this.addRawIndex({
+        cost: Number.MAX_VALUE,
+        execute: function() {},
+        bulkLoad: function() {},
+        toString: function() { return "StorageDAO Update"; },
+        put: this.updated,
+        remove: this.updated
+      });
     }
-
   },
 
   listeners: [
     {
       name: 'updated',
-      code: function(evt) {
-        console.log('updated: ', evt);
-        this.publish('updated');
+      isMerged: 100,
+      code: function() {
+        this.select()(function(a) {
+          localStorage.setItem(this.name, JSONUtil.compact.where(NOT_TRANSIENT).stringify(a));
+        }.bind(this));
       }
     }
   ]
-
 });
 
 
@@ -3026,7 +3000,7 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name: 'cache',
-      defaultValue: true
+      defaultValue: false
     },
     {
       model_: 'BooleanProperty',
@@ -3061,14 +3035,14 @@ FOAModel({
 
       var dao = daoModel.create(params);
 
-      if ( daoModel === MDAO ) {
+      if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
       } else if ( this.cache ) {
         this.mdao = MDAO.create(params);
         dao = CachingDAO.create(this.mdao, dao);
       }
 
-      if ( this.seqNo   ) {
+      if ( this.seqNo ) {
         dao = SeqNoDAO.create({__proto__: params, delegate: dao});
         if ( this.seqProperty ) dao.property = this.seqProperty;
       }

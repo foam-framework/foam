@@ -19,7 +19,7 @@ var Property = {
 
   name:  'Property',
   plural:'Properties',
-  help:  "Describes a properties of a modelled entity.",
+  help:  'Describes a properties of a modelled entity.',
 
   ids: [ 'name' ],
 
@@ -33,8 +33,8 @@ var Property = {
 
   properties: [
     {
-      name:  'name',
-      type:  'String',
+      name: 'name',
+      type: 'String',
       required: true,
       displayWidth: 30,
       displayHeight: 1,
@@ -101,8 +101,8 @@ var Property = {
       help: 'The javascript type that represents the type of this property.'
     },
     {
-      name:  'shortName',
-      type:  'String',
+      name: 'shortName',
+      type: 'String',
       required: true,
       displayWidth: 10,
       displayHeight: 1,
@@ -117,8 +117,8 @@ var Property = {
       help: 'Alternate names for this property.'
     },
     {
-      name:  'mode',
-      type:  'String',
+      name: 'mode',
+      type: 'String',
       defaultValue: 'read-write',
       view: {
         create: function() { return ChoiceView.create({choices:[
