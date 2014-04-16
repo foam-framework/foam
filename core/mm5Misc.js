@@ -140,7 +140,6 @@ FOAModel({
       this.scope.assert  = this.assert.bind(this);
       this.scope.fail    = this.fail.bind(this);
       this.scope.ok      = this.ok.bind(this);
-      this.scope.console = { __proto__: console, log: this.scope.log };
 
       this.results = '';
 
@@ -153,6 +152,13 @@ FOAModel({
       }
 
       var afuncs = [];
+      var oldConsole;
+
+      afuncs.push(function(ret) {
+        oldConsole = console;
+        window.console = { __proto__: console, log: self.scope.log };
+        ret();
+      });
 
       console.log(this.name + '   ' + this.async);
       afuncs.push(this.async ? code.bind(this) : code.abind(this));
@@ -173,6 +179,11 @@ FOAModel({
           });
         })(test);
       }
+
+      afuncs.push(function(ret) {
+        window.console = oldConsole;
+        ret();
+      });
 
       return aseq.apply(this, afuncs);
     },
