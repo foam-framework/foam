@@ -4495,7 +4495,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'DAOListController',
+  name: 'DAOListView',
   extendsModel: 'AbstractView',
 
   properties: [
@@ -4605,7 +4605,7 @@ FOAModel({
       postSet: function(old, nu) {
         if ( old !== nu && this.$ ) {
           console.log("Changing offset", nu);
-          this.$.lastElementChild.style.webkitTransform = 
+          this.$.lastElementChild.style.webkitTransform =
             'translatey(' + nu + 'px)';
         }
       }
