@@ -71,7 +71,16 @@ FOAModel({
       name: 'code',
       label: 'Test Code',
       displayWidth: 80,
-      displayHeight: 30
+      displayHeight: 30,
+      fromElement: function(e) {
+        var txt = e.innerHTML.trim();
+
+        txt = txt.startsWith('function') ?
+          txt :
+          'function(ret) { ' + txt + '}' ;
+
+        return eval('(' + txt + ')');
+      }
     },
     {
       model_: 'Property',
