@@ -887,6 +887,11 @@ var MDAO = Model.create({
       name:  'model',
       type:  'Model',
       required: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autoIndex',
+      defaultValue: false
     }
   ],
 
@@ -897,6 +902,8 @@ var MDAO = Model.create({
 
       this.map = {};
       this.index = TreeIndex.create(this.model.getProperty(this.model.ids[0]));
+
+      if ( this.autoIndex ) this.addRawIndex(AutoIndex.create(this));
     },
 
     /**
