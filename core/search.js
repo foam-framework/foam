@@ -204,3 +204,103 @@ FOAModel({
 
   ]
 });
+
+FOAModel({
+  name: 'SearchView',
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'dao'
+    },
+    {
+      name: 'model'
+    },
+    {
+      name: 'predicate',
+      type: 'Object',
+      defaultValue: TRUE
+    }
+  ],
+
+  methods: {
+    buildSubViews: function() {
+      var props = this.model.searchProperties;
+      for ( var i = 0; i < props.length; i++ ) {
+        var view = GroupBySearchView.create({
+          dao: this.dao,
+          property: this.model[props[i].constantize()]
+        });
+        this.addChild(view);
+        view.addPropertyListener(
+          'predicate',
+          this.updatePredicate
+        );
+      }
+    },
+
+    toInnerHTML: function() {
+      if ( ! this.children.length ) 
+        this.buildSubViews();
+
+      var str = ""
+      for ( var i = 0; i < this.children.length; i++ ) {
+        str += this.children[i].toHTML();
+      }
+      return str;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'updatePredicate',
+      code: function() {
+        var p = TRUE;
+        for ( var i = 0; i < this.children.length; i++ ) {
+          var view = this.children[i];
+          if ( view.predicate ) {
+            p = AND(p, view.predicate);
+          }
+        }
+        this.predicate = p.partialEval();
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'SearchBorder',
+
+  properties: [
+    {
+      name: 'dao',
+    },
+    {
+      name: 'model',
+    },
+    {
+      name: 'view',
+      factory: function() {
+        return SearchView.create({
+          dao: this.dao,
+          model: this.model
+        });
+      }
+    }
+  ],
+
+  methods: {
+    decorateObject: function(object) {
+      this.view.addPropertyListener(
+        'predicate',
+        function(border, _, _, pred) {
+          object.dao = border.dao.where(pred);
+        });
+    },
+
+    toHTML: function(border, delegate, args) {
+      this.addChild(border.view);
+      return border.view.toHTML() + delegate();
+    }
+  }
+});
