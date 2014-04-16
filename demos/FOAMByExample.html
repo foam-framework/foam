@@ -141,12 +141,10 @@ FOAModel({
   </code>
   <tests>
     <foam model="UnitTest" name="anop">
-      <description>Test anop.</description>
       <async>true</async>
       <code>log('anop'); aseq(alog('before'), anop, alog('after'))(ret);</code>
     </foam>
     <foam model="UnitTest" name="abind">
-      <description>Test abind.</description>
       <async>true</async>
       <code>
           var boo = function() { log('boo'); }
@@ -155,17 +153,14 @@ FOAModel({
       </code>
     </foam>
     <foam model="UnitTest" name="alog">
-      <description>Test alog.</description>
       <async>true</async>
       <code>log('alog'); alog('a message')(ret);</code>
     </foam>
     <foam model="UnitTest" name="asleep">
-      <description>Test asleep.</description>
       <async>true</async>
       <code>aseq(asleep(1000), alog('a message'))(ret);</code>
     </foam>
     <foam model="UnitTest" name="ayield">
-      <description>Test ayield.</description>
       <async>true</async>
       <code>aseq(ayield(), alog('a message'))(ret);</code>
     </foam>

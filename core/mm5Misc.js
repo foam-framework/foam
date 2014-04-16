@@ -37,6 +37,8 @@ FOAModel({
       type: 'String',
       displayWidth: 70,
       displayHeight: 5,
+      defaultValue: '',
+      // defaultValueFn: function() { return "Test " + this.name; },
       help: 'A multi-line description of the unit test.'
     },
     {
