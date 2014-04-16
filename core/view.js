@@ -4496,37 +4496,6 @@ FOAModel({
 
 
 FOAModel({
-  name: 'SearchView',
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name: 'dao'
-    },
-    {
-      name: 'model'
-    }
-  ],
-
-  methods: {
-    toInnerHTML: function() {
-      var str = ""
-      var props = this.model.searchProperties;
-      for ( var i = 0; i < props.length; i++ ) {
-        var view = GroupBySearchView.create({
-          dao: this.dao,
-          property: this.model[props[i].constantize()]
-        });
-        str += view.toHTML();
-        this.addChild(view);
-      }
-      return str;
-    }
-  }
-});
-
-
-FOAModel({
   name: 'DAOListController',
   extendsModel: 'AbstractView',
 

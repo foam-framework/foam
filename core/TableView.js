@@ -35,7 +35,8 @@ FOAModel({
   properties: [
     {
       name:  'model',
-      type:  'Model'
+      type:  'Model',
+      defaultValueFn: function() { return this.X.model; }
     },
     {
       model_: 'StringArrayProperty',
@@ -78,6 +79,14 @@ FOAModel({
         }
         this.scrollbar.value = 0;
         this.onDAOUpdate();
+      }
+    },
+    {
+      name: 'value',
+      postSet: function(old, nu) {
+        old && old.removeListener(this.onValueChange);
+        nu.addListener(this.onValueChange);
+        this.onValueChange();
       }
     },
     {
@@ -144,12 +153,17 @@ FOAModel({
         }.bind(this));
       }
     },
-
     {
       name: 'repaint',
       isAnimated: true,
       code: function() {
         this.repaintNow();
+      }
+    },
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.dao = this.value.value;
       }
     },
     {
@@ -389,6 +403,10 @@ FOAModel({
 
       delete this['initializers_'];
       this.children = [];
+    },
+
+    setValue: function(value) {
+      this.value = value;
     },
 
     destroy: function() {

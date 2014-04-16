@@ -25,18 +25,24 @@ FOAModel({
       name:  'selection'
     },
     {
-      name:  'model'
+      name:  'model',
+      postSet: function(_, model) {
+        // TODO: Is this the best way to pass the model to the TableView?
+        this.X.model = model;
+      }
     },
     {
       name:  'dao',
       label: 'DAO',
-      postSet: function(_, val) {
-        if ( this.scrollBorder && val ) this.scrollBorder.dao = val;
-        if ( this.searchView && val ) this.searchView.dao = val;
+      view: 'TableView2', 
+      postSet: function(_, dao) {
+        // TODO Is this going to be useful?
+        this.X.DAO = dao;
       }
     },
     {
       name:  'value',
+      help: 'Alias value property to set the dao.',
       postSet: function(old, value) {
         old && old.removeListener(this.onValueChange);
         value.addListener(this.onValueChange);
@@ -46,26 +52,22 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name: 'useSearchView',
-      defaultValue: false
-    },
-    {
-      name: 'searchView'
+      defaultValue: false,
+      postSet: function(_, value) {
+        if ( value ) {
+          this.addDecorator(SearchBorder.create({
+            model: this.model,
+            dao: this.dao
+          }));
+        }
+      },
     }
   ],
 
   actions: [
-    /*
-      {
-      name:  'toggleView',
-      label: 'Table/Detail',
-      help:  'Toggle the display format between table and details views.',
-
-      action:      function() {  }
-      },*/
     {
       name:  'new',
       help:  'Create a new record.',
-
       action: function() {
         var createView = DAOCreateController.create({
           model: this.model,
@@ -79,14 +81,6 @@ FOAModel({
         this.X.stack.pushView(createView, 'New');
       }
     },
-    /*
-      {
-      name:  'view',
-      help:  'View the current record.',
-
-      action:      function() { }
-      },
-    */
     {
       name:  'edit',
       help:  'Edit the current record.',
@@ -94,7 +88,7 @@ FOAModel({
 
       action: function() {
         // Todo: fix, should already be connected
-        this.selection = this.tableView.selection.get();
+        this.selection = this.daoView.selection.get();
 
         var obj = this.selection;
         var actions = DAOUpdateController.actions.slice(0);
@@ -132,7 +126,7 @@ FOAModel({
 //      isEnabled: function()   { return this.selection; },
       action: function()      {
         // Todo: fix, should already be connected
-        this.selection = this.tableView.selection.get();
+        this.selection = this.daoView.selection.get();
         var self = this;
         this.dao.remove(this.selection, {
           // Hack: shouldn't be needed
@@ -141,62 +135,28 @@ FOAModel({
           }
         });
       }
-    }/*,
-       {
-       name:  'prev',
-       help:  'Select the previous record.',
-
-       action: function()      {  }
-       },
-       {
-       name:  'next',
-       help:  'Select the next record.',
-
-       action: function()      {  }
-       }*/
-
+    }
   ],
 
   methods: {
-    init: function() {
-      var tmp = this.model;
-      this.SUPER();
-      this.model = tmp;
-
-      var model = this.model;
-      var dao = this.dao;
-      this.tableView = TableView.create({ model: model, dao: dao, rows: 1000 });
-      this.scrollBorder = ScrollBorder.create({ view: this.tableView });
-      if ( this.useSearchView && ! this.searchView )  {
-        this.searchView = SearchView.create({
-          model: this.model,
-          dao: this.dao
-        });
-      }
-    },
-
-    toHTML: function() {
-      //       return this.scrollBorder.toHTML();
-      return (this.useSearchView ? this.searchView.toHTML() : '') +
-        this.scrollBorder.view.toHTML();
-    },
-
     initHTML: function() {
       this.SUPER();
-      //       this.scrollBorder.initHTML(); // could this just be added to children?
-      this.useSearchView && this.searchView.initHTML();
-      this.scrollBorder.view.initHTML();
-
-      this.dao = this.dao;
-      this.tableView.unsubscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
-      this.tableView.subscribe(this.tableView.DOUBLE_CLICK, this.onDoubleClick);
-      this.tableView.selection.addListener(this.onSelection);
+      this.daoView.unsubscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
+      this.daoView.subscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
+      this.daoView.selection.addListener(this.onSelection);
     },
 
     refresh: function() {
       this.dao = this.dao;
     }
   },
+
+  templates: [
+    {
+      name: 'toHTML',
+      template: '$$dao'
+    }
+  ],
 
   listeners:
   [
@@ -208,7 +168,6 @@ FOAModel({
 
           if ( action.default ) {
             action.action.call(this);
-
             break;
           }
         }
@@ -217,50 +176,14 @@ FOAModel({
     {
       name: 'onSelection',
       code: function(evt) {
-        var obj = this.tableView.selection.get();
+        var obj = this.daoView.selection.get();
+        if ( ! obj ) return;
 
-        if ( obj ) {
-          /*
-            FOAModel({
-            model_: 'AlternateView',
-
-            selection: 'GUI',
-            views: [
-            {
-            model_: 'ViewChoice',
-            label:  'GUI',
-            view:   'DetailView'
-            },
-            {
-            model_: 'ViewChoice',
-            label:  'JS',
-            view:   'JSView'
-            },
-            {
-            model_: 'ViewChoice',
-            label:  'XML',
-            view:   'XMLView'
-            }
-            ]
-            });
-          */
-          //             var view = XMLView.create({});
-          //             view.rows = 50;
-          //             view.cols = 100;
-          //             view.model = SimpleValue.create("");
-          //             view.model.set(obj);
-          //             (this.stackView || stack).setPreview(view);
-
-          this.X.stack.setPreview(
-            DetailView.create({
-              model: this.model,
-              value: this.tableView.selection}));
-        }
-        else
-        {
-          // Don't erase selection, just keep last selected
-          //               (this.stackView || stack).setPreview(null);
-        }
+        this.X.stack.setPreview(
+          DetailView.create({
+            model: this.model,
+            value: this.daoView.selection
+          }));
       }
     },
     {
@@ -270,7 +193,6 @@ FOAModel({
       }
     },
   ]
-
 });
 
 
