@@ -19,7 +19,7 @@
 
 /** Adapt a synchronous method into a psedo-afunc. **/
 Function.prototype.abind = function(self) {
-  return function(ret) { this.apply(self, arguments); }.bind(this);
+  return function(ret) { this.apply(self, arguments); ret(); }.bind(this);
 };
 
 /** NOP afunc. **/
