@@ -3055,16 +3055,24 @@ FOAModel({
 
       var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
       var params = { model: this.model, autoIndex: this.autoIndex };
-      if ( this.name ) params.name = this.name;
+
+      if ( this.name  ) params.name = this.name;
       if ( this.seqNo ) params.property = this.seqProperty;
 
       var dao = daoModel.create(params);
 
-      if ( this.cache && daoModel !== MDAO ) dao = CachingDAO.create(MDAO.create(params), dao);
+      if ( daoModel === MDAO ) {
+        this.mdao = dao;
+      } else if ( this.cache ) {
+        this.mdao = MDAO.create(params);
+        dao = CachingDAO.create(this.mdao, dao);
+      }
+
       if ( this.seqNo   ) {
         dao = SeqNoDAO.create({__proto__: params, delegate: dao});
         if ( this.seqProperty ) dao.property = this.seqProperty;
       }
+
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
       if ( this.logging ) dao = LoggingDAO.create(dao);
 
@@ -3072,11 +3080,11 @@ FOAModel({
     },
 
     addIndex: function() {
-      // TODO:
+      this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
     },
 
     addRawIndex: function() {
-      // TODO:
+      this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
     },
 
   }

@@ -40,9 +40,8 @@ FOAModel({
       help: 'A multi-line description of the unit test.'
     },
     {
-      model_: 'Property',
+      model_: 'IntProperty',
       name: 'passed',
-      type: 'Integer',
       required: true,
       displayWidth: 8,
       displayHeight: 1,
@@ -50,9 +49,8 @@ FOAModel({
       help: 'Number of sub-tests to pass.'
     },
     {
-      model_: 'Property',
+      model_: 'IntProperty',
       name: 'failed',
-      type: 'Integer',
       required: true,
       displayWidth: 8,
       displayHeight: 1,
@@ -64,16 +62,16 @@ FOAModel({
       factory: function() { return {}; }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'async',
+      defaultValue: false
+    },
+    {
       model_: 'FunctionProperty',
       name: 'code',
       label: 'Test Code',
       displayWidth: 80,
       displayHeight: 30
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'synchronous',
-      defaultValue: true
     },
     {
       model_: 'Property',
@@ -117,43 +115,60 @@ FOAModel({
       name:  'test',
       help:  'Run the unit tests.',
 
-      action: function(obj) {
-        this.scope.log    = this.log.bind(this);
-        this.scope.jlog   = this.jlog.bind(this);
-        this.scope.assert = this.assert.bind(this);
-        this.scope.fail   = this.fail.bind(this);
-        this.scope.ok     = this.ok.bind(this);
-
-        this.results = ''; //'<table border=1>';
-
-        this.passed = 0;
-        this.failed = 0;
-
-        var code;
-        with ( this.scope ) {
-          code = eval('(' + this.code.toString() + ')');
-        }
-        code.call(this);
-
-        // this.code();
-
-        for ( var i = 0 ; i < this.tests.length ; i++ ) {
-          var test = this.tests[i];
-
-          // for ( var key in this.scope ) test.scope[key] = this.scope[key];
-          test.scope.__proto__ = this.scope;
-          test.test();
-          this.passed += test.passed;
-          this.failed += test.failed;
-
-          // this.append(test.results);
-        }
-//        this.append('</table>');
-      }
+      action: function(obj) { this.atest()(function() {}); }
     }
   ],
 
   methods:{
+    // Run test as asynchronously as an afunc.
+    atest: function() {
+      var self = this;
+
+      this.scope.log     = this.log.bind(this);
+      this.scope.jlog    = this.jlog.bind(this);
+      this.scope.assert  = this.assert.bind(this);
+      this.scope.fail    = this.fail.bind(this);
+      this.scope.ok      = this.ok.bind(this);
+      this.scope.console = { __proto__: console, log: this.scope.log };
+
+      this.results = '';
+
+      this.passed = 0;
+      this.failed = 0;
+
+      var code;
+      with ( this.scope ) {
+        code = eval('(' + this.code.toString() + ')');
+      }
+
+      var afuncs = [];
+
+      console.log(this.name + '   ' + this.async);
+      if ( this.async ) {
+        afuncs.push(code.bind(this));
+      } else {
+        afuncs.push(function(ret) { code.call(self); ret(); } );
+      }
+
+      for ( var i = 0 ; i < this.tests.length ; i++ ) {
+        var test = this.tests[i];
+
+        (function(test) {
+          afuncs.push(function(ret) {
+            test.scope.__proto__ = self.scope;
+            test.atest()(ret);
+          });
+          afuncs.push(function(ret) {
+            console.log('finished: ', test.name);
+            self.passed += test.passed;
+            self.failed += test.failed;
+            ret();
+          });
+        })(test);
+      }
+
+      return aseq.apply(this, afuncs);
+    },
     log: function(/*arguments*/) {
       for ( var i = 0 ; i < arguments.length ; i++ )
         this.results += arguments[i];
@@ -167,16 +182,8 @@ FOAModel({
     addHeader: function(name) {
       this.log('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
     },
-    /*
-    addRow: function(comment, condition) {
-      this.append('<tr>' +
-                  '<td>' + comment + '</td>' +
-                  '<td>' + (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>") + '</td>' +
-                  '</tr>');
-    },*/
     assert: function(condition, comment) {
       if ( condition ) this.passed++; else this.failed++;
-      // this.addRow(comment, condition);
       this.log(comment + ' ' + (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>"));
     },
     fail: function(comment) {

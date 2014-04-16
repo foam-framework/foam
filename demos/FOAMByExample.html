@@ -130,10 +130,44 @@ FOAModel({
   </tests>
 </foam>
 
-<script language="javascript">
-  arequire('DemoView')(function() {
-    DOM.init(X);
- });
-</script>
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <name>aFunc Tests</name>
+  <description>Test FOAM's Asynchronous-Functions (aFunc's).</description>
+  <async>true</async>
+  <code>
+        function(ret) { console.log('*************************'); log('here i am'); ret(); }
+  </code>
+  <tests>
+    <foam model="UnitTest" name="anop">
+      <description>Test anop.</description>
+      <async>true</async>
+      <code>
+        function(ret) { log('anop'); aseq(alog('before'), anop, alog('after'))(ret); }
+      </code>
+    </foam>
+    <foam model="UnitTest" name="alog">
+      <description>Test alog.</description>
+      <async>true</async>
+      <code>
+        function(ret) { log('alog'); alog('a message')(ret); }
+      </code>
+    </foam>
+    <foam model="UnitTest" name="asleep">
+      <description>Test asleep.</description>
+      <async>true</async>
+      <code>
+        function(ret) { aseq(asleep(1000), alog('a message'))(ret); }
+      </code>
+    </foam>
+    <foam model="UnitTest" name="ayield">
+      <description>Test ayield.</description>
+      <async>true</async>
+      <code>
+        function(ret) { aseq(ayield(), alog('a message'))(ret); }
+      </code>
+    </foam>
+  </tests>
+</foam>
+
  </body>
 </html>

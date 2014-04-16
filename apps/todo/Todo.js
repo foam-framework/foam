@@ -14,7 +14,7 @@ FOAModel({
       name: 'input',
       setter: function(text) {
         this.todoDAO.put(Todo.create({text: text}));
-        this.propertyChange('input', text, '');
+        this.propertyChange("input", text, "");
       },
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
@@ -38,7 +38,7 @@ FOAModel({
     },
     {
       name: 'clear',
-      labelFn:   function() { return 'Clear completed (' + this.completedCount + ')'; },
+      labelFn:   function() { return "Clear completed (" + this.completedCount + ")"; },
       isEnabled: function() { return this.completedCount > 0; },
       action:    function() { this.todoDAO.where(Todo.COMPLETED).removeAll(); }
     }
@@ -49,8 +49,8 @@ FOAModel({
       isAnimated: true,
       code: function() {
         this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
-          this.completedCount = q.groups['true'];
-          this.activeCount    = q.groups['false'];
+          this.completedCount = q.groups[true];
+          this.activeCount    = q.groups[false];
         }.bind(this));
       }
     }

@@ -354,6 +354,7 @@ var QIssueSplitDAO = FOAM({
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
        var buf = this.buf = MDAO.create({ model: this.model });
+       // TODO: switch to MDAO's 'autoIndex: true' feature when improved.
        var auto = AutoIndex.create(buf);
 
        // Auto index the buffer, but set an initial index for the current

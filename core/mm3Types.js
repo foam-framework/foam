@@ -97,7 +97,15 @@ var BooleanProperty = Model.create({
       type: 'Integer',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'fromElement',
+      defaultValue: function(e) {
+        var txt = e.innerHTML.trim();
+        return txt.equalsIC('y') || txt.equalsIC('yes') || txt.equalsIC('true') || txt.equalsIC('t');
+      }
     }
+
   ]
 });
 
@@ -325,10 +333,10 @@ var FunctionProperty = Model.create({
     {
       name: 'fromElement',
       defaultValue: function(e) {
-        var txt = e.innerHTML;
+        var txt = e.innerHTML.trim();
 
         return txt.startsWith('function') ?
-          eval(txt) :
+          eval('(' + txt + ')') :
           new Function(txt) ;
       }
     }
