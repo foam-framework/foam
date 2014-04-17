@@ -58,8 +58,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
-      this.query = this.query;  // causes filteredDAO to be set
+      this.filteredDAO = this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
       this.todoDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
