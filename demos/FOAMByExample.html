@@ -133,13 +133,93 @@ FOAModel({
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
   <name>aFunc Tests</name>
   <description>Test FOAM's Asynchronous-Functions (aFunc's).</description>
-  <async>true</async>
   <code>
-    console.log('console.log');
-    log('here i am');
-    ret();
+    f1 = function(ret) { console.log('f1() called.'); ret(1); };
+    f2 = function(ret, a) { console.log('f2() called.'); ret(a,2); };
+    aprint = function(ret) { console.log(argsToArray(arguments).slice(1).join(', ')); ret(); };
   </code>
   <tests>
+
+
+    <foam model="UnitTest" name="test1"><async>true</async><code>aprint.ao(f2.ao(f1))(ret);</code></foam>
+    <foam model="UnitTest" name="test2"><async>true</async><code>f1.aseq(f2.aseq(aprint))(ret);</code></foam>
+    <foam model="UnitTest" name="test3"><async>true</async><code>f1.aseq(aprint)(ret);</code></foam>
+    <foam model="UnitTest" name="test4"><async>true</async><code>ao(aprint,f2,f1)(ret);</code></foam>
+    <foam model="UnitTest" name="test5"><async>true</async><code>aseq(f1, aprint)(ret);</code></foam>
+    <foam model="UnitTest" name="test6"><async>true</async><code>aseq(f1,f2,aprint)(ret);</code></foam>
+    <foam model="UnitTest" name="amemo">
+      <async>true</async>
+      <description>Test that amemo() only executes its delegate once.</description>
+      <code>
+        m = amemo(function(ret) { console.log('Should only see this once.'); ret(1); });
+        apar(m, m, m).aseq(aprint)(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="test7">
+      <async>true</async>
+      <code>
+        aseq(
+          function(ret) { console.log('fB'); ret(1); },
+          function(ret) { console.log('fC'); ret(2); },
+          aprint
+        )(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="test8">
+      <async>true</async>
+      <code>
+        apar(
+          function(ret, a) { console.log('fB'); ret(1); },
+          function(ret, a) { console.log('fC'); ret(2); }
+        )(aprint.aseq(ret));
+      </code>
+    </foam>
+    <!--
+    <foam model="UnitTest" name="test9">
+      <async>true</async>
+      <code>
+        aseq(
+          arepeatpar(5, aseq(ayield(), function(ret, a, b) { console.log('a', a); ret(1); })),
+          ayield(),
+          arepeatpar(5, function(ret, a, b) { console.log('b', a); ret(1); }),
+          ayield()
+        )(ret);
+      </code>
+    </foam>
+    -->
+    <foam model="UnitTest" name="arepeat 1">
+      <async>true</async>
+      <code>
+        arepeat(5, f1)(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="arepeat 2">
+      <async>true</async>
+      <code>
+        arepeat(5, function(ret, a, b) { console.log(a); ret(1); }).aseq(aprint)(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="arepeat 3">
+      <async>true</async>
+      <code>
+        aseq(
+          arepeat(5, function(ret, a, b) { console.log(a); ret(1); }),
+          aprint)(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="test11">
+      <async>true</async>
+      <code>
+        aseq(
+          function(ret) { console.log('fA'); ret(1); },
+          apar(
+            function(ret, a) { console.log('fB', a); ret(1); },
+            function(ret, a) { console.log('fC', a); ret(2); }
+          ),
+          aprint
+        )(ret);
+      </code>
+    </foam>
     <foam model="UnitTest" name="anop">
       <async>true</async>
       <code>log('anop'); aseq(alog('before'), anop, alog('after'))(ret);</code>
@@ -156,13 +236,27 @@ FOAModel({
       <async>true</async>
       <code>log('alog'); alog('a message')(ret);</code>
     </foam>
-    <foam model="UnitTest" name="asleep">
+    <foam id="test" model="UnitTest" name="asleep2">
       <async>true</async>
-      <code>aseq(asleep(1000), alog('a message'))(ret);</code>
+      <code>
+        console.log('************** Beginning asleep2');
+        aseq(alog('before'), asleep(1000), alog('after'), asleep(1000), alog('much after'))(ret);
+//        log('after it all');
+      </code>
+    </foam>
+    <foam model="UnitTest" name="asleep2">
+      <async>true</async>
+      <code>
+        log('at the start');
+        aseq(asleep(1000), alog('a message'))(ret);
+      </code>
     </foam>
     <foam model="UnitTest" name="ayield">
       <async>true</async>
-      <code>aseq(ayield(), alog('a message'))(ret);</code>
+      <code>
+        aseq(ayield, alog('And then this second.'))(ret);
+        log('This should print first.');
+      </code>
     </foam>
   </tests>
 </foam>
