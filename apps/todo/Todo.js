@@ -13,18 +13,18 @@ FOAModel({
     {
       name: 'input',
       setter: function(text) {
-        this.todoDAO.put(Todo.create({text: text}));
+        this.dao.put(Todo.create({text: text}));
         this.propertyChange("input", text, "");
       },
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
-    { name: 'todoDAO' },
+    { name: 'dao' },
     { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView', rowView: 'View' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
     {
       name: 'query',
-      postSet: function(_, q) { this.filteredDAO = this.todoDAO.where(q); },
+      postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
       defaultValue: TRUE,
       view: ChoiceListView.create({
         choices: [ [ TRUE, 'All' ], [ NOT(Todo.COMPLETED), 'Active' ], [ Todo.COMPLETED, 'Completed' ] ]
@@ -34,13 +34,13 @@ FOAModel({
   actions: [
     {
       name: 'toggle',
-      action: function() { this.todoDAO.update(SET(Todo.COMPLETED, this.activeCount)); }
+      action: function() { this.dao.update(SET(Todo.COMPLETED, this.activeCount)); }
     },
     {
       name: 'clear',
       labelFn:   function() { return "Clear completed (" + this.completedCount + ")"; },
       isEnabled: function() { return this.completedCount > 0; },
-      action:    function() { this.todoDAO.where(Todo.COMPLETED).removeAll(); }
+      action:    function() { this.dao.where(Todo.COMPLETED).removeAll(); }
     }
   ],
   listeners: [
@@ -48,7 +48,7 @@ FOAModel({
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() {
-        this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
+        this.dao.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
           this.completedCount = q.groups[true];
           this.activeCount    = q.groups[false];
         }.bind(this));
@@ -58,8 +58,8 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.todoDAO = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
-      this.todoDAO.listen(this.onDAOUpdate);
+      this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
+      this.dao.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
   }
