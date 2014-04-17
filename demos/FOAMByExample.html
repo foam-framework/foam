@@ -236,9 +236,40 @@ FOAModel({
       <async>true</async>
       <code>log('alog'); alog('a message')(ret);</code>
     </foam>
+    <!--
+    <foam model="UnitTest" name="cooperative multithreading">
+      <async>true</async>
+      <code>
+          apar(
+            arepeat(10, aseq(alog('A'), ayield())),
+            arepeat(10, aseq(alog('B'), ayield()))
+          ))(ret);
+      </code>
+    </foam>
+    -->
+    <!--
+    <foam model="UnitTest" name="atimeout">
+      <async>true</async>
+      <description>What should be the semantics of atimeout()?  Should it still ret()?</description>
+      <code>
+        aseq(
+          aseq(
+            alog('starting'),
+            atimeout(1000, asleep(500), alog('too slow')),
+            alog('on time')
+          ),
+          aseq(
+            alog('starting'),
+            atimeout(1000, asleep(1500), alog('too slow')),
+            alog('on time')
+          ))(ret);
+      </code>
+    </foam>
+    -->
     <foam id="test" model="UnitTest" name="asleep2">
       <async>true</async>
       <code>
+        log('**********');
         console.log('************** Beginning asleep2');
         aseq(alog('before'), asleep(1000), alog('after'), asleep(1000), alog('much after'))(ret);
 //        log('after it all');
@@ -251,12 +282,61 @@ FOAModel({
         aseq(asleep(1000), alog('a message'))(ret);
       </code>
     </foam>
+    <!--
     <foam model="UnitTest" name="ayield">
       <async>true</async>
       <code>
         aseq(ayield, alog('And then this second.'))(ret);
         log('This should print first.');
       </code>
+    </foam>
+    -->
+    <foam model="UnitTest" name="Future Function">
+      <async>true</async>
+      <code>
+        log('start');
+  var functionFuture = afuture();
+  var fn = futurefn(functionFuture);
+
+  fn("hello");
+  setTimeout(function() { fn(" world!"); ret(); }, 1000);
+  setTimeout(function() { functionFuture.set(log); }, 100);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="asynchronized">
+      <code>
+        tlock = {};
+
+        f1 = aseq(
+          alog('f1 start'),
+          asleep(2000),
+          alog('f1 end')
+        );
+      </code>
+      <tests>
+        <foam model="UnitTest" name="Without Synchronization">
+          <async>true</async>
+          <code>
+            apar(
+              f1,
+              f1,
+              f1
+            )(ret);
+          </code>
+        </foam>
+        <foam model="UnitTest" name="With Synchronization">
+          <async>true</async>
+          <code>
+            var f2 = aseq(asynchronized(atime('f2', f1), tlock), alog('END'));
+
+            apar(
+              f2,
+              f2,
+              f2
+            )(ret);
+          </code>
+        </foam>
+      </tests>
     </foam>
   </tests>
 </foam>
