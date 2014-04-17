@@ -37,6 +37,8 @@ FOAModel({
       type: 'String',
       displayWidth: 70,
       displayHeight: 5,
+      defaultValue: '',
+      // defaultValueFn: function() { return "Test " + this.name; },
       help: 'A multi-line description of the unit test.'
     },
     {
@@ -71,7 +73,16 @@ FOAModel({
       name: 'code',
       label: 'Test Code',
       displayWidth: 80,
-      displayHeight: 30
+      displayHeight: 30,
+      fromElement: function(e) {
+        var txt = e.innerHTML.trim();
+
+        txt = txt.startsWith('function') ?
+          txt :
+          'function(ret) { ' + txt + '}' ;
+
+        return eval('(' + txt + ')');
+      }
     },
     {
       model_: 'Property',
@@ -94,7 +105,7 @@ FOAModel({
       subType: 'UnitTest',
       view: 'ArrayView',
       fromElement: function(e) { return DOM.initElementChildren(e); },
-      preSet: function(tests) {
+      preSet: function(_, tests) {
         if ( Array.isArray(tests) ) return tests;
 
         var a = [];
@@ -129,7 +140,6 @@ FOAModel({
       this.scope.assert  = this.assert.bind(this);
       this.scope.fail    = this.fail.bind(this);
       this.scope.ok      = this.ok.bind(this);
-      this.scope.console = { __proto__: console, log: this.scope.log };
 
       this.results = '';
 
@@ -142,13 +152,16 @@ FOAModel({
       }
 
       var afuncs = [];
+      var oldConsole;
+
+      afuncs.push(function(ret) {
+        oldConsole = console;
+        window.console = { __proto__: console, log: self.scope.log };
+        ret();
+      });
 
       console.log(this.name + '   ' + this.async);
-      if ( this.async ) {
-        afuncs.push(code.bind(this));
-      } else {
-        afuncs.push(function(ret) { code.call(self); ret(); } );
-      }
+      afuncs.push(this.async ? code.bind(this) : code.abind(this));
 
       for ( var i = 0 ; i < this.tests.length ; i++ ) {
         var test = this.tests[i];
@@ -166,6 +179,11 @@ FOAModel({
           });
         })(test);
       }
+
+      afuncs.push(function(ret) {
+        window.console = oldConsole;
+        ret();
+      });
 
       return aseq.apply(this, afuncs);
     },

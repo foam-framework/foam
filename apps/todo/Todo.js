@@ -19,7 +19,7 @@ FOAModel({
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'todoDAO' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListController', rowView: 'View' } },
+    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView', rowView: 'View' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
     {

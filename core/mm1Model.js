@@ -128,7 +128,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Properties associated with the entity.',
-      preSet: function(newValue, oldValue) {
+      preSet: function(oldValue, newValue) {
         if ( ! Property ) return;
         // Convert Maps to Properties if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
@@ -157,7 +157,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Actions associated with the entity.',
-      preSet: function(newValue) {
+      preSet: function(_, newValue) {
         if ( ! Action ) return;
 
         // Convert Maps to Properties if required
@@ -185,7 +185,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Methods associated with the entity.',
-      preSet: function(newValue) {
+      preSet: function(_, newValue) {
         if ( ! Method ) return;
 
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(newValue, Method);
@@ -280,7 +280,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       help: 'Relationships of this model to other models.',
-      preSet: function(newValue) {
+      preSet: function(_, newValue) {
         if ( ! Relationship ) return;
 
         // Convert Maps to Properties if required

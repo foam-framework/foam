@@ -17,6 +17,11 @@
 // TODO: time-travelling debugger, ala:
 //    "Debugging Standard ML Without Reverse Engineering"
 
+/** Adapt a synchronous method into a psedo-afunc. **/
+Function.prototype.abind = function(self) {
+  return function(ret) { this.apply(self, arguments); ret(); }.bind(this);
+};
+
 /** NOP afunc. **/
 function anop(ret) { ret && ret(undefined); }
 

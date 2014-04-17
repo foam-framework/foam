@@ -24,7 +24,7 @@ FOAModel({
    properties: [
       {
         name:  'arg1',
-        preSet: function(value) {
+        preSet: function(_, value) {
           // Escape Regex escape characters
           var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           this.pattern_ = new RegExp(pattern, 'i');

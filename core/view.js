@@ -1118,7 +1118,7 @@ FOAModel({
       type:  'Array[StringField]',
       help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
       defaultValue: [],
-      preSet: function(a) {
+      preSet: function(_, a) {
         a = a.clone();
         // Upgrade single values to [value, value]
         for ( var i = 0 ; i < a.length ; i++ ) if ( ! Array.isArray(a[i]) ) a[i] = [a[i], a[i]];
@@ -2314,7 +2314,7 @@ FOAModel({
     {
       model_: 'StringArrayProperty',
       name:  'properties',
-      preSet: function(a) { return ! a || a.length == 0 ? null : a; },
+      preSet: function(_, a) { return ! a || a.length == 0 ? null : a; },
       postSet: function() { this.repaint_(); },
       defaultValue: null
     },
@@ -4273,7 +4273,7 @@ FOAModel({
     {
       name: 'innerView',
       type: 'AbstractView',
-      preSet: function(value) {
+      preSet: function(_, value) {
         if ( typeof value === "string" ) value = GLOBAL[value];
         return value;
       },
@@ -4444,7 +4444,7 @@ FOAModel({
     {
       model_: 'IntegerProperty',
       name: 'viewIndex',
-      preSet: function(value) {
+      preSet: function(_, value) {
         if ( value >= this.views.length ) return 0;
         if ( value < 0 ) return this.views.length - 1;
         return value;
@@ -4495,7 +4495,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'DAOListController',
+  name: 'DAOListView',
   extendsModel: 'AbstractView',
 
   properties: [
@@ -4605,7 +4605,7 @@ FOAModel({
       postSet: function(old, nu) {
         if ( old !== nu && this.$ ) {
           console.log("Changing offset", nu);
-          this.$.lastElementChild.style.webkitTransform = 
+          this.$.lastElementChild.style.webkitTransform =
             'translatey(' + nu + 'px)';
         }
       }

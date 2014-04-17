@@ -208,7 +208,7 @@ var AbstractPrototype = {
 
       if ( prop.preSet ) {
         setter = (function(setter, preSet) { return function(oldValue, newValue) {
-          setter.call(this, oldValue, preSet.call(this, newValue, oldValue, prop));
+          setter.call(this, oldValue, preSet.call(this, oldValue, newValue, prop));
         }; })(setter, prop.preSet);
       }
 
