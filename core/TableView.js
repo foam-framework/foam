@@ -147,6 +147,7 @@ FOAModel({
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() {
+        if ( ! this.dao ) return;
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
           this.repaint();
@@ -231,7 +232,8 @@ FOAModel({
         this.onResize();
       }
 
-      this.dao.listen(this.daoListener);
+      if ( this.dao )
+        this.dao.listen(this.daoListener);
     },
 
     /** Call repaint() instead to repaint on next animation frame. **/
