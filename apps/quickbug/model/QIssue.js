@@ -94,7 +94,7 @@ var QIssue = FOAM({
         },
         {
           name: 'author',
-          preSet: function(a) { return a.intern(); },
+          preSet: function(_, a) { return a.intern(); },
           aliases: ['reporter']
         },
         {
@@ -164,14 +164,14 @@ var QIssue = FOAM({
         },
         {
           name: 'cc',
-          preSet: function(a) { return a.intern(); }
+          preSet: function(_, a) { return a.intern(); }
         },
         {
             name: 'owner',
             shortName: 'o',
             tableWidth: '181px',
             type: 'String',
-            preSet: function(a) { return a.intern(); }
+            preSet: function(_, a) { return a.intern(); }
         },
         {
             name: 'summary',
@@ -279,7 +279,7 @@ var QIssue = FOAM({
         model_: 'StringArrayProperty',
         name: 'movedFrom',
         tableWidth: '100px',
-        preSet: function(v) {
+        preSet: function(_, v) {
           if ( Array.isArray(v) ) return v;
           if ( ! v ) return undefined;
 

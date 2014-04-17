@@ -328,7 +328,7 @@ var EMail = FOAM({
          displayHeight: 1,
          view: 'TextFieldView',
          tableWidth: '100',
-         preSet: function (d) {
+         preSet: function (_, d) {
            if (typeof d === 'string' || typeof d === 'number')
              return new Date(d);
            return d;

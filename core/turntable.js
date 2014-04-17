@@ -57,14 +57,14 @@ FOAModel({
     },
     {
       name:  'internalTime',
-      preSet: function(newValue) {
+      preSet: function(_, newValue) {
         if ( this.active ) this.time = newValue;
         return newValue;
       }
     },
     {
       name:  'time',
-      preSet: function(newValue) {
+      preSet: function(_, newValue) {
         setTimeout(function(){
           if ( this.active )
             this.time = this.internalTime;

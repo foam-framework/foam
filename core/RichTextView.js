@@ -38,7 +38,7 @@ FOAModel({
       name: 'link',
       displayWidth: 19,
       view: { model_: 'TextFieldView', placeholder: 'Type or paste link.' },
-      preSet: function(value) {
+      preSet: function(_, value) {
         value = value.trim();
         // Disallow javascript URL's
         if ( value.toLowerCase().startsWith('javascript:') ) value = '';

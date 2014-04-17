@@ -88,7 +88,7 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function (v) { return !!v; },
+      defaultValue: function (_, v) { return !!v; },
       help: 'The Java type of this property.'
     },
     {
@@ -160,7 +160,7 @@ var DateProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function (d) {
+      defaultValue: function (_, d) {
         return typeof d === 'string' ? new Date(d) : d;
       }
     },
@@ -193,7 +193,7 @@ var DateTimeProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function(d) {
+      defaultValue: function(_, d) {
         if ( typeof d === 'number' ) return new Date(d);
         if ( typeof d === 'string' ) return new Date(d);
         return d;
@@ -367,7 +367,7 @@ var ArrayProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function(a, _, prop) {
+      defaultValue: function(_, a, prop) {
         var m = GLOBAL[prop.subType];
 
         if ( ! m ) return a;

@@ -41,7 +41,7 @@ FOAModel({
     {
       model_: 'StringArrayProperty',
       name:  'properties',
-      preSet: function(a) { return ! a || a.length == 0 ? null : a; },
+      preSet: function(_, a) { return ! a || a.length == 0 ? null : a; },
       postSet: function() { this.repaint(); },
       defaultValue: null
     },

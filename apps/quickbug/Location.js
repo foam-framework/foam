@@ -82,7 +82,7 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'colspec',
-      preSet: function(a) {
+      preSet: function(_, a) {
         if ( a ) {
           for ( var i = 0 ; i < a.length ; i++ ) {
             var prop = this.getPropertyIC(a[i]);

@@ -105,7 +105,7 @@ FOAModel({
       subType: 'UnitTest',
       view: 'ArrayView',
       fromElement: function(e) { return DOM.initElementChildren(e); },
-      preSet: function(tests) {
+      preSet: function(_, tests) {
         if ( Array.isArray(tests) ) return tests;
 
         var a = [];

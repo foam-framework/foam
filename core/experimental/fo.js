@@ -354,7 +354,7 @@ function bootstrap(scope) {
   tmp = Extends.create();
   tmp.parent = 'FObject';
   forceInstall(tmp, Method);
-  
+
   // Bootstreap the real property and method features we put in earlier.
   tmp = Property.create();
   tmp.name = "name"
@@ -666,7 +666,7 @@ var featureDAO = [
 
       if ( prop.preSet ) {
         set = (function(set, preSet) { return function(oldValue, newValue) {
-          set.call(this, oldValue, preSet.call(this, newValue, oldValue, prop));
+          set.call(this, oldValue, preSet.call(this, oldValue, newValue, prop));
         }; })(set, prop.preSet);
       }
 
@@ -1022,7 +1022,7 @@ var featureDAO = [
   }],
   ['ArrayProperty', 'FunctionProperty', {
     name: 'preSet',
-    defaultValue: function(value, oldValue, prop) {
+    defaultValue: function(oldValue, value, prop) {
       var m = get(prop.subType);
 
       if ( ! m || ! m.model_ ) {

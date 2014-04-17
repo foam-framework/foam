@@ -26,7 +26,7 @@ var QIssueComment = FOAM({
     {
       name: 'author',
       view: 'QIssueCommentAuthorView',
-      preSet: function(newValue, _, prop) {
+      preSet: function(_, newValue, prop) {
         if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
         return newValue;
       }
@@ -34,7 +34,7 @@ var QIssueComment = FOAM({
     {
       name: 'updates',
       view: 'QIssueCommentUpdateView',
-      preSet: function(newValue, _, prop) {
+      preSet: function(_, newValue, prop) {
         if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
         return newValue;
       }

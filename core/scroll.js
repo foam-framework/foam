@@ -43,7 +43,7 @@ FOAModel({
       name:  'value',
       type:  'int',
       help:  'The first element being shown, starting at zero.',
-      preSet: function(value) { return Math.max(0, Math.min(this.size-this.extent, value)); },
+      preSet: function(_, value) { return Math.max(0, Math.min(this.size-this.extent, value)); },
       defaultValue: 0
     },
     {
