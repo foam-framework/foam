@@ -82,6 +82,10 @@ FOAModel({
       name: 'projects_',
       factory: function() { return {}; },
       transient: true
+    },
+    {
+      name: 'defaultProjectName',
+      defaultValue: 'chromium'
     }
   ],
 
@@ -122,6 +126,9 @@ FOAModel({
           self.projects_[projectName] = p;
 
           sink.put(p);
+        },
+        error: function() {
+          sink.error && sink.error();
         }
       });
     },
@@ -133,10 +140,16 @@ FOAModel({
     launchBrowser: function(opt_projectName, opt_url) {
       var self = this;
       this.userFuture.get(function(user) {
-        self.findProject(opt_projectName || user.defaultProject, {put: function(p) {
-          console.log('launch: ', p);
-          p.launchBrowser(opt_url);
-        }});
+        self.findProject(opt_projectName || user.defaultProject, {
+          put: function(p) {
+            console.log('launch: ', p);
+            p.launchBrowser(opt_url);
+          },
+          error: function() {
+            console.warn("Couldn't find default project, default to ", self.defaultProjectName);
+            self.launchBrowser(self.defaultProjectName);
+          },
+        });
       });
     }
   },

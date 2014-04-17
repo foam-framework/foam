@@ -1,7 +1,5 @@
-var QIssuePreviewView = FOAM({
-  model_: 'Model',
-
-  name: 'QIssuePreviewView',
+FOAModel({
+  name: 'QIssueDetailView',
   extendsModel: 'DetailView',
 
   properties: [
@@ -61,15 +59,16 @@ var QIssuePreviewView = FOAM({
     },
     clView: function() {
       return QIssueCLView.create({dao: this.QIssueCommentDAO});
-    }
-
+    },
+    toHTML: function() {
+      return '<div id="' + this.getID() + '">' + this.toInnerHTML() + '</div>';
+    },
   },
 
   templates: [
-    { name: 'toHTML' }
+    { name: 'toInnerHTML' }
   ]
 });
-
 
 var QIssueLabelsView = FOAM({
   model_: 'Model',

@@ -179,7 +179,7 @@ FOAModel({
             arequire('GridView'),
             arequire('QIssueTileView'),
             arequire('Browser'),
-            arequire('QIssuePreviewView'),
+            arequire('QIssueDetailView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
             arequire('QIssueCommentUpdateView'),
