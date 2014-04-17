@@ -857,7 +857,7 @@ FOAModel({
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
 
-        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + this.cssClassAttr() + ' name="' + this.name + '" size="' + this.displayWidth + '"/>';
+        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + this.cssClassAttr() + ' name="' + this.name + '" size="' + this.displayWidth + '"></' + this.readOnlyTagName + '>';
       }
 
       return '<' + this.readOnlyTagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.readOnlyTagName + '>';
@@ -4517,7 +4517,16 @@ FOAModel({
         value.addListener(function() { this.dao = value.value; }.bind(this));
       }
     },
-    { name: 'rowView', defaultValue: 'DetailView' }
+    { name: 'rowView', defaultValue: 'DetailView' },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      view: {
+        create: function() { return ChoiceView.create({choices:[
+          "read-only", "read-write", "final"
+        ]}); }
+      }
+    }
   ],
 
   methods: {
@@ -4543,13 +4552,15 @@ FOAModel({
       this.initializers_ = [];
 
       this.dao.select({put: function(o) {
-        o = o.clone();
+        if ( this.mode === 'read-write' ) o = o.clone();
         var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
-        o.addListener(function() {
-          this.dao.put(o);
-        }.bind(this, o));
+        if ( this.mode === 'read-write' ) {
+          o.addListener(function() {
+            this.dao.put(o);
+          }.bind(this, o));
+        }
         this.addChild(view);
         out += view.toHTML();
       }.bind(this)})(function() {
