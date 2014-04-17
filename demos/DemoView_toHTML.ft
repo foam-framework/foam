@@ -11,12 +11,11 @@
 <% } %>
 <div>Code:</div>
 <div class="code">{{test.code}}</div>
-<% if ( test.results.trim() ) { %>
+<% if ( test.results.trim() || true) { %>
   <br>
   <div>Output:</div>
-  <div class="output" id="<%= this.setClass('error', ifError) %>">{{test.results}}</div>
+  <div class="output" id="<%= this.setClass('error', ifError) %>"> $$results{mode: 'read-only'}</div>
 <% } %>
-Results: $$results
 <% if ( test.tests.length ) { %>
   <blockquote>
   <% for ( var i = 0 ; i < test.tests.length ; i++ ) {
