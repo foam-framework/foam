@@ -1888,6 +1888,11 @@ var DetailView = Model.create({
           this.addDecorator(ActionBorder.create());
         }
       }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'mode',
+      defaultValue: 'read-write'
     }
   ],
 
