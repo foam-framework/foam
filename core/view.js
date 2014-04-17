@@ -262,6 +262,10 @@ FOAModel({
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
+    cssClassAttr: function() {
+      return this.cssClasses.length ? ' class="' + this.cssClasses.join(' ') + '"' : '';
+    },
+
     dynamicTag: function(tagName, f) {
       var id = this.nextID();
       Events.dynamic(function() {
@@ -438,7 +442,7 @@ FOAModel({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '" class="' + this.cssClasses.join(' ') + '">' +
+      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
     },
@@ -750,8 +754,8 @@ FOAModel({
       }
     }
   ]
-});
-
+})
+;
 
 // TODO: document the difference between softValue and value
 FOAModel({
@@ -850,15 +854,13 @@ FOAModel({
     ESCAPE: ['escape'],
 
     toHTML: function() {
-      var className = this.cssClasses ? ' class="' + this.cssClasses.join(' ') + '"' : '';
-
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
 
-        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + className + ' name="' + this.name + '" size="' + this.displayWidth + '"/>';
+        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + this.cssClassAttr() + ' name="' + this.name + '" size="' + this.displayWidth + '"/>';
       }
 
-      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '"' + className + ' name="' + this.name + '"></' + this.readOnlyTagName + '>';
+      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.readOnlyTagName + '>';
     },
 
     // TODO: deprecate
@@ -1515,7 +1517,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '" class="' + this.cssClasses.join(' ') + '"/>';
+      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
     },
 
     initHTML: function() {
