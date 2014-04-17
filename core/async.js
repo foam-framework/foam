@@ -115,7 +115,7 @@ var atime = (function() {
     return function(ret) {
       var name = str;
       if ( activeOps[str] ) {
-         name += "-" + id++;
+         name += '-' + id++;
          activeOps[str]++;
       } else {
          activeOps[str] = 1;
@@ -143,8 +143,7 @@ var ametric = atime;
 /** Sleep for the specified delay. **/
 function asleep(ms) {
   return function(ret) {
-    var args = argsToArray(arguments);
-    window.setTimeout(ret.bind(args.shift()), ms);
+    window.setTimeout(ret, ms);
   };
 }
 
