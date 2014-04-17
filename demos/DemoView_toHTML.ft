@@ -1,6 +1,14 @@
 <%
   var test = this.value.value;
   var ifError = function() { return this.failed; }.bind(test);
+  var cView = DAOListView.create({
+      model: UnitTest,
+      dao: test.tests,
+      rowView: 'DemoView',
+      mode: 'read-only'
+  });
+
+  this.addChild(cView);
 %>
 <h3>{{test.name}}</h3>
 <% if ( test.description ) { %>
@@ -14,16 +22,9 @@
 <% if ( test.results.trim() || true) { %>
   <br>
   <div>Output:</div>
-  <div class="output" id="<%= this.setClass('error', ifError) %>"> $$results{mode: 'read-only'}</div>
+  <div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
 <% } %>
 <% if ( test.tests.length ) { %>
-  <blockquote>
-  <% for ( var i = 0 ; i < test.tests.length ; i++ ) {
-    var t = test.tests[i];
-    this.value.value = t;
-    %>
-  <%= this.toHTML() %>
-  <% } %>
-  </blockquote>
+  <blockquote><%= cView %></blockquote>
 <% } %>
 <br>

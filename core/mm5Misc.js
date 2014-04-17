@@ -137,10 +137,10 @@ FOAModel({
       var self = this;
 
       this.scope.log     = this.log.bind(this);
-      this.scope.jlog    = this.jlog.bind(this);
-      this.scope.assert  = this.assert.bind(this);
-      this.scope.fail    = this.fail.bind(this);
-      this.scope.ok      = this.ok.bind(this);
+      this.scope.jlog   = this.jlog.bind(this);
+      this.scope.assert = this.assert.bind(this);
+      this.scope.fail   = this.fail.bind(this);
+      this.scope.ok     = this.ok.bind(this);
 
       this.results = '';
 
@@ -153,11 +153,11 @@ FOAModel({
       }
 
       var afuncs = [];
-      var oldConsole;
+      var oldLog;
 
       afuncs.push(function(ret) {
-        oldConsole = console;
-        window.console = { __proto__: console, log: self.scope.log };
+        oldLog = console.log;
+        console.log = self.scope.log;
         ret();
       });
 
@@ -180,7 +180,7 @@ FOAModel({
       }
 
       afuncs.push(function(ret) {
-        window.console = oldConsole;
+        console.log = oldLog;
         ret();
       });
 
