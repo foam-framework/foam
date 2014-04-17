@@ -75,11 +75,12 @@ FOAModel({
       displayWidth: 80,
       displayHeight: 30,
       fromElement: function(e) {
-        var txt = e.innerHTML.trim();
+        var txt = e.innerHTML;
 
-        txt = txt.startsWith('function') ?
-          txt :
-          'function(ret) { ' + txt + '}' ;
+        txt =
+          txt.trim().startsWith('function') ? txt                               :
+          this.async                 ? 'function(ret) {\n' + txt + '\n}' :
+                                       'function() {\n'    + txt + '\n}' ;
 
         return eval('(' + txt + ')');
       }
@@ -160,7 +161,6 @@ FOAModel({
         ret();
       });
 
-      console.log(this.name + '   ' + this.async);
       afuncs.push(this.async ? code.bind(this) : code.abind(this));
 
       for ( var i = 0 ; i < this.tests.length ; i++ ) {
@@ -172,7 +172,6 @@ FOAModel({
             test.atest()(ret);
           });
           afuncs.push(function(ret) {
-            console.log('finished: ', test.name);
             self.passed += test.passed;
             self.failed += test.failed;
             ret();
