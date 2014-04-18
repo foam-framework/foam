@@ -9,7 +9,7 @@
 	</section>
 	<footer id="footer">
 		<span id="todo-count">
-			<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.value.value.activeCount == 1 ? '' : 's' %> left
+			<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.obj.activeCount == 1 ? '' : 's' %> left
 		</span>
 		$$query{id: 'filters'}
                 $$clear{id: 'clear-completed'}
