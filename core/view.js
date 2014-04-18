@@ -1877,8 +1877,12 @@ var DetailView = Model.create({
       }
     },
     {
-      name:  'title',
+      name: 'title',
       defaultValueFn: function() { return "Edit " + this.model.label; }
+    },
+    {
+      name: 'obj',
+      getter: function() { return this.value.value; }
     },
     {
       model_: 'BooleanProperty',
