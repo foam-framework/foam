@@ -1,0 +1,5 @@
+<li class="thumbnail">
+  <a class="thumb">$$imageUrl</a>
+  <a>$$name{mode: 'read-only'}</a>
+  <p>$$snippet{mode: 'read-only'}</p>
+</li>

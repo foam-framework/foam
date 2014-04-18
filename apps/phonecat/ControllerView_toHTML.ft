@@ -1,0 +1,4 @@
+&nbsp;&nbsp; Search: $$search
+&nbsp;&nbsp; Sort by: $$order
+<p>
+$$filteredDAO{cssClasses: ['phones'], tagName: 'ul'}
