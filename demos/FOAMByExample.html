@@ -36,6 +36,31 @@ FOAModel({
 -->
 
 <foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <name>By-Name Value binding</name>
+  <description>Demonstrate the binding of $ values.</description>
+  <code>
+    FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+    var t1 = Test.create({x:1});
+    var t2 = Test.create({x:2});
+
+    t1.x$ = t2.x$;
+    jlog(t1.x, t2.x);
+
+    t1.x = 3;
+    jlog(t1.x, t2.x);
+
+    t2.x = 4;
+    jlog(t1.x, t2.x);
+
+    var t3 = Test.create({x$: t1.x$});
+    jlog(t1.x, t2.x, t3.x);
+    
+    t3.x = 5;
+    jlog(t1.x, t2.x, t3.x);
+  </code>
+</foam>
+
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
   <name>Context Examples</name>
   <code>
     X.a = 42;
