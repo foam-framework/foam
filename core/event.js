@@ -528,7 +528,7 @@ var Events = {
    */
   dynamic: function(fn, opt_fn) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var listener = EventService.merged(fn2, 5);
+    var listener = EventService.animate(fn2, 5);
     Events.onGet.push(function(obj, name, value) {
       obj.propertyValue(name).addListener(listener);
     });
@@ -841,18 +841,17 @@ var Movement = {
    * @arg r radius of orbit
    * @arg p period of orbit
    */
-  orbit: function (t, body, sat, r, p)
-  {
-    var bodyX = body.propertyValue('x');
-    var bodyY = body.propertyValue('y');
-    var satX  = sat.propertyValue('x');
-    var satY  = sat.propertyValue('y');
+  orbit: function (t, body, sat, r, p) {
+    var bodyX = body.x$;
+    var bodyY = body.y$;
+    var satX  = sat.x$;
+    var satY  = sat.y$;
 
-    t.addListener(function() {
+    t.addListener(EventService.animate(function() {
       var time = t.time;
       satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
       satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
-    });
+    }));
   }
 
 };
