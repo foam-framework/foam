@@ -232,8 +232,7 @@ FOAModel({
         this.onResize();
       }
 
-      if ( this.dao )
-        this.dao.listen(this.daoListener);
+      if ( this.dao ) this.dao.listen(this.daoListener);
     },
 
     /** Call repaint() instead to repaint on next animation frame. **/
