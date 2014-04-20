@@ -113,10 +113,11 @@ var TemplateCompiler = {
      return ret;
    },
    'create child': function(v) {
-     this.push("', this.createTemplateView(this.viewModel()['",
-               v[1].join('').constantize(), "']",
+     var name = v[1].join('').constantize();
+     this.push("', this.createTemplateView('", name, "'",
                v[2] ? ', {' + v[2][1].join('') + '}' : '',
-               "), '"); },
+               "), '");
+   },
    'simple value': function(v) { this.push("', this.", v[1].join(''), ",'"); },
    'raw values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
    'values tag': function (v) { this.push("',", v[1].join(''), ",'"); },
