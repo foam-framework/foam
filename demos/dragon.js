@@ -97,7 +97,7 @@ FOAModel({
 
       var c = this.canvas;
       this.dot(r);
-      c.rotate(0.05 * Math.sin(this.timer.time/2000*(Math.PI*2)));
+      c.rotate(0.05 * Math.sin(this.timer.time/4000*(Math.PI*2)));
       c.translate(r*2.2,0);
       this.feather(r*0.92);
     },
@@ -118,12 +118,12 @@ FOAModel({
       {
 
       c.translate(500,250);
-      c.translate(0, -30*Math.sin(this.timer.time/2000*(Math.PI*2)));
+      c.translate(0, -30*Math.sin(this.timer.time/4000*(Math.PI*2)));
 
       // tail
-      c.save();this.tail(this.r, Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/10);c.restore();
+      c.save();this.tail(this.r, Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/10);c.restore();
 
-        var a = Math.sin(this.timer.time/2000*(Math.PI*2))*Math.PI/31.5;
+        var a = Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/31.5;
       // right wing
       c.save();c.rotate(-0.4);this.wing(this.r, a);c.restore();
       // left wing
@@ -149,7 +149,7 @@ FOAModel({
 
       if ( Math.random() > 0.1 ) return;
 
-      var Y = 210-30*Math.sin(this.timer.time/2000*(Math.PI*2));
+      var Y = 210-30*Math.sin(this.timer.time/4000*(Math.PI*2));
 
        var circle = Circle.create({
          x: 500,
