@@ -135,8 +135,24 @@ FOAModel({
     }
   ],
 
+  listeners: [
+    {
+      name: 'tick',
+      isAnimated: true,
+      code: function(e) {
+        this.timeout = undefined;
+        if ( ! this.isStarted ) return;
+
+        var prevTime = this.startTime_ || 0;
+        this.startTime_ = Date.now();
+        this.interval = Math.min(100, this.startTime_ - prevTime);
+        this.step();
+        this.tick();
+      }
+    }
+  ],
   methods: {
-    tick: function() {
+    xtick: function() {
       this.timeout = undefined;
       if ( ! this.isStarted ) return;
 
@@ -238,6 +254,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'Person',
   properties: [
@@ -247,6 +264,7 @@ FOAModel({
     { model_: 'IntegerProperty', name: 'age' }
   ]
 });
+
 
 FOAModel({
   name: 'UserInfo',
