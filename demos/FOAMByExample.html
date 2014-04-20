@@ -44,19 +44,19 @@ FOAModel({
     var t2 = Test.create({x:2});
 
     t1.x$ = t2.x$;
-    jlog(t1.x, t2.x);
+    log([t1.x, t2.x]);
 
     t1.x = 3;
-    jlog(t1.x, t2.x);
+    log([t1.x, t2.x]);
 
     t2.x = 4;
-    jlog(t1.x, t2.x);
+    log([t1.x, t2.x]);
 
     var t3 = Test.create({x$: t1.x$});
-    jlog(t1.x, t2.x, t3.x);
+    log([t1.x, t2.x, t3.x]);
     
     t3.x = 5;
-    jlog(t1.x, t2.x, t3.x);
+    log([t1.x, t2.x, t3.x]);
   </code>
 </foam>
 
