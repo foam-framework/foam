@@ -304,7 +304,6 @@ o = Model;
     space.addChild(moon);
     space.addChild(apollo);
     space.addChild(mars);
-    for ( var i = 0 ; i < mmoons.length ; i++ ) { space.addChild(mmoons[i]); Movement.orbit(timer, mars, mmoons[i], 20+i*10, 1500+372*i); }
 
     Movement.orbit(timer,   sun,  venus,  80,  2007);
     Movement.orbit(timer,   sun,  earth, 160,  6011);
@@ -312,6 +311,7 @@ o = Model;
     Movement.orbit(timer, earth,   moon,  50,  2049);
     Movement.orbit(timer,  moon, apollo,  10,  1513);
 //    Movement.moveTowards(timer, moon, apollo, 0.75);
+    for ( var i = 0 ; i < mmoons.length ; i++ ) { space.addChild(mmoons[i]); Movement.orbit(timer, mars, mmoons[i], 30+i*10, 1500+500*i); }
     space.paint();
 
     document.writeln("<td valign=top>");
