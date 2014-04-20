@@ -159,10 +159,11 @@ var AbstractPrototype = {
     // this method might be a good candidate for a decision table
 
     var name = prop.name;
+    prop.name$_ = name + '$';
 
     // TODO: add caching
-    if ( ! AbstractPrototype.__lookupGetter__(name + '$') ) {
-      Object.defineProperty(AbstractPrototype, name + '$', {
+    if ( ! AbstractPrototype.__lookupGetter__(prop.name$_) ) {
+      Object.defineProperty(AbstractPrototype, prop.name$_, {
         get: function() { return this.propertyValue(name); },
         set: function(value) { Events.link(value, this.propertyValue(name)); }
       });
@@ -309,6 +310,7 @@ var AbstractPrototype = {
         var prop = ps[i];
 
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
+        if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_]; 
       }
     }
 
