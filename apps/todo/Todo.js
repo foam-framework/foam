@@ -65,5 +65,10 @@ FOAModel({
   }
 });
 
-FOAModel({ name: 'View',           extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'ControllerView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({
+  name: 'View',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ],
+  actions: [ { name: 'remove', label: '', action: function() { this.DAO.remove(this.obj); }}]
+});
