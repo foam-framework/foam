@@ -9,9 +9,7 @@ FOAModel({
     {
       name: 'order',
       defaultValue: Phone.NAME,
-      view: ChoiceView.create({
-        choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ]
-      }),
+      view: { model_: 'ChoiceView', choices: [ [ Phone.NAME, 'Alphabetical' ], [ Phone.AGE, 'Newest' ] ] },
       postSet: function() { this.filter(); }
     },
     { name: 'dao', defaultValue: phones },
@@ -19,11 +17,7 @@ FOAModel({
   ],
   methods: {
     filter: function() {
-      this.filteredDAO = this.dao.orderBy(this.order).where(OR(CONTAINS_IC(Phone.NAME, this.search), CONTAINS_IC(Phone.SNIPPET, this.search)));
-    },
-    init: function() {
-      this.SUPER();
-      this.filter();
+      this.filteredDAO = this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));
     }
   }
 });
