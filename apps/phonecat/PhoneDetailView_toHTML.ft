@@ -14,11 +14,11 @@
 <p>{{phone.description}}</p>
 
 <ul class="phone-thumbs">
-<% for ( var i in phone.images ) { var image = phone.images[i]; %>
+<% phone.images.forEach(function(image) { %>
   <li>
     <img src="{{{image}}}">
   </li>
-<% } %>
+<% }); %>
 </ul>
 
 <ul class="specs">
@@ -26,9 +26,9 @@
     <span>Availability and Networks</span>
     <dl>
       <dt>Availability</dt>
-      <% for ( var i in phone.availability ) { var availability = phone.availability[i]; %>
+      <% phone.availability.forEach(function(availability) { %>
       <dd>{{availability}}</dd>
-      <% } %>
+      <% }); %>
     </dl>
   </li>
   <li>
@@ -79,9 +79,9 @@
     <span>Size and Weight</span>
     <dl>
       <dt>Dimensions</dt>
-      <% for ( var i in phone.sizeAndWeight.dimensions ) { var dim = phone.sizeAndWeight.dimensions[i]; %>
+      <% phone.sizeAndWeight.dimensions.forEach(function(dim) { %>
       <dd>{{dim}}</dd>
-      <% } %>
+      <% }); %>
       <dt>Weight</dt>
       <dd>{{phone.sizeAndWeight.weight}}</dd>
     </dl>
