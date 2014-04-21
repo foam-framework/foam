@@ -209,6 +209,10 @@ var Model = {
       subType: 'Method',
       view: 'ArrayView',
       factory: function() { return []; },
+      preSet: function(_, newValue) {
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(newValue, Method);
+        return newValue;
+      },
       defaultValue: [],
       help: 'Event listeners associated with the entity.'
     },
