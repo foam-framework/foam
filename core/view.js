@@ -4559,7 +4559,7 @@ FOAModel({
       this.painting = true;
 
       var out = '';
-      var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView].create() : this.rowView;
+      var rowView = FOAM.lookup(this.rowView);
 
       this.children = [];
       this.initializers_ = [];
