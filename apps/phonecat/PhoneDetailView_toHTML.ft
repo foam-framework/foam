@@ -4,10 +4,9 @@
   var imgId = this.nextID();
   function checkmark(b) { return b ? '\u2713' : '\u2718'; }
 %>
-<% for ( var i = 0 ; i < 1 /*phone.images.length*/ ; i++  ) { var image = phone.images[i]; %>
 <div class="phone-images">
-    <img src="{{{image}}}" id="{{{imgId}}}" class="phone">
-</div>
+<% for ( var i = 0 ; i < 1 /*phone.images.length*/ ; i++  ) { var image = phone.images[i]; %>
+  <img src="{{{image}}}" id="{{{imgId}}}" class="phone">
 <% } %>
 </div>
 
@@ -28,9 +27,7 @@
     <span>Availability and Networks</span>
     <dl>
       <dt>Availability</dt>
-      <% phone.availability.forEach(function(availability) { %>
-      <dd>{{availability}}</dd>
-      <% }); %>
+      <% phone.availability.forEach(function(availability) { %> <dd>{{availability}}</dd> <% }); %>
     </dl>
   </li>
   <li>
@@ -81,9 +78,7 @@
     <span>Size and Weight</span>
     <dl>
       <dt>Dimensions</dt>
-      <% phone.sizeAndWeight.dimensions.forEach(function(dim) { %>
-      <dd>{{dim}}</dd>
-      <% }); %>
+      <% phone.sizeAndWeight.dimensions.forEach(function(dim) { %> <dd>{{dim}}</dd> <% }); %>
       <dt>Weight</dt>
       <dd>{{phone.sizeAndWeight.weight}}</dd>
     </dl>
