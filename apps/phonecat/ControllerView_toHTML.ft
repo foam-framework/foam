@@ -3,7 +3,6 @@
   this.addChild(view);
 
   this.obj.dao.find(window.location.hash.substring(1), {put: function(phone) {
-    console.log('find phone: ', phone);
     view.value.set(phone);
   }});
 
