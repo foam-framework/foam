@@ -1,4 +1,16 @@
-&nbsp;&nbsp; Search: $$search
-&nbsp;&nbsp; Sort by: $$order
-<p>
-$$filteredDAO{cssClasses: ['phones'], tagName: 'ul'}
+<% if ( window.location.hash ) {
+  var view = DetailView.create({model: Phone});
+  this.addChild(view);
+
+  this.obj.dao.find(window.location.hash.substring(1), {put: function(phone) {
+    console.log('find phone: ', phone);
+    view.value.set(phone);
+  }});
+
+  return view.toHTML();
+} else { %>
+  &nbsp;&nbsp; Search: $$search
+  &nbsp;&nbsp; Sort by: $$order
+  <p>
+  $$filteredDAO{cssClasses: ['phones'], tagName: 'ul'}
+<% } %>

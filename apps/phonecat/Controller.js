@@ -24,4 +24,19 @@ FOAModel({
 
 FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'ControllerView',    extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({
+  name: 'ControllerView',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      console.log('location: ', window.location.hash);
+      window.addEventListener('hashchange', function() {
+        console.log('change: ', arguments);
+        document.body.innerHTML = this.toHTML();
+        this.initHTML();
+      }.bind(this));
+    }
+  }
+});
