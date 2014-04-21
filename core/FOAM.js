@@ -146,6 +146,16 @@ FOAM.browse = function(model, opt_dao) {
   stack.pushView(ctrl);
 };
 
+FOAM.lookup = function(key) {
+  if ( ! typeof key === 'string' ) return key;
+
+  var path = key.split('.');
+  var root = GLOBAL;
+  for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
+
+  return root;
+}
+
 
 function arequire(modelName) {
   var model = GLOBAL[modelName];

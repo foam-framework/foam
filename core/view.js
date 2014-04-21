@@ -312,12 +312,16 @@ FOAModel({
       return view;
     },
 
-    createTemplateView: function(o, opt_args) {
-      if ( Action.isInstance(o) ) {
-        return ActionButton.create({action: o, value: this.value}).copyFrom(opt_args);
-      }
+    createTemplateView: function(name, opt_args) {
+      var o = this.viewModel()[name];
+      if ( o ) return Action.isInstance(o) ?
+        ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
+        this.createView(o, opt_args);
 
-      return this.createView(o, opt_args);
+      o = this.model_[name];
+      return Action.isInstance(o) ?
+        ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
+        this.createView(o, opt_args);
     },
 
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
@@ -4555,7 +4559,7 @@ FOAModel({
       this.painting = true;
 
       var out = '';
-      var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView].create() : this.rowView;
+      var rowView = FOAM.lookup(this.rowView);
 
       this.children = [];
       this.initializers_ = [];

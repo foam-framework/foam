@@ -39,7 +39,7 @@ FOAModel({
     {
       name: 'clear',
       labelFn:   function() { return "Clear completed (" + this.completedCount + ")"; },
-      isEnabled: function() { return this.completedCount > 0; },
+      isEnabled: function() { return this.completedCount; },
       action:    function() { this.dao.where(Todo.COMPLETED).removeAll(); }
     }
   ],
@@ -65,5 +65,10 @@ FOAModel({
   }
 });
 
-FOAModel({ name: 'View',           extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'ControllerView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({
+  name: 'View',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ],
+  actions: [ { name: 'remove', label: '', action: function() { this.DAO.remove(this.obj); }}]
+});
