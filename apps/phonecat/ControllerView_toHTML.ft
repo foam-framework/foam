@@ -1,5 +1,5 @@
 <% if ( window.location.hash ) {
-  var view = DetailView.create({model: Phone});
+  var view = PhoneDetailView.create({model: Phone});
   this.addChild(view);
 
   this.obj.dao.find(window.location.hash.substring(1), {put: function(phone) {
