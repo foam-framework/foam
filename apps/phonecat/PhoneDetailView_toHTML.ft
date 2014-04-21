@@ -1,10 +1,12 @@
 <%
+  var self  = this;
   var phone = this.obj;
+  var imgId = this.nextID();
   function checkmark(b) { return b ? '\u2713' : '\u2718'; }
 %>
 <% for ( var i = 0 ; i < 1 /*phone.images.length*/ ; i++  ) { var image = phone.images[i]; %>
 <div class="phone-images">
-    <img src="{{{image}}}" class="phone">
+    <img src="{{{image}}}" id="{{{imgId}}}" class="phone">
 </div>
 <% } %>
 </div>
@@ -16,7 +18,7 @@
 <ul class="phone-thumbs">
 <% phone.images.forEach(function(image) { %>
   <li>
-    <img src="{{{image}}}">
+    <img src="{{{image}}}" id="<%= self.on('click', function() { $(imgId).src = image; }) %>">
   </li>
 <% }); %>
 </ul>
