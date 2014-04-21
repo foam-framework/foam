@@ -106,7 +106,7 @@ var ModelProto = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls[m.name] = JSONUtil.mapToObj(m);
+      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(m, Model);
     });
 
     // build properties
