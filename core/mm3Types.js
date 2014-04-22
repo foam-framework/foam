@@ -44,7 +44,7 @@ var StringProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValueFn: function() { return this.displayHeight > 1 ? 'TextAreaView' : 'TextFieldView'; }
+      defaultValue: 'TextFieldView'
     },
     {
       name: 'prototag',
