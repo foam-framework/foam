@@ -780,6 +780,11 @@ FOAModel({
       defaultValue: 30
     },
     {
+      name:  'displayHeight',
+      type:  'int',
+      defaultValue: 1
+    },
+    {
       model_: 'StringProperty',
       name:  'type',
       defaultValue: 'text'
@@ -816,10 +821,10 @@ FOAModel({
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
           Events.unlink(oldValue, this.domValue);
-          Events.relate(newValue, this.domValue, this.valueToText, this.textToValue);
+          Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
         } else {
           Events.unfollow(oldValue, this.domValue);
-          Events.map(newValue, this.domValue, this.valueToText);
+          Events.map(newValue, this.domValue, this.valueToText.bind(this));
         }
       }
     },
@@ -843,12 +848,10 @@ FOAModel({
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
-      defaultValueFn: function() { return 'input'; }
-    },
-    {
-      model_: 'StringProperty',
-      name: 'readOnlyTagName',
-      defaultValueFn: function() { return 'span'; }
+      defaultValueFn: function() {
+        if ( this.displayHeight === 1 ) return 'input';
+        return 'textarea';
+      }
     }
   ],
 
@@ -861,10 +864,20 @@ FOAModel({
       if ( this.mode === 'read-write' ) {
         this.on('change', this.onChange, this.getID());
 
-        return '<' + this.readWriteTagName + ' id="' + this.getID() + '" type="' + this.type + '"' + this.cssClassAttr() + ' name="' + this.name + '" size="' + this.displayWidth + '"></' + this.readOnlyTagName + '>';
+        var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
+        str += ' type="' + this.type + '" ' + this.cssClassAttr();
+
+        if ( this.readWriteTagName === 'input' )
+          str += ' size="' + this.displayWidth + '"';
+        else
+          str += ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
+
+        str += ' name="' + this.name + '">';
+        str += '</' + this.readWriteTagName + '>';
+        return str;
       }
 
-      return '<' + this.readOnlyTagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.readOnlyTagName + '>';
+      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     // TODO: deprecate
@@ -1671,96 +1684,50 @@ FOAModel({
 FOAModel({
   name: 'TextAreaView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'TextFieldView',
 
   label: 'Text-Area View',
 
   properties: [
     {
-      name:  'rows',
-      type:  'int',
-      view:  'IntFieldView',
+      model_: 'IntegerProperty',
+      name:  'displayHeight',
       defaultValue: 5
     },
     {
-      name:  'cols',
-      type:  'int',
-      view:  'IntFieldView',
+      model_: 'IntegerProperty',
+      name:  'displayWidth',
       defaultValue: 70
-    },
-    {
-      model_: 'BooleanProperty',
-      name:  'onKeyMode',
-      help: 'If true, value is updated on each keystroke.'
-    },
-    {
-      name:  'value',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        oldValue && Events.unlink(this.domValue, oldValue);
-
-        //Events.follow(this.model, this.domValue);
-        try {
-          // Events.link(newValue, this.domValue);
-          Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
-        } catch (x) {
-        }
-      }
     }
-  ],
-
-  methods: {
-    init: function(args) {
-      this.SUPER(args);
-
-      this.cols = (args && args.displayWidth)  || 70;
-      this.rows = (args && args.displayHeight) || 10;
-    },
-
-    toHTML: function() {
-      return '<textarea id="' + this.getID() + '" rows=' + this.rows + ' cols=' + this.cols + ' /> </textarea>';
-    },
-
-    setValue: function(value) {
-      this.value = value;
-    },
-
-    initHTML: function() {
-      this.domValue = DomValue.create(this.$, this.onKeyMode ? 'input' : 'change', 'value');
-
-      // Events.follow(this.model, this.domValue);
-      // Events.relate(this.value, this.domValue, this.valueToText, this.textToValue);
-      this.value = this.value;
-    },
-
-    destroy: function() {
-      Events.unlink(this.domValue, this.value);
-    },
-
-    textToValue: function(text) { return text; },
-
-    valueToText: function(value) { return value; }
-  }
-
+  ]
 });
 
 
 FOAModel({
   name:  'FunctionView',
 
-  extendsModel: 'TextAreaView',
+  extendsModel: 'TextFieldView',
+
+  properties: [
+    {
+      name: 'onKeyMode',
+      defaultValue: true
+    },
+    {
+      name: 'displayWidth',
+      defaultValue: 80
+    },
+    {
+      name: 'displayHeight',
+      defaultValue: 8
+    },
+    {
+      name: 'errorView',
+      factory: function() { return TextFieldView.create({mode:'read-only'}); }
+    }
+  ],
 
   methods: {
-    init: function(args) {
-      this.SUPER(args);
-
-      this.cols = args.displayWidth  || 80;
-      this.rows = args.displayHeight || 8;
-      this.onKeyMode = true;
-      this.errorView = TextFieldView.create({mode:'read-only'});
-    },
-
     initHTML: function() {
       this.SUPER();
 

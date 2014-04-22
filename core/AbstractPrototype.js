@@ -38,21 +38,30 @@ var AbstractPrototype = {
   /** Context defaults to the global namespace by default. **/
   X: X,
 
+  selectProperties_: function(name, p) {
+    if ( this.hasOwnProperty(name) ) return this[name];
+
+    var a = [];
+    var ps = this.model_.properties;
+    for ( var i = 0 ; i < ps.length ; i++ ) if ( ps[i][p] ) a.push(ps[i]);
+    this[name] = a;
+
+    return a;
+  },
+
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    if ( ! Object.hasOwnProperty.call(this.model_, 'factoryProperties_') ) {
-      this.model_.factoryProperties_ = [];
+    var ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
 
-      var ps = this.model_.properties;
-      for ( var i = 0 ; i < ps.length ; i++ ) {
-        var prop = ps[i];
-
-        if ( prop.factory ) this.model_.factoryProperties_.push(prop);
-      }
+      (function(self, name, dynamicValue) {
+        Events.dynamic(dynamicValue.bind(self), function(value) { self[name] = value; } );
+      })(this, prop.name, prop.dynamicValue);
     }
 
-    var ps = this.model_.factoryProperties_;
+    ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
@@ -310,7 +319,7 @@ var AbstractPrototype = {
         var prop = ps[i];
 
         if ( src.hasOwnProperty(prop.name) ) this[prop.name] = src[prop.name];
-        if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_]; 
+        if ( src.hasOwnProperty(prop.name$_) ) this[prop.name$_] = src[prop.name$_];
       }
     }
 
