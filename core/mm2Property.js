@@ -219,6 +219,18 @@ var Property = {
       help: 'The property\'s default value function.'
     },
     {
+      name: 'dynamicValue',
+      label: "Value's Dynamic Function",
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      rows:3,
+      view: 'FunctionView',
+      defaultValue: '',
+      help: "A dynamic function which computes the property's value."
+    },
+    {
       name: 'factory',
       type: 'Function',
       required: false,
