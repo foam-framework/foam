@@ -46,6 +46,12 @@ var QIssueComment = FOAM({
     {
       model_: 'ReferenceProperty',
       name: 'issueId'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'content',
+      displayWidth: 85,
+      displayHeight: 8
     }
   ]
 });

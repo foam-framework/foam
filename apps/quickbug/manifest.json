@@ -27,6 +27,7 @@
         "ui/QIssuePreviewBorder.js",
         "ui/QIssueDetailView.js",
         "ui/QIssueCommentView.js",
+        "ui/QIssueCommentCreateView.js",
         "ui/QIssueCLView.js",
         "ui/QIssueCommentAuthorView.js",
         "ui/QIssueCommentUpdateView.js",

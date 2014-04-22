@@ -65,5 +65,8 @@
       </tbody>
     </table>
     <br>
+    <% if ( this.mode === 'read-write' ) { %>
+      %%commentCreateView()
+    <% } %>
   </div>
 </div>
