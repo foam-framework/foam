@@ -8,7 +8,7 @@ function makeOp(name, sym, f) {
 }
 
 var DEFAULT_OP = function(a1) { return a1; };
-DEFAULT_OP.toString = function() { return ""; };
+DEFAULT_OP.toString = function() { return ''; };
 
 FOAModel({
   name: 'Calc',
@@ -49,8 +49,8 @@ FOAModel({
     { name: '8', action: function() { this.num(8); } },
     { name: '9', action: function() { this.num(9); } },
     { name: '0', action: function() { this.num(0); } },
-    makeOp('div', '/', function(a1, a2) { return a1 / a2; }),
-    makeOp('div', '*', function(a1, a2) { return a1 * a2; }),
+    makeOp('div', '\u00F7', function(a1, a2) { return a1 / a2; }),
+    makeOp('div', '\u00D7', function(a1, a2) { return a1 * a2; }),
     makeOp('div', '+', function(a1, a2) { return a1 + a2; }),
     makeOp('div', '-', function(a1, a2) { return a1 - a2; }),
     {
