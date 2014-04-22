@@ -14,9 +14,8 @@ FOAModel({
   name: 'Calc',
 
   properties: [
-    { name: 'a1', model_: 'FloatProperty' },
-    { name: 'a2', model_: 'FloatProperty' },
-    { name: 'pos', defaultValue: 1 },
+    { name: 'a1', defaultValue: '0' },
+    { name: 'a2', defaultValue: '0' },
     {
       name: 'op',
       postSet: function() { this.a1 = this.a2; this.a2 = 0; this.pos = 1; },
@@ -26,14 +25,7 @@ FOAModel({
   ],
 
   methods: {
-    num: function(n) {
-      if ( this.pos == 1 ) {
-        this.a2 = 10 * this.a2 + n;
-      } else {
-        this.a2 = this.a2 + n / this.pos;
-        this.pos *= 10;
-      }
-    }
+    num: function(n) { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
   },
 
   actions: [
@@ -64,7 +56,7 @@ FOAModel({
     {
       name: 'point',
       label: '.',
-      action: function() { this.pos = 10; }
+      action: function() { if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.'; }
     },
     {
       name: 'equal',
