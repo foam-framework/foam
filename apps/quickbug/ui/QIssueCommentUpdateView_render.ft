@@ -1,11 +1,11 @@
 <% var value = this.get(); %>
-<% if ( value.summary ||
+<% if ( value && ( value.summary ||
    value.status ||
    value.cc.length ||
    value.blockedOn.length ||
    value.blocking.length ||
    value.labels.length ||
-   value.owner ) { %>
+   value.owner )  ) { %>
 <div class="qissueupdates">
 <div class="qupdatesround4"></div>
 <div class="qupdatesround2"></div>

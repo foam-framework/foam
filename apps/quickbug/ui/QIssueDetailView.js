@@ -57,6 +57,12 @@ FOAModel({
         }
       });
     },
+    commentCreateView: function() {
+      return QIssueCommentCreateView.create({
+        dao: this.QIssueCommentDAO,
+        value: SimpleValue.create(this.value.get().newComment())
+      });
+    },
     clView: function() {
       return QIssueCLView.create({dao: this.QIssueCommentDAO});
     },

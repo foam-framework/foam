@@ -4,7 +4,7 @@ var QIssueCommentUpdateView = FOAM({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', defaultValue: IssueCommentUpdate }
+    { name: 'model', factory: function() { return IssueCommentUpdate; } }
   ],
 
   methods: {
