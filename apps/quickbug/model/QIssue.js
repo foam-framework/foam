@@ -348,6 +348,21 @@ var QIssue = FOAM({
         });
 
         out(comment);
+      },
+      newComment: function() {
+        return QIssueComment.create({
+          issueId: this.id,
+          updates: IssueCommentUpdate.create({
+            labels: this.labels.clone(),
+            owner: this.owner,
+            blockedOn: this.blockedOn.clone(),
+            blocking: this.blocking.clone(),
+            cc: this.cc.clone(),
+            mergedInto: this.mergedInto,
+            status: this.status,
+            summary: this.summary
+          })
+        })
       }
     }
 });
