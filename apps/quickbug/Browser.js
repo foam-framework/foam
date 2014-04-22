@@ -409,7 +409,7 @@ FOAModel({
       this.location.can$.addListener(this.performQuery);
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-        this.editIssue(issue.id);
+        this.project.editIssue(issue.id);
       }.bind(this));
 
       this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
@@ -478,38 +478,6 @@ FOAModel({
           });
 
           popup.open(self.view);
-        }
-      });
-    },
-
-    editIssue: function(id) {
-      if ( ! id ) return;
-      var self = this;
-      this.IssueDAO.find(id, {
-        put: function(obj) {
-          chrome.app.window.create('empty.html', { width: 1000, height: 800 }, function(w) {
-            w.contentWindow.onload = function() {
-              var window = w.contentWindow;
-
-              $addWindow(window);
-              var Y = self.X.subWindow(window);
-
-              var v = Y.QIssueDetailView.create({
-                value: SimpleValue.create(obj),
-                QIssueCommentDAO: self.project.issueCommentDAO(id),
-                QIssueDAO: self.IssueDAO,
-                mode: 'read-write',
-                url: self.url
-              }).addDecorator(Y.QIssueEditBorder.create());
-
-              window.document.body.innerHTML = v.toHTML();
-              v.initHTML();
-              w.focus();
-            };
-          });
-          w.onClosed.addListener(function() {
-            $removeWindow(w.contentWindow)
-          });
         }
       });
     },
