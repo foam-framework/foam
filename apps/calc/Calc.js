@@ -28,7 +28,7 @@ FOAModel({
     {
       name: 'ac',
       label: 'AC',
-      action: function() { this.a1 = this.a2 = 0; this.history = []; this.op = DEFAULT_OP; }
+      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
     },
     {
       name: 'sign',
