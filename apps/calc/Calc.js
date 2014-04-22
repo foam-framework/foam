@@ -1,10 +1,6 @@
 function makeOp(name, sym, f) {
   f.toString = function() { return sym; };
-  return {
-    name: name,
-    label: sym,
-    action: function() { this.op = f; }
-  };
+  return { name: name, label: sym, action: function() { this.op = f; } };
 }
 
 var DEFAULT_OP = function(a1) { return a1; };
