@@ -530,6 +530,8 @@ var Events = {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.animate(fn2, 5);
     Events.onGet.push(function(obj, name, value) {
+      // Uncomment next line to debug.
+      // obj.propertyValue(name).addListener(function() { console.log('name: ', name); });
       obj.propertyValue(name).addListener(listener);
     });
     var ret = fn();
