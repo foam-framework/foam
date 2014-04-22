@@ -1,7 +1,7 @@
 <li id="{{{this.getID()}}}">
 	<div class="view">
 		$$completed{cssClasses: ['toggle']}
-		$$text{mode: 'read-only', readOnlyTagName: 'label'}
+		$$text{mode: 'read-only', tagName: 'label'}
                 $$remove{cssClasses: ['destroy']}
 	</div>
 	$$text{cssClasses: ['edit']}
