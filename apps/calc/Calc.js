@@ -46,16 +46,16 @@ FOAModel({
     { name: '9', action: function() { this.num(9); } },
     { name: '0', action: function() { this.num(0); } },
     makeOp('div', '\u00F7', function(a1, a2) { return a1 / a2; }),
-    makeOp('div', '\u00D7', function(a1, a2) { return a1 * a2; }),
-    makeOp('div', '+', function(a1, a2) { return a1 + a2; }),
-    makeOp('div', '-', function(a1, a2) { return a1 - a2; }),
+    makeOp('mult', '\u00D7', function(a1, a2) { return a1 * a2; }),
+    makeOp('plus', '+', function(a1, a2) { return a1 + a2; }),
+    makeOp('minus', '-', function(a1, a2) { return a1 - a2; }),
     {
       name: 'point',
       label: '.',
       action: function() { if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.'; }
     },
     {
-      name: 'equal',
+      name: 'equals',
       label: '=',
       action: function() {
         var a1 = this.a1;
@@ -66,3 +66,5 @@ FOAModel({
     }
   ]
 });
+
+FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
