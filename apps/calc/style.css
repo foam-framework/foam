@@ -152,12 +152,12 @@ body {
   margin: 1;
 }
 
-.calc-button:active, .calc-button.active {
+.actionButton:active, .actionButton.active {
   background: linear-gradient(#424242, #4B4B4B);
   box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
 }
 
-.actionButton-0, .actionButton-1, .actionButton-2, .actionButton-3, .actionButton-4, .actionButton-5, .actionButton-6, .actionButton-7, .actionButton-8, .actionButton-9  {
+.actionButton-0, .actionButton-1, .actionButton-2, .actionButton-3, .actionButton-4, .actionButton-5, .actionButton-6, .actionButton-7, .actionButton-8, .actionButton-9, .actionButton-point {
   background: linear-gradient(#4B4B4B, #424242);
 }
 
