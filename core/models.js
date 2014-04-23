@@ -67,6 +67,7 @@ FOAModel({
       type:  'int',
       help:  'The current time in milliseconds since epoch.',
       view:  'IntFieldView',
+      preSet: function(_, t) { return Math.ceil(t); },
       defaultValue: 0
     },
     {
@@ -150,16 +151,7 @@ FOAModel({
         this.tick();
       }
     }
-  ],
-  methods: {
-    xtick: function() {
-      this.timeout = undefined;
-      if ( ! this.isStarted ) return;
-
-      this.step();
-      this.timeout = setTimeout(this.tick.bind(this), this.interval);
-    }
-  }
+  ]
 });
 
 

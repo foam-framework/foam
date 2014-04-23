@@ -1,0 +1,135 @@
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  font: bold 16px 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 700;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.calc {
+  background-color: #fff;
+  border: 0;
+  margin: 0;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.calc-display, .calc-display:focus {
+  flex: 1 1 100%;
+  border: none;
+  letter-spacing: 1px;
+  line-height: 20px;
+  margin: 0px;
+  min-width: 204px;
+  overflow: scroll;
+  padding: 20px;
+  width: calc( 100% - 40px );
+}
+
+.edge-top {
+  height: 5px;
+  width: 100%;
+  z-index: 99;
+  position: absolute;
+  background: #fff;
+}
+
+.edge {
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,
+                                         rgba(255,255,255,0) 100%);
+  height: 20px;
+  position: absolute;
+  top: 5px;
+  width: 100%;
+  z-index: 99;
+}
+
+.calc-display {
+  text-align: right;
+}
+
+.display .hr {
+  width: 100%;
+  height: 0px;
+  border-top: 1px solid #d9d9d9;
+  position: relative;
+}
+
+.calc .buttons {
+  flex: 1 1 100%;
+  height: 244px;
+  width: 100%;
+  min-height: 225px;
+  min-width: 244px;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex: 1 1 100%;
+}
+
+.button-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  flex: 1 1 100%;
+}
+
+.actionButton {
+  align-items: center;
+  justify-content: center;
+  font: bold 16px 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  cursor: pointer;
+  text-align: center;
+  color: rgb(202, 202, 202);
+  background: linear-gradient(#6B6B6B, #626262);
+  box-shadow: inset 1px 1px 0 #636363, inset -1px -1px 0 #141414;
+  text-shadow: 2px 2px #222;
+  flex: 1 1 100%;
+  border: none;
+  margin: 1;
+}
+
+.actionButton:active, .actionButton.active {
+  background: linear-gradient(#424242, #4B4B4B);
+  box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
+}
+
+.actionButton-0, .actionButton-1, .actionButton-2, .actionButton-3, .actionButton-4, .actionButton-5, .actionButton-6, .actionButton-7, .actionButton-8, .actionButton-9, .actionButton-point {
+  background: linear-gradient(#4B4B4B, #424242);
+}
+
+.actionButton-div, .actionButton-mult, .actionButton-plus, .actionButton-minus, .actionButton-ac, .actionButton-sign, .actionButton-point, .actionButton-equals {
+  font-size: 24px;
+}
+
+.actionButton-ac {
+  background: linear-gradient(#FF504B, #F8261C);
+}
+
+.actionButton-equals {
+  flex: 2 1 200%;
+  background: linear-gradient(#6BA0FF, #2C76F8);
+  box-shadow: inset 1px 1px 0 #84ACF5, inset -1px -1px 0 #175EDA;
+}
