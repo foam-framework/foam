@@ -1,4 +1,16 @@
 FOAModel({
+  name:  'CalcFloatFieldView',
+
+  extendsModel: 'FloatFieldView',
+
+  methods: {
+    valueToText: function(v) {
+      return v == 0 ? '' : v.toString();
+    }
+  }
+});
+
+FOAModel({
   name: 'History',
   properties: [
     { name: 'id' },
@@ -20,7 +32,7 @@ FOAModel({
 
   properties: [
     { name: 'a1', defaultValue: '0' },
-    { name: 'a2', defaultValue: '0' },
+    { name: 'a2', view: 'CalcFloatFieldView', defaultValue: '0' },
     {
       name: 'op',
       postSet: function() {

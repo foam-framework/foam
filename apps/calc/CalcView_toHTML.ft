@@ -1,11 +1,11 @@
 <div class="edge-top"></div>
 <div class="edge"></div>
-<div id="calc">
-  <div id="display" class="calc-display">
-    $$history <br>
+<div class="calc">
+  <div class="calc-display">
+    $$history
     $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
   </div>
-  <div id="buttons" class="button-row">
+  <div class="buttons button-row">
     <div class="button-column" style="flex-basis: 300%">
       <div class="button-row"> $$ac $$sign $$div </div>
       <div class="button-row"> $$7 $$8 $$9 </div>

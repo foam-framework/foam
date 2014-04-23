@@ -23,7 +23,7 @@ body {
   display: none;
 }
 
-#calc {
+.calc {
   background-color: #fff;
   border: 0;
   margin: 0;
@@ -33,8 +33,7 @@ body {
   height: 100%;
 }
 
-#calc #display,
-#calc #display:focus {
+.calc-display, .calc-display:focus {
   flex: 1 1 100%;
   border: none;
   letter-spacing: 1px;
@@ -62,6 +61,10 @@ body {
   top: 5px;
   width: 100%;
   z-index: 99;
+}
+
+.calc-display {
+  text-align: right;
 }
 
 .equation {
@@ -108,14 +111,14 @@ body {
   padding-bottom: 3px;
 }
 
-#display .hr {
+.display .hr {
   width: 100%;
   height: 0px;
   border-top: 1px solid #d9d9d9;
   position: relative;
 }
 
-#calc #buttons {
+.calc .buttons {
   flex: 1 1 100%;
   height: 244px;
   width: 100%;
