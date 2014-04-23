@@ -43,6 +43,8 @@ body {
   overflow: scroll;
   padding: 20px;
   width: calc( 100% - 40px );
+
+  text-align: right;
 }
 
 .edge-top {
@@ -61,10 +63,6 @@ body {
   top: 5px;
   width: 100%;
   z-index: 99;
-}
-
-.calc-display {
-  text-align: right;
 }
 
 .display .hr {

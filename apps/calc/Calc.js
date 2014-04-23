@@ -1,23 +1,10 @@
 FOAModel({
   name:  'CalcFloatFieldView',
-
   extendsModel: 'FloatFieldView',
-
-  methods: {
-    valueToText: function(v) {
-      return v == 0 ? '' : v.toString();
-    }
-  }
+  methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
-FOAModel({
-  name: 'History',
-  properties: [
-    { name: 'id' },
-    { name: 'op' },
-    { name: 'a2' }
-  ]
-});
+FOAModel({ name: 'History', properties: [ { name: 'op' }, { name: 'a2' } ] });
 
 function makeOp(name, sym, f) {
   f.toString = function() { return sym; };
@@ -32,13 +19,25 @@ FOAModel({
 
   properties: [
     { name: 'a1', defaultValue: '0' },
-    { name: 'a2', view: 'CalcFloatFieldView', defaultValue: '0' },
+    { name: 'a2', view: 'CalcFloatFieldView', defaultValue: 0 },
     {
       name: 'op',
-      postSet: function() {
-        this.history.put(History.create({a2: this.a2}));
-        this.a1 = this.a2;
-        this.a2 = 0;
+      preSet: function(oldOp, newOp) {
+        if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
+          var a1 = this.a1;
+          var a2 = this.a2;
+          var a3 = this.op(parseFloat(a1), parseFloat(a2));
+          this.history.put(History.create(this));
+          this.history.put(History.create({a2: a3}));
+          this.a1 = a3;
+          this.a2 = 0;
+        }
+        else if ( this.a2 ) {
+          this.history.put(History.create({a2: this.a2}));
+          this.a1 = this.a2;
+          this.a2 = 0;
+        }
+        return newOp;
       },
       defaultValue: DEFAULT_OP
     },
@@ -46,7 +45,7 @@ FOAModel({
       name: 'history',
       model_: 'DAOProperty',
       view: { model_: 'DAOListView', rowView: 'HistoryView' },
-      factory: function() { return EasyDAO.create({model: History, seqNo: true, daoType: 'MDAO'}); }
+      factory: function() { return []; }
     }
   ],
 
@@ -100,5 +99,4 @@ FOAModel({
 });
 
 FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-
 FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
