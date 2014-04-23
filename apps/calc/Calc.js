@@ -17,7 +17,7 @@ FOAModel({
       postSet: function() { this.a1 = this.a2; this.a2 = 0; },
       defaultValue: DEFAULT_OP
     },
-    { name: 'history', model_: 'StringArrayProperty', factory: function() { return []; } }
+    { name: 'history', model_: 'StringArrayProperty', defaultValue: [] }
   ],
 
   methods: {
@@ -25,16 +25,6 @@ FOAModel({
   },
 
   actions: [
-    {
-      name: 'ac',
-      label: 'AC',
-      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
-    },
-    {
-      name: 'sign',
-      label: '+/-',
-      action: function() { this.a2 = - this.a2; }
-    },
     { name: '1', action: function() { this.num(1); } },
     { name: '2', action: function() { this.num(2); } },
     { name: '3', action: function() { this.num(3); } },
@@ -45,10 +35,20 @@ FOAModel({
     { name: '8', action: function() { this.num(8); } },
     { name: '9', action: function() { this.num(9); } },
     { name: '0', action: function() { this.num(0); } },
-    makeOp('div', '\u00F7', function(a1, a2) { return a1 / a2; }),
-    makeOp('mult', '\u00D7', function(a1, a2) { return a1 * a2; }),
-    makeOp('plus', '+', function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '-', function(a1, a2) { return a1 - a2; }),
+    makeOp('div',   '\u00F7', function(a1, a2) { return a1 / a2; }),
+    makeOp('mult',  '\u00D7', function(a1, a2) { return a1 * a2; }),
+    makeOp('plus',  '+',      function(a1, a2) { return a1 + a2; }),
+    makeOp('minus', '-',      function(a1, a2) { return a1 - a2; }),
+    {
+      name: 'ac',
+      label: 'AC',
+      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
+    },
+    {
+      name: 'sign',
+      label: '+/-',
+      action: function() { this.a2 = - this.a2; }
+    },
     {
       name: 'point',
       label: '.',
