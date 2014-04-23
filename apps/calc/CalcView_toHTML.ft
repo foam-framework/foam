@@ -2,8 +2,8 @@
 <div class="edge"></div>
 <div id="calc">
   <div id="display" class="calc-display">
-    $$a1
-    $$op $$a2
+    $$history <br>
+    $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
   </div>
   <div id="buttons" class="button-row">
     <div class="button-column" style="flex-basis: 300%">

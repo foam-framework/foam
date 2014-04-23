@@ -1,3 +1,12 @@
+FOAModel({
+  name: 'History',
+  properties: [
+    { name: 'id' },
+    { name: 'op' },
+    { name: 'a2' }
+  ]
+});
+
 function makeOp(name, sym, f) {
   f.toString = function() { return sym; };
   return { name: name, label: sym, action: function() { this.op = f; } };
@@ -14,10 +23,19 @@ FOAModel({
     { name: 'a2', defaultValue: '0' },
     {
       name: 'op',
-      postSet: function() { this.a1 = this.a2; this.a2 = 0; },
+      postSet: function() {
+        this.history.put(History.create({a2: this.a2}));
+        this.a1 = this.a2;
+        this.a2 = 0;
+      },
       defaultValue: DEFAULT_OP
     },
-    { name: 'history', model_: 'StringArrayProperty', defaultValue: [] }
+    {
+      name: 'history',
+      model_: 'DAOProperty',
+      view: { model_: 'DAOListView', rowView: 'HistoryView' },
+      factory: function() { return EasyDAO.create({model: History, seqNo: true, daoType: 'MDAO'}); }
+    }
   ],
 
   methods: {
@@ -61,10 +79,14 @@ FOAModel({
         var a1 = this.a1;
         var a2 = this.a2;
         this.a1 = a2;
-        this.history = this.history.concat([this.a2 = this.op(parseFloat(a1), parseFloat(a2))]);
+        this.history.put(History.create(this));
+        this.a2 = this.op(parseFloat(a1), parseFloat(a2));
+        this.op = DEFAULT_OP;
       }
     }
   ]
 });
+
+FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
