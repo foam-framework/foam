@@ -1422,10 +1422,12 @@ FOAModel({
       if ( objs ) JSONUtil.parse(objs).select(this);
 
       this.addRawIndex({
-        cost: Number.MAX_VALUE,
         execute: function() {},
         bulkLoad: function() {},
         toString: function() { return "StorageDAO Update"; },
+        plan: function() {
+          return { cost: Number.MAX_VALUE };
+        },
         put: this.updated,
         remove: this.updated
       });
