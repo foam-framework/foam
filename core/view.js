@@ -4597,9 +4597,8 @@ FOAModel({
       defaultValue: 0,
       postSet: function(old, nu) {
         if ( old !== nu && this.$ ) {
-          console.log("Changing offset", nu);
           this.$.lastElementChild.style.webkitTransform =
-            'translatey(' + nu + 'px)';
+            'translate3d(0, ' + nu + 'px, 0)';
         }
       }
     },
