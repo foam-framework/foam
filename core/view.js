@@ -684,7 +684,7 @@ FOAModel({
     initHTML: function() {
       this.SUPER();
 
-      if ( chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
@@ -4597,9 +4597,8 @@ FOAModel({
       defaultValue: 0,
       postSet: function(old, nu) {
         if ( old !== nu && this.$ ) {
-          console.log("Changing offset", nu);
           this.$.lastElementChild.style.webkitTransform =
-            'translatey(' + nu + 'px)';
+            'translate3d(0, ' + nu + 'px, 0)';
         }
       }
     },
@@ -4614,7 +4613,6 @@ FOAModel({
       var overlay = this.nextID();
       this.on('touchstart', this.onTouchStart, overlay);
       this.on('touchmove', this.onTouchMove, overlay);
-      console.log("overlay is ", overlay);
 
       return '<div id="' + this.getID() + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
@@ -4627,12 +4625,13 @@ FOAModel({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
       code: function() {
         if ( ! this.$ ) return;
-        console.log("On dao update.", this.skip);
+
+        if ( ! this.views ) this.views = [];
+
         var objs = [];
-        var limit = Math.floor(this.height / this.rowViewHeight) + 1
+        var limit = Math.floor(this.height / this.rowViewHeight) + 3;
         this.dao.skip(this.skip).limit(limit).select(objs)((function() {
           this.children = [];
           this.initializers_ = [];
@@ -4644,10 +4643,14 @@ FOAModel({
 
           var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView] : this.rowView;
           for (var i = 0; i < objs.length; i++ ) {
-            var view = rowView.create({
-              value: SimpleValue.create(objs[i]),
-              model: objs[i].model_
-            });
+            if ( ! this.views[i] ) {
+              this.views[i] = rowView.create({
+                value: SimpleValue.create(objs[i]),
+                model: objs[i].model_
+              });
+            }
+            var view = this.views[i];
+            view.value.set(objs[i]);
             this.addChild(view);
             html += view.toHTML();
           }
@@ -4660,16 +4663,16 @@ FOAModel({
     {
       name: 'onTouchStart',
       code: function(e) {
-        console.log("touch start.");
         if ( e.changedTouches[0] )
           this.startY = e.changedTouches[0].screenY;
       }
     },
     {
       name: 'onTouchMove',
-      isAnimated: true,
       code: function(e) {
         if ( ! e.changedTouches[0] ) return;
+
+        e.preventDefault();
 
         var delta = e.changedTouches[0].screenY - this.startY;
         this.startY = e.changedTouches[0].screenY;
@@ -4690,6 +4693,11 @@ FOAModel({
         }
 
         if ( skip === 0 && offset > 0 ) offset = 0;
+
+        if ( skip > 0 ) {
+          skip = skip - 1;
+          offset -= this.rowViewHeight;
+        }
 
         if ( skip < 0 ) {
           skip = 0;
