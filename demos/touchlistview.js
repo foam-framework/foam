@@ -1,3 +1,24 @@
+FOAModel({
+  name: 'Contact',
+
+  properties: [
+    { name: 'id' },
+    { model_: 'StringProperty', name: 'first' },
+    { model_: 'StringProperty', name: 'last' },
+    { model_: 'StringProperty', name: 'email' },
+    { model_: 'StringProperty',
+      name: 'color',
+      factory: function() {
+        var c = Math.floor(Math.random() * 0xffffff).toString(16);
+        while ( c.length < 6 ) {
+          c = "0" + c;
+        }
+        return "#" + c;
+      }
+    }
+  ]
+});
+
 var dao = EasyDAO.create({
   model: Contact,
   seqNo: true,
@@ -70,7 +91,7 @@ FOAModel({
   templates: [
     {
       name: 'toHTML',
-      template: '<div id="<%= this.getID() %>" style="height:200px">' +
+      template: '<div id="<%= this.getID() %>" style="height:200px;background:<%= this.value.value.color %>">' +
         '<span>%%value.value.first <b>%%value.value.last</b></span>' +
         '</div>'
     }
