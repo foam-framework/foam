@@ -61,7 +61,7 @@ FOAModel({
         var a1 = this.a1;
         var a2 = this.a2;
         this.a1 = a2;
-        this.history = this.history.concat([this.a2 = this.op(a1, a2)]);
+        this.history = this.history.concat([this.a2 = this.op(parseFloat(a1), parseFloat(a2))]);
       }
     }
   ]
