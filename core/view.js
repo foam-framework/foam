@@ -684,7 +684,7 @@ FOAModel({
     initHTML: function() {
       this.SUPER();
 
-      if ( chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
