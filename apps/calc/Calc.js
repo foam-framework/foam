@@ -38,7 +38,7 @@ FOAModel({
     makeOp('div',   '\u00F7', function(a1, a2) { return a1 / a2; }),
     makeOp('mult',  '\u00D7', function(a1, a2) { return a1 * a2; }),
     makeOp('plus',  '+',      function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '-',      function(a1, a2) { return a1 - a2; }),
+    makeOp('minus', '&#150;', function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
