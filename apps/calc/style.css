@@ -144,7 +144,7 @@ body {
   cursor: pointer;
   text-align: center;
   color: rgb(202, 202, 202);
-  background: linear-gradient(#4B4B4B, #424242);
+  background: linear-gradient(#6B6B6B, #626262);
   box-shadow: inset 1px 1px 0 #636363, inset -1px -1px 0 #141414;
   text-shadow: 1px 1px #222;
   flex: 1 1 100%;
@@ -152,30 +152,21 @@ body {
   margin: 1;
 }
 
-.calc-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;
-  color: rgb(202, 202, 202);
-  background: linear-gradient(#4B4B4B, #424242);
-  box-shadow: inset 1px 1px 0 #636363, inset -1px -1px 0 #141414;
-  text-shadow: 1px 1px #222;
-  flex: 1 1 100%;
-}
 .calc-button:active, .calc-button.active {
   background: linear-gradient(#424242, #4B4B4B);
   box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
+}
+
+.actionButton-0, .actionButton-1, .actionButton-2, .actionButton-3, .actionButton-4, .actionButton-5, .actionButton-6, .actionButton-7, .actionButton-8, .actionButton-9  {
+  background: linear-gradient(#4B4B4B, #424242);
 }
 
 .calc-button.big {
   font-size: 24px;
 }
 
-.actionButton-ac
-.calc-button.AC {
+.actionButton-ac {
+  background: linear-gradient(#FF504B, #F8261C);
 }
 
 .calc-button.plus-minus {
