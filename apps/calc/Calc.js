@@ -14,7 +14,7 @@ FOAModel({
     { name: 'a2', defaultValue: '0' },
     {
       name: 'op',
-      postSet: function() { this.a1 = this.a2; this.a2 = 0; this.pos = 1; },
+      postSet: function() { this.a1 = this.a2; this.a2 = 0; },
       defaultValue: DEFAULT_OP
     },
     { name: 'history', model_: 'StringArrayProperty', factory: function() { return []; } }
