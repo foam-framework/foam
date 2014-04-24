@@ -26,7 +26,7 @@ FOAModel({
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
-FOAModel({ name: 'History', properties: [ { name: 'op' }, { name: 'a2' } ] });
+FOAModel({ name: 'History', properties: [ 'op', 'a2' ] });
 
 FOAModel({
   name: 'Calc',
