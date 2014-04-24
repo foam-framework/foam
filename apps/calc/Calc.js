@@ -107,6 +107,13 @@ FOAModel({
         this.a2 = this.op(parseFloat(a1), parseFloat(a2));
         this.op = DEFAULT_OP;
       }
+    },
+    {
+      name: 'backspace',
+      keyboardShortcuts: [ 8 /* backspace */ ],
+      action: function() {
+        this.a2 = this.a2 == 0 ? this.a2 : this.a2.substring(0, this.a2.length-1);
+      }
     }
   ]
 });
