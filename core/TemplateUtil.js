@@ -47,7 +47,7 @@ var TemplateParser = {
     sym('text')
   )),
 
-  'create child': seq('$$', repeat(notChars(' \n<{')),
+  'create child': seq('$$', repeat(notChars(' $\n<{')),
                       optional(seq('{', repeat(notChar('}')), '}'))),
 
   'simple value': seq('%%', repeat(notChars(' \n<'))),
