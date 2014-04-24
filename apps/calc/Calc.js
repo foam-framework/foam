@@ -1,3 +1,25 @@
+function makeOp(name, sym, key, f) {
+  f.toString = function() { return sym; };
+  return {
+    name: name,
+    label: sym,
+    keyboardShortcuts: [key],
+    action: function() { this.op = f; }
+  };
+}
+
+function makeNum(num) {
+  return {
+    name: num.toString(),
+    keyboardShortcuts: [48+num /* 0 */ , 96+num /* keypad-0 */],
+    action: function() { this.num(num); }
+  };
+}
+
+var DEFAULT_OP = function(a1) { return a1; };
+DEFAULT_OP.toString = function() { return ''; };
+
+
 FOAModel({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
@@ -5,14 +27,6 @@ FOAModel({
 });
 
 FOAModel({ name: 'History', properties: [ { name: 'op' }, { name: 'a2' } ] });
-
-function makeOp(name, sym, f) {
-  f.toString = function() { return sym; };
-  return { name: name, label: sym, action: function() { this.op = f; } };
-}
-
-var DEFAULT_OP = function(a1) { return a1; };
-DEFAULT_OP.toString = function() { return ''; };
 
 FOAModel({
   name: 'Calc',
@@ -54,38 +68,37 @@ FOAModel({
   },
 
   actions: [
-    { name: '1', action: function() { this.num(1); } },
-    { name: '2', action: function() { this.num(2); } },
-    { name: '3', action: function() { this.num(3); } },
-    { name: '4', action: function() { this.num(4); } },
-    { name: '5', action: function() { this.num(5); } },
-    { name: '6', action: function() { this.num(6); } },
-    { name: '7', action: function() { this.num(7); } },
-    { name: '8', action: function() { this.num(8); } },
-    { name: '9', action: function() { this.num(9); } },
-    { name: '0', action: function() { this.num(0); } },
-    makeOp('div',   '\u00F7', function(a1, a2) { return a1 / a2; }),
-    makeOp('mult',  '\u00D7', function(a1, a2) { return a1 * a2; }),
-    makeOp('plus',  '+',      function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '&#150;', function(a1, a2) { return a1 - a2; }),
+    makeNum(1), makeNum(2), makeNum(3),
+    makeNum(4), makeNum(5), makeNum(6),
+    makeNum(7), makeNum(8), makeNum(9), makeNum(0),
+    makeOp('div',   '\u00F7', 191, function(a1, a2) { return a1 / a2; }),
+    makeOp('mult',  '\u00D7', 'shift-56', function(a1, a2) { return a1 * a2; }),
+    makeOp('plus',  '+',      'shift-187', function(a1, a2) { return a1 + a2; }),
+    makeOp('minus', '&#150;', 189, function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
+      keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
     },
     {
       name: 'sign',
       label: '+/-',
+      keyboardShortcuts: [ 78 /* n */ , 83 /* s */],
       action: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
       label: '.',
-      action: function() { if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.'; }
+      keyboardShortcuts: [ 190 ],
+      action: function() {
+        if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
+      }
     },
     {
       name: 'equals',
       label: '=',
+      keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
         var a1 = this.a1;
         var a2 = this.a2;

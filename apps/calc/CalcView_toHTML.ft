@@ -1,6 +1,6 @@
 <div class="edge-top"></div>
 <div class="edge"></div>
-<div class="calc">
+<div id="{{this.getID()}}" class="calc">
   <div class="calc-display">
     $$history
     $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
@@ -13,6 +13,6 @@
       <div class="button-row"> $$1 $$2 $$3 </div>
       <div class="button-row"> $$0 $$point </div>
     </div>
-    <div class="button-column"> $$mult $$minus $$plus $$equals </div>
+    <div class="button-column">$$mult $$minus $$plus $$equals</div>
   </div>
 </div>

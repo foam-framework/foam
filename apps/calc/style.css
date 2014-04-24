@@ -31,6 +31,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 200pt;
 }
 
 .calc-display, .calc-display:focus {

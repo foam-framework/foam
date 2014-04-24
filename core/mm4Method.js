@@ -118,6 +118,10 @@ FOAModel({
       displayHeight: 20,
       defaultValue: '',
       help: 'Function to implement action.'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'keyboardShortcuts'
     }
   ],
   methods: {
