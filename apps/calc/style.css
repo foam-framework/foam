@@ -44,7 +44,6 @@ body {
   overflow: scroll;
   padding: 20px;
   width: calc( 100% - 40px );
-
   text-align: right;
 }
 
@@ -108,11 +107,7 @@ body {
   flex: 1 1 100%;
   border: none;
   margin: 0;
-}
-
-.actionButton:active, .actionButton.active {
-  background: linear-gradient(#424242, #4B4B4B);
-  box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
+  outline: none;
 }
 
 .actionButton-0, .actionButton-1, .actionButton-2, .actionButton-3, .actionButton-4, .actionButton-5, .actionButton-6, .actionButton-7, .actionButton-8, .actionButton-9, .actionButton-point {
@@ -125,6 +120,7 @@ body {
 
 .actionButton-ac {
   background: linear-gradient(#FF504B, #F8261C);
+  font-size: 20px;
 }
 
 .actionButton-equals {
@@ -133,4 +129,9 @@ body {
   box-shadow: inset 1px 1px 0 #84ACF5, inset -1px -1px 0 #175EDA;
   padding-bottom: 2px;
   padding-top: 2px;
+}
+
+.actionButton:active {
+  background: linear-gradient(#424242, #4B4B4B);
+  box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
 }
