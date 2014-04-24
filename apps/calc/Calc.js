@@ -8,11 +8,11 @@ function makeOp(name, sym, key, f) {
   };
 }
 
-function makeNum(num) {
+function makeNum(n) {
   return {
-    name: num.toString(),
-    keyboardShortcuts: [48+num /* 0 */ , 96+num /* keypad-0 */],
-    action: function() { this.num(num); }
+    name: n.toString(),
+    keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
+    action: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
   };
 }
 
@@ -63,10 +63,6 @@ FOAModel({
     }
   ],
 
-  methods: {
-    num: function(n) { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
-  },
-
   actions: [
     makeNum(1), makeNum(2), makeNum(3),
     makeNum(4), makeNum(5), makeNum(6),
@@ -78,6 +74,7 @@ FOAModel({
     {
       name: 'ac',
       label: 'AC',
+      help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
       action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
     },
@@ -112,7 +109,7 @@ FOAModel({
       name: 'backspace',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2 == 0 ? this.a2 : this.a2.substring(0, this.a2.length-1);
+        this.a2 = this.a2 == 0 ? this.a2 : this.a2.toString().substring(0, this.a2.length-1);
       }
     }
   ]
