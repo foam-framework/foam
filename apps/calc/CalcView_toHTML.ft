@@ -2,8 +2,10 @@
 <div class="edge"></div>
 <div id="{{this.getID()}}" class="calc">
   <div class="calc-display">
-    $$history
-    $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
+    <div class="inner-calc-display">
+      $$history
+      $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
+    </div>
   </div>
   <div class="buttons button-row">
     <div class="button-column" style="flex-basis: 300%">
