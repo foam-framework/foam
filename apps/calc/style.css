@@ -39,7 +39,7 @@ body {
   border: none;
   letter-spacing: 1px;
   line-height: 20px;
-  margin: 0px;
+  margin: 0;
   min-width: 204px;
   overflow: scroll;
   padding: 20px;
@@ -107,7 +107,7 @@ body {
   text-shadow: 2px 2px #222;
   flex: 1 1 100%;
   border: none;
-  margin: 1;
+  margin: 0;
 }
 
 .actionButton:active, .actionButton.active {
@@ -131,4 +131,6 @@ body {
   flex: 2 1 200%;
   background: linear-gradient(#6BA0FF, #2C76F8);
   box-shadow: inset 1px 1px 0 #84ACF5, inset -1px -1px 0 #175EDA;
+  padding-bottom: 2px;
+  padding-top: 2px;
 }
