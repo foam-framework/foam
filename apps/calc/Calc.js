@@ -40,9 +40,7 @@ FOAModel({
       name: 'op',
       preSet: function(oldOp, newOp) {
         if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
-          var a1 = this.a1;
-          var a2 = this.a2;
-          var a3 = this.op(parseFloat(a1), parseFloat(a2));
+          var a3 = this.op(parseFloat(this.a1), parseFloat(this.a2));
           this.history.put(History.create(this));
           this.history.put(History.create({a2: a3}));
           this.a1 = a3;
