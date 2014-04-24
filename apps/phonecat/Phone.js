@@ -1,24 +1,11 @@
 FOAModel({
   name: 'Phone',
   properties: [
-    { name: 'id' },
-    { name: 'age' },
+    'id', 'age', 'name', 'snippet', 'additionalFeatures', 'android',
+    'availability', 'battery', 'camera', 'connectivity', 'description',
+    'display', 'hardware', 'sizeAndWeight', 'storage', 'details',
     { name: 'imageUrl', view: 'ImageView' },
-    { name: 'name' },
-    { name: 'snippet' },
-    { name: 'additionalFeatures' },
-    { name: 'android' },
-    { name: 'availability' },
-    { name: 'battery' },
-    { name: 'camera' },
-    { name: 'connectivity' },
-    { name: 'description' },
-    { name: 'display' },
-    { name: 'hardware' },
-    { name: 'images', model_: 'StringArrayProperty' },
-    { name: 'sizeAndWeight' },
-    { name: 'storage' },
-    { name: 'details' }
+    { name: 'images', model_: 'StringArrayProperty' }
   ]
 });
 

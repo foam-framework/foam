@@ -134,6 +134,8 @@ var Model = {
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 
+          if ( typeof p === 'string' ) newValue[i] = p = { name: p };
+
           if ( ! p.model_ ) {
             p = newValue[i] = Property.create(p);
           } else if ( typeof p.model_ === 'string' ) {
