@@ -137,6 +137,18 @@ hr {
   box-shadow: inset 1px 1px 0 #141414, inset -1px -1px 0 #636363;
 }
 
+.actionButton-ac:active {
+  background: linear-gradient(#F8261C, #FF504B);
+}
+
+.actionButton-equals:active {
+  background: linear-gradient(#2C76F8, #6BA0FF);
+}
+
+.actionButton-div:active, .actionButton-mult:active, .actionButton-plus:active, .actionButton-minus:active, .actionButton-sign:active {
+  background: linear-gradient(#626262, #6B6B6B);
+}
+
 .inner-calc-display {
   bottom: 0;
   position: absolute;
