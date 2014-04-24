@@ -1,13 +1,15 @@
-function makeOp(name, sym, key, f) {
+/** Make a +-/* Action. **/
+function makeOp(name, sym, keys, f) {
   f.toString = function() { return sym; };
   return {
     name: name,
     label: sym,
-    keyboardShortcuts: [key],
+    keyboardShortcuts: keys,
     action: function() { this.op = f; }
   };
 }
 
+/** Make a 0-9 Number Action. **/
 function makeNum(n) {
   return {
     name: n.toString(),
@@ -19,7 +21,7 @@ function makeNum(n) {
 var DEFAULT_OP = function(a1) { return a1; };
 DEFAULT_OP.toString = function() { return ''; };
 
-
+/** A subclass of FloatFieldView which doesn't display 0 values. **/
 FOAModel({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
@@ -45,8 +47,7 @@ FOAModel({
           this.history.put(History.create({a2: a3}));
           this.a1 = a3;
           this.a2 = 0;
-        }
-        else if ( this.a2 ) {
+        } else if ( this.a2 ) {
           this.history.put(History.create({a2: this.a2}));
           this.a1 = this.a2;
           this.a2 = 0;
@@ -67,10 +68,10 @@ FOAModel({
     makeNum(1), makeNum(2), makeNum(3),
     makeNum(4), makeNum(5), makeNum(6),
     makeNum(7), makeNum(8), makeNum(9), makeNum(0),
-    makeOp('div',   '\u00F7', 191, function(a1, a2) { return a1 / a2; }),
-    makeOp('mult',  '\u00D7', 'shift-56', function(a1, a2) { return a1 * a2; }),
-    makeOp('plus',  '+',      'shift-187', function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '&#150;', 189, function(a1, a2) { return a1 - a2; }),
+    makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
+    makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
+    makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
+    makeOp('minus', '&#150;', [109, 189],         function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
@@ -87,7 +88,7 @@ FOAModel({
     {
       name: 'point',
       label: '.',
-      keyboardShortcuts: [ 190 ],
+      keyboardShortcuts: [ 110, 190 ],
       action: function() {
         if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
       }
