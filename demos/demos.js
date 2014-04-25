@@ -14,14 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var EyeCView = FOAM({
-
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
+FOAModel({
    name:  'EyeCView',
    label: 'Eye',
+
+   extendsModel: 'PanelCView',
 
    properties: [
       {
@@ -60,7 +57,6 @@ var EyeCView = FOAM({
             return Circle.create({x:this.x,y:this.y,r:10,color:'black',parent:this});
          }
       }
-
    ],
 
    methods: {
@@ -92,14 +88,10 @@ var EyeCView = FOAM({
 });
 
 
-var EyesCView = FOAM({
-
-   model_: 'Model',
-
-   extendsModel: 'PanelCView',
-
+FOAModel({
    name:  'EyesCView',
    label: 'Eyes',
+   extendsModel: 'PanelCView',
 
    properties: [
       {
@@ -136,13 +128,10 @@ var EyesCView = FOAM({
 });
 
 
-var ClockView = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
+   name:  'ClockView',
    extendsModel: 'PanelCView',
 
-   name:  'ClockView',
    label: 'Clock',
 
    properties: [
@@ -180,7 +169,7 @@ var ClockView = FOAM({
          type:  'float',
          view:  'IntFieldView',
          defaultValue: 0
-      },
+        },
       {
          name:  'hourHand',
          type:  'Hand',
@@ -209,8 +198,7 @@ var ClockView = FOAM({
    ],
 
    methods: {
-      paint: function()
-      {
+      paint: function() {
          this.canvas.save();
 
          this.canvas.translate(this.x, this.y);
@@ -667,10 +655,7 @@ var System = FOAM({
 
 
 
-var Developer = FOAM({
-
-   model_: 'Model',
-
+FOAModel({
    name:  'Developer',
 
    properties: [
