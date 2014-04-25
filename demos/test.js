@@ -10,7 +10,6 @@
        DAOController,
        Timer,
        Mouse,
-       PanelCView,
        EyeCView,
        EyesCView,
        ClockView,
