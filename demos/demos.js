@@ -18,7 +18,7 @@ FOAModel({
    name:  'EyeCView',
    label: 'Eye',
 
-   extendsModel: 'PanelCView',
+   extendsModel: 'CView',
 
    properties: [
       {
@@ -91,7 +91,7 @@ FOAModel({
 FOAModel({
    name:  'EyesCView',
    label: 'Eyes',
-   extendsModel: 'PanelCView',
+   extendsModel: 'CView',
 
    properties: [
       {
@@ -119,8 +119,7 @@ FOAModel({
          this.leftEye.watch(target);
          this.rightEye.watch(target);
       },
-      paint: function()
-      {
+      paint: function() {
          this.leftEye.paint();
          this.rightEye.paint();
       }
@@ -130,7 +129,7 @@ FOAModel({
 
 FOAModel({
    name:  'ClockView',
-   extendsModel: 'PanelCView',
+   extendsModel: 'CView',
 
    label: 'Clock',
 
@@ -229,7 +228,7 @@ FOAModel({
      model_: 'Model',
      name: 'Hand',
      label: 'Clock Hand',
-     extendsModel: 'PanelCView',
+     extendsModel: 'CView',
      properties:
      [
         {
