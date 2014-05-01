@@ -80,14 +80,14 @@ unsubscribeAll	   		 unsubscribe all registered listeners
 Objects
 -------
 extend PropertyChangeSupport
-propertyTopic(propertyName)	creates topic for property events
-propertyChange(property, oldValue, newValue) fire property change event
-globalChange()		 one or more unspecified properties changed
+propertyTopic(propertyName)                     creates topic for property events
+propertyChange(property, oldValue, newValue)    fire property change event
+globalChange()		                        one or more unspecified properties changed
 addListener(listener)
 removeListener(listener)
 addPropertyListener(property, listener)
 removePropertyListener(property, listener)	TODO
-propertyValue(propertyName)	 create a Value for specified property
+propertyValue(propertyName)	                create a Value for specified property
 
 
 model_			object's Model
