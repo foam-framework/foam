@@ -285,31 +285,7 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = GLOBAL[prop.view].create(prop);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
-
-      view.copyFrom(opt_args);
-
-      this.bindSubView(view, prop);
-
-      view.prop = prop;
-      view.toString = function () { return this.prop.name + "View"; };
-      this.addChild(view);
-
-      this[prop.name + 'View'] = view;
-
-      return view;
+      return PropertyView.create({parent: this, prop: prop, args: opt_args});
     },
 
     createTemplateView: function(name, opt_args) {
@@ -495,6 +471,92 @@ FOAModel({
       this.destroy();
       this.publish('closed');
     }
+  }
+});
+
+
+FOAModel({
+  name: 'PropertyView',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'parent',
+      type: 'View',
+      postSet: function(_, p) {
+        if ( ! this.data ) {
+          // TODO: replace with just 'p.data' when data-binding done
+          this.data = p.data || ( p.get && p.get() );
+        }
+      }
+    },
+    {
+      name: 'prop',
+      type: 'Property'
+    },
+    {
+      name: 'data',
+      postSet: function() { this.bindData(); }
+    },
+    {
+      name: 'view',
+      type: 'View'
+    },
+    'args'
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+
+      var prop = this.prop;
+      var view;
+
+      if ( ! prop.view ) {
+        view = TextFieldView.create(prop);
+      } else if ( typeof prop.view === 'string' ) {
+        view = GLOBAL[prop.view].create(prop);
+      } else if ( prop.view.model_ ) {
+        view = prop.view.deepClone().copyFrom(prop);
+      } else if ( typeof prop.view === 'function' ) {
+        view = prop.view(prop);
+      } else {
+        view = prop.view.create(prop);
+      }
+
+      view.copyFrom(this.args);
+
+      this.bindData();
+
+      view.prop = prop;
+      view.toString = function () { return this.prop.name + 'View'; };
+      if ( this.parent) {
+        this.parent.addChild(view);
+        this.parent[prop.name + 'View'] = view;
+      }
+
+      this.view = view;
+    },
+    bindData: function() {
+      var view = this.view;
+      var data = this.data;
+
+      if ( ! view || ! data ) return;
+
+      var pValue = data.propertyValue(this.prop.name);
+      if ( this.model_.DATA ) {
+        // When all views are converted to data-binding, only this method
+        // will be supported.
+        view.data$ = pValue;
+      } else if ( view.setValue ) {
+        view.setValue(pValue);
+      } else {
+        view.value = pValue;
+      }
+    },
+    toHTML: function() { return this.view.toHTML(); },
+    initHTML: function() { this.view.initHTML(); }
   }
 });
 
@@ -1887,6 +1949,7 @@ var DetailView = Model.create({
 
   methods: {
     bindSubView: function(view, prop) {
+      console.log('deprecated');
       if ( this.get() ) {
         // TODO: setValue is deprecated
         if ( view.setValue ) {
@@ -2088,6 +2151,7 @@ var DetailView2 = Model.create({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
+      console.log('deprecated');
       var view =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
@@ -2097,7 +2161,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.id ) { return; }
+      if ( ! this.id ) return;
 
       this.children = [];
 
