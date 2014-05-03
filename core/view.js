@@ -252,8 +252,8 @@ FOAModel({
       defaultValue: 'span'
     },
     {
-      name: 'cssClasses',
-      factory: function() { return []; }
+      name: 'className',
+      defaultValue: ''
     }
   ],
 
@@ -263,7 +263,7 @@ FOAModel({
     },
 
     cssClassAttr: function() {
-      return this.cssClasses.length ? ' class="' + this.cssClasses.join(' ') + '"' : '';
+      return this.className ? ' class="' + this.className + '"' : '';
     },
 
     dynamicTag: function(tagName, f) {
@@ -1211,8 +1211,8 @@ FOAModel({
       }
     },
     {
-      name: 'cssClasses',
-      defaultValueFn: function() { return ['foamChoiceListView', this.orientation]; }
+      name: 'className',
+      defaultValueFn: function() { return 'foamChoiceListView ' + this.orientation; }
     },
     {
       name: 'tagName',
@@ -2713,8 +2713,8 @@ FOAModel({
       factory: function() { return SimpleValue.create(); }
     },
     {
-      name: 'cssClasses',
-      factory: function() { return ['actionButton', 'actionButton-' + this.action.name]; }
+      name: 'className',
+      factory: function() { return 'actionButton actionButton-' + this.action.name; }
     },
     {
       name: 'tagName',

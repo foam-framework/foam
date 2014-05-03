@@ -1,10 +1,10 @@
 <li id="{{{this.getID()}}}">
 	<div class="view">
-		$$completed{cssClasses: ['toggle']}
+		$$completed{className: 'toggle'}
 		$$text{mode: 'read-only', tagName: 'label'}
-                $$remove{cssClasses: ['destroy']}
+                $$remove{className: 'destroy'}
 	</div>
-	$$text{cssClasses: ['edit']}
+	$$text{className: 'edit'}
 </li>
 <%
 var toEdit    = function() { DOM.setClass(this.$, 'editing'); this.textView.focus(); }.bind(this);
