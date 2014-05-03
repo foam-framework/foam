@@ -1267,11 +1267,6 @@ FOAModel({
       defaultValue: undefined
     },
     {
-      name: 'cssClass',
-      type: 'String',
-      defaultValue: 'foamChoiceView'
-    },
-    {
       name:  'size',
       type:  'int',
       defaultValue: 1
