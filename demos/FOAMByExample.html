@@ -366,5 +366,27 @@ FOAModel({
   </tests>
 </foam>
 
+<!-- TODO: Enable UnitTests to handle the rendering of views.
+
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <name>View Tests</name>
+  <description>Test Views and Data-Binding.</description>
+  <tests>
+    <foam model="UnitTest" name="TextFieldView">
+      <description>Test data-binding in TextFieldViews.</description>
+      <code>
+        var v1 = TextFieldView.create();
+        var v2 = TextFieldView.create();
+        
+        log(v1.toHTML()); v1.initHTML();
+        log(v2.toHTML()); v2.initHTML();
+
+        v1.data$ = v2.data$;
+      </code>
+    </foam>
+  </tests>
+</foam>
+-->
+
  </body>
 </html>

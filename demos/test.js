@@ -175,14 +175,13 @@ document.writeln("=======================================");
     v3.write(document);
     view.write(document);
 
-    v2.setValue(v1.value);
-    v3.setValue(v1.value);
-    v4.value = v1.value;
+    v2.data$ = v1.data$;
+    v3.data$ = v1.data$;
+    v4.data$ = v1.data$;
 
 //    document.writeln("<br/>subs: " + e.subs_);
 
-
-    var sview = Canvas.create({width: 50, height: 300, background:'#fff'});
+    var sview = Canvas.create({width: 50, height: 300, background: '#fff'});
     var s1 = ScrollCView.create({
       x:10, y:10, width: 30, height:290,
       value:100, extent:50, size: 500
@@ -260,6 +259,7 @@ o = Model;
 
     dv1.set(o);
     // dv2.setModel(o);
+/** TODO: fix
     dv3.setValue({
        __proto__: o,
        set: function (val) { return JSONUtil.parse(val);},
@@ -271,6 +271,7 @@ o = Model;
        get: function () { return XMLUtil.stringify(this); }
     });
     DomValue.DEFAULT_EVENT = 'change';
+**/
 
     document.writeln("</br><h2>Test Property Linking</h2>");
 
