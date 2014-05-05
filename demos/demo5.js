@@ -24,7 +24,6 @@ var Models = [
   'Issues',
   'Timer',
   'Mouse',
-  'PanelCView',
   'EyeCView',
   'EyesCView',
   'ClockView',
@@ -137,7 +136,7 @@ Events.dynamic(function() {
   },
   function() {
     var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
-                  Timer, Mouse, PanelCView, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];
+                  Timer, Mouse, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];
     if ( sys.selectedY < 1 || sys.selectedX < 0 ) return;
 
     var model = MODELS[sys.selectedY-1];

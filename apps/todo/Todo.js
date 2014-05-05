@@ -1,10 +1,6 @@
 FOAModel({
   name: 'Todo',
-  properties: [
-    { name: 'id' },
-    { name: 'completed', model_: 'BooleanProperty' },
-    { name: 'text' }
-  ]
+  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ]
 });
 
 FOAModel({

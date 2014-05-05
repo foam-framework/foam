@@ -60,8 +60,8 @@ function subWindow(w, opt_name) {
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: w.requestAnimationFrame.bind(w),
-    cancelAnimationFrame: w.cancelAnimationFrame.bind(w)
+    requestAnimationFrame: w.requestAnimationFrame && w.requestAnimationFrame.bind(w),
+    cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
   }, opt_name);
 }
 

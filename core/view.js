@@ -252,8 +252,8 @@ FOAModel({
       defaultValue: 'span'
     },
     {
-      name: 'cssClasses',
-      factory: function() { return []; }
+      name: 'className',
+      defaultValue: ''
     }
   ],
 
@@ -263,7 +263,7 @@ FOAModel({
     },
 
     cssClassAttr: function() {
-      return this.cssClasses.length ? ' class="' + this.cssClasses.join(' ') + '"' : '';
+      return this.className ? ' class="' + this.className + '"' : '';
     },
 
     dynamicTag: function(tagName, f) {
@@ -285,31 +285,7 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = GLOBAL[prop.view].create(prop);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
-
-      view.copyFrom(opt_args);
-
-      this.bindSubView(view, prop);
-
-      view.prop = prop;
-      view.toString = function () { return this.prop.name + "View"; };
-      this.addChild(view);
-
-      this[prop.name + 'View'] = view;
-
-      return view;
+      return PropertyView.create({parent: this, prop: prop, args: opt_args});
     },
 
     createTemplateView: function(name, opt_args) {
@@ -495,6 +471,90 @@ FOAModel({
       this.destroy();
       this.publish('closed');
     }
+  }
+});
+
+
+FOAModel({
+  name: 'PropertyView',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'parent',
+      type: 'View',
+      postSet: function(_, p) {
+        if ( ! this.data ) {
+          // TODO: replace with just 'p.data' when data-binding done
+          this.data = p.data || ( p.get && p.get() );
+        }
+      }
+    },
+    {
+      name: 'prop',
+      type: 'Property'
+    },
+    {
+      name: 'data',
+      postSet: function() { this.bindData(); }
+    },
+    {
+      name: 'view',
+      type: 'View'
+    },
+    'args'
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+
+      var prop = this.prop;
+      var view;
+
+      if ( ! prop.view ) {
+        view = TextFieldView.create(prop);
+      } else if ( typeof prop.view === 'string' ) {
+        view = GLOBAL[prop.view].create(prop);
+      } else if ( prop.view.model_ ) {
+        view = prop.view.deepClone().copyFrom(prop);
+      } else if ( typeof prop.view === 'function' ) {
+        view = prop.view(prop);
+      } else {
+        view = prop.view.create(prop);
+      }
+
+      view.copyFrom(this.args);
+
+      view.prop = prop;
+      view.toString = function () { return this.prop.name + 'View'; };
+      if ( this.parent) {
+        this.parent.addChild(view);
+        this.parent[prop.name + 'View'] = view;
+      }
+
+      this.view = view;
+      this.bindData();
+    },
+    bindData: function() {
+      var view = this.view;
+      var data = this.data;
+      if ( ! view || ! data ) return;
+
+      var pValue = data.propertyValue(this.prop.name);
+      if ( view.model_.DATA ) {
+        // When all views are converted to data-binding,
+        // only this method will be supported.
+        Events.link(pValue, view.data$);
+      } else if ( view.setValue ) {
+        view.setValue(pValue);
+      } else {
+        view.value = pValue;
+      }
+    },
+    toHTML: function() { return this.view.toHTML(); },
+    initHTML: function() { this.view.initHTML(); }
   }
 });
 
@@ -758,10 +818,9 @@ FOAModel({
       }
     }
   ]
-})
-;
+});
 
-// TODO: document the difference between softValue and value
+
 FOAModel({
   name:  'TextFieldView',
   label: 'Text Field',
@@ -770,18 +829,18 @@ FOAModel({
 
   properties: [
     {
+      model_: 'StringProperty',
       name:  'name',
-      type:  'String',
       defaultValue: 'field'
     },
     {
+      model_: 'IntegerProperty',
       name:  'displayWidth',
-      type:  'int',
       defaultValue: 30
     },
     {
+      model_: 'IntegerProperty',
       name:  'displayHeight',
-      type:  'int',
       defaultValue: 1
     },
     {
@@ -807,50 +866,26 @@ FOAModel({
       help: 'If true, HTML content is excaped in display mode.'
     },
     {
+      model_: 'StringProperty',
       name:  'mode',
-      type:  'String',
       defaultValue: 'read-write',
       view: {
         create: function() { return ChoiceView.create({choices:[
           "read-only", "read-write", "final"
-        ]}); } }
-    },
-    {
-      name: 'softValue',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        if ( this.mode === 'read-write' ) {
-          Events.unlink(oldValue, this.domValue);
-          Events.relate(newValue, this.domValue, this.valueToText.bind(this), this.textToValue.bind(this));
-        } else {
-          Events.unfollow(oldValue, this.domValue);
-          Events.map(newValue, this.domValue, this.valueToText.bind(this));
-        }
+        ]}); }
       }
     },
     {
       name: 'domValue'
     },
     {
-      name:  'value',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        if ( this.onKeyMode ) {
-          Events.unlink(oldValue, this.softValue);
-          Events.link(newValue, this.softValue);
-        } else {
-          Events.unfollow(oldValue, this.softValue);
-          Events.follow(newValue, this.softValue);
-        }
-      }
+      name: 'data'
     },
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
       defaultValueFn: function() {
-        if ( this.displayHeight === 1 ) return 'input';
-        return 'textarea';
+        return this.displayHeight === 1 ? 'input' : 'textarea';
       }
     }
   ],
@@ -861,73 +896,64 @@ FOAModel({
     ESCAPE: ['escape'],
 
     toHTML: function() {
-      if ( this.mode === 'read-write' ) {
-        this.on('change', this.onChange, this.getID());
+      return this.mode === 'read-write' ?
+        this.toReadWriteHTML() :
+        this.toReadOnlyHTML()  ;
+    },
 
-        var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
-        str += ' type="' + this.type + '" ' + this.cssClassAttr();
+    toReadWriteHTML: function() {
+      var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
+      str += ' type="' + this.type + '" ' + this.cssClassAttr();
+      
+      str += this.readWriteTagName === 'input' ?
+        ' size="' + this.displayWidth + '"' :
+        ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
+      
+      str += ' name="' + this.name + '">';
+      str += '</' + this.readWriteTagName + '>';
+      return str;
+    },
 
-        if ( this.readWriteTagName === 'input' )
-          str += ' size="' + this.displayWidth + '"';
-        else
-          str += ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
-
-        str += ' name="' + this.name + '">';
-        str += '</' + this.readWriteTagName + '>';
-        return str;
-      }
-
+    toReadOnlyHTML: function() {
       return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
-    // TODO: deprecate
-    getValue: function() { return this.value; },
-
-    // TODO: deprecate
-    setValue: function(value) {
-      this.value = value;
-    },
     initHTML: function() {
       this.SUPER();
 
       if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
-      if ( this.mode === 'read-write' ) {
-        this.domValue = DomValue.create(this.$, 'input');
-      } else {
-        //        this.domValue = DomValue.create(this.$, 'undefined', 'textContent');
-        this.domValue = DomValue.create(this.$, 'undefined', this.escapeHTML ? 'textContent' : 'innerHTML');
-      }
+      this.domValue = ( this.mode === 'read-write' ) ?
+        DomValue.create(
+          this.$,
+          this.onKeyMode ? 'input' : 'change') :
+        DomValue.create(
+          this.$,
+          'undefined',
+          this.escapeHTML ? 'textContent' : 'innerHTML');
 
-      this.setValue(this.value);
-      this.softValue = this.softValue;
+      Events.relate(
+        this.data$,
+        this.domValue,
+        this.valueToText,
+        this.textToValue);
 
       this.$.addEventListener('keydown', this.onKeyDown);
     },
 
-    //    textToValue: Events.identity,
+    textToValue: function(text) { return text; },
 
-    //    valueToText: Events.identity,
+    valueToText: function(value) { return value; },
 
-    textToValue: function(text) { return text;},
-
-    valueToText: function(value) { return value;},
-
-    destroy: function() { Events.unlink(this.domValue, this.value); }
+    destroy: function() { Events.unlink(this.domValue, this.data$); }
   },
 
   listeners: [
     {
-      name: 'onChange',
-      code: function(e) {
-        this.value.set(this.softValue.get());
-      }
-    },
-    {
       name: 'onKeyDown',
       code: function(e) {
         if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
-          this.domValue.set(this.value.get());
+          this.domValue.set(this.data);
           this.publish(this.ESCAPE);
         }
       }
@@ -1211,8 +1237,8 @@ FOAModel({
       }
     },
     {
-      name: 'cssClasses',
-      defaultValueFn: function() { return ['foamChoiceListView', this.orientation]; }
+      name: 'className',
+      defaultValueFn: function() { return 'foamChoiceListView ' + this.orientation; }
     },
     {
       name: 'tagName',
@@ -1265,11 +1291,6 @@ FOAModel({
       name:  'helpText',
       type:  'String',
       defaultValue: undefined
-    },
-    {
-      name: 'cssClass',
-      type: 'String',
-      defaultValue: 'foamChoiceView'
     },
     {
       name:  'size',
@@ -1880,11 +1901,19 @@ var DetailView = Model.create({
         if ( ! this.$ ) return;
         this.updateSubViews();
       }
+    },
+    {
+      name: 'onKeyboardShortcut',
+      code: function(evt) {
+        var action = this.keyMap_[this.evtToKeyCode(evt)];
+        if ( action ) action.callIfEnabled(this.obj);
+      }
     }
   ],
 
   methods: {
     bindSubView: function(view, prop) {
+      console.log('deprecated');
       if ( this.get() ) {
         // TODO: setValue is deprecated
         if ( view.setValue ) {
@@ -1976,6 +2005,7 @@ var DetailView = Model.create({
 
       // hooks sub-views upto sub-models
       this.updateSubViews();
+      this.initKeyboardShortcuts();
     },
 
     set: function(obj) {
@@ -1984,6 +2014,32 @@ var DetailView = Model.create({
 
     get: function() {
       return this.getValue().get();
+    },
+
+    evtToKeyCode: function(evt) {
+      var s = '';
+      if ( evt.ctrlKey ) s += 'ctrl-';
+      if ( evt.shiftKey ) s += 'shift-';
+      s += evt.keyCode;
+      return s;
+    },
+
+    initKeyboardShortcuts: function() {
+      var keyMap = {};
+      var found = false;
+      for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
+        var action = this.model.actions[i];
+        for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
+          var key = action.keyboardShortcuts[j];
+          var keyCode = key.toString();
+          keyMap[keyCode] = action;
+          found = true;
+        }
+      }
+      if ( found ) {
+        this.keyMap_ = keyMap;
+        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+      }
     },
 
     updateSubViews: function() {
@@ -2059,6 +2115,7 @@ var DetailView2 = Model.create({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
+      console.log('deprecated');
       var view =
         ! prop.view                   ? TextFieldView     :
         typeof prop.view === 'string' ? GLOBAL[prop.view] :
@@ -2068,7 +2125,7 @@ var DetailView2 = Model.create({
     },
 
     updateHTML: function() {
-      if ( ! this.id ) { return; }
+      if ( ! this.id ) return;
 
       this.children = [];
 
@@ -2684,8 +2741,8 @@ FOAModel({
       factory: function() { return SimpleValue.create(); }
     },
     {
-      name: 'cssClasses',
-      factory: function() { return ['actionButton', 'actionButton-' + this.action.name]; }
+      name: 'className',
+      factory: function() { return 'actionButton actionButton-' + this.action.name; }
     },
     {
       name: 'tagName',
@@ -3439,6 +3496,7 @@ FOAModel({
 
   methods: {
     textToValue: function(text) {
+      debugger;
       return parseFloat(text) || "0.0";
     }
   }

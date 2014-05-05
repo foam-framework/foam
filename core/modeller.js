@@ -42,7 +42,6 @@
 //       Model,
        Mouse,
 //       NeedleMeter,
-//       PanelCView,
 //       Power,
 //       Property,
        Rectangle,

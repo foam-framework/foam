@@ -595,90 +595,9 @@ FOAModel({
 });
 
 
-// DEPRECATED TODO: Remove and replace with CView wherever used
-/** A Panel is a container of other CViews. **/
-FOAModel({
-  name:  'PanelCView',
-  label: 'Panel',
-
-  properties: [
-    {
-      name:  'parent',
-      type:  'CView',
-      hidden: true
-    },
-    {
-      name:  'x',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 10
-    },
-    {
-      name:  'y',
-      type:  'int',
-      view:  'IntFieldView',
-      defaultValue: 10
-    },
-    {
-      name:  'children',
-      type:  'CView[]',
-      factory: function() { return []; }
-    },
-    {
-      name:  'canvas',
-      type:  'CView',
-      getter: function() {
-        return this.parent && this.parent.canvas;
-      },
-      setter: undefined
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      //       this.canvasView = Canvas.create(this);
-      this.canvasView = Canvas.create({width:this.width+1, height:this.height+2});
-      if ( this.backgroundColor ) this.canvasView.backgroundColor = this.backgroundColor;
-      return this.canvasView.toHTML();
-    },
-
-    initHTML: function() {
-      this.canvasView.initHTML();
-      this.canvasView.addChild(this);
-    },
-
-    write: function(document) {
-      document.writeln(this.toHTML());
-      this.initHTML();
-    },
-
-    addChild: function(child) {
-      this.children.push(child);
-      child.parent = this;
-      return this;
-    },
-
-    removeChild: function(child) {
-      this.children.deleteI(child);
-      child.parent = undefined;
-      return this;
-    },
-
-    paint: function() {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var child = this.children[i];
-
-        child.paint();
-      }
-    }
-  }
-});
-
-
 FOAModel({
   name:  'ProgressCView',
-  extendsModel: 'PanelCView',
-  label: 'ProgressCView',
+  extendsModel: 'CView',
 
   properties: [
     {
@@ -721,7 +640,7 @@ FOAModel({
 
 FOAModel({
   name:  'Graph',
-  extendsModel: 'PanelCView',
+  extendsModel: 'CView',
 
   properties: [
     {

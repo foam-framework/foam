@@ -24,71 +24,61 @@ FOAModel({
 
   properties: [
     {
+      model_: 'IntegerProperty',
       name:  'interval',
-      type:  'int',
-      view:  'IntFieldView',
       help:  'Interval of time between updating time.',
       units: 'ms',
       defaultValue: 10
     },
     {
+      model_: 'IntegerProperty',
       name:  'i',
-      type:  'int',
-      view:  'IntFieldView',
       defaultValue: 0
     },
     {
+      model_: 'FloatProperty',
       name:  'timeWarp',
-      type:  'float',
-      view:  'FloatFieldView',
       defaultValue: 1.0
     },
     {
+      model_: 'IntegerProperty',
       name:  'duration',
-      type:  'int',
-      view:  'IntFieldView',
       units: 'ms',
       defaultValue: -1
     },
     {
+      model_: 'FloatProperty',
       name: 'percent',
-      type: 'float',
-      view:  'FloatFieldView',
       defaultValue: 0
     },
     {
+      model_: 'IntegerProperty',
       name:  'startTime',
-      type:  'int',
-      view:  'IntFieldView',
       defaultValue: 0
     },
     {
+      model_: 'IntegerProperty',
       name:  'time',
-      type:  'int',
       help:  'The current time in milliseconds since epoch.',
-      view:  'IntFieldView',
       preSet: function(_, t) { return Math.ceil(t); },
       defaultValue: 0
     },
     {
+      model_: 'IntegerProperty',
       name:  'second',
-      type:  'int',
       help:  'The second of the current minute.',
-      view:  'IntFieldView',
       defaultValue: 0
     },
     {
+      model_: 'IntegerProperty',
       name:  'minute',
-      type:  'int',
       help:  'The minute of the current hour.',
-      view:  'IntFieldView',
       defaultValue: 0
     },
     {
+      model_: 'IntegerProperty',
       name:  'hour',
-      type:  'int',
       help:  'The hour of the current day.',
-      view:  'IntFieldView',
       defaultValue: 0
     },
     {
