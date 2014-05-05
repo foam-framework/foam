@@ -214,8 +214,8 @@ window.addEventListener('load', function() { DOM.init(X); }, false);
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 
-// ??? Should this have a 'value'?
-// Or maybe a ValueView and ModelView
+// ??? Should this have a 'data' property?
+// Or maybe a DataView and ModelView
 FOAModel({
   name: 'AbstractView',
   label: 'AbstractView',
@@ -904,11 +904,11 @@ FOAModel({
     toReadWriteHTML: function() {
       var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
-      
+
       str += this.readWriteTagName === 'input' ?
         ' size="' + this.displayWidth + '"' :
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
-      
+
       str += ' name="' + this.name + '">';
       str += '</' + this.readWriteTagName + '>';
       return str;
@@ -3495,10 +3495,7 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   methods: {
-    textToValue: function(text) {
-      debugger;
-      return parseFloat(text) || "0.0";
-    }
+    textToValue: function(text) { return parseFloat(text) || "0.0"; }
   }
 });
 
@@ -3509,12 +3506,8 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   methods: {
-    textToValue: function(text) {
-      return parseInt(text) || "0";
-    },
-    valueToText: function(value) {
-      return value ? value : '0';
-    }
+    textToValue: function(text) { return parseInt(text) || "0"; },
+    valueToText: function(value) { return value ? value : '0'; }
   }
 });
 
@@ -3525,12 +3518,8 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   methods: {
-    textToValue: function(text) {
-      return text.replace(/\s/g,'').split(',');
-    },
-    valueToText: function(value) {
-      return value ? value.toString() : "";
-    }
+    textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
+    valueToText: function(value) { return value ? value.toString() : ""; }
   }
 });
 
@@ -4449,6 +4438,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'ViewSwitcher',
   extendsModel: 'AbstractView',
@@ -4618,6 +4608,7 @@ FOAModel({
     }
   ]
 });
+
 
 FOAModel({
   name: 'TouchListView',
