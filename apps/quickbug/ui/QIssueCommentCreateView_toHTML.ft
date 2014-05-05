@@ -1,0 +1,88 @@
+<%
+   var saveButton = ActionButton.create({ action: this.model_.SAVE, value: SimpleValue.create(this) });
+   var discardButton = ActionButton.create({ action: this.model_.DISCARD, value: SimpleValue.create(this) });
+%>
+<div id="<%= this.getID() %>">
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tbody><tr>
+        <td>
+          $$content
+          <div id="attachmentarea"></div>
+          <span id="attachprompt">Attach a file</span>
+          <span id="attachmaxsize" style="margin-left:2em; display:none">Max. attachments per comment: 10.0 MB</span><br>
+          <br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        %%updatesView()
+          <table cellspacing="2" cellpadding="2" border="0" class="rowmajor">
+            <tbody><tr><th style="width: 1em">Summary:</th>
+                <td class="inplace" colspan="2">
+                  <input type="text" size="90" name="summary" value="Create reusable DAOKeyView">
+                </td>
+              </tr>
+              <tr><th>Status:</th><td class="inplace" colspan="2">
+                  <input type="text" id="statusedit" style="width: 12em" autocomplete="off" name="status" value="Started">
+                  <span id="merge_area" style="margin-left: 2em; display: none;">
+                    Merge into issue:
+                    <input type="text" id="merge_into" name="merge_into" style="width: 5em" value="">
+                  </span>
+                </td>
+              </tr>
+              <tr><th>Owner:</th><td class="inplace">
+                  <input type="text" id="owneredit" autocomplete="off" style="width: 12em" name="owner" value="adamvy@google.com">
+                </td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr><th>Cc:</th><td class="inplace" colspan="2">
+                  <input type="text" id="memberccedit" size="90" autocomplete="off" name="cc" value="">
+              </td></tr>
+              <tr><th class="vt">Labels:<br>
+                </th>
+                <td class="labelediting" colspan="2">
+                  <div id="editrow1">
+                    <input type="text" id="labeledit0" size="20" autocomplete="off" name="label" value="Type-Enhancement">
+                    <input type="text" id="labeledit1" size="20" autocomplete="off" name="label" value="Milestone-Release1.0">
+                    <input type="text" id="labeledit2" size="20" autocomplete="off" name="label" value="Component-UI">
+                  </div>
+                  <div id="editrow2">
+                    <input type="text" id="labeledit3" size="20" autocomplete="off" name="label" value="Priority-High">
+                    <input type="text" id="labeledit4" size="20" autocomplete="off" name="label" value="">
+                    <input type="text" id="labeledit5" size="20" autocomplete="off" name="label" value="">&nbsp;<u id="addrow2" class="fakelink">Add a row</u>
+                  </div>
+                </td>
+              </tr>
+              <tr><th>Blocked&nbsp;on:</th><td class="inplace" colspan="2">
+                  <input type="text" size="90" name="blocked_on" value="70">
+                </td>
+              </tr>
+              <tr id="move_issue_form_fragment" style="display: none">
+                <td class="nowrap">
+                  <b>Move to project: </b>
+                </td>
+                <td>
+                  <input type="text" name="move_to" id="move_to">
+                  <span id="derived_labels_target"></span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <div id="confirmarea" class="novel" style="display: none;"><span id="confirmmsg"></span></div>
+                  <div id="blocksubmitarea" class="blockingsubmit"><span id="blocksubmitmsg"></span></div>
+                </td>
+              </tr>
+          </tbody></table>
+          <%= saveButton %>
+          <%= discardButton %>
+          <input type="hidden" name="offer_send_email" value="1">
+          <input type="checkbox" checked="checked" name="send_email" id="send_email">
+          <label for="send_email" title="Send issue change notifications to interested users">Send email</label>
+          <select name="more_actions" id="more_actions" style="margin-left:3em">
+            <option value="0" selected="selected" disabled="1">More actions...</option>
+            <option value="move">Move issue</option>
+          </select>
+        </td>
+      </tr>
+  </tbody></table>
+</div>
