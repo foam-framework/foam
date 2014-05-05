@@ -134,7 +134,7 @@ var DOM = {
     for ( var i = 0 ; i < e.attributes.length ; i++ ) {
       var a   = e.attributes[i];
       var key = a.name;
-      var val = a.textContent;
+      var val = a.value;
       var p   = model.getProperty(key);
 
       if ( p ) {
