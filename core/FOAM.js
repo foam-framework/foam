@@ -119,7 +119,7 @@ var FOAModel = function(m) {
     get: function () {
       USED_MODELS[m.name] = true;
       delete UNUSED_MODELS[m.name];
-      Object.defineProperty(GLOBAL, m.name, {value: null});
+      Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
       registerModel(JSONUtil.mapToObj(m, Model));
       return this[m.name];
     },

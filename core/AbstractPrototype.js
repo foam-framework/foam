@@ -174,7 +174,8 @@ var AbstractPrototype = {
     if ( ! AbstractPrototype.__lookupGetter__(prop.name$_) ) {
       Object.defineProperty(AbstractPrototype, prop.name$_, {
         get: function() { return this.propertyValue(name); },
-        set: function(value) { Events.link(value, this.propertyValue(name)); }
+        set: function(value) { Events.link(value, this.propertyValue(name)); },
+        configurable: true
       });
     }
 

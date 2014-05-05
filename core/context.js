@@ -90,7 +90,8 @@ var registerModel = function(model) {
     {
       get: function() {
         return ( this === thisX ) ? thisModel : this.registerModel(model);
-      }
+      },
+      configurabe: true
     }
   );
 
