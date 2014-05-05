@@ -935,8 +935,8 @@ FOAModel({
       Events.relate(
         this.data$,
         this.domValue,
-        this.valueToText,
-        this.textToValue);
+        this.valueToText.bind(this),
+        this.textToValue.bind(this));
 
       this.$.addEventListener('keydown', this.onKeyDown);
     },
@@ -1762,7 +1762,7 @@ FOAModel({
     },
 
     setError: function(err) {
-      this.errorView.getValue().set(err || "");
+      this.errorView.data = err || "";
       this.errorView.$.style.display = err ? 'block' : 'none';
     },
 
