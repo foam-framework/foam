@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 var files = [
+  ['firefox', function() { return navigator.userAgent.indexOf('firefox') != -1; }],
   'stdlib',
   'io',
   'writer',
