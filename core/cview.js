@@ -74,7 +74,7 @@ FOAModel({
 
       try {
         child.addListener(this.paint);
-      } catch (x) { }
+      } catch (x) { console.log(x); }
 
       return this;
     },

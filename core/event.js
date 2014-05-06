@@ -544,7 +544,6 @@ var Events = {
 
   // ???: would be nice to have a removeValue method
   // or maybe add an 'owner' property, combine with Janitor
-
 }
 
 // TODO: Janitor

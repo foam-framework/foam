@@ -57,22 +57,11 @@ FOAModel({
     },
     {
       name:  'internalTime',
-      preSet: function(_, newValue) {
-        if ( this.active ) this.time = newValue;
-        return newValue;
-      }
     },
     {
       name:  'time',
       preSet: function(_, newValue) {
-        setTimeout(function() {
-          if ( this.active )
-            this.time = this.internalTime;
-          else
-            this.internalTime = this.time;
-        }.bind(this), 16);
-
-        return newValue;
+        return this.active ? this.internalTime : newValue;
       }
     }
   ],
@@ -80,6 +69,7 @@ FOAModel({
   listeners: {
     mouseDown: function(evt) {
       this.active = true;
+      this.internalTime = this.time;
       this.a = this.angle(evt.offsetX, evt.offsetY);
       this.touchX = evt.offsetX;
       this.touchY = evt.offsetY;
@@ -101,7 +91,7 @@ FOAModel({
       if ( d == 0 ) return;
 
       var dTime = d/(Math.PI*2)*36000/this.rpm;
-      this.internalTime = this.internalTime + dTime;
+      this.time = this.internalTime = this.internalTime + dTime;
     }
   },
 
