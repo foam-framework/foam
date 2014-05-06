@@ -446,7 +446,10 @@ var Events = {
     dstValue.set(srcValue.get());
 
     var listener = function () {
-      dstValue.set(srcValue.get());
+      var sv = srcValue.get();
+      var dv = dstValue.get();
+
+      if ( sv !== dv ) dstValue.set(sv);
     };
 
     // TODO: put back when cleanup implemented
