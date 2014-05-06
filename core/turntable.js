@@ -65,12 +65,12 @@ FOAModel({
     {
       name:  'time',
       preSet: function(_, newValue) {
-        setTimeout(function(){
+        setTimeout(function() {
           if ( this.active )
             this.time = this.internalTime;
           else
             this.internalTime = this.time;
-        }.bind(this));
+        }.bind(this), 16);
 
         return newValue;
       }
