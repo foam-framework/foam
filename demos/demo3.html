@@ -7,13 +7,6 @@
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
-
-    var timerView = DetailView.create({ model: timer.model_, showActions: true });
-    document.writeln(timerView.toHTML());
-    timerView.set(timer);
-    timerView.initHTML();
-
     var space = Canvas.create({width: 2500, height: 2700, background:'#fff'});
     space.write(document);
 
@@ -81,12 +74,7 @@
       }
     };
 
-    Events.dynamic(function () {
-       timer.time;
-       space.paint();
-    });
-
-    timer.start();
+    space.paint();
   </script>
 
  </body>
