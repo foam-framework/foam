@@ -195,22 +195,26 @@ function asynchronized(f, opt_lock) {
   var lock = opt_lock || {};
   if ( ! lock.q ) { lock.q = []; lock.active = false; }
 
-  function onExit(g) {
-    return function(ret) {
+  // Decorate 'ret' to check for blocked continuations.
+  function onExit(ret) {
+    return function() {
       var next = lock.q.shift();
+
       if ( next ) {
         setTimeout(next, 0);
       } else {
         lock.active = false;
       }
 
-      g(ret);
+      ret();
     };
   }
 
   return function(ret) {
+    // Semaphore is in use, so just queue f for execution when the current
+    // continuation exits.
     if ( lock.active ) {
-       lock.q.push(function() { f(onExit(ret)); onExit(ret); });
+       lock.q.push(function() { f(onExit(ret)); });
        return;
     }
 

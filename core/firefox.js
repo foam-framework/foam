@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,17 @@
  * limitations under the License.
  */
 
-/**
- * files is a list of either filenames for [filename, predicate] pairs.
- * If a predicate is supplied, then the file is only loaded if the predicate returns true.
- **/
-(function() {
-  for ( var i = 0 ; i < files.length ; i++ ) {
-    var p = Array.isArray(files[i]) ? files[i][1] : null;
-    var f = Array.isArray(files[i]) ? files[i][0] : files[i];
-    if ( ! p || p() ) {
-      document.writeln('<script language="javascript" src="' + (FOAM_BOOT_DIR || "") + f + '.js"></script>\n');
+console.log('Loading Firefox Support.');
+
+Object.defineProperties(MouseEvent.prototype, {
+  offsetX: {
+    get: function() {
+      return this.clientX - this.target.getBoundingClientRect().left;
+    }
+  },
+  offsetY: {
+    get: function() {
+      return this.clientY - this.target.getBoundingClientRect().top;
     }
   }
-})();
-
-
+});

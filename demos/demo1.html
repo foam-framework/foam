@@ -7,13 +7,8 @@
  <body>
   <script language="javascript">
     var timer = Timer.create({});
-
-    var timerView = DetailView.create({ model: timer.model_, showActions: true });
-    document.writeln(timerView.toHTML());
-    timerView.set(timer);
-    timerView.initHTML();
-
     var space = Canvas.create({width: 1000, height: 700, background:'#fff'});
+    timer.write(document);
     space.write(document);
 
     var mouse = Mouse.create();

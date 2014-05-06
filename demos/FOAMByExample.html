@@ -23,6 +23,22 @@ FOAModel({
 });
 </script>
 
+<foam id="t1" model="UnitTest" onInit="this.test()" view="DemoView">
+  <name>Event Tests</name>
+  <description>Test event primitives.</description>
+  <async>true</async>
+  <code>
+    FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+    var t = Test.create();
+    t.x$.addListener(function() { log(t.x); });
+    t.x = 1;
+    t.x = 2;
+    t.x = 3;
+    Movement.animate(500, function() { t.x = 10; })();
+    setTimeout(ret, 550);
+  </code>
+</foam>
+
 <!--
 <foam model="Model" name="DemoView" extendsModel="DetailView">
   <templates>
@@ -54,7 +70,7 @@ FOAModel({
 
     var t3 = Test.create({x$: t1.x$});
     log([t1.x, t2.x, t3.x]);
-    
+
     t3.x = 5;
     log([t1.x, t2.x, t3.x]);
   </code>
@@ -159,9 +175,9 @@ FOAModel({
   <name>aFunc Tests</name>
   <description>Test FOAM's Asynchronous-Functions (aFunc's).</description>
   <code>
-    f1 = function(ret) { console.log('f1() called.'); ret(1); };
-    f2 = function(ret, a) { console.log('f2() called.'); ret(a,2); };
-    aprint = function(ret) { console.log(argsToArray(arguments).slice(1).join(', ')); ret(); };
+    f1 = function(ret) { log('f1() called.'); ret(1); };
+    f2 = function(ret, a) { log('f2() called.'); ret(a,2); };
+    aprint = function(ret) { log(argsToArray(arguments).slice(1).join(', ')); ret(); };
   </code>
   <tests>
 
@@ -176,7 +192,7 @@ FOAModel({
       <async>true</async>
       <description>Test that amemo() only executes its delegate once.</description>
       <code>
-        m = amemo(function(ret) { console.log('Should only see this once.'); ret(1); });
+        m = amemo(function(ret) { log('Should only see this once.'); ret(1); });
         apar(m, m, m).aseq(aprint)(ret);
       </code>
     </foam>
@@ -184,8 +200,8 @@ FOAModel({
       <async>true</async>
       <code>
         aseq(
-          function(ret) { console.log('fB'); ret(1); },
-          function(ret) { console.log('fC'); ret(2); },
+          function(ret) { log('fB'); ret(1); },
+          function(ret) { log('fC'); ret(2); },
           aprint
         )(ret);
       </code>
@@ -194,8 +210,8 @@ FOAModel({
       <async>true</async>
       <code>
         apar(
-          function(ret, a) { console.log('fB'); ret(1); },
-          function(ret, a) { console.log('fC'); ret(2); }
+          function(ret, a) { log('fB'); ret(1); },
+          function(ret, a) { log('fC'); ret(2); }
         )(aprint.aseq(ret));
       </code>
     </foam>
@@ -204,9 +220,9 @@ FOAModel({
       <async>true</async>
       <code>
         aseq(
-          arepeatpar(5, aseq(ayield(), function(ret, a, b) { console.log('a', a); ret(1); })),
+          arepeatpar(5, aseq(ayield(), function(ret, a, b) { log('a', a); ret(1); })),
           ayield(),
-          arepeatpar(5, function(ret, a, b) { console.log('b', a); ret(1); }),
+          arepeatpar(5, function(ret, a, b) { log('b', a); ret(1); }),
           ayield()
         )(ret);
       </code>
@@ -221,14 +237,14 @@ FOAModel({
     <foam model="UnitTest" name="arepeat 2">
       <async>true</async>
       <code>
-        arepeat(5, function(ret, a, b) { console.log(a); ret(1); }).aseq(aprint)(ret);
+        arepeat(5, function(ret, a, b) { log(a); ret(1); }).aseq(aprint)(ret);
       </code>
     </foam>
     <foam model="UnitTest" name="arepeat 3">
       <async>true</async>
       <code>
         aseq(
-          arepeat(5, function(ret, a, b) { console.log(a); ret(1); }),
+          arepeat(5, function(ret, a, b) { log(a); ret(1); }),
           aprint)(ret);
       </code>
     </foam>
@@ -236,10 +252,10 @@ FOAModel({
       <async>true</async>
       <code>
         aseq(
-          function(ret) { console.log('fA'); ret(1); },
+          function(ret) { log('fA'); ret(1); },
           apar(
-            function(ret, a) { console.log('fB', a); ret(1); },
-            function(ret, a) { console.log('fC', a); ret(2); }
+            function(ret, a) { log('fB', a); ret(1); },
+            function(ret, a) { log('fC', a); ret(2); }
           ),
           aprint
         )(ret);
@@ -249,12 +265,22 @@ FOAModel({
       <async>true</async>
       <code>log('anop'); aseq(alog('before'), anop, alog('after'))(ret);</code>
     </foam>
-    <foam model="UnitTest" name="abind">
+    <foam model="UnitTest" name="abind1">
       <async>true</async>
       <code>
           var boo = function() { log('boo'); }
           boo();
           boo.abind(null)(ret);
+      </code>
+    </foam>
+    <foam model="UnitTest" name="abind2">
+      <async>true</async>
+      <code>
+        aseq(
+          f1,
+          function() { log('sync fn'); }.abind(this),
+          f2
+        )(ret);
       </code>
     </foam>
     <foam model="UnitTest" name="alog">
@@ -295,8 +321,8 @@ FOAModel({
       <async>true</async>
       <code>
         log('**********');
-        console.log('************** Beginning asleep2');
-        aseq(alog('before'), asleep(1000), alog('after'), asleep(1000), alog('much after'))(ret);
+        log('************** Beginning asleep2');
+        aseq(alog('before'), asleep(100), alog('after'), asleep(100), alog('much after'))(ret);
 //        log('after it all');
       </code>
     </foam>
@@ -304,7 +330,7 @@ FOAModel({
       <async>true</async>
       <code>
         log('at the start');
-        aseq(asleep(1000), alog('a message'))(ret);
+        aseq(asleep(100), alog('a message'))(ret);
       </code>
     </foam>
     <!--
@@ -324,7 +350,7 @@ FOAModel({
   var fn = futurefn(functionFuture);
 
   fn("hello");
-  setTimeout(function() { fn(" world!"); ret(); }, 1000);
+  setTimeout(function() { fn(" world!"); ret(); }, 200);
   setTimeout(function() { functionFuture.set(log); }, 100);
       </code>
     </foam>
@@ -334,7 +360,7 @@ FOAModel({
 
         f1 = aseq(
           alog('f1 start'),
-          asleep(2000),
+          asleep(200),
           alog('f1 end')
         );
       </code>
@@ -342,23 +368,21 @@ FOAModel({
         <foam model="UnitTest" name="Without Synchronization">
           <async>true</async>
           <code>
-            apar(
-              f1,
-              f1,
-              f1
-            )(ret);
+            apar(f1, f1, f1)(ret);
           </code>
         </foam>
         <foam model="UnitTest" name="With Synchronization">
           <async>true</async>
           <code>
-            var f2 = aseq(asynchronized(atime('f2', f1), tlock), alog('END'));
+            f1 = asynchronized(f1);
 
-            apar(
-              f2,
-              f2,
-              f2
-            )(ret);
+            apar(f1, f1, f1)(ret);
+          </code>
+        </foam>
+        <foam model="UnitTest" name="With Synchronization (Sequential)">
+          <async>true</async>
+          <code>
+            apar(aseq(f1, f1, f1), aseq(f1, f1, f1))(ret);
           </code>
         </foam>
       </tests>
@@ -377,7 +401,7 @@ FOAModel({
       <code>
         var v1 = TextFieldView.create();
         var v2 = TextFieldView.create();
-        
+
         log(v1.toHTML()); v1.initHTML();
         log(v2.toHTML()); v2.initHTML();
 

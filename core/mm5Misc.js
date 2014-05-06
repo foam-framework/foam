@@ -79,8 +79,8 @@ FOAModel({
 
         txt =
           txt.trim().startsWith('function') ? txt                               :
-          this.async                 ? 'function(ret) {\n' + txt + '\n}' :
-                                       'function() {\n'    + txt + '\n}' ;
+          this.async                        ? 'function(ret) {\n' + txt + '\n}' :
+                                              'function() {\n'    + txt + '\n}' ;
 
         return eval('(' + txt + ')');
       }
@@ -127,16 +127,19 @@ FOAModel({
       name:  'test',
       help:  'Run the unit tests.',
 
-      action: function(obj) { this.atest()(function() {}); }
+      action: function(obj) { asynchronized(this.atest(), this.LOCK)(function() {}); }
     }
   ],
 
   methods:{
+    // Lock to prevent more than one top-level Test from running at once.
+    LOCK: {},
+
     // Run test as asynchronously as an afunc.
     atest: function() {
       var self = this;
 
-      this.scope.log     = this.log.bind(this);
+      this.scope.log    = this.log.bind(this);
       this.scope.jlog   = this.jlog.bind(this);
       this.scope.assert = this.assert.bind(this);
       this.scope.fail   = this.fail.bind(this);
@@ -148,9 +151,7 @@ FOAModel({
       this.failed = 0;
 
       var code;
-      with ( this.scope ) {
-        code = eval('(' + this.code.toString() + ')');
-      }
+      with ( this.scope ) { code = eval('(' + this.code.toString() + ')'); }
 
       var afuncs = [];
       var oldLog;
@@ -163,25 +164,21 @@ FOAModel({
 
       afuncs.push(this.async ? code.bind(this) : code.abind(this));
 
-      for ( var i = 0 ; i < this.tests.length ; i++ ) {
-        var test = this.tests[i];
-
-        (function(test) {
-          afuncs.push(function(ret) {
-            test.scope.__proto__ = self.scope;
-            test.atest()(ret);
-          });
-          afuncs.push(function(ret) {
-            self.passed += test.passed;
-            self.failed += test.failed;
-            ret();
-          });
-        })(test);
-      }
-
       afuncs.push(function(ret) {
         console.log = oldLog;
         ret();
+      });
+
+      this.tests.forEach(function(test) {
+        afuncs.push(function(ret) {
+          test.scope.__proto__ = self.scope;
+          test.atest()(ret);
+        });
+        afuncs.push(function(ret) {
+          self.passed += test.passed;
+          self.failed += test.failed;
+          ret();
+        });
       });
 
       return aseq.apply(this, afuncs);

@@ -344,11 +344,11 @@ var AbstractPrototype = {
   write: function(document) {
     var view = DetailView.create({
       model: this.model_,
+      value: SimpleValue.create(this),
       showActions: true
     });
 
     document.writeln(view.toHTML());
-    view.value.set(this);
     view.initHTML();
   },
 

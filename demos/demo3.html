@@ -7,14 +7,7 @@
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
-
-    var timerView = DetailView.create({ model: timer.model_, showActions: true });
-    document.writeln(timerView.toHTML());
-    timerView.set(timer);
-    timerView.initHTML();
-
-    var space = Canvas.create({width: 2500, height: 2700, background:'#fff'});
+    var space = Canvas.create({width: 3500, height: 2700, background:'#fff'});
     space.write(document);
 
     var mouse = Mouse.create();
@@ -36,28 +29,23 @@
        [M.bounce(0.15, 0.02,2),         'red'],
        [M.bounce(0.15, 0.02,3),         'red'],
        [M.stepBack(0.05),               'orange'],
-       [M.bounce(0.5, 0.2,3).o(M.stepBack(0.05)),       'black'],
-//       [M.back,                         'orange'],
-//       [M.back.o(M.back),               'purple'],
-//       [M.back.o(M.accelerate),         'lightGreen'],
+       [M.bounce(0.5, 0.1, 3).o(M.stepBack(0.05)),       'black'],
+       [M.back,                         'orange'],
+       [M.back.o(M.back),               'purple'],
+       [M.back.o(M.accelerate),         'lightGreen'],
     ];
 
-    var clocks = [];
-    var graphs = [];
-    var ms = [];
-    for ( var i = 0 ; i < is.length ; i++ )
-    {
+    var clocks = [], graphs = [], ms = [];
+    for ( var i = 0 ; i < is.length ; i++ ) {
       clocks[i] = ClockView.create({x:250,y:50+i*100,r:40,color:is[i][1]});
       graphs[i] = Graph.create({x:5,y:50+i*100,width:200,height:95,style:'Line',graphColor:null,lineWidth:2,drawShadow:false,capColor:is[i][1], data:[]});
-//      graphs[i] = Graph.create({x:250,y:50,width:1500,height:1200,style:'Line',graphColor:null,lineWidth:3,drawShadow:false,capColor:is[i][1], data:[]});
       space.addChild(clocks[i]);
       space.addChild(graphs[i]);
 
       (function (i) {
         var start = clocks[i].x;
         clocks[i].propertyValue('x').addListener(function() {
-          graphs[i].data.push(clocks[i].x-start);
-          if ( graphs[i].data.length > 100 ) graphs[i].data.shift();
+          graphs[i].addData(clocks[i].x-start, 100);
         });
 
         ms[i] = Movement.animate(
@@ -71,23 +59,13 @@
       })(i);
     }
 
-// graphs[2].width = 900; graphs[2].height= 500; graphs[2].x = 300;
-
     space.$.onmousedown = function(evt) {
-      for ( var i = 0 ; i < is.length ; i++ )
-      {
-//        console.log(ms[i]);
+      for ( var i = 0 ; i < is.length ; i++ ) {
         ms[i](evt);
       }
     };
 
-    Events.dynamic(function () {
-       timer.time;
-       space.paint();
-    });
-
-    timer.start();
+    space.paint();
   </script>
-
  </body>
 </html>

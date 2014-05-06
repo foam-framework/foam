@@ -544,7 +544,6 @@ var Events = {
 
   // ???: would be nice to have a removeValue method
   // or maybe add an 'owner' property, combine with Janitor
-
 }
 
 // TODO: Janitor
@@ -603,7 +602,7 @@ var Movement = {
    * @param a amplitude of maximum bounce
    * @param opt_c number of cycles in bounce (default: 3)
    */
-  oscillate:  function(b,a,opt_c) {
+  oscillate:  function(b, a, opt_c) {
     var c = opt_c || 3;
     return function(x) {
       if ( x < (1-b) ) return x/(1-b);
@@ -659,7 +658,6 @@ var Movement = {
 
     return function() {
       var STACK     = DEBUG_STACK();
-      var startTime = Date.now();
       var ranges    = [];
       var timer;
 
@@ -677,23 +675,22 @@ var Movement = {
         Events.onSet.pop();
       }
 
-      if ( ranges.length > 0 || true ) {
+      var startTime = Date.now();
+
+      if ( ranges.length > 0 ) {
         timer = setInterval(function() {
-          var now = Math.min(Date.now(), startTime + duration);
-          var p   = interp((now-startTime)/duration);
+          var now = Date.now();
+          var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
 
           for ( var i = 0 ; i < ranges.length ; i++ ) {
             var r = ranges[i];
-            var obj = r[0];
-            var name = r[1];
-            var value1 = r[2];
-            var value2 = r[3];
+            var obj = r[0], name = r[1], value1 = r[2], value2 = r[3];
 
             obj[name] = value1 + (value2-value1) * p;
           }
 
           if ( now >= startTime + duration ) stop();
-        }, 30);
+        }, 16);
       }
 
       return stop;
