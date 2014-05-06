@@ -11,5 +11,5 @@
   &nbsp;&nbsp; Search: $$search
   &nbsp;&nbsp; Sort by: $$order
   <p>
-  $$filteredDAO{cssClasses: ['phones'], tagName: 'ul'}
+  $$filteredDAO{className: 'phones', tagName: 'ul'}
 <% } %>
