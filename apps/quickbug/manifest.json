@@ -6,6 +6,8 @@
   "permissions": [
     "https://www.googleapis.com/*",
     "https://code.google.com/p/*",
+    "https://accounts.google.com/*",
+    "webview",
     "identity",
     "storage",
     "unlimitedStorage"

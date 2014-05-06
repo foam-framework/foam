@@ -18,73 +18,162 @@ FOAModel({
   name: 'OAuth2',
   label: 'OAuth 2.0',
 
-
   properties: [
     {
-      name: 'accesstoken'
+      name: 'accessToken',
+      help: 'Token used to authenticate requests.'
     },
     {
-      name: 'refreshtoken'
+      name: 'refreshToken',
+      help: 'Token used to generate new access tokens.'
     },
     {
-      name: 'authcode',
-      postSet: function(oldValue, newValue) {
-        this.updateRefreshToken_();
-      }
+      name: 'authCode',
+      help: 'Authorization code used to generate a new refresh token.'
     },
     {
-      name: 'clientid',
+      name: 'clientId',
       required: true
     },
     {
-      name: 'clientsecret',
+      name: 'clientSecret',
       required: true
     },
     {
-      name: 'scope',
+      model_: 'StringArrayProperty',
+      name: 'scopes',
       required: true
     },
     {
+      model_: 'URLProperty',
       name: 'endpoint',
-      type: 'String',
-      defaultValue: "https://accounts.google.com/o/oauth2/auth"
+      defaultValue: "https://accounts.google.com/o/oauth2/"
     }
   ],
 
   methods: {
-    updateRefreshToken_: function() {
+    init: function() {
+      this.SUPER();
+      this.refresh_ = asynchronized((function(ret, opt_forceInteractive) {
+        if ( opt_forceInteractive ) {
+          this.auth(ret);
+          return;
+        }
+
+        aseq(
+          (function(ret) {
+            this.updateAccessToken(ret)
+          }).bind(this),
+          (function(ret, result) {
+            if ( ! result ) {
+              this.auth(ret);
+              return;
+            }
+
+            ret && ret(result);
+          }).bind(this)
+        )(ret);
+      }).bind(this));
+    },
+
+    updateAccessToken: function(ret) {
       var postdata = [
-        'code=' + (this.authcode),
-        'client_id=' + (this.clientid),
-        'client_secret=' + (this.clientsecret),
-        'grant_type=authorization_code'
+        'refresh_token=' + encodeURIComponent(this.refreshToken),
+        'client_id=' + this.clientId,
+        'client_secret=' + this.clientSecret,
+        'grant_type=refresh_token'
       ];
 
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", this.endpoint);
+      xhr.open("POST", this.endpoint + "token")
+      xhr.responseType = "json";
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      var self = this;
       aseq(
         function(ret) {
           xhr.asend(ret, postdata.join('&'));
         },
-        function() {
-          console.log('auth result: ' + xhr.responseText);
-        })();
+        function(ret) {
+          if ( xhr.status === 200 ) self.accessToken = xhr.response.access_token;
+
+          ret && ret(xhr.status === 200 && self.accessToken)
+        })(ret);
     },
 
-    auth: function() {
-/*      var queryparams = [
-        '?response_type=code',
-        'client_id=' + encodeURIComponent(this.clientid),
-        'redirect_uri=urn:ietf:wg:oauth:2.0:oob',
-        'scope=' + encodeURIComponent(this.scope)
-      ];*/
-      var queryparams = [
-        '?response_type=token',
-        'client_id=' + encodeURIComponent(this.clientid),
-        'redirect_uri=http://localhost:8080/oauth2callback',
-        'scope=' + encodeURIComponent(this.scope)
+    updateRefreshToken: function(ret) {
+      var postdata = [
+        'code=' + this.authCode,
+        'client_id=' + this.clientId,
+        'client_secret=' + this.clientSecret,
+        'grant_type=authorization_code',
+        'redirect_uri=urn:ietf:wg:oauth:2.0:oob'
       ];
-      window.open(this.endpoint + queryparams.join('&'));
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", this.endpoint + "token");
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.responseType = "json";
+      var self = this;
+      aseq(
+        function(ret) {
+          xhr.asend(ret, postdata.join('&'));
+        },
+        function(ret) {
+          if ( xhr.status === 200 ) {
+            self.accessToken = xhr.response.access_token;
+            self.refreshToken = xhr.response.refresh_token;
+          }
+
+          ret && ret(xhr.status === 200 && self.accessToken);
+        })(ret);
+    },
+
+    auth: function(ret) {
+      var queryparams = [
+        '?response_type=code',
+        'client_id=' + encodeURIComponent(this.clientId),
+        'redirect_uri=urn:ietf:wg:oauth:2.0:oob',
+        'scope=' + encodeURIComponent(this.scopes.join(' '))
+      ];
+
+
+      var self = this;
+      chrome.app.window.create(
+        'empty.html', { width: 800, height: 600 },
+        function(w) {
+          var success = false;
+
+          w.onClosed.addListener(function() {
+            if ( ! success ) ret(false);
+          });
+
+          var window = w.contentWindow;
+          var document = w.contentWindow.document;
+
+          window.addEventListener('load', function() {
+            var webview = document.createElement('webview');
+            webview.style.width = '100%';
+            webview.style.height = '100%';
+            document.body.appendChild(webview);
+
+            webview.addEventListener('contentload', function() {
+              webview.executeScript({ code: 'window.document.title;' }, function(title) {
+                if ( title[0] && title[0].startsWith('Success code=') ) {
+                  self.authCode = title[0].substring(title[0].indexOf('=') + 1);
+                  success = true;
+                  w.close();
+                  self.updateRefreshToken(ret);
+                }
+              });
+            });
+
+            webview.src = self.endpoint + "auth" + queryparams.join('&');
+          });
+        });
+    },
+
+    refresh: function(ret, opt_forceInteractive) {
+      return this.refresh_(ret, opt_forceInteractive);
     }
   }
 });
