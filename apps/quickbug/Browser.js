@@ -78,9 +78,9 @@ FOAModel({
         });
         return view;
       },
-      postSet: function(oldValue, newValue) {
-        // TODO clean this up when scopes are implemented.
-        newValue.setValue(this.project.user.email$);
+      postSet: function(_, view) {
+        // TODO: clean this up when scopes are implemented.
+        view.data$ = this.project.user.email$;
       }
     },
     {
@@ -175,7 +175,7 @@ FOAModel({
         name: 'search',
         displayWidth: 5,
         type: 'search',
-        value: this.location.q$ }); }
+        data$: this.location.q$ }); }
     },
     {
       name: 'refreshImg',
@@ -401,7 +401,7 @@ FOAModel({
       Events.dynamic(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
-          this.countField.value.value =
+          this.countField.data =
             this.selectedIssueCount.toLocaleString() + ' selected of ' + this.issueCount.toLocaleString();
         }.bind(this));
 
