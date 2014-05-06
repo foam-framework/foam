@@ -727,10 +727,7 @@ FOAModel({
     {
       name:  'data',
       type:  'Array[float]',
-      factory: function() {
-        return [];
-      }
-      //       defaultValue: []
+      factory: function() { return []; }
     },
     {
       name: 'f',
@@ -743,7 +740,6 @@ FOAModel({
       defaultValue: function (x) { return x; },
       help: 'The graph\'s data function.'
     }
-
   ],
 
   issues: [
@@ -805,8 +801,7 @@ FOAModel({
       }
     },
 
-    paintPointData: function(canvas, x, y, xs, w, h, maxValue)
-    {
+    paintPointData: function(canvas, x, y, xs, w, h, maxValue) {
       canvas.shadowOffsetX = 2;
       canvas.shadowOffsetY = 2;
       canvas.shadowBlur = 2;
@@ -816,23 +811,18 @@ FOAModel({
       canvas.lineWidth = 2;
       canvas.lineJoin = 'round';
       canvas.beginPath();
-      for ( var i = 0 ; i < this.data.length ; i++ )
-      {
+      for ( var i = 0 ; i < this.data.length ; i++ ) {
         var d = this.f(this.data[i]);
         var lx = this.toX(i)+0.5;
         var ly = this.toY(d, maxValue)+0.5;
 
-        if ( i == 0 )
-          canvas.moveTo(lx, ly);
-        else
-          canvas.lineTo(lx, ly);
+        if ( i == 0 ) canvas.moveTo(lx, ly); else canvas.lineTo(lx, ly);
       }
 
       canvas.stroke();
 
       canvas.lineWidth = 3;
-      for ( var i = 0 ; i < this.data.length ; i++ )
-      {
+      for ( var i = 0 ; i < this.data.length ; i++ ) {
         var d = this.f(this.data[i]);
         var lx = this.toX(i)+0.5;
         var ly = this.toY(d, maxValue)+0.5;
@@ -842,15 +832,12 @@ FOAModel({
         canvas.closePath();
         canvas.stroke();
       }
-
     },
 
-    paintBarData: function(canvas, x, y, xs, w, h, maxValue)
-    {
+    paintBarData: function(canvas, x, y, xs, w, h, maxValue) {
       canvas.fillStyle = this.graphColor;
 
-      for ( var i = 0 ; i < this.data.length ; i++ )
-      {
+      for ( var i = 0 ; i < this.data.length ; i++ ) {
         var d = this.f(this.data[i]);
         var x1 = x+xs+w*i/this.data.length;
         var y1 = this.toY(d, maxValue);
@@ -933,12 +920,12 @@ FOAModel({
     },
 
     toX: function(val) {
-      var w  = this.width-this.axisSize;
+      var w = this.width - this.axisSize;
       return this.x+this.axisSize+(val==0?0:w*val/(this.data.length-1));
     },
 
     toY: function(val, maxValue) {
-      var h  = this.height-this.axisSize;
+      var h = this.height - this.axisSize;
       return this.y+h-val*h/maxValue+0.5;
     },
 
@@ -960,7 +947,6 @@ FOAModel({
         graph.addData(value.get(), opt_maxNumValues);
       });
     }
-
   }
 });
 
