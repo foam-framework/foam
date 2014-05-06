@@ -57,11 +57,19 @@ FOAModel({
     },
     {
       name:  'internalTime',
+      postSet: function(_, newValue) { if ( this.active ) this.time = newValue; }
     },
     {
       name:  'time',
       preSet: function(_, newValue) {
-        return this.active ? this.internalTime : newValue;
+        // When active, don't accept external changes to time.  Override by firing event back to
+        // internalTime value.
+        if ( this.active ) {
+          if ( newValue != this.internalTime ) this.propertyChange('time', newValue, this.internalTime);
+          return this.internalTime;
+        }
+
+        return newValue;
       }
     }
   ],
