@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+console.log('Loading Firefox Support.');
+
 Object.defineProperties(MouseEvent.prototype, {
   offsetX: {
     get: function() {
