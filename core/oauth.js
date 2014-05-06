@@ -28,15 +28,15 @@ FOAModel({
       help: 'Token used to generate new access tokens.'
     },
     {
-      name: 'authcode',
+      name: 'authCode',
       help: 'Authorization code used to generate a new refresh token.'
     },
     {
-      name: 'clientid',
+      name: 'clientId',
       required: true
     },
     {
-      name: 'clientsecret',
+      name: 'clientSecret',
       required: true
     },
     {
@@ -52,11 +52,35 @@ FOAModel({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      this.refresh_ = asynchronized((function(ret, opt_forceInteractive) {
+        if ( opt_forceInteractive ) {
+          this.auth(ret);
+          return;
+        }
+
+        aseq(
+          (function(ret) {
+            this.updateAccessToken(ret)
+          }).bind(this),
+          (function(ret, result) {
+            if ( ! result ) {
+              this.auth(ret);
+              return;
+            }
+
+            ret && ret(result);
+          }).bind(this)
+        )(ret);
+      }).bind(this));
+    },
+
     updateAccessToken: function(ret) {
       var postdata = [
         'refresh_token=' + encodeURIComponent(this.refreshToken),
-        'client_id=' + this.clientid,
-        'client_secret=' + this.clientsecret,
+        'client_id=' + this.clientId,
+        'client_secret=' + this.clientSecret,
         'grant_type=refresh_token'
       ];
 
@@ -78,9 +102,9 @@ FOAModel({
 
     updateRefreshToken: function(ret) {
       var postdata = [
-        'code=' + (this.authcode),
-        'client_id=' + (this.clientid),
-        'client_secret=' + (this.clientsecret),
+        'code=' + this.authCode,
+        'client_id=' + this.clientId,
+        'client_secret=' + this.clientSecret,
         'grant_type=authorization_code',
         'redirect_uri=urn:ietf:wg:oauth:2.0:oob'
       ];
@@ -107,7 +131,7 @@ FOAModel({
     auth: function(ret) {
       var queryparams = [
         '?response_type=code',
-        'client_id=' + encodeURIComponent(this.clientid),
+        'client_id=' + encodeURIComponent(this.clientId),
         'redirect_uri=urn:ietf:wg:oauth:2.0:oob',
         'scope=' + encodeURIComponent(this.scopes.join(' '))
       ];
@@ -135,7 +159,7 @@ FOAModel({
             webview.addEventListener('contentload', function() {
               webview.executeScript({ code: 'window.document.title;' }, function(title) {
                 if ( title[0] && title[0].startsWith('Success code=') ) {
-                  self.authcode = title[0].substring(title[0].indexOf('=') + 1);
+                  self.authCode = title[0].substring(title[0].indexOf('=') + 1);
                   success = true;
                   w.close();
                   self.updateRefreshToken(ret);
@@ -149,24 +173,7 @@ FOAModel({
     },
 
     refresh: function(ret, opt_forceInteractive) {
-      if ( opt_forceInteractive ) {
-        this.auth(ret);
-        return;
-      }
-
-      aseq(
-        (function(ret) {
-          this.updateAccessToken(ret)
-        }).bind(this),
-        (function(ret, result) {
-          if ( ! result ) {
-            this.auth(ret);
-            return;
-          }
-
-          ret && ret(result);
-        }).bind(this)
-      )(ret);
+      return this.refresh_(ret, opt_forceInteractive);
     }
   }
 });
