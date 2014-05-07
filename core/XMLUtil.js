@@ -19,7 +19,7 @@ var XMLParser = {
 
   START: seq(sym('whitespace'), sym('tag'), sym('whitespace')),
 
-  'tag': seq(
+  tag: seq(
       '<',
       sym('label'),
       sym('whitespace'),
@@ -33,13 +33,13 @@ var XMLParser = {
       '</', sym('label'), '>'
     ),
 
-  'label': plus(notChars(' =/\t\r\n<>\'"')),
+  label: plus(notChars(' =/\t\r\n<>\'"')),
 
-  'text': plus(notChar('<')),
+  text: plus(notChar('<')),
 
-  'attribute': seq(sym('label'), '=', sym('value')),
+  attribute: seq(sym('label'), '=', sym('value')),
 
-  'value': alt(
+  value: alt(
     seq('"', repeat(notChar('"')), '"'),
     seq("'", repeat(notChar("'")), "'")
   ),
@@ -49,10 +49,10 @@ var XMLParser = {
 
 XMLParser.addActions({
   START: function(xs) { return xs[1]; },
-  'label': function(xs) { return xs.join(''); },
-  'text': function(xs) { return xs.join(''); },
-  'value': function(xs) { return xs[1].join(''); },
-  'attribute': function(xs) {
+  label: function(xs) { return xs.join(''); },
+  text: function(xs) { return xs.join(''); },
+  value: function(xs) { return xs[1].join(''); },
+  attribute: function(xs) {
     return { name: xs[0], value: xs[2] };
   },
 
@@ -156,8 +156,7 @@ var XMLUtil = {
     return ret.length ? ret : XMLUtil.unescape(a.join(''));
   },
 
-  compact:
-  {
+  compact: {
     stringify: function(obj) {
       var buf = [];
 
@@ -243,9 +242,7 @@ var XMLUtil = {
     }
   },
 
-
-  pretty:
-  {
+  pretty: {
     stringify: function(obj) {
       var buf = [];
 
@@ -344,7 +341,6 @@ var XMLUtil = {
       out('\n',indent);
     }
   }
-
 };
 
 XMLUtil.stringify = XMLUtil.pretty.stringify.bind(XMLUtil.pretty);
