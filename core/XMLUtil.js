@@ -17,7 +17,7 @@
 var XMLParser = {
   __proto__: grammar,
 
-  START: seq(sym('whitespace'), sym('tag'), sym('whitespace')),
+  START: seq1(1, sym('whitespace'), sym('tag'), sym('whitespace')),
 
   tag: seq(
       '<',
@@ -33,32 +33,24 @@ var XMLParser = {
       '</', sym('label'), '>'
     ),
 
-  label: plus(notChars(' =/\t\r\n<>\'"')),
+  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
-  text: plus(notChar('<')),
+  text: str(plus(notChar('<'))),
 
-  attribute: seq(sym('label'), '=', sym('value')),
+  attribute: pick([0, 2], seq(sym('label'), '=', sym('value'))),
 
-  value: alt(
-    seq('"', repeat(notChar('"')), '"'),
-    seq("'", repeat(notChar("'")), "'")
-  ),
+  value: str(alt(
+    seq1(1, '"', repeat(notChar('"')), '"'),
+    seq1(1, "'", repeat(notChar("'")), "'")
+  )),
 
   'whitespace': repeat(alt(' ', '\t', '\r', '\n'))
 };
 
 XMLParser.addActions({
-  START: function(xs) { return xs[1]; },
-  label: function(xs) { return xs.join(''); },
-  text: function(xs) { return xs.join(''); },
-  value: function(xs) { return xs[1].join(''); },
-  attribute: function(xs) {
-    return { name: xs[0], value: xs[2] };
-  },
-
   // Trying to abstract all the details of the parser into one place,
   // and to use a more generic representation in XMLUtil.parse().
-  'tag': function(xs) {
+  tag: function(xs) {
     // 0 - opening bracket
     // 1 - label
     // 2 - whitespace
@@ -70,16 +62,12 @@ XMLParser.addActions({
     // 8 - closing label
     // 9 - >
 
-    if (xs[1] != xs[8]) {
+    if ( xs[1] != xs[8] ) {
       // XXX: Handle thrown errors in parsers!
       throw 'Mismatched XML tags';
     }
 
-    var obj = {
-      tag: xs[1],
-      attrs: {},
-      children: xs[6]
-    };
+    var obj = { tag: xs[1], attrs: {}, children: xs[6] };
 
     xs[3].forEach(function(attr) {
       obj.attrs[attr.name] = attr.value;
