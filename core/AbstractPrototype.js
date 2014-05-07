@@ -341,8 +341,8 @@ var AbstractPrototype = {
     return XMLUtil.stringify(this);
   },
 
-  write: function(document) {
-    var view = DetailView.create({
+  write: function(document, opt_view) {
+    var view = (opt_view || DetailView).create({
       model: this.model_,
       value: SimpleValue.create(this),
       showActions: true
