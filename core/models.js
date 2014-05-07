@@ -238,17 +238,6 @@ FOAModel({
 
 
 FOAModel({
-  name: 'Person',
-  properties: [
-    { model_: 'IntegerProperty', name: 'id' },
-    { name: 'name' },
-    { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntegerProperty', name: 'age' }
-  ]
-});
-
-
-FOAModel({
   name: 'UserInfo',
   label: 'UserInfo',
 

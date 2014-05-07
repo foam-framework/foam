@@ -14,22 +14,146 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var XMLParser = {
+  __proto__: grammar,
+
+  START: seq(sym('whitespace'), sym('tag'), sym('whitespace')),
+
+  'tag': seq(
+      '<',
+      sym('label'),
+      sym('whitespace'),
+      repeat(sym('attribute'), sym('whitespace')),
+      sym('whitespace'),
+      '>',
+      repeat(alt(
+        sym('tag'),
+        sym('text')
+      )),
+      '</', sym('label'), '>'
+    ),
+
+  'label': plus(notChars(' =/\t\r\n<>\'"')),
+
+  'text': plus(notChar('<')),
+
+  'attribute': seq(sym('label'), '=', sym('value')),
+
+  'value': alt(
+    seq('"', repeat(notChar('"')), '"'),
+    seq("'", repeat(notChar("'")), "'")
+  ),
+
+  'whitespace': repeat(alt(' ', '\t', '\r', '\n'))
+};
+
+XMLParser.addActions({
+  START: function(xs) { return xs[1]; },
+  'label': function(xs) { return xs.join(''); },
+  'text': function(xs) { return xs.join(''); },
+  'value': function(xs) { return xs[1].join(''); },
+  'attribute': function(xs) {
+    return { name: xs[0], value: xs[2] };
+  },
+
+  // Trying to abstract all the details of the parser into one place,
+  // and to use a more generic representation in XMLUtil.parse().
+  'tag': function(xs) {
+    // 0 - opening bracket
+    // 1 - label
+    // 2 - whitespace
+    // 3 - attributes
+    // 4 - whitespace
+    // 5 - closing bracket
+    // 6 - children
+    // 7 - </
+    // 8 - closing label
+    // 9 - >
+
+    if (xs[1] != xs[8]) {
+      // XXX: Handle thrown errors in parsers!
+      throw 'Mismatched XML tags';
+    }
+
+    var obj = {
+      tag: xs[1],
+      attrs: {},
+      children: xs[6]
+    };
+
+    xs[3].forEach(function(attr) {
+      obj.attrs[attr.name] = attr.value;
+    });
+
+    return obj;
+  }
+});
+
+
 var XMLUtil = {
 
   escape: function(str) {
     return str
-      .replace(/&/g, '&amp;');
-    //       .replace(/\</g, '&lt;')
-    //       .replace(/\>/g, '&gt;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+  },
+
+  unescape: function(str) {
+    return str
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
   },
 
   escapeAttr: function(str) {
-    return str
-      .replace(/"/g, '&quot;');
+    return str.replace(/"/g, '&quot;');
+  },
+
+  unescapeAttr: function(str) {
+    return str.replace(/&quot;/g, '"');
   },
 
   parse: function(str) {
-    // todo
+    var result = XMLParser.parseString(str);
+    if (!result) return result; // Parse error on undefined.
+
+    // Otherwise result is the <foam> tag.
+    return this.parseArray(result.children);
+  },
+
+  parseObject: function(tag) {
+    var obj = {};
+    var self = this;
+    tag.children.forEach(function(c) {
+      // Ignore children which are not tags.
+      if (typeof c === 'object' && c.attrs && c.attrs.name) {
+        obj[self.unescapeAttr(c.attrs.name)] = self.parseArray(c.children);
+      }
+    });
+
+    if (!tag.attrs.model) return obj;
+    var model = this.unescapeAttr(tag.attrs.model);
+    return GLOBAL[model] ?  GLOBAL[model].create(obj) : obj;
+  },
+
+  parseArray: function(a) {
+    // Turn <i> tags into primitive values, everything else goes through
+    // parseObject.
+    // Any loose primitive values are junk whitespace, and ignored.
+    var self = this;
+    var ret = [];
+    a.forEach(function(x) {
+      if (typeof x !== 'object') return;
+      if (x.tag == 'i') {
+        ret.push(XMLUtil.unescape(x.children[0])); // Literal content.
+      } else {
+        ret.push(self.parseObject(x));
+      }
+    });
+
+    // Special case: If we found nothing, return all children as a string.
+    return ret.length ? ret : XMLUtil.unescape(a.join(''));
   },
 
   compact:
@@ -39,7 +163,7 @@ var XMLUtil = {
 
       this.output(buf.push.bind(buf), obj);
 
-      return buf.join('');
+      return '<foam>' + buf.join('') + '</foam>';
     },
 
     output: function(out, obj) {
@@ -47,9 +171,7 @@ var XMLUtil = {
         this.outputArray_(out, obj);
       }
       else if ( typeof obj == 'string' ) {
-        out("'");
         out(XMLUtil.escape(obj));
-        out("'");
       }
       else if ( obj instanceof Function ) {
         out(obj);
@@ -61,9 +183,8 @@ var XMLUtil = {
           else
             this.outputMap_(out, obj);
         }
-        catch (x)
-        {
-          console.log("toXMLError: ", x, obj);
+        catch (x) {
+          console.log('toXMLError: ', x.toString(), obj);
         }
       }
       else {
@@ -72,65 +193,53 @@ var XMLUtil = {
     },
 
     outputObject_: function(out, obj) {
-      var str          = "";
-
-      out('{', "model_:'", obj.model_.name, "'");
+      out('<object model="', XMLUtil.escapeAttr(obj.model_.name), '">');
 
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
 
-        if ( prop.name in obj.instance_ && obj[prop.name] ) {
+        if ( prop.name === 'parent' ) continue;
+        if ( obj.instance_ && prop.name in obj.instance_ ) {
           var val = obj[prop.name];
 
           if ( Array.isArray(val) && val.length == 0 ) continue;
 
           if ( val == prop.defaultValue ) continue;
 
-          out(",", prop.name, ':');
+          out('<property name="', XMLUtil.escapeAttr(prop.name), '">');
           this.output(out, val);
+          out('</property>');
         }
       }
 
-      out('}');
+      out('</object>');
     },
 
-
     outputMap_: function(out, obj) {
-      var str          = "";
-      var first        = true;
-
-      out('{');
+      out('<object>');
 
       for ( var key in obj ) {
         var val = obj[key];
 
-        if ( ! first ) out(",");
-        out(key, ':');
+        out('<property name="', XMLUtil.escapeAttr(key), '">');
         this.output(out, val);
-
-        first = false;
+        out('</property>');
       }
 
-      out('}');
+      out('</object>');
     },
 
     outputArray_: function(out, a) {
-      if ( a.length == 0 ) { out('[]'); return out; }
-
-      var str          = "";
-      var first        = true;
-
-      out('[');
+      if ( a.length == 0 ) return out;
 
       for ( var i = 0 ; i < a.length ; i++, first = false ) {
         var obj = a[i];
 
-        if ( ! first ) out(',');
-
-        this.output(out, obj);
+        if (typeof obj === 'string' || typeof obj === 'number')
+          out('<i>', XMLUtil.escape(obj), '</i>');
+        else
+          this.output(out, obj);
       }
-
-      out(']');
     }
   },
 
@@ -142,7 +251,7 @@ var XMLUtil = {
 
       this.output(buf.push.bind(buf), obj);
 
-      return buf.join('');
+      return '<foam>\n' + buf.join('') + '</foam>\n';
     },
 
     output: function(out, obj, opt_indent) {
@@ -175,10 +284,9 @@ var XMLUtil = {
 
     outputObject_: function(out, obj, opt_indent) {
       var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var nestedIndent = indent + "  ";
 
-      out(indent, '<', obj.model_.name, '>');
+      out(indent, '<object model="', XMLUtil.escapeAttr(obj.model_.name), '">');
 
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
@@ -191,49 +299,47 @@ var XMLUtil = {
 
           if ( val == prop.defaultValue ) continue;
 
-          out("\n", nestedIndent, '<', prop.name, '>');
+          out("\n", nestedIndent, '<property name="', XMLUtil.escapeAttr(prop.name), '">');
           this.output(out, val, nestedIndent);
-          out('</', prop.name, '>');
+          out('</property>');
         }
       }
 
-      out('\n', indent, '</', obj.model_.name, '>');
-      out('\n',indent);
+      out('\n', indent, '</object>');
+      out('\n');
     },
 
     outputMap_: function(out, obj, opt_indent) {
       var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var nestedIndent = indent + "  ";
 
-      out(indent, '<map>');
+      out(indent, '<object>');
 
       for ( var key in obj ) {
         var val = obj[key];
 
-
-        out("\n", nestedIndent, '<', key, '>');
+        out("\n", nestedIndent, '<property name="', XMLUtil.escapeAttr(key), '">');
         this.output(out, val, nestedIndent);
-        out('</', key, '>');
+        out('</property>');
       }
 
-      out("\n", indent, '</map>');
+      out("\n", indent, '</object>\n');
     },
 
     outputArray_: function(out, a, opt_indent) {
       if ( a.length == 0 ) return out;
 
       var indent       = opt_indent || "";
-      var nestedIndent = indent + "   ";
-      var str          = "";
+      var nestedIndent = indent + "  ";
 
       for ( var i = 0 ; i < a.length ; i++, first = false ) {
         var obj = a[i];
 
         out('\n');
-        if ( typeof obj == 'string' ) out(nestedIndent, '<i>');
-        this.output(out, obj, nestedIndent);
-        if ( typeof obj == 'string' ) out('</i>');
+        if (typeof obj === 'string' || typeof obj === 'number')
+          out(nestedIndent, '<i>', XMLUtil.escape(obj), '</i>');
+        else
+          this.output(out, obj, nestedIndent);
       }
       out('\n',indent);
     }
