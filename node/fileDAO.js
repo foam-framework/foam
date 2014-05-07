@@ -45,7 +45,6 @@ FOAModel({
       isMerged: 100,
       code: function() {
         this.select()(function(a) {
-          console.log('writing');
           fs.writeFileSync(this.name, JSONUtil.where(NOT_TRANSIENT).stringify(a), { encoding: 'utf-8' });
         }.bind(this));
       }
@@ -53,16 +52,55 @@ FOAModel({
   ]
 });
 
-// Testing
 
-var Person = FOAM({
-  model_: 'Model',
-  name: 'Person',
+FOAModel({
+  name: 'NodeXMLFileDAO',
+
+  extendsModel: 'MDAO',
+
   properties: [
-    'id',
-    'name',
-    { model_: IntegerProperty, name: 'age' },
-    { name: 'sex', defaultValue: 'M' }
+    {
+      name:  'name',
+      label: 'File Name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural + '.xml';
+      }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      if (fs.existsSync(this.name)) {
+        var content = fs.readFileSync(this.name, { encoding: 'utf-8' });
+        XMLUtil.parse(content).select(this);
+      }
+
+      this.addRawIndex({
+        execute: function() {},
+        bulkLoad: function() {},
+        toString: function() { return "NodeXMLFileDAO Update"; },
+        plan: function() {
+          return { cost: Number.MAX_VALUE };
+        },
+        put: this.updated,
+        remove: this.updated
+      });
+    }
+  },
+
+  listeners: [
+    {
+      name: 'updated',
+      isMerged: 100,
+      code: function() {
+        this.select()(function(a) {
+          fs.writeFileSync(this.name, XMLUtil.stringify(a), { encoding: 'utf-8' });
+        }.bind(this));
+      }
+    }
   ]
 });
 
