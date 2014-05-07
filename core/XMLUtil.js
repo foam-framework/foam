@@ -44,7 +44,7 @@ var XMLParser = {
     seq1(1, "'", repeat(notChar("'")), "'")
   )),
 
-  'whitespace': repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 };
 
 XMLParser.addActions({
@@ -104,7 +104,7 @@ var XMLUtil = {
 
   parse: function(str) {
     var result = XMLParser.parseString(str);
-    if (!result) return result; // Parse error on undefined.
+    if ( !result ) return result; // Parse error on undefined.
 
     // Otherwise result is the <foam> tag.
     return this.parseArray(result.children);
@@ -120,7 +120,7 @@ var XMLUtil = {
       }
     });
 
-    if (!tag.attrs.model) return obj;
+    if ( !tag.attrs.model ) return obj;
     var model = this.unescapeAttr(tag.attrs.model);
     return GLOBAL[model] ?  GLOBAL[model].create(obj) : obj;
   },
@@ -132,8 +132,8 @@ var XMLUtil = {
     var self = this;
     var ret = [];
     a.forEach(function(x) {
-      if (typeof x !== 'object') return;
-      if (x.tag == 'i') {
+      if ( typeof x !== 'object' ) return;
+      if ( x.tag == 'i' ) {
         ret.push(XMLUtil.unescape(x.children[0])); // Literal content.
       } else {
         ret.push(self.parseObject(x));
