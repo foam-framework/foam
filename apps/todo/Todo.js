@@ -10,7 +10,7 @@ FOAModel({
       name: 'input',
       setter: function(text) {
         this.dao.put(Todo.create({text: text}));
-        this.propertyChange("input", text, "");
+        this.propertyChange("input", text, '');
       },
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },

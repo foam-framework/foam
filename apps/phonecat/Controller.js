@@ -14,7 +14,7 @@ FOAModel({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'PhoneCitationView' },
+      view: { model_: 'DAOListView', rowView: 'PhoneCitationView', mode: 'read-only' },
       dynamicValue: function() {
         return this.dao.orderBy(this.order).where(CONTAINS_IC(SEQ(Phone.NAME, Phone.SNIPPET), this.search));
       }
