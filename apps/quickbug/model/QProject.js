@@ -52,7 +52,7 @@ FOAModel({
     {
       name: 'IssueCommentNetworkDAO',
       factory: function() {
-        return QIssueCommentNetworkDAO.create({
+        return this.X.QIssueCommentNetworkDAO.create({
           model: QIssueComment,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
         });
@@ -61,8 +61,8 @@ FOAModel({
     {
       name: 'IssueMDAO',
       factory: function() {
-        var dao = MDAO.create({model: QIssue});
-        var auto = AutoIndex.create(dao);
+        var dao = this.X.MDAO.create({model: QIssue});
+        var auto = this.X.AutoIndex.create(dao);
 
         auto.addIndex(QIssue.STATUS);
         dao.addRawIndex(auto);
@@ -73,19 +73,19 @@ FOAModel({
     {
       name: 'IssueCachingDAO',
       factory: function() {
-        var IssueIDBDAO = IDBDAO.create({
+        var IssueIDBDAO = this.X.IDBDAO.create({
           model: QIssue,
           name: this.projectName + '_' + QIssue.plural
         });
 
-        return CachingDAO.create(this.IssueMDAO, IssueIDBDAO);
+        return this.X.CachingDAO.create(this.IssueMDAO, IssueIDBDAO);
       },
       transient: true
     },
     {
       name: 'IssueNetworkDAO',
       factory: function() {
-        return IssueRestDAO.create({
+        return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           model: QIssue,
           batchSize: 500
@@ -98,18 +98,18 @@ FOAModel({
       factory: function() {
         var dao = this.IssueMDAO;
 
-        dao = QIssueSplitDAO.create({
+        dao = this.X.QIssueSplitDAO.create({
           local: dao,
           model: QIssue,
           remote: this.IssueNetworkDAO
         });
 
-        dao = ActionFactoryDAO.create({
+        dao = this.X.ActionFactoryDAO.create({
           delegate: dao,
           actionDao: this.IssueCommentNetworkDAO
         });
 
-        dao = QIssueStarringDAO.create({
+        dao = this.X.QIssueStarringDAO.create({
           delegate: dao,
           project: this,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
@@ -129,13 +129,13 @@ FOAModel({
     },
     {
       name: 'timer',
-      factory: function() { return Timer.create(); },
+      factory: function() { return this.X.Timer.create(); },
       transient: true
     },
     {
       name: 'syncManager',
       factory: function() {
-        return SyncManager.create({
+        return this.X.SyncManager.create({
           syncInterval: 60*5,
           batchSize: 500,
           queryParser: QueryParser,

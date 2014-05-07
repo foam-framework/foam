@@ -48,6 +48,7 @@ cat \
   ../../core/experimental/protobufparser.js \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
+  ../../core/oauth.js \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   > "$BUILD_DIR/foam.js"
