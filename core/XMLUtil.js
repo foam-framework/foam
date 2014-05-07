@@ -37,7 +37,7 @@ var XMLParser = {
 
   text: str(plus(notChar('<'))),
 
-  attribute: pick([0, 2], seq(sym('label'), '=', sym('value'))),
+  attribute: seq(sym('label'), '=', sym('value')),
 
   value: str(alt(
     seq1(1, '"', repeat(notChar('"')), '"'),
@@ -70,7 +70,7 @@ XMLParser.addActions({
     var obj = { tag: xs[1], attrs: {}, children: xs[6] };
 
     xs[3].forEach(function(attr) {
-      obj.attrs[attr.name] = attr.value;
+      obj.attrs[attr[0]] = attr[2];
     });
 
     return obj;
@@ -104,7 +104,7 @@ var XMLUtil = {
 
   parse: function(str) {
     var result = XMLParser.parseString(str);
-    if ( !result ) return result; // Parse error on undefined.
+    if ( ! result ) return result; // Parse error on undefined.
 
     // Otherwise result is the <foam> tag.
     return this.parseArray(result.children);
