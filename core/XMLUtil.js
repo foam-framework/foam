@@ -44,7 +44,7 @@ var XMLParser = {
     seq("'", repeat(notChar("'")), "'")
   ),
 
-  'whitespace': repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 };
 
 XMLParser.addActions({
@@ -58,7 +58,7 @@ XMLParser.addActions({
 
   // Trying to abstract all the details of the parser into one place,
   // and to use a more generic representation in XMLUtil.parse().
-  'tag': function(xs) {
+  tag: function(xs) {
     // 0 - opening bracket
     // 1 - label
     // 2 - whitespace
@@ -70,7 +70,7 @@ XMLParser.addActions({
     // 8 - closing label
     // 9 - >
 
-    if (xs[1] != xs[8]) {
+    if ( xs[1] != xs[8] ) {
       // XXX: Handle thrown errors in parsers!
       throw 'Mismatched XML tags';
     }
@@ -116,7 +116,7 @@ var XMLUtil = {
 
   parse: function(str) {
     var result = XMLParser.parseString(str);
-    if (!result) return result; // Parse error on undefined.
+    if ( !result ) return result; // Parse error on undefined.
 
     // Otherwise result is the <foam> tag.
     return this.parseArray(result.children);
@@ -132,7 +132,7 @@ var XMLUtil = {
       }
     });
 
-    if (!tag.attrs.model) return obj;
+    if ( !tag.attrs.model ) return obj;
     var model = this.unescapeAttr(tag.attrs.model);
     return GLOBAL[model] ?  GLOBAL[model].create(obj) : obj;
   },
@@ -144,8 +144,8 @@ var XMLUtil = {
     var self = this;
     var ret = [];
     a.forEach(function(x) {
-      if (typeof x !== 'object') return;
-      if (x.tag == 'i') {
+      if ( typeof x !== 'object' ) return;
+      if ( x.tag == 'i' ) {
         ret.push(XMLUtil.unescape(x.children[0])); // Literal content.
       } else {
         ret.push(self.parseObject(x));
