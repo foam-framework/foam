@@ -94,15 +94,21 @@ FOAModel({
       transient: true
     },
     {
-      name: 'IssueDAO',
+      name: 'IssueSplitDAO',
       factory: function() {
         var dao = this.IssueMDAO;
 
-        dao = this.X.QIssueSplitDAO.create({
+        return this.X.QIssueSplitDAO.create({
           local: dao,
           model: QIssue,
           remote: this.IssueNetworkDAO
         });
+      }
+    },
+    {
+      name: 'IssueDAO',
+      factory: function() {
+        var dao = this.IssueSplitDAO;
 
         dao = this.X.ActionFactoryDAO.create({
           delegate: dao,

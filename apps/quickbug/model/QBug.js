@@ -135,7 +135,13 @@ FOAModel({
 
       this.persistentContext.bindObject('user', QUser)(function(user) {
         self.userFuture.set(user);
+        self.refreshUser();
+      });
+    },
 
+    refreshUser: function() {
+      var self = this;
+      this.userFuture.get(function(user) {
         self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
           function(response) {
             if ( response ) {

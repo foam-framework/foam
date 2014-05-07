@@ -31,9 +31,9 @@ FOAModel({
   extendsModel: 'AbstractView',
 
   properties: [
-    {
-      name: 'project'
-    },
+    'project',
+    'previewID',
+    'favouritesMenu',
     {
       name: 'qbug',
       scope: 'project',
@@ -71,16 +71,12 @@ FOAModel({
     {
       name: 'userView',
       factory: function() {
-        var view = TextFieldView.create(QUser.EMAIL);
-        view.copyFrom({
-          mode: 'read-only',
-          escapeHtml: true
+        var view = ActionLink.create({
+          action: this.model_.CHANGE_USER,
+          value: SimpleValue.create(this),
         });
+        view.className = view.className + ' tip-below';
         return view;
-      },
-      postSet: function(_, view) {
-        // TODO: clean this up when scopes are implemented.
-        view.data$ = this.project.user.email$;
       }
     },
     {
@@ -196,9 +192,6 @@ FOAModel({
       }
     },
     {
-      name: 'favouritesMenu'
-    },
-    {
       name: 'legacyUrl',
       getter: function() {
         return this.url + '/issues/list?' + this.location.toURL(this);
@@ -301,7 +294,6 @@ FOAModel({
       model_: 'Action',
       name:  'launchBrowser',
 //      iconUrl: 'images/link.svg',
-      help:  'Link',
       action: function() {
         this.project.launchBrowser();
       }
@@ -386,8 +378,21 @@ FOAModel({
       }
     },
     {
-      name: 'previewID'
-    }
+      model_: 'Action',
+      name: 'changeUser',
+      help: 'Change the current user.',
+      labelFn: function() {
+        return AbstractView.getPrototype().strToHTML(this.project.user.email);
+      },
+      action: function() {
+        var self = this;
+        this.qbug.authAgent.auth(function() {
+          self.qbug.refreshUser();
+          self.project.IssueSplitDAO.invalidate();
+          self.performQuery();
+        });
+      }
+    },
   ],
 
   methods: {

@@ -2,6 +2,7 @@ export BUILD_DIR=~/Downloads/quickbug
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
+cp ../../core/css-tooltips.css $BUILD_DIR
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
