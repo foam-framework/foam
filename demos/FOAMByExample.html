@@ -1,6 +1,6 @@
 <html>
  <head>
-  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="dragon.js"></script>
   <title>FOAM DOM Objects</title>
@@ -389,61 +389,6 @@ FOAModel({
     </foam>
   </tests>
 </foam>
-
-<script language="javascript">
-aseq(
-  arequire('UnitTest'),
-  function(ret) {
-    UnitTest.create({
-      model_: 'UnitTest',
-      name: 'XMLUtil Tests',
-      description: 'Define an example model (see the DAO tests above) and make sure it serializes to and from XML',
-      view: 'DemoView',
-      editable: false,
-      code: function() {
-        Person = FOAM({
-          model_: 'Model',
-          name: 'Person',
-          properties: [
-            { name: 'id' },
-            { name: 'name' },
-            { name: 'sex', defaultValue: 'M' },
-            { model_: 'IntegerProperty', name: 'age' },
-            { model_: 'ArrayProperty', name: 'kids' },
-            { name: 'troublesome"quoted"name' }
-          ]
-        });
-
-        alice = Person.create({
-          id: 1,
-          name: 'Alice',
-          sex: 'F',
-          age: 42,
-          kids: ['Emily', 'Bobby</i><i>Injection'],
-          'troublesome"quote"name': 'some value'
-        });
-      },
-
-      tests: [
-        {
-          model_: 'UnitTest',
-          name: 'RoundTrip1',
-          description: 'Serialize the alice object and parse it back again',
-          code: function() {
-            var xml = XMLUtil.stringify([alice]);
-            jlog(xml);
-            var parsed = XMLUtil.parse(xml);
-            log(parsed);
-            assert(alice.equals(parsed), 'Objects should match');
-            assert(parsed.kids.length === alice.kids.length, 'In particular, the tags should be escaped');
-          }
-        }
-      ]
-    }).write(document, DemoView);
-    ret();
-  }
-);
-</script>
 
 <!-- TODO: Enable UnitTests to handle the rendering of views.
 
