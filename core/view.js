@@ -2747,6 +2747,14 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'button'
+    },
+    {
+      name: 'showLabel',
+      defaultValueFn: function() { return this.action.showLabel; }
+    },
+    {
+      name: 'iconUrl',
+      defaultValueFn: function() { return this.action.iconUrl; }
     }
   ],
 
@@ -2784,11 +2792,11 @@ FOAModel({
     toInnerHTML: function() {
       var out = "";
 
-      if ( this.action.iconUrl ) {
+      if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
       }
 
-      if ( this.action.showLabel ) {
+      if ( this.showLabel ) {
         var value = this.value.get();
 
         out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
