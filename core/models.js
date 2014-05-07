@@ -145,6 +145,19 @@ FOAModel({
 });
 
 
+/**
+ * Used when creating PersistentContext's.
+ * Ex.
+ * var persistentContext = PersistentContext.create({
+ *  dao: IDBDAO.create({model: Binding}),
+ *   predicate: NOT_TRANSIENT,
+ *   context: GLOBAL
+ *  });
+ * ...
+ * persistentContext.bindObject('userInfo', UserInfo, {});
+ *
+ * TODO: Make simpler to setup.
+ **/
 FOAModel({
   name: 'Binding',
 
@@ -234,17 +247,6 @@ FOAModel({
       return future.get;
     }
   }
-});
-
-
-FOAModel({
-  name: 'Person',
-  properties: [
-    { model_: 'IntegerProperty', name: 'id' },
-    { name: 'name' },
-    { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntegerProperty', name: 'age' }
-  ]
 });
 
 
