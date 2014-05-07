@@ -51,27 +51,16 @@ XMLParser.addActions({
   // Trying to abstract all the details of the parser into one place,
   // and to use a more generic representation in XMLUtil.parse().
   tag: function(xs) {
-    // 0 - opening bracket
-    // 1 - label
-    // 2 - whitespace
-    // 3 - attributes
-    // 4 - whitespace
-    // 5 - closing bracket
-    // 6 - children
-    // 7 - </
-    // 8 - closing label
-    // 9 - >
+    // < label ws attributes ws > children </ label >
+    // 0 1     2  3          4  5 6        7  8     9
 
-    if ( xs[1] != xs[8] ) {
-      // XXX: Handle thrown errors in parsers!
-      throw 'Mismatched XML tags';
-    }
+    // Mismatched XML tags
+    // TODO: We should be able to set the error message on the ps here.
+    if ( xs[1] != xs[8] ) return undefined;
 
     var obj = { tag: xs[1], attrs: {}, children: xs[6] };
 
-    xs[3].forEach(function(attr) {
-      obj.attrs[attr[0]] = attr[2];
-    });
+    xs[3].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
 
     return obj;
   }
