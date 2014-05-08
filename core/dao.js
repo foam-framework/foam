@@ -2384,13 +2384,16 @@ FOAModel({
     },
     put: function(value, sink) {
       var self = this;
+      var extra = {};
       this.X.ajsonp(this.buildPutURL(value),
              this.buildPutParams(value),
              "POST",
-             this.objToJson(value)
+             this.objToJson(value, extra)
             )(
         function(resp) {
-          sink && sink.put && sink.put(self.jsonToObj(resp));
+          var obj = self.jsonToObj(resp, extra);
+          sink && sink.put && sink.put(obj);
+          self.notify_('put', [obj]);
         });
     },
     remove: function(query, sink) {
