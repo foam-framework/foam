@@ -1442,7 +1442,9 @@ FOAModel({
   methods: {
     toSQL: function() { return this.arg1.toSQL() + ' = ' + this.arg2.toSQL(); },
     f: function(obj) {
-      if (Property.isInstance(this.arg1)) {
+      // TODO: This should be an assertion when arg1 is set rather than be checked
+      // for every invocation.
+      if ( Property.isInstance(this.arg1) ) {
         obj[this.arg1.name] = this.arg2.f(obj);
       }
     }
