@@ -3,7 +3,7 @@ FOAModel({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return IssueCommentUpdate; } },
+    { name: 'model', factory: function() { return IssueCommentUpdate; } }
   ],
 
   templates: [
