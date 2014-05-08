@@ -50,15 +50,6 @@ FOAModel({
       defaultValueFn: function() { return this.qbug.user; }
     },
     {
-      name: 'IssueCommentNetworkDAO',
-      factory: function() {
-        return this.X.QIssueCommentNetworkDAO.create({
-          model: QIssueComment,
-          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
-        });
-      }
-    },
-    {
       name: 'IssueMDAO',
       factory: function() {
         var dao = this.X.MDAO.create({model: QIssue});
@@ -83,6 +74,16 @@ FOAModel({
       transient: true
     },
     {
+      name: 'IssueCommentNetworkDAO',
+      factory: function() {
+        return this.X.QIssueCommentNetworkDAO.create({
+          model: QIssueComment,
+          IssueDAO: this.IssueCachingDAO,
+          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+        });
+      }
+    },
+    {
       name: 'IssueNetworkDAO',
       factory: function() {
         return this.X.IssueRestDAO.create({
@@ -103,7 +104,8 @@ FOAModel({
           model: QIssue,
           remote: this.IssueNetworkDAO
         });
-      }
+      },
+      transient: true
     },
     {
       name: 'IssueDAO',
