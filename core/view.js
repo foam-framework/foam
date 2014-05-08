@@ -407,7 +407,6 @@ FOAModel({
 
     write: function(document) {
       // Write the View's HTML to the provided document and then initialize.
-
       document.writeln(this.toHTML());
       this.initHTML();
     },
@@ -2800,7 +2799,7 @@ FOAModel({
       var out = "";
 
       if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
+        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
       }
 
       if ( this.showLabel ) {
