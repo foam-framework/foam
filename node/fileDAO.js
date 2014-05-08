@@ -2,7 +2,7 @@ var fs = require('fs');
 require('../core/bootFOAMnode');
 
 FOAModel({
-  name: 'NodeJSONFileDAO',
+  name: 'JSONFileDAO',
 
   extendsModel: 'MDAO',
 
@@ -10,7 +10,7 @@ FOAModel({
     {
       name:  'name',
       label: 'File Name',
-      type:  'String',
+      model_: 'StringProperty',
       defaultValueFn: function() {
         return this.model.plural + '.json';
       }
@@ -21,7 +21,7 @@ FOAModel({
     init: function() {
       this.SUPER();
 
-      if (fs.existsSync(this.name)) {
+      if ( fs.existsSync(this.name) ) {
         var content = fs.readFileSync(this.name, { encoding: 'utf-8' });
         JSONUtil.parse(content).select(this);
       }
@@ -29,7 +29,7 @@ FOAModel({
       this.addRawIndex({
         execute: function() {},
         bulkLoad: function() {},
-        toString: function() { return "NodeJSONFileDAO Update"; },
+        toString: function() { return "JSONFileDAO Update"; },
         plan: function() {
           return { cost: Number.MAX_VALUE };
         },
@@ -54,7 +54,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'NodeXMLFileDAO',
+  name: 'XMLFileDAO',
 
   extendsModel: 'MDAO',
 
@@ -62,7 +62,7 @@ FOAModel({
     {
       name:  'name',
       label: 'File Name',
-      type:  'String',
+      model_: 'StringProperty',
       defaultValueFn: function() {
         return this.model.plural + '.xml';
       }
@@ -73,7 +73,7 @@ FOAModel({
     init: function() {
       this.SUPER();
 
-      if (fs.existsSync(this.name)) {
+      if ( fs.existsSync(this.name) ) {
         var content = fs.readFileSync(this.name, { encoding: 'utf-8' });
         XMLUtil.parse(content).select(this);
       }
@@ -81,7 +81,7 @@ FOAModel({
       this.addRawIndex({
         execute: function() {},
         bulkLoad: function() {},
-        toString: function() { return "NodeXMLFileDAO Update"; },
+        toString: function() { return "XMLFileDAO Update"; },
         plan: function() {
           return { cost: Number.MAX_VALUE };
         },

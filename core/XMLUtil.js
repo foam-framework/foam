@@ -17,7 +17,7 @@
 var XMLParser = {
   __proto__: grammar,
 
-  START: seq(sym('whitespace'), sym('tag'), sym('whitespace')),
+  START: seq1(1, sym('whitespace'), sym('tag'), sym('whitespace')),
 
   tag: seq(
       '<',
@@ -33,57 +33,34 @@ var XMLParser = {
       '</', sym('label'), '>'
     ),
 
-  label: plus(notChars(' =/\t\r\n<>\'"')),
+  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
 
-  text: plus(notChar('<')),
+  text: str(plus(notChar('<'))),
 
   attribute: seq(sym('label'), '=', sym('value')),
 
-  value: alt(
-    seq('"', repeat(notChar('"')), '"'),
-    seq("'", repeat(notChar("'")), "'")
-  ),
+  value: str(alt(
+    seq1(1, '"', repeat(notChar('"')), '"'),
+    seq1(1, "'", repeat(notChar("'")), "'")
+  )),
 
-  'whitespace': repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
 };
 
 XMLParser.addActions({
-  START: function(xs) { return xs[1]; },
-  label: function(xs) { return xs.join(''); },
-  text: function(xs) { return xs.join(''); },
-  value: function(xs) { return xs[1].join(''); },
-  attribute: function(xs) {
-    return { name: xs[0], value: xs[2] };
-  },
-
   // Trying to abstract all the details of the parser into one place,
   // and to use a more generic representation in XMLUtil.parse().
-  'tag': function(xs) {
-    // 0 - opening bracket
-    // 1 - label
-    // 2 - whitespace
-    // 3 - attributes
-    // 4 - whitespace
-    // 5 - closing bracket
-    // 6 - children
-    // 7 - </
-    // 8 - closing label
-    // 9 - >
+  tag: function(xs) {
+    // < label ws attributes ws > children </ label >
+    // 0 1     2  3          4  5 6        7  8     9
 
-    if (xs[1] != xs[8]) {
-      // XXX: Handle thrown errors in parsers!
-      throw 'Mismatched XML tags';
-    }
+    // Mismatched XML tags
+    // TODO: We should be able to set the error message on the ps here.
+    if ( xs[1] != xs[8] ) return undefined;
 
-    var obj = {
-      tag: xs[1],
-      attrs: {},
-      children: xs[6]
-    };
+    var obj = { tag: xs[1], attrs: {}, children: xs[6] };
 
-    xs[3].forEach(function(attr) {
-      obj.attrs[attr.name] = attr.value;
-    });
+    xs[3].forEach(function(attr) { obj.attrs[attr[0]] = attr[2]; });
 
     return obj;
   }
@@ -116,7 +93,7 @@ var XMLUtil = {
 
   parse: function(str) {
     var result = XMLParser.parseString(str);
-    if (!result) return result; // Parse error on undefined.
+    if ( ! result ) return result; // Parse error on undefined.
 
     // Otherwise result is the <foam> tag.
     return this.parseArray(result.children);
@@ -132,7 +109,7 @@ var XMLUtil = {
       }
     });
 
-    if (!tag.attrs.model) return obj;
+    if ( !tag.attrs.model ) return obj;
     var model = this.unescapeAttr(tag.attrs.model);
     return GLOBAL[model] ?  GLOBAL[model].create(obj) : obj;
   },
@@ -144,8 +121,8 @@ var XMLUtil = {
     var self = this;
     var ret = [];
     a.forEach(function(x) {
-      if (typeof x !== 'object') return;
-      if (x.tag == 'i') {
+      if ( typeof x !== 'object' ) return;
+      if ( x.tag == 'i' ) {
         ret.push(XMLUtil.unescape(x.children[0])); // Literal content.
       } else {
         ret.push(self.parseObject(x));

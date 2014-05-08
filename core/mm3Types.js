@@ -88,8 +88,7 @@ var BooleanProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function (_, v) { return !!v; },
-      help: 'The Java type of this property.'
+      defaultValue: function (_, v) { return !!v; }
     },
     {
       name: 'prototag',
@@ -235,6 +234,10 @@ var IntegerProperty = Model.create({
     {
       name: 'view',
       defaultValue: 'IntFieldView'
+    },
+    {
+      name: 'preSet',
+      defaultValue: function (_, v) { return parseInt(v); }
     },
     {
       name: 'defaultValue',

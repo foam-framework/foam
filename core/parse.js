@@ -247,6 +247,29 @@ function seq(/* vargs */) {
   return f;
 }
 
+/**
+ * A Sequence which only returns one of its arguments.
+ * Ex. seq1(1, '"', sym('string'), '"'),
+ **/
+function seq1(n /*, vargs */) {
+  var args = prepArgs(argsToArray(arguments).slice(1));
+
+  var f = function(ps) {
+    var ret;
+
+    for ( var i = 0 ; i < args.length ; i++ ) {
+      if ( ! ( ps = this.parse(args[i], ps) ) ) return undefined;
+      if ( i == n ) ret = ps.value;
+    }
+
+    return ps.setValue(ret);
+  };
+
+  f.toString = function() { return 'seq1(' + n + ', ' + argsToArray(args).join(',') + ')'; };
+
+  return f;
+}
+
 function alt(/* vargs */) {
   var args = prepArgs(arguments);
   var map  = {};
@@ -329,6 +352,35 @@ function alt(/* vargs */) {
   };
 
   f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
+
+  return f;
+}
+
+/** Takes a parser which returns an array, and converts its result to a String. **/
+function str(p) {
+  p = prep(p);
+  var f = function(ps) {
+    var ps = this.parse(p, ps);
+    return ps ? ps.setValue(ps.value.join('')) : undefined ;
+  };
+
+  f.toString = function() { return 'str(' + p + ')'; };
+
+  return f;
+}
+
+/** Ex. attr: pick([0, 2], seq(sym('label'), '=', sym('value'))) **/
+function pick(as, p) {
+  p = prep(p);
+  var f = function(ps) {
+    var ps = this.parse(p, ps);
+    if ( ! ps ) return undefined;
+    var ret = [];
+    for ( var i = 0 ; i < as.length ; i++ ) ret.push(ps.value[as[i]]);
+    return ps.setValue(ret);
+  };
+
+  f.toString = function() { return 'pick(' + as + ', ' + p + ')'; };
 
   return f;
 }

@@ -923,22 +923,29 @@ FOAModel({
 
       if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
-      this.domValue = ( this.mode === 'read-write' ) ?
-        DomValue.create(
+      if ( this.mode === 'read-write' ) {
+        this.domValue = DomValue.create(
           this.$,
-          this.onKeyMode ? 'input' : 'change') :
-        DomValue.create(
+          this.onKeyMode ? 'input' : 'change');
+
+        Events.relate(
+          this.data$,
+          this.domValue,
+          this.valueToText.bind(this),
+          this.textToValue.bind(this));
+
+        this.$.addEventListener('keydown', this.onKeyDown);
+      } else {
+        this.domValue = DomValue.create(
           this.$,
           'undefined',
           this.escapeHTML ? 'textContent' : 'innerHTML');
 
-      Events.relate(
-        this.data$,
-        this.domValue,
-        this.valueToText.bind(this),
-        this.textToValue.bind(this));
-
-      this.$.addEventListener('keydown', this.onKeyDown);
+        Events.map(
+          this.data$,
+          this.domValue,
+          this.valueToText.bind(this))
+      }
     },
 
     textToValue: function(text) { return text; },

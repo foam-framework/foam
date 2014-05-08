@@ -56,7 +56,7 @@ var QueryParser = {
 
   labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
 
-  summary: plus(notChar(' '))
+  summary: str(plus(notChar(' ')))
 
 }.addActions({
   stars: function(v) {
@@ -78,7 +78,7 @@ var QueryParser = {
   },
 
   summary: function(v) {
-    return DefaultQuery.create({arg1: v.join('')});
+    return DefaultQuery.create({arg1: v});
   }
 });
 
