@@ -2061,7 +2061,7 @@ var DetailView = Model.create({
         if ( ! prop ) continue;
 
         try {
-          if ( PropertyView.isInstance(child) ) child.data = obj;
+          if ( child.model_.DATA ) child.data = obj;
           else child.value = obj.propertyValue(prop.name);
         } catch (x) {
           console.log("error: ", prop.name, " ", x);
