@@ -330,6 +330,7 @@ var QIssueSplitDAO = FOAM({
        var local = this.local;
 
        local.find(issue.id, {
+         put: function(o) { if ( ! o.equals(issue) ) local.put(issue); },
          error: function() { local.put(issue); }
        });
      },
