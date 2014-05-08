@@ -285,7 +285,7 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      return PropertyView.create({parent: this, prop: prop, args: opt_args});
+      return PropertyView.create({ prop: prop, args: opt_args});
     },
 
     createTemplateView: function(name, opt_args) {
@@ -2061,7 +2061,8 @@ var DetailView = Model.create({
         if ( ! prop ) continue;
 
         try {
-          child.value = obj.propertyValue(prop.name);
+          if ( PropertyView.isInstance(child) ) child.data = obj;
+          else child.value = obj.propertyValue(prop.name);
         } catch (x) {
           console.log("error: ", prop.name, " ", x);
         }
