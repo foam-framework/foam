@@ -55,7 +55,7 @@ FOAModel({
     {
       name: 'ProjectNetworkDAO',
       factory: function() {
-        var dao = RestDAO.create({
+        var dao = this.X.RestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/',
           model: Project
         });
@@ -86,6 +86,9 @@ FOAModel({
     {
       name: 'defaultProjectName',
       defaultValue: 'chromium'
+    },
+    {
+      name: 'authAgent'
     }
   ],
 
@@ -93,17 +96,60 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
       var self = this;
+      var jsonpFuture = afuture();
+      this.X.ajsonp = function() {
+        var args = arguments;
+        return function(ret) {
+          jsonpFuture.get(function(f) {
+            f.apply(undefined, args)(ret);
+          });
+        };
+      };
+
+      this.persistentContext.bindObject('authAgent', OAuth2, {
+        clientId: '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: 'mbxy7-eZlosojSZgHTRT15o9',
+        scopes: [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/projecthosting"
+        ]
+      })(function(oauth2) {
+        jsonpFuture.set((function() {
+          var factory = self.X.OAuthXhrFactory.create({
+            authAgent: oauth2,
+            responseType: "json"
+          });
+
+          return function(url, params, opt_method, opt_payload) {
+            return function(ret) {
+              var xhr = factory.make();
+              xhr.responseType = "json";
+              return xhr.asend(ret,
+                               opt_method ? opt_method : "GET",
+                               url + (params ? '?' + params.join('&') : ''),
+                               opt_payload);
+            };
+          };
+        })());
+      });
+
       this.persistentContext.bindObject('user', QUser)(function(user) {
         self.userFuture.set(user);
+        self.refreshUser();
+      });
+    },
 
-        ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
+    refreshUser: function() {
+      var self = this;
+      this.userFuture.get(function(user) {
+        self.X.ajsonp("https://www.googleapis.com/oauth2/v1/userinfo", ["alt=json"])(
           function(response) {
             if ( response ) {
               user.email = response.email;
             }
           });
 
-        ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
+        self.X.ajsonp("https://www.googleapis.com/projecthosting/v2/users/me")(
           function(response) {
             response && user.copyFrom(response);
           });

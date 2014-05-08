@@ -18,11 +18,13 @@
    <br>
 <% } %>
 <div>Code:</div>
-<div class="code">{{test.code}}</div>
+<pre><div class="code">{{test.code}}</div></pre>
 <% if ( test.results.trim() || true) { %>
   <br>
   <div>Output:</div>
+  <pre>
   <div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
+  </pre>
 <% } %>
 <% if ( test.tests.length ) { %>
   <blockquote><%= cView %></blockquote>

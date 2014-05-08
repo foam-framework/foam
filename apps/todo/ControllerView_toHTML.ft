@@ -4,7 +4,7 @@
 		$$input{id: 'new-todo'}
 	</header>
 	<section id="main">
-		$$toggle{id: 'toggle-all'}
+		$$toggle{id: 'toggle-all', showLabel: false}
 		$$filteredDAO{tagName: 'ul', id: 'todo-list'}
 	</section>
 	<footer id="footer">

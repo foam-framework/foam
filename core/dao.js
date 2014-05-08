@@ -2384,7 +2384,7 @@ FOAModel({
     },
     put: function(value, sink) {
       var self = this;
-      ajsonp(this.buildPutURL(value),
+      this.X.ajsonp(this.buildPutURL(value),
              this.buildPutParams(value),
              "POST",
              this.objToJson(value)
@@ -2461,7 +2461,7 @@ FOAModel({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          ajsonp(url, myparams)(function(data) {
+          this.X.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -2509,7 +2509,7 @@ FOAModel({
     },
     find: function(key, sink) {
       var self = this;
-      ajsonp(this.buildFindURL(key))(function(data) {
+      this.X.ajsonp(this.buildFindURL(key))(function(data) {
         if ( data ) {
           sink && sink.put && sink.put(self.jsonToObj(data));
         } else {

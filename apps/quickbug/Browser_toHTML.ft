@@ -1,5 +1,6 @@
 <%
   var browserLink = ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
+  browserLink.className = browserLink.className + ' tip-below';
   var linkButton  = ActionButton.create({action: this.model_.LINK,         value: SimpleValue.create(this)});
   var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
   var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
@@ -7,6 +8,7 @@
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
+  <link rel="stylesheet" type="text/css" href="css-tooltips.css" />
   <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
   <link rel="stylesheet" type="text/css" href="qbug.css" />
   <title>QuickBug</title>

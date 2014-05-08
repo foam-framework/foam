@@ -2754,6 +2754,14 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'button'
+    },
+    {
+      name: 'showLabel',
+      defaultValueFn: function() { return this.action.showLabel; }
+    },
+    {
+      name: 'iconUrl',
+      defaultValueFn: function() { return this.action.iconUrl; }
     }
   ],
 
@@ -2791,13 +2799,12 @@ FOAModel({
     toInnerHTML: function() {
       var out = "";
 
-      if ( this.action.iconUrl ) {
+      if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
       }
 
-      if ( this.action.showLabel ) {
+      if ( this.showLabel ) {
         var value = this.value.get();
-
         out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
       }
 
@@ -2812,28 +2819,32 @@ FOAModel({
 
   extendsModel: 'ActionButton',
 
+  properties: [
+    {
+      name: 'className',
+      factory: function() { return 'actionLink actionLink-' + this.action.name; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'a'
+    }
+  ],
+
   methods: {
     toHTML: function() {
-      var self = this;
-      var value = self.value.get();
+      this.setAttribute('href', function() { return '#' }, this.getID());
+      return this.SUPER();
+    },
 
-      this.on('click', function() {
-        self.action.callIfEnabled(self.value.get());
-      }, this.getID());
-
-      var out = '<a href="#" class="actionLink actionLink-' + this.action.name + '" id="' + this.getID() + '">';
-
+    toInnerHTML: function() {
       if ( this.action.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
+        return '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '" />';
       }
 
       if ( this.action.showLabel ) {
-        out += this.action.label;
+        var value = this.value.get();
+        return value ? this.action.labelFn.call(value, this.action) : this.action.label;
       }
-
-      out += '</a>';
-
-      return out;
     }
   }
 });

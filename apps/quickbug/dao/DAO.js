@@ -155,7 +155,7 @@ var QIssueStarringDAO = FOAM({
     put: function(obj, sink) {
       var star = obj.starred ? '/star' : '/unstar';
       var self = this;
-      ajsonp(this.url + '/' + obj.id + star, undefined, 'POST')(
+      this.X.ajsonp(this.url + '/' + obj.id + star, undefined, 'POST')(
         function(resp, status){
           if ( status >= 200 && status < 300 ) {
             self.delegate.put(obj, sink);
