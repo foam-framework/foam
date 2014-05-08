@@ -60,7 +60,7 @@ FOAModel({
     commentCreateView: function() {
       return QIssueCommentCreateView.create({
         dao: this.QIssueCommentDAO,
-        value: SimpleValue.create(this.value.get().newComment())
+        issue: this.value.get()
       });
     },
     clView: function() {
