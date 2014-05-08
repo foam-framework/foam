@@ -103,7 +103,8 @@ FOAModel({
           model: QIssue,
           remote: this.IssueNetworkDAO
         });
-      }
+      },
+      transient: true
     },
     {
       name: 'IssueDAO',

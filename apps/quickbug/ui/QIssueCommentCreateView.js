@@ -10,7 +10,7 @@ FOAModel({
   methods: {
     updatesView: function() {
       var prop = QIssueComment.UPDATES;
-      var view = DetailView.create({ model: IssueCommentUpdate });
+      var view = QIssueCommentUpdateDetailView.create();
 
       this.bindSubView(view, prop);
 
