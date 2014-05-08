@@ -173,6 +173,10 @@ var QIssueCommentNetworkDAO = FOAM({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
+  properties: [
+    'IssueDAO'
+  ],
+
   methods: {
     buildURL: function(outquery, extra) {
       var query = outquery[0];
@@ -216,8 +220,9 @@ var QIssueCommentNetworkDAO = FOAM({
       obj.issueId = extra.issueId;
       return obj;
     },
-    objToJson: function(obj) {
+    objToJson: function(obj, extra) {
       if ( ! obj.content ) obj.content = "(No comment was entered for this change.)";
+      extra.issueId = obj.issueId;
       var json = JSONUtil.compact.where(
           IN(Property.NAME, [
             'author',
@@ -237,7 +242,20 @@ var QIssueCommentNetworkDAO = FOAM({
     },
     buildPutURL: function(obj) {
       return this.url + '/' + obj.issueId + '/comments';
-    }
+    },
+    put: function(obj, sink) {
+      var issueDAO = this.IssueDAO;
+      this.SUPER(obj, {
+        put: function(o) {
+          // Update the local IssueDAO with the resulting comment.
+          issueDAO.update(o);
+          sink && sink.put && sink.put(o);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      });
+    },
   }
 });
 

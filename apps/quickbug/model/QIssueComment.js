@@ -53,5 +53,26 @@ var QIssueComment = FOAM({
       displayWidth: 85,
       displayHeight: 8
     }
-  ]
+  ],
+
+  methods: {
+    f: function(issue) {
+      var comment = this;
+
+      function updateField(field) {
+        for ( var i = 0; i < comment.updates.blockedOn.length; i++ ) {
+          if ( comment.updates[field][i][0] === '-' )
+            issue[field] = issue[field].removeF(this.updates[field][i].substr(1));
+          else
+            issue[field] = issue[field].pushF(comment.updates[field][i]);
+        }
+      }
+
+      ['blockedOn', 'cc', 'labels'].forEach(updateField);
+
+      if ( comment.owner ) issue.owner = comment.owner;
+      if ( comment.status ) issue.status = comment.status;
+      if ( comment.summary ) issue.summary = comment.summary;
+    }
+  }
 });
