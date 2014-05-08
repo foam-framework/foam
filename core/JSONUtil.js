@@ -125,7 +125,7 @@ var JSONUtil = {
       }
       else if ( obj instanceof Object ) {
         try {
-          if ( obj.model_ )
+          if ( Model.isInstance(obj.model_) )
             this.outputObject_(out, obj);
           else
             this.outputMap_(out, obj);
@@ -239,7 +239,7 @@ var JSONUtil = {
       }
       else if ( obj instanceof Object ) {
         try {
-          if ( obj.model_ )
+          if ( Model.isInstance(obj.model_) )
             this.outputObject_(out, obj, indent);
           else
             this.outputMap_(out, obj, indent);
