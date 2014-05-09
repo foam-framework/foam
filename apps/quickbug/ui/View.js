@@ -22,7 +22,7 @@ var COL = {
   toHTML: function() {
     var s = '';
     var vs = this.values;
-    for ( var i = 0 ; i < vs.length ; i++ ) s += vs[i].toHTML();
+    for ( var i = 0 ; i < vs.length ; i++ ) s += vs[i].toHTML ? vs[i].toHTML() : vs[i];
     return s;
   },
   initHTML: function() {
@@ -194,7 +194,7 @@ var IdFormatter = function(browser) {
   return {
     f: function(i) {
       var url = browser.url + '/issues/detail?id=' + i.id;
-      return '<a target="_blank" href="' + url + '">' + i.id + '</a>';
+      return '<a target="_blank" href="' + url + '">' + i.id + '</a>&nbsp;';
     }
   };
 };
