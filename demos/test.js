@@ -62,6 +62,7 @@ document.writeln("=======================================");
     document.write("\r\n");
     document.write(JSONUtil.pretty.stringify(Model));
     document.write("\r\n");
+    document.write("</pre>");
     document.write("<textarea cols=120 rows=20>");
     document.write(XMLUtil.stringify(Model));
     document.write("\r\n");
