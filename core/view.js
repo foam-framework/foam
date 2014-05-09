@@ -481,18 +481,19 @@ FOAModel({
 
   properties: [
     {
+      name: 'prop',
+      type: 'Property'
+    },
+    {
       name: 'parent',
       type: 'View',
       postSet: function(_, p) {
+        p[this.prop.name + 'View'] = this.view;
         if ( ! this.data ) {
           // TODO: replace with just 'p.data' when data-binding done
           this.data = p.data || ( p.get && p.get() );
         }
       }
-    },
-    {
-      name: 'prop',
-      type: 'Property'
     },
     {
       name: 'data',
@@ -530,7 +531,6 @@ FOAModel({
       view.toString = function () { return this.prop.name + 'View'; };
       if ( this.parent) {
         this.parent.addChild(view);
-        this.parent[prop.name + 'View'] = view;
       }
 
       this.view = view;
