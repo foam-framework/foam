@@ -41,12 +41,33 @@ FOAModel({
       label: 'Save changes',
       isEnabled: function() { return ! this.saving; },
       action: function() {
-        this.saving = true;
+        var defaultComment = this.issue.newComment();
+
+        var diff = defaultComment.updates.diff(this.value.value.updates);
+        function convertArray(key) {
+          if ( ! diff[key] ) {
+            diff[key] = [];
+            return;
+          }
+
+          var delta = diff[key].added;
+          for ( var i = 0; i < diff[key].removed.length; i++ )
+            delta.push("-" + diff[key].removed[i]);
+          diff[key] = delta;
+        }
+
+        convertArray('labels');
+        convertArray('blockedOn');
+        convertArray('cc');
+
+        var comment = this.value.value.clone();
+        comment.updates = QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
 
         var self = this;
-        this.dao.put(this.value.value, {
+        this.saving = true;
+        this.dao.put(comment, {
           put: function(o) {
             self.saving = false;
             // Update the local issue with the returned comment.

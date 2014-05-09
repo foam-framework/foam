@@ -344,7 +344,7 @@ var QIssue = FOAM({
 
         var comment = QIssueComment.create({
           issueId: this.id,
-          updates: IssueCommentUpdate.create(diff)
+          updates: QIssueCommentUpdate.create(diff)
         });
 
         out(comment);
@@ -352,7 +352,7 @@ var QIssue = FOAM({
       newComment: function() {
         return QIssueComment.create({
           issueId: this.id,
-          updates: IssueCommentUpdate.create({
+          updates: QIssueCommentUpdate.create({
             labels: this.labels.clone(),
             owner: this.owner,
             blockedOn: this.blockedOn.clone(),

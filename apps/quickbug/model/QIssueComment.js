@@ -33,6 +33,7 @@ var QIssueComment = FOAM({
     },
     {
       name: 'updates',
+      subType: 'QIssueCommentUpdate',
       view: 'QIssueCommentUpdateView',
       preSet: function(_, newValue, prop) {
         if ( ! newValue.model_ ) return GLOBAL[prop.subType].create(newValue);
@@ -75,4 +76,15 @@ var QIssueComment = FOAM({
       if ( comment.summary ) issue.summary = comment.summary;
     }
   }
+});
+
+FOAModel({
+  name: 'QIssueCommentUpdate',
+  extendsModel: 'IssueCommentUpdate',
+
+  properties: [
+    { name: 'labels', view: 'MultiLineStringArrayView' },
+    { name: 'cc', view: 'MultiLineStringArrayView' },
+    { name: 'blockedOn', view: 'MultiLineStringArrayView' }
+  ]
 });
