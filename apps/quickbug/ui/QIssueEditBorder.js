@@ -5,8 +5,6 @@ FOAModel({
   methods: {
     toHTML: function(border, delegate, args) {
       return '<head>' +
-        '  <link rel="stylesheet" type="text/css" href="foam.css" />' +
-        '  <link rel="stylesheet" type="text/css" href="../../core/foam.css" />' +
         '  <link rel="stylesheet" type="text/css" href="qbug.css" />' +
         '  <title>Quick Bug</title>' +
         '</head>' +
