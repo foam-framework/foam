@@ -150,10 +150,11 @@ hr {
 }
 
 .inner-calc-display {
-  bottom: 0;
   position: absolute;
-  width: 85%;
   right: 20pt;
+  top: 100%;
+  transition: top 0.3s ease;
+  width: 85%;
 }
 
 .calc-display {
