@@ -124,15 +124,10 @@ var JSONUtil = {
         out(obj.getTime());
       }
       else if ( obj instanceof Object ) {
-        try {
-          if ( Model.isInstance(obj.model_) )
-            this.outputObject_(out, obj);
-          else
-            this.outputMap_(out, obj);
-        }
-        catch (x) {
-          console.log("toJSONError: ", x, obj);
-        }
+        if ( obj.model_ )
+          this.outputObject_(out, obj);
+        else
+          this.outputMap_(out, obj);
       }
       else if (typeof obj === "number") {
         if (!isFinite(obj)) obj = null;
@@ -238,15 +233,10 @@ var JSONUtil = {
         out("new Date('", obj, "')");
       }
       else if ( obj instanceof Object ) {
-        try {
-          if ( Model.isInstance(obj.model_) )
-            this.outputObject_(out, obj, indent);
-          else
-            this.outputMap_(out, obj, indent);
-        }
-        catch (x) {
-          console.log("toJSONError: ", x, obj);
-        }
+        if ( obj.model_ )
+          this.outputObject_(out, obj, indent);
+        else
+          this.outputMap_(out, obj, indent);
       } else if (typeof obj === "number") {
         if (!isFinite(obj)) obj = null;
         out(obj);
