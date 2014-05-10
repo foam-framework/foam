@@ -70,25 +70,25 @@ XMLParser.addActions({
 var XMLUtil = {
 
   escape: function(str) {
-    return str
+    return str && str
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
   },
 
   unescape: function(str) {
-    return str
+    return str && str
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
   },
 
   escapeAttr: function(str) {
-    return str.replace(/"/g, '&quot;');
+    return str && str.replace(/"/g, '&quot;');
   },
 
   unescapeAttr: function(str) {
-    return str.replace(/&quot;/g, '"');
+    return str && str.replace(/&quot;/g, '"');
   },
 
   parse: function(str) {
