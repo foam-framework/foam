@@ -6,6 +6,10 @@ FOAModel({
       name: 'defaultEverything'
     },
     {
+      name: 'defaultValue',
+      defaultValue: 'defaultValue'
+    },
+    {
       name: 'clickToEnableEdit',
       defaultValue: 'click to enable edit',
       view: {
@@ -92,6 +96,15 @@ FOAModel({
     },
     {
       name: 'choiceView',
+      view: {
+        model_: 'ChoiceView',
+        helpText: 'Help Text',
+        choices: [ 'Value1', 'Value2', 'Value3' ]
+      }
+    },
+    {
+      name: 'choiceViewWithDefaultValue',
+      defaultValue: 'Value1',
       view: {
         model_: 'ChoiceView',
         helpText: 'Help Text',
