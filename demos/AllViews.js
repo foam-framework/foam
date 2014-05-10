@@ -95,10 +95,18 @@ FOAModel({
       view: {
         model_: 'ChoiceView',
         helpText: 'Help Text',
+        choices: [ 'Value1', 'Value2', 'Value3' ]
+      }
+    },
+    {
+      name: 'choiceViewWithLabels',
+      view: {
+        model_: 'ChoiceView',
+        helpText: 'Help Text',
         choices: [
           [ 'value1', 'Label 1' ],
           [ 'value2', 'Label 2' ],
-           [ 'value3', 'Label 3' ]
+          [ 'value3', 'Label 3' ]
         ]
       }
     },
@@ -146,7 +154,13 @@ FOAModel({
 
 var allViews = AllViews.create();
 
-allViews.write(document);
+document.write('<table><tr><td>');
+  var dv1 = DetailView.create({model: AllViews, value: SimpleValue.create(allViews)});
+  dv1.write(document);
+document.write('</td><td>');
+  var dv2 = DetailView.create({model: AllViews, value: SimpleValue.create(allViews)});
+  dv2.write(document);
+document.write('</td></tr></table>');
 
-// allView.addListener(console.log.bind(console));
+allViews.addListener(console.log.bind(console));
 
