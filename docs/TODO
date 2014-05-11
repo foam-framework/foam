@@ -1,3 +1,5 @@
+Do we add views to objects?  If so, will cause garbage.  Remove.
+
 s/Canvas/CanvasView/
 
 Replace getID() with .id

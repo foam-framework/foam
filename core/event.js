@@ -329,10 +329,8 @@ var PropertyChangeSupport = {
 
   __proto__: EventService,
 
-
   /** Root for property topics. **/
   PROPERTY_TOPIC: 'property',
-
 
   /** Create a topic for the specified property name. **/
   propertyTopic: function (property) {
@@ -467,7 +465,10 @@ var Events = {
     if ( ! srcValue || ! dstValue ) return;
 
     var listener = function () {
-      dstValue.set(f(srcValue.get()));
+      var sv = f(srcValue.get());
+      var dv = dstValue.get();
+
+      if ( sv !== dv ) dstValue.set(sv);
     };
 
     listener(); // copy initial value
