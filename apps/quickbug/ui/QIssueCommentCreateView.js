@@ -6,6 +6,7 @@ FOAModel({
     { name: 'model', factory: function() { return QIssueComment; } },
     { name: 'issue' },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
+    { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }
   ],
 
@@ -66,20 +67,16 @@ FOAModel({
         // TODO: UI feedback while saving.
 
         var self = this;
+        this.errorView.data = "";
         this.saving = true;
         this.dao.put(comment, {
           put: function(o) {
             self.saving = false;
-            // Update the local issue with the returned comment.
-            // This is hack, we should have the QIssueDetailView update when the object has changed.
-            o.f(self.issue);
-
-
             self.value.value = self.issue.newComment();
           },
           error: function() {
             self.saving = false;
-            // TODO: Display error message.
+            self.errorView.data = "Error saving comment.  Try again later.";
           }
         });
       }
@@ -90,6 +87,7 @@ FOAModel({
       isEnabled: function() { return ! this.saving; },
       action: function() {
         this.value.value = this.issue.newComment();
+        this.errorView.data = "";
       }
     }
   ]
