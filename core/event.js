@@ -494,10 +494,13 @@ var Events = {
   },
 
 
-  /** Link the values of two models by having them follow each other.  Initial value is copied from value1 to model2. **/
-  link: function (value1, model2) {
-    this.follow(value1, model2);
-    this.follow(model2, value1);
+  /**
+   * Link the values of two models by having them follow each other.
+   * Initial value is copied from srcValue to dstValue.
+   **/
+  link: function (srcValue, dstValue) {
+    this.follow(srcValue, dstValue);
+    this.follow(dstValue, srcValue);
   },
 
 

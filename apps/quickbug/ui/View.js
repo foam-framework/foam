@@ -331,7 +331,7 @@ function createView(rowSelection, browser) {
           }
           setAcc(location.cells);
 
-          g.acc.value.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
+          g.acc.data$.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
           location.cells$.addListener(setAcc);
 
           return g;

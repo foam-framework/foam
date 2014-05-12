@@ -152,7 +152,7 @@ FOAModel({
 
         return ChoiceView.create({
           helpText: 'Search within:',
-          value: this.location.can$,
+          data$: this.location.can$,
           choices:[
             ['',                     '&nbsp;All issues',              1],
             [open,                   '&nbsp;Open issues',             2],
@@ -250,9 +250,7 @@ FOAModel({
     {
       name: 'onLocationUpdate',
       isAnimated: true,
-      code: function(evt) {
-        this.memento = this.location.toMemento(this);
-      }
+      code: function(evt) { this.memento = this.location.toMemento(this); }
     },
   ],
 
@@ -260,23 +258,17 @@ FOAModel({
     {
       model_: 'Action',
       name:  'zoomIn',
-      action: function() {
-        this.zoom *= 1.1;
-      }
+      action: function() { this.zoom *= 1.1; }
     },
     {
       model_: 'Action',
       name:  'zoomOut',
-      action: function() {
-        this.zoom *= 0.9;
-      }
+      action: function() { this.zoom *= 0.9; }
     },
     {
       model_: 'Action',
       name:  'zoomReset',
-      action: function() {
-        this.zoom = 1.0;
-      }
+      action: function() { this.zoom = 1.0; }
     },
     {
       model_: 'Action',
@@ -293,18 +285,13 @@ FOAModel({
     {
       model_: 'Action',
       name:  'launchBrowser',
-//      iconUrl: 'images/link.svg',
-      action: function() {
-        this.project.launchBrowser();
-      }
+      action: function() { this.project.launchBrowser(); }
     },
     {
       model_: 'Action',
       name:  'launchSync',
       label: 'Sync Status',
-      action: function() {
-        this.project.launchSync();
-      }
+      action: function() { this.project.launchSync(); }
     },
     {
       model_: 'Action',
@@ -357,25 +344,19 @@ FOAModel({
       model_: 'Action',
       name: 'findProjects',
       label: 'Find open source projects...',
-      action: function() {
-        this.openURL('https://code.google.com/hosting/');
-      }
+      action: function() { this.openURL('https://code.google.com/hosting/'); }
     },
     {
       model_: 'Action',
       name: 'createProject',
       label: 'Create a project...',
-      action: function() {
-        this.openURL('https://code.google.com/hosting/createProject');
-      }
+      action: function() { this.openURL('https://code.google.com/hosting/createProject'); }
     },
     {
       model_: 'Action',
       name: 'configProjects',
       label: 'Configure projects...',
-      action: function() {
-        this.project.launchConfigProjects();
-      }
+      action: function() { this.project.launchConfigProjects(); }
     },
     {
       model_: 'Action',

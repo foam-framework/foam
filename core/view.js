@@ -519,6 +519,8 @@ FOAModel({
         view = TextFieldView.create(prop);
       } else if ( typeof prop.view === 'string' ) {
         view = GLOBAL[prop.view].create(prop);
+      } else if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) {
+        view = FOAM(prop.view);
       } else if ( prop.view.model_ ) {
         view = prop.view.deepClone().copyFrom(prop);
       } else if ( typeof prop.view === 'function' ) {
@@ -529,9 +531,12 @@ FOAModel({
 
       view.copyFrom(this.args);
 
+      /*
+        I don't think this is need anymore.  Now done by PropertyView.
       view.prop = prop;
       view.toString = function () { return this.prop.name + 'View'; };
       if ( this.parent ) this.parent.addChild(view);
+      */
 
       this.view = view;
       this.bindData();
@@ -987,8 +992,7 @@ FOAModel({
       var e = this.$;
 
       this.domValue = DomValue.create(e, undefined, 'valueAsDate');
-
-      this.setValue(this.value);
+      Events.link(this.data$, this.domValue);
     }
   }
 });
@@ -1132,290 +1136,6 @@ FOAModel({
 
     destroy: function() { Events.unlink(this.domValue, this.value); }
   }
-});
-
-
-FOAModel({
-  name:  'AbstractChoiceView',
-
-  extendsModel: 'AbstractView',
-
-  properties: [
-    {
-      name:  'value',
-      type:  'Value',
-      help: "A Value of the current choice's value (ie. choice[0]).",
-      factory: function() { return SimpleValue.create(); }
-    },
-    {
-      name: 'choice',
-      help: 'The current choice (ie. [value, label]).',
-      getter: function() {
-        var value = this.value.get();
-        for ( var i = 0 ; i < this.choices.length ; i++ ) {
-          var choice = this.choices[i];
-          if ( value === choice[0] ) return choice;
-        }
-        return undefined;
-      },
-      setter: function(choice) {
-        var oldValue = this.choice;
-        this.value.set(choice[0]);
-        this.propertyChange('choice', oldValue, this.choice);
-      }
-    },
-    {
-      name:  'choices',
-      type:  'Array[StringField]',
-      help: 'Array of [value, label] choices.  Simple String values will be upgraded to [value, value].',
-      defaultValue: [],
-      preSet: function(_, a) {
-        a = a.clone();
-        // Upgrade single values to [value, value]
-        for ( var i = 0 ; i < a.length ; i++ )
-          if ( ! Array.isArray(a[i]) )
-            a[i] = [a[i], a[i]];
-        return a;
-      },
-      postSet: function(_, newValue) {
-        if ( ! this.value.get ) return;
-
-        var value = this.value.get();
-
-        // Update current choice when choices update
-        for ( var i = 0 ; i < newValue.length ; i++ ) {
-          var choice = newValue[i];
-
-          if ( value === choice[0] ) {
-            this.choice = choice;
-            break;
-          }
-        }
-
-        if ( i === newValue.length ) this.choice = newValue[0];
-
-        if ( this.$ ) this.updateHTML();
-      }
-    }
-  ],
-
-  methods: {
-    findChoiceIC: function(name) {
-      name = name.toLowerCase();
-      for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        if ( this.choices[i][1].toLowerCase() == name )
-          return this.choices[i];
-      }
-    },
-    getValue: function() {
-      return this.value;
-    },
-    indexToValue: function(v) {
-      var i = parseInt(v);
-      if ( isNaN(i) ) return v;
-
-      return this.choices[i][0];
-    }
-  }
-});
-
-
-FOAModel({
-  name:  'ChoiceListView',
-
-  extendsModel: 'AbstractChoiceView',
-
-  properties: [
-    {
-      name: 'orientation',
-      defaultValue: 'horizontal',
-      view: {
-        model_: 'ChoiceView',
-        choices: [
-          [ 'horizontal', 'Horizontal' ],
-          [ 'vertical',   'Vertical'   ]
-        ]
-      },
-      postSet: function(old, nu) {
-        if ( this.$ ) {
-          DOM.setClass(this.$, old, false);
-          DOM.setClass(this.$, nu);
-        }
-      }
-    },
-    {
-      name: 'className',
-      defaultValueFn: function() { return 'foamChoiceListView ' + this.orientation; }
-    },
-    {
-      name: 'tagName',
-      defaultValue: 'ul'
-    }
-  ],
-
-  methods: {
-    toInnerHTML: function() {
-      var out = "";
-      for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        var choice = this.choices[i];
-        var id     = this.nextID();
-
-        this.on(
-          'click',
-          function(choice) { this.choice = choice; }.bind(this, choice),
-          id);
-
-        this.setClass(
-          'selected',
-          function(choice) { return this.choice == choice; }.bind(this, choice),
-          id);
-
-        out += '<li id="' + id + '">' + choice[1] + '</li>';
-      }
-      return out;
-    }
-  }
-});
-
-
-FOAModel({
-  name:  'ChoiceView',
-
-  extendsModel: 'AbstractChoiceView',
-
-  /*
-   * <select size="">
-   *    <choice value="" selected></choice>
-   * </select>
-   */
-  properties: [
-    {
-      name:  'name',
-      type:  'String',
-      defaultValue: 'field'
-    },
-    {
-      name:  'helpText',
-      type:  'String',
-      defaultValue: undefined
-    },
-    {
-      name:  'size',
-      type:  'int',
-      defaultValue: 1
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
-    },
-
-    updateHTML: function() {
-      var out = [];
-
-      if ( this.helpText ) {
-        out.push('<option disabled="disabled">');
-        out.push(this.helpText);
-        out.push('</option>');
-      }
-
-      for ( var i = 0 ; i < this.choices.length ; i++ ) {
-        var choice = this.choices[i];
-        var id     = this.nextID();
-
-        try {
-          this.on('click', this.onClick, id);
-          this.on('mouseover', this.onMouseOver, id);
-          this.on('mouseout', this.onMouseOut, id);
-        } catch (x) {
-          // Fails on iPad, which is okay, because this feature doesn't make
-          // sense on the iPad anyway.
-        }
-
-        out.push('\t<option id="' + id + '"');
-
-        if ( this.value && choice[0] === this.value.get() ) out.push(' selected');
-        out.push(' value="');
-        out.push(i + '">');
-        out.push(choice[1].toString());
-        out.push('</option>');
-      }
-
-      this.$.innerHTML = out.join('');
-      AbstractView.getPrototype().initHTML.call(this);
-    },
-
-    setValue: function(value) {
-      Events.unlink(this.domValue, this.value);
-      this.value = value;
-      //       Events.link(value, this.domValue);
-      var self = this;
-      Events.relate(
-        value,
-        this.domValue,
-        function (v) {
-          for ( var i = 0 ; i < self.choices.length ; i++ ) {
-            var c = self.choices[i];
-            if ( c[0] === v ) return i;
-          }
-          return -1;
-        },
-        function (v) { return self.indexToValue(v); }
-      );
-    },
-
-    initHTML: function() {
-      var e = this.$;
-
-      this.updateHTML();
-      this.domValue = DomValue.create(e);
-      this.setValue(this.value);
-    },
-
-    destroy: function() {
-      Events.unlink(this.domValue, this.value);
-    },
-
-    indexToValue: function(v) {
-      var i = parseInt(v);
-      if ( isNaN(i) ) return undefined;
-
-      return this.choices[i][0];
-    },
-
-    evtToValue: function(e) { return this.indexToValue(e.target.value); }
-  },
-
-  listeners: [
-    {
-      name: 'onMouseOver',
-      code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
-        this.value.set(this.evtToValue(e));
-      }
-    },
-
-    {
-      name: 'onMouseOut',
-      code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.timer_ = window.setTimeout(function() {
-          this.value.set(this.prev || "");
-          this.prev = undefined;
-        }.bind(this), 1);
-      }
-    },
-
-    {
-      name: 'onClick',
-      code: function(e) {
-        this.prev = this.evtToValue(e);
-        this.value.set(this.prev);
-      }
-    }
-  ]
 });
 
 
@@ -2920,11 +2640,7 @@ FOAModel({
       name:  'scrollMode',
       type:  'String',
       defaultValue: 'Bars',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "Bars", "Warp"
-        ]}); }
-      }
+      view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
       name:  'model',
@@ -2934,9 +2650,7 @@ FOAModel({
       name:  'dao',
       label: 'DAO',
       type: 'DAO',
-      postSet: function() {
-        this.updateHTML();
-      }
+      postSet: function() { this.updateHTML(); }
     },
     {
       name:  'grid',
@@ -2955,9 +2669,9 @@ FOAModel({
       if ( ! this.$ ) return;
 
       var self = this;
-      this.grid.xFunc = this.col.value.get() || this.grid.xFunc;
-      this.grid.yFunc = this.row.value.get() || this.grid.yFunc;
-      this.grid.acc   = this.acc.value.get() || this.grid.acc;
+      this.grid.xFunc = this.col.data || this.grid.xFunc;
+      this.grid.yFunc = this.row.data || this.grid.yFunc;
+      this.grid.acc   = this.acc.data || this.grid.acc;
 
       this.dao.select(this.grid.clone())(function(g) {
         if ( self.scrollMode === 'Bars' ) {
@@ -2985,8 +2699,11 @@ FOAModel({
     },
 
     initHTML: function() {
+      // TODO: I think this should be done automatically some-how/where.
+      this.scrollModeView.data$ = this.scrollMode$;
+
       var choices = [];
-      this.model.properties.orderBy(Property.LABEL).select({put:function(p) {
+      this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
       this.row.choices = choices;
@@ -3001,9 +2718,9 @@ FOAModel({
       this.SUPER();
       this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
-      this.row.value.addListener(this.repaint_);
-      this.col.value.addListener(this.repaint_);
-      this.acc.value.addListener(this.repaint_);
+      this.row.data$.addListener(this.repaint_);
+      this.col.data$.addListener(this.repaint_);
+      this.acc.data$.addListener(this.repaint_);
       this.scrollMode$.addListener(this.repaint_);
 
       this.updateHTML();
