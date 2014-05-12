@@ -1910,6 +1910,11 @@ FOAModel({
 
   listeners: [
     {
+      name: 'repaint_',
+      isAnimated: true,
+      code: function() { this.repaint(); }
+    },
+    {
       name: 'onEditColumns',
       code: function(evt) {
         var v = EditColumnsView.create({
@@ -1970,7 +1975,6 @@ FOAModel({
 
     init: function() {
       var self = this;
-      this.repaint_ = EventService.animate(this.repaint.bind(this));
 
       this.listener = {
         put: self.repaint_,
@@ -2716,7 +2720,6 @@ FOAModel({
       this.acc.initHTML();
 
       this.SUPER();
-      this.repaint_ = EventService.animate(this.updateHTML.bind(this));
 
       this.row.data$.addListener(this.repaint_);
       this.col.data$.addListener(this.repaint_);
@@ -2726,6 +2729,14 @@ FOAModel({
       this.updateHTML();
     }
   },
+
+  listeners: [
+    {
+      name: 'repaint_',
+      isAnimated: true,
+      code: function() { this.updateHTML(); }
+    }
+  ],
 
   templates:[
     /*
