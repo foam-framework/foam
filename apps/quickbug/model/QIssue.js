@@ -283,7 +283,7 @@ var QIssue = FOAM({
           if ( Array.isArray(v) ) return v;
           if ( ! v ) return undefined;
 
-          return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? Number(v.substring(1)) : Number(v));
+          return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? parseInt(v.substring(1)) : parseInt(v));
         },
         compareProperty: function(o1, o2) {
           o1 = o1.length ? o1[0] : 0;
