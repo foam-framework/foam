@@ -2390,7 +2390,11 @@ FOAModel({
              "POST",
              this.objToJson(value, extra)
             )(
-        function(resp) {
+        function(resp, status) {
+          if ( status !== 200 ) {
+            sink && sink.error && sink.error([resp, status]);
+            return;
+          }
           var obj = self.jsonToObj(resp, extra);
           sink && sink.put && sink.put(obj);
           self.notify_('put', [obj]);
