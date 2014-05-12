@@ -1350,6 +1350,7 @@ FOAModel({
         '<img id="' + id + '">' ;
     },
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.invokeInitializers();
       this.$.src = this.image();
     },
