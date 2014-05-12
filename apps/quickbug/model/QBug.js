@@ -193,6 +193,11 @@ FOAModel({
           },
           error: function() {
             console.warn("Couldn't find default project, default to ", self.defaultProjectName);
+            if ( opt_projectName === self.defaultProjectName) {
+              // TODO: Some sort of error view that we couldn't find the project.
+              console.error("Couldn't find a project, you're probably offline.");
+              return;
+            }
             self.launchBrowser(self.defaultProjectName);
           },
         });
