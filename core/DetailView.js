@@ -1,7 +1,5 @@
-var DetailView = Model.create({
-
+FOAModel({
   name: 'DetailView',
-
   extendsModel: 'AbstractView',
 
   properties: [
