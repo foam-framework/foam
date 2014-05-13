@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// TODO: used in saturnmail/bg.js, see if can be merged with Action keyboard support.
 function KeyboardShortcutController(win, view) {
   this.contexts_ = {};
   this.body_ = {};
@@ -131,6 +133,11 @@ var DOM = {
     var model = GLOBAL[e.getAttribute('model')];
     var args = {};
 
+    // This is because of a bug that the model.properties isn't populated
+    // with the parent model's properties until after the prototype is
+    // created.  TODO: remove after FO
+    model.getPrototype();
+
     for ( var i = 0 ; i < e.attributes.length ; i++ ) {
       var a   = e.attributes[i];
       var key = a.name;
@@ -144,7 +151,9 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        if ( ! {model:true, view:true, id:true, oninit:true}[key] ) console.log('unknown attribute: ', key);
+        if ( ! {model:true, view:true, id:true, oninit:true}[key] ) {
+          console.log('unknown attribute: ', key);
+        }
       }
     }
 
@@ -492,6 +501,7 @@ FOAModel({
           // TODO: replace with just 'p.data' when data-binding done
           this.data = p.data || ( p.get && p.get() );
         }
+        if ( this.view ) this.view.parent = p;
       }
     },
     {
@@ -515,7 +525,7 @@ FOAModel({
       if ( ! prop.view ) {
         view = TextFieldView.create(prop);
       } else if ( typeof prop.view === 'string' ) {
-        view = GLOBAL[prop.view].create(prop);
+        view = this.X[prop.view].create(prop);
       } else if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) {
         view = FOAM(prop.view);
       } else if ( prop.view.model_ ) {
@@ -527,7 +537,7 @@ FOAModel({
       }
 
       view.copyFrom(this.args);
-
+      view.parent = this.parent;
       /*
         I don't think this is need anymore.  Now done by PropertyView.
       view.prop = prop;
@@ -1615,7 +1625,7 @@ var DetailView2 = Model.create({
       console.log('deprecated');
       var view =
         ! prop.view                   ? TextFieldView     :
-        typeof prop.view === 'string' ? GLOBAL[prop.view] :
+        typeof prop.view === 'string' ? this.X[prop.view] :
         prop.view ;
 
       return view.create(prop).copyFrom(opt_args);
@@ -1816,7 +1826,7 @@ FOAModel({
         out.push(prop.label);
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
-          var subModel = GLOBAL[prop.subType];
+          var subModel = this.X[prop.subType];
           var subView  = HelpView.create({model: subModel});
           if ( subModel != model )
             out.push(subView.toHTML());
@@ -4275,4 +4285,63 @@ FOAModel({
       }
     },
   ]
+});
+
+
+
+FOAModel({
+  name: 'UITestResultView',
+  label: 'UI Test Result View',
+
+  extendsModel: 'AbstractView',
+
+  properties: [
+    {
+      name: 'data'
+    }
+  ],
+
+  methods: {/*
+    toHTML: function() {
+    },*/
+    initHTML: function() {
+      var parent = this.parent;
+      var test   = parent.obj;
+      var $ = this.$;
+      test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
+      test.scope.render = function(v) {
+        test.append(v.toHTML());
+        v.initHTML();
+      };
+      test.test();
+    }
+  }
+});
+
+
+FOAModel({
+  name: 'UITest',
+  label: 'UI Test',
+
+  extendsModel: 'UnitTest',
+
+  properties: [
+    {
+      name: 'results',
+      view: 'UITestResultView'
+    }
+  ],
+
+  /*
+  actions: [
+    {
+      name:  'test',
+      action: function(obj) { }
+    }
+  ],
+  */
+
+  methods: {
+    //atest: function() { return aconstant('output'); },
+  }
 });
