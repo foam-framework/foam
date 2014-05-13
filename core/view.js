@@ -4313,7 +4313,13 @@ FOAModel({
         test.append(v.toHTML());
         v.initHTML();
       };
+      // Temporarily remove sub-tests to prevent them from being tested also.
+      // This means, that unlike regular UnitTests, UITests do not inherit
+      // variables from their ancestors.
+      var oldTests = test.tests;
+      test.tests = [];
       test.test();
+      test.tests = oldTests;
     }
   }
 });
