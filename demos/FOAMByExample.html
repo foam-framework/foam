@@ -406,7 +406,7 @@ FOAModel({
         v1.data$ = v2.data$;
       </code>
     </foam>
-    <foam model="UITest" name="TextFieldView">
+    <foam model="UITest" name="TextFieldView/onKeyMode">
       <description>Test data-binding in TextFieldViews with onKeyMode enabled.</description>
       <code>
         var v1 = TextFieldView.create({onKeyMode: true});
@@ -416,6 +416,17 @@ FOAModel({
         render(v2);
 
         v1.data$ = v2.data$;
+      </code>
+    </foam>
+    <foam model="UITest" name="DetailView">
+      <description>Test data-binding in TextFieldViews with onKeyMode enabled.</description>
+      <code>
+        var t   = Timer.create();
+        var dv1 = DetailView.create({value: SimpleValue.create(t)});
+        var dv2 = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv1);
+        render(dv2);
       </code>
     </foam>
   </tests>
