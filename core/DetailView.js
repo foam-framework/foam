@@ -4,10 +4,6 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
-    },
-    {
       name:  'value',
       type:  'Value',
       factory: function() { return SimpleValue.create(); },
@@ -16,6 +12,11 @@ FOAModel({
         if ( newValue ) newValue.addListener(this.onValueChange);
         this.onValueChange();
       }
+    },
+    {
+      name:  'model',
+      type:  'Model',
+      defaultValueFn: function() { return this.value.get().model_; }
     },
     {
       name: 'title',
