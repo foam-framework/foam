@@ -17,10 +17,7 @@
 FOAModel({
   name: 'UnitTest',
   plural: 'Unit Tests',
-  tableProperties:
-  [
-    'description', 'passed', 'failed'
-  ],
+  tableProperties: [ 'description', 'passed', 'failed' ],
   properties:
   [
     {
@@ -123,7 +120,6 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'test',
       help:  'Run the unit tests.',
 
@@ -135,7 +131,7 @@ FOAModel({
     // Lock to prevent more than one top-level Test from running at once.
     LOCK: {},
 
-    // Run test as asynchronously as an afunc.
+    // Run test asynchronously as an afunc.
     atest: function() {
       var self = this;
 
@@ -183,15 +179,16 @@ FOAModel({
 
       return aseq.apply(this, afuncs);
     },
+    append: function(s) { this.results += s; },
     log: function(/*arguments*/) {
       for ( var i = 0 ; i < arguments.length ; i++ )
-        this.results += arguments[i];
-      this.results += '\n';
+        this.append(arguments[i]);
+      this.append('\n');
     },
     jlog: function(/*arguments*/) {
       for ( var i = 0 ; i < arguments.length ; i++ )
-        this.results += JSONUtil.stringify(arguments[i]);
-      this.results += '\n';
+        this.append(JSONUtil.stringify(arguments[i]));
+      this.append('\n');
     },
     addHeader: function(name) {
       this.log('<tr><th colspan=2 class="resultHeader">' + name + '</th></tr>');
@@ -384,8 +381,7 @@ FOAModel({
       code: function() {this.addHeader("header");this.ok("pass");this.fail("fail");}
     }
   ]
-}
-        );
+});
 
 (function() {
   for ( var i = 0 ; i < Model.templates.length ; i++ )
