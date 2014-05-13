@@ -244,22 +244,15 @@ FOAModel({
       dao = dao.skip(this.scrollbar.value);
 
       var self = this;
-      var objs = [];
-      var selection = this.selection && this.selection.get();
       if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
 
-      dao.limit(this.rows).select({
-        put: function(o) { if ( ! selection || ( self.selection && o === self.selection.get() ) ) selection = o; objs.push(o); }} )(function() {
-          self.objs = objs;
-          if ( self.$ ) {
-            self.$.innerHTML = self.tableToHTML();
-//            console.time('TableView2.initHTML');
-            self.initHTML_();
-//            console.timeEnd('TableView2.initHTML');
-          }
-//          self.onResize();
-          // self.selection && self.selection.set(selection);
-        });
+      dao.limit(this.rows).select()(function(objs) {
+        self.objs = objs;
+        if ( self.$ ) {
+          self.$.innerHTML = self.tableToHTML();
+          self.initHTML_();
+        }
+      });
     },
 
     tableToHTML: function() {
@@ -325,7 +318,6 @@ FOAModel({
           var className = "tr-" + this.getID();
 
           if ( hselect && obj.id == hselect.id ) {
-            if ( ! obj.equals(hselect) ) this.hardSelection.set(obj);
             className += " rowSelected";
           }
 

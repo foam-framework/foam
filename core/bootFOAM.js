@@ -16,7 +16,20 @@
  */
 
 if ( ! this.FOAM_BOOT_DIR ) {
-  var path = document.currentScript.src;
+  var path = document.currentScript && document.currentScript.src;
+
+  // document.currentScript isn't supported on all browsers, so the following
+  // hack gets the job done on those browsers.
+  if ( ! path ) {
+    var scripts = document.getElementsByTagName('script');
+    for ( var i = 0 ; i < scripts.length ; i++ ) {
+      if ( scripts[i].src.match(/\/bootFOAM.js$/) ) {
+        path = scripts[i].src;
+        break;
+      }
+    }
+  }
+
   path = path.substring(0, path.lastIndexOf('/')+1);
 
   FOAM_BOOT_DIR = path;

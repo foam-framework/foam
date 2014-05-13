@@ -30,10 +30,9 @@ var ConfigureProjectsView = FOAM({
   methods: {
     updateSubViews: function() {
       this.SUPER();
-      var obj = this.get();
 
-      Events.follow(obj.preferredProjects$, this.defaultProjectView.choices$);
-      this.defaultProjectView.setValue(obj.defaultProject$);
+      Events.follow(this.obj.preferredProjects$, this.defaultProjectView.choices$);
+      this.defaultProjectView.data$ = this.obj.defaultProject$;
     }
   },
 

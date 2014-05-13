@@ -250,11 +250,11 @@ function createView(rowSelection, browser) {
         label: 'List',
         view: function() {
           var tableView = QIssueTableView.create({
-            model: QIssue,
-            dao: browser.filteredIssueDAO,
-            browser: browser,
-            hardSelection: rowSelection,
-            scrollEnabled: true,
+            model:              QIssue,
+            dao:                browser.filteredIssueDAO,
+            browser:            browser,
+            hardSelection:      rowSelection,
+            scrollEnabled:      true,
             editColumnsEnabled: true
           });
 
@@ -318,8 +318,8 @@ function createView(rowSelection, browser) {
               grid: /*GridByExpr*/DragAndDropGrid.create({})
            });
 
-          g.row.value = location.y$;
-          g.col.value = location.x$;
+          g.row.data$ = location.y$;
+          g.col.data$ = location.x$;
 
           // TODO: cleanup this block
           function setAcc() {
@@ -331,7 +331,7 @@ function createView(rowSelection, browser) {
           }
           setAcc(location.cells);
 
-          g.acc.value.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
+          g.acc.data$.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
           location.cells$.addListener(setAcc);
 
           return g;

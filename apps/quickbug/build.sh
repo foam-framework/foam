@@ -30,6 +30,8 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/ChoiceView.js \
+  ../../core/DetailView.js \
   ../../core/TableView.js \
   ../../core/cview.js \
   ../../core/MementoMgr.js \

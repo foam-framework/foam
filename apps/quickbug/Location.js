@@ -52,8 +52,7 @@ var Location = FOAM({
       fromMemento: function(c) {
         var choices = this.searchChoice.choices;
         for ( var i = 0 ; i < choices.length ; i++ )
-          if ( choices[i][2] == c )
-            return choices[i][0];
+          if ( choices[i][2] == c ) return choices[i][0];
         return choices[1][0];
       }
     },

@@ -70,25 +70,25 @@ XMLParser.addActions({
 var XMLUtil = {
 
   escape: function(str) {
-    return str
+    return str && str
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
   },
 
   unescape: function(str) {
-    return str
+    return str && str
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
   },
 
   escapeAttr: function(str) {
-    return str.replace(/"/g, '&quot;');
+    return str && str.replace(/"/g, '&quot;');
   },
 
   unescapeAttr: function(str) {
-    return str.replace(/&quot;/g, '"');
+    return str && str.replace(/&quot;/g, '"');
   },
 
   parse: function(str) {
@@ -153,15 +153,10 @@ var XMLUtil = {
         out(obj);
       }
       else if ( obj instanceof Object ) {
-        try {
-          if ( Model.isInstance(obj.model_) )
-            this.outputObject_(out, obj);
-          else
-            this.outputMap_(out, obj);
-        }
-        catch (x) {
-          console.log('toXMLError: ', x.toString(), obj);
-        }
+        if ( obj.model_ )
+          this.outputObject_(out, obj);
+        else
+          this.outputMap_(out, obj);
       }
       else {
         out(obj);
@@ -242,13 +237,13 @@ var XMLUtil = {
       }
       else if ( obj instanceof Object ) {
         try {
-          if ( Model.isInstance(obj.model_) )
+          if ( obj.model_ && typeof obj.model_ !== 'string' )
             this.outputObject_(out, obj, indent);
           else
             this.outputMap_(out, obj, indent);
         }
         catch (x) {
-          console.log('toXMLError: ', x.toString(), obj);
+          console.log('toXMLError: ', x);
         }
       }
       else {

@@ -92,7 +92,7 @@ document.writeln("=======================================");
     ctx.lineTo(400,180);
     ctx.stroke();
 
-    document.writeln("</br><h2>Test Events</h2>");
+    document.writeln("<br/><h2>Test Events</h2>");
     var l = function(obj, property, oldValue, newValue)
     {
        document.writeln("obj: " + obj + " property: " + property+ " oldValue: " + oldValue+ " newValue: " + newValue);
@@ -126,7 +126,7 @@ document.writeln("=======================================");
     document.writeln(sm.get());
 
 
-    document.writeln("</br><h2>Test New Events</h2>");
+    document.writeln("<br/><h2>Test New Events</h2>");
     var e = { __proto__: PropertyChangeSupport };
 
     e.subscribe(['property','lname'], l);
@@ -220,7 +220,7 @@ console.log('************************************', mmodels.length);
     stv.scrollbar.height=430;
     stv.write(document);
 */
-    document.writeln("</br><h2>Test DetailView</h2>");
+    document.writeln("<br/><h2>Test DetailView</h2>");
 
 
 //    var user = new (o.getPrototype())();
@@ -274,7 +274,7 @@ o = Model;
     DomValue.DEFAULT_EVENT = 'change';
 **/
 
-    document.writeln("</br><h2>Test Property Linking</h2>");
+    document.writeln("<br/><h2>Test Property Linking</h2>");
 
 
     var Planet = Circle;
