@@ -429,6 +429,25 @@ FOAModel({
         render(dv2);
       </code>
     </foam>
+    <foam model="UITest" name="DetailView2">
+      <description>Test DetailView2.</description>
+      <code>
+        var t  = Timer.create();
+        var dv = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv);
+      </code>
+    </foam>
+    <foam model="UITest" name="DetailView2">
+      <description>Test DetailView2's ability to switch Value to object with new Model type.</description>
+      <code>
+        var t  = Timer.create();
+        var dv = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv);
+        dv.value.set(Binding.create());
+      </code>
+    </foam>
   </tests>
 </foam>
  </body>
