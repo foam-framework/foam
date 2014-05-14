@@ -1,6 +1,7 @@
 FOAModel({
   name: 'Todo',
-  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ]
+  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
+  templates:  [ { name: 'toDetailHTML' } ],
 });
 
 FOAModel({
@@ -15,7 +16,7 @@ FOAModel({
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'dao' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView', rowView: 'View' } },
+    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
     {
@@ -54,15 +55,7 @@ FOAModel({
       this.SUPER();
       this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
       this.dao.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
     }
-  }
-});
-
-FOAModel({ name: 'ControllerView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({
-  name: 'View',
-  extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ],
-  actions: [ { name: 'remove', label: '', action: function() { this.DAO.remove(this.obj); }}]
+  },
+  templates: [ { name: 'toDetailHTML' } ]
 });

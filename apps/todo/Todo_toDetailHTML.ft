@@ -2,7 +2,7 @@
 	<div class="view">
 		$$completed{className: 'toggle'}
 		$$text{mode: 'read-only', tagName: 'label'}
-                $$remove{className: 'destroy'}
+                <button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
 	</div>
 	$$text{className: 'edit'}
 </li>
