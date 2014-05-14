@@ -254,6 +254,8 @@ var Model = {
               future.set(data);
               t.futureTemplate = undefined;
             };})(t, future));
+          } else if ( typeof t.template === 'function' ) {
+            t.template = multiline(t.template);
           }
         }
       },
