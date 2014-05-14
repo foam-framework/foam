@@ -1,7 +1,7 @@
 FOAModel({
   name: 'Todo',
   properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
-  templates:  [ { name: 'toDetailHTML', template: function() {/*
+  templates: [ function toDetailHTML() {/*
 	<li id="{{{this.getID()}}}">
 		<div class="view">
 			$$completed{className: 'toggle'}
@@ -17,7 +17,7 @@ FOAModel({
 	this.on('blur',	    toDisplay, this.textView.id);
 	this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 	this.setClass('completed', function() { return this.obj.completed; }.bind(this), this.id);
-	%> */} } ],
+	%> */} ],
 });
 
 FOAModel({
@@ -73,7 +73,7 @@ FOAModel({
       this.dao.listen(this.onDAOUpdate);
     }
   },
-  templates: [ { name: 'toDetailHTML', template: function() {/*
+  templates: [ function toDetailHTML() {/*
 	<section id="todoapp">
 		<header id="header">
 			<h1>todos</h1>
@@ -96,5 +96,5 @@ FOAModel({
 		<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
 		{{{FOAM_POWERED}}}
 		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-	</footer> */} } ]
+	</footer> */ } ]
 });

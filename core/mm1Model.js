@@ -241,7 +241,9 @@ var Model = {
         // if their 'template' property isn't set
         for ( var i = 0 ; i < templates.length ; i++ ) {
           var t = templates[i];
-          if ( ! t.template ) {
+          if ( typeof t === 'function' ) {
+            t = templates[i] = Template.create({name: t.name, template: multiline(t)});
+          } else if ( ! t.template ) {
             var future = afuture();
             t.futureTemplate = future.get;
             var path = document.currentScript.src;
