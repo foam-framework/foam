@@ -1,7 +1,23 @@
 FOAModel({
   name: 'Todo',
   properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
-  templates:  [ { name: 'toDetailHTML' } ],
+  templates:  [ { name: 'toDetailHTML', template: function() {/*
+	<li id="{{{this.getID()}}}">
+		<div class="view">
+			$$completed{className: 'toggle'}
+			$$text{mode: 'read-only', tagName: 'label'}
+                	<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
+		</div>
+		$$text{className: 'edit'}
+	</li>
+	<%
+	var toEdit    = function() { DOM.setClass(this.$, 'editing'); this.textView.focus(); }.bind(this);
+	var toDisplay = function() { DOM.setClass(this.$, 'editing', false); }.bind(this);
+	this.on('dblclick', toEdit,    this.id);
+	this.on('blur',	    toDisplay, this.textView.id);
+	this.textView.subscribe(this.textView.ESCAPE, toDisplay);
+	this.setClass('completed', function() { return this.obj.completed; }.bind(this), this.id);
+	%> */} } ],
 });
 
 FOAModel({
@@ -57,5 +73,28 @@ FOAModel({
       this.dao.listen(this.onDAOUpdate);
     }
   },
-  templates: [ { name: 'toDetailHTML' } ]
+  templates: [ { name: 'toDetailHTML', template: function() {/*
+	<section id="todoapp">
+		<header id="header">
+			<h1>todos</h1>
+			$$input{id: 'new-todo'}
+		</header>
+		<section id="main">
+			$$toggle{id: 'toggle-all', showLabel: false}
+			$$filteredDAO{tagName: 'ul', id: 'todo-list'}
+		</section>
+		<footer id="footer">
+			<span id="todo-count">
+				<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.obj.activeCount == 1 ? '' : 's' %> left
+			</span>
+			$$query{id: 'filters'}
+                	$$clear{id: 'clear-completed'}
+		</footer>
+	</section>
+	<footer id="info">
+		<p>Double-click to edit a todo</p>
+		<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
+		{{{FOAM_POWERED}}}
+		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+	</footer> */} } ]
 });
