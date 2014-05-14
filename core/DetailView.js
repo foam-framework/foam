@@ -1,14 +1,8 @@
-var DetailView = Model.create({
-
+FOAModel({
   name: 'DetailView',
-
   extendsModel: 'AbstractView',
 
   properties: [
-    {
-      name:  'model',
-      type:  'Model'
-    },
     {
       name:  'value',
       type:  'Value',
@@ -18,6 +12,11 @@ var DetailView = Model.create({
         if ( newValue ) newValue.addListener(this.onValueChange);
         this.onValueChange();
       }
+    },
+    {
+      name:  'model',
+      type:  'Model',
+      defaultValueFn: function() { return this.value.get().model_; }
     },
     {
       name: 'title',
@@ -125,7 +124,10 @@ var DetailView = Model.create({
       return str;
     },
 
-    toHTML: function() {
+    // If the Model supplies a toDetailHTML method, then use it instead.
+    toHTML: function() { return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this); },
+
+    defaultToHTML: function() {
       this.children = [];
       var model = this.model;
       var str  = "";

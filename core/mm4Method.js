@@ -576,6 +576,8 @@ FOAModel({
       rows: 30, cols: 80,
       defaultValue: '',
       view: 'TextAreaView',
+      // Doesn't work because of bootstrapping issues.
+      // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
       help: 'Template text. <%= expr %> or <% out(...); %>'
     }/*,
        {

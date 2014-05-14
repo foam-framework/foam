@@ -390,27 +390,65 @@ FOAModel({
   </tests>
 </foam>
 
-<!-- TODO: Enable UnitTests to handle the rendering of views.
-
-<foam model="UnitTest" onInit="this.test()" view="DemoView">
+<foam model="UITest" view="DemoView">
   <name>View Tests</name>
   <description>Test Views and Data-Binding.</description>
   <tests>
-    <foam model="UnitTest" name="TextFieldView">
+    <foam model="UITest" name="TextFieldView">
       <description>Test data-binding in TextFieldViews.</description>
       <code>
         var v1 = TextFieldView.create();
         var v2 = TextFieldView.create();
 
-        log(v1.toHTML()); v1.initHTML();
-        log(v2.toHTML()); v2.initHTML();
+        render(v1);
+        render(v2);
 
         v1.data$ = v2.data$;
       </code>
     </foam>
+    <foam model="UITest" name="TextFieldView/onKeyMode">
+      <description>Test data-binding in TextFieldViews with onKeyMode enabled.</description>
+      <code>
+        var v1 = TextFieldView.create({onKeyMode: true});
+        var v2 = TextFieldView.create({onKeyMode: true});
+
+        render(v1);
+        render(v2);
+
+        v1.data$ = v2.data$;
+      </code>
+    </foam>
+    <foam model="UITest" name="DetailView">
+      <description>Test data-binding in TextFieldViews with onKeyMode enabled.</description>
+      <code>
+        var t   = Timer.create();
+        var dv1 = DetailView.create({value: SimpleValue.create(t)});
+        var dv2 = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv1);
+        render(dv2);
+      </code>
+    </foam>
+    <foam model="UITest" name="DetailView2">
+      <description>Test DetailView2.</description>
+      <code>
+        var t  = Timer.create();
+        var dv = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv);
+      </code>
+    </foam>
+    <foam model="UITest" name="DetailView2">
+      <description>Test DetailView2's ability to switch Value to object with new Model type.</description>
+      <code>
+        var t  = Timer.create();
+        var dv = DetailView.create({value: SimpleValue.create(t)});
+
+        render(dv);
+        dv.value.set(Binding.create());
+      </code>
+    </foam>
   </tests>
 </foam>
--->
-
  </body>
 </html>

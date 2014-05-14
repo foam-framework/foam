@@ -1,6 +1,23 @@
 FOAModel({
   name: 'Todo',
-  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ]
+  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
+  templates: [ function toDetailHTML() {/*
+	<li id="{{{this.getID()}}}">
+		<div class="view">
+			$$completed{className: 'toggle'}
+			$$text{mode: 'read-only', tagName: 'label'}
+                	<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
+		</div>
+		$$text{className: 'edit'}
+	</li>
+	<%
+	var toEdit    = function() { DOM.setClass(this.$, 'editing'); this.textView.focus(); }.bind(this);
+	var toDisplay = function() { DOM.setClass(this.$, 'editing', false); }.bind(this);
+	this.on('dblclick', toEdit,    this.id);
+	this.on('blur',	    toDisplay, this.textView.id);
+	this.textView.subscribe(this.textView.ESCAPE, toDisplay);
+	this.setClass('completed', function() { return this.obj.completed; }.bind(this), this.id);
+	%> */} ],
 });
 
 FOAModel({
@@ -15,7 +32,7 @@ FOAModel({
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
     { name: 'dao' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView', rowView: 'View' } },
+    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
     { name: 'completedCount', model_: 'IntegerProperty' },
     { name: 'activeCount',    model_: 'IntegerProperty' },
     {
@@ -54,15 +71,30 @@ FOAModel({
       this.SUPER();
       this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
       this.dao.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
     }
-  }
-});
-
-FOAModel({ name: 'ControllerView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({
-  name: 'View',
-  extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ],
-  actions: [ { name: 'remove', label: '', action: function() { this.DAO.remove(this.obj); }}]
+  },
+  templates: [ function toDetailHTML() {/*
+	<section id="todoapp">
+		<header id="header">
+			<h1>todos</h1>
+			$$input{id: 'new-todo'}
+		</header>
+		<section id="main">
+			$$toggle{id: 'toggle-all', showLabel: false}
+			$$filteredDAO{tagName: 'ul', id: 'todo-list'}
+		</section>
+		<footer id="footer">
+			<span id="todo-count">
+				<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.obj.activeCount == 1 ? '' : 's' %> left
+			</span>
+			$$query{id: 'filters'}
+                	$$clear{id: 'clear-completed'}
+		</footer>
+	</section>
+	<footer id="info">
+		<p>Double-click to edit a todo</p>
+		<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
+		{{{FOAM_POWERED}}}
+		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+	</footer> */ } ]
 });
