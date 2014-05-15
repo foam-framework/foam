@@ -16,7 +16,13 @@ FOAModel({
     {
       name:  'model',
       type:  'Model',
-      defaultValueFn: function() { return this.value.get().model_; }
+      postSet: function(_, m) {
+        if ( this.$ ) {
+          this.children = [];
+          this.$.outerHTML = this.toHTML();
+          this.initHTML();
+        }
+      }
     },
     {
       name: 'title',
@@ -48,8 +54,8 @@ FOAModel({
     {
       name: 'onValueChange',
       code: function() {
-        if ( ! this.$ ) return;
-        this.updateSubViews();
+        if ( this.obj && this.obj.model_ ) this.model = this.obj.model_;
+        if ( this.$ ) this.updateSubViews();
       }
     },
     {
@@ -216,10 +222,6 @@ FOAModel({
       if ( ! obj ) return;
 
       this.obj = obj;
-    },
-
-    destroy: function()
-    {
     }
   }
 });
