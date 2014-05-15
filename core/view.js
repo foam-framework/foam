@@ -1635,7 +1635,6 @@ FOAModel({
       return out.join('');
     }
   }
-
 });
 
 
