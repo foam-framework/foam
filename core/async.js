@@ -111,7 +111,7 @@ var atime = (function() {
   // of the same timing are active at once.
   var id = 1;
   var activeOps = {};
-  return function (str, afunc, opt_callback) {
+  return function (str, afunc, opt_endCallback, opt_startCallback) {
     return function(ret) {
       var name = str;
       if ( activeOps[str] ) {
@@ -121,13 +121,14 @@ var atime = (function() {
          activeOps[str] = 1;
       }
       var start = performance.now();
-      console.time(name);
+      if ( opt_startCallback ) opt_startCallback(name);
+      if ( ! opt_endCallback ) console.time(name);
       var a = arguments;
       var args = [function() {
         activeOps[str]--;
         var end = performance.now();
-        if ( opt_callback ) opt_callback(end-start);
-        console.timeEnd(name);
+        if ( opt_endCallback ) opt_endCallback(name, end - start);
+        else console.timeEnd(name);
         ret && ret.apply(this, [].shift.call(a));
       }];
       for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];

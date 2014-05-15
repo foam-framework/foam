@@ -235,6 +235,7 @@ FOAModel({
             QueryParser.parseString(this.location.can) || TRUE,
             QueryParser.parseString(this.location.q) || TRUE
           ).partialEval());
+          metricsSrv.sendEvent('Browser', 'Query');
         }
       }
     },
