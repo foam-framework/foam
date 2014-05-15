@@ -281,6 +281,10 @@ var FloatProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'defaultValue',
+      defaultValue: 0.0
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
@@ -294,6 +298,10 @@ var FloatProperty = Model.create({
     {
       name: 'view',
       defaultValue: 'FloatFieldView'
+    },
+    {
+      name: 'preSet',
+      defaultValue: function (_, v) { return parseFloat(v || 0.0); }
     },
     {
       name: 'prototag',
