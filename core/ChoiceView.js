@@ -247,3 +247,64 @@ FOAModel({
     }
   ]
 });
+
+
+// TODO: Fix, doesn't work when choice is an array, which is always now
+FOAModel({
+  name:  'RadioBoxView',
+
+  extendsModel: 'ChoiceView',
+
+  methods: {
+    toHTML: function() {
+      return '<span id="' + this.getID() + '"/></span>';
+    },
+
+    updateHTML: function() {
+      var out = [];
+
+      for ( var i = 0 ; i < this.choices.length ; i++ ) {
+        var choice = this.choices[i];
+
+        if ( Array.isArray(choice) ) {
+          /*
+            var encodedValue = choice[0].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            out.push(this.value && choice[0] == this.value.get() ? '\t<option selected value="' : '\t<option value="');
+            out.push(encodedValue + '">');
+            out.push(choice[1].toString());
+          */
+        } else {
+          out.push(choice.toString());
+          out.push(': <input type="radio" name="');
+          out.push(this.name);
+          out.push('" value="');
+          out.push(choice.toString());
+          out.push('"');
+          var callback = (function(value, choice) { return function() { value.set(choice); }})(this.value, choice);
+          out.push('id="' + this.on('click', callback) + '"');
+          if ( this.value && choice == this.value.get() ) out.push(' checked');
+          out.push('/> ');
+        }
+        out.push('</option>');
+      }
+
+      this.$.innerHTML = out.join('');
+      AbstractView.getPrototype().initHTML.call(this);
+    },
+
+    initHTML: function() {
+      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(evt) {
+        console.log('****************', evt, arguments);
+      }
+    }
+  ]
+
+});

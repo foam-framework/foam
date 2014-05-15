@@ -286,7 +286,6 @@ FOAModel({
 
       this.obj = this.model.create();
 
-      //        this.view = DetailView2.create({model: this.model, value: SimpleValue.create(this.obj)});
       this.view = DetailView.create({model: this.model, value: this.propertyValue('obj')});
     },
 
@@ -387,8 +386,6 @@ FOAModel({
       var tmp = this.model;
       this.SUPER();
       this.model = tmp;
-
-      this.view2 = DetailView2.create();
 
       this.view = FOAM({
         model_: 'AlternateView',
