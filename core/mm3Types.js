@@ -237,7 +237,7 @@ var IntegerProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function (_, v) { return parseInt(v); }
+      defaultValue: function (_, v) { return parseInt(v || 0); }
     },
     {
       name: 'defaultValue',

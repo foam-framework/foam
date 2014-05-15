@@ -4112,7 +4112,6 @@ FOAModel({
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {
-console.log('obj update: ', arguments);
             this.dao.put(o);
           }.bind(this, o));
         }
