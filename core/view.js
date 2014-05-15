@@ -252,6 +252,7 @@ FOAModel({
     },
     {
       name:   '$',
+      hidden: true,
       mode:   "read-only",
       getter: function() { return this.id && $(this.id); },
       help:   'DOM Element.'
