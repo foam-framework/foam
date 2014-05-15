@@ -204,6 +204,7 @@ FOAModel({
             b.initHTML();
             if ( opt_url ) b.maybeImportCrbugUrl(opt_url);
             w.focus();
+            metricsSrv.sendAppView('Browser');
           });
         };
 

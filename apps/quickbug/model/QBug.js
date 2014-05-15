@@ -192,10 +192,12 @@ FOAModel({
             p.launchBrowser(opt_url);
           },
           error: function() {
+            metricsSrv.sendException('Failed to find default project.');
             console.warn("Couldn't find default project, default to ", self.defaultProjectName);
             if ( opt_projectName === self.defaultProjectName) {
               // TODO: Some sort of error view that we couldn't find the project.
               console.error("Couldn't find a project, you're probably offline.");
+              metricsSrv.sendException('Failed to find project.', true);
               return;
             }
             self.launchBrowser(self.defaultProjectName);
