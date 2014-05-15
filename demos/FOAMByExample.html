@@ -596,8 +596,8 @@ FOAModel({
 });
 
   var allViews = AllViews.create();
-  var dv1 = DetailView.create({model: AllViews, value: SimpleValue.create(allViews)});
-  var dv2 = DetailView.create({model: AllViews, value: SimpleValue.create(allViews)});
+  var dv1 = DetailView.create({value: SimpleValue.create(allViews)});
+  var dv2 = DetailView.create({value: SimpleValue.create(allViews)});
   log('<table><tr><td>' + dv1.toHTML() + '</td><td>' + dv2.toHTML() + '</td></tr></table>');
   dv1.initHTML();
   dv2.initHTML();
@@ -658,6 +658,19 @@ FOAModel({
 
         render(dv);
         dv.value.set(TextFieldView.create());
+      </code>
+    </foam>
+    <foam model="UITest" name="ChoiceViews">
+      <description>Test data-binding in ChoiceViews.</description>
+      <code>
+        var choices = [ 'Value1', 'Value2', 'Value3' ];
+        var v1 = ChoiceView.create({choices: choices});
+        var v2 = ChoiceListView.create({choices: choices});
+        var v3 = RadioBoxView.create({choices: choices});
+
+        render(v1); render(v2); render(v3);
+
+        v1.data$ = v2.data$ = v3.data$;
       </code>
     </foam>
   </tests>
