@@ -36,6 +36,12 @@ var StringProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'preSet',
+      defaultValue: function (_, v) {
+        return v === undefined || v === null ? '' : v.toString();
+      }
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
