@@ -660,6 +660,16 @@ FOAModel({
         dv.value.set(TextFieldView.create());
       </code>
     </foam>
+    <foam model="UITest" name="DetailViewSwitchModelWithShowActions">
+      <description>Test DetailView's ability to switch to value with a different Model when showActions is set to true.</description>
+      <code>
+        var t  = Timer.create();
+        var dv = DetailView.create({showActions:true, value: SimpleValue.create(t)});
+
+        render(dv);
+        dv.value.set(TextFieldView.create());
+      </code>
+    </foam>
     <foam model="UITest" name="ChoiceViews">
       <description>Test data-binding in ChoiceViews.</description>
       <code>
