@@ -73,7 +73,6 @@ p, h1, form, button{
 }
 
 .detailView input {
-  float: left;
   font-size: 12px;
   padding: 4px 2px;
   border: solid 1px #aacfe4;
@@ -227,39 +226,39 @@ option[selected]{
   padding-bottom: 10px;
 }
 #stylized label{
-  display:block;
-  font-weight:bold;
-  text-align:right;
-  width:140px;
-  float:left;
+  display: block;
+  font-weight: bold;
+  text-align: right;
+  width: 140px;
+  float: left;
 }
 #stylized .small{
-  color:#666666;
-  display:block;
-  font-size:11px;
-  font-weight:normal;
-  text-align:right;
-  width:140px;
+  color: #666666;
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: right;
+  width: 140px;
 }
 #stylized input{
-  float:left;
-  font-size:12px;
-  padding:4px 2px;
-  border:solid 1px #aacfe4;
-  margin:2px 0 20px 10px;
-  width:200px;
+  float: left;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  margin: 2px 0 20px 10px;
+  width: 200px;
 }
 #stylized button{
-  background:#666666;
-  clear:both;
-  color:#FFFFFF;
-  font-size:11px;
-  font-weight:bold;
-  height:31px;
-  line-height:31px;
-  margin-left:150px;
-  text-align:center;
-  width:125px;
+  background: #666666;
+  clear: both;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+  height: 31px;
+  line-height: 31px;
+  margin-left: 150px;
+  text-align: center;
+  width: 125px;
 }
 
 
