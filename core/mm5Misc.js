@@ -39,7 +39,7 @@ FOAModel({
       help: 'A multi-line description of the unit test.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'passed',
       required: true,
       displayWidth: 8,
@@ -48,7 +48,7 @@ FOAModel({
       help: 'Number of sub-tests to pass.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'failed',
       required: true,
       displayWidth: 8,

@@ -75,7 +75,7 @@ var Property = {
           'Float',
           'Function',
           'Image',
-          'Integer',
+          'Int',
           'Object',
           'Password',
           'String',
@@ -326,7 +326,7 @@ var Property = {
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },

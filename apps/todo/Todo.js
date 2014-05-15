@@ -33,8 +33,8 @@ FOAModel({
     },
     { name: 'dao' },
     { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
-    { name: 'completedCount', model_: 'IntegerProperty' },
-    { name: 'activeCount',    model_: 'IntegerProperty' },
+    { name: 'completedCount', model_: 'IntProperty' },
+    { name: 'activeCount',    model_: 'IntProperty' },
     {
       name: 'query',
       postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },

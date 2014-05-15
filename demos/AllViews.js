@@ -65,7 +65,7 @@ FOAModel({
       defaultValue: new Date(Date.now()-123456)
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'integerProperty',
       defaultValue: 42
     },

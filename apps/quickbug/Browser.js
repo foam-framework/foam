@@ -117,11 +117,11 @@ FOAModel({
       factory: function() { return Timer.create(); }
     },
     {
-      mode_: 'IntegerProperty',
+      mode_: 'IntProperty',
       name: 'issueCount'
     },
     {
-      mode_: 'IntegerProperty',
+      mode_: 'IntProperty',
       name: 'selectedIssueCount'
     },
     {

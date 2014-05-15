@@ -99,11 +99,11 @@ var PhotoDetail = FOAM({
   model_: 'Model',
   name: 'PhotoDetail',
   properties: [
-    { model_: 'IntegerProperty', name: 'id' },
+    { model_: 'IntProperty', name: 'id' },
     { name: 'photoId' },
     { name: 'albumId' },
     { name: 'hash' },
-    { model_: 'IntegerProperty', name: 'totalComments' }
+    { model_: 'IntProperty', name: 'totalComments' }
   ]
 });
 

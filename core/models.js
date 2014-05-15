@@ -24,14 +24,14 @@ FOAModel({
 
   properties: [
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'interval',
       help:  'Interval of time between updating time.',
       units: 'ms',
       defaultValue: 10
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'i',
       defaultValue: 0
     },
@@ -41,7 +41,7 @@ FOAModel({
       defaultValue: 1.0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'duration',
       units: 'ms',
       defaultValue: -1
@@ -52,31 +52,31 @@ FOAModel({
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'startTime',
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'time',
       help:  'The current time in milliseconds since epoch.',
       preSet: function(_, t) { return Math.ceil(t); },
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'second',
       help:  'The second of the current minute.',
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'minute',
       help:  'The minute of the current hour.',
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'hour',
       help:  'The hour of the current day.',
       defaultValue: 0

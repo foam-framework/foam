@@ -126,7 +126,7 @@ FOAModel({
     {
       name: 'compare',
       description: 'Compare two objects, returning 0 if they are equal, > 0 if the first is larger, and < 0 if the second is.',
-      returnType: 'Integer',
+      returnType: 'Int',
       args: [
         { name: 'o1', description: 'The first object to be compared.' },
         { name: 'o2', description: 'The second object to be compared.' }
@@ -207,7 +207,7 @@ FOAModel({
       description: 'Return a DAO that will limit future select()\'s to the specified number of results.',
       returnValue: 'DAO',
       args: [
-        { name: 'count', type: 'Integer' }
+        { name: 'count', type: 'Int' }
       ]
     },
     {
@@ -215,7 +215,7 @@ FOAModel({
       description: 'Return a DAO that will skip the specified number of objects from future select()\'s',
       returnValue: 'DAO',
       args: [
-        { name: 'skip', type: 'Integer' }
+        { name: 'skip', type: 'Int' }
       ]
     },
     {
@@ -757,7 +757,7 @@ FOAModel({
       transient: true
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'sequenceValue',
       defaultValue: 1
     }
@@ -1731,7 +1731,7 @@ FOAModel({
     },
     {
       name:  'nextRequest_',
-      type:  'Integer',
+      type:  'Int',
       label: 'Next Request',
       help:  'Id of the next request to the delegate.',
       factory: function() { return 1; }
@@ -2355,7 +2355,7 @@ FOAModel({
       help: 'Properties that are handled as separate parameters rather than in the query.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'batchSize',
       defaultValue: 200
     },
@@ -2563,7 +2563,7 @@ FOAModel({
 
   properties: [
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'maxSize',
       defaultValue: 30
     },

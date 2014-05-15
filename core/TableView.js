@@ -91,14 +91,14 @@ FOAModel({
     },
     {
       name: 'rows',
-      type:  'Integer',
+      type:  'Int',
       defaultValue: 50,
       postSet: function(oldValue, newValue) {
         if ( oldValue !== newValue ) this.repaint();
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'height'
     },
     {

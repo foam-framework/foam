@@ -55,7 +55,7 @@ var StringProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -99,7 +99,7 @@ var BooleanProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -159,7 +159,7 @@ var DateProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -212,18 +212,18 @@ var DateTimeProperty = Model.create({
 });
 
 
-var IntegerProperty = Model.create({
+var IntProperty = Model.create({
   extendsModel: 'Property',
 
-  name:  'IntegerProperty',
-  help:  "Describes a properties of type Integer.",
+  name:  'IntProperty',
+  help:  "Describes a properties of type Int.",
 
   properties: [
     {
       name: 'type',
       type: 'String',
       displayWidth: 20,
-      defaultValue: 'Integer',
+      defaultValue: 'Int',
       help: 'The FOAM type of this property.'
     },
     {
@@ -252,7 +252,7 @@ var IntegerProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -306,7 +306,7 @@ var FloatProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -424,7 +424,7 @@ var ArrayProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -469,7 +469,7 @@ var ReferenceProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -520,7 +520,7 @@ var StringArrayProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }

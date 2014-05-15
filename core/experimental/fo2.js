@@ -61,13 +61,13 @@ var rootFeatureSet = [
     name: 'filteredDAO',
     view: { model_: 'DAOListController', rowView: 'TodoView' }
   }],
-  ['TodoController', 'IntegerProperty', {
+  ['TodoController', 'IntProperty', {
     name: 'completedCount',
   }],
-  ['TodoController', 'IntegerProperty', {
+  ['TodoController', 'IntProperty', {
     name: 'activeCount',
   }],
-  ['TodoController', 'IntegerProperty', {
+  ['TodoController', 'IntProperty', {
     name: 'query',
     postSet: function(_, q) {
       this.filteredDAO = this.todoDAO.where(q);

@@ -1141,7 +1141,7 @@ var typeModels = {
   boolean: BooleanProperty,
   dateTime: DateTimeProperty,
   float: FloatProperty,
-  integer: IntegerProperty,
+  integer: IntProperty,
   ref: ReferenceProperty,
   refArray: ArrayProperty,
   string: StringProperty,
