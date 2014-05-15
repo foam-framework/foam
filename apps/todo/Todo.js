@@ -34,7 +34,8 @@ FOAModel({
     { name: 'dao' },
     { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
     { name: 'completedCount', model_: 'IntProperty' },
-    { name: 'activeCount',    model_: 'IntProperty' },
+    { name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; } },
+    { name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) { if ( n == !!this.activeCount ) this.dao.update(SET(Todo.COMPLETED, n)); }},
     {
       name: 'query',
       postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
@@ -43,10 +44,6 @@ FOAModel({
     }
   ],
   actions: [
-    {
-      name: 'toggle',
-      action: function() { this.dao.update(SET(Todo.COMPLETED, this.activeCount)); }
-    },
     {
       name: 'clear',
       labelFn:   function() { return "Clear completed (" + this.completedCount + ")"; },
@@ -71,6 +68,7 @@ FOAModel({
       this.SUPER();
       this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
       this.dao.listen(this.onDAOUpdate);
+      this.onDAOUpdate();
     }
   },
   templates: [ function toDetailHTML() {/*
