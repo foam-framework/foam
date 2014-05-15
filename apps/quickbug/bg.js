@@ -1,8 +1,20 @@
+var metricsSrv = analytics.getService('Quick Bug').getTracker('UA-47217230-3');
+
+ametric = function(name, afunc) {
+  var metric;
+  return atime(name, afunc, function(name) {
+    metric = metricsSrv.startTiming('Load', name);
+    console.time(name);
+  }, function(name, time) {
+    console.timeEnd(name);
+    metric.send();
+  });
+};
+
 var qb;
 function launch() {
   if ( ! qb ) qb = X.QBug.create();
   qb.launchBrowser();
-//  qb.launchBrowser('chromium');
 }
 
 if ( chrome.app.runtime ) {

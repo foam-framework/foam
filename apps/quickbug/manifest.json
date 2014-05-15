@@ -20,6 +20,7 @@
   "app": {
     "background": {
       "scripts": [
+        "google-analytics-bundle.js",
         "foam.js",
         "model/ImportedModels.js",
         "model/QIssue.js",
