@@ -147,7 +147,7 @@ FOAModel({
       name: 'table',
       type: 'AbstractView',
       factory: function() {
-        return TableView2.create({
+        return TableView.create({
             model: this.model,
             dao: this.dao,
             scrollEnabled: true,

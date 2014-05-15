@@ -35,7 +35,7 @@ FOAModel({
       model_: 'DAOProperty',
       name:  'dao',
       label: 'DAO',
-      view: 'TableView2', 
+      view: 'TableView',
       postSet: function(_, dao) {
         // TODO Is this going to be useful?
         this.X.DAO = dao;
