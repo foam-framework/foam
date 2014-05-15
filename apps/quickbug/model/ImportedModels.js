@@ -23,7 +23,7 @@ var GeneratedQIssue = FOAM({
    properties:
    [
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          name: 'id',
          help: 'ID of the issue, unique to this project.'
       },
@@ -101,7 +101,7 @@ var GeneratedQIssue = FOAM({
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          name: 'stars',
          help: 'Number of stars this issue has.'
       },
@@ -157,7 +157,7 @@ var IssueComment = FOAM({
          subType: 'IssuePerson'
       },
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          help: '0-based sequence number of this comment, unique to this issue.',
          name: 'id'
       },

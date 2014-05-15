@@ -219,7 +219,7 @@ window.addEventListener('load', function() { DOM.init(X); }, false);
 
 
 // TODO: document and make non-global
-/** Convert a style size to an Integer.  Ex. '10px' to 10. **/
+/** Convert a style size to an Int.  Ex. '10px' to 10. **/
 function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 
@@ -792,11 +792,11 @@ FOAModel({
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'displayWidth'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'displayHeight'
     }
   ],
@@ -845,12 +845,12 @@ FOAModel({
       defaultValue: 'field'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'displayWidth',
       defaultValue: 30
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'displayHeight',
       defaultValue: 1
     },
@@ -1445,12 +1445,12 @@ FOAModel({
 
   properties: [
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'displayHeight',
       defaultValue: 5
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'displayWidth',
       defaultValue: 70
     }
@@ -1899,14 +1899,14 @@ FOAModel({
     },
     {
       name: 'rows',
-      type:  'Integer',
+      type:  'Int',
       defaultValue: 30,
       postSet: function() {
         this.repaint();
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'height'
     },
     {
@@ -3065,7 +3065,7 @@ FOAModel({
       defaultValue: 'text'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'displayWidth',
       defaultValue: 30
     },
@@ -3841,7 +3841,7 @@ FOAModel({
       name: 'objs'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'selection',
       defaultValue: 0,
       postSet: function(oldValue, newValue) {
@@ -3854,16 +3854,16 @@ FOAModel({
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'count',
       defaultValue: 20
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'left'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'top'
     },
   ],
@@ -3998,7 +3998,7 @@ FOAModel({
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'viewIndex',
       preSet: function(_, value) {
         if ( value >= this.views.length ) return 0;
@@ -4151,15 +4151,15 @@ FOAModel({
     },
     {
       // TODO: Can we calculate this reliably?
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'rowViewHeight'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'height'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'skip',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -4167,7 +4167,7 @@ FOAModel({
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'offset',
       defaultValue: 0,
       postSet: function(old, nu) {

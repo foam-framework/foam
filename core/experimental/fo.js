@@ -911,35 +911,35 @@ var featureDAO = [
     defaultValue: 'String'
   }],
 
-  [null, 'Model', { name: 'IntegerProperty' }],
-  ['IntegerProperty', 'Extends', 'Property'],
-  ['IntegerProperty', 'StringProperty', {
+  [null, 'Model', { name: 'IntProperty' }],
+  ['IntProperty', 'Extends', 'Property'],
+  ['IntProperty', 'StringProperty', {
     name: 'type',
-    defaultValue: 'Integer'
+    defaultValue: 'Int'
   }],
-  ['IntegerProperty', 'StringProperty', {
+  ['IntProperty', 'StringProperty', {
     name: 'javaType',
     defaultValue: 'int'
   }],
-  ['IntegerProperty', 'IntegerProperty', {
+  ['IntProperty', 'IntProperty', {
     name: 'defaultValue',
     defaultValue: 0
   }],
-  ['Property', 'IntegerProperty', {
+  ['Property', 'IntProperty', {
     name: 'displayWidth',
     defaultValue: 30,
     help: 'The display width of the property.'
   }],
-  ['Property', 'IntegerProperty', {
+  ['Property', 'IntProperty', {
     name: 'displayHeight',
     defaultValue: 1,
     help: 'The display height of the property.'
   }],
-  ['IntegerProperty', 'IntegerProperty', {
+  ['IntProperty', 'IntProperty', {
     name: 'displayWidth',
     defaultValue: 8
   }],
-  ['StringProperty', 'IntegerProperty', {
+  ['StringProperty', 'IntProperty', {
     name: 'displayHeight',
     displayWidth: 8,
     defaultValue: 1,
@@ -1151,7 +1151,7 @@ var featureDAO = [
     name: 'javaType',
     defaultValue: 'double'
   }],
-  ['FloatProperty', 'IntegerProperty', {
+  ['FloatProperty', 'IntProperty', {
     name: 'displayWidth',
     defaultValue: 15
   }],

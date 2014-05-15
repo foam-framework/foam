@@ -110,11 +110,11 @@ FOAModel({
 
    properties: [
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          name: 'initialDelay'
       },
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          name: 'rowDelay'
       }
    ],

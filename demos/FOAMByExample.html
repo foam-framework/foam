@@ -138,7 +138,7 @@ FOAModel({
       name: 'Test',
       properties: [
         { model_: 'StringProperty',  name: 's' },
-        { model_: 'IntegerProperty', name: 'i' },
+        { model_: 'IntProperty', name: 'i' },
         { model_: 'FloatProperty',   name: 'f' }
       ]
     }).create();
@@ -148,10 +148,10 @@ FOAModel({
     o.s = undefined; assert(o.s === '', 'Setting String Properties to undefined should convert value to empty string.');
     o.s = 1; assert(o.s === '1', 'Setting String Properties to numbers should convert value to String.');
 
-    assert(o.i === 0, 'Default value for Integer Properties should be 0.');
-    o.i = 1; assert(o.i === 1, 'Setting Integer Properties should work.');
-    o.i = undefined; assert(o.i === 0, 'Setting Integer Properties to undefined should convert value to 0.');
-    o.i = '1'; assert(o.i === 1, 'Setting Integer Properties to a string should convert value to Integer.');
+    assert(o.i === 0, 'Default value for Int Properties should be 0.');
+    o.i = 1; assert(o.i === 1, 'Setting Int Properties should work.');
+    o.i = undefined; assert(o.i === 0, 'Setting Int Properties to undefined should convert value to 0.');
+    o.i = '1'; assert(o.i === 1, 'Setting Int Properties to a string should convert value to Int.');
 
     assert(o.f === 0.0, 'Default value for Float Properties should be 0.0.');
     o.f = 1.0; assert(o.f === 1.0, 'Setting Float Properties should work.');
@@ -171,7 +171,7 @@ FOAModel({
         { name: 'id' },
         { name: 'name' },
         { name: 'sex', defaultValue: 'M' },
-        { model_: 'IntegerProperty', name: 'age' }
+        { model_: 'IntProperty', name: 'age' }
       ]
     });
 

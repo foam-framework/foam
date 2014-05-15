@@ -76,7 +76,7 @@ var QIssue = FOAM({
 
     properties: [
         {
-          model_: 'IntegerProperty',
+          model_: 'IntProperty',
           name: 'id',
           shortName: 'i',
           label: 'ID',
@@ -126,7 +126,7 @@ var QIssue = FOAM({
             shortName: 'm',
             aliases: ['mstone'],
             tableLabel: 'M',
-            type: 'Integer',
+            type: 'Int',
             tableWidth: '70px',
             defaultValue: ''
         },
@@ -244,7 +244,7 @@ var QIssue = FOAM({
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
-         model_: 'IntegerProperty',
+         model_: 'IntProperty',
          name: 'stars',
          tableWidth: '20px',
          help: 'Number of stars this issue has.'

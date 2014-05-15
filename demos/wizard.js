@@ -18,7 +18,7 @@ var Service = FOAM({
       name: 'description'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'cost',
       mode: 'read-only'
     }

@@ -105,37 +105,37 @@ FOAModel({
       }
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'width',
       defaultValue: 500
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'height',
       defaultValue: 500
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'headerHeight',
       defaultValue: 119
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'footerHeight',
       defaultValue: 30
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'maxSearchWidth',
       defaultValue: 160
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'searchWidth',
       defaultValue: 160
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'minThreeColumnWidth',
       defaultValue: 1250
     },
