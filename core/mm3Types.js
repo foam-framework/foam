@@ -36,6 +36,12 @@ var StringProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'preSet',
+      defaultValue: function (_, v) {
+        return v === undefined || v === null ? '' : v.toString();
+      }
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 70,
@@ -49,7 +55,7 @@ var StringProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -93,7 +99,7 @@ var BooleanProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -153,7 +159,7 @@ var DateProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -206,18 +212,18 @@ var DateTimeProperty = Model.create({
 });
 
 
-var IntegerProperty = Model.create({
+var IntProperty = Model.create({
   extendsModel: 'Property',
 
-  name:  'IntegerProperty',
-  help:  "Describes a properties of type Integer.",
+  name:  'IntProperty',
+  help:  "Describes a properties of type Int.",
 
   properties: [
     {
       name: 'type',
       type: 'String',
       displayWidth: 20,
-      defaultValue: 'Integer',
+      defaultValue: 'Int',
       help: 'The FOAM type of this property.'
     },
     {
@@ -237,7 +243,7 @@ var IntegerProperty = Model.create({
     },
     {
       name: 'preSet',
-      defaultValue: function (_, v) { return parseInt(v); }
+      defaultValue: function (_, v) { return parseInt(v || 0); }
     },
     {
       name: 'defaultValue',
@@ -246,7 +252,7 @@ var IntegerProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -275,6 +281,10 @@ var FloatProperty = Model.create({
       help: 'The FOAM type of this property.'
     },
     {
+      name: 'defaultValue',
+      defaultValue: 0.0
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
@@ -290,9 +300,13 @@ var FloatProperty = Model.create({
       defaultValue: 'FloatFieldView'
     },
     {
+      name: 'preSet',
+      defaultValue: function (_, v) { return parseFloat(v || 0.0); }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -410,7 +424,7 @@ var ArrayProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -455,7 +469,7 @@ var ReferenceProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -506,7 +520,7 @@ var StringArrayProperty = Model.create({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Integer',
+      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }

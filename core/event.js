@@ -296,12 +296,11 @@ var EventService = {
         try {
           listener.apply(null, msg);
         } catch ( err ) {
-          if ( err == this.UNSUBSCRIBE_EXCEPTION ) {
-            listeners.splice(i,1);
-            i--;
-          } else {
-            console.warn('Error delivering event: ', err);
+          if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+            console.warn('Error delivering event (removing listener): ', topic);
           }
+          listeners.splice(i,1);
+          i--;
         }
       }
 

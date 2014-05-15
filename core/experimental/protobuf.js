@@ -63,7 +63,7 @@ function outProtobufPrimitive(type, tag, value, out) {
     out.varint(bytes.length);
     out.bytes(bytes);
     break;
-  case 'Integer':
+  case 'Int':
   case 'uint64':
   case 'int64':
   case 'uint32':
@@ -98,7 +98,7 @@ ArrayProperty.getPrototype().outProtobuf = function(obj, out) {
   }
 };
 
-IntegerProperty.getPrototype().outProtobuf = function(obj, out) {
+IntProperty.getPrototype().outProtobuf = function(obj, out) {
   out(this.prototag << 3);
   var value = this.f(obj);
   // Hack for handling large numbers that we can't handle in JS.

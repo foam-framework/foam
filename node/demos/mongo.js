@@ -13,7 +13,7 @@ global.Person = FOAM({
     { name: 'id' },
     { name: 'name' },
     { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntegerProperty', name: 'age' }
+    { model_: 'IntProperty', name: 'age' }
   ]
 });
 

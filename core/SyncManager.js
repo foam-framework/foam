@@ -40,26 +40,26 @@ FOAModel({
       hidden: true
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name: 'itemsSynced',
       mode2: 'read-only',
       help: 'Number of items synced.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'timesSynced',
       mode2: 'read-only',
       help: 'Number of times sync has been performed.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'syncInterval',
       help: 'Delay after empty sync response.',
       units: 's',
       defaultValue: 60
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'delay',
       label: 'Delay',
       help:  'Delay after a non-empty sync response.',
@@ -67,7 +67,7 @@ FOAModel({
       defaultValue: 0
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'batchSize',
       help: 'Maximum number of items per sync request; 0 for unlimited.',
       defaultValue: 0
@@ -79,7 +79,7 @@ FOAModel({
       help: 'Current status of the sync process.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'lastBatchSize',
       help: 'Number of item updates returned in last sync response.'
     },
@@ -89,7 +89,7 @@ FOAModel({
       help: 'The time of the last sync.'
     },
     {
-      model_: 'IntegerProperty',
+      model_: 'IntProperty',
       name:  'lastSyncDuration',
       help: 'Duration of last sync request.',
       units: 'ms'

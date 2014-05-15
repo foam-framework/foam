@@ -48,7 +48,7 @@ var EMailLabel = FOAM({
             label: 'Display Name'
         },
         {
-            model_: 'IntegerProperty',
+            model_: 'IntProperty',
             name: 'color',
             label: 'color',
             defaultValue: 0
@@ -1126,12 +1126,12 @@ var EMailBody = FOAM({
     properties: [
         {
             name: 'offset',
-            type: 'Integer',
+            type: 'Int',
             required: true
         },
         {
             name: 'size',
-            type: 'Integer',
+            type: 'Int',
             required: true
         },
         {
