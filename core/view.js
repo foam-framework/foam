@@ -4094,9 +4094,7 @@ FOAModel({
     }
   ],
 
-  methods: {/*
-    toHTML: function() {
-    },*/
+  methods: {
     initHTML: function() {
       var parent = this.parent;
       var test   = parent.obj;
