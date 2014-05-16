@@ -225,7 +225,7 @@ FOAModel({
       name: 'onMouseOver',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
+        this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
     },
