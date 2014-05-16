@@ -45,9 +45,7 @@ FOAModel({
       name: 'persistentContext',
       factory: function() {
         return PersistentContext.create({
-          dao: IDBDAO.create({
-            model: Binding
-          }),
+          dao: IDBDAO.create({ model: Binding }),
           context: this
         });
       }
@@ -96,6 +94,16 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
       var self = this;
+
+      this.initOAuth();
+
+      this.persistentContext.bindObject('user', QUser)(function(user) {
+        self.userFuture.set(user);
+        self.refreshUser();
+      });
+    },
+
+    initOAuth: function() {
       var jsonpFuture = afuture();
       this.X.ajsonp = function() {
         var args = arguments;
@@ -131,11 +139,6 @@ FOAModel({
             };
           };
         })());
-      });
-
-      this.persistentContext.bindObject('user', QUser)(function(user) {
-        self.userFuture.set(user);
-        self.refreshUser();
       });
     },
 
@@ -210,9 +213,7 @@ FOAModel({
   listeners: [
     {
       name: 'onUserUpdate',
-      code: function() {
-        QueryParser.ME = this.user.email;
-      }
+      code: function() { QueryParser.ME = this.user.email; }
     }
   ]
 });
