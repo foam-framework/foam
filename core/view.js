@@ -233,7 +233,8 @@ FOAModel({
     {
       name:  'id',
       label: 'Element ID',
-      type:  'String'
+      type:  'String',
+      factory: function() { return this.nextID() }
     },
     {
       name:  'parent',
@@ -254,7 +255,7 @@ FOAModel({
       name:   '$',
       hidden: true,
       mode:   "read-only",
-      getter: function() { return this.id && $(this.id); },
+      getter: function() { return $(this.id); },
       help:   'DOM Element.'
     },
     {
@@ -354,13 +355,6 @@ FOAModel({
       return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
-    getID: function() {
-      // @return this View's unique DOM element-id
-      // console.log('getID', this.id);
-      if ( this.id ) return this.id;
-      return this.id || ( this.id = this.nextID() );
-    },
-
     addInitializer: function(f) {
       (this.initializers_ || (this.initializers_ = [])).push(f);
     },
@@ -430,7 +424,7 @@ FOAModel({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + '>' +
+      return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
     },
@@ -607,7 +601,7 @@ FOAModel({
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
       div.style.position = 'absolute';
-      div.id = this.getID();
+      div.id = this.id;
       div.innerHTML = this.view.toHTML();
 
       document.body.appendChild(div);
@@ -785,7 +779,7 @@ FOAModel({
       this.value = value;
     },
     toHTML: function() {
-      return '<img class="imageView" id="' + this.getID() + '">';
+      return '<img class="imageView" id="' + this.id + '">';
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -846,7 +840,7 @@ FOAModel({
     },
 
     toHTML: function() {
-      return '<img id="' + this.getID() + '">';
+      return '<img id="' + this.id + '">';
     },
 
     initHTML: function() {
@@ -959,7 +953,7 @@ FOAModel({
     },
 
     toReadWriteHTML: function() {
-      var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
+      var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
       str += this.readWriteTagName === 'input' ?
@@ -972,7 +966,7 @@ FOAModel({
     },
 
     toReadOnlyHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
+      return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     initHTML: function() {
@@ -1146,8 +1140,8 @@ FOAModel({
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
       return ( this.mode === 'read-write' ) ?
-        '<input id="' + this.getID() + '" type="datetime-local" name="' + this.name + '"/>' :
-        '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+        '<input id="' + this.id + '" type="datetime-local" name="' + this.name + '"/>' :
+        '<span id="' + this.id + '" name="' + this.name + '"></span>' ;
     },
 
     initHTML: function() {
@@ -1206,7 +1200,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      var s = '<' + this.tag + ' id="' + this.getID() + '"';
+      var s = '<' + this.tag + ' id="' + this.id + '"';
       if ( this.name ) s+= ' name="' + this.name + '"';
       s += '></' + this.tag + '>';
       return s;
@@ -1271,7 +1265,7 @@ FOAModel({
     toHTML: function() {
       var str = "";
 
-      str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+      str += '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/>';
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         str += "\t<option>" + this.choices[i].toString() + "</option>";
       }
@@ -1313,7 +1307,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
+      return '<input type="checkbox" id="' + this.id + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
     },
 
     initHTML: function() {
@@ -1374,7 +1368,7 @@ FOAModel({
       return this.value.get() ? this.trueImage : this.falseImage;
     },
     toHTML: function() {
-      var id = this.getID();
+      var id = this.id;
  // TODO: next line appears slow, check why
       this.on('click', this.onClick, id);
       return this.name ?
@@ -1441,7 +1435,7 @@ FOAModel({
   methods: {
     image: function() { return this.value ? this.trueImage : this.falseImage; },
     toHTML: function() {
-      return '<img id="' + this.getID() + '" name="' + this.name + '">';
+      return '<img id="' + this.id + '" name="' + this.name + '">';
     },
     initHTML: function() {
       this.$.addEventListener('click', this.onClick);
@@ -1639,7 +1633,7 @@ FOAModel({
       var obj   = this.get();
       var out   = [];
 
-      out.push('<div id="' + this.getID() + '" class="summaryView">');
+      out.push('<div id="' + this.id + '" class="summaryView">');
       out.push('<table>');
 
       // TODO: Either make behave like DetailView or else
@@ -1696,7 +1690,7 @@ FOAModel({
       var model = this.model;
       var out   = [];
 
-      out.push('<div id="' + this.getID() + '" class="helpView">');
+      out.push('<div id="' + this.id + '" class="helpView">');
 
       out.push('<div class="intro">');
       out.push(model.help);
@@ -1767,7 +1761,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      var s = '<span id="' + this.getID() + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
+      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
 
       s += 'Show columns:';
       s += '<table>';
@@ -1847,16 +1841,16 @@ FOAModel({
 
       this.on('click', function() {
         self.action.callIfEnabled(self.value.get());
-      }, this.getID());
+      }, this.id);
 
       this.setAttribute('data-tip', function() {
         return self.action.help || undefined;
-      }, this.getID());
+      }, this.id);
 
       this.setAttribute('disabled', function() {
         var value = self.value.get();
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
-      }, this.getID());
+      }, this.id);
 
       Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
@@ -1899,7 +1893,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.setAttribute('href', function() { return '#' }, this.getID());
+      this.setAttribute('href', function() { return '#' }, this.id);
       return this.SUPER();
     },
 
@@ -2012,7 +2006,7 @@ FOAModel({
       var str = '';
       var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
 
-      str += '<div id="' + this.getID() + '" class="' + cls + '">';
+      str += '<div id="' + this.id + '" class="' + cls + '">';
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         str += this.preButton(this.children[i]) +
@@ -2040,7 +2034,7 @@ FOAModel({
         }
         i = (i + 1) % this.children.length;
         this.children[i].$.focus();
-      }.bind(this), this.getID());
+      }.bind(this), this.id);
       this.addShortcut('Left', function(e) {
         var i = 0;
         for (; i < this.children.length; ++i) {
@@ -2049,7 +2043,7 @@ FOAModel({
         }
         i = (i + this.children.length - 1) % this.children.length;
         this.children[i].$.focus();
-      }.bind(this), this.getID());
+      }.bind(this), this.id);
     },
 
     addAction: function(a) {
@@ -2140,7 +2134,7 @@ FOAModel({
   methods: {
 
     toHTML: function() {
-      return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
+      return '<progress value="25" id="' + this.id + '" max="100" >25</progress>';
     },
 
     setValue: function(value) {
@@ -2318,7 +2312,7 @@ FOAModel({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
-        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     },
     */
@@ -2329,7 +2323,7 @@ FOAModel({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
-        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     }
   ]
@@ -2434,7 +2428,7 @@ FOAModel({
     {
       name:  'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.id && oldValue != viewChoice ) this.installSubView(viewChoice);
+        if ( this.$ && oldValue != viewChoice ) this.installSubView(viewChoice);
       },
       hidden: true
     },
@@ -2524,7 +2518,7 @@ FOAModel({
       }
       str.push('</div>');
       str.push('<br/>');
-      str.push('<div class="altView column" id="' + this.getID() + '"> </div>');
+      str.push('<div class="altView column" id="' + this.id + '"> </div>');
       str.push('</div>');
 
       return str.join('');
@@ -2657,7 +2651,7 @@ FOAModel({
       toolbar.addActions([this.model_.ADD]);
       this.children = [toolbar];
 
-      return '<div id="' + this.getID() + '"><div></div>' +
+      return '<div id="' + this.id + '"><div></div>' +
         toolbar.toHTML() +
         '</div>';
     },
@@ -2928,11 +2922,11 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.on('keydown', this.onKeyDown, this.getID());
-      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.getID());
-      this.on('focus', this.onInput, this.getID());
+      this.on('keydown', this.onKeyDown, this.id);
+      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('focus', this.onInput, this.id);
 
-      return '<input name="' + this.name + '" type="text" id="' + this.getID() + '" class="listInputView">' + this.autocompleteView.toHTML();
+      return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
@@ -3073,9 +3067,9 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.on('click', this.onClick, this.getID());
+      this.on('click', this.onClick, this.id);
 
-      return '<ul id="' + this.getID() + '" class="arrayTileView"><li class="arrayTileLastView">' +
+      return '<ul id="' + this.id + '" class="arrayTileView"><li class="arrayTileLastView">' +
         this.lastView.toHTML() + '</li></ul>';
     },
     initHTML: function() {
@@ -3202,7 +3196,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -3326,7 +3320,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -3468,7 +3462,7 @@ FOAModel({
   templates: [
     {
       name: 'toHTML',
-      template: '<ul class="autocompleteListView" id="<%= this.getID() %>"></ul>'
+      template: '<ul class="autocompleteListView" id="<%= this.id %>"></ul>'
     }
   ],
 
@@ -3576,7 +3570,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '" style="display:none"></div>' + this.toInnerHTML();
+      return '<div id="' + this.id + '" style="display:none"></div>' + this.toInnerHTML();
     },
 
     updateHTML: function() {
@@ -3757,12 +3751,12 @@ FOAModel({
       this.dao.listen(this.onDAOUpdate);
     },
     toHTML: function() {
-      var id = this.getID();
+      var id = this.id;
       var overlay = this.nextID();
       this.on('touchstart', this.onTouchStart, overlay);
       this.on('touchmove', this.onTouchMove, overlay);
 
-      return '<div id="' + this.getID() + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
+      return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
     initHTML: function() {
       this.SUPER();

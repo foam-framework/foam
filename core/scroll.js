@@ -228,7 +228,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<table id="' + this.getID() + '" width=100% height=100% border=0><tr><td valign=top>' +
+      return '<table id="' + this.id + '" width=100% height=100% border=0><tr><td valign=top>' +
         this.view.toHTML() +
         '</td><td valign=top><div class="scrollSpacer"></div>' +
         this.scrollbar.toHTML() +

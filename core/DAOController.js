@@ -379,7 +379,7 @@ FOAModel({
   methods: {
 
     toHTML: function() {
-      return '<div id="' + this.getID() + '">controller</div>';
+      return '<div id="' + this.id + '">controller</div>';
     },
 
     init: function() {

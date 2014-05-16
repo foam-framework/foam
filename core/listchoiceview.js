@@ -112,7 +112,7 @@ FOAModel({
   methods: {
     toHTML: function() {
       var renderer = this.renderer;
-      var out = renderer.start(this.getID()) + renderer.end();
+      var out = renderer.start(this.id) + renderer.end();
       return out;
     },
 

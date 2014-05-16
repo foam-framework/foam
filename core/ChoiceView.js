@@ -173,7 +173,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
+      return '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/></select>';
     },
 
     updateHTML: function() {
@@ -256,7 +256,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<span id="' + this.getID() + '"/></span>';
+      return '<span id="' + this.id + '"/></span>';
     },
 
     updateHTML: function() {
@@ -268,7 +268,7 @@ FOAModel({
         var id     = self.nextID();
 
         out += label + ':<input type="radio" name="';
-        out += self.getID();
+        out += self.id;
         out += '" value="';
         out += value;
         out += '" ';
