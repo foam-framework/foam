@@ -936,7 +936,14 @@ FOAModel({
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
       }
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
+    },
+    'autocompleter',
+    'autocompleteView',
   ],
 
   methods: {
@@ -984,6 +991,46 @@ FOAModel({
           this.textToValue.bind(this));
 
         this.$.addEventListener('keydown', this.onKeyDown);
+
+        if ( this.autocomplete && this.autocompleter ) {
+          var proto = FOAM.lookup(this.autocompleter);
+          var completer = proto.create();
+          this.autocompleteView = AutocompletePopup.create({
+            dao: completer.autocompleteDao,
+            view: DAOListView.create({
+              dao: completer.autocompleteDao,
+              mode: 'final',
+              rowView: 'SummaryView',
+              useSelection: true
+            })
+          });
+          this.addChild(this.autocompleteView);
+
+          this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+            this.data = completer.f(obj);
+          }).bind(this));
+
+          var self = this;
+          this.$.addEventListener('input', function() {
+            var node = self.$;
+            var x = 0;
+            var y = node.offsetHeight;
+            while ( node ) {
+              x += node.offsetLeft;
+              y += node.offsetTop;
+              node = node.offsetParent;
+            }
+            self.autocompleteView.x = x;
+            self.autocompleteView.y = y;
+
+            var value = self.textToValue(self.$.value)
+            completer.autocomplete(value);
+          });
+          this.$.addEventListener('focus', function() {
+            completer.autocomplete(self.data);
+          });
+          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { completer.autocomplete(''); })))));
+        }
       } else {
         this.domValue = DomValue.create(
           this.$,

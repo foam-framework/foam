@@ -493,5 +493,86 @@ FOAModel({
     </foam>
   </tests>
 </foam>
+<foam model="UITest" name="TextFieldAutocomplete" view="DemoView">
+  <description>Test's the autocomplete functionality of a TextFieldView.</description>
+  <code>
+    FOAModel({
+      name: 'Contact',
+      properties: [
+        'id', 'first', 'last', 'email'
+      ]
+    });
+
+    var ContactDAO = MDAO.create({ model: Contact });
+
+    [Contact.create({ id: 1, first: 'Adam', last: 'Van Ymeren', email: 'adam...@google.com' }),
+     Contact.create({ id: 2, first: 'Kevin', last: 'Greer', email: 'kg...@google.com' }),
+     Contact.create({ id: 3, first: 'Alice', email: 'alice@alice.org' }),
+     Contact.create({ id: 4, first: 'Bob', email: 'bob@bob.org' }),
+     Contact.create({ id: 5, first: 'Test', last: 'Contact', email: 'test@test.test' }),
+     Contact.create({ id: 6, first: 'John', last: 'Smith', email: 'j.smith@johnsmith.net' }),
+     Contact.create({ id: 7, first: 'Somebody', last: 'Else', email: 'nobody@nowhere.org' }),
+     Contact.create({ id: 8, first: 'Random', last: 'Joe', email: 'joe.random@there.ca' }),
+     Contact.create({ id: 9, first: 'Frank', last: 'Ellis', email: 'frank@test.com' }),
+    ].forEach(ContactDAO.put.bind(ContactDAO));
+
+    FOAModel({
+      name: 'ContactEMailCompleter',
+
+      properties: [
+        {
+          name: 'dao',
+          factory: function() { return ContactDAO; }
+        },
+        {
+          model_: 'DAOProperty',
+          name: 'autocompleteDao'
+        }
+      ],
+      methods: {
+        autocomplete: function(data) {
+          if ( ! data ) {
+            this.autocompleteDao = this.dao.where(FALSE);
+            return;
+          }
+          
+          this.autocompleteDao = this.dao.where(
+            OR(STARTS_WITH(Contact.EMAIL, data),
+               STARTS_WITH(Contact.FIRST, data),
+               STARTS_WITH(Contact.LAST, data)));
+        },
+        f: function(obj) {
+          return obj.email
+        }
+      }
+    });
+    
+
+    FOAModel({
+      name: 'Message',
+      properties: [
+        {
+          name: 'sender',
+          autocompleter: 'ContactEMailCompleter'
+        },
+        {
+          name: 'to',
+          autocompleter: 'ContactEMailCompleter'
+        },
+        {
+          name: 'cc',
+          autocompleter: 'ContactEMailCompleter'
+        },
+        {
+          name: 'bcc',
+          autocompleter: 'ContactEMailCompleter'
+        }
+      ]
+    });
+
+    var view = DetailView.create({ value: SimpleValue.create(Message.create()) });
+    render(view);
+  </code>
+</foam>
  </body>
 </html>
