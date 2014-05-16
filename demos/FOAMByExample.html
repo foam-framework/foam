@@ -723,22 +723,17 @@ FOAModel({
       ],
       methods: {
         autocomplete: function(data) {
-          if ( ! data ) {
-            this.autocompleteDao = this.dao.where(FALSE);
-            return;
-          }
-          
           this.autocompleteDao = this.dao.where(
-            OR(STARTS_WITH(Contact.EMAIL, data),
-               STARTS_WITH(Contact.FIRST, data),
-               STARTS_WITH(Contact.LAST, data)));
+            data ?
+              OR(STARTS_WITH(Contact.EMAIL, data),
+                STARTS_WITH(Contact.FIRST, data),
+                STARTS_WITH(Contact.LAST, data)) :
+              false);
         },
-        f: function(obj) {
-          return obj.email
-        }
+        f: Contact.EMAIL
       }
     });
-    
+
 
     FOAModel({
       name: 'Message',

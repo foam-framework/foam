@@ -1007,7 +1007,7 @@ FOAModel({
           this.addChild(this.autocompleteView);
 
           this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-            this.data = completer.f(obj);
+            this.data = (completer.f.f || completer.f)(obj);
           }).bind(this));
 
           var self = this;
