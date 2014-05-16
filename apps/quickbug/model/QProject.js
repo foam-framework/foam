@@ -128,7 +128,7 @@ FOAModel({
       transient: true
     },
     {
-      mode_: 'IntProperty',
+      model_: 'IntegerProperty',
       name: 'issueCount'
     },
     {
