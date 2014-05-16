@@ -120,9 +120,8 @@ FOAModel({
     {
       name: 'updateChoice',
 
-      code: function(newValue, oldValue) {
-        var choice = newValue.get();
-        this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
+      code: function(_, _, _, choice) {
+        this.predicate = choice ? EQ(this.property, choice) : TRUE ;
       }
     }
 
