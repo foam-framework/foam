@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 FOAModel({
   name: 'Canvas',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

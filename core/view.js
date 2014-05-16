@@ -188,7 +188,7 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
+      if ( View.isInstance(obj) || CView.isInstance(obj) ) {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
@@ -226,8 +226,8 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
 FOAModel({
-  name: 'AbstractView',
-  label: 'AbstractView',
+  name: 'View',
+  label: 'View',
 
   properties: [
     {
@@ -450,7 +450,7 @@ FOAModel({
           try {
             this.children[i].initHTML();
           } catch (x) {
-            console.log("Error on AbstractView.child.initHTML", x, x.stack);
+            console.log("Error on View.child.initHTML", x, x.stack);
           }
         }
       }
@@ -480,7 +480,7 @@ FOAModel({
 FOAModel({
   name: 'PropertyView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -568,7 +568,7 @@ FOAModel({
 FOAModel({
   name: 'PopupView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -650,7 +650,7 @@ FOAModel({
 
 FOAModel({
   name: 'StaticHTML',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
   properties: [
     {
       model_: 'StringProperty',
@@ -738,7 +738,7 @@ var DomValue = {
 FOAModel({
   name: 'ImageView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -811,7 +811,7 @@ FOAModel({
 FOAModel({
   name: 'BlobImageView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   help: 'Image view for rendering a blob as an image.',
 
@@ -869,7 +869,7 @@ FOAModel({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1091,7 +1091,7 @@ FOAModel({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1170,7 +1170,7 @@ FOAModel({
   name:  'HTMLView',
   label: 'HTML Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1231,7 +1231,7 @@ FOAModel({
 FOAModel({
   name:  'RoleView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1294,7 +1294,7 @@ FOAModel({
 FOAModel({
   name:  'BooleanView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1338,7 +1338,7 @@ FOAModel({
 FOAModel({
   name:  'ImageBooleanView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1411,7 +1411,7 @@ FOAModel({
 FOAModel({
   name:  'ImageBooleanView2',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1604,7 +1604,7 @@ FOAModel({
 FOAModel({
   name: 'SummaryView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1675,7 +1675,7 @@ FOAModel({
 FOAModel({
   name: 'HelpView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1726,7 +1726,7 @@ FOAModel({
 FOAModel({
   name: 'EditColumnsView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1793,7 +1793,7 @@ FOAModel({
 FOAModel({
   name: 'ActionButton',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1916,7 +1916,7 @@ FOAModel({
   name:  'ToolbarView',
   label: 'Toolbar',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2121,7 +2121,7 @@ FOAModel({
 FOAModel({
   name:  'ProgressView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2179,7 +2179,7 @@ var ArrayView = {
 FOAModel({
   name: 'GridView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2396,7 +2396,7 @@ FOAModel({
 FOAModel({
   name: 'AlternateView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2609,7 +2609,7 @@ FOAModel({
 
 FOAModel({
   name: 'MultiLineStringArrayView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2751,7 +2751,7 @@ FOAModel({
 
 
 FOAModel({
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   name: 'SplitView',
 
@@ -2816,7 +2816,7 @@ FOAModel({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2859,7 +2859,7 @@ FOAModel({
 
 
 FOAModel({
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   name: 'ListInputView',
 
@@ -3035,7 +3035,7 @@ FOAModel({
 FOAModel({
   name: 'ArrayTileView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3177,7 +3177,7 @@ FOAModel({
 
 FOAModel({
   name: 'ArrayListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3234,7 +3234,7 @@ FOAModel({
 
 FOAModel({
   name: 'DAOKeyView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3302,7 +3302,7 @@ FOAModel({
 
 FOAModel({
   name: 'ListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3360,7 +3360,7 @@ FOAModel({
 FOAModel({
   name: 'AutocompleteListView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3384,7 +3384,7 @@ FOAModel({
     },
     {
       name: 'innerView',
-      type: 'AbstractView',
+      type: 'View',
       preSet: function(_, value) {
         if ( typeof value === "string" ) value = GLOBAL[value];
         return value;
@@ -3524,7 +3524,7 @@ FOAModel({
 
 FOAModel({
   name: 'ViewSwitcher',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   help: 'A view which cycles between an array of views.',
 
@@ -3609,7 +3609,7 @@ FOAModel({
 
 FOAModel({
   name: 'DAOListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3706,7 +3706,7 @@ FOAModel({
 FOAModel({
   name: 'TouchListView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3859,7 +3859,7 @@ FOAModel({
   name: 'UITestResultView',
   label: 'UI Test Result View',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

@@ -172,7 +172,7 @@ FOAModel({
 FOAModel({
   name:  'ScrollBorder',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

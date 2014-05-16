@@ -16,7 +16,7 @@
  */
 FOAModel({
   name:  'GroupBySearchView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   label: 'GroupBy Search View',
 
@@ -134,7 +134,7 @@ FOAModel({
 FOAModel({
   name:  'TextSearchView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -207,7 +207,7 @@ FOAModel({
 
 FOAModel({
   name: 'SearchView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

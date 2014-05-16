@@ -1,4 +1,4 @@
-<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">
+<div id="<%= this.id %>" class="linkDialog" style="position:absolute">
   <table>
     <tr>
       <th>Text</th>

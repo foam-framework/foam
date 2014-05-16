@@ -16,7 +16,7 @@
  */
 FOAModel({
   name:  'StackView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

@@ -18,7 +18,7 @@ FOAModel({
   name:  'DAOController',
   label: 'DAO Controller',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -201,7 +201,7 @@ FOAModel({
   name:  'DAOCreateController',
   label: 'DAO Create',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -305,7 +305,7 @@ FOAModel({
   name:  'DAOUpdateController',
   label: 'DAO Update',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

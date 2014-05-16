@@ -29,7 +29,7 @@ FOAModel({
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -145,7 +145,7 @@ FOAModel({
     },
     {
       name: 'table',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return TableView.create({
             model: this.model,
@@ -163,7 +163,7 @@ FOAModel({
     },
     {
       name: 'toolbar',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return ToolbarView.create({
           actions: this.model.actions,
@@ -177,7 +177,7 @@ FOAModel({
     },
     {
       name: 'editView',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return DetailView.create({model: this.model}/*, this.table.selection*/);
       },

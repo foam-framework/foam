@@ -1,6 +1,6 @@
 FOAModel({
   name: 'DetailView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

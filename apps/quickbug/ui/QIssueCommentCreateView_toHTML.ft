@@ -2,7 +2,7 @@
    var saveButton = ActionButton.create({ action: this.model_.SAVE, value: SimpleValue.create(this) });
    var discardButton = ActionButton.create({ action: this.model_.DISCARD, value: SimpleValue.create(this) });
 %>
-<div id="<%= this.getID() %>">
+<div id="<%= this.id %>">
   <table cellpadding="0" cellspacing="0" border="0">
     <tbody><tr>
         <td>

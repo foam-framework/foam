@@ -67,7 +67,7 @@ FOAModel({
       return QIssueCLView.create({dao: this.QIssueCommentDAO});
     },
     toHTML: function() {
-      return '<div id="' + this.getID() + '">' + this.toInnerHTML() + '</div>';
+      return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
     },
   },
 
@@ -79,7 +79,7 @@ FOAModel({
 var QIssueLabelsView = FOAM({
   model_: 'Model',
   name: 'QIssueLabelsView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -94,7 +94,7 @@ var QIssueLabelsView = FOAM({
   ],
 
   methods: {
-    toHTML: function() { return '<div id="' + this.getID() + '"></div>'; },
+    toHTML: function() { return '<div id="' + this.id + '"></div>'; },
     initHTML: function() { this.SUPER(); this.update(); },
     setValue: function(value) { this.value = value; }
   },
@@ -131,7 +131,7 @@ var QIssueLabelsView = FOAM({
 var BlockView = FOAM({
   model_: 'Model',
   name: 'QIssueQuickStatusView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

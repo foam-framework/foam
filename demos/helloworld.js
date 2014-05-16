@@ -33,7 +33,7 @@ var PersonView = FOAM({
   templates: [
     {
       name: 'toHTML',
-      template: '<span id="<%= this.getID() %>">Hello ' +
+      template: '<span id="<%= this.id %>">Hello ' +
         '<% var v = this.createView(Person.NAME); v.mode = "read-only"; %>' +
         '<%= v.toHTML() %></span>'
     }

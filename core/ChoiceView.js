@@ -1,7 +1,7 @@
 FOAModel({
   name:  'AbstractChoiceView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -208,7 +208,7 @@ FOAModel({
       }
 
       this.$.innerHTML = out.join('');
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {
@@ -281,7 +281,7 @@ FOAModel({
       });
 
       this.$.innerHTML = out;
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {
