@@ -706,7 +706,7 @@ FOAModel({
      Contact.create({ id: 7, first: 'Somebody', last: 'Else', email: 'nobody@nowhere.org' }),
      Contact.create({ id: 8, first: 'Random', last: 'Joe', email: 'joe.random@there.ca' }),
      Contact.create({ id: 9, first: 'Frank', last: 'Ellis', email: 'frank@test.com' }),
-    ].forEach(ContactDAO.put.bind(ContactDAO));
+    ].select(ContactDAO);
 
     FOAModel({
       name: 'ContactEMailCompleter',
