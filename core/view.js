@@ -611,10 +611,47 @@ FOAModel({
 
       document.body.appendChild(div);
       this.view.initHTML();
+    },
+    close: function() {
+      this.$ && this.$.remove();
     }
   }
 });
 
+FOAModel({
+  name: 'AutocompletePopup',
+  extendsModel: 'PopupView',
+  help: 'A popup view that only renders if the count is >0',
+
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.dao.listen(this.autocomplete);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'autocomplete',
+      code: function() {
+        this.dao.select(COUNT())((function(c) {
+          if ( c.count === 0 ) {
+            this.close();
+            return;
+          }
+          this.open(this.parent);
+          this.view.dao = this.dao;
+        }).bind(this));
+      }
+    }
+  ]
+});
 
 FOAModel({
   name: 'StaticHTML',
