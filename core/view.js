@@ -4081,7 +4081,9 @@ FOAModel({
           "read-only", "read-write", "final"
         ]}); }
       }
-    }
+    },
+    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
+    'selection'
   ],
 
   methods: {
@@ -4117,7 +4119,15 @@ FOAModel({
           }.bind(this, o));
         }
         this.addChild(view);
+        if ( this.useSelection ) {
+          out += '<div id="' + this.on('click', (function() {
+            this.selection = o
+          }).bind(this)) + '">';
+        }
         out += view.toHTML();
+        if ( this.useSelection ) {
+          out += '</div>';
+        }
       }.bind(this)})(function() {
         this.$.innerHTML = out;
         this.initInnerHTML();
