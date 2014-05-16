@@ -86,7 +86,7 @@ FOAModel({
         this.updateDAO();
         }).bind(this));
       */
-      this.view.value.addListener(this.updateChoice);
+      this.view.data$.addListener(this.updateChoice);
 
       //       this.updateDAO();
       //       this.view.addListener(console.log.bind(console));
@@ -176,7 +176,7 @@ FOAModel({
       this.SUPER();
       this.view.initHTML();
 
-      this.view.value.addListener(this.updateValue);
+      this.view.data$.addListener(this.updateValue);
     }
   },
 
@@ -185,7 +185,7 @@ FOAModel({
     {
       name: 'updateValue',
       code: function() {
-        var value = this.view.getValue().get();
+        var value = this.view.data;
         if ( ! value ) {
           this.predicate = TRUE;
           return;
@@ -240,7 +240,7 @@ FOAModel({
     },
 
     toInnerHTML: function() {
-      if ( ! this.children.length ) 
+      if ( ! this.children.length )
         this.buildSubViews();
 
       var str = ""
