@@ -146,11 +146,11 @@ FOAM.browse = function(model, opt_dao) {
   stack.pushView(ctrl);
 };
 
-FOAM.lookup = function(key) {
+FOAM.lookup = function(key, opt_X) {
   if ( ! typeof key === 'string' ) return key;
 
   var path = key.split('.');
-  var root = GLOBAL;
+  var root = opt_X || GLOBAL;
   for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
 
   return root;

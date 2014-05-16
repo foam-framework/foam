@@ -62,6 +62,31 @@ FOAModel({
           return this.url + key;
         };
 
+        dao.jsonToObj = function(json) {
+          if ( json.members ) {
+            for ( var i = 0; i < json.members.length; i++ ) {
+              json.members[i] = QIssuePerson.create(json.members[i]);
+            }
+          }
+
+          if ( json.issuesConfig ) {
+            if ( json.issuesConfig.statuses ) {
+              for ( i = 0; i < json.issuesConfig.statuses.length; i++ ) {
+                json.issuesConfig.statuses[i] =
+                  QIssueStatus.create(json.issuesConfig.statuses[i]);
+              }
+            }
+
+            if ( json.issuesConfig.labels ) {
+              for ( i = 0; i < json.issuesConfig.labels.length; i++ ) {
+                json.issuesConfig.labels[i] =
+                  QIssueLabel.create(json.issuesConfig.labels[i]);
+              }
+            }
+          }
+          return this.model.create(json);
+        };
+
           /*
         dao.jsonToObj = function(json) {
           if ( json.author ) json.author = json.author.name;
