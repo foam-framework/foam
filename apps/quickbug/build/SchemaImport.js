@@ -1192,7 +1192,8 @@ var exports = [
    CIssueSchema.schemas.IssuePerson,
    CIssueSchema.schemas.Project,
    CIssueSchema.schemas.IssueCommentUpdate,
-   CIssueSchema.schemas.User
+   CIssueSchema.schemas.User,
+   CIssueSchema.schemas.ProjectIssueConfig
 ];
 
 console.log(
