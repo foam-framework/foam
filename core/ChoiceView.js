@@ -247,3 +247,45 @@ FOAModel({
     }
   ]
 });
+
+
+FOAModel({
+  name:  'RadioBoxView',
+
+  extendsModel: 'ChoiceView',
+
+  methods: {
+    toHTML: function() {
+      return '<span id="' + this.getID() + '"/></span>';
+    },
+
+    updateHTML: function() {
+      var out = '';
+      var self = this;
+      this.choices.forEach(function(choice) {
+        var value  = choice[0];
+        var label  = choice[1];
+        var id     = self.nextID();
+
+        out += label + ':<input type="radio" name="';
+        out += self.getID();
+        out += '" value="';
+        out += value;
+        out += '" ';
+        out += 'id="' + id + '"';
+        if ( self.data === value ) out += ' checked';
+        out += '> ';
+
+        self.on('click', function() { self.data = value; }, id)
+        self.data$.addListener(function() { $(id).checked = ( self.data == value ); });
+      });
+
+      this.$.innerHTML = out;
+      AbstractView.getPrototype().initHTML.call(this);
+    },
+
+    initHTML: function() {
+      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+    }
+  }
+});

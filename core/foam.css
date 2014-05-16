@@ -17,14 +17,19 @@
 @import "css-tooltips.css";
 
 body {
-  font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
-  font-size:12px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
 }
 p, h1, form, button{
-  border:0; margin:0; padding:0;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.spacer {clear:both; height:1px;}
+.spacer {
+  clear: both;
+  height: 1px;
+}
 
 .foamform {
   margin: 0 auto;
@@ -47,47 +52,46 @@ p, h1, form, button{
 /* ----------- detailView ----------- */
 
 .detailView {
-  border:solid 2px #dddddd;
+  border: solid 2px #dddddd;
   background: #fafafa;
-  width:99%;
+  width: 99%;
 }
 
 .detailView .heading {
-  float:left;
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:8px;
+  float: left;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .detailView .propertyLabel {
-  font-size:14px;
-  display:block;
-  font-weight:bold;
-  text-align:right;
-  float:left;
+  font-size: 14px;
+  display: block;
+  font-weight: bold;
+  text-align: right;
+  float: left;
 }
 
 .detailView input {
-  float:left;
-  font-size:12px;
-  padding:4px 2px;
-  border:solid 1px #aacfe4;
-  margin:2px 0 0px 10px;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  margin: 2px 0 0px 10px;
 }
 
 .detailView textarea {
-  float:left;
-  font-size:12px;
-  padding:4px 2px;
-  border:solid 1px #aacfe4;
-  margin:2px 0 0px 10px;
+  float: left;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  margin: 2px 0 0px 10px;
 }
 
 .detailView select {
-  font-size:12px;
-  padding:4px 2px;
-  border:solid 1px #aacfe4;
-  margin:2px 0 0px 10px;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  margin: 2px 0 0px 10px;
 }
 
 .detailView .label {
@@ -117,22 +121,22 @@ p, h1, form, button{
 }
 
 /* Temp for gmail demo. */
-.summaryView td:first-child { width: 50px; }
+.summaryView td: first-child { width: 50px; }
 
 .summaryView .label{
-  font-size:14px;
-  display:block;
-  font-weight:bold;
-  text-align:right;
-  width:120px;
-  float:left;
+  font-size: 14px;
+  display: block;
+  font-weight: bold;
+  text-align: right;
+  width: 120px;
+  float: left;
 }
 
 .summaryView .value{
-  float:left;
-  font-size:12px;
+  float: left;
+  font-size: 12px;
   padding-left: 8px;
-  margin:2px 15px 2px 0px;
+  margin: 2px 15px 2px 0px;
 }
 
 
@@ -149,30 +153,30 @@ option[selected]{
 /* ----------- summaryView ----------- */
 
 .helpView {
-  width:100%;
+  width: 100%;
 }
 
 .helpView .intro{
-  padding-top:10px;
-  font-size:16px;
-  font-weight:bold;
+  padding-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .helpView .label{
-  padding-top:10px;
-  font-size:14px;
-  font-weight:bold;
+  padding-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .helpView .text{
-  width:100%;
-  font-size:14px;
+  width: 100%;
+  font-size: 14px;
   padding-left: 8px;
-  margin:2px 15px 2px 0px;
+  margin: 2px 15px 2px 0px;
 }
 
 .actionBorder {
-  width:95%;
+  width: 95%;
 }
 
 .actionToolbar {
@@ -180,8 +184,8 @@ option[selected]{
 }
 
 .actionBorderActions {
-  padding-right:15px;
-  text-align:right;
+  padding-right: 15px;
+  text-align: right;
 }
 
 .ActionMenuPopup {
@@ -192,11 +196,11 @@ option[selected]{
 }
 
 .ActionMenu .actionButton {
-  background:white;
-  border:none;
-  border-radius:0;
-  text-align:left;
-  width:100%;
+  background: white;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+  width: 100%;
 }
 
 /* ----------- ImageView ---------- */
@@ -206,55 +210,55 @@ option[selected]{
 
 /* ----------- stylized ----------- */
 #stylized {
-  border:solid 2px #b7ddf2;
-  background:#ebf4fb;
+  border: solid 2px #b7ddf2;
+  background: #ebf4fb;
 }
 #stylized h1 {
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:8px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 #stylized p{
-  font-size:11px;
-  color:#666666;
-  margin-bottom:20px;
-  border-bottom:solid 1px #b7ddf2;
-  padding-bottom:10px;
+  font-size: 11px;
+  color: #666666;
+  margin-bottom: 20px;
+  border-bottom: solid 1px #b7ddf2;
+  padding-bottom: 10px;
 }
 #stylized label{
-  display:block;
-  font-weight:bold;
-  text-align:right;
-  width:140px;
-  float:left;
+  display: block;
+  font-weight: bold;
+  text-align: right;
+  width: 140px;
+  float: left;
 }
 #stylized .small{
-  color:#666666;
-  display:block;
-  font-size:11px;
-  font-weight:normal;
-  text-align:right;
-  width:140px;
+  color: #666666;
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: right;
+  width: 140px;
 }
 #stylized input{
-  float:left;
-  font-size:12px;
-  padding:4px 2px;
-  border:solid 1px #aacfe4;
-  margin:2px 0 20px 10px;
-  width:200px;
+  float: left;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  margin: 2px 0 20px 10px;
+  width: 200px;
 }
 #stylized button{
-  background:#666666;
-  clear:both;
-  color:#FFFFFF;
-  font-size:11px;
-  font-weight:bold;
-  height:31px;
-  line-height:31px;
-  margin-left:150px;
-  text-align:center;
-  width:125px;
+  background: #666666;
+  clear: both;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+  height: 31px;
+  line-height: 31px;
+  margin-left: 150px;
+  text-align: center;
+  width: 125px;
 }
 
 
@@ -301,34 +305,34 @@ option[selected]{
 
 
 .actionButton {
-  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-  box-shadow:inset 0px 1px 0px 0px #ffffff;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-  background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-  background-color:#ededed;
-  -moz-border-radius:3px;
-  -webkit-border-radius:3px;
-  border-radius:3px;
-  border:1px solid #dcdcdc;
-  display:inline-block;
-  color:#777777;
-  font-family:arial;
-  font-size:12px;
-  font-weight:bold;
-  padding:4px 16px;
-  text-decoration:none;
+  -webkit-box-shadow: inset 0px 1px 0px 0px #ffffff;
+  box-shadow: inset 0px 1px 0px 0px #ffffff;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+  background: -moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+  background-color: #ededed;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #dcdcdc;
+  display: inline-block;
+  color: #777777;
+  font-family: arial;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 16px;
+  text-decoration: none;
 }
 
 .actionButton:hover {
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-  background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
-  background-color:#dfdfdf;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+  background: -moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+  background-color: #dfdfdf;
 }
 
 .scrollSpacer {
-  height:52;
+  height: 52;
 }
 
 .foamTable td,
@@ -401,11 +405,11 @@ div.gridtile {
 div.gridtile td.id {
   width: 5em;
   text-align: left;
-  margin-left:4px;
+  margin-left: 4px;
 }
 
 div.gridtile td.id a {
-  margin-left:4px;
+  margin-left: 4px;
 }
 
 div.gridtile td.status {
@@ -429,14 +433,14 @@ div.gridtile td, div.projecttile td {
 }
 
 div.gridtile td div {
-  height:5.5ex;
-  font-size:90%;
+  height: 5.5ex;
+  font-size: 90%;
   line-height: 100%;
 }
 
 div.gridViewControl {
-  padding:5px;
-  background:rgb(235, 239, 249);
+  padding: 5px;
+  background: rgb(235, 239, 249);
   border-color: rgb(187, 187, 187);
   border-style: solid;
   border-width: 1px;

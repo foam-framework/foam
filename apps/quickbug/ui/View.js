@@ -216,7 +216,7 @@ var QIssueTableView = FOAM({
 
   name: 'QIssueTableView',
 
-  extendsModel: 'TableView2',
+  extendsModel: 'TableView',
 
   properties: [
     { name: 'browser' }
