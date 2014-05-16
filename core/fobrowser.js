@@ -179,12 +179,12 @@ layout();
     var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
     var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
     var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
-    Object.defineProperty(byModel, 'updateChoice', {value: (function(newValue, oldValue) {
-       var choice = newValue.get();
+    Object.defineProperty(byModel, 'updateChoice', {value: (function(_, _, _, choice) {
+      debugger;
        if ( choice ) {
           this.predicate = EQ(this.property, choice);
 
-          var matchType = modelMatchType.value.get();
+          var matchType = modelMatchType.data;
 
           if ( matchType !== 'Exact' ) this.predicate.f = function(obj) {
              var arg1 = this.arg1.f(obj);
@@ -251,10 +251,10 @@ layout();
     },
     updateQuery);
 
-    modelMatchType.data$.addListener(function() { byModel.updateChoice(byModel.view.value); updateQuery(); });
+    modelMatchType.data$.addListener(function() { byModel.updateChoice(byModel.view.data); updateQuery(); });
 
     function resetSearch() {
-      byType.view.value.set(''); byModel.view.value.set(''); byName.view.value.set('');
+      byType.view.data = ''; byModel.view.data = ''; byName.view.data = '';
       byType.filter = byModel.filter = byName.filter = TRUE;
       table.dao = dao;
     }
