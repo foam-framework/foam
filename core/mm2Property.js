@@ -356,7 +356,12 @@ var Property = {
       name: 'fromElement',
       defaultValue: function(e) { return e.innerHTML; },
       help: 'Function to extract from from DOM Element.'
-    }
+    },
+    {
+      name: 'autocompleter',
+      subType: 'Autocompleter',
+      help: 'Name or model for the autocompleter for this property.',
+    },
   ],
 
   methods: {

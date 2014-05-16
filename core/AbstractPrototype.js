@@ -87,7 +87,7 @@ var AbstractPrototype = {
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
     this.__defineGetter__(name, function() {
-      var value = getter.call(this);
+      var value = getter.call(this, name);
       var f = stack[0];
       f && f(this, name, value);
       return value;
@@ -180,7 +180,7 @@ var AbstractPrototype = {
     }
 
     if ( prop.getter ) {
-      this.__defineGetter__(name, prop.getter);
+      this.defineFOAMGetter(name, prop.getter);
     } else {
       this.defineFOAMGetter(name, prop.defaultValueFn ?
         function() {

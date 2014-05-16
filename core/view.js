@@ -611,10 +611,47 @@ FOAModel({
 
       document.body.appendChild(div);
       this.view.initHTML();
+    },
+    close: function() {
+      this.$ && this.$.remove();
     }
   }
 });
 
+FOAModel({
+  name: 'AutocompletePopup',
+  extendsModel: 'PopupView',
+  help: 'A popup view that only renders if the count is >0',
+
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.dao.listen(this.autocomplete);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'autocomplete',
+      code: function() {
+        this.dao.select(COUNT())((function(c) {
+          if ( c.count === 0 ) {
+            this.close();
+            return;
+          }
+          this.open(this.parent);
+          this.view.dao = this.dao;
+        }).bind(this));
+      }
+    }
+  ]
+});
 
 FOAModel({
   name: 'StaticHTML',
@@ -899,7 +936,14 @@ FOAModel({
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
       }
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
+    },
+    'autocompleter',
+    'autocompleteView',
   ],
 
   methods: {
@@ -947,6 +991,46 @@ FOAModel({
           this.textToValue.bind(this));
 
         this.$.addEventListener('keydown', this.onKeyDown);
+
+        if ( this.autocomplete && this.autocompleter ) {
+          var proto = FOAM.lookup(this.autocompleter);
+          var completer = proto.create();
+          this.autocompleteView = AutocompletePopup.create({
+            dao: completer.autocompleteDao,
+            view: DAOListView.create({
+              dao: completer.autocompleteDao,
+              mode: 'final',
+              rowView: 'SummaryView',
+              useSelection: true
+            })
+          });
+          this.addChild(this.autocompleteView);
+
+          this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+            this.data = completer.f(obj);
+          }).bind(this));
+
+          var self = this;
+          this.$.addEventListener('input', function() {
+            var node = self.$;
+            var x = 0;
+            var y = node.offsetHeight;
+            while ( node ) {
+              x += node.offsetLeft;
+              y += node.offsetTop;
+              node = node.offsetParent;
+            }
+            self.autocompleteView.x = x;
+            self.autocompleteView.y = y;
+
+            var value = self.textToValue(self.$.value)
+            completer.autocomplete(value);
+          });
+          this.$.addEventListener('focus', function() {
+            completer.autocomplete(self.data);
+          });
+          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { completer.autocomplete(''); })))));
+        }
       } else {
         this.domValue = DomValue.create(
           this.$,
@@ -3552,7 +3636,9 @@ FOAModel({
           "read-only", "read-write", "final"
         ]}); }
       }
-    }
+    },
+    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
+    'selection'
   ],
 
   methods: {
@@ -3588,7 +3674,15 @@ FOAModel({
           }.bind(this, o));
         }
         this.addChild(view);
+        if ( this.useSelection ) {
+          out += '<div id="' + this.on('click', (function() {
+            this.selection = o
+          }).bind(this)) + '">';
+        }
         out += view.toHTML();
+        if ( this.useSelection ) {
+          out += '</div>';
+        }
       }.bind(this)})(function() {
         this.$.innerHTML = out;
         this.initInnerHTML();
