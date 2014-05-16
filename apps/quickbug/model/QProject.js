@@ -50,6 +50,42 @@ FOAModel({
       defaultValueFn: function() { return this.qbug.user; }
     },
     {
+      name: 'LabelDAO',
+      help: 'DAO of known labels.',
+      factory: function() {
+        var dao = MDAO.create({ model: QIssueLabel });
+        this.project.issuesConfig.labels.select(dao);
+        return dao;
+      },
+      postSet: function(_, value)  {
+        this.X.LabelDAO = value;
+      }
+    },
+    {
+      name: 'StatusDAO',
+      help: 'DAO of known statuses.',
+      factory: function() {
+        var dao = MDAO.create({ model: QIssueStatus });
+        this.project.issuesConfig.statuses.select(dao);
+        return dao;
+      },
+      postSet: function(_, value)  {
+        this.X.StatusDAO = value;
+      }
+    },
+    {
+      name: 'PersonDAO',
+      help: 'DAO of known people.',
+      factory: function() {
+        var dao = MDAO.create({ model: QIssuePerson });
+        this.project.members.select(dao);
+        return dao;
+      },
+      postSet: function(_, value)  {
+        this.X.PersonDAO = value;
+      }
+    },
+    {
       name: 'IssueMDAO',
       factory: function() {
         var dao = this.X.MDAO.create({model: QIssue});
@@ -192,7 +228,10 @@ FOAModel({
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),
             arequire('QIssueCommentUpdateView'),
-            arequire('ConfigureProjectsView')
+            arequire('ConfigureProjectsView'),
+            arequire('QIssueStatus'),
+            arequire('QIssueLabel'),
+            arequire('QIssuePerson')
           )(function () {
             $addWindow(window);
             var Y = self.X.subWindow(window, 'Browser Window');

@@ -83,8 +83,10 @@ FOAModel({
   extendsModel: 'IssueCommentUpdate',
 
   properties: [
-    { name: 'labels', view: 'MultiLineStringArrayView' },
-    { name: 'cc', view: 'MultiLineStringArrayView' },
+    { name: 'status', autocompleter: 'StatusCompleter' },
+    { name: 'owner', autocompleter: 'PersonCompleter' },
+    { name: 'labels', view: 'MultiLineStringArrayView', autocompleter: 'LabelCompleter' },
+    { name: 'cc', view: 'MultiLineStringArrayView', autocompleter: 'PersonCompleter' },
     { name: 'blockedOn', view: 'MultiLineStringArrayView' }
   ]
 });

@@ -599,6 +599,7 @@ FOAModel({
 
   methods: {
     open: function(e, opt_delay) {
+      if ( this.$ ) return;
       var document = (e.$ || e).ownerDocument;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
@@ -993,7 +994,7 @@ FOAModel({
         this.$.addEventListener('keydown', this.onKeyDown);
 
         if ( this.autocomplete && this.autocompleter ) {
-          var proto = FOAM.lookup(this.autocompleter);
+          var proto = FOAM.lookup(this.autocompleter, this.X);
           var completer = proto.create();
           this.autocompleteView = AutocompletePopup.create({
             dao: completer.autocompleteDao,
@@ -1007,11 +1008,11 @@ FOAModel({
           this.addChild(this.autocompleteView);
 
           this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-            this.data = (completer.f.f || completer.f)(obj);
+            this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
           }).bind(this));
 
           var self = this;
-          this.$.addEventListener('input', function() {
+          var doAutocomplete = (function(data) {
             var node = self.$;
             var x = 0;
             var y = node.offsetHeight;
@@ -1022,14 +1023,16 @@ FOAModel({
             }
             self.autocompleteView.x = x;
             self.autocompleteView.y = y;
+            completer.autocomplete(data);
+          }).bind(this);
 
-            var value = self.textToValue(self.$.value)
-            completer.autocomplete(value);
+          this.$.addEventListener('input', function() {
+            doAutocomplete(self.textToValue(self.$.value));
           });
           this.$.addEventListener('focus', function() {
-            completer.autocomplete(self.data);
+            doAutocomplete(self.data);
           });
-          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { completer.autocomplete(''); })))));
+          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
         }
       } else {
         this.domValue = DomValue.create(
@@ -1627,6 +1630,10 @@ FOAModel({
     },
 
     toHTML: function() {
+      return (this.model.getPrototype().toSummaryHTML || this.defaultToHTML).call(this);
+    },
+
+    defaultToHTML: function() {
       this.children = [];
       var model = this.model;
       var obj   = this.get();
