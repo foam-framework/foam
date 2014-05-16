@@ -545,6 +545,14 @@ var DAOProperty = Model.create({
       defaultValue: 'ArrayView'
     },
     {
+      name: 'getter',
+      defaultValue: function(name) {
+        if ( ! this.instance_[name] )
+          this.instance_[name] = ProxyDAO.create({ delegate: NullDAO.create({}) });
+        return this.instance_[name];
+      }
+    },
+    {
       name: 'setter',
       defaultValue: function(dao, name) {
         if ( ! this.instance_[name] ) this.instance_[name] = ProxyDAO.create();
