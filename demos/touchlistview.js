@@ -80,7 +80,7 @@ dao.put(Contact.create({ first: "Zachary", last: 	"Hayes", email: "Zachary@Hayes
 
 FOAModel({
   name: 'ContactRowView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -91,7 +91,7 @@ FOAModel({
   templates: [
     {
       name: 'toHTML',
-      template: '<div id="<%= this.getID() %>" style="height:200px;background:<%= this.value.value.color %>">' +
+      template: '<div id="<%= this.id %>" style="height:200px;background:<%= this.value.value.color %>">' +
         '<span>%%value.value.first <b>%%value.value.last</b></span>' +
         '</div>'
     }

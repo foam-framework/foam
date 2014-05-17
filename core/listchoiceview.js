@@ -31,7 +31,7 @@ var ListChoiceViewRenderer = {
 FOAModel({
   name:  'ListChoiceView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -112,7 +112,7 @@ FOAModel({
   methods: {
     toHTML: function() {
       var renderer = this.renderer;
-      var out = renderer.start(this.getID()) + renderer.end();
+      var out = renderer.start(this.id) + renderer.end();
       return out;
     },
 
@@ -170,7 +170,7 @@ FOAModel({
         this.selectedElement = selectedAsList[0];
       }
 
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     getValue: function() {

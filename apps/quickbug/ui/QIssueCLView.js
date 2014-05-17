@@ -2,7 +2,7 @@ var QIssueCLView = FOAM({
   model_: 'Model',
 
   name: 'QIssueCLView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     { name: 'dao' }
@@ -28,7 +28,7 @@ var QIssueCLView = FOAM({
       ],
     ],
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       var self = this;

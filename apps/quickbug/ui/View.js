@@ -68,7 +68,7 @@ var DragAndDropGrid = FOAM({
 var IssueDropCell = FOAM({
   model_: 'Model',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -90,10 +90,10 @@ var IssueDropCell = FOAM({
 
   methods: {
     toHTML: function() {
-      this.on('dragenter', this.onDragEnter, this.getID());
-      this.on('dragover', this.onDragEnter, this.getID());
-      this.on('drop', this.onDrop, this.getID());
-      return '<td id="' + this.getID() + '">' +
+      this.on('dragenter', this.onDragEnter, this.id);
+      this.on('dragover', this.onDragEnter, this.id);
+      this.on('drop', this.onDrop, this.id);
+      return '<td id="' + this.id + '">' +
         (this.value ? (this.value.toHTML ? this.value.toHTML() : this.value) : '') + '</td>';
     },
     initHTML: function() {
@@ -163,7 +163,7 @@ var ItemCount = Model.create({
     put: function(obj) {
       if ( ! this.obj ) {
         this.obj = obj;
-        this.eid = AbstractView.getPrototype().nextID();
+        this.eid = View.getPrototype().nextID();
       }
       this.SUPER(obj);
     },

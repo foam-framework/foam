@@ -1247,7 +1247,7 @@ var EMailsView = FOAM({
 
    methods: {
      toHTML: function() {
-       return '<div id="' + this.getID() + '"></div>';
+       return '<div id="' + this.id + '"></div>';
      },
    }
 });

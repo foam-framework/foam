@@ -1,7 +1,7 @@
 var QIssueTileView = FOAM({
    model_: 'Model',
 
-   extendsModel: 'AbstractView',
+   extendsModel: 'View',
 
    name: 'QIssueTileView',
    label: 'QIssue Tile View',

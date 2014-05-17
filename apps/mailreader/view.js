@@ -20,7 +20,7 @@ var LabelView = FOAM({
 
    name:  'LabelView',
 
-   extendsModel: 'AbstractView',
+   extendsModel: 'View',
 
    properties: [
       {
@@ -70,12 +70,12 @@ var LabelView = FOAM({
       },
 /*
       initHTML: function() {
-         AbstractView.getPrototype().initHTML.call(this);
+         View.getPrototype().initHTML.call(this);
          // if ( this.value ) this.value.addListener(this.updateHTML.bind(this));
       },
 */
       toHTML: function() {
-         return '<div class="labelList" id="' + this.getID() + '"></div>';
+         return '<div class="labelList" id="' + this.id + '"></div>';
       },
 
       updateHTML: function() {

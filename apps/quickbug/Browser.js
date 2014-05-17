@@ -28,7 +28,7 @@ MementoMgr.FORTH.help = '';
 FOAModel({
   name: 'Browser',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     'project',
@@ -364,7 +364,7 @@ FOAModel({
       name: 'changeUser',
       help: 'Change the current user.',
       labelFn: function() {
-        return AbstractView.getPrototype().strToHTML(this.project.user.email);
+        return View.getPrototype().strToHTML(this.project.user.email);
       },
       action: function() {
         var self = this;

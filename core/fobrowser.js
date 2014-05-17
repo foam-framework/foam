@@ -118,8 +118,6 @@ function layout() {
       SEARCH_H / 2 -20);
   }
   pos(footer, H-FOOTER_H, null, W, FOOTER_H);
-
-  table && table.layout();
 }
 
 window.onresize = layout;
@@ -169,13 +167,11 @@ layout();
     dao.addIndex(EMail.FROM);
     dao.addIndex(EMail.SUBJECT);
 */
-    var table = ScrollBorder.create({
-      view: TableView.create({
-        model: Feature,
-        dao: dao,
-        rows: 20
-      }),
-      dao: dao
+    var table = TableView.create({
+      model: Feature,
+      dao: dao,
+      rows: 20,
+      scrollEnabled: true
     });
 
     var searchSubject = TextSearchView.create({width:44, label: 'Search',
@@ -183,12 +179,12 @@ layout();
     var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
     var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
     var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
-    Object.defineProperty(byModel, 'updateChoice', {value: (function(newValue, oldValue) {
-       var choice = newValue.get();
+    Object.defineProperty(byModel, 'updateChoice', {value: (function(_, _, _, choice) {
+      debugger;
        if ( choice ) {
           this.predicate = EQ(this.property, choice);
 
-          var matchType = modelMatchType.value.get();
+          var matchType = modelMatchType.data;
 
           if ( matchType !== 'Exact' ) this.predicate.f = function(obj) {
              var arg1 = this.arg1.f(obj);
@@ -209,7 +205,7 @@ layout();
       name: 'modelMatchType',
       choices: ['Super', 'Exact', 'Sub']
     });
-    modelMatchType.value.set('Exact');
+    modelMatchType.data = 'Exact';
     browse.innerHTML = table.toHTML();
     searchSubject.insertInElement('subjectSearch');
     byModel.insertInElement('modelSearch');
@@ -219,15 +215,15 @@ layout();
 
     table.initHTML();
 
-    table.view.selection.addListener(function (src, property, oldValue, newValue) {
+    table.selection.addListener(function (src, property, oldValue, newValue) {
       if ( ! newValue ) return;
-      var obj = table.view.selection.get().obj.clone();
+      var obj = table.selection.get().obj.clone();
       var editView = DetailView.create({value: SimpleValue.create(obj)});
-      editView.model = table.view.selection.get().obj.model_;
+      editView.model = table.selection.get().obj.model_;
       edit.innerHTML = editView.toHTML();
       editView.initHTML();
     });
-    table.view.selection.set(table.view.objs[0]);
+//    table.selection.set(table.objs[0]);
 
     layout();
 
@@ -240,7 +236,6 @@ layout();
 
       console.log('query: ', predicate.toSQL());
 
-      table.scrollbar.value = 0;
       table.dao = dao.where(predicate);
 
       byType.filter  = AND(searchSubject.predicate, byModel.predicate, byName.predicate).partialEval();
@@ -256,10 +251,10 @@ layout();
     },
     updateQuery);
 
-    modelMatchType.value.addListener(function() { byModel.updateChoice(byModel.view.value); updateQuery(); });
+    modelMatchType.data$.addListener(function() { byModel.updateChoice(byModel.view.data); updateQuery(); });
 
     function resetSearch() {
-      byType.view.value.set(''); byModel.view.value.set(''); byName.view.value.set('');
+      byType.view.data = ''; byModel.view.data = ''; byName.view.data = '';
       byType.filter = byModel.filter = byName.filter = TRUE;
       table.dao = dao;
     }

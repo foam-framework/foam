@@ -2,7 +2,7 @@ FOAModel({
   name: 'Todo',
   properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
   templates: [ function toDetailHTML() {/*
-	<li id="{{{this.getID()}}}">
+	<li id="{{{this.id}}}">
 		<div class="view">
 			$$completed{className: 'toggle'}
 			$$text{mode: 'read-only', tagName: 'label'}

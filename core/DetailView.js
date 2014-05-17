@@ -1,6 +1,6 @@
 FOAModel({
   name: 'DetailView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -138,7 +138,7 @@ FOAModel({
       var model = this.model;
       var str  = "";
 
-      str += '<div id="' + this.getID() + '" class="detailView" name="form">';
+      str += '<div id="' + this.id + '" class="detailView" name="form">';
       str += '<table>';
       str += this.titleHTML();
 

@@ -1,4 +1,4 @@
-<div id="<%= this.getID() %>">
+<div id="<%= this.id %>">
 <b>Preferred projects:</b>
 $$preferredProjects
 <br>

@@ -1,7 +1,7 @@
 FOAModel({
   name:  'AbstractChoiceView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -173,7 +173,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/></select>';
+      return '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/></select>';
     },
 
     updateHTML: function() {
@@ -208,7 +208,7 @@ FOAModel({
       }
 
       this.$.innerHTML = out.join('');
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {
@@ -225,7 +225,7 @@ FOAModel({
       name: 'onMouseOver',
       code: function(e) {
         if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.prev = ( this.prev === undefined ) ? this.value.get() : this.prev;
+        this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
     },
@@ -256,7 +256,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<span id="' + this.getID() + '"/></span>';
+      return '<span id="' + this.id + '"/></span>';
     },
 
     updateHTML: function() {
@@ -268,7 +268,7 @@ FOAModel({
         var id     = self.nextID();
 
         out += label + ':<input type="radio" name="';
-        out += self.getID();
+        out += self.id;
         out += '" value="';
         out += value;
         out += '" ';
@@ -281,7 +281,7 @@ FOAModel({
       });
 
       this.$.innerHTML = out;
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {

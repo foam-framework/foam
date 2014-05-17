@@ -16,7 +16,7 @@
  */
 FOAModel({
   name:  'GroupBySearchView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   label: 'GroupBy Search View',
 
@@ -86,7 +86,7 @@ FOAModel({
         this.updateDAO();
         }).bind(this));
       */
-      this.view.value.addListener(this.updateChoice);
+      this.view.data$.addListener(this.updateChoice);
 
       //       this.updateDAO();
       //       this.view.addListener(console.log.bind(console));
@@ -120,9 +120,8 @@ FOAModel({
     {
       name: 'updateChoice',
 
-      code: function(newValue, oldValue) {
-        var choice = newValue.get();
-        this.predicate = ( ! choice ) ? TRUE : EQ(this.property, choice);
+      code: function(_, _, _, choice) {
+        this.predicate = choice ? EQ(this.property, choice) : TRUE ;
       }
     }
 
@@ -134,7 +133,7 @@ FOAModel({
 FOAModel({
   name:  'TextSearchView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -176,7 +175,7 @@ FOAModel({
       this.SUPER();
       this.view.initHTML();
 
-      this.view.value.addListener(this.updateValue);
+      this.view.data$.addListener(this.updateValue);
     }
   },
 
@@ -185,7 +184,7 @@ FOAModel({
     {
       name: 'updateValue',
       code: function() {
-        var value = this.view.getValue().get();
+        var value = this.view.data;
         if ( ! value ) {
           this.predicate = TRUE;
           return;
@@ -207,7 +206,7 @@ FOAModel({
 
 FOAModel({
   name: 'SearchView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -240,7 +239,7 @@ FOAModel({
     },
 
     toInnerHTML: function() {
-      if ( ! this.children.length ) 
+      if ( ! this.children.length )
         this.buildSubViews();
 
       var str = ""
