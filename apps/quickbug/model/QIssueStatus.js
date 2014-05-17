@@ -46,10 +46,20 @@ FOAModel({
   ],
   methods: {
     autocomplete: function(data) {
-      this.autocompleteDao = this.X.StatusDAO.where(
+      var src = this.X.StatusDAO;
+      var dao = src.where(
         data ?
           STARTS_WITH(QIssueStatus.STATUS, data) :
           TRUE);
+
+      var self = this;
+      dao.limit(2).select()(function(objs) {
+        if ( objs.length === 1 && self.f.f(objs[0]) === data ) {
+          self.autocompleteDao = src.where(FALSE);
+        } else {
+          self.autocompleteDao = dao;
+        }
+      });
     },
     f: QIssueStatus.STATUS
   }

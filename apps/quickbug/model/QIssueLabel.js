@@ -29,8 +29,9 @@ FOAModel({
     {
       name: 'toSummaryHTML',
       template: function() {/*
-  <div style="background:white;color:blue;padding:4px 0;width:400px">
-    <div style="display:inline-block;width:50%>{{this.value.value.label}}</div><div style="display:inline-block;width:50%">=&nbsp;{{this.value.value.description}}</div>
+  <div style="background:white;color:blue;padding:4px 0;width:450px">
+    <div style="display:inline;width:25%;overflow:hidden">{{this.value.value.label}}</div>
+    <div style="display:inline;width:75%;float:right">=&nbsp;{{this.value.value.description}}</div>
   </div>
     */}
     }
@@ -45,10 +46,20 @@ FOAModel({
   ],
   methods: {
     autocomplete: function(data) {
-      this.autocompleteDao = this.X.LabelDAO.where(
+      var src = this.X.LabelDAO;
+      var dao = src.where(
         data ?
           STARTS_WITH(QIssueLabel.LABEL, data) :
           TRUE);
+
+      var self = this;
+      dao.limit(2).select()(function(objs) {
+        if ( objs.length === 1 && self.f.f(objs[0]) === data ) {
+          self.autocompleteDao = src.where(FALSE);
+        } else {
+          self.autocompleteDao = dao;
+        }
+      });
     },
     f: QIssueLabel.LABEL
   }
