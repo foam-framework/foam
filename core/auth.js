@@ -133,7 +133,7 @@ FOAModel({
     {
       name: 'authenticator',
       type: 'Authenticator',
-      valueFactory: function() {
+      factory: function() {
         return {
           readPermission: function(principal, obj) {
             return obj.readPermission(principal);
