@@ -616,6 +616,10 @@ FOAModel({
     },
     close: function() {
       this.$ && this.$.remove();
+    },
+    destroy: function() {
+      this.close();
+      this.view.destroy();
     }
   }
 });
@@ -633,7 +637,8 @@ FOAModel({
   ],
 
   methods: {
-    init: function() {
+    init: function(args) {
+      this.SUPER(args);
       this.dao.listen(this.autocomplete);
     }
   },
@@ -2634,20 +2639,47 @@ FOAModel({
       defaultValue: 30
     },
     {
-      name: 'softValue',
-      factory: function() { return SimpleValue.create([]); }
+      model_: 'BooleanProperty',
+      name: 'onKeyMode',
+      defaultValue: true
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create([]); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue ) {
-          oldValue.removeListener(this.update);
-        }
-        newValue.addListener(this.update);
-        this.update();
-      }
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
     },
+    {
+      name: 'data'
+    },
+    'autocompleter',
+    {
+      model_: 'ArrayProperty',
+      subType: 'MultiLineStringArrayView.RowView',
+      name: 'inputs'
+    }
+  ],
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'RowView',
+      extendsModel: 'View',
+      properties: [
+        'field',
+        {
+          name: 'tagName',
+          defaultValue: 'div'
+        }
+      ],
+      methods: {
+        toInnerHTML: function() {
+          this.children = [this.field];
+          return this.field.toHTML() + '<input type="button" id="' +
+            this.on('click', (function(){ this.publish('remove'); }).bind(this)) +
+            '" class="multiLineStringRemove" value="X">';
+        }
+      }
+    }
   ],
 
   methods: {
@@ -2664,15 +2696,22 @@ FOAModel({
     },
     initHTML: function() {
       this.SUPER();
+      this.data$.addListener(this.update);
       this.update();
     },
     row: function() {
-      return '<div><input id="' + this.on('input', this.onInput) +
-        '" name="' + this.name + '" type="' + this.type + '" ' +
-        'size="' + this.displayWidth + '"/>' +
-        '<input type="button" id="' +
-        this.on('click', this.onRemove) +
-        '" class="multiLineStringRemove" value="X"></div>';
+      // TODO: Find a better way to copy relevant values as this is unsustainable.
+      var view = this.model_.RowView.create({
+        field: TextFieldView.create({
+          name: this.name,
+          type: this.type,
+          displayWidth: this.displayWidth,
+          onKeyMode: this.onKeyMode,
+          autocomplete: this.autocomplete,
+          autocompleter: this.autocompleter
+        })
+      });
+      return view;
     },
     setValue: function(value) {
       this.value = value;
@@ -2685,45 +2724,59 @@ FOAModel({
       code: function() {
         if ( ! this.$ ) return;
 
-        var inputs = this.$.firstElementChild;
-        var value = this.value.get();
-
-        var extra = "";
+        var inputs = this.inputs;
+        var inputElement = this.$.firstElementChild;
+        var newViews = [];
+        var data = this.data;
 
         // Add/remove rows as necessary.
-        if ( inputs.children.length > value.length ) {
-          for ( var i = value.length - 1; i < inputs.children.length; i++ ) {
-            inputs.children[i].remove();
+        if ( inputs.length > data.length ) {
+          for ( var i = data.length; i < inputs.length; i++ ) {
+            inputs[i].$.remove();
+            this.removeChild(inputs[i]);
           }
+          inputs.length = data.length;
         } else {
-          for ( i = inputs.children.length; i < value.length; i++ )
-            extra += this.row();
+          var extra = "";
 
-          if ( extra.length > 0 ) {
-            inputs.insertAdjacentHTML('beforeend', extra);
+          for ( i = inputs.length; i < data.length; i++ ) {
+            var view = this.row();
+
+            // TODO: This seems ridiculous.
+            this.addChild(view);
+            newViews.push(view);
+            inputs.push(view);
+
+            view.subscribe('remove', this.onRemove);
+            view.field.data$.addListener(this.onInput);
+            extra += view.toHTML();
           }
+
+          if ( extra ) inputElement.insertAdjacentHTML('beforeend', extra);
         }
 
         // Only update the value for a row if it does not match.
-        for ( i = 0; i < value.length; i++ ) {
-          if ( inputs.children[i].firstElementChild.value !== value[i] )
-            inputs.children[i].firstElementChild.value = value[i];
+        for ( i = 0; i < data.length; i++ ) {
+          if ( inputs[i].field.data !== data[i] )
+            inputs[i].field.data = data[i];
         }
 
-        this.invokeInitializers();
+        this.inputs = inputs;
+
+        for ( i = 0; i < newViews.length; i++ )
+          newViews[i].initHTML();
       }
     },
     {
       name: 'onRemove',
-      code: function(e) {
-        var inputs = this.$.firstElementChild.children;
+      code: function(src) {
+        var inputs = this.inputs;
         for ( var i = 0; i < inputs.length; i++ ) {
-          if ( inputs[i].lastChild === e.target ) {
-            inputs[i].remove();
+          if ( inputs[i] === src ) {
+            this.data = this.data.slice(0, i).concat(this.data.slice(i+1));
             break;
           }
         }
-        this.onInput();
       }
     },
     {
@@ -2731,13 +2784,13 @@ FOAModel({
       code: function(e) {
         if ( ! this.$ ) return;
 
-        var inputs = this.$.firstElementChild.children;
-        var newValue = [];
+        var inputs = this.inputs;
+        var newdata = [];
 
         for ( var i = 0; i < inputs.length; i++ ) {
-          newValue.push(inputs[i].firstElementChild.value);
+          newdata.push(inputs[i].field.data);
         }
-        this.value.set(newValue);
+        this.data = newdata;
       }
     }
   ],
@@ -2747,10 +2800,7 @@ FOAModel({
       name: 'add',
       label: 'Add',
       action: function() {
-        this.$.firstElementChild.insertAdjacentHTML(
-          'beforeend', this.row());
-        this.invokeInitializers();
-        this.onInput();
+        this.data = this.data.pushF('');
       }
     }
   ]
