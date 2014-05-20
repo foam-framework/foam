@@ -21,7 +21,7 @@ var ListChoiceViewRenderer = {
   choice: function(name, c, autoId, index, isCurrentSelection) {
     return '<li id="' + autoId + '" name="' + name + '"' +
       (isCurrentSelection ? ' class="' + this.selectedCssClass + '"' : '') +
-      ' value="' + index + '">' + c.n.toString() + '</li>';
+      ' value="' + index + '">' + c.toString() + '</li>';
   },
   end: function() {
     return '</ul>';
