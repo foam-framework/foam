@@ -368,11 +368,11 @@ FOAModel({
       },
       action: function() {
         var self = this;
-        this.qbug.authAgent.auth(function() {
+        this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
           self.project.IssueSplitDAO.invalidate();
           self.performQuery();
-        });
+        }, true);
       }
     },
   ],
