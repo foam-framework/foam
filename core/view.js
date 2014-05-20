@@ -541,7 +541,7 @@ FOAModel({
       if ( typeof prop.view === 'string' ) return this.X[prop.view].create(prop);
       if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) return FOAM(v);
       if ( prop.view.model_ ) return prop.view.deepClone().copyFrom(prop);
-      if ( typeof prop.view === 'function' ) return prop.view(prop);
+      if ( typeof prop.view === 'function' ) return prop.view(prop, this);
 
       return prop.view.create(prop);
     },
