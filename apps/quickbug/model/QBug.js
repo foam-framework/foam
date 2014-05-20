@@ -111,7 +111,7 @@ FOAModel({
       defaultValue: 'chromium'
     },
     {
-      name: 'authAgent'
+      name: 'authAgent2'
     }
   ],
 

@@ -118,13 +118,12 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.refresh_ = asynchronized(this.refreshNow_.bind(this));
+      this.refresh_ = amemoTtl(this.refreshNow_.bind(this), 1000);
     },
 
     refreshNow_: function(){},
 
     refresh: function(ret, opt_forceInteractive) {
-      debugger;
       return this.refresh_(ret, opt_forceInteractive);
     }
   }
@@ -139,19 +138,22 @@ FOAModel({
     {
       name: 'delegate',
       transient: true
+    },
+    {
+      name: 'accessToken',
+      getter: function() { return this.delegate.accessToken; },
+      setter: function(t) { this.delegate.accessToken = t; }
     }
   ],
 
   methods: {
     refresh: function(ret, opt_forceInteractive) {
-      debugger;
       if ( ! this.delegate ) {
         if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
           this.delegate = OAuth2ChromeApp.create(this);
         } else {
           this.delegate = OAuth2WebClient.create(this);
         }
-        this.accessToken$ = this.delegate.accessToken$;
       }
 
       return this.delegate.refresh(ret, opt_forceInteractive);
@@ -170,6 +172,7 @@ FOAModel({
       var self = this;
       var w;
       var cb = wrapJsonpCallback(function(code) {
+        debugger;
         self.accessToken = code;
         try {
           ret(code);
@@ -309,7 +312,6 @@ FOAModel({
     },
 
     refreshNow_: function(ret, opt_forceInteractive) {
-      debugger;
       if ( opt_forceInteractive ) {
         this.auth(ret);
         return;
