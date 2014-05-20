@@ -26,11 +26,12 @@ FOAModel({
       postSet: function(_, project) {
         console.log('New Project: ', project);
         this.X.project  = project;
-        this.X.IssueDAO = project.IssueDAO;
+        this.X.projectName = project.projectName;
+        this.X.issueDAO = project.IssueDAO;
       }
     },
     {
-      name: 'stackView',
+      name: 'stack',
       subType: 'StackView',
       view: function() { return StackView.create(); },
       factory: function() { return StackView.create(); }
@@ -45,9 +46,9 @@ FOAModel({
     },
     */
 
-    toHTML: function() { return this.stackView.toHTML(); },
+    toHTML: function() { return this.stack.toHTML(); },
     initHTML: function() {
-      this.stackView.initHTML();
+      this.stack.initHTML();
 
       var self = this;
 
@@ -55,13 +56,13 @@ FOAModel({
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
-        ProjectDAO:        this.qbug.ProjectNetworkDAO,
-      });
+        ProjectDAO:        this.qbug.ProjectNetworkDAO
+      }, 'MBUG CONTEXT');
 
-        debugger;
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
-        var view = self.X.DetailView.create({value: SimpleValue.create(project)});
+        var pc = self.X.ProjectController.create();
+        var view = self.X.DetailView.create({value: SimpleValue.create(pc)});
         self.stack.setTopView(view);
       }});
     }
@@ -76,14 +77,21 @@ FOAModel({
   properties: [
     {
       name: 'projectName',
-      getter: function() { this.X.projectName; }
+      defaultValueFn: function() { return this.X.projectName; },
     },
-    { name: 'issueDAO' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
+    {
+      name: 'issueDAO',
+      defaultValueFn: function() { return this.X.issueDAO; },
+      hidden: true
+    },
+    {
+      name: 'filteredDAO',
+      model_: 'DAOProperty',
+      view: { model_: 'DAOListView'/*'TouchListView'*/, mode: 'read-only', rowView: 'IssueCitationView'  }
+    },
     {
       name: 'sortOrder',
-      postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
-      defaultValue: TRUE,
+      defaultValue: QIssue.MODIFIED,
       view: {
         model_: 'ChoiceListView',
         choices: [
@@ -94,15 +102,18 @@ FOAModel({
       }
     },
     {
-      name: 'searchChoice',
-      postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
-      factory: function() {
+      name: 'q',
+      defaultValue: ''
+    },
+    {
+      name: 'can',
+      defaultValue: '',
+      view: function() {
         var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
 
         return ChoiceView.create({
           helpText: 'Search within:',
-          data$: this.location.can$,
-          choices:[
+          choices: [
 //            ['',                     'All issues',              1],
             [open,                   'OPEN ISSUES',             2],
             [open + ' owner=me',     'OWNED BY ME',    3],
@@ -111,7 +122,8 @@ FOAModel({
 //            [open + ' commentby:me', 'Open and comment by me',  8],
 //            ['status=New',           'New issues',              6],
 //            ['status=Fixed,Done',    'Issues to verify',        7]
-          ]});
+          ]
+        });
       }
     }
   ],
@@ -122,19 +134,34 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
-      this.dao.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
+
+      var self = this;
+
+      Events.dynamic(
+        function() { self.can; self.sortOrder; self.q; },
+        function() {
+          console.log('Query Update');
+          self.filteredDAO = self.issueDAO.
+            limit(20).
+            where(AND(
+              QueryParser.parseString(self.can) || TRUE,
+              QueryParser.parseString(self.q) || TRUE
+            ).partialEval()).
+            orderBy(self.sortOrder);
+        }
+      );
     }
   },
   templates: [
   ]
 });
 
-/*
 FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
+  templates: [ function toHTML() {/*
+    <div>
+       $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    </div>
+  */} ]
 });
-*/
