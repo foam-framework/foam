@@ -629,3 +629,16 @@ function multiline(f) {
   var end   = s.lastIndexOf('*/');
   return s.substring(start+2, end);
 }
+
+// Computes the XY coordinates of the given node
+// relative to the window.
+function findPageXY(node) {
+  var x = 0;
+  var y = 0;
+  while ( node ) {
+    x += node.offsetLeft;
+    y += node.offsetTop;
+    node = node.offsetParent;
+  }
+  return [x, y];
+}
