@@ -120,7 +120,7 @@ FOAModel({
       this.SUPER(args);
       var self = this;
 
-      this.initOAuth();
+      this.initOAuth(args && args.authClientId, args && args.authClientSecret);
 
       this.persistentContext.bindObject('user', QUser)(function(user) {
         self.userFuture.set(user);
@@ -128,7 +128,7 @@ FOAModel({
       });
     },
 
-    initOAuth: function() {
+    initOAuth: function(opt_clientId, opt_clientSecret) {
       var jsonpFuture = afuture();
       this.X.ajsonp = function() {
         var args = arguments;
@@ -139,9 +139,9 @@ FOAModel({
         };
       };
 
-      this.persistentContext.bindObject('authAgent', OAuth2, {
-        clientId: '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
-        clientSecret: 'mbxy7-eZlosojSZgHTRT15o9',
+      this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
+        clientId: opt_clientId || '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9',
         scopes: [
           "https://www.googleapis.com/auth/userinfo.email",
           "https://www.googleapis.com/auth/projecthosting"

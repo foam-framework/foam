@@ -417,32 +417,40 @@ function axhr(url, opt_op, opt_params) {
   };
 }
 
-// Note: this doesn't work for packaged-apps
 var __JSONP_CALLBACKS__ = {};
-var ajsonp = (function() {
+var wrapJsonpCallback = (function() {
   var nextID = 0;
 
-  return function(url, params) {
-    return function(ret) {
-      var id = 'c' + (nextID++);
+  return function(ret, opt_nonce) {
+    var id = 'c' + (nextID++);
+    if ( opt_nonce ) id += Math.floor(Math.random() * 0xffffff).toString(16);
 
-      __JSONP_CALLBACKS__[id] = function(data) {
-        delete __JSONP_CALLBACKS__[id];
+    var cb = __JSONP_CALLBACKS__[id] = function(data) {
+      delete __JSONP_CALLBACKS__[id];
 
-        // console.log('JSONP Callback', id, data);
+      // console.log('JSONP Callback', id, data);
 
-        ret && ret.call(this, data);
-      };
-
-      var script = document.createElement('script');
-      script.src = url + '?callback=__JSONP_CALLBACKS__.' + id + (params ? '&' + params.join('&') : '');
-      script.onload = function() {
-        document.body.removeChild(this);
-      };
-      document.body.appendChild(script);
+      ret && ret.call(this, data);
     };
+    cb.id = id;
+
+    return cb;
   };
 })();
+
+// Note: this doesn't work for packaged-apps
+var ajsonp = function(url, params) {
+  return function(ret) {
+    var cb = wrapJsonpCallback(ret);
+
+    var script = document.createElement('script');
+    script.src = url + '?callback=__JSONP_CALLBACKS__.' + cb.id + (params ? '&' + params.join('&') : '');
+    script.onload = function() {
+      document.body.removeChild(this);
+    };
+    document.body.appendChild(script);
+  };
+};
 
 function futurefn(future) {
   return function() {
