@@ -17,13 +17,6 @@ FOAModel({
       }
     },
     {
-      name: 'index',
-      help: 'The index of the current choice.',
-      postSet: function(_, i) {
-        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
-      }
-    },
-    {
       name: 'choice',
       help: 'The current choice (ie. [value, label]).',
       getter: function() {
@@ -69,6 +62,13 @@ FOAModel({
         if ( i === newValue.length ) this.choice = newValue[0];
 
         if ( this.$ ) this.updateHTML();
+      }
+    },
+    {
+      name: 'index',
+      help: 'The index of the current choice.',
+      postSet: function(_, i) {
+        if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     }
   ],
@@ -127,7 +127,9 @@ FOAModel({
 
         this.on(
           'click',
-          function(choice) { this.choice = choice; }.bind(this, choice),
+          function(choice) {
+            this.choice = choice;
+          }.bind(this, choice),
           id);
 
         this.setClass(
@@ -135,7 +137,7 @@ FOAModel({
           function(choice) { return this.choice == choice; }.bind(this, choice),
           id);
 
-        out += '<li id="' + id + '">' + choice[1] + '</li>';
+        out += '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
       }
       return out;
     }
