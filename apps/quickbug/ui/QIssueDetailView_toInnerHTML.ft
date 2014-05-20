@@ -68,5 +68,11 @@
     <% if ( this.mode === 'read-write' ) { %>
       %%commentCreateView()
     <% } %>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
 </div>
