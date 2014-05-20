@@ -25,9 +25,9 @@ FOAModel({
       subType: 'QProject',
       postSet: function(_, project) {
         console.log('New Project: ', project);
-        this.X.project  = project;
+        this.X.project     = project;
         this.X.projectName = project.projectName;
-        this.X.issueDAO = project.IssueDAO;
+        this.X.issueDAO    = project.IssueDAO;
       }
     },
     {
@@ -56,13 +56,14 @@ FOAModel({
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
-        ProjectDAO:        this.qbug.ProjectNetworkDAO
+        ProjectDAO:        this.qbug.ProjectNetworkDAO,
+        stack:             this.stack
       }, 'MBUG CONTEXT');
 
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
         var pc = self.X.ProjectController.create();
-        var view = self.X.DetailView.create({value: SimpleValue.create(pc)});
+        var view = self.X.DetailView.create({data: pc, showActions: true});
         self.stack.setTopView(view);
       }});
     }
@@ -75,6 +76,11 @@ FOAModel({
   name: 'ProjectController',
 
   properties: [
+    {
+      name: 'project',
+      defaultValueFn: function() { return this.X.project; },
+      hidden: true
+    },
     {
       name: 'projectName',
       defaultValueFn: function() { return this.X.projectName; },
@@ -102,8 +108,7 @@ FOAModel({
       }
     },
     {
-      name: 'q',
-      defaultValue: ''
+      name: 'q'
     },
     {
       name: 'can',
@@ -128,6 +133,13 @@ FOAModel({
     }
   ],
   actions: [
+    {
+      name: 'changeProject',
+      action: function() {
+        var v = this.X.ChangeProjectView.create({data: this.project.user});
+        this.X.stack.pushView(v);
+      }
+    }
   ],
   listeners: [
   ],
@@ -142,7 +154,7 @@ FOAModel({
         function() {
           console.log('Query Update');
           self.filteredDAO = self.issueDAO.
-            limit(20).
+            limit(10).
             where(AND(
               QueryParser.parseString(self.can) || TRUE,
               QueryParser.parseString(self.q) || TRUE
@@ -164,4 +176,48 @@ FOAModel({
        $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
     </div>
   */} ]
+});
+
+
+FOAModel({
+  name: 'ChangeProjectView',
+  extendsModel: 'DetailView',
+
+  properties: [
+    {
+      name: 'projects',
+      hidden: true
+    },
+    {
+      name: 'projectList',
+      view: { model_: 'ListChoiceView', choices: [''] }
+    }
+  ],
+
+  methods: {
+    updateSubViews: function() {
+      this.SUPER();
+
+      this.projectListView.choices = this.data.preferredProjects;
+    }
+
+  },
+
+  actions: [
+    {
+      name: 'close',
+      action: function() {
+        this.X.stack.popView();
+      }
+    }
+  ],
+
+  templates: [ function toHTML() {/*
+    <div>
+      $$email{mode: 'display-only'}
+      <hr>
+      $$projectList
+    </div>
+  */} ]
+
 });
