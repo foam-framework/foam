@@ -283,6 +283,39 @@ function amemo(f) {
   };
 }
 
+function amemoTtl(f, ttl) {
+  var memoized = false;
+  var values;
+  var waiters;
+
+  return function(ret) {
+    if ( memoized ) { ret.apply(null, values); return; }
+
+    var first = ! waiters;
+
+    if ( first ) waiters = [];
+
+    waiters.push(ret);
+
+    if ( first ) {
+      f(function() {
+        values = arguments;
+
+        setTimeout(function() {
+          memoized = false;
+        }, ttl);
+
+        for (var i = 0 ; i < waiters.length; i++) {
+          waiters[i] && waiters[i].apply(null, values);
+        }
+        f = undefined;
+        memoized = true;
+        waiters = undefined;
+      });
+    }
+  };
+}
+
 
 /** Async Compose (like Function.prototype.O, but for async functions **/
 Function.prototype.ao = function(f2) {
