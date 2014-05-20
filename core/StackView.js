@@ -47,7 +47,7 @@ FOAModel({
   actions: [
     {
       name:  'back',
-      label: '',
+      label: '<',
 //      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Left_Arrow.svg',
       help:  'Go to previous view',
 
@@ -60,7 +60,7 @@ FOAModel({
     },
     {
       name:  'forth',
-      label: '',
+      label: '>',
 //      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Right_Arrow.svg',
       help:  'Undo the previous back.',
 
