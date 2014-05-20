@@ -118,7 +118,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.refresh_ = amemoTtl(this.refreshNow_.bind(this), 1000);
+      this.refresh_ = amerged(this.refreshNow_.bind(this));
     },
 
     refreshNow_: function(){},

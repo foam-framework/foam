@@ -283,14 +283,16 @@ function amemo(f) {
   };
 }
 
-function amemoTtl(f, ttl) {
-  var memoized = false;
-  var values;
+/**
+ * Decorates an afunc to merge all calls to one active execution of the
+ * delegate.
+ * Similar to asynchronized, but doesn't queue up a number of calls
+ * to the delegate.
+ */
+function amerged(f) {
   var waiters;
 
   return function(ret) {
-    if ( memoized ) { ret.apply(null, values); return; }
-
     var first = ! waiters;
 
     if ( first ) {
@@ -302,21 +304,14 @@ function amemoTtl(f, ttl) {
 
     if ( first ) {
       args[0] = function() {
-        values = arguments;
-
-        setTimeout(function() {
-          memoized = false;
-          waiters = undefined;
-        }, ttl);
-
-        for (var i = 0 ; i < waiters.length; i++) {
-          waiters[i] && waiters[i].apply(null, values);
-        }
-        memoized = true;
+        var calls = waiters;
         waiters = undefined;
+        for (var i = 0 ; i < calls.length; i++) {
+          calls[i] && calls[i].apply(null, arguments);
+        }
       }
 
-      f.apply(undefined, args);
+      f.apply(null, args);
     }
   };
 }
