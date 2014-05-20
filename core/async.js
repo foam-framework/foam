@@ -293,25 +293,30 @@ function amemoTtl(f, ttl) {
 
     var first = ! waiters;
 
-    if ( first ) waiters = [];
+    if ( first ) {
+      waiters = [];
+      var args = argsToArray(arguments);
+    }
 
     waiters.push(ret);
 
     if ( first ) {
-      f(function() {
+      args[0] = function() {
         values = arguments;
 
         setTimeout(function() {
           memoized = false;
+          waiters = undefined;
         }, ttl);
 
         for (var i = 0 ; i < waiters.length; i++) {
           waiters[i] && waiters[i].apply(null, values);
         }
-        f = undefined;
         memoized = true;
         waiters = undefined;
-      });
+      }
+
+      f.apply(undefined, args);
     }
   };
 }
