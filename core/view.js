@@ -130,8 +130,15 @@ var DOM = {
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.contains(e) ) return;
 
-    var model = GLOBAL[e.getAttribute('model')];
     var args = {};
+    var modelName = e.getAttribute('model');
+    var model = GLOBAL[modelName];
+
+    if ( ! model ) {
+      console.error('Unknown Model: ', modelName);
+      e.outerHTML = 'Unknown Model: ' + modelName;
+      return;
+    }
 
     // This is because of a bug that the model.properties isn't populated
     // with the parent model's properties until after the prototype is
