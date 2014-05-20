@@ -637,6 +637,39 @@ FOAModel({
   ],
 
   methods: {
+    open: function(e, opt_delay) {
+      if ( this.$ ) return;
+      var parentNode = e.$ || e;
+      var document = parentNode.ownerDocument;
+
+      var div      = document.createElement('div');
+
+      if ( this.x || this.y ) {
+        div.style.left = this.x + 'px';
+        div.style.top = this.y + 'px';
+      } else {
+        var pos = findPageXY(parentNode);
+        var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+
+        div.style.left = pos[0];
+
+        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || 400) ) {
+          div.style.bottom = pageWH[1] - pos[1];
+        } else {
+          div.style.top = pos[1] + parentNode.offsetHeight;
+        }
+      }
+
+      if ( this.width ) div.style.width = this.width + 'px';
+      if ( this.height ) div.style.height = this.height + 'px';
+      div.style.position = 'absolute';
+      div.id = this.id;
+      div.innerHTML = this.view.toHTML();
+
+      document.body.appendChild(div);
+      this.view.initHTML();
+    },
+
     init: function(args) {
       this.SUPER(args);
       this.dao.listen(this.autocomplete);
@@ -1018,25 +1051,11 @@ FOAModel({
           }).bind(this));
 
           var self = this;
-          var doAutocomplete = (function(data) {
-            var node = self.$;
-            var x = 0;
-            var y = node.offsetHeight;
-            while ( node ) {
-              x += node.offsetLeft;
-              y += node.offsetTop;
-              node = node.offsetParent;
-            }
-            self.autocompleteView.x = x;
-            self.autocompleteView.y = y;
-            completer.autocomplete(data);
-          }).bind(this);
-
           this.$.addEventListener('input', function() {
-            doAutocomplete(self.textToValue(self.$.value));
+            completer.autocomplete(self.textToValue(self.$.value));;
           });
           this.$.addEventListener('focus', function() {
-            doAutocomplete(self.data);
+            completer.autocomplete(self.data);
           });
           this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
         }
