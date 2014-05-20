@@ -522,21 +522,7 @@ FOAModel({
       this.SUPER(args);
 
       var prop = this.prop;
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = this.X[prop.view].create(prop);
-      } else if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) {
-        view = FOAM(prop.view);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
+      var view = this.createViewFromProperty(prop);
 
       view.copyFrom(this.args);
       view.parent = this.parent;
@@ -549,6 +535,15 @@ FOAModel({
 
       this.view = view;
       this.bindData();
+    },
+    createViewFromProperty: function(prop) {
+      if ( ! prop.view ) return TextFieldView.create(prop);
+      if ( typeof prop.view === 'string' ) return this.X[prop.view].create(prop);
+      if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) return FOAM(v);
+      if ( prop.view.model_ ) return prop.view.deepClone().copyFrom(prop);
+      if ( typeof prop.view === 'function' ) return prop.view(prop);
+
+      return prop.view.create(prop);
     },
     bindData: function() {
       var view = this.view;
