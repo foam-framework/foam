@@ -137,28 +137,34 @@ FOAModel({
   properties: [
     {
       name: 'delegate',
+      postSet: function(oldValue, newValue) {
+        oldValue && oldValue.removePropertyListener(this.updateToken);
+        this.delegate.addPropertyListener('accessToken', this.updateToken);
+      },
+      factory: function() {
+        if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
+          return OAuth2ChromeApp.create(this);
+        }
+        return OAuth2WebClient.create(this);
+      },
       transient: true
-    },
-    {
-      name: 'accessToken',
-      getter: function() { return this.delegate.accessToken; },
-      setter: function(t) { this.delegate.accessToken = t; }
     }
   ],
 
   methods: {
     refresh: function(ret, opt_forceInteractive) {
-      if ( ! this.delegate ) {
-        if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-          this.delegate = OAuth2ChromeApp.create(this);
-        } else {
-          this.delegate = OAuth2WebClient.create(this);
-        }
-      }
-
       return this.delegate.refresh(ret, opt_forceInteractive);
     }
-  }
+  },
+
+  listeners: [
+    {
+      name: 'updateToken',
+      code: function(src) {
+        this.accessToken = src.accessToken;
+      }
+    }
+  ]
 });
 
 FOAModel({
@@ -172,7 +178,6 @@ FOAModel({
       var self = this;
       var w;
       var cb = wrapJsonpCallback(function(code) {
-        debugger;
         self.accessToken = code;
         try {
           ret(code);
