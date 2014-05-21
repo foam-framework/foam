@@ -754,3 +754,63 @@ input.clickToEnableEdit:not(:focus) {
   overflow: scroll;
   width: 100%;
 }
+
+.galleryView {
+  text-align: center;
+}
+
+.galleryView .swipeAltInner {
+  overflow: hidden;
+}
+
+.galleryCirclesOuter {
+  float: left;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  bottom: 20px;
+}
+
+.galleryCircle {
+  display: inline-block;
+  margin: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #aaa;
+}
+
+.galleryCircle.selected {
+  background-color: #333;
+}
+
+.galleryImage {
+  width: 100%;
+}
+
+/* UnitTestResultView */
+.foamTest {
+  border: 1px solid black;
+  border-radius: 5px;
+  line-height: 150%;
+  margin: 2px;
+  padding: 6px;
+}
+
+.foamTestPassed {
+  background-color: #cfc;
+}
+
+.foamTestFailed {
+  background-color: #fcc;
+}
+
+.foamInnerTests {
+  padding-left: 10px;
+}
+
+.foamTestOutput {
+  background-color: #e3e3e3;
+  margin: 4px;
+  padding: 5px;
+}
