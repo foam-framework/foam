@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script src="../../core/bootFOAM.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+
+    <script type="text/javascript">
+      var view = GalleryView.create({
+        images: ['img1.jpg', 'img2.jpg', 'img3.jpg'],
+        height: 400
+      });
+
+      window.requestAnimationFrame(function() {
+        document.body.innerHTML += view.toHTML();
+        view.initHTML();
+      });
+    </script>
+
+    <style>
+      .galleryView {
+        text-align: center;
+      }
+
+      .galleryView .swipeAltInner {
+        overflow: hidden;
+      }
+
+      .galleryCirclesOuter {
+        float: left;
+        text-align: center;
+        position: relative;
+        width: 100%;
+        bottom: 20px;
+      }
+
+      .galleryCircle {
+        display: inline-block;
+        margin: 5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #aaa;
+      }
+
+      .galleryCircle.selected {
+        background-color: #333;
+      }
+
+      .galleryImage {
+        width: 100%;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h2>Gallery View</h2>
+  </body>
+</html>

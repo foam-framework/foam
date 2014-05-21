@@ -2657,9 +2657,6 @@ FOAModel({
     //   and they have the same width as the outer div.
     //   At most two of these can be visible at a time.
     //
-    // NB: Because the size of the elements is not known until they have been
-    // rendered, this view goes back during initHTML and adds style: settings.
-    //
     // If the width is not set yet, this renders a fake carousel. It has the
     // outer, slider and inner divs, but there's only one inner div and it
     // can't slide yet. Shortly thereafter, the slide is expanded and the
@@ -2668,8 +2665,10 @@ FOAModel({
       var str  = [];
       var viewChoice = this.views[this.index];
 
-      str.push(this.headerView.toHTML());
-      this.addChild(this.headerView);
+      if ( this.headerView ) {
+        str.push(this.headerView.toHTML());
+        this.addChild(this.headerView);
+      }
 
       str.push('<div id="' + this.id + '" class="swipeAltOuter">');
       str.push('<div class="swipeAltSlider" style="width: 100%">');
@@ -2820,6 +2819,75 @@ FOAModel({
     }
   ]
 });
+
+FOAModel({
+  name: 'GalleryView',
+  extendsModel: 'SwipeAltView',
+
+  properties: [
+    {
+      name: 'images',
+      required: true,
+      help: 'List of image URLs for the gallery',
+      postSet: function(old, nu) {
+        this.views = nu.map(function(src) {
+          return ViewChoice.create({
+            view: GalleryImageView.create({ source: src })
+          });
+        });
+      }
+    },
+    {
+      name: 'height',
+      help: 'Optionally set the height'
+    },
+    {
+      name: 'headerView',
+      factory: function() { return null; }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      // Add an extra div to the outer one.
+      // It's absolutely positioned at the bottom, and contains the circles.
+      var circlesDiv = document.createElement('div');
+      circlesDiv.classList.add('galleryCirclesOuter');
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        var circle = document.createElement('div');
+        //circle.appendChild(document.createTextNode('*'));
+        circle.classList.add('galleryCircle');
+        if ( this.index == i ) circle.classList.add('selected');
+        circlesDiv.appendChild(circle);
+      }
+
+      this.$.appendChild(circlesDiv);
+      this.$.classList.add('galleryView');
+      this.$.style.height = this.height;
+
+      this.index$.addListener(function(obj, prop, old, nu) {
+        circlesDiv.children[old].classList.remove('selected');
+        circlesDiv.children[nu].classList.add('selected');
+      });
+    }
+  }
+});
+
+FOAModel({
+  name: 'GalleryImageView',
+  extendsModel: 'View',
+
+  properties: ['source'],
+
+  methods: {
+    toHTML: function() {
+      return '<img class="galleryImage" src="' + this.source + '" />';
+    }
+  }
+});
+
 
 FOAModel({
   name: 'ModelAlternateView',
