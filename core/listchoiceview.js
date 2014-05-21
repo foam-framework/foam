@@ -14,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// TODO: Move any missing functionality to ChoiceView and then delete this.
+
 var ListChoiceViewRenderer = {
   start: function(id) {
     return '<ul id="' + id + '"/>';
@@ -21,7 +24,7 @@ var ListChoiceViewRenderer = {
   choice: function(name, c, autoId, index, isCurrentSelection) {
     return '<li id="' + autoId + '" name="' + name + '"' +
       (isCurrentSelection ? ' class="' + this.selectedCssClass + '"' : '') +
-      ' value="' + index + '">' + c[1].toString() + '</li>';
+      ' value="' + index + '">' + c.n.toString() + '</li>';
   },
   end: function() {
     return '</ul>';
