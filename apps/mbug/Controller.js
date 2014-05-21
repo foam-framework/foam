@@ -53,6 +53,7 @@ FOAModel({
       var self = this;
 
       this.X = this.X.sub({
+        mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
@@ -66,6 +67,11 @@ FOAModel({
         var view = self.X.DetailView.create({data: pc});
         self.stack.setTopView(view);
       }});
+    },
+    editIssue: function(issue) {
+      // TODO: clone issue, and add listener which saves on updates
+      var v = this.X.IssueDetailView.create({data: issue});
+      this.X.stack.pushView(v);
     }
   }
 
@@ -179,10 +185,32 @@ FOAModel({
 
 
 FOAModel({
-  name: 'IssueCitationView',
+  name: 'IssueDetailView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div>
+      $$starred
+      <!-- Insert Attachments here -->
+      <hr>
+      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+      <hr>
+      $$priority{mode: 'read-only'}<br>
+      $$status{mode: 'read-only'}
+      <hr>
+      Owner
+      $$owner
+      <hr>
+      CC
+      $$cc
+    </div>
+  */} ]
+});
+
+FOAModel({
+  name: 'IssueCitationView',
+  extendsModel: 'DetailView',
+  templates: [ function toHTML() {/*
+    <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>">
        $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
     </div>
   */} ]
