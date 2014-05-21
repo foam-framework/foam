@@ -68,13 +68,17 @@ FOAModel({
         self.stack.setTopView(view);
       }});
     },
+    viewIssue: function(issue) {
+      // TODO: clone issue, and add listener which saves on updates
+      var v = this.X.IssueView.create({data: issue});
+      this.X.stack.pushView(v);
+    },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueDetailView.create({data: issue});
+      var v = this.X.IssueEditView.create({data: issue});
       this.X.stack.pushView(v);
     }
   }
-
 });
 
 
@@ -185,7 +189,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'IssueDetailView',
+  name: 'IssueEditView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div>
@@ -194,8 +198,8 @@ FOAModel({
       <hr>
       #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       <hr>
-      $$priority{mode: 'read-only'}<br>
-      $$status{mode: 'read-only'}
+      $$priority<br>
+      $$status
       <hr>
       Owner
       $$owner
@@ -207,10 +211,41 @@ FOAModel({
 });
 
 FOAModel({
+  name: 'IssueView',
+  extendsModel: 'DetailView',
+  actions: [
+    {
+      name: 'edit',
+      action: function() {
+        this.X.mbug.editIssue(this.data);
+      }
+    }
+  ],
+  templates: [ function toHTML() {/*
+    <div>
+      $$starred
+      <!-- Insert Attachments here -->
+      <hr>
+      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+      <hr>
+      $$priority{mode: 'read-only'}<br>
+      $$status{mode: 'read-only'}
+      <hr>
+      Owner
+      $$owner{mode: 'read-only'}
+      <hr>
+      CC
+      $$cc{mode: 'read-only'}
+    </div>
+    $$edit
+  */} ]
+});
+
+FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>">
+    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
        $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
     </div>
   */} ]
