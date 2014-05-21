@@ -681,11 +681,12 @@ FOAModel({
         var choices = [ 'Value1', 'Value2', 'Value3' ];
         var v1 = ChoiceView.create({choices: choices});
         var v2 = ChoiceListView.create({choices: choices});
-        var v3 = RadioBoxView.create({choices: choices});
+        var v3 = ChoiceListView.create({choices: choices, orientation: 'vertical'});
+        var v4 = RadioBoxView.create({choices: choices});
 
-        render(v1); render(v2); render(v3);
+        render(v1); render(v2); render(v3); render(v4);
 
-        v1.data$ = v2.data$ = v3.data$;
+        v1.data$ = v2.data$ = v3.data$ = v4.data$;
       </code>
     </foam>
     <foam model="UITest" name="ChoiceViewsWithKeysAndValues">
