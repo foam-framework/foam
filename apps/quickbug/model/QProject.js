@@ -114,8 +114,16 @@ FOAModel({
       factory: function() {
         return this.X.QIssueCommentNetworkDAO.create({
           model: QIssueComment,
-          IssueDAO: this.IssueCachingDAO,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+        });
+      }
+    },
+    {
+      name: 'IssueCommentDAO',
+      factory: function() {
+        return this.X.QIssueCommentUpdateDAO.create({
+          IssueDAO: this.IssueCachingDAO,
+          delegate: this.IssueCommentNetworkDAO
         });
       }
     },
@@ -133,7 +141,7 @@ FOAModel({
     {
       name: 'IssueSplitDAO',
       factory: function() {
-        var dao = this.IssueMDAO;
+        var dao = this.IssueCachingDAO;
 
         return this.X.QIssueSplitDAO.create({
           local: dao,
@@ -148,14 +156,9 @@ FOAModel({
       factory: function() {
         var dao = this.IssueSplitDAO;
 
-        dao = this.X.ActionFactoryDAO.create({
+        dao = this.X.QBugActionFactoryDAO.create({
           delegate: dao,
-          actionDao: this.IssueCommentNetworkDAO
-        });
-
-        dao = this.X.QIssueStarringDAO.create({
-          delegate: dao,
-          project: this,
+          actionDao: this.IssueCommentNetworkDAO,
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
         });
 
@@ -356,7 +359,7 @@ FOAModel({
     },
 
     issueCommentDAO: function(id) {
-      return this.IssueCommentNetworkDAO.where(EQ(QIssueComment.ISSUE_ID, id));
+      return this.IssueCommentDAO.where(EQ(QIssueComment.ISSUE_ID, id));
     }
   },
 

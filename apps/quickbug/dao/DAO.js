@@ -140,34 +140,31 @@ var IssueRestDAO = FOAM({
   }
 });
 
-
-var QIssueStarringDAO = FOAM({
-  model_: 'Model',
-  name: 'QIssueStarringDAO',
+FOAModel({
+  name: 'QIssueCommentUpdateDAO',
+  help: 'Decorates a comment dao, and on put, updates an associated issue dao.',
   extendsModel: 'ProxyDAO',
 
   properties: [
-    {
-      name: 'url'
-    }
+    'IssueDAO'
   ],
 
   methods: {
     put: function(obj, sink) {
-      var star = obj.starred ? '/star' : '/unstar';
-      var self = this;
-      this.X.ajsonp(this.url + '/' + obj.id + star, undefined, 'POST')(
-        function(resp, status){
-          if ( status >= 200 && status < 300 ) {
-            self.delegate.put(obj, sink);
-          } else {
-            sink && sink.error && sink.error('put', obj);
-          }
-        });
+      var issueDAO = this.IssueDAO;
+      this.SUPER(obj, {
+        put: function(o) {
+          // Update the local IssueDAO with the resulting comment.
+          issueDAO.update(o);
+          sink && sink.put && sink.put(o);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      });
     }
   }
 });
-
 
 var QIssueCommentNetworkDAO = FOAM({
   model_: 'Model',
@@ -243,20 +240,7 @@ var QIssueCommentNetworkDAO = FOAM({
     },
     buildPutURL: function(obj) {
       return this.url + '/' + obj.issueId + '/comments';
-    },
-    put: function(obj, sink) {
-      var issueDAO = this.IssueDAO;
-      this.SUPER(obj, {
-        put: function(o) {
-          // Update the local IssueDAO with the resulting comment.
-          issueDAO.update(o);
-          sink && sink.put && sink.put(o);
-        },
-        error: function() {
-          sink && sink.error && sink.error.apply(sink, arguments);
-        }
-      });
-    },
+    }
   }
 });
 
@@ -342,7 +326,7 @@ var QIssueSplitDAO = FOAM({
      },
 
      remove: function(query, sink) {
-       this.local.remove(query, sink);
+       this.local.remove(value, sink);
      },
 
      putIfMissing: function(issue) {
@@ -453,4 +437,65 @@ var QIssueSplitDAO = FOAM({
        return future.get;
      }
    }
+});
+
+FOAModel({
+  name: 'QBugActionFactoryDAO',
+  extendsModel: 'ActionFactoryDAO',
+  label: 'QBugActionFactoryDAO',
+  help: 'A custom action factory dao, that does not always write updates to the delegate.',
+
+  properties: [
+    {
+      name: 'url',
+      help: 'URL endpoint for handling starring requests.'
+    }
+  ],
+
+  methods: {
+    put: function(value, sink) {
+      var self = this;
+      var starred = false;
+      aseq(
+        function(ret) {
+          self.delegate.find(value.id, {
+            put: function(obj) {
+              ret(obj);
+            },
+            error: function() { ret(); }
+          });
+        },
+        function(ret, existing) {
+          if ( existing && existing.starred !== value.starred ) {
+            var star = value.starred ? '/star' : '/unstar';
+            starred = true;
+            self.X.ajsonp(self.url + '/' + value.id + star, undefined, 'POST')(
+              function(resp, status) {
+                if ( ! ( status >= 200 && status < 300 ) ) {
+                  starred = false;
+                  value.starred = existing.starred;
+                }
+                ret(existing);
+              });
+            return;
+          }
+          ret(existing);
+        },
+        function(ret, existing) {
+          if ( existing ) {
+            existing.writeActions(
+              value,
+              self.actionDao.put.bind(self.actionDao));
+          } else if ( value.model_.createActionFactory ) {
+            value.model_.createActionFactory(function(actions) {
+              for (var j = 0; j < actions.length; j++)
+                self.actionDao.put(actions[j]);
+            }, value);
+          }
+
+          self.delegate.put(value, sink);
+          ret();
+        })(function(){});
+    }
+  }
 });
