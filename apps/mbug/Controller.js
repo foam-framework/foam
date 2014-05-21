@@ -39,13 +39,6 @@ FOAModel({
   ],
 
   methods: {
-    /*
-    init: function() {
-      this.SUPER();
-
-    },
-    */
-
     toHTML: function() { return this.stack.toHTML(); },
     initHTML: function() {
       this.stack.initHTML();
