@@ -16,18 +16,11 @@ FOAModel({
       this.value.value = this.issue.newComment();
     },
 
-    updatesView: function() {
-      var prop = QIssueComment.UPDATES;
-      var view = QIssueCommentUpdateDetailView.create();
-
-      this.bindSubView(view, prop);
-
-      view.prop = prop
-      view.toString = function() { return this.prop.name + "View"; };
-
-      this.addChild(view);
-      this[prop.name + 'View'];
-
+    makeUpdatesView: function() {
+      return PropertyView.create({
+        innerView: 'QIssueCommentUpdateDetailView',
+        prop: QIssueComment.UPDATES
+      });
       return view;
     }
   },
