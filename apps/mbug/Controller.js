@@ -63,7 +63,7 @@ FOAModel({
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
         var pc = self.X.ProjectController.create();
-        var view = self.X.DetailView.create({data: pc, showActions: true});
+        var view = self.X.DetailView.create({data: pc});
         self.stack.setTopView(view);
       }});
     }
@@ -78,8 +78,7 @@ FOAModel({
   properties: [
     {
       name: 'project',
-      defaultValueFn: function() { return this.X.project; },
-      hidden: true
+      defaultValueFn: function() { return this.X.project; }
     },
     {
       name: 'projectName',
@@ -117,7 +116,8 @@ FOAModel({
         var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
 
         return ChoiceView.create({
-          helpText: 'Search within:',
+          orientation: 'horizontal',
+//          helpText: 'Search within:',
           choices: [
 //            ['',                     'All issues',              1],
             [open,                   'OPEN ISSUES',             2],
@@ -165,8 +165,18 @@ FOAModel({
     }
   },
   templates: [
+    function toDetailHTML() {/*
+    <div>
+       $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
+       <hr>
+       $$can
+       <hr>
+       $$filteredDAO
+    </div>
+  */}
   ]
 });
+
 
 FOAModel({
   name: 'IssueCitationView',

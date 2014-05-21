@@ -21,7 +21,7 @@ var ListChoiceViewRenderer = {
   choice: function(name, c, autoId, index, isCurrentSelection) {
     return '<li id="' + autoId + '" name="' + name + '"' +
       (isCurrentSelection ? ' class="' + this.selectedCssClass + '"' : '') +
-      ' value="' + index + '">' + c.toString() + '</li>';
+      ' value="' + index + '">' + c[1].toString() + '</li>';
   },
   end: function() {
     return '</ul>';
@@ -118,10 +118,10 @@ FOAModel({
 
     updateHTML: function() {
       var self = this;
-      if (this.choicesDao) {
+      if ( this.choicesDao ) {
         var choices = [];
         this.choicesDao.select({ put: function(c) {
-          if (self.renderableProperty.f(c)) {
+          if ( self.renderableProperty.f(c) ) {
             c = { n: self.displayNameProperty.f(c), v: self.valueProperty.f(c), o: c };
             choices.push(c);
           }
@@ -166,7 +166,7 @@ FOAModel({
       this.$.innerHTML = out.join('');
 
       selectedAsList = this.$.getElementsByClassName(this.selectedCssClass);
-      if (selectedAsList && selectedAsList.length) {
+      if ( selectedAsList && selectedAsList.length ) {
         this.selectedElement = selectedAsList[0];
       }
 
