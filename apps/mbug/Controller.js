@@ -217,7 +217,7 @@ FOAModel({
     {
       name: 'commentsView',
       factory: function() {
-        return DAOListView.create({mode: 'read-only', dao: this.X.project.issueCommentDAO(this.data.id)});
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
       }
     }
   ],
@@ -257,6 +257,20 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
        $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    </div>
+  */} ]
+});
+
+
+FOAModel({
+  name: 'CommentView',
+  extendsModel: 'DetailView',
+  templates: [ function toHTML() {/*
+    <div>
+       Commented by $$author{tagName: 'span', mode: 'read-only'}<br>
+       $$published<br><br>
+       $$content{mode: 'read-only'}
+       <hr>
     </div>
   */} ]
 });
