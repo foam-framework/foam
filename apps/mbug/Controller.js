@@ -213,6 +213,14 @@ FOAModel({
 FOAModel({
   name: 'IssueView',
   extendsModel: 'DetailView',
+  properties: [
+    {
+      name: 'commentsView',
+      factory: function() {
+        return DAOListView.create({mode: 'read-only', dao: this.X.project.issueCommentDAO(this.data.id)});
+      }
+    }
+  ],
   actions: [
     {
       name: 'edit',
@@ -236,6 +244,8 @@ FOAModel({
       <hr>
       CC
       $$cc{mode: 'read-only'}
+      <hr>
+      <%= this.commentsView %>
     </div>
     $$edit
   */} ]
