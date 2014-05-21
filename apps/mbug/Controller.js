@@ -39,13 +39,6 @@ FOAModel({
   ],
 
   methods: {
-    /*
-    init: function() {
-      this.SUPER();
-
-    },
-    */
-
     toHTML: function() { return this.stack.toHTML(); },
     initHTML: function() {
       this.stack.initHTML();
@@ -213,6 +206,14 @@ FOAModel({
 FOAModel({
   name: 'IssueView',
   extendsModel: 'DetailView',
+  properties: [
+    {
+      name: 'commentsView',
+      factory: function() {
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
+      }
+    }
+  ],
   actions: [
     {
       name: 'edit',
@@ -236,6 +237,8 @@ FOAModel({
       <hr>
       CC
       $$cc{mode: 'read-only'}
+      <hr>
+      <%= this.commentsView %>
     </div>
     $$edit
   */} ]
@@ -247,6 +250,20 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
        $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    </div>
+  */} ]
+});
+
+
+FOAModel({
+  name: 'CommentView',
+  extendsModel: 'DetailView',
+  templates: [ function toHTML() {/*
+    <div>
+       Commented by $$author{tagName: 'span', mode: 'read-only'}<br>
+       $$published<br><br>
+       $$content{mode: 'read-only'}
+       <hr>
     </div>
   */} ]
 });
