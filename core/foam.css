@@ -724,7 +724,33 @@ input.clickToEnableEdit:not(:focus) {
   font-weight: bold;
 }
 
+.foamChoiceListView.horizontal {
+  padding: 0;
+}
+
 .foamChoiceListView.horizontal .choice {
   display: inline;
   margin: 12px;
+}
+
+.swipeAltOuter {
+  overflow: hidden;
+  position: relative;
+
+  min-width: 240px;
+  width: 100%;
+}
+.swipeAltSlider {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  transform: translate3d(0,0,0);
+}
+.swipeAltInner {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  overflow: scroll;
+  width: 100%;
 }
