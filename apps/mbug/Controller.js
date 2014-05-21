@@ -25,12 +25,13 @@ FOAModel({
       subType: 'QProject',
       postSet: function(_, project) {
         console.log('New Project: ', project);
-        this.X.project  = project;
-        this.X.IssueDAO = project.IssueDAO;
+        this.X.project     = project;
+        this.X.projectName = project.projectName;
+        this.X.issueDAO    = project.IssueDAO;
       }
     },
     {
-      name: 'stackView',
+      name: 'stack',
       subType: 'StackView',
       view: function() { return StackView.create(); },
       factory: function() { return StackView.create(); }
@@ -45,28 +46,39 @@ FOAModel({
     },
     */
 
-    toHTML: function() { return this.stackView.toHTML(); },
+    toHTML: function() { return this.stack.toHTML(); },
     initHTML: function() {
-      this.stackView.initHTML();
+      this.stack.initHTML();
 
       var self = this;
 
       this.X = this.X.sub({
+        mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
         ProjectDAO:        this.qbug.ProjectNetworkDAO,
-      });
+        stack:             this.stack
+      }, 'MBUG CONTEXT');
 
-        debugger;
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
-        var view = self.X.DetailView.create({value: SimpleValue.create(project)});
+        var pc = self.X.ProjectController.create();
+        var view = self.X.DetailView.create({data: pc});
         self.stack.setTopView(view);
       }});
+    },
+    viewIssue: function(issue) {
+      // TODO: clone issue, and add listener which saves on updates
+      var v = this.X.IssueView.create({data: issue});
+      this.X.stack.pushView(v);
+    },
+    editIssue: function(issue) {
+      // TODO: clone issue, and add listener which saves on updates
+      var v = this.X.IssueEditView.create({data: issue});
+      this.X.stack.pushView(v);
     }
   }
-
 });
 
 
@@ -75,17 +87,28 @@ FOAModel({
 
   properties: [
     {
-      name: 'projectName',
-      getter: function() { this.X.projectName; }
+      name: 'project',
+      defaultValueFn: function() { return this.X.project; }
     },
-    { name: 'issueDAO' },
-    { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
+    {
+      name: 'projectName',
+      defaultValueFn: function() { return this.X.projectName; },
+    },
+    {
+      name: 'issueDAO',
+      defaultValueFn: function() { return this.X.issueDAO; },
+      hidden: true
+    },
+    {
+      name: 'filteredDAO',
+      model_: 'DAOProperty',
+      view: { model_: 'DAOListView'/*'TouchListView'*/, mode: 'read-only', rowView: 'IssueCitationView'  }
+    },
     {
       name: 'sortOrder',
-      postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
-      defaultValue: TRUE,
+      defaultValue: QIssue.MODIFIED,
       view: {
-        model_: 'ChoiceListView',
+        model_: 'ChoiceView',
         choices: [
           [ QIssue.MODIFIED,  'Last modified' ],
           [ QIssue.PRIORITY,  'Priority' ],
@@ -94,15 +117,18 @@ FOAModel({
       }
     },
     {
-      name: 'searchChoice',
-      postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
-      factory: function() {
-        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+      name: 'q'
+    },
+    {
+      name: 'can',
+      defaultValue: 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged',
+      view: function() {
+        var open = ProjectController.CAN.defaultValue;
 
-        return ChoiceView.create({
-          helpText: 'Search within:',
-          data$: this.location.can$,
-          choices:[
+        return ChoiceListView.create({
+          orientation: 'horizontal',
+//          helpText: 'Search within:',
+          choices: [
 //            ['',                     'All issues',              1],
             [open,                   'OPEN ISSUES',             2],
             [open + ' owner=me',     'OWNED BY ME',    3],
@@ -111,30 +137,159 @@ FOAModel({
 //            [open + ' commentby:me', 'Open and comment by me',  8],
 //            ['status=New',           'New issues',              6],
 //            ['status=Fixed,Done',    'Issues to verify',        7]
-          ]});
+          ]
+        });
       }
     }
   ],
   actions: [
+    {
+      name: 'changeProject',
+      action: function() {
+        var v = this.X.ChangeProjectView.create({data: this.project.user});
+        this.X.stack.pushView(v);
+      }
+    }
   ],
   listeners: [
   ],
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
-      this.dao.listen(this.onDAOUpdate);
-      this.onDAOUpdate();
+
+      var self = this;
+
+      Events.dynamic(
+        function() { self.can; self.sortOrder; self.q; },
+        function() {
+          console.log('Query Update');
+          self.filteredDAO = self.issueDAO.
+            limit(10).
+            where(AND(
+              QueryParser.parseString(self.can) || TRUE,
+              QueryParser.parseString(self.q) || TRUE
+            ).partialEval()).
+            orderBy(self.sortOrder);
+        }
+      );
     }
   },
   templates: [
+    function toDetailHTML() {/*
+    <div>
+       $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
+       <hr>
+       $$can
+       <hr>
+       $$filteredDAO
+    </div>
+  */}
   ]
 });
 
-/*
+
+FOAModel({
+  name: 'IssueEditView',
+  extendsModel: 'DetailView',
+  templates: [ function toHTML() {/*
+    <div>
+      $$starred
+      <!-- Insert Attachments here -->
+      <hr>
+      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+      <hr>
+      $$priority<br>
+      $$status
+      <hr>
+      Owner
+      $$owner
+      <hr>
+      CC
+      $$cc
+    </div>
+  */} ]
+});
+
+FOAModel({
+  name: 'IssueView',
+  extendsModel: 'DetailView',
+  actions: [
+    {
+      name: 'edit',
+      action: function() {
+        this.X.mbug.editIssue(this.data);
+      }
+    }
+  ],
+  templates: [ function toHTML() {/*
+    <div>
+      $$starred
+      <!-- Insert Attachments here -->
+      <hr>
+      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+      <hr>
+      $$priority{mode: 'read-only'}<br>
+      $$status{mode: 'read-only'}
+      <hr>
+      Owner
+      $$owner{mode: 'read-only'}
+      <hr>
+      CC
+      $$cc{mode: 'read-only'}
+    </div>
+    $$edit
+  */} ]
+});
+
 FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
+  templates: [ function toHTML() {/*
+    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
+       $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    </div>
+  */} ]
 });
-*/
+
+
+FOAModel({
+  name: 'ChangeProjectView',
+  extendsModel: 'DetailView',
+
+  properties: [
+    {
+      name: 'projects',
+      hidden: true
+    },
+    {
+      name: 'projectList',
+      view: { model_: 'ChoiceListView', choices: ['',''] }
+    }
+  ],
+
+  methods: {
+    updateSubViews: function() {
+      this.SUPER();
+
+      this.projectListView.choices = this.data.preferredProjects;
+    }
+
+  },
+
+  actions: [
+    {
+      name: 'close',
+      action: function() {
+        this.X.stack.popView();
+      }
+    }
+  ],
+
+  templates: [ function toHTML() {/*
+    <div>
+      $$email{mode: 'display-only'}
+      <hr>
+      $$projectList
+    </div>
+  */} ]
+});

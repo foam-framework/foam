@@ -522,21 +522,7 @@ FOAModel({
       this.SUPER(args);
 
       var prop = this.prop;
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = this.X[prop.view].create(prop);
-      } else if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) {
-        view = FOAM(prop.view);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
+      var view = this.createViewFromProperty(prop);
 
       view.copyFrom(this.args);
       view.parent = this.parent;
@@ -549,6 +535,15 @@ FOAModel({
 
       this.view = view;
       this.bindData();
+    },
+    createViewFromProperty: function(prop) {
+      if ( ! prop.view ) return TextFieldView.create(prop);
+      if ( typeof prop.view === 'string' ) return this.X[prop.view].create(prop);
+      if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) return FOAM(v);
+      if ( prop.view.model_ ) return prop.view.deepClone().copyFrom(prop);
+      if ( typeof prop.view === 'function' ) return prop.view(prop, this);
+
+      return prop.view.create(prop);
     },
     bindData: function() {
       var view = this.view;
@@ -2567,6 +2562,335 @@ FOAModel({
 
       this.choice = this.choice || this.views[0];
       this.installSubView(this.choice);
+    }
+  }
+});
+
+
+// TODO: Currently this view is "eager": it renders all the child views.
+// It could be made more lazy , and therefore more memory-efficient.
+FOAModel({
+  name: 'SwipeAltView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'views',
+      type: 'Array[ViewChoice]',
+      subType: 'ViewChoice',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      help: 'Child views'
+    },
+    {
+      name:  'index',
+      help: 'The index of the currently selected view',
+      defaultValue: 0,
+      preSet: function(old, nu) {
+        if (nu < 0) return 0;
+        if (nu >= this.views.length) return this.views.length - 1;
+        return nu;
+      },
+      postSet: function(oldValue, viewChoice) {
+        this.snapToCurrent();
+      },
+      hidden: true
+    },
+    {
+      name: 'headerView',
+      help: 'Optional View to be displayed in header.',
+      factory: function() {
+        return ChoiceListView.create({
+          choices: this.views.map(function(x) {
+            return x.label;
+          }),
+          index$: this.index$
+        });
+      }
+    },
+    {
+      name: 'slider',
+      help: 'Internal element which gets translated around',
+      hidden: true
+    },
+    {
+      name: 'width',
+      help: 'Set when we know the width',
+      hidden: true
+    },
+    {
+      name: 'x',
+      help: 'X coordinate of the translation',
+      hidden: true,
+      postSet: function(old, nu) {
+        // TODO: Other browsers.
+        this.slider.style['-webkit-transform'] = 'translate3d(-' +
+            nu + 'px, 0, 0)';
+      }
+    },
+    {
+      name: 'touchStart',
+      help: 'Coordinates (screen-relative) of the first touch',
+      hidden: true
+    },
+    {
+      name: 'touchLast',
+      help: 'Last coordinates of an in-progress swipe',
+      hidden: true
+    },
+    {
+      name: 'touchStarted',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      help: 'True if we received a touchstart',
+      hidden: true
+    },
+    {
+      name: 'touchLive',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      help: 'True if a touch is currently active',
+      hidden: true
+    }
+  ],
+
+  methods: {
+    // The general structure of the carousel is:
+    // - An outer div (this.$), with position: relative.
+    // - A second div (this.slider) with position: relative.
+    //   This is the div that gets translated to and fro.
+    // - A set of internal divs (this.slider.children) for the child views.
+    //   These are positioned inside the slider right next to each other,
+    //   and they have the same width as the outer div.
+    //   At most two of these can be visible at a time.
+    //
+    // If the width is not set yet, this renders a fake carousel. It has the
+    // outer, slider and inner divs, but there's only one inner div and it
+    // can't slide yet. Shortly thereafter, the slide is expanded and the
+    // other views are added. This should be imperceptible to the user.
+    toHTML: function() {
+      var str  = [];
+      var viewChoice = this.views[this.index];
+
+      if ( this.headerView ) {
+        str.push(this.headerView.toHTML());
+        this.addChild(this.headerView);
+      }
+
+      str.push('<div id="' + this.id + '" class="swipeAltOuter">');
+      str.push('<div class="swipeAltSlider" style="width: 100%">');
+      str.push('<div class="swipeAltInner" style="left: 0px">');
+
+      str.push(viewChoice.view.toHTML());
+
+      str.push('</div>');
+      str.push('</div>');
+      str.push('</div>');
+
+      return str.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // Now is the time to inflate our fake carousel into the real thing.
+      // For now we won't worry about re-rendering the current one.
+      // TODO: Stop re-rendering if it's slow or causes flicker or whatever.
+
+      this.slider = this.$.children[0];
+      this.width = this.$.clientWidth;
+
+      var str = [];
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        str.push('<div class="swipeAltInner">');
+        str.push(this.views[i].view.toHTML());
+        str.push('</div>');
+      }
+
+      this.slider.innerHTML = str.join('');
+
+      window.addEventListener('resize', this.resize, false);
+
+      this.$.addEventListener('touchstart', this.onTouchStart);
+      this.$.addEventListener('touchmove', this.onTouchMove);
+      this.$.addEventListener('touchend', this.onTouchEnd);
+
+      // Wait for the new HTML to render first, then init it.
+      var self = this;
+      window.setTimeout(function() {
+        self.resize();
+        self.views.forEach(function(choice) {
+          choice.view.initHTML();
+        });
+      }, 0);
+    },
+
+    getTouch: function(event) {
+      var touches = event.touches && event.touches.length ?
+          event.touches : [event];
+      var e = (event.changedTouches && event.changedTouches[0]) ||
+          (event.originalEvent && event.originalEvent.changedTouches &&
+              event.originalEvent.changedTouches[0]) ||
+          touches[0].originalEvent || touches[0];
+      return { x: e.clientX, y: e.clientY };
+    },
+
+    snapToCurrent: function() {
+      var self = this;
+      Movement.animate(200, function(evt) {
+        self.x = self.index * self.width;
+      }, Movement.easeIn(0.2))();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'resize',
+      code: function() {
+        // When the orientation of the screen has changed, update the
+        // left and width values of the inner elements and slider.
+        this.width = this.$.clientWidth;
+        var self = this;
+        var frame = window.requestAnimationFrame(function() {
+          self.x = self.index * self.width;
+
+          for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
+            self.slider.children[i].style.left = (i * 100) + '%';
+          }
+
+          window.cancelAnimationFrame(frame);
+        });
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(event) {
+        this.touchStart = this.getTouch(event);
+        this.touchStarted = true;
+        this.touchLive = false;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(event) {
+        if ( ! this.touchStarted ) return;
+
+        var touch = this.getTouch(event);
+        var deltaX = Math.abs(this.touchStart.x - touch.x);
+        var deltaY = Math.abs(this.touchStart.y - touch.y);
+        if ( ! this.touchLive &&
+            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 10 ) {
+          // Prevent default, but don't decide if we're scrolling yet.
+          event.preventDefault();
+          return;
+        }
+
+        if ( ! this.touchLive && deltaX < deltaY ) {
+          return;
+        }
+
+        // Otherwise the touch is live.
+        this.touchLive = true;
+        event.preventDefault();
+        this.touchLast = touch;
+        var x = this.index * this.width -
+            (this.touchLast.x - this.touchStart.x);
+
+        // Limit x to be within the scope of the slider: no dragging too far.
+        if (x < 0) x = 0;
+        var maxWidth = (this.views.length - 1) * this.width;
+        if ( x > maxWidth ) x = maxWidth;
+
+        this.x = x;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(event) {
+        if ( ! this.touchLive ) return;
+
+        this.touchLive = false;
+
+        var finalX = this.getTouch(event).x;
+        if ( Math.abs(finalX - this.touchStart.x) > this.width / 3 ) {
+          // Consider that a move.
+          if (finalX < this.touchStart.x) {
+            this.index++;
+          } else {
+            this.index--;
+          }
+        } else {
+          this.snapToCurrent();
+        }
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'GalleryView',
+  extendsModel: 'SwipeAltView',
+
+  properties: [
+    {
+      name: 'images',
+      required: true,
+      help: 'List of image URLs for the gallery',
+      postSet: function(old, nu) {
+        this.views = nu.map(function(src) {
+          return ViewChoice.create({
+            view: GalleryImageView.create({ source: src })
+          });
+        });
+      }
+    },
+    {
+      name: 'height',
+      help: 'Optionally set the height'
+    },
+    {
+      name: 'headerView',
+      factory: function() { return null; }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      // Add an extra div to the outer one.
+      // It's absolutely positioned at the bottom, and contains the circles.
+      var circlesDiv = document.createElement('div');
+      circlesDiv.classList.add('galleryCirclesOuter');
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        var circle = document.createElement('div');
+        //circle.appendChild(document.createTextNode('*'));
+        circle.classList.add('galleryCircle');
+        if ( this.index == i ) circle.classList.add('selected');
+        circlesDiv.appendChild(circle);
+      }
+
+      this.$.appendChild(circlesDiv);
+      this.$.classList.add('galleryView');
+      this.$.style.height = this.height;
+
+      this.index$.addListener(function(obj, prop, old, nu) {
+        circlesDiv.children[old].classList.remove('selected');
+        circlesDiv.children[nu].classList.add('selected');
+      });
+    }
+  }
+});
+
+FOAModel({
+  name: 'GalleryImageView',
+  extendsModel: 'View',
+
+  properties: ['source'],
+
+  methods: {
+    toHTML: function() {
+      return '<img class="galleryImage" src="' + this.source + '" />';
     }
   }
 });

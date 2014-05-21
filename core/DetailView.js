@@ -4,6 +4,12 @@ FOAModel({
 
   properties: [
     {
+      // TODO: remove 'value' and make this the real source of data
+      name:  'data',
+      getter: function() { return this.value.value; },
+      setter: function(data) { this.value = SimpleValue.create(data); }
+    },
+    {
       name:  'value',
       type:  'Value',
       factory: function() { return SimpleValue.create(); },

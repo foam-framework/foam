@@ -157,6 +157,60 @@ FOAM.lookup = function(key, opt_X) {
 }
 
 
+FOAModel({
+  name: 'UnitTestResultView',
+  extendsModel: 'AbstractView',
+  properties: [
+    {
+      name: 'value',
+      type: 'Value'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      var test = this.value.get();
+      var cssClass = test.failed > 0 ? 'foamTestFailed' : 'foamTestPassed';
+      var results = test.results.replace(/\n/g, '<br/>\n');
+      var pre = '<div class="' + cssClass + ' foamTest" id="' + this.getID() + '">' +
+          '<p><strong>' + test.description + '</strong></p>' +
+          '<p><span>Passed: ' + test.passed + '</span>&nbsp;&nbsp;' +
+          '<span>Failed: ' + test.failed + '</span></p>';
+      if (results.length) {
+        pre += '<div class="foamTestOutput">' + results + '</div>';
+      }
+
+      if (test.tests && test.tests.length > 0) {
+        return pre + '<div class="foamInnerTests">' + this.toInnerHTML() + '</div></div>';
+      } else {
+        return pre + "</div>";
+      }
+    },
+
+    toInnerHTML: function() {
+      var inner = ArrayListView.create({
+        value: SimpleValue.create(this.value.get().tests),
+        listView: UnitTestResultView
+      });
+      this.addChild(inner);
+      return inner.toHTML();
+    }
+  }
+});
+
+// Given a model and a DOM element, render test results into the element.
+// TODO: Put me into a method on models.
+function testModel(model, element) {
+  if (!model.tests || !element) return;
+  model.tests.forEach(function(t) {
+    t.test();
+    var view = UnitTestResultView.create({ value: SimpleValue.create(t) });
+    element.insertAdjacentHTML('beforeend', view.toHTML());
+    view.initHTML();
+  });
+}
+
+
 function arequire(modelName) {
   var model = GLOBAL[modelName];
 

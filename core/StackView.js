@@ -47,8 +47,8 @@ FOAModel({
   actions: [
     {
       name:  'back',
-      label: '',
-      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
+      label: '<',
+//      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Left_Arrow.svg',
       help:  'Go to previous view',
 
       isEnabled:   function() { return this.stack.length > 1; },
@@ -60,8 +60,8 @@ FOAModel({
     },
     {
       name:  'forth',
-      label: '',
-      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Right_Arrow.svg',
+      label: '>',
+//      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Right_Arrow.svg',
       help:  'Undo the previous back.',
 
       action:      function() {
