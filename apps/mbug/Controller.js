@@ -98,7 +98,7 @@ FOAModel({
       name: 'sortOrder',
       defaultValue: QIssue.MODIFIED,
       view: {
-        model_: 'ChoiceListView',
+        model_: 'ChoiceView',
         choices: [
           [ QIssue.MODIFIED,  'Last modified' ],
           [ QIssue.PRIORITY,  'Priority' ],
@@ -111,11 +111,11 @@ FOAModel({
     },
     {
       name: 'can',
-      defaultValue: '',
+      defaultValue: 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged',
       view: function() {
-        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        var open = ProjectController.CAN.defaultValue;
 
-        return ChoiceView.create({
+        return ChoiceListView.create({
           orientation: 'horizontal',
 //          helpText: 'Search within:',
           choices: [
@@ -200,7 +200,7 @@ FOAModel({
     },
     {
       name: 'projectList',
-      view: { model_: 'ListChoiceView', choices: [''] }
+      view: { model_: 'ChoiceListView', choices: ['',''] }
     }
   ],
 
@@ -229,5 +229,4 @@ FOAModel({
       $$projectList
     </div>
   */} ]
-
 });
