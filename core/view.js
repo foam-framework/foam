@@ -638,11 +638,23 @@ FOAModel({
 
   methods: {
     open: function(e, opt_delay) {
-      if ( this.$ ) return;
+      if ( this.$ ) { this.position(this.$, e.$ || e); return; }
+
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
-
       var div      = document.createElement('div');
+
+      this.position(div, parentNode);
+
+      div.id = this.id;
+      div.innerHTML = this.view.toHTML();
+
+      document.body.appendChild(div);
+      this.view.initHTML();
+    },
+
+    position: function(div, parentNode) {
+      var document = parentNode.ownerDocument;
 
       if ( this.x || this.y ) {
         div.style.left = this.x + 'px';
@@ -654,7 +666,7 @@ FOAModel({
         div.style.left = pos[0];
 
         if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || 400) ) {
-          div.style.bottom = pageWH[1] - pos[1];
+          div.style.bottom = document.defaultView.innerHeight - pos[1];
         } else {
           div.style.top = pos[1] + parentNode.offsetHeight;
         }
@@ -663,11 +675,6 @@ FOAModel({
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
       div.style.position = 'absolute';
-      div.id = this.id;
-      div.innerHTML = this.view.toHTML();
-
-      document.body.appendChild(div);
-      this.view.initHTML();
     },
 
     init: function(args) {
