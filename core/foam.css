@@ -754,3 +754,36 @@ input.clickToEnableEdit:not(:focus) {
   overflow: scroll;
   width: 100%;
 }
+
+.galleryView {
+  text-align: center;
+}
+
+.galleryView .swipeAltInner {
+  overflow: hidden;
+}
+
+.galleryCirclesOuter {
+  float: left;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  bottom: 20px;
+}
+
+.galleryCircle {
+  display: inline-block;
+  margin: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #aaa;
+}
+
+.galleryCircle.selected {
+  background-color: #333;
+}
+
+.galleryImage {
+  width: 100%;
+}
