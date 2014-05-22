@@ -276,6 +276,10 @@ FOAModel({
   ],
 
   methods: {
+    // TODO: Model as Topics
+    ON_HIDE: ['onHide'], // Indicates that the View has been hidden
+    ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
+
     deepPublish: function(topic) {
       var count = this.publish.apply(this, arguments);
 
