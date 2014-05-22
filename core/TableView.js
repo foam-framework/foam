@@ -28,7 +28,7 @@
 */
 FOAModel({
   name: 'TableView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   label: 'Table View',
 
@@ -157,15 +157,11 @@ FOAModel({
     {
       name: 'repaint',
       isAnimated: true,
-      code: function() {
-        this.repaintNow();
-      }
+      code: function() { this.repaintNow(); }
     },
     {
       name: 'onValueChange',
-      code: function() {
-        this.dao = this.value.value;
-      }
+      code: function() { this.dao = this.value.value; }
     },
     {
       name: 'onEditColumns',
@@ -190,14 +186,13 @@ FOAModel({
   ],
 
   methods: {
-
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
       return '<div style="display:flex;width:100%;height:100%">' +
-        '<span id="' + this.getID() + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
+        '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
         '<span style="width:19px;flex:none;overflow:hidden;">' +
@@ -315,7 +310,7 @@ FOAModel({
         var hselect = this.hardSelection.get();
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
-          var className = "tr-" + this.getID();
+          var className = "tr-" + this.id;
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
@@ -352,7 +347,7 @@ FOAModel({
     initHTML_: function() {
       this.initHTML.super_.call(this);
 
-      var es = $$('tr-' + this.getID());
+      var es = $$('tr-' + this.id);
       var self = this;
 
       /*

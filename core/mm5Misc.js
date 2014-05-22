@@ -195,7 +195,10 @@ FOAModel({
     },
     assert: function(condition, comment) {
       if ( condition ) this.passed++; else this.failed++;
-      this.log(comment + ' ' + (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>"));
+      this.log(
+        (comment ? comment : '(no message)') +
+        ' ' +
+        (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>"));
     },
     fail: function(comment) {
       this.assert(false, comment);

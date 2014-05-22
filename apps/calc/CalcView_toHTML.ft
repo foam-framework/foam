@@ -1,6 +1,6 @@
 <div class="edge-top"></div>
 <div class="edge"></div>
-<div id="{{this.getID()}}" class="calc">
+<div id="{{this.id}}" class="calc">
   <div class="calc-display">
     <div class="inner-calc-display">
       $$history

@@ -1,2 +1,2 @@
-<div id="<%= this.getID() %>">
+<div id="<%= this.id %>">
 </div>

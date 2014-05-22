@@ -130,8 +130,15 @@ var DOM = {
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.contains(e) ) return;
 
-    var model = GLOBAL[e.getAttribute('model')];
     var args = {};
+    var modelName = e.getAttribute('model');
+    var model = GLOBAL[modelName];
+
+    if ( ! model ) {
+      console.error('Unknown Model: ', modelName);
+      e.outerHTML = 'Unknown Model: ' + modelName;
+      return;
+    }
 
     // This is because of a bug that the model.properties isn't populated
     // with the parent model's properties until after the prototype is
@@ -188,7 +195,7 @@ var DOM = {
 
     if ( opt_document ) {
       var view;
-      if ( AbstractView.isInstance(obj) || CView.isInstance(obj) ) {
+      if ( View.isInstance(obj) || CView.isInstance(obj) ) {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
@@ -226,14 +233,15 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
 FOAModel({
-  name: 'AbstractView',
-  label: 'AbstractView',
+  name: 'View',
+  label: 'View',
 
   properties: [
     {
       name:  'id',
       label: 'Element ID',
-      type:  'String'
+      type:  'String',
+      factory: function() { return this.nextID() }
     },
     {
       name:  'parent',
@@ -254,7 +262,7 @@ FOAModel({
       name:   '$',
       hidden: true,
       mode:   "read-only",
-      getter: function() { return this.id && $(this.id); },
+      getter: function() { return $(this.id); },
       help:   'DOM Element.'
     },
     {
@@ -354,13 +362,6 @@ FOAModel({
       return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
-    getID: function() {
-      // @return this View's unique DOM element-id
-      // console.log('getID', this.id);
-      if ( this.id ) return this.id;
-      return this.id || ( this.id = this.nextID() );
-    },
-
     addInitializer: function(f) {
       (this.initializers_ || (this.initializers_ = [])).push(f);
     },
@@ -430,7 +431,7 @@ FOAModel({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + '>' +
+      return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
     },
@@ -456,7 +457,7 @@ FOAModel({
           try {
             this.children[i].initHTML();
           } catch (x) {
-            console.log("Error on AbstractView.child.initHTML", x, x.stack);
+            console.log("Error on View.child.initHTML", x, x.stack);
           }
         }
       }
@@ -486,7 +487,7 @@ FOAModel({
 FOAModel({
   name: 'PropertyView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -521,33 +522,22 @@ FOAModel({
       this.SUPER(args);
 
       var prop = this.prop;
-      var view;
-
-      if ( ! prop.view ) {
-        view = TextFieldView.create(prop);
-      } else if ( typeof prop.view === 'string' ) {
-        view = this.X[prop.view].create(prop);
-      } else if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) {
-        view = FOAM(prop.view);
-      } else if ( prop.view.model_ ) {
-        view = prop.view.deepClone().copyFrom(prop);
-      } else if ( typeof prop.view === 'function' ) {
-        view = prop.view(prop);
-      } else {
-        view = prop.view.create(prop);
-      }
+      var view = this.createViewFromProperty(prop);
 
       view.copyFrom(this.args);
       view.parent = this.parent;
-      /*
-        I don't think this is need anymore.  Now done by PropertyView.
-      view.prop = prop;
-      view.toString = function () { return this.prop.name + 'View'; };
-      if ( this.parent ) this.parent.addChild(view);
-      */
 
       this.view = view;
       this.bindData();
+    },
+    createViewFromProperty: function(prop) {
+      if ( ! prop.view ) return TextFieldView.create(prop);
+      if ( typeof prop.view === 'string' ) return this.X[prop.view].create(prop);
+      if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) return FOAM(v);
+      if ( prop.view.model_ ) return prop.view.deepClone().copyFrom(prop);
+      if ( typeof prop.view === 'function' ) return prop.view(prop, this);
+
+      return prop.view.create(prop);
     },
     bindData: function() {
       var view = this.view;
@@ -574,7 +564,7 @@ FOAModel({
 FOAModel({
   name: 'PopupView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -599,6 +589,7 @@ FOAModel({
 
   methods: {
     open: function(e, opt_delay) {
+      if ( this.$ ) return;
       var document = (e.$ || e).ownerDocument;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
@@ -606,19 +597,101 @@ FOAModel({
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
       div.style.position = 'absolute';
-      div.id = this.getID();
+      div.id = this.id;
       div.innerHTML = this.view.toHTML();
 
       document.body.appendChild(div);
       this.view.initHTML();
+    },
+    close: function() {
+      this.$ && this.$.remove();
+    },
+    destroy: function() {
+      this.close();
+      this.view.destroy();
     }
   }
 });
 
+FOAModel({
+  name: 'AutocompletePopup',
+  extendsModel: 'PopupView',
+  help: 'A popup view that only renders if the count is >0',
+
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao'
+    }
+  ],
+
+  methods: {
+    open: function(e, opt_delay) {
+      if ( this.$ ) { this.position(this.$, e.$ || e); return; }
+
+      var parentNode = e.$ || e;
+      var document = parentNode.ownerDocument;
+      var div      = document.createElement('div');
+
+      this.position(div, parentNode);
+
+      div.id = this.id;
+      div.innerHTML = this.view.toHTML();
+
+      document.body.appendChild(div);
+      this.view.initHTML();
+    },
+
+    position: function(div, parentNode) {
+      var document = parentNode.ownerDocument;
+
+      if ( this.x || this.y ) {
+        div.style.left = this.x + 'px';
+        div.style.top = this.y + 'px';
+      } else {
+        var pos = findPageXY(parentNode);
+        var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+
+        div.style.left = pos[0];
+
+        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || 400) ) {
+          div.style.bottom = document.defaultView.innerHeight - pos[1];
+        } else {
+          div.style.top = pos[1] + parentNode.offsetHeight;
+        }
+      }
+
+      if ( this.width ) div.style.width = this.width + 'px';
+      if ( this.height ) div.style.height = this.height + 'px';
+      div.style.position = 'absolute';
+    },
+
+    init: function(args) {
+      this.SUPER(args);
+      this.dao.listen(this.autocomplete);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'autocomplete',
+      code: function() {
+        this.dao.select(COUNT())((function(c) {
+          if ( c.count === 0 ) {
+            this.close();
+            return;
+          }
+          this.open(this.parent);
+          this.view.dao = this.dao;
+        }).bind(this));
+      }
+    }
+  ]
+});
 
 FOAModel({
   name: 'StaticHTML',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
   properties: [
     {
       model_: 'StringProperty',
@@ -706,7 +779,7 @@ var DomValue = {
 FOAModel({
   name: 'ImageView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -747,7 +820,7 @@ FOAModel({
       this.value = value;
     },
     toHTML: function() {
-      return '<img class="imageView" id="' + this.getID() + '">';
+      return '<img class="imageView" id="' + this.id + '">';
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -779,7 +852,7 @@ FOAModel({
 FOAModel({
   name: 'BlobImageView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   help: 'Image view for rendering a blob as an image.',
 
@@ -808,7 +881,7 @@ FOAModel({
     },
 
     toHTML: function() {
-      return '<img id="' + this.getID() + '">';
+      return '<img id="' + this.id + '">';
     },
 
     initHTML: function() {
@@ -837,7 +910,7 @@ FOAModel({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -899,7 +972,14 @@ FOAModel({
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
       }
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
+    },
+    'autocompleter',
+    'autocompleteView',
   ],
 
   methods: {
@@ -914,7 +994,7 @@ FOAModel({
     },
 
     toReadWriteHTML: function() {
-      var str = '<' + this.readWriteTagName + ' id="' + this.getID() + '"';
+      var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
       str += this.readWriteTagName === 'input' ?
@@ -927,7 +1007,7 @@ FOAModel({
     },
 
     toReadOnlyHTML: function() {
-      return '<' + this.tagName + ' id="' + this.getID() + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
+      return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     initHTML: function() {
@@ -947,6 +1027,34 @@ FOAModel({
           this.textToValue.bind(this));
 
         this.$.addEventListener('keydown', this.onKeyDown);
+
+        if ( this.autocomplete && this.autocompleter ) {
+          var proto = FOAM.lookup(this.autocompleter, this.X);
+          var completer = proto.create();
+          this.autocompleteView = AutocompletePopup.create({
+            dao: completer.autocompleteDao,
+            view: DAOListView.create({
+              dao: completer.autocompleteDao,
+              mode: 'final',
+              rowView: 'SummaryView',
+              useSelection: true
+            })
+          });
+          this.addChild(this.autocompleteView);
+
+          this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+            this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+          }).bind(this));
+
+          var self = this;
+          this.$.addEventListener('input', function() {
+            completer.autocomplete(self.textToValue(self.$.value));;
+          });
+          this.$.addEventListener('focus', function() {
+            completer.autocomplete(self.data);
+          });
+          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
+        }
       } else {
         this.domValue = DomValue.create(
           this.$,
@@ -1010,7 +1118,7 @@ FOAModel({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1059,8 +1167,8 @@ FOAModel({
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
       return ( this.mode === 'read-write' ) ?
-        '<input id="' + this.getID() + '" type="datetime-local" name="' + this.name + '"/>' :
-        '<span id="' + this.getID() + '" name="' + this.name + '"></span>' ;
+        '<input id="' + this.id + '" type="datetime-local" name="' + this.name + '"/>' :
+        '<span id="' + this.id + '" name="' + this.name + '"></span>' ;
     },
 
     initHTML: function() {
@@ -1089,7 +1197,7 @@ FOAModel({
   name:  'HTMLView',
   label: 'HTML Field',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1119,7 +1227,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      var s = '<' + this.tag + ' id="' + this.getID() + '"';
+      var s = '<' + this.tag + ' id="' + this.id + '"';
       if ( this.name ) s+= ' name="' + this.name + '"';
       s += '></' + this.tag + '>';
       return s;
@@ -1150,7 +1258,7 @@ FOAModel({
 FOAModel({
   name:  'RoleView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1184,7 +1292,7 @@ FOAModel({
     toHTML: function() {
       var str = "";
 
-      str += '<select id="' + this.getID() + '" name="' + this.name + '" size=' + this.size + '/>';
+      str += '<select id="' + this.id + '" name="' + this.name + '" size=' + this.size + '/>';
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         str += "\t<option>" + this.choices[i].toString() + "</option>";
       }
@@ -1213,7 +1321,7 @@ FOAModel({
 FOAModel({
   name:  'BooleanView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1226,7 +1334,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<input type="checkbox" id="' + this.getID() + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
+      return '<input type="checkbox" id="' + this.id + '" name="' + this.name + '"' + this.cssClassAttr() + '/>';
     },
 
     initHTML: function() {
@@ -1257,7 +1365,7 @@ FOAModel({
 FOAModel({
   name:  'ImageBooleanView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1287,7 +1395,7 @@ FOAModel({
       return this.value.get() ? this.trueImage : this.falseImage;
     },
     toHTML: function() {
-      var id = this.getID();
+      var id = this.id;
  // TODO: next line appears slow, check why
       this.on('click', this.onClick, id);
       return this.name ?
@@ -1330,7 +1438,7 @@ FOAModel({
 FOAModel({
   name:  'ImageBooleanView2',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1354,7 +1462,7 @@ FOAModel({
   methods: {
     image: function() { return this.value ? this.trueImage : this.falseImage; },
     toHTML: function() {
-      return '<img id="' + this.getID() + '" name="' + this.name + '">';
+      return '<img id="' + this.id + '" name="' + this.name + '">';
     },
     initHTML: function() {
       this.$.addEventListener('click', this.onClick);
@@ -1523,7 +1631,7 @@ FOAModel({
 FOAModel({
   name: 'SummaryView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1543,12 +1651,16 @@ FOAModel({
     },
 
     toHTML: function() {
+      return (this.model.getPrototype().toSummaryHTML || this.defaultToHTML).call(this);
+    },
+
+    defaultToHTML: function() {
       this.children = [];
       var model = this.model;
       var obj   = this.get();
       var out   = [];
 
-      out.push('<div id="' + this.getID() + '" class="summaryView">');
+      out.push('<div id="' + this.id + '" class="summaryView">');
       out.push('<table>');
 
       // TODO: Either make behave like DetailView or else
@@ -1590,7 +1702,7 @@ FOAModel({
 FOAModel({
   name: 'HelpView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1605,7 +1717,7 @@ FOAModel({
       var model = this.model;
       var out   = [];
 
-      out.push('<div id="' + this.getID() + '" class="helpView">');
+      out.push('<div id="' + this.id + '" class="helpView">');
 
       out.push('<div class="intro">');
       out.push(model.help);
@@ -1641,7 +1753,7 @@ FOAModel({
 FOAModel({
   name: 'EditColumnsView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1676,7 +1788,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      var s = '<span id="' + this.getID() + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
+      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
 
       s += 'Show columns:';
       s += '<table>';
@@ -1708,7 +1820,7 @@ FOAModel({
 FOAModel({
   name: 'ActionButton',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1756,16 +1868,16 @@ FOAModel({
 
       this.on('click', function() {
         self.action.callIfEnabled(self.value.get());
-      }, this.getID());
+      }, this.id);
 
       this.setAttribute('data-tip', function() {
         return self.action.help || undefined;
-      }, this.getID());
+      }, this.id);
 
       this.setAttribute('disabled', function() {
         var value = self.value.get();
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
-      }, this.getID());
+      }, this.id);
 
       Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
@@ -1808,7 +1920,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.setAttribute('href', function() { return '#' }, this.getID());
+      this.setAttribute('href', function() { return '#' }, this.id);
       return this.SUPER();
     },
 
@@ -1831,7 +1943,7 @@ FOAModel({
   name:  'ToolbarView',
   label: 'Toolbar',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -1921,7 +2033,7 @@ FOAModel({
       var str = '';
       var cls = opt_menuMode ? 'ActionMenu' : 'ActionToolbar';
 
-      str += '<div id="' + this.getID() + '" class="' + cls + '">';
+      str += '<div id="' + this.id + '" class="' + cls + '">';
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         str += this.preButton(this.children[i]) +
@@ -1949,7 +2061,7 @@ FOAModel({
         }
         i = (i + 1) % this.children.length;
         this.children[i].$.focus();
-      }.bind(this), this.getID());
+      }.bind(this), this.id);
       this.addShortcut('Left', function(e) {
         var i = 0;
         for (; i < this.children.length; ++i) {
@@ -1958,7 +2070,7 @@ FOAModel({
         }
         i = (i + this.children.length - 1) % this.children.length;
         this.children[i].$.focus();
-      }.bind(this), this.getID());
+      }.bind(this), this.id);
     },
 
     addAction: function(a) {
@@ -2036,7 +2148,7 @@ FOAModel({
 FOAModel({
   name:  'ProgressView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2049,7 +2161,7 @@ FOAModel({
   methods: {
 
     toHTML: function() {
-      return '<progress value="25" id="' + this.getID() + '" max="100" >25</progress>';
+      return '<progress value="25" id="' + this.id + '" max="100" >25</progress>';
     },
 
     setValue: function(value) {
@@ -2094,7 +2206,7 @@ var ArrayView = {
 FOAModel({
   name: 'GridView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2227,7 +2339,7 @@ FOAModel({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
-        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     },
     */
@@ -2238,7 +2350,7 @@ FOAModel({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
-        '<div id="<%= this.getID()%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
         '</div>'
     }
   ]
@@ -2311,7 +2423,7 @@ FOAModel({
 FOAModel({
   name: 'AlternateView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2343,7 +2455,7 @@ FOAModel({
     {
       name:  'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.id && oldValue != viewChoice ) this.installSubView(viewChoice);
+        if ( this.$ && oldValue != viewChoice ) this.installSubView(viewChoice);
       },
       hidden: true
     },
@@ -2433,7 +2545,7 @@ FOAModel({
       }
       str.push('</div>');
       str.push('<br/>');
-      str.push('<div class="altView column" id="' + this.getID() + '"> </div>');
+      str.push('<div class="altView column" id="' + this.id + '"> </div>');
       str.push('</div>');
 
       return str.join('');
@@ -2444,6 +2556,335 @@ FOAModel({
 
       this.choice = this.choice || this.views[0];
       this.installSubView(this.choice);
+    }
+  }
+});
+
+
+// TODO: Currently this view is "eager": it renders all the child views.
+// It could be made more lazy , and therefore more memory-efficient.
+FOAModel({
+  name: 'SwipeAltView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'views',
+      type: 'Array[ViewChoice]',
+      subType: 'ViewChoice',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      help: 'Child views'
+    },
+    {
+      name:  'index',
+      help: 'The index of the currently selected view',
+      defaultValue: 0,
+      preSet: function(old, nu) {
+        if (nu < 0) return 0;
+        if (nu >= this.views.length) return this.views.length - 1;
+        return nu;
+      },
+      postSet: function(oldValue, viewChoice) {
+        this.snapToCurrent();
+      },
+      hidden: true
+    },
+    {
+      name: 'headerView',
+      help: 'Optional View to be displayed in header.',
+      factory: function() {
+        return ChoiceListView.create({
+          choices: this.views.map(function(x) {
+            return x.label;
+          }),
+          index$: this.index$
+        });
+      }
+    },
+    {
+      name: 'slider',
+      help: 'Internal element which gets translated around',
+      hidden: true
+    },
+    {
+      name: 'width',
+      help: 'Set when we know the width',
+      hidden: true
+    },
+    {
+      name: 'x',
+      help: 'X coordinate of the translation',
+      hidden: true,
+      postSet: function(old, nu) {
+        // TODO: Other browsers.
+        this.slider.style['-webkit-transform'] = 'translate3d(-' +
+            nu + 'px, 0, 0)';
+      }
+    },
+    {
+      name: 'touchStart',
+      help: 'Coordinates (screen-relative) of the first touch',
+      hidden: true
+    },
+    {
+      name: 'touchLast',
+      help: 'Last coordinates of an in-progress swipe',
+      hidden: true
+    },
+    {
+      name: 'touchStarted',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      help: 'True if we received a touchstart',
+      hidden: true
+    },
+    {
+      name: 'touchLive',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      help: 'True if a touch is currently active',
+      hidden: true
+    }
+  ],
+
+  methods: {
+    // The general structure of the carousel is:
+    // - An outer div (this.$), with position: relative.
+    // - A second div (this.slider) with position: relative.
+    //   This is the div that gets translated to and fro.
+    // - A set of internal divs (this.slider.children) for the child views.
+    //   These are positioned inside the slider right next to each other,
+    //   and they have the same width as the outer div.
+    //   At most two of these can be visible at a time.
+    //
+    // If the width is not set yet, this renders a fake carousel. It has the
+    // outer, slider and inner divs, but there's only one inner div and it
+    // can't slide yet. Shortly thereafter, the slide is expanded and the
+    // other views are added. This should be imperceptible to the user.
+    toHTML: function() {
+      var str  = [];
+      var viewChoice = this.views[this.index];
+
+      if ( this.headerView ) {
+        str.push(this.headerView.toHTML());
+        this.addChild(this.headerView);
+      }
+
+      str.push('<div id="' + this.id + '" class="swipeAltOuter">');
+      str.push('<div class="swipeAltSlider" style="width: 100%">');
+      str.push('<div class="swipeAltInner" style="left: 0px">');
+
+      str.push(viewChoice.view.toHTML());
+
+      str.push('</div>');
+      str.push('</div>');
+      str.push('</div>');
+
+      return str.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // Now is the time to inflate our fake carousel into the real thing.
+      // For now we won't worry about re-rendering the current one.
+      // TODO: Stop re-rendering if it's slow or causes flicker or whatever.
+
+      this.slider = this.$.children[0];
+      this.width = this.$.clientWidth;
+
+      var str = [];
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        str.push('<div class="swipeAltInner">');
+        str.push(this.views[i].view.toHTML());
+        str.push('</div>');
+      }
+
+      this.slider.innerHTML = str.join('');
+
+      window.addEventListener('resize', this.resize, false);
+
+      this.$.addEventListener('touchstart', this.onTouchStart);
+      this.$.addEventListener('touchmove', this.onTouchMove);
+      this.$.addEventListener('touchend', this.onTouchEnd);
+
+      // Wait for the new HTML to render first, then init it.
+      var self = this;
+      window.setTimeout(function() {
+        self.resize();
+        self.views.forEach(function(choice) {
+          choice.view.initHTML();
+        });
+      }, 0);
+    },
+
+    getTouch: function(event) {
+      var touches = event.touches && event.touches.length ?
+          event.touches : [event];
+      var e = (event.changedTouches && event.changedTouches[0]) ||
+          (event.originalEvent && event.originalEvent.changedTouches &&
+              event.originalEvent.changedTouches[0]) ||
+          touches[0].originalEvent || touches[0];
+      return { x: e.clientX, y: e.clientY };
+    },
+
+    snapToCurrent: function() {
+      var self = this;
+      Movement.animate(200, function(evt) {
+        self.x = self.index * self.width;
+      }, Movement.easeIn(0.2))();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'resize',
+      code: function() {
+        // When the orientation of the screen has changed, update the
+        // left and width values of the inner elements and slider.
+        this.width = this.$.clientWidth;
+        var self = this;
+        var frame = window.requestAnimationFrame(function() {
+          self.x = self.index * self.width;
+
+          for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
+            self.slider.children[i].style.left = (i * 100) + '%';
+          }
+
+          window.cancelAnimationFrame(frame);
+        });
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(event) {
+        this.touchStart = this.getTouch(event);
+        this.touchStarted = true;
+        this.touchLive = false;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(event) {
+        if ( ! this.touchStarted ) return;
+
+        var touch = this.getTouch(event);
+        var deltaX = Math.abs(this.touchStart.x - touch.x);
+        var deltaY = Math.abs(this.touchStart.y - touch.y);
+        if ( ! this.touchLive &&
+            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 10 ) {
+          // Prevent default, but don't decide if we're scrolling yet.
+          event.preventDefault();
+          return;
+        }
+
+        if ( ! this.touchLive && deltaX < deltaY ) {
+          return;
+        }
+
+        // Otherwise the touch is live.
+        this.touchLive = true;
+        event.preventDefault();
+        this.touchLast = touch;
+        var x = this.index * this.width -
+            (this.touchLast.x - this.touchStart.x);
+
+        // Limit x to be within the scope of the slider: no dragging too far.
+        if (x < 0) x = 0;
+        var maxWidth = (this.views.length - 1) * this.width;
+        if ( x > maxWidth ) x = maxWidth;
+
+        this.x = x;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(event) {
+        if ( ! this.touchLive ) return;
+
+        this.touchLive = false;
+
+        var finalX = this.getTouch(event).x;
+        if ( Math.abs(finalX - this.touchStart.x) > this.width / 3 ) {
+          // Consider that a move.
+          if (finalX < this.touchStart.x) {
+            this.index++;
+          } else {
+            this.index--;
+          }
+        } else {
+          this.snapToCurrent();
+        }
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'GalleryView',
+  extendsModel: 'SwipeAltView',
+
+  properties: [
+    {
+      name: 'images',
+      required: true,
+      help: 'List of image URLs for the gallery',
+      postSet: function(old, nu) {
+        this.views = nu.map(function(src) {
+          return ViewChoice.create({
+            view: GalleryImageView.create({ source: src })
+          });
+        });
+      }
+    },
+    {
+      name: 'height',
+      help: 'Optionally set the height'
+    },
+    {
+      name: 'headerView',
+      factory: function() { return null; }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      // Add an extra div to the outer one.
+      // It's absolutely positioned at the bottom, and contains the circles.
+      var circlesDiv = document.createElement('div');
+      circlesDiv.classList.add('galleryCirclesOuter');
+      for ( var i = 0 ; i < this.views.length ; i++ ) {
+        var circle = document.createElement('div');
+        //circle.appendChild(document.createTextNode('*'));
+        circle.classList.add('galleryCircle');
+        if ( this.index == i ) circle.classList.add('selected');
+        circlesDiv.appendChild(circle);
+      }
+
+      this.$.appendChild(circlesDiv);
+      this.$.classList.add('galleryView');
+      this.$.style.height = this.height;
+
+      this.index$.addListener(function(obj, prop, old, nu) {
+        circlesDiv.children[old].classList.remove('selected');
+        circlesDiv.children[nu].classList.add('selected');
+      });
+    }
+  }
+});
+
+FOAModel({
+  name: 'GalleryImageView',
+  extendsModel: 'View',
+
+  properties: ['source'],
+
+  methods: {
+    toHTML: function() {
+      return '<img class="galleryImage" src="' + this.source + '" />';
     }
   }
 });
@@ -2524,7 +2965,7 @@ FOAModel({
 
 FOAModel({
   name: 'MultiLineStringArrayView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2542,20 +2983,47 @@ FOAModel({
       defaultValue: 30
     },
     {
-      name: 'softValue',
-      factory: function() { return SimpleValue.create([]); }
+      model_: 'BooleanProperty',
+      name: 'onKeyMode',
+      defaultValue: true
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create([]); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue ) {
-          oldValue.removeListener(this.update);
-        }
-        newValue.addListener(this.update);
-        this.update();
-      }
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
     },
+    {
+      name: 'data'
+    },
+    'autocompleter',
+    {
+      model_: 'ArrayProperty',
+      subType: 'MultiLineStringArrayView.RowView',
+      name: 'inputs'
+    }
+  ],
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'RowView',
+      extendsModel: 'View',
+      properties: [
+        'field',
+        {
+          name: 'tagName',
+          defaultValue: 'div'
+        }
+      ],
+      methods: {
+        toInnerHTML: function() {
+          this.children = [this.field];
+          return this.field.toHTML() + '<input type="button" id="' +
+            this.on('click', (function(){ this.publish('remove'); }).bind(this)) +
+            '" class="multiLineStringRemove" value="X">';
+        }
+      }
+    }
   ],
 
   methods: {
@@ -2566,21 +3034,28 @@ FOAModel({
       toolbar.addActions([this.model_.ADD]);
       this.children = [toolbar];
 
-      return '<div id="' + this.getID() + '"><div></div>' +
+      return '<div id="' + this.id + '"><div></div>' +
         toolbar.toHTML() +
         '</div>';
     },
     initHTML: function() {
       this.SUPER();
+      this.data$.addListener(this.update);
       this.update();
     },
     row: function() {
-      return '<div><input id="' + this.on('input', this.onInput) +
-        '" name="' + this.name + '" type="' + this.type + '" ' +
-        'size="' + this.displayWidth + '"/>' +
-        '<input type="button" id="' +
-        this.on('click', this.onRemove) +
-        '" class="multiLineStringRemove" value="X"></div>';
+      // TODO: Find a better way to copy relevant values as this is unsustainable.
+      var view = this.model_.RowView.create({
+        field: TextFieldView.create({
+          name: this.name,
+          type: this.type,
+          displayWidth: this.displayWidth,
+          onKeyMode: this.onKeyMode,
+          autocomplete: this.autocomplete,
+          autocompleter: this.autocompleter
+        })
+      });
+      return view;
     },
     setValue: function(value) {
       this.value = value;
@@ -2593,45 +3068,59 @@ FOAModel({
       code: function() {
         if ( ! this.$ ) return;
 
-        var inputs = this.$.firstElementChild;
-        var value = this.value.get();
-
-        var extra = "";
+        var inputs = this.inputs;
+        var inputElement = this.$.firstElementChild;
+        var newViews = [];
+        var data = this.data;
 
         // Add/remove rows as necessary.
-        if ( inputs.children.length > value.length ) {
-          for ( var i = value.length - 1; i < inputs.children.length; i++ ) {
-            inputs.children[i].remove();
+        if ( inputs.length > data.length ) {
+          for ( var i = data.length; i < inputs.length; i++ ) {
+            inputs[i].$.remove();
+            this.removeChild(inputs[i]);
           }
+          inputs.length = data.length;
         } else {
-          for ( i = inputs.children.length; i < value.length; i++ )
-            extra += this.row();
+          var extra = "";
 
-          if ( extra.length > 0 ) {
-            inputs.insertAdjacentHTML('beforeend', extra);
+          for ( i = inputs.length; i < data.length; i++ ) {
+            var view = this.row();
+
+            // TODO: This seems ridiculous.
+            this.addChild(view);
+            newViews.push(view);
+            inputs.push(view);
+
+            view.subscribe('remove', this.onRemove);
+            view.field.data$.addListener(this.onInput);
+            extra += view.toHTML();
           }
+
+          if ( extra ) inputElement.insertAdjacentHTML('beforeend', extra);
         }
 
         // Only update the value for a row if it does not match.
-        for ( i = 0; i < value.length; i++ ) {
-          if ( inputs.children[i].firstElementChild.value !== value[i] )
-            inputs.children[i].firstElementChild.value = value[i];
+        for ( i = 0; i < data.length; i++ ) {
+          if ( inputs[i].field.data !== data[i] )
+            inputs[i].field.data = data[i];
         }
 
-        this.invokeInitializers();
+        this.inputs = inputs;
+
+        for ( i = 0; i < newViews.length; i++ )
+          newViews[i].initHTML();
       }
     },
     {
       name: 'onRemove',
-      code: function(e) {
-        var inputs = this.$.firstElementChild.children;
+      code: function(src) {
+        var inputs = this.inputs;
         for ( var i = 0; i < inputs.length; i++ ) {
-          if ( inputs[i].lastChild === e.target ) {
-            inputs[i].remove();
+          if ( inputs[i] === src ) {
+            this.data = this.data.slice(0, i).concat(this.data.slice(i+1));
             break;
           }
         }
-        this.onInput();
       }
     },
     {
@@ -2639,13 +3128,13 @@ FOAModel({
       code: function(e) {
         if ( ! this.$ ) return;
 
-        var inputs = this.$.firstElementChild.children;
-        var newValue = [];
+        var inputs = this.inputs;
+        var newdata = [];
 
         for ( var i = 0; i < inputs.length; i++ ) {
-          newValue.push(inputs[i].firstElementChild.value);
+          newdata.push(inputs[i].field.data);
         }
-        this.value.set(newValue);
+        this.data = newdata;
       }
     }
   ],
@@ -2655,10 +3144,7 @@ FOAModel({
       name: 'add',
       label: 'Add',
       action: function() {
-        this.$.firstElementChild.insertAdjacentHTML(
-          'beforeend', this.row());
-        this.invokeInitializers();
-        this.onInput();
+        this.data = this.data.pushF('');
       }
     }
   ]
@@ -2666,7 +3152,7 @@ FOAModel({
 
 
 FOAModel({
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   name: 'SplitView',
 
@@ -2731,7 +3217,7 @@ FOAModel({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2774,7 +3260,7 @@ FOAModel({
 
 
 FOAModel({
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   name: 'ListInputView',
 
@@ -2837,11 +3323,11 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.on('keydown', this.onKeyDown, this.getID());
-      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.getID());
-      this.on('focus', this.onInput, this.getID());
+      this.on('keydown', this.onKeyDown, this.id);
+      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('focus', this.onInput, this.id);
 
-      return '<input name="' + this.name + '" type="text" id="' + this.getID() + '" class="listInputView">' + this.autocompleteView.toHTML();
+      return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
     },
     setValue: function(value) {
       this.value = value;
@@ -2950,7 +3436,7 @@ FOAModel({
 FOAModel({
   name: 'ArrayTileView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -2982,9 +3468,9 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      this.on('click', this.onClick, this.getID());
+      this.on('click', this.onClick, this.id);
 
-      return '<ul id="' + this.getID() + '" class="arrayTileView"><li class="arrayTileLastView">' +
+      return '<ul id="' + this.id + '" class="arrayTileView"><li class="arrayTileLastView">' +
         this.lastView.toHTML() + '</li></ul>';
     },
     initHTML: function() {
@@ -3092,7 +3578,7 @@ FOAModel({
 
 FOAModel({
   name: 'ArrayListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3111,7 +3597,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -3149,7 +3635,7 @@ FOAModel({
 
 FOAModel({
   name: 'DAOKeyView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3217,7 +3703,7 @@ FOAModel({
 
 FOAModel({
   name: 'ListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3235,7 +3721,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -3275,7 +3761,7 @@ FOAModel({
 FOAModel({
   name: 'AutocompleteListView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3299,7 +3785,7 @@ FOAModel({
     },
     {
       name: 'innerView',
-      type: 'AbstractView',
+      type: 'View',
       preSet: function(_, value) {
         if ( typeof value === "string" ) value = GLOBAL[value];
         return value;
@@ -3377,7 +3863,7 @@ FOAModel({
   templates: [
     {
       name: 'toHTML',
-      template: '<ul class="autocompleteListView" id="<%= this.getID() %>"></ul>'
+      template: '<ul class="autocompleteListView" id="<%= this.id %>"></ul>'
     }
   ],
 
@@ -3439,7 +3925,7 @@ FOAModel({
 
 FOAModel({
   name: 'ViewSwitcher',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   help: 'A view which cycles between an array of views.',
 
@@ -3485,7 +3971,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<div id="' + this.getID() + '" style="display:none"></div>' + this.toInnerHTML();
+      return '<div id="' + this.id + '" style="display:none"></div>' + this.toInnerHTML();
     },
 
     updateHTML: function() {
@@ -3524,7 +4010,7 @@ FOAModel({
 
 FOAModel({
   name: 'DAOListView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3552,7 +4038,9 @@ FOAModel({
           "read-only", "read-write", "final"
         ]}); }
       }
-    }
+    },
+    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
+    'selection'
   ],
 
   methods: {
@@ -3588,7 +4076,15 @@ FOAModel({
           }.bind(this, o));
         }
         this.addChild(view);
+        if ( this.useSelection ) {
+          out += '<div id="' + this.on('click', (function() {
+            this.selection = o
+          }).bind(this)) + '">';
+        }
         out += view.toHTML();
+        if ( this.useSelection ) {
+          out += '</div>';
+        }
       }.bind(this)})(function() {
         this.$.innerHTML = out;
         this.initInnerHTML();
@@ -3611,7 +4107,7 @@ FOAModel({
 FOAModel({
   name: 'TouchListView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -3656,12 +4152,12 @@ FOAModel({
       this.dao.listen(this.onDAOUpdate);
     },
     toHTML: function() {
-      var id = this.getID();
+      var id = this.id;
       var overlay = this.nextID();
       this.on('touchstart', this.onTouchStart, overlay);
       this.on('touchmove', this.onTouchMove, overlay);
 
-      return '<div id="' + this.getID() + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
+      return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -3764,7 +4260,7 @@ FOAModel({
   name: 'UITestResultView',
   label: 'UI Test Result View',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {

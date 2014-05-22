@@ -45,9 +45,7 @@ FOAModel({
       name: 'persistentContext',
       factory: function() {
         return PersistentContext.create({
-          dao: IDBDAO.create({
-            model: Binding
-          }),
+          dao: IDBDAO.create({ model: Binding }),
           context: this
         });
       }
@@ -62,6 +60,31 @@ FOAModel({
 
         dao.buildFindURL = function(key) {
           return this.url + key;
+        };
+
+        dao.jsonToObj = function(json) {
+          if ( json.members ) {
+            for ( var i = 0; i < json.members.length; i++ ) {
+              json.members[i] = QIssuePerson.create(json.members[i]);
+            }
+          }
+
+          if ( json.issuesConfig ) {
+            if ( json.issuesConfig.statuses ) {
+              for ( i = 0; i < json.issuesConfig.statuses.length; i++ ) {
+                json.issuesConfig.statuses[i] =
+                  QIssueStatus.create(json.issuesConfig.statuses[i]);
+              }
+            }
+
+            if ( json.issuesConfig.labels ) {
+              for ( i = 0; i < json.issuesConfig.labels.length; i++ ) {
+                json.issuesConfig.labels[i] =
+                  QIssueLabel.create(json.issuesConfig.labels[i]);
+              }
+            }
+          }
+          return this.model.create(json);
         };
 
           /*
@@ -88,7 +111,7 @@ FOAModel({
       defaultValue: 'chromium'
     },
     {
-      name: 'authAgent'
+      name: 'authAgent2'
     }
   ],
 
@@ -96,6 +119,16 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
       var self = this;
+
+      this.initOAuth(args && args.authClientId, args && args.authClientSecret);
+
+      this.persistentContext.bindObject('user', QUser)(function(user) {
+        self.userFuture.set(user);
+        self.refreshUser();
+      });
+    },
+
+    initOAuth: function(opt_clientId, opt_clientSecret) {
       var jsonpFuture = afuture();
       this.X.ajsonp = function() {
         var args = arguments;
@@ -106,9 +139,9 @@ FOAModel({
         };
       };
 
-      this.persistentContext.bindObject('authAgent', OAuth2, {
-        clientId: '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
-        clientSecret: 'mbxy7-eZlosojSZgHTRT15o9',
+      this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
+        clientId: opt_clientId || '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9',
         scopes: [
           "https://www.googleapis.com/auth/userinfo.email",
           "https://www.googleapis.com/auth/projecthosting"
@@ -131,11 +164,6 @@ FOAModel({
             };
           };
         })());
-      });
-
-      this.persistentContext.bindObject('user', QUser)(function(user) {
-        self.userFuture.set(user);
-        self.refreshUser();
       });
     },
 
@@ -210,9 +238,7 @@ FOAModel({
   listeners: [
     {
       name: 'onUserUpdate',
-      code: function() {
-        QueryParser.ME = this.user.email;
-      }
+      code: function() { QueryParser.ME = this.user.email; }
     }
   ]
 });

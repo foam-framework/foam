@@ -28,7 +28,7 @@ MementoMgr.FORTH.help = '';
 FOAModel({
   name: 'Browser',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     'project',
@@ -364,15 +364,15 @@ FOAModel({
       name: 'changeUser',
       help: 'Change the current user.',
       labelFn: function() {
-        return AbstractView.getPrototype().strToHTML(this.project.user.email);
+        return View.getPrototype().strToHTML(this.project.user.email);
       },
       action: function() {
         var self = this;
-        this.qbug.authAgent.auth(function() {
+        this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
           self.project.IssueSplitDAO.invalidate();
           self.performQuery();
-        });
+        }, true);
       }
     },
   ],

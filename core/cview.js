@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 FOAModel({
   name: 'Canvas',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -60,7 +60,7 @@ FOAModel({
 
   methods: {
     toHTML: function() {
-      return '<canvas id="' + this.getID() + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      return '<canvas id="' + this.id + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
     },
 
     initHTML: function() {

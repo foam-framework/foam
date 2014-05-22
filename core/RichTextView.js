@@ -123,7 +123,7 @@ var LinkView = Model.create({
     {
       name: "toHTML",
       template:
-        '<div id="<%= this.getID() %>" class="linkDialog" style="position:absolute">\
+        '<div id="<%= this.id %>" class="linkDialog" style="position:absolute">\
         <table><tr>\
         <th>Text</th><td>$$label</td></tr><tr>\
         <th>Link</th><td>$$link\
@@ -138,7 +138,7 @@ var LinkView = Model.create({
 FOAModel({
   name: 'ColorPickerView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -184,7 +184,7 @@ FOAModel({
 FOAModel({
   name: 'RichTextView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -245,14 +245,14 @@ FOAModel({
         '' :
         ' sandbox="allow-same-origin"';
 
-      var id = this.getID();
+      var id = this.id;
       this.dropId = this.nextID();
       this.placeholderId = this.nextID();
 
       return '<div class="richtext">' +
         '<div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
         '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' +
-        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.getID() + '"' + sandbox + ' img-src="*"></iframe>' +
+        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.id + '"' + sandbox + ' img-src="*"></iframe>' +
         '</div>';
     },
 

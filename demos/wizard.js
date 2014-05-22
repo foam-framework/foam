@@ -83,7 +83,7 @@ var OptionalServiceView = FOAM({
 
   name: 'OptionalServiceView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -126,7 +126,7 @@ var CompositeServiceView = FOAM({
 
   name: 'CompositeDetailView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -145,7 +145,7 @@ var CompositeServiceView = FOAM({
       this.renderChoices();
     },
     toHTML: function() {
-      return '<div id="' + this.getID() + '"></div>';
+      return '<div id="' + this.id + '"></div>';
     },
     initHTML: function() {
       this.SUPER();
@@ -204,7 +204,7 @@ var ServiceSummaryView = FOAM({
   templates: [
     {
       name: 'toHTML',
-      template: '<div id="<%= this.getID() %>"><%= this.createView(Service.NAME).toHTML() %>' +
+      template: '<div id="<%= this.id %>"><%= this.createView(Service.NAME).toHTML() %>' +
         '<%= this.createView(Service.COST).toHTML() %></div>'
     }
   ]
@@ -231,7 +231,7 @@ var CompositeServiceSummaryView = FOAM({
   methods: {
     toHTML: function() {
       var total = this.createView(Service.COST);
-      return '<div id="' + this.getID() + '"></div><div>--' + total.toHTML() + '</div>';
+      return '<div id="' + this.id + '"></div><div>--' + total.toHTML() + '</div>';
     },
     setValue: function(value) {
       this.value = value;
@@ -320,7 +320,7 @@ var OrderSummaryView = FOAM({
   methods: {
     toHTML: function() {
       return '<div>Order Summary</div><div id="' +
-        this.getID() + '"></div><div>Total: ' +
+        this.id + '"></div><div>Total: ' +
         this.createView(Service.COST).toHTML() + '</div>';
     }
   }

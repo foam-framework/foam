@@ -100,7 +100,7 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var escapeHTML = AbstractView.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var escapeHTML = View.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +

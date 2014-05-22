@@ -1,4 +1,4 @@
-<div class="qvt qissuecomment" id="<%= this.getID() %>">
+<div class="qvt qissuecomment" id="<%= this.id %>">
   <div class="qissuecommentdate">
     $$published{ mode: 'read-only' }
   </div>

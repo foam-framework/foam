@@ -36,16 +36,13 @@ global.MongoDAO = FOAM({
       this.SUPER();
 
       this.withDB = amemo(this.openDB.bind(this));
-
-      this.serialize = this.FOAMSerialize;
-      this.deserialize = this.FOAMDeserialize;
     },
 
-    FOAMDeserialize: function(json) {
+    deserialize: function(json) {
       return JSONToObject.visitObject(json);
     },
 
-    FOAMSerialize: function(obj) {
+    serialize: function(obj) {
       return ObjectToJSON.visitObject(obj);
     },
 
@@ -90,6 +87,7 @@ global.MongoDAO = FOAM({
             sink && sink.error && sink.error(err);
           } else {
             sink && sink.put && sink.put(value);
+            self.notify_('put', [value]);
           }
         });
       });
@@ -120,21 +118,27 @@ global.MongoDAO = FOAM({
         });
       };
 
-      if (sink && sink.remove) {
-        var arr = [];
-        this.select({ put: sink.remove, error: sink.error, eof: doRemove }, options);
-      } else {
-        doRemove();
-      }
+      this.select({
+        put: function(x) {
+          sink && sink.remove && sink.remove(x);
+          self.notify_('remove', [x]);
+        },
+        error: sink && sink.error,
+        eof: doRemove
+      }, options);
 
       return future.get;
     },
 
     remove: function(obj, sink) {
+      var self = this;
       this.withDB(function(db) {
         db.remove({ _id: obj.id }, function(err, result) {
           if (err) sink && sink.error && sink.error(err);
-          else sink && sink.remove && sink.remove(obj);
+          else {
+            sink && sink.remove && sink.remove(obj);
+            self.notify_('remove', [obj]);
+          }
         });
       });
     },

@@ -1,7 +1,7 @@
 FOAModel({
   name: 'DoubleClickWrapper',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -17,7 +17,7 @@ FOAModel({
 
   methods: {
     toInnerHTML: function() {
-      this.on('dblclick', this.onDoubleClick, this.getID());
+      this.on('dblclick', this.onDoubleClick, this.id);
       return this.view.toHTML();
     },
     initInnerHTML: function() {

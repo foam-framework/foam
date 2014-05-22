@@ -29,20 +29,8 @@
 
     console.log('************************************', mmodels.length);
     document.write('<h1>Rows: ', mmodels.length, '</h1>');
-    var stv = ScrollBorder.create({
-      view: TableView.create({
-        model: Model,
-        dao: mmodels,
-        rows: 15
-      }),
-      dao: mmodels
-    });
-
-    stv.scrollbar.height=250;
+    var stv = TableView.create({ model: Model, dao: mmodels, rows: 15, scrollEnabed: true});
     stv.write(document);
-    stv.layout();
-
-    DetailView.create({model: stv.scrollbar.model_, value: SimpleValue.create(stv.scrollbar)}).write(document);
 
     "";
 </script>

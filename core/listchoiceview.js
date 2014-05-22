@@ -14,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// TODO: Move any missing functionality to ChoiceView and then delete this.
+
 var ListChoiceViewRenderer = {
   start: function(id) {
     return '<ul id="' + id + '"/>';
@@ -31,7 +34,7 @@ var ListChoiceViewRenderer = {
 FOAModel({
   name:  'ListChoiceView',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -112,16 +115,16 @@ FOAModel({
   methods: {
     toHTML: function() {
       var renderer = this.renderer;
-      var out = renderer.start(this.getID()) + renderer.end();
+      var out = renderer.start(this.id) + renderer.end();
       return out;
     },
 
     updateHTML: function() {
       var self = this;
-      if (this.choicesDao) {
+      if ( this.choicesDao ) {
         var choices = [];
         this.choicesDao.select({ put: function(c) {
-          if (self.renderableProperty.f(c)) {
+          if ( self.renderableProperty.f(c) ) {
             c = { n: self.displayNameProperty.f(c), v: self.valueProperty.f(c), o: c };
             choices.push(c);
           }
@@ -166,11 +169,11 @@ FOAModel({
       this.$.innerHTML = out.join('');
 
       selectedAsList = this.$.getElementsByClassName(this.selectedCssClass);
-      if (selectedAsList && selectedAsList.length) {
+      if ( selectedAsList && selectedAsList.length ) {
         this.selectedElement = selectedAsList[0];
       }
 
-      AbstractView.getPrototype().initHTML.call(this);
+      View.getPrototype().initHTML.call(this);
     },
 
     getValue: function() {

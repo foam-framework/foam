@@ -1,4 +1,4 @@
-<table id="<%= this.getID() %>" cellspacing="2" cellpadding="2" border="0" class="rowmajor">
+<table id="<%= this.id %>" cellspacing="2" cellpadding="2" border="0" class="rowmajor">
   <tbody><tr><th style="width: 1em">Summary:</th>
       <td class="inplace" colspan="2">
         $$summary

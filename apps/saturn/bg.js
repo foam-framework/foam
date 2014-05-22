@@ -224,7 +224,7 @@ function launchController(_, callback) {
     var model = this.model;
 
     var str = "";
-    str += '<div id="' + this.getID() + '" class="detailView">';
+    str += '<div id="' + this.id + '" class="detailView">';
 
     // Header
     str += '<div class="header">';
@@ -298,7 +298,7 @@ function launchController(_, callback) {
 
 
   timer.addPropertyListener('i', function() {
-    var logo = $('logo-' + controller.getID());
+    var logo = $('logo-' + controller.id);
     if (logo) logo.style.webkitTransform = 'rotate(' + 10*Math.sin(timer.i/40) + 'deg)';
   });
 
@@ -336,7 +336,7 @@ function launchController(_, callback) {
      }, false);
 
     // TODO: this should be a property of the controller
-    $('settings-' + controller.getID()).onclick = openMenu;
+    $('settings-' + controller.id).onclick = openMenu;
     controller.searchChoice.$.parentElement.parentElement.onmouseout  = function(e) { expandState.out && expandState.out(); };
     controller.searchChoice.$.parentElement.parentElement.onmouseover = function(e) { expandState.over && expandState.over(); };
     controller.layout();
@@ -394,7 +394,7 @@ chrome.runtime.onMessageExternal.addListener(function(message, sender, sendRespo
         put: function(x) {
            suggests.push({
               content: 'id:' + x.id,
-              description: 'From ' + AbstractView.strToHTML(x.from) + ': ' + AbstractView.strToHTML(x.subject)
+              description: 'From ' + View.strToHTML(x.from) + ': ' + View.strToHTML(x.subject)
            });
         },
         eof: function() {
@@ -458,7 +458,7 @@ var MessageView = FOAM({
         escapeHTML: false
       });
       this.addChild(bodyView);
-      return '<div id="' + this.getID() + '">' +
+      return '<div id="' + this.id + '">' +
           '<div>From: ' + fromView.toHTML() + '</div>' +
           '<div>To: ' + toView.toHTML() + '</div>' +
           '<div>CC: ' + ccView.toHTML() + '</div>' +
@@ -487,7 +487,7 @@ var ConversationView = FOAM({
       var emailsView = this.createView(this.model.EMAILS);
       this.addChild(emailsView);
 
-      return '<div id="' + this.getID() + '">' +
+      return '<div id="' + this.id + '">' +
                '<div>' + subjectView.toHTML() + '</div>' +
                '<div>' + labelView.toHTML() + '</div>' +
                '<div>' + emailsView.toHTML() + '</div>' +

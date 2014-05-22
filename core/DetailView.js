@@ -1,8 +1,14 @@
 FOAModel({
   name: 'DetailView',
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
+    {
+      // TODO: remove 'value' and make this the real source of data
+      name:  'data',
+      getter: function() { return this.value.value; },
+      setter: function(data) { this.value = SimpleValue.create(data); }
+    },
     {
       name:  'value',
       type:  'Value',
@@ -138,7 +144,7 @@ FOAModel({
       var model = this.model;
       var str  = "";
 
-      str += '<div id="' + this.getID() + '" class="detailView" name="form">';
+      str += '<div id="' + this.id + '" class="detailView" name="form">';
       str += '<table>';
       str += this.titleHTML();
 

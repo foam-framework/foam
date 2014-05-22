@@ -29,7 +29,7 @@ FOAModel({
   name: 'ThreePaneController',
   label: 'ThreePaneController',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
@@ -145,7 +145,7 @@ FOAModel({
     },
     {
       name: 'table',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return TableView.create({
             model: this.model,
@@ -163,7 +163,7 @@ FOAModel({
     },
     {
       name: 'toolbar',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return ToolbarView.create({
           actions: this.model.actions,
@@ -177,7 +177,7 @@ FOAModel({
     },
     {
       name: 'editView',
-      type: 'AbstractView',
+      type: 'View',
       factory: function() {
         return DetailView.create({model: this.model}/*, this.table.selection*/);
       },
@@ -203,14 +203,14 @@ FOAModel({
       }, self.layout);
     },
     setLogo: function(src) {
-      $('logo-' + this.getID()).src = src;
+      $('logo-' + this.id).src = src;
     },
     toHTML: function() {
-      return '<div style="width: 100%; height: 100%;" id="' + this.getID() + '">\n' +
-        '<table class="header" id="header-' + this.getID() + '">\n' +
+      return '<div style="width: 100%; height: 100%;" id="' + this.id + '">\n' +
+        '<table class="header" id="header-' + this.id + '">\n' +
         '  <tr>\n' +
         '  <td style="height: 49px; padding: 5px 0px">\n' +
-        '    <img id="logo-' + this.getID() + '" height="49" style="margin-left: 10px" src="images/logo.png">\n' +
+        '    <img id="logo-' + this.id + '" height="49" style="margin-left: 10px" src="images/logo.png">\n' +
         '  </td>\n' +
         '  <td width="5%"></td>\n' +
         '  <td width="45"><img src="images/search-icon.png" style="vertical-align:middle;"></td>\n' +
@@ -225,19 +225,19 @@ FOAModel({
         '  </td>\n' +
         '  <td width="10%"></td>\n' +
         '  <td align="right">\n' +
-        '    <div><img id="settings-' + this.getID() + '" src="images/settings.svg"> &nbsp;</div>\n' +
+        '    <div><img id="settings-' + this.id + '" src="images/settings.svg"> &nbsp;</div>\n' +
         '  </td>\n' +
         '  </tr>\n' +
         '</table>\n' +
-        '<span class="toolbar" id="toolbar-' + this.getID() + '">' + this.toolbar.toHTML() + '</span>\n' +
-        '<div id="search-' + this.getID() + '" style="position:absolute;background-color:#fff;overflow-y:auto;overflow-x:hidden">\n' +
+        '<span class="toolbar" id="toolbar-' + this.id + '">' + this.toolbar.toHTML() + '</span>\n' +
+        '<div id="search-' + this.id + '" style="position:absolute;background-color:#fff;overflow-y:auto;overflow-x:hidden">\n' +
         '  <span class="searchChoice">' + this.searchChoice.toHTML() + '</span>\n' +
         '</div>\n' +
-        '<div class="browse" id="browse-' + this.getID() + '" style="position:absolute;background-color:#FFF;float:left;">' + this.table.toHTML() + '</div>\n' +
-        '<div class="edit" id="edit-' + this.getID() + '" style="position:absolute;position:absolute;background-color:#FFF;overflow:scroll;">\n' +
+        '<div class="browse" id="browse-' + this.id + '" style="position:absolute;background-color:#FFF;float:left;">' + this.table.toHTML() + '</div>\n' +
+        '<div class="edit" id="edit-' + this.id + '" style="position:absolute;position:absolute;background-color:#FFF;overflow:scroll;">\n' +
         this.editView.toHTML() +
         '</div>\n' +
-        '<div id="footer-' + this.getID() + '" style="position:absolute;text-align:right;padding-top:3px;width:100%"> \n' +
+        '<div id="footer-' + this.id + '" style="position:absolute;text-align:right;padding-top:3px;width:100%"> \n' +
         '  <a href="https://code.google.com/p/foam-framework/" style="text-decoration: none" target="_blank">\n' +
         '  <font size=-1 face="catull" style="padding-left:10px;text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\n' +
         '  <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#ddaa00">A</font><font color="#33CC00">M</font>\n\n' +
@@ -314,34 +314,34 @@ FOAModel({
         var RIGHT_W   = W - this.searchWidth-1;
 
         //  pos(header,null,null,W,HEADER_H-10);
-        pos($('search-' + this.getID()), this.headerHeight, null, this.maxSearchWidth, SEARCH_H);
+        pos($('search-' + this.id), this.headerHeight, null, this.maxSearchWidth, SEARCH_H);
 
         if ( W > this.minThreeColumnWidth ) {
-          pos($('browse-' + this.getID()),
+          pos($('browse-' + this.id),
               this.headerHeight,
               this.searchWidth + 1,
               RIGHT_W * this.threeColumnLeftPaneWeight,
               SEARCH_H);
 
-          pos($('edit-' + this.getID()),
+          pos($('edit-' + this.id),
               this.headerHeight,
               this.searchWidth + 1 + RIGHT_W * this.threeColumnLeftPaneWeight,
               RIGHT_W * 0.55-10,
               SEARCH_H-10);
         } else {
-          pos($('browse-' + this.getID()),
+          pos($('browse-' + this.id),
               this.headerHeight,
               this.searchWidth + 1,
               RIGHT_W,
               SEARCH_H/2-4);
 
-          pos($('edit-' + this.getID()),
-              hideTable ? this.headerHeight : toNum($('browse-' + this.getID()).style.top) + toNum($('browse-' + this.getID()).style.height),
+          pos($('edit-' + this.id),
+              hideTable ? this.headerHeight : toNum($('browse-' + this.id).style.top) + toNum($('browse-' + this.id).style.height),
               this.searchWidth + 1,
               RIGHT_W,
               hideTable ? SEARCH_H : SEARCH_H / 2);
         }
-        pos($('footer-' + this.getID()),
+        pos($('footer-' + this.id),
             H-this.footerHeight+10,
             null,
             W,
