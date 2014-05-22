@@ -198,7 +198,7 @@ var EventService = {
    * standard definition, which is the same as just calling publish().
    **/
   deepPublish: function(topic) {
-    this.publish.apply(this, arguments);
+    return this.publish.apply(this, arguments);
   },
 
 
