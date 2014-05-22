@@ -1,6 +1,17 @@
 /**
  *
  **/
+
+FOAModel({
+  name: 'PriorityView',
+  extendsModel: 'View',
+  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  templates: [ function toInnerHTML() {/*
+    <div class="priority priority-%%data">P%%data</div>
+  */} ]
+});
+QIssue.PRIORITY.view = 'PriorityView';
+
 FOAModel({
   name: 'MBug',
   description: 'Mobile QuickBug',
@@ -253,7 +264,7 @@ FOAModel({
         $$starred $$id{mode: 'read-only', className: 'id'}<br>
         $$summary{mode: 'read-only'}
       </div>
-      $$priority{mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
+      $$priority{mode: 'read-only', className: 'priority'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });

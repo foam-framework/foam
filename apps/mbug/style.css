@@ -15,9 +15,27 @@
 }
 
 .issue-citation .priority {
+  text-align: center;
+  font-weight: 700;
+  color: white;
   flex-grow: 0;
   width: 80px;
   align-self: center;
+  border-radius: 4px;
+  width: 18px;
+  padding: 10px;
+}
+
+.issue-citation .priority-1 {
+  background: #DB44e7;
+}
+
+.issue-citation .priority-2 {
+  background: #F4B400;
+}
+
+.issue-citation .priority-3 {
+  background: #4285F4;
 }
 
 .issue-citation .id {
