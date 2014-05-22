@@ -5,9 +5,12 @@
 
 .issue-citation .owner {
   flex-grow: 0;
-  width: 100px;
   overflow: hidden;
   margin-right: 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  border: 1px solid;
 }
 
 .issue-citation .middle {
