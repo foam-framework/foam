@@ -35,7 +35,7 @@ FOAModel({
 
   properties: [
     { name: 'a1', defaultValue: '0' },
-    { name: 'a2', view: 'CalcFloatFieldView', defaultValue: 0 },
+    { name: 'a2', defaultValue: 0 },
     {
       name: 'op',
       preSet: function(oldOp, newOp) {
@@ -55,12 +55,28 @@ FOAModel({
       defaultValue: DEFAULT_OP
     },
     {
+      model_: 'StringProperty',
+      name: 'row1',
+      postSet: function(o, n) { console.log(o, ' -> ', n); },
+      view: 'ALabel'
+    },
+    {
       name: 'history',
       model_: 'DAOProperty',
       view: { model_: 'DAOListView', rowView: 'HistoryView' },
       factory: function() { return []; }
     }
   ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), function() {
+        this.row1 = this.op + ( this.a2 ? '&nbsp;' + this.a2 : '' );
+      }.bind(this));
+    }
+  },
 
   actions: [
     makeNum(1), makeNum(2), makeNum(3),

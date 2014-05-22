@@ -4,7 +4,7 @@
   <div class="calc-display">
     <div class="inner-calc-display">
       $$history
-      $$op{mode: 'read-only'} $$a2{mode: 'read-only'}
+      $$row1
     </div>
   </div>
   <div class="buttons button-row">
@@ -26,8 +26,8 @@
     if ( ! this.$ ) return;
     var outer$ = this.$.querySelector('.calc-display');
     var inner$ = this.$.querySelector('.inner-calc-display');
-    var outer = window.getComputedStyle(outer$);
-    var inner = window.getComputedStyle(inner$);
+    var outer  = window.getComputedStyle(outer$);
+    var inner  = window.getComputedStyle(inner$);
     inner$.style.top = toNum(outer.height)-toNum(inner.height) + 'px';
   }.bind(this));
   Events.dynamic(function() { this.obj.op; this.obj.a1; this.obj.a2; }.bind(this), move);
