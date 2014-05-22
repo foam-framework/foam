@@ -3,7 +3,7 @@
 FOAModel({
   name: 'ALabel',
 
-  extendsModel: 'AbstractView',
+  extendsModel: 'View',
 
   properties: [
     {
