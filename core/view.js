@@ -276,6 +276,19 @@ FOAModel({
   ],
 
   methods: {
+    deepPublish: function(topic) {
+      var count = this.publish.apply(this, arguments);
+
+      if ( this.children ) {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          count += child.deepPublish.apply(child, arguments);
+        }
+      }
+
+      return count;
+    },
+
     strToHTML: function(str) {
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
