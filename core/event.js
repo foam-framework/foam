@@ -192,9 +192,25 @@ var EventService = {
   },
 
 
-  // TODO: alternate name: lazyPublish
-  // fn: function which returns array
-  publishLazy: function (topic, fn) {
+  /**
+   * Publishes a message to this object and all of its children.
+   * Objects/Protos which have children should override the
+   * standard definition, which is the same as just calling publish().
+   **/
+  deepPublish: function(topic) {
+    this.publish.apply(this, arguments);
+  },
+
+
+  /**
+   * Publish a message supplied by a factory function.
+   *
+   * This is useful if the message is expensive to generate and you
+   * don't want to waste the effort if there are no listeners.
+   *
+   * arg fn: function which returns array
+   **/
+  lazyPublish: function (topic, fn) {
     if ( this.hasListeners(topic) ) return this.publish.apply(this, fn());
 
     return 0;
