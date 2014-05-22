@@ -11,7 +11,7 @@
       </tr>
       <tr>
         <td>
-          %%updatesView()
+          %%makeUpdatesView()
           <%= saveButton %>
           <%= discardButton %>
           %%errorView
