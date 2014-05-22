@@ -247,8 +247,13 @@ FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
-       $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>" class="issue-citation">
+      <span class="owner">$$owner{mode: 'read-only'}</span>
+      <div class="middle">
+        $$starred $$id{mode: 'read-only', className: 'id'}<br>
+        $$summary{mode: 'read-only'}
+      </div>
+      $$priority{mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });
