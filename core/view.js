@@ -526,12 +526,6 @@ FOAModel({
 
       view.copyFrom(this.args);
       view.parent = this.parent;
-      /*
-        I don't think this is need anymore.  Now done by PropertyView.
-      view.prop = prop;
-      view.toString = function () { return this.prop.name + 'View'; };
-      if ( this.parent ) this.parent.addChild(view);
-      */
 
       this.view = view;
       this.bindData();
