@@ -232,8 +232,7 @@ FOAModel({
       $$priority{mode: 'read-only'}<br>
       $$status{mode: 'read-only'}
       <hr>
-      Owner
-      $$owner{mode: 'read-only'}
+      Owner $$owner{mode: 'read-only', tagName: 'span'}
       <hr>
       CC
       $$cc{mode: 'read-only'}
@@ -260,7 +259,7 @@ FOAModel({
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div>
-       Commented by $$author{tagName: 'span', mode: 'read-only'}<br>
+       Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
        $$published<br><br>
        $$content{mode: 'read-only'}
        <hr>
