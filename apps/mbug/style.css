@@ -1,0 +1,48 @@
+.issue-citation {
+  margin: 20px;
+  display: flex;
+}
+
+.issue-citation .owner {
+  flex-grow: 0;
+  width: 100px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+
+.issue-citation .middle {
+  flex: 1;
+}
+
+.issue-citation .priority {
+  text-align: center;
+  font-weight: 700;
+  color: white;
+  flex-grow: 0;
+  width: 80px;
+  align-self: center;
+  border-radius: 4px;
+  width: 18px;
+  padding: 10px;
+}
+
+.issue-citation .priority-1 {
+  background: #DB4437;
+}
+
+.issue-citation .priority-2 {
+  background: #F4B400;
+}
+
+.issue-citation .priority-3 {
+  background: #4285F4;
+}
+
+.issue-citation .id {
+   font-size: 1.5em;
+   font-weight: 300; 
+}
+
+body {
+  font-family: Roboto2, 'Helvetica Neue', Helvetica, Arial;
+}
