@@ -295,9 +295,7 @@ FOAModel({
   actions: [
     {
       name: 'close',
-      action: function() {
-        this.X.stack.popView();
-      }
+      action: function() { this.X.stack.popView(); }
     }
   ],
 
