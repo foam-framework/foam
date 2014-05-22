@@ -105,7 +105,36 @@ FOAModel({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView'/*'TouchListView'*/, mode: 'read-only', rowView: 'IssueCitationView'  }
+      help: 'Top-level filtered DAO. Further filtered by each canned query.',
+      view: function() {
+        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        var self = this;
+        var views = [
+    //        ['',                     'All issues'],
+            [open,                   'OPEN ISSUES'],
+            [open + ' is:starred',   'STARRED'],
+            [open + ' owner=me',     'OWNED BY ME']
+    //        [open + ' reporter=me',  'Open and reported by me'],
+    //        [open + ' commentby:me', 'Open and comment by me'],
+    //        ['status=New',           'New issues'],
+    //        ['status=Fixed,Done',    'Issues to verify']
+          ].map(function(filter) {
+            return ViewChoice.create({
+              view: PredicatedView.create({
+                predicate: QueryParser.parseString(filter[0]) || TRUE,
+                view: DAOListView.create({
+                  mode: 'read-only',
+                  rowView: 'IssueCitationView',
+                  chunkSize: 100
+                })
+              }),
+
+              label: filter[1]
+            });
+          });
+
+        return SwipeAltView.create({ views: views });
+      }
     },
     {
       name: 'sortOrder',
@@ -129,27 +158,6 @@ FOAModel({
       name: 'q',
       displayWidth: 50,
       view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
-    },
-    {
-      name: 'can',
-      defaultValue: 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged',
-      view: function() {
-        var open = ProjectController.CAN.defaultValue;
-
-        return ChoiceListView.create({
-          orientation: 'horizontal',
-          choices: [
-            [open,                   'OPEN ISSUES',             2],
-            [open + ' is:starred',   'STARRED',  5],
-            [open + ' owner=me',     'OWNED BY ME',    3]
-//            ['',                     'All issues',              1],
-//            [open + ' reporter=me',  'Open and reported by me', 4],
-//            [open + ' commentby:me', 'Open and comment by me',  8],
-//            ['status=New',           'New issues',              6],
-//            ['status=Fixed,Done',    'Issues to verify',        7]
-          ]
-        });
-      }
     }
   ],
   actions: [
@@ -180,18 +188,14 @@ FOAModel({
       this.SUPER();
 
       var self = this;
-
       Events.dynamic(
-        function() { self.can; self.sortOrder; self.q; },
+        function() { self.sortOrder; self.q; },
         function() {
           console.log('Query Update');
-          self.filteredDAO = self.issueDAO.
-            limit(15).
-            where(AND(
-              QueryParser.parseString(self.can) || TRUE,
-              QueryParser.parseString(self.q)   || TRUE
-            ).partialEval()).
-            orderBy(self.sortOrder);
+          self.filteredDAO = self.issueDAO
+              .limit(15)
+              .where(QueryParser.parseString(self.q) || TRUE)
+              .orderBy(self.sortOrder);
         }
       );
     }
@@ -207,16 +211,18 @@ FOAModel({
            $$leaveSearchMode $$q
          </span>
        </div>
-       $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
     <%
-      this.data.can$.addListener(function() {
-        self.qView.$.placeholder = "Search " + self.canView.choice[1].toLowerCase();
+      this.addInitializer(function() {
+        self.filteredDAOView.index$.addListener(function() {
+          var v = self.filteredDAOView;
+          self.qView.$.placeholder = "Search " + v.views[v.index].label.toLowerCase();
+        });
+        self.data.searchMode$.addListener(EventService.merged(function() {
+          self.qView.$.focus();
+        }, 100));
       });
-      this.data.searchMode$.addListener(EventService.merged(function() {
-        self.qView.$.focus();
-      }, 100));
     %>
   */}
   ]

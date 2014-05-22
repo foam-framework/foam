@@ -1,3 +1,8 @@
+body,tbody,tr,td {
+  margin: 0;
+  padding: 0;
+}
+
 .issue-citation {
   margin: 30 20 30 20;
   display: flex;
@@ -25,6 +30,7 @@
 .issue-citation .middle {
   flex: 1;
   margin-right: 10px;
+  overflow: hidden;
 }
 
 .priority {
@@ -295,6 +301,12 @@ select[name=sortOrder] {
   margin: 20px;
 }
 
+.mbug {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .mbug .header {
   display: flex;
   background: #03A9F4;
@@ -314,6 +326,10 @@ select[name=sortOrder] {
   display: none;
 }
 
+.swipeAltOuter {
+  flex-grow: 1;
+}
+
 span[name=projectName] {
   align-self: center;
   flex: 1.0;
@@ -321,6 +337,14 @@ span[name=projectName] {
   margin-left: 42px;
   vertical-align: middle;
   font-size: 28pt;
+}
+
+.stackview {
+  height: 100%;
+}
+
+.stackview table {
+  height: 100%;
 }
 
 .stackview_navbar {
@@ -333,6 +357,10 @@ span[name=projectName] {
 
 .stackview-previewarea-td {
   display: none;
+}
+
+.stackview-viewarea {
+  height: 100%;
 }
 
 .issue-edit .actionButton-done {
@@ -384,26 +412,26 @@ select[name=pri], select[name=status] {
   flex: 1;
 }
 
-.mbug.searchMode .cannedQuery {
+.mbug.searchMode .swipeAltHeader {
   display: none;
 }
 
-.cannedQuery {
+.swipeAltHeader {
   height: 36px;
 }
 
-.cannedQuery li {
+.swipeAltHeader li {
   font-size: 16pt;
   padding-bottom: 14px;
   opacity: 0.76;
 }
 
-.cannedQuery .selected {
+.swipeAltHeader .selected {
   border-bottom: 3px solid red;
   opacity: 1.0;
 }
 
-ul.cannedQuery {
+ul.swipeAltHeader {
   background: #03A9F4;
   padding: 10 0 3 100 !important;
   margin: 0;
