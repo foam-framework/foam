@@ -198,3 +198,8 @@ span[name=projectName] {
   background: white;
   padding: 0;
 }
+
+.actionButton-done:hover {
+  background: #0F9D58;
+  border-radius:100px;
+}
