@@ -79,13 +79,19 @@ body {
 }
 
 .actionButton {
+  padding: 8px;
   vertical-align: middle;
   background: #03A9F4;
   border: none;
 }
 
+.actionButton:hover {
+  background: #0F9D58;
+  border-radius:100px;
+}
+
 .issue-edit .header {
-    background: #3e51b5;
+    background: #03A9F4;
     color: #fff;
     padding: 92px 32px 70px 32px;
     font-size: 32px;
@@ -146,22 +152,49 @@ body {
   background: #4285F4;
 }
 
+.issue-citation span[name=id] {
+  font-size: larger;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.issue-citation span[name=summary] {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+input[name=q] {
+  align-self: center;
+  margin: 20px;
+}
+
+select[name=sortOrder] {
+  align-self: center;
+  margin: 20px;
+}
+
+.mbug .header {
+  display: flex;
+  background: #03A9F4;
+  padding: 5px;
+}
+
 span[name=projectName] {
+  align-self: center;
+  flex: 1.0;
   color: white;
   font-size: xx-large;
   margin-left: 30px;
   vertical-align: middle;
 }
 
-span[name=id] {
-  font-size: larger;
-  color: rgba(0, 0, 0, 0.87);
+.stackview_navbar {
+  display: none;
 }
 
-span[name=summary] {
-  color: rgba(0, 0, 0, 0.54);
+.stackview_navactions {
+  display: none;
 }
 
-.mbug .header {
-  background: #03A9F4;
+.issue-edit .actionButton-done {
+  background: white;
+  padding: 0;
 }

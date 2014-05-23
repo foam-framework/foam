@@ -228,10 +228,10 @@ FOAModel({
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
-      $$done $$starred
-      <!-- Insert Attachments here -->
-      <hr>
-      <div class="header">#&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}</div>
+      $$done <!-- $$starred --><br>
+      <div class="header">
+        #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+      </div>
       <div class="choice">$$priority{model_: 'PriorityView'}</div>
       <div class="choice">$$status</div>
       <div class="separator"></div>
