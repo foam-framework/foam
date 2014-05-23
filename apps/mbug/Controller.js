@@ -191,25 +191,27 @@ FOAModel({
   ]
 });
 
-
 FOAModel({
   name: 'IssueEditView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.id %>">
+    <div id="<%= this.id %>" class="issue-edit">
       $$starred
       <!-- Insert Attachments here -->
       <hr>
-      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
-      <hr>
-      $$priority<br>
-      $$status
-      <hr>
-      Owner
-      $$owner
-      <hr>
-      CC
-      $$cc
+      <div class="header">#&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}</div>
+      <div class="choice">$$priority</div>
+      <div class="choice">$$status</div>
+      <div class="separator"></div>
+      <div class="owner">
+        <div class="owner-header">Owner</div>
+        $$owner
+      </div>
+      <div class="separator"></div>
+      <div class="cc">
+        <div class="cc-header">Cc</div>
+        $$cc
+      </div>
     </div>
   */} ]
 });
