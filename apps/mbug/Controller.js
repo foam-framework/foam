@@ -212,7 +212,7 @@ FOAModel({
       <hr>
       #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       <hr>
-      $$priority<br>
+      $$priority{model_: 'PriorityView'}<br>
       $$status
       <hr>
       Owner
@@ -251,7 +251,7 @@ FOAModel({
       <hr>
       #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       <hr>
-      $$priority{mode: 'read-only'}<br>
+      $$priority{model_: 'PriorityView', mode: 'read-only'}<br>
       $$status{mode: 'read-only'}
       <hr>
       Owner $$owner{mode: 'read-only', tagName: 'span'}
@@ -303,14 +303,20 @@ FOAModel({
   extendsModel: 'DetailView',
 
   templates: [ function toHTML() {/*
-    <div>
+    <div class="project-view">
+      <div class="email-photo">
+        $$email{mode: 'display-only'}
+      </div>
+      <div style="height: 80px;"> </div>
+
       $$email{mode: 'display-only'}
+      <br><br>
       <hr>
       <% this.data.preferredProjects.forEach(function(project) { %>
-        <% if ( project === 'chromium-os' || project === 'chromedriver' ) return; %>
+        <% if ( false && ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
           <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
-          <%= project %>
+          <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
       <% }); %>
     </div>
