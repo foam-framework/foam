@@ -76,9 +76,7 @@ FOAModel({
     },
     setProject: function(projectName) {
       var self = this;
-      console.log('setProject: ', projectName);
       this.qbug.findProject(projectName, function(project) {
-        console.log('project loaded: ', project);
         self.project = project;
       });
       this.stack.back();
@@ -308,10 +306,11 @@ FOAModel({
     <div>
       $$email{mode: 'display-only'}
       <hr>
-      <% this.data.projects.forEach(function(project) { %>
+      <% this.data.preferredProjects.forEach(function(project) { %>
+        <% if ( project === 'chromium-os' || project === 'chromedriver' ) return; %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({data: self.X.baseURL + project.name + '/logo'}) %>
-          <%= project.name %>
+          <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
+          <%= project %>
         </div>
       <% }); %>
     </div>
