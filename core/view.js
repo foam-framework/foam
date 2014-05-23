@@ -542,8 +542,9 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
 
-      var prop = this.prop;
-      var view = this.createViewFromProperty(prop);
+      var view = args && args.model_ ?
+        FOAM(args) :
+        this.createViewFromProperty(this.prop);
 
       view.copyFrom(this.args);
       view.parent = this.parent;
