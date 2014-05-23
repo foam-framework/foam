@@ -54,7 +54,7 @@ FOAModel({
       help: 'DAO of known labels.',
       factory: function() {
         var dao = MDAO.create({ model: QIssueLabel });
-        this.project.issuesConfig.labels.select(dao);
+        this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
       },
       postSet: function(_, value)  {
@@ -66,7 +66,7 @@ FOAModel({
       help: 'DAO of known statuses.',
       factory: function() {
         var dao = MDAO.create({ model: QIssueStatus });
-        this.project.issuesConfig.statuses.select(dao);
+        this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
       },
       postSet: function(_, value)  {

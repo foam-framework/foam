@@ -1,17 +1,6 @@
 /**
- *
+ * Mobile QuickBug.
  **/
-
-FOAModel({
-  name: 'PriorityView',
-  extendsModel: 'View',
-  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
-  templates: [ function toInnerHTML() {/*
-    <div class="priority priority-%%data">P%%data</div>
-  */} ]
-});
-QIssue.PRIORITY.view = 'PriorityView';
-
 
 FOAModel({
   name: 'MBug',
@@ -36,10 +25,15 @@ FOAModel({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        console.log('New Project: ', project);
+        console.log('New Project: ', project.projectName);
+
         this.X.project     = project;
         this.X.projectName = project.projectName;
         this.X.issueDAO    = project.IssueDAO;
+
+        var pc = this.X.ProjectController.create();
+        var view = this.X.DetailView.create({data: pc});
+        this.stack.setTopView(view);
       }
     },
     {
@@ -68,9 +62,6 @@ FOAModel({
 
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
-        var pc = self.X.ProjectController.create();
-        var view = self.X.DetailView.create({data: pc});
-        self.stack.setTopView(view);
       }});
     },
     viewIssue: function(issue) {
@@ -83,12 +74,28 @@ FOAModel({
       var v = this.X.IssueEditView.create({data: issue});
       this.stack.pushView(v);
     },
-    setProject: function(project) {
-      console.log('setProject: ', project);
+    setProject: function(projectName) {
+      var self = this;
+      console.log('setProject: ', projectName);
+      this.qbug.findProject(projectName, function(project) {
+        console.log('project loaded: ', project);
+        self.project = project;
+      });
       this.stack.back();
     }
   }
 });
+
+
+FOAModel({
+  name: 'PriorityView',
+  extendsModel: 'View',
+  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  templates: [ function toInnerHTML() {/*
+    <div class="priority priority-%%data">P%%data</div>
+  */} ]
+});
+QIssue.PRIORITY.view = 'PriorityView';
 
 
 FOAModel({
