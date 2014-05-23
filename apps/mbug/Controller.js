@@ -180,7 +180,7 @@ FOAModel({
   },
   templates: [
     function toDetailHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
        $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
        <hr>
        $$can
@@ -196,7 +196,7 @@ FOAModel({
   name: 'IssueEditView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
       $$starred
       <!-- Insert Attachments here -->
       <hr>
@@ -234,7 +234,7 @@ FOAModel({
     }
   ],
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
       $$starred
       <!-- Insert Attachments here -->
       <hr>
@@ -274,7 +274,7 @@ FOAModel({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
        Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
        $$published<br><br>
        $$content{mode: 'read-only'}
@@ -316,7 +316,7 @@ FOAModel({
   ],
 
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
       $$email{mode: 'display-only'}
       <hr>
       $$projectList
