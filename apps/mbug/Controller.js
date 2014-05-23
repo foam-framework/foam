@@ -229,7 +229,7 @@ FOAModel({
       <div class="separator"></div>
       <div class="owner">
         <div class="owner-header">Owner</div>
-        $$owner
+        $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Owner'}
       </div>
       <div class="separator"></div>
       <div class="cc">

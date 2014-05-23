@@ -4355,8 +4355,11 @@ FOAModel({
     {
       name: 'data',
       postSet: function(_, value) {
-        if ( this.$ ) this.$.textContent = value;
+        if ( this.$ ) this.$.textContent = value || this.placeholder;
       }
+    },
+    {
+      name: 'placeholder'
     },
     { name: 'editView' },
   ],
@@ -4364,13 +4367,21 @@ FOAModel({
   methods: {
     init: function(args) {
       this.SUPER(args);
-      this.editView = FullScreenTextFieldView.create(args);
+      this.editView = this.X.FullScreenTextFieldView.create(args);
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.data = this.data;
     }
   },
 
   templates: [
     function toHTML() {/*
-    <div id="<%= this.on('click', this.onClick) %>" <%= this.cssClassAttr() %>></div>
+    <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
+    <%
+      this.on('click', this.onClick, this.id);
+      this.setClass('placeholder', (function() { return ! this.data }).bind(this), this.id);
+    %>
     */}
   ],
 
@@ -4386,7 +4397,7 @@ FOAModel({
     {
       name: 'onDataSet',
       code: function() {
-        this.editView.data$.removeLitsener(this.onDataSet);
+        this.editView.data$.removeListener(this.onDataSet);
         this.data = this.editView.data;
         this.X.stack.back();
       }
