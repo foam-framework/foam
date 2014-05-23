@@ -320,7 +320,7 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var v = PropertyView.create({prop: prop, args: opt_args});
+      var v = this.X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -328,12 +328,12 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
       if ( o ) return Action.isInstance(o) ?
-        ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
+        this.X.ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
         this.createView(o, opt_args);
 
       o = this.model_[name];
       return Action.isInstance(o) ?
-        ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
+        this.X.ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
         this.createView(o, opt_args);
     },
 
@@ -542,9 +542,12 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
 
-      var view = args && args.model_ ?
-        FOAM(args) :
-        this.createViewFromProperty(this.prop);
+      if ( this.args && this.args.model_ ) {
+        var view = this.X[this.args.model_].create(this.prop);
+        delete this.args.model_;
+      } else {
+        view = this.createViewFromProperty(this.prop);
+      }
 
       view.copyFrom(this.args);
       view.parent = this.parent;
