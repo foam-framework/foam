@@ -95,7 +95,6 @@ FOAModel({
     <div class="priority priority-%%data">P%%data</div>
   */} ]
 });
-QIssue.PRIORITY.view = 'PriorityView';
 
 
 FOAModel({
@@ -208,6 +207,14 @@ FOAModel({
 FOAModel({
   name: 'IssueEditView',
   extendsModel: 'DetailView',
+  properties: [
+    {
+      name: 'commentsView',
+      factory: function() {
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
+      }
+    }
+  ],
   actions: [
     {
       name: 'done',
@@ -220,7 +227,7 @@ FOAModel({
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
-      $$starred
+      $$done $$starred
       <!-- Insert Attachments here -->
       <hr>
       <div class="header">#&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}</div>
@@ -236,6 +243,7 @@ FOAModel({
         <div class="cc-header">Cc</div>
         $$cc
       </div>
+      <%= this.commentsView %>
     </div>
   */} ]
 });
@@ -292,7 +300,7 @@ FOAModel({
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
         $$summary{mode: 'read-only'}
       </div>
-      $$priority{mode: 'read-only', className: 'priority'} <!-- $status{mode: 'read-only'} -->
+      $$priority{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });
@@ -304,7 +312,7 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>">
        Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
-       $$published<br><br>
+       <%= this.data.published %> <br><br>
        $$content{mode: 'read-only'}
        <hr>
     </div>
@@ -319,16 +327,12 @@ FOAModel({
   extendsModel: 'DetailView',
 
   templates: [ function toHTML() {/*
-<<<<<<< HEAD
-    <div id="<%= this.id %>">
-=======
-    <div class="project-view">
+    <div id="<%= this.id %>" class="project-view">
       <div class="email-photo">
         $$email{mode: 'display-only'}
       </div>
       <div style="height: 80px;"> </div>
 
->>>>>>> e838e2532660a29a54cefe071ebba001574a5294
       $$email{mode: 'display-only'}
       <br><br>
       <hr>
