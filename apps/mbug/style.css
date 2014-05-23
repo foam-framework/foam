@@ -7,9 +7,9 @@
   flex-grow: 0;
   overflow: hidden;
   margin-right: 20px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50px;
+  width: 55px;
+  height: 55px;
+  border-radius: 30px;
   border: 1px solid;
 }
 
@@ -18,15 +18,13 @@
 }
 
 .priority {
-  text-align: center;
-  font-weight: 700;
-  color: white;
-  flex-grow: 0;
-  width: 80px;
   align-self: center;
   border-radius: 4px;
-  width: 18px;
-  padding: 10px;
+  color: white;
+  flex-grow: 0;
+  font-weight: 700;
+  padding: 4px;
+  text-align: center;
 }
 
 .priority-1 {
@@ -153,6 +151,15 @@ span[name=projectName] {
   font-size: xx-large;
   margin-left: 30px;
   vertical-align: middle;
+}
+
+span[name=id] {
+  font-size: larger;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+span[name=summary] {
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .mbug .header {
