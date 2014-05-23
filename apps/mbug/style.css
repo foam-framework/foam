@@ -74,3 +74,8 @@ body {
 .project-citation .project-name.selected {
   color: blue;
 }
+
+.actionButton {
+  background: white;
+  border: none;
+}
