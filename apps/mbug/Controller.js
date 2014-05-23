@@ -12,6 +12,7 @@ FOAModel({
 });
 QIssue.PRIORITY.view = 'PriorityView';
 
+
 FOAModel({
   name: 'MBug',
   description: 'Mobile QuickBug',
@@ -75,12 +76,16 @@ FOAModel({
     viewIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueView.create({data: issue});
-      this.X.stack.pushView(v);
+      this.stack.pushView(v);
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueEditView.create({data: issue});
-      this.X.stack.pushView(v);
+      this.stack.pushView(v);
+    },
+    setProject: function(project) {
+      console.log('setProject: ', project);
+      this.stack.back();
     }
   }
 });
@@ -214,6 +219,7 @@ FOAModel({
   */} ]
 });
 
+
 FOAModel({
   name: 'IssueView',
   extendsModel: 'DetailView',
@@ -254,6 +260,7 @@ FOAModel({
   */} ]
 });
 
+
 FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
@@ -284,42 +291,21 @@ FOAModel({
 });
 
 
+// Is actually a DetailView on User, but is only really
+// used to show and select available projects.
 FOAModel({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
-
-  properties: [
-    {
-      name: 'projects',
-      hidden: true
-    },
-    {
-      name: 'projectList',
-      view: { model_: 'ChoiceListView', choices: ['',''] }
-    }
-  ],
-
-  methods: {
-    updateSubViews: function() {
-      this.SUPER();
-
-      this.projectListView.choices = this.data.preferredProjects;
-    }
-
-  },
-
-  actions: [
-    {
-      name: 'close',
-      action: function() { this.X.stack.popView(); }
-    }
-  ],
 
   templates: [ function toHTML() {/*
     <div>
       $$email{mode: 'display-only'}
       <hr>
-      $$projectList
+      <% this.data.projects.forEach(function(project) { %>
+        <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= project.name %>
+        </div>
+      <% }); %>
     </div>
   */} ]
 });
