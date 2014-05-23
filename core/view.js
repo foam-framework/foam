@@ -320,7 +320,7 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var v = PropertyView.create({prop: prop, args: opt_args});
+      var v = this.X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -328,12 +328,12 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
       if ( o ) return Action.isInstance(o) ?
-        ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
+        this.X.ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
         this.createView(o, opt_args);
 
       o = this.model_[name];
       return Action.isInstance(o) ?
-        ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
+        this.X.ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
         this.createView(o, opt_args);
     },
 
@@ -542,9 +542,12 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
 
-      var view = args && args.model_ ?
-        FOAM(args) :
-        this.createViewFromProperty(this.prop);
+      if ( this.args && this.args.model_ ) {
+        var view = this.X[this.args.model_].create(this.prop);
+        delete this.args.model_;
+      } else {
+        view = this.createViewFromProperty(this.prop);
+      }
 
       view.copyFrom(this.args);
       view.parent = this.parent;
@@ -1036,6 +1039,36 @@ FOAModel({
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
+    setupAutocomplete: function() {
+      if ( ! this.autocomplete || ! this.autocompleter ) return;
+
+      var proto = FOAM.lookup(this.autocompleter, this.X);
+      var completer = proto.create();
+      this.autocompleteView = AutocompletePopup.create({
+        dao: completer.autocompleteDao,
+        view: DAOListView.create({
+          dao: completer.autocompleteDao,
+          mode: 'final',
+          rowView: 'SummaryView',
+          useSelection: true
+        })
+      });
+      this.addChild(this.autocompleteView);
+
+      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+      }).bind(this));
+
+      var self = this;
+      this.$.addEventListener('input', function() {
+        completer.autocomplete(self.textToValue(self.$.value));;
+      });
+      this.$.addEventListener('focus', function() {
+        completer.autocomplete(self.data);
+      });
+      this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
+    },
+
     initHTML: function() {
       this.SUPER();
 
@@ -1053,34 +1086,7 @@ FOAModel({
           this.textToValue.bind(this));
 
         this.$.addEventListener('keydown', this.onKeyDown);
-
-        if ( this.autocomplete && this.autocompleter ) {
-          var proto = FOAM.lookup(this.autocompleter, this.X);
-          var completer = proto.create();
-          this.autocompleteView = AutocompletePopup.create({
-            dao: completer.autocompleteDao,
-            view: DAOListView.create({
-              dao: completer.autocompleteDao,
-              mode: 'final',
-              rowView: 'SummaryView',
-              useSelection: true
-            })
-          });
-          this.addChild(this.autocompleteView);
-
-          this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-            this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-          }).bind(this));
-
-          var self = this;
-          this.$.addEventListener('input', function() {
-            completer.autocomplete(self.textToValue(self.$.value));;
-          });
-          this.$.addEventListener('focus', function() {
-            completer.autocomplete(self.data);
-          });
-          this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
-        }
+        this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
           this.$,
@@ -4338,5 +4344,91 @@ FOAModel({
 
   methods: {
     //atest: function() { return aconstant('output'); },
+  }
+});
+
+FOAModel({
+  name: 'TwoModeTextFieldView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function(_, value) {
+        if ( this.$ ) this.$.textContent = value || this.placeholder;
+      }
+    },
+    {
+      name: 'placeholder'
+    },
+    { name: 'editView' },
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+      this.editView = this.X.FullScreenTextFieldView.create(args);
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.data = this.data;
+    }
+  },
+
+  templates: [
+    function toHTML() {/*
+    <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
+    <%
+      this.on('click', this.onClick, this.id);
+      this.setClass('placeholder', (function() { return ! this.data }).bind(this), this.id);
+    %>
+    */}
+  ],
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() {
+        this.editView.data = '';
+        this.X.stack.pushView(this.editView);
+        this.editView.data$.addListener(this.onDataSet);
+      }
+    },
+    {
+      name: 'onDataSet',
+      code: function() {
+        this.editView.data$.removeListener(this.onDataSet);
+        this.data = this.editView.data;
+        this.X.stack.back();
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'FullScreenTextFieldView',
+  extendsModel: 'TextFieldView',
+
+  methods: {
+    setupAutocomplete: function() {
+      if ( ! this.autocomplete || ! this.autocompleter ) return;
+
+      var completer = FOAM.lookup(this.autocompleter, this.X).create();
+
+      this.autocompleteView = DAOListView.create({
+        dao: completer.autocompleteDao,
+        mode: 'final',
+        rowView: 'SummaryView',
+        useSelection: true
+      });
+      this.addChild(this.autocompleteView);
+
+      this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
+        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+      }).bind(this));
+      this.$.addEventListener('input', (function() {
+        completer.autocomplete(this.textToValue(this.$.value));
+      }).bind(this));
+    }
   }
 });

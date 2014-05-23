@@ -194,7 +194,7 @@ FOAModel({
   },
   templates: [
     function toDetailHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
        $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
        <hr>
        $$can
@@ -204,7 +204,6 @@ FOAModel({
   */}
   ]
 });
-
 
 FOAModel({
   name: 'IssueEditView',
@@ -220,20 +219,23 @@ FOAModel({
     }
   ],
   templates: [ function toHTML() {/*
-    <div>
-      $$done $$starred
+    <div id="<%= this.id %>" class="issue-edit">
+      $$starred
       <!-- Insert Attachments here -->
       <hr>
-      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
-      <hr>
-      $$priority{model_: 'PriorityView'}<br>
-      <img src="images/ic_keep_24dp.png"> $$status
-      <hr>
-      Owner
-      $$owner
-      <hr>
-      CC
-      $$cc
+      <div class="header">#&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}</div>
+      <div class="choice">$$priority{model_: 'PriorityView'}</div>
+      <div class="choice">$$status</div>
+      <div class="separator"></div>
+      <div class="owner">
+        <div class="owner-header">Owner</div>
+        $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Owner'}
+      </div>
+      <div class="separator"></div>
+      <div class="cc">
+        <div class="cc-header">Cc</div>
+        $$cc
+      </div>
     </div>
   */} ]
 });
@@ -259,7 +261,7 @@ FOAModel({
     }
   ],
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
       $$starred
       <!-- Insert Attachments here -->
       <hr>
@@ -300,7 +302,7 @@ FOAModel({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div>
+    <div id="<%= this.id %>">
        Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
        $$published<br><br>
        $$content{mode: 'read-only'}
@@ -317,12 +319,16 @@ FOAModel({
   extendsModel: 'DetailView',
 
   templates: [ function toHTML() {/*
+<<<<<<< HEAD
+    <div id="<%= this.id %>">
+=======
     <div class="project-view">
       <div class="email-photo">
         $$email{mode: 'display-only'}
       </div>
       <div style="height: 80px;"> </div>
 
+>>>>>>> e838e2532660a29a54cefe071ebba001574a5294
       $$email{mode: 'display-only'}
       <br><br>
       <hr>
