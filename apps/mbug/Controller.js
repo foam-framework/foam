@@ -65,6 +65,8 @@ FOAModel({
       }});
     },
     viewIssue: function(issue) {
+      this.editIssue(issue); return;
+
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueView.create({data: issue});
       this.stack.pushView(v);
@@ -159,6 +161,8 @@ FOAModel({
   actions: [
     {
       name: 'changeProject',
+      iconUrl: 'images/ic_menu_24dp.png',
+      label: '',
       action: function() {
         var v = this.X.ChangeProjectView.create({data: this.project.user});
         this.X.stack.pushView(v);
@@ -205,15 +209,25 @@ FOAModel({
 FOAModel({
   name: 'IssueEditView',
   extendsModel: 'DetailView',
+  actions: [
+    {
+      name: 'done',
+      label: '',
+      iconUrl: 'images/ic_clear_24dp.png',
+      action: function() {
+        this.X.stack.back();
+      }
+    }
+  ],
   templates: [ function toHTML() {/*
     <div>
-      $$starred
+      $$done $$starred
       <!-- Insert Attachments here -->
       <hr>
       #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       <hr>
       $$priority{model_: 'PriorityView'}<br>
-      $$status
+      <img src="images/ic_keep_24dp.png"> $$status
       <hr>
       Owner
       $$owner
