@@ -68,11 +68,16 @@ body {
 
 .project-citation img {
   vertical-align: middle;
-  margin-right: 25px;
+  margin-right: 35px;
+}
+
+.project-citation .project-name {
+  vertical-align: middle;
+  font-size: x-large;
 }
 
 .project-citation .project-name.selected {
-  color: blue;
+  color: #03A9F4;
 }
 
 .actionButton {

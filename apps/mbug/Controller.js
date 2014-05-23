@@ -336,7 +336,13 @@ FOAModel({
       $$email{mode: 'display-only'}
       <br><br>
       <hr>
-      <% this.data.preferredProjects.forEach(function(project) { %>
+      <%
+         var projects = this.data.preferredProjects;
+
+         if ( projects.indexOf('chromium') == -1 ) projects.push('chromium');
+         if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
+
+         projects.forEach(function(project) { %>
         <% if ( false && ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
           <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
