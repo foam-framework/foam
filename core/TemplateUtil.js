@@ -50,7 +50,7 @@ var TemplateParser = {
   'create child': seq('$$', repeat(notChars(' $\n<{')),
                       optional(seq('{', repeat(notChar('}')), '}'))),
 
-  'simple value': seq('%%', repeat(notChars(' \n<'))),
+  'simple value': seq('%%', repeat(notChars(' "\n<'))),
 
   'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 

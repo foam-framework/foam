@@ -1,6 +1,17 @@
 /**
  *
  **/
+
+FOAModel({
+  name: 'PriorityView',
+  extendsModel: 'View',
+  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  templates: [ function toInnerHTML() {/*
+    <div class="priority priority-%%data">P%%data</div>
+  */} ]
+});
+QIssue.PRIORITY.view = 'PriorityView';
+
 FOAModel({
   name: 'MBug',
   description: 'Mobile QuickBug',
@@ -124,9 +135,9 @@ FOAModel({
           choices: [
 //            ['',                     'All issues',              1],
             [open,                   'OPEN ISSUES',             2],
-            [open + ' owner=me',     'OWNED BY ME',    3],
+            [open + ' is:starred',   'STARRED',  5],
+            [open + ' owner=me',     'OWNED BY ME',    3]
 //            [open + ' reporter=me',  'Open and reported by me', 4],
-            [open + ' is:starred',   'STARRED',  5]
 //            [open + ' commentby:me', 'Open and comment by me',  8],
 //            ['status=New',           'New issues',              6],
 //            ['status=Fixed,Done',    'Issues to verify',        7]
@@ -247,8 +258,13 @@ FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>">
-       $$id{mode: 'read-only'} $$priority{mode: 'read-only'} $$owner{mode: 'read-only'} $$summary{mode: 'read-only'} $$starred $$status{mode: 'read-only'}
+    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>" class="issue-citation">
+      <span class="owner">$$owner{mode: 'read-only'}</span>
+      <div class="middle">
+        $$id{mode: 'read-only', className: 'id'} $$starred<br>
+        $$summary{mode: 'read-only'}
+      </div>
+      $$priority{mode: 'read-only', className: 'priority'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });
@@ -295,9 +311,7 @@ FOAModel({
   actions: [
     {
       name: 'close',
-      action: function() {
-        this.X.stack.popView();
-      }
+      action: function() { this.X.stack.popView(); }
     }
   ],
 

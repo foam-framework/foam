@@ -276,6 +276,23 @@ FOAModel({
   ],
 
   methods: {
+    // TODO: Model as Topics
+    ON_HIDE: ['onHide'], // Indicates that the View has been hidden
+    ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
+
+    deepPublish: function(topic) {
+      var count = this.publish.apply(this, arguments);
+
+      if ( this.children ) {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var child = this.children[i];
+          count += child.deepPublish.apply(child, arguments);
+        }
+      }
+
+      return count;
+    },
+
     strToHTML: function(str) {
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
@@ -511,6 +528,10 @@ FOAModel({
       postSet: function() { this.bindData(); }
     },
     {
+      name: 'innerView',
+      help: 'Override for prop.view'
+    },
+    {
       name: 'view',
       type: 'View'
     },
@@ -531,13 +552,14 @@ FOAModel({
       this.bindData();
     },
     createViewFromProperty: function(prop) {
-      if ( ! prop.view ) return TextFieldView.create(prop);
-      if ( typeof prop.view === 'string' ) return this.X[prop.view].create(prop);
-      if ( prop.view.model_ && typeof prop.view.model_ === 'string' ) return FOAM(v);
-      if ( prop.view.model_ ) return prop.view.deepClone().copyFrom(prop);
-      if ( typeof prop.view === 'function' ) return prop.view(prop, this);
+      var viewName = this.innerView || prop.view
+      if ( ! viewName ) return TextFieldView.create(prop);
+      if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
+      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(v);
+      if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
+      if ( typeof viewName === 'function' ) return viewName(prop, this);
 
-      return prop.view.create(prop);
+      return viewName.create(prop);
     },
     bindData: function() {
       var view = this.view;
