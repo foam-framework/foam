@@ -542,8 +542,9 @@ FOAModel({
     init: function(args) {
       this.SUPER(args);
 
-      var prop = this.prop;
-      var view = this.createViewFromProperty(prop);
+      var view = args && args.model_ ?
+        FOAM(args) :
+        this.createViewFromProperty(this.prop);
 
       view.copyFrom(this.args);
       view.parent = this.parent;
@@ -813,6 +814,11 @@ FOAModel({
       }
     },
     {
+      // TODO: make 'data' be the actual source of the data
+      name: 'data',
+      setter: function(d) { this.value = SimpleValue.create(d); }
+    },
+    {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(this.value, oldValue);
@@ -838,9 +844,7 @@ FOAModel({
   ],
 
   methods: {
-    setValue: function(value) {
-      this.value = value;
-    },
+    setValue: function(value) { this.value = value; },
     toHTML: function() {
       return '<img class="imageView" id="' + this.id + '">';
     },
@@ -2903,7 +2907,7 @@ FOAModel({
   name: 'GalleryImageView',
   extendsModel: 'View',
 
-  properties: ['source'],
+  properties: [ 'source' ],
 
   methods: {
     toHTML: function() {

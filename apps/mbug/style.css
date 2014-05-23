@@ -17,7 +17,7 @@
   flex: 1;
 }
 
-.issue-citation .priority {
+.priority {
   text-align: center;
   font-weight: 700;
   color: white;
@@ -29,27 +29,51 @@
   padding: 10px;
 }
 
-.issue-citation .priority-1 {
+.priority-1 {
   background: #DB4437;
 }
 
-.issue-citation .priority-2 {
+.priority-2 {
   background: #F4B400;
 }
 
-.issue-citation .priority-3 {
+.priority-3 {
   background: #4285F4;
 }
 
 .issue-citation .id {
    font-size: 1.5em;
-   font-weight: 300; 
+   font-weight: 300;
 }
 
 body {
   font-family: Roboto2, 'Helvetica Neue', Helvetica, Arial;
 }
 
+.email-photo {
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  border: 1px solid;
+}
+
+.project-view {
+  margin-left: 25px;
+}
+
+.project-citation {
+  margin-top: 20px;
+}
+
+.project-citation img {
+  vertical-align: middle;
+  margin-right: 25px;
+}
+
+.project-citation .project-name.selected {
+  color: blue;
+}
 
 .issue-edit .header {
     background: #3e51b5;

@@ -100,7 +100,7 @@ var TemplateCompiler = {
 
   push: function() { this.out.push.apply(this.out, arguments); },
 
-  header: 'var escapeHTML = View.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
+  header: 'var self = this; var escapeHTML = View.getPrototype().strToHTML; var out = opt_out ? opt_out : TemplateOutput.create(this);' +
     "out('",
 
   footer: "');" +
@@ -118,11 +118,11 @@ var TemplateCompiler = {
                v[2] ? ', {' + v[2][1].join('') + '}' : '',
                "),\n'");
    },
-   'simple value': function(v) { this.push("', this.", v[1].join(''), ",\n'"); },
-   'raw values tag': function (v) { this.push("',", v[1].join(''), ",\n'"); },
-   'values tag': function (v) { this.push("',", v[1].join(''), ",\n'"); },
-   'live value tag': function (v) { this.push("',this.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
-   'code tag': function (v) { this.push("');", v[1].join(''), "out('"); },
+   'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },
+   'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
+   'values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
+   'live value tag': function (v) { this.push("',\nthis.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
+   'code tag': function (v) { this.push("');\n", v[1].join(''), "out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },
    text: function(v) { this.push(v); }

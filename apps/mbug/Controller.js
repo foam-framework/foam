@@ -1,16 +1,6 @@
 /**
- *
+ * Mobile QuickBug.
  **/
-
-FOAModel({
-  name: 'PriorityView',
-  extendsModel: 'View',
-  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
-  templates: [ function toInnerHTML() {/*
-    <div class="priority priority-%%data">P%%data</div>
-  */} ]
-});
-QIssue.PRIORITY.view = 'PriorityView';
 
 FOAModel({
   name: 'MBug',
@@ -35,10 +25,15 @@ FOAModel({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        console.log('New Project: ', project);
+        console.log('New Project: ', project.projectName);
+
         this.X.project     = project;
         this.X.projectName = project.projectName;
         this.X.issueDAO    = project.IssueDAO;
+
+        var pc = this.X.ProjectController.create();
+        var view = this.X.DetailView.create({data: pc});
+        this.stack.setTopView(view);
       }
     },
     {
@@ -67,23 +62,40 @@ FOAModel({
 
       this.qbug.getDefaultProject({put: function(project) {
         self.project = project;
-        var pc = self.X.ProjectController.create();
-        var view = self.X.DetailView.create({data: pc});
-        self.stack.setTopView(view);
       }});
     },
     viewIssue: function(issue) {
+      this.editIssue(issue); return;
+
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueView.create({data: issue});
-      this.X.stack.pushView(v);
+      this.stack.pushView(v);
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueEditView.create({data: issue});
-      this.X.stack.pushView(v);
+      this.stack.pushView(v);
+    },
+    setProject: function(projectName) {
+      var self = this;
+      this.qbug.findProject(projectName, function(project) {
+        self.project = project;
+      });
+      this.stack.back();
     }
   }
 });
+
+
+FOAModel({
+  name: 'PriorityView',
+  extendsModel: 'View',
+  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  templates: [ function toInnerHTML() {/*
+    <div class="priority priority-%%data">P%%data</div>
+  */} ]
+});
+QIssue.PRIORITY.view = 'PriorityView';
 
 
 FOAModel({
@@ -149,6 +161,8 @@ FOAModel({
   actions: [
     {
       name: 'changeProject',
+      iconUrl: 'images/ic_menu_24dp.png',
+      label: '',
       action: function() {
         var v = this.X.ChangeProjectView.create({data: this.project.user});
         this.X.stack.pushView(v);
@@ -194,13 +208,23 @@ FOAModel({
 FOAModel({
   name: 'IssueEditView',
   extendsModel: 'DetailView',
+  actions: [
+    {
+      name: 'done',
+      label: '',
+      iconUrl: 'images/ic_clear_24dp.png',
+      action: function() {
+        this.X.stack.back();
+      }
+    }
+  ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
       $$starred
       <!-- Insert Attachments here -->
       <hr>
       <div class="header">#&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}</div>
-      <div class="choice">$$priority</div>
+      <div class="choice">$$priority{model_: 'PriorityView'}</div>
       <div class="choice">$$status</div>
       <div class="separator"></div>
       <div class="owner">
@@ -215,6 +239,7 @@ FOAModel({
     </div>
   */} ]
 });
+
 
 FOAModel({
   name: 'IssueView',
@@ -242,7 +267,7 @@ FOAModel({
       <hr>
       #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       <hr>
-      $$priority{mode: 'read-only'}<br>
+      $$priority{model_: 'PriorityView', mode: 'read-only'}<br>
       $$status{mode: 'read-only'}
       <hr>
       Owner $$owner{mode: 'read-only', tagName: 'span'}
@@ -255,6 +280,7 @@ FOAModel({
     $$edit
   */} ]
 });
+
 
 FOAModel({
   name: 'IssueCitationView',
@@ -286,42 +312,33 @@ FOAModel({
 });
 
 
+// Is actually a DetailView on User, but is only really
+// used to show and select available projects.
 FOAModel({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
 
-  properties: [
-    {
-      name: 'projects',
-      hidden: true
-    },
-    {
-      name: 'projectList',
-      view: { model_: 'ChoiceListView', choices: ['',''] }
-    }
-  ],
-
-  methods: {
-    updateSubViews: function() {
-      this.SUPER();
-
-      this.projectListView.choices = this.data.preferredProjects;
-    }
-
-  },
-
-  actions: [
-    {
-      name: 'close',
-      action: function() { this.X.stack.popView(); }
-    }
-  ],
-
   templates: [ function toHTML() {/*
+<<<<<<< HEAD
     <div id="<%= this.id %>">
+=======
+    <div class="project-view">
+      <div class="email-photo">
+        $$email{mode: 'display-only'}
+      </div>
+      <div style="height: 80px;"> </div>
+
+>>>>>>> e838e2532660a29a54cefe071ebba001574a5294
       $$email{mode: 'display-only'}
+      <br><br>
       <hr>
-      $$projectList
+      <% this.data.preferredProjects.forEach(function(project) { %>
+        <% if ( false && ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
+        <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
+          <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
+        </div>
+      <% }); %>
     </div>
   */} ]
 });
