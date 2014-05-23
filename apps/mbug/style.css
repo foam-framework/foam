@@ -81,7 +81,8 @@ body {
 }
 
 .actionButton {
-  background: white;
+  vertical-align: middle;
+  background: #03A9F4;
   border: none;
 }
 
@@ -145,4 +146,15 @@ body {
 
 .issue-edit .priority-3 {
   background: #4285F4;
+}
+
+span[name=projectName] {
+  color: white;
+  font-size: xx-large;
+  margin-left: 30px;
+  vertical-align: middle;
+}
+
+.mbug .header {
+  background: #03A9F4;
 }

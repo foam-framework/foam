@@ -193,9 +193,10 @@ FOAModel({
   },
   templates: [
     function toDetailHTML() {/*
-    <div id="<%= this.id %>">
-       $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
-       <hr>
+    <div id="<%= this.id %>" class="mbug">
+       <div class="header">
+         $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
+       </div>
        $$can
        <hr>
        $$filteredDAO
