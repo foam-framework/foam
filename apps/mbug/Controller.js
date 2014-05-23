@@ -310,6 +310,7 @@ FOAModel({
       <hr>
       <% this.data.projects.forEach(function(project) { %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({data: self.X.baseURL + project.name + '/logo'}) %>
           <%= project.name %>
         </div>
       <% }); %>
