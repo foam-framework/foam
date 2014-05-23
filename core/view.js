@@ -241,7 +241,7 @@ FOAModel({
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID() }
+      factory: function() { return this.nextID(); }
     },
     {
       name:  'parent',
@@ -1105,9 +1105,7 @@ FOAModel({
 
   methods: {
     initHTML: function() {
-      var e = this.$;
-
-      this.domValue = DomValue.create(e, undefined, 'valueAsDate');
+      this.domValue = DomValue.create(this.$, undefined, 'valueAsDate');
       Events.link(this.data$, this.domValue);
     }
   }
