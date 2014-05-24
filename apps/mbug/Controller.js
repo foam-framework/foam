@@ -191,8 +191,7 @@ FOAModel({
        <div class="header">
          $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
        </div>
-       $$can
-       <hr>
+       $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
   */}
@@ -326,7 +325,7 @@ FOAModel({
          if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
 
          projects.forEach(function(project) { %>
-        <% if ( false && ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
+        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
           <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>

@@ -217,3 +217,15 @@ select[name=priority], select[name=status] {
   margin-left: 30px;
   margin-top: 16px;
 }
+
+.cannedQuery .selected {
+  border-bottom: 3px solid red;
+}
+
+ul.cannedQuery {
+  background: #03A9F4;
+  padding: 10 0 3 6 !important;
+  margin: 0;
+  color: white;
+}
+
