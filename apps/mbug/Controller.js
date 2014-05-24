@@ -232,8 +232,37 @@ FOAModel({
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
-      <div class="choice">$$priority{model_: 'PriorityView'}</div>
-      <div class="choice">$$status</div>
+      <div class="choice">
+        $$priority{model_: 'PriorityView'}
+        $$priority{
+          model_: 'ChoiceView',
+          choices: [
+            [1, 'Priority 1'],
+            [2, 'Priority 2'],
+            [3, 'Priority 3']
+          ]
+        }
+      </div>
+      <div class="choice">
+        <img src="images/ic_keep_24dp.png" class="status-icon">
+        $$status{
+          model_: 'ChoiceView',
+          // TODO: get options from QProject
+          choices: [
+            'Unconfirmed',
+            'Untriaged',
+            'Available',
+            'Assigned',
+            'Started',
+            'ExternalDependency',
+            'Fixed',
+            'Verified',
+            'Duplicate',
+            'WontFix',
+            'Archived'
+          ]
+        }
+      </div>
       <div class="separator"></div>
       <div class="owner">
         <div class="owner-header">Owner</div>

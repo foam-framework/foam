@@ -203,3 +203,7 @@ span[name=projectName] {
   background: #0F9D58;
   border-radius:100px;
 }
+
+.status-icon {
+  opacity: 0.87;
+}
