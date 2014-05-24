@@ -125,7 +125,8 @@ FOAModel({
       }
     },
     {
-      name: 'q'
+      name: 'q',
+      view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
     },
     {
       name: 'can',
