@@ -207,3 +207,11 @@ span[name=projectName] {
 .status-icon {
   opacity: 0.87;
 }
+
+select[name=priority] {
+  background: white;
+  width: 80%;
+  height: 30px;
+  margin-left: 30px;
+  margin-top: 16px;
+}
