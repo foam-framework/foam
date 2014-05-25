@@ -215,3 +215,7 @@ select[name=priority] {
   margin-left: 30px;
   margin-top: 16px;
 }
+
+.comment-view .published {
+  color: #999;
+}

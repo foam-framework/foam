@@ -340,9 +340,9 @@ FOAModel({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.id %>">
+    <div id="<%= this.id %>" class="comment-view">
        Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
-       <%= this.data.published %> <br><br>
+       <span class="published"><%= this.data.published %></span> <br><br>
        $$content{mode: 'read-only'}
        <hr>
     </div>
