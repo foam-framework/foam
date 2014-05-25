@@ -294,7 +294,7 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="comment-view">
        Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
-       <span class="published"><%= this.data.published %></span> <br><br>
+       <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
        $$content{mode: 'read-only'}
        <hr>
     </div>
