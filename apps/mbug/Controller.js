@@ -64,13 +64,6 @@ FOAModel({
         self.project = project;
       }});
     },
-    viewIssue: function(issue) {
-      this.editIssue(issue); return;
-
-      // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueView.create({data: issue});
-      this.stack.pushView(v);
-    },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
       var v = this.X.IssueEditView.create({data: issue});
@@ -132,7 +125,8 @@ FOAModel({
       }
     },
     {
-      name: 'q'
+      name: 'q',
+      view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
     },
     {
       name: 'can',
@@ -197,8 +191,7 @@ FOAModel({
        <div class="header">
          $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
        </div>
-       $$can
-       <hr>
+       $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
   */}
@@ -280,51 +273,10 @@ FOAModel({
 
 
 FOAModel({
-  name: 'IssueView',
-  extendsModel: 'DetailView',
-  properties: [
-    {
-      name: 'commentsView',
-      factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
-      }
-    }
-  ],
-  actions: [
-    {
-      name: 'edit',
-      action: function() {
-        this.X.mbug.editIssue(this.data);
-      }
-    }
-  ],
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>">
-      $$starred
-      <!-- Insert Attachments here -->
-      <hr>
-      #$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
-      <hr>
-      $$priority{model_: 'PriorityView', mode: 'read-only'}<br>
-      $$status{mode: 'read-only'}
-      <hr>
-      Owner $$owner{mode: 'read-only', tagName: 'span'}
-      <hr>
-      CC
-      $$cc{mode: 'read-only'}
-      <hr>
-      <%= this.commentsView %>
-    </div>
-    $$edit
-  */} ]
-});
-
-
-FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <div id="<%= this.on('click', function() { this.X.mbug.viewIssue(this.data); }) %>" class="issue-citation">
+    <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
       <span class="owner">$$owner{mode: 'read-only'}</span>
       <div class="middle">
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
@@ -373,7 +325,7 @@ FOAModel({
          if ( projects.indexOf('foam-framework') == -1 ) projects.push('foam-framework');
 
          projects.forEach(function(project) { %>
-        <% if ( false && ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
+        <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
           <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
