@@ -144,7 +144,8 @@ FOAModel({
         clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9',
         scopes: [
           "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/projecthosting"
+          "https://www.googleapis.com/auth/projecthosting",
+          "https://www.google.com/m8/feeds"
         ]
       })(function(oauth2) {
         jsonpFuture.set((function() {

@@ -196,7 +196,7 @@ FOAModel({
         'redirect_uri=' + encodeURIComponent(returnPath),
         'scope=' + encodeURIComponent(this.scopes.join(' ')),
         'state=' + cb.id,
-        'approval_prompt=' + opt_forceInteractive ? 'force' : 'auto'
+        'approval_prompt=' + (opt_forceInteractive ? 'force' : 'auto')
       ];
 
       w = window.open(this.endpoint + "auth" + queryparams.join('&'));
