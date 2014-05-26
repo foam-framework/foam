@@ -1915,7 +1915,7 @@ FOAModel({
     },
 
     toInnerHTML: function() {
-      var out = "";
+      var out = '';
 
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
