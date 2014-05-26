@@ -177,6 +177,23 @@ select[name=sortOrder] {
   padding: 5px;
 }
 
+.mbug .header .default {
+  flex: 1.0;
+  display: flex;
+}
+
+.mbug.searchMode .header .default {
+  display: none;
+}
+
+.mbug:not(.searchMode) .header .search {
+  display: none;
+}
+
+.mbug.searchMode .cannedQuery {
+  display: none;
+}
+
 span[name=projectName] {
   align-self: center;
   flex: 1.0;

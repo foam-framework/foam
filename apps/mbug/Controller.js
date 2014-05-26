@@ -125,6 +125,11 @@ FOAModel({
       }
     },
     {
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      name: 'searchMode', postSet: function(_,v) { console.log('searchMode: ', v); }
+    },
+    {
       name: 'q',
       view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
     },
@@ -160,6 +165,18 @@ FOAModel({
         var v = this.X.ChangeProjectView.create({data: this.project.user});
         this.X.stack.pushView(v);
       }
+    },
+    {
+      name: 'enterSearchMode',
+      iconUrl: 'images/ic_filter_24dp.png',
+      label: '',
+      action: function() { this.searchMode = true; }
+    },
+    {
+      name: 'leaveSearchMode',
+      iconUrl: 'images/ic_arrow_back_24dp.png',
+      label: '',
+      action: function() { this.searchMode = false; }
     }
   ],
   listeners: [
@@ -187,9 +204,14 @@ FOAModel({
   },
   templates: [
     function toDetailHTML() {/*
-    <div id="<%= this.id %>" class="mbug">
+    <div id="<%= this.setClass('searchMode', function() { return self.data.searchMode; }, this.id) %>"  class="mbug">
        <div class="header">
-         $$changeProject $$projectName{mode: 'read-only'} $$q $$sortOrder
+         <span class="default">
+           $$changeProject $$projectName{mode: 'read-only'} $$enterSearchMode $$sortOrder
+         </span>
+         <span class="search">
+           $$leaveSearchMode $$q
+         </span>
        </div>
        $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
