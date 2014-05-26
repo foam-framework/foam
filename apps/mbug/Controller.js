@@ -133,8 +133,8 @@ FOAModel({
     },
     {
       name: 'q',
-      displayWidth: 70,
-      view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
+      displayWidth: 50,
+      view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
     },
     {
       name: 'can',
@@ -195,7 +195,7 @@ FOAModel({
         function() {
           console.log('Query Update');
           self.filteredDAO = self.issueDAO.
-            limit(500).
+            limit(10).
             where(AND(
               QueryParser.parseString(self.can) || TRUE,
               QueryParser.parseString(self.q) || TRUE
@@ -219,6 +219,11 @@ FOAModel({
        $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
+    <%
+      this.data.can$.addListener(function() {
+        self.qView.$.placeholder = "Search " + self.canView.choice[1].toLowerCase();
+      });
+    %>
   */}
   ]
 });
