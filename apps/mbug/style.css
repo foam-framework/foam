@@ -83,6 +83,8 @@ body {
   vertical-align: middle;
   background: #03A9F4;
   border: none;
+  -webkit-box-shadow: none;
+  box-shadown: none;
 }
 
 .actionButton:hover {
