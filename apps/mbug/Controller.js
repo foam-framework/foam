@@ -223,6 +223,9 @@ FOAModel({
       this.data.can$.addListener(function() {
         self.qView.$.placeholder = "Search " + self.canView.choice[1].toLowerCase();
       });
+      this.data.searchMode$.addListener(EventService.merged(function() {
+        self.qView.$.focus();
+      }, 100));
     %>
   */}
   ]

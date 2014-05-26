@@ -170,6 +170,22 @@ body {
 input[name=q] {
   align-self: center;
   margin: 20px;
+  height: 45px;
+  border: none;
+  color: white;
+  background: #03A9F4;
+  padding-left: 10px;
+  font-size: larger;
+}
+
+input[name=q]:focus {
+  outline: none;
+}
+
+input[name=q]::-webkit-input-placeholder {
+  font-size: larger;
+  color: white;
+  height: 45px;
 }
 
 select[name=sortOrder] {
@@ -259,3 +275,4 @@ ul.cannedQuery {
 .popupChoiceView {
   background: transparent;
 }
+
