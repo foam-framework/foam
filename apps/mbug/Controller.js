@@ -168,7 +168,7 @@ FOAModel({
     },
     {
       name: 'enterSearchMode',
-      iconUrl: 'images/ic_filter_24dp.png',
+      iconUrl: 'images/ic_search_24dp.png',
       label: '',
       action: function() { this.searchMode = true; }
     },
