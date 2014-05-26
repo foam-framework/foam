@@ -6,6 +6,13 @@ FOAModel({
     { model_: 'StringProperty', name: 'first' },
     { model_: 'StringProperty', name: 'last' },
     { model_: 'StringProperty', name: 'email' },
+    {
+      name: 'avatar',
+      factory: function() {
+        var blob = new Blob(['<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="64" height="64"><rect width="64" height="64" x="0" y="0" style="fill:#d40000"/><text x="32" y="32" style="text-anchor:middle;font-size:19;font-style:normal;font-weight:bold;font-family:Arial, sans;fill:#fff">' + this.last[0] + '</text></svg>'], { type: 'image/svg+xml' });
+        return URL.createObjectURL(blob);
+      }
+    },
     { model_: 'StringProperty',
       name: 'color',
       factory: function() {
@@ -99,10 +106,14 @@ FOAModel({
 });
 
 var view = TouchListView.create({
-  rowView: 'ContactRowView',
+  model: Contact,
   rowViewHeight: 200,
   height: document.body.offsetHeight,
   dao: dao
 });
+
+view.formatObject = function(o) {
+  return '<img style="border-radius:32px" src="' + o.avatar + '"><span>' + this.strToHTML(o.first + " " + o.last) + '</span>';
+};
 
 view.write(document);

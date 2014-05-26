@@ -4145,7 +4145,7 @@ FOAModel({
       name: 'dao'
     },
     {
-      name: 'rowView'
+      name: 'model'
     },
     {
       // TODO: Can we calculate this reliably?
@@ -4158,86 +4158,80 @@ FOAModel({
     },
     {
       model_: 'IntProperty',
-      name: 'skip',
+      name: 'scrollTop',
       defaultValue: 0,
+      preSet: function(_, v) {
+        if ( v < 0 ) return 0;
+        return v;
+      },
       postSet: function(old, nu) {
-        if ( old !== nu ) this.onDAOUpdate();
-      }
-    },
-    {
-      model_: 'IntProperty',
-      name: 'offset',
-      defaultValue: 0,
-      postSet: function(old, nu) {
-        if ( old !== nu && this.$ ) {
-          this.$.lastElementChild.style.webkitTransform =
-            'translate3d(0, ' + nu + 'px, 0)';
-        }
+        this.scroll();
       }
     },
   ],
 
   methods: {
     init: function() {
-      this.dao.listen(this.onDAOUpdate);
+      this.SUPER();
+      this.dao.listen(this.scroll);
     },
     toHTML: function() {
       var id = this.id;
       var overlay = this.nextID();
       this.on('touchstart', this.onTouchStart, overlay);
       this.on('touchmove', this.onTouchMove, overlay);
+      this.on('touchend', this.onTouchEnd, overlay);
 
       return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
+    formatObject: function(o) {
+      var out = "";
+      for ( var i = 0, prop; prop = this.model.properties[i]; i++ ) {
+        if ( prop.summaryFormatter )
+          out += prop.summaryFormatter(prop.f(o), o);
+        else out += this.strToHTML(prop.f(o));
+      }
+      return out;
+    },
     initHTML: function() {
       this.SUPER();
-      this.onDAOUpdate();
+      this.scroll();
     }
   },
 
   listeners: [
     {
-      name: 'onDAOUpdate',
+      name: 'scroll',
       code: function() {
         if ( ! this.$ ) return;
 
-        if ( ! this.views ) this.views = [];
-
-        var objs = [];
-        var limit = Math.floor(this.height / this.rowViewHeight) + 3;
-        this.dao.skip(this.skip).limit(limit).select(objs)((function() {
-          this.children = [];
-          this.initializers_ = [];
-          this.painting = false;
-
-          if ( ! this.$ ) return;
-
-          var html = "";
-
-          var rowView = typeof this.rowView === 'string' ? GLOBAL[this.rowView] : this.rowView;
-          for (var i = 0; i < objs.length; i++ ) {
-            if ( ! this.views[i] ) {
-              this.views[i] = rowView.create({
-                value: SimpleValue.create(objs[i]),
-                model: objs[i].model_
-              });
-            }
-            var view = this.views[i];
-            view.value.set(objs[i]);
-            this.addChild(view);
-            html += view.toHTML();
+        var offset = -(this.scrollTop % this.rowViewHeight);
+        var limit = Math.floor(this.height / this.rowViewHeight) + 2;
+        var skip = Math.floor(this.scrollTop / this.rowViewHeight);
+        var self = this;
+        this.dao.skip(skip).limit(limit).select()(function(objs) {
+          var out = "";
+          for ( var i = 0; i < objs.length; i++ ) {
+            out += '<div style="height:' + self.rowViewHeight + 'px;overflow:hidden">';
+            out += self.formatObject(objs[i]);
+            out += '</div>';
           }
-
-          this.$.lastElementChild.innerHTML = html;
-          this.initInnerHTML();
-        }).bind(this));
+          self.$.lastElementChild.innerHTML = out;
+          self.$.lastElementChild.style.webkitTransform = "translate3d(0px, " + offset + "px, 0px)";
+        });
       }
     },
     {
       name: 'onTouchStart',
       code: function(e) {
-        if ( e.changedTouches[0] )
+        if ( e.changedTouches[0] ) {
+          if ( this.decel ) {
+            this.decel = 0;
+          }
           this.startY = e.changedTouches[0].screenY;
+          this.speedY = 0;
+          this.lastTime = performance.now();
+        }
       }
     },
     {
@@ -4247,38 +4241,42 @@ FOAModel({
 
         e.preventDefault();
 
-        var delta = e.changedTouches[0].screenY - this.startY;
+        var delta = this.startY - e.changedTouches[0].screenY;
+        var time = performance.now();
+        this.speedY = delta / (time - this.lastTime);
+        this.lastTime = time;
         this.startY = e.changedTouches[0].screenY;
 
-        var offset = this.offset;
-        var skip = this.skip;
+        this.scrollTop = this.scrollTop + delta;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(e) {
+        if ( ! e.changedTouches[0] ) return;
 
-        offset += delta;
-        if ( Math.abs(offset) > this.rowViewHeight ) {
-          while ( offset >= this.rowViewHeight ) {
-            offset -= this.rowViewHeight;
-            skip--;
+        var speed = this.speedY;
+        var comp = function(s) { return s > 0; };
+        var accel = 0.0000002;
+        if ( speed > 0 ) {
+          accel *= -1;
+          comp = function(s) { return s < 0; };
+        }
+        var last = performance.now();
+        var self = this;
+        this.decel = 1;
+        window.requestAnimationFrame(function animate() {
+          if ( ! self.decel || comp(speed) ) {
+            self.decel = 0;
+            return;
           }
-          while ( offset <= 0 - this.rowViewHeight ) {
-            offset += this.rowViewHeight;
-            skip++;
-          }
-        }
-
-        if ( skip === 0 && offset > 0 ) offset = 0;
-
-        if ( skip > 0 ) {
-          skip = skip - 1;
-          offset -= this.rowViewHeight;
-        }
-
-        if ( skip < 0 ) {
-          skip = 0;
-          offset = 0;
-        }
-
-        this.offset = offset;
-        this.skip = skip;
+          window.requestAnimationFrame(animate);
+          var time = performance.now();
+          var delta = speed * (time - last);
+          last = time;
+          self.scrollTop = self.scrollTop + delta;
+          speed += accel * time;
+        });
       }
     },
   ]
