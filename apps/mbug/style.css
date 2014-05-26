@@ -177,6 +177,23 @@ select[name=sortOrder] {
   padding: 5px;
 }
 
+.mbug .header .default {
+  flex: 1.0;
+  display: flex;
+}
+
+.mbug.searchMode .header .default {
+  display: none;
+}
+
+.mbug:not(.searchMode) .header .search {
+  display: none;
+}
+
+.mbug.searchMode .cannedQuery {
+  display: none;
+}
+
 span[name=projectName] {
   align-self: center;
   flex: 1.0;
@@ -206,4 +223,29 @@ span[name=projectName] {
 
 .status-icon {
   opacity: 0.87;
+  margin: 3px;
+}
+
+select[name=priority], select[name=status] {
+  background: white;
+  border-color: white;
+  width: 250px;
+  height: 30px;
+  margin-left: 30px;
+  margin-top: 16px;
+}
+
+.comment-view .published {
+  color: #999;
+}
+
+.cannedQuery .selected {
+  border-bottom: 3px solid red;
+}
+
+ul.cannedQuery {
+  background: #03A9F4;
+  padding: 10 0 3 6 !important;
+  margin: 0;
+  color: white;
 }
