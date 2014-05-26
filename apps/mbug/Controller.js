@@ -83,7 +83,8 @@ FOAModel({
 FOAModel({
   name: 'PriorityView',
   extendsModel: 'View',
-  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  // TODO: I'm not sure why the preSet is needed, but things aren't working without it.
+  properties: [ { name: 'data', preSet: function(_, v) { return v ? v : '0'; }, postSet: function() { this.updateHTML(); } } ],
   templates: [ function toInnerHTML() {/*
     <div class="priority priority-%%data">P%%data</div>
   */} ]
@@ -119,9 +120,9 @@ FOAModel({
         model_: 'PopupChoiceView',
         iconUrl: 'images/ic_sort_24dp.png',
         choices: [
-          [ QIssue.MODIFIED,  'Last modified' ],
-          [ QIssue.PRIORITY,  'Priority' ],
-          [ QIssue.ID,        'Issue ID' ]
+          [ DESC(QIssue.MODIFIED), 'Last modified' ],
+          [ QIssue.PRI,            'Priority' ],
+          [ DESC(QIssue.ID),       'Issue ID' ]
         ]
       }
     },
@@ -194,7 +195,7 @@ FOAModel({
         function() {
           console.log('Query Update');
           self.filteredDAO = self.issueDAO.
-            limit(10).
+            limit(500).
             where(AND(
               QueryParser.parseString(self.can) || TRUE,
               QueryParser.parseString(self.q) || TRUE
@@ -251,13 +252,14 @@ FOAModel({
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
       <div class="choice">
-        $$priority{model_: 'PriorityView'}
-        $$priority{
+        $$pri{model_: 'PriorityView'}
+        $$pri{
           model_: 'ChoiceView',
           choices: [
-            [1, 'Priority 1'],
-            [2, 'Priority 2'],
-            [3, 'Priority 3']
+            [0, 'Priority 0 -- Critical'],
+            [1, 'Priority 1 -- High'],
+            [2, 'Priority 2 -- Medium'],
+            [3, 'Priority 3 -- Low']
           ]
         }
       </div>
@@ -307,7 +309,7 @@ FOAModel({
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
         $$summary{mode: 'read-only'}
       </div>
-      $$priority{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
+      $$pri{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });
