@@ -116,7 +116,8 @@ FOAModel({
       name: 'sortOrder',
       defaultValue: QIssue.MODIFIED,
       view: {
-        model_: 'ChoiceView',
+        model_: 'PopupChoiceView',
+        iconUrl: 'images/ic_sort_24dp.png',
         choices: [
           [ QIssue.MODIFIED,  'Last modified' ],
           [ QIssue.PRIORITY,  'Priority' ],
@@ -131,6 +132,7 @@ FOAModel({
     },
     {
       name: 'q',
+      displayWidth: 70,
       view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
     },
     {
@@ -219,6 +221,7 @@ FOAModel({
   */}
   ]
 });
+
 
 FOAModel({
   name: 'IssueEditView',

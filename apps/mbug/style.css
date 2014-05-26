@@ -251,3 +251,7 @@ ul.cannedQuery {
   margin: 0;
   color: white;
 }
+
+.popupChoiceView {
+  background: transparent;
+}
