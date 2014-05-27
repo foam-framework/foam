@@ -302,7 +302,6 @@ FOAModel({
       </div>
       <div class="separator"></div>
       <div class="cc">
-      $$owner{model_: 'IssueOwnerAvatarView'}
         <div class="cc-header">Cc</div>
         $$cc
       </div>
