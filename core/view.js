@@ -1429,8 +1429,8 @@ FOAModel({
  // TODO: next line appears slow, check why
       this.on('click', this.onClick, id);
       return this.name ?
-        '<img id="' + id + '" name="' + this.name + '">' :
-        '<img id="' + id + '">' ;
+        '<img id="' + id + '" ' + this.cssClassAttr() + '" name="' + this.name + '">' :
+        '<img id="' + id + '" ' + this.cssClassAttr() + '>' ;
     },
     initHTML: function() {
       if ( ! this.$ ) return;
