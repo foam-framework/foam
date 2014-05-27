@@ -387,9 +387,7 @@ FOAModel({
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
-      <div class="email-photo">
-        $$email{mode: 'display-only'}
-      </div>
+      $$email{model_: 'IssueOwnerAvatarView'}
       <div style="height: 80px;"> </div>
 
       $$email{mode: 'display-only'}
