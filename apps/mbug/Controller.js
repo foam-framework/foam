@@ -325,7 +325,7 @@ FOAModel({
                     '#846600',
                     '#330099'];
 
-      if ( ! this.data ) return colors[0];
+      if ( ! this.data ) return 'url(images/silhouette.png)';
 
       return colors[Math.abs(this.data.hashCode()) % colors.length];
     },
