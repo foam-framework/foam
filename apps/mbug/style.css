@@ -3,14 +3,19 @@
   display: flex;
 }
 
-.issue-citation .owner {
+.owner-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
   flex-grow: 0;
   overflow: hidden;
   margin-right: 20px;
   width: 55px;
   height: 55px;
   border-radius: 30px;
-  border: 1px solid;
+  border: 1px solid #999;
 }
 
 .issue-citation .middle {
@@ -122,6 +127,22 @@ body {
     padding: 12px 0 24px 0;
     color: #999;
     font-size: 21px;
+}
+
+.issue-edit .owner-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.owner-name.placeholder {
+  color: #b2b2b2
+}
+
+.issue-edit .owner .owner-name {
+  border-bottom: 1px solid #e9e9e9;
+  font-size: 24px;
+  flex: 1 0 auto;
 }
 
 .issue-edit .cc {
