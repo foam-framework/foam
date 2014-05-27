@@ -294,7 +294,7 @@ FOAModel({
       <div class="separator"></div>
       <div class="owner">
         <div class="owner-header">Owner</div>
-        $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Owner'}
+        <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
       </div>
       <div class="separator"></div>
       <div class="cc">
@@ -339,7 +339,7 @@ FOAModel({
       {{{this.data[0] && this.data[0].toUpperCase()}}}
     */},
     function toHTML() {/*
-      <div id="<%= this.id %>" class="owner" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+      <div id="<%= this.id %>" class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
     */}
   ]
 });
