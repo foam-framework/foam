@@ -180,12 +180,18 @@ input[name=q] {
 
 input[name=q]:focus {
   outline: none;
+  opacity: 0.76;
 }
 
 input[name=q]::-webkit-input-placeholder {
   font-size: larger;
   color: white;
-  height: 45px;
+  opacity: 0.76;
+  height: 55px;
+}
+
+.actionButton-leaveSearchMode img {
+  opacity: 0.76;
 }
 
 select[name=sortOrder] {
