@@ -307,3 +307,78 @@ FOAModel({
     }
   }
 });
+
+
+FOAModel({
+  name:  'PopupChoiceView',
+
+  extendsModel: 'AbstractChoiceView',
+
+  properties: [
+    {
+      name: 'showLabel'
+    },
+    {
+      name: 'iconUrl'
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'button'
+    },
+    {
+      name: 'className',
+      defaultValue: 'popupChoiceView'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'popup',
+      code: function(e) {
+        var view = ChoiceListView.create({
+          className: 'popupChoiceList',
+          data: this.data,
+          choices: this.choices
+        });
+
+        view.data$.addListener(function() {
+          this.data = view.data;
+          view.$.outerHTML = '';
+        }.bind(this));
+
+        var pos = findPageXY(this.$);
+        var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
+        var s = this.X.window.getComputedStyle(view.$);
+
+        view.$.style.top = pos[1];
+        view.$.style.left = pos[0]-toNum(s.width);
+        view.initHTML();
+        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.outerHTML = ''; });
+        view.$.addEventListener('mouseout', function(e) {
+          if ( e.fromElement == view.$ && e.toElement.parentNode != view.$ )
+            view.$.outerHTML = '';
+        });
+      }
+    }
+  ],
+
+  methods: {
+    toInnerHTML: function() {
+      var out = '';
+
+      if ( this.iconUrl ) {
+        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
+      }
+
+      if ( this.showLabel ) {
+        out += this.label;
+      }
+
+      return out;
+    },
+
+    initHTML: function() {
+      this.$.addEventListener('click', this.popup);
+    }
+  }
+});

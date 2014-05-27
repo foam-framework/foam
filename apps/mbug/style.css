@@ -32,6 +32,10 @@
   text-align: center;
 }
 
+.priority-0 {
+  background: #FF0000;
+}
+
 .priority-1 {
   background: #DB4437;
 }
@@ -171,6 +175,28 @@ body {
 input[name=q] {
   align-self: center;
   margin: 20px;
+  height: 45px;
+  border: none;
+  color: white;
+  background: #03A9F4;
+  padding-left: 10px;
+  font-size: larger;
+}
+
+input[name=q]:focus {
+  outline: none;
+  opacity: 0.76;
+}
+
+input[name=q]::-webkit-input-placeholder {
+  font-size: larger;
+  color: white;
+  opacity: 0.76;
+  height: 55px;
+}
+
+.actionButton-leaveSearchMode img {
+  opacity: 0.76;
 }
 
 select[name=sortOrder] {
@@ -218,6 +244,10 @@ span[name=projectName] {
   display: none;
 }
 
+.stackview-previewarea-td {
+  display: none;
+}
+
 .issue-edit .actionButton-done {
   background: white;
   padding: 0;
@@ -233,7 +263,7 @@ span[name=projectName] {
   margin: 3px;
 }
 
-select[name=priority], select[name=status] {
+select[name=pri], select[name=status] {
   background: white;
   border-color: white;
   width: 250px;
@@ -256,3 +286,8 @@ ul.cannedQuery {
   margin: 0;
   color: white;
 }
+
+.popupChoiceView {
+  background: transparent;
+}
+

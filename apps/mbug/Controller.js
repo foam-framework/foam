@@ -83,7 +83,8 @@ FOAModel({
 FOAModel({
   name: 'PriorityView',
   extendsModel: 'View',
-  properties: [ { name: 'data', postSet: function() { this.updateHTML(); } } ],
+  // TODO: I'm not sure why the preSet is needed, but things aren't working without it.
+  properties: [ { name: 'data', preSet: function(_, v) { return v ? v : '0'; }, postSet: function() { this.updateHTML(); } } ],
   templates: [ function toInnerHTML() {/*
     <div class="priority priority-%%data">P%%data</div>
   */} ]
@@ -116,11 +117,12 @@ FOAModel({
       name: 'sortOrder',
       defaultValue: QIssue.MODIFIED,
       view: {
-        model_: 'ChoiceView',
+        model_: 'PopupChoiceView',
+        iconUrl: 'images/ic_sort_24dp.png',
         choices: [
-          [ QIssue.MODIFIED,  'Last modified' ],
-          [ QIssue.PRIORITY,  'Priority' ],
-          [ QIssue.ID,        'Issue ID' ]
+          [ DESC(QIssue.MODIFIED), 'Last modified' ],
+          [ QIssue.PRI,            'Priority' ],
+          [ DESC(QIssue.ID),       'Issue ID' ]
         ]
       }
     },
@@ -131,7 +133,8 @@ FOAModel({
     },
     {
       name: 'q',
-      view: { model_: 'TextFieldView', type: 'search', onKeyMode: true }
+      displayWidth: 50,
+      view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
     },
     {
       name: 'can',
@@ -216,9 +219,18 @@ FOAModel({
        $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
+    <%
+      this.data.can$.addListener(function() {
+        self.qView.$.placeholder = "Search " + self.canView.choice[1].toLowerCase();
+      });
+      this.data.searchMode$.addListener(EventService.merged(function() {
+        self.qView.$.focus();
+      }, 100));
+    %>
   */}
   ]
 });
+
 
 FOAModel({
   name: 'IssueEditView',
@@ -248,13 +260,14 @@ FOAModel({
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
       <div class="choice">
-        $$priority{model_: 'PriorityView'}
-        $$priority{
+        $$pri{model_: 'PriorityView'}
+        $$pri{
           model_: 'ChoiceView',
           choices: [
-            [1, 'Priority 1'],
-            [2, 'Priority 2'],
-            [3, 'Priority 3']
+            [0, 'Priority 0 -- Critical'],
+            [1, 'Priority 1 -- High'],
+            [2, 'Priority 2 -- Medium'],
+            [3, 'Priority 3 -- Low']
           ]
         }
       </div>
@@ -341,7 +354,7 @@ FOAModel({
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
         $$summary{mode: 'read-only'}
       </div>
-      $$priority{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
+      $$pri{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
     </div>
   */} ]
 });

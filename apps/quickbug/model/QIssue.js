@@ -17,7 +17,7 @@
 var labelToProperty = {
   App:          'app',
   Type:         'type',
-  Pri:          'priority',
+  Pri:          'pri',
   Priority:     'priority',
   Mstone:       'milestone',
   M:            'milestone',
@@ -101,7 +101,7 @@ var QIssue = FOAM({
           model_: 'StringProperty',
           name: 'priority',
           shortName: 'p',
-          aliases: ['pr', 'pri', 'prior'],
+          aliases: ['pr', 'prior'],
           tableLabel: 'Priority',
           tableWidth: '60px',
           compareProperty: function(p1, p2) {
@@ -110,6 +110,12 @@ var QIssue = FOAM({
             return r === 0 ? 0 : r < 0 ? -1 : 1;
           },
           required: true
+        },
+        {
+          model_: 'IntProperty',
+          name: 'pri',
+          tableLabel: 'Pri',
+          tableWidth: '60px'
         },
         {
           model_: 'StringProperty',
