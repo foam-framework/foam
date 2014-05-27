@@ -94,11 +94,21 @@ body {
   border: none;
   -webkit-box-shadow: none;
   box-shadown: none;
+  opacity: 0.76;
 }
 
-.actionButton:hover {
+.actionButton:hover, .popupChoiceView:hover {
   background: #0F9D58;
   border-radius:100px;
+  outline: none;
+}
+
+.popupChoiceView {
+  padding: 8px;
+  margin-right: 20px;
+  margin-left: 20px;
+  outline: none;
+  opacity: 0.76;
 }
 
 .issue-edit .header {

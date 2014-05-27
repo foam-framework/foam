@@ -339,7 +339,7 @@ FOAModel({
       {{{this.data[0] && this.data[0].toUpperCase()}}}
     */},
     function toHTML() {/*
-      <div id="<%= this.id %>" class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+      <div id="<%= this.id %>" data-tip="<%= this.data %>"class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
     */}
   ]
 });
