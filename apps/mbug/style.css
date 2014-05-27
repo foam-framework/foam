@@ -239,6 +239,10 @@ span[name=projectName] {
   display: none;
 }
 
+.stackview-previewarea-td {
+  display: none;
+}
+
 .issue-edit .actionButton-done {
   background: white;
   padding: 0;
