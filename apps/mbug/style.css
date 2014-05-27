@@ -4,6 +4,11 @@
 }
 
 .issue-citation .owner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
   flex-grow: 0;
   overflow: hidden;
   margin-right: 20px;

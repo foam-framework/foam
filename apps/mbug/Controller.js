@@ -293,13 +293,50 @@ FOAModel({
   */} ]
 });
 
+FOAModel({
+  name: 'IssueOwnerAvatarView',
+  extendsModel: 'View',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } },
+  ],
+  methods: {
+    generateColor: function() {
+      var colors = ['#00681c',
+                    '#5b1094',
+                    '#790619',
+                    '#c88900',
+                    '#cc0060',
+                    '#008391',
+                    '#009486',
+                    '#b90038',
+                    '#846600',
+                    '#330099'];
+
+      if ( ! this.data ) return colors[0];
+
+      return colors[Math.abs(this.data.hashCode()) % colors.length];
+    },
+    updateHTML: function() {
+      if ( this.$ ) this.$.style.background = this.generateColor();
+      return this.SUPER();
+    },
+  },
+  templates: [
+    function toInnerHTML() {/*
+      {{{this.data[0] && this.data[0].toUpperCase()}}}
+    */},
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="owner" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+    */}
+  ]
+});
 
 FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-      <span class="owner">$$owner{mode: 'read-only'}</span>
+      $$owner{model_: 'IssueOwnerAvatarView'}
       <div class="middle">
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
         $$summary{mode: 'read-only'}
