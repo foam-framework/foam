@@ -1,6 +1,10 @@
 .issue-citation {
-  margin: 20px;
+  margin: 30 20 30 20;
   display: flex;
+}
+
+.issue-citation .priority {
+  margin-top: 16px;
 }
 
 .owner-avatar {
@@ -20,6 +24,7 @@
 
 .issue-citation .middle {
   flex: 1;
+  margin-right: 10px;
 }
 
 .priority {
@@ -208,11 +213,15 @@ body {
 
 .issue-citation span[name=id] {
   font-size: larger;
-  color: rgba(0, 0, 0, 0.87);
+  color: #555;
+  font-size: 16pt;
 }
 
 .issue-citation span[name=summary] {
-  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  margin-top: 6px;
+  color: #999;
+  font-size: 14pt;
 }
 
 input[name=q] {
