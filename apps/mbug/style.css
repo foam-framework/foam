@@ -293,6 +293,14 @@ select[name=pri], select[name=status] {
   color: #999;
 }
 
+.comment-view {
+  display: flex;
+}
+
+.comment-view .content {
+  flex: 1;
+}
+
 .cannedQuery .selected {
   border-bottom: 3px solid red;
 }
