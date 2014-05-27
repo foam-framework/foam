@@ -4387,7 +4387,7 @@ FOAModel({
     {
       name: 'onClick',
       code: function() {
-        this.editView.data = '';
+        this.editView.data = this.data;
         this.X.stack.pushView(this.editView);
         this.editView.data$.addListener(this.onDataSet);
       }
