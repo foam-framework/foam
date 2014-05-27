@@ -343,7 +343,7 @@ FOAModel({
 
         view.data$.addListener(function() {
           this.data = view.data;
-          view.$.outerHTML = '';
+          view.$.remove();
         }.bind(this));
 
         var pos = findPageXY(this.$);
@@ -353,10 +353,10 @@ FOAModel({
         view.$.style.top = pos[1];
         view.$.style.left = pos[0]-toNum(s.width);
         view.initHTML();
-        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.outerHTML = ''; });
+        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
         view.$.addEventListener('mouseout', function(e) {
           if ( e.fromElement == view.$ && e.toElement.parentNode != view.$ )
-            view.$.outerHTML = '';
+            view.$.remove();
         });
       }
     }
