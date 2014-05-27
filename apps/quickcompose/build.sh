@@ -53,6 +53,7 @@ cat \
   ../../core/experimental/protobufparser.js \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
+  ../../core/oauth.js \
   ../../core/ChromeApp.js \
   ../mailreader/view.js \
   ../mailreader/email.js \
