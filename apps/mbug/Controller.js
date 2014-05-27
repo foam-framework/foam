@@ -367,7 +367,7 @@ FOAModel({
     <hr>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
-         $$author{model_: 'IssueOwnerAvatarView'}
+         <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
          Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
