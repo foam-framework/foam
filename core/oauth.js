@@ -130,44 +130,6 @@ FOAModel({
 });
 
 FOAModel({
-  name: 'EasyOAuth2',
-  extendsModel: 'OAuth2',
-  help: 'A facade for easy OAuth strategy selection.',
-
-  properties: [
-    {
-      name: 'delegate',
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removePropertyListener(this.updateToken);
-        this.delegate.addPropertyListener('accessToken', this.updateToken);
-      },
-      factory: function() {
-        if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-          return OAuth2ChromeApp.create(this);
-        }
-        return OAuth2WebClient.create(this);
-      },
-      transient: true
-    }
-  ],
-
-  methods: {
-    refresh: function(ret, opt_forceInteractive) {
-      return this.delegate.refresh(ret, opt_forceInteractive);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'updateToken',
-      code: function(src) {
-        this.accessToken = src.accessToken;
-      }
-    }
-  ]
-});
-
-FOAModel({
   name: 'OAuth2WebClient',
   help: 'Strategy for OAuth2 when running as a web page.',
 
@@ -338,3 +300,11 @@ FOAModel({
     }
   }
 });
+
+
+// TODO: Register model for model, or fix the facade.
+if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
+  var EasyOAuth2 = OAuth2ChromeApp;
+} else {
+  EasyOAuth2 = OAuth2WebClient;
+}
