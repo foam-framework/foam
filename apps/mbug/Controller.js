@@ -298,6 +298,7 @@ FOAModel({
       </div>
       <div class="separator"></div>
       <div class="cc">
+      $$owner{model_: 'IssueOwnerAvatarView'}
         <div class="cc-header">Cc</div>
         $$cc
       </div>
@@ -387,9 +388,7 @@ FOAModel({
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
-      <div class="email-photo">
-        $$email{mode: 'display-only'}
-      </div>
+      $$email{model_: 'IssueOwnerAvatarView'}
       <div style="height: 80px;"> </div>
 
       $$email{mode: 'display-only'}
