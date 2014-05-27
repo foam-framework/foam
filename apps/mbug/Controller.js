@@ -144,12 +144,11 @@ FOAModel({
 
         return ChoiceListView.create({
           orientation: 'horizontal',
-//          helpText: 'Search within:',
           choices: [
-//            ['',                     'All issues',              1],
             [open,                   'OPEN ISSUES',             2],
             [open + ' is:starred',   'STARRED',  5],
             [open + ' owner=me',     'OWNED BY ME',    3]
+//            ['',                     'All issues',              1],
 //            [open + ' reporter=me',  'Open and reported by me', 4],
 //            [open + ' commentby:me', 'Open and comment by me',  8],
 //            ['status=New',           'New issues',              6],
@@ -315,16 +314,10 @@ FOAModel({
   ],
   methods: {
     generateColor: function() {
-      var colors = ['#00681c',
-                    '#5b1094',
-                    '#790619',
-                    '#c88900',
-                    '#cc0060',
-                    '#008391',
-                    '#009486',
-                    '#b90038',
-                    '#846600',
-                    '#330099'];
+      var colors = [
+        '#00681c', '#5b1094', '#790619', '#c88900', '#cc0060',
+        '#008391', '#009486', '#b90038', '#846600', '#330099'
+      ];
 
       if ( ! this.data ) return 'url(images/silhouette.png)';
 
@@ -336,14 +329,13 @@ FOAModel({
     },
   },
   templates: [
-    function toInnerHTML() {/*
-      {{{this.data[0] && this.data[0].toUpperCase()}}}
-    */},
+    function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase()}}} */},
     function toHTML() {/*
       <div id="<%= this.id %>" data-tip="<%= this.data %>"class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
     */}
   ]
 });
+
 
 FOAModel({
   name: 'IssueCitationView',
