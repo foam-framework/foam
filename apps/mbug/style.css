@@ -248,7 +248,7 @@ span[name=projectName] {
   margin: 3px;
 }
 
-select[name=priority], select[name=status] {
+select[name=pri], select[name=status] {
   background: white;
   border-color: white;
   width: 250px;
