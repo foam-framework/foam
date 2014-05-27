@@ -109,6 +109,23 @@ body {
   margin-left: 20px;
   outline: none;
   opacity: 0.76;
+  background: transparent;
+}
+
+.popupChoiceList {
+  width: 215px;
+  margin-left: 10px;
+  margin-top: -5px;
+}
+
+.popupChoiceList li {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 28;
+  margin: 45 20 45 0;
+}
+
+.popupChoiceList li.selected {
+  color: #03A9F4;
 }
 
 .issue-edit .header {
@@ -320,9 +337,5 @@ ul.cannedQuery {
   padding: 10 0 3 6 !important;
   margin: 0;
   color: white;
-}
-
-.popupChoiceView {
-  background: transparent;
 }
 
