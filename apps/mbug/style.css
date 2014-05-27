@@ -296,6 +296,12 @@ span[name=projectName] {
   padding: 0;
 }
 
+.issue-edit .star {
+  vertical-align: middle;
+  position: absolute;
+  right: 10px;
+}
+
 .actionButton-done:hover {
   background: #0F9D58;
   border-radius:100px;

@@ -66,7 +66,7 @@ FOAModel({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueEditView.create({data: issue});
+      var v = this.X.IssueView.create({data: issue});
       this.stack.pushView(v);
     },
     setProject: function(projectName) {
@@ -232,7 +232,7 @@ FOAModel({
 
 
 FOAModel({
-  name: 'IssueEditView',
+  name: 'IssueView',
   extendsModel: 'DetailView',
   properties: [
     {
@@ -254,7 +254,12 @@ FOAModel({
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
-      $$done <!-- $$starred --><br>
+      $$done $$starred{
+        className:  'star',
+        trueImage:  'images/ic_star_24dp.png',
+        falseImage: 'images/ic_star_outline_24dp.png'
+      }
+ <br>
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
