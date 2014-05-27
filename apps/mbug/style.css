@@ -266,17 +266,14 @@ select[name=sortOrder] {
   display: none;
 }
 
-.mbug.searchMode .cannedQuery {
-  display: none;
-}
-
 span[name=projectName] {
   align-self: center;
   flex: 1.0;
   color: white;
   font-size: xx-large;
-  margin-left: 30px;
+  margin-left: 42px;
   vertical-align: middle;
+  font-size: 28pt;
 }
 
 .stackview_navbar {
@@ -334,13 +331,28 @@ select[name=pri], select[name=status] {
   flex: 1;
 }
 
+.mbug.searchMode .cannedQuery {
+  display: none;
+}
+
+.cannedQuery {
+  height: 36px;
+}
+
+.cannedQuery li {
+  font-size: 16pt;
+  padding-bottom: 14px;
+  opacity: 0.76;
+}
+
 .cannedQuery .selected {
   border-bottom: 3px solid red;
+  opacity: 1.0;
 }
 
 ul.cannedQuery {
   background: #03A9F4;
-  padding: 10 0 3 6 !important;
+  padding: 10 0 3 100 !important;
   margin: 0;
   color: white;
 }
