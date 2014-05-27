@@ -134,31 +134,31 @@ body {
 }
 
 .issue-edit .header {
-    background: #03A9F4;
-    color: #fff;
-    padding: 92px 32px 70px 32px;
-    font-size: 32px;
+  background: #03A9F4;
+  color: #fff;
+  padding: 92px 32px 70px 32px;
+  font-size: 32px;
 }
 
 .issue-edit .separator {
-    border-top: #e9e9e9 1px solid;
+  border-top: #e9e9e9 1px solid;
 }
 
 .issue-edit .choice {
-    font-size: 32px;
-    display: flex;
-    align-items: center;
-    padding: 16px 12px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  padding: 16px 12px;
 }
 
 .issue-edit .owner {
-    padding: 12px;
+  padding: 12px;
 }
 
 .issue-edit .owner-header {
-    padding: 12px 0 24px 0;
-    color: #999;
-    font-size: 21px;
+  padding: 12px 0 24px 0;
+  color: #999;
+  font-size: 21px;
 }
 
 .issue-edit .owner-info {
@@ -178,13 +178,13 @@ body {
 }
 
 .issue-edit .cc {
-    padding: 12px;
+  padding: 12px;
 }
 
 .issue-edit .cc-header {
-    padding: 12px 0 24px 0;
-    color: #999;
-    font-size: 21px;
+  padding: 12px 0 24px 0;
+  color: #999;
+  font-size: 21px;
 }
 
 .issue-edit .priority {
@@ -366,3 +366,6 @@ ul.cannedQuery {
   color: white;
 }
 
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
