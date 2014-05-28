@@ -192,6 +192,10 @@ body {
   align-items: center;
 }
 
+.issue-edit .cc .owner-info {
+  padding: 12px 0;
+}
+
 .owner-name.placeholder {
   color: #b2b2b2
 }

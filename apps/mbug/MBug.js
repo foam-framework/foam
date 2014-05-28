@@ -313,7 +313,7 @@ FOAModel({
     { name: 'data', postSet: function() { this.updateHTML(); } }
   ],
   templates: [
-    function toHTML() {/* <div id="<%= this.id %>" class="owner-info"><%= this.toInnerHTML() %></div> */},
+    function toHTML() {/* <div id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
     function toInnerHTML() {/*
 <% for ( var i = 0; i < this.data.length; i++ ) { %>
   <div class="owner-info"><%= IssueOwnerAvatarView.create({ data: this.data[i] }) %> <div class="owner-name">{{{this.data[i]}}}</div></div>
