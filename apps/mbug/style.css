@@ -187,6 +187,7 @@ body {
 }
 
 .issue-edit .owner .owner-name {
+  color: #555;
   border-bottom: 1px solid #e9e9e9;
   font-size: 24px;
   flex: 1 0 auto;
