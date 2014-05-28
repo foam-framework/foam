@@ -328,6 +328,10 @@ FOAModel({
     {
       name: 'className',
       defaultValue: 'popupChoiceView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showValue'
     }
   ],
 
@@ -348,7 +352,7 @@ FOAModel({
           view.$.remove();
         }.bind(this)));
 
-        var pos = findPageXY(this.$);
+        var pos = findPageXY(this.$.querySelector('img'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
 
@@ -367,6 +371,12 @@ FOAModel({
   methods: {
     toInnerHTML: function() {
       var out = '';
+
+      if ( this.showValue ) {
+        var id = this.nextID();
+        out += '<span id="' + id + '" class="value">' + (this.choice[1] || '') + '</span>';
+        this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
+      }
 
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
