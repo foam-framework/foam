@@ -102,7 +102,7 @@ body {
   opacity: 0.76;
 }
 
-.actionButton:hover, .popupChoiceView:hover {
+.actionButton:hover, .popupChoiceView:hover img {
   background: #0F9D58;
   border-radius:100px;
   outline: none;
@@ -117,10 +117,22 @@ body {
   background: transparent;
 }
 
-.popupChoiceList {
+.popupChoiceView .value {
+  width: 350px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 22pt;
+  text-align: left;
+  color: #222;
+  margin-left: 30px;
+  margin-top: -35px;
+}
+
+.popupChoiceView img {
   margin-left: 10px;
   margin-top: -5px;
   border-radius: 5px;
+  opacity: 0.76;
 }
 
 .popupChoiceList li {

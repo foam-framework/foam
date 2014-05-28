@@ -256,7 +256,9 @@ FOAModel({
       <div class="choice">
         $$pri{model_: 'PriorityView'}
         $$pri{
-          model_: 'ChoiceView',
+          model_: 'PopupChoiceView',
+          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+          showValue: true,
           choices: [
             [0, 'Priority 0 -- Critical'],
             [1, 'Priority 1 -- High'],
@@ -268,7 +270,9 @@ FOAModel({
       <div class="choice">
         <img src="images/ic_keep_24dp.png" class="status-icon">
         $$status{
-          model_: 'ChoiceView',
+          model_: 'PopupChoiceView',
+          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+          showValue: true,
           // TODO: get options from QProject
           choices: [
             'Unconfirmed',
