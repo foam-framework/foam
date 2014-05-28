@@ -39,7 +39,6 @@ FOAModel({
     {
       name: 'stack',
       subType: 'StackView',
-      view: function() { return StackView.create(); },
       factory: function() { return StackView.create(); }
     }
   ],
@@ -60,9 +59,7 @@ FOAModel({
         stack:             this.stack
       }, 'MBUG CONTEXT');
 
-      this.qbug.getDefaultProject({put: function(project) {
-        self.project = project;
-      }});
+      this.qbug.getDefaultProject({put: function(project) { self.project = project; }});
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
@@ -71,9 +68,7 @@ FOAModel({
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) {
-        self.project = project;
-      });
+      this.qbug.findProject(projectName, function(project) { self.project = project; });
       this.stack.back();
     }
   }
@@ -106,7 +101,6 @@ FOAModel({
     {
       name: 'issueDAO',
       defaultValueFn: function() { return this.X.issueDAO; },
-      hidden: true
     },
     {
       name: 'filteredDAO',
@@ -181,8 +175,6 @@ FOAModel({
       action: function() { this.searchMode = false; }
     }
   ],
-  listeners: [
-  ],
   methods: {
     init: function() {
       this.SUPER();
@@ -194,10 +186,10 @@ FOAModel({
         function() {
           console.log('Query Update');
           self.filteredDAO = self.issueDAO.
-            limit(10).
+            limit(15).
             where(AND(
               QueryParser.parseString(self.can) || TRUE,
-              QueryParser.parseString(self.q) || TRUE
+              QueryParser.parseString(self.q)   || TRUE
             ).partialEval()).
             orderBy(self.sortOrder);
         }
@@ -247,9 +239,7 @@ FOAModel({
       name: 'done',
       label: '',
       iconUrl: 'images/ic_clear_24dp.png',
-      action: function() {
-        this.X.stack.back();
-      }
+      action: function() { this.X.stack.back(); }
     }
   ],
   templates: [ function toHTML() {/*
@@ -259,7 +249,7 @@ FOAModel({
         trueImage:  'images/ic_star_24dp.png',
         falseImage: 'images/ic_star_outline_24dp.png'
       }
- <br>
+      <br>
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
@@ -309,6 +299,7 @@ FOAModel({
     </div>
   */} ]
 });
+
 
 FOAModel({
   name: 'IssueOwnerAvatarView',
