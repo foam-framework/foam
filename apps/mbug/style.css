@@ -156,8 +156,13 @@ body {
 .issue-edit .header {
   background: #03A9F4;
   color: #fff;
-  padding: 92px 32px 70px 32px;
+  padding: 50px 32px 50px 32px;
   font-size: 32px;
+}
+
+.issue-edit .toolbar {
+  padding: 20px;
+  background: #03A9F4;
 }
 
 .issue-edit .separator {
@@ -320,14 +325,13 @@ span[name=projectName] {
 }
 
 .issue-edit .actionButton-done {
-  background: white;
   padding: 0;
 }
 
 .issue-edit .star {
   vertical-align: middle;
   position: absolute;
-  right: 10px;
+  right: 35px;
 }
 
 .actionButton-done:hover {
