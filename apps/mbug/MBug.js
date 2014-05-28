@@ -244,12 +244,14 @@ FOAModel({
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
-      $$done $$starred{
-        className:  'star',
-        trueImage:  'images/ic_star_24dp.png',
-        falseImage: 'images/ic_star_outline_24dp.png'
-      }
-      <br>
+      <div class="toolbar">
+        $$done
+        $$starred{
+          className:  'star',
+          trueImage:  'images/ic_star_24dp.png',
+          falseImage: 'images/ic_star_outline_24dp.png'
+        }
+      </div>
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
