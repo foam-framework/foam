@@ -54,8 +54,12 @@
 }
 
 .issue-citation .id {
-   font-size: 1.5em;
-   font-weight: 300;
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+.issue-edit span[name=id] {
+  font-weight: bold;
 }
 
 body {
