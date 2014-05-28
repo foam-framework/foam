@@ -349,7 +349,7 @@ FOAModel({
         // doesn't remove the view without it.
         view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
-          view.$.remove();
+          if ( view.$ ) view.$.remove();
         }.bind(this)));
 
         var pos = findPageXY(this.$.querySelector('img'));
@@ -361,7 +361,7 @@ FOAModel({
         view.initHTML();
         view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
         view.$.addEventListener('mouseout', function(e) {
-          if ( e.fromElement == view.$ && ( ( ! e.toElement ) || e.toElement.parentNode != view.$ ) )
+          if ( view.$ && e.fromElement == view.$ && ( ( ! e.toElement ) || e.toElement.parentNode != view.$ ) )
             view.$.remove();
         });
       }
