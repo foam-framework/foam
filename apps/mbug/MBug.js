@@ -298,14 +298,29 @@ FOAModel({
       </div>
       <div class="separator"></div>
       <div class="cc">
-        <div class="cc-header">Cc</div>
-        $$cc
+        <div class="cc-header">Cc<img class="cc-add" src="images/ic_add_24dp.png"></div>
+        $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
     </div>
   */} ]
 });
 
+FOAModel({
+  name: 'IssueEmailArrayView',
+  extendsModel: 'View',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } }
+  ],
+  templates: [
+    function toHTML() {/* <div id="<%= this.id %>" class="owner-info"><%= this.toInnerHTML() %></div> */},
+    function toInnerHTML() {/*
+<% for ( var i = 0; i < this.data.length; i++ ) { %>
+  <div class="owner-info"><%= IssueOwnerAvatarView.create({ data: this.data[i] }) %> <div class="owner-name">{{{this.data[i]}}}</div></div>
+<% } %>
+    */}
+  ]
+});
 
 FOAModel({
   name: 'IssueOwnerAvatarView',
