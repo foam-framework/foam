@@ -357,7 +357,7 @@ FOAModel({
         view.initHTML();
         view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
         view.$.addEventListener('mouseout', function(e) {
-          if ( e.fromElement == view.$ && e.toElement.parentNode != view.$ )
+          if ( e.fromElement == view.$ && ( ( ! e.toElement ) || e.toElement.parentNode != view.$ ) )
             view.$.remove();
         });
       }
