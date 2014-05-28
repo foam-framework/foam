@@ -351,6 +351,7 @@ select[name=pri], select[name=status] {
 
 .comment-view .content {
   flex: 1;
+  margin-right: 30px;
 }
 
 .mbug.searchMode .cannedQuery {
