@@ -118,6 +118,9 @@ body {
   outline: none;
   opacity: 0.76;
   background: transparent;
+}
+
+.issue-edit .popupChoiceView {
   display: flex;
   flex: 1 0 auto;
   align-items: center;
