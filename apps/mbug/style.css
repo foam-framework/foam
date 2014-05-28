@@ -351,11 +351,16 @@ select[name=pri], select[name=status] {
 
 .comment-view {
   display: flex;
+  margin-right: 35px;
+  margin-bottom: 25px;
 }
 
 .comment-view .content {
+  color: #555;
+  font-size: 16pt;
+  line-height: 26pt;
+  overflow: hidden;
   flex: 1;
-  margin-right: 30px;
 }
 
 .mbug.searchMode .cannedQuery {
