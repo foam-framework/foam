@@ -341,10 +341,12 @@ FOAModel({
           choices: this.choices
         });
 
-        view.data$.addListener(function() {
+        // I don't know why the 'animate' is required, but it sometimes
+        // doesn't remove the view without it.
+        view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
           view.$.remove();
-        }.bind(this));
+        }.bind(this)));
 
         var pos = findPageXY(this.$);
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
