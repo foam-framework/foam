@@ -363,7 +363,7 @@ span[name=projectName] {
   height: 100%;
 }
 
-.issue-edit .actionButton-done {
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
   padding: 0;
 }
 
@@ -374,9 +374,17 @@ span[name=projectName] {
   opacity: 0.76;
 }
 
-.actionButton-done:hover {
+.actionButton-cancel:hover, .actionButton-save:hover {
   background: #0F9D58;
   border-radius:100px;
+}
+
+.actionButton-save:disabled {
+  display: none;
+}
+
+.actionButton-save {
+  border: none;
 }
 
 .status-icon {

@@ -63,8 +63,8 @@ FOAModel({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueView.create({data: issue});
-      this.stack.pushView(v);
+      var v = this.X.IssueView.create({dao: this.X.issueDAO, data: issue});
+      this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
       var self = this;
@@ -231,7 +231,7 @@ FOAModel({
 
 FOAModel({
   name: 'IssueView',
-  extendsModel: 'DetailView',
+  extendsModel: 'UpdateDetailView',
   properties: [
     {
       name: 'commentsView',
@@ -242,16 +242,20 @@ FOAModel({
   ],
   actions: [
     {
-      name: 'done',
+      name: 'cancel',
       label: '',
-      iconUrl: 'images/ic_clear_24dp.png',
-      action: function() { this.X.stack.back(); }
+      iconUrl: 'images/ic_clear_24dp.png'
+    },
+    {
+      name: 'save',
+      label: '',
+      iconUrl: 'images/ic_done_24dp.png'
     }
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
       <div class="toolbar">
-        $$done
+        $$cancel $$save
         $$starred{
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',
