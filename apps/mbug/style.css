@@ -237,8 +237,9 @@ body {
 }
 
 .issue-edit .cc-header .cc-add {
+  margin-right: 7px;
   float: right;
-  opacity: 0.76;
+  opacity: 0.54;
 }
 
 .issue-edit .priority {
