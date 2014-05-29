@@ -25,8 +25,6 @@ FOAModel({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        console.log('New Project: ', project.projectName);
-
         this.X.project     = project;
         this.X.projectName = project.projectName;
         this.X.issueDAO    = project.IssueDAO;
@@ -255,7 +253,9 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
       <div class="toolbar">
-        $$cancel $$save
+        $$cancel
+        <span class="expand"></span>
+        $$save
         $$starred{
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',

@@ -169,6 +169,20 @@ body {
 .issue-edit .toolbar {
   padding: 20px;
   background: #03A9F4;
+  display: flex;
+}
+
+.isue-edit .actionButton-cancel {
+  flex: 1;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
+  padding: 0;
+}
+
+.issue-edit .star {
+  vertical-align: middle;
+  opacity: 0.76;
 }
 
 .issue-edit .separator {
@@ -363,17 +377,6 @@ span[name=projectName] {
   height: 100%;
 }
 
-.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
-  padding: 0;
-}
-
-.issue-edit .star {
-  vertical-align: middle;
-  position: absolute;
-  right: 35px;
-  opacity: 0.76;
-}
-
 .actionButton-cancel:hover, .actionButton-save:hover {
   background: #0F9D58;
   border-radius:100px;
@@ -385,6 +388,7 @@ span[name=projectName] {
 
 .actionButton-save {
   border: none;
+  margin-right: 40px;
 }
 
 .status-icon {
