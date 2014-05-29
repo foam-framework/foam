@@ -102,6 +102,11 @@ body {
   color: #03A9F4;
 }
 
+.actionButton-back {
+  width: 48px;
+  height: 48px;
+}
+
 .actionButton {
   padding: 8px;
   vertical-align: middle;
@@ -110,12 +115,12 @@ body {
   -webkit-box-shadow: none;
   box-shadown: none;
   opacity: 0.76;
+  outline: none;
 }
 
 .actionButton:hover, .popupChoiceView:hover img {
   background: #0F9D58;
   border-radius:100px;
-  outline: none;
 }
 
 .popupChoiceView {
@@ -335,6 +340,10 @@ select[name=sortOrder] {
 
 .mbug:not(.searchMode) .header .search {
   display: none;
+}
+
+.mbug.searchMode .header .search {
+  display: inherit;
 }
 
 .swipeAltOuter {
