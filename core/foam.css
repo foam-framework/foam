@@ -665,11 +665,6 @@ div.gridViewControl select {
   padding-right: 10px;
 }
 
-
-.actionButton-back, .actionButton-forth { border: none; background: transparent; padding: 4px; }
-.actionButton-back img { width: 32px; }
-.actionButton-forth img { width: 32px; }
-
 .actionButton:disabled { color: #bbb; -webkit-filter: grayscale(0.8); }
 
 .editColumnView {

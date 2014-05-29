@@ -309,6 +309,10 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .actionButton-leaveSearchMode img {
+  margin: 12px;
+}
+
+.actionButton-leaveSearchMode img {
   opacity: 0.76;
 }
 
