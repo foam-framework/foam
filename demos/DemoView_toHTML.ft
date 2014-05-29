@@ -26,7 +26,5 @@
   <div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
   </pre>
 <% } %>
-<% if ( test.tests.length ) { %>
   <blockquote><%= cView %></blockquote>
-<% } %>
 <br>

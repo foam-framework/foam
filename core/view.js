@@ -4187,10 +4187,6 @@ FOAModel({
 
     initHTML: function() {
       // this.SUPER();
-      this.$.addEventListener('scroll', function(event) {
-        console.log('scrolled ' + this.$.scrollTop);
-      });
-
       if ( ! this.hidden ) this.updateHTML();
     },
 
@@ -4209,7 +4205,6 @@ FOAModel({
       if ( this.chunkSize ) {
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
-      console.log('updating ' + this.id);
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.clone();
         var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
