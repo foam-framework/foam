@@ -275,9 +275,7 @@ FOAModel({
       name:  'save',
       help:  'Save updates.',
 
-      isEnabled: function() {
-        return ! this.originalData.equals(this.data);
-      },
+      isEnabled: function() { return ! this.originalData.equals(this.data); },
       action: function() {
         var self = this;
         var obj  = this.data;
@@ -296,6 +294,12 @@ FOAModel({
     {
       name:  'cancel',
       help:  'Cancel update.',
+      isEnabled: function() { return ! this.originalData.equals(this.data); },
+      action: function() { this.stack.back(); }
+    },
+    {
+      name:  'back',
+      isEnabled: function() { return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     }
   ]
