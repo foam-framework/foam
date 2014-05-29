@@ -175,7 +175,7 @@ input[name=q] {
   color: white;
   background: #03A9F4;
   padding-left: 10px;
-  font-size: larger;
+  font-size: 24pt;
 }
 
 input[name=q]:focus {
@@ -183,7 +183,7 @@ input[name=q]:focus {
 }
 
 input[name=q]::-webkit-input-placeholder {
-  font-size: larger;
+  font-size: 24pt;
   color: white;
   height: 45px;
 }
