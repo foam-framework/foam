@@ -405,6 +405,7 @@ debugger; // Why is this here?  Is it ever called?
 Model.methods = {
   getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
   getProperty:              ModelProto.getProperty,
+  getAction:                ModelProto.getAction,
   hashCode:                 ModelProto.hashCode,
   buildPrototype:           ModelProto.buildPrototype,
   getPrototype:             ModelProto.getPrototype,

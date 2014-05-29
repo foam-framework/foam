@@ -106,6 +106,7 @@ Model.properties = Model.properties.concat(
 Model.methods = {
   getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
   getProperty:              ModelProto.getProperty,
+  getAction:                ModelProto.getAction,
   hashCode:                 ModelProto.hashCode,
   buildPrototype:           ModelProto.buildPrototype,
   getPrototype:             ModelProto.getPrototype,
