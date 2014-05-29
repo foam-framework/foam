@@ -112,6 +112,18 @@ FOAModel({
     },
     {
       name: 'authAgent2'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'scopes',
+      factory: function() {
+        return [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/projecthosting",
+          "https://www.googleapis.com/auth/plus.me",
+          "https://www.googleapis.com/auth/plus.peopleapi.readwrite"
+        ];
+      }
     }
   ],
 
@@ -139,15 +151,15 @@ FOAModel({
         };
       };
 
+      var self = this;
       this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
         clientId: opt_clientId || '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
-        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9',
-        scopes: [
-          "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/projecthosting",
-          "https://www.google.com/m8/feeds"
-        ]
+        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9'
       })(function(oauth2) {
+        if ( oauth2.scopes.compareTo(self.scopes) != 0 ) {
+          oauth2.scopes = self.scopes;
+        }
+
         jsonpFuture.set((function() {
           var factory = self.X.OAuthXhrFactory.create({
             authAgent: oauth2,

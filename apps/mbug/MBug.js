@@ -39,7 +39,6 @@ FOAModel({
     {
       name: 'stack',
       subType: 'StackView',
-      view: function() { return StackView.create(); },
       factory: function() { return StackView.create(); }
     }
   ],
@@ -60,20 +59,16 @@ FOAModel({
         stack:             this.stack
       }, 'MBUG CONTEXT');
 
-      this.qbug.getDefaultProject({put: function(project) {
-        self.project = project;
-      }});
+      this.qbug.getDefaultProject({put: function(project) { self.project = project; }});
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueEditView.create({data: issue});
-      this.stack.pushView(v);
+      var v = this.X.IssueView.create({dao: this.X.issueDAO, data: issue});
+      this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) {
-        self.project = project;
-      });
+      this.qbug.findProject(projectName, function(project) { self.project = project; });
       this.stack.back();
     }
   }
@@ -106,12 +101,40 @@ FOAModel({
     {
       name: 'issueDAO',
       defaultValueFn: function() { return this.X.issueDAO; },
-      hidden: true
     },
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: { model_: 'DAOListView'/*'TouchListView'*/, mode: 'read-only', rowView: 'IssueCitationView'  }
+      help: 'Top-level filtered DAO. Further filtered by each canned query.',
+      view: function() {
+        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        var self = this;
+        var views = [
+    //        ['',                     'All issues'],
+            [open,                   'OPEN ISSUES'],
+            [open + ' is:starred',   'STARRED'],
+            [open + ' owner=me',     'OWNED BY ME']
+    //        [open + ' reporter=me',  'Open and reported by me'],
+    //        [open + ' commentby:me', 'Open and comment by me'],
+    //        ['status=New',           'New issues'],
+    //        ['status=Fixed,Done',    'Issues to verify']
+          ].map(function(filter) {
+            return ViewChoice.create({
+              view: PredicatedView.create({
+                predicate: QueryParser.parseString(filter[0]) || TRUE,
+                view: DAOListView.create({
+                  mode: 'read-only',
+                  rowView: 'IssueCitationView',
+                  chunkSize: 100
+                })
+              }),
+
+              label: filter[1]
+            });
+          });
+
+        return SwipeAltView.create({ views: views });
+      }
     },
     {
       name: 'sortOrder',
@@ -135,28 +158,6 @@ FOAModel({
       name: 'q',
       displayWidth: 50,
       view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
-    },
-    {
-      name: 'can',
-      defaultValue: 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged',
-      view: function() {
-        var open = ProjectController.CAN.defaultValue;
-
-        return ChoiceListView.create({
-          orientation: 'horizontal',
-//          helpText: 'Search within:',
-          choices: [
-//            ['',                     'All issues',              1],
-            [open,                   'OPEN ISSUES',             2],
-            [open + ' is:starred',   'STARRED',  5],
-            [open + ' owner=me',     'OWNED BY ME',    3]
-//            [open + ' reporter=me',  'Open and reported by me', 4],
-//            [open + ' commentby:me', 'Open and comment by me',  8],
-//            ['status=New',           'New issues',              6],
-//            ['status=Fixed,Done',    'Issues to verify',        7]
-          ]
-        });
-      }
     }
   ],
   actions: [
@@ -182,25 +183,19 @@ FOAModel({
       action: function() { this.searchMode = false; }
     }
   ],
-  listeners: [
-  ],
   methods: {
     init: function() {
       this.SUPER();
 
       var self = this;
-
       Events.dynamic(
-        function() { self.can; self.sortOrder; self.q; },
+        function() { self.sortOrder; self.q; },
         function() {
           console.log('Query Update');
-          self.filteredDAO = self.issueDAO.
-            limit(10).
-            where(AND(
-              QueryParser.parseString(self.can) || TRUE,
-              QueryParser.parseString(self.q) || TRUE
-            ).partialEval()).
-            orderBy(self.sortOrder);
+          self.filteredDAO = self.issueDAO
+              .limit(15)
+              .where(QueryParser.parseString(self.q) || TRUE)
+              .orderBy(self.sortOrder);
         }
       );
     }
@@ -216,16 +211,18 @@ FOAModel({
            $$leaveSearchMode $$q
          </span>
        </div>
-       $$can{className: 'foamChoiceListView horizontal cannedQuery'}
        $$filteredDAO
     </div>
     <%
-      this.data.can$.addListener(function() {
-        self.qView.$.placeholder = "Search " + self.canView.choice[1].toLowerCase();
+      this.addInitializer(function() {
+        self.filteredDAOView.index$.addListener(function() {
+          var v = self.filteredDAOView;
+          self.qView.$.placeholder = "Search " + v.views[v.index].label.toLowerCase();
+        });
+        self.data.searchMode$.addListener(EventService.merged(function() {
+          self.qView.$.focus();
+        }, 100));
       });
-      this.data.searchMode$.addListener(EventService.merged(function() {
-        self.qView.$.focus();
-      }, 100));
     %>
   */}
   ]
@@ -233,8 +230,8 @@ FOAModel({
 
 
 FOAModel({
-  name: 'IssueEditView',
-  extendsModel: 'DetailView',
+  name: 'IssueView',
+  extendsModel: 'UpdateDetailView',
   properties: [
     {
       name: 'commentsView',
@@ -245,24 +242,35 @@ FOAModel({
   ],
   actions: [
     {
-      name: 'done',
+      name: 'cancel',
       label: '',
-      iconUrl: 'images/ic_clear_24dp.png',
-      action: function() {
-        this.X.stack.back();
-      }
+      iconUrl: 'images/ic_clear_24dp.png'
+    },
+    {
+      name: 'save',
+      label: '',
+      iconUrl: 'images/ic_done_24dp.png'
     }
   ],
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
-      $$done <!-- $$starred --><br>
+      <div class="toolbar">
+        $$cancel $$save
+        $$starred{
+          className:  'star',
+          trueImage:  'images/ic_star_24dp.png',
+          falseImage: 'images/ic_star_outline_24dp.png'
+        }
+      </div>
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
       <div class="choice">
         $$pri{model_: 'PriorityView'}
         $$pri{
-          model_: 'ChoiceView',
+          model_: 'PopupChoiceView',
+          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+          showValue: true,
           choices: [
             [0, 'Priority 0 -- Critical'],
             [1, 'Priority 1 -- High'],
@@ -274,7 +282,9 @@ FOAModel({
       <div class="choice">
         <img src="images/ic_keep_24dp.png" class="status-icon">
         $$status{
-          model_: 'ChoiceView',
+          model_: 'PopupChoiceView',
+          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+          showValue: true,
           // TODO: get options from QProject
           choices: [
             'Unconfirmed',
@@ -294,16 +304,62 @@ FOAModel({
       <div class="separator"></div>
       <div class="owner">
         <div class="owner-header">Owner</div>
-        $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Owner'}
+        <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
       </div>
       <div class="separator"></div>
       <div class="cc">
-        <div class="cc-header">Cc</div>
-        $$cc
+        <div class="cc-header">Cc<img class="cc-add" src="images/ic_add_24dp.png"></div>
+        $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
     </div>
   */} ]
+});
+
+FOAModel({
+  name: 'IssueEmailArrayView',
+  extendsModel: 'View',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } }
+  ],
+  templates: [
+    function toHTML() {/* <div id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
+    function toInnerHTML() {/*
+<% for ( var i = 0; i < this.data.length; i++ ) { %>
+  <div class="owner-info"><%= IssueOwnerAvatarView.create({ data: this.data[i] }) %> <div class="owner-name">{{{this.data[i]}}}</div></div>
+<% } %>
+    */}
+  ]
+});
+
+FOAModel({
+  name: 'IssueOwnerAvatarView',
+  extendsModel: 'View',
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } },
+  ],
+  methods: {
+    generateColor: function() {
+      var colors = [
+        '#00681c', '#5b1094', '#790619', '#c88900', '#cc0060',
+        '#008391', '#009486', '#b90038', '#846600', '#330099'
+      ];
+
+      if ( ! this.data ) return 'url(images/silhouette.png)';
+
+      return colors[Math.abs(this.data.hashCode()) % colors.length];
+    },
+    updateHTML: function() {
+      if ( this.$ ) this.$.style.background = this.generateColor();
+      return this.SUPER();
+    },
+  },
+  templates: [
+    function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase()}}} */},
+    function toHTML() {/*
+      <div id="<%= this.id %>" data-tip="<%= this.data %>"class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+    */}
+  ]
 });
 
 
@@ -312,7 +368,7 @@ FOAModel({
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
     <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-      <span class="owner">$$owner{mode: 'read-only'}</span>
+      $$owner{model_: 'IssueOwnerAvatarView'}
       <div class="middle">
         $$id{mode: 'read-only', className: 'id'} $$starred<br>
         $$summary{mode: 'read-only'}
@@ -327,11 +383,16 @@ FOAModel({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
+    <hr>
     <div id="<%= this.id %>" class="comment-view">
-       Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
-       <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
-       $$content{mode: 'read-only'}
-       <hr>
+       <span class="owner">
+         <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
+       </span>
+       <span class="content">
+         Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
+         <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
+         $$content{mode: 'read-only'}
+       </span>
     </div>
   */} ]
 });
@@ -345,9 +406,7 @@ FOAModel({
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
-      <div class="email-photo">
-        $$email{mode: 'display-only'}
-      </div>
+      $$email{model_: 'IssueOwnerAvatarView'}
       <div style="height: 80px;"> </div>
 
       $$email{mode: 'display-only'}

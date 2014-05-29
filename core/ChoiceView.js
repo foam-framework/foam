@@ -328,6 +328,10 @@ FOAModel({
     {
       name: 'className',
       defaultValue: 'popupChoiceView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showValue'
     }
   ],
 
@@ -341,22 +345,24 @@ FOAModel({
           choices: this.choices
         });
 
-        view.data$.addListener(function() {
+        // I don't know why the 'animate' is required, but it sometimes
+        // doesn't remove the view without it.
+        view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
-          view.$.outerHTML = '';
-        }.bind(this));
+          if ( view.$ ) view.$.remove();
+        }.bind(this)));
 
-        var pos = findPageXY(this.$);
+        var pos = findPageXY(this.$.querySelector('img'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
 
         view.$.style.top = pos[1];
         view.$.style.left = pos[0]-toNum(s.width);
         view.initHTML();
-        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.outerHTML = ''; });
+        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
         view.$.addEventListener('mouseout', function(e) {
-          if ( e.fromElement == view.$ && e.toElement.parentNode != view.$ )
-            view.$.outerHTML = '';
+          if ( view.$ && e.fromElement == view.$ && ( ( ! e.toElement ) || e.toElement.parentNode != view.$ ) )
+            view.$.remove();
         });
       }
     }
@@ -365,6 +371,12 @@ FOAModel({
   methods: {
     toInnerHTML: function() {
       var out = '';
+
+      if ( this.showValue ) {
+        var id = this.nextID();
+        out += '<span id="' + id + '" class="value">' + (this.choice[1] || '') + '</span>';
+        this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
+      }
 
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';

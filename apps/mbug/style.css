@@ -1,20 +1,36 @@
+body,tbody,tr,td {
+  margin: 0;
+  padding: 0;
+}
+
 .issue-citation {
-  margin: 20px;
+  margin: 30 20 30 20;
   display: flex;
 }
 
-.issue-citation .owner {
+.issue-citation .priority {
+  margin-top: 16px;
+}
+
+.owner-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
   flex-grow: 0;
   overflow: hidden;
   margin-right: 20px;
   width: 55px;
   height: 55px;
   border-radius: 30px;
-  border: 1px solid;
+  border: 1px solid #999;
 }
 
 .issue-citation .middle {
   flex: 1;
+  margin-right: 10px;
+  overflow: hidden;
 }
 
 .priority {
@@ -44,8 +60,12 @@
 }
 
 .issue-citation .id {
-   font-size: 1.5em;
-   font-weight: 300;
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+.issue-edit span[name=id] {
+  font-weight: bold;
 }
 
 body {
@@ -89,49 +109,126 @@ body {
   border: none;
   -webkit-box-shadow: none;
   box-shadown: none;
+  opacity: 0.76;
 }
 
-.actionButton:hover {
+.actionButton:hover, .popupChoiceView:hover img {
   background: #0F9D58;
   border-radius:100px;
+  outline: none;
+}
+
+.popupChoiceView {
+  padding: 8px;
+  margin-left: 20px;
+  outline: none;
+  opacity: 0.76;
+  background: transparent;
+}
+
+.issue-edit .popupChoiceView {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+.popupChoiceView .value {
+  font-size: 22pt;
+  text-align: left;
+  color: #222;
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+.popupChoiceView img {
+  opacity: 0.76;
+}
+
+.popupChoiceList {
+  border-radius: 5px;
+}
+
+.popupChoiceList li {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 28;
+  margin: 45 20 45 0;
+}
+
+.popupChoiceList li.selected {
+  color: #03A9F4;
 }
 
 .issue-edit .header {
-    background: #03A9F4;
-    color: #fff;
-    padding: 92px 32px 70px 32px;
-    font-size: 32px;
+  background: #03A9F4;
+  color: #fff;
+  padding: 50px 32px 50px 32px;
+  font-size: 32px;
+}
+
+.issue-edit .toolbar {
+  padding: 20px;
+  background: #03A9F4;
 }
 
 .issue-edit .separator {
-    border-top: #e9e9e9 1px solid;
+  border-top: #e9e9e9 1px solid;
 }
 
 .issue-edit .choice {
-    font-size: 32px;
-    display: flex;
-    align-items: center;
-    padding: 16px 12px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  padding: 16px 12px;
 }
 
 .issue-edit .owner {
-    padding: 12px;
+  padding: 12px;
 }
 
 .issue-edit .owner-header {
-    padding: 12px 0 24px 0;
-    color: #999;
-    font-size: 21px;
+  padding: 12px 0 24px 0;
+  color: #999;
+  font-size: 21px;
+}
+
+.issue-edit .owner-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.issue-edit .cc .owner-info {
+  padding: 12px 0;
+}
+
+.owner-name.placeholder {
+  color: #b2b2b2
+}
+
+.issue-edit .owner-name {
+  color: #555;
+  font-size: 24px;
+  flex: 1 0 auto;
+}
+
+.issue-edit .owner .owner-name {
+  border-bottom: 1px solid #e9e9e9;
 }
 
 .issue-edit .cc {
-    padding: 12px;
+  padding: 12px;
 }
 
 .issue-edit .cc-header {
-    padding: 12px 0 24px 0;
-    color: #999;
-    font-size: 21px;
+  padding: 12px 0 24px 0;
+  color: #999;
+  font-size: 21px;
+}
+
+.issue-edit .cc-header .cc-add {
+  float: right;
+  opacity: 0.76;
 }
 
 .issue-edit .priority {
@@ -160,11 +257,16 @@ body {
 
 .issue-citation span[name=id] {
   font-size: larger;
-  color: rgba(0, 0, 0, 0.87);
+  color: #555;
+  font-size: 16pt;
 }
 
 .issue-citation span[name=summary] {
-  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  margin-top: 6px;
+  color: #999;
+  font-size: 14pt;
+  overflow: hidden;
 }
 
 input[name=q] {
@@ -180,17 +282,29 @@ input[name=q] {
 
 input[name=q]:focus {
   outline: none;
+  opacity: 0.76;
 }
 
 input[name=q]::-webkit-input-placeholder {
   font-size: 24pt;
   color: white;
-  height: 45px;
+  opacity: 0.76;
+  height: 55px;
+}
+
+.actionButton-leaveSearchMode img {
+  opacity: 0.76;
 }
 
 select[name=sortOrder] {
   align-self: center;
   margin: 20px;
+}
+
+.mbug {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .mbug .header {
@@ -212,17 +326,25 @@ select[name=sortOrder] {
   display: none;
 }
 
-.mbug.searchMode .cannedQuery {
-  display: none;
+.swipeAltOuter {
+  flex-grow: 1;
 }
 
 span[name=projectName] {
   align-self: center;
   flex: 1.0;
   color: white;
-  font-size: xx-large;
-  margin-left: 30px;
+  margin-left: 42px;
   vertical-align: middle;
+  font-size: 28pt;
+}
+
+.stackview {
+  height: 100%;
+}
+
+.stackview table {
+  height: 100%;
 }
 
 .stackview_navbar {
@@ -233,46 +355,97 @@ span[name=projectName] {
   display: none;
 }
 
-.issue-edit .actionButton-done {
-  background: white;
+.stackview-previewarea-td {
+  display: none;
+}
+
+.stackview-viewarea {
+  height: 100%;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
   padding: 0;
 }
 
-.actionButton-done:hover {
+.issue-edit .star {
+  vertical-align: middle;
+  position: absolute;
+  right: 35px;
+  opacity: 0.76;
+}
+
+.actionButton-cancel:hover, .actionButton-save:hover {
   background: #0F9D58;
   border-radius:100px;
 }
 
+.actionButton-save:disabled {
+  display: none;
+}
+
+.actionButton-save {
+  border: none;
+}
+
 .status-icon {
-  opacity: 0.87;
+  opacity: 0.54;
   margin: 3px;
 }
 
-select[name=priority], select[name=status] {
+select[name=pri], select[name=status] {
   background: white;
   border-color: white;
   width: 250px;
   height: 30px;
   margin-left: 30px;
   margin-top: 16px;
+  outline: none;
 }
 
 .comment-view .published {
   color: #999;
 }
 
-.cannedQuery .selected {
-  border-bottom: 3px solid red;
+.comment-view {
+  display: flex;
+  margin-right: 35px;
+  margin-bottom: 25px;
 }
 
-ul.cannedQuery {
+.comment-view .content {
+  color: #555;
+  font-size: 16pt;
+  line-height: 26pt;
+  overflow: hidden;
+  flex: 1;
+}
+
+.mbug.searchMode .swipeAltHeader {
+  display: none;
+}
+
+.swipeAltHeader {
+  height: 36px;
+}
+
+.swipeAltHeader li {
+  font-size: 16pt;
+  padding-bottom: 14px;
+  opacity: 0.76;
+}
+
+.swipeAltHeader .selected {
+  border-bottom: 3px solid red;
+  opacity: 1.0;
+}
+
+ul.swipeAltHeader {
   background: #03A9F4;
-  padding: 10 0 3 6 !important;
+  padding: 10 0 3 100 !important;
   margin: 0;
   color: white;
 }
 
-.popupChoiceView {
-  background: transparent;
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
-
