@@ -154,7 +154,7 @@ FOAModel({
     },
     {
       name: 'q',
-      displayWidth: 50,
+      displayWidth: 25,
       view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
     }
   ],
