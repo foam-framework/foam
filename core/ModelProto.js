@@ -146,10 +146,21 @@ var ModelProto = {
     // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });
 
     // add action
-    // Workaround for crbug.com/258522
-    this.actions && Object_forEach(this.actions, function(a) {
-      addMethod(a.name, function() { a.callIfEnabled(this); });
-    });
+    if ( this.actions ) {
+      for ( var i = 0 ; i < this.actions.length ; i++ ) {
+        (function(a) {
+          if ( extendsModel ) {
+            var superAction = extendsModel.getAction(a.name);
+            if ( superAction ) {
+              console.log('superAction: ', a.name, a.model_.name);
+              a = superAction.clone().copyFrom(a);
+              this.actions[i] = a;
+            }
+            addMethod(a.name, function() { a.callIfEnabled(this); });
+          }
+        }.bind(this))(this.actions[i]);
+      }
+    }
 
     // add methods
     for ( var key in this.methods ) {
@@ -297,6 +308,11 @@ var ModelProto = {
     }
 
     return this.propertyMap_[name];
+  },
+
+  getAction: function(name) {
+    for ( var i = 0 ; i < this.actions.length ; i++ )
+      if ( this.actions[i].name === name ) return this.actions[i];
   },
 
   hashCode: function() {

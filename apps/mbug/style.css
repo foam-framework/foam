@@ -1,3 +1,8 @@
+body,tbody,tr,td {
+  margin: 0;
+  padding: 0;
+}
+
 .issue-citation {
   margin: 30 20 30 20;
   display: flex;
@@ -25,6 +30,7 @@
 .issue-citation .middle {
   flex: 1;
   margin-right: 10px;
+  overflow: hidden;
 }
 
 .priority {
@@ -163,6 +169,20 @@ body {
 .issue-edit .toolbar {
   padding: 20px;
   background: #03A9F4;
+  display: flex;
+}
+
+.isue-edit .actionButton-cancel {
+  flex: 1;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
+  padding: 0;
+}
+
+.issue-edit .star {
+  vertical-align: middle;
+  opacity: 0.76;
 }
 
 .issue-edit .separator {
@@ -271,7 +291,7 @@ input[name=q] {
   color: white;
   background: #03A9F4;
   padding-left: 10px;
-  font-size: larger;
+  font-size: 24pt;
 }
 
 input[name=q]:focus {
@@ -280,7 +300,7 @@ input[name=q]:focus {
 }
 
 input[name=q]::-webkit-input-placeholder {
-  font-size: larger;
+  font-size: 24pt;
   color: white;
   opacity: 0.76;
   height: 55px;
@@ -293,6 +313,12 @@ input[name=q]::-webkit-input-placeholder {
 select[name=sortOrder] {
   align-self: center;
   margin: 20px;
+}
+
+.mbug {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .mbug .header {
@@ -314,6 +340,10 @@ select[name=sortOrder] {
   display: none;
 }
 
+.swipeAltOuter {
+  flex-grow: 1;
+}
+
 span[name=projectName] {
   align-self: center;
   flex: 1.0;
@@ -321,6 +351,14 @@ span[name=projectName] {
   margin-left: 42px;
   vertical-align: middle;
   font-size: 28pt;
+}
+
+.stackview {
+  height: 100%;
+}
+
+.stackview table {
+  height: 100%;
 }
 
 .stackview_navbar {
@@ -335,20 +373,22 @@ span[name=projectName] {
   display: none;
 }
 
-.issue-edit .actionButton-done {
-  padding: 0;
+.stackview-viewarea {
+  height: 100%;
 }
 
-.issue-edit .star {
-  vertical-align: middle;
-  position: absolute;
-  right: 35px;
-  opacity: 0.76;
-}
-
-.actionButton-done:hover {
+.actionButton-cancel:hover, .actionButton-save:hover {
   background: #0F9D58;
   border-radius:100px;
+}
+
+.actionButton-save:disabled {
+  display: none;
+}
+
+.actionButton-save {
+  border: none;
+  margin-right: 40px;
 }
 
 .status-icon {
@@ -384,26 +424,26 @@ select[name=pri], select[name=status] {
   flex: 1;
 }
 
-.mbug.searchMode .cannedQuery {
+.mbug.searchMode .swipeAltHeader {
   display: none;
 }
 
-.cannedQuery {
+.swipeAltHeader {
   height: 36px;
 }
 
-.cannedQuery li {
+.swipeAltHeader li {
   font-size: 16pt;
   padding-bottom: 14px;
   opacity: 0.76;
 }
 
-.cannedQuery .selected {
+.swipeAltHeader .selected {
   border-bottom: 3px solid red;
   opacity: 1.0;
 }
 
-ul.cannedQuery {
+ul.swipeAltHeader {
   background: #03A9F4;
   padding: 10 0 3 100 !important;
   margin: 0;

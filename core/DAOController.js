@@ -334,7 +334,7 @@ FOAModel({
         this.dao.put(obj, {
           put: function() {
             console.log("Saving: ", obj.toJSON());
-            
+
             self.X.stack.back();
           },
           error: function() {
@@ -378,9 +378,12 @@ FOAModel({
 
   methods: {
 
+    /*
+      TODO: I don't think this is need. Remove when verified.
     toHTML: function() {
       return '<div id="' + this.id + '">controller</div>';
     },
+    */
 
     init: function() {
       var tmp = this.model;

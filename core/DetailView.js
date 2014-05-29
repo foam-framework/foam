@@ -231,3 +231,72 @@ FOAModel({
     }
   }
 });
+
+
+
+
+FOAModel({
+  name: 'UpdateDetailView',
+  extendsModel: 'DetailView',
+
+  properties: [
+    {
+      name: 'originalData'
+    },
+    {
+      // TODO: remove 'value' and make this the real source of data
+      name:  'data',
+      getter: function() { return this.value.value; },
+      setter: function(data) {
+        this.originalData = data.deepClone();
+        this.value = SimpleValue.create(data);
+      }
+    },
+    /*
+    {
+      name: 'data',
+      postSet: function(_, data) { this.originalData = data.deepClone(); }
+    },
+    */
+    {
+      name: 'dao'
+    },
+    {
+      name: 'stack',
+      defaultValueFn: function() { return this.X.stack; }
+    },
+    {
+      name: 'view'
+    }
+  ],
+
+  actions: [
+    {
+      name:  'save',
+      help:  'Save updates.',
+
+      isEnabled: function() {
+        return ! this.originalData.equals(this.data);
+      },
+      action: function() {
+        var self = this;
+        var obj  = this.data;
+        this.dao.put(obj, {
+          put: function() {
+            console.log("Saving: ", obj.toJSON());
+
+            self.stack.back();
+          },
+          error: function() {
+            console.error("Error saving", arguments);
+          }
+        });
+      }
+    },
+    {
+      name:  'cancel',
+      help:  'Cancel update.',
+      action: function() { this.stack.back(); }
+    }
+  ]
+});

@@ -2424,6 +2424,7 @@ FOAModel({
 });
 
 
+// TODO: This should be replaced with a generic Choice.
 FOAModel({
   name: 'ViewChoice',
 
@@ -2616,6 +2617,8 @@ FOAModel({
         return nu;
       },
       postSet: function(oldValue, viewChoice) {
+        this.views[oldValue].view.deepPublish(this.ON_HIDE);
+        // ON_SHOW is called after the animation is done.
         this.snapToCurrent();
       },
       hidden: true
@@ -2628,7 +2631,17 @@ FOAModel({
           choices: this.views.map(function(x) {
             return x.label;
           }),
-          index$: this.index$
+          index$: this.index$,
+          className: 'swipeAltHeader foamChoiceListView horizontal'
+        });
+      }
+    },
+    {
+      name: 'data',
+      help: 'Generic data field for the views. Proxied to all the child views.',
+      postSet: function(old, nu) {
+        this.views.forEach(function(c) {
+          c.view.data = nu;
         });
       }
     },
@@ -2679,6 +2692,15 @@ FOAModel({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      var self = this;
+      this.views.forEach(function(choice, index) {
+        if ( index != self.index )
+          choice.view.deepPublish(self.ON_HIDE);
+      });
+    },
+
     // The general structure of the carousel is:
     // - An outer div (this.$), with position: relative.
     // - A second div (this.slider) with position: relative.
@@ -2715,6 +2737,7 @@ FOAModel({
     },
 
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.SUPER();
 
       // Now is the time to inflate our fake carousel into the real thing.
@@ -2763,7 +2786,9 @@ FOAModel({
       var self = this;
       Movement.animate(200, function(evt) {
         self.x = self.index * self.width;
-      }, Movement.easeIn(0.2))();
+      }, Movement.easeIn(0.2), function() {
+        self.views[self.index].view.deepPublish(self.ON_SHOW);
+      })();
     }
   },
 
@@ -4039,6 +4064,48 @@ FOAModel({
 
 
 FOAModel({
+  name: 'PredicatedView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'predicate',
+      defaultValueFn: function() { return TRUE; },
+      postSet: function() { this.updateDAO(); }
+    },
+    {
+      name: 'data',
+      help: 'Payload of the view; assumed to be a DAO.',
+      postSet: function() { this.updateDAO(); }
+    },
+    {
+      name: 'view',
+      required: true
+    }
+  ],
+
+  methods: {
+    init: function() {
+      if ( typeof this.view === 'string' )
+        this.view = FOAM.lookup(this.view);
+      // Necessary for events and other things that walk the view tree.
+      this.children = [this.view];
+    },
+    toHTML: function() {
+      return this.view.toHTML();
+    },
+    initHTML: function() {
+      this.view.initHTML();
+    },
+    updateDAO: function() {
+      if ( this.data && this.data.where )
+        this.view.data = this.data.where(this.predicate);
+    }
+  }
+});
+
+
+FOAModel({
   name: 'DAOListView',
   extendsModel: 'View',
 
@@ -4048,8 +4115,27 @@ FOAModel({
       postSet: function(oldDAO, newDAO) {
         this.X.DAO = newDAO;
         if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
-        newDAO.listen(this.onDAOUpdate);
-        this.updateHTML();
+        if ( ! this.hidden ) {
+          newDAO.listen(this.onDAOUpdate);
+          this.updateHTML();
+        }
+      }
+    },
+    {
+      name: 'hidden',
+      postSet: function(old, nu) {
+        if ( ! this.dao ) return;
+        if ( nu ) this.dao.unlisten(this.onDAOUpdate);
+        else {
+          this.dao.listen(this.onDAOUpdate);
+          this.updateHTML();
+        }
+      }
+    },
+    {
+      name: 'data',
+      setter: function(value) {
+        this.value = SimpleValue.create(value);
       }
     },
     {
@@ -4070,18 +4156,42 @@ FOAModel({
       }
     },
     { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
-    'selection'
+    'selection',
+    {
+      name: 'chunkSize',
+      defaultValue: 0,
+      help: 'Number of entries to load in each infinite scroll chunk.'
+    },
+    {
+      name: 'chunksLoaded',
+      hidden: true,
+      defaultValue: 1,
+      help: 'The number of chunks currently loaded.'
+    }
   ],
 
   methods: {
     init: function() {
       this.SUPER();
       this.X = this.X.sub();
+
+      var self = this;
+      this.subscribe(this.ON_HIDE, function() {
+        self.hidden = true;
+      });
+
+      this.subscribe(this.ON_SHOW, function() {
+        self.hidden = false;
+      });
     },
 
     initHTML: function() {
       // this.SUPER();
-      this.updateHTML();
+      this.$.addEventListener('scroll', function(event) {
+        console.log('scrolled ' + this.$.scrollTop);
+      });
+
+      if ( ! this.hidden ) this.updateHTML();
     },
 
     updateHTML: function() {
@@ -4089,13 +4199,18 @@ FOAModel({
       if ( this.painting ) return;
       this.painting = true;
 
-      var out = '';
+      var out = [];
       var rowView = FOAM.lookup(this.rowView);
 
       this.children = [];
       this.initializers_ = [];
 
-      this.dao.select({put: function(o) {
+      var d = this.dao;
+      if ( this.chunkSize ) {
+        d = d.limit(this.chunkSize * this.chunksLoaded);
+      }
+      console.log('updating ' + this.id);
+      d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.clone();
         var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
@@ -4107,16 +4222,16 @@ FOAModel({
         }
         this.addChild(view);
         if ( this.useSelection ) {
-          out += '<div id="' + this.on('click', (function() {
+          out.push('<div id="' + this.on('click', (function() {
             this.selection = o
-          }).bind(this)) + '">';
+          }).bind(this)) + '">');
         }
-        out += view.toHTML();
+        out.push(view.toHTML());
         if ( this.useSelection ) {
-          out += '</div>';
+          out.put('</div>');
         }
       }.bind(this)})(function() {
-        this.$.innerHTML = out;
+        this.$.innerHTML = out.join('');
         this.initInnerHTML();
         this.children = [];
         this.painting = false;
