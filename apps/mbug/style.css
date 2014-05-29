@@ -172,11 +172,7 @@ body {
   display: flex;
 }
 
-.isue-edit .actionButton-cancel {
-  flex: 1;
-}
-
-.issue-edit .actionButton-cancel, .issue-edit .actionButton-save {
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
   padding: 0;
 }
 
@@ -241,8 +237,9 @@ body {
 }
 
 .issue-edit .cc-header .cc-add {
+  margin-right: 7px;
   float: right;
-  opacity: 0.76;
+  opacity: 0.54;
 }
 
 .issue-edit .priority {
@@ -377,12 +374,12 @@ span[name=projectName] {
   height: 100%;
 }
 
-.actionButton-cancel:hover, .actionButton-save:hover {
+.actionButton-back:hover, .actionButton-cancel:hover, .actionButton-save:hover {
   background: #0F9D58;
   border-radius:100px;
 }
 
-.actionButton-save:disabled {
+.actionButton-save:disabled, .actionButton-back:disabled, .actionButton-cancel:disabled {
   display: none;
 }
 

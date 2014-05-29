@@ -240,6 +240,11 @@ FOAModel({
   ],
   actions: [
     {
+      name: 'back',
+      label: '',
+      iconUrl: 'images/ic_arrow_back_24dp.png'
+    },
+    {
       name: 'cancel',
       label: '',
       iconUrl: 'images/ic_clear_24dp.png'
@@ -253,6 +258,7 @@ FOAModel({
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="issue-edit">
       <div class="toolbar">
+        $$back
         $$cancel
         <span class="expand"></span>
         $$save
