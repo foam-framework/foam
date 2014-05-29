@@ -156,8 +156,8 @@ var ModelProto = {
               a = superAction.clone().copyFrom(a);
               this.actions[i] = a;
             }
-            addMethod(a.name, function() { a.callIfEnabled(this); });
           }
+          addMethod(a.name, function() { a.callIfEnabled(this); });
         }.bind(this))(this.actions[i]);
       }
     }
