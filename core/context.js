@@ -36,10 +36,10 @@ function sub(opt_args, opt_name) {
 
 
 function subWindow(w, opt_name) {
-  if ( ! w ) return sub();
+  if ( ! w ) return this.sub();
 
   var document = w.document;
-  return sub({
+  return this.sub({
     window: w,
     document: document,
     console: w.console,

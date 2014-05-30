@@ -227,34 +227,28 @@ var QIssue = FOAM({
          model_: 'BooleanProperty',
          name: 'starred',
          tableLabel: '',
-         tableWidth: '20px',
+         tableWidth: '15px',
          tableFormatter: function(val, obj, tableView) {
-           var view = ImageBooleanView2.create({
-               trueImage: 'data:image/gif;base64,R0lGODlhDwAPAMQfAF9h4RYVnZeQJC0u0lRQU42R6P/7Fv74L05NrRkZxi4tW52XXv71D8nAIWxnjnRxr3NuMJKOluXbBe7kCa2x7UFD1vPoB77D8Jqe6n6B5tvTUr62BMrP8lJPh1xbuv///yH5BAEAAB8ALAAAAAAPAA8AAAWD4CeOWQKMaDpESepi3tFlLgpExlK9RT9ohkYi08N8KhWP8nEwMBwIDyJRSTgO2CaDYcBOCAlMgtDYmhmTDSFQ+HAqgbLZIlAMLqiKw7m1EAYuFQsGEhITEwItKBc/EgIEAhINAUYkCBIQAQMBEGonIwAKa21iCgo7IxQDFRQjF1VtHyEAOw==', //'images/star_on.gif',
-               falseImage: 'data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=', //'images/star_off.gif',
-             value: obj.starred
-             });
+           var view = CSSImageBooleanView.create({
+             trueClassName: 'star-image-on',
+             falseClassName: 'star-image-off',
+             data: obj.starred
+           });
 
-           view.value$.addListener(function() {
+           view.data$.addListener(function() {
              var tmp = obj.clone();
              tmp.starred = view.value;
              tableView.browser.IssueDAO.put(tmp);
            });
 
            tableView.addChild(view);
-
            return view.toHTML();
          },
          view: {
-           // TODO: make it so that initialized objects can be used as factories
-           create: function() {
-             return ImageBooleanView.create({
-               trueImage: 'images/star_on.gif',
-               falseImage: 'images/star_off.gif'
-             });
-           }
+           model_: 'CSSImageBooleanView',
+           trueClassName: 'star-image-on',
+           falseClassName: 'star-image-off'
          },
-         tableWidth: '20px',
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
@@ -263,32 +257,32 @@ var QIssue = FOAM({
          tableWidth: '20px',
          help: 'Number of stars this issue has.'
       },
-        {
-          name: 'labels',
-          shortName: 'l',
-          aliases: ['label'],
-          type: 'String',
-          view: 'QIssueLabelsView',
-          tableFormatter: function(a, row) {
-            var s = '';
-            for ( var i = 0 ; i < a.length ; i++ ) {
-              s += ' <span class="label">' + a[i] + '</span>';
-            }
-            return s;
-          },
-          postSet: function(_, a) {
-            for ( var i = 0 ; i < a.length ; i++ ) {
-              var kv = isPropertyLabel(a[i]);
-              if ( kv ) {
-                this[kv[0]] = kv[1];
-                a.splice(i,1);
-                i--;
-              } else {
-                a[i] = a[i].intern();
-              }
+      {
+        name: 'labels',
+        shortName: 'l',
+        aliases: ['label'],
+        type: 'String',
+        view: 'QIssueLabelsView',
+        tableFormatter: function(a, row) {
+          var s = '';
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            s += ' <span class="label">' + a[i] + '</span>';
+          }
+          return s;
+        },
+        postSet: function(_, a) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            var kv = isPropertyLabel(a[i]);
+            if ( kv ) {
+              this[kv[0]] = kv[1];
+              a.splice(i,1);
+              i--;
+            } else {
+              a[i] = a[i].intern();
             }
           }
-        },
+        }
+      },
       {
         model_: 'StringArrayProperty',
         name: 'movedFrom',

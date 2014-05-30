@@ -105,6 +105,9 @@ FOAModel({
   ]
 });
 
+var TouchInput = TouchManager.create({});
+TouchInput.install(document);
+
 var view = TouchListView.create({
   model: Contact,
   rowViewHeight: 200,

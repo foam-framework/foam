@@ -557,9 +557,9 @@ FOAModel({
     },
     createViewFromProperty: function(prop) {
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return TextFieldView.create(prop);
+      if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
-      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(v);
+      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
@@ -608,6 +608,14 @@ FOAModel({
       defaultValue: undefined
     },
     {
+      name:  'maxWidth',
+      defaultValue: undefined
+    },
+    {
+      name:  'maxHeight',
+      defaultValue: undefined
+    },
+    {
       name:  'height',
       defaultValue: undefined
     }
@@ -622,6 +630,8 @@ FOAModel({
       div.style.top = this.y + 'px';
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
+      if ( this.maxWidth ) div.style.maxWidth = this.maxWidth + 'px';
+      if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
@@ -648,6 +658,9 @@ FOAModel({
     {
       model_: 'DAOProperty',
       name: 'dao'
+    },
+    {
+      model_: 'BooleanProperty', name: 'hideOnMouseOut', defaultValue: true
     }
   ],
 
@@ -663,6 +676,12 @@ FOAModel({
 
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
+      if ( this.hideOnMouseOut ) {
+        var self = this;
+        div.addEventListener('mouseleave', function(e) {
+          self.close();
+        });
+      }
 
       document.body.appendChild(div);
       this.view.initHTML();
@@ -680,7 +699,7 @@ FOAModel({
 
         div.style.left = pos[0];
 
-        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || 400) ) {
+        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
           div.style.bottom = document.defaultView.innerHeight - pos[1];
         } else {
           div.style.top = pos[1] + parentNode.offsetHeight;
@@ -689,6 +708,15 @@ FOAModel({
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
+      if ( this.maxWidth ) {
+        div.style.maxWidth = this.maxWidth + 'px';
+        div.style.overflowX = 'scroll';
+      }
+      if ( this.maxHeight ) {
+        div.style.maxHeight = this.maxHeight + 'px';
+        div.style.overflowY = 'scroll';
+      }
+
       div.style.position = 'absolute';
     },
 
@@ -1044,8 +1072,9 @@ FOAModel({
 
       var proto = FOAM.lookup(this.autocompleter, this.X);
       var completer = proto.create();
-      this.autocompleteView = AutocompletePopup.create({
+      this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
+        maxHeight: 400,
         view: DAOListView.create({
           dao: completer.autocompleteDao,
           mode: 'final',
@@ -1066,7 +1095,6 @@ FOAModel({
       this.$.addEventListener('focus', function() {
         completer.autocomplete(self.data);
       });
-      this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
     },
 
     initHTML: function() {
@@ -1459,6 +1487,49 @@ FOAModel({
       code: function(e) {
         e.stopPropagation();
         this.value.set(! this.value.get());
+      }
+    }
+  ]
+});
+
+
+FOAModel({
+  name:  'CSSImageBooleanView',
+
+  extendsModel: 'View',
+
+  properties: [
+    'trueClassName',
+    'falseClassName',
+    {
+      name: 'className',
+      getter: function() { return this.data ? this.trueClassName : this.falseClassName; }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.data$.addListener(this.update);
+      this.$.addEventListener('click', this.onClick);
+    },
+    toInnerHTML: function() { return '&nbsp;&nbsp;&nbsp;'; }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      code: function() {
+        if ( ! this.$ ) return;
+        DOM.setClass(this.$, this.trueClassName,    this.data);
+        DOM.setClass(this.$, this.falseClassName, ! this.data);
+      }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        e.stopPropagation();
+        this.data = ! this.data;
+        this.update();
       }
     }
   ]
@@ -3101,7 +3172,7 @@ FOAModel({
     row: function() {
       // TODO: Find a better way to copy relevant values as this is unsustainable.
       var view = this.model_.RowView.create({
-        field: TextFieldView.create({
+        field: this.X.TextFieldView.create({
           name: this.name,
           type: this.type,
           displayWidth: this.displayWidth,
@@ -3687,6 +3758,52 @@ FOAModel({
   ]
 });
 
+FOAModel({
+  name: 'KeyView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'dao',
+      factory: function() { return this.X[this.subType + 'DAO']; }
+    },
+    { name: 'mode' },
+    {
+      name: 'data',
+      postSet: function(_, value) {
+        var self = this;
+        var subKey = FOAM.lookup(this.subKey, this.X);
+        this.dao.where(EQ(subKey, value)).limit(1).select({
+          put: function(o) {
+            self.innerData = o;
+          }
+        });
+      }
+    },
+    {
+      name: 'innerData',
+    },
+    { name: 'subType' },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.X[this.subType]; }
+    },
+    { name: 'subKey' },
+    {
+      name: 'innerView',
+      defaultValue: 'DetailView'
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.children = [];
+      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      this.addChild(view);
+      return view.toHTML();
+    }
+  }
+});
 
 FOAModel({
   name: 'DAOKeyView',
@@ -3694,67 +3811,43 @@ FOAModel({
 
   properties: [
     {
-      name: 'innerValue',
-      factory: function() { return SimpleValue.create(''); }
+      name: 'dao',
+      factory: function() { return this.X[this.subType + 'DAO']; }
     },
+    { name: 'mode' },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(""); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
+      name: 'data',
+      postSet: function(_, value) {
+        var self = this;
+        var subKey = FOAM.lookup(this.subKey, this.X);
+        this.innerData = this.dao.where(IN(subKey, value));
       }
     },
     {
+      name: 'innerData',
+    },
+    { name: 'subType' },
+    {
       name: 'model',
+      defaultValueFn: function() { return this.X[this.subType]; }
     },
-    {
-      name: 'dao',
-      factory: function() { return GLOBAL[this.model.name + 'DAO']; }
-    },
-    {
-      name: 'view',
-      defaultValueFn: function() { return DetailView; }
-    },
+    { name: 'subKey' },
     {
       name: 'innerView',
-    }
+      defaultValue: 'DAOListView'
+    },
+    'dataView'
   ],
 
   methods: {
     toHTML: function() {
-      this.innerView = this.view.create({ model: this.model });
-      this.innerView.value = this.innerValue;
-      return this.innerView.toHTML();
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.innerView.initHTML();
-      this.update();
+      this.children = [];
+      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      this.addChild(view);
+      return view.toHTML();
     }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      animate: true,
-      code: function() {
-        var self = this;
-        if ( ! this.dao ) return;
-        this.dao.find(this.value.get(), {
-          put: function(obj) {
-            self.innerValue.set(obj);
-          },
-          error: function() {
-            self.innerValue.set('');
-          }
-        });
-      }
-    }
-  ]
+  }
 });
-
 
 FOAModel({
   name: 'ListView',
@@ -4288,9 +4381,9 @@ FOAModel({
     toHTML: function() {
       var id = this.id;
       var overlay = this.nextID();
-      this.on('touchstart', this.onTouchStart, overlay);
-      this.on('touchmove', this.onTouchMove, overlay);
-      this.on('touchend', this.onTouchEnd, overlay);
+      var touch = this.X.TouchInput;
+      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
+      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
 
       return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
@@ -4333,60 +4426,20 @@ FOAModel({
     },
     {
       name: 'onTouchStart',
-      code: function(e) {
-        if ( e.changedTouches[0] ) {
-          if ( this.decel ) {
-            this.decel = 0;
-          }
-          this.startY = e.changedTouches[0].screenY;
-          this.speedY = 0;
-          this.lastTime = performance.now();
-        }
-      }
-    },
-    {
-      name: 'onTouchMove',
-      code: function(e) {
-        if ( ! e.changedTouches[0] ) return;
-
-        e.preventDefault();
-
-        var delta = this.startY - e.changedTouches[0].screenY;
-        var time = performance.now();
-        this.speedY = delta / (time - this.lastTime);
-        this.lastTime = time;
-        this.startY = e.changedTouches[0].screenY;
-
-        this.scrollTop = this.scrollTop + delta;
+      code: function(_, _, touch) {
+        if ( ! this.touch ) this.touch = touch;
+        var self = this;
+        this.touch.y$.addListener(function(_, _, old, nu) {
+          self.scrollTop = self.scrollTop + old - nu;
+        });
       }
     },
     {
       name: 'onTouchEnd',
-      code: function(e) {
-        if ( ! e.changedTouches[0] ) return;
-
-        var speed = this.speedY;
-        var comp = function(s) { return s > 0; };
-        var accel = 0.0000002;
-        if ( speed > 0 ) {
-          accel *= -1;
-          comp = function(s) { return s < 0; };
+      code: function(_, _, touch) {
+        if ( touch.id === this.touch.id ) {
+          this.touch = '';
         }
-        var last = performance.now();
-        var self = this;
-        this.decel = 1;
-        window.requestAnimationFrame(function animate() {
-          if ( ! self.decel || comp(speed) ) {
-            self.decel = 0;
-            return;
-          }
-          window.requestAnimationFrame(animate);
-          var time = performance.now();
-          var delta = speed * (time - last);
-          last = time;
-          self.scrollTop = self.scrollTop + delta;
-          speed += accel * time;
-        });
       }
     },
   ]

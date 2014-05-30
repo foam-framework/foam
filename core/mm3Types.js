@@ -454,6 +454,13 @@ var ReferenceProperty = Model.create({
       help: 'The FOAM sub-type of this property.'
     },
     {
+      name: 'subKey',
+      type: 'EXPR',
+      displayWidth: 20,
+      factory: function() { return this.subType + '.ID'; },
+      help: 'The foreign key that this property references.'
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
@@ -463,8 +470,9 @@ var ReferenceProperty = Model.create({
     },
     {
       name: 'view',
-      // TODO: should be 'KeyView'
       defaultValue: 'TextFieldView'
+// TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
+//      defaultValue: 'KeyView'
     },
     {
       name: 'prototag',
@@ -562,6 +570,29 @@ var DAOProperty = Model.create({
   ]
 });
 
-var ReferenceArrayProperty = StringArrayProperty;
+var ReferenceArrayProperty = Model.create({
+  name: 'ReferenceArrayProperty',
+  extendsModel: 'ReferenceProperty',
+
+  properties: [
+    {
+      name: 'type',
+      defaultValue: 'Array',
+      displayWidth: 20,
+      help: 'The FOAM type of this property.'
+    },
+    {
+      name: 'factory',
+      defaultValue: function() { return []; },
+    },
+    {
+      name: 'view',
+      defaultValue: 'StringArrayView',
+// TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
+//      defaultValue: 'DAOKeyView'
+    }
+  ]
+});
+
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;

@@ -46,7 +46,9 @@ var QIssueComment = FOAM({
     },
     {
       model_: 'ReferenceProperty',
-      name: 'issueId'
+      name: 'issueId',
+      subType: 'Issue',
+      hidden: true
     },
     {
       model_: 'StringProperty',

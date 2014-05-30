@@ -45,7 +45,7 @@ FOAModel({
       postSet: function(old, nu) {
         // TODO: No way to remove the decorator.
         if ( nu ) {
-          this.addDecorator(ActionBorder.create());
+          this.addDecorator(this.X.ActionBorder.create());
         }
       }
     },

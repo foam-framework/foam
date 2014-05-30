@@ -1143,7 +1143,7 @@ var typeModels = {
   float: FloatProperty,
   integer: IntProperty,
   ref: ReferenceProperty,
-  refArray: ArrayProperty,
+  refArray: ReferenceArrayProperty,
   string: StringProperty,
   stringArray: StringArrayProperty
 };
