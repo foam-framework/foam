@@ -325,3 +325,9 @@ input[name="search"] {
 .foamTable tr.rowSelected {
   border: none;
 }
+
+.actionButton-back, .actionButton-forth {
+    border: none;
+    background: transparent;
+    padding: 4px;
+}
