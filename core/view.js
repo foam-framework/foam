@@ -557,7 +557,7 @@ FOAModel({
     },
     createViewFromProperty: function(prop) {
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return TextFieldView.create(prop);
+      if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
@@ -3101,7 +3101,7 @@ FOAModel({
     row: function() {
       // TODO: Find a better way to copy relevant values as this is unsustainable.
       var view = this.model_.RowView.create({
-        field: TextFieldView.create({
+        field: this.X.TextFieldView.create({
           name: this.name,
           type: this.type,
           displayWidth: this.displayWidth,

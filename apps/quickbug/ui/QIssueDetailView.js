@@ -58,13 +58,13 @@ FOAModel({
       });
     },
     commentCreateView: function() {
-      return QIssueCommentCreateView.create({
+      return this.X.QIssueCommentCreateView.create({
         dao: this.QIssueCommentDAO,
         issue: this.value.get()
       });
     },
     clView: function() {
-      return QIssueCLView.create({dao: this.QIssueCommentDAO});
+      return this.X.QIssueCLView.create({dao: this.QIssueCommentDAO});
     },
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
@@ -76,8 +76,7 @@ FOAModel({
   ]
 });
 
-var QIssueLabelsView = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'QIssueLabelsView',
   extendsModel: 'View',
 

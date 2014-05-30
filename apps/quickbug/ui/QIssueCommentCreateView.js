@@ -17,7 +17,7 @@ FOAModel({
     },
 
     makeUpdatesView: function() {
-      return PropertyView.create({
+      return this.X.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
         prop: QIssueComment.UPDATES
       });
