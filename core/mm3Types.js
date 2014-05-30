@@ -457,7 +457,7 @@ var ReferenceProperty = Model.create({
       name: 'subKey',
       type: 'EXPR',
       displayWidth: 20,
-      factory: function() { return this.X[this.subType].ID; },
+      factory: function() { return this.subType + '.ID'; },
       help: 'The foreign key that this property references.'
     },
     {
