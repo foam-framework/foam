@@ -180,15 +180,23 @@ var QIssue = FOAM({
             preSet: function(_, a) { return a.intern(); }
         },
         {
-            name: 'summary',
-            shortName: 'su',
-            label: 'Summary + Labels',
-            type: 'String',
-            tableWidth: '100%',
-            tableFormatter: function(value, row, tableView) {
-              return tableView.strToHTML(value) +
-                QIssue.LABELS.tableFormatter(row.labels, row);
-            }
+          name: 'summary',
+          shortName: 'su',
+          label: 'Summary',
+          type: 'String',
+            tableWidth: '350px'
+//          tableWidth: '100%'
+        },
+        {
+          name: 'summaryPlusLabels',
+          label: 'Summary + Labels',
+          columnLabel: 'Summary + Labels',
+          type: 'String',
+          tableWidth: '100%',
+          tableFormatter: function(value, row, tableView) {
+            return tableView.strToHTML(value) +
+              QIssue.LABELS.tableFormatter(row.labels, row);
+          }
         },
         {
             name: 'OS',

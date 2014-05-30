@@ -268,6 +268,7 @@ FOAModel({
           falseImage: 'images/ic_star_outline_24dp.png'
         }
       </div>
+      <div class="body">
       <div class="header">
         #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
       </div>
@@ -318,6 +319,7 @@ FOAModel({
         $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
+      </div>
     </div>
   */} ]
 });
