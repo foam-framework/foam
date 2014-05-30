@@ -1494,6 +1494,49 @@ FOAModel({
 
 
 FOAModel({
+  name:  'CSSImageBooleanView',
+
+  extendsModel: 'View',
+
+  properties: [
+    'trueClassName',
+    'falseClassName',
+    {
+      name: 'className',
+      getter: function() { return this.data ? this.trueClassName : this.falseClassName; }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.data$.addListener(this.update);
+      this.$.addEventListener('click', this.onClick);
+    },
+    toInnerHTML: function() { return '&nbsp;&nbsp;&nbsp;'; }
+  },
+
+  listeners: [
+    {
+      name: 'update',
+      code: function() {
+        if ( ! this.$ ) return;
+        DOM.setClass(this.$, this.trueClassName,    this.data);
+        DOM.setClass(this.$, this.falseClassName, ! this.data);
+      }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        e.stopPropagation();
+        this.data = ! this.data;
+        this.update();
+      }
+    }
+  ]
+});
+
+
+FOAModel({
   name:  'ImageBooleanView2',
 
   extendsModel: 'View',
