@@ -3730,6 +3730,52 @@ FOAModel({
   ]
 });
 
+FOAModel({
+  name: 'KeyView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'dao',
+      factory: function() { return this.X[this.subType + 'DAO']; }
+    },
+    { name: 'mode' },
+    {
+      name: 'data',
+      postSet: function(_, value) {
+        var self = this;
+        var subKey = FOAM.lookup(this.subKey, this.X);
+        this.dao.where(EQ(subKey, value)).limit(1).select({
+          put: function(o) {
+            self.innerData = o;
+          }
+        });
+      }
+    },
+    {
+      name: 'innerData',
+    },
+    { name: 'subType' },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.X[this.subType]; }
+    },
+    { name: 'subKey' },
+    {
+      name: 'innerView',
+      defaultValue: 'DetailView'
+    },
+  ],
+
+  methods: {
+    toHTML: function() {
+      this.children = [];
+      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      this.addChild(view);
+      return view.toHTML();
+    }
+  }
+});
 
 FOAModel({
   name: 'DAOKeyView',
@@ -3737,67 +3783,43 @@ FOAModel({
 
   properties: [
     {
-      name: 'innerValue',
-      factory: function() { return SimpleValue.create(''); }
+      name: 'dao',
+      factory: function() { return this.X[this.subType + 'DAO']; }
     },
+    { name: 'mode' },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(""); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
+      name: 'data',
+      postSet: function(_, value) {
+        var self = this;
+        var subKey = FOAM.lookup(this.subKey, this.X);
+        this.innerData = this.dao.where(IN(subKey, value));
       }
     },
     {
+      name: 'innerData',
+    },
+    { name: 'subType' },
+    {
       name: 'model',
+      defaultValueFn: function() { return this.X[this.subType]; }
     },
-    {
-      name: 'dao',
-      factory: function() { return GLOBAL[this.model.name + 'DAO']; }
-    },
-    {
-      name: 'view',
-      defaultValueFn: function() { return DetailView; }
-    },
+    { name: 'subKey' },
     {
       name: 'innerView',
-    }
+      defaultValue: 'DAOListView'
+    },
+    'dataView'
   ],
 
   methods: {
     toHTML: function() {
-      this.innerView = this.view.create({ model: this.model });
-      this.innerView.value = this.innerValue;
-      return this.innerView.toHTML();
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.innerView.initHTML();
-      this.update();
+      this.children = [];
+      var view = FOAM.lookup(this.innerView).create({ model: this.model, mode: this.mode, data$: this.innerData$ });
+      this.addChild(view);
+      return view.toHTML();
     }
-  },
-
-  listeners: [
-    {
-      name: 'update',
-      animate: true,
-      code: function() {
-        var self = this;
-        if ( ! this.dao ) return;
-        this.dao.find(this.value.get(), {
-          put: function(obj) {
-            self.innerValue.set(obj);
-          },
-          error: function() {
-            self.innerValue.set('');
-          }
-        });
-      }
-    }
-  ]
+  }
 });
-
 
 FOAModel({
   name: 'ListView',

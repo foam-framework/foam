@@ -428,6 +428,10 @@ FOAModel({
     <foam model="UITest" name="AllViews">
       <description>Test all simple view types.</description>
       <code>
+ModelDAO = MDAO.create({ model: Model });
+ModelDAO.put(Model);
+ModelDAO.put(EMail);
+
 FOAModel({
   name: 'AllViews',
 
@@ -504,13 +508,22 @@ FOAModel({
       name: 'functionProperty',
       defaultValue: function() { console.log('boo!'); }
     },
-<!--
     {
       model_: 'ReferenceProperty',
       name: 'referenceProperty',
-      subType: 'Model'
+      subType: 'Model',
+      defaultValue: 'Model',
+      subKey: 'Model.NAME',
+      view: 'KeyView'
     },
--->
+    {
+      model_: 'ReferenceArrayProperty',
+      name: 'referenceArrayProperty',
+      subType: 'Model',
+      factory: function() { return ['Model', 'EMail']; },
+      subKey: 'Model.NAME',
+      view: 'DAOKeyView'
+    },
     {
       model_: 'StringArrayProperty',
       name: 'stringArrayProperty',
