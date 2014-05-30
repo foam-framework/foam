@@ -4288,9 +4288,9 @@ FOAModel({
     toHTML: function() {
       var id = this.id;
       var overlay = this.nextID();
-      this.on('touchstart', this.onTouchStart, overlay);
-      this.on('touchmove', this.onTouchMove, overlay);
-      this.on('touchend', this.onTouchEnd, overlay);
+      var touch = this.X.TouchInput;
+      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
+      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
 
       return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
@@ -4333,60 +4333,20 @@ FOAModel({
     },
     {
       name: 'onTouchStart',
-      code: function(e) {
-        if ( e.changedTouches[0] ) {
-          if ( this.decel ) {
-            this.decel = 0;
-          }
-          this.startY = e.changedTouches[0].screenY;
-          this.speedY = 0;
-          this.lastTime = performance.now();
-        }
-      }
-    },
-    {
-      name: 'onTouchMove',
-      code: function(e) {
-        if ( ! e.changedTouches[0] ) return;
-
-        e.preventDefault();
-
-        var delta = this.startY - e.changedTouches[0].screenY;
-        var time = performance.now();
-        this.speedY = delta / (time - this.lastTime);
-        this.lastTime = time;
-        this.startY = e.changedTouches[0].screenY;
-
-        this.scrollTop = this.scrollTop + delta;
+      code: function(_, _, touch) {
+        if ( ! this.touch ) this.touch = touch;
+        var self = this;
+        this.touch.y$.addListener(function(_, _, old, nu) {
+          self.scrollTop = self.scrollTop + old - nu;
+        });
       }
     },
     {
       name: 'onTouchEnd',
-      code: function(e) {
-        if ( ! e.changedTouches[0] ) return;
-
-        var speed = this.speedY;
-        var comp = function(s) { return s > 0; };
-        var accel = 0.0000002;
-        if ( speed > 0 ) {
-          accel *= -1;
-          comp = function(s) { return s < 0; };
+      code: function(_, _, touch) {
+        if ( touch.id === this.touch.id ) {
+          this.touch = '';
         }
-        var last = performance.now();
-        var self = this;
-        this.decel = 1;
-        window.requestAnimationFrame(function animate() {
-          if ( ! self.decel || comp(speed) ) {
-            self.decel = 0;
-            return;
-          }
-          window.requestAnimationFrame(animate);
-          var time = performance.now();
-          var delta = speed * (time - last);
-          last = time;
-          self.scrollTop = self.scrollTop + delta;
-          speed += accel * time;
-        });
       }
     },
   ]

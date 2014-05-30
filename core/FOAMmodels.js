@@ -72,6 +72,7 @@ var files = [
   'experimental/protobuf',
   // remove below here
   'models',
+  'touch',
   'glang',
   'oauth',
   '../apps/mailreader/view',
