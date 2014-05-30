@@ -559,7 +559,7 @@ FOAModel({
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
-      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(v);
+      if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
