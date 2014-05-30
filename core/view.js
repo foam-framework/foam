@@ -608,6 +608,14 @@ FOAModel({
       defaultValue: undefined
     },
     {
+      name:  'maxWidth',
+      defaultValue: undefined
+    },
+    {
+      name:  'maxHeight',
+      defaultValue: undefined
+    },
+    {
       name:  'height',
       defaultValue: undefined
     }
@@ -622,6 +630,8 @@ FOAModel({
       div.style.top = this.y + 'px';
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
+      if ( this.maxWidth ) div.style.maxWidth = this.maxWidth + 'px';
+      if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
@@ -648,6 +658,9 @@ FOAModel({
     {
       model_: 'DAOProperty',
       name: 'dao'
+    },
+    {
+      model_: 'BooleanProperty', name: 'hideOnMouseOut', defaultValue: true
     }
   ],
 
@@ -663,6 +676,12 @@ FOAModel({
 
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
+      if ( this.hideOnMouseOut ) {
+        var self = this;
+        div.addEventListener('mouseleave', function(e) {
+          self.close();
+        });
+      }
 
       document.body.appendChild(div);
       this.view.initHTML();
@@ -680,7 +699,7 @@ FOAModel({
 
         div.style.left = pos[0];
 
-        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || 400) ) {
+        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
           div.style.bottom = document.defaultView.innerHeight - pos[1];
         } else {
           div.style.top = pos[1] + parentNode.offsetHeight;
@@ -689,6 +708,15 @@ FOAModel({
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
+      if ( this.maxWidth ) {
+        div.style.maxWidth = this.maxWidth + 'px';
+        div.style.overflowX = 'scroll';
+      }
+      if ( this.maxHeight ) {
+        div.style.maxHeight = this.maxHeight + 'px';
+        div.style.overflowY = 'scroll';
+      }
+
       div.style.position = 'absolute';
     },
 
@@ -1044,8 +1072,9 @@ FOAModel({
 
       var proto = FOAM.lookup(this.autocompleter, this.X);
       var completer = proto.create();
-      this.autocompleteView = AutocompletePopup.create({
+      this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
+        maxHeight: 400,
         view: DAOListView.create({
           dao: completer.autocompleteDao,
           mode: 'final',
@@ -1066,7 +1095,6 @@ FOAModel({
       this.$.addEventListener('focus', function() {
         completer.autocomplete(self.data);
       });
-      this.$.addEventListener('blur', this.animate(this.delay(200, this.animate(this.animate(function() { self.autocompleteView.close(); })))));
     },
 
     initHTML: function() {
