@@ -1498,15 +1498,6 @@ FOAModel({
 
   extendsModel: 'View',
 
-  properties: [
-    'trueClassName',
-    'falseClassName',
-    {
-      name: 'className',
-      getter: function() { return this.data ? this.trueClassName : this.falseClassName; }
-    }
-  ],
-
   methods: {
     initHTML: function() {
       this.data$.addListener(this.update);
@@ -1520,8 +1511,7 @@ FOAModel({
       name: 'update',
       code: function() {
         if ( ! this.$ ) return;
-        DOM.setClass(this.$, this.trueClassName,    this.data);
-        DOM.setClass(this.$, this.falseClassName, ! this.data);
+        DOM.setClass(this.$, 'true', this.data);
       }
     },
     {
