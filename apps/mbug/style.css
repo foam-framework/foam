@@ -4,6 +4,14 @@ body {
    font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
 }
 
+table {
+   border-spacing: 0;
+}
+
+* {
+   box-sizing: border-box;
+}
+
 body, tbody, tr, td {
   margin: 0;
   padding: 0;
@@ -117,7 +125,7 @@ body, tbody, tr, td {
 }
 
 .project-citation .project-name.selected {
-  color: #03A9F4;
+  color: #3e50b4;
 }
 
 .actionButton-back {
@@ -128,7 +136,7 @@ body, tbody, tr, td {
 .actionButton {
   padding: 8px;
   vertical-align: middle;
-  background: #03A9F4;
+  background: #3e50b4;
   border: none;
   -webkit-box-shadow: none;
   box-shadown: none;
@@ -143,7 +151,7 @@ body, tbody, tr, td {
 
 .popupChoiceView {
   padding: 8px;
-  margin-left: 20px;
+   margin-left: 0;
   outline: none;
   opacity: 0.76;
   background: transparent;
@@ -179,11 +187,11 @@ body, tbody, tr, td {
 }
 
 .popupChoiceList li.selected {
-  color: #03A9F4;
+  color: #3e50b4;
 }
 
 .issue-edit .header {
-  background: #03A9F4;
+  background: #3e50b4;
   color: #fff;
   padding: 50px 32px 50px 32px;
   font-size: 32px;
@@ -191,7 +199,7 @@ body, tbody, tr, td {
 
 .issue-edit .toolbar {
   padding: 20px;
-  background: #03A9F4;
+  background: #3e50b4;
   display: flex;
 }
 
@@ -309,7 +317,7 @@ input[name=q] {
   height: 45px;
   border: none;
   color: white;
-  background: #03A9F4;
+  background: #3e50b4;
   padding-left: 10px;
   font-size: 24pt;
 }
@@ -347,8 +355,8 @@ select[name=sortOrder] {
 
 .mbug .header {
   display: flex;
-  background: #03A9F4;
-  padding: 5px;
+  background: #3e50b4;
+  padding: 0;
 }
 
 .mbug .header .default {
@@ -374,11 +382,12 @@ select[name=sortOrder] {
 
 span[name=projectName] {
   align-self: center;
-  flex: 1.0;
   color: white;
-  margin-left: 42px;
+  flex: 1.0;
   vertical-align: middle;
-  font-size: 28pt;
+  font-size: 40px;
+  font-weight: 500;
+  margin-left: 16px;
 }
 
 .stackview {
@@ -452,6 +461,10 @@ select[name=pri], select[name=status] {
   flex: 1;
 }
 
+.actionButton-changeProject {
+   margin: 4px;
+}
+
 .mbug.searchMode .swipeAltHeader {
   display: none;
 }
@@ -472,7 +485,7 @@ select[name=pri], select[name=status] {
 }
 
 ul.swipeAltHeader {
-  background: #03A9F4;
+  background: #3e50b4;
   padding: 10 0 3 100 !important;
   margin: 0;
   color: white;
