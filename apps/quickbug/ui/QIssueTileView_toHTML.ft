@@ -1,6 +1,5 @@
 <%
-var starView = QIssue.STARRED.view.create();
-starView.value = this.issue.starred$;;
+var starView = PropertyView.create({prop: QIssue.STARRED, data: this.issue});
 %>
 <div draggable="true"
      id="<%= this.on('dragstart', this.dragStart, this.id) %>"

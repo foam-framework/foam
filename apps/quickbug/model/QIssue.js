@@ -243,10 +243,7 @@ var QIssue = FOAM({
            tableView.addChild(view);
            return view.toHTML();
          },
-         view: {
-           model_: 'CSSImageBooleanView',
-           className: 'star-image'
-         },
+         view: { model_: 'CSSImageBooleanView', className: 'star-image' },
          help: 'Whether the authenticated user has starred this issue.'
       },
       {
