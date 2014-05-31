@@ -1,4 +1,10 @@
-body,tbody,tr,td {
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
+body {
+   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+}
+
+body, tbody, tr, td {
   margin: 0;
   padding: 0;
 }
@@ -82,10 +88,6 @@ body,tbody,tr,td {
 
 .issue-edit span[name=id] {
   font-weight: bold;
-}
-
-body {
-  font-family: Roboto2, 'Helvetica Neue', Helvetica, Arial;
 }
 
 .email-photo {
