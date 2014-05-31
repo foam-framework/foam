@@ -234,6 +234,13 @@ FOAModel({
     repaintNow: function() {
       var dao = this.dao;
 
+      /*
+      this.show__ = ! this.show__;
+      if ( this.show__ ) return;
+      */
+      this.count__ = ( this.count__ || 0)+1;
+      if ( this.count__ % 3 !== 0 ) return;
+
       if ( ! dao || ! this.$ ) return;
 
       dao = dao.skip(this.scrollbar.value);

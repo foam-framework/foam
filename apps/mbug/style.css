@@ -33,7 +33,7 @@ body,tbody,tr,td {
   overflow: hidden;
 }
 
-.priority {
+.issue-edit .priority {
   align-self: center;
   border-radius: 4px;
   color: white;
@@ -43,19 +43,35 @@ body,tbody,tr,td {
   text-align: center;
 }
 
-.priority-0 {
+.issue-citation .priority-0 {
+  color: #F4C7C3;
+}
+
+.issue-citation .priority-1 {
+  color: #F4B400;
+}
+
+.issue-citation .priority-2 {
+  color: #4285F4;
+}
+
+.issue-citation .priority-3 {
+  color: #0F9D58;
+}
+
+.issue-edit .priority-0 {
   background: #FF0000;
 }
 
-.priority-1 {
+.issue-edit .priority-1 {
   background: #DB4437;
 }
 
-.priority-2 {
+.issue-edit .priority-2 {
   background: #F4B400;
 }
 
-.priority-3 {
+.issue-edit .priority-3 {
   background: #4285F4;
 }
 
@@ -181,7 +197,7 @@ body {
   padding: 0;
 }
 
-.issue-edit .star {
+.star {
   vertical-align: middle;
   opacity: 0.76;
 }

@@ -263,6 +263,7 @@ FOAModel({
         <span class="expand"></span>
         $$save
         $$starred{
+          model_: 'ImageBooleanView',
           className:  'star',
           trueImage:  'images/ic_star_24dp.png',
           falseImage: 'images/ic_star_outline_24dp.png'
@@ -374,16 +375,27 @@ FOAModel({
 FOAModel({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
-  templates: [ function toHTML() {/*
-    <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-      $$owner{model_: 'IssueOwnerAvatarView'}
-      <div class="middle">
-        $$id{mode: 'read-only', className: 'id'} $$starred<br>
-        $$summary{mode: 'read-only'}
+  templates: [
+    function priorityToHTML() {/*
+      <% var pri = this.data.pri ? this.data.pri : '0'; %>
+      <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
+    */},
+    function toHTML() {/*
+      <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
+        $$owner{model_: 'IssueOwnerAvatarView'}
+        <div class="middle">
+          $$id{mode: 'read-only', className: 'id'} <% this.priorityToHTML(out); %><br>
+          $$summary{mode: 'read-only'}
+        </div>
+        $$starred{
+          model_: 'ImageBooleanView',
+          className:  'star',
+          trueImage:  'images/ic_star_24dp.png',
+          falseImage: 'images/ic_star_outline_24dp.png'
+        }
       </div>
-      $$pri{model_: 'PriorityView', mode: 'read-only'} <!-- $status{mode: 'read-only'} -->
-    </div>
-  */} ]
+    */}
+   ]
 });
 
 

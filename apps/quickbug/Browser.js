@@ -83,6 +83,7 @@ FOAModel({
       name: 'IssueDAO',
       scope: 'project',
       factory: function() {
+        return this.project.IssueDAO;
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
           window:   this.X.window
