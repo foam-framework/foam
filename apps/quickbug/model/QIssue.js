@@ -230,8 +230,7 @@ var QIssue = FOAM({
          tableWidth: '15px',
          tableFormatter: function(val, obj, tableView) {
            var view = CSSImageBooleanView.create({
-             trueClassName: 'star-image-on',
-             falseClassName: 'star-image-off',
+             className: 'star-image',
              data: obj.starred
            });
 
@@ -246,8 +245,7 @@ var QIssue = FOAM({
          },
          view: {
            model_: 'CSSImageBooleanView',
-           trueClassName: 'star-image-on',
-           falseClassName: 'star-image-off'
+           className: 'star-image'
          },
          help: 'Whether the authenticated user has starred this issue.'
       },
