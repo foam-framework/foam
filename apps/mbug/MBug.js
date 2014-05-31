@@ -265,8 +265,8 @@ FOAModel({
         $$starred{
           model_: 'ImageBooleanView',
           className:  'star',
-          trueImage:  'images/ic_star_24dp.png',
-          falseImage: 'images/ic_star_outline_24dp.png'
+          trueImage:  'images/ic_star_white_24dp.png',
+          falseImage: 'images/ic_star_outline_white_24dp.png'
         }
       </div>
       <div class="body">
