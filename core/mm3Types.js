@@ -574,6 +574,7 @@ var DAOProperty = Model.create({
     {
       name: 'setter',
       defaultValue: function(dao, name) {
+        if ( ! dao ) return;
         if ( ! this.instance_[name] ) this.instance_[name] = ProxyDAO.create();
         this.instance_[name].delegate = dao;
       }
