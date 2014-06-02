@@ -185,10 +185,6 @@ a {
   border-bottom: 1px solid rgba(0,0,0,.1);
 }
 
-.issue-edit .cc {
-  padding: 12px;
-}
-
 .issue-edit .cc-header, .issue-edit .owner-header {
   color: #999;
   font-size: 14px;
@@ -196,15 +192,13 @@ a {
   padding: 0 0 24px 0;
 }
 
-.issue-edit .cc-header .cc-add {
-  margin-right: 7px;
-  float: right;
-  opacity: 0.54;
+.issue-edit .cc-header {
+  display: flex;
+  align-items: center;
 }
 
-img.cc-add {
-  width: 24px;
-  height: 24px;
+.issue-edit .cc-header .cc-header-text {
+  flex: 1 0 auto;
 }
 
 .issue-edit .priority {
