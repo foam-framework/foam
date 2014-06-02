@@ -356,6 +356,17 @@ var FunctionProperty = Model.create({
           eval('(' + txt + ')') :
           new Function(txt) ;
       }
+    },
+    {
+      name: 'preSet',
+      defaultValue: function(_, value) {
+        if ( typeof value === 'string' ) {
+          return value.startsWith('function') ?
+              eval('(' + value + ')') :
+              new Function(value);
+        }
+        return value;
+      }
     }
   ]
 });

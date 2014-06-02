@@ -105,7 +105,19 @@ var XMLUtil = {
     tag.children.forEach(function(c) {
       // Ignore children which are not tags.
       if (typeof c === 'object' && c.attrs && c.attrs.name) {
-        obj[self.unescapeAttr(c.attrs.name)] = self.parseArray(c.children);
+        var result;
+        if ( c.attrs.type && c.attrs.type == 'function' ) {
+          var code = XMLUtil.unescape(c.children.join(''));
+          if ( code.startsWith('function') ) {
+            result = eval('(' + code + ')');
+          } else {
+            result = new Function(code);
+          }
+        } else {
+          result = self.parseArray(c.children);
+        }
+
+        obj[self.unescapeAttr(c.attrs.name)] = result;
       }
     });
 
@@ -177,7 +189,8 @@ var XMLUtil = {
 
           if ( val == prop.defaultValue ) continue;
 
-          out('<property name="', XMLUtil.escapeAttr(prop.name), '">');
+          out('<property name="', XMLUtil.escapeAttr(prop.name), '" ' +
+              (typeof val === 'function' ? 'type="function"' : '') + '>');
           this.output(out, val);
           out('</property>');
         }
@@ -268,7 +281,10 @@ var XMLUtil = {
 
           if ( val == prop.defaultValue ) continue;
 
-          out("\n", nestedIndent, '<property name="', XMLUtil.escapeAttr(prop.name), '">');
+          var type = typeof obj[prop.name] == 'function' ?
+              ' type="function"' : '';
+          out("\n", nestedIndent, '<property name="',
+              XMLUtil.escapeAttr(prop.name), '"', type, '>');
           this.output(out, val, nestedIndent);
           out('</property>');
         }

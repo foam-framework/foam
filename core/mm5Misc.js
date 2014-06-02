@@ -80,6 +80,24 @@ FOAModel({
                                               'function() {\n'    + txt + '\n}' ;
 
         return eval('(' + txt + ')');
+      },
+      preSet: function(_, value) {
+        if ( typeof value === 'string' ) {
+          if ( value.startsWith('function') ) {
+            value = eval('(' + value + ')');
+          } else {
+            value = new Function(value);
+          }
+        }
+
+        // Now value is a function either way.
+        // We just need to check that if it's async it has an argument.
+        if ( typeof value === 'function' && this.async && value.length === 0 ) {
+          var str = value.toString();
+          return eval('(function(ret)' + str.substring(str.indexOf('{')) + ')');
+        } else {
+          return value;
+        }
       }
     },
     {
