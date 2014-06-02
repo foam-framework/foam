@@ -357,13 +357,15 @@ FOAModel({
         var s = this.X.window.getComputedStyle(view.$);
 
         view.$.style.top = pos[1];
-        view.$.style.left = pos[0]-toNum(s.width);
+        view.$.style.left = pos[0]-toNum(s.width)+30;
         view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
-        view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
-        view.$.addEventListener('mouseout', function(e) {
-          if ( view.$ && e.fromElement == view.$ && ( ( ! e.toElement ) || e.toElement.parentNode != view.$ ) )
+        view.$.addEventListener('click', function() { if ( view.$ ) view.$.remove(); });
+        view.$.parentNode.addEventListener('mousemove', function(evt) {
+          if ( ! view.$.contains(evt.target) ) {
+            view.$.parentNode.removeEventListener('mousemove', arguments.callee);
             view.$.remove();
+          }
         });
       }
     }
