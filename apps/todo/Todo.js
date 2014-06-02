@@ -17,7 +17,7 @@ FOAModel({
 	this.on('blur',	    toDisplay, this.textView.id);
 	this.textView.subscribe(this.textView.ESCAPE, toDisplay);
 	this.setClass('completed', function() { return this.obj.completed; }.bind(this), this.id);
-	%> */} ],
+	%> */} ]
 });
 
 FOAModel({
@@ -35,7 +35,11 @@ FOAModel({
     { name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
     { name: 'completedCount', model_: 'IntProperty' },
     { name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; } },
-    { name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) { if ( n == !!this.activeCount ) this.dao.update(SET(Todo.COMPLETED, n)); }},
+    { name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {
+      if ( n == !!this.activeCount ) {
+        this.dao.update(SET(Todo.COMPLETED, n));
+      }
+    }},
     {
       name: 'query',
       postSet: function(_, q) { this.filteredDAO = this.dao.where(q); },
