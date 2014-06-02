@@ -581,3 +581,13 @@ ul.swipeAltHeader {
   padding: 14px 16px;
   margin: 0;
 }
+
+.issue-edit .toolbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+.issue-edit .body {
+  margin-top: 55px;
+}
