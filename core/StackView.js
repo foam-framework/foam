@@ -119,6 +119,17 @@ FOAModel({
       this.navBarElement().innerHTML = buf.join('');
     },
 
+    slideView: function (view, opt_label) {
+      this.redo.length = 0;
+      this.setPreview(null);
+      view.stackLabel = opt_label || view.stackLabel || view.label;
+      this.stack.push(view);
+      this.leftSlider().innerHTML = view.toHTML();
+      view.stackView = this;
+      view.initHTML();
+      this.propertyChange('stack', this.stack, this.stack);
+    },
+
     pushView: function (view, opt_label, opt_back) {
       if ( !opt_back ) this.redo.length = 0;
       this.setPreview(null);
