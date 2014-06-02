@@ -319,7 +319,6 @@ img.cc-add {
   box-shadow: 0 0 2px 2px rgba(0,0,0,.1), 0 0 3px 1px rgba(0,0,0,.1);
   border: none;
   border-radius: 2px;
-  overflow-y: auto;
   padding: 8px 0;
   min-width: 190px;
 }
