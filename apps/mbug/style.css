@@ -1,15 +1,15 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 body {
-   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
 }
 
 table {
-   border-spacing: 0;
+  border-spacing: 0;
 }
 
 * {
-   box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body, tbody, tr, td {
@@ -18,17 +18,17 @@ body, tbody, tr, td {
 }
 
 hr {
-   border-top: 1px solid rgba(0,0,0,.1);
-   border: none;
-   height: 1px;
-   margin: 0;
-   padding: 0;
-   background: rgba(0,0,0,.1);
+  border-top: 1px solid rgba(0,0,0,.1);
+  border: none;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  background: rgba(0,0,0,.1);
 }
 
 a {
-   text-decoration: none;
-   color: #4285f4;
+  text-decoration: none;
+  color: #4285f4;
 }
 
 .issue-citation {
@@ -74,20 +74,6 @@ a {
   line-height: 20px;
 }
 
-.issue-edit .priority {
-  align-self: center;
-  border-radius: 2px;
-  color: white;
-  flex-grow: 0;
-  font-size: 11px;
-  font-weight: 700;
-  height: 18px;
-  margin: 3px;
-  padding: 3px 0 0 0;
-  text-align: center;
-  width: 18px;
-}
-
 .issue-citation .priority-0 {
   color: #F4C7C3;
 }
@@ -104,6 +90,25 @@ a {
   color: #0F9D58;
 }
 
+.issue-citation .id {
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.issue-edit .priority {
+  align-self: center;
+  border-radius: 2px;
+  color: white;
+  flex-grow: 0;
+  font-size: 11px;
+  font-weight: 700;
+  height: 18px;
+  margin: 3px;
+  padding: 3px 0 0 0;
+  text-align: center;
+  width: 18px;
+}
+
 .issue-edit .priority-0 {
   background: #FF0000;
 }
@@ -118,11 +123,6 @@ a {
 
 .issue-edit .priority-3 {
   background: #4285F4;
-}
-
-.issue-citation .id {
-  font-size: 1.5em;
-  font-weight: 400;
 }
 
 .issue-edit span[name=id] {
@@ -191,7 +191,7 @@ a {
 
 .popupChoiceView {
   padding: 8px;
-   margin-left: 0;
+  margin-left: 0;
   outline: none;
   opacity: 0.76;
   background: transparent;
@@ -267,18 +267,9 @@ a {
   margin: 12px;
 }
 
-/*
-Should the star really be shrunk?
-.issue-edit .star {
-   width: 24px;
-   height: 24px;
-   margin: 12px;
-}
-*/
-
 .issue-edit .separator {
-   border-top: 1px solid rgba(0,0,0,.1);
-   margin: 8px 0;
+  border-top: 1px solid rgba(0,0,0,.1);
+  margin: 8px 0;
 }
 
 .issue-edit .choice {
@@ -289,7 +280,7 @@ Should the star really be shrunk?
 }
 
 .issue-edit .owner, .issue-edit .cc {
-   padding: 12px 16px;
+  padding: 12px 16px;
 }
 
 .issue-edit .owner-info {
@@ -328,7 +319,6 @@ Should the star really be shrunk?
   padding: 0 0 24px 0;
 }
 
-
 .issue-edit .cc-header .cc-add {
   margin-right: 7px;
   float: right;
@@ -336,8 +326,8 @@ Should the star really be shrunk?
 }
 
 img.cc-add {
-   width: 24px;
-   height: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .issue-edit .priority {
@@ -408,6 +398,10 @@ input[name=q]::-webkit-input-placeholder {
   height: 55px;
 }
 
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
 .actionButton-leaveSearchMode img {
   margin: 12px;
 }
@@ -455,7 +449,7 @@ select[name=sortOrder] {
 }
 
 .swipeAltInner {
-   padding-top: 8px;
+  padding-top: 8px;
 }
 
 span[name=projectName] {
@@ -543,7 +537,7 @@ select[name=pri], select[name=status] {
 }
 
 .actionButton-changeProject {
-   margin: 4px;
+  margin: 4px;
 }
 
 .mbug.searchMode .swipeAltHeader {
@@ -578,17 +572,12 @@ ul.swipeAltHeader {
 }
 
 .popupChoiceView, .actionButton {
-   width: 48px;
-   height: 48px;
-   background: transparent;
+  width: 48px;
+  height: 48px;
+  background: transparent;
 }
 
 .foamChoiceListView.horizontal .choice {
-   padding: 14px 16px;
-   margin: 0;
-}
-
-
-::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+  padding: 14px 16px;
+  margin: 0;
 }
