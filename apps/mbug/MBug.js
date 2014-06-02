@@ -253,6 +253,20 @@ FOAModel({
       name: 'save',
       label: '',
       iconUrl: 'images/ic_done_24dp.png'
+    },
+    {
+      name: 'addCc',
+      label: '',
+      iconUrl: 'images/ic_add_24dp.png',
+      action: function() {
+        var view = this.X.FullScreenTextFieldView.create(this.model.CC);
+        this.X.stack.pushView(view);
+        var self = this;
+        view.data$.addListener(function() {
+          self.X.stack.back();
+          self.data.cc = self.data.cc.concat(view.data);
+        });
+      }
     }
   ],
   templates: [ function toHTML() {/*
@@ -316,7 +330,7 @@ FOAModel({
       </div>
       <div class="separator"></div>
       <div class="cc">
-        <div class="cc-header">Cc<img class="cc-add" src="images/ic_add_24dp.png"></div>
+        <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
         $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
