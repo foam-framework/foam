@@ -184,7 +184,7 @@ a {
   outline: none;
 }
 
-.actionButton:hover, .popupChoiceView:hover img {
+.actionButton:hover, .popupChoiceView:hover img, .mbug .header .popupChoiceView:hover {
   background: #0F9D58;
   border-radius:100px;
 }
