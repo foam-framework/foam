@@ -812,6 +812,7 @@ input.clickToEnableEdit:not(:focus) {
   border: 2px solid grey;
   background: white;
   display: table-footer-group;
+  overflow-y: auto;
   position: absolute;
   top: 20;
   left: 50;
