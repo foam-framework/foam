@@ -129,6 +129,108 @@ a {
   font-weight: bold;
 }
 
+.issue-edit .popupChoiceView {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+.issue-edit .header {
+  background: #3e50b4;
+  color: #fff;
+  font-size: 20px;
+  line-height: 28px;
+  margin-bottom: 8px;
+  min-height: 132px;
+  padding: 24px 16px;
+}
+
+.issue-edit .toolbar {
+  background: #3e50b4;
+  display: flex;
+  padding: 4px;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
+  padding: 0;
+}
+
+.issue-edit .separator {
+  border-top: 1px solid rgba(0,0,0,.1);
+  margin: 8px 0;
+}
+
+.issue-edit .choice {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.issue-edit .owner, .issue-edit .cc {
+  padding: 12px 16px;
+}
+
+.issue-edit .owner-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.issue-edit .cc .owner-info {
+  padding: 12px 0;
+}
+
+.issue-edit .owner .owner-name {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.issue-edit .cc {
+  padding: 12px;
+}
+
+.issue-edit .cc-header, .issue-edit .owner-header {
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 0 24px 0;
+}
+
+.issue-edit .cc-header .cc-add {
+  margin-right: 7px;
+  float: right;
+  opacity: 0.54;
+}
+
+img.cc-add {
+  width: 24px;
+  height: 24px;
+}
+
+.issue-edit .priority {
+  font-weight: 700;
+  color: white;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.issue-edit .priority-1 {
+  background: #DB4437;
+}
+
+.issue-edit .priority-2 {
+  background: #F4B400;
+}
+
+.issue-edit .priority-3 {
+  background: #4285F4;
+}
+
 .email-photo {
   overflow: hidden;
   width: 80px;
@@ -197,12 +299,6 @@ a {
   background: transparent;
 }
 
-.issue-edit .popupChoiceView {
-  display: flex;
-  flex: 1 0 auto;
-  align-items: center;
-}
-
 .popupChoiceView .value {
   align-items: center;
   color: #222;
@@ -223,8 +319,9 @@ a {
   box-shadow: 0 0 2px 2px rgba(0,0,0,.1), 0 0 3px 1px rgba(0,0,0,.1);
   border: none;
   border-radius: 2px;
+  overflow-y: auto;
   padding: 8px 0;
-  min-width: 160px;
+  min-width: 190px;
 }
 
 .popupChoiceList li {
@@ -239,58 +336,12 @@ a {
   color: #3e50b4;
 }
 
-.issue-edit .header {
-  background: #3e50b4;
-  color: #fff;
-  font-size: 20px;
-  line-height: 28px;
-  margin-bottom: 8px;
-  min-height: 132px;
-  padding: 24px 16px;
-}
-
-.issue-edit .toolbar {
-  background: #3e50b4;
-  display: flex;
-  padding: 4px;
-}
-
-.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
-  padding: 0;
-}
-
 .star {
   vertical-align: middle;
   opacity: 0.76;
   width: 24px;
   height: 24px;
   margin: 12px;
-}
-
-.issue-edit .separator {
-  border-top: 1px solid rgba(0,0,0,.1);
-  margin: 8px 0;
-}
-
-.issue-edit .choice {
-  font-size: 32px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-}
-
-.issue-edit .owner, .issue-edit .cc {
-  padding: 12px 16px;
-}
-
-.issue-edit .owner-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.issue-edit .cc .owner-info {
-  padding: 12px 0;
 }
 
 .owner-name.placeholder {
@@ -302,56 +353,6 @@ a {
   font-size: 16px;
   line-height: 32px;
   flex: 1 0 auto;
-}
-
-.issue-edit .owner .owner-name {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-}
-
-.issue-edit .cc {
-  padding: 12px;
-}
-
-.issue-edit .cc-header, .issue-edit .owner-header {
-  color: #999;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 0 0 24px 0;
-}
-
-.issue-edit .cc-header .cc-add {
-  margin-right: 7px;
-  float: right;
-  opacity: 0.54;
-}
-
-img.cc-add {
-  width: 24px;
-  height: 24px;
-}
-
-.issue-edit .priority {
-  font-weight: 700;
-  color: white;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-}
-
-.issue-edit .priority-1 {
-  background: #DB4437;
-}
-
-.issue-edit .priority-2 {
-  background: #F4B400;
-}
-
-.issue-edit .priority-3 {
-  background: #4285F4;
 }
 
 .issue-citation span[name=id] {
