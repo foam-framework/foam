@@ -358,6 +358,7 @@ FOAModel({
 
         view.$.style.top = pos[1];
         view.$.style.left = pos[0]-toNum(s.width);
+        view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
         view.$.addEventListener('click',    function() { if ( view.$ ) view.$.remove(); });
         view.$.addEventListener('mouseout', function(e) {

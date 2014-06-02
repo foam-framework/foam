@@ -1,15 +1,15 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 body {
-   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
 }
 
 table {
-   border-spacing: 0;
+  border-spacing: 0;
 }
 
 * {
-   box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body, tbody, tr, td {
@@ -18,17 +18,17 @@ body, tbody, tr, td {
 }
 
 hr {
-   border-top: 1px solid rgba(0,0,0,.1);
-   border: none;
-   height: 1px;
-   margin: 0;
-   padding: 0;
-   background: rgba(0,0,0,.1);
+  border-top: 1px solid rgba(0,0,0,.1);
+  border: none;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  background: rgba(0,0,0,.1);
 }
 
 a {
-   text-decoration: none;
-   color: #4285f4;
+  text-decoration: none;
+  color: #4285f4;
 }
 
 .issue-citation {
@@ -74,20 +74,6 @@ a {
   line-height: 20px;
 }
 
-.issue-edit .priority {
-  align-self: center;
-  border-radius: 2px;
-  color: white;
-  flex-grow: 0;
-  font-size: 11px;
-  font-weight: 700;
-  height: 18px;
-  margin: 3px;
-  padding: 3px 0 0 0;
-  text-align: center;
-  width: 18px;
-}
-
 .issue-citation .priority-0 {
   color: #F4C7C3;
 }
@@ -102,6 +88,25 @@ a {
 
 .issue-citation .priority-3 {
   color: #0F9D58;
+}
+
+.issue-citation .id {
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.issue-edit .priority {
+  align-self: center;
+  border-radius: 2px;
+  color: white;
+  flex-grow: 0;
+  font-size: 11px;
+  font-weight: 700;
+  height: 18px;
+  margin: 3px;
+  padding: 3px 0 0 0;
+  text-align: center;
+  width: 18px;
 }
 
 .issue-edit .priority-0 {
@@ -120,13 +125,110 @@ a {
   background: #4285F4;
 }
 
-.issue-citation .id {
-  font-size: 1.5em;
-  font-weight: 400;
-}
-
 .issue-edit span[name=id] {
   font-weight: bold;
+}
+
+.issue-edit .popupChoiceView {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+.issue-edit .header {
+  background: #3e50b4;
+  color: #fff;
+  font-size: 20px;
+  line-height: 28px;
+  margin-bottom: 8px;
+  min-height: 132px;
+  padding: 24px 16px;
+}
+
+.issue-edit .toolbar {
+  background: #3e50b4;
+  display: flex;
+  padding: 4px;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
+  padding: 0;
+}
+
+.issue-edit .separator {
+  border-top: 1px solid rgba(0,0,0,.1);
+  margin: 8px 0;
+}
+
+.issue-edit .choice {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.issue-edit .owner, .issue-edit .cc {
+  padding: 12px 16px;
+}
+
+.issue-edit .owner-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.issue-edit .cc .owner-info {
+  padding: 12px 0;
+}
+
+.issue-edit .owner .owner-name {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.issue-edit .cc {
+  padding: 12px;
+}
+
+.issue-edit .cc-header, .issue-edit .owner-header {
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 0 24px 0;
+}
+
+.issue-edit .cc-header .cc-add {
+  margin-right: 7px;
+  float: right;
+  opacity: 0.54;
+}
+
+img.cc-add {
+  width: 24px;
+  height: 24px;
+}
+
+.issue-edit .priority {
+  font-weight: 700;
+  color: white;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.issue-edit .priority-1 {
+  background: #DB4437;
+}
+
+.issue-edit .priority-2 {
+  background: #F4B400;
+}
+
+.issue-edit .priority-3 {
+  background: #4285F4;
 }
 
 .email-photo {
@@ -184,23 +286,17 @@ a {
   outline: none;
 }
 
-.actionButton:hover, .popupChoiceView:hover img {
+.actionButton:hover, .popupChoiceView:hover img, .mbug .header .popupChoiceView:hover {
   background: #0F9D58;
   border-radius:100px;
 }
 
 .popupChoiceView {
   padding: 8px;
-   margin-left: 0;
+  margin-left: 0;
   outline: none;
   opacity: 0.76;
   background: transparent;
-}
-
-.issue-edit .popupChoiceView {
-  display: flex;
-  flex: 1 0 auto;
-  align-items: center;
 }
 
 .popupChoiceView .value {
@@ -223,8 +319,9 @@ a {
   box-shadow: 0 0 2px 2px rgba(0,0,0,.1), 0 0 3px 1px rgba(0,0,0,.1);
   border: none;
   border-radius: 2px;
+  overflow-y: auto;
   padding: 8px 0;
-  min-width: 160px;
+  min-width: 190px;
 }
 
 .popupChoiceList li {
@@ -239,67 +336,12 @@ a {
   color: #3e50b4;
 }
 
-.issue-edit .header {
-  background: #3e50b4;
-  color: #fff;
-  font-size: 20px;
-  line-height: 28px;
-  margin-bottom: 8px;
-  min-height: 132px;
-  padding: 24px 16px;
-}
-
-.issue-edit .toolbar {
-  background: #3e50b4;
-  display: flex;
-  padding: 4px;
-}
-
-.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
-  padding: 0;
-}
-
 .star {
   vertical-align: middle;
   opacity: 0.76;
   width: 24px;
   height: 24px;
   margin: 12px;
-}
-
-/*
-Should the star really be shrunk?
-.issue-edit .star {
-   width: 24px;
-   height: 24px;
-   margin: 12px;
-}
-*/
-
-.issue-edit .separator {
-   border-top: 1px solid rgba(0,0,0,.1);
-   margin: 8px 0;
-}
-
-.issue-edit .choice {
-  font-size: 32px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-}
-
-.issue-edit .owner, .issue-edit .cc {
-   padding: 12px 16px;
-}
-
-.issue-edit .owner-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.issue-edit .cc .owner-info {
-  padding: 12px 0;
 }
 
 .owner-name.placeholder {
@@ -311,50 +353,6 @@ Should the star really be shrunk?
   font-size: 16px;
   line-height: 32px;
   flex: 1 0 auto;
-}
-
-.issue-edit .owner .owner-name {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-}
-
-.issue-edit .cc-header, .issue-edit .owner-header {
-  color: #999;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 0 0 24px 0;
-}
-
-.issue-edit .cc-header {
-  display: flex;
-  align-items: center;
-}
-
-.issue-edit .cc-header-text {
-  flex: 1 0 auto;
-}
-
-.issue-edit .priority {
-  font-weight: 700;
-  color: white;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-}
-
-.issue-edit .priority-1 {
-  background: #DB4437;
-}
-
-.issue-edit .priority-2 {
-  background: #F4B400;
-}
-
-.issue-edit .priority-3 {
-  background: #4285F4;
 }
 
 .issue-citation span[name=id] {
@@ -384,7 +382,7 @@ input[name=q] {
   border: none;
   color: white;
   font-size: 20px;
-  height: 56px;
+  height: 24px;
   margin: 20px;
   padding-left: 10px;
 }
@@ -399,6 +397,10 @@ input[name=q]::-webkit-input-placeholder {
   color: white;
   opacity: 0.76;
   height: 55px;
+}
+
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
 
 .actionButton-leaveSearchMode img {
@@ -448,7 +450,7 @@ select[name=sortOrder] {
 }
 
 .swipeAltInner {
-   padding-top: 8px;
+  padding-top: 8px;
 }
 
 span[name=projectName] {
@@ -456,7 +458,7 @@ span[name=projectName] {
   color: white;
   flex: 1.0;
   vertical-align: middle;
-  font-size: 40px;
+  font-size: 24px;
   font-weight: 500;
   margin-left: 16px;
 }
@@ -536,7 +538,7 @@ select[name=pri], select[name=status] {
 }
 
 .actionButton-changeProject {
-   margin: 4px;
+  margin: 4px;
 }
 
 .mbug.searchMode .swipeAltHeader {
@@ -571,17 +573,12 @@ ul.swipeAltHeader {
 }
 
 .popupChoiceView, .actionButton {
-   width: 48px;
-   height: 48px;
-   background: transparent;
+  width: 48px;
+  height: 48px;
+  background: transparent;
 }
 
 .foamChoiceListView.horizontal .choice {
-   padding: 14px 16px;
-   margin: 0;
-}
-
-
-::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+  padding: 14px 16px;
+  margin: 0;
 }
