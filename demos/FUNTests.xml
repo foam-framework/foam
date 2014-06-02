@@ -1,0 +1,795 @@
+<foam>
+  <object model="UnitTest">
+    <property name="name">Event Tests</property>
+    <property name="description">Test event primitives.</property>
+    <property name="async">true</property>
+    <property name="code" type="function">
+      FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+      var t = Test.create();
+      t.x$.addListener(function() { log(t.x); });
+      t.x = 1;
+      t.x = 2;
+      t.x = 3;
+      Movement.animate(500, function() { t.x = 10; })();
+      setTimeout(ret, 550);
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">By-Name Value binding</property>
+    <property name="description">Demonstrate the binding of $ values.</property>
+    <property name="code" type="function">
+      FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+      var t1 = Test.create({x:1});
+      var t2 = Test.create({x:2});
+
+      t1.x$ = t2.x$;
+      log([t1.x, t2.x]);
+
+      t1.x = 3;
+      log([t1.x, t2.x]);
+
+      t2.x = 4;
+      log([t1.x, t2.x]);
+
+      var t3 = Test.create({x$: t1.x$});
+      log([t1.x, t2.x, t3.x]);
+
+      t3.x = 5;
+      log([t1.x, t2.x, t3.x]);
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">Context Examples</property>
+    <property name="code">
+      X.a = 42;
+      log(X.a);
+      var Y = X.sub({a:1,b:2}, 'Y');
+      log(Y);
+      log(Y.a);
+      Mouse.create();
+      var m1 = Mouse.create();
+      var m2 = Y.Mouse.create();
+      log('m2.X ', m2.X);
+      log('m1.X ', m1.X);
+      log(m2.X.a);
+      var m3 = m2.X.Mouse.create();
+      log(m3.X);
+      log(m3.X.a);
+    </property>
+    <property name="tests">
+      <object model="UnitTest">
+        <property name="name">SubTest1</property>
+        <property name="code" type="function">
+          log('sub test 1, part 1');
+          log('sub test 1, part 2');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">SubTest2</property>
+        <property name="code" type="function">
+          log('sub test 2');
+        </property>
+      </object>
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">A UnitTest embedded in DOM</property>
+    <property name="code" type="function">
+      log('Here I am.');
+      log('And here.');
+    </property>
+    <property name="tests">
+      <object model="UnitTest">
+        <property name="code" type="function">
+          log('sub test 1, part 1');
+          log('sub test 1, part 2');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="code" type="function">
+          log('sub test 2');
+        </property>
+      </object>
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">A failed Test</property>
+    <property name="code" type="function">
+      fail("Something's wrong.");
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">Property Type Conversions</property>
+    <property name="description">Test that properties coerce values properly..</property>
+    <property name="code" type="function">
+      o = FOAM({
+        model_: 'Model',
+        name: 'Test',
+        properties: [
+          { model_: 'StringProperty',  name: 's' },
+          { model_: 'IntProperty', name: 'i' },
+          { model_: 'FloatProperty',   name: 'f' }
+        ]
+      }).create();
+
+      assert(o.s === '', 'Default value for String Properties should be empty string.');
+      o.s = 'string'; assert(o.s === 'string', 'Setting String Properties should work.');
+      o.s = undefined; assert(o.s === '', 'Setting String Properties to undefined should convert value to empty string.');
+      o.s = 1; assert(o.s === '1', 'Setting String Properties to numbers should convert value to String.');
+
+      assert(o.i === 0, 'Default value for Int Properties should be 0.');
+      o.i = 1; assert(o.i === 1, 'Setting Int Properties should work.');
+      o.i = undefined; assert(o.i === 0, 'Setting Int Properties to undefined should convert value to 0.');
+      o.i = '1'; assert(o.i === 1, 'Setting Int Properties to a string should convert value to Int.');
+
+      assert(o.f === 0.0, 'Default value for Float Properties should be 0.0.');
+      o.f = 1.0; assert(o.f === 1.0, 'Setting Float Properties should work.');
+      o.f = undefined; assert(o.f === 0.0, 'Setting Float Properties to undefined should convert value to 0.0.');
+      o.f = '1.1'; assert(o.f === 1.1, 'Setting Float Properties to a string should convert value to Float.');
+    </property>
+  </object>
+
+  <object model="UnitTest">
+    <property name="name">DAO Tests</property>
+    <property name="description">Define the Model (like a schema) and create a DAO.</property>
+    <property name="code" type="function">
+      Person = FOAM({
+        model_: 'Model',
+        name: 'Person',
+        properties: [
+          { name: 'id' },
+          { name: 'name' },
+          { name: 'sex', defaultValue: 'M' },
+          { model_: 'IntProperty', name: 'age' }
+        ]
+      });
+
+      dao = MDAO.create({model: Person})
+        .addIndex(Person.NAME)
+        .addIndex(Person.SEX, Person.AGE);
+
+      log(dao);
+    </property>
+    <property name="tests">
+      <object model="UnitTest">
+        <property name="name">SubTest1</property>
+        <property name="description">Add some sample data and select ot a 'sink'.</property>
+        <property name="code" type="function">
+          dao.put(Person.create({id:'1', name:'John',  age:21}));
+          dao.put(Person.create({id:'2', name:'Dave',  age:20}));
+          dao.put(Person.create({id:'3', name:'Steve', age:19}));
+          dao.put(Person.create({id:'4', name:'Andy',  age:18}));
+
+          dao.select({put: function(p) { log('person: ', p.name); }});
+        </property>
+      </object>
+      <foam object="UnitTest">
+        <property name="name">SubTest2</property>
+        <property name="description">Select directly to an Array.</property>
+        <property name="code" type="function">
+          var a = [];
+          dao.select(a);
+          jlog(a);
+        </property>
+      </object>
+    </property>
+  </object>
+
+  <foam object="UnitTest">
+    <property name="name">aFunc Tests</property>
+    <property name="description">Test FOAM's Asynchronous-Functions (aFunc's).</property>
+    <property name="code" type="function">
+      f1 = function(ret) { log('f1() called.'); ret(1); };
+      f2 = function(ret, a) { log('f2() called.'); ret(a,2); };
+      aprint = function(ret) { log(argsToArray(arguments).slice(1).join(', ')); ret(); };
+    </property>
+    <property name="tests">
+      <object model="UnitTest">
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aprint.ao(f2.ao(f1))(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test1</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aprint.ao(f2.ao(f1))(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test2</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          f1.aseq(f2.aseq(aprint))(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test3</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          f1.aseq(aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test4</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          ao(aprint,f2,f1)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test5</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(f1, aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test6</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(f1,f2,aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">amemo</property>
+        <property name="async">true</property>
+        <property name="description">Test that amemo() only executes its delegate once.</property>
+        <property name="code" type="function">
+          m = amemo(function(ret) { log('Should only see this once.'); ret(1); });
+          apar(m, m, m).aseq(aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test7</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(
+            function(ret) { log('fB'); ret(1); },
+            function(ret) { log('fC'); ret(2); },
+            aprint
+          )(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test8</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          apar(
+            function(ret, a) { log('fB'); ret(1); },
+            function(ret, a) { log('fC'); ret(2); }
+          )(aprint.aseq(ret));
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">arepeat 1</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          arepeat(5, f1)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">arepeat 2</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          arepeat(5, function(ret, a, b) { log(a); ret(1); }).aseq(aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">arepeat 3</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(
+            arepeat(5, function(ret, a, b) { log(a); ret(1); }),
+            aprint)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">test11</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(
+            function(ret) { log('fA'); ret(1); },
+            apar(
+              function(ret, a) { log('fB', a); ret(1); },
+              function(ret, a) { log('fC', a); ret(2); }
+            ),
+            aprint
+          )(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">anop</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          log('anop');
+          aseq(alog('before'), anop, alog('after'))(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">abind1</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+            var boo = function() { log('boo'); }
+            boo();
+            boo.abind(null)(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">abind2</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          aseq(
+            f1,
+            function() { log('sync fn'); }.abind(this),
+            f2
+          )(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">alog</property>
+        <property name="async">true</property>
+        <property name="code" type="function">log('alog'); alog('a message')(ret);</property>
+      </object>
+      <object id="test">
+        <property name="name">UnitTest</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          log('**********');
+          log('************** Beginning asleep2');
+          aseq(alog('before'), asleep(100), alog('after'), asleep(100), alog('much after'))(ret);
+  //        log('after it all');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">asleep2</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          log('at the start');
+          aseq(asleep(100), alog('a message'))(ret);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">Future Function</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          log('start');
+          var functionFuture = afuture();
+          var fn = futurefn(functionFuture);
+
+          fn("hello");
+          setTimeout(function() { fn(" world!"); ret(); }, 200);
+          setTimeout(function() { functionFuture.set(log); }, 100);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">asynchronized</property>
+        <property name="code" type="function">
+          tlock = {};
+
+          f1 = aseq(
+            alog('f1 start'),
+            asleep(200),
+            alog('f1 end')
+          );
+        </property>
+        <property name="tests">
+          <object model="UnitTest">
+            <property name="name">Without Synchronization</property>
+            <property name="async">true</property>
+            <property name="code" type="function">
+              apar(f1, f1, f1)(ret);
+            </property>
+          </object>
+          <object model="UnitTest">
+            <property name="name">With Synchronization</property>
+            <property name="async">true</property>
+            <property name="code" type="function">
+              f1 = asynchronized(f1);
+
+              apar(f1, f1, f1)(ret);
+            </property>
+          </object>
+          <object model="UnitTest">
+            <property name="name">With Synchronization (Sequential)</property>
+            <property name="async">true</property>
+            <property name="code" type="function">
+              apar(aseq(f1, f1, f1), aseq(f1, f1, f1))(ret);
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </object>
+
+  <object model="UITest">
+    <property name="name">View Tests</property>
+    <property name="description">Test Views and Data-Binding.</property>
+    <property name="tests">
+      <object model="UITest">
+        <property name="name">AllViews</property>
+        <property name="description">Test all simple view types.</property>
+        <property name="code" type="function">
+          ModelDAO = MDAO.create({ model: Model });
+          ModelDAO.put(Model);
+          ModelDAO.put(EMail);
+
+          FOAModel({
+            name: 'AllViews',
+
+            properties: [
+              {
+                name: 'defaultEverything'
+              },
+              {
+                name: 'defaultValue',
+                defaultValue: 'defaultValue'
+              },
+              {
+                name: 'clickToEnableEdit',
+                defaultValue: 'click to enable edit',
+                view: {
+                  model_: 'TextFieldView',
+                  className: 'clickToEnableEdit'
+                }
+              },
+              {
+                model_: 'StringProperty',
+                name: 'stringProperty'
+              },
+              {
+                model_: 'StringProperty',
+                name: 'stringWithWidth',
+                displayWidth: 60
+              },
+              {
+                model_: 'StringProperty',
+                name: 'stringWithWidthAndHeight',
+                displayWidth: 40,
+                displayHeight: 5
+              },
+              {
+                model_: 'StringProperty',
+                name: 'readOnlyStaticHTML',
+                mode: 'read-only',
+                defaultValue: '&lt;font color=red&gt;&lt;b&gt;BOO!&lt;/b&gt;&lt;/font&gt;'
+              },
+              {
+                model_: 'BooleanProperty',
+                name: 'booleanProperty'
+              },
+              {
+                model_: 'BooleanProperty',
+                name: 'imageBooleanProperty',
+                view: ImageBooleanView.create({
+                         trueImage: 'data:image/gif;base64,R0lGODlhDwAPAMQfAF9h4RYVnZeQJC0u0lRQU42R6P/7Fv74L05NrRkZxi4tW52XXv71D8nAIWxnjnRxr3NuMJKOluXbBe7kCa2x7UFD1vPoB77D8Jqe6n6B5tvTUr62BMrP8lJPh1xbuv///yH5BAEAAB8ALAAAAAAPAA8AAAWD4CeOWQKMaDpESepi3tFlLgpExlK9RT9ohkYi08N8KhWP8nEwMBwIDyJRSTgO2CaDYcBOCAlMgtDYmhmTDSFQ+HAqgbLZIlAMLqiKw7m1EAYuFQsGEhITEwItKBc/EgIEAhINAUYkCBIQAQMBEGonIwAKa21iCgo7IxQDFRQjF1VtHyEAOw==', //'images/star_on.gif',
+                         falseImage: 'data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=' //'images/star_off.gif'
+                       })
+              },
+              {
+                model_: 'DateProperty',
+                name: 'dateProperty'
+              },
+              {
+                model_: 'DateTimeProperty',
+                name: 'dateTimeProperty'
+              },
+              {
+                model_: 'DateTimeProperty',
+                name: 'relativeDateTimeProperty',
+                view: 'RelativeDateTimeFieldView',
+                defaultValue: new Date(Date.now()-123456)
+              },
+              {
+                model_: 'IntProperty',
+                name: 'integerProperty',
+                defaultValue: 42
+              },
+              {
+                model_: 'FunctionProperty',
+                name: 'functionProperty',
+                defaultValue: function() { console.log('boo!'); }
+              },
+              {
+                model_: 'ReferenceProperty',
+                name: 'referenceProperty',
+                subType: 'Model',
+                defaultValue: 'Model',
+                subKey: 'Model.NAME',
+                view: 'KeyView'
+              },
+              {
+                model_: 'ReferenceArrayProperty',
+                name: 'referenceArrayProperty',
+                subType: 'Model',
+                factory: function() { return ['Model', 'EMail']; },
+                subKey: 'Model.NAME',
+                view: 'DAOKeyView'
+              },
+              {
+                model_: 'StringArrayProperty',
+                name: 'stringArrayProperty',
+                defaultValue: ["value1", "value2", "value3"]
+              },
+              {
+                model_: 'EMailProperty',
+                name: 'emailProperty'
+              },
+              {
+                model_: 'URLProperty',
+                name: 'urlProperty'
+              },
+              {
+                name: 'choiceView',
+                view: {
+                  model_: 'ChoiceView',
+                  helpText: 'Help Text',
+                  choices: [ 'Value1', 'Value2', 'Value3' ]
+                }
+              },
+              {
+                name: 'choiceViewWithDefaultValue',
+                defaultValue: 'Value1',
+                view: {
+                  model_: 'ChoiceView',
+                  helpText: 'Help Text',
+                  choices: [ 'Value1', 'Value2', 'Value3' ]
+                }
+              },
+              {
+                name: 'choiceViewWithLabels',
+                view: {
+                  model_: 'ChoiceView',
+                  helpText: 'Help Text',
+                  choices: [
+                    [ 'value1', 'Label 1' ],
+                    [ 'value2', 'Label 2' ],
+                    [ 'value3', 'Label 3' ]
+                  ]
+                }
+              },
+              {
+                name: 'choiceListView',
+                defaultValue: 'value2',
+                view: ChoiceListView.create({
+                  choices: [
+                    [ 'value1', 'Label 1' ],
+                    [ 'value2', 'Label 2' ],
+                    [ 'value3', 'Label 3' ]
+                  ]
+                })
+              },
+              {
+                name: 'verticalChoiceListView',
+                defaultValue: 'value2',
+                view: ChoiceListView.create({
+                  orientation: 'vertical',
+                  choices: [
+                    [ 'value1', 'Label 1' ],
+                    [ 'value2', 'Label 2' ],
+                    [ 'value3', 'Label 3' ]
+                  ]
+                })
+              },
+              {
+                name: 'radioBoxView',
+                view: RadioBoxView.create({
+                   helpText: 'Help Text',
+                   choices: [
+                     [ 'value1', 'Label 1' ],
+                     [ 'value2', 'Label 2' ],
+                     [ 'value3', 'Label 3' ]
+                   ]
+                })
+              },
+              {
+                model_: 'ArrayProperty',
+                name: 'arrayProperty',
+                subType: 'Model'
+              },
+              {
+                model_: 'StringArrayProperty',
+                view: 'MultiLineStringArrayView',
+                name: 'multiLineStringArrayProperty'
+              },
+            ]
+          });
+
+          var allViews = AllViews.create();
+          var dv1 = DetailView.create({value: SimpleValue.create(allViews)});
+          var dv2 = DetailView.create({value: SimpleValue.create(allViews)});
+          log('&lt;table&gt;&lt;tr&gt;&lt;td&gt;' + dv1.toHTML() + '&lt;/td&gt;&lt;td&gt;' + dv2.toHTML() + '&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;');
+          dv1.initHTML();
+          dv2.initHTML();
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">TextFieldView</property>
+        <property name="description">Test data-binding in TextFieldViews.</property>
+        <property name="code" type="function">
+          var v1 = TextFieldView.create();
+          var v2 = TextFieldView.create();
+
+          render(v1);
+          render(v2);
+
+          v1.data$ = v2.data$;
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">TextFieldView/onKeyMode</property>
+        <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
+        <property name="code" type="function">
+          var v1 = TextFieldView.create({onKeyMode: true});
+          var v2 = TextFieldView.create({onKeyMode: true});
+
+          render(v1);
+          render(v2);
+
+          v1.data$ = v2.data$;
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">TextFieldView/readOnlyMode</property>
+        <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
+        <property name="code" type="function">
+          var v1 = TextFieldView.create({onKeyMode: true});
+          var v2 = TextFieldView.create({mode: 'read-only'});
+
+          render(v1);
+          render(v2);
+
+          v1.data$ = v2.data$;
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">DetailView</property>
+        <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
+        <property name="code" type="function">
+          var t   = Timer.create();
+          var dv1 = DetailView.create({value: SimpleValue.create(t)});
+          var dv2 = DetailView.create({value: SimpleValue.create(t)});
+
+          render(dv1);
+          render(dv2);
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">DetailViewSwitchModel</property>
+        <property name="description">Test DetailView's ability to switch to value with a different Model.</property>
+        <property name="code" type="function">
+          var t  = Timer.create();
+          var dv = DetailView.create({value: SimpleValue.create(t)});
+
+          render(dv);
+          dv.value.set(TextFieldView.create());
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">DetailViewSwitchModelWithShowActions</property>
+        <property name="description">Test DetailView's ability to switch to value with a different Model when showActions is set to true.</property>
+        <property name="code" type="function">
+          var t  = Timer.create();
+          var dv = DetailView.create({showActions:true, value: SimpleValue.create(t)});
+
+          render(dv);
+          dv.value.set(TextFieldView.create());
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">ChoiceViews</property>
+        <property name="description">Test data-binding in ChoiceViews.</property>
+        <property name="code" type="function">
+          var choices = [ 'Value1', 'Value2', 'Value3' ];
+          var v1 = ChoiceView.create({choices: choices});
+          var v2 = ChoiceListView.create({choices: choices});
+          var v3 = ChoiceListView.create({choices: choices, orientation: 'vertical'});
+          var v4 = RadioBoxView.create({choices: choices});
+
+          render(v1); render(v2); render(v3); render(v4);
+
+          v1.data$ = v2.data$ = v3.data$ = v4.data$;
+        </property>
+      </object>
+      <object model="UITest">
+        <property name="name">ChoiceViewsWithKeysAndValues</property>
+        <property name="description">Test data-binding in ChoiceViews with different Keys and Values.</property>
+        <property name="code" type="function">
+          var choices = [ ['a', 'Value1'], ['b', 'Value2'], ['c', 'Value3'] ];
+          var v1 = ChoiceView.create({choices: choices});
+          var v2 = ChoiceListView.create({choices: choices});
+          var v3 = RadioBoxView.create({choices: choices});
+
+          render(v1); render(v2); render(v3);
+
+          v1.data$ = v2.data$ = v3.data$;
+        </property>
+      </object>
+    </property>
+  </object>
+
+  <object model="UITest">
+    <property name="description">Test's the autocomplete functionality of a TextFieldView.</property>
+    <property name="code" type="function">
+      FOAModel({
+        name: 'Contact',
+        properties: [
+          'id', 'first', 'last', 'email'
+        ]
+      });
+
+      var ContactDAO = MDAO.create({ model: Contact });
+
+      [Contact.create({ id: 1, first: 'Adam', last: 'Van Ymeren', email: 'adam...@google.com' }),
+       Contact.create({ id: 2, first: 'Kevin', last: 'Greer', email: 'kg...@google.com' }),
+       Contact.create({ id: 3, first: 'Alice', email: 'alice@alice.org' }),
+       Contact.create({ id: 4, first: 'Bob', email: 'bob@bob.org' }),
+       Contact.create({ id: 5, first: 'Test', last: 'Contact', email: 'test@test.test' }),
+       Contact.create({ id: 6, first: 'John', last: 'Smith', email: 'j.smith@johnsmith.net' }),
+       Contact.create({ id: 7, first: 'Somebody', last: 'Else', email: 'nobody@nowhere.org' }),
+       Contact.create({ id: 8, first: 'Random', last: 'Joe', email: 'joe.random@there.ca' }),
+       Contact.create({ id: 9, first: 'Frank', last: 'Ellis', email: 'frank@test.com' }),
+      ].select(ContactDAO);
+
+      FOAModel({
+        name: 'ContactEMailCompleter',
+
+        properties: [
+          {
+            name: 'dao',
+            factory: function() { return ContactDAO; }
+          },
+          {
+            model_: 'DAOProperty',
+            name: 'autocompleteDao'
+          }
+        ],
+        methods: {
+          autocomplete: function(data) {
+            this.autocompleteDao = this.dao.where(
+              data ?
+                OR(STARTS_WITH(Contact.EMAIL, data),
+                  STARTS_WITH(Contact.FIRST, data),
+                  STARTS_WITH(Contact.LAST, data)) :
+                false);
+          },
+          f: Contact.EMAIL
+        }
+      });
+
+
+      FOAModel({
+        name: 'Message',
+        properties: [
+          {
+            name: 'sender',
+            autocompleter: 'ContactEMailCompleter'
+          },
+          {
+            name: 'to',
+            autocompleter: 'ContactEMailCompleter'
+          },
+          {
+            name: 'cc',
+            autocompleter: 'ContactEMailCompleter'
+          },
+          {
+            name: 'bcc',
+            autocompleter: 'ContactEMailCompleter'
+          }
+        ]
+      });
+
+      var view = DetailView.create({ value: SimpleValue.create(Message.create()) });
+      render(view);
+    </property>
+  </object>
+</foam>
+
+
