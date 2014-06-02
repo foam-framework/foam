@@ -27,7 +27,7 @@ FOAModel({
       name: 'input',
       setter: function(text) {
         this.dao.put(Todo.create({text: text}));
-        this.propertyChange("input", text, '');
+        this.propertyChange('input', text, '');
       },
       view: { model_: 'TextFieldView', placeholder: 'What needs to be done?' }
     },
@@ -50,7 +50,7 @@ FOAModel({
   actions: [
     {
       name: 'clear',
-      labelFn:   function() { return "Clear completed (" + this.completedCount + ")"; },
+      labelFn:   function() { return 'Clear completed (' + this.completedCount + ')'; },
       isEnabled: function() { return this.completedCount; },
       action:    function() { this.dao.where(Todo.COMPLETED).removeAll(); }
     }
