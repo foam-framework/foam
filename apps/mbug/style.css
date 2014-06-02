@@ -63,7 +63,7 @@ a {
   margin: 16px;
 }
 
-.project-view span[name="email"] {
+.project-view span[name=email] {
   padding-left: 16px;
 }
 
@@ -220,13 +220,19 @@ a {
 }
 
 .popupChoiceList {
-  border-radius: 5px;
+  box-shadow: 0 0 2px 2px rgba(0,0,0,.1), 0 0 3px 1px rgba(0,0,0,.1);
+  border: none;
+  border-radius: 2px;
+  padding: 8px 0;
+  min-width: 160px;
 }
 
 .popupChoiceList li {
   color: rgba(0, 0, 0, 0.54);
-  font-size: 28;
-  margin: 45 20 45 0;
+  font-size: 16px;
+  padding: 16px;
+  margin: 0;
+  line-height: 16px;
 }
 
 .popupChoiceList li.selected {
@@ -365,10 +371,11 @@ img.cc-add {
 }
 
 .issue-citation span[name=summary] {
-  display: block;
-  margin-top: 6px;
   color: #999;
-  font-size: 14pt;
+  display: block;
+  font-size: 14px;
+  height: 40px;
+  margin-top: 0;
   overflow: hidden;
 }
 
@@ -542,9 +549,10 @@ select[name=pri], select[name=status] {
 }
 
 .swipeAltHeader li {
-  font-size: 16pt;
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 48px;
   padding-bottom: 14px;
-  opacity: 0.76;
 }
 
 .swipeAltHeader .selected {
@@ -562,6 +570,18 @@ ul.swipeAltHeader {
   margin: 0;
   padding: 0 0 0 56px;
 }
+
+.popupChoiceView, .actionButton {
+   width: 48px;
+   height: 48px;
+   background: transparent;
+}
+
+.foamChoiceListView.horizontal .choice {
+   padding: 14px 16px;
+   margin: 0;
+}
+
 
 ::-webkit-search-cancel-button {
   -webkit-appearance: none;
