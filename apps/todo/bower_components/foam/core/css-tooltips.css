@@ -1,0 +1,149 @@
+/*====================================================
+CSS Tooltips by Adam Whitcroft
+https://github.com/AdamWhitcroft/CSS.Tooltips
+====================================================*/
+/*==================================================*/
+/*  $Tooltips                                       */
+/*==================================================*/
+[data-tip] {
+	position:relative;
+}
+[data-tip]:before {
+	content:'';
+	/* hides the tooltip when not hovered */
+	display:none;
+	border:5px solid #1a1a1a;
+	/* 4 border technique to create the arrow */
+	border-top-color:#1a1a1a;
+	border-right-color:transparent;
+	border-bottom-color:transparent;
+	border-left-color:transparent;
+	position:absolute;
+	top:-7px;
+	left:10px;
+	z-index:8;
+	font-size:0;
+	line-height:0;
+	width:0;
+	height:0;
+}
+[data-tip]:after {
+	display:none;
+	content:attr(data-tip);
+	position:absolute;
+	top:-35px;
+	left:0px;
+	padding:5px 8px;
+	background:#1a1a1a;
+	color:#fff;
+	z-index:9;
+	height:20px;
+	line-height:20px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	white-space:nowrap;
+	word-wrap:normal;
+}
+[data-tip]:hover:before,
+[data-tip]:hover:after {
+	display:block;
+}
+/*==================================================*/
+/*  $Coloured Tooltips                              */
+/*==================================================*/
+/* Help tooltip */
+.help {
+	color:#00b7d8;
+}
+.help[data-tip]:before {
+	border-top-color:#00b7d8;
+	border-right-color:transparent;
+	border-bottom-color:transparent;
+	border-left-color:transparent;
+}
+.help[data-tip]:after {
+	background:#00b7d8;
+	color:#fff;
+}
+/* Success tooltip */
+.success {
+	color:#51bd6a;
+}
+.success[data-tip]:before {
+	border-top-color:#51bd6a;
+	border-right-color:transparent;
+	border-bottom-color:transparent;
+	border-left-color:transparent;
+}
+.success[data-tip]:after {
+	background:#51bd6a;
+	color:#fff;
+}
+/* Alert tooltip */
+.alert {
+	color:#f9ca64;
+}
+.alert[data-tip]:before {
+	border-top-color:#f9ca64;
+	border-right-color:transparent;
+	border-bottom-color:transparent;
+	border-left-color:transparent;
+}
+.alert[data-tip]:after {
+	background:#f9ca64;
+	color:#574d36;
+}
+/* Error tooltip */
+.error {
+	color:#e1473e;
+}
+.error[data-tip]:before {
+	border-top-color:#e1473e;
+	border-right-color:transparent;
+	border-bottom-color:transparent;
+	border-left-color:transparent;
+}
+.error[data-tip]:after {
+	background:#e1473e;
+	color:#fff;
+}
+/*==================================================*/
+/*  $Gravity                                        */
+/*==================================================*/
+.tip-below[data-tip]:after {
+	top:23px;
+	left:0px;
+}
+.tip-below[data-tip]:before {
+	border-top-color:transparent;
+	border-right-color:transparent;
+	border-bottom-color:#1a1a1a;
+	border-left-color:transparent;
+	top:13px;
+	left:10px;	
+}
+.tip-below.help[data-tip]:before {
+	border-top-color:transparent;
+	border-right-color:transparent;
+	border-bottom-color:#00b7d8;
+	border-left-color:transparent;
+}
+.tip-below.success[data-tip]:before {
+	border-top-color:transparent;
+	border-right-color:transparent;
+	border-bottom-color:#51bd6a;
+	border-left-color:transparent;
+}
+.tip-below.alert[data-tip]:before {
+	border-top-color:transparent;
+	border-right-color:transparent;
+	border-bottom-color:#f9ca64;
+	border-left-color:transparent;
+}
+.tip-below.error[data-tip]:before {
+	border-top-color:transparent;
+	border-right-color:transparent;
+	border-bottom-color:#e1473e;
+	border-left-color:transparent;
+}

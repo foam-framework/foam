@@ -1,0 +1,19 @@
+<%
+  var todo      = this.value.value;
+  var remove    = this.DAO.remove.bind(this.DAO, todo);
+  var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
+  var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
+%>
+<li class="{{{todo.completed ? ' completed' : ''}}}" id="{{{this.id}}}">
+  <div class="view">
+    $$completed{extraClasses: 'toggle']}
+    {{todo.text}}
+    $$text
+    <button id="{{{this.on('click', remove, this.nextID())}}}">X</button>
+  </div>
+</li>
+<%
+  this.on('dblclick', toEdit,    this.id);
+  this.on('blur',     toDisplay, this.textView.id);
+  this.textView.subscribe(this.textView.ESCAPE, toDisplay);
+%>
