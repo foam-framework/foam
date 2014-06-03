@@ -1070,7 +1070,7 @@ FOAModel({
       this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
         maxHeight: 400,
-        view: DAOListView.create({
+        view: this.X.DAOListView.create({
           dao: completer.autocompleteDao,
           mode: 'final',
           rowView: 'SummaryView',
@@ -4561,13 +4561,16 @@ FOAModel({
 
       var completer = FOAM.lookup(this.autocompleter, this.X).create();
 
-      this.autocompleteView = DAOListView.create({
+      this.autocompleteView = this.X.DAOListView.create({
         dao: completer.autocompleteDao,
         mode: 'final',
         rowView: 'SummaryView',
         useSelection: true
       });
       this.addChild(this.autocompleteView);
+      // TODO: This steps out of the encapsulation a bit.
+      this.$.insertAdjacentHTML('afterend', this.autocompleteView.toHTML());
+      this.autocompleteView.initHTML();
 
       this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
         this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);

@@ -15,7 +15,7 @@ FOAModel({
       subType: 'QBug',
       view: function() { return DetailView.create({model: QBug}); },
       factory: function() {
-        return QBug.create({
+        return this.X.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
           authClientSecret: 'HkwDwjSekPBL5Oybq1NsDeZj'
         });
@@ -25,12 +25,13 @@ FOAModel({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        this.X.project     = project;
-        this.X.projectName = project.projectName;
-        this.X.issueDAO    = project.IssueDAO;
+        var Y = project.X;
+        Y.project     = project;
+        Y.projectName = project.projectName;
+        Y.issueDAO    = project.IssueDAO;
 
-        var pc = this.X.ProjectController.create();
-        var view = this.X.DetailView.create({data: pc});
+        var pc = Y.ProjectController.create();
+        var view = Y.DetailView.create({data: pc});
         this.stack.setTopView(view);
       }
     },
@@ -43,12 +44,8 @@ FOAModel({
 
   methods: {
     toHTML: function() { return this.stack.toHTML(); },
-    initHTML: function() {
-      this.stack.initHTML();
-
-      var self = this;
-
-      this.X = this.X.sub({
+    projectContext: function() {
+      return this.X.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
@@ -56,17 +53,22 @@ FOAModel({
         ProjectDAO:        this.qbug.ProjectNetworkDAO,
         stack:             this.stack
       }, 'MBUG CONTEXT');
+    },
 
-      this.qbug.getDefaultProject({put: function(project) { self.project = project; }});
+    initHTML: function() {
+      this.stack.initHTML();
+
+      var self = this;
+      this.qbug.getDefaultProject({put: function(project) { self.project = project; }}, this.projectContext());
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueView.create({dao: this.X.issueDAO, data: issue});
+      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue});
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) { self.project = project; });
+      this.qbug.findProject(projectName, function(project) { self.project = project; }, this.projectContext());
       this.stack.back();
     }
   }
