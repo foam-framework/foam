@@ -197,7 +197,7 @@ FOAModel({
       });
     },
 
-    findProject: function(projectName, sink) {
+    findProject: function(projectName, sink, opt_X) {
       if ( this.projects_[projectName] ) {
         sink.put(this.projects_[projectName]);
         return;
@@ -208,7 +208,7 @@ FOAModel({
       this.ProjectNetworkDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
-          var p = self.X.sub().QProject.create({qbug: self, project: project});
+          var p = (opt_X || (self.X.sub())).QProject.create({qbug: self, project: project});
 
           self.projects_[projectName] = p;
 
@@ -220,11 +220,11 @@ FOAModel({
       });
     },
 
-    getDefaultProject: function(sink) {
-      this.findProject(this.defaultProjectName, sink);
+    getDefaultProject: function(sink, opt_X) {
+      this.findProject(this.defaultProjectName, sink, opt_X);
     },
 
-    launchBrowser: function(opt_projectName, opt_url) {
+    launchBrowser: function(opt_projectName, opt_url, opt_X) {
       var self = this;
       this.userFuture.get(function(user) {
         self.findProject(opt_projectName || user.defaultProject, {
@@ -241,9 +241,9 @@ FOAModel({
               metricsSrv.sendException('Failed to find project.', true);
               return;
             }
-            self.launchBrowser(self.defaultProjectName);
+            self.launchBrowser(self.defaultProjectName, undefined, opt_X);
           },
-        });
+        }, opt_X);
       });
     }
   },
