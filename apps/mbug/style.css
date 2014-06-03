@@ -31,6 +31,10 @@ a {
   color: #4285f4;
 }
 
+.actionButton-enterSearchMode, .header .default .popupChoiceView {
+  margin: 4px;
+}
+
 .issue-citation {
   display: flex;
   margin: 0;
@@ -102,8 +106,8 @@ a {
   flex-grow: 0;
   font-size: 11px;
   font-weight: 700;
-  height: 18px;
-  margin: 3px;
+  height: 20px;
+  margin: 15px;
   padding: 3px 0 0 0;
   text-align: center;
   width: 18px;
@@ -202,30 +206,6 @@ a {
   flex: 1 0 auto;
 }
 
-.issue-edit .priority {
-  font-weight: 700;
-  color: white;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-}
-
-.issue-edit .priority-1 {
-  background: #DB4437;
-}
-
-.issue-edit .priority-2 {
-  background: #F4B400;
-}
-
-.issue-edit .priority-3 {
-  background: #4285F4;
-}
-
 .email-photo {
   overflow: hidden;
   width: 80px;
@@ -301,6 +281,7 @@ a {
   flex: 1 0 auto;
   font-family: Roboto;
   font-size: 16px;
+  margin-left: 20px;
   text-align: left;
 }
 
@@ -335,7 +316,7 @@ a {
   opacity: 0.76;
   width: 24px;
   height: 24px;
-  margin: 8px 12px 12px 12px;
+  margin: 12px;
 }
 
 .owner-name.placeholder {
@@ -346,18 +327,19 @@ a {
   color: rgba(0,0,0,.3);
   font-size: 16px;
   line-height: 32px;
+  margin-left: 18px;
   flex: 1 0 auto;
 }
 
 .issue-citation span[name=id] {
   font-size: larger;
   color: #444;
-  font-size: 16pt;
+  font-size: 16px;
 }
 
 .issue-citation .priority {
   font-size: larger;
-  font-size: 16pt;
+  font-size: 16px;
   margin-left: 8px;
 }
 
