@@ -149,6 +149,7 @@ a {
   background: #3e50b4;
   display: flex;
   padding: 4px;
+  z-index: 2;
 }
 
 .issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
