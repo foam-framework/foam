@@ -98,5 +98,10 @@ FOAModel({
 		<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
 		{{{FOAM_POWERED}}}
 		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-	</footer> */ } ]
+	</footer>
+        <%
+          var f = function() { return this.completedCount + this.activeCount == 0; }.bind(this.data);
+          this.setClass('hidden', f, 'main');
+          this.setClass('hidden', f, 'footer');
+        %> */ } ]
 });
