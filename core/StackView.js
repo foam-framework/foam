@@ -64,6 +64,8 @@ FOAModel({
       isEnabled: function() { return this.stack.length > 1; },
       action: function() {
         if ( this.sliderOpen ) {
+          this.dimmer$().style.zIndex = 0;
+          this.dimmer$().style.opacity = -1;
           Movement.animate(
             400,
             function() { this.sliderLeft = -250; }.bind(this),
@@ -90,6 +92,7 @@ FOAModel({
   ],
 
   methods: {
+    dimmer$:      function() { return this.$.querySelector('.stackview-dimmer'); },
     navBar$:      function() { return this.$.querySelector('.stackview_navbar'); },
     navActions$:  function() { return this.$.querySelector('.stackview_navactions'); },
     slideArea$:   function() { return this.$.querySelector('.stackview-slidearea'); },
@@ -123,6 +126,8 @@ FOAModel({
       this.slideArea$().innerHTML = view.toHTML();
       var s = this.X.window.getComputedStyle(this.slideArea$());
       this.sliderLeft = -toNum(s.width);
+      this.dimmer$().style.zIndex = 3;
+      this.dimmer$().style.opacity = 0.4;
       Movement.animate(
         300,
         function() { this.sliderLeft = 0; }.bind(this),
@@ -165,6 +170,7 @@ FOAModel({
         <tr>
           <td width=48% valign=top class="stackview-viewarea-td">
             <div class="stackview-slidearea"></div>
+            <div class="stackview-dimmer"></div>
             <div class="stackview-viewarea"></div>
           </td>
           <td width=48% valign=top class="stackview-previewarea-td"><div class="stackview-previewarea"></div></td>
