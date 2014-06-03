@@ -152,7 +152,7 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       defaultValue: false,
-      name: 'searchMode', postSet: function(_,v) { console.log('searchMode: ', v); }
+      name: 'searchMode'
     },
     {
       name: 'q',
@@ -191,11 +191,10 @@ FOAModel({
       Events.dynamic(
         function() { self.sortOrder; self.q; },
         function() {
-          console.log('Query Update');
           self.filteredDAO = self.issueDAO
-              .limit(15)
-              .where(QueryParser.parseString(self.q) || TRUE)
-              .orderBy(self.sortOrder);
+            .limit(15)
+            .where(QueryParser.parseString(self.q) || TRUE)
+            .orderBy(self.sortOrder);
         }
       );
     }
