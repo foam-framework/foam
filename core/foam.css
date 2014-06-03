@@ -53,6 +53,14 @@ p, h1, form, button{
   display: none;
 }
 
+.stackview-slidearea {
+  background: white;
+  box-shadow: 0px 0px 30px black;
+  height: 100%;
+  position: fixed;
+  z-index: 3;
+}
+
 /* ----------- detailView ----------- */
 
 .detailView {
@@ -307,10 +315,9 @@ option[selected]{
   border: 2px solid #f00;
 }
 
-
 .actionButton {
-  -webkit-box-shadow: inset 0px 1px 0px 0px #ffffff;
-  box-shadow: inset 0px 1px 0px 0px #ffffff;
+  -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
+  box-shadow: inset 0 1px 0 0 #ffffff;
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
   background: -moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');

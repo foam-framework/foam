@@ -14,6 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/*
+ TODO:
+   Use MementoMgr.
+   destroy() views when removed.
+   Switch to use flexbox instead of <table>.
+   Browser history support.
+*/
 FOAModel({
   name:  'StackView',
   extendsModel: 'View',
@@ -34,6 +42,16 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'div'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'sliderOpen'
+    },
+    {
+      name: 'sliderLeft',
+      postSet: function(_, v) {
+        this.slideArea$().style.left = v + 'px';
+      }
     }
   ],
 
@@ -45,9 +63,18 @@ FOAModel({
 
       isEnabled: function() { return this.stack.length > 1; },
       action: function() {
-        this.redo.push(this.stack.pop());
-        this.pushView(this.stack.pop(), undefined, true);
-        this.propertyChange('stack', this.stack, this.stack);
+        if ( this.sliderOpen ) {
+          Movement.animate(
+            400,
+            function() { this.sliderLeft = -250; }.bind(this),
+            Movement.easeIn(0.9),
+            function() { this.slideArea$().innerHTML = ''; }.bind(this))();
+          this.sliderOpen = false;
+        } else {
+          this.redo.push(this.stack.pop());
+          this.pushView(this.stack.pop(), undefined, true);
+          this.propertyChange('stack', this.stack, this.stack);
+        }
       }
     },
     {
@@ -63,25 +90,15 @@ FOAModel({
   ],
 
   methods: {
+    navBar$:      function() { return this.$.querySelector('.stackview_navbar'); },
+    navActions$:  function() { return this.$.querySelector('.stackview_navactions'); },
+    slideArea$:   function() { return this.$.querySelector('.stackview-slidearea'); },
+    viewArea$:    function() { return this.$.querySelector('.stackview-viewarea'); },
+    previewArea$: function() { return this.$.querySelector('.stackview-previewarea'); },
+
     setTopView: function(view, opt_label) {
       this.stack = [];
       this.pushView(view);
-    },
-
-    navBarElement: function() {
-      return this.$.childNodes[0];
-    },
-
-    navActionsElement: function() {
-      return this.$.childNodes[1];
-    },
-
-    viewAreaElement: function () {
-      return this.$.querySelector('.stackview-viewarea');
-    },
-
-    previewAreaElement: function() {
-      return this.$.querySelector('.stackview-previewarea');
     },
 
     updateNavBar: function() {
@@ -94,26 +111,33 @@ FOAModel({
         buf.push(view.stackLabel);
       }
 
-      this.navBarElement().innerHTML = buf.join('');
+      this.navBar$().innerHTML = buf.join('');
     },
 
     slideView: function (view, opt_label) {
+      this.sliderOpen = true;
       this.redo.length = 0;
       this.setPreview(null);
       view.stackLabel = opt_label || view.stackLabel || view.label;
       this.stack.push(view);
-      this.leftSlider().innerHTML = view.toHTML();
+      this.slideArea$().innerHTML = view.toHTML();
+      var s = this.X.window.getComputedStyle(this.slideArea$());
+      this.sliderLeft = -toNum(s.width);
+      Movement.animate(
+        300,
+        function() { this.sliderLeft = 0; }.bind(this),
+        Movement.easeIn(0.7).o(Movement.oscillate(0.3, 0.02, 3)))();
       view.stackView = this;
       view.initHTML();
       this.propertyChange('stack', this.stack, this.stack);
     },
 
     pushView: function (view, opt_label, opt_back) {
-      if ( !opt_back ) this.redo.length = 0;
+      if ( ! opt_back ) this.redo.length = 0;
       this.setPreview(null);
       view.stackLabel = opt_label || view.stackLabel || view.label;
       this.stack.push(view);
-      this.viewAreaElement().innerHTML = view.toHTML();
+      this.viewArea$().innerHTML = view.toHTML();
       this.updateNavBar();
       view.stackView = this;
       view.initHTML();
@@ -122,13 +146,13 @@ FOAModel({
 
     setPreview: function(view) {
       if ( ! view ) {
-        this.viewAreaElement().parentNode.width = '100%';
-        this.previewAreaElement().innerHTML = '';
+        this.viewArea$().parentNode.width = '100%';
+        this.previewArea$().innerHTML = '';
         return;
       }
 
-      this.viewAreaElement().parentNode.width = '65%';
-      this.previewAreaElement().innerHTML = view.toHTML();
+      this.viewArea$().parentNode.width = '65%';
+      this.previewArea$().innerHTML = view.toHTML();
       view.initHTML();
     }
   },
@@ -139,7 +163,10 @@ FOAModel({
       <div class="stackview_navactions">$$back $$forward</div>
       <table width=100% style="table-layout:fixed;">
         <tr>
-          <td width=48% valign=top class="stackview-viewarea-td"><div class="stackview-viewarea"></div></td>
+          <td width=48% valign=top class="stackview-viewarea-td">
+            <div class="stackview-slidearea"></div>
+            <div class="stackview-viewarea"></div>
+          </td>
           <td width=48% valign=top class="stackview-previewarea-td"><div class="stackview-previewarea"></div></td>
         </tr>
       </table>
