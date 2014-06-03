@@ -28,19 +28,12 @@ FOAModel({
       factory: function() { return []; }
     },
     {
-      name:   'backButton',
-      type:  'ActionButton',
-      factory: function() {
-        // TODO: What's the right value for the action button.
-        return ActionButton.create({action: StackView.actions[0], value: SimpleValue.create(this)});
-      }
+      name: 'className',
+      defaultValue: 'stackView'
     },
     {
-      name:   'forwardButton',
-      type:   'ActionButton',
-      factory: function() {
-        return ActionButton.create({action: StackView.actions[1], value: SimpleValue.create(this)});
-      }
+      name: 'tagName',
+      defaultValue: 'div'
     }
   ],
 
@@ -48,11 +41,10 @@ FOAModel({
     {
       name:  'back',
       label: '<',
-//      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Left_Arrow.svg',
       help:  'Go to previous view',
 
-      isEnabled:   function() { return this.stack.length > 1; },
-      action:      function() {
+      isEnabled: function() { return this.stack.length > 1; },
+      action: function() {
         this.redo.push(this.stack.pop());
         this.pushView(this.stack.pop(), undefined, true);
         this.propertyChange('stack', this.stack, this.stack);
@@ -61,10 +53,9 @@ FOAModel({
     {
       name:  'forth',
       label: '>',
-//      iconUrl: ( FOAM_BOOT_DIR || './' ) + 'images/Navigation_Right_Arrow.svg',
       help:  'Undo the previous back.',
 
-      action:      function() {
+      action: function() {
         this.pushView(this.redo.pop());
         this.propertyChange('stack', this.stack, this.stack);
       }
@@ -72,19 +63,6 @@ FOAModel({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.addChild(this.forwardButton);
-      this.addChild(this.backButton);
-    },
-
-    toHTML: function() {
-      return '<div class="stackview" style="width:100%;" id="' + this.id + '">' +
-        '<div class="stackview_navbar"></div>' +
-        '<div class="stackview_navactions">' + this.backButton.toHTML() + this.forwardButton.toHTML() + '</div>' +
-        '<table width=100% style="table-layout:fixed;"><tr><td width=48% valign=top class="stackview-viewarea-td"><div class="stackview-viewarea"></div></td><td width=48% valign=top class="stackview-previewarea-td"><div class="stackview-previewarea"></div></td></tr></table></div>';
-    },
-
     setTopView: function(view, opt_label) {
       this.stack = [];
       this.pushView(view);
@@ -153,5 +131,18 @@ FOAModel({
       this.previewAreaElement().innerHTML = view.toHTML();
       view.initHTML();
     }
-  }
+  },
+
+  templates: [
+    function toInnerHTML() {/*
+      <div class="stackview_navbar"></div>
+      <div class="stackview_navactions">$$back $$forward</div>
+      <table width=100% style="table-layout:fixed;">
+        <tr>
+          <td width=48% valign=top class="stackview-viewarea-td"><div class="stackview-viewarea"></div></td>
+          <td width=48% valign=top class="stackview-previewarea-td"><div class="stackview-previewarea"></div></td>
+        </tr>
+      </table>
+    */}
+  ]
 });

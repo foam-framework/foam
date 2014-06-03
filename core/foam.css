@@ -37,6 +37,10 @@ p, h1, form, button{
   padding: 14px;
 }
 
+.stackview {
+  width: 100%;
+}
+
 .stackview-viewarea {
   width: 100%;
 }
