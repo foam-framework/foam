@@ -2854,6 +2854,7 @@ FOAModel({
       code: function() {
         // When the orientation of the screen has changed, update the
         // left and width values of the inner elements and slider.
+        if ( ! this.$ ) return;
         this.width = this.$.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
