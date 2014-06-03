@@ -1,7 +1,7 @@
 # Site settings
 title: FOAM Framework
 description: "FOAM is a deeply MVC Javascript framework"
-baseurl: ""
+baseurl: "http://foam-framework.github.io/foam"
 url: "http://foam-framework.github.io/foam"
 
 # Build settings
