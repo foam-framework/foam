@@ -131,7 +131,7 @@ FOAModel({
       Movement.animate(
         300,
         function() { this.sliderLeft = 0; }.bind(this),
-        Movement.easeIn(0.7).o(Movement.oscillate(0.3, 0.02, 3)))();
+        Movement.easeIn(0.5).o(Movement.bounce(0.4, 0.03)))();
       view.stackView = this;
       view.initHTML();
       this.propertyChange('stack', this.stack, this.stack);
