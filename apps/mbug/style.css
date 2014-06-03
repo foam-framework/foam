@@ -34,7 +34,7 @@ a {
 .issue-citation {
   display: flex;
   margin: 0;
-  padding: 16px 12px 10px 16px;
+  padding: 16px 4px 10px 16px;
 }
 
 .issue-citation .priority {
@@ -335,7 +335,7 @@ a {
   opacity: 0.76;
   width: 24px;
   height: 24px;
-  margin: 12px;
+  margin: 8px 12px 12px 12px;
 }
 
 .owner-name.placeholder {
