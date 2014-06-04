@@ -535,6 +535,7 @@ select[name=pri], select[name=status] {
 }
 
 .swipeAltHeader {
+  padding-left: 57px !important;
   height: 36px;
 }
 
