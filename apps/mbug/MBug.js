@@ -271,74 +271,86 @@ FOAModel({
       }
     }
   ],
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>" class="issue-edit">
-      <div class="toolbar">
-        $$back
-        $$cancel
-        <span class="expand"></span>
-        $$save
-        $$starred{
-          model_: 'ImageBooleanView',
-          className:  'star',
-          trueImage:  'images/ic_star_white_24dp.png',
-          falseImage: 'images/ic_star_outline_white_24dp.png'
-        }
-      </div>
-      <div class="body">
+  templates: [
+    function headerToHTML() {/*
       <div class="header">
-        #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+        <div class="toolbar">
+          $$back
+          $$cancel
+          <span class="expand"></span>
+          $$save
+          $$starred{
+            model_: 'ImageBooleanView',
+            className:  'star',
+            trueImage:  'images/ic_star_white_24dp.png',
+            falseImage: 'images/ic_star_outline_white_24dp.png'
+          }
+        </div>
+        <div class="title">
+          #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+        </div>
       </div>
-      <div class="choice">
-        $$pri{model_: 'PriorityView'}
-        $$pri{
-          model_: 'PopupChoiceView',
-          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-          showValue: true,
-          choices: [
-            [0, 'Priority 0 -- Critical'],
-            [1, 'Priority 1 -- High'],
-            [2, 'Priority 2 -- Medium'],
-            [3, 'Priority 3 -- Low']
-          ]
-        }
-      </div>
-      <div class="choice">
-        <img src="images/ic_keep_24dp.png" class="status-icon">
-        $$status{
-          model_: 'PopupChoiceView',
-          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-          showValue: true,
-          // TODO: get options from QProject
-          choices: [
-            'Unconfirmed',
-            'Untriaged',
-            'Available',
-            'Assigned',
-            'Started',
-            'ExternalDependency',
-            'Fixed',
-            'Verified',
-            'Duplicate',
-            'WontFix',
-            'Archived'
-          ]
-        }
-      </div>
-      <div class="separator"></div>
-      <div class="owner">
-        <div class="owner-header">Owner</div>
-        <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
-      </div>
-      <div class="separator"></div>
-      <div class="cc">
-        <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-        $$cc{model_: 'IssueEmailArrayView'}
+    */},
+
+    function bodyToHTML() {/*
+      <div class="body">
+        <div class="choice">
+          $$pri{model_: 'PriorityView'}
+          $$pri{
+            model_: 'PopupChoiceView',
+            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+            showValue: true,
+            choices: [
+              [0, 'Priority 0 -- Critical'],
+              [1, 'Priority 1 -- High'],
+              [2, 'Priority 2 -- Medium'],
+              [3, 'Priority 3 -- Low']
+            ]
+          }
+        </div>
+        <div class="choice">
+          <img src="images/ic_keep_24dp.png" class="status-icon">
+          $$status{
+            model_: 'PopupChoiceView',
+            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+            showValue: true,
+            // TODO: get options from QProject
+            choices: [
+              'Unconfirmed',
+              'Untriaged',
+              'Available',
+              'Assigned',
+              'Started',
+              'ExternalDependency',
+              'Fixed',
+              'Verified',
+              'Duplicate',
+              'WontFix',
+              'Archived'
+            ]
+          }
+        </div>
+        <div class="separator"></div>
+        <div class="owner">
+          <div class="owner-header">Owner</div>
+          <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
+        </div>
+        <div class="separator"></div>
+        <div class="cc">
+          <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
+          $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
       </div>
-    </div>
-  */} ]
+    */},
+
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="issue-edit">
+        <%= this.headerToHTML() %>
+        <%= this.bodyToHTML() %>
+      </div>
+    */}
+  ]
 });
 
 FOAModel({

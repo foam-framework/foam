@@ -152,6 +152,17 @@ a {
 
 .issue-edit .header {
   background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+}
+
+.issue-edit .body {
+  margin-top: 200px;
+}
+
+.issue-edit .title {
   color: #fff;
   font-size: 20px;
   line-height: 28px;
@@ -161,10 +172,8 @@ a {
 }
 
 .issue-edit .toolbar {
-  background: #3e50b4;
   display: flex;
   padding: 4px;
-  z-index: 2;
 }
 
 .issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
@@ -571,14 +580,4 @@ ul.swipeAltHeader {
 .foamChoiceListView.horizontal .choice {
   padding: 14px 16px;
   margin: 0;
-}
-
-.issue-edit .toolbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-}
-
-.issue-edit .body {
-  margin-top: 55px;
 }
