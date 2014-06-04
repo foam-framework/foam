@@ -60,6 +60,12 @@ a {
   width: 40px;
 }
 
+.project-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .project-view .owner-avatar {
   width: 64px;
   height: 64px;
@@ -69,6 +75,11 @@ a {
 
 .project-view span[name=email] {
   padding-left: 16px;
+}
+
+.project-view .projectList {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .issue-citation .middle {

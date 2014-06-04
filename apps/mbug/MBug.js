@@ -448,6 +448,8 @@ FOAModel({
       $$email{mode: 'display-only'}
       <br><br>
       <hr>
+
+      <div class="projectList">
       <%
          var projects = this.data.preferredProjects;
 
@@ -460,7 +462,8 @@ FOAModel({
           <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
-      <% }); %>
+        <% }); %>
+        </div>
     </div>
   */} ]
 });
