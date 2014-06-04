@@ -1,12 +1,13 @@
 FOAModel({
   name: 'Todo',
-  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
+  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' },
+      { name: 'text', postSet: function(_, nu) { if (nu != nu.trim()) this.text = nu.trim(); } } ],
   templates: [ function toDetailHTML() {/*
 	<li id="{{{this.id}}}">
 		<div class="view">
 			$$completed{className: 'toggle'}
 			$$text{mode: 'read-only', tagName: 'label'}
-                	<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
+                        <button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
 		</div>
 		$$text{className: 'edit'}
 	</li>
