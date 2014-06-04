@@ -74,6 +74,9 @@ a {
 }
 
 .project-view span[name=email] {
+  color: white;
+  display: block;
+  margin-top: 40;
   padding-left: 16px;
 }
 
@@ -243,8 +246,16 @@ a {
   font-weight: 500;
 }
 
+.project-view .header {
+  width: 304px;
+  height: 172px;
+  margin-bottom: 8px;
+  background-image: url('images/projectBackground.jpg');
+}
+
 .project-citation {
   margin-top: 0;
+  height: 48px;
 }
 
 .project-citation img {

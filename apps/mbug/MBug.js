@@ -353,6 +353,7 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'IssueEmailArrayView',
   extendsModel: 'View',
@@ -454,13 +455,11 @@ FOAModel({
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
-      $$email{model_: 'IssueOwnerAvatarView'}
-      <div style="height: 80px;"> </div>
-
-      $$email{mode: 'display-only'}
-      <br><br>
-      <hr>
-
+      <div class="header">
+        $$email{model_: 'IssueOwnerAvatarView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
       <div class="projectList">
       <%
          var projects = this.data.preferredProjects;
