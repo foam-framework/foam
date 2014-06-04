@@ -1,0 +1,34 @@
+<div class="edge-top"></div>
+<div class="edge"></div>
+<div id="{{this.id}}" class="calc">
+  <div class="calc-display">
+    <div class="inner-calc-display">
+      $$history
+      $$row1
+    </div>
+  </div>
+  <div class="buttons button-row">
+    <div class="button-column" style="flex-basis: 300%">
+      <div class="button-row"> $$ac $$sign $$div </div>
+      <div class="button-row"> $$7 $$8 $$9 </div>
+      <div class="button-row"> $$4 $$5 $$6 </div>
+      <div class="button-row"> $$1 $$2 $$3 </div>
+      <div class="button-row"> $$0 $$point </div>
+    </div>
+    <div class="button-column"> $$mult $$minus $$plus $$equals</div>
+  </div>
+</div>
+<%
+  // This block causes the calc-display to scroll when updated.
+  // To remove this feature replace the .inner-calc-display 'transition:' and 
+  // 'top:' styles with 'bottom: 0'.
+  var move = EventService.animate(function() {
+    if ( ! this.$ ) return;
+    var outer$ = this.$.querySelector('.calc-display');
+    var inner$ = this.$.querySelector('.inner-calc-display');
+    var outer  = window.getComputedStyle(outer$);
+    var inner  = window.getComputedStyle(inner$);
+    inner$.style.top = toNum(outer.height)-toNum(inner.height) + 'px';
+  }.bind(this));
+  Events.dynamic(function() { this.obj.op; this.obj.a1; this.obj.a2; }.bind(this), move);
+%>
