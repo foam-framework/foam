@@ -1,3 +1,8 @@
+FOAModel({ name: 'TodoDAO', extendsModel: 'ProxyDAO', methods: { put: function(x, s) {
+      if (x.text.trim() == '') this.remove(x.id, { remove: s && s.put });
+      else this.SUPER(x, s);
+} } });
+
 FOAModel({
   name: 'Todo',
   properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' },
@@ -27,6 +32,7 @@ FOAModel({
     {
       name: 'input',
       setter: function(text) {
+        if (!text) return;
         this.dao.put(Todo.create({text: text}));
         this.propertyChange('input', text, '');
       },
@@ -71,7 +77,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
+      this.filteredDAO = this.dao = TodoDAO.create({ delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'}) });
       this.dao.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
