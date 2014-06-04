@@ -471,7 +471,7 @@ FOAModel({
          projects.forEach(function(project) { %>
         <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
         <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
+          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
         <% }); %>
