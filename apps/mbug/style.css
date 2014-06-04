@@ -78,6 +78,8 @@ a {
   display: block;
   margin-top: 40;
   padding-left: 16px;
+  font-weight: 900;
+  font-size: 16px;
 }
 
 .project-view .projectList {
