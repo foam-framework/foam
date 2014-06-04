@@ -99,6 +99,12 @@ FOAModel({
     viewArea$:    function() { return this.$.querySelector('.stackview-viewarea'); },
     previewArea$: function() { return this.$.querySelector('.stackview-previewarea'); },
 
+    initHTML: function() {
+      this.SUPER();
+
+      this.dimmer$().addEventListener('click', this.back.bind(this));
+    },
+
     setTopView: function(view, opt_label) {
       this.stack = [];
       this.pushView(view);
