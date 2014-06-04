@@ -845,6 +845,9 @@ FOAModel({
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
+      name: 'backupImage'
+    },
+    {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(this.value, oldValue);
@@ -872,7 +875,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return '<img class="imageView" id="' + this.id + '">';
+      return this.backupImage ?
+        '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
+        '<img class="imageView" id="' + this.id + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -880,6 +885,10 @@ FOAModel({
     },
     initHTML: function() {
       this.SUPER();
+
+      if ( this.backupImage ) this.$.addEventListener('error', function() {
+        this.data = this.backupImage;
+      }.bind(this));
 
       if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
