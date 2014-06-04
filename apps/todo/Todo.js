@@ -1,12 +1,29 @@
 FOAModel({
+  name: 'TodoDAO',
+  extendsModel: 'ProxyDAO',
+  methods: {
+    put: function(x, s) {
+      if (x.text.trim() == '') this.remove(x.id, { remove: s && s.put });
+      else this.SUPER(x, s);
+    }
+  }
+});
+
+FOAModel({
   name: 'Todo',
-  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' }, 'text' ],
+  properties: [
+    'id',
+    { name: 'completed', model_: 'BooleanProperty' },
+    { name: 'text',
+      postSet: function(_, nu) { if (nu != nu.trim()) this.text = nu.trim(); }
+    }
+  ],
   templates: [ function toDetailHTML() {/*
 	<li id="{{{this.id}}}">
 		<div class="view">
 			$$completed{className: 'toggle'}
 			$$text{mode: 'read-only', tagName: 'label'}
-                	<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
+                        <button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
 		</div>
 		$$text{className: 'edit'}
 	</li>
@@ -26,6 +43,7 @@ FOAModel({
     {
       name: 'input',
       setter: function(text) {
+        if (!text) return;
         this.dao.put(Todo.create({text: text}));
         this.propertyChange('input', text, '');
       },
@@ -70,7 +88,8 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.dao = EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'});
+      this.filteredDAO = this.dao = TodoDAO.create({
+        delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'}) });
       this.dao.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
@@ -98,5 +117,10 @@ FOAModel({
 		<p>Created by <a href="mailto:kgr@chromium.org">Kevin Greer</a></p>
 		{{{FOAM_POWERED}}}
 		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-	</footer> */ } ]
+	</footer>
+        <%
+          var f = function() { return this.completedCount + this.activeCount == 0; }.bind(this.data);
+          this.setClass('hidden', f, 'main');
+          this.setClass('hidden', f, 'footer');
+        %> */ } ]
 });
