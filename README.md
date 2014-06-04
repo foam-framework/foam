@@ -2,7 +2,7 @@
 
 ## Feature Oriented Active Modeller
 
-FOAM is a full-stack MVC Meta-Programming framework.
+FOAM is a full-stack Reactive MVC Meta-Programming framework.
 
 While it is written in Javascript, it can be used to generate code for any
 language or platform.
