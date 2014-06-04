@@ -13,3 +13,4 @@ There is nothing to build.  Just load any of the various .html demos.
 
   * Developer Discussion: [foam-framework-discuss@googlegroups.com](https://groups.google.com/forum/#!forum/foam-framework-discuss)
 
+  * [Website](http://foam-framework.github.io/foam/)
