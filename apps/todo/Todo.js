@@ -1,12 +1,23 @@
-FOAModel({ name: 'TodoDAO', extendsModel: 'ProxyDAO', methods: { put: function(x, s) {
+FOAModel({
+  name: 'TodoDAO',
+  extendsModel: 'ProxyDAO',
+  methods: {
+    put: function(x, s) {
       if (x.text.trim() == '') this.remove(x.id, { remove: s && s.put });
       else this.SUPER(x, s);
-} } });
+    }
+  }
+});
 
 FOAModel({
   name: 'Todo',
-  properties: [ 'id', { name: 'completed', model_: 'BooleanProperty' },
-      { name: 'text', postSet: function(_, nu) { if (nu != nu.trim()) this.text = nu.trim(); } } ],
+  properties: [
+    'id',
+    { name: 'completed', model_: 'BooleanProperty' },
+    { name: 'text',
+      postSet: function(_, nu) { if (nu != nu.trim()) this.text = nu.trim(); }
+    }
+  ],
   templates: [ function toDetailHTML() {/*
 	<li id="{{{this.id}}}">
 		<div class="view">
@@ -77,7 +88,8 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.filteredDAO = this.dao = TodoDAO.create({ delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'}) });
+      this.filteredDAO = this.dao = TodoDAO.create({
+        delegate: EasyDAO.create({model: Todo, seqNo: true, daoType: 'StorageDAO', name: 'todos-foam'}) });
       this.dao.listen(this.onDAOUpdate);
       this.onDAOUpdate();
     }
