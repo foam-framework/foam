@@ -76,12 +76,8 @@ FOAModel({
     },
     {
       name: 'discard',
-      label: 'Discard',
       isEnabled: function() { return ! this.saving; },
-      action: function() {
-        this.value.value = this.issue.newComment();
-        this.errorView.data = "";
-      }
+      action: function() { this.X.stack.back(); }
     }
   ]
 });

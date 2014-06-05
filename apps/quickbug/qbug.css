@@ -382,3 +382,7 @@ input[name="search"] {
   display: table-row;
   margin-left: 6px;
 }
+
+.stack {
+  overflow: auto;
+}

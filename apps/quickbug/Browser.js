@@ -31,6 +31,12 @@ FOAModel({
   extendsModel: 'View',
 
   properties: [
+    {
+      name: 'X',
+      preSet: function(_, x) {
+        return X.sub({stack: this});
+      }
+    },
     'project',
     'previewID',
     'favouritesMenu',
@@ -450,7 +456,7 @@ FOAModel({
               QIssueDAO:        self.IssueDAO,
               mode:             'read-write',
               url:              self.url
-            }).addDecorator(self.X.QIssueEditBorder.create());
+            })/*.addDecorator(self.X.QIssueEditBorder.create())*/;
             self.pushView(v);
 //            w.focus();
           });
