@@ -1,4 +1,32 @@
 module.exports = function(grunt) {
+  require('grunt-log-headers')(grunt);
+
+  // Returns the repetitive shell commands for measuring the size.
+  function sizeOptions() {
+    var ret = {};
+    function oneSize(file, gzip) {
+      ret[file + (gzip ? '.gz' : '')] = {
+        command: 'cat build/' + file + ' | ' +
+            (gzip ? 'gzip -c | ' : '') +
+            'wc -c',
+        options: {
+          gruntLogHeader: false,
+          stdout: false,
+          callback: function(err, stdout, stderr, cb) {
+            console.log(file + (gzip ? '.gz' : '') + ':\t' + stdout.trim());
+            cb();
+          }
+        }
+      };
+    }
+
+    oneSize('foam.js', false);
+    oneSize('foam.js', true);
+    oneSize('foam.min.js', false);
+    oneSize('foam.min.js', true);
+    return ret;
+  }
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
@@ -79,12 +107,15 @@ module.exports = function(grunt) {
 
     'git-describe': {
       foam: {}
-    }
+    },
+
+    shell: sizeOptions()
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-git-describe');
+  grunt.loadNpmTasks('grunt-shell');
 
   // Custom logic: Read in the git metadata, and save it as a value.
   // This value is used in the concat banner.
@@ -95,6 +126,13 @@ module.exports = function(grunt) {
     grunt.task.run('git-describe');
   });
 
-  grunt.registerTask('default', ['loadGitData', 'concat', 'uglify']);
+  grunt.registerTask('sizes', function() {
+    grunt.task.run('shell:foam.js');
+    grunt.task.run('shell:foam.js.gz');
+    grunt.task.run('shell:foam.min.js');
+    grunt.task.run('shell:foam.min.js.gz');
+  });
+
+  grunt.registerTask('default', ['loadGitData', 'concat', 'uglify', 'sizes']);
 };
 
