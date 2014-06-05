@@ -229,7 +229,7 @@ var QIssue = FOAM({
          model_: 'BooleanProperty',
          name: 'starred',
          tableLabel: '',
-         tableWidth: '15px',
+         tableWidth: '18px',
          tableFormatter: function(val, obj, tableView) {
            var view = CSSImageBooleanView.create({
              className: 'star-image',
