@@ -2,6 +2,10 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        banner: '/*! <%= pkg.name %> v<%= pkg.version %> */\n' +
+                '/* <%= grunt.option("gitRevision") %> */\n'
+      },
       foam: {
         dest: 'build/foam.js',
         src: [
@@ -71,11 +75,26 @@ module.exports = function(grunt) {
         src:  'build/foam.js',
         dest: 'build/foam.min.js'
       }
+    },
+
+    'git-describe': {
+      foam: {}
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.registerTask('default', ['concat', 'uglify']);
+  grunt.loadNpmTasks('grunt-git-describe');
+
+  // Custom logic: Read in the git metadata, and save it as a value.
+  // This value is used in the concat banner.
+  grunt.registerTask('loadGitData', function() {
+    grunt.event.once('git-describe', function(rev) {
+      grunt.option('gitRevision', rev);
+    });
+    grunt.task.run('git-describe');
+  });
+
+  grunt.registerTask('default', ['loadGitData', 'concat', 'uglify']);
 };
 
