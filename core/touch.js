@@ -18,7 +18,7 @@
 FOAModel({
   name: 'FOAMTouch',
   properties: [
-    'id', 'x', 'y'
+    'id', 'startX', 'startY', 'x', 'y'
   ],
 
   methods: {
@@ -29,47 +29,122 @@ FOAModel({
       // TODO:
     },
     move: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.clientX;
+      this.y = t.clientY;
     }
   }
+});
+
+FOAModel({
+  name: 'TouchReceiver',
+  properties: [
+    'id',
+    'element',
+    'delegate',
+    { name: 'activeTouches', factory: function() { return {}; } }
+  ]
 });
 
 FOAModel({
   name: 'TouchManager',
 
   properties: [
-    { name: 'touches', factory: function() { return {}; } }
+    { name: 'touches', factory: function() { return {}; } },
+    { name: 'receivers', factory: function() { return []; } },
+    { name: 'attached', defautValue: false, model_: 'BooleanProperty' }
   ],
 
   methods: {
     TOUCH_START: 'touch-start',
     TOUCH_END: 'touch-end',
-    TOUCH_MOVE: 'touch-move',
 
-    install: function(d) {
-      d.addEventListener('touchstart', this.onTouchStart);
-      d.addEventListener('touchend', this.onTouchEnd);
-      d.addEventListener('touchmove', this.onTouchMove);
-      d.addEventListener('touchcancel', this.onTouchCancel);
-      d.addEventListener('touchleave', this.onTouchLeave);
+    attachHandlers: function() {
+      this.X.window.document.addEventListener('touchstart', this.onTouchStart);
+      this.X.window.document.addEventListener('touchend', this.onTouchEnd);
+      this.X.window.document.addEventListener('touchmove', this.onTouchMove);
+      this.X.window.document.addEventListener('touchcancel', this.onTouchCancel);
+      this.X.window.document.addEventListener('touchleave', this.onTouchLeave);
+      this.attached = true;
     },
 
-    touchStart: function(i, t) {
-      this.touches[i] = FOAMTouch.create({
-        id: i,
-        x: t.screenX,
-        y: t.screenY
-      });
-      this.publish(this.TOUCH_START, this.touches[i]);
+    install: function(recv) {
+      if ( ! this.attached ) this.attachHandlers();
+
+      this.receivers.push(recv);
+
+      // Attach a touchstart handler to the capture phase, this checks
+      // whether each touch is inside the given element, and records the
+      // offset into that element.
+      recv.element.addEventListener('touchstart', this.touchCapture.bind(recv),
+          true);
     },
-    touchMove: function(i, t) {
-      this.touches[i].move(t);
+
+    // NB: 'this' is bound to the receiver, not the TouchManager!
+    touchCapture: function(event) {
+      for ( var i = 0; i < event.changedTouches.length; i++ ) {
+        var t = event.changedTouches[i];
+        // TODO: Maybe capture the offset into the element here?
+        this.activeTouches[t.identifier] = true;
+      }
     },
-    touchEnd: function(i, t) {
-      this.touches[i].move(t);
-      this.publish(this.TOUCH_END, this.touches[i]);
-      delete this.touches[i];
+
+    notifyReceivers: function(type, event) {
+      var changed = [];
+      for ( var i = 0 ; i < event.changedTouches.length ; i++ ) {
+        changed.push(event.changedTouches[i].identifier);
+      }
+
+      var rets = [];
+      for ( i = 0 ; i < this.receivers.length; i++ ) {
+        var matched = false;
+        for ( var j = 0 ; j < changed.length; j++ ) {
+          if ( this.receivers[i].activeTouches[changed[j]] ) {
+            matched = true;
+            break;
+          }
+        }
+
+        // Skip if this receiver isn't watching any of the changed touches.
+        if ( ! matched ) continue;
+
+        // Since it is watching, let's notify it of the change.
+        var d = this.receivers[i].delegate;
+        var f = d[type].bind(d);
+        if ( f ) rets.push(f(this.touches, changed));
+      }
+
+      // Now rets contains the responses from the listeners.
+      // Any that set drop: true should have their active touches cleared.
+      // Then any that set claim: true have their weights compared.
+      // The highest is the winner and all others are dropped.
+      // If none set claim, then preventDefault if any non-dropped ones set it.
+      // If we did have a winner, then preventDefault based on its wishes.
+      var winner = -1;
+      for ( i = 0 ; i < rets.length ; i++ ) {
+        var r = rets[i];
+        if ( r.drop ) {
+          this.receivers[i].activeTouches = {};
+          continue;
+        }
+
+        if ( r.claim && ( winner < 0 || r.weight > rets[winner].weight ) ) {
+          winner = i;
+        }
+      }
+
+      if ( winner >= 0 ) {
+        for ( i = 0 ; i < rets.length ; i++ ) {
+          if ( i != winner ) this.receivers[i].activeTouches = {};
+        }
+        if ( rets[winner].preventDefault ) event.preventDefault();
+      } else {
+        for ( i = 0 ; i < rets.length ; i++ ) {
+          if ( ! rets[i].drop && rets[i].preventDefault ) {
+            event.preventDefault();
+            break;
+          }
+        }
+      }
     }
   },
 
@@ -77,73 +152,71 @@ FOAModel({
     {
       name: 'onTouchStart',
       code: function(e) {
-        e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           if ( this.touches[i] ) {
             console.warn('Touch start for known touch.');
             continue;
           }
-          this.touchStart(i, t);
+          console.log(t);
+          this.touches[t.identifier] = FOAMTouch.create({
+            id: t.identifier,
+            startX: t.clientX,
+            startY: t.clientY,
+            x: t.clientX,
+            y: t.clientY
+          });
         }
+
+        this.notifyReceivers('onTouchStart', e);
       }
     },
     {
       name: 'onTouchMove',
       code: function(e) {
-        e.preventDefault();
-
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           if ( ! this.touches[i] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
-          this.touchMove(i, t);
+          this.touches[t.identifier].move(t);
         }
+        this.notifyReceivers('onTouchMove', e);
       }
     },
     {
       name: 'onTouchEnd',
       code: function(e) {
-        e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           if ( ! this.touches[i] ) {
             console.warn('Touch end for unknown touch.');
             continue;
           }
-          this.touchEnd(i, t);
+          this.touches[t.identifier].move(t);
+        }
+        this.notifyReceivers('onTouchEnd', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     },
     {
       name: 'onTouchCancel',
       code: function(e) {
-        e.preventDefault();
-        for ( var i = 0; i < e.changedTouches.length; i++ ) {
-          var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
-            console.warn('Touch cancel for unknown touch.');
-            continue;
-          }
-
-          this.touches[i].cancel(e, t);
+        this.notifyReceivers('onTouchCancel', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     },
     {
       name: 'onTouchLeave',
       code: function(e) {
-        e.preventDefault();
-        for ( var i = 0; i < e.changedTouches.length; i++ ) {
-          var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
-            console.warn('Touch cancel for unknown touch.');
-            continue;
-          }
-
-          this.touches[i].leave(e, t);
+        this.notifyReceivers('onTouchLeave', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     }
