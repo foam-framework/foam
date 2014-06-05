@@ -331,7 +331,7 @@ input[name="search"] {
 }
 
 table {
-  table-layout: fixed; width: 100%;
+  table-layout: fixed;
 }
 
 .star-image.true {
