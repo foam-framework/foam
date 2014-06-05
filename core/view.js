@@ -326,11 +326,6 @@ FOAModel({
     },
 
     createTemplateView: function(name, opt_args) {
-      var o = this.viewModel()[name];
-      if ( o ) return Action.isInstance(o) ?
-        this.X.ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
-        this.createView(o, opt_args);
-
       o = this.model_[name];
       return Action.isInstance(o) ?
         this.X.ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
@@ -850,6 +845,9 @@ FOAModel({
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
+      name: 'backupImage'
+    },
+    {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
         oldValue && Events.unfollow(this.value, oldValue);
@@ -877,7 +875,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return '<img class="imageView" id="' + this.id + '">';
+      return this.backupImage ?
+        '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
+        '<img class="imageView" id="' + this.id + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -885,6 +885,10 @@ FOAModel({
     },
     initHTML: function() {
       this.SUPER();
+
+      if ( this.backupImage ) this.$.addEventListener('error', function() {
+        this.data = this.backupImage;
+      }.bind(this));
 
       if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
@@ -1075,7 +1079,7 @@ FOAModel({
       this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
         maxHeight: 400,
-        view: DAOListView.create({
+        view: this.X.DAOListView.create({
           dao: completer.autocompleteDao,
           mode: 'final',
           rowView: 'SummaryView',
@@ -2859,6 +2863,11 @@ FOAModel({
       code: function() {
         // When the orientation of the screen has changed, update the
         // left and width values of the inner elements and slider.
+        if ( ! this.$ ) {
+          window.removeEventListener('resize', this.resize, false);
+          return;
+        }
+
         this.width = this.$.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
@@ -4566,13 +4575,16 @@ FOAModel({
 
       var completer = FOAM.lookup(this.autocompleter, this.X).create();
 
-      this.autocompleteView = DAOListView.create({
+      this.autocompleteView = this.X.DAOListView.create({
         dao: completer.autocompleteDao,
         mode: 'final',
         rowView: 'SummaryView',
         useSelection: true
       });
       this.addChild(this.autocompleteView);
+      // TODO: This steps out of the encapsulation a bit.
+      this.$.insertAdjacentHTML('afterend', this.autocompleteView.toHTML());
+      this.autocompleteView.initHTML();
 
       this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
         this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);

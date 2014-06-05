@@ -15,17 +15,19 @@
  * limitations under the License.
  */
 
-console.log('Loading Firefox Support.');
+if (navigator && navigator.userAgent.indexOf('Firefox') != -1) {
+  console.log('Loading Firefox Support.');
 
-Object.defineProperties(MouseEvent.prototype, {
-  offsetX: {
-    get: function() {
-      return this.clientX - this.target.getBoundingClientRect().left;
+  Object.defineProperties(MouseEvent.prototype, {
+    offsetX: {
+      get: function() {
+        return this.clientX - this.target.getBoundingClientRect().left;
+      }
+    },
+    offsetY: {
+      get: function() {
+        return this.clientY - this.target.getBoundingClientRect().top;
+      }
     }
-  },
-  offsetY: {
-    get: function() {
-      return this.clientY - this.target.getBoundingClientRect().top;
-    }
-  }
-});
+  });
+}

@@ -170,13 +170,15 @@ var QIssue = FOAM({
         },
         {
           name: 'cc',
-          preSet: function(_, a) { return a.intern(); }
+          preSet: function(_, a) { return a.intern(); },
+          autocompleter: 'PersonCompleter'
         },
         {
             name: 'owner',
             shortName: 'o',
             tableWidth: '181px',
             type: 'String',
+            autocompleter: 'PersonCompleter',
             preSet: function(_, a) { return a.intern(); }
         },
         {

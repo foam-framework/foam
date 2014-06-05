@@ -1,0 +1,30 @@
+{
+  "name": "foam",
+  "version": "0.0.1",
+  "homepage": "https://github.com/foam-framework/foam",
+  "authors": [
+    "FOAM Project Authors https://github.com/foam-framework/foam"
+  ],
+  "description": "Feature-Oriented Active Modeller - A supremely flexible MVC framework",
+  "main": "core/bootFOAM.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "mvc",
+    "web"
+  ],
+  "license": "Apache 2.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "apps",
+    "demos",
+    "java",
+    "node",
+    "node_modules",
+    "bower_components",
+    "tools",
+    "tests"
+  ]
+}

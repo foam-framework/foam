@@ -31,10 +31,14 @@ a {
   color: #4285f4;
 }
 
+.actionButton-enterSearchMode, .header .default .popupChoiceView {
+  margin: 4px;
+}
+
 .issue-citation {
   display: flex;
   margin: 0;
-  padding: 16px 12px 10px 16px;
+  padding: 16px 4px 10px 16px;
 }
 
 .issue-citation .priority {
@@ -56,6 +60,12 @@ a {
   width: 40px;
 }
 
+.project-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .project-view .owner-avatar {
   width: 64px;
   height: 64px;
@@ -64,7 +74,17 @@ a {
 }
 
 .project-view span[name=email] {
+  color: white;
+  display: block;
+  margin-top: 40;
   padding-left: 16px;
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.project-view .projectList {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .issue-citation .middle {
@@ -102,8 +122,8 @@ a {
   flex-grow: 0;
   font-size: 11px;
   font-weight: 700;
-  height: 18px;
-  margin: 3px;
+  height: 20px;
+  margin: 15px;
   padding: 3px 0 0 0;
   text-align: center;
   width: 18px;
@@ -137,6 +157,17 @@ a {
 
 .issue-edit .header {
   background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+}
+
+.issue-edit .body {
+  margin-top: 200px;
+}
+
+.issue-edit .title {
   color: #fff;
   font-size: 20px;
   line-height: 28px;
@@ -146,7 +177,6 @@ a {
 }
 
 .issue-edit .toolbar {
-  background: #3e50b4;
   display: flex;
   padding: 4px;
 }
@@ -201,30 +231,6 @@ a {
   flex: 1 0 auto;
 }
 
-.issue-edit .priority {
-  font-weight: 700;
-  color: white;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-}
-
-.issue-edit .priority-1 {
-  background: #DB4437;
-}
-
-.issue-edit .priority-2 {
-  background: #F4B400;
-}
-
-.issue-edit .priority-3 {
-  background: #4285F4;
-}
-
 .email-photo {
   overflow: hidden;
   width: 80px;
@@ -242,8 +248,16 @@ a {
   font-weight: 500;
 }
 
+.project-view .header {
+  width: 304px;
+  height: 172px;
+  margin-bottom: 8px;
+  background-image: url('images/projectBackground.png');
+}
+
 .project-citation {
   margin-top: 0;
+  height: 48px;
 }
 
 .project-citation img {
@@ -300,6 +314,7 @@ a {
   flex: 1 0 auto;
   font-family: Roboto;
   font-size: 16px;
+  margin-left: 20px;
   text-align: left;
 }
 
@@ -345,18 +360,19 @@ a {
   color: rgba(0,0,0,.3);
   font-size: 16px;
   line-height: 32px;
+  margin-left: 18px;
   flex: 1 0 auto;
 }
 
 .issue-citation span[name=id] {
   font-size: larger;
   color: #444;
-  font-size: 16pt;
+  font-size: 16px;
 }
 
 .issue-citation .priority {
   font-size: larger;
-  font-size: 16pt;
+  font-size: 16px;
   margin-left: 8px;
 }
 
@@ -376,7 +392,7 @@ input[name=q] {
   color: white;
   font-size: 20px;
   height: 24px;
-  margin: 20px;
+  margin: 20px 20px 20px 16px;
   padding-left: 10px;
 }
 
@@ -396,11 +412,12 @@ input[name=q]::-webkit-input-placeholder {
   -webkit-appearance: none;
 }
 
-.actionButton-leaveSearchMode img {
-  margin: 12px;
+.actionButton-leaveSearchMode {
+  margin: 4px;
 }
 
 .actionButton-leaveSearchMode img {
+  margin: 4px;
   opacity: 0.76;
 }
 
@@ -436,6 +453,7 @@ select[name=sortOrder] {
 
 .mbug.searchMode .header .search {
   display: inherit;
+  height: 56px;
 }
 
 .swipeAltOuter {
@@ -539,6 +557,7 @@ select[name=pri], select[name=status] {
 }
 
 .swipeAltHeader {
+  padding-left: 57px !important;
   height: 36px;
 }
 
@@ -574,14 +593,4 @@ ul.swipeAltHeader {
 .foamChoiceListView.horizontal .choice {
   padding: 14px 16px;
   margin: 0;
-}
-
-.issue-edit .toolbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-}
-
-.issue-edit .body {
-  margin-top: 55px;
 }

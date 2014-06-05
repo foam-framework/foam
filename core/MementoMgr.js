@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 FOAModel({
-  name:  'MementoMgr',
+  name: 'MementoMgr',
 
   properties: [
     {
@@ -35,7 +35,6 @@ FOAModel({
     {
       name:  'back',
       label: ' <-- ',
-//      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Left_Arrow.svg',
       help:  'Go to previous view',
 
       isEnabled:   function() { return this.stack.length; },
@@ -51,7 +50,6 @@ FOAModel({
     {
       name:  'forth',
       label: ' --> ',
-//      iconUrl: FOAM_BOOT_DIR + 'images/Navigation_Right_Arrow.svg',
       help:  'Undo the previous back.',
 
       isEnabled:   function() { return this.redo.length; },

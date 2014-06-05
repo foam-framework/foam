@@ -15,7 +15,7 @@ FOAModel({
       subType: 'QBug',
       view: function() { return DetailView.create({model: QBug}); },
       factory: function() {
-        return QBug.create({
+        return this.X.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
           authClientSecret: 'HkwDwjSekPBL5Oybq1NsDeZj'
         });
@@ -25,12 +25,13 @@ FOAModel({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        this.X.project     = project;
-        this.X.projectName = project.projectName;
-        this.X.issueDAO    = project.IssueDAO;
+        var Y = project.X;
+        Y.project     = project;
+        Y.projectName = project.projectName;
+        Y.issueDAO    = project.IssueDAO;
 
-        var pc = this.X.ProjectController.create();
-        var view = this.X.DetailView.create({data: pc});
+        var pc = Y.ProjectController.create();
+        var view = Y.DetailView.create({data: pc});
         this.stack.setTopView(view);
       }
     },
@@ -43,12 +44,8 @@ FOAModel({
 
   methods: {
     toHTML: function() { return this.stack.toHTML(); },
-    initHTML: function() {
-      this.stack.initHTML();
-
-      var self = this;
-
-      this.X = this.X.sub({
+    projectContext: function() {
+      return this.X.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
@@ -56,17 +53,22 @@ FOAModel({
         ProjectDAO:        this.qbug.ProjectNetworkDAO,
         stack:             this.stack
       }, 'MBUG CONTEXT');
+    },
 
-      this.qbug.getDefaultProject({put: function(project) { self.project = project; }});
+    initHTML: function() {
+      this.stack.initHTML();
+
+      var self = this;
+      this.qbug.getDefaultProject({put: function(project) { self.project = project; }}, this.projectContext());
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.X.IssueView.create({dao: this.X.issueDAO, data: issue});
+      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue});
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) { self.project = project; });
+      this.qbug.findProject(projectName, function(project) { self.project = project; }, this.projectContext());
       this.stack.back();
     }
   }
@@ -150,7 +152,7 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       defaultValue: false,
-      name: 'searchMode', postSet: function(_,v) { console.log('searchMode: ', v); }
+      name: 'searchMode'
     },
     {
       name: 'q',
@@ -165,7 +167,8 @@ FOAModel({
       label: '',
       action: function() {
         var v = this.X.ChangeProjectView.create({data: this.project.user});
-        this.X.stack.pushView(v);
+//        this.X.stack.pushView(v);
+        this.X.stack.slideView(v);
       }
     },
     {
@@ -191,9 +194,9 @@ FOAModel({
         function() {
 //          console.log('Query: ', (QueryParser.parseString(self.q) || TRUE).toMQL());
           self.filteredDAO = self.issueDAO
-              .limit(15)
-              .where(QueryParser.parseString(self.q) || TRUE)
-              .orderBy(self.sortOrder);
+            .limit(15)
+            .where(QueryParser.parseString(self.q) || TRUE)
+            .orderBy(self.sortOrder);
         }
       );
     }
@@ -269,75 +272,88 @@ FOAModel({
       }
     }
   ],
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>" class="issue-edit">
-      <div class="toolbar">
-        $$back
-        $$cancel
-        <span class="expand"></span>
-        $$save
-        $$starred{
-          model_: 'ImageBooleanView',
-          className:  'star',
-          trueImage:  'images/ic_star_white_24dp.png',
-          falseImage: 'images/ic_star_outline_white_24dp.png'
-        }
-      </div>
-      <div class="body">
+  templates: [
+    function headerToHTML() {/*
       <div class="header">
-        #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+        <div class="toolbar">
+          $$back
+          $$cancel
+          <span class="expand"></span>
+          $$save
+          $$starred{
+            model_: 'ImageBooleanView',
+            className:  'star',
+            trueImage:  'images/ic_star_white_24dp.png',
+            falseImage: 'images/ic_star_outline_white_24dp.png'
+          }
+        </div>
+        <div class="title">
+          #&nbsp;$$id{mode: 'read-only'} $$summary{mode: 'read-only'}
+        </div>
       </div>
-      <div class="choice">
-        $$pri{model_: 'PriorityView'}
-        $$pri{
-          model_: 'PopupChoiceView',
-          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-          showValue: true,
-          choices: [
-            [0, 'Priority 0 -- Critical'],
-            [1, 'Priority 1 -- High'],
-            [2, 'Priority 2 -- Medium'],
-            [3, 'Priority 3 -- Low']
-          ]
-        }
-      </div>
-      <div class="choice">
-        <img src="images/ic_keep_24dp.png" class="status-icon">
-        $$status{
-          model_: 'PopupChoiceView',
-          iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-          showValue: true,
-          // TODO: get options from QProject
-          choices: [
-            'Unconfirmed',
-            'Untriaged',
-            'Available',
-            'Assigned',
-            'Started',
-            'ExternalDependency',
-            'Fixed',
-            'Verified',
-            'Duplicate',
-            'WontFix',
-            'Archived'
-          ]
-        }
-      </div>
-      <div class="separator"></div>
-      <div class="owner">
-        <div class="owner-header">Owner</div>
-        <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
-      </div>
-      <div class="separator"></div>
-      <div class="cc">
-        <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-        $$cc{model_: 'IssueEmailArrayView'}
+    */},
+
+    function bodyToHTML() {/*
+      <div class="body">
+        <div class="choice">
+          $$pri{model_: 'PriorityView'}
+          $$pri{
+            model_: 'PopupChoiceView',
+            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+            showValue: true,
+            choices: [
+              [0, 'Priority 0 -- Critical'],
+              [1, 'Priority 1 -- High'],
+              [2, 'Priority 2 -- Medium'],
+              [3, 'Priority 3 -- Low']
+            ]
+          }
+        </div>
+        <div class="choice">
+          <img src="images/ic_keep_24dp.png" class="status-icon">
+          $$status{
+            model_: 'PopupChoiceView',
+            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+            showValue: true,
+            // TODO: get options from QProject
+            choices: [
+              'Unconfirmed',
+              'Untriaged',
+              'Available',
+              'Assigned',
+              'Started',
+              'ExternalDependency',
+              'Fixed',
+              'Verified',
+              'Duplicate',
+              'WontFix',
+              'Archived'
+            ]
+          }
+        </div>
+        <div class="separator"></div>
+        <div class="owner">
+          <div class="owner-header">Owner</div>
+          <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
+        </div>
+        <div class="separator"></div>
+        <div class="cc">
+          <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
+          $$cc{model_: 'IssueEmailArrayView'}
       </div>
       <%= this.commentsView %>
       </div>
-    </div>
-  */} ]
+    */},
+
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="issue-edit">
+        <%= this.headerToHTML() %>
+        <%= this.bodyToHTML() %>
+      </div>
+    */}
+  ]
 });
+
 
 FOAModel({
   name: 'IssueEmailArrayView',
@@ -440,12 +456,12 @@ FOAModel({
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
-      $$email{model_: 'IssueOwnerAvatarView'}
-      <div style="height: 80px;"> </div>
-
-      $$email{mode: 'display-only'}
-      <br><br>
-      <hr>
+      <div class="header">
+        $$email{model_: 'IssueOwnerAvatarView'}
+        $$email{mode: 'display-only'}
+        <br><br>
+      </div>
+      <div class="projectList">
       <%
          var projects = this.data.preferredProjects;
 
@@ -454,11 +470,12 @@ FOAModel({
 
          projects.forEach(function(project) { %>
         <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
-        <div id="<%= self.on('click', function() { self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({data: self.X.baseURL + project + '/logo'}) %>
+        <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
           <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
-      <% }); %>
+        <% }); %>
+        </div>
     </div>
   */} ]
 });
