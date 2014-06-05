@@ -123,6 +123,7 @@ body {
 }
 
 .qissuepage {
+  min-height: 100%;
 }
 
 .qissuepage td {
@@ -331,7 +332,7 @@ input[name="search"] {
   padding: 4px;
 }
 
-table {
+.QIssueTable, .gridViewControl table {
   table-layout: fixed;
 }
 
