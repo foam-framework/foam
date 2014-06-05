@@ -25,7 +25,7 @@
   <span style="width:60px;flex-shrink:10000"></span>
   <span>Search %%searchChoice for </span>
   <span class="expand" style="padding-left:4px;">%%searchField</span>
-  <span> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a></span>
+  <span class="link" style="align-self:center;"> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search tips</a></span>
  </div>
  <div class="BrowserView expand column">%%view</div>
  <div class="footer"><%= FOAM_POWERED %></div>

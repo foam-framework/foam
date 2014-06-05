@@ -110,7 +110,7 @@ FOAModel({
         var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
         var self = this;
         var views = [
-    //        ['',                     'All issues'],
+//            ['',                     'ALL ISSUES'],
             [open,                   'OPEN ISSUES'],
             [open + ' is:starred',   'STARRED'],
             [open + ' owner=me',     'OWNED BY ME']
@@ -192,6 +192,7 @@ FOAModel({
       Events.dynamic(
         function() { self.sortOrder; self.q; },
         function() {
+//          console.log('Query: ', (QueryParser.parseString(self.q) || TRUE).toMQL());
           self.filteredDAO = self.issueDAO
             .limit(15)
             .where(QueryParser.parseString(self.q) || TRUE)

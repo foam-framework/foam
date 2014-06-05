@@ -154,7 +154,7 @@ FOAModel({
         return ChoiceView.create({
           helpText: 'Search within:',
           data$: this.location.can$,
-          choices:[
+          choices: [
             ['',                     '&nbsp;All issues',              1],
             [open,                   '&nbsp;Open issues',             2],
             [open + ' owner=me',     '&nbsp;Open and owned by me',    3],
