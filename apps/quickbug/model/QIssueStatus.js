@@ -30,9 +30,9 @@ FOAModel({
     {
       name: 'toSummaryHTML',
       template: function() {/*
-  <div style="background:white;color:blue;padding:4px 0;width:400px">
-    <div style="display:inline;width:25%">{{this.value.value.status}}</div>
-    <div style="display:inline;width:75%;float:right">=&nbsp;{{this.value.value.description}}</div>
+  <div class="labelSummary">
+    <div class="label">{{this.value.value.status}}</div>
+    <div class="description">=&nbsp;{{this.value.value.description}}</div>
   </div>
     */}
     }

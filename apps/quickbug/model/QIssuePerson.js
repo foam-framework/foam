@@ -22,7 +22,7 @@ FOAModel({
   templates: [
     {
       name: 'toSummaryHTML',
-      template: '<div style="background:white;color:blue;padding:4px 0;width:200px"><span style="margin-left:6px;">{{this.value.value.name}}</span></div>'
+      template: '<div style="personSummary">{{this.value.value.name}}</div>'
     }
   ]
 });

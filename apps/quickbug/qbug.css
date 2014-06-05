@@ -349,3 +349,35 @@ table {
   background-repeat: no-repeat;
   display: block;
 }
+
+.autocomplete {
+  display: table;
+  color: #00c;
+  background: white;
+  border: 1px solid #bbb;
+}
+
+.autocomplete .row {
+  display: table-row-group;
+}
+
+.autocomplete .row:hover {
+  background: #c3d9ff;
+}
+
+.labelSummary {
+  display: table-row;
+}
+
+.labelSummary .label {
+  display: table-cell;
+}
+
+.labelSummary .description {
+  display: tabel-cell;
+}
+
+.personSummary {
+  display: table-row;
+  margin-left: 6px;
+}

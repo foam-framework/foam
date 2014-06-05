@@ -666,20 +666,35 @@ FOAModel({
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
       var div      = document.createElement('div');
+      var window = document.defaultView;
 
       this.position(div, parentNode);
 
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
-      if ( this.hideOnMouseOut ) {
-        var self = this;
-        div.addEventListener('mouseleave', function(e) {
-          self.close();
-        });
-      }
 
       document.body.appendChild(div);
       this.view.initHTML();
+
+      if ( this.hideOnMouseOut ) {
+        var timeout;
+        var self = this;
+        document.addEventListener('mousemove', function listener(evt) {
+          if ( ! self.$ ) {
+            document.removeEventListener('mousemove', listener);
+          } else if ( ! self.$.contains(evt.target) ) {
+            if ( ! timeout ) {
+              timeout = window.setTimeout(function() {
+                document.removeEventListener('mousemove', listener);
+                self.close();
+              }, 300);
+            }
+          } else if ( timeout ) {
+            window.clearTimeout(timeout);
+            timeout = undefined;
+          }
+        });
+      }
     },
 
     position: function(div, parentNode) {
@@ -705,11 +720,11 @@ FOAModel({
       if ( this.height ) div.style.height = this.height + 'px';
       if ( this.maxWidth ) {
         div.style.maxWidth = this.maxWidth + 'px';
-        div.style.overflowX = 'scroll';
+        div.style.overflowX = 'auto';
       }
       if ( this.maxHeight ) {
         div.style.maxHeight = this.maxHeight + 'px';
-        div.style.overflowY = 'scroll';
+        div.style.overflowY = 'auto';
       }
 
       div.style.position = 'absolute';
@@ -1079,8 +1094,10 @@ FOAModel({
       this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
         maxHeight: 400,
+        maxWidth: 800,
         view: this.X.DAOListView.create({
           dao: completer.autocompleteDao,
+          className: this.name + ' autocomplete',
           mode: 'final',
           rowView: 'SummaryView',
           useSelection: true
@@ -1090,6 +1107,7 @@ FOAModel({
 
       this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
         this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+        this.autocompleteView.close();
       }).bind(this));
 
       var self = this;
@@ -4309,7 +4327,7 @@ FOAModel({
         }
         this.addChild(view);
         if ( this.useSelection ) {
-          out.push('<div id="' + this.on('click', (function() {
+          out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
             this.selection = o
           }).bind(this)) + '">');
         }
