@@ -2,6 +2,7 @@ body {
   margin-bottom: 5px;
   margin-top: 0;
   overflow: hidden;
+  -webkit-user-select: text;
 }
 
 .scrollSpacer { height: 24px }
@@ -348,4 +349,36 @@ table {
   background-image: url('data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=');
   background-repeat: no-repeat;
   display: block;
+}
+
+.autocomplete {
+  display: table;
+  color: #00c;
+  background: white;
+  border: 1px solid #bbb;
+}
+
+.autocomplete .row {
+  display: table-row-group;
+}
+
+.autocomplete .row:hover {
+  background: #c3d9ff;
+}
+
+.labelSummary {
+  display: table-row;
+}
+
+.labelSummary .label {
+  display: table-cell;
+}
+
+.labelSummary .description {
+  display: tabel-cell;
+}
+
+.personSummary {
+  display: table-row;
+  margin-left: 6px;
 }

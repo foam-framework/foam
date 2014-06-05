@@ -666,20 +666,35 @@ FOAModel({
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
       var div      = document.createElement('div');
+      var window = document.defaultView;
 
       this.position(div, parentNode);
 
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
-      if ( this.hideOnMouseOut ) {
-        var self = this;
-        div.addEventListener('mouseleave', function(e) {
-          self.close();
-        });
-      }
 
       document.body.appendChild(div);
       this.view.initHTML();
+
+      if ( this.hideOnMouseOut ) {
+        var timeout;
+        var self = this;
+        document.addEventListener('mousemove', function listener(evt) {
+          if ( ! self.$ ) {
+            document.removeEventListener('mousemove', listener);
+          } else if ( ! self.$.contains(evt.target) ) {
+            if ( ! timeout ) {
+              timeout = window.setTimeout(function() {
+                document.removeEventListener('mousemove', listener);
+                self.close();
+              }, 300);
+            }
+          } else if ( timeout ) {
+            window.clearTimeout(timeout);
+            timeout = undefined;
+          }
+        });
+      }
     },
 
     position: function(div, parentNode) {
@@ -705,11 +720,11 @@ FOAModel({
       if ( this.height ) div.style.height = this.height + 'px';
       if ( this.maxWidth ) {
         div.style.maxWidth = this.maxWidth + 'px';
-        div.style.overflowX = 'scroll';
+        div.style.overflowX = 'auto';
       }
       if ( this.maxHeight ) {
         div.style.maxHeight = this.maxHeight + 'px';
-        div.style.overflowY = 'scroll';
+        div.style.overflowY = 'auto';
       }
 
       div.style.position = 'absolute';
@@ -1079,8 +1094,10 @@ FOAModel({
       this.autocompleteView = this.X.AutocompletePopup.create({
         dao: completer.autocompleteDao,
         maxHeight: 400,
+        maxWidth: 800,
         view: this.X.DAOListView.create({
           dao: completer.autocompleteDao,
+          className: this.name + ' autocomplete',
           mode: 'final',
           rowView: 'SummaryView',
           useSelection: true
@@ -1090,6 +1107,7 @@ FOAModel({
 
       this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
         this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+        this.autocompleteView.close();
       }).bind(this));
 
       var self = this;
@@ -4309,7 +4327,7 @@ FOAModel({
         }
         this.addChild(view);
         if ( this.useSelection ) {
-          out.push('<div id="' + this.on('click', (function() {
+          out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
             this.selection = o
           }).bind(this)) + '">');
         }
@@ -4567,31 +4585,78 @@ FOAModel({
 
 FOAModel({
   name: 'FullScreenTextFieldView',
-  extendsModel: 'TextFieldView',
+  extendsModel: 'View',
+
+  properties: [
+    'data',
+    'softData',
+    'autocompleter',
+    { model_: 'BooleanProperty', name: 'autocomplete', defaultValue: true },
+    'autocompleteView',
+    'placeholder',
+    'domValue'
+  ],
 
   methods: {
-    setupAutocomplete: function() {
-      if ( ! this.autocomplete || ! this.autocompleter ) return;
+    initHTML: function() {
+      this.SUPER();
 
-      var completer = FOAM.lookup(this.autocompleter, this.X).create();
+      var input = this.$.firstElementChild;
 
-      this.autocompleteView = this.X.DAOListView.create({
-        dao: completer.autocompleteDao,
-        mode: 'final',
-        rowView: 'SummaryView',
-        useSelection: true
-      });
-      this.addChild(this.autocompleteView);
-      // TODO: This steps out of the encapsulation a bit.
-      this.$.insertAdjacentHTML('afterend', this.autocompleteView.toHTML());
-      this.autocompleteView.initHTML();
+      if ( this.placeholder ) input.placeholder = this.placeholder;
 
-      this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-      }).bind(this));
-      this.$.addEventListener('input', (function() {
-        completer.autocomplete(this.textToValue(this.$.value));
-      }).bind(this));
+      this.domValue = DomValue.create(input, 'input');
+
+      Events.follow(this.data$, this.softData$);
+
+      Events.relate(
+        this.softData$,
+        this.domValue,
+        this.valueToText.bind(this),
+        this.textToValue.bind(this));
+
+      input.addEventListener('keydown', this.onKeyDown);
+
+      if ( this.autocomplete && this.autocompleter ) {
+        var completer = FOAM.lookup(this.autocompleter, this.X).create();
+        this.autocompleteView.dao = completer.autocompleteDao;
+
+        this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
+          this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+        }).bind(this));
+        this.softData$.addListener((function() {
+          completer.autocomplete(this.softData);
+        }).bind(this));
+      }
+    },
+
+    valueToText: function(value) { return value; },
+    textToValue: function(text) { return text; },
+  },
+
+  templates: [
+    function toHTML() {/*
+      <div class="fullScreenTextFieldView" id="{{this.id}}">
+        <input type="text">
+        <div class="fullScreenTextFieldView-autocomplete"><%= 
+          (this.autocompleteView = this.X.DAOListView.create({
+            mode: 'final',
+            rowView: 'SummaryView',
+            useSelection: true
+          }))
+        %></div>
+      </div>
+    */}
+  ],
+
+  listeners: [
+    {
+      name: 'onKeyDown',
+      code: function(e) {
+        if ( e.keyCode === 13 /* ENTER */ ) {
+          this.data = this.softData;
+        }
+      }
     }
-  }
+  ]
 });
