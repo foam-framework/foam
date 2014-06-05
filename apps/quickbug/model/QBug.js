@@ -167,10 +167,12 @@ FOAModel({
           });
 
           return function(url, params, opt_method, opt_payload) {
+//            console.log('***** AJSONP Call: ', url + (params ? '?' + params.join('&') : ''));
             return function(ret) {
               var xhr = factory.make();
               xhr.responseType = "json";
               return xhr.asend(ret,
+//              return xhr.asend(function(res) { console.log('***** CB: ', res); ret.apply(this, arguments); },
                                opt_method ? opt_method : "GET",
                                url + (params ? '?' + params.join('&') : ''),
                                opt_payload);

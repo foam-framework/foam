@@ -293,6 +293,17 @@ var QIssue = FOAM({
           o2 = o2.length ? o2[0] : 0;
           return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
         }
+      },
+      {
+        name: 'movedTo',
+        preSet: function(_, v) {
+          // TODO: looks like we're getting bad values, investigate and fix
+          /*
+          if ( v.length ) console.log('movedTo: ', v);
+          return v;
+          */
+          return [];
+        }
       }
     ],
 
@@ -390,3 +401,5 @@ GeneratedQIssue.properties.forEach(function(p) {
     p["tableWidth"] = '80px;'
   }
 });
+
+QIssue.LABELS.toMQL = function() { return 'label'; };
