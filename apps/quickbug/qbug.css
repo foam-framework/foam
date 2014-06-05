@@ -2,6 +2,7 @@ body {
   margin-bottom: 5px;
   margin-top: 0;
   overflow: hidden;
+  -webkit-user-select: text;
 }
 
 .scrollSpacer { height: 24px }
