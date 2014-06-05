@@ -397,7 +397,8 @@ FOAModel({
       this.location.can$.addListener(this.performQuery);
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-        this.project.editIssue(issue.id);
+//        this.project.editIssue(issue.id);
+        this.editIssue(issue.id);
       }.bind(this));
 
       this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
@@ -427,6 +428,53 @@ FOAModel({
 
       this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
       this.onSyncManagerUpdate();
+    },
+
+    editIssue: function(id) {
+      if ( ! id ) return;
+
+      var self = this;
+
+      this.IssueDAO.find(id, {
+        put: function(obj) {
+          apar(
+            arequire('QIssueDetailView'),
+            arequire('QIssueCommentCreateView'),
+            arequire('QIssueCommentView'),
+            arequire('QIssueCommentAuthorView'),
+            arequire('QIssueCommentUpdateView')
+          )(function() {
+            var v = self.X.QIssueDetailView.create({
+              value:            SimpleValue.create(obj),
+              QIssueCommentDAO: self.project.issueCommentDAO(id),
+              QIssueDAO:        self.IssueDAO,
+              mode:             'read-write',
+              url:              self.url
+            }).addDecorator(self.X.QIssueEditBorder.create());
+            self.pushView(v);
+//            w.focus();
+          });
+        }
+      });
+    },
+
+    pushView: function(view) {
+      var stack = this.$.querySelector('.stack');
+      this.$.querySelector('.header').style.display = 'none';
+      this.$.querySelector('.BrowserView').style.display = 'none';
+      stack.style.display = '';
+
+      stack.innerHTML = view.toHTML();
+      view.initHTML();
+    },
+
+    back: function() {
+      var stack = this.$.querySelector('.stack');
+      this.$.querySelector('.header').style.display = '';
+      this.$.querySelector('.BrowserView').style.display = '';
+      stack.style.display = 'none';
+
+      stack.innerHTML = '';
     },
 
     /** Open a preview window when the user hovers over an issue id. **/
