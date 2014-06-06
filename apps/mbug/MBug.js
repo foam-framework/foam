@@ -378,7 +378,7 @@ FOAModel({
     { name: 'data', postSet: function() { this.updateHTML(); } },
   ],
   methods: {
-    colors: 'e8ad62 9b26af 6639b6 3e5084 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
+    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
     generateColor: function() {
       if ( ! this.data ) return 'url(images/silhouette.png)';
 
