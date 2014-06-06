@@ -46,12 +46,6 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name: 'sliderOpen'
-    },
-    {
-      name: 'sliderLeft',
-      postSet: function(_, v) {
-        this.slideArea$().style.left = v + 'px';
-      }
     }
   ],
 
@@ -66,11 +60,12 @@ FOAModel({
         if ( this.sliderOpen ) {
           this.dimmer$().style.zIndex = 0;
           this.dimmer$().style.opacity = -1;
-          Movement.animate(
-            400,
-            function() { this.sliderLeft = -250; }.bind(this),
-            Movement.easeIn(0.9),
-            function() { this.slideArea$().innerHTML = ''; }.bind(this))();
+          this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.4, 0.0, 1, 1)';
+          this.slideArea$().style.left = '-304px';
+          setTimeout(function() {
+            this.slideArea$().style.transition = '';
+            this.slideArea$().innerHTML = '';
+          }.bind(this), 500);
           this.sliderOpen = false;
         } else {
           this.redo.push(this.stack.pop());
@@ -131,13 +126,12 @@ FOAModel({
       this.stack.push(view);
       this.slideArea$().innerHTML = view.toHTML();
       var s = this.X.window.getComputedStyle(this.slideArea$());
-      this.sliderLeft = -toNum(s.width);
+      this.slideArea$().style.transition = '';
+      this.slideArea$().style.left = -toNum(s.width);
       this.dimmer$().style.zIndex = 3;
       this.dimmer$().style.opacity = 0.4;
-      Movement.animate(
-        300,
-        function() { this.sliderLeft = 0; }.bind(this),
-        Movement.easeIn(0.5).o(Movement.bounce(0.4, 0.03)))();
+      this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
+      this.slideArea$().style.left = '0';
       view.stackView = this;
       view.initHTML();
       this.propertyChange('stack', this.stack, this.stack);
