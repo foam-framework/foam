@@ -38,6 +38,9 @@ var Location = FOAM({
 
   properties: [
     {
+      name: 'id'
+    },
+    {
       model_: 'LocationProperty',
       name: 'can',
       // The memento is the can# stored in the 3rd element of the choice
