@@ -340,3 +340,175 @@ function createView(rowSelection, browser) {
     ]
   });
 }
+
+FOAModel({
+  name: 'GriddedStringArrayView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'type',
+      defaultValue: 'text'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'displayWidth',
+      defaultValue: 30
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'onKeyMode',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autocomplete',
+      defaultValue: true
+    },
+    {
+      name: 'data',
+      getter: function() { return this.softData; },
+      setter: function(value) {
+        this.softData = value;
+        this.update();
+      },
+    },
+    {
+      name: 'softData',
+      postSet: function(oldValue, newValue) {
+        this.propertyChange('data', oldValue, newValue);
+      }
+    },
+    'autocompleter',
+    {
+      model_: 'ArrayProperty',
+      subType: 'TextFieldView',
+      name: 'inputs'
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      var link = ActionButton.create({
+        action: this.model_.ADD,
+        value: SimpleValue.create(this)
+      });
+      this.addChild(link);
+
+      return '<div id="' + this.id + '"><div></div>' +
+        link.toHTML() +
+        '</div>';
+    },
+    initHTML: function() {
+      this.SUPER();
+      this.update();
+    },
+    field: function() {
+      return this.X.TextFieldView.create({
+        name: this.name,
+        type: this.type,
+        displayWidth: this.displayWidth,
+        onKeyMode: this.onKeyMode,
+        autocomplete: this.autocomplete,
+        autocompleter: this.autocompleter
+      });
+    },
+    setValue: function(value) {
+      this.value = value;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'addRow',
+      code: function() {
+        var views = [this.field(),
+                     this.field(),
+                     this.field()];
+
+        this.addChildren.apply(this, views);
+        this.inputs = this.inputs.concat(views);
+        views[0].data$.addListener(this.onInput);
+        views[1].data$.addListener(this.onInput);
+        views[2].data$.addListener(this.onInput);
+
+        var inputElement = this.$.firstElementChild;
+        inputElement.insertAdjacentHTML('beforeend',
+                                        '<div>' +
+                                        views[0].toHTML() +
+                                        views[1].toHTML() +
+                                        views[2].toHTML() +
+                                        '</div>');
+
+        views[0].initHTML();
+        views[1].initHTML();
+        views[2].initHTML();
+      }
+    },
+    {
+      name: 'update',
+      code: function() {
+        if ( ! this.$ ) return;
+
+        var i = 0;
+        while ( this.inputs.length < this.softData.length ) {
+          var views = [this.field(),
+                       this.field(),
+                       this.field()];
+
+          this.addChildren.apply(this, views);
+          this.inputs = this.inputs.concat(views);
+
+          views[0].data = this.softData[i++];
+          views[1].data = this.softData[i++];
+          views[2].data = this.softData[i++];
+
+          views[0].data$.addListener(this.onInput);
+          views[1].data$.addListener(this.onInput);
+          views[2].data$.addListener(this.onInput);
+
+          var inputElement = this.$.firstElementChild;
+          inputElement.insertAdjacentHTML('beforeend',
+                                          '<div>' +
+                                          views[0].toHTML() +
+                                          views[1].toHTML() +
+                                          views[2].toHTML() +
+                                          '</div>');
+
+          views[0].initHTML();
+          views[1].initHTML();
+          views[2].initHTML();
+        }
+      }
+    },
+    {
+      name: 'onInput',
+      code: function(e) {
+        if ( ! this.$ ) return;
+
+        var newdata = [];
+
+        var inputs = this.inputs;
+        for ( var i = 0; i < inputs.length; i++ ) {
+          if ( inputs[i].data ) newdata.push(inputs[i].data);
+        }
+        this.softData = newdata;
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'add',
+      label: 'Add a row',
+      action: function() {
+        this.addRow();
+      }
+    }
+  ]
+});

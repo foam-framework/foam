@@ -87,8 +87,8 @@ FOAModel({
   properties: [
     { name: 'status', autocompleter: 'StatusCompleter' },
     { name: 'owner', autocompleter: 'PersonCompleter' },
-    { name: 'labels', view: 'MultiLineStringArrayView', autocompleter: 'LabelCompleter' },
-    { name: 'cc', view: 'MultiLineStringArrayView', autocompleter: 'PersonCompleter' },
+    { name: 'labels', view: 'GriddedStringArrayView', autocompleter: 'LabelCompleter' },
+    { name: 'cc', view: 'StringArrayView', autocompleter: 'PersonCompleter', displayWidth: 120 },
     { name: 'blockedOn', view: 'MultiLineStringArrayView' }
   ]
 });

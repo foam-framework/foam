@@ -302,6 +302,10 @@ input[name="search"] {
   width: 100%;
 }
 
+input[name="labels"] {
+  color: #060
+}
+
 .logo img {
   padding-right: 10px;
   vertical-align: middle;
