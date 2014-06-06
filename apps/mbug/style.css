@@ -31,8 +31,12 @@ a {
   color: #4285f4;
 }
 
-.actionButton-enterSearchMode, .header .default .popupChoiceView {
-  margin: 4px;
+.actionButton-enterSearchMode {
+  margin: 4px 0;
+}
+
+.header .default .popupChoiceView {
+  margin: 4px 4px 4px 0;
 }
 
 .issue-citation {

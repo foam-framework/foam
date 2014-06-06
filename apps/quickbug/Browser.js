@@ -53,6 +53,7 @@ FOAModel({
       name: 'memento',
       defaultValue: 'mode=list',
       postSet: function (oldValue, newValue) {
+        console.log('****** LOCATION: ', this.location.toJSON());
         // Avoid feedback by temporarily unsubscribing
         this.location.removeListener(this.onLocationUpdate);
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
@@ -258,7 +259,14 @@ FOAModel({
     {
       name: 'onLocationUpdate',
       isAnimated: true,
-      code: function(evt) { this.memento = this.location.toMemento(this); }
+      code: function(evt) {
+        this.memento = this.location.toMemento(this);
+        if ( this.location.id ) {
+          this.editIssue(this.location.id);
+        } else if ( this.issueMode_ ) {
+          this.back();
+        }
+      }
     },
   ],
 
@@ -404,7 +412,8 @@ FOAModel({
 
       this.rowSelection.addListener(function(_,_,_,issue) {
 //        this.project.editIssue(issue.id);
-        this.editIssue(issue.id);
+        this.location.id = issue.id;
+//        this.editIssue(issue.id);
       }.bind(this));
 
       this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
@@ -465,6 +474,8 @@ FOAModel({
     },
 
     pushView: function(view) {
+      this.issueMode_ = true;
+
       var stack = this.$.querySelector('.stack');
       this.$.querySelector('.header').style.display = 'none';
       this.$.querySelector('.BrowserView').style.display = 'none';
@@ -475,6 +486,8 @@ FOAModel({
     },
 
     back: function() {
+      this.issueMode_ = false;
+
       var stack = this.$.querySelector('.stack');
       this.$.querySelector('.header').style.display = '';
       this.$.querySelector('.BrowserView').style.display = '';
