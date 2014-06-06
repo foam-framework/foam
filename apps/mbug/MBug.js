@@ -378,15 +378,11 @@ FOAModel({
     { name: 'data', postSet: function() { this.updateHTML(); } },
   ],
   methods: {
+    colors: 'e8ad62 9b26af 6639b6 3e5084 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
     generateColor: function() {
-      var colors = [
-        '#00681c', '#5b1094', '#790619', '#c88900', '#cc0060',
-        '#008391', '#009486', '#b90038', '#846600', '#330099'
-      ];
-
       if ( ! this.data ) return 'url(images/silhouette.png)';
 
-      return colors[Math.abs(this.data.hashCode()) % colors.length];
+      return '#' + this.colors[Math.abs(this.data.hashCode()) % this.colors.length];
     },
     updateHTML: function() {
       if ( this.$ ) this.$.style.background = this.generateColor();
