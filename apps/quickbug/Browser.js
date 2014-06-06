@@ -459,7 +459,7 @@ FOAModel({
             arequire('QIssueCommentAuthorView'),
             arequire('QIssueCommentUpdateView')
           )(function() {
-            var v = self.X.QIssueDetailView.create({
+            var v = self.project.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
               QIssueCommentDAO: self.project.issueCommentDAO(id),
               QIssueDAO:        self.IssueDAO,
