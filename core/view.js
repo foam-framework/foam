@@ -2867,9 +2867,10 @@ FOAModel({
 
     snapToCurrent: function(sizeOfMove) {
       var self = this;
-      Movement.animate(300 * sizeOfMove, function(evt) {
+      var time = 150 + sizeOfMove * 150;
+      Movement.animate(time, function(evt) {
         self.x = self.index * self.width;
-      }, Movement.ease(0.5, 0.5), function() {
+      }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
     }
