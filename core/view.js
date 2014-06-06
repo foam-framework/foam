@@ -3101,6 +3101,65 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   methods: {
+    setupAutocomplete: function() {
+      // TODO: Too much duplicated code, refactor this.
+      if ( ! this.autocomplete || ! this.autocompleter ) return;
+
+      var proto = FOAM.lookup(this.autocompleter, this.X);
+      var completer = proto.create();
+      this.autocompleteView = this.X.AutocompletePopup.create({
+        dao: completer.autocompleteDao,
+        maxHeight: 400,
+        maxWidth: 800,
+        view: this.X.DAOListView.create({
+          dao: completer.autocompleteDao,
+          className: this.name + ' autocomplete',
+          mode: 'final',
+          rowView: 'SummaryView',
+          useSelection: true
+        })
+      });
+      this.addChild(this.autocompleteView);
+
+      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+        this.autocompleteView.close();
+      }).bind(this));
+
+      var self = this;
+      this.$.addEventListener('input', function() {
+        var start = self.$.selectionStart;
+        var value = self.$.value;
+
+        if ( start === self.$.selectionEnd ) {
+          var values = value.split(',');
+          var i = 0;
+          var sum = 0;
+
+          while ( sum + values[i].length < start ) {
+            sum += values[i].length;
+            i++;
+          }
+          completer.autocomplete(values[i]);
+        }
+      });
+      this.$.addEventListener('focus', function() {
+        var start = self.$.selectionStart;
+        var value = self.$.value;
+
+        if ( start === self.$.selectionEnd ) {
+          var values = value.split(',');
+          var i = 0;
+          var sum = 0;
+
+          while ( sum + values[i].length < start ) {
+            sum += values[i].length;
+            i++;
+          }
+          completer.autocomplete(values[i]);
+        }
+      });
+    },
     textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
     valueToText: function(value) { return value ? value.toString() : ""; }
   }
