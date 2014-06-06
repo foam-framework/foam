@@ -46,12 +46,6 @@ FOAModel({
     {
       model_: 'BooleanProperty',
       name: 'sliderOpen'
-    },
-    {
-      name: 'sliderLeft',
-      postSet: function(_, v) {
-        this.slideArea$().style.left = v + 'px';
-      }
     }
   ],
 
@@ -61,17 +55,18 @@ FOAModel({
       label: '<',
       help:  'Go to previous view',
 
-      isEnabled: function() { return this.stack.length > 1; },
+      isEnabled: function() { return this.stack.length > 1 || this.sliderOpen; },
       action: function() {
         if ( this.sliderOpen ) {
+          this.sliderOpen = false;
           this.dimmer$().style.zIndex = 0;
           this.dimmer$().style.opacity = -1;
-          Movement.animate(
-            400,
-            function() { this.sliderLeft = -250; }.bind(this),
-            Movement.easeIn(0.9),
-            function() { this.slideArea$().innerHTML = ''; }.bind(this))();
-          this.sliderOpen = false;
+          this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.4, 0.0, 1, 1)';
+          this.slideArea$().style.left = '-304px';
+          setTimeout(function() {
+            this.slideArea$().style.transition = '';
+            this.slideArea$().innerHTML = '';
+          }.bind(this), 300);
         } else {
           this.redo.push(this.stack.pop());
           this.pushView(this.stack.pop(), undefined, true);
@@ -127,20 +122,19 @@ FOAModel({
       this.sliderOpen = true;
       this.redo.length = 0;
       this.setPreview(null);
-      view.stackLabel = opt_label || view.stackLabel || view.label;
-      this.stack.push(view);
+      // view.stackLabel = opt_label || view.stackLabel || view.label;
+      // this.stack.push(view);
       this.slideArea$().innerHTML = view.toHTML();
       var s = this.X.window.getComputedStyle(this.slideArea$());
-      this.sliderLeft = -toNum(s.width);
+      this.slideArea$().style.transition = '';
+      this.slideArea$().style.left = -toNum(s.width);
       this.dimmer$().style.zIndex = 3;
       this.dimmer$().style.opacity = 0.4;
-      Movement.animate(
-        300,
-        function() { this.sliderLeft = 0; }.bind(this),
-        Movement.easeIn(0.5).o(Movement.bounce(0.4, 0.03)))();
-      view.stackView = this;
+      this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
+      this.slideArea$().style.left = '0';
+      // view.stackView = this;
       view.initHTML();
-      this.propertyChange('stack', this.stack, this.stack);
+      // this.propertyChange('stack', this.stack, this.stack);
     },
 
     pushView: function (view, opt_label, opt_back) {

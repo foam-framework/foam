@@ -2702,7 +2702,7 @@ FOAModel({
       postSet: function(oldValue, viewChoice) {
         this.views[oldValue].view.deepPublish(this.ON_HIDE);
         // ON_SHOW is called after the animation is done.
-        this.snapToCurrent();
+        this.snapToCurrent(Math.abs(oldValue - viewChoice));
       },
       hidden: true
     },
@@ -2865,11 +2865,12 @@ FOAModel({
       return { x: e.clientX, y: e.clientY };
     },
 
-    snapToCurrent: function() {
+    snapToCurrent: function(sizeOfMove) {
       var self = this;
-      Movement.animate(200, function(evt) {
+      var time = 150 + sizeOfMove * 150;
+      Movement.animate(time, function(evt) {
         self.x = self.index * self.width;
-      }, Movement.easeIn(0.2), function() {
+      }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
     }
@@ -2957,7 +2958,7 @@ FOAModel({
             this.index--;
           }
         } else {
-          this.snapToCurrent();
+          this.snapToCurrent(1);
         }
       }
     }
@@ -4638,7 +4639,7 @@ FOAModel({
     function toHTML() {/*
       <div class="fullScreenTextFieldView" id="{{this.id}}">
         <input type="text">
-        <div class="fullScreenTextFieldView-autocomplete"><%= 
+        <div class="fullScreenTextFieldView-autocomplete"><%=
           (this.autocompleteView = this.X.DAOListView.create({
             mode: 'final',
             rowView: 'SummaryView',
