@@ -55,9 +55,10 @@ FOAModel({
       label: '<',
       help:  'Go to previous view',
 
-      isEnabled: function() { return this.stack.length > 1; },
+      isEnabled: function() { return this.stack.length > 1 || this.sliderOpen; },
       action: function() {
         if ( this.sliderOpen ) {
+          this.sliderOpen = false;
           this.dimmer$().style.zIndex = 0;
           this.dimmer$().style.opacity = -1;
           this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.4, 0.0, 1, 1)';
@@ -65,8 +66,7 @@ FOAModel({
           setTimeout(function() {
             this.slideArea$().style.transition = '';
             this.slideArea$().innerHTML = '';
-          }.bind(this), 500);
-          this.sliderOpen = false;
+          }.bind(this), 300);
         } else {
           this.redo.push(this.stack.pop());
           this.pushView(this.stack.pop(), undefined, true);
@@ -122,8 +122,8 @@ FOAModel({
       this.sliderOpen = true;
       this.redo.length = 0;
       this.setPreview(null);
-      view.stackLabel = opt_label || view.stackLabel || view.label;
-      this.stack.push(view);
+      // view.stackLabel = opt_label || view.stackLabel || view.label;
+      // this.stack.push(view);
       this.slideArea$().innerHTML = view.toHTML();
       var s = this.X.window.getComputedStyle(this.slideArea$());
       this.slideArea$().style.transition = '';
@@ -132,9 +132,9 @@ FOAModel({
       this.dimmer$().style.opacity = 0.4;
       this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
       this.slideArea$().style.left = '0';
-      view.stackView = this;
+      // view.stackView = this;
       view.initHTML();
-      this.propertyChange('stack', this.stack, this.stack);
+      // this.propertyChange('stack', this.stack, this.stack);
     },
 
     pushView: function (view, opt_label, opt_back) {
