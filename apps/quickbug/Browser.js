@@ -33,9 +33,7 @@ FOAModel({
   properties: [
     {
       name: 'X',
-      preSet: function(_, x) {
-        return X.sub({stack: this});
-      }
+      preSet: function(_, x) { return x.sub({stack: this}); }
     },
     'project',
     'previewID',
@@ -194,12 +192,6 @@ FOAModel({
       }
     },
     {
-      name: 'favouritesLink',
-      factory: function() {
-        return ActionLink.create({action: this.model_.FAVOURITES, value: SimpleValue.create(this)});
-      }
-    },
-    {
       name: 'legacyUrl',
       getter: function() {
         return this.url + '/issues/list?' + this.location.toURL(this);
@@ -325,8 +317,7 @@ FOAModel({
           document: this.X.document
         });
 
-        view.addChild(
-          StaticHTML.create({ content: '<b>Projects</b>' }));
+        view.addChild(StaticHTML.create({ content: '<b>Projects</b>' }));
         view.addActions(
           this.project.user.preferredProjects.map(function(p) {
             return Action.create({
@@ -344,8 +335,8 @@ FOAModel({
         view.addSeparator();
         view.addAction(this.model_.CONFIG_PROJECTS);
 
-        view.left = this.favouritesLink.$.offsetLeft;
-        view.top = this.favouritesLink.$.offsetTop + this.favouritesLink.$.offsetHeight;
+        view.left = this.favouritesView.$.offsetLeft;
+        view.top = this.favouritesView.$.offsetTop + this.favouritesView.$.offsetHeight;
         view.openAsMenu();
 
         var self = this;
@@ -574,9 +565,7 @@ FOAModel({
     }
   },
 
-  templates: [
-    { name: "toHTML" }
-  ]
+  templates: [ { name: "toHTML" } ]
 });
 
 
