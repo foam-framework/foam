@@ -440,6 +440,7 @@ FOAModel({
       this.location.addListener(this.onLocationUpdate);
 
       this.IssueDAO.listen(this.onDAOUpdate);
+      this.onDAOUpdate();
 
       this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
       this.onSyncManagerUpdate();
