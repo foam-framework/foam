@@ -4689,7 +4689,7 @@ FOAModel({
         }).bind(this));
       }
     },
-
+    focus: function() { this.$.firstElementChild.focus(); },
     valueToText: function(value) { return value; },
     textToValue: function(text) { return text; },
   },
