@@ -121,17 +121,16 @@ a {
 }
 
 .issue-edit .priority {
-  align-self: center;
   border-radius: 2px;
   color: white;
-  flex-grow: 0;
   font-size: 11px;
   font-weight: 700;
-  margin-left: 4px;
+  margin: 4px 24px 4px 0;
   margin-right: 24px;
   padding: 4px 0 0 0;
   text-align: center;
-  width: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .issue-edit .priority-0 {
@@ -199,11 +198,11 @@ a {
   font-size: 32px;
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding-left: 16px;
 }
 
 .issue-edit .owner, .issue-edit .cc {
-  padding: 12px 16px;
+  padding: 12px 0 12px 16px;
 }
 
 .issue-edit .owner-info {
@@ -224,7 +223,7 @@ a {
   color: #999;
   font-size: 14px;
   font-weight: 500;
-  padding: 0 0 24px 0;
+  padding: 0 0 16px 0;
 }
 
 .issue-edit .cc-header {
@@ -320,7 +319,7 @@ a {
   flex: 1 0 auto;
   font-family: Roboto;
   font-size: 16px;
-  margin-left: 20px;
+  margin-left: 0;
   text-align: left;
 }
 
@@ -366,7 +365,7 @@ a {
   color: rgba(0,0,0,.3);
   font-size: 16px;
   line-height: 32px;
-  margin-left: 18px;
+  margin-left: 0;
   flex: 1 0 auto;
 }
 
@@ -519,10 +518,11 @@ span[name=projectName] {
 }
 
 .status-icon {
-  opacity: 0.54;
-  width: 24px;
   height: 24px;
-  margin: 0 24px 0 2px;
+  margin: 0 24px 0 0;
+  opacity: 0.54;
+  padding: 2px;
+  width: 24px;
 }
 
 select[name=pri], select[name=status] {
