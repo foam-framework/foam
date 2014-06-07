@@ -74,6 +74,7 @@ FOAModel({
       defaultValueFn: function() { return this.project.url; }
     },
     {
+      // TODO: Not needed, just use ActionView in template
       name: 'userView',
       factory: function() {
         var view = ActionLink.create({
@@ -264,22 +265,18 @@ FOAModel({
 
   actions: [
     {
-      model_: 'Action',
       name:  'zoomIn',
       action: function() { this.zoom *= 1.1; }
     },
     {
-      model_: 'Action',
       name:  'zoomOut',
       action: function() { this.zoom *= 0.9; }
     },
     {
-      model_: 'Action',
       name:  'zoomReset',
       action: function() { this.zoom = 1.0; }
     },
     {
-      model_: 'Action',
       name:  'link',
       label: '',
       iconUrl: 'images/link.svg',
@@ -291,18 +288,15 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name:  'launchBrowser',
       action: function() { this.project.launchBrowser(); }
     },
     {
-      model_: 'Action',
       name:  'launchSync',
       label: 'Sync Status',
       action: function() { this.project.launchSync(); }
     },
     {
-      model_: 'Action',
       name: 'favourites',
       label: 'My Favorites &#x25BE;',
       action: function() {
@@ -348,30 +342,24 @@ FOAModel({
       }
     },
     {
-      model_: 'Action',
       name: 'findProjects',
       label: 'Find open source projects...',
       action: function() { this.openURL('https://code.google.com/hosting/'); }
     },
     {
-      model_: 'Action',
       name: 'createProject',
       label: 'Create a project...',
       action: function() { this.openURL('https://code.google.com/hosting/createProject'); }
     },
     {
-      model_: 'Action',
       name: 'configProjects',
       label: 'Configure projects...',
       action: function() { this.project.launchConfigProjects(); }
     },
     {
-      model_: 'Action',
       name: 'changeUser',
       help: 'Change the current user.',
-      labelFn: function() {
-        return View.getPrototype().strToHTML(this.project.user.email);
-      },
+      labelFn: function() { return View.getPrototype().strToHTML(this.project.user.email); },
       action: function() {
         var self = this;
         this.qbug.authAgent2.refresh(function() {
