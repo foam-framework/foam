@@ -264,6 +264,7 @@ FOAModel({
       action: function() {
         var view = this.X.FullScreenTextFieldView.create(this.model.CC);
         this.X.stack.pushView(view);
+        view.focus();
         var self = this;
         view.data$.addListener(function() {
           self.X.stack.back();
