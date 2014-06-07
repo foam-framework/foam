@@ -331,12 +331,12 @@ FOAModel({
             ]
           }
         </div>
-        <div class="separator"></div>
+        <div class="separator separator1"></div>
         <div class="owner">
           <div class="owner-header">Owner</div>
           <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
         </div>
-        <div class="separator"></div>
+        <div class="separator separator1"></div>
         <div class="cc">
           <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
           $$cc{model_: 'IssueEmailArrayView'}
@@ -429,7 +429,7 @@ FOAModel({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
-    <hr>
+    <div class="separator"></div>
     <div id="<%= this.id %>" class="comment-view">
        <span class="owner">
          <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>

@@ -191,7 +191,11 @@ a {
 
 .issue-edit .separator {
   border-top: 1px solid rgba(0,0,0,.1);
-  margin: 8px 0;
+  margin-bottom: 16px;
+}
+
+.issue-edit .separator1 {
+  margin-top: 8px;
 }
 
 .issue-edit .choice {
@@ -202,7 +206,7 @@ a {
 }
 
 .issue-edit .owner, .issue-edit .cc {
-  padding: 12px 0 12px 16px;
+  padding: 0 0 12px 16px;
 }
 
 .issue-edit .owner-info {
@@ -229,6 +233,8 @@ a {
 .issue-edit .cc-header {
   display: flex;
   align-items: center;
+  margin-top: -16px;
+  padding-bottom: 0px;
 }
 
 .issue-edit .cc-header .cc-header-text {
@@ -550,7 +556,6 @@ select[name=pri], select[name=status] {
   flex: 1;
   font-size: 14px;
   line-height: 20px;
-  margin-top: 18px;
   overflow: hidden;
 }
 
