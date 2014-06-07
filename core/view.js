@@ -325,11 +325,22 @@ FOAModel({
       return v;
     },
 
+    createActionView: function(action, opt_args) {
+      var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
+      var v = this.X[modelName].create({
+        action: action,
+        value: SimpleValue.create(this)}).copyFrom(opt_args);
+
+      this[action.name + 'View'] = v;
+
+      return v;
+    },
+
     createTemplateView: function(name, opt_args) {
-      o = this.model_[name];
+      var o = this.model_[name];
       return Action.isInstance(o) ?
-        this.X.ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
-        this.createView(o, opt_args);
+        this.createActionView(o, opt_args) :
+        this.createView(o, opt_args) ;
     },
 
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
@@ -2091,6 +2102,7 @@ FOAModel({
       name: 'right'
     },
     {
+      // TODO: This should just come from X instead
       name: 'document'
     },
     {
@@ -2105,7 +2117,6 @@ FOAModel({
     postButton: function() { return this.horizontal ? ' ' : '<br>'; },
 
     openAsMenu: function() {
-      // TODO
       var div = this.document.createElement('div');
       this.openedAsMenu = true;
 
@@ -2117,12 +2128,10 @@ FOAModel({
 
       var self = this;
       // Close window when clicked
-      div.onclick = function() {
-        self.close();
-      };
+      div.onclick = function() { self.close(); };
 
       div.onmouseout = function(e) {
-        if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
+        if ( e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div ) {
           self.close();
         }
       };
@@ -2132,9 +2141,7 @@ FOAModel({
     },
 
     close: function() {
-      if ( ! this.openedAsMenu ) {
-        return this.SUPER();
-      }
+      if ( ! this.openedAsMenu ) return this.SUPER();
 
       this.openedAsMenu = false;
       this.$.parentNode.remove();
