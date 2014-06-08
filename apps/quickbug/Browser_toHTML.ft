@@ -14,7 +14,7 @@
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>%%userView | $$favourites{model_: 'ActionLink'} | <%= syncLink %> | <%= browserLink %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | <%= syncLink %> | <%= browserLink %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>

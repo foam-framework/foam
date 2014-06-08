@@ -74,18 +74,6 @@ FOAModel({
       defaultValueFn: function() { return this.project.url; }
     },
     {
-      // TODO: Not needed, just use ActionView in template
-      name: 'userView',
-      factory: function() {
-        var view = ActionLink.create({
-          action: this.model_.CHANGE_USER,
-          value: SimpleValue.create(this),
-        });
-        view.className = view.className + ' tip-below';
-        return view;
-      }
-    },
-    {
       name: 'IssueDAO',
       scope: 'project',
       factory: function() {
