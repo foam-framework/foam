@@ -272,6 +272,10 @@ FOAModel({
     {
       name: 'className',
       defaultValue: ''
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: ''
     }
   ],
 
@@ -298,7 +302,7 @@ FOAModel({
     },
 
     cssClassAttr: function() {
-      return this.className ? ' class="' + this.className + '"' : '';
+      return this.className ? ' class="' + this.className + ' ' + this.extraClassName + '"' : '';
     },
 
     dynamicTag: function(tagName, f) {
