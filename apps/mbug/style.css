@@ -1,4 +1,23 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+// @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'), url(fonts/roboto/v11/2UX7WLTfW3W8TclTUvlFyQ.woff) format('woff');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url(fonts/roboto/v11/RxZJdnzeo3R5zSexge8UUT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url(fonts/roboto/v11/d-6IYplOFocCacKzxwXSOD8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
 
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
@@ -82,7 +101,7 @@ a {
   display: block;
   margin-top: 40;
   padding-left: 16px;
-  font-weight: 900;
+  font-weight: 500;
   font-size: 16px;
 }
 
