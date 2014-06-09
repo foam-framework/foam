@@ -163,7 +163,7 @@ FOAModel({
       transient: true
     },
     {
-      name: 'BookmarkDAO',
+      name: 'bookmarkDAO',
       factory: function() {
         return this.X.EasyDAO.create({
           model: Bookmark,

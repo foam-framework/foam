@@ -87,7 +87,7 @@ FOAModel({
     {
       name: 'bookmarkDAO',
       scope: 'project',
-      defaultValueFn: function() { return this.project.BookmarkDAO; }
+      defaultValueFn: function() { return this.project.bookmarkDAO; }
     },
     {
       name: 'filteredIssueDAO',
