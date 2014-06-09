@@ -15,11 +15,22 @@
  * limitations under the License.
  */
 FOAModel({
-  name:  'AbstractChoiceView',
+  name: 'AbstractChoiceView',
 
   extendsModel: 'View',
 
   properties: [
+    {
+      name: 'dao',
+      postSet: function(oldDAO, dao) {
+        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
+        dao.listen(this.onDAOUpdate);
+        this.onDAOUpdate();
+      }
+    },
+    {
+      name: 'labelProperty'
+    },
     {
       name: 'data',
       help: 'The value of the current choice (ie. [value, label] -> value).',
@@ -75,7 +86,7 @@ FOAModel({
           }
         }
 
-        if ( i === newValue.length ) this.choice = newValue[0];
+        if ( i === newValue.length ) this.data = newValue.length ? newValue[0][0] : undefined;
 
         if ( this.$ ) this.updateHTML();
       }
@@ -85,6 +96,20 @@ FOAModel({
       help: 'The index of the current choice.',
       postSet: function(_, i) {
         if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+//      isMerged: 160,
+      code: function() {
+        var self = this;
+        this.dao.select(MAP({f: function(o) {
+          console.log('choice: ', o);
+          return [o.id, self.labelProperty.f(o)];
+        }}, []))(function(map) { var choices = map.arg2; console.log('CHOICES: ', choices); self.choices = choices; });
       }
     }
   ],
@@ -316,7 +341,7 @@ FOAModel({
 
   properties: [
     {
-      name: 'showLabel'
+      name: 'label'
     },
     {
       name: 'iconUrl'
@@ -352,12 +377,12 @@ FOAModel({
           if ( view.$ ) view.$.remove();
         }.bind(this)));
 
-        var pos = findPageXY(this.$.querySelector('img'));
+        var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
         var parentNode = view.$.parentNode;
 
-        view.$.style.top = pos[1];
+        view.$.style.top = pos[1]-2;
         view.$.style.left = pos[0]-toNum(s.width)+30;
         view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
@@ -384,13 +409,15 @@ FOAModel({
         this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
       }
 
+      out += '<span class="action">';
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
-      if ( this.showLabel ) {
+      if ( this.label ) {
         out += this.label;
       }
+      out += '</span>';
 
       return out;
     },
