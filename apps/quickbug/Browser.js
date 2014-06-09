@@ -409,11 +409,11 @@ FOAModel({
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
-      this.X.document.addEventListener('mousemove', function(evt) {
+      this.X.document.addEventListener('mousemove', (function(evt) {
         if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
           this.preview(null);
         }
-      }.bind(this));
+      }).bind(this));
 
       this.searchChoice.choice = this.searchChoice.choices[1];
 
