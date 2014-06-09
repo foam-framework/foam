@@ -1,0 +1,315 @@
+Intro
+
+FOAM/Core	- base meta-programming system
+FOAM/Events	- events, pub/sub, reactive programming
+FOAM/Animate	- animation
+FOAM/Views	- HTML UI components
+FOAM/DAO	- Data Access Objects, persistence framework
+FOAM/ASync	- async support
+FOAM/Parse	- parsing support
+FOAM/J		- Java support
+FOAM/Modeller	- Modeller / IDE
+FOAM/IO		- IO support
+
+
+Framework
+	Cross-Platform (intent, but currently only JS)
+
+	MVC
+		Main Model types:
+		     Modelled Objects
+		     Value
+		     DAO
+		Views
+			View	-- DOM Views
+			CView	-- Canvas Views
+		Reusable DOM Controller, which is Modelled  
+
+	Meta-Programming
+		Mode-Driven: based on high-level data-Model definitions
+		Can use either/or:
+		    Data-Driven at runtime based on rich data-Model
+		    Code-Generation
+
+	Reactive Programming
+		Manages dynamic value bindings and propogates updates when
+		dependent values change.  Like cells in a spreadsheet.
+		Eliminates the need for many explicit event listeners. 
+
+	Animation
+		Just reactive-programming as a function of time. 
+
+
+Models
+-------
+
+The term 'Model' is overloaded in FOAM, because it has both MVC Models and MDD Models.
+
+create(opt_args)
+  calls
+    obj.copyFrom(opt_args)
+    obj.init(opt_args);
+
+
+getPrototype()	returns JS Prototype/Class
+isInstance(obj)	returns true iff obj is instance of model
+
+
+PropertyChangeSupport
+---------------------
+extends EventService
+
+
+EventService
+------------
+subs_				 subscriptions
+oneTime(listener)		 decorate a listener to be one-time
+consoleLog(listener)		 decorate a listener to log to console
+merged(listener, opt_delay)	 decorate listener to merge events
+async(listener)	 		 decorate listener to make async
+delay(delay, listener)		 decorate to add delay
+hasListeners(topic)		 TODO
+publish(topic)			 publish arguments to topic
+publishAsync(topic)		 publish arguments asynchronously
+publishLazy(topic, fn)		 publish fn result if listeners
+subscribe(topic, listener)
+unsubscribe(topic, listener)	 TODO
+unsubscribeAll	   		 unsubscribe all registered listeners
+
+
+Objects
+-------
+extend PropertyChangeSupport
+propertyTopic(propertyName)                     creates topic for property events
+propertyChange(property, oldValue, newValue)    fire property change event
+globalChange()		                        one or more unspecified properties changed
+addListener(listener)
+removeListener(listener)
+addPropertyListener(property, listener)
+removePropertyListener(property, listener)	TODO
+propertyValue(propertyName)	                create a Value for specified property
+
+
+model_			object's Model
+instance_		map of instance property values
+__proto__		prototype
+name_			name of object's Model
+TYPE			Model name (used for testing, remove)
+
+copyFrom(map)		calls all setters defined in map
+toString()
+hasOwnProperty(name)
+clearProperty(name)	reverts to default value or defaultValueFn
+getProperty(name)	returns Property
+clone()			returns a shallow copy
+deepClone()		returns a deepClone
+output(out)		outputs object in JSON format
+toJSON(): 		returns JSON string representation of obj
+toXML(): 		returns XML string representation of obj
+write(document): 	writes DetailView with Action Border to document
+
+
+
+Properties
+----------
+defaultValueFn
+	function used to provide a value for a property whose value hasn't
+	been set
+
+factory
+	used when an object is init()'ialized to create the initial value
+
+
+
+Function
+	o(fn)	function composition
+
+Value
+	get()
+	set()
+	addListener(listener)
+	removeListener(listener)
+
+
+Async Functions
+      amemo()	      - memoize an afunc	
+      aseq()	      - execute afunc's in sequence, passing results from one to next
+      apar()	      - execute afunc's in parallel, passing joined results to continuation
+      ao()	      - async compose, like ao(f1,f2,f3) = f1 o f2 o f3 = f1(f2(f3()))
+      		        like aseq() but in reverse order
+      alog()          - log message to console
+      asleep()        - sleep for a specified duration
+      atimeout()      - perform an action if an afunc times-out
+      asynchronized() - like Java's synchronized block (binary semaphore)
+      anop()          - no-operation
+      atime()         - time/benchmark an afunc's execution
+      afuture()       - a future value
+      ayield()	      - yield
+      aconstant()     - always returns a constant
+
+Function.ao()	  - Function method version: ex f1.ao(f2)
+Function.aseq()	  - Function method version: ex f1.aseq(f2)
+
+
+MLang
+
+First-Class modelled Predicates and Accumulators.
+
+Function	Arity
+========        =====
+TRUE		0
+FALSE		0
+SUM		1
+MIN		1
+MAX		1
+COUNT		0
+SEQ		N
+GROUP_BY	2
+GRID_BY		3
+AND		N
+OR		N
+NOT		1
+EQ		2
+NEQ		2
+LT		2
+GT		2
+LTE		2
+GTE		2
+CONTAINS	2
+CONTAINS_IC	2
+CONCAT		N
+
+
+Data Access Object (DAO)
+
+Data persistance abstraction.
+
+Methods:
+	put(obj, opt_sink)
+	remove(object, sink)
+
+	find(query, sink)
+
+	select(sink)
+        removeAll(sink)
+
+	pipe(sink)
+	listen(sink)
+	unlisten(sink)
+
+	where(query) -> DAO
+	limit(count) -> DAO
+	skip(count) -> DAO
+	orderBy(...comparators) -> DAO
+
+
+Sink Interface
+     put(obj, opt_sink, opt_flow-control)
+     remove()
+     error()
+     eof()
+
+
+DAO Implementations
+
+Arrays		- Normal arrays ([]) support the full DAO interface.
+IndexedDBDAO	- Adapts the IndexedDB API.
+StorageDAO	- Adapts the Web Storage API.
+JSONFileDAO	- Stores data in JSON format in flat-files.
+MDAO		- Very efficient query optimizing DAO implementation.
+
+
+DAO Decorators
+LoggingDAO(opt_logger, delegate)
+TimingDAO(name, delegate)
+CachingDAO(cache, source) 
+
+
+Model Properties
+name
+label
+extendsModel
+plural
+version
+ids
+tableProperties
+
+
+Property Properties
+name
+label
+type
+mode
+subType
+units
+required
+hidden
+displayWidth
+displayHeight
+view
+defaultValue
+defaultValueFn
+factory
+getter
+preSet
+postSet
+setter
+tableFormatter
+summaryFormatter
+tableWidth
+help
+
+
+Feature Types
+Model		A collection of features.  Like a class.
+Property	A data element.  Like an instance variable.
+Method		A method.
+Listener	A method which can be used like a function because it is pre-bound to 'this'.
+Template	A method which is defined as a JSP-like template.
+Action		A method with GUI support, ie. label, help, isEnabled, etc.
+Topic		pub/sub name, reserved for future use
+UnitTest	A simple unit test.
+Issue		Issue or requirement information.
+
+
+Template Syntax
+ <% code %>: code inserted into template, but nothing implicitly output
+ <%= comma-separated-values %>: all values are appended to template output
+ \<new-line>: ignored
+
+ 
+DOM Views
+  extend AbstractView2 ('2' to be removed when all code ported from old version)
+
+  Properties:
+    parent	Parent View.
+    children[]	Child Views.
+    id		DOM Element ID.
+
+  Lifecycle
+    toHTML()	Returns HTML for view.
+    initHTML()	Connects listeners and performs other initialization.
+    		Can be implemented as either a method or template.
+
+
+Currently Supported Platforms
+	  Chrome Browser
+	  Chrome Apps V2
+	  Node.js (preliminary)
+
+
+Advanced Features
+=================
+
+Parser Framework
+       Write context-free parsers using parse combinators.
+       Provides similar performance to regex, but is much more powerful and easier
+       to read and write.
+
+Web Workers
+    Access a DAO in another WebWorker (thread).
+
+PartitionDAO
+    Partition data across multiple DAO's.
+
+Reciprocol Search		 	 

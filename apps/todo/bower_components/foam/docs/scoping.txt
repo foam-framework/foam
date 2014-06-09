@@ -1,0 +1,283 @@
+Problem with JS Package Systems
+
+They assume that requirements can be fulfilled synchronously, but
+since most JS libraries are asynchronous, this greatly limits their
+options for fulfilling dependency requests.
+
+The solution to this problem is to use an asynchronous API for
+requirements acquisition.  This allows for dependencies to be lazily
+loaded from databases or from the network.  This essentially provides
+the equivalent of Java's powerful "class loader" system.
+
+
+
+Problem with Dependency-Injection
+
+A composite object should be loosely coupled with its sub-components
+so that they can be replaced (or decorated) without the knowledge (or
+alteration) of the parent.  However, if a new sub-component has new
+dependencies that were not explicit dependencies of the parent
+component, then the parent component has no means of injecting the
+unknown value.
+  
+The solution is to use store dependencies in hierarchical context
+objects.  Contexts contain all available exported services and are
+passed down from a component to its sub-components.  This allows a
+sub-component to access dependencies from the Context which were not
+dependencies of the parent.
+
+Ex. Suppose that you have an AddressView with a 'state' field which
+uses a 'TextFieldView'.  If some user of this Model wants to replace
+the default sub-view with a StateView and that View has a dependency
+on the StateDAO, then this would break dependency-injection because
+the AddressView was not dependent on the StateDAO.  With Contexts, the
+StateDAO dependency can flow through the AddressView without it being
+aware or having to change its interface to accommodate the new and
+improved StateView. 
+
+
+
+Explicit Scopes
+
+The Property Model will be extended to allow for properties to
+explicitly state their 'scope'.  A scope indicates where the value for
+that property is to be stored.  Most OO languages have two scopes:
+instance and class/static variables.  There is also the 'global'
+scope, but it is usually manipulated through a separate system.
+
+
+Ex.
+
+properties: [
+  // A standard 'instance' variable
+  {
+    name: 'instanceVar',
+    scope: 'instance_'    // Default, not needed
+  },
+
+  // A standard 'static' / 'class' variable
+  {
+    name: 'staticVar',
+    scope: 'static_'
+  },
+
+  // A dependency inherited from a parent Object
+  {
+    name: 'parent'
+  },
+  {
+    name: 'fromParent',
+    scope: 'parent'
+  },
+
+  // A facade for a property actually stored in a child component
+  {
+    name: 'child'
+    factory: function() { return Child.create(); }
+  },
+  { 
+    name: 'fromChild',
+    scope: 'child'
+  },
+
+  // A property taken from the supplied Context.
+  { 
+    name: 'fromContext',
+    scope: 'context_'
+  }
+]
+
+Standard Scopes
+  * instance_: corresponds to 'instance' variables
+  * static_: corresponds to 'static' or 'class' variables
+  * default_: corresponds to default-values, if specified in the model
+
+No Globals
+
+The use of global variables inhibits re-usability and
+re-composability.  Once you use a global, you restrict yourself to
+only having a single instance of that item and whatever else depends
+on it.
+
+The software industry has long hoped to establish a level of software
+re-use through componentization, much like the electronics and other
+industries. Unfortunately software components haven't succeeded as
+expected. The reason for this failure is the simple static or global
+variable. Only in software do individual components have a “magical”
+connection to this shared pool of global or static information or
+services. In all other fields, components, be it CPU or carburetor,
+only have access to what they’re explicitly connected to. Because of
+this limitation they are guaranteed to be re-usable and
+re-composable. I can use a given CPU in a computer or a DVD player and
+I can put two tail pipes on a car if I want. Software on the other
+hand has all sorts of artificial restrictions. Try to instantiate two
+instances of your favourite ORB (because you want to be configured
+with different hostnames of socket layers on different networks for
+example), or database driver or logging package. Even having one part
+of your application use a different console.log than the other can be
+a problem. Software components which rely on globals being one way or
+another are potentially excluding other software from running
+(especially another instance of themselves). Globals/Statics are
+holding back the entire software industry (or rather, the people who
+use them are).
+
+
+External Dependencies
+
+External dependencies are added as scoped properties and then treated
+as regular properties of the object.
+
+
+Internal Facades
+
+Internal properties of sub-components can be exported as facade-properties.
+
+Ex. Consider a Dragon Model which has an Eyes sub-model.  To set the
+eye colour, users could call dragon.eyes.color = 'blue', but this
+violates "The Law of Demeter".  Instead, an 'eyeColor' property could
+be added to the Dragon model with the scope of 'eyes' (and the alias:
+'color').  Then, users would call dragon.eyeColor = 'blue' instead.
+This allows Models to hide their internal structure from external
+users.
+
+
+Contexts
+
+Contexts are objects which contain bindings.  They replace the global namespace.
+When creating an object, unless explicitly provided, an object is
+supplied with the Context of creating object.
+
+Ex.
+
+this.Address.create();
+
+is the same as
+
+this.Address.create({ctx_: this.ctx_});
+
+Every Object has a ctx_ property.
+
+
+Factories
+
+Other Models will be accessed as scoped properties rather than from
+the global namespace.  Ex. instead of Person.create() you will do
+this.Person.create().
+
+This allows for Person, or just the Person.create() factory to be
+overwritten for individual Models.  This allows for Model or Model
+object creation to be specified 
+
+
+FOAM.arequire()
+
+Ex.
+FOAM.arequire('Browser')(function (Browser) { 
+  var b = Browser.create();
+  b.launch();
+  ...
+});
+
+ 
+FOAM.acreate()
+
+FOAM.acreate('Browser')(function (b) {
+  b.launch();
+  ...
+});
+
+
+Advantages
+
+1. Lazy-Loading
+
+Models can be loaded lazily from local storage or from the network.
+This allows for program extensibility and saves memory by not loading
+code until it is needed.
+
+
+2. Testability
+
+Through the use of explicit scopes, all FOAM objects will work as
+though all of their dependencies are their own properties (which, in a
+way, they are).  This means that objects can be tested with far fewer
+mock objects.
+
+
+Ex. See apps/crbug/Project.js/Browser.js  Browser depends on Project
+for all of its dependencies, but they are still properties of Browser,
+meaning that Browser can be tested without creating a mock (or real)
+Project.
+
+
+3. eval() for ChromeApps
+
+The asynchronous loading of Models allows for the use of aeval()
+(asynchronous eval) for their loading.
+
+
+4. Client-Side Templates
+
+The asynchronous loading of Models allows for templates to be compiled
+on the client-side in ChromeApps.  This decreases application size and
+simplifies the build process.
+
+
+5. VM's
+
+It will be possible to load multiple instances, or even versions, of
+FOAM into the same JS engine at the same time.  This will be useful
+when developing FOAM in FOAM.  Also, it will be possible to load
+multiple instances, or versions, of a FOAM application at the same
+time.  This would be very useful for migrating data between versions
+or for performing regression testing.
+
+
+6. Code Mobility
+
+With all dependencies explicitly managed, we should be able to migrate
+code across devices and proxy dependencies back to the original host.
+
+
+7. Instrumentation
+
+With all dependencies explicitly managed, we will be able to decorate
+the Context and install instrumenting decorators between all component
+dependencies.  This will allow for superior profiling and
+visualisation of running systems.
+
+
+
+Design
+
+Property Model.requires
+         Allows Model to explicitly list dependent Models
+         ex. requires: ['Project', 'Browser', 'CIssue']
+         Implicit requirements are also gathered from the types of properties.
+
+Method   Model.arequire():
+         Allows a Model to perform additional asynchronous operations then it is being required.
+         The default implementation arequire()'s the Model's dependencies.
+
+Function aRequireFOAM(opt_params)
+         Load FOAM.  Can specify parameters for things like FOAM version or source URL.
+         Asynchronously returns a FOAM object.
+         The only global.
+
+Method FOAM.arequire()
+         Asynchronously require a FOAM Model.
+
+Method FOAM.acreate()
+         Asynchronously create an instance from a FOAM Model.
+
+Property Property.readScope
+         Read scope for a property.  Defaults to instance_ || default_;
+
+Property Property.writeScope
+         Write scope for a property. Defaults to instance_;
+
+Property Property.scope
+         Short-from for setting both the readScope and writeScope.
+
+Property Property.alias
+         Alias if property is named differently in the source scope.

@@ -1,0 +1,42 @@
+{
+  "name": "foam",
+  "version": "0.1.0",
+  "homepage": "https://github.com/foam-framework/foam",
+  "authors": [
+    "Kevin Greer <kgr@google.com>",
+    "Adam Van Ymeren <adamvy@google.com>",
+    "Braden Shepherdson <braden@google.com>"
+  ],
+  "description": "Reactive, deeply MVC, metaprogramming Javascript framework. This is an alpha release! FOAM is evolving rapidly.",
+  "main": "build/foam.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "reactive",
+    "mvc",
+    "web"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "apps",
+    "core",
+    "demos",
+    "java",
+    "node",
+    "node_modules",
+    "bower_components",
+    "tools",
+    "tests"
+  ],
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.0",
+    "commit": "9ff371919b79a8cdc768ded9e0004e9926ca52c8"
+  },
+  "_source": "git://github.com/foam-framework/foam.git",
+  "_target": "~0.1",
+  "_originalSource": "foam"
+}
