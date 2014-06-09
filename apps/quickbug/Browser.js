@@ -85,6 +85,11 @@ FOAModel({
       }
     },
     {
+      name: 'bookmarkDAO',
+      scope: 'project',
+      defaultValueFn: function() { return this.project.BookmarkDAO; }
+    },
+    {
       name: 'filteredIssueDAO',
       defaultValueFn: function() { return this.IssueDAO; },
       postSet: function(_, dao) {
@@ -252,6 +257,7 @@ FOAModel({
   ],
 
   actions: [
+    // TODO: register keyboard bindings for actions
     {
       name:  'zoomIn',
       action: function() { this.zoom *= 1.1; }
@@ -343,6 +349,15 @@ FOAModel({
       name: 'configProjects',
       label: 'Configure projects...',
       action: function() { this.project.launchConfigProjects(); }
+    },
+    {
+      name: 'addBookmark',
+      action: function() {
+        this.bookmarkDAO.put(Bookmark.create({
+          title: 'Bookmark ' + Date.now(),
+          url: this.legacyUrl // or, could be memento
+        }));
+      }
     },
     {
       name: 'changeUser',

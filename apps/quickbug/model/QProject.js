@@ -53,25 +53,21 @@ FOAModel({
       name: 'LabelDAO',
       help: 'DAO of known labels.',
       factory: function() {
-        var dao = MDAO.create({ model: QIssueLabel });
+        var dao = MDAO.create({model: QIssueLabel});
         this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
       },
-      postSet: function(_, value)  {
-        this.X.LabelDAO = value;
-      }
+      postSet: function(_, value) { this.X.LabelDAO = value; }
     },
     {
       name: 'StatusDAO',
       help: 'DAO of known statuses.',
       factory: function() {
-        var dao = MDAO.create({ model: QIssueStatus });
+        var dao = MDAO.create({model: QIssueStatus});
         this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
       },
-      postSet: function(_, value)  {
-        this.X.StatusDAO = value;
-      }
+      postSet: function(_, value) { this.X.StatusDAO = value; }
     },
     {
       name: 'PersonDAO',
@@ -163,6 +159,19 @@ FOAModel({
         });
 
         return dao;
+      },
+      transient: true
+    },
+    {
+      name: 'BookmarkDAO',
+      factory: function() {
+        return this.X.EasyDAO.create({
+          model: Bookmark,
+          name: this.projectName + '_' + Bookmark.plural,
+          cache: true,
+          seqNo: true,
+          seqProperty: Bookmark.INDEX
+        });
       },
       transient: true
     },
