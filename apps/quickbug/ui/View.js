@@ -456,7 +456,7 @@ FOAModel({
         if ( ! this.$ ) return;
 
         var i = 0;
-        while ( this.inputs.length < this.softData.length ) {
+        while ( this.inputs.length < Math.max(6, this.softData.length) ) {
           var views = [this.field(),
                        this.field(),
                        this.field()];
@@ -464,9 +464,9 @@ FOAModel({
           this.addChildren.apply(this, views);
           this.inputs = this.inputs.concat(views);
 
-          views[0].data = this.softData[i++];
-          views[1].data = this.softData[i++];
-          views[2].data = this.softData[i++];
+          views[0].data = i < this.softData.length ? this.softData[i++] : '';
+          views[1].data = i < this.softData.length ? this.softData[i++] : '';
+          views[2].data = i < this.softData.length ? this.softData[i++] : '';
 
           views[0].data$.addListener(this.onInput);
           views[1].data$.addListener(this.onInput);
