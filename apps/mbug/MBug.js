@@ -125,7 +125,7 @@ FOAModel({
                 view: DAOListView.create({
                   mode: 'read-only',
                   rowView: 'IssueCitationView',
-                  chunkSize: 100
+                  chunkSize: 15
                 })
               }),
 
@@ -194,7 +194,6 @@ FOAModel({
         function() {
 //          console.log('Query: ', (QueryParser.parseString(self.q) || TRUE).toMQL());
           self.filteredDAO = self.issueDAO
-            .limit(15)
             .where(QueryParser.parseString(self.q) || TRUE)
             .orderBy(self.sortOrder);
         }
