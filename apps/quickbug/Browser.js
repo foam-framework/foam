@@ -90,6 +90,18 @@ FOAModel({
       defaultValueFn: function() { return this.project.bookmarkDAO; }
     },
     {
+      name: 'bookmarksMenu',
+      factory: function() {
+        debugger;
+        var v = this.X.PopupChoiceView.create({
+          dao: this.bookmarkDAO,
+          labelProperty: Bookmark.TITLE,
+          label: 'Bookmarks'
+        });
+        return v;
+      }
+    },
+    {
       name: 'filteredIssueDAO',
       defaultValueFn: function() { return this.IssueDAO; },
       postSet: function(_, dao) {
@@ -267,11 +279,11 @@ FOAModel({
       action: function() { this.zoom *= 0.9; }
     },
     {
-      name:  'zoomReset',
+      name: 'zoomReset',
       action: function() { this.zoom = 1.0; }
     },
     {
-      name:  'link',
+      name: 'link',
       label: '',
       iconUrl: 'images/link.svg',
       help:  'Link to code.google.com', // disable until tooltips work better
@@ -282,7 +294,7 @@ FOAModel({
       }
     },
     {
-      name:  'launchBrowser',
+      name: 'launchBrowser',
       action: function() { this.project.launchBrowser(); }
     },
     {
