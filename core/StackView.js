@@ -124,17 +124,21 @@ FOAModel({
       this.setPreview(null);
       // view.stackLabel = opt_label || view.stackLabel || view.label;
       // this.stack.push(view);
-      this.slideArea$().innerHTML = view.toHTML();
+      this.slideArea$().style.left = -2000;
       var s = this.X.window.getComputedStyle(this.slideArea$());
+      this.slideArea$().innerHTML = view.toHTML();
+      view.initHTML();
       this.slideArea$().style.transition = '';
       this.slideArea$().style.left = -toNum(s.width);
-      this.dimmer$().style.zIndex = 3;
-      this.dimmer$().style.opacity = 0.4;
-      this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
-      this.slideArea$().style.left = '0';
-      // view.stackView = this;
-      view.initHTML();
-      // this.propertyChange('stack', this.stack, this.stack);
+
+      setTimeout(function() {
+        this.dimmer$().style.zIndex = 3;
+        this.dimmer$().style.opacity = 0.4;
+        this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
+        this.slideArea$().style.left = '0';
+        // view.stackView = this;
+        // this.propertyChange('stack', this.stack, this.stack);
+      }.bind(this), 10);
     },
 
     pushView: function (view, opt_label, opt_back) {
