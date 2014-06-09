@@ -202,7 +202,11 @@ FOAModel({
     }
   },
   templates: [
+    // Pre-load project view images to speed up load time.
+    // However, the first load is still delayed while it downloads a Roboto font related file.
     function toDetailHTML() {/*
+    <img style="display:none" src="images/defaultlogo.png">
+    <img style="display:none" src="images/projectBackground.png">
     <div id="<%= this.setClass('searchMode', function() { return self.data.searchMode; }, this.id) %>"  class="mbug">
        <div class="header">
          <span class="default">
