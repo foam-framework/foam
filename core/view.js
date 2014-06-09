@@ -4339,6 +4339,10 @@ FOAModel({
     { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
     'selection',
     {
+      name: 'scrollContainer',
+      help: 'Containing element that is responsible for scrolling.'
+    },
+    {
       name: 'chunkSize',
       defaultValue: 0,
       help: 'Number of entries to load in each infinite scroll chunk.'
@@ -4368,6 +4372,20 @@ FOAModel({
 
     initHTML: function() {
       // this.SUPER();
+
+      // If we're doing infinite scrolling, we need to find the container.
+      // Either an overflow: scroll element or the window.
+      // We keep following the parentElement chain until we get null.
+      if ( this.chunkSize > 0 ) {
+        var e = this.$;
+        while ( e ) {
+          if ( window.getComputedStyle(e).overflow === 'scroll' ) break;
+          e = e.parentElement;
+        }
+        this.scrollContainer = e || window;
+        e.addEventListener('scroll', this.onScroll, false);
+      }
+
       if ( ! this.hidden ) this.updateHTML();
     },
 
@@ -4420,6 +4438,16 @@ FOAModel({
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() { this.updateHTML(); }
+    },
+    {
+      name: 'onScroll',
+      code: function() {
+        var e = this.scrollContainer;
+        if ( this.chunkSize > 0 && e.scrollTop + e.offsetHeight >= e.scrollHeight ) {
+          this.chunksLoaded++;
+          this.updateHTML();
+        }
+      }
     }
   ]
 });
