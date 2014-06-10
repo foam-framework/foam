@@ -92,11 +92,19 @@ FOAModel({
     {
       name: 'bookmarksMenu',
       factory: function() {
-        debugger;
+        var self = this;
         var v = this.X.PopupChoiceView.create({
+          valueProperty: Bookmark.URL,
+//          labelProperty: Bookmark.TITLE,
+          labelProperty: Bookmark.URL,
           dao: this.bookmarkDAO,
-          labelProperty: Bookmark.TITLE,
-          label: 'Bookmarks'
+          label: 'Bookmarks',
+          extraClassName: 'bookmarks-menu'
+        });
+        v.data$.addListener(function() {
+//          self.location.q = v.data;
+          self.memento = v.data;
+          console.log('********* Bookmark: ', v.data);
         });
         return v;
       }
@@ -367,7 +375,8 @@ FOAModel({
       action: function() {
         this.bookmarkDAO.put(Bookmark.create({
           title: 'Bookmark ' + Date.now(),
-          url: this.legacyUrl // or, could be memento
+//          url: this.legacyUrl // or, could be memento
+          url: this.memento // or, could be memento
         }));
       }
     },

@@ -171,7 +171,7 @@ FOAModel({
           cache: true,
           seqNo: true,
           seqProperty: Bookmark.INDEX
-        });
+        }).orderBy(Bookmark.INDEX);
       },
       transient: true
     },

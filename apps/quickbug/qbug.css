@@ -390,3 +390,9 @@ input[name="labels"] {
 .stack {
   overflow: auto;
 }
+
+.bookmarks-menu {
+  color: blue;
+  background: white;
+  text-decoration: underline;
+}
