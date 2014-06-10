@@ -169,6 +169,9 @@ FOAModel({
   ],
 
   methods: {
+    choiceToHTML: function(id, choice) {
+      return '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
+    },
     toInnerHTML: function() {
       var out = "";
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -187,7 +190,7 @@ FOAModel({
           function(choice) { return this.choice == choice; }.bind(this, choice),
           id);
 
-        out += '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
+        out += this.choiceToHTML(id, choice);
       }
       return out;
     }
@@ -373,7 +376,7 @@ FOAModel({
     {
       name: 'popup',
       code: function(e) {
-        var view = ChoiceListView.create({
+        var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
           choices: this.choices
