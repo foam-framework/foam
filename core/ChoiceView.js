@@ -88,17 +88,17 @@ FOAModel({
       }
     },
     {
+      model_: 'FunctionProperty',
+      name: 'objToChoice',
+      help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
+    },
+    {
       name: 'dao',
       postSet: function(oldDAO, dao) {
         if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
         dao.listen(this.onDAOUpdate);
         this.onDAOUpdate();
       }
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'objToChoice',
-      help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     }
   ],
 
@@ -107,11 +107,9 @@ FOAModel({
       name: 'onDAOUpdate',
       isMerged: 100,
       code: function() {
-        var self = this;
-        this.dao.select(MAP(this.objToChoice, []))(function(map) {
-          var choices = map.arg2;
-          self.choices = choices;
-        });
+        this.dao.select(MAP(this.objToChoice))(function(map) {
+          this.choices = map.arg2;
+        }.bind(this));
       }
     }
   ],
