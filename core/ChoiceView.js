@@ -29,6 +29,10 @@ FOAModel({
       }
     },
     {
+      name: 'valueProperty',
+      defaultValue: { f: function(o) { return o.id; } }
+    },
+    {
       name: 'labelProperty'
     },
     {
@@ -106,10 +110,15 @@ FOAModel({
 //      isMerged: 160,
       code: function() {
         var self = this;
-        this.dao.select(MAP({f: function(o) {
-          console.log('choice: ', o);
-          return [o.id, self.labelProperty.f(o)];
-        }}, []))(function(map) { var choices = map.arg2; console.log('CHOICES: ', choices); self.choices = choices; });
+        this.dao.select(MAP(
+          {f: function(o) {
+            return [ self.valueProperty.f(o), self.labelProperty.f(o)];
+          }},
+          []
+        ))(function(map) {
+          var choices = map.arg2;
+          self.choices = choices;
+        });
       }
     }
   ],
