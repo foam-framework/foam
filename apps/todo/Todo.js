@@ -1,12 +1,14 @@
 (function () {
 	'use strict';
 	// Necessary JSHint options. FOAModel is not a constructor, just a global function.
+	// (It creates a trampoline that returns quickly, and will build the model when first used.)
 	/* jshint newcap: false */
 	FOAModel({
 		name: 'TodoDAO',
 		extendsModel: 'ProxyDAO',
 		methods: {
 			put: function(x, s) {
+				// If the user tried to put an empty text, remove the entry instead.
 				if (x.text.trim() === '') this.remove(x.id, { remove: s && s.put });
 				else this.SUPER(x, s);
 			}
@@ -19,7 +21,10 @@
 			'id',
 			{ name: 'completed', model_: 'BooleanProperty' },
 			{ name: 'text',
-				postSet: function(_, nu) { if (nu != nu.trim()) this.text = nu.trim(); }
+				postSet: function (_, nu) {
+					// Trim whitespace on new todo. Need the if to prevent an infinite loop of updates.
+					if (nu != nu.trim()) this.text = nu.trim();
+				}
 			}
 		],
 		templates: [ function toDetailHTML() {/*
@@ -47,6 +52,7 @@
 			{
 				name: 'input',
 				setter: function(text) {
+					// This is a fake property that adds the todo when its value gets saved.
 					if (!text) return;
 					this.dao.put(Todo.create({text: text}));
 					this.propertyChange('input', text, '');
@@ -56,7 +62,9 @@
 			{ name: 'dao' },
 			{ name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
 			{ name: 'completedCount', model_: 'IntProperty' },
-			{ name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; } },
+			{ name: 'activeCount', model_: 'IntProperty', postSet: function(_, c) {
+					this.toggle = !c;
+			}},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {
 				if ( n == this.activeCount > 0 ) {
 					this.dao.update(SET(Todo.COMPLETED, n));
