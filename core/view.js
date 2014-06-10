@@ -3133,8 +3133,24 @@ FOAModel({
       this.addChild(this.autocompleteView);
 
       this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-        this.autocompleteView.close();
+        var start = self.$.selectionStart;
+        var value = self.$.value;
+
+        if ( start === self.$.selectionEnd ) {
+          var values = value.split(',');
+          var i = 0;
+          var sum = 0;
+
+          while ( sum + values[i].length < start ) {
+            sum += values[i].length + 1;
+            i++;
+          }
+
+          values[i] = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+          this.data = values.join(',');
+          var selection = sum + values[i].length;
+          this.$.setSelectionRange(selection, selection);
+        }
       }).bind(this));
 
       var self = this;
@@ -3148,7 +3164,7 @@ FOAModel({
           var sum = 0;
 
           while ( sum + values[i].length < start ) {
-            sum += values[i].length;
+            sum += values[i].length + 1;
             i++;
           }
           completer.autocomplete(values[i]);
@@ -3164,7 +3180,7 @@ FOAModel({
           var sum = 0;
 
           while ( sum + values[i].length < start ) {
-            sum += values[i].length;
+            sum += values[i].length + 1;
             i++;
           }
           completer.autocomplete(values[i]);
