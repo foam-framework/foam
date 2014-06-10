@@ -101,7 +101,6 @@ FOAModel({
               choiceToHTML: function(id, choice) {
                 var id2 = this.nextID();
                 this.on('click', function() {
-                  console.log('********* DELETE: ', choice[0]);
                   self.bookmarkDAO.remove(choice[2]);
                 }, id2);
                 return '<li class="choice"><span id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
@@ -110,13 +109,12 @@ FOAModel({
           })
         }); 
         var v = Y.PopupChoiceView.create({
-          objToChoice: function(issue) { return [issue.url, issue.url/*title*/, issue]; },
+          objToChoice: function(b) { return [b.url, b.title, b]; },
           dao: this.bookmarkDAO,
           label: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
         });
         v.data$.addListener(function() {
-//          self.location.q = v.data;
           self.memento = v.data;
           console.log('********* Bookmark: ', v.data);
         });
@@ -390,11 +388,16 @@ FOAModel({
       label: '',
       help: 'Create Bookmark',
       action: function() {
-        this.bookmarkDAO.put(Bookmark.create({
-          title: 'Bookmark ' + Date.now(),
-//          url: this.legacyUrl // or, could be memento
-          url: this.memento // or, could be memento
-        }));
+        var anchor = this.addBookmarkView.$; 
+        var view   = AddBookmarkDialog.create({
+          dao: this.bookmarkDAO,
+          data: Bookmark.create({url: this.memento})
+        });
+
+        anchor.insertAdjacentHTML('beforebegin', view.toHTML());
+        view.$.style.left = 200; // x + anchor.offsetLeft;
+        view.$.style.top  = 200; // y + anchor.offsetTop;
+        view.initHTML();
       }
     },
     {
@@ -474,6 +477,7 @@ FOAModel({
       this.IssueDAO.find(id, {
         put: function(obj) {
           apar(
+            arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
