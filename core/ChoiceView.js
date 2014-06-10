@@ -21,14 +21,6 @@ FOAModel({
 
   properties: [
     {
-      name: 'dao',
-      postSet: function(oldDAO, dao) {
-        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
-        dao.listen(this.onDAOUpdate);
-        this.onDAOUpdate();
-      }
-    },
-    {
       name: 'valueProperty',
       defaultValue: { f: function(o) { return o.id; } }
     },
@@ -100,6 +92,14 @@ FOAModel({
       help: 'The index of the current choice.',
       postSet: function(_, i) {
         if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+      }
+    },
+    {
+      name: 'dao',
+      postSet: function(oldDAO, dao) {
+        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
+        dao.listen(this.onDAOUpdate);
+        this.onDAOUpdate();
       }
     }
   ],
