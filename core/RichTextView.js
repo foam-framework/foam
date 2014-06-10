@@ -77,7 +77,7 @@ FOAModel({
 });
 
 
-var LinkView = Model.create({
+FOAModel({
   name: 'LinkView',
 
   extendsModel: 'DetailView',
@@ -180,6 +180,7 @@ FOAModel({
     }
   }
 });
+
 
 FOAModel({
   name: 'RichTextView',
@@ -791,5 +792,4 @@ FOAModel({
       }
     }
   ]
-
 });
