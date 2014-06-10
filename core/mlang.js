@@ -1273,7 +1273,7 @@ FOAModel({
     pipe: function(sink) {
     },
     put: function(obj) {
-      var val = this.arg1.f(obj);
+      var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
       var acc = this.arg2;
       acc.put(val);
     },
