@@ -3052,8 +3052,9 @@ FOAModel({
       }
 
       if ( this.seqNo ) {
-        dao = SeqNoDAO.create({__proto__: params, delegate: dao});
-        if ( this.seqProperty ) dao.property = this.seqProperty;
+        var args = {__proto__: params, delegate: dao};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = SeqNoDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
