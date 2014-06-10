@@ -1495,8 +1495,8 @@ function GRID_BY(xFunc, yFunc, acc) {
   return GridByExpr.create({xFunc: xFunc, yFunc: yFunc, acc: acc});
 }
 
-function MAP(fn, sink) {
-  return MapExpr.create({arg1: fn, arg2: sink});
+function MAP(fn, opt_sink) {
+  return MapExpr.create({arg1: fn, arg2: opt_sink || []});
 }
 
 function DISTINCT(fn, sink) {
