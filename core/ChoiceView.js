@@ -21,13 +21,6 @@ FOAModel({
 
   properties: [
     {
-      name: 'valueProperty',
-      defaultValue: { f: function(o) { return o.id; } }
-    },
-    {
-      name: 'labelProperty'
-    },
-    {
       name: 'data',
       help: 'The value of the current choice (ie. [value, label] -> value).',
       postSet: function(_, d) {
@@ -101,21 +94,21 @@ FOAModel({
         dao.listen(this.onDAOUpdate);
         this.onDAOUpdate();
       }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'objToChoice',
+      help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     }
   ],
 
   listeners: [
     {
       name: 'onDAOUpdate',
-//      isMerged: 160,
+      isMerged: 100,
       code: function() {
         var self = this;
-        this.dao.select(MAP(
-          {f: function(o) {
-            return [ self.valueProperty.f(o), self.labelProperty.f(o)];
-          }},
-          []
-        ))(function(map) {
+        this.dao.select(MAP(this.objToChoice, []))(function(map) {
           var choices = map.arg2;
           self.choices = choices;
         });
