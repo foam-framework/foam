@@ -98,7 +98,7 @@ FOAModel({
 //          labelProperty: Bookmark.TITLE,
           labelProperty: Bookmark.URL,
           dao: this.bookmarkDAO,
-          label: 'Bookmarks',
+          label: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
         });
         v.data$.addListener(function() {
@@ -312,7 +312,7 @@ FOAModel({
     },
     {
       name: 'favourites',
-      label: 'My Favorites &#x25BE;',
+      label: 'Projects &#x25BE;',
       action: function() {
         if ( this.favouritesMenu ) {
           this.favouritesMenu.close();
@@ -372,6 +372,9 @@ FOAModel({
     },
     {
       name: 'addBookmark',
+      iconUrl: 'images/star_off.gif',
+      label: '',
+      help: 'Create Bookmark',
       action: function() {
         this.bookmarkDAO.put(Bookmark.create({
           title: 'Bookmark ' + Date.now(),

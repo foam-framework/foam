@@ -396,3 +396,9 @@ input[name="labels"] {
   background: white;
   text-decoration: underline;
 }
+
+.actionButton-addBookmark, .actionButton-addBookmark:hover {
+  background: white;
+  border: none;
+  margin-left: 4px;
+}
