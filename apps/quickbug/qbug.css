@@ -402,3 +402,14 @@ input[name="labels"] {
   border: none;
   margin-left: 4px;
 }
+
+.popupChoiceList li {
+  margin: 0;
+  margin-left: -40px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.popupChoiceList li:hover {
+  background: #f0f0f0;
+}
