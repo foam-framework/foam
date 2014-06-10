@@ -798,7 +798,7 @@ FOAModel({
  */
 FOAModel({
   name: 'CascadingRemoveDAO',
-  label: 'SeqNoDAO', // TODO: Copy-paste error?
+  label: 'Cascading Remove DAO',
 
   extendsModel: 'ProxyDAO',
 
