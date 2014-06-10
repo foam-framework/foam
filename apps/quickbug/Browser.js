@@ -93,7 +93,20 @@ FOAModel({
       name: 'bookmarksMenu',
       factory: function() {
         var self = this;
-        var v = this.X.PopupChoiceView.create({
+        var Y = this.X.sub({
+          ChoiceListView: Model.create({
+            name: 'ChoiceListView',
+            extendsModel: 'ChoiceListView',
+            methods: {
+              choiceToHTML: function(id, choice) {
+                var id2 = this.nextID();
+                this.on('click', function() { console.log('********* DELETE: ', choice[0]); }, id2);
+                return '<li class="choice"><span id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
+              }
+            }
+          })
+        }); 
+        var v = Y.PopupChoiceView.create({
           valueProperty: Bookmark.URL,
 //          labelProperty: Bookmark.TITLE,
           labelProperty: Bookmark.URL,

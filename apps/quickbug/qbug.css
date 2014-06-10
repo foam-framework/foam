@@ -406,10 +406,23 @@ input[name="labels"] {
 .popupChoiceList li {
   margin: 0;
   margin-left: -40px;
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
 }
 
 .popupChoiceList li:hover {
   background: #f0f0f0;
+}
+
+.DeleteBookmark {
+  float: right;
+  padding: 8px;
+  margin-left: 15px;
+  margin-top: -8px;
+}
+
+.DeleteBookmark:hover {
+  font-weight: 900;
+  font-size: 18px;
+  margin-top: -10px;
 }
