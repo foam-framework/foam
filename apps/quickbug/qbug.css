@@ -430,3 +430,7 @@ input[name="labels"] {
 .actionLink-prev[disabled=disabled], .actionLink-next[disabled=disabled] {
   display: none;
 }
+
+.actionLink-backToList {
+  margin-left: 8px;
+}
