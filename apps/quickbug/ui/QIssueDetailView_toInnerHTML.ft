@@ -8,6 +8,7 @@
               Issue $$id{ mode: 'read-only' }
               $$summary{ mode: 'read-only', escapeHTML: true }
             </td>
+            <td align=right><%= this.cursorView %></td>
           </tr>
       </tbody></table>
     </div>

@@ -33,7 +33,7 @@ FOAModel({
   properties: [
     {
       name: 'X',
-      preSet: function(_, x) { return x.sub({stack: this}); }
+      preSet: function(_, x) { return x.sub({stack: this, browser: this}); }
     },
     'project',
     'previewID',
@@ -479,6 +479,7 @@ FOAModel({
           apar(
             arequire('AddBookmarkDialog'),
             arequire('QIssueDetailView'),
+            arequire('CursorView'),
             arequire('QIssueCommentCreateView'),
             arequire('QIssueCommentView'),
             arequire('QIssueCommentAuthorView'),

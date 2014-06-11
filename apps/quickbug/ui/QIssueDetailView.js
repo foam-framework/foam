@@ -17,6 +17,12 @@ FOAModel({
       name: 'url'
     },
     {
+      name: 'cursorView',
+      factory: function() {
+        return this.X.CursorView.create({data: this.X.Cursor.create()});
+      }
+    },
+    {
       name: 'blockingView',
       factory: function() {
         return BlockView.create({
