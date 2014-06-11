@@ -426,3 +426,7 @@ input[name="labels"] {
   font-size: 18px;
   margin-top: -10px;
 }
+
+.actionLink-prev[disabled=disabled], .actionLink-next[disabled=disabled] {
+  display: none;
+}
