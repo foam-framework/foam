@@ -1537,6 +1537,7 @@ FOAModel({
 
   methods: {
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.data$.addListener(this.update);
       this.$.addEventListener('click', this.onClick);
     },
