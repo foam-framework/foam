@@ -10,12 +10,10 @@
 <table><tr>
   <td valign=top>
     <foam id="timer" model="Timer" onInit="this.start()"></foam>
+    <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
   </td>
   <td>
     <foam model="Dragon" timer="#timer" width="950" height="1000"></foam>
-  </td>
-  <td valign=top>
-    <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
   </td>
 </tr></table>
 <h2>Test</h2>
