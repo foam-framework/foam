@@ -51,7 +51,7 @@ FOAModel({
       name: 'memento',
       defaultValue: 'mode=list',
       postSet: function (oldValue, newValue) {
-        console.log('****** LOCATION: ', this.location.toJSON());
+        // console.log('****** LOCATION: ', this.location.toJSON());
         // Avoid feedback by temporarily unsubscribing
         this.location.removeListener(this.onLocationUpdate);
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
@@ -108,12 +108,17 @@ FOAModel({
             }
           })
         }); 
+        // TODO: this was a bad idea to make this a ChoiceView because
+        // it only fires events when the data changes, not when you select
+        // an item like a regular menu.  Make into something else.
         var v = Y.PopupChoiceView.create({
+          autoSetData: false,
           objToChoice: function(b) { return [b.url, b.title, b]; },
           dao: this.bookmarkDAO,
           label: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
         });
+        v.data = 'dummy';
         v.data$.addListener(function() {
           self.memento = v.data;
           console.log('********* Bookmark: ', v.data);
@@ -122,6 +127,7 @@ FOAModel({
       }
     },
     {
+      model_: 'DAOProperty',
       name: 'filteredIssueDAO',
       defaultValueFn: function() { return this.IssueDAO; },
       postSet: function(_, dao) {
