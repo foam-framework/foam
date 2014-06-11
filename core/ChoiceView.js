@@ -21,6 +21,12 @@ FOAModel({
 
   properties: [
     {
+      model_: 'BooleanProperty',
+      name: 'autoSetData',
+      help: 'If true, this.data is set when choices update and the current data is not one of the choices.',
+      defaultValue: true
+    },
+    {
       name: 'data',
       help: 'The value of the current choice (ie. [value, label] -> value).',
       postSet: function(_, d) {
@@ -75,7 +81,7 @@ FOAModel({
           }
         }
 
-        if ( i === newValue.length ) this.data = newValue.length ? newValue[0][0] : undefined;
+        if ( this.autoSetData && i === newValue.length ) this.data = newValue.length ? newValue[0][0] : undefined;
 
         if ( this.$ ) this.updateHTML();
       }
@@ -178,7 +184,7 @@ FOAModel({
 
         this.setClass(
           'selected',
-          function(choice) { return this.choice == choice; }.bind(this, choice),
+          function(choice) { return this.choice === choice; }.bind(this, choice),
           id);
 
         out += this.choiceToHTML(id, choice);
@@ -370,7 +376,8 @@ FOAModel({
         var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
-          choices: this.choices
+          choices: this.choices,
+          autoSetData: this.autoSetData
         });
 
         // I don't know why the 'animate' is required, but it sometimes
