@@ -64,6 +64,7 @@ FOAModel({
     },
 
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
     },
 
