@@ -238,8 +238,8 @@ FOAModel({
       this.show__ = ! this.show__;
       if ( this.show__ ) return;
       */
-      this.count__ = ( this.count__ || 0)+1;
-      if ( this.count__ % 3 !== 0 ) return;
+      // this.count__ = ( this.count__ || 0)+1;
+      // if ( this.count__ % 3 !== 0 ) return;
 
       if ( ! dao || ! this.$ ) return;
 
