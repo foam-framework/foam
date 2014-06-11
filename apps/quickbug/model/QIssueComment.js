@@ -85,6 +85,7 @@ FOAModel({
   extendsModel: 'IssueCommentUpdate',
 
   properties: [
+    { name: 'summary', displayWidth: 120 },
     { name: 'status', autocompleter: 'StatusCompleter' },
     { name: 'owner', autocompleter: 'PersonCompleter' },
     { name: 'labels', view: 'GriddedStringArrayView', autocompleter: 'LabelCompleter' },
