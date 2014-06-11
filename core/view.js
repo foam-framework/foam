@@ -3152,8 +3152,8 @@ FOAModel({
           }
 
           values[i] = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-          this.data = values.join(',');
-          var selection = sum + values[i].length;
+          this.data = values.join(',') + ',';
+          var selection = sum + values[i].length + 1;
           this.$.setSelectionRange(selection, selection);
         }
       }).bind(this));
