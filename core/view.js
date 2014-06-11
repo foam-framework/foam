@@ -329,11 +329,11 @@ FOAModel({
       return v;
     },
 
-    createActionView: function(action, opt_args) {
+    createActionView: function(action, value, opt_args) {
       var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
       var v = this.X[modelName].create({
         action: action,
-        value: SimpleValue.create(this)}).copyFrom(opt_args);
+        value: value}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -343,7 +343,7 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.model_[name];
       return Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
+        this.createActionView(o, SimpleValue.create(this), opt_args) :
         this.createView(o, opt_args) ;
     },
 
@@ -1959,8 +1959,12 @@ FOAModel({
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'data',
+      setter: function(_, d) { this.value = SimpleValue.create(d); }
+    },
+    {
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
