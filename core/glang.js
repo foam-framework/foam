@@ -73,6 +73,9 @@ FOAModel({
     },
     paint: function() {
       var c = this.canvas;
+
+      if ( ! c ) return;
+
       var x = this.x;
       var y = this.y;
       var r = this.r;
