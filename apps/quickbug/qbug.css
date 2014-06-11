@@ -362,11 +362,7 @@ input[name="labels"] {
   border: 1px solid #bbb;
 }
 
-.autocomplete .row {
-  display: table-row-group;
-}
-
-.autocomplete .row:hover {
+.autocomplete .choice:hover {
   background: #c3d9ff;
 }
 

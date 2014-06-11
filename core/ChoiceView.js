@@ -20,6 +20,8 @@ FOAModel({
   extendsModel: 'View',
 
   properties: [
+    // This is the real, final choice. The internals use index only.
+    // When useSelection is enabled, data is not set until a final choice is made.
     {
       model_: 'BooleanProperty',
       name: 'autoSetData',
@@ -38,6 +40,7 @@ FOAModel({
         }
       }
     },
+    // See above; choice works the same as data.
     {
       name: 'choice',
       help: 'The current choice (ie. [value, label]).',
@@ -69,27 +72,40 @@ FOAModel({
         return a;
       },
       postSet: function(_, newValue) {
-        var value = this.data
+        var value = this.data;
 
-        // Update current choice when choices update
+        // Update current choice when choices update.
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var choice = newValue[i];
 
           if ( value === choice[0] ) {
-            this.choice = choice;
+            if ( this.useSelection ) this.index = i;
+            else this.choice = choice;
             break;
           }
         }
 
-        if ( this.autoSetData && i === newValue.length ) this.data = newValue.length ? newValue[0][0] : undefined;
+        if ( this.autoSetData && i === newValue.length ) {
+          if ( this.useSelection ) this.index = 0;
+          else this.data = newValue.length ? newValue[0][0] : undefined;
+        }
 
         if ( this.$ ) this.updateHTML();
       }
     },
+    // The authoritative selection internally. data and choice are outputs when
+    // useSelection is enabled.
     {
       name: 'index',
       help: 'The index of the current choice.',
+      preSet: function(_, i) {
+        if ( i < 0 || this.choices.length == 0 ) return 0;
+        if ( i >= this.choices.length ) return this.choices.length - 1;
+        return i;
+      },
       postSet: function(_, i) {
+        // If useSelection is enabled, don't update data or choice.
+        if ( this.useSelection ) return;
         if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
       }
     },
@@ -97,6 +113,11 @@ FOAModel({
       model_: 'FunctionProperty',
       name: 'objToChoice',
       help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
+    },
+    {
+      name: 'useSelection',
+      help: 'When set, data and choice do not update until an entry is firmly selected',
+      model_: 'BooleanProperty'
     },
     {
       name: 'dao',
@@ -127,6 +148,11 @@ FOAModel({
         if ( this.choices[i][1].toLowerCase() == name )
           return this.choices[i];
       }
+    },
+
+    commit: function() {
+      if ( ! this.useSelection ) return;
+      this.choice = this.choices[this.index];
     }
   }
 });
@@ -170,26 +196,26 @@ FOAModel({
       return '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
     },
     toInnerHTML: function() {
-      var out = "";
+      var out = [];
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         var choice = this.choices[i];
         var id     = this.nextID();
 
         this.on(
           'click',
-          function(choice) {
-            this.choice = choice;
-          }.bind(this, choice),
+          function(index) {
+            this.choice = this.choices[index];
+          }.bind(this, i),
           id);
 
         this.setClass(
           'selected',
-          function(choice) { return this.choice === choice; }.bind(this, choice),
+          function(index) { return this.index === index; }.bind(this, i),
           id);
 
-        out += this.choiceToHTML(id, choice);
+        out.push(this.choiceToHTML(id, choice));
       }
-      return out;
+      return out.join('');
     }
   }
 });
