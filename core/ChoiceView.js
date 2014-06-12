@@ -122,9 +122,13 @@ FOAModel({
     {
       name: 'dao',
       postSet: function(oldDAO, dao) {
-        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
-        dao.listen(this.onDAOUpdate);
-        this.onDAOUpdate();
+        if ( oldDAO ) {
+          oldDAO.unlisten(this.onDAOUpdate);
+        }
+        if ( dao && this.$ ) {
+          dao.listen(this.onDAOUpdate);
+          this.onDAOUpdate();
+        }
       }
     }
   ],
@@ -135,6 +139,7 @@ FOAModel({
       isMerged: 100,
       code: function() {
         this.dao.select(MAP(this.objToChoice))(function(map) {
+          console.log('** ', map.arg2, this.choices);
           this.choices = map.arg2;
         }.bind(this));
       }
@@ -142,6 +147,12 @@ FOAModel({
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      this.dao = this.dao;
+    },
+
     findChoiceIC: function(name) {
       name = name.toLowerCase();
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
@@ -290,6 +301,8 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       var e = this.$;
 
       this.updateHTML();
@@ -363,6 +376,8 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
     }
   }
@@ -459,6 +474,7 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
       this.$.addEventListener('click', this.popup);
     }
   }
