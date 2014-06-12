@@ -121,7 +121,6 @@ FOAModel({
         v.data = 'dummy';
         v.data$.addListener(function() {
           self.memento = v.data;
-          console.log('********* Bookmark: ', v.data);
         });
         return v;
       }
