@@ -103,7 +103,7 @@ FOAModel({
                 this.on('click', function() {
                   self.bookmarkDAO.remove(choice[2]);
                 }, id2);
-                return '<li class="choice"><span id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
+                return '<li style="display:flex;" class="choice"><span style="width:100%;" id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
               }
             }
           })
