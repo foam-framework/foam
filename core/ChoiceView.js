@@ -216,6 +216,29 @@ FOAModel({
         out.push(this.choiceToHTML(id, choice));
       }
       return out.join('');
+    },
+
+    scrollToSelection: function() {
+      // Three cases: in view, need to scroll up, need to scroll down.
+      // First we determine the parent's scrolling bounds.
+      var e = this.$.children[this.index];
+      if ( ! e ) return;
+      var parent = e.parentElement;
+      while ( parent ) {
+        var overflow = this.X.window.getComputedStyle(parent).overflow;
+        if ( overflow === 'scroll' || overflow === 'auto' ) {
+          break;
+        }
+        parent = parent.parentElement;
+      }
+      parent = parent || this.X.window;
+
+      if ( e.offsetTop < parent.scrollTop ) { // Scroll up
+        e.scrollIntoView(true);
+      } else if ( e.offsetTop + e.offsetHeight >=
+          parent.scrollTop + parent.offsetHeight ) { // Down
+        e.scrollIntoView();
+      }
     }
   }
 });

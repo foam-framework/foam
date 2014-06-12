@@ -1178,8 +1178,10 @@ FOAModel({
         } else if ( this.autocompleteView ) {
           if ( e.keyCode === 38 /* arrow up */ ) {
             this.autocompleteView.view.index--;
+            this.autocompleteView.view.scrollToSelection(this.$);
           } else if ( e.keyCode === 40 /* arrow down */ ) {
             this.autocompleteView.view.index++;
+            this.autocompleteView.view.scrollToSelection(this.$);
           } else if ( e.keyCode === 13 /* enter */ ) {
             this.autocompleteView.view.commit();
           }
