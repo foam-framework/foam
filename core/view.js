@@ -1105,18 +1105,19 @@ FOAModel({
         dao: completer.autocompleteDao,
         maxHeight: 400,
         maxWidth: 800,
-        view: this.X.DAOListView.create({
+        view: this.X.ChoiceListView.create({
           dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete',
+          className: this.name + ' autocomplete foamChoiceListView vertical',
+          orientation: 'vertical',
           mode: 'final',
-          rowView: 'SummaryView',
+          objToChoice: completer.f,
           useSelection: true
         })
       });
       this.addChild(this.autocompleteView);
 
-      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+      this.autocompleteView.view.data$.addListener((function(_, _, _, obj) {
+        this.data = obj;
         this.autocompleteView.close();
       }).bind(this));
 
@@ -1174,6 +1175,14 @@ FOAModel({
         if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
           this.domValue.set(this.data);
           this.publish(this.ESCAPE);
+        } else if ( this.autocompleteView ) {
+          if ( e.keyCode === 38 /* arrow up */ ) {
+            this.autocompleteView.view.index--;
+          } else if ( e.keyCode === 40 /* arrow down */ ) {
+            this.autocompleteView.view.index++;
+          } else if ( e.keyCode === 13 /* enter */ ) {
+            this.autocompleteView.view.commit();
+          }
         }
       }
     }
@@ -2398,17 +2407,8 @@ FOAModel({
           console.time('toHTML');
           var html = g.toHTML();
           console.timeEnd('toHTML');
-
-          console.time('setInnerHTML');
           self.$.innerHTML = html;
-          console.timeEnd('setInnerHTML');
-
-          // Perform asynchronously so that it doesn't delay the displaying of the grid
-          setTimeout(function() {
-            console.time('initHTML');
-            g.initHTML();
-            console.timeEnd('initHTML');
-          }, 800);
+          g.initHTML();
         } else {
           var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
@@ -3122,17 +3122,18 @@ FOAModel({
         dao: completer.autocompleteDao,
         maxHeight: 400,
         maxWidth: 800,
-        view: this.X.DAOListView.create({
+        view: this.X.ChoiceListView.create({
           dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete',
+          className: this.name + ' autocomplete foamChoiceListView vertical',
           mode: 'final',
-          rowView: 'SummaryView',
+          objToChoice: completer.f,
           useSelection: true
         })
       });
       this.addChild(this.autocompleteView);
 
-      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
+      var self = this;
+      this.autocompleteView.view.data$.addListener((function(_, _, _, obj) {
         var start = self.$.selectionStart;
         var value = self.$.value;
 
@@ -3146,14 +3147,13 @@ FOAModel({
             i++;
           }
 
-          values[i] = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+          values[i] = obj;
           this.data = values.join(',') + ',';
           var selection = sum + values[i].length + 1;
           this.$.setSelectionRange(selection, selection);
         }
       }).bind(this));
 
-      var self = this;
       this.$.addEventListener('input', function() {
         var start = self.$.selectionStart;
         var value = self.$.value;

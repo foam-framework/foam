@@ -362,11 +362,7 @@ input[name="labels"] {
   border: 1px solid #bbb;
 }
 
-.autocomplete .row {
-  display: table-row-group;
-}
-
-.autocomplete .row:hover {
+.autocomplete .choice:hover {
   background: #c3d9ff;
 }
 
@@ -416,15 +412,13 @@ input[name="labels"] {
 
 .DeleteBookmark {
   float: right;
-  padding: 8px;
+  padding: 2px;
   margin-left: 15px;
-  margin-top: -8px;
+  margin-top: -2px;
 }
 
 .DeleteBookmark:hover {
   font-weight: 900;
-  font-size: 18px;
-  margin-top: -10px;
 }
 
 .actionLink-prev[disabled=disabled], .actionLink-next[disabled=disabled] {
