@@ -139,7 +139,7 @@ FOAModel({
       isMerged: 100,
       code: function() {
         this.dao.select(MAP(this.objToChoice))(function(map) {
-          console.log('** ', map.arg2, this.choices);
+          // console.log('***** Update Choices ', map.arg2, this.choices);
           this.choices = map.arg2;
         }.bind(this));
       }

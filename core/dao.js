@@ -254,7 +254,7 @@ var FutureDAO = {
           console.log('******************************************************* AddingListener ', ret, listeners[i]);
           ret.listen.apply(ret, listeners[i]);
         }
-        ret.notify_('put', []);
+//        ret.notify_('put', []);
       }
     }
 
@@ -801,6 +801,7 @@ FOAModel({
       this.cache = FutureDAO.create(futureDelegate.get);
 
       src.select(cache)(function() {
+        // Actually means that cache listens to changes in the src.
         src.listen(cache);
         futureDelegate.set(cache);
         this.cache = cache;
@@ -1130,10 +1131,10 @@ function atxn(afunc) {
  * of data in the database.
  */
 FOAModel({
-  extendsModel: 'AbstractDAO',
-
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
