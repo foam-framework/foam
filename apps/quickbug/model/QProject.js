@@ -101,7 +101,7 @@ FOAModel({
           name: this.projectName + '_' + QIssue.plural
         });
 
-        return this.X.CachingDAO.create(this.IssueMDAO, IssueIDBDAO);
+        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: IssueIDBDAO});
       },
       transient: true
     },
@@ -169,9 +169,8 @@ FOAModel({
           model: Bookmark,
           name: this.projectName + '_' + Bookmark.plural,
           cache: true,
-          seqNo: true,
-          seqProperty: Bookmark.INDEX
-        }).orderBy(Bookmark.INDEX);
+          seqNo: true
+        }).orderBy(Bookmark.ID);
       },
       transient: true
     },
