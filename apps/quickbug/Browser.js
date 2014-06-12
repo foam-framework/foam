@@ -107,7 +107,7 @@ FOAModel({
               }
             }
           })
-        }); 
+        });
         // TODO: this was a bad idea to make this a ChoiceView because
         // it only fires events when the data changes, not when you select
         // an item like a regular menu.  Make into something else.
@@ -394,7 +394,7 @@ FOAModel({
       label: '',
       help: 'Create Bookmark',
       action: function() {
-        var anchor = this.addBookmarkView.$; 
+        var anchor = this.addBookmarkView.$;
         var view   = AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
