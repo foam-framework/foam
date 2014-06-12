@@ -49,13 +49,13 @@ FOAModel({
     },
     {
       name: 'memento',
+      help: 'A String representation of the current Location.',
       defaultValue: 'mode=list',
       postSet: function (oldValue, newValue) {
+        if ( oldValue === newValue ) return;
+        console.log('************** MEMENTO: ', newValue);
         // console.log('****** LOCATION: ', this.location.toJSON());
-        // Avoid feedback by temporarily unsubscribing
-        this.location.removeListener(this.onLocationUpdate);
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
-        this.location.addListener(this.onLocationUpdate);
      }
     },
     {
@@ -260,7 +260,7 @@ FOAModel({
     },
     {
       name: 'performQuery',
-      isAnimated: true,
+      isMerged: 100,
       code: function(evt) {
         if ( ! this.maybeSetLegacyUrl(this.location.q) ) {
           this.search(AND(
