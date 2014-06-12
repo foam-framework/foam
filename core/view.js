@@ -683,13 +683,11 @@ FOAModel({
       var div      = document.createElement('div');
       var window = document.defaultView;
 
-      this.position(div, parentNode);
 
-      div.id = this.id;
-      div.innerHTML = this.view.toHTML();
+      parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
-      document.body.appendChild(div);
-      this.view.initHTML();
+      this.position(this.$.firstElementChild, parentNode);
+      this.initHTML();
 
       if ( this.hideOnMouseOut ) {
         var timeout;
@@ -715,21 +713,14 @@ FOAModel({
     position: function(div, parentNode) {
       var document = parentNode.ownerDocument;
 
-      if ( this.x || this.y ) {
-        div.style.left = this.x + 'px';
-        div.style.top = this.y + 'px';
-      } else {
-        var pos = findPageXY(parentNode);
-        var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+      var pos = findPageXY(parentNode);
+      var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
 
-        div.style.left = pos[0];
-
-        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
-          div.style.bottom = document.defaultView.innerHeight - pos[1];
-        } else {
-          div.style.top = pos[1] + parentNode.offsetHeight;
-        }
+      if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
+        div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
       }
+
+      div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
@@ -741,8 +732,6 @@ FOAModel({
         div.style.maxHeight = this.maxHeight + 'px';
         div.style.overflowY = 'auto';
       }
-
-      div.style.position = 'absolute';
     },
 
     init: function(args) {
@@ -765,6 +754,12 @@ FOAModel({
         }).bind(this));
       }
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+  <span id="<%= this.id %>" style="position:relative"><div style="position:absolute"><%= this.view %></div></span>
+    */}
   ]
 });
 
