@@ -2412,17 +2412,8 @@ FOAModel({
           console.time('toHTML');
           var html = g.toHTML();
           console.timeEnd('toHTML');
-
-          console.time('setInnerHTML');
           self.$.innerHTML = html;
-          console.timeEnd('setInnerHTML');
-
-          // Perform asynchronously so that it doesn't delay the displaying of the grid
-          setTimeout(function() {
-            console.time('initHTML');
-            g.initHTML();
-            console.timeEnd('initHTML');
-          }, 800);
+          g.initHTML();
         } else {
           var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
