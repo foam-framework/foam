@@ -56,6 +56,7 @@ function subWindow(w, opt_name) {
     $$: function(cls) {
       return document.getElementsByClassName(cls);
     },
+    memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
