@@ -660,54 +660,101 @@ FOAModel({
 });
 
 FOAModel({
-  name: 'AutocompletePopup',
+  name: 'AutocompleteView',
   extendsModel: 'PopupView',
-  help: 'A popup view that only renders if the count is >0',
+  help: 'Default autocomplete popup.',
 
   properties: [
     {
       model_: 'DAOProperty',
       name: 'dao'
     },
+    'closeTimeout',
     {
-      model_: 'BooleanProperty', name: 'hideOnMouseOut', defaultValue: true
-    }
+      model_: 'IntProperty',
+      name: 'closeTime',
+      units: 'ms',
+      help: 'Time to delay the actual close on a .close call.',
+      defaultValue: 100
+    },
+    {
+      name: 'completer',
+      postSet: function(_, c) {
+        this.dao = c.autocompleteDao;
+      }
+    },
+    {
+      name: 'view',
+      factory: function() {
+        return this.X.ChoiceListView.create({
+          dao: this.completer.autocompleteDao,
+          className: this.name + ' autocomplete foamChoiceListView vertical',
+          orientation: 'vertical',
+          mode: 'final',
+          objToChoice: this.completer.f,
+          useSelection: true
+        });
+      },
+      postSet: function(_, v) {
+        v.data$.addListener(this.complete);
+      }
+    },
+    'data',
+    {
+      name: 'target',
+      postSet: function(prev, v) {
+        prev && prev.unsubscribe('keydown', this.onKeyDown);
+        v.subscribe('keydown', this.onKeyDown);
+      }
+    },
   ],
 
   methods: {
+    init: function(args) {
+      this.SUPER(args);
+      this.subscribe('blur', (function() {
+        this.close();
+      }).bind(this));
+      this.dao.listen(this.autocomplete);
+    },
+
     open: function(e, opt_delay) {
-      if ( this.$ ) { this.position(this.$, e.$ || e); return; }
+      console.log('********** open');
+      if ( this.closeTimeout ) {
+        this.X.clearTimeout(this.closeTimeout);
+        this.closeTimeout = 0;
+      }
+
+      if ( this.$ ) { this.position(this.$.firstElementChild, e.$ || e); return; }
 
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
+
+      if ( this.X.document !== document ) debugger;
+
       var div      = document.createElement('div');
       var window = document.defaultView;
+
+      if ( this.X.window !== window ) debugger;
 
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
       this.position(this.$.firstElementChild, parentNode);
       this.initHTML();
+    },
 
-      if ( this.hideOnMouseOut ) {
-        var timeout;
-        var self = this;
-        document.addEventListener('mousemove', function listener(evt) {
-          if ( ! self.$ ) {
-            document.removeEventListener('mousemove', listener);
-          } else if ( ! self.$.contains(evt.target) ) {
-            if ( ! timeout ) {
-              timeout = window.setTimeout(function() {
-                document.removeEventListener('mousemove', listener);
-                self.close();
-              }, 300);
-            }
-          } else if ( timeout ) {
-            window.clearTimeout(timeout);
-            timeout = undefined;
-          }
-        });
-      }
+    close: function() {
+      console.log('********** close');
+
+      if ( this.closeTimeout ) return;
+
+      var realClose = this.SUPER;
+      var self = this;
+      this.closeTimeout = this.X.window.setTimeout(function() {
+        self.closeTimeout = 0;
+        realClose.call(self);
+      }, this.closeTime);
     },
 
     position: function(div, parentNode) {
@@ -732,25 +779,43 @@ FOAModel({
         div.style.maxHeight = this.maxHeight + 'px';
         div.style.overflowY = 'auto';
       }
-    },
-
-    init: function(args) {
-      this.SUPER(args);
-      this.dao.listen(this.autocomplete);
     }
   },
 
   listeners: [
     {
+      name: 'onKeyDown',
+      code: function(_,_,e) {
+        if ( e.keyCode === 38 /* arrow up */ ) {
+          this.view.index--;
+          e.preventDefault();
+        } else if ( e.keyCode  === 40 /* arrow down */ ) {
+          this.view.index++;
+          e.preventDefault();
+        } else if ( e.keyCode  === 13 /* enter */ ) {
+          this.view.commit();
+          e.preventDefault();
+        }
+      }
+    },
+    {
+      name: 'complete',
+      code: function() {
+        this.data = this.view.data;
+      }
+    },
+    {
       name: 'autocomplete',
       code: function() {
-        this.dao.select(COUNT())((function(c) {
-          if ( c.count === 0 ) {
+        this.dao.limit(2).select()((function(objs) {
+          if ( objs.length === 0 ||
+               ( objs.length === 1 &&
+                 ( this.completer.f.f ?
+                   this.completer.f.f(objs[0]) :this.completer.f(objs[0]) ) === this.data ) ) {
             this.close();
             return;
           }
-          this.open(this.parent);
-          this.view.dao = this.dao;
+          this.open(this.target);
         }).bind(this));
       }
     }
@@ -1065,7 +1130,7 @@ FOAModel({
       defaultValue: true
     },
     'autocompleter',
-    'autocompleteView',
+    'completer',
   ],
 
   methods: {
@@ -1100,34 +1165,30 @@ FOAModel({
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
       var proto = FOAM.lookup(this.autocompleter, this.X);
-      var completer = proto.create();
-      this.autocompleteView = this.X.AutocompletePopup.create({
-        dao: completer.autocompleteDao,
-        maxHeight: 400,
-        maxWidth: 800,
-        view: this.X.ChoiceListView.create({
-          dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete foamChoiceListView vertical',
-          orientation: 'vertical',
-          mode: 'final',
-          objToChoice: completer.f,
-          useSelection: true
-        })
+      this.completer = proto.create();
+      var view = this.X.AutocompleteView.create({
+        completer: this.completer,
+        target: this
       });
-      this.addChild(this.autocompleteView);
 
-      this.autocompleteView.view.data$.addListener((function(_, _, _, obj) {
-        this.data = obj;
-        this.autocompleteView.close();
+      this.bindAutocompleteEvents(view);
+    },
+
+    bindAutocompleteEvents: function(view) {
+      view.data$.addListener((function(_,_,_,data) {
+        this.data = data;
       }).bind(this));
 
-      var self = this;
-      this.$.addEventListener('input', function() {
-        completer.autocomplete(self.textToValue(self.$.value));;
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
       });
-      this.$.addEventListener('focus', function() {
-        completer.autocomplete(self.data);
-      });
+      this.$.addEventListener('input', (function() {
+        this.completer.autocomplete(this.textToValue(this.$.value));
+      }).bind(this));
+      this.$.addEventListener('focus', (function() {
+        this.completer.autocomplete(this.textToValue(this.$.value));
+      }).bind(this));
     },
 
     initHTML: function() {
@@ -1175,14 +1236,8 @@ FOAModel({
         if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
           this.domValue.set(this.data);
           this.publish(this.ESCAPE);
-        } else if ( this.autocompleteView ) {
-          if ( e.keyCode === 38 /* arrow up */ ) {
-            this.autocompleteView.view.index--;
-          } else if ( e.keyCode === 40 /* arrow down */ ) {
-            this.autocompleteView.view.index++;
-          } else if ( e.keyCode === 13 /* enter */ ) {
-            this.autocompleteView.view.commit();
-          }
+        } else {
+          this.publish('keydown', e);
         }
       }
     }
@@ -3112,28 +3167,28 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   methods: {
-    setupAutocomplete: function() {
-      // TODO: Too much duplicated code, refactor this.
-      if ( ! this.autocomplete || ! this.autocompleter ) return;
-
-      var proto = FOAM.lookup(this.autocompleter, this.X);
-      var completer = proto.create();
-      this.autocompleteView = this.X.AutocompletePopup.create({
-        dao: completer.autocompleteDao,
-        maxHeight: 400,
-        maxWidth: 800,
-        view: this.X.ChoiceListView.create({
-          dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete foamChoiceListView vertical',
-          mode: 'final',
-          objToChoice: completer.f,
-          useSelection: true
-        })
-      });
-      this.addChild(this.autocompleteView);
-
+    bindAutocompleteEvents: function(view) {
+      // TODO: Refactor this.
       var self = this;
-      this.autocompleteView.view.data$.addListener((function(_, _, _, obj) {
+      var completer = this.completer;
+      function onInput() {
+        var start = self.$.selectionStart;
+        var value = self.$.value;
+
+        if ( start === self.$.selectionEnd ) {
+          var values = value.split(',');
+          var i = 0;
+          var sum = 0;
+
+          while ( sum + values[i].length < start ) {
+            sum += values[i].length + 1;
+            i++;
+          }
+          completer.autocomplete(values[i]);
+        }
+      }
+
+      view.data$.addListener((function(_, _, _, data) {
         var start = self.$.selectionStart;
         var value = self.$.value;
 
@@ -3147,44 +3202,19 @@ FOAModel({
             i++;
           }
 
-          values[i] = obj;
-          this.data = values.join(',') + ',';
+          values[i] = data;
+          if ( i === values.length - 1 ) values[i] += ',';
+          this.data = values.join(',');
           var selection = sum + values[i].length + 1;
           this.$.setSelectionRange(selection, selection);
         }
       }).bind(this));
 
-      this.$.addEventListener('input', function() {
-        var start = self.$.selectionStart;
-        var value = self.$.value;
-
-        if ( start === self.$.selectionEnd ) {
-          var values = value.split(',');
-          var i = 0;
-          var sum = 0;
-
-          while ( sum + values[i].length < start ) {
-            sum += values[i].length + 1;
-            i++;
-          }
-          completer.autocomplete(values[i]);
-        }
-      });
-      this.$.addEventListener('focus', function() {
-        var start = self.$.selectionStart;
-        var value = self.$.value;
-
-        if ( start === self.$.selectionEnd ) {
-          var values = value.split(',');
-          var i = 0;
-          var sum = 0;
-
-          while ( sum + values[i].length < start ) {
-            sum += values[i].length + 1;
-            i++;
-          }
-          completer.autocomplete(values[i]);
-        }
+      this.$.addEventListener('input', onInput);
+      this.$.addEventListener('focus', onInput);
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
       });
     },
     textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
@@ -4731,18 +4761,6 @@ FOAModel({
         this.textToValue.bind(this));
 
       input.addEventListener('keydown', this.onKeyDown);
-
-      if ( this.autocomplete && this.autocompleter ) {
-        var completer = FOAM.lookup(this.autocompleter, this.X).create();
-        this.autocompleteView.dao = completer.autocompleteDao;
-
-        this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
-          this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-        }).bind(this));
-        this.softData$.addListener((function() {
-          completer.autocomplete(this.softData);
-        }).bind(this));
-      }
     },
     focus: function() { this.$.firstElementChild.focus(); },
     valueToText: function(value) { return value; },

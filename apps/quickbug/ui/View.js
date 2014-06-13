@@ -362,11 +362,6 @@ FOAModel({
     },
     {
       model_: 'BooleanProperty',
-      name: 'onKeyMode',
-      defaultValue: true
-    },
-    {
-      model_: 'BooleanProperty',
       name: 'autocomplete',
       defaultValue: true
     },
@@ -389,6 +384,13 @@ FOAModel({
       model_: 'ArrayProperty',
       subType: 'TextFieldView',
       name: 'inputs'
+    },
+    {
+      name: 'lastInput',
+      postSet: function(old, v) {
+        old && old.data$.removeListener(this.addRow);
+        v.data$.addListener(this.addRow);
+      }
     }
   ],
 
@@ -413,7 +415,6 @@ FOAModel({
         name: this.name,
         type: this.type,
         displayWidth: this.displayWidth,
-        onKeyMode: this.onKeyMode,
         autocomplete: this.autocomplete,
         autocompleter: this.autocompleter
       });
@@ -448,6 +449,8 @@ FOAModel({
         views[0].initHTML();
         views[1].initHTML();
         views[2].initHTML();
+
+        this.lastInput = views[2];
       }
     },
     {
@@ -483,6 +486,8 @@ FOAModel({
           views[0].initHTML();
           views[1].initHTML();
           views[2].initHTML();
+
+          this.lastInput = views[2];
         }
       }
     },
