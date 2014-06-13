@@ -201,7 +201,7 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view.showActions = true;
+        if ( ! viewName ) view.showActions = !!e.getAttribute('showActions');
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
