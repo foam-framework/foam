@@ -40,6 +40,18 @@ FOAModel({
         }
       }
     },
+    {
+      name: 'label',
+      help: 'The label of the current choice (ie. [value, label] -> label).',
+      postSet: function(_, d) {
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( this.choices[i][1] === d ) {
+            if ( this.index !== i ) this.index = i;
+            return;
+          }
+        }
+      }
+    },
     // See above; choice works the same as data.
     {
       name: 'choice',
@@ -55,6 +67,7 @@ FOAModel({
       setter: function(choice) {
         var oldValue = this.choice;
         this.data = choice[0];
+        this.label = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
