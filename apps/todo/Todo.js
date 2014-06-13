@@ -127,7 +127,7 @@
 				var f = function() { return this.completedCount + this.activeCount == 0; }.bind(this.data);
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
-				Events.link(X.memento, this.queryView.label$);
+				Events.link(this.X.memento, this.queryView.label$);
 			%> */ } ]
 	});
 })();

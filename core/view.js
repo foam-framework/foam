@@ -877,7 +877,7 @@ FOAModel({
   }
 });
 
-X = X.sub({memento: X.WindowHashValue.create()});
+X.memento = X.WindowHashValue.create();
 
 
 FOAModel({

@@ -24,7 +24,7 @@ function sub(opt_args, opt_name) {
     if ( opt_args.hasOwnProperty(key) ) {
       // It looks like the chrome debug console is overwriting sub.window
       // but this prevents it.
-      Object.defineProperty(sub, key, {value: opt_args[key], writable: false});
+      Object.defineProperty(sub, key, {value: opt_args[key], writable: key !== 'window'});
     }
   }
   if ( opt_name ) {
@@ -68,7 +68,7 @@ function subWindow(w, opt_name) {
 
 var X = this.subWindow(window, 'DEFAULT WINDOW');
 
-var registerModel = function(model) {
+function registerModel(model) {
   /*
   if ( model.X === this ) {
     this[model.name] = model;
