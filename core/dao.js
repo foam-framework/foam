@@ -247,11 +247,14 @@ var FutureDAO = {
     // pay the overhead once the delegate has been set.
 
     function setupFuture(delegate) {
-      if ( ret.__proto__ != delegate ) {
-        for ( var i = 0 ; i < ret.__proto__.daoListeners_.length ; i++ ) {
-          delegate.listen.apply(delegate, ret.__proto__.daoListeners_[i]);
-        }
+      if ( ret.__proto__ !== delegate ) {
+        var listeners = ret.__proto__.daoListeners_;
         ret.__proto__ = delegate;
+        for ( var i = 0 ; i < listeners.length ; i++ ) {
+          console.log('******************************************************* AddingListener ', ret, listeners[i]);
+          ret.listen.apply(ret, listeners[i]);
+        }
+//        ret.notify_('put', []);
       }
     }
 
@@ -306,9 +309,10 @@ var FutureDAO = {
           return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
         },
         listen: function(sink, options) {
-          this.daoListeners_.push([sink, options]);
+          // this.daoListeners_.push([sink, options]);
         },
         unlisten: function(sink) {
+          /*
           for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
             if ( this.daoListeners_[i][0] === sink ) {
               this.daoListeners_.splice(i, 1);
@@ -316,37 +320,11 @@ var FutureDAO = {
             }
           }
           console.warn('phantom DAO unlisten: ', sink);
+          */
         }
       }};
     return ret;
   }
-};
-
-
-var CachingDAO = {
-
-  create: function(cache, source) {
-    var futureDelegate = afuture();
-
-    //    console.time('CachingDAO-' + source.model.name);
-    source.select(cache)(function() {
-      //      console.timeEnd('CachingDAO-' + source.model.name);
-      source.listen(cache);
-      futureDelegate.set(cache);
-    });
-
-    return {
-      __proto__: FutureDAO.create(futureDelegate.get),
-
-      model: cache.model || source.model,
-      put: function(obj, sink) { source.put(obj, sink); },
-      remove: function(query, sink) { source.remove(query, sink); },
-      removeAll: function(sink, options) {
-        return source.removeAll(sink, options);
-      }
-    };
-  }
-
 };
 
 
@@ -383,7 +361,6 @@ var LoggingDAO = {
       }
     };
   }
-
 };
 
 
@@ -439,7 +416,6 @@ var TimingDAO = {
       }
     };
   }
-
 };
 
 
@@ -638,6 +614,7 @@ FOAModel({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
+//       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       if ( ! this.daoListeners_ ) return;
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
@@ -656,6 +633,7 @@ FOAModel({
     }
   }
 });
+
 
 FOAModel({
   name: 'ProxyDAO',
@@ -753,7 +731,9 @@ FOAModel({
       type: 'Property',
       required: true,
       hidden: true,
-      defaultValueFn: function() { return this.delegate.model.ID; },
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
       transient: true
     },
     {
@@ -787,6 +767,49 @@ FOAModel({
         this.delegate.put(obj, sink);
       }.bind(this));
     }
+  }
+});
+
+
+FOAModel({
+  name: 'CachingDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'src'
+    },
+    {
+      name: 'cache',
+      help: 'Alias for delegate.',
+      getter: function() { return this.delegate },
+      setter: function(dao) { this.delegate = dao; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var src   = this.src;
+      var cache = this.cache;
+
+      this.model = src.model;
+
+      var futureDelegate = afuture();
+      this.cache = FutureDAO.create(futureDelegate.get);
+
+      src.select(cache)(function() {
+        // Actually means that cache listens to changes in the src.
+        src.listen(cache);
+        futureDelegate.set(cache);
+        this.cache = cache;
+      }.bind(this));
+    },
+    put: function(obj, sink) { this.src.put(obj, sink); },
+    remove: function(query, sink) { this.src.remove(query, sink); },
+    removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
   }
 });
 
@@ -1108,10 +1131,10 @@ function atxn(afunc) {
  * of data in the database.
  */
 FOAModel({
-  extendsModel: 'AbstractDAO',
-
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -3048,7 +3071,7 @@ FOAModel({
         this.mdao = dao;
       } else if ( this.cache ) {
         this.mdao = MDAO.create(params);
-        dao = CachingDAO.create(this.mdao, dao);
+        dao = CachingDAO.create({cache: this.mdao, src: dao});
       }
 
       if ( this.seqNo ) {

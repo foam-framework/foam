@@ -201,7 +201,7 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view.showActions = true;
+        if ( ! viewName ) view.showActions = !!e.getAttribute('showActions');
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
@@ -570,7 +570,7 @@ FOAModel({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
+      if ( viewName.model_ ) { var v = viewName.deepClone().copyFrom(prop); v.id = v.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -788,9 +788,11 @@ FOAModel({
       code: function(_,_,e) {
         if ( e.keyCode === 38 /* arrow up */ ) {
           this.view.index--;
+          this.view.scrollToSelection(this.$);
           e.preventDefault();
         } else if ( e.keyCode  === 40 /* arrow down */ ) {
           this.view.index++;
+          this.view.scrollToSelection(this.$);
           e.preventDefault();
         } else if ( e.keyCode  === 13 /* enter */ ) {
           this.view.commit();
@@ -913,6 +915,36 @@ var DomValue = {
     return "DomValue(" + this.event + ", " + this.property + ")";
   }
 };
+
+
+FOAModel({
+  name: 'WindowHashValue',
+
+  properties: [
+    {
+      name: 'window',
+      defaultValueFn: function() { return this.X.window; }
+    }
+  ],
+
+  methods: {
+    get: function() { return this.window.location.hash ? this.window.location.hash.substring(1) : ''; },
+
+    set: function(value) { this.window.location.hash = value; },
+
+    addListener: function(listener) {
+      this.window.addEventListener('hashchange', listener, false);
+    },
+
+    removeListener: function(listener) {
+      this.window.removeEventListener('hashchange', listener, false);
+    },
+
+    toString: function() { return "WindowHashValue(" + this.get() + ")"; }
+  }
+});
+
+X.memento = X.WindowHashValue.create();
 
 
 FOAModel({

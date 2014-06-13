@@ -313,7 +313,9 @@ var EventService = {
           listener.apply(null, msg);
         } catch ( err ) {
           if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-            console.warn('Error delivering event (removing listener): ', topic);
+            console.error('Error delivering event (removing listener): ', topic.join('.'));
+          } else {
+            console.warn('Unsubscribing listener: ', topic.join('.'));
           }
           listeners.splice(i,1);
           i--;
