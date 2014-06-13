@@ -7,10 +7,10 @@
 		name: 'TodoDAO',
 		extendsModel: 'ProxyDAO',
 		methods: {
-			put: function(x, s) {
+			put: function(issue, s) {
 				// If the user tried to put an empty text, remove the entry instead.
-				if (x.text.trim() === '') this.remove(x.id, { remove: s && s.put });
-				else this.SUPER(x, s);
+				if (!issue.text) this.remove(issue.id, { remove: s && s.put });
+				else this.SUPER(issue, s);
 			}
 		}
 	});
@@ -20,12 +20,7 @@
 		properties: [
 			'id',
 			{ name: 'completed', model_: 'BooleanProperty' },
-			{ name: 'text',
-				postSet: function (_, nu) {
-					// Trim whitespace on new todo. Need the if to prevent an infinite loop of updates.
-					if (nu != nu.trim()) this.text = nu.trim();
-				}
-			}
+			{ name: 'text', preSet: function (_, text) { return text.trim(); } }
 		],
 		templates: [ function toDetailHTML() {/*
 			<li id="{{{this.id}}}">
@@ -62,9 +57,7 @@
 			{ name: 'dao' },
 			{ name: 'filteredDAO',    model_: 'DAOProperty', view: { model_: 'DAOListView' } },
 			{ name: 'completedCount', model_: 'IntProperty' },
-			{ name: 'activeCount', model_: 'IntProperty', postSet: function(_, c) {
-					this.toggle = !c;
-			}},
+			{ name: 'activeCount',    model_: 'IntProperty', postSet: function(_, c) { this.toggle = !c; }},
 			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function(_, n) {
 				if ( n == this.activeCount > 0 ) {
 					this.dao.update(SET(Todo.COMPLETED, n));
