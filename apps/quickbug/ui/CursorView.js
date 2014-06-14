@@ -55,7 +55,7 @@ FOAModel({
     },
     {
       name: 'backToList',
-      label: 'Back to list',
+      label: 'Back',
       action: function() { this.location.id = ''; }
     }
   ],

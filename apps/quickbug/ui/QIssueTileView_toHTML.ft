@@ -1,5 +1,6 @@
 <%
 var starView = PropertyView.create({prop: QIssue.STARRED, data: this.issue});
+var f = function() { this.browser.location.id = this.issue.id; };
 %>
 <div draggable="true"
      id="<%= this.on('dragstart', this.dragStart, this.id) %>"
@@ -8,13 +9,13 @@ var starView = PropertyView.create({prop: QIssue.STARRED, data: this.issue});
     <tr>
       <td class="id">
         <%= starView %>
-        <a target="_blank" href="<%= this.browser.url %>/issues/detail?id={{this.issue.id}}">{{this.issue.id}}</a>
+        <a href="" id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.id}}</a>
       </td>
       <td class="status">{{this.issue.status}}</td>
     </tr>
     <tr>
       <td colspan="2">
-        <div><a href="<%= this.browser.url %>/issues/detail?id={{this.issue.id}}">{{this.issue.summary}}</a></div>
+        <div><span id="<%= this.on('click', f, this.nextID()) %>">{{this.issue.summary}}</div></div>
       </td>
     </tr>
   </tbody></table>
