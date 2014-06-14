@@ -3093,8 +3093,13 @@ FOAModel({
 
   extendsModel: 'TextFieldView',
 
+  properties: [
+    { name: 'precision', defaultValue: '6' }
+  ],
+
   methods: {
-    textToValue: function(text) { return parseFloat(text) || "0.0"; }
+    valueToText: function(val) { return val.toFixed(this.precision).replace(/\.?0*$/,''); },
+    textToValue: function(text) { return parseFloat(text) || 0; }
   }
 });
 
