@@ -244,13 +244,13 @@ FOAModel({
       factory: function() { return this.nextID(); }
     },
     {
-      name:  'parent',
-      type:  'View',
+      name: 'parent',
+      type: 'View',
       hidden: true
     },
     {
-      name:  'children',
-      type:  'Array[View]',
+      name: 'children',
+      type: 'Array[View]',
       factory: function() { return []; }
     },
     {
@@ -604,29 +604,29 @@ FOAModel({
 
   properties: [
     {
-      name:  'view',
-      type:  'View',
+      name: 'view',
+      type: 'View',
     },
     {
-      name:  'x'
+      name: 'x'
     },
     {
-      name:  'y'
+      name: 'y'
     },
     {
-      name:  'width',
+      name: 'width',
       defaultValue: undefined
     },
     {
-      name:  'maxWidth',
+      name: 'maxWidth',
       defaultValue: undefined
     },
     {
-      name:  'maxHeight',
+      name: 'maxHeight',
       defaultValue: undefined
     },
     {
-      name:  'height',
+      name: 'height',
       defaultValue: undefined
     }
   ],
@@ -1098,44 +1098,44 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'name',
+      name: 'name',
       defaultValue: 'field'
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 30
     },
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 1
     },
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'text'
     },
     {
       model_: 'StringProperty',
-      name:  'placeholder',
+      name: 'placeholder',
       defaultValue: undefined
     },
     {
       model_: 'BooleanProperty',
-      name:  'onKeyMode',
+      name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.'
     },
     {
       model_: 'BooleanProperty',
-      name:  'escapeHTML',
+      name: 'escapeHTML',
       // defaultValue: true,
       // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },
     {
       model_: 'StringProperty',
-      name:  'mode',
+      name: 'mode',
       defaultValue: 'read-write',
       view: {
         create: function() { return ChoiceView.create({choices:[
@@ -1286,7 +1286,7 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'date'
     }
   ],
@@ -1387,18 +1387,18 @@ FOAModel({
 
   properties: [
     {
-      name:  'name',
-      type:  'String',
+      name: 'name',
+      type: 'String',
       defaultValue: ''
     },
     {
       model_: 'StringProperty',
-      name:  'tag',
+      name: 'tag',
       defaultValue: 'span'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
@@ -1442,29 +1442,29 @@ FOAModel({
 
 
 FOAModel({
-  name:  'RoleView',
+  name: 'RoleView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'roleName',
-      type:  'String',
+      name: 'roleName',
+      type: 'String',
       defaultValue: ''
     },
     {
-      name:  'models',
-      type:  'Array[String]',
+      name: 'models',
+      type: 'Array[String]',
       defaultValue: []
     },
     {
-      name:  'selection',
-      type:  'Value',
+      name: 'selection',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -1505,7 +1505,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'BooleanView',
+  name: 'BooleanView',
 
   extendsModel: 'View',
 
@@ -1549,7 +1549,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'ImageBooleanView',
+  name: 'ImageBooleanView',
 
   extendsModel: 'View',
 
@@ -1622,7 +1622,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'CSSImageBooleanView',
+  name: 'CSSImageBooleanView',
 
   extendsModel: 'View',
 
@@ -1656,7 +1656,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'ImageBooleanView2',
+  name: 'ImageBooleanView2',
 
   extendsModel: 'View',
 
@@ -1712,12 +1712,12 @@ FOAModel({
   properties: [
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 5
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 70
     }
   ]
@@ -1791,7 +1791,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'JSView',
+  name: 'JSView',
 
   extendsModel: 'TextAreaView',
 
@@ -1855,12 +1855,12 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -1926,8 +1926,8 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -1977,16 +1977,16 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'properties'
+      name: 'properties'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'availableProperties'
+      name: 'availableProperties'
     }
   ],
 
@@ -2044,7 +2044,7 @@ FOAModel({
 
   properties: [
     {
-      name:  'action',
+      name: 'action',
       postSet: function(old, nu) {
         old && old.removeListener(this.render)
         nu.addListener(this.render);
@@ -2183,8 +2183,8 @@ FOAModel({
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
       }
@@ -2366,14 +2366,14 @@ FOAModel({
 });
 
 FOAModel({
-  name:  'ProgressView',
+  name: 'ProgressView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -2430,47 +2430,47 @@ FOAModel({
 
   properties: [
     {
-      name:  'row',
+      name: 'row',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'col',
+      name: 'col',
       label: 'column',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'acc',
+      name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'accChoices',
+      name: 'accChoices',
       label: 'Accumulator Choices',
       type: 'Array',
       factory: function() { return []; }
     },
     {
-      name:  'scrollMode',
-      type:  'String',
+      name: 'scrollMode',
+      type: 'String',
       defaultValue: 'Bars',
       view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
-      name:  'dao',
+      name: 'dao',
       label: 'DAO',
       type: 'DAO',
       postSet: function() { this.updateHTML(); }
     },
     {
-      name:  'grid',
-      type:  'GridByExpr',
+      name: 'grid',
+      type: 'GridByExpr',
       factory: function() { return GridByExpr.create(); }
     }
   ],
@@ -2573,15 +2573,15 @@ FOAModel({
 
   properties: [
     {
-      name:  'x',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'x',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     },
     {
-      name:  'y',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'y',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     }
   ],
@@ -2665,7 +2665,7 @@ FOAModel({
       }
     },
     {
-      name:  'choice',
+      name: 'choice',
       postSet: function(oldValue, viewChoice) {
         if ( this.$ && oldValue != viewChoice ) this.installSubView(viewChoice);
       },
@@ -2789,7 +2789,7 @@ FOAModel({
       help: 'Child views'
     },
     {
-      name:  'index',
+      name: 'index',
       help: 'The index of the currently selected view',
       defaultValue: 0,
       preSet: function(old, nu) {
@@ -3118,6 +3118,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'GalleryImageView',
   extendsModel: 'View',
@@ -3171,7 +3172,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'FloatFieldView',
+  name: 'FloatFieldView',
 
   extendsModel: 'TextFieldView',
 
@@ -3199,7 +3200,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'IntFieldView',
+  name: 'IntFieldView',
 
   extendsModel: 'TextFieldView',
 
@@ -3215,7 +3216,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'StringArrayView',
+  name: 'StringArrayView',
 
   extendsModel: 'TextFieldView',
 
@@ -4712,7 +4713,7 @@ FOAModel({
   /*
   actions: [
     {
-      name:  'test',
+      name: 'test',
       action: function(obj) { }
     }
   ],
