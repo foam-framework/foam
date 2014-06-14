@@ -3176,11 +3176,22 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   properties: [
-    { name: 'precision', defaultValue: '6' }
+    { name: 'precision', defaultValue: undefined }
   ],
 
   methods: {
-    valueToText: function(val) { return val.toFixed(this.precision).replace(/\.?0*$/,''); },
+    formatNumber: function(val) {
+      if ( ! val ) return '0';
+      val = val.toFixed(this.precision);
+      var i = val.length-1;
+      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
+      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
+    },
+    valueToText: function(val) {
+      return this.hasOwnProperty('precision') ?
+        this.formatNumber(val) : 
+        String.valueOf(val) ;
+    },
     textToValue: function(text) { return parseFloat(text) || 0; }
   }
 });
