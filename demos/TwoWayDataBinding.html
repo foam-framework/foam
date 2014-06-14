@@ -8,7 +8,7 @@
  </head>
  <body><script>
   FOAModel({
-    name: 'F2C',
+    name: 'Temperature',
     properties: [
 //      'f', 'c'
       { name: 'f', model_: 'FloatProperty' },
@@ -21,10 +21,11 @@
     },
     templates: [
       function toDetailHTML() {/*
-        $$c{onKeyMode: true, displayWidth:7, type:'number', precision: 4} C <-> $$f{onKeyMode: true, displayWidth:7, type:'number', precision: 4} F
+        $$c{onKeyMode: true, precision: 4} C <-> $$f{onKeyMode: true, precision: 4} F
       */}
     ]
   });
-  F2C.create().write(document);
+  var t = Temperature.create();
+  t.write(document);
  </script></body>
 </html>
