@@ -1,0 +1,30 @@
+<html>
+ <head>
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <title>Two-Way Data-Binding</title>
+  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
+  <style>
+  </style>
+ </head>
+ <body><script>
+  FOAModel({
+    name: 'F2C',
+    properties: [
+//      'f', 'c'
+      { name: 'f', model_: 'FloatProperty' },
+      { name: 'c', model_: 'FloatProperty' }
+    ],
+    methods: {
+      init: function() { Events.relate(this.c$, this.f$, this.f2c, this.c2f); },
+      f2c: function(f) { return 9/5 * f + 32; },
+      c2f: function(c) { return 5/9 * ( c - 32 ); }
+    },
+    templates: [
+      function toDetailHTML() {/*
+        $$c{onKeyMode: true, displayWidth:7, type:'number', precision: 4} C <-> $$f{onKeyMode: true, displayWidth:7, type:'number', precision: 4} F
+      */}
+    ]
+  });
+  F2C.create().write(document);
+ </script></body>
+</html>
