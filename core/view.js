@@ -158,7 +158,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        if ( ! {model:true, view:true, id:true, oninit:true}[key] ) {
+        if ( ! {model:true, view:true, id:true, oninit:true, showActions:true}[key] ) {
           console.log('unknown attribute: ', key);
         }
       }
@@ -201,7 +201,14 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view.showActions = !!e.getAttribute('showActions');
+        if ( ! viewName ) {
+          // default value is 'true' if 'showActions' isn't specified.
+          var a = e.getAttribute('showActions');
+          
+          view.showActions = a ?
+            a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
+            true ;
+        }
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
