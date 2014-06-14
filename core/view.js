@@ -3176,7 +3176,8 @@ FOAModel({
   extendsModel: 'TextFieldView',
 
   properties: [
-    { name: 'precision', defaultValue: undefined }
+    { name: 'precision', defaultValue: undefined },
+    { name: 'type',      defaultValue: 'number' }
   ],
 
   methods: {
@@ -3201,6 +3202,10 @@ FOAModel({
   name:  'IntFieldView',
 
   extendsModel: 'TextFieldView',
+
+  properties: [
+    { name: 'type', defaultValue: 'number' }
+  ],
 
   methods: {
     textToValue: function(text) { return parseInt(text) || "0"; },
