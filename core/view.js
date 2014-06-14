@@ -1240,6 +1240,7 @@ FOAModel({
           this.textToValue.bind(this));
 
         this.$.addEventListener('keydown', this.onKeyDown);
+        this.$.addEventListener('blur',    this.onBlur);
         this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
@@ -1271,6 +1272,12 @@ FOAModel({
         } else {
           this.publish('keydown', e);
         }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        this.domValue.set(this.data);
       }
     }
   ]
