@@ -11,13 +11,13 @@
     name: 'Temperature',
     properties: [
 //      'f', 'c'
-      { name: 'f', model_: 'FloatProperty' },
-      { name: 'c', model_: 'FloatProperty' }
+      { name: 'c', model_: 'FloatProperty' },
+      { name: 'f', model_: 'FloatProperty' }
     ],
     methods: {
-      init: function() { Events.relate(this.c$, this.f$, this.f2c, this.c2f); },
-      f2c: function(f) { return 9/5 * f + 32; },
-      c2f: function(c) { return 5/9 * ( c - 32 ); }
+      init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
+      c2f: function(f) { return 9/5 * f + 32; },
+      f2c: function(c) { return 5/9 * ( c - 32 ); }
     },
     templates: [
       function toDetailHTML() {/*
@@ -33,19 +33,20 @@
     name: 'Temperature2',
     properties: [
       {
-        name: 'f',
-        model_: 'FloatProperty',
-        postSet: function(oldValue, newValue) {
-          if ( oldValue !== newValue ) this.c = 9*5 * newValue + 32;
-        }
-      },
-      {
         name: 'c',
         model_: 'FloatProperty',
         postSet: function(oldValue, newValue) {
-          if ( oldValue !== newValue ) this.f = 5/9 * ( newValue - 32 );
+          if ( oldValue !== newValue ) this.f = 9/5 * newValue + 32;
         }
       },
+      {
+        name: 'f',
+        model_: 'FloatProperty',
+        defaultValue: 32,
+        postSet: function(oldValue, newValue) {
+          if ( oldValue !== newValue ) this.c = 5/9 * ( newValue - 32 );
+        }
+      }
     ],
     templates: [
       function toDetailHTML() {/*
