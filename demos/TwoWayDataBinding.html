@@ -27,5 +27,33 @@
   });
   var t = Temperature.create();
   t.write(document);
+
+
+  FOAModel({
+    name: 'Temperature2',
+    properties: [
+      {
+        name: 'f',
+        model_: 'FloatProperty',
+        postSet: function(oldValue, newValue) {
+          if ( oldValue !== newValue ) this.c = 9*5 * newValue + 32;
+        }
+      },
+      {
+        name: 'c',
+        model_: 'FloatProperty',
+        postSet: function(oldValue, newValue) {
+          if ( oldValue !== newValue ) this.f = 5/9 * ( newValue - 32 );
+        }
+      },
+    ],
+    templates: [
+      function toDetailHTML() {/*
+        $$c{onKeyMode: true, precision: 4} C <-> $$f{onKeyMode: true, precision: 4} F
+      */}
+    ]
+  });
+  var t2 = Temperature2.create();
+  t2.write(document);
  </script></body>
 </html>
