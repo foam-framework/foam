@@ -27,9 +27,7 @@ var AbstractPrototype = {
   create: function(args, opt_X) {
     var o = Object.create(this);
     o.instance_ = {};
-    if ( args && args.X ) o.X = args.X;
-    else if ( opt_X ) o.X = opt_X;
-
+    if ( opt_X ) o.X = opt_X;
     if ( typeof args === 'object' ) o.copyFrom(args);
 
     o.init(args);
