@@ -520,32 +520,6 @@ var Events = {
 
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
-    return;
-
-    var feedback = false;
-
-    var l = function(sv, dv) { return function (_, _, _, s) {
-      s = s || sv.get();
-      if ( feedback ) return;
-      var d = dv.get();
-
-      if ( s !== d ) {
-        feedback = true;
-        dv.set(s);
-        feedback = false;
-      }
-    }};
-
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-    var l1 = l(srcValue, dstValue);
-    var l2 = l(dstValue, srcValue);
-
-    srcValue.addListener(l1);
-    dstValue.addListener(l2);
-
-    l1(null, null, null, srcValue.get());
   },
 
 
@@ -553,20 +527,16 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
+   * @param removeFeedback disables feedback   
    */
   relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
     if ( ! srcValue || ! dstValue ) return;
 
-    this.map(srcValue, dstValue, f);
-    this.map(dstValue, srcValue, fprime);
-    return;
-
     var feedback = false;
 
-    var l = function(sv, dv, f) { return function (_, _, _, s) {
-      // if ( removeFeedback && feedback ) return;
-      s = sv.get(); // s || sv.get();
-      s = f(s);
+    var l = function(sv, dv, f) { return function () {
+      if ( removeFeedback && feedback ) return;
+      var s = f(sv.get());
       var d = dv.get();
 
       if ( s !== d ) {
@@ -587,40 +557,6 @@ var Events = {
 
     l1();
   },
-
-  relateMV: function (m$, v$, m2v, v2m) {
-    if ( ! m$ || ! v$ ) return;
-    debugger;
-    var feedback = false;
-
-    var ml = function(_, _, _, m) {
-      if ( feedback ) return;
-      m = m2v(m || m$.get());
-      var v = v$.get();
-      if ( m !== v ) {
-        v$.set(m);
-      }
-    };
-    var vl = function(_, _, _, v) {
-      v = v2m(v || v$.get());
-      var m = m$.get();
-
-      if ( m !== v ) {
-        feedback = true;
-        m$.set(v);
-        feedback = false;
-      }
-    };
-
-    m$.addListener(ml);
-    v$.addListener(vl);
-
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-    
-    ml();
-  },
-
 
   /** Unlink the values of two models by having them no longer follow each other. **/
   unlink: function (value1, value2) {
