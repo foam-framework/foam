@@ -481,14 +481,14 @@ var Events = {
   map: function (srcValue, dstValue, f) {
     if ( ! srcValue || ! dstValue ) return;
 
-    var listener = function (_, _, _, s) {
-      s = f(s || srcValue.get());
+    var listener = function () {
+      var s = f(srcValue.get());
       var d = dstValue.get();
 
       if ( s !== d ) dstValue.set(s);
     };
 
-    listener(null, null, null, srcValue.get()); // copy initial value
+    listener();
 
     // TODO: put back when cleanup implemented
     //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -517,6 +517,10 @@ var Events = {
    **/
   link: function (srcValue, dstValue) {
     if ( ! srcValue || ! dstValue ) return;
+
+    this.follow(srcValue, dstValue);
+    this.follow(dstValue, srcValue);
+    return;
 
     var feedback = false;
 
@@ -550,14 +554,18 @@ var Events = {
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
    */
-  relate: function (srcValue, dstValue, f, fprime) {
+  relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
     if ( ! srcValue || ! dstValue ) return;
+
+    this.map(srcValue, dstValue, f);
+    this.map(dstValue, srcValue, fprime);
+    return;
 
     var feedback = false;
 
     var l = function(sv, dv, f) { return function (_, _, _, s) {
-      if ( feedback ) return;
-      s = s || sv.get();
+      // if ( removeFeedback && feedback ) return;
+      s = sv.get(); // s || sv.get();
       s = f(s);
       var d = dv.get();
 
@@ -578,6 +586,39 @@ var Events = {
     dstValue.addListener(l2);
 
     l1();
+  },
+
+  relateMV: function (m$, v$, m2v, v2m) {
+    if ( ! m$ || ! v$ ) return;
+    debugger;
+    var feedback = false;
+
+    var ml = function(_, _, _, m) {
+      if ( feedback ) return;
+      m = m2v(m || m$.get());
+      var v = v$.get();
+      if ( m !== v ) {
+        v$.set(m);
+      }
+    };
+    var vl = function(_, _, _, v) {
+      v = v2m(v || v$.get());
+      var m = m$.get();
+
+      if ( m !== v ) {
+        feedback = true;
+        m$.set(v);
+        feedback = false;
+      }
+    };
+
+    m$.addListener(ml);
+    v$.addListener(vl);
+
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+    
+    ml();
   },
 
 
