@@ -158,7 +158,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        if ( ! {model:true, view:true, id:true, oninit:true, showActions:true}[key] ) {
+        if ( ! {model:true, view:true, id:true, oninit:true, showactions:true}[key] ) {
           console.log('unknown attribute: ', key);
         }
       }
@@ -1256,14 +1256,21 @@ FOAModel({
           this.$,
           this.onKeyMode ? 'input' : 'change');
 
+        // In KeyMode we disable feedback to avoid updating the field
+        // while the user is still typing.  Then we update the view
+        // once they leave(blur) the field.
         Events.relate(
           this.data$,
           this.domValue,
           this.valueToText.bind(this),
-          this.textToValue.bind(this));
+          this.textToValue.bind(this),
+          this.onKeyMode);
+
+        if ( this.onKeyMode )
+          this.$.addEventListener('blur', this.onBlur);
 
         this.$.addEventListener('keydown', this.onKeyDown);
-        this.$.addEventListener('blur',    this.onBlur);
+
         this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
@@ -1300,7 +1307,8 @@ FOAModel({
     {
       name: 'onBlur',
       code: function(e) {
-        this.domValue.set(this.data);
+        if ( this.domValue.get() !== this.data )
+          this.domValue.set(this.data);
       }
     }
   ]

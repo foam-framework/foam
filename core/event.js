@@ -481,14 +481,14 @@ var Events = {
   map: function (srcValue, dstValue, f) {
     if ( ! srcValue || ! dstValue ) return;
 
-    var listener = function (_, _, _, s) {
-      s = f(s || srcValue.get());
+    var listener = function () {
+      var s = f(srcValue.get());
       var d = dstValue.get();
 
       if ( s !== d ) dstValue.set(s);
     };
 
-    listener(null, null, null, srcValue.get()); // copy initial value
+    listener();
 
     // TODO: put back when cleanup implemented
     //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -518,30 +518,8 @@ var Events = {
   link: function (srcValue, dstValue) {
     if ( ! srcValue || ! dstValue ) return;
 
-    var feedback = false;
-
-    var l = function(sv, dv) { return function (_, _, _, s) {
-      s = s || sv.get();
-      if ( feedback ) return;
-      var d = dv.get();
-
-      if ( s !== d ) {
-        feedback = true;
-        dv.set(s);
-        feedback = false;
-      }
-    }};
-
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-    var l1 = l(srcValue, dstValue);
-    var l2 = l(dstValue, srcValue);
-
-    srcValue.addListener(l1);
-    dstValue.addListener(l2);
-
-    l1(null, null, null, srcValue.get());
+    this.follow(srcValue, dstValue);
+    this.follow(dstValue, srcValue);
   },
 
 
@@ -549,16 +527,16 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
+   * @param removeFeedback disables feedback   
    */
-  relate: function (srcValue, dstValue, f, fprime) {
+  relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
     if ( ! srcValue || ! dstValue ) return;
 
     var feedback = false;
 
-    var l = function(sv, dv, f) { return function (_, _, _, s) {
-      if ( feedback ) return;
-      s = s || sv.get();
-      s = f(s);
+    var l = function(sv, dv, f) { return function () {
+      if ( removeFeedback && feedback ) return;
+      var s = f(sv.get());
       var d = dv.get();
 
       if ( s !== d ) {
@@ -579,7 +557,6 @@ var Events = {
 
     l1();
   },
-
 
   /** Unlink the values of two models by having them no longer follow each other. **/
   unlink: function (value1, value2) {
