@@ -56,28 +56,7 @@ var QIssueComment = FOAM({
       displayWidth: 85,
       displayHeight: 8
     }
-  ],
-
-  methods: {
-    f: function(issue) {
-      var comment = this;
-
-      function updateField(field) {
-        for ( var i = 0; i < comment.updates.blockedOn.length; i++ ) {
-          if ( comment.updates[field][i][0] === '-' )
-            issue[field] = issue[field].removeF(this.updates[field][i].substr(1));
-          else
-            issue[field] = issue[field].pushF(comment.updates[field][i]);
-        }
-      }
-
-      ['blockedOn', 'cc', 'labels'].forEach(updateField);
-
-      if ( comment.owner ) issue.owner = comment.owner;
-      if ( comment.status ) issue.status = comment.status;
-      if ( comment.summary ) issue.summary = comment.summary;
-    }
-  }
+  ]
 });
 
 FOAModel({
@@ -91,5 +70,26 @@ FOAModel({
     { name: 'labels', view: 'GriddedStringArrayView', autocompleter: 'LabelCompleter' },
     { name: 'cc', view: 'StringArrayView', autocompleter: 'PersonCompleter', displayWidth: 120 },
     { name: 'blockedOn', view: 'MultiLineStringArrayView' }
-  ]
+  ],
+
+  methods: {
+    f: function(issue) {
+      var comment = this;
+
+      function updateField(field) {
+        for ( var i = 0; i < comment[field].length; i++ ) {
+          if ( comment[field][i][0] === '-' )
+            issue[field] = issue[field].removeF(comment[field][i].substr(1));
+          else
+            issue[field] = issue[field].pushF(comment[field][i]);
+        }
+      }
+
+      ['blockedOn', 'cc', 'labels'].forEach(updateField);
+
+      if ( comment.owner ) issue.owner = comment.owner;
+      if ( comment.status ) issue.status = comment.status;
+      if ( comment.summary ) issue.summary = comment.summary;
+    }
+  }
 });
