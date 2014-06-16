@@ -118,7 +118,6 @@ FOAModel({
       name: 'IssueCommentDAO',
       factory: function() {
         return this.X.QIssueCommentUpdateDAO.create({
-          IssueDAO: this.IssueCachingDAO,
           delegate: this.IssueCommentNetworkDAO
         });
       }
@@ -128,37 +127,20 @@ FOAModel({
       factory: function() {
         return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+          IssueCommentDAO: this.IssueCommentNetworkDAO,
           model: QIssue,
           batchSize: 500
         });
       },
-      transient: true
-    },
-    {
-      name: 'IssueSplitDAO',
-      factory: function() {
-        var dao = this.IssueCachingDAO;
-
-        return this.X.QIssueSplitDAO.create({
-          local: dao,
-          model: QIssue,
-          remote: this.IssueNetworkDAO
-        });
+      postSet: function(_, v) {
+        this.IssueCommentDAO.IssueNetworkDAO = v;
       },
       transient: true
     },
     {
       name: 'IssueDAO',
       factory: function() {
-        var dao = this.IssueSplitDAO;
-
-        dao = this.X.QBugActionFactoryDAO.create({
-          delegate: dao,
-          actionDao: this.IssueCommentNetworkDAO,
-          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues'
-        });
-
-        return dao;
+        return this.IssueCachingDAO;
       },
       transient: true
     },

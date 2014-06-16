@@ -77,6 +77,12 @@ FOAModel({
       name: 'IssueDAO',
       scope: 'project',
       factory: function() {
+        return this.X.QIssueSplitDAO.create({
+          local: this.project.IssueDAO,
+          model: QIssue,
+          remote: this.project.IssueNetworkDAO
+        });
+
         return this.project.IssueDAO;
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
