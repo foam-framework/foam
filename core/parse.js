@@ -218,7 +218,7 @@ function repeat0(p) {
   return function(ps) {
     var res;
     while ( res = this.parse(p, ps) ) ps = res;
-    return ps;
+    return ps.setValue('');
   };
 }
 
