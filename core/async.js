@@ -94,16 +94,16 @@ function awhile(cond, afunc) {
 
 
 /** Execute the supplied afunc if cond. */
-function aif(cond, afunc) {
+function aif(cond, afunc, aelse) {
   return function(ret) {
     if ( cond ) {
        afunc.apply(this, arguments);
     } else {
-       ret();
+      if ( aelse ) aelse.apply(this, arguments);
+      else ret();
     }
   };
 }
-
 
 /** Time an afunc. **/
 var atime = (function() {
