@@ -48,7 +48,7 @@ var TemplateParser = {
   )),
 
   'create child': seq('$$', repeat(notChars(' $\n<{')),
-                      optional(JSONParser.export('obj'))),
+                      optional(JSONParser.export('objAsString'))),
 
   'simple value': seq('%%', repeat(notChars(' "\n<'))),
 
@@ -115,7 +115,7 @@ var TemplateCompiler = {
    'create child': function(v) {
      var name = v[1].join('').constantize();
      this.push("', this.createTemplateView('", name, "'",
-               v[2] ? ', ' +JSON.stringify(v[2]) : '',
+               v[2] ? ', ' + v[2] : '',
                "),\n'");
    },
    'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },

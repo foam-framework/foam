@@ -21,7 +21,9 @@
 var JSONParser = SkipGrammar.create({
   __proto__: grammar,
 
-  START: sym('obj'),
+  START: copyInput(sym('objAsString')),
+
+  objAsString: copyInput(sym('obj')),
 
   obj: seq1(1, '{', repeat(sym('pair'), ','), '}'),
     pair: seq(sym('key'), ':', sym('value')),
@@ -31,15 +33,21 @@ var JSONParser = SkipGrammar.create({
         sym('string')),
 
         symbol: noskip(str(seq(sym('char'), str(repeat(sym('alpha')))))),
-          char: alt(range('a','z'), range('A','Z'), '_'),
+          char: alt(range('a','z'), range('A','Z'), '_', '$'),
           alpha: alt(sym('char'), range('0', '9')),
 
   value: alt(
+    sym('expr'),
     sym('number'),
     sym('string'),
     sym('obj'),
     sym('bool')
   ),
+
+  expr: str(seq(
+    sym('symbol'), optional(str(alt(
+      seq('.', sym('expr')),
+      seq('(', str(repeat(sym('value'), ',')), ')')))))),
 
   number: noskip(seq(
     optional('-'),
@@ -78,7 +86,6 @@ var JSONParser = SkipGrammar.create({
 }), repeat0(alt(' ', '\t', '\n', '\r')));
 
 /*
-var res = JSONParser.parseString('{a:1,b:"2",c:false}');
-DEBUG_PARSE = false;
+var res = JSONParser.parseString('{a:1,b:"2",c:false,d:f(),e:g(1,2),f:h.j.k(1)}');
 console.log(res);
 */
