@@ -412,7 +412,7 @@ FOAModel({
     */},
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
-        $$owner{model_: 'IssueOwnerAvatarView'}
+        $$owner{model_: "IssueOwnerAvatarView"}
         <div class="middle">
           $$id{mode: 'read-only', className: 'id'} <% this.priorityToHTML(out); %><br>
           $$summary{mode: 'read-only'}

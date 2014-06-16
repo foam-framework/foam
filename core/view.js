@@ -331,14 +331,16 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var v = this.X.PropertyView.create({prop: prop, args: opt_args});
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
 
     createActionView: function(action, value, opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
-      var v = this.X[modelName].create({
+      var v = X[modelName].create({
         action: action,
         value: value}).copyFrom(opt_args);
 

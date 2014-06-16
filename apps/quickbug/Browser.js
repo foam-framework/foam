@@ -53,7 +53,7 @@ FOAModel({
       defaultValue: 'mode=list',
       postSet: function (oldValue, newValue) {
         if ( oldValue === newValue ) return;
-        console.log('************** MEMENTO: ', newValue);
+        // console.log('************** MEMENTO: ', newValue);
         // console.log('****** LOCATION: ', this.location.toJSON());
         if ( newValue !== oldValue ) this.location.fromMemento(this, newValue);
      }
@@ -445,12 +445,12 @@ FOAModel({
       this.location.can$.addListener(this.performQuery);
 
       this.rowSelection.addListener(function(_,_,_,issue) {
-//        this.project.editIssue(issue.id);
         this.location.id = issue.id;
-//        this.editIssue(issue.id);
       }.bind(this));
 
       this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
+
+      this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
       Events.dynamic(function() {
@@ -470,8 +470,6 @@ FOAModel({
       this.searchChoice.choice = this.searchChoice.choices[1];
 
       this.X.document.addEventListener('keyup', this.keyPress);
-
-      this.location.addListener(this.onLocationUpdate);
 
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
