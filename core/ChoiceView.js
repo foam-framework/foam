@@ -212,12 +212,17 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'ul'
+    },
+    {
+      name: 'innerTagName',
+      defaultValue: 'li'
     }
   ],
 
   methods: {
     choiceToHTML: function(id, choice) {
-      return '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
+      return '<' + this.innerTagName + ' id="' + id + '" class="choice">' +
+          choice[1] + '</' + this.innerTagName + '>';
     },
     toInnerHTML: function() {
       var out = [];

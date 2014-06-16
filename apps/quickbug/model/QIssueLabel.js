@@ -38,6 +38,25 @@ FOAModel({
   ]
 });
 
+FOAModel({
+  name: 'LabelAutocompleteView',
+  extendsModel: 'AutocompleteView',
+  methods: {
+    makeView: function() {
+      return this.X.ChoiceListView.create({
+        dao: this.completer.autocompleteDao,
+        className: this.name + ' autocomplete foamChoiceListView vertical autocompleteLabels',
+        orientation: 'vertical',
+        mode: 'final',
+        objToChoice: this.completer.f,
+        tagName: 'table',
+        innerTagName: 'tr',
+        useSelection: true
+      });
+    }
+  }
+});
+
 
 FOAModel({
   name: 'LabelCompleter',
@@ -61,6 +80,9 @@ FOAModel({
         }
       });
     },
-    f: QIssueLabel.LABEL
+    f: function(issue) {
+      var label = QIssueLabel.LABEL.f(issue);
+      return [label, '<td>' + label + '</td><td>= ' + QIssueLabel.DESCRIPTION.f(issue) + '</td>'];
+    }
   }
 });

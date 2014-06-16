@@ -19,7 +19,8 @@
     <tr><th class="vt">Labels:<br>
       </th>
       <td class="labelediting" colspan="2">
-        $$labels
+        <% var Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
+        $$labels{ X: Y }
       </td>
     </tr>
 <% if ( false ) { /* disabled until the API supports changing blockedOn */ %>
