@@ -216,14 +216,8 @@ function repeat0(p) {
   p = prep(p);
 
   return function(ps) {
-    while ( true ) {
-      var res;
-
-      if ( ! ( res = this.parse(p,ps) ) ) break;
-
-      ps = res;
-    }
-
+    var res;
+    while ( res = this.parse(p, ps) ) ps = res;
     return ps;
   };
 }
