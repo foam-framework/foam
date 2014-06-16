@@ -18,25 +18,26 @@
 /**
  * JSON Parser.
  */
-
 var JSONParser = SkipGrammar.create({
   __proto__: grammar,
 
-  START: sym('map'),
+  START: sym('obj'),
 
-  map: seq1(1, '{', repeat(sym('pair'), ','), '}'),
+  obj: seq1(1, '{', repeat(sym('pair'), ','), '}'),
     pair: seq(sym('key'), ':', sym('value')),
+
       key: alt(
         sym('symbol'),
         sym('string')),
-  symbol: noskip(str(seq(sym('char'), str(repeat(sym('alpha')))))),
-        char: alt(range('a','z'), range('A','Z')),
-        alpha: alt(sym('char'), range('0', '9')),
+
+        symbol: noskip(str(seq(sym('char'), str(repeat(sym('alpha')))))),
+          char: alt(range('a','z'), range('A','Z'), '_'),
+          alpha: alt(sym('char'), range('0', '9')),
 
   value: alt(
     sym('number'),
     sym('string'),
-    sym('map'),
+    sym('obj'),
     sym('bool')
   ),
 
@@ -68,7 +69,13 @@ var JSONParser = SkipGrammar.create({
   bool: alt(
     literal('true', true),
     literal('false', false))
-}, repeat0(alt(' ', '\t')));
+}.addActions({
+  obj: function(v) {
+    var m = {};
+    for ( var i = 0 ; i < v.length ; i++ ) m[v[i][0]] = v[i][2];
+    return m;
+  }
+}), repeat0(alt(' ', '\t', '\n', '\r')));
 
 /*
 var res = JSONParser.parseString('{a:1,b:"2",c:false}');
