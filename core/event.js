@@ -482,13 +482,13 @@ var Events = {
     if ( ! srcValue || ! dstValue ) return;
 
     var listener = function () {
-      var sv = f(srcValue.get());
-      var dv = dstValue.get();
+      var s = f(srcValue.get());
+      var d = dstValue.get();
 
-      if ( sv !== dv ) dstValue.set(sv);
+      if ( s !== d ) dstValue.set(s);
     };
 
-    listener(); // copy initial value
+    listener();
 
     // TODO: put back when cleanup implemented
     //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -516,6 +516,8 @@ var Events = {
    * Initial value is copied from srcValue to dstValue.
    **/
   link: function (srcValue, dstValue) {
+    if ( ! srcValue || ! dstValue ) return;
+
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
   },
@@ -525,12 +527,36 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
+   * @param removeFeedback disables feedback   
    */
-  relate: function (value1, value2, f, fprime) {
-    this.map(value1, value2, f);
-    this.map(value2, value1, fprime);
-  },
+  relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
+    if ( ! srcValue || ! dstValue ) return;
 
+    var feedback = false;
+
+    var l = function(sv, dv, f) { return function () {
+      if ( removeFeedback && feedback ) return;
+      var s = f(sv.get());
+      var d = dv.get();
+
+      if ( s !== d ) {
+        feedback = true;
+        dv.set(s);
+        feedback = false;
+      }
+    }};
+
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+
+    var l1 = l(srcValue, dstValue, f);
+    var l2 = l(dstValue, srcValue, fprime);
+
+    srcValue.addListener(l1);
+    dstValue.addListener(l2);
+
+    l1();
+  },
 
   /** Unlink the values of two models by having them no longer follow each other. **/
   unlink: function (value1, value2) {

@@ -107,7 +107,7 @@ FOAModel({
       var self = this;
       this.i = 0;
       Events.dynamic(function() { self.timer.time; }, function() { self.paint(); });
-//      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
+      //      this.timer && this.timer.propertyValue('time').addListener(this.paint.bind(this));
     },
 
     paintSelf: function() {
@@ -117,29 +117,29 @@ FOAModel({
       try
       {
 
-      c.translate(500,250);
-      c.translate(0, -30*Math.sin(this.timer.time/4000*(Math.PI*2)));
+        c.translate(500,250);
+        c.translate(0, -30*Math.sin(this.timer.time/4000*(Math.PI*2)));
 
-      // tail
-      c.save();this.tail(this.r, Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/10);c.restore();
+        // tail
+        c.save();this.tail(this.r, Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/10);c.restore();
 
         var a = Math.sin(this.timer.time/4000*(Math.PI*2))*Math.PI/31.5;
-      // right wing
-      c.save();c.rotate(-0.4);this.wing(this.r, a);c.restore();
-      // left wing
-      c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r, a);c.restore();
+        // right wing
+        c.save();c.rotate(-0.4);this.wing(this.r, a);c.restore();
+        // left wing
+        c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r, a);c.restore();
 
-      // neck
-      c.translate(0,2*-this.r);
-      this.dot(this.r);
-      c.translate(0,2*-this.r);
-      this.dot(this.r*.8);
+        // neck
+        c.translate(0,2*-this.r);
+        this.dot(this.r);
+        c.translate(0,2*-this.r);
+        this.dot(this.r*.8);
 
-      // eyes
-      c.scale(0.38, 0.38);
-      c.translate(-80,-140);
-      c.translate(-500,-500);
-      this.eyes.paint();
+        // eyes
+        c.scale(0.38, 0.38);
+        c.translate(-80,-140);
+        c.translate(-500,-500);
+        this.eyes.paint();
 
       }
       catch(x) {
@@ -147,39 +147,40 @@ FOAModel({
       }
       c.restore();
 
-      if ( Math.random() > 0.1 ) return;
+      if ( Math.random() > 0.2 ) return;
 
       var Y = 210-30*Math.sin(this.timer.time/4000*(Math.PI*2));
 
-       var circle = Circle.create({
-         x: 500,
-         y: Y,
-         r: 0,
-         color: undefined,
-         borderWidth: 4,
-         border: this.colours[this.timer.time/10%this.colours.length]});
+      var circle = Circle.create({
+        x: 500,
+        y: Y,
+        r: 0,
+        color: undefined,
+        borderWidth: 2,
+        border: this.colours[Math.floor(Math.random() * this.colours.length)]});
 
-       this.addChild(circle);
+      this.addChild(circle);
 
-       var M = Movement;
+      var M = Movement;
 
-       M.compile([
-          [
-            [4000, function() {
-               circle.x = 350 - Math.random()*150;
-               circle.alpha = 0;
-             },
-             Math.sqrt
-            ],
-            [4000, function() {
-               circle.y = Y - 150 - Math.random() * 50;
-               circle.r = 15 + Math.random() * 50;
-             },
-             M.easeIn(0.5)
-            ]
+      M.compile([
+        [
+          [4000, function() {
+            circle.x = 350 - Math.random()*150;
+            circle.alpha = 0;
+           },
+           Math.sqrt
           ],
-          (function() { this.removeChild(circle); }).bind(this)
-       ])();
+          [4000, function() {
+            circle.y = Y - 150 - Math.random() * 50;
+            circle.r = 25 + Math.random() * 50;
+            circle.borderWidth = 12;
+           },
+           M.easeIn(0.5)
+          ]
+        ],
+        (function() { this.removeChild(circle); }).bind(this)
+      ])();
     }
   }
 });
