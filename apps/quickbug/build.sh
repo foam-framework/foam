@@ -17,6 +17,7 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/context.js \
   ../../core/FOAM.js \
+  ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
   ../../core/oam.js \
