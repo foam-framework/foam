@@ -25,6 +25,10 @@ MementoMgr.FORTH.label = '';
 MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
+/** TODO: There is a race-condition between onLocationUpdate and performQuery and performQuery must be
+    called first in case location.q contains a URL.  The search field should use a different value which
+    is copied into location.q if it isn't a URL.  This would fix the race condition.  But for now, I've
+    just tweaked the merged times. **/
 FOAModel({
   name: 'Browser',
 
@@ -212,7 +216,6 @@ FOAModel({
       name: 'searchField',
       factory: function() { return TextFieldView.create({
         name: 'search',
-        displayWidth: 5,
         type: 'search',
         data$: this.location.q$ }); }
     },
@@ -265,7 +268,7 @@ FOAModel({
     },
     {
       name: 'performQuery',
-      isMerged: 100,
+      isMerged: 2,
       code: function(evt) {
         if ( ! this.maybeSetLegacyUrl(this.location.q) ) {
           this.search(AND(
@@ -287,7 +290,7 @@ FOAModel({
     },
     {
       name: 'onLocationUpdate',
-      isAnimated: true,
+      isMerged: 15,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
         if ( this.location.id ) {
