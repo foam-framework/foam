@@ -213,18 +213,18 @@ FOAModel({
           var window = self.window = w.contentWindow;
 
           apar(
-            arequire('GridView'),
-            arequire('QIssueTileView'),
             arequire('Browser'),
-            arequire('QIssueDetailView'),
-            arequire('QIssueCommentCreateView'),
-            arequire('QIssueCommentView'),
-            arequire('QIssueCommentAuthorView'),
-            arequire('QIssueCommentUpdateView'),
             arequire('ConfigureProjectsView'),
-            arequire('QIssueStatus'),
+            arequire('GridView'),
+            arequire('QIssueCommentAuthorView'),
+            arequire('QIssueCommentCreateView'),
+            arequire('QIssueCommentUpdateView'),
+            arequire('QIssueCommentView'),
+            arequire('QIssueDetailView'),
             arequire('QIssueLabel'),
-            arequire('QIssuePerson')
+            arequire('QIssuePerson'),
+            arequire('QIssueStatus'),
+            arequire('QIssueTileView')
           )(function () {
             $addWindow(window);
             var Y = self.X.subWindow(window, 'Browser Window');
@@ -275,6 +275,7 @@ FOAModel({
                 arequire('QIssueCommentCreateView'),
                 arequire('QIssueCommentView'),
                 arequire('QIssueCommentAuthorView'),
+                arequire('QIssueCommentUpdateDetailView'),
                 arequire('QIssueCommentUpdateView')
               )(function() {
                   var v = Y.QIssueDetailView.create({
