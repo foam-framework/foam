@@ -266,7 +266,9 @@ var QIssue = FOAM({
         tableFormatter: function(a, row) {
           var s = '';
           for ( var i = 0 ; i < a.length ; i++ ) {
-            s += ' <span class="label">' + a[i] + '</span>';
+            if ( ! isPropertyLabel(a[i]) ) {
+              s += ' <span class="label">' + a[i] + '</span>';
+            }
           }
           return s;
         },
