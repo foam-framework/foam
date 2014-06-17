@@ -38,6 +38,7 @@ var Location = FOAM({
 
   properties: [
     {
+      model_: 'LocationProperty',
       name: 'id'
     },
     {
