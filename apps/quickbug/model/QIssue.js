@@ -241,7 +241,7 @@ var QIssue = FOAM({
 
            view.data$.addListener(function() {
              var tmp = obj.clone();
-             tmp.starred = view.value;
+             tmp.starred = view.data;
              tableView.browser.IssueDAO.put(tmp);
            });
 

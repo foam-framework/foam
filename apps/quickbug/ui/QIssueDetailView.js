@@ -55,13 +55,16 @@ FOAModel({
       isMerged: 100,
       code: function() {
         if ( ! this.data ) return;
+        if ( ! this.$ ) this.QIssueDAO.unlisten(this.onDAOUpdate);
 
         var self = this;
         this.QIssueDAO.find(this.data.id, {
           put: function(obj) {
+            if ( obj.equals(self.data) ) return;
             self.saveEnabled = false;
             self.data.copyFrom(obj);
             self.newCommentView.issue = obj;
+            self.saveEnabled = true;
           }
         });
       }
