@@ -130,7 +130,8 @@ FOAModel({
         });
         v.data = 'dummy';
         v.data$.addListener(function() {
-          self.memento = v.data;
+          if ( v.data ) self.memento = v.data;
+          v.data = '';
         });
         return v;
       }
