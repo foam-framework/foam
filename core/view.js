@@ -3283,11 +3283,10 @@ FOAModel({
       return { values: values, i: i };
     },
     setValues: function(values, index) {
+      this.domValue.set(this.valueToText(values) + ',');
+      this.data = this.textToValue(this.domValue.get());
+
       var isLast = values.length - 1 === index;
-
-      var data = values.join(',') + ( isLast ? ',' : '' );
-      this.data = data;
-
       var selection = 0;
       for ( var i = 0; i <= index; i++ ) {
         selection += values[i].length + 1;
