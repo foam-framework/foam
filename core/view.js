@@ -1666,13 +1666,19 @@ FOAModel({
 
   extendsModel: 'View',
 
+  properties: [
+    'data',
+  ],
+
   methods: {
     initHTML: function() {
       if ( ! this.$ ) return;
       this.data$.addListener(this.update);
       this.$.addEventListener('click', this.onClick);
     },
-    toInnerHTML: function() { return '&nbsp;&nbsp;&nbsp;'; }
+    toHTML: function() {
+      return '<span id="' + this.id + '" class="' + this.className + ' ' + (this.data ? 'true' : '') + '">&nbsp;&nbsp;&nbsp;</span>';
+    }
   },
 
   listeners: [
