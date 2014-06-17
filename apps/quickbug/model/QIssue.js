@@ -46,8 +46,7 @@ function isPropertyLabel(l) {
     }
   }
 
-  propertyLabels_[l] = false;
-  return false;
+  return propertyLabels_[l] = false;
 }
 
 
@@ -187,17 +186,20 @@ var QIssue = FOAM({
           shortName: 'su',
           label: 'Summary',
           type: 'String',
-            tableWidth: '350px'
+          tableWidth: '350px',
 //          tableWidth: '100%'
+          tableFormatter: function(value, row, tableView) {
+            return tableView.strToHTML(value);
+          }
         },
         {
           name: 'summaryPlusLabels',
           label: 'Summary + Labels',
-          columnLabel: 'Summary + Labels',
+          tableLabel: 'Summary + Labels',
           type: 'String',
           tableWidth: '100%',
           tableFormatter: function(value, row, tableView) {
-            return tableView.strToHTML(value) +
+            return tableView.strToHTML(row.summary) +
               QIssue.LABELS.tableFormatter(row.labels, row);
           }
         },
@@ -273,8 +275,9 @@ var QIssue = FOAM({
             var kv = isPropertyLabel(a[i]);
             if ( kv ) {
               this[kv[0]] = kv[1];
-              a.splice(i,1);
-              i--;
+              // Don't remove from labels because then label:X searches don't work.
+              // a.splice(i,1);
+              // i--;
             } else {
               a[i] = a[i].intern();
             }
