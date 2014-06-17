@@ -411,8 +411,12 @@ input[name="labels"] {
 .popupChoiceList li {
   margin: 0;
   margin-left: -40px;
-  padding: 8px;
+  padding: 0;
   font-size: 14px;
+}
+
+.popupChoiceList li span {
+  padding: 8px;
 }
 
 .popupChoiceList li:hover {
