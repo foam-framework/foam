@@ -366,6 +366,15 @@ input[name="labels"] {
   background: #c3d9ff;
 }
 
+.autocompleteLabels {
+  width: 600px;
+}
+
+.autocompleteLabels > td {
+  word-wrap: nowrap;
+}
+
+
 .labelSummary {
   display: table-row;
 }
