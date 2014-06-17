@@ -48,6 +48,7 @@ FOAModel({
     {
       name:  'hardSelection',
       type:  'Value',
+      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
       factory: function() { return SimpleValue.create(); }
     },
     {
@@ -186,6 +187,8 @@ FOAModel({
   ],
 
   methods: {
+    ROW_SELECTED: ['escape'],
+
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
