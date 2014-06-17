@@ -785,6 +785,10 @@ FOAModel({
       help: 'Alias for delegate.',
       getter: function() { return this.delegate },
       setter: function(dao) { this.delegate = dao; }
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.src.model || this.cache.model; }
     }
   ],
 
@@ -794,8 +798,6 @@ FOAModel({
 
       var src   = this.src;
       var cache = this.cache;
-
-      this.model = src.model;
 
       var futureDelegate = afuture();
       this.cache = FutureDAO.create(futureDelegate.get);
@@ -3071,11 +3073,11 @@ FOAModel({
         this.mdao = dao;
       } else if ( this.cache ) {
         this.mdao = MDAO.create(params);
-        dao = CachingDAO.create({cache: this.mdao, src: dao});
+        dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
       }
 
       if ( this.seqNo ) {
-        var args = {__proto__: params, delegate: dao};
+        var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
         dao = SeqNoDAO.create(args);
       }
