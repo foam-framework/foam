@@ -59,6 +59,7 @@ FOAModel({
         var self = this;
         this.QIssueDAO.find(this.data.id, {
           put: function(obj) {
+            self.saveEnabled = false;
             self.data.copyFrom(obj);
             self.newCommentView.issue = obj;
           }

@@ -293,6 +293,8 @@ FOAModel({
         if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
+          // Unselect the current row so that it can be selected/edit again.
+          this.rowSelection.set('');
           this.back();
         }
       }

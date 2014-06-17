@@ -19,6 +19,7 @@ var labelToProperty = {
   Type:         'type',
   Pri:          'pri',
   Priority:     'priority',
+  Milestone:    'milestone',
   Mstone:       'milestone',
   M:            'milestone',
   Cr:           'cr',
