@@ -458,6 +458,9 @@ FOAModel({
       code: function() {
         if ( ! this.$ ) return;
 
+        this.$.firstElementChild.innerHTML = '';
+        this.inputs = [];
+
         var i = 0;
         while ( this.inputs.length < Math.max(6, this.softData.length) ) {
           var views = [this.field(),
