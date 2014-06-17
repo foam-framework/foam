@@ -5,7 +5,8 @@
       </td>
     </tr>
     <tr><th>Status:</th><td class="inplace" colspan="2">
-        $$status
+        <% var Y = this.X.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
+        $$status{ X: Y }
       </td>
     </tr>
     <tr><th>Owner:</th><td class="inplace">
@@ -19,7 +20,7 @@
     <tr><th class="vt">Labels:<br>
       </th>
       <td class="labelediting" colspan="2">
-        <% var Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
+        <% Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
         $$labels{ X: Y }
       </td>
     </tr>

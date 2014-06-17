@@ -635,10 +635,12 @@ function multiline(f) {
 function findPageXY(node) {
   var x = 0;
   var y = 0;
+  var parent;
   while ( node ) {
+    parent = node;
     x += node.offsetLeft;
     y += node.offsetTop;
     node = node.offsetParent;
   }
-  return [x, y];
+  return [x, y, parent];
 }

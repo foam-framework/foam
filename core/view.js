@@ -703,6 +703,10 @@ FOAModel({
         prev && prev.unsubscribe('keydown', this.onKeyDown);
         v.subscribe('keydown', this.onKeyDown);
       }
+    },
+    {
+      name: 'maxHeight',
+      defaultValue: 400
     }
   ],
 
@@ -794,7 +798,8 @@ FOAModel({
         div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
       }
 
-      div.style.left = -parentNode.offsetWidth;
+      if ( pos[2].offsetWidth - pos[0] < 600 ) div.style.left = 600 - pos[2].offsetWidth;
+      else div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
