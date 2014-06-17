@@ -54,13 +54,38 @@ FOAModel({
 
       var self = this;
       dao.limit(2).select()(function(objs) {
-        if ( objs.length === 1 && self.f.f(objs[0]) === data ) {
+        if ( objs.length === 1 && self.f(objs[0]) === data ) {
           self.autocompleteDao = src.where(FALSE);
         } else {
           self.autocompleteDao = dao;
         }
       });
     },
-    f: QIssueStatus.STATUS
+    f: function(o) { return o.status; }
+  }
+});
+
+FOAModel({
+  name: 'StatusAutocompleteView',
+  extendsModel: 'AutocompleteView',
+
+  methods: {
+    makeView: function() {
+      var completer = this.completer;
+      var strToHTML = this.strToHTML.bind(this);
+
+      return this.X.ChoiceListView.create({
+        dao: this.completer.autocompleteDao,
+        className: this.name + ' autocomplete foamChoiceListView vertical autocompleteLabels',
+        orientation: 'vertical',
+        mode: 'final',
+        objToChoice: function(obj) {
+          return [completer.f(obj), '<td>' + strToHTML(obj.status) + '</td><td>= ' + strToHTML(obj.description) + '</td>']
+        },
+        tagName: 'table',
+        innerTagName: 'tr',
+        useSelection: true
+      });
+    }
   }
 });
