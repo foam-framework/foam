@@ -4,18 +4,13 @@ FOAModel({
 
   properties: [
     { name: 'model', factory: function() { return QIssueComment; } },
-    { name: 'issue' },
+    { name: 'issue', postSet: function(_, v) { this.data = v.newComment() } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
     { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }
   ],
 
   methods: {
-    init: function(args) {
-      this.SUPER(args);
-      this.value.value = this.issue.newComment();
-    },
-
     makeUpdatesView: function() {
       return this.X.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
@@ -37,7 +32,7 @@ FOAModel({
       action: function() {
         var defaultComment = this.issue.newComment();
 
-        var diff = defaultComment.updates.diff(this.value.value.updates);
+        var diff = defaultComment.updates.diff(this.data.updates);
         function convertArray(key) {
           if ( ! diff[key] ) {
             diff[key] = [];
@@ -54,7 +49,7 @@ FOAModel({
         convertArray('blockedOn');
         convertArray('cc');
 
-        var comment = this.value.value.clone();
+        var comment = this.data.clone();
         comment.updates = QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
@@ -65,7 +60,7 @@ FOAModel({
         this.dao.put(comment, {
           put: function(o) {
             self.saving = false;
-            self.value.value = self.issue.newComment();
+            self.data = self.issue.newComment();
           },
           error: function() {
             self.saving = false;
