@@ -703,6 +703,10 @@ FOAModel({
         prev && prev.unsubscribe('keydown', this.onKeyDown);
         v.subscribe('keydown', this.onKeyDown);
       }
+    },
+    {
+      name: 'maxHeight',
+      defaultValue: 400
     }
   ],
 
