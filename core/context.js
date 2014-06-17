@@ -68,7 +68,7 @@ function subWindow(w, opt_name) {
 
 var X = this.subWindow(window, 'DEFAULT WINDOW');
 
-function registerModel(model) {
+function registerModel(model, opt_name) {
   /*
   if ( model.X === this ) {
     this[model.name] = model;
@@ -87,7 +87,7 @@ function registerModel(model) {
 
   Object.defineProperty(
     this,
-    model.name,
+    opt_name || model.name,
     {
       get: function() {
         return ( this === thisX ) ? thisModel : this.registerModel(model);
