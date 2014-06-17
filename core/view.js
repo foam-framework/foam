@@ -204,7 +204,7 @@ var DOM = {
         if ( ! viewName ) {
           // default value is 'true' if 'showActions' isn't specified.
           var a = e.getAttribute('showActions');
-          
+
           view.showActions = a ?
             a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
             true ;
@@ -692,7 +692,7 @@ FOAModel({
           prev.data$.removeListener(this.complete);
           prev.choices$.removeListener(this.choicesUpdate);
         }
-        
+
         v.data$.addListener(this.complete);
         v.choices$.addListener(this.choicesUpdate);
       }
@@ -3237,7 +3237,7 @@ FOAModel({
     },
     valueToText: function(val) {
       return this.hasOwnProperty('precision') ?
-        this.formatNumber(val) : 
+        this.formatNumber(val) :
         String.valueOf(val) ;
     },
     textToValue: function(text) { return parseFloat(text) || 0; }
@@ -4512,7 +4512,11 @@ FOAModel({
           out.put('</div>');
         }
       }.bind(this)})(function() {
-        this.$.innerHTML = out.join('');
+        var e = this.$;
+
+        if ( ! e ) return;
+
+        e.innerHTML = out.join('');
         this.initInnerHTML();
         this.children = [];
         this.painting = false;
