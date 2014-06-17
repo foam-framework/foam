@@ -8,9 +8,15 @@ FOAModel({
       factory: function() { return QIssue; }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'saveEnabled',
+      defaultValue: false
+    },
+    {
       name: 'QIssueCommentDAO'
     },
     {
+      model_: 'DAOProperty',
       name: 'QIssueDAO'
     },
     {
@@ -39,34 +45,62 @@ FOAModel({
           property: QIssue.BLOCKED_ON,
           ids: this.value.get().blockedOn});
       }
+    },
+    'newCommentView'
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: 100,
+      code: function() {
+        if ( ! this.data ) return;
+
+        var self = this;
+        this.QIssueDAO.find(this.data.id, {
+          put: function(obj) {
+            self.saveEnabled = false;
+            self.data.copyFrom(obj);
+            self.newCommentView.issue = obj;
+          }
+        });
+      }
+    },
+    {
+      name: 'doSave',
+      code: function() {
+        if ( this.saveEnabled ) this.QIssueDAO.put(this.data);
+      }
     }
   ],
 
   methods: {
-    updateSubViews: function() {
-      this.SUPER();
-      var value = this.value.get();
-      var dao = this.QIssueDAO;
-      value.addListener(function(v) {
-        dao.put(v);
-      });
+    init: function(args) {
+      this.SUPER(args);
+      this.QIssueDAO.listen(this.onDAOUpdate);
     },
+
+    onValueChange_: function(_, _, old, v) {
+      this.saveEnabled = false;
+
+      if ( old ) old.removeListener(this.doSave);
+
+      if ( v ) v.addListener(this.doSave);
+      else if ( this.data ) this.data.addListener(this.doSave);
+    },
+
+
     commentView: function() {
-      return ListView.create({
+      return this.X.DAOListView.create({
         dao: this.QIssueCommentDAO,
-        view: {
-          create: function() {
-            return QIssueCommentView.create({
-              model: QIssueComment // ???: Is this needed
-            });
-          }
-        }
+        model: this.X.QIssueComment,
+        rowView: 'QIssueCommentView'
       });
     },
     commentCreateView: function() {
-      return this.X.QIssueCommentCreateView.create({
+      return this.newCommentView = this.X.QIssueCommentCreateView.create({
         dao: this.QIssueCommentDAO,
-        issue: this.value.get()
+        issue: this.data
       });
     },
     clView: function() {
@@ -75,6 +109,10 @@ FOAModel({
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
     },
+    updateSubViews: function() {
+      this.SUPER();
+      this.saveEnabled = true;
+    }
   },
 
   templates: [

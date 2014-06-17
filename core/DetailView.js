@@ -60,6 +60,9 @@ FOAModel({
     {
       name: 'onValueChange',
       code: function() {
+        // TODO: Allow overriding of listeners
+        this.onValueChange_.apply(this, arguments);
+
         if ( this.obj && this.obj.model_ ) this.model = this.obj.model_;
         if ( this.$ ) this.updateSubViews();
       }
@@ -74,6 +77,9 @@ FOAModel({
   ],
 
   methods: {
+    onValueChange_: function() {
+    },
+
     bindSubView: function(view, prop) {
       if ( this.get() ) {
         // TODO: setValue is deprecated

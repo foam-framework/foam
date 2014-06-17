@@ -4077,63 +4077,6 @@ FOAModel({
 });
 
 FOAModel({
-  name: 'ListView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'dao',
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.unlisten(this.update);
-        newValue.listen(this.update);
-        this.update();
-      }
-    },
-    {
-      name: 'view'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.update();
-    }
-  },
-
-  listeners: [
-    {
-      name: "update",
-      animate: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var self = this;
-
-        this.dao.select()(function(objs) {
-          if ( ! self.$ ) { self.destroy(); return; }
-
-          self.$.innerHTML = '';
-          var children = new Array(objs.length);
-
-          for ( var i = 0; i < objs.length; i++ ) {
-            var view = self.view.create();
-            children[i] = view;
-            view.value = SimpleValue.create(objs[i]);
-          }
-
-          self.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
-          children.forEach(function(c) { c.initHTML(); });
-        });
-      }
-    }
-  ]
-});
-
-
-FOAModel({
   name: 'AutocompleteListView',
 
   extendsModel: 'View',
