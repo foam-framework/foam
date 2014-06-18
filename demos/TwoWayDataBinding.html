@@ -55,6 +55,9 @@ input::-webkit-inner-spin-button {
  <body>
   <a href="http://n12v.com/2-way-data-binding/?hn">Two-Way-Data-Binding</a>
   <script>
+
+  // Version 1: Uses Events.relate() to relate to two fields.
+
   FOAModel({
     name: 'Temperature',
     properties: [ 'f', 'c' ],
@@ -76,6 +79,8 @@ input::-webkit-inner-spin-button {
   var t = Temperature.create();
   t.write(document);
 
+
+  // Version 2: Save as version 1, but upgrades fields to FloatProperties and sets the 'precision' of the views.
 
   FOAModel({
     name: 'Temperature2',
@@ -101,6 +106,8 @@ input::-webkit-inner-spin-button {
   var t2 = Temperature2.create();
   t2.write(document);
  
+
+  // Version 3: Uses the postSet's on the properties instead of relate().
 
   FOAModel({
     name: 'Temperature3',
