@@ -68,7 +68,7 @@ FOAModel({
       var i = 1;
       this.dao.select({
         put: function(o) {
-          if ( o.id === self.location.id ) {
+          if ( o.id == self.location.id ) {
             self.pos = i;
           }
           i++;
