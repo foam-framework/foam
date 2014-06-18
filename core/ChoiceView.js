@@ -219,7 +219,27 @@ FOAModel({
     }
   ],
 
+  listeners: [
+    {
+      name: 'updateSelected',
+      code: function() {
+        for ( var i = 0 ; i < this.$.children.length ; i++ ) {
+          var c = this.$.children[i];
+          DOM.setClass(c, 'selected', i === this.index);
+        }
+      }
+    }
+  ],
+
   methods: {
+    init: function() {
+      this.SUPER();
+      // Doing this at the low level rather than with this.setClass listeners
+      // to avoid creating loads of listeners when autocompleting or otherwise
+      // rapidly changing this.choices.
+      this.index$.addListener(this.updateSelected);
+      this.choices$.addListener(this.updateSelected);
+    },
     choiceToHTML: function(id, choice) {
       return '<' + this.innerTagName + ' id="' + id + '" class="choice">' +
           choice[1] + '</' + this.innerTagName + '>';
@@ -237,14 +257,14 @@ FOAModel({
           }.bind(this, i),
           id);
 
-        this.setClass(
-          'selected',
-          function(index) { return this.index === index; }.bind(this, i),
-          id);
-
         out.push(this.choiceToHTML(id, choice));
       }
       return out.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.updateSelected();
     },
 
     scrollToSelection: function() {
