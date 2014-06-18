@@ -41,7 +41,8 @@ var JSONParser = SkipGrammar.create({
     sym('number'),
     sym('string'),
     sym('obj'),
-    sym('bool')
+    sym('bool'),
+    sym('array')
   ),
 
   expr: str(seq(
@@ -76,7 +77,9 @@ var JSONParser = SkipGrammar.create({
 
   bool: alt(
     literal('true', true),
-    literal('false', false))
+    literal('false', false)),
+
+  array: seq1(1, '[', repeat(sym('value'), ','), ']')
 }.addActions({
   obj: function(v) {
     var m = {};
@@ -85,7 +88,5 @@ var JSONParser = SkipGrammar.create({
   }
 }), repeat0(alt(' ', '\t', '\n', '\r')));
 
-/*
-var res = JSONParser.parseString('{a:1,b:"2",c:false,d:f(),e:g(1,2),f:h.j.k(1)}');
+var res = JSONParser.parseString('{a:1,b:"2",c:false,d:f(),e:g(1,2),f:h.j.k(1),g:[1,"a",false,[]]}');
 console.log(res);
-*/
