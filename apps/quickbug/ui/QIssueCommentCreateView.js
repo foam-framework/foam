@@ -72,7 +72,7 @@ FOAModel({
     {
       name: 'discard',
       isEnabled: function() { return ! this.saving; },
-      action: function() { this.X.stack.back(); }
+      action: function() { this.X.browser.location.id = ''; }
     }
   ]
 });
