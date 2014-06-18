@@ -88,5 +88,8 @@ var JSONParser = SkipGrammar.create({
   }
 }), repeat0(alt(' ', '\t', '\n', '\r')));
 
+/*
+TODO: move to FUNTest
 var res = JSONParser.parseString('{a:1,b:"2",c:false,d:f(),e:g(1,2),f:h.j.k(1),g:[1,"a",false,[]]}');
 console.log(res);
+*/
