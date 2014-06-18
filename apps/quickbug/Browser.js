@@ -213,7 +213,8 @@ FOAModel({
       name: 'searchField',
       factory: function() { return TextFieldView.create({
         name: 'search',
-        type: 'search'
+        type: 'search',
+        displayWidth: 5
       });}
     },
     {
