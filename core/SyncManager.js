@@ -115,7 +115,7 @@ FOAModel({
       model_: 'DateTimeProperty',
       name:  'lastModified',
       help: 'The last-modified timestamp of the most recently synced item.',
-      defaultValue: new Date(0)
+      factory: function() { return new Date(); }
     },
     {
       model_: 'StringProperty',
@@ -123,6 +123,12 @@ FOAModel({
       displayWidth: 33,
       displayHeight: 4,
       help: 'Only sync items which match this query.'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'maxSyncAge',
+      defaultValue: 6 * 24 * 60 * 1000,
+      help: 'How old our database is allowed to be before we just toss it and start over.'
     }
   ],
 
@@ -175,13 +181,13 @@ FOAModel({
       help:  'Reset the Sync Manager to force a re-sync of all data.',
 
       isEnabled: function() { return ! this.enabled; },
-      action: function() {
+      action: function(ret) {
         this.itemsSynced = 0;
         this.timesSynced = 0;
         this.lastSync = '';
         this.lastSyncDuration = 0;
         this.lastId = '';
-        this.lastModified = SyncManager.LAST_MODIFIED.defaultValue;
+        this.lastModified = SyncManager.LAST_MODIFIED.factory();
       }
     }
   ],
@@ -190,73 +196,90 @@ FOAModel({
     init: function() {
       this.SUPER();
       var self = this;
-
-      this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
-        if ( max.max ) self.lastModified = max.max;
-        // Postpone starting until we have the lastModified timestamp
-        // self.start();
-      });
     },
 
-    sync: function() {
+    doReset: function(ret) {
+      console.log("Doing reset...");
+      this.reset();
+      this.dstDAO.removeAll()(ret)
+    },
+
+    sync: function(ret) {
       var self = this;
-      var batchSize = this.batchSize;
-      var startTime = Date.now();
-      var lastBatchSize = 0;
+      aseq(
+        (function(ret) {
+          this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
+            if ( max.max - self.lastModified.getTime() > self.maxSyncAge )
+              self.doReset(ret);
+            else
+              ret();
+          });
+        }).bind(this),
+        (function(ret) {
+          var batchSize = this.batchSize;
+          var startTime = Date.now();
+          var lastBatchSize = 0;
 
-      this.abortRequest_ = false;
-      this.isSyncing = true;
-      this.syncStatus = 'Syncing...';
+          this.abortRequest_ = false;
+          this.isSyncing = true;
+          this.syncStatus = 'Syncing...';
 
-      var dao = this.srcDAO;
+          var dao = this.srcDAO;
 
-      if ( this.batchSize > 0 ) dao = dao.limit(batchSize);
+          if ( this.batchSize > 0 ) dao = dao.limit(batchSize);
 
-      var delay = this.syncInterval;
+          var delay = this.syncInterval;
 
-      if ( this.queryParser && this.query ) {
-        var p = this.queryParser.parseString(this.query.replace(/\s+/g, ' '));
+          if ( this.queryParser && this.query ) {
+            var p = this.queryParser.parseString(this.query.replace(/\s+/g, ' '));
 
-        if ( p ) {
-          p = p.partialEval();
-          // console.log('sync query: ', p.toMQL());
-          dao = dao.where(p);
-        }
-      }
-
-      dao
-        .where(GT(this.modifiedProperty, this.lastModified))
-        .orderBy(this.modifiedProperty)
-        .select({
-          put: function(item, _, fc) {
-            if ( self.abortRequest_ ) {
-              fc.stop();
-              self.abortRequest_ = false;
+            if ( p ) {
+              p = p.partialEval();
+              // console.log('sync query: ', p.toMQL());
+              dao = dao.where(p);
             }
-
-            self.itemsSynced++;
-            self.lastId = item.id;
-            if ( item[self.modifiedProperty.name].compareTo(self.lastModified) > 0 ) {
-              self.lastModified = item[self.modifiedProperty.name];
-              delay = self.delay;
-            }
-            lastBatchSize++;
-            self.dstDAO.put(item);
-          },
-          error: function() {
-            debugger;
           }
-        })(function() {
-          self.timesSynced++;
-          self.lastSyncDuration = Date.now() - startTime;
-          self.lastBatchSize = lastBatchSize;
 
-          self.syncStatus = '';
-          self.lastSync = new Date().toString();
-          self.isSyncing = false;
+          dao
+            .where(GT(this.modifiedProperty, this.lastModified))
+            .orderBy(this.modifiedProperty)
+            .select({
+              put: function(item, _, fc) {
+                if ( self.abortRequest_ ) {
+                  fc.stop();
+                  self.abortRequest_ = false;
+                }
 
-          self.schedule(delay);
-        });
+                self.itemsSynced++;
+                self.lastId = item.id;
+                if ( item[self.modifiedProperty.name].compareTo(self.lastModified) > 0 ) {
+                  self.lastModified = item[self.modifiedProperty.name];
+                  delay = self.delay;
+                }
+                lastBatchSize++;
+                self.dstDAO.find(item.id, {
+                  put: function() {
+                    self.dstDAO.put(item);
+                  }
+                });
+                self.dstDAO.put(item);
+              },
+              error: function() {
+                debugger;
+              }
+            })(function() {
+              self.timesSynced++;
+              self.lastSyncDuration = Date.now() - startTime;
+              self.lastBatchSize = lastBatchSize;
+
+              self.syncStatus = '';
+              self.lastSync = new Date().toString();
+              self.isSyncing = false;
+
+              self.schedule(delay);
+              ret();
+            });
+        }).bind(this))(function(){ ret && ret(); });
     },
 
     schedule: function(syncInterval) {
