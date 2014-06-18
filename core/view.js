@@ -707,6 +707,10 @@ FOAModel({
     {
       name: 'maxHeight',
       defaultValue: 400
+    },
+    {
+      name: 'className',
+      defaultValue: 'autocompletePopup'
     }
   ],
 
@@ -728,7 +732,7 @@ FOAModel({
     makeView: function() {
       return this.X.ChoiceListView.create({
         dao: this.completer.autocompleteDao,
-        className: this.name + ' autocomplete foamChoiceListView vertical',
+        extraClassName: 'autocomplete',
         orientation: 'vertical',
         mode: 'final',
         objToChoice: this.completer.f,
@@ -857,7 +861,7 @@ FOAModel({
 
   templates: [
     function toHTML() {/*
-  <span id="<%= this.id %>" style="position:relative"><div style="position:absolute"><%= this.view %></div></span>
+  <span id="<%= this.id %>" style="position:relative"><div %%cssClassAttr() style="position:absolute"><%= this.view %></div></span>
     */}
   ]
 });
