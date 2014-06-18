@@ -270,6 +270,15 @@ FOAModel({
       }
     },
     {
+      name: 'keyPress',
+      code: function(e) {
+        if ( e.ctrlKey && e.shiftKey ) {
+          if ( e.keyCode == 189 ) this.zoomOut();
+          if ( e.keyCode == 187 ) this.zoomIn();
+        }
+      }
+    },
+    {
       name: 'performQuery',
       isMerged: 1,
       code: function(evt) {
@@ -281,17 +290,8 @@ FOAModel({
       }
     },
     {
-      name: 'keyPress',
-      code: function(e) {
-        if ( e.ctrlKey && e.shiftKey ) {
-          if ( e.keyCode == 189 ) this.zoomOut();
-          if ( e.keyCode == 187 ) this.zoomIn();
-        }
-      }
-    },
-    {
       name: 'onLocationUpdate',
-      isMerged: 1,
+      isMerged: 2,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
         if ( this.location.id ) {
