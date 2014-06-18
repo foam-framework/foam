@@ -341,6 +341,7 @@ function createView(rowSelection, browser) {
   });
 }
 
+
 FOAModel({
   name: 'GriddedStringArrayView',
   extendsModel: 'View',

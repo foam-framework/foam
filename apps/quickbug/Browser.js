@@ -25,10 +25,6 @@ MementoMgr.FORTH.label = '';
 MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
-/** TODO: There is a race-condition between onLocationUpdate and performQuery and performQuery must be
-    called first in case location.q contains a URL.  The search field should use a different value which
-    is copied into location.q if it isn't a URL.  This would fix the race condition.  But for now, I've
-    just tweaked the merged times. **/
 FOAModel({
   name: 'Browser',
 
@@ -217,8 +213,8 @@ FOAModel({
       name: 'searchField',
       factory: function() { return TextFieldView.create({
         name: 'search',
-        type: 'search',
-        data$: this.location.q$ }); }
+        type: 'search'
+      });}
     },
     {
       name: 'refreshImg',
@@ -246,6 +242,12 @@ FOAModel({
 
   listeners: [
     {
+      name: 'onSearch',
+      code: function(_,_,_,q) {
+        if ( ! this.maybeSetLegacyUrl(q) ) this.location.q = q;
+      }
+    },
+    {
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function(evt) {
@@ -269,15 +271,13 @@ FOAModel({
     },
     {
       name: 'performQuery',
-      isMerged: 2,
+      isMerged: 1,
       code: function(evt) {
-        if ( ! this.maybeSetLegacyUrl(this.location.q) ) {
-          this.search(AND(
-            QueryParser.parseString(this.location.can) || TRUE,
-            QueryParser.parseString(this.location.q) || TRUE
-          ).partialEval());
-          metricsSrv.sendEvent('Browser', 'Query');
-        }
+        this.search(AND(
+          QueryParser.parseString(this.location.can) || TRUE,
+          QueryParser.parseString(this.location.q) || TRUE
+        ).partialEval());
+        metricsSrv.sendEvent('Browser', 'Query');
       }
     },
     {
@@ -291,7 +291,7 @@ FOAModel({
     },
     {
       name: 'onLocationUpdate',
-      isMerged: 15,
+      isMerged: 1,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
         if ( this.location.id ) {
@@ -437,6 +437,9 @@ FOAModel({
       this.SUPER();
 
       this.memento = '';
+
+      this.searchField.data$.addListener(this.onSearch);
+      Events.follow(this.location.q$, this.searchField.data$);
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
