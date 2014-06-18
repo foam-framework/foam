@@ -4,7 +4,7 @@ FOAModel({
 
   properties: [
     { name: 'model', factory: function() { return QIssueComment; } },
-    { name: 'issue', postSet: function(_, v) { this.data = v.newComment() } },
+    { name: 'issue', postSet: function(_, v) { this.data = v.newComment(); } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
     { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }

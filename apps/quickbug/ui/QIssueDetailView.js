@@ -55,7 +55,10 @@ FOAModel({
       isMerged: 100,
       code: function() {
         if ( ! this.data ) return;
-        if ( ! this.$ ) this.QIssueDAO.unlisten(this.onDAOUpdate);
+        if ( ! this.$ ) {
+          this.QIssueDAO.unlisten(this.onDAOUpdate);
+          return;
+        }
 
         var self = this;
         this.QIssueDAO.find(this.data.id, {
@@ -72,12 +75,20 @@ FOAModel({
     {
       name: 'doSave',
       code: function() {
+        // Don't keep listening if we're no longer around.
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+
         if ( this.saveEnabled ) this.QIssueDAO.put(this.data);
       }
     }
   ],
 
   methods: {
+    destroy: function() {
+      if ( this.data ) this.data.removeListener(this.doSave);
+      this.QIssueDAO.unlisten(this.onDAOUpdate);
+    },
+
     init: function(args) {
       this.SUPER(args);
       this.QIssueDAO.listen(this.onDAOUpdate);
