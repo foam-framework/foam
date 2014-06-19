@@ -44,8 +44,8 @@ FOAModel({
     {
       name: 'persistentContext',
       factory: function() {
-        return PersistentContext.create({
-          dao: IDBDAO.create({ model: Binding }),
+        return this.X.PersistentContext.create({
+          dao: this.X.IDBDAO.create({ model: this.X.Binding }),
           context: this
         });
       }

@@ -142,9 +142,9 @@ FOAModel({
       }
     },
     {
-      name: 'syncManager',
+      name: 'syncManagerFuture',
       scope: 'project',
-      defaultValueFn: function() { return this.project.syncManager; }
+      defaultValueFn: function() { return this.project.syncManagerFuture; }
     },
     {
       name: 'zoom',
@@ -260,14 +260,16 @@ FOAModel({
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
-        if ( this.syncManager.isSyncing ) {
-          this.timer.step();
-          this.timer.start();
-        } else {
-          this.timer.stop();
-          // Should no longer be necessary since both views listen for dao updates.
-          // this.view.choice = this.view.choice;
-        }
+        this.syncManagerFuture.get((function(syncManager) {
+          if ( syncManager.isSyncing ) {
+            this.timer.step();
+            this.timer.start();
+          } else {
+            this.timer.stop();
+            // Should no longer be necessary since both views listen for dao updates.
+            // this.view.choice = this.view.choice;
+          }
+        }).bind(this));
       }
     },
     {
@@ -458,7 +460,9 @@ FOAModel({
         this.location.id = issue.id;
       }.bind(this));
 
-      this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
+      this.syncManagerFuture.get((function(syncManager) {
+        this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
+      }).bind(this));
 
       this.location.addListener(this.onLocationUpdate);
 
@@ -484,7 +488,10 @@ FOAModel({
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
 
-      this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      this.syncManagerFuture.get((function(syncManager) {
+        syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      }).bind(this));
+
       this.onSyncManagerUpdate();
     },
 

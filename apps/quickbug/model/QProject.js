@@ -170,19 +170,21 @@ FOAModel({
       transient: true
     },
     {
-      name: 'syncManager',
+      name: 'persistentContext',
       factory: function() {
-        return this.X.SyncManager.create({
-          syncInterval: 60*5,
-          batchSize: 500,
-          queryParser: QueryParser,
-//          query: 'status=New,Accepted,Started OR\nupdated-after:today-60 OR\nis:starred',
-          srcDAO: this.IssueNetworkDAO,
-          dstDAO: this.IssueCachingDAO,
-          lastModified: new Date(2014,01,01),
-          modifiedProperty: QIssue.MODIFIED
+        return this.X.PersistentContext.create({
+          dao: this.X.IDBDAO.create({ model: this.X.Binding, name: 'QProject-Bindings' }),
+          predicate: NOT_TRANSIENT,
+          context: this
         });
       }
+    },
+    {
+      name: 'syncManager'
+    },
+    {
+      name: 'syncManagerFuture',
+      factory: function() { return afuture(); }
     }
   ],
 
@@ -198,10 +200,22 @@ FOAModel({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
+    init: function(args) {
+      this.SUPER(args);
 
       this.IssueDAO.listen(this.onDAOUpdate);
+      this.persistentContext.bindObject('syncManager', SyncManager, {
+        syncInterval: 60*5,
+        batchSize: 500,
+        queryParser: this.X.QueryParser,
+        srcDAO: this.IssueNetworkDAO,
+        dstDAO: this.IssueCachingDAO,
+        modifiedProperty: this.X.QIssue.MODIFIED
+      })((function(manager) {
+        this.syncManager = manager;
+        this.syncManagerFuture.set(manager);
+        manager.start();
+      }).bind(this));
     },
 
     /** Open a Browser in a Window for a Chome Packaged App. **/
@@ -299,32 +313,34 @@ FOAModel({
     launchSync: function() {
       var self = this;
 
-      chrome.app.window.create('empty.html', {width: 600, height: 600}, function(w) {
-        var window = w.contentWindow;
-        w.contentWindow.onload = function() {
-          $addWindow(window);
-          var b = DetailView.create({
+      this.syncManagerFuture.get((function(syncManager) {
+        chrome.app.window.create('empty.html', {width: 600, height: 600}, function(w) {
+          var window = w.contentWindow;
+          w.contentWindow.onload = function() {
+            $addWindow(window);
+            var b = DetailView.create({
               model: SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
               value: SimpleValue.create(self.syncManager),
               showActions: true });
-          window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
-          b.initHTML();
-          var extrax = window.outerWidth - window.innerWidth + 16;
-          var extray = window.outerHeight - window.innerHeight + 16;
+            window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
+            b.initHTML();
+            var extrax = window.outerWidth - window.innerWidth + 16;
+            var extray = window.outerHeight - window.innerHeight + 16;
 
-          window.resizeTo(
-            window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
-            window.document.body.firstChild.offsetHeight + extray);
-          window.resizeTo(
-            window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
-            window.document.body.firstChild.offsetHeight + extray);
-          w.focus();
-        };
-        w.onClosed.addListener(function() {
-          $removeWindow(window);
+            window.resizeTo(
+              window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
+              window.document.body.firstChild.offsetHeight + extray);
+            window.resizeTo(
+              window.document.body.firstChild.firstChild.firstChild.offsetWidth + extrax,
+              window.document.body.firstChild.offsetHeight + extray);
+            w.focus();
+          };
+          w.onClosed.addListener(function() {
+            $removeWindow(window);
+          });
         });
-      });
+      }).bind(this));
     },
 
     launchConfigProjects: function() {

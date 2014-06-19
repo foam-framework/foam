@@ -20,24 +20,28 @@ FOAModel({
   properties: [
     {
       name:  'queryParser',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       name:  'srcDAO',
       label: 'Source DAO',
       type:  'DAO',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       name:  'dstDAO',
       label: 'Destination DAO',
       type:  'DAO',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       name:  'modifiedProperty',
       type:  'Property',
-      hidden: true
+      hidden: true,
+      transient: true
     },
     {
       model_: 'IntProperty',
@@ -76,40 +80,47 @@ FOAModel({
       model_: 'StringProperty',
       name:  'syncStatus',
       displayWidth: 40,
-      help: 'Current status of the sync process.'
+      help: 'Current status of the sync process.',
+      transient: true
     },
     {
       model_: 'IntProperty',
       name:  'lastBatchSize',
-      help: 'Number of item updates returned in last sync response.'
+      help: 'Number of item updates returned in last sync response.',
+      transient: true
     },
     {
       model_: 'DateTimeProperty',
       name:  'lastSync',
-      help: 'The time of the last sync.'
+      help: 'The time of the last sync.',
+      transient: true
     },
     {
       model_: 'IntProperty',
       name:  'lastSyncDuration',
       help: 'Duration of last sync request.',
-      units: 'ms'
+      units: 'ms',
+      transient: true
     },
     {
       model_: 'BooleanProperty',
       name:  'enabled',
       mode2: 'read-only',
-      help: 'If the Sync Manager is currently enabled to perform periodic sync requests.'
+      help: 'If the Sync Manager is currently enabled to perform periodic sync requests.',
+      transient: true
     },
     {
       model_: 'BooleanProperty',
       name:  'isSyncing',
       mode2: 'read-only',
-      help: 'If the Sync Manager is currently syncing.'
+      help: 'If the Sync Manager is currently syncing.',
+      transient: true
     },
     {
       model_: 'StringProperty',
       name:  'lastId',
-      help: 'The id of the last item synced.'
+      help: 'The id of the last item synced.',
+      transient: true
     },
     {
       model_: 'DateTimeProperty',
