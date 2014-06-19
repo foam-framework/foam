@@ -75,7 +75,6 @@ FOAModel({
     },
     {
       name: 'IssueDAO',
-      scope: 'project',
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
@@ -428,8 +427,7 @@ FOAModel({
         var self = this;
         this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
-          self.project.IssueSplitDAO.invalidate();
-          self.performQuery();
+          self.syncManagerFuture.get(function(m) { m.doReset(function() { m.start(); }) });
         }, true);
       }
     },
