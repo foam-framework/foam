@@ -297,7 +297,10 @@ FOAModel({
       isMerged: 2,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
-        if ( this.location.id ) {
+        if ( this.location.createMode ) {
+          this.createIssue();
+        }
+        else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
