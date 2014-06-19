@@ -41,7 +41,7 @@ FOAModel({
       label: 'Discard',
       isEnabled: function() { return ! this.saving },
       action: function() {
-        this.X.browser.location.id = '';
+        this.X.browser.location.createMode = false;
       }
     },
   ],

@@ -5,7 +5,7 @@
   var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
   var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
   var forthButton = ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
-  var createButton = ActionButton.create({action: this.model_.CREATE_ISSUE, value: SimpleValue.create(this)});
+  var createButton = ActionButton.create({action: this.model_.NEW_ISSUE, value: SimpleValue.create(this)});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
