@@ -514,7 +514,9 @@ FOAModel({
             var v = self.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
               QIssueCommentDAO: self.project.issueCommentDAO(id),
-              QIssueDAO:        self.IssueDAO,
+              QIssueDAO:        self.location.sort ?
+                self.filteredIssueDAO.orderBy(self.location.sort) :
+                self.filteredIssueDAO,
               mode:             'read-write',
               url:              self.url
             });
