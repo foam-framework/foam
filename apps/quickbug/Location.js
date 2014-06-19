@@ -44,7 +44,8 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'createMode',
-      defaultValue: false
+      defaultValue: false,
+      preSet: function(_, v) { return v === "false" ? false : !!v; }
     },
     {
       model_: 'LocationProperty',
