@@ -256,7 +256,7 @@ function createView(rowSelection, browser) {
             hardSelection:      rowSelection,
             scrollEnabled:      true,
             editColumnsEnabled: true
-          });
+          }, browser.X);
 
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;

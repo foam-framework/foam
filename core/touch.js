@@ -18,7 +18,27 @@
 FOAModel({
   name: 'FOAMTouch',
   properties: [
-    'id', 'startX', 'startY', 'x', 'y'
+    'id', 'startX', 'startY', 'x', 'y',
+    {
+      name: 'dx',
+      getter: function() {
+        return this.x - this.startX;
+      }
+    },
+    {
+      name: 'dy',
+      getter: function() {
+        return this.y - this.startY;
+      }
+    },
+    {
+      name: 'distance',
+      getter: function() {
+        var dx = this.dx;
+        var dy = this.dy;
+        return Math.sqrt(dx*dx + dy*dy);
+      }
+    }
   ],
 
   methods: {
@@ -60,10 +80,6 @@ FOAModel({
 
     attachHandlers: function() {
       this.X.window.document.addEventListener('touchstart', this.onTouchStart);
-      this.X.window.document.addEventListener('touchend', this.onTouchEnd);
-      this.X.window.document.addEventListener('touchmove', this.onTouchMove);
-      this.X.window.document.addEventListener('touchcancel', this.onTouchCancel);
-      this.X.window.document.addEventListener('touchleave', this.onTouchLeave);
       this.attached = true;
     },
 
@@ -154,7 +170,7 @@ FOAModel({
       code: function(e) {
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( this.touches[i] ) {
+          if ( this.touches[t.identifier] ) {
             console.warn('Touch start for known touch.');
             continue;
           }
@@ -168,6 +184,11 @@ FOAModel({
           });
         }
 
+        e.target.addEventListener('touchmove', this.onTouchMove);
+        e.target.addEventListener('touchend', this.onTouchEnd);
+        e.target.addEventListener('touchcancel', this.onTouchCancel);
+        e.target.addEventListener('touchleave', this.onTouchLeave);
+
         this.notifyReceivers('onTouchStart', e);
       }
     },
@@ -176,7 +197,7 @@ FOAModel({
       code: function(e) {
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          if ( ! this.touches[t.identifier] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
@@ -190,7 +211,7 @@ FOAModel({
       code: function(e) {
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          if ( ! this.touches[t.identifier] ) {
             console.warn('Touch end for unknown touch.');
             continue;
           }
