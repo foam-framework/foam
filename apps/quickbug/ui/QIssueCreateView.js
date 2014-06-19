@@ -27,6 +27,7 @@ FOAModel({
         this.X.IssueDAO.put(this.data, {
           put: function(obj) {
             self.saving = false;
+            self.X.browser.location.createMode = false;
             self.X.browser.location.id = obj.id;
           },
           error: function() {
@@ -59,6 +60,7 @@ FOAModel({
         <% var Y = this.X.sub(); Y.registerModel(StatusAutocompleteView, 'AutocompleteView'); %>
         $$status{ X: Y }
       </td></tr>
+      <tr><td>Owner:</td><td>$$owner</td></tr>
       <tr><td>Cc:</td><td>$$cc</td></tr>
       <tr><td>Labels:</td><td>
         <% Y = this.X.sub(); Y.registerModel(LabelAutocompleteView, 'AutocompleteView'); %>
