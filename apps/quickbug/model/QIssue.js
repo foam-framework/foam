@@ -190,6 +190,7 @@ var QIssue = FOAM({
       label: 'Summary',
       type: 'String',
       tableWidth: '350px',
+      displayWidth: 70,
       //          tableWidth: '100%'
       tableFormatter: function(value, row, tableView) {
         return tableView.strToHTML(value);
@@ -197,7 +198,8 @@ var QIssue = FOAM({
     },
     {
       name: 'description',
-      displayHeight: 20
+      displayHeight: 20,
+      displayWidth: 70
     },
     {
       name: 'summaryPlusLabels',
