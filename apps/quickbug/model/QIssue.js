@@ -173,7 +173,7 @@ var QIssue = FOAM({
     {
       model_: 'StringArrayProperty',
       name: 'cc',
-      autocompleter: 'PersonCompleter'
+      autocompleter: 'PersonCompleter',
       preSet: function(_, a) { return a.intern(); }
     },
     {
@@ -194,6 +194,10 @@ var QIssue = FOAM({
       tableFormatter: function(value, row, tableView) {
         return tableView.strToHTML(value);
       }
+    },
+    {
+      name: 'description',
+      displayHeight: 20
     },
     {
       name: 'summaryPlusLabels',
