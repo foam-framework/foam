@@ -297,6 +297,7 @@ FOAModel({
       </div>
     */},
 
+    // TODO: get options from QProject
     function bodyToHTML() {/*
       <div class="body">
         <div class="choice">
@@ -319,7 +320,6 @@ FOAModel({
             model_: 'PopupChoiceView',
             iconUrl: 'images/ic_arrow_drop_down_24dp.png',
             showValue: true,
-            // TODO: get options from QProject
             choices: [
               'Unconfirmed',
               'Untriaged',
