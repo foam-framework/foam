@@ -301,8 +301,7 @@ FOAModel({
         this.memento = this.location.toMemento(this);
         if ( this.location.createMode ) {
           this.createIssue();
-        }
-        else if ( this.location.id ) {
+        } else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
@@ -550,12 +549,12 @@ Please use labels and text to provide additional information.
           )(function() {
             var v = self.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
+              mode:             'read-write',
+              url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
               QIssueDAO:        self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
-                self.filteredIssueDAO,
-              mode:             'read-write',
-              url:              self.url
+                self.filteredIssueDAO
             });
             self.pushView(v);
 //            w.focus();

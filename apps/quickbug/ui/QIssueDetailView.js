@@ -25,14 +25,13 @@ FOAModel({
     {
       name: 'cursorView',
       factory: function() {
-        debugger;
         return this.X.CursorView.create({data: this.X.Cursor.create({dao: this.QIssueDAO})});
       }
     },
     {
       name: 'blockingView',
       factory: function() {
-        return BlockView.create({
+        return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKING,
           ids: this.value.get().blocking});
@@ -41,7 +40,7 @@ FOAModel({
     {
       name: 'blockedOnView',
       factory: function() {
-        return BlockView.create({
+        return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKED_ON,
           ids: this.value.get().blockedOn});
@@ -193,7 +192,7 @@ var BlockView = FOAM({
 
   properties: [
     {
-      name: 'ctx'
+      name: 'ctx' // TODO: switch to X
     },
     {
       name: 'url',
@@ -237,8 +236,9 @@ var BlockView = FOAM({
 
         var url = this.url + '/issues/detail?id=' + issue;
 
-        s += '<div><a href="' + url + '" id="' + id + '">Issue ' + issue + '</a><div>';
+        s += '<div><a href="" id="' + id + '">Issue ' + issue + '</a><div>';
 
+        this.on('click',     this.editIssue.bind(this, issue),    id);
         this.on('mouseover', this.startPreview.bind(this, issue), id);
         this.on('mouseout',  this.endPreview,                     id);
       }
@@ -277,6 +277,13 @@ var BlockView = FOAM({
   },
 
   listeners: [
+    {
+      name: 'editIssue',
+      code: function(id) {
+        console.log('********* EditIssue: ', id);
+        this.X.location.id = id;
+      }
+    },
     {
       name: 'startPreview',
       code: function(id, e) {
