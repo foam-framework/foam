@@ -17,7 +17,11 @@ FOAModel({
     },
     {
       model_: 'DAOProperty',
-      name: 'QIssueDAO'
+      name: 'issueDAO'
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'cursorIssueDAO'
     },
     {
       name: 'url'
@@ -25,7 +29,8 @@ FOAModel({
     {
       name: 'cursorView',
       factory: function() {
-        return this.X.CursorView.create({data: this.X.Cursor.create({dao: this.QIssueDAO})});
+        return this.X.CursorView.create({
+          data: this.X.Cursor.create({dao: this.cursorIssueDAO})});
       }
     },
     {
@@ -56,12 +61,12 @@ FOAModel({
       code: function() {
         if ( ! this.data ) return;
         if ( ! this.$ ) {
-          this.QIssueDAO.unlisten(this.onDAOUpdate);
+          this.issueDAO.unlisten(this.onDAOUpdate);
           return;
         }
 
         var self = this;
-        this.QIssueDAO.find(this.data.id, {
+        this.issueDAO.find(this.data.id, {
           put: function(obj) {
             if ( obj.equals(self.data) ) return;
             self.saveEnabled = false;
@@ -78,7 +83,7 @@ FOAModel({
         // Don't keep listening if we're no longer around.
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
-        if ( this.saveEnabled ) this.QIssueDAO.put(this.data);
+        if ( this.saveEnabled ) this.issueDAO.put(this.data);
       }
     }
   ],
@@ -86,12 +91,12 @@ FOAModel({
   methods: {
     destroy: function() {
       if ( this.data ) this.data.removeListener(this.doSave);
-      this.QIssueDAO.unlisten(this.onDAOUpdate);
+      this.issueDAO.unlisten(this.onDAOUpdate);
     },
 
     init: function(args) {
       this.SUPER(args);
-      this.QIssueDAO.listen(this.onDAOUpdate);
+      this.issueDAO.listen(this.onDAOUpdate);
     },
 
     onValueChange_: function(_, _, old, v) {
@@ -185,9 +190,8 @@ FOAModel({
  * Draw the ID with style line-through if issue closed.
  * Display a TileView hover preview.
  **/
-var BlockView = FOAM({
-  model_: 'Model',
-  name: 'QIssueQuickStatusView',
+FOAModel({
+  name: 'BlockView',
   extendsModel: 'View',
 
   properties: [
@@ -200,9 +204,9 @@ var BlockView = FOAM({
       defaultValueFn: function() { return this.ctx.url; }
     },
     {
-      name: 'QIssueDAO',
+      name: 'issueDAO',
       scope: 'ctx',
-      defaultValueFn: function() { return this.ctx.QIssueDAO; }
+      defaultValueFn: function() { return this.ctx.issueDAO; }
     },
     {
       name: 'property',
@@ -255,7 +259,7 @@ var BlockView = FOAM({
 
       for ( var i = 0 ; i < this.ids.length ; i++ ) {
         var id = this.ids[i];
-        this.QIssueDAO.find(id, { put: function(issue) {
+        this.issueDAO.find(id, { put: function(issue) {
           if ( ! issue.isOpen() ) {
             $(self.idSet[id]).style.textDecoration = 'line-through';
           }
@@ -279,10 +283,7 @@ var BlockView = FOAM({
   listeners: [
     {
       name: 'editIssue',
-      code: function(id) {
-        console.log('********* EditIssue: ', id);
-        this.X.location.id = id;
-      }
+      code: function(id) { this.parent.X.browser.location.id = id; }
     },
     {
       name: 'startPreview',
@@ -290,7 +291,7 @@ var BlockView = FOAM({
         if ( this.currentPreview ) return;
 
         var self = this;
-        this.QIssueDAO.find(id, { put: function(issue) {
+        this.issueDAO.find(id, { put: function(issue) {
           self.currentPreview = PopupView.create({
             x: e.x+30,
             y: e.y-20,

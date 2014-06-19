@@ -552,7 +552,8 @@ Please use labels and text to provide additional information.
               mode:             'read-write',
               url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
-              QIssueDAO:        self.location.sort ?
+              issueDAO:         self.issueDAO,
+              cursorQIssueDAO:  self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
                 self.filteredIssueDAO
             });
