@@ -30,7 +30,6 @@
         "model/QIssuePerson.js",
         "model/QUser.js",
         "ui/CursorView.js",
-        "ui/QIssueEditBorder.js",
         "ui/QIssuePreviewBorder.js",
         "ui/QIssueDetailView.js",
         "ui/QIssueCommentView.js",

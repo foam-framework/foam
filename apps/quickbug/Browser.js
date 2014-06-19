@@ -517,7 +517,7 @@ FOAModel({
               QIssueDAO:        self.IssueDAO,
               mode:             'read-write',
               url:              self.url
-            })/*.addDecorator(self.X.QIssueEditBorder.create())*/;
+            });
             self.pushView(v);
 //            w.focus();
           });
