@@ -75,7 +75,6 @@ FOAModel({
     },
     {
       name: 'IssueDAO',
-      scope: 'project',
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
@@ -88,6 +87,9 @@ FOAModel({
           delegate: this.project.IssueDAO,
           window:   this.X.window
         });
+      },
+      postSet: function(_, v) {
+        this.X.IssueDAO = v;
       }
     },
     {
@@ -430,11 +432,15 @@ FOAModel({
         var self = this;
         this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
-          self.project.IssueSplitDAO.invalidate();
-          self.performQuery();
+          self.syncManagerFuture.get(function(m) { m.doReset(function() { m.start(); }) });
         }, true);
       }
     },
+    {
+      name: 'newIssue',
+      label: 'New issue',
+      action: function() { this.location.createMode = true; }
+    }
   ],
 
   methods: {
@@ -495,6 +501,34 @@ FOAModel({
       }).bind(this));
 
       this.onSyncManagerUpdate();
+    },
+
+    createIssue: function() {
+      var self = this;
+      apar(
+        arequire('QIssueCreateView')
+      )(function() {
+        var v = self.X.QIssueCreateView.create({
+          data:
+          QIssue.create({
+            description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+
+What is the expected output? What do you see instead?
+
+
+Please use labels and text to provide additional information.
+
+*/}),
+            status: 'New',
+            summary: 'Enter a one-line summary.'
+          }),
+          mode:             'read-write'
+        });
+        self.pushView(v);
+      });
     },
 
     editIssue: function(id) {

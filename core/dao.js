@@ -2404,6 +2404,7 @@ FOAModel({
       return this.url;
     },
     buildPutParams: function(obj) {
+      return [];
     },
     buildSelectParams: function(sink, query) {
       return [];

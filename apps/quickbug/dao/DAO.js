@@ -152,7 +152,8 @@ var IssueRestDAO = FOAM({
       aseq(
         apar(
           function(ret) {
-            self.find(issue.id, ret);
+            if ( issue.id ) self.find(issue.id, ret);
+            else ret();
           },
           function(ret) {
             if ( ! issue.id ) {

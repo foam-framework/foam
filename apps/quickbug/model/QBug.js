@@ -119,9 +119,7 @@ FOAModel({
       factory: function() {
         return [
           "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/projecthosting",
-          "https://www.googleapis.com/auth/plus.me",
-          "https://www.googleapis.com/auth/plus.peopleapi.readwrite"
+          "https://www.googleapis.com/auth/projecthosting"
         ];
       }
     }

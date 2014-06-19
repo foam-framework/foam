@@ -167,12 +167,14 @@ var QIssue = FOAM({
       type: 'String',
       preSet: function(_, s) { return s.capitalize(); },
       tableWidth: '58px',
+      autocompleter: 'StatusCompleter',
       defaultValue: ''
     },
     {
+      model_: 'StringArrayProperty',
       name: 'cc',
-      preSet: function(_, a) { return a.intern(); },
-      autocompleter: 'PersonCompleter'
+      autocompleter: 'PersonCompleter',
+      preSet: function(_, a) { return a.intern(); }
     },
     {
       name: 'owner',
@@ -188,10 +190,16 @@ var QIssue = FOAM({
       label: 'Summary',
       type: 'String',
       tableWidth: '350px',
+      displayWidth: 70,
       //          tableWidth: '100%'
       tableFormatter: function(value, row, tableView) {
         return tableView.strToHTML(value);
       }
+    },
+    {
+      name: 'description',
+      displayHeight: 20,
+      displayWidth: 70
     },
     {
       name: 'summaryPlusLabels',
@@ -264,6 +272,7 @@ var QIssue = FOAM({
       aliases: ['label'],
       type: 'String',
       view: 'QIssueLabelsView',
+      autocompleter: 'LabelCompleter',
       tableFormatter: function(a, row) {
         var s = '';
         for ( var i = 0 ; i < a.length ; i++ ) {

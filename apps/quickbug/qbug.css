@@ -399,6 +399,7 @@ input[name="labels"] {
 
 .stack {
   overflow: auto;
+  flex-grow: 1;
 }
 
 .bookmarks-menu {
