@@ -1021,6 +1021,7 @@ var MDAO = Model.create({
       this.find(id, {
         put: function(obj) {
           self.root = self.index.remove(self.root, obj);
+          delete self.map[obj.id];
           self.notify_('remove', [obj]);
           sink && sink.remove && sink.remove(obj);
         },

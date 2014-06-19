@@ -124,6 +124,24 @@ FOAModel({
 
         return sb;
       }
+    },
+    {
+      name: 'scrollPitch',
+      help: 'Number of (CSS) pixels of touch drag required to scroll by one',
+      defaultValue: 10
+    },
+    {
+      name: 'touchScrolling',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      hidden: true,
+      transient: true
+    },
+    {
+      name: 'touchPrev',
+      hidden: true,
+      transient: true,
+      defaultValue: 0
     }
   ],
 
@@ -183,6 +201,50 @@ FOAModel({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(touches, changed) {
+        if ( touches.length > 1 ) return { drop: true };
+        return { weight: 0.3 };
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(touches, changed) {
+        var t = touches[changed[0]];
+        if ( this.touchScrolling ) {
+          var sb = this.scrollbar;
+          var dy = t.y - this.touchPrev;
+          if ( dy > this.scrollPitch && sb.value > 0 ) {
+            this.touchPrev = t.y;
+            sb.value--;
+          } else if ( dy < -this.scrollPitch && sb.value < sb.size - sb.extent ) {
+            this.touchPrev = t.y;
+            sb.value++;
+          }
+
+          return { claim: true, weight: 0.99, preventDefault: true };
+        }
+
+        if ( Math.abs(t.dy) > 10 && Math.abs(t.dx) < 10 ) {
+          // Moving mostly vertically, so start scrolling.
+          this.touchScrolling = true;
+          this.touchPrev = t.y;
+          return { claim: true, weight: 0.8, preventDefault: true };
+        } else if ( t.distance < 10 ) {
+          return { preventDefault: true };
+        } else {
+          return { drop: true };
+        }
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(touches, changed) {
+        this.touchScrolling = false;
+        return { drop: true };
+      }
     }
   ],
 
@@ -226,6 +288,14 @@ FOAModel({
             sb.value++;
           }
         };
+
+        if ( this.X.touchManager ) {
+          this.X.touchManager.install(TouchReceiver.create({
+            id: 'qbug-table-scroll-' + this.id,
+            element: this.$.parentElement,
+            delegate: this
+          }));
+        }
 
         this.onResize();
       }

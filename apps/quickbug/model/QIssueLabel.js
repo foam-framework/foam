@@ -23,18 +23,6 @@ FOAModel({
   properties: [
     'label',
     'description'
-  ],
-
-  templates: [
-    {
-      name: 'toSummaryHTML',
-      template: function() {/*
-  <div class="labelSummary">
-    <div class="labelSummary label">{{this.value.value.label}}</div>
-    <div class="labelSummary description">>=&nbsp;{{this.value.value.description}}</div>
-  </div>
-    */}
-    }
   ]
 });
 
@@ -47,14 +35,12 @@ FOAModel({
       var strToHTML = this.strToHTML.bind(this);
       return this.X.ChoiceListView.create({
         dao: this.completer.autocompleteDao,
-        className: this.name + ' autocomplete foamChoiceListView vertical autocompleteLabels',
+        extraClassName: 'autocompleteTable autocomplete',
         orientation: 'vertical',
         mode: 'final',
         objToChoice: function(obj) {
-          return [completer.f(obj), '<td>' + strToHTML(obj.label) + '</td><td>= ' + strToHTML(obj.description) + '</td>']
+          return [completer.f(obj), '<div class="label">' + strToHTML(obj.label) + '</div><div class="description">= ' + strToHTML(obj.description) + '</div>']
         },
-        tagName: 'table',
-        innerTagName: 'tr',
         useSelection: true
       });
     }

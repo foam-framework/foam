@@ -11,8 +11,7 @@ FOAModel({
       defaultValueFn: function() { return this.browser.location; }
     },
     {
-      name: 'dao',
-      defaultValueFn: function() { return this.browser.filteredIssueDAO; }
+      name: 'dao'
     },
     {
       model_: 'IntProperty',
@@ -68,7 +67,7 @@ FOAModel({
       var i = 1;
       this.dao.select({
         put: function(o) {
-          if ( o.id === self.location.id ) {
+          if ( o.id == self.location.id ) {
             self.pos = i;
           }
           i++;

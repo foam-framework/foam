@@ -24,18 +24,6 @@ FOAModel({
     'status',
     'description',
     { model_: 'BooleanProperty', name: 'meansOpen' }
-  ],
-
-  templates: [
-    {
-      name: 'toSummaryHTML',
-      template: function() {/*
-  <div class="labelSummary">
-    <div class="label">{{this.value.value.status}}</div>
-    <div class="description">=&nbsp;{{this.value.value.description}}</div>
-  </div>
-    */}
-    }
   ]
 });
 
@@ -73,17 +61,14 @@ FOAModel({
     makeView: function() {
       var completer = this.completer;
       var strToHTML = this.strToHTML.bind(this);
-
       return this.X.ChoiceListView.create({
         dao: this.completer.autocompleteDao,
-        className: this.name + ' autocomplete foamChoiceListView vertical autocompleteLabels',
+        extraClassName: 'autocompleteTable autocomplete',
         orientation: 'vertical',
         mode: 'final',
         objToChoice: function(obj) {
-          return [completer.f(obj), '<td>' + strToHTML(obj.status) + '</td><td>= ' + strToHTML(obj.description) + '</td>']
+          return [completer.f(obj), '<div class="label">' + strToHTML(obj.status) + '</div><div class="description">= ' + strToHTML(obj.description) + '</div>']
         },
-        tagName: 'table',
-        innerTagName: 'tr',
         useSelection: true
       });
     }

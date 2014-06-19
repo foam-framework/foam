@@ -44,8 +44,8 @@ FOAModel({
     {
       name: 'persistentContext',
       factory: function() {
-        return PersistentContext.create({
-          dao: IDBDAO.create({ model: Binding }),
+        return this.X.PersistentContext.create({
+          dao: this.X.IDBDAO.create({ model: this.X.Binding }),
           context: this
         });
       }
@@ -119,9 +119,7 @@ FOAModel({
       factory: function() {
         return [
           "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/projecthosting",
-          "https://www.googleapis.com/auth/plus.me",
-          "https://www.googleapis.com/auth/plus.peopleapi.readwrite"
+          "https://www.googleapis.com/auth/projecthosting"
         ];
       }
     }

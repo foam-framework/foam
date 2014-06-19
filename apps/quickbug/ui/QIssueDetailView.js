@@ -25,13 +25,13 @@ FOAModel({
     {
       name: 'cursorView',
       factory: function() {
-        return this.X.CursorView.create({data: this.X.Cursor.create()});
+        return this.X.CursorView.create({data: this.X.Cursor.create({dao: this.QIssueDAO})});
       }
     },
     {
       name: 'blockingView',
       factory: function() {
-        return BlockView.create({
+        return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKING,
           ids: this.value.get().blocking});
@@ -40,7 +40,7 @@ FOAModel({
     {
       name: 'blockedOnView',
       factory: function() {
-        return BlockView.create({
+        return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKED_ON,
           ids: this.value.get().blockedOn});
@@ -55,7 +55,10 @@ FOAModel({
       isMerged: 100,
       code: function() {
         if ( ! this.data ) return;
-        if ( ! this.$ ) this.QIssueDAO.unlisten(this.onDAOUpdate);
+        if ( ! this.$ ) {
+          this.QIssueDAO.unlisten(this.onDAOUpdate);
+          return;
+        }
 
         var self = this;
         this.QIssueDAO.find(this.data.id, {
@@ -72,12 +75,20 @@ FOAModel({
     {
       name: 'doSave',
       code: function() {
+        // Don't keep listening if we're no longer around.
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+
         if ( this.saveEnabled ) this.QIssueDAO.put(this.data);
       }
     }
   ],
 
   methods: {
+    destroy: function() {
+      if ( this.data ) this.data.removeListener(this.doSave);
+      this.QIssueDAO.unlisten(this.onDAOUpdate);
+    },
+
     init: function(args) {
       this.SUPER(args);
       this.QIssueDAO.listen(this.onDAOUpdate);
@@ -91,7 +102,6 @@ FOAModel({
       if ( v ) v.addListener(this.doSave);
       else if ( this.data ) this.data.addListener(this.doSave);
     },
-
 
     commentView: function() {
       return this.X.DAOListView.create({
@@ -122,6 +132,7 @@ FOAModel({
     { name: 'toInnerHTML' }
   ]
 });
+
 
 FOAModel({
   name: 'QIssueLabelsView',
@@ -181,7 +192,7 @@ var BlockView = FOAM({
 
   properties: [
     {
-      name: 'ctx'
+      name: 'ctx' // TODO: switch to X
     },
     {
       name: 'url',
@@ -225,8 +236,9 @@ var BlockView = FOAM({
 
         var url = this.url + '/issues/detail?id=' + issue;
 
-        s += '<div><a href="' + url + '" id="' + id + '">Issue ' + issue + '</a><div>';
+        s += '<div><a href="" id="' + id + '">Issue ' + issue + '</a><div>';
 
+        this.on('click',     this.editIssue.bind(this, issue),    id);
         this.on('mouseover', this.startPreview.bind(this, issue), id);
         this.on('mouseout',  this.endPreview,                     id);
       }
@@ -265,6 +277,13 @@ var BlockView = FOAM({
   },
 
   listeners: [
+    {
+      name: 'editIssue',
+      code: function(id) {
+        console.log('********* EditIssue: ', id);
+        this.X.location.id = id;
+      }
+    },
     {
       name: 'startPreview',
       code: function(id, e) {

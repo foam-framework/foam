@@ -5,6 +5,7 @@
   var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
   var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
   var forthButton = ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
+  var createButton = ActionButton.create({action: this.model_.NEW_ISSUE, value: SimpleValue.create(this)});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -25,7 +26,7 @@
     <div class="subtitle">%%summary</div>
   </div>
   <span style="width:60px;flex-shrink:10000"></span>
-  <span>Search %%searchChoice for </span>
+  <span><%= createButton %>&nbsp;&nbsp;Search %%searchChoice for </span>
   <span class="expand" style="padding-left:4px;">%%searchField</span> $$addBookmark
   <span class="link" style="align-self:center;"> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search&nbsp;tips</a></span>
  </div>

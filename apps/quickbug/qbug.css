@@ -355,8 +355,12 @@ input[name="labels"] {
   background-image: url('data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=');
 }
 
-.autocomplete {
-  display: table;
+.autocompletePopup {
+  width: 600px;
+  overflow-x: hidden;
+}
+
+.autocomplete,ul {
   color: #00c;
   background: white;
   border: 1px solid #bbb;
@@ -366,34 +370,36 @@ input[name="labels"] {
   background: #c3d9ff;
 }
 
-.autocompleteLabels {
+.autocomplete .popup {
   width: 600px;
 }
 
-.autocompleteLabels > td {
+.autocompleteTable {
+  width: 598px;
+  padding: 0;
+  margin: 0;
+}
+
+.autocompleteTable .label {
   word-wrap: nowrap;
-}
-
-
-.labelSummary {
-  display: table-row;
-}
-
-.labelSummary .label {
   display: table-cell;
 }
 
-.labelSummary .description {
-  display: tabel-cell;
+.autocompleteTable .description {
+  display: table-cell;
 }
 
-.personSummary {
+.autocompleteTable > li {
   display: table-row;
-  margin-left: 6px;
+}
+
+.autocompleteTable {
+  display: table;
 }
 
 .stack {
   overflow: auto;
+  flex-grow: 1;
 }
 
 .bookmarks-menu {

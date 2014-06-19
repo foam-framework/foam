@@ -75,7 +75,6 @@ FOAModel({
     },
     {
       name: 'IssueDAO',
-      scope: 'project',
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
@@ -88,6 +87,9 @@ FOAModel({
           delegate: this.project.IssueDAO,
           window:   this.X.window
         });
+      },
+      postSet: function(_, v) {
+        this.X.IssueDAO = v;
       }
     },
     {
@@ -142,9 +144,9 @@ FOAModel({
       }
     },
     {
-      name: 'syncManager',
+      name: 'syncManagerFuture',
       scope: 'project',
-      defaultValueFn: function() { return this.project.syncManager; }
+      defaultValueFn: function() { return this.project.syncManagerFuture; }
     },
     {
       name: 'zoom',
@@ -213,7 +215,8 @@ FOAModel({
       name: 'searchField',
       factory: function() { return TextFieldView.create({
         name: 'search',
-        type: 'search'
+        type: 'search',
+        displayWidth: 5
       });}
     },
     {
@@ -259,14 +262,16 @@ FOAModel({
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
-        if ( this.syncManager.isSyncing ) {
-          this.timer.step();
-          this.timer.start();
-        } else {
-          this.timer.stop();
-          // Should no longer be necessary since both views listen for dao updates.
-          // this.view.choice = this.view.choice;
-        }
+        this.syncManagerFuture.get((function(syncManager) {
+          if ( syncManager.isSyncing ) {
+            this.timer.step();
+            this.timer.start();
+          } else {
+            this.timer.stop();
+            // Should no longer be necessary since both views listen for dao updates.
+            // this.view.choice = this.view.choice;
+          }
+        }).bind(this));
       }
     },
     {
@@ -294,7 +299,9 @@ FOAModel({
       isMerged: 2,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
-        if ( this.location.id ) {
+        if ( this.location.createMode ) {
+          this.createIssue();
+        } else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
@@ -425,11 +432,15 @@ FOAModel({
         var self = this;
         this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
-          self.project.IssueSplitDAO.invalidate();
-          self.performQuery();
+          self.syncManagerFuture.get(function(m) { m.doReset(function() { m.start(); }) });
         }, true);
       }
     },
+    {
+      name: 'newIssue',
+      label: 'New issue',
+      action: function() { this.location.createMode = true; }
+    }
   ],
 
   methods: {
@@ -457,7 +468,9 @@ FOAModel({
         this.location.id = issue.id;
       }.bind(this));
 
-      this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
+      this.syncManagerFuture.get((function(syncManager) {
+        this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
+      }).bind(this));
 
       this.location.addListener(this.onLocationUpdate);
 
@@ -483,8 +496,39 @@ FOAModel({
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
 
-      this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      this.syncManagerFuture.get((function(syncManager) {
+        syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      }).bind(this));
+
       this.onSyncManagerUpdate();
+    },
+
+    createIssue: function() {
+      var self = this;
+      apar(
+        arequire('QIssueCreateView')
+      )(function() {
+        var v = self.X.QIssueCreateView.create({
+          data:
+          QIssue.create({
+            description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+
+What is the expected output? What do you see instead?
+
+
+Please use labels and text to provide additional information.
+
+*/}),
+            status: 'New',
+            summary: 'Enter a one-line summary.'
+          }),
+          mode:             'read-write'
+        });
+        self.pushView(v);
+      });
     },
 
     editIssue: function(id) {
@@ -505,11 +549,13 @@ FOAModel({
           )(function() {
             var v = self.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
-              QIssueCommentDAO: self.project.issueCommentDAO(id),
-              QIssueDAO:        self.IssueDAO,
               mode:             'read-write',
-              url:              self.url
-            })/*.addDecorator(self.X.QIssueEditBorder.create())*/;
+              url:              self.url,
+              QIssueCommentDAO: self.project.issueCommentDAO(id),
+              QIssueDAO:        self.location.sort ?
+                self.filteredIssueDAO.orderBy(self.location.sort) :
+                self.filteredIssueDAO
+            });
             self.pushView(v);
 //            w.focus();
           });

@@ -1360,10 +1360,11 @@ FOAModel({
               };
             }
             cursor.continue();
-          } else {
-            sink && sink.eof && sink.eof();
-            future.set();
           }
+        };
+        request.transaction.oncomplete = function() {
+          sink && sink.eof && sink.eof();
+          future.set();
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
@@ -2403,6 +2404,7 @@ FOAModel({
       return this.url;
     },
     buildPutParams: function(obj) {
+      return [];
     },
     buildSelectParams: function(sink, query) {
       return [];
