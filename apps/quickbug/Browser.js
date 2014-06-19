@@ -87,6 +87,9 @@ FOAModel({
           delegate: this.project.IssueDAO,
           window:   this.X.window
         });
+      },
+      postSet: function(_, v) {
+        this.X.IssueDAO = v;
       }
     },
     {
@@ -431,6 +434,37 @@ FOAModel({
         }, true);
       }
     },
+    {
+      name: 'createIssue',
+      label: 'New issue',
+      action: function() {
+        var self = this;
+        apar(
+          arequire('QIssueCreateView')
+        )(function() {
+          var v = self.X.QIssueCreateView.create({
+            data:
+            QIssue.create({
+              description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+
+What is the expected output? What do you see instead?
+
+
+Please use labels and text to provide additional information.
+
+*/}),
+              status: 'New',
+              summary: 'Enter a one-line summary.'
+            }),
+            mode:             'read-write'
+          });
+          self.pushView(v);
+        });
+      }
+    }
   ],
 
   methods: {

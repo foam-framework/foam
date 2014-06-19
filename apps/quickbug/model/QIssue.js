@@ -166,9 +166,11 @@ var QIssue = FOAM({
             aliases: ['stat'],
             type: 'String',
             tableWidth: '58px',
-            defaultValue: ''
+            defaultValue: '',
+            autocompleter: 'StatusCompleter'
         },
         {
+          model_: 'StringArrayProperty',
           name: 'cc',
           preSet: function(_, a) { return a.intern(); },
           autocompleter: 'PersonCompleter'
@@ -191,6 +193,10 @@ var QIssue = FOAM({
           tableFormatter: function(value, row, tableView) {
             return tableView.strToHTML(value);
           }
+        },
+        {
+          name: 'description',
+          displayHeight: 20
         },
         {
           name: 'summaryPlusLabels',
@@ -284,7 +290,8 @@ var QIssue = FOAM({
               a[i] = a[i].intern();
             }
           }
-        }
+        },
+        autocompleter: 'LabelCompleter'
       },
       {
         model_: 'StringArrayProperty',
