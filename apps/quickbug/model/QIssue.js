@@ -174,6 +174,7 @@ var QIssue = FOAM({
       model_: 'StringArrayProperty',
       name: 'cc',
       autocompleter: 'PersonCompleter',
+      displayWidth: 70,
       preSet: function(_, a) { return a.intern(); }
     },
     {
