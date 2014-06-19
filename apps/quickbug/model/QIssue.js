@@ -165,6 +165,7 @@ var QIssue = FOAM({
             shortName: 's',
             aliases: ['stat'],
             type: 'String',
+            preSet: function(_, s) { return s.capitalize(); },
             tableWidth: '58px',
             defaultValue: ''
         },
