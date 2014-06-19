@@ -25,7 +25,8 @@ FOAModel({
     {
       name: 'cursorView',
       factory: function() {
-        return this.X.CursorView.create({data: this.X.Cursor.create()});
+        debugger;
+        return this.X.CursorView.create({data: this.X.Cursor.create({dao: this.QIssueDAO})});
       }
     },
     {
@@ -103,7 +104,6 @@ FOAModel({
       else if ( this.data ) this.data.addListener(this.doSave);
     },
 
-
     commentView: function() {
       return this.X.DAOListView.create({
         dao: this.QIssueCommentDAO,
@@ -133,6 +133,7 @@ FOAModel({
     { name: 'toInnerHTML' }
   ]
 });
+
 
 FOAModel({
   name: 'QIssueLabelsView',

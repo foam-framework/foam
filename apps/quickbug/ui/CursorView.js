@@ -11,8 +11,7 @@ FOAModel({
       defaultValueFn: function() { return this.browser.location; }
     },
     {
-      name: 'dao',
-      defaultValueFn: function() { return this.browser.filteredIssueDAO; }
+      name: 'dao'
     },
     {
       model_: 'IntProperty',

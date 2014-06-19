@@ -243,6 +243,7 @@ FOAModel({
             $addWindow(window);
             var Y = self.X.subWindow(window, 'Browser Window');
             var b = Y.ChromeAppBrowser.create({project: self});
+            Y.touchManager = Y.TouchManager.create({});
             window.browser = b; // for debugging
             BROWSERS.push(b); // for debugging
             w.browser = b;
@@ -267,47 +268,6 @@ FOAModel({
       var b = this.X.Browser.create({project: this, window: window});
       window.browser = b;
       return b;
-    },
-
-    editIssue: function(id) {
-      if ( ! id ) return;
-      var self = this;
-      this.IssueDAO.find(id, {
-        put: function(obj) {
-          chrome.app.window.create('empty.html', { width: 1000, height: 800 }, function(w) {
-            $addWindow(w.contentWindow);
-            w.onClosed.addListener(function() {
-              $removeWindow(w.contentWindow)
-            });
-            w.contentWindow.onload = function() {
-              var window = w.contentWindow;
-
-              var Y = self.X.subWindow(window);
-
-              apar(
-                arequire('QIssueDetailView'),
-                arequire('QIssueCommentCreateView'),
-                arequire('QIssueCommentView'),
-                arequire('QIssueCommentAuthorView'),
-                arequire('QIssueCommentUpdateDetailView'),
-                arequire('QIssueCommentUpdateView')
-              )(function() {
-                  var v = Y.QIssueDetailView.create({
-                    value: SimpleValue.create(obj),
-                    QIssueCommentDAO: self.issueCommentDAO(id),
-                    QIssueDAO: self.IssueDAO,
-                    mode: 'read-write',
-                    url: self.url
-                  }).addDecorator(Y.QIssueEditBorder.create());
-
-                  window.document.body.innerHTML = v.toHTML();
-                  v.initHTML();
-                  w.focus();
-                });
-            };
-          });
-        }
-      });
     },
 
     launchSync: function() {

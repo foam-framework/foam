@@ -53,6 +53,7 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/oauth.js \
+  ../../core/touch.js \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \

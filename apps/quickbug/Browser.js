@@ -299,7 +299,10 @@ FOAModel({
       isMerged: 2,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
-        if ( this.location.id ) {
+        if ( this.location.createMode ) {
+          this.createIssue();
+        }
+        else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
@@ -546,10 +549,12 @@ Please use labels and text to provide additional information.
             var v = self.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
               QIssueCommentDAO: self.project.issueCommentDAO(id),
-              QIssueDAO:        self.IssueDAO,
+              QIssueDAO:        self.location.sort ?
+                self.filteredIssueDAO.orderBy(self.location.sort) :
+                self.filteredIssueDAO,
               mode:             'read-write',
               url:              self.url
-            })/*.addDecorator(self.X.QIssueEditBorder.create())*/;
+            });
             self.pushView(v);
 //            w.focus();
           });
