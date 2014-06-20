@@ -22,8 +22,20 @@ FOAModel({
   ]
 });
 
-FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+
+FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
+  function toHTML() {/*
+      <li class="thumbnail">
+        <a href="#{{this.obj.id}}" class="thumb">$$imageUrl</a>
+        <a href="#{{this.obj.id}}">$$name{mode: 'read-only'}</a>
+        <p>$$snippet{mode: 'read-only'}</p>
+      </li>
+  */}
+]});
+
+
 FOAModel({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+
 
 FOAModel({
   name: 'ControllerView',
