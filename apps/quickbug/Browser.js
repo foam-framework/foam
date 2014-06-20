@@ -123,7 +123,7 @@ FOAModel({
           autoSetData: false,
           objToChoice: function(b) { return [b.url, b.title, b]; },
           dao: this.bookmarkDAO,
-          label: 'Bookmarks &#x25BE;',
+          linkLabel: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
         });
         v.data = 'dummy';
@@ -504,6 +504,10 @@ FOAModel({
       }).bind(this));
 
       this.onSyncManagerUpdate();
+
+      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {put: function(bookmark) {
+        this.memento = bookmark.url;
+      }.bind(this)});
     },
 
     createIssue: function() {
