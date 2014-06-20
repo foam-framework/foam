@@ -2565,7 +2565,9 @@ FOAModel({
       // TODO: I think this should be done automatically some-how/where.
       this.scrollModeView.data$ = this.scrollMode$;
 
-      var choices = [];
+      var choices = [
+        [ { f: function() { return ''; } }, 'none' ]
+      ];
       this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});

@@ -449,6 +449,9 @@ FOAModel({
 
       this.memento = '';
 
+      this.location.y = QIssue.OWNER;
+      this.location.x = QIssue.STATUS;
+
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
 
