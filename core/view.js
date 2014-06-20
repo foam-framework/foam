@@ -1000,6 +1000,7 @@ FOAModel({
     {
       // TODO: make 'data' be the actual source of the data
       name: 'data',
+      getter: function() { return this.value.get(); },
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
@@ -1033,9 +1034,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage ?
+      return this.backupImage && IS_CHROME_APP ?
         '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img class="imageView" id="' + this.id + '">' ;
+        '<img class="imageView" id="' + this.id + '" src="' + this.data + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -1048,7 +1049,7 @@ FOAModel({
         this.data = this.backupImage;
       }.bind(this));
 
-      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
