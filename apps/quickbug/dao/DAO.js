@@ -55,6 +55,12 @@ var IssueRestDAO = FOAM({
       return this.model.create(json);
     },
 
+    objToJson: function(obj, extra) {
+      var data = JSON.parse(this.SUPER(obj));
+      data.owner = { name: data.owner };
+      return JSON.stringify(data);
+    },
+
     buildSelectParams: function(sink, outquery) {
       var query = outquery[0];
 
@@ -283,17 +289,14 @@ var QIssueCommentNetworkDAO = FOAM({
     objToJson: function(obj, extra) {
       if ( ! obj.content ) obj.content = "(No comment was entered for this change.)";
       extra.issueId = obj.issueId;
-      var json = JSONUtil.compact.where(
+      var json = JSONUtil.where(
           IN(Property.NAME, [
             'author',
             'content',
             'published',
             'updates',
-            'blockedOn',
-            'blocking',
             'cc',
             'labels',
-            'mergedInto',
             'owner',
             'status',
             'summary'
