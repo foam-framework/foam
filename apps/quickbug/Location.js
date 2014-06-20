@@ -135,16 +135,12 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'y',
-      defaultValue: QIssue.OWNER,
-//      defaultMemento: 'owner',
       toMemento: function(y) { return y.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
-      defaultValue: QIssue.STATUS,
-//      defaultMemento: 'status',
       toMemento: function(x) { return x.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     }

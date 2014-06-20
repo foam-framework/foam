@@ -449,6 +449,9 @@ FOAModel({
 
       this.memento = '';
 
+      this.location.y = QIssue.OWNER;
+      this.location.x = QIssue.STATUS;
+
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
 
@@ -553,7 +556,7 @@ Please use labels and text to provide additional information.
               url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
               issueDAO:         self.issueDAO,
-              cursorQIssueDAO:  self.location.sort ?
+              cursorIssueDAO:   self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
                 self.filteredIssueDAO
             });
