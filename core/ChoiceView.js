@@ -452,7 +452,7 @@ FOAModel({
 
   properties: [
     {
-      name: 'label'
+      name: 'linkLabel'
     },
     {
       name: 'iconUrl'
@@ -526,8 +526,8 @@ FOAModel({
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
-      if ( this.label ) {
-        out += this.label;
+      if ( this.linkLabel ) {
+        out += this.linkLabel;
       }
       out += '</span>';
 
