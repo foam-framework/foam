@@ -143,3 +143,6 @@ var stack = {
     /* nop */
   }
 };
+
+
+var IS_CHROME_APP = true;
