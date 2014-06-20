@@ -24,10 +24,29 @@ FOAModel({
 
 FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+
 FOAModel({
   name: 'ControllerView',
   extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ],
+  templates: [
+    function toHTML() {/*
+      <% if ( window.location.hash ) {
+        var view = PhoneDetailView.create({model: Phone});
+        this.addChild(view);
+
+        this.obj.dao.find(window.location.hash.substring(1), {put: function(phone) {
+          view.value.set(phone);
+        }});
+
+        return view.toHTML();
+      } else { %>
+        &nbsp;&nbsp; Search: $$search
+        &nbsp;&nbsp; Sort by: $$order
+        <p>
+        $$filteredDAO{className: 'phones', tagName: 'ul'}
+      <% } %>
+    */}
+ ],
   methods: {
     init: function() {
       this.SUPER();
