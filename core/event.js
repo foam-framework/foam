@@ -64,7 +64,7 @@ var EventService = {
    * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
    *        the smallest delay that humans aren't able to perceive.
    **/
-  merged: function(listener, opt_delay) {
+  merged: function(listener, opt_delay, opt_X) {
     var delay = opt_delay || 16;
 
     return function() {
@@ -81,7 +81,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          setTimeout(
+          ((opt_X && opt_X.setTimeout) || setTimeout)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
@@ -109,7 +109,10 @@ var EventService = {
    * Only the last notification is delivered.
    **/
   // TODO: execute immediately from within a requestAnimationFrame
-  animate: function(listener) {
+  animate: function(listener, opt_X) {
+//    if ( ! opt_X ) debugger;
+//    if ( opt_X.isBackground ) debugger;
+
     return function() {
       var STACK        = null;
       var triggered    = false;
@@ -124,8 +127,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          var window = $documents[$documents.length-1].defaultView;
-          window.requestAnimationFrame(
+          ((opt_X && opt_X.requestAnimationFrame) || $requestAnimationFrame)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
@@ -527,7 +529,7 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
-   * @param removeFeedback disables feedback   
+   * @param removeFeedback disables feedback
    */
   relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
     if ( ! srcValue || ! dstValue ) return;
@@ -576,9 +578,9 @@ var Events = {
    * @param opt_fn also invoked when dependencies change,
    *        but its own dependencies are not tracked.
    */
-  dynamic: function(fn, opt_fn) {
+  dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var listener = EventService.animate(fn2, 5);
+    var listener = EventService.animate(fn2, opt_X);
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name); });
@@ -903,11 +905,4 @@ var Movement = {
     }));
   }
 
-};
-
-
-var originalRequestAnimationFrame = window.requestAnimationFrame;
-
-window.requestAnimationFrame = function(f) {
-  this.setTimeout(f, 16);
 };

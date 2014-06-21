@@ -240,16 +240,17 @@ var QIssueTableView = FOAM({
 
 
 function createView(rowSelection, browser) {
+  var X = browser.X;
   var location = browser.location;
 
-  return AlternateView.create({
+  return X.AlternateView.create({
     dao: browser.filteredIssueDAO,
     headerView: browser.countField,
     views: [
       ViewChoice.create({
         label: 'List',
         view: function() {
-          var tableView = QIssueTableView.create({
+          var tableView = X.QIssueTableView.create({
             model:              QIssue,
             dao:                browser.filteredIssueDAO,
             browser:            browser,
@@ -261,13 +262,14 @@ function createView(rowSelection, browser) {
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;
 
-          tableView.window = browser.X.window;  // TODO: fix
+          tableView.window = X.window;  // TODO: fix
           return tableView;
         }
       }),
-      ViewChoice.create({
+      X.ViewChoice.create({
         label: 'Grid',
         view: function() {
+           // TODO: this is a bit complex because it was written before Contexts. Fix.
            var g = Model.create({
               name: 'QIssueGridView',
               extendsModel: 'GridView',
@@ -313,7 +315,7 @@ function createView(rowSelection, browser) {
                   [ ItemCount.create({browser: browser}),                         "Counts" ],
                   [ PIE(QIssue.STATUS),                                           "Pie(Status)"  ],
                   [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
-                  //                 [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                  // [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
               grid: /*GridByExpr*/DragAndDropGrid.create({})
            });

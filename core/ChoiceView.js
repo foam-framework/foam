@@ -376,7 +376,7 @@ FOAModel({
     {
       name: 'onMouseOver',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
         this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
@@ -384,8 +384,8 @@ FOAModel({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.timer_ = window.setTimeout(function() {
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
+        this.timer_ = this.X.setTimeout(function() {
           this.data = this.prev || '';
           this.prev = undefined;
         }.bind(this), 1);
@@ -482,12 +482,7 @@ FOAModel({
           autoSetData: this.autoSetData
         });
 
-        // I don't know why the 'animate' is required, but it sometimes
-        // doesn't remove the view without it.
-        view.data$.addListener(EventService.animate(function() {
-          this.data = view.data;
-          if ( view.$ ) view.$.remove();
-        }.bind(this)));
+        view.data$.addListener(this.onDataUpdate)
 
         var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
@@ -507,6 +502,16 @@ FOAModel({
             view.$.remove();
           }
         });
+      }
+    },
+    {
+      name: 'onDataUpdate',
+      // I don't know why the 'animate' is required, but it sometimes
+      // doesn't remove the view without it.
+      isAnimated: true,
+      code: function() {
+        this.data = view.data;
+        if ( view.$ ) view.$.remove();
       }
     }
   ],

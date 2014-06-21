@@ -35,11 +35,12 @@ function sub(opt_args, opt_name) {
 }
 
 
-function subWindow(w, opt_name) {
+function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
   var document = w.document;
-  return this.sub({
+  var map = {
+    isBackground: !!isBackground,
     window: w,
     document: document,
     console: w.console,
@@ -56,17 +57,28 @@ function subWindow(w, opt_name) {
     $$: function(cls) {
       return document.getElementsByClassName(cls);
     },
+    dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
+    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
     memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: w.requestAnimationFrame && w.requestAnimationFrame.bind(w),
+    requestAnimationFrame: function(f) { return w.requestAnimationFrame(f); },
     cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
-  }, opt_name);
+  };
+
+  if ( isBackground ) {
+    map.requestAnimationFrame = function(f) { return w.setTimeout(f, 16); };
+    map.cancelAnimationFrame = map.clearTimeout;
+  }
+
+  var X = this.sub(map, opt_name);
+  w.X = X;
+  return X;
 }
 
-var X = this.subWindow(window, 'DEFAULT WINDOW');
+var X = this.subWindow(window, 'DEFAULT WINDOW').sub({IN_WINDOW: false});
 
 function registerModel(model, opt_name) {
   /*

@@ -314,7 +314,7 @@ FOAModel({
 
     dynamicTag: function(tagName, f) {
       var id = this.nextID();
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         var html = f();
         var e = $(id);
         if ( e ) e.innerHTML = html;
@@ -419,14 +419,14 @@ FOAModel({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        Events.dynamic(valueFn, function() {
+        this.X.dynamic(valueFn, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
         })
-      });
+      }.bind(this));
     },
 
     setClass: function(className, predicate, opt_id) {
@@ -434,12 +434,12 @@ FOAModel({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        Events.dynamic(predicate, function() {
+        this.X.dynamic(predicate, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -2159,7 +2159,7 @@ FOAModel({
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },

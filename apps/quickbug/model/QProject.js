@@ -192,7 +192,7 @@ FOAModel({
     {
       model_: 'Method',
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isMerged: 16,
       code: function() {
         this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
       }
@@ -256,9 +256,9 @@ FOAModel({
         };
 
         w.onClosed.addListener(function() {
-          $removeWindow(self.window);
+          $removeWindow(window);
           // for debugging
-          BROWSERS.deleteI(self.window);
+          BROWSERS.deleteI(window);
         });
       });
     },

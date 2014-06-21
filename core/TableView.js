@@ -116,7 +116,7 @@ FOAModel({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 

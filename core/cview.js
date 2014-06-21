@@ -175,7 +175,7 @@ FOAModel({
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = Canvas.create();
+        this.parent = this.X.Canvas.create();
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
@@ -193,7 +193,7 @@ FOAModel({
 
       parent.addChild(this);
       parent.initHTML();
-      Events.dynamic(
+      this.X.dynamic(
         function() { self.background; }, function() {
           parent.background = self.background;
         });

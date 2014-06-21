@@ -31,6 +31,7 @@ function $removeWindow(w) {
       $documents.splice(i,1);
   }
 }
+
 /** Replacement for getElementById **/
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {

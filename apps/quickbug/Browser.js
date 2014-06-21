@@ -239,7 +239,7 @@ FOAModel({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.X.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -355,7 +355,7 @@ FOAModel({
           return;
         }
 
-        var view = ToolbarView.create({
+        var view = this.X.ToolbarView.create({
           horizontal: false,
           value: SimpleValue.create(this),
           document: this.X.document
@@ -413,7 +413,7 @@ FOAModel({
       help: 'Create Bookmark',
       action: function() {
         var anchor = this.addBookmarkView.$;
-        var view   = AddBookmarkDialog.create({
+        var view   = this.X.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
         });
@@ -457,7 +457,7 @@ FOAModel({
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
-      Events.dynamic(
+      this.X.dynamic(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.data =
@@ -478,7 +478,7 @@ FOAModel({
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         // TODO: This doesn't work because the listener is merged()' which doesn't cascade the Exception,
         // but it should
         //        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -619,7 +619,7 @@ Please use labels and text to provide additional information.
             url: self.url
           }).addDecorator(QIssuePreviewBorder.create());
 
-          var popup = self.currentPreview = PopupView.create({
+          var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,
