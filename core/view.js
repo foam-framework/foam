@@ -1375,30 +1375,13 @@ FOAModel({
       }
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(new Date()); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue && this.domValue ) {
-          Events.unlink(this.domValue, oldValue);
-        }
-        this.linkValues();
-      }
+      name: 'data',
     }
   ],
 
   methods: {
-    linkValues: function() {
-      if ( ! this.$ ) return;
-      if ( ! this.value ) return;
-
-      this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
-
-      Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
-    },
-
     valueToDom: function(value) { return value ? value.getTime() : 0; },
     domToValue: function(dom) { return new Date(dom); },
-    setValue: function(value) { this.value = value; },
 
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
@@ -1409,7 +1392,19 @@ FOAModel({
 
     initHTML: function() {
       this.SUPER();
-      this.linkValues();
+
+      this.domValue = DomValue.create(
+        this.$,
+        this.mode === 'read-write' ? 'input' : undefined,
+        this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
+
+      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
+
+      Events.relate(
+        this.data$,
+        this.domValue,
+        this.valueToDom.bind(this),
+        this.domToValue.bind(this));
     }
   }
 });
@@ -1421,8 +1416,12 @@ FOAModel({
 
   extendsModel: 'DateTimeFieldView',
 
+  properties: [
+    { name: 'mode', defaultValue: 'read-only' }
+  ],
+
   methods: {
-    valueToText: function(value) {
+    valueToDom: function(value) {
       return value.toRelativeDateString();
     }
   }
