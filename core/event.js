@@ -127,7 +127,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          ((opt_X && opt_X.requestAnimationFrame) || $requestAnimationFrame)(
+          ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
