@@ -1034,7 +1034,7 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage && IS_CHROME_APP ?
+      return this.backupImage && window.IS_CHROME_APP ?
         '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
         '<img class="imageView" id="' + this.id + '" src="' + this.data + '">' ;
     },
