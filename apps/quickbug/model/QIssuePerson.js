@@ -15,19 +15,8 @@
  * limitations under the License.
  */
 
-FOAModel({
-  name: 'QIssuePerson',
-  extendsModel: 'IssuePerson',
-
-  templates: [
-    {
-      name: 'toSummaryHTML',
-      template: '<div style="personSummary">{{this.value.value.name}}</div>'
-    }
-  ]
-});
-
-QIssuePerson.getPrototype();
+// Override the primary key of people to be the name property.
+IssuePerson.ids = ['name'];
 
 FOAModel({
   name: 'PersonCompleter',
@@ -39,19 +28,19 @@ FOAModel({
       var src = this.X.PersonDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH(QIssuePerson.NAME, data) :
+          STARTS_WITH(IssuePerson.NAME, data) :
           TRUE);
 
       var self = this;
       dao.limit(2).select()(function(objs) {
-        if ( objs.length === 1 && self.f.f(objs[0]) === data ) {
+        if ( objs.length === 1 && self.f(objs[0]) === data ) {
           self.autocompleteDao = src.where(FALSE);
         } else {
           self.autocompleteDao = dao;
         }
       });
     },
-    f: QIssuePerson.NAME
+    f: function(o) { return o.name; }
   }
 });
   

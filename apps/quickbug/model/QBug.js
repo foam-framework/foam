@@ -65,7 +65,7 @@ FOAModel({
         dao.jsonToObj = function(json) {
           if ( json.members ) {
             for ( var i = 0; i < json.members.length; i++ ) {
-              json.members[i] = QIssuePerson.create(json.members[i]);
+              json.members[i] = IssuePerson.create(json.members[i]);
             }
           }
 

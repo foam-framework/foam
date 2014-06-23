@@ -73,7 +73,7 @@ FOAModel({
       name: 'PersonDAO',
       help: 'DAO of known people.',
       factory: function() {
-        var dao = MDAO.create({ model: QIssuePerson });
+        var dao = MDAO.create({ model: IssuePerson });
         this.project.members.select(dao);
         return dao;
       },
@@ -236,7 +236,6 @@ FOAModel({
             arequire('QIssueCommentView'),
             arequire('QIssueDetailView'),
             arequire('QIssueLabel'),
-            arequire('QIssuePerson'),
             arequire('QIssueStatus'),
             arequire('QIssueTileView')
           )(function () {
