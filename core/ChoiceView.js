@@ -376,7 +376,7 @@ FOAModel({
     {
       name: 'onMouseOver',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
         this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
@@ -384,8 +384,8 @@ FOAModel({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.timer_ = window.setTimeout(function() {
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
+        this.timer_ = this.X.setTimeout(function() {
           this.data = this.prev || '';
           this.prev = undefined;
         }.bind(this), 1);
@@ -452,7 +452,7 @@ FOAModel({
 
   properties: [
     {
-      name: 'label'
+      name: 'linkLabel'
     },
     {
       name: 'iconUrl'
@@ -487,7 +487,7 @@ FOAModel({
         view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
           if ( view.$ ) view.$.remove();
-        }.bind(this)));
+        }.bind(this), this.X));
 
         var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
@@ -526,8 +526,8 @@ FOAModel({
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
-      if ( this.label ) {
-        out += this.label;
+      if ( this.linkLabel ) {
+        out += this.linkLabel;
       }
       out += '</span>';
 

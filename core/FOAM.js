@@ -27,10 +27,11 @@ function $addWindow(w) {
 }
 function $removeWindow(w) {
   for ( var i = $documents.length - 1 ; i >= 0 ; i-- ) {
-    if ( $documents[i].defaultView === w )
+    if ( ! $documents[i].defaultView || $documents[i].defaultView === w )
       $documents.splice(i,1);
   }
 }
+
 /** Replacement for getElementById **/
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {

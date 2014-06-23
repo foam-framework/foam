@@ -15,27 +15,20 @@
     mouse.connect(space.$);
 
     var COUNT = 100;
-    var colours = ['#33f','#f00','#fc0','#33f','#3c0'];
     var s = [];
-    for ( var i = 0 ; i < COUNT ; i++ )
-    {
+    for ( var i = 0 ; i < COUNT ; i++ ) {
        s[i] = Circle.create({
           x: Math.random()*300+300,
           y: Math.random()*300+300,
           r: Math.random()*20+2,
-          color: colours[i%colours.length]
+          color: 'hsl(' + 1440*i/COUNT + ', 90%, 60%)'
        });
        space.addChild(s[i]);
     }
 
     for ( var i = 1 ; i < COUNT ; i++ )
-//       if ( i % 5 == 0 )
        Movement.moveTowards(timer, s[i-1], s[i], 7-6.7*i/COUNT);
-//       else
-//       Movement.orbit(timer, s[i-1], s[i], 10+Math.random(30), 1000);
 
-
-//    Movement.orbit(timer, mouse, s[0], 100, 800);
     Movement.moveTowards(timer, mouse, s[0], 3);
 
     space.paint();

@@ -1,5 +1,7 @@
 var metricsSrv = analytics.getService('Quick Bug').getTracker('UA-47217230-3');
 
+X = subWindow(window, 'BACKGROUND WINDOW', true);
+
 ametric = function(name, afunc) {
   var metric;
   return atime(name, afunc, function(name) {

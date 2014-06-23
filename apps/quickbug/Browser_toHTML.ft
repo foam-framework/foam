@@ -1,10 +1,12 @@
 <%
-  var browserLink = ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
+  var X = this.X;
+  var browserLink = X.ActionLink.create({action: this.model_.LAUNCH_BROWSER, value: SimpleValue.create(this)});
   browserLink.className = browserLink.className + ' tip-below';
-  var linkButton  = ActionButton.create({action: this.model_.LINK,         value: SimpleValue.create(this)});
-  var syncLink    = ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
-  var backButton  = ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
-  var forthButton = ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
+  var linkButton  = X.ActionButton.create({action: this.model_.LINK,         value: SimpleValue.create(this)});
+  var syncLink    = X.ActionLink.create({action: this.model_.LAUNCH_SYNC,    value: SimpleValue.create(this)});
+  var backButton  = X.ActionButton.create({action: MementoMgr.BACK,          value: SimpleValue.create(this.mementoMgr)});
+  var forthButton = X.ActionButton.create({action: MementoMgr.FORTH,         value: SimpleValue.create(this.mementoMgr)});
+  var createButton = X.ActionLink.create({action: this.model_.NEW_ISSUE, value: SimpleValue.create(this)});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -14,7 +16,7 @@
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span><%= createButton %> | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>

@@ -75,7 +75,6 @@ FOAModel({
     },
     {
       name: 'IssueDAO',
-      scope: 'project',
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
@@ -88,6 +87,9 @@ FOAModel({
           delegate: this.project.IssueDAO,
           window:   this.X.window
         });
+      },
+      postSet: function(_, v) {
+        this.X.IssueDAO = v;
       }
     },
     {
@@ -121,7 +123,7 @@ FOAModel({
           autoSetData: false,
           objToChoice: function(b) { return [b.url, b.title, b]; },
           dao: this.bookmarkDAO,
-          label: 'Bookmarks &#x25BE;',
+          linkLabel: 'Bookmarks &#x25BE;',
           extraClassName: 'bookmarks-menu'
         });
         v.data = 'dummy';
@@ -142,9 +144,9 @@ FOAModel({
       }
     },
     {
-      name: 'syncManager',
+      name: 'syncManagerFuture',
       scope: 'project',
-      defaultValueFn: function() { return this.project.syncManager; }
+      defaultValueFn: function() { return this.project.syncManagerFuture; }
     },
     {
       name: 'zoom',
@@ -237,7 +239,7 @@ FOAModel({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.X.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -260,14 +262,16 @@ FOAModel({
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
-        if ( this.syncManager.isSyncing ) {
-          this.timer.step();
-          this.timer.start();
-        } else {
-          this.timer.stop();
-          // Should no longer be necessary since both views listen for dao updates.
-          // this.view.choice = this.view.choice;
-        }
+        this.syncManagerFuture.get((function(syncManager) {
+          if ( syncManager.isSyncing ) {
+            this.timer.step();
+            this.timer.start();
+          } else {
+            this.timer.stop();
+            // Should no longer be necessary since both views listen for dao updates.
+            // this.view.choice = this.view.choice;
+          }
+        }).bind(this));
       }
     },
     {
@@ -295,7 +299,9 @@ FOAModel({
       isMerged: 2,
       code: function(evt) {
         this.memento = this.location.toMemento(this);
-        if ( this.location.id ) {
+        if ( this.location.createMode ) {
+          this.createIssue();
+        } else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
@@ -349,7 +355,7 @@ FOAModel({
           return;
         }
 
-        var view = ToolbarView.create({
+        var view = this.X.ToolbarView.create({
           horizontal: false,
           value: SimpleValue.create(this),
           document: this.X.document
@@ -407,7 +413,7 @@ FOAModel({
       help: 'Create Bookmark',
       action: function() {
         var anchor = this.addBookmarkView.$;
-        var view   = AddBookmarkDialog.create({
+        var view   = this.X.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
         });
@@ -426,11 +432,15 @@ FOAModel({
         var self = this;
         this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
-          self.project.IssueSplitDAO.invalidate();
-          self.performQuery();
+          self.syncManagerFuture.get(function(m) { m.doReset(function() { m.start(); }) });
         }, true);
       }
     },
+    {
+      name: 'newIssue',
+      label: 'New issue',
+      action: function() { this.location.createMode = true; }
+    }
   ],
 
   methods: {
@@ -439,12 +449,15 @@ FOAModel({
 
       this.memento = '';
 
+      this.location.y = QIssue.OWNER;
+      this.location.x = QIssue.STATUS;
+
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
-      Events.dynamic(
+      this.X.dynamic(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.data =
@@ -458,12 +471,14 @@ FOAModel({
         this.location.id = issue.id;
       }.bind(this));
 
-      this.refreshImg.$.onclick = this.syncManager.forceSync.bind(this.syncManager);
+      this.syncManagerFuture.get((function(syncManager) {
+        this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
+      }).bind(this));
 
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         // TODO: This doesn't work because the listener is merged()' which doesn't cascade the Exception,
         // but it should
         //        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
@@ -484,8 +499,43 @@ FOAModel({
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
 
-      this.syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      this.syncManagerFuture.get((function(syncManager) {
+        syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
+      }).bind(this));
+
       this.onSyncManagerUpdate();
+
+      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {put: function(bookmark) {
+        this.memento = bookmark.url;
+      }.bind(this)});
+    },
+
+    createIssue: function() {
+      var self = this;
+      apar(
+        arequire('QIssueCreateView')
+      )(function() {
+        var v = self.X.QIssueCreateView.create({
+          data:
+          QIssue.create({
+            description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+
+What is the expected output? What do you see instead?
+
+
+Please use labels and text to provide additional information.
+
+*/}),
+            status: 'New',
+            summary: 'Enter a one-line summary.'
+          }),
+          mode:             'read-write'
+        });
+        self.pushView(v);
+      });
     },
 
     editIssue: function(id) {
@@ -506,11 +556,14 @@ FOAModel({
           )(function() {
             var v = self.X.QIssueDetailView.create({
               value:            SimpleValue.create(obj),
-              QIssueCommentDAO: self.project.issueCommentDAO(id),
-              QIssueDAO:        self.IssueDAO,
               mode:             'read-write',
-              url:              self.url
-            })/*.addDecorator(self.X.QIssueEditBorder.create())*/;
+              url:              self.url,
+              QIssueCommentDAO: self.project.issueCommentDAO(id),
+              issueDAO:         self.issueDAO,
+              cursorIssueDAO:   self.location.sort ?
+                self.filteredIssueDAO.orderBy(self.location.sort) :
+                self.filteredIssueDAO
+            });
             self.pushView(v);
 //            w.focus();
           });
@@ -566,7 +619,7 @@ FOAModel({
             url: self.url
           }).addDecorator(QIssuePreviewBorder.create());
 
-          var popup = self.currentPreview = PopupView.create({
+          var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,

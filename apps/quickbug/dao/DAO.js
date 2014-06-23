@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var IssueRestDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'RestDAO',
 
+FOAModel({
   name: 'IssueRestDAO',
+  extendsModel: 'RestDAO',
 
   properties: [
     {
@@ -53,6 +52,12 @@ var IssueRestDAO = FOAM({
       if ( json.published ) json.published = new Date(json.published).getTime()/1000;
 
       return this.model.create(json);
+    },
+
+    objToJson: function(obj, extra) {
+      var data = JSON.parse(this.SUPER(obj));
+      if ( data.owner ) data.owner = { name: data.owner };
+      return JSON.stringify(data);
     },
 
     buildSelectParams: function(sink, outquery) {
@@ -152,7 +157,8 @@ var IssueRestDAO = FOAM({
       aseq(
         apar(
           function(ret) {
-            self.find(issue.id, ret);
+            if ( issue.id ) self.find(issue.id, ret);
+            else ret();
           },
           function(ret) {
             if ( ! issue.id ) {
@@ -227,8 +233,7 @@ FOAModel({
   }
 });
 
-var QIssueCommentNetworkDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
@@ -282,17 +287,14 @@ var QIssueCommentNetworkDAO = FOAM({
     objToJson: function(obj, extra) {
       if ( ! obj.content ) obj.content = "(No comment was entered for this change.)";
       extra.issueId = obj.issueId;
-      var json = JSONUtil.compact.where(
+      var json = JSONUtil.where(
           IN(Property.NAME, [
             'author',
             'content',
             'published',
             'updates',
-            'blockedOn',
-            'blocking',
             'cc',
             'labels',
-            'mergedInto',
             'owner',
             'status',
             'summary'
@@ -319,11 +321,9 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Remote data is stored non-permanently in the local MDAO.
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
-var QIssueSplitDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
-
+FOAModel({
    name: 'QIssueSplitDAO',
+   extendsModel: 'AbstractDAO',
 
    properties: [
       {

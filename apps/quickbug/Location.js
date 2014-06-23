@@ -43,6 +43,12 @@ var Location = FOAM({
     },
     {
       model_: 'LocationProperty',
+      name: 'createMode',
+      defaultValue: false,
+      preSet: function(_, v) { return v === "false" ? false : !!v; }
+    },
+    {
+      model_: 'LocationProperty',
       name: 'can',
       // The memento is the can# stored in the 3rd element of the choice
       // The value of 'can' is the value stored in the 1st element of the choice
@@ -129,16 +135,12 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'y',
-      defaultValue: QIssue.OWNER,
-//      defaultMemento: 'owner',
       toMemento: function(y) { return y.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
-      defaultValue: QIssue.STATUS,
-//      defaultMemento: 'status',
       toMemento: function(x) { return x.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
     }

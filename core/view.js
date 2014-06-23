@@ -314,7 +314,7 @@ FOAModel({
 
     dynamicTag: function(tagName, f) {
       var id = this.nextID();
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         var html = f();
         var e = $(id);
         if ( e ) e.innerHTML = html;
@@ -419,14 +419,14 @@ FOAModel({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        Events.dynamic(valueFn, function() {
+        this.X.dynamic(valueFn, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
         })
-      });
+      }.bind(this));
     },
 
     setClass: function(className, predicate, opt_id) {
@@ -434,12 +434,12 @@ FOAModel({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        Events.dynamic(predicate, function() {
+        this.X.dynamic(predicate, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -1000,6 +1000,7 @@ FOAModel({
     {
       // TODO: make 'data' be the actual source of the data
       name: 'data',
+      getter: function() { return this.value.get(); },
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
@@ -1033,9 +1034,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage ?
+      return this.backupImage && window.IS_CHROME_APP ?
         '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img class="imageView" id="' + this.id + '">' ;
+        '<img class="imageView" id="' + this.id + '" src="' + this.data + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -1048,7 +1049,7 @@ FOAModel({
         this.data = this.backupImage;
       }.bind(this));
 
-      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
@@ -1374,30 +1375,13 @@ FOAModel({
       }
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(new Date()); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue && this.domValue ) {
-          Events.unlink(this.domValue, oldValue);
-        }
-        this.linkValues();
-      }
+      name: 'data',
     }
   ],
 
   methods: {
-    linkValues: function() {
-      if ( ! this.$ ) return;
-      if ( ! this.value ) return;
-
-      this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
-
-      Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
-    },
-
     valueToDom: function(value) { return value ? value.getTime() : 0; },
     domToValue: function(dom) { return new Date(dom); },
-    setValue: function(value) { this.value = value; },
 
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
@@ -1408,7 +1392,19 @@ FOAModel({
 
     initHTML: function() {
       this.SUPER();
-      this.linkValues();
+
+      this.domValue = DomValue.create(
+        this.$,
+        this.mode === 'read-write' ? 'input' : undefined,
+        this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
+
+      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
+
+      Events.relate(
+        this.data$,
+        this.domValue,
+        this.valueToDom.bind(this),
+        this.domToValue.bind(this));
     }
   }
 });
@@ -1420,8 +1416,12 @@ FOAModel({
 
   extendsModel: 'DateTimeFieldView',
 
+  properties: [
+    { name: 'mode', defaultValue: 'read-only' }
+  ],
+
   methods: {
-    valueToText: function(value) {
+    valueToDom: function(value) {
       return value.toRelativeDateString();
     }
   }
@@ -2158,7 +2158,7 @@ FOAModel({
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -2564,7 +2564,9 @@ FOAModel({
       // TODO: I think this should be done automatically some-how/where.
       this.scrollModeView.data$ = this.scrollMode$;
 
-      var choices = [];
+      var choices = [
+        [ { f: function() { return ''; } }, 'none' ]
+      ];
       this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
@@ -2909,13 +2911,8 @@ FOAModel({
       }
     },
     {
-      name: 'touchStart',
-      help: 'Coordinates (screen-relative) of the first touch',
-      hidden: true
-    },
-    {
-      name: 'touchLast',
-      help: 'Last coordinates of an in-progress swipe',
+      name: 'touch',
+      help: 'TouchManager\'s FOAMTouch object',
       hidden: true
     },
     {
@@ -3000,10 +2997,12 @@ FOAModel({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
+      this.X.touchManager.install(TouchReceiver.create({
+        id: 'swipeAltView-' + this.id,
+        element: this.$,
+        delegate: this
+      }));
 
-      this.$.addEventListener('touchstart', this.onTouchStart);
-      this.$.addEventListener('touchmove', this.onTouchMove);
-      this.$.addEventListener('touchend', this.onTouchEnd);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -3013,16 +3012,6 @@ FOAModel({
           choice.view.initHTML();
         });
       }, 0);
-    },
-
-    getTouch: function(event) {
-      var touches = event.touches && event.touches.length ?
-          event.touches : [event];
-      var e = (event.changedTouches && event.changedTouches[0]) ||
-          (event.originalEvent && event.originalEvent.changedTouches &&
-              event.originalEvent.changedTouches[0]) ||
-          touches[0].originalEvent || touches[0];
-      return { x: e.clientX, y: e.clientY };
     },
 
     snapToCurrent: function(sizeOfMove) {
@@ -3062,37 +3051,39 @@ FOAModel({
     },
     {
       name: 'onTouchStart',
-      code: function(event) {
-        this.touchStart = this.getTouch(event);
+      code: function(touches, changed) {
+        // Only handle single-point touches.
+        if ( Object.keys(touches).length > 1 ) return { drop: true };
+
+        // Otherwise we're moderately interested, until it moves.
+        this.touch = touches[changed[0]];
         this.touchStarted = true;
         this.touchLive = false;
+        return { weight: 0.5 };
       }
     },
     {
       name: 'onTouchMove',
-      code: function(event) {
-        if ( ! this.touchStarted ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchStarted ) return { drop: true };
 
-        var touch = this.getTouch(event);
-        var deltaX = Math.abs(this.touchStart.x - touch.x);
-        var deltaY = Math.abs(this.touchStart.y - touch.y);
+        var deltaX = Math.abs(this.touch.x - this.touch.startX);
+        var deltaY = Math.abs(this.touch.y - this.touch.startY);
         if ( ! this.touchLive &&
-            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 10 ) {
+            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 6 ) {
           // Prevent default, but don't decide if we're scrolling yet.
-          event.preventDefault();
-          return;
+          return { preventDefault: true, weight: 0.5 };
         }
 
         if ( ! this.touchLive && deltaX < deltaY ) {
-          return;
+          // Drop our following of this touch.
+          return { drop: true };
         }
 
         // Otherwise the touch is live.
         this.touchLive = true;
-        event.preventDefault();
-        this.touchLast = touch;
         var x = this.index * this.width -
-            (this.touchLast.x - this.touchStart.x);
+            (this.touch.x - this.touch.startX);
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -3100,19 +3091,20 @@ FOAModel({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
+        return { claim: true, weight: 0.9 };
       }
     },
     {
       name: 'onTouchEnd',
-      code: function(event) {
-        if ( ! this.touchLive ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchLive ) return this.onTouchCancel(touches, changed);
 
         this.touchLive = false;
 
-        var finalX = this.getTouch(event).x;
-        if ( Math.abs(finalX - this.touchStart.x) > this.width / 3 ) {
+        var finalX = this.touch.x;
+        if ( Math.abs(finalX - this.touch.startX) > this.width / 3 ) {
           // Consider that a move.
-          if (finalX < this.touchStart.x) {
+          if (finalX < this.touch.startX) {
             this.index++;
           } else {
             this.index--;
@@ -3120,6 +3112,16 @@ FOAModel({
         } else {
           this.snapToCurrent(1);
         }
+
+        return { drop: true };
+      }
+    },
+    {
+      name: 'onTouchCancel',
+      code: function(touches, changed) {
+        this.touchLive = false;
+        this.touchStarted = false;
+        return { drop: true };
       }
     }
   ]

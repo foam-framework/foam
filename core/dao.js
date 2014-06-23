@@ -2385,6 +2385,11 @@ FOAModel({
       name: 'batchSize',
       defaultValue: 200
     },
+    {
+      model_: 'IntProperty',
+      name: 'skipThreshold',
+      defaultValue: 1000
+    }
   ],
 
   methods: {
@@ -2404,6 +2409,7 @@ FOAModel({
       return this.url;
     },
     buildPutParams: function(obj) {
+      return [];
     },
     buildSelectParams: function(sink, query) {
       return [];
@@ -2433,6 +2439,7 @@ FOAModel({
       var fut = afuture();
       var self = this;
       var limit;
+      var skipped = 0;
       var index = 0;
       var fc = this.createFlowControl_();
       // TODO: This is a very ugly way of passing additional data
@@ -2515,6 +2522,7 @@ FOAModel({
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
               if ( origQuery && !origQuery.f(item) ) {
+                skipped++;
                 continue;
               }
 
@@ -2533,7 +2541,8 @@ FOAModel({
               sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
-            if ( ! data || index === data.totalResults ) finished = true;
+            if ( ! data || index >= data.totalResults ) finished = true;
+            if ( skipped >= self.skipThreshold ) finished = true;
             ret();
           });
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });

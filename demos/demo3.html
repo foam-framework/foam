@@ -3,9 +3,10 @@
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="demos.js"></script>
-  <title>FOAM </title>
+  <title>Interpolators</title>
  </head>
  <body>
+  Click screen to roll time.
   <script language="javascript">
     var space = Canvas.create({width: 3500, height: 2700, background:'#fff'});
     space.write(document);
@@ -50,10 +51,9 @@
 
         ms[i] = Movement.animate(
           2000,
-          function(evt) {
-            clocks[i].a = Movement.distance(evt.offsetX, evt.offsetY)/clocks[i].r;
-            clocks[i].x = evt.offsetX;
-            clocks[i].y = evt.offsetY + i*100;
+          function(x) {
+            clocks[i].a = x/clocks[i].r;
+            clocks[i].x = x;
           },
           is[i][0]);
       })(i);
@@ -61,7 +61,7 @@
 
     space.$.onmousedown = function(evt) {
       for ( var i = 0 ; i < is.length ; i++ ) {
-        ms[i](evt);
+        ms[i](evt.offsetX);
       }
     };
 
