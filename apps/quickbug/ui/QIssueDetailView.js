@@ -163,7 +163,9 @@ FOAModel({
       code: function() {
         if ( ! this.$ ) return;
 
-        var value = this.value.get();
+        var value = this.value.get().sort(function (o1, o2) {
+          return o1.toLowerCase().compareTo(o2.toLowerCase());
+        });
         var out = "";
         for ( var i = 0; i < value.length; i++ ) {
           var start = value[i].substring(0, value[i].indexOf('-') + 1);
