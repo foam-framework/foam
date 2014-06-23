@@ -1075,6 +1075,8 @@ FOAModel({
           }
           group.put(obj);
         }
+        // Perhaps we should use a key value of undefiend instead of '', since '' may actually
+        // be a valid key.
         if ( key.length == 0 ) {
           var group = this.groups.hasOwnProperty('') && this.groups[''];
           if ( ! group ) {
