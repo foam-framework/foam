@@ -48,7 +48,7 @@ var DragAndDropGrid = FOAM({
   methods: {
     sortAxis: function(values, f) {
       return values.sort(
-        f.name === 'iteration' ? function(o1, o2) { return parseInt(o2).compareTo(parseInt(o1)); } :
+        f.name === 'iteration' ? function(o1, o2) { return parseInt(o2 || '0').compareTo(parseInt(o1 || '0')); } :
         f.name === 'milestone' ? function(o1, o2) { return f.compareProperty(o2, o1); } :
         f.compareProperty);
     },

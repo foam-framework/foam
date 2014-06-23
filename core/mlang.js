@@ -1075,6 +1075,14 @@ FOAModel({
           }
           group.put(obj);
         }
+        if ( key.length == 0 ) {
+          var group = this.groups.hasOwnProperty('') && this.groups[''];
+          if ( ! group ) {
+            group = this.arg2.clone();
+            this.groups[''] = group;
+          }
+          group.put(obj);
+        }
       } else {
         var group = this.groups.hasOwnProperty(key) && this.groups[key];
         if ( ! group ) {
