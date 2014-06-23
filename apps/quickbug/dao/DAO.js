@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var IssueRestDAO = FOAM({
-  model_: 'Model',
-  extendsModel: 'RestDAO',
 
+FOAModel({
   name: 'IssueRestDAO',
+  extendsModel: 'RestDAO',
 
   properties: [
     {
@@ -57,7 +56,7 @@ var IssueRestDAO = FOAM({
 
     objToJson: function(obj, extra) {
       var data = JSON.parse(this.SUPER(obj));
-      data.owner = { name: data.owner };
+      if ( data.owner ) data.owner = { name: data.owner };
       return JSON.stringify(data);
     },
 
@@ -234,8 +233,7 @@ FOAModel({
   }
 });
 
-var QIssueCommentNetworkDAO = FOAM({
-  model_: 'Model',
+FOAModel({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
@@ -323,11 +321,9 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Remote data is stored non-permanently in the local MDAO.
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
-var QIssueSplitDAO = FOAM({
-   model_: 'Model',
-   extendsModel: 'AbstractDAO',
-
+FOAModel({
    name: 'QIssueSplitDAO',
+   extendsModel: 'AbstractDAO',
 
    properties: [
       {
