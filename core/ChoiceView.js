@@ -223,6 +223,7 @@ FOAModel({
     {
       name: 'updateSelected',
       code: function() {
+        if ( ! this.$ || ! this.$.children ) return;
         for ( var i = 0 ; i < this.$.children.length ; i++ ) {
           var c = this.$.children[i];
           DOM.setClass(c, 'selected', i === this.index);
