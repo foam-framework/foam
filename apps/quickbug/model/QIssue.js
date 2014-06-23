@@ -14,6 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+FOAModel({
+  name: 'LabelArrayProperty',
+  extendsModel: 'StringArrayProperty',
+
+  help: "An array of String values, taken from labels.",
+
+  properties: [
+    {
+      name: 'preSet',
+      defaultValue: function(oldValue, v) {
+        return Array.isArray(v) ? v :
+          ! v ? undefined :
+          Array.isArray(oldValue) ? oldValue.binaryInsert(v) :
+          [v];
+      }
+    },
+    {
+      name: 'compareProperty',
+      defaultValue: function(o1, o2) {
+        o1 = o1.length ? o1[o1.length-1] : 0;
+        o2 = o2.length ? o2[o2.length-1] : 0;
+        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+      }
+    }
+  ]
+});
+
+
 var labelToProperty = {
   App:          'app',
   Type:         'type',
@@ -128,19 +157,18 @@ var QIssue = FOAM({
       tableWidth: '70px'
     },
     {
+      model_: 'LabelArrayProperty',
       name: 'milestone',
       shortName: 'm',
       aliases: ['mstone'],
       tableLabel: 'M',
-      type: 'Int',
-      tableWidth: '70px',
-      defaultValue: ''
+      tableWidth: '70px'
     },
     {
+      model_: 'LabelArrayProperty',
       name: 'iteration',
       shortName: 'it',
       aliases: ['iter'],
-      type: 'String',
       tableWidth: '69px'
     },
     {
@@ -298,19 +326,14 @@ var QIssue = FOAM({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      model_: 'LabelArrayProperty',
       name: 'movedFrom',
       tableWidth: '100px',
       preSet: function(_, v) {
         if ( Array.isArray(v) ) return v;
         if ( ! v ) return undefined;
-
+        
         return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? parseInt(v.substring(1)) : parseInt(v));
-      },
-      compareProperty: function(o1, o2) {
-        o1 = o1.length ? o1[0] : 0;
-        o2 = o2.length ? o2[0] : 0;
-        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
       }
     },
     {
