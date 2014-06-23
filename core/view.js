@@ -4856,3 +4856,215 @@ FOAModel({
     }
   ]
 });
+
+FOAModel({
+  name: 'SlidePanelView',
+  help: 'A controller that shows a main view with a small strip of the ' +
+      'secondary view visible at the right edge. This "panel" can be dragged ' +
+      'by a finger or mouse pointer to any position from its small strip to ' +
+      'fully exposed. If the containing view is wide enough, both panels ' +
+      'will be always visible.',
+  extendsModel: 'View',
+
+  properties: [
+    'mainView', 'panelView',
+    {
+      name: 'minWidth',
+      defaultValueFn: function() {
+        var e = this.main$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            300;
+      }
+    },
+    {
+      name: 'width',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.main$().style.width = x + 'px';
+      }
+    },
+    {
+      name: 'minPanelWidth',
+      defaultValueFn: function() {
+        if ( this.panelView && this.panelView.minWidth )
+          return this.panelView.minWidth;
+        var e = this.panel$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            250;
+      }
+    },
+    {
+      name: 'panelWidth',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.panel$().style.width = x + 'px';
+      }
+    },
+    {
+      name: 'parentWidth',
+      help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
+      getter: function() {
+        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+      }
+    },
+    {
+      name: 'stripWidth',
+      help: 'The width in (CSS) pixels of the minimal visible strip of panel',
+      defaultValue: 30
+    },
+    {
+      name: 'panelRatio',
+      help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
+          'the containing element is wide enough for expanded view.',
+      defaultValue: 0.5
+    },
+    {
+      name: 'panelX',
+      //defaultValueFn: function() { this.width - this.stripWidth; },
+      preSet: function(_, x) {
+        // Bound it between its left and right limits: full open and just the
+        // strip.
+        if ( x <= this.parentWidth - this.panelWidth ) {
+          return this.parentWidth - this.panelWidth;
+        } else if ( x >= this.parentWidth - this.stripWidth ) {
+          return this.parentWidth - this.stripWidth;
+        }
+        return x;
+      },
+      postSet: function(_, x) {
+        this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+      }
+    },
+    'dragging',
+    'firstDragX', 'oldPanelX',
+    'expanded'
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.id + '" ' +
+          'style="display: inline-block; position: relative; height: 100%">' +
+          '<div id="' + this.id + '-main" style="height:100%">' +
+              this.mainView.toHTML() +
+          '</div>' +
+          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+              this.panelView.toHTML() +
+          '</div>' +
+          '</div>';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // Mousedown and touch events on the sliding panel itself.
+      // Mousemove and mouseup on the whole window, so that you can drag the
+      // cursor off the slider and have it still following until you release the mouse.
+      this.panel$().addEventListener('mousedown', this.onMouseDown);
+      this.panel$().addEventListener('touchstart', this.onTouchStart);
+      this.panel$().addEventListener('touchmove', this.onTouchMove);
+      this.panel$().addEventListener('touchend', this.onTouchEnd);
+
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup', this.onMouseUp);
+
+      // Resize first, then init the outer view, and finally the panel view.
+      this.X.window.addEventListener('resize', this.onResize);
+      this.onResize();
+      this.mainView.initHTML();
+      this.panelView.initHTML();
+    },
+
+    main$: function() {
+      return this.X.window.document.getElementById(this.id + '-main');
+    },
+    panel$: function() {
+      return this.X.window.document.getElementById(this.id + '-panel');
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onResize',
+      isAnimated: true,
+      code: function(e) {
+        if ( ! this.$ ) return;
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          // Expanded mode. Show the two side by side, setting their widths
+          // based on the panelRatio.
+          this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
+          this.width = this.parentWidth - this.panelWidth;
+          this.panelX = this.width;
+          this.expanded = true;
+        } else {
+          this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
+          this.panelWidth = this.minPanelWidth;
+          this.panelX = this.width;
+          this.expanded = false;
+        }
+      }
+    },
+    {
+      name: 'onMouseDown',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.firstDragX = e.clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        // Stop propagation so that only the uppermost panel is dragged, if
+        // they are nested.
+        e.stopPropagation();
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( e.touches.length > 1 ) return;
+        var t = e.touches[0];
+        this.firstDragX = e.touches[0].clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onMouseMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault(); // Necessary to make browser handle this nicely.
+        var dx = e.clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault();
+        var dx = e.touches[0].clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
+      }
+    }
+  ]
+});
