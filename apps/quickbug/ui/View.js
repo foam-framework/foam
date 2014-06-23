@@ -46,6 +46,12 @@ var DragAndDropGrid = FOAM({
   ],
 
   methods: {
+    sortAxis: function(values, f) {
+      return values.sort(
+        f.name === 'iteration' ? function(o1, o2) { return parseInt(o2).compareTo(parseInt(o1)); } :
+        f.name === 'milestone' ? function(o1, o2) { return f.compareProperty(o2, o1); } :
+        f.compareProperty);
+    },
     renderCell: function(x, y, value) {
       var cell = IssueDropCell.create({
         value: value,
@@ -168,7 +174,7 @@ var ItemCount = Model.create({
       this.SUPER(obj);
     },
     toHTML: function() {
-      return '<span id="' + this.eid + '" class="idcount">' + this.count + (this.count == 1 ? ' item' : ' items') + '</span>';
+      return '<span id="' + this.eid + '" class="idcount">' + this.count + '&nbsp;' + (this.count == 1 ? 'item' : 'items') + '</span>';
     },
     initHTML: function() {
       var f = function() {
@@ -293,13 +299,13 @@ function createView(rowSelection, browser) {
                 },
               ],
               methods: {
-                 init: function(args) {
-                    this.SUPER(args);
-                    this.listener = {
-                       put:    this.daoUpdate,
-                       remove: this.daoUpdate
-                    };
-                 }
+                init: function(args) {
+                  this.SUPER(args);
+                  this.listener = {
+                    put:    this.daoUpdate,
+                    remove: this.daoUpdate
+                  };
+                }
               },
               listeners: [
                  {
@@ -317,7 +323,7 @@ function createView(rowSelection, browser) {
                   [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
                   // [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-              grid: /*GridByExpr*/DragAndDropGrid.create({})
+                grid: /*GridByExpr*/DragAndDropGrid.create({})
            });
 
           g.row.data$ = location.y$;

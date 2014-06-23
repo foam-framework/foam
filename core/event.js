@@ -749,7 +749,8 @@ var Movement = {
     };
   },
 
-  // requires unsubscribe to work first
+  // requires unsubscribe to work first (which it does now)
+  /*
   animate2: function(timer, duration, fn) {
     return function() {
       var startTime = timer.time;
@@ -771,6 +772,7 @@ var Movement = {
       update();
     };
   },
+  */
 
   // TODO: if this were an object then you could sub-class to modify playback
   compile: function (a, opt_rest) {
