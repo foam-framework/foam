@@ -1215,13 +1215,16 @@ FOAModel({
       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
       return '<td>' + str + '</td>';
     },
+    sortAxis: function(values, f) { return values.sort(f.compareProperty); },
+    sortColumns: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
+    sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
     toHTML: function() {
       var out;
       this.children = [];
       var cols = this.cols.groups;
       var rows = this.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
+      var sortedCols = this.sortColumns(Object.getOwnPropertyNames(cols), this.xFunc);
+      var sortedRows = this.sortRows(Object.getOwnPropertyNames(rows), this.yFunc);
 
       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
@@ -1612,7 +1615,7 @@ FOAModel({
       },*/
     select: function(sink, options) {
       var self = this;
-      this.values.select({put:function(o) {
+      this.values.select({put: function(o) {
         sink.put(o);
         var key = self.arg1.f(o);
         var a = o.children;
@@ -1620,13 +1623,11 @@ FOAModel({
       }}, options);
       return aconstant(sink);
     },
-    put: function(obj) {
-      var key = this.arg1.f(obj);
-
+    putKeyValue_: function(key, value) {
       var group = this.groups.hasOwnProperty(key) && this.groups[key];
 
       if ( ! group ) {
-        group = obj.clone();
+        group = value.clone();
         if ( this.expanded[key] ) group.children = [];
         this.groups[key] = group;
         group.count = 1;
@@ -1636,6 +1637,15 @@ FOAModel({
       }
 
       if ( group.children ) group.children.push(obj);
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
+
+      if ( Array.isArray(key) ) {
+        for ( var i = 0 ; i < key.length ; i++ ) this.putKeyValue_(key[i], obj);
+      } else {
+        this.putKeyValue_(key, obj);
+      }
     },
     where: function(query) {
       return filteredDAO(query, this);
