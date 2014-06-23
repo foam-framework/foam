@@ -197,7 +197,7 @@ FOAModel({
         this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
 
         var self = this;
-        this.IssueMDAO.select(GROUP_BY(QIssue.CC, []))(function(g) {
+        this.IssueMDAO.select(GROUP_BY(QIssue.CC, COUNT()))(function(g) {
           Object.keys(g.groups).forEach(function(key) {
             self.PersonDAO.find(key, { error: function() {
               self.PersonDAO.put(IssuePerson.create({ name: key }));
