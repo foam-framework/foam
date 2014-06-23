@@ -750,7 +750,7 @@ FOAModel({
       var future = afuture();
       this.WHEN_READY = future.get;
 
-      // Scan all DAO values to find the
+      // Scan all DAO values to find the largest
       this.delegate.select(MAX(this.property))(function(max) {
         if ( max.max ) this.sequenceValue = max.max + 1;
         future.set(true);
