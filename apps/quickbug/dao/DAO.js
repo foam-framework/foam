@@ -56,7 +56,7 @@ FOAModel({
 
     objToJson: function(obj, extra) {
       var data = JSON.parse(this.SUPER(obj));
-      data.owner = { name: data.owner };
+      if ( data.owner ) data.owner = { name: data.owner };
       return JSON.stringify(data);
     },
 
