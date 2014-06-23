@@ -482,7 +482,12 @@ FOAModel({
           autoSetData: this.autoSetData
         });
 
-        view.data$.addListener(this.onDataUpdate)
+        // I don't know why the 'animate' is required, but it sometimes
+        // doesn't remove the view without it.
+        view.data$.addListener(EventService.animate(function() {
+          this.data = view.data;
+          if ( view.$ ) view.$.remove();
+        }.bind(this), this.X));
 
         var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
@@ -502,16 +507,6 @@ FOAModel({
             view.$.remove();
           }
         });
-      }
-    },
-    {
-      name: 'onDataUpdate',
-      // I don't know why the 'animate' is required, but it sometimes
-      // doesn't remove the view without it.
-      isAnimated: true,
-      code: function() {
-        this.data = view.data;
-        if ( view.$ ) view.$.remove();
       }
     }
   ],
