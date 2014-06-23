@@ -3903,7 +3903,7 @@ FOAModel({
           }
 
           var temp = document.createElement('div');
-          temp.style.display = 'none';
+          temp.style.display = 'None';
           self.$.insertBefore(temp, self.$.lastChild);
           temp.outerHTML = self.children.map(
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
