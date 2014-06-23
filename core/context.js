@@ -58,7 +58,7 @@ function subWindow(w, opt_name, isBackground) {
       return document.getElementsByClassName(cls);
     },
     dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
-    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
+//    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
     memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
