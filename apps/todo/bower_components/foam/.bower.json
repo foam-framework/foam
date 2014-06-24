@@ -1,6 +1,6 @@
 {
   "name": "foam",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/foam-framework/foam",
   "authors": [
     "Kevin Greer <kgr@google.com>",
@@ -30,13 +30,13 @@
     "tools",
     "tests"
   ],
-  "_release": "0.1.0",
+  "_release": "0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.0",
-    "commit": "9ff371919b79a8cdc768ded9e0004e9926ca52c8"
+    "tag": "v0.2.1",
+    "commit": "830f7c7bebdc99dcee888642b9adabd87edf9b25"
   },
   "_source": "git://github.com/foam-framework/foam.git",
-  "_target": "~0.1",
+  "_target": "~0.2",
   "_originalSource": "foam"
 }

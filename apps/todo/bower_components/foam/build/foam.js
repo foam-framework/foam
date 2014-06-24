@@ -1,5 +1,5 @@
 /*! foam v0.1.0 */
-/* qc-1.20.6-1499-e243c13-dirty */
+/* qc-1.20.6-1750-ea5e7e6-dirty */
 /**
  * @license
  * Copyright 2014 Google Inc. All Rights Reserved.
@@ -671,12 +671,14 @@ function multiline(f) {
 function findPageXY(node) {
   var x = 0;
   var y = 0;
+  var parent;
   while ( node ) {
+    parent = node;
     x += node.offsetLeft;
     y += node.offsetTop;
     node = node.offsetParent;
   }
-  return [x, y];
+  return [x, y, parent];
 }
 
 /**
@@ -1602,6 +1604,21 @@ function optional(p) {
   return f;
 }
 
+
+function copyInput(p) {
+  p = prep(p);
+  var f = function(ps) {
+    var res = this.parse(p, ps);
+
+    return res ? res.setValue(ps.str_.toString().substring(ps.pos, res.pos)) : res;
+  };
+
+  f.toString = function() { return 'copyInput(' + p + ')'; };
+
+  return f;
+}
+
+
 /** Parses if the delegate parser parses, but doesn't advance the pstream. **/
 function lookahead(p) {
   p = prep(p);
@@ -1659,15 +1676,9 @@ function repeat0(p) {
   p = prep(p);
 
   return function(ps) {
-    while ( true ) {
-      var res;
-
-      if ( ! ( res = this.parse(p,ps) ) ) break;
-
-      ps = res;
-    }
-
-    return ps;
+    var res;
+    while ( res = this.parse(p, ps) ) ps = res;
+    return ps.setValue('');
   };
 }
 
@@ -1856,6 +1867,7 @@ function sym(name) {
   return f;
 }
 
+
 // This isn't any faster because V8 does the same thing already.
 // function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
 
@@ -1877,7 +1889,7 @@ var grammar = {
   parse: function(parser, pstream) {
     //    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
     if ( DEBUG_PARSE && pstream.str_ ) {
-      //      console.log(new Array(pstream.pos).join(' '), pstream.head);
+            console.log(new Array(pstream.pos).join('.'), pstream.head);
       console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);
@@ -2031,7 +2043,7 @@ var EventService = {
    * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
    *        the smallest delay that humans aren't able to perceive.
    **/
-  merged: function(listener, opt_delay) {
+  merged: function(listener, opt_delay, opt_X) {
     var delay = opt_delay || 16;
 
     return function() {
@@ -2048,7 +2060,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          setTimeout(
+          ((opt_X && opt_X.setTimeout) || setTimeout)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
@@ -2076,7 +2088,10 @@ var EventService = {
    * Only the last notification is delivered.
    **/
   // TODO: execute immediately from within a requestAnimationFrame
-  animate: function(listener) {
+  animate: function(listener, opt_X) {
+//    if ( ! opt_X ) debugger;
+//    if ( opt_X.isBackground ) debugger;
+
     return function() {
       var STACK        = null;
       var triggered    = false;
@@ -2091,8 +2106,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          var window = $documents[$documents.length-1].defaultView;
-          window.requestAnimationFrame(
+          ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
@@ -2280,7 +2294,9 @@ var EventService = {
           listener.apply(null, msg);
         } catch ( err ) {
           if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-            console.warn('Error delivering event (removing listener): ', topic);
+            console.error('Error delivering event (removing listener): ', topic.join('.'));
+          } else {
+            console.warn('Unsubscribing listener: ', topic.join('.'));
           }
           listeners.splice(i,1);
           i--;
@@ -2447,13 +2463,13 @@ var Events = {
     if ( ! srcValue || ! dstValue ) return;
 
     var listener = function () {
-      var sv = f(srcValue.get());
-      var dv = dstValue.get();
+      var s = f(srcValue.get());
+      var d = dstValue.get();
 
-      if ( sv !== dv ) dstValue.set(sv);
+      if ( s !== d ) dstValue.set(s);
     };
 
-    listener(); // copy initial value
+    listener();
 
     // TODO: put back when cleanup implemented
     //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -2481,6 +2497,8 @@ var Events = {
    * Initial value is copied from srcValue to dstValue.
    **/
   link: function (srcValue, dstValue) {
+    if ( ! srcValue || ! dstValue ) return;
+
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
   },
@@ -2490,12 +2508,36 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
+   * @param removeFeedback disables feedback
    */
-  relate: function (value1, value2, f, fprime) {
-    this.map(value1, value2, f);
-    this.map(value2, value1, fprime);
-  },
+  relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
+    if ( ! srcValue || ! dstValue ) return;
 
+    var feedback = false;
+
+    var l = function(sv, dv, f) { return function () {
+      if ( removeFeedback && feedback ) return;
+      var s = f(sv.get());
+      var d = dv.get();
+
+      if ( s !== d ) {
+        feedback = true;
+        dv.set(s);
+        feedback = false;
+      }
+    }};
+
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+
+    var l1 = l(srcValue, dstValue, f);
+    var l2 = l(dstValue, srcValue, fprime);
+
+    srcValue.addListener(l1);
+    dstValue.addListener(l2);
+
+    l1();
+  },
 
   /** Unlink the values of two models by having them no longer follow each other. **/
   unlink: function (value1, value2) {
@@ -2515,9 +2557,9 @@ var Events = {
    * @param opt_fn also invoked when dependencies change,
    *        but its own dependencies are not tracked.
    */
-  dynamic: function(fn, opt_fn) {
+  dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var listener = EventService.animate(fn2, 5);
+    var listener = EventService.animate(fn2, opt_X);
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name); });
@@ -2686,7 +2728,8 @@ var Movement = {
     };
   },
 
-  // requires unsubscribe to work first
+  // requires unsubscribe to work first (which it does now)
+  /*
   animate2: function(timer, duration, fn) {
     return function() {
       var startTime = timer.time;
@@ -2708,6 +2751,7 @@ var Movement = {
       update();
     };
   },
+  */
 
   // TODO: if this were an object then you could sub-class to modify playback
   compile: function (a, opt_rest) {
@@ -2842,13 +2886,6 @@ var Movement = {
     }));
   }
 
-};
-
-
-var originalRequestAnimationFrame = window.requestAnimationFrame;
-
-window.requestAnimationFrame = function(f) {
-  this.setTimeout(f, 16);
 };
 
 /**
@@ -3012,7 +3049,6 @@ var JSONUtil = {
 
       out('}');
     },
-
 
     outputMap_: function(out, obj) {
       var str   = "";
@@ -3553,7 +3589,7 @@ function sub(opt_args, opt_name) {
     if ( opt_args.hasOwnProperty(key) ) {
       // It looks like the chrome debug console is overwriting sub.window
       // but this prevents it.
-      Object.defineProperty(sub, key, {value: opt_args[key], writable: false});
+      Object.defineProperty(sub, key, {value: opt_args[key], writable: key !== 'window'});
     }
   }
   if ( opt_name ) {
@@ -3564,11 +3600,12 @@ function sub(opt_args, opt_name) {
 }
 
 
-function subWindow(w, opt_name) {
+function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
   var document = w.document;
-  return this.sub({
+  var map = {
+    isBackground: !!isBackground,
     window: w,
     document: document,
     console: w.console,
@@ -3585,18 +3622,30 @@ function subWindow(w, opt_name) {
     $$: function(cls) {
       return document.getElementsByClassName(cls);
     },
+    dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
+//    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
+    memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: w.requestAnimationFrame && w.requestAnimationFrame.bind(w),
+    requestAnimationFrame: function(f) { return w.requestAnimationFrame(f); },
     cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
-  }, opt_name);
+  };
+
+  if ( isBackground ) {
+    map.requestAnimationFrame = function(f) { return w.setTimeout(f, 16); };
+    map.cancelAnimationFrame = map.clearTimeout;
+  }
+
+  var X = this.sub(map, opt_name);
+  w.X = X;
+  return X;
 }
 
-var X = this.subWindow(window, 'DEFAULT WINDOW');
+var X = this.subWindow(window, 'DEFAULT WINDOW').sub({IN_WINDOW: false});
 
-var registerModel = function(model) {
+function registerModel(model, opt_name) {
   /*
   if ( model.X === this ) {
     this[model.name] = model;
@@ -3615,7 +3664,7 @@ var registerModel = function(model) {
 
   Object.defineProperty(
     this,
-    model.name,
+    opt_name || model.name,
     {
       get: function() {
         return ( this === thisX ) ? thisModel : this.registerModel(model);
@@ -3668,10 +3717,11 @@ function $addWindow(w) {
 }
 function $removeWindow(w) {
   for ( var i = $documents.length - 1 ; i >= 0 ; i-- ) {
-    if ( $documents[i].defaultView === w )
+    if ( ! $documents[i].defaultView || $documents[i].defaultView === w )
       $documents.splice(i,1);
   }
 }
+
 /** Replacement for getElementById **/
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {
@@ -3888,6 +3938,101 @@ var FOAM_POWERED = '<a style="text-decoration:none;" href="http://code.google.co
 
 /**
  * @license
+ * Copyright 2014 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * JSON Parser.
+ */
+var JSONParser = SkipGrammar.create({
+  __proto__: grammar,
+
+  START: copyInput(sym('objAsString')),
+
+  objAsString: copyInput(sym('obj')),
+
+  obj: seq1(1, '{', repeat(sym('pair'), ','), '}'),
+    pair: seq(sym('key'), ':', sym('value')),
+
+      key: alt(
+        sym('symbol'),
+        sym('string')),
+
+        symbol: noskip(str(seq(sym('char'), str(repeat(sym('alpha')))))),
+          char: alt(range('a','z'), range('A','Z'), '_', '$'),
+          alpha: alt(sym('char'), range('0', '9')),
+
+  value: alt(
+    sym('expr'),
+    sym('number'),
+    sym('string'),
+    sym('obj'),
+    sym('bool'),
+    sym('array')
+  ),
+
+  expr: str(seq(
+    sym('symbol'), optional(str(alt(
+      seq('.', sym('expr')),
+      seq('(', str(repeat(sym('value'), ',')), ')')))))),
+
+  number: noskip(seq(
+    optional('-'),
+    repeat(range('0', '9'), null, 1),
+    optional(seq('.', repeat(range('0', '9')))))),
+
+  string: noskip(alt(
+    sym('single quoted string'),
+    sym('double quoted string'))),
+
+    'double quoted string': seq1(1, '"', str(repeat(sym('double quoted char'))), '"'),
+    'double quoted char': alt(
+      sym('escape char'),
+      literal('\\"', '"'),
+      notChar('"')),
+
+    'single quoted string': seq1(1, "'", str(repeat(sym('single quoted char'))), "'"),
+    'single quoted char': alt(
+      sym('escape char'),
+      literal("\\'", "'"),
+      notChar("'")),
+
+    'escape char': alt(
+      literal('\\\\', '\\'),
+      literal('\\n', '\n')),
+
+  bool: alt(
+    literal('true', true),
+    literal('false', false)),
+
+  array: seq1(1, '[', repeat(sym('value'), ','), ']')
+}.addActions({
+  obj: function(v) {
+    var m = {};
+    for ( var i = 0 ; i < v.length ; i++ ) m[v[i][0]] = v[i][2];
+    return m;
+  }
+}), repeat0(alt(' ', '\t', '\n', '\r')));
+
+/*
+TODO: move to FUNTest
+var res = JSONParser.parseString('{a:1,b:"2",c:false,d:f(),e:g(1,2),f:h.j.k(1),g:[1,"a",false,[]]}');
+console.log(res);
+*/
+/**
+ * @license
  * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -3936,7 +4081,7 @@ var TemplateParser = {
   )),
 
   'create child': seq('$$', repeat(notChars(' $\n<{')),
-                      optional(seq('{', repeat(notChar('}')), '}'))),
+                      optional(JSONParser.export('objAsString'))),
 
   'simple value': seq('%%', repeat(notChars(' "\n<'))),
 
@@ -4003,7 +4148,7 @@ var TemplateCompiler = {
    'create child': function(v) {
      var name = v[1].join('').constantize();
      this.push("', this.createTemplateView('", name, "'",
-               v[2] ? ', {' + v[2][1].join('') + '}' : '',
+               v[2] ? ', ' + v[2] : '',
                "),\n'");
    },
    'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },
@@ -4665,12 +4810,18 @@ var ModelProto = {
       Object.defineProperty(cls, name, {
         get: function () {
           var l = fn.bind(this);
+          /*
+          if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
+            console.log('*********************** ', this.model_.name);
+            debugger;
+          }
+          */
           if ( isAnimated )
-            l = EventService.animate(l);
+            l = EventService.animate(l, this.X);
           else if ( isMerged ) {
             l = EventService.merged(
               l,
-              (isMerged === true) ? undefined : isMerged);
+              (isMerged === true) ? undefined : isMerged, this.X);
           }
 
           Object.defineProperty(this, name, { value: l});
@@ -5042,27 +5193,33 @@ var Model = {
       postSet: function(_, templates) {
         // Load templates from an external file
         // if their 'template' property isn't set
-        for ( var i = 0 ; i < templates.length ; i++ ) {
-          var t = templates[i];
+        var i = 0;
+        templates.forEach(function(t) {
           if ( typeof t === 'function' ) {
             t = templates[i] = Template.create({name: t.name, template: multiline(t)});
           } else if ( ! t.template ) {
+            // console.log('loading: '+ this.name + ' ' + t.name);
+
             var future = afuture();
-            t.futureTemplate = future.get;
             var path = document.currentScript.src;
+
+            t.futureTemplate = future.get;
             path = path.substring(0, path.lastIndexOf('/')+1);
             path += this.name + '_' + t.name + '.ft';
+
             var xhr = new XMLHttpRequest();
             xhr.open("GET", path);
-            xhr.asend((function(t, future) { return function(data) {
+            xhr.asend(function(data) {
               t.template = data;
               future.set(data);
               t.futureTemplate = undefined;
-            };})(t, future));
+            });
           } else if ( typeof t.template === 'function' ) {
             t.template = multiline(t.template);
           }
-        }
+
+          i++;
+        }.bind(this));
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.'
@@ -7560,7 +7717,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        if ( ! {model:true, view:true, id:true, oninit:true}[key] ) {
+        if ( ! {model:true, view:true, id:true, oninit:true, showactions:true}[key] ) {
           console.log('unknown attribute: ', key);
         }
       }
@@ -7603,7 +7760,14 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view.showActions = true;
+        if ( ! viewName ) {
+          // default value is 'true' if 'showActions' isn't specified.
+          var a = e.getAttribute('showActions');
+
+          view.showActions = a ?
+            a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
+            true ;
+        }
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
@@ -7646,13 +7810,13 @@ FOAModel({
       factory: function() { return this.nextID(); }
     },
     {
-      name:  'parent',
-      type:  'View',
+      name: 'parent',
+      type: 'View',
       hidden: true
     },
     {
-      name:  'children',
-      type:  'Array[View]',
+      name: 'children',
+      type: 'Array[View]',
       factory: function() { return []; }
     },
     {
@@ -7709,7 +7873,7 @@ FOAModel({
 
     dynamicTag: function(tagName, f) {
       var id = this.nextID();
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         var html = f();
         var e = $(id);
         if ( e ) e.innerHTML = html;
@@ -7726,16 +7890,18 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var v = this.X.PropertyView.create({prop: prop, args: opt_args});
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
 
-    createActionView: function(action, opt_args) {
+    createActionView: function(action, value, opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
-      var v = this.X[modelName].create({
+      var v = X[modelName].create({
         action: action,
-        value: SimpleValue.create(this)}).copyFrom(opt_args);
+        value: value}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -7745,7 +7911,7 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.model_[name];
       return Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
+        this.createActionView(o, SimpleValue.create(this), opt_args) :
         this.createView(o, opt_args) ;
     },
 
@@ -7812,14 +7978,14 @@ FOAModel({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        Events.dynamic(valueFn, function() {
+        this.X.dynamic(valueFn, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
         })
-      });
+      }.bind(this));
     },
 
     setClass: function(className, predicate, opt_id) {
@@ -7827,12 +7993,12 @@ FOAModel({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        Events.dynamic(predicate, function() {
+        this.X.dynamic(predicate, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -7972,7 +8138,7 @@ FOAModel({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
+      if ( viewName.model_ ) { var v = viewName.deepClone().copyFrom(prop); v.id = v.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -8006,29 +8172,29 @@ FOAModel({
 
   properties: [
     {
-      name:  'view',
-      type:  'View',
+      name: 'view',
+      type: 'View',
     },
     {
-      name:  'x'
+      name: 'x'
     },
     {
-      name:  'y'
+      name: 'y'
     },
     {
-      name:  'width',
+      name: 'width',
       defaultValue: undefined
     },
     {
-      name:  'maxWidth',
+      name: 'maxWidth',
       defaultValue: undefined
     },
     {
-      name:  'maxHeight',
+      name: 'maxHeight',
       defaultValue: undefined
     },
     {
-      name:  'height',
+      name: 'height',
       defaultValue: undefined
     }
   ],
@@ -8062,76 +8228,141 @@ FOAModel({
 });
 
 FOAModel({
-  name: 'AutocompletePopup',
+  name: 'AutocompleteView',
   extendsModel: 'PopupView',
-  help: 'A popup view that only renders if the count is >0',
+  help: 'Default autocomplete popup.',
 
   properties: [
+    'closeTimeout',
+    'autocompleter',
+    'completer',
+    'current',
     {
-      model_: 'DAOProperty',
-      name: 'dao'
+      model_: 'IntProperty',
+      name: 'closeTime',
+      units: 'ms',
+      help: 'Time to delay the actual close on a .close call.',
+      defaultValue: 200
     },
     {
-      model_: 'BooleanProperty', name: 'hideOnMouseOut', defaultValue: true
+      name: 'view',
+      postSet: function(prev, v) {
+        if ( prev ) {
+          prev.data$.removeListener(this.complete);
+          prev.choices$.removeListener(this.choicesUpdate);
+        }
+
+        v.data$.addListener(this.complete);
+        v.choices$.addListener(this.choicesUpdate);
+      }
+    },
+    {
+      name: 'target',
+      postSet: function(prev, v) {
+        prev && prev.unsubscribe('keydown', this.onKeyDown);
+        v.subscribe('keydown', this.onKeyDown);
+      }
+    },
+    {
+      name: 'maxHeight',
+      defaultValue: 400
+    },
+    {
+      name: 'className',
+      defaultValue: 'autocompletePopup'
     }
   ],
 
   methods: {
+    autocomplete: function(partial) {
+      if ( ! this.completer ) {
+        var proto = FOAM.lookup(this.autocompleter, this.X);
+        this.completer = proto.create();
+      }
+      if ( ! this.view ) {
+        this.view = this.makeView();
+      }
+
+      this.current = partial;
+      this.open(this.target);
+      this.completer.autocomplete(partial);
+    },
+
+    makeView: function() {
+      return this.X.ChoiceListView.create({
+        dao: this.completer.autocompleteDao,
+        extraClassName: 'autocomplete',
+        orientation: 'vertical',
+        mode: 'final',
+        objToChoice: this.completer.f,
+        useSelection: true
+      });
+    },
+
+    init: function(args) {
+      this.SUPER(args);
+      this.subscribe('blur', (function() {
+        this.close();
+      }).bind(this));
+    },
+
     open: function(e, opt_delay) {
-      if ( this.$ ) { this.position(this.$, e.$ || e); return; }
+      if ( this.closeTimeout ) {
+        this.X.clearTimeout(this.closeTimeout);
+        this.closeTimeout = 0;
+      }
+
+      if ( this.$ ) { this.position(this.$.firstElementChild, e.$ || e); return; }
 
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
+
+      if ( this.X.document !== document ) debugger;
+
       var div      = document.createElement('div');
       var window = document.defaultView;
 
-      this.position(div, parentNode);
+      if ( this.X.window !== window ) debugger;
 
-      div.id = this.id;
-      div.innerHTML = this.view.toHTML();
 
-      document.body.appendChild(div);
-      this.view.initHTML();
+      parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
-      if ( this.hideOnMouseOut ) {
-        var timeout;
-        var self = this;
-        document.addEventListener('mousemove', function listener(evt) {
-          if ( ! self.$ ) {
-            document.removeEventListener('mousemove', listener);
-          } else if ( ! self.$.contains(evt.target) ) {
-            if ( ! timeout ) {
-              timeout = window.setTimeout(function() {
-                document.removeEventListener('mousemove', listener);
-                self.close();
-              }, 300);
-            }
-          } else if ( timeout ) {
-            window.clearTimeout(timeout);
-            timeout = undefined;
-          }
-        });
+      this.position(this.$.firstElementChild, parentNode);
+      this.initHTML();
+    },
+
+    close: function(opt_now) {
+      if ( opt_now ) {
+        if ( this.closeTimeout ) {
+          this.X.clearTimeout(this.closeTimeout);
+          this.closeTimeout = 0;
+        }
+        this.SUPER();
+        return;
       }
+
+      if ( this.closeTimeout ) return;
+
+      var realClose = this.SUPER;
+      var self = this;
+      this.closeTimeout = this.X.setTimeout(function() {
+        self.closeTimeout = 0;
+        realClose.call(self);
+      }, this.closeTime);
     },
 
     position: function(div, parentNode) {
       var document = parentNode.ownerDocument;
 
-      if ( this.x || this.y ) {
-        div.style.left = this.x + 'px';
-        div.style.top = this.y + 'px';
-      } else {
-        var pos = findPageXY(parentNode);
-        var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+      var pos = findPageXY(parentNode);
+      var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
 
-        div.style.left = pos[0];
-
-        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
-          div.style.bottom = document.defaultView.innerHeight - pos[1];
-        } else {
-          div.style.top = pos[1] + parentNode.offsetHeight;
-        }
+      if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
+        div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
       }
+
+      if ( pos[2].offsetWidth - pos[0] < 600 ) div.style.left = 600 - pos[2].offsetWidth;
+      else div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
@@ -8143,30 +8374,54 @@ FOAModel({
         div.style.maxHeight = this.maxHeight + 'px';
         div.style.overflowY = 'auto';
       }
-
-      div.style.position = 'absolute';
-    },
-
-    init: function(args) {
-      this.SUPER(args);
-      this.dao.listen(this.autocomplete);
     }
   },
 
   listeners: [
     {
-      name: 'autocomplete',
+      name: 'onKeyDown',
+      code: function(_,_,e) {
+        if ( ! this.view ) return;
+
+        if ( e.keyCode === 38 /* arrow up */ ) {
+          this.view.index--;
+          this.view.scrollToSelection(this.$);
+          e.preventDefault();
+        } else if ( e.keyCode  === 40 /* arrow down */ ) {
+          this.view.index++;
+          this.view.scrollToSelection(this.$);
+          e.preventDefault();
+        } else if ( e.keyCode  === 13 /* enter */ ) {
+          this.view.commit();
+          e.preventDefault();
+        }
+      }
+    },
+    {
+      name: 'complete',
       code: function() {
-        this.dao.select(COUNT())((function(c) {
-          if ( c.count === 0 ) {
-            this.close();
-            return;
-          }
-          this.open(this.parent);
-          this.view.dao = this.dao;
-        }).bind(this));
+        this.target.onAutocomplete(this.view.data);
+        this.view = this.makeView();
+        this.close(true);
+      }
+    },
+    {
+      name: 'choicesUpdate',
+      code: function() {
+        if ( this.view &&
+             ( this.view.choices.length === 0 ||
+               ( this.view.choices.length === 1 &&
+                 this.view.choices[0][1] === this.current ) ) ) {
+          this.close(true);
+        }
       }
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+  <span id="<%= this.id %>" style="position:relative"><div %%cssClassAttr() style="position:absolute"><%= this.view %></div></span>
+    */}
   ]
 });
 
@@ -8258,6 +8513,36 @@ var DomValue = {
 
 
 FOAModel({
+  name: 'WindowHashValue',
+
+  properties: [
+    {
+      name: 'window',
+      defaultValueFn: function() { return this.X.window; }
+    }
+  ],
+
+  methods: {
+    get: function() { return this.window.location.hash ? this.window.location.hash.substring(1) : ''; },
+
+    set: function(value) { this.window.location.hash = value; },
+
+    addListener: function(listener) {
+      this.window.addEventListener('hashchange', listener, false);
+    },
+
+    removeListener: function(listener) {
+      this.window.removeEventListener('hashchange', listener, false);
+    },
+
+    toString: function() { return "WindowHashValue(" + this.get() + ")"; }
+  }
+});
+
+X.memento = X.WindowHashValue.create();
+
+
+FOAModel({
   name: 'ImageView',
 
   extendsModel: 'View',
@@ -8274,6 +8559,7 @@ FOAModel({
     {
       // TODO: make 'data' be the actual source of the data
       name: 'data',
+      getter: function() { return this.value.get(); },
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
@@ -8307,9 +8593,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage ?
+      return this.backupImage && window.IS_CHROME_APP ?
         '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img class="imageView" id="' + this.id + '">' ;
+        '<img class="imageView" id="' + this.id + '" src="' + this.data + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -8322,7 +8608,7 @@ FOAModel({
         this.data = this.backupImage;
       }.bind(this));
 
-      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
@@ -8408,44 +8694,44 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'name',
+      name: 'name',
       defaultValue: 'field'
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 30
     },
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 1
     },
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'text'
     },
     {
       model_: 'StringProperty',
-      name:  'placeholder',
+      name: 'placeholder',
       defaultValue: undefined
     },
     {
       model_: 'BooleanProperty',
-      name:  'onKeyMode',
+      name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.'
     },
     {
       model_: 'BooleanProperty',
-      name:  'escapeHTML',
+      name: 'escapeHTML',
       // defaultValue: true,
       // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },
     {
       model_: 'StringProperty',
-      name:  'mode',
+      name: 'mode',
       defaultValue: 'read-write',
       view: {
         create: function() { return ChoiceView.create({choices:[
@@ -8472,7 +8758,7 @@ FOAModel({
       defaultValue: true
     },
     'autocompleter',
-    'autocompleteView',
+    'autocompleteView'
   ],
 
   methods: {
@@ -8506,34 +8792,29 @@ FOAModel({
     setupAutocomplete: function() {
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
-      var proto = FOAM.lookup(this.autocompleter, this.X);
-      var completer = proto.create();
-      this.autocompleteView = this.X.AutocompletePopup.create({
-        dao: completer.autocompleteDao,
-        maxHeight: 400,
-        maxWidth: 800,
-        view: this.X.DAOListView.create({
-          dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete',
-          mode: 'final',
-          rowView: 'SummaryView',
-          useSelection: true
-        })
+      var view = this.autocompleteView = this.X.AutocompleteView.create({
+        autocompleter: this.autocompleter,
+        target: this
       });
-      this.addChild(this.autocompleteView);
 
-      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-        this.autocompleteView.close();
+      this.bindAutocompleteEvents(view);
+    },
+
+    onAutocomplete: function(data) {
+      this.data = data;
+    },
+
+    bindAutocompleteEvents: function(view) {
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
+      });
+      this.$.addEventListener('input', (function() {
+        view.autocomplete(this.textToValue(this.$.value));
       }).bind(this));
-
-      var self = this;
-      this.$.addEventListener('input', function() {
-        completer.autocomplete(self.textToValue(self.$.value));;
-      });
-      this.$.addEventListener('focus', function() {
-        completer.autocomplete(self.data);
-      });
+      this.$.addEventListener('focus', (function() {
+        view.autocomplete(this.textToValue(this.$.value));
+      }).bind(this));
     },
 
     initHTML: function() {
@@ -8546,13 +8827,21 @@ FOAModel({
           this.$,
           this.onKeyMode ? 'input' : 'change');
 
+        // In KeyMode we disable feedback to avoid updating the field
+        // while the user is still typing.  Then we update the view
+        // once they leave(blur) the field.
         Events.relate(
           this.data$,
           this.domValue,
           this.valueToText.bind(this),
-          this.textToValue.bind(this));
+          this.textToValue.bind(this),
+          this.onKeyMode);
+
+        if ( this.onKeyMode )
+          this.$.addEventListener('blur', this.onBlur);
 
         this.$.addEventListener('keydown', this.onKeyDown);
+
         this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
@@ -8581,7 +8870,16 @@ FOAModel({
         if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
           this.domValue.set(this.data);
           this.publish(this.ESCAPE);
+        } else {
+          this.publish('keydown', e);
         }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        if ( this.domValue.get() !== this.data )
+          this.domValue.set(this.data);
       }
     }
   ]
@@ -8597,7 +8895,7 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'date'
     }
   ],
@@ -8636,30 +8934,13 @@ FOAModel({
       }
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(new Date()); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue && this.domValue ) {
-          Events.unlink(this.domValue, oldValue);
-        }
-        this.linkValues();
-      }
+      name: 'data',
     }
   ],
 
   methods: {
-    linkValues: function() {
-      if ( ! this.$ ) return;
-      if ( ! this.value ) return;
-
-      this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
-
-      Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
-    },
-
     valueToDom: function(value) { return value ? value.getTime() : 0; },
     domToValue: function(dom) { return new Date(dom); },
-    setValue: function(value) { this.value = value; },
 
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
@@ -8670,7 +8951,19 @@ FOAModel({
 
     initHTML: function() {
       this.SUPER();
-      this.linkValues();
+
+      this.domValue = DomValue.create(
+        this.$,
+        this.mode === 'read-write' ? 'input' : undefined,
+        this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
+
+      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
+
+      Events.relate(
+        this.data$,
+        this.domValue,
+        this.valueToDom.bind(this),
+        this.domToValue.bind(this));
     }
   }
 });
@@ -8682,8 +8975,12 @@ FOAModel({
 
   extendsModel: 'DateTimeFieldView',
 
+  properties: [
+    { name: 'mode', defaultValue: 'read-only' }
+  ],
+
   methods: {
-    valueToText: function(value) {
+    valueToDom: function(value) {
       return value.toRelativeDateString();
     }
   }
@@ -8698,18 +8995,18 @@ FOAModel({
 
   properties: [
     {
-      name:  'name',
-      type:  'String',
+      name: 'name',
+      type: 'String',
       defaultValue: ''
     },
     {
       model_: 'StringProperty',
-      name:  'tag',
+      name: 'tag',
       defaultValue: 'span'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
@@ -8753,29 +9050,29 @@ FOAModel({
 
 
 FOAModel({
-  name:  'RoleView',
+  name: 'RoleView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'roleName',
-      type:  'String',
+      name: 'roleName',
+      type: 'String',
       defaultValue: ''
     },
     {
-      name:  'models',
-      type:  'Array[String]',
+      name: 'models',
+      type: 'Array[String]',
       defaultValue: []
     },
     {
-      name:  'selection',
-      type:  'Value',
+      name: 'selection',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -8816,7 +9113,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'BooleanView',
+  name: 'BooleanView',
 
   extendsModel: 'View',
 
@@ -8860,7 +9157,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'ImageBooleanView',
+  name: 'ImageBooleanView',
 
   extendsModel: 'View',
 
@@ -8933,16 +9230,23 @@ FOAModel({
 
 
 FOAModel({
-  name:  'CSSImageBooleanView',
+  name: 'CSSImageBooleanView',
 
   extendsModel: 'View',
 
+  properties: [
+    'data',
+  ],
+
   methods: {
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.data$.addListener(this.update);
       this.$.addEventListener('click', this.onClick);
     },
-    toInnerHTML: function() { return '&nbsp;&nbsp;&nbsp;'; }
+    toHTML: function() {
+      return '<span id="' + this.id + '" class="' + this.className + ' ' + (this.data ? 'true' : '') + '">&nbsp;&nbsp;&nbsp;</span>';
+    }
   },
 
   listeners: [
@@ -8966,7 +9270,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'ImageBooleanView2',
+  name: 'ImageBooleanView2',
 
   extendsModel: 'View',
 
@@ -9022,12 +9326,12 @@ FOAModel({
   properties: [
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 5
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 70
     }
   ]
@@ -9101,7 +9405,7 @@ FOAModel({
 
 
 FOAModel({
-  name:  'JSView',
+  name: 'JSView',
 
   extendsModel: 'TextAreaView',
 
@@ -9165,12 +9469,12 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -9236,8 +9540,8 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -9287,16 +9591,16 @@ FOAModel({
 
   properties: [
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'properties'
+      name: 'properties'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'availableProperties'
+      name: 'availableProperties'
     }
   ],
 
@@ -9354,15 +9658,19 @@ FOAModel({
 
   properties: [
     {
-      name:  'action',
+      name: 'action',
       postSet: function(old, nu) {
         old && old.removeListener(this.render)
         nu.addListener(this.render);
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'data',
+      setter: function(_, d) { this.value = SimpleValue.create(d); }
+    },
+    {
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
@@ -9409,7 +9717,7 @@ FOAModel({
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -9489,8 +9797,8 @@ FOAModel({
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
       }
@@ -9672,14 +9980,14 @@ FOAModel({
 });
 
 FOAModel({
-  name:  'ProgressView',
+  name: 'ProgressView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -9736,47 +10044,47 @@ FOAModel({
 
   properties: [
     {
-      name:  'row',
+      name: 'row',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'col',
+      name: 'col',
       label: 'column',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'acc',
+      name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'accChoices',
+      name: 'accChoices',
       label: 'Accumulator Choices',
       type: 'Array',
       factory: function() { return []; }
     },
     {
-      name:  'scrollMode',
-      type:  'String',
+      name: 'scrollMode',
+      type: 'String',
       defaultValue: 'Bars',
       view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
-      name:  'dao',
+      name: 'dao',
       label: 'DAO',
       type: 'DAO',
-      postSet: function() { this.updateHTML(); }
+      postSet: function() { this.repaint_(); }
     },
     {
-      name:  'grid',
-      type:  'GridByExpr',
+      name: 'grid',
+      type: 'GridByExpr',
       factory: function() { return GridByExpr.create(); }
     }
   ],
@@ -9800,19 +10108,10 @@ FOAModel({
           console.time('toHTML');
           var html = g.toHTML();
           console.timeEnd('toHTML');
-
-          console.time('setInnerHTML');
           self.$.innerHTML = html;
-          console.timeEnd('setInnerHTML');
-
-          // Perform asynchronously so that it doesn't delay the displaying of the grid
-          setTimeout(function() {
-            console.time('initHTML');
-            g.initHTML();
-            console.timeEnd('initHTML');
-          }, 800);
+          g.initHTML();
         } else {
-          var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
@@ -9824,7 +10123,9 @@ FOAModel({
       // TODO: I think this should be done automatically some-how/where.
       this.scrollModeView.data$ = this.scrollMode$;
 
-      var choices = [];
+      var choices = [
+        [ { f: function() { return ''; } }, 'none' ]
+      ];
       this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
@@ -9888,15 +10189,15 @@ FOAModel({
 
   properties: [
     {
-      name:  'x',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'x',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     },
     {
-      name:  'y',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'y',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     }
   ],
@@ -9974,15 +10275,15 @@ FOAModel({
           if ( this.view ) {
             this.view.dao = dao;
           } else {
-            this.installSubView(this.choice);
+            this.installSubView();
           }
         }
       }
     },
     {
-      name:  'choice',
+      name: 'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.$ && oldValue != viewChoice ) this.installSubView(viewChoice);
+        if ( this.$ && oldValue != viewChoice ) this.installSubView();
       },
       hidden: true
     },
@@ -10012,32 +10313,39 @@ FOAModel({
     }
   ],
 
+  listeners: [
+    {
+      name: 'installSubView',
+      isAnimated: true,
+      code: function(evt) {
+        var viewChoice = this.choice;
+        var view = typeof(viewChoice.view) === 'function' ?
+          viewChoice.view(this.value.get().model_, this.value) :
+          GLOBAL[viewChoice.view].create({
+            model: this.value.get().model_,
+            value: this.value
+          });
+
+        // TODO: some views are broken and don't have model_, remove
+        // first guard when fixed.
+        if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
+
+        this.$.innerHTML = view.toHTML();
+        view.initHTML();
+        view.value && view.value.set(this.value.get());
+        //       if ( view.set ) view.set(this.model.get());
+        //       Events.link(this.model, this.view.model);
+
+        this.view = view;
+      }
+    }
+  ],
+
   methods: {
     init: function() {
       this.SUPER();
 
       this.choice = this.views[0];
-    },
-
-    installSubView: function(viewChoice) {
-      var view = typeof(viewChoice.view) === 'function' ?
-        viewChoice.view(this.value.get().model_, this.value) :
-        GLOBAL[viewChoice.view].create({
-          model: this.value.get().model_,
-          value: this.value
-        });
-
-      // TODO: some views are broken and don't have model_, remove
-      // first guard when fixed.
-      if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
-
-      this.$.innerHTML = view.toHTML();
-      view.initHTML();
-      view.value && view.value.set(this.value.get());
-      //       if ( view.set ) view.set(this.model.get());
-      //       Events.link(this.model, this.view.model);
-
-      this.view = view;
     },
 
     toHTML: function() {
@@ -10082,7 +10390,7 @@ FOAModel({
       this.SUPER();
 
       this.choice = this.choice || this.views[0];
-      this.installSubView(this.choice);
+      this.installSubView();
     }
   }
 });
@@ -10104,7 +10412,7 @@ FOAModel({
       help: 'Child views'
     },
     {
-      name:  'index',
+      name: 'index',
       help: 'The index of the currently selected view',
       defaultValue: 0,
       preSet: function(old, nu) {
@@ -10162,13 +10470,8 @@ FOAModel({
       }
     },
     {
-      name: 'touchStart',
-      help: 'Coordinates (screen-relative) of the first touch',
-      hidden: true
-    },
-    {
-      name: 'touchLast',
-      help: 'Last coordinates of an in-progress swipe',
+      name: 'touch',
+      help: 'TouchManager\'s FOAMTouch object',
       hidden: true
     },
     {
@@ -10253,10 +10556,12 @@ FOAModel({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
+      this.X.touchManager.install(TouchReceiver.create({
+        id: 'swipeAltView-' + this.id,
+        element: this.$,
+        delegate: this
+      }));
 
-      this.$.addEventListener('touchstart', this.onTouchStart);
-      this.$.addEventListener('touchmove', this.onTouchMove);
-      this.$.addEventListener('touchend', this.onTouchEnd);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -10266,16 +10571,6 @@ FOAModel({
           choice.view.initHTML();
         });
       }, 0);
-    },
-
-    getTouch: function(event) {
-      var touches = event.touches && event.touches.length ?
-          event.touches : [event];
-      var e = (event.changedTouches && event.changedTouches[0]) ||
-          (event.originalEvent && event.originalEvent.changedTouches &&
-              event.originalEvent.changedTouches[0]) ||
-          touches[0].originalEvent || touches[0];
-      return { x: e.clientX, y: e.clientY };
     },
 
     snapToCurrent: function(sizeOfMove) {
@@ -10315,37 +10610,39 @@ FOAModel({
     },
     {
       name: 'onTouchStart',
-      code: function(event) {
-        this.touchStart = this.getTouch(event);
+      code: function(touches, changed) {
+        // Only handle single-point touches.
+        if ( Object.keys(touches).length > 1 ) return { drop: true };
+
+        // Otherwise we're moderately interested, until it moves.
+        this.touch = touches[changed[0]];
         this.touchStarted = true;
         this.touchLive = false;
+        return { weight: 0.5 };
       }
     },
     {
       name: 'onTouchMove',
-      code: function(event) {
-        if ( ! this.touchStarted ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchStarted ) return { drop: true };
 
-        var touch = this.getTouch(event);
-        var deltaX = Math.abs(this.touchStart.x - touch.x);
-        var deltaY = Math.abs(this.touchStart.y - touch.y);
+        var deltaX = Math.abs(this.touch.x - this.touch.startX);
+        var deltaY = Math.abs(this.touch.y - this.touch.startY);
         if ( ! this.touchLive &&
-            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 10 ) {
+            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 6 ) {
           // Prevent default, but don't decide if we're scrolling yet.
-          event.preventDefault();
-          return;
+          return { preventDefault: true, weight: 0.5 };
         }
 
         if ( ! this.touchLive && deltaX < deltaY ) {
-          return;
+          // Drop our following of this touch.
+          return { drop: true };
         }
 
         // Otherwise the touch is live.
         this.touchLive = true;
-        event.preventDefault();
-        this.touchLast = touch;
         var x = this.index * this.width -
-            (this.touchLast.x - this.touchStart.x);
+            (this.touch.x - this.touch.startX);
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -10353,19 +10650,20 @@ FOAModel({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
+        return { claim: true, weight: 0.9 };
       }
     },
     {
       name: 'onTouchEnd',
-      code: function(event) {
-        if ( ! this.touchLive ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchLive ) return this.onTouchCancel(touches, changed);
 
         this.touchLive = false;
 
-        var finalX = this.getTouch(event).x;
-        if ( Math.abs(finalX - this.touchStart.x) > this.width / 3 ) {
+        var finalX = this.touch.x;
+        if ( Math.abs(finalX - this.touch.startX) > this.width / 3 ) {
           // Consider that a move.
-          if (finalX < this.touchStart.x) {
+          if (finalX < this.touch.startX) {
             this.index++;
           } else {
             this.index--;
@@ -10373,6 +10671,16 @@ FOAModel({
         } else {
           this.snapToCurrent(1);
         }
+
+        return { drop: true };
+      }
+    },
+    {
+      name: 'onTouchCancel',
+      code: function(touches, changed) {
+        this.touchLive = false;
+        this.touchStarted = false;
+        return { drop: true };
       }
     }
   ]
@@ -10433,6 +10741,7 @@ FOAModel({
   }
 });
 
+
 FOAModel({
   name: 'GalleryImageView',
   extendsModel: 'View',
@@ -10486,20 +10795,41 @@ FOAModel({
 
 
 FOAModel({
-  name:  'FloatFieldView',
+  name: 'FloatFieldView',
 
   extendsModel: 'TextFieldView',
 
+  properties: [
+    { name: 'precision', defaultValue: undefined },
+    { name: 'type',      defaultValue: 'number' }
+  ],
+
   methods: {
-    textToValue: function(text) { return parseFloat(text) || "0.0"; }
+    formatNumber: function(val) {
+      if ( ! val ) return '0';
+      val = val.toFixed(this.precision);
+      var i = val.length-1;
+      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
+      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
+    },
+    valueToText: function(val) {
+      return this.hasOwnProperty('precision') ?
+        this.formatNumber(val) :
+        String.valueOf(val) ;
+    },
+    textToValue: function(text) { return parseFloat(text) || 0; }
   }
 });
 
 
 FOAModel({
-  name:  'IntFieldView',
+  name: 'IntFieldView',
 
   extendsModel: 'TextFieldView',
+
+  properties: [
+    { name: 'type', defaultValue: 'number' }
+  ],
 
   methods: {
     textToValue: function(text) { return parseInt(text) || "0"; },
@@ -10509,68 +10839,57 @@ FOAModel({
 
 
 FOAModel({
-  name:  'StringArrayView',
+  name: 'StringArrayView',
 
   extendsModel: 'TextFieldView',
 
   methods: {
-    setupAutocomplete: function() {
-      // TODO: Too much duplicated code, refactor this.
-      if ( ! this.autocomplete || ! this.autocompleter ) return;
+    findCurrentValues: function() {
+      var start = this.$.selectionStart;
+      var value = this.$.value;
 
-      var proto = FOAM.lookup(this.autocompleter, this.X);
-      var completer = proto.create();
-      this.autocompleteView = this.X.AutocompletePopup.create({
-        dao: completer.autocompleteDao,
-        maxHeight: 400,
-        maxWidth: 800,
-        view: this.X.DAOListView.create({
-          dao: completer.autocompleteDao,
-          className: this.name + ' autocomplete',
-          mode: 'final',
-          rowView: 'SummaryView',
-          useSelection: true
-        })
-      });
-      this.addChild(this.autocompleteView);
+      var values = value.split(',');
+      var i = 0;
+      var sum = 0;
 
-      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-        this.autocompleteView.close();
-      }).bind(this));
+      while ( sum + values[i].length < start ) {
+        sum += values[i].length + 1;
+        i++;
+      }
 
+      return { values: values, i: i };
+    },
+    setValues: function(values, index) {
+      this.domValue.set(this.valueToText(values) + ',');
+      this.data = this.textToValue(this.domValue.get());
+
+      var isLast = values.length - 1 === index;
+      var selection = 0;
+      for ( var i = 0; i <= index; i++ ) {
+        selection += values[i].length + 1;
+      }
+      this.$.setSelectionRange(selection, selection);
+      isLast && this.X.setTimeout((function() {
+        this.autocompleteView.autocomplete('');
+      }).bind(this), 0);
+    },
+    onAutocomplete: function(data) {
+      var current = this.findCurrentValues();
+      current.values[current.i] = data;
+      this.setValues(current.values, current.i);
+    },
+    bindAutocompleteEvents: function(view) {
+      // TODO: Refactor this.
       var self = this;
-      this.$.addEventListener('input', function() {
-        var start = self.$.selectionStart;
-        var value = self.$.value;
-
-        if ( start === self.$.selectionEnd ) {
-          var values = value.split(',');
-          var i = 0;
-          var sum = 0;
-
-          while ( sum + values[i].length < start ) {
-            sum += values[i].length;
-            i++;
-          }
-          completer.autocomplete(values[i]);
-        }
-      });
-      this.$.addEventListener('focus', function() {
-        var start = self.$.selectionStart;
-        var value = self.$.value;
-
-        if ( start === self.$.selectionEnd ) {
-          var values = value.split(',');
-          var i = 0;
-          var sum = 0;
-
-          while ( sum + values[i].length < start ) {
-            sum += values[i].length;
-            i++;
-          }
-          completer.autocomplete(values[i]);
-        }
+      function onInput() {
+        var values = self.findCurrentValues();
+        view.autocomplete(values.values[values.i]);
+      }
+      this.$.addEventListener('input', onInput);
+      this.$.addEventListener('focus', onInput);
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
       });
     },
     textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
@@ -11143,7 +11462,7 @@ FOAModel({
           }
 
           var temp = document.createElement('div');
-          temp.style.display = 'none';
+          temp.style.display = 'None';
           self.$.insertBefore(temp, self.$.lastChild);
           temp.outerHTML = self.children.map(
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
@@ -11338,63 +11657,6 @@ FOAModel({
     }
   }
 });
-
-FOAModel({
-  name: 'ListView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'dao',
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.unlisten(this.update);
-        newValue.listen(this.update);
-        this.update();
-      }
-    },
-    {
-      name: 'view'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.update();
-    }
-  },
-
-  listeners: [
-    {
-      name: "update",
-      animate: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var self = this;
-
-        this.dao.select()(function(objs) {
-          if ( ! self.$ ) { self.destroy(); return; }
-
-          self.$.innerHTML = '';
-          var children = new Array(objs.length);
-
-          for ( var i = 0; i < objs.length; i++ ) {
-            var view = self.view.create();
-            children[i] = view;
-            view.value = SimpleValue.create(objs[i]);
-          }
-
-          self.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
-          children.forEach(function(c) { c.initHTML(); });
-        });
-      }
-    }
-  ]
-});
-
 
 FOAModel({
   name: 'AutocompleteListView',
@@ -11827,7 +12089,11 @@ FOAModel({
           out.put('</div>');
         }
       }.bind(this)})(function() {
-        this.$.innerHTML = out.join('');
+        var e = this.$;
+
+        if ( ! e ) return;
+
+        e.innerHTML = out.join('');
         this.initInnerHTML();
         this.children = [];
         this.painting = false;
@@ -12015,7 +12281,7 @@ FOAModel({
   /*
   actions: [
     {
-      name:  'test',
+      name: 'test',
       action: function(obj) { }
     }
   ],
@@ -12117,18 +12383,6 @@ FOAModel({
         this.textToValue.bind(this));
 
       input.addEventListener('keydown', this.onKeyDown);
-
-      if ( this.autocomplete && this.autocompleter ) {
-        var completer = FOAM.lookup(this.autocompleter, this.X).create();
-        this.autocompleteView.dao = completer.autocompleteDao;
-
-        this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
-          this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-        }).bind(this));
-        this.softData$.addListener((function() {
-          completer.autocomplete(this.softData);
-        }).bind(this));
-      }
     },
     focus: function() { this.$.firstElementChild.focus(); },
     valueToText: function(value) { return value; },
@@ -12162,6 +12416,218 @@ FOAModel({
   ]
 });
 
+FOAModel({
+  name: 'SlidePanelView',
+  help: 'A controller that shows a main view with a small strip of the ' +
+      'secondary view visible at the right edge. This "panel" can be dragged ' +
+      'by a finger or mouse pointer to any position from its small strip to ' +
+      'fully exposed. If the containing view is wide enough, both panels ' +
+      'will be always visible.',
+  extendsModel: 'View',
+
+  properties: [
+    'mainView', 'panelView',
+    {
+      name: 'minWidth',
+      defaultValueFn: function() {
+        var e = this.main$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            300;
+      }
+    },
+    {
+      name: 'width',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.main$().style.width = x + 'px';
+      }
+    },
+    {
+      name: 'minPanelWidth',
+      defaultValueFn: function() {
+        if ( this.panelView && this.panelView.minWidth )
+          return this.panelView.minWidth;
+        var e = this.panel$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            250;
+      }
+    },
+    {
+      name: 'panelWidth',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.panel$().style.width = x + 'px';
+      }
+    },
+    {
+      name: 'parentWidth',
+      help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
+      getter: function() {
+        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+      }
+    },
+    {
+      name: 'stripWidth',
+      help: 'The width in (CSS) pixels of the minimal visible strip of panel',
+      defaultValue: 30
+    },
+    {
+      name: 'panelRatio',
+      help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
+          'the containing element is wide enough for expanded view.',
+      defaultValue: 0.5
+    },
+    {
+      name: 'panelX',
+      //defaultValueFn: function() { this.width - this.stripWidth; },
+      preSet: function(_, x) {
+        // Bound it between its left and right limits: full open and just the
+        // strip.
+        if ( x <= this.parentWidth - this.panelWidth ) {
+          return this.parentWidth - this.panelWidth;
+        } else if ( x >= this.parentWidth - this.stripWidth ) {
+          return this.parentWidth - this.stripWidth;
+        }
+        return x;
+      },
+      postSet: function(_, x) {
+        this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+      }
+    },
+    'dragging',
+    'firstDragX', 'oldPanelX',
+    'expanded'
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.id + '" ' +
+          'style="display: inline-block; position: relative; height: 100%">' +
+          '<div id="' + this.id + '-main" style="height:100%">' +
+              this.mainView.toHTML() +
+          '</div>' +
+          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+              this.panelView.toHTML() +
+          '</div>' +
+          '</div>';
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // Mousedown and touch events on the sliding panel itself.
+      // Mousemove and mouseup on the whole window, so that you can drag the
+      // cursor off the slider and have it still following until you release the mouse.
+      this.panel$().addEventListener('mousedown', this.onMouseDown);
+      this.panel$().addEventListener('touchstart', this.onTouchStart);
+      this.panel$().addEventListener('touchmove', this.onTouchMove);
+      this.panel$().addEventListener('touchend', this.onTouchEnd);
+
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup', this.onMouseUp);
+
+      // Resize first, then init the outer view, and finally the panel view.
+      this.X.window.addEventListener('resize', this.onResize);
+      this.onResize();
+      this.mainView.initHTML();
+      this.panelView.initHTML();
+    },
+
+    main$: function() {
+      return this.X.window.document.getElementById(this.id + '-main');
+    },
+    panel$: function() {
+      return this.X.window.document.getElementById(this.id + '-panel');
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onResize',
+      isAnimated: true,
+      code: function(e) {
+        if ( ! this.$ ) return;
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          // Expanded mode. Show the two side by side, setting their widths
+          // based on the panelRatio.
+          this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
+          this.width = this.parentWidth - this.panelWidth;
+          this.panelX = this.width;
+          this.expanded = true;
+        } else {
+          this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
+          this.panelWidth = this.minPanelWidth;
+          this.panelX = this.width;
+          this.expanded = false;
+        }
+      }
+    },
+    {
+      name: 'onMouseDown',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.firstDragX = e.clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        // Stop propagation so that only the uppermost panel is dragged, if
+        // they are nested.
+        e.stopPropagation();
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( e.touches.length > 1 ) return;
+        var t = e.touches[0];
+        this.firstDragX = e.touches[0].clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onMouseMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault(); // Necessary to make browser handle this nicely.
+        var dx = e.clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault();
+        var dx = e.touches[0].clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
+      }
+    }
+  ]
+});
+
 /**
  * @license
  * Copyright 2012 Google Inc. All Rights Reserved.
@@ -12179,11 +12645,19 @@ FOAModel({
  * limitations under the License.
  */
 FOAModel({
-  name:  'AbstractChoiceView',
+  name: 'AbstractChoiceView',
 
   extendsModel: 'View',
 
   properties: [
+    // This is the real, final choice. The internals use index only.
+    // When useSelection is enabled, data is not set until a final choice is made.
+    {
+      model_: 'BooleanProperty',
+      name: 'autoSetData',
+      help: 'If true, this.data is set when choices update and the current data is not one of the choices.',
+      defaultValue: true
+    },
     {
       name: 'data',
       help: 'The value of the current choice (ie. [value, label] -> value).',
@@ -12196,6 +12670,19 @@ FOAModel({
         }
       }
     },
+    {
+      name: 'label',
+      help: 'The label of the current choice (ie. [value, label] -> label).',
+      postSet: function(_, d) {
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( this.choices[i][1] === d ) {
+            if ( this.index !== i ) this.index = i;
+            return;
+          }
+        }
+      }
+    },
+    // See above; choice works the same as data.
     {
       name: 'choice',
       help: 'The current choice (ie. [value, label]).',
@@ -12210,6 +12697,7 @@ FOAModel({
       setter: function(choice) {
         var oldValue = this.choice;
         this.data = choice[0];
+        this.label = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
@@ -12227,39 +12715,98 @@ FOAModel({
         return a;
       },
       postSet: function(_, newValue) {
-        var value = this.data
+        var value = this.data;
 
-        // Update current choice when choices update
+        // Update current choice when choices update.
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var choice = newValue[i];
 
           if ( value === choice[0] ) {
-            this.choice = choice;
+            if ( this.useSelection ) this.index = i;
+            else this.choice = choice;
             break;
           }
         }
 
-        if ( i === newValue.length ) this.choice = newValue[0];
+        if ( this.autoSetData && i === newValue.length ) {
+          if ( this.useSelection ) this.index = 0;
+          else this.data = newValue.length ? newValue[0][0] : undefined;
+        }
 
         if ( this.$ ) this.updateHTML();
       }
     },
+    // The authoritative selection internally. data and choice are outputs when
+    // useSelection is enabled.
     {
       name: 'index',
       help: 'The index of the current choice.',
+      preSet: function(_, i) {
+        if ( i < 0 || this.choices.length == 0 ) return 0;
+        if ( i >= this.choices.length ) return this.choices.length - 1;
+        return i;
+      },
       postSet: function(_, i) {
+        // If useSelection is enabled, don't update data or choice.
+        if ( this.useSelection ) return;
         if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'objToChoice',
+      help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
+    },
+    {
+      name: 'useSelection',
+      help: 'When set, data and choice do not update until an entry is firmly selected',
+      model_: 'BooleanProperty'
+    },
+    {
+      name: 'dao',
+      postSet: function(oldDAO, dao) {
+        if ( oldDAO ) {
+          oldDAO.unlisten(this.onDAOUpdate);
+        }
+        if ( dao && this.$ ) {
+          dao.listen(this.onDAOUpdate);
+          this.onDAOUpdate();
+        }
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: 100,
+      code: function() {
+        this.dao.select(MAP(this.objToChoice))(function(map) {
+          // console.log('***** Update Choices ', map.arg2, this.choices);
+          this.choices = map.arg2;
+        }.bind(this));
       }
     }
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      this.dao = this.dao;
+    },
+
     findChoiceIC: function(name) {
       name = name.toLowerCase();
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         if ( this.choices[i][1].toLowerCase() == name )
           return this.choices[i];
       }
+    },
+
+    commit: function() {
+      if ( ! this.useSelection ) return;
+      this.choice = this.choices[this.index];
     }
   }
 });
@@ -12295,31 +12842,83 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'ul'
+    },
+    {
+      name: 'innerTagName',
+      defaultValue: 'li'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateSelected',
+      code: function() {
+        if ( ! this.$ || ! this.$.children ) return;
+        for ( var i = 0 ; i < this.$.children.length ; i++ ) {
+          var c = this.$.children[i];
+          DOM.setClass(c, 'selected', i === this.index);
+        }
+      }
     }
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      // Doing this at the low level rather than with this.setClass listeners
+      // to avoid creating loads of listeners when autocompleting or otherwise
+      // rapidly changing this.choices.
+      this.index$.addListener(this.updateSelected);
+      this.choices$.addListener(this.updateSelected);
+    },
+    choiceToHTML: function(id, choice) {
+      return '<' + this.innerTagName + ' id="' + id + '" class="choice">' +
+          choice[1] + '</' + this.innerTagName + '>';
+    },
     toInnerHTML: function() {
-      var out = "";
+      var out = [];
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         var choice = this.choices[i];
         var id     = this.nextID();
 
         this.on(
           'click',
-          function(choice) {
-            this.choice = choice;
-          }.bind(this, choice),
+          function(index) {
+            this.choice = this.choices[index];
+          }.bind(this, i),
           id);
 
-        this.setClass(
-          'selected',
-          function(choice) { return this.choice == choice; }.bind(this, choice),
-          id);
-
-        out += '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
+        out.push(this.choiceToHTML(id, choice));
       }
-      return out;
+      return out.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.updateSelected();
+    },
+
+    scrollToSelection: function() {
+      // Three cases: in view, need to scroll up, need to scroll down.
+      // First we determine the parent's scrolling bounds.
+      var e = this.$.children[this.index];
+      if ( ! e ) return;
+      var parent = e.parentElement;
+      while ( parent ) {
+        var overflow = this.X.window.getComputedStyle(parent).overflow;
+        if ( overflow === 'scroll' || overflow === 'auto' ) {
+          break;
+        }
+        parent = parent.parentElement;
+      }
+      parent = parent || this.X.window;
+
+      if ( e.offsetTop < parent.scrollTop ) { // Scroll up
+        e.scrollIntoView(true);
+      } else if ( e.offsetTop + e.offsetHeight >=
+          parent.scrollTop + parent.offsetHeight ) { // Down
+        e.scrollIntoView();
+      }
     }
   }
 });
@@ -12394,6 +12993,8 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       var e = this.$;
 
       this.updateHTML();
@@ -12406,7 +13007,7 @@ FOAModel({
     {
       name: 'onMouseOver',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
         this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
@@ -12414,8 +13015,8 @@ FOAModel({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.timer_ = window.setTimeout(function() {
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
+        this.timer_ = this.X.setTimeout(function() {
           this.data = this.prev || '';
           this.prev = undefined;
         }.bind(this), 1);
@@ -12467,6 +13068,8 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
     }
   }
@@ -12480,7 +13083,7 @@ FOAModel({
 
   properties: [
     {
-      name: 'showLabel'
+      name: 'linkLabel'
     },
     {
       name: 'iconUrl'
@@ -12503,10 +13106,11 @@ FOAModel({
     {
       name: 'popup',
       code: function(e) {
-        var view = ChoiceListView.create({
+        var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
-          choices: this.choices
+          choices: this.choices,
+          autoSetData: this.autoSetData
         });
 
         // I don't know why the 'animate' is required, but it sometimes
@@ -12514,14 +13118,14 @@ FOAModel({
         view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
           if ( view.$ ) view.$.remove();
-        }.bind(this)));
+        }.bind(this), this.X));
 
-        var pos = findPageXY(this.$.querySelector('img'));
+        var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
         var parentNode = view.$.parentNode;
 
-        view.$.style.top = pos[1];
+        view.$.style.top = pos[1]-2;
         view.$.style.left = pos[0]-toNum(s.width)+30;
         view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
@@ -12548,18 +13152,21 @@ FOAModel({
         this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
       }
 
+      out += '<span class="action">';
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
-      if ( this.showLabel ) {
-        out += this.label;
+      if ( this.linkLabel ) {
+        out += this.linkLabel;
       }
+      out += '</span>';
 
       return out;
     },
 
     initHTML: function() {
+      this.SUPER();
       this.$.addEventListener('click', this.popup);
     }
   }
@@ -12627,6 +13234,9 @@ FOAModel({
     {
       name: 'onValueChange',
       code: function() {
+        // TODO: Allow overriding of listeners
+        this.onValueChange_.apply(this, arguments);
+
         if ( this.obj && this.obj.model_ ) this.model = this.obj.model_;
         if ( this.$ ) this.updateSubViews();
       }
@@ -12641,6 +13251,9 @@ FOAModel({
   ],
 
   methods: {
+    onValueChange_: function() {
+    },
+
     bindSubView: function(view, prop) {
       if ( this.get() ) {
         // TODO: setValue is deprecated
@@ -12671,8 +13284,8 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
       if ( o ) return Action.isInstance(o) ?
-        this.X.ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
-        this.createView(o, opt_args);
+        this.createActionView(o, this.value, opt_args) :
+        this.createView(o, opt_args) ;
 
       return this.SUPER(name, opt_args);
     },
@@ -12931,6 +13544,7 @@ FOAModel({
     {
       name:  'hardSelection',
       type:  'Value',
+      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
       factory: function() { return SimpleValue.create(); }
     },
     {
@@ -12998,7 +13612,7 @@ FOAModel({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -13006,6 +13620,24 @@ FOAModel({
 
         return sb;
       }
+    },
+    {
+      name: 'scrollPitch',
+      help: 'Number of (CSS) pixels of touch drag required to scroll by one',
+      defaultValue: 10
+    },
+    {
+      name: 'touchScrolling',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      hidden: true,
+      transient: true
+    },
+    {
+      name: 'touchPrev',
+      hidden: true,
+      transient: true,
+      defaultValue: 0
     }
   ],
 
@@ -13065,10 +13697,56 @@ FOAModel({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(touches, changed) {
+        if ( touches.length > 1 ) return { drop: true };
+        return { weight: 0.3 };
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(touches, changed) {
+        var t = touches[changed[0]];
+        if ( this.touchScrolling ) {
+          var sb = this.scrollbar;
+          var dy = t.y - this.touchPrev;
+          if ( dy > this.scrollPitch && sb.value > 0 ) {
+            this.touchPrev = t.y;
+            sb.value--;
+          } else if ( dy < -this.scrollPitch && sb.value < sb.size - sb.extent ) {
+            this.touchPrev = t.y;
+            sb.value++;
+          }
+
+          return { claim: true, weight: 0.99, preventDefault: true };
+        }
+
+        if ( Math.abs(t.dy) > 10 && Math.abs(t.dx) < 10 ) {
+          // Moving mostly vertically, so start scrolling.
+          this.touchScrolling = true;
+          this.touchPrev = t.y;
+          return { claim: true, weight: 0.8, preventDefault: true };
+        } else if ( t.distance < 10 ) {
+          return { preventDefault: true };
+        } else {
+          return { drop: true };
+        }
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(touches, changed) {
+        this.touchScrolling = false;
+        return { drop: true };
+      }
     }
   ],
 
   methods: {
+    ROW_SELECTED: ['escape'],
+
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
@@ -13107,6 +13785,14 @@ FOAModel({
           }
         };
 
+        if ( this.X.touchManager ) {
+          this.X.touchManager.install(TouchReceiver.create({
+            id: 'qbug-table-scroll-' + this.id,
+            element: this.$.parentElement,
+            delegate: this
+          }));
+        }
+
         this.onResize();
       }
 
@@ -13121,8 +13807,8 @@ FOAModel({
       this.show__ = ! this.show__;
       if ( this.show__ ) return;
       */
-      this.count__ = ( this.count__ || 0)+1;
-      if ( this.count__ % 3 !== 0 ) return;
+      // this.count__ = ( this.count__ || 0)+1;
+      // if ( this.count__ % 3 !== 0 ) return;
 
       if ( ! dao || ! this.$ ) return;
 
@@ -13358,6 +14044,7 @@ FOAModel({
     },
 
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
     },
 
@@ -13468,7 +14155,7 @@ FOAModel({
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = Canvas.create();
+        this.parent = this.X.Canvas.create();
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
@@ -13486,7 +14173,7 @@ FOAModel({
 
       parent.addChild(this);
       parent.initHTML();
-      Events.dynamic(
+      this.X.dynamic(
         function() { self.background; }, function() {
           parent.background = self.background;
         });
@@ -14334,7 +15021,7 @@ FOAModel({
     },
     {
       name: 'mouse',
-      factory: function() { return Mouse.create(); }
+      factory: function() { return this.X.Mouse.create(); }
     }
   ],
 
@@ -14405,8 +15092,8 @@ FOAModel({
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(g.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
+      var sortedCols = g.sortedCols();
+      var sortedRows = g.sortedRows();
       var w = this.width;
       var h = this.height;
       var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag);
@@ -14569,7 +15256,7 @@ FOAModel({
 });
 
 
-var LinkView = Model.create({
+FOAModel({
   name: 'LinkView',
 
   extendsModel: 'DetailView',
@@ -14672,6 +15359,7 @@ FOAModel({
     }
   }
 });
+
 
 FOAModel({
   name: 'RichTextView',
@@ -15283,7 +15971,6 @@ FOAModel({
       }
     }
   ]
-
 });
 
 /**
@@ -16884,6 +17571,16 @@ FOAModel({
           }
           group.put(obj);
         }
+        // Perhaps we should use a key value of undefiend instead of '', since '' may actually
+        // be a valid key.
+        if ( key.length == 0 ) {
+          var group = this.groups.hasOwnProperty('') && this.groups[''];
+          if ( ! group ) {
+            group = this.arg2.clone();
+            this.groups[''] = group;
+          }
+          group.put(obj);
+        }
       } else {
         var group = this.groups.hasOwnProperty(key) && this.groups[key];
         if ( ! group ) {
@@ -17024,13 +17721,26 @@ FOAModel({
       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
       return '<td>' + str + '</td>';
     },
+    sortAxis: function(values, f) { return values.sort(f.compareProperty); },
+    sortCols: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
+    sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
+    sortedCols: function() {
+      return this.sortCols(
+        Object.getOwnPropertyNames(this.cols.groups),
+        this.xFunc);
+    },
+    sortedRows: function() {
+      return this.sortRows(
+        Object.getOwnPropertyNames(this.rows.groups),
+        this.yFunc);
+    },
     toHTML: function() {
       var out;
       this.children = [];
       var cols = this.cols.groups;
       var rows = this.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
+      var sortedCols = this.sortedCols();
+      var sortedRows = this.sortedRows();
 
       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
@@ -17082,7 +17792,7 @@ FOAModel({
     pipe: function(sink) {
     },
     put: function(obj) {
-      var val = this.arg1.f(obj);
+      var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
       var acc = this.arg2;
       acc.put(val);
     },
@@ -17304,8 +18014,8 @@ function GRID_BY(xFunc, yFunc, acc) {
   return GridByExpr.create({xFunc: xFunc, yFunc: yFunc, acc: acc});
 }
 
-function MAP(fn, sink) {
-  return MapExpr.create({arg1: fn, arg2: sink});
+function MAP(fn, opt_sink) {
+  return MapExpr.create({arg1: fn, arg2: opt_sink || []});
 }
 
 function DISTINCT(fn, sink) {
@@ -17421,7 +18131,7 @@ FOAModel({
       },*/
     select: function(sink, options) {
       var self = this;
-      this.values.select({put:function(o) {
+      this.values.select({put: function(o) {
         sink.put(o);
         var key = self.arg1.f(o);
         var a = o.children;
@@ -17429,13 +18139,11 @@ FOAModel({
       }}, options);
       return aconstant(sink);
     },
-    put: function(obj) {
-      var key = this.arg1.f(obj);
-
+    putKeyValue_: function(key, value) {
       var group = this.groups.hasOwnProperty(key) && this.groups[key];
 
       if ( ! group ) {
-        group = obj.clone();
+        group = value.clone();
         if ( this.expanded[key] ) group.children = [];
         this.groups[key] = group;
         group.count = 1;
@@ -17445,6 +18153,15 @@ FOAModel({
       }
 
       if ( group.children ) group.children.push(obj);
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
+
+      if ( Array.isArray(key) ) {
+        for ( var i = 0 ; i < key.length ; i++ ) this.putKeyValue_(key[i], obj);
+      } else {
+        this.putKeyValue_(key, obj);
+      }
     },
     where: function(query) {
       return filteredDAO(query, this);
@@ -18179,16 +18896,16 @@ function awhile(cond, afunc) {
 
 
 /** Execute the supplied afunc if cond. */
-function aif(cond, afunc) {
+function aif(cond, afunc, aelse) {
   return function(ret) {
     if ( cond ) {
        afunc.apply(this, arguments);
     } else {
-       ret();
+      if ( aelse ) aelse.apply(this, arguments);
+      else ret();
     }
   };
 }
-
 
 /** Time an afunc. **/
 var atime = (function() {
@@ -18953,11 +19670,14 @@ var FutureDAO = {
     // pay the overhead once the delegate has been set.
 
     function setupFuture(delegate) {
-      if ( ret.__proto__ != delegate ) {
-        for ( var i = 0 ; i < ret.__proto__.daoListeners_.length ; i++ ) {
-          delegate.listen.apply(delegate, ret.__proto__.daoListeners_[i]);
-        }
+      if ( ret.__proto__ !== delegate ) {
+        var listeners = ret.__proto__.daoListeners_;
         ret.__proto__ = delegate;
+        for ( var i = 0 ; i < listeners.length ; i++ ) {
+          console.log('******************************************************* AddingListener ', ret, listeners[i]);
+          ret.listen.apply(ret, listeners[i]);
+        }
+//        ret.notify_('put', []);
       }
     }
 
@@ -19012,9 +19732,10 @@ var FutureDAO = {
           return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
         },
         listen: function(sink, options) {
-          this.daoListeners_.push([sink, options]);
+          // this.daoListeners_.push([sink, options]);
         },
         unlisten: function(sink) {
+          /*
           for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
             if ( this.daoListeners_[i][0] === sink ) {
               this.daoListeners_.splice(i, 1);
@@ -19022,37 +19743,11 @@ var FutureDAO = {
             }
           }
           console.warn('phantom DAO unlisten: ', sink);
+          */
         }
       }};
     return ret;
   }
-};
-
-
-var CachingDAO = {
-
-  create: function(cache, source) {
-    var futureDelegate = afuture();
-
-    //    console.time('CachingDAO-' + source.model.name);
-    source.select(cache)(function() {
-      //      console.timeEnd('CachingDAO-' + source.model.name);
-      source.listen(cache);
-      futureDelegate.set(cache);
-    });
-
-    return {
-      __proto__: FutureDAO.create(futureDelegate.get),
-
-      model: cache.model || source.model,
-      put: function(obj, sink) { source.put(obj, sink); },
-      remove: function(query, sink) { source.remove(query, sink); },
-      removeAll: function(sink, options) {
-        return source.removeAll(sink, options);
-      }
-    };
-  }
-
 };
 
 
@@ -19089,7 +19784,6 @@ var LoggingDAO = {
       }
     };
   }
-
 };
 
 
@@ -19145,7 +19839,6 @@ var TimingDAO = {
       }
     };
   }
-
 };
 
 
@@ -19344,6 +20037,7 @@ FOAModel({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
+//       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       if ( ! this.daoListeners_ ) return;
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
@@ -19362,6 +20056,7 @@ FOAModel({
     }
   }
 });
+
 
 FOAModel({
   name: 'ProxyDAO',
@@ -19459,7 +20154,9 @@ FOAModel({
       type: 'Property',
       required: true,
       hidden: true,
-      defaultValueFn: function() { return this.delegate.model.ID; },
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
       transient: true
     },
     {
@@ -19476,7 +20173,7 @@ FOAModel({
       var future = afuture();
       this.WHEN_READY = future.get;
 
-      // Scan all DAO values to find the
+      // Scan all DAO values to find the largest
       this.delegate.select(MAX(this.property))(function(max) {
         if ( max.max ) this.sequenceValue = max.max + 1;
         future.set(true);
@@ -19497,6 +20194,51 @@ FOAModel({
 });
 
 
+FOAModel({
+  name: 'CachingDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'src'
+    },
+    {
+      name: 'cache',
+      help: 'Alias for delegate.',
+      getter: function() { return this.delegate },
+      setter: function(dao) { this.delegate = dao; }
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.src.model || this.cache.model; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var src   = this.src;
+      var cache = this.cache;
+
+      var futureDelegate = afuture();
+      this.cache = FutureDAO.create(futureDelegate.get);
+
+      src.select(cache)(function() {
+        // Actually means that cache listens to changes in the src.
+        src.listen(cache);
+        futureDelegate.set(cache);
+        this.cache = cache;
+      }.bind(this));
+    },
+    put: function(obj, sink) { this.src.put(obj, sink); },
+    remove: function(query, sink) { this.src.remove(query, sink); },
+    removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
+  }
+});
+
+
 /**
  * Provide Cascading Remove.
  * Remove dependent children from a secondary DAO when parent is
@@ -19504,7 +20246,7 @@ FOAModel({
  */
 FOAModel({
   name: 'CascadingRemoveDAO',
-  label: 'SeqNoDAO', // TODO: Copy-paste error?
+  label: 'Cascading Remove DAO',
 
   extendsModel: 'ProxyDAO',
 
@@ -19814,10 +20556,10 @@ function atxn(afunc) {
  * of data in the database.
  */
 FOAModel({
-  extendsModel: 'AbstractDAO',
-
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -20041,10 +20783,11 @@ FOAModel({
               };
             }
             cursor.continue();
-          } else {
-            sink && sink.eof && sink.eof();
-            future.set();
           }
+        };
+        request.transaction.oncomplete = function() {
+          sink && sink.eof && sink.eof();
+          future.set();
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
@@ -21065,6 +21808,11 @@ FOAModel({
       name: 'batchSize',
       defaultValue: 200
     },
+    {
+      model_: 'IntProperty',
+      name: 'skipThreshold',
+      defaultValue: 1000
+    }
   ],
 
   methods: {
@@ -21084,6 +21832,7 @@ FOAModel({
       return this.url;
     },
     buildPutParams: function(obj) {
+      return [];
     },
     buildSelectParams: function(sink, query) {
       return [];
@@ -21113,6 +21862,7 @@ FOAModel({
       var fut = afuture();
       var self = this;
       var limit;
+      var skipped = 0;
       var index = 0;
       var fc = this.createFlowControl_();
       // TODO: This is a very ugly way of passing additional data
@@ -21195,6 +21945,7 @@ FOAModel({
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
               if ( origQuery && !origQuery.f(item) ) {
+                skipped++;
                 continue;
               }
 
@@ -21213,7 +21964,8 @@ FOAModel({
               sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
-            if ( ! data || index === data.totalResults ) finished = true;
+            if ( ! data || index >= data.totalResults ) finished = true;
+            if ( skipped >= self.skipThreshold ) finished = true;
             ret();
           });
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });
@@ -21754,12 +22506,13 @@ FOAModel({
         this.mdao = dao;
       } else if ( this.cache ) {
         this.mdao = MDAO.create(params);
-        dao = CachingDAO.create(this.mdao, dao);
+        dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
       }
 
       if ( this.seqNo ) {
-        dao = SeqNoDAO.create({__proto__: params, delegate: dao});
-        if ( this.seqProperty ) dao.property = this.seqProperty;
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = SeqNoDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
@@ -23121,6 +23874,7 @@ var MDAO = Model.create({
       this.find(id, {
         put: function(obj) {
           self.root = self.index.remove(self.root, obj);
+          delete self.map[obj.id];
           self.notify_('remove', [obj]);
           sink && sink.remove && sink.remove(obj);
         },
@@ -23231,7 +23985,7 @@ FOAModel({
       action: function() {
         if ( this.sliderOpen ) {
           this.sliderOpen = false;
-          this.dimmer$().style.zIndex = 0;
+          this.dimmer$().style.zIndex = -1;
           this.dimmer$().style.opacity = -1;
           this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.4, 0.0, 1, 1)';
           this.slideArea$().style.left = '-304px';
@@ -25177,7 +25931,27 @@ FOAModel({
 FOAModel({
   name: 'FOAMTouch',
   properties: [
-    'id', 'x', 'y'
+    'id', 'startX', 'startY', 'x', 'y',
+    {
+      name: 'dx',
+      getter: function() {
+        return this.x - this.startX;
+      }
+    },
+    {
+      name: 'dy',
+      getter: function() {
+        return this.y - this.startY;
+      }
+    },
+    {
+      name: 'distance',
+      getter: function() {
+        var dx = this.dx;
+        var dy = this.dy;
+        return Math.sqrt(dx*dx + dy*dy);
+      }
+    }
   ],
 
   methods: {
@@ -25188,47 +25962,146 @@ FOAModel({
       // TODO:
     },
     move: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.clientX;
+      this.y = t.clientY;
     }
   }
+});
+
+FOAModel({
+  name: 'TouchReceiver',
+  properties: [
+    'id',
+    'element',
+    {
+      name: 'delegate',
+      // Default delegate insta-captures every incoming single-point touch, and
+      // drives the propX and propY values with it.
+      defaultValueFn: function() {
+        var oldX, oldY;
+        var self = this;
+        return {
+          onTouchStart: function(touches, changed) {
+            // Skip multi-touches.
+            if ( Object.keys(touches).length > 1 ) return { drop: true };
+            // Set oldX and oldY to the current values of their properties.
+            oldX = self.propX && self.propX.get();
+            oldY = self.propY && self.propY.get();
+
+            return { claim: true, weight: 0.8 };
+          },
+
+          // Move the properties if they are defined, based on the delta.
+          onTouchMove: function(touches, changed) {
+            var t = touches[changed[0]];
+            if ( self.propX ) self.propX.set(oldX + t.dx);
+            if ( self.propY ) self.propY.set(oldY + t.dy);
+            return { claim: true, weight: 0.8, preventDefault: true };
+          }
+        };
+      }
+    },
+    'propX', 'propY',
+    { name: 'activeTouches', factory: function() { return {}; } }
+  ]
 });
 
 FOAModel({
   name: 'TouchManager',
 
   properties: [
-    { name: 'touches', factory: function() { return {}; } }
+    { name: 'touches', factory: function() { return {}; } },
+    { name: 'receivers', factory: function() { return []; } },
+    { name: 'attached', defautValue: false, model_: 'BooleanProperty' }
   ],
 
   methods: {
     TOUCH_START: 'touch-start',
     TOUCH_END: 'touch-end',
-    TOUCH_MOVE: 'touch-move',
 
-    install: function(d) {
-      d.addEventListener('touchstart', this.onTouchStart);
-      d.addEventListener('touchend', this.onTouchEnd);
-      d.addEventListener('touchmove', this.onTouchMove);
-      d.addEventListener('touchcancel', this.onTouchCancel);
-      d.addEventListener('touchleave', this.onTouchLeave);
+    attachHandlers: function() {
+      this.X.window.document.addEventListener('touchstart', this.onTouchStart);
+      this.attached = true;
     },
 
-    touchStart: function(i, t) {
-      this.touches[i] = FOAMTouch.create({
-        id: i,
-        x: t.screenX,
-        y: t.screenY
-      });
-      this.publish(this.TOUCH_START, this.touches[i]);
+    install: function(recv) {
+      if ( ! this.attached ) this.attachHandlers();
+
+      this.receivers.push(recv);
+
+      // Attach a touchstart handler to the capture phase, this checks
+      // whether each touch is inside the given element, and records the
+      // offset into that element.
+      recv.element.addEventListener('touchstart', this.touchCapture.bind(recv),
+          true);
     },
-    touchMove: function(i, t) {
-      this.touches[i].move(t);
+
+    // NB: 'this' is bound to the receiver, not the TouchManager!
+    touchCapture: function(event) {
+      for ( var i = 0; i < event.changedTouches.length; i++ ) {
+        var t = event.changedTouches[i];
+        // TODO: Maybe capture the offset into the element here?
+        this.activeTouches[t.identifier] = true;
+      }
     },
-    touchEnd: function(i, t) {
-      this.touches[i].move(t);
-      this.publish(this.TOUCH_END, this.touches[i]);
-      delete this.touches[i];
+
+    notifyReceivers: function(type, event) {
+      var changed = [];
+      for ( var i = 0 ; i < event.changedTouches.length ; i++ ) {
+        changed.push(event.changedTouches[i].identifier);
+      }
+
+      var rets = [];
+      for ( i = 0 ; i < this.receivers.length; i++ ) {
+        var matched = false;
+        for ( var j = 0 ; j < changed.length; j++ ) {
+          if ( this.receivers[i].activeTouches[changed[j]] ) {
+            matched = true;
+            break;
+          }
+        }
+
+        // Skip if this receiver isn't watching any of the changed touches.
+        if ( ! matched ) continue;
+
+        // Since it is watching, let's notify it of the change.
+        var d = this.receivers[i].delegate;
+        var f = d[type].bind(d);
+        if ( f ) rets.push(f(this.touches, changed));
+      }
+
+      // Now rets contains the responses from the listeners.
+      // Any that set drop: true should have their active touches cleared.
+      // Then any that set claim: true have their weights compared.
+      // The highest is the winner and all others are dropped.
+      // If none set claim, then preventDefault if any non-dropped ones set it.
+      // If we did have a winner, then preventDefault based on its wishes.
+      var winner = -1;
+      for ( i = 0 ; i < rets.length ; i++ ) {
+        var r = rets[i];
+        if ( r.drop ) {
+          this.receivers[i].activeTouches = {};
+          continue;
+        }
+
+        if ( r.claim && ( winner < 0 || r.weight > rets[winner].weight ) ) {
+          winner = i;
+        }
+      }
+
+      if ( winner >= 0 ) {
+        for ( i = 0 ; i < rets.length ; i++ ) {
+          if ( i != winner ) this.receivers[i].activeTouches = {};
+        }
+        if ( rets[winner].preventDefault ) event.preventDefault();
+      } else {
+        for ( i = 0 ; i < rets.length ; i++ ) {
+          if ( ! rets[i].drop && rets[i].preventDefault ) {
+            event.preventDefault();
+            break;
+          }
+        }
+      }
     }
   },
 
@@ -25236,73 +26109,76 @@ FOAModel({
     {
       name: 'onTouchStart',
       code: function(e) {
-        e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( this.touches[i] ) {
+          if ( this.touches[t.identifier] ) {
             console.warn('Touch start for known touch.');
             continue;
           }
-          this.touchStart(i, t);
+          console.log(t);
+          this.touches[t.identifier] = FOAMTouch.create({
+            id: t.identifier,
+            startX: t.clientX,
+            startY: t.clientY,
+            x: t.clientX,
+            y: t.clientY
+          });
         }
+
+        e.target.addEventListener('touchmove', this.onTouchMove);
+        e.target.addEventListener('touchend', this.onTouchEnd);
+        e.target.addEventListener('touchcancel', this.onTouchCancel);
+        e.target.addEventListener('touchleave', this.onTouchLeave);
+
+        this.notifyReceivers('onTouchStart', e);
       }
     },
     {
       name: 'onTouchMove',
       code: function(e) {
-        e.preventDefault();
-
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          if ( ! this.touches[t.identifier] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
-          this.touchMove(i, t);
+          this.touches[t.identifier].move(t);
         }
+        this.notifyReceivers('onTouchMove', e);
       }
     },
     {
       name: 'onTouchEnd',
       code: function(e) {
-        e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          if ( ! this.touches[t.identifier] ) {
             console.warn('Touch end for unknown touch.');
             continue;
           }
-          this.touchEnd(i, t);
+          this.touches[t.identifier].move(t);
+        }
+        this.notifyReceivers('onTouchEnd', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     },
     {
       name: 'onTouchCancel',
       code: function(e) {
-        e.preventDefault();
-        for ( var i = 0; i < e.changedTouches.length; i++ ) {
-          var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
-            console.warn('Touch cancel for unknown touch.');
-            continue;
-          }
-
-          this.touches[i].cancel(e, t);
+        this.notifyReceivers('onTouchCancel', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     },
     {
       name: 'onTouchLeave',
       code: function(e) {
-        e.preventDefault();
-        for ( var i = 0; i < e.changedTouches.length; i++ ) {
-          var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
-            console.warn('Touch cancel for unknown touch.');
-            continue;
-          }
-
-          this.touches[i].leave(e, t);
+        this.notifyReceivers('onTouchLeave', e);
+        for ( i = 0; i < e.changedTouches.length; i++ ) {
+          delete this.touches[e.changedTouches[i].identifier];
         }
       }
     }
@@ -25384,6 +26260,9 @@ FOAModel({
     },
     paint: function() {
       var c = this.canvas;
+
+      if ( ! c ) return;
+
       var x = this.x;
       var y = this.y;
       var r = this.r;

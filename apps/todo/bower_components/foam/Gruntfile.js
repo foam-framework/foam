@@ -52,6 +52,7 @@ module.exports = function(grunt) {
           'core/XMLUtil.js',
           'core/context.js',
           'core/FOAM.js',
+          'core/JSONParser.js',
           'core/TemplateUtil.js',
           'core/AbstractPrototype.js',
           'core/ModelProto.js',
