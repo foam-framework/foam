@@ -1112,8 +1112,8 @@ FOAModel({
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(g.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
+      var sortedCols = g.sortedCols();
+      var sortedRows = g.sortedRows();
       var w = this.width;
       var h = this.height;
       var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag);
