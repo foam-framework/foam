@@ -22,6 +22,10 @@ var COL = {
   toHTML: function() {
     var s = '';
     var vs = this.values;
+    if( vs.length && vs[0].issue ) { vs.sort(function(o1, o2) {
+      return o1.issue.id.compareTo(o2.issue.id);
+    });
+                                   }
     for ( var i = 0 ; i < vs.length ; i++ ) s += vs[i].toHTML ? vs[i].toHTML() : vs[i];
     return s;
   },
