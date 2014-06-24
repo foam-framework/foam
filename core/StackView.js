@@ -59,7 +59,7 @@ FOAModel({
       action: function() {
         if ( this.sliderOpen ) {
           this.sliderOpen = false;
-          this.dimmer$().style.zIndex = 0;
+          this.dimmer$().style.zIndex = -1;
           this.dimmer$().style.opacity = -1;
           this.slideArea$().style.transition = 'left 0.2s cubic-bezier(0.4, 0.0, 1, 1)';
           this.slideArea$().style.left = '-304px';
