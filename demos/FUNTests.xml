@@ -935,6 +935,64 @@
           assert(OMTestBase.isInstance(parsed[0]), 'The parsed object should be an instance of the original Model');
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">Property update handlers</property>
+        <property name="description">Exercises property updaters (preSet, postSet) and pseudo-properties (getter, setter)</property>
+        <property name="code">
+          var model = Model.create({
+            name: 'OMTestPropUpdaters',
+            properties: [
+              {
+                name: 'foo',
+                defaultValue: -1,
+                preSet: function(old, nu) {
+                  // Foo allows only positive numbers.
+                  // If anything else is provided, it returns old to cause no change.
+                  // Note that postSet will still fire!
+                  seq.push('preSet');
+                  if ( typeof nu !== 'number' ) return old;
+                  if ( nu &lt; 0 ) return old;
+                  return nu;
+                },
+                postSet: function(old, nu) {
+                  seq.push('postSet ' + old + ' ' + nu);
+                }
+              },
+              {
+                name: 'bar',
+                getter: function() { seq.push('bar getter'); return 'kittens'; },
+                setter: function(nu) { seq.push('bar setter ' + nu); }
+              }
+            ]
+          });
+
+          seq = [];
+          var x = model.create({});
+
+          assert(seqMatches([]), 'Neither preSet, postSet, getter nor setter are called at creation time unless there are factories');
+
+          assert(x.foo === -1, 'Default values that don\'t pass the preSet are possible!');
+          assert(seqMatches([]), 'Accessing the defaultValue is not an update, so preSet and postSet don\'t fire');
+
+          x.foo = -3;
+          assert(x.foo === -1, 'Updates that are rejected by preSet are ignored');
+          assert(seqMatches(['preSet', 'postSet -1 -1']), 'preSet is called, it returns the old value (-1), postSet is called with old == nu == -1');
+
+          seq = [];
+          x.foo = 7;
+          assert(x.foo === 7, 'Updates that are allowed by preSet actually happen');
+          assert(seqMatches(['preSet', 'postSet -1 7']), 'preSet is called, it returns the new value (7), and then postSet is called with old = -1, nu = 7');
+
+          seq = [];
+          assert(x.bar === 'kittens', 'bar, the pseudoproperty, calls its getter function when accessed and returns its result')
+          assert(seqMatches(['bar getter']), 'the getter function was indeed called');
+
+          seq = [];
+          x.bar = 'puppies';
+          assert(x.bar === 'kittens', 'bar is a pseudoproperty - if its setter does nothing with the value, the getter returns what it always does');
+          assert(seqMatches(['bar setter puppies', 'bar getter']), 'setter was called properly');
+        </property>
+      </object>
     </property>
   </object>
 </foam>
