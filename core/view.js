@@ -2403,13 +2403,13 @@ FOAModel({
       var actions = border.actions || this.model.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
-        var button = ActionButton.create({ action: action });
+        var button = this.X.ActionButton.create({ action: action });
         if ( border.value )
           button.value$ = border.value$
         else if ( this.value )
           button.value$ = this.value$;
         else
-          button.value = SimpleValue.create(this);
+          button.value = this.X.SimpleValue.create(this);
         str += " " + button.toHTML() + " ";
         this.addChild(button);
       }
