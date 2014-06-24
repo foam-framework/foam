@@ -380,12 +380,20 @@ var QIssue = FOAM({
       convertArray('blocking');
       convertArray('cc');
       convertArray('labels');
+      convertArray('milestone');
+      convertArray('iteration');
 
       function propToLabel(prop, label) {
         if ( diff[prop] ) {
-          diff.labels = diff.labels.concat(
-            '-' + label + '-' + other[prop],
-            label + '-' + diff[prop]);
+          if ( Array.isArray(diff[prop]) ) {
+            for ( var i = 0; i < diff[prop].length; i++) {
+              diff.labels.push(label + '-' + diff[prop][i]);
+            }
+          } else {
+            diff.labels = diff.labels.concat(
+              '-' + label + '-' + other[prop],
+              label + '-' + diff[prop]);
+          }
           delete diff[prop];
         }
       }
