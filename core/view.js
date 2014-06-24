@@ -2552,7 +2552,7 @@ FOAModel({
           self.$.innerHTML = html;
           g.initHTML();
         } else {
-          var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
