@@ -1226,15 +1226,25 @@ FOAModel({
       return '<td>' + str + '</td>';
     },
     sortAxis: function(values, f) { return values.sort(f.compareProperty); },
-    sortColumns: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
+    sortCols: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
     sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
+    sortedCols: function() {
+      return this.sortCols(
+        Object.getOwnPropertyNames(this.cols.groups),
+        this.xFunc);
+    },
+    sortedRows: function() {
+      return this.sortRows(
+        Object.getOwnPropertyNames(this.rows.groups),
+        this.yFunc);
+    },
     toHTML: function() {
       var out;
       this.children = [];
       var cols = this.cols.groups;
       var rows = this.rows.groups;
-      var sortedCols = this.sortColumns(Object.getOwnPropertyNames(cols), this.xFunc);
-      var sortedRows = this.sortRows(Object.getOwnPropertyNames(rows), this.yFunc);
+      var sortedCols = this.sortedCols();
+      var sortedRows = this.sortedRows();
 
       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 

@@ -46,10 +46,24 @@ var DragAndDropGrid = FOAM({
   ],
 
   methods: {
+    // Milestone and Iteration use the following specialized compator rule:
+    //   1. Undefined values come first
+    //   2. Next, number values are sorted in descending order
+    //   3. Next, string values are sorted in ascending order
     sortAxis: function(values, f) {
       return values.sort(
-        f.name === 'iteration' ? function(o1, o2) { return parseInt(o2 || '0').compareTo(parseInt(o1 || '0')); } :
-        f.name === 'milestone' ? function(o1, o2) { return f.compareProperty(o2, o1); } :
+        f.name === 'milestone' || f.name === 'iteration' ? function(o1, o2) {
+          if ( o1 === '' && o2 === '' ) return 0;
+          if ( o1 === '' ) return -1;
+          if ( o2 === '' ) return 1;
+          var i1 = parseInt(o1);
+          var i2 = parseInt(o2);
+          if ( isNaN(i1) && isNaN(i2) ) return o1.compareTo(o2);
+          if ( isNaN(i1) ) return 1;
+          if ( isNaN(i2) ) return -1;
+
+          return i2.compareTo(i1);
+        } :
         f.compareProperty);
     },
     renderCell: function(x, y, value) {
