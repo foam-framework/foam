@@ -911,6 +911,30 @@
               'this.SUPER() calls the same method on the superclass, allowing you to add code before and after it');
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">toFoo wrappers</property>
+        <property name="description">Describes toString, toJSON and toXML default handlers</property>
+        <property name="code" type="function">
+          var x = OMTestBase.create({});
+          var s = x.toString();
+          log(s);
+          assert(typeof s === 'string', '.toString() produces strings');
+
+          var json = x.toJSON();
+          log(json);
+          assert(typeof json === 'string', '.toJSON() produces JSON strings');
+          var parsed = JSONUtil.parse(json);
+          assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
+          assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
+
+          var xml = x.toXML();
+          //log(xml);
+          assert(typeof xml === 'string', '.toXML() produces XML strings');
+          parsed = XMLUtil.parse(xml);
+          assert(parsed instanceof Array, '.toXML() output can be parsed by XMLUtil.parse(), which returns an array of parsed objects');
+          assert(OMTestBase.isInstance(parsed[0]), 'The parsed object should be an instance of the original Model');
+        </property>
+      </object>
     </property>
   </object>
 </foam>
