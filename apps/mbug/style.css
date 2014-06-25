@@ -211,13 +211,14 @@ a {
   padding: 0 0 12px 16px;
 }
 
-.issue-edit .owner-info {
+.owner-info {
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: #575757;
 }
 
-.issue-edit .cc .owner-info {
+.cc .owner-info {
   padding: 12px 0;
 }
 
@@ -370,7 +371,6 @@ a {
 }
 
 .issue-edit .owner-name {
-  color: rgba(0,0,0,.3);
   font-size: 16px;
   line-height: 32px;
   margin-left: 0;
@@ -610,4 +610,42 @@ ul.swipeAltHeader {
 
 .stackview-slidearea {
    box-shadow: 1px 0px 1px 1px rgba(0,0,0,.2);
+}
+
+.issueOwnerEditView {
+  height: 100%;
+  background: #e1e1e1;
+}
+
+.issueOwnerEditView .header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #d2d2d2;
+  background: #fff;
+}
+
+.issueOwnerEditView input[name="owner"] {
+  border: none;
+  font-size: 17px;
+  flex-grow: 1;
+  margin: 0 0 0 12px;
+  padding: 0;
+}
+
+.issueOwnerEditView input[name="owner"]:focus {
+  outline: none;
+}
+
+.issuePersonAutocompleteView {
+  background: #fafafa;
+  box-shadow: 2px 2px 1px grey;
+}
+
+.issuePersonAutocompleteView .row {
+  padding: 6px 0 6px 12px;
+}
+
+.issueOwnerEditView .header .actionButton {
+  flex-grow: 0;
+  flex-shrink: 0;
 }

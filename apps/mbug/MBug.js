@@ -358,7 +358,7 @@ FOAModel({
         <div class="separator separator1"></div>
         <div class="owner">
           <div class="owner-header">Owner</div>
-          <div class="owner-info">$$owner{model_: 'IssueOwnerAvatarView'} $$owner{model_: 'TwoModeTextFieldView', placeholder: 'Name', className: 'owner-name' }</div>
+          $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
         </div>
         <div class="separator separator1"></div>
         <div class="cc">
@@ -378,7 +378,6 @@ FOAModel({
   ]
 });
 
-
 FOAModel({
   name: 'IssueEmailArrayView',
   extendsModel: 'View',
@@ -389,11 +388,42 @@ FOAModel({
     function toHTML() {/* <div id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
     function toInnerHTML() {/*
 <% for ( var i = 0; i < this.data.length; i++ ) { %>
-  <div class="owner-info"><%= IssueOwnerAvatarView.create({ data: this.data[i] }) %> <div class="owner-name">{{{this.data[i]}}}</div></div>
+  <%= IssueEmailCitationView.create({ data: this.data[i] }) %>
 <% } %>
     */}
   ]
 });
+
+FOAModel({
+  name: 'IssuePersonCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/* $$name{model_: 'IssueEmailCitationView'} */}
+  ]
+});
+
+FOAModel({
+  name: 'IssueEmailCitationView',
+  extendsModel: 'View',
+  properties: [
+    {
+      name: 'value',
+      postSet: function(_, v) {
+        this.data = v.value;
+      }
+    },
+    { name: 'data', postSet: function() { this.updateHTML(); } },
+    { name: 'tagName', defaultValue: 'div' },
+    { name: 'className', defaultValue: 'owner-info' }
+  ],
+  templates: [
+    function toHTML() {/* <div %%cssClassAttr() id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
+    function toInnerHTML() {/*
+      <%= IssueOwnerAvatarView.create({ data: this.data }) %> <div class="owner-name"><%= escapeHTML(this.data) %></div>
+    */}
+  ]
+});
+    
 
 FOAModel({
   name: 'IssueOwnerAvatarView',
@@ -538,4 +568,213 @@ FOAModel({
         </div>
     </div>
   */} ]
+});
+
+FOAModel({
+  name: 'IssueOwnerView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'avatarView',
+      mode: 'final'
+    },
+    {
+      name: 'nameView',
+      mode: 'final'
+    },
+    {
+      name: 'editView'
+    },
+    'data',
+    'editViewArgs'
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+
+      this.avatarView = this.X.IssueOwnerAvatarView.create(args);
+      this.nameView = this.X.TextFieldView.create(args);
+      this.nameView.mode = 'read-only';
+      this.nameView.className = 'owner-name';
+      this.nameView.placeholder = 'Name';
+      this.editViewArgs = args;
+
+      this.avatarView.data$ = this.nameView.data$ = this.data$;
+    }
+  },
+
+  templates: [
+    function toHTML() {/*
+      <% this.on('click', this.onClick, this.id); %>
+      <div %%cssClassAttr() id="{{this.id}}">%%avatarView %%nameView</div>
+    */}
+  ],
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() {
+        this.editView = this.X.IssueOwnerEditView.create(this.editViewArgs);
+        this.X.stack.pushView(this.editView);
+        this.editView.data$ = this.data$;
+        this.editView.focus();
+      }
+    }
+  ]
+});
+
+FOAModel({
+  name: 'IssueOwnerEditView',
+  extendsModel: 'View',
+
+  properties: [
+    'data',
+    'autocompleter',
+    { model_: 'BooleanProperty', name: 'autocomplete', defaultValue: true },
+    'name',
+    'placeholder',
+    'domValue',
+    'field',
+    'autocompleteView',
+    {
+      name: 'className',
+      defaultValue: 'issueOwnerEditView'
+    }
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+
+      var Y = this.X.sub();
+
+      this.autocompleteView = Y.IssuePersonAutocompleteView.create({
+        autocompleter: this.autocompleter,
+        target: this
+      });
+
+      this.children = [this.autocompleteView];
+
+      var view = this.autocompleteView;
+      var self = this;
+      Y.registerModel({
+        create: function(args) {
+          args.target = self;
+          view.copyFrom(args);
+          return view;
+        }
+      }, 'AutocompleteView');
+
+      this.field = Y.TextFieldView.create(args);
+      this.field.onKeyMode = true;
+      this.field.data$ = this.data$;
+      this.field.subscribe('keydown', this.onKeyDown);
+      this.field.subscribe(this.field.ESCAPE, this.onCancel);
+    },
+    initHTML: function() {
+      this.SUPER();
+    },
+    onAutocomplete: function(data) {
+      this.data = data;
+      this.X.stack.back();
+    },
+    focus: function() { this.field.focus(); },
+    valueToText: function(value) { return value; },
+    textToValue: function(text) { return text; },
+  },
+
+  templates: [
+    function toHTML() {/*
+      <div <%= this.cssClassAttr() %> id="{{this.id}}">
+        <div class="header">$$back %%field</div>
+        %%autocompleteView
+      </div>
+    */}
+  ],
+
+  actions: [
+    {
+      name: 'back',
+      label: '',
+      iconUrl: 'images/ic_arrow_back_24dp_black.png',
+      action: function() { this.X.stack.back(); }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onKeyDown',
+      code: function(_,_,e) {
+        if ( e.keyCode === 13 ) {
+          this.data = this.field.data;
+          this.X.stack.back();
+        }
+      }
+    },
+    {
+      name: 'onCancel',
+      code: function() {
+        this.X.stack.back();
+      }
+    }
+  ],
+});
+
+FOAModel({
+  name: 'IssuePersonAutocompleteView',
+  extendsModel: 'View',
+
+  properties: [
+    'autocompleter',
+    'target',
+    {
+      name: 'view',
+      factory: function() {
+        return this.X.DAOListView.create({
+          rowView: 'IssuePersonCitationView',
+          dao: NullDAO.create({}),
+          useSelection: true
+        });
+      },
+      postSet: function(old, v) {
+        old && old.selection$.removeListener(this.complete);
+        v.selection$.addListener(this.complete);
+      }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    },
+    {
+      name: 'className',
+      defaultValue: 'issuePersonAutocompleteView'
+    }
+  ],
+
+  methods: {
+    autocomplete: function(partial) {
+      if ( ! this.completer ) {
+        var proto = FOAM.lookup(this.autocompleter, this.X);
+        this.completer = proto.create();
+        this.view.dao = this.completer.autocompleteDao,
+        this.view.objToChoice = this.completer.f;
+      }
+      this.completer.autocomplete(partial);
+    },
+    toInnerHTML: function() {
+      this.children = [this.view];
+      return this.view.toHTML();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'complete',
+      code: function() {
+        this.target.onAutocomplete(this.completer.f(this.view.selection));
+      }
+    }
+  ],
 });
