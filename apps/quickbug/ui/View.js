@@ -186,10 +186,8 @@ var ItemCount = Model.create({
 
   methods: {
     put: function(obj) {
-      if ( ! this.obj ) {
-        this.obj = obj;
-        this.eid = View.getPrototype().nextID();
-      }
+      if ( ! this.obj ) this.obj = obj;
+      this.eid = View.getPrototype().nextID();
       this.SUPER(obj);
     },
     toHTML: function() {
@@ -197,12 +195,11 @@ var ItemCount = Model.create({
     },
     initHTML: function() {
       var f = function() {
-        var searchField = this.browser.searchField;
         var altView = this.browser.view;
-        var col = altView.views[1].view().col.value.get();
-        var row = altView.views[1].view().row.value.get();
+        var col = altView.views[1].view().col.data;
+        var row = altView.views[1].view().row.data;
         var q = AND(
-          QueryParser.parseString(searchField.value.get()),
+          QueryParser.parseString(this.browser.location.q),
           EQ(col, col.f(this.obj)),
           EQ(row, row.f(this.obj))).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
