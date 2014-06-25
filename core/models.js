@@ -205,11 +205,11 @@ FOAModel({
     manage: function(name, obj) {
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
-        this.dao.put(Binding.create({
+        this.dao.put(this.X.Binding.create({
           id:    name,
           value: JSONUtil.compact.where(this.predicate).stringify(obj)
         }));
-      }).bind(this)));
+      }).bind(this), undefined, this.X));
     },
     bindObjects: function(a) {
       // TODO: implement
