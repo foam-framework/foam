@@ -98,6 +98,34 @@
           }, 300);
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">Event topic chaining and wildcarding</property>
+        <property name="description">Events can have paths, and wildcards will hit all sub-events</property>
+        <property name="code" type="function">
+          FOAModel({ name: 'Test' });
+          var x = Test.create({});
+
+          var barCount = 0;
+          var bazCount = 0;
+          x.subscribe(['foo', 'bar'], function() { barCount++; });
+          x.subscribe(['foo', 'baz'], function() { bazCount++; });
+
+          assert(barCount === 0 &amp;&amp; bazCount === 0, 'Both counts start at 0');
+
+          x.publish(['foo', 'bar']);
+          assert(barCount === 1 &amp;&amp; bazCount === 0, 'Bar was incremented');
+
+          x.publish(['foo', 'baz']);
+          assert(barCount === 1 &amp;&amp; bazCount === 1, 'Baz was incremented');
+
+          x.publish(['foo']);
+          assert(barCount === 1 &amp;&amp; bazCount === 1, 'Publishing on a prefix does nothing');
+
+          x.publish(['foo', EventService.WILDCARD]);
+          log(barCount + ' ' + bazCount);
+          assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
+        </property>
+      </object>
     </property>
   </object>
 
