@@ -65,6 +65,7 @@ FOAModel({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
+      this.paint();
     }
   }
 });
@@ -144,7 +145,7 @@ FOAModel({
   ],
 
   methods: {
-    toView: function() { return this.X.CViewView.create({cview: this}); },
+    toView: function() { return this.view || this.X.CViewView.create({cview: this}); },
 
     write: function(document) {
       var v = this.toView();
@@ -243,6 +244,105 @@ FOAModel({
         c.closePath();
         c.fill();
       }
+    }
+  }
+});
+
+
+FOAModel({
+  name: 'ActionButtonCView',
+
+  extendsModel: 'CView2',
+
+  properties: [
+    {
+      name: 'action',
+      postSet: function(oldValue, action) {
+        //  oldValue && oldValue.removeListener(this.render)
+        // action.addListener(this.render);
+      }
+    },
+    {
+      name: 'data',
+      setter: function(_, d) { this.value = SimpleValue.create(d); }
+    },
+    {
+      name:  'font',
+      type:  'String',
+      defaultValue: ''
+    },
+    {
+      name: 'value',
+      type: 'Value',
+      factory: function() { return SimpleValue.create(); }
+    },
+    {
+      name: 'showLabel',
+      defaultValueFn: function() { return this.action.showLabel; }
+    },
+    {
+      name: 'iconUrl',
+      defaultValueFn: function() { return this.action.iconUrl; }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'fooBar',
+      isAnimated: true,
+      code: function() {  }
+    }
+  ],
+
+  methods: {
+    paintSelf: function() {
+      var self = this;
+      var canvas = this.canvas;
+
+      var oldFont = canvas.font;
+      var oldAlign = canvas.textAlign;
+
+      if ( this.font ) canvas.font = this.font;
+
+      canvas.textAlign = 'center';
+      canvas.textBaseline = 'middle';
+      canvas.fillStyle = this.color;
+      canvas.fillText(this.action.labelFn.call(this.value, this.action), this.x+this.width/2, this.y+this.height/2);
+
+      canvas.font = oldFont;
+      canvas.textAlign = oldAlign;
+
+      /*
+      this.on('click', function() {
+        self.action.callIfEnabled(self.value.get());
+      }, this.id);
+
+      this.setAttribute('data-tip', function() {
+        return self.action.help || undefined;
+      }, this.id);
+
+      this.setAttribute('disabled', function() {
+        var value = self.value.get();
+        return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
+      }, this.id);
+
+      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      */
+    },
+
+    foo: function() {
+      var out = '';
+
+      if ( this.iconUrl ) {
+        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
+      }
+
+      if ( this.showLabel ) {
+        var value = this.value.get();
+        out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
+      }
+
+      return out;
     }
   }
 });
