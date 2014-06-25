@@ -28,7 +28,11 @@ FOAModel({
         var Y = project.X;
         Y.project     = project;
         Y.projectName = project.projectName;
-        Y.issueDAO    = project.IssueDAO;
+        Y.issueDAO    = Y.QIssueSplitDAO.create({
+          local: project.IssueDAO,
+          model: QIssue,
+          remote: project.IssueNetworkDAO
+        });
 
         var pc = Y.ProjectController.create();
         var view = Y.DetailView.create({data: pc});
