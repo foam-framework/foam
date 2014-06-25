@@ -51,6 +51,7 @@ var files = [
   'DetailView',
   'TableView',
   'cview',
+  'cview2',
   'RichTextView',
   'listchoiceview',
   'scroll',
