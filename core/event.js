@@ -327,9 +327,11 @@ var EventService = {
       return listeners.length;
     }
 
+    var count = 0;
     for ( var key in listeners ) {
-      return this.notifyListeners_(topic, listeners[key], msg);
+      count += this.notifyListeners_(topic, listeners[key], msg);
     }
+    return count;
   },
 
 
