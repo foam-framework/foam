@@ -285,12 +285,11 @@ FOAModel({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
-        var view = this.X.FullScreenTextFieldView.create(this.model.CC);
+        var view = this.X.IssueOwnerEditView.create(this.model.CC);
         this.X.stack.pushView(view);
         view.focus();
         var self = this;
-        view.data$.addListener(function() {
-          self.X.stack.back();
+        view.subscribe(['finished'], function() {
           self.data.cc = self.data.cc.concat(view.data);
         });
       }
@@ -678,6 +677,10 @@ FOAModel({
     },
     onAutocomplete: function(data) {
       this.data = data;
+      this.finished();
+    },
+    finished: function() {
+      this.publish(['finished']);
       this.X.stack.back();
     },
     focus: function() { this.field.focus(); },
@@ -699,7 +702,7 @@ FOAModel({
       name: 'back',
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp_black.png',
-      action: function() { this.X.stack.back(); }
+      action: function() { this.finished(); this.X.stack.back(); }
     }
   ],
 
@@ -709,14 +712,14 @@ FOAModel({
       code: function(_,_,e) {
         if ( e.keyCode === 13 ) {
           this.data = this.field.data;
-          this.X.stack.back();
+          this.finished();
         }
       }
     },
     {
       name: 'onCancel',
       code: function() {
-        this.X.stack.back();
+        this.finished();
       }
     }
   ],
