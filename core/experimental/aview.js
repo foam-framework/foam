@@ -23,7 +23,7 @@ FOAModel({
 
   methods: {
     toInnerHTML: function() {
-      return '<div style="position:absolute;transition: left .5s ease;" class="f1"></div><div style="display:inline;visibility:hidden;" class="f2"></div>';
+      return '<div style="position:absolute;transition: left .3s ease;" class="f1"></div><div style="display:inline;visibility:hidden;" class="f2"></div>';
     },
     initHTML: function() {
       this.data$.addListener(this.onDataChange);

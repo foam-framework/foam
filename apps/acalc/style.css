@@ -1,6 +1,6 @@
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-  font-size: 20px;
+  font-size: 28px;
 }
 
 * {
@@ -20,7 +20,7 @@ body {
   padding: 0px;
   width: 100%;
   height: 100%;
-  font-weight: 700;
+  font-weight: 300;
 }
 
 ::-webkit-scrollbar {
@@ -46,11 +46,11 @@ body {
   flex: 1 1 100%;
   border: none;
   letter-spacing: 1px;
-  line-height: 20px;
+  line-height: 25px;
   margin: 0;
   min-width: 204px;
   overflow: scroll;
-  padding: 0 20pt 2pt 20pt;
+  padding: 0 25pt 2pt 25pt;
   width: calc( 100% - 40px );
   text-align: right;
 }
