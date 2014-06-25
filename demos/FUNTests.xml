@@ -122,7 +122,6 @@
           assert(barCount === 1 &amp;&amp; bazCount === 1, 'Publishing on a prefix does nothing');
 
           x.publish(['foo', EventService.WILDCARD]);
-          log(barCount + ' ' + bazCount);
           assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
         </property>
       </object>
@@ -272,7 +271,7 @@
     <property name="tests">
       <object model="UnitTest">
         <property name="name">SubTest1</property>
-        <property name="description">Add some sample data and select ot a 'sink'.</property>
+        <property name="description">Add some sample data and select to a 'sink'.</property>
         <property name="code" type="function">
           dao.put(Person.create({id:'1', name:'John',  age:21}));
           dao.put(Person.create({id:'2', name:'Dave',  age:20}));
