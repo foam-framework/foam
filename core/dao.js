@@ -627,7 +627,14 @@ FOAModel({
             })(this.unlisten.bind(this), l),
             error: function(e) { /* Don't care. */ }
           };
-          fn.apply(l, args);
+          try {
+            fn.apply(l, args);
+          } catch(err) {
+            if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+              console.error('Error delivering event (removing listener): ', topic.join('.'));
+            }
+            this.unlisten(l);
+          }
         }
       }
     }
