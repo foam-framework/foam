@@ -57,7 +57,7 @@ FOAModel({
     {
       model_: 'StringProperty',
       name: 'row1',
-      postSet: function(o, n) { console.log(o, ' -> ', n); },
+//      postSet: function(o, n) { console.log(o, ' -> ', n); },
       view: 'ALabel'
     },
     {
