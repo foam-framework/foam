@@ -173,7 +173,10 @@ FOAModel({
       name: 'persistentContext',
       factory: function() {
         return this.X.PersistentContext.create({
-          dao: this.X.IDBDAO.create({ model: this.X.Binding, name: 'QProject-Bindings' }),
+          dao: this.X.IDBDAO.create({
+            model: this.X.Binding,
+            name: 'QProject-' + this.projectName + '-Bindings'
+          }),
           predicate: NOT_TRANSIENT,
           context: this
         });
@@ -286,10 +289,11 @@ FOAModel({
           var window = w.contentWindow;
           w.contentWindow.onload = function() {
             $addWindow(window);
-            var b = DetailView.create({
-              model: SyncManager,
+            var Y = self.X.subWindow(window, 'Sync Config')
+            var b = Y.DetailView.create({
+              model: Y.SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
-              value: SimpleValue.create(self.syncManager),
+              value: SimpleValue.create(syncManager),
               showActions: true });
             window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
             b.initHTML();

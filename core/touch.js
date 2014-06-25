@@ -60,7 +60,35 @@ FOAModel({
   properties: [
     'id',
     'element',
-    'delegate',
+    {
+      name: 'delegate',
+      // Default delegate insta-captures every incoming single-point touch, and
+      // drives the propX and propY values with it.
+      defaultValueFn: function() {
+        var oldX, oldY;
+        var self = this;
+        return {
+          onTouchStart: function(touches, changed) {
+            // Skip multi-touches.
+            if ( Object.keys(touches).length > 1 ) return { drop: true };
+            // Set oldX and oldY to the current values of their properties.
+            oldX = self.propX && self.propX.get();
+            oldY = self.propY && self.propY.get();
+
+            return { claim: true, weight: 0.8 };
+          },
+
+          // Move the properties if they are defined, based on the delta.
+          onTouchMove: function(touches, changed) {
+            var t = touches[changed[0]];
+            if ( self.propX ) self.propX.set(oldX + t.dx);
+            if ( self.propY ) self.propY.set(oldY + t.dy);
+            return { claim: true, weight: 0.8, preventDefault: true };
+          }
+        };
+      }
+    },
+    'propX', 'propY',
     { name: 'activeTouches', factory: function() { return {}; } }
   ]
 });

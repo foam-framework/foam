@@ -1041,7 +1041,7 @@ FOAModel({
     },
     {
       name: 'mouse',
-      factory: function() { return Mouse.create(); }
+      factory: function() { return this.X.Mouse.create(); }
     }
   ],
 
