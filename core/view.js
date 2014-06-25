@@ -1227,6 +1227,8 @@ FOAModel({
     },
 
     toReadOnlyHTML: function() {
+      var self = this;
+      this.setClass('placeholder', function() { return self.data === ''; }, this.id);
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
@@ -1261,9 +1263,10 @@ FOAModel({
     initHTML: function() {
       this.SUPER();
 
-      if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
       if ( this.mode === 'read-write' ) {
+        if ( this.placeholder ) this.$.placeholder = this.placeholder;
+
         this.domValue = DomValue.create(
           this.$,
           this.onKeyMode ? 'input' : 'change');
@@ -1299,7 +1302,11 @@ FOAModel({
 
     textToValue: function(text) { return text; },
 
-    valueToText: function(value) { return value; },
+    valueToText: function(value) {
+      if ( this.mode === 'read-only' )
+        return (value === '') ? this.placeholder : value;
+      return value;
+    },
 
     destroy: function() { Events.unlink(this.domValue, this.data$); }
   },
