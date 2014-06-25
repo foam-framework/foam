@@ -291,6 +291,8 @@ FOAModel({
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
     ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
 
+    toView: function() { return this; },
+
     deepPublish: function(topic) {
       var count = this.publish.apply(this, arguments);
 
@@ -359,6 +361,7 @@ FOAModel({
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
+      if ( child.toView ) child = child.toView(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
