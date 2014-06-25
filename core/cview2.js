@@ -93,6 +93,10 @@ FOAModel({
       hidden: true
     },
     {
+      name: 'state',
+      defaultValue: 'initial'
+    },
+    {
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
@@ -147,6 +151,8 @@ FOAModel({
   methods: {
     toView: function() { return this.view || this.X.CViewView.create({cview: this}); },
 
+    initCView: function() { },
+
     write: function(document) {
       var v = this.toView();
       document.writeln(v.toHTML());
@@ -187,6 +193,10 @@ FOAModel({
 
     paint: function() {
       if ( ! this.$ ) return;
+      if ( this.state === 'initial' ) {
+        this.initCView();
+        this.state = 'active';
+      }
       this.erase();
       this.paintSelf();
       this.paintChildren();
@@ -295,6 +305,11 @@ FOAModel({
   ],
 
   methods: {
+    initCView: function() {
+      this.$.addEventListener('click', function() {
+        this.action.callIfEnabled(this.value.get());
+      }.bind(this));
+    },
     paintSelf: function() {
       var self   = this;
       var canvas = this.canvas;
