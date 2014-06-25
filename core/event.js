@@ -81,17 +81,22 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          ((opt_X && opt_X.setTimeout) || setTimeout)(
-            function() {
-              triggered = false;
-              var args = argsToArray(lastArgs);
-              lastArgs = null;
-              try {
-                listener.apply(this, args);
-              } catch (x) {
-                if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
-              }
-            }, delay);
+          try {
+            ((opt_X && opt_X.setTimeout) || setTimeout)(
+              function() {
+                triggered = false;
+                var args = argsToArray(lastArgs);
+                lastArgs = null;
+                try {
+                  listener.apply(this, args);
+                } catch (x) {
+                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
+                }
+              }, delay);
+          } catch(e) {
+            // TODO: Clean this up when we move EventService into the context.
+            throw EventService.UNSUBSCRIBE_EXCEPTION;
+          }
         }
       };
 
