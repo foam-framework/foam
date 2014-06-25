@@ -624,7 +624,7 @@ ul.swipeAltHeader {
   background: #fff;
 }
 
-.issueOwnerEditView input[name="owner"] {
+.issueOwnerEditView input {
   border: none;
   font-size: 17px;
   flex-grow: 1;
@@ -632,7 +632,7 @@ ul.swipeAltHeader {
   padding: 0;
 }
 
-.issueOwnerEditView input[name="owner"]:focus {
+.issueOwnerEditView input:focus {
   outline: none;
 }
 
