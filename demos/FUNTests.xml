@@ -1,17 +1,103 @@
 <foam>
   <object model="UnitTest">
     <property name="name">Event Tests</property>
-    <property name="description">Test event primitives.</property>
-    <property name="async">true</property>
-    <property name="code" type="function">
-      FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
-      var t = Test.create();
-      t.x$.addListener(function() { log(t.x); });
-      t.x = 1;
-      t.x = 2;
-      t.x = 3;
-      Movement.animate(500, function() { t.x = 10; })();
-      setTimeout(ret, 550);
+    <property name="description">Tests for event handling.</property>
+    <property name="tests">
+      <object model="UnitTest">
+        <property name="name">Event primitivies</property>
+        <property name="description">Tests the primitive event listeners and handlers</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+          var t = Test.create();
+          t.x$.addListener(function() { log(t.x); });
+          t.x = 1;
+          t.x = 2;
+          t.x = 3;
+          Movement.animate(500, function() { t.x = 10; })();
+          setTimeout(ret, 550);
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">Pub/sub support</property>
+        <property name="description">Every Modelled object is a pub/sub target. Also shows one-time listeners.</property>
+        <property name="code" type="function">
+          FOAModel({
+            name: 'Test',
+            properties: [
+              {
+                name: 'x',
+                postSet: function(_, x) {
+                  if ( x === 7 ) {
+                    this.publish(['x7']);
+                  }
+                }
+              }
+            ]
+          });
+
+          var foo = Test.create({ x: 3 });
+          var sevensSeen = 0;
+          var sevensSeenOneTime = 0;
+          foo.subscribe(['x7'], function() { sevensSeen++; });
+          foo.subscribe(['x7'], EventService.oneTime(function() { sevensSeenOneTime++; }));
+
+          foo.x = 1;
+          assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'No sevens yet');
+          foo.x = 9;
+          assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'Still none');
+          foo.x = 7;
+          assert(sevensSeen === 1 &amp;&amp; sevensSeenOneTime === 1, 'Found one');
+          foo.x = 5;
+          foo.x = 7;
+          assert(sevensSeen === 2 &amp;&amp; sevensSeenOneTime === 1, 'And another, but the one-time listener has been removed');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">Event Merging</property>
+        <property name="description">Events can be merged into a maximum of 1 event per unit time, or 1 event per animation frame.</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          var animationCount = 0;
+          var otherCount = 0;
+
+          FOAModel({
+            name: 'Test',
+            listeners: [
+              {
+                name: 'animated',
+                isAnimated: true,
+                code: function() {
+                  animationCount++;
+                }
+              },
+              {
+                name: 'other',
+                isMerged: 100,
+                code: function() {
+                  otherCount++;
+                }
+              }
+            ]
+          });
+
+          var foo = Test.create({});
+          assert(animationCount === 0 &amp;&amp; otherCount === 0, 'Counts start at 0');
+          foo.animated();
+          foo.animated();
+          foo.animated();
+          foo.animated();
+          foo.other();
+          foo.other();
+          foo.other();
+          foo.other();
+
+          setTimeout(function() {
+            assert(animationCount === 1 &amp;&amp; otherCount === 1, 'Both counts are 1 due to the merging');
+            ret();
+          }, 300);
+        </property>
+      </object>
     </property>
   </object>
 
