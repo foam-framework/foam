@@ -85,7 +85,7 @@ FOAModel({
     makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
     makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
     makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '&#150;', [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeOp('minus', '–', [109, 189],         function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
@@ -134,10 +134,10 @@ FOAModel({
   name: 'CalcButton',
   extendsModel: 'ActionButtonCView',
   properties: [
-    { name: 'background', defaultValue: 'gray' },
-    { name: 'width', defaultValue: 80 },
-    { name: 'height', defaultValue: 80 },
-    { name: 'font', defaultValue: '26px Roboto' }
+    { name: 'background', defaultValue: 'white' },
+    { name: 'width', defaultValue: 60 },
+    { name: 'height', defaultValue: 60 },
+    { name: 'font', defaultValue: '24px Roboto' }
   ]
 });
 X.registerModel(CalcButton, 'ActionButton');
