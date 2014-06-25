@@ -700,8 +700,8 @@ FOAModel({
     {
       name: 'target',
       postSet: function(prev, v) {
-        prev && prev.unsubscribe('keydown', this.onKeyDown);
-        v.subscribe('keydown', this.onKeyDown);
+        prev && prev.unsubscribe(['keydown'], this.onKeyDown);
+        v.subscribe(['keydown'], this.onKeyDown);
       }
     },
     {
@@ -1319,7 +1319,7 @@ FOAModel({
           this.domValue.set(this.data);
           this.publish(this.ESCAPE);
         } else {
-          this.publish('keydown', e);
+          this.publish(['keydown'], e);
         }
       }
     },

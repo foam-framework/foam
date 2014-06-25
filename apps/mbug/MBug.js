@@ -670,7 +670,7 @@ FOAModel({
       this.field = Y.TextFieldView.create(args);
       this.field.onKeyMode = true;
       this.field.data$ = this.data$;
-      this.field.subscribe('keydown', this.onKeyDown);
+      this.field.subscribe(['keydown'], this.onKeyDown);
       this.field.subscribe(this.field.ESCAPE, this.onCancel);
     },
     initHTML: function() {
