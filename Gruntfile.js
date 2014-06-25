@@ -68,6 +68,7 @@ module.exports = function(grunt) {
           'core/DetailView.js',
           'core/TableView.js',
           'core/cview.js',
+          'core/cview2.js',
           'core/RichTextView.js',
           'core/listchoiceview.js',
           'core/scroll.js',
