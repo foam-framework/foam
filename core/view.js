@@ -768,7 +768,6 @@ FOAModel({
 
       if ( this.X.window !== window ) debugger;
 
-
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
       this.position(this.$.firstElementChild, parentNode);

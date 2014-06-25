@@ -296,11 +296,8 @@ FOAModel({
 
   methods: {
     paintSelf: function() {
-      var self = this;
+      var self   = this;
       var canvas = this.canvas;
-
-      var oldFont = canvas.font;
-      var oldAlign = canvas.textAlign;
 
       if ( this.font ) canvas.font = this.font;
 
@@ -308,10 +305,6 @@ FOAModel({
       canvas.textBaseline = 'middle';
       canvas.fillStyle = this.color;
       canvas.fillText(this.action.labelFn.call(this.value, this.action), this.x+this.width/2, this.y+this.height/2);
-
-      canvas.font = oldFont;
-      canvas.textAlign = oldAlign;
-
       /*
       this.on('click', function() {
         self.action.callIfEnabled(self.value.get());
@@ -327,9 +320,6 @@ FOAModel({
       }, this.id);
 
       this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
-      */
-    },
-
     foo: function() {
       var out = '';
 
@@ -343,6 +333,8 @@ FOAModel({
       }
 
       return out;
+    }
+      */
     }
   }
 });
