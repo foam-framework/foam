@@ -221,6 +221,27 @@
           assert(x.foo === 2.5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">Direct property binding</property>
+        <property name="description">Creates a two-way binding between two properties at object creation time.</property>
+        <property name="code" type="function">
+          FOAModel({
+            name: 'Test',
+            properties: ['foo', 'bar']
+          });
+
+          var x = Test.create({ foo: 1, bar: 'asdf' });
+          var y = Test.create({ foo$: x.foo$ });
+
+          log('y.foo now follows x.foo and vice versa. They can be considered the same property.');
+          assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+
+          x.foo = 3;
+          assert(y.foo === 3, 'Changing x.foo updates y.foo');
+          y.foo = 5;
+          assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
+        </property>
+      </object>
     </property>
   </object>
 
