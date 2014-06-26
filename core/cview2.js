@@ -100,13 +100,13 @@ FOAModel({
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     },
     {
       name:  'y',
       type:  'int',
       view:  'IntFieldView',
-      defaultValue: 10
+      defaultValue: 0
     },
     {
       name:  'width',
@@ -293,63 +293,70 @@ FOAModel({
     {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
+    },
+    {
+      name: 'pressCircle',
+      factory: function() { return Circle2.create({
+        alpha: 0,
+        x: this.width/2,
+        y: this.width/2,
+        r: 15,
+        color: 'rgb(241, 250, 65)'
+      });}
     }
   ],
 
   listeners: [
     {
-      name: 'fooBar',
-      isAnimated: true,
-      code: function() {  }
+      name: 'onClick',
+      code: function() { this.action.callIfEnabled(this.value.get()); }
+    },
+    {
+      name: 'onMouseDown',
+      code: function() {
+        Movement.animate(50, function() {
+          this.pressCircle.r = this.width/2-7;
+          this.pressCircle.alpha = 1;
+        }.bind(this))();
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function() {
+        Movement.animate(
+          100,
+          function() { this.pressCircle.alpha = 0; }.bind(this),
+          undefined,
+          function() { this.pressCircle.r = 15; }.bind(this))();
+      }
     }
   ],
 
   methods: {
     initCView: function() {
-      this.$.addEventListener('click', function() {
-        this.action.callIfEnabled(this.value.get());
-      }.bind(this));
+      this.addChild(this.pressCircle);
+
+      this.$.addEventListener('click',     this.onClick);
+      this.$.addEventListener('mousedown', this.onMouseDown);
+      this.$.addEventListener('mouseup',   this.onMouseUp);
     },
+    paintChildren: function() { },
     paintSelf: function() {
-      var self   = this;
-      var canvas = this.canvas;
+      var c = this.canvas;
 
-      if ( this.font ) canvas.font = this.font;
+      c.save();
+      this.pressCircle.paint();
+      c.restore();
 
-      canvas.textAlign = 'center';
-      canvas.textBaseline = 'middle';
-      canvas.fillStyle = this.color;
-      canvas.fillText(this.action.labelFn.call(this.value, this.action), this.x+this.width/2, this.y+this.height/2);
-      /*
-      this.on('click', function() {
-        self.action.callIfEnabled(self.value.get());
-      }, this.id);
+      if ( this.font ) c.font = this.font;
 
-      this.setAttribute('data-tip', function() {
-        return self.action.help || undefined;
-      }, this.id);
-
-      this.setAttribute('disabled', function() {
-        var value = self.value.get();
-        return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
-      }, this.id);
-
-      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
-    foo: function() {
-      var out = '';
-
-      if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
-      }
-
-      if ( this.showLabel ) {
-        var value = this.value.get();
-        out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
-      }
-
-      return out;
-    }
-      */
+      c.textAlign    = 'center';
+      c.textBaseline = 'middle';
+      c.fillStyle    = this.color;
+      c.fillText(
+        this.action.labelFn.call(this.value, this.action),
+        this.x+this.width/2,
+        this.y+this.height/2);
     }
   }
 });

@@ -57,7 +57,7 @@ FOAModel({
     {
       model_: 'StringProperty',
       name: 'row1',
-      postSet: function(o, n) { console.log(o, ' -> ', n); },
+//      postSet: function(o, n) { console.log(o, ' -> ', n); },
       view: 'ALabel'
     },
     {
@@ -134,7 +134,8 @@ FOAModel({
   name: 'CalcButton',
   extendsModel: 'ActionButtonCView',
   properties: [
-    { name: 'background', defaultValue: 'white' },
+    { name: 'color', defaultValue: 'white' },
+    { name: 'background', defaultValue: '#4c4c4c' },
     { name: 'width', defaultValue: 60 },
     { name: 'height', defaultValue: 60 },
     { name: 'font', defaultValue: '24px Roboto' }
@@ -146,5 +147,3 @@ FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name:
 FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 CalcView.X.ActionButton = CalcView.X.ActionButtonCView;
-
-
