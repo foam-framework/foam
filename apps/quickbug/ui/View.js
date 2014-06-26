@@ -344,6 +344,7 @@ function createView(rowSelection, browser) {
 
           g.row.data$ = location.y$;
           g.col.data$ = location.x$;
+          g.scrollMode$ = location.scroll$;
 
           // TODO: cleanup this block
           function setAcc() {

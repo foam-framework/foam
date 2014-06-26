@@ -143,6 +143,11 @@ var Location = FOAM({
       name: 'x',
       toMemento: function(x) { return x.name; },
       fromMemento: function(name) { return QIssue.getProperty(name); }
+    },
+    {
+      model_: 'LocationProperty',
+      name: 'scroll',
+      defaultMemento: 'Bars'
     }
   ],
 
