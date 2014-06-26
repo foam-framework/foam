@@ -37,7 +37,7 @@ FOAModel({
       var src = this.X.StatusDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH(QIssueStatus.STATUS, data) :
+          STARTS_WITH_IC(QIssueStatus.STATUS, data) :
           TRUE);
 
       var self = this;

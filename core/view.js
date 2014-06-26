@@ -3076,23 +3076,19 @@ FOAModel({
       code: function(touches, changed) {
         if ( ! this.touchStarted ) return { drop: true };
 
-        var deltaX = Math.abs(this.touch.x - this.touch.startX);
-        var deltaY = Math.abs(this.touch.y - this.touch.startY);
-        if ( ! this.touchLive &&
-            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 6 ) {
+        if ( ! this.touchLive && this.touch.distance < 6 ) {
           // Prevent default, but don't decide if we're scrolling yet.
           return { preventDefault: true, weight: 0.5 };
         }
 
-        if ( ! this.touchLive && deltaX < deltaY ) {
+        if ( ! this.touchLive && Math.abs(this.touch.dx) < Math.abs(this.touch.dy) ) {
           // Drop our following of this touch.
           return { drop: true };
         }
 
         // Otherwise the touch is live.
         this.touchLive = true;
-        var x = this.index * this.width -
-            (this.touch.x - this.touch.startX);
+        var x = this.index * this.width - this.touch.dx;
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -3100,7 +3096,7 @@ FOAModel({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
-        return { claim: true, weight: 0.9 };
+        return { preventDefault: true, claim: true, weight: 0.9 };
       }
     },
     {

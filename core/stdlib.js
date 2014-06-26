@@ -51,6 +51,17 @@ if ( ! String.prototype.startsWith ) {
   */
 }
 
+if ( ! String.prototype.startsWithIC ) {
+  String.prototype.startsWithIC = function(a) {
+    if ( a.length > this.length ) return false;
+    var l = a.length;
+    for ( var i = 0 ; i < l; i++ ) {
+      if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
+    }
+    return true;
+  };
+}
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
