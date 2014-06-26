@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var SCHEMA_URL = 'https://www-googleapis-test.sandbox.google.com/discovery/v1/apis/projecthosting/v2/rest';
+var SCHEMA_URL = 'https://www.googleapis.com/discovery/v1/apis/projecthosting/v2/rest';
 
 /*
 
-https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/<project-name>
-https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/<project-name>/issues
-https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/<project-name>/issues/<issue-id>
-https://www-googleapis-staging.sandbox.google.com/projecthosting/v2/projects/<project-name>/issues/<issue-id>/comments
+https://www.googleapis.com/projecthosting/v2/projects/<project-name>
+https://www.googleapis.com/projecthosting/v2/projects/<project-name>/issues
+https://www.googleapis.com/projecthosting/v2/projects/<project-name>/issues/<issue-id>
+https://www.googleapis.com/projecthosting/v2/projects/<project-name>/issues/<issue-id>/comments
 
 */
 /*
