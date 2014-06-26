@@ -793,7 +793,7 @@ FOAModel({
 
       return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
         StartsWithExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this;
     },
 
     f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
