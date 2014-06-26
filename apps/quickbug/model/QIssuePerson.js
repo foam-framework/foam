@@ -28,7 +28,7 @@ FOAModel({
       var src = this.X.PersonDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH(IssuePerson.NAME, data) :
+          STARTS_WITH_IC(IssuePerson.NAME, data) :
           TRUE);
 
       var self = this;
