@@ -311,7 +311,16 @@ FOAModel({
     },
 
     cssClassAttr: function() {
-      return this.className ? ' class="' + this.className + ' ' + this.extraClassName + '"' : '';
+      if ( ! this.className && ! this.extraClassName ) return '';
+
+      var s = ' class="';
+      if ( this.className ) {
+        s += this.className
+        if ( this.extraClassName ) s += ' ';
+      }
+      if ( this.extraClassName ) s += this.extraClassName;
+
+      return s + '"';
     },
 
     dynamicTag: function(tagName, f) {
@@ -1006,6 +1015,10 @@ FOAModel({
       setter: function(d) { this.value = SimpleValue.create(d); }
     },
     {
+      name: 'className',
+      defaultValue: 'imageView'
+    },
+    {
       name: 'backupImage'
     },
     {
@@ -1037,8 +1050,8 @@ FOAModel({
     setValue: function(value) { this.value = value; },
     toHTML: function() {
       return this.backupImage && window.IS_CHROME_APP ?
-        '<img class="imageView" id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img class="imageView" id="' + this.id + '" src="' + this.data + '">' ;
+        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.backupImage + '">' :
+        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
