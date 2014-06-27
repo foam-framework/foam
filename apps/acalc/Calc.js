@@ -9,6 +9,14 @@ function makeOp(name, sym, keys, f) {
   };
 }
 
+function makeUnaryOp(name, f, opt_label) {
+  return {
+    name: name,
+    label: opt_label || name,
+    action: function() { this.a2 = f(this.a2); }
+  };
+}
+
 /** Make a 0-9 Number Action. **/
 function makeNum(n) {
   return {
@@ -132,18 +140,12 @@ FOAModel({
       label: 'π',
       action: function() { this.a2 = 3.1415926; }
     },
-    {
-      name: 'sin',
-      action: function() { this.a2 = Math.sin(this.a2); }
-    },
-    {
-      name: 'cos',
-      action: function() { this.a2 = Math.cos(this.a2); }
-    },
-    {
-      name: 'tan',
-      action: function() { this.a2 = Math.tan(this.a2); }
-    }
+    makeUnaryOp('sin', Math.sin),
+    makeUnaryOp('cos', Math.cos),
+    makeUnaryOp('tan', Math.tan),
+    makeUnaryOp('asin', Math.asin),
+    makeUnaryOp('acos', Math.acos),
+    makeUnaryOp('atan', Math.atan),
   ]
 });
 
