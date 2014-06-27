@@ -467,6 +467,14 @@ FOAModel({
       this.location.q$.addListener(this.performQuery);
       this.location.can$.addListener(this.performQuery);
 
+      // Warp mode currently only makes sense when looking at pie-charts, so if the user
+      // switches to warp mode then switch to pie(status) if they didn't already have a pie
+      // cell type selected.
+      this.location.scroll$.addListener(function() {
+        if ( this.location.scroll === 'Warp' ) {
+          if ( this.location.cells.indexOf('pie') == -1 ) this.location.cells = 'pie(status)';
+        }
+      }.bind(this));
       this.rowSelection.addListener(function(_,_,_,issue) {
         this.location.id = issue.id;
       }.bind(this));

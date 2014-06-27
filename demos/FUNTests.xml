@@ -125,6 +125,78 @@
           assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">Events.follow()</property>
+        <property name="description">Creates a one-way binding between two properties</property>
+        <property name="code" type="function">
+          FOAModel({
+            name: 'Test',
+            properties: ['foo', 'bar']
+          });
+
+          var x = Test.create({ foo: 1, bar: 'asdf' });
+          var y = Test.create({});
+
+          assert(!y.foo, 'y.foo is not set to start');
+
+          Events.follow(x.foo$, y.foo$);
+          log('y.foo now follows x.foo');
+          assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+
+          x.foo = 3;
+          assert(y.foo === 3, 'Changing x.foo updates y.foo');
+          y.foo = 5;
+          assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">Events.map()</property>
+        <property name="description">Creates a one-way binding between two properties, running a filter over the value in between</property>
+        <property name="code" type="function">
+          FOAModel({
+            name: 'Test',
+            properties: ['foo', 'bar']
+          });
+
+          var x = Test.create({ foo: 1, bar: 'asdf' });
+          var y = Test.create({});
+
+          assert(!y.foo, 'y.foo is not set to start');
+
+          Events.map(x.foo$, y.foo$, function(x) { return 2*x; });
+          log('y.foo now follows x.foo, storing double the value');
+          assert(y.foo === 2 &amp;&amp; !y.bar, 'y.foo immediately updated');
+
+          x.foo = 3;
+          assert(y.foo === 6, 'Changing x.foo updates y.foo');
+          y.foo = 5;
+          assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
+        </property>
+      </object>
+      <object model="UnitTest">
+        <property name="name">Events.link()</property>
+        <property name="description">Creates a two-way binding between two properties</property>
+        <property name="code" type="function">
+          FOAModel({
+            name: 'Test',
+            properties: ['foo', 'bar']
+          });
+
+          var x = Test.create({ foo: 1, bar: 'asdf' });
+          var y = Test.create({});
+
+          assert(!y.foo, 'y.foo is not set to start');
+
+          Events.link(x.foo$, y.foo$);
+          log('y.foo now follows x.foo and vice versa');
+          assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+
+          x.foo = 3;
+          assert(y.foo === 3, 'Changing x.foo updates y.foo');
+          y.foo = 5;
+          assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
+        </property>
+      </object>
     </property>
   </object>
 
@@ -281,7 +353,7 @@
           dao.select({put: function(p) { log('person: ', p.name); }});
         </property>
       </object>
-      <foam object="UnitTest">
+      <object model="UnitTest">
         <property name="name">SubTest2</property>
         <property name="description">Select directly to an Array.</property>
         <property name="code" type="function">
@@ -293,7 +365,7 @@
     </property>
   </object>
 
-  <foam object="UnitTest">
+  <object model="UnitTest">
     <property name="name">aFunc Tests</property>
     <property name="description">Test FOAM's Asynchronous-Functions (aFunc's).</property>
     <property name="code" type="function">

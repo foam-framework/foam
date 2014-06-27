@@ -447,3 +447,8 @@ input[name="labels"] {
 .actionLink-backToList {
   margin-left: 8px;
 }
+
+.appName {
+  margin-top: 3px;
+  float: right;
+}

@@ -49,7 +49,7 @@ FOAModel({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.touchManager = TouchManager.create({});
+      this.X.touchManager = this.X.TouchManager.create({});
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
@@ -111,6 +111,19 @@ FOAModel({
       defaultValueFn: function() { return this.X.issueDAO; },
     },
     {
+      name: 'sortOrder',
+      defaultValue: DESC(QIssue.MODIFIED),
+      view: {
+        model_: 'PopupChoiceView',
+        iconUrl: 'images/ic_sort_24dp.png',
+        choices: [
+          [ DESC(QIssue.MODIFIED), 'Last modified' ],
+          [ QIssue.PRI,            'Priority' ],
+          [ DESC(QIssue.ID),       'Issue ID' ]
+        ]
+      }
+    },
+    {
       name: 'filteredDAO',
       model_: 'DAOProperty',
       help: 'Top-level filtered DAO. Further filtered by each canned query.',
@@ -145,19 +158,6 @@ FOAModel({
       }
     },
     {
-      name: 'sortOrder',
-      defaultValue: QIssue.MODIFIED,
-      view: {
-        model_: 'PopupChoiceView',
-        iconUrl: 'images/ic_sort_24dp.png',
-        choices: [
-          [ DESC(QIssue.MODIFIED), 'Last modified' ],
-          [ QIssue.PRI,            'Priority' ],
-          [ DESC(QIssue.ID),       'Issue ID' ]
-        ]
-      }
-    },
-    {
       model_: 'BooleanProperty',
       defaultValue: false,
       name: 'searchMode'
@@ -166,9 +166,6 @@ FOAModel({
       name: 'q',
       displayWidth: 25,
       view: {model_: 'TextFieldView', type: 'search', onKeyMode: true, placeholder: 'Search open issues'}
-    },
-    {
-      name: 'changeProjectView'
     }
   ],
   actions: [
@@ -209,10 +206,6 @@ FOAModel({
             .orderBy(self.sortOrder);
         }
       );
-
-      this.changeProjectView = ChangeProjectView.create({
-        data: this.project.user
-      });
     }
   },
   templates: [
@@ -241,15 +234,6 @@ FOAModel({
         self.data.searchMode$.addListener(EventService.merged(function() {
           self.qView.$.focus();
         }, 100));
-
-        // Add the project menu swipe-in handler. Its bound to the
-        // controller's element, but the delegate is the menu itself.
-        self.data.changeProjectView.container = self.$;
-        self.X.touchManager.install(TouchReceiver.create({
-          id: 'mbug-project-menu-' + self.id,
-          element: self.$,
-          delegate: self.data.changeProjectView
-        }));
       });
     %>
   */}
@@ -426,7 +410,7 @@ FOAModel({
     */}
   ]
 });
-    
+
 
 FOAModel({
   name: 'IssueOwnerAvatarView',
@@ -506,46 +490,6 @@ FOAModel({
 FOAModel({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
-
-  properties: [ 'x', 'container', 'open' ],
-
-  methods: {
-    onTouchStart: function(touches, changed) {
-      // Only interested in single touches.
-      if ( Object.keys(touches).length > 1 ) return { drop: true };
-      var t = touches[changed[0]];
-      console.log(t);
-      if ( t.startX < 20 ) return { weight: 0.8 };
-      else return { drop: true };
-    },
-
-    onTouchMove: function(touches, changed) {
-      if ( this.open ) return { drop: true };
-      // Touch started at left edge, or we wouldn't still be listening.
-      // If it begins swiping right, then we're totally interested.
-      var t = touches[changed[0]];
-      var dx = t.x - t.startX;
-      var dy = t.y - t.startY;
-      var d = Math.sqrt(dx*dx + dy*dy);
-      console.log('dx = ' + dx + ', dy = ' + dy + ', d = ' + d);
-      if ( t.x - t.startX > 10 && Math.abs(t.y - t.startY) < 10 ) {
-        // Moving right a bit and not much vertical, so start sliding.
-        this.X.stack.slideView(this);
-        this.open = true;
-        return { claim: true, weight: 0.97, preventDefault: true };
-      } else if ( d < 10 ) {
-        return { preventDefault: true };
-      } else {
-        // This touch is no longer interesting.
-        return { drop: true };
-      }
-    },
-
-    onTouchEnd: function(touches, changed) {
-      // TODO: Snap to place.
-      return { drop: true };
-    }
-  },
 
   templates: [ function toHTML() {/*
     <div id="<%= this.id %>" class="project-view">
