@@ -139,15 +139,7 @@ FOAModel({
     },
 
     initOAuth: function(opt_clientId, opt_clientSecret) {
-      var jsonpFuture = afuture();
-      this.X.ajsonp = function() {
-        var args = arguments;
-        return function(ret) {
-          jsonpFuture.get(function(f) {
-            f.apply(undefined, args)(ret);
-          });
-        };
-      };
+      var jsonpFuture = deferJsonP(this.X);
 
       var self = this;
       this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
@@ -158,25 +150,7 @@ FOAModel({
           oauth2.scopes = self.scopes;
         }
 
-        jsonpFuture.set((function() {
-          var factory = self.X.OAuthXhrFactory.create({
-            authAgent: oauth2,
-            responseType: "json"
-          });
-
-          return function(url, params, opt_method, opt_payload) {
-//            console.log('***** AJSONP Call: ', url + (params ? '?' + params.join('&') : ''));
-            return function(ret) {
-              var xhr = factory.make();
-              xhr.responseType = "json";
-              return xhr.asend(ret,
-//              return xhr.asend(function(res) { console.log('***** CB: ', res); ret.apply(this, arguments); },
-                               opt_method ? opt_method : "GET",
-                               url + (params ? '?' + params.join('&') : ''),
-                               opt_payload);
-            };
-          };
-        })());
+        oauth2.setJsonpFuture(self.X, jsonpFuture);
       });
     },
 
