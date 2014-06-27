@@ -75,6 +75,10 @@ FOAModel({
           this.$.style.height = newValue;
         }
       }
+    },
+    {
+      name: 'className',
+      defaultValue: 'aImageView'
     }
   ],
 
@@ -82,12 +86,17 @@ FOAModel({
     {
       name: 'onDataChange',
       code: function() {
-        console.log('*******************************************');
-        debugger;
         if ( ! this.$ ) return;
         var $ = this.$;
-        var newImage = this.toHTML();
-        $.insertAdjacentHTML('afterend', newImage);
+        var height = $.querySelector('img').height;
+        var newImage = '<img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:' + height + '">';
+        $.insertAdjacentHTML('beforeend', newImage);
+        var vs = $.querySelectorAll('img');
+        if ( vs.length == 3 ) vs[0].remove();
+        setTimeout(function() {
+          vs[vs.length-2].style.top = '-' + height +'px';
+          vs[vs.length-1].style.top = 0;
+        }, 1);
       }
     }
   ],
@@ -98,12 +107,11 @@ FOAModel({
 
       this.displayHeight = this.displayHeight;
       this.displayWidth = this.displayWidth;
- 
-      debugger;
+
       this.data$.addListener(this.onDataChange);
     },
     toHTML: function() {
-      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
+      return '<span id="' + this.id + '"><img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:0"></span>' ;
     }
   }
 });
