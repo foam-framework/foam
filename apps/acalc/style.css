@@ -82,10 +82,8 @@ hr {
 
 .calc .buttons {
   flex: 1 1 100%;
-  height: 244px;
   width: 100%;
-  min-height: 225px;
-  min-width: 360px;
+  height: 350px;
 }
 
 .button-row {
@@ -93,12 +91,27 @@ hr {
   flex-direction: row;
   flex-wrap: nowrap;
   flex: 1 1 100%;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.button {
+  flex-grow: 1;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  background-color: #4b4b4b;
+}
+
+.rhs-ops .button {
+  background-color: #777;
 }
 
 .button-column {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  /* align-items: stretch; */
 }
 
 .actionButton {

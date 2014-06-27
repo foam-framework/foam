@@ -1,18 +1,29 @@
-<!-- <div class="buttons button-row">
-  <div class="button-column" style="flex-basis: 300%">
-    <div class="button-row"> $$pi $$sin </div>
-    <div class="button-row"> $$4 $$5 $$6 </div>
-    <div class="button-row"> $$1 $$2 $$3 </div>
-    <div class="button-row"> $$point $$0 $$equals </div>
-  </div>
-</div>
--->
-<div id="%%id" style="background-color: pink; height: 100%; width: 400px;" class="buttons button-row">
-  <div class="button-column" style="flex-basis: 300%">
-    <div class="button-row"> $$sin $$cos $$tan </div>
-    <div class="button-row"> $$asin $$acos $$atan </div>
-    <div class="button-row"> $$inv $$square $$root </div>
-    <div class="button-row"> $$log $$ln $$exp </div>
-    <div class="button-row"> $$pi $$fact $$pow</div>
+<div id="%%id" class="buttons button-row">
+  <div class="button-column" style="flex-grow: 1">
+    <div class="button-row">
+      <div class="button">$$sin</div>
+      <div class="button">$$cos</div>
+      <div class="button">$$tan</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$asin</div>
+      <div class="button">$$acos</div>
+      <div class="button">$$atan</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$inv</div>
+      <div class="button">$$square</div>
+      <div class="button">$$root</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$log</div>
+      <div class="button">$$ln</div>
+      <div class="button">$$exp</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$pi</div>
+      <div class="button">$$fact</div>
+      <div class="button">$$pow</div>
+    </div>
   </div>
 </div>

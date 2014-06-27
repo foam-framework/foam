@@ -11,7 +11,7 @@
     SlidePanelView.create({
       mainView: MainButtonsView.create({data: this.data}),
       panelView: SecondaryButtonsView.create({data: this.data}),
-      minWidth: 500,
+      minWidth: 360,
       minPanelWidth: 300
     })
    %>
