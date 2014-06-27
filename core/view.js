@@ -4760,7 +4760,7 @@ FOAModel({
       'secondary view visible at the right edge. This "panel" can be dragged ' +
       'by a finger or mouse pointer to any position from its small strip to ' +
       'fully exposed. If the containing view is wide enough, both panels ' +
-      'will be always visible.',
+      'will always be visible.',
 
   properties: [
     'mainView', 'panelView',
@@ -4826,7 +4826,8 @@ FOAModel({
         // strip.
         if ( x <= this.parentWidth - this.panelWidth ) {
           return this.parentWidth - this.panelWidth;
-        } else if ( x >= this.parentWidth - this.stripWidth ) {
+        }
+        if ( x >= this.parentWidth - this.stripWidth ) {
           return this.parentWidth - this.stripWidth;
         }
         return x;
@@ -4836,7 +4837,8 @@ FOAModel({
       }
     },
     'dragging',
-    'firstDragX', 'oldPanelX',
+    'firstDragX',
+    'oldPanelX',
     'expanded'
   ],
 
@@ -4859,13 +4861,13 @@ FOAModel({
       // Mousedown and touch events on the sliding panel itself.
       // Mousemove and mouseup on the whole window, so that you can drag the
       // cursor off the slider and have it still following until you release the mouse.
-      this.panel$().addEventListener('mousedown', this.onMouseDown);
+      this.panel$().addEventListener('mousedown',  this.onMouseDown);
       this.panel$().addEventListener('touchstart', this.onTouchStart);
-      this.panel$().addEventListener('touchmove', this.onTouchMove);
-      this.panel$().addEventListener('touchend', this.onTouchEnd);
+      this.panel$().addEventListener('touchmove',  this.onTouchMove);
+      this.panel$().addEventListener('touchend',   this.onTouchEnd);
 
       this.X.document.addEventListener('mousemove', this.onMouseMove);
-      this.X.document.addEventListener('mouseup', this.onMouseUp);
+      this.X.document.addEventListener('mouseup',   this.onMouseUp);
 
       // Resize first, then init the outer view, and finally the panel view.
       this.X.window.addEventListener('resize', this.onResize);
@@ -4875,10 +4877,10 @@ FOAModel({
     },
 
     main$: function() {
-      return this.X.window.document.getElementById(this.id + '-main');
+      return this.X.$(this.id + '-main');
     },
     panel$: function() {
-      return this.X.window.document.getElementById(this.id + '-panel');
+      return this.X.$(this.id + '-panel');
     }
   },
 
