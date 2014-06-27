@@ -103,7 +103,7 @@ FOAModel({
           else this.data = newValue.length ? newValue[0][0] : undefined;
         }
 
-        if ( this.$ ) this.updateHTML();
+        this.updateHTML();
       }
     },
     // The authoritative selection internally. data and choice are outputs when
@@ -328,6 +328,7 @@ FOAModel({
     },
 
     updateHTML: function() {
+      if ( ! this.$ ) return;
       var out = [];
 
       if ( this.helpText ) {
