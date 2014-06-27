@@ -518,7 +518,7 @@ FOAModel({
 
       if ( this.showValue ) {
         var id = this.nextID();
-        out += '<span id="' + id + '" class="value">' + (this.choice[1] || '') + '</span>';
+        out += '<span id="' + id + '" class="value">' + ((this.choice && this.choice[1]) || '') + '</span>';
         this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
       }
 
