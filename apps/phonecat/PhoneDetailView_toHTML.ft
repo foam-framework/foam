@@ -5,9 +5,6 @@
   function checkmark(b) { return b ? '\u2713' : '\u2718'; }
 %>
 <div class="phone-images">
-<% for ( var i = 0 ; i < 0 /*phone.images.length*/ ; i++  ) { var image = phone.images[i]; %>
-  <img src="{{{image}}}" id="{{{imgId}}}" class="phone">
-<% } %>
   $$imageUrl{model_: 'AImageView', className: 'phone'}
 </div>
 
@@ -19,7 +16,7 @@
 <ul class="phone-thumbs">
 <% phone.images.forEach(function(image) { %>
   <li>
-    <img src="{{{image}}}" id="<%= self.on('click', function() { debugger; phone.imageUrl = image; }) %>">
+    <img src="{{{image}}}" id="<%= self.on('click', function() { phone.imageUrl = image; }) %>">
   </li>
 <% }); %>
 </ul>
