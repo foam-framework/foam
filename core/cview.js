@@ -441,7 +441,6 @@ FOAModel({
     }
   ],
 
-
   methods: {
 
     paint3d: function() {
@@ -526,7 +525,6 @@ FOAModel({
       type: 'String'
     }
   ],
-
 
   methods: {
 

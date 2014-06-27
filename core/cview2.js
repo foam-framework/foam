@@ -314,6 +314,7 @@ FOAModel({
     {
       name: 'onMouseDown',
       code: function() {
+        this.down_ = true;
         Movement.animate(50, function() {
           this.pressCircle.r = this.width/2-7;
           this.pressCircle.alpha = 1;
@@ -323,6 +324,8 @@ FOAModel({
     {
       name: 'onMouseUp',
       code: function() {
+        if ( ! this.down_ ) return;
+        this.down_ = false;
         Movement.animate(
           200,
           function() { this.pressCircle.alpha = 0; }.bind(this),
@@ -336,9 +339,10 @@ FOAModel({
     initCView: function() {
       this.addChild(this.pressCircle);
 
-      this.$.addEventListener('click',     this.onClick);
-      this.$.addEventListener('mousedown', this.onMouseDown);
-      this.$.addEventListener('mouseup',   this.onMouseUp);
+      this.$.addEventListener('click',      this.onClick);
+      this.$.addEventListener('mousedown',  this.onMouseDown);
+      this.$.addEventListener('mouseup',    this.onMouseUp);
+      this.$.addEventListener('mouseleave', this.onMouseUp);
     },
     paintChildren: function() { },
     paintSelf: function() {
