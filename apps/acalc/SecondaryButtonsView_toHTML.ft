@@ -1,0 +1,12 @@
+<!-- <div class="buttons button-row">
+  <div class="button-column" style="flex-basis: 300%">
+    <div class="button-row"> $$pi $$sin </div>
+    <div class="button-row"> $$4 $$5 $$6 </div>
+    <div class="button-row"> $$1 $$2 $$3 </div>
+    <div class="button-row"> $$point $$0 $$equals </div>
+  </div>
+</div>
+-->
+<div id="%%id" style="background-color: pink; height: 100%; width: 400px;">
+  $$pi $$sin $$cos $$tan
+</div>

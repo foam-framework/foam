@@ -4754,12 +4754,13 @@ FOAModel({
 
 FOAModel({
   name: 'SlidePanelView',
+  extendsModel: 'View',
+
   help: 'A controller that shows a main view with a small strip of the ' +
       'secondary view visible at the right edge. This "panel" can be dragged ' +
       'by a finger or mouse pointer to any position from its small strip to ' +
       'fully exposed. If the containing view is wide enough, both panels ' +
       'will be always visible.',
-  extendsModel: 'View',
 
   properties: [
     'mainView', 'panelView',
@@ -4888,7 +4889,7 @@ FOAModel({
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
-          // Expanded mode. Show the two side by side, setting their widths
+          // Expaded mode. Show the two side by side, setting their widths
           // based on the panelRatio.
           this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
           this.width = this.parentWidth - this.panelWidth;

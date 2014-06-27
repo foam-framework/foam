@@ -85,7 +85,7 @@ FOAModel({
     makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
     makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
     makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '–', [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeOp('minus', '–',      [109, 189],         function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
@@ -126,6 +126,23 @@ FOAModel({
       action: function() {
         this.a2 = this.a2 == 0 ? this.a2 : this.a2.toString().substring(0, this.a2.length-1);
       }
+    },
+    {
+      name: 'pi',
+      label: 'π',
+      action: function() { this.a2 = 3.1415926; }
+    },
+    {
+      name: 'sin',
+      action: function() { this.a2 = Math.sin(this.a2); }
+    },
+    {
+      name: 'cos',
+      action: function() { this.a2 = Math.cos(this.a2); }
+    },
+    {
+      name: 'tan',
+      action: function() { this.a2 = Math.tan(this.a2); }
     }
   ]
 });
@@ -136,8 +153,8 @@ FOAModel({
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'background', defaultValue: '#4c4c4c' },
-    { name: 'width', defaultValue: 60 },
-    { name: 'height', defaultValue: 60 },
+    { name: 'width', defaultValue: 70 },
+    { name: 'height', defaultValue: 70 },
     { name: 'font', defaultValue: '24px Roboto' }
   ]
 });
@@ -145,5 +162,7 @@ X.registerModel(CalcButton, 'ActionButton');
 
 FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'MainButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 CalcView.X.ActionButton = CalcView.X.ActionButtonCView;

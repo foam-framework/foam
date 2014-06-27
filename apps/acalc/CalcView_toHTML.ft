@@ -7,15 +7,14 @@
       $$row1
     </div>
   </div>
-  <div class="buttons button-row">
-    <div class="button-column" style="flex-basis: 300%">
-      <div class="button-row"> $$7 $$8 $$9 </div>
-      <div class="button-row"> $$4 $$5 $$6 </div>
-      <div class="button-row"> $$1 $$2 $$3 </div>
-      <div class="button-row"> $$point $$0 $$equals </div>
-    </div>
-    <div class="button-column"> $$ac{background: '#777'} $$plus{background: '#777'} $$minus{background: '#777'} $$div{background: '#777'} $$mult{background: '#777'} </div>
-  </div>
+  <%=
+    SlidePanelView.create({
+      mainView: MainButtonsView.create({data: this.data}),
+      panelView: SecondaryButtonsView.create({data: this.data}),
+      minWidth: 400,
+      minPanelWidth: 150
+    })
+   %>
 </div>
 <%
   // This block causes the calc-display to scroll when updated.

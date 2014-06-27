@@ -324,7 +324,7 @@ FOAModel({
       name: 'onMouseUp',
       code: function() {
         Movement.animate(
-          100,
+          200,
           function() { this.pressCircle.alpha = 0; }.bind(this),
           undefined,
           function() { this.pressCircle.r = 15; }.bind(this))();

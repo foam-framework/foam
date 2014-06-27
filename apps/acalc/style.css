@@ -86,7 +86,7 @@ hr {
   height: 244px;
   width: 100%;
   min-height: 225px;
-  min-width: 244px;
+  min-width: 360px;
 }
 
 .button-row {
@@ -100,7 +100,6 @@ hr {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  flex: 1 1 100%;
 }
 
 .actionButton {
