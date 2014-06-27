@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script src="../../core/bootFOAM.js"></script>
+  </head>
+  <body>
+    <pre id="out"></pre>
+    <script>
+      console.log = function() {
+        var out = document.getElementById('out');
+        for ( var i = 0; i < arguments.length; i++ ) {
+          out.textContent += arguments[i].toString();
+        }
+      };
+    </script>
+    <script src="SchemaImport.js"></script>
+  </body>
+</html>
