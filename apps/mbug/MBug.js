@@ -111,6 +111,19 @@ FOAModel({
       defaultValueFn: function() { return this.X.issueDAO; },
     },
     {
+      name: 'sortOrder',
+      defaultValue: DESC(QIssue.MODIFIED),
+      view: {
+        model_: 'PopupChoiceView',
+        iconUrl: 'images/ic_sort_24dp.png',
+        choices: [
+          [ DESC(QIssue.MODIFIED), 'Last modified' ],
+          [ QIssue.PRI,            'Priority' ],
+          [ DESC(QIssue.ID),       'Issue ID' ]
+        ]
+      }
+    },
+    {
       name: 'filteredDAO',
       model_: 'DAOProperty',
       help: 'Top-level filtered DAO. Further filtered by each canned query.',
@@ -142,19 +155,6 @@ FOAModel({
           });
 
         return SwipeAltView.create({ views: views });
-      }
-    },
-    {
-      name: 'sortOrder',
-      defaultValue: QIssue.MODIFIED,
-      view: {
-        model_: 'PopupChoiceView',
-        iconUrl: 'images/ic_sort_24dp.png',
-        choices: [
-          [ DESC(QIssue.MODIFIED), 'Last modified' ],
-          [ QIssue.PRI,            'Priority' ],
-          [ DESC(QIssue.ID),       'Issue ID' ]
-        ]
       }
     },
     {
@@ -410,7 +410,7 @@ FOAModel({
     */}
   ]
 });
-    
+
 
 FOAModel({
   name: 'IssueOwnerAvatarView',
