@@ -2210,6 +2210,7 @@ FOAModel({
 
   properties: [
     {
+      // TODO: fix
       name: 'className',
       factory: function() { return 'actionLink actionLink-' + this.action.name; }
     },

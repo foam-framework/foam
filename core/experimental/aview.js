@@ -50,3 +50,60 @@ FOAModel({
 });
 
 
+FOAModel({
+  name: 'AImageView',
+
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function(_,value) { console.log('*** ', value); }
+    },
+    {
+      name: 'displayWidth',
+      postSet: function(_, newValue) {
+        if ( this.$ ) {
+          this.$.style.width = newValue;
+        }
+      }
+    },
+    {
+      name: 'displayHeight',
+      postSet: function(_, newValue) {
+        if ( this.$ ) {
+          this.$.style.height = newValue;
+        }
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDataChange',
+      code: function() {
+        console.log('*******************************************');
+        debugger;
+        if ( ! this.$ ) return;
+        var $ = this.$;
+        var newImage = this.toHTML();
+        $.insertAdjacentHTML('afterend', newImage);
+      }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      this.displayHeight = this.displayHeight;
+      this.displayWidth = this.displayWidth;
+ 
+      debugger;
+      this.data$.addListener(this.onDataChange);
+    },
+    toHTML: function() {
+      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
+    }
+  }
+});
