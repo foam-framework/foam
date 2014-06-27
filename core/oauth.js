@@ -125,9 +125,44 @@ FOAModel({
 
     refresh: function(ret, opt_forceInteractive) {
       return this.refresh_(ret, opt_forceInteractive);
+    },
+
+    setJsonpFuture: function(X, future) {
+      var agent = this;
+      future.set((function() {
+        var factory = X.OAuthXhrFactory.create({
+          authAgent: agent,
+          responseType: "json"
+        });
+
+        return function(url, params, opt_method, opt_payload) {
+          return function(ret) {
+            var xhr = factory.make();
+            xhr.responseType = "json";
+            return xhr.asend(ret,
+                             opt_method ? opt_method : "GET",
+                             url + (params ? '?' + params.join('&') : ''),
+                             opt_payload);
+          };
+        };
+      })());
     }
   }
 });
+
+function deferJsonP(X) {
+  var future = afuture();
+  X.ajsonp = function() {
+    var args = arguments;
+    return function(ret) {
+      future.get(function(f) {
+        f.apply(undefined, args)(ret);
+      });
+    };
+  };
+
+  return future;
+}
 
 FOAModel({
   name: 'OAuth2WebClient',
@@ -150,7 +185,7 @@ FOAModel({
 
       var path = location.pathname;
       var returnPath = location.origin +
-        location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/oauth.html';
+        location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/oauth2callback.html';
 
       var queryparams = [
         '?response_type=token',

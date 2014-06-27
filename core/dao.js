@@ -2556,9 +2556,12 @@ FOAModel({
 
       return fut.get;
     },
+    buildFindParams: function(key) {
+      return [];
+    },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key))(function(data) {
+      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
         if ( data ) {
           sink && sink.put && sink.put(self.jsonToObj(data));
         } else {
