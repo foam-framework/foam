@@ -140,6 +140,9 @@ FOAModel({
       label: 'π',
       action: function() { this.a2 = 3.1415926; }
     },
+    makeUnaryOp('fact', function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
+    makeUnaryOp('inv', function(a) { return 1.0/a; }, '1/x'),
+    makeOp('pow', 'yⁿ', [], Math.pow),
     makeUnaryOp('sin', Math.sin),
     makeUnaryOp('cos', Math.cos),
     makeUnaryOp('tan', Math.tan),

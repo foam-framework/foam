@@ -9,9 +9,10 @@
 -->
 <div id="%%id" style="background-color: pink; height: 100%; width: 400px;" class="buttons button-row">
   <div class="button-column" style="flex-basis: 300%">
-    <div class="button-row"> $$sin $$cos $$tan</div>
-    <div class="button-row"> $$asin $$acos $$atan</div>
-    <div class="button-row"> $$pi $$square $$root</div>
-    <div class="button-row"> $$log $$ln $$exp</div>
+    <div class="button-row"> $$sin $$cos $$tan </div>
+    <div class="button-row"> $$asin $$acos $$atan </div>
+    <div class="button-row"> $$inv $$square $$root </div>
+    <div class="button-row"> $$log $$ln $$exp </div>
+    <div class="button-row"> $$pi $$fact $$pow</div>
   </div>
 </div>
