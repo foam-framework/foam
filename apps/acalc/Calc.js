@@ -1,5 +1,5 @@
-/** Make a +-/* Action. **/
-function makeOp(name, sym, keys, f) {
+/** Make a Binary Action. **/
+function makeBinaryOp(name, sym, keys, f) {
   f.toString = function() { return sym; };
   return {
     name: name,
@@ -90,10 +90,11 @@ FOAModel({
     makeNum(1), makeNum(2), makeNum(3),
     makeNum(4), makeNum(5), makeNum(6),
     makeNum(7), makeNum(8), makeNum(9), makeNum(0),
-    makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
-    makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
-    makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '–',      [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeBinaryOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
+    makeBinaryOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
+    makeBinaryOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
+    makeBinaryOp('minus', '–',      [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeBinaryOp('pow',   'yⁿ',     [],                 Math.pow),
     {
       name: 'ac',
       label: 'AC',
@@ -140,20 +141,19 @@ FOAModel({
       label: 'π',
       action: function() { this.a2 = 3.1415926; }
     },
-    makeUnaryOp('fact', function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
-    makeUnaryOp('inv', function(a) { return 1.0/a; }, '1/x'),
-    makeOp('pow', 'yⁿ', [], Math.pow),
-    makeUnaryOp('sin', Math.sin),
-    makeUnaryOp('cos', Math.cos),
-    makeUnaryOp('tan', Math.tan),
-    makeUnaryOp('asin', Math.asin),
-    makeUnaryOp('acos', Math.acos),
-    makeUnaryOp('atan', Math.atan),
+    makeUnaryOp('fact',   function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
+    makeUnaryOp('inv',    function(a) { return 1.0/a; }, '1/x'),
+    makeUnaryOp('sin',    Math.sin),
+    makeUnaryOp('cos',    Math.cos),
+    makeUnaryOp('tan',    Math.tan),
+    makeUnaryOp('asin',   Math.asin),
+    makeUnaryOp('acos',   Math.acos),
+    makeUnaryOp('atan',   Math.atan),
     makeUnaryOp('square', function(a) { return a*a; }, 'x²'),
-    makeUnaryOp('root', Math.sqrt, '√'),
-    makeUnaryOp('log', function(a) { return Math.log(a) / Math.log(10); }),
-    makeUnaryOp('ln', Math.log),
-    makeUnaryOp('exp', Math.exp, 'eⁿ'),
+    makeUnaryOp('root',   Math.sqrt, '√'),
+    makeUnaryOp('log',    function(a) { return Math.log(a) / Math.log(10); }),
+    makeUnaryOp('ln',     Math.log),
+    makeUnaryOp('exp',    Math.exp, 'eⁿ'),
   ]
 });
 
@@ -170,9 +170,7 @@ FOAModel({
 });
 X.registerModel(CalcButton, 'ActionButton');
 
-FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'MainButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+FOAModel({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-
-CalcView.X.ActionButton = CalcView.X.ActionButtonCView;
