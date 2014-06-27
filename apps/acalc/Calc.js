@@ -146,6 +146,11 @@ FOAModel({
     makeUnaryOp('asin', Math.asin),
     makeUnaryOp('acos', Math.acos),
     makeUnaryOp('atan', Math.atan),
+    makeUnaryOp('square', function(a) { return a*a; }, 'x²'),
+    makeUnaryOp('root', Math.sqrt, '√'),
+    makeUnaryOp('log', function(a) { return Math.log(a) / Math.log(10); }),
+    makeUnaryOp('ln', Math.log),
+    makeUnaryOp('exp', Math.exp, 'eⁿ'),
   ]
 });
 
