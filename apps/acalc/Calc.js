@@ -26,8 +26,10 @@ function makeNum(n) {
   };
 }
 
+
 var DEFAULT_OP = function(a1) { return a1; };
 DEFAULT_OP.toString = function() { return ''; };
+
 
 /** A subclass of FloatFieldView which doesn't display 0 values. **/
 FOAModel({
@@ -36,7 +38,9 @@ FOAModel({
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
+
 FOAModel({ name: 'History', properties: [ 'op', 'a2' ] });
+
 
 FOAModel({
   name: 'Calc',
@@ -157,18 +161,20 @@ FOAModel({
   ]
 });
 
+
 FOAModel({
   name: 'CalcButton',
   extendsModel: 'ActionButtonCView',
   properties: [
-    { name: 'color', defaultValue: 'white' },
+    { name: 'color',      defaultValue: 'white' },
     { name: 'background', defaultValue: '#4c4c4c' },
-    { name: 'width', defaultValue: 70 },
-    { name: 'height', defaultValue: 70 },
-    { name: 'font', defaultValue: '24px Roboto' }
+    { name: 'width',      defaultValue: 70 },
+    { name: 'height',     defaultValue: 70 },
+    { name: 'font',       defaultValue: '24px Roboto' }
   ]
 });
 X.registerModel(CalcButton, 'ActionButton');
+
 
 FOAModel({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 FOAModel({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
