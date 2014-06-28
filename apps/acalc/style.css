@@ -179,3 +179,7 @@ hr {
 .calc-display {
   position: relative;
 }
+
+.secondaryButtons .button {
+  background: rgb(64, 189, 158);
+}

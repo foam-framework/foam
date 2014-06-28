@@ -354,6 +354,7 @@ FOAModel({
 
       if ( this.font ) c.font = this.font;
 
+      c.globalAlpha  = this.alpha;
       c.textAlign    = 'center';
       c.textBaseline = 'middle';
       c.fillStyle    = this.color;
