@@ -7,6 +7,8 @@
       $$row1
     </div>
   </div>
+  <div class='keypad'>
+  <div class="edge2"></div>
   <%=
     SlidePanelView.create({
       mainView: MainButtonsView.create({data: this.data}),
@@ -14,7 +16,8 @@
       minWidth: 360,
       minPanelWidth: 300
     })
-   %>
+  %>
+  </div>
 </div>
 <%
   // This block causes the calc-display to scroll when updated.
