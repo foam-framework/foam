@@ -190,6 +190,11 @@ hr {
   position: relative;
 }
 
+.secondaryButtons {
+  padding-left: 10px;
+  background: rgb(64, 189, 158);
+}
+
 .secondaryButtons .button {
   background: rgb(64, 189, 158);
 }
