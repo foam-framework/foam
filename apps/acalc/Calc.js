@@ -160,7 +160,7 @@ FOAModel({
     {
       name: 'pi',
       label: 'π',
-      action: function() { this.a2 = 3.1415926; }
+      action: function() { this.a2 = Math.PI; }
     },
     makeUnaryOp('fact',   function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
     makeUnaryOp('inv',    function(a) { return 1.0/a; }, '1/x'),
