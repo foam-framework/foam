@@ -184,7 +184,7 @@ FOAModel({
   extendsModel: 'ActionButtonCView',
   properties: [
     { name: 'color',      defaultValue: 'white' },
-    { name: 'background', defaultValue: '#4c4c4c' },
+    { name: 'background', defaultValue: '#4b4b4b' },
     { name: 'width',      defaultValue: 70 },
     { name: 'height',     defaultValue: 70 },
     { name: 'font',       defaultValue: '24px Roboto' }
