@@ -16,7 +16,7 @@
  */
 
 /** Make a Binary Action. **/
-function makeBinaryOp(name, sym, keys, f) {
+function makeBinaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
   return {
     name: name,
@@ -26,10 +26,10 @@ function makeBinaryOp(name, sym, keys, f) {
   };
 }
 
-function makeUnaryOp(name, f, opt_label) {
+function makeUnaryOp(name, keys, f, opt_sym) {
   return {
     name: name,
-    label: opt_label || name,
+    label: opt_sym || name,
     action: function() { this.a2 = f(this.a2); }
   };
 }
@@ -111,11 +111,11 @@ FOAModel({
     makeNum(1), makeNum(2), makeNum(3),
     makeNum(4), makeNum(5), makeNum(6),
     makeNum(7), makeNum(8), makeNum(9), makeNum(0),
-    makeBinaryOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
-    makeBinaryOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
-    makeBinaryOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeBinaryOp('minus', '–',      [109, 189],         function(a1, a2) { return a1 - a2; }),
-    makeBinaryOp('pow',   'yⁿ',     [],                 Math.pow),
+    makeBinaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
+    makeBinaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
+    makeBinaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
+    makeBinaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    makeBinaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     {
       name: 'ac',
       label: 'AC',
@@ -162,19 +162,19 @@ FOAModel({
       label: 'π',
       action: function() { this.a2 = Math.PI; }
     },
-    makeUnaryOp('fact',   function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
-    makeUnaryOp('inv',    function(a) { return 1.0/a; }, '1/x'),
-    makeUnaryOp('sin',    Math.sin),
-    makeUnaryOp('cos',    Math.cos),
-    makeUnaryOp('tan',    Math.tan),
-    makeUnaryOp('asin',   Math.asin),
-    makeUnaryOp('acos',   Math.acos),
-    makeUnaryOp('atan',   Math.atan),
-    makeUnaryOp('square', function(a) { return a*a; }, 'x²'),
-    makeUnaryOp('root',   Math.sqrt, '√'),
-    makeUnaryOp('log',    function(a) { return Math.log(a) / Math.log(10); }),
-    makeUnaryOp('ln',     Math.log),
-    makeUnaryOp('exp',    Math.exp, 'eⁿ'),
+    makeUnaryOp('fact',   [], function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
+    makeUnaryOp('inv',    [], function(a) { return 1.0/a; }, '1/x'),
+    makeUnaryOp('sin',    [], Math.sin),
+    makeUnaryOp('cos',    [], Math.cos),
+    makeUnaryOp('tan',    [], Math.tan),
+    makeUnaryOp('asin',   [], Math.asin),
+    makeUnaryOp('acos',   [], Math.acos),
+    makeUnaryOp('atan',   [], Math.atan),
+    makeUnaryOp('square', [], function(a) { return a*a; }, 'x²'),
+    makeUnaryOp('root',   [], Math.sqrt, '√'),
+    makeUnaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
+    makeUnaryOp('ln',     [], Math.log),
+    makeUnaryOp('exp',    [], Math.exp, 'eⁿ'),
   ]
 });
 
