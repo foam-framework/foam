@@ -30,6 +30,7 @@ function makeUnaryOp(name, keys, f, opt_sym) {
   return {
     name: name,
     label: opt_sym || name,
+    keyboardShortcuts: keys,
     action: function() { this.a2 = f(this.a2); }
   };
 }
@@ -160,10 +161,11 @@ FOAModel({
     {
       name: 'pi',
       label: 'π',
+      keyboardShortcuts: [80 /* p */],
       action: function() { this.a2 = Math.PI; }
     },
-    makeUnaryOp('fact',   [], function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
-    makeUnaryOp('inv',    [], function(a) { return 1.0/a; }, '1/x'),
+    makeUnaryOp('fact',   ['shift-49' /* ! */], function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
+    makeUnaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
     makeUnaryOp('sin',    [], Math.sin),
     makeUnaryOp('cos',    [], Math.cos),
     makeUnaryOp('tan',    [], Math.tan),
@@ -171,10 +173,10 @@ FOAModel({
     makeUnaryOp('acos',   [], Math.acos),
     makeUnaryOp('atan',   [], Math.atan),
     makeUnaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    makeUnaryOp('root',   [], Math.sqrt, '√'),
+    makeUnaryOp('root',   [82 /* r */], Math.sqrt, '√'),
     makeUnaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
     makeUnaryOp('ln',     [], Math.log),
-    makeUnaryOp('exp',    [], Math.exp, 'eⁿ'),
+    makeUnaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
   ]
 });
 

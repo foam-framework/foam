@@ -25,7 +25,7 @@
     <div class="button">$$ac{background: '#777'}</div>
     <div class="button">$$plus{background: '#777'}</div>
     <div class="button">$$minus{background: '#777'}</div>
-    <div class="button">$$div{background: '#777'}</div>
     <div class="button">$$mult{background: '#777'}</div>
+    <div class="button">$$div{background: '#777'}</div>
   </div>
 </div>
