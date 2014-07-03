@@ -135,8 +135,19 @@ var QIssue = FOAM({
       tableWidth: '60px',
       compareProperty: function(p1, p2) {
         var priorities = ['Low', 'Medium', 'High', 'Critical'];
-        var r = priorities.indexOf(p1) - priorities.indexOf(p2);
-        return r === 0 ? 0 : r < 0 ? -1 : 1;
+        var i1 = priorities.indexOf(p1);
+        var i2 = priorities.indexOf(p2);
+        if ( i1 < 0 && i2 < 0 ) {
+          // Neither is a proper priority - return normal string order.
+          return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
+        } else if ( i1 < 0 ) {
+          return -1; // Nonstandard priorities are considered lower than Low.
+        } else if ( i2 < 0 ) {
+          return 1;  // Likewise.
+        } else {
+          var r = i1 - i2;
+          return r === 0 ? 0 : r < 0 ? -1 : 1;
+        }
       },
       required: true
     },
