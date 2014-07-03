@@ -74,8 +74,7 @@ MODEL({
     {
       model_: 'StringProperty',
       name: 'row1',
-      postSet: function(o, n) { console.log(o, ' -> ', n); },
-      view: 'ALabel'
+      postSet: function(o, n) { console.log(o, ' -> ', n); }
     },
     {
       name: 'history',
