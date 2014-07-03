@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name:  'DAOController',
   label: 'DAO Controller',
 
@@ -197,7 +197,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'DAOCreateController',
   label: 'DAO Create',
 
@@ -301,7 +301,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'DAOUpdateController',
   label: 'DAO Update',
 

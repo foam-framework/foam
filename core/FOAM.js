@@ -78,7 +78,7 @@ FOAM.putFactory = function(ctx, name, factory) {
 
 /*
 // Simple Immediate Model Definition
-var FOAModel = function(m) {
+var MODEL = function(m) {
   var model = Model.create(m);
 
   GLOBAL[model.name] = model;
@@ -87,7 +87,7 @@ var FOAModel = function(m) {
 
 /*
 // Lazy Model Definition - Only creates Model when first referenced
-var FOAModel = function(m) {
+var MODEL = function(m) {
   Object.defineProperty(GLOBAL, m.name, {
     get: function () {
       // console.log('bounceFactory: ', m.name);
@@ -105,7 +105,7 @@ var UNUSED_MODELS = {};
 var USED_MODELS = {};
 
 // Lazy Model Definition - Only creates Model when first referenced
-var FOAModel = function(m) {
+var MODEL = function(m) {
   // Templates need to access document.currentScript in order to know
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
@@ -158,7 +158,7 @@ FOAM.lookup = function(key, opt_X) {
 }
 
 
-FOAModel({
+MODEL({
   name: 'UnitTestResultView',
   extendsModel: 'AbstractView',
   properties: [

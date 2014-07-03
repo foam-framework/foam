@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'FOAMTouch',
   properties: [
     'id', 'startX', 'startY', 'x', 'y',
@@ -55,7 +55,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'TouchReceiver',
   properties: [
     'id',
@@ -93,7 +93,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'TouchManager',
 
   properties: [

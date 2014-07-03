@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name:  'GroupBySearchView',
   extendsModel: 'View',
 
@@ -130,7 +130,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'TextSearchView',
 
   extendsModel: 'View',
@@ -204,7 +204,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'SearchView',
   extendsModel: 'View',
 
@@ -267,7 +267,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'SearchBorder',
 
   properties: [

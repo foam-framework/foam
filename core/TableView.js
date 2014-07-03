@@ -26,7 +26,7 @@
     repaint
 
 */
-FOAModel({
+MODEL({
   name: 'TableView',
   extendsModel: 'View',
 

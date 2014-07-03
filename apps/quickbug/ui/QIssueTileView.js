@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'QIssueTileView',
   label: 'QIssue Tile View',
 

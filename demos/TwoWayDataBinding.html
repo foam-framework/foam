@@ -58,7 +58,7 @@ input::-webkit-inner-spin-button {
 
   // Version 1: Uses Events.relate() to relate to two fields.
 
-  FOAModel({
+  MODEL({
     name: 'Temperature',
     properties: [ 'f', 'c' ],
     methods: {
@@ -82,7 +82,7 @@ input::-webkit-inner-spin-button {
 
   // Version 2: Save as version 1, but upgrades fields to FloatProperties and sets the 'precision' of the views.
 
-  FOAModel({
+  MODEL({
     name: 'Temperature2',
     properties: [
       { name: 'c', model_: 'FloatProperty' },
@@ -109,7 +109,7 @@ input::-webkit-inner-spin-button {
 
   // Version 3: Uses the postSet's on the properties instead of relate().
 
-  FOAModel({
+  MODEL({
     name: 'Temperature3',
     properties: [
       {

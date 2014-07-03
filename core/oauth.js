@@ -63,7 +63,7 @@ var OAuthXhr = {
   }
 };
 
-FOAModel({
+MODEL({
   name: 'OAuthXhrFactory',
   label: 'OAuthXhrFactory',
 
@@ -86,7 +86,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'OAuth2',
   label: 'OAuth 2.0',
 
@@ -164,7 +164,7 @@ function deferJsonP(X) {
   return future;
 }
 
-FOAModel({
+MODEL({
   name: 'OAuth2WebClient',
   help: 'Strategy for OAuth2 when running as a web page.',
 
@@ -201,7 +201,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'OAuth2ChromeApp',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 

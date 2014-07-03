@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'QIssueStatus',
 
   ids: [ 'status' ],
@@ -27,7 +27,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'StatusCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }
@@ -53,7 +53,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'StatusAutocompleteView',
   extendsModel: 'AutocompleteView',
 

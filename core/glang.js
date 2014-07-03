@@ -18,7 +18,7 @@
 
 // See: https://developers.google.com/chart/interactive/docs/index
 
-FOAModel({
+MODEL({
   name: 'PieGraph',
 
   extendsModel: 'CView',
@@ -133,7 +133,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PieExpr',
 
   extendsModel: 'GroupByExpr',

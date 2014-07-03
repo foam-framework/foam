@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name:  'CropCircle',
   extendsModel: 'CView2',
 

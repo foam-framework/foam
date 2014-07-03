@@ -239,7 +239,7 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
-FOAModel({
+MODEL({
   name: 'View',
   label: 'View',
 
@@ -532,7 +532,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PropertyView',
 
   extendsModel: 'View',
@@ -618,7 +618,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PopupView',
 
   extendsModel: 'View',
@@ -680,7 +680,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'AutocompleteView',
   extendsModel: 'PopupView',
   help: 'Default autocomplete popup.',
@@ -877,7 +877,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'StaticHTML',
   extendsModel: 'View',
   properties: [
@@ -903,7 +903,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
   properties: [
@@ -964,7 +964,7 @@ var DomValue = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'WindowHashValue',
 
   properties: [
@@ -994,7 +994,7 @@ FOAModel({
 X.memento = X.WindowHashValue.create();
 
 
-FOAModel({
+MODEL({
   name: 'ImageView',
 
   extendsModel: 'View',
@@ -1084,7 +1084,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'BlobImageView',
 
   extendsModel: 'View',
@@ -1141,7 +1141,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'TextFieldView',
   label: 'Text Field',
 
@@ -1349,7 +1349,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'DateFieldView',
   label: 'Date Field',
 
@@ -1372,7 +1372,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
@@ -1432,7 +1432,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'RelativeDateTimeFieldView',
   label: 'Relative Date-Time Field',
 
@@ -1450,7 +1450,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'HTMLView',
   label: 'HTML Field',
 
@@ -1512,7 +1512,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'RoleView',
 
   extendsModel: 'View',
@@ -1575,7 +1575,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'BooleanView',
 
   extendsModel: 'View',
@@ -1619,7 +1619,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ImageBooleanView',
 
   extendsModel: 'View',
@@ -1692,7 +1692,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CSSImageBooleanView',
 
   extendsModel: 'View',
@@ -1732,7 +1732,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ImageBooleanView2',
 
   extendsModel: 'View',
@@ -1779,7 +1779,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'TextAreaView',
 
   extendsModel: 'TextFieldView',
@@ -1801,7 +1801,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'FunctionView',
 
   extendsModel: 'TextFieldView',
@@ -1867,7 +1867,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'JSView',
 
   extendsModel: 'TextAreaView',
@@ -1896,7 +1896,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'XMLView',
   label: 'XML View',
 
@@ -1925,7 +1925,7 @@ FOAModel({
 
 
 /** A display-only summary view. **/
-FOAModel({
+MODEL({
   name: 'SummaryView',
 
   extendsModel: 'View',
@@ -1996,7 +1996,7 @@ FOAModel({
 
 
 /** A display-only on-line help view. **/
-FOAModel({
+MODEL({
   name: 'HelpView',
 
   extendsModel: 'View',
@@ -2047,7 +2047,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EditColumnsView',
 
   extendsModel: 'View',
@@ -2114,7 +2114,7 @@ FOAModel({
 
 
 // TODO: add ability to set CSS class and/or id
-FOAModel({
+MODEL({
   name: 'ActionButton',
 
   extendsModel: 'View',
@@ -2203,7 +2203,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ActionLink',
 
   extendsModel: 'ActionButton',
@@ -2241,7 +2241,7 @@ FOAModel({
 
 
 // TODO: ActionBorder should use this.
-FOAModel({
+MODEL({
   name:  'ToolbarView',
   label: 'Toolbar',
 
@@ -2406,7 +2406,7 @@ FOAModel({
    listen for changes to Model and change buttons displayed and enabled
    isAvailable
 */
-FOAModel({
+MODEL({
   name: 'ActionBorder',
 
   properties: [
@@ -2443,7 +2443,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'ProgressView',
 
   extendsModel: 'View',
@@ -2501,7 +2501,7 @@ var ArrayView = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'GridView',
 
   extendsModel: 'View',
@@ -2648,7 +2648,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Mouse',
 
   properties: [
@@ -2686,7 +2686,7 @@ FOAModel({
 
 
 // TODO: This should be replaced with a generic Choice.
-FOAModel({
+MODEL({
   name: 'ViewChoice',
 
   tableProperties: [
@@ -2712,7 +2712,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AlternateView',
 
   extendsModel: 'View',
@@ -2862,7 +2862,7 @@ FOAModel({
 
 // TODO: Currently this view is "eager": it renders all the child views.
 // It could be made more lazy , and therefore more memory-efficient.
-FOAModel({
+MODEL({
   name: 'SwipeAltView',
   extendsModel: 'View',
 
@@ -3146,7 +3146,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'GalleryView',
   extendsModel: 'SwipeAltView',
 
@@ -3202,7 +3202,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'GalleryImageView',
   extendsModel: 'View',
 
@@ -3216,7 +3216,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ModelAlternateView',
   extendsModel: 'AlternateView',
   methods: {
@@ -3254,7 +3254,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'FloatFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3282,7 +3282,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'IntFieldView',
 
   extendsModel: 'TextFieldView',
@@ -3298,7 +3298,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'StringArrayView',
 
   extendsModel: 'TextFieldView',
@@ -3358,7 +3358,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MultiLineStringArrayView',
   extendsModel: 'View',
 
@@ -3546,7 +3546,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'View',
 
   name: 'SplitView',
@@ -3608,7 +3608,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
@@ -3654,7 +3654,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'View',
 
   name: 'ListInputView',
@@ -3828,7 +3828,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ArrayTileView',
 
   extendsModel: 'View',
@@ -3971,7 +3971,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ArrayListView',
   extendsModel: 'View',
 
@@ -4027,7 +4027,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'KeyView',
   extendsModel: 'View',
 
@@ -4074,7 +4074,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'DAOKeyView',
   extendsModel: 'View',
 
@@ -4118,7 +4118,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'AutocompleteListView',
 
   extendsModel: 'View',
@@ -4283,7 +4283,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ViewSwitcher',
   extendsModel: 'View',
 
@@ -4368,7 +4368,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PredicatedView',
   extendsModel: 'View',
 
@@ -4410,7 +4410,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DAOListView',
   extendsModel: 'View',
 
@@ -4581,7 +4581,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'TouchListView',
 
   extendsModel: 'View',
@@ -4691,7 +4691,7 @@ FOAModel({
 
 
 
-FOAModel({
+MODEL({
   name: 'UITestResultView',
   label: 'UI Test Result View',
 
@@ -4725,7 +4725,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'UITest',
   label: 'UI Test',
 
@@ -4752,7 +4752,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'SlidePanelView',
   extendsModel: 'View',
 

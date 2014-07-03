@@ -39,15 +39,15 @@ var DEFAULT_OP = function(a1) { return a1; };
 DEFAULT_OP.toString = function() { return ''; };
 
 /** A subclass of FloatFieldView which doesn't display 0 values. **/
-FOAModel({
+MODEL({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
-FOAModel({ name: 'History', properties: [ 'op', 'a2' ] });
+MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 
-FOAModel({
+MODEL({
   name: 'Calc',
 
   properties: [
@@ -147,5 +147,5 @@ FOAModel({
   ]
 });
 
-FOAModel({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'HistoryView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'CViewView',
   extendsModel: 'View',
 
@@ -72,7 +72,7 @@ FOAModel({
 
 
 // Should CViews' have a cparent?
-FOAModel({
+MODEL({
   name:  'CView2',
   label: 'CView2',
 
@@ -205,7 +205,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Circle2',
 
   extendsModel: 'CView2',
@@ -259,7 +259,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ActionButtonCView',
 
   extendsModel: 'CView2',

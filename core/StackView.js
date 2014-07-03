@@ -22,7 +22,7 @@
    Switch to use flexbox instead of <table>.
    Browser history support.
 */
-FOAModel({
+MODEL({
   name:  'StackView',
   extendsModel: 'View',
 

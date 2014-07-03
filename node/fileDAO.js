@@ -1,7 +1,7 @@
 var fs = require('fs');
 require('../core/bootFOAMnode');
 
-FOAModel({
+MODEL({
   name: 'JSONFileDAO',
 
   extendsModel: 'MDAO',
@@ -53,7 +53,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'XMLFileDAO',
 
   extendsModel: 'MDAO',

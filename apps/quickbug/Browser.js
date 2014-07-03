@@ -25,7 +25,7 @@ MementoMgr.FORTH.label = '';
 MementoMgr.BACK.help = '';
 MementoMgr.FORTH.help = '';
 
-FOAModel({
+MODEL({
   name: 'Browser',
 
   extendsModel: 'View',
@@ -684,7 +684,7 @@ Please use labels and text to provide additional information.
 
 
 /** A subclass of Browser which works as a Chrome-App. **/
-FOAModel({
+MODEL({
   name: 'ChromeAppBrowser',
 
   extendsModel: 'Browser',

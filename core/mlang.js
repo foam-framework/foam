@@ -33,7 +33,7 @@ Property.getPrototype().compare = function(o1, o2) {
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-FOAModel({
+MODEL({
   name: 'Expr',
 
   package: 'foam.mlang',
@@ -129,7 +129,7 @@ var IDENTITY = (FOAM({
 })).create();
 
 /** An n-ary function. **/
-FOAModel({
+MODEL({
   name: 'NARY',
 
   extendsModel: 'Expr',
@@ -175,7 +175,7 @@ FOAModel({
 
 
 /** An unary function. **/
-FOAModel({
+MODEL({
   name: 'UNARY',
 
   extendsModel: 'Expr',
@@ -203,7 +203,7 @@ FOAModel({
 
 
 /** An unary function. **/
-FOAModel({
+MODEL({
   name: 'BINARY',
 
   extendsModel: 'UNARY',
@@ -230,7 +230,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AndExpr',
 
   extendsModel: 'NARY',
@@ -315,7 +315,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
@@ -397,7 +397,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NotExpr',
 
   extendsModel: 'UNARY',
@@ -439,7 +439,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DescribeExpr',
 
   extendsModel: 'UNARY',
@@ -466,7 +466,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EqExpr',
 
   extendsModel: 'BINARY',
@@ -511,7 +511,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'InExpr',
 
   extendsModel: 'BINARY',
@@ -544,7 +544,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'ContainsExpr',
 
   extendsModel: 'BINARY',
@@ -582,7 +582,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ContainsICExpr',
 
   extendsModel: 'BINARY',
@@ -636,7 +636,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NeqExpr',
 
   extendsModel: 'BINARY',
@@ -663,7 +663,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'LtExpr',
 
   extendsModel: 'BINARY',
@@ -690,7 +690,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GtExpr',
 
   extendsModel: 'BINARY',
@@ -717,7 +717,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'LteExpr',
 
   extendsModel: 'BINARY',
@@ -744,7 +744,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GteExpr',
 
   extendsModel: 'BINARY',
@@ -773,7 +773,7 @@ FOAModel({
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
-FOAModel({
+MODEL({
   name: 'StartsWithExpr',
 
   extendsModel: 'BINARY',
@@ -800,7 +800,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'StartsWithICExpr',
 
   extendsModel: 'BINARY',
@@ -828,7 +828,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ConstantExpr',
 
   extendsModel: 'UNARY',
@@ -861,7 +861,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ConcatExpr',
   extendsModel: 'NARY',
 
@@ -907,7 +907,7 @@ function compileArray_(args) {
 };
 
 
-FOAModel({
+MODEL({
   name: 'SumExpr',
 
   extendsModel: 'UNARY',
@@ -930,7 +930,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AvgExpr',
 
   extendsModel: 'UNARY',
@@ -964,7 +964,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MaxExpr',
 
   extendsModel: 'UNARY',
@@ -996,7 +996,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MinExpr',
 
   extendsModel: 'UNARY',
@@ -1028,7 +1028,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DistinctExpr',
 
   extendsModel: 'BINARY',
@@ -1061,7 +1061,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'GroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1159,7 +1159,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'GridByExpr',
 
   extendsModel: 'Expr',
@@ -1309,7 +1309,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MapExpr',
 
   extendsModel: 'BINARY',
@@ -1345,7 +1345,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CountExpr',
 
   extendsModel: 'Expr',
@@ -1373,7 +1373,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'SeqExpr',
 
   extendsModel: 'NARY',
@@ -1422,7 +1422,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'UpdateExpr',
   extendsModel: 'NARY',
 
@@ -1483,7 +1483,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'SetExpr',
   label: 'SetExpr',
 
@@ -1624,7 +1624,7 @@ function CONCAT() {
 }
 
 
-FOAModel({
+MODEL({
   name: 'ExpandableGroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1721,7 +1721,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'TreeExpr',
 
   extendsModel: 'Expr',
@@ -1778,7 +1778,7 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
-FOAModel({
+MODEL({
   name: 'DescExpr',
 
   extendsModel: 'UNARY',
@@ -1793,7 +1793,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'AddExpr',
 
   extendsModel: 'BINARY',

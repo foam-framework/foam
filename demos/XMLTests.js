@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'DemoView',
   extendsModel: 'DetailView',
   templates: [ { name: 'toHTML' } ]

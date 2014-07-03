@@ -24,7 +24,7 @@
  *    improve L&F
  */
 
-FOAModel({
+MODEL({
   name: 'Link',
   properties: [
     {
@@ -77,7 +77,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LinkView',
 
   extendsModel: 'DetailView',
@@ -135,7 +135,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ColorPickerView',
 
   extendsModel: 'View',
@@ -182,7 +182,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'RichTextView',
 
   extendsModel: 'View',

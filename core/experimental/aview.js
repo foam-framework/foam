@@ -1,6 +1,6 @@
 // Experimental Animated Views
 
-FOAModel({
+MODEL({
   name: 'ALabel',
 
   extendsModel: 'View',
@@ -50,7 +50,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AImageView',
 
   extendsModel: 'View',

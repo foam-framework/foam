@@ -17,7 +17,7 @@
 
 /** A Canvas View for embedding CView's in. **/
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
-FOAModel({
+MODEL({
   name: 'Canvas',
   extendsModel: 'View',
 
@@ -103,7 +103,7 @@ FOAModel({
  * CView's can also be used as regular (DOM) Views because if you call
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
-FOAModel({
+MODEL({
   name:  'CView',
   label: 'CView',
 
@@ -242,7 +242,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Label',
 
   properties: [
@@ -309,7 +309,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Box',
   extendsModel: 'Label',
 
@@ -393,7 +393,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Circle',
 
   properties: [
@@ -490,7 +490,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ImageCView',
 
   properties: [
@@ -547,7 +547,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Rectangle',
 
   properties: [
@@ -594,7 +594,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ProgressCView',
   extendsModel: 'CView',
 
@@ -637,7 +637,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Graph',
   extendsModel: 'CView',
 
@@ -1017,7 +1017,7 @@ var WarpedCanvas = {
 };
 
 
-FOAModel({
+MODEL({
   name:  'GridCView',
   extendsModel: 'CView',
   label: 'GridCView',

@@ -1,10 +1,10 @@
-FOAModel({
+MODEL({
   name: 'DemoView',
   extendsModel: 'DetailView',
   templates: [ { name: 'toHTML' } ]
 });
 
-FOAModel({
+MODEL({
   name: 'XHRXMLDAO',
   label: 'A read-only DAO that fetches an XML file via XHR and reads its contents',
   extendsModel: 'MDAO',

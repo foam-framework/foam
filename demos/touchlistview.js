@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'Contact',
 
   properties: [
@@ -85,7 +85,7 @@ dao.put(Contact.create({ first: "Frankie", last: 	"Valdez", email: "Frankie@Vald
 dao.put(Contact.create({ first: "Jermaine", last: 	"Mccoy", email: "Jermaine@Mccoy.com" }));
 dao.put(Contact.create({ first: "Zachary", last: 	"Hayes", email: "Zachary@Hayes.com" }));
 
-FOAModel({
+MODEL({
   name: 'ContactRowView',
   extendsModel: 'View',
 

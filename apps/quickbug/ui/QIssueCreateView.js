@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'QIssueCreateView',
   extendsModel: 'DetailView',
 

@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'Todo',
   tableProperties: [
     "priority",

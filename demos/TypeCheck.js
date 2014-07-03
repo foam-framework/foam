@@ -1,6 +1,6 @@
 DEBUG = true;
 
-FOAModel({
+MODEL({
   name: 'Account',
 
   properties: [

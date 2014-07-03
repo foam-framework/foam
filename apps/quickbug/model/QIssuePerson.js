@@ -18,7 +18,7 @@
 // Override the primary key of people to be the name property.
 IssuePerson.ids = ['name'];
 
-FOAModel({
+MODEL({
   name: 'PersonCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }

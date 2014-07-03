@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'QIssueLabel',
 
   ids: [ 'label' ],
@@ -26,7 +26,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'LabelAutocompleteView',
   extendsModel: 'AutocompleteView',
   methods: {
@@ -48,7 +48,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LabelCompleter',
   properties: [
     { model_: 'DAOProperty', name: 'autocompleteDao' }

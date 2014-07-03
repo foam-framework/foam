@@ -16,7 +16,7 @@
  */
 
 // ???: Is there any point in making this an Interface, or just a Concrete Model
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -58,7 +58,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -97,7 +97,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   name: 'Predicate',
@@ -116,7 +116,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   name: 'Comparator',
@@ -138,7 +138,7 @@ FOAModel({
 
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -485,7 +485,7 @@ var JSONToObject = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'AbstractDAO',
 
   methods: {
@@ -642,7 +642,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ProxyDAO',
 
   extendsModel: 'AbstractDAO',
@@ -726,7 +726,7 @@ FOAModel({
  * sequence number on DAO.put() if the properties value
  * is set to the properties default value.
  */
-FOAModel({
+MODEL({
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
@@ -778,7 +778,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -828,7 +828,7 @@ FOAModel({
  * Remove dependent children from a secondary DAO when parent is
  * removed from the delegate DAO.
  */
-FOAModel({
+MODEL({
   name: 'CascadingRemoveDAO',
   label: 'Cascading Remove DAO',
 
@@ -1139,7 +1139,7 @@ function atxn(afunc) {
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
  */
-FOAModel({
+MODEL({
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
 
@@ -1431,7 +1431,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'StorageDAO',
 
   extendsModel: 'MDAO',
@@ -1481,7 +1481,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
@@ -1629,7 +1629,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'JSONFileDAO',
   extendsModel: 'AbstractFileDAO',
 
@@ -1697,7 +1697,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
@@ -1720,7 +1720,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'WorkerDAO',
   extendsModel: 'AbstractDAO',
 
@@ -1917,7 +1917,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'WorkerDelegate',
   help:  'The client side of a web-worker DAO',
 
@@ -2067,7 +2067,7 @@ var ModelDAO = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'OrderedCollectorSink',
 
   properties: [
@@ -2094,7 +2094,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CollectorSink',
 
   properties: [
@@ -2116,7 +2116,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ParitionDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2231,7 +2231,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ActionFactoryDAO',
   extendsModel: 'ProxyDAO',
   label: 'ActionFactoryDAO',
@@ -2285,7 +2285,7 @@ FOAModel({
 
 
 // TODO Why is this even a DAO, it literally only does find.
-FOAModel({
+MODEL({
   name: 'BlobReaderDAO',
 
   properties: [
@@ -2323,7 +2323,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GDriveDAO',
   properties: [
     {
@@ -2368,7 +2368,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'RestDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2573,7 +2573,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DefaultObjectDAO',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
@@ -2601,7 +2601,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LRUCachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2769,7 +2769,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LazyCacheDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2807,7 +2807,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2868,7 +2868,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2961,7 +2961,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
   methods: {
@@ -3028,7 +3028,7 @@ var WaitCursorDAO = FOAM({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EasyDAO',
   extendsModel: 'ProxyDAO',
 

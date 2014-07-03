@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'DoubleClickWrapper',
 
   extendsModel: 'View',

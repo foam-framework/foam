@@ -50,17 +50,17 @@ DEFAULT_OP.toString = function() { return ''; };
 
 
 /** A subclass of FloatFieldView which doesn't display 0 values. **/
-FOAModel({
+MODEL({
   name:  'CalcFloatFieldView',
   extendsModel: 'FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
 
-FOAModel({ name: 'History', properties: [ 'op', 'a2' ] });
+MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
-FOAModel({
+MODEL({
   name: 'Calc',
 
   properties: [
@@ -181,7 +181,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CalcButton',
   extendsModel: 'ActionButtonCView',
   properties: [
@@ -195,7 +195,7 @@ FOAModel({
 X.registerModel(CalcButton, 'ActionButton');
 
 
-FOAModel({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-FOAModel({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

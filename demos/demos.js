@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name:  'EyeCView',
   label: 'Eye',
 
@@ -85,7 +85,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'EyesCView',
   label: 'Eyes',
   extendsModel: 'CView',
@@ -124,7 +124,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ClockView',
   extendsModel: 'CView',
 
@@ -649,7 +649,7 @@ var System = FOAM({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Developer',
 
   properties: [

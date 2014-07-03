@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'Cursor',
 
   properties: [
@@ -80,7 +80,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CursorView',
 
   extendsModel: 'DetailView',

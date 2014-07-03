@@ -2,7 +2,7 @@
  * Mobile QuickBug.
  **/
 
-FOAModel({
+MODEL({
   name: 'MBug',
   description: 'Mobile QuickBug',
 
@@ -83,7 +83,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PriorityView',
   extendsModel: 'View',
   // TODO: I'm not sure why the preSet is needed, but things aren't working without it.
@@ -94,7 +94,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ProjectController',
 
   properties: [
@@ -241,7 +241,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
   properties: [
@@ -365,7 +365,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'IssueEmailArrayView',
   extendsModel: 'View',
   properties: [
@@ -381,7 +381,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'IssuePersonCitationView',
   extendsModel: 'DetailView',
   templates: [
@@ -389,7 +389,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'IssueEmailCitationView',
   extendsModel: 'View',
   properties: [
@@ -412,7 +412,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'IssueOwnerAvatarView',
   extendsModel: 'View',
   properties: [
@@ -439,7 +439,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [
@@ -466,7 +466,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CommentView',
   extendsModel: 'DetailView',
   templates: [ function toHTML() {/*
@@ -487,7 +487,7 @@ FOAModel({
 
 // Is actually a DetailView on User, but is only really
 // used to show and select available projects.
-FOAModel({
+MODEL({
   name: 'ChangeProjectView',
   extendsModel: 'DetailView',
 
@@ -517,7 +517,7 @@ FOAModel({
   */} ]
 });
 
-FOAModel({
+MODEL({
   name: 'IssueOwnerView',
   extendsModel: 'View',
 
@@ -572,7 +572,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'IssueOwnerEditView',
   extendsModel: 'View',
 
@@ -673,7 +673,7 @@ FOAModel({
   ],
 });
 
-FOAModel({
+MODEL({
   name: 'IssuePersonAutocompleteView',
   extendsModel: 'View',
 

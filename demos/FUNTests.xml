@@ -8,7 +8,7 @@
         <property name="description">Tests the primitive event listeners and handlers</property>
         <property name="async">true</property>
         <property name="code" type="function">
-          FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+          MODEL({name: 'Test', properties: [ { name: 'x' } ]});
           var t = Test.create();
           t.x$.addListener(function() { log(t.x); });
           t.x = 1;
@@ -22,7 +22,7 @@
         <property name="name">Pub/sub support</property>
         <property name="description">Every Modelled object is a pub/sub target. Also shows one-time listeners.</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: [
               {
@@ -61,7 +61,7 @@
           var animationCount = 0;
           var otherCount = 0;
 
-          FOAModel({
+          MODEL({
             name: 'Test',
             listeners: [
               {
@@ -102,7 +102,7 @@
         <property name="name">Event topic chaining and wildcarding</property>
         <property name="description">Events can have paths, and wildcards will hit all sub-events</property>
         <property name="code" type="function">
-          FOAModel({ name: 'Test' });
+          MODEL({ name: 'Test' });
           var x = Test.create({});
 
           var barCount = 0;
@@ -129,7 +129,7 @@
         <property name="name">Events.follow()</property>
         <property name="description">Creates a one-way binding between two properties</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: ['foo', 'bar']
           });
@@ -153,7 +153,7 @@
         <property name="name">Events.map()</property>
         <property name="description">Creates a one-way binding between two properties, running a filter over the value in between</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: ['foo', 'bar']
           });
@@ -177,7 +177,7 @@
         <property name="name">Events.link()</property>
         <property name="description">Creates a two-way binding between two properties</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: ['foo', 'bar']
           });
@@ -201,7 +201,7 @@
         <property name="name">Events.relate()</property>
         <property name="description">Creates a two-way binding between two properties, converting with functions</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: ['foo', 'bar']
           });
@@ -225,7 +225,7 @@
         <property name="name">Direct property binding</property>
         <property name="description">Creates a two-way binding between two properties at object creation time.</property>
         <property name="code" type="function">
-          FOAModel({
+          MODEL({
             name: 'Test',
             properties: ['foo', 'bar']
           });
@@ -249,7 +249,7 @@
     <property name="name">By-Name Value binding</property>
     <property name="description">Demonstrate the binding of $ values.</property>
     <property name="code" type="function">
-      FOAModel({name: 'Test', properties: [ { name: 'x' } ]});
+      MODEL({name: 'Test', properties: [ { name: 'x' } ]});
       var t1 = Test.create({x:1});
       var t2 = Test.create({x:2});
 
@@ -650,7 +650,7 @@
           ModelDAO.put(Model);
           ModelDAO.put(EMail);
 
-          FOAModel({
+          MODEL({
             name: 'AllViews',
 
             properties: [
@@ -947,7 +947,7 @@
   <object model="UITest">
     <property name="description">Test's the autocomplete functionality of a TextFieldView.</property>
     <property name="code" type="function">
-      FOAModel({
+      MODEL({
         name: 'Contact',
         properties: [
           'id', 'first', 'last', 'email'
@@ -967,7 +967,7 @@
        Contact.create({ id: 9, first: 'Frank', last: 'Ellis', email: 'frank@test.com' }),
       ].select(ContactDAO);
 
-      FOAModel({
+      MODEL({
         name: 'ContactEMailCompleter',
 
         properties: [
@@ -994,7 +994,7 @@
       });
 
 
-      FOAModel({
+      MODEL({
         name: 'Message',
         properties: [
           {
@@ -1026,7 +1026,7 @@
     <property name="description">Tests for the basic Object model</property>
     <property name="code" type="function">
       seq = [];
-      FOAModel({
+      MODEL({
         name: 'OMTestBase',
         properties: [
           { name: 'foo', defaultValue: 'rabbits' },

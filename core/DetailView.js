@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'DetailView',
   extendsModel: 'View',
 
@@ -251,7 +251,7 @@ FOAModel({
 
 
 
-FOAModel({
+MODEL({
   name: 'UpdateDetailView',
   extendsModel: 'DetailView',
 

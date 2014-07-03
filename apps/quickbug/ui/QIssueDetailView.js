@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'QIssueDetailView',
   extendsModel: 'DetailView',
 
@@ -139,7 +139,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'QIssueLabelsView',
   extendsModel: 'View',
 
@@ -192,7 +192,7 @@ FOAModel({
  * Draw the ID with style line-through if issue closed.
  * Display a TileView hover preview.
  **/
-FOAModel({
+MODEL({
   name: 'BlockView',
   extendsModel: 'View',
 

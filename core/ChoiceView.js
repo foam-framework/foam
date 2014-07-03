@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name: 'AbstractChoiceView',
 
   extendsModel: 'View',
@@ -182,7 +182,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ChoiceListView',
 
   extendsModel: 'AbstractChoiceView',
@@ -294,7 +294,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ChoiceView',
 
   extendsModel: 'AbstractChoiceView',
@@ -403,7 +403,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'RadioBoxView',
 
   extendsModel: 'ChoiceView',
@@ -447,7 +447,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',

@@ -16,7 +16,7 @@
  */
 
 /** Perform text search on 'summary' field and prefix searches on 'cc' and 'owner' fields. */
-FOAModel({
+MODEL({
    name: 'DefaultQuery',
 
    extendsModel: 'UNARY',

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'IssueRestDAO',
   extendsModel: 'RestDAO',
 
@@ -208,7 +208,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'QIssueCommentUpdateDAO',
   help: 'Decorates a comment dao, and on put, updates an associated issue dao.',
   extendsModel: 'ProxyDAO',
@@ -233,7 +233,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'QIssueCommentNetworkDAO',
   extendsModel: 'RestDAO',
 
@@ -321,7 +321,7 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Remote data is stored non-permanently in the local MDAO.
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
-FOAModel({
+MODEL({
    name: 'QIssueSplitDAO',
    extendsModel: 'AbstractDAO',
 

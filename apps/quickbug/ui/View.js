@@ -369,7 +369,7 @@ function createView(rowSelection, browser) {
 }
 
 
-FOAModel({
+MODEL({
   name: 'GriddedStringArrayView',
   extendsModel: 'View',
 

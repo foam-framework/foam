@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'ChromeStorageDAO',
   extendsModel: 'AbstractDAO',
   label: 'Chrome Storage DAO',

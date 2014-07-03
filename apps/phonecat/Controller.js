@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'Controller',
   properties: [
     {
@@ -23,7 +23,7 @@ FOAModel({
 });
 
 
-FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
+MODEL({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <li class="thumbnail">
         <a href="#{{this.obj.id}}" class="thumb">$$imageUrl</a>
@@ -34,10 +34,10 @@ FOAModel({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
 ]});
 
 
-FOAModel({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'PhoneDetailView',   extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 
 
-FOAModel({
+MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
   templates: [

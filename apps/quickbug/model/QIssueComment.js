@@ -59,7 +59,7 @@ var QIssueComment = FOAM({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'QIssueCommentUpdate',
   extendsModel: 'IssueCommentUpdate',
 
