@@ -300,7 +300,7 @@ MODEL({
         alpha: 0,
         x: this.width/2,
         y: this.width/2,
-        r: 15,
+        r: 10,
         color: 'rgb(241, 250, 65)'
       });}
     }
@@ -313,9 +313,15 @@ MODEL({
     },
     {
       name: 'onMouseDown',
-      code: function() {
+      code: function(evt) {
         this.down_ = true;
-        Movement.animate(50, function() {
+        this.pressCircle.x = evt.offsetX;
+        this.pressCircle.y = evt.offsetY;
+        this.pressCircle.r = 10;
+        Movement.animate(100, function() {
+        x: this.width/2,
+          this.pressCircle.x = this.width/2;
+          this.pressCircle.y = this.width/2;
           this.pressCircle.r = this.width/2-7;
           this.pressCircle.alpha = 1;
         }.bind(this))();
