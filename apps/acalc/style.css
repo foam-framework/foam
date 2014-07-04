@@ -138,5 +138,6 @@ body {
 }
 
 .keypad {
+  height: 672px;
   margin-bottom: -4px;
 }
