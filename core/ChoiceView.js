@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
-  name:  'AbstractChoiceView',
+MODEL({
+  name: 'AbstractChoiceView',
 
   extendsModel: 'View',
 
   properties: [
+    // This is the real, final choice. The internals use index only.
+    // When useSelection is enabled, data is not set until a final choice is made.
+    {
+      model_: 'BooleanProperty',
+      name: 'autoSetData',
+      help: 'If true, this.data is set when choices update and the current data is not one of the choices.',
+      defaultValue: true
+    },
     {
       name: 'data',
       help: 'The value of the current choice (ie. [value, label] -> value).',
@@ -32,6 +40,19 @@ FOAModel({
         }
       }
     },
+    {
+      name: 'label',
+      help: 'The label of the current choice (ie. [value, label] -> label).',
+      postSet: function(_, d) {
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( this.choices[i][1] === d ) {
+            if ( this.index !== i ) this.index = i;
+            return;
+          }
+        }
+      }
+    },
+    // See above; choice works the same as data.
     {
       name: 'choice',
       help: 'The current choice (ie. [value, label]).',
@@ -46,6 +67,7 @@ FOAModel({
       setter: function(choice) {
         var oldValue = this.choice;
         this.data = choice[0];
+        this.label = choice[1];
         this.propertyChange('choice', oldValue, this.choice);
       }
     },
@@ -63,45 +85,104 @@ FOAModel({
         return a;
       },
       postSet: function(_, newValue) {
-        var value = this.data
+        var value = this.data;
 
-        // Update current choice when choices update
+        // Update current choice when choices update.
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var choice = newValue[i];
 
           if ( value === choice[0] ) {
-            this.choice = choice;
+            if ( this.useSelection ) this.index = i;
+            else this.choice = choice;
             break;
           }
         }
 
-        if ( i === newValue.length ) this.choice = newValue[0];
+        if ( this.autoSetData && i === newValue.length ) {
+          if ( this.useSelection ) this.index = 0;
+          else this.data = newValue.length ? newValue[0][0] : undefined;
+        }
 
-        if ( this.$ ) this.updateHTML();
+        this.updateHTML();
       }
     },
+    // The authoritative selection internally. data and choice are outputs when
+    // useSelection is enabled.
     {
       name: 'index',
       help: 'The index of the current choice.',
+      preSet: function(_, i) {
+        if ( i < 0 || this.choices.length == 0 ) return 0;
+        if ( i >= this.choices.length ) return this.choices.length - 1;
+        return i;
+      },
       postSet: function(_, i) {
+        // If useSelection is enabled, don't update data or choice.
+        if ( this.useSelection ) return;
         if ( this.data !== this.choices[i][0] ) this.data = this.choices[i][0];
+      }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'objToChoice',
+      help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
+    },
+    {
+      name: 'useSelection',
+      help: 'When set, data and choice do not update until an entry is firmly selected',
+      model_: 'BooleanProperty'
+    },
+    {
+      name: 'dao',
+      postSet: function(oldDAO, dao) {
+        if ( oldDAO ) {
+          oldDAO.unlisten(this.onDAOUpdate);
+        }
+        if ( dao && this.$ ) {
+          dao.listen(this.onDAOUpdate);
+          this.onDAOUpdate();
+        }
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: 100,
+      code: function() {
+        this.dao.select(MAP(this.objToChoice))(function(map) {
+          // console.log('***** Update Choices ', map.arg2, this.choices);
+          this.choices = map.arg2;
+        }.bind(this));
       }
     }
   ],
 
   methods: {
+    initHTML: function() {
+      this.SUPER();
+
+      this.dao = this.dao;
+    },
+
     findChoiceIC: function(name) {
       name = name.toLowerCase();
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         if ( this.choices[i][1].toLowerCase() == name )
           return this.choices[i];
       }
+    },
+
+    commit: function() {
+      if ( ! this.useSelection ) return;
+      this.choice = this.choices[this.index];
     }
   }
 });
 
 
-FOAModel({
+MODEL({
   name:  'ChoiceListView',
 
   extendsModel: 'AbstractChoiceView',
@@ -131,37 +212,89 @@ FOAModel({
     {
       name: 'tagName',
       defaultValue: 'ul'
+    },
+    {
+      name: 'innerTagName',
+      defaultValue: 'li'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateSelected',
+      code: function() {
+        if ( ! this.$ || ! this.$.children ) return;
+        for ( var i = 0 ; i < this.$.children.length ; i++ ) {
+          var c = this.$.children[i];
+          DOM.setClass(c, 'selected', i === this.index);
+        }
+      }
     }
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      // Doing this at the low level rather than with this.setClass listeners
+      // to avoid creating loads of listeners when autocompleting or otherwise
+      // rapidly changing this.choices.
+      this.index$.addListener(this.updateSelected);
+      this.choices$.addListener(this.updateSelected);
+    },
+    choiceToHTML: function(id, choice) {
+      return '<' + this.innerTagName + ' id="' + id + '" class="choice">' +
+          choice[1] + '</' + this.innerTagName + '>';
+    },
     toInnerHTML: function() {
-      var out = "";
+      var out = [];
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         var choice = this.choices[i];
         var id     = this.nextID();
 
         this.on(
           'click',
-          function(choice) {
-            this.choice = choice;
-          }.bind(this, choice),
+          function(index) {
+            this.choice = this.choices[index];
+          }.bind(this, i),
           id);
 
-        this.setClass(
-          'selected',
-          function(choice) { return this.choice == choice; }.bind(this, choice),
-          id);
-
-        out += '<li id="' + id + '" class="choice">' + choice[1] + '</li>';
+        out.push(this.choiceToHTML(id, choice));
       }
-      return out;
+      return out.join('');
+    },
+
+    initHTML: function() {
+      this.SUPER();
+      this.updateSelected();
+    },
+
+    scrollToSelection: function() {
+      // Three cases: in view, need to scroll up, need to scroll down.
+      // First we determine the parent's scrolling bounds.
+      var e = this.$.children[this.index];
+      if ( ! e ) return;
+      var parent = e.parentElement;
+      while ( parent ) {
+        var overflow = this.X.window.getComputedStyle(parent).overflow;
+        if ( overflow === 'scroll' || overflow === 'auto' ) {
+          break;
+        }
+        parent = parent.parentElement;
+      }
+      parent = parent || this.X.window;
+
+      if ( e.offsetTop < parent.scrollTop ) { // Scroll up
+        e.scrollIntoView(true);
+      } else if ( e.offsetTop + e.offsetHeight >=
+          parent.scrollTop + parent.offsetHeight ) { // Down
+        e.scrollIntoView();
+      }
     }
   }
 });
 
 
-FOAModel({
+MODEL({
   name:  'ChoiceView',
 
   extendsModel: 'AbstractChoiceView',
@@ -195,6 +328,7 @@ FOAModel({
     },
 
     updateHTML: function() {
+      if ( ! this.$ ) return;
       var out = [];
 
       if ( this.helpText ) {
@@ -230,6 +364,8 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       var e = this.$;
 
       this.updateHTML();
@@ -242,7 +378,7 @@ FOAModel({
     {
       name: 'onMouseOver',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
         this.prev = ( this.prev === undefined ) ? this.data : this.prev;
         this.index = e.target.value;
       }
@@ -250,8 +386,8 @@ FOAModel({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.timer_ ) window.clearTimeout(this.timer_);
-        this.timer_ = window.setTimeout(function() {
+        if ( this.timer_ ) this.X.clearTimeout(this.timer_);
+        this.timer_ = this.X.setTimeout(function() {
           this.data = this.prev || '';
           this.prev = undefined;
         }.bind(this), 1);
@@ -267,7 +403,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'RadioBoxView',
 
   extendsModel: 'ChoiceView',
@@ -303,20 +439,22 @@ FOAModel({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
     }
   }
 });
 
 
-FOAModel({
+MODEL({
   name:  'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',
 
   properties: [
     {
-      name: 'showLabel'
+      name: 'linkLabel'
     },
     {
       name: 'iconUrl'
@@ -339,10 +477,11 @@ FOAModel({
     {
       name: 'popup',
       code: function(e) {
-        var view = ChoiceListView.create({
+        var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
-          choices: this.choices
+          choices: this.choices,
+          autoSetData: this.autoSetData
         });
 
         // I don't know why the 'animate' is required, but it sometimes
@@ -350,14 +489,14 @@ FOAModel({
         view.data$.addListener(EventService.animate(function() {
           this.data = view.data;
           if ( view.$ ) view.$.remove();
-        }.bind(this)));
+        }.bind(this), this.X));
 
-        var pos = findPageXY(this.$.querySelector('img'));
+        var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
         var parentNode = view.$.parentNode;
 
-        view.$.style.top = pos[1];
+        view.$.style.top = pos[1]-2;
         view.$.style.left = pos[0]-toNum(s.width)+30;
         view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
@@ -380,22 +519,25 @@ FOAModel({
 
       if ( this.showValue ) {
         var id = this.nextID();
-        out += '<span id="' + id + '" class="value">' + (this.choice[1] || '') + '</span>';
+        out += '<span id="' + id + '" class="value">' + ((this.choice && this.choice[1]) || '') + '</span>';
         this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
       }
 
+      out += '<span class="action">';
       if ( this.iconUrl ) {
         out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
-      if ( this.showLabel ) {
-        out += this.label;
+      if ( this.linkLabel ) {
+        out += this.linkLabel;
       }
+      out += '</span>';
 
       return out;
     },
 
     initHTML: function() {
+      this.SUPER();
       this.$.addEventListener('click', this.popup);
     }
   }

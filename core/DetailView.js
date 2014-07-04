@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'DetailView',
   extendsModel: 'View',
 
@@ -60,6 +60,9 @@ FOAModel({
     {
       name: 'onValueChange',
       code: function() {
+        // TODO: Allow overriding of listeners
+        this.onValueChange_.apply(this, arguments);
+
         if ( this.obj && this.obj.model_ ) this.model = this.obj.model_;
         if ( this.$ ) this.updateSubViews();
       }
@@ -67,6 +70,7 @@ FOAModel({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
+        // console.log('***** key: ', this.evtToKeyCode(evt));
         var action = this.keyMap_[this.evtToKeyCode(evt)];
         if ( action ) action.callIfEnabled(this.obj);
       }
@@ -74,6 +78,9 @@ FOAModel({
   ],
 
   methods: {
+    onValueChange_: function() {
+    },
+
     bindSubView: function(view, prop) {
       if ( this.get() ) {
         // TODO: setValue is deprecated
@@ -104,8 +111,8 @@ FOAModel({
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
       if ( o ) return Action.isInstance(o) ?
-        this.X.ActionButton.create({action: o, value: this.value}).copyFrom(opt_args) :
-        this.createView(o, opt_args);
+        this.createActionView(o, this.value, opt_args) :
+        this.createView(o, opt_args) ;
 
       return this.SUPER(name, opt_args);
     },
@@ -244,7 +251,7 @@ FOAModel({
 
 
 
-FOAModel({
+MODEL({
   name: 'UpdateDetailView',
   extendsModel: 'DetailView',
 

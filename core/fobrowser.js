@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
    name: 'Feature',
    plural:'Features',
    help:  "A feature of a Model.",

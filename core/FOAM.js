@@ -27,10 +27,11 @@ function $addWindow(w) {
 }
 function $removeWindow(w) {
   for ( var i = $documents.length - 1 ; i >= 0 ; i-- ) {
-    if ( $documents[i].defaultView === w )
+    if ( ! $documents[i].defaultView || $documents[i].defaultView === w )
       $documents.splice(i,1);
   }
 }
+
 /** Replacement for getElementById **/
 var $ = function (id) {
   for ( var i = 0 ; i < $documents.length ; i++ ) {
@@ -77,7 +78,7 @@ FOAM.putFactory = function(ctx, name, factory) {
 
 /*
 // Simple Immediate Model Definition
-var FOAModel = function(m) {
+var MODEL = function(m) {
   var model = Model.create(m);
 
   GLOBAL[model.name] = model;
@@ -86,7 +87,7 @@ var FOAModel = function(m) {
 
 /*
 // Lazy Model Definition - Only creates Model when first referenced
-var FOAModel = function(m) {
+var MODEL = function(m) {
   Object.defineProperty(GLOBAL, m.name, {
     get: function () {
       // console.log('bounceFactory: ', m.name);
@@ -104,7 +105,7 @@ var UNUSED_MODELS = {};
 var USED_MODELS = {};
 
 // Lazy Model Definition - Only creates Model when first referenced
-var FOAModel = function(m) {
+var MODEL = function(m) {
   // Templates need to access document.currentScript in order to know
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
@@ -157,7 +158,7 @@ FOAM.lookup = function(key, opt_X) {
 }
 
 
-FOAModel({
+MODEL({
   name: 'UnitTestResultView',
   extendsModel: 'AbstractView',
   properties: [
@@ -240,7 +241,7 @@ function arequire(modelName) {
 }
 
 
-var FOAM_POWERED = '<a style="text-decoration:none;" href="http://code.google.com/p/foam-framework/" target="_blank">\
+var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\
 <font size=+1 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">\
 <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>\
 <font color="#555555" > POWERED</font></font></a>';

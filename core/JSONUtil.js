@@ -160,7 +160,6 @@ var JSONUtil = {
       out('}');
     },
 
-
     outputMap_: function(out, obj) {
       var str   = "";
       var first = true;

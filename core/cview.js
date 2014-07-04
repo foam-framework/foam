@@ -17,7 +17,7 @@
 
 /** A Canvas View for embedding CView's in. **/
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
-FOAModel({
+MODEL({
   name: 'Canvas',
   extendsModel: 'View',
 
@@ -64,6 +64,7 @@ FOAModel({
     },
 
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
     },
 
@@ -102,7 +103,7 @@ FOAModel({
  * CView's can also be used as regular (DOM) Views because if you call
  * toHTML() on them they will create their own 'Canvas' View parent.
  **/
-FOAModel({
+MODEL({
   name:  'CView',
   label: 'CView',
 
@@ -174,7 +175,7 @@ FOAModel({
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = Canvas.create();
+        this.parent = this.X.Canvas.create();
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
@@ -192,7 +193,7 @@ FOAModel({
 
       parent.addChild(this);
       parent.initHTML();
-      Events.dynamic(
+      this.X.dynamic(
         function() { self.background; }, function() {
           parent.background = self.background;
         });
@@ -241,7 +242,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Label',
 
   properties: [
@@ -308,7 +309,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Box',
   extendsModel: 'Label',
 
@@ -392,7 +393,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Circle',
 
   properties: [
@@ -439,7 +440,6 @@ FOAModel({
       defaultValue: 20
     }
   ],
-
 
   methods: {
 
@@ -490,7 +490,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ImageCView',
 
   properties: [
@@ -526,7 +526,6 @@ FOAModel({
     }
   ],
 
-
   methods: {
 
     init: function() {
@@ -548,7 +547,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Rectangle',
 
   properties: [
@@ -595,7 +594,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'ProgressCView',
   extendsModel: 'CView',
 
@@ -638,7 +637,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'Graph',
   extendsModel: 'CView',
 
@@ -1018,7 +1017,7 @@ var WarpedCanvas = {
 };
 
 
-FOAModel({
+MODEL({
   name:  'GridCView',
   extendsModel: 'CView',
   label: 'GridCView',
@@ -1040,7 +1039,7 @@ FOAModel({
     },
     {
       name: 'mouse',
-      factory: function() { return Mouse.create(); }
+      factory: function() { return this.X.Mouse.create(); }
     }
   ],
 
@@ -1111,8 +1110,8 @@ FOAModel({
       var g = this.grid;
       var cols = g.cols.groups;
       var rows = g.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(g.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(g.yFunc.compareProperty);
+      var sortedCols = g.sortedCols();
+      var sortedRows = g.sortedRows();
       var w = this.width;
       var h = this.height;
       var wc = WarpedCanvas.create(c, this.mouse.x, this.mouse.y, w, h, this.mag);

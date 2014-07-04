@@ -16,7 +16,7 @@
  */
 
 // ???: Is there any point in making this an Interface, or just a Concrete Model
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -58,7 +58,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -97,7 +97,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   name: 'Predicate',
@@ -116,7 +116,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   name: 'Comparator',
@@ -138,7 +138,7 @@ FOAModel({
 
 // 'options': Map including 'query', 'order', and 'limit', all optional
 
-FOAModel({
+MODEL({
   model_: 'Interface',
 
   package: 'dao',
@@ -247,11 +247,14 @@ var FutureDAO = {
     // pay the overhead once the delegate has been set.
 
     function setupFuture(delegate) {
-      if ( ret.__proto__ != delegate ) {
-        for ( var i = 0 ; i < ret.__proto__.daoListeners_.length ; i++ ) {
-          delegate.listen.apply(delegate, ret.__proto__.daoListeners_[i]);
-        }
+      if ( ret.__proto__ !== delegate ) {
+        var listeners = ret.__proto__.daoListeners_;
         ret.__proto__ = delegate;
+        for ( var i = 0 ; i < listeners.length ; i++ ) {
+          console.log('******************************************************* AddingListener ', ret, listeners[i]);
+          ret.listen.apply(ret, listeners[i]);
+        }
+//        ret.notify_('put', []);
       }
     }
 
@@ -306,9 +309,10 @@ var FutureDAO = {
           return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
         },
         listen: function(sink, options) {
-          this.daoListeners_.push([sink, options]);
+          // this.daoListeners_.push([sink, options]);
         },
         unlisten: function(sink) {
+          /*
           for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
             if ( this.daoListeners_[i][0] === sink ) {
               this.daoListeners_.splice(i, 1);
@@ -316,37 +320,11 @@ var FutureDAO = {
             }
           }
           console.warn('phantom DAO unlisten: ', sink);
+          */
         }
       }};
     return ret;
   }
-};
-
-
-var CachingDAO = {
-
-  create: function(cache, source) {
-    var futureDelegate = afuture();
-
-    //    console.time('CachingDAO-' + source.model.name);
-    source.select(cache)(function() {
-      //      console.timeEnd('CachingDAO-' + source.model.name);
-      source.listen(cache);
-      futureDelegate.set(cache);
-    });
-
-    return {
-      __proto__: FutureDAO.create(futureDelegate.get),
-
-      model: cache.model || source.model,
-      put: function(obj, sink) { source.put(obj, sink); },
-      remove: function(query, sink) { source.remove(query, sink); },
-      removeAll: function(sink, options) {
-        return source.removeAll(sink, options);
-      }
-    };
-  }
-
 };
 
 
@@ -383,7 +361,6 @@ var LoggingDAO = {
       }
     };
   }
-
 };
 
 
@@ -439,7 +416,6 @@ var TimingDAO = {
       }
     };
   }
-
 };
 
 
@@ -509,7 +485,7 @@ var JSONToObject = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'AbstractDAO',
 
   methods: {
@@ -638,6 +614,7 @@ FOAModel({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
+//       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       if ( ! this.daoListeners_ ) return;
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
@@ -650,14 +627,22 @@ FOAModel({
             })(this.unlisten.bind(this), l),
             error: function(e) { /* Don't care. */ }
           };
-          fn.apply(l, args);
+          try {
+            fn.apply(l, args);
+          } catch(err) {
+            if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+              console.error('Error delivering event (removing listener): ', topic.join('.'));
+            }
+            this.unlisten(l);
+          }
         }
       }
     }
   }
 });
 
-FOAModel({
+
+MODEL({
   name: 'ProxyDAO',
 
   extendsModel: 'AbstractDAO',
@@ -741,7 +726,7 @@ FOAModel({
  * sequence number on DAO.put() if the properties value
  * is set to the properties default value.
  */
-FOAModel({
+MODEL({
   name: 'SeqNoDAO',
   label: 'SeqNoDAO',
 
@@ -753,7 +738,9 @@ FOAModel({
       type: 'Property',
       required: true,
       hidden: true,
-      defaultValueFn: function() { return this.delegate.model.ID; },
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
       transient: true
     },
     {
@@ -770,7 +757,7 @@ FOAModel({
       var future = afuture();
       this.WHEN_READY = future.get;
 
-      // Scan all DAO values to find the
+      // Scan all DAO values to find the largest
       this.delegate.select(MAX(this.property))(function(max) {
         if ( max.max ) this.sequenceValue = max.max + 1;
         future.set(true);
@@ -791,14 +778,59 @@ FOAModel({
 });
 
 
+MODEL({
+  name: 'CachingDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'src'
+    },
+    {
+      name: 'cache',
+      help: 'Alias for delegate.',
+      getter: function() { return this.delegate },
+      setter: function(dao) { this.delegate = dao; }
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.src.model || this.cache.model; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var src   = this.src;
+      var cache = this.cache;
+
+      var futureDelegate = afuture();
+      this.cache = FutureDAO.create(futureDelegate.get);
+
+      src.select(cache)(function() {
+        // Actually means that cache listens to changes in the src.
+        src.listen(cache);
+        futureDelegate.set(cache);
+        this.cache = cache;
+      }.bind(this));
+    },
+    put: function(obj, sink) { this.src.put(obj, sink); },
+    remove: function(query, sink) { this.src.remove(query, sink); },
+    removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
+  }
+});
+
+
 /**
  * Provide Cascading Remove.
  * Remove dependent children from a secondary DAO when parent is
  * removed from the delegate DAO.
  */
-FOAModel({
+MODEL({
   name: 'CascadingRemoveDAO',
-  label: 'SeqNoDAO', // TODO: Copy-paste error?
+  label: 'Cascading Remove DAO',
 
   extendsModel: 'ProxyDAO',
 
@@ -1107,11 +1139,11 @@ function atxn(afunc) {
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
  */
-FOAModel({
-  extendsModel: 'AbstractDAO',
-
+MODEL({
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
@@ -1335,10 +1367,11 @@ FOAModel({
               };
             }
             cursor.continue();
-          } else {
-            sink && sink.eof && sink.eof();
-            future.set();
           }
+        };
+        request.transaction.oncomplete = function() {
+          sink && sink.eof && sink.eof();
+          future.set();
         };
         request.onerror = function(e) {
           sink && sink.error && sink.error('remove', e);
@@ -1398,7 +1431,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'StorageDAO',
 
   extendsModel: 'MDAO',
@@ -1448,7 +1481,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'AbstractDAO',
 
   name: 'AbstractFileDAO',
@@ -1596,7 +1629,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'JSONFileDAO',
   extendsModel: 'AbstractFileDAO',
 
@@ -1664,7 +1697,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'KeyCollector',
   help: "A sink that collects the keys of the objects it's given.",
 
@@ -1687,7 +1720,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'WorkerDAO',
   extendsModel: 'AbstractDAO',
 
@@ -1884,7 +1917,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'WorkerDelegate',
   help:  'The client side of a web-worker DAO',
 
@@ -2034,7 +2067,7 @@ var ModelDAO = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'OrderedCollectorSink',
 
   properties: [
@@ -2061,7 +2094,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CollectorSink',
 
   properties: [
@@ -2083,7 +2116,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ParitionDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2198,7 +2231,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ActionFactoryDAO',
   extendsModel: 'ProxyDAO',
   label: 'ActionFactoryDAO',
@@ -2252,7 +2285,7 @@ FOAModel({
 
 
 // TODO Why is this even a DAO, it literally only does find.
-FOAModel({
+MODEL({
   name: 'BlobReaderDAO',
 
   properties: [
@@ -2290,7 +2323,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GDriveDAO',
   properties: [
     {
@@ -2335,7 +2368,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'RestDAO',
   extendsModel: 'AbstractDAO',
 
@@ -2359,6 +2392,11 @@ FOAModel({
       name: 'batchSize',
       defaultValue: 200
     },
+    {
+      model_: 'IntProperty',
+      name: 'skipThreshold',
+      defaultValue: 1000
+    }
   ],
 
   methods: {
@@ -2378,6 +2416,7 @@ FOAModel({
       return this.url;
     },
     buildPutParams: function(obj) {
+      return [];
     },
     buildSelectParams: function(sink, query) {
       return [];
@@ -2407,6 +2446,7 @@ FOAModel({
       var fut = afuture();
       var self = this;
       var limit;
+      var skipped = 0;
       var index = 0;
       var fc = this.createFlowControl_();
       // TODO: This is a very ugly way of passing additional data
@@ -2489,6 +2529,7 @@ FOAModel({
               // Filter items that don't match due to
               // low resolution of Date parameters in MQL
               if ( origQuery && !origQuery.f(item) ) {
+                skipped++;
                 continue;
               }
 
@@ -2507,16 +2548,20 @@ FOAModel({
               sink && sink.put && sink.put(item, null, fc);
             }
             if ( limit <= 0 ) finished = true;
-            if ( ! data || index === data.totalResults ) finished = true;
+            if ( ! data || index >= data.totalResults ) finished = true;
+            if ( skipped >= self.skipThreshold ) finished = true;
             ret();
           });
         })(function() { sink && sink.eof && sink.eof(); fut.set(sink); });
 
       return fut.get;
     },
+    buildFindParams: function(key) {
+      return [];
+    },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key))(function(data) {
+      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
         if ( data ) {
           sink && sink.put && sink.put(self.jsonToObj(data));
         } else {
@@ -2528,7 +2573,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DefaultObjectDAO',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
@@ -2556,7 +2601,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LRUCachingDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2724,7 +2769,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'LazyCacheDAO',
 
   extendsModel: 'ProxyDAO',
@@ -2762,7 +2807,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PropertyOffloadDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2823,7 +2868,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'BlobSerializeDAO',
   extendsModel: 'ProxyDAO',
 
@@ -2916,7 +2961,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
   methods: {
@@ -2983,7 +3028,7 @@ var WaitCursorDAO = FOAM({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EasyDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3048,12 +3093,13 @@ FOAModel({
         this.mdao = dao;
       } else if ( this.cache ) {
         this.mdao = MDAO.create(params);
-        dao = CachingDAO.create(this.mdao, dao);
+        dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
       }
 
       if ( this.seqNo ) {
-        dao = SeqNoDAO.create({__proto__: params, delegate: dao});
-        if ( this.seqProperty ) dao.property = this.seqProperty;
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = SeqNoDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);

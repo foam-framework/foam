@@ -26,7 +26,7 @@
     repaint
 
 */
-FOAModel({
+MODEL({
   name: 'TableView',
   extendsModel: 'View',
 
@@ -48,6 +48,7 @@ FOAModel({
     {
       name:  'hardSelection',
       type:  'Value',
+      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
       factory: function() { return SimpleValue.create(); }
     },
     {
@@ -115,7 +116,7 @@ FOAModel({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -123,6 +124,24 @@ FOAModel({
 
         return sb;
       }
+    },
+    {
+      name: 'scrollPitch',
+      help: 'Number of (CSS) pixels of touch drag required to scroll by one',
+      defaultValue: 10
+    },
+    {
+      name: 'touchScrolling',
+      model_: 'BooleanProperty',
+      defaultValue: false,
+      hidden: true,
+      transient: true
+    },
+    {
+      name: 'touchPrev',
+      hidden: true,
+      transient: true,
+      defaultValue: 0
     }
   ],
 
@@ -182,10 +201,56 @@ FOAModel({
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
         v.initHTML();
       }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(touches, changed) {
+        if ( touches.length > 1 ) return { drop: true };
+        return { weight: 0.3 };
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(touches, changed) {
+        var t = touches[changed[0]];
+        if ( this.touchScrolling ) {
+          var sb = this.scrollbar;
+          var dy = t.y - this.touchPrev;
+          if ( dy > this.scrollPitch && sb.value > 0 ) {
+            this.touchPrev = t.y;
+            sb.value--;
+          } else if ( dy < -this.scrollPitch && sb.value < sb.size - sb.extent ) {
+            this.touchPrev = t.y;
+            sb.value++;
+          }
+
+          return { claim: true, weight: 0.99, preventDefault: true };
+        }
+
+        if ( Math.abs(t.dy) > 10 && Math.abs(t.dx) < 10 ) {
+          // Moving mostly vertically, so start scrolling.
+          this.touchScrolling = true;
+          this.touchPrev = t.y;
+          return { claim: true, weight: 0.8, preventDefault: true };
+        } else if ( t.distance < 10 ) {
+          return { preventDefault: true };
+        } else {
+          return { drop: true };
+        }
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(touches, changed) {
+        this.touchScrolling = false;
+        return { drop: true };
+      }
     }
   ],
 
   methods: {
+    ROW_SELECTED: ['escape'],
+
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
     DOUBLE_CLICK: "double-click", // event topic
@@ -224,6 +289,14 @@ FOAModel({
           }
         };
 
+        if ( this.X.touchManager ) {
+          this.X.touchManager.install(TouchReceiver.create({
+            id: 'qbug-table-scroll-' + this.id,
+            element: this.$.parentElement,
+            delegate: this
+          }));
+        }
+
         this.onResize();
       }
 
@@ -238,8 +311,8 @@ FOAModel({
       this.show__ = ! this.show__;
       if ( this.show__ ) return;
       */
-      this.count__ = ( this.count__ || 0)+1;
-      if ( this.count__ % 3 !== 0 ) return;
+      // this.count__ = ( this.count__ || 0)+1;
+      // if ( this.count__ % 3 !== 0 ) return;
 
       if ( ! dao || ! this.$ ) return;
 

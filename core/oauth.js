@@ -63,7 +63,7 @@ var OAuthXhr = {
   }
 };
 
-FOAModel({
+MODEL({
   name: 'OAuthXhrFactory',
   label: 'OAuthXhrFactory',
 
@@ -86,7 +86,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'OAuth2',
   label: 'OAuth 2.0',
 
@@ -125,11 +125,46 @@ FOAModel({
 
     refresh: function(ret, opt_forceInteractive) {
       return this.refresh_(ret, opt_forceInteractive);
+    },
+
+    setJsonpFuture: function(X, future) {
+      var agent = this;
+      future.set((function() {
+        var factory = X.OAuthXhrFactory.create({
+          authAgent: agent,
+          responseType: "json"
+        });
+
+        return function(url, params, opt_method, opt_payload) {
+          return function(ret) {
+            var xhr = factory.make();
+            xhr.responseType = "json";
+            return xhr.asend(ret,
+                             opt_method ? opt_method : "GET",
+                             url + (params ? '?' + params.join('&') : ''),
+                             opt_payload);
+          };
+        };
+      })());
     }
   }
 });
 
-FOAModel({
+function deferJsonP(X) {
+  var future = afuture();
+  X.ajsonp = function() {
+    var args = arguments;
+    return function(ret) {
+      future.get(function(f) {
+        f.apply(undefined, args)(ret);
+      });
+    };
+  };
+
+  return future;
+}
+
+MODEL({
   name: 'OAuth2WebClient',
   help: 'Strategy for OAuth2 when running as a web page.',
 
@@ -150,7 +185,7 @@ FOAModel({
 
       var path = location.pathname;
       var returnPath = location.origin +
-        location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/oauth.html';
+        location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/oauth2callback.html';
 
       var queryparams = [
         '?response_type=token',
@@ -166,7 +201,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'OAuth2ChromeApp',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 

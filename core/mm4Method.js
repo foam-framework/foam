@@ -18,7 +18,7 @@
 // TODO: do this once no views use it directly
 // delete ModelProto;
 
-FOAModel({
+MODEL({
   name: 'Action',
 
   tableProperties: [
@@ -137,7 +137,7 @@ Action.getPrototype().callIfEnabled = function(that) {
 
 
 /* Not used yet
-   FOAModel({
+   MODEL({
    name: 'Topic',
 
    tableProperties: [
@@ -171,7 +171,7 @@ Action.getPrototype().callIfEnabled = function(that) {
    });
 */
 
-FOAModel({
+MODEL({
   name: 'Arg',
 
   tableProperties: [
@@ -296,7 +296,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Method',
 
   tableProperties: [
@@ -442,7 +442,7 @@ Method.getPrototype().generateFunction = function() {
 };
 
 
-FOAModel({
+MODEL({
   name: 'Interface',
 
   tableProperties: [
@@ -542,7 +542,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Template',
 
   tableProperties: [

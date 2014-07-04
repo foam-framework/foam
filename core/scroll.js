@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name:  'ScrollCView',
 
   extendsModel: 'CView',
@@ -169,7 +169,7 @@ FOAModel({
 
 
 /** Add a scrollbar around an inner-view. **/
-FOAModel({
+MODEL({
   name:  'ScrollBorder',
 
   extendsModel: 'View',

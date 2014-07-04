@@ -29,6 +29,7 @@ var files = [
   'XMLUtil',
   'context',
   'FOAM',
+  'JSONParser',
   'TemplateUtil',
   'AbstractPrototype',
   'ModelProto',

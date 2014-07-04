@@ -51,7 +51,7 @@ ajsonp = function(url, params, opt_method) {
   return axhr(url, opt_method ? opt_method : 'GET', params);
 };
 
-FOAModel({
+MODEL({
   name: 'ChromeAuthAgent',
   label: 'ChromeAuthAgent',
 
@@ -143,3 +143,6 @@ var stack = {
     /* nop */
   }
 };
+
+
+var IS_CHROME_APP = true;

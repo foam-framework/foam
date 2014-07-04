@@ -19,7 +19,7 @@
  * Only completely modelled models here.
  * All models in this file can be stored and loaded in a DAO.
  **/
-FOAModel({
+MODEL({
   name: 'Timer',
 
   properties: [
@@ -158,7 +158,7 @@ FOAModel({
  *
  * TODO: Make simpler to setup.
  **/
-FOAModel({
+MODEL({
   name: 'Binding',
 
   properties: [
@@ -175,7 +175,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PersistentContext',
 
   properties: [
@@ -205,11 +205,11 @@ FOAModel({
     manage: function(name, obj) {
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
-        this.dao.put(Binding.create({
+        this.dao.put(this.X.Binding.create({
           id:    name,
           value: JSONUtil.compact.where(this.predicate).stringify(obj)
         }));
-      }).bind(this)));
+      }).bind(this), undefined, this.X));
     },
     bindObjects: function(a) {
       // TODO: implement
@@ -250,7 +250,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'UserInfo',
   label: 'UserInfo',
 

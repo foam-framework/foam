@@ -64,7 +64,7 @@ var EventService = {
    * @param opt_delay time in milliseconds of time-window, defaults to 16ms, which is
    *        the smallest delay that humans aren't able to perceive.
    **/
-  merged: function(listener, opt_delay) {
+  merged: function(listener, opt_delay, opt_X) {
     var delay = opt_delay || 16;
 
     return function() {
@@ -81,17 +81,22 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          setTimeout(
-            function() {
-              triggered = false;
-              var args = argsToArray(lastArgs);
-              lastArgs = null;
-              try {
-                listener.apply(this, args);
-              } catch (x) {
-                if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
-              }
-            }, delay);
+          try {
+            ((opt_X && opt_X.setTimeout) || setTimeout)(
+              function() {
+                triggered = false;
+                var args = argsToArray(lastArgs);
+                lastArgs = null;
+                try {
+                  listener.apply(this, args);
+                } catch (x) {
+                  if ( x === EventService.UNSUBSCRIBE_EXCEPTION ) unsubscribed = true;
+                }
+              }, delay);
+          } catch(e) {
+            // TODO: Clean this up when we move EventService into the context.
+            throw EventService.UNSUBSCRIBE_EXCEPTION;
+          }
         }
       };
 
@@ -109,7 +114,10 @@ var EventService = {
    * Only the last notification is delivered.
    **/
   // TODO: execute immediately from within a requestAnimationFrame
-  animate: function(listener) {
+  animate: function(listener, opt_X) {
+//    if ( ! opt_X ) debugger;
+//    if ( opt_X.isBackground ) debugger;
+
     return function() {
       var STACK        = null;
       var triggered    = false;
@@ -124,8 +132,7 @@ var EventService = {
 
         if ( ! triggered ) {
           triggered = true;
-          var window = $documents[$documents.length-1].defaultView;
-          window.requestAnimationFrame(
+          ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
             function() {
               triggered = false;
               var args = argsToArray(lastArgs);
@@ -313,7 +320,9 @@ var EventService = {
           listener.apply(null, msg);
         } catch ( err ) {
           if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-            console.warn('Error delivering event (removing listener): ', topic);
+            console.error('Error delivering event (removing listener): ', topic.join('.'));
+          } else {
+            console.warn('Unsubscribing listener: ', topic.join('.'));
           }
           listeners.splice(i,1);
           i--;
@@ -323,9 +332,11 @@ var EventService = {
       return listeners.length;
     }
 
+    var count = 0;
     for ( var key in listeners ) {
-      return this.notifyListeners_(topic, listeners[key], msg);
+      count += this.notifyListeners_(topic, listeners[key], msg);
     }
+    return count;
   },
 
 
@@ -480,13 +491,13 @@ var Events = {
     if ( ! srcValue || ! dstValue ) return;
 
     var listener = function () {
-      var sv = f(srcValue.get());
-      var dv = dstValue.get();
+      var s = f(srcValue.get());
+      var d = dstValue.get();
 
-      if ( sv !== dv ) dstValue.set(sv);
+      if ( s !== d ) dstValue.set(s);
     };
 
-    listener(); // copy initial value
+    listener();
 
     // TODO: put back when cleanup implemented
     //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
@@ -514,6 +525,8 @@ var Events = {
    * Initial value is copied from srcValue to dstValue.
    **/
   link: function (srcValue, dstValue) {
+    if ( ! srcValue || ! dstValue ) return;
+
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
   },
@@ -523,12 +536,36 @@ var Events = {
    * Relate the values of two models.
    * @param f maps value1 to model2
    * @param fprime maps model2 to value1
+   * @param removeFeedback disables feedback
    */
-  relate: function (value1, value2, f, fprime) {
-    this.map(value1, value2, f);
-    this.map(value2, value1, fprime);
-  },
+  relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
+    if ( ! srcValue || ! dstValue ) return;
 
+    var feedback = false;
+
+    var l = function(sv, dv, f) { return function () {
+      if ( removeFeedback && feedback ) return;
+      var s = f(sv.get());
+      var d = dv.get();
+
+      if ( s !== d ) {
+        feedback = true;
+        dv.set(s);
+        feedback = false;
+      }
+    }};
+
+    // TODO: put back when cleanup implemented
+    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
+
+    var l1 = l(srcValue, dstValue, f);
+    var l2 = l(dstValue, srcValue, fprime);
+
+    srcValue.addListener(l1);
+    dstValue.addListener(l2);
+
+    l1();
+  },
 
   /** Unlink the values of two models by having them no longer follow each other. **/
   unlink: function (value1, value2) {
@@ -548,9 +585,9 @@ var Events = {
    * @param opt_fn also invoked when dependencies change,
    *        but its own dependencies are not tracked.
    */
-  dynamic: function(fn, opt_fn) {
+  dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var listener = EventService.animate(fn2, 5);
+    var listener = EventService.animate(fn2, opt_X);
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name); });
@@ -719,7 +756,8 @@ var Movement = {
     };
   },
 
-  // requires unsubscribe to work first
+  // requires unsubscribe to work first (which it does now)
+  /*
   animate2: function(timer, duration, fn) {
     return function() {
       var startTime = timer.time;
@@ -741,6 +779,7 @@ var Movement = {
       update();
     };
   },
+  */
 
   // TODO: if this were an object then you could sub-class to modify playback
   compile: function (a, opt_rest) {
@@ -875,11 +914,4 @@ var Movement = {
     }));
   }
 
-};
-
-
-var originalRequestAnimationFrame = window.requestAnimationFrame;
-
-window.requestAnimationFrame = function(f) {
-  this.setTimeout(f, 16);
 };

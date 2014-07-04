@@ -239,27 +239,33 @@ var Model = {
       postSet: function(_, templates) {
         // Load templates from an external file
         // if their 'template' property isn't set
-        for ( var i = 0 ; i < templates.length ; i++ ) {
-          var t = templates[i];
+        var i = 0;
+        templates.forEach(function(t) {
           if ( typeof t === 'function' ) {
             t = templates[i] = Template.create({name: t.name, template: multiline(t)});
           } else if ( ! t.template ) {
+            // console.log('loading: '+ this.name + ' ' + t.name);
+
             var future = afuture();
-            t.futureTemplate = future.get;
             var path = document.currentScript.src;
+
+            t.futureTemplate = future.get;
             path = path.substring(0, path.lastIndexOf('/')+1);
             path += this.name + '_' + t.name + '.ft';
+
             var xhr = new XMLHttpRequest();
             xhr.open("GET", path);
-            xhr.asend((function(t, future) { return function(data) {
+            xhr.asend(function(data) {
               t.template = data;
               future.set(data);
               t.futureTemplate = undefined;
-            };})(t, future));
+            });
           } else if ( typeof t.template === 'function' ) {
             t.template = multiline(t.template);
           }
-        }
+
+          i++;
+        }.bind(this));
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.'

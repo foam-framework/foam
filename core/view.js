@@ -158,7 +158,7 @@ var DOM = {
         }
         args[key] = val;
       } else {
-        if ( ! {model:true, view:true, id:true, oninit:true}[key] ) {
+        if ( ! {model:true, view:true, id:true, oninit:true, showactions:true}[key] ) {
           console.log('unknown attribute: ', key);
         }
       }
@@ -201,7 +201,14 @@ var DOM = {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
         view = viewModel.create({model: model, value: SimpleValue.create(obj)});
-        if ( ! viewName ) view.showActions = true;
+        if ( ! viewName ) {
+          // default value is 'true' if 'showActions' isn't specified.
+          var a = e.getAttribute('showActions');
+
+          view.showActions = a ?
+            a.equalsIC('y') || a.equalsIC('yes') || a.equalsIC('true') || a.equalsIC('t') :
+            true ;
+        }
       }
 
       if ( e.id ) opt_document.FOAM_OBJECTS[e.id] = obj;
@@ -232,7 +239,7 @@ function toNum(p) { return p.replace ? parseInt(p.replace('px','')) : p; };
 
 // ??? Should this have a 'data' property?
 // Or maybe a DataView and ModelView
-FOAModel({
+MODEL({
   name: 'View',
   label: 'View',
 
@@ -244,13 +251,13 @@ FOAModel({
       factory: function() { return this.nextID(); }
     },
     {
-      name:  'parent',
-      type:  'View',
+      name: 'parent',
+      type: 'View',
       hidden: true
     },
     {
-      name:  'children',
-      type:  'Array[View]',
+      name: 'children',
+      type: 'Array[View]',
       factory: function() { return []; }
     },
     {
@@ -272,6 +279,10 @@ FOAModel({
     {
       name: 'className',
       defaultValue: ''
+    },
+    {
+      name: 'extraClassName',
+      defaultValue: ''
     }
   ],
 
@@ -279,6 +290,8 @@ FOAModel({
     // TODO: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
     ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
+
+    toView: function() { return this; },
 
     deepPublish: function(topic) {
       var count = this.publish.apply(this, arguments);
@@ -298,12 +311,21 @@ FOAModel({
     },
 
     cssClassAttr: function() {
-      return this.className ? ' class="' + this.className + '"' : '';
+      if ( ! this.className && ! this.extraClassName ) return '';
+
+      var s = ' class="';
+      if ( this.className ) {
+        s += this.className
+        if ( this.extraClassName ) s += ' ';
+      }
+      if ( this.extraClassName ) s += this.extraClassName;
+
+      return s + '"';
     },
 
     dynamicTag: function(tagName, f) {
       var id = this.nextID();
-      Events.dynamic(function() {
+      this.X.dynamic(function() {
         var html = f();
         var e = $(id);
         if ( e ) e.innerHTML = html;
@@ -320,21 +342,35 @@ FOAModel({
 
     /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
-      var v = this.X.PropertyView.create({prop: prop, args: opt_args});
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
 
+    createActionView: function(action, value, opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
+      var v = X[modelName].create({
+        action: action,
+        value: value}).copyFrom(opt_args);
+
+      this[action.name + 'View'] = v;
+
+      return v;
+    },
+
     createTemplateView: function(name, opt_args) {
-      o = this.model_[name];
+      var o = this.model_[name];
       return Action.isInstance(o) ?
-        this.X.ActionButton.create({action: o, value: SimpleValue.create(this)}).copyFrom(opt_args) :
-        this.createView(o, opt_args);
+        this.createActionView(o, SimpleValue.create(this), opt_args) :
+        this.createView(o, opt_args) ;
     },
 
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
+      if ( child.toView ) child = child.toView(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
@@ -395,14 +431,14 @@ FOAModel({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        Events.dynamic(valueFn, function() {
+        this.X.dynamic(valueFn, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined ) e.removeAttribute(attributeName);
           else e.setAttribute(attributeName, newValue);
         })
-      });
+      }.bind(this));
     },
 
     setClass: function(className, predicate, opt_id) {
@@ -410,12 +446,12 @@ FOAModel({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        Events.dynamic(predicate, function() {
+        this.X.dynamic(predicate, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
         });
-      });
+      }.bind(this));
 
       return opt_id;
     },
@@ -496,7 +532,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PropertyView',
 
   extendsModel: 'View',
@@ -555,7 +591,7 @@ FOAModel({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) return viewName.deepClone().copyFrom(prop);
+      if ( viewName.model_ ) { var v = viewName.deepClone().copyFrom(prop); v.id = v.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -582,36 +618,36 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PopupView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'view',
-      type:  'View',
+      name: 'view',
+      type: 'View',
     },
     {
-      name:  'x'
+      name: 'x'
     },
     {
-      name:  'y'
+      name: 'y'
     },
     {
-      name:  'width',
+      name: 'width',
       defaultValue: undefined
     },
     {
-      name:  'maxWidth',
+      name: 'maxWidth',
       defaultValue: undefined
     },
     {
-      name:  'maxHeight',
+      name: 'maxHeight',
       defaultValue: undefined
     },
     {
-      name:  'height',
+      name: 'height',
       defaultValue: undefined
     }
   ],
@@ -644,101 +680,204 @@ FOAModel({
   }
 });
 
-FOAModel({
-  name: 'AutocompletePopup',
+MODEL({
+  name: 'AutocompleteView',
   extendsModel: 'PopupView',
-  help: 'A popup view that only renders if the count is >0',
+  help: 'Default autocomplete popup.',
 
   properties: [
+    'closeTimeout',
+    'autocompleter',
+    'completer',
+    'current',
     {
-      model_: 'DAOProperty',
-      name: 'dao'
+      model_: 'IntProperty',
+      name: 'closeTime',
+      units: 'ms',
+      help: 'Time to delay the actual close on a .close call.',
+      defaultValue: 200
     },
     {
-      model_: 'BooleanProperty', name: 'hideOnMouseOut', defaultValue: true
+      name: 'view',
+      postSet: function(prev, v) {
+        if ( prev ) {
+          prev.data$.removeListener(this.complete);
+          prev.choices$.removeListener(this.choicesUpdate);
+        }
+
+        v.data$.addListener(this.complete);
+        v.choices$.addListener(this.choicesUpdate);
+      }
+    },
+    {
+      name: 'target',
+      postSet: function(prev, v) {
+        prev && prev.unsubscribe(['keydown'], this.onKeyDown);
+        v.subscribe(['keydown'], this.onKeyDown);
+      }
+    },
+    {
+      name: 'maxHeight',
+      defaultValue: 400
+    },
+    {
+      name: 'className',
+      defaultValue: 'autocompletePopup'
     }
   ],
 
   methods: {
+    autocomplete: function(partial) {
+      if ( ! this.completer ) {
+        var proto = FOAM.lookup(this.autocompleter, this.X);
+        this.completer = proto.create();
+      }
+      if ( ! this.view ) {
+        this.view = this.makeView();
+      }
+
+      this.current = partial;
+      this.open(this.target);
+      this.completer.autocomplete(partial);
+    },
+
+    makeView: function() {
+      return this.X.ChoiceListView.create({
+        dao: this.completer.autocompleteDao,
+        extraClassName: 'autocomplete',
+        orientation: 'vertical',
+        mode: 'final',
+        objToChoice: this.completer.f,
+        useSelection: true
+      });
+    },
+
+    init: function(args) {
+      this.SUPER(args);
+      this.subscribe('blur', (function() {
+        this.close();
+      }).bind(this));
+    },
+
     open: function(e, opt_delay) {
-      if ( this.$ ) { this.position(this.$, e.$ || e); return; }
+      if ( this.closeTimeout ) {
+        this.X.clearTimeout(this.closeTimeout);
+        this.closeTimeout = 0;
+      }
+
+      if ( this.$ ) { this.position(this.$.firstElementChild, e.$ || e); return; }
 
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
+
+      if ( this.X.document !== document ) debugger;
+
       var div      = document.createElement('div');
+      var window = document.defaultView;
 
-      this.position(div, parentNode);
+      if ( this.X.window !== window ) debugger;
 
-      div.id = this.id;
-      div.innerHTML = this.view.toHTML();
-      if ( this.hideOnMouseOut ) {
-        var self = this;
-        div.addEventListener('mouseleave', function(e) {
-          self.close();
-        });
+      parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
+
+      this.position(this.$.firstElementChild, parentNode);
+      this.initHTML();
+    },
+
+    close: function(opt_now) {
+      if ( opt_now ) {
+        if ( this.closeTimeout ) {
+          this.X.clearTimeout(this.closeTimeout);
+          this.closeTimeout = 0;
+        }
+        this.SUPER();
+        return;
       }
 
-      document.body.appendChild(div);
-      this.view.initHTML();
+      if ( this.closeTimeout ) return;
+
+      var realClose = this.SUPER;
+      var self = this;
+      this.closeTimeout = this.X.setTimeout(function() {
+        self.closeTimeout = 0;
+        realClose.call(self);
+      }, this.closeTime);
     },
 
     position: function(div, parentNode) {
       var document = parentNode.ownerDocument;
 
-      if ( this.x || this.y ) {
-        div.style.left = this.x + 'px';
-        div.style.top = this.y + 'px';
-      } else {
-        var pos = findPageXY(parentNode);
-        var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+      var pos = findPageXY(parentNode);
+      var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
 
-        div.style.left = pos[0];
-
-        if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
-          div.style.bottom = document.defaultView.innerHeight - pos[1];
-        } else {
-          div.style.top = pos[1] + parentNode.offsetHeight;
-        }
+      if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
+        div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
       }
+
+      if ( pos[2].offsetWidth - pos[0] < 600 ) div.style.left = 600 - pos[2].offsetWidth;
+      else div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
       if ( this.maxWidth ) {
         div.style.maxWidth = this.maxWidth + 'px';
-        div.style.overflowX = 'scroll';
+        div.style.overflowX = 'auto';
       }
       if ( this.maxHeight ) {
         div.style.maxHeight = this.maxHeight + 'px';
-        div.style.overflowY = 'scroll';
+        div.style.overflowY = 'auto';
       }
-
-      div.style.position = 'absolute';
-    },
-
-    init: function(args) {
-      this.SUPER(args);
-      this.dao.listen(this.autocomplete);
     }
   },
 
   listeners: [
     {
-      name: 'autocomplete',
+      name: 'onKeyDown',
+      code: function(_,_,e) {
+        if ( ! this.view ) return;
+
+        if ( e.keyCode === 38 /* arrow up */ ) {
+          this.view.index--;
+          this.view.scrollToSelection(this.$);
+          e.preventDefault();
+        } else if ( e.keyCode  === 40 /* arrow down */ ) {
+          this.view.index++;
+          this.view.scrollToSelection(this.$);
+          e.preventDefault();
+        } else if ( e.keyCode  === 13 /* enter */ ) {
+          this.view.commit();
+          e.preventDefault();
+        }
+      }
+    },
+    {
+      name: 'complete',
       code: function() {
-        this.dao.select(COUNT())((function(c) {
-          if ( c.count === 0 ) {
-            this.close();
-            return;
-          }
-          this.open(this.parent);
-          this.view.dao = this.dao;
-        }).bind(this));
+        this.target.onAutocomplete(this.view.data);
+        this.view = this.makeView();
+        this.close(true);
+      }
+    },
+    {
+      name: 'choicesUpdate',
+      code: function() {
+        if ( this.view &&
+             ( this.view.choices.length === 0 ||
+               ( this.view.choices.length === 1 &&
+                 this.view.choices[0][1] === this.current ) ) ) {
+          this.close(true);
+        }
       }
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+  <span id="<%= this.id %>" style="position:relative"><div %%cssClassAttr() style="position:absolute"><%= this.view %></div></span>
+    */}
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'StaticHTML',
   extendsModel: 'View',
   properties: [
@@ -764,7 +903,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MenuSeparator',
   extendsModel: 'StaticHTML',
   properties: [
@@ -825,7 +964,37 @@ var DomValue = {
 };
 
 
-FOAModel({
+MODEL({
+  name: 'WindowHashValue',
+
+  properties: [
+    {
+      name: 'window',
+      defaultValueFn: function() { return this.X.window; }
+    }
+  ],
+
+  methods: {
+    get: function() { return this.window.location.hash ? this.window.location.hash.substring(1) : ''; },
+
+    set: function(value) { this.window.location.hash = value; },
+
+    addListener: function(listener) {
+      this.window.addEventListener('hashchange', listener, false);
+    },
+
+    removeListener: function(listener) {
+      this.window.removeEventListener('hashchange', listener, false);
+    },
+
+    toString: function() { return "WindowHashValue(" + this.get() + ")"; }
+  }
+});
+
+X.memento = X.WindowHashValue.create();
+
+
+MODEL({
   name: 'ImageView',
 
   extendsModel: 'View',
@@ -842,7 +1011,15 @@ FOAModel({
     {
       // TODO: make 'data' be the actual source of the data
       name: 'data',
+      getter: function() { return this.value.get(); },
       setter: function(d) { this.value = SimpleValue.create(d); }
+    },
+    {
+      name: 'className',
+      defaultValue: 'imageView'
+    },
+    {
+      name: 'backupImage'
     },
     {
       name: 'domValue',
@@ -872,7 +1049,9 @@ FOAModel({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return '<img class="imageView" id="' + this.id + '">';
+      return this.backupImage && window.IS_CHROME_APP ?
+        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.backupImage + '">' :
+        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -881,7 +1060,11 @@ FOAModel({
     initHTML: function() {
       this.SUPER();
 
-      if ( window.chrome && window.chrome.app && window.chrome.app.runtime && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( this.backupImage ) this.$.addEventListener('error', function() {
+        this.data = this.backupImage;
+      }.bind(this));
+
+      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.value.get()) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.value.get());
@@ -901,7 +1084,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'BlobImageView',
 
   extendsModel: 'View',
@@ -958,7 +1141,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'TextFieldView',
   label: 'Text Field',
 
@@ -967,44 +1150,44 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'name',
+      name: 'name',
       defaultValue: 'field'
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 30
     },
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 1
     },
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'text'
     },
     {
       model_: 'StringProperty',
-      name:  'placeholder',
+      name: 'placeholder',
       defaultValue: undefined
     },
     {
       model_: 'BooleanProperty',
-      name:  'onKeyMode',
+      name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.'
     },
     {
       model_: 'BooleanProperty',
-      name:  'escapeHTML',
+      name: 'escapeHTML',
       // defaultValue: true,
       // TODO: make the default 'true' for security reasons
       help: 'If true, HTML content is excaped in display mode.'
     },
     {
       model_: 'StringProperty',
-      name:  'mode',
+      name: 'mode',
       defaultValue: 'read-write',
       view: {
         create: function() { return ChoiceView.create({choices:[
@@ -1031,7 +1214,7 @@ FOAModel({
       defaultValue: true
     },
     'autocompleter',
-    'autocompleteView',
+    'autocompleteView'
   ],
 
   methods: {
@@ -1059,56 +1242,65 @@ FOAModel({
     },
 
     toReadOnlyHTML: function() {
+      var self = this;
+      this.setClass('placeholder', function() { return self.data === ''; }, this.id);
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + ' name="' + this.name + '"></' + this.tagName + '>';
     },
 
     setupAutocomplete: function() {
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
-      var proto = FOAM.lookup(this.autocompleter, this.X);
-      var completer = proto.create();
-      this.autocompleteView = this.X.AutocompletePopup.create({
-        dao: completer.autocompleteDao,
-        maxHeight: 400,
-        view: this.X.DAOListView.create({
-          dao: completer.autocompleteDao,
-          mode: 'final',
-          rowView: 'SummaryView',
-          useSelection: true
-        })
+      var view = this.autocompleteView = this.X.AutocompleteView.create({
+        autocompleter: this.autocompleter,
+        target: this
       });
-      this.addChild(this.autocompleteView);
 
-      this.autocompleteView.view.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
+      this.bindAutocompleteEvents(view);
+    },
+
+    onAutocomplete: function(data) {
+      this.data = data;
+    },
+
+    bindAutocompleteEvents: function(view) {
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
+      });
+      this.$.addEventListener('input', (function() {
+        view.autocomplete(this.textToValue(this.$.value));
       }).bind(this));
-
-      var self = this;
-      this.$.addEventListener('input', function() {
-        completer.autocomplete(self.textToValue(self.$.value));;
-      });
-      this.$.addEventListener('focus', function() {
-        completer.autocomplete(self.data);
-      });
+      this.$.addEventListener('focus', (function() {
+        view.autocomplete(this.textToValue(this.$.value));
+      }).bind(this));
     },
 
     initHTML: function() {
       this.SUPER();
 
-      if ( this.placeholder ) this.$.placeholder = this.placeholder;
 
       if ( this.mode === 'read-write' ) {
+        if ( this.placeholder ) this.$.placeholder = this.placeholder;
+
         this.domValue = DomValue.create(
           this.$,
           this.onKeyMode ? 'input' : 'change');
 
+        // In KeyMode we disable feedback to avoid updating the field
+        // while the user is still typing.  Then we update the view
+        // once they leave(blur) the field.
         Events.relate(
           this.data$,
           this.domValue,
           this.valueToText.bind(this),
-          this.textToValue.bind(this));
+          this.textToValue.bind(this),
+          this.onKeyMode);
+
+        if ( this.onKeyMode )
+          this.$.addEventListener('blur', this.onBlur);
 
         this.$.addEventListener('keydown', this.onKeyDown);
+
         this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
@@ -1125,7 +1317,11 @@ FOAModel({
 
     textToValue: function(text) { return text; },
 
-    valueToText: function(value) { return value; },
+    valueToText: function(value) {
+      if ( this.mode === 'read-only' )
+        return (value === '') ? this.placeholder : value;
+      return value;
+    },
 
     destroy: function() { Events.unlink(this.domValue, this.data$); }
   },
@@ -1137,14 +1333,23 @@ FOAModel({
         if ( e.keyCode == 27 /* ESCAPE KEY */ ) {
           this.domValue.set(this.data);
           this.publish(this.ESCAPE);
+        } else {
+          this.publish(['keydown'], e);
         }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        if ( this.domValue.get() !== this.data )
+          this.domValue.set(this.data);
       }
     }
   ]
 });
 
 
-FOAModel({
+MODEL({
   name:  'DateFieldView',
   label: 'Date Field',
 
@@ -1153,7 +1358,7 @@ FOAModel({
   properties: [
     {
       model_: 'StringProperty',
-      name:  'type',
+      name: 'type',
       defaultValue: 'date'
     }
   ],
@@ -1167,7 +1372,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
@@ -1192,30 +1397,13 @@ FOAModel({
       }
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(new Date()); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue && this.domValue ) {
-          Events.unlink(this.domValue, oldValue);
-        }
-        this.linkValues();
-      }
+      name: 'data',
     }
   ],
 
   methods: {
-    linkValues: function() {
-      if ( ! this.$ ) return;
-      if ( ! this.value ) return;
-
-      this.domValue = DomValue.create(this.$, undefined, 'valueAsNumber');
-
-      Events.relate(this.value, this.domValue, this.valueToDom, this.domToValue);
-    },
-
     valueToDom: function(value) { return value ? value.getTime() : 0; },
     domToValue: function(dom) { return new Date(dom); },
-    setValue: function(value) { this.value = value; },
 
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.
@@ -1226,27 +1414,43 @@ FOAModel({
 
     initHTML: function() {
       this.SUPER();
-      this.linkValues();
+
+      this.domValue = DomValue.create(
+        this.$,
+        this.mode === 'read-write' ? 'input' : undefined,
+        this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
+
+      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
+
+      Events.relate(
+        this.data$,
+        this.domValue,
+        this.valueToDom.bind(this),
+        this.domToValue.bind(this));
     }
   }
 });
 
 
-FOAModel({
+MODEL({
   name:  'RelativeDateTimeFieldView',
   label: 'Relative Date-Time Field',
 
   extendsModel: 'DateTimeFieldView',
 
+  properties: [
+    { name: 'mode', defaultValue: 'read-only' }
+  ],
+
   methods: {
-    valueToText: function(value) {
+    valueToDom: function(value) {
       return value.toRelativeDateString();
     }
   }
 });
 
 
-FOAModel({
+MODEL({
   name:  'HTMLView',
   label: 'HTML Field',
 
@@ -1254,18 +1458,18 @@ FOAModel({
 
   properties: [
     {
-      name:  'name',
-      type:  'String',
+      name: 'name',
+      type: 'String',
       defaultValue: ''
     },
     {
       model_: 'StringProperty',
-      name:  'tag',
+      name: 'tag',
       defaultValue: 'span'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
         if ( this.mode === 'read-write' ) {
@@ -1308,30 +1512,30 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'RoleView',
+MODEL({
+  name: 'RoleView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'roleName',
-      type:  'String',
+      name: 'roleName',
+      type: 'String',
       defaultValue: ''
     },
     {
-      name:  'models',
-      type:  'Array[String]',
+      name: 'models',
+      type: 'Array[String]',
       defaultValue: []
     },
     {
-      name:  'selection',
-      type:  'Value',
+      name: 'selection',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -1371,8 +1575,8 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'BooleanView',
+MODEL({
+  name: 'BooleanView',
 
   extendsModel: 'View',
 
@@ -1415,8 +1619,8 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'ImageBooleanView',
+MODEL({
+  name: 'ImageBooleanView',
 
   extendsModel: 'View',
 
@@ -1488,17 +1692,24 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'CSSImageBooleanView',
+MODEL({
+  name: 'CSSImageBooleanView',
 
   extendsModel: 'View',
 
+  properties: [
+    'data',
+  ],
+
   methods: {
     initHTML: function() {
+      if ( ! this.$ ) return;
       this.data$.addListener(this.update);
       this.$.addEventListener('click', this.onClick);
     },
-    toInnerHTML: function() { return '&nbsp;&nbsp;&nbsp;'; }
+    toHTML: function() {
+      return '<span id="' + this.id + '" class="' + this.className + ' ' + (this.data ? 'true' : '') + '">&nbsp;&nbsp;&nbsp;</span>';
+    }
   },
 
   listeners: [
@@ -1521,8 +1732,8 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'ImageBooleanView2',
+MODEL({
+  name: 'ImageBooleanView2',
 
   extendsModel: 'View',
 
@@ -1568,7 +1779,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'TextAreaView',
 
   extendsModel: 'TextFieldView',
@@ -1578,19 +1789,19 @@ FOAModel({
   properties: [
     {
       model_: 'IntProperty',
-      name:  'displayHeight',
+      name: 'displayHeight',
       defaultValue: 5
     },
     {
       model_: 'IntProperty',
-      name:  'displayWidth',
+      name: 'displayWidth',
       defaultValue: 70
     }
   ]
 });
 
 
-FOAModel({
+MODEL({
   name:  'FunctionView',
 
   extendsModel: 'TextFieldView',
@@ -1656,8 +1867,8 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'JSView',
+MODEL({
+  name: 'JSView',
 
   extendsModel: 'TextAreaView',
 
@@ -1685,7 +1896,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name:  'XMLView',
   label: 'XML View',
 
@@ -1714,19 +1925,19 @@ FOAModel({
 
 
 /** A display-only summary view. **/
-FOAModel({
+MODEL({
   name: 'SummaryView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -1785,15 +1996,15 @@ FOAModel({
 
 
 /** A display-only on-line help view. **/
-FOAModel({
+MODEL({
   name: 'HelpView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'model',
-      type:  'Model'
+      name: 'model',
+      type: 'Model'
     }
   ],
 
@@ -1836,23 +2047,23 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EditColumnsView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'properties'
+      name: 'properties'
     },
     {
       model_: 'StringArrayProperty',
-      name:  'availableProperties'
+      name: 'availableProperties'
     }
   ],
 
@@ -1903,22 +2114,26 @@ FOAModel({
 
 
 // TODO: add ability to set CSS class and/or id
-FOAModel({
+MODEL({
   name: 'ActionButton',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'action',
+      name: 'action',
       postSet: function(old, nu) {
         old && old.removeListener(this.render)
         nu.addListener(this.render);
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'data',
+      setter: function(_, d) { this.value = SimpleValue.create(d); }
+    },
+    {
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     },
     {
@@ -1965,7 +2180,7 @@ FOAModel({
         return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      Events.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -1988,13 +2203,14 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ActionLink',
 
   extendsModel: 'ActionButton',
 
   properties: [
     {
+      // TODO: fix
       name: 'className',
       factory: function() { return 'actionLink actionLink-' + this.action.name; }
     },
@@ -2025,7 +2241,7 @@ FOAModel({
 
 
 // TODO: ActionBorder should use this.
-FOAModel({
+MODEL({
   name:  'ToolbarView',
   label: 'Toolbar',
 
@@ -2045,8 +2261,8 @@ FOAModel({
       }
     },
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); },
       postSet: function(oldValue, newValue) {
       }
@@ -2064,6 +2280,7 @@ FOAModel({
       name: 'right'
     },
     {
+      // TODO: This should just come from X instead
       name: 'document'
     },
     {
@@ -2078,7 +2295,6 @@ FOAModel({
     postButton: function() { return this.horizontal ? ' ' : '<br>'; },
 
     openAsMenu: function() {
-      // TODO
       var div = this.document.createElement('div');
       this.openedAsMenu = true;
 
@@ -2090,12 +2306,10 @@ FOAModel({
 
       var self = this;
       // Close window when clicked
-      div.onclick = function() {
-        self.close();
-      };
+      div.onclick = function() { self.close(); };
 
       div.onmouseout = function(e) {
-        if (e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div) {
+        if ( e.toElement.parentNode != div && e.toElement.parentNode.parentNode != div ) {
           self.close();
         }
       };
@@ -2105,9 +2319,7 @@ FOAModel({
     },
 
     close: function() {
-      if ( ! this.openedAsMenu ) {
-        return this.SUPER();
-      }
+      if ( ! this.openedAsMenu ) return this.SUPER();
 
       this.openedAsMenu = false;
       this.$.parentNode.remove();
@@ -2194,7 +2406,7 @@ FOAModel({
    listen for changes to Model and change buttons displayed and enabled
    isAvailable
 */
-FOAModel({
+MODEL({
   name: 'ActionBorder',
 
   properties: [
@@ -2214,13 +2426,13 @@ FOAModel({
       var actions = border.actions || this.model.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
-        var button = ActionButton.create({ action: action });
+        var button = this.X.ActionButton.create({ action: action });
         if ( border.value )
           button.value$ = border.value$
         else if ( this.value )
           button.value$ = this.value$;
         else
-          button.value = SimpleValue.create(this);
+          button.value = this.X.SimpleValue.create(this);
         str += " " + button.toHTML() + " ";
         this.addChild(button);
       }
@@ -2231,15 +2443,15 @@ FOAModel({
   }
 });
 
-FOAModel({
-  name:  'ProgressView',
+MODEL({
+  name: 'ProgressView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'value',
-      type:  'Value',
+      name: 'value',
+      type: 'Value',
       factory: function() { return SimpleValue.create(); }
     }
   ],
@@ -2289,54 +2501,54 @@ var ArrayView = {
 };
 
 
-FOAModel({
+MODEL({
   name: 'GridView',
 
   extendsModel: 'View',
 
   properties: [
     {
-      name:  'row',
+      name: 'row',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'col',
+      name: 'col',
       label: 'column',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'acc',
+      name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
       factory: function() { return ChoiceView.create(); }
     },
     {
-      name:  'accChoices',
+      name: 'accChoices',
       label: 'Accumulator Choices',
       type: 'Array',
       factory: function() { return []; }
     },
     {
-      name:  'scrollMode',
-      type:  'String',
+      name: 'scrollMode',
+      type: 'String',
       defaultValue: 'Bars',
       view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
     },
     {
-      name:  'model',
+      name: 'model',
       type: 'Model'
     },
     {
-      name:  'dao',
+      name: 'dao',
       label: 'DAO',
       type: 'DAO',
-      postSet: function() { this.updateHTML(); }
+      postSet: function() { this.repaint_(); }
     },
     {
-      name:  'grid',
-      type:  'GridByExpr',
+      name: 'grid',
+      type: 'GridByExpr',
       factory: function() { return GridByExpr.create(); }
     }
   ],
@@ -2360,19 +2572,10 @@ FOAModel({
           console.time('toHTML');
           var html = g.toHTML();
           console.timeEnd('toHTML');
-
-          console.time('setInnerHTML');
           self.$.innerHTML = html;
-          console.timeEnd('setInnerHTML');
-
-          // Perform asynchronously so that it doesn't delay the displaying of the grid
-          setTimeout(function() {
-            console.time('initHTML');
-            g.initHTML();
-            console.timeEnd('initHTML');
-          }, 800);
+          g.initHTML();
         } else {
-          var cview = GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
@@ -2384,7 +2587,9 @@ FOAModel({
       // TODO: I think this should be done automatically some-how/where.
       this.scrollModeView.data$ = this.scrollMode$;
 
-      var choices = [];
+      var choices = [
+        [ { f: function() { return ''; } }, 'none' ]
+      ];
       this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
         choices.push([p, p.label]);
       }});
@@ -2443,20 +2648,20 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Mouse',
 
   properties: [
     {
-      name:  'x',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'x',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     },
     {
-      name:  'y',
-      type:  'int',
-      view:  'IntFieldView',
+      name: 'y',
+      type: 'int',
+      view: 'IntFieldView',
       defaultValue: 0
     }
   ],
@@ -2481,7 +2686,7 @@ FOAModel({
 
 
 // TODO: This should be replaced with a generic Choice.
-FOAModel({
+MODEL({
   name: 'ViewChoice',
 
   tableProperties: [
@@ -2507,7 +2712,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AlternateView',
 
   extendsModel: 'View',
@@ -2534,15 +2739,15 @@ FOAModel({
           if ( this.view ) {
             this.view.dao = dao;
           } else {
-            this.installSubView(this.choice);
+            this.installSubView();
           }
         }
       }
     },
     {
-      name:  'choice',
+      name: 'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.$ && oldValue != viewChoice ) this.installSubView(viewChoice);
+        if ( this.$ && oldValue != viewChoice ) this.installSubView();
       },
       hidden: true
     },
@@ -2572,32 +2777,39 @@ FOAModel({
     }
   ],
 
+  listeners: [
+    {
+      name: 'installSubView',
+      isAnimated: true,
+      code: function(evt) {
+        var viewChoice = this.choice;
+        var view = typeof(viewChoice.view) === 'function' ?
+          viewChoice.view(this.value.get().model_, this.value) :
+          GLOBAL[viewChoice.view].create({
+            model: this.value.get().model_,
+            value: this.value
+          });
+
+        // TODO: some views are broken and don't have model_, remove
+        // first guard when fixed.
+        if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
+
+        this.$.innerHTML = view.toHTML();
+        view.initHTML();
+        view.value && view.value.set(this.value.get());
+        //       if ( view.set ) view.set(this.model.get());
+        //       Events.link(this.model, this.view.model);
+
+        this.view = view;
+      }
+    }
+  ],
+
   methods: {
     init: function() {
       this.SUPER();
 
       this.choice = this.views[0];
-    },
-
-    installSubView: function(viewChoice) {
-      var view = typeof(viewChoice.view) === 'function' ?
-        viewChoice.view(this.value.get().model_, this.value) :
-        GLOBAL[viewChoice.view].create({
-          model: this.value.get().model_,
-          value: this.value
-        });
-
-      // TODO: some views are broken and don't have model_, remove
-      // first guard when fixed.
-      if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
-
-      this.$.innerHTML = view.toHTML();
-      view.initHTML();
-      view.value && view.value.set(this.value.get());
-      //       if ( view.set ) view.set(this.model.get());
-      //       Events.link(this.model, this.view.model);
-
-      this.view = view;
     },
 
     toHTML: function() {
@@ -2642,7 +2854,7 @@ FOAModel({
       this.SUPER();
 
       this.choice = this.choice || this.views[0];
-      this.installSubView(this.choice);
+      this.installSubView();
     }
   }
 });
@@ -2650,7 +2862,7 @@ FOAModel({
 
 // TODO: Currently this view is "eager": it renders all the child views.
 // It could be made more lazy , and therefore more memory-efficient.
-FOAModel({
+MODEL({
   name: 'SwipeAltView',
   extendsModel: 'View',
 
@@ -2664,7 +2876,7 @@ FOAModel({
       help: 'Child views'
     },
     {
-      name:  'index',
+      name: 'index',
       help: 'The index of the currently selected view',
       defaultValue: 0,
       preSet: function(old, nu) {
@@ -2675,7 +2887,7 @@ FOAModel({
       postSet: function(oldValue, viewChoice) {
         this.views[oldValue].view.deepPublish(this.ON_HIDE);
         // ON_SHOW is called after the animation is done.
-        this.snapToCurrent();
+        this.snapToCurrent(Math.abs(oldValue - viewChoice));
       },
       hidden: true
     },
@@ -2722,13 +2934,8 @@ FOAModel({
       }
     },
     {
-      name: 'touchStart',
-      help: 'Coordinates (screen-relative) of the first touch',
-      hidden: true
-    },
-    {
-      name: 'touchLast',
-      help: 'Last coordinates of an in-progress swipe',
+      name: 'touch',
+      help: 'TouchManager\'s FOAMTouch object',
       hidden: true
     },
     {
@@ -2813,10 +3020,12 @@ FOAModel({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
+      this.X.touchManager.install(TouchReceiver.create({
+        id: 'swipeAltView-' + this.id,
+        element: this.$,
+        delegate: this
+      }));
 
-      this.$.addEventListener('touchstart', this.onTouchStart);
-      this.$.addEventListener('touchmove', this.onTouchMove);
-      this.$.addEventListener('touchend', this.onTouchEnd);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2828,21 +3037,12 @@ FOAModel({
       }, 0);
     },
 
-    getTouch: function(event) {
-      var touches = event.touches && event.touches.length ?
-          event.touches : [event];
-      var e = (event.changedTouches && event.changedTouches[0]) ||
-          (event.originalEvent && event.originalEvent.changedTouches &&
-              event.originalEvent.changedTouches[0]) ||
-          touches[0].originalEvent || touches[0];
-      return { x: e.clientX, y: e.clientY };
-    },
-
-    snapToCurrent: function() {
+    snapToCurrent: function(sizeOfMove) {
       var self = this;
-      Movement.animate(200, function(evt) {
+      var time = 150 + sizeOfMove * 150;
+      Movement.animate(time, function(evt) {
         self.x = self.index * self.width;
-      }, Movement.easeIn(0.2), function() {
+      }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
     }
@@ -2874,37 +3074,35 @@ FOAModel({
     },
     {
       name: 'onTouchStart',
-      code: function(event) {
-        this.touchStart = this.getTouch(event);
+      code: function(touches, changed) {
+        // Only handle single-point touches.
+        if ( Object.keys(touches).length > 1 ) return { drop: true };
+
+        // Otherwise we're moderately interested, until it moves.
+        this.touch = touches[changed[0]];
         this.touchStarted = true;
         this.touchLive = false;
+        return { weight: 0.5 };
       }
     },
     {
       name: 'onTouchMove',
-      code: function(event) {
-        if ( ! this.touchStarted ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchStarted ) return { drop: true };
 
-        var touch = this.getTouch(event);
-        var deltaX = Math.abs(this.touchStart.x - touch.x);
-        var deltaY = Math.abs(this.touchStart.y - touch.y);
-        if ( ! this.touchLive &&
-            Math.sqrt(deltaX*deltaX + deltaY*deltaY) < 10 ) {
+        if ( ! this.touchLive && this.touch.distance < 6 ) {
           // Prevent default, but don't decide if we're scrolling yet.
-          event.preventDefault();
-          return;
+          return { preventDefault: true, weight: 0.5 };
         }
 
-        if ( ! this.touchLive && deltaX < deltaY ) {
-          return;
+        if ( ! this.touchLive && Math.abs(this.touch.dx) < Math.abs(this.touch.dy) ) {
+          // Drop our following of this touch.
+          return { drop: true };
         }
 
         // Otherwise the touch is live.
         this.touchLive = true;
-        event.preventDefault();
-        this.touchLast = touch;
-        var x = this.index * this.width -
-            (this.touchLast.x - this.touchStart.x);
+        var x = this.index * this.width - this.touch.dx;
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -2912,32 +3110,43 @@ FOAModel({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
+        return { preventDefault: true, claim: true, weight: 0.9 };
       }
     },
     {
       name: 'onTouchEnd',
-      code: function(event) {
-        if ( ! this.touchLive ) return;
+      code: function(touches, changed) {
+        if ( ! this.touchLive ) return this.onTouchCancel(touches, changed);
 
         this.touchLive = false;
 
-        var finalX = this.getTouch(event).x;
-        if ( Math.abs(finalX - this.touchStart.x) > this.width / 3 ) {
+        var finalX = this.touch.x;
+        if ( Math.abs(finalX - this.touch.startX) > this.width / 3 ) {
           // Consider that a move.
-          if (finalX < this.touchStart.x) {
+          if (finalX < this.touch.startX) {
             this.index++;
           } else {
             this.index--;
           }
         } else {
-          this.snapToCurrent();
+          this.snapToCurrent(1);
         }
+
+        return { drop: true };
+      }
+    },
+    {
+      name: 'onTouchCancel',
+      code: function(touches, changed) {
+        this.touchLive = false;
+        this.touchStarted = false;
+        return { drop: true };
       }
     }
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'GalleryView',
   extendsModel: 'SwipeAltView',
 
@@ -2992,7 +3201,8 @@ FOAModel({
   }
 });
 
-FOAModel({
+
+MODEL({
   name: 'GalleryImageView',
   extendsModel: 'View',
 
@@ -3006,7 +3216,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ModelAlternateView',
   extendsModel: 'AlternateView',
   methods: {
@@ -3044,21 +3254,42 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'FloatFieldView',
+MODEL({
+  name: 'FloatFieldView',
 
   extendsModel: 'TextFieldView',
 
+  properties: [
+    { name: 'precision', defaultValue: undefined },
+    { name: 'type',      defaultValue: 'number' }
+  ],
+
   methods: {
-    textToValue: function(text) { return parseFloat(text) || "0.0"; }
+    formatNumber: function(val) {
+      if ( ! val ) return '0';
+      val = val.toFixed(this.precision);
+      var i = val.length-1;
+      for ( ; i > 0 && val.charAt(i) === '0' ; i-- );
+      return val.substring(0, val.charAt(i) === '.' ? i : i+1);
+    },
+    valueToText: function(val) {
+      return this.hasOwnProperty('precision') ?
+        this.formatNumber(val) :
+        String.valueOf(val) ;
+    },
+    textToValue: function(text) { return parseFloat(text) || 0; }
   }
 });
 
 
-FOAModel({
-  name:  'IntFieldView',
+MODEL({
+  name: 'IntFieldView',
 
   extendsModel: 'TextFieldView',
+
+  properties: [
+    { name: 'type', defaultValue: 'number' }
+  ],
 
   methods: {
     textToValue: function(text) { return parseInt(text) || "0"; },
@@ -3067,19 +3298,67 @@ FOAModel({
 });
 
 
-FOAModel({
-  name:  'StringArrayView',
+MODEL({
+  name: 'StringArrayView',
 
   extendsModel: 'TextFieldView',
 
   methods: {
+    findCurrentValues: function() {
+      var start = this.$.selectionStart;
+      var value = this.$.value;
+
+      var values = value.split(',');
+      var i = 0;
+      var sum = 0;
+
+      while ( sum + values[i].length < start ) {
+        sum += values[i].length + 1;
+        i++;
+      }
+
+      return { values: values, i: i };
+    },
+    setValues: function(values, index) {
+      this.domValue.set(this.valueToText(values) + ',');
+      this.data = this.textToValue(this.domValue.get());
+
+      var isLast = values.length - 1 === index;
+      var selection = 0;
+      for ( var i = 0; i <= index; i++ ) {
+        selection += values[i].length + 1;
+      }
+      this.$.setSelectionRange(selection, selection);
+      isLast && this.X.setTimeout((function() {
+        this.autocompleteView.autocomplete('');
+      }).bind(this), 0);
+    },
+    onAutocomplete: function(data) {
+      var current = this.findCurrentValues();
+      current.values[current.i] = data;
+      this.setValues(current.values, current.i);
+    },
+    bindAutocompleteEvents: function(view) {
+      // TODO: Refactor this.
+      var self = this;
+      function onInput() {
+        var values = self.findCurrentValues();
+        view.autocomplete(values.values[values.i]);
+      }
+      this.$.addEventListener('input', onInput);
+      this.$.addEventListener('focus', onInput);
+      this.$.addEventListener('blur', function() {
+        // Notify the autocomplete view of a blur, it can decide what to do from there.
+        view.publish('blur');
+      });
+    },
     textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
     valueToText: function(value) { return value ? value.toString() : ""; }
   }
 });
 
 
-FOAModel({
+MODEL({
   name: 'MultiLineStringArrayView',
   extendsModel: 'View',
 
@@ -3267,7 +3546,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'View',
 
   name: 'SplitView',
@@ -3329,7 +3608,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ListValueView',
   help: 'Combines an input view with a value view for the edited value.',
 
@@ -3375,7 +3654,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   extendsModel: 'View',
 
   name: 'ListInputView',
@@ -3549,7 +3828,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ArrayTileView',
 
   extendsModel: 'View',
@@ -3643,7 +3922,7 @@ FOAModel({
           }
 
           var temp = document.createElement('div');
-          temp.style.display = 'none';
+          temp.style.display = 'None';
           self.$.insertBefore(temp, self.$.lastChild);
           temp.outerHTML = self.children.map(
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
@@ -3692,7 +3971,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ArrayListView',
   extendsModel: 'View',
 
@@ -3748,7 +4027,7 @@ FOAModel({
   ]
 });
 
-FOAModel({
+MODEL({
   name: 'KeyView',
   extendsModel: 'View',
 
@@ -3795,7 +4074,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'DAOKeyView',
   extendsModel: 'View',
 
@@ -3839,64 +4118,7 @@ FOAModel({
   }
 });
 
-FOAModel({
-  name: 'ListView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'dao',
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.unlisten(this.update);
-        newValue.listen(this.update);
-        this.update();
-      }
-    },
-    {
-      name: 'view'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      return '<div id="' + this.id + '"></div>';
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.update();
-    }
-  },
-
-  listeners: [
-    {
-      name: "update",
-      animate: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var self = this;
-
-        this.dao.select()(function(objs) {
-          if ( ! self.$ ) { self.destroy(); return; }
-
-          self.$.innerHTML = '';
-          var children = new Array(objs.length);
-
-          for ( var i = 0; i < objs.length; i++ ) {
-            var view = self.view.create();
-            children[i] = view;
-            view.value = SimpleValue.create(objs[i]);
-          }
-
-          self.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
-          children.forEach(function(c) { c.initHTML(); });
-        });
-      }
-    }
-  ]
-});
-
-
-FOAModel({
+MODEL({
   name: 'AutocompleteListView',
 
   extendsModel: 'View',
@@ -4061,7 +4283,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ViewSwitcher',
   extendsModel: 'View',
 
@@ -4146,7 +4368,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'PredicatedView',
   extendsModel: 'View',
 
@@ -4188,7 +4410,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DAOListView',
   extendsModel: 'View',
 
@@ -4241,6 +4463,10 @@ FOAModel({
     { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
     'selection',
     {
+      name: 'scrollContainer',
+      help: 'Containing element that is responsible for scrolling.'
+    },
+    {
       name: 'chunkSize',
       defaultValue: 0,
       help: 'Number of entries to load in each infinite scroll chunk.'
@@ -4270,6 +4496,20 @@ FOAModel({
 
     initHTML: function() {
       // this.SUPER();
+
+      // If we're doing infinite scrolling, we need to find the container.
+      // Either an overflow: scroll element or the window.
+      // We keep following the parentElement chain until we get null.
+      if ( this.chunkSize > 0 ) {
+        var e = this.$;
+        while ( e ) {
+          if ( window.getComputedStyle(e).overflow === 'scroll' ) break;
+          e = e.parentElement;
+        }
+        this.scrollContainer = e || window;
+        e.addEventListener('scroll', this.onScroll, false);
+      }
+
       if ( ! this.hidden ) this.updateHTML();
     },
 
@@ -4300,7 +4540,7 @@ FOAModel({
         }
         this.addChild(view);
         if ( this.useSelection ) {
-          out.push('<div id="' + this.on('click', (function() {
+          out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
             this.selection = o
           }).bind(this)) + '">');
         }
@@ -4309,7 +4549,11 @@ FOAModel({
           out.put('</div>');
         }
       }.bind(this)})(function() {
-        this.$.innerHTML = out.join('');
+        var e = this.$;
+
+        if ( ! e ) return;
+
+        e.innerHTML = out.join('');
         this.initInnerHTML();
         this.children = [];
         this.painting = false;
@@ -4322,12 +4566,22 @@ FOAModel({
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() { this.updateHTML(); }
+    },
+    {
+      name: 'onScroll',
+      code: function() {
+        var e = this.scrollContainer;
+        if ( this.chunkSize > 0 && e.scrollTop + e.offsetHeight >= e.scrollHeight ) {
+          this.chunksLoaded++;
+          this.updateHTML();
+        }
+      }
     }
   ]
 });
 
 
-FOAModel({
+MODEL({
   name: 'TouchListView',
 
   extendsModel: 'View',
@@ -4437,7 +4691,7 @@ FOAModel({
 
 
 
-FOAModel({
+MODEL({
   name: 'UITestResultView',
   label: 'UI Test Result View',
 
@@ -4471,7 +4725,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'UITest',
   label: 'UI Test',
 
@@ -4487,7 +4741,7 @@ FOAModel({
   /*
   actions: [
     {
-      name:  'test',
+      name: 'test',
       action: function(obj) { }
     }
   ],
@@ -4498,91 +4752,217 @@ FOAModel({
   }
 });
 
-FOAModel({
-  name: 'TwoModeTextFieldView',
+MODEL({
+  name: 'SlidePanelView',
   extendsModel: 'View',
 
+  help: 'A controller that shows a main view with a small strip of the ' +
+      'secondary view visible at the right edge. This "panel" can be dragged ' +
+      'by a finger or mouse pointer to any position from its small strip to ' +
+      'fully exposed. If the containing view is wide enough, both panels ' +
+      'will always be visible.',
+
   properties: [
+    'mainView', 'panelView',
     {
-      name: 'data',
-      postSet: function(_, value) {
-        if ( this.$ ) this.$.textContent = value || this.placeholder;
+      name: 'minWidth',
+      defaultValueFn: function() {
+        var e = this.main$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            300;
       }
     },
     {
-      name: 'placeholder'
+      name: 'width',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.main$().style.width = x + 'px';
+      }
     },
-    { name: 'editView' },
+    {
+      name: 'minPanelWidth',
+      defaultValueFn: function() {
+        if ( this.panelView && this.panelView.minWidth )
+          return this.panelView.minWidth;
+        var e = this.panel$();
+        return e ?
+            toNum(this.X.window.getComputedStyle(e).width) :
+            250;
+      }
+    },
+    {
+      name: 'panelWidth',
+      hidden: true,
+      help: 'Set internally by the resize handler',
+      postSet: function(_, x) {
+        this.panel$().style.width = x + 'px';
+      }
+    },
+    {
+      name: 'parentWidth',
+      help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
+      getter: function() {
+        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+      }
+    },
+    {
+      name: 'stripWidth',
+      help: 'The width in (CSS) pixels of the minimal visible strip of panel',
+      defaultValue: 30
+    },
+    {
+      name: 'panelRatio',
+      help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
+          'the containing element is wide enough for expanded view.',
+      defaultValue: 0.5
+    },
+    {
+      name: 'panelX',
+      //defaultValueFn: function() { this.width - this.stripWidth; },
+      preSet: function(_, x) {
+        // Bound it between its left and right limits: full open and just the
+        // strip.
+        if ( x <= this.parentWidth - this.panelWidth ) {
+          return this.parentWidth - this.panelWidth;
+        }
+        if ( x >= this.parentWidth - this.stripWidth ) {
+          return this.parentWidth - this.stripWidth;
+        }
+        return x;
+      },
+      postSet: function(_, x) {
+        this.panel$().style.webkitTransform = 'translate3d(' + x + 'px, 0,0)';
+      }
+    },
+    'dragging',
+    'firstDragX',
+    'oldPanelX',
+    'expanded'
   ],
 
   methods: {
-    init: function(args) {
-      this.SUPER(args);
-      this.editView = this.X.FullScreenTextFieldView.create(args);
+    toHTML: function() {
+      return '<div id="' + this.id + '" ' +
+          'style="display: inline-block; position: relative; height: 100%">' +
+          '<div id="' + this.id + '-main" style="height:100%">' +
+              this.mainView.toHTML() +
+          '</div>' +
+          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+              this.panelView.toHTML() +
+          '</div>' +
+          '</div>';
     },
+
     initHTML: function() {
       this.SUPER();
-      this.data = this.data;
+
+      // Mousedown and touch events on the sliding panel itself.
+      // Mousemove and mouseup on the whole window, so that you can drag the
+      // cursor off the slider and have it still following until you release the mouse.
+      this.panel$().addEventListener('mousedown',  this.onMouseDown);
+      this.panel$().addEventListener('touchstart', this.onTouchStart);
+      this.panel$().addEventListener('touchmove',  this.onTouchMove);
+      this.panel$().addEventListener('touchend',   this.onTouchEnd);
+
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup',   this.onMouseUp);
+
+      // Resize first, then init the outer view, and finally the panel view.
+      this.X.window.addEventListener('resize', this.onResize);
+      this.onResize();
+      this.mainView.initHTML();
+      this.panelView.initHTML();
+    },
+
+    main$: function() {
+      return this.X.$(this.id + '-main');
+    },
+    panel$: function() {
+      return this.X.$(this.id + '-panel');
     }
   },
 
-  templates: [
-    function toHTML() {/*
-    <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
-    <%
-      this.on('click', this.onClick, this.id);
-      this.setClass('placeholder', (function() { return ! this.data }).bind(this), this.id);
-    %>
-    */}
-  ],
-
   listeners: [
     {
-      name: 'onClick',
-      code: function() {
-        this.editView.data = this.data;
-        this.X.stack.pushView(this.editView);
-        this.editView.data$.addListener(this.onDataSet);
+      name: 'onResize',
+      isAnimated: true,
+      code: function(e) {
+        if ( ! this.$ ) return;
+        if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          // Expaded mode. Show the two side by side, setting their widths
+          // based on the panelRatio.
+          this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
+          this.width = this.parentWidth - this.panelWidth;
+          this.panelX = this.width;
+          this.expanded = true;
+        } else {
+          this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
+          this.panelWidth = this.minPanelWidth;
+          this.panelX = this.width;
+          this.expanded = false;
+        }
       }
     },
     {
-      name: 'onDataSet',
-      code: function() {
-        this.editView.data$.removeListener(this.onDataSet);
-        this.data = this.editView.data;
-        this.X.stack.back();
+      name: 'onMouseDown',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.firstDragX = e.clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        // Stop propagation so that only the uppermost panel is dragged, if
+        // they are nested.
+        e.stopPropagation();
+      }
+    },
+    {
+      name: 'onTouchStart',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( e.touches.length > 1 ) return;
+        var t = e.touches[0];
+        this.firstDragX = e.touches[0].clientX;
+        this.oldPanelX = this.panelX;
+        this.dragging = true;
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onMouseMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault(); // Necessary to make browser handle this nicely.
+        var dx = e.clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(e) {
+        if ( this.expanded ) return;
+        if ( ! this.dragging ) return;
+        e.preventDefault();
+        var dx = e.touches[0].clientX - this.firstDragX;
+        this.panelX = this.oldPanelX + dx;
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(e) {
+        if ( this.expanded ) return;
+        this.dragging = false;
       }
     }
   ]
-});
-
-FOAModel({
-  name: 'FullScreenTextFieldView',
-  extendsModel: 'TextFieldView',
-
-  methods: {
-    setupAutocomplete: function() {
-      if ( ! this.autocomplete || ! this.autocompleter ) return;
-
-      var completer = FOAM.lookup(this.autocompleter, this.X).create();
-
-      this.autocompleteView = this.X.DAOListView.create({
-        dao: completer.autocompleteDao,
-        mode: 'final',
-        rowView: 'SummaryView',
-        useSelection: true
-      });
-      this.addChild(this.autocompleteView);
-      // TODO: This steps out of the encapsulation a bit.
-      this.$.insertAdjacentHTML('afterend', this.autocompleteView.toHTML());
-      this.autocompleteView.initHTML();
-
-      this.autocompleteView.selection$.addListener((function(_, _, _, obj) {
-        this.data = completer.f.f ? completer.f.f(obj) : completer.f(obj);
-      }).bind(this));
-      this.$.addEventListener('input', (function() {
-        completer.autocomplete(this.textToValue(this.$.value));
-      }).bind(this));
-    }
-  }
 });

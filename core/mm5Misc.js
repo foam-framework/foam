@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-FOAModel({
+MODEL({
   name: 'UnitTest',
   plural: 'Unit Tests',
   tableProperties: [ 'description', 'passed', 'failed' ],
@@ -228,7 +228,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Relationship',
   tableProperties: [
     'name', 'label', 'relatedModel', 'relatedProperty'
@@ -295,7 +295,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'Issue',
   plural: 'Issues',
   help: 'An issue describes a question, feature request, or defect.',

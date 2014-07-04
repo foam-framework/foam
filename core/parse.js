@@ -159,6 +159,21 @@ function optional(p) {
   return f;
 }
 
+
+function copyInput(p) {
+  p = prep(p);
+  var f = function(ps) {
+    var res = this.parse(p, ps);
+
+    return res ? res.setValue(ps.str_.toString().substring(ps.pos, res.pos)) : res;
+  };
+
+  f.toString = function() { return 'copyInput(' + p + ')'; };
+
+  return f;
+}
+
+
 /** Parses if the delegate parser parses, but doesn't advance the pstream. **/
 function lookahead(p) {
   p = prep(p);
@@ -216,15 +231,9 @@ function repeat0(p) {
   p = prep(p);
 
   return function(ps) {
-    while ( true ) {
-      var res;
-
-      if ( ! ( res = this.parse(p,ps) ) ) break;
-
-      ps = res;
-    }
-
-    return ps;
+    var res;
+    while ( res = this.parse(p, ps) ) ps = res;
+    return ps.setValue('');
   };
 }
 
@@ -413,6 +422,7 @@ function sym(name) {
   return f;
 }
 
+
 // This isn't any faster because V8 does the same thing already.
 // function sym(name) { var p; return function(ps) { return (p || ( p = this[name])).call(this, ps); }; }
 
@@ -434,7 +444,7 @@ var grammar = {
   parse: function(parser, pstream) {
     //    if ( DEBUG_PARSE ) console.log('parser: ', parser, 'stream: ',pstream);
     if ( DEBUG_PARSE && pstream.str_ ) {
-      //      console.log(new Array(pstream.pos).join(' '), pstream.head);
+            console.log(new Array(pstream.pos).join('.'), pstream.head);
       console.log(pstream.pos + '> ' + pstream.str_[0].substring(0, pstream.pos) + '(' + pstream.head + ')');
     }
     var ret = parser.call(this, pstream);

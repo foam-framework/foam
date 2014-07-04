@@ -33,7 +33,7 @@ Property.getPrototype().compare = function(o1, o2) {
 // TODO: add type-checking in partialEval
 //  (type-checking is a subset of partial-eval)
 
-FOAModel({
+MODEL({
   name: 'Expr',
 
   package: 'foam.mlang',
@@ -129,7 +129,7 @@ var IDENTITY = (FOAM({
 })).create();
 
 /** An n-ary function. **/
-FOAModel({
+MODEL({
   name: 'NARY',
 
   extendsModel: 'Expr',
@@ -175,7 +175,7 @@ FOAModel({
 
 
 /** An unary function. **/
-FOAModel({
+MODEL({
   name: 'UNARY',
 
   extendsModel: 'Expr',
@@ -203,7 +203,7 @@ FOAModel({
 
 
 /** An unary function. **/
-FOAModel({
+MODEL({
   name: 'BINARY',
 
   extendsModel: 'UNARY',
@@ -230,7 +230,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AndExpr',
 
   extendsModel: 'NARY',
@@ -315,7 +315,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
@@ -397,7 +397,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NotExpr',
 
   extendsModel: 'UNARY',
@@ -439,7 +439,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DescribeExpr',
 
   extendsModel: 'UNARY',
@@ -466,7 +466,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'EqExpr',
 
   extendsModel: 'BINARY',
@@ -511,7 +511,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'InExpr',
 
   extendsModel: 'BINARY',
@@ -544,7 +544,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'ContainsExpr',
 
   extendsModel: 'BINARY',
@@ -582,7 +582,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ContainsICExpr',
 
   extendsModel: 'BINARY',
@@ -636,7 +636,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'NeqExpr',
 
   extendsModel: 'BINARY',
@@ -663,7 +663,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'LtExpr',
 
   extendsModel: 'BINARY',
@@ -690,7 +690,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GtExpr',
 
   extendsModel: 'BINARY',
@@ -717,7 +717,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'LteExpr',
 
   extendsModel: 'BINARY',
@@ -744,7 +744,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'GteExpr',
 
   extendsModel: 'BINARY',
@@ -773,7 +773,7 @@ FOAModel({
 
 
 // TODO: A TrieIndex would be ideal for making this very fast.
-FOAModel({
+MODEL({
   name: 'StartsWithExpr',
 
   extendsModel: 'BINARY',
@@ -793,15 +793,42 @@ FOAModel({
 
       return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
         StartsWithExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this;
     },
 
     f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
   }
 });
 
+MODEL({
+  name: 'StartsWithICExpr',
 
-FOAModel({
+  extendsModel: 'BINARY',
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
+    // TODO: Does MQL support this operation?
+    toMQL: function() { return this.arg1.toMQL() + '-after:' + this.arg2.toMQL(); },
+
+    partialEval: function() {
+      var newArg1 = this.arg1.partialEval();
+      var newArg2 = this.arg2.partialEval();
+
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
+        return compile_(newArg1.f().startsWithIC(newArg2.f()));
+      }
+
+      return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
+        StartsWithICExpr.create({arg1: newArg1, arg2: newArg2}) :
+      this;
+    },
+
+    f: function(obj) { return this.arg1.f(obj).startsWithIC(this.arg2.f(obj)); }
+  }
+});
+
+
+MODEL({
   name: 'ConstantExpr',
 
   extendsModel: 'UNARY',
@@ -834,7 +861,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'ConcatExpr',
   extendsModel: 'NARY',
 
@@ -880,7 +907,7 @@ function compileArray_(args) {
 };
 
 
-FOAModel({
+MODEL({
   name: 'SumExpr',
 
   extendsModel: 'UNARY',
@@ -903,7 +930,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'AvgExpr',
 
   extendsModel: 'UNARY',
@@ -937,7 +964,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MaxExpr',
 
   extendsModel: 'UNARY',
@@ -969,7 +996,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MinExpr',
 
   extendsModel: 'UNARY',
@@ -1001,7 +1028,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'DistinctExpr',
 
   extendsModel: 'BINARY',
@@ -1034,7 +1061,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'GroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1072,6 +1099,16 @@ FOAModel({
           if ( ! group ) {
             group = this.arg2.clone();
             this.groups[key[i]] = group;
+          }
+          group.put(obj);
+        }
+        // Perhaps we should use a key value of undefiend instead of '', since '' may actually
+        // be a valid key.
+        if ( key.length == 0 ) {
+          var group = this.groups.hasOwnProperty('') && this.groups[''];
+          if ( ! group ) {
+            group = this.arg2.clone();
+            this.groups[''] = group;
           }
           group.put(obj);
         }
@@ -1122,7 +1159,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'GridByExpr',
 
   extendsModel: 'Expr',
@@ -1215,13 +1252,26 @@ FOAModel({
       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
       return '<td>' + str + '</td>';
     },
+    sortAxis: function(values, f) { return values.sort(f.compareProperty); },
+    sortCols: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
+    sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
+    sortedCols: function() {
+      return this.sortCols(
+        Object.getOwnPropertyNames(this.cols.groups),
+        this.xFunc);
+    },
+    sortedRows: function() {
+      return this.sortRows(
+        Object.getOwnPropertyNames(this.rows.groups),
+        this.yFunc);
+    },
     toHTML: function() {
       var out;
       this.children = [];
       var cols = this.cols.groups;
       var rows = this.rows.groups;
-      var sortedCols = Object.getOwnPropertyNames(cols).sort(this.xFunc.compareProperty);
-      var sortedRows = Object.getOwnPropertyNames(rows).sort(this.yFunc.compareProperty);
+      var sortedCols = this.sortedCols();
+      var sortedRows = this.sortedRows();
 
       out = '<table border=0 cellspacing=0 class="gridBy"><tr><th></th>';
 
@@ -1259,7 +1309,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'MapExpr',
 
   extendsModel: 'BINARY',
@@ -1273,7 +1323,7 @@ FOAModel({
     pipe: function(sink) {
     },
     put: function(obj) {
-      var val = this.arg1.f(obj);
+      var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
       var acc = this.arg2;
       acc.put(val);
     },
@@ -1295,7 +1345,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'CountExpr',
 
   extendsModel: 'Expr',
@@ -1323,7 +1373,7 @@ FOAModel({
 });
 
 
-FOAModel({
+MODEL({
   name: 'SeqExpr',
 
   extendsModel: 'NARY',
@@ -1372,7 +1422,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'UpdateExpr',
   extendsModel: 'NARY',
 
@@ -1433,7 +1483,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'SetExpr',
   label: 'SetExpr',
 
@@ -1495,8 +1545,8 @@ function GRID_BY(xFunc, yFunc, acc) {
   return GridByExpr.create({xFunc: xFunc, yFunc: yFunc, acc: acc});
 }
 
-function MAP(fn, sink) {
-  return MapExpr.create({arg1: fn, arg2: sink});
+function MAP(fn, opt_sink) {
+  return MapExpr.create({arg1: fn, arg2: opt_sink || []});
 }
 
 function DISTINCT(fn, sink) {
@@ -1557,6 +1607,10 @@ function STARTS_WITH(arg1, arg2) {
   return StartsWithExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
 
+function STARTS_WITH_IC(arg1, arg2) {
+  return StartsWithICExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
+}
+
 function CONTAINS(arg1, arg2) {
   return ContainsExpr.create({arg1: compile_(arg1), arg2: compile_(arg2)});
 }
@@ -1570,7 +1624,7 @@ function CONCAT() {
 }
 
 
-FOAModel({
+MODEL({
   name: 'ExpandableGroupByExpr',
 
   extendsModel: 'BINARY',
@@ -1612,7 +1666,7 @@ FOAModel({
       },*/
     select: function(sink, options) {
       var self = this;
-      this.values.select({put:function(o) {
+      this.values.select({put: function(o) {
         sink.put(o);
         var key = self.arg1.f(o);
         var a = o.children;
@@ -1620,13 +1674,11 @@ FOAModel({
       }}, options);
       return aconstant(sink);
     },
-    put: function(obj) {
-      var key = this.arg1.f(obj);
-
+    putKeyValue_: function(key, value) {
       var group = this.groups.hasOwnProperty(key) && this.groups[key];
 
       if ( ! group ) {
-        group = obj.clone();
+        group = value.clone();
         if ( this.expanded[key] ) group.children = [];
         this.groups[key] = group;
         group.count = 1;
@@ -1636,6 +1688,15 @@ FOAModel({
       }
 
       if ( group.children ) group.children.push(obj);
+    },
+    put: function(obj) {
+      var key = this.arg1.f(obj);
+
+      if ( Array.isArray(key) ) {
+        for ( var i = 0 ; i < key.length ; i++ ) this.putKeyValue_(key[i], obj);
+      } else {
+        this.putKeyValue_(key, obj);
+      }
     },
     where: function(query) {
       return filteredDAO(query, this);
@@ -1660,7 +1721,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'TreeExpr',
 
   extendsModel: 'Expr',
@@ -1717,7 +1778,7 @@ function TREE(parentProperty, childrenProperty) {
   });
 }
 
-FOAModel({
+MODEL({
   name: 'DescExpr',
 
   extendsModel: 'UNARY',
@@ -1732,7 +1793,7 @@ FOAModel({
   }
 });
 
-FOAModel({
+MODEL({
   name: 'AddExpr',
 
   extendsModel: 'BINARY',

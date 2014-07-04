@@ -30,6 +30,7 @@ var files = [
   'XMLUtil',
   'context',
   'FOAM',
+  'JSONParser',
   'TemplateUtil',
   // To use FO, uncomment the next line
   // and comment out all lines from AbstractPrototype to mm6Prototbuf
@@ -50,6 +51,7 @@ var files = [
   'DetailView',
   'TableView',
   'cview',
+  'cview2',
   'RichTextView',
   'listchoiceview',
   'scroll',

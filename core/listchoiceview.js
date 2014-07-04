@@ -31,7 +31,7 @@ var ListChoiceViewRenderer = {
   }
 };
 
-FOAModel({
+MODEL({
   name:  'ListChoiceView',
 
   extendsModel: 'View',

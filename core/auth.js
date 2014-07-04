@@ -10,7 +10,7 @@
 // TODO: We may want to split query into a read-only and write-only query.
 // Also they could replace the *Permission methods, if mlangs are sufficiently
 // expressive to handle all the queries we care about.
-FOAModel({
+MODEL({
   model_: 'Interface',
   name: 'Authenticator',
   description: 'Interface for checking a principal\'s permission to access an object',
@@ -51,7 +51,7 @@ FOAModel({
 
 // This is the interface implemented by a model that makes it able to
 // authorize users to access itself.
-FOAModel({
+MODEL({
   model_: 'Interface',
   name: 'Authenticated',
   description: 'Interface for checking a principal\'s permission to access this object',
@@ -107,7 +107,7 @@ FOAModel({
 // it will not be available through the server, unauthorized.
 // It only takes a moment imagining what the addition of removeAll could have
 // done with that security hole to agree this is worth it.
-FOAModel({
+MODEL({
   name: 'AuthenticatedDAO',
   extendsModel: 'AbstractDAO',
 

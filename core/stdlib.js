@@ -51,6 +51,17 @@ if ( ! String.prototype.startsWith ) {
   */
 }
 
+if ( ! String.prototype.startsWithIC ) {
+  String.prototype.startsWithIC = function(a) {
+    if ( a.length > this.length ) return false;
+    var l = a.length;
+    for ( var i = 0 ; i < l; i++ ) {
+      if ( this[i].toUpperCase() !== a[i].toUpperCase() ) return false;
+    }
+    return true;
+  };
+}
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
@@ -635,10 +646,12 @@ function multiline(f) {
 function findPageXY(node) {
   var x = 0;
   var y = 0;
+  var parent;
   while ( node ) {
+    parent = node;
     x += node.offsetLeft;
     y += node.offsetTop;
     node = node.offsetParent;
   }
-  return [x, y];
+  return [x, y, parent];
 }

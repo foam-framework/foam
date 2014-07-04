@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-FOAModel({
+MODEL({
   name: 'ClientDAO',
   extendsModel: 'AbstractDAO',
 

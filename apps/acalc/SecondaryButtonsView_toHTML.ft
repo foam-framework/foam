@@ -1,0 +1,32 @@
+<%
+  var b = 'rgb(64, 189, 158)';
+%>
+<div id="%%id" class="buttons button-row secondaryButtons">
+  <div class="button-column" style="flex-grow: 1">
+    <div class="button-row">
+      <div class="button">$$sin{background: b} </div>
+      <div class="button">$$cos{background: b}</div>
+      <div class="button">$$tan{background: b}</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$asin{background: b}</div>
+      <div class="button">$$acos{background: b}</div>
+      <div class="button">$$atan{background: b}</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$inv{background:    b}</div>
+      <div class="button">$$square{background: b}</div>
+      <div class="button">$$root{background:   b}</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$log{background: b}</div>
+      <div class="button">$$ln{background:  b}</div>
+      <div class="button">$$exp{background: b}</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$pi{background:   b}</div>
+      <div class="button">$$fact{background: b}</div>
+      <div class="button">$$pow{background:  b}</div>
+    </div>
+  </div>
+</div>

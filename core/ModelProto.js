@@ -200,12 +200,18 @@ var ModelProto = {
       Object.defineProperty(cls, name, {
         get: function () {
           var l = fn.bind(this);
+          /*
+          if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
+            console.log('*********************** ', this.model_.name);
+            debugger;
+          }
+          */
           if ( isAnimated )
-            l = EventService.animate(l);
+            l = EventService.animate(l, this.X);
           else if ( isMerged ) {
             l = EventService.merged(
               l,
-              (isMerged === true) ? undefined : isMerged);
+              (isMerged === true) ? undefined : isMerged, this.X);
           }
 
           Object.defineProperty(this, name, { value: l});
