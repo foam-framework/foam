@@ -1,6 +1,7 @@
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
   font-size: 24px;
+  margin: 0;
 }
 
 * {
@@ -42,7 +43,6 @@ body {
 }
 
 .calc-display, .calc-display:focus {
-  flex: 1 1 100%;
   border: none;
   letter-spacing: 1px;
   line-height: 25px;
@@ -131,6 +131,7 @@ body {
 }
 
 .calc-display {
+  flex-grow: 5;
   position: relative;
 }
 
@@ -144,7 +145,8 @@ body {
 }
 
 .keypad {
-  height: 672px;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin-bottom: -4px;
 }
 

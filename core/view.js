@@ -4848,11 +4848,11 @@ MODEL({
   methods: {
     toHTML: function() {
       return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative; height: 100%" class="SliderPanel">' +
-          '<div id="' + this.id + '-main" style="height:100%">' +
+          'style="display: inline-block; position: relative" class="SliderPanel">' +
+          '<div id="' + this.id + '-main">' +
               this.mainView.toHTML() +
           '</div>' +
-          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
           '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
               this.panelView.toHTML() +
           '</div>' +
