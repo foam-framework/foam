@@ -4823,7 +4823,8 @@ MODEL({
     {
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
-      preSet: function(_, x) {
+      preSet: function(oldX, x) {
+        if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
         // Bound it between its left and right limits: full open and just the
         // strip.
         if ( x <= this.parentWidth - this.panelWidth ) {
@@ -4878,8 +4879,13 @@ MODEL({
       this.mainView.initHTML();
       this.panelView.initHTML();
     },
-
-    main$: function() {
+    snap: function() {
+      // TODO: Calculate the animation time based on how far the panel has to move
+      Movement.animate(500, function() {
+        this.panelX = this.dir_ > 0 ? 0 : 1000;
+      }.bind(this))();
+     },
+     main$: function() {
       return this.X.$(this.id + '-main');
     },
     panel$: function() {
@@ -4963,6 +4969,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     },
     {
@@ -4970,6 +4977,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     }
   ]
