@@ -105,6 +105,12 @@ body {
   background-color: #4b4b4b;
 }
 
+.rhs-ops {
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: rgb(68, 68, 68);
+}
+
 .rhs-ops .button {
   background-color: #777;
 }
