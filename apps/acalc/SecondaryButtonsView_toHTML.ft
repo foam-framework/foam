@@ -18,14 +18,14 @@ this.X.registerModel(Model.create({
       <div class="button">$$sqroot</div>
     </div>
     <div class="button-row">
-      <div class="button">$$pi</div>
+      <div class="button">$$log</div>
       <div class="button">$$pow</div>
       <div class="button">$$root</div>
     </div>
     <div class="button-row">
-      <div class="button">$$log</div>
       <div class="button">$$ln</div>
       <div class="button">$$exp</div>
+      <div class="button">$$pi</div>
     </div>
     <div class="button-row">
       <div class="button">$$sin </div>
