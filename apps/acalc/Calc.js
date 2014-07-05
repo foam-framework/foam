@@ -123,6 +123,7 @@ MODEL({
     binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
     binaryOp('p',     [],                 permutation,                          'nPr'),
     binaryOp('c',     [],                 combination,                          'nCr'),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
       label: 'AC',
@@ -170,12 +171,6 @@ MODEL({
       keyboardShortcuts: [80 /* p */],
       action: function() { this.a2 = Math.PI; }
     },
-    {
-      name: 'second',
-      label: '2nd',
-      keyboardShortcuts: [],
-      action: function() {  }
-    },
     unaryOp('fact',   ['shift-49' /* ! */], factorial,             'x!'),
     unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
     unaryOp('sin',    [], Math.sin),
@@ -185,7 +180,7 @@ MODEL({
     unaryOp('acos',   [], Math.acos),
     unaryOp('atan',   [], Math.atan),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    unaryOp('root',   [82 /* r */], Math.sqrt, '√'),
+    unaryOp('sqroot',   [82 /* r */], Math.sqrt, '√'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
     unaryOp('ln',     [], Math.log),
     unaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
