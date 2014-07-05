@@ -1,32 +1,46 @@
 <%
-  var b = 'rgb(64, 189, 158)';
+this.X.registerModel(Model.create({
+  name: 'ActionButton',
+  extendsModel: 'CalcButton',
+  properties: [
+    { name: 'background', defaultValue: 'rgb(64, 189, 158)' },
+    { name: 'width',      defaultValue: 58 },
+    { name: 'height',     defaultValue: 58 },
+    { name: 'font',       defaultValue: '20px Roboto' }
+  ]
+}));
 %>
 <div id="%%id" class="buttons button-row secondaryButtons">
   <div class="button-column" style="flex-grow: 1">
     <div class="button-row">
-      <div class="button">$$sin{background: b} </div>
-      <div class="button">$$cos{background: b}</div>
-      <div class="button">$$tan{background: b}</div>
+      <div class="button">$$second </div>
+      <div class="button">$$p</div>
+      <div class="button">$$c</div>
     </div>
     <div class="button-row">
-      <div class="button">$$asin{background: b}</div>
-      <div class="button">$$acos{background: b}</div>
-      <div class="button">$$atan{background: b}</div>
+      <div class="button">$$sin </div>
+      <div class="button">$$cos</div>
+      <div class="button">$$tan</div>
     </div>
     <div class="button-row">
-      <div class="button">$$inv{background:    b}</div>
-      <div class="button">$$square{background: b}</div>
-      <div class="button">$$root{background:   b}</div>
+      <div class="button">$$asin</div>
+      <div class="button">$$acos</div>
+      <div class="button">$$atan</div>
     </div>
     <div class="button-row">
-      <div class="button">$$log{background: b}</div>
-      <div class="button">$$ln{background:  b}</div>
-      <div class="button">$$exp{background: b}</div>
+      <div class="button">$$inv</div>
+      <div class="button">$$square</div>
+      <div class="button">$$root</div>
     </div>
     <div class="button-row">
-      <div class="button">$$pi{background:   b}</div>
-      <div class="button">$$fact{background: b}</div>
-      <div class="button">$$pow{background:  b}</div>
+      <div class="button">$$log</div>
+      <div class="button">$$ln</div>
+      <div class="button">$$exp</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$pi</div>
+      <div class="button">$$fact</div>
+      <div class="button">$$pow</div>
     </div>
   </div>
 </div>
