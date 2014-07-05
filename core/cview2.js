@@ -322,7 +322,7 @@ MODEL({
         x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.width/2;
-          this.pressCircle.r = this.width/2-7;
+          this.pressCircle.r = Math.max(28, this.width/2-7);
           this.pressCircle.alpha = 1;
         }.bind(this))();
       }
