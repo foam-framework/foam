@@ -320,6 +320,26 @@ a:visited { color: #205caa; }
 .highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
 
 
+/* custom */
+
+.toc {
+  background-color: #eef;
+  display: inline-block;
+  font-size: 80%;
+  list-style-type: none;
+  margin: 20px 0 0 0 !important;
+  padding: 10px;
+}
+
+.toc-item-selected {
+  background-color: #22c;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 2px;
+}
+
 /* media queries */
 /* ----------------------------------------------------------*/
 
