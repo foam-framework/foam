@@ -10,37 +10,39 @@ In this simple app, however, we'll do navigation by hand to demonstrate more adv
 
 We'll begin by expanding the `ControllerView` to make the decision of whether to show us a single phone's page or the list. Expand it to look like this:
 
-    MODEL({
-      name: 'ControllerView',
-      extendsModel: 'DetailView',
-      templates: [
-        function toHTML() {/*
-          <% if ( window.location.hash ) {
-            var view = PhoneDetailView.create({ model: Phone });
-            this.addChild(view);
+{% highlight js %}
+MODEL({
+  name: 'ControllerView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <% if ( window.location.hash ) {
+        var view = PhoneDetailView.create({ model: Phone });
+        this.addChild(view);
 
-            this.data.dao.find(window.location.hash.substring(1), { put: function(phone) {
-              view.data = phone;
-            }});
+        this.data.dao.find(window.location.hash.substring(1), { put: function(phone) {
+          view.data = phone;
+        }});
 
-            return view.toHTML();
-          } else { %>
-            Search: $$search
-            Sort by: $$order
-            <p>$$filteredDAO{className: 'phones', tagName: 'ul'}</p>
-          <% } %>
-        */}
-      ],
-      methods: {
-        init: function() {
-          this.SUPER();
-          window.addEventListener('hashchange', function() {
-            document.body.innerHTML = this.toHTML();
-            this.initHTML();
-          }.bind(this));
-        }
-      }
-    });
+        return view.toHTML();
+      } else { %>
+        Search: $$search
+        Sort by: $$order
+        <p>$$filteredDAO{className: 'phones', tagName: 'ul'}</p>
+      <% } %>
+    */}
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      window.addEventListener('hashchange', function() {
+        document.body.innerHTML = this.toHTML();
+        this.initHTML();
+      }.bind(this));
+    }
+  }
+});
+{% endhighlight %}
 
 Note that our original `ControllerView` template is now the `else` branch, ie. what will be shown when `window.location.hash` is empty.
 
@@ -60,10 +62,12 @@ Note that our original `ControllerView` template is now the `else` branch, ie. w
 
 Now we need to define `PhoneDetailView`. As we did before, let's simply define it as an empty submodel of `DetailView`:
 
-    MODEL({
-      name: 'PhoneDetailView',
-      extendsModel: 'DetailView'
-    });
+{% highlight js %}
+MODEL({
+  name: 'PhoneDetailView',
+  extendsModel: 'DetailView'
+});
+{% endhighlight %}
 
 That will be enough to let us reload the page and see it working, though it will be ugly as before.
 

@@ -25,31 +25,37 @@ Models have several parts:
 
 Here's a simple model:
 
-    MODEL({
-      name: 'Point',
-      properties: ['x', 'y'],
-      methods: {
-        scale: function(s) {
-          this.x *= s;
-          this.y *= s;
-        }
-      }
-    });
+{% highlight js %}
+MODEL({
+  name: 'Point',
+  properties: ['x', 'y'],
+  methods: {
+    scale: function(s) {
+      this.x *= s;
+      this.y *= s;
+    }
+  }
+});
+{% endhighlight %}
 
 and it can be instantiated and used like this:
 
-    var p = Point.create({ x: 10, y: 20 });
-    p.scale(2);
-    p.x = p.y;
-    console.log(p.toJSON());
+{% highlight js %}
+var p = Point.create({ x: 10, y: 20 });
+p.scale(2);
+p.x = p.y;
+console.log(p.toJSON());
+{% endhighlight %}
 
 which will output
 
-    {
-      "model_": "Point",
-      "x": 40,
-      "y": 40
-    }
+{% highlight js %}
+{
+  "model_": "Point",
+  "x": 40,
+  "y": 40
+}
+{% endhighlight %}
 
 So you can see that, whatever is going on under the hood, these modelled objects can be manipulated very much like plain old Javascript objects: read and write their properties, call their methods, and so on. The main difference is that new instances are created with `MyModel.create({...})` rather than `new MyModel(...)`.
 
@@ -57,17 +63,19 @@ So you can see that, whatever is going on under the hood, these modelled objects
 
 Models can extend other models, which means they will inherit all of the parent model's properties and methods (and listeners, actions, ...).
 
-    MODEL({
-      name: 'Point3D',
-      extendsModel: 'Point',
-      properties: ['z'],
-      methods: {
-        scale: function(s) {
-          this.SUPER(s);
-          this.z *= s;
-        }
-      }
-    });
+{% highlight js %}
+MODEL({
+  name: 'Point3D',
+  extendsModel: 'Point',
+  properties: ['z'],
+  methods: {
+    scale: function(s) {
+      this.SUPER(s);
+      this.z *= s;
+    }
+  }
+});
+{% endhighlight %}
 
 This defines a new model `Point3D` that extends `Point`. It inherits all the properties (`x` and `y`) of `Point`, and adds a new one, `z`. It would inherit the method `scale` too, but instead overrides it.
 
@@ -79,18 +87,20 @@ Because `super` and `extends` are reserved but unused in Javascript, FOAM uses t
 
 In the example above, we defined a property simply as a string, `'z'`. This defines a property with that name on the model. There are *many* more properties a property can have. Here's an example of a model with a more interesting property:
 
-    FOAModel({
-      name: 'Event',
-      properties: [
-        {
-          model_: 'IntProperty',
-          name: 'time',
-          help: 'The current time in milliseconds since the epoch.',
-          preSet: function(_, t) { return Math.ceil(t); }
-          defaultValue: 0
-        }
-      ]
-    });
+{% highlight js %}
+MODEL({
+  name: 'Event',
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'time',
+      help: 'The current time in milliseconds since the epoch.',
+      preSet: function(_, t) { return Math.ceil(t); }
+      defaultValue: 0
+    }
+  ]
+});
+{% endhighlight %}
 
 The properties on an object are data, and data is modelled. Therefore properties have models of their own, with properties and methods.
 
@@ -111,26 +121,28 @@ Listeners are called like methods, but they have some special features.
 
 The most basic is that they always have `this` bound properly, avoiding Javascript's worst wart. That way you can pass them as event handlers without having to bind manually:
 
-    FOAModel({
-      name: 'Mouse',
-      properties: [ 'x', 'y' ],
-      methods: {
-        connect: function(element) {
-          element.addEventListener('mousemove', this.onMouseMove);
-        }
-      },
+{% highlight js %}
+MODEL({
+  name: 'Mouse',
+  properties: [ 'x', 'y' ],
+  methods: {
+    connect: function(element) {
+      element.addEventListener('mousemove', this.onMouseMove);
+    }
+  },
 
-      listeners: [
-        {
-          name: 'onMouseMove',
-          isAnimated: true,
-          code: function(evt) {
-            this.x = evt.offsetX;
-            this.y = evt.offsetY;
-          }
-        }
-      ]
-    });
+  listeners: [
+    {
+      name: 'onMouseMove',
+      isAnimated: true,
+      code: function(evt) {
+        this.x = evt.offsetX;
+        this.y = evt.offsetY;
+      }
+    }
+  ]
+});
+{% endhighlight %}
 
 The listener is attached to the object like a normal method, which can be called directly with `this.onMouseMove()`. Under the hood, however, there are several differences.
 
@@ -144,20 +156,22 @@ The listener is attached to the object like a normal method, which can be called
 
 Actions are guarded, GUI-friendly methods. FOAM will run code you supply to determine whether the button for this action should be hidden, visible but disabled, or enabled.
 
-    MODEL({
-      // ...
-      actions: [
-        {
-          name: 'start',
-          help: 'Start the timer',
+{% highlight js %}
+MODEL({
+  // ...
+  actions: [
+    {
+      name: 'start',
+      help: 'Start the timer',
 
-          isAvailable: function() { return true; },
-          isEnabled:   function() { return ! this.isStarted; },
-          action:      function() { this.isStarted = true; }
-        }
-      ],
-      // ...
-    });
+      isAvailable: function() { return true; },
+      isEnabled:   function() { return ! this.isStarted; },
+      action:      function() { this.isStarted = true; }
+    }
+  ],
+  // ...
+});
+{% endhighlight %}
 
 By default, an action is always visible and enabled (so the `isAvailable` above is unnecessary). This button is always visible but only enabled when `this.isStarted` is false. When the button is clicked while enabled, `action` is called. If the button is disabled, nothing happens.
 
@@ -166,34 +180,36 @@ By default, an action is always visible and enabled (so the `isAvailable` above 
 
 Models can have templates. Templates are methods that return snippets of HTML. Template methods can be written as plain old Javascript that returns a string, but they can also be written using a superset of JSP syntax:
 
+{% highlight js %}
 {% raw %}
-    FOAModel({
-      name: 'IssueCitationView',
-      extendsModel: 'DetailView',
-      templates: [
-        function priorityToHTML() {/*
-          <% var pri = this.data.pri || '0'; %>
-          <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
-        */},
+FOAModel({
+  name: 'IssueCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function priorityToHTML() {/*
+      <% var pri = this.data.pri || '0'; %>
+      <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
+    */},
 
-        function toHTML() {/*
-          <div id="%%id" class="issue-citation">
-            $$owner{model_: "IssueOwnerAvatarView"}
-            <div class="middle">
-              $$id{ mode: 'read-only', className: 'id' } <% this.priorityToHTML(out); %><br>
-              $$summary{mode: 'read-only'}
-            </div>
-            $$starred{
-              model_: 'ImageBooleanView',
-              className:  'star',
-              trueImage:  'images/ic_star_24dp.png',
-              falseImage: 'images/ic_star_outline_24dp.png'
-            }
-          </div>
-        */}
-      ]
-    });
+    function toHTML() {/*
+      <div id="%%id" class="issue-citation">
+        $$owner{model_: "IssueOwnerAvatarView"}
+        <div class="middle">
+          $$id{ mode: 'read-only', className: 'id' } <% this.priorityToHTML(out); %><br>
+          $$summary{mode: 'read-only'}
+        </div>
+        $$starred{
+          model_: 'ImageBooleanView',
+          className:  'star',
+          trueImage:  'images/ic_star_24dp.png',
+          falseImage: 'images/ic_star_outline_24dp.png'
+        }
+      </div>
+    */}
+  ]
+});
 {% endraw %}
+{% endhighlight %}
 
 The details of templates belong to [part 4](/tutorial/4-templates), but for now let's note a few high-level points:
 

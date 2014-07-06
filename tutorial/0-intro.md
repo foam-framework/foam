@@ -58,17 +58,19 @@ The core library is split across many files, but you only need to include one in
 
 Create `$PROJECT/index.html` with the following contents:
 
-    <html>
-      <head>
-        <script src="foam/core/bootFOAM.js"></script>
-        <link rel="stylesheet" href="foam/core/foam.css" />
-      </head>
-      <body>
-        <script>
-          document.write(FOAM_POWERED);
-        </script>
-      </body>
-    </html>
+{% highlight html %}
+<html>
+  <head>
+    <script src="foam/core/bootFOAM.js"></script>
+    <link rel="stylesheet" href="foam/core/foam.css" />
+  </head>
+  <body>
+    <script>
+      document.write(FOAM_POWERED);
+    </script>
+  </body>
+</html>
+{% endhighlight %}
 
 Loading that page ([http://localhost:8000/](http://localhost:8000/)) should show the "FOAM Powered" logo, and no JS console errors.
 

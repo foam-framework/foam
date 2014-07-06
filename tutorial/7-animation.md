@@ -12,15 +12,21 @@ To demonstrate, let's make the big image on the phone detail page slide in when 
 
 First, open `index.html` and add the following, *after* the `<script>` tag for `bootFOAM.js`:
 
-    <script src="foam/core/experimental/aview.js"></script>
+{% highlight html %}
+<script src="foam/core/experimental/aview.js"></script>
+{% endhighlight %}
 
 Then go to `PhoneDetailView_toHTML.ft` and near the top, change:
 
-    $$imageUrl{ model_: 'ImageView', className: 'phone' }
+{% highlight js %}
+$$imageUrl{ model_: 'ImageView', className: 'phone' }
+{% endhighlight %}
 
 to
 
-    $$imageUrl{ model_: 'AImageView', className: 'phone' }
+{% highlight js %}
+$$imageUrl{ model_: 'AImageView', className: 'phone' }
+{% endhighlight %}
 
 and reload your app. Now when you click a thumbnail, the new image will slide in.
 

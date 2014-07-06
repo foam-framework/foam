@@ -16,16 +16,18 @@ Our application has only one FOAM model in its MVC Model: `Phone`. It has many p
 
 Put the following code in `$PROJECT/Phone.js`:
 
-    MODEL({
-      name: 'Phone',
-      properties: [
-        'id', 'age', 'name', 'snippet', 'additionalFeatures', 'android',
-        'availability', 'battery', 'camera', 'connectivity', 'description',
-        'display', 'hardware', 'sizeAndWeight', 'storage', 'details',
-        { name: 'imageUrl', view: 'ImageView' },
-        { name: 'images', model_: 'StringArrayProperty' }
-      ]
-    });
+{% highlight js %}
+MODEL({
+  name: 'Phone',
+  properties: [
+    'id', 'age', 'name', 'snippet', 'additionalFeatures', 'android',
+    'availability', 'battery', 'camera', 'connectivity', 'description',
+    'display', 'hardware', 'sizeAndWeight', 'storage', 'details',
+    { name: 'imageUrl', view: 'ImageView' },
+    { name: 'images', model_: 'StringArrayProperty' }
+  ]
+});
+{% endhighlight %}
 
 Most of these properties are straightforward. Some are notable:
 
