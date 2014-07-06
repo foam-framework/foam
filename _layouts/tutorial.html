@@ -1,0 +1,51 @@
+---
+layout: default
+tutorials:
+  -
+    title: Getting Started
+    url: /tutorial/0-intro
+  -
+    title: Core Concepts
+    url: /tutorial/1-concepts
+  -
+    title: Phone model
+    url: /tutorial/2-model
+  -
+    title: Controllers and DAOs
+    url: /tutorial/3-dao
+  -
+    title: Custom templates
+    url: /tutorial/4-templates
+  -
+    title: Navigation
+    url: /tutorial/5-navigation
+  -
+    title: DetailView and external templates
+    url: /tutorial 6-detailview
+  -
+    title: Animations
+    url: /tutorial/7-animation
+---
+
+<div class="post">
+
+  <header class="post-header">
+    <h2>Tutorial Part {{ page.tutorial }}</h2>
+    <h1>{{ page.tutorials[page.tutorial].title }}</h1>
+    <ul class="toc">
+      {% for tut in page.tutorials %}
+        <li class="toc-item">
+          {% if page.tutorial != forloop.index0 %}
+            <a href="{{ tut.url | prepend: site.baseurl }}">{{ tut.title }}</a>
+          {% else %}
+            <span class="toc-item-selected">{{ tut.title }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+  </header>
+
+  <article class="post-content">
+  {{ content }}
+  </article>
+
+</div>
