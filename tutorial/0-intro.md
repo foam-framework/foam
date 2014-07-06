@@ -6,7 +6,7 @@ tutorial: 0
 
 ## Overview
 
-FOAM, **Feature-Oriented Active Modeler**, is a data-centric, very MVC Javascript framework. More details can be found on the [About page](/about/) but this tutorial aims to be standalone.
+FOAM, **Feature-Oriented Active Modeler**, is a data-centric, very MVC Javascript framework. More details can be found on the [About page]({{ site.baseurl }}/about/) but this tutorial aims to be standalone.
 
 We fundamentally believe in programming at a higher level - of abstraction, productivity, and performance.
 
@@ -17,13 +17,13 @@ Very little code is left to be written in an imperative style - mostly event han
 The parts of the tutorial are as follows:
 
 - Getting Started (below)
-- [Core Concepts](/tutorial/1-concepts/)
-- [`Phone` model](/tutorial/2-model/)
-- [DAOs](/tutorial/3-dao/)
-- [Custom Templates](/tutorial/4-templates)
-- [Navigation](/tutorial/5-navigation)
-- [`DetailView' and External Templates](/tutorial/6-detailview)
-- [Animations](/tutorial/7-animation)
+- [Core Concepts]({{ site.baseurl }}/tutorial/1-concepts/)
+- [`Phone` model]({{ site.baseurl }}/tutorial/2-model/)
+- [DAOs]({{ site.baseurl }}/tutorial/3-dao/)
+- [Custom Templates]({{ site.baseurl }}/tutorial/4-templates)
+- [Navigation]({{ site.baseurl }}/tutorial/5-navigation)
+- [`DetailView' and External Templates]({{ site.baseurl }}/tutorial/6-detailview)
+- [Animations]({{ site.baseurl }}/tutorial/7-animation)
 
 ## Audience
 
@@ -74,5 +74,5 @@ Create `$PROJECT/index.html` with the following contents:
 
 Loading that page ([http://localhost:8000/](http://localhost:8000/)) should show the "FOAM Powered" logo, and no JS console errors.
 
-If that's what you're seeing, then congratulations! You've got FOAM running and you're ready to move on to the tutorial proper, with [Part 1: Core Concepts](/tutorial/1-concepts).
+If that's what you're seeing, then congratulations! You've got FOAM running and you're ready to move on to the tutorial proper, with [Part 1: Core Concepts]({{ site.baseurl }}/tutorial/1-concepts).
 

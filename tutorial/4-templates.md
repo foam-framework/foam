@@ -6,7 +6,7 @@ tutorial: 4
 
 A template on a model is simply a Javascript function that returns a string of HTML when called. Instead of writing Javascript code by hand, you'll usually use the template syntax.
 
-Templates can also live in external files, which are introduced in [part 6](/tutorial/6-detailview).
+Templates can also live in external files, which are introduced in [part 6]({{ site.baseurl }}/tutorial/6-detailview).
 
 ## Template Syntax
 
@@ -35,7 +35,7 @@ Since `<%  %>` allows embedding arbitrary, real Javascript code, you can create 
 </ul>
 {% endhighlight %}
 
-However, code like this is rarely necessary, since FOAM contains many views that handle creating rows from a collection of data. `DAOListView` from [part 3](/tutorial/3-dao) is one example; `TableView` and `GridView` are two more.
+However, code like this is rarely necessary, since FOAM contains many views that handle creating rows from a collection of data. `DAOListView` from [part 3]({{ site.baseurl }}/tutorial/3-dao) is one example; `TableView` and `GridView` are two more.
 
 ## Inline Templates
 
@@ -98,5 +98,5 @@ The custom CSS still isn't loaded, so add the following to `index.html`'s `<head
 
 and reload your app. Now it should look much better, and the search and sort functions work!
 
-[Part 5](/tutorial/5-navigation) will add navigation to our app.
+[Part 5]({{ site.baseurl }}/tutorial/5-navigation) will add navigation to our app.
 

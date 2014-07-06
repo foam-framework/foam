@@ -211,7 +211,7 @@ FOAModel({
 {% endraw %}
 {% endhighlight %}
 
-The details of templates belong to [part 4](/tutorial/4-templates), but for now let's note a few high-level points:
+The details of templates belong to [part 4]({{ site.baseurl }}/tutorial/4-templates), but for now let's note a few high-level points:
 
 - Templates can be given either inline as above, or in external files.
 - Multi-line strings are hacked into Javascript for the templates by using multi-line comments.
@@ -260,7 +260,7 @@ Data Access Object, or DAO, is FOAM's term for a collection of objects, all of t
 
 In addition there is a large set of DAO decorators, which add extra functionality to other DAOs. This spares each DAO's author from having to reimplement caching, autoincrement, logging, timing, or anything else not specific to the target backend.
 
-DAOs have a rich and extensible query language, which supports filtering, sorting, grouping, aggregating and more. More details of the interface and how to use it are in [part 3](/tutorial/3-dao).
+DAOs have a rich and extensible query language, which supports filtering, sorting, grouping, aggregating and more. More details of the interface and how to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao).
 
 
 ### Views
@@ -312,7 +312,7 @@ Minified and gzipped, it comes in at 94 KB as of early July 2014. There is a gre
 
 Some further details, for the curious.
 
-**Feel free to skip this section and move on to [part 2](/tutorial/2-model).**
+**Feel free to skip this section and move on to [part 2]({{ site.baseurl }}/tutorial/2-model).**
 
 ### Property Types
 

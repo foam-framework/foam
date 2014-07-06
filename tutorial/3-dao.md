@@ -112,11 +112,11 @@ If you load that up in your browser, you'll see that it's not exactly pretty, bu
 
 The `<foam>` tag is a convenience for loading a given model and inserting it into the DOM.
 
-Next we'll add custom templates in [part 4](/tutorial/4-templates).
+Next we'll add custom templates in [part 4]({{ site.baseurl }}/tutorial/4-templates).
 
 ## Appendix - Details of the DAO Interface
 
-**Feel free to skip ahead to [part 4](/tutorial/4-templates) to move on with the tutorial. This section is for those interested in the details of working with DAOs.**
+**Feel free to skip ahead to [part 4]({{ site.baseurl }}/tutorial/4-templates) to move on with the tutorial. This section is for those interested in the details of working with DAOs.**
 
 The DAO interface looks like this, if you pretend Javascript supports interfaces:
 

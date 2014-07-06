@@ -8,7 +8,7 @@ The place to start with any FOAM application is with a first draft of your data 
 
 The app we're going to build here is shamelessly borrowed from the [AngularJS tutorial](https://docs.angularjs.org/tutorial). It is a simple catalog app the shows a collection of smartphones. It has two views: one for the list of phones and the other for the details of one phone.
 
-You can see the finished app running live [here](/apps/phonecat/Cat.html).
+You can see the finished app running live [here]({{ site.baseurl }}/apps/phonecat/Cat.html).
 
 ## Defining the Model
 
@@ -45,9 +45,9 @@ If this model doesn't seem to do much, that's because it doesn't. This is purely
 
 There is a companion file with this tutorial that includes the data about the phones in JSON format, as well as the collection of images of the devices.
 
-Click [here](/tutorial/bundle.zip) to download them. Unpack it into your `$PROJECT` directory. You should get an `img/` directory, `css/` directory, and `phones.js`.
+Click [here]({{ site.baseurl }}/tutorial/bundle.zip) to download them. Unpack it into your `$PROJECT` directory. You should get an `img/` directory, `css/` directory, and `phones.js`.
 
 ## Next
 
-The [next part](/tutorial/3-dao) of the tutorial introduces DAOs and sets up the basic controller.
+The [next part]({{ site.baseurl }}/tutorial/3-dao) of the tutorial introduces DAOs and sets up the basic controller.
 

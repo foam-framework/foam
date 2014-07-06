@@ -73,5 +73,5 @@ That will be enough to let us reload the page and see it working, though it will
 
 Try it! Click on a phone in the catalog, and you will switch to its detail view. Use your browser's Back button, and you're back at the catalog.
 
-[Part 6](/tutorial/6-detailview) shows external templates and explores `DetailView`s further.
+[Part 6]({{ site.baseurl }}/tutorial/6-detailview) shows external templates and explores `DetailView`s further.
 
