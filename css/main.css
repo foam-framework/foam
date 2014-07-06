@@ -241,7 +241,7 @@ a:visited { color: #205caa; }
 .post ul,
 .post ol { margin-left: 1.35em; }
 
-.post pre code { border: none; }
+.post pre code { border: none; padding: 1px 0px; }
 
 /* terminal */
 .post pre.terminal {
