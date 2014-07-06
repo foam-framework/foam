@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/1-concepts/
+permalink: /1-concepts/
 tutorial: 1
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/3-dao/
+permalink: /3-dao/
 tutorial: 3
 ---
 

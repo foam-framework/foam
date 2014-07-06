@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/2-model/
+permalink: /2-model/
 tutorial: 2
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/6-detailview/
+permalink: /6-detailview/
 tutorial: 6
 ---
 

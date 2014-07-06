@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/4-templates/
+permalink: /4-templates/
 tutorial: 4
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/0-intro/
+permalink: /0-intro/
 tutorial: 0
 ---
 

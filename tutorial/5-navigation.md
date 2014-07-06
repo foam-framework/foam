@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /tutorial/5-navigation/
+permalink: /5-navigation/
 tutorial: 5
 ---
 
