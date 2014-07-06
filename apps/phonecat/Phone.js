@@ -1,4 +1,4 @@
-FOAModel({
+MODEL({
   name: 'Phone',
   properties: [
     'id', 'age', 'name', 'snippet', 'additionalFeatures', 'android',
