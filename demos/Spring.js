@@ -60,6 +60,8 @@ for ( var x = 0 ; x < 5 ; x++ ) {
 //    strut(mouse, c, (x-2)*100, (y-2)*100);
     spring(mouse, c, (x-2)*100, (y-2)*100);
     inertia(c);
-    friction(c, 0.7);
+    friction(c, 0.75);
   }
 }
+
+mouse.x = mouse.y = 300;
