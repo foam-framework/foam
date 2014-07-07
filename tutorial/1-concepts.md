@@ -19,7 +19,7 @@ Models have several parts:
 - **Methods**: Plain old methods, as in Java or most other languages.
 - **Actions**: Guarded methods for GUIs, whose buttons can be hidden or disabled based on custom conditions.
 - **Listeners**: Pre-bound event listeners. These are essentially methods with `this` pre-bound.
-    - Listeners can declare they want to be de-duped. Then they will run either after a set period of time or on the next animation frame.
+    - Listeners can declare they want to be batched. If so, events will be held until either a set time has elapsed (`isMerged: 100` for 100 milliseconds) or until the next animation frame (`isAnimated: true`). Your code is only called once, and the event delivered is the latest one.
 - **Templates**: Methods that return HTML strings.
     - Generally not handwritten Javascript, rather created by FOAM's template compiler.
 
@@ -130,11 +130,11 @@ Models can have templates. Templates are methods that return snippets of HTML. T
 
 {% highlight js %}
 {% raw %}
-FOAModel({
+MODEL({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [
-    function priorityToHTML() {/*
+    function priorityTemplate() {/*
       <% var pri = this.data.pri || '0'; %>
       <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
     */},
@@ -143,7 +143,7 @@ FOAModel({
       <div id="%%id" class="issue-citation">
         $$owner{model_: "IssueOwnerAvatarView"}
         <div class="middle">
-          $$id{ mode: 'read-only', className: 'id' } <% this.priorityToHTML(out); %><br>
+          $$id{ mode: 'read-only', className: 'id' } <% this.priorityTemplate(out); %><br>
           $$summary{mode: 'read-only'}
         </div>
         $$starred{
@@ -241,7 +241,7 @@ FOAM has very rich support for reactive programming. This is event-driven, with 
 
 There are one-way and two-way binding functions, plus variants of each that adapt the values with a function while binding them. (`Events.follow` and `.link`, and `.map` and `.relate`, respectively.)
 
-There is also the extremely flexible `Events.dynamic`. It takes a function, and inspects it to determine what its inputs are. It automatically registers listeners for all the inputs that will run the provided function whenever any of them changes.
+There is also the extremely flexible `Events.dynamic`. It takes a function with no arguments that is similar to a spreadsheet formula. FOAM will run the function once and capture all the property accesses. Then it attaches listeners to each of those properties, so that your function will be run again every time one of its inputs changes, just like a spreadsheet cell.
 
 ### Animation
 

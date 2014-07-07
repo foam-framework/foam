@@ -36,9 +36,9 @@ MODEL({
 The listener is attached to the object like a normal method, which can be called directly with `this.onMouseMove()`. Under the hood, however, there are several differences.
 
 - Listeners always have `this` bound properly, so they can be passed as callbacks, as above, without being explicitly bound.
-- Listeners can be merged. When events are merged, it's in a "last in, only out" fashion, where the `event` parameter passed to the actual code is the latest one.
-    - `isAnimated: true` will merge events and fire the real code on the next animation frame. This is useful to avoid redrawing more than once per frame.
-    - `isMerged: 100` will merge events and fire the real code 100ms after the **first** one. This is useful to avoid spamming database updates.
+- Listeners can be merged, or batched. The first event that comes in starts the clock, when the timer expires, your handler is fired *once* with the *most recent* event.
+    - `isMerged: 100` will merge events and fire the real code 100ms after the *first* event arrives. After that time expires, another event arriving will start the clock again. This is useful to avoid spamming database or network updates.
+    - `isAnimated: true` will merge events and fire your code on the next animation frame. This is useful to avoid redrawing more than once per frame. It receives the most recent event, as above.
 
 
 ## Actions
@@ -96,4 +96,59 @@ FOAM injects several properties and methods onto all objects:
 - `o.deepClone()` is of course a deep copy.
 - `o.toJSON()` and `o.toXML()` return JSON or XML as a string. Parsers are included to read them in again.
 - `o.write(document)` writes the default view (see below) of the object into the document.
+
+## DAOs
+
+The DAO interface looks like this, if you pretend Javascript supports interfaces:
+
+{% highlight js %}
+interface DAO extends Sink {
+  void   put(obj, opt_sink);
+  void   remove(id, opt_sink);
+  void   find(query, sink);
+  Future select(sink);
+  Future removeAll(query, sink);
+  Future update(expression);
+  void   listen(sink);
+  void   pipe(sink):  // select() + listen()
+  void   unlisten(sink);
+  DAO    where(query);
+  DAO    limit(count);
+  DAO    skip(count);
+  DAO    orderBy(comparators...);
+}
+{% endhighlight %}
+
+a `Sink` looks like this:
+
+{% highlight js %}
+interface Sink {
+  void put(obj);
+  void remove(obj);
+  void eof();
+  void error(msg);
+}
+{% endhighlight %}
+
+Every DAO is also a sink, making it trivial to pull data from one DAO to another.
+
+Here's an example of using the DAO interface to make a query:
+
+{% highlight js %}
+dao
+  .skip(200)
+  .limit(50)
+  .orderBy(EMail.TIMESTAMP)
+  .where(
+    AND(
+      EQ(EMail.TO,        'kgr@google.com'),
+      EQ(EMail.FROM,      'adamvy@google.com'),
+      GT(EMail.TIMESTAMP, startOfYear)))
+  .select(
+    GROUP_BY(EMail.SUBJECT, COUNT()));
+{% endhighlight %}
+
+This is generally SQL-like, but instead of parsing a string it constructs the query directly. This avoids parsing overhead, and completely avoids SQL injection. It also adds some typechecking, though Javascript can only take that so far.
+
+This query syntax works on all DAOs, including plain Javascript arrays. It is also extensible - the `MLang` syntax - `AND`, `EQ`, and so on - are simple expressions, and you can write new ones if needed.
 
