@@ -16,11 +16,9 @@ MODEL({
     { model_: 'StringProperty',
       name: 'color',
       factory: function() {
-        var c = Math.floor(Math.random() * 0xffffff).toString(16);
-        while ( c.length < 6 ) {
-          c = "0" + c;
-        }
-        return "#" + c;
+        var colors = 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' ');
+        var c = Math.abs(this.hashCode()) % colors.length;
+        return '#' + colors[c];
       }
     }
   ]
@@ -105,9 +103,81 @@ MODEL({
   ]
 });
 
-var TouchInput = TouchManager.create({});
-TouchInput.install(document);
+MODEL({
+  name: 'ContactRowRenderer',
+  properties: [
+    { name: 'height', defaultValue: 200 }
+  ],
+  methods: {
+    render: function(ctx, obj) {
 
+      ctx.beginPath();
+      ctx.arc(36, 44, 20, 0, 2 * Math.PI, false);
+      ctx.fillStyle = obj.color;
+      ctx.strokeStyle = "#e5e5e5";
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#fff";
+      ctx.font = '20px Roboto';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(obj.last[0], 36, 44);
+      
+      ctx.font = '16px Roboto';
+      ctx.fillStyle = "#444";
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(obj.first + ' ' + obj.last, 72, 40);
+
+      var words = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit'.split(' ');
+      var text = words[0];
+
+      ctx.fillStyle = "#999";
+
+      var max = 200;
+      var w = 0;
+      var i = 1;
+      while ( true ) {
+        var metrics = ctx.measureText(text + ' ' + words[i]);
+        if ( metrics.width > max ) break;
+        text += ' ' + words[i++];
+      }
+
+      ctx.fillText(text, 72, 60);
+    }
+  }
+});
+
+var view = DAOListCView.create({
+  rowRenderer: ContactRowRenderer.create({}),
+  width: 400,
+  height: 800
+});
+
+var cview = CViewView.create({
+  cview: view,
+  width: 400,
+  height: 800
+});
+
+cview.write(document);
+
+view.dao = dao;
+
+var Y = this.X.subWindow(window);
+Y.registerModel(MomentumTouch, 'FOAMTouch');
+Y.registerModel(MomentumTouchManager, 'TouchManager');
+
+var touch = Y.TouchManager.create({});
+touch.install(document);
+
+touch.subscribe(touch.TOUCH_START, function(_, _, t) {
+  t.y$.addListener(function(_,_,old,nu) {
+    view.scrollTop = view.scrollTop + old - nu;
+  });
+});
+/*
 var view = TouchListView.create({
   model: Contact,
   rowViewHeight: 200,
@@ -120,3 +190,4 @@ view.formatObject = function(o) {
 };
 
 view.write(document);
+*/
