@@ -32,7 +32,9 @@ MODEL({
         [ Phone.AGE,  'Newest' ]
       ] }
     },
-    { name: 'dao', defaultValue: phones },
+    { name: 'dao', defaultValue: phones },    // phones comes from phones.js
+                                              // It's an in-memory DAO
+                                              // of the phone data
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
