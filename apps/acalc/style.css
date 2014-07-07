@@ -144,6 +144,15 @@ body {
   background: rgb(64, 189, 158);
 }
 
+.tertiaryButtons {
+  padding-left: 10px;
+  background: rgb(29, 233, 182);
+}
+
+.tertiaryButtons .button {
+  background: rgb(29, 233, 182);
+}
+
 .keypad {
   flex-grow: 0;
   flex-shrink: 0;

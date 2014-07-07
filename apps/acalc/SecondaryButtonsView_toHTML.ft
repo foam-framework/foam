@@ -25,7 +25,7 @@ this.X.registerModel(Model.create({
     <div class="button-row">
       <div class="button">$$ln</div>
       <div class="button">$$exp</div>
-      <div class="button">$$pi</div>
+      <div class="button">$$e</div>
     </div>
     <div class="button-row">
       <div class="button">$$sin </div>
@@ -38,9 +38,9 @@ this.X.registerModel(Model.create({
       <div class="button">$$atan</div>
     </div>
     <div class="button-row">
-      <div class="button">$$fact</div>
-      <div class="button">$$p</div>
-      <div class="button">$$c</div>
+      <div class="button">$$sign</div>
+      <div class="button">$$percent</div>
+      <div class="button">$$pi</div>
     </div>
   </div>
 </div>

@@ -78,7 +78,7 @@ String.prototype.labelize = function() {
 
 // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
 String.prototype.constantize = function() {
-    return this.replace(/[a-z][^a-z]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
+    return this.replace(/[a-z_][^a-z_]/g, function(a) { return a.substring(0,1) + '_' + a.substring(1,2); }).toUpperCase();
 };
 
 /** Give all objects a Unique ID. **/

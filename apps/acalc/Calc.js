@@ -19,6 +19,18 @@ function factorial(n)      { var r = 1; while ( n > 0 ) r *= n--; return r; };
 function permutation(n, r) { return factorial(n) / factorial(n-r); };
 function combination(n, r) { return permutation(n, r) / factorial(r); };
 
+function trigFn(f) {
+  return function(a) {
+    return f(this.degreesMode ? a * Math.PI / 180 : a);
+  };
+}
+
+function invTrigFn(f) {
+  return function(a) {
+    return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
+  };
+}
+
 /** Make a Binary Action. **/
 function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
@@ -35,7 +47,7 @@ function unaryOp(name, keys, f, opt_sym) {
     name: name,
     label: opt_sym || name,
     keyboardShortcuts: keys,
-    action: function() { this.a2 = f(this.a2); }
+    action: function() { this.a2 = f.call(this, this.a2); }
   };
 }
 
@@ -68,6 +80,7 @@ MODEL({
   name: 'Calc',
 
   properties: [
+    { name: 'degreesMode', defaultValue: false },
     { name: 'a1', defaultValue: '0' },
     { name: 'a2', defaultValue: 0 },
     {
@@ -171,19 +184,38 @@ MODEL({
       keyboardShortcuts: [80 /* p */],
       action: function() { this.a2 = Math.PI; }
     },
+    {
+      name: 'e',
+      label: 'E',
+      keyboardShortcuts: [69 /* e */],
+      action: function() { this.a2 = Math.E; }
+    },
+    {
+      name: 'percent',
+      label: '%',
+      action: function() { this.a2 = this.a2 / 100.0; }
+    },
+    {
+      name: 'deg',
+      action: function() { this.degreesMode = true; }
+    },
+    {
+      name: 'rad',
+      action: function() { this.degreesMode = false; }
+    },
     unaryOp('fact',   ['shift-49' /* ! */], factorial,             'x!'),
     unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
-    unaryOp('sin',    [], Math.sin),
-    unaryOp('cos',    [], Math.cos),
-    unaryOp('tan',    [], Math.tan),
-    unaryOp('asin',   [], Math.asin),
-    unaryOp('acos',   [], Math.acos),
-    unaryOp('atan',   [], Math.atan),
+    unaryOp('sin',    [], trigFn(Math.sin)),
+    unaryOp('cos',    [], trigFn(Math.cos)),
+    unaryOp('tan',    [], trigFn(Math.tan)),
+    unaryOp('asin',   [], invTrigFn(Math.asin)),
+    unaryOp('acos',   [], invTrigFn(Math.acos)),
+    unaryOp('atan',   [], invTrigFn(Math.atan)),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    unaryOp('sqroot',   [82 /* r */], Math.sqrt, '√'),
+    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
     unaryOp('ln',     [], Math.log),
-    unaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ'),
   ]
 });
 
@@ -206,3 +238,4 @@ MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ {
 MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'TertiaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
