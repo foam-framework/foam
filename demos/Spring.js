@@ -23,7 +23,7 @@ function friction(c, opt_coef) {
     c.vy *= coef;
   });
 }
-function move(c) {
+function inertia(c) {
   Events.dynamic(function() { c.vx; c.vy; }, function() {
     c.x += c.vx;
     c.y += c.vy;
@@ -52,7 +52,7 @@ function spring(mouse, c, dx, dy, opt_strength) {
 }
 function springFollow(mouse, c, dx, dy) {
   spring(mouse, c, dx, dy);
-  move(c);
+  inertia(c);
   friction(c, 0.7);
 }
 
