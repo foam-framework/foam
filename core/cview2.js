@@ -15,11 +15,23 @@ MODEL({
       }
     },
     {
+      name: 'scalingRatio',
+      type: 'int',
+      defaultValue: 1,
+      postSet: function() {
+        this.width = this.width;
+        this.height = this.height;
+      }
+    },
+    {
       name:  'width',
       type:  'int',
       defaultValue: 100,
       postSet: function(_, width) {
-        if ( this.$ ) this.$.width = width;
+        if ( this.$ ) {
+          this.$.width = width * this.scalingRatio;
+          this.$.style.width = width + 'px';
+        }
       }
     },
     {
@@ -27,7 +39,10 @@ MODEL({
       type:  'int',
       defaultValue: 100,
       postSet: function(_, height) {
-        if ( this.$ ) this.$.height = height;
+        if ( this.$ )  {
+          this.$.height = height * this.scalingRatio;
+          this.$.style.height = height + 'px';
+        }
       }
     },
     {
@@ -51,6 +66,7 @@ MODEL({
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
+        this.canvas.scale(this.scalingRatio, this.scalingRatio);
         this.cview.paint();
         this.canvas.restore();
       }
@@ -65,6 +81,14 @@ MODEL({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
+
+      var devicePixelRatio = this.X.window.devicePixelRatio;
+      var backingStoreRatio = this.canvas.backingStoreRatio ||
+        this.canvas.webkitBackingStorePixelRatio;
+
+      if ( devicePixelRatio !== backingStoreRatio )
+        this.scalingRatio = devicePixelRatio / backingStoreRatio;
+
       this.paint();
     }
   }
