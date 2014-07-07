@@ -15,8 +15,12 @@
  * limitations under the License.
  */
 
+function factorial(n)      { var r = 1; while ( n > 0 ) r *= n--; return r; };
+function permutation(n, r) { return factorial(n) / factorial(n-r); };
+function combination(n, r) { return permutation(n, r) / factorial(r); };
+
 /** Make a Binary Action. **/
-function makeBinaryOp(name, keys, f, sym) {
+function binaryOp(name, keys, f, sym) {
   f.toString = function() { return sym; };
   return {
     name: name,
@@ -26,7 +30,7 @@ function makeBinaryOp(name, keys, f, sym) {
   };
 }
 
-function makeUnaryOp(name, keys, f, opt_sym) {
+function unaryOp(name, keys, f, opt_sym) {
   return {
     name: name,
     label: opt_sym || name,
@@ -36,7 +40,7 @@ function makeUnaryOp(name, keys, f, opt_sym) {
 }
 
 /** Make a 0-9 Number Action. **/
-function makeNum(n) {
+function num(n) {
   return {
     name: n.toString(),
     keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
@@ -109,14 +113,17 @@ MODEL({
   },
 
   actions: [
-    makeNum(1), makeNum(2), makeNum(3),
-    makeNum(4), makeNum(5), makeNum(6),
-    makeNum(7), makeNum(8), makeNum(9), makeNum(0),
-    makeBinaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
-    makeBinaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
-    makeBinaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    makeBinaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
-    makeBinaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
+    num(1), num(2), num(3),
+    num(4), num(5), num(6),
+    num(7), num(8), num(9), num(0),
+    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
+    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
+    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
+    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
+    binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
+    binaryOp('p',     [],                 permutation,                          'nPr'),
+    binaryOp('c',     [],                 combination,                          'nCr'),
+    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
     {
       name: 'ac',
       label: 'AC',
@@ -164,19 +171,19 @@ MODEL({
       keyboardShortcuts: [80 /* p */],
       action: function() { this.a2 = Math.PI; }
     },
-    makeUnaryOp('fact',   ['shift-49' /* ! */], function n(a) { var r = 1; while ( a > 0 ) r *= a--; return r; }, 'x!'),
-    makeUnaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
-    makeUnaryOp('sin',    [], Math.sin),
-    makeUnaryOp('cos',    [], Math.cos),
-    makeUnaryOp('tan',    [], Math.tan),
-    makeUnaryOp('asin',   [], Math.asin),
-    makeUnaryOp('acos',   [], Math.acos),
-    makeUnaryOp('atan',   [], Math.atan),
-    makeUnaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    makeUnaryOp('root',   [82 /* r */], Math.sqrt, '√'),
-    makeUnaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
-    makeUnaryOp('ln',     [], Math.log),
-    makeUnaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
+    unaryOp('fact',   ['shift-49' /* ! */], factorial,             'x!'),
+    unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
+    unaryOp('sin',    [], Math.sin),
+    unaryOp('cos',    [], Math.cos),
+    unaryOp('tan',    [], Math.tan),
+    unaryOp('asin',   [], Math.asin),
+    unaryOp('acos',   [], Math.acos),
+    unaryOp('atan',   [], Math.atan),
+    unaryOp('square', [], function(a) { return a*a; }, 'x²'),
+    unaryOp('sqroot',   [82 /* r */], Math.sqrt, '√'),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
+    unaryOp('ln',     [], Math.log),
+    unaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
   ]
 });
 

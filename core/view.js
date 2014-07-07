@@ -4752,6 +4752,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'SlidePanelView',
   extendsModel: 'View',
@@ -4763,7 +4764,8 @@ MODEL({
       'will always be visible.',
 
   properties: [
-    'mainView', 'panelView',
+    'mainView',
+    'panelView',
     {
       name: 'minWidth',
       defaultValueFn: function() {
@@ -4821,7 +4823,8 @@ MODEL({
     {
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
-      preSet: function(_, x) {
+      preSet: function(oldX, x) {
+        if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
         // Bound it between its left and right limits: full open and just the
         // strip.
         if ( x <= this.parentWidth - this.panelWidth ) {
@@ -4845,11 +4848,12 @@ MODEL({
   methods: {
     toHTML: function() {
       return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative; height: 100%">' +
-          '<div id="' + this.id + '-main" style="height:100%">' +
+          'style="display: inline-block; position: relative" class="SliderPanel">' +
+          '<div id="' + this.id + '-main">' +
               this.mainView.toHTML() +
           '</div>' +
-          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
+          '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
               this.panelView.toHTML() +
           '</div>' +
           '</div>';
@@ -4875,12 +4879,20 @@ MODEL({
       this.mainView.initHTML();
       this.panelView.initHTML();
     },
-
-    main$: function() {
+    snap: function() {
+      // TODO: Calculate the animation time based on how far the panel has to move
+      Movement.animate(500, function() {
+        this.panelX = this.dir_ > 0 ? 0 : 1000;
+      }.bind(this))();
+     },
+     main$: function() {
       return this.X.$(this.id + '-main');
     },
     panel$: function() {
       return this.X.$(this.id + '-panel');
+    },
+    shadow$: function() {
+      return this.X.$(this.id + '-shadow');
     }
   },
 
@@ -4891,6 +4903,7 @@ MODEL({
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          this.shadow$().style.display = 'none';
           // Expaded mode. Show the two side by side, setting their widths
           // based on the panelRatio.
           this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
@@ -4898,6 +4911,7 @@ MODEL({
           this.panelX = this.width;
           this.expanded = true;
         } else {
+          this.shadow$().style.display = 'inline';
           this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
           this.panelWidth = this.minPanelWidth;
           this.panelX = this.width;
@@ -4955,6 +4969,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     },
     {
@@ -4962,6 +4977,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     }
   ]

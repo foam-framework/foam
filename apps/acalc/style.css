@@ -1,6 +1,7 @@
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
   font-size: 24px;
+  margin: 0;
 }
 
 * {
@@ -42,7 +43,6 @@ body {
 }
 
 .calc-display, .calc-display:focus {
-  flex: 1 1 100%;
   border: none;
   letter-spacing: 1px;
   line-height: 25px;
@@ -105,6 +105,12 @@ body {
   background-color: #4b4b4b;
 }
 
+.rhs-ops {
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: rgb(68, 68, 68);
+}
+
 .rhs-ops .button {
   background-color: #777;
 }
@@ -125,6 +131,7 @@ body {
 }
 
 .calc-display {
+  flex-grow: 5;
   position: relative;
 }
 
@@ -138,5 +145,17 @@ body {
 }
 
 .keypad {
+  flex-grow: 0;
+  flex-shrink: 0;
   margin-bottom: -4px;
+}
+
+/* Copied from foam.css. */
+.SliderPanel .shadow {
+  background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+                                         rgba(0,0,0,0) 100%);
+  height: 100%;
+  left: -8px;
+  position: absolute;
+  width: 8px;
 }
