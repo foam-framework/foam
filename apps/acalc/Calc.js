@@ -187,7 +187,7 @@ MODEL({
     {
       name: 'e',
       label: 'E',
-      keyboardShortcuts: [ /* e */],
+      keyboardShortcuts: [69 /* e */],
       action: function() { this.a2 = Math.E; }
     },
     {
@@ -212,10 +212,10 @@ MODEL({
     unaryOp('acos',   [], invTrigFn(Math.acos)),
     unaryOp('atan',   [], invTrigFn(Math.atan)),
     unaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    unaryOp('sqroot',   [82 /* r */], Math.sqrt, '√'),
+    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
     unaryOp('log',    [], function(a) { return Math.log(a) / Math.log(10); }),
     unaryOp('ln',     [], Math.log),
-    unaryOp('exp',    [69 /* e */], Math.exp, 'eⁿ'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ'),
   ]
 });
 
