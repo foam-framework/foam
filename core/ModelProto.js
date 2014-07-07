@@ -86,7 +86,6 @@ var ModelProto = {
   buildPrototype: function() {
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
     var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
-    cls.instance_ = {};
     cls.model_    = this;
     cls.name_     = this.name;
     cls.TYPE      = this.name + "Prototype";
