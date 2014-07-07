@@ -9,8 +9,7 @@ MODEL({name: 'Circle', extendsModel: 'Circle2', properties: [
 space.write(document);
 mouse.connect(space.$);
 
-function distance(x1, x2) { Math.sqrt(x1*x1, x2*x2); }
-function follow(mouse, c, dx, dy) {
+function strut(mouse, c, dx, dy) {
   Events.dynamic(function() { mouse.x; mouse.y; }, function() {
     c.x = mouse.x + dx;
     c.y = mouse.y + dy;
@@ -45,15 +44,7 @@ function spring(mouse, c, dx, dy, opt_strength) {
       c.vx += dv * Math.cos(a);
       c.vy += dv * Math.sin(a);
     }
-// Simpler 2 1-dimensional version
-//    c.vx += -(c.x - mouse.x - dx)/Math.max(50, Math.abs(dx));
-//    c.vy += -(c.y - mouse.y - dy)/Math.max(50, Math.abs(dy));
   });
-}
-function springFollow(mouse, c, dx, dy) {
-  spring(mouse, c, dx, dy);
-  inertia(c);
-  friction(c, 0.7);
 }
 
 for ( var x = 0 ; x < 5 ; x++ ) {
@@ -64,9 +55,11 @@ for ( var x = 0 ; x < 5 ; x++ ) {
       borderWidth: 12,
       border: 'hsl(' + x/.005 + ',' + (35+y/.005*60) + '%, 60%)'
     });
-
-//    follow(mouse, c, (x-2)*100, (y-2)*100);
-    springFollow(mouse, c, (x-2)*100, (y-2)*100);
     space.addChild(c);
+
+//    strut(mouse, c, (x-2)*100, (y-2)*100);
+    spring(mouse, c, (x-2)*100, (y-2)*100);
+    inertia(c);
+    friction(c, 0.7);
   }
 }
