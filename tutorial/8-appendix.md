@@ -6,6 +6,50 @@ tutorial: 8
 
 This appendix introduces further details about some parts of FOAM that aren't necessary for the main tutorial.
 
+## Properties
+
+### Properties-on-properties
+
+Properties are modelled objects too, which means they have their own methods and properties.
+
+Several of these properties on properties are very relevant to writing your own models. Here are some of them, in roughly descending order of usefulness:
+
+- `postSet: function(old, nu) { ... }` is called with the old and new values of this property, after it has changed.
+- `preSet: function(old, nu { ... }` is called with the old and new values of the property when it's *about* to change. The return value of `preSet` is the value which is actually stored.
+- `defaultValue`: Provide a fixed default value for this property. It won't actually be stored on each object, saving memory and bandwidth.
+- `defaultValueFn: function() { ... }`: A function that's called *every time* the default value is required. Can use `this` to refer to the object in question, so you can compute the default based on some other properties.
+- `factory: function() { ... }` is called once during `init` after creating a new object, the value returned becomes the value of this property.
+    - This is commonly used as `factory: function() { return []; }` to make each object have its own empty array. `defaultValue: []` would make all instances share the one array!
+- `view` specifies the *name* of the view that should be used to render this property. Defaults to `TextFieldView` for default properties; other `FooProperty` models may have other approaches.
+- `required: true` indicates that this field is required for the model to function correctly.
+- `transient: true` indicates that this field should not be stored by DAOs.
+- `hidden: true` indicates that this field should not be rendered by views.
+- `label: 'string'` gives the label a view should use to label this property, if labeling it.
+- `help: 'string'` explanatory help text for this property, which could go in a tooltip or just serve as documentation in the code
+- `getter: function() { ... }` returns the current value of this property. When this is used, the property is a "pseudoproperty" that has no real value, but is usually computed from others.
+- `setter: function(nu) { ... }` is called to set the current value of the property. When this is used, the property is a "pseudoproperty" that has no real value, but is usually computed from others.
+- `dynamicValue: function() { ... }` is passed to `Events.dynamic`, which turns this property into a spreadsheet cell. The function you provide will be re-run every time any of its inputs changes, and the return value becomes the value of the property.
+- `aliases: ['string', 'array']` defines other names for this property. They can be used to access the same underlying value.
+
+There are some more having to do with tables, i18n, autocomplete and more. See `core/mm2Property.js` for the complete list for `Property`; `core/mm3Types.js` adds `IntProperty` and friends that may have more specific properties for their type.
+
+### Property Types
+
+We showed `IntProperty` above; there are many more types of properties. Most you can easily guess what they do:
+
+`StringProperty` (the default), `BooleanProperty`, `DateProperty`, `DateTimeProperty`, `IntProperty`, `FloatProperty`, `FunctionProperty`, `ArrayProperty`, `ReferenceProperty`, `StringArrayProperty`, `DAOProperty`, `ReferenceArrayProperty`.
+
+There are many more; most of these are defined in `core/mm3Types.js`.
+
+## Methods on the Model
+
+On models themselves, statically, there are a handful of useful methods.
+
+- `SomeModel.name` is the name of the model.
+- `SomeModel.create()` creates a new instance of the model.
+- `SomeModel.isInstance(o)` checks if `o` is an instance of the model (or a sub-model).
+- `SomeModel.isSubModel(OtherModel)` returns `true` if `OtherModel` is a descendant of `SomeModel`.
+
 ## Listeners
 
 Listeners are like methods, but `this` is always bound to the object, making them easier to pass as event handlers.
@@ -64,23 +108,6 @@ MODEL({
 
 By default, an action is always visible and enabled (so the `isAvailable` above is unnecessary). This button is always visible but only enabled when `this.isStarted` is false. When the button is clicked while enabled, `action` is called. If the button is disabled, nothing happens.
 
-
-## Property Types
-
-We showed `IntProperty` above; there are many more types of properties. Most you can easily guess what they do:
-
-`StringProperty` (the default), `BooleanProperty`, `DateProperty`, `DateTimeProperty`, `IntProperty`, `FloatProperty`, `FunctionProperty`, `ArrayProperty`, `ReferenceProperty`, `StringArrayProperty`, `DAOProperty`, `ReferenceArrayProperty`.
-
-There are many more; most of these are defined in `core/mm3Types.js`.
-
-## Methods on the Model
-
-On models themselves, statically, there are a handful of useful methods.
-
-- `SomeModel.name` is the name of the model.
-- `SomeModel.create()` creates a new instance of the model.
-- `SomeModel.isInstance(o)` checks if `o` is an instance of the model (or a sub-model).
-- `SomeModel.isSubModel(OtherModel)` returns `true` if `OtherModel` is a descendant of `SomeModel`.
 
 ## Methods on the `Object` prototype
 
