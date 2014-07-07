@@ -12,14 +12,14 @@ Very little code is left to be written in an imperative style - mostly event han
 
 FOAM stands for **Feature-Oriented Active Modeler**. That isn't a very transparent name, so let's break it down.
 
-- FOAM is **deeply** MVC. Everything is modeled:
+- FOAM is **deeply** MVC. Everything is modelled:
     - Your data objects, obviously, but also:
     - The properties, methods, listeners, etc. on those objects
     - The properties etc. on *those* properties
     - Views
     - Controllers
     - `Model` itself!
-- This modeled data is "smart":
+- This modelled data is "smart":
     - It knows which properties should be displayed in a table, which are public keys, which should be hidden in the UI, and which not to store in the database.
     - It knows what to update when values change, how to validate incoming updates to those values, what view the values should be rendered with.
     - Therefore databases and views don't need to be customized for your data - they already know how to handle it.
