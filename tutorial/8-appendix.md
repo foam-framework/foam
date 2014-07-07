@@ -20,18 +20,59 @@ Several of these properties on properties are very relevant to writing your own 
 - `defaultValueFn: function() { ... }`: A function that's called *every time* the default value is required. Can use `this` to refer to the object in question, so you can compute the default based on some other properties.
 - `factory: function() { ... }` is called once during `init` after creating a new object, the value returned becomes the value of this property.
     - This is commonly used as `factory: function() { return []; }` to make each object have its own empty array. `defaultValue: []` would make all instances share the one array!
-- `view` specifies the *name* of the view that should be used to render this property. Defaults to `TextFieldView` for default properties; other `FooProperty` models may have other approaches.
+- `view` specifies the *name* of the view that should be used to render this property. Defaults to `TextFieldView` for properties with no specified `model_`; properties with eg. `StringArrayProperty` as their model may have other defaults.
 - `required: true` indicates that this field is required for the model to function correctly.
 - `transient: true` indicates that this field should not be stored by DAOs.
 - `hidden: true` indicates that this field should not be rendered by views.
-- `label: 'string'` gives the label a view should use to label this property, if labeling it.
+- `label: 'string'` gives the label that views should use to label this property, if applicable. Defaults to `this.name`, naturally.
 - `help: 'string'` explanatory help text for this property, which could go in a tooltip or just serve as documentation in the code
 - `getter: function() { ... }` returns the current value of this property. When this is used, the property is a "pseudoproperty" that has no real value, but is usually computed from others.
 - `setter: function(nu) { ... }` is called to set the current value of the property. When this is used, the property is a "pseudoproperty" that has no real value, but is usually computed from others.
 - `dynamicValue: function() { ... }` is passed to `Events.dynamic`, which turns this property into a spreadsheet cell. The function you provide will be re-run every time any of its inputs changes, and the return value becomes the value of the property.
-- `aliases: ['string', 'array']` defines other names for this property. They can be used to access the same underlying value.
+- `aliases: ['string', 'array']` defines other names for this property. They can be used as if they were real properties, but they access the same underlying value.
 
-There are some more having to do with tables, i18n, autocomplete and more. See `core/mm2Property.js` for the complete list for `Property`; `core/mm3Types.js` adds `IntProperty` and friends that may have more specific properties for their type.
+There are some more having to do with tables, i18n, autocomplete and more. See `core/mm2Property.js` for the complete definition of `Property`. `core/mm3Types.js` adds `IntProperty` and friends, and some of those have more properties specific to their type.
+
+### Property Binding
+
+For every property `foo` on a FOAM object, there is a `foo$` which is the property itself. Setting two objects to share a property, rather than the value, is like passing by reference instead of by value. To illustrate:
+
+{% highlight js %}
+var o1 = Foo.create({ bar: 'abc' });
+var o2 = Foo.create({ bar: o1.bar });
+console.log(o1.bar);        // prints 'abc'
+o2.bar = 'def';
+console.log(o2.bar);        // 'def'
+console.log(o1.bar);        // 'abc'
+{% endhighlight %}
+
+In the above, the value of `o1.bar` is copied to `o2.bar`. In the below, `o1.bar` and `o2.bar` are the same underlying property:
+
+{% highlight js %}
+var o1 = Foo.create({ bar: 'abc' });
+var o2 = Foo.create({ bar$: o1.bar$ });
+console.log(o1.bar);        // prints 'abc'
+o2.bar = 'def';
+console.log(o2.bar);        // 'def'
+console.log(o1.bar);        // 'def'
+{% endhighlight %}
+
+This makes it convenient to eg. bind a view to a specific property from a larger model.
+
+### Listening to Properties
+
+In addition to things like `setter` and `postSet`, you can listen for updates to any property, like so:
+
+{% highlight js %}
+foo.bar$.addListener(function(object, topic, oldValue, newValue) { ... });
+{% endhighlight %}
+
+- `object` is the object this property belongs to. It serves as `this`, effectively.
+- `topic` is the reason for the event. For a property listener, it's always the property's name.
+- `oldValue` is the value from before the change.
+- `newValue` is the value after the change.
+
+This functionality is used by things like `Events.dynamic` to register listeners on properties changing.
 
 ### Property Types
 

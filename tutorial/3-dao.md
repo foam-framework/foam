@@ -61,7 +61,7 @@ Let's explain a few pieces of this code in detail.
     - `phones.js` creates a global array called `phones`. We set the `defaultValue` of our `dao` property to this global value. Remember that Arrays implement the DAO interface.
 - `filteredDAO` is the interesting DAO. This is the one that actually drives the main view on the page, which gets filtered by the search and ordered by the sort order.
     - Its view is `DAOListView`. This view shows a vertical list of rows, one for each entry in the DAO it is bound to. The view for each row is `PhoneCitationView`, which we'll define shortly.
-    - `dynamicValue` defines a function that is run through `Events.dynamic`. `Events.dynamic` examines the function it is passed to see what its input are, and registers listeners on each of those inputs. When any of them changes, the function passed to `Events.dynamic` will be run again.
+    - `dynamicValue` defines a function that is run through `Events.dynamic`. This essentially creates spreadsheet cells: `Events.dynamic` registers listeners on each of the inputs in the function. When any of them changes, the function will be run again.
         - Here, those inputs include `this.order` and `this.search`.
         - The return value becomes the value of `this.filteredDAO`, which is a sorted and filtered version of the master `this.dao`.
     - `CONTAINS_IC` checks if the string on the left (`SEQ(Phone.NAME, Phone.SNIPPET)`) contains the string on the right (`this.search`), ignoring case.
