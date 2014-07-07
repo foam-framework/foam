@@ -6,7 +6,7 @@ tutorial: 1
 
 FOAM is, fundamentally, about data. It takes the object-oriented view of data: the smallest unit of data is an object, and an object is a collection of properties and methods.
 
-This part of the tutorial is split into two sections. First, the high-level concepts with a few examples. Second, an appendix with much more comprehensive details on models, properties, and other parts of FOAM.
+This part of the tutorial is split into two sections. First, the high-level concepts with a few examples. Second, an [appendix]({{ site.baseurl }}/tutorial/8-appendix) with much more comprehensive details on models, properties, and other parts of FOAM.
 
 ## Models
 
@@ -43,7 +43,7 @@ and it can be instantiated and used like this:
 {% highlight js %}
 var p = Point.create({ x: 10, y: 20 });
 p.scale(2);
-p.x = p.y;
+p.x += p.y;
 console.log(p.toJSON());
 {% endhighlight %}
 
@@ -52,7 +52,7 @@ which will output
 {% highlight js %}
 {
   "model_": "Point",
-  "x": 40,
+  "x": 60,
   "y": 40
 }
 {% endhighlight %}
@@ -112,68 +112,16 @@ A property only has one required property, `name`, but this example sets several
 - `preSet`: This function runs when this property is written. It is passed the old and new values, and its return value becomes the actual value stored in the property.
 - `defaultValue`: Specifies the default value for this property. Note that when a property is current equal to its `defaultValue`, the value can be omitted from `toJSON` representations, not stored in the database, or not sent over the wire, saving bandwidth and space.
 
-There are many more properties-on-properties: `hidden`, `postSet`, `getter`, `setter`, `factory` and lots more. See the **Appendix** below for more details on these.
+There are many more properties-on-properties: `hidden`, `postSet`, `getter`, `setter`, `factory` and lots more. See the [appendix]({{ site.baseurl }}/tutorial/8-appendix) for more details.
 
 
 ### Listeners
 
 Listeners are called like methods, but they have some special features.
 
-The most basic is that they always have `this` bound properly, avoiding Javascript's worst wart. That way you can pass them as event handlers without having to bind manually:
+The most basic is that they always have `this` bound properly, avoiding Javascript's worst wart. That way you can pass them as event handlers without having to bind manually.
 
-{% highlight js %}
-MODEL({
-  name: 'Mouse',
-  properties: [ 'x', 'y' ],
-  methods: {
-    connect: function(element) {
-      element.addEventListener('mousemove', this.onMouseMove);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'onMouseMove',
-      isAnimated: true,
-      code: function(evt) {
-        this.x = evt.offsetX;
-        this.y = evt.offsetY;
-      }
-    }
-  ]
-});
-{% endhighlight %}
-
-The listener is attached to the object like a normal method, which can be called directly with `this.onMouseMove()`. Under the hood, however, there are several differences.
-
-- Listeners always have `this` bound properly, so they can be passed as callbacks, as above, without being explicitly bound.
-- Listeners can be merged. When events are merged, it's in a "last in, only out" fashion, where the `event` parameter passed to the actual code is the latest one.
-    - `isAnimated: true` will merge events and fire the real code on the next animation frame. This is useful to avoid redrawing more than once per frame.
-    - `isMerged: 100` will merge events and fire the real code 100ms after the **first** one. This is useful to avoid spamming database updates.
-
-
-### Actions
-
-Actions are guarded, GUI-friendly methods. FOAM will run code you supply to determine whether the button for this action should be hidden, visible but disabled, or enabled.
-
-{% highlight js %}
-MODEL({
-  // ...
-  actions: [
-    {
-      name: 'start',
-      help: 'Start the timer',
-
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return ! this.isStarted; },
-      action:      function() { this.isStarted = true; }
-    }
-  ],
-  // ...
-});
-{% endhighlight %}
-
-By default, an action is always visible and enabled (so the `isAvailable` above is unnecessary). This button is always visible but only enabled when `this.isStarted` is false. When the button is clicked while enabled, `action` is called. If the button is disabled, nothing happens.
+For more details, see the [appendix]({{ site.baseurl }}/tutorial/8-appendix).
 
 
 ### Templates
@@ -234,7 +182,10 @@ Controllers are frequently either absent, or a mess of glue code that manually b
 
 ### Terminology Warning
 
-FOAM has an unfortunate terminology collision around the word "model". We use it to mean models as above, the concept similar to Java classes, as well as for the M in MVC, the data model of the application.
+FOAM has an unfortunate terminology collision around the word "model". We use it to mean both:
+
+- models as above, the concept similar to Java classes, and
+- the M in MVC, the data model of the application.
 
 The M in MVC is generally a collection of FOAM models, which together define all the data in the application.
 
@@ -260,7 +211,7 @@ Data Access Object, or DAO, is FOAM's term for a collection of objects, all of t
 
 In addition there is a large set of DAO decorators, which add extra functionality to other DAOs. This spares each DAO's author from having to reimplement caching, autoincrement, logging, timing, or anything else not specific to the target backend.
 
-DAOs have a rich and extensible query language, which supports filtering, sorting, grouping, aggregating and more. More details of the interface and how to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao).
+DAOs have a rich and extensible query language, which supports filtering, sorting, grouping, aggregation and more. More details of the interface and how to use it are in [part 3]({{ site.baseurl }}/tutorial/3-dao).
 
 
 ### Views
@@ -307,42 +258,7 @@ FOAM is largely written in itself, which helps keep it compact despite all these
 
 Minified and gzipped, it comes in at 94 KB as of early July 2014. There is a great deal in the core codebase currently that should not be there; as FOAM moves towards release we will cut this at least in half.
 
+## Next
 
-## Appendix
-
-Some further details, for the curious.
-
-**Feel free to skip this section and move on to [part 2]({{ site.baseurl }}/tutorial/2-model).**
-
-### Property Types
-
-We showed `IntProperty` above; there are many more types of properties. Most you can easily guess what they do:
-
-`StringProperty` (the default), `BooleanProperty`, `DateProperty`, `DateTimeProperty`, `IntProperty`, `FloatProperty`, `FunctionProperty`, `ArrayProperty`, `ReferenceProperty`, `StringArrayProperty`, `DAOProperty`, `ReferenceArrayProperty`.
-
-There are many more; most of these are defined in `core/mm3Types.js`.
-
-### Methods on the Model
-
-On the model itself, statically, there are a handful of useful methods.
-
-- `SomeModel.name` is the name of the model.
-- `SomeModel.create()` creates a new instance of the model.
-- `SomeModel.isInstance(o)` checks if `o` is an instance of the model (or a sub-model).
-- `SomeModel.isSubModel(SomeOtherModel)` returns `true` if `SomeModel` extends `SomeOtherModel`.
-
-### Methods on the `Object` prototype
-
-FOAM injects several properties and methods onto all objects:
-
-- `model_`: Every modelled object has a pointer to its `Model`. (Including `Model` itself: `Model.model_ === Model`)
-- `TYPE`: same as `model_.name`
-- `o.equals(x)` compares `o` and `x`
-- `o.compareTo(x)` returns the usual -1, 0 or 1.
-- `o.hashCode()` is similar to Java.
-- `o.diff(x)` returns a diff of `o` against `x`.
-- `o.clone()` returns a shallow copy of `o`.
-- `o.deepClone()` is of course a deep copy.
-- `o.toJSON()` and `o.toXML()` return JSON or XML as a string. Parsers are included to read them in again.
-- `o.write(document)` writes the default view (see below) of the object into the document.
+You should proceed either to [part 2]({{ site.baseurl }}/tutorial/2-model) or the [appendix]({{ site.baseurl }}/tutorial/8-appendix) if you're still curious.
 
