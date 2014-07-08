@@ -15,7 +15,7 @@ Properties are modelled objects too, which means they have their own methods and
 Several of these properties on properties are very relevant to writing your own models. Here are some of them, in roughly descending order of usefulness:
 
 - `postSet: function(old, nu) { ... }` is called with the old and new values of this property, after it has changed.
-- `preSet: function(old, nu { ... }` is called with the old and new values of the property when it's *about* to change. The return value of `preSet` is the value which is actually stored.
+- `preSet: function(old, nu) { ... }` is called with the old and new values of the property when it's *about* to change. The return value of `preSet` is the value which is actually stored.
 - `defaultValue`: Provide a fixed default value for this property. It won't actually be stored on each object, saving memory and bandwidth.
 - `defaultValueFn: function() { ... }`: A function that's called *every time* the default value is required. Can use `this` to refer to the object in question, so you can compute the default based on some other properties.
 - `factory: function() { ... }` is called once during `init` after creating a new object, the value returned becomes the value of this property.

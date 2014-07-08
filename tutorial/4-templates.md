@@ -20,7 +20,7 @@ FOAM's template syntax is a superset of JSP syntax. This means templates are HTM
 - `{{{ }}}` does the same but without escaping.
 - `%%foo` inserts the simple value of `this.foo` into the page.
 - `$$foo` inserts the view for `this.foo` at this location. That is, whatever `this.foo$.view` is, it will be created, fed the value of `this.foo`, and inserted into the DOM.
-    - `$$foo{ x: 'y', y: 'x' }` allows providing or overriding parameters to that view.
+    - `$$foo{ x: 'y', y: 'x' }` will pass along the values you set to `.create` when it builds the view for `foo`.
 {% endraw %}
 
 ### Control Structures
