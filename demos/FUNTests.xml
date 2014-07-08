@@ -636,6 +636,32 @@
           </object>
         </property>
       </object>
+      <object model="UnitTest">
+        <property name="name">mergeAsync</property>
+        <property name="async">true</property>
+        <property name="code" type="function">
+          var calls = [];
+          var fdirty = mergeAsync(function(r, x) {
+            calls.push(x);
+            setTimeout(r, 200);
+          });
+          aseq(
+            function(r) { fdirty(1); r(); },
+            function(r) { fdirty(2); r(); },
+            function(r) { fdirty(3); r(); },
+            function(r) {
+              assert(calls.length == 1 &amp;&amp; calls[0] == 1, 'Only one call should fire right away');
+              r();
+            },
+            asleep(250),
+            function(r) {
+              assert(calls.length == 2 &amp;&amp; calls[0] == 1 &amp;&amp; calls[1] == 3,
+                  'Both calls should now have fired.');
+              r();
+            }
+          )(ret);
+        </property>
+      </object>
     </property>
   </object>
 
