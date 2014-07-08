@@ -493,3 +493,38 @@ function futurefn(future) {
     });
   };
 }
+
+function adelay(afunc, delay) {
+  var queue = [];
+  var timeout;
+
+  function pump() {
+    if ( timeout ) return;
+    if ( ! queue.length ) return;
+
+    var top = queue.shift();
+    var f = top[0];
+    var args = top[1];
+    var ret = args[0];
+    args[0] = function() {
+      ret.apply(null, arguments);
+      pump();
+    };
+
+    timeout = setTimeout(function() {
+      timeout = 0;
+      f.apply(null, args);
+    }, delay)
+  }
+
+  return function() {
+    var args = arguments;
+
+    queue.push([
+      afunc,
+      args
+    ]);
+
+    pump();
+  };
+}
