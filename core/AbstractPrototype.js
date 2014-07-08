@@ -25,6 +25,19 @@ var AbstractPrototype = {
   TYPE: 'AbstractPrototype',
 
   create: function(args, opt_X) {
+    if ( this.instance_ && this.model_ != Model ) {
+      // TODO: Make faster.
+      var o = this.deepClone();
+
+      if ( opt_X ) o.X = opt_X;
+      else o.X = this.X;
+
+      o.copyFrom(args);
+      o.init(args);
+
+      return o;
+    }
+
     var o = Object.create(this);
     o.instance_ = {};
     if ( opt_X ) o.X = opt_X;

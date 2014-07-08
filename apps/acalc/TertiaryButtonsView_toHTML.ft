@@ -1,0 +1,31 @@
+<%
+this.X.registerModel(Model.create({
+  name: 'ActionButton',
+  extendsModel: 'CalcButton',
+  properties: [
+    { name: 'background', defaultValue: 'rgb(29, 233, 182)' },
+//    { name: 'width',      defaultValue: 58 },
+//    { name: 'height',     defaultValue: 58 },
+    { name: 'font',       defaultValue: '20px Roboto' }
+  ]
+}));
+%>
+<div id="%%id" class="buttons button-row tertiaryButtons">
+  <div class="button-column" style="flex-grow: 1">
+    <div class="button-row">
+      <div class="button">$$deg</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$rad</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$fact</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$p</div>
+    </div>
+    <div class="button-row">
+      <div class="button">$$c</div>
+    </div>
+  </div>
+</div>
