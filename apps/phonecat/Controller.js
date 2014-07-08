@@ -63,6 +63,7 @@ MODEL({
     init: function() {
       this.SUPER();
       window.addEventListener('hashchange', function() {
+        this.children = [];
         document.body.innerHTML = this.toHTML();
         this.initHTML();
       }.bind(this));

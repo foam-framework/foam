@@ -9,8 +9,7 @@ MODEL({name: 'Circle', extendsModel: 'Circle2', properties: [
 space.write(document);
 mouse.connect(space.$);
 
-function distance(x1, x2) { Math.sqrt(x1*x1, x2*x2); }
-function follow(mouse, c, dx, dy) {
+function strut(mouse, c, dx, dy) {
   Events.dynamic(function() { mouse.x; mouse.y; }, function() {
     c.x = mouse.x + dx;
     c.y = mouse.y + dy;
@@ -23,10 +22,14 @@ function friction(c, opt_coef) {
     c.vy *= coef;
   });
 }
-function move(c) {
+function inertia(c) {
   Events.dynamic(function() { c.vx; c.vy; }, function() {
+    // Dynamic Friction
     c.x += c.vx;
     c.y += c.vy;
+    // Static Friction
+    if ( c.x < 0.1 ) c.x = 0;
+    if ( c.y < 0.1 ) c.y = 0;
   });
 }
 function spring(mouse, c, dx, dy, opt_strength) {
@@ -45,28 +48,33 @@ function spring(mouse, c, dx, dy, opt_strength) {
       c.vx += dv * Math.cos(a);
       c.vy += dv * Math.sin(a);
     }
-// Simpler 2 1-dimensional version
-//    c.vx += -(c.x - mouse.x - dx)/Math.max(50, Math.abs(dx));
-//    c.vy += -(c.y - mouse.y - dy)/Math.max(50, Math.abs(dy));
   });
 }
-function springFollow(mouse, c, dx, dy) {
-  spring(mouse, c, dx, dy);
-  move(c);
-  friction(c, 0.7);
+function bounceOnWalls(c, w, h) {
+  Events.dynamic(function() { c.x; c.y; }, function() {
+    if ( c.x < 0 ) c.vx = Math.abs(c.vx);
+    if ( c.x > w ) c.vx = -Math.abs(c.vx);
+    if ( c.y < 0 ) c.vy = Math.abs(c.vy);
+    if ( c.y > w ) c.vy = -Math.abs(c.vy);
+  });
 }
 
-for ( var x = 0 ; x < 5 ; x++ ) {
-  for ( var y = 0 ; y < 5 ; y++ ) {
+var N = 5;
+for ( var x = 0 ; x < N ; x++ ) {
+  for ( var y = 0 ; y < N ; y++ ) {
     var c = Circle.create({
-      r: 30,
+      r: 20,
       color: 'white',
       borderWidth: 12,
-      border: 'hsl(' + x/.005 + ',' + (35+y/.005*60) + '%, 60%)'
+      border: 'hsl(' + x/N*100 + ',' + (35+y/N*100*60) + '%, 60%)'
     });
-
-//    follow(mouse, c, (x-2)*100, (y-2)*100);
-    springFollow(mouse, c, (x-2)*100, (y-2)*100);
     space.addChild(c);
+
+//    strut(mouse, c, (x-2)*100, (y-2)*100);
+    spring(mouse, c, (x-(N-1)/2)*60, (y-(N-1)/2)*60);
+    inertia(c);
+    friction(c, 0.8);
   }
 }
+
+mouse.x = mouse.y = 300;
