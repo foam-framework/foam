@@ -238,4 +238,4 @@ MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ {
 MODEL({ name: 'CalcView',             extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'MainButtonsView',      extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
 MODEL({ name: 'SecondaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
-MODEL({ name: 'TertiaryButtonsView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+MODEL({ name: 'TertiaryButtonsView',  extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
