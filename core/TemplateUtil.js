@@ -75,7 +75,7 @@ var TemplateOutput = {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
         if ( o && o.toView ) o = o.toView();
-        if ( o ) {
+        if ( ! ( o === null || o === undefined ) ) {
           if ( o.appendHTML ) {
             o.appendHTML(this);
           } else if ( o.toHTML ) {
