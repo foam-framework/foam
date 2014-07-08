@@ -420,6 +420,7 @@
     </property>
     <property name="tests">
       <object model="UnitTest">
+        <property name="name">test0</property>
         <property name="async">true</property>
         <property name="code" type="function">
           aprint.ao(f2.ao(f1))(ret);
@@ -567,8 +568,8 @@
         <property name="async">true</property>
         <property name="code" type="function">log('alog'); alog('a message')(ret);</property>
       </object>
-      <object id="test">
-        <property name="name">UnitTest</property>
+      <object model="UnitTest">
+        <property name="name">asleep</property>
         <property name="async">true</property>
         <property name="code" type="function">
           log('**********');
