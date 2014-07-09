@@ -606,7 +606,6 @@ MODEL({
         // only this method will be supported (and DAO).
         Events.link(pValue, view.data$);
       } else if ( view.model_.DAO ) {
-        debugger;
         Events.link(pValue, view.dao$);
       } else if ( view.setValue ) {
         view.setValue(pValue);

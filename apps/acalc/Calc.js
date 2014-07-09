@@ -220,16 +220,12 @@ MODEL({
 });
 
 
-MODEL({
-  name: 'CalcButton',
-  extendsModel: 'ActionButtonCView',
-  properties: [
-    { name: 'color',      defaultValue: 'white' },
-    { name: 'background', defaultValue: '#4b4b4b' },
-    { name: 'width',      defaultValue: 70 },
-    { name: 'height',     defaultValue: 70 },
-    { name: 'font',       defaultValue: '24px Roboto' }
-  ]
+var CalcButton = ActionButtonCView.xbind({
+  color:      'white',
+  background: '#4b4b4b',
+  width:      70,
+  height:     70,
+  font:       '24px Roboto'
 });
 X.registerModel(CalcButton, 'ActionButton');
 
