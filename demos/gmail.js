@@ -6,15 +6,11 @@ var auth = EasyOAuth2.create({
   ]
 });
 
-var future = deferJsonP(X);
-
-/*
-(function() {
-  future.get = athrottle(future.get, 10);
-})();
-*/
-
-auth.setJsonpFuture(X, future);
+X.registerModel(XHR.xbind({
+  authAgent: auth,
+  retries: 3,
+  delay: 2
+}), 'XHR');
 
 var messageDao = X.GMailRestDAO.create({
   model: GMailMessage,

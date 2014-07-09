@@ -6,7 +6,7 @@ var auth = EasyOAuth2.create({
   ]
 });
 
-X.registerModel(XHR.create({
+X.registerModel(XHR.xbind({
   authAgent: auth,
   retries: 3,
   delay: 10
