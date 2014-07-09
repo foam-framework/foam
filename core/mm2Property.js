@@ -204,6 +204,9 @@ var Property = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
+      postSet: function(old, nu) {
+        if ( nu && this.defaultValueFn ) this.defaultValueFn = undefined;
+      },
       help: 'The property\'s default value.'
     },
     {
@@ -216,6 +219,9 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
+      postSet: function(old, nu) {
+        if ( nu && this.defaultValue ) this.defaultValue = undefined;
+      },
       help: 'The property\'s default value function.'
     },
     {
