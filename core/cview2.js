@@ -82,9 +82,9 @@ MODEL({
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
 
-      var devicePixelRatio = this.X.window.devicePixelRatio;
+      var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
       var backingStoreRatio = this.canvas.backingStoreRatio ||
-        this.canvas.webkitBackingStorePixelRatio;
+        this.canvas.webkitBackingStorePixelRatio || 1;
 
       if ( devicePixelRatio !== backingStoreRatio )
         this.scalingRatio = devicePixelRatio / backingStoreRatio;

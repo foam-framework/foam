@@ -84,6 +84,8 @@ var ModelProto = {
   TYPE: 'ModelProto <startup only, error if you see this>',
 
   buildPrototype: function() {
+    if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
     var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
     cls.model_    = this;

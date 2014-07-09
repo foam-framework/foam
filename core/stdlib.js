@@ -103,6 +103,16 @@ Object.defineProperty(Object.prototype, 'deepClone', {
   writable: true
 });
 
+Object.defineProperty(String.prototype, 'clone', {
+  value: function() { return this.toString(); },
+  writable: true
+});
+
+Object.defineProperty(Number.prototype, 'clone', {
+  value: function() { return +this; },
+  writable: true
+});
+
 Object.defineProperty(Object.prototype, 'become', {
   value: function(other) {
     var local = Object.getOwnPropertyNames(this);

@@ -25,19 +25,6 @@ var AbstractPrototype = {
   TYPE: 'AbstractPrototype',
 
   create: function(args, opt_X) {
-    if ( this.instance_ && this.model_ != Model ) {
-      // TODO: Make faster.
-      var o = this.deepClone();
-
-      if ( opt_X ) o.X = opt_X;
-      else o.X = this.X;
-
-      o.copyFrom(args);
-      o.init(args);
-
-      return o;
-    }
-
     var o = Object.create(this);
     o.instance_ = {};
     if ( opt_X ) o.X = opt_X;
@@ -46,6 +33,25 @@ var AbstractPrototype = {
     o.init(args);
 
     return o;
+  },
+
+  xbind: function(map) {
+    return {
+      __proto__: this,
+      create: function(args) {
+        args = args || {};
+        for ( var key in map ) {
+          if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
+        }
+        return this.__proto__.create(args);
+      },
+      xbind: function(m2) {
+        for ( var key in map ) {
+          if ( ! m2.hasOwnProperty(key) ) m2[key] = map[key];
+        }
+        return this.__proto__.xbind(m2);
+      }
+    }
   },
 
   /** Context defaults to the global namespace by default. **/
