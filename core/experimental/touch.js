@@ -209,7 +209,7 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          this.touchStart(i, t, e);
+          this.touchStart(t.identifier, t, e);
         }
       }
     },
@@ -220,11 +220,12 @@ MODEL({
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
-          this.touchMove(i, t, e);
+          this.touchMove(id, t, e);
         }
       }
     },
@@ -234,11 +235,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch end for unknown touch.');
             continue;
           }
-          this.touchEnd(i, t, e);
+          this.touchEnd(id, t, e);
         }
       }
     },
@@ -248,11 +250,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch cancel for unknown touch.');
             continue;
           }
-          this.touchCancel(i, t, e);
+          this.touchCancel(id, t, e);
         }
       }
     },
@@ -262,11 +265,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch cancel for unknown touch.');
             continue;
           }
-          this.touchLeave(i, t, e);
+          this.touchLeave(id, t, e);
         }
       }
     }
