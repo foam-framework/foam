@@ -15,6 +15,19 @@
  * limitations under the License.
  */
 
+Object.defineProperties(Touch.prototype, {
+  offsetX: {
+    get: function() {
+      return this.clientX - this.target.getBoundingClientRect().left;
+    }
+  },
+  offsetY: {
+    get: function() {
+      return this.clientY - this.target.getBoundingClientRect().top;
+    }
+  }
+});
+
 MODEL({
   name: 'FOAMTouch',
   properties: [
@@ -33,8 +46,8 @@ MODEL({
       // TODO:
     },
     move: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.offsetX;
+      this.y = t.offsetY;
     }
   }
 });
