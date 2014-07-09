@@ -61,7 +61,7 @@ MODEL({
       this.open(xhr, method || "GET", url);
       this.configure(xhr);
       this.bindListeners(xhr, ret);
-      this.send(xhr, data.toJSON ? data.toJSON() : data);
+      this.send(xhr, (data && data.toJSON) ? data.toJSON() : data);
     },
   }
 });

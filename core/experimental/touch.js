@@ -15,6 +15,19 @@
  * limitations under the License.
  */
 
+Object.defineProperties(Touch.prototype, {
+  offsetX: {
+    get: function() {
+      return this.clientX - this.target.getBoundingClientRect().left;
+    }
+  },
+  offsetY: {
+    get: function() {
+      return this.clientY - this.target.getBoundingClientRect().top;
+    }
+  }
+});
+
 MODEL({
   name: 'FOAMTouch',
   properties: [
@@ -23,8 +36,8 @@ MODEL({
 
   methods: {
     start: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.offsetX;
+      this.y = t.offsetY;
     },
     cancel: function(e) {
       // TODO:
@@ -33,8 +46,8 @@ MODEL({
       // TODO:
     },
     move: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.offsetX;
+      this.y = t.offsetY;
     }
   }
 });
@@ -209,7 +222,7 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          this.touchStart(i, t, e);
+          this.touchStart(t.identifier, t, e);
         }
       }
     },
@@ -220,11 +233,12 @@ MODEL({
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
-          this.touchMove(i, t, e);
+          this.touchMove(id, t, e);
         }
       }
     },
@@ -234,11 +248,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch end for unknown touch.');
             continue;
           }
-          this.touchEnd(i, t, e);
+          this.touchEnd(id, t, e);
         }
       }
     },
@@ -248,11 +263,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch cancel for unknown touch.');
             continue;
           }
-          this.touchCancel(i, t, e);
+          this.touchCancel(id, t, e);
         }
       }
     },
@@ -262,11 +278,12 @@ MODEL({
         e.preventDefault();
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[i] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch cancel for unknown touch.');
             continue;
           }
-          this.touchLeave(i, t, e);
+          this.touchLeave(id, t, e);
         }
       }
     }
