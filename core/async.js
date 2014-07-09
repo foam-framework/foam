@@ -316,6 +316,49 @@ function amerged(f) {
   };
 }
 
+/**
+ * Decorates an afunc to merge calls.
+ * NB: This does not return an afunc itself!
+ *
+ * Immediately fires on the first call. If more calls come in while the first is
+ * active, they are merged into one subsequent call with the latest arguments.
+ * Once the first call is complete, the afunc will fire again if any further
+ * calls have come in. If there are no more, then it will rest.
+ *
+ * The key difference from amerged is that it makes one call to the afunc but
+ * calls its own ret once for *each* call it has received. This calls only once.
+ */
+function mergeAsync(f) {
+  var active = false;
+  var args;
+
+  return function() {
+    if ( active ) {
+      args = argsToArray(arguments);
+      return;
+    }
+
+    active = true;
+
+    // Otherwise, call f with the arguments I've been given, plus the ret
+    // handler.
+    var ret = function() {
+      // If args is set, we have received further calls.
+      if ( args ) {
+        args.unshift(ret);
+        f.apply(null, args);
+        args = undefined;
+      } else {
+        active = false;
+      }
+    };
+
+    var a = argsToArray(arguments);
+    a.unshift(ret);
+    f.apply(null, a);
+  };
+}
+
 
 /** Async Compose (like Function.prototype.O, but for async functions **/
 Function.prototype.ao = function(f2) {

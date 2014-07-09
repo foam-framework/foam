@@ -75,7 +75,7 @@ var TemplateOutput = {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
         if ( o && o.toView ) o = o.toView();
-        if ( o ) {
+        if ( ! ( o === null || o === undefined ) ) {
           if ( o.appendHTML ) {
             o.appendHTML(this);
           } else if ( o.toHTML ) {
@@ -123,7 +123,7 @@ var TemplateCompiler = {
    'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
    'values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
    'live value tag': function (v) { this.push("',\nthis.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
-   'code tag': function (v) { this.push("');\n", v[1].join(''), "out('"); },
+   'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },
    text: function(v) { this.push(v); }
