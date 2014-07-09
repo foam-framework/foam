@@ -550,8 +550,8 @@ var StringArrayProperty = Model.create({
 var DAOProperty = Model.create({
   extendsModel: 'Property',
 
-  name:  'DAOProperty',
-  help:  "Describes a DAO property.",
+  name: 'DAOProperty',
+  help: "Describes a DAO property.",
 
   properties: [
     {
@@ -562,25 +562,10 @@ var DAOProperty = Model.create({
     {
       name: 'view',
       defaultValue: 'ArrayView'
-    },
-    {
-      name: 'getter',
-      defaultValue: function(name) {
-        if ( ! this.instance_[name] )
-          this.instance_[name] = ProxyDAO.create({ delegate: NullDAO.create({}) });
-        return this.instance_[name];
-      }
-    },
-    {
-      name: 'setter',
-      defaultValue: function(dao, name) {
-        if ( ! dao ) return;
-        if ( ! this.instance_[name] ) this.instance_[name] = ProxyDAO.create();
-        this.instance_[name].delegate = dao;
-      }
     }
   ]
 });
+
 
 var ReferenceArrayProperty = Model.create({
   name: 'ReferenceArrayProperty',
