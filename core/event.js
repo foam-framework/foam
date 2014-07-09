@@ -415,29 +415,42 @@ var PropertyChangeSupport = {
 
 
   /** Create a Value for the specified property. **/
-  propertyValue: function(property) {
-    var obj = this;
-    return {
-      $UID: obj.$UID + "." + property,
+  propertyValue: function(prop) {
+    var obj  = this;
+    var name = prop + 'Value___';
+    var proxy;
 
-      get: function() { return obj[property]; },
+    return Object.hasOwnProperty.call(obj, name) ? obj[name] : ( obj[name] = {
+      $UID: obj.$UID + "." + prop,
 
-      set: function(val) { obj[property] = val; },
+      get: function() { return obj[prop]; },
+
+      set: function(val) { obj[prop] = val; },
+
+      asDAO: function() {
+        if ( ! proxy ) {
+          proxy = ProxyDAO.create({delegate: this.get()});
+
+          this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
+        }
+
+        return proxy;
+      },
 
       get value() { return this.get(); },
 
       set value(val) { this.set(val); },
 
       addListener: function(listener) {
-        obj.addPropertyListener(property, listener);
+        obj.addPropertyListener(prop, listener);
       },
 
       removeListener: function(listener) {
-        obj.removePropertyListener(property, listener);
+        obj.removePropertyListener(prop, listener);
       },
 
-      toString: function () { return 'PropertyValue(' + property + ')'; }
-    };
+      toString: function () { return 'PropertyValue(' + prop + ')'; }
+    } );
   }
 
 };
