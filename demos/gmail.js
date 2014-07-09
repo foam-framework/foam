@@ -24,11 +24,16 @@ var historyDao = X.GMailRestDAO.create({
   model: GMailHistory,
 });
 
+var threadDao = X.GMailRestDAO.create({
+  model: GMailThread,
+});
+
 var gmailSyncManager = GmailSyncManager.create({
   historyDao: historyDao,
   messageDao: messageDao,
   dstDAO: MDAO.create({ model: GMailMessage }),
   historyProperty: GMailMessage.HISTORY_ID,
+  threadDao: threadDao,
 });
 
 var view = TableView.create({
