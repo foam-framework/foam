@@ -70,7 +70,6 @@ MODEL({
     ]
 });
 
-
 var header = $('header');
 var footer = $('footer');
 var search = $('search');
@@ -180,7 +179,6 @@ layout();
     var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.TYPE});
     var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
     Object.defineProperty(byModel, 'updateChoice', {value: (function(_, _, _, choice) {
-      debugger;
        if ( choice ) {
           this.predicate = EQ(this.property, choice);
 
@@ -259,5 +257,6 @@ layout();
       table.dao = dao;
     }
 
-    var stack = StackView.create();
-    stack.write(document);
+//    var stack = StackView.create();
+//    stack.write(document);
+

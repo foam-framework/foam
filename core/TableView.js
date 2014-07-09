@@ -68,27 +68,11 @@ MODEL({
       defaultValue: undefined
     },
     {
+      model_: 'DAOProperty',
       name:  'dao',
       label: 'DAO',
-      type: 'DAO',
       required: true,
-      hidden: true,
-      postSet: function(oldValue, newValue) {
-        if ( this.daoListener ) {
-          if ( oldValue ) oldValue.unlisten(this.daoListener);
-          if ( newValue ) newValue.listen(this.daoListener);
-        }
-        this.scrollbar.value = 0;
-        this.onDAOUpdate();
-      }
-    },
-    {
-      name: 'value',
-      postSet: function(old, nu) {
-        old && old.removeListener(this.onValueChange);
-        nu.addListener(this.onValueChange);
-        this.onValueChange();
-      }
+      hidden: true
     },
     {
       name: 'rows',
@@ -161,12 +145,10 @@ MODEL({
         this.scrollbar.paint();
       }
     },
-
     {
       name: 'onDAOUpdate',
       isAnimated: true,
       code: function() {
-        if ( ! this.dao ) return;
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
           this.repaint();
@@ -177,10 +159,6 @@ MODEL({
       name: 'repaint',
       isAnimated: true,
       code: function() { this.repaintNow(); }
-    },
-    {
-      name: 'onValueChange',
-      code: function() { this.dao = this.value.value; }
     },
     {
       name: 'onEditColumns',
@@ -269,12 +247,12 @@ MODEL({
     initHTML: function() {
       this.scrollbar.initHTML();
 
-      this.onDAOUpdate();
+      this.dao && this.onDAOUpdate();
 
-      this.daoListener = {
+      this.dao$.asDAO().listen({
         put:    this.onDAOUpdate,
         remove: this.onDAOUpdate
-      };
+      });
 
       if ( this.scrollEnabled ) {
         (this.window || window).addEventListener('resize', this.onResize, false);
@@ -299,8 +277,6 @@ MODEL({
 
         this.onResize();
       }
-
-      if ( this.dao ) this.dao.listen(this.daoListener);
     },
 
     /** Call repaint() instead to repaint on next animation frame. **/
@@ -471,10 +447,6 @@ MODEL({
 
       delete this['initializers_'];
       this.children = [];
-    },
-
-    setValue: function(value) {
-      this.value = value;
     },
 
     destroy: function() {
