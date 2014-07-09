@@ -90,7 +90,7 @@ var Property = {
       name: 'javaType',
       type: 'String',
       required: false,
-      defaultValueFn: function() { console.log('javaType default on Property: ' + this.name + ' ' + this.type); return this.type; },
+      defaultValueFn: function() { return this.type; },
       help: 'The java type that represents the type of this property.'
     },
     {
