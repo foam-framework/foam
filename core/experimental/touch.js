@@ -23,8 +23,8 @@ MODEL({
 
   methods: {
     start: function(t) {
-      this.x = t.screenX;
-      this.y = t.screenY;
+      this.x = t.offsetX;
+      this.y = t.offsetY;
     },
     cancel: function(e) {
       // TODO:
