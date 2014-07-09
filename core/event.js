@@ -925,6 +925,51 @@ var Movement = {
       satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
       satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
     }));
+  },
+
+  strut: function(mouse, c, dx, dy) {
+    Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+      c.x = mouse.x + dx;
+      c.y = mouse.y + dy;
+    });
+  },
+
+  friction: function(c, opt_coef) {
+    var coef = opt_coef || 0.9;
+    Events.dynamic(function() { c.vx; c.vy; }, function() {
+      c.vx *= coef;
+      c.vy *= coef;
+    });
+  },
+
+  inertia: function(c) {
+    Events.dynamic(function() { c.vx; c.vy; }, function() {
+      // Dynamic Friction
+      c.x += c.vx;
+      c.y += c.vy;
+      // StaticFriction
+      if ( c.x < 0.1 ) c.x = 0;
+      if ( c.y < 0.1 ) c.y = 0;
+    });
+  },
+
+  spring: function(mouse, c, dx, dy, opt_strength) {
+    var strength = opt_strength || 8;
+    Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
+      if ( dx === 0 && dy === 0 ) {
+        c.x = mouse.x;
+        c.y = mouse.y;
+      } else {
+        var d = Movement.distance(dx, dy);
+        var dx2 = c.x - mouse.x - dx;
+        var dy2 = c.y - mouse.y - dy;
+        var d2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+        var dv = -strength*d2/d;
+        var a = Math.atan2(dy2, dx2);
+        c.vx += dv * Math.cos(a);
+        c.vy += dv * Math.sin(a);
+      }
+    });
   }
 
 };
