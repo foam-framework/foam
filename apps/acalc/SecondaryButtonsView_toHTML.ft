@@ -1,7 +1,7 @@
 <%
-this.X.registerModel(this.X.ActionButton.xbind({
+this.X.registerModel(CalcButton.xbind({
   background: 'rgb(64, 189, 158)',
-  width:  58,
+  width:  100,
   height: 58,
   font:   '20px Roboto'
 }), 'ActionButton');

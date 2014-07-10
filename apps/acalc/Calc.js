@@ -223,8 +223,8 @@ MODEL({
 var CalcButton = ActionButtonCView.xbind({
   color:      'white',
   background: '#4b4b4b',
-  width:      70,
-  height:     70,
+  width:      95,
+  height:     85,
   font:       '24px Roboto'
 });
 X.registerModel(CalcButton, 'ActionButton');
