@@ -36,7 +36,7 @@ for ( var x = 0 ; x < N ; x++ ) {
     });
     space.addChild(c);
 
-//    Movement.spring(anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
+    Movement.spring(anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
     Movement.inertia(c);
     Movement.friction(c, 0.99);
     bounceOnWalls(c, space.width, space.height);
