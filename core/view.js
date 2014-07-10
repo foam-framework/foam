@@ -591,7 +591,7 @@ MODEL({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { return viewName.model_.create(viewName).copyFrom(prop); }
+      if ( viewName.model_ ) { var v = viewName.model_.create(viewName).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -4718,7 +4718,7 @@ MODEL({
       preSet: function(_, v) {
         if ( v < 0 )
           return 0;
-        if (this.numRows) 
+        if (this.numRows)
           return Math.max(0, Math.min(v, (this.rowViewHeight * this.numRows) - this.height));
         return v;
       },
