@@ -4566,6 +4566,15 @@ MODEL({
   ]
 });
 
+
+/**
+ * The default vertical scrollbar view for a ScrollView. It appears during
+ * scrolling and fades out after scrolling stops.
+ *
+ * TODO: create a version that can respond to mouse input.
+ * TODO: a horizontal scrollbar. Either a separate view, or a generalization of
+ * this one.
+ */
 MODEL({
   name: 'VerticalScrollbarView',
   extendsModel: 'View',
@@ -4586,7 +4595,7 @@ MODEL({
             this.$.style.opacity = '0';
           }.bind(this), 200);
         }
-      },
+      }
     },
     {
       name: 'scrollHeight',
@@ -4612,7 +4621,7 @@ MODEL({
         if (this.$) {
           this.$.style.height = nu + 'px';
         }
-      },
+      }
     },
     {
       name: 'thumbPosition',
@@ -4628,20 +4637,38 @@ MODEL({
           // TODO: need to generalize this transform stuff.
           this.$.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }
-      },
-    },
+      }
+    }
   ],
 
   templates: [
-    {
-      name: 'toHTML',
-      template: '<div id="<%= this.id %>" style="position:absolute;'
-          + 'width:<%= this.thumbWidth %>px;right:0px;opacity:0;'
-          + 'margin:3px;z-index:2;background:black;"></div>',
-    }
-  ],
+    function toHTML() {/*
+      <div id="%%id" style="
+          position: absolute;
+          width: <%= this.thumbWidth %>px;
+          right: 0px;
+          opacity: 0;
+          margin: 3px;
+          z-index: 2;
+          background:black;">
+      </div>
+    */}
+  ]
 });
 
+
+/**
+ * A general purpose view for scrolling content.
+ *
+ * TODO: Scrollbar removal when content does not overflow.
+ * TODO: Horizontal scrolling.
+ * TODO: A scroll corner resizer.
+ * TODO: Non-overlay scrollbars (we currently don't account for
+ * scrollbar size).
+ * TODO: Graceful, customizable strategy for coping with a slow DAO. E.g., show
+ * tombstones (if the # of rows is available), or a pacifier view while the
+ * content is being fetched.
+ */
 MODEL({
   name: 'TouchListView',
 
@@ -4654,24 +4681,26 @@ MODEL({
     },
     {
       name: 'model',
+      type: 'Model'
     },
     {
       name: 'runway',
-      help: 'Elements that are within |runway| of the scroll clip are retained.',
+      help: 'Elements that are within |runway| pixels of the scroll clip are retained.',
       model_: 'IntProperty',
-      defaultValue: 500,
+      units: 'pixels',
+      defaultValue: 500
     },
     {
       name: 'rowView',
-      defaultValue: 'SummaryView',
+      defaultValue: 'SummaryView'
     },
     {
       name: 'rowViews',
-      factory: function() { return {}; },
+      factory: function() { return {}; }
     },
     {
       name: 'unclaimedRowViews',
-      factory: function() { return []; },
+      factory: function() { return []; }
     },
     {
       // TODO: Can we calculate this reliably?
@@ -4699,24 +4728,24 @@ MODEL({
     },
     {
       name: 'scrollHeight',
-      dynamicValue: function() { return this.numRows * this.rowViewHeight; },
+      dynamicValue: function() { return this.numRows * this.rowViewHeight; }
     },
     {
       name: 'sequenceNumber',
       hidden: true,
-      defaultValue: 0,
+      defaultValue: 0
     },
     {
       name: 'workingSet',
-      factory: function() { return []; },
+      factory: function() { return []; }
     },
     {
       name: 'numRows',
-      defaultValue: 0,
+      defaultValue: 0
     },
     {
       name: 'verticalScrollbarView',
-      defaultValue: 'VerticalScrollbarView',
+      defaultValue: 'VerticalScrollbarView'
     }
   ],
 
@@ -4760,10 +4789,10 @@ MODEL({
         return this.unclaimedRowViews.shift();
       var view = FOAM.lookup(this.rowView).create({ data: data });
       return {
-        'view': view,
-        'html': view.toHTML(),
-        'initialized': false,
-        'sequenceNumber': 0,
+        view: view,
+        html: view.toHTML(),
+        initialized: false,
+        sequenceNumber: 0
       };
     },
     createOrReuseRowViews: function() {
@@ -4786,7 +4815,7 @@ MODEL({
       }
 
       if (newHTML)
-        this.$.lastElementChild.innerHTML += newHTML;
+        this.$.lastElementChild.insertAdjacentHTML('afterend', newHTML);
 
       for (var i = 0; i < uninitialized.length; i++) {
         uninitialized[i].view.initHTML();
@@ -4817,14 +4846,10 @@ MODEL({
         }
       }
     },
-    updateThumb: function(offset) {
-      var thumb = $(this.thumbID);
-    },
     updateDOM: function(offset) {
       this.createOrReuseRowViews();
       this.positionRowViews(offset);
       this.recycleRowViews(offset);
-      this.updateThumb(offset);
     },
     updateDOMWithNumRows: function(limit) {
       var skip = Math.max(Math.min(this.numRows - limit, Math.floor((this.scrollTop - this.runway) / this.rowViewHeight)), 0);
@@ -4881,6 +4906,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'UITestResultView',

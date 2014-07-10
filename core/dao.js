@@ -724,9 +724,12 @@ MODEL({
 });
 
 
+/**
+ * Apply this decorator to a DAO if you'd like to (for debugging purposes)
+ * pretend that accesses are slow. Currently, only select has been targetted.
+ */
 MODEL({
   name: 'SlowDAO',
-
   extendsModel: 'ProxyDAO',
 
   properties: [
@@ -734,7 +737,7 @@ MODEL({
       name: 'delay',
       model_: 'IntProperty',
       defaultValue: 2000,
-    },
+    }
   ],
 
   methods: {
@@ -746,8 +749,8 @@ MODEL({
         });
       }.bind(this), this.delay);
       return f.get;
-    },
-  },
+    }
+  }
 });
 
 

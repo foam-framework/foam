@@ -18,7 +18,6 @@
 var dao = EasyDAO.create({
   model: Contact,
   seqNo: true,
-  seqProperty: Contact.ID,
   daoType: 'MDAO',
   cache: false
 });
@@ -33,14 +32,18 @@ MODEL({
   extendsModel: 'DetailView',
 
   templates: [
-    {
-      name: 'toHTML',
-      template: '<div class="scrolled-content" id="<%= this.id %>" '
-          + 'style="background:<%= this.data.color %>">'
-          + '<div class="avatar"><b>%%data.avatar</b></div>'
-          + '<div style="position:relative;top:30px">'
-          + '<span>%%data.first <b>%%data.last</b></span></div></div>',
-    }
+    function toHTML() {/*
+      <div class="scrolled-content" id="%%id" style="background:%%data.color">
+        <div class="avatar"><b>%%data.avatar</b></div>
+        <div style="position:relative;top:20px">
+          <span>%%data.first <b>%%data.last</b></span>
+        </div>
+        <br>
+        <div class="email">
+          (<span>%%data.email</span>)
+        </div>
+      </div>
+    */}
   ]
 });
 
@@ -56,7 +59,7 @@ var view = Y.TouchListView.create({
   rowView: 'ContactRowView',
   rowViewHeight: 130,
   height: document.body.offsetHeight,
-  dao: dao,
+  dao: dao
 });
 
 view.write(document);
