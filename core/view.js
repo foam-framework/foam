@@ -5004,7 +5004,7 @@ MODEL({
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
-          return this.panelView.minWidth;
+          return this.panelView.minWidth + (this.panelView.stripWidth || 0);
         var e = this.panel$();
         return e ?
             toNum(this.X.window.getComputedStyle(e).width) :
