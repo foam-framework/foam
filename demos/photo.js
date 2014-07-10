@@ -95,6 +95,9 @@ var Album = Model.create({
   ]
 });
 
+// Note: The 'relationships' feature is not used in these benchmarks, but to use this feature, you would do:
+// albums[0].Photos.select(console.log)
+
 var PhotoDetail = FOAM({
   model_: 'Model',
   name: 'PhotoDetail',
