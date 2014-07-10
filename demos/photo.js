@@ -60,7 +60,7 @@ function atest(name, test) {
 function CachedIDB(dao) {
   var name = dao.model.name;
   var idb = IDBDAO.create({model: dao.model});
-  dao = CachingDAO.create(dao, idb);
+  dao = CachingDAO.create({cache: dao, src: idb});
   // if ( DEBUG ) dao = TimingDAO.create(name, dao);
   return dao;
 }
