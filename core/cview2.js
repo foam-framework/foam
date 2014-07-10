@@ -322,8 +322,6 @@ MODEL({
       name: 'pressCircle',
       factory: function() { return Circle2.create({
         alpha: 0,
-        x: this.width/2,
-        y: this.width/2,
         r: 10,
         color: 'rgb(241, 250, 65)'
       });}
@@ -345,8 +343,8 @@ MODEL({
         Movement.animate(100, function() {
         x: this.width/2,
           this.pressCircle.x = this.width/2;
-          this.pressCircle.y = this.width/2;
-          this.pressCircle.r = Math.max(28, this.width/2-7);
+          this.pressCircle.y = this.height/2;
+          this.pressCircle.r = 28; //Math.min(28, Math.min(this.width, this.height)/2-7);
           this.pressCircle.alpha = 1;
         }.bind(this))();
       }
@@ -395,6 +393,7 @@ MODEL({
     }
   }
 });
+
 
 MODEL({
   name: 'DAOListCView',
