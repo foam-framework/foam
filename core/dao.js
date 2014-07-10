@@ -723,6 +723,34 @@ MODEL({
   }
 });
 
+
+MODEL({
+  name: 'SlowDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delay',
+      model_: 'IntProperty',
+      defaultValue: 2000,
+    },
+  ],
+
+  methods: {
+    select: function(sink, options) {
+      var f = afuture();
+      setTimeout(function() {
+        this.delegate.select(sink, options)(function(result) {
+          f.set(result);
+        });
+      }.bind(this), this.delay);
+      return f.get;
+    },
+  },
+});
+
+
 /**
  * Set a specified properties value with an auto-increment
  * sequence number on DAO.put() if the properties value
