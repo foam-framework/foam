@@ -4567,6 +4567,108 @@ MODEL({
 });
 
 
+/**
+ * The default vertical scrollbar view for a ScrollView. It appears during
+ * scrolling and fades out after scrolling stops.
+ *
+ * TODO: create a version that can respond to mouse input.
+ * TODO: a horizontal scrollbar. Either a separate view, or a generalization of
+ * this one.
+ */
+MODEL({
+  name: 'VerticalScrollbarView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'scrollTop',
+      model_: 'IntProperty',
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.webkitTransition = '';
+          this.$.style.opacity = '0.3';
+          if (this.timeoutID)
+            clearTimeout(this.timeoutID);
+          this.timeoutID = setTimeout(function() {
+            this.timeoutID = 0;
+            this.$.style.webkitTransition = '200ms opacity';
+            this.$.style.opacity = '0';
+          }.bind(this), 200);
+        }
+      }
+    },
+    {
+      name: 'scrollHeight',
+      model_: 'IntProperty',
+    },
+    {
+      name: 'height',
+      model_: 'IntProperty',
+    },
+    {
+      name: 'thumbWidth',
+      model_: 'IntProperty',
+      defaultValue: 8,
+    },
+    {
+      name: 'thumbHeight',
+      dynamicValue: function() {
+        if (!this.scrollHeight)
+          return 0;
+        return this.height * this.height / this.scrollHeight;
+      },
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.height = nu + 'px';
+        }
+      }
+    },
+    {
+      name: 'thumbPosition',
+      dynamicValue: function() {
+        var maxScrollTop = this.scrollHeight - this.height;
+        if (!maxScrollTop)
+          return 0;
+        var ratio = this.scrollTop / maxScrollTop;
+        return ratio * (this.height - this.thumbHeight - 10);
+      },
+      postSet: function(old, nu) {
+        if (this.$) {
+          // TODO: need to generalize this transform stuff.
+          this.$.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
+        }
+      }
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" style="
+          position: absolute;
+          width: <%= this.thumbWidth %>px;
+          right: 0px;
+          opacity: 0;
+          margin: 3px;
+          z-index: 2;
+          background:black;">
+      </div>
+    */}
+  ]
+});
+
+
+/**
+ * A general purpose view for scrolling content.
+ *
+ * TODO: Scrollbar removal when content does not overflow.
+ * TODO: Horizontal scrolling.
+ * TODO: A scroll corner resizer.
+ * TODO: Non-overlay scrollbars (we currently don't account for
+ * scrollbar size).
+ * TODO: Graceful, customizable strategy for coping with a slow DAO. E.g., show
+ * tombstones (if the # of rows is available), or a pacifier view while the
+ * content is being fetched.
+ */
 MODEL({
   name: 'TouchListView',
 
@@ -4578,7 +4680,27 @@ MODEL({
       name: 'dao'
     },
     {
-      name: 'model'
+      name: 'model',
+      type: 'Model'
+    },
+    {
+      name: 'runway',
+      help: 'Elements that are within |runway| pixels of the scroll clip are retained.',
+      model_: 'IntProperty',
+      units: 'pixels',
+      defaultValue: 500
+    },
+    {
+      name: 'rowView',
+      defaultValue: 'SummaryView'
+    },
+    {
+      name: 'rowViews',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'unclaimedRowViews',
+      factory: function() { return []; }
     },
     {
       // TODO: Can we calculate this reliably?
@@ -4594,13 +4716,37 @@ MODEL({
       name: 'scrollTop',
       defaultValue: 0,
       preSet: function(_, v) {
-        if ( v < 0 ) return 0;
+        if ( v < 0 )
+          return 0;
+        if (this.numRows) 
+          return Math.max(0, Math.min(v, (this.rowViewHeight * this.numRows) - this.height));
         return v;
       },
       postSet: function(old, nu) {
         this.scroll();
       }
     },
+    {
+      name: 'scrollHeight',
+      dynamicValue: function() { return this.numRows * this.rowViewHeight; }
+    },
+    {
+      name: 'sequenceNumber',
+      hidden: true,
+      defaultValue: 0
+    },
+    {
+      name: 'workingSet',
+      factory: function() { return []; }
+    },
+    {
+      name: 'numRows',
+      defaultValue: 0
+    },
+    {
+      name: 'verticalScrollbarView',
+      defaultValue: 'VerticalScrollbarView'
+    }
   ],
 
   methods: {
@@ -4615,7 +4761,19 @@ MODEL({
       touch.subscribe(touch.TOUCH_START, this.onTouchStart);
       touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
 
-      return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
+      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+          scrollTop$ : this.scrollTop$,
+          height$ : this.height$,
+          scrollHeight$ : this.scrollHeight$,
+      });
+
+      this.addChild(verticalScrollbar);
+
+      return '<div><div id="' + this.id + '" style="height:' + this.height
+          + 'px;overflow:hidden;position:relative;"><div id="' + overlay
+          + '" style="z-index:1;position:absolute;height:'
+          + this.height + ';width:100%">' + verticalScrollbar.toHTML()
+          + '</div></div></div>';
     },
     formatObject: function(o) {
       var out = "";
@@ -4626,9 +4784,85 @@ MODEL({
       }
       return out;
     },
+    createOrReuseRowView: function(data) {
+      if (this.unclaimedRowViews.length)
+        return this.unclaimedRowViews.shift();
+      var view = FOAM.lookup(this.rowView).create({ data: data });
+      return {
+        view: view,
+        html: view.toHTML(),
+        initialized: false,
+        sequenceNumber: 0
+      };
+    },
+    createOrReuseRowViews: function() {
+      var uninitialized = [];
+      var newHTML = "";
+
+      for (var i = 0; i < this.workingSet.length; i++) {
+        if (!this.rowViews[this.workingSet[i].id]) {
+          var view = this.createOrReuseRowView(this.workingSet[i]);
+          this.rowViews[this.workingSet[i].id] = view;
+          view.view.data = this.workingSet[i];
+          if (!view.initialized) {
+            view.id = this.nextID();
+            newHTML += '<div style="width:100%;position:absolute;height:'
+                + this.rowViewHeight + 'px;overflow:visible" id="' + view.id
+                + '">' + view.html + "</div>";
+            uninitialized.push(view);
+          }
+        }
+      }
+
+      if (newHTML)
+        this.$.lastElementChild.insertAdjacentHTML('afterend', newHTML);
+
+      for (var i = 0; i < uninitialized.length; i++) {
+        uninitialized[i].view.initHTML();
+        uninitialized[i].initialized = true;
+      }
+    },
+    positionRowViews: function(offset) {
+      // Set the CSS3 transform for all visible rows.
+      // FIXME: eventually get this from a physics solver.
+      for (var i = 0; i < this.workingSet.length; i++) {
+        // Need to get this element and set its transform
+        var elementOffset = offset + (i * this.rowViewHeight);
+        var row = this.rowViews[this.workingSet[i].id];
+        var rowView = $(row.id);
+        // TODO: need to generalize this transform stuff.
+        rowView.style.webkitTransform = "translate3d(0px, " + elementOffset + "px, 0px)";
+        row.sequenceNumber = this.sequenceNumber;
+      }
+    },
+    recycleRowViews: function(offset) {
+      for (var key in this.rowViews) {
+        if (this.rowViews[key].sequenceNumber != this.sequenceNumber) {
+          var row = this.rowViews[key];
+          var rowView = $(row.id);
+          rowView.style.webkitTransform = "scale(0)";
+          this.unclaimedRowViews.push(this.rowViews[key]);
+          delete this.rowViews[key];
+        }
+      }
+    },
+    updateDOM: function(offset) {
+      this.createOrReuseRowViews();
+      this.positionRowViews(offset);
+      this.recycleRowViews(offset);
+    },
+    updateDOMWithNumRows: function(limit) {
+      var skip = Math.max(Math.min(this.numRows - limit, Math.floor((this.scrollTop - this.runway) / this.rowViewHeight)), 0);
+      var offset = Math.floor(skip * this.rowViewHeight - this.scrollTop);
+      this.dao.skip(skip).limit(limit).select()(function(objs) {
+        this.workingSet = objs;
+        this.updateDOM(offset);
+      }.bind(this));
+    },
     initHTML: function() {
       this.SUPER();
       this.scroll();
+      this.$.addEventListener('wheel', this.onWheel);
     }
   },
 
@@ -4637,22 +4871,13 @@ MODEL({
       name: 'scroll',
       code: function() {
         if ( ! this.$ ) return;
-
-        var offset = -(this.scrollTop % this.rowViewHeight);
-        var limit = Math.floor(this.height / this.rowViewHeight) + 2;
-        var skip = Math.floor(this.scrollTop / this.rowViewHeight);
-        var self = this;
-        this.dao.skip(skip).limit(limit).select()(function(objs) {
-          var out = "";
-          for ( var i = 0; i < objs.length; i++ ) {
-            out += '<div style="height:' + self.rowViewHeight + 'px;overflow:hidden">';
-            out += self.formatObject(objs[i]);
-            out += '</div>';
-          }
-          self.$.lastElementChild.innerHTML = out;
-          self.$.lastElementChild.style.webkitTransform = "translate3d(0px, " + offset + "px, 0px)";
-        });
-      }
+        this.sequenceNumber++;
+        var limit = Math.floor((this.height + 2 * this.runway) / this.rowViewHeight) + 2;
+        this.dao.select(COUNT())(function(c) {
+          this.numRows = c.count;
+          this.updateDOMWithNumRows(limit);
+        }.bind(this));
+      },
     },
     {
       name: 'onTouchStart',
@@ -4672,9 +4897,15 @@ MODEL({
         }
       }
     },
+    {
+      name: 'onWheel',
+      code: function(ev) {
+        this.scrollTop += ev.deltaY;
+        ev.preventDefault();
+      }
+    }
   ]
 });
-
 
 
 MODEL({
