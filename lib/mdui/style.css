@@ -1,0 +1,32 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
+body {
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+}
+
+table {
+  border-spacing: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body, tbody, tr, td {
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  border-top: 1px solid rgba(0,0,0,.1);
+  border: none;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  background: rgba(0,0,0,.1);
+}
+
+a {
+  text-decoration: none;
+  color: #4285f4;
+}
