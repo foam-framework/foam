@@ -4625,6 +4625,7 @@ MODEL({
       },
       postSet: function(old, nu) {
         if (this.$) {
+          // TODO: need to generalize this transform stuff.
           this.$.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }
       },
@@ -4800,6 +4801,7 @@ MODEL({
         var elementOffset = offset + (i * this.rowViewHeight);
         var row = this.rowViews[this.workingSet[i].id];
         var rowView = $(row.id);
+        // TODO: need to generalize this transform stuff.
         rowView.style.webkitTransform = "translate3d(0px, " + elementOffset + "px, 0px)";
         row.sequenceNumber = this.sequenceNumber;
       }
