@@ -59,8 +59,8 @@
 var ModelDAO = StorageDAO.create({model: Model});
 ModelDAO.find(TRUE, {error: function() { console.log('Populating DAO...'); models.select(ModelDAO); }});
 
-ModelDAO = ModelDAO.orderBy(Model.NAME);
+// ModelDAO = ModelDAO.orderBy(Model.NAME);
 
 var stack = StackView.create();
 stack.write(document);
-FOAM.browse(Model);
+FOAM.browse(Model, ModelDAO);

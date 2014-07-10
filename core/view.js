@@ -591,7 +591,7 @@ MODEL({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.deepClone().copyFrom(prop); v.id = v.nextID(); return v; }
+      if ( viewName.model_ ) { return viewName.model_.create(viewName).copyFrom(prop); }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -600,12 +600,13 @@ MODEL({
       var view = this.view;
       var data = this.data;
       if ( ! view || ! data ) return;
-
       var pValue = data.propertyValue(this.prop.name);
       if ( view.model_.DATA ) {
         // When all views are converted to data-binding,
-        // only this method will be supported.
+        // only this method will be supported (and DAO).
         Events.link(pValue, view.data$);
+      } else if ( view.model_.DAO ) {
+        Events.link(pValue, view.dao$);
       } else if ( view.setValue ) {
         view.setValue(pValue);
       } else {
@@ -4416,38 +4417,21 @@ MODEL({
 
   properties: [
     {
-      name: 'dao',
-      postSet: function(oldDAO, newDAO) {
-        this.X.DAO = newDAO;
-        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
-        if ( ! this.hidden ) {
-          newDAO.listen(this.onDAOUpdate);
-          this.updateHTML();
-        }
-      }
+      model_: 'DAOProperty',
+      name: 'dao'
     },
     {
+      model_: 'BooleanProperty',
       name: 'hidden',
-      postSet: function(old, nu) {
+      defaultValue: false,
+      postSet: function(_, hidden) {
         if ( ! this.dao ) return;
-        if ( nu ) this.dao.unlisten(this.onDAOUpdate);
-        else {
-          this.dao.listen(this.onDAOUpdate);
-          this.updateHTML();
+        if ( hidden ) {
+          this.dao$.asDAO().unlisten(this.onDAOUpdate);
+        } else {
+          this.dao$.asDAO().listen(this.onDAOUpdate);
+          this.updateHTML(); // TODO: I don't think this line is necessary
         }
-      }
-    },
-    {
-      name: 'data',
-      setter: function(value) {
-        this.value = SimpleValue.create(value);
-      }
-    },
-    {
-      name: 'value',
-      setter: function(value) {
-        this.dao = value.value;
-        value.addListener(function() { this.dao = value.value; }.bind(this));
       }
     },
     { name: 'rowView', defaultValue: 'DetailView' },
@@ -4482,7 +4466,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub();
+      this.X = this.X.sub({DAO: this.dao$.asDAO()});
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -4492,6 +4476,8 @@ MODEL({
       this.subscribe(this.ON_SHOW, function() {
         self.hidden = false;
       });
+
+      this.dao$.asDAO().listen(this.onDAOUpdate);
     },
 
     initHTML: function() {

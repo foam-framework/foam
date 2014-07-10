@@ -17,7 +17,18 @@ MODEL({
   ]
 });
 
-var stack = StackView.create();
-stack.write(document);
 
-FOAM.browse(Todo, EasyDAO.create({model: Todo, seqNo: true, cache: true}));
+var c = AppController.create({
+  model: Todo,
+  dao: EasyDAO.create({model: Todo, seqNo: true, cache: true}),
+  sortChoices: [
+    [ DESC(Todo.ID), 'Default']
+  ],
+  filterChoices: [
+    ['', 'All'],
+    [ EQ(Todo.COMPLETED, false), 'Active' ],
+    [ EQ(Todo.COMPLETED, true), 'Completed' ]
+  ]
+});
+
+c.write(document);

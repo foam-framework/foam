@@ -14,6 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * JSONUtil -- Provides JSON++ marshalling support.
+ *
+ * Like regular JSON, with the following differences:
+ *  1. Marshalls to/from FOAM Objects, rather than maps.
+ *  2. Object Model information is encoded as 'model: "ModelName"'
+ *  3. Default Values are not marshalled, saving disk space and network bandwidth.
+ *  4. Support for marshalling functions.
+ *  5. Support for property filtering, ie. only output non-transient properties.
+ *  6. Support for 'pretty' and 'compact' modes.
+ *
+ *  TODO:
+ *    Replace with JSONParser.js, when finished.
+ *    Maybe rename to FON (FOAM Object Notation, pronounced 'phone') to avoid
+ *    confusion with regular JSON syntax.
+ **/
+
 var AbstractFormatter = {
   /** @param p a predicate function or an mLang **/
   where: function(p) {

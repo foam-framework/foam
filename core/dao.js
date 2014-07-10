@@ -655,8 +655,10 @@ MODEL({
       hidden: true,
       required: true,
       transient: true,
+      factory: function() { return NullDAO.create(); }, // TODO: use singleton
+      preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
-        this.model = newDAO.model;
+        this.model = this.model || newDAO.model;
         if ( this.daoListeners_ && this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
@@ -2961,6 +2963,7 @@ MODEL({
 });
 
 
+// TODO: Make a Singleton?
 MODEL({
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
@@ -2969,7 +2972,7 @@ MODEL({
     remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
     select: function(sink) {
       sink && sink.eof && sink.eof();
-      return aconstant(sink);
+      return aconstant(sink || []);
     },
     find: function(q, sink) { sink && sink.error && sink.error('find', q); },
     listen: function() {},
@@ -3078,8 +3081,8 @@ MODEL({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
+    init: function(args) {
+      this.SUPER(args);
 
       var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
       var params = { model: this.model, autoIndex: this.autoIndex };

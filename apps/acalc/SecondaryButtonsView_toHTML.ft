@@ -1,14 +1,10 @@
 <%
-this.X.registerModel(Model.create({
-  name: 'ActionButton',
-  extendsModel: 'CalcButton',
-  properties: [
-    { name: 'background', defaultValue: 'rgb(64, 189, 158)' },
-    { name: 'width',      defaultValue: 58 },
-    { name: 'height',     defaultValue: 58 },
-    { name: 'font',       defaultValue: '20px Roboto' }
-  ]
-}));
+this.X.registerModel(this.X.ActionButton.xbind({
+  background: 'rgb(64, 189, 158)',
+  width:  58,
+  height: 58,
+  font:   '20px Roboto'
+}), 'ActionButton');
 %>
 <div id="%%id" class="buttons button-row secondaryButtons">
   <div class="button-column" style="flex-grow: 1">
