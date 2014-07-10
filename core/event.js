@@ -860,7 +860,14 @@ var Movement = {
 
 
   onIntersect: function (o1, o2, fn) {
-
+    Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+      var dx = o1.x - o2.x;
+      var dy = o1.y - o2.y;
+      var d = dx*dx + dy*dy;
+      var r2 = o1.r + o2.r;
+      if ( d < r2*r2 )
+        fn.call(null, o1, o2);
+    });
   },
 
 
