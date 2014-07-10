@@ -1,7 +1,8 @@
 <%
 this.X.registerModel(this.X.ActionButton.xbind({
+  color:      'rgb(119, 119, 119)',
   background: 'rgb(29, 233, 182)',
-  font:       '20px Roboto'
+  font:       '18px Roboto'
 }), 'ActionButton');
 %>
 <div id="%%id" class="buttons button-row tertiaryButtons">
