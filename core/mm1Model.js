@@ -301,7 +301,7 @@ var Model = {
       preSet: function(_, newValue) {
         if ( ! Relationship ) return;
 
-        // Convert Maps to Properties if required
+        // Convert Maps to Relationships if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 
