@@ -3112,11 +3112,13 @@ MODEL({
     },
 
     addIndex: function() {
-      return this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+      this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+      return this;
     },
 
     addRawIndex: function() {
-      return this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
+      this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
+      return this;
     },
 
   }
