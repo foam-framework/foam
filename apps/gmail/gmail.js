@@ -18,8 +18,11 @@ MODEL({
       }
     },
     {
-      name: 'emailDao',
-      type:  'DAO',
+      name: 'gmailSyncManager',
+      type:  'GmailSyncManager',
+      postSet: function(oldVal, newVal) {
+        newVal.forceSync();
+      }
     },
     {
       name: 'stack',
@@ -47,18 +50,18 @@ MODEL({
       this.controller = Y.AppController.create({
         name: 'Gmail API FOAM Demo',
         model: EMail,
-        dao: this.emailDao,
+        dao: this.gmailSyncManager.dstDAO,
         citationView: 'EMailCitationView',
-          sortChoices: [
-            [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
-          ],
-          filterChoices: [
-            ['', 'All Mail'],
-          ],
-          menuFactory: function() {
-            return this.X.StaticHTML.create({content: 'Hello world'});
-          }
-        });
+        sortChoices: [
+          [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
+        ],
+        filterChoices: [
+          ['', 'All Mail'],
+        ],
+        menuFactory: function() {
+          return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
+        }
+      });
     },
     openEmail: function(email) {
       var v = this.controller.X.EmailView.create({data: email});
@@ -148,4 +151,15 @@ MODEL({
       </div>
     */}
    ]
+});
+
+MODEL({
+  name: 'MenuView',
+  extendsModel: 'DetailView',
+
+  templates: [ function toHTML() {/*
+    <div id="<%= this.id %>">
+      $$forceSync
+    </div>
+  */} ]
 });

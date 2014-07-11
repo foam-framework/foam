@@ -476,7 +476,7 @@ var EMail = FOAM({
          model_: 'StringProperty',
          name: 'snippet',
          mode: 'read-only',
-         getter: function() {
+         defaultValueFn: function() {
            return this.body.substr(0, 100);
          },
       }
