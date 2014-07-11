@@ -4747,31 +4747,32 @@ MODEL({
     }
   ],
 
+  templates: [
+    function toHTML() {/*
+      <div>
+        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
+          <%
+            var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+                scrollTop$ : this.scrollTop$,
+                height$ : this.height$,
+                scrollHeight$ : this.scrollHeight$,
+            });
+
+            this.addChild(verticalScrollbar);
+            out(verticalScrollbar.toHTML());
+          %>
+        </div>
+      </div>
+    */},
+  ],
+
   methods: {
     init: function() {
       this.SUPER();
       this.dao.listen(this.scroll);
-    },
-    toHTML: function() {
-      var id = this.id;
-      var overlay = this.nextID();
       var touch = this.X.TouchInput;
       touch.subscribe(touch.TOUCH_START, this.onTouchStart);
       touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
-
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
-          scrollTop$ : this.scrollTop$,
-          height$ : this.height$,
-          scrollHeight$ : this.scrollHeight$,
-      });
-
-      this.addChild(verticalScrollbar);
-
-      return '<div><div id="' + this.id + '" style="height:' + this.height
-          + 'px;overflow:hidden;position:relative;"><div id="' + overlay
-          + '" style="z-index:1;position:absolute;height:'
-          + this.height + ';width:100%">' + verticalScrollbar.toHTML()
-          + '</div></div></div>';
     },
     formatObject: function(o) {
       var out = "";
