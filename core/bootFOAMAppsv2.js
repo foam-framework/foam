@@ -29,6 +29,7 @@ var withFOAM = function(extra, cb) {
         while ( Array.isArray(file) && file[1]()) {
           file = files.shift();
         }
+        if ( Array.isArray(file) ) file = file[0];
         if (!file) {
             file = extra ? extra.shift() : undefined;
             if (!file) {
