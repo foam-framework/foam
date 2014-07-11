@@ -1410,7 +1410,7 @@ MODEL({
       // TODO: Switch type to just datetime when supported.
       return ( this.mode === 'read-write' ) ?
         '<input id="' + this.id + '" type="datetime-local" name="' + this.name + '"/>' :
-        '<span id="' + this.id + '" name="' + this.name + '"></span>' ;
+        '<span id="' + this.id + '" name="' + this.name + '" ' + this.cssClassAttr() + '></span>' ;
     },
 
     initHTML: function() {
@@ -4532,7 +4532,7 @@ MODEL({
         }
         out.push(view.toHTML());
         if ( this.useSelection ) {
-          out.put('</div>');
+          out.push('</div>');
         }
       }.bind(this)})(function() {
         var e = this.$;
