@@ -4606,7 +4606,8 @@ MODEL({
     },
     {
       name: 'mouseOver',
-      model_: 'BooleanProperty'
+      model_: 'BooleanProperty',
+      defaultValue: false
     },
     {
       name: 'height',
@@ -4675,7 +4676,9 @@ MODEL({
 
       this.$.addEventListener('mouseover', this.onMouseEnter);
       this.$.addEventListener('mouseout', this.onMouseOut);
+      this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
+      this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
     },
     show: function() {
       var thumb = this.thumb();
@@ -4690,6 +4693,9 @@ MODEL({
         thumb.style.webkitTransition = '200ms opacity';
         thumb.style.opacity = '0';
       }
+    },
+    maxScrollTop: function() {
+      return this.scrollHeight - this.height;
     }
   },
 
@@ -4720,13 +4726,12 @@ MODEL({
     {
       name: 'onThumbDrag',
       code: function(e) {
-        var maxScrollTop = this.scrollHeight - this.height;
-        if (maxScrollTop <= 0)
-          return 0;
+        if (this.maxScrollTop() <= 0)
+          return;
 
         var dy = e.screenY - this.lastDragY;
-        var newScrollTop = this.scrollTop + (maxScrollTop * dy) / (this.height - this.thumbHeight);
-        this.scrollTop = Math.min(maxScrollTop, Math.max(0, newScrollTop));
+        var newScrollTop = this.scrollTop + (this.maxScrollTop() * dy) / (this.height - this.thumbHeight);
+        this.scrollTop = Math.min(this.maxScrollTop(), Math.max(0, newScrollTop));
         this.lastDragY = e.screenY;
         e.preventDefault();
       }
@@ -4735,7 +4740,20 @@ MODEL({
       name: 'onStopThumbDrag',
       code: function(e) {
         document.body.removeEventListener('mousemove', this.onThumbDrag);
-        document.body.removeEventListener('mouseup', this.onStopThumbDrag);
+        document.body.removeEventListener('mouseup', this.onStopThumbDrag, true);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onTrackClick',
+      code: function(e) {
+        if (this.maxScrollTop() <= 0)
+          return;
+        var delta = this.height;
+        if (e.clientY < this.thumbPosition)
+          delta *= -1;
+        var newScrollTop = this.scrollTop + delta;
+        this.scrollTop = Math.min(this.maxScrollTop(), Math.max(0, newScrollTop));
       }
     }
   ],
