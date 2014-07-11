@@ -56,6 +56,7 @@ a {
   display: flex;
   background: #3e50b4;
   padding: 0;
+  height: 48px;
 }
 
 .mdui-app-controller .header .default {
@@ -81,8 +82,11 @@ a {
 }
 
 .mdui-app-controller .header .name {
-  width: 100%;
-  text-align: center;
-  margin: auto;
-  color: #ACB4DF;
+  align-self: center;
+  color: white;
+  flex: 1.0;
+  font-size: 20px;
+  font-weight: 500;
+  margin-left: 16px;
+  vertical-align: middle;
 }

@@ -1,5 +1,5 @@
 /**
- * Mobile QuickBug.
+ * Material Design GMail.
  **/
 
 /** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/

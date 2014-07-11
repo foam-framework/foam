@@ -444,16 +444,6 @@ select[name=sortOrder] {
   padding-top: 8px;
 }
 
-span[name=projectName] {
-  align-self: center;
-  color: white;
-  flex: 1.0;
-  vertical-align: middle;
-  font-size: 20px;
-  font-weight: 500;
-  margin-left: 16px;
-}
-
 .stackview {
   height: 100%;
 }
