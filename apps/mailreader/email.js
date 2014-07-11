@@ -283,6 +283,31 @@ var openComposeView = function(email) {
   DAOCreateController.getPrototype().newObj(email, EMailDAO);
 }
 
+MODEL({
+  name: 'EMailLabelProperty',
+  extendsModel: 'BooleanProperty',
+  properties: [
+    { name: 'labelName', required: true },
+    {
+      name: 'setter',
+      defaultValue: function(v, name) {
+        var old = this.v;
+        var label = this.model_[name.constantize()].labelName;
+        if ( v ) this.addLabel(label);
+        else this.removeLabel(label);
+        this.propertyChange_(this.propertyTopic(name), old, v);
+      }
+    },
+    {
+      name: 'getter',
+      defaultValue: function(name) {
+        var label = this.model_[name.constantize()].labelName;
+        return this.hasLabel(label);
+      }
+    }
+  ]
+});
+
 var EMail = FOAM({
    model_: 'Model',
    name: 'EMail',
@@ -436,6 +461,16 @@ var EMail = FOAM({
          summaryFormatter: function(t) {
            return '<div class="messageBody">' + t.replace(/\n/g,'<br/>') + '</div>';
          }
+      },
+      {
+         model_: 'EMailLabelProperty',
+         name: 'starred',
+         labelName: 'STARRED'
+      },
+      {
+         model_: 'EMailLabelProperty',
+         name: 'unread',
+         labelName: 'UNREAD'
       }
    ],
 
