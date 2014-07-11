@@ -429,7 +429,7 @@ var EMail = FOAM({
          name: 'labels',
          view: 'LabelView',
          postSet: function(_, a) {
-           for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
+           if ( a ) for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
          },
          help: 'Email labels.'
       },
