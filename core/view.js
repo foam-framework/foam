@@ -4660,9 +4660,7 @@ MODEL({
 /**
  * A general purpose view for scrolling content.
  *
- * TODO: Scrollbar removal when content does not overflow.
  * TODO: Horizontal scrolling.
- * TODO: A scroll corner resizer.
  * TODO: Non-overlay scrollbars (we currently don't account for
  * scrollbar size).
  * TODO: Graceful, customizable strategy for coping with a slow DAO. E.g., show
@@ -4670,7 +4668,7 @@ MODEL({
  * content is being fetched.
  */
 MODEL({
-  name: 'TouchListView',
+  name: 'ScrollView',
 
   extendsModel: 'View',
 
