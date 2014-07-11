@@ -60,7 +60,7 @@ function atest(name, test) {
 function CachedIDB(dao) {
   var name = dao.model.name;
   var idb = IDBDAO.create({model: dao.model});
-  dao = CachingDAO.create(dao, idb);
+  dao = CachingDAO.create({cache: dao, src: idb});
   // if ( DEBUG ) dao = TimingDAO.create(name, dao);
   return dao;
 }
@@ -94,6 +94,9 @@ var Album = Model.create({
     { model_: 'Relationship', relatedModel: 'Photo', relatedProperty: 'albumId' }
   ]
 });
+
+// Note: The 'relationships' feature is not used in these benchmarks, but to use this feature, you would do:
+// albums[0].Photos.select(console.log)
 
 var PhotoDetail = FOAM({
   model_: 'Model',

@@ -24,10 +24,10 @@
         mainView: SecondaryButtonsView.create({data: this.data}),
         panelView: TertiaryButtonsView.create({data: this.data}),
         minWidth: 360,
-        minPanelWidth: 90
+        minPanelWidth: 90,
+        panelRatio: 0.25
       }),
-      minWidth: 360,
-      minPanelWidth: 300
+      minWidth: 360
     })
   %>
   </div>

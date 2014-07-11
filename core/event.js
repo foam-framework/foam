@@ -967,12 +967,12 @@ var Movement = {
         c.x = mouse.x;
         c.y = mouse.y;
       } else {
-        var d = Movement.distance(dx, dy);
-        var dx2 = c.x - mouse.x - dx;
-        var dy2 = c.y - mouse.y - dy;
-        var d2 = Math.sqrt(dx2*dx2 + dy2*dy2);
-        var dv = -strength*d2/d;
-        var a = Math.atan2(dy2, dx2);
+        var d   = Movement.distance(dx, dy);
+        var dx2 = mouse.x + dx - c.x;
+        var dy2 = mouse.y + dy - c.y;
+        var d2  = Math.sqrt(dx2*dx2 + dy2*dy2);
+        var dv  = strength*d2/d;
+        var a   = Math.atan2(dy2, dx2);
         c.vx += dv * Math.cos(a);
         c.vy += dv * Math.sin(a);
       }

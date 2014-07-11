@@ -38,6 +38,9 @@ MODEL({
             return;
           }
         }
+
+        if ( d && this.choices.length )
+          console.warn('ChoiceView data set to invalid choice: ', d);
       }
     },
     {

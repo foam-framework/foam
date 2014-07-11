@@ -278,20 +278,20 @@ MODEL({
       help: 'The join property of the related Model.'
     }
   ]/*,
-     methods: {
-     dao: function() {
-     var m = GLOBAL[this.relatedModel];
-     return GLOBAL[m.name + 'DAO'];
-     },
-     JOIN: function(sink, opt_where) {
-     var m = GLOBAL[this.relatedModel];
-     var dao = GLOBAL[m.name + 'DAO'];
-     return MAP(JOIN(
-     dao.where(opt_where || TRUE),
-     m.getProperty(this.relatedProperty),
-     []), sink);
-     }
-     }*/
+  methods: {
+    dao: function() {
+      var m = this.X[this.relatedModel];
+      return this.X[m.name + 'DAO'];
+    },
+    JOIN: function(sink, opt_where) {
+      var m = this.X[this.relatedModel];
+      var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+      return MAP(JOIN(
+        dao.where(opt_where || TRUE),
+        m.getProperty(this.relatedProperty),
+        []), sink);
+    }
+  }*/
 });
 
 

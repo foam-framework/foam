@@ -723,6 +723,37 @@ MODEL({
   }
 });
 
+
+/**
+ * Apply this decorator to a DAO if you'd like to (for debugging purposes)
+ * pretend that accesses are slow. Currently, only select has been targetted.
+ */
+MODEL({
+  name: 'SlowDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delay',
+      model_: 'IntProperty',
+      defaultValue: 2000,
+    }
+  ],
+
+  methods: {
+    select: function(sink, options) {
+      var f = afuture();
+      setTimeout(function() {
+        this.delegate.select(sink, options)(function(result) {
+          f.set(result);
+        });
+      }.bind(this), this.delay);
+      return f.get;
+    }
+  }
+});
+
+
 /**
  * Set a specified properties value with an auto-increment
  * sequence number on DAO.put() if the properties value
@@ -3113,10 +3144,12 @@ MODEL({
 
     addIndex: function() {
       this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+      return this;
     },
 
     addRawIndex: function() {
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
+      return this;
     },
 
   }
