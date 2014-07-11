@@ -177,17 +177,3 @@ touch.subscribe(touch.TOUCH_START, function(_, _, t) {
     view.scrollTop = view.scrollTop + old - nu;
   });
 });
-/*
-var view = TouchListView.create({
-  model: Contact,
-  rowViewHeight: 200,
-  height: document.body.offsetHeight,
-  dao: dao
-});
-
-view.formatObject = function(o) {
-  return '<img style="border-radius:32px" src="' + o.avatar + '"><span>' + this.strToHTML(o.first + " " + o.last) + '</span>';
-};
-
-view.write(document);
-*/
