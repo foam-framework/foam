@@ -370,3 +370,7 @@ ul.swipeAltHeader {
 .email-view .star {
   margin: 12px;
 }
+
+.email-view .body {
+  white-space: pre;
+}
