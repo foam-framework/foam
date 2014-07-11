@@ -264,17 +264,6 @@ ul.swipeAltHeader {
    box-shadow: 1px 0px 1px 1px rgba(0,0,0,.2);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 .email-citation {
   display: flex;
   border-bottom: solid #B5B5B5 1px;
@@ -319,4 +308,65 @@ ul.swipeAltHeader {
 
 .email-citation .monogram-string-view {
   margin: auto 6px auto 0;
+}
+
+.email-view .monogram-string-view {
+  margin: auto 6px auto 0;
+}
+
+.email-view .header {
+  background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
+  display: flex;
+}
+
+.email-view .from {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.email-view .details {
+  font-size: 12px;
+  color: rgb(119, 119, 119);
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.email-view .content {
+  margin-top: 54px;
+  margin-left: 6px;
+  margin-right: 6px;
+  word-break: break-word;
+}
+
+.email-view .subject {
+  color: #fff;
+  display: block;
+  font-size: 20px;
+  line-height: 28px;
+  margin: auto;
+  overflow-x: hidden;
+  padding: 0px 16px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.email-view .actionButton-back {
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.email-view .star {
+  margin: 12px;
 }

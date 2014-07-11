@@ -61,9 +61,55 @@ MODEL({
         });
     },
     openEmail: function(email) {
-      alert(email.body);
+      var v = this.controller.X.EmailView.create({data: email});
+      this.stack.pushView(v, '');
     },
   }
+});
+
+MODEL({
+  name: 'EmailView',
+  extendsModel: 'UpdateDetailView',
+  properties: [
+  ],
+  actions: [
+    {
+      name: 'back',
+      label: '',
+      iconUrl: 'images/ic_arrow_back_24dp.png'
+    },
+  ],
+  templates: [
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="email-view">
+        <div class="header">
+          $$back
+          $$subject{mode: 'read-only', className: 'subject'}
+          $$starred{
+            model_: 'ImageBooleanView',
+            className:  'star',
+            trueImage:  'images/ic_star_24dp.png',
+            falseImage: 'images/ic_star_outline_24dp.png'
+          }
+        </div>
+        <div class="content">
+          <div style='display: flex'>
+            $$from{model_: 'MDMonogramStringView'}
+            <div style='flex: 1'>
+              $$from{mode: 'read-only', className: 'from', escapeHTML: true}
+              <div class='details'>
+                $$to{mode: 'read-only'}
+                $$cc{mode: 'read-only'}
+                <br>
+                $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
+              </div>
+            </div>
+          </div>
+          $$body{ mode: 'read-only', className: 'body' }
+        </div>
+      </div>
+    */}
+  ]
 });
 
 MODEL({
