@@ -471,6 +471,14 @@ var EMail = FOAM({
          model_: 'EMailLabelProperty',
          name: 'unread',
          labelName: 'UNREAD'
+      },
+      {
+         model_: 'StringProperty',
+         name: 'snippet',
+         mode: 'read-only',
+         getter: function() {
+           return this.body.substr(0, 100);
+         },
       }
    ],
 
