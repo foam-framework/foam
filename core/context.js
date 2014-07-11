@@ -46,7 +46,7 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  var document = w.document;
+  var document = this.subDocument ? this.subDocument(w.document) : w.document;
   var map = {
     isBackground: !!isBackground,
     window: w,
