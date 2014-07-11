@@ -9,66 +9,16 @@
   <script language="javascript" src="../../lib/bookmarks/bookmark.js"></script>
   <script language="javascript" src="../../lib/mdui/AppController.js"></script>
   <script language="javascript" src="../../lib/mdui/view.js"></script>
+  <script src="../../lib/gmail/ImportedModels.js"></script>
+  <script src="../../lib/gmail/dao.js"></script>
+  <script src="../../lib/gmail/SyncAgent.js"></script>
   <script src="../mailreader/email.js"></script>
   <script language="javascript" src="gmail.js"></script>
  </head>
  <body>
-   <script>
-     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-     ga('create', 'UA-47217230-4', 'google.com');
-     ga('send', 'pageview');
-
-   </script>
   <script>
-    var randomBoolean = function() {
-      return Math.random() < 0.5;
-    };
-    var randomCharacter = function() {
-      var chars = "0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ";
-      return chars.charAt(Math.floor(Math.random() * chars.length));
-    };
-    var randomString = function(length) {
-      var s = '';
-      for (var i = 0; i < length; i++) {
-        s = s + randomCharacter();
-      }
-      return s;
-    };
-    var randomStringWithRandomLength = function(maxLength) {
-      return randomString(Math.random() * maxLength);
-    };
-    var randomEmail = function() {
-      return randomStringWithRandomLength(20) + ' ' + randomStringWithRandomLength(20) + ' <' + randomStringWithRandomLength(20) + '@' + randomStringWithRandomLength(20) + '.com>';
-    };
-
-    var emailDao = MDAO.create({model: EMail});
-    for (var i = 0; i < 1000; i++) {
-      var email = EMail.create({
-        id: randomString(16),
-        convId: randomString(16),
-        timestamp: new Date().getTime() - Math.random() * 1000000000,
-        from: randomEmail(),
-        to: randomEmail(),
-        replyTo: randomEmail(),
-        subject: randomStringWithRandomLength(50),
-        labels: [],
-        body: randomStringWithRandomLength(1000),
-      });
-      randomBoolean() && email.labels.push('INBOX');
-      randomBoolean() && email.labels.push('UNREAD');
-      randomBoolean() && email.labels.push('STARRED');
-      randomBoolean() && email.labels.push('CATEGORY_PERSONAL');
-      randomBoolean() && email.labels.push('CATEGORY_FORUMS');
-      randomBoolean() && email.labels.push('CATEGORY_SOCIAL');
-      emailDao.put(email);
-    }
-
     // TODO: In the EMailCitationView it refers to this directly. It should use context but that's not working.
-    var mgmail = MGmail.create({ emailDao: emailDao });
+    var mgmail = MGmail.create({ gmailSyncManager: createGmailSyncAgent() });
     mgmail.write(document);
   </script>
  </body>
