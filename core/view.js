@@ -4584,31 +4584,58 @@ MODEL({
       name: 'scrollTop',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if (this.$) {
-          this.$.style.webkitTransition = '';
-          this.$.style.opacity = '0.3';
-          if (this.timeoutID)
-            clearTimeout(this.timeoutID);
+        this.show();
+        if (this.timeoutID)
+          clearTimeout(this.timeoutID);
+        if (!this.mouseOver) {
           this.timeoutID = setTimeout(function() {
             this.timeoutID = 0;
-            this.$.style.webkitTransition = '200ms opacity';
-            this.$.style.opacity = '0';
+            this.hide();
           }.bind(this), 200);
         }
+        var maxScrollTop = this.scrollHeight - this.height;
+        if (maxScrollTop <= 0)
+          return 0;
+        var ratio = this.scrollTop / maxScrollTop;
+        this.thumbPosition = ratio * (this.height - this.thumbHeight);
       }
     },
     {
       name: 'scrollHeight',
-      model_: 'IntProperty',
+      model_: 'IntProperty'
+    },
+    {
+      name: 'mouseOver',
+      model_: 'BooleanProperty'
     },
     {
       name: 'height',
       model_: 'IntProperty',
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.height = nu + 'px';
+        }
+      }
     },
     {
-      name: 'thumbWidth',
+      name: 'width',
       model_: 'IntProperty',
-      defaultValue: 8,
+      defaultValue: 12,
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.width = nu + 'px';
+        }
+        var thumb = this.thumb();
+        if (thumb) {
+          thumb.style.width = nu + 'px';
+        }
+      }
+    },
+    {
+      name: 'thumbID',
+      factory: function() {
+        return this.nextID();
+      }
     },
     {
       name: 'thumbHeight',
@@ -4618,39 +4645,115 @@ MODEL({
         return this.height * this.height / this.scrollHeight;
       },
       postSet: function(old, nu) {
-        if (this.$) {
-          this.$.style.height = nu + 'px';
+        var thumb = this.thumb();
+        if (thumb) {
+          thumb.style.height = nu + 'px';
         }
       }
     },
     {
       name: 'thumbPosition',
-      dynamicValue: function() {
-        var maxScrollTop = this.scrollHeight - this.height;
-        if (!maxScrollTop)
-          return 0;
-        var ratio = this.scrollTop / maxScrollTop;
-        return ratio * (this.height - this.thumbHeight - 10);
-      },
+      defaultValue: 0,
       postSet: function(old, nu) {
-        if (this.$) {
+        var thumb = this.thumb();
+        if (thumb) {
           // TODO: need to generalize this transform stuff.
-          this.$.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
+          thumb.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }
+      }
+    },
+    {
+      name: 'lastDragY',
+      model_: 'IntProperty'
+    }
+  ],
+
+  methods: {
+    thumb: function() { return $(this.thumbID); },
+    initHTML: function() {
+      this.SUPER();
+
+      this.$.addEventListener('mouseover', this.onMouseEnter);
+      this.$.addEventListener('mouseout', this.onMouseOut);
+      this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
+    },
+    show: function() {
+      var thumb = this.thumb();
+      if (thumb) {
+        thumb.style.webkitTransition = '';
+        thumb.style.opacity = '0.3';
+      }
+    },
+    hide: function() {
+      var thumb = this.thumb();
+      if (thumb) {
+        thumb.style.webkitTransition = '200ms opacity';
+        thumb.style.opacity = '0';
+      }
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onMouseEnter',
+      code: function(e) {
+        this.mouseOver = true;
+        this.show();
+      }
+    },
+    {
+      name: 'onMouseOut',
+      code: function(e) {
+        this.mouseOver = false;
+        this.hide();
+      }
+    },
+    {
+      name: 'onStartThumbDrag',
+      code: function(e) {
+        this.lastDragY = e.screenY;
+        document.body.addEventListener('mousemove', this.onThumbDrag);
+        document.body.addEventListener('mouseup', this.onStopThumbDrag);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onThumbDrag',
+      code: function(e) {
+        var maxScrollTop = this.scrollHeight - this.height;
+        if (maxScrollTop <= 0)
+          return 0;
+
+        var dy = e.screenY - this.lastDragY;
+        var newScrollTop = this.scrollTop + (maxScrollTop * dy) / (this.height - this.thumbHeight);
+        this.scrollTop = Math.min(maxScrollTop, Math.max(0, newScrollTop));
+        this.lastDragY = e.screenY;
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onStopThumbDrag',
+      code: function(e) {
+        document.body.removeEventListener('mousemove', this.onThumbDrag);
+        document.body.removeEventListener('mouseup', this.onStopThumbDrag);
       }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <div id="%%id" style="
-          position: absolute;
-          width: <%= this.thumbWidth %>px;
-          right: 0px;
-          opacity: 0;
-          margin: 3px;
-          z-index: 2;
-          background:black;">
+      <div id="%%id" style="position: absolute;
+                            width: <%= this.width %>px;
+                            height: <%= this.height %>px;
+                            right: 0px;
+                            background: rgba(0, 0, 0, 0.1);
+                            z-index: 2;">
+        <div id="%%thumbID" style="
+            opacity: 0;
+            position: absolute;
+            width: <%= this.width %>px;
+            background:#333;">
+        </div>
       </div>
     */}
   ]
@@ -4747,31 +4850,32 @@ MODEL({
     }
   ],
 
+  templates: [
+    function toHTML() {/*
+      <div>
+        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
+          <%
+            var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+                scrollTop$ : this.scrollTop$,
+                height$ : this.height$,
+                scrollHeight$ : this.scrollHeight$,
+            });
+
+            this.addChild(verticalScrollbar);
+            out(verticalScrollbar.toHTML());
+          %>
+        </div>
+      </div>
+    */},
+  ],
+
   methods: {
     init: function() {
       this.SUPER();
       this.dao.listen(this.scroll);
-    },
-    toHTML: function() {
-      var id = this.id;
-      var overlay = this.nextID();
       var touch = this.X.TouchInput;
       touch.subscribe(touch.TOUCH_START, this.onTouchStart);
       touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
-
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
-          scrollTop$ : this.scrollTop$,
-          height$ : this.height$,
-          scrollHeight$ : this.scrollHeight$,
-      });
-
-      this.addChild(verticalScrollbar);
-
-      return '<div><div id="' + this.id + '" style="height:' + this.height
-          + 'px;overflow:hidden;position:relative;"><div id="' + overlay
-          + '" style="z-index:1;position:absolute;height:'
-          + this.height + ';width:100%">' + verticalScrollbar.toHTML()
-          + '</div></div></div>';
     },
     formatObject: function(o) {
       var out = "";
