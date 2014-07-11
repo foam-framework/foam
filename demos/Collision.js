@@ -32,7 +32,7 @@ for ( var x = 0 ; x < N ; x++ ) {
       y: 400+(y-(N-1)/2)*70,
       border: 'white',
       borderWidth: 0,
-      color: 'hsl(' + x/N*100 + ',' + (35+y/N*100*60) + '%, 60%)'
+      color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
     });
     space.addChild(c);
 
