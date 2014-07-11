@@ -38,7 +38,7 @@ for ( var x = 0 ; x < N ; x++ ) {
 
     Movement.spring(anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
     Movement.inertia(c);
-    Movement.friction(c, 0.99);
+    Movement.friction(c, 0.98);
     bounceOnWalls(c, space.width, space.height);
     collider.add(c);
   }
