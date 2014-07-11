@@ -39,6 +39,7 @@ MODEL({
           name: project.projectName,
           model: QIssue,
           dao: Y.issueDAO,
+          queryParser: QueryParser,
           citationView: 'IssueCitationView',
           sortChoices: [
             [ DESC(QIssue.MODIFIED), 'Last modified' ],
