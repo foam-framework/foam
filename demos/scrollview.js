@@ -101,12 +101,19 @@ MODEL({
   ]
 });
 
+/*
 var Y = this.X.subWindow(window);
 Y.registerModel(MomentumTouch, 'FOAMTouch');
 Y.registerModel(MomentumTouchManager, 'TouchManager');
 
 Y.TouchInput = Y.TouchManager.create({});
 Y.TouchInput.install(document);
+*/
+
+var Y = this.X.subWindow(window);
+Y.touchManager = Y.TouchManager.create({});
+Y.touchManager.install(document);
+Y.gestureManager = Y.GestureManager.create();
 
 var view = Y.ScrollView.create({
   model: Contact,

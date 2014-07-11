@@ -4903,10 +4903,8 @@ MODEL({
     init: function() {
       this.SUPER();
       this.dao.listen(this.scroll);
-      var touch = this.X.TouchInput;
-      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
-      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
     },
+
     formatObject: function(o) {
       var out = "";
       for ( var i = 0, prop; prop = this.model.properties[i]; i++ ) {
@@ -4995,6 +4993,11 @@ MODEL({
       this.SUPER();
       this.scroll();
       this.$.addEventListener('wheel', this.onWheel);
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        element: this.$,
+        handler: this,
+        gesture: 'verticalScroll'
+      }));
     }
   },
 
@@ -5012,23 +5015,29 @@ MODEL({
       },
     },
     {
-      name: 'onTouchStart',
-      code: function(_, _, touch) {
-        if ( ! this.touch ) this.touch = touch;
-        var self = this;
-        this.touch.y$.addListener(function(_, _, old, nu) {
-          self.scrollTop = self.scrollTop + old - nu;
-        });
+      name: 'verticalScrollMove',
+      code: function(dy) {
+        this.scrollTop = this.scrollTop - dy;
       }
     },
-    {
-      name: 'onTouchEnd',
-      code: function(_, _, touch) {
-        if ( touch.id === this.touch.id ) {
-          this.touch = '';
-        }
-      }
-    },
+    //{
+    //  name: 'onTouchStart',
+    //  code: function(_, _, touch) {
+    //    if ( ! this.touch ) this.touch = touch;
+    //    var self = this;
+    //    this.touch.y$.addListener(function(_, _, old, nu) {
+    //      self.scrollTop = self.scrollTop + old - nu;
+    //    });
+    //  }
+    //},
+    //{
+    //  name: 'onTouchEnd',
+    //  code: function(_, _, touch) {
+    //    if ( touch.id === this.touch.id ) {
+    //      this.touch = '';
+    //    }
+    //  }
+    //},
     {
       name: 'onWheel',
       code: function(ev) {
