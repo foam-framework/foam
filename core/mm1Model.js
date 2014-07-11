@@ -103,6 +103,13 @@ var Model = {
       help: 'Properties which make up unique id.'
     },
     {
+      name: 'traits',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Traits to mix-into this Model.'
+    },
+    {
       name: 'tableProperties',
       type: 'Array[String]',
       view: 'StringArrayView',

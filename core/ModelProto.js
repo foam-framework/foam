@@ -85,10 +85,36 @@ var ModelProto = {
   TYPE: 'ModelProto <startup only, error if you see this>',
 
   buildPrototype: function() {
+    function addTraitToModel(traitModel, parentModel) {
+      var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
+      if ( ! GLOBAL[name] ) {
+        MODEL({
+          __proto__: eval('(' + traitModel.toJSON() + ')'),
+          name: name,
+          extendsModel: parentModel.name
+        });
+      }
+
+      return GLOBAL[name];
+    }
+
     if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
-    var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
+
+    if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
+      var trait = this.traits[i];
+      var traitModel = GLOBAL[trait];
+
+      if ( traitModel ) {
+        extendsModel = addTraitToModel(traitModel, extendsModel);
+      } else {
+        console.warn('Missing trait: ', trait, ', in Model: ', this.name);
+      }
+    }
+
+    var proto = extendsModel ? extendsModel.getPrototype() : AbstractPrototype;
+    var cls   = Object.create(proto);
     cls.model_    = this;
     cls.name_     = this.name;
     cls.TYPE      = this.name + "Prototype";
