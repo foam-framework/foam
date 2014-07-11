@@ -24,17 +24,55 @@ var threadDao = X.GMailRestDAO.create({
   model: GMailThread,
 });
 
+MODEL({
+  name: 'EMailAdapterDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  methods: {
+    put: function(obj, sink) {
+      var headersMap = {};
+      var headers = obj.payload.headers || [];
+      for (var i = 0; i < headers.length; i++) {
+        var header = headers[i];
+        headersMap[header.name] = header.value;
+      }
+
+      var email = EMail.create({
+        id: obj.id,
+        convId: obj.threadId,
+        timestamp: headersMap['Date'],
+        from: headersMap['From'],
+        to: headersMap['To'],
+        cc: headersMap['Cc'],
+        bcc: headersMap['Bcc'],
+        replyTo: headersMap['Reply-To'],
+        subject: headersMap['Subject'],
+        labels: obj.labelIds,
+        historyId: obj.historyId,
+        // attachments: obj.attachments,
+        // body: ab2String(decode(obj.payload.body.data)),
+      });
+      this.delegate.put(email, sink);
+    }
+  }
+});
+
+var emailAdapterDAO = EMailAdapterDAO.create({
+  delegate: MDAO.create({ model: EMail }),
+});
+
 var gmailSyncManager = GmailSyncManager.create({
   historyDao: historyDao,
   messageDao: messageDao,
-  dstDAO: MDAO.create({ model: GMailMessage }),
-  historyProperty: GMailMessage.HISTORY_ID,
+  dstDAO: emailAdapterDAO,
+  historyProperty: EMail.HISTORY_ID,
   threadDao: threadDao,
 });
 
 var view = TableView.create({
   dao: gmailSyncManager.dstDAO,
-  model: GMailMessage,
+  model: EMail,
   scrollEnabled: true
 });
 
