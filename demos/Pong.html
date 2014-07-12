@@ -1,0 +1,16 @@
+<html>
+ <head>
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="../lib/physics/Collider.js"></script>
+  <script language="javascript" src="Pong.js"></script>
+  <title>Pong Game</title>
+ </head>
+ <body>
+  <xfoam id="pong" model="Pong"></xfoam>
+<script>
+  var pong = Pong.create();
+  document.write(pong.toHTML());
+  pong.initHTML();
+</script>
+ </body>
+</html>
