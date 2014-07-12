@@ -1,6 +1,38 @@
 /**
- * Mobile QuickBug.
+ * Material Design GMail.
  **/
+
+/** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
+var queryParser = {
+  __proto__: QueryParserFactory(EMail),
+
+  id: sym('string'),
+
+  labelMatch: seq(alt('label','l'), alt(':', '='), sym('valueList'))
+}.addActions({
+  id: function(v) {
+     return OR(
+        CONTAINS_IC(EMail.SUBJECT, v),
+        CONTAINS_IC(EMail.BODY, v));
+  },
+
+  labelMatch: function(v) {
+    var or = OR();
+    var values = v[2];
+    for ( var i = 0 ; i < values.length ; i++ ) {
+      EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, values[i])).select({put:function(el) {
+         or.args.push(EQ(EMail.LABELS, el.id));
+      }});
+    }
+    return or;
+  }
+});
+
+queryParser.expr = alt(
+  sym('labelMatch'),
+  queryParser.export('expr')
+);
+
 
 MODEL({
   name: 'MGmail',
@@ -55,6 +87,7 @@ MODEL({
         model: EMail,
         dao: this.emailDao,
         citationView: 'EMailCitationView',
+        queryParser: queryParser,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
         ],
