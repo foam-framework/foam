@@ -4380,13 +4380,14 @@ MODEL({
       postSet: function() { this.updateDAO(); }
     },
     {
-      name: 'data',
+      name: 'dao',
       help: 'Payload of the view; assumed to be a DAO.',
       postSet: function() { this.updateDAO(); }
     },
     {
       name: 'view',
-      required: true
+      required: true,
+      postSet: function() { this.updateDAO(); }
     }
   ],
 
@@ -4404,8 +4405,8 @@ MODEL({
       this.view.initHTML();
     },
     updateDAO: function() {
-      if ( this.data && this.data.where )
-        this.view.data = this.data.where(this.predicate);
+      if ( this.dao && this.dao.where && this.view )
+        this.view.dao = this.dao.where(this.predicate);
     }
   }
 });
@@ -4418,7 +4419,14 @@ MODEL({
   properties: [
     {
       model_: 'DAOProperty',
-      name: 'dao'
+      name: 'dao',
+      postSet: function(oldVal, newVal) {
+        if (oldVal) {
+          oldVal.unlisten(this.onDAOUpdate);
+        }
+        this.X = this.X.sub({DAO: newVal});
+        newVal.listen(this.onDAOUpdate);
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -4466,7 +4474,6 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.dao$.asDAO()});
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -4477,7 +4484,6 @@ MODEL({
         self.hidden = false;
       });
 
-      this.dao$.asDAO().listen(this.onDAOUpdate);
     },
 
     initHTML: function() {
