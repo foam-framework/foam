@@ -81,8 +81,12 @@ MODEL({
       name: 'onBallMove',
       isAnimated: true,
       code: function() {
-        if ( this.ball.y + this.ball.r >= this.HEIGHT ) this.ball.vy *= -1;
-        if ( this.ball.y - this.ball.r <= 0           ) this.ball.vy *= -1;
+        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
+          this.ball.vy = -Math.abs(this.ball.vy);
+        }
+        if ( this.ball.y - this.ball.r <= 0 ) {
+          this.ball.vy = Math.abs(this.ball.vy);
+        }
         if ( this.ball.x >= this.WIDTH ) {
           this.lScore++;
           this.ball.vx *= -1;
@@ -98,25 +102,29 @@ MODEL({
   actions: [
     {
       name: 'lUp',
-      action: function() { this.lPaddle.y -= 4; }
+      keyboardShortcuts: [ 81 /* q */ ],
+      action: function() { this.lPaddle.y -= 8; }
     },
     {
       name: 'lDown',
-      action: function() { this.lPaddle.y += 4; }
+      keyboardShortcuts: [ 65 /* a */ ],
+      action: function() { this.lPaddle.y += 8; }
     },
     {
       name: 'rUp',
-      action: function() { this.rPaddle.y -= 4; }
+      keyboardShortcuts: [ 38 /* up arrow */ ],
+      action: function() { this.rPaddle.y -= 8; }
     },
     {
       name: 'rDown',
-      action: function() { this.rPaddle.y += 4; }
+      keyboardShortcuts: [ 40 /* down arrow */ ],
+      action: function() { this.rPaddle.y += 8; }
     }
   ],
 
   templates: [
     function toDetailHTML() {/*
-      $$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%obj.table
+      <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%obj.table</div>
     */}
   ],
 
