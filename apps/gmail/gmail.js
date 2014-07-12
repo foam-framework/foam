@@ -20,9 +20,7 @@ var queryParser = {
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
-      EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, values[i])).select({put:function(el) {
-         or.args.push(EQ(EMail.LABELS, el.id));
-      }});
+      or.args.push(EQ(EMail.LABELS, values[i]))
     }
     return or;
   }
@@ -89,10 +87,12 @@ MODEL({
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         sortChoices: [
-          [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
+          [ DESC(EMail.TIMESTAMP), 'Date' ],
+          [ EMail.SUBJECT, 'Subject' ],
         ],
         filterChoices: [
           ['', 'All Mail'],
+          ['l:INBOX', 'Inbox'],
         ],
         menuFactory: function() {
           return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});

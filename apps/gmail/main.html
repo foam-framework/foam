@@ -70,8 +70,8 @@
       emailDao.put(email);
     }
 
-    // TODO: In the EMailCitationView it refers to this directly. It should use context but that's not working.
     var gmailSyncManager = createGmailSyncAgent();
+    // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
     var mgmail = MGmail.create({
       gmailSyncManager: gmailSyncManager,
       emailDao: emailDao,
