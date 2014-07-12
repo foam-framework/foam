@@ -191,6 +191,11 @@ MODEL({
       return this;
     },
 
+    addChildren: function() {
+      for ( var key in arguments ) this.addChild(arguments[key]);
+      return this;
+    },
+
     removeChild: function(child) {
       this.children.deleteI(child);
       child.view = undefined;
@@ -258,6 +263,8 @@ MODEL({
 
     paint: function() {
       var c = this.canvas;
+
+      if ( ! c ) return;
 
       c.globalAlpha = this.alpha;
 
@@ -440,3 +447,45 @@ MODEL({
     }
   ]
 });
+
+MODEL({name: 'MotionBlur', methods: {
+  paint: function() {
+    this.SUPER();
+    var c = this.canvas;
+    var oldAlpha = this.alpha;
+
+    c.save();
+    c.translate(-this.vx, -this.vy);
+    this.alpha = 0.6;
+    this.SUPER();
+
+    c.translate(-this.vx, -this.vy);
+    this.alpha = 0.3;
+    this.SUPER();
+    c.restore();
+
+    this.alpha = oldAlpha;
+  }
+}});
+
+
+MODEL({name: 'Shadow', methods: {
+  paint: function() {
+    var c = this.canvas;
+    var oldAlpha = this.alpha;
+    var oldColor = this.color;
+
+    c.save();
+    c.translate(4, 4);
+    this.alpha = 0.2;
+    this.color = 'black';
+    this.SUPER();
+    c.restore();
+
+    this.alpha = oldAlpha;
+    this.color = oldColor;
+
+    this.SUPER();
+  }
+}});
+
