@@ -4435,9 +4435,9 @@ MODEL({
       postSet: function(_, hidden) {
         if ( ! this.dao ) return;
         if ( hidden ) {
-          this.dao$.asDAO().unlisten(this.onDAOUpdate);
+          this.dao.unlisten(this.onDAOUpdate);
         } else {
-          this.dao$.asDAO().listen(this.onDAOUpdate);
+          this.dao.listen(this.onDAOUpdate);
           this.updateHTML(); // TODO: I don't think this line is necessary
         }
       }
