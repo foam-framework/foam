@@ -21,8 +21,11 @@ MODEL({
       name: 'gmailSyncManager',
       type:  'GmailSyncManager',
       postSet: function(oldVal, newVal) {
-        newVal.forceSync();
       }
+    },
+    {
+      name: 'emailDao',
+      type: 'DAO',
     },
     {
       name: 'stack',
@@ -50,7 +53,7 @@ MODEL({
       this.controller = Y.AppController.create({
         name: 'Gmail API FOAM Demo',
         model: EMail,
-        dao: this.gmailSyncManager.dstDAO,
+        dao: this.emailDao,
         citationView: 'EMailCitationView',
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
