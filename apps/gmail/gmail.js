@@ -91,8 +91,9 @@ MODEL({
           [ EMail.SUBJECT, 'Subject' ],
         ],
         filterChoices: [
-          ['', 'All Mail'],
           ['l:INBOX', 'Inbox'],
+          ['l:STARRED', 'Starred'],
+          ['', 'All Mail']
         ],
         menuFactory: function() {
           return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
