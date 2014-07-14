@@ -393,6 +393,7 @@ var PropertyChangeSupport = {
 
 
   addListener: function(listener) {
+    console.assert(listener, 'Listener cannot be null.');
     // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
     this.addPropertyListener(null, listener);
   },
@@ -860,14 +861,26 @@ var Movement = {
 
 
   onIntersect: function (o1, o2, fn) {
-    Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
-      var dx = o1.x - o2.x;
-      var dy = o1.y - o2.y;
-      var d = dx*dx + dy*dy;
-      var r2 = o1.r + o2.r;
-      if ( d < r2*r2 )
-        fn.call(null, o1, o2);
-    });
+    if ( o1.model_.R ) {
+      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        var dx = o1.x - o2.x;
+        var dy = o1.y - o2.y;
+        var d = dx*dx + dy*dy;
+        var r2 = o1.r + o2.r;
+        if ( d < r2*r2 )
+          fn.call(null, o1, o2);
+      });
+    } else {
+      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        if ( ( o1.x <= o2.x && o1.x + o1.width > o2.x    &&
+               o1.y <= o2.y && o1.y + o1.height > o2.y ) ||
+             ( o2.x <= o1.x && o2.x + o2.width > o1.x    &&
+               o2.y <= o1.y && o2.y + o2.height > o1.y ) )
+        {
+          fn.call(null, o1, o2);
+        }
+      });
+    }
   },
 
 
@@ -950,7 +963,7 @@ var Movement = {
   },
 
   inertia: function(c) {
-    Events.dynamic(function() { c.vx; c.vy; }, function() {
+    Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
       // Dynamic Friction
       c.x += c.vx;
       c.y += c.vy;
