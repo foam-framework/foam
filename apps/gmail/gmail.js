@@ -87,7 +87,8 @@ MODEL({
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         sortChoices: [
-          [ DESC(EMail.TIMESTAMP), 'Date' ],
+          [ DESC(EMail.TIMESTAMP), 'Newest First' ],
+          [ EMail.TIMESTAMP, 'Oldest First' ],
           [ EMail.SUBJECT, 'Subject' ],
         ],
         filterChoices: [
@@ -115,6 +116,7 @@ MODEL({
   actions: [
     {
       name: 'back',
+      isEnabled: function() { return true; },
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png'
     },
@@ -125,9 +127,16 @@ MODEL({
         <div class="header">
           $$back
           $$subject{mode: 'read-only', className: 'subject'}
+          $$inInbox{
+            model_: 'ImageBooleanView',
+            className:  'actionButton',
+            falseClass: 'hide',
+            trueImage: 'images/archive.svg',
+            falseImage: 'images/archive.svg'
+          }
           $$starred{
             model_: 'ImageBooleanView',
-            className:  'star',
+            className:  'actionButton',
             trueImage:  'images/ic_star_24dp.png',
             falseImage: 'images/ic_star_outline_24dp.png'
           }

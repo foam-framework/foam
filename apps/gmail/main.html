@@ -61,10 +61,11 @@
     }
 
     var gmailSyncManager = createGmailSyncAgent();
+    gmailSyncManager.forceSync();
     // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
     var mgmail = MGmail.create({
       gmailSyncManager: gmailSyncManager,
-      emailDao: emailDao,
+      emailDao: gmailSyncManager.dstDAO,
     });
     mgmail.write(document);
   </script>

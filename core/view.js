@@ -1645,6 +1645,12 @@ MODEL({
     },
     {
       name: 'falseImage'
+    },
+    {
+      name: 'trueClass'
+    },
+    {
+      name: 'falseClass'
     }
   ],
 
@@ -1663,7 +1669,7 @@ MODEL({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.invokeInitializers();
-      this.$.src = this.image();
+      this.updateHTML();
     },
     // deprecated: remove
     getValue: function() { return this.value; },
@@ -1671,7 +1677,18 @@ MODEL({
     setValue: function(value) { this.value = value; },
     destroy: function() {
       this.value.removeListener(this.update);
-    }
+    },
+    updateHTML: function() {
+      this.$.src = this.image();
+
+      if (this.value.get()) {
+        this.trueClass && this.$.classList.add(this.trueClass);
+        this.falseClass && this.$.classList.remove(this.falseClass);
+      } else {
+        this.trueClass && this.$.classList.remove(this.trueClass);
+        this.falseClass && this.$.classList.add(this.falseClass);
+      }
+    },
   },
 
   listeners: [
@@ -1679,7 +1696,7 @@ MODEL({
       name: 'update',
       code: function() {
         if ( ! this.$ ) return;
-        this.$.src = this.image();
+        this.updateHTML();
       }
     },
     {
