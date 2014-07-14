@@ -226,6 +226,7 @@ MODEL({
         this.initCView();
         this.state = 'active';
       }
+      this.canvas.translate(this.x, this.y);
       this.erase();
       this.paintSelf();
       this.paintChildren();
