@@ -315,6 +315,43 @@ MODEL({
 });
 
 MODEL({
+  name: 'TapGesture',
+  help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
+
+  properties: [
+    {
+      name: 'name',
+      defaultValue: 'tap'
+    },
+    'handlers'
+  ],
+
+  methods: {
+    recognize: function(map) {
+      // I recognize:
+      // - multiple points that
+      // - are all done and
+      // - none of which has moved more than 10px net.
+
+      return Object.keys(map).every(function(key) {
+        var p = map[key];
+        return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
+      });
+    },
+
+    attach: function(map, handlers) {
+      // Nothing to listen for; the tap has already fired when this recognizes.
+      // Just sent the tapClick(numberOfPoints) message to the handlers.
+      if  ( ! handlers || ! handlers.length ) return;
+      var points = Object.keys(map).length;
+      handlers.forEach(function(h) {
+        h && h.tapClick && h.tapClick(points);
+      });
+    }
+  }
+});
+
+MODEL({
   name: 'GestureTarget',
   properties: [
     'x', 'y', 'w', 'h',
@@ -347,7 +384,8 @@ MODEL({
       name: 'gestures',
       factory: function() {
         return {
-          verticalScroll: VerticalScrollGesture.create({ manager: this })
+          verticalScroll: VerticalScrollGesture.create(),
+          tap: TapGesture.create()
         };
       }
     },
@@ -446,11 +484,16 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(_, _, touch) {
-        delete this.points[touch.id];
-        if ( Object.keys(this.points).length === 0 ) {
-          this.recognized = undefined;
-        } else {
+        if ( ! this.recognized ) {
           this.checkRecognition();
+        }
+
+        if ( this.recognized ) {
+          delete this.points[touch.id];
+          if ( Object.keys(this.points).length === 0 ) {
+            this.active[this.recognized.name] = [];
+            this.recognized = undefined;
+          }
         }
       }
     }
