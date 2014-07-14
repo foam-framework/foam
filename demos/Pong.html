@@ -3,14 +3,31 @@
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="../lib/physics/Collider.js"></script>
   <script language="javascript" src="Pong.js"></script>
+  <style>
+    span[name="lScore"] {
+      color: white;
+      position: absolute;
+      top: 20;
+      left: 300;
+      font-family: sans-serif;
+      font-size: 70px;
+    }
+    span[name="rScore"] {
+      color: white;
+      position: absolute;
+      top: 20;
+      left: 450;
+      font-family: sans-serif;
+      font-size: 70px;
+    }
+  </style>
   <title>Pong Game</title>
  </head>
  <body>
-  <xfoam id="pong" model="Pong"></xfoam>
-<script>
-  var pong = Pong.create();
-  document.write(pong.toHTML());
-  pong.initHTML();
-</script>
+ <script>
+   var pong = Pong.create();
+   document.write(pong.toHTML());
+   pong.initHTML();
+ </script>
  </body>
 </html>
