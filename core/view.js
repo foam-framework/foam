@@ -1645,6 +1645,12 @@ MODEL({
     },
     {
       name: 'falseImage'
+    },
+    {
+      name: 'trueClass'
+    },
+    {
+      name: 'falseClass'
     }
   ],
 
@@ -1663,7 +1669,7 @@ MODEL({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.invokeInitializers();
-      this.$.src = this.image();
+      this.updateHTML();
     },
     // deprecated: remove
     getValue: function() { return this.value; },
@@ -1671,7 +1677,18 @@ MODEL({
     setValue: function(value) { this.value = value; },
     destroy: function() {
       this.value.removeListener(this.update);
-    }
+    },
+    updateHTML: function() {
+      this.$.src = this.image();
+
+      if (this.value.get()) {
+        this.trueClass && this.$.classList.add(this.trueClass);
+        this.falseClass && this.$.classList.remove(this.falseClass);
+      } else {
+        this.trueClass && this.$.classList.remove(this.trueClass);
+        this.falseClass && this.$.classList.add(this.falseClass);
+      }
+    },
   },
 
   listeners: [
@@ -1679,7 +1696,7 @@ MODEL({
       name: 'update',
       code: function() {
         if ( ! this.$ ) return;
-        this.$.src = this.image();
+        this.updateHTML();
       }
     },
     {
@@ -4380,13 +4397,14 @@ MODEL({
       postSet: function() { this.updateDAO(); }
     },
     {
-      name: 'data',
+      name: 'dao',
       help: 'Payload of the view; assumed to be a DAO.',
       postSet: function() { this.updateDAO(); }
     },
     {
       name: 'view',
-      required: true
+      required: true,
+      postSet: function() { this.updateDAO(); }
     }
   ],
 
@@ -4404,8 +4422,8 @@ MODEL({
       this.view.initHTML();
     },
     updateDAO: function() {
-      if ( this.data && this.data.where )
-        this.view.data = this.data.where(this.predicate);
+      if ( this.dao && this.dao.where && this.view )
+        this.view.dao = this.dao.where(this.predicate);
     }
   }
 });
@@ -4418,7 +4436,14 @@ MODEL({
   properties: [
     {
       model_: 'DAOProperty',
-      name: 'dao'
+      name: 'dao',
+      postSet: function(oldVal, newVal) {
+        if (oldVal) {
+          oldVal.unlisten(this.onDAOUpdate);
+        }
+        this.X = this.X.sub({DAO: newVal});
+        newVal.listen(this.onDAOUpdate);
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -4427,9 +4452,9 @@ MODEL({
       postSet: function(_, hidden) {
         if ( ! this.dao ) return;
         if ( hidden ) {
-          this.dao$.asDAO().unlisten(this.onDAOUpdate);
+          this.dao.unlisten(this.onDAOUpdate);
         } else {
-          this.dao$.asDAO().listen(this.onDAOUpdate);
+          this.dao.listen(this.onDAOUpdate);
           this.updateHTML(); // TODO: I don't think this line is necessary
         }
       }
@@ -4466,7 +4491,6 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.dao$.asDAO()});
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -4477,7 +4501,6 @@ MODEL({
         self.hidden = false;
       });
 
-      this.dao$.asDAO().listen(this.onDAOUpdate);
     },
 
     initHTML: function() {
