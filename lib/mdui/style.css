@@ -62,6 +62,7 @@ a {
 .mdui-app-controller .header .default {
   flex: 1.0;
   display: flex;
+  margin: 4px;
 }
 
 .mdui-app-controller.searchMode .header .default {
@@ -75,6 +76,9 @@ a {
 .mdui-app-controller.searchMode .header .search {
   display: inherit;
   height: 56px;
+  width: 100%;
+  background: #3e50b4;
+  z-index: 2;
 }
 
 .mdui-app-controller.searchMode .swipeAltHeader {
@@ -89,4 +93,31 @@ a {
   font-weight: 500;
   margin-left: 16px;
   vertical-align: middle;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+input[name=q] {
+  align-self: center;
+  background: #3e50b4;
+  border: none;
+  color: white;
+  font-size: 20px;
+  height: 24px;
+  margin: 20px 20px 20px 6px;
+  padding-left: 10px;
+  width: 100%;
+}
+
+input[name=q]:focus {
+  outline: none;
+  opacity: 0.76;
+}
+
+input[name=q]::-webkit-input-placeholder {
+  font-size: 20px;
+  color: white;
+  opacity: 0.76;
+  height: 55px;
 }
