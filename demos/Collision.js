@@ -24,13 +24,14 @@ var N = 7;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
     var c = Circle.create({
-      r: 25,
+      r: x % 2 ? 25 : 10,
       x: 600+(x-(N-1)/2)*70,
       y: 400+(y-(N-1)/2)*70,
       border: 'white',
       borderWidth: 0,
       color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
     });
+    c.mass = c.r;
     space.addChild(c);
 
 //    Movement.spring(anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
