@@ -30,6 +30,9 @@ var Base64Decoder = {
     for (var i = 0; i < chars.length; i++ ) {
       ret[chars[i]] = toValue(chars[i].charCodeAt(0));
     }
+    // Add URL Safe characters
+    ret["-"] = 62;
+    ret["_"] = 63;
     return ret;
   })(),
 
