@@ -28,10 +28,23 @@ Object.defineProperties(Touch.prototype, {
   }
 });
 
+Object.defineProperties(MouseEvent.prototype, {
+  offsetX: {
+    get: function() {
+      return this.clientX - this.target.getBoundingClientRect().left;
+    }
+  },
+  offsetY: {
+    get: function() {
+      return this.clientY - this.target.getBoundingClientRect().top;
+    }
+  }
+});
+
 MODEL({
   name: 'InputPoint',
   properties: [
-    'id',
+    'id', 'type',
     { name: 'done', model_: 'BooleanProperty' },
     {
       name: 'xHistory',
@@ -100,6 +113,7 @@ MODEL({
     touchStart: function(i, t, e) {
       this.touches[i] = this.X.InputPoint.create({
         id: i,
+        type: 'touch',
         x: t.offsetX,
         y: t.offsetY
       });
@@ -255,6 +269,7 @@ MODEL({
     recognize: function(map) {
       // I recognize:
       // - a single point that
+      // - is touch, not mouse and
       // - is not done and
       // - has moved at least 10px vertically, and
       // - less than 10px horizontally.
@@ -263,7 +278,7 @@ MODEL({
 
       var point = map[Object.keys(map)[0]];
 
-      return ! point.done && Math.abs(point.totalX) < 10 && Math.abs(point.totalY) > 10;
+      return point.type != 'mouse' && ! point.done && Math.abs(point.totalX) < 10 && Math.abs(point.totalY) > 10;
     },
 
     attach: function(map, handlers) {
@@ -418,6 +433,9 @@ MODEL({
       this.X.touchManager.subscribe(this.X.touchManager.TOUCH_START, this.onTouchStart);
       this.X.touchManager.subscribe(this.X.touchManager.TOUCH_MOVE,  this.onTouchMove);
       this.X.touchManager.subscribe(this.X.touchManager.TOUCH_END,   this.onTouchEnd);
+      this.X.document.addEventListener('mousedown', this.onMouseDown);
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup', this.onMouseUp);
     },
 
     install: function(target) {
@@ -475,9 +493,54 @@ MODEL({
       }
     },
     {
+      name: 'onMouseDown',
+      code: function(event) {
+        // Build the InputPoint for it.
+        var point = InputPoint.create({
+          id: 'mouse',
+          type: 'mouse',
+          x: event.offsetX,
+          y: event.offsetY
+        });
+
+        // TODO: De-dupe me with the code above in onTouchStart.
+        if ( this.recognized ) {
+          this.recognized.addPoint(point);
+          return;
+        }
+
+        var pointCount = Object.keys(this.points).length;
+        if ( ! pointCount ) {
+          // Check rectangles for this first point.
+          for ( var i = 0 ; i < this.targets.length ; i++ ) {
+            if ( this.targets[i].inside(point) ) {
+              var g = this.gestures[this.targets[i].gesture];
+              if ( ! g ) continue;
+              if ( ! this.active[g.name] ) this.active[g.name] = [];
+              this.active[g.name].push(this.targets[i]);
+            }
+          }
+        }
+
+        this.points[point.id] = point;
+        this.checkRecognition();
+      }
+    },
+    {
       name: 'onTouchMove',
       code: function(_, _, touch) {
         if ( this.recognized ) return;
+        this.checkRecognition();
+      }
+    },
+    {
+      name: 'onMouseMove',
+      code: function(event) {
+        // No reaction unless we have an active mouse point.
+        if ( ! this.points.mouse ) return;
+        // If one does exist, update its coordinates.
+        this.points.mouse.x = event.offsetX;
+        this.points.mouse.y = event.offsetY;
         this.checkRecognition();
       }
     },
@@ -490,6 +553,25 @@ MODEL({
 
         if ( this.recognized ) {
           delete this.points[touch.id];
+          if ( Object.keys(this.points).length === 0 ) {
+            this.active[this.recognized.name] = [];
+            this.recognized = undefined;
+          }
+        }
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function(event) {
+        // TODO: De-dupe me too.
+        if ( ! this.points.mouse ) return;
+        this.points.mouse.done = true;
+        if ( ! this.recognized ) {
+          this.checkRecognition();
+        }
+
+        if ( this.recognized ) {
+          delete this.points.mouse;
           if ( Object.keys(this.points).length === 0 ) {
             this.active[this.recognized.name] = [];
             this.recognized = undefined;
