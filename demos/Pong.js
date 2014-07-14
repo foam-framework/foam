@@ -9,15 +9,14 @@ MODEL({
 MODEL({
   name: 'Paddle',
   extendsModel: 'Circle2',
-
   traits: ['Physical', 'Shadow'],
-
   properties: [
     { name: 'color', defaultValue: 'white' },
     { name: 'r',     defaultValue: 30 },
     { name: 'mass',  defaultValue: Physical.getPrototype().INFINITE_MASS },
   ]
 });
+
 
 MODEL({
   name: 'Pong',
@@ -129,6 +128,7 @@ MODEL({
       this.ball.vx = this.ball.vy = 10;
 
       this.table.addChildren(
+        CView2.create({x: this.WIDTH/2-10, width:20, height: this.HEIGHT, background: 'white'}),
         this.ball,
         this.lPaddle,
         this.rPaddle,
