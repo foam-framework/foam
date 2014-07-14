@@ -1,3 +1,4 @@
+// TODO: ensure a nimimum ball x-velocity
 MODEL({
   name: 'Ball',
   extendsModel: 'Circle2',
@@ -9,33 +10,15 @@ MODEL({
   name: 'Paddle',
   extendsModel: 'Circle2',
 
-  traits: ['Shadow'],
+  traits: ['Physical', 'Shadow'],
 
   properties: [
     { name: 'color', defaultValue: 'white' },
-    { name: 'r',     defaultValue: 30 }
+    { name: 'r',     defaultValue: 30 },
+    { name: 'mass',  defaultValue: Physical.getPrototype().INFINITE_MASS },
   ]
 });
 
-
-MODEL({
-  name: 'PaddleCollider',
-  extendsModel: 'Collider',
-
-  properties: [ 'pong' ],
-
-  methods: {
-    collide: function(o1, o2) {
-      var lx = this.pong.lPaddle.x;
-      var rx = this.pong.rPaddle.x;
-      this.SUPER(o1, o2);
-      this.pong.lPaddle.x = lx;
-      this.pong.rPaddle.x = rx;
-    }
-  }
-});
-
-    
 MODEL({
   name: 'Pong',
 
@@ -130,7 +113,7 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      this.view = DetailView.create({data: this, showActions: true});
+      this.view = DetailView.create({data: this});
       return this.view.toHTML();
     },
     initHTML: function() {
@@ -141,18 +124,19 @@ MODEL({
 
       Movement.inertia(this.ball);
 
-      this.ball.x = this.ball.y = 50;
-      this.ball.vx = 3;
-      this.ball.vy = 3;
+      this.ball.x  = this.ball.y  = 100;
+      this.ball.y  = this.rPaddle.y;
+      this.ball.vx = this.ball.vy = 10;
 
       this.table.addChildren(
         this.ball,
         this.lPaddle,
-        this.rPaddle);
+        this.rPaddle,
+        CView2.create({x: this.WIDTH/2-10, y:0, width:20, height: this.HEIGHT, background: 'white'}));
 
       this.ball.x$.addListener(this.onBallMove);
 
-      var collider = PaddleCollider.create({pong: this});
+      var collider = Collider.create({pong: this});
       collider.add(this.ball);
       collider.add(this.lPaddle);
       collider.add(this.rPaddle);
