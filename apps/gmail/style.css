@@ -31,11 +31,6 @@ a {
   color: #4285f4;
 }
 
-.actionButton-back {
-  width: 48px;
-  height: 48px;
-}
-
 .actionButton {
   padding: 8px;
   vertical-align: middle;
@@ -47,26 +42,7 @@ a {
   outline: none;
 }
 
-.popupChoiceView {
-  padding: 8px;
-  margin-left: 0;
-  outline: none;
-  opacity: 0.76;
-  background: transparent;
-}
-
-.popupChoiceView .value {
-  align-items: center;
-  color: #222;
-  display: flex;
-  flex: 1 0 auto;
-  font-family: Roboto;
-  font-size: 16px;
-  margin-left: 0;
-  text-align: left;
-}
-
-.popupChoiceView img, .actionButton img {
+.actionButton img {
   height: 24px;
   opacity: 0.76;
   width: 24px;
@@ -101,38 +77,19 @@ a {
   margin-top: auto;
 }
 
-input[name=q] {
-  align-self: center;
-  background: #3e50b4;
-  border: none;
-  color: white;
-  font-size: 20px;
-  height: 24px;
-  margin: 20px 20px 20px 6px;
-  padding-left: 10px;
-}
-
-input[name=q]:focus {
-  outline: none;
-  opacity: 0.76;
-}
-
-input[name=q]::-webkit-input-placeholder {
-  font-size: 20px;
-  color: white;
-  opacity: 0.76;
-  height: 55px;
+.hide {
+  display: none;
 }
 
 ::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
 
-.actionButton-leaveSearchMode {
+.actionButton-leaveSearchMode, .actionButton-back {
   margin: 4px;
 }
 
-.actionButton-leaveSearchMode img {
+.actionButton-leaveSearchMode img, .actionButton-back img {
   margin: 4px;
   opacity: 0.76;
 }
@@ -183,15 +140,6 @@ span[name=projectName] {
 
 .stackview-viewarea {
   height: 100%;
-}
-
-.actionButton-back:hover, .actionButton-cancel:hover, .actionButton-save:hover {
-  background: #0F9D58;
-  border-radius:100px;
-}
-
-.actionButton-save:disabled, .actionButton-back:disabled, .actionButton-cancel:disabled {
-  display: none;
 }
 
 .actionButton-save {
@@ -249,7 +197,7 @@ ul.swipeAltHeader {
   padding: 0 0 0 56px;
 }
 
-.popupChoiceView, .actionButton {
+.actionButton {
   width: 48px;
   height: 48px;
   background: transparent;
@@ -324,6 +272,10 @@ ul.swipeAltHeader {
   display: flex;
 }
 
+.email-view .header .actionButton {
+  margin: 4px;
+}
+
 .email-view .from {
   font-size: 14px;
   font-weight: bold;
@@ -342,7 +294,7 @@ ul.swipeAltHeader {
 }
 
 .email-view .content {
-  margin-top: 54px;
+  margin-top: 62px;
   margin-left: 6px;
   margin-right: 6px;
   word-break: break-word;
@@ -356,21 +308,13 @@ ul.swipeAltHeader {
   margin: auto;
   overflow-x: hidden;
   padding: 0px 16px;
-  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
 }
 
-.email-view .actionButton-back {
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.email-view .star {
-  margin: 12px;
-}
-
 .email-view .body {
   white-space: pre;
+  margin-top: 6px;
+  display: block;
 }

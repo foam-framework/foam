@@ -20,9 +20,7 @@ var queryParser = {
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
-      EMailLabelDAO.where(EQ(EMailLabel.DISPLAY_NAME, values[i])).select({put:function(el) {
-         or.args.push(EQ(EMail.LABELS, el.id));
-      }});
+      or.args.push(EQ(EMail.LABELS, values[i]))
     }
     return or;
   }
@@ -53,8 +51,11 @@ MODEL({
       name: 'gmailSyncManager',
       type:  'GmailSyncManager',
       postSet: function(oldVal, newVal) {
-        newVal.forceSync();
       }
+    },
+    {
+      name: 'emailDao',
+      type: 'DAO',
     },
     {
       name: 'stack',
@@ -82,14 +83,18 @@ MODEL({
       this.controller = Y.AppController.create({
         name: 'Gmail API FOAM Demo',
         model: EMail,
-        dao: this.gmailSyncManager.dstDAO,
+        dao: this.emailDao,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         sortChoices: [
-          [ DESC(EMail.TIMESTAMP), 'Date' ] // TODO: Sorting no work.
+          [ DESC(EMail.TIMESTAMP), 'Newest First' ],
+          [ EMail.TIMESTAMP, 'Oldest First' ],
+          [ EMail.SUBJECT, 'Subject' ],
         ],
         filterChoices: [
-          ['', 'All Mail'],
+          ['l:INBOX', 'Inbox'],
+          ['l:STARRED', 'Starred'],
+          ['', 'All Mail']
         ],
         menuFactory: function() {
           return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
@@ -111,6 +116,7 @@ MODEL({
   actions: [
     {
       name: 'back',
+      isEnabled: function() { return true; },
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png'
     },
@@ -121,9 +127,16 @@ MODEL({
         <div class="header">
           $$back
           $$subject{mode: 'read-only', className: 'subject'}
+          $$inInbox{
+            model_: 'ImageBooleanView',
+            className:  'actionButton',
+            falseClass: 'hide',
+            trueImage: 'images/archive.svg',
+            falseImage: 'images/archive.svg'
+          }
           $$starred{
             model_: 'ImageBooleanView',
-            className:  'star',
+            className:  'actionButton',
             trueImage:  'images/ic_star_24dp.png',
             falseImage: 'images/ic_star_outline_24dp.png'
           }
