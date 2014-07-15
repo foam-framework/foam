@@ -1,6 +1,6 @@
 MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
-var space    = CView2.create({width: 1500, height: 800, background:'black'});
+var space    = CView2.create({width: 1500, height: 1000, background:'black'});
 var mouse    = Mouse.create();
 var collider = Collider.create();
 var bumper   = Circle.create({r: 30, color: 'white'});
