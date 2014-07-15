@@ -4992,7 +4992,6 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       this.scroll();
-      this.$.addEventListener('wheel', this.onWheel);
       this.X.gestureManager.install(this.X.GestureTarget.create({
         element: this.$,
         handler: this,
@@ -5018,31 +5017,6 @@ MODEL({
       name: 'verticalScrollMove',
       code: function(dy) {
         this.scrollTop = this.scrollTop - dy;
-      }
-    },
-    //{
-    //  name: 'onTouchStart',
-    //  code: function(_, _, touch) {
-    //    if ( ! this.touch ) this.touch = touch;
-    //    var self = this;
-    //    this.touch.y$.addListener(function(_, _, old, nu) {
-    //      self.scrollTop = self.scrollTop + old - nu;
-    //    });
-    //  }
-    //},
-    //{
-    //  name: 'onTouchEnd',
-    //  code: function(_, _, touch) {
-    //    if ( touch.id === this.touch.id ) {
-    //      this.touch = '';
-    //    }
-    //  }
-    //},
-    {
-      name: 'onWheel',
-      code: function(ev) {
-        this.scrollTop += ev.deltaY;
-        ev.preventDefault();
       }
     }
   ]

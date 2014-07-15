@@ -41,6 +41,19 @@ Object.defineProperties(MouseEvent.prototype, {
   }
 });
 
+Object.defineProperties(WheelEvent.prototype, {
+  offsetX: {
+    get: function() {
+      return this.clientX - this.target.getBoundingClientRect().left;
+    }
+  },
+  offsetY: {
+    get: function() {
+      return this.clientY - this.target.getBoundingClientRect().top;
+    }
+  }
+});
+
 MODEL({
   name: 'InputPoint',
   properties: [
@@ -423,6 +436,11 @@ MODEL({
     {
       name: 'points',
       factory: function() { return {}; }
+    },
+    'wheelTimer',
+    {
+      name: 'scrollWheelTimeout',
+      defaultValue: 300
     }
   ],
 
@@ -436,6 +454,7 @@ MODEL({
       this.X.document.addEventListener('mousedown', this.onMouseDown);
       this.X.document.addEventListener('mousemove', this.onMouseMove);
       this.X.document.addEventListener('mouseup', this.onMouseUp);
+      this.X.document.addEventListener('wheel', this.onWheel);
     },
 
     install: function(target) {
@@ -577,6 +596,66 @@ MODEL({
             this.recognized = undefined;
           }
         }
+      }
+    },
+    {
+      name: 'onWheel',
+      code: function(event) {
+        if ( this.wheelTimer ) {
+          // Wheel is already active. Just update.
+          this.points.wheel.x -= event.deltaX;
+          this.points.wheel.y -= event.deltaY;
+          this.X.window.clearTimeout(this.wheelTimer);
+          this.wheelTimer = this.X.window.setTimeout(this.onWheelDone, this.scrollWheelTimeout);
+        } else {
+          // Do nothing if we're currently recognizing something else.
+          if ( this.recognized || Object.keys(this.points).length > 0) return;
+
+          // New wheel event. Create an input point for it.
+          var wheel = InputPoint.create({
+            id: 'wheel',
+            type: 'wheel',
+            x: event.offsetX,
+            y: event.offsetY
+          });
+
+          // Now immediately feed this to the appropriate ScrollGesture.
+          var gesture = Math.abs(event.deltaX) > Math.abs(event.deltaY) ?
+              'horizontalScroll' : 'verticalScroll';
+          // Find all targets for that gesture and check their rectangles.
+          this.active[gesture] = [];
+          for ( var i = 0 ; i < this.targets.length ; i++ ) {
+            if ( this.targets[i].gesture === gesture &&
+                this.targets[i].inside(wheel) ) {
+              this.active[gesture].push(this.targets[i]);
+            }
+          }
+
+          // And since wheel events are already moving, include the deltas immediately.
+          // We have to do this after checking rectangles, or a downward (negative)
+          // scroll too close to the top of the rectangle will fail.
+          wheel.x -= event.deltaX;
+          wheel.y -= event.deltaY;
+
+          if ( this.active[gesture].length ) {
+            this.points.wheel = wheel;
+            this.gestures[gesture].attach(this.points, this.active[gesture].map(function(gt) {
+              return gt.handler;
+            }));
+            this.recognized = this.gestures[gesture];
+            this.wheelTimer = this.X.window.setTimeout(this.onWheelDone,
+                this.scrollWheelTimeout);
+          }
+        }
+      }
+    },
+    {
+      name: 'onWheelDone',
+      code: function() {
+        this.wheelTimer = undefined;
+        this.points.wheel.done = true;
+        delete this.points['wheel'];
+        this.recognized = undefined;
       }
     }
   ]
