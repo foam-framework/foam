@@ -1,0 +1,609 @@
+.actionButton-enterSearchMode {
+  margin: 4px 0;
+}
+
+.header .default .popupChoiceView {
+  margin: 4px 4px 4px 0;
+}
+
+.issue-citation {
+  display: flex;
+  margin: 0;
+  padding: 16px 4px 10px 16px;
+}
+
+.issue-citation .priority {
+  margin-top: 16px;
+}
+
+.owner-avatar {
+  align-items: center;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,.1);
+  color: #fff;
+  display: inline-flex;
+  flex-grow: 0;
+  font-size: 20px;
+  height: 40px;
+  justify-content: center;
+  margin-right: 16px;
+  overflow: hidden;
+  width: 40px;
+}
+
+.project-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-view .owner-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  margin: 16px;
+}
+
+.project-view span[name=email] {
+  color: white;
+  display: block;
+  margin-top: 40;
+  padding-left: 16px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.project-view .projectList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.issue-citation .middle {
+  flex: 1;
+  margin-right: 10px;
+  overflow: hidden;
+  line-height: 20px;
+}
+
+.issue-citation .priority-0 {
+  color: #DB4437;
+}
+
+.issue-citation .priority-1 {
+  color: #F4B400;
+}
+
+.issue-citation .priority-2 {
+  color: #4285F4;
+}
+
+.issue-citation .priority-3 {
+  color: #0F9D58;
+}
+
+.issue-citation .id {
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.issue-edit .priority {
+  border-radius: 2px;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 4px 24px 4px 2px;
+  margin-right: 24px;
+  padding: 2px 2px 0 0;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+}
+
+.issue-edit .priority-0 {
+   background: #DB4437;
+}
+
+.issue-edit .priority-1 {
+   background: #F4B400;
+}
+
+.issue-edit .priority-2 {
+   background: #4285F4;
+}
+
+.issue-edit .priority-3 {
+   background: #0F9D58;
+}
+
+.issue-edit span[name=id] {
+  font-weight: bold;
+}
+
+.issue-edit .popupChoiceView {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+.issue-edit .header {
+  background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
+}
+
+.issue-edit .body {
+  margin-top: 176px;
+}
+
+.issue-edit .title {
+  color: #fff;
+  font-size: 20px;
+  line-height: 28px;
+  margin-bottom: 8px;
+  min-height: 132px;
+  padding: 0px 16px;
+  min-height: 96px;
+}
+
+.issue-edit .toolbar {
+  display: flex;
+  padding: 4px;
+}
+
+.issue-edit .actionButton-cancel, .issue-edit .actionButton-back, .issue-edit .actionButton-save {
+  padding: 0;
+}
+
+.issue-edit .separator {
+  border-top: 1px solid rgba(0,0,0,.1);
+  margin-bottom: 16px;
+}
+
+.issue-edit .separator1 {
+  margin-top: 8px;
+}
+
+.issue-edit .choice {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+}
+
+.issue-edit .owner, .issue-edit .cc {
+  padding: 0 0 12px 16px;
+}
+
+.owner-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #575757;
+}
+
+.cc .owner-info {
+  padding: 12px 0;
+}
+
+.issue-edit .owner .owner-name {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.issue-edit .cc-header, .issue-edit .owner-header {
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 0 16px 0;
+}
+
+.issue-edit .cc-header {
+  display: flex;
+  align-items: center;
+  margin-top: -16px;
+  padding-bottom: 0px;
+}
+
+.issue-edit .cc-header .cc-header-text {
+  flex: 1 0 auto;
+}
+
+.email-photo {
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  border: 1px solid;
+}
+
+.project-view {
+  margin: 0;
+  padding: 0;
+  width: 304px;
+  box-shadow: 1px 0 1px rgba(0,0,0,.1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.project-view .header {
+  width: 304px;
+  height: 172px;
+  margin-bottom: 0;
+  background-image: url('images/projectBackground.png');
+}
+
+.project-citation {
+  margin-top: 0;
+  height: 48px;
+}
+
+.project-citation img {
+  margin-right: 0;
+  width: 24px;
+  height: 24px;
+  margin: 12px 16px;
+  vertical-align: middle;
+}
+
+.project-citation .project-name {
+  color: rgba(0,0,0,.8);
+  font-size: 14px;
+  margin-left: 16px;
+  vertical-align: middle;
+}
+
+.project-citation .project-name.selected {
+  color: #3e50b4;
+}
+
+.actionButton-back {
+  width: 48px;
+  height: 48px;
+}
+
+.actionButton {
+  padding: 8px;
+  vertical-align: middle;
+  background: #3e50b4;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadown: none;
+  opacity: 0.76;
+  outline: none;
+}
+
+.actionButton:hover, .popupChoiceView:hover img, .mbug .header .popupChoiceView:hover {
+  background: #0F9D58;
+  border-radius:100px;
+}
+
+.popupChoiceView {
+  padding: 8px;
+  margin-left: 0;
+  outline: none;
+  opacity: 0.76;
+  background: transparent;
+}
+
+.popupChoiceView .value {
+  align-items: center;
+  color: #222;
+  display: flex;
+  flex: 1 0 auto;
+  font-family: Roboto;
+  font-size: 16px;
+  margin-left: 0;
+  text-align: left;
+}
+
+.popupChoiceView img, .actionButton img {
+  height: 24px;
+  opacity: 0.76;
+  width: 24px;
+}
+
+.popupChoiceList {
+  box-shadow: 0 0 2px 2px rgba(0,0,0,.1), 0 0 3px 1px rgba(0,0,0,.1);
+  border: none;
+  border-radius: 2px;
+  padding: 8px 0;
+  min-width: 190px;
+}
+
+.popupChoiceList li {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 16px;
+  padding: 16px;
+  margin: 0;
+  line-height: 16px;
+}
+
+.popupChoiceList li.selected {
+  color: #3e50b4;
+}
+
+.star {
+  vertical-align: middle;
+  opacity: 0.76;
+  width: 24px;
+  height: 24px;
+  margin: 12px;
+}
+
+.owner-name.placeholder {
+  color: #b2b2b2
+}
+
+.issue-edit .owner-name {
+  font-size: 16px;
+  line-height: 32px;
+  margin-left: 0;
+  flex: 1 0 auto;
+}
+
+.issue-citation span[name=id] {
+  font-size: larger;
+  color: #444;
+  font-size: 16px;
+}
+
+.issue-citation .priority {
+  font-size: larger;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+.issue-citation span[name=summary] {
+  color: #999;
+  display: block;
+  font-size: 14px;
+  height: 40px;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+input[name=q] {
+  align-self: center;
+  background: #3e50b4;
+  border: none;
+  color: white;
+  font-size: 20px;
+  height: 24px;
+  margin: 20px 20px 20px 6px;
+  padding-left: 10px;
+}
+
+input[name=q]:focus {
+  outline: none;
+  opacity: 0.76;
+}
+
+input[name=q]::-webkit-input-placeholder {
+  font-size: 20px;
+  color: white;
+  opacity: 0.76;
+  height: 55px;
+}
+
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.actionButton-leaveSearchMode {
+  margin: 4px;
+}
+
+.actionButton-leaveSearchMode img {
+  margin: 4px;
+  opacity: 0.76;
+}
+
+select[name=sortOrder] {
+  align-self: center;
+  margin: 20px;
+}
+
+.mbug {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mbug .header {
+  display: flex;
+  background: #3e50b4;
+  padding: 0;
+}
+
+.mbug .header .default {
+  flex: 1.0;
+  display: flex;
+}
+
+.mbug.searchMode .header .default {
+  display: none;
+}
+
+.mbug:not(.searchMode) .header .search {
+  display: none;
+}
+
+.mbug.searchMode .header .search {
+  display: inherit;
+  height: 56px;
+}
+
+.swipeAltOuter {
+  flex-grow: 1;
+}
+
+.swipeAltInner {
+  padding-top: 8px;
+}
+
+.stackview {
+  height: 100%;
+}
+
+.stackview table {
+  height: 100%;
+}
+
+.stackview_navbar {
+  display: none;
+}
+
+.stackview_navactions {
+  display: none;
+}
+
+.stackview-previewarea-td {
+  display: none;
+}
+
+.stackview-viewarea {
+  height: 100%;
+}
+
+.actionButton-back:hover, .actionButton-cancel:hover, .actionButton-save:hover {
+  background: #0F9D58;
+  border-radius:100px;
+}
+
+.actionButton-save:disabled, .actionButton-back:disabled, .actionButton-cancel:disabled {
+  display: none;
+}
+
+.actionButton-save {
+  border: none;
+  margin-right: 40px;
+}
+
+.status-icon {
+  height: 24px;
+  margin: 0 24px 0 0;
+  opacity: 0.54;
+  padding: 2px;
+  width: 24px;
+}
+
+select[name=pri], select[name=status] {
+  background: white;
+  border-color: white;
+  width: 250px;
+  height: 30px;
+  margin-left: 30px;
+  margin-top: 16px;
+  outline: none;
+}
+
+.comment-view .published {
+  color: #999;
+}
+
+.comment-view {
+  display: flex;
+  margin-right: 35px;
+  margin-bottom: 25px;
+}
+
+.comment-view .content {
+  color: #444;
+  flex: 1;
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+}
+
+.actionButton-changeProject {
+  margin: 4px;
+}
+
+.mbug.searchMode .swipeAltHeader {
+  display: none;
+}
+
+.swipeAltHeader {
+  padding-left: 57px !important;
+  height: 36px;
+}
+
+.swipeAltHeader li {
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 48px;
+  padding-bottom: 14px;
+}
+
+.swipeAltHeader .selected {
+  border-bottom: 2px solid #ff3f80;
+  color: white;
+  font-weight: 500;
+  opacity: 1;
+}
+
+ul.swipeAltHeader {
+  background: #3e50b4;
+  box-shadow: 0 1px 1px rgba(0,0,0,.25);
+  color: white;
+  height: 48px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0 0 0 56px;
+}
+
+.popupChoiceView, .actionButton {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+}
+
+.foamChoiceListView.horizontal .choice {
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.stackview-slidearea {
+   box-shadow: 1px 0px 1px 1px rgba(0,0,0,.2);
+}
+
+.issueOwnerEditView {
+  height: 100%;
+  background: #e1e1e1;
+}
+
+.issueOwnerEditView .header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #d2d2d2;
+  background: #fff;
+}
+
+.issueOwnerEditView input {
+  border: none;
+  font-size: 17px;
+  flex-grow: 1;
+  margin: 0 0 0 12px;
+  padding: 0;
+}
+
+.issueOwnerEditView input:focus {
+  outline: none;
+}
+
+.issuePersonAutocompleteView {
+  background: #fafafa;
+  box-shadow: 2px 2px 1px grey;
+}
+
+.issuePersonAutocompleteView .row {
+  padding: 6px 0 6px 12px;
+}
+
+.issueOwnerEditView .header .actionButton {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
