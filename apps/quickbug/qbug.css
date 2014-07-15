@@ -1,0 +1,454 @@
+body {
+  margin-bottom: 5px;
+  margin-top: 0;
+  overflow: hidden;
+  -webkit-user-select: text;
+}
+
+.scrollSpacer { height: 24px }
+
+.title {
+  color: #666;
+  font-family: arial, sans-serif;
+  font-size: 39px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+}
+
+.subtitle {
+  color: #666;
+  font-family: arial, sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+}
+
+#settings {
+  margin-left: 15px;
+}
+
+.searchBar {
+  color: black;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+}
+
+.QIssueTableHeader {
+  background:rgb(235, 239, 249);
+  border-color: rgb(187, 187, 187);
+  border-style: solid;
+  border-width: 1px;
+  flex: none;
+  height: 23px;
+  margin-left: 6px;
+  width: 99.4%;
+}
+
+.QIssueTable {
+  background: #fff;
+  border: 1px solid #ccc;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  margin-left:6px;
+  margin-top:0;
+  min-width: 1200px;
+  width:99.6%;
+}
+
+.QIssueTable thead {
+  background-color: #eee;
+  height: 90px;
+}
+
+.QIssueTable th {
+  font-weight: bold;
+  padding: 2px;
+  font: 100% arial,sans-serif;
+  color: #00c;
+  border: 1px solid #ccc;
+}
+
+.QIssueTable td {
+  color: #000;
+  padding: 2px;
+  border-top: 1px solid #ccc;
+}
+
+.QIssueTable .OS {
+  white-space: normal;
+  overflow: auto;
+}
+
+.QIssueTable .summary {
+  white-space: normal;
+  overflow: auto;
+}
+
+.QIssueTable .label {
+  color: green!important;
+  white-space: nowrap;
+}
+
+.altViewButtons {
+  margin-top: 18px;
+  position: absolute;
+  right: 5px;
+}
+
+#countField {
+  margin-left: 30px;
+  margin-right: 5px;
+  font-weight: normal;
+}
+
+.QIssuePreview {
+  border: 1px solid #666;
+  overflow: auto;
+}
+
+.actionButton-link, .actionButton-link:hover{
+  border: none;
+  background: white;
+}
+
+/* QIssuePreviewView*/
+.qmaincol {
+  padding: 3px;
+  background: white;
+}
+
+.QIssuePreview .qissuepage {
+  min-height: 100%;
+}
+
+.qissuepage td {
+  white-space: normal;
+}
+
+.qissueheader {
+  margin: 0.5em 0 0 0;
+  border: 3px solid #e5ecf9;
+  background: #e5ecf9;
+}
+
+.qpreviewtable {
+  border-collapse: separate;
+  font: 12px arial, sans-serif;
+}
+
+.qh3 {
+  font-size: 130%;
+  font-width: bolder;
+}
+
+.qvt {
+  vertical-align: top;
+}
+
+.qissuepage {
+  margin-top: 0;
+  font: 12px arial, sans-serif;
+}
+
+.qissuemeta {
+  width: 12em;
+  border-right: 3px solid #e5ecf9;
+  font-size: 95%;
+  vertical-align: top;
+}
+
+.qissuepage td {
+  padding: 0.5em .5em .5em 0;
+}
+
+.qissuemeta table td, .qissuemeta table th {
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+}
+
+.qlabel {
+  color: green;
+  text-decoration: none;
+}
+
+.topHeader {
+  border-bottom: 2px solid rgb(150,192,250);
+  flex: none;
+  font: 13px arial, sans-serif;
+  margin: 0;
+  margin-bottom: 2px;
+  text-align: right;
+}
+
+.topHeader img { padding: 2px; }
+
+.topHeader .imageView {
+  margin-left: 10px;
+}
+
+.header {
+  border-bottom: 2px solid rgb(150,192,250);
+  flex: none;
+  padding-bottom: 4px;
+}
+
+.qissueupdates {
+  margin: 1em 0 .5em .7em;
+  background: #e5ecf9;
+  width: 80%;
+  font-size: 90%;
+}
+
+.qupdatesround1, .qupdatesround2, .qupdatesround4 {
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  height: 1px;
+}
+
+.qupdatesround1 {
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+}
+
+.qupdatesround2 {
+  border-left: 2px solid #fff;
+  border-right: 2px solid #fff;
+}
+
+.qupdatesround4 {
+  border-left: 4px solid #fff;
+  border-right: 4px solid #fff;
+}
+
+.qissueinnerupdates {
+  margin: 0;
+  padding: 0 13px 0 13px;
+}
+
+.qissuecomment {
+  border-top: 3px solid #e5ecf9;
+  padding-top: 0.5em;
+  font-size: 13px;
+}
+
+.qissuecomment pre {
+  white-space: pre-wrap;
+  max-width: 80em;
+  padding-left: .7em;
+}
+
+.qissuecommentdate {
+  float: right;
+  margin-right: .3em;
+  text-align: right;
+}
+
+.qissuecommentauthor {
+  margin-bottom: 1em;
+  display: inline;
+}
+
+.qissuelabels {
+  text-decoration: none;
+  color: green;
+  white-space: nowrap;
+}
+
+.qissuerelated {
+  color: #00c;
+  white-space: nowrap;
+}
+
+.ActionMenuPopup {
+  border-color: #c9d7f1 #36c #36c #a2bae7
+  border-style: solid;
+  border-width: 1px;
+  width: 175px;
+}
+
+.actionButton {
+  color: #00c;
+  padding: 3px;
+  text-decoration: none;
+  font-weight: normal;
+  box-shadow: none;
+}
+
+.menuSeparator {
+  margin: 0 0.5em;
+  border: 0;
+  border-top: 1px solid #c9d7f1
+}
+
+.gridtile {
+  background: white;
+}
+
+.qbugCount {
+  margin-right: 25px;
+}
+
+.actionButton-link img {
+  vertical-align: sub;
+}
+
+input[name="search"] {
+  width: 100%;
+}
+
+input[name="labels"] {
+  color: #060
+}
+
+.logo img {
+  padding-right: 10px;
+  vertical-align: middle;
+}
+
+.actionButton-link[data-tip]:after {
+  left: -65px;
+}
+
+.gridViewArea {
+  overflow: auto;
+}
+
+.actionButton-back img, .actionButton-forth img { width: 22px; }
+
+.footer {
+  flex: none;
+}
+
+.foamTable tr.rowSelected {
+  border: none;
+}
+
+.actionButton-back, .actionButton-forth {
+  border: none;
+  background: transparent;
+  padding: 4px;
+}
+
+.QIssueTable, .gridViewControl table {
+  table-layout: fixed;
+}
+
+.star-image {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  padding: 0 2px;
+}
+
+.star-image.true {
+  background-image: url('data:image/gif;base64,R0lGODlhDwAPAMQfAF9h4RYVnZeQJC0u0lRQU42R6P/7Fv74L05NrRkZxi4tW52XXv71D8nAIWxnjnRxr3NuMJKOluXbBe7kCa2x7UFD1vPoB77D8Jqe6n6B5tvTUr62BMrP8lJPh1xbuv///yH5BAEAAB8ALAAAAAAPAA8AAAWD4CeOWQKMaDpESepi3tFlLgpExlK9RT9ohkYi08N8KhWP8nEwMBwIDyJRSTgO2CaDYcBOCAlMgtDYmhmTDSFQ+HAqgbLZIlAMLqiKw7m1EAYuFQsGEhITEwItKBc/EgIEAhINAUYkCBIQAQMBEGonIwAKa21iCgo7IxQDFRQjF1VtHyEAOw==');
+}
+
+.star-image:not(.true) {
+  background-image: url('data:image/gif;base64,R0lGODlhDwAPALMPAP///8zj++r7/7vb/rHW/tPt/9Lk+qzT/rbY/sHh/8Te/N7q+Nzy/7nY/djn+f///yH5BAEAAA8ALAAAAAAPAA8AAARg8MkZjpo4k0KyNwlQBB42MICAfEF7APDRBsYzIEkewGKeDI1DgUckMg6GTdFIqC0QgyUgQVhgGkOi4OBBCJYdzILAywIGNcoOgCAQvowBRpE4kgzCQgPjQCAcEwsNTRIRADs=');
+}
+
+.autocompletePopup {
+  width: 600px;
+  overflow-x: hidden;
+}
+
+.autocomplete,ul {
+  color: #00c;
+  background: white;
+  border: 1px solid #bbb;
+}
+
+.autocomplete .choice:hover {
+  background: #c3d9ff;
+}
+
+.autocomplete .popup {
+  width: 600px;
+}
+
+.autocompleteTable {
+  width: 598px;
+  padding: 0;
+  margin: 0;
+}
+
+.autocompleteTable .label {
+  word-wrap: nowrap;
+  display: table-cell;
+}
+
+.autocompleteTable .description {
+  display: table-cell;
+}
+
+.autocompleteTable > li {
+  display: table-row;
+}
+
+.autocompleteTable {
+  display: table;
+}
+
+.stack {
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.bookmarks-menu {
+  color: blue;
+  background: white;
+  text-decoration: underline;
+}
+
+.actionButton-addBookmark, .actionButton-addBookmark:hover {
+  background: white;
+  border: none;
+  margin-left: 4px;
+}
+
+.popupChoiceList li {
+  margin: 0;
+  margin-left: -40px;
+  padding: 0;
+  font-size: 14px;
+}
+
+.popupChoiceList li span {
+  padding: 8px;
+}
+
+.popupChoiceList li:hover {
+  background: #f0f0f0;
+}
+
+.DeleteBookmark {
+  float: right;
+  padding: 2px;
+  margin-left: 15px;
+  margin-top: -2px;
+}
+
+.DeleteBookmark:hover {
+  font-weight: 900;
+}
+
+.actionLink-prev[disabled=disabled], .actionLink-next[disabled=disabled] {
+  display: none;
+}
+
+.actionLink-backToList {
+  margin-left: 8px;
+}
+
+.appName {
+  margin-top: 3px;
+  float: right;
+}

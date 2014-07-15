@@ -1,0 +1,15 @@
+IDAO
+  - efficient OR
+
+Sync
+  - how to handle inital sync and/or sync filter
+  - force sync on reactivation of UI
+
+Group-By support for array values
+
+Look into possibility of sharing whole lists.
+
+Add PivotTable support: https://github.com/nicolaskruchten/pivottable
+
+Add chrome.omnibox support: https://developer.chrome.com/extensions/omnibox.html
+

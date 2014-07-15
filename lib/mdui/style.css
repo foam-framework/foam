@@ -1,0 +1,123 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+
+body {
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+}
+
+table {
+  border-spacing: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body, tbody, tr, td {
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  border-top: 1px solid rgba(0,0,0,.1);
+  border: none;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  background: rgba(0,0,0,.1);
+}
+
+a {
+  text-decoration: none;
+  color: #4285f4;
+}
+
+.monogram-string-view {
+  align-items: center;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,.1);
+  color: #fff;
+  display: inline-flex;
+  flex-grow: 0;
+  font-size: 20px;
+  height: 40px;
+  justify-content: center;
+  margin-right: 16px;
+  overflow: hidden;
+  width: 40px;
+}
+
+.mdui-app-controller {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mdui-app-controller .header {
+  display: flex;
+  background: #3e50b4;
+  padding: 0;
+  height: 48px;
+}
+
+.mdui-app-controller .header .default {
+  flex: 1.0;
+  display: flex;
+  margin: 4px;
+}
+
+.mdui-app-controller.searchMode .header .default {
+  display: none;
+}
+
+.mdui-app-controller:not(.searchMode) .header .search {
+  display: none;
+}
+
+.mdui-app-controller.searchMode .header .search {
+  display: inherit;
+  height: 56px;
+  width: 100%;
+  background: #3e50b4;
+  z-index: 2;
+}
+
+.mdui-app-controller.searchMode .swipeAltHeader {
+  display: none;
+}
+
+.mdui-app-controller .header .name {
+  align-self: center;
+  color: white;
+  flex: 1.0;
+  font-size: 20px;
+  font-weight: 500;
+  margin-left: 16px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+input[name=q] {
+  align-self: center;
+  background: #3e50b4;
+  border: none;
+  color: white;
+  font-size: 20px;
+  height: 24px;
+  margin: 20px 20px 20px 6px;
+  padding-left: 10px;
+  width: 100%;
+}
+
+input[name=q]:focus {
+  outline: none;
+  opacity: 0.76;
+}
+
+input[name=q]::-webkit-input-placeholder {
+  font-size: 20px;
+  color: white;
+  opacity: 0.76;
+  height: 55px;
+}
