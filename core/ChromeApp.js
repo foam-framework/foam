@@ -146,3 +146,13 @@ var stack = {
 
 
 var IS_CHROME_APP = true;
+
+function subDocument(d) {
+  d.writeln = function(str) {
+    this.body.insertAdjacentHTML('beforeend', str);
+  };
+
+  return d;
+};
+
+subDocument(document);

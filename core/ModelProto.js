@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * Prototype for original proto-Models.
  * Used during bootstrapping to create the real Model
@@ -84,9 +85,36 @@ var ModelProto = {
   TYPE: 'ModelProto <startup only, error if you see this>',
 
   buildPrototype: function() {
+    function addTraitToModel(traitModel, parentModel) {
+      var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
+      if ( ! GLOBAL[name] ) {
+        MODEL({
+          __proto__: eval('(' + traitModel.toJSON() + ')'),
+          name: name,
+          extendsModel: parentModel.name
+        });
+      }
+
+      return GLOBAL[name];
+    }
+
+    if ( this.extendsModel && ! GLOBAL[this.extendsModel] ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+
     var extendsModel = this.extendsModel && GLOBAL[this.extendsModel];
-    var cls = Object.create(extendsModel ? extendsModel.getPrototype() : AbstractPrototype);
-    cls.instance_ = {};
+
+    if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
+      var trait = this.traits[i];
+      var traitModel = GLOBAL[trait];
+
+      if ( traitModel ) {
+        extendsModel = addTraitToModel(traitModel, extendsModel);
+      } else {
+        console.warn('Missing trait: ', trait, ', in Model: ', this.name);
+      }
+    }
+
+    var proto = extendsModel ? extendsModel.getPrototype() : AbstractPrototype;
+    var cls   = Object.create(proto);
     cls.model_    = this;
     cls.name_     = this.name;
     cls.TYPE      = this.name + "Prototype";
@@ -173,9 +201,7 @@ var ModelProto = {
     }
 
     // add relationships
-    for ( var key in this.relationships ) {
-      var r = this.relationships[key];
-
+    this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
       //           this[r.name.constantize()] = r;
@@ -183,12 +209,14 @@ var ModelProto = {
       Object.defineProperty(cls, r.name, {
         get: (function (r) {
           return function() {
-            return GLOBAL[r.relatedModel].where(EQ(r.relatedProperty, this.id));
+            var m = this.X[r.relatedModel];
+            var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+            return dao.where(EQ(m.getProperty(r.relatedProperty), this.id));
           };
         })(r),
         configurable: false
       });
-    }
+    });
 
     // todo: move this somewhere better
     var createListenerTrampoline = function(cls, name, fn, isMerged, isAnimated) {

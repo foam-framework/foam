@@ -15,11 +15,23 @@ MODEL({
       }
     },
     {
+      name: 'scalingRatio',
+      type: 'int',
+      defaultValue: 1,
+      postSet: function() {
+        this.width = this.width;
+        this.height = this.height;
+      }
+    },
+    {
       name:  'width',
       type:  'int',
       defaultValue: 100,
       postSet: function(_, width) {
-        if ( this.$ ) this.$.width = width;
+        if ( this.$ ) {
+          this.$.width = width * this.scalingRatio;
+          this.$.style.width = width + 'px';
+        }
       }
     },
     {
@@ -27,7 +39,10 @@ MODEL({
       type:  'int',
       defaultValue: 100,
       postSet: function(_, height) {
-        if ( this.$ ) this.$.height = height;
+        if ( this.$ )  {
+          this.$.height = height * this.scalingRatio;
+          this.$.style.height = height + 'px';
+        }
       }
     },
     {
@@ -51,6 +66,7 @@ MODEL({
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
+        this.canvas.scale(this.scalingRatio, this.scalingRatio);
         this.cview.paint();
         this.canvas.restore();
       }
@@ -65,6 +81,14 @@ MODEL({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
+
+      var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
+      var backingStoreRatio = this.canvas.backingStoreRatio ||
+        this.canvas.webkitBackingStorePixelRatio || 1;
+
+      if ( devicePixelRatio !== backingStoreRatio )
+        this.scalingRatio = devicePixelRatio / backingStoreRatio;
+
       this.paint();
     }
   }
@@ -167,6 +191,11 @@ MODEL({
       return this;
     },
 
+    addChildren: function() {
+      for ( var key in arguments ) this.addChild(arguments[key]);
+      return this;
+    },
+
     removeChild: function(child) {
       this.children.deleteI(child);
       child.view = undefined;
@@ -197,6 +226,7 @@ MODEL({
         this.initCView();
         this.state = 'active';
       }
+      this.canvas.translate(this.x, this.y);
       this.erase();
       this.paintSelf();
       this.paintChildren();
@@ -234,6 +264,8 @@ MODEL({
 
     paint: function() {
       var c = this.canvas;
+
+      if ( ! c ) return;
 
       c.globalAlpha = this.alpha;
 
@@ -298,9 +330,7 @@ MODEL({
       name: 'pressCircle',
       factory: function() { return Circle2.create({
         alpha: 0,
-        x: this.width/2,
-        y: this.width/2,
-        r: 15,
+        r: 10,
         color: 'rgb(241, 250, 65)'
       });}
     }
@@ -313,10 +343,16 @@ MODEL({
     },
     {
       name: 'onMouseDown',
-      code: function() {
+      code: function(evt) {
         this.down_ = true;
-        Movement.animate(50, function() {
-          this.pressCircle.r = this.width/2-7;
+        this.pressCircle.x = evt.offsetX;
+        this.pressCircle.y = evt.offsetY;
+        this.pressCircle.r = 10;
+        Movement.animate(100, function() {
+        x: this.width/2,
+          this.pressCircle.x = this.width/2;
+          this.pressCircle.y = this.height/2;
+          this.pressCircle.r = 28; //Math.min(28, Math.min(this.width, this.height)/2-7);
           this.pressCircle.alpha = 1;
         }.bind(this))();
       }
@@ -365,3 +401,92 @@ MODEL({
     }
   }
 });
+
+
+MODEL({
+  name: 'DAOListCView',
+  extendsModel: 'CView2',
+
+  properties: [
+    { model_: 'DAOProperty', name: 'dao' },
+    { model_: 'IntProperty', name: 'scrollTop', preSet: function(_,t) { return Math.max(t, 0); }, postSet: function() { this.scroll(); } },
+    { name: 'rowRenderer' },
+    { name: 'objs', postSet: function() { this.view && this.view.paint(); }, factory: function() { return []; } }
+  ],
+
+  methods: {
+    init: function(args) {
+      this.SUPER(args);
+      this.dao.listen(this.scroll);
+    },
+    paintSelf: function() {
+      var renderer = this.rowRenderer;
+
+      var offset = -(this.scrollTop % renderer.height);
+      this.canvas.save();
+      this.canvas.translate(0, offset);
+      for ( var i = 0; i < this.objs.length; i++ ) {
+        renderer.render(this.canvas, this.objs[i]);
+        this.canvas.translate(0, renderer.height);
+      }
+      this.canvas.restore();
+    }
+  },
+
+  listeners: [
+    {
+      name: 'scroll',
+      code: function() {
+        var renderer = this.rowRenderer;
+        var limit = Math.floor(this.height / renderer.height);
+        var skip = Math.floor(this.scrollTop / renderer.height);
+        var self = this;
+        this.dao.skip(skip).limit(limit).select()(function(objs) {
+          self.objs = objs;
+        });
+      }
+    }
+  ]
+});
+
+MODEL({name: 'MotionBlur', methods: {
+  paint: function() {
+    this.SUPER();
+    var c = this.canvas;
+    var oldAlpha = this.alpha;
+
+    c.save();
+    c.translate(-this.vx, -this.vy);
+    this.alpha = 0.6;
+    this.SUPER();
+
+    c.translate(-this.vx, -this.vy);
+    this.alpha = 0.3;
+    this.SUPER();
+    c.restore();
+
+    this.alpha = oldAlpha;
+  }
+}});
+
+
+MODEL({name: 'Shadow', methods: {
+  paint: function() {
+    var c = this.canvas;
+    var oldAlpha = this.alpha;
+    var oldColor = this.color;
+
+    c.save();
+    c.translate(4, 4);
+    this.alpha = 0.2;
+    this.color = 'black';
+    this.SUPER();
+    c.restore();
+
+    this.alpha = oldAlpha;
+    this.color = oldColor;
+
+    this.SUPER();
+  }
+}});
+

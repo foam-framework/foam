@@ -45,6 +45,13 @@ var IncrementalUtf8 = {
   },
 
   put: function(byte) {
+    if ( byte instanceof ArrayBuffer ) {
+      var data = new Uint8Array(byte);
+      for ( var i = 0; i < data.length; i++ ) {
+        this.put(data[i]);
+      }
+      return;
+    }
     if (this.charcode == undefined) {
       this.charcode = byte;
       if (!(this.charcode & 0x80)) {

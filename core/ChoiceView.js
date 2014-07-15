@@ -38,6 +38,9 @@ MODEL({
             return;
           }
         }
+
+        if ( d && this.choices.length )
+          console.warn('ChoiceView data set to invalid choice: ', d);
       }
     },
     {
@@ -404,7 +407,7 @@ MODEL({
 
 
 MODEL({
-  name:  'RadioBoxView',
+  name: 'RadioBoxView',
 
   extendsModel: 'ChoiceView',
 
@@ -414,6 +417,7 @@ MODEL({
     },
 
     updateHTML: function() {
+      if ( ! this.$ ) return;
       var out = '';
       var self = this;
       this.choices.forEach(function(choice) {

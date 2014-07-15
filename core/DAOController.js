@@ -22,10 +22,10 @@ MODEL({
 
   properties: [
     {
-      name:  'selection'
+      name: 'selection'
     },
     {
-      name:  'model',
+      name: 'model',
       postSet: function(_, model) {
         // TODO: Is this the best way to pass the model to the TableView?
         this.X.model = model;
@@ -39,15 +39,6 @@ MODEL({
       postSet: function(_, dao) {
         // TODO Is this going to be useful?
         this.X.DAO = dao;
-      }
-    },
-    {
-      name:  'value',
-      help: 'Alias value property to set the dao.',
-      postSet: function(old, value) {
-        old && old.removeListener(this.onValueChange);
-        value.addListener(this.onValueChange);
-        this.onValueChange();
       }
     },
     {
@@ -129,12 +120,7 @@ MODEL({
         // Todo: fix, should already be connected
         this.selection = this.daoView.selection.get();
         var self = this;
-        this.dao.remove(this.selection, {
-          // Hack: shouldn't be needed
-          remove: function() {
-            self.refresh();
-          }
-        });
+        this.dao.remove(this.selection);
       }
     }
   ],
@@ -142,13 +128,10 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
+      this.daoView.dao = this.dao;
       this.daoView.unsubscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
       this.daoView.subscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
       this.daoView.selection.addListener(this.onSelection);
-    },
-
-    refresh: function() {
-      this.dao = this.dao;
     }
   },
 
@@ -186,13 +169,7 @@ MODEL({
             value: this.daoView.selection
           }));
       }
-    },
-    {
-      name: 'onValueChange',
-      code: function() {
-        this.dao = this.value.value;
-      }
-    },
+    }
   ]
 });
 

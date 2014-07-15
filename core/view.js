@@ -591,7 +591,7 @@ MODEL({
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
       if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
-      if ( viewName.model_ ) { var v = viewName.deepClone().copyFrom(prop); v.id = v.nextID(); return v; }
+      if ( viewName.model_ ) { var v = viewName.model_.create(viewName).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
 
       return viewName.create(prop);
@@ -600,12 +600,13 @@ MODEL({
       var view = this.view;
       var data = this.data;
       if ( ! view || ! data ) return;
-
       var pValue = data.propertyValue(this.prop.name);
       if ( view.model_.DATA ) {
         // When all views are converted to data-binding,
-        // only this method will be supported.
+        // only this method will be supported (and DAO).
         Events.link(pValue, view.data$);
+      } else if ( view.model_.DAO ) {
+        Events.link(pValue, view.dao$);
       } else if ( view.setValue ) {
         view.setValue(pValue);
       } else {
@@ -1409,7 +1410,7 @@ MODEL({
       // TODO: Switch type to just datetime when supported.
       return ( this.mode === 'read-write' ) ?
         '<input id="' + this.id + '" type="datetime-local" name="' + this.name + '"/>' :
-        '<span id="' + this.id + '" name="' + this.name + '"></span>' ;
+        '<span id="' + this.id + '" name="' + this.name + '" ' + this.cssClassAttr() + '></span>' ;
     },
 
     initHTML: function() {
@@ -1644,6 +1645,12 @@ MODEL({
     },
     {
       name: 'falseImage'
+    },
+    {
+      name: 'trueClass'
+    },
+    {
+      name: 'falseClass'
     }
   ],
 
@@ -1662,7 +1669,7 @@ MODEL({
     initHTML: function() {
       if ( ! this.$ ) return;
       this.invokeInitializers();
-      this.$.src = this.image();
+      this.updateHTML();
     },
     // deprecated: remove
     getValue: function() { return this.value; },
@@ -1670,7 +1677,18 @@ MODEL({
     setValue: function(value) { this.value = value; },
     destroy: function() {
       this.value.removeListener(this.update);
-    }
+    },
+    updateHTML: function() {
+      this.$.src = this.image();
+
+      if (this.value.get()) {
+        this.trueClass && this.$.classList.add(this.trueClass);
+        this.falseClass && this.$.classList.remove(this.falseClass);
+      } else {
+        this.trueClass && this.$.classList.remove(this.trueClass);
+        this.falseClass && this.$.classList.add(this.falseClass);
+      }
+    },
   },
 
   listeners: [
@@ -1678,7 +1696,7 @@ MODEL({
       name: 'update',
       code: function() {
         if ( ! this.$ ) return;
-        this.$.src = this.image();
+        this.updateHTML();
       }
     },
     {
@@ -4379,13 +4397,14 @@ MODEL({
       postSet: function() { this.updateDAO(); }
     },
     {
-      name: 'data',
+      name: 'dao',
       help: 'Payload of the view; assumed to be a DAO.',
       postSet: function() { this.updateDAO(); }
     },
     {
       name: 'view',
-      required: true
+      required: true,
+      postSet: function() { this.updateDAO(); }
     }
   ],
 
@@ -4403,8 +4422,8 @@ MODEL({
       this.view.initHTML();
     },
     updateDAO: function() {
-      if ( this.data && this.data.where )
-        this.view.data = this.data.where(this.predicate);
+      if ( this.dao && this.dao.where && this.view )
+        this.view.dao = this.dao.where(this.predicate);
     }
   }
 });
@@ -4416,38 +4435,28 @@ MODEL({
 
   properties: [
     {
+      model_: 'DAOProperty',
       name: 'dao',
-      postSet: function(oldDAO, newDAO) {
-        this.X.DAO = newDAO;
-        if ( oldDAO ) oldDAO.unlisten(this.onDAOUpdate);
-        if ( ! this.hidden ) {
-          newDAO.listen(this.onDAOUpdate);
-          this.updateHTML();
+      postSet: function(oldVal, newVal) {
+        if (oldVal) {
+          oldVal.unlisten(this.onDAOUpdate);
         }
+        this.X = this.X.sub({DAO: newVal});
+        newVal.listen(this.onDAOUpdate);
       }
     },
     {
+      model_: 'BooleanProperty',
       name: 'hidden',
-      postSet: function(old, nu) {
+      defaultValue: false,
+      postSet: function(_, hidden) {
         if ( ! this.dao ) return;
-        if ( nu ) this.dao.unlisten(this.onDAOUpdate);
-        else {
+        if ( hidden ) {
+          this.dao.unlisten(this.onDAOUpdate);
+        } else {
           this.dao.listen(this.onDAOUpdate);
-          this.updateHTML();
+          this.updateHTML(); // TODO: I don't think this line is necessary
         }
-      }
-    },
-    {
-      name: 'data',
-      setter: function(value) {
-        this.value = SimpleValue.create(value);
-      }
-    },
-    {
-      name: 'value',
-      setter: function(value) {
-        this.dao = value.value;
-        value.addListener(function() { this.dao = value.value; }.bind(this));
       }
     },
     { name: 'rowView', defaultValue: 'DetailView' },
@@ -4482,7 +4491,6 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub();
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -4492,6 +4500,7 @@ MODEL({
       this.subscribe(this.ON_SHOW, function() {
         self.hidden = false;
       });
+
     },
 
     initHTML: function() {
@@ -4546,7 +4555,7 @@ MODEL({
         }
         out.push(view.toHTML());
         if ( this.useSelection ) {
-          out.put('</div>');
+          out.push('</div>');
         }
       }.bind(this)})(function() {
         var e = this.$;
@@ -4581,8 +4590,229 @@ MODEL({
 });
 
 
+/**
+ * The default vertical scrollbar view for a ScrollView. It appears during
+ * scrolling and fades out after scrolling stops.
+ *
+ * TODO: create a version that can respond to mouse input.
+ * TODO: a horizontal scrollbar. Either a separate view, or a generalization of
+ * this one.
+ */
 MODEL({
-  name: 'TouchListView',
+  name: 'VerticalScrollbarView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'scrollTop',
+      model_: 'IntProperty',
+      postSet: function(old, nu) {
+        this.show();
+        if (this.timeoutID)
+          clearTimeout(this.timeoutID);
+        if (!this.mouseOver) {
+          this.timeoutID = setTimeout(function() {
+            this.timeoutID = 0;
+            this.hide();
+          }.bind(this), 200);
+        }
+        var maxScrollTop = this.scrollHeight - this.height;
+        if (maxScrollTop <= 0)
+          return 0;
+        var ratio = this.scrollTop / maxScrollTop;
+        this.thumbPosition = ratio * (this.height - this.thumbHeight);
+      }
+    },
+    {
+      name: 'scrollHeight',
+      model_: 'IntProperty'
+    },
+    {
+      name: 'mouseOver',
+      model_: 'BooleanProperty',
+      defaultValue: false
+    },
+    {
+      name: 'height',
+      model_: 'IntProperty',
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.height = nu + 'px';
+        }
+      }
+    },
+    {
+      name: 'width',
+      model_: 'IntProperty',
+      defaultValue: 12,
+      postSet: function(old, nu) {
+        if (this.$) {
+          this.$.style.width = nu + 'px';
+        }
+        var thumb = this.thumb();
+        if (thumb) {
+          thumb.style.width = nu + 'px';
+        }
+      }
+    },
+    {
+      name: 'thumbID',
+      factory: function() {
+        return this.nextID();
+      }
+    },
+    {
+      name: 'thumbHeight',
+      dynamicValue: function() {
+        if (!this.scrollHeight)
+          return 0;
+        return this.height * this.height / this.scrollHeight;
+      },
+      postSet: function(old, nu) {
+        var thumb = this.thumb();
+        if (thumb) {
+          thumb.style.height = nu + 'px';
+        }
+      }
+    },
+    {
+      name: 'thumbPosition',
+      defaultValue: 0,
+      postSet: function(old, nu) {
+        var thumb = this.thumb();
+        if (thumb) {
+          // TODO: need to generalize this transform stuff.
+          thumb.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
+        }
+      }
+    },
+    {
+      name: 'lastDragY',
+      model_: 'IntProperty'
+    }
+  ],
+
+  methods: {
+    thumb: function() { return $(this.thumbID); },
+    initHTML: function() {
+      this.SUPER();
+
+      this.$.addEventListener('mouseover', this.onMouseEnter);
+      this.$.addEventListener('mouseout', this.onMouseOut);
+      this.$.addEventListener('click', this.onTrackClick);
+      this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
+      this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
+    },
+    show: function() {
+      var thumb = this.thumb();
+      if (thumb) {
+        thumb.style.webkitTransition = '';
+        thumb.style.opacity = '0.3';
+      }
+    },
+    hide: function() {
+      var thumb = this.thumb();
+      if (thumb) {
+        thumb.style.webkitTransition = '200ms opacity';
+        thumb.style.opacity = '0';
+      }
+    },
+    maxScrollTop: function() {
+      return this.scrollHeight - this.height;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onMouseEnter',
+      code: function(e) {
+        this.mouseOver = true;
+        this.show();
+      }
+    },
+    {
+      name: 'onMouseOut',
+      code: function(e) {
+        this.mouseOver = false;
+        this.hide();
+      }
+    },
+    {
+      name: 'onStartThumbDrag',
+      code: function(e) {
+        this.lastDragY = e.screenY;
+        document.body.addEventListener('mousemove', this.onThumbDrag);
+        document.body.addEventListener('mouseup', this.onStopThumbDrag);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onThumbDrag',
+      code: function(e) {
+        if (this.maxScrollTop() <= 0)
+          return;
+
+        var dy = e.screenY - this.lastDragY;
+        var newScrollTop = this.scrollTop + (this.maxScrollTop() * dy) / (this.height - this.thumbHeight);
+        this.scrollTop = Math.min(this.maxScrollTop(), Math.max(0, newScrollTop));
+        this.lastDragY = e.screenY;
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onStopThumbDrag',
+      code: function(e) {
+        document.body.removeEventListener('mousemove', this.onThumbDrag);
+        document.body.removeEventListener('mouseup', this.onStopThumbDrag, true);
+        e.preventDefault();
+      }
+    },
+    {
+      name: 'onTrackClick',
+      code: function(e) {
+        if (this.maxScrollTop() <= 0)
+          return;
+        var delta = this.height;
+        if (e.clientY < this.thumbPosition)
+          delta *= -1;
+        var newScrollTop = this.scrollTop + delta;
+        this.scrollTop = Math.min(this.maxScrollTop(), Math.max(0, newScrollTop));
+      }
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" style="position: absolute;
+                            width: <%= this.width %>px;
+                            height: <%= this.height %>px;
+                            right: 0px;
+                            background: rgba(0, 0, 0, 0.1);
+                            z-index: 2;">
+        <div id="%%thumbID" style="
+            opacity: 0;
+            position: absolute;
+            width: <%= this.width %>px;
+            background:#333;">
+        </div>
+      </div>
+    */}
+  ]
+});
+
+
+/**
+ * A general purpose view for scrolling content.
+ *
+ * TODO: Horizontal scrolling.
+ * TODO: Non-overlay scrollbars (we currently don't account for
+ * scrollbar size).
+ * TODO: Graceful, customizable strategy for coping with a slow DAO. E.g., show
+ * tombstones (if the # of rows is available), or a pacifier view while the
+ * content is being fetched.
+ */
+MODEL({
+  name: 'ScrollView',
 
   extendsModel: 'View',
 
@@ -4592,7 +4822,27 @@ MODEL({
       name: 'dao'
     },
     {
-      name: 'model'
+      name: 'model',
+      type: 'Model'
+    },
+    {
+      name: 'runway',
+      help: 'Elements that are within |runway| pixels of the scroll clip are retained.',
+      model_: 'IntProperty',
+      units: 'pixels',
+      defaultValue: 500
+    },
+    {
+      name: 'rowView',
+      defaultValue: 'SummaryView'
+    },
+    {
+      name: 'rowViews',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'unclaimedRowViews',
+      factory: function() { return []; }
     },
     {
       // TODO: Can we calculate this reliably?
@@ -4608,28 +4858,65 @@ MODEL({
       name: 'scrollTop',
       defaultValue: 0,
       preSet: function(_, v) {
-        if ( v < 0 ) return 0;
+        if ( v < 0 )
+          return 0;
+        if (this.numRows)
+          return Math.max(0, Math.min(v, (this.rowViewHeight * this.numRows) - this.height));
         return v;
       },
       postSet: function(old, nu) {
         this.scroll();
       }
     },
+    {
+      name: 'scrollHeight',
+      dynamicValue: function() { return this.numRows * this.rowViewHeight; }
+    },
+    {
+      name: 'sequenceNumber',
+      hidden: true,
+      defaultValue: 0
+    },
+    {
+      name: 'workingSet',
+      factory: function() { return []; }
+    },
+    {
+      name: 'numRows',
+      defaultValue: 0
+    },
+    {
+      name: 'verticalScrollbarView',
+      defaultValue: 'VerticalScrollbarView'
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div>
+        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
+          <%
+            var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+                scrollTop$ : this.scrollTop$,
+                height$ : this.height$,
+                scrollHeight$ : this.scrollHeight$,
+            });
+
+            this.addChild(verticalScrollbar);
+            out(verticalScrollbar.toHTML());
+          %>
+        </div>
+      </div>
+    */},
   ],
 
   methods: {
     init: function() {
       this.SUPER();
       this.dao.listen(this.scroll);
-    },
-    toHTML: function() {
-      var id = this.id;
-      var overlay = this.nextID();
       var touch = this.X.TouchInput;
       touch.subscribe(touch.TOUCH_START, this.onTouchStart);
       touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
-
-      return '<div id="' + this.id + '" style="height:' + this.height + 'px;overflow:hidden;"><div id="' + overlay + '" style="z-index:1;position:absolute;height:' + this.height + ';width:100%"></div><div></div></div>';
     },
     formatObject: function(o) {
       var out = "";
@@ -4640,9 +4927,85 @@ MODEL({
       }
       return out;
     },
+    createOrReuseRowView: function(data) {
+      if (this.unclaimedRowViews.length)
+        return this.unclaimedRowViews.shift();
+      var view = FOAM.lookup(this.rowView).create({ data: data });
+      return {
+        view: view,
+        html: view.toHTML(),
+        initialized: false,
+        sequenceNumber: 0
+      };
+    },
+    createOrReuseRowViews: function() {
+      var uninitialized = [];
+      var newHTML = "";
+
+      for (var i = 0; i < this.workingSet.length; i++) {
+        if (!this.rowViews[this.workingSet[i].id]) {
+          var view = this.createOrReuseRowView(this.workingSet[i]);
+          this.rowViews[this.workingSet[i].id] = view;
+          view.view.data = this.workingSet[i];
+          if (!view.initialized) {
+            view.id = this.nextID();
+            newHTML += '<div style="width:100%;position:absolute;height:'
+                + this.rowViewHeight + 'px;overflow:visible" id="' + view.id
+                + '">' + view.html + "</div>";
+            uninitialized.push(view);
+          }
+        }
+      }
+
+      if (newHTML)
+        this.$.lastElementChild.insertAdjacentHTML('afterend', newHTML);
+
+      for (var i = 0; i < uninitialized.length; i++) {
+        uninitialized[i].view.initHTML();
+        uninitialized[i].initialized = true;
+      }
+    },
+    positionRowViews: function(offset) {
+      // Set the CSS3 transform for all visible rows.
+      // FIXME: eventually get this from a physics solver.
+      for (var i = 0; i < this.workingSet.length; i++) {
+        // Need to get this element and set its transform
+        var elementOffset = offset + (i * this.rowViewHeight);
+        var row = this.rowViews[this.workingSet[i].id];
+        var rowView = $(row.id);
+        // TODO: need to generalize this transform stuff.
+        rowView.style.webkitTransform = "translate3d(0px, " + elementOffset + "px, 0px)";
+        row.sequenceNumber = this.sequenceNumber;
+      }
+    },
+    recycleRowViews: function(offset) {
+      for (var key in this.rowViews) {
+        if (this.rowViews[key].sequenceNumber != this.sequenceNumber) {
+          var row = this.rowViews[key];
+          var rowView = $(row.id);
+          rowView.style.webkitTransform = "scale(0)";
+          this.unclaimedRowViews.push(this.rowViews[key]);
+          delete this.rowViews[key];
+        }
+      }
+    },
+    updateDOM: function(offset) {
+      this.createOrReuseRowViews();
+      this.positionRowViews(offset);
+      this.recycleRowViews(offset);
+    },
+    updateDOMWithNumRows: function(limit) {
+      var skip = Math.max(Math.min(this.numRows - limit, Math.floor((this.scrollTop - this.runway) / this.rowViewHeight)), 0);
+      var offset = Math.floor(skip * this.rowViewHeight - this.scrollTop);
+      this.dao.skip(skip).limit(limit).select()(function(objs) {
+        this.workingSet = objs;
+        this.updateDOM(offset);
+      }.bind(this));
+    },
     initHTML: function() {
       this.SUPER();
       this.scroll();
+      this.$.addEventListener('wheel', this.onWheel);
     }
   },
 
@@ -4651,22 +5014,13 @@ MODEL({
       name: 'scroll',
       code: function() {
         if ( ! this.$ ) return;
-
-        var offset = -(this.scrollTop % this.rowViewHeight);
-        var limit = Math.floor(this.height / this.rowViewHeight) + 2;
-        var skip = Math.floor(this.scrollTop / this.rowViewHeight);
-        var self = this;
-        this.dao.skip(skip).limit(limit).select()(function(objs) {
-          var out = "";
-          for ( var i = 0; i < objs.length; i++ ) {
-            out += '<div style="height:' + self.rowViewHeight + 'px;overflow:hidden">';
-            out += self.formatObject(objs[i]);
-            out += '</div>';
-          }
-          self.$.lastElementChild.innerHTML = out;
-          self.$.lastElementChild.style.webkitTransform = "translate3d(0px, " + offset + "px, 0px)";
-        });
-      }
+        this.sequenceNumber++;
+        var limit = Math.floor((this.height + 2 * this.runway) / this.rowViewHeight) + 2;
+        this.dao.select(COUNT())(function(c) {
+          this.numRows = c.count;
+          this.updateDOMWithNumRows(limit);
+        }.bind(this));
+      },
     },
     {
       name: 'onTouchStart',
@@ -4686,9 +5040,15 @@ MODEL({
         }
       }
     },
+    {
+      name: 'onWheel',
+      code: function(ev) {
+        this.scrollTop += ev.deltaY;
+        ev.preventDefault();
+      }
+    }
   ]
 });
-
 
 
 MODEL({
@@ -4752,6 +5112,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'SlidePanelView',
   extendsModel: 'View',
@@ -4763,7 +5124,8 @@ MODEL({
       'will always be visible.',
 
   properties: [
-    'mainView', 'panelView',
+    'mainView',
+    'panelView',
     {
       name: 'minWidth',
       defaultValueFn: function() {
@@ -4785,7 +5147,7 @@ MODEL({
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
-          return this.panelView.minWidth;
+          return this.panelView.minWidth + (this.panelView.stripWidth || 0);
         var e = this.panel$();
         return e ?
             toNum(this.X.window.getComputedStyle(e).width) :
@@ -4821,7 +5183,8 @@ MODEL({
     {
       name: 'panelX',
       //defaultValueFn: function() { this.width - this.stripWidth; },
-      preSet: function(_, x) {
+      preSet: function(oldX, x) {
+        if ( oldX !== x ) this.dir_ = oldX.compareTo(x);
         // Bound it between its left and right limits: full open and just the
         // strip.
         if ( x <= this.parentWidth - this.panelWidth ) {
@@ -4845,11 +5208,12 @@ MODEL({
   methods: {
     toHTML: function() {
       return '<div id="' + this.id + '" ' +
-          'style="display: inline-block; position: relative; height: 100%">' +
-          '<div id="' + this.id + '-main" style="height:100%">' +
+          'style="display: inline-block; position: relative" class="SliderPanel">' +
+          '<div id="' + this.id + '-main">' +
               this.mainView.toHTML() +
           '</div>' +
-          '<div id="' + this.id + '-panel" style="height:100%; position: absolute; top: 0; left: 0">' +
+          '<div id="' + this.id + '-panel" style="position: absolute; top: 0; left: 0">' +
+          '   <div id="' + this.id + '-shadow" class="shadow"></div>' +
               this.panelView.toHTML() +
           '</div>' +
           '</div>';
@@ -4875,12 +5239,20 @@ MODEL({
       this.mainView.initHTML();
       this.panelView.initHTML();
     },
-
-    main$: function() {
+    snap: function() {
+      // TODO: Calculate the animation time based on how far the panel has to move
+      Movement.animate(500, function() {
+        this.panelX = this.dir_ > 0 ? 0 : 1000;
+      }.bind(this))();
+     },
+     main$: function() {
       return this.X.$(this.id + '-main');
     },
     panel$: function() {
       return this.X.$(this.id + '-panel');
+    },
+    shadow$: function() {
+      return this.X.$(this.id + '-shadow');
     }
   },
 
@@ -4891,6 +5263,7 @@ MODEL({
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
+          this.shadow$().style.display = 'none';
           // Expaded mode. Show the two side by side, setting their widths
           // based on the panelRatio.
           this.panelWidth = Math.max(this.panelRatio * this.parentWidth, this.minPanelWidth);
@@ -4898,6 +5271,7 @@ MODEL({
           this.panelX = this.width;
           this.expanded = true;
         } else {
+          this.shadow$().style.display = 'inline';
           this.width = Math.max(this.parentWidth - this.stripWidth, this.minWidth);
           this.panelWidth = this.minPanelWidth;
           this.panelX = this.width;
@@ -4955,6 +5329,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     },
     {
@@ -4962,6 +5337,7 @@ MODEL({
       code: function(e) {
         if ( this.expanded ) return;
         this.dragging = false;
+        this.snap();
       }
     }
   ]

@@ -655,8 +655,10 @@ MODEL({
       hidden: true,
       required: true,
       transient: true,
+      factory: function() { return NullDAO.create(); }, // TODO: use singleton
+      preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
-        this.model = newDAO.model;
+        this.model = this.model || newDAO.model;
         if ( this.daoListeners_ && this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
@@ -720,6 +722,37 @@ MODEL({
     }
   }
 });
+
+
+/**
+ * Apply this decorator to a DAO if you'd like to (for debugging purposes)
+ * pretend that accesses are slow. Currently, only select has been targetted.
+ */
+MODEL({
+  name: 'SlowDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delay',
+      model_: 'IntProperty',
+      defaultValue: 2000,
+    }
+  ],
+
+  methods: {
+    select: function(sink, options) {
+      var f = afuture();
+      setTimeout(function() {
+        this.delegate.select(sink, options)(function(result) {
+          f.set(result);
+        });
+      }.bind(this), this.delay);
+      return f.get;
+    }
+  }
+});
+
 
 /**
  * Set a specified properties value with an auto-increment
@@ -2961,6 +2994,7 @@ MODEL({
 });
 
 
+// TODO: Make a Singleton?
 MODEL({
   name: 'NullDAO',
   help: 'A DAO that stores nothing and does nothing.',
@@ -2969,7 +3003,7 @@ MODEL({
     remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
     select: function(sink) {
       sink && sink.eof && sink.eof();
-      return aconstant(sink);
+      return aconstant(sink || []);
     },
     find: function(q, sink) { sink && sink.error && sink.error('find', q); },
     listen: function() {},
@@ -3078,8 +3112,8 @@ MODEL({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
+    init: function(args) {
+      this.SUPER(args);
 
       var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
       var params = { model: this.model, autoIndex: this.autoIndex };
@@ -3110,10 +3144,12 @@ MODEL({
 
     addIndex: function() {
       this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
+      return this;
     },
 
     addRawIndex: function() {
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
+      return this;
     },
 
   }

@@ -96,9 +96,18 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() {
+        var id = this.getProperty('id');
+        if ( id ) return ['id'];
         return this.properties.length ? [this.properties[0].name] : [];
       },
       help: 'Properties which make up unique id.'
+    },
+    {
+      name: 'traits',
+      type: 'Array[String]',
+      view: 'StringArrayView',
+      defaultValueFn: function() { return []; },
+      help: 'Traits to mix-into this Model.'
     },
     {
       name: 'tableProperties',
@@ -299,7 +308,7 @@ var Model = {
       preSet: function(_, newValue) {
         if ( ! Relationship ) return;
 
-        // Convert Maps to Properties if required
+        // Convert Maps to Relationships if required
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 

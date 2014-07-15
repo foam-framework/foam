@@ -24,7 +24,15 @@ function sub(opt_args, opt_name) {
     if ( opt_args.hasOwnProperty(key) ) {
       // It looks like the chrome debug console is overwriting sub.window
       // but this prevents it.
-      Object.defineProperty(sub, key, {value: opt_args[key], writable: key !== 'window'});
+      Object.defineProperty(
+        sub,
+        key,
+        {
+          value: opt_args[key],
+          writable: key !== 'window',
+          configurable: true
+        }
+      );
     }
   }
   if ( opt_name ) {
@@ -38,7 +46,7 @@ function sub(opt_args, opt_name) {
 function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
-  var document = w.document;
+  var document = this.subDocument ? this.subDocument(w.document) : w.document;
   var map = {
     isBackground: !!isBackground,
     window: w,
@@ -104,7 +112,7 @@ function registerModel(model, opt_name) {
       get: function() {
         return ( this === thisX ) ? thisModel : this.registerModel(model);
       },
-      configurabe: true
+      configurable: true
     }
   );
 

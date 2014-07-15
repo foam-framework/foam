@@ -35,6 +35,25 @@ var AbstractPrototype = {
     return o;
   },
 
+  xbind: function(map) {
+    return {
+      __proto__: this,
+      create: function(args) {
+        args = args || {};
+        for ( var key in map ) {
+          if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
+        }
+        return this.__proto__.create(args);
+      },
+      xbind: function(m2) {
+        for ( var key in map ) {
+          if ( ! m2.hasOwnProperty(key) ) m2[key] = map[key];
+        }
+        return this.__proto__.xbind(m2);
+      }
+    }
+  },
+
   /** Context defaults to the global namespace by default. **/
   X: X,
 

@@ -61,6 +61,7 @@ var files = [
   'async',
   'oam',
   'visitor',
+  'messaging',
   'dao',
   'ClientDAO',
   'diff',

@@ -15,11 +15,26 @@
  * limitations under the License.
  */
 var Base64Decoder = {
-
   lookup: function(data) {
-    var c = data.charCodeAt(0);
-    return c == 43 ? 62 : c == 47 ? 63 : c < 58 ? c+4 : c < 91 ? c-65 : c-71;
+    return this.table_[data];
   },
+
+  table_: (function() {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+      'abcdefghijklmnopqrstuvwxyz' +
+      '0123456789+/';
+    function toValue(c) {
+      return c == 43 ? 62 : c == 47 ? 63 : c < 58 ? c+4 : c < 91 ? c-65 : c-71;
+    }
+    var ret = {};
+    for (var i = 0; i < chars.length; i++ ) {
+      ret[chars[i]] = toValue(chars[i].charCodeAt(0));
+    }
+    // Add URL Safe characters
+    ret["-"] = 62;
+    ret["_"] = 63;
+    return ret;
+  })(),
 
   create: function(sink, bufsize) {
     bufsize = bufsize || 512;

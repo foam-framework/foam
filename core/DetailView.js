@@ -153,7 +153,11 @@ MODEL({
     },
 
     // If the Model supplies a toDetailHTML method, then use it instead.
-    toHTML: function() { return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this); },
+    toHTML: function() {
+      if ( ! this.model ) throw "DetailView: either 'data' or 'model' must be specified.";
+
+      return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this);
+    },
 
     defaultToHTML: function() {
       this.children = [];

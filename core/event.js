@@ -393,6 +393,7 @@ var PropertyChangeSupport = {
 
 
   addListener: function(listener) {
+    console.assert(listener, 'Listener cannot be null.');
     // this.addPropertyListener([ this.PROPERTY_TOPIC ], listener);
     this.addPropertyListener(null, listener);
   },
@@ -415,29 +416,42 @@ var PropertyChangeSupport = {
 
 
   /** Create a Value for the specified property. **/
-  propertyValue: function(property) {
-    var obj = this;
-    return {
-      $UID: obj.$UID + "." + property,
+  propertyValue: function(prop) {
+    var obj  = this;
+    var name = prop + 'Value___';
+    var proxy;
 
-      get: function() { return obj[property]; },
+    return Object.hasOwnProperty.call(obj, name) ? obj[name] : ( obj[name] = {
+      $UID: obj.$UID + "." + prop,
 
-      set: function(val) { obj[property] = val; },
+      get: function() { return obj[prop]; },
+
+      set: function(val) { obj[prop] = val; },
+
+      asDAO: function() {
+        if ( ! proxy ) {
+          proxy = ProxyDAO.create({delegate: this.get()});
+
+          this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
+        }
+
+        return proxy;
+      },
 
       get value() { return this.get(); },
 
       set value(val) { this.set(val); },
 
       addListener: function(listener) {
-        obj.addPropertyListener(property, listener);
+        obj.addPropertyListener(prop, listener);
       },
 
       removeListener: function(listener) {
-        obj.removePropertyListener(property, listener);
+        obj.removePropertyListener(prop, listener);
       },
 
-      toString: function () { return 'PropertyValue(' + property + ')'; }
-    };
+      toString: function () { return 'PropertyValue(' + prop + ')'; }
+    } );
   }
 
 };
@@ -847,7 +861,26 @@ var Movement = {
 
 
   onIntersect: function (o1, o2, fn) {
-
+    if ( o1.model_.R ) {
+      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        var dx = o1.x - o2.x;
+        var dy = o1.y - o2.y;
+        var d = dx*dx + dy*dy;
+        var r2 = o1.r + o2.r;
+        if ( d < r2*r2 )
+          fn.call(null, o1, o2);
+      });
+    } else {
+      Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        if ( ( o1.x <= o2.x && o1.x + o1.width > o2.x    &&
+               o1.y <= o2.y && o1.y + o1.height > o2.y ) ||
+             ( o2.x <= o1.x && o2.x + o2.width > o1.x    &&
+               o2.y <= o1.y && o2.y + o2.height > o1.y ) )
+        {
+          fn.call(null, o1, o2);
+        }
+      });
+    }
   },
 
 
@@ -912,6 +945,51 @@ var Movement = {
       satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
       satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
     }));
+  },
+
+  strut: function(mouse, c, dx, dy) {
+    Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+      c.x = mouse.x + dx;
+      c.y = mouse.y + dy;
+    });
+  },
+
+  friction: function(c, opt_coef) {
+    var coef = opt_coef || 0.9;
+    Events.dynamic(function() { c.vx; c.vy; }, function() {
+      c.vx *= coef;
+      c.vy *= coef;
+    });
+  },
+
+  inertia: function(c) {
+    Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
+      // Dynamic Friction
+      c.x += c.vx;
+      c.y += c.vy;
+      // StaticFriction
+      if ( c.x < 0.1 ) c.x = 0;
+      if ( c.y < 0.1 ) c.y = 0;
+    });
+  },
+
+  spring: function(mouse, c, dx, dy, opt_strength) {
+    var strength = opt_strength || 8;
+    Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
+      if ( dx === 0 && dy === 0 ) {
+        c.x = mouse.x;
+        c.y = mouse.y;
+      } else {
+        var d   = Movement.distance(dx, dy);
+        var dx2 = mouse.x + dx - c.x;
+        var dy2 = mouse.y + dy - c.y;
+        var d2  = Math.sqrt(dx2*dx2 + dy2*dy2);
+        var dv  = strength*d2/d;
+        var a   = Math.atan2(dy2, dx2);
+        c.vx += dv * Math.cos(a);
+        c.vy += dv * Math.sin(a);
+      }
+    });
   }
 
 };
