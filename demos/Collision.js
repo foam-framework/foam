@@ -1,6 +1,6 @@
 MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
-var space    = CView2.create({width: 1500, height: 800, background:'black'});
+var space    = CView2.create({width: 1500, height: 1000, background:'black'});
 var mouse    = Mouse.create();
 var collider = Collider.create();
 var bumper   = Circle.create({r: 30, color: 'white'});
@@ -24,11 +24,9 @@ var N = 7;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
     var c = Circle.create({
-      r: x % 2 ? 25 : 10,
+      r: x == (N-1)/2 ? 32 : x % 2 ? 25 : 10,
       x: 600+(x-(N-1)/2)*70,
       y: 400+(y-(N-1)/2)*70,
-      border: 'white',
-      borderWidth: 0,
       color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
     });
     c.mass = c.r;
