@@ -76,6 +76,36 @@ var expr = {
   number: seq(optional('-'), repeat(range('0', '9'), null, 1))
 };
 
+
+var expr2 = {
+  __proto__: grammar,
+
+  START: sym('expr'),
+
+  expr: precedence(
+    [
+      sym('number'),
+      sym('group')
+    ],
+    [
+      seq(sym('expr'), '^' sym('expr'))
+    ],
+    [
+      seq(sym('expr'), '*', sym('expr')),
+      seq(sym('expr'), '/', sym('expr'))
+    ],
+    [
+      seq(sym('expr'), '+', sym('expr')),
+      seq(sym('expr'), '-', sym('expr'))
+    ]
+  ),
+
+  group: seq('(', sym('expr'), ')'),
+
+  number: seq(optional('-'), repeat(range('0', '9'), null, 1))
+};
+
+
 /* Create an expression interpreter from the expression parser. */
 var calc = {
   __proto__: expr
