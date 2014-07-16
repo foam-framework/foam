@@ -15,44 +15,6 @@
  * limitations under the License.
  */
 
-Object.defineProperties(Touch.prototype, {
-  offsetX: {
-    get: function() {
-      return this.clientX - this.target.getBoundingClientRect().left;
-    }
-  },
-  offsetY: {
-    get: function() {
-      return this.clientY - this.target.getBoundingClientRect().top;
-    }
-  }
-});
-
-Object.defineProperties(MouseEvent.prototype, {
-  offsetX: {
-    get: function() {
-      return this.clientX - this.target.getBoundingClientRect().left;
-    }
-  },
-  offsetY: {
-    get: function() {
-      return this.clientY - this.target.getBoundingClientRect().top;
-    }
-  }
-});
-
-Object.defineProperties(WheelEvent.prototype, {
-  offsetX: {
-    get: function() {
-      return this.clientX - this.target.getBoundingClientRect().left;
-    }
-  },
-  offsetY: {
-    get: function() {
-      return this.clientY - this.target.getBoundingClientRect().top;
-    }
-  }
-});
 
 MODEL({
   name: 'InputPoint',
@@ -78,7 +40,7 @@ MODEL({
     },
     {
       name: 'x',
-      help: 'The real latest X-coordinate. offsetX, relative to the whole document, in CSS pixels.',
+      help: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',
       postSet: function(old, nu) {
         this.dx = nu - old;
         this.xHistory.push(nu);
@@ -87,7 +49,7 @@ MODEL({
     },
     {
       name: 'y',
-      help: 'The real latest Y-coordinate. offsetY, relative to the whole document, in CSS pixels.',
+      help: 'The real latest Y-coordinate. pageY, relative to the whole document, in CSS pixels.',
       postSet: function(old, nu) {
         this.dy = nu - old;
         this.yHistory.push(nu);
@@ -127,19 +89,19 @@ MODEL({
       this.touches[i] = this.X.InputPoint.create({
         id: i,
         type: 'touch',
-        x: t.offsetX,
-        y: t.offsetY
+        x: t.pageX,
+        y: t.pageY
       });
       this.publish(this.TOUCH_START, this.touches[i]);
     },
     touchMove: function(i, t, e) {
-      this.touches[i].x = t.offsetX;
-      this.touches[i].y = t.offsetY;
+      this.touches[i].x = t.pageX;
+      this.touches[i].y = t.pageY;
       this.publish(this.TOUCH_MOVE, this.touches[i]);
     },
     touchEnd: function(i, t, e) {
-      this.touches[i].x = t.offsetX;
-      this.touches[i].y = t.offsetY;
+      this.touches[i].x = t.pageX;
+      this.touches[i].y = t.pageY;
       this.touches[i].done = true;
       this.publish(this.TOUCH_END, this.touches[i]);
       delete this.touches[i];
@@ -380,9 +342,65 @@ MODEL({
 });
 
 MODEL({
+  name: 'DragGesture',
+  help: 'Gesture that understands a hold and drag with mouse or one touch point.',
+  properties: [
+    {
+      name: 'name',
+      defaultValue: 'drag'
+    }
+  ],
+
+  methods: {
+    recognize: function(map) {
+      // I recognize:
+      // - a single point that
+      // - is not done and
+      // - has begun to move
+      // I conflict with: vertical and horizontal scrolling, when using touch.
+      if ( Object.keys(map).length > 1 ) return;
+      var point = map[Object.keys(map)[0]];
+      var r = point.dx != 0 || point.dy != 0;
+      return r;
+    },
+
+    attach: function(map, handlers) {
+      // My callbacks take the form: function(point) {}
+      // And I call dragStart and dragEnd on the handler.
+      // There is no dragMove; bind to the point to follow its changes.
+      var point = map[Object.keys(map)[0]];
+      this.handlers = handlers || [];
+
+      point.done$.addListener(this.onDone);
+
+      // Now send the start event to all the handlers.
+      this.pingHandlers('dragStart', point);
+    },
+
+    pingHandlers: function(method, point) {
+      for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+        var h = this.handlers[i];
+        h && h[method] && h[method](point);
+      }
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDone',
+      code: function(obj, prop, old, nu) {
+        obj.done$.removeListener(this.onDone);
+        this.pingHandlers('dragEnd', obj);
+      }
+    }
+  ]
+});
+
+
+MODEL({
   name: 'GestureTarget',
   properties: [
-    'x', 'y', 'w', 'h',
+    'x', 'y', 'width', 'height',
     'handler', 'gesture',
     {
       name: 'element',
@@ -413,7 +431,8 @@ MODEL({
       factory: function() {
         return {
           verticalScroll: VerticalScrollGesture.create(),
-          tap: TapGesture.create()
+          tap: TapGesture.create(),
+          drag: DragGesture.create()
         };
       }
     },
@@ -518,8 +537,8 @@ MODEL({
         var point = InputPoint.create({
           id: 'mouse',
           type: 'mouse',
-          x: event.offsetX,
-          y: event.offsetY
+          x: event.pageX,
+          y: event.pageY
         });
 
         // TODO: De-dupe me with the code above in onTouchStart.
@@ -558,8 +577,8 @@ MODEL({
         // No reaction unless we have an active mouse point.
         if ( ! this.points.mouse ) return;
         // If one does exist, update its coordinates.
-        this.points.mouse.x = event.offsetX;
-        this.points.mouse.y = event.offsetY;
+        this.points.mouse.x = event.pageX;
+        this.points.mouse.y = event.pageY;
         this.checkRecognition();
       }
     },
@@ -615,8 +634,8 @@ MODEL({
           var wheel = InputPoint.create({
             id: 'wheel',
             type: 'wheel',
-            x: event.offsetX,
-            y: event.offsetY
+            x: event.pageX,
+            y: event.pageY
           });
 
           // Now immediately feed this to the appropriate ScrollGesture.
