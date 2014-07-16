@@ -1,7 +1,13 @@
 MODEL({
   name: 'Ball',
   extendsModel: 'Circle2',
-  traits: ['Physical', 'MotionBlur']
+  traits: ['Physical', 'MotionBlur'],
+  properties: [
+    {
+      name: 'vx',
+      preSet: function(_, v) { return Math.sign(v) * Math.max(5, Math.abs(v)); }
+    }
+  ]
 });
 
 

@@ -20,7 +20,7 @@ space.addChild(bumper);
 space.addChild(anchor);
 mouse.connect(space.$);
 
-var N = 7;
+var N = 5;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
     var c = Circle.create({
