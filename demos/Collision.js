@@ -24,13 +24,12 @@ var N = 7;
 for ( var x = 0 ; x < N ; x++ ) {
   for ( var y = 0 ; y < N ; y++ ) {
     var c = Circle.create({
-      r: 25,
-      x: 600+(x-(N-1)/2)*70,
-      y: 400+(y-(N-1)/2)*70,
-      border: 'white',
-      borderWidth: 0,
+      r: x == (N-1)/2 ? 32 : x % 2 ? 25 : 10,
+      x: 600+(x-(N-1)/2)*100,
+      y: 400+(y-(N-1)/2)*100,
       color: 'hsl(' + x/N*100 + ',' + (70+y/N*30) + '%, 60%)'
     });
+    c.mass = c.r;
     space.addChild(c);
 
 //    Movement.spring(anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
@@ -46,8 +45,8 @@ collider.collide = function(c1, c2) {
     this.collide(c2, c1);
   } else if ( c1 === bumper ) {
     var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
-    c2.vx += 25 * Math.cos(a);
-    c2.vy += 25 * Math.sin(a);
+    c2.vx += 20 * Math.cos(a);
+    c2.vy += 20 * Math.sin(a);
   } else {
     Collider.getPrototype().collide.call(this, c1, c2);
   }
