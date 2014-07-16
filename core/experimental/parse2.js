@@ -103,6 +103,18 @@ function literal_ic(c, opt_value) {
   }
 }
 
+function range(c1, c2) {
+  return function(state) {
+    var ps = state[STREAM];
+    if ( ps.head < c1 && ps.head > c2 ) {
+      state[FAIL][STREAM] = ps;
+      return state[FAIL];
+    }
+    state[SUCCESS][STREAM] = ps.tail.setValue(ps.head);
+    return state[SUCCESS];
+  };
+};
+
 function anyChar(state) {
   state[SUCCESS][STREAM] = state[STREAM].tail.setValue(state[STREAM].head);
   return state[SUCCESS];
@@ -110,17 +122,55 @@ function anyChar(state) {
 
 function notChar(c) {
   return function(state) {
-    var next = state[STREAM].head !== c ? state[SUCCESS] : state[FAIL];
-    next[STREAM] = state[STREAM].tail.setValue(c);
-  }
+    var ps = state[STREAM];
+    if ( ps.head !== c ) {
+      state[SUCCESS][STREAM] = ps.tail.setValue(ps.head);
+      return state[SUCCESS];
+    }
+    state[FAIL][STREAM] = ps;
+    return state[FAIL];
+  };
 }
 
-function seq(a, b) {
+function notChars(s) {
+  return function(state) {
+    var ps = state[STREAM];
+    if ( s.indexOf(ps.head) == -1 ) {
+      state[SUCCESS][STREAM] = ps.tail.setValue(ps.head);
+      return state[SUCCESS];
+    }
+    state[FAIL][STREAM] = ps;
+    return state[FAIL];
+  };
+}
+
+function not(a, opt_else) {
+  a = prep(a);
+  opt_else = prep(opt_else);
+  return function(state) {
+    return [a, state[STREAM],
+            opt_else ? [opt_else, undefined, state[SUCCESS], state[FAIL]] : state[FAIL],
+            state[SUCCESS]];
+  };
+}
+
+function seq2(a, b) {
   a = prep(a);
   b = prep(b);
   return function(state) {
     return [a, state[STREAM], [b, undefined, state[SUCCESS], state[FAIL]], state[FAIL]];
   };
+}
+
+function seq() {
+  if ( arguments.length == 1 ) return prep(arguments[0]);
+  if ( arguments.legnth == 2 ) return seq2(arguments[0], arguments[1]);
+  var a = seq2(arguments[arguments.length - 2], arguments[arguments.length - 1]);
+
+  for ( var i = arguments.length - 3; i >= 0; i-- ) {
+    a = seq2(arguments[i], a);
+  }
+  return a;
 }
 
 function optional(parser) {
@@ -136,12 +186,22 @@ function sym(name) {
   };
 }
 
-function alt(a, b) {
+function alt2(a, b) {
   a = prep(a);
   b = prep(b);
   return function(state) {
     return [a, state[STREAM], state[SUCCESS], [b, undefined, state[SUCCESS], state[FAIL]]];
   };
+}
+
+function alt() {
+  if ( arguments.length == 1 ) return prep(arguments[0]);
+  if ( arguments.length == 2 ) return prep(arguments[1]);
+  var a = alt2(arguments[arguments.length - 2], arguments[arguments.length - 1]);
+  for ( var i = arguments.length - 3; i >= 0; i-- ) {
+    a = alt2(arguments[i], a);
+  }
+  return a;
 }
 
 function fail(state) {
@@ -174,6 +234,8 @@ function repeat(a, opt_delim, opt_min, opt_max, i) {
     ];
   };
 }
+
+function plus(a) { return repeat(a, undefined, 1); }
 
 var grammar = {
   // Special end state indicator
@@ -226,9 +288,7 @@ var grammar = {
 var TestGrammar = {
   __proto__: grammar,
 
-  START: seq(repeat("a", "delim"),
-             seq('a',
-                 seq(sym('middle'), sym('end')))),
+  START: seq(repeat("a", "delim"),'a', sym('middle'), sym('end')),
   middle: alt("b", "c"),
   end: literal("dddd")
 }.addActions({
