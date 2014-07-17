@@ -80,6 +80,7 @@ MODEL({
         dao: this.emailDao,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
+        editableCitationViews: true,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
           [ EMail.TIMESTAMP, 'Oldest First' ],
