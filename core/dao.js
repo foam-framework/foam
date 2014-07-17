@@ -3180,7 +3180,7 @@ MODEL({
           seqNo: true,
           cache: false,
           model: this.Operation,
-          name: this.storageName || this.delegate.model.plural - 'operations'
+          name: this.storageName || ( this.delegate.model ? this.delegate.model.plural - 'operations' : '' )
         });
       }
     },
