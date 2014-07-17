@@ -84,7 +84,8 @@
           })
         }),
         cache: MDAO.create({ model: EMail })
-      })
+      }),
+      labelDao: GMailRestDAO.create({ model: GMailLabel }),
     });
     mgmail.write(document);
   </script>

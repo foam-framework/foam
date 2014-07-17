@@ -318,3 +318,9 @@ ul.swipeAltHeader {
   margin-top: 6px;
   display: block;
 }
+
+.menuView {
+  height: 100%;
+  display: block;
+  overflow-y: scroll;
+}
