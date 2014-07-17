@@ -52,6 +52,10 @@ MODEL({
       type: 'DAO',
     },
     {
+      name: 'labelDao',
+      type: 'DAO',
+    },
+    {
       name: 'stack',
       subType: 'StackView',
       factory: function() { return StackView.create(); }
@@ -92,14 +96,23 @@ MODEL({
           ['', 'All Mail']
         ],
         menuFactory: function() {
-          return StaticHTML.create({ content: 'hello' });
-          return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
+          return this.X.DAOListView.create({
+            dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
+            rowView: 'MenuLabelCitationView',
+            className: 'menuView',
+          });
         }
       });
     },
     openEmail: function(email) {
       var v = this.controller.X.EmailView.create({data: email});
       this.stack.pushView(v, '');
+    },
+    changeLabel: function(label) {
+      var query = 'l:' + label.id;
+      this.controller.filteredDAO = this.emailDao.where(
+          queryParser.parseString(query));
+      this.stack.back();
     },
   }
 });
@@ -195,13 +208,13 @@ MODEL({
    ]
 });
 
-MODEL({
-  name: 'MenuView',
-  extendsModel: 'DetailView',
 
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>">
-      $$forceSync
-    </div>
-  */} ]
+MODEL({
+  name: 'MenuLabelCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(this.data); }) %>">$$name{mode: 'read-only'}</div>
+    */}
+   ]
 });

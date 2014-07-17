@@ -3209,6 +3209,15 @@ MODEL({
 });
 
 MODEL({
+  name: 'StoreAndForwardOperation',
+  properties: [
+    { model_: 'IntProperty', name: 'id' },
+    { model_: 'StringProperty', name: 'method', view: { model_: 'ChoiceView', choices: ['put', 'remove'] } },
+    { name: 'obj' },
+  ]
+});
+
+MODEL({
   name: 'StoreAndForwardDAO',
   extendsModel: 'ProxyDAO',
 
@@ -3216,11 +3225,12 @@ MODEL({
     { name: 'storageName' },
     { name: 'store', required: true, type: 'DAO',
       factory: function() {
-        return EasyDAO.create({
-          seqNo: true,
-          cache: false,
-          model: this.Operation,
-          name: this.storageName || ( this.delegate.model ? this.delegate.model.plural - 'operations' : '' )
+        return SeqNoDAO.create({
+          delegate: IDBDAO.create({
+            model: StoreAndForwardOperation,
+            name: this.storageName || ( this.delegate.model ? this.delegate.model.plural - 'operations' : '' ),
+            useSimpleSerialization: false
+          }),
         });
       }
     },
@@ -3229,21 +3239,12 @@ MODEL({
   ],
 
   models: [
-    {
-      model_: 'Model',
-      name: 'Operation',
-      properties: [
-        { model_: 'IntProperty', name: 'id' },
-        { model_: 'StringProperty', name: 'method', view: { model_: 'ChoiceView', choices: ['put', 'remove'] } },
-        { name: 'obj' },
-      ]
-    }
   ],
 
   methods: {
     store_: function(method, obj, sink) {
       var self = this;
-      var op = self.Operation.create({
+      var op = StoreAndForwardOperation.create({
         method: method,
         obj: obj.clone()
       });
@@ -3287,7 +3288,7 @@ MODEL({
     },
     forward_: function(ret) {
       var self = this;
-      this.store.orderBy(this.Operation.ID).select()(function(ops) {
+      this.store.orderBy(StoreAndForwardOperation.ID).select()(function(ops) {
         var funcs = [];
         for ( var i = 0; i < ops.length; i++ ) {
           (function(op) {
@@ -3296,8 +3297,8 @@ MODEL({
                 put: function(obj) {
                   // If the objects id was updated on put, remove the old one and put the new one.
                   if ( obj.id !== op.obj.id ) {
-                    self.notify_('remove', op.obj);
-                    self.notify_('put', obj);
+                    self.notify_('remove', [op.obj]);
+                    self.notify_('put', [obj]);
                   }
                   ret(op);
                 },

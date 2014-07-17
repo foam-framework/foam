@@ -191,8 +191,8 @@ var AbstractPrototype = {
     prop.name$_ = name + '$';
 
     // TODO: add caching
-    if ( ! AbstractPrototype.__lookupGetter__(prop.name$_) ) {
-      Object.defineProperty(AbstractPrototype, prop.name$_, {
+    if ( ! this.__lookupGetter__(prop.name$_) ) {
+      Object.defineProperty(this, prop.name$_, {
         get: function() { return this.propertyValue(name); },
         set: function(value) { Events.link(value, this.propertyValue(name)); },
         configurable: true
@@ -222,6 +222,34 @@ var AbstractPrototype = {
         setter = (function(setter) { return function(oldValue, newValue) {
           setter.call(this, oldValue, typeof newValue !== 'number' ? Number(newValue) : newValue);
         }; })(setter);
+      }
+
+      if ( prop.onDAOUpdate ) {
+        if ( typeof prop.onDAOUpdate === 'string' ) {
+          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
+            setter.call(this, oldValue, newValue);
+
+            var listener = this[listenerName] || ( this[listenerName] = this[onDAOUpdate].bind(this) );
+
+            if ( oldValue ) oldValue.unlisten(listener);
+            if ( newValue ) {
+              newValue.listen(listener);
+              listener();
+            }
+          }; })(setter, prop.onDAOUpdate, prop.name + '_onDAOUpdate');
+        } else {
+          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
+            setter.call(this, oldValue, newValue);
+
+            var listener = this[listenerName] || ( this[listenerName] = onDAOUpdate.bind(this) );
+
+            if ( oldValue ) oldValue.unlisten(listener);
+            if ( newValue ) {
+              newValue.listen(listener);
+              listener();
+            }
+          }; })(setter, prop.onDAOUpdate, prop.name + '_onDAOUpdate');
+        }
       }
 
       if ( prop.postSet ) {
