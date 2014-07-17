@@ -562,6 +562,10 @@ var DAOProperty = Model.create({
     {
       name: 'view',
       defaultValue: 'ArrayView'
+    },
+    {
+//      model_: 'FunctionProperty',
+      name: 'onDAOUpdate'
     }
   ]
 });
