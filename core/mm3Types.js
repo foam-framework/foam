@@ -569,8 +569,16 @@ var DAOProperty = Model.create({
     },
     {
       name: 'install',
-      function(prop) {
-        this[prop.name + '$Proxy'] = this[prop.name + '$'
+      defaultValue: function(prop) {
+        defineLazyProperty(this, prop.name + '$Proxy', function() {
+          var proxy = ProxyDAO.create({delegate: this[prop.name]});
+
+          this.addPropertyListener(prop.name, function(_, _, _, dao) {
+            proxy.delegate = dao;
+          });
+
+          return proxy;
+        });
       }
     }
   ]

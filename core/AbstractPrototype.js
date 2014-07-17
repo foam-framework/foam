@@ -35,6 +35,7 @@ var AbstractPrototype = {
     return o;
   },
 
+  // TODO: document
   xbind: function(map) {
     return {
       __proto__: this,
@@ -75,7 +76,7 @@ var AbstractPrototype = {
     ps.forEach(function(prop) {
       var name = prop.name;
       var dynamicValue = prop.dynamicValue;
-      
+
       Events.dynamic(
         dynamicValue.bind(this),
         function(value) { this[name] = value; }.bind(this));
@@ -185,7 +186,6 @@ var AbstractPrototype = {
   },
 
   defineProperty: function(prop) {
-    debugger;
     var name = prop.name;
     prop.name$_ = name + '$';
 
@@ -276,6 +276,9 @@ var AbstractPrototype = {
 
       this.defineFOAMSetter(name, setter);
     }
+
+    // Let the property install other features into the Prototype
+    prop.install && prop.install.call(this, prop);
   },
 
   hashCode: function() {
