@@ -617,7 +617,7 @@ MODEL({
       code: function(_, _, touch) {
         // If we've already recognized, it's up to that code to handle the new point.
         if ( this.recognized ) {
-          this.recognized.addPoint(touch);
+          this.recognized.addPoint && this.recognized.addPoint(touch);
           return;
         }
 
