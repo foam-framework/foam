@@ -196,7 +196,7 @@ MODEL({
       name: 'clear',
       code: function() {
         console.log('**************************** clear');
-        this.view.getValue().set('');
+        this.view.data = '';
         this.predicate = TRUE;
       }
     }
