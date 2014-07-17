@@ -324,3 +324,8 @@ ul.swipeAltHeader {
   display: block;
   overflow-y: scroll;
 }
+
+.menuView div:hover {
+  background-color: #3e50b4;
+  color: white;
+}
