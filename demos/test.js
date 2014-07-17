@@ -1,3 +1,41 @@
+
+
+FOAModel({
+  name: 'Point',
+  properties: [ 'x', 'y' ],
+  methods: {
+    scale: function(s) { this.x *= s; this.y *= s; }
+  }
+});
+
+var p = Point.create({x: 10, y: 20});
+p.scale(2);
+p.x = p.y;
+console.log(p.toJSON());
+
+FOAModel({
+  name: 'Point3D',
+  extendsModel: 'Point',
+  properties: [ 'z' ],
+  methods: {
+    scale: function(s) { this.SUPER(s); this.z *= s; }
+  }
+});
+
+var p2 = Point3D.create({x: 1, y: 2, z: 3});
+p2.scale(2);
+console.log(p2.toJSON());
+
+p2.write(document);
+
+var dv = DetailView.create({data: p2});
+dv.write(document);
+
+var dv2 = DetailView.create({model: Point3D});
+dv2.write(document);
+
+
+
 var bookmarks = [];
 
 bookmarks.push(Bookmark.create({index: 1, title: 'Google Blog', url: 'http://googleblog.blogspot.com/2011/09/happy-third-birthday-chrome.html'}));
@@ -35,7 +73,6 @@ document.writeln("<table><tr><td valign=top>");
 var tv1 = TableView.create({model: Model, dao: models});
 document.writeln(tv1.toHTML());
 tv1.initHTML();
-
 
 document.writeln("</td><td><font size=-1>");
 var dv = DetailView.create({model: Model});
