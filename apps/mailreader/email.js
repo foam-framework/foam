@@ -484,6 +484,12 @@ var EMail = FOAM({
          defaultValueFn: function() {
            return this.body.substr(0, 100);
          },
+      },
+      {
+         model_: 'BooleanProperty',
+         name: 'messageSent',
+         defaultValue: false,
+         help: 'True if the user has marked this message to be sent.'
       }
    ],
 

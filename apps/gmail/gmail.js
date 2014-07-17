@@ -48,12 +48,6 @@ MODEL({
       }
     },
     {
-      name: 'gmailSyncManager',
-      type:  'GmailSyncManager',
-      postSet: function(oldVal, newVal) {
-      }
-    },
-    {
       name: 'emailDao',
       type: 'DAO',
     },
@@ -97,6 +91,7 @@ MODEL({
           ['', 'All Mail']
         ],
         menuFactory: function() {
+          return StaticHTML.create({ content: 'hello' });
           return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
         }
       });

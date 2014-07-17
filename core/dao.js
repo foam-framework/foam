@@ -868,6 +868,46 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'LimitedLiveCachingDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'src'
+    },
+    { model_: 'IntProperty', name: 'limit', defaultValue: 100 },
+    {
+      name: 'cache',
+      help: 'Alias for delegate.',
+      getter: function() { return this.delegate },
+      setter: function(dao) { this.delegate = dao; }
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.src.model || this.cache.model; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var src   = this.src;
+      var cache = this.cache;
+
+      src.limit(this.limit).select(cache)(function() {
+        // Actually means that cache listens to changes in the src.
+        src.listen(cache);
+      }.bind(this));
+    },
+    put: function(obj, sink) { this.src.put(obj, sink); },
+    remove: function(query, sink) { this.src.remove(query, sink); },
+    removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
+  }
+});
+
 
 /**
  * Provide Cascading Remove.
