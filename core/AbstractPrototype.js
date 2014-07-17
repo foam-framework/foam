@@ -72,13 +72,14 @@ var AbstractPrototype = {
     if ( ! this.model_ ) return;
 
     var ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
-    for ( var i = 0 ; i < ps.length ; i++ ) {
-      var prop = ps[i];
-
-      (function(self, name, dynamicValue) {
-        Events.dynamic(dynamicValue.bind(self), function(value) { self[name] = value; } );
-      })(this, prop.name, prop.dynamicValue);
-    }
+    ps.forEach(function(prop) {
+      var name = prop.name;
+      var dynamicValue = prop.dynamicValue;
+      
+      Events.dynamic(
+        dynamicValue.bind(this),
+        function(value) { this[name] = value; }.bind(this));
+    }.bind(this));
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {

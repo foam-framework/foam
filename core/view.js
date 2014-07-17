@@ -1050,9 +1050,11 @@ MODEL({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage && window.IS_CHROME_APP ?
-        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
+      var src = window.IS_CHROME_APP ? 
+        ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
+        ' src="' + this.data + '"';
+
+      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '"' + src + '>';
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -4392,39 +4394,36 @@ MODEL({
 
   properties: [
     {
-      name: 'predicate',
-      defaultValueFn: function() { return TRUE; },
-      postSet: function() { this.updateDAO(); }
+      name: 'dao',
+      help: 'Payload of the view; assumed to be a DAO.'
     },
     {
-      name: 'dao',
-      help: 'Payload of the view; assumed to be a DAO.',
-      postSet: function() { this.updateDAO(); }
+      name: 'predicate',
+      defaultValueFn: function() { return TRUE; },
+      postSet: function(_, p) { console.log(p); this.predicatedDAO = this.dao.where(p); }
+    },
+    {
+      name: 'predicatedDAO'
     },
     {
       name: 'view',
       required: true,
-      postSet: function() { this.updateDAO(); }
+      preSet: function(_, v) {
+        if ( typeof v === 'string' ) v = FOAM.lookup(v);
+        this.children = [v];
+        v.data = v.dao = this.predicatedDAO$.asDAO();
+        return v;
+      }
     }
   ],
 
   methods: {
     init: function() {
-      if ( typeof this.view === 'string' )
-        this.view = FOAM.lookup(this.view);
-      // Necessary for events and other things that walk the view tree.
-      this.children = [this.view];
+      this.SUPER();
+      this.X = this.X.sub({DAO: this.predicatedDAO$.asDAO()});
     },
-    toHTML: function() {
-      return this.view.toHTML();
-    },
-    initHTML: function() {
-      this.view.initHTML();
-    },
-    updateDAO: function() {
-      if ( this.dao && this.dao.where && this.view )
-        this.view.dao = this.dao.where(this.predicate);
-    }
+    toHTML: function() { return this.view.toHTML(); },
+    initHTML: function() { this.view.initHTML(); }
   }
 });
 
@@ -4436,14 +4435,7 @@ MODEL({
   properties: [
     {
       model_: 'DAOProperty',
-      name: 'dao',
-      postSet: function(oldVal, newVal) {
-        if (oldVal) {
-          oldVal.unlisten(this.onDAOUpdate);
-        }
-        this.X = this.X.sub({DAO: newVal});
-        newVal.listen(this.onDAOUpdate);
-      }
+      name: 'dao'
     },
     {
       model_: 'BooleanProperty',
@@ -4491,6 +4483,8 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
+
+      this.dao$.asDAO().listen(this.onDAOUpdate);
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
