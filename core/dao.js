@@ -3297,8 +3297,8 @@ MODEL({
                 put: function(obj) {
                   // If the objects id was updated on put, remove the old one and put the new one.
                   if ( obj.id !== op.obj.id ) {
-                    self.notify_('remove', op.obj);
-                    self.notify_('put', obj);
+                    self.notify_('remove', [op.obj]);
+                    self.notify_('put', [obj]);
                   }
                   ret(op);
                 },
