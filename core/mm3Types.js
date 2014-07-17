@@ -566,6 +566,12 @@ var DAOProperty = Model.create({
     {
 //      model_: 'FunctionProperty',
       name: 'onDAOUpdate'
+    },
+    {
+      name: 'install',
+      function(prop) {
+        this[prop.name + '$Proxy'] = this[prop.name + '$'
+      }
     }
   ]
 });

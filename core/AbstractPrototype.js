@@ -185,8 +185,7 @@ var AbstractPrototype = {
   },
 
   defineProperty: function(prop) {
-    // this method might be a good candidate for a decision table
-
+    debugger;
     var name = prop.name;
     prop.name$_ = name + '$';
 

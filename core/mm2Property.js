@@ -368,6 +368,17 @@ var Property = {
       subType: 'Autocompleter',
       help: 'Name or model for the autocompleter for this property.',
     },
+    {
+      name: 'install',
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      rows:3,
+      view: 'FunctionView',
+      defaultValue: '',
+      help: "A function which installs additional features into the Model's prototype."
+    }
   ],
 
   methods: {
