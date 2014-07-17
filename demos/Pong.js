@@ -55,11 +55,13 @@ MODEL({
     },
     {
       model_: 'IntProperty',
-      name: 'lScore'
+      name: 'lScore',
+      postSet: function(_, s) { return s % 100; }
     },
     {
       model_: 'IntProperty',
-      name: 'rScore'
+      name: 'rScore',
+      postSet: function(_, s) { return s % 100; }
     }
   ],
 
@@ -76,13 +78,13 @@ MODEL({
         }
         if ( this.ball.x <= 0 ) {
           this.rScore++;
-          this.ball.vx *= -1;
           this.ball.x = 150;
+          this.ball.vx *= -1;
         }
         if ( this.ball.x >= this.WIDTH ) {
           this.lScore++;
-          this.ball.vx *= -1;
           this.ball.x = this.WIDTH - 150;
+          this.ball.vx *= -1;
         }
       }
     }
