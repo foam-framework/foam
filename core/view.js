@@ -4435,20 +4435,15 @@ MODEL({
   properties: [
     {
       model_: 'DAOProperty',
-      name: 'dao'
+      name: 'dao',
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       model_: 'BooleanProperty',
       name: 'hidden',
       defaultValue: false,
       postSet: function(_, hidden) {
-        if ( ! this.dao ) return;
-        if ( hidden ) {
-          this.dao.unlisten(this.onDAOUpdate);
-        } else {
-          this.dao.listen(this.onDAOUpdate);
-          this.updateHTML(); // TODO: I don't think this line is necessary
-        }
+        if ( this.dao && ! hidden ) this.onDAOUpdate();
       }
     },
     { name: 'rowView', defaultValue: 'DetailView' },
@@ -4483,8 +4478,6 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-
-      this.dao$.asDAO().listen(this.onDAOUpdate);
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -4568,7 +4561,7 @@ MODEL({
     {
       name: 'onDAOUpdate',
       isAnimated: true,
-      code: function() { this.updateHTML(); }
+      code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },
     {
       name: 'onScroll',
