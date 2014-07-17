@@ -5,13 +5,11 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../../lib/mdui/style.css">
   <script language="javascript" src="../../core/bootFOAM.js"></script>
-  <script language="javascript" src="../../core/SyncManager.js"></script>
   <script language="javascript" src="../../lib/bookmarks/bookmark.js"></script>
   <script language="javascript" src="../../lib/mdui/AppController.js"></script>
   <script language="javascript" src="../../lib/mdui/view.js"></script>
   <script src="../../lib/gmail/ImportedModels.js"></script>
   <script src="../../lib/gmail/dao.js"></script>
-  <script src="../../lib/gmail/SyncAgent.js"></script>
   <script src="../mailreader/email.js"></script>
   <script language="javascript" src="gmail.js"></script>
  </head>
@@ -38,7 +36,7 @@
       return randomStringWithRandomLength(20) + ' ' + randomStringWithRandomLength(20) + ' <' + randomStringWithRandomLength(20) + '@' + randomStringWithRandomLength(20) + '.com>';
     };
 
-    var emailDao = MDAO.create({model: EMail});
+/*    var emailDao = MDAO.create({model: EMail});
     for (var i = 0; i < 1000; i++) {
       var email = EMail.create({
         id: randomString(16),
@@ -58,14 +56,35 @@
       randomBoolean() && email.labels.push('CATEGORY_FORUMS');
       randomBoolean() && email.labels.push('CATEGORY_SOCIAL');
       emailDao.put(email);
-    }
+    }*/
 
-    var gmailSyncManager = createGmailSyncAgent();
-    gmailSyncManager.forceSync();
+                        var auth = EasyOAuth2.create({
+                        clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
+                        clientSecret: "GTkp929u268_SXAiHitESs-1",
+                        scopes: [
+                        "https://mail.google.com/"
+                        ]
+                        });
+
+                        X.registerModel(XHR.xbind({
+                        authAgent: auth,
+                        retries: 3,
+                        delay: 10
+                        }), 'XHR');
+
+//    var gmailSyncManager = createGmailSyncAgent();
+//    gmailSyncManager.forceSync();
     // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
     var mgmail = MGmail.create({
-      gmailSyncManager: gmailSyncManager,
-      emailDao: gmailSyncManager.dstDAO,
+      emailDao: LimitedLiveCachingDAO.create({
+        limit: 10,
+        src: GMailToEMailDAO.create({
+          delegate: StoreAndForwardDAO.create({
+            delegate: GMailMessageDAO.create({})
+          })
+        }),
+        cache: MDAO.create({ model: EMail })
+      })
     });
     mgmail.write(document);
   </script>

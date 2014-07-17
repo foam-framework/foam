@@ -48,12 +48,6 @@ MODEL({
       }
     },
     {
-      name: 'gmailSyncManager',
-      type:  'GmailSyncManager',
-      postSet: function(oldVal, newVal) {
-      }
-    },
-    {
       name: 'emailDao',
       type: 'DAO',
     },
@@ -86,6 +80,7 @@ MODEL({
         dao: this.emailDao,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
+        editableCitationViews: true,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
           [ EMail.TIMESTAMP, 'Oldest First' ],
@@ -97,6 +92,7 @@ MODEL({
           ['', 'All Mail']
         ],
         menuFactory: function() {
+          return StaticHTML.create({ content: 'hello' });
           return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
         }
       });
