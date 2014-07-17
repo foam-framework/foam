@@ -68,19 +68,21 @@ MODEL({
       name: 'onBallMove',
       isAnimated: true,
       code: function() {
-        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
-          this.ball.vy = -Math.abs(this.ball.vy);
-        }
         if ( this.ball.y - this.ball.r <= 0 ) {
           this.ball.vy = Math.abs(this.ball.vy);
         }
-        if ( this.ball.x >= this.WIDTH ) {
-          this.lScore++;
-          this.ball.vx *= -1;
+        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
+          this.ball.vy = -Math.abs(this.ball.vy);
         }
         if ( this.ball.x <= 0 ) {
           this.rScore++;
           this.ball.vx *= -1;
+          this.ball.x = 150;
+        }
+        if ( this.ball.x >= this.WIDTH ) {
+          this.lScore++;
+          this.ball.vx *= -1;
+          this.ball.x = this.WIDTH - 150;
         }
       }
     }
