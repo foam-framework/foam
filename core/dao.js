@@ -753,6 +753,19 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'ErrorDAO',
+  extendsModel: 'AbstractDAO',
+  methods: {
+    put: function(obj, sink) {
+      sink && sink.error && sink.error('put', obj);
+    },
+    remove: function(obj, sink) {
+      sink && sink.error && sink.error('remove', obj);
+    }
+  }
+});
+
 
 /**
  * Set a specified properties value with an auto-increment
@@ -3152,6 +3165,128 @@ MODEL({
       return this;
     },
 
+  }
+});
+
+MODEL({
+  name: 'StoreAndForwardDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    { name: 'storageName' },
+    { name: 'store', required: true, type: 'DAO',
+      factory: function() {
+        return EasyDAO.create({
+          seqNo: true,
+          cache: false,
+          model: this.Operation,
+          name: this.storageName || this.delegate.model.plural - 'operations'
+        });
+      }
+    },
+    { model_: 'IntProperty', name: 'retryInterval', units: 'ms', defaultValue: 5000 },
+    { model_: 'BooleanProperty', name: 'syncing', defaultValue: false }
+  ],
+
+  models: [
+    {
+      model_: 'Model',
+      name: 'Operation',
+      properties: [
+        { model_: 'IntProperty', name: 'id' },
+        { model_: 'StringProperty', name: 'method', view: { model_: 'ChoiceView', choices: ['put', 'remove'] } },
+        { name: 'obj' },
+      ]
+    }
+  ],
+
+  methods: {
+    store_: function(method, obj, sink) {
+      var self = this;
+      var op = self.Operation.create({
+        method: method,
+        obj: obj.clone()
+      });
+      self.store.put(op, {
+        put: function(o) {
+          sink && sink[method] && sink[method](obj);
+          self.pump_();
+        },
+        error: function() {
+          sink && sink.error && sink.error(method, obj);
+        }
+      });
+    },
+    put: function(obj, sink) {
+      this.store_('put', obj, sink);
+    },
+    remove: function(obj, sink) {
+      this.store_('remove', obj, sink);
+    },
+    pump_: function() {
+      if ( this.syncing ) return;
+      this.syncing = true;
+
+      var self = this;
+      awhile(
+        function() { return self.syncing; },
+        aseq(
+          function(ret) {
+            self.forward_(ret);
+          },
+          function(ret) {
+            self.store.select(COUNT())(function(c) {
+              if ( c.count === 0 ) self.syncing = false;
+              ret();
+            });
+          },
+          function(ret) {
+            self.X.setTimeout(ret, self.retryInterval);
+          }
+        ))(function(){});
+    },
+    forward_: function(ret) {
+      var self = this;
+      this.store.orderBy(this.Operation.ID).select()(function(ops) {
+        var funcs = [];
+        for ( var i = 0; i < ops.length; i++ ) {
+          (function(op) {
+            funcs.push(function(ret) {
+              self.delegate[op.method](op.obj, {
+                put: function(obj) {
+                  // If the objects id was updated on put, remove the old one and put the new one.
+                  if ( obj.id !== op.obj.id ) {
+                    self.notify_('remove', op.obj);
+                    self.notify_('put', obj);
+                  }
+                  ret(op);
+                },
+                remove: function() {
+                  ret(op);
+                },
+                error: function() {
+                  ret();
+                }
+              });
+            });
+          })(ops[i]);
+        }
+
+        aseq(
+          apar.apply(null, funcs),
+          function(ret) {
+            var funcs = [];
+            for ( var i = 1; i < arguments.length; i++ ) {
+              (function(op) {
+                funcs.push(function(ret) {
+                  self.store.remove(op, ret);
+                });
+              })(arguments[i]);
+            }
+            apar.apply(null, funcs)(ret);
+          })(ret);
+      });
+    }
   }
 });
 
