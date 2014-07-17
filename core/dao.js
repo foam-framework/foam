@@ -3290,6 +3290,86 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'AbstractAdapterDAO',
+  extendsModel: 'ProxyDAO',
+  help: 'An abstract decorator for adapting a DAO of one data type to another data type.  Extend this class and implement aToB() and bToA().',
+
+  methods: {
+    adaptKey_: function(key) {
+      // Usually the primary key doesn't need to be adapted.
+      return key;
+    },
+    put: function(obj, sink) {
+      obj = this.aToB(obj);
+      this.SUPER(obj, sink);
+    },
+    remove: function(obj, sink) {
+      obj = this.aToB(obj);
+      this.SUPER(obj, sink);
+    },
+    select: function(sink, options) {
+      var self = this;
+      sink = this.decorateSink_(sink, options);
+      var mysink = {
+        put: function(o, s, fc) {
+          o = self.bToA(o);
+          sink && sink.put && sink.put(o, s, fc);
+        },
+        eof: function() {
+          sink && sink.eof && sink.eof();
+        }
+      };
+      options = this.adaptOptions_(options);
+      var future = afuture();
+      this.SUPER(mysink, options)(function() { future.set(sink); });
+      return future.get;
+    },
+    find: function(key, sink) {
+      var self = this;
+      this.SUPER(this.adaptKey_(key), {
+        put: function(o) {
+          sink && sink.put && sink.put(self.bToA(o));
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      });
+    },
+    removeAll: function(sink, options) {
+      options = this.adaptOptions_(options);
+      var self = this;
+      var mysink = {
+        remove: function(o, sink, fc) {
+          sink && sink.remove && sink.remove(self.bToA(o), sink, fc);
+        },
+        error: function() {
+          sink && sink.error && sink.error.apply(sink, arguments);
+        }
+      };
+      this.SUPER(mysink, options);
+    },
+    listen: function(s, options) {
+      if ( options ) var myoptions = this.adaptOptions_(options);
+      var self = this;
+      var mysink = {
+        $UID: s.$UID,
+        put: function(o, sink, fc) {
+          s.put && s.put(self.bToA(o), sink, fc);
+        },
+        remove: function(o, sink, fc) {
+          s.remove && s.remove(self.bToA(o), sink, fc);
+        },
+        error: function() {
+          s.error && s.error.apply(s, arguments);
+        }
+      };
+      s = this.decorateSink_(s, options, true);
+      this.SUPER(mysink, myoptions);
+    }
+  }
+});
+
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };
