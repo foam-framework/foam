@@ -3267,8 +3267,6 @@ MODEL({
 
       this.view1 = DetailView.create({data$: this.data$});
       this.view2 = JSView.create({data$: this.data$});
-
-      this.setValue(SimpleValue.create(""));
     },
 
     toHTML: function() {
