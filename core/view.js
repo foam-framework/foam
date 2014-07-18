@@ -1050,7 +1050,7 @@ MODEL({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      var src = window.IS_CHROME_APP ? 
+      var src = window.IS_CHROME_APP ?
         ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
         ' src="' + this.data + '"';
 
@@ -4403,6 +4403,7 @@ MODEL({
       postSet: function(_, p) { console.log(p); this.predicatedDAO = this.dao.where(p); }
     },
     {
+      model_: 'DAOProperty',
       name: 'predicatedDAO'
     },
     {
@@ -4411,7 +4412,7 @@ MODEL({
       preSet: function(_, v) {
         if ( typeof v === 'string' ) v = FOAM.lookup(v);
         this.children = [v];
-        v.data = v.dao = this.predicatedDAO$.asDAO();
+        v.data = v.dao = this.predicatedDAO$Proxy;
         return v;
       }
     }
@@ -4420,7 +4421,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.predicatedDAO$.asDAO()});
+      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }
