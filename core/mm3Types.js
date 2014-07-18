@@ -574,7 +574,7 @@ var DAOProperty = Model.create({
           var proxy = ProxyDAO.create({delegate: this[prop.name]});
 
           this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            proxy.delegate = dao;
+            proxy.delegate = dao
           });
 
           return proxy;

@@ -27,7 +27,7 @@
 				<div class="view">
 					$$completed{className: 'toggle'}
 					$$text{mode: 'read-only', tagName: 'label'}
-					<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.obj); }) %>"></button>
+					<button class="destroy" id="<%= this.on('click', function() { this.parent.dao.remove(this.data); }) %>"></button>
 				</div>
 				$$text{className: 'edit'}
 			</li>
@@ -37,7 +37,7 @@
 				this.on('dblclick', toEdit, this.id);
 				this.on('blur',	toDisplay, this.textView.id);
 				this.textView.subscribe(this.textView.ESCAPE, toDisplay);
-				this.setClass('completed', function() { return this.obj.completed; }.bind(this), this.id);
+				this.setClass('completed', function() { return this.data.completed; }.bind(this), this.id);
 			%> */} ]
 	});
 
@@ -111,7 +111,7 @@
 				</section>
 				<footer id="footer">
 					<span id="todo-count">
-						<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.obj.activeCount == 1 ? '' : 's' %> left
+						<strong>$$activeCount{mode: 'read-only'}</strong> item<%# this.data.activeCount == 1 ? '' : 's' %> left
 					</span>
 					$$query{id: 'filters'}
 					$$clear{id: 'clear-completed'}

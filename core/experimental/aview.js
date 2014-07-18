@@ -58,7 +58,7 @@ MODEL({
   properties: [
     {
       name: 'data',
-      postSet: function(_,value) { console.log('*** ', value); }
+      postSet: function() { this.onDataChange(); }
     },
     {
       name: 'displayWidth',
@@ -107,8 +107,6 @@ MODEL({
 
       this.displayHeight = this.displayHeight;
       this.displayWidth = this.displayWidth;
-
-      this.data$.addListener(this.onDataChange);
     },
     toHTML: function() {
       return '<span id="' + this.id + '"><img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:0"></span>' ;

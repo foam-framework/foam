@@ -18,9 +18,13 @@ MODEL({
   name:  'DAOController',
   label: 'DAO Controller',
 
-  extendsModel: 'View',
+  extendsModel: 'AbstractDAOView',
 
   properties: [
+    {
+      name: 'dao',
+      view: 'TableView'
+    },
     {
       name: 'selection'
     },
@@ -32,16 +36,6 @@ MODEL({
       }
     },
     {
-      model_: 'DAOProperty',
-      name:  'dao',
-      label: 'DAO',
-      view: 'TableView',
-      postSet: function(_, dao) {
-        // TODO Is this going to be useful?
-        this.X.DAO = dao;
-      }
-    },
-    {
       model_: 'BooleanProperty',
       name: 'useSearchView',
       defaultValue: false,
@@ -49,7 +43,7 @@ MODEL({
         if ( value ) {
           this.addDecorator(SearchBorder.create({
             model: this.model,
-            dao: this.dao
+            data: this.data
           }));
         }
       },
@@ -126,6 +120,10 @@ MODEL({
   ],
 
   methods: {
+    toHTML: function() {
+      this.daoView = TableView.create(this);
+      return this.daoView.toHTML();
+    },
     initHTML: function() {
       this.SUPER();
       this.daoView.dao = this.dao;
@@ -135,15 +133,7 @@ MODEL({
     }
   },
 
-  templates: [
-    {
-      name: 'toHTML',
-      template: '$$dao'
-    }
-  ],
-
-  listeners:
-  [
+  listeners: [
     {
       name: 'onDoubleClick',
       code: function(evt) {

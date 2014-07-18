@@ -47,6 +47,7 @@ var files = [
   'mm6Protobuf',
   'value',
   'view',
+  'daoView',
   'ChoiceView',
   'DetailView',
   'TableView',
