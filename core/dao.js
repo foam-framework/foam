@@ -877,7 +877,7 @@ MODEL({
     {
       name: 'src'
     },
-    { model_: 'IntProperty', name: 'limit', defaultValue: 100 },
+    { model_: 'IntProperty', name: 'cacheLimit', defaultValue: 100 },
     {
       name: 'cache',
       help: 'Alias for delegate.',
@@ -897,7 +897,7 @@ MODEL({
       var src   = this.src;
       var cache = this.cache;
 
-      src.limit(this.limit).select(cache)(function() {
+      src.limit(this.cacheLimit).select(cache)(function() {
         // Actually means that cache listens to changes in the src.
         src.listen(cache);
       }.bind(this));
