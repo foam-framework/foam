@@ -14,7 +14,6 @@ MODEL({
       name:  'model',
       type:  'Model',
       postSet: function(_, m) {
-        if ( ! m ) debugger;
         if ( this.$ ) {
           this.children = [];
           this.$.outerHTML = this.toHTML();
