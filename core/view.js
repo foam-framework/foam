@@ -2982,6 +2982,7 @@ MODEL({
         if ( index != self.index )
           choice.view.deepPublish(self.ON_HIDE);
       });
+      this.views[this.index].view.deepPublish(this.ON_SHOW);
     },
 
     // The general structure of the carousel is:
