@@ -47,25 +47,57 @@ MODEL({
         this.stack.setTopView(view);
       }
     },
+    { name: 'oauth' },
     {
       name: 'emailDao',
       type: 'DAO',
+      factory: function() {
+        return this.X.LimitedLiveCachingDAO.create({
+          cacheLimit: 10,
+          src: this.X.GMailToEMailDAO.create({
+            delegate: this.X.StoreAndForwardDAO.create({
+              delegate: this.X.GMailMessageDAO.create({})
+            })
+          }),
+          cache: this.X.MDAO.create({ model: EMail })
+        });
+      }
     },
     {
       name: 'labelDao',
       type: 'DAO',
+      factory: function() {
+        return this.X.GMailRestDAO.create({ model: GMailLabel });
+      }
     },
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return StackView.create(); }
+      factory: function() { return this.X.StackView.create(); }
     }
   ],
 
   methods: {
     init: function() {
+      this.X = this.X.sub({
+        touchManager: this.X.TouchManager.create({})
+      }, 'MGMAIL CONTEXT');
+
+      this.oauth = this.X.EasyOAuth2.create({
+        clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
+        clientSecret: "GTkp929u268_SXAiHitESs-1",
+        scopes: [
+          "https://mail.google.com/"
+        ]
+      });
+
+      this.X.registerModel(XHR.xbind({
+        authAgent: this.oauth,
+        retries: 3,
+        delay: 10
+      }), 'XHR');
+
       this.SUPER();
-      this.X.touchManager = this.X.TouchManager.create({});
     },
 
     toHTML: function() { return this.stack.toHTML(); },
