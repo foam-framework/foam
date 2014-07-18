@@ -1050,9 +1050,11 @@ MODEL({
   methods: {
     setValue: function(value) { this.value = value; },
     toHTML: function() {
-      return this.backupImage && window.IS_CHROME_APP ?
-        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.backupImage + '">' :
-        '<img ' + this.cssClassAttr() + ' id="' + this.id + '" src="' + this.data + '">' ;
+      var src = window.IS_CHROME_APP ?
+        ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
+        ' src="' + this.data + '"';
+
+      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '"' + src + '>';
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();
@@ -2980,6 +2982,7 @@ MODEL({
         if ( index != self.index )
           choice.view.deepPublish(self.ON_HIDE);
       });
+      this.views[this.index].view.deepPublish(this.ON_SHOW);
     },
 
     // The general structure of the carousel is:
@@ -4392,39 +4395,37 @@ MODEL({
 
   properties: [
     {
-      name: 'predicate',
-      defaultValueFn: function() { return TRUE; },
-      postSet: function() { this.updateDAO(); }
+      name: 'dao',
+      help: 'Payload of the view; assumed to be a DAO.'
     },
     {
-      name: 'dao',
-      help: 'Payload of the view; assumed to be a DAO.',
-      postSet: function() { this.updateDAO(); }
+      name: 'predicate',
+      defaultValueFn: function() { return TRUE; },
+      postSet: function(_, p) { console.log(p); this.predicatedDAO = this.dao.where(p); }
+    },
+    {
+      model_: 'DAOProperty',
+      name: 'predicatedDAO'
     },
     {
       name: 'view',
       required: true,
-      postSet: function() { this.updateDAO(); }
+      preSet: function(_, v) {
+        if ( typeof v === 'string' ) v = FOAM.lookup(v);
+        this.children = [v];
+        v.data = v.dao = this.predicatedDAO$Proxy;
+        return v;
+      }
     }
   ],
 
   methods: {
     init: function() {
-      if ( typeof this.view === 'string' )
-        this.view = FOAM.lookup(this.view);
-      // Necessary for events and other things that walk the view tree.
-      this.children = [this.view];
+      this.SUPER();
+      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
     },
-    toHTML: function() {
-      return this.view.toHTML();
-    },
-    initHTML: function() {
-      this.view.initHTML();
-    },
-    updateDAO: function() {
-      if ( this.dao && this.dao.where && this.view )
-        this.view.dao = this.dao.where(this.predicate);
-    }
+    toHTML: function() { return this.view.toHTML(); },
+    initHTML: function() { this.view.initHTML(); }
   }
 });
 
@@ -4437,26 +4438,14 @@ MODEL({
     {
       model_: 'DAOProperty',
       name: 'dao',
-      postSet: function(oldVal, newVal) {
-        if (oldVal) {
-          oldVal.unlisten(this.onDAOUpdate);
-        }
-        this.X = this.X.sub({DAO: newVal});
-        newVal.listen(this.onDAOUpdate);
-      }
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       model_: 'BooleanProperty',
       name: 'hidden',
       defaultValue: false,
       postSet: function(_, hidden) {
-        if ( ! this.dao ) return;
-        if ( hidden ) {
-          this.dao.unlisten(this.onDAOUpdate);
-        } else {
-          this.dao.listen(this.onDAOUpdate);
-          this.updateHTML(); // TODO: I don't think this line is necessary
-        }
+        if ( this.dao && ! hidden ) this.onDAOUpdate();
       }
     },
     { name: 'rowView', defaultValue: 'DetailView' },
@@ -4516,7 +4505,7 @@ MODEL({
           e = e.parentElement;
         }
         this.scrollContainer = e || window;
-        e.addEventListener('scroll', this.onScroll, false);
+        this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
       if ( ! this.hidden ) this.updateHTML();
@@ -4574,7 +4563,7 @@ MODEL({
     {
       name: 'onDAOUpdate',
       isAnimated: true,
-      code: function() { this.updateHTML(); }
+      code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },
     {
       name: 'onScroll',

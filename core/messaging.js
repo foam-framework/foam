@@ -45,6 +45,7 @@ MODEL({
     },
     configure: function(xhr) {
       xhr.responseType = this.responseType;
+      this.setRequestHeader(xhr, "Content-Type", "application/json");
     },
     bindListeners: function(xhr, ret) {
       xhr.onreadystatechange = function() {
@@ -117,6 +118,7 @@ MODEL({
                },
                function(ret, response, xhr) {
                  if ( ( xhr.status >= 200 && xhr.status < 300 ) ||
+                      xhr.status === 404 ||
                       ++attempts >= decorator.maxAttempts ) {
                    finished = true;
                    originalRet(response, xhr);

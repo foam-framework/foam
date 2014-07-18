@@ -253,8 +253,6 @@ MODEL({
 });
 
 
-
-
 MODEL({
   name: 'UpdateDetailView',
   extendsModel: 'DetailView',
