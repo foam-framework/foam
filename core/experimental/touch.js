@@ -229,76 +229,102 @@ MODEL({
 
 
 MODEL({
-  name: 'VerticalScrollGesture',
-  help: 'Gesture that understands vertical scrolling. Calls into the handler ',
+  name: 'ScrollGesture',
+  help: 'Gesture that understands vertical or horizontal scrolling.',
 
   properties: [
     {
       name: 'name',
-      defaultValue: 'verticalScroll'
+      defaultValueFn: function() { return this.direction + 'Scroll'; }
+    },
+    {
+      name: 'direction',
+      defaultValue: 'vertical'
     },
     'handlers'
   ],
 
   methods: {
+    makeAxis: function(point, xy) {
+      return {
+        current: point[xy],
+        prop: point[xy + '$'],
+        start: point[xy + '0'],
+        delta: point['d' + xy],
+        total: point['total' + xy.capitalize()],
+        history: point[xy + 'History']
+      };
+    },
+    getPrimaryAxis: function(point) {
+      return this.makeAxis(point, this.direction == 'vertical' ? 'y' : 'x');
+    },
+    getSecondaryAxis: function(point) {
+      return this.makeAxis(point, this.direction == 'vertical' ? 'x' : 'y');
+    },
+
     recognize: function(map) {
       // I recognize:
       // - a single point that
       // - is touch, not mouse and
       // - is not done and
-      // - has moved at least 10px vertically, and
-      // - less than 10px horizontally.
+      // - has moved at least 10px in the primary direction, and
+      // - less than 10px in the other direction.
 
       if ( Object.keys(map).length > 1 ) return false;
-
       var point = map[Object.keys(map)[0]];
 
-      return point.type != 'mouse' && ! point.done && Math.abs(point.totalX) < 10 && Math.abs(point.totalY) > 10;
+      return point.type != 'mouse' && ! point.done &&
+          Math.abs(this.getSecondaryAxis(point).total) < 10 &&
+          Math.abs(this.getPrimaryAxis(point).total) > 10;
     },
 
     attach: function(map, handlers) {
       var point = map[Object.keys(map)[0]];
       this.handlers = handlers || [];
-      point.y$.addListener(this.onDeltaY);
+
+      var axis = this.getPrimaryAxis(point);
+      axis.prop.addListener(this.onDelta);
       point.done$.addListener(this.onDone);
 
       // Now send the start and subsequent events to all the handlers.
       // This is essentially replaying the history for all the handlers,
       // now that we've been recognized.
       // In this particular case, all three handlers are called with dy, totalY, and y.
-      // The handlers are verticalScroll{Start,Move,End}.
-      this.pingHandlers('verticalScrollStart', 0, 0, point.y0);
-      for ( var i = 1 ; i < point.yHistory.length ; i++ ) {
+      // The handlers are {vertical,horizontal}Scroll{Start,Move,End}.
+      this.pingHandlers(this.direction + 'ScrollStart', 0, 0, axis.start);
+      for ( var i = 1 ; i < axis.history.length ; i++ ) {
         this.pingHandlers(
-          'verticalScrollMove',
-          point.yHistory[i] - point.yHistory[i-1],
-          point.yHistory[i] - point.y0,
-          point.y
+          this.direction + 'ScrollMove',
+          axis.history[i] - axis.history[i-1],
+          axis.history[i] - axis.start,
+          axis.current
         );
       }
     },
 
-    pingHandlers: function(method, dy, ty, y) {
+    pingHandlers: function(method, d, t, c) {
       for ( var i = 0 ; i < this.handlers.length ; i++ ) {
         var h = this.handlers[i];
-        h && h[method] && h[method](dy, ty, y);
+        h && h[method] && h[method](d, t, c);
       }
     }
   },
 
   listeners: [
     {
-      name: 'onDeltaY',
+      name: 'onDelta',
       code: function(obj, prop, old, nu) {
-        this.pingHandlers('verticalScrollMove', obj.dy, obj.totalY, obj.y);
+        var axis = this.getPrimaryAxis(obj);
+        this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
       }
     },
     {
       name: 'onDone',
       code: function(obj, prop, old, nu) {
-        obj.y$.removeListener(this.onDeltaY);
+        var axis = this.getPrimaryAxis(obj);
+        axis.prop.removeListener(this.onDelta);
         obj.done$.removeListener(this.onDone);
-        this.pingHandlers('verticalScrollEnd', obj.dy, obj.totalY, obj.y);
+        this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
       }
     }
   ]
@@ -505,7 +531,6 @@ MODEL({
 });
 
 
-
 MODEL({
   name: 'GestureTarget',
   properties: [
@@ -539,7 +564,8 @@ MODEL({
       name: 'gestures',
       factory: function() {
         return {
-          verticalScroll: VerticalScrollGesture.create(),
+          verticalScroll: ScrollGesture.create(),
+          horizontalScroll: ScrollGesture.create({ direction: 'horizontal' }),
           tap: TapGesture.create(),
           drag: DragGesture.create(),
           pinchTwist: PinchTwistGesture.create()

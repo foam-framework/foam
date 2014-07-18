@@ -1,0 +1,82 @@
+<!--
+   Copyright 2014 Google Inc. All Rights Reserved.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="../core/experimental/touch.js"></script>
+  <title>Horizontal Scroll Gesture</title>
+  <meta name="viewport" content="width=device-width">
+ </head>
+ <body>
+ <script>
+MODEL({
+  name: 'HScrollGestureBlock',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'x',
+      defaultValue: 0,
+      preSet: function(old, nu) {
+        if ( nu < 0 ) return 0;
+        if ( nu > 1000 ) return 1000;
+        return nu;
+      },
+      postSet: function() {
+        this.updatePosition();
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updatePosition',
+      isAnimated: true,
+      code: function() {
+        this.$.innerHTML = '"Scrolled" to ' + this.x + ' pixels';
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      return '<div id="' + this.id + '" style="position: absolute; background: #88f; width: 400px; height: 200px;">Drag me</div>';
+    },
+    initHTML: function() {
+      this.updatePosition();
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        element: this.$,
+        handler: this,
+        gesture: 'horizontalScroll'
+      }));
+    },
+    horizontalScrollMove: function(dx, tx, x) {
+      this.x += dx;
+    }
+  }
+});
+
+var Y = this.X.subWindow(window);
+Y.touchManager = Y.TouchManager.create({});
+Y.touchManager.install(document);
+Y.gestureManager = Y.GestureManager.create();
+
+var view = Y.HScrollGestureBlock.create();
+view.write(document);
+ </script>
+ </body>
+</html>
