@@ -200,7 +200,7 @@ var DOM = {
       } else {
         var viewName = e.getAttribute('view');
         var viewModel = viewName ? GLOBAL[viewName] : DetailView;
-        view = viewModel.create({model: model, value: SimpleValue.create(obj)});
+        view = viewModel.create({model: model, data: obj});
         if ( ! viewName ) {
           // default value is 'true' if 'showActions' isn't specified.
           var a = e.getAttribute('showActions');
@@ -353,7 +353,7 @@ MODEL({
       var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
       var v = X[modelName].create({
         action: action,
-        value: value}).copyFrom(opt_args);
+        data$: value}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -547,16 +547,13 @@ MODEL({
       type: 'View',
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
-        if ( ! this.data ) {
-          // TODO: replace with just 'p.data' when data-binding done
-          this.data = p.data || ( p.get && p.get() );
-        }
+        if ( ! this.data ) this.data$ = p.data$;
         if ( this.view ) this.view.parent = p;
       }
     },
     {
       name: 'data',
-      postSet: function() { this.bindData(); }
+      postSet: function(_,d) { this.bindData(); }
     },
     {
       name: 'innerView',
@@ -601,17 +598,7 @@ MODEL({
       var data = this.data;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
-      if ( view.model_.DATA ) {
-        // When all views are converted to data-binding,
-        // only this method will be supported (and DAO).
-        Events.link(pValue, view.data$);
-      } else if ( view.model_.DAO ) {
-        Events.link(pValue, view.dao$);
-      } else if ( view.setValue ) {
-        view.setValue(pValue);
-      } else {
-        view.value = pValue;
-      }
+      Events.link(pValue, view.data$);
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }
@@ -1002,18 +989,7 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        oldValue && Events.unfollow(oldValue, this.domValue);
-        Events.follow(newValue, this.domValue);
-      }
-    },
-    {
-      // TODO: make 'data' be the actual source of the data
-      name: 'data',
-      getter: function() { return this.value.get(); },
-      setter: function(d) { this.value = SimpleValue.create(d); }
+      name: 'data'
     },
     {
       name: 'className',
@@ -1048,7 +1024,6 @@ MODEL({
   ],
 
   methods: {
-    setValue: function(value) { this.value = value; },
     toHTML: function() {
       var src = window.IS_CHROME_APP ?
         ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
@@ -1067,10 +1042,10 @@ MODEL({
         this.data = this.backupImage;
       }.bind(this));
 
-      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.value.get()) ) {
+      if ( window.IS_CHROME_APP && ! this.isSupportedUrl(this.data) ) {
         var self = this;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", this.value.get());
+        xhr.open("GET", this.data);
         xhr.responseType = 'blob';
         xhr.asend(function(blob) {
           if ( blob ) {
@@ -1096,12 +1071,8 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.onValueChange);
-        newValue.addListener(this.onValueChange);
-      }
+      name: 'data',
+      postSet: function() { this.onValueChange(); }
     },
     {
       model_: 'IntProperty',
@@ -1114,10 +1085,6 @@ MODEL({
   ],
 
   methods: {
-    setValue: function(value) {
-      this.value = value;
-    },
-
     toHTML: function() {
       return '<img id="' + this.id + '">';
     },
@@ -1135,9 +1102,8 @@ MODEL({
     {
       name: 'onValueChange',
       code: function() {
-        if ( ! this.value.get() ) return;
-        if ( this.$ )
-          this.$.src = URL.createObjectURL(this.value.get());
+        if ( this.data && this.$ )
+          this.$.src = URL.createObjectURL(this.data);
       }
     }
   ]
@@ -1279,8 +1245,9 @@ MODEL({
     },
 
     initHTML: function() {
-      this.SUPER();
+      if ( ! this.$ ) return;
 
+      this.SUPER();
 
       if ( this.mode === 'read-write' ) {
         if ( this.placeholder ) this.$.placeholder = this.placeholder;
@@ -1447,7 +1414,7 @@ MODEL({
 
   methods: {
     valueToDom: function(value) {
-      return value.toRelativeDateString();
+      return value ? value.toRelativeDateString() : '';
     }
   }
 });
@@ -1471,17 +1438,7 @@ MODEL({
       defaultValue: 'span'
     },
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        if ( this.mode === 'read-write' ) {
-          Events.unlink(this.domValue, oldValue);
-          Events.link(newValue, this.domValue);
-        } else {
-          Events.follow(newValue, this.domValue);
-        }
-      }
+      name: 'data'
     }
   ],
 
@@ -1493,12 +1450,6 @@ MODEL({
       return s;
     },
 
-    // TODO: deprecate
-    getValue: function() { return this.value; },
-
-    // TODO: deprecate
-    setValue: function(value) { this.value = value; },
-
     initHTML: function() {
       var e = this.$;
 
@@ -1507,10 +1458,15 @@ MODEL({
         return;
       }
       this.domValue = DomValue.create(e, undefined, 'innerHTML');
-      this.setValue(this.value);
+
+      if ( this.mode === 'read-write' ) {
+        Events.link(this.data$, this.domValue);
+      } else {
+        Events.follow(this.data$, this.domValue);
+      }
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.value); }
+    destroy: function() { Events.unlink(this.domValue, this.data$); }
   }
 });
 
@@ -1522,6 +1478,9 @@ MODEL({
 
   properties: [
     {
+      name: 'data'
+    },
+    {
       name: 'roleName',
       type: 'String',
       defaultValue: ''
@@ -1532,9 +1491,7 @@ MODEL({
       defaultValue: []
     },
     {
-      name: 'selection',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      name: 'selection'
     },
     {
       name: 'model',
@@ -1546,7 +1503,7 @@ MODEL({
     initHTML: function() {
       var e = this.$;
       this.domValue = DomValue.create(e);
-      Events.link(this.value, this.domValue);
+      Events.link(this.data$, this.domValue);
     },
 
     toHTML: function() {
@@ -1561,18 +1518,8 @@ MODEL({
       return str;
     },
 
-    getValue: function() {
-      return this.value;
-    },
-
-    setValue: function(value) {
-      Events.unlink(this.domValue, this.value);
-      this.value = value;
-      Events.link(value, this.domValue);
-    },
-
     destroy: function() {
-      Events.unlink(this.domValue, this.value);
+      Events.unlink(this.domValue, this.data$);
     }
   }
 });
@@ -1584,6 +1531,9 @@ MODEL({
   extendsModel: 'View',
 
   properties: [
+    {
+      name: 'data'
+    },
     {
       name:  'name',
       label: 'Name',
@@ -1602,21 +1552,11 @@ MODEL({
 
       this.domValue = DomValue.create(e, 'change', 'checked');
 
-      Events.link(this.value, this.domValue);
-    },
-
-    getValue: function() {
-      return this.value;
-    },
-
-    setValue: function(value) {
-      Events.unlink(this.domValue, this.value);
-      this.value = value;
-      Events.link(value, this.domValue);
+      Events.link(this.data$, this.domValue);
     },
 
     destroy: function() {
-      Events.unlink(this.domValue, this.value);
+      Events.unlink(this.domValue, this.data$);
     }
   }
 });
@@ -1635,12 +1575,8 @@ MODEL({
       defaultValue: ''
     },
     {
-      name: 'value',
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
-      }
+      name: 'data',
+      postSet: function() { this.updateHTML(); }
     },
     {
       name: 'trueImage'
@@ -1658,7 +1594,7 @@ MODEL({
 
   methods: {
     image: function() {
-      return this.value.get() ? this.trueImage : this.falseImage;
+      return this.data ? this.trueImage : this.falseImage;
     },
     toHTML: function() {
       var id = this.id;
@@ -1673,21 +1609,15 @@ MODEL({
       this.invokeInitializers();
       this.updateHTML();
     },
-    // deprecated: remove
-    getValue: function() { return this.value; },
-    // deprecated: remove
-    setValue: function(value) { this.value = value; },
-    destroy: function() {
-      this.value.removeListener(this.update);
-    },
     updateHTML: function() {
+      if ( ! this.$ ) return;
       this.$.src = this.image();
 
-      if (this.value.get()) {
-        this.trueClass && this.$.classList.add(this.trueClass);
+      if ( this.data ) {
+        this.trueClass  && this.$.classList.add(this.trueClass);
         this.falseClass && this.$.classList.remove(this.falseClass);
       } else {
-        this.trueClass && this.$.classList.remove(this.trueClass);
+        this.trueClass  && this.$.classList.remove(this.trueClass);
         this.falseClass && this.$.classList.add(this.falseClass);
       }
     },
@@ -1695,17 +1625,10 @@ MODEL({
 
   listeners: [
     {
-      name: 'update',
-      code: function() {
-        if ( ! this.$ ) return;
-        this.updateHTML();
-      }
-    },
-    {
       name: 'onClick',
       code: function(e) {
         e.stopPropagation();
-        this.value.set(! this.value.get());
+        this.data = ! this.data;
       }
     }
   ]
@@ -1746,53 +1669,6 @@ MODEL({
         e.stopPropagation();
         this.data = ! this.data;
         this.update();
-      }
-    }
-  ]
-});
-
-
-MODEL({
-  name: 'ImageBooleanView2',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name:  'name',
-      label: 'Name',
-      type:  'String',
-      defaultValue: 'field'
-    },
-    {
-      name: 'value',
-      postSet: function() { if ( this.$ ) this.$.src = this.image(); }
-    },
-    {
-      name: 'trueImage'
-    },
-    {
-      name: 'falseImage'
-    }
-  ],
-
-  methods: {
-    image: function() { return this.value ? this.trueImage : this.falseImage; },
-    toHTML: function() {
-      return '<img id="' + this.id + '" name="' + this.name + '">';
-    },
-    initHTML: function() {
-      this.$.addEventListener('click', this.onClick);
-      this.$.src = this.image();
-    }
-  },
-
-  listeners: [
-    {
-      name: 'onClick',
-      code: function(e) {
-        e.stopPropagation();
-        this.value = ! this.value;
       }
     }
   ]
@@ -1956,17 +1832,11 @@ MODEL({
       type: 'Model'
     },
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      name: 'data'
     }
   ],
 
   methods: {
-    getValue: function() {
-      return this.value;
-    },
-
     toHTML: function() {
       return (this.model.getPrototype().toSummaryHTML || this.defaultToHTML).call(this);
     },
@@ -1974,7 +1844,7 @@ MODEL({
     defaultToHTML: function() {
       this.children = [];
       var model = this.model;
-      var obj   = this.get();
+      var obj   = this.data;
       var out   = [];
 
       out.push('<div id="' + this.id + '" class="summaryView">');
@@ -2006,10 +1876,6 @@ MODEL({
       out.push('</div>');
 
       return out.join('');
-    },
-
-    get: function() {
-      return this.getValue().get();
     }
   }
 });
@@ -2148,13 +2014,7 @@ MODEL({
       }
     },
     {
-      name: 'data',
-      setter: function(_, d) { this.value = SimpleValue.create(d); }
-    },
-    {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      name: 'data'
     },
     {
       name: 'className',
@@ -2185,10 +2045,9 @@ MODEL({
   methods: {
     toHTML: function() {
       var self = this;
-      var value = self.value.get();
 
       this.on('click', function() {
-        self.action.callIfEnabled(self.value.get());
+        self.action.callIfEnabled(self.data);
       }, this.id);
 
       this.setAttribute('data-tip', function() {
@@ -2196,11 +2055,11 @@ MODEL({
       }, this.id);
 
       this.setAttribute('disabled', function() {
-        var value = self.value.get();
-        return self.action.isEnabled.call(value, self.action) ? undefined : 'disabled';
+        return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      this.X.dynamic(function() { self.action.labelFn.call(value, self.action); self.updateHTML(); });
+      // ???: It looks wrong that the first arg is 'value'
+      this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
       return this.SUPER();
     },
@@ -2213,8 +2072,7 @@ MODEL({
       }
 
       if ( this.showLabel ) {
-        var value = this.value.get();
-        out += value ? this.action.labelFn.call(value, this.action) : this.action.label;
+        out += this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
       }
 
       return out;
@@ -2252,8 +2110,7 @@ MODEL({
       }
 
       if ( this.action.showLabel ) {
-        var value = this.value.get();
-        return value ? this.action.labelFn.call(value, this.action) : this.action.label;
+        return this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
       }
     }
   }
@@ -2281,11 +2138,7 @@ MODEL({
       }
     },
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-      }
+      name: 'data'
     },
     {
       name: 'left'
@@ -2368,40 +2221,34 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      // this.value.addListener(function() { console.log('****ActionToolBar'); });
       // When the focus is in the toolbar, left/right arrows should move the
       // focus in the direction.
       this.addShortcut('Right', function(e) {
         var i = 0;
-        for (; i < this.children.length; ++i) {
-          if (e.target == this.children[i].$)
-            break;
-        }
+        for ( ; i < this.children.length && e.target != this.children[i].$ ; i++ );
         i = (i + 1) % this.children.length;
         this.children[i].$.focus();
       }.bind(this), this.id);
+
       this.addShortcut('Left', function(e) {
         var i = 0;
-        for (; i < this.children.length; ++i) {
-          if (e.target == this.children[i].$)
-            break;
-        }
+        for ( ; i < this.children.length && e.target != this.children[i].$ ; i++ );
         i = (i + this.children.length - 1) % this.children.length;
         this.children[i].$.focus();
       }.bind(this), this.id);
     },
 
     addAction: function(a) {
-      var view = ActionButton.create({ action: a, value: this.value });
+      var view = ActionButton.create({ action: a, data$: this.data$ });
       if ( a.children.length > 0 ) {
         var self = this;
         view.action = a.clone();
         view.action.action = function() {
           var toolbar = ToolbarView.create({
-            value: self.value,
+            data$:    self.data$,
             document: self.document,
-            left: view.$.offsetLeft,
-            top: view.$.offsetTop
+            left:     view.$.offsetLeft,
+            top:      view.$.offsetTop
           });
           toolbar.addActions(a.children);
           toolbar.openAsMenu(view);
@@ -2434,7 +2281,7 @@ MODEL({
       name: 'actions'
     },
     {
-      name: 'value'
+      name: 'data'
     }
   ],
 
@@ -2446,13 +2293,7 @@ MODEL({
       var actions = border.actions || this.model.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
-        var button = this.X.ActionButton.create({ action: action });
-        if ( border.value )
-          button.value$ = border.value$
-        else if ( this.value )
-          button.value$ = this.value$;
-        else
-          button.value = this.X.SimpleValue.create(this);
+        var button = this.X.ActionButton.create({ action: action, data$: this.data$ });
         str += " " + button.toHTML() + " ";
         this.addChild(button);
       }
@@ -2463,6 +2304,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'ProgressView',
 
@@ -2470,9 +2312,9 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      model_: 'FloatProperty',
+      name: 'data',
+      postSet: function () { this.updateValue(); }
     }
   ],
 
@@ -2482,30 +2324,14 @@ MODEL({
       return '<progress value="25" id="' + this.id + '" max="100" >25</progress>';
     },
 
-    setValue: function(value) {
-      this.value.removeListener(this.listener_);
-
-      this.value = value;
-      value.addListener(this.listener_);
-    },
-
     updateValue: function() {
       var e = this.$;
 
-      e.value = parseInt(this.value.get());
+      e.value = parseInt(this.data);
     },
 
     initHTML: function() {
-      var e = this.$;
-
-      // TODO: move to modelled listener
-      this.listener_ = this.updateValue.bind(this);
-
-      this.value.addListener(this.listener_);
-    },
-
-    destroy: function() {
-      this.value.removeListener(this.listener_);
+      this.updateValue();
     }
   }
 });
@@ -2519,153 +2345,6 @@ var ArrayView = {
     return view;
   }
 };
-
-
-MODEL({
-  name: 'GridView',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'row',
-      type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
-    },
-    {
-      name: 'col',
-      label: 'column',
-      type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
-    },
-    {
-      name: 'acc',
-      label: 'accumulator',
-      type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
-    },
-    {
-      name: 'accChoices',
-      label: 'Accumulator Choices',
-      type: 'Array',
-      factory: function() { return []; }
-    },
-    {
-      name: 'scrollMode',
-      type: 'String',
-      defaultValue: 'Bars',
-      view: { model_: 'ChoiceView', choices: [ 'Bars', 'Warp' ] }
-    },
-    {
-      name: 'model',
-      type: 'Model'
-    },
-    {
-      name: 'dao',
-      label: 'DAO',
-      type: 'DAO',
-      postSet: function() { this.repaint_(); }
-    },
-    {
-      name: 'grid',
-      type: 'GridByExpr',
-      factory: function() { return GridByExpr.create(); }
-    }
-  ],
-
-  // TODO: need an 'onChange:' property to handle both value
-  // changing and values in the value changing
-
-  // TODO: listeners should be able to mark themselves as mergable
-  // or updatable on 'animate', ie. specify decorators
-  methods: {
-    updateHTML: function() {
-      if ( ! this.$ ) return;
-
-      var self = this;
-      this.grid.xFunc = this.col.data || this.grid.xFunc;
-      this.grid.yFunc = this.row.data || this.grid.yFunc;
-      this.grid.acc   = this.acc.data || this.grid.acc;
-
-      this.dao.select(this.grid.clone())(function(g) {
-        if ( self.scrollMode === 'Bars' ) {
-          console.time('toHTML');
-          var html = g.toHTML();
-          console.timeEnd('toHTML');
-          self.$.innerHTML = html;
-          g.initHTML();
-        } else {
-          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
-          self.$.innerHTML = cview.toHTML();
-          cview.initHTML();
-          cview.paint();
-        }
-      });
-    },
-
-    initHTML: function() {
-      // TODO: I think this should be done automatically some-how/where.
-      this.scrollModeView.data$ = this.scrollMode$;
-
-      var choices = [
-        [ { f: function() { return ''; } }, 'none' ]
-      ];
-      this.model.properties.orderBy(Property.LABEL).select({put: function(p) {
-        choices.push([p, p.label]);
-      }});
-      this.row.choices = choices;
-      this.col.choices = choices;
-
-      this.acc.choices = this.accChoices;
-
-      this.row.initHTML();
-      this.col.initHTML();
-      this.acc.initHTML();
-
-      this.SUPER();
-
-      this.row.data$.addListener(this.repaint_);
-      this.col.data$.addListener(this.repaint_);
-      this.acc.data$.addListener(this.repaint_);
-      this.scrollMode$.addListener(this.repaint_);
-
-      this.updateHTML();
-    }
-  },
-
-  listeners: [
-    {
-      name: 'repaint_',
-      isAnimated: true,
-      code: function() { this.updateHTML(); }
-    }
-  ],
-
-  templates:[
-    /*
-    {
-      model_: 'Template',
-
-      name: 'toHTML2',
-      description: 'TileView',
-      template: '<div class="column expand">' +
-        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
-        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
-        '</div>'
-    },
-    */
-    {
-      model_: 'Template',
-
-      name: 'toHTML',
-      description: 'TileView',
-      template: '<div class="column expand">' +
-        '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
-        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
-        '</div>'
-    }
-  ]
-});
 
 
 MODEL({
@@ -2739,8 +2418,21 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create(''); }
+      name: 'data',
+      postSet: function(_, data) {
+        if ( this.choice ) {
+          if ( this.view ) {
+            this.view.data = data;
+          } else {
+            this.installSubView();
+          }
+        }
+      }
+    },
+    {
+      name: 'dao',
+      getter: function() { return this.data; },
+      setter: function(dao) { this.data = dao; }
     },
     {
       name: 'views',
@@ -2749,20 +2441,6 @@ MODEL({
       view: 'ArrayView',
       defaultValue: [],
       help: 'View choices.'
-    },
-    {
-      name:  'dao',
-      label: 'DAO',
-      type: 'DAO',
-      postSet: function(_, dao) {
-        if ( this.choice ) {
-          if ( this.view ) {
-            this.view.dao = dao;
-          } else {
-            this.installSubView();
-          }
-        }
-      }
     },
     {
       name: 'choice',
@@ -2804,10 +2482,10 @@ MODEL({
       code: function(evt) {
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
-          viewChoice.view(this.value.get().model_, this.value) :
+          viewChoice.view(this.data.model_, this.data$) :
           GLOBAL[viewChoice.view].create({
-            model: this.value.get().model_,
-            value: this.value
+            model: this.data.model_,
+            value: this.data$
           });
 
         // TODO: some views are broken and don't have model_, remove
@@ -2816,9 +2494,8 @@ MODEL({
 
         this.$.innerHTML = view.toHTML();
         view.initHTML();
-        view.value && view.value.set(this.value.get());
-        //       if ( view.set ) view.set(this.model.get());
-        //       Events.link(this.model, this.view.model);
+        // TODO: this line might need some work
+        view.data = this.data;
 
         this.view = view;
       }
@@ -2878,8 +2555,6 @@ MODEL({
     }
   }
 });
-
-
 // TODO: Currently this view is "eager": it renders all the child views.
 // It could be made more lazy , and therefore more memory-efficient.
 MODEL({
@@ -3574,6 +3249,9 @@ MODEL({
 
   properties: [
     {
+      name: 'data'
+    },
+    {
       name:  'view1',
       label: 'View 1'
     },
@@ -3586,29 +3264,9 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      /*
-        this.view1 = AlternateView.create();
-        this.view2 = AlternateView.create();
-      */
-      this.view1 = DetailView.create();
-      this.view2 = JSView.create();
 
-      this.setValue(SimpleValue.create(""));
-    },
-
-    // Sets the Data-Model
-    setValue: function(value) {
-      this.value = value;
-      if ( this.view1 ) this.view1.setValue(value);
-      if ( this.view2 ) this.view2.setValue(value);
-    },
-
-    set: function(obj) {
-      this.value.set(obj);
-    },
-
-    get: function() {
-      return this.value.get();
+      this.view1 = DetailView.create({data$: this.data$});
+      this.view2 = JSView.create({data$: this.data$});
     },
 
     toHTML: function() {
@@ -3649,12 +3307,8 @@ MODEL({
       }
     },
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create({ value: [] }); },
-      postSet: function(oldValue, newValue) {
-        this.inputView.setValue(newValue);
-        this.valueView.value = newValue;
-      }
+      name: 'data',
+      factory: function() { return []; }
     }
   ],
 
@@ -3664,11 +3318,10 @@ MODEL({
       this.valueView.lastView = this.inputView;
       return this.valueView.toHTML();
     },
-    setValue: function(value) {
-      this.value = value;
-    },
     initHTML: function() {
       this.SUPER();
+      this.valueView.data$ = this.data$;
+      this.inputView.data$ = this.data$;
       this.valueView.initHTML();
     }
   }
@@ -3720,17 +3373,9 @@ MODEL({
       }
     },
     {
-      name: 'value',
+      name: 'data',
       help: 'The array value we are editing.',
-      factory: function() {
-        return SimpleValue.create({
-          value: []
-        });
-      },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.onValueChange);
-        newValue.addListener(this.onValueChange);
-      }
+      factory: function() { return []; }
     },
     {
       name: 'domInputValue'
@@ -3740,32 +3385,31 @@ MODEL({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
-      this.on('blur', this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
-      this.on('focus', this.onInput, this.id);
+      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('focus',   this.onInput, this.id);
 
       return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
     },
-    setValue: function(value) {
-      this.value = value;
-    },
     initHTML: function() {
       this.SUPER();
+
       if ( this.usePlaceholder && this.placeholder )
         this.$.placeholder = this.placeholder;
+
       this.autocompleteView.initHTML();
       this.domInputValue = DomValue.create(this.$, 'input');
       this.domInputValue.addListener(this.onInput);
     },
     pushValue: function(v) {
-      this.value.set(this.value.get().concat(v));
+      this.data = this.data.concat(v);
       this.domInputValue.set('');
       // Previous line doesn't trigger listeners.
       this.onInput();
     },
     popValue: function() {
-      var value = this.value.get().slice();
-      value.pop();
-      this.value.set(value);
+      var a = this.data.slice();
+      a.pop();
+      this.data = a;
     }
   },
 
@@ -3773,9 +3417,9 @@ MODEL({
     {
       name: 'selected',
       code: function() {
-        if ( this.autocompleteView.value.get() ) {
+        if ( this.autocompleteView.data ) {
           this.pushValue(
-            this.property.f(this.autocompleteView.value.get()));
+            this.property.f(this.autocompleteView.data));
         }
       }
     },
@@ -3817,9 +3461,9 @@ MODEL({
           this.autocompleteView.prevSelection();
           e.preventDefault();
         } else if ( e.keyCode === 13 /* RET */ || e.keyCode === 9 /* TAB */ ) {
-          if ( this.autocompleteView.value.get() ) {
+          if ( this.autocompleteView.data ) {
             this.pushValue(
-              this.property.f(this.autocompleteView.value.get()));
+              this.property.f(this.autocompleteView.data));
             e.preventDefault();
           }
         } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
@@ -3850,159 +3494,13 @@ MODEL({
 
 
 MODEL({
-  name: 'ArrayTileView',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'dao'
-    },
-    {
-      name: 'property'
-    },
-    {
-      name: 'tileView'
-    },
-    {
-      name: 'lastView'
-    },
-    {
-      name: 'value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.paint);
-        newValue.addListener(this.paint);
-      }
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'painting',
-      defaultValue: false
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      this.on('click', this.onClick, this.id);
-
-      return '<ul id="' + this.id + '" class="arrayTileView"><li class="arrayTileLastView">' +
-        this.lastView.toHTML() + '</li></ul>';
-    },
-    initHTML: function() {
-      this.SUPER();
-
-      this.lastView.initHTML();
-      this.paint();
-      this.$.ownerDocument.defaultView.addEventListener('resize', this.layout);
-    },
-  },
-
-  listeners: [
-    {
-      // Clicking anywhere in the View should give focus to the
-      // lastView.
-      name: 'onClick',
-      code: function() {
-        this.lastView.focus();
-      }
-    },
-    {
-      name: 'layout',
-      isAnimated: true,
-      code: function() {
-        if ( ! this.$ ) return;
-        var last = this.$.lastChild;
-        last.style.width = '100px';
-        last.style.width = 100 + last.parentNode.clientWidth -
-          (last.offsetWidth + last.offsetLeft) - 4 /* margin */ - 75;
-        this.painting = false;
-      }
-    },
-    {
-      name: 'paint',
-      isAnimated: true,
-      code: function() {
-        // If we're currently painting, don't actually paint now,
-        // queue up another paint on the next animation frame.
-        // This doesn't spin infinitely because paint is set to animate: true,
-        // meaning that it's merged to the next animation frame.
-        if ( this.painting ) {
-          this.paint();
-          return;
-        }
-
-        this.painting = true;
-        this.children = [];
-        var value = this.value.get();
-        var count = value.length;
-        var self = this;
-        var render = function() {
-          while ( self.$.firstChild !== self.$.lastChild ) {
-            self.$.removeChild(self.$.firstChild);
-          }
-
-          var temp = document.createElement('div');
-          temp.style.display = 'None';
-          self.$.insertBefore(temp, self.$.lastChild);
-          temp.outerHTML = self.children.map(
-            function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
-          self.children.forEach(
-            function(c) { c.initHTML(); });
-          self.layout();
-        };
-
-        if ( value.length == 0 ) {
-          render();
-        } else {
-          self.$.style.display = '';
-        }
-
-        for ( var i = 0; i < value.length; i++ ) {
-          this.dao.find(EQ(this.property, value[i]), {
-            put: function(obj) {
-              var view = self.tileView.create();
-              view.value.set(obj);
-              view.subscribe('remove', self.onRemove);
-              self.addChild(view);
-              count--;
-              if ( count == 0 ) render();
-            },
-            error: function() {
-              // Ignore missing values
-              count--;
-              if ( count == 0 ) render();
-            },
-          });
-        }
-      }
-    },
-    {
-      name: 'onRemove',
-      code: function(src, topic, obj) {
-        var self = this;
-        this.value.set(this.value.get().removeF({
-          f: function(o) {
-            return o === self.property.f(obj);
-          }
-        }));
-      }
-    }
-  ]
-});
-
-
-MODEL({
   name: 'ArrayListView',
   extendsModel: 'View',
 
   properties: [
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create([]) },
+      name: 'data',
       postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
         this.update();
       }
     },
@@ -4018,9 +3516,6 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       this.update();
-    },
-    setValue: function(value) {
-      this.value = value;
     }
   },
 
@@ -4032,13 +3527,13 @@ MODEL({
         if ( ! this.$ ) return;
         this.$.innerHTML = '';
 
-        var objs = this.value.get();
+        var objs = this.data;
         var children = new Array(objs.length);
 
         for ( var i = 0; i < objs.length; i++ ) {
           var view = this.listView.create();
           children[i] = view;
-          view.value = SimpleValue.create(objs[i]);
+          view.data = objs[i];
         }
 
         this.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
@@ -4047,6 +3542,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'KeyView',
@@ -4094,6 +3590,7 @@ MODEL({
     }
   }
 });
+
 
 MODEL({
   name: 'DAOKeyView',
@@ -4156,9 +3653,8 @@ MODEL({
       hidden: true
     },
     {
-      name: 'value',
-      hidden: true,
-      factory: function() { return SimpleValue.create(); }
+      name: 'data',
+      hidden: true
     },
     {
       name: 'model',
@@ -4184,7 +3680,7 @@ MODEL({
       name: 'selection',
       defaultValue: 0,
       postSet: function(oldValue, newValue) {
-        this.value.set(this.objs[newValue]);
+        this.data = this.objs[newValue];
         if ( this.$ ) {
           if ( this.$.children[oldValue] )
             this.$.children[oldValue].className = 'autocompleteListItem';
@@ -4208,10 +3704,6 @@ MODEL({
   ],
 
   methods: {
-    setValue: function(value) {
-      this.value = value;
-    },
-
     initHTML: function() {
       this.SUPER();
       this.$.style.display = 'none';
@@ -4258,7 +3750,7 @@ MODEL({
         // TODO Determine if its worth double buffering the dom.
         var objs = [];
         var newSelection = 0;
-        var value = this.value.get();
+        var value = this.data;
         var self = this;
 
         this.dao.limit(this.count).select({
@@ -4289,7 +3781,7 @@ MODEL({
               })(i);
               container.className = 'autocompleteListItem';
               self.$.appendChild(container);
-              view.value.set(obj);
+              view.data = obj;
               container.innerHTML = view.toHTML();
               view.initHTML();
             }
@@ -4319,21 +3811,19 @@ MODEL({
       },
     },
     {
-      name: 'value',
-      postSet: function(old, nu) {
-        this.activeView.value = nu;
-      }
+      name: 'data',
+      postSet: function(_, data) { this.activeView.data = data; }
     },
     {
       name: 'activeView',
-      postSet: function(old, nu) {
+      postSet: function(old, view) {
         if ( old ) {
           old.unsubscribe('nextview', this.onNextView);
           old.unsubscribe('prevview', this.onPrevView);
         }
-        nu.subscribe('nextview', this.onNextView);
-        nu.subscribe('prevview', this.onPrevView);
-        if ( this.value ) nu.value = this.value;
+        view.subscribe('nextview', this.onNextView);
+        view.subscribe('prevview', this.onPrevView);
+        view.data = this.data;
       }
     },
     {
@@ -4390,189 +3880,169 @@ MODEL({
 
 
 MODEL({
-  name: 'PredicatedView',
-  extendsModel: 'View',
+  name: 'ListInputView',
+
+  extendsModel: 'AbstractDAOView',
 
   properties: [
     {
+      name: 'name'
+    },
+    {
       name: 'dao',
-      help: 'Payload of the view; assumed to be a DAO.'
+      help: 'The DAO to fetch autocomplete objects from.',
     },
     {
-      name: 'predicate',
-      defaultValueFn: function() { return TRUE; },
-      postSet: function(_, p) { console.log(p); this.predicatedDAO = this.dao.where(p); }
+      name: 'property',
+      help: 'The property model to map autocomplete objecst to values with.'
     },
     {
-      model_: 'DAOProperty',
-      name: 'predicatedDAO'
+      model_: 'ArrayProperty',
+      name: 'searchProperties',
+      help: 'The properties with which to construct the autocomplete query with.'
     },
     {
-      name: 'view',
-      required: true,
-      preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v);
-        this.children = [v];
-        v.data = v.dao = this.predicatedDAO$Proxy;
-        return v;
+      name: 'autocompleteView',
+      postSet: function(oldValue, newValue) {
+        oldValue && oldValue.unsubscribe('selected', this.selected);
+        newValue.subscribe('selected', this.selected);
       }
+    },
+    {
+      name: 'placeholder',
+      postSet: function(oldValue, newValue) {
+        if ( this.$ && this.usePlaceholer ) this.$.placeholder = newValue;
+      }
+    },
+    {
+      model_: 'BooleanValue',
+      name: 'usePlaceholder',
+      defaultValue: true,
+      postSet: function(_, newValue) {
+        if ( this.$ ) this.$.placeholder = newValue ?
+          this.placeholder : '';
+      }
+    },
+    {
+      name: 'data',
+      help: 'The array value we are editing.',
+      factory: function() { return []; }
+    },
+    {
+      name: 'domInputValue'
     }
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
+    toHTML: function() {
+      this.on('keydown', this.onKeyDown, this.id);
+      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('focus',   this.onInput, this.id);
+
+      return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
     },
-    toHTML: function() { return this.view.toHTML(); },
-    initHTML: function() { this.view.initHTML(); }
-  }
-});
-
-
-MODEL({
-  name: 'DAOListView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      model_: 'DAOProperty',
-      name: 'dao',
-      onDAOUpdate: 'onDAOUpdate'
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'hidden',
-      defaultValue: false,
-      postSet: function(_, hidden) {
-        if ( this.dao && ! hidden ) this.onDAOUpdate();
-      }
-    },
-    { name: 'rowView', defaultValue: 'DetailView' },
-    {
-      name: 'mode',
-      defaultValue: 'read-write',
-      view: {
-        create: function() { return ChoiceView.create({choices:[
-          "read-only", "read-write", "final"
-        ]}); }
-      }
-    },
-    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
-    'selection',
-    {
-      name: 'scrollContainer',
-      help: 'Containing element that is responsible for scrolling.'
-    },
-    {
-      name: 'chunkSize',
-      defaultValue: 0,
-      help: 'Number of entries to load in each infinite scroll chunk.'
-    },
-    {
-      name: 'chunksLoaded',
-      hidden: true,
-      defaultValue: 1,
-      help: 'The number of chunks currently loaded.'
-    }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      var self = this;
-      this.subscribe(this.ON_HIDE, function() {
-        self.hidden = true;
-      });
-
-      this.subscribe(this.ON_SHOW, function() {
-        self.hidden = false;
-      });
-
-    },
-
     initHTML: function() {
-      // this.SUPER();
+      this.SUPER();
 
-      // If we're doing infinite scrolling, we need to find the container.
-      // Either an overflow: scroll element or the window.
-      // We keep following the parentElement chain until we get null.
-      if ( this.chunkSize > 0 ) {
-        var e = this.$;
-        while ( e ) {
-          if ( window.getComputedStyle(e).overflow === 'scroll' ) break;
-          e = e.parentElement;
-        }
-        this.scrollContainer = e || window;
-        this.scrollContainer.addEventListener('scroll', this.onScroll, false);
-      }
+      if ( this.usePlaceholder && this.placeholder )
+        this.$.placeholder = this.placeholder;
 
-      if ( ! this.hidden ) this.updateHTML();
+      this.autocompleteView.initHTML();
+      this.domInputValue = DomValue.create(this.$, 'input');
+      this.domInputValue.addListener(this.onInput);
     },
-
-    updateHTML: function() {
-      if ( ! this.dao || ! this.$ ) return;
-      if ( this.painting ) return;
-      this.painting = true;
-
-      var out = [];
-      var rowView = FOAM.lookup(this.rowView);
-
-      this.children = [];
-      this.initializers_ = [];
-
-      var d = this.dao;
-      if ( this.chunkSize ) {
-        d = d.limit(this.chunkSize * this.chunksLoaded);
-      }
-      d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.clone();
-        var view = rowView.create({value: SimpleValue.create(o), model: o.model_}, this.X);
-        // TODO: Something isn't working with the Context, fix
-        view.DAO = this.dao;
-        if ( this.mode === 'read-write' ) {
-          o.addListener(function() {
-            this.dao.put(o);
-          }.bind(this, o));
-        }
-        this.addChild(view);
-        if ( this.useSelection ) {
-          out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
-            this.selection = o
-          }).bind(this)) + '">');
-        }
-        out.push(view.toHTML());
-        if ( this.useSelection ) {
-          out.push('</div>');
-        }
-      }.bind(this)})(function() {
-        var e = this.$;
-
-        if ( ! e ) return;
-
-        e.innerHTML = out.join('');
-        this.initInnerHTML();
-        this.children = [];
-        this.painting = false;
-      }.bind(this));
+    pushValue: function(v) {
+      this.data = this.data.concat(v);
+      this.domInputValue.set('');
+      // Previous line doesn't trigger listeners.
+      this.onInput();
+    },
+    popValue: function() {
+      var a = this.data.slice();
+      a.pop();
+      this.data = a;
     }
   },
 
   listeners: [
     {
-      name: 'onDAOUpdate',
-      isAnimated: true,
-      code: function() { if ( ! this.hidden ) this.updateHTML(); }
+      name: 'selected',
+      code: function() {
+        if ( this.autocompleteView.data ) {
+          this.pushValue(
+            this.property.f(this.autocompleteView.data));
+        }
+<<<<<<< HEAD
+=======
+        this.scrollContainer = e || window;
+        this.scrollContainer.addEventListener('scroll', this.onScroll, false);
+>>>>>>> fb4d298f75675763203be78ee00a56d1f2ae1873
+      }
     },
     {
-      name: 'onScroll',
+      name: 'onInput',
       code: function() {
-        var e = this.scrollContainer;
-        if ( this.chunkSize > 0 && e.scrollTop + e.offsetHeight >= e.scrollHeight ) {
-          this.chunksLoaded++;
-          this.updateHTML();
+        var value = this.domInputValue.get();
+
+        if ( value.charAt(value.length - 1) === ',' ) {
+          if ( value.length > 1 ) this.pushValue(value.substring(0, value.length - 1));
+          else this.domInputValue.set('');
+          return;
         }
+
+        if ( value === '' ) {
+          this.autocompleteView.dao = [];
+          return;
+        }
+
+        var predicate = OR();
+        value = this.domInputValue.get();
+        for ( var i = 0; i < this.searchProperties.length; i++ ) {
+          predicate.args.push(STARTS_WITH(this.searchProperties[i], value));
+        }
+        value = this.data;
+        if ( value.length > 0 ) {
+          predicate = AND(NOT(IN(this.property, value)), predicate);
+        }
+        this.autocompleteView.dao = this.dao.where(predicate);
+      }
+    },
+    {
+      name: 'onKeyDown',
+      code: function(e) {
+        if ( e.keyCode === 40 /* down */) {
+          this.autocompleteView.nextSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 38 /* up */ ) {
+          this.autocompleteView.prevSelection();
+          e.preventDefault();
+        } else if ( e.keyCode === 13 /* RET */ || e.keyCode === 9 /* TAB */ ) {
+          if ( this.autocompleteView.data ) {
+            this.pushValue(
+              this.property.f(this.autocompleteView.data));
+            e.preventDefault();
+          }
+        } else if ( e.keyCode === 8 && this.domInputValue.get() === '' ) {
+          this.popValue();
+        }
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function(e) {
+        var value = this.domInputValue.get();
+        if ( value.length > 0 ) {
+          this.pushValue(value);
+        } else {
+          this.domInputValue.set('');
+        }
+        this.autocompleteView.dao = [];
+      }
+    },
+    {
+      name: 'onValueChange',
+      code: function() {
+        this.usePlaceholder = this.data.length == 0;
       }
     }
   ]
@@ -4786,256 +4256,6 @@ MODEL({
         </div>
       </div>
     */}
-  ]
-});
-
-
-/**
- * A general purpose view for scrolling content.
- *
- * TODO: Horizontal scrolling.
- * TODO: Non-overlay scrollbars (we currently don't account for
- * scrollbar size).
- * TODO: Graceful, customizable strategy for coping with a slow DAO. E.g., show
- * tombstones (if the # of rows is available), or a pacifier view while the
- * content is being fetched.
- */
-MODEL({
-  name: 'ScrollView',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      model_: 'DAOProperty',
-      name: 'dao'
-    },
-    {
-      name: 'model',
-      type: 'Model'
-    },
-    {
-      name: 'runway',
-      help: 'Elements that are within |runway| pixels of the scroll clip are retained.',
-      model_: 'IntProperty',
-      units: 'pixels',
-      defaultValue: 500
-    },
-    {
-      name: 'rowView',
-      defaultValue: 'SummaryView'
-    },
-    {
-      name: 'rowViews',
-      factory: function() { return {}; }
-    },
-    {
-      name: 'unclaimedRowViews',
-      factory: function() { return []; }
-    },
-    {
-      // TODO: Can we calculate this reliably?
-      model_: 'IntProperty',
-      name: 'rowViewHeight'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'height'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'scrollTop',
-      defaultValue: 0,
-      preSet: function(_, v) {
-        if ( v < 0 )
-          return 0;
-        if (this.numRows)
-          return Math.max(0, Math.min(v, (this.rowViewHeight * this.numRows) - this.height));
-        return v;
-      },
-      postSet: function(old, nu) {
-        this.scroll();
-      }
-    },
-    {
-      name: 'scrollHeight',
-      dynamicValue: function() { return this.numRows * this.rowViewHeight; }
-    },
-    {
-      name: 'sequenceNumber',
-      hidden: true,
-      defaultValue: 0
-    },
-    {
-      name: 'workingSet',
-      factory: function() { return []; }
-    },
-    {
-      name: 'numRows',
-      defaultValue: 0
-    },
-    {
-      name: 'verticalScrollbarView',
-      defaultValue: 'VerticalScrollbarView'
-    }
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <div>
-        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
-          <%
-            var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
-                scrollTop$ : this.scrollTop$,
-                height$ : this.height$,
-                scrollHeight$ : this.scrollHeight$,
-            });
-
-            this.addChild(verticalScrollbar);
-            out(verticalScrollbar.toHTML());
-          %>
-        </div>
-      </div>
-    */},
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-      this.dao.listen(this.scroll);
-      var touch = this.X.TouchInput;
-      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
-      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
-    },
-    formatObject: function(o) {
-      var out = "";
-      for ( var i = 0, prop; prop = this.model.properties[i]; i++ ) {
-        if ( prop.summaryFormatter )
-          out += prop.summaryFormatter(prop.f(o), o);
-        else out += this.strToHTML(prop.f(o));
-      }
-      return out;
-    },
-    createOrReuseRowView: function(data) {
-      if (this.unclaimedRowViews.length)
-        return this.unclaimedRowViews.shift();
-      var view = FOAM.lookup(this.rowView).create({ data: data });
-      return {
-        view: view,
-        html: view.toHTML(),
-        initialized: false,
-        sequenceNumber: 0
-      };
-    },
-    createOrReuseRowViews: function() {
-      var uninitialized = [];
-      var newHTML = "";
-
-      for (var i = 0; i < this.workingSet.length; i++) {
-        if (!this.rowViews[this.workingSet[i].id]) {
-          var view = this.createOrReuseRowView(this.workingSet[i]);
-          this.rowViews[this.workingSet[i].id] = view;
-          view.view.data = this.workingSet[i];
-          if (!view.initialized) {
-            view.id = this.nextID();
-            newHTML += '<div style="width:100%;position:absolute;height:'
-                + this.rowViewHeight + 'px;overflow:visible" id="' + view.id
-                + '">' + view.html + "</div>";
-            uninitialized.push(view);
-          }
-        }
-      }
-
-      if (newHTML)
-        this.$.lastElementChild.insertAdjacentHTML('afterend', newHTML);
-
-      for (var i = 0; i < uninitialized.length; i++) {
-        uninitialized[i].view.initHTML();
-        uninitialized[i].initialized = true;
-      }
-    },
-    positionRowViews: function(offset) {
-      // Set the CSS3 transform for all visible rows.
-      // FIXME: eventually get this from a physics solver.
-      for (var i = 0; i < this.workingSet.length; i++) {
-        // Need to get this element and set its transform
-        var elementOffset = offset + (i * this.rowViewHeight);
-        var row = this.rowViews[this.workingSet[i].id];
-        var rowView = $(row.id);
-        // TODO: need to generalize this transform stuff.
-        rowView.style.webkitTransform = "translate3d(0px, " + elementOffset + "px, 0px)";
-        row.sequenceNumber = this.sequenceNumber;
-      }
-    },
-    recycleRowViews: function(offset) {
-      for (var key in this.rowViews) {
-        if (this.rowViews[key].sequenceNumber != this.sequenceNumber) {
-          var row = this.rowViews[key];
-          var rowView = $(row.id);
-          rowView.style.webkitTransform = "scale(0)";
-          this.unclaimedRowViews.push(this.rowViews[key]);
-          delete this.rowViews[key];
-        }
-      }
-    },
-    updateDOM: function(offset) {
-      this.createOrReuseRowViews();
-      this.positionRowViews(offset);
-      this.recycleRowViews(offset);
-    },
-    updateDOMWithNumRows: function(limit) {
-      var skip = Math.max(Math.min(this.numRows - limit, Math.floor((this.scrollTop - this.runway) / this.rowViewHeight)), 0);
-      var offset = Math.floor(skip * this.rowViewHeight - this.scrollTop);
-      this.dao.skip(skip).limit(limit).select()(function(objs) {
-        this.workingSet = objs;
-        this.updateDOM(offset);
-      }.bind(this));
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.scroll();
-      this.$.addEventListener('wheel', this.onWheel);
-    }
-  },
-
-  listeners: [
-    {
-      name: 'scroll',
-      code: function() {
-        if ( ! this.$ ) return;
-        this.sequenceNumber++;
-        var limit = Math.floor((this.height + 2 * this.runway) / this.rowViewHeight) + 2;
-        this.dao.select(COUNT())(function(c) {
-          this.numRows = c.count;
-          this.updateDOMWithNumRows(limit);
-        }.bind(this));
-      },
-    },
-    {
-      name: 'onTouchStart',
-      code: function(_, _, touch) {
-        if ( ! this.touch ) this.touch = touch;
-        var self = this;
-        this.touch.y$.addListener(function(_, _, old, nu) {
-          self.scrollTop = self.scrollTop + old - nu;
-        });
-      }
-    },
-    {
-      name: 'onTouchEnd',
-      code: function(_, _, touch) {
-        if ( touch.id === this.touch.id ) {
-          this.touch = '';
-        }
-      }
-    },
-    {
-      name: 'onWheel',
-      code: function(ev) {
-        this.scrollTop += ev.deltaY;
-        ev.preventDefault();
-      }
-    }
   ]
 });
 

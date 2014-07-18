@@ -1,6 +1,6 @@
 
 
-FOAModel({
+MODEL({
   name: 'Point',
   properties: [ 'x', 'y' ],
   methods: {
@@ -13,7 +13,7 @@ p.scale(2);
 p.x = p.y;
 console.log(p.toJSON());
 
-FOAModel({
+MODEL({
   name: 'Point3D',
   extendsModel: 'Point',
   properties: [ 'z' ],
@@ -358,7 +358,7 @@ space.paint();
 
 document.writeln("<td valign=top>");
 
-var timerView = DetailView.create({value: SimpleValue.create(timer), showActions: true});;
+var timerView = DetailView.create({data: timer, showActions: true});;
 document.writeln(timerView.toHTML());
 timerView.initHTML();
 

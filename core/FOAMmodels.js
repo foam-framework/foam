@@ -48,6 +48,7 @@ var files = [
   'value',
   'view',
   'layout',
+  'daoView',
   'ChoiceView',
   'DetailView',
   'TableView',

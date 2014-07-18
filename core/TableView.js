@@ -28,7 +28,7 @@
 */
 MODEL({
   name: 'TableView',
-  extendsModel: 'View',
+  extendsModel: 'AbstractDAOView',
 
   label: 'Table View',
 
@@ -66,14 +66,6 @@ MODEL({
       type:  'Comparator',
       postSet: function() { this.repaint(); },
       defaultValue: undefined
-    },
-    {
-      model_: 'DAOProperty',
-      name:  'dao',
-      label: 'DAO',
-      onDAOUpdate: 'onDAOUpdate',
-      required: true,
-      hidden: true
     },
     {
       name: 'rows',
