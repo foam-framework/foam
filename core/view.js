@@ -3444,7 +3444,7 @@ MODEL({
         for ( var i = 0; i < this.searchProperties.length; i++ ) {
           predicate.args.push(STARTS_WITH(this.searchProperties[i], value));
         }
-        value = this.value.get();
+        value = this.data;
         if ( value.length > 0 ) {
           predicate = AND(NOT(IN(this.property, value)), predicate);
         }
@@ -3486,7 +3486,7 @@ MODEL({
     {
       name: 'onValueChange',
       code: function() {
-        this.usePlaceholder = this.value.get().length == 0;
+        this.usePlaceholder = this.data.length == 0;
       }
     }
   ]
@@ -3647,7 +3647,7 @@ MODEL({
       postSet: function(oldValue, newValue) {
         oldValue && oldValue.unlisten(this.paint);
         newValue.listen(this.paint);
-        this.value.set('');
+        this.data = '';
         this.paint();
       },
       hidden: true
