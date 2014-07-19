@@ -89,7 +89,7 @@ var ModelProto = {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
         MODEL({
-          __proto__: eval('(' + traitModel.toJSON() + ')'),
+          __proto__: traitModel,
           name: name,
           extendsModel: parentModel.name
         });
