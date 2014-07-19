@@ -231,8 +231,7 @@ var s1 = ScrollCView.create({
 sview.write(document);
 sview.addChild(s1);
 s1.paint();
-var sv1 = DetailView.create({model: s1.model_});
-sv1.set(s1);
+var sv1 = DetailView.create({data: s1});
 sv1.write(document);
 
 /*
@@ -271,8 +270,7 @@ document.writeln("<table width=1600><tr>");
 
 DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
-var dv1 = DetailView.create({model: o.model_});
-dv1.set(o);
+var dv1 = DetailView.create({data: o});
 document.writeln("<td valign=top width=500>");
 dv1.write(document);
 document.writeln("</td>");
@@ -299,7 +297,7 @@ document.writeln("</td>");
 dv4.initHTML();
 document.writeln("</tr></table>");
 
-dv1.set(o);
+dv1.data = o;
 // dv2.setModel(o);
 /** TODO: fix
     dv3.setValue({
@@ -363,14 +361,12 @@ document.writeln(timerView.toHTML());
 timerView.initHTML();
 
 document.writeln("</td><td valign=top>");
-var sunView = DetailView.create({model: sun.model_});
+var sunView = DetailView.create({data: sun});
 document.writeln(sunView.toHTML());
-sunView.set(sun);
 sunView.initHTML();
 
-var earthView = DetailView.create({model: sun.model_});
+var earthView = DetailView.create({data: earth});
 document.writeln(earthView.toHTML());
-earthView.set(earth);
 earthView.initHTML();
 
 document.writeln("</td>");
@@ -427,16 +423,14 @@ Movement.orbit(timer, mouse, bug1, 80, 1500);
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 
 document.writeln("<table><tr><td valign=top>");
-var mouseView = DetailView.create({model: mouse.model_});
+var mouseView = DetailView.create({data: mouse});
 document.writeln(mouseView.toHTML());
-mouseView.set(mouse);
 mouseView.initHTML();
 
 document.writeln("</td><td>");
 
-var bugView = DetailView.create({model: bug1.model_});
+var bugView = DetailView.create({data: bug1});
 document.writeln(bugView.toHTML());
-bugView.set(bug1);
 bugView.initHTML();
 document.writeln("</td></tr></table>");
 
