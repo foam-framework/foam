@@ -6,7 +6,7 @@ MODEL({
     { name: 'view' },
     { name: 'window' },
     { name: 'timer', factory: function() { return Timer.create({}); } },
-    { name: 'dest', factory: function() { return Point.create({ x: 100, y: 100 });  } }
+    { name: 'dest',  factory: function() { return Point.create({ x: 100, y: 100 });  } }
   ],
   methods: {
     init: function() {
@@ -27,7 +27,7 @@ MODEL({
   }
 });
 
-var win = Window.create({ window: window });
+var win  = Window.create({ window: window });
 var view = DetailView.create({ data: win });
-var v = OrbitingLayout.create({ window: win, view: FloatingView.create({ view: view }) });
+var v    = OrbitingLayout.create({ window: win, view: FloatingView.create({ view: view }) });
 v.write(document);
