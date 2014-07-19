@@ -2058,7 +2058,6 @@ MODEL({
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
       }, this.id);
 
-      // ???: It looks wrong that the first arg is 'value'
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
       return this.SUPER();
