@@ -465,7 +465,7 @@ MODEL({
     },
     {
       name: 'tagName',
-      defaultValue: 'button'
+      defaultValue: 'span'
     },
     {
       name: 'className',
@@ -477,10 +477,11 @@ MODEL({
     }
   ],
 
-  listeners: [
+  actions: [
     {
-      name: 'popup',
-      code: function(e) {
+      name: 'open',
+      labelFn: function() { return this.linkLabel; },
+      action: function() {
         var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
@@ -528,21 +529,18 @@ MODEL({
       }
 
       out += '<span class="action">';
-      if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
-      }
+      this.model_.OPEN.iconUrl = this.iconUrl;
+      var button = this.createActionView(
+        this.model_.OPEN,
+        SimpleValue.create(this)
+      ).toView();
 
-      if ( this.linkLabel ) {
-        out += this.linkLabel;
-      }
+      this.addChild(button);
+      
+      out += button.toHTML();
       out += '</span>';
 
       return out;
-    },
-
-    initHTML: function() {
-      this.SUPER();
-      this.$.addEventListener('click', this.popup);
     }
   }
 });
