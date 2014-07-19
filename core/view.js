@@ -3972,11 +3972,8 @@ MODEL({
           this.pushValue(
             this.property.f(this.autocompleteView.data));
         }
-<<<<<<< HEAD
-=======
         this.scrollContainer = e || window;
         this.scrollContainer.addEventListener('scroll', this.onScroll, false);
->>>>>>> fb4d298f75675763203be78ee00a56d1f2ae1873
       }
     },
     {
