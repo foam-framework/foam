@@ -18,13 +18,14 @@
 MODEL({
   name: 'PositionedViewTrait',
   properties: [
-    { model_: 'IntProperty', name: 'x', units: 'px', defaultValue: 0 },
-    { model_: 'IntProperty', name: 'y', units: 'px', defaultValue: 0 },
-    { model_: 'IntProperty', name: 'z', units: 'px', defaultValue: 0 },
-    { model_: 'IntProperty', name: 'width', units: 'px', defaultValue: 100 },
+    { model_: 'IntProperty', name: 'x',      units: 'px', defaultValue: 0 },
+    { model_: 'IntProperty', name: 'y',      units: 'px', defaultValue: 0 },
+    { model_: 'IntProperty', name: 'z',      units: 'px', defaultValue: 0 },
+    { model_: 'IntProperty', name: 'width',  units: 'px', defaultValue: 100 },
     { model_: 'IntProperty', name: 'height', units: 'px', defaultValue: 100 }
   ]
 });
+
 
 MODEL({
   name: 'PositionedDOMViewTrait',
@@ -57,12 +58,13 @@ MODEL({
       name: 'resize',
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        this.$.style.width = this.width + this.model_.WIDTH.units;
+        this.$.style.width  = this.width + this.model_.WIDTH.units;
         this.$.style.height = this.height + this.model_.HEIGHT.units;
       }
     }
   ]
 });
+
 
 MODEL({
   name: 'Window',
@@ -84,11 +86,12 @@ MODEL({
       name: 'onResize',
       code: function() {
         this.height = this.window.innerHeight;
-        this.width = this.window.innerWidth;
+        this.width  = this.window.innerWidth;
       }
     }
   ]
 });
+
 
 MODEL({
   name: 'Point',
@@ -98,13 +101,14 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'FloatingView',
   extendsModel: 'View',
   traits: ['PositionedDOMViewTrait'],
   properties: [
     { name: 'view' },
-    { name: 'width', defaultValue: 300 },
+    { name: 'width',  defaultValue: 300 },
     { name: 'height', defaultValue: 300 }
   ],
   methods: {
