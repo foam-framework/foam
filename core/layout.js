@@ -117,6 +117,7 @@ MODEL({
     },
     initHTML: function() {
       this.SUPER();
+      this.$.style.overflow = 'scroll';
       this.view.initHTML();
     }
   }

@@ -934,16 +934,17 @@ var Movement = {
    * @arg r radius of orbit
    * @arg p period of orbit
    */
-  orbit: function (t, body, sat, r, p) {
+  orbit: function (t, body, sat, r, p, opt_start) {
     var bodyX = body.x$;
     var bodyY = body.y$;
     var satX  = sat.x$;
     var satY  = sat.y$;
+    var start = opt_start || 0;
 
     t.addListener(EventService.animate(function() {
       var time = t.time;
-      satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2));
-      satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2));
+      satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2 + start));
+      satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2 + start));
     }));
   },
 
