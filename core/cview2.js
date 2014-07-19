@@ -314,9 +314,7 @@ MODEL({
       defaultValue: ''
     },
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      name: 'data'
     },
     {
       name: 'showLabel',
@@ -339,7 +337,7 @@ MODEL({
   listeners: [
     {
       name: 'onClick',
-      code: function() { this.action.callIfEnabled(this.value.get()); }
+      code: function() { this.action.callIfEnabled(this.data); }
     },
     {
       name: 'onMouseDown',
@@ -395,7 +393,7 @@ MODEL({
       c.textBaseline = 'middle';
       c.fillStyle    = this.color;
       c.fillText(
-        this.action.labelFn.call(this.value, this.action),
+        this.action.labelFn.call(this.data, this.action),
         this.x+this.width/2,
         this.y+this.height/2);
     }
