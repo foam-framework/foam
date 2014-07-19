@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var Property = {
-  __proto__: ModelProto,
+  __proto__: BootstrapModel,
 
   name:  'Property',
   plural:'Properties',
@@ -420,14 +420,14 @@ debugger; // Why is this here?  Is it ever called?
 
 
 Model.methods = {
-  getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
-  getProperty:              ModelProto.getProperty,
-  getAction:                ModelProto.getAction,
-  hashCode:                 ModelProto.hashCode,
-  buildPrototype:           ModelProto.buildPrototype,
-  getPrototype:             ModelProto.getPrototype,
-  isSubModel:               ModelProto.isSubModel,
-  isInstance:               ModelProto.isInstance
+  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
+  getProperty:              BootstrapModel.getProperty,
+  getAction:                BootstrapModel.getAction,
+  hashCode:                 BootstrapModel.hashCode,
+  buildPrototype:           BootstrapModel.buildPrototype,
+  getPrototype:             BootstrapModel.getPrototype,
+  isSubModel:               BootstrapModel.isSubModel,
+  isInstance:               BootstrapModel.isInstance
 };
 
 // This is the coolest line of code that I've ever written

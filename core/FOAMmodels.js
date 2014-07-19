@@ -38,7 +38,7 @@ var files = [
 //  'experimental/fo',
 //  'experimental/protobuffeatures',
   'AbstractPrototype',
-  'ModelProto',
+  'BootstrapModel',
   'mm1Model',
   'mm2Property',
   'mm3Types',

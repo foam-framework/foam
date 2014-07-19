@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Now remove ModelProto so nobody tries to use it
+// Now remove BootstrapModel so nobody tries to use it
 // TODO: do this once no views use it directly
-// delete ModelProto;
+// delete BootstrapModel;
 
 MODEL({
   name: 'Action',

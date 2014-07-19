@@ -26,7 +26,7 @@
  *   properties property (so meta).
  *
  * TODO: Is still used by a few views in view.js.  Those views
- * should be fixed and then ModelProto should be deleted at
+ * should be fixed and then BootstrapModel should be deleted at
  * the end of metamodel.js once the real Model is created.
  **/
 
@@ -78,11 +78,11 @@ Object.defineProperty(AbstractPrototype, 'SUPER', {
 /* End Non-Rhino Version */
 
 
-var ModelProto = {
+var BootstrapModel = {
 
   __proto__: PropertyChangeSupport,
 
-  TYPE: 'ModelProto <startup only, error if you see this>',
+  TYPE: 'BootstrapModel <startup only, error if you see this>',
 
   buildPrototype: function() {
     function addTraitToModel(traitModel, parentModel) {
@@ -359,7 +359,7 @@ var ModelProto = {
 
   isInstance: function(obj) { return obj && obj.model_ && this.isSubModel(obj.model_); },
 
-  toString: function() { return "ModelProto(" + this.name + ")"; }
+  toString: function() { return "BootstrapModel(" + this.name + ")"; }
 };
 
 /*

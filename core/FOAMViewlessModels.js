@@ -32,7 +32,7 @@ var files = [
   'JSONParser',
   'TemplateUtil',
   'AbstractPrototype',
-  'ModelProto',
+  'BootstrapModel',
   'mm1Model',
   'mm2Property',
   'mm3Types',

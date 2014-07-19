@@ -55,7 +55,7 @@ module.exports = function(grunt) {
           'core/JSONParser.js',
           'core/TemplateUtil.js',
           'core/AbstractPrototype.js',
-          'core/ModelProto.js',
+          'core/BootstrapModel.js',
           'core/mm1Model.js',
           'core/mm2Property.js',
           'core/mm3Types.js',

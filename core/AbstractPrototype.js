@@ -101,7 +101,7 @@ var AbstractPrototype = {
     // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
     if ( this.model_ == Model && this.name != 'Model' )
-      this.create = ModelProto.create;
+      this.create = BootstrapModel.create;
   },
 
 

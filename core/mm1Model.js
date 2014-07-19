@@ -17,7 +17,7 @@
 var BinaryProtoGrammar;
 
 var Model = {
-  __proto__: ModelProto,
+  __proto__: BootstrapModel,
 
   name:  'Model',
   plural:'Models',
