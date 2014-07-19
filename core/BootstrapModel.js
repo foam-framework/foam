@@ -69,7 +69,7 @@ function override(cls, methodName, method) {
   cls[methodName] = method;
 }
 
-Object.defineProperty(AbstractPrototype, 'SUPER', {
+Object.defineProperty(FObject, 'SUPER', {
   get: function() {
     return arguments.callee.caller.super_.bind(this);
   }
@@ -113,7 +113,7 @@ var BootstrapModel = {
       }
     }
 
-    var proto = extendsModel ? extendsModel.getPrototype() : AbstractPrototype;
+    var proto = extendsModel ? extendsModel.getPrototype() : FObject;
     var cls   = Object.create(proto);
     cls.model_    = this;
     cls.name_     = this.name;

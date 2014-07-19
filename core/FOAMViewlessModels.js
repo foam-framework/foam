@@ -31,7 +31,7 @@ var files = [
   'FOAM',
   'JSONParser',
   'TemplateUtil',
-  'AbstractPrototype',
+  'FObject',
   'BootstrapModel',
   'mm1Model',
   'mm2Property',

@@ -17,12 +17,14 @@
 
 var prefix = '';
 
-/** The Prototype for all Generated Prototypes. **/
-// TODO: Rename FOAMObject or FObject
-var AbstractPrototype = {
+/**
+ * The Prototype for all Generated Prototypes.
+ * The common ancestor of all FOAM Objects.
+ **/
+var FObject = {
   __proto__: PropertyChangeSupport,
 
-  TYPE: 'AbstractPrototype',
+  TYPE: 'FObject',
 
   create: function(args, opt_X) {
     var o = Object.create(this);

@@ -33,11 +33,11 @@ var files = [
   'JSONParser',
   'TemplateUtil',
   // To use FO, uncomment the next line
-  // and comment out all lines from AbstractPrototype to mm6Prototbuf
+  // and comment out all lines from FObject to mm6Prototbuf
   // inclusively
 //  'experimental/fo',
 //  'experimental/protobuffeatures',
-  'AbstractPrototype',
+  'FObject',
   'BootstrapModel',
   'mm1Model',
   'mm2Property',
