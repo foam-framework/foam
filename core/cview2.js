@@ -331,6 +331,16 @@ MODEL({
         r: 10,
         color: 'rgb(241, 250, 65)'
       });}
+    },
+    {
+      name:  'iconWidth',
+      type:  'int',
+      defaultValue: 0
+    },
+    {
+      name:  'iconHeight',
+      type:  'int',
+      defaultValue: 0
     }
   ],
 
@@ -346,13 +356,13 @@ MODEL({
         this.pressCircle.x = evt.offsetX;
         this.pressCircle.y = evt.offsetY;
         this.pressCircle.r = 10;
-        Movement.animate(100, function() {
+        Movement.animate(150, function() {
         x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
-          this.pressCircle.r = 28; //Math.min(28, Math.min(this.width, this.height)/2-7);
+          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
           this.pressCircle.alpha = 1;
-        }.bind(this))();
+        }.bind(this), Movement.easeIn(1))();
       }
     },
     {
@@ -370,6 +380,22 @@ MODEL({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+
+      if ( this.iconUrl ) {
+        this.image_ = new Image();
+
+        this.image_.onload = function() {
+          if ( this.iconWidth ) this.image_.width  = this.iconWidth;
+          if ( this.iconWidth ) this.image_.height = this.iconHeight;
+          if ( this.canvas ) this.paintSelf();
+        }.bind(this);
+
+        this.image_.src = this.iconUrl;
+      }
+    },
+    
     initCView: function() {
       this.addChild(this.pressCircle);
 
@@ -385,6 +411,15 @@ MODEL({
       c.save();
       this.pressCircle.paint();
       c.restore();
+
+      if ( this.image_ && this.image_.width ) {
+        c.drawImage(
+          this.image_,
+          this.x + (this.width  - this.image_.width)/2,
+          this.y + (this.height - this.image_.height)/2,
+          this.image_.width,
+          this.image_.height);
+      }
 
       if ( this.font ) c.font = this.font;
 
