@@ -40,7 +40,11 @@ MODEL({
         this.data = dao;
       }
     }
-  ]
+  ],
+
+  methods: {
+    onDAOUpdate: function() {}
+  }
 });
 
 
