@@ -360,7 +360,7 @@ MODEL({
         x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
-          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
+          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-2);
           this.pressCircle.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
@@ -387,9 +387,9 @@ MODEL({
         this.image_ = new Image();
 
         this.image_.onload = function() {
-          if ( this.iconWidth ) this.image_.width  = this.iconWidth;
-          if ( this.iconWidth ) this.image_.height = this.iconHeight;
-          if ( this.canvas ) this.paintSelf();
+          if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
+          if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
+          if ( this.canvas ) this.paint();
         }.bind(this);
 
         this.image_.src = this.iconUrl;
@@ -412,21 +412,22 @@ MODEL({
       this.pressCircle.paint();
       c.restore();
 
-      if ( this.image_ && this.image_.width ) {
-        c.drawImage(
-          this.image_,
-          this.x + (this.width  - this.image_.width)/2,
-          this.y + (this.height - this.image_.height)/2,
-          this.image_.width,
-          this.image_.height);
-      }
-
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
       c.textAlign    = 'center';
       c.textBaseline = 'middle';
       c.fillStyle    = this.color;
+
+      if ( this.image_ && this.image_.width ) {
+        c.drawImage(
+          this.image_,
+          this.x + (this.width  - this.iconWidth)/2,
+          this.y + (this.height - this.iconHeight)/2,
+          this.iconWidth,
+          this.iconHeight);
+      }
+
       c.fillText(
         this.action.labelFn.call(this.data, this.action),
         this.x+this.width/2,
