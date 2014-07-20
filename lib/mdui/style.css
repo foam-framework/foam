@@ -121,3 +121,7 @@ input[name=q]::-webkit-input-placeholder {
   opacity: 0.76;
   height: 55px;
 }
+
+.backButton {
+  margin-top: 6px;
+}

@@ -80,7 +80,8 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      return '<canvas id="' + this.id + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"> </canvas>';
     },
 
     initHTML: function() {
