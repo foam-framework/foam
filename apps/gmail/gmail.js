@@ -138,11 +138,10 @@ MODEL({
     },
     changeLabel: function(label) {
       if (label) {
-        this.controller.filteredDAO = this.emailDao.where(
-            queryParser.parseString('l:' + label.id));
+        this.controller.q = 'l:' + label.id;
         this.controller.name = label.name;
       } else {
-        this.controller.filteredDAO = this.emailDao;
+        this.controller.q = '';
         this.controller.name = 'All Mail';
       }
       this.stack.back();
