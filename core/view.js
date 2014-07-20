@@ -278,6 +278,7 @@ MODEL({
     },
     {
       name: 'className',
+      help: 'CSS class name(s), space separated.',
       defaultValue: ''
     },
     {
