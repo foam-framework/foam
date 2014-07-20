@@ -167,7 +167,7 @@ MODEL({
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          $$back
+          $$back{className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
           $$inInbox{
             model_: 'ImageBooleanView',
@@ -202,6 +202,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'EMailCitationView',
