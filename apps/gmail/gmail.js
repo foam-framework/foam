@@ -111,7 +111,6 @@ MODEL({
       }, 'GMAIL CONTEXT');
 
       this.controller = Y.AppController.create({
-        name: 'Gmail API FOAM Demo',
         model: EMail,
         dao: this.emailDao,
         citationView: 'EMailCitationView',
@@ -122,28 +121,30 @@ MODEL({
           [ EMail.TIMESTAMP, 'Oldest First' ],
           [ EMail.SUBJECT, 'Subject' ],
         ],
-        filterChoices: [
-          ['l:INBOX', 'Inbox'],
-          ['l:STARRED', 'Starred'],
-          ['', 'All Mail']
-        ],
         menuFactory: function() {
-          return this.X.DAOListView.create({
-            dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
-            rowView: 'MenuLabelCitationView',
-            className: 'menuView',
+          return this.X.MenuView.create({
+            daoListView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
+              rowView: 'MenuLabelCitationView',
+            }),
           });
         }
       });
+      this.changeLabel();
     },
     openEmail: function(email) {
       var v = this.controller.X.EmailView.create({data: email});
       this.stack.pushView(v, '');
     },
     changeLabel: function(label) {
-      var query = 'l:' + label.id;
-      this.controller.filteredDAO = this.emailDao.where(
-          queryParser.parseString(query));
+      if (label) {
+        this.controller.filteredDAO = this.emailDao.where(
+            queryParser.parseString('l:' + label.id));
+        this.controller.name = label.name;
+      } else {
+        this.controller.filteredDAO = this.emailDao;
+        this.controller.name = 'All Mail';
+      }
       this.stack.back();
     },
   }
@@ -240,6 +241,23 @@ MODEL({
    ]
 });
 
+MODEL({
+  name: 'MenuView',
+  extendsModel: 'View',
+  properties: [
+    {
+      name: 'daoListView',
+    },
+  ],
+  templates: [
+    function toHTML() {/*
+      <div class="menuView">
+        %%daoListView
+        <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
+      </div>
+    */}
+   ]
+});
 
 MODEL({
   name: 'MenuLabelCitationView',
