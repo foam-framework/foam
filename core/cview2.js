@@ -15,6 +15,11 @@ MODEL({
       }
     },
     {
+      name: 'className',
+      help: 'CSS class name(s), space separated.',
+      defaultValue: ''
+    },
+    {
       name: 'scalingRatio',
       type: 'int',
       defaultValue: 1,
@@ -121,6 +126,11 @@ MODEL({
       defaultValue: 'initial'
     },
     {
+      name: 'className',
+      help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
+      defaultValue: ''
+    },
+    {
       name:  'x',
       type:  'int',
       view:  'IntFieldView',
@@ -173,7 +183,14 @@ MODEL({
   ],
 
   methods: {
-    toView: function() { return this.view || this.X.CViewView.create({cview: this}); },
+    toView: function() {
+      if ( ! this.view ) {
+        var params = {cview: this};
+        if ( this.className ) params.className = this.className;
+        view = this.X.CViewView.create(params);
+      }
+      return this.view;
+    },
 
     initCView: function() { },
 
@@ -395,7 +412,7 @@ MODEL({
         this.image_.src = this.iconUrl;
       }
     },
-    
+
     initCView: function() {
       this.addChild(this.pressCircle);
 
