@@ -69,7 +69,7 @@ MODEL({
           }.bind(this), 300);
         } else {
           this.redo.push(this.stack.pop());
-          this.pushView(this.stack.pop(), undefined, true);
+          this.pushView(this.stack.pop(), undefined, true, 'fromLeft');
           this.propertyChange('stack', this.stack, this.stack);
         }
       }
@@ -102,7 +102,7 @@ MODEL({
 
     setTopView: function(view, opt_label) {
       this.stack = [];
-      this.pushView(view);
+      this.pushView(view, undefined, undefined, 'none');
     },
 
     updateNavBar: function() {
@@ -141,16 +141,78 @@ MODEL({
       }.bind(this), 10);
     },
 
-    pushView: function (view, opt_label, opt_back) {
+    pushView: function (view, opt_label, opt_back, opt_transition) {
+      var transition = opt_transition || 'fromRight';
+
       if ( ! opt_back ) this.redo.length = 0;
       this.setPreview(null);
       view.stackLabel = opt_label || view.stackLabel || view.label;
       this.stack.push(view);
-      this.viewArea$().innerHTML = view.toHTML();
+      if ( transition === 'fromRight' ) 
+        this.installViewFromRight_(view);
+      else if ( transition === 'fromLeft' )
+        this.installViewFromLeft_(view);
+      else
+        this.installView_(view);
       this.updateNavBar();
       view.stackView = this;
       view.initHTML();
       this.propertyChange('stack', this.stack, this.stack);
+    },
+
+    installView_: function(view) {
+      this.viewArea$().innerHTML = view.toHTML();
+    },
+
+    installViewFromRight_: function(view) {
+      var oldViewArea = this.viewArea$();
+
+      var id = this.nextID();
+      var width = toNum(this.X.window.getComputedStyle(oldViewArea).width);
+      debugger;
+      var newViewHTML = '<div id="' + id + '" style="position: absolute; left: ' + width + ';transition: left .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      oldViewArea.style.position = 'absolute';
+      oldViewArea.style.left = 0;
+      oldViewArea.style.transition = 'left .3s';
+      oldViewArea.insertAdjacentHTML('afterend', newViewHTML);
+
+      var newViewArea = this.X.$(id);
+
+      this.X.setTimeout(function() {
+        oldViewArea.style.left = -width;
+        newViewArea.style.left = 0;
+      }.bind(this), 15);
+
+      this.X.setTimeout(function() {
+        oldViewArea.remove();
+        newViewArea.style.position = '';
+        newViewArea.style.left = '';
+      }, 1500);
+    },
+
+    installViewFromLeft_: function(view) {
+      var oldViewArea = this.viewArea$();
+
+      var id = this.nextID();
+      var width = toNum(this.X.window.getComputedStyle(oldViewArea).width);
+      var newViewHTML = '<div id="' + id + '" style="position: absolute; right: ' + width + ';transition: right .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      oldViewArea.style.position = 'absolute';
+      oldViewArea.style.right = 0;
+      oldViewArea.style.transition = 'right .3s';
+      oldViewArea.insertAdjacentHTML('afterend', newViewHTML);
+
+      var newViewArea = this.X.$(id);
+
+      this.X.setTimeout(function() {
+        oldViewArea.style.right = -width;
+        newViewArea.style.right = 0;
+      }.bind(this), 15);
+
+      this.X.setTimeout(function() {
+        oldViewArea.remove();
+        newViewArea.style.position = '';
+        newViewArea.style.right = '';
+      }, 1500);
     },
 
     setPreview: function(view) {
