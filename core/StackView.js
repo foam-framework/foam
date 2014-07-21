@@ -169,7 +169,6 @@ MODEL({
 
       var id = this.nextID();
       var width = toNum(this.X.window.getComputedStyle(oldViewArea).width);
-      debugger;
       var newViewHTML = '<div id="' + id + '" style="position: absolute; left: ' + width + ';transition: left .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
       oldViewArea.style.position = 'absolute';
       oldViewArea.style.left = 0;
