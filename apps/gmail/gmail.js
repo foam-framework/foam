@@ -12,6 +12,8 @@ var queryParser = {
 }.addActions({
   id: function(v) {
      return OR(
+        CONTAINS_IC(EMail.TO, v),
+        CONTAINS_IC(EMail.FROM, v),
         CONTAINS_IC(EMail.SUBJECT, v),
         CONTAINS_IC(EMail.BODY, v));
   },
