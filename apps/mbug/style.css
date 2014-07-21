@@ -2,10 +2,6 @@
   margin: 4px 0;
 }
 
-.header .default .popupChoiceView {
-  margin: 4px 4px 4px 0;
-}
-
 .issue-citation {
   display: flex;
   margin: 0;
@@ -281,7 +277,7 @@
 }
 
 .popupChoiceView {
-  padding: 8px;
+  padding: 0;
   margin-left: 0;
   outline: none;
   opacity: 0.76;
