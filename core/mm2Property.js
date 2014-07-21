@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 var Property = {
-  __proto__: ModelProto,
+  __proto__: BootstrapModel,
 
   name:  'Property',
   plural:'Properties',
@@ -368,6 +368,17 @@ var Property = {
       subType: 'Autocompleter',
       help: 'Name or model for the autocompleter for this property.',
     },
+    {
+      name: 'install',
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      rows:3,
+      view: 'FunctionView',
+      defaultValue: '',
+      help: "A function which installs additional features into the Model's prototype."
+    }
   ],
 
   methods: {
@@ -409,14 +420,14 @@ debugger; // Why is this here?  Is it ever called?
 
 
 Model.methods = {
-  getPropertyWithoutCache_: ModelProto.getPropertyWithoutCache_,
-  getProperty:              ModelProto.getProperty,
-  getAction:                ModelProto.getAction,
-  hashCode:                 ModelProto.hashCode,
-  buildPrototype:           ModelProto.buildPrototype,
-  getPrototype:             ModelProto.getPrototype,
-  isSubModel:               ModelProto.isSubModel,
-  isInstance:               ModelProto.isInstance
+  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
+  getProperty:              BootstrapModel.getProperty,
+  getAction:                BootstrapModel.getAction,
+  hashCode:                 BootstrapModel.hashCode,
+  buildPrototype:           BootstrapModel.buildPrototype,
+  getPrototype:             BootstrapModel.getPrototype,
+  isSubModel:               BootstrapModel.isSubModel,
+  isInstance:               BootstrapModel.isInstance
 };
 
 // This is the coolest line of code that I've ever written

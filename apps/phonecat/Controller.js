@@ -26,8 +26,8 @@ MODEL({
 MODEL({ name: 'PhoneCitationView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <li class="thumbnail">
-        <a href="#{{this.obj.id}}" class="thumb">$$imageUrl</a>
-        <a href="#{{this.obj.id}}">$$name{mode: 'read-only'}</a>
+        <a href="#{{this.data.id}}" class="thumb">$$imageUrl</a>
+        <a href="#{{this.data.id}}">$$name{mode: 'read-only'}</a>
         <p>$$snippet{mode: 'read-only'}</p>
       </li>
   */}
@@ -46,8 +46,8 @@ MODEL({
         var view = PhoneDetailView.create({model: Phone});
         this.addChild(view);
 
-        this.obj.dao.find(window.location.hash.substring(1), {put: function(phone) {
-          view.value.set(phone);
+        this.data.dao.find(window.location.hash.substring(1), {put: function(phone) {
+          view.data = phone;
         }});
 
         return view.toHTML();

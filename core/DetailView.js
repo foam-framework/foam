@@ -4,18 +4,9 @@ MODEL({
 
   properties: [
     {
-      // TODO: remove 'value' and make this the real source of data
       name:  'data',
-      getter: function() { return this.value.value; },
-      setter: function(data) { this.value = SimpleValue.create(data); }
-    },
-    {
-      name:  'value',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        if ( oldValue ) oldValue.removeListener(this.onValueChange);
-        if ( newValue ) newValue.addListener(this.onValueChange);
+      postSet: function(_, data) {
+        if ( ! this.model && data && data.model_ ) this.model = data.model_;
         this.onValueChange();
       }
     },
@@ -36,15 +27,15 @@ MODEL({
     },
     {
       name: 'obj',
-      getter: function() { return this.value.value; }
+      getter: function() { console.warn('DetailView .obj is deprecated.  Use .data instead.'); return this.data; }
     },
     {
       model_: 'BooleanProperty',
       name: 'showActions',
       defaultValue: false,
-      postSet: function(old, nu) {
+      postSet: function(_, showActions) {
         // TODO: No way to remove the decorator.
-        if ( nu ) {
+        if ( showActions ) {
           this.addDecorator(this.X.ActionBorder.create());
         }
       }
@@ -62,8 +53,6 @@ MODEL({
       code: function() {
         // TODO: Allow overriding of listeners
         this.onValueChange_.apply(this, arguments);
-
-        if ( this.obj && this.obj.model_ ) this.model = this.obj.model_;
         if ( this.$ ) this.updateSubViews();
       }
     },
@@ -78,40 +67,15 @@ MODEL({
   ],
 
   methods: {
-    onValueChange_: function() {
-    },
-
-    bindSubView: function(view, prop) {
-      if ( this.get() ) {
-        // TODO: setValue is deprecated
-        if ( view.setValue ) {
-          view.setValue(this.get().propertyValue(prop.name));
-        } else {
-          view.value = this.get().propertyValue(prop.name);
-        }
-      }
-    },
+    // Template Method
+    onValueChange_: function() { },
 
     viewModel: function() { return this.model; },
-
-    getValue: function() { return this.value; },
-
-    setValue: function (value) {
-      if ( this.getValue() ) {
-        // todo:
-        /// getValue().removeListener(???)
-      }
-      this.value = value;
-      this.updateSubViews();
-      // TODO: model this class and make updateSubViews a listener
-      // instead of bind()'ing
-      value.addListener(this.updateSubViews.bind(this));
-    },
 
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
       if ( o ) return Action.isInstance(o) ?
-        this.createActionView(o, this.value, opt_args) :
+        this.createActionView(o, this.data$, opt_args) :
         this.createView(o, opt_args) ;
 
       return this.SUPER(name, opt_args);
@@ -190,14 +154,6 @@ MODEL({
       this.initKeyboardShortcuts();
     },
 
-    set: function(obj) {
-      this.getValue().set(obj);
-    },
-
-    get: function() {
-      return this.getValue().get();
-    },
-
     evtToKeyCode: function(evt) {
       var s = '';
       if ( evt.ctrlKey ) s += 'ctrl-';
@@ -225,9 +181,7 @@ MODEL({
     },
 
     updateSubViews: function() {
-      var obj = this.get();
-
-      if ( obj === '' ) return;
+      if ( this.data === '' ) return;
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
@@ -236,23 +190,14 @@ MODEL({
         if ( ! prop ) continue;
 
         try {
-          if ( child.model_.DATA ) child.data = obj;
-          else child.value = obj.propertyValue(prop.name);
+          child.data = this.data;
         } catch (x) {
           console.log("error: ", prop.name, " ", x);
         }
       }
-    },
-
-    setModel: function(obj) {
-      if ( ! obj ) return;
-
-      this.obj = obj;
     }
   }
 });
-
-
 
 
 MODEL({
@@ -264,20 +209,13 @@ MODEL({
       name: 'originalData'
     },
     {
-      // TODO: remove 'value' and make this the real source of data
-      name:  'data',
-      getter: function() { return this.value.value; },
-      setter: function(data) {
+      name: 'data',
+      postSet: function(_, data) {
         this.originalData = data.deepClone();
-        this.value = SimpleValue.create(data);
+        if ( ! this.model && data && data.model_ ) this.model = data.model_;
+        this.onValueChange();
       }
     },
-    /*
-    {
-      name: 'data',
-      postSet: function(_, data) { this.originalData = data.deepClone(); }
-    },
-    */
     {
       name: 'dao'
     },

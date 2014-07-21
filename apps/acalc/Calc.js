@@ -43,11 +43,23 @@ function binaryOp(name, keys, f, sym) {
 }
 
 function unaryOp(name, keys, f, opt_sym) {
+  var sym = opt_sym || name;
+  f.toString = function() { return sym; };
+
   return {
     name: name,
-    label: opt_sym || name,
+    label: sym,
     keyboardShortcuts: keys,
-    action: function() { this.a2 = f.call(this, this.a2); }
+    action: function() {
+      var a1 = this.a1;
+      var a2 = this.a2;
+      this.op = f;
+      this.a2 = '';
+      this.history.put(History.create(this));
+      this.a1 = a2;
+      this.a2 = f.call(this, a2);
+      this.op = DEFAULT_OP;
+    }
   };
 }
 
@@ -61,7 +73,7 @@ function num(n) {
 }
 
 
-var DEFAULT_OP = function(a1) { return a1; };
+var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
 

@@ -1,3 +1,41 @@
+
+
+MODEL({
+  name: 'Point',
+  properties: [ 'x', 'y' ],
+  methods: {
+    scale: function(s) { this.x *= s; this.y *= s; }
+  }
+});
+
+var p = Point.create({x: 10, y: 20});
+p.scale(2);
+p.x = p.y;
+console.log(p.toJSON());
+
+MODEL({
+  name: 'Point3D',
+  extendsModel: 'Point',
+  properties: [ 'z' ],
+  methods: {
+    scale: function(s) { this.SUPER(s); this.z *= s; }
+  }
+});
+
+var p2 = Point3D.create({x: 1, y: 2, z: 3});
+p2.scale(2);
+console.log(p2.toJSON());
+
+p2.write(document);
+
+var dv = DetailView.create({data: p2});
+dv.write(document);
+
+var dv2 = DetailView.create({model: Point3D});
+dv2.write(document);
+
+
+
 var bookmarks = [];
 
 bookmarks.push(Bookmark.create({index: 1, title: 'Google Blog', url: 'http://googleblog.blogspot.com/2011/09/happy-third-birthday-chrome.html'}));
@@ -35,7 +73,6 @@ document.writeln("<table><tr><td valign=top>");
 var tv1 = TableView.create({model: Model, dao: models});
 document.writeln(tv1.toHTML());
 tv1.initHTML();
-
 
 document.writeln("</td><td><font size=-1>");
 var dv = DetailView.create({model: Model});
@@ -194,8 +231,7 @@ var s1 = ScrollCView.create({
 sview.write(document);
 sview.addChild(s1);
 s1.paint();
-var sv1 = DetailView.create({model: s1.model_});
-sv1.set(s1);
+var sv1 = DetailView.create({data: s1});
 sv1.write(document);
 
 /*
@@ -234,8 +270,7 @@ document.writeln("<table width=1600><tr>");
 
 DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
-var dv1 = DetailView.create({model: o.model_});
-dv1.set(o);
+var dv1 = DetailView.create({data: o});
 document.writeln("<td valign=top width=500>");
 dv1.write(document);
 document.writeln("</td>");
@@ -262,7 +297,7 @@ document.writeln("</td>");
 dv4.initHTML();
 document.writeln("</tr></table>");
 
-dv1.set(o);
+dv1.data = o;
 // dv2.setModel(o);
 /** TODO: fix
     dv3.setValue({
@@ -321,19 +356,17 @@ space.paint();
 
 document.writeln("<td valign=top>");
 
-var timerView = DetailView.create({value: SimpleValue.create(timer), showActions: true});;
+var timerView = DetailView.create({data: timer, showActions: true});;
 document.writeln(timerView.toHTML());
 timerView.initHTML();
 
 document.writeln("</td><td valign=top>");
-var sunView = DetailView.create({model: sun.model_});
+var sunView = DetailView.create({data: sun});
 document.writeln(sunView.toHTML());
-sunView.set(sun);
 sunView.initHTML();
 
-var earthView = DetailView.create({model: sun.model_});
+var earthView = DetailView.create({data: earth});
 document.writeln(earthView.toHTML());
-earthView.set(earth);
 earthView.initHTML();
 
 document.writeln("</td>");
@@ -390,16 +423,14 @@ Movement.orbit(timer, mouse, bug1, 80, 1500);
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 
 document.writeln("<table><tr><td valign=top>");
-var mouseView = DetailView.create({model: mouse.model_});
+var mouseView = DetailView.create({data: mouse});
 document.writeln(mouseView.toHTML());
-mouseView.set(mouse);
 mouseView.initHTML();
 
 document.writeln("</td><td>");
 
-var bugView = DetailView.create({model: bug1.model_});
+var bugView = DetailView.create({data: bug1});
 document.writeln(bugView.toHTML());
-bugView.set(bug1);
 bugView.initHTML();
 document.writeln("</td></tr></table>");
 

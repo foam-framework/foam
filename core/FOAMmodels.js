@@ -33,12 +33,12 @@ var files = [
   'JSONParser',
   'TemplateUtil',
   // To use FO, uncomment the next line
-  // and comment out all lines from AbstractPrototype to mm6Prototbuf
+  // and comment out all lines from FObject to mm6Prototbuf
   // inclusively
 //  'experimental/fo',
 //  'experimental/protobuffeatures',
-  'AbstractPrototype',
-  'ModelProto',
+  'FObject',
+  'BootstrapModel',
   'mm1Model',
   'mm2Property',
   'mm3Types',
@@ -47,6 +47,8 @@ var files = [
   'mm6Protobuf',
   'value',
   'view',
+  'layout',
+  'daoView',
   'ChoiceView',
   'DetailView',
   'TableView',

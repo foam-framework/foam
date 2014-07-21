@@ -12,12 +12,8 @@ X.registerModel(XHR.xbind({
   delay: 10
 }), 'XHR');
 
-var m = GMailMessage;
-
-var dao = X.GMailRestDAO.create({
-  model: m,
-});
-
+var dao = X.GMailMessageDAO.create({});
+/*
 var view = TableView.create({
   dao: dao,
   model: m,
@@ -25,3 +21,4 @@ var view = TableView.create({
 });
 
 view.write(document);
+*/

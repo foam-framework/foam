@@ -418,12 +418,6 @@ MODEL({
   name: 'IssueEmailCitationView',
   extendsModel: 'View',
   properties: [
-    {
-      name: 'value',
-      postSet: function(_, v) {
-        this.data = v.value;
-      }
-    },
     { name: 'data', postSet: function() { this.updateHTML(); } },
     { name: 'tagName', defaultValue: 'div' },
     { name: 'className', defaultValue: 'owner-info' }

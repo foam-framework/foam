@@ -15,6 +15,11 @@ MODEL({
       }
     },
     {
+      name: 'className',
+      help: 'CSS class name(s), space separated.',
+      defaultValue: ''
+    },
+    {
       name: 'scalingRatio',
       type: 'int',
       defaultValue: 1,
@@ -75,7 +80,8 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      return '<canvas id="' + this.id + '" width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"> </canvas>';
     },
 
     initHTML: function() {
@@ -119,6 +125,11 @@ MODEL({
     {
       name: 'state',
       defaultValue: 'initial'
+    },
+    {
+      name: 'className',
+      help: 'CSS class name(s), space separated. Used if adapted with a CViewView.',
+      defaultValue: ''
     },
     {
       name:  'x',
@@ -173,7 +184,14 @@ MODEL({
   ],
 
   methods: {
-    toView: function() { return this.view || this.X.CViewView.create({cview: this}); },
+    toView: function() {
+      if ( ! this.view ) {
+        var params = {cview: this};
+        if ( this.className ) params.className = this.className;
+        view = this.X.CViewView.create(params);
+      }
+      return this.view;
+    },
 
     initCView: function() { },
 
@@ -314,9 +332,7 @@ MODEL({
       defaultValue: ''
     },
     {
-      name: 'value',
-      type: 'Value',
-      factory: function() { return SimpleValue.create(); }
+      name: 'data'
     },
     {
       name: 'showLabel',
@@ -333,13 +349,23 @@ MODEL({
         r: 10,
         color: 'rgb(241, 250, 65)'
       });}
+    },
+    {
+      name:  'iconWidth',
+      type:  'int',
+      defaultValue: 0
+    },
+    {
+      name:  'iconHeight',
+      type:  'int',
+      defaultValue: 0
     }
   ],
 
   listeners: [
     {
       name: 'onClick',
-      code: function() { this.action.callIfEnabled(this.value.get()); }
+      code: function() { this.action.callIfEnabled(this.data); }
     },
     {
       name: 'onMouseDown',
@@ -348,13 +374,13 @@ MODEL({
         this.pressCircle.x = evt.offsetX;
         this.pressCircle.y = evt.offsetY;
         this.pressCircle.r = 10;
-        Movement.animate(100, function() {
+        Movement.animate(150, function() {
         x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
-          this.pressCircle.r = 28; //Math.min(28, Math.min(this.width, this.height)/2-7);
+          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-2);
           this.pressCircle.alpha = 1;
-        }.bind(this))();
+        }.bind(this), Movement.easeIn(1))();
       }
     },
     {
@@ -372,6 +398,22 @@ MODEL({
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+
+      if ( this.iconUrl ) {
+        this.image_ = new Image();
+
+        this.image_.onload = function() {
+          if ( ! this.iconWidth  ) this.iconWidth  = this.image_.width;
+          if ( ! this.iconHeight ) this.iconHeight = this.image_.height;
+          if ( this.canvas ) this.paint();
+        }.bind(this);
+
+        this.image_.src = this.iconUrl;
+      }
+    },
+
     initCView: function() {
       this.addChild(this.pressCircle);
 
@@ -394,8 +436,18 @@ MODEL({
       c.textAlign    = 'center';
       c.textBaseline = 'middle';
       c.fillStyle    = this.color;
+
+      if ( this.image_ && this.image_.width ) {
+        c.drawImage(
+          this.image_,
+          this.x + (this.width  - this.iconWidth)/2,
+          this.y + (this.height - this.iconHeight)/2,
+          this.iconWidth,
+          this.iconHeight);
+      }
+
       c.fillText(
-        this.action.labelFn.call(this.value, this.action),
+        this.action.labelFn.call(this.data, this.action),
         this.x+this.width/2,
         this.y+this.height/2);
     }

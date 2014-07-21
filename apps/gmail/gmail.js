@@ -47,27 +47,57 @@ MODEL({
         this.stack.setTopView(view);
       }
     },
-    {
-      name: 'gmailSyncManager',
-      type:  'GmailSyncManager',
-      postSet: function(oldVal, newVal) {
-      }
-    },
+    { name: 'oauth' },
     {
       name: 'emailDao',
       type: 'DAO',
+      factory: function() {
+        return this.X.LimitedLiveCachingDAO.create({
+          cacheLimit: 10,
+          src: this.X.GMailToEMailDAO.create({
+            delegate: this.X.StoreAndForwardDAO.create({
+              delegate: this.X.GMailMessageDAO.create({})
+            })
+          }),
+          cache: this.X.MDAO.create({ model: EMail })
+        });
+      }
+    },
+    {
+      name: 'labelDao',
+      type: 'DAO',
+      factory: function() {
+        return this.X.GMailRestDAO.create({ model: GMailLabel });
+      }
     },
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return StackView.create(); }
+      factory: function() { return this.X.StackView.create(); }
     }
   ],
 
   methods: {
     init: function() {
+      this.X = this.X.sub({
+        touchManager: this.X.TouchManager.create({})
+      }, 'MGMAIL CONTEXT');
+
+      this.oauth = this.X.EasyOAuth2.create({
+        clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
+        clientSecret: "GTkp929u268_SXAiHitESs-1",
+        scopes: [
+          "https://mail.google.com/"
+        ]
+      });
+
+      this.X.registerModel(XHR.xbind({
+        authAgent: this.oauth,
+        retries: 3,
+        delay: 10
+      }), 'XHR');
+
       this.SUPER();
-      this.X.touchManager = this.X.TouchManager.create({});
     },
 
     toHTML: function() { return this.stack.toHTML(); },
@@ -81,29 +111,40 @@ MODEL({
       }, 'GMAIL CONTEXT');
 
       this.controller = Y.AppController.create({
-        name: 'Gmail API FOAM Demo',
         model: EMail,
         dao: this.emailDao,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
+        editableCitationViews: true,
         sortChoices: [
           [ DESC(EMail.TIMESTAMP), 'Newest First' ],
           [ EMail.TIMESTAMP, 'Oldest First' ],
           [ EMail.SUBJECT, 'Subject' ],
         ],
-        filterChoices: [
-          ['l:INBOX', 'Inbox'],
-          ['l:STARRED', 'Starred'],
-          ['', 'All Mail']
-        ],
         menuFactory: function() {
-          return this.X.MenuView.create({data: this.X.mgmail.gmailSyncManager});
+          return this.X.MenuView.create({
+            daoListView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
+              rowView: 'MenuLabelCitationView',
+            }),
+          });
         }
       });
+      this.changeLabel();
     },
     openEmail: function(email) {
       var v = this.controller.X.EmailView.create({data: email});
       this.stack.pushView(v, '');
+    },
+    changeLabel: function(label) {
+      if (label) {
+        this.controller.q = 'l:' + label.id;
+        this.controller.name = label.name;
+      } else {
+        this.controller.q = '';
+        this.controller.name = 'All Mail';
+      }
+      this.stack.back();
     },
   }
 });
@@ -125,7 +166,7 @@ MODEL({
     function toHTML() {/*
       <div id="<%= this.id %>" class="email-view">
         <div class="header">
-          $$back
+          $$back{className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
           $$inInbox{
             model_: 'ImageBooleanView',
@@ -160,6 +201,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'EMailCitationView',
@@ -201,11 +243,28 @@ MODEL({
 
 MODEL({
   name: 'MenuView',
-  extendsModel: 'DetailView',
+  extendsModel: 'View',
+  properties: [
+    {
+      name: 'daoListView',
+    },
+  ],
+  templates: [
+    function toHTML() {/*
+      <div class="menuView">
+        %%daoListView
+        <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
+      </div>
+    */}
+   ]
+});
 
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>">
-      $$forceSync
-    </div>
-  */} ]
+MODEL({
+  name: 'MenuLabelCitationView',
+  extendsModel: 'DetailView',
+  templates: [
+    function toHTML() {/*
+      <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(this.data); }) %>">$$name{mode: 'read-only'}</div>
+    */}
+   ]
 });

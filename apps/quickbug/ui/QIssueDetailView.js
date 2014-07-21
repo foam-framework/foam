@@ -61,7 +61,7 @@ MODEL({
       code: function() {
         if ( ! this.data ) return;
         if ( ! this.$ ) {
-          this.issueDAO.unlisten(this.onDAOUpdate);
+          this.issueDAO$Proxy.unlisten(this.onDAOUpdate);
           return;
         }
 
@@ -96,7 +96,8 @@ MODEL({
 
     init: function(args) {
       this.SUPER(args);
-      this.issueDAO.listen(this.onDAOUpdate);
+      debugger;
+      this.issueDAO$Proxy.listen(this.onDAOUpdate);
     },
 
     onValueChange_: function(_, _, old, v) {

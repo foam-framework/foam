@@ -1,7 +1,13 @@
 MODEL({
   name: 'Ball',
   extendsModel: 'Circle2',
-  traits: ['Physical', 'MotionBlur']
+  traits: ['Physical', 'MotionBlur'],
+  properties: [
+    {
+      name: 'vx',
+      preSet: function(_, v) { return Math.sign(v) * Math.max(5, Math.abs(v)); }
+    }
+  ]
 });
 
 
@@ -49,11 +55,13 @@ MODEL({
     },
     {
       model_: 'IntProperty',
-      name: 'lScore'
+      name: 'lScore',
+      postSet: function(_, s) { return s % 100; }
     },
     {
       model_: 'IntProperty',
-      name: 'rScore'
+      name: 'rScore',
+      postSet: function(_, s) { return s % 100; }
     }
   ],
 
@@ -62,18 +70,20 @@ MODEL({
       name: 'onBallMove',
       isAnimated: true,
       code: function() {
-        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
-          this.ball.vy = -Math.abs(this.ball.vy);
-        }
         if ( this.ball.y - this.ball.r <= 0 ) {
           this.ball.vy = Math.abs(this.ball.vy);
         }
-        if ( this.ball.x >= this.WIDTH ) {
-          this.lScore++;
-          this.ball.vx *= -1;
+        if ( this.ball.y + this.ball.r >= this.HEIGHT ) {
+          this.ball.vy = -Math.abs(this.ball.vy);
         }
         if ( this.ball.x <= 0 ) {
           this.rScore++;
+          this.ball.x = 150;
+          this.ball.vx *= -1;
+        }
+        if ( this.ball.x >= this.WIDTH ) {
+          this.lScore++;
+          this.ball.x = this.WIDTH - 150;
           this.ball.vx *= -1;
         }
       }

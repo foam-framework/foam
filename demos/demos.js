@@ -400,7 +400,7 @@ var System = FOAM({
   methods: {
     erase: function() {
       this.canvas.globalAlpha = 0.2;
-      //        AbstractPrototype.erase.call(this);
+      //        FObject.erase.call(this);
     },
 
     init: function(values)

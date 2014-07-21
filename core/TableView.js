@@ -28,7 +28,7 @@
 */
 MODEL({
   name: 'TableView',
-  extendsModel: 'View',
+  extendsModel: 'AbstractDAOView',
 
   label: 'Table View',
 
@@ -66,13 +66,6 @@ MODEL({
       type:  'Comparator',
       postSet: function() { this.repaint(); },
       defaultValue: undefined
-    },
-    {
-      model_: 'DAOProperty',
-      name:  'dao',
-      label: 'DAO',
-      required: true,
-      hidden: true
     },
     {
       name: 'rows',
@@ -248,11 +241,6 @@ MODEL({
       this.scrollbar.initHTML();
 
       this.dao && this.onDAOUpdate();
-
-      this.dao$.asDAO().listen({
-        put:    this.onDAOUpdate,
-        remove: this.onDAOUpdate
-      });
 
       if ( this.scrollEnabled ) {
         (this.window || window).addEventListener('resize', this.onResize, false);
