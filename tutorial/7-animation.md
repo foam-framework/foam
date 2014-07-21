@@ -28,5 +28,7 @@ to
 $$imageUrl{ model_: 'AImageView', className: 'phone' }
 {% endhighlight %}
 
-and reload your app. Now when you click a thumbnail, the new image will slide in.
+and reload your app. Now when you go to the detail page for a phone and click a thumbnail, the new image will slide in from the bottom.
+
+This works because the `AImageView` performs this animation by default when its image URL changes. It listens for changes to its `data$` property, which is set to `imageURL` from the `PhoneDetailView`. When you click a thumbnail, `imageURL` changes, which makes the `AImageView`'s `data` property update, which triggers the animation.
 

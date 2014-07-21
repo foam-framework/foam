@@ -167,5 +167,5 @@ Once you've got this file saved, reload the app and navigate to a phone, and you
 
 And that's the complete app! Hopefully you now have a better feel for the steps of building a FOAM app, and are ready to start building your own.
 
-There's one final, optional step left: [animations]({{ site.baseurl }}/tutorial/7-animation). Trust us, this is **not** a tedious mess of CSS3 transitions and the like; it's very simple.
+There's one final, optional step left: [animations]({{ site.baseurl }}/tutorial/7-animation).
 

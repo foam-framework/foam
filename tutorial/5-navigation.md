@@ -4,9 +4,7 @@ permalink: /5-navigation/
 tutorial: 5
 ---
 
-FOAM has a `MementoManager` that can do hash-based navigation for single-page apps.
-
-In this simple app, however, we'll do navigation by hand to demonstrate more advanced templates, the template lifecycle, and other concepts.
+Usually, you'll be using one of FOAM's generic controllers, which can handle navigation for you. In this tutorial, we'll do navigation by hand to demonstrate more advanced templates, the template lifecycle, and other concepts.
 
 We'll begin by expanding the `ControllerView` to make the decision of whether to show us a single phone's page or the list. Expand it to look like this:
 

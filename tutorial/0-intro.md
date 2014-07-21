@@ -6,20 +6,14 @@ tutorial: 0
 
 ## Overview
 
-FOAM, **Feature-Oriented Active Modeler**, is a data-centric, very MVC Javascript framework. More details can be found on the [About page]({{ site.baseurl }}/about/) but this tutorial aims to be standalone.
+FOAM is a reactive MVC Javascript framework which tries to deliver a higher level of abstraction, productivity, and performance. See the [About page]({{ site.baseurl}}/about/) for more about the philosophy, or follow this tutorial to dive right in.
 
-We fundamentally believe in programming at a higher level - of abstraction, productivity, and performance.
-
-Therefore FOAM is a _meta_-programming framework.
-It is reactive and highly declarative - you specify the properties on objects, and how they react when their values change.
-Very little code is left to be written in an imperative style - mostly event handlers that update a few properties.
-
-The parts of the tutorial are as follows:
+This tutorial is split into several parts:
 
 - Getting Started (below)
 - [Core Concepts]({{ site.baseurl }}/tutorial/1-concepts/)
 - [`Phone` model]({{ site.baseurl }}/tutorial/2-model/)
-- [DAOs]({{ site.baseurl }}/tutorial/3-dao/)
+- [Controllers]({{ site.baseurl }}/tutorial/3-dao/)
 - [Custom Templates]({{ site.baseurl }}/tutorial/4-templates)
 - [Navigation]({{ site.baseurl }}/tutorial/5-navigation)
 - [`DetailView' and External Templates]({{ site.baseurl }}/tutorial/6-detailview)
@@ -34,15 +28,7 @@ This tutorial is for people who are familiar with Javascript and building web ap
 There are only two required tools for this tutorial:
 
 - `git`
-- A local web server. We recommend either running
-
-        python -m SimpleHTTPServer       # python 2
-
-    or
-
-        python -m http.server            # python 3
-
-Either will serve the current working directory on [http://localhost:8000](http://localhost:8000).
+- A local web server. We recommend Python's built-in web server module.
 
 ## Getting Started
 
@@ -72,7 +58,14 @@ Create `$PROJECT/index.html` with the following contents:
 </html>
 {% endhighlight %}
 
-Loading that page ([http://localhost:8000/](http://localhost:8000/)) should show the "FOAM Powered" logo, and no JS console errors.
+Launch your web server and direct your browser to this file. Using Python, that looks like:
+
+    python -m SimpleHTTPServer    # Python 2
+    python -m http.server         # Python 3
+
+which will serve the current directory on port 8000: [http://localhost:8000/](http://localhost:8000/).
+
+Loading the page should show the "FOAM Powered" logo, and no JS console errors.
 
 If that's what you're seeing, then congratulations! You've got FOAM running and you're ready to move on to the tutorial proper, with [Part 1: Core Concepts]({{ site.baseurl }}/tutorial/1-concepts).
 

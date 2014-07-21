@@ -123,7 +123,7 @@ The listener is attached to the object like a normal method, which can be called
 - Listeners always have `this` bound properly, so they can be passed as callbacks, as above, without being explicitly bound.
 - Listeners can be merged, or batched. The first event that comes in starts the clock, when the timer expires, your handler is fired *once* with the *most recent* event.
     - `isMerged: 100` will merge events and fire the real code 100ms after the *first* event arrives. After that time expires, another event arriving will start the clock again. This is useful to avoid spamming database or network updates.
-    - `isAnimated: true` will merge events and fire your code on the next animation frame. This is useful to avoid redrawing more than once per frame. It receives the most recent event, as above.
+    - `isAnimated: true` will merge events and fire your code on the next animation frame. This is useful to avoid redrawing more than once per frame. Your code receives the most recent event, same as `isMerged`.
 
 
 ## Actions
