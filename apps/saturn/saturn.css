@@ -1,0 +1,331 @@
+body {
+  margin: 0px;
+}
+
+.header {
+  border-bottom: 1px solid #E1E1E1;
+  border-spacing: 0px;
+  height: 59px;
+}
+
+.toolbar div {
+  background-color: #F5F5F5;
+  border-bottom: 1px solid #E1E1E1;
+  height: 59px;
+  padding: 0px 10px;
+  white-space: nowrap;
+}
+
+.toolbar>div>button {
+  -webkit-box-shadow: none;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+  height: 59px;
+  padding: 0px 5px;
+  text-shadow: none;
+  vertical-align: middle;
+  width: 60px;
+}
+
+.toolbar>div>button:hover {
+  background: #EAEAEA;
+}
+
+.toolbar>div>button:active {
+  position: inherit;
+  top: 0px;
+}
+
+.toolbar>div>button:first-child {
+  background-color: #D9372E;
+  border: 1px solid #A22822;
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 0px 0px #E25349;
+  color: #F2F2F2;
+  height: 30PX;
+  margin-left: 10px;
+  margin-right: 88px;
+  width: 48px;
+}
+
+.toolbar>div>button:first-child .toolbar>div>button:hover {
+  background-color: #BF3028;
+}
+
+.toolbar>div>button:first-child .toolbar>div>button:active {
+  background-color: #922723;
+  box-shadow: inset 2px 2px 6px 0px #402020;
+}
+
+.toolbar>div>button>img {
+  opacity: 0.5;
+  padding-right: 3px;
+  vertical-align: middle;
+}
+
+.toolbar>div>button:first-child>img {
+  width: 29px;
+  height: 29px;
+  opacity: 1.0;
+}
+
+input[name=search] {
+   border-width: 1px;
+   border-style: solid;
+   border-color: lightgray;
+}
+
+.searchChoice ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 10px 10px 10px 3px;
+}
+
+.searchChoice ul li {
+  color: #686868;
+  font-family: 'helvetica neue', Arial, 'open sans' sans-serif;
+  font-size: 12;
+  font-weight: bold;
+  height: 37px;
+  line-height: 37px;
+  padding: 1px;
+  white-space: nowrap;
+}
+
+.searchChoice ul li:hover {
+  background-color: #FAFAFA;
+}
+
+.searchChoice ul li.selected {
+  background-color: #F5F5F5;
+  border: 1px solid #EBEBEB;
+  border-radius: 4px;
+  height: 37px;
+  padding: 0px;
+}
+
+.searchChoice>ul li img {
+  display: inline-block;
+  color: black;
+  font-family: 'serif';
+  margin: 0px 8px;
+  opacity: 0.5;
+  text-align: center;
+  width: 21px;
+  vertical-align: -3px;
+}
+
+.detailView {
+  border: 0;
+  background: white;
+}
+
+.browse {
+  border-left: 1px solid #E1E1E1;
+}
+
+.browse>table {
+  border-collapse: collapse;
+}
+
+.browse>table>tbody>tr>td {
+  padding: 0px;
+}
+
+.EMailTable,
+.ConversationTable {
+  border-right: 1px solid #E1E1E1;
+  margin: 0;
+}
+
+.EMailTable thead tr,
+.ConversationTable thead tr{
+  border-bottom: 1px solid #E1E1E1;
+}
+
+.EMailTable thead tr th,
+.ConversationTable thead tr th {
+  border: none;
+  color: #686868;
+  font-family: 'helvetica neue', Arial, 'open sans' sans-serif;
+  font-size: 12;
+  font-weight: bold;
+}
+
+.EMailTable tbody tr.rowSelected,
+.ConversationTable tbody tr.rowSelected {
+  border: none;
+  border-bottom: 1px solid #E1E1E1;
+}
+
+.EMailTable tbody tr td,
+.ConversationTable tbody tr td {
+  border-bottom: 1px solid #E1E1E1;
+  color: #666666;
+  font-family: 'helvetica neue', Arial, 'open sans' sans-serif;
+  font-size: 12;
+  height: 31px;
+  line-height: 31px;
+  padding: 4px 8px 4px 8px;
+  white-space: nowrap;
+}
+
+.EMailTable tbody tr td.from,
+.ConversationTable tbody tr td.from {
+  color: #5A5A5A;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.EMailTable tbody tr:hover td,
+.ConversationTable tbody tr:hover td {
+  background-color: #FAFAFA;
+  color: #666666;
+}
+
+.EMailTable tbody tr.rowSelected td,
+.ConversationTable tbody tr.rowSelected td {
+  background-color: #F5F5F5;
+}
+
+.EMailTable tbody tr.rowSelected td.from
+.ConversationTable tbody tr.rowSelected td.from {
+  border-width: 0px 0px 0px 8px;
+  border-color: #FF6060;
+  border-style: solid;
+  padding-left: 6px;
+}
+
+.scrollSpacer {
+  height: 32px;
+}
+.EMailTable,
+.ConversationTable {
+  width: 100%
+}
+
+tr.detail-attachments .actionBorderActions {
+  display: none;
+}
+
+.edit {
+  border-left: 1px solid #E1E1E1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.detailView {
+  display: -webkit-box;
+  -webkit-box-flex: 1;
+  -webkit-box-orient: vertical;
+}
+
+.edit .detailView input {
+  border: none;
+  float: none;
+  margin: 0px;
+}
+
+.detailView>div {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.detailView>div.header {
+  border-bottom: 1px solid #E1E1E1;
+  padding-bottom: 9px;
+  -webkit-box-flex: 0;
+}
+
+.detailView>div.header>div.subject input {
+  color: #5A5A5A;
+  font-family: 'helvetica neue', Arial, 'open sans', sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.detailView span.label {
+  border: 1px solid #E1E1E1;
+  border-radius: 3px;
+  color: #5A5A5A;
+  display: inline-block;
+  margin-right: 5px;
+  padding: 2px 4px;
+}
+
+.detailView>div.details {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  -webkit-box-flex: 0;
+}
+
+.detailView>div.details>div.details1 {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+}
+
+.detailView img.avatar {
+  background-color: #cccccc;
+  -webkit-box-flex: 0;
+  height: 24px;
+  margin-right: 10px;
+  width: 24px;
+}
+
+.detailView div.from {
+  -webkit-box-flex: 1;
+}
+
+.detailView div.from input {
+  color: #5A5A5A;
+  font-family: 'helvetica neue', Arial, 'open sans', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.detailView div.timestamp {
+  -webkit-box-flex: 0;
+}
+
+.detailView div.timestamp input {
+  color: #999999;
+  font-family: 'helvetica neue', Arial, 'open sans', sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.detailView div.to {
+  display: inline-block;
+  margin-left: 34px;
+}
+
+.detailView div.details2 div, .detailView div.details2 input {
+  color: #999999;
+  font-family: 'helvetica neue', Arial, 'open sans', sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  padding: 0px;
+}
+
+.detailView div.body {
+  -webkit-box-flex: 1;
+  padding-left: 44px;
+}
+
+.detailView div.body textarea {
+  border: 1px solid #E1E1E1;
+  color: #666666;
+  font-family: 'helvetica neue', Arial, 'open sans', sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  height: 75%;
+  line-height: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+.actionToolbar {
+  float: none;
+}

@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <script src="../core/bootFOAM.js"></script>
+    <link rel="stylesheet" type="text/css" href="../core/foam.css" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+
+    <script type="text/javascript">
+      MODEL({
+        name: 'Person',
+        properties: [
+          'id',
+          'name',
+          { name: 'age', model_: 'IntProperty' },
+          { name: 'sex', defaultValue: 'M' }
+        ]
+      });
+
+      var dao = MDAO.create({ model: Person });
+      dao.put(Person.create({ id: 1, name: 'Alice', sex: 'F' }));
+      dao.put(Person.create({ id: 2, name: 'Bob' }));
+      dao.put(Person.create({ id: 3, name: 'Carol', sex: 'F' }));
+      dao.put(Person.create({ id: 4, name: 'Dave' }));
+
+      var view = SwipeAltView.create({
+        views: [
+          ViewChoice.create({
+            label: 'All',
+            view: DAOListView.create({
+              dao: dao
+            })
+          }),
+          ViewChoice.create({
+            label: 'Men',
+            view: DAOListView.create({
+              dao: dao.where(EQ(Person.SEX, 'M'))
+            })
+          }),
+          ViewChoice.create({
+            label: 'Women',
+            view: DAOListView.create({
+              dao: dao.where(EQ(Person.SEX, 'F'))
+            })
+          })
+        ]
+      });
+
+      window.requestAnimationFrame(function() {
+        document.body.innerHTML += view.toHTML();
+        view.initHTML();
+      });
+    </script>
+
+  </head>
+  <body>
+    <h2>Swipe Alt View</h2>
+  </body>
+</html>

@@ -2,7 +2,6 @@
 	"name": "todomvc-template",
 	"version": "0.0.0",
 	"dependencies": {
-		"todomvc-common": "~0.1.4",
-                "foam": "~0.2"
+		"todomvc-common": "~0.1.4"
 	}
 }

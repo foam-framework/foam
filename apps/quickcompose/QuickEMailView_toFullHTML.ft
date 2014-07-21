@@ -1,0 +1,12 @@
+<%
+  var toFocus  = function() { this.toView.focus(); };
+  var ccFocus  = function() { this.ccView.focus(); };
+  var bccFocus = function() { this.bccView.focus(); };
+
+%>
+<table class="recipientRow">
+<tr><th align=left id="<%=this.on('click', toFocus)%>">To</th><td>$$to{placeholder:""}</td></tr>
+<tr><th align=left id="<%=this.on('click', ccFocus)%>">Cc</th><td>$$cc{placeholder:""}</td></tr>
+<tr><th align=left id="<%=this.on('click', bccFocus)%>">Bcc</th><td>$$bcc{placeholder:""}</td></tr>
+</table>
+$$subject $$body $$attachments

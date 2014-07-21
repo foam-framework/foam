@@ -70,9 +70,6 @@ MODEL({
     ]
 });
 
-for ( var key in UNUSED_MODELS ) { console.log(key); window[key].getPrototype && window[key].getPrototype(); }
-for ( var key in USED_MODELS ) window[key].getPrototype && window[key].getPrototype();
-
 var header = $('header');
 var footer = $('footer');
 var search = $('search');
@@ -141,10 +138,9 @@ layout();
         dao.put(f);
       }
     }
-    for ( var key in USED_MODELS ) {
+    for ( key in window ) {
       var m = window[key];
-      if ( ! m.getPrototype ) continue;
-      m.getPrototype();
+      if ( ! ( m && m.model_ && m.model_ === Model ) ) continue;
       console.log('Model: ', m.name);
 
       var f = Feature.create(m);

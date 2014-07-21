@@ -71,7 +71,6 @@ MODEL({
       model_: 'DAOProperty',
       name:  'dao',
       label: 'DAO',
-      onDAOUpdate: 'onDAOUpdate',
       required: true,
       hidden: true
     },
@@ -249,6 +248,11 @@ MODEL({
       this.scrollbar.initHTML();
 
       this.dao && this.onDAOUpdate();
+
+      this.dao$.asDAO().listen({
+        put:    this.onDAOUpdate,
+        remove: this.onDAOUpdate
+      });
 
       if ( this.scrollEnabled ) {
         (this.window || window).addEventListener('resize', this.onResize, false);

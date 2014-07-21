@@ -21,11 +21,16 @@
       <div class="button">$$equals</div>
     </div>
   </div>
+<%
+this.X.registerModel(CalcButton.xbind({
+  background: '#777', width: 70, height: 70
+}), 'ActionButton');
+%>
   <div class="button-column rhs-ops" style="flex-grow: 1">
-    <div class="button">$$ac{background: '#777'}</div>
-    <div class="button">$$plus{background: '#777'}</div>
-    <div class="button">$$minus{background: '#777'}</div>
-    <div class="button">$$mult{background: '#777'}</div>
-    <div class="button">$$div{background: '#777'}</div>
+    <div class="button">$$ac</div>
+    <div class="button">$$plus</div>
+    <div class="button">$$minus</div>
+    <div class="button">$$div</div>
+    <div class="button">$$mult</div>
   </div>
 </div>

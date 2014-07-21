@@ -562,24 +562,6 @@ var DAOProperty = Model.create({
     {
       name: 'view',
       defaultValue: 'ArrayView'
-    },
-    {
-//      model_: 'FunctionProperty',
-      name: 'onDAOUpdate'
-    },
-    {
-      name: 'install',
-      defaultValue: function(prop) {
-        defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var proxy = ProxyDAO.create({delegate: this[prop.name]});
-
-          this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            proxy.delegate = dao;
-          });
-
-          return proxy;
-        });
-      }
     }
   ]
 });

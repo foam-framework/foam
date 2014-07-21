@@ -160,7 +160,7 @@ FOAM.lookup = function(key, opt_X) {
 
 MODEL({
   name: 'UnitTestResultView',
-  extendsModel: 'View',
+  extendsModel: 'AbstractView',
   properties: [
     {
       name: 'value',
@@ -221,7 +221,7 @@ function arequire(modelName) {
   if ( ! model.required__ ) {
     // TODO: eventually this should just call the arequire() method on the Model
     var args = [];
-    if ( model.templates ) for ( var i = 0 ; i < model.templates.length ; i++ ) {
+    for ( var i = 0 ; i < model.templates.length ; i++ ) {
       var t = model.templates[i];
       args.push(aseq(
         aevalTemplate(model.templates[i]),

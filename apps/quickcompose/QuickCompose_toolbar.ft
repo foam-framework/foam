@@ -1,0 +1,19 @@
+<%
+var sendB                = ActionButton.create({action: this.model_.SEND,                  value: SimpleValue.create(this) });
+var boldB                = ActionButton.create({action: RichTextView.BOLD,                 value: SimpleValue.create(this.view.bodyView)});
+var italicB              = ActionButton.create({action: RichTextView.ITALIC,               value: SimpleValue.create(this.view.bodyView) });
+var underlineB           = ActionButton.create({action: RichTextView.UNDERLINE,            value: SimpleValue.create(this.view.bodyView) });
+var linkB                = ActionButton.create({action: RichTextView.LINK,                 value: SimpleValue.create(this.view.bodyView) });
+var discardB             = ActionButton.create({action: this.model_.DISCARD,               value: SimpleValue.create(this)});
+var leftJustifyB         = ActionButton.create({action: RichTextView.LEFT_JUSTIFY,         value: SimpleValue.create(this.view.bodyView) });
+var centerJustifyB       = ActionButton.create({action: RichTextView.CENTER_JUSTIFY,       value: SimpleValue.create(this.view.bodyView) });
+var rightJustifyB        = ActionButton.create({action: RichTextView.RIGHT_JUSTIFY,        value: SimpleValue.create(this.view.bodyView) });
+var numberedListB        = ActionButton.create({action: RichTextView.NUMBERED_LIST,        value: SimpleValue.create(this.view.bodyView) });
+var bulletListB          = ActionButton.create({action: RichTextView.BULLET_LIST,          value: SimpleValue.create(this.view.bodyView) });
+var decreaseIndentationB = ActionButton.create({action: RichTextView.DECREASE_INDENTATION, value: SimpleValue.create(this.view.bodyView) });
+var increaseIndentationB = ActionButton.create({action: RichTextView.INCREASE_INDENTATION, value: SimpleValue.create(this.view.bodyView) });
+var blockQuoteB          = ActionButton.create({action: RichTextView.BLOCK_QUOTE,          value: SimpleValue.create(this.view.bodyView) });
+%>
+<div class=toolbar>
+  <%= sendB, boldB, italicB, underlineB, linkB, leftJustifyB, centerJustifyB, rightJustifyB, numberedListB, bulletListB, decreaseIndentationB, increaseIndentationB, blockQuoteB, discardB %>
+</div>

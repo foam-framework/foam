@@ -1,0 +1,39 @@
+<html>
+ <head>
+  <style type="text/css">
+    .bar {
+       color: white;
+       margin-left:8px;
+       font-family: Arial, sans-serif;
+       font-size: 14px;
+       font-style: normal;
+       font-variant: normal;
+       font-weight: normal;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <title>Scroll Test</title>
+ </head>
+ <body>
+<script>
+    var models = [];
+    for ( key in window ) {
+      if ( window[key] && Model.isInstance(window[key]) ) models.push(window[key]);
+    }
+
+    var mmodels = [];
+
+    for ( var i = 0 ; i < 5000000 ; i++ )
+      mmodels.push(models[i%models.length]);
+
+    console.log('************************************', mmodels.length);
+    document.write('<h1>Rows: ', mmodels.length, '</h1>');
+    var stv = TableView.create({ model: Model, dao: mmodels, rows: 15, scrollEnabed: true});
+    stv.write(document);
+
+    "";
+</script>
+
+ </body>
+</html>

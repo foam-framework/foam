@@ -108,16 +108,6 @@ var Base64Encoder = {
     'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
     'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'],
 
-  create: function(args) {
-    var obj = Object.create(this);
-    if ( args.urlSafe ) {
-      obj.table = this.table.clone();
-      obj.table[62] = '-'
-      obj.table[63] = '_';
-    }
-    return obj;
-  },
-
   encode: function(b, opt_break) {
     var result = "";
     if ( opt_break >= 0 ) {

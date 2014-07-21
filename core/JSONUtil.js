@@ -160,10 +160,8 @@ var JSONUtil = {
     outputObject_: function(out, obj) {
       var str = "";
 
-      out('{');
-      this.outputModel_(out, obj);
+      out('{', '"model_":"', obj.model_.name, '"');
 
-      var first = true;
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
 
@@ -172,18 +170,12 @@ var JSONUtil = {
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
           if ( val == prop.defaultValue ) continue;
-          if ( ! first ) out(",");
-          out(JSONUtil.keyify(prop.name), ':');
+          out(",", JSONUtil.keyify(prop.name), ':');
           this.output(out, val);
-          first = false;
         }
       }
 
       out('}');
-    },
-
-    outputModel_: function(out, obj) {
-      out('"model_":"', obj.model_.name, '",');
     },
 
     outputMap_: function(out, obj) {
@@ -276,10 +268,8 @@ var JSONUtil = {
       var nestedIndent = indent + "   ";
       var str          = "";
 
-      out(/*"\n", */indent, '{\n');
-      this.outputModel_(out, obj, nestedIndent);
+      out(/*"\n", */indent, '{\n', nestedIndent, '"model_": "', obj.model_.name, '"');
 
-      var first = true;
       for ( var key in obj.model_.properties ) {
         var prop = obj.model_.properties[key];
 
@@ -288,18 +278,12 @@ var JSONUtil = {
         if ( prop.name === 'parent' ) continue;
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
-          if ( ! first ) out(",\n");
-          out(nestedIndent, "\"", prop.name, "\"", ': ');
+          out(",\n", nestedIndent, "\"", prop.name, "\"", ': ');
           this.output(out, val, nestedIndent);
-          first = false;
         }
       }
 
       out("\n", indent, '}');
-    },
-
-    outputModel_: function(out, obj, indent) {
-      out(indent, '"model_": "', obj.model_.name, '",\n');
     },
 
     outputMap_: function(out, obj, opt_indent) {

@@ -567,15 +567,17 @@ RegExp.quote = function(str) {
   return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
 };
 
-function defineLazyProperty(target, name, valueFn) {
+function trampoline(installer, target, name, valueFn) {
   var value;
-  Object.defineProperty(target, name, {
+  installer.defineProperty(target, name, {
     get: function() {
       if ( value ) return value;
-      value = valueFn.call(this);
+      value = valueFn();
       Object.defineProperty(target, name, value);
       return value;
-    }
+    },
+    writable: true,
+    configurable: true
   });
 }
 

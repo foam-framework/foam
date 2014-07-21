@@ -1,0 +1,122 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <title>FOAM Diagram </title>
+ </head>
+ <body>
+  <script language="javascript">
+    var timer = Timer.create({});
+    var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
+
+    space.paintChildren = function() {
+      // paint children inverted and slated below reflection point
+      this.canvas.save();
+      this.canvas.translate(850*0.6,850);
+      this.canvas.scale(1,-1);
+      this.canvas.translate(0,-850);
+      this.canvas.transform(1,0,-0.6,1,0,0);
+
+      Canvas.getPrototype().paintChildren.call(this);
+
+      // cause fading with white gradient
+      var fade = this.canvas.createLinearGradient(0,750,0,-1000);
+      fade.addColorStop(0, 'rgba(255,255,255,0.82)');
+      fade.addColorStop(0.2, 'rgba(255,255,255,1)');
+      fade.addColorStop(1, 'rgba(255,255,255,1)');
+      this.canvas.fillStyle = fade;
+      this.canvas.fillRect(0, 850, 1500, -1000);
+      this.canvas.restore();
+
+      // paint children in normally
+      Canvas.getPrototype().paintChildren.call(this);
+    };
+
+    space.write(document);
+
+    var events    = Box.create({color: 'white', text: "Events", background: 'green', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var reactive  = Box.create({color: 'white', text: "Reactivity", background: 'blue', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var animation = Box.create({color: 'white', text: "Animation", background: 'brown', width: 300, height: 50, x:-300, font: '22pt Arial'});
+    var m         = Box.create({color: 'white', text: "M", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
+    var V         = Box.create({color: 'white', text: "V", background: 'gray', width: 100, height: 100, x:-300, font: '22pt Arial'});
+    var C         = Box.create({color: 'white', text: "C", background: 'gray', width: 35, height: 35, x:-300, font: '22pt Arial'});
+    var meta      = Box.create({color: 'white', a: Math.PI/2, text: "Meta", background: 'black', width: 300, height: 100, x:-300, font: '22pt Arial'});
+    var ime       = Box.create({color: 'white', text: "IME", background: 'orange', width: 300, height: 0, x:750, y:450, font: '22pt Arial'});
+    var js        = Box.create({color: 'white', text: "JavaScript", background: 'red', width: 0, height: 50, x:750, y:800, font: '16pt Arial'});
+    var java      = Box.create({color: 'white', text: "Java", background: 'red', width: 50, height: 0, x:1050, y:550, font: '16pt Arial'});
+    var dart      = Box.create({color: 'white', text: "Dart", background: 'red', width: 50, height: 0, x:1100, y:550, font: '16pt Arial'});
+    var cpp       = Box.create({color: 'white', text: "C++", background: 'red', width: 50, height: 0, x:1150, y:550, font: '16pt Arial'});
+    var future    = Box.create({color: 'white', text: "...", background: 'red', width: 100, height: 0, x:1200, y:550, font: '16pt Arial'});
+    var dev       = Circle.create({color:'red', r:15, x:800-15, y:-15});
+
+    space.addChildren(
+      future, cpp, dart, java, js, ime, meta, animation, reactive, events, C, V, m, dev
+    );
+
+    var M = Movement;
+    var B = M.bounce(0.2, 0.08, 3);
+
+    M.orbit(timer, V, m, 220, 535);
+    M.orbit(timer, V, C, -220, 535);
+
+    // Add gravity to 'dev'
+    dev.v = 0;
+    var intersects = {f:function(shape) {
+      return shape !== dev && dev.x > shape.x && dev.x < shape.x + shape.width && dev.y+dev.r > shape.y;
+    }};
+    Events.dynamic(function() { dev.x; }, function() {
+      dev.y += ++dev.v;
+      space.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
+    });
+
+    M.compile([
+       [1000, function() { js.width = 300; }, B],
+       [0],
+       [2000, function() { events.x = 750;  }, M.easeIn(0.3).o(M.oscillate(0.3, 0.02, 2))],
+       [2000, function() { events.y = 750; }, M.accelerate.o(M.bounce(0.2, 0.05, 2))],
+       [0],
+       [
+          [2900, function() { reactive.x = 750; reactive.a = Math.PI*2; }, M.easeOut(1.0)],
+          [3000, function() { reactive.y = 700; }, M.easeIn(1.0)]
+       ],
+       [0],
+       [1500, function() { animation.x = 600; animation.y = 650;}],
+       [ 500],
+       [ 700, function() { animation.x = 750;}],
+       [0],
+       function() { timer.start(); },
+       [1500, function() { V.x = 850; }],
+       [1500, function() { V.y = 550; }],
+       function() { timer.stop(); },
+       [1000, function() { m.x = 750; m.y = 550; m.width = 100; m.height=100; C.x = 950; C.y = 550; C.width=100; C.height=100; }],
+       [0],
+       [2000, function() { meta.a = 0; meta.x = 750; meta.y = 450;}],
+       [0],
+       [1500, function() { ime.y -= 100; ime.height += 100; }],
+       [0],
+       [
+         [5000, function() { meta.width += 250; }],
+         [[1000], [2000, function() { java.height = 300; }, B]],
+         [[2000], [2000, function() { dart.height = 300; }, B]],
+         [[3000], [2000, function() { cpp.height = 300; }, B]],
+         [[5000], [2000, function() { future.height = 300; }, B]]
+       ],
+       [0],
+       [1000, function() { dev.y = 350-dev.r; }, M.accelerate.o(M.bounce(0.2, 0.15, 2))],
+       [1000, function() {
+         var s = 50;
+         var w = 6*s;
+         js.x        -= w;     js.width        += w;   w-=s;
+         events.x    -= w;     events.width    += w;   w-=s;
+         reactive.x  -= w;     reactive.width  += w;   w-=s;
+         animation.x -= w;     animation.width += w;   w-=s;
+         m.x         -= w;     m.width         += w/3;
+         V.x         -= w*2/3; V.width         += w/3;
+         C.x         -= w/3;   C.width         += w/3; w-=s;
+         meta.x      -= w;     meta.width      += w;   w-=s;
+       }, B],
+       [9000, function() { dev.x = 475; }, M.ease(0.2, 0.2)],
+    ])();
+  </script>
+ </body>
+</html>

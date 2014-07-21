@@ -10,11 +10,24 @@
   <div class='keypad'>
   <div class="edge2"></div>
   <%=
-    SlidePanelView.create({
+  /*
+      SlidePanelView.create({
       mainView: MainButtonsView.create({data: this.data}),
       panelView: SecondaryButtonsView.create({data: this.data}),
       minWidth: 360,
       minPanelWidth: 300
+    })
+*/
+    SlidePanelView.create({
+      mainView: MainButtonsView.create({data: this.data}),
+      panelView: SlidePanelView.create({
+        mainView: SecondaryButtonsView.create({data: this.data}),
+        panelView: TertiaryButtonsView.create({data: this.data}),
+        minWidth: 360,
+        minPanelWidth: 90,
+        panelRatio: 0.25
+      }),
+      minWidth: 360
     })
   %>
   </div>

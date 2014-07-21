@@ -1,0 +1,38 @@
+{
+    "name": "Saturn Mail",
+    "version": "1.0",
+    "manifest_version": 2,
+
+    "permissions": [
+        "storage",
+        {"socket": [ "tcp-connect" ] },
+      "https://*/",
+      "http://*/",
+      "identity",
+      "alarms",
+      "pushMessaging"
+    ],
+
+    "icons": {
+      "128": "images/saturn128.png"
+    },
+
+    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+H2WU0tNtGJbp6H25PvaK9otuLih/A2ImVBkiNOS+hKy6Ou1bMsGwnR+Dghb7QtJuuRxo6u1ufrPg+jRWk2bfrT0fFVvlhcFegJdv0lu+6BKjTQSi2Kdolz5kE/Qi3O0kdVqPsKyozyAdJ4+WMctpksN9R5aSw1JQIJ1R4oOD4wIDAQAB",
+
+    "app": {
+        "background": {
+            "scripts": [
+              "foam.js"
+            ]
+        }
+    },
+
+    "oauth2": {
+        "client_id": "945476427475-vqb9p05jtcoll6c088qtirc329khntm0.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.google.com/m8/feeds/",
+            "https://mail.google.com/mail"
+        ]
+    }
+}

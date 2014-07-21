@@ -96,7 +96,7 @@ function awhile(cond, afunc) {
 /** Execute the supplied afunc if cond. */
 function aif(cond, afunc, aelse) {
   return function(ret) {
-    if ( typeof cond === 'function' ? cond() : cond ) {
+    if ( cond ) {
        afunc.apply(this, arguments);
     } else {
       if ( aelse ) aelse.apply(this, arguments);

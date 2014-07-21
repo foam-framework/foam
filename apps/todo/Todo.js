@@ -1,9 +1,9 @@
 (function () {
 	'use strict';
-	// Necessary JSHint options. FOAModel is not a constructor, just a global function.
+	// Necessary JSHint options. MODEL is not a constructor, just a global function.
 	// (It creates a trampoline that returns quickly, and will build the model when first used.)
 	/* jshint newcap: false */
-	FOAModel({
+	MODEL({
 		name: 'TodoDAO',
 		extendsModel: 'ProxyDAO',
 		methods: {
@@ -15,7 +15,7 @@
 		}
 	});
 
-	FOAModel({
+	MODEL({
 		name: 'Todo',
 		properties: [
 			'id',
@@ -41,7 +41,7 @@
 			%> */} ]
 	});
 
-	FOAModel({
+	MODEL({
 		name: 'Controller',
 		properties: [
 			{

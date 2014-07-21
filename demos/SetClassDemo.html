@@ -1,0 +1,48 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <script language="javascript" src="../core/bootFOAM.js"></script>
+  <script language="javascript" src="dragon.js"></script>
+  <title>FOAM DOM Objects</title>
+  <style>
+    .code {width:700px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
+    .output {width:700px; white-space: pre; border: 1px solid; padding: 5px; color:blue;}
+    .error {border: 2px solid red;}
+  </style>
+ </head>
+
+ <body>
+
+<script language="javascript">
+MODEL({
+  name: 'DemoView',
+  extendsModel: 'DetailView',
+  templates: [ { name: 'toHTML' } ]
+});
+</script>
+
+<foam model="UnitTest" onInit="this.test()" view="DemoView">
+  <description>A UnitTest embedded in DOM</description>
+  <code>
+    this.log('Here I am');
+  </code>
+</foam>
+
+<foam id='test2' model="UnitTest" onInit="this.test()" view="DemoView">
+  <description>A failed Test</description>
+  <code>
+    this.fail("Something's wrong.");
+  </code>
+</foam>
+
+<script language="javascript">
+  arequire('DemoView')(function() {
+    DOM.init(document);
+
+    // Toggle test2.failed to see if the class updates
+    setInterval(function() { $('test2').failed = $('test2').failed ? 0 : 1 }, 1000);
+ });
+</script>
+
+ </body>
+</html>

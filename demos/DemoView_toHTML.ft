@@ -1,0 +1,30 @@
+<%
+  var test = this.data;
+  var ifError = function() { return this.failed; }.bind(test);
+  var cView = DAOListView.create({
+      model: UnitTest,
+      dao: test.tests,
+      rowView: 'DemoView',
+      mode: 'read-only'
+  });
+
+  this.addChild(cView);
+%>
+<h3>{{test.name}}</h3>
+<% if ( test.description ) { %>
+   <div class="description">
+     {{{test.description}}}
+   </div>
+   <br>
+<% } %>
+<div>Code:</div>
+<pre><div class="code">{{test.code}}</div></pre>
+<% if ( test.results.trim() || true) { %>
+  <br>
+  <div>Output:</div>
+  <pre>
+  <div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
+  </pre>
+<% } %>
+  <blockquote><%= cView %></blockquote>
+<br>

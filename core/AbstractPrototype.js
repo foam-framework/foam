@@ -35,7 +35,6 @@ var AbstractPrototype = {
     return o;
   },
 
-  // TODO: document
   xbind: function(map) {
     return {
       __proto__: this,
@@ -73,14 +72,13 @@ var AbstractPrototype = {
     if ( ! this.model_ ) return;
 
     var ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
-    ps.forEach(function(prop) {
-      var name = prop.name;
-      var dynamicValue = prop.dynamicValue;
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var prop = ps[i];
 
-      Events.dynamic(
-        dynamicValue.bind(this),
-        function(value) { this[name] = value; }.bind(this));
-    }.bind(this));
+      (function(self, name, dynamicValue) {
+        Events.dynamic(dynamicValue.bind(self), function(value) { self[name] = value; } );
+      })(this, prop.name, prop.dynamicValue);
+    }
 
     ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
@@ -186,12 +184,14 @@ var AbstractPrototype = {
   },
 
   defineProperty: function(prop) {
+    // this method might be a good candidate for a decision table
+
     var name = prop.name;
     prop.name$_ = name + '$';
 
     // TODO: add caching
-    if ( ! this.__lookupGetter__(prop.name$_) ) {
-      Object.defineProperty(this, prop.name$_, {
+    if ( ! AbstractPrototype.__lookupGetter__(prop.name$_) ) {
+      Object.defineProperty(AbstractPrototype, prop.name$_, {
         get: function() { return this.propertyValue(name); },
         set: function(value) { Events.link(value, this.propertyValue(name)); },
         configurable: true
@@ -223,34 +223,6 @@ var AbstractPrototype = {
         }; })(setter);
       }
 
-      if ( prop.onDAOUpdate ) {
-        if ( typeof prop.onDAOUpdate === 'string' ) {
-          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
-            setter.call(this, oldValue, newValue);
-
-            var listener = this[listenerName] || ( this[listenerName] = this[onDAOUpdate].bind(this) );
-
-            if ( oldValue ) oldValue.unlisten(listener);
-            if ( newValue ) {
-              newValue.listen(listener);
-              listener();
-            }
-          }; })(setter, prop.onDAOUpdate, prop.name + '_onDAOUpdate');
-        } else {
-          setter = (function(setter, onDAOUpdate, listenerName) { return function(oldValue, newValue) {
-            setter.call(this, oldValue, newValue);
-
-            var listener = this[listenerName] || ( this[listenerName] = onDAOUpdate.bind(this) );
-
-            if ( oldValue ) oldValue.unlisten(listener);
-            if ( newValue ) {
-              newValue.listen(listener);
-              listener();
-            }
-          }; })(setter, prop.onDAOUpdate, prop.name + '_onDAOUpdate');
-        }
-      }
-
       if ( prop.postSet ) {
         setter = (function(setter, postSet) { return function(oldValue, newValue) {
           setter.call(this, oldValue, newValue);
@@ -276,9 +248,6 @@ var AbstractPrototype = {
 
       this.defineFOAMSetter(name, setter);
     }
-
-    // Let the property install other features into the Prototype
-    prop.install && prop.install.call(this, prop);
   },
 
   hashCode: function() {

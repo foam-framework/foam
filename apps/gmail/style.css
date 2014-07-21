@@ -314,18 +314,7 @@ ul.swipeAltHeader {
 }
 
 .email-view .body {
-  white-space: pre-wrap;
+  white-space: pre;
   margin-top: 6px;
   display: block;
-}
-
-.menuView {
-  height: 100%;
-  display: block;
-  overflow-y: scroll;
-}
-
-.menuView div:hover {
-  background-color: #3e50b4;
-  color: white;
 }
