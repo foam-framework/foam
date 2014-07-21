@@ -169,7 +169,8 @@ MODEL({
 
       var id = this.nextID();
       var width = toNum(this.X.window.getComputedStyle(oldViewArea).width);
-      var newViewHTML = '<div id="' + id + '" style="position: absolute; left: ' + width + ';transition: left .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      var newViewHTML = '<div id="' + id + '" style="display: table;position: absolute; left: ' + width + ';transition: left .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      oldViewArea.style.display = 'table';
       oldViewArea.style.position = 'absolute';
       oldViewArea.style.left = 0;
       oldViewArea.style.transition = 'left .3s';
@@ -186,7 +187,7 @@ MODEL({
         oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.left = '';
-      }, 1500);
+      }, 1000);
     },
 
     installViewFromLeft_: function(view) {
@@ -194,7 +195,8 @@ MODEL({
 
       var id = this.nextID();
       var width = toNum(this.X.window.getComputedStyle(oldViewArea).width);
-      var newViewHTML = '<div id="' + id + '" style="position: absolute; right: ' + width + ';transition: right .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      var newViewHTML = '<div id="' + id + '" style="display: table;position: absolute; right: ' + width + ';transition: right .3s;" class="stackview-viewarea">' + view.toHTML() + '<div>';
+      oldViewArea.style.display = 'table';
       oldViewArea.style.position = 'absolute';
       oldViewArea.style.right = 0;
       oldViewArea.style.transition = 'right .3s';
@@ -211,7 +213,7 @@ MODEL({
         oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.right = '';
-      }, 1500);
+      }, 1000);
     },
 
     setPreview: function(view) {
