@@ -726,7 +726,7 @@ MODEL({
     {
       name: 'predicate',
       defaultValueFn: function() { return TRUE; },
-      postSet: function(_, p) { console.log(p); this.predicatedDAO = this.dao.where(p); }
+      postSet: function(_, p) { this.predicatedDAO = this.dao.where(p); }
     },
     {
       model_: 'DAOProperty',

@@ -180,7 +180,6 @@ var BootstrapModel = {
           if ( extendsModel ) {
             var superAction = extendsModel.getAction(a.name);
             if ( superAction ) {
-              console.log('superAction: ', a.name, a.model_.name);
               a = superAction.clone().copyFrom(a);
               this.actions[i] = a;
             }
