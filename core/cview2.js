@@ -95,6 +95,13 @@ MODEL({
       if ( devicePixelRatio !== backingStoreRatio )
         this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
+      var style = this.X.window.getComputedStyle(this.$);
+
+      // Copy the background colour from the div styling.
+      // TODO: the same thing for other CSS attributes like 'font'
+      if ( style.backgroundColor && ! this.cview.hasOwnProperty('background') )
+        this.cview.background = style.backgroundColor;
+
       this.paint();
     }
   }
