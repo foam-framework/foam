@@ -17,7 +17,8 @@ MODEL({
     },
     {
       model_: 'DAOProperty',
-      name: 'issueDAO'
+      name: 'issueDAO',
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       model_: 'DAOProperty',
@@ -30,7 +31,7 @@ MODEL({
       name: 'cursorView',
       factory: function() {
         return this.X.CursorView.create({
-          data: this.X.Cursor.create({dao: this.cursorIssueDAO})});
+          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
       }
     },
     {
@@ -60,10 +61,7 @@ MODEL({
       isMerged: 100,
       code: function() {
         if ( ! this.data ) return;
-        if ( ! this.$ ) {
-          this.issueDAO$Proxy.unlisten(this.onDAOUpdate);
-          return;
-        }
+        if ( ! this.$ ) return;
 
         var self = this;
         this.issueDAO.find(this.data.id, {
@@ -91,12 +89,6 @@ MODEL({
   methods: {
     destroy: function() {
       if ( this.data ) this.data.removeListener(this.doSave);
-      this.issueDAO.unlisten(this.onDAOUpdate);
-    },
-    init: function(args) {
-      this.SUPER(args);
-      debugger;
-      this.issueDAO$Proxy.listen(this.onDAOUpdate);
     },
     commentView: function() {
       return this.X.DAOListView.create({
