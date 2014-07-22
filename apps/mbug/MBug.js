@@ -390,6 +390,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'IssueEmailArrayView',
   extendsModel: 'View',
@@ -406,6 +407,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'IssuePersonCitationView',
   extendsModel: 'DetailView',
@@ -413,6 +415,7 @@ MODEL({
     function toHTML() {/* $$name{model_: 'IssueEmailCitationView'} */}
   ]
 });
+
 
 MODEL({
   name: 'IssueEmailCitationView',
@@ -691,6 +694,7 @@ MODEL({
     }
   ],
 });
+
 
 MODEL({
   name: 'IssuePersonAutocompleteView',

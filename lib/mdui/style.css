@@ -125,3 +125,15 @@ input[name=q]::-webkit-input-placeholder {
 .backButton {
   margin-top: 6px;
 }
+
+.header canvas {
+  background: #3e50b4
+}
+
+.body canvas {
+  background: white;
+}
+
+.popupChoiceView {
+  padding: 0;
+}

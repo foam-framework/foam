@@ -390,7 +390,7 @@ MODEL({
           e = e.parentElement;
         }
         this.scrollContainer = e || window;
-        e.addEventListener('scroll', this.onScroll, false);
+        this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
       if ( ! this.hidden ) this.updateHTML();

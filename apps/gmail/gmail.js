@@ -151,6 +151,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'EmailView',
   extendsModel: 'UpdateDetailView',
@@ -180,8 +181,8 @@ MODEL({
           $$starred{
             model_: 'ImageBooleanView',
             className:  'actionButton',
-            trueImage:  'images/ic_star_24dp.png',
-            falseImage: 'images/ic_star_outline_24dp.png'
+            trueImage:  'images/ic_star_white_24dp.png',
+            falseImage: 'images/ic_star_outline_white_24dp.png'
           }
         </div>
         <div class="content">
