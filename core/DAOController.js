@@ -156,7 +156,7 @@ MODEL({
         this.X.stack.setPreview(
           DetailView.create({
             model: this.model,
-            value: this.daoView.selection
+            data$: this.daoView.selection
           }));
       }
     }
@@ -172,7 +172,7 @@ MODEL({
 
   properties: [
     {
-      name:  'obj',
+      name:  'data',
       label: 'New Object',
     },
     {
@@ -194,7 +194,7 @@ MODEL({
       isEnabled:   function() { return true; },
       action:      function() {
         var self = this;
-        this.dao.put(this.obj, {
+        this.dao.put(this.data, {
           put: function(value) {
             console.log("Created: ", value);
             self.X.stack.back();
@@ -211,9 +211,7 @@ MODEL({
 
       isAvailable: function() { return true; },
       isEnabled:   function() { return true; },
-      action:      function() {
-        this.X.stack.back();
-      }
+      action:      function() { this.X.stack.back(); }
     },
     {
       name:  'help',
@@ -222,7 +220,7 @@ MODEL({
       isAvailable: function() { return true; },
       isEnabled:   function() { return true; },
       action:      function() {
-        var model = this.obj.model_;
+        var model = this.data.model_;
         var helpView = HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
@@ -230,22 +228,6 @@ MODEL({
   ],
 
   methods: {
-    newObj: function(obj, dao) {
-      // TODO is this ever called?
-      debugger;
-      var model = {
-        __proto__: obj.model_,
-        create: function() { return obj; }
-      };
-      var createView = DAOCreateController.create({
-        model: model,
-        dao:   dao
-      }).addDecorator(ActionBorder.create({ actions: DAOCreateController.actions }));
-
-      createView.parentController = this;
-      this.X.stack.pushView(createView);
-    },
-
     init: function() {
       var tmp = this.model;
       this.SUPER();
@@ -253,7 +235,7 @@ MODEL({
 
       this.obj = this.model.create();
 
-      this.view = DetailView.create({model: this.model, value: this.propertyValue('obj')});
+      this.view = DetailView.create({model: this.model, data: this.data});
     },
 
     toHTML: function() {
