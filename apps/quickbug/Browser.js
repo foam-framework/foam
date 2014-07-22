@@ -600,7 +600,6 @@ Please use labels and text to provide additional information.
 
     /** Open a preview window when the user hovers over an issue id. **/
     preview: function(e, id) {
-      debugger;
       if ( id === this.previewID ) return;
       if ( this.currentPreview ) this.currentPreview.close();
       this.previewID = id;
