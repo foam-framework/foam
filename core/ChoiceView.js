@@ -533,10 +533,10 @@ MODEL({
       var button = this.createActionView(
         this.model_.OPEN,
         SimpleValue.create(this)
-      ).toView();
+      ).toView_();
 
       this.addChild(button);
-      
+
       out += button.toHTML();
       out += '</span>';
 

@@ -191,7 +191,7 @@ MODEL({
   ],
 
   methods: {
-    toView: function() {
+    toView_: function() {
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
@@ -203,7 +203,7 @@ MODEL({
     initCView: function() { },
 
     write: function(document) {
-      var v = this.toView();
+      var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();
     },
