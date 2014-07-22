@@ -71,9 +71,9 @@ var DragAndDropGrid = FOAM({
         } :
         f.compareProperty);
     },
-    renderCell: function(x, y, value) {
+    renderCell: function(x, y, data) {
       var cell = IssueDropCell.create({
-        value: value,
+        data: data,
         dao: this.dao,
         props: [this.xFunc, this.yFunc],
         values: [x, y]
@@ -97,7 +97,7 @@ var IssueDropCell = FOAM({
 
   properties: [
     {
-      name: 'value'
+      name: 'data'
     },
     {
       name: 'dao',
@@ -119,14 +119,14 @@ var IssueDropCell = FOAM({
       this.on('dragover', this.onDragEnter, this.id);
       this.on('drop', this.onDrop, this.id);
       return '<td id="' + this.id + '">' +
-        (this.value ? (this.value.toHTML ? this.value.toHTML() : this.value) : '') + '</td>';
+        (this.data ? (this.data.toHTML ? this.data.toHTML() : this.data) : '') + '</td>';
     },
     initHTML: function() {
       this.SUPER();
-      this.value && this.value.initHTML && this.value.initHTML();
+      this.data && this.data.initHTML && this.data.initHTML();
     },
     put: function(obj) {
-      this.value.put(obj);
+      this.data.put(obj);
     }
   },
 
@@ -426,7 +426,7 @@ MODEL({
     toHTML: function() {
       var link = ActionButton.create({
         action: this.model_.ADD,
-        value: SimpleValue.create(this)
+        data: this
       });
       this.addChild(link);
 
@@ -446,9 +446,6 @@ MODEL({
         autocomplete: this.autocomplete,
         autocompleter: this.autocompleter
       });
-    },
-    setValue: function(value) {
-      this.value = value;
     }
   },
 

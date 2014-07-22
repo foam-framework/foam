@@ -293,7 +293,7 @@ MODEL({
             var b = Y.DetailView.create({
               model: Y.SyncManager,
               title: '<img style="vertical-align:bottom;" src="images/refresh.png"> Sync Config: ' + self.projectName,
-              value: SimpleValue.create(syncManager),
+              data: syncManager,
               showActions: true });
             window.document.body.innerHTML = '<div>' + b.toHTML() + '</div>';
             b.initHTML();
