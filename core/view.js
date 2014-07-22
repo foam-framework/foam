@@ -2340,6 +2340,7 @@ MODEL({
 
 var ArrayView = {
   create: function(prop) {
+    console.assert(prop.subType, 'Array properties must specify "subType".');
     var view = DAOController.create({
       model: GLOBAL[prop.subType]
     });
