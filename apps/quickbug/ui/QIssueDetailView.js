@@ -39,7 +39,7 @@ MODEL({
         return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKING,
-          ids: this.value.get().blocking});
+          ids: this.data.blocking});
       }
     },
     {
@@ -48,7 +48,7 @@ MODEL({
         return this.X.BlockView.create({
           ctx: this,
           property: QIssue.BLOCKED_ON,
-          ids: this.value.get().blockedOn});
+          ids: this.data.blockedOn});
       }
     },
     'newCommentView'
@@ -93,22 +93,11 @@ MODEL({
       if ( this.data ) this.data.removeListener(this.doSave);
       this.issueDAO.unlisten(this.onDAOUpdate);
     },
-
     init: function(args) {
       this.SUPER(args);
       debugger;
       this.issueDAO$Proxy.listen(this.onDAOUpdate);
     },
-
-    onValueChange_: function(_, _, old, v) {
-      this.saveEnabled = false;
-
-      if ( old ) old.removeListener(this.doSave);
-
-      if ( v ) v.addListener(this.doSave);
-      else if ( this.data ) this.data.addListener(this.doSave);
-    },
-
     commentView: function() {
       return this.X.DAOListView.create({
         dao: this.QIssueCommentDAO,
@@ -146,20 +135,15 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
+      name: 'data',
       factory: function() { return SimpleValue.create([]); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
-      }
+      postSet: function() { this.update(); }
     }
   ],
 
   methods: {
     toHTML: function() { return '<div id="' + this.id + '"></div>'; },
-    initHTML: function() { this.SUPER(); this.update(); },
-    setValue: function(value) { this.value = value; }
+    initHTML: function() { this.SUPER(); this.update(); }
   },
 
   listeners: [
@@ -169,7 +153,7 @@ MODEL({
       code: function() {
         if ( ! this.$ ) return;
 
-        var value = this.value.get().sort(function (o1, o2) {
+        var value = this.data.sort(function (o1, o2) {
           return o1.toLowerCase().compareTo(o2.toLowerCase());
         });
         var out = "";
