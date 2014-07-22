@@ -343,7 +343,8 @@ var QIssue = FOAM({
       preSet: function(_, v) {
         if ( Array.isArray(v) ) return v;
         if ( ! v ) return undefined;
-        
+        if ( typeof v !== 'string' ) return [];
+
         return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? parseInt(v.substring(1)) : parseInt(v));
       }
     },
