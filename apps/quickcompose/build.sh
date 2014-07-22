@@ -24,10 +24,11 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/context.js \
   ../../core/FOAM.js \
+  ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
-  ../../core/AbstractPrototype.js \
-  ../../core/ModelProto.js \
+  ../../core/FObject.js \
+  ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
@@ -36,7 +37,9 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
-  ../../core/listchoiceview.js \
+  ../../core/daoView.js \
+  ../../core/ChoiceView.js \
+  ../../core/DetailView.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
   ../../core/glang.js \
