@@ -70,7 +70,7 @@ MODEL({
     ]
 });
 
-for ( var key in UNUSED_MODELS ) { console.log(key); window[key].getPrototype && window[key].getPrototype(); }
+for ( var key in UNUSED_MODELS ) { window[key].getPrototype && window[key].getPrototype(); }
 for ( var key in USED_MODELS ) window[key].getPrototype && window[key].getPrototype();
 
 var header = $('header');
@@ -145,7 +145,6 @@ layout();
       var m = window[key];
       if ( ! m.getPrototype ) continue;
       m.getPrototype();
-      console.log('Model: ', m.name);
 
       var f = Feature.create(m);
       f.model = '- GLOBAL -';
@@ -217,15 +216,13 @@ layout();
 
     table.initHTML();
 
-    table.selection.addListener(function (src, property, oldValue, newValue) {
+    table.selection$.addListener(function (src, property, oldValue, newValue) {
       if ( ! newValue ) return;
-      var obj = table.selection.get().obj.clone();
-      var editView = DetailView.create({value: SimpleValue.create(obj)});
-      editView.model = table.selection.get().obj.model_;
+      var obj        = table.selection.obj.clone();
+      var editView   = DetailView.create({data: obj});
       edit.innerHTML = editView.toHTML();
       editView.initHTML();
     });
-//    table.selection.set(table.objs[0]);
 
     layout();
 
@@ -236,7 +233,7 @@ layout();
         byModel.predicate,
         byName.predicate).partialEval();
 
-      console.log('query: ', predicate.toSQL());
+      // console.log('query: ', predicate.toSQL());
 
       table.dao = dao.where(predicate);
 
