@@ -54,9 +54,7 @@ var ContactAvatarDAO = LRUCachingDAO.create({
 });
 console.timeEnd('ContactAvatarDAO');
 
-ContactDAO = CachingDAO.create(
-  ContactDAO,
-  IDBDAO.create({ model: Contact }));
+ContactDAO = EasyDAO.create({model: Contact, cache: true})
 
 ContactAvatarDAO = PropertyOffloadDAO.create({
   property: Contact.AVATAR,
