@@ -156,7 +156,7 @@ MODEL({
     },
     {
       name: 'rowSelection',
-      factory: function() { return SimpleValue.create(); }
+      postSet: function(_, issue) { this.location.id = issue.id; }
     },
     {
       name: 'timer',
@@ -185,8 +185,7 @@ MODEL({
     {
       name: 'view',
       factory: function() {
-        var view = createView(this.rowSelection, this);
-//        this.location.mode$ = view.choice$
+        var view = createView(this.rowSelection$, this);
         view.choice$ = this.location.mode$;
         return view;
       }
@@ -305,7 +304,7 @@ MODEL({
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
-          this.rowSelection.set('');
+          this.rowSelection = '';
           this.back();
         }
       }
@@ -475,9 +474,6 @@ MODEL({
           if ( this.location.cells.indexOf('pie') == -1 ) this.location.cells = 'pie(status)';
         }
       }.bind(this));
-      this.rowSelection.addListener(function(_,_,_,issue) {
-        this.location.id = issue.id;
-      }.bind(this));
 
       this.syncManagerFuture.get((function(syncManager) {
         this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
@@ -604,6 +600,7 @@ Please use labels and text to provide additional information.
 
     /** Open a preview window when the user hovers over an issue id. **/
     preview: function(e, id) {
+      debugger;
       if ( id === this.previewID ) return;
       if ( this.currentPreview ) this.currentPreview.close();
       this.previewID = id;

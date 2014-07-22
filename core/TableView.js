@@ -46,12 +46,14 @@ MODEL({
       defaultValue: null
     },
     {
+      // TODO: shouldn't be a Value
       name:  'hardSelection',
       type:  'Value',
       postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
       factory: function() { return SimpleValue.create(); }
     },
     {
+      // TODO: shouldn't be a Value
       name:  'selection',
       type:  'Value',
       factory: function() { return SimpleValue.create(); }

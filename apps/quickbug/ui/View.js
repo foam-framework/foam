@@ -261,7 +261,7 @@ var QIssueTableView = FOAM({
 });
 
 
-function createView(rowSelection, browser) {
+function createView(rowSelectionValue, browser) {
   var X = browser.X;
   var location = browser.location;
 
@@ -276,7 +276,7 @@ function createView(rowSelection, browser) {
             model:              QIssue,
             dao:                browser.filteredIssueDAO,
             browser:            browser,
-            hardSelection:      rowSelection,
+            hardSelection:      rowSelectionValue,
             scrollEnabled:      true,
             editColumnsEnabled: true
           }, browser.X);
