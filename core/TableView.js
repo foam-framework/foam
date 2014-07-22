@@ -396,7 +396,6 @@ MODEL({
         e.onclick = function(evt) {
           self.hardSelection = self.objs[i];
           self.selection = obj;
-          delete value['prevValue'];
           var row = evt.srcElement;
           while ( row && row.tagName !== "TR") row = row.parentNode;
           var table = row;
