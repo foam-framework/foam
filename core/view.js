@@ -2486,7 +2486,7 @@ MODEL({
           viewChoice.view(this.data.model_, this.data$) :
           GLOBAL[viewChoice.view].create({
             model: this.data.model_,
-            value: this.data$
+            data:  this.data
           });
 
         // TODO: some views are broken and don't have model_, remove
@@ -3121,7 +3121,7 @@ MODEL({
   methods: {
     toHTML: function() {
       var toolbar = ToolbarView.create({
-        value: SimpleValue.create(this)
+        data: this
       });
       toolbar.addActions([this.model_.ADD]);
       this.children = [toolbar];
