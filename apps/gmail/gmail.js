@@ -109,12 +109,14 @@ MODEL({
 
       var Y = this.X.sub({
         stack: this.stack,
+        EMailDAO: this.emailDao,
         mgmail: this, // TODO: this doesn't actually work.
       }, 'GMAIL CONTEXT');
 
       this.controller = Y.AppController.create({
         model: EMail,
         dao: this.emailDao,
+        createAction: this.model_.COMPOSE,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         editableCitationViews: true,
@@ -135,7 +137,7 @@ MODEL({
       this.changeLabel();
     },
     openEmail: function(email) {
-      var v = this.controller.X.EmailView.create({data: email});
+      var v = this.controller.X.EMailView.create({data: email});
       this.stack.pushView(v, '');
     },
     changeLabel: function(label) {
@@ -148,12 +150,27 @@ MODEL({
       }
       this.stack.back();
     },
-  }
+  },
+
+  actions: [
+    {
+      model_: 'Action',
+      name: 'compose',
+      iconUrl: 'images/compose.png',
+      action: function() {
+        var view = this.X.DetailView.create({
+          data: this.X.EMail.create({}),
+          showActions: true
+        });
+        this.X.stack.pushView(view, undefined, undefined, 'fromLeft');
+      }
+    }
+  ]
 });
 
 
 MODEL({
-  name: 'EmailView',
+  name: 'EMailView',
   extendsModel: 'UpdateDetailView',
   properties: [
   ],
@@ -171,13 +188,8 @@ MODEL({
         <div class="header">
           $$back{className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
-          $$inInbox{
-            model_: 'ImageBooleanView',
-            className:  'actionButton',
-            falseClass: 'hide',
-            trueImage: 'images/archive.svg',
-            falseImage: 'images/archive.svg'
-          }
+          $$archive
+          $$moveToInbox
           $$starred{
             model_: 'ImageBooleanView',
             className:  'actionButton',
