@@ -304,7 +304,10 @@ var QIssue = FOAM({
       model_: 'IntProperty',
       name: 'stars',
       tableWidth: '20px',
-      help: 'Number of stars this issue has.'
+      help: 'Number of stars this issue has.',
+      compareProperty: function(o2, o1) {
+        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+      }
     },
     {
       name: 'labels',

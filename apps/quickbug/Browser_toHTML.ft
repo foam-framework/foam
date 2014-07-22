@@ -1,13 +1,12 @@
 <%
   var X = this.X;
   var manifest = chrome.runtime.getManifest();
-  var browserLink = X.ActionLink.create({action: this.model_.LAUNCH_BROWSER, data: this});
-  browserLink.className = browserLink.className + ' tip-below';
-  var linkButton  = X.ActionButton.create({action: this.model_.LINK,         data: this});
-  var syncLink    = X.ActionLink.create({action: this.model_.LAUNCH_SYNC,    data: this});
-  var backButton  = X.ActionButton.create({action: MementoMgr.BACK,          data: this.mementoMgr});
-  var forthButton = X.ActionButton.create({action: MementoMgr.FORTH,         data: this.mementoMgr});
-  var createButton = X.ActionLink.create({action: this.model_.NEW_ISSUE,     data: this});
+  var browserLink  = X.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this, extraClassName: 'tip-below'});
+  var linkButton   = X.ActionButton.create({action: this.model_.LINK,           data: this});
+  var syncLink     = X.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
+  var backButton   = X.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
+  var forthButton  = X.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
+  var createButton = X.ActionLink.create(  {action: this.model_.NEW_ISSUE,      data: this});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />

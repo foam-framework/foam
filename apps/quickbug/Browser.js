@@ -222,13 +222,13 @@ MODEL({
     {
       name: 'refreshImg',
       factory: function() {
-        return ImageView.create({value: SimpleValue.create('images/refresh.png')});
+        return ImageView.create({data: 'images/refresh.png'});
       }
     },
     {
       name: 'logo',
       factory: function() {
-        return ImageView.create({value: SimpleValue.create(this.url + '/logo')});
+        return ImageView.create({data: this.url + '/logo'});
       }
     },
     {
@@ -357,7 +357,7 @@ MODEL({
 
         var view = this.X.ToolbarView.create({
           horizontal: false,
-          value: SimpleValue.create(this),
+          data: this,
           document: this.X.document
         });
 
@@ -563,7 +563,7 @@ Please use labels and text to provide additional information.
             arequire('QIssueCommentUpdateView')
           )(function() {
             var v = self.X.QIssueDetailView.create({
-              value:            SimpleValue.create(obj),
+              data:             obj,
               mode:             'read-write',
               url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
@@ -620,7 +620,7 @@ Please use labels and text to provide additional information.
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
           var v = self.X.QIssueDetailView.create({
-            value: SimpleValue.create(obj),
+            data: obj,
             QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
