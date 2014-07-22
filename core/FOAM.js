@@ -170,7 +170,7 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var test = this.value.get();
+      var test = this.data;
       var cssClass = test.failed > 0 ? 'foamTestFailed' : 'foamTestPassed';
       var results = test.results.replace(/\n/g, '<br/>\n');
       var pre = '<div class="' + cssClass + ' foamTest" id="' + this.getID() + '">' +
@@ -190,7 +190,7 @@ MODEL({
 
     toInnerHTML: function() {
       var inner = ArrayListView.create({
-        value: SimpleValue.create(this.value.get().tests),
+        data: this.data.tests,
         listView: UnitTestResultView
       });
       this.addChild(inner);
@@ -205,7 +205,7 @@ function testModel(model, element) {
   if (!model.tests || !element) return;
   model.tests.forEach(function(t) {
     t.test();
-    var view = UnitTestResultView.create({ value: SimpleValue.create(t) });
+    var view = UnitTestResultView.create({ data: t });
     element.insertAdjacentHTML('beforeend', view.toHTML());
     view.initHTML();
   });
