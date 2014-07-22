@@ -396,7 +396,7 @@ var FObject = {
   write: function(document, opt_view) {
     var view = (opt_view || DetailView).create({
       model: this.model_,
-      value: SimpleValue.create(this),
+      data: this,
       showActions: true
     });
 
