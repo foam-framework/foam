@@ -2007,6 +2007,7 @@ MODEL({
   extendsModel: 'View',
 
   properties: [
+{ name: 'value', postSet: function() { console.error('attempt to set value on ActionButton'); debugger; } },
     {
       name: 'action',
       postSet: function(old, nu) {
