@@ -402,9 +402,11 @@ input[name="labels"] {
   flex-grow: 1;
 }
 
-.bookmarks-menu {
-  color: blue;
+.bookmarks-menu button {
   background: white;
+  border: none;
+  color: blue;
+  font: 13px arial, sans-serif;
   text-decoration: underline;
 }
 
