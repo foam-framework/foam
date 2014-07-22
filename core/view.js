@@ -2060,6 +2060,10 @@ MODEL({
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
       }, this.id);
 
+      this.setClass('available', function() {
+        return self.action.isAvailable.call(self.data, self.action);
+      }, this.id);
+
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
       return this.SUPER();
@@ -2295,6 +2299,7 @@ MODEL({
       for ( var i = 0 ; i < actions.length; i++ ) {
         var action = actions[i];
         var button = this.X.ActionButton.create({ action: action, data$: this.data$ });
+        if ( button.toView_ ) button = button.toView_();
         str += " " + button.toHTML() + " ";
         this.addChild(button);
       }
