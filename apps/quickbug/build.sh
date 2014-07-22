@@ -21,8 +21,8 @@ cat \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
   ../../core/oam.js \
-  ../../core/AbstractPrototype.js \
-  ../../core/ModelProto.js \
+  ../../core/FObject.js \
+  ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
@@ -31,6 +31,7 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
   ../../core/TableView.js \
