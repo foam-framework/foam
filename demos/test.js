@@ -80,9 +80,9 @@ document.writeln(dv.toHTML());
 dv.initHTML();
 document.writeln("</font></td></tr></table>");
 
-tv1.selection.addListener(function (src, property, oldValue, newValue) {
+tv1.selection$.addListener(function (src, property, oldValue, newValue) {
   if ( newValue )
-    dv.set(tv1.selection.get()/*.clone()*/);
+    dv.data = tv1.selection.clone();
 });
 
 // Events.follow(tv1.selection, dv);

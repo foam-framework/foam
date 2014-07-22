@@ -74,7 +74,7 @@ MODEL({
 
       action: function() {
         // Todo: fix, should already be connected
-        this.selection = this.daoView.selection.get();
+        this.selection = this.daoView.selection;
 
         var obj = this.selection;
         var actions = DAOUpdateController.actions.slice(0);
@@ -112,7 +112,7 @@ MODEL({
 //      isEnabled: function()   { return this.selection; },
       action: function()      {
         // Todo: fix, should already be connected
-        this.selection = this.daoView.selection.get();
+        this.selection = this.daoView.selection;
         var self = this;
         this.dao.remove(this.selection);
       }
@@ -129,7 +129,7 @@ MODEL({
       this.daoView.dao = this.dao;
       this.daoView.unsubscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
       this.daoView.subscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
-      this.daoView.selection.addListener(this.onSelection);
+      this.daoView.selection$.addListener(this.onSelection);
     }
   },
 
@@ -150,13 +150,13 @@ MODEL({
     {
       name: 'onSelection',
       code: function(evt) {
-        var obj = this.daoView.selection.get();
+        var obj = this.daoView.selection;
         if ( ! obj ) return;
 
         this.X.stack.setPreview(
           DetailView.create({
             model: this.model,
-            data$: this.daoView.selection
+            data: this.daoView.selection
           }));
       }
     }

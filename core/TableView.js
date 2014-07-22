@@ -46,17 +46,11 @@ MODEL({
       defaultValue: null
     },
     {
-      // TODO: shouldn't be a Value
       name:  'hardSelection',
-      type:  'Value',
-      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
-      factory: function() { return SimpleValue.create(); }
+      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); }
     },
     {
-      // TODO: shouldn't be a Value
-      name:  'selection',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); }
+      name:  'selection'
     },
     {
       name:  'children',
@@ -353,7 +347,7 @@ MODEL({
       str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
       var objs = this.objs;
       if ( objs ) {
-        var hselect = this.hardSelection.get();
+        var hselect = this.hardSelection;
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
           var className = "tr-" + this.id;
@@ -393,31 +387,15 @@ MODEL({
     initHTML_: function() {
       this.initHTML.super_.call(this);
 
-      var es = $$('tr-' + this.id);
       var self = this;
 
-      /*
-      if ( es.length ) {
-        if ( ! this.sized_ ) {
-          this.sized_ = true;
-          this.layout();
-          return;
-        }
-      }
-      */
-
-      for ( var i = 0 ; i < es.length ; i++ ) {
-        var e = es[i];
-
-        e.onmouseover = function(value, obj) { return function() {
-          value.set(obj);
-        }; }(this.selection, this.objs[i]);
-        e.onmouseout = function(value, obj) { return function() {
-          value.set(self.hardSelection.get());
-        }; }(this.selection, this.objs[i]);
-        e.onclick = function(value, obj) { return function(evt) {
-          self.hardSelection.set(obj);
-          value.set(obj);
+      argsToArray($$('tr-' + this.id)).forEach(function(e, i) {
+        var obj = self.objs[i];
+        e.onmouseover = function() { self.selection = obj; };
+        e.onmouseout = function() { self.selection = self.hardSelection; };
+        e.onclick = function(evt) {
+          self.hardSelection = self.objs[i];
+          self.selection = obj;
           delete value['prevValue'];
           var row = evt.srcElement;
           while ( row && row.tagName !== "TR") row = row.parentNode;
@@ -429,17 +407,12 @@ MODEL({
             siblings[i].classList.remove("rowSelected");
           }
           row && row.classList.add('rowSelected');
-        }; }(this.selection, this.objs[i]);
-        e.ondblclick = function(value, obj) { return function(evt) {
-          self.publish(self.DOUBLE_CLICK, obj, value);
-        }; }(this.selection, this.objs[i]);
-      }
+        };
+        e.ondblclick = function() { self.publish(self.DOUBLE_CLICK, obj, self.selection); };
+      });
 
       delete this['initializers_'];
       this.children = [];
-    },
-
-    destroy: function() {
     }
   }
 });
