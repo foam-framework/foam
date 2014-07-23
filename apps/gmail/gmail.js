@@ -57,9 +57,10 @@ MODEL({
         return this.X.LimitedLiveCachingDAO.create({
           cacheLimit: 10,
           src: this.X.GMailToEMailDAO.create({
-            delegate: this.X.StoreAndForwardDAO.create({
-              delegate: this.X.GMailMessageDAO.create({})
-            })
+            delegate: this.X.GMailMessageDAO.create({})
+//            delegate: this.X.StoreAndForwardDAO.create({
+//              delegate: this.X.GMailMessageDAO.create({})
+//            })
           }),
           cache: this.X.MDAO.create({ model: EMail })
         });

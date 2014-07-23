@@ -8,7 +8,7 @@ MODEL({
       postSet: function(_, cview) {
         cview.view = this;
         cview.x$.addListener(this.resize);
-        cview.y$.addListener(this.resizeP);
+        cview.y$.addListener(this.resize);
         cview.width$.addListener(this.resize);
         cview.height$.addListener(this.resize);
         this.resize();
@@ -63,6 +63,7 @@ MODEL({
       code: function() {
         this.width  = this.cview.x + this.cview.width;
         this.height = this.cview.y + this.cview.height;
+        this.paint();
       }
     },
     {
@@ -327,11 +328,8 @@ MODEL({
       postSet: function(oldValue, action) {
         //  oldValue && oldValue.removeListener(this.render)
         // action.addListener(this.render);
+        this.bindIsAvailable();
       }
-    },
-    {
-      name: 'data',
-      setter: function(_, d) { this.value = SimpleValue.create(d); }
     },
     {
       name:  'font',
@@ -339,7 +337,10 @@ MODEL({
       defaultValue: ''
     },
     {
-      name: 'data'
+      name: 'data',
+      postSet: function() {
+        this.bindIsAvailable();
+      }
     },
     {
       name: 'showLabel',
@@ -419,6 +420,32 @@ MODEL({
 
         this.image_.src = this.iconUrl;
       }
+    },
+
+    bindIsAvailable: function() {
+      if ( ! this.action || ! this.data ) return;
+
+      var self = this;
+      Events.dynamic(
+        function() { self.action.isAvailable.call(self.data, self.action); },
+        function() {
+          if ( self.action.isAvailable.call(self.data, self.action) &&
+               self.oldWidth_ && self.oldHeight_ ) {
+            self.x = self.oldX_;
+            self.y = self.oldY_;
+            self.width = self.oldWidth_;
+            self.height = self.oldHeight_;
+          } else if ( self.width || self.height ) {
+            self.oldX_ = self.x;
+            self.oldY_ = self.y;
+            self.oldWidth_ = self.width;
+            self.oldHeight_ = self.height;
+            self.width = 0;
+            self.height = 0;
+            self.x = 0;
+            self.y = 0;
+          }
+        });
     },
 
     initCView: function() {
