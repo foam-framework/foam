@@ -452,7 +452,7 @@ MODEL({
 
 
 MODEL({
-  name:  'PopupChoiceView',
+  name: 'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',
 

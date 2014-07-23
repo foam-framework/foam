@@ -27,18 +27,7 @@ MODEL({
     },
     {
       name: 'obj',
-      getter: function() { console.warn('DetailView .obj is deprecated.  Use .data instead.'); return this.data; }
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'showActions',
-      defaultValue: false,
-      postSet: function(_, showActions) {
-        // TODO: No way to remove the decorator.
-        if ( showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
-        }
-      }
+      getter: function() { console.warn('DetailView .obj is deprecated.  Use .data instead.'); debugger; return this.data; }
     },
     {
       model_: 'StringProperty',
@@ -74,9 +63,14 @@ MODEL({
 
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
-      if ( o ) return Action.isInstance(o) ?
-        this.createActionView(o, this.data$, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( o ) {
+        var v = Action.isInstance(o) ?
+          this.createActionView(o, opt_args) :
+          this.createView(o, opt_args) ;
+
+        v.data$ = this.data$;
+        return v;
+      }
 
       return this.SUPER(name, opt_args);
     },

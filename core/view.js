@@ -284,6 +284,17 @@ MODEL({
     {
       name: 'extraClassName',
       defaultValue: ''
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: false,
+      postSet: function(oldValue, showActions) {
+        // TODO: No way to remove the decorator.
+        if ( ! oldValue && showActions ) {
+          this.addDecorator(this.X.ActionBorder.create());
+        }
+      }
     }
   ],
 
@@ -349,12 +360,12 @@ MODEL({
       return v;
     },
 
-    createActionView: function(action, value, opt_args) {
+    createActionView: function(action, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
-      var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
-      var v = X[modelName].create({
-        action: action,
-        data$: value}).copyFrom(opt_args);
+      var modelName = opt_args && opt_args.model_ ?
+        opt_args.model_ :
+        'ActionButton'  ;
+      var v = X[modelName].create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -362,10 +373,14 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
+      // TODO: it would be more efficient to replace SimpleValue with ConstantValue
+      // TODO: rename SimpleValue to just Value and make it a Trait?
       var o = this.model_[name];
-      return Action.isInstance(o) ?
-        this.createActionView(o, SimpleValue.create(this), opt_args) :
+      var v = Action.isInstance(o) ?
+        this.createActionView(o, opt_args) :
         this.createView(o, opt_args) ;
+      v.data = this;
+      return v;
     },
 
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
@@ -548,13 +563,21 @@ MODEL({
       type: 'View',
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
-        if ( ! this.data ) this.data$ = p.data$;
+        /*
+        if ( ! this.data ) {
+          if ( p.model_.DATA ) {
+            this.data$ = p.data$;
+          } else {
+            this.data = p;
+          }
+        }
+        */
         if ( this.view ) this.view.parent = p;
       }
     },
     {
       name: 'data',
-      postSet: function(_,d) { this.bindData(); }
+      postSet: function(_,d) { if ( d.TYPE === 'DetailView' ) debugger; this.bindData(); }
     },
     {
       name: 'innerView',
@@ -2281,27 +2304,33 @@ MODEL({
 MODEL({
   name: 'ActionBorder',
 
-  properties: [
-    {
-      name: 'actions'
-    },
-    {
-      name: 'data'
-    }
-  ],
-
   methods: {
     toHTML: function(border, delegate, args) {
       var str = "";
       str += delegate.apply(this, args);
       str += '<div class="actionToolbar">';
-      var actions = border.actions || this.model.actions;
+
+      // Actions on the View, are bound to the view
+      var actions = this.model_.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
-        var action = actions[i];
-        var button = this.X.ActionButton.create({ action: action, data$: this.data$ });
-        if ( button.toView_ ) button = button.toView_();
-        str += " " + button.toHTML() + " ";
-        this.addChild(button);
+        var v = this.createActionView(actions[i]);
+        v.data = this;
+        str += ' ' + v.toView_().toHTML() + ' ';
+        this.addChild(v);
+      }
+
+      // This is poor design, we should defer to the view and polymorphism
+      // to make the distinction.
+      if ( DetailView.isInstance(this) ) {
+
+        // Actions on the data are bound to the data
+        actions = this.model.actions;
+        for ( var i = 0 ; i < actions.length; i++ ) {
+          var v = this.createActionView(actions[i]);
+          v.data$ = this.data$;
+          str += ' ' + v.toView_().toHTML() + ' ';
+          this.addChild(v);
+        }
       }
 
       str += '</div>';
