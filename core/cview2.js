@@ -465,16 +465,18 @@ MODEL({
       this.$.addEventListener('mouseleave', this.onMouseUp);
     },
     paintChildren: function() { },
-    erase: function() {
-      if ( ! this.radius ) return this.SUPER();
-
-      this.canvas.save();
-      this.canvas.fillStyle = this.background;
-      this.canvas.beginPath();
-      this.canvas.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2);
-      this.canvas.closePath();
-      this.canvas.fill();
-      this.canvas.restore();
+    paint: function() {
+      var c = this.canvas;
+      c.save();
+      if ( this.radius ) {
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+        c.strokeStyle = this.background;
+        c.stroke();
+        c.clip();
+      }
+      this.SUPER();
+      c.restore();
     },
     paintSelf: function() {
       var c = this.canvas;
