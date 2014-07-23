@@ -530,10 +530,7 @@ MODEL({
 
       out += '<span class="action">';
       this.model_.OPEN.iconUrl = this.iconUrl;
-      var button = this.createActionView(
-        this.model_.OPEN,
-        SimpleValue.create(this)
-      ).toView_();
+      var button = this.createActionView(this.model_.OPEN, {data: this}).toView_();
 
       this.addChild(button);
 
