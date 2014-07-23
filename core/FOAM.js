@@ -137,10 +137,10 @@ FOAM.browse = function(model, opt_dao) {
    }
 
    var ctrl = DAOController.create({
-      model:     model,
-      dao:       dao,
-      useSearchView: false
-   }).addDecorator(ActionBorder.create({ actions: DAOController.actions }));
+     model:     model,
+     dao:       dao,
+     useSearchView: false
+   });
 
   var stack = GLOBAL.stack;
   ctrl.X.stack = stack;

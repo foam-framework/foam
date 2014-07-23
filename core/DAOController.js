@@ -18,22 +18,18 @@ MODEL({
   name:  'DAOController',
   label: 'DAO Controller',
 
-  extendsModel: 'AbstractDAOView',
+  extendsModel: 'View',
 
   properties: [
+    {
+      name: 'model'
+    },
     {
       name: 'dao',
       view: 'TableView'
     },
     {
       name: 'selection'
-    },
-    {
-      name: 'model',
-      postSet: function(_, model) {
-        // TODO: Is this the best way to pass the model to the TableView?
-        this.X.model = model;
-      }
     },
     {
       model_: 'BooleanProperty',
@@ -57,10 +53,9 @@ MODEL({
       action: function() {
         var createView = DAOCreateController.create({
           model: this.model,
-          dao:   this.dao
-        }).addDecorator(ActionBorder.create({
-          actions: DAOCreateController.actions,
-        }));
+          dao:   this.dao,
+          showActions: true
+        });
 
         createView.parentController = this;
 
@@ -84,8 +79,7 @@ MODEL({
 
           var newAction = Action.create(action);
           newAction.action = function (oldAction) {
-            return function()
-            {
+            return function() {
               oldAction.call(obj);
             };
           }(action.action);
@@ -95,12 +89,11 @@ MODEL({
 
         console.log(["selection: ", this.selection]);
         var updateView = DAOUpdateController.create({
-          obj:   this.selection/*.deepClone()*/,
+          data:  this.selection/*.deepClone()*/,
           model: this.model,
-          dao:   this.dao
-        }).addDecorator(ActionBorder.create({
-          actions: DAOUpdateController.actions,
-        }));
+          dao:   this.dao,
+          showActions: true
+        });
 
         this.X.stack.pushView(updateView, 'Edit');
       }
@@ -120,18 +113,20 @@ MODEL({
   ],
 
   methods: {
-    toHTML: function() {
-      this.daoView = TableView.create(this);
-      return this.daoView.toHTML();
+    init: function() {
+      this.SUPER();
+      this.showActions = true;
     },
     initHTML: function() {
       this.SUPER();
-      this.daoView.dao = this.dao;
-      this.daoView.unsubscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
       this.daoView.subscribe(this.daoView.DOUBLE_CLICK, this.onDoubleClick);
       this.daoView.selection$.addListener(this.onSelection);
     }
   },
+
+  templates: [
+    function toInnerHTML() {/* $$dao{model_: 'TableView', model: this.model}*/}
+  ],
 
   listeners: [
     {
@@ -172,11 +167,13 @@ MODEL({
 
   properties: [
     {
-      name:  'data',
-      label: 'New Object',
+      name:  'model'
     },
     {
-      name:  'model'
+      name:  'data',
+      label: 'New Object',
+      view: 'DetailView',
+      factory: function() { return this.model.create(); }
     },
     {
       name:  'dao',
@@ -209,17 +206,13 @@ MODEL({
       name:  'cancel',
       help:  'Cancel creation.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() { this.X.stack.back(); }
+      action: function() { this.X.stack.back(); }
     },
     {
       name:  'help',
       help:  'View help.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
         var model = this.data.model_;
         var helpView = HelpView.create(model);
         this.X.stack.pushView(helpView);
@@ -227,26 +220,9 @@ MODEL({
     }
   ],
 
-  methods: {
-    init: function() {
-      var tmp = this.model;
-      this.SUPER();
-      this.model = tmp;
-
-      this.obj = this.model.create();
-
-      this.view = DetailView.create({model: this.model, data: this.data});
-    },
-
-    toHTML: function() {
-      return this.view.toHTML();
-    },
-
-    initHTML: function() {
-      this.SUPER();
-      this.view.initHTML();
-    }
-  }
+  templates: [
+    function toInnerHTML() {/* $$data */}
+  ]
 });
 
 
@@ -275,9 +251,7 @@ MODEL({
       name:  'save',
       help:  'Save updates.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
         var self = this;
         var obj = this.obj;
         this.dao.put(obj, {
@@ -296,18 +270,14 @@ MODEL({
       name:  'copy',
       help:  'Create a new object which is a copy of this one.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
       }
     },
     {
       name:  'cancel',
       help:  'Cancel update.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
         this.X.stack.back();
       }
     },
@@ -315,9 +285,7 @@ MODEL({
       name:  'help',
       help:  'View help.',
 
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return true; },
-      action:      function() {
+      action: function() {
         var model = this.obj.model_;
         var helpView = HelpView.create(model);
         this.X.stack.pushView(helpView);
@@ -326,14 +294,6 @@ MODEL({
   ],
 
   methods: {
-
-    /*
-      TODO: I don't think this is need. Remove when verified.
-    toHTML: function() {
-      return '<div id="' + this.id + '">controller</div>';
-    },
-    */
-
     init: function() {
       var tmp = this.model;
       this.SUPER();
