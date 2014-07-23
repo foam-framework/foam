@@ -161,7 +161,6 @@ MODEL({
       model_: 'Action',
       name: 'compose',
       label: '+',
-      iconUrl: 'images/compose.png',
       action: function() {
         var view = this.X.DetailView.create({
           data: this.X.EMail.create({}),
