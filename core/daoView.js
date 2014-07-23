@@ -482,7 +482,10 @@ MODEL({
   properties: [
     {
       name: 'model',
-      type: 'Model'
+      type: 'Model',
+      defaultValueFn: function() {
+        return this.dao.model;
+      }
     },
     {
       name: 'runway',
@@ -547,13 +550,23 @@ MODEL({
     {
       name: 'verticalScrollbarView',
       defaultValue: 'VerticalScrollbarView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'hidden',
+      hidden: true,
+      help: 'Set when we receive an ON_HIDE event.',
+      defaultValue: false,
+      postSet: function(_, hidden) {
+        if ( this.dao && ! hidden ) this.onDAOUpdate();
+      }
     }
   ],
 
   templates: [
     function toHTML() {/*
       <div>
-        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
+        <div id="%%id" style="overflow:hidden;position:relative">
           <%
             var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
                 scrollTop$ : this.scrollTop$,
@@ -561,8 +574,7 @@ MODEL({
                 scrollHeight$ : this.scrollHeight$,
             });
 
-            this.addChild(verticalScrollbar);
-            out(verticalScrollbar.toHTML());
+            out(verticalScrollbar);
           %>
         </div>
       </div>
@@ -573,9 +585,13 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      var touch = this.X.TouchInput;
-      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
-      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
+      var self = this;
+      this.subscribe(this.ON_HIDE, function() {
+        self.hidden = true;
+      });
+      this.subscribe(this.ON_SHOW, function() {
+        self.hidden = false;
+      });
     },
     formatObject: function(o) {
       var out = "";
@@ -662,9 +678,15 @@ MODEL({
       }.bind(this));
     },
     initHTML: function() {
+      this.$.style.height = this.height ? this.height + 'px' : '100%';
       this.SUPER();
       this.scroll();
       this.$.addEventListener('wheel', this.onWheel);
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        element: this.$,
+        handler: this,
+        gesture: 'verticalScroll'
+      }));
     }
   },
 
@@ -686,21 +708,9 @@ MODEL({
       },
     },
     {
-      name: 'onTouchStart',
-      code: function(_, _, touch) {
-        if ( ! this.touch ) this.touch = touch;
-        var self = this;
-        this.touch.y$.addListener(function(_, _, old, nu) {
-          self.scrollTop = self.scrollTop + old - nu;
-        });
-      }
-    },
-    {
-      name: 'onTouchEnd',
-      code: function(_, _, touch) {
-        if ( touch.id === this.touch.id ) {
-          this.touch = '';
-        }
+      name: 'verticalScrollMove',
+      code: function(dy, ty, y) {
+        this.scrollTop -= dy;
       }
     },
     {

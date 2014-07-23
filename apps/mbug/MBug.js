@@ -75,6 +75,8 @@ MODEL({
     init: function() {
       this.SUPER();
       this.X.touchManager = this.X.TouchManager.create({});
+      this.X.touchManager.install(this.X.document);
+      this.X.gestureManager = this.X.GestureManager.create({});
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
