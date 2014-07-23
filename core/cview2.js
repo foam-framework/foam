@@ -466,7 +466,7 @@ MODEL({
     },
     toView_: function() {
       if ( ! this.view ) {
-        var params = {cview: this, scalingRatio: 4};
+        var params = {cview: this};
         if ( this.className ) params.className = this.className;
         view = this.X.CViewView.create(params);
       }
