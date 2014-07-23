@@ -24,7 +24,7 @@ MODEL({
       type: 'int',
       defaultValue: 1,
       postSet: function() {
-        this.width = this.width;
+        this.width  = this.width;
         this.height = this.height;
       }
     },
@@ -367,6 +367,14 @@ MODEL({
       name:  'iconHeight',
       type:  'int',
       defaultValue: 0
+    },
+    {
+      name:  'radius',
+      type:  'int',
+      defaultValue: 0,
+      postSet: function(_, r) {
+        if ( r ) this.width = this.height = 2 * r;
+      }
     }
   ],
 
@@ -456,7 +464,26 @@ MODEL({
       this.$.addEventListener('mouseup',    this.onMouseUp);
       this.$.addEventListener('mouseleave', this.onMouseUp);
     },
+    toView_: function() {
+      if ( ! this.view ) {
+        var params = {cview: this, scalingRatio: 4};
+        if ( this.className ) params.className = this.className;
+        view = this.X.CViewView.create(params);
+      }
+      return this.view;
+    },
     paintChildren: function() { },
+    paint: function() {
+      var c = this.canvas;
+      c.save();
+      if ( this.radius ) {
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
+        c.clip();
+      }
+      this.SUPER();
+      c.restore();
+    },
     paintSelf: function() {
       var c = this.canvas;
 
