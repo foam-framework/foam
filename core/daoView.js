@@ -24,9 +24,7 @@ MODEL({
     {
       name: 'data',
       postSet: function(oldDAO, dao) {
-        if ( oldDAO === dao ) return;
-        this.X.DAO = dao;
-        this.dao = dao;
+        if ( this.dao !== dao ) this.dao = dao;
       }
     },
     {
@@ -36,8 +34,7 @@ MODEL({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( oldDAO === dao ) return;
-        this.data = dao;
+        if ( this.data !== dao ) this.data = dao;
       }
     }
   ],
