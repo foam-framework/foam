@@ -70,7 +70,10 @@ MODEL({
       name: 'labelDao',
       type: 'DAO',
       factory: function() {
-        return this.X.GMailRestDAO.create({ model: GMailLabel });
+        return this.X.CachingDAO.create({
+          src: this.X.GMailRestDAO.create({ model: GMailLabel }),
+          cache: this.X.MDAO.create({ model: GMailLabel }),
+        });
       }
     },
     {
