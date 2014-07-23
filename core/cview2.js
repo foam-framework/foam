@@ -470,7 +470,9 @@ MODEL({
       c.save();
       if ( this.radius ) {
         c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+        c.strokeStyle = this.background;
+        c.stroke();
         c.clip();
       }
       this.SUPER();
