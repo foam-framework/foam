@@ -113,11 +113,11 @@ var BootstrapModel = {
       }
     }
 
-    var proto = extendsModel ? extendsModel.getPrototype() : FObject;
-    var cls   = Object.create(proto);
-    cls.model_    = this;
-    cls.name_     = this.name;
-    cls.TYPE      = this.name + "Prototype";
+    var proto  = extendsModel ? extendsModel.getPrototype() : FObject;
+    var cls    = Object.create(proto);
+    cls.model_ = this;
+    cls.name_  = this.name;
+    cls.TYPE   = this.name;
 
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
