@@ -139,7 +139,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 canvas.composeButton {
-  position: absolute;
+  position: fixed;
   background: red;
   bottom: 10px;
   right: 20px;
