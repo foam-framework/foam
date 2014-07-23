@@ -330,10 +330,6 @@ MODEL({
       }
     },
     {
-      name: 'data',
-      setter: function(_, d) { this.value = SimpleValue.create(d); }
-    },
-    {
       name:  'font',
       type:  'String',
       defaultValue: ''
