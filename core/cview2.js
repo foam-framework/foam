@@ -63,6 +63,7 @@ MODEL({
       code: function() {
         this.width  = this.cview.x + this.cview.width;
         this.height = this.cview.y + this.cview.height;
+        this.paint();
       }
     },
     {
