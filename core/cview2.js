@@ -8,7 +8,7 @@ MODEL({
       postSet: function(_, cview) {
         cview.view = this;
         cview.x$.addListener(this.resize);
-        cview.y$.addListener(this.resizeP);
+        cview.y$.addListener(this.resize);
         cview.width$.addListener(this.resize);
         cview.height$.addListener(this.resize);
         this.resize();
