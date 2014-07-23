@@ -33,7 +33,6 @@
        DAOController,
        DAOCreateController,
        DAOUpdateController,
-       EMail,
        EyeCView,
        EyesCView,
        Graph,
