@@ -473,16 +473,16 @@ MODEL({
       return this.view;
     },
     paintChildren: function() { },
-    paint: function() {
-      var c = this.canvas;
-      c.save();
-      if ( this.radius ) {
-        c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
-        c.clip();
-      }
-      this.SUPER();
-      c.restore();
+    erase: function() {
+      if ( ! this.radius ) return this.SUPER();
+
+      this.canvas.save();
+      this.canvas.fillStyle = this.background;
+      this.canvas.beginPath();
+      this.canvas.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2);
+      this.canvas.closePath();
+      this.canvas.fill();
+      this.canvas.restore();
     },
     paintSelf: function() {
       var c = this.canvas;
