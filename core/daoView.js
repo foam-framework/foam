@@ -375,7 +375,7 @@ MODEL({
     },
 
     initHTML: function() {
-      // this.SUPER();
+      this.SUPER();
 
       // If we're doing infinite scrolling, we need to find the container.
       // Either an overflow: scroll element or the window.
