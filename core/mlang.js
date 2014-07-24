@@ -980,16 +980,19 @@ MODEL({
   ],
 
   methods: {
+    max: function(o1, o2) {
+      return o1.compareTo(o2) > 0 ? o1 : o2;
+    },
     reduce: function(other) {
-      return MaxExpr.create({max: Math.max(this.max, other.max)});
+      return MaxExpr.create({max: (this.max, other.max)});
     },
     reduceI: function(other) {
-      this.max = Math.max(this.max, other.max);
+      this.max = this.max(this.max, other.max);
     },
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.max = this.max === undefined ? v : Math.max(this.max, v);
+      this.max = this.max === undefined ? v : this.max(this.max, v);
     },
     remove: function(obj) { },
     toString: function() { return this.max; }
@@ -1012,16 +1015,19 @@ MODEL({
   ],
 
   methods: {
+    max: function(o1, o2) {
+      return o1.compareTo(o2) > 0 ? o2 : o1;
+    },
     reduce: function(other) {
-      return MinExpr.create({max: Math.min(this.min, other.min)});
+      return MinExpr.create({max: this.min(this.min, other.min)});
     },
     reduceI: function(other) {
-      this.min = Math.min(this.min, other.min);
+      this.min = this.min(this.min, other.min);
     },
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.min = this.min === undefined ? v : Math.min(this.min, v);
+      this.min = this.min === undefined ? v : this.min(this.min, v);
     },
     remove: function(obj) { },
     toString: function() { return this.min; }
