@@ -276,7 +276,7 @@ function createView(rowSelectionValue, browser) {
             model:              QIssue,
             dao:                browser.filteredIssueDAO,
             browser:            browser,
-            hardSelection:      rowSelectionValue,
+            hardSelection$:     rowSelectionValue,
             scrollEnabled:      true,
             editColumnsEnabled: true
           }, browser.X);

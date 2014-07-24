@@ -65,6 +65,7 @@ var files = [
   'visitor',
   'messaging',
   'dao',
+  'arrayDAO',
   'ClientDAO',
   'diff',
   'SplitDAO',
