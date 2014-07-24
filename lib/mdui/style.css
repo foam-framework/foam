@@ -142,5 +142,6 @@ canvas.composeButton {
   position: fixed;
   bottom: 10px;
   right: 20px;
+  z-index: 10;
   background: rgba(0,0,0,0);
 }

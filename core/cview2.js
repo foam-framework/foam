@@ -290,7 +290,6 @@ MODEL({
 
     paint: function() {
       var c = this.canvas;
-
       if ( ! c ) return;
 
       c.globalAlpha = this.alpha;
@@ -389,12 +388,11 @@ MODEL({
         this.down_ = true;
         this.pressCircle.x = evt.offsetX;
         this.pressCircle.y = evt.offsetY;
-        this.pressCircle.r = 10;
+        this.pressCircle.r = 5;
         Movement.animate(150, function() {
-        x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
-          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-2);
+          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
           this.pressCircle.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
@@ -405,10 +403,8 @@ MODEL({
         if ( ! this.down_ ) return;
         this.down_ = false;
         Movement.animate(
-          200,
-          function() { this.pressCircle.alpha = 0; }.bind(this),
-          undefined,
-          function() { this.pressCircle.r = 15; }.bind(this))();
+          300,
+          function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
     }
   ],
@@ -464,26 +460,33 @@ MODEL({
       this.$.addEventListener('mouseup',    this.onMouseUp);
       this.$.addEventListener('mouseleave', this.onMouseUp);
     },
-    paintChildren: function() { },
+    // paintChildren: function() { },
     paint: function() {
       var c = this.canvas;
       c.save();
+      c.globalAlpha = this.alpha;
+
       if ( this.radius ) {
+        this.fillStyle = 'white';
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
+        c.strokeStyle = 'white';
+        c.lineWidth = 1;
+        c.stroke();
+
         c.beginPath();
         c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
         c.strokeStyle = this.background;
+        c.lineWidth = 1;
         c.stroke();
         c.clip();
       }
       this.SUPER();
+      this.paintChildren();
       c.restore();
     },
     paintSelf: function() {
       var c = this.canvas;
-
-      c.save();
-      this.pressCircle.paint();
-      c.restore();
 
       if ( this.font ) c.font = this.font;
 
