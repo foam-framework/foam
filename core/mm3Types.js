@@ -577,7 +577,10 @@ var DAOProperty = Model.create({
             proxy.delegate = dao
           });
 
-          return proxy;
+          return {
+            get: function() { return proxy; },
+            configurable: true
+          };
         });
       }
     }
