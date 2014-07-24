@@ -231,6 +231,7 @@ MODEL({
     },
 
     erase: function() {
+      this.canvas.clearRect(0, 0, this.width, this.height);
       this.canvas.fillStyle = this.background;
       this.canvas.fillRect(0, 0, this.width, this.height);
     },
@@ -460,19 +461,13 @@ MODEL({
       this.$.addEventListener('mouseup',    this.onMouseUp);
       this.$.addEventListener('mouseleave', this.onMouseUp);
     },
-    // paintChildren: function() { },
     paint: function() {
       var c = this.canvas;
       c.save();
       c.globalAlpha = this.alpha;
 
       if ( this.radius ) {
-        this.fillStyle = 'white';
-        c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius, 0, Math.PI*2, false);
-        c.strokeStyle = 'white';
-        c.lineWidth = 1;
-        c.stroke();
+        this.canvas.clearRect(0, 0, this.width, this.height);
 
         c.beginPath();
         c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
@@ -481,6 +476,7 @@ MODEL({
         c.stroke();
         c.clip();
       }
+
       this.SUPER();
       this.paintChildren();
       c.restore();
