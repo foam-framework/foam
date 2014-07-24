@@ -729,29 +729,49 @@ MODEL({
  * pretend that accesses are slow. Currently, only select has been targetted.
  */
 MODEL({
-  name: 'SlowDAO',
-  extendsModel: 'ProxyDAO',
+   name: 'DelayedDAO',
 
-  properties: [
-    {
-      name: 'delay',
-      model_: 'IntProperty',
-      defaultValue: 2000,
-    }
-  ],
+   extendsModel: 'ProxyDAO',
 
-  methods: {
-    select: function(sink, options) {
+   properties: [
+     {
+       model_: 'IntProperty',
+       name: 'initialDelay'
+     },
+     {
+       model_: 'IntProperty',
+       name: 'rowDelay'xs
+     }
+   ],
+
+   methods: {
+      select: function(sink, options) {
       var f = afuture();
-      setTimeout(function() {
-        this.delegate.select(sink, options)(function(result) {
-          f.set(result);
-        });
-      }.bind(this), this.delay);
+         var i = 0;
+         var delayedSink = this.rowDelay ? {
+            __proto__: sink,
+            put: function() {
+               var args = arguments;
+               setTimeout(function() {
+                  sink.put.apply(sink, args);
+               }, this.rowDelay * ++i);
+            }.bind(this)
+         } : sink;
+         setTimeout(function() {
+           this.delegate.select(delayedSink, options)(function(result) {
+             f.set(result);
+           });
+         }.bind(this), this.initialDelay);
       return f.get;
-    }
-  }
+      }
+   }
 });
+
+/*
+var dao = DelayedDAO.create({delegate: [1,2,3], initialDelay: 5000, rowDelay: 2000});
+dao.select(console.log);
+*/
+
 
 MODEL({
   name: 'ErrorDAO',
