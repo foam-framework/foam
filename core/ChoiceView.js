@@ -136,16 +136,9 @@ MODEL({
       model_: 'BooleanProperty'
     },
     {
+      model_: 'DAOProperty',
       name: 'dao',
-      postSet: function(oldDAO, dao) {
-        if ( oldDAO ) {
-          oldDAO.unlisten(this.onDAOUpdate);
-        }
-        if ( dao && this.$ ) {
-          dao.listen(this.onDAOUpdate);
-          this.onDAOUpdate();
-        }
-      }
+      onDAOUpdate: 'onDAOUpdate'
     }
   ],
 
