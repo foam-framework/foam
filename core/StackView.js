@@ -142,13 +142,15 @@ MODEL({
     },
 
     pushView: function (view, opt_label, opt_back, opt_transition) {
+      if ( this.staleView_ ) this.staleView_.remove();
+
       var transition = opt_transition || 'fromRight';
 
       if ( ! opt_back ) this.redo.length = 0;
       this.setPreview(null);
       view.stackLabel = opt_label || view.stackLabel || view.label;
       this.stack.push(view);
-      if ( transition === 'fromRight' ) 
+      if ( transition === 'fromRight' )
         this.installViewFromRight_(view);
       else if ( transition === 'fromLeft' )
         this.installViewFromLeft_(view);
@@ -183,11 +185,12 @@ MODEL({
         newViewArea.style.left = 0;
       }.bind(this), 15);
 
+      this.staleView_ = oldViewArea;
       this.X.setTimeout(function() {
         oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.left = '';
-      }, 1000);
+      }, 500);
     },
 
     installViewFromLeft_: function(view) {
@@ -209,11 +212,12 @@ MODEL({
         newViewArea.style.right = 0;
       }.bind(this), 15);
 
+      this.staleView_ = oldViewArea;
       this.X.setTimeout(function() {
         oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.right = '';
-      }, 1000);
+      }, 500);
     },
 
     setPreview: function(view) {
