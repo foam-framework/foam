@@ -47,6 +47,7 @@ cat \
   ../../core/search.js \
   ../../core/visitor.js \
   ../../core/dao.js \
+  ../../core/arrayDAO.js \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
