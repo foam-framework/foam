@@ -142,7 +142,7 @@ MODEL({
     },
 
     pushView: function (view, opt_label, opt_back, opt_transition) {
-      if ( this.staleView_ ) this.staleView_.remove();
+      if ( this.staleView_ ) try { this.staleView_.remove(); } catch (x) { }
 
       var transition = opt_transition || 'fromRight';
 
@@ -187,9 +187,9 @@ MODEL({
 
       this.staleView_ = oldViewArea;
       this.X.setTimeout(function() {
-        oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.left = '';
+        oldViewArea.remove();
       }, 500);
     },
 
@@ -214,9 +214,9 @@ MODEL({
 
       this.staleView_ = oldViewArea;
       this.X.setTimeout(function() {
-        oldViewArea.remove();
         newViewArea.style.position = '';
         newViewArea.style.right = '';
+        oldViewArea.remove();
       }, 500);
     },
 
