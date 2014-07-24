@@ -394,7 +394,7 @@ MODEL({
         e.onmouseover = function() { self.selection = obj; };
         e.onmouseout = function() { self.selection = self.hardSelection; };
         e.onclick = function(evt) {
-          self.hardSelection = self.objs[i];
+          self.hardSelection = obj;
           self.selection = obj;
           var row = evt.srcElement;
           while ( row && row.tagName !== "TR") row = row.parentNode;
