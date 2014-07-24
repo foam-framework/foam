@@ -756,7 +756,7 @@ MODEL({
 
     makeView: function() {
       return this.X.ChoiceListView.create({
-        dao: this.completer.autocompleteDao,
+        dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocomplete',
         orientation: 'vertical',
         mode: 'final',
