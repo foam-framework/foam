@@ -474,6 +474,10 @@ MODEL({
           if ( this.location.cells.indexOf('pie') == -1 ) this.location.cells = 'pie(status)';
         }
       }.bind(this));
+      this.location.cells$.addListener(function() {
+        if ( this.location.cells.indexOf('pie') == -1 ) this.location.scroll = 'Bars';
+      }.bind(this));
+
 
       this.syncManagerFuture.get((function(syncManager) {
         this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
