@@ -329,3 +329,49 @@ ul.swipeAltHeader {
   background-color: #3e50b4;
   color: white;
 }
+
+.email-compose-view .header {
+  background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
+  display: flex;
+}
+
+.email-compose-view .header .actionButton {
+  margin: 4px;
+}
+
+.email-compose-view .content {
+  margin-top: 62px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.email-compose-view .to {
+}
+
+.email-compose-view .cc {
+}
+
+.email-compose-view .bcc {
+}
+
+.email-compose-view .subject {
+  color: #fff;
+  display: block;
+  font-size: 20px;
+  line-height: 28px;
+  margin: auto;
+  overflow-x: hidden;
+  padding: 0px 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.email-compose-view .richtext {
+  height: 300px;
+}

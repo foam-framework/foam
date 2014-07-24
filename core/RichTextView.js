@@ -245,7 +245,7 @@ MODEL({
       return '<div class="richtext">' +
         '<div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
         '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' +
-        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.id + '"' + sandbox + ' img-src="*"></iframe>' +
+        '<iframe style="width:' + this.width + ';min-height:' + this.height + 'px" id="' + this.id + '"' + sandbox + ' img-src="*"></iframe>' +
         '</div>';
     },
 
