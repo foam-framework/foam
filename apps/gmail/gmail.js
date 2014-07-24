@@ -167,7 +167,7 @@ MODEL({
             labels: ['DRAFT']
           })
         });
-        this.X.stack.pushView(view, undefined, undefined, 'fromLeft');
+        this.X.stack.pushView(view, undefined, undefined, 'fromRight');
       }
     }
   ]

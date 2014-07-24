@@ -692,6 +692,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'AutocompleteView',
   extendsModel: 'PopupView',
@@ -784,7 +785,7 @@ MODEL({
 
       if ( this.X.document !== document ) debugger;
 
-      var div      = document.createElement('div');
+      var div    = document.createElement('div');
       var window = document.defaultView;
 
       if ( this.X.window !== window ) debugger;
@@ -888,6 +889,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'StaticHTML',
