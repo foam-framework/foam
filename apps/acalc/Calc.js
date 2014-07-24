@@ -231,8 +231,21 @@ MODEL({
   ]
 });
 
+// HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
+// So we wait a second, to give the font time to load, then redraw all the buttons.
+// TODO: Something better.
+MODEL({
+  name: 'ActionButtonCView2',
+  extendsModel: 'ActionButtonCView',
+  methods: {
+    init: function() {
+      this.SUPER();
+      setTimeout(function() { this.view.paint(); }.bind(this), 1000);
+    }
+  }
+});
 
-var CalcButton = ActionButtonCView.xbind({
+var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
   width:      95,
