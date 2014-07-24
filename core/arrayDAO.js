@@ -17,12 +17,12 @@
 
 (function() {
   // Copy AbstractDAO methods in Array prototype
-  
+
   var pmap = {};
   for ( var key in AbstractDAO.methods ) {
     pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
   }
-  
+
   defineProperties(Array.prototype, pmap);
 })();
 
@@ -113,7 +113,7 @@ defineProperties(Array.prototype, {
     sink && sink.error && sink.error('find', query);
   },
   // TODO: make this faster, should stop after finding first item.
-  remove: function(query, sink) {
+  remove: function(obj, sink) {
     if ( ! obj ) {
       sink && sink.error && sink.error('missing key');
       return;
@@ -127,7 +127,7 @@ defineProperties(Array.prototype, {
         return;
       }
     }
-    sink && sink.error && sink.error('remove', query);
+    sink && sink.error && sink.error('remove', obj);
   },
   removeAll: function(sink, options) {
     if (!options) options = {};
