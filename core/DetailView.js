@@ -26,10 +26,6 @@ MODEL({
       defaultValueFn: function() { return "Edit " + this.model.label; }
     },
     {
-      name: 'obj',
-      getter: function() { console.warn('DetailView .obj is deprecated.  Use .data instead.'); debugger; return this.data; }
-    },
-    {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write'
