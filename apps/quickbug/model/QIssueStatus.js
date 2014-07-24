@@ -62,7 +62,7 @@ MODEL({
       var completer = this.completer;
       var strToHTML = this.strToHTML.bind(this);
       return this.X.ChoiceListView.create({
-        dao: this.completer.autocompleteDao,
+        dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocompleteTable autocomplete',
         orientation: 'vertical',
         mode: 'final',
