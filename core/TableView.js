@@ -126,6 +126,7 @@ MODEL({
         if ( ! this. objs || ! this.objs.length ) return;
         if ( this.hardSelection ) {
           var i = this.objs.indexOf(this.hardSelection);
+          this.scrollbar.value--;
           if ( i > 0 ) this.selection = this.hardSelection = this.objs[i-1];
         } else {
           this.selection = this.hardSelection = this.objs[0];
@@ -140,6 +141,7 @@ MODEL({
         if ( ! this. objs || ! this.objs.length ) return;
         if ( this.hardSelection ) {
           var i = this.objs.indexOf(this.hardSelection);
+          this.scrollbar.value++;
           if ( i < this.objs.length-1 ) this.selection = this.hardSelection = this.objs[i+1];
         } else {
           this.selection = this.hardSelection = this.objs[0];
