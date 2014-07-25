@@ -117,6 +117,14 @@ MODEL({
         mgmail: this, // TODO: this doesn't actually work.
       }, 'GMAIL CONTEXT');
 
+      var toTop = function(id) {
+        return {
+          compare: function(o1, o2) {
+            return o1.id == id ? -1 : o2.id == id ? 1 : 0;
+          }
+        };
+      };
+
       this.controller = Y.AppController.create({
         model: EMail,
         dao: this.emailDao,
@@ -131,14 +139,42 @@ MODEL({
         ],
         menuFactory: function() {
           return this.X.MenuView.create({
-            daoListView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
+            topSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
+                  .where(EQ(GMailLabel.TYPE, 'system'))
+                  .orderBy(
+                    toTop('INBOX'),
+                    toTop('STARRED'),
+                    toTop('DRAFT')
+                  )
+                  .limit(3),
+              rowView: 'MenuLabelCitationView',
+            }),
+            bottomSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
+                  .where(AND(EQ(GMailLabel.TYPE, 'system'),
+                             NEQ(GMailLabel.ID, 'INBOX'),
+                             NEQ(GMailLabel.ID, 'STARRED'),
+                             NEQ(GMailLabel.ID, 'UNREAD'),
+                             NEQ(GMailLabel.ID, 'DRAFT')))
+                  .orderBy(toTop('SENT'),
+                           toTop('SPAM'),
+                           toTop('TRASH')),
+              rowView: 'MenuLabelCitationView',
+            }),
+            userLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao.where(NEQ(GMailLabel.TYPE, 'system')).orderBy(GMailLabel.NAME),
               rowView: 'MenuLabelCitationView',
             }),
           });
         }
       });
-      this.changeLabel();
+      var self = this;
+      this.labelDao.where(EQ(GMailLabel.ID, 'INBOX')).select({
+        put: function(inbox) {
+          self.changeLabel(inbox);
+        }
+      });
     },
     openEmail: function(email) {
       var v = this.controller.X.EMailView.create({data: email});
@@ -296,14 +332,24 @@ MODEL({
   extendsModel: 'View',
   properties: [
     {
-      name: 'daoListView',
+      name: 'topSystemLabelView',
+    },
+    {
+      name: 'bottomSystemLabelView',
+    },
+    {
+      name: 'userLabelView',
     },
   ],
   templates: [
     function toHTML() {/*
       <div class="menuView">
-        %%daoListView
+        %%topSystemLabelView
+        <br>
         <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
+        %%userLabelView
+        <br>
+        %%bottomSystemLabelView
       </div>
     */}
    ]
