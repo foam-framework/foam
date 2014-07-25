@@ -62,6 +62,10 @@ MODEL({
       name: 'avatarView',
       defaultValue: 'AvatarView'
     },
+    {
+      name: 'mode',
+      defaultValue: 'read-only'
+    }
   ],
 
   /* FIXME: the following doesn't work at the moment.
@@ -80,7 +84,7 @@ MODEL({
                   color: #333;
                   height: 110px;">
         <%
-          var avatar = FOAM.lookup(this.avatarView).create({ data$: this.data$ }); 
+          var avatar = FOAM.lookup(this.avatarView).create({ data$: this.data$ });
           this.addChild(avatar);
           out(avatar.toHTML());
         %>
@@ -115,10 +119,10 @@ Y.touchManager = Y.TouchManager.create({});
 Y.touchManager.install(document);
 Y.gestureManager = Y.GestureManager.create();
 
-var view = Y.ScrollView.create({
+var view = Y.ScrollView2.create({
   model: Contact,
   rowView: 'ContactRowView',
-  rowViewHeight: 130,
+  rowHeight: 130,
   height: document.body.offsetHeight,
   dao: dao
 });

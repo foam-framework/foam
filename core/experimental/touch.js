@@ -78,6 +78,7 @@ MODEL({
     // Change this to connect the touchstart only to the document, and the others on the fly
     // after the first touch, to event.target.
     install: function(d) {
+      console.log('installing');
       d.addEventListener('touchstart', this.onTouchStart);
       d.addEventListener('touchend', this.onTouchEnd);
       d.addEventListener('touchmove', this.onTouchMove);
