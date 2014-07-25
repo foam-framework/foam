@@ -38,7 +38,6 @@ MODEL({
       name: 'blockingView',
       factory: function() {
         return this.X.BlockView.create({
-          ctx: this,
           property: QIssue.BLOCKING,
           ids: this.data.blocking});
       }
@@ -47,7 +46,6 @@ MODEL({
       name: 'blockedOnView',
       factory: function() {
         return this.X.BlockView.create({
-          ctx: this,
           property: QIssue.BLOCKED_ON,
           ids: this.data.blockedOn});
       }
@@ -175,17 +173,15 @@ MODEL({
 
   properties: [
     {
-      name: 'ctx' // TODO: switch to X
-    },
-    {
       name: 'url',
-      scope: 'ctx',
-      defaultValueFn: function() { return this.ctx.url; }
+      scope: 'X',
+      defaultValueFn: function() { return this.X.url; }
     },
     {
       name: 'issueDAO',
-      scope: 'ctx',
-      defaultValueFn: function() { return this.ctx.issueDAO; }
+      scope: 'X',
+      // TODO: should be renamed from IssueDAO to issueDAO in X
+      defaultValueFn: function() { return this.X.IssueDAO; }
     },
     {
       name: 'property',
@@ -271,7 +267,7 @@ MODEL({
 
         var self = this;
         this.issueDAO.find(id, { put: function(issue) {
-          self.currentPreview = PopupView.create({
+          self.currentPreview = self.X.PopupView.create({
             x: e.x+30,
             y: e.y-20,
             view: QIssueTileView.create({
@@ -279,7 +275,7 @@ MODEL({
               browser: {url: ''}})
           });
 
-          self.currentPreview.open(self.ctx);
+          self.currentPreview.open(self);
         }});
       }
     },
