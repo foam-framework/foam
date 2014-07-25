@@ -50,7 +50,7 @@ defineProperties(Array.prototype, {
   removeF: function(p) {
     var a = this.clone();
     for (var i = 0; i < a.length; i++) {
-      if (p.f(a[i])) { a.splice(i, 1); break; }
+      if ( p.f(a[i]) ) { a.splice(i, 1); break; }
     }
     return a;
   },
@@ -185,39 +185,54 @@ MODEL({
   properties: [
     {
       name: 'array',
+      postSet: function() { if ( ! this.feedback_ ) this.notify_('put', []); },
       factory: function() { return []; }
     }
   ],
 
   methods: {
-    put: function(value, sink) {
+    updateArray_: function(a) {
+      this.feedback_ = true;
+      this.array = a;
+      this.feedback_ = false;
+    },
+    put: function(obj, sink) {
+      var a2 = this.array.clone();
       for ( var i = 0 ; i < this.array.length ; i++ ) {
-        if ( this[i].id == obj.id ) {
-          this[i] = obj;
+        if ( this.array[i].id == obj.id ) {
+          a2[i] = obj;
+          this.updateArray_(a2);
           sink && sink.put && sink.put(obj);
           this.notify_('put', arguments);
           return;
         }
       }
-      this.push(obj);
+      a2.push(obj);
+      this.updateArray_(a2);
       this.notify_('put', arguments);
       sink && sink.put && sink.put(obj);
     },
 
-    remove: function(query, sink) {
-      this.array.remove(query, sink);
+    remove: function(obj, sink) {
+      if ( ! obj ) {
+        sink && sink.error && sink.error('missing key');
+        return;
+      }
+      var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
+      for ( var i = 0 ; i < this.array.length ; i++ ) {
+        if ( this.array[i].id == id ) {
+          var rem = this.array[i];
+          this.updateArray_(this.array.slice(0, i).concat(this.array.slice(i)));
+          this.notify_('remove', [rem]);
+          sink && sink.remove && sink.remove(rem0);
+          return;
+        }
+      }
+      sink && sink.error && sink.error('remove', obj);
     },
 
-    removeAll: function() {
-      return this.array.removeAll.apply(this.delegate, arguments);
-    },
+    find: function(key, sink) { this.array.find(key, sink); },
 
-    find: function(key, sink) {
-      this.array.find(key, sink);
-    },
-
-    select: function(sink, options) {
-      return this.array.select(sink, options);
-    }
+    select: function(sink, options) { return this.array.select(sink, options); }
   }
 });
