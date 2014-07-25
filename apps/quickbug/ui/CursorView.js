@@ -37,6 +37,7 @@ MODEL({
     {
       name: 'prev',
       label: '< Prev',
+      keyboardShortcuts: [ 37 /* left-arrow */, 75 /* k */ ],
       isEnabled: function() { return this.pos > 1; },
       action: function() {
         this.pos--;
@@ -46,6 +47,7 @@ MODEL({
     {
       name: 'next',
       label: 'Next >',
+      keyboardShortcuts: [ 39 /* right-arrow */, 74 /* j */ ],
       isEnabled: function() { return this.pos < this.total; },
       action: function() {
         this.pos++;
@@ -85,9 +87,16 @@ MODEL({
 
   extendsModel: 'DetailView',
 
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.$.focus();
+    }
+  },
+
   templates: [
     function toHTML() {/*
-      $$prev{model_: 'ActionLink'} $$pos{mode: 'read-only'} of $$total{mode: 'read-only'} $$next{model_: 'ActionLink'} $$backToList{model_: 'ActionLink'}
+      <span id="%%id" tabindex=1>$$prev{model_: 'ActionLink'} $$pos{mode: 'read-only'} of $$total{mode: 'read-only'} $$next{model_: 'ActionLink'} $$backToList{model_: 'ActionLink'}</span>
     */}
   ]
 });
