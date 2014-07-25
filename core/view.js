@@ -4644,3 +4644,25 @@ MODEL({
     }
   ]
 });
+
+MODEL({
+  name: 'ActionSheetView',
+  extendsModel: 'View',
+
+  properties: [
+    'actions',
+    'data',
+  ],
+
+  help: 'A controller that shows a list of actions.',
+
+  templates: [
+    function toHTML() {/*
+      <% for( var i = 0, action; action = this.actions[i]; i++ ) {
+        var view = this.createActionView(action);
+        view.data$ = this.data$;
+        out(view);
+      } %>
+    */}
+  ]
+});

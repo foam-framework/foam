@@ -222,6 +222,18 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png'
     },
+    {
+      name: 'moreActions',
+      isEnabled: function() { return true; },
+      label: 'More',
+      action: function() {
+        var actionSheet = this.X.ActionSheetView.create({
+          data: this.data,
+          actions: this.data.model_.actions,
+        });
+        this.X.stack.slideView(actionSheet);
+      },
+    },
   ],
   templates: [
     function toHTML() {/*
@@ -232,6 +244,7 @@ MODEL({
           $$archive
           $$moveToInbox
           $$trash
+          $$moreActions
         </div>
         <div class="content">
           <div style='display: flex'>
