@@ -160,7 +160,7 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return Timer.create(); }
+      factory: function() { return this.X.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -261,16 +261,16 @@ MODEL({
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
-        this.syncManagerFuture.get((function(syncManager) {
+        this.syncManagerFuture.get(function(syncManager) {
           if ( syncManager.isSyncing ) {
             this.timer.step();
             this.timer.start();
           } else {
-            this.timer.stop();
-            // Should no longer be necessary since both views listen for dao updates.
-            // this.view.choice = this.view.choice;
+            // Let the timer run for a bit longer so that people can see
+            // that it's doing something.
+            this.X.setTimeout(this.timer.stop.bind(this.timer), 1000);
           }
-        }).bind(this));
+        }.bind(this));
       }
     },
     {
@@ -478,7 +478,6 @@ MODEL({
         if ( this.location.cells.indexOf('pie') == -1 ) this.location.scroll = 'Bars';
       }.bind(this));
 
-
       this.syncManagerFuture.get((function(syncManager) {
         this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
       }).bind(this));
@@ -486,11 +485,8 @@ MODEL({
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
-      this.X.dynamic(function() {
-        // TODO: This doesn't work because the listener is merged()' which doesn't cascade the Exception,
-        // but it should
-        //        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        if ( ! this.refreshImg.$ ) return;
+      timer.i$.addListener(function() {
+        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 

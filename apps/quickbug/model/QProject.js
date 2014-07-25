@@ -216,6 +216,7 @@ MODEL({
       this.SUPER(args);
 
       this.IssueDAO.listen(this.onDAOUpdate);
+
       this.persistentContext.bindObject('syncManager', SyncManager, {
         syncInterval: 60*5,
         batchSize: 500,
@@ -223,11 +224,11 @@ MODEL({
         srcDAO: this.IssueNetworkDAO,
         dstDAO: this.IssueCachingDAO,
         modifiedProperty: this.X.QIssue.MODIFIED
-      })((function(manager) {
+      })(function(manager) {
         this.syncManager = manager;
         this.syncManagerFuture.set(manager);
         manager.start();
-      }).bind(this));
+      }.bind(this));
     },
 
     /** Open a Browser in a Window for a Chome Packaged App. **/
