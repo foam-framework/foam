@@ -298,6 +298,20 @@ MODEL({
     }
   ],
 
+  listeners: [
+    {
+      name: 'onKeyboardShortcut',
+      code: function(evt) {
+        // console.log('***** key: ', this.evtToKeyCode(evt));
+        var action = this.keyMap_[this.evtToKeyCode(evt)];
+        if ( action ) {
+          action();
+          evt.preventDefault();
+        }
+      }
+    }
+  ],
+
   methods: {
     // TODO: Model as Topics
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
@@ -502,6 +516,7 @@ MODEL({
 
     initHTML: function() {
       this.initInnerHTML();
+      this.initKeyboardShortcuts();
     },
 
     initInnerHTML: function() {
@@ -533,6 +548,45 @@ MODEL({
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
 
       this.initializers_ = undefined;
+    },
+
+    evtToKeyCode: function(evt) {
+      var s = '';
+      if ( evt.ctrlKey ) s += 'ctrl-';
+      if ( evt.shiftKey ) s += 'shift-';
+      s += evt.keyCode;
+      return s;
+    },
+
+    initKeyboardShortcutsForActions: function(actions, keyMap) {
+      var found = false;
+      return found;
+    },
+
+    initKeyboardShortcuts: function() {
+      var keyMap = {};
+      var found  = false;
+
+      function init(actions, opt_value) {
+        actions.forEach(function(action) {
+          for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
+            var key     = action.keyboardShortcuts[j];
+            var keyCode = key.toString();
+            keyMap[keyCode] = opt_value ?
+              function() { action.callIfEnabled(opt_value.get()); } :
+              function() { action.callIfEnabled(this); } ;
+            found = true;
+          }
+        }.bind(this));
+      }
+
+      init(this.model_.actions);
+      if ( DetailView.isInstance(this) ) init(this.model.actions, this.data$);
+
+      if ( found ) {
+        this.keyMap_ = keyMap;
+        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+      }
     },
 
     destroy: function() {
@@ -591,6 +645,7 @@ MODEL({
   ],
 
   methods: {
+
     init: function(args) {
       this.SUPER(args);
 
@@ -607,6 +662,7 @@ MODEL({
       this.view = view;
       this.bindData();
     },
+
     createViewFromProperty: function(prop) {
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
@@ -617,6 +673,7 @@ MODEL({
 
       return viewName.create(prop);
     },
+
     bindData: function() {
       var view = this.view;
       var data = this.data;
@@ -624,7 +681,9 @@ MODEL({
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
     },
+
     toHTML: function() { return this.view.toHTML(); },
+
     initHTML: function() { this.view.initHTML(); }
   }
 });

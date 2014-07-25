@@ -118,6 +118,21 @@ MODEL({
     }
   ],
 
+  actions: [
+    {
+      name: 'prevRow',
+      keyboardShortcuts: [ 75 /* k */ ],
+      action: function() {
+      }
+    },
+    {
+      name: 'nextRow',
+      keyboardShortcuts: [ 74 /* j */ ],
+      action: function() {
+      }
+    }
+  ],
+
   listeners: [
     {
       name: 'onResize',
