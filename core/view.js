@@ -561,6 +561,7 @@ MODEL({
     initKeyboardShortcuts: function() {
       var keyMap = {};
       var found  = false;
+      var self   = this;
 
       function init(actions, opt_value) {
         actions.forEach(function(action) {
@@ -568,10 +569,10 @@ MODEL({
             var key     = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(opt_value.get()); } :
-              action.callIfEnabled.bind(action, this) ;
+              action.callIfEnabled.bind(action, self) ;
             found = true;
           }
-        }.bind(this));
+        });
       }
 
       init(this.model_.actions);
