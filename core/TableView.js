@@ -120,31 +120,41 @@ MODEL({
 
   actions: [
     {
+      name: 'selectRow',
+      keyboardShortcuts: [ 13 /* enter */ ],
+      action: function() {
+        if ( this.selection ) this.hardSelection = this.selection;
+        this.publish(this.CLICK, this.selection);
+      }
+    },
+    {
       name: 'prevRow',
-      keyboardShortcuts: [ 75 /* k */ ],
+      keyboardShortcuts: [ 38 /* up arrow */, 75 /* k */ ],
       action: function() {
         if ( ! this. objs || ! this.objs.length ) return;
-        if ( this.hardSelection ) {
-          var i = this.objs.indexOf(this.hardSelection);
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
           this.scrollbar.value--;
-          if ( i > 0 ) this.selection = this.hardSelection = this.objs[i-1];
+          if ( i > 0 ) this.selection = this.objs[i-1];
         } else {
-          this.selection = this.hardSelection = this.objs[0];
+          this.selection = this.objs[0];
         }
         this.repaint();
       }
     },
     {
       name: 'nextRow',
-      keyboardShortcuts: [ 74 /* j */ ],
+      keyboardShortcuts: [ 40 /* down arrow */, 74 /* j */ ],
       action: function() {
         if ( ! this. objs || ! this.objs.length ) return;
-        if ( this.hardSelection ) {
-          var i = this.objs.indexOf(this.hardSelection);
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
           this.scrollbar.value++;
-          if ( i < this.objs.length-1 ) this.selection = this.hardSelection = this.objs[i+1];
+          if ( i < this.objs.length-1 ) this.selection = this.objs[i+1];
         } else {
-          this.selection = this.hardSelection = this.objs[0];
+          this.selection = this.objs[0];
         }
         this.repaint();
       }
@@ -253,6 +263,8 @@ MODEL({
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
+    CLICK: "click", // event topic
+
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
@@ -383,12 +395,17 @@ MODEL({
       var objs = this.objs;
       if ( objs ) {
         var hselect = this.hardSelection;
+        var sselect = this.selection;
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
           var className = "tr-" + this.id;
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
+          }
+
+          if ( sselect && obj.id == sselect.id ) {
+            className += " rowSoftSelected";
           }
 
           str.push('<tr class="' + className + '">');
@@ -426,23 +443,26 @@ MODEL({
 
       argsToArray($$('tr-' + this.id)).forEach(function(e, i) {
         var obj = self.objs[i];
-        e.onmouseover = function() { self.selection = obj; };
-        e.onmouseout = function() { self.selection = self.hardSelection; };
-        e.onclick = function(evt) {
-          self.hardSelection = obj;
-          self.selection = obj;
-          var row = evt.srcElement;
-          while ( row && row.tagName !== "TR") row = row.parentNode;
-          var table = row;
-          while (table && table.tagName !== "TBODY")  table = table.parentNode;
 
-          var siblings = table ? table.childNodes : [];
-          for ( var i = 0 ; i < siblings.length ; i++ ) {
-            siblings[i].classList.remove("rowSelected");
-          }
-          row && row.classList.add('rowSelected');
+        self.selection$.addListener(function() {
+          DOM.setClass(e, 'rowSoftSelected', self.selection === obj);
+        });
+        self.hardSelection$.addListener(function() {
+          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
+        });
+        e.onmouseover = function() {
+          self.selection = obj;
         };
-        e.ondblclick = function() { self.publish(self.DOUBLE_CLICK, obj, self.selection); };
+        e.onmouseout = function() {
+          self.selection = self.hardSelection;
+        };
+        e.onclick = function(evt) {
+          self.hardSelection = self.selection = obj;
+          self.publish(self.CLICK, obj);
+        };
+        e.ondblclick = function() {
+          self.publish(self.DOUBLE_CLICK, obj);
+        };
       });
 
       delete this['initializers_'];
