@@ -612,15 +612,6 @@ MODEL({
       type: 'View',
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
-        /*
-        if ( ! this.data ) {
-          if ( p.model_.DATA ) {
-            this.data$ = p.data$;
-          } else {
-            this.data = p;
-          }
-        }
-        */
         if ( this.view ) this.view.parent = p;
       }
     },
