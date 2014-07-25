@@ -123,14 +123,28 @@ MODEL({
       name: 'prevRow',
       keyboardShortcuts: [ 75 /* k */ ],
       action: function() {
-        console.log('**** prevRow');
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( this.hardSelection ) {
+          var i = this.objs.indexOf(this.hardSelection);
+          if ( i > 0 ) this.selection = this.hardSelection = this.objs[i-1];
+        } else {
+          this.selection = this.hardSelection = this.objs[0];
+        }
+        this.repaint();
       }
     },
     {
       name: 'nextRow',
       keyboardShortcuts: [ 74 /* j */ ],
       action: function() {
-        console.log('**** nextRow');
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( this.hardSelection ) {
+          var i = this.objs.indexOf(this.hardSelection);
+          if ( i < this.objs.length-1 ) this.selection = this.hardSelection = this.objs[i+1];
+        } else {
+          this.selection = this.hardSelection = this.objs[0];
+        }
+        this.repaint();
       }
     }
   ],
