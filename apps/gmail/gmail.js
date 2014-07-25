@@ -231,12 +231,7 @@ MODEL({
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive
           $$moveToInbox
-          $$starred{
-            model_: 'ImageBooleanView',
-            className:  'actionButton',
-            trueImage:  'images/ic_star_white_24dp.png',
-            falseImage: 'images/ic_star_outline_white_24dp.png'
-          }
+          $$trash
         </div>
         <div class="content">
           <div style='display: flex'>
@@ -250,6 +245,12 @@ MODEL({
                 $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
               </div>
             </div>
+            $$starred{
+              model_: 'ImageBooleanView',
+              className:  'actionButton',
+              trueImage:  'images/ic_star_24dp.png',
+              falseImage: 'images/ic_star_outline_24dp.png'
+            }
           </div>
           $$body{ mode: 'read-only', className: 'body' }
         </div>
