@@ -558,11 +558,6 @@ MODEL({
       return s;
     },
 
-    initKeyboardShortcutsForActions: function(actions, keyMap) {
-      var found = false;
-      return found;
-    },
-
     initKeyboardShortcuts: function() {
       var keyMap = {};
       var found  = false;
@@ -571,10 +566,9 @@ MODEL({
         actions.forEach(function(action) {
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key     = action.keyboardShortcuts[j];
-            var keyCode = key.toString();
-            keyMap[keyCode] = opt_value ?
+            keyMap[key] = opt_value ?
               function() { action.callIfEnabled(opt_value.get()); } :
-              function() { action.callIfEnabled(this); } ;
+              action.callIfEnabled.bind(action, this) ;
             found = true;
           }
         }.bind(this));
@@ -724,15 +718,16 @@ MODEL({
   ],
 
   methods: {
-    open: function(e, opt_delay) {
+    // TODO: first argument isn't used anymore, find and cleanup all uses
+    open: function(_, opt_delay) {
       if ( this.$ ) return;
-      var document = (e.$ || e).ownerDocument;
+      var document = this.X.document;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
       div.style.top = this.y + 'px';
-      if ( this.width ) div.style.width = this.width + 'px';
-      if ( this.height ) div.style.height = this.height + 'px';
-      if ( this.maxWidth ) div.style.maxWidth = this.maxWidth + 'px';
+      if ( this.width )     div.style.width = this.width + 'px';
+      if ( this.height )    div.style.height = this.height + 'px';
+      if ( this.maxWidth )  div.style.maxWidth = this.maxWidth + 'px';
       if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;

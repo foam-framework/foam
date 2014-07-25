@@ -123,12 +123,14 @@ MODEL({
       name: 'prevRow',
       keyboardShortcuts: [ 75 /* k */ ],
       action: function() {
+        console.log('**** prevRow');
       }
     },
     {
       name: 'nextRow',
       keyboardShortcuts: [ 74 /* j */ ],
       action: function() {
+        console.log('**** nextRow');
       }
     }
   ],
@@ -238,7 +240,7 @@ MODEL({
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
-      return '<div style="display:flex;width:100%;height:100%">' +
+      return '<div tabindex="99" style="display:flex;width:100%;height:100%">' +
         '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
@@ -249,6 +251,8 @@ MODEL({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       this.scrollbar.initHTML();
 
       this.dao && this.onDAOUpdate();
