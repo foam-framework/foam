@@ -83,5 +83,6 @@ var files = [
   'oauth',
   '../apps/mailreader/view',
   '../apps/mailreader/email',
+  '../lib/email/email',
   'turntable'
 ];

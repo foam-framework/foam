@@ -222,6 +222,18 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png'
     },
+    {
+      name: 'moreActions',
+      isEnabled: function() { return true; },
+      label: 'More',
+      action: function() {
+        var actionSheet = this.X.ActionSheetView.create({
+          data: this.data,
+          actions: this.data.model_.actions,
+        });
+        this.X.stack.slideView(actionSheet);
+      },
+    },
   ],
   templates: [
     function toHTML() {/*
@@ -231,12 +243,8 @@ MODEL({
           $$subject{mode: 'read-only', className: 'subject'}
           $$archive
           $$moveToInbox
-          $$starred{
-            model_: 'ImageBooleanView',
-            className:  'actionButton',
-            trueImage:  'images/ic_star_white_24dp.png',
-            falseImage: 'images/ic_star_outline_white_24dp.png'
-          }
+          $$trash
+          $$moreActions
         </div>
         <div class="content">
           <div style='display: flex'>
@@ -250,6 +258,12 @@ MODEL({
                 $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
               </div>
             </div>
+            $$starred{
+              model_: 'ImageBooleanView',
+              className:  'actionButton',
+              trueImage:  'images/ic_star_24dp.png',
+              falseImage: 'images/ic_star_outline_24dp.png'
+            }
           </div>
           $$body{ mode: 'read-only', className: 'body' }
         </div>
