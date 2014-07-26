@@ -762,6 +762,8 @@ MODEL({
     },
     {
       name: 'data',
+      factory: function() { return []; },
+      postSet: function(_, data) { this.arrayDAO.array = data; }
     },
     {
       name: 'arrayDAO',
@@ -779,7 +781,7 @@ MODEL({
     {
       name: 'daoView',
       factory: function() {
-        return DAOController.create({ model: this.model });
+        return DAOController.create({ model: this.model, dao: this.arrayDAO });
       }
     }
   ],
