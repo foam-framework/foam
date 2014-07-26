@@ -138,7 +138,7 @@ input[name=q]::-webkit-input-placeholder {
   padding: 0;
 }
 
-canvas.composeButton {
+canvas.createButton {
   position: fixed;
   bottom: 10px;
   right: 20px;
