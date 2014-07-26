@@ -598,6 +598,26 @@ var DAOProperty = Model.create({
 });
 
 
+var ModelProperty = Model.create({
+  extendsModel: 'Property',
+
+  help: "Describes a Model property.",
+
+  properties: [
+    {
+      name: 'type',
+      defaultValue: 'Model'
+    },
+    {
+      name: 'preSet',
+      defaultValue: function(_, model) {
+        return FOAM.lookup(model, this.X);
+      }
+    }
+  ]
+});
+
+
 var ReferenceArrayProperty = Model.create({
   name: 'ReferenceArrayProperty',
   extendsModel: 'ReferenceProperty',
