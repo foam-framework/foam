@@ -69,34 +69,31 @@
       space.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
     });
 
-//    var PAUSE = [0];  // Press to continue
-    var PAUSE = [1000]; // Pause for 1s
-
     M.compile([
        [1000, function() { js.width = 300; }, B],
-       PAUSE,
+       [1000],
        [2000, function() { events.x = 750;  }, M.easeIn(0.3).o(M.oscillate(0.3, 0.02, 2))],
        [2000, function() { events.y = 750; }, M.accelerate.o(M.bounce(0.2, 0.05, 2))],
-       PAUSE,
+       [1000],
        [
           [2900, function() { reactive.x = 750; reactive.a = Math.PI*2; }, M.easeOut(1.0)],
           [3000, function() { reactive.y = 700; }, M.easeIn(1.0)]
        ],
-       PAUSE,
+       [1000],
        [1500, function() { animation.x = 600; animation.y = 650;}],
        [ 500],
        [ 700, function() { animation.x = 750;}],
-       PAUSE,
+       [1000],
        function() { timer.start(); },
        [1500, function() { V.x = 850; }],
        [1500, function() { V.y = 550; }],
        function() { timer.stop(); },
        [1000, function() { m.x = 750; m.y = 550; m.width = 100; m.height=100; C.x = 950; C.y = 550; C.width=100; C.height=100; }],
-       PAUSE,
+       [1000],
        [2000, function() { meta.a = 0; meta.x = 750; meta.y = 450;}],
-       PAUSE,
+       [1000],
        [1500, function() { ime.y -= 100; ime.height += 100; }],
-       PAUSE,
+       [1000],
        [
          [5000, function() { meta.width += 250; }],
          [[1000], [2000, function() { java.height = 300; }, B]],
@@ -104,7 +101,7 @@
          [[3000], [2000, function() { cpp.height = 300; }, B]],
          [[5000], [2000, function() { future.height = 300; }, B]]
        ],
-       PAUSE,
+       [1000],
        [1000, function() { dev.y = 350-dev.r; }, M.accelerate.o(M.bounce(0.2, 0.15, 2))],
        [1000, function() {
          var s = 50;
