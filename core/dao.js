@@ -2998,6 +2998,7 @@ MODEL({
 
   properties: [
     {
+      model_: 'ModelProperty',
       name: 'model'
     },
     {

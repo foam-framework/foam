@@ -309,15 +309,10 @@ MODEL({
   properties:
   [
     {
-      model_: 'Property',
+      model_: 'IntProperty',
       name: 'id',
       label: 'Issue ID',
-      type: 'String',
-      required: true,
       displayWidth: 12,
-      displayHeight: 1,
-      defaultValue: 0,
-      view: 'IntFieldView',
       help: 'Issue\'s unique sequence number.'
     },
     {
