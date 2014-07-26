@@ -184,6 +184,10 @@ MODEL({
 
   properties: [
     {
+      model_: 'ModelProperty',
+      name: 'model'
+    },
+    {
       name: 'array',
       postSet: function() { if ( ! this.feedback_ ) this.notify_('put', []); },
       factory: function() { return []; }
