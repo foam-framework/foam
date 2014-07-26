@@ -2352,7 +2352,7 @@ MODEL({
   }
 });
 
-
+/*
 var ArrayView = {
   create: function(prop) {
     console.assert(prop.subType, 'Array properties must specify "subType".');
@@ -2362,7 +2362,7 @@ var ArrayView = {
     return view;
   }
 };
-
+*/
 
 MODEL({
   name: 'Mouse',
