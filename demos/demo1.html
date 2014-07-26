@@ -7,7 +7,7 @@
  <body>
   <script language="javascript">
     var timer = Timer.create({});
-    var space = Canvas.create({width: 1000, height: 700, background:'#fff'});
+    var space = CView2.create({width: 1000, height: 700, background:'#fff'});
     timer.write(document);
     space.write(document);
 
@@ -17,7 +17,7 @@
     var COUNT = 100;
     var s = [];
     for ( var i = 0 ; i < COUNT ; i++ ) {
-       s[i] = Circle.create({
+       s[i] = Circle2.create({
           x: Math.random()*300+300,
           y: Math.random()*300+300,
           r: Math.random()*20+2,
