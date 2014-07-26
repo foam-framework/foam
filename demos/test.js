@@ -1,3 +1,43 @@
+var aDAO = ArrayDAO.create({model: 'Bookmark'});
+aDAO.array$.addListener(function(_,_,_,a) {
+  console.log('Array Update: ', a.length);
+  console.log(JSONUtil.stringify(a));
+});
+
+aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
+aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
+aDAO.put(Bookmark.create({id: 3, title: 'title3'}));
+aDAO.remove(2);
+
+MODEL({
+  name: 'ArrayDAOExample',
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'p1',
+      subType: 'Bookmark'
+      // No view: specified, so defaults to DAOController
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'p2',
+      subType: 'Bookmark',
+      view: function() {
+        return ArrayView.create({
+          model: 'Bookmark',
+          daoView: DAOListView.create()
+        });
+      }
+    }
+  ]
+});
+
+
+var ade = ArrayDAOExample.create({p2: [
+  Bookmark.create({id: 1, title: 'title1', img: ''}),
+  Bookmark.create({id: 1, title: 'title2', img: ''})
+]});
+ade.write(document);
 
 
 MODEL({

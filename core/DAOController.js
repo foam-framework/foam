@@ -22,6 +22,7 @@ MODEL({
 
   properties: [
     {
+      model_: 'ModelProperty',
       name: 'model'
     },
     {
@@ -234,7 +235,7 @@ MODEL({
 
   properties: [
     {
-      name:  'obj',
+      name:  'data',
       label: 'Edited Object'
     },
     {
@@ -253,10 +254,10 @@ MODEL({
 
       action: function() {
         var self = this;
-        var obj = this.obj;
-        this.dao.put(obj, {
+        var obj = this.data;
+        this.dao.put(data, {
           put: function() {
-            console.log("Saving: ", obj.toJSON());
+            console.log("Saving: ", data.toJSON());
 
             self.X.stack.back();
           },
@@ -286,7 +287,7 @@ MODEL({
       help:  'View help.',
 
       action: function() {
-        var model = this.obj.model_;
+        var model = this.data.model_;
         var helpView = HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
@@ -295,14 +296,11 @@ MODEL({
 
   methods: {
     init: function() {
-      var tmp = this.model;
       this.SUPER();
-      this.model = tmp;
 
-      this.view = FOAM({
-        model_: 'AlternateView',
-
+      this.view = AlternateView.create({
         selection: 'GUI',
+        data: this.data,
         views: [
           {
             model_: 'ViewChoice',
@@ -331,8 +329,6 @@ MODEL({
              }*/
         ]
       });
-
-      this.view.value.set(this.obj);
     },
 
     toHTML: function() {

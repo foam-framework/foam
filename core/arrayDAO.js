@@ -184,6 +184,10 @@ MODEL({
 
   properties: [
     {
+      model_: 'ModelProperty',
+      name: 'model'
+    },
+    {
       name: 'array',
       postSet: function() { if ( ! this.feedback_ ) this.notify_('put', []); },
       factory: function() { return []; }
@@ -222,9 +226,9 @@ MODEL({
       for ( var i = 0 ; i < this.array.length ; i++ ) {
         if ( this.array[i].id == id ) {
           var rem = this.array[i];
-          this.updateArray_(this.array.slice(0, i).concat(this.array.slice(i)));
+          this.updateArray_(this.array.slice(0, i).concat(this.array.slice(i+1)));
           this.notify_('remove', [rem]);
-          sink && sink.remove && sink.remove(rem0);
+          sink && sink.remove && sink.remove(rem);
           return;
         }
       }

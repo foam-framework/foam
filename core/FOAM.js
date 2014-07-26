@@ -105,7 +105,7 @@ var UNUSED_MODELS = {};
 var USED_MODELS = {};
 
 // Lazy Model Definition - Only creates Model when first referenced
-var MODEL = function(m) {
+function MODEL(m) {
   // Templates need to access document.currentScript in order to know
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
@@ -128,6 +128,7 @@ var MODEL = function(m) {
   });
 }
 
+
 FOAM.browse = function(model, opt_dao) {
    var dao = opt_dao || GLOBAL[model.name + 'DAO'] || GLOBAL[model.plural];
 
@@ -147,15 +148,16 @@ FOAM.browse = function(model, opt_dao) {
   stack.pushView(ctrl);
 };
 
+
 FOAM.lookup = function(key, opt_X) {
-  if ( ! typeof key === 'string' ) return key;
+  if ( ! ( typeof key === 'string' ) ) return key;
 
   var path = key.split('.');
   var root = opt_X || GLOBAL;
   for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
 
   return root;
-}
+};
 
 
 MODEL({
