@@ -781,7 +781,7 @@ MODEL({
     {
       name: 'daoView',
       factory: function() {
-        return DAOController.create({ model: this.model, dao: this.arrayDAO });
+        return DAOController.create({ model: this.model });
       }
     }
   ],
@@ -789,6 +789,7 @@ MODEL({
   methods: {
     init: function(prop) {
       this.SUPER();
+      this.daoView.dao = this.arrayDAO;
       console.assert(this.model, 'ArrayView requires subType/Model.');
     },
     toHTML:   function() { return this.daoView.toHTML(); },
