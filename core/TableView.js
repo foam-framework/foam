@@ -203,7 +203,6 @@ MODEL({
 
         v.addPropertyListener('properties', function() {
           v.close();
-          debugger;
           this.properties = v.properties;
           v.removePropertyListener('properties', arguments.callee);
           this.repaint();
@@ -269,6 +268,8 @@ MODEL({
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
+      // TODO: I don't think this should be height:100%, but needs to be
+      // fixed somehow.
       return '<div tabindex="99" style="display:flex;width:100%;height:100%">' +
         '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
