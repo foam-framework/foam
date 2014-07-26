@@ -1840,14 +1840,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       try {
         return JSONUtil.parse(text);
@@ -1870,14 +1868,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       return this.val_; // Temporary hack until XML parsing is implemented
       // TODO: parse XML
