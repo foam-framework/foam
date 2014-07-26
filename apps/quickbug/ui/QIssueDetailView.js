@@ -242,7 +242,8 @@ MODEL({
             var ids = issue[self.property.name];
 
             if ( ids.length ) {
-              var subView = self.clone().copyFrom({
+              var subView = self.X.BlockView.create({
+                property: self.property,
                 maxDepth: self.maxDepth-1,
                 ids:      ids
               });
