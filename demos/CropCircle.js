@@ -163,6 +163,12 @@ var fs = [
   function() { if ( this.scale < .1 ) return; c2(); sym(4, s(0.7, t(0, 100, f)))(); },
   function() { if ( this.scale < .15 ) return; c2(); sym(5, s(0.7, t(0, 100, f)))(); },
   function() { if ( this.scale < .15 ) return; c2(); sym(6, s(0.7, t(0, 100, f)))(); },
+
+  function() { if ( this.scale < .1 ) return; c2(); sym(2, s(0.6, t(10, 100, f)))(); },
+  function() { if ( this.scale < .1 ) return; c2(); sym(3, s(0.6, t(10, 100, f)))(); },
+  function() { if ( this.scale < .1 ) return; c2(); sym(4, s(0.6, t(10, 100, f)))(); },
+  function() { if ( this.scale < .15 ) return; c2(); sym(5, s(0.6, t(10, 100, f)))(); },
+  function() { if ( this.scale < .15 ) return; c2(); sym(6, s(0.6, t(10, 100, f)))(); },
   // symetric tree
   function() { if ( this.scale < .02 ) return; c(); t(0, -50, c)(); t(0, -100, c)();  t(0, -135, s(0.5, f))(); t(-38, -110, s(0.6, r(-1.2, f)))(); t(40, -105, r(1.2, s(0.6, f)))();  },
   // tree
