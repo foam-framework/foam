@@ -148,6 +148,10 @@ var Location = FOAM({
       model_: 'LocationProperty',
       name: 'scroll',
       defaultMemento: 'Bars'
+    },
+    {
+      model_: 'LocationProperty',
+      name: 'createIssueTemplate'
     }
   ],
 
