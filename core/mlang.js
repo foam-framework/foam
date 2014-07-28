@@ -797,7 +797,18 @@ MODEL({
         this;
     },
 
-    f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
+
+      if ( Array.isArray(arg1) ) {
+        return arg1.some(function(arg) {
+          return arg.startsWith(arg2);
+        });
+      }
+
+      return arg1.startsWith(arg2);
+    }
   }
 });
 

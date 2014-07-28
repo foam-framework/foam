@@ -53,11 +53,15 @@
                   %%blockingView
                 </div>
                 <br>
-                <% if ( EQ(QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
+                <% if ( STARTS_WITH(QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
                 <div class="issue_restrictions">
                   <div class="restrictions_header">
                     <ul>
-                      <li>Only users with Google permission can see this issue.</li>
+                      <% for ( var i = 0 ; i < this.data.labels.length ; i++ )
+                        if ( this.data.labels[i].startsWith('Restrict-View-') ) {
+                          var r = this.data.labels[i].substring(14); %>
+                      <li>Only users with <%= r %> permission can see this issue.</li>
+                      <% } %>
                     </ul>
                   </div>
                 </div>
