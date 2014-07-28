@@ -47,9 +47,9 @@ MODEL({
       delete json['projectId'];
       delete json['movedFrom']; // conflicts with movedFrom label/psedo-property
       if ( json.labels ) json.labels = json.labels.intern();
-      if ( json.closed ) json.closed = new Date(json.closed).getTime()/1000;
-      if ( json.updated ) json.updated = new Date(new Date(json.updated).getTime());
-      if ( json.published ) json.published = new Date(json.published).getTime()/1000;
+      if ( json.closed ) json.closed = new Date(json.closed);
+      if ( json.updated ) json.updated = new Date(json.updated);
+      if ( json.published ) json.published = new Date(json.published);
 
       return this.model.create(json);
     },

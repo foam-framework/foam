@@ -322,6 +322,10 @@ option[selected]{
   color: #009;
   background: #eee;
 }
+.foamTable tbody tr.rowSoftSelected td {
+  color: #009;
+  background: #eee;
+}
 .foamTable tr.rowSelected {
   color: #900;
   background: #eee;

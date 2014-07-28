@@ -561,6 +561,7 @@ MODEL({
     initKeyboardShortcuts: function() {
       var keyMap = {};
       var found  = false;
+      var self   = this;
 
       function init(actions, opt_value) {
         actions.forEach(function(action) {
@@ -568,10 +569,10 @@ MODEL({
             var key     = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
               function() { action.callIfEnabled(opt_value.get()); } :
-              action.callIfEnabled.bind(action, this) ;
+              action.callIfEnabled.bind(action, self) ;
             found = true;
           }
-        }.bind(this));
+        });
       }
 
       init(this.model_.actions);
@@ -611,15 +612,6 @@ MODEL({
       type: 'View',
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
-        /*
-        if ( ! this.data ) {
-          if ( p.model_.DATA ) {
-            this.data$ = p.data$;
-          } else {
-            this.data = p;
-          }
-        }
-        */
         if ( this.view ) this.view.parent = p;
       }
     },
@@ -1848,14 +1840,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       try {
         return JSONUtil.parse(text);
@@ -1878,14 +1868,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       return this.val_; // Temporary hack until XML parsing is implemented
       // TODO: parse XML
@@ -2008,72 +1996,6 @@ MODEL({
       out.push('</div>');
 
       return out.join('');
-    }
-  }
-});
-
-
-MODEL({
-  name: 'EditColumnsView',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'model',
-      type: 'Model'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'properties'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'availableProperties'
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onAddColumn',
-      code: function(prop) {
-        this.properties = this.properties.concat([prop]);
-      }
-    },
-    {
-      name: 'onRemoveColumn',
-      code: function(prop) {
-        this.properties = this.properties.deleteF(prop);
-      }
-    }
-
-  ],
-
-  methods: {
-    toHTML: function() {
-      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
-
-      s += 'Show columns:';
-      s += '<table>';
-
-      // Currently Selected Properties
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var p = this.model.getProperty(this.properties[i]);
-        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
-      }
-
-      // Available but not Selected Properties
-      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
-        var p = this.availableProperties[i];
-        if ( this.properties.indexOf(p.name) == -1 ) {
-          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
-        }
-      }
-
-      s += '</table>';
-      s += '</span>';
-
-      return s;
     }
   }
 });
@@ -2426,7 +2348,7 @@ MODEL({
   }
 });
 
-
+/*
 var ArrayView = {
   create: function(prop) {
     console.assert(prop.subType, 'Array properties must specify "subType".');
@@ -2436,7 +2358,7 @@ var ArrayView = {
     return view;
   }
 };
-
+*/
 
 MODEL({
   name: 'Mouse',

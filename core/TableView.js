@@ -120,17 +120,43 @@ MODEL({
 
   actions: [
     {
-      name: 'prevRow',
-      keyboardShortcuts: [ 75 /* k */ ],
+      name: 'selectRow',
+      keyboardShortcuts: [ 13 /* enter */ ],
       action: function() {
-        console.log('**** prevRow');
+        if ( this.selection ) this.hardSelection = this.selection;
+        this.publish(this.CLICK, this.selection);
+      }
+    },
+    {
+      name: 'prevRow',
+      keyboardShortcuts: [ 38 /* up arrow */, 75 /* k */ ],
+      action: function() {
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
+          this.scrollbar.value--;
+          if ( i > 0 ) this.selection = this.objs[i-1];
+        } else {
+          this.selection = this.objs[0];
+        }
+        this.repaint();
       }
     },
     {
       name: 'nextRow',
-      keyboardShortcuts: [ 74 /* j */ ],
+      keyboardShortcuts: [ 40 /* down arrow */, 74 /* j */ ],
       action: function() {
-        console.log('**** nextRow');
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
+          this.scrollbar.value++;
+          if ( i < this.objs.length-1 ) this.selection = this.objs[i+1];
+        } else {
+          this.selection = this.objs[0];
+        }
+        this.repaint();
       }
     }
   ],
@@ -237,9 +263,13 @@ MODEL({
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
+    CLICK: "click", // event topic
+
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
+      // TODO: I don't think this should be height:100%, but needs to be
+      // fixed somehow.
       return '<div tabindex="99" style="display:flex;width:100%;height:100%">' +
         '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
@@ -367,12 +397,17 @@ MODEL({
       var objs = this.objs;
       if ( objs ) {
         var hselect = this.hardSelection;
+        var sselect = this.selection;
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
           var className = "tr-" + this.id;
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
+          }
+
+          if ( sselect && obj.id == sselect.id ) {
+            className += " rowSoftSelected";
           }
 
           str.push('<tr class="' + className + '">');
@@ -410,27 +445,95 @@ MODEL({
 
       argsToArray($$('tr-' + this.id)).forEach(function(e, i) {
         var obj = self.objs[i];
-        e.onmouseover = function() { self.selection = obj; };
-        e.onmouseout = function() { self.selection = self.hardSelection; };
-        e.onclick = function(evt) {
-          self.hardSelection = obj;
-          self.selection = obj;
-          var row = evt.srcElement;
-          while ( row && row.tagName !== "TR") row = row.parentNode;
-          var table = row;
-          while (table && table.tagName !== "TBODY")  table = table.parentNode;
 
-          var siblings = table ? table.childNodes : [];
-          for ( var i = 0 ; i < siblings.length ; i++ ) {
-            siblings[i].classList.remove("rowSelected");
-          }
-          row && row.classList.add('rowSelected');
+        self.selection$.addListener(function() {
+          DOM.setClass(e, 'rowSoftSelected', self.selection === obj);
+        });
+        self.hardSelection$.addListener(function() {
+          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
+        });
+        e.onmouseover = function() {
+          self.selection = obj;
         };
-        e.ondblclick = function() { self.publish(self.DOUBLE_CLICK, obj, self.selection); };
+        e.onmouseout = function() {
+          self.selection = self.hardSelection;
+        };
+        e.onclick = function(evt) {
+          self.hardSelection = self.selection = obj;
+          self.publish(self.CLICK, obj);
+        };
+        e.ondblclick = function() {
+          self.publish(self.DOUBLE_CLICK, obj);
+        };
       });
 
       delete this['initializers_'];
       this.children = [];
+    }
+  }
+});
+
+
+MODEL({
+  name: 'EditColumnsView',
+
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'model',
+      type: 'Model'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'properties'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'availableProperties'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onAddColumn',
+      code: function(prop) {
+        this.properties = this.properties.concat([prop]);
+      }
+    },
+    {
+      name: 'onRemoveColumn',
+      code: function(prop) {
+        this.properties = this.properties.deleteF(prop);
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
+
+      s += 'Show columns:';
+      s += '<table>';
+
+      // Currently Selected Properties
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var p = this.model.getProperty(this.properties[i]);
+        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
+      }
+
+      // Available but not Selected Properties
+      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
+        var p = this.availableProperties[i];
+        if ( this.properties.indexOf(p.name) == -1 ) {
+          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
+        }
+      }
+
+      s += '</table>';
+      s += '</span>';
+
+      return s;
     }
   }
 });

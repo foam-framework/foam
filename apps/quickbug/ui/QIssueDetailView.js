@@ -149,11 +149,13 @@ MODEL({
         var out = "";
         for ( var i = 0; i < value.length; i++ ) {
           var start = value[i].substring(0, value[i].indexOf('-') + 1);
-          var rest = value[i].substring(value[i].indexOf('-') + 1);
+          var rest  = value[i].substring(value[i].indexOf('-') + 1);
 
-          out += '<div><b>' +
-            this.strToHTML(start) + '</b>' +
-            this.strToHTML(rest) + '</div>';
+          if ( start != 'Restrict-' ) {
+            out += '<div><b>' +
+              this.strToHTML(start) + '</b>' +
+              this.strToHTML(rest) + '</div>';
+          }
         }
         this.$.innerHTML = out;
       }
@@ -242,7 +244,8 @@ MODEL({
             var ids = issue[self.property.name];
 
             if ( ids.length ) {
-              var subView = self.clone().copyFrom({
+              var subView = self.X.BlockView.create({
+                property: self.property,
                 maxDepth: self.maxDepth-1,
                 ids:      ids
               });

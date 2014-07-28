@@ -125,15 +125,15 @@ Events.dynamic(function () {
 function protoToString(proto) {
   var buf = [];
   for ( var key in proto) {
-    buf.push(key, ':', proto[key]);
-    buf.push('\n');
+    try {
+      buf.push(key, ':', proto[key]);
+      buf.push('\n');
+    } catch(x) { }
   }
   return buf.join('');
 }
 
-Events.dynamic(function() {
-    console.log(sys.selectedX, sys.selectedY);
-  },
+Events.dynamic(function() { console.log(sys.selectedX, sys.selectedY); },
   function() {
     var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
                   Timer, Mouse, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Turntable, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];
@@ -165,7 +165,7 @@ Events.dynamic(function() {
     case 7: setDisplay("<textarea rows=100 cols=80>" + protoToString(model.getPrototype()) + '</textarea>'); break;
     case 8: setDisplay('<pre>' + model.javaSource() + '</pre>'); break;
     case 9: setDisplay('<pre>' + model.dartSource() + '</pre>'); break;
-    case 10: setDisplay(); break;
+    case 10: setDisplay(JSONUtil.stringify(model.actions)); break;
     case 11:
       var dao = GLOBAL[model.plural] || GLOBAL[model.name + 'DAO'];
       if ( dao ) dao.select()(function(a) {

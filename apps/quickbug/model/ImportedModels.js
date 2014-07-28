@@ -50,7 +50,7 @@ var GeneratedQIssue = FOAM({
       help: 'List of people who are CC\'ed on updates to this issue.'
     },
     {
-      model_: 'DateProperty',
+      model_: 'DateTimeProperty',
       name: 'closed',
       help: 'Date and time the issue was closed.'
     },

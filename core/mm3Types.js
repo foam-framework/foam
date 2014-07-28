@@ -171,11 +171,8 @@ var DateProperty = Model.create({
     },
     {
       name: 'tableFormatter',
-      defaultValue2: function(d) {
-        return d.toDateString();
-      },
       defaultValue: function(d) {
-        return d.toRelativeDateString();
+        return d ? d.toRelativeDateString() : '';
       }
     }
   ]
@@ -433,6 +430,22 @@ var ArrayProperty = Model.create({
       defaultValue: function() { return []; }
     },
     {
+      name: 'install',
+      defaultValue: function(prop) {
+        defineLazyProperty(this, prop.name + '$Proxy', function() {
+          var dao = ArrayDAO.create({
+            array$: this.propertyValue(prop.name),
+            model: prop.subType
+          });
+
+          return {
+            get: function() { return dao; },
+            configurable: true
+          };
+        });
+      }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',
@@ -574,7 +587,7 @@ var DAOProperty = Model.create({
           var proxy = ProxyDAO.create({delegate: this[prop.name]});
 
           this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            proxy.delegate = dao
+            proxy.delegate = dao;
           });
 
           return {
@@ -582,6 +595,26 @@ var DAOProperty = Model.create({
             configurable: true
           };
         });
+      }
+    }
+  ]
+});
+
+
+var ModelProperty = Model.create({
+  extendsModel: 'Property',
+
+  help: "Describes a Model property.",
+
+  properties: [
+    {
+      name: 'type',
+      defaultValue: 'Model'
+    },
+    {
+      name: 'preSet',
+      defaultValue: function(_, model) {
+        return FOAM.lookup(model, this.X);
       }
     }
   ]

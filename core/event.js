@@ -764,6 +764,8 @@ var Movement = {
 
           if ( now >= startTime + duration ) stop();
         }, 16);
+      } else {
+        timer = setInterval(stop, duration);
       }
 
       return stop;

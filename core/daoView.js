@@ -752,3 +752,47 @@ MODEL({
 });
 
 
+MODEL({
+  name: 'ArrayView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'model'
+    },
+    {
+      name: 'data',
+      factory: function() { return []; },
+      postSet: function(_, data) { this.arrayDAO.array = data; }
+    },
+    {
+      name: 'arrayDAO',
+      factory: function() {
+        return ArrayDAO.create({
+          model: this.model,
+          array: this.data
+        });
+      }
+    },
+    {
+      name: 'subType',
+      setter: function(subType) { this.model = subType; }
+    },
+    {
+      name: 'daoView',
+      factory: function() {
+        return DAOController.create({ model: this.model });
+      }
+    }
+  ],
+
+  methods: {
+    init: function(prop) {
+      this.SUPER();
+      this.daoView.dao = this.arrayDAO;
+      console.assert(this.model, 'ArrayView requires subType/Model.');
+    },
+    toHTML:   function() { return this.daoView.toHTML(); },
+    initHTML: function() { return this.daoView.initHTML(); }
+  }
+});
