@@ -53,6 +53,16 @@
                   %%blockingView
                 </div>
                 <br>
+                <% if ( EQ(QIssue.LABELS, 'Restrict-View-Google').f(this.data) ) { %>
+                <div class="issue_restrictions">
+                  <div class="restrictions_header">
+                    <ul>
+                      <li>Only users with Google permission can see this issue.</li>
+                    </ul>
+                  </div>
+                </div>
+                <br>
+                <% } %>
               </div>
               <br><br>
             </div>&nbsp;
