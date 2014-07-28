@@ -438,7 +438,7 @@ MODEL({
     },
     {
       name: 'newIssue',
-      label: 'New issue',
+      label: 'New issue &#x25BE;',
       action: function() {
         if ( this.createMenu ) {
           this.createMenu.close();
@@ -466,6 +466,10 @@ MODEL({
                   description: c.description
                 });
 
+                if ( self.location.createMode === true ) {
+                  self.issueTemplate_.copyFrom(data);
+                  return;
+                }
                 self.issueTemplate_ = data;
                 self.location.createMode = true;
               }
