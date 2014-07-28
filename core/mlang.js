@@ -995,7 +995,7 @@ MODEL({
       return o1.compareTo(o2) > 0 ? o1 : o2;
     },
     reduce: function(other) {
-      return MaxExpr.create({max: (this.max, other.max)});
+      return MaxExpr.create({max: this.maximum(this.max, other.max)});
     },
     reduceI: function(other) {
       this.max = this.maximum(this.max, other.max);
