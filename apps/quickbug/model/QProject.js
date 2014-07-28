@@ -325,7 +325,7 @@ MODEL({
           $addWindow(window);
 
           var view = ConfigureProjectsView.create({ model: QUser });
-          view.value.set(self.user);
+          view.data = self.user;
 
           window.document.body.innerHTML = view.toHTML();
           view.initHTML();
