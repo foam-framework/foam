@@ -6,7 +6,6 @@
   var syncLink     = X.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
   var backButton   = X.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
   var forthButton  = X.ActionButton.create({action: MementoMgr.FORTH,           data: this.mementoMgr});
-  var createButton = X.ActionLink.create(  {action: this.model_.NEW_ISSUE,      data: this});
 %>
 <head>
   <link rel="stylesheet" type="text/css" href="foam.css" />
@@ -16,7 +15,7 @@
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span><%= createButton %> | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>

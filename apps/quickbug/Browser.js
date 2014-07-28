@@ -38,6 +38,7 @@ MODEL({
     'project',
     'previewID',
     'favouritesMenu',
+    'createMenu',
     {
       name: 'qbug',
       scope: 'project',
@@ -438,7 +439,49 @@ MODEL({
     {
       name: 'newIssue',
       label: 'New issue',
-      action: function() { this.location.createMode = true; }
+      action: function() {
+        if ( this.createMenu ) {
+          this.createMenu.close();
+          return;
+        }
+
+        var view = this.X.ToolbarView.create({
+          horizontal: false,
+          data: this,
+          document: this.X.document
+        });
+
+        var self = this;
+
+        view.addChild(StaticHTML.create({ content: '<b>Templates</b>' }));
+        view.addActions(
+          this.project.project.issuesConfig.prompts.map(function(c) {
+            return Action.create({
+              name: c.name,
+              action: function() {
+                var data = QIssue.create({
+                  labels: c.labels,
+                  status: c.status,
+                  summary: c.title,
+                  description: c.description
+                });
+
+                self.issueTemplate_ = data;
+                self.location.createMode = true;
+              }
+            });
+          }));
+
+        view.left = this.newIssueView.$.offsetLeft;
+        view.top = this.newIssueView.$.offsetTop + this.newIssueView.$.offsetHeight;
+        view.openAsMenu();
+
+        view.subscribe('close', function() {
+          self.createMenu = '';
+        });
+
+        this.createMenu = view;
+      }
     }
   ],
 
@@ -520,22 +563,22 @@ MODEL({
         arequire('QIssueCreateView')
       )(function() {
         var v = self.X.QIssueCreateView.create({
-          data:
-          QIssue.create({
-            description: multiline(function(){/*What steps will reproduce the problem?
-1.
-2.
-3.
+          data: self.issueTemplate_ || 
+            QIssue.create({
+              description: multiline(function(){/*What steps will reproduce the problem?
+                                                  1.
+                                                  2.
+                                                  3.
 
-What is the expected output? What do you see instead?
+                                                  What is the expected output? What do you see instead?
 
 
-Please use labels and text to provide additional information.
+                                                  Please use labels and text to provide additional information.
 
-*/}),
-            status: 'New',
-            summary: 'Enter a one-line summary.'
-          }),
+                                                */}),
+              status: 'New',
+              summary: 'Enter a one-line summary.'
+            }),
           mode:             'read-write'
         });
         self.pushView(v);
