@@ -191,13 +191,12 @@ var QIssue = FOAM({
       defaultValue: ''
     },
     {
+      model_: 'StringArrayProperty',
       name: 'cr',
       shortName: 'c',
       aliases: ['cat', 'cr'],
       label: 'Cr',
       tableWidth: '87px',
-      type: 'String',
-      defaultValue: ''
     },
     {
       name: 'status',
@@ -328,13 +327,16 @@ var QIssue = FOAM({
       postSet: function(_, a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           var kv = isPropertyLabel(a[i]);
+          a[i] = a[i].intern();
           if ( kv ) {
-            this[kv[0]] = kv[1];
+            if ( Array.isArray(this[kv[0]]) ) {
+              this[kv[0]].push(kv[1]);
+            } else {
+              this[kv[0]] = kv[1];
+            }
             // Don't remove from labels because then label:X searches don't work.
             // a.splice(i,1);
             // i--;
-          } else {
-            a[i] = a[i].intern();
           }
         }
       }
