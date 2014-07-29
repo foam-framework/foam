@@ -39,7 +39,7 @@ for ( var x = 0 ; x < N ; x++ ) {
     if ( x && y ) Movement.spring2(c, cs[x-1][y-1], 113);
 
     Movement.inertia(c);
-    Movement.friction(c, 0.95);
+    Movement.friction(c, 0.97);
     bounceOnWalls(c, space.width, space.height);
     collider.add(c);
   }
@@ -51,7 +51,7 @@ for ( var i = 0 ; i < N2 ; i++ ) {
   var c = cs2[i] = Circle.create({r: 20, x:600+200*Math.sin(i/N2*2*Math.PI), y:300+200*Math.cos(i/N2*2*Math.PI), color: 'green'});
   space.addChild(c);
   Movement.inertia(c);
-  Movement.friction(c, 0.95);
+  Movement.friction(c, 0.97);
   // bounceOnWalls(c, space.width, space.height);
   collider.add(c);
   Movement.spring2(c, cs[Math.floor(N/2)][Math.floor(N/2)], 400, 1);
