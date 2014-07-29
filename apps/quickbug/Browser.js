@@ -38,6 +38,7 @@ MODEL({
     'project',
     'previewID',
     'favouritesMenu',
+    'createMenu',
     {
       name: 'qbug',
       scope: 'project',
@@ -299,7 +300,7 @@ MODEL({
       code: function(evt) {
         this.memento = this.location.toMemento(this);
         if ( this.location.createMode ) {
-          this.createIssue();
+          this.createIssue(this.location.createIssueTemplate);
         } else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
@@ -437,8 +438,43 @@ MODEL({
     },
     {
       name: 'newIssue',
-      label: 'New issue',
-      action: function() { this.location.createMode = true; }
+      label: 'New issue &#x25BE;',
+      action: function() {
+        if ( this.createMenu ) {
+          this.createMenu.close();
+          return;
+        }
+
+        var view = this.X.ToolbarView.create({
+          horizontal: false,
+          data: this,
+          document: this.X.document
+        });
+
+        var self = this;
+
+        view.addChild(StaticHTML.create({ content: '<b>Templates</b>' }));
+        view.addActions(
+          this.project.project.issuesConfig.prompts.map(function(c) {
+            return Action.create({
+              name: c.name,
+              action: function() {
+                self.location.createIssueTemplate = c.name;
+                self.location.createMode = true;
+              }
+            });
+          }));
+
+        view.left = this.newIssueView.$.offsetLeft;
+        view.top = this.newIssueView.$.offsetTop + this.newIssueView.$.offsetHeight;
+        view.openAsMenu();
+
+        view.subscribe('close', function() {
+          self.createMenu = '';
+        });
+
+        this.createMenu = view;
+      }
     }
   ],
 
@@ -514,29 +550,44 @@ MODEL({
       }.bind(this)});
     },
 
-    createIssue: function() {
+    createIssue: function(opt_templateName) {
+
+      if ( opt_templateName ) {
+        for ( var i = 0, prompt; prompt = this.project.project.issuesConfig.prompts[i]; i++ ) {
+          if ( prompt.name !== opt_templateName ) continue;
+          var data = QIssue.create({
+            labels: prompt.labels,
+            status: prompt.status,
+            summary: prompt.title,
+            description: prompt.description
+          });
+          break;
+        }
+      }
+
+      if ( ! data ) {
+          data = QIssue.create({
+            description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+What is the expected output? What do you see instead?
+
+Please use labels and text to provide additional information.
+*/}),
+            status: 'New',
+            summary: 'Enter a one-line summary.'
+          });
+      }
+
+
       var self = this;
       apar(
         arequire('QIssueCreateView')
       )(function() {
         var v = self.X.QIssueCreateView.create({
-          data:
-          QIssue.create({
-            description: multiline(function(){/*What steps will reproduce the problem?
-1.
-2.
-3.
-
-What is the expected output? What do you see instead?
-
-
-Please use labels and text to provide additional information.
-
-*/}),
-            status: 'New',
-            summary: 'Enter a one-line summary.'
-          }),
-          mode:             'read-write'
+          data: data,
+          mode: 'read-write'
         });
         self.pushView(v);
       });
