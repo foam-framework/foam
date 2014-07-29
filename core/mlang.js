@@ -1109,26 +1109,23 @@ MODEL({
       }
       return sink;
     },
+    putInGroup_: function(key, obj) {
+      var group = this.groups.hasOwnProperty(key) && this.groups[key];
+      if ( ! group ) {
+        group = this.arg2.clone();
+        this.groups[key] = group;
+      }
+      group.put(obj);
+    },
     put: function(obj) {
       var key = this.arg1.f(obj);
       if ( Array.isArray(key) ) {
-        for ( var i = 0 ; i < key.length ; i++ ) {
-          var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
-          if ( ! group ) {
-            group = this.arg2.clone();
-            this.groups[key[i]] = group;
-          }
-          group.put(obj);
-        }
-        // Perhaps we should use a key value of undefiend instead of '', since '' may actually
-        // be a valid key.
-        if ( key.length == 0 ) {
-          var group = this.groups.hasOwnProperty('') && this.groups[''];
-          if ( ! group ) {
-            group = this.arg2.clone();
-            this.groups[''] = group;
-          }
-          group.put(obj);
+        if ( key.length ) {
+          for ( var i = 0 ; i < key.length ; i++ ) this.putInGroup_(key[i], obj);
+        } else {
+          // Perhaps we should use a key value of undefiend instead of '', since
+          // '' may actually be a valid key.
+          this.putInGroup_('', obj);
         }
       } else {
         var group = this.groups.hasOwnProperty(key) && this.groups[key];
