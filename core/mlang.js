@@ -1090,6 +1090,14 @@ MODEL({
       type:  'Map[Expr]',
       help:  'Groups.',
       factory: function() { return {}; }
+    },
+    {
+      // Maintain a mapping of real keys because the keys in
+      // 'groups' are actually the toString()'s of the real keys
+      // and his interferes with the property comparator used to
+      // sort groups.
+      name: 'groupKeys',
+      factory: function() { return [] }
     }
   ],
 
@@ -1114,6 +1122,7 @@ MODEL({
       if ( ! group ) {
         group = this.arg2.clone();
         this.groups[key] = group;
+        this.groupKeys.push(key);
       }
       group.put(obj);
     },
@@ -1271,13 +1280,14 @@ MODEL({
     sortCols: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
     sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
     sortedCols: function() {
+      debugger;
       return this.sortCols(
-        Object.getOwnPropertyNames(this.cols.groups),
+        this.cols.groupKeys,
         this.xFunc);
     },
     sortedRows: function() {
       return this.sortRows(
-        Object.getOwnPropertyNames(this.rows.groups),
+        this.rows.groupKeys,
         this.yFunc);
     },
     toHTML: function() {
