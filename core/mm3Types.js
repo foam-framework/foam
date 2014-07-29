@@ -544,6 +544,10 @@ var StringArrayProperty = Model.create({
       defaultValue: 50
     },
     {
+      name: 'preSet',
+      defaultValue: function(_, v) { return Array.isArray(v) ? v : [v]; }
+    },
+    {
       name: 'factory',
       defaultValue: function() { return []; }
     },
