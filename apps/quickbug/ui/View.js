@@ -55,6 +55,7 @@ var DragAndDropGrid = FOAM({
     //   1. Undefined values come first
     //   2. Next, number values are sorted in descending order
     //   3. Next, string values are sorted in ascending order
+    // TODO: this can be moved to the Model now.
     sortAxis: function(values, f) {
       return values.sort(
         f.name === 'milestone' || f.name === 'iteration' ? function(o1, o2) {

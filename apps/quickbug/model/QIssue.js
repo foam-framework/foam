@@ -34,9 +34,10 @@ MODEL({
     {
       name: 'compareProperty',
       defaultValue: function(o1, o2) {
-        o1 = o1.length ? o1[o1.length-1] : 0;
-        o2 = o2.length ? o2[o2.length-1] : 0;
-        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+        o1 = Array.isArray(o1) ? ( o1.length ? o1[o1.length-1] : 0 ) : o1;
+        o2 = Array.isArray(o2) ? ( o2.length ? o2[o2.length-1] : 0 ) : o2;
+
+        return o1.compareTo(o2);
       }
     },
     {
