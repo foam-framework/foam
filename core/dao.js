@@ -1123,6 +1123,10 @@ MODEL({
       model_: 'BooleanProperty',
       name: 'useSimpleSerialization',
       defaultValue: true
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'indicies'
     }
   ],
 
@@ -1166,7 +1170,10 @@ MODEL({
       var request = indexedDB.open("FOAM:" + this.name, 1);
 
       request.onupgradeneeded = (function(e) {
-        e.target.result.createObjectStore(this.name);
+        var store = e.target.result.createObjectStore(this.name);
+        for ( var i = 0; i < this.indicies.length; i++ ) {
+          store.createIndex(this.indicies[i][0], this.indicies[i][0], { unique: this.indicies[i][1] });
+        }
       }).bind(this);
 
       request.onsuccess = (function(e) {
@@ -1220,7 +1227,8 @@ MODEL({
     put: function(value, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var request = store.put(self.serialize(value), value.id);
+        var request = store.put(self.serialize(value),
+                                value[self.model.ids[0]]);
 
         request.transaction.addEventListener(
           'complete',
@@ -1275,7 +1283,7 @@ MODEL({
     remove: function(obj, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var key = obj.id ? obj.id : obj;
+        var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
 
         var getRequest = store.get(key);
         getRequest.onsuccess = function(e) {
@@ -1348,7 +1356,11 @@ MODEL({
       var self = this;
 
       this.withStore("readonly", function(store) {
-        var request = store.openCursor();
+        if ( options && options.query && EqExpr.isInstance(options.query) && store.indexNames.contains(options.query.arg1.name) ) {
+          var request = store.index(options.query.arg1.name).openCursor(IDBKeyRange.only(options.query.arg2.f()));
+        } else {
+          var request = store.openCursor();
+        }
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if ( fc.stopped ) return;
@@ -1374,6 +1386,11 @@ MODEL({
       });
 
       return future.get;
+    },
+
+    addIndex: function(prop) {
+      this.indicies.push([prop.name, false]);
+      return this;
     }
   },
 
