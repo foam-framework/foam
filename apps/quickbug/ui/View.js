@@ -313,7 +313,7 @@ function createView(rowSelectionValue, browser) {
                   [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
                   // [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-                grid: /*GridByExpr*/DragAndDropGrid.create({})
+                grid: /*GridByExpr*/DragAndDropGrid.create({ dao: browser.filteredIssueDAO})
            });
 
           g.row.data$   = location.y$;
