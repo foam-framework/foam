@@ -410,7 +410,7 @@ Object.defineProperty(Object.prototype, 'forEach', {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
 }});*/
 
-// Workaround for crbug.com/258522
+// Workaround for crbug.com/258552
 function Object_forEach(obj, fn) {
   for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
 }

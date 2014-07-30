@@ -1123,6 +1123,10 @@ MODEL({
       model_: 'BooleanProperty',
       name: 'useSimpleSerialization',
       defaultValue: true
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'indicies'
     }
   ],
 
@@ -1166,7 +1170,10 @@ MODEL({
       var request = indexedDB.open("FOAM:" + this.name, 1);
 
       request.onupgradeneeded = (function(e) {
-        e.target.result.createObjectStore(this.name);
+        var store = e.target.result.createObjectStore(this.name);
+        for ( var i = 0; i < this.indicies.length; i++ ) {
+          store.createIndex(this.indicies[i][0], this.indicies[i][0], { unique: this.indicies[i][1] });
+        }
       }).bind(this);
 
       request.onsuccess = (function(e) {
@@ -1220,7 +1227,8 @@ MODEL({
     put: function(value, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var request = store.put(self.serialize(value), value.id);
+        var request = store.put(self.serialize(value),
+                                value[self.model.ids[0]]);
 
         request.transaction.addEventListener(
           'complete',
@@ -1275,7 +1283,7 @@ MODEL({
     remove: function(obj, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var key = obj.id ? obj.id : obj;
+        var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
 
         var getRequest = store.get(key);
         getRequest.onsuccess = function(e) {
@@ -1348,7 +1356,11 @@ MODEL({
       var self = this;
 
       this.withStore("readonly", function(store) {
-        var request = store.openCursor();
+        if ( options && options.query && EqExpr.isInstance(options.query) && store.indexNames.contains(options.query.arg1.name) ) {
+          var request = store.index(options.query.arg1.name).openCursor(IDBKeyRange.only(options.query.arg2.f()));
+        } else {
+          var request = store.openCursor();
+        }
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if ( fc.stopped ) return;
@@ -1374,6 +1386,11 @@ MODEL({
       });
 
       return future.get;
+    },
+
+    addIndex: function(prop) {
+      this.indicies.push([prop.name, false]);
+      return this;
     }
   },
 
@@ -2737,7 +2754,26 @@ MODEL({
 
   properties: [
     {
-      name: 'cache'
+      name: 'cache',
+      postSet: function(_, d) {
+        d.listen(this.relay());
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cacheOnSelect',
+      defaultValue: false
+    },
+    {
+      model_: 'IntProperty',
+      name: 'staleTimeout',
+      defaultValue: 500,
+      units: 'ms',
+      help: 'Time in miliseconds before we consider the delegate results to be stale for a particular query and will issue a new select.'
+    },
+    {
+      name: 'selects',
+      factory: function() { return []; }
     }
   ],
 
@@ -2762,11 +2798,78 @@ MODEL({
         }
       };
 
-      this.cache.find(id, mysink);
+      this.delegate.find(id, mysink);
+    },
+    select: function(sink, options) {
+      if ( ! this.cacheOnSelect ) {
+        return this.SUPER(sink, options);
+      }
+
+      var query = ( options && options.query && options.query.toSQL() ) || "";
+      var limit = ( options && options.limit );
+      var skip =  ( options && options.skip );
+      var order = ( options && options.order && options.order.toSQL() ) || "";
+
+      var running = false;
+      for ( var i = 0; i < this.selects.length; i++ ) {
+        if ( this.selects[i].query === query &&
+             this.selects[i].limit === limit &&
+             this.selects[i].skip === skip &&
+             this.selects[i].order === order ) {
+          running = true;
+        }
+      }
+
+      if ( ! running ) {
+        var pendingSelect = {
+          sink: sink,
+          query: query,
+          limit: limit,
+          skip: skip,
+          order: order
+        };
+
+        this.selects.push(pendingSelect);
+
+
+        var cache = this.cache;
+        var count = 0;
+        var remaining = 0;
+
+        var finished = (function() {
+          if ( count !== remaining ) return;
+          window.setTimeout((function() {
+            for ( var i = 0; i < this.selects.length; i++ ) {
+              if ( this.selects[i] === pendingSelect ) {
+                this.selects.splice(i, 1);
+                break;
+              }
+            }
+          }).bind(this), this.staleTimeout);
+        }).bind(this);
+
+        this.delegate.select({
+          put: function(obj) {
+            remaining++;
+            cache.put(obj, {
+              put: function() {
+                count++;
+                finished();
+              },
+              error: function() {
+                count++;
+                finished();
+              }
+            });
+          },
+          eof: finished
+        }, options);
+      }
+
+      return this.cache.select(sink, options);
     }
   }
 });
-
 
 MODEL({
   name: 'PropertyOffloadDAO',

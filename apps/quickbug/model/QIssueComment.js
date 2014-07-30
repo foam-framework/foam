@@ -24,6 +24,12 @@ var QIssueComment = FOAM({
 
   properties: [
     {
+      model_: 'StringProperty',
+      name: 'id',
+      preSet: function(_, v) { return v; },
+      defaultValue: '0'
+    },
+    {
       name: 'author',
       view: 'QIssueCommentAuthorView',
       preSet: function(_, newValue, prop) {
@@ -55,6 +61,11 @@ var QIssueComment = FOAM({
       name: 'content',
       displayWidth: 85,
       displayHeight: 8
+    },
+    {
+      model_: 'IntProperty',
+      name: 'seqNo',
+      help: 'The sequence number for this comment, indicating where it shows in the comment list for a particular issue.'
     }
   ]
 });

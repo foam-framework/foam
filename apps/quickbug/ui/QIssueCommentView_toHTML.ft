@@ -2,7 +2,7 @@
   <div class="qissuecommentdate">
     $$published{ mode: 'read-only' }
   </div>
-  <span style="padding-left:.7em">By </span>$$author <a target="_blank" href="<%= this.X.browser.url %>/issues/detail?id={{this.data.issueId}}#{{ this.data.id }}">#{{ this.data.id || '0' }}</a>
+  <span style="padding-left:.7em">By </span>$$author <a target="_blank" href="<%= this.X.browser.url %>/issues/detail?id={{this.data.issueId}}#{{ this.data.seqNo }}">#{{ this.data.seqNo || '0' }}</a>
   $$content{ mode: 'read-only', escapeHTML: false, placeholder: '(No comment was entered for this change.)', tagName: 'pre' }
   $$updates
 </div>
