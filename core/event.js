@@ -993,6 +993,22 @@ var Movement = {
         c.vy += dv * Math.sin(a);
       }
     });
+  },
+
+  spring2: function(c1, c2, length, opt_strength) {
+    var strength = opt_strength || 4;
+
+    Events.dynamic(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
+      var d = c1.distanceTo(c2);
+      var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
+      if ( d > length ) {
+        c1.applyMomentum( strength * (d/length-1), a);
+        c2.applyMomentum(-strength * (d/length-1), a);
+      } else if ( d < length ) {
+        c1.applyMomentum(-strength * (length/d-1), a);
+        c2.applyMomentum( strength * (length/d-1), a);
+      }
+    });
   }
 
 };

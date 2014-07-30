@@ -84,7 +84,7 @@ MODEL({
     {
       name: 'IssueMDAO',
       factory: function() {
-        var dao = this.X.MDAO.create({model: QIssue});
+        var dao  = this.X.MDAO.create({model: QIssue});
         var auto = this.X.AutoIndex.create(dao);
 
         auto.addIndex(QIssue.STATUS);
@@ -96,9 +96,10 @@ MODEL({
     {
       name: 'IssueCachingDAO',
       factory: function() {
-        var IssueIDBDAO = this.X.IDBDAO.create({
+        var IssueIDBDAO = this.X.EasyDAO.create({
           model: QIssue,
           name: this.projectName + '_' + QIssue.plural
+//          logging: true
         });
 
         return this.X.CachingDAO.create({cache: this.IssueMDAO, src: IssueIDBDAO});

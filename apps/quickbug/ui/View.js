@@ -55,6 +55,7 @@ var DragAndDropGrid = FOAM({
     //   1. Undefined values come first
     //   2. Next, number values are sorted in descending order
     //   3. Next, string values are sorted in ascending order
+    // TODO: this can be moved to the Model now.
     sortAxis: function(values, f) {
       return values.sort(
         f.name === 'milestone' || f.name === 'iteration' ? function(o1, o2) {
@@ -295,41 +296,14 @@ function createView(rowSelectionValue, browser) {
            var g = Model.create({
               name: 'QIssueGridView',
               extendsModel: 'GridView',
-              properties: [
-                {
-                  name: 'dao',
-                  postSet: function(old, dao) {
-                     if ( this.listener ) {
-                        old && old.unlisten(this.listener);
-                        dao.listen(this.listener);
-                     }
-                     this.grid.dao = dao;
-                     this.updateHTML();
-                  },
-                  // crbug limits grid view to 6000 rows, so do the same
-                  getter: function() {
-                    return ( this.acc.choice && this.acc.choice[1] === 'Tiles' && this.instance_.dao ) ?
-                      this.instance_.dao.limit(2000) :
-                      this.instance_.dao ;
-                  }
-                },
-              ],
               methods: {
-                init: function(args) {
-                  this.SUPER(args);
-                  this.listener = {
-                    put:    this.daoUpdate,
-                    remove: this.daoUpdate
-                  };
+                filteredDAO: function() {
+                  return ( this.acc.choice && this.acc.choice[1] === 'Tiles' ) ?
+                    this.dao.limit(2000) :
+                    this.dao ;
                 }
-              },
-              listeners: [
-                 {
-                    name: 'daoUpdate',
-                    isMerged: 1000,
-                    code: function() { this.updateHTML(); }
-                 }
-              ]}).create({
+              }
+              }).create({
                 model: QIssue,
                 accChoices: [
                   [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
@@ -342,8 +316,8 @@ function createView(rowSelectionValue, browser) {
                 grid: /*GridByExpr*/DragAndDropGrid.create({})
            });
 
-          g.row.data$ = location.y$;
-          g.col.data$ = location.x$;
+          g.row.data$   = location.y$;
+          g.col.data$   = location.x$;
           g.scrollMode$ = location.scroll$;
 
           // TODO: cleanup this block

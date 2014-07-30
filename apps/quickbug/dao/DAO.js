@@ -421,7 +421,7 @@ MODEL({
        var local = this.local;
 
        local.find(issue.id, {
-         put: function(o) { if ( ! o.equals(issue) ) local.put(issue); },
+         put: function(o) { if ( o.modified.compareTo(issue.modified) ) local.put(issue); },
          error: function() { local.put(issue); }
        });
      },

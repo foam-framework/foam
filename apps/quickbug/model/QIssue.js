@@ -34,10 +34,35 @@ MODEL({
     {
       name: 'compareProperty',
       defaultValue: function(o1, o2) {
-        o1 = o1.length ? o1[o1.length-1] : 0;
-        o2 = o2.length ? o2[o2.length-1] : 0;
-        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+        o1 = Array.isArray(o1) ? ( o1.length ? o1[o1.length-1] : 0 ) : o1;
+        o2 = Array.isArray(o2) ? ( o2.length ? o2[o2.length-1] : 0 ) : o2;
+
+        return o1.compareTo(o2);
       }
+    },
+    {
+      name: 'transient',
+      defaultValue: true
+    }
+  ]
+});
+
+
+MODEL({
+  name: 'LabelStringProperty',
+  extendsModel: 'StringProperty',
+
+  help: "A String value, taken from labels.",
+
+  properties: [
+    // Test for LabelStringProperties that should be LabelArrayProperties.
+    {
+      name: 'postSet',
+      defaultValue: function(o, n) { if ( o && o !== n ) debugger; }
+    },
+    {
+      name: 'transient',
+      defaultValue: true
     }
   ]
 });
@@ -127,7 +152,7 @@ var QIssue = FOAM({
       aliases: ['reporter']
     },
     {
-      model_: 'StringProperty',
+      model_: 'LabelStringProperty',
       name: 'priority',
       shortName: 'p',
       aliases: ['pr', 'prior'],
@@ -158,12 +183,12 @@ var QIssue = FOAM({
       tableWidth: '60px'
     },
     {
-      model_: 'StringProperty',
+      model_: 'LabelStringProperty',
       name: 'app',
       tableWidth: '70px'
     },
     {
-      model_: 'StringProperty',
+      model_: 'LabelArrayProperty',
       name: 'type',
       tableWidth: '70px'
     },
@@ -183,6 +208,7 @@ var QIssue = FOAM({
       tableWidth: '69px'
     },
     {
+      model_: 'LabelStringProperty',
       name: 'releaseBlock',
       shortName: 'rb',
       aliases: ['rBlock', 'release'],
@@ -191,13 +217,12 @@ var QIssue = FOAM({
       defaultValue: ''
     },
     {
+      model_: 'LabelArrayProperty',
       name: 'cr',
       shortName: 'c',
       aliases: ['cat', 'cr'],
       label: 'Cr',
       tableWidth: '87px',
-      type: 'String',
-      defaultValue: ''
     },
     {
       name: 'status',
@@ -253,6 +278,7 @@ var QIssue = FOAM({
       }
     },
     {
+      model_: 'LabelArrayProperty',
       name: 'OS',
       tableWidth: '61px',
       type: 'String'
@@ -328,13 +354,16 @@ var QIssue = FOAM({
       postSet: function(_, a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           var kv = isPropertyLabel(a[i]);
+          a[i] = a[i].intern();
           if ( kv ) {
-            this[kv[0]] = kv[1];
+            if ( Array.isArray(this[kv[0]]) ) {
+              this[kv[0]].push(kv[1]);
+            } else {
+              this[kv[0]] = kv[1];
+            }
             // Don't remove from labels because then label:X searches don't work.
             // a.splice(i,1);
             // i--;
-          } else {
-            a[i] = a[i].intern();
           }
         }
       }

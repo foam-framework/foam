@@ -174,6 +174,15 @@ var DateProperty = Model.create({
       defaultValue: function(d) {
         return d ? d.toRelativeDateString() : '';
       }
+    },
+    {
+      name: 'compareProperty',
+      defaultValue: function(o1, o2) {
+        if ( ! o1 ) return ( ! o2 ) ? 0: -1;
+        if ( ! o2 ) return 1;
+
+        return o1.compareTo(o2);
+      }
     }
   ]
 });
@@ -533,6 +542,10 @@ var StringArrayProperty = Model.create({
     {
       name: 'displayWidth',
       defaultValue: 50
+    },
+    {
+      name: 'preSet',
+      defaultValue: function(_, v) { return Array.isArray(v) ? v : [v]; }
     },
     {
       name: 'factory',

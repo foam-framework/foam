@@ -45,7 +45,6 @@ MODEL({
 });
 
 
-
 MODEL({
   name: 'GridView',
 
@@ -98,7 +97,10 @@ MODEL({
   // TODO: listeners should be able to mark themselves as mergable
   // or updatable on 'animate', ie. specify decorators
   methods: {
+    filteredDAO: function() { return this.dao; },
+
     updateHTML: function() {
+      if ( this.initialized_ && ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
       if ( ! this.$ ) return;
 
       var self = this;
@@ -106,7 +108,7 @@ MODEL({
       this.grid.yFunc = this.row.data || this.grid.yFunc;
       this.grid.acc   = this.acc.data || this.grid.acc;
 
-      this.dao.select(this.grid.clone())(function(g) {
+      this.filteredDAO().select(this.grid.clone())(function(g) {
         if ( self.scrollMode === 'Bars' ) {
           console.time('toHTML');
           var html = g.toHTML();
@@ -148,6 +150,7 @@ MODEL({
       this.acc.data$.addListener(this.onDAOUpdate);
       this.scrollMode$.addListener(this.onDAOUpdate);
 
+      this.initialized_ = true;
       this.updateHTML();
     }
   },
