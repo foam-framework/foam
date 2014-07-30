@@ -162,6 +162,12 @@ var Location = FOAM({
         var prop = QIssue.properties[i];
 
         if ( prop.name.toLowerCase() === propName ) return prop;
+
+        if ( prop.shortName.toLowerCase() === propName ) return prop;
+
+        for ( var j = 0 ; j < prop.aliases ; j++ ) {
+          if ( prop.aliases[j].toLowerCase() === propName ) return prop;
+        }
       }
 
       return undefined;
