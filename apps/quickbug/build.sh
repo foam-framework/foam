@@ -1,3 +1,4 @@
+cp manifest_prod.json manifest.json
 export BUILD_DIR=~/Downloads/quickbug
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR

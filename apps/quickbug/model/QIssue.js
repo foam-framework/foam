@@ -183,7 +183,7 @@ var QIssue = FOAM({
       tableWidth: '60px'
     },
     {
-      model_: 'LabelStringProperty',
+      model_: 'LabelArrayProperty',
       name: 'app',
       tableWidth: '70px'
     },
