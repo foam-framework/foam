@@ -282,6 +282,8 @@ MODEL({
     jsonToObj: function(obj, extra) {
       var obj = this.SUPER(obj);
       obj.issueId = extra.issueId;
+      obj.seqNo = obj.id;
+      obj.id = obj.id + '_' + extra.issueId;
       return obj;
     },
     objToJson: function(obj, extra) {
