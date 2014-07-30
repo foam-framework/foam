@@ -670,8 +670,12 @@ var SetIndex = {
   put: function(s, newValue) {
     var a = this.prop.f(newValue);
 
-    for ( var i = 0 ; i < a.length ; i++ ) {
-      s = this.putKeyValue(s, a[i], newValue);
+    if ( a.length ) {
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        s = this.putKeyValue(s, a[i], newValue);
+      }
+    } else {
+      s = this.putKeyValue(s, '', newValue);
     }
 
     return s;
@@ -680,8 +684,12 @@ var SetIndex = {
   remove: function(s, value) {
     var a = this.prop.f(value);
 
-    for ( var i = 0 ; i < a.length ; i++ ) {
-      s = this.removeKeyValue(s, a[i], value);
+    if ( a.length ) {
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        s = this.removeKeyValue(s, a[i], value);
+      }
+    } else {
+      s = this.removeKeyValue(s, '', value);
     }
 
     return s;
