@@ -2754,7 +2754,26 @@ MODEL({
 
   properties: [
     {
-      name: 'cache'
+      name: 'cache',
+      postSet: function(_, d) {
+        d.listen(this.relay());
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cacheOnSelect',
+      defaultValue: false
+    },
+    {
+      model_: 'IntProperty',
+      name: 'staleTimeout',
+      defaultValue: 500,
+      units: 'ms',
+      help: 'Time in miliseconds before we consider the delegate results to be stale for a particular query and will issue a new select.'
+    },
+    {
+      name: 'selects',
+      factory: function() { return []; }
     }
   ],
 
@@ -2779,11 +2798,78 @@ MODEL({
         }
       };
 
-      this.cache.find(id, mysink);
+      this.delegate.find(id, mysink);
+    },
+    select: function(sink, options) {
+      if ( ! this.cacheOnSelect ) {
+        return this.SUPER(sink, options);
+      }
+
+      var query = ( options && options.query && options.query.toSQL() ) || "";
+      var limit = ( options && options.limit );
+      var skip =  ( options && options.skip );
+      var order = ( options && options.order && options.order.toSQL() ) || "";
+
+      var running = false;
+      for ( var i = 0; i < this.selects.length; i++ ) {
+        if ( this.selects[i].query === query &&
+             this.selects[i].limit === limit &&
+             this.selects[i].skip === skip &&
+             this.selects[i].order === order ) {
+          running = true;
+        }
+      }
+
+      if ( ! running ) {
+        var pendingSelect = {
+          sink: sink,
+          query: query,
+          limit: limit,
+          skip: skip,
+          order: order
+        };
+
+        this.selects.push(pendingSelect);
+
+
+        var cache = this.cache;
+        var count = 0;
+        var remaining = 0;
+
+        var finished = (function() {
+          if ( count !== remaining ) return;
+          window.setTimeout((function() {
+            for ( var i = 0; i < this.selects.length; i++ ) {
+              if ( this.selects[i] === pendingSelect ) {
+                this.selects.splice(i, 1);
+                break;
+              }
+            }
+          }).bind(this), this.staleTimeout);
+        }).bind(this);
+
+        this.delegate.select({
+          put: function(obj) {
+            remaining++;
+            cache.put(obj, {
+              put: function() {
+                count++;
+                finished();
+              },
+              error: function() {
+                count++;
+                finished();
+              }
+            });
+          },
+          eof: finished
+        }, options);
+      }
+
+      return this.cache.select(sink, options);
     }
   }
 });
-
 
 MODEL({
   name: 'PropertyOffloadDAO',
