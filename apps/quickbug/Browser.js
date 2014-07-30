@@ -194,7 +194,14 @@ MODEL({
     {
       name: 'searchChoice',
       factory: function() {
-        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        // determine 'open' query from project configuration
+        var ss = this.project.project.issuesConfig.statuses;
+        var os = [];
+        for ( var i = 0 ; i < ss.length ; i++ ) {
+          var s = ss[i];
+          if ( s.meansOpen ) os.push(s.status); 
+        }
+        var open = 'status=' + os.join(',');
 
         return ChoiceView.create({
           helpText: 'Search within:',
