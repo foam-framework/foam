@@ -1137,13 +1137,7 @@ MODEL({
           this.putInGroup_('', obj);
         }
       } else {
-        var group = this.groups.hasOwnProperty(key) && this.groups[key];
-        if ( ! group ) {
-          group = this.arg2.clone();
-
-          this.groups[key] = group;
-        }
-        group.put(obj);
+        this.putInGroup_(key, obj);
       }
     },
     clone: function() {
@@ -1280,7 +1274,6 @@ MODEL({
     sortCols: function(cols, xFunc) { return this.sortAxis(cols, xFunc); },
     sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
     sortedCols: function() {
-      debugger;
       return this.sortCols(
         this.cols.groupKeys,
         this.xFunc);
