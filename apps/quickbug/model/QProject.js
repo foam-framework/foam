@@ -108,9 +108,14 @@ MODEL({
     {
       name: 'IssueCommentNetworkDAO',
       factory: function() {
-        return this.X.QIssueCommentNetworkDAO.create({
+        return this.X.LazyCacheDAO.create({
           model: QIssueComment,
-          url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+          cacheOnSelect: true,
+          cache: IDBDAO.create({ model: QIssueComment, useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
+          delegate: this.X.QIssueCommentNetworkDAO.create({
+            model: QIssueComment,
+            url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
+          })
         });
       }
     },
