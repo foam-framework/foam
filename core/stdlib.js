@@ -62,6 +62,11 @@ if ( ! String.prototype.startsWithIC ) {
   };
 }
 
+String.prototype.indexOfIC = function(a) {
+  if ( a.length > this.length ) return false;
+  return this.toUpperCase().indexOf(a.toUpperCase());
+};
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
