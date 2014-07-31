@@ -212,15 +212,8 @@ MODEL({
 
     doReset: function(ret) {
       console.log("Doing reset...");
-      var self = this;
-      aseq(
-        function(ret) {
-          self.dstDAO.where(LT(self.modifiedProperty, self.lastSync)).removeAll()(ret)
-        },
-        function(ret) {
-          self.reset();
-          ret();
-        })(ret);
+      this.reset();
+      this.dstDAO.removeAll()(ret)
     },
 
     sync: function(ret) {
