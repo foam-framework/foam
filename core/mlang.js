@@ -78,7 +78,7 @@ MODEL({
         }
       }
       var ret = OrExpr.create({ args: terms }).partialEval();
-//      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
+      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
       return ret;
     },
     toString: function() { return this.label_; },
@@ -278,30 +278,30 @@ MODEL({
     PARTIAL_AND_RULES: [
       [ 'EqExpr', 'EqExpr',
         function(e1, e2) {
-          return e1.arg2 == e2.arg2 ? e1 : FALSE;
+          return e1.arg2.f() == e2.arg2.f() ? e1 : FALSE;
         }
       ],
       [ 'InExpr', 'InExpr',
         function(e1, e2) {
-          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          var i = e1.arg2.f().filter(function(o) { return e2.arg2.f().indexOf(o) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsICExpr',
         function(e1, e2) {
-          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2); });
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsExpr',
         function(e1, e2) {
-          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2); });
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'EqExpr', 'InExpr',
         function(e1, e2) {
-          return e2.arg2.indexOf(e1.arg2) === -1 ? FALSE : e1;
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
         }
       ]
     ],
@@ -317,7 +317,7 @@ MODEL({
         if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
-//      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
+      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
 
       return null;
     },
@@ -353,7 +353,7 @@ MODEL({
         for ( var j = i+1 ; j < newArgs.length ; j++ ) {
           var a = this.partialAnd(newArgs[i], newArgs[j]);
           if ( a ) {
-//            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL()); 
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL()); 
             if ( a === FALSE ) return FALSE;
             newArgs[i] = a;
             newArgs.splice(j, 1);
