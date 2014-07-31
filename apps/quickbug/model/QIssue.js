@@ -455,29 +455,6 @@ var QIssue = FOAM({
       convertArray('milestone');
       convertArray('iteration');
 
-      function propToLabel(prop, label) {
-        if ( diff[prop] ) {
-          if ( Array.isArray(diff[prop]) ) {
-            for ( var i = 0; i < diff[prop].length; i++) {
-              diff.labels.push(label + '-' + diff[prop][i]);
-            }
-          } else {
-            diff.labels = diff.labels.concat(
-              '-' + label + '-' + other[prop],
-              label + '-' + diff[prop]);
-          }
-          delete diff[prop];
-        }
-      }
-
-      propToLabel('priority', 'Priority');
-      propToLabel('app', 'App');
-      propToLabel('milestone', 'Milestone');
-      propToLabel('cr', 'Cr');
-      propToLabel('iteration', 'Iteration');
-      propToLabel('releaseBlock', 'ReleaseBlock');
-      propToLabel('OS', 'OS');
-
       var comment = QIssueComment.create({
         issueId: this.id,
         updates: QIssueCommentUpdate.create(diff)
