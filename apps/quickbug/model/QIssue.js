@@ -29,7 +29,7 @@ MODEL({
 
         v.sort();
 
-        this.replaceLabels(prop.name, v);
+        this.replaceLabels(prop.name.capitalize(), v);
       }
     },
     {
@@ -59,7 +59,7 @@ MODEL({
     {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        this.replaceLabels(prop.name, n);
+        this.replaceLabels(prop.name.capitalize(), n);
 
         // Test for LabelStringProperties that should be LabelArrayProperties.
         if ( o && o !== n ) debugger;
