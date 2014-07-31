@@ -1159,7 +1159,12 @@ MODEL({
     },
 
     SimpleSerialize: function(obj) {
-      return obj.instance_;
+      var s = {};
+      for ( var key in obj.instance_ ) {
+        var prop = obj.model_.getProperty(key);
+        if ( ! prop.transient ) s[key] = obj.instance_[key];
+      }
+      return s;
     },
 
     openDB: function(cc) {
