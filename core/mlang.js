@@ -283,7 +283,7 @@ MODEL({
       ],
       [ 'InExpr', 'InExpr',
         function(e1, e2) {
-          var i = e1.arg2.f().filter(function(o) { return e2.arg2.f().indexOf(o) !== -1; });
+          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
@@ -307,14 +307,23 @@ MODEL({
     ],
 
     partialAnd: function(e1, e2) {
+      if ( e2.model_ === OrExpr ) { var tmp = e1; e1 = e2; e2 = tmp; }
+      if ( e1.model_ === OrExpr ) {
+        var args = [];
+        for ( var i = 0 ; i < e1.args.length ; i++ ) {
+          args.push(AND(e2, e1.args[i]));
+        }
+        return OrExpr.create({args: args}).partialEval();
+      }
+
       if ( ! BINARY.isInstance(e1) ) return null;
       if ( ! BINARY.isInstance(e2) ) return null;
       if ( e1.arg1 != e2.arg1 ) return null;
 
       var RULES = this.PARTIAL_AND_RULES;
       for ( var i = 0 ; i < RULES.length ; i++ ) {
-        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
-        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e1, e2).toMQL()); return RULES[i][2](e1, e2); }
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e2, e1).toMQL()); return RULES[i][2](e2, e1); }
       }
 
       console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
@@ -353,7 +362,7 @@ MODEL({
         for ( var j = i+1 ; j < newArgs.length ; j++ ) {
           var a = this.partialAnd(newArgs[i], newArgs[j]);
           if ( a ) {
-            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL()); 
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
             if ( a === FALSE ) return FALSE;
             newArgs[i] = a;
             newArgs.splice(j, 1);
@@ -418,6 +427,54 @@ MODEL({
       return out;
     },
 
+    PARTIAL_OR_RULES: [
+      [ 'InExpr', 'EqExpr',
+        function(e1, e2) {
+          return IN(e1.arg1, e1.arg1.union([e2.arg2.f()]));
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          return IN(e1.arg1, e1.arg2.union(e2.arg2));
+        }
+      ]
+      /*
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
+        }
+      ]*/
+    ],
+
+    partialOr: function(e1, e2) {
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_OR_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+      console.log('************** Unknown partialOr combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -440,6 +497,18 @@ MODEL({
             newArgs.push(newA);
           }
           if ( a !== newA ) updated = true;
+        }
+      }
+
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialOr(newArgs[i], newArgs[j]);
+          if ( a ) {
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialOr> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
+            if ( a === TRUE ) return TRUE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
+          }
         }
       }
 
