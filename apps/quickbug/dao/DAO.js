@@ -146,8 +146,7 @@ MODEL({
 
       outquery[1] = stripDefaultQuery(outquery[1]).partialEval();
 
-      if ( updatedMin ) return ["updatedMin=" + Math.floor(updatedMin/1000)];
-      return [];
+      return updatedMin ? ["updatedMin=" + Math.floor(updatedMin/1000)] : [];
     },
 
     put: function(issue, sink) {

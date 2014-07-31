@@ -77,7 +77,9 @@ MODEL({
           terms.push(AndExpr.create({ args: subterms }));
         }
       }
-      return OrExpr.create({ args: terms }).partialEval();
+      var ret = OrExpr.create({ args: terms }).partialEval();
+//      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
+      return ret;
     },
     toString: function() { return this.label_; },
     pipe: function(sink) {
@@ -273,6 +275,53 @@ MODEL({
       return out;
     },
 
+    PARTIAL_AND_RULES: [
+      [ 'EqExpr', 'EqExpr',
+        function(e1, e2) {
+          return e1.arg2 == e2.arg2 ? e1 : FALSE;
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          return e2.arg2.indexOf(e1.arg2) === -1 ? FALSE : e1;
+        }
+      ]
+    ],
+
+    partialAnd: function(e1, e2) {
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_AND_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+//      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -296,6 +345,18 @@ MODEL({
           } else {
             newArgs.push(newA);
             if ( a !== newA ) updated = true;
+          }
+        }
+      }
+
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialAnd(newArgs[i], newArgs[j]);
+          if ( a ) {
+//            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL()); 
+            if ( a === FALSE ) return FALSE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
           }
         }
       }
@@ -595,10 +656,7 @@ MODEL({
       type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE,
-      postSet: function(_, value) {
-        // Escape Regex escape characters
-        this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-      }
+      postSet: function(_, value) { this.pattern_ = undefined; }
     }
   ],
 
@@ -622,6 +680,10 @@ MODEL({
 
     f: function(obj) {
       var arg1 = this.arg1.f(obj);
+
+      // Escape Regex escape characters
+      var pattern = this.pattern_ ||
+        ( this.pattern_ = new RegExp(this.arg2.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') );
 
       if ( Array.isArray(arg1) ) {
         var pattern = this.pattern_;
