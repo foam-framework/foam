@@ -23,12 +23,13 @@ MODEL({
 
   properties: [
     {
-      name: 'preSet',
-      defaultValue: function(oldValue, v) {
-        return Array.isArray(v) ? v :
-          ! v ? undefined :
-          Array.isArray(oldValue) ? oldValue.binaryInsert(v) :
-          [v];
+      name: 'postSet',
+      defaultValue: function(_, v, prop) {
+        if ( ! Array.isArray(v) ) debugger;
+
+        v.sort();
+
+        this.replaceLabels(prop.name, v);
       }
     },
     {
@@ -55,10 +56,14 @@ MODEL({
   help: "A String value, taken from labels.",
 
   properties: [
-    // Test for LabelStringProperties that should be LabelArrayProperties.
     {
       name: 'postSet',
-      defaultValue: function(o, n) { if ( o && o !== n ) debugger; }
+      defaultValue: function(o, n, prop) {
+        this.replaceLabels(prop.name, n);
+
+        // Test for LabelStringProperties that should be LabelArrayProperties.
+        if ( o && o !== n ) debugger;
+      }
     },
     {
       name: 'transient',
@@ -225,6 +230,7 @@ var QIssue = FOAM({
       tableWidth: '87px',
     },
     {
+      model_: 'LabelStringProperty',
       name: 'status',
       shortName: 's',
       aliases: ['stat'],
@@ -352,18 +358,28 @@ var QIssue = FOAM({
         return s;
       },
       postSet: function(_, a) {
+        a.sort();
+
+        // Reset all label properties to initial values.
+        for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+          var p = this.model_.properties[i];
+
+          if ( p.model_ === LabelArrayProperty ) {
+            this.instance_[p.name] = [];
+          } else if ( p.model_ === LabelStringProperty ) {
+            this.instance_[p.name] = "";
+          }
+        }
+
         for ( var i = 0 ; i < a.length ; i++ ) {
           var kv = isPropertyLabel(a[i]);
           a[i] = a[i].intern();
           if ( kv ) {
             if ( Array.isArray(this[kv[0]]) ) {
-              this[kv[0]].push(kv[1]);
+              this.instance_[kv[0]].binaryInsert(kv[1]);
             } else {
-              this[kv[0]] = kv[1];
+              this.instance_[kv[0]] = kv[1];
             }
-            // Don't remove from labels because then label:X searches don't work.
-            // a.splice(i,1);
-            // i--;
           }
         }
       }
@@ -394,6 +410,19 @@ var QIssue = FOAM({
   ],
 
   methods: {
+    replaceLabels: function(label, values) {
+      var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+      if ( Array.isArray(values) ) {
+        for ( var i = 0 ; i < values.length ; i++ ) {
+          labels.binaryInsert(label + '-' + values[i]);
+        }
+      } else {
+        labels.binaryInsert(label + '-' + values);
+      }
+
+      // Set this way to avoid updating lable properties and causing a feedback loop.
+      this.instance_.labels = labels;
+    },
     isOpen: function() {
       return !! ({
         'New':       true,
