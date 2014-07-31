@@ -152,6 +152,55 @@ var QIssue = FOAM({
       }
     },
     {
+      name: 'labels',
+      shortName: 'l',
+      aliases: ['label'],
+      type: 'String',
+      view: 'QIssueLabelsView',
+      autocompleter: 'LabelCompleter',
+      tableFormatter: function(a, row) {
+        var s = '';
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          if ( ! isPropertyLabel(a[i]) ) {
+            s += ' <span class="label">' + a[i] + '</span>';
+          }
+        }
+        return s;
+      },
+      postSet: function(_, a) {
+        a.sort();
+
+        // Reset all label properties to initial values.
+        for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+          var p = this.model_.properties[i];
+
+          if ( p.model_ === LabelArrayProperty ) {
+            this.instance_[p.name] = [];
+          } else if ( p.model_ === LabelStringProperty ) {
+            this.instance_[p.name] = "";
+          }
+        }
+
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var kv = isPropertyLabel(a[i]);
+          a[i] = a[i].intern();
+          if ( kv ) {
+
+            // Cleanup 'movedFrom' labels
+            if ( kv[0] === 'movedFrom' ) {
+              kv[1] = typeof kv[1] === 'string' ? parseInt(kv[1].charAt(0) === 'M' ? kv[1].substring(1) : kv[1]) : kv[1];
+            }
+
+            if ( Array.isArray(this[kv[0]]) ) {
+              this.instance_[kv[0]].binaryInsert(kv[1]);
+            } else {
+              this.instance_[kv[0]] = kv[1];
+            }
+          }
+        }
+      }
+    },
+    {
       name: 'author',
       preSet: function(_, a) { return a.intern(); },
       aliases: ['reporter']
@@ -230,7 +279,7 @@ var QIssue = FOAM({
       tableWidth: '87px',
     },
     {
-      model_: 'LabelStringProperty',
+      model_: 'StringProperty',
       name: 'status',
       shortName: 's',
       aliases: ['stat'],
@@ -342,59 +391,9 @@ var QIssue = FOAM({
       }
     },
     {
-      name: 'labels',
-      shortName: 'l',
-      aliases: ['label'],
-      type: 'String',
-      view: 'QIssueLabelsView',
-      autocompleter: 'LabelCompleter',
-      tableFormatter: function(a, row) {
-        var s = '';
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          if ( ! isPropertyLabel(a[i]) ) {
-            s += ' <span class="label">' + a[i] + '</span>';
-          }
-        }
-        return s;
-      },
-      postSet: function(_, a) {
-        a.sort();
-
-        // Reset all label properties to initial values.
-        for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
-          var p = this.model_.properties[i];
-
-          if ( p.model_ === LabelArrayProperty ) {
-            this.instance_[p.name] = [];
-          } else if ( p.model_ === LabelStringProperty ) {
-            this.instance_[p.name] = "";
-          }
-        }
-
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          var kv = isPropertyLabel(a[i]);
-          a[i] = a[i].intern();
-          if ( kv ) {
-            if ( Array.isArray(this[kv[0]]) ) {
-              this.instance_[kv[0]].binaryInsert(kv[1]);
-            } else {
-              this.instance_[kv[0]] = kv[1];
-            }
-          }
-        }
-      }
-    },
-    {
       model_: 'LabelArrayProperty',
       name: 'movedFrom',
-      tableWidth: '100px',
-      preSet: function(_, v) {
-        if ( Array.isArray(v) ) return v;
-        if ( ! v ) return undefined;
-        if ( typeof v !== 'string' ) return [];
-
-        return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? parseInt(v.substring(1)) : parseInt(v));
-      }
+      tableWidth: '100px'
     },
     {
       name: 'movedTo',
