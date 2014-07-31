@@ -256,7 +256,7 @@ var FObject = {
       if ( prop.postSet ) {
         setter = (function(setter, postSet) { return function(oldValue, newValue) {
           setter.call(this, oldValue, newValue);
-          postSet.call(this, oldValue, newValue)
+          postSet.call(this, oldValue, newValue, prop)
         }; })(setter, prop.postSet);
       }
 
