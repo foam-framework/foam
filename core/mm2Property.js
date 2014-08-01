@@ -378,6 +378,13 @@ var Property = {
       view: 'FunctionView',
       defaultValue: '',
       help: "A function which installs additional features into the Model's prototype."
+    },
+    {
+      name: 'exclusive',
+      type: 'Boolean',
+      view: 'BooleanView',
+      defaultValue: true,
+      help: 'Indicates if the property can only have a single value.'
     }
   ],
 

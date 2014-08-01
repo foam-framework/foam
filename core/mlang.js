@@ -55,6 +55,7 @@ MODEL({
       return !!((term >>> index[0]--) & 1 );
     },
     normalize: function() {
+      return this;
       // Each input term to the expression.
       var inputs = [];
       this.collectInputs(inputs);
@@ -319,6 +320,7 @@ MODEL({
       if ( ! BINARY.isInstance(e1) ) return null;
       if ( ! BINARY.isInstance(e2) ) return null;
       if ( e1.arg1 != e2.arg1 ) return null;
+      if ( ! e1.arg1.exclusive ) return null;
 
       var RULES = this.PARTIAL_AND_RULES;
       for ( var i = 0 ; i < RULES.length ; i++ ) {
@@ -538,7 +540,8 @@ MODEL({
       return 'not ( ' + this.arg1.toSQL() + ' )';
     },
     toMQL: function() {
-      return '-( ' + this.arg1.toMQL() + ' )';
+      // TODO: only include params if necessary
+      return '-' + this.arg1.toMQL();
     },
     collectInputs: function(terms) {
       this.arg1.collectInputs(terms);
