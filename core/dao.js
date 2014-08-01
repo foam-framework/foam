@@ -3145,6 +3145,11 @@ MODEL({
       model_: 'BooleanProperty',
       name: 'autoIndex',
       defaultValue: false
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'migrationRules',
+      subType: 'MigrationRule'
     }
   ],
 
@@ -3162,9 +3167,16 @@ MODEL({
 
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
-      } else if ( this.cache ) {
-        this.mdao = MDAO.create(params);
-        dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+      } else {
+        dao = this.X.MigrationDAO.create({
+          delegate: dao,
+          rules: this.migrationRules,
+          name: this.model.name + "_" + this.daoType + "_" + this.name
+        });
+        if ( this.cache ) {
+          this.mdao = MDAO.create(params);
+          dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+        }
       }
 
       if ( this.seqNo ) {
@@ -3393,6 +3405,113 @@ MODEL({
       };
       s = this.decorateSink_(s, options, true);
       this.SUPER(mysink, myoptions);
+    }
+  }
+});
+
+MODEL({
+  name: 'DAOVersion',
+  ids: ['name'],
+  properties: [
+    'name',
+    'version'
+  ]
+});
+
+MODEL({
+  name: 'MigrationRule',
+  ids: ['modelName'],
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'modelName',
+    },
+    {
+      model_: 'IntProperty',
+      name: 'version'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'migration'
+    }
+  ]
+});
+
+MODEL({
+  name: 'MigrationDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delegate'
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'MigrationRule',
+      name: 'rules'
+    },
+    {
+      name: 'name'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      var dao = this.delegate;
+      var future = afuture()
+      this.delegate = FutureDAO.create(future.get);
+
+      var self = this;
+      var version;
+      aseq(
+        function(ret) {
+          self.X.DAOVersionDAO.find(self.name, {
+            put: function(c) {
+              version = c;
+              ret();
+            },
+            error: function() {
+              version = DAOVersion.create({
+                name: self.name,
+                version: 0
+              });
+              ret();
+            }
+          });
+        },
+        function(ret) {
+          function updateVersion(ret, v) {
+            var c = version.clone();
+            c.version = v;
+            self.X.DAOVersionDAO.put(c, ret);
+          }
+
+          var rulesDAO = ArrayDAO.create({ array: self.rules, model: MigrationRule });
+
+          rulesDAO
+            .where(AND(GT(MigrationRule.VERSION, version.version),
+                       LTE(MigrationRule.VERSION, self.X.App.version)))
+            .select([])(function(rules) {
+              var seq = [];
+              for ( var i = 0; i < rules.length; i++ ) {
+                     (function(rule) {
+                       seq.push(
+                         aseq(
+                           function(ret) {
+                             rule.migration(ret, dao);
+                           },
+                           function(ret) {
+                             updateVersion(ret, rule.version);
+                           }));
+                     })(self.rules[i]);
+              }
+              if ( seq.length > 0 ) aseq.apply(null, seq)(ret);
+              else ret();
+            });
+        })(function() {
+          future.set(dao);
+        });
+      this.SUPER();
     }
   }
 });

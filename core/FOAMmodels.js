@@ -84,5 +84,6 @@ var files = [
   '../apps/mailreader/view',
   '../apps/mailreader/email',
   '../lib/email/email',
-  'turntable'
+  'turntable',
+  'CORE'
 ];
