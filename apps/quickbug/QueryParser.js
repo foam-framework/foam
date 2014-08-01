@@ -43,6 +43,7 @@ MODEL({
        if ( this.pattern_.test(obj.summary) ) return true;
        if ( this.prefixPattern_.test(obj.owner) ) return true;
        for ( var i = 0 ; i < obj.cc.length ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
+//       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.prefixPattern_.test(obj.labels[i]) ) return true;
        return false;
      }
    }
@@ -54,7 +55,11 @@ var QueryParser = {
 
   stars: seq(literal_ic('stars:'), sym('number')),
 
-  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
+  labelChar: alt(range('a','z'), range('A', 'Z'), range('0', '9')),
+
+  labelName: str(plus(sym('labelChar'))),
+
+  labelMatch: seq(sym('labelName'), alt(':', '=', '-'), sym('valueList')),
 
   summary: str(plus(notChar(' ')))
 
