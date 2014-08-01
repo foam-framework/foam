@@ -63,7 +63,7 @@ if ( ! String.prototype.startsWithIC ) {
 }
 
 String.prototype.indexOfIC = function(a) {
-  if ( a.length > this.length ) return false;
+  if ( a.length > this.length ) return -1;
   return this.toUpperCase().indexOf(a.toUpperCase());
 };
 
@@ -252,6 +252,13 @@ Object.defineProperty(Array.prototype, 'binaryInsert', {
     this.splice(start, 0, item);
 
     return this;
+  }
+});
+
+Object.defineProperty(Array.prototype, 'union', {
+  value: function(other) {
+    return this.concat(
+      other.filter(function(o) { return this.indexOf(o) == -1; }.bind(this)));
   }
 });
 
