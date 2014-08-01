@@ -678,6 +678,47 @@ MODEL({
   }
 });
 
+
+MODEL({
+  name: 'ContainedInICExpr',
+
+  extendsModel: 'BINARY',
+
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      preSet: function(_, a) { return a.map(function(o) { return o.toUpperCase(); }); }
+    }
+  ],
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.join(',') },
+
+    f: function(obj) {
+      var v = this.arg1.f(obj);
+      if ( Array.isArray(v) ) {
+        for ( var j = 0 ; j < v.length ; j++ ) {
+          var a = v[j].toUpperCase();
+          for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+            if ( a.indexOf(this.arg2[i]) != -1 ) return true;
+          }
+        }
+      } else {
+        v = v.toUpperCase();
+        for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+          if ( v.indexOf(this.arg2[i]) != -1 ) return true;
+        }
+      }
+      return false;
+    }
+  }
+});
+
+
 MODEL({
   name: 'ContainsExpr',
 
