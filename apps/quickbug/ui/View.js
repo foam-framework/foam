@@ -201,8 +201,8 @@ var ItemCount = Model.create({
         var row = altView.views[1].view().row.data;
         var q = AND(
           QueryParser.parseString(this.browser.location.q),
-          EQ(col, col.f(this.obj)),
-          EQ(row, row.f(this.obj))).partialEval();
+          AND(EQ(col, col.f(this.obj)),
+              EQ(row, row.f(this.obj))).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
         this.browser.location.q = q.toMQL();
       }.bind(this);
