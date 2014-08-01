@@ -279,29 +279,35 @@ MODEL({
     PARTIAL_AND_RULES: [
       [ 'EqExpr', 'EqExpr',
         function(e1, e2) {
-          return e1.arg2.f() == e2.arg2.f() ? e1 : FALSE;
+          return e1.arg1.exclusive ?
+            e1.arg2.f() == e2.arg2.f() ? e1 : FALSE :
+            e1.arg2.f() == e2.arg2.f() ? e1 : null ;
         }
       ],
       [ 'InExpr', 'InExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsICExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'EqExpr', 'InExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
         }
       ]
@@ -320,7 +326,6 @@ MODEL({
       if ( ! BINARY.isInstance(e1) ) return null;
       if ( ! BINARY.isInstance(e2) ) return null;
       if ( e1.arg1 != e2.arg1 ) return null;
-      if ( ! e1.arg1.exclusive ) return null;
 
       var RULES = this.PARTIAL_AND_RULES;
       for ( var i = 0 ; i < RULES.length ; i++ ) {
