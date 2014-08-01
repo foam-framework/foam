@@ -329,8 +329,8 @@ MODEL({
 
       var RULES = this.PARTIAL_AND_RULES;
       for ( var i = 0 ; i < RULES.length ; i++ ) {
-        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e1, e2).toMQL()); return RULES[i][2](e1, e2); }
-        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e2, e1).toMQL()); return RULES[i][2](e2, e1); }
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
       console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
@@ -666,6 +666,10 @@ MODEL({
   ],
 
   methods: {
+    partialEval: function() {
+      if ( this.arg2.length == 1 ) return EQ(this.arg1, this.arg2[0]);
+      return this;
+    },
     valueSet: function() {
       if ( ! this.valueSet_ ) {
         var s = {};
@@ -1487,6 +1491,10 @@ MODEL({
         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
           var x = sortedCols[i];
           var value = rows[y].groups[x];
+          if ( value ) {
+            value.x = x;
+            value.y = y;
+          }
           out += this.renderCell(x, y, value);
         }
 
