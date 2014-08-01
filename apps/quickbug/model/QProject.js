@@ -98,7 +98,17 @@ MODEL({
       factory: function() {
         var IssueIDBDAO = this.X.EasyDAO.create({
           model: QIssue,
-          name: this.projectName + '_' + QIssue.plural
+          name: this.projectName + '_' + QIssue.plural,
+          migrationRules: [
+            MigrationRule.create({
+              modelName: 'QIssue',
+              version: 119,
+              migration: function(ret, dao) {
+                console.log("Migrating to ", this.version);
+                dao.removeAll()(ret);
+              }
+            })
+          ]
 //          logging: true
         });
 
