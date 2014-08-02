@@ -74,12 +74,20 @@ var QueryParser = {
   },
 
   labelMatch: function(v) {
+    var a = [];
+    for ( var i = 2 ; i < v.length ; i++ ) {
+      a.push(v[0] + '-' + v[i]);
+    }
+
+    return IN(QIssue.LABELS, a).partialEval();
+    /*
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
       or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
     }
     return or;
+    */
   },
 
   summary: function(v) {

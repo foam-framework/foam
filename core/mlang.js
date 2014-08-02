@@ -286,16 +286,26 @@ MODEL({
       ],
       [ 'InExpr', 'InExpr',
         function(e1, e2) {
-          if ( ! e1.arg1.exclusive ) return;
-          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          var i = e1.arg1.exclusive ? e1.arg2.intersection(e2.arg2) : e1.arg2.union(e2.arg2) ;
           return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return null;
+          var i = e1.arg2.filter(function(o) { o = o.toUpperCase(); return e2.arg2.some(function(o2) { return o.indexOf(o2) != -1; }); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'ContainedInICExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          debugger;
         }
       ],
       [ 'InExpr', 'ContainsICExpr',
         function(e1, e2) {
           if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
-          return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsExpr',
