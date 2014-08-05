@@ -1299,9 +1299,9 @@ MODEL({
 
     remove: function(obj, sink) {
       var self = this;
-      this.withStore("readwrite", function(store) {
-        var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
+      var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
 
+      this.withStore("readwrite", function(store) {
         var getRequest = store.get(key);
         getRequest.onsuccess = function(e) {
           if (!getRequest.result) {
