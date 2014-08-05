@@ -34,7 +34,10 @@ MODEL({
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][0] === d ) {
-            if ( this.index !== i ) this.index = i;
+            if ( this.index !== i ) {
+              this.label = this.choices[i][1];
+              this.index = i;
+            }
             return;
           }
         }
