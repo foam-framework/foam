@@ -624,9 +624,9 @@ MODEL({
     toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
     toMQL: function() {
       if ( ! this.arg1.toMQL || ! this.arg2.toMQL ) return '';
-      return this.arg2 === TRUE ?
-        'is:' + this.arg1.toMQL() :
-        this.arg1.toMQL() + '=' + this.arg2.toMQL();
+      return this.arg2     === TRUE ? 'is:' + this.arg1.toMQL()   :
+             this.arg2.f() == ''    ? '-has:' + this.arg1.toMQL() :
+             this.arg1.toMQL() + '=' + this.arg2.toMQL()      ;
     },
 
     partialEval: function() {
