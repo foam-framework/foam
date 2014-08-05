@@ -568,6 +568,10 @@ var StringArrayProperty = Model.create({
       type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'exclusive',
+      defaultValue: false
     }
   ]
 });

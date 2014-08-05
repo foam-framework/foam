@@ -93,6 +93,13 @@ MODEL({
       model_: 'DateTimeProperty',
       name:  'lastSync',
       help: 'The time of the last sync.',
+      factory: function() { return new Date(); }
+    },
+    {
+      model_: 'DateTimeProperty',
+      name:  'lastModified',
+      help: 'The time of the last sync.',
+      factory: function() { return new Date(); },
       transient: true
     },
     {
@@ -121,12 +128,6 @@ MODEL({
       name:  'lastId',
       help: 'The id of the last item synced.',
       transient: true
-    },
-    {
-      model_: 'DateTimeProperty',
-      name:  'lastModified',
-      help: 'The last-modified timestamp of the most recently synced item.',
-      factory: function() { return new Date(); }
     },
     {
       model_: 'StringProperty',
@@ -195,10 +196,10 @@ MODEL({
       action: function(ret) {
         this.itemsSynced = 0;
         this.timesSynced = 0;
-        this.lastSync = '';
         this.lastSyncDuration = 0;
         this.lastId = '';
-        this.lastModified = SyncManager.LAST_MODIFIED.factory();
+        this.lastSync = this.model_.LAST_SYNC.factory.call(this);;
+        this.lastModified = this.model_.LAST_MODIFIED.factory.call(this);
       }
     }
   ],
@@ -218,14 +219,12 @@ MODEL({
     sync: function(ret) {
       var self = this;
       aseq(
-        (function(ret) {
-          this.dstDAO.select(MAX(this.modifiedProperty))(function (max) {
-            if ( max.max - self.lastModified.getTime() > self.maxSyncAge )
-              self.doReset(ret);
-            else
-              ret();
-          });
-        }).bind(this),
+        function(ret) {
+          if ( Date.now() - self.lastSync.getTime() > self.maxSyncAge )
+            self.doReset(ret);
+          else
+            ret();
+        },
         (function(ret) {
           var batchSize = this.batchSize;
           var startTime = Date.now();
@@ -284,13 +283,13 @@ MODEL({
               self.lastBatchSize = lastBatchSize;
 
               self.syncStatus = '';
-              self.lastSync = new Date().toString();
+              self.lastSync = new Date();
               self.isSyncing = false;
 
               self.schedule(delay);
               ret();
             });
-        }).bind(this))(function(){ ret && ret(); });
+        }).bind(this))(ret || function(){});
     },
 
     schedule: function(syncInterval) {

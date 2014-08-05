@@ -62,6 +62,11 @@ if ( ! String.prototype.startsWithIC ) {
   };
 }
 
+String.prototype.indexOfIC = function(a) {
+  if ( a.length > this.length ) return -1;
+  return this.toUpperCase().indexOf(a.toUpperCase());
+};
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
@@ -250,6 +255,19 @@ Object.defineProperty(Array.prototype, 'binaryInsert', {
   }
 });
 
+Object.defineProperty(Array.prototype, 'union', {
+  value: function(other) {
+    return this.concat(
+      other.filter(function(o) { return this.indexOf(o) == -1; }.bind(this)));
+  }
+});
+
+Object.defineProperty(Array.prototype, 'intersection', {
+  value: function(other) {
+    return this.filter(function(o) { return other.indexOf(o) != -1; });
+  }
+});
+
 // TODO: binarySearch
 
 Object.defineProperty(Array.prototype, 'intern', {
@@ -305,19 +323,23 @@ Object.defineProperty(Array.prototype, 'fReduce', {
 /** Reverse the direction of a comparator. **/
 
 var CompoundComparator = function() {
-  var cs = arguments;
+  var cs = argsToArray(arguments);
 
   // Convert objects with .compare() methods to compare functions.
   for ( var i = 0 ; i < cs.length ; i++ )
     cs[i] = toCompare(cs[i]);
 
-  return function(o1, o2) {
+  var f = function(o1, o2) {
     for ( var i = 0 ; i < cs.length ; i++ ) {
       var r = cs[i](o1, o2);
       if ( r != 0 ) return r;
     }
     return 0;
   };
+
+  f.toSQL = function() { return cs.join(','); };
+
+  return f;
 };
 
 

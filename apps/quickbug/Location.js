@@ -124,7 +124,9 @@ var Location = FOAM({
             ps[i] = QIssue.getProperty(p);
           }
         }
-        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
+        if ( ps.length != 1 ) { console.warn('TODO: implement support for CompoundComparators: ', sort); }
+        return ps[0];
+//        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
       }
     },
     {

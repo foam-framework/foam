@@ -256,7 +256,7 @@ var FObject = {
       if ( prop.postSet ) {
         setter = (function(setter, postSet) { return function(oldValue, newValue) {
           setter.call(this, oldValue, newValue);
-          postSet.call(this, oldValue, newValue)
+          postSet.call(this, oldValue, newValue, prop)
         }; })(setter, prop.postSet);
       }
 
@@ -321,7 +321,11 @@ var FObject = {
     c.instance_ = {};
     for ( var key in this.instance_ ) {
       var value = this[key];
-      c[key] = Array.isArray(value) ? value.clone() : value;
+      // The commented out (original) implementation was causing
+      // issues with QuickBug because of the 'lables' postSet.
+      // I'm not sure it was done that way originally.
+//      c[key] = Array.isArray(value) ? value.clone() : value;
+      c.instance_[key] = Array.isArray(value) ? value.clone() : value;
     }
     return c;
 //    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;

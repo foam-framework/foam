@@ -55,6 +55,7 @@ MODEL({
       return !!((term >>> index[0]--) & 1 );
     },
     normalize: function() {
+      return this;
       // Each input term to the expression.
       var inputs = [];
       this.collectInputs(inputs);
@@ -77,7 +78,9 @@ MODEL({
           terms.push(AndExpr.create({ args: subterms }));
         }
       }
-      return OrExpr.create({ args: terms }).partialEval();
+      var ret = OrExpr.create({ args: terms }).partialEval();
+      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
+      return ret;
     },
     toString: function() { return this.label_; },
     pipe: function(sink) {
@@ -273,6 +276,78 @@ MODEL({
       return out;
     },
 
+    PARTIAL_AND_RULES: [
+      [ 'EqExpr', 'EqExpr',
+        function(e1, e2) {
+          return e1.arg1.exclusive ?
+            e1.arg2.f() == e2.arg2.f() ? e1 : FALSE :
+            e1.arg2.f() == e2.arg2.f() ? e1 : null ;
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg1.exclusive ? e1.arg2.intersection(e2.arg2) : e1.arg2.union(e2.arg2) ;
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return null;
+          var i = e1.arg2.filter(function(o) { o = o.toUpperCase(); return e2.arg2.some(function(o2) { return o.indexOf(o2) != -1; }); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'ContainedInICExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          debugger;
+        }
+      ],
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
+        }
+      ]
+    ],
+
+    partialAnd: function(e1, e2) {
+      if ( e2.model_ === OrExpr ) { var tmp = e1; e1 = e2; e2 = tmp; }
+      if ( e1.model_ === OrExpr ) {
+        var args = [];
+        for ( var i = 0 ; i < e1.args.length ; i++ ) {
+          args.push(AND(e2, e1.args[i]));
+        }
+        return OrExpr.create({args: args}).partialEval();
+      }
+
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_AND_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -296,6 +371,18 @@ MODEL({
           } else {
             newArgs.push(newA);
             if ( a !== newA ) updated = true;
+          }
+        }
+      }
+
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialAnd(newArgs[i], newArgs[j]);
+          if ( a ) {
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
+            if ( a === FALSE ) return FALSE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
           }
         }
       }
@@ -357,6 +444,54 @@ MODEL({
       return out;
     },
 
+    PARTIAL_OR_RULES: [
+      [ 'InExpr', 'EqExpr',
+        function(e1, e2) {
+          return IN(e1.arg1, e1.arg1.union([e2.arg2.f()]));
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          return IN(e1.arg1, e1.arg2.union(e2.arg2));
+        }
+      ]
+      /*
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
+        }
+      ]*/
+    ],
+
+    partialOr: function(e1, e2) {
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_OR_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+      console.log('************** Unknown partialOr combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -379,6 +514,18 @@ MODEL({
             newArgs.push(newA);
           }
           if ( a !== newA ) updated = true;
+        }
+      }
+
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialOr(newArgs[i], newArgs[j]);
+          if ( a ) {
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialOr> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
+            if ( a === TRUE ) return TRUE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
+          }
         }
       }
 
@@ -408,7 +555,8 @@ MODEL({
       return 'not ( ' + this.arg1.toSQL() + ' )';
     },
     toMQL: function() {
-      return '-( ' + this.arg1.toMQL() + ' )';
+      // TODO: only include params if necessary
+      return '-' + this.arg1.toMQL();
     },
     collectInputs: function(terms) {
       this.arg1.collectInputs(terms);
@@ -476,9 +624,9 @@ MODEL({
     toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
     toMQL: function() {
       if ( ! this.arg1.toMQL || ! this.arg2.toMQL ) return '';
-      return this.arg2 === TRUE ?
-        'is:' + this.arg1.toMQL() :
-        this.arg1.toMQL() + '=' + this.arg2.toMQL();
+      return this.arg2     === TRUE ? 'is:' + this.arg1.toMQL()   :
+             this.arg2.f() == ''    ? '-has:' + this.arg1.toMQL() :
+             this.arg1.toMQL() + '=' + this.arg2.toMQL()      ;
     },
 
     partialEval: function() {
@@ -528,6 +676,10 @@ MODEL({
   ],
 
   methods: {
+    partialEval: function() {
+      if ( this.arg2.length == 1 ) return EQ(this.arg1, this.arg2[0]);
+      return this;
+    },
     valueSet: function() {
       if ( ! this.valueSet_ ) {
         var s = {};
@@ -544,6 +696,47 @@ MODEL({
     }
   }
 });
+
+
+MODEL({
+  name: 'ContainedInICExpr',
+
+  extendsModel: 'BINARY',
+
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      preSet: function(_, a) { return a.map(function(o) { return o.toUpperCase(); }); }
+    }
+  ],
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.join(',') },
+
+    f: function(obj) {
+      var v = this.arg1.f(obj);
+      if ( Array.isArray(v) ) {
+        for ( var j = 0 ; j < v.length ; j++ ) {
+          var a = v[j].toUpperCase();
+          for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+            if ( a.indexOf(this.arg2[i]) != -1 ) return true;
+          }
+        }
+      } else {
+        v = v.toUpperCase();
+        for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+          if ( v.indexOf(this.arg2[i]) != -1 ) return true;
+        }
+      }
+      return false;
+    }
+  }
+});
+
 
 MODEL({
   name: 'ContainsExpr',
@@ -595,10 +788,7 @@ MODEL({
       type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE,
-      postSet: function(_, value) {
-        // Escape Regex escape characters
-        this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-      }
+      postSet: function(_, value) { this.pattern_ = undefined; }
     }
   ],
 
@@ -622,6 +812,10 @@ MODEL({
 
     f: function(obj) {
       var arg1 = this.arg1.f(obj);
+
+      // Escape Regex escape characters
+      var pattern = this.pattern_ ||
+        ( this.pattern_ = new RegExp(this.arg2.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') );
 
       if ( Array.isArray(arg1) ) {
         var pattern = this.pattern_;
@@ -1307,6 +1501,10 @@ MODEL({
         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
           var x = sortedCols[i];
           var value = rows[y].groups[x];
+          if ( value ) {
+            value.x = x;
+            value.y = y;
+          }
           out += this.renderCell(x, y, value);
         }
 

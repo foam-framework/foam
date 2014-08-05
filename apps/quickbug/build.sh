@@ -60,6 +60,7 @@ cat \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \
+  ../../core/CORE.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:

@@ -23,12 +23,13 @@ MODEL({
 
   properties: [
     {
-      name: 'preSet',
-      defaultValue: function(oldValue, v) {
-        return Array.isArray(v) ? v :
-          ! v ? undefined :
-          Array.isArray(oldValue) ? oldValue.binaryInsert(v) :
-          [v];
+      name: 'postSet',
+      defaultValue: function(_, v, prop) {
+        if ( ! Array.isArray(v) ) debugger;
+
+        v.sort();
+
+        this.replaceLabels(prop.name.capitalize(), v);
       }
     },
     {
@@ -55,10 +56,14 @@ MODEL({
   help: "A String value, taken from labels.",
 
   properties: [
-    // Test for LabelStringProperties that should be LabelArrayProperties.
     {
       name: 'postSet',
-      defaultValue: function(o, n) { if ( o && o !== n ) debugger; }
+      defaultValue: function(o, n, prop) {
+        this.replaceLabels(prop.name.capitalize(), n);
+
+        // Test for LabelStringProperties that should be LabelArrayProperties.
+        if ( o && o !== n ) debugger;
+      }
     },
     {
       name: 'transient',
@@ -147,6 +152,55 @@ var QIssue = FOAM({
       }
     },
     {
+      name: 'labels',
+      shortName: 'l',
+      aliases: ['label'],
+      type: 'String',
+      view: 'QIssueLabelsView',
+      autocompleter: 'LabelCompleter',
+      tableFormatter: function(a, row) {
+        var s = '';
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          if ( ! isPropertyLabel(a[i]) ) {
+            s += ' <span class="label">' + a[i] + '</span>';
+          }
+        }
+        return s;
+      },
+      postSet: function(_, a) {
+        a.sort();
+
+        // Reset all label properties to initial values.
+        for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+          var p = this.model_.properties[i];
+
+          if ( p.model_ === LabelArrayProperty ) {
+            this.instance_[p.name] = [];
+          } else if ( p.model_ === LabelStringProperty ) {
+            this.instance_[p.name] = "";
+          }
+        }
+
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var kv = isPropertyLabel(a[i]);
+          a[i] = a[i].intern();
+          if ( kv ) {
+
+            // Cleanup 'movedFrom' labels
+            if ( kv[0] === 'movedFrom' ) {
+              kv[1] = typeof kv[1] === 'string' ? parseInt(kv[1].charAt(0) === 'M' ? kv[1].substring(1) : kv[1]) : kv[1];
+            }
+
+            if ( Array.isArray(this[kv[0]]) ) {
+              this.instance_[kv[0]].binaryInsert(kv[1]);
+            } else {
+              this.instance_[kv[0]] = kv[1];
+            }
+          }
+        }
+      }
+    },
+    {
       name: 'author',
       preSet: function(_, a) { return a.intern(); },
       aliases: ['reporter']
@@ -225,6 +279,7 @@ var QIssue = FOAM({
       tableWidth: '87px',
     },
     {
+      model_: 'StringProperty',
       name: 'status',
       shortName: 's',
       aliases: ['stat'],
@@ -336,49 +391,9 @@ var QIssue = FOAM({
       }
     },
     {
-      name: 'labels',
-      shortName: 'l',
-      aliases: ['label'],
-      type: 'String',
-      view: 'QIssueLabelsView',
-      autocompleter: 'LabelCompleter',
-      tableFormatter: function(a, row) {
-        var s = '';
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          if ( ! isPropertyLabel(a[i]) ) {
-            s += ' <span class="label">' + a[i] + '</span>';
-          }
-        }
-        return s;
-      },
-      postSet: function(_, a) {
-        for ( var i = 0 ; i < a.length ; i++ ) {
-          var kv = isPropertyLabel(a[i]);
-          a[i] = a[i].intern();
-          if ( kv ) {
-            if ( Array.isArray(this[kv[0]]) ) {
-              this[kv[0]].push(kv[1]);
-            } else {
-              this[kv[0]] = kv[1];
-            }
-            // Don't remove from labels because then label:X searches don't work.
-            // a.splice(i,1);
-            // i--;
-          }
-        }
-      }
-    },
-    {
       model_: 'LabelArrayProperty',
       name: 'movedFrom',
-      tableWidth: '100px',
-      preSet: function(_, v) {
-        if ( Array.isArray(v) ) return v;
-        if ( ! v ) return undefined;
-        if ( typeof v !== 'string' ) return [];
-
-        return (this.movedFrom || []).binaryInsert(v.charAt(0) == 'M' ? parseInt(v.substring(1)) : parseInt(v));
-      }
+      tableWidth: '100px'
     },
     {
       name: 'movedTo',
@@ -394,6 +409,19 @@ var QIssue = FOAM({
   ],
 
   methods: {
+    replaceLabels: function(label, values) {
+      var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+      if ( Array.isArray(values) ) {
+        for ( var i = 0 ; i < values.length ; i++ ) {
+          labels.binaryInsert(label + '-' + values[i]);
+        }
+      } else {
+        labels.binaryInsert(label + '-' + values);
+      }
+
+      // Set this way to avoid updating lable properties and causing a feedback loop.
+      this.instance_.labels = labels;
+    },
     isOpen: function() {
       return !! ({
         'New':       true,
@@ -426,29 +454,6 @@ var QIssue = FOAM({
       convertArray('labels');
       convertArray('milestone');
       convertArray('iteration');
-
-      function propToLabel(prop, label) {
-        if ( diff[prop] ) {
-          if ( Array.isArray(diff[prop]) ) {
-            for ( var i = 0; i < diff[prop].length; i++) {
-              diff.labels.push(label + '-' + diff[prop][i]);
-            }
-          } else {
-            diff.labels = diff.labels.concat(
-              '-' + label + '-' + other[prop],
-              label + '-' + diff[prop]);
-          }
-          delete diff[prop];
-        }
-      }
-
-      propToLabel('priority', 'Priority');
-      propToLabel('app', 'App');
-      propToLabel('milestone', 'Milestone');
-      propToLabel('cr', 'Cr');
-      propToLabel('iteration', 'Iteration');
-      propToLabel('releaseBlock', 'ReleaseBlock');
-      propToLabel('OS', 'OS');
 
       var comment = QIssueComment.create({
         issueId: this.id,

@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-/** Perform text search on 'summary' field and prefix searches on 'cc' and 'owner' fields. */
+/**
+ * Perform text search on 'summary' field and prefix searches on 'cc' and 'owner' fields.
+ * Also search the labels, but exclude the value before the first '-'.
+ */
 MODEL({
    name: 'DefaultQuery',
 
@@ -27,22 +30,25 @@ MODEL({
         preSet: function(_, value) {
           // Escape Regex escape characters
           var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-          this.pattern_ = new RegExp(pattern, 'i');
+          this.pattern_       = new RegExp(pattern, 'i');
           this.prefixPattern_ = new RegExp('^' + pattern, 'i');
+          this.labelPattern_  = new RegExp('^\\w+-' + pattern, 'i');
+
           return value.toLowerCase();
         }
       }
    ],
 
    methods: {
-     // No different that the non IC-case
+     // No different than the non IC-case
      toSQL: function() { return this.arg1; },
      toMQL: function() { return this.arg1; },
 
      f: function(obj) {
        if ( this.pattern_.test(obj.summary) ) return true;
        if ( this.prefixPattern_.test(obj.owner) ) return true;
-       for ( var i = 0 ; i < obj.cc.length ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
+       for ( var i = 0 ; i < obj.cc.length     ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
+       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i])  ) return true;
        return false;
      }
    }
@@ -54,7 +60,7 @@ var QueryParser = {
 
   stars: seq(literal_ic('stars:'), sym('number')),
 
-  labelMatch: seq(sym('string'), alt(':', '='), sym('valueList')),
+  labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
   summary: str(plus(notChar(' ')))
 
@@ -69,12 +75,20 @@ var QueryParser = {
   },
 
   labelMatch: function(v) {
+    var a = [];
+    for ( var i = 2 ; i < v.length ; i++ ) {
+      a.push(v[0] + '-' + v[i]);
+    }
+
+    return IN(QIssue.LABELS, a).partialEval();
+    /*
     var or = OR();
     var values = v[2];
     for ( var i = 0 ; i < values.length ; i++ ) {
       or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
     }
     return or;
+    */
   },
 
   summary: function(v) {
