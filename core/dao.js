@@ -262,6 +262,9 @@ var FutureDAO = {
       __proto__: {
         // TODO: implement other DAO methods
         daoListeners_: [],
+        toString: function() {
+          return 'FutureDAO';
+        },
 
         select: function() {
           var a = arguments;
@@ -270,6 +273,15 @@ var FutureDAO = {
             // This removes this code from the delegate-chain and replaces the real delegate.
             setupFuture(delegate);
             delegate.select.apply(delegate, a)(f.set);
+          });
+          return f.get;
+        },
+        removeAll: function() {
+          var a = arguments;
+          var f = afuture();
+          futureDelegate(function(delegate) {
+            setupFuture(delegate);
+            delegate.removeAll.apply(delegate, a)(f.set);
           });
           return f.get;
         },
