@@ -90,7 +90,7 @@ MODEL({
     },
     commentView: function() {
       return this.X.DAOListView.create({
-        dao: this.QIssueCommentDAO,
+        dao: this.QIssueCommentDAO.orderBy(QIssueComment.SEQ_NO),
         model: this.X.QIssueComment,
         rowView: 'QIssueCommentView'
       });
