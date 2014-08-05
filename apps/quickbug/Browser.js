@@ -717,7 +717,10 @@ Please use labels and text to provide additional information.
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL());
+      if ( p ) {
+        p = p.partialEval();
+        console.log('SEARCH: ', p.toSQL());
+      }
       this.filteredIssueDAO = p ? this.IssueDAO.where(p) : this.IssueDAO;
     },
 

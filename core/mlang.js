@@ -279,29 +279,45 @@ MODEL({
     PARTIAL_AND_RULES: [
       [ 'EqExpr', 'EqExpr',
         function(e1, e2) {
-          return e1.arg2.f() == e2.arg2.f() ? e1 : FALSE;
+          return e1.arg1.exclusive ?
+            e1.arg2.f() == e2.arg2.f() ? e1 : FALSE :
+            e1.arg2.f() == e2.arg2.f() ? e1 : null ;
         }
       ],
       [ 'InExpr', 'InExpr',
         function(e1, e2) {
-          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          var i = e1.arg1.exclusive ? e1.arg2.intersection(e2.arg2) : e1.arg2.union(e2.arg2) ;
           return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return null;
+          var i = e1.arg2.filter(function(o) { o = o.toUpperCase(); return e2.arg2.some(function(o2) { return o.indexOf(o2) != -1; }); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'ContainedInICExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          debugger;
         }
       ],
       [ 'InExpr', 'ContainsICExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
-          return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'InExpr', 'ContainsExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
           return i.length ? IN(e1.arg1, i) : FALSE;
         }
       ],
       [ 'EqExpr', 'InExpr',
         function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
           return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
         }
       ]
@@ -320,12 +336,11 @@ MODEL({
       if ( ! BINARY.isInstance(e1) ) return null;
       if ( ! BINARY.isInstance(e2) ) return null;
       if ( e1.arg1 != e2.arg1 ) return null;
-      if ( ! e1.arg1.exclusive ) return null;
 
       var RULES = this.PARTIAL_AND_RULES;
       for ( var i = 0 ; i < RULES.length ; i++ ) {
-        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e1, e2).toMQL()); return RULES[i][2](e1, e2); }
-        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) { console.log(RULES[i], e1.toMQL(), e2.toMQL(), RULES[i][2](e2, e1).toMQL()); return RULES[i][2](e2, e1); }
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
       console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
@@ -661,6 +676,10 @@ MODEL({
   ],
 
   methods: {
+    partialEval: function() {
+      if ( this.arg2.length == 1 ) return EQ(this.arg1, this.arg2[0]);
+      return this;
+    },
     valueSet: function() {
       if ( ! this.valueSet_ ) {
         var s = {};
@@ -677,6 +696,47 @@ MODEL({
     }
   }
 });
+
+
+MODEL({
+  name: 'ContainedInICExpr',
+
+  extendsModel: 'BINARY',
+
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      preSet: function(_, a) { return a.map(function(o) { return o.toUpperCase(); }); }
+    }
+  ],
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.join(',') },
+
+    f: function(obj) {
+      var v = this.arg1.f(obj);
+      if ( Array.isArray(v) ) {
+        for ( var j = 0 ; j < v.length ; j++ ) {
+          var a = v[j].toUpperCase();
+          for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+            if ( a.indexOf(this.arg2[i]) != -1 ) return true;
+          }
+        }
+      } else {
+        v = v.toUpperCase();
+        for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+          if ( v.indexOf(this.arg2[i]) != -1 ) return true;
+        }
+      }
+      return false;
+    }
+  }
+});
+
 
 MODEL({
   name: 'ContainsExpr',
@@ -1441,6 +1501,10 @@ MODEL({
         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
           var x = sortedCols[i];
           var value = rows[y].groups[x];
+          if ( value ) {
+            value.x = x;
+            value.y = y;
+          }
           out += this.renderCell(x, y, value);
         }
 

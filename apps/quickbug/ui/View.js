@@ -186,12 +186,8 @@ var ItemCount = Model.create({
   ],
 
   methods: {
-    put: function(obj) {
-      if ( ! this.obj ) this.obj = obj;
-      this.eid = View.getPrototype().nextID();
-      this.SUPER(obj);
-    },
     toHTML: function() {
+      this.eid = View.getPrototype().nextID();
       return '<span id="' + this.eid + '" class="idcount">' + this.count + '&nbsp;' + (this.count == 1 ? 'item' : 'items') + '</span>';
     },
     initHTML: function() {
@@ -201,8 +197,8 @@ var ItemCount = Model.create({
         var row = altView.views[1].view().row.data;
         var q = AND(
           QueryParser.parseString(this.browser.location.q),
-          EQ(col, col.f(this.obj)),
-          EQ(row, row.f(this.obj))).partialEval();
+          AND(EQ(col, this.x),
+              EQ(row, this.y)).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
         this.browser.location.q = q.toMQL();
       }.bind(this);
@@ -330,7 +326,7 @@ function createView(rowSelectionValue, browser) {
           }
           setAcc(location.cells);
 
-          g.acc.data$.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
+          g.acc.data$.addListener(function(choice) { location.cells = g.acc.label.toLowerCase(); });
           location.cells$.addListener(setAcc);
 
           g.X = X;

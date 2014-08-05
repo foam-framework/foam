@@ -173,6 +173,7 @@ var QueryParserFactory = function(model) {
       // simplify it when it isn't.
 
       if ( v[1] === '=' ) return IN(v[0], v[2]);
+      if ( v[1] === ':' ) return ContainedInICExpr.create({arg1: compile_(v[0]), arg2: v[2]});
 
       var or = OR();
       var values = v[2];
