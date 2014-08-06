@@ -51,10 +51,10 @@ MODEL({
 
       var self = this;
 
+//      this.daoListeners_ = []; // This is required to work around some bug.
       chrome.storage.onChanged.addListener(function(changes, namespace) {
         for ( key in changes ) {
           if ( chrome.storage[namespace] === self.store && self.isID_(key) ) {
-            console.log(key, ' -> ', changes[key]);
             if ( changes[key].newValue ) {
               self.notify_('put', [self.deserialize(changes[key].newValue)]);
             } else {
@@ -138,14 +138,7 @@ MODEL({
       });
     },
 
-    find: function(key, sink) {
-      throw "Unsupported Operation: ChromeStorage.find(). Add CachingDAO.";
-      /*
-      this.store.get({id: key}, function(obj) {
-        sink.put(obj);
-      });
-      */
-    },
+    find: function(key, sink) { this.select()(function(a) { a.find(key, sink); }); },
 
     remove: function(obj, sink) {
       this.store.remove(this.toID_(obj), function() {
