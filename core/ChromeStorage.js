@@ -38,7 +38,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.serialize = this.SimpleSerialize;
+      this.serialize   = this.SimpleSerialize;
       this.deserialize = this.SimpleDeserialize;
     },
 
@@ -55,7 +55,12 @@ MODEL({
     },
 
     SimpleSerialize: function(obj) {
-      return obj.instance_;
+      var s = {};
+      for ( var key in obj.instance_ ) {
+        var prop = obj.model_.getProperty(key);
+        if ( ! prop.transient ) s[key] = obj.instance_[key];
+      }
+      return s;
     },
 
     put: function(value, sink) {
@@ -119,4 +124,17 @@ MODEL({
   }
 });
 
-IDBDAO = ChromeStorageDAO;
+
+MODEL({
+  name: 'ChromeSyncStorageDAO',
+  label: 'Chrome Sync Storage DAO',
+
+  extendsModel: 'ChromeStorageDAO',
+
+  properties: [
+    {
+      name:  'store',
+      defaultValueFn: function() { return chrome.storage.sync; }
+    }
+  ]
+});
