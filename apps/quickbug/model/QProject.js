@@ -164,10 +164,11 @@ MODEL({
       name: 'bookmarkDAO',
       factory: function() {
         return this.X.EasyDAO.create({
-          model: Bookmark,
-          name: this.projectName + '_' + Bookmark.plural,
-          cache: true,
-          seqNo: true
+          model:   Bookmark,
+          name:    this.projectName + '_' + Bookmark.plural,
+          cache:   true,
+          seqNo:   true,
+          daoType: 'SYNC'
         }).orderBy(Bookmark.ID);
       },
       transient: true

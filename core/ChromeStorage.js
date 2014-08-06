@@ -51,14 +51,18 @@ MODEL({
 
       var self = this;
 
+      this.listen(function() {
+        console.log('*******88 DAO Listener: ', arguments);
+      });
+
       chrome.storage.onChanged.addListener(function(changes, namespace) {
         for ( key in changes ) {
           if ( chrome.storage[namespace] === self.store && self.isID_(key) ) {
             console.log(key, ' -> ', changes[key]);
             if ( changes[key].newValue ) {
-              self.notify_('put', [changes[key].newValue]);
+              self.notify_('put', [self.deserialize(changes[key].newValue)]);
             } else {
-              self.notify_('remove', [changes[key].oldValue]);
+              self.notify_('remove', [self.deserialize(changes[key].oldValue)]);
             }
           }
         }
@@ -160,7 +164,7 @@ MODEL({
       this.store.get(null, function(map) {
         for ( key in map ) {
           if ( self.isID_(key) ) {
-            sink && sink.put && sink.put(map[key]);
+            sink && sink.put && sink.put(self.deserialize(map[key]));
           }
         }
         future.set(sink);
