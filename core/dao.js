@@ -3207,14 +3207,17 @@ MODEL({
     // Aliases for daoType
     ALIASES: {
       IDB:   'IDBDAO',
-      LOCAL: 'StorageDAO', // Switches for 'ChromeStorageDAO' for Chrome Apps
-      SYNC:  'ChromeSyncStorageDAO'
+      LOCAL: 'StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
+      SYNC:  'StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
     },
 
     init: function(args) {
       this.SUPER(args);
 
-      if ( chrome.storage ) this.ALIASES.LOCAL = 'ChromeStorageDAO';
+      if ( chrome.storage ) {
+        this.ALIASES.LOCAL = 'ChromeStorageDAO';
+        this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
+      }
 
       var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType; 
       var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
