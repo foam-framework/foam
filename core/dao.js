@@ -500,20 +500,20 @@ var JSONToObject = {
 MODEL({
   name: 'AbstractDAO',
 
-  methods: {
+  properties: [
+    {
+      name: 'daoListeners_',
+      factory: function() { return []; }
+    }
+  ],
 
+  methods: {
     update: function(expr) {
       return this.select(UPDATE(expr, this));
     },
 
     listen: function(sink, options) {
       sink = this.decorateSink_(sink, options, true);
-      if ( ! this.daoListeners_ ) {
-        Object.defineProperty(this, 'daoListeners_', {
-          enumerable: false,
-          value: []
-        });
-      }
       this.daoListeners_.push(sink);
     },
 
@@ -593,14 +593,12 @@ MODEL({
 
     unlisten: function(sink) {
       var ls = this.daoListeners_;
-      if ( ls ) {
-        for ( var i = 0; i < ls.length ; i++ ) {
-          if ( ls[i].$UID === sink.$UID ) {
-            ls.splice(i, 1);
-            return true;
-          }
+      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
+      for ( var i = 0; i < ls.length ; i++ ) {
+        if ( ls[i].$UID === sink.$UID ) {
+          ls.splice(i, 1);
+          return true;
         }
-        console.warn('Phantom DAO unlisten: ', this, sink);
       }
     },
 
@@ -627,7 +625,6 @@ MODEL({
      **/
     notify_: function(fName, args) {
 //       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
-      if ( ! this.daoListeners_ ) return;
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
@@ -671,7 +668,7 @@ MODEL({
       preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
         this.model = this.model || newDAO.model;
-        if ( this.daoListeners_ && this.daoListeners_.length ) {
+        if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           this.notify_('put', []);
@@ -717,7 +714,7 @@ MODEL({
 
     listen: function(sink, options) {
       // Adding first listener, so listen to delegate
-      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length ) {
         this.delegate.listen(this.relay());
       }
 
@@ -728,7 +725,7 @@ MODEL({
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length ) {
         this.delegate.unlisten(this.relay());
       }
     }

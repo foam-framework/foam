@@ -113,20 +113,28 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'sort',
-      toMemento: function(sortOrder) { return sortOrder.toMQL(); },
+      toMemento: function(sortOrder) { console.log('sort to memento: ', sortOrder.toMQL()); return sortOrder.toMQL(); },
       fromMemento: function(sort) {
         var ps = sort.split(' ');
+        var sorts = [];
         for ( var i = 0 ; i < ps.length ; i++ ) {
           var p = ps[i];
+          var name = p.charAt('0') == '-' ? p.substring(1) : p;
+          var prop = QIssue.getProperty(name);
+
+          if ( ! prop ) {
+            console.warn("Property not found: ", name);
+            continue;
+          }
           if ( p.charAt('0') == '-' ) {
-            ps[i] = DESC(QIssue.getProperty(p.substring(1)));
+            sorts.push(DESC(prop));
           } else {
-            ps[i] = QIssue.getProperty(p);
+            sorts.push(prop);
           }
         }
-        if ( ps.length != 1 ) { console.warn('TODO: implement support for CompoundComparators: ', sort); }
-        return ps[0];
-//        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
+
+        if ( sorts.length == 0 ) return '';
+        return ( sorts.length == 1 ) ? sorts[0] : CompoundComparator.apply(null, sorts) ;
       }
     },
     {

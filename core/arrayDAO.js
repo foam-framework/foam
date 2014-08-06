@@ -20,6 +20,10 @@
 
   var pmap = {};
   for ( var key in AbstractDAO.methods ) {
+    // Skip listen as it isn't suitable for arrays.
+    if ( key === "listen" ||
+         key === "unlisten" ||
+         key === "notify_" ) continue;
     pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
   }
 
@@ -28,6 +32,31 @@
 
 
 defineProperties(Array.prototype, {
+  listen: function(sink, options) {
+    sink = this.decorateSink_(sink, options, true);
+    if ( ! this.daoListeners_ ) {
+      Object.defineProperty(this, 'daoListeners_', {
+        enumerable: false,
+        value: []
+      });
+    }
+    this.daoListeners_.push(sink);
+  },
+  unlisten: function() {
+    if ( ls ) {
+      for ( var i = 0; i < ls.length ; i++ ) {
+        if ( ls[i].$UID === sink.$UID ) {
+          ls.splice(i, 1);
+          return true;
+        }
+      }
+      console.warn('Phantom DAO unlisten: ', this, sink);
+    }
+  },
+  notify_: function() {
+    if ( ! this.daoListeners_ ) return;
+    AbstractDAO.methods['notify_'].apply(this, arguments);
+  },
   // Clone this Array and remove 'v' (only 1 instance)
   // TODO: make faster by copying in one pass, without splicing
   deleteF: function(v) {

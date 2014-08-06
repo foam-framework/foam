@@ -371,6 +371,7 @@ MODEL({
 
    methods: {
      init: function() {
+       this.SUPER();
        this.relay_ = {
          put:    function() { this.invalidate(); this.mergedPutNotify();    }.bind(this),
          remove: function() { this.invalidate(); this.mergedRemoveNotify(); }.bind(this)
@@ -450,8 +451,10 @@ MODEL({
 
        // Auto index the buffer, but set an initial index for the current
        // sort order.
-       if ( options && options.order) auto.addIndex(options.order);
-       buf.addRawIndex(auto);
+       if ( options && options.order && Property.isInstance(options.order) ) {
+         auto.addIndex(options.order);
+         buf.addRawIndex(auto);
+       }
 
        this.activeQuery = query;
 
