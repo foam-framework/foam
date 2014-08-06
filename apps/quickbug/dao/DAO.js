@@ -371,6 +371,7 @@ MODEL({
 
    methods: {
      init: function() {
+       this.SUPER();
        this.relay_ = {
          put:    function() { this.invalidate(); this.mergedPutNotify();    }.bind(this),
          remove: function() { this.invalidate(); this.mergedRemoveNotify(); }.bind(this)
