@@ -163,13 +163,30 @@ MODEL({
     {
       name: 'bookmarkDAO',
       factory: function() {
-        return this.X.EasyDAO.create({
+        var newDAO = this.X.EasyDAO.create({
           model:   Bookmark,
           name:    this.projectName + '_' + Bookmark.plural,
           cache:   true,
           guid:    true,
           daoType: 'SYNC'
         }).orderBy(Bookmark.ID);
+
+        // Migrate bookmarks from old DAO to new SyncStorage.
+        // TODO: Remove this code after a couple versions when all data has been translated.
+        var oldDAO = this.X.EasyDAO.create({
+          model:   Bookmark,
+          name:    this.projectName + '_' + Bookmark.plural,
+          cache:   true
+        });
+
+        oldDAO.select({put: function(bookmark) {
+          bookmark.id = '';
+          newDAO.put(bookmark);
+        }})(function() {
+          oldDAO.removeAll();
+        });
+
+        return newDAO;
       },
       transient: true
     },
