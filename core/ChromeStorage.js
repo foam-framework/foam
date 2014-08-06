@@ -17,15 +17,23 @@
 
 MODEL({
   name: 'ChromeStorageDAO',
-  extendsModel: 'AbstractDAO',
   label: 'Chrome Storage DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       required: true
+    },
+    {
+      name:  'name',
+      label: 'Store Name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
+      }
     },
     {
       name:  'store',
@@ -38,7 +46,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.serialize = this.SimpleSerialize;
+      this.serialize   = this.SimpleSerialize;
       this.deserialize = this.SimpleDeserialize;
     },
 
@@ -55,9 +63,15 @@ MODEL({
     },
 
     SimpleSerialize: function(obj) {
-      return obj.instance_;
+      var s = {};
+      for ( var key in obj.instance_ ) {
+        var prop = obj.model_.getProperty(key);
+        if ( ! prop.transient ) s[key] = obj.instance_[key];
+      }
+      return s;
     },
 
+    /*
     put: function(value, sink) {
       var self = this;
 
@@ -88,35 +102,65 @@ MODEL({
         });
       }
     },
+    */
 
-    /* Simple put without batching.
+    toID_: function(obj) {
+      return this.name + '-' + obj.id;
+    },
+
+    // Simple put without batching.
     put: function(value, sink) {
-      var self = this;
-      this.store.set({id: value}, function() {
+      var map = {};
+      map[this.toID_(value)] = this.serialize(value);
+      this.store.set(map, function() {
         // TODO: check runtime.lastError and call sink.error instead of set
         sink && sink.put && sink.put(value);
       });
     },
-    */
 
     find: function(key, sink) {
+      throw "Unsupported Operation: ChromeStorage.find(). Add CachingDAO.";
+      /*
       this.store.get({id: key}, function(obj) {
         sink.put(obj);
       });
+      */
     },
 
     remove: function(obj, sink) {
-      this.store.remove(obj, sink);
+      this.store.remove(this.toID_(obj), function() {
+        debugger;
+      });
     },
 
     select: function(sink, options) {
+      sink = sink || [];
       var future = afuture();
-      this.store.get(null, function() {
-        console.log('select ', arguments);
+      var prefix = this.name + '-';
+      this.store.get(null, function(map) {
+        for ( key in map ) {
+          if ( key.startsWith(prefix ) ) {
+            sink && sink.put && sink.put(map[key]);
+          }
+        }
+        future.set(sink);
       });
       return future.get;
     }
   }
 });
 
-IDBDAO = ChromeStorageDAO;
+
+MODEL({
+  name: 'ChromeSyncStorageDAO',
+  label: 'Chrome Sync Storage DAO',
+
+  extendsModel: 'ChromeStorageDAO',
+
+  properties: [
+    {
+      name:  'store',
+      defaultValueFn: function() { return chrome.storage.sync; }
+    }
+  ]
+});

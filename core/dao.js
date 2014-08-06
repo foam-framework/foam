@@ -1119,7 +1119,6 @@ MODEL({
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       required: true
     },
@@ -3166,13 +3165,23 @@ MODEL({
   ],
 
   methods: {
+    // Aliases for daoType
+    ALIASES: {
+      IDB:   'IDBDAO',
+      LOCAL: 'StorageDAO', // Switches for 'ChromeStorageDAO' for Chrome Apps
+      SYNC:  'ChromeSyncStorageDAO'
+    },
+
     init: function(args) {
       this.SUPER(args);
 
-      var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
-      var params = { model: this.model, autoIndex: this.autoIndex };
+      if ( chrome.storage ) this.ALIASES.LOCAL = 'ChromeStorageDAO';
 
-      if ( this.name  ) params.name = this.name;
+      var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType; 
+      var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
+      var params   = { model: this.model, autoIndex: this.autoIndex };
+
+      if ( this.name  ) params.name     = this.name;
       if ( this.seqNo ) params.property = this.seqProperty;
 
       var dao = daoModel.create(params);
@@ -3183,7 +3192,7 @@ MODEL({
         dao = this.X.MigrationDAO.create({
           delegate: dao,
           rules: this.migrationRules,
-          name: this.model.name + "_" + this.daoType + "_" + this.name
+          name: this.model.name + "_" + daoModel.name + "_" + this.name
         });
         if ( this.cache ) {
           this.mdao = MDAO.create(params);
@@ -3211,8 +3220,7 @@ MODEL({
     addRawIndex: function() {
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
       return this;
-    },
-
+    }
   }
 });
 
