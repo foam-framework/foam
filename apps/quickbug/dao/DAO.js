@@ -450,8 +450,10 @@ MODEL({
 
        // Auto index the buffer, but set an initial index for the current
        // sort order.
-       if ( options && options.order) auto.addIndex(options.order);
-       buf.addRawIndex(auto);
+       if ( options && options.order && Property.isInstance(options.order) ) {
+         auto.addIndex(options.order);
+         buf.addRawIndex(auto);
+       }
 
        this.activeQuery = query;
 

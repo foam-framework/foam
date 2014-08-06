@@ -323,11 +323,12 @@ Object.defineProperty(Array.prototype, 'fReduce', {
 /** Reverse the direction of a comparator. **/
 
 var CompoundComparator = function() {
-  var cs = argsToArray(arguments);
+  var args = argsToArray(arguments);
+  var cs = [];
 
   // Convert objects with .compare() methods to compare functions.
-  for ( var i = 0 ; i < cs.length ; i++ )
-    cs[i] = toCompare(cs[i]);
+  for ( var i = 0 ; i < args.length ; i++ )
+    cs[i] = toCompare(args[i]);
 
   var f = function(o1, o2) {
     for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -337,7 +338,9 @@ var CompoundComparator = function() {
     return 0;
   };
 
-  f.toSQL = function() { return cs.join(','); };
+  f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
+  f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
+  f.toString = f.toSQL;
 
   return f;
 };
