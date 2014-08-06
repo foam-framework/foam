@@ -15,6 +15,29 @@
  * limitations under the License.
  */
 
+
+var VersionParser = {
+  __proto__: grammar,
+
+  START: repeat(sym('component'), optional(sym('separator'))),
+
+  component: alt(
+    sym('number'),
+    sym('string')
+  ),
+
+  digit: range('0', '9'),
+
+  number: plus(sym('digit')),
+
+  string: str(plus(not(alt(sym('digit'), sym('separator')), anyChar))),
+
+  separator: alt('.', '-')
+}.addActions({
+  number: function(v) { return parseInt(v.join('')); }
+});
+
+
 // Accumulator which formats objects in a column.  Used within GridView
 var COL = {
   create: function() { return { __proto__: this, values: [] }; },
