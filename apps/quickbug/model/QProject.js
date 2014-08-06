@@ -167,7 +167,7 @@ MODEL({
           model:   Bookmark,
           name:    this.projectName + '_' + Bookmark.plural,
           cache:   true,
-          seqNo:   true,
+          guid:    true,
           daoType: 'SYNC'
         }).orderBy(Bookmark.ID);
       },

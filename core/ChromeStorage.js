@@ -51,10 +51,6 @@ MODEL({
 
       var self = this;
 
-      this.listen(function() {
-        console.log('*******88 DAO Listener: ', arguments);
-      });
-
       chrome.storage.onChanged.addListener(function(changes, namespace) {
         for ( key in changes ) {
           if ( chrome.storage[namespace] === self.store && self.isID_(key) ) {
