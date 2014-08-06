@@ -48,6 +48,22 @@ MODEL({
 
       this.serialize   = this.SimpleSerialize;
       this.deserialize = this.SimpleDeserialize;
+
+      var self = this;
+
+      chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for ( key in changes ) {
+          if ( chrome.storage[namespace] === self.store && self.isID_(key) ) {
+            console.log(key, ' -> ', changes[key]);
+            if ( changes[key].newValue ) {
+              self.notify_('put', [changes[key].newValue]);
+            } else {
+              self.notify_('remove', [changes[key].oldValue]);
+            }
+          }
+        }
+      });
+
     },
 
     FOAMDeserialize: function(json) {
@@ -108,6 +124,10 @@ MODEL({
       return this.name + '-' + obj.id;
     },
 
+    isID_: function(id) {
+      return id.startsWith(this.prefix_ || ( this.prefix_ = this.name + '-' ) );
+    },
+
     // Simple put without batching.
     put: function(value, sink) {
       var map = {};
@@ -129,17 +149,17 @@ MODEL({
 
     remove: function(obj, sink) {
       this.store.remove(this.toID_(obj), function() {
-        debugger;
+        sink && sink.remove && sink.remove(obj);
       });
     },
 
     select: function(sink, options) {
+      var self = this;
       sink = sink || [];
       var future = afuture();
-      var prefix = this.name + '-';
       this.store.get(null, function(map) {
         for ( key in map ) {
-          if ( key.startsWith(prefix ) ) {
+          if ( self.isID_(key) ) {
             sink && sink.put && sink.put(map[key]);
           }
         }
