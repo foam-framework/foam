@@ -1119,7 +1119,6 @@ MODEL({
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       required: true
     },
