@@ -859,8 +859,8 @@
           });
 
           var allViews = AllViews.create();
-          var dv1 = DetailView.create({value: SimpleValue.create(allViews)});
-          var dv2 = DetailView.create({value: SimpleValue.create(allViews)});
+          var dv1 = DetailView.create({ data: allViews });
+          var dv2 = DetailView.create({ data: allViews });
           log('&lt;table&gt;&lt;tr&gt;&lt;td&gt;' + dv1.toHTML() + '&lt;/td&gt;&lt;td&gt;' + dv2.toHTML() + '&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;');
           dv1.initHTML();
           dv2.initHTML();
@@ -910,8 +910,8 @@
         <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
         <property name="code" type="function">
           var t   = Timer.create();
-          var dv1 = DetailView.create({value: SimpleValue.create(t)});
-          var dv2 = DetailView.create({value: SimpleValue.create(t)});
+          var dv1 = DetailView.create({ data: t });
+          var dv2 = DetailView.create({ data: t });
 
           render(dv1);
           render(dv2);
@@ -922,10 +922,10 @@
         <property name="description">Test DetailView's ability to switch to value with a different Model.</property>
         <property name="code" type="function">
           var t  = Timer.create();
-          var dv = DetailView.create({value: SimpleValue.create(t)});
+          var dv = DetailView.create({ data: t });
 
           render(dv);
-          dv.value.set(TextFieldView.create());
+          dv.data = TextFieldView.create();
         </property>
       </object>
       <object model="UITest">
@@ -933,10 +933,10 @@
         <property name="description">Test DetailView's ability to switch to value with a different Model when showActions is set to true.</property>
         <property name="code" type="function">
           var t  = Timer.create();
-          var dv = DetailView.create({showActions:true, value: SimpleValue.create(t)});
+          var dv = DetailView.create({showActions:true, data: t });
 
           render(dv);
-          dv.value.set(TextFieldView.create());
+          dv.data = TextFieldView.create();
         </property>
       </object>
       <object model="UITest">
@@ -1043,7 +1043,7 @@
         ]
       });
 
-      var view = DetailView.create({ value: SimpleValue.create(Message.create()) });
+      var view = DetailView.create({ data: Message.create() });
       render(view);
     </property>
   </object>

@@ -4285,7 +4285,7 @@ MODEL({
   methods: {
     initHTML: function() {
       var parent = this.parent;
-      var test   = parent.obj;
+      var test   = parent.data;
       var $ = this.$;
       test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
       test.scope.render = function(v) {

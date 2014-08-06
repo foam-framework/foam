@@ -20,10 +20,6 @@
 
   var pmap = {};
   for ( var key in AbstractDAO.methods ) {
-    // Skip listen as it isn't suitable for arrays.
-    if ( key === "listen" ||
-         key === "unlisten" ||
-         key === "notify_" ) continue;
     pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
   }
 
@@ -32,30 +28,17 @@
 
 
 defineProperties(Array.prototype, {
-  listen: function(sink, options) {
-    sink = this.decorateSink_(sink, options, true);
-    if ( ! this.daoListeners_ ) {
-      Object.defineProperty(this, 'daoListeners_', {
-        enumerable: false,
-        value: []
-      });
-    }
-    this.daoListeners_.push(sink);
+  listen: function() {
+    throw "Unsupported:  Use ArrayDAO wrapper for listen support.";
   },
   unlisten: function() {
-    if ( ls ) {
-      for ( var i = 0; i < ls.length ; i++ ) {
-        if ( ls[i].$UID === sink.$UID ) {
-          ls.splice(i, 1);
-          return true;
-        }
-      }
-      console.warn('Phantom DAO unlisten: ', this, sink);
-    }
+    throw "Unsupported:  Use ArrayDAO wrapper for listen support.";
   },
   notify_: function() {
-    if ( ! this.daoListeners_ ) return;
-    AbstractDAO.methods['notify_'].apply(this, arguments);
+    throw "Unsupported: Use ArrayDAO wrapper for listen support.";
+  },
+  asDAO: function() {
+    return ArrayDAO.create({ array: this });
   },
   // Clone this Array and remove 'v' (only 1 instance)
   // TODO: make faster by copying in one pass, without splicing
@@ -120,7 +103,7 @@ defineProperties(Array.prototype, {
       }
     */
     this.push(obj);
-    this.notify_('put', arguments);
+//    this.notify_('put', arguments);
     sink && sink.put && sink.put(obj);
   },
   find: function(query, sink) {
@@ -151,7 +134,7 @@ defineProperties(Array.prototype, {
     for ( var idx in this ) {
       if ( this[idx].id === id ) {
         var rem = this.splice(idx,1)[0];
-        this.notify_('remove', rem);
+//        this.notify_('remove', rem);
         sink && sink.remove && sink.remove(rem[0]);
         return;
       }
@@ -166,7 +149,7 @@ defineProperties(Array.prototype, {
       var obj = this[i];
       if (options.query.f(obj)) {
         var rem = this.splice(i,1)[0];
-        this.notify_('remove', [rem]);
+//        this.notify_('remove', [rem]);
         sink && sink.remove && sink.remove(rem);
         i--;
       }

@@ -37,8 +37,11 @@
 
    </script>
   <script>
-    var mbug = MBug.create();
-    mbug.write(document);
+    var Y = bootCORE(Application.create({
+      name: 'MBug'
+    }));
+    var mbug = Y.MBug.create();
+    mbug.write(Y.document);
   </script>
  </body>
 </html>
