@@ -1,10 +1,10 @@
 <%
   var test = this.data;
   var ifError = function() { return this.failed; }.bind(test);
-  var cView = DAOListView.create({
+  var cView = ArrayView.create({
       model: UnitTest,
-      dao: test.tests,
-      rowView: 'DemoView',
+      data: test.tests,
+      daoView: DAOListView.create({ rowView: 'DemoView', mode: 'read-only' }),
       mode: 'read-only'
   });
 
@@ -13,7 +13,7 @@
 <h3>{{test.name}}</h3>
 <% if ( test.description ) { %>
    <div class="description">
-     {{{test.description}}}
+     {{test.description}}
    </div>
    <br>
 <% } %>
@@ -23,7 +23,7 @@
   <br>
   <div>Output:</div>
   <pre>
-  <div class="output" id="<%= this.setClass('error', ifError) %>">$$results</div>
+  <div class="output" id="<%= this.setClass('error', ifError) %>">$$results{ escapeHTML: false }</div>
   </pre>
 <% } %>
   <blockquote><%= cView %></blockquote>
