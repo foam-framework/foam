@@ -3061,7 +3061,7 @@ MODEL({
         view.publish('blur');
       });
     },
-    textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
+    textToValue: function(text) { return text === "" ? [] : text.replace(/\s/g,'').split(','); },
     valueToText: function(value) { return value ? value.toString() : ""; }
   }
 });
