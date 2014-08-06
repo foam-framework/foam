@@ -856,6 +856,43 @@ MODEL({
 });
 
 
+
+MODEL({
+  name: 'GUIDDAO',
+  label: 'GUIDDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'property',
+      type: 'Property',
+      required: true,
+      hidden: true,
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
+      transient: true
+    }
+  ],
+
+  methods: {
+    createGUID: function() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    },
+
+    put: function(obj, sink) {
+      obj[this.property.name] = this.createGUID();
+
+      this.delegate.put(obj, sink);
+    }
+  }
+});
+
+
 MODEL({
   name: 'CachingDAO',
 
@@ -3130,6 +3167,11 @@ MODEL({
       defaultValue: false
     },
     {
+      model_: 'BooleanProperty',
+      name: 'guid',
+      defaultValue: false
+    },
+    {
       name: 'seqProperty',
       type: 'Property'
     },
@@ -3181,8 +3223,8 @@ MODEL({
       var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
-      if ( this.name  ) params.name     = this.name;
-      if ( this.seqNo ) params.property = this.seqProperty;
+      if ( this.name  ) params.name = this.name;
+      if ( this.seqNo || this.guid ) params.property = this.seqProperty;
 
       var dao = daoModel.create(params);
 
@@ -3200,10 +3242,18 @@ MODEL({
         }
       }
 
+      if ( this.seqNo && this.guid ) throw "EasyDAO 'seqNo' and 'guid' features are mutually exclusive.";
+
       if ( this.seqNo ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
         dao = SeqNoDAO.create(args);
+      }
+
+      if ( this.guid ) {
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = GUIDDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
