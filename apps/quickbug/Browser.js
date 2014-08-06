@@ -621,7 +621,7 @@ Please use labels and text to provide additional information.
               mode:             'read-write',
               url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
-              issueDAO:         self.issueDAO,
+              issueDAO:         self.IssueDAO,
               cursorIssueDAO:   self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
                 self.filteredIssueDAO
