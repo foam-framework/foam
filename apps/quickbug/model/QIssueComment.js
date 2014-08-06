@@ -90,7 +90,7 @@ MODEL({
       function updateField(field) {
         for ( var i = 0; i < comment[field].length; i++ ) {
           if ( comment[field][i][0] === '-' )
-            issue[field] = issue[field].removeF(comment[field][i].substr(1));
+            issue[field] = issue[field].removeF({ f: function(s) { return s === comment[field][i].substr(1); } });
           else
             issue[field] = issue[field].pushF(comment[field][i]);
         }

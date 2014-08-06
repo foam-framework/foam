@@ -17,8 +17,7 @@ MODEL({
     },
     {
       model_: 'DAOProperty',
-      name: 'issueDAO',
-      onDAOUpdate: 'onDAOUpdate'
+      name: 'issueDAO'
     },
     {
       model_: 'DAOProperty',
@@ -55,25 +54,6 @@ MODEL({
 
   listeners: [
     {
-      name: 'onDAOUpdate',
-      isMerged: 100,
-      code: function() {
-        if ( ! this.data ) return;
-        if ( ! this.$ ) return;
-
-        var self = this;
-        this.issueDAO.find(this.data.id, {
-          put: function(obj) {
-            if ( obj.equals(self.data) ) return;
-            self.saveEnabled = false;
-            self.data.copyFrom(obj);
-            self.newCommentView.issue = obj;
-            self.saveEnabled = true;
-          }
-        });
-      }
-    },
-    {
       name: 'doSave',
       code: function() {
         // Don't keep listening if we're no longer around.
@@ -98,7 +78,8 @@ MODEL({
     commentCreateView: function() {
       return this.newCommentView = this.X.QIssueCommentCreateView.create({
         dao: this.QIssueCommentDAO,
-        issue: this.data
+        issue$: this.data$,
+        data: this.data.newComment()
       });
     },
     clView: function() {
@@ -109,8 +90,22 @@ MODEL({
     },
     updateSubViews: function() {
       this.SUPER();
+      this.newCommentView.data = this.data.newComment();
       this.saveEnabled = true;
-    }
+    },
+    refresh: function() {
+      var self = this;
+      self.issueDAO.where(EQ(QIssue.ID, self.data.id)).listen(
+        EventService.oneTime(function() {
+          self.issueDAO.find(self.data.id, {
+            put: function(issue) {
+              self.data = issue;
+              self.newCommentView.issue
+            }
+          });
+        })
+      );
+    },
   },
 
   templates: [
