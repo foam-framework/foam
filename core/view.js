@@ -1222,9 +1222,9 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'escapeHTML',
-      // defaultValue: true,
+      defaultValue: true,
       // TODO: make the default 'true' for security reasons
-      help: 'If true, HTML content is excaped in display mode.'
+      help: 'If true, HTML content is escaped in display mode.'
     },
     {
       model_: 'StringProperty',

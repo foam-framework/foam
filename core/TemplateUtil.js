@@ -121,7 +121,7 @@ var TemplateCompiler = {
    },
    'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },
    'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-   'values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
+   'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
    'live value tag': function (v) { this.push("',\nthis.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
    'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
    'single quote': function () { this.push("\\'"); },
