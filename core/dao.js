@@ -503,6 +503,8 @@ MODEL({
   properties: [
     {
       name: 'daoListeners_',
+      transient: true,
+      hidden: true,
       factory: function() { return []; }
     }
   ],
@@ -3166,6 +3168,7 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'guid',
+      label: 'GUID',
       defaultValue: false
     },
     {
