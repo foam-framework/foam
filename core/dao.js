@@ -3219,7 +3219,7 @@ MODEL({
         this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
       }
 
-      var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType; 
+      var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
       var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
@@ -3231,11 +3231,13 @@ MODEL({
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
       } else {
-        dao = this.X.MigrationDAO.create({
-          delegate: dao,
-          rules: this.migrationRules,
-          name: this.model.name + "_" + daoModel.name + "_" + this.name
-        });
+        if ( this.migrationRules && this.migrationRules.length ) {
+          dao = this.X.MigrationDAO.create({
+            delegate: dao,
+            rules: this.migrationRules,
+            name: this.model.name + "_" + daoModel.name + "_" + this.name
+          });
+        }
         if ( this.cache ) {
           this.mdao = MDAO.create(params);
           dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
