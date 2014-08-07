@@ -37,6 +37,28 @@ var VersionParser = {
   number: function(v) { return parseInt(v.join('')); }
 });
 
+function createVersionComparator() {
+  var m = {};
+  
+  function toKey(o) {
+    return m[o] || ( m[o] = VersionParser.parseString(o) );
+  }
+
+  return function(o1, o2) {
+    o1 = toKey(o1);
+    o2 = toKey(o2);
+
+    for ( var i = 0 ; ; i++ ) {
+      if ( i == o1.length && i == o2.length ) return 0;
+      if ( i == o1.length ) return -1;
+      if ( i == o2.length ) return  1;
+      if ( typeof o1[i] === 'string' && typeof o2[i] !== 'string' ) return  1;
+      if ( typeof o1[i] !== 'string' && typeof o2[i] === 'string' ) return -1;
+      var c = o2.compareTo(o1);
+      if ( c !== 0 ) return c;
+    }
+  };
+};
 
 // Accumulator which formats objects in a column.  Used within GridView
 var COL = {
@@ -81,19 +103,9 @@ var DragAndDropGrid = FOAM({
     // TODO: this can be moved to the Model now.
     sortAxis: function(values, f) {
       return values.sort(
-        f.name === 'milestone' || f.name === 'iteration' ? function(o1, o2) {
-          if ( o1 === '' && o2 === '' ) return 0;
-          if ( o1 === '' ) return -1;
-          if ( o2 === '' ) return 1;
-          var i1 = parseInt(o1);
-          var i2 = parseInt(o2);
-          if ( isNaN(i1) && isNaN(i2) ) return o1.compareTo(o2);
-          if ( isNaN(i1) ) return 1;
-          if ( isNaN(i2) ) return -1;
-
-          return i2.compareTo(i1);
-        } :
-        f.compareProperty);
+        f.name === 'milestone' || f.name === 'iteration' ?
+          createVersionComparator() :
+          f.compareProperty);
     },
     renderCell: function(x, y, data) {
       var cell = IssueDropCell.create({
