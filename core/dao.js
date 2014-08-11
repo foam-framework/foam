@@ -2538,7 +2538,7 @@ MODEL({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          this.X.ajsonp(url, myparams)(function(data) {
+          self.X.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
