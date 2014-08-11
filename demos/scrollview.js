@@ -65,7 +65,8 @@ MODEL({
     {
       name: 'mode',
       defaultValue: 'read-only'
-    }
+    },
+    'data'
   ],
 
   /* FIXME: the following doesn't work at the moment.

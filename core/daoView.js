@@ -693,7 +693,7 @@ MODEL({
       this.scroll();
       this.$.addEventListener('wheel', this.onWheel);
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        element: this.$,
+        container: this,
         handler: this,
         gesture: 'verticalScroll'
       }));
@@ -873,7 +873,7 @@ MODEL({
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
 
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        element: this.$,
+        container: this,
         handler: this,
         gesture: 'verticalScroll'
       }));
@@ -943,12 +943,10 @@ MODEL({
 
           // Now all three arrays are populated. We need to initHTML
           // all the newly-created elements, though.
-          //self.X.window.setTimeout(function() {
-            self.visibleRows.forEach(function(r, i) {
-              r.view.initHTML();
-              r.y = Math.max(self.scrollTop - self.runway, 0) + i * self.rowHeight;
-            });
-          //}, 1);
+          self.visibleRows.forEach(function(r, i) {
+            r.view.initHTML();
+            r.y = Math.max(self.scrollTop - self.runway, 0) + i * self.rowHeight;
+          });
         });
       } else {
         // If we already have data loaded, we just checked for needing more above and below.

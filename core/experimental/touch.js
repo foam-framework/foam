@@ -387,7 +387,7 @@ MODEL({
       // I conflict with: vertical and horizontal scrolling, when using touch.
       if ( Object.keys(map).length > 1 ) return;
       var point = map[Object.keys(map)[0]];
-      var r = point.dx != 0 || point.dy != 0;
+      var r = point.dx !== 0 || point.dy !== 0;
       return r;
     },
 
@@ -450,8 +450,8 @@ MODEL({
       var points = this.getPoints(map);
       return ! points[0].done &&
              ! points[1].done &&
-             ( points[0].dx != 0 || points[0].dy != 0 ) &&
-             ( points[1].dx != 0 || points[1].dy != 0 );
+             ( points[0].dx !== 0 || points[0].dy !== 0 ) &&
+             ( points[1].dx !== 0 || points[1].dy !== 0 );
     },
 
     attach: function(map, handlers) {
@@ -534,26 +534,27 @@ MODEL({
 
 MODEL({
   name: 'GestureTarget',
+  help: 'Created by each view that wants to receive gestures.',
   properties: [
-    'x', 'y', 'width', 'height',
-    'handler', 'gesture',
     {
-      name: 'element',
-      help: 'Convenience for setting the bounding rect of this target to be a DOM element',
-      setter: function(e) {
-        this.x      = e.offsetTop;
-        this.y      = e.offsetLeft;
-        this.width  = e.offsetWidth;
-        this.height = e.offsetHeight;
-      }
+      name: 'gesture',
+      help: 'The name of the gesture to be tracked.'
+    },
+    {
+      name: 'container',
+      help: 'The containing object. The GestureManager will call containsPoint() on it.'
+    },
+    {
+      name: 'handler',
+      help: 'The target for the gesture\'s events, after it has been recognized.'
     }
   ],
 
   methods: {
-    inside: function(p) {
-      return this.x <= p.x && this.y <= p.y &&
-          p.x <= this.x + this.width &&
-          p.y <= this.y + this.height;
+    // TODO: Add support for this to CView2.
+    containsPoint: function(point) {
+      return this.container.containsPoint(point.x, point.y,
+          this.X.document.elementFromPoint(point.x, point.y));
     }
   }
 });
@@ -641,7 +642,7 @@ MODEL({
   listeners: [
     {
       name: 'onTouchStart',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         // If we've already recognized, it's up to that code to handle the new point.
         if ( this.recognized ) {
           this.recognized.addPoint && this.recognized.addPoint(touch);
@@ -653,7 +654,7 @@ MODEL({
         if ( ! pointCount ) {
           // Check rectangles, since this is the first point.
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].inside(touch) ) {
+            if ( this.targets[i].containsPoint(touch) ) {
               var g = this.gestures[this.targets[i].gesture];
               if ( ! g ) continue;
               if ( ! this.active[g.name] ) this.active[g.name] = [];
@@ -688,7 +689,7 @@ MODEL({
         if ( ! pointCount ) {
           // Check rectangles for this first point.
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].inside(point) ) {
+            if ( this.targets[i].containsPoint(point) ) {
               var g = this.gestures[this.targets[i].gesture];
               if ( ! g ) continue;
               if ( ! this.active[g.name] ) this.active[g.name] = [];
@@ -703,7 +704,7 @@ MODEL({
     },
     {
       name: 'onTouchMove',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         if ( this.recognized ) return;
         this.checkRecognition();
       }
@@ -721,7 +722,7 @@ MODEL({
     },
     {
       name: 'onTouchEnd',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         if ( ! this.recognized ) {
           this.checkRecognition();
         }
@@ -782,7 +783,7 @@ MODEL({
           this.active[gesture] = [];
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
             if ( this.targets[i].gesture === gesture &&
-                this.targets[i].inside(wheel) ) {
+                this.targets[i].containsPoint(wheel) ) {
               this.active[gesture].push(this.targets[i]);
             }
           }
@@ -810,62 +811,11 @@ MODEL({
       code: function() {
         this.wheelTimer = undefined;
         this.points.wheel.done = true;
-        delete this.points['wheel'];
+        delete this.points.wheel;
         this.recognized = undefined;
       }
     }
   ]
-});
-
-
-// NB: Any new gestures need to be added to the methods of GestureProxyTrait
-// in order to be proxied.
-// TODO: This is much more elegant with __noSuchMethod__, once that exists.
-MODEL({
-  name: 'GestureProxyTrait',
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      var self = this;
-      var factory = function(gesture, method) {
-        self[method] = function() {
-          var args = Array.prototype.splice(0);
-          args.unshift(method);
-          args.unshift(gesture);
-          self.proxyGesture.apply(self, args);
-        };
-      };
-
-      factory('verticalScroll', 'verticalScrollStart');
-      factory('verticalScroll', 'verticalScrollMove');
-      factory('verticalScroll', 'verticalScrollEnd');
-      factory('horizontalScroll', 'horizontalScrollStart');
-      factory('horizontalScroll', 'horizontalScrollMove');
-      factory('horizontalScroll', 'horizontalScrollEnd');
-      factory('drag', 'dragStart');
-      factory('drag', 'dragEnd');
-      factory('tap', 'tapClick');
-      factory('pinchTwist', 'pinchStart');
-      factory('pinchTwist', 'pinchMove');
-      factory('pinchTwist', 'pinchEnd');
-    },
-
-    gestureProxyTarget: function(gesture, method) {
-      // Given the name of the active gesture and the method it was trying to
-      // call, return the object on which that method should be called.
-      // This default implementation does nothing except emit a warning.
-      console.warn('You must implement the abstract method gestureProxyTarget!');
-      return null;
-    },
-
-    proxyGesture: function(gesture, method) {
-      var target = this.gestureProxyTarget(gesture, method);
-      if ( ! target ) return;
-      var args = Array.prototype.splice(arguments, 2);
-      if ( target[method] ) target[method].apply(target, args);
-    }
-  }
 });
 
 /*

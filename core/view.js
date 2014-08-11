@@ -597,6 +597,11 @@ MODEL({
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
+    },
+
+    // Called by the GestureManager, return true if this view is being touched.
+    containsPoint: function(x, y, element) {
+      return this.$ && this.$.contains(element);
     }
   }
 });
@@ -2592,8 +2597,6 @@ MODEL({
   name: 'SwipeAltView',
   extendsModel: 'View',
 
-  traits: ['GestureProxyTrait'],
-
   properties: [
     {
       name: 'views',
@@ -2731,7 +2734,7 @@ MODEL({
 
       window.addEventListener('resize', this.resize, false);
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        element: this.$,
+        container: this,
         handler: this,
         gesture: 'horizontalScroll'
       }));
@@ -2754,13 +2757,6 @@ MODEL({
       }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
-    },
-
-    gestureProxyTarget: function(gesture, method) {
-      // Horizontal scrolling goes to me, everything else to the active child.
-      if ( gesture === 'horizontalScroll' ) return this;
-      console.log(this.views[this.index]);
-      return this.views[this.index].view;
     }
   },
 

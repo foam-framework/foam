@@ -61,10 +61,7 @@ MODEL({
     initHTML: function() {
       this.updatePosition();
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        x$: this.x$,
-        y$: this.y$,
-        width: 400,
-        height: 200,
+        container: this,
         handler: this,
         gesture: 'drag'
       }));
