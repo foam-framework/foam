@@ -818,6 +818,56 @@ MODEL({
 });
 
 
+// NB: Any new gestures need to be added to the methods of GestureProxyTrait
+// in order to be proxied.
+// TODO: This is much more elegant with __noSuchMethod__, once that exists.
+MODEL({
+  name: 'GestureProxyTrait',
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var self = this;
+      var factory = function(gesture, method) {
+        self[method] = function() {
+          var args = Array.prototype.splice(0);
+          args.unshift(method);
+          args.unshift(gesture);
+          self.proxyGesture.apply(self, args);
+        };
+      };
+
+      factory('verticalScroll', 'verticalScrollStart');
+      factory('verticalScroll', 'verticalScrollMove');
+      factory('verticalScroll', 'verticalScrollEnd');
+      factory('horizontalScroll', 'horizontalScrollStart');
+      factory('horizontalScroll', 'horizontalScrollMove');
+      factory('horizontalScroll', 'horizontalScrollEnd');
+      factory('drag', 'dragStart');
+      factory('drag', 'dragEnd');
+      factory('tap', 'tapClick');
+      factory('pinchTwist', 'pinchStart');
+      factory('pinchTwist', 'pinchMove');
+      factory('pinchTwist', 'pinchEnd');
+    },
+
+    gestureProxyTarget: function(gesture, method) {
+      // Given the name of the active gesture and the method it was trying to
+      // call, return the object on which that method should be called.
+      // This default implementation does nothing except emit a warning.
+      console.warn('You must implement the abstract method gestureProxyTarget!');
+      return null;
+    },
+
+    proxyGesture: function(gesture, method) {
+      var target = this.gestureProxyTarget(gesture, method);
+      if ( ! target ) return;
+      var args = Array.prototype.splice(arguments, 2);
+      if ( target[method] ) target[method].apply(target, args);
+    }
+  }
+});
+
 /*
 MODEL({
   name: 'MomentumTouch',

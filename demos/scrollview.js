@@ -55,7 +55,7 @@ MODEL({
 
 MODEL({
   name: 'ContactRowView',
-  extendsModel: 'DetailView',
+  extendsModel: 'View',
 
   properties: [
     {

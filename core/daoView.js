@@ -898,10 +898,13 @@ MODEL({
         var limit = Math.ceil((roomAbove + 3 * this.runway + this.viewportHeight) /
             this.rowHeight);
         var self = this;
+        console.log('scrollView initial fetch: skip = ' + skip + ', limit = ' + limit + ', id = ' + this.id);
         this.dao.skip(skip).limit(limit).select([])(function(a) {
           // a contains invisible above, runway above, viewport, runway below, and invisible below.
           // The invisible portions go in the loadedAbove/Below arrays as a zipper.
           // The visible portions get loaded into visibleRows.
+          if ( a.length === 0 ) return;
+
           var invisibleAbove = Math.floor(Math.max(0, (roomAbove - self.runway) / self.rowHeight));
           for ( var i = 0 ; i < invisibleAbove ; i++ ) {
             self.loadedAbove.push(a.shift());
@@ -909,7 +912,9 @@ MODEL({
 
           // Note that the above removed the invisible portions from the array.
           // Now the visible portion is two runways and the viewport.
-          var visibleCount = Math.ceil( (self.viewportHeight + 2 * self.runway) / self.rowHeight ) + 1;
+          var visibleCount = Math.min(Math.ceil( (self.viewportHeight + 2 * self.runway) / self.rowHeight ) + 1,
+                                      a.length);
+
           // +1 above to make sure there's no feedback where elements
           // get repeatedly shuffled between top and bottom.
           var rowView = FOAM.lookup(self.rowView);
@@ -920,9 +925,9 @@ MODEL({
             var svr = ScrollViewRow.create({ data: r, id: v.nextID() });
             self.visibleRows.push(svr);
 
-            html.push('<div style="width: 100%; position: absolute; height: '
-                + self.rowViewHeight + 'px; overflow: visible" id="' + svr.id
-                + '">');
+            html.push('<div style="width: 100%; position: absolute; height: ' +
+                self.rowViewHeight + 'px; overflow: visible" id="' + svr.id +
+                '">');
             html.push(v.toHTML());
             html.push('</div>');
 
