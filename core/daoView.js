@@ -766,10 +766,12 @@ MODEL({
     {
       name: 'data',
       factory: function() { return []; },
-      postSet: function(_, data) { this.arrayDAO.array = data; }
+      postSet: function(_, data) { if ( this.arrayDAO.array !== data ) this.arrayDAO.array = data; }
     },
     {
+      model_: 'DAOProperty',
       name: 'arrayDAO',
+      onDAOUpdate: 'onDAOUpdate',
       factory: function() {
         return ArrayDAO.create({
           model: this.model,
@@ -779,21 +781,27 @@ MODEL({
     },
     {
       name: 'subType',
-      setter: function(subType) { this.model = subType; }
+      setter: function(subType) { this.model = FOAM.lookup(subType, this.X); }
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'viewType',
+      factory: function() { return 'DAOController'; }
     },
     {
       name: 'daoView',
-      factory: function() {
-        return DAOController.create({ model: this.model });
-      }
     }
   ],
 
   methods: {
     init: function(prop) {
       this.SUPER();
-      this.daoView.dao = this.arrayDAO;
       console.assert(this.model, 'ArrayView requires subType/Model.');
+      this.daoView = this.viewType.create({ model: this.model });
+      this.daoView.dao = this.arrayDAO;
+    },
+    onDAOUpdate: function() {
+      this.data = this.arrayDAO.array;
     },
     toHTML:   function() { return this.daoView.toHTML(); },
     initHTML: function() { return this.daoView.initHTML(); }
