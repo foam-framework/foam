@@ -265,7 +265,7 @@ MODEL({
               falseImage: 'images/ic_star_outline_24dp.png'
             }
           </div>
-          $$body{ mode: 'read-only', className: 'body' }
+          $$body{ mode: 'read-only', className: 'body', escapeHTML: false }
         </div>
       </div>
     */}
