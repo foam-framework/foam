@@ -332,7 +332,20 @@ MODEL({
         }
       </div>
     */}
-   ]
+   ],
+   methods: {
+     init: function() {
+       this.SUPER();
+       var self = this;
+       this.data.addListener(function() {
+         if ( ! this.$ ) return;
+         var priorityElements = this.$.getElementsByClassName('priority');
+         priorityElements.forEach(function(e) {
+           e.outerHTML = self.priorityToHTML();
+         });
+       });
+     }
+   }
 });
 
 

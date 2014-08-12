@@ -745,9 +745,12 @@ MODEL({
       postSet: function(old, nu) {
         if ( this.view ) {
           this.view.data = nu;
-          var e = $(this.id);
-          e.innerHTML = this.view.toHTML();
-          this.view.initHTML();
+          // DetailViews will update on data changing, but others won't.
+          if ( ! DetailView.isInstance(this.view) ) {
+            var e = $(this.id);
+            e.innerHTML = this.view.toHTML();
+            this.view.initHTML();
+          }
         }
       }
     },
@@ -782,11 +785,16 @@ MODEL({
       help: 'The distance in pixels to render outside the viewport'
     },
     {
-      name: 'scrollHeight',
-      dynamicValue: function() {
-        return this.$ && this.count * this.rowHeight;
-      },
+      name: 'count',
+      defaultValue: 0,
       postSet: function(old, nu) {
+        this.scrollHeight = nu * this.rowHeight;
+      }
+    },
+    {
+      name: 'scrollHeight',
+      postSet: function(old, nu) {
+        console.log('updating scrollHeight to ' + nu);
         if ( this.$ ) this.scroller$().style.height = nu + 'px';
       }
     },
@@ -813,6 +821,7 @@ MODEL({
         return nu;
       },
       postSet: function(old, nu) {
+        //console.log('scrolling from ' + old + ' to ' + nu);
         var scroller = this.scroller$();
         if ( scroller ) scroller.style.webkitTransform =
             'translate3d(0px, -' + nu + 'px, 0px)';
@@ -892,7 +901,7 @@ MODEL({
       // If either direction is below the threshold, fetch more data.
       if ( ! this.visibleRows || ! this.visibleRows.length ) {
         // Select triple the runway above and below, plus the viewport.
-        var skip = Math.max((this.scrollTop - 3 * this.runway) / this.rowHeight, 0);
+        var skip = Math.floor( Math.max((this.scrollTop - 3 * this.runway) / this.rowHeight, 0) );
         this.loadedIndex = skip;
         var roomAbove = Math.min(this.scrollTop, 3 * this.runway);
         var limit = Math.ceil((roomAbove + 3 * this.runway + this.viewportHeight) /
@@ -962,6 +971,7 @@ MODEL({
           // If we're short loaded rows above, fetch more.
           // Using setTimeout here because this shouldn't hold up the scroll frame.
           if ( this.loadedIndex > 0 && this.loadedAbove.length < this.runway / this.rowHeight ) {
+            console.log('scheduling loadMoreAbove');
             this.loadMoreAbove();
           }
         }
@@ -977,11 +987,21 @@ MODEL({
 
           // If we're short loaded rows below, fetch more.
           if ( this.bottomIndex < this.count && this.loadedBelow.length < this.runway / this.rowHeight ) {
+            console.log('scheduling loadMoreBelow');
             this.loadMoreBelow();
           }
         }
         // We've now successfully updated, where necessary.
       }
+    },
+
+    // Clears all cached data, when the DAO changes.
+    invalidate: function() {
+      if ( this.visibleRows )
+        this.visibleRows.forEach(function(r) { r.view.data = undefined; });
+      this.visibleRows = [];
+      this.loadedAbove = [];
+      this.loadedBelow = [];
     }
   },
 
@@ -989,8 +1009,10 @@ MODEL({
     {
       name: 'onDAOUpdate',
       code: function() {
+        this.invalidate();
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
+          console.log('setting count = ' + this.count + ' for ' + this.id);
           this.X.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
@@ -999,13 +1021,14 @@ MODEL({
       name: 'loadMoreAbove',
       isAnimated: true,
       code: function() {
-        var max = 2 * this.runway / this.rowHeight;
+        var max = Math.ceil(2 * this.runway / this.rowHeight);
         var old = this.loadedIndex;
         this.loadedIndex = Math.max(0, this.loadedIndex - max);
         this.dao.skip(this.loadedIndex).limit(old - this.loadedIndex).select([])(function(a) {
           this.loadedIndex -= a.length;
           this.loadedAbove.forEach(function(r) { a.push(r); });
           this.loadedAbove = a;
+          console.log('loaded more above');
           this.update();
         }.bind(this));
       }
@@ -1014,7 +1037,7 @@ MODEL({
       name: 'loadMoreBelow',
       isAnimated: true,
       code: function() {
-        var max = 2 * this.runway / this.rowHeight;
+        var max = Math.ceil(2 * this.runway / this.rowHeight);
         this.dao.skip(this.bottomIndex).limit(max).select([])(function(a) {
           var nu = [];
           // Reverse the order of the fetched rows.
@@ -1022,6 +1045,9 @@ MODEL({
           // But keep the order of the existing zipper.
           this.loadedBelow.forEach(function(r) { nu.push(r); });
           this.loadedBelow = nu;
+          console.log('loaded more above');
+          this.update();
+          // TODO: Y U NO update() here, but do update in loadMoreAbove above?
         }.bind(this));
       }
     },

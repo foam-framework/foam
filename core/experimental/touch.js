@@ -271,7 +271,7 @@ MODEL({
       // - has moved at least 10px in the primary direction, and
       // - less than 10px in the other direction.
 
-      if ( Object.keys(map).length > 1 ) return false;
+      if ( Object.keys(map).length !== 1 ) return false;
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
@@ -727,8 +727,8 @@ MODEL({
           this.checkRecognition();
         }
 
+        delete this.points[touch.id];
         if ( this.recognized ) {
-          delete this.points[touch.id];
           if ( Object.keys(this.points).length === 0 ) {
             this.active[this.recognized.name] = [];
             this.recognized = undefined;
@@ -746,8 +746,8 @@ MODEL({
           this.checkRecognition();
         }
 
+        delete this.points.mouse;
         if ( this.recognized ) {
-          delete this.points.mouse;
           if ( Object.keys(this.points).length === 0 ) {
             this.active[this.recognized.name] = [];
             this.recognized = undefined;

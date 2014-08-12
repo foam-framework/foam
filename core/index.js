@@ -974,6 +974,7 @@ var MDAO = Model.create({
     },
 
     put: function(obj, sink) {
+      if ( obj === undefined ) debugger; // XXX: Remove me.
       var oldValue = this.map[obj.id];
       if ( oldValue ) {
         this.root = this.index.put(this.index.remove(this.root, oldValue), obj);

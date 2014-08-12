@@ -323,36 +323,38 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
 MODEL({
-   name: 'QIssueSplitDAO',
-   extendsModel: 'AbstractDAO',
+  name: 'QIssueSplitDAO',
+  extendsModel: 'AbstractDAO',
 
-   properties: [
-      {
-         model_: 'StringProperty',
-         name: 'activeQuery'
-      },
-      {
-         model_: 'StringProperty',
-         name: 'activeOrder'
-      },
-      {
-         name: 'local',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'remote',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'model'
-      },
-   ],
+  properties: [
+    {
+      name: 'queryCache',
+      help: 'An array of [query, order, MDAO<data>] entries, oldest first, and a maximum of queryCount.',
+      factory: function() { return []; }
+    },
+    {
+      name: 'queryCount',
+      help: 'The maximum number of queries to cache.',
+      defaultValue: 5
+    },
+    {
+      name: 'local',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'remote',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'model'
+    },
+  ],
 
   listeners: [
     {
@@ -394,7 +396,7 @@ MODEL({
      },
 
      invalidate: function() {
-       this.buf = this.query = undefined;
+       this.queryCache = [];
      },
 
      put: function(value, sink) {
@@ -445,7 +447,7 @@ MODEL({
      },
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
-       var buf = this.buf = MDAO.create({ model: this.model });
+       var buf = MDAO.create({ model: this.model });
        // TODO: switch to MDAO's 'autoIndex: true' feature when improved.
        var auto = AutoIndex.create(buf);
 
@@ -456,9 +458,11 @@ MODEL({
          buf.addRawIndex(auto);
        }
 
-       this.activeQuery = query;
+       var cacheEntry = [query, order, buf];
+       if ( this.queryCache.length >= this.queryCount ) this.queryCache.shift();
+       this.queryCache.push(cacheEntry);
 
-       this.local.select(buf, options && options.query ? { query: options.query } : {})(
+       this.local.select({ put: function(x) { if (x === undefined) debugger; buf.put(x) } }, options && options.query ? { query: options.query } : {})(
          (function() {
            buf.select(sink, bufOptions)(function(s) { future.set(s); });
 
@@ -469,6 +473,7 @@ MODEL({
            this.remote.limit(500).select({
              put: (function(obj) {
                // Put the object in the buffer, but also cache it in the local DAO
+               if (obj === undefined) debugger;
                buf.put(obj);
                this.putIfMissing(obj);
 
@@ -498,29 +503,37 @@ MODEL({
 
        var future = afuture();
 
-       if ( this.buf && query === this.activeQuery ) {
-         if ( CountExpr.isInstance(sink) ) return this.buf.select(sink, bufOptions);
+       // Search the cache of buffers for a matching query and order.
+       var matchingQueries = this.queryCache.filter(function(e) { return e[0] === query; });
 
-         if ( order && order !== this.activeOrder ) {
-           this.activeOrder = order;
+       if ( matchingQueries.length ) {
+         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
 
-           this.buf.select(COUNT())((function(c) {
+         var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
+         if ( matchingOrder.length > 0 ) {
+           return matchingOrder[0][2].select(sink, bufOptions);
+         } else {
+           // We did NOT find a matching order.
+           // But we do have at least one match for this query with a different order.
+           // Check the size of the first match's buffer. If it's < 500, we've
+           // got all the data and can simply compute the order ourselves.
+           // If it's >= 500, we have only a subset and need to query the server.
+           var match = matchingQueries[0];
+           match[2].select(COUNT())((function(c) {
              if ( c.count < 500 ) {
-               this.buf.select(sink, bufOptions)(function(s) {
+               match[2].select(sink, bufOptions)(function(s) {
                  future.set(s);
                });
              } else {
+               console.log('Creating new query: ' + query + '   ' + order);
                this.newQuery(sink, options, query, order, bufOptions, future);
              }
-           }).bind(this))
-         } else {
-           return this.buf.select(sink, bufOptions);
+           }).bind(this));
          }
        } else {
          if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 
-         this.activeQuery = query;
-         this.activeOrder = order;
+         console.log('Creating new query: ' + query + '   ' + order);
          this.newQuery(sink, options, query, order, bufOptions, future);
        }
 

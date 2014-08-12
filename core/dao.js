@@ -1101,6 +1101,7 @@ function limitedDAO(count, dao) {
 
 
 function skipDAO(skip, dao) {
+  if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
   return {
     __proto__: dao,
     select: function(sink, options) {

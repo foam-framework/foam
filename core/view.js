@@ -633,6 +633,10 @@ MODEL({
       }
     },
     {
+      name: 'value',
+      help: 'Set by bindData()'
+    },
+    {
       name: 'innerView',
       help: 'Override for prop.view'
     },
@@ -683,8 +687,12 @@ MODEL({
     bindData: function(data) {
       var view = this.view;
       if ( ! view || ! data ) return;
-      var pValue = data.propertyValue(this.prop.name);
-      Events.link(pValue, view.data$);
+
+      if ( this.value) {
+        Events.unlink(this.value, view.data$);
+      }
+      this.value = data.propertyValue(this.prop.name);
+      Events.link(this.value, view.data$);
     },
 
     toHTML: function() { return this.view.toHTML(); },
