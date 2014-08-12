@@ -214,8 +214,9 @@ function testModel(model, element) {
 }
 
 
-function arequire(modelName) {
-  var model = GLOBAL[modelName];
+function arequire(modelName, opt_X) {
+  var X = opt_X || GLOBAL;
+  var model = FOAM.lookup(modelName, X);
 
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.

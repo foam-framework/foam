@@ -120,7 +120,7 @@ MODEL({
       type: 'Array[Unit Test]',
       subType: 'UnitTest',
       view: 'ArrayView',
-      fromElement: function(e) { return DOM.initElementChildren(e); },
+      fromElement: function(e) { return DOM.initElementChildren(e, this.X); },
       preSet: function(_, tests) {
         if ( Array.isArray(tests) ) return tests;
 

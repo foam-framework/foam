@@ -94,8 +94,8 @@ var DOM = {
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
       // console.log(e.getAttribute('model'), e.getAttribute('view'));
-      GLOBAL[e.getAttribute('view')];
-      GLOBAL[e.getAttribute('model')];
+      FOAM.lookup(e.getAttribute('view'), X);
+      FOAM.lookup(e.getAttribute('model'), X);
     }
     var models = [];
     for ( var key in USED_MODELS ) {
@@ -104,35 +104,34 @@ var DOM = {
 
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
-        this.initElement(fs[i], X.document);
+        this.initElement(fs[i], X, X.document);
       }
     }.bind(this))();
   },
 
-  initElementChildren: function(e) {
+  initElementChildren: function(e, X) {
     var a = [];
 
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
 
       if ( c.tagName === 'FOAM' ) {
-        a.push(DOM.initElement(c));
+        a.push(DOM.initElement(c, X));
       }
     }
 
     return a;
   },
 
-  // TODO: Supply X and set on created children
   /** opt_document -- if supplied the object's view will be added to the document. **/
-  initElement: function(e, opt_document) {
+  initElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.contains(e) ) return;
 
     var args = {};
     var modelName = e.getAttribute('model');
-    var model = GLOBAL[modelName];
+    var model = FOAM.lookup(modelName, X);
 
     if ( ! model ) {
       console.error('Unknown Model: ', modelName);
@@ -186,7 +185,7 @@ var DOM = {
       }
     }
 
-    var obj = model.create(args);
+    var obj = model.create(args, X);
 
     var onLoad = e.getAttribute('oninit');
     if ( onLoad ) {
@@ -199,7 +198,7 @@ var DOM = {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
-        var viewModel = viewName ? GLOBAL[viewName] : DetailView;
+        var viewModel = viewName ? FOAM.lookup(viewName, X) : DetailView;
         view = viewModel.create({model: model, data: obj});
         if ( ! viewName ) {
           // default value is 'true' if 'showActions' isn't specified.
