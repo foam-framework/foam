@@ -25,11 +25,26 @@ var dao = EasyDAO.create({
 addContacts(dao);
 
 // Uncomment this if you'd like to simulate a slow dao.
-// dao = SlowDAO.create({delegate: dao});
+/*
+dao = DelayedDAO.create({
+  delegate: dao,
+  initialDelay: 3000
+});
+*/
+
 
 MODEL({
   name: 'AvatarView',
-  extendsModel: 'DetailView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function(_, nu) {
+        if ( this.$ ) this.updateHTML();
+      }
+    }
+  ],
 
   templates: [
     function toHTML() {/*
@@ -47,15 +62,18 @@ MODEL({
                   font-style: bold;
                   text-align: center;
                   line-height: 50px;">
-        <b>%%data.avatar</b>
+        <b><%= this.toInnerHTML() %></b>
       </div>
+    */},
+    function toInnerHTML() {/*
+      %%data.avatar
     */}
   ],
 });
 
 MODEL({
   name: 'ContactRowView',
-  extendsModel: 'View',
+  extendsModel: 'DetailView',
 
   properties: [
     {
@@ -63,10 +81,13 @@ MODEL({
       defaultValue: 'AvatarView'
     },
     {
+      name: 'model',
+      defaultValue: Contact
+    },
+    {
       name: 'mode',
       defaultValue: 'read-only'
-    },
-    'data'
+    }
   ],
 
   /* FIXME: the following doesn't work at the moment.
@@ -90,7 +111,7 @@ MODEL({
           out(avatar.toHTML());
         %>
         <div style="position:relative;top:20px">
-          <span>%%data.first <b>%%data.last</b></span>
+          <span>$$first{ mode: 'read-only' } <b>$$last{ mode: 'read-only' }</b></span>
         </div>
         <br>
         <div style="font-family: 'Roboto', sans-serif;
@@ -99,7 +120,7 @@ MODEL({
                     text-align: center;
                     position: relative;
                     top: -25px;">
-          (<span>%%data.email</span>)
+          (<span>$$email{ mode: 'read-only' }</span>)
         </div>
       </div>
     */}
@@ -124,7 +145,6 @@ var view = Y.ScrollView2.create({
   model: Contact,
   rowView: 'ContactRowView',
   rowHeight: 130,
-  height: document.body.offsetHeight,
   dao: dao
 });
 
