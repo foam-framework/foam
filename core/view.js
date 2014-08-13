@@ -637,6 +637,10 @@ MODEL({
       help: 'Set by bindData()'
     },
     {
+      name: 'value',
+      help: 'Set by bindData()'
+    },
+    {
       name: 'innerView',
       help: 'Override for prop.view'
     },
@@ -2795,7 +2799,6 @@ MODEL({
     {
       name: 'horizontalScrollMove',
       code: function(dx, tx, x) {
-        console.log('hsm', dx, tx);
         var x = this.index * this.width - tx;
 
         // Limit x to be within the scope of the slider: no dragging too far.

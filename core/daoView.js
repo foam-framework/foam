@@ -688,8 +688,8 @@ MODEL({
       }
     },
     initHTML: function() {
-      this.$.style.height = this.height ? this.height + 'px' : '100%';
       this.SUPER();
+      this.$.style.height = this.height ? this.height + 'px' : '100%';
       this.scroll();
       this.$.addEventListener('wheel', this.onWheel);
       this.X.gestureManager.install(this.X.GestureTarget.create({
@@ -861,6 +861,14 @@ MODEL({
     {
       name: 'verticalScrollbarView',
       defaultValue: 'VerticalScrollbarView'
+    },
+    {
+      name: 'lmbIndex',
+      defaultValue: 0,
+    },
+    {
+      name: 'lmaIndex',
+      defaultValue: 0,
     }
   ],
 
@@ -912,6 +920,14 @@ MODEL({
           // a contains invisible above, runway above, viewport, runway below, and invisible below.
           // The invisible portions go in the loadedAbove/Below arrays as a zipper.
           // The visible portions get loaded into visibleRows.
+          if ( this.abortUpdate ) {
+            // If abortUpdate is set, another onDAOUpdate has come in while we were waiting for this select.
+            // So we run through the DAO update again rather than rendering unnecessarily.
+            this.abortUpdate = false;
+            this.dirty = false;
+            this.onDAOUpdate();
+            return;
+          }
           if ( a.length === 0 ) return;
 
           var invisibleAbove = Math.floor(Math.max(0, (roomAbove - self.runway) / self.rowHeight));
@@ -956,42 +972,49 @@ MODEL({
             r.view.initHTML();
             r.y = Math.max(self.scrollTop - self.runway, 0) + i * self.rowHeight;
           });
+          this.dirty = false;
         });
       } else {
         // If we already have data loaded, we just checked for needing more above and below.
-        while ( this.visibleRows[0].y > Math.max(this.scrollTop - this.runway, 0) ) {
+        var ran = false;
+        var moving;
+        while ( this.visibleRows[0].y > Math.max(this.scrollTop - this.runway, 0) && this.loadedAbove.length ) {
           // Not enough runway above.
           // We reuse the bottom-most entry and move it to the top.
-          var moving = this.visibleRows.pop();
+          ran = true;
+          moving = this.visibleRows.pop();
           this.loadedBelow.push(moving.data);
           moving.data = this.loadedAbove.pop();
           moving.y = this.visibleRows[0].y - this.rowHeight;
           this.visibleRows.unshift(moving);
-
-          // If we're short loaded rows above, fetch more.
-          // Using setTimeout here because this shouldn't hold up the scroll frame.
-          if ( this.loadedIndex > 0 && this.loadedAbove.length < this.runway / this.rowHeight ) {
-            console.log('scheduling loadMoreAbove');
-            this.loadMoreAbove();
-          }
         }
 
-        while ( this.visibleRows[this.visibleRows.length-1].y + this.rowHeight < Math.min(this.scrollTop + this.runway + this.viewportHeight, this.scrollHeight) && (this.loadedBelow.length > 0 || this.bottomIndex < this.count ) ) {
+        // If we're short loaded rows above, fetch more.
+        // Using setTimeout here because this shouldn't hold up the scroll frame.
+        if ( this.loadedIndex > 0 && this.loadedAbove.length < this.runway / this.rowHeight ) {
+          console.log('scheduling loadMoreAbove');
+          this.loadMoreAbove();
+        }
+
+        ran = false;
+        while ( this.visibleRows[this.visibleRows.length-1].y + this.rowHeight < Math.min(this.scrollTop + this.runway + this.viewportHeight, this.scrollHeight) && this.loadedBelow.length ) {
           // Not enough runway below.
           // We reuse the top-most entry and move it to the top.
-          var moving = this.visibleRows.shift();
+          ran = true;
+          moving = this.visibleRows.shift();
           this.loadedAbove.push(moving.data);
           moving.data = this.loadedBelow.pop();
           moving.y = this.visibleRows[this.visibleRows.length-1].y + this.rowHeight;
           this.visibleRows.push(moving);
+        }
 
-          // If we're short loaded rows below, fetch more.
-          if ( this.bottomIndex < this.count && this.loadedBelow.length < this.runway / this.rowHeight ) {
-            console.log('scheduling loadMoreBelow');
-            this.loadMoreBelow();
-          }
+        // If we're short loaded rows below, fetch more.
+        if ( this.bottomIndex < this.count && this.loadedBelow.length < this.runway / this.rowHeight ) {
+          console.log('scheduling loadMoreBelow');
+          this.loadMoreBelow();
         }
         // We've now successfully updated, where necessary.
+        this.dirty = false;
       }
     },
 
@@ -1002,6 +1025,28 @@ MODEL({
       this.visibleRows = [];
       this.loadedAbove = [];
       this.loadedBelow = [];
+    },
+
+    // XXX: Debugging, remove me.
+    checkDupes_: function() {
+      var obj = {};
+      this.visibleRows.forEach(function(x) { if (obj[x.data.id]) { obj[x.data.id]++; } else { obj[x.data.id] = 1 } });
+      this.loadedBelow.forEach(function(x) { if (obj[x.id]) { obj[x.id]++; } else { obj[x.id] = 1 } });
+      this.loadedAbove.forEach(function(x) { if (obj[x.id]) { obj[x.id]++; } else { obj[x.id] = 1 } });
+      var dupes = false;
+      Object.keys(obj).forEach(function(key) {
+        if ( obj[key] > 1 ) {
+          console.warn('multiple copies of ' + key + ' loaded!');
+          dupes = true;
+        }
+      });
+      if (dupes) debugger;
+    },
+    checkDupes: function() {
+      if ( this.dupesTimer ) {
+        window.clearTimeout(this.dupesTimer);
+      }
+      this.dupesTimer = window.setTimeout(this.checkDupes_.bind(this), 6000);
     }
   },
 
@@ -1009,6 +1054,11 @@ MODEL({
     {
       name: 'onDAOUpdate',
       code: function() {
+        if ( this.dirty ) {
+          this.abortUpdate = true;
+          return;
+        }
+        this.dirty = true;
         this.invalidate();
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
@@ -1024,11 +1074,14 @@ MODEL({
         var max = Math.ceil(2 * this.runway / this.rowHeight);
         var old = this.loadedIndex;
         this.loadedIndex = Math.max(0, this.loadedIndex - max);
+        var index = ++this.lmaIndex;
         this.dao.skip(this.loadedIndex).limit(old - this.loadedIndex).select([])(function(a) {
+          if ( index !== this.lmaIndex ) return;
           this.loadedIndex -= a.length;
           this.loadedAbove.forEach(function(r) { a.push(r); });
           this.loadedAbove = a;
           console.log('loaded more above');
+          this.checkDupes();
           this.update();
         }.bind(this));
       }
@@ -1038,14 +1091,21 @@ MODEL({
       isAnimated: true,
       code: function() {
         var max = Math.ceil(2 * this.runway / this.rowHeight);
+        console.log('loadMoreBelow', this.bottomIndex, this.bottomIndex + max - 1);
+        var index = ++this.lmbIndex;
+        console.log('firing lmb', index, this.lmbIndex);
         this.dao.skip(this.bottomIndex).limit(max).select([])(function(a) {
+          console.log('done lmb', index, this.lmbIndex);
+          if ( index != this.lmbIndex ) return; // Bail if other, larger lmb's are following.
           var nu = [];
           // Reverse the order of the fetched rows.
           while ( a.length ) { nu.push(a.pop()); }
           // But keep the order of the existing zipper.
           this.loadedBelow.forEach(function(r) { nu.push(r); });
           this.loadedBelow = nu;
-          console.log('loaded more above');
+
+          this.checkDupes();
+          console.log('loaded more below');
           this.update();
           // TODO: Y U NO update() here, but do update in loadMoreAbove above?
         }.bind(this));
