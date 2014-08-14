@@ -20,6 +20,73 @@
  * All models in this file can be stored and loaded in a DAO.
  **/
 MODEL({
+  name: 'TimerListener',
+
+  properties: [
+    {
+      model_: 'FunctionProperty',
+      name:  'callback',
+      required: true
+    },
+    {
+      model_: 'IntProperty',
+      name:  'waitTime',
+      required: true
+    },
+    {
+      model_: 'IntProperty',
+      name:  'lastTime',
+      required: true
+    }
+  ],
+
+  methods: {
+    maybeRun: function(currentTime) {
+      if (currentTime - this.lastTime >= this.waitTime) {
+        this.callback();
+        this.lastTime = currentTime;
+      }
+    }
+  }
+});
+
+MODEL({
+  name: 'TimerEvery',
+
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'listeners_',
+      factory: function() { return []; },
+      hidden: true
+    }
+  ],
+
+  methods: {
+    add: function(waitTime, callback) {
+      var listener = TimerListener.create({
+          callback: callback,
+          waitTime: waitTime,
+          lastTime: 0
+      });
+      this.listeners_.push(listener);
+    },
+    remove: function(callback) {
+      for (var i = 0; i < this.listeners_.length; ++i) {
+        if (this.listeners_[i].callback === callback) {
+          this.listeners_.splice(i, 1);
+        }
+      }
+    },
+    runListeners: function(currentTime) {
+      this.listeners_.forEach(function(listener) {
+        listener.maybeRun(currentTime);
+      });
+    }
+  }
+});
+
+MODEL({
   name: 'Timer',
 
   properties: [
@@ -85,8 +152,19 @@ MODEL({
       name: 'isStarted',
       defaultValue: false,
       hidden: true
+    },
+    {
+      name:  'every',
+      help:  'Helper for adding/removing callbacks that run "every X amount of time".',
+      factory: function() { return TimerEvery.create(); }
     }
   ],
+
+  methods: {
+    runListeners_: function() {
+      this.every.runListeners(this.time);
+    }
+  },
 
   actions: [
     {
@@ -138,6 +216,7 @@ MODEL({
         this.startTime_ = Date.now();
         this.interval = Math.min(100, this.startTime_ - prevTime);
         this.step();
+        this.runListeners_();
         this.tick();
       }
     }
