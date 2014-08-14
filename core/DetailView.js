@@ -40,6 +40,24 @@ MODEL({
         this.onValueChange_.apply(this, arguments);
         if ( this.$ ) this.updateSubViews();
       }
+    },
+    {
+      name: 'onKeyboardShortcut',
+      code: function(evt) {
+        var isKeyboardShortcut = false;
+        for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
+          var action = this.model.actions[i];
+          for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
+            var key = action.keyboardShortcuts[j];
+            var keyCode = key.toString();
+            if (keyCode === this.evtToKeyCode(evt)) {
+              isKeyboardShortcut |= action.isEnabled;
+              action.callIfEnabled(this.obj);
+            }
+          }
+        }
+        return isKeyboardShortcut;
+      }
     }
   ],
 
@@ -133,6 +151,19 @@ MODEL({
 
       // hooks sub-views upto sub-models
       this.updateSubViews();
+      this.initKeyboardShortcuts();
+    },
+
+    evtToKeyCode: function(evt) {
+      var s = '';
+      if ( evt.ctrlKey ) s += 'ctrl-';
+      if ( evt.shiftKey ) s += 'shift-';
+      s += evt.keyCode;
+      return s;
+    },
+
+    initKeyboardShortcuts: function() {
+      this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
     },
 
     updateSubViews: function() {
