@@ -333,7 +333,15 @@ MODEL({
         if ( this.dao && ! hidden ) this.onDAOUpdate();
       }
     },
-    { name: 'rowView', defaultValue: 'DetailView' },
+    {
+      name: 'rowView',
+      defaultValue: 'DetailView'
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowViewFactory',
+      help: 'Factory for constructing row views'
+    },
     {
       name: 'mode',
       defaultValue: 'read-write',
@@ -365,6 +373,8 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
+
+      this.rowViewFactory$ = this.rowView$;
 
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
@@ -402,7 +412,6 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView);
 
       this.children = [];
       this.initializers_ = [];
@@ -413,7 +422,7 @@ MODEL({
       }
       d.select({put: function(o) {
         if ( this.mode === 'read-write' ) o = o.clone();
-        var view = rowView.create({data: o, model: o.model_}, this.X);
+        var view = this.rowViewFactory({data: o, model: o.model_});
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
@@ -796,8 +805,9 @@ MODEL({
   methods: {
     init: function(prop) {
       this.SUPER();
-      console.assert(this.model, 'ArrayView requires subType/Model.');
-      this.daoView = this.viewType.create({ model: this.model });
+      if (typeof this.daoView === 'string') {
+        this.daoView = this.X[this.daoView].create({ model: this.model });
+      }
       this.daoView.dao = this.arrayDAO;
     },
     onDAOUpdate: function() {

@@ -662,5 +662,57 @@ var ReferenceArrayProperty = Model.create({
   ]
 });
 
+
+var ViewFactoryProperty = Model.create({
+  name: 'ViewFactoryProperty',
+  extendsModel: 'Property',
+
+  properties: [
+    {
+      name: 'preSet',
+      defaultValue: function(_, value) {
+        if (typeof value === 'function') return value;
+
+        var viewModel = this.X['DetailView'];
+        if (typeof value === 'string') viewModel = this.X[value];
+        if (value.model_) {
+            if (typeof value.model_ === 'string') viewModel = FOAM(value);
+            else viewModel = value.model_;
+        }
+        return function(value, viewModel, cfg) {
+          return viewModel.create(
+              typeof value === 'object' ? value : {}
+          ).copyFrom(cfg);
+        }.bind(this, value, viewModel);
+      }
+    }
+  ]
+});
+
+
+var ViewProperty = Model.create({
+  name: 'ViewProperty',
+  extendsModel: 'Property',
+
+  properties: [
+    {
+      name: 'preSet',
+      defaultValue: function(_, value) {
+        if (this.X.View.isInstance(value)) return value;
+        if (typeof value === 'function') return value(this);
+
+        var viewModel = this.X['DetailView'];
+        if (typeof value === 'string') viewModel = this.X[value];
+        if (value.model_) {
+            if (typeof value.model_ === 'string') viewModel = FOAM(value);
+            else viewModel = value.model_;
+        }
+        return viewModel.create(typeof value === 'object' ? value : {});
+      }
+    }
+  ]
+});
+
+
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;

@@ -624,7 +624,7 @@ MODEL({
     },
     {
       name: 'view',
-      type: 'View'
+      model_: 'ViewProperty'
     },
     'args'
   ],
@@ -634,17 +634,12 @@ MODEL({
     init: function(args) {
       this.SUPER(args);
 
-      if ( this.args && this.args.model_ ) {
-        var view = this.X[this.args.model_].create(this.prop);
-        delete this.args.model_;
-      } else {
-        view = this.createViewFromProperty(this.prop);
-      }
+      if ( this.args && this.args.model_ ) delete this.args.model_;
 
-      view.copyFrom(this.args);
-      view.parent = this.parent;
+      this.view = this.prop.view;
+      this.view.copyFrom(this.args);
+      this.view.parent = this.parent;
 
-      this.view = view;
       this.bindData();
     },
 
