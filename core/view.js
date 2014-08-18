@@ -633,14 +633,6 @@ MODEL({
       }
     },
     {
-      name: 'value',
-      help: 'Set by bindData()'
-    },
-    {
-      name: 'value',
-      help: 'Set by bindData()'
-    },
-    {
       name: 'innerView',
       help: 'Override for prop.view'
     },
@@ -691,12 +683,8 @@ MODEL({
     bindData: function(data) {
       var view = this.view;
       if ( ! view || ! data ) return;
-
-      if ( this.value) {
-        Events.unlink(this.value, view.data$);
-      }
-      this.value = data.propertyValue(this.prop.name);
-      Events.link(this.value, view.data$);
+      var pValue = data.propertyValue(this.prop.name);
+      Events.link(pValue, view.data$);
     },
 
     toHTML: function() { return this.view.toHTML(); },
@@ -4225,7 +4213,6 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <% console.log(this.id, this.thumbID); %>
       <div id="%%id" style="position: absolute;
                             width: <%= this.width %>px;
                             height: <%= this.height %>px;

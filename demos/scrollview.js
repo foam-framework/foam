@@ -41,6 +41,7 @@ MODEL({
     {
       name: 'data',
       postSet: function(_, nu) {
+        console.log('avatar fired');
         if ( this.$ ) this.updateHTML();
       }
     }
@@ -62,11 +63,11 @@ MODEL({
                   font-style: bold;
                   text-align: center;
                   line-height: 50px;">
-        <b><%= this.toInnerHTML() %></b>
+        <%= this.toInnerHTML() %>
       </div>
     */},
     function toInnerHTML() {/*
-      %%data.avatar
+      <b>%%data.avatar</b>
     */}
   ],
 });

@@ -766,7 +766,7 @@ MODEL({
     {
       name: 'y',
       postSet: function(old, nu) {
-        if ( this.view && this.id ) {
+        if ( this.view && this.id && old != nu ) {
           $(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
         }
       }
@@ -828,26 +828,18 @@ MODEL({
       }
     },
     {
-      name: 'loadedIndex',
-      help: 'The skip value for the top of loadedAbove.',
-      defaultValue: 0
-    },
-    {
-      name: 'bottomIndex',
-      getter: function() {
-        return this.loadedIndex + this.loadedAbove.length + this.visibleRows.length + this.loadedBelow.length;
-      }
-    },
-    {
-      name: 'loadedAbove',
-      factory: function() { return []; }
-    },
-    {
-      name: 'loadedBelow',
-      factory: function() { return []; }
-    },
-    {
       name: 'visibleRows',
+      help: 'Map of currently visible rows, keyed by their position/order',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'extraRows',
+      help: 'Buffer of extra, unneeded visible rows.',
+      factory: function() { return []; }
+    },
+    {
+      name: 'cache',
+      model_: 'ArrayProprety',
       factory: function() { return []; }
     },
     {
@@ -863,12 +855,31 @@ MODEL({
       defaultValue: 'VerticalScrollbarView'
     },
     {
-      name: 'lmbIndex',
-      defaultValue: 0,
+      name: 'loadedTop',
+      help: 'Index of the first cached (not necessarily visible) value above the viewing area. Invariant: Always a contiguous block of loaded entries from loadedTop to loadedBottom!',
+      defaultValue: -1
     },
     {
-      name: 'lmaIndex',
+      name: 'loadedBottom',
+      help: 'Index of the last cached (not necessarily visible) value below the viewing area. Invariant: Always a contiguous block of loaded entires from loadedTop to loadedBottom!',
+      defaultValue: -1
+    },
+    {
+      name: 'visibleTop',
+      help: 'Index of the first visible value.',
+      defaultValue: 0
+    },
+    {
+      name: 'visibleBottom',
+      help: 'Index of the last visible value.',
+      defaultValue: 0
+    },
+    {
+      name: 'daoUpdateNumber',
+      help: 'Counter for avoiding duplicate DAO updates.',
       defaultValue: 0,
+      transient: true,
+      hidden: true
     }
   ],
 
@@ -902,151 +913,94 @@ MODEL({
     container$: function() {
       return this.X.document.getElementById(this.containerID);
     },
-    update: function() {
-      if ( ! this.$ ) return;
-      // If the visibleRows is empty, redraw everything.
-      // If the most distant upward or downward node is inside the runway, redraw one.
-      // If either direction is below the threshold, fetch more data.
-      if ( ! this.visibleRows || ! this.visibleRows.length ) {
-        // Select triple the runway above and below, plus the viewport.
-        var skip = Math.floor( Math.max((this.scrollTop - 3 * this.runway) / this.rowHeight, 0) );
-        this.loadedIndex = skip;
-        var roomAbove = Math.min(this.scrollTop, 3 * this.runway);
-        var limit = Math.ceil((roomAbove + 3 * this.runway + this.viewportHeight) /
-            this.rowHeight);
-        var self = this;
-        console.log('scrollView initial fetch: skip = ' + skip + ', limit = ' + limit + ', id = ' + this.id);
-        this.dao.skip(skip).limit(limit).select([])(function(a) {
-          // a contains invisible above, runway above, viewport, runway below, and invisible below.
-          // The invisible portions go in the loadedAbove/Below arrays as a zipper.
-          // The visible portions get loaded into visibleRows.
-          if ( this.abortUpdate ) {
-            // If abortUpdate is set, another onDAOUpdate has come in while we were waiting for this select.
-            // So we run through the DAO update again rather than rendering unnecessarily.
-            this.abortUpdate = false;
-            this.dirty = false;
-            this.onDAOUpdate();
-            return;
-          }
-          if ( a.length === 0 ) return;
+    // Allocates visible rows to the correct positions.
+    // Will create new visible rows where necessary, and reuse existing ones.
+    // Expects the cache to be populated with all the values necessary.
+    allocateVisible: function() {
+      var homeless = [];
+      var foundIDs = {};
+      var self = this;
 
-          var invisibleAbove = Math.floor(Math.max(0, (roomAbove - self.runway) / self.rowHeight));
-          for ( var i = 0 ; i < invisibleAbove ; i++ ) {
-            self.loadedAbove.push(a.shift());
-          }
+      // Run through the visible section and check if they're already loaded.
+      for ( var i = this.visibleTop ; i <= this.visibleBottom ; i++ ) {
+        if ( this.visibleRows[i] ) {
+          foundIDs[i] = true;
+        } else {
+          homeless.push(i);
+        }
+      }
 
-          // Note that the above removed the invisible portions from the array.
-          // Now the visible portion is two runways and the viewport.
-          var visibleCount = Math.min(Math.ceil( (self.viewportHeight + 2 * self.runway) / self.rowHeight ) + 1,
-                                      a.length);
+      // Now run through the visible rows, skipping those that were just touched,
+      // and reusing the untouched ones for the homeless.
+      var keys = Object.keys(this.visibleRows);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        if ( homeless.length === 0 ) break;
+        if ( foundIDs[keys[i]] ) continue;
+        var h = homeless.shift();
+        var r = self.visibleRows[keys[i]];
+        delete self.visibleRows[keys[i]];
+        self.visibleRows[h] = r;
+        r.data = self.cache[h];
+        r.y = h * self.rowHeight;
+      }
 
-          // +1 above to make sure there's no feedback where elements
-          // get repeatedly shuffled between top and bottom.
-          var rowView = FOAM.lookup(self.rowView);
-          var html = [];
-          for ( i = 0 ; i < visibleCount ; i++ ) {
-            var r = a.shift();
-            var v = rowView.create({ model: r.model_, data: r });
-            var svr = ScrollViewRow.create({ data: r, id: v.nextID() });
-            self.visibleRows.push(svr);
+      // Now if there are any homeless left, reuse those from extraRows,
+      // or create new rows for them.
+      if ( homeless.length ) {
+        var html = [];
+        var newViews = [];
+        var rowView = FOAM.lookup(this.rowView);
+        for ( var i = 0 ; i < homeless.length ; i++ ) {
+          var h = homeless[i];
+          var x = self.cache[h];
+
+          if ( this.extraRows.length ) {
+            var r = this.extraRows.shift();
+            self.visibleRows[h] = r;
+            r.data = x;
+            r.y = h * self.rowHeight;
+          } else {
+            var v = rowView.create({ model: x.model_, data: x });
+            var svr = ScrollViewRow.create({ data: x, id: v.nextID() });
+            self.visibleRows[h] = svr;
 
             html.push('<div style="width: 100%; position: absolute; height: ' +
-                self.rowViewHeight + 'px; overflow: visible" id="' + svr.id +
-                '">');
+                self.rowHeight + 'px; overflow: visible" id="' + svr.id + '">');
             html.push(v.toHTML());
             html.push('</div>');
-
+            newViews.push([h, svr]);
             svr.view = v;
           }
-          self.container$().innerHTML = html.join('');
-
-          // Finally, push the remaining rows into loadedBelow.
-          // They need to be reversed.
-          while ( a.length ) {
-            self.loadedBelow.push(a.pop());
-          }
-
-          // Now all three arrays are populated. We need to initHTML
-          // all the newly-created elements, though.
-          self.visibleRows.forEach(function(r, i) {
-            r.view.initHTML();
-            r.y = Math.max(self.scrollTop - self.runway, 0) + i * self.rowHeight;
-          });
-          this.dirty = false;
-        });
-      } else {
-        // If we already have data loaded, we just checked for needing more above and below.
-        var ran = false;
-        var moving;
-        while ( this.visibleRows[0].y > Math.max(this.scrollTop - this.runway, 0) && this.loadedAbove.length ) {
-          // Not enough runway above.
-          // We reuse the bottom-most entry and move it to the top.
-          ran = true;
-          moving = this.visibleRows.pop();
-          this.loadedBelow.push(moving.data);
-          moving.data = this.loadedAbove.pop();
-          moving.y = this.visibleRows[0].y - this.rowHeight;
-          this.visibleRows.unshift(moving);
         }
 
-        // If we're short loaded rows above, fetch more.
-        // Using setTimeout here because this shouldn't hold up the scroll frame.
-        if ( this.loadedIndex > 0 && this.loadedAbove.length < this.runway / this.rowHeight ) {
-          console.log('scheduling loadMoreAbove');
-          this.loadMoreAbove();
-        }
+        if ( html.length )
+          this.container$().insertAdjacentHTML('beforeend', html.join(''));
 
-        ran = false;
-        while ( this.visibleRows[this.visibleRows.length-1].y + this.rowHeight < Math.min(this.scrollTop + this.runway + this.viewportHeight, this.scrollHeight) && this.loadedBelow.length ) {
-          // Not enough runway below.
-          // We reuse the top-most entry and move it to the top.
-          ran = true;
-          moving = this.visibleRows.shift();
-          this.loadedAbove.push(moving.data);
-          moving.data = this.loadedBelow.pop();
-          moving.y = this.visibleRows[this.visibleRows.length-1].y + this.rowHeight;
-          this.visibleRows.push(moving);
+        // Finally, initHTML the new elements.
+        for ( var i = 0 ; i < newViews.length ; i++ ) {
+          var r = newViews[i];
+          r[1].view.initHTML();
+          r[1].y = r[0] * self.rowHeight;
         }
+      }
 
-        // If we're short loaded rows below, fetch more.
-        if ( this.bottomIndex < this.count && this.loadedBelow.length < this.runway / this.rowHeight ) {
-          console.log('scheduling loadMoreBelow');
-          this.loadMoreBelow();
-        }
-        // We've now successfully updated, where necessary.
-        this.dirty = false;
+      // Make sure any extra rows are hidden so there's no overlap.
+      for ( var i = 0 ; i < this.extraRows.length ; i++ ) {
+        this.extraRows[i].y = -10000;
       }
     },
 
     // Clears all cached data, when the DAO changes.
     invalidate: function() {
-      if ( this.visibleRows )
-        this.visibleRows.forEach(function(r) { r.view.data = undefined; });
-      this.visibleRows = [];
-      this.loadedAbove = [];
-      this.loadedBelow = [];
-    },
-
-    // XXX: Debugging, remove me.
-    checkDupes_: function() {
-      var obj = {};
-      this.visibleRows.forEach(function(x) { if (obj[x.data.id]) { obj[x.data.id]++; } else { obj[x.data.id] = 1 } });
-      this.loadedBelow.forEach(function(x) { if (obj[x.id]) { obj[x.id]++; } else { obj[x.id] = 1 } });
-      this.loadedAbove.forEach(function(x) { if (obj[x.id]) { obj[x.id]++; } else { obj[x.id] = 1 } });
-      var dupes = false;
-      Object.keys(obj).forEach(function(key) {
-        if ( obj[key] > 1 ) {
-          console.warn('multiple copies of ' + key + ' loaded!');
-          dupes = true;
-        }
-      });
-      if (dupes) debugger;
-    },
-    checkDupes: function() {
-      if ( this.dupesTimer ) {
-        window.clearTimeout(this.dupesTimer);
+      var keys = Object.keys(this.visibleRows);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        this.extraRows.push(this.visibleRows[keys[i]]);
       }
-      this.dupesTimer = window.setTimeout(this.checkDupes_.bind(this), 6000);
+      this.visibleRows = {};
+
+      this.cache = [];
+      this.loadedTop = -1;
+      this.loadedBottom = -1;
     }
   },
 
@@ -1054,61 +1008,72 @@ MODEL({
     {
       name: 'onDAOUpdate',
       code: function() {
-        if ( this.dirty ) {
-          this.abortUpdate = true;
-          return;
-        }
-        this.dirty = true;
         this.invalidate();
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
-          console.log('setting count = ' + this.count + ' for ' + this.id);
           this.X.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
     },
     {
-      name: 'loadMoreAbove',
+      name: 'update',
       isAnimated: true,
       code: function() {
-        var max = Math.ceil(2 * this.runway / this.rowHeight);
-        var old = this.loadedIndex;
-        this.loadedIndex = Math.max(0, this.loadedIndex - max);
-        var index = ++this.lmaIndex;
-        this.dao.skip(this.loadedIndex).limit(old - this.loadedIndex).select([])(function(a) {
-          if ( index !== this.lmaIndex ) return;
-          this.loadedIndex -= a.length;
-          this.loadedAbove.forEach(function(r) { a.push(r); });
-          this.loadedAbove = a;
-          console.log('loaded more above');
-          this.checkDupes();
-          this.update();
-        }.bind(this));
-      }
-    },
-    {
-      name: 'loadMoreBelow',
-      isAnimated: true,
-      code: function() {
-        var max = Math.ceil(2 * this.runway / this.rowHeight);
-        console.log('loadMoreBelow', this.bottomIndex, this.bottomIndex + max - 1);
-        var index = ++this.lmbIndex;
-        console.log('firing lmb', index, this.lmbIndex);
-        this.dao.skip(this.bottomIndex).limit(max).select([])(function(a) {
-          console.log('done lmb', index, this.lmbIndex);
-          if ( index != this.lmbIndex ) return; // Bail if other, larger lmb's are following.
-          var nu = [];
-          // Reverse the order of the fetched rows.
-          while ( a.length ) { nu.push(a.pop()); }
-          // But keep the order of the existing zipper.
-          this.loadedBelow.forEach(function(r) { nu.push(r); });
-          this.loadedBelow = nu;
+        if ( ! this.$ ) return;
+        // Calculate visibleIndex based on scrollTop.
+        // If the visible rows are inside the cache, just expand the cached area
+        // to keep 3*runway rows on each side, up to the edges of the data.
+        // If the visible rows have moved so vast that there is a gap, scrap the
+        // old cache and rebuild it.
+        if ( this.count === 0 ) return;
+        var runwayCount = Math.ceil(this.runway / this.rowHeight);
+        this.visibleIndex = Math.floor(this.scrollTop / this.rowHeight);
+        this.visibleTop = Math.max(0, this.visibleIndex - runwayCount);
+        this.visibleBottom = Math.min(this.count - 1,
+            this.visibleIndex + Math.ceil( (this.runway + this.viewportHeight) / this.rowHeight ) );
 
-          this.checkDupes();
-          console.log('loaded more below');
-          this.update();
-          // TODO: Y U NO update() here, but do update in loadMoreAbove above?
-        }.bind(this));
+        // Four cases:
+        // Visible wholly contained.
+        // Top overlap.
+        // Bottom overlap.
+        // No overlap.
+        var toLoadTop, toLoadBottom;
+        if ( this.visibleTop >= this.loadedTop && this.visibleBottom <= this.loadedBottom ) {
+          // Wholly contained. Do nothing.
+          // TODO: Maybe a little more optimistic padding here?
+        } else if ( this.visibleTop < this.loadedTop && this.visibleBottom >= this.loadedTop ) {
+          // Visible overlaps te top of loaded.
+          toLoadBottom = this.loadedTop - 1;
+          toLoadTop = Math.max(0, this.visibleTop - 2 * runwayCount);
+        } else if ( this.visibleBottom > this.loadedBottom && this.visibleTop <= this.loadedBottom ) {
+          toLoadTop = this.loadedBottom + 1;
+          toLoadBottom = Math.min(this.count - 1, this.visibleBottom + 2 * runwayCount);
+        } else {
+          // No overlap. Fresh start.
+          this.invalidate();
+          toLoadTop = Math.max(0, this.visibleTop - 2 * runwayCount);
+          toLoadBottom = Math.min(this.count, this.visibleBottom + 2 * runwayCount);
+        }
+
+        if ( toLoadTop >= 0 && toLoadBottom >= 0 && toLoadTop <= toLoadBottom ) {
+          // Something to load.
+          var self = this;
+          var updateNumber = ++this.daoUpdateNumber;
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select([])(function(a) {
+            if ( ! a || ! a.length ) return;
+            if ( updateNumber !== self.daoUpdateNumber ) return;
+
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              self.cache[toLoadTop + i] = a[i];
+            }
+            self.loadedTop = Math.min(toLoadTop, Math.max(0, self.loadedTop));
+            self.loadedBottom = Math.max(toLoadBottom, self.loadedBottom);
+
+            self.allocateVisible();
+          });
+        } else {
+          this.allocateVisible();
+        }
       }
     },
     {
