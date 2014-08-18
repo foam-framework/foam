@@ -53,7 +53,7 @@ MODEL({
       name: 'LabelDAO',
       help: 'DAO of known labels.',
       factory: function() {
-        var dao = MDAO.create({model: QIssueLabel});
+        var dao = MDAO.create({model: this.X.QIssueLabel});
         this.project.issuesConfig && this.project.issuesConfig.labels.select(dao);
         return dao;
       },
@@ -63,7 +63,7 @@ MODEL({
       name: 'StatusDAO',
       help: 'DAO of known statuses.',
       factory: function() {
-        var dao = MDAO.create({model: QIssueStatus});
+        var dao = MDAO.create({model: this.X.QIssueStatus});
         this.project.issuesConfig && this.project.issuesConfig.statuses.select(dao);
         return dao;
       },
@@ -84,10 +84,10 @@ MODEL({
     {
       name: 'IssueMDAO',
       factory: function() {
-        var dao  = this.X.MDAO.create({model: QIssue});
+        var dao  = this.X.MDAO.create({model: this.X.QIssue});
         var auto = this.X.AutoIndex.create(dao);
 
-        auto.addIndex(QIssue.STATUS);
+        auto.addIndex(this.X.QIssue.STATUS);
         dao.addRawIndex(auto);
 
         return dao;
@@ -97,8 +97,8 @@ MODEL({
       name: 'IssueCachingDAO',
       factory: function() {
         var IssueIDBDAO = this.X.EasyDAO.create({
-          model: QIssue,
-          name: this.projectName + '_' + QIssue.plural,
+          model: this.X.QIssue,
+          name: this.projectName + '_' + this.X.QIssue.plural,
           migrationRules: [
             MigrationRule.create({
               modelName: 'QIssue',
@@ -120,11 +120,11 @@ MODEL({
       name: 'IssueCommentNetworkDAO',
       factory: function() {
         return this.X.LazyCacheDAO.create({
-          model: QIssueComment,
+          model: this.X.QIssueComment,
           cacheOnSelect: true,
-          cache: IDBDAO.create({ model: QIssueComment, useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
+          cache: IDBDAO.create({ model: this.X.QIssueComment, useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
           delegate: this.X.QIssueCommentNetworkDAO.create({
-            model: QIssueComment,
+            model: this.X.QIssueComment,
             url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           })
         });
@@ -144,7 +144,7 @@ MODEL({
         return this.X.IssueRestDAO.create({
           url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
           IssueCommentDAO: this.IssueCommentNetworkDAO,
-          model: QIssue,
+          model: this.X.QIssue,
           batchSize: 500
         });
       },
@@ -234,7 +234,7 @@ MODEL({
         this.IssueMDAO.select(COUNT())(function (c) { this.issueCount = c.count; }.bind(this));
 
         var self = this;
-        this.IssueMDAO.select(GROUP_BY(QIssue.CC, COUNT()))(function(g) {
+        this.IssueMDAO.select(GROUP_BY(this.X.QIssue.CC, COUNT()))(function(g) {
           Object.keys(g.groups).forEach(function(key) {
             self.PersonDAO.find(key, { error: function() {
               self.PersonDAO.put(IssuePerson.create({ name: key }));
@@ -247,13 +247,450 @@ MODEL({
 
   methods: {
     init: function(args) {
+      this.X.registerModel(Model.create({
+        extendsModel: 'GeneratedQIssue',
+
+        name: 'QIssue',
+
+        tableProperties: [
+          'starred',
+          'id',
+          //      'app',
+          'priority',
+          'milestone',
+          'iteration',
+          'releaseBlock',
+          'cr',
+          'status',
+          'owner',
+          'summary',
+          'OS',
+          'modified'
+        ],
+
+        ids: ['id'],
+
+        properties: [
+          {
+            model_: 'IntProperty',
+            name: 'id',
+            shortName: 'i',
+            label: 'ID',
+            required: true,
+            tableWidth: '48px',
+            tableFormatter: function(value, row, table) {
+              var id = table.nextID();
+
+              table.on('mouseover', function(e) {
+                table.browser.preview(e, value);
+              }, id);
+
+              return '<div id="' + id + '">' + value + '</div>';
+            }
+          },
+          {
+            name: 'labels',
+            shortName: 'l',
+            aliases: ['label'],
+            type: 'String',
+            view: 'QIssueLabelsView',
+            autocompleter: 'LabelCompleter',
+            tableFormatter: function(a, row) {
+              var s = '';
+              for ( var i = 0 ; i < a.length ; i++ ) {
+                if ( ! isPropertyLabel(a[i]) ) {
+                  s += ' <span class="label">' + a[i] + '</span>';
+                }
+              }
+              return s;
+            },
+            postSet: function(_, a) {
+              a.sort();
+
+              // Reset all label properties to initial values.
+              for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
+                var p = this.model_.properties[i];
+
+                if ( p.model_ === LabelArrayProperty ) {
+                  this.instance_[p.name] = [];
+                } else if ( p.model_ === LabelStringProperty ) {
+                  this.instance_[p.name] = "";
+                }
+              }
+
+              for ( var i = 0 ; i < a.length ; i++ ) {
+                var kv = isPropertyLabel(a[i]);
+                a[i] = a[i].intern();
+                if ( kv ) {
+
+                  // Cleanup 'movedFrom' labels
+                  if ( kv[0] === 'movedFrom' ) {
+                    kv[1] = typeof kv[1] === 'string' ? parseInt(kv[1].charAt(0) === 'M' ? kv[1].substring(1) : kv[1]) : kv[1];
+                  }
+
+                  if ( Array.isArray(this[kv[0]]) ) {
+                    this.instance_[kv[0]].binaryInsert(kv[1]);
+                  } else {
+                    this.instance_[kv[0]] = kv[1];
+                  }
+                }
+              }
+            }
+          },
+          {
+            name: 'author',
+            preSet: function(_, a) { return a.intern(); },
+            aliases: ['reporter']
+          },
+          {
+            model_: 'LabelStringProperty',
+            name: 'priority',
+            shortName: 'p',
+            aliases: ['pr', 'prior'],
+            tableLabel: 'Priority',
+            tableWidth: '60px',
+            compareProperty: function(p1, p2) {
+              var priorities = ['Low', 'Medium', 'High', 'Critical'];
+              var i1 = priorities.indexOf(p1);
+              var i2 = priorities.indexOf(p2);
+              if ( i1 < 0 && i2 < 0 ) {
+                // Neither is a proper priority - return normal string order.
+                return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
+              } else if ( i1 < 0 ) {
+                return -1; // Nonstandard priorities are considered lower than Low.
+              } else if ( i2 < 0 ) {
+                return 1;  // Likewise.
+              } else {
+                var r = i1 - i2;
+                return r === 0 ? 0 : r < 0 ? -1 : 1;
+              }
+            },
+            required: true
+          },
+          {
+            model_: 'IntProperty',
+            name: 'pri',
+            tableLabel: 'Pri',
+            tableWidth: '60px',
+            postSet: function(_, v) {
+              if ( typeof v !== 'number' ) debugger;
+            }
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'app',
+            tableWidth: '70px'
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'type',
+            tableWidth: '70px'
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'milestone',
+            shortName: 'm',
+            aliases: ['mstone'],
+            tableLabel: 'M',
+            tableWidth: '70px'
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'iteration',
+            shortName: 'it',
+            aliases: ['iter'],
+            tableWidth: '69px'
+          },
+          {
+            model_: 'LabelStringProperty',
+            name: 'releaseBlock',
+            shortName: 'rb',
+            aliases: ['rBlock', 'release'],
+            type: 'String',
+            tableWidth: '103px',
+            defaultValue: ''
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'cr',
+            shortName: 'c',
+            aliases: ['cat', 'cr'],
+            label: 'Cr',
+            tableWidth: '87px',
+          },
+          {
+            model_: 'StringProperty',
+            name: 'status',
+            shortName: 's',
+            aliases: ['stat'],
+            type: 'String',
+            preSet: function(_, s) { return s.capitalize(); },
+            tableWidth: '58px',
+            autocompleter: 'StatusCompleter',
+            defaultValue: ''
+          },
+          {
+            model_: 'StringArrayProperty',
+            name: 'cc',
+            autocompleter: 'PersonCompleter',
+            displayWidth: 70,
+            preSet: function(_, a) { return a.intern(); }
+          },
+          {
+            name: 'owner',
+            shortName: 'o',
+            tableWidth: '181px',
+            type: 'String',
+            autocompleter: 'PersonCompleter',
+            preSet: function(_, a) { return a.intern(); }
+          },
+          {
+            name: 'summary',
+            shortName: 'su',
+            label: 'Summary',
+            type: 'String',
+            tableWidth: '350px',
+            displayWidth: 70,
+            //          tableWidth: '100%'
+            tableFormatter: function(value, row, tableView) {
+              return tableView.strToHTML(value);
+            }
+          },
+          {
+            name: 'description',
+            displayHeight: 20,
+            displayWidth: 70
+          },
+          {
+            name: 'summaryPlusLabels',
+            label: 'Summary + Labels',
+            tableLabel: 'Summary + Labels',
+            type: 'String',
+            tableWidth: '100%',
+            tableFormatter: function(value, row, tableView) {
+              return tableView.strToHTML(row.summary) +
+                value.model_.LABELS.tableFormatter(row.labels, row);
+            }
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'OS',
+            tableWidth: '61px',
+            type: 'String'
+          },
+          {
+            model_: 'BooleanProperty',
+            name: 'blocked',
+            tableWidth: '20px',
+            getter: function() { return !! this.blockedOn.length; }
+          },
+          {
+            model_: 'DateTimeProperty',
+            name: 'modified',
+            shortName: 'mod',
+            mode: 'read-write',
+            required: true,
+            tableWidth: '100px',
+            factory: function() { return new Date(); }
+          },
+          {
+            name: 'updated',
+            hidden: true,
+            setter: function(v) { this.modified = v; }
+          },
+          {
+            model_: 'BooleanProperty',
+            name: 'starred',
+            tableLabel: '',
+            tableWidth: '18px',
+            tableFormatter: function(val, obj, tableView) {
+              var view = CSSImageBooleanView.create({
+                className: 'star-image',
+                data: obj.starred
+              });
+
+              view.data$.addListener(function() {
+                var tmp = obj.clone();
+                tmp.starred = view.data;
+                tableView.browser.IssueDAO.put(tmp);
+              });
+
+              tableView.addChild(view);
+              return view.toHTML();
+            },
+            view: { model_: 'CSSImageBooleanView', className: 'star-image' },
+            help: 'Whether the authenticated user has starred this issue.'
+          },
+          {
+            model_: 'IntProperty',
+            name: 'stars',
+            tableWidth: '20px',
+            help: 'Number of stars this issue has.',
+            compareProperty: function(o2, o1) {
+              return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
+            }
+          },
+          {
+            model_: 'LabelArrayProperty',
+            name: 'movedFrom',
+            tableWidth: '100px'
+          },
+          {
+            name: 'movedTo',
+            preSet: function(_, v) {
+              // TODO: looks like we're getting bad values, investigate and fix
+              /*
+                if ( v.length ) console.log('movedTo: ', v);
+                return v;
+              */
+              return [];
+            }
+          }
+        ],
+
+        methods: {
+          replaceLabels: function(label, values) {
+            var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+            if ( Array.isArray(values) ) {
+              for ( var i = 0 ; i < values.length ; i++ ) {
+                labels.binaryInsert(label + '-' + values[i]);
+              }
+            } else {
+              labels.binaryInsert(label + '-' + values);
+            }
+
+            // Set this way to avoid updating lable properties and causing a feedback loop.
+            this.instance_.labels = labels;
+          },
+          isOpen: function() {
+            return !! ({
+              'New':       true,
+              'Accepted':  true,
+              'Started':   true,
+              'Untriaged': true
+            }[this.status]);
+          },
+          writeActions: function(other, out) {
+            var diff = this.diff(other);
+            delete diff.starred;
+
+            if ( Object.keys(diff).length == 0 ) return;
+
+            function convertArray(key) {
+              if ( ! diff[key] ) {
+                diff[key] = [];
+                return;
+              }
+
+              var delta = diff[key].added;
+              for ( var i = 0; i < diff[key].removed.length; i++ )
+                delta.push("-" + diff[key].removed[i]);
+              diff[key] = delta;
+            }
+
+            convertArray('blockedOn');
+            convertArray('blocking');
+            convertArray('cc');
+            convertArray('labels');
+            convertArray('milestone');
+            convertArray('iteration');
+
+            var comment = this.X.QIssueComment.create({
+              issueId: this.id,
+              updates: this.X.QIssueCommentUpdate.create(diff)
+            });
+
+            out(comment);
+          },
+          newComment: function() {
+            return this.X.QIssueComment.create({
+              issueId: this.id,
+              updates: this.X.QIssueCommentUpdate.create({
+                labels: this.labels.clone(),
+                owner: this.owner,
+                blockedOn: this.blockedOn.clone(),
+                blocking: this.blocking.clone(),
+                cc: this.cc.clone(),
+                mergedInto: this.mergedInto,
+                status: this.status,
+                summary: this.summary
+              })
+            })
+          }
+        }
+      }));
+
+      this.X.QIssue.getPrototype();
+
+      this.X.QIssue.properties.forEach(function(p) {
+        if ( ! p["tableFormatter"] ) {
+          p["tableFormatter"] = function(v) {
+            return v || '----';
+          };
+        }
+      });
+
+      this.X.QIssue.LABELS.toMQL = function() { return 'label'; };
+
+
+      this.X.QueryParser = {
+        X: this.X,
+        __proto__: QueryParserFactory(this.X.QIssue),
+
+        stars: seq(literal_ic('stars:'), sym('number')),
+
+        labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
+
+        summary: str(plus(notChar(' ')))
+
+      }.addActions({
+        stars: function(v) {
+          return GTE({
+            f: function(i) { return i.stars; },
+            partialEval: function() {return this;},
+            toSQL: function() { return 'stars > ' + v[1]; },
+            toMQL: function() { return 'stars > ' + v[1]; }
+          }, v[1]);
+        },
+
+        labelMatch: function(v) {
+          var a = [];
+          for ( var i = 2 ; i < v.length ; i++ ) {
+            a.push(v[0] + '-' + v[i]);
+          }
+
+          return IN(this.X.QIssue.LABELS, a).partialEval();
+          /*
+            var or = OR();
+            var values = v[2];
+            for ( var i = 0 ; i < values.length ; i++ ) {
+            or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
+            }
+            return or;
+          */
+        },
+
+        summary: function(v) {
+          return this.X.DefaultQuery.create({arg1: v});
+        }
+      });
+
+
+      this.X.QueryParser.expr = alt(
+        this.X.QueryParser.export('expr'),
+        sym('stars'),
+        sym('labelMatch'),
+        sym('summary')
+      );
+
       this.SUPER(args);
 
       this.IssueDAO.listen(this.onDAOUpdate);
 
-      this.persistentContext.bindObject('syncManager', SyncManager, {
+      this.persistentContext.bindObject('syncManager', SyncManager.xbind({
         syncInterval: 60*5,
         batchSize: 500,
+      }), {
         queryParser: this.X.QueryParser,
         srcDAO: this.IssueNetworkDAO,
         dstDAO: this.IssueCachingDAO,
@@ -373,7 +810,7 @@ MODEL({
     },
 
     issueCommentDAO: function(id) {
-      return this.IssueCommentDAO.where(EQ(QIssueComment.ISSUE_ID, id));
+      return this.IssueCommentDAO.where(EQ(this.X.QIssueComment.ISSUE_ID, id));
     }
   },
 

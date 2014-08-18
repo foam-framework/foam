@@ -37,7 +37,7 @@ MODEL({
       var src = this.X.StatusDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH_IC(QIssueStatus.STATUS, data) :
+          STARTS_WITH_IC(this.X.QIssueStatus.STATUS, data) :
           TRUE);
 
       var self = this;

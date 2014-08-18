@@ -211,7 +211,8 @@ var IssueDropCell = FOAM({
  * An extension to COUNT() which turns count into a link which performs
  * a query for only the selected data when clicked.
  */
-var ItemCount = Model.create({
+MODEL({
+  name: 'ItemCount',
   extendsModel: 'CountExpr',
 
   properties: [
@@ -231,7 +232,7 @@ var ItemCount = Model.create({
         var col = altView.views[1].view().col.data;
         var row = altView.views[1].view().row.data;
         var q = AND(
-          QueryParser.parseString(this.browser.location.q),
+          this.X.QueryParser.parseString(this.browser.location.q),
           AND(EQ(col, this.x),
               EQ(row, this.y)).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
@@ -305,7 +306,7 @@ function createView(rowSelectionValue, browser) {
         label: 'List',
         view: function() {
           var tableView = X.QIssueTableView.create({
-            model:              QIssue,
+            model:              X.QIssue,
             dao:                browser.filteredIssueDAO,
             browser:            browser,
             hardSelection$:     rowSelectionValue,
@@ -335,17 +336,17 @@ function createView(rowSelectionValue, browser) {
                 }
               }
               }).create({
-                model: QIssue,
+                model: X.QIssue,
                 accChoices: [
-                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
+                  [ MAP(X.QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
                   [ MAP(IdFormatter(browser), COL.create()),                      "IDs" ],
                   [ ItemCount.create({browser: browser}),                         "Counts" ],
-                  [ PIE(QIssue.STATUS),                                           "Pie(Status)"  ],
-                  [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
-                  // [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                  [ PIE(X.QIssue.STATUS),                                           "Pie(Status)"  ],
+                  [ PIE(X.QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
+                  // [ PIE(X.QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
                 grid: /*GridByExpr*/DragAndDropGrid.create({ dao: browser.filteredIssueDAO})
-           });
+           }, X);
 
           g.row.data$   = location.y$;
           g.col.data$   = location.x$;
@@ -364,11 +365,9 @@ function createView(rowSelectionValue, browser) {
           g.acc.data$.addListener(function(choice) { location.cells = g.acc.label.toLowerCase(); });
           location.cells$.addListener(setAcc);
 
-          g.X = X;
-
           return g;
         }
-      })
+      }, X)
     ]
   });
 }

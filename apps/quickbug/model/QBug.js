@@ -73,14 +73,14 @@ MODEL({
             if ( json.issuesConfig.statuses ) {
               for ( i = 0; i < json.issuesConfig.statuses.length; i++ ) {
                 json.issuesConfig.statuses[i] =
-                  QIssueStatus.create(json.issuesConfig.statuses[i]);
+                  this.X.QIssueStatus.create(json.issuesConfig.statuses[i]);
               }
             }
 
             if ( json.issuesConfig.labels ) {
               for ( i = 0; i < json.issuesConfig.labels.length; i++ ) {
                 json.issuesConfig.labels[i] =
-                  QIssueLabel.create(json.issuesConfig.labels[i]);
+                  this.X.QIssueLabel.create(json.issuesConfig.labels[i]);
               }
             }
           }
@@ -225,7 +225,11 @@ MODEL({
   listeners: [
     {
       name: 'onUserUpdate',
-      code: function() { QueryParser.ME = this.user.email; }
+      code: function() {
+        for ( var key in this.projects ) {
+          this.projects[key].X.QueryParser.ME = this.user.email;
+        }
+      }
     }
   ]
 });

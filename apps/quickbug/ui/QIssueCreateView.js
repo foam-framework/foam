@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return QIssue; }
+      factory: function() { return this.X.QIssue; }
     },
     {
       model_: 'BooleanProperty',

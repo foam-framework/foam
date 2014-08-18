@@ -58,7 +58,7 @@ MODEL({
       var src = this.X.LabelDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH_IC(QIssueLabel.LABEL, data) :
+          STARTS_WITH_IC(this.X.QIssueLabel.LABEL, data) :
           TRUE);
 
       var self = this;

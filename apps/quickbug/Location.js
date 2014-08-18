@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-var LocationProperty = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'LocationProperty',
 
   extendsModel: 'Property',
@@ -31,9 +29,7 @@ var LocationProperty = FOAM({
 });
 
 
-var Location = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'Location',
 
   properties: [
@@ -72,7 +68,7 @@ var Location = FOAM({
       defaultValue: '',
       toURL: function(q) {
         // Replace short-names will fullnames that quickbug will understand
-        return (QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
+        return (this.X.QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
       }
     },
     {
@@ -120,7 +116,7 @@ var Location = FOAM({
         for ( var i = 0 ; i < ps.length ; i++ ) {
           var p = ps[i];
           var name = p.charAt('0') == '-' ? p.substring(1) : p;
-          var prop = QIssue.getProperty(name);
+          var prop = this.X.QIssue.getProperty(name);
 
           if ( ! prop ) {
             console.warn("Property not found: ", name);
@@ -146,13 +142,13 @@ var Location = FOAM({
       model_: 'LocationProperty',
       name: 'y',
       toMemento: function(y) { return y.name; },
-      fromMemento: function(name) { return QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
       toMemento: function(x) { return x.name; },
-      fromMemento: function(name) { return QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
@@ -168,8 +164,8 @@ var Location = FOAM({
   methods: {
     getPropertyIC: function(propName) {
       propName = propName.toLowerCase();
-      for ( var i = 0 ; i < QIssue.properties.length ; i++ ) {
-        var prop = QIssue.properties[i];
+      for ( var i = 0 ; i < this.X.QIssue.properties.length ; i++ ) {
+        var prop = this.X.QIssue.properties[i];
 
         if ( prop.name.toLowerCase() === propName ) return prop;
 

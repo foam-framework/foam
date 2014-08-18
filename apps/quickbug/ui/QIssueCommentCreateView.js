@@ -3,7 +3,7 @@ MODEL({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return QIssueComment; } },
+    { name: 'model', factory: function() { return this.X.QIssueComment; } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
     { name: 'issue' },
     { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
@@ -14,7 +14,7 @@ MODEL({
     makeUpdatesView: function() {
       return this.X.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
-        prop: QIssueComment.UPDATES
+        prop: this.X.QIssueComment.UPDATES
       });
       return view;
     }
@@ -50,7 +50,7 @@ MODEL({
         convertArray('cc');
 
         var comment = this.data.clone();
-        comment.updates = QIssueCommentUpdate.create(diff);
+        comment.updates = this.X.QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
 

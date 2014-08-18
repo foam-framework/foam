@@ -46,7 +46,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return Location.create(); }
+      factory: function() { return this.X.Location.create(); }
     },
     {
       name: 'memento',
@@ -79,7 +79,7 @@ MODEL({
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
-          model: QIssue,
+          model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
         });
 
@@ -295,8 +295,8 @@ MODEL({
       isMerged: 1,
       code: function(evt) {
         this.search(AND(
-          QueryParser.parseString(this.location.can) || TRUE,
-          QueryParser.parseString(this.location.q) || TRUE
+          this.X.QueryParser.parseString(this.location.can) || TRUE,
+          this.X.QueryParser.parseString(this.location.q) || TRUE
         ).partialEval());
         metricsSrv.sendEvent('Browser', 'Query');
       }
@@ -491,8 +491,8 @@ MODEL({
 
       this.memento = '';
 
-      this.location.y = QIssue.OWNER;
-      this.location.x = QIssue.STATUS;
+      this.location.y = this.X.QIssue.OWNER;
+      this.location.x = this.X.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
@@ -562,7 +562,7 @@ MODEL({
       if ( opt_templateName ) {
         for ( var i = 0, prompt; prompt = this.project.project.issuesConfig.prompts[i]; i++ ) {
           if ( prompt.name !== opt_templateName ) continue;
-          var data = QIssue.create({
+          var data = this.X.QIssue.create({
             labels: prompt.labels,
             status: prompt.status,
             summary: prompt.title,
@@ -573,7 +573,7 @@ MODEL({
       }
 
       if ( ! data ) {
-          data = QIssue.create({
+          data = this.X.QIssue.create({
             description: multiline(function(){/*What steps will reproduce the problem?
 1.
 2.
@@ -679,7 +679,7 @@ Please use labels and text to provide additional information.
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url
-          }).addDecorator(QIssuePreviewBorder.create());
+          }).addDecorator(self.X.QIssuePreviewBorder.create());
 
           var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,

@@ -54,56 +54,6 @@ MODEL({
    }
 });
 
-
-var QueryParser = {
-  __proto__: QueryParserFactory(QIssue),
-
-  stars: seq(literal_ic('stars:'), sym('number')),
-
-  labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
-
-  summary: str(plus(notChar(' ')))
-
-}.addActions({
-  stars: function(v) {
-    return GTE({
-      f: function(i) { return i.stars; },
-      partialEval: function() {return this;},
-      toSQL: function() { return 'stars > ' + v[1]; },
-      toMQL: function() { return 'stars > ' + v[1]; }
-    }, v[1]);
-  },
-
-  labelMatch: function(v) {
-    var a = [];
-    for ( var i = 2 ; i < v.length ; i++ ) {
-      a.push(v[0] + '-' + v[i]);
-    }
-
-    return IN(QIssue.LABELS, a).partialEval();
-    /*
-    var or = OR();
-    var values = v[2];
-    for ( var i = 0 ; i < values.length ; i++ ) {
-      or.args.push(CONTAINS_IC(QIssue.LABELS, v[0] + '-' + values[i]));
-    }
-    return or;
-    */
-  },
-
-  summary: function(v) {
-    return DefaultQuery.create({arg1: v});
-  }
-});
-
-
-QueryParser.expr = alt(
-  QueryParser.export('expr'),
-  sym('stars'),
-  sym('labelMatch'),
-  sym('summary')
-);
-
 /*
 function test(query) {
   var res = QueryParser.parseString(query);

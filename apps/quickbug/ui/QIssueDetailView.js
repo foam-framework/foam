@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return QIssue; }
+      factory: function() { return this.X.QIssue; }
     },
     {
       model_: 'BooleanProperty',
@@ -37,7 +37,7 @@ MODEL({
       name: 'blockingView',
       factory: function() {
         return this.X.BlockView.create({
-          property: QIssue.BLOCKING,
+          property: this.X.QIssue.BLOCKING,
           ids: this.data.blocking});
       }
     },
@@ -45,7 +45,7 @@ MODEL({
       name: 'blockedOnView',
       factory: function() {
         return this.X.BlockView.create({
-          property: QIssue.BLOCKED_ON,
+          property: this.X.QIssue.BLOCKED_ON,
           ids: this.data.blockedOn});
       }
     },
@@ -95,7 +95,7 @@ MODEL({
     },
     refresh: function() {
       var self = this;
-      self.issueDAO.where(EQ(QIssue.ID, self.data.id)).listen(
+      self.issueDAO.where(EQ(this.X.QIssue.ID, self.data.id)).listen(
         EventService.oneTime(function() {
           self.issueDAO.find(self.data.id, {
             put: function(issue) {
@@ -268,7 +268,7 @@ MODEL({
           self.currentPreview = self.X.PopupView.create({
             x: e.x+30,
             y: e.y-20,
-            view: QIssueTileView.create({
+            view: self.X.QIssueTileView.create({
               issue: issue,
               browser: {url: ''}})
           });

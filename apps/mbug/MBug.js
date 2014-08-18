@@ -30,21 +30,21 @@ MODEL({
         Y.projectName = project.projectName;
         Y.issueDAO    = Y.QIssueSplitDAO.create({
           local: project.IssueDAO,
-          model: QIssue,
+          model: Y.QIssue,
           remote: project.IssueNetworkDAO
         });
 
         var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
         var pc = Y.AppController.create({
           name: project.projectName,
-          model: QIssue,
+          model: Y.QIssue,
           dao: Y.issueDAO,
-          queryParser: QueryParser,
+          queryParser: Y.QueryParser,
           citationView: 'IssueCitationView',
           sortChoices: [
-            [ DESC(QIssue.MODIFIED), 'Last modified' ],
-            [ QIssue.PRI,            'Priority' ],
-            [ DESC(QIssue.ID),       'Issue ID' ]
+            [ DESC(Y.QIssue.MODIFIED), 'Last modified' ],
+            [ Y.QIssue.PRI,            'Priority' ],
+            [ DESC(Y.QIssue.ID),       'Issue ID' ]
           ],
           filterChoices: [
 //          ['',                     'ALL ISSUES'],
