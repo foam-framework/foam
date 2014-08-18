@@ -142,14 +142,14 @@ MODEL({
       var jsonpFuture = deferJsonP(this.X);
 
       var self = this;
-      this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
-        clientId: opt_clientId || '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
-        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9'
+      this.persistentContext.bindObject('authAgent2', EasyOAuth2.xbind({
+        clientId: opt_clientId ||
+          '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: opt_clientSecret ||
+          'mbxy7-eZlosojSZgHTRT15o9'
+      }), {
+        scopes: self.scopes
       })(function(oauth2) {
-        if ( oauth2.scopes.compareTo(self.scopes) != 0 ) {
-          oauth2.scopes = self.scopes;
-        }
-
         oauth2.setJsonpFuture(self.X, jsonpFuture);
       });
     },

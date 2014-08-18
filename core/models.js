@@ -214,10 +214,10 @@ MODEL({
     bindObjects: function(a) {
       // TODO: implement
     },
-    bindObject: function(name, model, createArgs) {
+    bindObject: function(name, factory, transientValues) {
       console.log('PersistentContext', 'binding', name);
       var future = afuture();
-      createArgs = createArgs || {};
+      transientValues = transientValues || {};
 
       if ( this.context[name] ) {
         future.set(this.context[name]);
@@ -227,16 +227,18 @@ MODEL({
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
+            if ( name === 'syncManager' ) debugger;
             var json = JSON.parse(binding.value);
-            json.__proto__ = createArgs;
             var obj = JSONUtil.mapToObj(json);
+            obj.copyFrom(transientValues);
             this.context[name] = obj;
             this.manage(name, obj);
             future.set(obj);
           }.bind(this),
           error: function() {
             console.log('PersistentContext', 'newInit', name);
-            var obj = model.create(createArgs);
+            var obj = factory.create();
+            obj.copyFrom(transientValues);
             this.context[name] = obj;
             this.manage(name, obj);
             future.set(obj);
