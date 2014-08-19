@@ -227,7 +227,6 @@ MODEL({
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
-            if ( name === 'syncManager' ) debugger;
             var json = JSON.parse(binding.value);
             var obj = JSONUtil.mapToObj(json);
             obj.copyFrom(transientValues);
