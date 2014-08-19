@@ -319,6 +319,7 @@ var FObject = {
   clone: function() {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
+    c.X = this.X;
     for ( var key in this.instance_ ) {
       var value = this[key];
       // The commented out (original) implementation was causing
