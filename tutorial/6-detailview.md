@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /6-detailview/
+permalink: /tutorial/6-detailview/
 tutorial: 6
 ---
 
@@ -155,10 +155,10 @@ Create this file now, and add the following, which was adapted from the AngularJ
 {% endraw %}
 {% endhighlight %}
 
-There's quite a lot there, but it's mostly the same pattern. A few points of interest:
+There's quite a lot there, but it's mostly the same pattern repeated for each group of specs. A few points of interest:
 
 - `this.nextID()` is a function all views have, which returns a fresh identifier they can use as the ID of a DOM element.
-- We can defined new variables and functions in templates, like `checkmark`.
+- We can define new variables and functions in templates, like `checkmark`.
 
 Once you've got this file saved, reload the app and navigate to a phone, and you should see its information nicely laid out. Clicking a thumbnail image will load the larger version.
 

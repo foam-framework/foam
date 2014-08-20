@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /8-appendix/
+permalink: /tutorial/8-appendix/
 tutorial: 8
 ---
 

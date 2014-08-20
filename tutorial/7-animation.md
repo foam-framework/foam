@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /7-animation/
+permalink: /tutorial/7-animation/
 tutorial: 7
 ---
 

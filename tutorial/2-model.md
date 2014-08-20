@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /2-model/
+permalink: /tutorial/2-model/
 tutorial: 2
 ---
 
@@ -37,9 +37,9 @@ Most of these properties are straightforward. Some are notable:
     - If you don't have `ids`, but do have an `id` property, DAOs will use that.
     - Failing that, they use the first property in the `properties` array.
 - `imageUrl` has its `view` property specified as `ImageView`, so that when we render it in a `DetailView`, an `ImageView` will be created for it.
-- `images` is defined as a `StringArrayProperty`, which handles array-valued properties better than the default (`StringProperty`).
+- `images` is defined as a `StringArrayProperty`, which handles array-valued properties better than the default generic property.
 
-If this model doesn't seem to do much, that's because it doesn't. This is purely declarative, just specifying what properties there are and what their types are. (Properties default to `StringProperty` if their `model_` is not specified.)
+If this model doesn't seem to do much, that's because it doesn't. This is purely declarative, just specifying what properties there are and what their types are. The default type is a generic property that makes no assumptions about its type.
 
 ### Download Bundle
 

@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-permalink: /4-templates/
+permalink: /tutorial/4-templates/
 tutorial: 4
 ---
 
@@ -61,7 +61,7 @@ MODEL({
 
 - FOAM uses multi-line comments in templates as a hack for multi-line strings in Javascript.
 - Inside a template, `this` is bound to the view itself, **not the `Phone` object**.
-- Instead, `this.data` is bound to the `Phone` object.
+- The phone object is `this.data` instead.
 - The `$$foo` syntax puts a child view at this location. `imageUrl` has its `view` set to `ImageView`, so `$$imageUrl` will render an `ImageView` in the first link tag.
 - `$$name{mode: 'read-only'}` will put the child view for the `name` property (defaults to `TextFieldView`) in the second link tag. `mode: 'read-only'` on a `TextFieldView` is simply text.
 - Similarly for `$$snippet{mode: 'read-only'}`.
