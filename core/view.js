@@ -389,6 +389,9 @@ MODEL({
       // TODO: it would be more efficient to replace SimpleValue with ConstantValue
       // TODO: rename SimpleValue to just Value and make it a Trait?
       var o = this.model_[name];
+
+      if ( ! o ) throw 'Unknown View Name: ' + name;
+
       var v = Action.isInstance(o) ?
         this.createActionView(o, opt_args) :
         this.createView(o, opt_args) ;
@@ -616,7 +619,10 @@ MODEL({
     },
     {
       name: 'data',
-      postSet: function(_,d) { if ( d.TYPE === 'DetailView' ) debugger; this.bindData(); }
+      postSet: function(oldData, data) {
+        this.unbindData(oldData);
+        this.bindData(data);
+      }
     },
     {
       name: 'innerView',
@@ -645,7 +651,7 @@ MODEL({
       view.parent = this.parent;
 
       this.view = view;
-      this.bindData();
+      this.bindData(this.data);
     },
 
     createViewFromProperty: function(prop) {
@@ -659,9 +665,15 @@ MODEL({
       return viewName.create(prop);
     },
 
-    bindData: function() {
+    unbindData: function(oldData) {
       var view = this.view;
-      var data = this.data;
+      if ( ! view || ! oldData ) return;
+      var pValue = oldData.propertyValue(this.prop.name);
+      Events.unlink(pValue, view.data$);
+    },
+
+    bindData: function(data) {
+      var view = this.view;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
@@ -1072,8 +1084,8 @@ MODEL({
     {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
-        oldValue && Events.unfollow(this.value, oldValue);
-        Events.follow(this.value, newValue);
+        oldValue && Events.unfollow(this.data$, oldValue);
+        newValue && Events.follow(this.data$, newValue);
       }
     },
     {

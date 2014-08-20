@@ -236,7 +236,7 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <div class="stackview_navbar"></div>
-      <div class="stackview_navactions">$$back $$forward</div>
+      <div class="stackview_navactions">$$back $$forth</div>
       <table width=100% style="table-layout:fixed;">
         <tr>
           <td width=48% valign=top class="stackview-viewarea-td">

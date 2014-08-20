@@ -57,9 +57,14 @@ MODEL({
 
   properties: [
     {
+      name: 'labelName',
+      help: 'The associated label name for this property.',
+      defaultValueFn: function() { return this.name.capitalize(); }
+    },
+    {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        this.replaceLabels(prop.name.capitalize(), n);
+        this.replaceLabels(prop.labelName, n);
 
         // Test for LabelStringProperties that should be LabelArrayProperties.
         if ( o && o !== n ) debugger;
@@ -73,40 +78,6 @@ MODEL({
 });
 
 
-var labelToProperty = {
-  App:          'app',
-  Type:         'type',
-  Pri:          'pri',
-  Priority:     'priority',
-  Milestone:    'milestone',
-  Mstone:       'milestone',
-  M:            'milestone',
-  Cr:           'cr',
-  Iteration:    'iteration',
-  ReleaseBlock: 'releaseBlock',
-  OS:           'OS',
-  MovedFrom:    'movedFrom'
-};
-
-var propertyLabels_ = {};
-
-function isPropertyLabel(l) {
-  if ( l in propertyLabels_ ) return propertyLabels_[l];
-
-  var keyValue = l.match(/([^\-]*)\-(.*)/) || l.match(/(\D*)(.*)/);
-  if ( keyValue ) {
-    var key   = labelToProperty[keyValue[1]];
-    var value = keyValue[2];
-
-    if ( key ) {
-      var kv = [key, value.intern()];
-      propertyLabels_[l] = kv;
-      return kv;
-    }
-  }
-
-  return propertyLabels_[l] = false;
-}
 
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {

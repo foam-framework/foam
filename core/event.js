@@ -290,7 +290,7 @@ var EventService = {
       if ( ! map[null] ) return true;
 
       if ( ! map[null].deleteI(listener) ) {
-        console.warn('phantom unsubscribe');
+        console.warn('phantom unsubscribe, size: ', map[null].length);
       } else {
 //        console.log('remove', topic);
       }
@@ -417,6 +417,8 @@ var PropertyChangeSupport = {
 
   /** Create a Value for the specified property. **/
   propertyValue: function(prop) {
+    if ( ! prop ) throw 'Property Name required for propertyValue().';
+
     var obj  = this;
     var name = prop + 'Value___';
     var proxy;
@@ -473,7 +475,23 @@ var FunctionStack = {
 var Events = {
 
   /** Collection of all 'following' listeners. **/
-  listeners_: {},
+  listeners_: new WeakMap(),
+
+  recordListener: function(src, dst, listener, opt_dontCallListener) {
+    var srcMap = this.listeners_.get(src);
+    if ( ! srcMap ) {
+      srcMap = new WeakMap();
+      this.listeners_.set(src, srcMap);
+    }
+    if ( srcMap.get(dst) ) {
+      debugger;
+      console.log('duplicate follow');
+    }
+    srcMap.set(dst, listener);
+    src.addListener(listener);
+    if ( ! opt_dontCallListener ) listener();
+  },
+
 
   identity: function (x) { return x; },
 
@@ -481,19 +499,25 @@ var Events = {
   follow: function (srcValue, dstValue) {
     if ( ! srcValue || ! dstValue ) return;
 
-    var listener = function () {
+    this.recordListener(srcValue, dstValue, function () {
       var sv = srcValue.get();
       var dv = dstValue.get();
 
       if ( sv !== dv ) dstValue.set(sv);
-    };
+    });
+  },
 
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
 
-    srcValue.addListener(listener);
-
-    listener();
+  /** Have the dstValue stop listening for changes to the srcValue. **/
+  unfollow: function (src, dst) {
+    if ( ! src || ! dst ) return;
+    var srcMap = this.listeners_.get(src);
+    if ( ! srcMap ) return;
+    var listener = srcMap.get(dst);
+    if ( listener ) {
+      srcMap.delete(dst);
+      src.removeListener(listener);
+    }
   },
 
 
@@ -504,33 +528,12 @@ var Events = {
   map: function (srcValue, dstValue, f) {
     if ( ! srcValue || ! dstValue ) return;
 
-    var listener = function () {
+    this.recordListener(srcValue, dstValue, function () {
       var s = f(srcValue.get());
       var d = dstValue.get();
 
       if ( s !== d ) dstValue.set(s);
-    };
-
-    listener();
-
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
-    srcValue.addListener(listener);
-  },
-
-
-  /** Have the dstValue stop listening for changes to the srcValue. **/
-  unfollow: function (srcValue, dstValue) {
-    if ( ! srcValue || ! dstValue ) return;
-
-    var key      = [srcValue.$UID, dstValue.$UID];
-    var listener = this.listeners_[key];
-
-    if ( listener ) {
-      delete this.listeners_[key];
-      srcValue.removeListener(listener);
-    }
+    });
   },
 
 
@@ -539,8 +542,6 @@ var Events = {
    * Initial value is copied from srcValue to dstValue.
    **/
   link: function (srcValue, dstValue) {
-    if ( ! srcValue || ! dstValue ) return;
-
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
   },
@@ -569,14 +570,11 @@ var Events = {
       }
     }};
 
-    // TODO: put back when cleanup implemented
-    //    this.listeners_[[srcValue.$UID, dstValue.$UID]] = listener;
-
     var l1 = l(srcValue, dstValue, f);
     var l2 = l(dstValue, srcValue, fprime);
 
-    srcValue.addListener(l1);
-    dstValue.addListener(l2);
+    this.recordListener(srcValue, dstValue, l1, true);
+    this.recordListener(dstValue, srcValue, l2, true);
 
     l1();
   },

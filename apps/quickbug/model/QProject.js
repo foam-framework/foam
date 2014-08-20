@@ -247,6 +247,75 @@ MODEL({
 
   methods: {
     init: function(args) {
+      var labelToProperty = {
+        App:          'app',
+        Type:         'type',
+        Milestone:    'milestone',
+        Mstone:       'milestone',
+        M:            'milestone',
+        Cr:           'cr',
+        Iteration:    'iteration',
+        ReleaseBlock: 'releaseBlock',
+        OS:           'OS',
+        MovedFrom:    'movedFrom'
+      };
+
+      var propertyLabels_ = {};
+
+      function isPropertyLabel(l) {
+        if ( l in propertyLabels_ ) return propertyLabels_[l];
+
+        var keyValue = l.match(/([^\-]*)\-(.*)/) || l.match(/(\D*)(.*)/);
+        if ( keyValue ) {
+          var key   = labelToProperty[keyValue[1]];
+          var value = keyValue[2];
+
+          if ( key ) {
+            var kv = [key, value.intern()];
+            propertyLabels_[l] = kv;
+            return kv;
+          }
+        }
+
+        return propertyLabels_[l] = false;
+      }
+
+      var priorityProp = LabelStringProperty.create({
+        name: 'priority',
+        shortName: 'p',
+        aliases: ['pr', 'prior'],
+        tableLabel: 'Priority',
+        labelName: 'Priority',
+        tableWidth: '60px',
+        compareProperty: function(p1, p2) {
+          return p1.compareTo(p2);
+        },
+        required: true,
+      });
+
+      if ( this.projectName === 'chromium' ) {
+        labelToProperty.Pri = 'priority';
+        priorityProp.labelName = 'Pri';
+        priorityProp.compareProperty = function(p1, p2) {
+          var priorities = ['Low', 'Medium', 'High', 'Critical'];
+          var i1 = priorities.indexOf(p1);
+          var i2 = priorities.indexOf(p2);
+          if ( i1 < 0 && i2 < 0 ) {
+            // Neither is a proper priority - return normal string order.
+            return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
+          } else if ( i1 < 0 ) {
+            return -1; // Nonstandard priorities are considered lower than Low.
+          } else if ( i2 < 0 ) {
+            return 1;  // Likewise.
+          } else {
+            var r = i1 - i2;
+            return r === 0 ? 0 : r < 0 ? -1 : 1;
+          }
+        };
+      } else {
+        labelToProperty.Priority = 'priority';
+      }
+
       this.X.registerModel(Model.create({
         extendsModel: 'GeneratedQIssue',
 
@@ -342,40 +411,7 @@ MODEL({
             preSet: function(_, a) { return a.intern(); },
             aliases: ['reporter']
           },
-          {
-            model_: 'LabelStringProperty',
-            name: 'priority',
-            shortName: 'p',
-            aliases: ['pr', 'prior'],
-            tableLabel: 'Priority',
-            tableWidth: '60px',
-            compareProperty: function(p1, p2) {
-              var priorities = ['Low', 'Medium', 'High', 'Critical'];
-              var i1 = priorities.indexOf(p1);
-              var i2 = priorities.indexOf(p2);
-              if ( i1 < 0 && i2 < 0 ) {
-                // Neither is a proper priority - return normal string order.
-                return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
-              } else if ( i1 < 0 ) {
-                return -1; // Nonstandard priorities are considered lower than Low.
-              } else if ( i2 < 0 ) {
-                return 1;  // Likewise.
-              } else {
-                var r = i1 - i2;
-                return r === 0 ? 0 : r < 0 ? -1 : 1;
-              }
-            },
-            required: true
-          },
-          {
-            model_: 'IntProperty',
-            name: 'pri',
-            tableLabel: 'Pri',
-            tableWidth: '60px',
-            postSet: function(_, v) {
-              if ( typeof v !== 'number' ) debugger;
-            }
-          },
+          priorityProp,
           {
             model_: 'LabelArrayProperty',
             name: 'app',
