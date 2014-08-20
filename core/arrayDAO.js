@@ -191,7 +191,7 @@ defineProperties(Array.prototype, {
 
 
 MODEL({
-  name: 'ArrayDAO',
+  name: 'ImmutableArrayDAO',
   extendsModel: 'AbstractDAO',
 
   properties: [
@@ -239,6 +239,63 @@ MODEL({
         if ( this.array[i].id == id ) {
           var rem = this.array[i];
           this.updateArray_(this.array.slice(0, i).concat(this.array.slice(i+1)));
+          this.notify_('remove', [rem]);
+          sink && sink.remove && sink.remove(rem);
+          return;
+        }
+      }
+      sink && sink.error && sink.error('remove', obj);
+    },
+
+    find: function(key, sink) { this.array.find(key, sink); },
+
+    select: function(sink, options) { return this.array.select(sink, options); }
+  }
+});
+
+
+MODEL({
+  name: 'ArrayDAO',
+  extendsModel: 'AbstractDAO',
+
+  properties: [
+    {
+      model_: 'ModelProperty',
+      name: 'model'
+    },
+    {
+      name: 'array',
+      factory: function() { return []; }
+    }
+  ],
+
+  methods: {
+    put: function(obj, sink) {
+      var a = this.array;
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( a[i].id == obj.id ) {
+          a[i] = obj;
+          sink && sink.put && sink.put(obj);
+          this.notify_('put', arguments);
+          return;
+        }
+      }
+      a.push(obj);
+      this.notify_('put', arguments);
+      sink && sink.put && sink.put(obj);
+    },
+
+    remove: function(obj, sink) {
+      if ( ! obj ) {
+        sink && sink.error && sink.error('missing key');
+        return;
+      }
+      var id = ( obj.id !== undefined && obj.id !== '' ) ? obj.id : obj;
+      var a  = this.array;
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( a[i].id == id ) {
+          var rem = a[i];
+          a.splice(i,1);
           this.notify_('remove', [rem]);
           sink && sink.remove && sink.remove(rem);
           return;
