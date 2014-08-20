@@ -1,6 +1,6 @@
 <div class="history">
-{{this.obj.op}} {{this.obj.a2}}<br>
-<% if ( this.obj.op.toString() ) { %>
+{{this.data.op}} {{this.data.a2}}<br>
+<% if ( this.data.op.toString() ) { %>
 <hr>
 <% } %>
 </div>
