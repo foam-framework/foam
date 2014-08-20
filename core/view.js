@@ -1084,8 +1084,8 @@ MODEL({
     {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
-        oldValue && Events.unfollow(this.value, oldValue);
-        Events.follow(this.value, newValue);
+        oldValue && Events.unfollow(this.data$, oldValue);
+        newValue && Events.follow(this.data$, newValue);
       }
     },
     {
