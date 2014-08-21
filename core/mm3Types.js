@@ -442,7 +442,7 @@ var ArrayProperty = Model.create({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var dao = ArrayDAO.create({
+          var dao = ImmutableArrayDAO.create({
             array$: this.propertyValue(prop.name),
             model: prop.subType
           });
