@@ -1274,6 +1274,10 @@ MODEL({
     // TODO: Model as a 'Topic'
     ESCAPE: ['escape'],
 
+    installInDocument: function(X, document) {
+      console.log('Installing TextFieldView in Document.');
+    },
+
     toHTML: function() {
       return this.mode === 'read-write' ?
         this.toReadWriteHTML() :
