@@ -578,7 +578,10 @@ MODEL({
       }
 
       init(this.model_.actions);
-      if ( DetailView.isInstance(this) ) init(this.model.actions, this.data$);
+      if ( DetailView.isInstance(this) &&
+          this.model &&
+          this.model.actions )
+        init(this.model.actions, this.data$);
 
       if ( found ) {
         this.keyMap_ = keyMap;
