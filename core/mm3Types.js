@@ -402,6 +402,8 @@ var ArrayProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
+        if ( a ) a.dao;
+
         var m = GLOBAL[prop.subType];
 
         if ( ! m ) return a;
@@ -424,6 +426,18 @@ var ArrayProperty = Model.create({
       }
     },
     {
+      name: 'postSet',
+      defaultValue: function(oldA, a, prop) {
+        a.dao;
+        var name = prop.name + 'ArrayRelay_';
+        var l = this[name] || ( this[name] = function() {
+          this.propertyChange(prop.name, null, this[prop.name]);
+        }.bind(this) );
+        if ( oldA && oldA.unlisten ) oldA.unlisten(l);
+        if ( a && a.listen ) a.listen(l);
+      }
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
@@ -442,13 +456,14 @@ var ArrayProperty = Model.create({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var dao = ImmutableArrayDAO.create({
-            array$: this.propertyValue(prop.name),
-            model: prop.subType
+          var proxy = ProxyDAO.create({delegate: this[prop.name].dao});
+
+          this.addPropertyListener(prop.name, function(_, _, _, a) {
+            proxy.delegate = a.dao;
           });
 
           return {
-            get: function() { return dao; },
+            get: function() { return proxy; },
             configurable: true
           };
         });

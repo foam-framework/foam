@@ -412,7 +412,7 @@ MODEL({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.clone();
+        if ( this.mode === 'read-write' ) o = o.model_.create(o); //.clone();
         var view = rowView.create({data: o, model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
@@ -751,59 +751,5 @@ MODEL({
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }
-  }
-});
-
-
-MODEL({
-  name: 'ArrayView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'model'
-    },
-    {
-      name: 'data',
-      factory: function() { return []; },
-      postSet: function(_, data) { if ( this.arrayDAO.array !== data ) this.arrayDAO.array = data; }
-    },
-    {
-      model_: 'DAOProperty',
-      name: 'arrayDAO',
-      onDAOUpdate: 'onDAOUpdate',
-      factory: function() {
-        return ArrayDAO.create({
-          model: this.model,
-          array: this.data
-        });
-      }
-    },
-    {
-      name: 'subType',
-      setter: function(subType) { this.model = FOAM.lookup(subType, this.X); }
-    },
-    {
-      model_: 'ModelProperty',
-      name: 'viewType',
-      factory: function() { return 'DAOController'; }
-    },
-    {
-      name: 'daoView',
-    }
-  ],
-
-  methods: {
-    init: function(prop) {
-      this.SUPER();
-      console.assert(this.model, 'ArrayView requires subType/Model.');
-      this.daoView = this.viewType.create({ model: this.model });
-      this.daoView.dao = this.arrayDAO;
-    },
-    onDAOUpdate: function() {
-      this.data = this.arrayDAO.array;
-    },
-    toHTML:   function() { return this.daoView.toHTML(); },
-    initHTML: function() { return this.daoView.initHTML(); }
   }
 });
