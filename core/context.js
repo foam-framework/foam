@@ -47,7 +47,17 @@ function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
   var document = this.subDocument ? this.subDocument(w.document) : w.document;
+  var installedModels = new WeakMap();
+
   var map = {
+    registerModel: function(model, opt_name) {
+      if ( model.getPrototype().installInDocument && ! installedModels.has(model) ) {
+        console.log('installing model: ', model.name);
+        installedModels.set(model, true);
+        model.getPrototype().installInDocument(this, document);
+      }
+      return GLOBAL.registerModel.call(this, model, opt_name);
+    },
     isBackground: !!isBackground,
     window: w,
     document: document,

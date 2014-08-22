@@ -578,7 +578,10 @@ MODEL({
       }
 
       init(this.model_.actions);
-      if ( DetailView.isInstance(this) ) init(this.model.actions, this.data$);
+      if ( DetailView.isInstance(this) &&
+          this.model &&
+          this.model.actions )
+        init(this.model.actions, this.data$);
 
       if ( found ) {
         this.keyMap_ = keyMap;
@@ -1273,6 +1276,10 @@ MODEL({
     /** Escape topic published when user presses 'escape' key to abort edits. **/
     // TODO: Model as a 'Topic'
     ESCAPE: ['escape'],
+
+    installInDocument: function(X, document) {
+      console.log('Installing TextFieldView in Document.');
+    },
 
     toHTML: function() {
       return this.mode === 'read-write' ?

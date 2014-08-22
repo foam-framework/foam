@@ -226,9 +226,7 @@ MODEL({
     {
       name: 'onUserUpdate',
       code: function() {
-        for ( var key in this.projects ) {
-          this.projects[key].X.QueryParser.ME = this.user.email;
-        }
+        this.X.ME = this.user.email;
       }
     }
   ]
