@@ -1,15 +1,8 @@
 MODEL({
-  name: 'A',
+  name: 'C',
   properties: [
     'id',
-    'a',
-    {
-      model_: 'ArrayProperty',
-      name: 'bs',
-      subType: 'B',
-      view: 'DAOListView',
-      factory: function() { return [B.create({id: 1, b:'b1'})].dao; }
-    }
+    'c'
   ]
 });
 
@@ -23,18 +16,32 @@ MODEL({
       name: 'cs',
       subType: 'C',
       view: 'DAOListView',
-      factory: function() { return [C.create({id: 1, c:'c1'})].dao; }
+      factory: function() { return [C.create({id: 1, c:'c1'})]; }
     }
   ]
 });
 
 MODEL({
-  name: 'C',
+  name: 'A',
   properties: [
     'id',
-    'c'
+    'a',
+    {
+      name: 'b',
+      subType: 'B',
+      view: { model_: 'DetailView', model: B },
+      factory: function() { return B.create({id: 1, b:'nested B'}); }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'bs',
+      subType: 'B',
+      view: 'DAOListView',
+      factory: function() { return [B.create({id: 1, b:'b1'})]; }
+    }
   ]
 });
+
 
 var dao = EasyDAO.create({model: 'A', daoType: 'MDAO', seqNo: true});
 
