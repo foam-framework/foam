@@ -251,7 +251,13 @@ var Model = {
         var i = 0;
         templates.forEach(function(t) {
           if ( typeof t === 'function' ) {
-            t = templates[i] = Template.create({name: t.name, template: multiline(t)});
+            t = templates[i] = Template.create({
+              name: t.name,
+              // ignore first argument, which should be 'opt_out'
+              args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
+                return Arg.create({name: a});
+              }),
+              template: multiline(t)});
           } else if ( ! t.template ) {
             // console.log('loading: '+ this.name + ' ' + t.name);
 
