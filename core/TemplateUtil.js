@@ -157,7 +157,12 @@ var TemplateUtil = {
        var code = TemplateCompiler.parseString(t.template);
 
        try {
-         return new Function('opt_out', code);
+         var args = ['opt_out'];
+         for ( var i = 0 ; i < t.args.length ; i++ ) {
+           args.push(t.args[i].name);
+         }
+         args.push(code);
+         return Function.apply(null, args);
        } catch (err) {
          console.log('Template Error: ', err);
          console.log(code);

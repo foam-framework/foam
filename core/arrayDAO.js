@@ -113,7 +113,6 @@ defineProperties(Array.prototype, {
     return a;
   },
   put: function(obj, sink) {
-console.log('ArrayDAO.put');
     for ( var idx in this ) {
       if ( this[idx].id === obj.id ) {
         this[idx] = obj;

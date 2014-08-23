@@ -594,7 +594,7 @@ MODEL({
 
     unlisten: function(sink) {
       var ls = this.daoListeners_;
-      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
+//      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
       for ( var i = 0; i < ls.length ; i++ ) {
         if ( ls[i].$UID === sink.$UID ) {
           ls.splice(i, 1);
