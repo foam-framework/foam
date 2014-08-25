@@ -74,11 +74,15 @@ MODEL({
     TOUCH_END: ['touch-end'],
     TOUCH_MOVE: ['touch-move'],
 
+    init: function() {
+      this.SUPER();
+      if ( this.X.document ) this.install(this.X.document);
+    },
+
     // TODO: Problems if the innermost element actually being touched is removed from the DOM.
     // Change this to connect the touchstart only to the document, and the others on the fly
     // after the first touch, to event.target.
     install: function(d) {
-      console.log('installing');
       d.addEventListener('touchstart', this.onTouchStart);
       d.addEventListener('touchend', this.onTouchEnd);
       d.addEventListener('touchmove', this.onTouchMove);

@@ -22,14 +22,9 @@ MODEL({
 
   properties: [
     {
-      name: 'data',
-      postSet: function(oldDAO, dao) {
-        if ( this.dao !== dao ) this.dao = dao;
-      }
-    },
-    {
       model_: 'DAOProperty',
       name: 'dao',
+      aliases: ['data'],
       label: 'DAO',
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
@@ -537,11 +532,17 @@ MODEL({
     },
     {
       name: 'rowHeight',
-      help: 'The height of each row in CSS pixels. Defaults to -1 until it can be computed. Can also be specified.',
+      help: 'The height of each row in CSS pixels. If specified, ScrollView will use that height. Otherwise will use rowView\'s preferredHeight, if given. Otherwise defaults to -1 until it can be computed dynamically. Computing it requires rendering a rowView without data set, which breaks some views.',
       defaultValue: -1
     },
     {
-      name: 'rowView'
+      name: 'rowView',
+      help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
+      postSet: function(_, nu) {
+        var view = FOAM.lookup(nu);
+        if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
+          this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
+      }
     },
     {
       name: 'viewportHeight',
@@ -635,9 +636,13 @@ MODEL({
 
       // Grab the height of the -rowsize div, then drop that div.
       if ( this.rowHeight < 0 ) {
-        var rowsize = this.X.$(this.id + '-rowsize');
-        this.rowHeight = rowsize.offsetHeight;
-        rowsize.outerHTML = '';
+        var outer = this.X.$(this.id + '-rowsize');
+        var style = this.X.window.getComputedStyle(outer.children[0]);
+        // TODO: This is messy, but I can't find another way.
+        // This totals up the margin, border, padding and body.
+        this.rowHeight = this.X.parseFloat(style.height);
+        console.log('ScrollView dynamically found rowHeight to be ' + this.rowHeight + 'px');
+        outer.outerHTML = '';
       }
 
       // Add scrollbar.
@@ -852,20 +857,18 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <div>
-        <div id="%%id" style="overflow:hidden;position:relative">
-          <% if ( this.rowHeight < 0 ) { %>
-            <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
-              <%
-                var view = FOAM.lookup(this.rowView).create({ model: this.dao.model });
-                out(view.toHTML());
-                this.addChild(view);
-              %>
-            </div>
-          <% } %>
-          <div id="%%scrollID" style="position:absolute;width:100%">
-            <div id="%%containerID" style="position:relative;width:100%;height:100%">
-            </div>
+      <div id="%%id" style="overflow:hidden;position:relative">
+        <% if ( this.rowHeight < 0 ) { %>
+          <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
+            <%
+              var view = FOAM.lookup(this.rowView).create({ data: this.dao.model.create() });
+              out(view.toHTML());
+              this.addChild(view);
+            %>
+          </div>
+        <% } %>
+        <div id="%%scrollID" style="position:absolute;width:100%">
+          <div id="%%containerID" style="position:relative;width:100%;height:100%">
           </div>
         </div>
       </div>
