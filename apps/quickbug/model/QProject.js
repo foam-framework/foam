@@ -328,10 +328,10 @@ MODEL({
           return p1.compareTo(p2);
         },
         choices: [
-          [0, 'Priority 0 -- Critical'],
-          [1, 'Priority 1 -- High'],
-          [2, 'Priority 2 -- Medium'],
-          [3, 'Priority 3 -- Low']
+          ['0', 'Priority 0 -- Critical'],
+          ['1', 'Priority 1 -- High'],
+          ['2', 'Priority 2 -- Medium'],
+          ['3', 'Priority 3 -- Low']
         ]
       });
 
