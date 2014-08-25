@@ -623,6 +623,11 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
+
+      // Blow away all caches and so on. This ensures a clean slate, and that
+      // nothing is connected to elements that have been removed from the DOM.
+      this.powerwash();
+
       if ( ! this.$.style.height ) {
         this.$.style.height = '100%';
       }
@@ -634,7 +639,7 @@ MODEL({
           scrollHeight$ : this.scrollHeight$,
       });
       //Events.follow(this.viewportHeight$, verticalScrollbar.height$);
-      this.$.innerHTML += verticalScrollbar.toHTML();
+      this.$.insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
 
       this.X.gestureManager.install(this.X.GestureTarget.create({
@@ -727,8 +732,20 @@ MODEL({
       }
     },
 
+    // Clears all caches and saved rows and everything.
+    // Intended to be called by initHTML to make sure the slate is clean.
+    powerwash: function() {
+      this.visibleRows = {};
+      this.extraRows = [];
+      this.cache = [];
+      this.loadedTop = -1;
+      this.loadedBottom = -1;
+    },
+
     // Clears all cached data, when the DAO changes.
+    // Allows reuse of the rows.
     invalidate: function() {
+      if ( ! this.visibleRows ) return;
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0 ; i < keys.length ; i++ ) {
         this.extraRows.push(this.visibleRows[keys[i]]);
