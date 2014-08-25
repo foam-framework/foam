@@ -569,6 +569,16 @@ MODEL({
       help: 'The template\'s unique name.'
     },
     {
+      model_: 'ArrayProperty',
+      name: 'args',
+      type: 'Array[Arg]',
+      subType: 'Arg',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Method arguments.'
+    },
+    {
       name: 'template',
       type: 'String',
       displayWidth: 180,

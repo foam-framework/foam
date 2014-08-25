@@ -140,7 +140,7 @@ var TemplateUtil = {
        if ( ! delegate ) {
          if ( ! t.template )
            throw 'Must arequire() template model before use for ' + t.name;
-         delegate = TemplateUtil.compile(t.template);
+         delegate = TemplateUtil.compile(t);
        }
 
        return delegate.apply(this, arguments);
@@ -153,13 +153,18 @@ var TemplateUtil = {
          return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
        };
      } :
-     function(str) {
-       var code = TemplateCompiler.parseString(str);
+     function(t) {
+       var code = TemplateCompiler.parseString(t.template);
 
        try {
-         return new Function("opt_out", code);
+         var args = ['opt_out'];
+         for ( var i = 0 ; i < t.args.length ; i++ ) {
+           args.push(t.args[i].name);
+         }
+         args.push(code);
+         return Function.apply(null, args);
        } catch (err) {
-         console.log("Template Error: ", err);
+         console.log('Template Error: ', err);
          console.log(code);
          return function() {};
        }

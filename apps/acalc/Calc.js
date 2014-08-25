@@ -91,6 +91,178 @@ MODEL({ name: 'History', properties: [ 'id', 'op', 'a2' ] });
 MODEL({
   name: 'Calc',
 
+  templates: [ function CSS() {/*
+    body {
+      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      font-weight: 300;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      display: none;
+    }
+
+    .calc {
+      background-color: #fff;
+      border: 0;
+      margin: 0;
+      padding: 0px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .calc-display, .calc-display:focus {
+      border: none;
+      letter-spacing: 1px;
+      line-height: 25px;
+      margin: 0;
+      min-width: 204px;
+      overflow: scroll;
+      padding: 0 25pt 2pt 25pt;
+      width: calc( 100% - 40px );
+      text-align: right;
+    }
+
+    .edge-top {
+      height: 5px;
+      width: 100%;
+      z-index: 99;
+      position: absolute;
+      background: #fff;
+    }
+
+    .edge {
+      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,
+                                             rgba(255,255,255,0) 100%);
+      height: 20px;
+      position: absolute;
+      top: 5px;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .edge2 {
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,
+                                             rgba(0,0,0,0) 100%);
+      top: 12px;
+      height: 12px;
+      position: relative;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .calc .buttons {
+      flex: 1 1 100%;
+      width: 100%;
+      height: 350px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 1 1 100%;
+      justify-content: space-between;
+      align-items: stretch;
+    }
+
+    .button {
+      flex-grow: 1;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      background-color: #4b4b4b;
+    }
+
+    .rhs-ops {
+      border-left-width: 1px;
+      border-left-style: solid;
+      border-left-color: rgb(68, 68, 68);
+    }
+
+    .rhs-ops .button {
+      background-color: #777;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    .inner-calc-display {
+      position: absolute;
+      right: 20pt;
+      top: 100%;
+      transition: top 0.3s ease;
+      width: 85%;
+    }
+
+    .calc-display {
+      flex-grow: 5;
+      position: relative;
+    }
+
+    .secondaryButtons {
+      padding-left: 10px;
+      background: rgb(64, 189, 158);
+    }
+
+    .secondaryButtons .button {
+      background: rgb(64, 189, 158);
+    }
+
+    .tertiaryButtons {
+      padding-left: 10px;
+      background: rgb(29, 233, 182);
+    }
+
+    .tertiaryButtons .button {
+      background: rgb(29, 233, 182);
+    }
+
+    .keypad {
+      flex-grow: 0;
+      flex-shrink: 0;
+      margin-bottom: -4px;
+    }
+
+    // Copied from foam.css.
+    .SliderPanel .shadow {
+      background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+                                         rgba(0,0,0,0) 100%);
+      height: 100%;
+      left: -8px;
+      position: absolute;
+      width: 8px;
+    }
+  */}],
+
   properties: [
     { name: 'degreesMode', defaultValue: false },
     { name: 'a1', defaultValue: '0' },

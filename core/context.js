@@ -58,6 +58,11 @@ function subWindow(w, opt_name, isBackground) {
       }
       return GLOBAL.registerModel.call(this, model, opt_name);
     },
+    addStyle: function(css) {
+      var s = document.createElement('style');
+      s.innerHTML = css;
+      this.document.head.appendChild(s);
+    },
     isBackground: !!isBackground,
     window: w,
     document: document,

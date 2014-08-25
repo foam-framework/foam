@@ -106,6 +106,9 @@ var FObject = {
       this.create = BootstrapModel.create;
   },
 
+  installInDocument: function(X, document) {
+    if ( this.CSS ) X.addStyle(this.CSS());
+  },
 
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;

@@ -431,6 +431,7 @@ var PropertyChangeSupport = {
       set: function(val) { obj[prop] = val; },
 
       asDAO: function() {
+        console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
         if ( ! proxy ) {
           proxy = ProxyDAO.create({delegate: this.get()});
 

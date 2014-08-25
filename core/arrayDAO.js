@@ -27,19 +27,43 @@
 })();
 
 
+defineLazyProperty(Array.prototype, 'daoListeners_', function() {
+  return {
+    value: [],
+    configurable: true
+  };
+});
+
+
+var ArraySink = {
+  __proto__: Array.prototype,
+  put: function(obj, sink) {
+    this.push(obj);
+    this.notify_('put', arguments);
+    sink && sink.put && sink.put(obj);
+  }
+};
+
+
+Object.defineProperty(Array.prototype, 'dao', {
+  get: function() { this.__proto__ = Array.prototype; return this; },
+  writeable: true
+});
+
+Object.defineProperty(Array.prototype, 'sink', {
+  get: function() { this.__proto__ = ArraySink.prototype; return this; },
+  writeable: true
+});
+
 defineProperties(Array.prototype, {
-  listen: function() {
-    throw "Unsupported:  Use ArrayDAO wrapper for listen support.";
-  },
-  unlisten: function() {
-    throw "Unsupported:  Use ArrayDAO wrapper for listen support.";
-  },
-  notify_: function() {
-    throw "Unsupported: Use ArrayDAO wrapper for listen support.";
-  },
-  asDAO: function() {
-    return ArrayDAO.create({ array: this });
-  },
+  listen:   AbstractDAO.getPrototype().listen,
+  unlisten: AbstractDAO.getPrototype().unlisten,
+  notify_:  AbstractDAO.getPrototype().notify_,
+/*
+  listen:   function() { },
+  unlisten: function() { },
+  notify_:  function() { },
+*/
   // Clone this Array and remove 'v' (only 1 instance)
   // TODO: make faster by copying in one pass, without splicing
   deleteF: function(v) {
@@ -89,21 +113,18 @@ defineProperties(Array.prototype, {
     return a;
   },
   put: function(obj, sink) {
-    // With this block of code an [] is a real DAO
-    // but is much slower for collecting results.
-    /*
-      for (var idx in this) {
-      if (this[idx].id === obj.id) {
-      this[idx] = obj;
-      sink && sink.put && sink.put(obj);
-      this.notify_('put', arguments);
-      //        sink && sink.error && sink.error('put', obj, duplicate);
-      return;
+    for ( var idx in this ) {
+      if ( this[idx].id === obj.id ) {
+        this[idx] = obj;
+        sink && sink.put && sink.put(obj);
+        this.notify_('put', arguments);
+        //        sink && sink.error && sink.error('put', obj, duplicate);
+        return;
       }
-      }
-    */
+    }
+
     this.push(obj);
-//    this.notify_('put', arguments);
+    this.notify_('put', arguments);
     sink && sink.put && sink.put(obj);
   },
   find: function(query, sink) {
@@ -186,126 +207,5 @@ defineProperties(Array.prototype, {
     sink.eof && sink.eof();
 
     return aconstant(originalsink);
-  }
-});
-
-
-MODEL({
-  name: 'ImmutableArrayDAO',
-  extendsModel: 'AbstractDAO',
-
-  properties: [
-    {
-      model_: 'ModelProperty',
-      name: 'model'
-    },
-    {
-      name: 'array',
-      postSet: function() { if ( ! this.feedback_ ) this.notify_('put', []); },
-      factory: function() { return []; }
-    }
-  ],
-
-  methods: {
-    updateArray_: function(a) {
-      this.feedback_ = true;
-      this.array = a;
-      this.feedback_ = false;
-    },
-    put: function(obj, sink) {
-      var a2 = this.array.clone();
-      for ( var i = 0 ; i < this.array.length ; i++ ) {
-        if ( this.array[i].id == obj.id ) {
-          a2[i] = obj;
-          this.updateArray_(a2);
-          sink && sink.put && sink.put(obj);
-          this.notify_('put', arguments);
-          return;
-        }
-      }
-      a2.push(obj);
-      this.updateArray_(a2);
-      this.notify_('put', arguments);
-      sink && sink.put && sink.put(obj);
-    },
-
-    remove: function(obj, sink) {
-      if ( ! obj ) {
-        sink && sink.error && sink.error('missing key');
-        return;
-      }
-      var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
-      for ( var i = 0 ; i < this.array.length ; i++ ) {
-        if ( this.array[i].id == id ) {
-          var rem = this.array[i];
-          this.updateArray_(this.array.slice(0, i).concat(this.array.slice(i+1)));
-          this.notify_('remove', [rem]);
-          sink && sink.remove && sink.remove(rem);
-          return;
-        }
-      }
-      sink && sink.error && sink.error('remove', obj);
-    },
-
-    find: function(key, sink) { this.array.find(key, sink); },
-
-    select: function(sink, options) { return this.array.select(sink, options); }
-  }
-});
-
-
-MODEL({
-  name: 'ArrayDAO',
-  extendsModel: 'AbstractDAO',
-
-  properties: [
-    {
-      model_: 'ModelProperty',
-      name: 'model'
-    },
-    {
-      name: 'array',
-      factory: function() { return []; }
-    }
-  ],
-
-  methods: {
-    put: function(obj, sink) {
-      var a = this.array;
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( a[i].id == obj.id ) {
-          a[i] = obj;
-          sink && sink.put && sink.put(obj);
-          this.notify_('put', arguments);
-          return;
-        }
-      }
-      a.push(obj);
-      this.notify_('put', arguments);
-      sink && sink.put && sink.put(obj);
-    },
-
-    remove: function(obj, sink) {
-      if ( ! obj ) {
-        sink && sink.error && sink.error('missing key');
-        return;
-      }
-      var id = ( obj.id !== undefined && obj.id !== '' ) ? obj.id : obj;
-      var a  = this.array;
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( a[i].id == id ) {
-          var rem = a[i];
-          a.splice(i,1);
-          this.notify_('remove', [rem]);
-          sink && sink.remove && sink.remove(rem);
-          return;
-        }
-      }
-      sink && sink.error && sink.error('remove', obj);
-    },
-
-    find: function(key, sink) { this.array.find(key, sink); },
-
-    select: function(sink, options) { return this.array.select(sink, options); }
   }
 });

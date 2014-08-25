@@ -251,7 +251,6 @@ var FutureDAO = {
         var listeners = ret.__proto__.daoListeners_;
         ret.__proto__ = delegate;
         for ( var i = 0 ; i < listeners.length ; i++ ) {
-          console.log('******************************************************* AddingListener ', ret, listeners[i]);
           ret.listen.apply(ret, listeners[i]);
         }
 //        ret.notify_('put', []);
@@ -595,7 +594,7 @@ MODEL({
 
     unlisten: function(sink) {
       var ls = this.daoListeners_;
-      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
+//      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
       for ( var i = 0; i < ls.length ; i++ ) {
         if ( ls[i].$UID === sink.$UID ) {
           ls.splice(i, 1);
@@ -626,7 +625,7 @@ MODEL({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
-//       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
+      // console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
@@ -1400,7 +1399,7 @@ MODEL({
     },
 
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
@@ -1860,7 +1859,7 @@ MODEL({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       // Cases:
       // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
       // 2) Non-cloneable reducable sink -- treat same as case 3.
@@ -2195,7 +2194,7 @@ MODEL({
       }
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var myoptions = {};
       var originalsink = sink;
       options = options || {};
@@ -2212,10 +2211,10 @@ MODEL({
       var fc = this.createFlowControl_();
       var future = afuture();
 
-      if (sink.model_ && sink.reduceI) {
+      if ( sink.model_ && sink.reduceI ) {
         var mysink = sink;
       } else {
-        if (options.order) {
+        if ( options.order ) {
           mysink = OrderedCollectorSink.create({ comparator: options.order });
         } else {
           mysink = CollectorSink.create({});
@@ -2333,7 +2332,7 @@ MODEL({
     },
 
     select: function(query, sink) {
-      sink = sink || [];
+      sink = sink || [].sink;
       sink && sink.error && sink.error("Unsupported");
     },
 
@@ -2367,7 +2366,7 @@ MODEL({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var xhr = new XMLHttpRequest();
       var params = [
         'maxResults=10'
@@ -2472,7 +2471,7 @@ MODEL({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var fut = afuture();
       var self = this;
       var limit;
@@ -3086,7 +3085,7 @@ MODEL({
     remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
     select: function(sink) {
       sink && sink.eof && sink.eof();
-      return aconstant(sink || []);
+      return aconstant(sink || [].sink);
     },
     find: function(q, sink) { sink && sink.error && sink.error('find', q); },
     listen: function() {},
@@ -3566,7 +3565,7 @@ MODEL({
           rulesDAO
             .where(AND(GT(MigrationRule.VERSION, version.version),
                        LTE(MigrationRule.VERSION, self.X.App.version)))
-            .select([])(function(rules) {
+            .select([].sink)(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
                      (function(rule) {

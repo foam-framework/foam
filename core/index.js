@@ -732,7 +732,7 @@ var AltIndex = {
   },
 
   put: function(s, newValue) {
-    s = s || [];
+    s = s || [].sink;
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].put(s[i], newValue);
     }
@@ -741,7 +741,7 @@ var AltIndex = {
   },
 
   remove: function(s, obj) {
-    s = s || [];
+    s = s || [].sink;
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       s[i] = this.delegates[i].remove(s[i], obj);
     }
@@ -967,7 +967,7 @@ var MDAO = Model.create({
      **/
     bulkLoad: function(dao, sink) {
       var self = this;
-      dao.select({ __proto__: [], eof: function() {
+      dao.select({ __proto__: [].sink, eof: function() {
         self.root = self.index.bulkLoad(this);
         sink && sink.eof && sink.eof();
       }});
@@ -1043,7 +1043,7 @@ var MDAO = Model.create({
       if (!options) options = {};
       if (!options.query) options.query = TRUE;
       var future = afuture();
-      this.where(options.query).select([])(function(a) {
+      this.where(options.query).select()(function(a) {
         for ( var i = 0 ; i < a.length ; i++ ) {
           this.root = this.index.remove(this.root, a[i]);
           delete this.map[a[i].id];
@@ -1057,7 +1057,7 @@ var MDAO = Model.create({
     },
 
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       // Clone the options to prevent 'limit' from being mutated in the original.
       if ( options ) options = {__proto__: options};
 

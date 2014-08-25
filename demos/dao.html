@@ -213,8 +213,8 @@ dao.select(EXPLAIN(SUM(Person.AGE)))(console.log);
 
 // 'apar' to execute queries concurrently
 apar(
-  dao.where(EQ(Person.NAME, 'Dave')).select([]),
-  dao.where(EQ(Person.NAME, 'Suzy')).select([])
+  dao.where(EQ(Person.NAME, 'Dave')).select(),
+  dao.where(EQ(Person.NAME, 'Suzy')).select()
 )(function(q1, q2) {
   console.log('q1: ', q1[0].name, ' q2: ', q2[0].name);
 });
