@@ -537,7 +537,8 @@ MODEL({
     },
     {
       name: 'rowHeight',
-      defaultValue: 60
+      help: 'The height of each row in CSS pixels. Defaults to -1 until it can be computed. Can also be specified.',
+      defaultValue: -1
     },
     {
       name: 'rowView'
@@ -630,6 +631,13 @@ MODEL({
 
       if ( ! this.$.style.height ) {
         this.$.style.height = '100%';
+      }
+
+      // Grab the height of the -rowsize div, then drop that div.
+      if ( this.rowHeight < 0 ) {
+        var rowsize = this.X.$(this.id + '-rowsize');
+        this.rowHeight = rowsize.offsetHeight;
+        rowsize.outerHTML = '';
       }
 
       // Add scrollbar.
@@ -780,6 +788,7 @@ MODEL({
         // If the visible rows have moved so vast that there is a gap, scrap the
         // old cache and rebuild it.
         if ( this.count === 0 ) return;
+        if ( this.rowHeight < 0 ) return;
         var runwayCount = Math.ceil(this.runway / this.rowHeight);
         this.visibleIndex = Math.floor(this.scrollTop / this.rowHeight);
         this.visibleTop = Math.max(0, this.visibleIndex - runwayCount);
@@ -845,6 +854,15 @@ MODEL({
     function toHTML() {/*
       <div>
         <div id="%%id" style="overflow:hidden;position:relative">
+          <% if ( this.rowHeight < 0 ) { %>
+            <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
+              <%
+                var view = FOAM.lookup(this.rowView).create({ model: this.dao.model });
+                out(view.toHTML());
+                this.addChild(view);
+              %>
+            </div>
+          <% } %>
           <div id="%%scrollID" style="position:absolute;width:100%">
             <div id="%%containerID" style="position:relative;width:100%;height:100%">
             </div>
