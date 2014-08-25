@@ -3560,7 +3560,7 @@ MODEL({
             self.X.DAOVersionDAO.put(c, ret);
           }
 
-          var rulesDAO = ArrayDAO.create({ array: self.rules, model: MigrationRule });
+          var rulesDAO = self.rules.dao;
 
           rulesDAO
             .where(AND(GT(MigrationRule.VERSION, version.version),
