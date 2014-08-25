@@ -347,25 +347,25 @@ MODEL({
 
       if ( this.projectName === 'chromium' ) {
         metaProp.postSet = function(_, v) {
-          console.log('Settings pri prop to ', v);
-          if ( this.pri !== v ) this.pri = v;
+          feedback(this, 'priority', function() { this.pri = v; });
         };
         priProp.postSet = function(_, v) {
-          console.log('Settings meta prop to ', v);
-          this.replaceLabels(prop.name.capitalize(), n);
-          this.metaPriority = v;
+          feedback(this, 'labels', function() {
+            this.replaceLabels('Pri', v);
+          });
+          feedback(this, 'priority', function() { this.metaPriority = v; });
         };
         metaProp.choices = priProp.choices;
         metaProp.compareProperty = priProp.compareProperty;
       } else {
         metaProp.postSet = function(_, v) {
-          console.log('Settings priority to ', v);
-          if ( this.pri !== v ) this.priority = v;
+          feedback(this, 'priority', function() { this.priority = v; });
         };
         priorityProp.postSet = function(_, v) {
-          console.log('Settings meta prop to ', v);
-          this.replaceLabels(prop.labelName, n);
-          this.metaPriority = v;
+          feedback(this, 'labels', function() {
+            this.replaceLabels('Priority', v);
+          });
+          feedback(this, 'priority', function() { this.metaPriority = v; });
         };
       }
 
@@ -426,9 +426,13 @@ MODEL({
               }
               return s;
             },
+            preSet: function(_, a) {
+              for ( var i = 0; i < a.length; i++ ) {
+                if ( isPropertyLabel(a[i]) ) a[i] = a[i].intern();
+              }
+              return a.sort();
+            },
             postSet: function(_, a) {
-              a.sort();
-
               // Reset all label properties to initial values.
               for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
                 var p = this.model_.properties[i];
@@ -442,18 +446,18 @@ MODEL({
 
               for ( var i = 0 ; i < a.length ; i++ ) {
                 var kv = isPropertyLabel(a[i]);
-                a[i] = a[i].intern();
                 if ( kv ) {
-
                   // Cleanup 'movedFrom' labels
                   if ( kv[0] === 'movedFrom' ) {
                     kv[1] = typeof kv[1] === 'string' ? parseInt(kv[1].charAt(0) === 'M' ? kv[1].substring(1) : kv[1]) : kv[1];
                   }
 
                   if ( Array.isArray(this[kv[0]]) ) {
-                    this.instance_[kv[0]].binaryInsert(kv[1]);
+                    feedback(this, 'labels', function() {
+                      this[kv[0]] = this[kv[0]].binaryInsert(kv[1]);
+                    });
                   } else {
-                    this.instance_[kv[0]] = kv[1];
+                    feedback(this, 'labels', function() { this[kv[0]] = kv[1]; });
                   }
                 }
               }
@@ -650,8 +654,7 @@ MODEL({
               labels.binaryInsert(label + '-' + values);
             }
 
-            // Set this way to avoid updating lable properties and causing a feedback loop.
-            this.instance_.labels = labels;
+            this.labels = labels;
           },
           isOpen: function() {
             return !! ({

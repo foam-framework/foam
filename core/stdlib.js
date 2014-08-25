@@ -703,3 +703,11 @@ function findPageXY(node) {
   }
   return [x, y, parent];
 }
+
+var feedback = function(obj, name, fn) {
+  if ( ! obj['_feedback_' + name] ) {
+    obj['_feedback_' + name] = true;
+    fn.call(obj);
+    obj['_feedback_' + name] = false;
+  }
+};
