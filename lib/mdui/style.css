@@ -55,6 +55,7 @@ a {
 .mdui-app-controller .header {
   display: flex;
   background: #3e50b4;
+  flex-shrink: 0;
   padding: 0;
   height: 48px;
 }

@@ -74,6 +74,11 @@ MODEL({
     TOUCH_END: ['touch-end'],
     TOUCH_MOVE: ['touch-move'],
 
+    init: function() {
+      this.SUPER();
+      if ( this.X.document ) this.install(this.X.document);
+    },
+
     // TODO: Problems if the innermost element actually being touched is removed from the DOM.
     // Change this to connect the touchstart only to the document, and the others on the fly
     // after the first touch, to event.target.
@@ -270,7 +275,7 @@ MODEL({
       // - has moved at least 10px in the primary direction, and
       // - less than 10px in the other direction.
 
-      if ( Object.keys(map).length > 1 ) return false;
+      if ( Object.keys(map).length !== 1 ) return false;
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
@@ -386,7 +391,7 @@ MODEL({
       // I conflict with: vertical and horizontal scrolling, when using touch.
       if ( Object.keys(map).length > 1 ) return;
       var point = map[Object.keys(map)[0]];
-      var r = point.dx != 0 || point.dy != 0;
+      var r = point.dx !== 0 || point.dy !== 0;
       return r;
     },
 
@@ -449,8 +454,8 @@ MODEL({
       var points = this.getPoints(map);
       return ! points[0].done &&
              ! points[1].done &&
-             ( points[0].dx != 0 || points[0].dy != 0 ) &&
-             ( points[1].dx != 0 || points[1].dy != 0 );
+             ( points[0].dx !== 0 || points[0].dy !== 0 ) &&
+             ( points[1].dx !== 0 || points[1].dy !== 0 );
     },
 
     attach: function(map, handlers) {
@@ -533,26 +538,27 @@ MODEL({
 
 MODEL({
   name: 'GestureTarget',
+  help: 'Created by each view that wants to receive gestures.',
   properties: [
-    'x', 'y', 'width', 'height',
-    'handler', 'gesture',
     {
-      name: 'element',
-      help: 'Convenience for setting the bounding rect of this target to be a DOM element',
-      setter: function(e) {
-        this.x      = e.offsetTop;
-        this.y      = e.offsetLeft;
-        this.width  = e.offsetWidth;
-        this.height = e.offsetHeight;
-      }
+      name: 'gesture',
+      help: 'The name of the gesture to be tracked.'
+    },
+    {
+      name: 'container',
+      help: 'The containing object. The GestureManager will call containsPoint() on it.'
+    },
+    {
+      name: 'handler',
+      help: 'The target for the gesture\'s events, after it has been recognized.'
     }
   ],
 
   methods: {
-    inside: function(p) {
-      return this.x <= p.x && this.y <= p.y &&
-          p.x <= this.x + this.width &&
-          p.y <= this.y + this.height;
+    // TODO: Add support for this to CView2.
+    containsPoint: function(point) {
+      return this.container.containsPoint(point.x, point.y,
+          this.X.document.elementFromPoint(point.x, point.y));
     }
   }
 });
@@ -640,7 +646,7 @@ MODEL({
   listeners: [
     {
       name: 'onTouchStart',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         // If we've already recognized, it's up to that code to handle the new point.
         if ( this.recognized ) {
           this.recognized.addPoint && this.recognized.addPoint(touch);
@@ -652,7 +658,7 @@ MODEL({
         if ( ! pointCount ) {
           // Check rectangles, since this is the first point.
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].inside(touch) ) {
+            if ( this.targets[i].containsPoint(touch) ) {
               var g = this.gestures[this.targets[i].gesture];
               if ( ! g ) continue;
               if ( ! this.active[g.name] ) this.active[g.name] = [];
@@ -687,7 +693,7 @@ MODEL({
         if ( ! pointCount ) {
           // Check rectangles for this first point.
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].inside(point) ) {
+            if ( this.targets[i].containsPoint(point) ) {
               var g = this.gestures[this.targets[i].gesture];
               if ( ! g ) continue;
               if ( ! this.active[g.name] ) this.active[g.name] = [];
@@ -702,7 +708,7 @@ MODEL({
     },
     {
       name: 'onTouchMove',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         if ( this.recognized ) return;
         this.checkRecognition();
       }
@@ -720,13 +726,13 @@ MODEL({
     },
     {
       name: 'onTouchEnd',
-      code: function(_, _, touch) {
+      code: function(_, __, touch) {
         if ( ! this.recognized ) {
           this.checkRecognition();
         }
 
+        delete this.points[touch.id];
         if ( this.recognized ) {
-          delete this.points[touch.id];
           if ( Object.keys(this.points).length === 0 ) {
             this.active[this.recognized.name] = [];
             this.recognized = undefined;
@@ -744,8 +750,8 @@ MODEL({
           this.checkRecognition();
         }
 
+        delete this.points.mouse;
         if ( this.recognized ) {
-          delete this.points.mouse;
           if ( Object.keys(this.points).length === 0 ) {
             this.active[this.recognized.name] = [];
             this.recognized = undefined;
@@ -781,7 +787,7 @@ MODEL({
           this.active[gesture] = [];
           for ( var i = 0 ; i < this.targets.length ; i++ ) {
             if ( this.targets[i].gesture === gesture &&
-                this.targets[i].inside(wheel) ) {
+                this.targets[i].containsPoint(wheel) ) {
               this.active[gesture].push(this.targets[i]);
             }
           }
@@ -809,13 +815,12 @@ MODEL({
       code: function() {
         this.wheelTimer = undefined;
         this.points.wheel.done = true;
-        delete this.points['wheel'];
+        delete this.points.wheel;
         this.recognized = undefined;
       }
     }
   ]
 });
-
 
 /*
 MODEL({

@@ -679,3 +679,23 @@ var ReferenceArrayProperty = Model.create({
 
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;
+
+MODEL({
+  name: 'EnumPropertyTrait',
+  properties: [
+    {
+      name: 'choices',
+      type: 'Array',
+      help: 'Array of [value, label] choices.',
+      preSet: function(_, a) {
+        a = a.clone();
+        for ( var i = 0; i < a.length; i++ ) {
+          if ( ! Array.isArray(a[i]) )
+            a[i] = [a[i], a[i]];
+        }
+        return a;
+      },
+      required: true
+    }
+  ]
+});

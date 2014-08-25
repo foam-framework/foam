@@ -22,14 +22,9 @@ MODEL({
 
   properties: [
     {
-      name: 'data',
-      postSet: function(oldDAO, dao) {
-        if ( this.dao !== dao ) this.dao = dao;
-      }
-    },
-    {
       model_: 'DAOProperty',
       name: 'dao',
+      aliases: ['data'],
       label: 'DAO',
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
@@ -464,6 +459,43 @@ MODEL({
 });
 
 
+MODEL({
+  name: 'ScrollViewRow',
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( this.view ) {
+          this.view.data = nu;
+          // DetailViews will update on data changing, but others won't.
+          if ( ! DetailView.isInstance(this.view) ) {
+            var e = $(this.id);
+            e.innerHTML = this.view.toHTML();
+            this.view.initHTML();
+          }
+        }
+      }
+    },
+    {
+      name: 'view',
+      postSet: function(old, nu) {
+        if ( nu ) nu.data = this.data;
+      }
+    },
+    {
+      name: 'id',
+    },
+    {
+      name: 'y',
+      postSet: function(old, nu) {
+        if ( this.view && this.id && old != nu ) {
+          $(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
+        }
+      }
+    }
+  ]
+});
+
 /**
  * A general purpose view for scrolling content.
  *
@@ -476,240 +508,371 @@ MODEL({
  */
 MODEL({
   name: 'ScrollView',
-
   extendsModel: 'AbstractDAOView',
 
   properties: [
     {
-      name: 'model',
-      type: 'Model'
-    },
-    {
       name: 'runway',
-      help: 'Elements that are within |runway| pixels of the scroll clip are retained.',
-      model_: 'IntProperty',
-      units: 'pixels',
-      defaultValue: 500
+      defaultValue: 500,
+      help: 'The distance in pixels to render outside the viewport'
     },
     {
-      name: 'rowView',
-      defaultValue: 'SummaryView'
-    },
-    {
-      name: 'rowViews',
-      factory: function() { return {}; }
-    },
-    {
-      name: 'unclaimedRowViews',
-      factory: function() { return []; }
-    },
-    {
-      // TODO: Can we calculate this reliably?
-      model_: 'IntProperty',
-      name: 'rowViewHeight'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'height'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'scrollTop',
+      name: 'count',
       defaultValue: 0,
-      preSet: function(_, v) {
-        if ( v < 0 )
-          return 0;
-        if (this.numRows)
-          return Math.max(0, Math.min(v, (this.rowViewHeight * this.numRows) - this.height));
-        return v;
-      },
       postSet: function(old, nu) {
-        this.scroll();
+        this.scrollHeight = nu * this.rowHeight;
       }
     },
     {
       name: 'scrollHeight',
-      dynamicValue: function() { return this.numRows * this.rowViewHeight; }
+      postSet: function(old, nu) {
+        console.log('updating scrollHeight to ' + nu);
+        if ( this.$ ) this.scroller$().style.height = nu + 'px';
+      }
     },
     {
-      name: 'sequenceNumber',
-      hidden: true,
-      defaultValue: 0
+      name: 'rowHeight',
+      help: 'The height of each row in CSS pixels. If specified, ScrollView will use that height. Otherwise will use rowView\'s preferredHeight, if given. Otherwise defaults to -1 until it can be computed dynamically. Computing it requires rendering a rowView without data set, which breaks some views.',
+      defaultValue: -1
     },
     {
-      name: 'workingSet',
+      name: 'rowView',
+      help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
+      postSet: function(_, nu) {
+        var view = FOAM.lookup(nu);
+        if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
+          this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
+      }
+    },
+    {
+      name: 'viewportHeight',
+      defaultValueFn: function() {
+        return this.$ && this.$.offsetHeight;
+      }
+    },
+    {
+      name: 'scrollTop',
+      defaultValue: 0,
+      preSet: function(old, nu) {
+        if ( nu < 0 ) return 0;
+        if ( nu > this.scrollHeight - this.viewportHeight )
+          return this.scrollHeight - this.viewportHeight;
+        return nu;
+      },
+      postSet: function(old, nu) {
+        //console.log('scrolling from ' + old + ' to ' + nu);
+        var scroller = this.scroller$();
+        if ( scroller ) scroller.style.webkitTransform =
+            'translate3d(0px, -' + nu + 'px, 0px)';
+      }
+    },
+    {
+      name: 'visibleRows',
+      help: 'Map of currently visible rows, keyed by their position/order',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'extraRows',
+      help: 'Buffer of extra, unneeded visible rows.',
       factory: function() { return []; }
     },
     {
-      name: 'numRows',
-      defaultValue: 0
+      name: 'cache',
+      model_: 'ArrayProprety',
+      factory: function() { return []; }
+    },
+    {
+      name: 'scrollID',
+      factory: function() { return this.nextID(); }
+    },
+    {
+      name: 'containerID',
+      factory: function() { return this.nextID(); }
     },
     {
       name: 'verticalScrollbarView',
       defaultValue: 'VerticalScrollbarView'
+    },
+    {
+      name: 'loadedTop',
+      help: 'Index of the first cached (not necessarily visible) value above the viewing area. Invariant: Always a contiguous block of loaded entries from loadedTop to loadedBottom!',
+      defaultValue: -1
+    },
+    {
+      name: 'loadedBottom',
+      help: 'Index of the last cached (not necessarily visible) value below the viewing area. Invariant: Always a contiguous block of loaded entires from loadedTop to loadedBottom!',
+      defaultValue: -1
+    },
+    {
+      name: 'visibleTop',
+      help: 'Index of the first visible value.',
+      defaultValue: 0
+    },
+    {
+      name: 'visibleBottom',
+      help: 'Index of the last visible value.',
+      defaultValue: 0
+    },
+    {
+      name: 'daoUpdateNumber',
+      help: 'Counter for avoiding duplicate DAO updates.',
+      defaultValue: 0,
+      transient: true,
+      hidden: true
     }
   ],
 
-  templates: [
-    function toHTML() {/*
-      <div>
-        <div id="%%id" style="height:<%= this.height %>px;overflow:hidden;position:relative">
-          <%
-            var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
-                scrollTop$ : this.scrollTop$,
-                height$ : this.height$,
-                scrollHeight$ : this.scrollHeight$,
-            });
-
-            this.addChild(verticalScrollbar);
-            out(verticalScrollbar.toHTML());
-          %>
-        </div>
-      </div>
-    */},
-  ],
-
   methods: {
-    init: function() {
-      this.SUPER();
-
-      var touch = this.X.TouchInput;
-      touch.subscribe(touch.TOUCH_START, this.onTouchStart);
-      touch.subscribe(touch.TOUCH_END, this.onTouchEnd);
-    },
-    formatObject: function(o) {
-      var out = "";
-      for ( var i = 0, prop; prop = this.model.properties[i]; i++ ) {
-        if ( prop.summaryFormatter )
-          out += prop.summaryFormatter(prop.f(o), o);
-        else out += this.strToHTML(prop.f(o));
-      }
-      return out;
-    },
-    createOrReuseRowView: function(data) {
-      if (this.unclaimedRowViews.length)
-        return this.unclaimedRowViews.shift();
-      var view = FOAM.lookup(this.rowView).create({ data: data });
-      return {
-        view: view,
-        html: view.toHTML(),
-        initialized: false,
-        sequenceNumber: 0
-      };
-    },
-    createOrReuseRowViews: function() {
-      var uninitialized = [];
-      var newHTML = "";
-
-      for (var i = 0; i < this.workingSet.length; i++) {
-        if (!this.rowViews[this.workingSet[i].id]) {
-          var view = this.createOrReuseRowView(this.workingSet[i]);
-          this.rowViews[this.workingSet[i].id] = view;
-          view.view.data = this.workingSet[i];
-          if (!view.initialized) {
-            view.id = this.nextID();
-            newHTML += '<div style="width:100%;position:absolute;height:'
-                + this.rowViewHeight + 'px;overflow:visible" id="' + view.id
-                + '">' + view.html + "</div>";
-            uninitialized.push(view);
-          }
-        }
-      }
-
-      if (newHTML)
-        this.$.lastElementChild.insertAdjacentHTML('afterend', newHTML);
-
-      for (var i = 0; i < uninitialized.length; i++) {
-        uninitialized[i].view.initHTML();
-        uninitialized[i].initialized = true;
-      }
-    },
-    positionRowViews: function(offset) {
-      // Set the CSS3 transform for all visible rows.
-      // FIXME: eventually get this from a physics solver.
-      for (var i = 0; i < this.workingSet.length; i++) {
-        // Need to get this element and set its transform
-        var elementOffset = offset + (i * this.rowViewHeight);
-        var row = this.rowViews[this.workingSet[i].id];
-        var rowView = $(row.id);
-        // TODO: need to generalize this transform stuff.
-        rowView.style.webkitTransform = "translate3d(0px, " + elementOffset + "px, 0px)";
-        row.sequenceNumber = this.sequenceNumber;
-      }
-    },
-    recycleRowViews: function(offset) {
-      for (var key in this.rowViews) {
-        if (this.rowViews[key].sequenceNumber != this.sequenceNumber) {
-          var row = this.rowViews[key];
-          var rowView = $(row.id);
-          rowView.style.webkitTransform = "scale(0)";
-          this.unclaimedRowViews.push(this.rowViews[key]);
-          delete this.rowViews[key];
-        }
-      }
-    },
-    updateDOM: function(offset) {
-      this.createOrReuseRowViews();
-      this.positionRowViews(offset);
-      this.recycleRowViews(offset);
-    },
-    updateDOMWithNumRows: function(limit) {
-      var skip = Math.max(Math.min(this.numRows - limit, Math.floor((this.scrollTop - this.runway) / this.rowViewHeight)), 0);
-      var offset = Math.floor(skip * this.rowViewHeight - this.scrollTop);
-      this.dao.skip(skip).limit(limit).select()(function(objs) {
-        this.workingSet = objs;
-        this.updateDOM(offset);
-      }.bind(this));
-    },
     initHTML: function() {
       this.SUPER();
-      this.scroll();
-      this.$.addEventListener('wheel', this.onWheel);
+
+      // Blow away all caches and so on. This ensures a clean slate, and that
+      // nothing is connected to elements that have been removed from the DOM.
+      this.powerwash();
+
+      if ( ! this.$.style.height ) {
+        this.$.style.height = '100%';
+      }
+
+      // Grab the height of the -rowsize div, then drop that div.
+      if ( this.rowHeight < 0 ) {
+        var outer = this.X.$(this.id + '-rowsize');
+        var style = this.X.window.getComputedStyle(outer.children[0]);
+        // TODO: This is messy, but I can't find another way.
+        // This totals up the margin, border, padding and body.
+        this.rowHeight = this.X.parseFloat(style.height);
+        console.log('ScrollView dynamically found rowHeight to be ' + this.rowHeight + 'px');
+        outer.outerHTML = '';
+      }
+
+      // Add scrollbar.
+      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+          height: this.viewportHeight,
+          scrollTop$ : this.scrollTop$,
+          scrollHeight$ : this.scrollHeight$,
+      });
+      //Events.follow(this.viewportHeight$, verticalScrollbar.height$);
+      this.$.insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
+      this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
+
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        container: this,
+        handler: this,
+        gesture: 'verticalScroll'
+      }));
+      this.onDAOUpdate();
+    },
+    scroller$: function() {
+      return this.X.document.getElementById(this.scrollID);
+    },
+    container$: function() {
+      return this.X.document.getElementById(this.containerID);
+    },
+    // Allocates visible rows to the correct positions.
+    // Will create new visible rows where necessary, and reuse existing ones.
+    // Expects the cache to be populated with all the values necessary.
+    allocateVisible: function() {
+      var homeless = [];
+      var foundIDs = {};
+      var self = this;
+
+      // Run through the visible section and check if they're already loaded.
+      for ( var i = this.visibleTop ; i <= this.visibleBottom ; i++ ) {
+        if ( this.visibleRows[i] ) {
+          foundIDs[i] = true;
+        } else {
+          homeless.push(i);
+        }
+      }
+
+      // Now run through the visible rows, skipping those that were just touched,
+      // and reusing the untouched ones for the homeless.
+      var keys = Object.keys(this.visibleRows);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        if ( homeless.length === 0 ) break;
+        if ( foundIDs[keys[i]] ) continue;
+        var h = homeless.shift();
+        var r = self.visibleRows[keys[i]];
+        delete self.visibleRows[keys[i]];
+        self.visibleRows[h] = r;
+        r.data = self.cache[h];
+        r.y = h * self.rowHeight;
+      }
+
+      // Now if there are any homeless left, reuse those from extraRows,
+      // or create new rows for them.
+      if ( homeless.length ) {
+        var html = [];
+        var newViews = [];
+        var rowView = FOAM.lookup(this.rowView);
+        for ( var i = 0 ; i < homeless.length ; i++ ) {
+          var h = homeless[i];
+          var x = self.cache[h];
+
+          if ( this.extraRows.length ) {
+            var r = this.extraRows.shift();
+            self.visibleRows[h] = r;
+            r.data = x;
+            r.y = h * self.rowHeight;
+          } else {
+            var v = rowView.create({ model: x.model_, data: x });
+            var svr = ScrollViewRow.create({ data: x, id: v.nextID() });
+            self.visibleRows[h] = svr;
+
+            html.push('<div style="width: 100%; position: absolute; height: ' +
+                self.rowHeight + 'px; overflow: visible" id="' + svr.id + '">');
+            html.push(v.toHTML());
+            html.push('</div>');
+            newViews.push([h, svr]);
+            svr.view = v;
+          }
+        }
+
+        if ( html.length )
+          this.container$().insertAdjacentHTML('beforeend', html.join(''));
+
+        // Finally, initHTML the new elements.
+        for ( var i = 0 ; i < newViews.length ; i++ ) {
+          var r = newViews[i];
+          r[1].view.initHTML();
+          r[1].y = r[0] * self.rowHeight;
+        }
+      }
+
+      // Make sure any extra rows are hidden so there's no overlap.
+      for ( var i = 0 ; i < this.extraRows.length ; i++ ) {
+        this.extraRows[i].y = -10000;
+      }
+    },
+
+    // Clears all caches and saved rows and everything.
+    // Intended to be called by initHTML to make sure the slate is clean.
+    powerwash: function() {
+      this.visibleRows = {};
+      this.extraRows = [];
+      this.cache = [];
+      this.loadedTop = -1;
+      this.loadedBottom = -1;
+    },
+
+    // Clears all cached data, when the DAO changes.
+    // Allows reuse of the rows.
+    invalidate: function() {
+      if ( ! this.visibleRows ) return;
+      var keys = Object.keys(this.visibleRows);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        this.extraRows.push(this.visibleRows[keys[i]]);
+      }
+      this.visibleRows = {};
+
+      this.cache = [];
+      this.loadedTop = -1;
+      this.loadedBottom = -1;
     }
   },
 
   listeners: [
     {
       name: 'onDAOUpdate',
-      code: function() { this.scroll(); }
-    },
-    {
-      name: 'scroll',
       code: function() {
-        if ( ! this.$ ) return;
-        this.sequenceNumber++;
-        var limit = Math.floor((this.height + 2 * this.runway) / this.rowViewHeight) + 2;
+        this.invalidate();
         this.dao.select(COUNT())(function(c) {
-          this.numRows = c.count;
-          this.updateDOMWithNumRows(limit);
+          this.count = c.count;
+          this.X.setTimeout(this.update.bind(this), 0);
         }.bind(this));
-      },
-    },
-    {
-      name: 'onTouchStart',
-      code: function(_, _, touch) {
-        if ( ! this.touch ) this.touch = touch;
-        var self = this;
-        this.touch.y$.addListener(function(_, _, old, nu) {
-          self.scrollTop = self.scrollTop + old - nu;
-        });
       }
     },
     {
-      name: 'onTouchEnd',
-      code: function(_, _, touch) {
-        if ( touch.id === this.touch.id ) {
-          this.touch = '';
+      name: 'update',
+      isAnimated: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        // Calculate visibleIndex based on scrollTop.
+        // If the visible rows are inside the cache, just expand the cached area
+        // to keep 3*runway rows on each side, up to the edges of the data.
+        // If the visible rows have moved so vast that there is a gap, scrap the
+        // old cache and rebuild it.
+        if ( this.count === 0 ) return;
+        if ( this.rowHeight < 0 ) return;
+        var runwayCount = Math.ceil(this.runway / this.rowHeight);
+        this.visibleIndex = Math.floor(this.scrollTop / this.rowHeight);
+        this.visibleTop = Math.max(0, this.visibleIndex - runwayCount);
+        this.visibleBottom = Math.min(this.count - 1,
+            this.visibleIndex + Math.ceil( (this.runway + this.viewportHeight) / this.rowHeight ) );
+
+        // Four cases:
+        // Visible wholly contained.
+        // Top overlap.
+        // Bottom overlap.
+        // No overlap.
+        var toLoadTop, toLoadBottom;
+        if ( this.visibleTop >= this.loadedTop && this.visibleBottom <= this.loadedBottom ) {
+          // Wholly contained. Do nothing.
+          // TODO: Maybe a little more optimistic padding here?
+        } else if ( this.visibleTop < this.loadedTop && this.visibleBottom >= this.loadedTop ) {
+          // Visible overlaps te top of loaded.
+          toLoadBottom = this.loadedTop - 1;
+          toLoadTop = Math.max(0, this.visibleTop - 2 * runwayCount);
+        } else if ( this.visibleBottom > this.loadedBottom && this.visibleTop <= this.loadedBottom ) {
+          toLoadTop = this.loadedBottom + 1;
+          toLoadBottom = Math.min(this.count - 1, this.visibleBottom + 2 * runwayCount);
+        } else {
+          // No overlap. Fresh start.
+          this.invalidate();
+          toLoadTop = Math.max(0, this.visibleTop - 2 * runwayCount);
+          toLoadBottom = Math.min(this.count, this.visibleBottom + 2 * runwayCount);
+        }
+
+        if ( toLoadTop >= 0 && toLoadBottom >= 0 && toLoadTop <= toLoadBottom ) {
+          // Something to load.
+          var self = this;
+          var updateNumber = ++this.daoUpdateNumber;
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select([])(function(a) {
+            if ( ! a || ! a.length ) return;
+            if ( updateNumber !== self.daoUpdateNumber ) return;
+
+            for ( var i = 0 ; i < a.length ; i++ ) {
+              self.cache[toLoadTop + i] = a[i];
+            }
+            self.loadedTop = Math.min(toLoadTop, Math.max(0, self.loadedTop));
+            self.loadedBottom = Math.max(toLoadBottom, self.loadedBottom);
+
+            self.allocateVisible();
+          });
+        } else {
+          this.allocateVisible();
         }
       }
     },
     {
-      name: 'onWheel',
-      code: function(ev) {
-        this.scrollTop += ev.deltaY;
-        ev.preventDefault();
+      name: 'verticalScrollMove',
+      code: function(dy, ty, y) {
+        this.scrollTop -= dy;
+        this.update(); // TODO: Maybe run this in setTimeout, or make update an animated listener?
+        // We want the vsm callback to be very fast so scrolling is responsive.
+        // I'll leave it here for now and see whether frames are dropping.
       }
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" style="overflow:hidden;position:relative">
+        <% if ( this.rowHeight < 0 ) { %>
+          <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
+            <%
+              var view = FOAM.lookup(this.rowView).create({ data: this.dao.model.create() });
+              out(view.toHTML());
+              this.addChild(view);
+            %>
+          </div>
+        <% } %>
+        <div id="%%scrollID" style="position:absolute;width:100%">
+          <div id="%%containerID" style="position:relative;width:100%;height:100%">
+          </div>
+        </div>
+      </div>
+    */},
   ]
 });
 

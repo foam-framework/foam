@@ -272,7 +272,7 @@ var Model = {
             xhr.open("GET", path);
             xhr.asend(function(data) {
               t.template = data;
-              future.set(data);
+              future.set(Template.create(t));
               t.futureTemplate = undefined;
             });
           } else if ( typeof t.template === 'function' ) {

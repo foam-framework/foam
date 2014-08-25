@@ -43,7 +43,7 @@ MODEL({
           citationView: 'IssueCitationView',
           sortChoices: [
             [ DESC(Y.QIssue.MODIFIED), 'Last modified' ],
-            [ Y.QIssue.PRI,            'Priority' ],
+            [ Y.QIssue.META_PRIORITY,            'Priority' ],
             [ DESC(Y.QIssue.ID),       'Issue ID' ]
           ],
           filterChoices: [
@@ -75,6 +75,7 @@ MODEL({
     init: function() {
       this.SUPER();
       this.X.touchManager = this.X.TouchManager.create({});
+      this.X.gestureManager = this.X.GestureManager.create({});
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
@@ -185,17 +186,11 @@ MODEL({
     function bodyToHTML() {/*
       <div class="body">
         <div class="choice">
-          $$pri{model_: 'PriorityView'}
-          $$pri{
+          $$metaPriority{model_: 'PriorityView'}
+          $$metaPriority{
             model_: 'PopupChoiceView',
             iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-            showValue: true,
-            choices: [
-              [0, 'Priority 0 -- Critical'],
-              [1, 'Priority 1 -- High'],
-              [2, 'Priority 2 -- Medium'],
-              [3, 'Priority 3 -- Low']
-            ]
+            showValue: true
           }
         </div>
         <div class="choice">
@@ -318,7 +313,7 @@ MODEL({
   extendsModel: 'DetailView',
   templates: [
     function priorityToHTML() {/*
-      <% var pri = this.data.pri ? this.data.pri : '0'; %>
+      <% var pri = this.data.metaPriority ? this.data.metaPriority : '-'; %>
       <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
     */},
     function toHTML() {/*
