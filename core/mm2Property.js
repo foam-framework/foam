@@ -186,13 +186,13 @@ var Property = {
       help: 'View component for the property.'
     },
     {
-      model_: 'FunctionProperty',
+//      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.'
     },
     {
-      model_: 'FunctionProperty',
+//      model_: 'FunctionProperty',
       name: 'detailViewPostRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.'

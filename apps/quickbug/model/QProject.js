@@ -257,7 +257,9 @@ MODEL({
         Iteration:    'iteration',
         ReleaseBlock: 'releaseBlock',
         OS:           'OS',
-        MovedFrom:    'movedFrom'
+        MovedFrom:    'movedFrom',
+        Pri:          'pri',
+        Priority:     'priority'
       };
 
       var propertyLabels_ = {};
@@ -280,23 +282,24 @@ MODEL({
         return propertyLabels_[l] = false;
       }
 
-      var priorityProp = LabelStringProperty.create({
-        name: 'priority',
-        shortName: 'p',
-        aliases: ['pr', 'prior'],
-        tableLabel: 'Priority',
-        labelName: 'Priority',
-        tableWidth: '60px',
-        compareProperty: function(p1, p2) {
-          return p1.compareTo(p2);
-        },
-        required: true,
+
+      var LabelStringEnumProperty = Model.create({
+        extendsModel: 'LabelStringProperty',
+        name: 'LabelStringEnumProperty',
+        traits: ['EnumPropertyTrait']
       });
 
-      if ( this.projectName === 'chromium' ) {
-        labelToProperty.Pri = 'priority';
-        priorityProp.labelName = 'Pri';
-        priorityProp.compareProperty = function(p1, p2) {
+      var StringEnumProperty = Model.create({
+        extendsModel: 'StringProperty',
+        name: 'StringEnumProperty',
+        traits: ['EnumPropertyTrait']
+      });
+
+      var priorityProp = LabelStringEnumProperty.create({
+        name: 'priority',
+        tableLabel: 'Priority',
+        tableWidth: '60px',
+        compareProperty: function(p1, p2) {
           var priorities = ['Low', 'Medium', 'High', 'Critical'];
           var i1 = priorities.indexOf(p1);
           var i2 = priorities.indexOf(p2);
@@ -311,9 +314,59 @@ MODEL({
             var r = i1 - i2;
             return r === 0 ? 0 : r < 0 ? -1 : 1;
           }
+        },
+        choices: ['Low', 'Medium', 'High', 'Critical']
+      });
+
+      var priProp = LabelStringEnumProperty.create({
+        name: 'pri',
+        tableLabel: 'Pri',
+        tableWidth: '60px',
+        compareProperty: function(p1, p2) {
+          if ( p1.length === 0 && p2.length != 0 ) return 1;
+          else if ( p2.length === 0 && p1.length != 0 ) return -1;
+          return p1.compareTo(p2);
+        },
+        choices: [
+          [0, 'Priority 0 -- Critical'],
+          [1, 'Priority 1 -- High'],
+          [2, 'Priority 2 -- Medium'],
+          [3, 'Priority 3 -- Low']
+        ]
+      });
+
+      var metaProp = StringEnumProperty.create({
+        name: 'metaPriority',
+        shortName: 'p',
+        aliases: ['pr', 'prior'],
+        tableLabel: 'Priority',
+        tableWidth: '60px',
+        choices: priorityProp.choices,
+        compareProperty: priorityProp.compareProperty
+      });
+
+      if ( this.projectName === 'chromium' ) {
+        metaProp.postSet = function(_, v) {
+          console.log('Settings pri prop to ', v);
+          if ( this.pri !== v ) this.pri = v;
         };
+        priProp.postSet = function(_, v) {
+          console.log('Settings meta prop to ', v);
+          this.replaceLabels(prop.name.capitalize(), n);
+          this.metaPriority = v;
+        };
+        metaProp.choices = priProp.choices;
+        metaProp.compareProperty = priProp.compareProperty;
       } else {
-        labelToProperty.Priority = 'priority';
+        metaProp.postSet = function(_, v) {
+          console.log('Settings priority to ', v);
+          if ( this.pri !== v ) this.priority = v;
+        };
+        priorityProp.postSet = function(_, v) {
+          console.log('Settings meta prop to ', v);
+          this.replaceLabels(prop.labelName, n);
+          this.metaPriority = v;
+        };
       }
 
       this.X.registerModel(Model.create({
@@ -412,6 +465,8 @@ MODEL({
             aliases: ['reporter']
           },
           priorityProp,
+          priProp,
+          metaProp,
           {
             model_: 'LabelArrayProperty',
             name: 'app',

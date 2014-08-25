@@ -57,14 +57,9 @@ MODEL({
 
   properties: [
     {
-      name: 'labelName',
-      help: 'The associated label name for this property.',
-      defaultValueFn: function() { return this.name.capitalize(); }
-    },
-    {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        this.replaceLabels(prop.labelName, n);
+        this.replaceLabels(prop.name.capitalize(), n);
 
         // Test for LabelStringProperties that should be LabelArrayProperties.
         if ( o && o !== n ) debugger;
