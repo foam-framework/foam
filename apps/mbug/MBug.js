@@ -107,15 +107,33 @@ MODEL({
   }
 });
 
-
 MODEL({
   name: 'PriorityView',
   extendsModel: 'View',
-  // TODO: I'm not sure why the preSet is needed, but things aren't working without it.
-  properties: [ { name: 'data', preSet: function(_, v) { return v ? v : '0'; }, postSet: function() { this.updateHTML(); } } ],
-  templates: [ function toInnerHTML() {/*
-    <div class="priority priority-%%data">P%%data</div>
-  */} ]
+  properties: [
+    { name: 'data', postSet: function() { this.updateHTML(); } },
+    {
+      name: 'map',
+      defaultValue: {
+        'Low': 3,
+        'Medium': 2,
+        'High': 1,
+        'Critical': 0
+      }
+    }
+  ],
+  methods: {
+    dataToPriority: function(data) {
+      if ( this.map[data] !== undefined ) return this.map[data];
+      if ( data.length === 1 ) return data;
+      return 3;
+    }
+  },
+  templates: [
+    function toInnerHTML() {/*
+      <div class="priority priority-<%= this.dataToPriority(this.data) %>">P<%= this.dataToPriority(this.data) %></div>
+    */}
+  ]
 });
 
 MODEL({
