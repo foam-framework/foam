@@ -1480,8 +1480,6 @@ MODEL({
         this.mode === 'read-write' ? 'input' : undefined,
         this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
 
-      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
-
       Events.relate(
         this.data$,
         this.domValue,
