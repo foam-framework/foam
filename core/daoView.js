@@ -120,9 +120,6 @@ MODEL({
     },
 
     initHTML: function() {
-      // TODO: I think this should be done automatically some-how/where.
-      this.scrollModeView.data$ = this.scrollMode$;
-
       var choices = [
         [ { f: function() { return ''; } }, 'none' ]
       ];
