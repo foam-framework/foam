@@ -342,6 +342,8 @@ MODEL({
     tableToHTML: function() {
       var model = this.model;
 
+      if ( ! model ) return;
+
       if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
         delete this['initializers_'];
