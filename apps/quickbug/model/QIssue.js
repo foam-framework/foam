@@ -62,7 +62,7 @@ MODEL({
       name: 'postSet',
       defaultValue: function(o, n, prop) {
         feedback(this, 'labels', function() {
-          this.replaceLabels(prop.name.capitalize(), v);
+          this.replaceLabels(prop.name.capitalize(), n);
         });
 
         // Test for LabelStringProperties that should be LabelArrayProperties.
