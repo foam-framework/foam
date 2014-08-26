@@ -137,7 +137,8 @@ MODEL({
     },
     {
       model_: 'DAOProperty',
-      name: 'filteredIssueDAO'
+      name: 'filteredIssueDAO',
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'syncManagerFuture',
