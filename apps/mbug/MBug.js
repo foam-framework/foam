@@ -34,28 +34,14 @@ MODEL({
           remote: project.IssueNetworkDAO
         });
 
-        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
         var pc = Y.AppController.create({
           name: project.projectName,
           model: Y.QIssue,
           dao: Y.issueDAO,
           queryParser: Y.QueryParser,
           citationView: 'IssueCitationView',
-          sortChoices: [
-            [ DESC(Y.QIssue.MODIFIED), 'Last modified' ],
-            [ Y.QIssue.META_PRIORITY,            'Priority' ],
-            [ DESC(Y.QIssue.ID),       'Issue ID' ]
-          ],
-          filterChoices: [
-//          ['',                     'ALL ISSUES'],
-            [open,                   'OPEN ISSUES'],
-            [open + ' is:starred',   'STARRED'],
-            [open + ' owner=me',     'OWNED BY ME']
-//          [open + ' reporter=me',  'Open and reported by me'],
-//          [open + ' commentby:me', 'Open and comment by me'],
-//          ['status=New',           'New issues'],
-//          ['status=Fixed,Done',    'Issues to verify']
-          ],
+          sortChoices: project.defaultSortChoices,
+          filterChoices: project.defaultFilterChoices,
           menuFactory: function() {
             return this.X.ChangeProjectView.create({data: project.user});
           }
