@@ -888,11 +888,14 @@ MODEL({
       var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
 
       if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
-        div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
+        div.style.bottom = parentNode.offsetHeight;
+        document.defaultView.innerHeight - pos[1];
       }
 
-      if ( pos[2].offsetWidth - pos[0] < 600 ) div.style.left = 600 - pos[2].offsetWidth;
-      else div.style.left = -parentNode.offsetWidth;
+      if ( pos[2].offsetWidth - pos[0] < 600 )
+        div.style.left = 600 - pos[2].offsetWidth;
+      else
+        div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';

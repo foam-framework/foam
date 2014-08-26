@@ -812,7 +812,7 @@ MODEL({
             w.browser = b;
             window.document.firstChild.innerHTML = b.toHTML();
             b.initHTML();
-            if ( opt_url ) b.maybeImportCrbugUrl(opt_url);
+            if ( opt_url ) b.maybeSetLegacyUrl(opt_url);
             w.focus();
             metricsSrv.sendAppView('Browser');
           });
