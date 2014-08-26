@@ -124,14 +124,26 @@ MODEL({
   ],
   methods: {
     dataToPriority: function(data) {
+      var numeric = parseInt(data);
+      if ( ! Number.isNaN(numeric) ) return numeric;
       if ( this.map[data] !== undefined ) return this.map[data];
-      if ( data.length === 1 ) return data;
+      console.warn('Unknown priority ', data);
       return 3;
     }
   },
   templates: [
     function toInnerHTML() {/*
       <div class="priority priority-<%= this.dataToPriority(this.data) %>">P<%= this.dataToPriority(this.data) %></div>
+    */}
+  ]
+});
+
+MODEL({
+  name: 'PriorityCitationView',
+  extendsModel: 'PriorityView',
+  templates: [
+    function toHTML() {/*
+      <span id="%%id" class="priority priority-<%= this.dataToPriority(this.data) %>">Pri <%= this.dataToPriority(this.data) %></span>
     */}
   ]
 });
@@ -203,12 +215,21 @@ MODEL({
     function bodyToHTML() {/*
       <div class="body">
         <div class="choice">
-          $$metaPriority{model_: 'PriorityView'}
-          $$metaPriority{
+        <% if ( this.data.pri ) { %>
+          $$pri{ model_: 'PriorityView' }
+          $$pri{
             model_: 'PopupChoiceView',
             iconUrl: 'images/ic_arrow_drop_down_24dp.png',
             showValue: true
           }
+        <% } else { %>
+          $$priority{ model_: 'PriorityView' }
+          $$priority{
+            model_: 'PopupChoiceView',
+            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+            showValue: true
+          }
+        <% } %>
         </div>
         <div class="choice">
           <img src="images/ic_keep_24dp.png" class="status-icon">
@@ -329,15 +350,16 @@ MODEL({
   name: 'IssueCitationView',
   extendsModel: 'DetailView',
   templates: [
-    function priorityToHTML() {/*
-      <% var pri = this.data.metaPriority ? this.data.metaPriority : '-'; %>
-      <span class="priority priority-{{{pri}}}">Pri {{{pri}}}</span>
-    */},
     function toHTML() {/*
       <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
         $$owner{model_: "IssueOwnerAvatarView"}
         <div class="middle">
-          $$id{mode: 'read-only', className: 'id'} <% this.priorityToHTML(out); %><br>
+          $$id{mode: 'read-only', className: 'id'}
+        <% if ( this.data.pri ) { %>
+          $$pri{ model_: 'PriorityCitationView' }
+        <% } else { %>
+          $$priority{ model_: 'PriorityCitationView' }
+        <% } %><br>
           $$summary{mode: 'read-only'}
         </div>
         $$starred{
