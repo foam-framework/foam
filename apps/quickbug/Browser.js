@@ -137,12 +137,7 @@ MODEL({
     },
     {
       model_: 'DAOProperty',
-      name: 'filteredIssueDAO',
-      defaultValueFn: function() { return this.IssueDAO; },
-      postSet: function(_, dao) {
-        this.view.dao = dao;
-        this.onDAOUpdate();
-      }
+      name: 'filteredIssueDAO'
     },
     {
       name: 'syncManagerFuture',

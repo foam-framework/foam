@@ -302,7 +302,7 @@ function createView(rowSelectionValue, browser) {
   var location = browser.location;
 
   return X.AlternateView.create({
-    dao: browser.filteredIssueDAO,
+    dao: browser.filteredIssueDAO$Proxy,
     headerView: browser.countField,
     views: [
       ViewChoice.create({
@@ -310,7 +310,7 @@ function createView(rowSelectionValue, browser) {
         view: function() {
           var tableView = X.QIssueTableView.create({
             model:              X.QIssue,
-            dao:                browser.filteredIssueDAO,
+            dao:                browser.filteredIssueDAO$Proxy,
             browser:            browser,
             hardSelection$:     rowSelectionValue,
             scrollEnabled:      true,
@@ -348,7 +348,7 @@ function createView(rowSelectionValue, browser) {
                   [ PIE(X.QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
                   // [ PIE(X.QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-                grid: /*GridByExpr*/X.DragAndDropGrid.create({ dao: browser.filteredIssueDAO})
+                grid: /*GridByExpr*/X.DragAndDropGrid.create({ dao: browser.filteredIssueDAO$Proxy})
            }, X);
 
           g.row.data$   = location.y$;
