@@ -209,6 +209,14 @@ MODEL({
         }.bind(this));
 
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
+
+        var y = findPageXY(this.$)[1];
+        var screenHeight = this.X.document.firstElementChild.offsetHeight;
+        var popupHeight = toNum(v.$.offsetHeight);
+        if ( screenHeight-y-popupHeight < 10 ) {
+          v.$.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
+        }
+
         v.initHTML();
       }
     },
@@ -513,7 +521,7 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
+      var s = '<span id="' + this.id + '" class="editColumnView" style="overflow-y: scroll;position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
 
       s += 'Show columns:';
       s += '<table>';
