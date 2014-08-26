@@ -668,13 +668,18 @@ MODEL({
       factory: function() { return NullDAO.create(); }, // TODO: use singleton
       preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
-        this.model = this.model || newDAO.model;
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           this.notify_('put', []);
         }
       }
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'model',
+      type: 'Model',
+      defaultValueFn: function() { return this.delegate.model; }
     }
   ],
 
@@ -1101,6 +1106,7 @@ function limitedDAO(count, dao) {
 
 
 function skipDAO(skip, dao) {
+  if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
   return {
     __proto__: dao,
     select: function(sink, options) {
@@ -2931,9 +2937,6 @@ MODEL({
       name: 'property'
     },
     {
-      name: 'model'
-    },
-    {
       name: 'offloadDAO'
     },
     {
@@ -3151,10 +3154,6 @@ MODEL({
   help: 'A facade for easy DAO setup.',
 
   properties: [
-    {
-      model_: 'ModelProperty',
-      name: 'model'
-    },
     {
       name: 'name',
       defaultValueFn: function() { return this.model.plural; }

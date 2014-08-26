@@ -33,7 +33,7 @@ MODEL({
     },
     initHTML: function() {
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        element: this.$,
+        container: this,
         handler: this,
         gesture: 'tap'
       }));

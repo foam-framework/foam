@@ -88,6 +88,7 @@ MODEL({
       this.X = this.X.sub({
         touchManager: this.X.TouchManager.create({})
       }, 'MGMAIL CONTEXT');
+      this.X.gestureManager = this.X.GestureManager.create({});
 
       this.oauth = this.X.EasyOAuth2.create({
         clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
@@ -307,7 +308,12 @@ MODEL({
   name: 'EMailCitationView',
   extendsModel: 'DetailView',
   properties: [
-    { name: 'className', defaultValue: 'email-citation' }
+    { name: 'className', defaultValue: 'email-citation' },
+    {
+      name: 'preferredHeight',
+      help: 'Specifying the preferred height of this view for the ScrollView, since an empty row is too small.',
+      defaultValue: 82
+    }
   ],
   templates: [
     function toHTML() {/*

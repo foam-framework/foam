@@ -126,7 +126,7 @@ window.onresize = layout;
 layout();
 
 //    var dao = StorageDAO.create({model: Feature});
-    var dao = [];
+    var dao = [].sink;
 
     function importFeatures(m, features, type) {
       if ( ! features ) return;
@@ -258,6 +258,7 @@ layout();
       table.dao = dao;
     }
 
+dao.dao;
 //    var stack = StackView.create();
 //    stack.write(document);
 

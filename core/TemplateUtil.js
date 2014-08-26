@@ -140,7 +140,7 @@ var TemplateUtil = {
        if ( ! delegate ) {
          if ( ! t.template )
            throw 'Must arequire() template model before use for ' + t.name;
-         delegate = TemplateUtil.compile(t);
+         delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
        }
 
        return delegate.apply(this, arguments);
@@ -199,8 +199,8 @@ var aevalTemplate = function(t) {
 
   return aseq(
     t.futureTemplate,
-    function(ret, template) {
-      aeval('function (opt_out) {' + TemplateCompiler.parseString(template) + '}')(ret);
+    function(ret, t) {
+      aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}')(ret);
     });
 };
 

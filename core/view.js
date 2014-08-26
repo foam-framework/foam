@@ -597,6 +597,11 @@ MODEL({
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
+    },
+
+    // Called by the GestureManager, return true if this view is being touched.
+    containsPoint: function(x, y, element) {
+      return this.$ && this.$.contains(element);
     }
   }
 });
@@ -1479,8 +1484,6 @@ MODEL({
         this.$,
         this.mode === 'read-write' ? 'input' : undefined,
         this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
-
-      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
 
       Events.relate(
         this.data$,
@@ -2658,25 +2661,6 @@ MODEL({
         this.slider.style['-webkit-transform'] = 'translate3d(-' +
             nu + 'px, 0, 0)';
       }
-    },
-    {
-      name: 'touch',
-      help: 'TouchManager\'s FOAMTouch object',
-      hidden: true
-    },
-    {
-      name: 'touchStarted',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      help: 'True if we received a touchstart',
-      hidden: true
-    },
-    {
-      name: 'touchLive',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      help: 'True if a touch is currently active',
-      hidden: true
     }
   ],
 
@@ -2747,12 +2731,11 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.touchManager.install(TouchReceiver.create({
-        id: 'swipeAltView-' + this.id,
-        element: this.$,
-        delegate: this
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        container: this,
+        handler: this,
+        gesture: 'horizontalScroll'
       }));
-
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2800,36 +2783,9 @@ MODEL({
       }
     },
     {
-      name: 'onTouchStart',
-      code: function(touches, changed) {
-        // Only handle single-point touches.
-        if ( Object.keys(touches).length > 1 ) return { drop: true };
-
-        // Otherwise we're moderately interested, until it moves.
-        this.touch = touches[changed[0]];
-        this.touchStarted = true;
-        this.touchLive = false;
-        return { weight: 0.5 };
-      }
-    },
-    {
-      name: 'onTouchMove',
-      code: function(touches, changed) {
-        if ( ! this.touchStarted ) return { drop: true };
-
-        if ( ! this.touchLive && this.touch.distance < 6 ) {
-          // Prevent default, but don't decide if we're scrolling yet.
-          return { preventDefault: true, weight: 0.5 };
-        }
-
-        if ( ! this.touchLive && Math.abs(this.touch.dx) < Math.abs(this.touch.dy) ) {
-          // Drop our following of this touch.
-          return { drop: true };
-        }
-
-        // Otherwise the touch is live.
-        this.touchLive = true;
-        var x = this.index * this.width - this.touch.dx;
+      name: 'horizontalScrollMove',
+      code: function(dx, tx, x) {
+        var x = this.index * this.width - tx;
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -2837,20 +2793,14 @@ MODEL({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
-        return { preventDefault: true, claim: true, weight: 0.9 };
       }
     },
     {
-      name: 'onTouchEnd',
-      code: function(touches, changed) {
-        if ( ! this.touchLive ) return this.onTouchCancel(touches, changed);
-
-        this.touchLive = false;
-
-        var finalX = this.touch.x;
-        if ( Math.abs(finalX - this.touch.startX) > this.width / 3 ) {
+      name: 'horizontalScrollEnd',
+      code: function(dx, tx, x) {
+        if ( Math.abs(tx) > this.width / 3 ) {
           // Consider that a move.
-          if (finalX < this.touch.startX) {
+          if (tx < 0) {
             this.index++;
           } else {
             this.index--;
@@ -2858,16 +2808,6 @@ MODEL({
         } else {
           this.snapToCurrent(1);
         }
-
-        return { drop: true };
-      }
-    },
-    {
-      name: 'onTouchCancel',
-      code: function(touches, changed) {
-        this.touchLive = false;
-        this.touchStarted = false;
-        return { drop: true };
       }
     }
   ]
@@ -4184,6 +4124,7 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
+      if ( ! this.$ ) return;
       this.$.addEventListener('mouseover', this.onMouseEnter);
       this.$.addEventListener('mouseout', this.onMouseOut);
       this.$.addEventListener('click', this.onTrackClick);
