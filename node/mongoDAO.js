@@ -170,7 +170,6 @@ global.MongoDAO = FOAM({
 
       var future = afuture();
       this.withDB(function(db) {
-        console.log(query, opts);
         db.find(query, opts, function(err, cursor) {
           if (err) return sink && sink.error && sink.error(err);
           if (CountExpr.isInstance(sink)) {
