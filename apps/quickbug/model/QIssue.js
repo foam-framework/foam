@@ -29,7 +29,9 @@ MODEL({
 
         v.sort();
 
-        this.replaceLabels(prop.name.capitalize(), v);
+        feedback(this, 'labels', function() {
+          this.replaceLabels(prop.name.capitalize(), v);
+        });
       }
     },
     {
@@ -59,7 +61,9 @@ MODEL({
     {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        this.replaceLabels(prop.name.capitalize(), n);
+        feedback(this, 'labels', function() {
+          this.replaceLabels(prop.name.capitalize(), v);
+        });
 
         // Test for LabelStringProperties that should be LabelArrayProperties.
         if ( o && o !== n ) debugger;
@@ -72,7 +76,11 @@ MODEL({
   ]
 });
 
-
+MODEL({
+  name: 'LabelStringEnumProperty',
+  extendsModel: 'LabelStringProperty',
+  traits: ['EnumPropertyTrait']
+});
 
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {

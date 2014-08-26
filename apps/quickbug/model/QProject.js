@@ -222,7 +222,35 @@ MODEL({
     {
       name: 'syncManagerFuture',
       factory: function() { return afuture(); }
+    },
+    {
+      name: 'defaultSortChoices',
+      factory: function() {
+        return [
+          [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
+          [ this.X.QIssue.PRI, 'Priority' ],
+          [ DESC(this.X.QIssue.ID),            'Issue ID' ]
+        ];
+      }
+    },
+    {
+      name: 'defaultFilterChoices',
+      factory: function() {
+        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+
+        return [
+//          ['',                     'ALL ISSUES'],
+          [open,                   'OPEN ISSUES'],
+          [open + ' is:starred',   'STARRED'],
+          [open + ' owner=me',     'OWNED BY ME']
+//          [open + ' reporter=me',  'Open and reported by me'],
+//          [open + ' commentby:me', 'Open and comment by me'],
+//          ['status=New',           'New issues'],
+//          ['status=Fixed,Done',    'Issues to verify']
+        ];
+      }
     }
+
   ],
 
   listeners: [
@@ -280,93 +308,6 @@ MODEL({
         }
 
         return propertyLabels_[l] = false;
-      }
-
-
-      var LabelStringEnumProperty = Model.create({
-        extendsModel: 'LabelStringProperty',
-        name: 'LabelStringEnumProperty',
-        traits: ['EnumPropertyTrait']
-      });
-
-      var StringEnumProperty = Model.create({
-        extendsModel: 'StringProperty',
-        name: 'StringEnumProperty',
-        traits: ['EnumPropertyTrait']
-      });
-
-      var priorityProp = LabelStringEnumProperty.create({
-        name: 'priority',
-        tableLabel: 'Priority',
-        tableWidth: '60px',
-        compareProperty: function(p1, p2) {
-          var priorities = ['Low', 'Medium', 'High', 'Critical'];
-          var i1 = priorities.indexOf(p1);
-          var i2 = priorities.indexOf(p2);
-          if ( i1 < 0 && i2 < 0 ) {
-            // Neither is a proper priority - return normal string order.
-            return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
-          } else if ( i1 < 0 ) {
-            return -1; // Nonstandard priorities are considered lower than Low.
-          } else if ( i2 < 0 ) {
-            return 1;  // Likewise.
-          } else {
-            var r = i1 - i2;
-            return r === 0 ? 0 : r < 0 ? -1 : 1;
-          }
-        },
-        choices: ['Low', 'Medium', 'High', 'Critical']
-      });
-
-      var priProp = LabelStringEnumProperty.create({
-        name: 'pri',
-        tableLabel: 'Pri',
-        tableWidth: '60px',
-        compareProperty: function(p1, p2) {
-          if ( p1.length === 0 && p2.length != 0 ) return 1;
-          else if ( p2.length === 0 && p1.length != 0 ) return -1;
-          return p1.compareTo(p2);
-        },
-        choices: [
-          ['0', 'Priority 0 -- Critical'],
-          ['1', 'Priority 1 -- High'],
-          ['2', 'Priority 2 -- Medium'],
-          ['3', 'Priority 3 -- Low']
-        ]
-      });
-
-      var metaProp = StringEnumProperty.create({
-        name: 'metaPriority',
-        shortName: 'p',
-        aliases: ['pr', 'prior'],
-        tableLabel: 'Priority',
-        tableWidth: '60px',
-        choices: priorityProp.choices,
-        compareProperty: priorityProp.compareProperty
-      });
-
-      if ( this.projectName === 'chromium' ) {
-        metaProp.postSet = function(_, v) {
-          feedback(this, 'priority', function() { this.pri = v; });
-        };
-        priProp.postSet = function(_, v) {
-          feedback(this, 'labels', function() {
-            this.replaceLabels('Pri', v);
-          });
-          feedback(this, 'priority', function() { this.metaPriority = v; });
-        };
-        metaProp.choices = priProp.choices;
-        metaProp.compareProperty = priProp.compareProperty;
-      } else {
-        metaProp.postSet = function(_, v) {
-          feedback(this, 'priority', function() { this.priority = v; });
-        };
-        priorityProp.postSet = function(_, v) {
-          feedback(this, 'labels', function() {
-            this.replaceLabels('Priority', v);
-          });
-          feedback(this, 'priority', function() { this.metaPriority = v; });
-        };
       }
 
       this.X.registerModel(Model.create({
@@ -468,9 +409,46 @@ MODEL({
             preSet: function(_, a) { return a.intern(); },
             aliases: ['reporter']
           },
-          priorityProp,
-          priProp,
-          metaProp,
+          {
+            model_: 'LabelStringEnumProperty',
+            name: 'priority',
+            tableLabel: 'Priority',
+            tableWidth: '60px',
+            compareProperty: function(p1, p2) {
+              var priorities = ['Low', 'Medium', 'High', 'Critical'];
+              var i1 = priorities.indexOf(p1);
+              var i2 = priorities.indexOf(p2);
+              if ( i1 < 0 && i2 < 0 ) {
+                // Neither is a proper priority - return normal string order.
+                return p1 === p2 ? 0 : p1 < p2 ? -1 : 1;
+              } else if ( i1 < 0 ) {
+                return 1; // Nonstandard come after standard priorities
+              } else if ( i2 < 0 ) {
+                return -1;  // Likewise.
+              } else {
+                var r = i2 - i1;
+                return r === 0 ? 0 : r < 0 ? -1 : 1;
+              }
+            },
+            choices: ['Low', 'Medium', 'High', 'Critical'],
+          },
+          {
+            model_: 'LabelStringEnumProperty',
+            name: 'pri',
+            tableLabel: 'Pri',
+            tableWidth: '60px',
+            compareProperty: function(p1, p2) {
+              if ( p1.length === 0 && p2.length != 0 ) return 1;
+              else if ( p2.length === 0 && p1.length != 0 ) return -1;
+              return p1.compareTo(p2);
+            },
+            choices: [
+              ['0', 'Priority 0 -- Critical'],
+              ['1', 'Priority 1 -- High'],
+              ['2', 'Priority 2 -- Medium'],
+              ['3', 'Priority 3 -- Low']
+            ]
+          },
           {
             model_: 'LabelArrayProperty',
             name: 'app',
@@ -794,6 +772,14 @@ MODEL({
         this.syncManagerFuture.set(manager);
         manager.start();
       }.bind(this));
+
+      if ( this.projectName !== 'chromium' ) {
+        this.defaultSortChoices = [
+          [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
+          [ this.X.QIssue.PRIORITY, 'Priority' ],
+          [ DESC(this.X.QIssue.ID),            'Issue ID' ]
+        ];
+      }
     },
 
     /** Open a Browser in a Window for a Chome Packaged App. **/
