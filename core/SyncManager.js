@@ -139,7 +139,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'maxSyncAge',
-      defaultValue: 6 * 24 * 60 * 1000,
+      defaultValue: 6 * 24 * 60 * 60 * 1000,
       help: 'How old our database is allowed to be before we just toss it and start over.'
     }
   ],
