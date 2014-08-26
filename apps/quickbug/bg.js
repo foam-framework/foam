@@ -20,9 +20,10 @@ ametric = function(name, afunc) {
 };
 
 var qb;
+// Forwards its arguments to QBug.launchBrowser(), if any.
 function launch() {
   if ( ! qb ) qb = X.QBug.create();
-  qb.launchBrowser();
+  qb.launchBrowser.apply(qb, arguments);
 }
 
 if ( chrome.app.runtime ) {
@@ -32,6 +33,16 @@ if ( chrome.app.runtime ) {
 
     console.log('launched');
     launch();
+  });
+
+  chrome.runtime.onMessageExternal.addListener(function(msg) {
+    if ( msg && msg.type === 'openUrl' ) {
+      // Extract the project name and call launchBrowser.
+      var start = msg.url.indexOf('/p/') + 3;
+      var end = msg.url.indexOf('/', start);
+      var project = msg.url.substring(start, end);
+      launch(project, msg.url);
+    }
   });
 }
 

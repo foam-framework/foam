@@ -695,7 +695,7 @@ Please use labels and text to provide additional information.
 
     // return true iff url was a legacy URL
     maybeSetLegacyUrl: function(url) {
-      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var regex = new RegExp("https?://code.google.com/p/([^/]+)/issues/[^\?]*(\\?(.*))?");
       var match = regex.exec(url);
 
       if ( ! match ) return false;
@@ -745,6 +745,14 @@ MODEL({
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
+      var codesite = url.indexOf('code.google.com');
+      if ( codesite >= 0 ) {
+        var question = url.indexOf('?');
+        var before = url.substring(0, question);
+        var after = url.substring(question + 1);
+        url = before + '?no_qbug=1&' + after;
+        console.log('new url', url);
+      }
       this.X.window.open(url);
     }
   }
