@@ -341,3 +341,6 @@ MODEL({
     }
   }
 });
+
+
+var ArrayView = DAOController;
