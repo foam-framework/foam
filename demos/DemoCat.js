@@ -48,18 +48,26 @@ var demos = [
     keywords: ['animation'],
     image: ''
   },
+  {
+    model_: 'Demo',
+    name: 'Pong',
+    path: 'Pong.html',
+    description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
+    keywords: ['animation', 'game', 'physics', 'traits'],
+    image: ''
+  },
 ].dao;
 
 
 MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
   function CSS() {/*
     .thumbnail {
-       margin-bottom: 50px;
+       margin-bottom: 40px;
     }
   */},
   function toHTML() {/*
       <li class="thumbnail">
-        <a href="%%path" class="thumb">$$name{mode: 'read-only'}</a>
+        <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
         <p>$$description{mode: 'read-only'}</p>
         <b>Keywords:</b> $$keywords{mode: 'read-only'}
         <br>
