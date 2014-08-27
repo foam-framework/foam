@@ -1762,7 +1762,7 @@ function GRID_BY(xFunc, yFunc, acc) {
 }
 
 function MAP(fn, opt_sink) {
-  return MapExpr.create({arg1: fn, arg2: opt_sink || []});
+  return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
 }
 
 function DISTINCT(fn, sink) {

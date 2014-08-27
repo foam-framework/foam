@@ -51,7 +51,7 @@ Object.defineProperty(Array.prototype, 'dao', {
 });
 
 Object.defineProperty(Array.prototype, 'sink', {
-  get: function() { this.__proto__ = ArraySink.prototype; return this; },
+  get: function() { this.__proto__ = ArraySink; return this; },
   writeable: true
 });
 
