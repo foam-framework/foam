@@ -22,9 +22,14 @@ MODEL({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(oldDAO, dao) {
+        if ( this.dao !== dao ) this.dao = dao;
+      }
+    },
+    {
       model_: 'DAOProperty',
       name: 'dao',
-      aliases: ['data'],
       label: 'DAO',
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
