@@ -2065,6 +2065,22 @@ MODEL({
       name: 'render',
       isAnimated: true,
       code: function() { this.updateHTML(); }
+    },
+    {
+      name: 'onMouseEnter',
+      code: function(e) {
+        console.log('onMouseOver: ', e);
+//        this.mouseOver = true;
+//       this.show();
+      }
+    },
+    {
+      name: 'onMouseOut',
+      code: function(e) {
+        console.log('onMouseOut', e);
+//        this.mouseOver = false;
+//        this.hide();
+      }
     }
   ],
 
@@ -2076,6 +2092,7 @@ MODEL({
         self.action.callIfEnabled(self.data);
       }, this.id);
 
+      // TODO: Remove when new Tooltips done.
       this.setAttribute('data-tip', function() {
         return self.action.help || undefined;
       }, this.id);
@@ -2105,6 +2122,15 @@ MODEL({
       }
 
       return out;
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      if ( this.action.help ) {
+        this.$.addEventListener('mouseover', this.onMouseEnter);
+        this.$.addEventListener('mouseout',  this.onMouseOut);
+      }
     }
   }
 });
