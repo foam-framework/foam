@@ -15,7 +15,7 @@
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>
@@ -28,7 +28,7 @@
   <span style="width:60px;flex-shrink:10000"></span>
   <span>Search %%searchChoice for </span>
   <span class="expand" style="padding-left:4px;">%%searchField</span> $$addBookmark
-  <span class="link" style="align-self:center;"> <%= linkButton %> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search&nbsp;tips</a></span>
+  <span class="link" style="align-self:center;"> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search&nbsp;tips</a></span>
  </div>
  <div class="BrowserView expand column">%%view</div>
  <div class="footer"><%= FOAM_POWERED %> <span class="appName"><%= manifest.name %> v<%= manifest.version%></span></div>

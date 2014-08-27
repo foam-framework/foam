@@ -111,7 +111,11 @@ body {
   overflow: auto;
 }
 
-.actionButton-link, .actionButton-link:hover{
+.actionButton-link {
+  vertical-align: middle;
+}
+
+.actionButton-link, .actionButton-link:hover {
   border: none;
   background: white;
 }
