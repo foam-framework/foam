@@ -694,6 +694,112 @@ MODEL({
 });
 
 
+// http://www.google.com/design/spec/components/tooltips.html#tooltips-usage
+MODEL({
+  name: 'Tooltip',
+
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'text',
+      help: 'Help text to be shown in tooltip.'
+    },
+    {
+      name: 'target',
+      help: 'Target element to provide tooltip for.'
+    },
+    {
+      name: 'x'
+    },
+    {
+      name: 'y'
+    },
+    {
+      name: 'width',
+      defaultValue: undefined
+    },
+    {
+      name: 'maxWidth',
+      defaultValue: undefined
+    },
+    {
+      name: 'maxHeight',
+      defaultValue: undefined
+    },
+    {
+      name: 'height',
+      defaultValue: undefined
+    },
+    {
+      name: 'className',
+      defaultValue: 'tooltip'
+    }
+  ],
+
+  templates: [
+    function CSS() {/*
+      .tooltip {
+        color: white;
+        font-size: 10pt;
+        xbackground: rgba(97,97,97,0.9);
+        background: rgba(80,80,80,0.9);
+        position: absolute;
+        padding: 5px 8px;
+        border-radius: 4px;
+        opacity: 0.9;
+        transition: left 0.3s;
+        transition: top 0.3s;
+      }
+    */}
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var document = this.X.document;
+      var div      = document.createElement('div');
+
+      div.className = this.className;
+      div.id = this.id;
+      div.innerHTML = this.toInnerHTML();
+
+      var pos = findPageXY(this.target);
+
+      /*
+      div.style.left = this.target.offsetLeft + 'px';
+      div.style.top  = this.target.offsetTop + 'px';
+      */
+      div.style.left = pos[0];
+      div.style.top  = pos[1] + 20;
+
+      this.X.setTimeout(function() {
+        div.style.left = pos[0] + ( this.target.clientWidth - div.clientWidth ) / 2;
+        div.style.top  = pos[1] + this.target.clientHeight + 8;
+      }.bind(this), 10);
+
+      /*
+      div.style.left = this.x + 'px';
+      div.style.top = this.y + 'px';
+      if ( this.width )     div.style.width = this.width + 'px';
+      if ( this.height )    div.style.height = this.height + 'px';
+      if ( this.maxWidth )  div.style.maxWidth = this.maxWidth + 'px';
+      if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
+      div.style.position = 'absolute';
+      div.id = this.id;
+      div.innerHTML = this.view.toHTML();
+      */
+      document.body.appendChild(div);
+      this.initHTML();
+    },
+    toInnerHTML: function() { return this.text; },
+    close: function() { this.$ && this.$.remove(); },
+    destroy: function() { this.close(); }
+  }
+});
+
+
 MODEL({
   name: 'PopupView',
 
@@ -2069,17 +2175,18 @@ MODEL({
     {
       name: 'onMouseEnter',
       code: function(e) {
-        console.log('onMouseOver: ', e);
-//        this.mouseOver = true;
-//       this.show();
+        if ( ! this.tooltip_ && this.action.help ) {
+          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, target: this.$});
+        }
       }
     },
     {
       name: 'onMouseOut',
       code: function(e) {
-        console.log('onMouseOut', e);
-//        this.mouseOver = false;
-//        this.hide();
+        if ( this.tooltip_ ) {
+          this.tooltip_.close();
+          this.tooltip_ = null;
+        }
       }
     }
   ],
@@ -2093,9 +2200,11 @@ MODEL({
       }, this.id);
 
       // TODO: Remove when new Tooltips done.
+      /*
       this.setAttribute('data-tip', function() {
         return self.action.help || undefined;
       }, this.id);
+      */
 
       this.setAttribute('disabled', function() {
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
