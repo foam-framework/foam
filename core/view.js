@@ -710,28 +710,6 @@ MODEL({
       help: 'Target element to provide tooltip for.'
     },
     {
-      name: 'x'
-    },
-    {
-      name: 'y'
-    },
-    {
-      name: 'width',
-      defaultValue: undefined
-    },
-    {
-      name: 'maxWidth',
-      defaultValue: undefined
-    },
-    {
-      name: 'maxHeight',
-      defaultValue: undefined
-    },
-    {
-      name: 'height',
-      defaultValue: undefined
-    },
-    {
       name: 'className',
       defaultValue: 'tooltip'
     }
@@ -742,14 +720,12 @@ MODEL({
       .tooltip {
         color: white;
         font-size: 10pt;
-        xbackground: rgba(97,97,97,0.9);
         background: rgba(80,80,80,0.9);
         position: absolute;
         padding: 5px 8px;
         border-radius: 4px;
         opacity: 0.9;
-        transition: left 0.3s;
-        transition: top 0.3s;
+        transition: top 0.2s;
       }
     */}
   ],
@@ -766,31 +742,27 @@ MODEL({
       div.innerHTML = this.toInnerHTML();
 
       var pos = findPageXY(this.target);
+      document.body.appendChild(div);
 
-      /*
-      div.style.left = this.target.offsetLeft + 'px';
-      div.style.top  = this.target.offsetTop + 'px';
-      */
-      div.style.left = pos[0];
-      div.style.top  = pos[1] + 20;
+      // var screenHeight = this.X.document.firstElementChild.offsetHeight;
+      var screenHeight = this.X.window.screen.availHeight;
+      var scrollY = this.X.window.scrollY;
+      console.log('sHeight: ', screenHeight, ' Y: ', pos[1], ' scrollY: ', scrollY);
+      var above = pos[1] - scrollY > screenHeight / 2;
 
+      div.style.top = above ? 
+        pos[1] - div.clientHeight :
+        pos[1] + this.target.clientHeight ;
+ 
+      var s = this.X.window.getComputedStyle(div);
+      div.style.left = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
+      
       this.X.setTimeout(function() {
-        div.style.left = pos[0] + ( this.target.clientWidth - div.clientWidth ) / 2;
-        div.style.top  = pos[1] + this.target.clientHeight + 8;
+        div.style.top = above ?
+          pos[1] - this.target.clientHeight - 8 :
+          pos[1] + this.target.clientHeight + 8 ;
       }.bind(this), 10);
 
-      /*
-      div.style.left = this.x + 'px';
-      div.style.top = this.y + 'px';
-      if ( this.width )     div.style.width = this.width + 'px';
-      if ( this.height )    div.style.height = this.height + 'px';
-      if ( this.maxWidth )  div.style.maxWidth = this.maxWidth + 'px';
-      if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
-      div.style.position = 'absolute';
-      div.id = this.id;
-      div.innerHTML = this.view.toHTML();
-      */
-      document.body.appendChild(div);
       this.initHTML();
     },
     toInnerHTML: function() { return this.text; },
