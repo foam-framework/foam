@@ -724,12 +724,14 @@ MODEL({
         font-size: 10pt;
         padding: 5px 8px;
         position: absolute;
+        left: 0;
+        top: 0;
       }
       .tooltip.animated {
-        transition: top 0.2s;
+        transition: top 0.5s ease-in-out;
       }
       .tooltip.fadeout {
-        transition: opacity 0.4s ease-in-out;
+        transition: opacity 0.5s ease-in-out;
         opacity: 0;
       }
     */}
@@ -742,26 +744,32 @@ MODEL({
       var document = this.X.document;
       var div      = document.createElement('div');
 
+      // Only allow one Tooltip per document, so close the previous one if it exists.
+      if ( document.previousTooltip_ ) document.previousTooltip_.close();
+      document.previousTooltip_ = this;
+
+      // Close after 10s
+      this.X.setTimeout(this.close.bind(this), 10000);
+
       div.className = this.className;
       div.id = this.id;
       div.innerHTML = this.toInnerHTML();
 
-      var pos = findPageXY(this.target);
       document.body.appendChild(div);
 
-      // var screenHeight = this.X.document.firstElementChild.offsetHeight;
-      var screenHeight = this.X.window.screen.availHeight;
-      var scrollY = this.X.window.scrollY;
-      console.log('sHeight: ', screenHeight, ' Y: ', pos[1], ' scrollY: ', scrollY);
-      var above = pos[1] - scrollY > screenHeight / 2;
-
-      div.style.top = above ? 
-        pos[1] - div.clientHeight :
-        pos[1] + this.target.clientHeight ;
- 
       var s = this.X.window.getComputedStyle(div);
-      div.style.left = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
-      
+
+      var pos = findPageXY(this.target);
+
+      var screenHeight = this.X.document.body.clientHeight;
+      var scrollY      = this.X.window.scrollY;
+      var above        = pos[1] - scrollY > screenHeight / 2;
+      var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
+      var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
+
+      div.style.top  = pos[1];
+      div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
+
       DOM.setClass(div, 'animated');
 
       this.X.setTimeout(function() {
@@ -775,7 +783,7 @@ MODEL({
     toInnerHTML: function() { return this.text; },
     close: function() {
       if ( this.$ ) {
-        this.X.setTimeout(this.$.remove.bind(this.$), 700);
+        this.X.setTimeout(this.$.remove.bind(this.$), 1000);
         DOM.setClass(this.$, 'fadeout');
       }
     },
@@ -2167,6 +2175,7 @@ MODEL({
     {
       name: 'onMouseOut',
       code: function(e) {
+        if ( e.toElement === this.tooltip_.$ ) return;
         this.closeTooltip();
       }
     }
