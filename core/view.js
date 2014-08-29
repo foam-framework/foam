@@ -2175,9 +2175,8 @@ MODEL({
       }
     },
     {
-      name: 'onMouseOut',
+      name: 'onMouseLeave',
       code: function(e) {
-        console.log(e);
         if ( this.tooltip_ && e.toElement === this.tooltip_.$ ) return;
         this.closeTooltip();
       }
@@ -2231,8 +2230,8 @@ MODEL({
       this.SUPER();
 
       if ( this.action.help ) {
-        this.$.addEventListener('mouseover', this.onMouseEnter);
-        this.$.addEventListener('mouseout',  this.onMouseOut);
+        this.$.addEventListener('mouseenter', this.onMouseEnter);
+        this.$.addEventListener('mouseleave', this.onMouseLeave);
       }
     }
   }
