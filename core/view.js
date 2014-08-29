@@ -718,6 +718,7 @@ MODEL({
   templates: [
     function CSS() {/*
       .tooltip {
+        visibility: hidden;
         background: rgba(80,80,80,0.9);
         border-radius: 4px;
         color: white;
@@ -728,6 +729,7 @@ MODEL({
         top: 0;
       }
       .tooltip.animated {
+        visibility: visible;
         transition: top 0.5s ease-in-out;
       }
       .tooltip.fadeout {
@@ -748,8 +750,8 @@ MODEL({
       if ( document.previousTooltip_ ) document.previousTooltip_.close();
       document.previousTooltip_ = this;
 
-      // Close after 10s
-      this.X.setTimeout(this.close.bind(this), 10000);
+      // Close after 5s
+      this.X.setTimeout(this.close.bind(this), 5000);
 
       div.className = this.className;
       div.id = this.id;
@@ -2175,7 +2177,8 @@ MODEL({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( e.toElement === this.tooltip_.$ ) return;
+        console.log(e);
+        if ( this.tooltip_ && e.toElement === this.tooltip_.$ ) return;
         this.closeTooltip();
       }
     }
