@@ -7,7 +7,6 @@ cp -r ../../core/* core
 cp ../../lib/bookmarks/bookmark.js core
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../core/css-tooltips.css $BUILD_DIR
 
 # For code compression, uncomment the following line:
 # ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"

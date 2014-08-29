@@ -195,7 +195,7 @@ MODEL({
         var os = [];
         for ( var i = 0 ; i < ss.length ; i++ ) {
           var s = ss[i];
-          if ( s.meansOpen ) os.push(s.status); 
+          if ( s.meansOpen ) os.push(s.status);
         }
         var open = 'status=' + os.join(',');
 
@@ -333,7 +333,7 @@ MODEL({
       name: 'link',
       label: '',
       iconUrl: 'images/link.svg',
-      help:  'Link to code.google.com', // disable until tooltips work better
+      help:  'Link to code.google.com',
       action: function() {
         var url = this.legacyUrl;
         console.log(url);

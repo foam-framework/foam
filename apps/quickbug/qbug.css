@@ -316,10 +316,6 @@ input[name="labels"] {
   vertical-align: middle;
 }
 
-.actionButton-link[data-tip]:after {
-  left: -65px;
-}
-
 .gridViewArea {
   overflow: auto;
 }
