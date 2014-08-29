@@ -88,11 +88,10 @@ var BootstrapModel = {
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
-        MODEL({
-          __proto__: traitModel,
-          name: name,
-          extendsModel: parentModel.name
-        });
+        var model = traitModel.deepClone();
+        model.name = name;
+        model.extendsModel = parentModel.name;
+        GLOBAL.registerModel(model);
       }
 
       return GLOBAL[name];
