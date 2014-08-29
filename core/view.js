@@ -718,14 +718,19 @@ MODEL({
   templates: [
     function CSS() {/*
       .tooltip {
+        background: rgba(80,80,80,0.9);
+        border-radius: 4px;
         color: white;
         font-size: 10pt;
-        background: rgba(80,80,80,0.9);
-        position: absolute;
         padding: 5px 8px;
-        border-radius: 4px;
-        opacity: 0.9;
+        position: absolute;
+      }
+      .tooltip.animated {
         transition: top 0.2s;
+      }
+      .tooltip.fadeout {
+        transition: opacity 0.4s ease-in-out;
+        opacity: 0;
       }
     */}
   ],
@@ -757,6 +762,8 @@ MODEL({
       var s = this.X.window.getComputedStyle(div);
       div.style.left = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
       
+      DOM.setClass(div, 'animated');
+
       this.X.setTimeout(function() {
         div.style.top = above ?
           pos[1] - this.target.clientHeight - 8 :
@@ -766,7 +773,12 @@ MODEL({
       this.initHTML();
     },
     toInnerHTML: function() { return this.text; },
-    close: function() { this.$ && this.$.remove(); },
+    close: function() {
+      if ( this.$ ) {
+        this.X.setTimeout(this.$.remove.bind(this.$), 700);
+        DOM.setClass(this.$, 'fadeout');
+      }
+    },
     destroy: function() { this.close(); }
   }
 });
@@ -2155,15 +2167,18 @@ MODEL({
     {
       name: 'onMouseOut',
       code: function(e) {
-        if ( this.tooltip_ ) {
-          this.tooltip_.close();
-          this.tooltip_ = null;
-        }
+        this.closeTooltip();
       }
     }
   ],
 
   methods: {
+    closeTooltip: function() {
+      if ( this.tooltip_ ) {
+        this.tooltip_.close();
+        this.tooltip_ = null;
+      }
+    },
     toHTML: function() {
       var self = this;
 
@@ -2171,18 +2186,13 @@ MODEL({
         self.action.callIfEnabled(self.data);
       }, this.id);
 
-      // TODO: Remove when new Tooltips done.
-      /*
-      this.setAttribute('data-tip', function() {
-        return self.action.help || undefined;
-      }, this.id);
-      */
-
       this.setAttribute('disabled', function() {
+        self.closeTooltip();
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
       }, this.id);
 
       this.setClass('available', function() {
+        self.closeTooltip();
         return self.action.isAvailable.call(self.data, self.action);
       }, this.id);
 
@@ -4236,7 +4246,7 @@ MODEL({
 
       if ( ! this.$ ) return;
       this.$.addEventListener('mouseover', this.onMouseEnter);
-      this.$.addEventListener('mouseout', this.onMouseOut);
+      this.$.addEventListener('mouseout',  this.onMouseOut);
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
