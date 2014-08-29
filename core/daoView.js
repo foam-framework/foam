@@ -54,19 +54,19 @@ MODEL({
     {
       name: 'row',
       type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
+      factory: function() { return this.X.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
       type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
+      factory: function() { return this.X.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
-      factory: function() { return ChoiceView.create(); }
+      factory: function() { return this.X.ChoiceView.create(); }
     },
     {
       name: 'accChoices',
@@ -87,7 +87,7 @@ MODEL({
     {
       name: 'grid',
       type: 'GridByExpr',
-      factory: function() { return GridByExpr.create(); }
+      factory: function() { return this.X.GridByExpr.create(); }
     }
   ],
 
@@ -399,7 +399,7 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView);
+      var rowView = FOAM.lookup(this.rowView, this.X);
 
       this.children = [];
       this.initializers_ = [];
@@ -541,7 +541,7 @@ MODEL({
       name: 'rowView',
       help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
       postSet: function(_, nu) {
-        var view = FOAM.lookup(nu);
+        var view = FOAM.lookup(nu, this.X);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
           this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
       }
@@ -648,7 +648,7 @@ MODEL({
       }
 
       // Add scrollbar.
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView).create({
+      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
           height: this.viewportHeight,
           scrollTop$ : this.scrollTop$,
           scrollHeight$ : this.scrollHeight$,
@@ -706,7 +706,7 @@ MODEL({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = FOAM.lookup(this.rowView);
+        var rowView = FOAM.lookup(this.rowView, this.X);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
@@ -863,7 +863,7 @@ MODEL({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              var view = FOAM.lookup(this.rowView).create({ data: this.dao.model.create() });
+              var view = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
               out(view.toHTML());
               this.addChild(view);
             %>
@@ -901,7 +901,7 @@ MODEL({
       name: 'view',
       required: true,
       preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v);
+        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.X);
         this.children = [v];
         v.data = v.dao = this.predicatedDAO$Proxy;
         return v;
