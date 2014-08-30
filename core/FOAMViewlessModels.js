@@ -45,6 +45,7 @@ var files = [
   'async',
   'visitor',
   'dao',
+  'arrayDAO',
   'ClientDAO',
   'diff',
   'SplitDAO',
