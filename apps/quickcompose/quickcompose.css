@@ -162,10 +162,6 @@ body > input[name="to"] {
   margin-right: 8px;
 }
 
-.actionButton-discard[data-tip]:after {
-  left: -65px;
-}
-
 .attachments {
   margin-top: 4px;
   margin-bottom: 4px;

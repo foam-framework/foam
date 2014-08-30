@@ -1,0 +1,17 @@
+{
+  "name": "Quickbug URL Capture Extension",
+  "version": "0.1",
+  "manifest_version": 2,
+  "description": "Captures code.google.com issue tracker requests and opens Quickbug.",
+  "icons": { "128": "icon_128.png" },
+  "background": {
+    "persistent": true,
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "declarativeWebRequest",
+    "management",
+    "tabs",
+    "*://code.google.com/*"
+  ]
+}
