@@ -1,8 +1,18 @@
+<%
+  function formatContent(s) {
+    var url = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/g;
+    return '<pre>' +
+           ( s ?
+             s.replace(url, function(a) { return '<a href="' + a + '" target="_blank">' + a + '</a>'; }) :
+             '(No comment was entered for this change.)' ) +
+           '</pre>';
+  }
+%>
 <div class="qvt qissuecomment" id="<%= this.id %>">
   <div class="qissuecommentdate">
     $$published{ mode: 'read-only' }
   </div>
   <span style="padding-left:.7em">By </span>$$author <a target="_blank" href="<%= this.X.browser.url %>/issues/detail?id={{this.data.issueId}}#{{ this.data.seqNo }}">#{{ this.data.seqNo || '0' }}</a>
-  $$content{ mode: 'read-only', escapeHTML: false, placeholder: '(No comment was entered for this change.)', tagName: 'pre' }
+  <%= formatContent(this.data.content) %>
   $$updates
 </div>
