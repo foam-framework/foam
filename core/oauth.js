@@ -336,10 +336,28 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'OAuth2ChromeIdentity',
+  extendsModel: 'OAuth2',
+  help: 'OAuth2 strategy that uses the Chrome identity API',
+  methods: {
+    refreshNow_: function(ret) {
+      var self = this;
+      chrome.identity.getAuthToken(function(token) {
+        console.log("**** REfresh: ", token);
+        self.accessToken = token;
+        ret(self.accessToken);
+      });
+    }
+  }
+});
+
 
 // TODO: Register model for model, or fix the facade.
-if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-  var EasyOAuth2 = OAuth2ChromeApp;
+if ( window.cordova || window.PhoneGap || window.phonegap) {
+  var EasyOAuth2 = OAuth2ChromeIdentity
+} else if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
+  EasyOAuth2 = OAuth2ChromeApp;
 } else {
   EasyOAuth2 = OAuth2WebClient;
 }

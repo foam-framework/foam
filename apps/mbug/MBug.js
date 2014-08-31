@@ -53,7 +53,7 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return StackView.create(); }
+      factory: function() { return this.X.StackView.create(); }
     }
   ],
 
