@@ -129,23 +129,32 @@ function MODEL(m) {
 }
 
 
-FOAM.browse = function(model, opt_dao) {
-   var dao = opt_dao || GLOBAL[model.name + 'DAO'] || GLOBAL[model.plural];
+FOAM.browse = function(model, opt_dao, opt_X) {
+   var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
+
+   if ( typeof model === 'string' ) model = Y[model];
+
+   var dao = opt_dao || Y[model.name + 'DAO'] || Y[model.plural];
 
    if ( ! dao ) {
-      dao = StorageDAO.create({ model: model });
-      GLOBAL[model.name + 'DAO'] = dao;
+      dao = Y.StorageDAO.create({ model: model });
+      Y[model.name + 'DAO'] = dao;
    }
 
-   var ctrl = DAOController.create({
+   var ctrl = Y.DAOController.create({
      model:     model,
      dao:       dao,
      useSearchView: false
    });
 
-  var stack = GLOBAL.stack;
-  ctrl.X.stack = stack;
-  stack.pushView(ctrl);
+  if ( ! Y.stack ) {
+    Y.stack = Y.StackView.create();
+    Y.document.body.insertAdjacentHTML('beforeend', Y.stack.toHTML());
+    Y.stack.initHTML();
+    Y.stack.setTopView(ctrl);
+  } else {
+    Y.stack.pushView(ctrl);
+  }
 };
 
 
