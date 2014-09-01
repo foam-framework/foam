@@ -150,7 +150,7 @@ MODEL({
         if ( ! obj ) return;
 
         this.X.stack.setPreview(
-          this.X.DetailView.create({
+          this.X.SummaryView.create({
             model: this.model,
             data: this.daoView.selection
           }));
