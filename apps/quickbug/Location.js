@@ -114,14 +114,15 @@ MODEL({
         var ps = sort.split(' ');
         var sorts = [];
         for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p = ps[i];
-          var name = p.charAt('0') == '-' ? p.substring(1) : p;
-          var prop = this.X.QIssue.getProperty(name);
+          var p    = ps[i];
+          var name = p.charAt(0) == '-' ? p.substring(1) : p;
+          var prop = this.location.getPropertyIC(name);
 
           if ( ! prop ) {
             console.warn("Property not found: ", name);
             continue;
           }
+
           if ( p.charAt('0') == '-' ) {
             sorts.push(DESC(prop));
           } else {
@@ -129,8 +130,9 @@ MODEL({
           }
         }
 
-        if ( sorts.length == 0 ) return '';
-        return ( sorts.length == 1 ) ? sorts[0] : CompoundComparator.apply(null, sorts) ;
+        return ( sorts.length == 0 ) ? ''            :
+               ( sorts.length == 1 ) ? sorts[0]      :
+               CompoundComparator.apply(null, sorts) ;
       }
     },
     {
