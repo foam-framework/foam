@@ -32,6 +32,7 @@
         "ui/CursorView.js",
         "ui/QIssuePreviewBorder.js",
         "ui/QIssueDetailView.js",
+        "ui/IssueLink.js",
         "ui/BlockView.js",
         "ui/QIssueCreateView.js",
         "ui/QIssueCommentView.js",
