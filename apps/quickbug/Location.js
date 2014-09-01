@@ -60,7 +60,8 @@ MODEL({
         for ( var i = 0 ; i < choices.length ; i++ )
           if ( choices[i][2] == c ) return choices[i][0];
         return choices[1][0];
-      }
+      },
+      defaultMemento: 2 // Open issues
     },
     {
       model_: 'LocationProperty',
