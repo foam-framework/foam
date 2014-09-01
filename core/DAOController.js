@@ -38,7 +38,7 @@ MODEL({
       defaultValue: false,
       postSet: function(_, value) {
         if ( value ) {
-          this.addDecorator(SearchBorder.create({
+          this.addDecorator(this.X.SearchBorder.create({
             model: this.model,
             data: this.data
           }));
@@ -52,7 +52,7 @@ MODEL({
       name:  'new',
       help:  'Create a new record.',
       action: function() {
-        var createView = DAOCreateController.create({
+        var createView = this.X.DAOCreateController.create({
           model: this.model,
           dao:   this.dao,
           showActions: true
@@ -78,7 +78,7 @@ MODEL({
         for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
           var action = this.model.actions[i];
 
-          var newAction = Action.create(action);
+          var newAction = this.X.Action.create(action);
           newAction.action = function (oldAction) {
             return function() {
               oldAction.call(obj);
@@ -89,7 +89,7 @@ MODEL({
         }
 
         console.log(["selection: ", this.selection]);
-        var updateView = DAOUpdateController.create({
+        var updateView = this.X.DAOUpdateController.create({
           data:  this.selection/*.deepClone()*/,
           model: this.model,
           dao:   this.dao,
@@ -150,7 +150,7 @@ MODEL({
         if ( ! obj ) return;
 
         this.X.stack.setPreview(
-          DetailView.create({
+          this.X.DetailView.create({
             model: this.model,
             data: this.daoView.selection
           }));
@@ -215,7 +215,7 @@ MODEL({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = HelpView.create(model);
+        var helpView = this.X.HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
     }
@@ -254,15 +254,13 @@ MODEL({
 
       action: function() {
         var self = this;
-        var obj = this.data;
-        this.dao.put(data, {
-          put: function() {
-            console.log("Saving: ", data.toJSON());
-
+        this.dao.put(this.data, {
+          put: function(value) {
+            console.log("Created: ", value);
             self.X.stack.back();
           },
           error: function() {
-            console.error("Error saving", arguments);
+            console.error("Error creating value: ", arguments);
           }
         });
       }
@@ -288,7 +286,7 @@ MODEL({
 
       action: function() {
         var model = this.data.model_;
-        var helpView = HelpView.create(model);
+        var helpView = this.X.HelpView.create(model);
         this.X.stack.pushView(helpView);
       }
     }
@@ -298,7 +296,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.view = AlternateView.create({
+      this.view = this.X.AlternateView.create({
         selection: 'GUI',
         data: this.data,
         views: [
