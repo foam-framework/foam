@@ -78,7 +78,7 @@ MODEL({
       name:  'forth',
       label: '>',
       help:  'Undo the previous back.',
-
+      isEnabled: function() { return this.redo.length > 0; },
       action: function() {
         this.pushView(this.redo.pop());
         this.propertyChange('stack', this.stack, this.stack);

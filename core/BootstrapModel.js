@@ -203,16 +203,14 @@ var BootstrapModel = {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
       //           this[r.name.constantize()] = r;
+      defineLazyProperty(cls, r.name, function() {
+        var m = this.X[r.relatedModel];
+        var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
 
-      Object.defineProperty(cls, r.name, {
-        get: (function (r) {
-          return function() {
-            var m = this.X[r.relatedModel];
-            var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
-            return dao.where(EQ(m.getProperty(r.relatedProperty), this.id));
-          };
-        })(r),
-        configurable: false
+        return {
+          get: function() { return dao.where(EQ(m.getProperty(r.relatedProperty), this.id)); },
+          configurable: true
+        };
       });
     });
 

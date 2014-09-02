@@ -36,6 +36,7 @@ MODEL({
         if ( this.$ ) {
           this.$.width = width * this.scalingRatio;
           this.$.style.width = width + 'px';
+          this.paint();
         }
       }
     },
@@ -47,6 +48,7 @@ MODEL({
         if ( this.$ )  {
           this.$.height = height * this.scalingRatio;
           this.$.style.height = height + 'px';
+          this.paint();
         }
       }
     },
@@ -82,7 +84,7 @@ MODEL({
   methods: {
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"> </canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"></canvas>';
     },
 
     initHTML: function() {
