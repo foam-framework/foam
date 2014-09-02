@@ -644,9 +644,17 @@ var ModelProperty = Model.create({
       defaultValue: 'Model'
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, model) {
-        return FOAM.lookup(model, this.X);
+      name: 'getter',
+      defaultValue: function(name) {
+        var value = this.instance_[name];
+        if ( typeof value === 'undefined' ) {
+          var prop = this.model_.getProperty(name);
+          if ( prop && prop.defaultValueFn )
+            value = prop.defaultValueFn.call(this, prop);
+          else
+            value = prop.defaultValue;
+        }
+        return FOAM.lookup(value, this.X);
       }
     }
   ]
