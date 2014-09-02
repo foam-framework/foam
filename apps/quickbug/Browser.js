@@ -541,6 +541,7 @@ MODEL({
 
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
+      this.search();
 
       this.syncManagerFuture.get((function(syncManager) {
         syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
