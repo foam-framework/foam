@@ -37,6 +37,8 @@ MODEL({
       var self = this;
 
       this.issueDAO.find(this.issue, { put: function(issue) {
+        if ( ! self.$ ) return; // stale
+
         if ( ! issue.isOpen() ) {
           self.$.style.textDecoration = 'line-through';
         }
