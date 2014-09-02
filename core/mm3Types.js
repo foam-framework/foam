@@ -704,6 +704,16 @@ MODEL({
         return a;
       },
       required: true
+    },
+    {
+      name: 'view',
+      defaultValue: 'ChoiceView'
     }
   ]
+});
+
+MODEL({
+  name: 'StringEnumProperty',
+  traits: ['EnumPropertyTrait'],
+  extendsModel: 'StringProperty'
 });
