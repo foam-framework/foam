@@ -237,108 +237,6 @@ MODEL({
 });
 
 
-/** A DAO proxy that delays operations until the delegate is set in the future. **/
-var FutureDAO = {
-  create: function(/* future */ futureDelegate) {
-
-    // This is kind-of-tricky.  We actually return an object whose proto is the future-proxy
-    // code.  This is so that once the future-delegate is set, that we can rewrite the proto
-    // to be that delegate.  This removes the future related code so that we no longer have
-    // pay the overhead once the delegate has been set.
-
-    function setupFuture(delegate) {
-      if ( ret.__proto__ !== delegate ) {
-        var listeners = ret.__proto__.daoListeners_;
-        ret.__proto__ = delegate;
-        for ( var i = 0 ; i < listeners.length ; i++ ) {
-          ret.listen.apply(ret, listeners[i]);
-        }
-//        ret.notify_('put', []);
-      }
-    }
-
-    var ret = {
-      __proto__: {
-        // TODO: implement other DAO methods
-        daoListeners_: [],
-        toString: function() {
-          return 'FutureDAO';
-        },
-
-        select: function() {
-          var a = arguments;
-          var f = afuture();
-          futureDelegate(function(delegate) {
-            // This removes this code from the delegate-chain and replaces the real delegate.
-            setupFuture(delegate);
-            delegate.select.apply(delegate, a)(f.set);
-          });
-          return f.get;
-        },
-        removeAll: function() {
-          var a = arguments;
-          var f = afuture();
-          futureDelegate(function(delegate) {
-            setupFuture(delegate);
-            delegate.removeAll.apply(delegate, a)(f.set);
-          });
-          return f.get;
-        },
-        pipe: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            // This removes this code from the delegate-chain and replaces the real delegate.
-            setupFuture(delegate);
-            delegate.pipe.apply(delegate, a);
-          });
-        },
-        put: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            setupFuture(delegate);
-            delegate.put.apply(delegate, a);
-          });
-        },
-        find: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            setupFuture(delegate);
-            delegate.find.apply(delegate, a);
-          });
-        },
-        where: function(query) {
-          if ( arguments.length > 1 ) query = CompoundComparator.apply(null, arguments);
-          return filteredDAO(query, this);
-        },
-        limit: function(count) {
-          return limitedDAO(count, this);
-        },
-        skip: function(skip) {
-          return skipDAO(skip, this);
-        },
-        orderBy: function() {
-          return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
-        },
-        listen: function(sink, options) {
-          // this.daoListeners_.push([sink, options]);
-        },
-        unlisten: function(sink) {
-          /*
-          for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
-            if ( this.daoListeners_[i][0] === sink ) {
-              this.daoListeners_.splice(i, 1);
-              return;
-            }
-          }
-          console.warn('phantom DAO unlisten: ', sink);
-          */
-        }
-      }};
-    return ret;
-  }
-};
-
-
 var LoggingDAO = {
 
   create: function(/*[logger], delegate*/) {
@@ -641,7 +539,7 @@ MODEL({
             fn.apply(l, args);
           } catch(err) {
             if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-              console.error('Error delivering event (removing listener): ', topic.join('.'));
+              console.error('Error delivering event (removing listener): ', fName, err);
             }
             this.unlisten(l);
           }
@@ -720,7 +618,7 @@ MODEL({
 
     listen: function(sink, options) {
       // Adding first listener, so listen to delegate
-      if ( ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.listen(this.relay());
       }
 
@@ -734,6 +632,95 @@ MODEL({
       if ( ! this.daoListeners_.length ) {
         this.delegate.unlisten(this.relay());
       }
+    }
+  }
+});
+
+
+/** A DAO proxy that delays operations until the delegate is set in the future. **/
+MODEL({
+  name: 'FutureDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delegate',
+      factory: function() { return null; },
+      postSet: function(oldDAO, newDAO) {
+        if ( this.daoListeners_.length ) {
+          if ( oldDAO ) oldDAO.unlisten(this.relay());
+          newDAO.listen(this.relay());
+        }
+      }
+    },
+    {
+      name: 'future'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.future(function(delegate) {
+        this.delegate = delegate;
+        if ( this.daoListeners_.length ) {
+          delegate.listen(this.relay());
+        }
+      }.bind(this));
+    },
+
+    put: function(value, sink) {
+      if ( this.delegate ) {
+        this.delegate.put(value, sink);
+      } else {
+        this.future(this.put.bind(this, value, sink));
+      }
+    },
+
+    remove: function(query, sink) {
+      if ( this.delegate ) {
+        this.delegate.remove(query, sink);
+      } else {
+        this.future(this.remove.bind(this, query, sink));
+      }
+    },
+
+    removeAll: function() {
+      if ( this.delegate ) {
+        return this.delegate.removeAll.apply(this.delegate, arguments);
+      }
+
+      var a = arguments;
+      var f = afuture();
+      future(function(delegate) {
+        this.removeAll.apply(this, a)(f.set);
+      }.bind(this));
+
+      return f.get;
+    },
+
+    find: function(key, sink) {
+      if ( this.delegate ) {
+        this.delegate.find(key, sink);
+      } else {
+        future(this.find.bind(this, key, sink));
+      }
+    },
+
+    select: function(sink, options) {
+      if ( this.delegate ) {
+        return this.delegate.select(sink, options);
+      }
+
+      var a = arguments;
+      var f = afuture();
+      future(function() {
+        this.select.apply(select, a)(f.set);
+      }.bind(this));
+
+      return f.get;
     }
   }
 });
@@ -925,7 +912,7 @@ MODEL({
       var cache = this.cache;
 
       var futureDelegate = afuture();
-      this.cache = FutureDAO.create(futureDelegate.get);
+      this.cache = FutureDAO.create({future: futureDelegate.get});
 
       src.select(cache)(function() {
         // Actually means that cache listens to changes in the src.
@@ -3510,6 +3497,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'MigrationDAO',
   extendsModel: 'ProxyDAO',
@@ -3532,7 +3520,7 @@ MODEL({
     init: function() {
       var dao = this.delegate;
       var future = afuture()
-      this.delegate = FutureDAO.create(future.get);
+      this.delegate = FutureDAO.create({future: future.get});
 
       var self = this;
       var version;
