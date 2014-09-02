@@ -217,3 +217,64 @@ MODEL({
     }
   ]
 });
+
+MODEL({
+  name: 'RelationshipView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'relationship',
+      required: true
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'viewModel',
+      defaultValue: 'DAOController'
+    },
+    {
+      name: 'data', 
+      postSet: function() {
+        this.updateView();
+      }
+    },
+    {
+      name: 'view'
+    }
+  ],
+
+  methods: {
+    updateView: function() {
+      if ( this.view ) this.view.destroy();
+      debugger;
+      this.view = this.viewModel.create({
+        dao: this.data[this.relationship.name],
+        model: this.relationship.relatedModel
+      });
+      if ( this.$ ) {
+        this.updateHTML();
+      }
+    }
+  },
+  templates: [
+    function toInnerHTML() {/* %%view */}
+  ]
+});
+
+MODEL({
+  name: 'RelationshipsView',
+  extendsModel: 'DetailView',
+
+  templates: [
+    function toHTML() {/*
+      <%
+        for ( var i = 0, relationship; relationship = this.model.relationships[i]; i++ ) {
+          out(this.X.RelationshipView.create({
+            data$: this.data$,
+            relationship: relationship
+          }));
+        }
+      %>
+    */}
+  ]
+});
