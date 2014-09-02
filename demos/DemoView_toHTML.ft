@@ -1,11 +1,10 @@
 <%
   var test = this.data;
   var ifError = function() { return this.failed; }.bind(test);
-  var cView = ArrayView.create({
-      model: UnitTest,
-      data: test.tests,
-      daoView: DAOListView.create({ rowView: 'DemoView', mode: 'read-only' }),
-      mode: 'read-only'
+  var cView = DAOListView.create({
+      mode: 'read-only',
+      dao: test.tests.dao,
+      rowView: DemoView.xbind({ mode: 'read-only' })
   });
 
   this.addChild(cView);

@@ -301,11 +301,11 @@ MODEL({
         var sb = this.scrollbar;
 
         this.$.parentElement.onmousewheel = function(e) {
-          if ( e.wheelDeltaY > 0 && sb.value ) {
-            sb.value--;
-          } else if ( e.wheelDeltaY < 0 && sb.value < sb.size - sb.extent ) {
-            sb.value++;
-          }
+          sb.value = Math.min(
+            sb.size - sb.extent,
+            Math.max(
+              0,
+              sb.value - Math.round(e.wheelDelta / 20)));
         };
 
         if ( this.X.touchManager ) {
