@@ -45,7 +45,7 @@ MODEL({
         });
 
         s += '<div>' + view.toHTML() + '</div>'
-        this.addChild(s);
+        this.addChild(view);
       }
 
       s += '</div>';

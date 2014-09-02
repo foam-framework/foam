@@ -50,7 +50,11 @@ MODEL({
               maxDepth: self.maxDepth-1,
               ids:      ids
             });
-            $(self.idSet[id]).insertAdjacentHTML('afterend', '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
+            
+            self.$.insertAdjacentHTML(
+              'afterend',
+              '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
+            
             subView.initHTML();
           }
         }
