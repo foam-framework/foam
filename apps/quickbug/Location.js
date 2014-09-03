@@ -218,7 +218,7 @@ MODEL({
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
-        var keyValue = param.match(/([^=]*)=(.*)/);
+        var keyValue = param.match(/([^=]*)=([^#]*)/);
         if ( keyValue ) {
           var key      = keyValue[1];
           var value    = keyValue[2];
