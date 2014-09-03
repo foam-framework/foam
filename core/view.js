@@ -2727,6 +2727,8 @@ MODEL({
     }
   }
 });
+
+
 // TODO: Currently this view is "eager": it renders all the child views.
 // It could be made more lazy , and therefore more memory-efficient.
 MODEL({
