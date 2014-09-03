@@ -272,14 +272,12 @@ MODEL({
       // - a single point that
       // - is touch, not mouse and
       // - is not done and
-      // - has moved at least 10px in the primary direction, and
-      // - less than 10px in the other direction.
+      // - has moved at least 10px in the primary direction
 
       if ( Object.keys(map).length !== 1 ) return false;
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
-          Math.abs(this.getSecondaryAxis(point).total) < 10 &&
           Math.abs(this.getPrimaryAxis(point).total) > 10;
     },
 
