@@ -774,6 +774,7 @@ MODEL({
         var above        = pos[1] - scrollY > screenHeight / 2;
         var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
         var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
+        var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
         div.style.top  = pos[1];
         div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
@@ -782,9 +783,9 @@ MODEL({
 
         this.X.setTimeout(function() {
           div.style.top = above ?
-            pos[1] - this.target.clientHeight - 8 :
-            pos[1] + this.target.clientHeight + 8 ;
-        }.bind(this), 10);
+            pos[1] - targetHeight - 8 :
+            pos[1] + targetHeight + 8 ;
+        }, 10);
 
         this.initHTML();
       }.bind(this), 500);
