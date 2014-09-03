@@ -722,23 +722,24 @@ MODEL({
   templates: [
     function CSS() {/*
       .tooltip {
-        visibility: hidden;
         background: rgba(80,80,80,0.9);
         border-radius: 4px;
         color: white;
         font-size: 10pt;
+        left: 0;
         padding: 5px 8px;
         position: absolute;
-        left: 0;
         top: 0;
+        visibility: hidden;
+        z-index: 999;
       }
       .tooltip.animated {
-        visibility: visible;
         transition: top 0.5s ease-in-out;
+        visibility: visible;
       }
       .tooltip.fadeout {
-        transition: opacity 0.5s ease-in-out;
         opacity: 0;
+        transition: opacity 0.5s ease-in-out;
       }
     */}
   ],
