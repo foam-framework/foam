@@ -1,8 +1,4 @@
-var aDAO = ArrayDAO.create({model: 'Bookmark'});
-aDAO.array$.addListener(function(_,_,_,a) {
-  console.log('Array Update: ', a.length);
-  console.log(JSONUtil.stringify(a));
-});
+var aDAO = [].dao;
 
 aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
 aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
