@@ -2,7 +2,6 @@ export BUILD_DIR=~/Downloads/quickcompose
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../core/css-tooltips.css $BUILD_DIR
 cp ../saturn/contacts.css $BUILD_DIR
 echo 'console.time("load_foam");' > prefix.js
 echo 'console.timeEnd("load_foam");' > postfix.js

@@ -1,7 +1,7 @@
 <%
   var X = this.X;
   var manifest = chrome.runtime.getManifest();
-  var browserLink  = X.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this, extraClassName: 'tip-below'});
+  var browserLink  = X.ActionLink.create(  {action: this.model_.LAUNCH_BROWSER, data: this});
   var linkButton   = X.ActionButton.create({action: this.model_.LINK,           data: this});
   var syncLink     = X.ActionLink.create(  {action: this.model_.LAUNCH_SYNC,    data: this});
   var backButton   = X.ActionButton.create({action: MementoMgr.BACK,            data: this.mementoMgr});
@@ -15,7 +15,7 @@
 </head>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
  <div class="topHeader row" style="align-items:center;">
-  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink', extraClassName: 'tip-below'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
+  <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'ActionLink'} | $$changeUser{model_: 'ActionLink'} | $$favourites{model_: 'ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>

@@ -60,7 +60,8 @@ MODEL({
         for ( var i = 0 ; i < choices.length ; i++ )
           if ( choices[i][2] == c ) return choices[i][0];
         return choices[1][0];
-      }
+      },
+      defaultMemento: 2 // Open issues
     },
     {
       model_: 'LocationProperty',
@@ -114,14 +115,15 @@ MODEL({
         var ps = sort.split(' ');
         var sorts = [];
         for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p = ps[i];
-          var name = p.charAt('0') == '-' ? p.substring(1) : p;
-          var prop = this.X.QIssue.getProperty(name);
+          var p    = ps[i];
+          var name = p.charAt(0) == '-' ? p.substring(1) : p;
+          var prop = this.location.getPropertyIC(name);
 
           if ( ! prop ) {
             console.warn("Property not found: ", name);
             continue;
           }
+
           if ( p.charAt('0') == '-' ) {
             sorts.push(DESC(prop));
           } else {
@@ -129,8 +131,9 @@ MODEL({
           }
         }
 
-        if ( sorts.length == 0 ) return '';
-        return ( sorts.length == 1 ) ? sorts[0] : CompoundComparator.apply(null, sorts) ;
+        return ( sorts.length == 0 ) ? ''            :
+               ( sorts.length == 1 ) ? sorts[0]      :
+               CompoundComparator.apply(null, sorts) ;
       }
     },
     {
@@ -215,7 +218,7 @@ MODEL({
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
-        var keyValue = param.match(/([^=]*)=(.*)/);
+        var keyValue = param.match(/([^=]*)=([^#]*)/);
         if ( keyValue ) {
           var key      = keyValue[1];
           var value    = keyValue[2];

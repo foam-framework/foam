@@ -404,7 +404,7 @@ var ArrayProperty = Model.create({
       defaultValue: function(_, a, prop) {
         if ( a ) a.dao;
 
-        var m = GLOBAL[prop.subType];
+        var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
 
@@ -644,9 +644,17 @@ var ModelProperty = Model.create({
       defaultValue: 'Model'
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, model) {
-        return FOAM.lookup(model, this.X);
+      name: 'getter',
+      defaultValue: function(name) {
+        var value = this.instance_[name];
+        if ( typeof value === 'undefined' ) {
+          var prop = this.model_.getProperty(name);
+          if ( prop && prop.defaultValueFn )
+            value = prop.defaultValueFn.call(this, prop);
+          else
+            value = prop.defaultValue;
+        }
+        return FOAM.lookup(value, this.X);
       }
     }
   ]
@@ -696,6 +704,16 @@ MODEL({
         return a;
       },
       required: true
+    },
+    {
+      name: 'view',
+      defaultValue: 'ChoiceView'
     }
   ]
+});
+
+MODEL({
+  name: 'StringEnumProperty',
+  traits: ['EnumPropertyTrait'],
+  extendsModel: 'StringProperty'
 });

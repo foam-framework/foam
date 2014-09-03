@@ -82,6 +82,10 @@ a {
   z-index: 2;
 }
 
+.swipeAltInner {
+  overflow: hidden;
+}
+
 .mdui-app-controller.searchMode .swipeAltHeader {
   display: none;
 }

@@ -56,6 +56,142 @@ var demos = [
     keywords: ['animation', 'game', 'physics', 'traits'],
     image: ''
   },
+  {
+    model_: 'Demo',
+    name: 'DAO Samples',
+    path: 'dao.html',
+    description: 'An extensive set of DAO (Data-Access-Object) samples.  A must read for learning FOAM.',
+    keywords: ['DAO', 'database'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Collision With Spring',
+    path: 'A simple physics simulation which shows the use of springs and collision detection.',
+    description: '',
+    keywords: ['physics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Crop Circles',
+    path: 'CropCircle.js',
+    description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines.',
+    keywords: ['graphics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Collision',
+    path: 'Collision.html',
+    description: 'Demonstration of collision-detection.',
+    keywords: ['physics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Spring',
+    path: 'Spring.html',
+    description: 'Addictive spring physics simulation.',
+    keywords: ['physics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Trait Graphics',
+    path: 'TraitGraphics.html',
+    description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blure.',
+    keywords: ['traits','graphics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Dragon',
+    path: 'Tags.html',
+    description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Two-Way Data-Binding',
+    path: 'TwoWayDataBinding',
+    description: 'Demonstrates how to do two way data-binding in FOAM.',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Calculator',
+    path: '../apps/calc/Calc.html',
+    description: 'A simple calculator application.',
+    keywords: ['app'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Material-Design Calculator',
+    path: '../apps/acalc/Calc.html',
+    description: 'A calculator application with an animated Material-Design interface.',
+    keywords: ['app', 'material-design'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Material-Design GMail',
+    path: '../apps/gmail/main.html',
+    description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
+    keywords: ['app', 'material-design', 'gmail', 'mobile'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Material-Design Issue Tracker',
+    path: '../apps/mbug/main.html',
+    description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
+    keywords: ['app', 'material-design', 'gmail', 'mobile'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Phone Catalog',
+    path: '../apps/phonecat/Cat.html',
+    description: '',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'QuickBug',
+    path: '',
+    description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'QuickCompose',
+    path: '',
+    description: '',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Todo',
+    path: '../apps/todo/Todo.html',
+    description: '',
+    keywords: [],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'FOAM Code Browser',
+    path: '../core/fobrowser.html',
+    description: 'A FOAM Model browser.',
+    keywords: [],
+    image: ''
+  },
 ].dao;
 
 

@@ -1,5 +1,4 @@
 cp ../../core/foam.css .
-cp ../../core/css-tooltips.css .
 cp ../quickcompose/QuickCompose_*.ft .
 cp ../quickcompose/QuickEMailView_toFullHTML.ft .
 cp ../quickcompose/quickcompose.css .

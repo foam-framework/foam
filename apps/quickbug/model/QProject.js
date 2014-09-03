@@ -475,7 +475,7 @@ MODEL({
             tableWidth: '69px'
           },
           {
-            model_: 'LabelStringProperty',
+            model_: 'LabelArrayProperty',
             name: 'releaseBlock',
             shortName: 'rb',
             aliases: ['rBlock', 'release'],

@@ -239,7 +239,7 @@ MODEL({
       type:  'String',
       displayWidth: 30,
       displayHeight: 1,
-      defaultValueFn: function() { return GLOBAL[this.relatedModel].plural; },
+      defaultValueFn: function() { return GLOBAL[this.relatedModel] ? GLOBAL[this.relatedModel].plural : ''; },
       help: 'The coding identifier for the action.'
     },
     {

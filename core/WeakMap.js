@@ -14,44 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var files = [
-  'stdlib',
-  'io',
-  'writer',
-  'socket',
-  'hash',
-  'base64',
-  'encodings',
-  'utf8',
-  'parse',
-  'event',
-  'JSONUtil',
-  'XMLUtil',
-  'context',
-  'FOAM',
-  'JSONParser',
-  'TemplateUtil',
-  'FObject',
-  'BootstrapModel',
-  'mm1Model',
-  'mm2Property',
-  'mm3Types',
-  'mm4Method',
-  'mm5Misc',
-  'mm6Protobuf',
-  'mlang',
-  'QueryParser',
-  'search',
-  'async',
-  'visitor',
-  'dao',
-  'arrayDAO',
-  'ClientDAO',
-  'diff',
-  'SplitDAO',
-  'index',
-  'experimental/protobufparser',
-  'experimental/protobuf',
-  'models',
-  'oauth'
-];
+
+// WeakMap Polyfill, doesn't implement the full interface, just the parts that we use
+function WeakMap() {
+  var id = '__WEAK_MAP__' + this.$UID;
+
+  function del(key) { delete key[id]; }
+  function get(key) { return key[id]; }
+  function set(key, value) { key[id] = value; }
+  function has(key) { return !!key[id]; }
+
+  return {
+    __proto__: this,
+    "delete": del,
+    get: get,
+    set: set,
+    has: has
+  };
+}

@@ -53,7 +53,7 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return StackView.create(); }
+      factory: function() { return this.X.StackView.create(); }
     }
   ],
 
@@ -326,8 +326,9 @@ MODEL({
   },
   templates: [
     function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase()}}} */},
+    // TODO: replace use of data-tip with Tooltip Model
     function toHTML() {/*
-      <div id="<%= this.id %>" data-tip="<%= this.data %>"class="owner-avatar" style="background: <%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+      <div id="<%= this.id %>" data-tip="<%= this.data %>" class="owner-avatar" style="background:<%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
     */}
   ]
 });

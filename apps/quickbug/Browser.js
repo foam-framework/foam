@@ -195,7 +195,7 @@ MODEL({
         var os = [];
         for ( var i = 0 ; i < ss.length ; i++ ) {
           var s = ss[i];
-          if ( s.meansOpen ) os.push(s.status); 
+          if ( s.meansOpen ) os.push(s.status);
         }
         var open = 'status=' + os.join(',');
 
@@ -237,7 +237,9 @@ MODEL({
     {
       name: 'legacyUrl',
       getter: function() {
-        return this.url + '/issues/list?' + this.location.toURL(this);
+        return this.url + '/issues/' + ( this.location.id ?
+          'detail?' + this.location.toURL(this) :
+          'list?'   + this.location.toURL(this) );
       }
     },
     {
@@ -333,7 +335,7 @@ MODEL({
       name: 'link',
       label: '',
       iconUrl: 'images/link.svg',
-      help:  'Link to code.google.com', // disable until tooltips work better
+      help:  'Link to code.google.com',
       action: function() {
         var url = this.legacyUrl;
         console.log(url);
@@ -548,9 +550,14 @@ MODEL({
 
       this.onSyncManagerUpdate();
 
-      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {put: function(bookmark) {
-        this.memento = bookmark.url;
-      }.bind(this)});
+      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
+        put: function(bookmark) {
+          this.memento = bookmark.url;
+        }.bind(this),
+        error: function () {
+          this.search();
+        }.bind(this)
+      });
     },
 
     createIssue: function(opt_templateName) {
@@ -695,7 +702,7 @@ Please use labels and text to provide additional information.
 
     // return true iff url was a legacy URL
     maybeSetLegacyUrl: function(url) {
-      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var regex = new RegExp("https?://code.google.com/p/([^/]+)/issues/[^\?]*(\\?(.*))?");
       var match = regex.exec(url);
 
       if ( ! match ) return false;
@@ -745,6 +752,14 @@ MODEL({
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
+      var codesite = url.indexOf('code.google.com');
+      if ( codesite >= 0 ) {
+        var question = url.indexOf('?');
+        var before = url.substring(0, question);
+        var after = url.substring(question + 1);
+        url = before + '?no_qbug=1&' + after;
+        console.log('new url', url);
+      }
       this.X.window.open(url);
     }
   }
