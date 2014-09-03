@@ -41,12 +41,12 @@ var FObject = {
   xbind: function(map) {
     return {
       __proto__: this,
-      create: function(args) {
+      create: function(args, X) {
         args = args || {};
         for ( var key in map ) {
           if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
         }
-        return this.__proto__.create(args);
+        return this.__proto__.create(args, X);
       },
       xbind: function(m2) {
         for ( var key in map ) {

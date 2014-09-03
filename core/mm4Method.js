@@ -125,14 +125,14 @@ MODEL({
     }
   ],
   methods: {
-    callIfEnabled: function(that) {
-      if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
+    callIfEnabled: function(X, that) {
+      if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }
 });
 
-Action.getPrototype().callIfEnabled = function(that) {
-  if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
+Action.getPrototype().callIfEnabled = function(X, that) {
+  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
 };
 
 

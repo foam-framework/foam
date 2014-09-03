@@ -384,7 +384,7 @@ MODEL({
   listeners: [
     {
       name: 'onClick',
-      code: function() { this.action.callIfEnabled(this.data); }
+      code: function() { this.action.callIfEnabled(this.X, this.data); }
     },
     {
       name: 'onMouseDown',
