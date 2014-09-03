@@ -1,6 +1,32 @@
 /**
  * Material Design GMail.
  **/
+EMail.ARCHIVE.iconUrl = 'icons/ic_archive_black_24dp.png';
+EMail.ARCHIVE.label = '';
+
+EMail.TRASH.iconUrl = 'icons/ic_delete_black_24dp.png';
+EMail.TRASH.label = '';
+
+EMail.REPLY.iconUrl = 'icons/ic_reply_black_24dp.png';
+EMail.REPLY.label = '';
+
+EMail.REPLY_ALL.iconUrl = 'icons/ic_reply_all_black_24dp.png';
+EMail.REPLY_ALL.label = '';
+
+EMail.SPAM.iconUrl = 'icons/ic_report_black_24dp.png';
+EMail.SPAM.label = '';
+
+EMail.FORWARD.iconUrl = 'icons/ic_forward_black_24dp.png';
+EMail.FORWARD.label = '';
+
+EMail.STAR.iconUrl = 'icons/ic_star_black_24dp.png';
+EMail.STAR.label = '';
+
+EMail.MOVE_TO_INBOX.iconUrl = 'icons/ic_inbox_black_24dp.png';
+EMail.MOVE_TO_INBOX.label = '';
+
+EMail.SEND.iconUrl = 'icons/ic_send_black_24dp.png';
+EMail.SEND.label = '';
 
 /** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
 var queryParser = {
@@ -225,8 +251,9 @@ MODEL({
     },
     {
       name: 'moreActions',
+      label: '',
       isEnabled: function() { return true; },
-      label: 'More',
+      iconUrl: 'icons/ic_more_horiz_white_24dp.png',
       action: function() {
         var actionSheet = this.X.ActionSheetView.create({
           data: this.data,
@@ -242,9 +269,9 @@ MODEL({
         <div class="header">
           $$back{className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
-          $$archive
-          $$moveToInbox
-          $$trash
+          $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
+          $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
+          $$trash{iconUrl: 'icons/ic_delete_white_24dp.png'}
           $$moreActions
         </div>
         <div class="content">
