@@ -702,6 +702,12 @@ MODEL({
 
   properties: [
     {
+      name: 'action'
+    },
+    {
+      name: 'data'
+    },
+    {
       name: 'text',
       help: 'Help text to be shown in tooltip.'
     },
@@ -766,6 +772,15 @@ MODEL({
         div.innerHTML = this.toInnerHTML();
 
         document.body.appendChild(div);
+
+        // If an action is defined and we click on the tooltip, then treat
+        // it as we activated the action.
+        if ( this.action && this.data ) {
+          this.on('click', function() {
+            this.action.callIfEnabled(this.data);
+            this.close();
+          }.bind(this), this.id);
+        }
 
         var s            = this.X.window.getComputedStyle(div);
         var pos          = findPageXY(this.target);
@@ -2179,7 +2194,7 @@ MODEL({
       name: 'onMouseEnter',
       code: function(e) {
         if ( ! this.tooltip_ && this.action.help ) {
-          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, target: this.$});
+          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, action: this.action, data: this.data, target: this.$});
         }
       }
     },
