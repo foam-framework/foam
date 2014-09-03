@@ -28,7 +28,7 @@ chrome.management.get(QUICKBUG_APP_ID, function(entry) {
       } else {
         // Tab is not whitelisted, so open Quickbug for it.
         chrome.runtime.sendMessage(QUICKBUG_APP_ID, { type: 'openUrl', url: details.url });
-        chrome.tabs.update(details.tabId, { url: 'chrome-extension://pdpojlbfiaejollkomjbdmlmoapejnfa/redirected.html' });
+        chrome.tabs.update(details.tabId, { url: 'chrome-extension://' + chrome.runtime.id + '/redirected.html' });
       }
     } else if ( details.message === 'escapeHatch' ) {
       // This tab had the no_qbug parameter, so make sure it's whitelisted.
