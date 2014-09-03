@@ -1,6 +1,5 @@
 <%
   var test = this.data;
-  var ifError = function() { return this.failed; }.bind(test);
   var cView = DAOListView.create({
       mode: 'read-only',
       dao: test.tests.dao,
@@ -18,12 +17,6 @@
 <% } %>
 <div>Code:</div>
 <pre><div class="code">{{test.code}}</div></pre>
-<% if ( test.results.trim() || true) { %>
-  <br>
-  <div>Output:</div>
-  <pre>
-  <div class="output" id="<%= this.setClass('error', ifError) %>">$$results{ escapeHTML: false }</div>
-  </pre>
-<% } %>
-  <blockquote><%= cView %></blockquote>
+$$results
+<blockquote><%= cView %></blockquote>
 <br>

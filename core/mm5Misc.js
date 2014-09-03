@@ -101,10 +101,18 @@ MODEL({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'hasRun',
+      transient: true,
+      hidden: true,
+      defaultValue: false
+    },
+    {
       model_: 'Property',
       name: 'results',
       type: 'String',
       mode: 'read-only',
+      view: 'UnitTestResultView',
       required: true,
       displayWidth: 80,
       displayHeight: 20
@@ -153,6 +161,9 @@ MODEL({
     atest: function() {
       var self = this;
 
+      if ( this.hasRun ) return anop;
+      this.hasRun = true;
+
       this.scope.log    = this.log.bind(this);
       this.scope.jlog   = this.jlog.bind(this);
       this.scope.assert = this.assert.bind(this);
@@ -195,6 +206,11 @@ MODEL({
         });
       });
 
+      afuncs.push(function(ret) {
+        self.hasRun = true;
+        ret();
+      });
+
       return aseq.apply(this, afuncs);
     },
     append: function(s) { this.results += s; },
@@ -225,6 +241,46 @@ MODEL({
       this.assert(true, comment);
     }
   }
+});
+
+MODEL({
+  name: 'RegressionTest',
+  label: 'Regression Test',
+  help: 'A UnitTest with a gold output, which is compared with the output of the live test.',
+
+  extendsModel: 'UnitTest',
+
+  properties: [
+    {
+      name: 'master'
+    },
+    {
+      name: 'results',
+      view: 'RegressionTestResultView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'regression',
+      hidden: true,
+      transient: true,
+      defaultValue: false
+    }
+  ],
+
+  methods: {
+    MASTER_UPDATE: ['RegressionTest', 'updateMaster']
+  },
+
+  actions: [
+    {
+      name: 'update',
+      isEnabled: function() { return ! this.results.equals(this.master); },
+      action: function() {
+        this.master = this.results;
+        this.publish(this.MASTER_UPDATE);
+      }
+    }
+  ]
 });
 
 

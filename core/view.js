@@ -537,6 +537,16 @@ MODEL({
       return opt_id;
     },
 
+    setClasses: function(map, opt_id) {
+      opt_id = opt_id || this.nextID();
+      var keys = Objects.keys(map);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        this.setClass(keys[i], map[keys[i]], opt_id);
+      }
+
+      return opt_id;
+    },
+
     /** Insert this View's toHTML into the Element of the supplied name. **/
     insertInElement: function(name) {
       var e = $(name);
@@ -1458,7 +1468,10 @@ MODEL({
       name: 'domValue'
     },
     {
-      name: 'data'
+      name: 'data',
+      postSet: function(old, nu) {
+        console.warn('update', this.$UID, 'old=' + old, 'nu=' + nu);
+      }
     },
     {
       model_: 'StringProperty',
@@ -4511,34 +4524,154 @@ MODEL({
 
 
 MODEL({
-  name: 'UITestResultView',
-  label: 'UI Test Result View',
-
+  name: 'UnitTestResultView',
   extendsModel: 'View',
 
   properties: [
     {
       name: 'data'
+    },
+    {
+      name: 'test',
+      defaultValueFn: function() { return this.parent.data; }
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+      <pre>
+        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }) %>">
+          <%= this.toInnerHTML() %>
+        </div>
+      </pre>
+    */},
+   function toInnerHTML() {/*
+     <%= TextFieldView.create({ data: this.data, mode: 'read-only', escapeHTML: false }) %>
+   */}
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.preTest();
+      this.test.test();
+      this.postTest();
+    },
+    preTest: function() {
+      // Override me to insert logic at the start of initHTML, before running the test.
+    },
+    postTest: function() {
+      // Override me to insert logic between running this test.
+    }
+  }
+});
+
+MODEL({
+  name: 'RegressionTestValueView',
+  extendsModel: 'TextFieldView',
+  properties: [
+    {
+      name: 'mode',
+      defaultValue: 'read-only'
+    },
+    {
+      name: 'escapeHTML',
+      defaultValue: false
+    }
+  ]
+});
+
+MODEL({
+  name: 'RegressionTestResultView',
+  label: 'Regression Test Result View',
+  help: 'Displays the output of a RegressionTest, either master or live.',
+
+  extendsModel: 'UnitTestResultView',
+
+  properties: [
+    {
+      name: 'masterView',
+      defaultValue: 'RegressionTestValueView'
+    },
+    {
+      name: 'liveView',
+      defaultValue: 'RegressionTestValueView'
+    },
+    {
+      name: 'masterID',
+      factory: function() { return this.nextID(); }
+    },
+    {
+      name: 'liveID',
+      factory: function() { return this.nextID(); }
     }
   ],
 
   methods: {
-    initHTML: function() {
-      var parent = this.parent;
-      var test   = parent.data;
-      var $ = this.$;
+    postTest: function() {
+      this.SUPER();
+      this.test.regression = this.test.hasRun && ! this.test.results.equals(this.test.master);
+    }
+  },
+
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+      <table id="<%= this.setClass('error', function() { return this.test.regression; }) %>">
+        <tbody>
+          <tr>
+            <th>Master</th>
+            <th>Live</th>
+          </tr>
+          <tr>
+            <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
+              <% this.masterView = FOAM.lookup(this.masterView).create({ data: this.test.master }); out(this.masterView); %>
+            </td>
+            <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
+              <% this.liveView = FOAM.lookup(this.liveView).create({ data: this.test.results }); out(this.liveView); %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <% out(this.createView(this.test.update)) %>
+    */}
+  ]
+});
+
+MODEL({
+  name: 'UITestResultView',
+  label: 'UI Test Result View',
+  help: 'Overrides the inner masterView and liveView for UITests.',
+
+  extendsModel: 'RegressionTestResultView',
+
+  properties: ['oldTests'],
+
+  methods: {
+    preTest: function() {
+      var test = this.test;
+      var $ = this.liveView.$;
       test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
       test.scope.render = function(v) {
+        console.warn('rendering', test.$UID, v.id);
         test.append(v.toHTML());
+        console.warn('looking up node', v.id, v.$, v.$ === document.getElementById(v.id));
         v.initHTML();
       };
+
       // Temporarily remove sub-tests to prevent them from being tested also.
       // This means, that unlike regular UnitTests, UITests do not inherit
       // variables from their ancestors.
-      var oldTests = test.tests;
+      this.oldTests = test.tests;
       test.tests = [];
-      test.test();
-      test.tests = oldTests;
+    },
+
+    postTest: function() {
+      this.test.tests = this.oldTests;
+      this.test.results = this.liveView.$.innerHTML;
+      this.SUPER();
     }
   }
 });
@@ -4548,7 +4681,7 @@ MODEL({
   name: 'UITest',
   label: 'UI Test',
 
-  extendsModel: 'UnitTest',
+  extendsModel: 'RegressionTest',
 
   properties: [
     {

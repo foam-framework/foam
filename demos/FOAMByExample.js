@@ -15,21 +15,17 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      console.log('loading');
       if ( this.name ) {
         var self = this;
-        console.log('looking');
         var xhr = new XMLHttpRequest();
         xhr.open('GET', this.name);
 
         aseq(
           function(ret) {
-            console.log('pre-send');
-            xhr.asend(function(xml) { console.log('get'); ret(XMLUtil.parse(xml)); });
+            xhr.asend(function(xml) { ret(XMLUtil.parse(xml)); });
           },
           function(ret, xml) {
-            console.log(xml);
-            xml.select(self);
+            xml.dao.select(self);
             ret();
           }
         )(function() { });
@@ -55,13 +51,21 @@ var dao = XHRXMLDAO.create({
 });
 
 setTimeout(function() {
-  var tests = [];
-  dao.select({ put: function(x) {
-    tests.push(x);
-    if ( x.model_.name != 'UITest' ) x.test();
-    var v = DemoView.create({ data: x });
-    document.body.insertAdjacentHTML('beforeend', v.toHTML());
-    v.initHTML();
-  } });
+  // Pre-select from this DAO into an array, so that it won't fire updates and cause re-rendering.
+  dao.find('View Tests', {
+    put: function(test) {
+      test.tests.dao.find('TextFieldView/onKeyMode', {
+        put: function(t) {
+          var view = DAOListView.create({
+            dao: [t].dao,
+            rowView: DemoView.xbind({ mode: 'read-only' }),
+            mode: 'read-only'
+          });
+          document.body.insertAdjacentHTML('beforeend', view.toHTML());
+          view.initHTML();
+        }
+      });
+    }
+  });
 }, 500);
 
