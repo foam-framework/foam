@@ -237,7 +237,9 @@ MODEL({
     {
       name: 'legacyUrl',
       getter: function() {
-        return this.url + '/issues/list?' + this.location.toURL(this);
+        return this.url + '/issues/' + ( this.location.id ?
+          'detail?' + this.location.toURL(this) :
+          'list?'   + this.location.toURL(this) );
       }
     },
     {
