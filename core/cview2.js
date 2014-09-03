@@ -348,6 +348,7 @@ MODEL({
     },
     {
       name: 'iconUrl',
+      postSet: function(_, v) { this.image_ && (this.image_.src = v); },
       defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
