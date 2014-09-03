@@ -712,6 +712,10 @@ MODEL({
     {
       name: 'className',
       defaultValue: 'tooltip'
+    },
+    {
+      name: 'closed',
+      defaultValue: false
     }
   ],
 
@@ -743,47 +747,50 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      var document = this.X.document;
-      var div      = document.createElement('div');
+      setTimeout(function() {
+        if ( this.closed ) return;
 
-      // Only allow one Tooltip per document, so close the previous one if it exists.
-      if ( document.previousTooltip_ ) document.previousTooltip_.close();
-      document.previousTooltip_ = this;
+        var document = this.X.document;
+        var div      = document.createElement('div');
 
-      // Close after 5s
-      this.X.setTimeout(this.close.bind(this), 5000);
+        // Only allow one Tooltip per document, so close the previous one if it exists.
+        if ( document.previousTooltip_ ) document.previousTooltip_.close();
+        document.previousTooltip_ = this;
 
-      div.className = this.className;
-      div.id = this.id;
-      div.innerHTML = this.toInnerHTML();
+        // Close after 5s
+        this.X.setTimeout(this.close.bind(this), 5000);
 
-      document.body.appendChild(div);
+        div.className = this.className;
+        div.id = this.id;
+        div.innerHTML = this.toInnerHTML();
 
-      var s = this.X.window.getComputedStyle(div);
+        document.body.appendChild(div);
 
-      var pos = findPageXY(this.target);
+        var s            = this.X.window.getComputedStyle(div);
+        var pos          = findPageXY(this.target);
+        var screenHeight = this.X.document.body.clientHeight;
+        var scrollY      = this.X.window.scrollY;
+        var above        = pos[1] - scrollY > screenHeight / 2;
+        var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
+        var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
 
-      var screenHeight = this.X.document.body.clientHeight;
-      var scrollY      = this.X.window.scrollY;
-      var above        = pos[1] - scrollY > screenHeight / 2;
-      var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
-      var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
+        div.style.top  = pos[1];
+        div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
 
-      div.style.top  = pos[1];
-      div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
+        DOM.setClass(div, 'animated');
 
-      DOM.setClass(div, 'animated');
+        this.X.setTimeout(function() {
+          div.style.top = above ?
+            pos[1] - this.target.clientHeight - 8 :
+            pos[1] + this.target.clientHeight + 8 ;
+        }.bind(this), 10);
 
-      this.X.setTimeout(function() {
-        div.style.top = above ?
-          pos[1] - this.target.clientHeight - 8 :
-          pos[1] + this.target.clientHeight + 8 ;
-      }.bind(this), 10);
-
-      this.initHTML();
+        this.initHTML();
+      }.bind(this), 500);
     },
     toInnerHTML: function() { return this.text; },
     close: function() {
+      this.closed = true;
       if ( this.$ ) {
         this.X.setTimeout(this.$.remove.bind(this.$), 1000);
         DOM.setClass(this.$, 'fadeout');
