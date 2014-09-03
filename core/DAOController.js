@@ -26,8 +26,23 @@ MODEL({
       name: 'model'
     },
     {
+      name: 'subType',
+      setter: function(v) {
+        this.model = v;
+      }
+    },
+    {
       name: 'dao',
       view: 'TableView'
+    },
+    {
+      name: 'data',
+      setter: function(v) {
+        this.dao = v;
+      },
+      getter: function() {
+        return this.dao;
+      }
     },
     {
       name: 'selection'
@@ -73,7 +88,7 @@ MODEL({
         this.selection = this.daoView.selection;
 
         var obj = this.selection;
-        var actions = DAOUpdateController.actions.slice(0);
+        var actions = this.X.DAOUpdateController.actions.slice(0);
 
         for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
           var action = this.model.actions[i];
