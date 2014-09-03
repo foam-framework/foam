@@ -17,6 +17,7 @@
 var files = [
   ['firefox', function() { return navigator.userAgent.indexOf('Firefox') != -1; }],
   'stdlib',
+  ['WeakMap', function() { return !!WeakMap; }],
   'io',
   'writer',
   'socket',
