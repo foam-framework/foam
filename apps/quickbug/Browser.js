@@ -541,7 +541,6 @@ MODEL({
 
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
-      this.search();
 
       this.syncManagerFuture.get((function(syncManager) {
         syncManager.isSyncing$.addListener(this.onSyncManagerUpdate);
@@ -549,9 +548,14 @@ MODEL({
 
       this.onSyncManagerUpdate();
 
-      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {put: function(bookmark) {
-        this.memento = bookmark.url;
-      }.bind(this)});
+      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
+        put: function(bookmark) {
+          this.memento = bookmark.url;
+        }.bind(this),
+        error: function () {
+          this.search();
+        }.bind(this)
+      });
     },
 
     createIssue: function(opt_templateName) {
