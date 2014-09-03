@@ -404,7 +404,7 @@ var ArrayProperty = Model.create({
       defaultValue: function(_, a, prop) {
         if ( a ) a.dao;
 
-        var m = GLOBAL[prop.subType];
+        var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
 

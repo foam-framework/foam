@@ -2608,11 +2608,9 @@ MODEL({
       setter: function(dao) { this.data = dao; }
     },
     {
+      model_: 'ArrayProperty',
       name: 'views',
-      type: 'Array[ViewChoice]',
       subType: 'ViewChoice',
-      view: 'ArrayView',
-      defaultValue: [],
       help: 'View choices.'
     },
     {
