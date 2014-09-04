@@ -255,6 +255,7 @@ MODEL({
       this.dropzone = drop;
       this.document = this.$.contentDocument;
       var body = this.document.body;
+      body.style.whiteSpace = 'pre-wrap';
 
       $(this.placeholderId).addEventListener('click', function() { body.focus(); });
       this.document.head.insertAdjacentHTML(
