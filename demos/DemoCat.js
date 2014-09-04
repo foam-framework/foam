@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Fading Circles',
+    path: 'FadingCircles.html',
+    description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Follow The Leader',
     path: 'FollowTheLeader.html',
     description: 'An animation which uses Movement.moveTowards() to create a chain of circles which follow the mouse.',
