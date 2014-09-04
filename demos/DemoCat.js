@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Complements',
+    path: 'Complements.html',
+    description: 'An animated colour wheel.  Ported from the Elm demo.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'SolarSystem',
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
@@ -227,24 +235,24 @@ var demos = [
   {
     model_: 'Demo',
     name: 'QuickBug',
-    path: '',
+    path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
     description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
-    keywords: [],
+    keywords: ['app'],
     image: ''
   },
   {
     model_: 'Demo',
     name: 'QuickCompose',
-    path: '',
-    description: '',
-    keywords: [],
+    path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
+    description: 'A Chrome App for composing (and sending) quick GMails.',
+    keywords: ['app'],
     image: ''
   },
   {
     model_: 'Demo',
     name: 'Todo',
     path: '../apps/todo/Todo.html',
-    description: '',
+    description: 'A FOAM implementation of the http://todomvc.com comparison application.',
     keywords: [],
     image: ''
   },
