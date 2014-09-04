@@ -50,6 +50,14 @@ var demos = [
   },
   {
     model_: 'Demo',
+    name: 'Google Simulator',
+    path: 'GoogleSimulator.html',
+    description: 'A simulation of the growth of Google.',
+    keywords: ['simulation', 'animation', 'architecture'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Fading Circles',
     path: 'FadingCircles.html',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
