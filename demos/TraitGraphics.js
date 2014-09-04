@@ -31,7 +31,7 @@ for ( var x = 0 ; x < N ; x++ ) {
     });
     space.addChild(c);
 
-    Movement.spring(mouse, c, -200+(x-(N-1)/2)*60, (y-(N-1)/2)*60, 3);
+    Movement.spring(mouse, c, -140+(x-(N-1)/2)*60, (y-(N-1)/2)*60, 3);
     Movement.inertia(c);
     Movement.friction(c, 0.9);
 
@@ -44,7 +44,7 @@ for ( var x = 0 ; x < N ; x++ ) {
     });
     space.addChild(c);
 
-    Movement.spring(mouse, c, 200+(x-(N-1)/2)*60, (y-(N-1)/2)*60, 3);
+    Movement.spring(mouse, c, 140+(x-(N-1)/2)*60, (y-(N-1)/2)*60, 3);
     Movement.inertia(c);
     Movement.friction(c, 0.9);
   }
