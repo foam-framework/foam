@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'SolarSystem',
+    path: 'SolarSystem.html',
+    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
+    keywords: ['animation', 'reactive'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Reactive Clocks',
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
