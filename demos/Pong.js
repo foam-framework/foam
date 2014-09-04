@@ -115,7 +115,7 @@ MODEL({
 
   templates: [
     function toDetailHTML() {/*
-      <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%obj.table</div>
+      <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%data.table</div>
     */}
   ],
 
