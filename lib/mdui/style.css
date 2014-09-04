@@ -144,7 +144,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 canvas.createButton {
-  position: fixed;
+  position: absolute;
   bottom: 10px;
   right: 20px;
   z-index: 10;
