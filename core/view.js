@@ -570,8 +570,8 @@ MODEL({
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key     = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
-              function() { action.callIfEnabled(opt_value.get()); } :
-              action.callIfEnabled.bind(action, self) ;
+              function() { action.callIfEnabled(self.X, opt_value.get()); } :
+              action.callIfEnabled.bind(action, self.X, self) ;
             found = true;
           }
         });
@@ -777,7 +777,7 @@ MODEL({
         // it as we activated the action.
         if ( this.action && this.data ) {
           this.on('click', function() {
-            this.action.callIfEnabled(this.data);
+            this.action.callIfEnabled(this.X, this.data);
             this.close();
           }.bind(this), this.id);
         }
@@ -2218,7 +2218,7 @@ MODEL({
       var self = this;
 
       this.on('click', function() {
-        self.action.callIfEnabled(self.data);
+        self.action.callIfEnabled(self.X, self.data);
       }, this.id);
 
       this.setAttribute('disabled', function() {
