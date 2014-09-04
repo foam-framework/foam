@@ -12,66 +12,19 @@ var QUICKBUG_APP_ID = 'hmdcjljmcglpjnmmbjhpialomleabcmg';
 var whitelist = {};
 
 chrome.management.get(QUICKBUG_APP_ID, function(entry) {
-  chrome.runtime.onMessage.addListener(function(request, sender) {
-    if ( request && request.type === 'killTab' ) {
-      sender && sender.tab && sender.tab.id && chrome.tabs.remove(sender.tab.id);
-    }
-  });
-
-  chrome.declarativeWebRequest.onMessage.addListener(function(details) {
-    if ( details.message === 'openUrl' ) {
-      if ( whitelist[details.tabId] ) {
-        // Whitelisted tab, therefore navigate it.
-        var queryString = details.url.indexOf('?');
-        var newUrl = details.url.substring(0, queryString) + '?no_qbug=1&' + details.url.substring(queryString + 1);
-        chrome.tabs.update(details.tabId, { url: newUrl });
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    var id = sender && sender.tab && sender.tab.id;
+    if ( request && request.type === 'redirect' ) {
+      // Check if the tab is whitelisted.
+      if ( ! (id && whitelist[id]) ) {
+        chrome.runtime.sendMessage(QUICKBUG_APP_ID, { type: 'openUrl', url: request.url });
+        sendResponse('redirected');
       } else {
-        // Tab is not whitelisted, so open Quickbug for it.
-        chrome.runtime.sendMessage(QUICKBUG_APP_ID, { type: 'openUrl', url: details.url });
-        chrome.tabs.update(details.tabId, { url: 'chrome-extension://' + chrome.runtime.id + '/redirected.html' });
+        sendResponse('whitelisted');
       }
-    } else if ( details.message === 'escapeHatch' ) {
-      // This tab had the no_qbug parameter, so make sure it's whitelisted.
-      whitelist[details.tabId] = true;
+    } else if ( request && request.type === 'whitelist' ) {
+      if ( id ) whitelist[id] = true;
     }
-  });
-
-  chrome.declarativeWebRequest.onRequest.removeRules(undefined, function() {
-    chrome.declarativeWebRequest.onRequest.addRules([
-      // High priority: codesite URLs with no_qbug=1 query parameter are allowed.
-      // Need to cancel lower-priority rules.
-      {
-        priority: 1000,
-        conditions: [
-          new chrome.declarativeWebRequest.RequestMatcher({
-            url: { hostSuffix: 'code.google.com', pathContains: 'issues', queryContains: 'no_qbug=1' },
-            resourceType: ['main_frame'],
-            stages: ['onBeforeRequest']
-          })
-        ],
-        actions: [
-          new chrome.declarativeWebRequest.SendMessageToExtension({ message: 'escapeHatch' }),
-          new chrome.declarativeWebRequest.IgnoreRules({
-            lowerPriorityThan: 1000
-          })
-        ]
-      },
-      // Low priority: If the above rule didn't override this one, then
-      // cancel the request and open QuickBug.
-      {
-        conditions: [
-          new chrome.declarativeWebRequest.RequestMatcher({
-            url: { hostSuffix: 'code.google.com', pathContains: 'issues' },
-            resourceType: ['main_frame'],
-            stages: ['onBeforeRequest']
-          })
-        ],
-        actions: [
-          new chrome.declarativeWebRequest.SendMessageToExtension({ message: 'openUrl' }),
-          new chrome.declarativeWebRequest.RedirectToEmptyDocument()
-        ]
-      }
-    ]);
   });
 });
 

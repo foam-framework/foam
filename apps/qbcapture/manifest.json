@@ -9,10 +9,18 @@
     "scripts": ["background.js"]
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiTU77aJKFs5EoFg6DT2Ok4JC0KRFHVBPQqXuq9fmNsXa6dRyO6MXJmXmHpo90Qy/JlmEIT2QeaA5blLRKEhKPK792hdg47HDEtMT3uAWpK0g0AyjU2S3oRDTX+aHqlDazQ4KOCFwwqpnHnKSTMu++agdUZFn6/ApyGi+rGehIFyboUw+KJq7AI2jr3TLSsg3nWUzA+sRvL7bX0BDkVej+DTAsUQbnlvSYMdJ1czej4G9K27jTOn2mPXEPAiVcIyzvpX7ywQw/nEb5BTkIYuvsJY2nZqO3Jgx1Kwb26pTpp224BmOxTcCrBwRkXZ3wuQSMw5Mtv5FkxZ38grja8zamQIDAQAB",
+  "content_scripts": [
+    {
+      "matches": ["*://code.google.com/p/*/issues/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    "redirected.*"
+  ],
   "permissions": [
-    "declarativeWebRequest",
     "management",
-    "tabs",
     "*://code.google.com/*"
   ]
 }
