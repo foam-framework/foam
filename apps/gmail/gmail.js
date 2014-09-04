@@ -28,6 +28,9 @@ EMail.MOVE_TO_INBOX.label = '';
 EMail.SEND.iconUrl = 'icons/ic_send_black_24dp.png';
 EMail.SEND.label = '';
 
+EMail.MARK_UNREAD.iconUrl = 'icons/ic_markunread_black_24dp.png';
+EMail.MARK_UNREAD.label = '';
+
 /** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
 var queryParser = {
   __proto__: QueryParserFactory(EMail),
@@ -204,7 +207,9 @@ MODEL({
       });
     },
     openEmail: function(email) {
+      email = email.clone();
       var v = this.controller.X.EMailView.create({data: email});
+      email.markRead(this.controller.X);
       this.stack.pushView(v, '');
     },
     changeLabel: function(label) {
