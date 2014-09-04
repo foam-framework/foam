@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Reactive Clocks',
+    path: 'ReactiveClocks.html',
+    description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
+    keywords: ['animation', 'reactive'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Unix Simulator',
     path: 'UnixSimulator.html',
     description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
