@@ -218,6 +218,10 @@ ul.swipeAltHeader {
   padding: 10px 6px;
 }
 
+.email-citation.unread {
+  font-weight: bold;
+}
+
 .email-citation .from {
   display: block;
   font-size: 17px;

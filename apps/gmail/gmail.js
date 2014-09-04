@@ -355,10 +355,11 @@ MODEL({
   templates: [
     function toHTML() {/*
       <%
-        // this.setClass('unread', function() { return self.data && self.data.unread; });
+        var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
+        this.on('click', function() { this.X.mgmail.openEmail(this.data); }, this.id);
       %>
 
-      <div id="<%= this.on('click', function() { this.X.mgmail.openEmail(this.data); }) %>" %%cssClassAttr() >
+      <div id="<%= id %>" %%cssClassAttr() >
         $$from{model_: 'MDMonogramStringView'}
         <div style="flex: 1">
           <div style="display: flex">
