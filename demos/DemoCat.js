@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Follow The Leader',
+    path: 'FollowTheLeader.html',
+    description: 'An animation which uses Movement.moveTowards() to create a chain of circles which follow the mouse.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'FOAM Architecture Diagram',
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram which demonstrates FOAM\'s architecture.  Notice the reflections.',
