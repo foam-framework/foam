@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Unix Simulator',
+    path: 'UnixSimulator.html',
+    description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
+    keywords: ['simulation', 'animation', 'architecture'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Fading Circles',
     path: 'FadingCircles.html',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
