@@ -50,6 +50,14 @@ var demos = [
   },
   {
     model_: 'Demo',
+    name: 'InterpolatedClocks',
+    path: 'InterpolatedClocks.html',
+    description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'FOAM Architecture Diagram',
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram which demonstrates FOAM\'s architecture.  Notice the reflections.',
