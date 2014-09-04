@@ -7,9 +7,10 @@
  <body>
   <script language="javascript">
     var timer = Timer.create({});
-    var space = CView2.create({width: 1000, height: 700, background:'#fff'});
+    var space = CView2.create({width: 2000, height: 1000, background:'#fff'});
     timer.write(document);
     space.write(document);
+    // space.erase = function() {}; // uncomment for nice effect
 
     var mouse = Mouse.create();
     mouse.connect(space.$);
@@ -21,7 +22,7 @@
           x: Math.random()*300+300,
           y: Math.random()*300+300,
           r: Math.random()*20+2,
-          color: 'hsl(' + 1440*i/COUNT + ', 90%, 60%)'
+          color: 'hsla(' + 1440*i/COUNT + ', 90%, 60%, .3)'
        });
        space.addChild(s[i]);
     }
@@ -32,6 +33,7 @@
     Movement.moveTowards(timer, mouse, s[0], 3);
 
     space.paint();
+    timer.start();
   </script>
 
  </body>

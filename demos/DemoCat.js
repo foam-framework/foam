@@ -34,6 +34,62 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'SolarSystem',
+    path: 'SolarSystem.html',
+    description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
+    keywords: ['animation', 'reactive'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Reactive Clocks',
+    path: 'ReactiveClocks.html',
+    description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
+    keywords: ['animation', 'reactive'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Unix Simulator',
+    path: 'UnixSimulator.html',
+    description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
+    keywords: ['simulation', 'animation', 'architecture'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Google Simulator',
+    path: 'GoogleSimulator.html',
+    description: 'A simulation of the growth of Google.',
+    keywords: ['simulation', 'animation', 'architecture'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Fading Circles',
+    path: 'FadingCircles.html',
+    description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Follow The Leader',
+    path: 'FollowTheLeader.html',
+    description: 'An animation which uses Movement.moveTowards() to create a chain of circles which follow the mouse.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'InterpolatedClocks',
+    path: 'InterpolatedClocks.html',
+    description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'FOAM Architecture Diagram',
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram which demonstrates FOAM\'s architecture.  Notice the reflections.',
@@ -44,8 +100,16 @@ var demos = [
     model_: 'Demo',
     name: 'Dragon Animation',
     path: 'Dragon.html',
-    description: 'Animated dragon.',
+    description: 'Animated dragon.  Demonstrates use of the <foam> tag.',
     keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Dragon Live-Coding',
+    path: 'DragonLiveCoding.html',
+    description: 'A version of the dragon animation that you can live code.  Use the Model editor to update methods while the animation is running.',
+    keywords: ['animation', 'live-coding'],
     image: ''
   },
   {
