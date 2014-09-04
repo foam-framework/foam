@@ -38,7 +38,7 @@ var demos = [
     path: 'Complements.html',
     description: 'An animated colour wheel.  Ported from the Elm demo.',
     keywords: ['animation'],
-    image: ''
+    image: 'Complements.png'
   },
   {
     model_: 'Demo',
@@ -46,7 +46,7 @@ var demos = [
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
     keywords: ['animation', 'reactive'],
-    image: ''
+    image: 'SolarSystem.png'
   },
   {
     model_: 'Demo',
@@ -54,7 +54,7 @@ var demos = [
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
-    image: ''
+    image: 'ReactiveClocks.png'
   },
   {
     model_: 'Demo',
@@ -62,7 +62,7 @@ var demos = [
     path: 'UnixSimulator.html',
     description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
     keywords: ['simulation', 'animation', 'architecture'],
-    image: ''
+    image: 'UnixSimulator.png'
   },
   {
     model_: 'Demo',
@@ -86,7 +86,7 @@ var demos = [
     path: 'FollowTheLeader.html',
     description: 'An animation which uses Movement.moveTowards() to create a chain of circles which follow the mouse.',
     keywords: ['animation'],
-    image: ''
+    image: 'FollowTheLeader.png'
   },
   {
     model_: 'Demo',
@@ -102,7 +102,7 @@ var demos = [
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram which demonstrates FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
-    image: ''
+    image: 'DemoBlockDiagram.png'
   },
   {
     model_: 'Demo',
@@ -158,7 +158,7 @@ var demos = [
     path: 'Spring.html',
     description: 'Addictive spring physics simulation.',
     keywords: ['physics'],
-    image: ''
+    image: 'Spring.png'
   },
   {
     model_: 'Demo',
@@ -174,7 +174,7 @@ var demos = [
     path: 'CropCircle.html',
     description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.',
     keywords: ['graphics'],
-    image: ''
+    image: 'CropCircle.png'
   },
   {
     model_: 'Demo',
@@ -182,7 +182,7 @@ var demos = [
     path: 'Tags.html',
     description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',
     keywords: [],
-    image: ''
+    image: 'Dragon.png'
   },
   {
     model_: 'Demo',
@@ -198,7 +198,7 @@ var demos = [
     path: '../apps/calc/Calc.html',
     description: 'A simple calculator application.',
     keywords: ['app'],
-    image: ''
+    image: 'Calc.png'
   },
   {
     model_: 'Demo',
@@ -206,7 +206,7 @@ var demos = [
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
     keywords: ['app', 'material-design'],
-    image: ''
+    image: 'ACalc.png'
   },
   {
     model_: 'Demo',
@@ -254,7 +254,7 @@ var demos = [
     path: '../apps/todo/Todo.html',
     description: 'A FOAM implementation of the http://todomvc.com comparison application.',
     keywords: [],
-    image: ''
+    image: 'Todo.png'
   },
   {
     model_: 'Demo',
@@ -276,6 +276,7 @@ MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <li class="thumbnail">
         <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
+        <% if ( this.data.image ) { %> <br><img width=250 height=250 src="democat/%%data.image"> <% } %>
         <p>$$description{mode: 'read-only'}</p>
         <b>Keywords:</b> $$keywords{mode: 'read-only'}
         <br>
