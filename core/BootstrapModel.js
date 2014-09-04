@@ -183,7 +183,7 @@ var BootstrapModel = {
               this.actions[i] = a;
             }
           }
-          addMethod(a.name, function() { a.callIfEnabled(this.X, this); });
+          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
     }
