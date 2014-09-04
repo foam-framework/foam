@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-debugger;
+
 var files = [
   ['firefox', function() { return navigator.userAgent.indexOf('Firefox') != -1; }],
   'stdlib',
