@@ -91,7 +91,12 @@ MODEL({
 //              delegate: this.X.GMailMessageDAO.create({})
 //            })
           }),
-          cache: this.X.MDAO.create({ model: EMail })
+          cache: this.X.CachingDAO.create({
+              src: this.X.IDBDAO.create({
+                  model: this.X.EMail
+              }),
+              cache: this.X.MDAO.create({ model: this.X.EMail })
+          })
         });
       }
     },
@@ -416,3 +421,11 @@ MODEL({
     */}
    ]
 });
+
+var openComposeView = function(email) {
+  var X = mgmail.controller.X;
+  var view = X.EMailComposeView.create({
+    data: email,
+  });
+  X.stack.pushView(view, undefined, undefined, 'fromRight');
+};
