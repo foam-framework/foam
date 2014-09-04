@@ -34,6 +34,14 @@ var demos = [
   */
   {
     model_: 'Demo',
+    name: 'Complements',
+    path: 'Complements.html',
+    description: 'An animated colour wheel.  Ported from the Elm demo.',
+    keywords: ['animation'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'SolarSystem',
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
@@ -131,17 +139,9 @@ var demos = [
   {
     model_: 'Demo',
     name: 'Collision With Spring',
-    path: 'A simple physics simulation which shows the use of springs and collision detection.',
-    description: '',
+    path: 'CollisionWithSpring.html',
+    description: 'A simple physics simulation which shows the use of springs and collision detection.',
     keywords: ['physics'],
-    image: ''
-  },
-  {
-    model_: 'Demo',
-    name: 'Crop Circles',
-    path: 'CropCircle.js',
-    description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines.',
-    keywords: ['graphics'],
     image: ''
   },
   {
@@ -170,6 +170,14 @@ var demos = [
   },
   {
     model_: 'Demo',
+    name: 'Crop Circles',
+    path: 'CropCircle.html',
+    description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.',
+    keywords: ['graphics'],
+    image: ''
+  },
+  {
+    model_: 'Demo',
     name: 'Dragon',
     path: 'Tags.html',
     description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',
@@ -179,8 +187,8 @@ var demos = [
   {
     model_: 'Demo',
     name: 'Two-Way Data-Binding',
-    path: 'TwoWayDataBinding',
-    description: 'Demonstrates how to do two way data-binding in FOAM.',
+    path: 'TwoWayDataBinding.html',
+    description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented with other JS libraries at: http://n12v.com/2-way-data-binding/?hn',
     keywords: [],
     image: ''
   },
@@ -227,24 +235,24 @@ var demos = [
   {
     model_: 'Demo',
     name: 'QuickBug',
-    path: '',
+    path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
     description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
-    keywords: [],
+    keywords: ['app'],
     image: ''
   },
   {
     model_: 'Demo',
     name: 'QuickCompose',
-    path: '',
-    description: '',
-    keywords: [],
+    path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
+    description: 'A Chrome App for composing (and sending) quick GMails.',
+    keywords: ['app'],
     image: ''
   },
   {
     model_: 'Demo',
     name: 'Todo',
     path: '../apps/todo/Todo.html',
-    description: '',
+    description: 'A FOAM implementation of the http://todomvc.com comparison application.',
     keywords: [],
     image: ''
   },

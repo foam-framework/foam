@@ -28,9 +28,9 @@
     }
 
     for ( var i = 1 ; i < COUNT ; i++ )
-       Movement.moveTowards(timer, s[i-1], s[i], 7-6.7*i/COUNT);
+       Movement.moveTowards(timer, s[i-1], s[i], 5-4.8*i/COUNT);
 
-    Movement.moveTowards(timer, mouse, s[0], 3);
+    Movement.moveTowards(timer, mouse, s[0], 5);
 
     space.paint();
     timer.start();
