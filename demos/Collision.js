@@ -1,9 +1,9 @@
 MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
-var space    = CView2.create({width: 1500, height: 800, background:'black'});
+var space    = CView2.create({width: 1500, height: 800, background: 'white'});
 var mouse    = Mouse.create();
 var collider = Collider.create();
-var bumper   = Circle.create({r: 30, color: 'white'});
+var bumper   = Circle.create({r: 30, color: 'gray'});
 var anchor   = Circle.create({r: 0, x: 1400, y: 400, color: 'white'});
 
 function bounceOnWalls(c, w, h) {

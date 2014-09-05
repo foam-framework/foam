@@ -42,7 +42,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'SolarSystem',
+    name: 'Solar System',
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
     keywords: ['animation', 'reactive'],
@@ -70,7 +70,7 @@ var demos = [
     path: 'GoogleSimulator.html',
     description: 'A simulation of the growth of Google.',
     keywords: ['simulation', 'animation', 'architecture'],
-    image: ''
+    image: 'GoogleSimulator.png'
   },
   {
     model_: 'Demo',
@@ -126,7 +126,7 @@ var demos = [
     path: 'Pong.html',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
     keywords: ['animation', 'game', 'physics', 'traits'],
-    image: ''
+    image: 'Pong.png'
   },
   {
     model_: 'Demo',
@@ -138,19 +138,19 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Collision With Spring',
-    path: 'CollisionWithSpring.html',
-    description: 'A simple physics simulation which shows the use of springs and collision detection.',
-    keywords: ['physics'],
-    image: ''
-  },
-  {
-    model_: 'Demo',
     name: 'Collision',
     path: 'Collision.html',
     description: 'Demonstration of collision-detection.',
     keywords: ['physics'],
-    image: ''
+    image: 'Collision.png'
+  },
+  {
+    model_: 'Demo',
+    name: 'Collision With Spring',
+    path: 'CollisionWithSpring.html',
+    description: 'A simple physics simulation which shows the use of springs and collision detection.',
+    keywords: ['physics'],
+    image: 'CollisionWithSpring.png'
   },
   {
     model_: 'Demo',
@@ -166,7 +166,7 @@ var demos = [
     path: 'TraitGraphics.html',
     description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blure.',
     keywords: ['traits','graphics'],
-    image: ''
+    image: 'TraitGraphics.png'
   },
   {
     model_: 'Demo',
