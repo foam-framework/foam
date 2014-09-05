@@ -222,7 +222,7 @@ var demos = [
     path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
     keywords: ['app', 'material-design', 'gmail', 'mobile'],
-    image: ''
+    image: 'MBug.png'
   },
   {
     model_: 'Demo',
