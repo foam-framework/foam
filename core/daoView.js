@@ -421,7 +421,7 @@ MODEL({
         this.addChild(view);
         if ( this.useSelection ) {
           out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
-            this.selection = o
+            this.selection = o;
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());
