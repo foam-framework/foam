@@ -238,7 +238,7 @@ var demos = [
     path: '../apps/phonecat/Cat.html',
     description: '',
     keywords: [],
-    image: ''
+    image: 'PhoneCat.png'
   },
   {
     model_: 'Demo',
