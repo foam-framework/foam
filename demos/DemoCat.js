@@ -190,7 +190,7 @@ var demos = [
     path: 'TwoWayDataBinding.html',
     description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented with other JS libraries at: http://n12v.com/2-way-data-binding/?hn',
     keywords: [],
-    image: ''
+    image: 'TwoWayDataBinding.png'
   },
   {
     model_: 'Demo',
