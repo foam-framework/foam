@@ -134,7 +134,7 @@ var demos = [
     path: 'dao.html',
     description: 'An extensive set of DAO (Data-Access-Object) samples.  A must read for learning FOAM.',
     keywords: ['DAO', 'database'],
-    image: ''
+    image: 'DAO.png'
   },
   {
     model_: 'Demo',
