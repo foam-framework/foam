@@ -246,7 +246,7 @@ var demos = [
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
     description: 'A Chrome App for composing (and sending) quick GMails.',
     keywords: ['app'],
-    image: ''
+    image: 'QuickCompose.png'
   },
   {
     model_: 'Demo',
