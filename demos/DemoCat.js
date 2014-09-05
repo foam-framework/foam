@@ -94,7 +94,7 @@ var demos = [
     path: 'InterpolatedClocks.html',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
     keywords: ['animation'],
-    image: ''
+    image: 'InterpolatedClocks.png'
   },
   {
     model_: 'Demo',
