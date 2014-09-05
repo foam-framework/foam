@@ -78,7 +78,7 @@ var demos = [
     path: 'FadingCircles.html',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
     keywords: ['animation'],
-    image: ''
+    image: 'FadingCircles.png'
   },
   {
     model_: 'Demo',
