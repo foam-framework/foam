@@ -218,10 +218,18 @@ var demos = [
   },
   {
     model_: 'Demo',
+    name: 'QuickBug',
+    path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
+    description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
+    keywords: ['app'],
+    image: 'QuickBug.png'
+  },
+  {
+    model_: 'Demo',
     name: 'Material-Design Issue Tracker',
     path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
-    keywords: ['app', 'material-design', 'gmail', 'mobile'],
+    keywords: ['app', 'material-design', 'mobile'],
     image: 'MBug.png'
   },
   {
@@ -230,14 +238,6 @@ var demos = [
     path: '../apps/phonecat/Cat.html',
     description: '',
     keywords: [],
-    image: ''
-  },
-  {
-    model_: 'Demo',
-    name: 'QuickBug',
-    path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
-    description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
-    keywords: ['app'],
     image: ''
   },
   {
