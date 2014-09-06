@@ -400,7 +400,9 @@ MODEL({
         str.push('>', prop.tableLabel, arrow);
 
         if ( this.columnResizeEnabled && i < properties.length - 1 ) 
-          str.push(this.columnResizerToHTML(prop, properties[i+1]));
+          str.push(this.columnResizerToHTML(
+            prop,
+            model.getProperty(properties[i+1])));
 
         str.push('</th>');
 
