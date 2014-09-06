@@ -309,12 +309,13 @@ function createView(rowSelectionValue, browser) {
         label: 'List',
         view: function() {
           var tableView = X.QIssueTableView.create({
-            model:              X.QIssue,
-            dao:                browser.filteredIssueDAO$Proxy,
-            browser:            browser,
-            hardSelection$:     rowSelectionValue,
-            scrollEnabled:      true,
-            editColumnsEnabled: true
+            model:               X.QIssue,
+            dao:                 browser.filteredIssueDAO$Proxy,
+            browser:             browser,
+            hardSelection$:      rowSelectionValue,
+            columnResizeEnabled: true,
+            scrollEnabled:       true,
+            editColumnsEnabled:  true
           }, browser.X);
 
           tableView.sortOrder$  = location.sort$;
