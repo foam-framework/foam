@@ -400,7 +400,7 @@ MODEL({
         str.push('>', prop.tableLabel, arrow);
 
         if ( this.columnResizeEnabled && i < properties.length - 1 ) 
-          str.push(this.columnResizerToHTML(prop));
+          str.push(this.columnResizerToHTML(prop, properties[i+1]));
 
         str.push('</th>');
 
@@ -454,8 +454,11 @@ MODEL({
       return str.join('');
     },
 
-    columnResizerToHTML: function(prop) {
+    columnResizerToHTML: function(prop1, prop2) {
       var id = this.nextID();
+
+      // Prevent the column sort-order listener from firing
+      this.on('click', function(e) { e.stopPropagation(); }, id);
 
       this.on('mousedown', function(e) {
         var self   = this;
@@ -469,8 +472,8 @@ MODEL({
 
         function onMouseMove(e) {
           var delta = e.x - startX;
-          col1.width = w1 + delta;
-          col2.width = w2 - delta;
+          prop1.tableWidth = col1.width = w1 + delta;
+          prop2.tableWidth = col2.width = w2 - delta;
         }
 
         this.X.document.addEventListener('mousemove', onMouseMove);
