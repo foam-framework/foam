@@ -82,6 +82,11 @@ MODEL({
     },
     {
       model_: 'BooleanProperty',
+      name: 'columnResizeEnabled',
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'editColumnsEnabled',
       defaultValue: false
     },
@@ -374,16 +379,12 @@ MODEL({
 
         if ( prop.hidden ) continue;
 
-        str.push('<th scope=col ');
+        str.push('<th style="position:relative;" scope=col ');
         str.push('id=' +
                  this.on(
                    'click',
                    (function(table, prop) { return function() {
-                     if ( table.sortOrder === prop ) {
-                       table.sortOrder = DESC(prop);
-                     } else {
-                       table.sortOrder = prop;
-                     }
+                     table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
                      table.repaintNow();
                    };})(this, prop)));
         if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
@@ -396,7 +397,12 @@ MODEL({
           arrow = ' <span class="indicator">&#9660;</span>';
         }
 
-        str.push('>' + prop.tableLabel + arrow + '</th>');
+        str.push('>', prop.tableLabel, arrow);
+
+        if ( this.columnResizeEnabled && i < properties.length - 1 ) 
+          str.push(this.columnResizerToHTML(prop));
+
+        str.push('</th>');
 
         props.push(prop);
       }
@@ -446,6 +452,37 @@ MODEL({
       str.push('</tbody></table>');
 
       return str.join('');
+    },
+
+    columnResizerToHTML: function(prop) {
+      var id = this.nextID();
+
+      this.on('mousedown', function(e) {
+        var self   = this;
+        var startX = e.x;
+        var col1   = self.X.$(id).parentElement;
+        var col2   = self.X.$(id).parentElement.nextSibling;
+        var w1     = toNum(col1.width);
+        var w2     = toNum(col2.width);
+
+        e.preventDefault();
+
+        function onMouseMove(e) {
+          var delta = e.x - startX;
+          col1.width = w1 + delta;
+          col2.width = w2 - delta;
+        }
+
+        this.X.document.addEventListener('mousemove', onMouseMove);
+        this.X.document.addEventListener('mouseup',   function(e) {
+          e.preventDefault();
+
+          self.X.document.removeEventListener('mousemove', onMouseMove);
+          self.X.document.removeEventListener('mouseup',   arguments.callee);
+        });
+      }, id);
+
+      return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';
     },
 
     initHTML_: function() {
