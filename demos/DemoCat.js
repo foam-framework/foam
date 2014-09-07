@@ -246,7 +246,7 @@ var demos = [
     path: '../core/fobrowser.html',
     description: 'A FOAM Model browser.',
     keywords: [],
-    image: ''
+    image: 'FOBrowser.png'
   },
   {
     model_: 'Demo',
