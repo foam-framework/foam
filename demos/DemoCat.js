@@ -34,14 +34,6 @@ var demos = [
   */
   {
     model_: 'Demo',
-    name: 'Complements',
-    path: 'Complements.html',
-    description: 'An animated colour wheel.  Ported from the Elm demo.',
-    keywords: ['animation'],
-    image: 'Complements.png'
-  },
-  {
-    model_: 'Demo',
     name: 'Solar System',
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
@@ -263,6 +255,14 @@ var demos = [
     description: 'A FOAM Model browser.',
     keywords: [],
     image: ''
+  },
+  {
+    model_: 'Demo',
+    name: 'Complements',
+    path: 'Complements.html',
+    description: 'An animated colour wheel.  Ported from the Elm demo.',
+    keywords: ['animation'],
+    image: 'Complements.png'
   },
 ].dao;
 
