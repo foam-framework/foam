@@ -92,25 +92,17 @@ var demos = [
     model_: 'Demo',
     name: 'FOAM Architecture Diagram',
     path: 'demoBlockDiagram.html',
-    description: 'An animated diagram which demonstrates FOAM\'s architecture.  Notice the reflections.',
+    description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
     image: 'DemoBlockDiagram.png'
   },
   {
     model_: 'Demo',
-    name: 'Dragon Animation',
-    path: 'Dragon.html',
-    description: 'Animated dragon.  Demonstrates use of the <foam> tag.',
-    keywords: ['animation'],
-    image: ''
-  },
-  {
-    model_: 'Demo',
     name: 'Dragon Live-Coding',
     path: 'DragonLiveCoding.html',
-    description: 'A version of the dragon animation that you can live code.  Use the Model editor to update methods while the animation is running.',
+    description: 'A version of the dragon animation that you can live-code.  Use the Model editor to update methods while the animation is running.',
     keywords: ['animation', 'live-coding'],
-    image: ''
+    image: 'TimeWheel.png'
   },
   {
     model_: 'Demo',
