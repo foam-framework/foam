@@ -4,12 +4,12 @@
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="demos.js"></script>
   <script language="javascript" src="dragon.js"></script>
+  <style>canvas { float:left; }</style>
   <title>Dragon</title>
  </head>
  <body>
    <div style="display:none"><foam id="timer" model="Timer" onInit="this.start()"></foam></div>
-   <foam model="Dragon" timer="#timer" width="950" height="1000"></foam>
-   <br>
    <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
+   <foam model="Dragon" timer="#timer" width="950" height="1000"></foam>
  </body>
 </html>
