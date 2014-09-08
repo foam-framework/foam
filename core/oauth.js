@@ -97,16 +97,19 @@ MODEL({
     },
     {
       name: 'clientId',
-      required: true
+      required: true,
+      transient: true
     },
     {
       name: 'clientSecret',
-      required: true
+      required: true,
+      transient: true
     },
     {
       model_: 'StringArrayProperty',
       name: 'scopes',
-      required: true
+      required: true,
+      transient: true
     },
     {
       model_: 'URLProperty',
