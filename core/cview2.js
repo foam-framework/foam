@@ -36,7 +36,7 @@ MODEL({
         if ( this.$ ) {
           this.$.width = width * this.scalingRatio;
           this.$.style.width = width + 'px';
-          this.paint();
+          window.setTimeout(this.paint, 100);
         }
       }
     },
@@ -48,7 +48,7 @@ MODEL({
         if ( this.$ )  {
           this.$.height = height * this.scalingRatio;
           this.$.style.height = height + 'px';
-          this.paint();
+          window.setTimeout(this.paint, 100);
         }
       }
     },
