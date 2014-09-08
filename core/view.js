@@ -2222,6 +2222,10 @@ MODEL({
       defaultValueFn: function() { return this.action.showLabel; }
     },
     {
+      name: 'label',
+      defaultValueFn: function() { return this.action.label; }
+    },
+    {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
     }
@@ -2283,7 +2287,7 @@ MODEL({
       var out = '';
 
       if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
+        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
       if ( this.showLabel ) {
