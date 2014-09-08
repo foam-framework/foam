@@ -399,7 +399,7 @@ MODEL({
 
         str.push('>', prop.tableLabel, arrow);
 
-        if ( this.columnResizeEnabled && i < properties.length - 1 ) 
+        if ( this.columnResizeEnabled ) 
           str.push(this.columnResizerToHTML(
             prop,
             model.getProperty(properties[i+1])));
@@ -468,14 +468,14 @@ MODEL({
         var col1   = self.X.$(id).parentElement;
         var col2   = self.X.$(id).parentElement.nextSibling;
         var w1     = toNum(col1.width);
-        var w2     = toNum(col2.width);
+        var w2     = prop2 ? toNum(col2.width) : 0;
 
         e.preventDefault();
 
         function onMouseMove(e) {
           var delta = e.x - startX;
           prop1.tableWidth = col1.width = w1 + delta;
-          prop2.tableWidth = col2.width = w2 - delta;
+          if ( prop2 ) prop2.tableWidth = col2.width = w2 - delta;
         }
 
         this.X.document.addEventListener('mousemove', onMouseMove);
