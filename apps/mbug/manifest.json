@@ -23,13 +23,5 @@
         "bg.js"
       ]
     }
-  },
-
-  "oauth2": {
-    "client_id": "18229540903-k50r37sk559igljc2bdcat7586ipr7vc.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/projecthosting"
-    ]
   }
 }
