@@ -295,11 +295,15 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.z; self.width; self.height; self.slideAmount; }, this.layout);
+      this.X.dynamic(function() { self.width; self.height; self.slideAmount; }, this.layout);
     },
     updateHTML: function() {
       this.children = [];
       this.layout();
+      this.SUPER();
+    },
+    initHTML: function() {
+      debugger;
       this.SUPER();
     }
   },
@@ -329,8 +333,6 @@ MODEL({
     {
       name: 'layout',
       code: function() {
-        this.z = (this.slideAmount === 0) ? -1 : 1;
-
         var width = Math.min(this.view.preferredWidth,
                              this.width);
 

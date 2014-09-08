@@ -284,11 +284,13 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; }, this.layout);
+      this.X.dynamic(function() { self.width; self.height; self.sliderOpen }, this.layout);
     },
     setPreview: function(){ console.warn('Preview removed from stack view, do it yourself.'); },
     pushView: function(view, opt_label, opt_back, opt_transition) {
       var prev = this.stack[this.stack.length];
+
+      if ( prev ) prev.destroy();
 
       if ( ! opt_back ) {
         this.redo.length = 0;
@@ -327,10 +329,6 @@ MODEL({
         function() {
           self.slideLatch = '';
         })();
-    },
-    initHTML: function() {
-      // TODO: Integrate this into mementomgr.
-      this.X.document.addEventListener('backbutton', this.back);
     }
   },
   listeners: [
@@ -339,6 +337,7 @@ MODEL({
       code: function() {
         this.overlaySlider.x = 0;
         this.overlaySlider.y = 0;
+        this.overlaySlider.z = this.sliderOpen ? 1 : 0;
         this.overlaySlider.width = this.width;
         this.overlaySlider.height = this.height;
 
