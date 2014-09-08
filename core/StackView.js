@@ -327,6 +327,10 @@ MODEL({
         function() {
           self.slideLatch = '';
         })();
+    },
+    initHTML: function() {
+      // TODO: Integrate this into mementomgr.
+      this.X.document.addEventListener('backbutton', this.back);
     }
   },
   listeners: [
