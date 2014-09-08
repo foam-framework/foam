@@ -620,6 +620,9 @@ MODEL({
     install: function(target) {
       this.targets.push(target);
     },
+    uninstall: function(target) {
+      this.targets.deleteI(target);
+    },
 
     checkRecognition: function() {
       if ( this.recognized ) return;
