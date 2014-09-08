@@ -94,7 +94,9 @@ MODEL({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue});
+      var v = this.project.X.FloatingView.create({
+        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue})
+      });
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
@@ -186,7 +188,9 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
-        var view = this.X.IssueOwnerEditView.create(this.model.CC);
+        var view = this.X.FloatingView.create({
+          view: this.X.IssueOwnerEditView.create(this.model.CC)
+        });
         this.X.stack.pushView(view);
         view.focus();
         var self = this;
@@ -555,7 +559,9 @@ MODEL({
     {
       name: 'onClick',
       code: function() {
-        this.editView = this.X.IssueOwnerEditView.create(this.editViewArgs);
+        this.editView = this.X.FloatingView.create({
+          view: this.X.IssueOwnerEditView.create(this.editViewArgs)
+        });
         this.X.stack.pushView(this.editView);
         this.editView.data$ = this.data$;
         this.editView.focus();
