@@ -34,13 +34,16 @@ MODEL({
   traits: ['PositionedViewTrait'],
   methods: {
     toHTML: function() {
-      return '<div id="' + this.id + '" style="' +
-        'transform:' + this.transform() +
-        ';width:' + this.styleWidth() +
-        ';height:' + this.styleHeight() +
-        ';position:absolute;" ' + this.cssClassAttr() + '>' +
+      return '<div id="' + this.id + '"' + this.layoutStyle() + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</div>';
+    },
+    layoutStyle: function() {
+      return ' style="' +
+        '-webkit-transform:' + this.transform() +
+        ';width:' + this.styleWidth() +
+        ';height:' + this.styleHeight() +
+        ';position:absolute;"';
     },
     initHTML: function() {
       this.SUPER();
@@ -71,7 +74,7 @@ MODEL({
       name: 'position',
       code: function() {
         if ( ! this.$ ) return;
-        this.$.style.transform = this.transform();
+        this.$.style.webkitTransform = this.transform();
       }
     },
     {
@@ -333,7 +336,7 @@ MODEL({
 
         if ( this.$ ) {
           var overlay = this.X.$(this.id + '-slider');
-          overlay.style.transform = 'translate3d(0,0,0px)';
+          overlay.style.webkitTransform = 'translate3d(0,0,0px)';
           overlay.style.width = this.width + 'px';
           overlay.style.height = this.height + 'px';
           overlay.style.opacity = this.slideAmount * 0.4;
