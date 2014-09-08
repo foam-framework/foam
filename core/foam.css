@@ -694,6 +694,7 @@ div.gridViewControl select {
 .editColumnView {
   font-size: 80%;
   font-weight: normal;
+  z-index: 2;
 }
 .editColumnView td {
   color: #0000cc;
