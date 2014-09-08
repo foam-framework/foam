@@ -272,6 +272,8 @@ MODEL({
   ],
 
   methods: {
+    MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
+
     ROW_SELECTED: ['escape'],
 
     // Not actually a method, but still works
@@ -474,17 +476,30 @@ MODEL({
 
         function onMouseMove(e) {
           var delta = e.x - startX;
-          prop1.tableWidth = col1.width = w1 + delta;
-          if ( prop2 ) prop2.tableWidth = col2.width = w2 - delta;
+          delta = Math.max(-w1, Math.min(w2, delta));
+          col1.width = w1 + delta;
+          if ( prop2 ) col2.width = w2 - delta;
         }
 
         this.X.document.addEventListener('mousemove', onMouseMove);
         this.X.document.addEventListener('mouseup',   function(e) {
           e.preventDefault();
 
+          if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
+            this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop1.name);
+          } else {
+            prop1.tableWidth = col1.width;
+          }
+          if ( prop2 ) {
+            if ( toNum(col2.width) < this.MIN_COLUMN_SIZE ) {
+              this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop2.name);
+            } else {
+              prop2.tableWidth = col2.width;
+            }
+          }
           self.X.document.removeEventListener('mousemove', onMouseMove);
           self.X.document.removeEventListener('mouseup',   arguments.callee);
-        });
+        }.bind(this));
       }, id);
 
       return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';
