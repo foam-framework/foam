@@ -476,9 +476,8 @@ MODEL({
 
         function onMouseMove(e) {
           var delta = e.x - startX;
-          delta = Math.max(-w1, Math.min(w2, delta));
-          col1.width = w1 + delta;
-          if ( prop2 ) col2.width = w2 - delta;
+          col1.width = w1 + ( prop2 ? Math.min(w2, delta) : delta );
+          if ( prop2 ) col2.width = w2 + Math.min(-delta, w1);
         }
 
         this.X.document.addEventListener('mousemove', onMouseMove);
