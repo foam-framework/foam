@@ -1,0 +1,12 @@
+{
+  "packageId": "com.google.foam.MBug",
+  "versionCode": 1,
+  "oauth2": {
+    "client_id": "18229540903-fois0dr7fn3u0j9a4nnqb275hiods5mk.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/projecthosting"
+    ]
+  },
+  "webview": "system"
+}
