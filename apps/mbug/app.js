@@ -68,9 +68,9 @@ window.onload = function() {
             arequire('OAuth2'),
             arequire('OAuthXhrFactory')),
        function(ret) {
+         var w = Y.Window.create({ window: window });
          mbug = Y.MBug.create();
-         document.body.innerHTML = mbug.toHTML();
-         mbug.initHTML();
+         w.view = mbug;
          ret();
        })(function(){});
 };
