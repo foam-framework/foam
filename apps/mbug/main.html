@@ -42,11 +42,7 @@
     }));
     var w = Y.Window.create({ window: window });
     var mbug = Y.MBug.create();
-    mbug.stack.width$ = w.width$;
-    mbug.stack.height$ = w.height$;
-
-    document.body.insertAdjacentHTML('beforeend', mbug.toHTML());
-    mbug.initHTML();
+    w.view = mbug;
   </script>
  </body>
 </html>

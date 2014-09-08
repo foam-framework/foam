@@ -4751,21 +4751,29 @@ MODEL({
 MODEL({
   name: 'ActionSheetView',
   extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
 
   properties: [
     'actions',
     'data',
+    { name: 'className', defaultValue: 'actionSheet' },
+    { name: 'preferredWidth', defaultValue: 200 },
   ],
 
   help: 'A controller that shows a list of actions.',
 
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <% for( var i = 0, action; action = this.actions[i]; i++ ) {
         var view = this.createActionView(action);
         view.data$ = this.data$;
         out(view);
       } %>
+    */},
+    function CSS() {/*
+      .actionSheet {
+        background: white;
+      }
     */}
   ]
 });

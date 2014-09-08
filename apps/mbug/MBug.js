@@ -56,7 +56,15 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); }
+      factory: function() { return this.X.StackView.create(); },
+      postSet: function(old, v) {
+        if ( old ) {
+          Events.unfollow(this.width$, old.width$);
+          Events.unfollow(this.height$, old.height$);
+        }
+        Events.follow(this.width$, v.width$);
+        Events.follow(this.height$, v.height$);
+      }
     }
   ],
 
