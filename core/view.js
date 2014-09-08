@@ -3012,6 +3012,31 @@ MODEL({
         }
       }
     }
+  ],
+  templates: [
+    function CSS() {/*
+      .swipeAltInner {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .swipeAltOuter {
+        display: flex;
+        overflow: hidden;
+        min-width: 240px;
+        width: 100%;
+      }
+
+      .swipeAltSlider {
+        position: relative;
+        width: 100%;
+        top: 0px;
+        -webkit-transform: translate3d(0,0,0);
+      }
+
+    */}
   ]
 });
 
