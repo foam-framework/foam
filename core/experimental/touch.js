@@ -614,6 +614,7 @@ MODEL({
       this.X.document.addEventListener('mousemove', this.onMouseMove);
       this.X.document.addEventListener('mouseup', this.onMouseUp);
       this.X.document.addEventListener('wheel', this.onWheel);
+      this.X.document.addEventListener('contextmenu', this.onContextMenu);
     },
 
     install: function(target) {
@@ -638,6 +639,14 @@ MODEL({
             return gt.handler;
           }));
       this.recognized = this.gestures[match];
+    },
+
+    // Clears all state in the gesture manager.
+    // This is a blunt instrument, use with care.
+    resetState: function() {
+      this.active = [];
+      this.recognized = null;
+      this.points = {};
     }
   },
 
@@ -815,6 +824,15 @@ MODEL({
         this.points.wheel.done = true;
         delete this.points.wheel;
         this.recognized = undefined;
+      }
+    },
+    {
+      name: 'onContextMenu',
+      code: function() {
+        // Fired when the user right-clicks to open a context menu.
+        // When this happens, we clear state, since sometimes after the context menu,
+        // we get a broken event sequence.
+        this.resetState();
       }
     }
   ]
