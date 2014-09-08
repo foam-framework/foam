@@ -301,10 +301,6 @@ MODEL({
       this.children = [];
       this.layout();
       this.SUPER();
-    },
-    initHTML: function() {
-      debugger;
-      this.SUPER();
     }
   },
   templates: [
