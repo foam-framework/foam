@@ -118,7 +118,7 @@ MODEL({
         s.padding = 0;
         s.margin = 0;
         s.border = 0;
-        this.window.document.body.innerHTML = v.toHTML();
+        this.window.document.body.insertAdjacentHTML('beforeend', v.toHTML());
         v.initHTML();
       }
     }
