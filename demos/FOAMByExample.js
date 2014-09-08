@@ -51,7 +51,16 @@ var dao = XHRXMLDAO.create({
 });
 
 setTimeout(function() {
-  // Pre-select from this DAO into an array, so that it won't fire updates and cause re-rendering.
+  var view = DAOListView.create({
+    dao: dao,
+    rowView: DemoView.xbind({ mode: 'read-only' }),
+    mode: 'read-only'
+  });
+  document.body.insertAdjacentHTML('beforeend', view.toHTML());
+  view.initHTML();
+
+  /*
+  // Old implementation that filters out a single child test for debugging.
   dao.find('View Tests', {
     put: function(test) {
       test.tests.dao.find('TextFieldView/onKeyMode', {
@@ -67,5 +76,6 @@ setTimeout(function() {
       });
     }
   });
+  */
 }, 500);
 

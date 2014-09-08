@@ -4554,15 +4554,16 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
+      var self = this;
       this.preTest();
-      this.test.test();
-      this.postTest();
+      this.test.atest()(function() { self.postTest(); });
     },
     preTest: function() {
       // Override me to insert logic at the start of initHTML, before running the test.
     },
     postTest: function() {
-      // Override me to insert logic between running this test.
+      // Override me to insert logic after running this test.
+      // Called asynchronously, after atest() is really finished.
     }
   }
 });
@@ -4669,8 +4670,16 @@ MODEL({
     },
 
     postTest: function() {
+      // Reinstate the cached child tests.
       this.test.tests = this.oldTests;
-      this.test.results = this.liveView.$.innerHTML;
+
+      // And grab the HTML rendered by the test as its results.
+      // We need the replace() to turn id="view247" into id="view#",
+      // which makes the regression tests far less fragile.
+      var raw = this.liveView.$.innerHTML;
+      this.test.results = raw.replace(/id="view\d+/g, 'id="view#');
+
+      // The above needs to run before SUPER's regression check.
       this.SUPER();
     }
   }
