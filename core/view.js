@@ -2779,7 +2779,7 @@ MODEL({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return ChoiceListView.create({
+        return this.X.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
