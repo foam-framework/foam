@@ -294,6 +294,14 @@ MODEL({
           this.addDecorator(this.X.ActionBorder.create());
         }
       }
+    },
+    {
+      name: 'initializers_',
+      factory: function() { return []; }
+    },
+    {
+      name: 'destructors_',
+      factory: function() { return []; }
     }
   ],
 
@@ -443,12 +451,43 @@ MODEL({
     },
 
     addInitializer: function(f) {
-      (this.initializers_ || (this.initializers_ = [])).push(f);
+      this.initializers_.push(f);
+    },
+    addDestructor: function(f) {
+      this.destructors_.push(f);
+    },
+
+    tapClick: function() {
     },
 
     on: function(event, listener, opt_id) {
       opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
+
+      if ( event === 'click' && this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: {
+            containsPoint: function(x, y, e) {
+              while (e) {
+                if ( e.id === opt_id ) return true;
+                e = e.parentNode;
+              }
+              return false;
+            }
+          },
+          handler: {
+            tapClick: listener
+          },
+          gesture: 'tap'
+        });
+
+        manager.install(target);
+        this.addDestructor(function() {
+          manager.uninstall(target);
+        })
+        return opt_id;
+      }
 
       this.addInitializer(function() {
         var e = $(opt_id);
@@ -504,6 +543,7 @@ MODEL({
     updateHTML: function() {
       if ( ! this.$ ) return;
 
+      this.invokeDestructors();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
@@ -511,6 +551,7 @@ MODEL({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
+      this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
@@ -545,11 +586,12 @@ MODEL({
     },
 
     invokeInitializers: function() {
-      if ( ! this.initializers_ ) return;
-
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
-
-      this.initializers_ = undefined;
+      this.initializers_ = [];
+    },
+    invokeDestructors: function() {
+      for ( var i = 0; i < this.destructors_.length; i++ ) this.destructors_[i]();
+      this.destructors_ = [];
     },
 
     evtToKeyCode: function(evt) {
@@ -591,6 +633,7 @@ MODEL({
 
     destroy: function() {
       // TODO: remove listeners
+      this.invokeDestructors();
     },
 
     close: function() {
