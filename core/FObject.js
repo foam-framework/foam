@@ -74,17 +74,7 @@ var FObject = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    var ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
-    ps.forEach(function(prop) {
-      var name = prop.name;
-      var dynamicValue = prop.dynamicValue;
-
-      Events.dynamic(
-        dynamicValue.bind(this),
-        function(value) { this[name] = value; }.bind(this));
-    }.bind(this));
-
-    ps = this.selectProperties_('factoryProperties_', 'factory');
+    var ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
@@ -98,6 +88,16 @@ var FObject = {
       // if ( ! this.instance_[prop.name] ) this[prop.name] = prop.factory.call(this);
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
     }
+
+    ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
+    ps.forEach(function(prop) {
+      var name = prop.name;
+      var dynamicValue = prop.dynamicValue;
+
+      Events.dynamic(
+        dynamicValue.bind(this),
+        function(value) { this[name] = value; }.bind(this));
+    }.bind(this));
 
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
