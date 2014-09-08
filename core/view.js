@@ -634,6 +634,10 @@ MODEL({
     destroy: function() {
       // TODO: remove listeners
       this.invokeDestructors();
+      for ( var i = 0; i < this.children.length; i++ ) {
+        this.children[i].destroy();
+      }
+      this.children = [];
     },
 
     close: function() {
