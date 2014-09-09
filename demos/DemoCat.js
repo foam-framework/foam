@@ -186,7 +186,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design Calculator',
+    name: 'Calculator (Material-Design)',
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
     keywords: ['app', 'material-design'],
@@ -194,11 +194,11 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design GMail',
+    name: 'GMail (Material-Design)',
     path: '../apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
     keywords: ['app', 'material-design', 'gmail', 'mobile'],
-    image: ''
+    image: 'GMail.png'
   },
   {
     model_: 'Demo',
@@ -210,7 +210,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design Issue Tracker',
+    name: 'Issue Tracker (Material-Design)',
     path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
     keywords: ['app', 'material-design', 'mobile'],
@@ -226,7 +226,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'QuickCompose',
+    name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
     description: 'A Chrome App for composing (and sending) quick GMails.',
     keywords: ['app'],

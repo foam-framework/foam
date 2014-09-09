@@ -5,6 +5,7 @@
 MODEL({
   name: 'MBug',
   description: 'Mobile QuickBug',
+  traits: ['PositionedDOMViewTrait'],
 
   extendsModel: 'View',
 
@@ -13,7 +14,7 @@ MODEL({
       name: 'qbug',
       label: 'QBug',
       subType: 'QBug',
-      view: function() { return DetailView.create({model: QBug}); },
+      view: function() { return this.X.DetailView.create({model: QBug}); },
       factory: function() {
         return this.X.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
@@ -46,14 +47,24 @@ MODEL({
             return this.X.ChangeProjectView.create({data: project.user});
           }
         });
-        var view = Y.DetailView.create({data: pc});
+        var view = FloatingView.create({
+          view: Y.DetailView.create({data: pc})
+        });
         this.stack.setTopView(view);
       }
     },
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); }
+      factory: function() { return this.X.StackView.create(); },
+      postSet: function(old, v) {
+        if ( old ) {
+          Events.unfollow(this.width$, old.width$);
+          Events.unfollow(this.height$, old.height$);
+        }
+        Events.follow(this.width$, v.width$);
+        Events.follow(this.height$, v.height$);
+      }
     }
   ],
 
@@ -83,7 +94,9 @@ MODEL({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue});
+      var v = this.project.X.FloatingView.create({
+        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue})
+      });
       this.stack.pushView(v, '');
     },
     setProject: function(projectName) {
@@ -128,6 +141,14 @@ MODEL({
 MODEL({
   name: 'PriorityCitationView',
   extendsModel: 'PriorityView',
+  methods: {
+    updateHTML: function() {
+      if ( ! this.$ ) return;
+      this.invokeDestructors();
+      this.$.outerHTML = this.toHTML();
+      this.initHTML();
+    }
+  },
   templates: [
     function toHTML() {/*
       <span id="%%id" class="priority priority-<%= this.dataToPriority(this.data) %>">Pri <%= this.dataToPriority(this.data) %></span>
@@ -167,7 +188,9 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
-        var view = this.X.IssueOwnerEditView.create(this.model.CC);
+        var view = this.X.FloatingView.create({
+          view: this.X.IssueOwnerEditView.create(this.model.CC)
+        });
         this.X.stack.pushView(view);
         view.focus();
         var self = this;
@@ -385,10 +408,16 @@ MODEL({
 // used to show and select available projects.
 MODEL({
   name: 'ChangeProjectView',
+  traits: ['PositionedDOMViewTrait'],
   extendsModel: 'DetailView',
 
-  templates: [ function toHTML() {/*
-    <div id="<%= this.id %>" class="project-view">
+  properties: [
+    { name: 'preferredWidth', defaultValue: 304 },
+    { name: 'className', defaultValue: 'change-project-view' },
+  ],
+
+  templates: [
+    function toInnerHTML() {/*
       <div class="header">
         $$email{model_: 'IssueOwnerAvatarView'}
         $$email{mode: 'display-only'}
@@ -410,7 +439,78 @@ MODEL({
         <% }); %>
         </div>
     </div>
-  */} ]
+    */},
+    function CSS() {/*
+      .change-project-view {
+        margin: 0;
+        padding: 0;
+        box-shadow: 1px 0 1px rgba(0,0,0,.1);
+        font-size: 14px;
+        font-weight: 500;
+        background: white;
+      }
+
+      .change-project-view .header {
+        width: 100%;
+        height: 172px;
+        margin-bottom: 0;
+        background-image: url('images/projectBackground.png');
+      }
+
+      .change-project-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: white;
+      }
+
+      .change-project-view span[name=email] {
+        color: white;
+        display: block;
+        margin-top: 40;
+        padding-left: 16px;
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .change-project-view .projectList {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+      }
+
+      .change-project-view .owner-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        margin: 16px;
+      }
+
+      .project-citation {
+        margin-top: 0;
+        height: 48px;
+      }
+
+      .project-citation img {
+        margin-right: 0;
+        width: 24px;
+        height: 24px;
+        margin: 12px 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name {
+        color: rgba(0,0,0,.8);
+        font-size: 14px;
+        margin-left: 16px;
+        vertical-align: middle;
+      }
+
+      .project-citation .project-name.selected {
+        color: #3e50b4;
+      }
+  */}
+ ]
 });
 
 MODEL({
@@ -459,7 +559,9 @@ MODEL({
     {
       name: 'onClick',
       code: function() {
-        this.editView = this.X.IssueOwnerEditView.create(this.editViewArgs);
+        this.editView = this.X.FloatingView.create({
+          view: this.X.IssueOwnerEditView.create(this.editViewArgs)
+        });
         this.X.stack.pushView(this.editView);
         this.editView.data$ = this.data$;
         this.editView.focus();

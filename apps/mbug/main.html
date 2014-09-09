@@ -36,12 +36,13 @@
      ga('create', 'UA-47217230-4', 'google.com');
      ga('send', 'pageview');
    </script>
-   <script>
-     var Y = bootCORE(Application.create({
-       name: 'MBug'
-     }));
-     var mbug = Y.MBug.create();
-     mbug.write(Y.document);
-   </script>
+  <script>
+    var Y = bootCORE(Application.create({
+      name: 'MBug'
+    }));
+    var w = Y.Window.create({ window: window });
+    var mbug = Y.MBug.create();
+    w.view = mbug;
+  </script>
  </body>
 </html>

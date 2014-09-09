@@ -507,7 +507,7 @@ MODEL({
        var matchingQueries = this.queryCache.filter(function(e) { return e[0] === query; });
 
        if ( matchingQueries.length ) {
-         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
+//         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
 
          var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
          if ( matchingOrder.length > 0 ) {
@@ -531,7 +531,7 @@ MODEL({
            }).bind(this));
          }
        } else {
-         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
+//         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 
          console.log('Creating new query: ' + query + '   ' + order);
          this.newQuery(sink, options, query, order, bufOptions, future);

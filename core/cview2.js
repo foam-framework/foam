@@ -36,7 +36,7 @@ MODEL({
         if ( this.$ ) {
           this.$.width = width * this.scalingRatio;
           this.$.style.width = width + 'px';
-          this.paint();
+          window.setTimeout(this.paint, 100);
         }
       }
     },
@@ -48,7 +48,7 @@ MODEL({
         if ( this.$ )  {
           this.$.height = height * this.scalingRatio;
           this.$.style.height = height + 'px';
-          this.paint();
+          window.setTimeout(this.paint, 100);
         }
       }
     },
@@ -456,10 +456,28 @@ MODEL({
         });
     },
 
+    containsPoint: function(x, y, e) {
+      if ( this.$ === e ) return true;
+    },
+
+    tapClick: function() {
+      this.onClick();
+    },
+
     initCView: function() {
       this.addChild(this.pressCircle);
 
-      this.$.addEventListener('click',      this.onClick);
+      if ( this.X.gestureManager ) {
+        // TODO: Glow animations on touch.
+        this.X.gestureManager.install(this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'tap'
+        }));
+      } else {
+        this.$.addEventListener('click',      this.onClick);
+      }
+
       this.$.addEventListener('mousedown',  this.onMouseDown);
       this.$.addEventListener('mouseup',    this.onMouseUp);
       this.$.addEventListener('mouseleave', this.onMouseUp);

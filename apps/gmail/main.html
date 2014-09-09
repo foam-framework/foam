@@ -18,8 +18,9 @@
  <body>
   <script>
     // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
+    var w = Window.create({ window: window });
     var mgmail = MGmail.create({});
-    mgmail.write(document);
+    w.view = mgmail;
   </script>
  </body>
 </html>

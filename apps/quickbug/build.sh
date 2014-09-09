@@ -31,6 +31,7 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \

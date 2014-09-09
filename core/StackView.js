@@ -23,7 +23,7 @@
    Browser history support.
 */
 MODEL({
-  name:  'StackView',
+  name:  'XXXStackView',
   extendsModel: 'View',
 
   properties: [
@@ -248,5 +248,155 @@ MODEL({
         </tr>
       </table>
     */}
+  ]
+});
+
+MODEL({
+  name: 'StackView',
+  traits: ['PositionedDOMViewTrait'],
+  extendsModel: 'View',
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'stack',
+      factory: function() { return []; }
+    },
+    {
+      name: 'redo',
+      factory: function() { return []; }
+    },
+    {
+      name: 'slider',
+      factory: function() { return this.X.ViewSlider.create(); }
+    },
+    {
+      name: 'overlaySlider',
+      factory: function() { return this.X.OverlaySlider.create(); },
+      postSet: function(old, v) {
+        if ( old ) old.unsubscribe(['click'], this.overlayBack);
+        v.subscribe(['click'], this.overlayBack);
+      }
+    },
+    { model_: 'BooleanProperty', name: 'sliderOpen', defaultValue: false },
+    'slideLatch'
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      var self = this;
+      this.X.dynamic(function() { self.width; self.height; self.sliderOpen }, this.layout);
+    },
+    setPreview: function(){ console.warn('Preview removed from stack view, do it yourself.'); },
+    pushView: function(view, opt_label, opt_back, opt_transition) {
+      var prev = this.stack[this.stack.length];
+
+      if ( prev ) prev.destroy();
+
+      if ( ! opt_back ) {
+        this.redo.length = 0;
+        this.propertyChange('redo', this.redo, this.redo);
+      }
+
+      this.stack.push(view);
+      this.propertyChange('stack', this.stack, this.stack);
+
+      if ( opt_transition === 'none' ) {
+        this.slider.setView(view);
+        return;
+      }
+
+      this.slider.reverse = opt_transition === 'fromLeft';
+      this.slider.slideView(view);
+    },
+    setTopView: function(view) {
+      this.stack = [];
+      this.pushView(view, undefined, undefined, 'none');
+    },
+    slideView: function(view, opt_label, opt_side) {
+      if ( this.slideLatch ) {
+        this.slideLatch();
+        this.slideLatch = '';
+      }
+
+      this.sliderOpen = true;
+      this.overlaySlider.view = view;
+
+      var self = this;
+      this.slideLatch = Movement.animate(
+        300,
+        function() { self.overlaySlider.slideAmount = 1 },
+        undefined,
+        function() {
+          self.slideLatch = '';
+        })();
+    }
+  },
+  listeners: [
+    {
+      name: 'layout',
+      code: function() {
+        this.overlaySlider.x = 0;
+        this.overlaySlider.y = 0;
+        this.overlaySlider.z = this.sliderOpen ? 1 : 0;
+        this.overlaySlider.width = this.width;
+        this.overlaySlider.height = this.height;
+
+        this.slider.x = 0;
+        this.slider.y = 0;
+        this.slider.width = this.width;
+        this.slider.height = this.height;
+      }
+    },
+    {
+      name: 'overlayBack',
+      code: function() {
+        if ( this.sliderOpen ) this.back();
+      }
+    }
+  ],
+  templates: [
+    function toInnerHTML() {/* %%overlaySlider %%slider */}
+  ],
+  actions: [
+    {
+      name:  'back',
+      label: '<',
+      help:  'Go to previous view',
+
+      isEnabled: function() { return this.stack.length > 1 || this.sliderOpen; },
+      action: function() {
+        if ( this.sliderOpen ) {
+          if ( this.slideLatch ) {
+            this.slideLatch();
+            this.slideLatch = '';
+          }
+
+          var self = this;
+          this.sliderOpen = false;
+          this.slideLatch = Movement.animate(
+            300,
+            function() { self.overlaySlider.slideAmount = 0; },
+            undefined,
+            function() {
+              self.slideLatch = '';
+              self.overlaySlider.view = '';
+            })();
+        } else {
+          this.redo.push(this.stack.pop());
+          this.pushView(this.stack.pop(), undefined, true, 'fromLeft');
+          this.propertyChange('stack', this.stack, this.stack);
+        }
+      }
+    },
+    {
+      name:  'forth',
+      label: '>',
+      help:  'Undo the previous back.',
+      isEnabled: function() { return this.redo.length > 0; },
+      action: function() {
+        this.pushView(this.redo.pop());
+        this.propertyChange('stack', this.redo, this.redo);
+      }
+    }
   ]
 });

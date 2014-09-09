@@ -66,6 +66,7 @@ queryParser.expr = alt(
 MODEL({
   name: 'MGmail',
   description: 'Mobile Gmail',
+  traits: ['PositionedDOMViewTrait'],
 
   extendsModel: 'View',
 
@@ -75,7 +76,7 @@ MODEL({
       subType: 'AppController',
       postSet: function(_, controller) {
         var view = controller.X.DetailView.create({data: controller});
-        this.stack.setTopView(view);
+        this.stack.setTopView(FloatingView.create({ view: view }));
       }
     },
     { name: 'oauth' },
@@ -113,7 +114,15 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); }
+      factory: function() { return this.X.StackView.create(); },
+      postSet: function(old, v) {
+        if ( old ) {
+          Events.unfollow(this.width$, old.width$);
+          Events.unfollow(this.height$, old.height$);
+        }
+        Events.follow(this.width$, v.width$);
+        Events.follow(this.height$, v.height$);
+      }
     }
   ],
 
@@ -213,7 +222,9 @@ MODEL({
     },
     openEmail: function(email) {
       email = email.clone();
-      var v = this.controller.X.EMailView.create({data: email});
+      var v = this.controller.X.FloatingView.create({
+        view: this.controller.X.EMailView.create({data: email})
+      });
       email.markRead(this.controller.X);
       this.stack.pushView(v, '');
     },
@@ -235,9 +246,11 @@ MODEL({
       name: 'compose',
       label: '+',
       action: function() {
-        var view = this.X.EMailComposeView.create({
-          data: this.X.EMail.create({
-            labels: ['DRAFT']
+        var view = this.X.FloatingView.create({
+          view: this.X.EMailComposeView.create({
+            data: this.X.EMail.create({
+              labels: ['DRAFT']
+            })
           })
         });
         this.X.stack.pushView(view, undefined, undefined, 'fromRight');
@@ -381,6 +394,57 @@ MODEL({
           </div>
         </div>
       </div>
+    */},
+    function CSS() {/*
+    .email-citation {
+      display: flex;
+      border-bottom: solid #B5B5B5 1px;
+      padding: 10px 14px 10px 6px;
+    }
+
+    .email-citation.unread {
+      font-weight: bold;
+    }
+
+    .email-citation .from {
+      display: block;
+      font-size: 17px;
+      line-height: 24px;
+      white-space: nowrap;
+      overflow-x:hidden;
+      text-overflow: ellipsis;
+      flex-grow: 1;
+    }
+
+    .email-citation .timestamp {
+      font-size: 12px;
+      color: rgb(17, 85, 204);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .email-citation .subject {
+      display: block;
+      font-size: 13px;
+      line-height: 17px;
+      overflow-x:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .email-citation .snippet {
+      color: rgb(119, 119, 119);
+      display: block;
+      font-size: 13px;
+      height: 20px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .email-citation .monogram-string-view {
+      margin: auto 6px auto 0;
+    }
     */}
    ]
 });
@@ -388,6 +452,7 @@ MODEL({
 MODEL({
   name: 'MenuView',
   extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
   properties: [
     {
       name: 'topSystemLabelView',
@@ -398,9 +463,13 @@ MODEL({
     {
       name: 'userLabelView',
     },
+    {
+      name: 'preferredWidth',
+      defaultValue: 200
+    }
   ],
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <div class="menuView">
         %%topSystemLabelView
         <br>
@@ -409,8 +478,21 @@ MODEL({
         <br>
         %%bottomSystemLabelView
       </div>
-    */}
-   ]
+    */},
+    function CSS() {/*
+      .menuView {
+        height: 100%;
+        display: block;
+        overflow-y: auto;
+        background: white;
+      }
+
+      .menuView div:hover {
+        background-color: #3e50b4;
+        color: white;
+      }
+   */}
+  ]
 });
 
 MODEL({
@@ -425,8 +507,10 @@ MODEL({
 
 var openComposeView = function(email) {
   var X = mgmail.controller.X;
-  var view = X.EMailComposeView.create({
-    data: email,
+  var view = X.FloatingView.create({
+    view: X.EMailComposeView.create({
+      data: email,
+    })
   });
   X.stack.pushView(view, undefined, undefined, 'fromRight');
 };
