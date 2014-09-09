@@ -372,6 +372,13 @@ MODEL({
         self.hidden = false;
       });
 
+      // Push selection value out to the context so others can use it
+      if (!this.X.selection$) {
+        this.X.selection$ = SimpleValue.create();
+        this.X.selection$ = this.selection$;
+      } else {
+        this.selection$ = this.X.selection$;
+      }
     },
 
     initHTML: function() {

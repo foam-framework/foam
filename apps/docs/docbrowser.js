@@ -29,14 +29,6 @@ MODEL({
       view: { model_: 'TextFieldView', onKeyMode: true }
     },
     {
-      name: 'order',
-      defaultValue: Model.NAME,
-      view: { model_: 'ChoiceView', choices: [
-        [ Model.NAME, 'Alphabetical' ],
-        [ Model.HELP,  'By Description for some reason' ]
-      ] }
-    },
-    {
       name: 'dao',
       factory: function() {
         var newDAO = MDAO.create({model:Model});
@@ -74,6 +66,7 @@ MODEL({
   ]
 });
 
+
 MODEL({ name: 'ModelDescriptionRowView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <div class="thumbnail">
@@ -83,13 +76,12 @@ MODEL({ name: 'ModelDescriptionRowView', extendsModel: 'DetailView', templates: 
 ]});
 
 
-
 MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
 
   templates: [
-    function toHTML()    {/*
+    function toHTML() {/*
       <div id="%%id">
         <div>$$search</div>
         <div>$$filteredDAO</div>
@@ -109,7 +101,6 @@ MODEL({
       name: 'data',
       type: 'Model',
       postSet: function(old, nu) {
-        console.log("Updating HTML in DocView...");
         // replace our content in the DOM
         this.updateHTML();
       }
@@ -124,9 +115,6 @@ MODEL({
 
       if (!model || !model.properties) return;
 
-      console.log(model.name)
-      if (model.name === "String")   { debugger;    }
-
       out.push('<div class="intro">');
       out.push(model.help);
       out.push('</div>');
@@ -136,28 +124,21 @@ MODEL({
 
         if ( prop.hidden ) continue;
 
-        console.log(prop.name)
-
         out.push('<div class="label">');
         out.push(prop.label);
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
           var subModel = this.X[prop.subType];
-console.log("Creating sub-DocView...")
           var subView  = DocView.create({model: subModel});
           if ( subModel != model )
-            console.log("Sub-DocView toHTML()...")
             out.push(subView.toHTML());
         } else {
           out.push(prop.help);
         }
         out.push('</div>');
       }
-
       return out.join('');
     }
-
-
   }
 });
 
@@ -165,6 +146,20 @@ console.log("Creating sub-DocView...")
 MODEL({
   name: 'DocBrowserController',
   extendsModel: 'Model',
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      // Push selection value out to the context so others can use it
+      if (!this.X.selection$) {
+        this.X.selection$ = SimpleValue.create();
+        this.X.selection$ = this.selection$;
+      } else {
+        this.selection$ = this.X.selection$;
+      }
+    }
+  },
 
   properties: [
     {
@@ -192,13 +187,8 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      console.log(this.data);
-
-      this.data.selection$ = this.modelListView.filteredDAOView.selection$;
-
-      console.log("DocBrowserView things:");
-      console.log(this.data.modelList);
-      console.log(this.data.selection);
+      // TODO: find a better way to propagate this information
+      //this.data.selection$ = this.X.selection$ //this.modelListView.filteredDAOView.selection$;
     }
   },
 
