@@ -52,7 +52,7 @@ var demos = [
     model_: 'Demo',
     name: 'Unix Simulator',
     path: 'UnixSimulator.html',
-    description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
+    description: "A simulator which demonstrates the advantage of UNIX's architecture over previous operating-sytems.",
     keywords: ['simulation', 'animation', 'architecture'],
     image: 'UnixSimulator.png'
   },
