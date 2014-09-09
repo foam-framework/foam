@@ -543,7 +543,6 @@ var Events = {
    * Initial value is copied from srcValue to dstValue.
    **/
   link: function (srcValue, dstValue) {
-    console.warn('link', srcValue.$UID, dstValue.$UID);
     this.follow(srcValue, dstValue);
     this.follow(dstValue, srcValue);
   },
@@ -556,7 +555,6 @@ var Events = {
    * @param removeFeedback disables feedback
    */
   relate: function (srcValue, dstValue, f, fprime, removeFeedback) {
-    console.warn('relate', srcValue.$UID, dstValue.$UID);
     if ( ! srcValue || ! dstValue ) return;
 
     var feedback = false;

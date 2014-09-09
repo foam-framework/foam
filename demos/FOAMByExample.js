@@ -45,37 +45,27 @@ MODEL({
   }
 });
 
-var dao = XHRXMLDAO.create({
+var xhrDAO = XHRXMLDAO.create({
   model: UnitTest,
   name: 'FUNTests.xml'
 });
 
 setTimeout(function() {
+  var dao = [];
+  window.X.UnitTestDAO = xhrDAO;
+  xhrDAO.where(EQ(UnitTest.PARENT, '')).select(dao.sink)(function(a) { console.log(a); });
+  dao.dao.listen({
+    put: function(x) {
+      console.warn('master update', x);
+    }
+  });
+
   var view = DAOListView.create({
-    dao: dao,
+    dao: dao.dao,
     rowView: DemoView.xbind({ mode: 'read-only' }),
     mode: 'read-only'
   });
   document.body.insertAdjacentHTML('beforeend', view.toHTML());
   view.initHTML();
-
-  /*
-  // Old implementation that filters out a single child test for debugging.
-  dao.find('View Tests', {
-    put: function(test) {
-      test.tests.dao.find('TextFieldView/onKeyMode', {
-        put: function(t) {
-          var view = DAOListView.create({
-            dao: [t].dao,
-            rowView: DemoView.xbind({ mode: 'read-only' }),
-            mode: 'read-only'
-          });
-          document.body.insertAdjacentHTML('beforeend', view.toHTML());
-          view.initHTML();
-        }
-      });
-    }
-  });
-  */
 }, 500);
 

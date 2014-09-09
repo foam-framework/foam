@@ -1467,12 +1467,7 @@ MODEL({
     {
       name: 'domValue'
     },
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        console.warn('update', this.$UID, 'old=' + old, 'nu=' + nu);
-      }
-    },
+    'data',
     {
       model_: 'StringProperty',
       name: 'readWriteTagName',
@@ -4616,6 +4611,20 @@ MODEL({
     }
   },
 
+  actions: [
+    {
+      name: 'update',
+      label: 'Update Master',
+      help: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
+      isEnabled: function() { return this.test.regression; },
+      action: function() {
+        debugger;
+        this.test.master = this.test.results;
+        this.X.DAO.put(this.test);
+      }
+    }
+  ],
+
   templates: [
     function toHTML() {/*
       <br>
@@ -4628,15 +4637,15 @@ MODEL({
           </tr>
           <tr>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
-              <% this.masterView = FOAM.lookup(this.masterView).create({ data: this.test.master }); out(this.masterView); %>
+              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data: this.test.master }); out(this.masterView); %>
             </td>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
-              <% this.liveView = FOAM.lookup(this.liveView).create({ data: this.test.results }); out(this.liveView); %>
+              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data: this.test.results }); out(this.liveView); %>
             </td>
           </tr>
         </tbody>
       </table>
-      <% out(this.createView(this.test.update)) %>
+      $$update
     */}
   ]
 });
@@ -4661,19 +4670,10 @@ MODEL({
         console.warn('looking up node', v.id, v.$, v.$ === document.getElementById(v.id));
         v.initHTML();
       };
-
-      // Temporarily remove sub-tests to prevent them from being tested also.
-      // This means, that unlike regular UnitTests, UITests do not inherit
-      // variables from their ancestors.
-      this.oldTests = test.tests;
-      test.tests = [];
     },
 
     postTest: function() {
-      // Reinstate the cached child tests.
-      this.test.tests = this.oldTests;
-
-      // And grab the HTML rendered by the test as its results.
+      // Grab the HTML rendered by the test as its results.
       // We need the replace() to turn id="view247" into id="view#",
       // which makes the regression tests far less fragile.
       var raw = this.liveView.$.innerHTML;
@@ -4696,6 +4696,11 @@ MODEL({
     {
       name: 'results',
       view: 'UITestResultView'
+    },
+    {
+      name: 'runChildTests',
+      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
+      defaultValue: false
     }
   ],
 

@@ -34,12 +34,19 @@ MODEL({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( this.data !== dao ) this.data = dao;
+        if ( this.data !== dao ) {
+          this.data = dao;
+          this.X.DAO = dao;
+        }
       }
     }
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      this.X = this.X.sub({ DAO: this.dao });
+    },
     onDAOUpdate: function() {}
   }
 });
@@ -445,6 +452,12 @@ MODEL({
   listeners: [
     {
       name: 'onDAOUpdate',
+      code: function() {
+        this.realDAOUpdate();
+      }
+    },
+    {
+      name: 'realDAOUpdate',
       isAnimated: true,
       code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },

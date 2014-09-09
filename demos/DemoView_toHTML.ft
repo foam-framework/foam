@@ -2,7 +2,7 @@
   var test = this.data;
   var cView = DAOListView.create({
       mode: 'read-only',
-      dao: test.tests.dao,
+      dao: test.tests,
       rowView: DemoView.xbind({ mode: 'read-only' })
   });
 

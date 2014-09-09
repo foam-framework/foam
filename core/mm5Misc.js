@@ -123,24 +123,21 @@ MODEL({
       label: 'Tags'
     },
     {
+      name: 'parent'
+    },
+    {
+      name: 'runChildTests',
+      help: 'Whether the nested child tests should be run when this test is. Defaults to true; set to false for UITests.',
+      defaultValue: true
+    }
+  ],
+
+  relationships: [
+    {
       name: 'tests',
-      label: 'Unit Tests',
-      type: 'Array[Unit Test]',
-      subType: 'UnitTest',
-      view: 'ArrayView',
-      fromElement: function(e) { return DOM.initElementChildren(e, this.X); },
-      preSet: function(_, tests) {
-        if ( Array.isArray(tests) ) return tests;
-
-        var a = [];
-        for ( key in tests ) {
-          a.push(UnitTest.create({name: key, code: tests[key]}));
-        }
-
-        return a;
-      },
-      factory: function() { return []; },
-      help: 'Sub-tests of this test.'
+      label: 'Sub-tests of this test.',
+      relatedModel: 'UnitTest',
+      relatedProperty: 'parent'
     }
   ],
 
@@ -194,17 +191,32 @@ MODEL({
         ret();
       });
 
-      this.tests.forEach(function(test) {
+      if ( this.runChildTests ) {
+        // TODO: This is horrendous, but I can't see a better way.
+        // It would nest quite neatly if there were afunc DAO ops.
+        var future = this.tests.select([].sink);
         afuncs.push(function(ret) {
-          test.scope.__proto__ = self.scope;
-          test.atest()(ret);
+          future(function(innerTests) {
+            var afuncsInner = [];
+            innerTests.forEach(function(test) {
+              afuncsInner.push(function(ret) {
+                test.scope.__proto__ = self.scope;
+                test.atest()(ret);
+              });
+              afuncsInner.push(function(ret) {
+                self.passed += test.passed;
+                self.failed += test.failed;
+                ret();
+              });
+            });
+            if ( afuncsInner.length ) {
+              aseq.apply(this, afuncsInner)(ret);
+            } else {
+              ret();
+            }
+          });
         });
-        afuncs.push(function(ret) {
-          self.passed += test.passed;
-          self.failed += test.failed;
-          ret();
-        });
-      });
+      }
 
       afuncs.push(function(ret) {
         self.hasRun = true;
@@ -267,17 +279,13 @@ MODEL({
     }
   ],
 
-  methods: {
-    MASTER_UPDATE: ['RegressionTest', 'updateMaster']
-  },
-
   actions: [
     {
       name: 'update',
       isEnabled: function() { return ! this.results.equals(this.master); },
       action: function() {
+        console.warn('updating test', this.$UID, this.name, this.master, this.results);
         this.master = this.results;
-        this.publish(this.MASTER_UPDATE);
       }
     }
   ]
