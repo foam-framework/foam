@@ -16,7 +16,6 @@
  */
 
 
-//var Y = this.X.subWindow(window);
 var touchManager = TouchManager.create({});
 touchManager.install(document);
 var gestureManager = GestureManager.create();
@@ -40,7 +39,22 @@ MODEL({
     {
       name: 'dao',
       factory: function() {
-         return MDAO.create({model:Model});
+        var newDAO = MDAO.create({model:Model});
+
+        // This is to make sure getPrototype is called, even if the model object has been created
+        // without a .create or .getPrototype having been called yet.
+        for ( var key in UNUSED_MODELS ) this.X[key].getPrototype && this.X[key].getPrototype();
+        for ( var key in USED_MODELS ) this.X[key].getPrototype && this.X[key].getPrototype();
+
+        // All models are now in USED_MODELS
+        for ( var key in USED_MODELS ) {
+          var m = this.X[key];
+          if ( ! m.getPrototype ) continue;
+          m.getPrototype();
+          newDAO.put(m);
+        };
+
+        return newDAO;
       }
     },
     {
@@ -50,21 +64,6 @@ MODEL({
         model_: 'DAOListView', //'ScrollView',
         rowView: 'ModelDescriptionRowView',
         useSelection: true // clicks are happening, listen for selection$ changes
-      },
-
-      defaultValueFn: function() {
-        // This is to make sure getPrototype is called, even if the model object has been created
-        // without a .create or .getPrototype having been called yet.
-        for ( var key in UNUSED_MODELS ) { window[key].getPrototype && window[key].getPrototype(); }
-        for ( var key in USED_MODELS ) window[key].getPrototype && window[key].getPrototype();
-
-        // All models are now in USED_MODELS
-        for ( var key in USED_MODELS ) {
-          var m = window[key];
-          if ( ! m.getPrototype ) continue;
-          m.getPrototype();
-          this.dao.put(m);
-        };
       },
 
       dynamicValue: function() {
@@ -177,11 +176,6 @@ MODEL({
         model_: 'ControllerView',
         model: ModelListController
       }
-
-//            function(prop) {
-//        return DetailView.create(prop);
-//      }
-        // 'DetailView', // 'ControllerView',
     },
     {
       name: 'selection',
@@ -194,24 +188,13 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
-//  properties: [
-//    {
-//      name: 'data'
-//    }
-//  ],
-
   methods: {
     initHTML: function() {
       this.SUPER();
 
       console.log(this.data);
 
-      this.modelListView.filteredDAOView.selection$.addListener(function(evt) {
-        console.log("CLick!");
-        this.data.selection = this.modelListView.filteredDAOView.selection;
-      }.bind(this));
-
-//      this.data.selection$ = this.modelListView.filteredDAOView.selection$;
+      this.data.selection$ = this.modelListView.filteredDAOView.selection$;
 
       console.log("DocBrowserView things:");
       console.log(this.data.modelList);
@@ -222,45 +205,11 @@ MODEL({
   templates: [
     function toHTML()    {/*
       <div id="%%id">
-        <div style="float:left">$$selection</div>
-        <div style="float:left">$$modelList</div>
+        <div style="float:left;width:50%">$$modelList</div>
+        <div style="float:left;width:50%">$$selection</div>
       </div>
     */}
   ]
 });
 
 
-
-window.setTimeout(function() {
-
-//  var controller = DocBrowserController.create();
-
-//  var view = DocBrowserView.create({data: controller});
-
-//  view.write(document);
-
-//  // This is to make sure getPrototype is called, even if the model object has been created
-//  // without a .create or .getPrototype having been called yet.
-//  for ( var key in UNUSED_MODELS ) { window[key].getPrototype && window[key].getPrototype(); }
-//  for ( var key in USED_MODELS ) window[key].getPrototype && window[key].getPrototype();
-
-//  // All models are now in USED_MODELS
-//  for ( var key in USED_MODELS ) {
-//    var m = window[key];
-//    if ( ! m.getPrototype ) continue;
-//    m.getPrototype();
-//    dao.put(m);
-//  };
-
-//  var controller = ModelListController.create();
-//  var listView = ControllerView.create({data: controller});
-//  listView.write(document);
-
-//  var docView = DocView.create();
-//  docView.write(document);
-
-//  listView.filteredDAOView.selection$.addListener(function(evt) {
-//    docView.model = listView.filteredDAOView.selection;
-//  });
-
-}, 100);
