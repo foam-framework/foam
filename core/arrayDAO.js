@@ -26,7 +26,6 @@
   defineProperties(Array.prototype, pmap);
 })();
 
-
 defineLazyProperty(Array.prototype, 'daoListeners_', function() {
   return {
     value: [],
@@ -112,9 +111,12 @@ defineProperties(Array.prototype, {
     }
     return a;
   },
+  id: function(obj) {
+    return obj.id || obj.$UID;
+  },
   put: function(obj, sink) {
     for ( var idx in this ) {
-      if ( this[idx].id === obj.id ) {
+      if ( this.id(this[idx]) === this.id(obj) ) {
         this[idx] = obj;
         sink && sink.put && sink.put(obj);
         this.notify_('put', arguments);
@@ -137,7 +139,7 @@ defineProperties(Array.prototype, {
       }
     } else {
       for (var idx in this) {
-        if ( this[idx].id === query ) {
+        if ( this.id(this[idx]) === query ) {
           sink && sink.put && sink.put(this[idx]);
           return;
         }
@@ -151,9 +153,10 @@ defineProperties(Array.prototype, {
       sink && sink.error && sink.error('missing key');
       return;
     }
-    var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
+    var objId = this.id(obj);
+    var id = (objId !== undefined && objId !== '') ? objId : obj;
     for ( var idx in this ) {
-      if ( this[idx].id === id ) {
+      if ( this.id(this[idx]) === id ) {
         var rem = this.splice(idx,1)[0];
 //        this.notify_('remove', rem);
         sink && sink.remove && sink.remove(rem[0]);
