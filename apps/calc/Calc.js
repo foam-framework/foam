@@ -45,7 +45,7 @@ MODEL({
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
-MODEL({ name: 'History', properties: [ 'id', 'op', 'a2' ] });
+MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 
 MODEL({
   name: 'Calc',
@@ -77,10 +77,9 @@ MODEL({
       postSet: function(o, n) { console.log(o, ' -> ', n); }
     },
     {
+      model_: 'ArrayProperty',
       name: 'history',
-      model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'HistoryView' },
-      factory: function() { return EasyDAO.create({model: 'History', seqNo: 'true', daoType: 'MDAO' }); }
+      view: { model_: 'DAOListView', rowView: 'HistoryView' }
     }
   ],
 

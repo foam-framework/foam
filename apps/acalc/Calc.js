@@ -85,7 +85,7 @@ MODEL({
 });
 
 
-MODEL({ name: 'History', properties: [ 'id', 'op', 'a2' ] });
+MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 
 
 MODEL({
@@ -292,10 +292,9 @@ MODEL({
       view: 'ALabel'
     },
     {
+      model_: 'ArrayProperty',
       name: 'history',
-      model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'HistoryView' },
-      factory: function() { return EasyDAO.create({model: 'History', seqNo: 'true', daoType: 'MDAO' }); }
+      view: { model_: 'DAOListView', rowView: 'HistoryView' }
     }
   ],
 
