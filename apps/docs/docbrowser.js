@@ -55,7 +55,7 @@ MODEL({
       view: {
         model_: 'DAOListView', //'ScrollView',
         rowView: 'ModelDescriptionRowView',
-        useSelection: true // clicks are happening, listen for selection$ changes
+        //useSelection: true // clicks are happening, listen for selection$ changes
       },
 
       dynamicValue: function() {
@@ -149,15 +149,14 @@ MODEL({
 
   methods: {
     init: function() {
+      // spawn and populate subcontext
+      //this.X = this.X.sub(); // TODO: fix context propagation
+      this.X.selection$ = SimpleValue.create();
+
       this.SUPER();
 
       // Push selection value out to the context so others can use it
-      if (!this.X.selection$) {
-        this.X.selection$ = SimpleValue.create();
-        this.X.selection$ = this.selection$;
-      } else {
-        this.selection$ = this.X.selection$;
-      }
+      this.selection$ = this.X.selection$;
     }
   },
 
@@ -165,7 +164,7 @@ MODEL({
     {
       name: 'modelList',
       factory: function() {
-        return ModelListController.create();
+        return this.X.ModelListController.create();
       },
       view: {
         model_: 'ControllerView',
@@ -182,15 +181,6 @@ MODEL({
 MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
-
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-
-      // TODO: find a better way to propagate this information
-      //this.data.selection$ = this.X.selection$ //this.modelListView.filteredDAOView.selection$;
-    }
-  },
 
   templates: [
     function toHTML()    {/*

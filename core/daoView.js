@@ -340,7 +340,13 @@ MODEL({
         ]}); }
       }
     },
-    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
+//    {
+//      model_: 'BooleanProperty',
+//      name: 'useSelection',
+//      dynamicValueFn: function() {
+//        return this.X.selection$;
+//      }
+//    },
     'selection',
     {
       name: 'scrollContainer',
@@ -372,11 +378,8 @@ MODEL({
         self.hidden = false;
       });
 
-      // Push selection value out to the context so others can use it
-      if (!this.X.selection$) {
-        this.X.selection$ = SimpleValue.create();
-        this.X.selection$ = this.selection$;
-      } else {
+      // bind to selection, if present
+      if (this.X.selection$) {
         this.selection$ = this.X.selection$;
       }
     },
@@ -426,13 +429,13 @@ MODEL({
           }.bind(this, o));
         }
         this.addChild(view);
-        if ( this.useSelection ) {
+        if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
             this.selection = o;
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());
-        if ( this.useSelection ) {
+        if ( this.X.selection$ ) {
           out.push('</div>');
         }
       }.bind(this)})(function() {

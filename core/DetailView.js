@@ -246,7 +246,6 @@ MODEL({
   methods: {
     updateView: function() {
       if ( this.view ) this.view.destroy();
-      debugger;
       this.view = this.viewModel.create({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
