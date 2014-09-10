@@ -11,7 +11,7 @@
     <property name="code" type="function">
       MODEL({name: 'Test', properties: [ { name: 'x' } ]});
       var t = Test.create();
-      t.x$.addListener(function() { log(t.x); });
+      t.x$.addListener(function() { this.log(t.x); }.bind(this));
       t.x = 1;
       t.x = 2;
       t.x = 3;
@@ -45,14 +45,14 @@
       foo.subscribe(['x7'], EventService.oneTime(function() { sevensSeenOneTime++; }));
 
       foo.x = 1;
-      assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'No sevens yet');
+      this.assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'No sevens yet');
       foo.x = 9;
-      assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'Still none');
+      this.assert(sevensSeen === 0 &amp;&amp; sevensSeenOneTime === 0, 'Still none');
       foo.x = 7;
-      assert(sevensSeen === 1 &amp;&amp; sevensSeenOneTime === 1, 'Found one');
+      this.assert(sevensSeen === 1 &amp;&amp; sevensSeenOneTime === 1, 'Found one');
       foo.x = 5;
       foo.x = 7;
-      assert(sevensSeen === 2 &amp;&amp; sevensSeenOneTime === 1, 'And another, but the one-time listener has been removed');
+      this.assert(sevensSeen === 2 &amp;&amp; sevensSeenOneTime === 1, 'And another, but the one-time listener has been removed');
     </property>
   </object>
   <object model="UnitTest">
@@ -85,7 +85,7 @@
       });
 
       var foo = Test.create({});
-      assert(animationCount === 0 &amp;&amp; otherCount === 0, 'Counts start at 0');
+      this.assert(animationCount === 0 &amp;&amp; otherCount === 0, 'Counts start at 0');
       foo.animated();
       foo.animated();
       foo.animated();
@@ -96,9 +96,9 @@
       foo.other();
 
       setTimeout(function() {
-        assert(animationCount === 1 &amp;&amp; otherCount === 1, 'Both counts are 1 due to the merging');
+        this.assert(animationCount === 1 &amp;&amp; otherCount === 1, 'Both counts are 1 due to the merging');
         ret();
-      }, 300);
+      }.bind(this), 300);
     </property>
   </object>
   <object model="UnitTest">
@@ -114,19 +114,19 @@
       x.subscribe(['foo', 'bar'], function() { barCount++; });
       x.subscribe(['foo', 'baz'], function() { bazCount++; });
 
-      assert(barCount === 0 &amp;&amp; bazCount === 0, 'Both counts start at 0');
+      this.assert(barCount === 0 &amp;&amp; bazCount === 0, 'Both counts start at 0');
 
       x.publish(['foo', 'bar']);
-      assert(barCount === 1 &amp;&amp; bazCount === 0, 'Bar was incremented');
+      this.assert(barCount === 1 &amp;&amp; bazCount === 0, 'Bar was incremented');
 
       x.publish(['foo', 'baz']);
-      assert(barCount === 1 &amp;&amp; bazCount === 1, 'Baz was incremented');
+      this.assert(barCount === 1 &amp;&amp; bazCount === 1, 'Baz was incremented');
 
       x.publish(['foo']);
-      assert(barCount === 1 &amp;&amp; bazCount === 1, 'Publishing on a prefix does nothing');
+      this.assert(barCount === 1 &amp;&amp; bazCount === 1, 'Publishing on a prefix does nothing');
 
       x.publish(['foo', EventService.WILDCARD]);
-      assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
+      this.assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
     </property>
   </object>
   <object model="UnitTest">
@@ -142,16 +142,16 @@
       var x = Test.create({ foo: 1, bar: 'asdf' });
       var y = Test.create({});
 
-      assert(!y.foo, 'y.foo is not set to start');
+      this.assert(!y.foo, 'y.foo is not set to start');
 
       Events.follow(x.foo$, y.foo$);
-      log('y.foo now follows x.foo');
-      assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+      this.log('y.foo now follows x.foo');
+      this.assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
 
       x.foo = 3;
-      assert(y.foo === 3, 'Changing x.foo updates y.foo');
+      this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
-      assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
+      this.assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
     </property>
   </object>
   <object model="UnitTest">
@@ -167,16 +167,16 @@
       var x = Test.create({ foo: 1, bar: 'asdf' });
       var y = Test.create({});
 
-      assert(!y.foo, 'y.foo is not set to start');
+      this.assert(!y.foo, 'y.foo is not set to start');
 
       Events.map(x.foo$, y.foo$, function(x) { return 2*x; });
-      log('y.foo now follows x.foo, storing double the value');
-      assert(y.foo === 2 &amp;&amp; !y.bar, 'y.foo immediately updated');
+      this.log('y.foo now follows x.foo, storing double the value');
+      this.assert(y.foo === 2 &amp;&amp; !y.bar, 'y.foo immediately updated');
 
       x.foo = 3;
-      assert(y.foo === 6, 'Changing x.foo updates y.foo');
+      this.assert(y.foo === 6, 'Changing x.foo updates y.foo');
       y.foo = 5;
-      assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
+      this.assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
     </property>
   </object>
   <object model="UnitTest">
@@ -192,16 +192,16 @@
       var x = Test.create({ foo: 1, bar: 'asdf' });
       var y = Test.create({});
 
-      assert(!y.foo, 'y.foo is not set to start');
+      this.assert(!y.foo, 'y.foo is not set to start');
 
       Events.link(x.foo$, y.foo$);
-      log('y.foo now follows x.foo and vice versa');
-      assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+      this.log('y.foo now follows x.foo and vice versa');
+      this.assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
 
       x.foo = 3;
-      assert(y.foo === 3, 'Changing x.foo updates y.foo');
+      this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
-      assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
+      this.assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
     </property>
   </object>
   <object model="UnitTest">
@@ -217,16 +217,16 @@
       var x = Test.create({ foo: 1, bar: 'asdf' });
       var y = Test.create({});
 
-      assert(!y.foo, 'y.foo is not set to start');
+      this.assert(!y.foo, 'y.foo is not set to start');
 
       Events.relate(x.foo$, y.foo$, function(x) { return x*2; }, function(x) { return x/2; });
-      log('y.foo now follows x.foo and vice versa, where x.foo == y.foo*2');
-      assert(y.foo === 2 &amp;&amp; !y.bar, 'y.foo immediately updated');
+      this.log('y.foo now follows x.foo and vice versa, where x.foo == y.foo*2');
+      this.assert(y.foo === 2 &amp;&amp; !y.bar, 'y.foo immediately updated');
 
       x.foo = 3;
-      assert(y.foo === 6, 'Changing x.foo updates y.foo');
+      this.assert(y.foo === 6, 'Changing x.foo updates y.foo');
       y.foo = 5;
-      assert(x.foo === 2.5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
+      this.assert(x.foo === 2.5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
     </property>
   </object>
   <object model="UnitTest">
@@ -242,13 +242,13 @@
       var x = Test.create({ foo: 1, bar: 'asdf' });
       var y = Test.create({ foo$: x.foo$ });
 
-      log('y.foo now follows x.foo and vice versa. They can be considered the same property.');
-      assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
+      this.log('y.foo now follows x.foo and vice versa. They can be considered the same property.');
+      this.assert(y.foo === 1 &amp;&amp; !y.bar, 'y.foo immediately updated');
 
       x.foo = 3;
-      assert(y.foo === 3, 'Changing x.foo updates y.foo');
+      this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
-      assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
+      this.assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
     </property>
   </object>
 
@@ -261,19 +261,19 @@
       var t2 = Test.create({x:2});
 
       t1.x$ = t2.x$;
-      log([t1.x, t2.x]);
+      this.log([t1.x, t2.x]);
 
       t1.x = 3;
-      log([t1.x, t2.x]);
+      this.log([t1.x, t2.x]);
 
       t2.x = 4;
-      log([t1.x, t2.x]);
+      this.log([t1.x, t2.x]);
 
       var t3 = Test.create({x$: t1.x$});
-      log([t1.x, t2.x, t3.x]);
+      this.log([t1.x, t2.x, t3.x]);
 
       t3.x = 5;
-      log([t1.x, t2.x, t3.x]);
+      this.log([t1.x, t2.x, t3.x]);
     </property>
   </object>
 
@@ -281,34 +281,34 @@
     <property name="name">Context Examples</property>
     <property name="code">
       X.a = 42;
-      log(X.a);
+      this.log(X.a);
       var Y = X.sub({a:1,b:2}, 'Y');
-      log(Y);
-      log(Y.a);
+      this.log(Y);
+      this.log(Y.a);
       Mouse.create();
       var m1 = Mouse.create();
       var m2 = Y.Mouse.create();
-      log('m2.X ', m2.X);
-      log('m1.X ', m1.X);
-      log(m2.X.a);
+      this.log('m2.X ', m2.X);
+      this.log('m1.X ', m1.X);
+      this.log(m2.X.a);
       var m3 = m2.X.Mouse.create();
-      log(m3.X);
-      log(m3.X.a);
+      this.log(m3.X);
+      this.log(m3.X.a);
     </property>
   </object>
   <object model="UnitTest">
     <property name="name">Context/SubTest1</property>
     <property name="parent">Context Examples</property>
     <property name="code" type="function">
-      log('sub test 1, part 1');
-      log('sub test 1, part 2');
+      this.log('sub test 1, part 1');
+      this.log('sub test 1, part 2');
     </property>
   </object>
   <object model="UnitTest">
     <property name="name">Context/SubTest2</property>
     <property name="parent">Context Examples</property>
     <property name="code" type="function">
-      log('sub test 2');
+      this.log('sub test 2');
     </property>
   </object>
 
@@ -326,20 +326,20 @@
         ]
       }).create();
 
-      assert(o.s === '', 'Default value for String Properties should be empty string.');
-      o.s = 'string'; assert(o.s === 'string', 'Setting String Properties should work.');
-      o.s = undefined; assert(o.s === '', 'Setting String Properties to undefined should convert value to empty string.');
-      o.s = 1; assert(o.s === '1', 'Setting String Properties to numbers should convert value to String.');
+      this.assert(o.s === '', 'Default value for String Properties should be empty string.');
+      o.s = 'string'; this.assert(o.s === 'string', 'Setting String Properties should work.');
+      o.s = undefined; this.assert(o.s === '', 'Setting String Properties to undefined should convert value to empty string.');
+      o.s = 1; this.assert(o.s === '1', 'Setting String Properties to numbers should convert value to String.');
 
-      assert(o.i === 0, 'Default value for Int Properties should be 0.');
-      o.i = 1; assert(o.i === 1, 'Setting Int Properties should work.');
-      o.i = undefined; assert(o.i === 0, 'Setting Int Properties to undefined should convert value to 0.');
-      o.i = '1'; assert(o.i === 1, 'Setting Int Properties to a string should convert value to Int.');
+      this.assert(o.i === 0, 'Default value for Int Properties should be 0.');
+      o.i = 1; this.assert(o.i === 1, 'Setting Int Properties should work.');
+      o.i = undefined; this.assert(o.i === 0, 'Setting Int Properties to undefined should convert value to 0.');
+      o.i = '1'; this.assert(o.i === 1, 'Setting Int Properties to a string should convert value to Int.');
 
-      assert(o.f === 0.0, 'Default value for Float Properties should be 0.0.');
-      o.f = 1.0; assert(o.f === 1.0, 'Setting Float Properties should work.');
-      o.f = undefined; assert(o.f === 0.0, 'Setting Float Properties to undefined should convert value to 0.0.');
-      o.f = '1.1'; assert(o.f === 1.1, 'Setting Float Properties to a string should convert value to Float.');
+      this.assert(o.f === 0.0, 'Default value for Float Properties should be 0.0.');
+      o.f = 1.0; this.assert(o.f === 1.0, 'Setting Float Properties should work.');
+      o.f = undefined; this.assert(o.f === 0.0, 'Setting Float Properties to undefined should convert value to 0.0.');
+      o.f = '1.1'; this.assert(o.f === 1.1, 'Setting Float Properties to a string should convert value to Float.');
     </property>
   </object>
 
@@ -362,7 +362,7 @@
         .addIndex(Person.NAME)
         .addIndex(Person.SEX, Person.AGE);
 
-      log(dao);
+      this.log(dao);
     </property>
   </object>
   <object model="UnitTest">
@@ -375,7 +375,7 @@
       dao.put(Person.create({id:'3', name:'Steve', age:19}));
       dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
-      dao.select({put: function(p) { log('person: ', p.name); }});
+      dao.select({put: function(p) { this.log('person: ', p.name); }.bind(this)});
     </property>
   </object>
   <object model="UnitTest">
@@ -385,7 +385,7 @@
     <property name="code" type="function">
       var a = [];
       dao.select(a);
-      jlog(a);
+      this.jlog(a);
     </property>
   </object>
 
@@ -393,11 +393,10 @@
     <property name="name">aFunc Tests</property>
     <property name="description">Test FOAM's Asynchronous-Functions (aFunc's).</property>
     <property name="code" type="function">
-      setup = function() {
-        f1 = function(ret) { log('f1() called.'); ret(1); };
-        f2 = function(ret, a) { log('f2() called.'); ret(a,2); };
-        aprint = function(ret) { this.log(argsToArray(arguments).slice(1).join(', ')); ret(); };
-      }
+      console.warn(this.$UID);
+      this.f1 = function(ret) { this.log('f1() called.'); ret(1); };
+      this.f2 = function(ret, a) { this.log('f2() called.'); ret(a,2); };
+      this.aprint = function(ret) { this.log(argsToArray(arguments).slice(1).join(', ')); ret(); };
     </property>
   </object>
   <object model="UnitTest">
@@ -405,8 +404,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      aprint.ao(f2.ao(f1))(ret);
+      this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -414,8 +412,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      aprint.ao(f2.ao(f1))(ret);
+      this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -423,8 +420,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      f1.aseq(f2.aseq(aprint))(ret);
+      this.f1.bind(this).aseq(this.f2.bind(this).aseq(this.aprint.bind(this)))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -432,8 +428,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      f1.aseq(aprint)(ret);
+      this.f1.bind(this).aseq(this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -441,8 +436,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      ao(aprint,f2,f1)(ret);
+      ao(this.aprint.bind(this), this.f2.bind(this), this.f1.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -450,8 +444,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      aseq(f1, aprint)(ret);
+      aseq(this.f1.bind(this), this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -459,8 +452,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      aseq(f1,f2,aprint)(ret);
+      aseq(this.f1.bind(this), this.f2.bind(this), this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -469,9 +461,8 @@
     <property name="async">true</property>
     <property name="description">Test that amemo() only executes its delegate once.</property>
     <property name="code" type="function">
-      setup();
-      m = amemo(function(ret) { log('Should only see this once.'); ret(1); });
-      apar(m, m, m).aseq(aprint)(ret);
+      m = amemo(function(ret) { this.log('Should only see this once.'); ret(1); }.bind(this));
+      apar(m, m, m).aseq(this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -479,11 +470,10 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
       aseq(
-        function(ret) { log('fB'); ret(1); },
-        function(ret) { log('fC'); ret(2); },
-        aprint
+        function(ret) { this.log('fB'); ret(1); }.bind(this),
+        function(ret) { this.log('fC'); ret(2); }.bind(this),
+        this.aprint.bind(this)
       )(ret);
     </property>
   </object>
@@ -492,11 +482,10 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
       apar(
-        function(ret, a) { log('fB'); ret(1); },
-        function(ret, a) { log('fC'); ret(2); }
-      )(aprint.aseq(ret));
+        function(ret, a) { this.log('fB'); ret(1); }.bind(this),
+        function(ret, a) { this.log('fC'); ret(2); }.bind(this)
+      )(this.aprint.bind(this).aseq(ret));
     </property>
   </object>
   <object model="UnitTest">
@@ -504,8 +493,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      arepeat(5, f1)(ret);
+      arepeat(5, this.f1.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -513,8 +501,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      arepeat(5, function(ret, a, b) { log(a); ret(1); }).aseq(aprint)(ret);
+      arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)).aseq(this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -522,10 +509,9 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
       aseq(
-        arepeat(5, function(ret, a, b) { log(a); ret(1); }),
-        aprint)(ret);
+        arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)),
+        this.aprint.bind(this))(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -533,14 +519,13 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
       aseq(
-        function(ret) { log('fA'); ret(1); },
+        function(ret) { this.log('fA'); ret(1); }.bind(this),
         apar(
-          function(ret, a) { log('fB', a); ret(1); },
-          function(ret, a) { log('fC', a); ret(2); }
+          function(ret, a) { this.log('fB', a); ret(1); }.bind(this),
+          function(ret, a) { this.log('fC', a); ret(2); }.bind(this)
         ),
-        aprint
+        this.aprint.bind(this)
       )(ret);
     </property>
   </object>
@@ -549,8 +534,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      log('anop');
+      this.log('anop');
       aseq(alog('before'), anop, alog('after'))(ret);
     </property>
   </object>
@@ -559,8 +543,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      var boo = function() { log('boo'); }
+      var boo = function() { console.log('boo'); };
       boo();
       boo.abind(null)(ret);
     </property>
@@ -570,11 +553,11 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
+      debugger;
       aseq(
-        f1,
-        function() { log('sync fn'); }.abind(this),
-        f2
+        this.f1.bind(this),
+        function() { this.log('sync fn'); }.abind(this),
+        this.f2.bind(this)
       )(ret);
     </property>
   </object>
@@ -583,8 +566,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      log('alog');
+      this.log('alog');
       alog('a message')(ret);
     </property>
   </object>
@@ -593,11 +575,9 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      log('**********');
-      log('************** Beginning asleep2');
+      this.log('**********');
+      this.log('************** Beginning asleep2');
       aseq(alog('before'), asleep(100), alog('after'), asleep(100), alog('much after'))(ret);
-//        log('after it all');
     </property>
   </object>
   <object model="UnitTest">
@@ -605,8 +585,7 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      log('at the start');
+      this.log('at the start');
       aseq(asleep(100), alog('a message'))(ret);
     </property>
   </object>
@@ -615,13 +594,13 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      log('start');
+      this.log('start');
       var functionFuture = afuture();
       var fn = futurefn(functionFuture);
 
       fn("hello");
       setTimeout(function() { fn(" world!"); ret(); }, 200);
+      var log = this.log.bind(this);
       setTimeout(function() { functionFuture.set(log); }, 100);
     </property>
   </object>
@@ -629,15 +608,13 @@
     <property name="name">asynchronized</property>
     <property name="parent">aFunc Tests</property>
     <property name="code" type="function">
-      function setup() {
-        tlock = {};
+      this.tlock = {};
 
-        f1 = aseq(
-          alog('f1 start'),
-          asleep(200),
-          alog('f1 end')
-        );
-      }
+      this.f1 = aseq(
+        alog('f1 start'),
+        asleep(200),
+        alog('f1 end')
+      );
     </property>
   </object>
   <object model="UnitTest">
@@ -645,8 +622,7 @@
     <property name="parent">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      apar(f1, f1, f1)(ret);
+      apar(this.f1, this.f1, this.f1)(ret);
     </property>
   </object>
   <object model="UnitTest">
@@ -654,8 +630,7 @@
     <property name="parent">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      f1 = asynchronized(f1);
+      var f1 = asynchronized(this.f1.bind(this));
 
       apar(f1, f1, f1)(ret);
     </property>
@@ -665,8 +640,7 @@
     <property name="parent">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      setup();
-      apar(aseq(f1, f1, f1), aseq(f1, f1, f1))(ret);
+      apar(aseq(this.f1, this.f1, this.f1), aseq(this.f1, this.f1, this.f1))(ret);
     </property>
   </object>
 
@@ -686,15 +660,15 @@
         function(r) { fdirty(2); r(); },
         function(r) { fdirty(3); r(); },
         function(r) {
-          assert(calls.length == 1 &amp;&amp; calls[0] == 1, 'Only one call should fire right away');
+          this.assert(calls.length == 1 &amp;&amp; calls[0] == 1, 'Only one call should fire right away');
           r();
-        },
+        }.bind(this),
         asleep(250),
         function(r) {
-          assert(calls.length == 2 &amp;&amp; calls[0] == 1 &amp;&amp; calls[1] == 3,
+          this.assert(calls.length == 2 &amp;&amp; calls[0] == 1 &amp;&amp; calls[1] == 3,
               'Both calls should now have fired.');
           r();
-        }
+        }.bind(this)
       )(ret);
     </property>
   </object>
@@ -897,7 +871,7 @@
       var allViews = AllViews.create();
       var dv1 = DetailView.create({ data: allViews });
       var dv2 = DetailView.create({ data: allViews });
-      log('&lt;table&gt;&lt;tr&gt;&lt;td&gt;' + dv1.toHTML() + '&lt;/td&gt;&lt;td&gt;' + dv2.toHTML() + '&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;');
+      this.log('&lt;table&gt;&lt;tr&gt;&lt;td&gt;' + dv1.toHTML() + '&lt;/td&gt;&lt;td&gt;' + dv2.toHTML() + '&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;');
       dv1.initHTML();
       dv2.initHTML();
     </property>
@@ -910,8 +884,8 @@
       var v1 = TextFieldView.create();
       var v2 = TextFieldView.create();
 
-      render(v1);
-      render(v2);
+      this.render(v1);
+      this.render(v2);
 
       v1.data$ = v2.data$;
     </property>
@@ -924,8 +898,8 @@
       var v1 = TextFieldView.create({onKeyMode: true});
       var v2 = TextFieldView.create({onKeyMode: true});
 
-      render(v1);
-      render(v2);
+      this.render(v1);
+      this.render(v2);
 
       v1.data$ = v2.data$;
     </property>
@@ -938,8 +912,8 @@
       var v1 = TextFieldView.create({onKeyMode: true});
       var v2 = TextFieldView.create({mode: 'read-only'});
 
-      render(v1);
-      render(v2);
+      this.render(v1);
+      this.render(v2);
 
       v1.data$ = v2.data$;
     </property>
@@ -953,8 +927,8 @@
       var dv1 = DetailView.create({ data: t });
       var dv2 = DetailView.create({ data: t });
 
-      render(dv1);
-      render(dv2);
+      this.render(dv1);
+      this.render(dv2);
     </property>
   </object>
   <object model="UITest">
@@ -965,7 +939,7 @@
       var t  = Timer.create();
       var dv = DetailView.create({ data: t });
 
-      render(dv);
+      this.render(dv);
       dv.data = TextFieldView.create();
     </property>
   </object>
@@ -977,7 +951,7 @@
       var t  = Timer.create();
       var dv = DetailView.create({showActions:true, data: t });
 
-      render(dv);
+      this.render(dv);
       dv.data = TextFieldView.create();
     </property>
   </object>
@@ -992,7 +966,10 @@
       var v3 = ChoiceListView.create({choices: choices, orientation: 'vertical'});
       var v4 = RadioBoxView.create({choices: choices});
 
-      render(v1); render(v2); render(v3); render(v4);
+      this.render(v1);
+      this.render(v2);
+      this.render(v3);
+      this.render(v4);
 
       v1.data$ = v2.data$ = v3.data$ = v4.data$;
     </property>
@@ -1007,7 +984,9 @@
       var v2 = ChoiceListView.create({choices: choices});
       var v3 = RadioBoxView.create({choices: choices});
 
-      render(v1); render(v2); render(v3);
+      this.render(v1);
+      this.render(v2);
+      this.render(v3);
 
       v1.data$ = v2.data$ = v3.data$;
     </property>
@@ -1088,7 +1067,7 @@
       });
 
       var view = DetailView.create({ data: Message.create() });
-      render(view);
+      this.render(view);
     </property>
   </object>
 
@@ -1125,16 +1104,16 @@
     <property name="description">Demonstrate various properties of FOAM object constructors</property>
     <property name="code" type="function">
       var x = OMTestBase.create({ bar: 'baz' });
-      assert(x.bar === 'baz', 'Constructors can set properties');
-      assert(x.foo === 'rabbits', 'Default values are used if not given');
+      this.assert(x.bar === 'baz', 'Constructors can set properties');
+      this.assert(x.foo === 'rabbits', 'Default values are used if not given');
 
       x.foo = 'kittens';
-      assert(x.foo === 'kittens', 'But the defaults can be overridden');
+      this.assert(x.foo === 'kittens', 'But the defaults can be overridden');
 
       var y = OMTestBase.create(x);
-      assert(y.foo == x.foo, 'FOAM objects can be passed to constructors to copy');
+      this.assert(y.foo == x.foo, 'FOAM objects can be passed to constructors to copy');
       y.foo = 'puppies';
-      assert(y.foo === 'puppies' && x.foo === 'kittens', 'And it\'s really a copy');
+      this.assert(y.foo === 'puppies' &amp;&amp; x.foo === 'kittens', 'And it\'s really a copy');
     </property>
   </object>
   <object model="UnitTest">
@@ -1157,27 +1136,27 @@
       });
 
       var x = model.create({});
-      assert(seqMatches(['bar factory']), 'Factories are called once on init, but defaultValueFns are not');
+      this.assert(seqMatches(['bar factory']), 'Factories are called once on init, but defaultValueFns are not');
 
-      assert(x.foo === 7, 'DefaultValueFns work');
-      assert(seqMatches(['bar factory', 'foo dVF']), 'Requesting x.foo calls the foo property\'s defaultValueFn');
-      assert(x.foo === 7, 'Still just the defaultValueFn');
-      assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
+      this.assert(x.foo === 7, 'DefaultValueFns work');
+      this.assert(seqMatches(['bar factory', 'foo dVF']), 'Requesting x.foo calls the foo property\'s defaultValueFn');
+      this.assert(x.foo === 7, 'Still just the defaultValueFn');
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
           'Requesting x.foo again calls its defaultValueFn again');
-      assert(x.bar === 9, 'The factory property was correctly set too');
-      assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
+      this.assert(x.bar === 9, 'The factory property was correctly set too');
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF']),
           'Requesting x.bar does not call the factory again');
 
       x.foo = 17;
-      assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
           'Overwriting the value causes one more defaultValueFn call');
 
-      assert(x.foo === 17, 'Overwriting the property with the defaultValueFn works');
-      assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(x.foo === 17, 'Overwriting the property with the defaultValueFn works');
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
           'And now requesting it does not call the defaultValueFn');
       x.foo = 7;
-      assert(x.foo === 7, 'Setting the property to the default value still doesn\'t return to calling the defaultValueFn');
-      assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
+      this.assert(x.foo === 7, 'Setting the property to the default value still doesn\'t return to calling the defaultValueFn');
+      this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
           'Requesting it still doesn\'t call defaultValueFn');
     </property>
   </object>
@@ -1203,15 +1182,15 @@
       });
 
       var x = sub.create({});
-      assert(x.foo === 'kittens', 'Default values of base class properties can be overridden');
-      assert(x.bar$, 'Properties not mentioned in the subclass still exist');
-      assert(x.baz$, 'Properties added by the subclass exist too');
+      this.assert(x.foo === 'kittens', 'Default values of base class properties can be overridden');
+      this.assert(x.bar$, 'Properties not mentioned in the subclass still exist');
+      this.assert(x.baz$, 'Properties added by the subclass exist too');
 
       seq = [];
-      assert(seqMatches([]), 'seq starts empty');
+      this.assert(seqMatches([]), 'seq starts empty');
 
       x.doThings();
-      assert(seqMatches(['subclass pre', 'doThings base', 'subclass post']),
+      this.assert(seqMatches(['subclass pre', 'doThings base', 'subclass post']),
           'this.SUPER() calls the same method on the superclass, allowing you to add code before and after it');
     </property>
   </object>
@@ -1222,22 +1201,22 @@
     <property name="code" type="function">
       var x = OMTestBase.create({});
       var s = x.toString();
-      log(s);
-      assert(typeof s === 'string', '.toString() produces strings');
+      this.log(s);
+      this.assert(typeof s === 'string', '.toString() produces strings');
 
       var json = x.toJSON();
-      log(json);
-      assert(typeof json === 'string', '.toJSON() produces JSON strings');
+      this.log(json);
+      this.assert(typeof json === 'string', '.toJSON() produces JSON strings');
       var parsed = JSONUtil.parse(json);
-      assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
-      assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
+      this.assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
+      this.assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
 
       var xml = x.toXML();
-      //log(xml);
-      assert(typeof xml === 'string', '.toXML() produces XML strings');
+      //this.log(xml);
+      this.assert(typeof xml === 'string', '.toXML() produces XML strings');
       parsed = XMLUtil.parse(xml);
-      assert(parsed instanceof Array, '.toXML() output can be parsed by XMLUtil.parse(), which returns an array of parsed objects');
-      assert(OMTestBase.isInstance(parsed[0]), 'The parsed object should be an instance of the original Model');
+      this.assert(parsed instanceof Array, '.toXML() output can be parsed by XMLUtil.parse(), which returns an array of parsed objects');
+      this.assert(OMTestBase.isInstance(parsed[0]), 'The parsed object should be an instance of the original Model');
     </property>
   </object>
   <object model="UnitTest">
@@ -1275,28 +1254,28 @@
       seq = [];
       var x = model.create({});
 
-      assert(seqMatches([]), 'Neither preSet, postSet, getter nor setter are called at creation time unless there are factories');
+      this.assert(seqMatches([]), 'Neither preSet, postSet, getter nor setter are called at creation time unless there are factories');
 
-      assert(x.foo === -1, 'Default values that don\'t pass the preSet are possible!');
-      assert(seqMatches([]), 'Accessing the defaultValue is not an update, so preSet and postSet don\'t fire');
+      this.assert(x.foo === -1, 'Default values that don\'t pass the preSet are possible!');
+      this.assert(seqMatches([]), 'Accessing the defaultValue is not an update, so preSet and postSet don\'t fire');
 
       x.foo = -3;
-      assert(x.foo === -1, 'Updates that are rejected by preSet are ignored');
-      assert(seqMatches(['preSet', 'postSet -1 -1']), 'preSet is called, it returns the old value (-1), postSet is called with old == nu == -1');
+      this.assert(x.foo === -1, 'Updates that are rejected by preSet are ignored');
+      this.assert(seqMatches(['preSet', 'postSet -1 -1']), 'preSet is called, it returns the old value (-1), postSet is called with old == nu == -1');
 
       seq = [];
       x.foo = 7;
-      assert(x.foo === 7, 'Updates that are allowed by preSet actually happen');
-      assert(seqMatches(['preSet', 'postSet -1 7']), 'preSet is called, it returns the new value (7), and then postSet is called with old = -1, nu = 7');
+      this.assert(x.foo === 7, 'Updates that are allowed by preSet actually happen');
+      this.assert(seqMatches(['preSet', 'postSet -1 7']), 'preSet is called, it returns the new value (7), and then postSet is called with old = -1, nu = 7');
 
       seq = [];
-      assert(x.bar === 'kittens', 'bar, the pseudoproperty, calls its getter function when accessed and returns its result')
-      assert(seqMatches(['bar getter']), 'the getter function was indeed called');
+      this.assert(x.bar === 'kittens', 'bar, the pseudoproperty, calls its getter function when accessed and returns its result')
+      this.assert(seqMatches(['bar getter']), 'the getter function was indeed called');
 
       seq = [];
       x.bar = 'puppies';
-      assert(x.bar === 'kittens', 'bar is a pseudoproperty - if its setter does nothing with the value, the getter returns what it always does');
-      assert(seqMatches(['bar setter puppies', 'bar getter']), 'setter was called properly');
+      this.assert(x.bar === 'kittens', 'bar is a pseudoproperty - if its setter does nothing with the value, the getter returns what it always does');
+      this.assert(seqMatches(['bar setter puppies', 'bar getter']), 'setter was called properly');
     </property>
   </object>
 </foam>

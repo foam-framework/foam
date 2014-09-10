@@ -4537,8 +4537,7 @@ MODEL({
       <br>
       <div>Output:</div>
       <pre>
-        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }) %>">
-          <%= this.toInnerHTML() %>
+        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }, this.id) %>">
         </div>
       </pre>
     */},
@@ -4551,12 +4550,16 @@ MODEL({
       this.SUPER();
       var self = this;
       this.preTest();
-      this.test.atest()(function() { self.postTest(); });
+      this.test.atest()(function() {
+        self.postTest();
+        self.X.asyncCallback && self.X.asyncCallback();
+      });
     },
     preTest: function() {
       // Override me to insert logic at the start of initHTML, before running the test.
     },
     postTest: function() {
+      this.updateHTML();
       // Override me to insert logic after running this test.
       // Called asynchronously, after atest() is really finished.
     }
@@ -4606,7 +4609,6 @@ MODEL({
 
   methods: {
     postTest: function() {
-      this.SUPER();
       this.test.regression = this.test.hasRun && ! this.test.results.equals(this.test.master);
     }
   },
@@ -4663,11 +4665,9 @@ MODEL({
     preTest: function() {
       var test = this.test;
       var $ = this.liveView.$;
-      test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
-      test.scope.render = function(v) {
-        console.warn('rendering', test.$UID, v.id);
-        test.append(v.toHTML());
-        console.warn('looking up node', v.id, v.$, v.$ === document.getElementById(v.id));
+      test.X.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
+      test.X.render = function(v) {
+        test.X.append(v.toHTML());
         v.initHTML();
       };
     },

@@ -1,12 +1,8 @@
 <%
   var test = this.data;
-  var cView = DAOListView.create({
-      mode: 'read-only',
-      dao: test.tests,
-      rowView: DemoView.xbind({ mode: 'read-only' })
+  this.childView = this.X.sub({ asyncCallback: this.childrenCallback }).TestsView.create({
+      dao: test.tests
   });
-
-  this.addChild(cView);
 %>
 <h3>{{test.name}}</h3>
 <% if ( test.description ) { %>
@@ -17,6 +13,6 @@
 <% } %>
 <div>Code:</div>
 <pre><div class="code">{{test.code}}</div></pre>
-$$results
-<blockquote><%= cView %></blockquote>
+$$results{ X: this.X.sub({ asyncCallback: this.resultsCallback }) }
+<blockquote><%= this.childView.toHTML() %></blockquote>
 <br>

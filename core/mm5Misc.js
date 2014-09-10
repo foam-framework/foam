@@ -56,11 +56,6 @@ MODEL({
       help: 'Number of sub-tests to fail.'
     },
     {
-      name:  'scope',
-      hidden: true,
-      factory: function() { return {}; }
-    },
-    {
       model_: 'BooleanProperty',
       name: 'async',
       defaultValue: false
@@ -161,11 +156,17 @@ MODEL({
       if ( this.hasRun ) return anop;
       this.hasRun = true;
 
-      this.scope.log    = this.log.bind(this);
-      this.scope.jlog   = this.jlog.bind(this);
-      this.scope.assert = this.assert.bind(this);
-      this.scope.fail   = this.fail.bind(this);
-      this.scope.ok     = this.ok.bind(this);
+      // Copy the test methods into the context.=
+      // The context becomes "this" inside the tests.
+      // The UnitTest object itself becomes this.test inside tests.
+      this.X = this.X.sub({}, this.name);
+      this.X.log    = this.log;
+      this.X.jlog   = this.jlog;
+      this.X.assert = this.assert;
+      this.X.fail   = this.fail;
+      this.X.ok     = this.ok;
+      this.X.append = this.append.bind(this);
+      this.X.test   = this;
 
       this.results = '';
 
@@ -173,18 +174,18 @@ MODEL({
       this.failed = 0;
 
       var code;
-      with ( this.scope ) { code = eval('(' + this.code.toString() + ')'); }
+      code = eval('(' + this.code.toString() + ')');
 
       var afuncs = [];
       var oldLog;
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.scope.log;
+        console.log = self.log.bind(self.X);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this) : code.abind(this));
+      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
@@ -200,7 +201,7 @@ MODEL({
             var afuncsInner = [];
             innerTests.forEach(function(test) {
               afuncsInner.push(function(ret) {
-                test.scope.__proto__ = self.scope;
+                test.X = self.X.sub();
                 test.atest()(ret);
               });
               afuncsInner.push(function(ret) {
