@@ -97,30 +97,27 @@ MODEL({
 });
 
 
-/** A display-only on-line help view. **/
 MODEL({
   name: 'DocView',
-  extendsModel: 'View',
+  extendsModel: 'DetailView',
+  help: 'Displays the documentation of the given Model.',
 
-  properties: [
-    {
-      name: 'data',
-      type: 'Model',
-      help: 'The model for which to show documentation.',
-      postSet: function(old, nu) {
-        // replace our content in the DOM
-        this.updateHTML();
-      }
-    },
-//    {
-//      name: 'introduction',
-//      type:
-//    }
-  ],
+  /// have to override onValueChange to get the HTML update to happen
+  methods: {
+    onValueChange_: function() { this.updateHTML(); },
+  },
+
   templates: [
-    function toInnerHTML()    {/*
-<%    if (this.data) {  %>
+    function toHTML() {/*
+      <div id="%%id">
+        <%=this.toInnerHTML()%>
+      </div>
+    */},
 
+    function toInnerHTML()    {/*
+<% console.log("innnerHTML"); %>
+<%    if (this.data) {  %>
+    <% console.log("Have data!" + this.data); %>
         <div class="introduction">
           <p class="h1"><%=this.data.name%></p>
 <%        if (this.data.extendsModel) { %>
@@ -131,29 +128,47 @@ MODEL({
           <p class="text"><%=this.data.help%></p>
         </div>
         <div class="members">
-<%        for ( var i = 0 ; i < this.data.properties.length ; i++ ) {
-            var prop = this.data.properties[i];
-            if ( prop.hidden ) continue;  %>
-              <div class="label">
-                <%=prop.label%>
-              </div>
-              <div class="text">
-<%            if ( prop.subType && prop.type.indexOf('[') != -1 ) {
-                var subModel = this.X[prop.subType];
-                var subView  = this.X.DocView.create({model: subModel});
-                if ( subModel != this.data ) %>
-                  <%=subView.toHTML()%>
-<%              } else {    %>
-                  <%=prop.help%>
-<%              } %>
-              </div>
-<%          } %>
+          $$properties{ model_: 'DocPropertyView', rowView: 'DocPropertyRowView' }
         </div>
 <%    } %>
     */}
   ]
 
 });
+
+MODEL({
+  name: 'DocPropertyView',
+  extendsModel: 'DAOListView',
+  help: 'Displays the documentation of the given Properties.',
+
+  templates: [
+    function toHTML()    {/*
+      <div id="%%id">
+<%    if (this.data) {  %>
+        <p class="h2">Properties:</p>
+        <div><%=0%></div>
+<%    } else { %>
+        <p class="h2">No Properties.</p>
+<%    } %>
+      </div>
+    */}
+  ]
+});
+
+MODEL({
+  name: 'DocPropertyRowView',
+  extendsModel: 'DetailView',
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id">
+        <p class="h3"><%=this.data.name%></p>
+      </div>
+    */}
+  ]
+});
+
+
 
 
 MODEL({
@@ -201,7 +216,13 @@ MODEL({
     },
     {
       name: 'selection',
-      view: 'DocView'
+      postSet: function() {
+        console.log("setting selection" + this.selection.name);
+      },
+      view: {
+        model_: 'DocView',
+        model: Model,
+      }
     }
   ]
 });
