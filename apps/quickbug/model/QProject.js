@@ -703,7 +703,7 @@ MODEL({
       });
 
       this.X.QIssue.LABELS.toMQL = function() { return 'label'; };
-
+      this.X.QIssue.AUTHOR.toMQL = function() { return 'reporter'; };
 
       this.X.QueryParser = {
         X: this.X,
