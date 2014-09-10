@@ -116,7 +116,7 @@ defineProperties(Array.prototype, {
   },
   put: function(obj, sink) {
     for ( var idx in this ) {
-      if ( this.id(this[idx]) === this.id(obj) ) {
+      if ( this[idx].id === obj.id ) {
         this[idx] = obj;
         sink && sink.put && sink.put(obj);
         this.notify_('put', arguments);
@@ -139,7 +139,7 @@ defineProperties(Array.prototype, {
       }
     } else {
       for (var idx in this) {
-        if ( this.id(this[idx]) === query ) {
+        if ( this[idx].id === query ) {
           sink && sink.put && sink.put(this[idx]);
           return;
         }
@@ -153,10 +153,10 @@ defineProperties(Array.prototype, {
       sink && sink.error && sink.error('missing key');
       return;
     }
-    var objId = this.id(obj);
+    var objId = obj.id;
     var id = (objId !== undefined && objId !== '') ? objId : obj;
     for ( var idx in this ) {
-      if ( this.id(this[idx]) === id ) {
+      if ( this[idx].id === id ) {
         var rem = this.splice(idx,1)[0];
 //        this.notify_('remove', rem);
         sink && sink.remove && sink.remove(rem[0]);
