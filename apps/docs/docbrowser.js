@@ -33,10 +33,15 @@ MODEL({
       factory: function() {
         var newDAO = MDAO.create({model:Model});
 
-        // This is to make sure getPrototype is called, even if the model object has been created
-        // without a .create or .getPrototype having been called yet.
-        for ( var key in UNUSED_MODELS ) this.X[key].getPrototype && this.X[key].getPrototype();
-        for ( var key in USED_MODELS ) this.X[key].getPrototype && this.X[key].getPrototype();
+        // This is to make sure getPrototype is called, even if the model object
+        // has been created without a .create or .getPrototype having been called
+        // yet.
+        for ( var key in UNUSED_MODELS ) {
+          this.X[key].getPrototype && this.X[key].getPrototype();
+        }
+        for ( var key in USED_MODELS ) {
+          this.X[key].getPrototype && this.X[key].getPrototype();
+        }
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
@@ -55,7 +60,6 @@ MODEL({
       view: {
         model_: 'DAOListView', //'ScrollView',
         rowView: 'ModelDescriptionRowView',
-        //useSelection: true // clicks are happening, listen for selection$ changes
       },
 
       dynamicValue: function() {
@@ -70,7 +74,7 @@ MODEL({
 MODEL({ name: 'ModelDescriptionRowView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <div class="thumbnail">
-        <p>$$name{mode:'read-only'}: $$help{mode: 'read-only'}</p>
+        <p>$$name{mode:'read-only'}</p>
       </div>
   */}
 ]});
@@ -84,7 +88,9 @@ MODEL({
     function toHTML() {/*
       <div id="%%id">
         <div>$$search</div>
-        <div>$$filteredDAO</div>
+        <div style="height:90%;overflow-y:scroll">
+          <div>$$filteredDAO</div>
+        </div>
       </div>
     */}
   ]
@@ -100,46 +106,53 @@ MODEL({
     {
       name: 'data',
       type: 'Model',
+      help: 'The model for which to show documentation.',
       postSet: function(old, nu) {
         // replace our content in the DOM
         this.updateHTML();
       }
-    }
+    },
+//    {
+//      name: 'introduction',
+//      type:
+//    }
   ],
+  templates: [
+    function toInnerHTML()    {/*
+<%    if (this.data) {  %>
 
-  methods: {
-    // TODO: make this a template
-    toInnerHTML: function() {
-      var model = this.data;
-      var out   = [];
+        <div class="introduction">
+          <p class="h1"><%=this.data.name%></p>
+<%        if (this.data.extendsModel) { %>
+            <p class="h2">Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></p>
+<%        } else { %>
+            <p class="h2">Extends <a href="#Model">Model</a></p>
+<%        } %>
+          <p class="text"><%=this.data.help%></p>
+        </div>
+        <div class="members">
+<%        for ( var i = 0 ; i < this.data.properties.length ; i++ ) {
+            var prop = this.data.properties[i];
+            if ( prop.hidden ) continue;  %>
+              <div class="label">
+                <%=prop.label%>
+              </div>
+              <div class="text">
+<%            if ( prop.subType && prop.type.indexOf('[') != -1 ) {
+                var subModel = this.X[prop.subType];
+                var subView  = this.X.DocView.create({model: subModel});
+                if ( subModel != this.data ) %>
+                  <%=subView.toHTML()%>
+<%              } else {    %>
+                  <%=prop.help%>
+<%              } %>
+              </div>
+<%          } %>
+        </div>
+<%    } %>
+    */}
+  ]
 
-      if (!model || !model.properties) return;
-
-      out.push('<div class="intro">');
-      out.push(model.help);
-      out.push('</div>');
-
-      for ( var i = 0 ; i < model.properties.length ; i++ ) {
-        var prop = model.properties[i];
-
-        if ( prop.hidden ) continue;
-
-        out.push('<div class="label">');
-        out.push(prop.label);
-        out.push('</div><div class="text">');
-        if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
-          var subModel = this.X[prop.subType];
-          var subView  = DocView.create({model: subModel});
-          if ( subModel != model )
-            out.push(subView.toHTML());
-        } else {
-          out.push(prop.help);
-        }
-        out.push('</div>');
-      }
-      return out.join('');
-    }
-  }
 });
 
 
@@ -157,8 +170,23 @@ MODEL({
 
       // Push selection value out to the context so others can use it
       this.selection$ = this.X.selection$;
+
+      // hack in URL support
+      this.X.selection$.addListener(this.onSelectionChange);
+      window.addEventListener('hashchange', function() {
+        this.selection = this.X[location.hash.substring(1)];
+      }.bind(this));
     }
   },
+
+  listeners: [
+    {
+     name: 'onSelectionChange',
+     code: function(evt) {
+        location.hash = "#" + this.X.selection$.value.name;
+     }
+    }
+  ],
 
   properties: [
     {
