@@ -402,8 +402,6 @@ var ArrayProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        if ( a ) a.dao;
-
         var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
@@ -428,7 +426,6 @@ var ArrayProperty = Model.create({
     {
       name: 'postSet',
       defaultValue: function(oldA, a, prop) {
-        a.dao;
         var name = prop.name + 'ArrayRelay_';
         var l = this[name] || ( this[name] = function() {
           this.propertyChange(prop.name, null, this[prop.name]);
