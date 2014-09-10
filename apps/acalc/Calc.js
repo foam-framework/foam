@@ -288,13 +288,13 @@ MODEL({
     {
       model_: 'StringProperty',
       name: 'row1',
-//      postSet: function(o, n) { console.log(o, ' -> ', n); },
       view: 'ALabel'
     },
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: { model_: 'DAOListView', rowView: 'HistoryView' }
+      view: { model_: 'DAOListView', rowView: 'HistoryView' },
+      factory: function() { return [].sink; }
     }
   ],
 
@@ -325,7 +325,7 @@ MODEL({
       label: 'AC',
       help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
-      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
+      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = [].sink; }
     },
     {
       name: 'sign',
