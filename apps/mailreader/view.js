@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-var LabelView = FOAM({
-
-   model_: 'Model',
-
+MODEL({
    name:  'LabelView',
 
    extendsModel: 'View',
