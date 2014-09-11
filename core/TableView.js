@@ -480,8 +480,7 @@ MODEL({
           if ( prop2 ) col2.width = w2 + Math.min(-delta, w1);
         }
 
-        this.X.document.addEventListener('mousemove', onMouseMove);
-        this.X.document.addEventListener('mouseup',   function(e) {
+        var onMouseUp = (function(e) {
           e.preventDefault();
 
           if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
@@ -496,9 +495,12 @@ MODEL({
               prop2.tableWidth = col2.width;
             }
           }
-          self.X.document.removeEventListener('mousemove', onMouseMove);
-          self.X.document.removeEventListener('mouseup',   arguments.callee);
-        }.bind(this));
+          this.X.document.removeEventListener('mousemove', onMouseMove);
+          this.X.document.removeEventListener('mouseup',   onMouseUp);
+        }).bind(this);
+
+        this.X.document.addEventListener('mousemove', onMouseMove);
+        this.X.document.addEventListener('mouseup',   onMouseUp);
       }, id);
 
       return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';
