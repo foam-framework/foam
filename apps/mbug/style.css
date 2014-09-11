@@ -55,6 +55,12 @@
   font-weight: 400;
 }
 
+.issue-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .issue-edit .priority {
   border-radius: 2px;
   color: white;
@@ -96,15 +102,20 @@
 
 .issue-edit .header {
   background: #3e50b4;
-  position: fixed;
+  height: 176px;
+  flex-shrink: 0;
   width: 100%;
-  top: 0;
-  z-index: 2;
+  -webkit-transform: translate3d(0,0,10px);
   box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
 }
 
 .issue-edit .body {
-  margin-top: 176px;
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+.issue-edit .body-scroller {
+  width: 100%;
 }
 
 .issue-edit .title {
