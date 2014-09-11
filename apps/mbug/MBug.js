@@ -714,6 +714,7 @@ MODEL({
   },
 
   templates: [
+    // ???: Why doesn't this use toInnerHTML()?
     function toHTML() {/*
       <div <%= this.cssClassAttr() %> id="{{this.id}}">
         <div class="header">$$back %%field</div>
