@@ -586,7 +586,7 @@ MODEL({
       help: 'Gestures that are active right now and should be checked for recognition. ' +
           'This is the gestures active on the FIRST touch. ' +
           'Rectangles are not checked for subsequent touches.',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'recognized',
@@ -742,12 +742,8 @@ MODEL({
         }
 
         delete this.points[touch.id];
-        if ( this.recognized ) {
-          if ( Object.keys(this.points).length === 0 ) {
-            this.active[this.recognized.name] = [];
-            this.recognized = undefined;
-          }
-        }
+        this.active = {}
+        this.recognized = undefined;
       }
     },
     {
@@ -761,12 +757,8 @@ MODEL({
         }
 
         delete this.points.mouse;
-        if ( this.recognized ) {
-          if ( Object.keys(this.points).length === 0 ) {
-            this.active[this.recognized.name] = [];
-            this.recognized = undefined;
-          }
-        }
+        this.active = {}
+        this.recognized = undefined;
       }
     },
     {
