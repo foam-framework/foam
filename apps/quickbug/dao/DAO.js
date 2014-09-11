@@ -519,9 +519,9 @@ MODEL({
          } else {
            // We did NOT find a matching order.
            // But we do have at least one match for this query with a different order.
-           // Check the size of the first match's buffer. If it's < 500, we've
+           // Check the size of the first match's buffer. If it's < maxLimit we've
            // got all the data and can simply compute the order ourselves.
-           // If it's >= 500, we have only a subset and need to query the server.
+           // If it's >= maxLimit, we have only a subset and need to query the server.
            var match = matchingQueries[0];
            match[2].select(COUNT())((function(c) {
              if ( c.count < this.maxLimit ) {
