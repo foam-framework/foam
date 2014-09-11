@@ -389,7 +389,6 @@ MODEL({
       // TODO: it would be more efficient to replace SimpleValue with ConstantValue
       // TODO: rename SimpleValue to just Value and make it a Trait?
       var o = this.model_[name];
-
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
       var v = Action.isInstance(o) ?

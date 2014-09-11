@@ -7,6 +7,12 @@
     <script src="docbrowser.js"></script>
   </head>
   <body>
-    <foam id="weee" model="DocBrowserController" view="DocBrowserView"/>
+    <script>
+      Y = X.sub({}, 'baseX');
+
+      var controller = Y.DocBrowserController.create();
+      var view = Y.DocBrowserView.create({ data: controller });
+      view.write(document);
+    </script>
   </body>
 </html>

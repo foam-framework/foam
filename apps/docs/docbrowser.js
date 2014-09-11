@@ -31,7 +31,7 @@ MODEL({
     {
       name: 'dao',
       factory: function() {
-        var newDAO = MDAO.create({model:Model});
+        var newDAO = this.X.MDAO.create({model:Model});
 
         // This is to make sure getPrototype is called, even if the model object
         // has been created without a .create or .getPrototype having been called
@@ -57,15 +57,17 @@ MODEL({
     {
       name: 'filteredDAO',
       model_: 'DAOProperty',
-      view: {
-        model_: 'DAOListView', //'ScrollView',
-        rowView: 'ModelDescriptionRowView',
-      },
 
       dynamicValue: function() {
         return this.dao.orderBy(this.order)
             .where(CONTAINS_IC(Model.NAME, this.search));
       }
+    },
+    {
+       name: 'filteredDAOView',
+       factory: function() {
+         return this.X.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
+       }
     }
   ]
 });
@@ -89,7 +91,8 @@ MODEL({
       <div id="%%id">
         <div>$$search</div>
         <div style="height:90%;overflow-y:scroll">
-          <div>$$filteredDAO</div>
+          <div><%=this.data.filteredDAOView.toHTML()%></div>
+          <% this.data.filteredDAOView.initHTML(); %>
         </div>
       </div>
     */}
@@ -115,9 +118,7 @@ MODEL({
     */},
 
     function toInnerHTML()    {/*
-<% console.log("innnerHTML"); %>
 <%    if (this.data) {  %>
-    <% console.log("Have data!" + this.data); %>
         <div class="introduction">
           <p class="h1"><%=this.data.name%></p>
 <%        if (this.data.extendsModel) { %>
@@ -128,7 +129,7 @@ MODEL({
           <p class="text"><%=this.data.help%></p>
         </div>
         <div class="members">
-          $$properties{ model_: 'DocPropertyView', rowView: 'DocPropertyRowView' }
+          $$properties{ model_: 'DocPropertyView' }
         </div>
 <%    } %>
     */}
@@ -138,16 +139,48 @@ MODEL({
 
 MODEL({
   name: 'DocPropertyView',
-  extendsModel: 'DAOListView',
+  extendsModel: 'DetailView',
   help: 'Displays the documentation of the given Properties.',
+
+  properties: [
+    {
+      name:  'data',
+      postSet: function(_, data) {
+        if ( ! this.model && data && data.model_ ) this.model = data.model_;
+        this.dataDAO = data;
+        this.onValueChange();
+      }
+    },
+    {
+      name:  'dataDAO',
+      preSet: function(_, data) {
+        if (Array.isArray(data)) {
+          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Model});
+          newDAO.select(COUNT())(function(c) {
+            this.count = c.count;
+          }.bind(this));
+          return newDAO;
+        } else {
+          return data;
+        }
+      },
+    },
+    {
+      name: 'count',
+      postSet: function(_, nu) {
+        this.onValueChange();
+      }
+    }
+  ],
 
   templates: [
     function toHTML()    {/*
       <div id="%%id">
-<%    if (this.data) {  %>
+<%    //if (this.count > 0)
+      {  %>
         <p class="h2">Properties:</p>
-        <div><%=0%></div>
-<%    } else { %>
+        <div><%= this.X.DAOListView.create({ rowView: 'DocPropertyRowView', data$: this.dataDAO$ }) %></div>
+<%   // } else { %>
         <p class="h2">No Properties.</p>
 <%    } %>
       </div>
@@ -177,19 +210,21 @@ MODEL({
 
   methods: {
     init: function() {
-      // spawn and populate subcontext
-      //this.X = this.X.sub(); // TODO: fix context propagation
-      this.X.selection$ = SimpleValue.create();
+      // spawn and populate subcontexts
+      this.SearchContext = this.X.sub({}, 'searchX');
+      this.DetailContext = this.X.sub({}, 'detailX');
+      // search context uses a selection value to indicate the chosen Model to display
+      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();
 
       this.SUPER();
 
       // Push selection value out to the context so others can use it
-      this.selection$ = this.X.selection$;
+      this.selection$ = this.SearchContext.selection$;
 
       // hack in URL support
-      this.X.selection$.addListener(this.onSelectionChange);
+      this.SearchContext.selection$.addListener(this.onSelectionChange);
       window.addEventListener('hashchange', function() {
-        this.selection = this.X[location.hash.substring(1)];
+        this.selection = this.SearchContext[location.hash.substring(1)];
       }.bind(this));
     }
   },
@@ -198,7 +233,7 @@ MODEL({
     {
      name: 'onSelectionChange',
      code: function(evt) {
-        location.hash = "#" + this.X.selection$.value.name;
+        location.hash = "#" + this.SearchContext.selection$.value.name;
      }
     }
   ],
@@ -207,11 +242,13 @@ MODEL({
     {
       name: 'modelList',
       factory: function() {
-        return this.X.ModelListController.create();
+        return this.SearchContext.ModelListController.create();
       },
-      view: {
-        model_: 'ControllerView',
-        model: ModelListController
+    },
+    {
+      name: 'modelListView',
+      factory: function() {
+        return this.SearchContext.ControllerView.create({ model: ModelListController, data$: this.modelList$ });
       }
     },
     {
@@ -219,9 +256,11 @@ MODEL({
       postSet: function() {
         console.log("setting selection" + this.selection.name);
       },
-      view: {
-        model_: 'DocView',
-        model: Model,
+    },
+    {
+      name: 'selectionView',
+      factory: function() {
+        return this.DetailContext.DocView.create({ model: Model, data$: this.selection$ });
       }
     }
   ]
@@ -234,8 +273,10 @@ MODEL({
   templates: [
     function toHTML()    {/*
       <div id="%%id">
-        <div style="float:left;width:50%">$$modelList</div>
-        <div style="float:left;width:50%">$$selection</div>
+        <div style="float:left;width:50%"><%=this.data.modelListView.toHTML()%></div>
+        <div style="float:left;width:50%"><%=this.data.selectionView.toHTML()%></div>
+        <% this.data.modelListView.initHTML(); %>
+        <% this.data.selectionView.initHTML(); %>
       </div>
     */}
   ]
