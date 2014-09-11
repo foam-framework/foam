@@ -107,6 +107,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'PriorityView',
   extendsModel: 'View',
@@ -138,6 +139,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'PriorityCitationView',
   extendsModel: 'PriorityView',
@@ -155,6 +157,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'IssueView',
@@ -513,6 +516,7 @@ MODEL({
  ]
 });
 
+
 MODEL({
   name: 'IssueOwnerView',
   extendsModel: 'View',
@@ -569,6 +573,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'IssueOwnerEditView',
