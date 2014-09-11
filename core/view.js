@@ -492,7 +492,7 @@ MODEL({
       this.addInitializer(function() {
         var e = $(opt_id);
         // if ( ! e ) console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
-        if ( e ) e.addEventListener(event, listener.bind(this), false);
+        if ( e ) e.addEventListener(event, listener, false);
       });
 
       return opt_id;
