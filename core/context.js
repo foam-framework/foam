@@ -51,7 +51,7 @@ function subWindow(w, opt_name, isBackground) {
 
   var map = {
     registerModel: function(model, opt_name) {
-      if ( model.getPrototype().installInDocument && ! installedModels.has(model) ) {
+      if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
         // console.log('installing model: ', model.name);
         installedModels.set(model, true);
         model.getPrototype().installInDocument(this, document);

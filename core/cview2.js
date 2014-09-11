@@ -478,9 +478,14 @@ MODEL({
         this.$.addEventListener('click',      this.onClick);
       }
 
-      this.$.addEventListener('mousedown',  this.onMouseDown);
-      this.$.addEventListener('mouseup',    this.onMouseUp);
-      this.$.addEventListener('mouseleave', this.onMouseUp);
+      this.$.addEventListener('mousedown',   this.onMouseDown);
+      this.$.addEventListener('mouseup',     this.onMouseUp);
+      this.$.addEventListener('mouseleave',  this.onMouseUp);
+
+      this.$.addEventListener('touchstart',  this.onMouseDown);
+      this.$.addEventListener('touchend',    this.onMouseUp);
+      this.$.addEventListener('touchleave',  this.onMouseUp);
+      this.$.addEventListener('touchcancel', this.onMouseUp);
     },
     paint: function() {
       var c = this.canvas;
