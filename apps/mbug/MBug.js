@@ -168,8 +168,80 @@ MODEL({
       factory: function() {
         return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
       }
+    },
+    {
+      name: 'scroller$',
+      getter: function() { return this.X.$(this.id + '-scroller'); }
+    },
+    {
+      name: 'scrollHeight'
+    },
+    {
+      name: 'viewportHeight',
+      defaultValueFn: function() {
+        return this.$ && this.$.offsetHeight;
+      }
+    },
+    {
+      name: 'scrollTop',
+      hidden: true,
+      defaultValue: 0,
+      postSet: function(_, nu) {
+        var s = this.$.getElementsByClassName('body')[0];
+        if ( s ) s.scrollTop = nu;
+      }
+    },
+    {
+      name: 'verticalScrollbarView',
+      defaultValue: 'VerticalScrollbarView'
     }
   ],
+  // TODO: Make traits for DOM (overflow: scroll) and abspos scrolling.
+  listeners: [
+    {
+      name: 'verticalScrollMove',
+      code: function(dy, ty, y) {
+        this.scrollTop -= dy;
+      }
+    },
+    {
+      name: 'updateScrollHeight',
+      code: function() {
+        this.scrollHeight = parseFloat(this.scroller$.style.height);
+      }
+    }
+  ],
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      var self = this;
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        container: {
+          containsPoint: function(x, y, e) {
+            var s = self.scroller$;
+            while ( e ) {
+              if ( e === s ) return true;
+              e = e.parentNode;
+            }
+            return false;
+          }
+        },
+        handler: this,
+        gesture: 'verticalScroll'
+      }));
+
+      /*
+      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
+        height$: this.viewportHeight$,
+        scrollTop$: this.scrollTop$,
+        scrollHeight$: this.scrollHeight$
+      });
+
+      this.$.getElementsByClassName('body')[0].insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
+      this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
+      */
+    }
+  },
   actions: [
     {
       name: 'back',
@@ -227,55 +299,57 @@ MODEL({
     // TODO: get options from QProject
     function bodyToHTML() {/*
       <div class="body">
-        <div class="choice">
-        <% if ( this.data.pri ) { %>
-          $$pri{ model_: 'PriorityView' }
-          $$pri{
-            model_: 'PopupChoiceView',
-            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-            showValue: true
-          }
-        <% } else { %>
-          $$priority{ model_: 'PriorityView' }
-          $$priority{
-            model_: 'PopupChoiceView',
-            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-            showValue: true
-          }
-        <% } %>
+        <div id="<%= this.id %>-scroller" class="body-scroller">
+          <div class="choice">
+          <% if ( this.data.pri ) { %>
+            $$pri{ model_: 'PriorityView' }
+            $$pri{
+              model_: 'PopupChoiceView',
+              iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+              showValue: true
+            }
+          <% } else { %>
+            $$priority{ model_: 'PriorityView' }
+            $$priority{
+              model_: 'PopupChoiceView',
+              iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+              showValue: true
+            }
+          <% } %>
+          </div>
+          <div class="choice">
+            <img src="images/ic_keep_24dp.png" class="status-icon">
+            $$status{
+              model_: 'PopupChoiceView',
+              iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+              showValue: true,
+              choices: [
+                'Unconfirmed',
+                'Untriaged',
+                'Available',
+                'Assigned',
+                'Started',
+                'ExternalDependency',
+                'Fixed',
+                'Verified',
+                'Duplicate',
+                'WontFix',
+                'Archived'
+              ]
+            }
+          </div>
+          <div class="separator separator1"></div>
+          <div class="owner">
+            <div class="owner-header">Owner</div>
+            $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
+          </div>
+          <div class="separator separator1"></div>
+          <div class="cc">
+            <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
+            $$cc{model_: 'IssueEmailArrayView'}
+          </div>
+          <%= this.commentsView %>
         </div>
-        <div class="choice">
-          <img src="images/ic_keep_24dp.png" class="status-icon">
-          $$status{
-            model_: 'PopupChoiceView',
-            iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-            showValue: true,
-            choices: [
-              'Unconfirmed',
-              'Untriaged',
-              'Available',
-              'Assigned',
-              'Started',
-              'ExternalDependency',
-              'Fixed',
-              'Verified',
-              'Duplicate',
-              'WontFix',
-              'Archived'
-            ]
-          }
-        </div>
-        <div class="separator separator1"></div>
-        <div class="owner">
-          <div class="owner-header">Owner</div>
-          $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
-        </div>
-        <div class="separator separator1"></div>
-        <div class="cc">
-          <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-          $$cc{model_: 'IssueEmailArrayView'}
-      </div>
-      <%= this.commentsView %>
       </div>
     */},
 
