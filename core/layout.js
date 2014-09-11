@@ -202,6 +202,7 @@ MODEL({
     },
     setView: function(view) {
       if ( this.view ) {
+        this.view.destroy();
         this.$.removeChild(this.view.$);
       }
       this.view = view;
@@ -232,7 +233,10 @@ MODEL({
       };
 
       this.latch = Movement.animate(opt_time, fn, opt_interp, function() {
-        if ( self.view ) self.$.removeChild(self.view.$);
+        if ( self.view ) {
+          self.view.destroy();
+          self.$.removeChild(self.view.$);
+        }
         self.view = view;
         self.incomingView = '';
         self.latch = '';
@@ -286,6 +290,7 @@ MODEL({
     {
       name: 'view',
       postSet: function(old, v) {
+        old && old.destroy();
         if ( this.$ ) { this.updateHTML(); }
       }
     },
