@@ -2953,6 +2953,11 @@ MODEL({
       }, 0);
     },
 
+    destroy: function() {
+      this.SUPER();
+      this.views.forEach(function(c) { c.view.destroy(); });
+    },
+
     snapToCurrent: function(sizeOfMove) {
       var self = this;
       var time = 150 + sizeOfMove * 150;
