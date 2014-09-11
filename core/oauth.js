@@ -346,8 +346,9 @@ MODEL({
   methods: {
     refreshNow_: function(ret) {
       var self = this;
-      chrome.identity.getAuthToken(function(token) {
-        console.log("**** REfresh: ", token);
+      chrome.identity.getAuthToken({
+        interactive: true
+      }, function(token) {
         self.accessToken = token;
         ret(self.accessToken);
       });
