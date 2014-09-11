@@ -533,7 +533,6 @@ MODEL({
     {
       name: 'scrollHeight',
       postSet: function(old, nu) {
-        console.log('updating scrollHeight to ' + nu);
         if ( this.$ ) this.scroller$().style.height = nu + 'px';
       }
     },
@@ -567,7 +566,6 @@ MODEL({
         return nu;
       },
       postSet: function(old, nu) {
-        //console.log('scrolling from ' + old + ' to ' + nu);
         var scroller = this.scroller$();
         if ( scroller ) scroller.style.webkitTransform =
             'translate3d(0px, -' + nu + 'px, 0px)';
@@ -644,7 +642,6 @@ MODEL({
         // TODO: This is messy, but I can't find another way.
         // This totals up the margin, border, padding and body.
         this.rowHeight = this.X.parseFloat(style.height);
-        console.log('ScrollView dynamically found rowHeight to be ' + this.rowHeight + 'px');
         outer.outerHTML = '';
       }
 
