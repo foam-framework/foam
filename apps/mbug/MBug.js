@@ -319,24 +319,15 @@ MODEL({
           </div>
           <div class="choice">
             <img src="images/ic_keep_24dp.png" class="status-icon">
-            $$status{
-              model_: 'PopupChoiceView',
-              iconUrl: 'images/ic_arrow_drop_down_24dp.png',
-              showValue: true,
-              choices: [
-                'Unconfirmed',
-                'Untriaged',
-                'Available',
-                'Assigned',
-                'Started',
-                'ExternalDependency',
-                'Fixed',
-                'Verified',
-                'Duplicate',
-                'WontFix',
-                'Archived'
-              ]
-            }
+            <%=
+              this.createTemplateView('STATUS', {
+                model_: 'PopupChoiceView',
+                iconUrl: 'images/ic_arrow_drop_down_24dp.png',
+                showValue: true,
+                dao: this.X.StatusDAO,
+                objToChoice: function(o) { return [o.status, o.status]; }
+              })
+            %>
           </div>
           <div class="separator separator1"></div>
           <div class="owner">
