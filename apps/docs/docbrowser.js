@@ -26,7 +26,15 @@ MODEL({
   properties: [
     {
       name: 'search',
-      view: { model_: 'TextFieldView', onKeyMode: true }
+      postSet: function() {
+        console.log("Search is: " + this.search);
+      }
+    },
+    {
+      name: 'searchView',
+      factory: function() {
+        return this.X.TextFieldView.create({ data$: this.search$, onKeyMode: true });
+      }
     },
     {
       name: 'dao',
@@ -76,9 +84,10 @@ MODEL({
 MODEL({ name: 'ModelDescriptionRowView', extendsModel: 'DetailView', templates: [
   function toHTML() {/*
       <div class="thumbnail">
-        <p>$$name{mode:'read-only'}</p>
+        <p><%=this.data.name%></p>
       </div>
   */}
+//  <p>$$name{mode:'read-only'}</p>
 ]});
 
 
@@ -86,13 +95,19 @@ MODEL({
   name: 'ControllerView',
   extendsModel: 'DetailView',
 
+  methods: {
+    initHTML: function() {
+      this.data.searchView.initHTML();
+      this.data.filteredDAOView.initHTML();
+    }
+  },
+
   templates: [
     function toHTML() {/*
       <div id="%%id">
-        <div>$$search</div>
+        <div><%=this.data.searchView.toHTML()%></div>
         <div style="height:90%;overflow-y:scroll">
           <div><%=this.data.filteredDAOView.toHTML()%></div>
-          <% this.data.filteredDAOView.initHTML(); %>
         </div>
       </div>
     */}
@@ -270,13 +285,18 @@ MODEL({
   name: 'DocBrowserView',
   extendsModel: 'DetailView',
 
+  methods: {
+    initHTML: function() {
+      this.data.modelListView.initHTML();
+      this.data.selectionView.initHTML();
+    }
+  },
+
   templates: [
     function toHTML()    {/*
       <div id="%%id">
         <div style="float:left;width:50%"><%=this.data.modelListView.toHTML()%></div>
         <div style="float:left;width:50%"><%=this.data.selectionView.toHTML()%></div>
-        <% this.data.modelListView.initHTML(); %>
-        <% this.data.selectionView.initHTML(); %>
       </div>
     */}
   ]

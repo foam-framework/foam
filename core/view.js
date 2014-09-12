@@ -1382,10 +1382,16 @@ MODEL({
       }
     },
     {
-      name: 'domValue'
+      name: 'domValue',
+      postSet: function() {
+        console.log("Typing domValue: "+this.domValue);
+      }
     },
     {
-      name: 'data'
+      name: 'data',
+      postSet: function() {
+        console.log("Typing data: "+this.data);
+      }
     },
     {
       model_: 'StringProperty',
