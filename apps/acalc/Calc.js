@@ -38,7 +38,16 @@ function binaryOp(name, keys, f, sym) {
     name: name,
     label: sym,
     keyboardShortcuts: keys,
-    action: function() { this.op = f; }
+    action: function() {
+      if ( this.op == DEFAULT_OP ) {
+        this.push('', f);
+        this.editable = true;
+      } else {
+        this.equals();
+        this.push('', f);
+        this.editable = true;
+      }
+    }
   };
 }
 
@@ -51,14 +60,8 @@ function unaryOp(name, keys, f, opt_sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      var a1 = this.a1;
-      var a2 = this.a2;
       this.op = f;
-      this.a2 = '';
-      this.history.put(History.create(this));
-      this.a1 = a2;
-      this.a2 = f.call(this, a2);
-      this.op = DEFAULT_OP;
+      this.push(f.call(this, this.a2));
     }
   };
 }
@@ -68,7 +71,15 @@ function num(n) {
   return {
     name: n.toString(),
     keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
-    action: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
+    action: function() {
+      if ( ! this.editable ) {
+        this.push(n);
+        this.editable = true;
+      } else {
+        if ( this.a2 == '0' && ! n ) return;
+        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
+      }
+    }
   };
 }
 
@@ -265,37 +276,25 @@ MODEL({
 
   properties: [
     { name: 'degreesMode', defaultValue: false },
-    { name: 'a1', defaultValue: '0' },
-    { name: 'a2', defaultValue: 0 },
+    { name: 'a1', defaultValue: 0 },
+    { name: 'a2', defaultValue: '' },
+    { name: 'editable', defaultValue: true }, 
     {
       name: 'op',
-      preSet: function(oldOp, newOp) {
-        if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
-          var a3 = this.op(parseFloat(this.a1), parseFloat(this.a2));
-          this.history.put(History.create(this));
-          this.history.put(History.create({a2: a3}));
-          this.a1 = a3;
-          this.a2 = 0;
-        } else if ( this.a2 ) {
-          this.history.put(History.create({a2: this.a2}));
-          this.a1 = this.a2;
-          this.a2 = 0;
-        }
-        return newOp;
-      },
       defaultValue: DEFAULT_OP
-    },
-    {
-      model_: 'StringProperty',
-      name: 'row1',
-      view: 'ALabel'
     },
     {
       model_: 'ArrayProperty',
       name: 'history',
       view: { model_: 'DAOListView', rowView: 'HistoryView' },
       factory: function() { return [].sink; }
-    }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'row1',
+      // TODO: Fix. Doesn't work with unary operations.
+      // view: 'ALabel'
+    },
   ],
 
   methods: {
@@ -303,8 +302,14 @@ MODEL({
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), function() {
-        this.row1 = this.op + ( this.a2 ? '&nbsp;' + this.a2 : '' );
+        this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
       }.bind(this));
+    },
+    push: function(a2, opt_op) {
+      this.history.put(History.create(this));
+      this.a1 = this.a2;
+      this.a2 = a2;
+      this.op = opt_op || DEFAULT_OP;
     }
   },
 
@@ -325,7 +330,12 @@ MODEL({
       label: 'AC',
       help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
-      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = [].sink; }
+      action: function() {
+        this.a2 = '0';
+        this.editable = true;
+        this.op = DEFAULT_OP;
+        this.history = [].sink;
+      }
     },
     {
       name: 'sign',
@@ -346,19 +356,17 @@ MODEL({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        var a1 = this.a1;
-        var a2 = this.a2;
-        this.a1 = a2;
-        this.history.put(History.create(this));
-        this.a2 = this.op(parseFloat(a1), parseFloat(a2));
-        this.op = DEFAULT_OP;
+        this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
+        this.editable = false;
       }
     },
     {
       name: 'backspace',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2 == 0 ? this.a2 : this.a2.toString().substring(0, this.a2.length-1);
+        this.a2 = this.a2.toString.length == 1 ?
+          '0' :
+          this.a2.toString().substring(0, this.a2.length-1) ;
       }
     },
     {
