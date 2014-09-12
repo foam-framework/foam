@@ -631,6 +631,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       this.value.removeListener(this.listener_);
     }
   }

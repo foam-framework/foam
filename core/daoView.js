@@ -542,6 +542,11 @@ MODEL({
       defaultValue: -1
     },
     {
+      name: 'rowSizeView',
+      hidden: true,
+      help: 'If the rowHeight is not set, a rowView will be constructed and its size checked. This property holds that view so it can be destroyed properly.'
+    },
+    {
       name: 'rowView',
       help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
       postSet: function(_, nu) {
@@ -639,9 +644,11 @@ MODEL({
       if ( this.rowHeight < 0 ) {
         var outer = this.X.$(this.id + '-rowsize');
         var style = this.X.window.getComputedStyle(outer.children[0]);
-        // TODO: This is messy, but I can't find another way.
-        // This totals up the margin, border, padding and body.
         this.rowHeight = this.X.parseFloat(style.height);
+
+        // Now destroy it properly.
+        this.rowSizeView.destroy();
+        this.rowSizeView = '';
         outer.outerHTML = '';
       }
 
@@ -877,9 +884,9 @@ MODEL({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              var view = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
-              out(view.toHTML());
-              this.addChild(view);
+              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
+              out(this.rowSizeView.toHTML());
+              this.addChild(this.rowSizeView);
             %>
           </div>
         <% } %>

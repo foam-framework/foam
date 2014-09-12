@@ -600,6 +600,10 @@ MODEL({
     {
       name: 'scrollWheelTimeout',
       defaultValue: 300
+    },
+    {
+      name: 'scrollViewTargets',
+      defaultValue: 0
     }
   ],
 
@@ -632,6 +636,13 @@ MODEL({
     },
     uninstall: function(target) {
       this.targets.deleteI(target);
+    },
+
+    debug_tag: function() {
+      this.targets.forEach(function(x) { x.seen = true; });
+    },
+    debug_sweep: function() {
+      this.targets.forEach(function(x) { if ( x.seen ) { console.log(x); } });
     },
 
     checkRecognition: function() {
