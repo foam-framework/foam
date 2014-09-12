@@ -26,9 +26,6 @@ MODEL({
   properties: [
     {
       name: 'search',
-      postSet: function() {
-        console.log("Search is: " + this.search);
-      }
     },
     {
       name: 'searchView',
@@ -268,9 +265,6 @@ MODEL({
     },
     {
       name: 'selection',
-      postSet: function() {
-        console.log("setting selection" + this.selection.name);
-      },
     },
     {
       name: 'selectionView',

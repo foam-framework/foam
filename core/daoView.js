@@ -369,8 +369,6 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      console.log("*** DAOListView init. Context:" + this.X.NAME);
-
       var self = this;
       this.subscribe(this.ON_HIDE, function() {
         self.hidden = true;
