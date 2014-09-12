@@ -50,6 +50,19 @@ MODEL({
       defaultValueFn: function() { return this.qbug.user; }
     },
     {
+      name: 'openPredicate',
+      factory: function() {
+        var ss = this.project.issuesConfig.statuses;
+        var os = [];
+        for ( var i = 0 ; i < ss.length ; i++ ) {
+          var s = ss[i];
+          if ( ! s.meansOpen ) os.push(s.status);
+        }
+        return '-status=' + os.join(',');
+      },
+      postSet: function(_, value) { this.X.openPredicate = value; }
+    },
+    {
       name: 'LabelDAO',
       help: 'DAO of known labels.',
       factory: function() {
@@ -709,6 +722,8 @@ MODEL({
         X: this.X,
         __proto__: QueryParserFactory(this.X.QIssue),
 
+        isOpen: literal_ic('is:open'),
+
         stars: seq(literal_ic('stars:'), sym('number')),
 
         labelMatch: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
@@ -716,6 +731,9 @@ MODEL({
         summary: str(plus(notChar(' ')))
 
       }.addActions({
+        isOpen: function(v) {
+          return this.X.QueryParser.parseString(this.X.openPredicate);
+        },
         stars: function(v) {
           return GTE({
             f: function(i) { return i.stars; },
@@ -749,6 +767,7 @@ MODEL({
 
 
       this.X.QueryParser.expr = alt(
+        sym('isOpen'),
         this.X.QueryParser.export('expr'),
         sym('stars'),
         sym('labelMatch'),

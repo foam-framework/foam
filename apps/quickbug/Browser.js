@@ -190,14 +190,7 @@ MODEL({
     {
       name: 'searchChoice',
       factory: function() {
-        // determine 'open' query from project configuration
-        var ss = this.project.project.issuesConfig.statuses;
-        var os = [];
-        for ( var i = 0 ; i < ss.length ; i++ ) {
-          var s = ss[i];
-          if ( s.meansOpen ) os.push(s.status);
-        }
-        var open = 'status=' + os.join(',');
+        var open = this.project.openPredicate;
 
         return ChoiceView.create({
           helpText: 'Search within:',
