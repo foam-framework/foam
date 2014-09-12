@@ -135,7 +135,10 @@ MODEL({
         return this.X.LazyCacheDAO.create({
           model: this.X.QIssueComment,
           cacheOnSelect: true,
-          cache: IDBDAO.create({ model: this.X.QIssueComment, useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
+          cache: IDBDAO.create({
+            model: this.X.QIssueComment,
+            name: this.projectName + '_' + this.X.QIssueComment.plural,
+            useSimpleSerialization: false }).addIndex(QIssueComment.ISSUE_ID),
           delegate: this.X.QIssueCommentNetworkDAO.create({
             model: this.X.QIssueComment,
             url: 'https://www.googleapis.com/projecthosting/v2/projects/' + this.projectName + '/issues',
