@@ -736,7 +736,12 @@ MODEL({
 
     toHTML: function() { return this.view.toHTML(); },
 
-    initHTML: function() { this.view.initHTML(); }
+    initHTML: function() { this.view.initHTML(); },
+
+    destroy: function() {
+      this.SUPER();
+      this.view.destroy();
+    }
   }
 });
 
@@ -860,7 +865,10 @@ MODEL({
         DOM.setClass(this.$, 'fadeout');
       }
     },
-    destroy: function() { this.close(); }
+    destroy: function() {
+      this.SUPER();
+      this.close();
+    }
   }
 });
 
@@ -922,6 +930,7 @@ MODEL({
       this.$ && this.$.remove();
     },
     destroy: function() {
+      this.SUPER();
       this.close();
       this.view.destroy();
     }
@@ -1562,7 +1571,10 @@ MODEL({
       return value;
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   },
 
   listeners: [
@@ -1733,7 +1745,10 @@ MODEL({
       }
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   }
 });
 
@@ -1786,6 +1801,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1823,6 +1839,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1873,7 +1890,7 @@ MODEL({
     },
     initHTML: function() {
       if ( ! this.$ ) return;
-      this.invokeInitializers();
+      this.SUPER();
       this.updateHTML();
     },
     updateHTML: function() {

@@ -194,6 +194,28 @@ MODEL({
     {
       name: 'verticalScrollbarView',
       defaultValue: 'VerticalScrollbarView'
+    },
+    {
+      name: 'scrollGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        var self = this;
+        return this.X.GestureTarget.create({
+          container: {
+            containsPoint: function(x, y, e) {
+              var s = self.scroller$;
+              while ( e ) {
+                if ( e === s ) return true;
+                e = e.parentNode;
+              }
+              return false;
+            }
+          },
+          handler: this,
+          gesture: 'verticalScroll'
+        });
+      }
     }
   ],
   // TODO: Make traits for DOM (overflow: scroll) and abspos scrolling.
@@ -214,21 +236,7 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      var self = this;
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: {
-          containsPoint: function(x, y, e) {
-            var s = self.scroller$;
-            while ( e ) {
-              if ( e === s ) return true;
-              e = e.parentNode;
-            }
-            return false;
-          }
-        },
-        handler: this,
-        gesture: 'verticalScroll'
-      }));
+      this.X.gestureManager.install(this.scrollGesture);
 
       /*
       var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
@@ -240,6 +248,11 @@ MODEL({
       this.$.getElementsByClassName('body')[0].insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
       */
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.X.gestureManager.uninstall(this.scrollGesture);
     }
   },
   actions: [
