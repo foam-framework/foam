@@ -39,6 +39,7 @@ MODEL({
           name: project.projectName,
           model: Y.QIssue,
           dao: Y.issueDAO,
+          editableCitationViews: true,
           queryParser: Y.QueryParser,
           citationView: 'IssueCitationView',
           sortChoices: project.defaultSortChoices,
