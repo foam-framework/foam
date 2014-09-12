@@ -546,6 +546,7 @@ MODEL({
       this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
         put: function(bookmark) {
           this.memento = bookmark.url;
+          this.search();
         }.bind(this),
         error: function () {
           this.search();
