@@ -465,6 +465,7 @@ MODEL({
       listener = listener.bind(this);
 
       if ( event === 'click' && this.X.gestureManager ) {
+        var self = this;
         var manager = this.X.gestureManager;
         var target = this.X.GestureTarget.create({
           container: {
@@ -476,8 +477,17 @@ MODEL({
               return false;
             }
           },
+          getElement: function() {
+            return self.X.$(opt_id);
+          },
           handler: {
-            tapClick: listener
+            tapClick: function() {
+              // Create a fake event.
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { }
+              });
+            }
           },
           gesture: 'tap'
         });
@@ -485,7 +495,7 @@ MODEL({
         manager.install(target);
         this.addDestructor(function() {
           manager.uninstall(target);
-        })
+        });
         return opt_id;
       }
 
