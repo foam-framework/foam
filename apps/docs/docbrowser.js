@@ -169,7 +169,7 @@ MODEL({
         if (Array.isArray(data)) {
           var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property});
 
-//          newDAO = newDAO.where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
+          newDAO = newDAO.where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
 
           newDAO.select(COUNT())(function(c) {
             this.count = c.count;
