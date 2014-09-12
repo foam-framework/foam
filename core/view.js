@@ -2867,6 +2867,18 @@ MODEL({
         this.slider.style['-webkit-transform'] = 'translate3d(-' +
             nu + 'px, 0, 0)';
       }
+    },
+    {
+      name: 'swipeGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'horizontalScroll'
+        });
+      }
     }
   ],
 
@@ -2937,11 +2949,7 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
-        handler: this,
-        gesture: 'horizontalScroll'
-      }));
+      this.X.gestureManager.install(this.swipeGesture);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2955,6 +2963,7 @@ MODEL({
 
     destroy: function() {
       this.SUPER();
+      this.X.gestureManager.uninstall(this.swipeGesture);
       this.views.forEach(function(c) { c.view.destroy(); });
     },
 
