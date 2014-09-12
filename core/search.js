@@ -199,7 +199,6 @@ MODEL({
         this.predicate = TRUE;
       }
     }
-
   ]
 });
 

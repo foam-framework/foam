@@ -69,10 +69,10 @@ MODEL({
       }
     },
     {
-       name: 'filteredDAOView',
-       factory: function() {
-         return this.X.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
-       }
+      name: 'filteredDAOView',
+      factory: function() {
+        return this.X.DAOListView.create({ data$: this.filteredDAO$, rowView: 'ModelDescriptionRowView' });
+      }
     }
   ]
 });
@@ -132,11 +132,11 @@ MODEL({
     function toInnerHTML()    {/*
 <%    if (this.data) {  %>
         <div class="introduction">
-          <p class="h1"><%=this.data.name%></p>
+          <h1><%=this.data.name%></h1>
 <%        if (this.data.extendsModel) { %>
-            <p class="h2">Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></p>
+            <h2>Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></h2>
 <%        } else { %>
-            <p class="h2">Extends <a href="#Model">Model</a></p>
+            <h2>Extends <a href="#Model">Model</a></h2>
 <%        } %>
           <p class="text"><%=this.data.help%></p>
         </div>
@@ -167,7 +167,10 @@ MODEL({
       name:  'dataDAO',
       preSet: function(_, data) {
         if (Array.isArray(data)) {
-          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Model});
+          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property});
+
+//          newDAO = newDAO.where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
+
           newDAO.select(COUNT())(function(c) {
             this.count = c.count;
           }.bind(this));
@@ -187,15 +190,18 @@ MODEL({
 
   templates: [
     function toHTML()    {/*
-      <div id="%%id">
-<%    //if (this.count > 0)
-      {  %>
-        <p class="h2">Properties:</p>
-        <div><%= this.X.DAOListView.create({ rowView: 'DocPropertyRowView', data$: this.dataDAO$ }) %></div>
-<%   // } else { %>
-        <p class="h2">No Properties.</p>
-<%    } %>
+      <div id="%%id" class="%%cssClassAttr">
+        <%=this.toInnerHTML()%>
       </div>
+    */},
+    function toInnerHTML()    {/*
+    <%    if (this.count > 0)
+          {  %>
+            <h2>Properties:</h2>
+            <div><%= this.X.DAOListView.create({ rowView: 'DocPropertyRowView', data$: this.dataDAO$ }) %></div>
+    <%    } else { %>
+            <h2>No Properties.</h2>
+    <%    } %>
     */}
   ]
 });
@@ -206,8 +212,9 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <p class="h3"><%=this.data.name%></p>
+      <div id="%%id" class="propertyRowView">
+        <h3><%=this.data.name%></h3>
+        <p><%=this.data.help%></p>
       </div>
     */}
   ]
@@ -289,8 +296,11 @@ MODEL({
   templates: [
     function toHTML()    {/*
       <div id="%%id">
-        <div style="float:left;width:50%"><%=this.data.modelListView.toHTML()%></div>
-        <div style="float:left;width:50%"><%=this.data.selectionView.toHTML()%></div>
+        <h1>FOAM Documentation Browser</h1>
+        <div class="contentPanes">
+          <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
+          <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
+        </div>
       </div>
     */}
   ]
