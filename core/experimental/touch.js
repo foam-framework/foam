@@ -618,6 +618,16 @@ MODEL({
     },
 
     install: function(target) {
+      // Check for dupes first. Nothing sophisticated, just checking if the
+      // GestureTarget is === to any already registered. There are no
+      // circumstances where double-registering an identical target is good.
+      for ( var i = 0 ; i < this.targets.length ; i++ ) {
+        if ( this.targets[i] === target ) {
+          console.warn('duplicate gesture target installation - not cleaning up?');
+          return;
+        }
+      }
+
       this.targets.push(target);
     },
     uninstall: function(target) {
