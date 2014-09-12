@@ -305,17 +305,6 @@
   overflow: hidden;
 }
 
-input[name=q] {
-  align-self: center;
-  background: #3e50b4;
-  border: none;
-  color: white;
-  font-size: 20px;
-  height: 24px;
-  margin: 20px 20px 20px 6px;
-  padding-left: 10px;
-}
-
 input[name=q]:focus {
   outline: none;
   opacity: 0.76;

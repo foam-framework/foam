@@ -66,6 +66,7 @@ MODEL({
 
   methods: {
     destroy: function() {
+      this.SUPER();
       if ( this.data ) this.data.removeListener(this.doSave);
     },
     commentView: function() {

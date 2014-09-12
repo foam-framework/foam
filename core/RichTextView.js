@@ -486,6 +486,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.value);
     },
 

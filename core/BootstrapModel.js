@@ -219,6 +219,7 @@ var BootstrapModel = {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
+      if ( ! fn ) debugger;
       fn.name = name;
 
       Object.defineProperty(cls, name, {

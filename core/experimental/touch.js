@@ -547,6 +547,11 @@ MODEL({
       help: 'The containing object. The GestureManager will call containsPoint() on it.'
     },
     {
+      name: 'getElement',
+      help: 'Function to retrieve the element this gesture is attached to. Defaults to container.$.',
+      defaultValue: function() { return this.container.$; }
+    },
+    {
       name: 'handler',
       help: 'The target for the gesture\'s events, after it has been recognized.'
     }
@@ -600,6 +605,10 @@ MODEL({
     {
       name: 'scrollWheelTimeout',
       defaultValue: 300
+    },
+    {
+      name: 'scrollViewTargets',
+      defaultValue: 0
     }
   ],
 
@@ -618,16 +627,34 @@ MODEL({
     },
 
     install: function(target) {
+      // Check for dupes first. Nothing sophisticated, just checking if the
+      // GestureTarget is === to any already registered. There are no
+      // circumstances where double-registering an identical target is good.
+      for ( var i = 0 ; i < this.targets.length ; i++ ) {
+        if ( this.targets[i] === target ) {
+          console.warn('duplicate gesture target installation - not cleaning up?');
+          return;
+        }
+      }
+
       this.targets.push(target);
     },
     uninstall: function(target) {
       this.targets.deleteI(target);
     },
 
+    debug_tag: function() {
+      this.targets.forEach(function(x) { x.seen = true; });
+    },
+    debug_sweep: function() {
+      this.targets.forEach(function(x) { if ( x.seen ) { console.log(x); } });
+    },
+
     checkRecognition: function() {
       if ( this.recognized ) return;
       var self = this;
       var match;
+      // TODO: Handle multiple matching gestures.
       Object.keys(this.active).forEach(function(name) {
         if ( self.gestures[name].recognize(self.points) ) {
           match = name;
@@ -636,11 +663,25 @@ MODEL({
 
       if ( ! match ) return;
 
-      this.gestures[match].attach(
-          this.points,
-          this.active[match].map(function(gt) {
-            return gt.handler;
-          }));
+      // Filter all the handlers to make sure none is a child of any already existing.
+      // This prevents eg. two tap handlers firing when the tap is on an inner one.
+      var matched = this.active[match];
+      var legal = [];
+      for ( var i = 0 ; i < matched.length ; i++ ) {
+        var m = matched[i].getElement();
+        var contained = 0;
+        for ( var j = 0 ; j < matched.length ; j++ ) {
+          var n = matched[j].getElement();
+          if ( m !== n && m.contains(n) ) {
+            contained++;
+          }
+        }
+
+        if ( contained === 0 ) legal.push(matched[i].handler);
+      }
+      // There will always be at least one survivor here.
+
+      this.gestures[match].attach(this.points, legal);
       this.recognized = this.gestures[match];
     },
 

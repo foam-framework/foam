@@ -465,6 +465,7 @@ MODEL({
       listener = listener.bind(this);
 
       if ( event === 'click' && this.X.gestureManager ) {
+        var self = this;
         var manager = this.X.gestureManager;
         var target = this.X.GestureTarget.create({
           container: {
@@ -476,8 +477,17 @@ MODEL({
               return false;
             }
           },
+          getElement: function() {
+            return self.X.$(opt_id);
+          },
           handler: {
-            tapClick: listener
+            tapClick: function() {
+              // Create a fake event.
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { }
+              });
+            }
           },
           gesture: 'tap'
         });
@@ -485,7 +495,7 @@ MODEL({
         manager.install(target);
         this.addDestructor(function() {
           manager.uninstall(target);
-        })
+        });
         return opt_id;
       }
 
@@ -736,7 +746,12 @@ MODEL({
 
     toHTML: function() { return this.view.toHTML(); },
 
-    initHTML: function() { this.view.initHTML(); }
+    initHTML: function() { this.view.initHTML(); },
+
+    destroy: function() {
+      this.SUPER();
+      this.view.destroy();
+    }
   }
 });
 
@@ -860,7 +875,10 @@ MODEL({
         DOM.setClass(this.$, 'fadeout');
       }
     },
-    destroy: function() { this.close(); }
+    destroy: function() {
+      this.SUPER();
+      this.close();
+    }
   }
 });
 
@@ -922,6 +940,7 @@ MODEL({
       this.$ && this.$.remove();
     },
     destroy: function() {
+      this.SUPER();
       this.close();
       this.view.destroy();
     }
@@ -1562,7 +1581,10 @@ MODEL({
       return value;
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   },
 
   listeners: [
@@ -1733,7 +1755,10 @@ MODEL({
       }
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   }
 });
 
@@ -1786,6 +1811,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1823,6 +1849,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1873,7 +1900,7 @@ MODEL({
     },
     initHTML: function() {
       if ( ! this.$ ) return;
-      this.invokeInitializers();
+      this.SUPER();
       this.updateHTML();
     },
     updateHTML: function() {
@@ -2867,6 +2894,18 @@ MODEL({
         this.slider.style['-webkit-transform'] = 'translate3d(-' +
             nu + 'px, 0, 0)';
       }
+    },
+    {
+      name: 'swipeGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'horizontalScroll'
+        });
+      }
     }
   ],
 
@@ -2937,11 +2976,7 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
-        handler: this,
-        gesture: 'horizontalScroll'
-      }));
+      this.X.gestureManager.install(this.swipeGesture);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2955,6 +2990,7 @@ MODEL({
 
     destroy: function() {
       this.SUPER();
+      this.X.gestureManager.uninstall(this.swipeGesture);
       this.views.forEach(function(c) { c.view.destroy(); });
     },
 

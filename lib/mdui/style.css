@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
@@ -109,8 +109,8 @@ input[name=q] {
   border: none;
   color: white;
   font-size: 20px;
-  height: 24px;
-  margin: 20px 20px 20px 6px;
+  height: 30px;
+  margin: 13px 20px 13px 6px;
   padding-left: 10px;
   width: 100%;
 }

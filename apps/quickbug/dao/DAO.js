@@ -502,8 +502,8 @@ MODEL({
          if ( options.limit ) bufOptions.limit = options.limit;
        }
 
-       var query = ( options && options.query && options.query.toSQL() ) || "";
-       var order = ( options && options.order && options.order.toSQL() ) || "";
+       var query = ( options && options.query && options.query.toMQL() ) || "";
+       var order = ( options && options.order && options.order.toMQL() ) || "";
 
        var future = afuture();
 
