@@ -490,7 +490,7 @@ MODEL({
     {
       name: 'y',
       postSet: function(old, nu) {
-        if ( this.view && this.id && old != nu ) {
+        if ( this.view && this.id && old !== nu ) {
           $(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
         }
       }
