@@ -2000,6 +2000,9 @@ MODEL({
   extendsModel: 'UNARY',
 
   methods: {
+    toSQL: function() {
+      return this.arg1.toMQL() + 'DESC';
+    },
     toMQL: function() {
       return '-' + this.arg1.toMQL();
     },
