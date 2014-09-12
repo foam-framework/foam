@@ -1,3 +1,5 @@
+var VIDEO_PATH = 'https://x20web.corp.google.com/~kgr/power/videos/DemoDen/';
+
 MODEL({
   name: 'Demo',
   properties: [
@@ -16,6 +18,9 @@ MODEL({
     },
     {
       name: 'image'
+    },
+    {
+      name: 'video'
     }
   ]
 });
@@ -46,15 +51,18 @@ var demos = [
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
     keywords: ['animation', 'reactive'],
-    image: 'ReactiveClocks.png'
+    image: 'ReactiveClocks.png',
+    video: 'part11.ogv'
+
   },
   {
     model_: 'Demo',
     name: 'Unix Simulator',
     path: 'UnixSimulator.html',
-    description: 'A simulator which demonstrates the competitive advantage of UNIX over previous operating-sytems.',
+    description: "A simulator which demonstrates the advantage of UNIX's architecture over previous operating-sytems.",
     keywords: ['simulation', 'animation', 'architecture'],
-    image: 'UnixSimulator.png'
+    image: 'UnixSimulator.png',
+    video: 'part1.ogv'
   },
   {
     model_: 'Demo',
@@ -62,7 +70,8 @@ var demos = [
     path: 'GoogleSimulator.html',
     description: 'A simulation of the growth of Google.',
     keywords: ['simulation', 'animation', 'architecture'],
-    image: 'GoogleSimulator.png'
+    image: 'GoogleSimulator.png',
+    video: 'part15.ogv'
   },
   {
     model_: 'Demo',
@@ -94,7 +103,8 @@ var demos = [
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
     keywords: ['architecture', 'animation'],
-    image: 'DemoBlockDiagram.png'
+    image: 'DemoBlockDiagram.png',
+    video: 'part6.ogv'
   },
   {
     model_: 'Demo',
@@ -102,7 +112,8 @@ var demos = [
     path: 'DragonLiveCoding.html',
     description: 'A version of the dragon animation that you can live-code.  Use the Model editor to update methods while the animation is running.',
     keywords: ['animation', 'live-coding'],
-    image: 'TimeWheel.png'
+    image: 'LiveDragon.png',
+    video: 'part12.ogv'
   },
   {
     model_: 'Demo',
@@ -186,7 +197,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design Calculator',
+    name: 'Calculator (Material-Design)',
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
     keywords: ['app', 'material-design'],
@@ -194,11 +205,11 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design GMail',
+    name: 'GMail (Material-Design)',
     path: '../apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
     keywords: ['app', 'material-design', 'gmail', 'mobile'],
-    image: ''
+    image: 'GMail.png'
   },
   {
     model_: 'Demo',
@@ -210,7 +221,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'Material-Design Issue Tracker',
+    name: 'Issue Tracker (Material-Design)',
     path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
     keywords: ['app', 'material-design', 'mobile'],
@@ -226,7 +237,7 @@ var demos = [
   },
   {
     model_: 'Demo',
-    name: 'QuickCompose',
+    name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
     description: 'A Chrome App for composing (and sending) quick GMails.',
     keywords: ['app'],
@@ -271,6 +282,9 @@ MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
         <% if ( this.data.image ) { %> <br><img width=250 height=250 src="democat/%%data.image"> <% } %>
         <p>$$description{mode: 'read-only'}</p>
         <b>Keywords:</b> $$keywords{mode: 'read-only'}
+        <% if ( VIDEO_PATH && this.data.video ) { %>
+        <br><b>Video:</b> <a href="<%= VIDEO_PATH + this.data.video%>"><img style="vertical-align:middle;" width=30 height=30 src="democat/movie-clip-icon.png"></a>
+        <% } %>
         <br>
       </li>
   */}

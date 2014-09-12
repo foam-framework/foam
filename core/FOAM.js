@@ -230,6 +230,7 @@ function arequire(modelName, opt_X) {
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.
    **/
+  if ( ! model ) console.log(modelName, 'not found');
   if ( ! model.required__ ) {
     // TODO: eventually this should just call the arequire() method on the Model
     var args = [];

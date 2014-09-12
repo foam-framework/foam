@@ -16,6 +16,7 @@
  */
 
 // WeakMap Polyfill, doesn't implement the full interface, just the parts that we use
+// TODO: Use defineProperty to make hidden property
 function WeakMap() {
   var id = '__WEAK_MAP__' + this.$UID;
 

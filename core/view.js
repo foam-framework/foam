@@ -294,6 +294,14 @@ MODEL({
           this.addDecorator(this.X.ActionBorder.create());
         }
       }
+    },
+    {
+      name: 'initializers_',
+      factory: function() { return []; }
+    },
+    {
+      name: 'destructors_',
+      factory: function() { return []; }
     }
   ],
 
@@ -406,7 +414,7 @@ MODEL({
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( child.parent ) return;
+      if ( this.children.indexOf(child) != -1 ) return;
 
       try {
         child.parent = this;
@@ -442,17 +450,48 @@ MODEL({
     },
 
     addInitializer: function(f) {
-      (this.initializers_ || (this.initializers_ = [])).push(f);
+      this.initializers_.push(f);
+    },
+    addDestructor: function(f) {
+      this.destructors_.push(f);
+    },
+
+    tapClick: function() {
     },
 
     on: function(event, listener, opt_id) {
       opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
 
+      if ( event === 'click' && this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: {
+            containsPoint: function(x, y, e) {
+              while (e) {
+                if ( e.id === opt_id ) return true;
+                e = e.parentNode;
+              }
+              return false;
+            }
+          },
+          handler: {
+            tapClick: listener
+          },
+          gesture: 'tap'
+        });
+
+        manager.install(target);
+        this.addDestructor(function() {
+          manager.uninstall(target);
+        })
+        return opt_id;
+      }
+
       this.addInitializer(function() {
         var e = $(opt_id);
         // if ( ! e ) console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
-        if ( e ) e.addEventListener(event, listener.bind(this), false);
+        if ( e ) e.addEventListener(event, listener, false);
       });
 
       return opt_id;
@@ -503,6 +542,7 @@ MODEL({
     updateHTML: function() {
       if ( ! this.$ ) return;
 
+      this.invokeDestructors();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
@@ -510,6 +550,7 @@ MODEL({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
+      this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
@@ -544,11 +585,12 @@ MODEL({
     },
 
     invokeInitializers: function() {
-      if ( ! this.initializers_ ) return;
-
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
-
-      this.initializers_ = undefined;
+      this.initializers_ = [];
+    },
+    invokeDestructors: function() {
+      for ( var i = 0; i < this.destructors_.length; i++ ) this.destructors_[i]();
+      this.destructors_ = [];
     },
 
     evtToKeyCode: function(evt) {
@@ -590,6 +632,11 @@ MODEL({
 
     destroy: function() {
       // TODO: remove listeners
+      this.invokeDestructors();
+      for ( var i = 0; i < this.children.length; i++ ) {
+        this.children[i].destroy();
+      }
+      this.children = [];
     },
 
     close: function() {
@@ -2178,6 +2225,10 @@ MODEL({
       defaultValueFn: function() { return this.action.showLabel; }
     },
     {
+      name: 'label',
+      defaultValueFn: function() { return this.action.label; }
+    },
+    {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
     }
@@ -2239,7 +2290,7 @@ MODEL({
       var out = '';
 
       if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
+        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
       if ( this.showLabel ) {
@@ -2778,7 +2829,7 @@ MODEL({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return ChoiceListView.create({
+        return this.X.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
@@ -2814,6 +2865,18 @@ MODEL({
         // TODO: Other browsers.
         this.slider.style['-webkit-transform'] = 'translate3d(-' +
             nu + 'px, 0, 0)';
+      }
+    },
+    {
+      name: 'swipeGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'horizontalScroll'
+        });
       }
     }
   ],
@@ -2885,11 +2948,7 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
-        handler: this,
-        gesture: 'horizontalScroll'
-      }));
+      this.X.gestureManager.install(this.swipeGesture);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2899,6 +2958,12 @@ MODEL({
           choice.view.initHTML();
         });
       }, 0);
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.X.gestureManager.uninstall(this.swipeGesture);
+      this.views.forEach(function(c) { c.view.destroy(); });
     },
 
     snapToCurrent: function(sizeOfMove) {
@@ -2964,6 +3029,31 @@ MODEL({
         }
       }
     }
+  ],
+  templates: [
+    function CSS() {/*
+      .swipeAltInner {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .swipeAltOuter {
+        display: flex;
+        overflow: hidden;
+        min-width: 240px;
+        width: 100%;
+      }
+
+      .swipeAltSlider {
+        position: relative;
+        width: 100%;
+        top: 0px;
+        -webkit-transform: translate3d(0,0,0);
+      }
+
+    */}
   ]
 });
 
@@ -4678,21 +4768,29 @@ MODEL({
 MODEL({
   name: 'ActionSheetView',
   extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
 
   properties: [
     'actions',
     'data',
+    { name: 'className', defaultValue: 'actionSheet' },
+    { name: 'preferredWidth', defaultValue: 200 },
   ],
 
   help: 'A controller that shows a list of actions.',
 
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <% for( var i = 0, action; action = this.actions[i]; i++ ) {
         var view = this.createActionView(action);
         view.data$ = this.data$;
         out(view);
       } %>
+    */},
+    function CSS() {/*
+      .actionSheet {
+        background: white;
+      }
     */}
   ]
 });

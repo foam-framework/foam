@@ -175,7 +175,8 @@ MODEL({
 
     commit: function() {
       if ( ! this.useSelection ) return;
-      this.choice = this.choices[this.index];
+      if ( this.choices[this.index] )
+        this.choice = this.choices[this.index];
     }
   }
 });

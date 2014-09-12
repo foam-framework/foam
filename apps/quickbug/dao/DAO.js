@@ -354,6 +354,10 @@ MODEL({
     {
       name: 'model'
     },
+    {
+      name: 'maxLimit',
+      defaultValue: 500
+    }
   ],
 
   listeners: [
@@ -470,7 +474,7 @@ MODEL({
            if ( options && options.query ) remoteOptions.query = options.query;
            if ( options && options.order ) remoteOptions.order = options.order;
 
-           this.remote.limit(500).select({
+           this.remote.limit(this.maxLimit).select({
              put: (function(obj) {
                // Put the object in the buffer, but also cache it in the local DAO
                if (obj === undefined) debugger;
@@ -507,7 +511,7 @@ MODEL({
        var matchingQueries = this.queryCache.filter(function(e) { return e[0] === query; });
 
        if ( matchingQueries.length ) {
-         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
+//         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
 
          var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
          if ( matchingOrder.length > 0 ) {
@@ -515,12 +519,12 @@ MODEL({
          } else {
            // We did NOT find a matching order.
            // But we do have at least one match for this query with a different order.
-           // Check the size of the first match's buffer. If it's < 500, we've
+           // Check the size of the first match's buffer. If it's < maxLimit we've
            // got all the data and can simply compute the order ourselves.
-           // If it's >= 500, we have only a subset and need to query the server.
+           // If it's >= maxLimit, we have only a subset and need to query the server.
            var match = matchingQueries[0];
            match[2].select(COUNT())((function(c) {
-             if ( c.count < 500 ) {
+             if ( c.count < this.maxLimit ) {
                match[2].select(sink, bufOptions)(function(s) {
                  future.set(s);
                });
@@ -531,7 +535,7 @@ MODEL({
            }).bind(this));
          }
        } else {
-         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
+//         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 
          console.log('Creating new query: ' + query + '   ' + order);
          this.newQuery(sink, options, query, order, bufOptions, future);

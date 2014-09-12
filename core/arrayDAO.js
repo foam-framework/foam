@@ -26,7 +26,6 @@
   defineProperties(Array.prototype, pmap);
 })();
 
-
 defineLazyProperty(Array.prototype, 'daoListeners_', function() {
   return {
     value: [],
@@ -112,6 +111,9 @@ defineProperties(Array.prototype, {
     }
     return a;
   },
+  id: function(obj) {
+    return obj.id || obj.$UID;
+  },
   put: function(obj, sink) {
     for ( var idx in this ) {
       if ( this[idx].id === obj.id ) {
@@ -151,7 +153,8 @@ defineProperties(Array.prototype, {
       sink && sink.error && sink.error('missing key');
       return;
     }
-    var id = (obj.id !== undefined && obj.id !== '') ? obj.id : obj;
+    var objId = obj.id;
+    var id = (objId !== undefined && objId !== '') ? objId : obj;
     for ( var idx in this ) {
       if ( this[idx].id === id ) {
         var rem = this.splice(idx,1)[0];

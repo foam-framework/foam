@@ -500,12 +500,17 @@ MODEL({
     {
       name: 'y',
       postSet: function(old, nu) {
-        if ( this.view && this.id && old != nu ) {
+        if ( this.view && this.id && old !== nu ) {
           $(this.id).style.webkitTransform = 'translate3d(0px,' + nu + 'px, 0px)';
         }
       }
     }
-  ]
+  ],
+  methods: {
+    destroy: function() {
+      this.view.destroy();
+    }
+  }
 });
 
 /**
@@ -538,7 +543,6 @@ MODEL({
     {
       name: 'scrollHeight',
       postSet: function(old, nu) {
-        console.log('updating scrollHeight to ' + nu);
         if ( this.$ ) this.scroller$().style.height = nu + 'px';
       }
     },
@@ -572,7 +576,6 @@ MODEL({
         return nu;
       },
       postSet: function(old, nu) {
-        //console.log('scrolling from ' + old + ' to ' + nu);
         var scroller = this.scroller$();
         if ( scroller ) scroller.style.webkitTransform =
             'translate3d(0px, -' + nu + 'px, 0px)';
@@ -638,10 +641,6 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      // Blow away all caches and so on. This ensures a clean slate, and that
-      // nothing is connected to elements that have been removed from the DOM.
-      this.powerwash();
-
       if ( ! this.$.style.height ) {
         this.$.style.height = '100%';
       }
@@ -653,7 +652,6 @@ MODEL({
         // TODO: This is messy, but I can't find another way.
         // This totals up the margin, border, padding and body.
         this.rowHeight = this.X.parseFloat(style.height);
-        console.log('ScrollView dynamically found rowHeight to be ' + this.rowHeight + 'px');
         outer.outerHTML = '';
       }
 
@@ -667,11 +665,6 @@ MODEL({
       this.$.insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
 
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
-        handler: this,
-        gesture: 'verticalScroll'
-      }));
       this.onDAOUpdate();
     },
     scroller$: function() {
@@ -758,10 +751,20 @@ MODEL({
     },
 
     // Clears all caches and saved rows and everything.
-    // Intended to be called by initHTML to make sure the slate is clean.
-    powerwash: function() {
+    destroy: function() {
+      this.SUPER();
+      var keys = Object.keys(this.visibleRows);
+      for ( var i = 0; i < keys.length; i++ ) {
+        this.visibleRows[keys[i]].destroy();
+      }
       this.visibleRows = {};
+
+      for ( i = 0; i < this.extraRows.length; i++ ) {
+        this.extraRows[i].destroy();
+      }
       this.extraRows = [];
+
+
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
@@ -869,6 +872,17 @@ MODEL({
 
   templates: [
     function toHTML() {/*
+      <% this.destroy();
+         var gestureTarget = this.X.GestureTarget.create({
+           container: this,
+           handler: this,
+           gesture: 'verticalScroll'
+         });
+         this.X.gestureManager.install(gestureTarget);
+         this.addDestructor(function() {
+           self.X.gestureManager.uninstall(gestureTarget);
+         });
+      %>
       <div id="%%id" style="overflow:hidden;position:relative">
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
