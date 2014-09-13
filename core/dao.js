@@ -1046,8 +1046,10 @@ function filteredDAO(query, dao) {
           AND(query, options.query) :
           query
       } : {query: query});
+    },
+    toString: function() {
+      return dao + '.where(' + query + ')';
     }
-
   };
 }
 
@@ -1067,6 +1069,9 @@ function orderedDAO(comparator, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.orderBy(' + comparator + ')';
     }
   };
 }
@@ -1091,6 +1096,9 @@ function limitedDAO(count, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.limit(' + count + ')';
     }
   };
 }
@@ -1111,6 +1119,9 @@ function skipDAO(skip, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.skip(' + skip + ')';
     }
   };
 }
