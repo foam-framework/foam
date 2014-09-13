@@ -91,7 +91,13 @@ MODEL({
       this.stack.initHTML();
 
       var self = this;
-      this.qbug.getDefaultProject({put: function(project) { self.project = project; }}, this.projectContext());
+      this.qbug.userFuture.get(function(user) {
+        self.qbug.findProject(user.defaultProject, {
+          put: function(p) {
+            self.project = p;
+          }
+        }, self.projectContext())
+      });
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
@@ -102,7 +108,12 @@ MODEL({
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) { self.project = project; }, this.projectContext());
+      this.qbug.findProject(projectName, function(project) {
+        self.project = project;
+        self.qbug.userFuture.get(function(user) {
+          user.defaultProject = projectName;
+        });
+      }, this.projectContext());
       this.stack.back();
     }
   }
