@@ -40,15 +40,10 @@ MODEL({
 
   methods: {
     // Mustang Query Language
-    toMQL: function() {
-      return this.toString();
-    },
-    toSQL: function() {
-      return this.toString();
-    },
-    collectInputs: function(terms) {
-      terms.push(this);
-    },
+    toMQL: function() { return this.label_; },
+    toSQL: function() { return this.label_; },
+    toString: function() { return this.toMQL(); },
+    collectInputs: function(terms) { terms.push(this); },
     partialEval: function() { return this; },
     minterm: function(index, term) {
       // True if this bit is set in the minterm number.
@@ -82,7 +77,6 @@ MODEL({
       console.log(this.toMQL(),' normalize-> ', ret.toMQL());
       return ret;
     },
-    toString: function() { return this.label_; },
     pipe: function(sink) {
       var expr = this;
       return {
