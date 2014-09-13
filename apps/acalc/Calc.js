@@ -39,14 +39,9 @@ function binaryOp(name, keys, f, sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      if ( this.op == DEFAULT_OP ) {
-        this.push('', f);
-        this.editable = true;
-      } else {
-        this.equals();
-        this.push('', f);
-        this.editable = true;
-      }
+      if ( this.op != DEFAULT_OP ) this.equals();
+      this.push('', f);
+      this.editable = true;
     }
   };
 }
@@ -62,6 +57,7 @@ function unaryOp(name, keys, f, opt_sym) {
     action: function() {
       this.op = f;
       this.push(f.call(this, this.a2));
+      this.editable = false;
     }
   };
 }
@@ -292,8 +288,7 @@ MODEL({
     {
       model_: 'StringProperty',
       name: 'row1',
-      // TODO: Fix. Doesn't work with unary operations.
-      // view: 'ALabel'
+      view: 'ALabel'
     },
   ],
 
@@ -301,9 +296,9 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), function() {
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.animate(function() {
         this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
-      }.bind(this));
+      }.bind(this)));
     },
     push: function(a2, opt_op) {
       this.history.put(History.create(this));
