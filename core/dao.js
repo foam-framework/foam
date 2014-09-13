@@ -632,6 +632,10 @@ MODEL({
       if ( ! this.daoListeners_.length ) {
         this.delegate.unlisten(this.relay());
       }
+    },
+
+    toString: function() {
+      return this.TYPE + '(' + this.delegate + ')';
     }
   }
 });
