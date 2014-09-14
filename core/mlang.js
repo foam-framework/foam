@@ -144,6 +144,16 @@ MODEL({
   ],
 
   methods: {
+    toString: function() {
+      var s = this.TYPE + '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toString();
+        if ( i < this.args.length-1 ) s += (', ');
+      }
+      return s + ')';
+    },
+
     toSQL: function() {
       var s;
       s = this.model_.label;
@@ -401,7 +411,6 @@ MODEL({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
-  abstract: true,
 
   methods: {
     toSQL: function() {
@@ -415,6 +424,7 @@ MODEL({
       s += ')';
       return s;
     },
+
     toMQL: function() {
       var s = '';
       for ( var i = 0 ; i < this.args.length ; i++ ) {
