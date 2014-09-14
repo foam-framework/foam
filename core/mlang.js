@@ -95,9 +95,10 @@ var TRUE = (FOAM({
   extendsModel: 'Expr',
 
   methods: {
-    toSQL: function() { return '( 1 = 1 )'; },
-    toMQL: function() { return ''; },
-    f:     function() { return true; }
+    toString: function() { return '<true>'; },
+    toSQL:    function() { return '( 1 = 1 )'; },
+    toMQL:    function() { return ''; },
+    f:        function() { return true; }
   }
 })).create();
 
