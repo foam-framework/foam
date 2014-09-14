@@ -804,7 +804,6 @@ MODEL({
         // to keep 3*runway rows on each side, up to the edges of the data.
         // If the visible rows have moved so vast that there is a gap, scrap the
         // old cache and rebuild it.
-        if ( this.count === 0 ) return;
         if ( this.rowHeight < 0 ) return;
         var runwayCount = Math.ceil(this.runway / this.rowHeight);
         this.visibleIndex = Math.floor(this.scrollTop / this.rowHeight);
