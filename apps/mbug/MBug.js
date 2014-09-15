@@ -283,14 +283,15 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
+        var innerView = this.X.IssueOwnerEditView.create(this.model.CC);
         var view = this.X.FloatingView.create({
-          view: this.X.IssueOwnerEditView.create(this.model.CC)
+          view: innerView
         });
         this.X.stack.pushView(view);
-        view.focus();
+        innerView.focus();
         var self = this;
-        view.subscribe(['finished'], function() {
-          self.data.cc = self.data.cc.concat(view.data);
+        innerView.subscribe(['finished'], function() {
+          self.data.cc = self.data.cc.concat(innerView.data);
         });
       }
     }
@@ -799,7 +800,7 @@ MODEL({
       if ( ! this.completer ) {
         var proto = FOAM.lookup(this.autocompleter, this.X);
         this.completer = proto.create();
-        this.view.dao = this.completer.autocompleteDao,
+        this.view.dao = this.completer.autocompleteDao$Proxy,
         this.view.objToChoice = this.completer.f;
       }
       this.completer.autocomplete(partial);
