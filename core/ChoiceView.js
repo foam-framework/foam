@@ -471,6 +471,10 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'showValue'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'updateListener'
     }
   ],
 
@@ -522,7 +526,11 @@ MODEL({
       if ( this.showValue ) {
         var id = this.nextID();
         out += '<span id="' + id + '" class="value">' + ((this.choice && this.choice[1]) || '') + '</span>';
-        this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
+
+        // Remove any previous data$ listener for this popup.
+        if ( this.updateListener ) this.data$.removeListener(this.updateListener);
+        this.updateListener = function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this);
+        this.data$.addListener(this.updateListener);
       }
 
       out += '<span class="action">';
