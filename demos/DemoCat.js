@@ -19,15 +19,8 @@ MODEL({
     {
       name: 'src',
       defaultValueFn: function() {
-        console.log('view-source: ' + window.location.origin + '/demos/' + this.path);
-
-        return 'view-source: ' + window.location.origin + '/demos/' + this.path;
+        return 'view-source: ' + window.location.href.replace('DemoCat.html', this.path);
       }
-      /*
-      preSet: function(_, src) {
-        return src.replace('view-source:', 'view-source:' + window.location.origin + '/demos/');
-      }
-      */
     },
     {
       name: 'image'
