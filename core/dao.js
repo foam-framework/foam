@@ -698,7 +698,7 @@ MODEL({
 
       var a = arguments;
       var f = afuture();
-      future(function(delegate) {
+      this.future(function(delegate) {
         this.removeAll.apply(this, a)(f.set);
       }.bind(this));
 
@@ -709,7 +709,7 @@ MODEL({
       if ( this.delegate ) {
         this.delegate.find(key, sink);
       } else {
-        future(this.find.bind(this, key, sink));
+        this.future(this.find.bind(this, key, sink));
       }
     },
 
@@ -720,7 +720,7 @@ MODEL({
 
       var a = arguments;
       var f = afuture();
-      future(function() {
+      this.future(function() {
         this.select.apply(select, a)(f.set);
       }.bind(this));
 
