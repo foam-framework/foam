@@ -17,7 +17,6 @@
  <head>
   <link rel="stylesheet" type="text/css" href="../core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
-  <script language="javascript" src="../core/experimental/touch.js"></script>
   <title>Drag Gesture</title>
   <meta name="viewport" content="width=device-width">
  </head>
@@ -79,12 +78,7 @@ MODEL({
   }
 });
 
-var Y = this.X.subWindow(window);
-Y.touchManager = Y.TouchManager.create({});
-Y.touchManager.install(document);
-Y.gestureManager = Y.GestureManager.create();
-
-var view = Y.DragGestureBlock.create();
+var view = DragGestureBlock.create();
 view.write(document);
  </script>
  </body>

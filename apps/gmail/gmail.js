@@ -128,10 +128,7 @@ MODEL({
 
   methods: {
     init: function() {
-      this.X = this.X.sub({
-        touchManager: this.X.TouchManager.create({})
-      }, 'MGMAIL CONTEXT');
-      this.X.gestureManager = this.X.GestureManager.create({});
+      this.X = this.X.sub({}, 'MGMAIL CONTEXT');
 
       this.oauth = this.X.EasyOAuth2.create({
         clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
