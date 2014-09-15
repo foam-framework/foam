@@ -19,7 +19,9 @@ MODEL({
     {
       name: 'src',
       defaultValueFn: function() {
-        return 'view-source: ' + window.location.href.replace('DemoCat.html', this.path);
+        var i = window.location.href.indexOf('DemoCat.html');
+        var path = window.location.href.substring(0, i);
+        return 'view-source: ' + path + this.path;
       }
     },
     {
@@ -331,7 +333,15 @@ MODEL({
         return this.dao.where(CONTAINS_IC(SEQ(Demo.NAME, Demo.DESCRIPTION, Demo.KEYWORDS), this.search));
       }
     }
-  ]
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      var i = window.location.href.indexOf('?q=');
+      if ( i != -1 ) this.search = window.location.href.substring(i+3);
+    }
+  }
 });
 
 
