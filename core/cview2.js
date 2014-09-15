@@ -411,8 +411,15 @@ MODEL({
       name: 'onMouseDown',
       code: function(evt) {
         this.down_ = true;
-        this.pressCircle.x = evt.offsetX;
-        this.pressCircle.y = evt.offsetY;
+        if ( evt.type === 'touchstart' ) {
+          var rect = this.$.getBoundingClientRect();
+          var t = evt.touches[0];
+          this.pressCircle.x = t.pageX - rect.left;
+          this.pressCircle.y = t.pageY - rect.top;
+        } else {
+          this.pressCircle.x = evt.offsetX;
+          this.pressCircle.y = evt.offsetY;
+        }
         this.pressCircle.r = 5;
         Movement.animate(150, function() {
           this.pressCircle.x = this.width/2;
