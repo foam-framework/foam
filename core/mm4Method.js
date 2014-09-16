@@ -61,7 +61,11 @@ MODEL({
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Action, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Action, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
     {
       name: 'default',
@@ -257,7 +261,11 @@ MODEL({
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Argument, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Argument, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
   ],
 
@@ -359,7 +367,11 @@ MODEL({
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Method, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Method, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
     {
       name: 'code',
@@ -520,7 +532,11 @@ MODEL({
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Interface, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Interface, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
     {
       model_: 'ArrayProperty',

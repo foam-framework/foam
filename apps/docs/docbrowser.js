@@ -198,8 +198,7 @@ MODEL({
       },
       documentation: function() { /*
           <div id=%%id>DOC modelList Property Template!</div>
-        */}
-
+      */}
     },
     {
       name: 'modelListView',

@@ -267,7 +267,11 @@ MODEL({
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Relationship, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Relationship, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
     {
       name:  'relatedModel',

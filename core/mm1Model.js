@@ -358,7 +358,13 @@ var Model = {
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Model, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Model, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        // TODO: not sure about the validity of this.X at this point. Will it ever be
+        // not Window?
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      }
     },
     {
       name: 'notes',

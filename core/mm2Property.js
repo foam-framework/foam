@@ -337,7 +337,11 @@ var Property = {
       displayHeight: 6,
       view: 'DocSubView',
       defaultValue: '',
-      help: 'Documentation for this Property, using HTML and FOAM Template syntax.'
+      help: 'Documentation for this Property, using HTML and FOAM Template syntax.',
+      // TODO: share this processing with normal templates
+      preSet: function(_, docTemplate) {
+        return TemplateUtil.templateMemberExpander(docTemplate);
+      }
     },
     {
       name: 'prototag',
