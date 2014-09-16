@@ -157,7 +157,7 @@ MODEL({
   extendsModel: 'Model',
 
   documentation: function() { /*
-      <div id=%%id>DOC DocBrowserController Template!</div>
+      <div id=%%id >DOC DocBrowserController Template!</div>
     */},
 
   methods: {
@@ -197,7 +197,7 @@ MODEL({
         return this.SearchContext.ModelListController.create();
       },
       documentation: function() { /*
-          <div id=%%id>DOC modelList Property Template!</div>
+          <div id=%%id >DOC modelList Property Template!</div>
       */}
     },
     {

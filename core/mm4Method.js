@@ -62,9 +62,12 @@ MODEL({
       view: 'DocSubView',
       defaultValue: '',
       help: 'Documentation for this Action, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
+      // TODO: build this toHTML() stuff into a Documentation property type?
       preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate);
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      },
+      postSet: function(_, docTemplate) {
+        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
       }
     },
     {
@@ -262,9 +265,12 @@ MODEL({
       view: 'DocSubView',
       defaultValue: '',
       help: 'Documentation for this Argument, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
+      // TODO: build this toHTML() stuff into a Documentation property type?
       preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate);
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      },
+      postSet: function(_, docTemplate) {
+        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
       }
     },
   ],
@@ -368,9 +374,12 @@ MODEL({
       view: 'DocSubView',
       defaultValue: '',
       help: 'Documentation for this Method, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
+      // TODO: build this toHTML() stuff into a Documentation property type?
       preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate);
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      },
+      postSet: function(_, docTemplate) {
+        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
       }
     },
     {
@@ -533,9 +542,12 @@ MODEL({
       view: 'DocSubView',
       defaultValue: '',
       help: 'Documentation for this Interface, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
+      // TODO: build this toHTML() stuff into a Documentation property type?
       preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate);
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      },
+      postSet: function(_, docTemplate) {
+        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
       }
     },
     {

@@ -338,9 +338,12 @@ var Property = {
       view: 'DocSubView',
       defaultValue: '',
       help: 'Documentation for this Property, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
+      // TODO: build this toHTML() stuff into a Documentation property type?
       preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate);
+        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
+      },
+      postSet: function(_, docTemplate) {
+        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
       }
     },
     {
