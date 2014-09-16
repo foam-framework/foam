@@ -84,6 +84,10 @@ MODEL({
     // after the first touch, to event.target.
     install: function(d) {
       d.addEventListener('touchstart', this.onTouchStart);
+      d.addEventListener('touchend', this.onTouchEnd);
+      d.addEventListener('touchmove', this.onTouchMove);
+      d.addEventListener('touchcancel', this.onTouchCancel);
+      d.addEventListener('touchleave', this.onTouchLeave);
     },
 
     touchStart: function(i, t, e) {

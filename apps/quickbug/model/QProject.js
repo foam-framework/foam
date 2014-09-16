@@ -828,6 +828,7 @@ MODEL({
             $addWindow(window);
             var Y = self.X.subWindow(window, 'Browser Window');
             var b = Y.ChromeAppBrowser.create({project: self});
+            Y.touchManager = Y.TouchManager.create({});
             window.browser = b; // for debugging
             BROWSERS.push(b); // for debugging
             w.browser = b;
