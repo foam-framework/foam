@@ -351,6 +351,16 @@ var Model = {
       help: 'Help text associated with the entity.'
     },
     {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Model, using HTML and FOAM Template syntax.'
+    },
+    {
       name: 'notes',
       type: 'String',
       displayWidth: 70,

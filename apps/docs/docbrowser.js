@@ -46,7 +46,7 @@ MODEL({
         }
         for ( var key in USED_MODELS ) {
           this.X[key].getPrototype && this.X[key].getPrototype();
-        }
+        }     
 
         // All models are now in USED_MODELS
         for ( var key in USED_MODELS ) {
@@ -149,83 +149,16 @@ MODEL({
 
 });
 
-MODEL({
-  name: 'DocPropertyView',
-  extendsModel: 'DetailView',
-  help: 'Displays the documentation of the given Properties.',
-
-  properties: [
-    {
-      name:  'data',
-      postSet: function(_, data) {
-        if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        this.dataDAO = data;
-        this.onValueChange();
-      }
-    },
-    {
-      name:  'dataDAO',
-      preSet: function(_, data) {
-        if (Array.isArray(data)) {
-          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property});
-
-          newDAO = newDAO.where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
-
-          newDAO.select(COUNT())(function(c) {
-            this.count = c.count;
-          }.bind(this));
-          return newDAO;
-        } else {
-          return data;
-        }
-      },
-    },
-    {
-      name: 'count',
-      postSet: function(_, nu) {
-        this.onValueChange();
-      }
-    }
-  ],
-
-  templates: [
-    function toHTML()    {/*
-      <div id="%%id" class="%%cssClassAttr">
-        <%=this.toInnerHTML()%>
-      </div>
-    */},
-    function toInnerHTML()    {/*
-    <%    if (this.count > 0)
-          {  %>
-            <h2>Properties:</h2>
-            <div><%= this.X.DAOListView.create({ rowView: 'DocPropertyRowView', data$: this.dataDAO$ }) %></div>
-    <%    } else { %>
-            <h2>No Properties.</h2>
-    <%    } %>
-    */}
-  ]
-});
-
-MODEL({
-  name: 'DocPropertyRowView',
-  extendsModel: 'DetailView',
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" class="propertyRowView">
-        <h3><%=this.data.name%></h3>
-        <p><%=this.data.help%></p>
-      </div>
-    */}
-  ]
-});
-
 
 
 
 MODEL({
   name: 'DocBrowserController',
   extendsModel: 'Model',
+
+  documentation: function() { /*
+      <div id=%%id>DOC DocBrowserController Template!</div>
+    */},
 
   methods: {
     init: function() {
@@ -263,11 +196,16 @@ MODEL({
       factory: function() {
         return this.SearchContext.ModelListController.create();
       },
+      documentation: function() { /*
+          <div id=%%id>DOC modelList Property Template!</div>
+        */}
+
     },
     {
       name: 'modelListView',
       factory: function() {
-        return this.SearchContext.ControllerView.create({ model: ModelListController, data$: this.modelList$ });
+        return this.SearchContext.ControllerView.create({ model: ModelListController,
+                                                          data$: this.modelList$ });
       }
     },
     {

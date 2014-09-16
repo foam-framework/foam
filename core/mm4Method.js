@@ -54,6 +54,16 @@ MODEL({
       help: 'Help text associated with the action.'
     },
     {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Action, using HTML and FOAM Template syntax.'
+    },
+    {
       name: 'default',
       type: 'Boolean',
       view: 'BooleanView',
@@ -238,7 +248,17 @@ MODEL({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.'
-    }
+    },
+    {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Argument, using HTML and FOAM Template syntax.'
+    },
   ],
 
   methods: {
@@ -330,6 +350,16 @@ MODEL({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.'
+    },
+    {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Method, using HTML and FOAM Template syntax.'
     },
     {
       name: 'code',
@@ -481,6 +511,16 @@ MODEL({
       displayHeight: 6,
       view: 'TextAreaView',
       help: 'Help text associated with the argument.'
+    },
+    {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Interface, using HTML and FOAM Template syntax.'
     },
     {
       model_: 'ArrayProperty',

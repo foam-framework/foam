@@ -260,6 +260,16 @@ MODEL({
       help: 'Help text associated with the relationship.'
     },
     {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Relationship, using HTML and FOAM Template syntax.'
+    },
+    {
       name:  'relatedModel',
       type:  'String',
       required: true,

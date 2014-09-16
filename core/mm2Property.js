@@ -330,6 +330,16 @@ var Property = {
       help: 'Help text associated with the property.'
     },
     {
+      name: 'documentation',
+      label: 'Documentation Text',
+      type: 'Function',
+      displayWidth: 70,
+      displayHeight: 6,
+      view: 'DocSubView',
+      defaultValue: '',
+      help: 'Documentation for this Property, using HTML and FOAM Template syntax.'
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',
