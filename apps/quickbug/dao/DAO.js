@@ -438,6 +438,9 @@ MODEL({
        var remote = this.remote;
 
        local.find(key, {
+         put: function(obj) {
+           sink && sink.put && sink.put(obj);
+         },
          error: function() {
            remote.find(key, {
              put: function(issue) {
