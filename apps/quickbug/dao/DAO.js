@@ -438,12 +438,14 @@ MODEL({
        var remote = this.remote;
 
        local.find(key, {
-         __proto__: sink,
          error: function() {
            remote.find(key, {
              put: function(issue) {
-               sink.put(issue);
+               sink && sink.put && sink.put(issue);
                local.put(issue);
+             },
+             error: function() {
+               sink && sink.error && sink.error.apply(sink, arguments);
              }
            });
          }
@@ -511,8 +513,6 @@ MODEL({
        var matchingQueries = this.queryCache.filter(function(e) { return e[0] === query; });
 
        if ( matchingQueries.length ) {
-//         if ( CountExpr.isInstance(sink) ) return matchingQueries[0][2].select(sink, bufOptions);
-
          var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
          if ( matchingOrder.length > 0 ) {
            return matchingOrder[0][2].select(sink, bufOptions);
