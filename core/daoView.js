@@ -529,6 +529,10 @@ MODEL({
 
   properties: [
     {
+      name: 'model',
+      defaultValueFn: function() { return this.dao.model; }
+    },
+    {
       name: 'runway',
       defaultValue: 500,
       help: 'The distance in pixels to render outside the viewport'

@@ -628,7 +628,7 @@ MODEL({
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.unlisten(this.relay());
       }
     },
@@ -659,6 +659,10 @@ MODEL({
     },
     {
       name: 'future'
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.delegate ? this.delegate.model : ''; }
     }
   ],
 
