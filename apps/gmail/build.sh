@@ -62,7 +62,6 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/touch.js \
-  ../../core/experimental/touch.js \
   ../../core/glang.js \
   ../../core/oauth.js \
   ../../core/../apps/mailreader/view.js \

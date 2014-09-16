@@ -61,7 +61,6 @@ cat \
   ../../core/models.js \
   ../../core/oauth.js \
   ../../core/touch.js \
-  ../../core/experimental/touch.js \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \
