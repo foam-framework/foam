@@ -162,7 +162,7 @@ MODEL({
 
   methods: {
     init: function() {
-      // spawn and populate subcontexts
+      /* spawn and populate sub%%id contexts...  */
       this.SearchContext = this.X.sub({}, 'searchX');
       this.DetailContext = this.X.sub({}, 'detailX');
       // search context uses a selection value to indicate the chosen Model to display

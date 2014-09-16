@@ -388,7 +388,16 @@ MODEL({
       displayWidth: 80,
       displayHeight: 30,
       view: 'FunctionView',
-      help: 'Javascript code to implement this method.'
+      help: 'Javascript code to implement this method.',
+      postSet: function() {
+        // check for documentation in a multiline comment at the beginning of the code
+        // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
+        var multilineComment = /^\s*function\s*\(.*\)\s*{\s*\/\*(.*)\*\/|^\s*\/\*(.*)\*\/ /.exec(this.code.toString());
+        if ( multilineComment ) {
+          this.documentation = Function("/*" + multilineComment[1] + "*/");
+        }
+
+      }
     },
     {
       name:  'returnType',
