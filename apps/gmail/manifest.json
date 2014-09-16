@@ -1,0 +1,23 @@
+{
+  "name": "MGMail",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  "permissions": [
+    "https://www.googleapis.com/*",
+    "https://code.google.com/p/*",
+    "https://accounts.google.com/*",
+    "webview",
+    "identity",
+    "storage",
+    "unlimitedStorage"
+  ],
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}
