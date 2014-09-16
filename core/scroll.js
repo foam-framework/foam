@@ -159,10 +159,6 @@ MODEL({
         this.y + 2 + this.value / this.size * h,
         this.width - 11,
         this.y + 4 + handleSize);
-    },
-
-    destroy: function() {
-      //      this.value.removeListener(this.listener_);
     }
   }
 });

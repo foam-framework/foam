@@ -106,6 +106,11 @@ MODEL({
         this.cview.background = style.backgroundColor;
 
       this.paint();
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.cview.destroy();
     }
   }
 });
@@ -259,6 +264,10 @@ MODEL({
       this.erase();
       this.paintSelf();
       this.paintChildren();
+    },
+
+    destroy: function() {
+      // Implement me in submodels to do cleanup when the view is removed.
     }
   }
 });
@@ -378,6 +387,18 @@ MODEL({
       postSet: function(_, r) {
         if ( r ) this.width = this.height = 2 * r;
       }
+    },
+    {
+      name: 'tapGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'tap'
+        });
+      }
     }
   ],
 
@@ -390,8 +411,15 @@ MODEL({
       name: 'onMouseDown',
       code: function(evt) {
         this.down_ = true;
-        this.pressCircle.x = evt.offsetX;
-        this.pressCircle.y = evt.offsetY;
+        if ( evt.type === 'touchstart' ) {
+          var rect = this.$.getBoundingClientRect();
+          var t = evt.touches[0];
+          this.pressCircle.x = t.pageX - rect.left;
+          this.pressCircle.y = t.pageY - rect.top;
+        } else {
+          this.pressCircle.x = evt.offsetX;
+          this.pressCircle.y = evt.offsetY;
+        }
         this.pressCircle.r = 5;
         Movement.animate(150, function() {
           this.pressCircle.x = this.width/2;
@@ -469,11 +497,7 @@ MODEL({
 
       if ( this.X.gestureManager ) {
         // TODO: Glow animations on touch.
-        this.X.gestureManager.install(this.X.GestureTarget.create({
-          container: this,
-          handler: this,
-          gesture: 'tap'
-        }));
+        this.X.gestureManager.install(this.tapGesture);
       } else {
         this.$.addEventListener('click',      this.onClick);
       }
@@ -486,6 +510,12 @@ MODEL({
       this.$.addEventListener('touchend',    this.onMouseUp);
       this.$.addEventListener('touchleave',  this.onMouseUp);
       this.$.addEventListener('touchcancel', this.onMouseUp);
+    },
+    destroy: function() {
+      this.SUPER();
+      if ( this.X.gestureManager ) {
+        this.X.gestureManager.uninstall(this.tapGesture);
+      }
     },
     paint: function() {
       var c = this.canvas;

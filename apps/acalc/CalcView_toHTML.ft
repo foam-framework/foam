@@ -4,7 +4,7 @@
   <div class="calc-display">
     <div class="inner-calc-display">
       $$history
-      $$row1
+      $$row1{mode: 'read-only', escapeHTML: false}
     </div>
   </div>
   <div class='keypad'>

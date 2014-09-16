@@ -552,6 +552,11 @@ MODEL({
       defaultValue: -1
     },
     {
+      name: 'rowSizeView',
+      hidden: true,
+      help: 'If the rowHeight is not set, a rowView will be constructed and its size checked. This property holds that view so it can be destroyed properly.'
+    },
+    {
       name: 'rowView',
       help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
       postSet: function(_, nu) {
@@ -634,6 +639,15 @@ MODEL({
       defaultValue: 0,
       transient: true,
       hidden: true
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      view: {
+        create: function() { return ChoiceView.create({choices:[
+          "read-only", "read-write", "final"
+        ]}); }
+      }
     }
   ],
 
@@ -649,9 +663,11 @@ MODEL({
       if ( this.rowHeight < 0 ) {
         var outer = this.X.$(this.id + '-rowsize');
         var style = this.X.window.getComputedStyle(outer.children[0]);
-        // TODO: This is messy, but I can't find another way.
-        // This totals up the margin, border, padding and body.
         this.rowHeight = this.X.parseFloat(style.height);
+
+        // Now destroy it properly.
+        this.rowSizeView.destroy();
+        this.rowSizeView = '';
         outer.outerHTML = '';
       }
 
@@ -764,7 +780,6 @@ MODEL({
       }
       this.extraRows = [];
 
-
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
@@ -807,7 +822,6 @@ MODEL({
         // to keep 3*runway rows on each side, up to the edges of the data.
         // If the visible rows have moved so vast that there is a gap, scrap the
         // old cache and rebuild it.
-        if ( this.count === 0 ) return;
         if ( this.rowHeight < 0 ) return;
         var runwayCount = Math.ceil(this.runway / this.rowHeight);
         this.visibleIndex = Math.floor(this.scrollTop / this.rowHeight);
@@ -846,8 +860,16 @@ MODEL({
             if ( ! a || ! a.length ) return;
             if ( updateNumber !== self.daoUpdateNumber ) return;
 
+            // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
-              self.cache[toLoadTop + i] = a[i];
+              var o = a[i];
+              if ( self.mode === 'read-write' ) {
+                o = a[i].clone();
+                o.addListener(function(x) {
+                  this.dao.put(x);
+                }.bind(self, o));
+              }
+              self.cache[toLoadTop + i] = o;
             }
             self.loadedTop = Math.min(toLoadTop, Math.max(0, self.loadedTop));
             self.loadedBottom = Math.max(toLoadBottom, self.loadedBottom);
@@ -887,9 +909,9 @@ MODEL({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              var view = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
-              out(view.toHTML());
-              this.addChild(view);
+              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
+              out(this.rowSizeView.toHTML());
+              this.addChild(this.rowSizeView);
             %>
           </div>
         <% } %>

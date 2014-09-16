@@ -564,7 +564,6 @@ MODEL({
       required: true,
       transient: true,
       factory: function() { return NullDAO.create(); }, // TODO: use singleton
-      preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
@@ -632,6 +631,10 @@ MODEL({
       if ( ! this.daoListeners_.length ) {
         this.delegate.unlisten(this.relay());
       }
+    },
+
+    toString: function() {
+      return this.TYPE + '(' + this.delegate + ')';
     }
   }
 });
@@ -665,9 +668,6 @@ MODEL({
 
       this.future(function(delegate) {
         this.delegate = delegate;
-        if ( this.daoListeners_.length ) {
-          delegate.listen(this.relay());
-        }
       }.bind(this));
     },
 
@@ -694,7 +694,7 @@ MODEL({
 
       var a = arguments;
       var f = afuture();
-      future(function(delegate) {
+      this.future(function(delegate) {
         this.removeAll.apply(this, a)(f.set);
       }.bind(this));
 
@@ -705,7 +705,7 @@ MODEL({
       if ( this.delegate ) {
         this.delegate.find(key, sink);
       } else {
-        future(this.find.bind(this, key, sink));
+        this.future(this.find.bind(this, key, sink));
       }
     },
 
@@ -716,8 +716,8 @@ MODEL({
 
       var a = arguments;
       var f = afuture();
-      future(function() {
-        this.select.apply(select, a)(f.set);
+      this.future(function() {
+        this.select.apply(this, a)(f.set);
       }.bind(this));
 
       return f.get;
@@ -1042,8 +1042,10 @@ function filteredDAO(query, dao) {
           AND(query, options.query) :
           query
       } : {query: query});
+    },
+    toString: function() {
+      return dao + '.where(' + query + ')';
     }
-
   };
 }
 
@@ -1063,6 +1065,9 @@ function orderedDAO(comparator, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.orderBy(' + comparator + ')';
     }
   };
 }
@@ -1087,6 +1092,9 @@ function limitedDAO(count, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.limit(' + count + ')';
     }
   };
 }
@@ -1107,6 +1115,9 @@ function skipDAO(skip, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.skip(' + skip + ')';
     }
   };
 }

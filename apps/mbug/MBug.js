@@ -39,6 +39,7 @@ MODEL({
           name: project.projectName,
           model: Y.QIssue,
           dao: Y.issueDAO,
+          editableCitationViews: true,
           queryParser: Y.QueryParser,
           citationView: 'IssueCitationView',
           sortChoices: project.defaultSortChoices,
@@ -69,11 +70,6 @@ MODEL({
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.X.touchManager = this.X.TouchManager.create({});
-      this.X.gestureManager = this.X.GestureManager.create({});
-    },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
       return this.X.sub({
@@ -90,7 +86,13 @@ MODEL({
       this.stack.initHTML();
 
       var self = this;
-      this.qbug.getDefaultProject({put: function(project) { self.project = project; }}, this.projectContext());
+      this.qbug.userFuture.get(function(user) {
+        self.qbug.findProject(user.defaultProject, {
+          put: function(p) {
+            self.project = p;
+          }
+        }, self.projectContext())
+      });
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
@@ -101,7 +103,12 @@ MODEL({
     },
     setProject: function(projectName) {
       var self = this;
-      this.qbug.findProject(projectName, function(project) { self.project = project; }, this.projectContext());
+      this.qbug.findProject(projectName, function(project) {
+        self.project = project;
+        self.qbug.userFuture.get(function(user) {
+          user.defaultProject = projectName;
+        });
+      }, this.projectContext());
       this.stack.back();
     }
   }
@@ -194,6 +201,28 @@ MODEL({
     {
       name: 'verticalScrollbarView',
       defaultValue: 'VerticalScrollbarView'
+    },
+    {
+      name: 'scrollGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        var self = this;
+        return this.X.GestureTarget.create({
+          container: {
+            containsPoint: function(x, y, e) {
+              var s = self.scroller$;
+              while ( e ) {
+                if ( e === s ) return true;
+                e = e.parentNode;
+              }
+              return false;
+            }
+          },
+          handler: this,
+          gesture: 'verticalScroll'
+        });
+      }
     }
   ],
   // TODO: Make traits for DOM (overflow: scroll) and abspos scrolling.
@@ -214,21 +243,7 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      var self = this;
-      this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: {
-          containsPoint: function(x, y, e) {
-            var s = self.scroller$;
-            while ( e ) {
-              if ( e === s ) return true;
-              e = e.parentNode;
-            }
-            return false;
-          }
-        },
-        handler: this,
-        gesture: 'verticalScroll'
-      }));
+      this.X.gestureManager.install(this.scrollGesture);
 
       /*
       var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
@@ -240,6 +255,11 @@ MODEL({
       this.$.getElementsByClassName('body')[0].insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
       */
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.X.gestureManager.uninstall(this.scrollGesture);
     }
   },
   actions: [
@@ -263,14 +283,15 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
       action: function() {
+        var innerView = this.X.IssueOwnerEditView.create(this.model.CC);
         var view = this.X.FloatingView.create({
-          view: this.X.IssueOwnerEditView.create(this.model.CC)
+          view: innerView
         });
         this.X.stack.pushView(view);
-        view.focus();
+        innerView.focus();
         var self = this;
-        view.subscribe(['finished'], function() {
-          self.data.cc = self.data.cc.concat(view.data);
+        innerView.subscribe(['finished'], function() {
+          self.data.cc = self.data.cc.concat(innerView.data);
         });
       }
     }
@@ -779,7 +800,7 @@ MODEL({
       if ( ! this.completer ) {
         var proto = FOAM.lookup(this.autocompleter, this.X);
         this.completer = proto.create();
-        this.view.dao = this.completer.autocompleteDao,
+        this.view.dao = this.completer.autocompleteDao$Proxy,
         this.view.objToChoice = this.completer.f;
       }
       this.completer.autocomplete(partial);

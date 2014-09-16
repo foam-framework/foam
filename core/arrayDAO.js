@@ -40,6 +40,16 @@ var ArraySink = {
     this.push(obj);
     this.notify_('put', arguments);
     sink && sink.put && sink.put(obj);
+  },
+  clone: function() {
+    return this.slice(0).sink;
+  },
+  deepClone: function() {
+    var a = this.slice(0);
+    for ( var i = 0 ; i < a.length ; i++ ) {
+      a[i] = a[i].deepClone();
+    }
+    return a.sink;
   }
 };
 

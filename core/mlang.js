@@ -40,15 +40,10 @@ MODEL({
 
   methods: {
     // Mustang Query Language
-    toMQL: function() {
-      return this.toString();
-    },
-    toSQL: function() {
-      return this.toString();
-    },
-    collectInputs: function(terms) {
-      terms.push(this);
-    },
+    toMQL: function() { return this.label_; },
+    toSQL: function() { return this.label_; },
+    toString: function() { return this.toMQL(); },
+    collectInputs: function(terms) { terms.push(this); },
     partialEval: function() { return this; },
     minterm: function(index, term) {
       // True if this bit is set in the minterm number.
@@ -82,7 +77,6 @@ MODEL({
       console.log(this.toMQL(),' normalize-> ', ret.toMQL());
       return ret;
     },
-    toString: function() { return this.label_; },
     pipe: function(sink) {
       var expr = this;
       return {
@@ -101,9 +95,10 @@ var TRUE = (FOAM({
   extendsModel: 'Expr',
 
   methods: {
-    toSQL: function() { return '( 1 = 1 )'; },
-    toMQL: function() { return ''; },
-    f:     function() { return true; }
+    toString: function() { return '<true>'; },
+    toSQL:    function() { return '( 1 = 1 )'; },
+    toMQL:    function() { return ''; },
+    f:        function() { return true; }
   }
 })).create();
 
@@ -149,6 +144,16 @@ MODEL({
   ],
 
   methods: {
+    toString: function() {
+      var s = this.TYPE + '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toString();
+        if ( i < this.args.length-1 ) s += (', ');
+      }
+      return s + ')';
+    },
+
     toSQL: function() {
       var s;
       s = this.model_.label;
@@ -406,7 +411,6 @@ MODEL({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
-  abstract: true,
 
   methods: {
     toSQL: function() {
@@ -420,6 +424,7 @@ MODEL({
       s += ')';
       return s;
     },
+
     toMQL: function() {
       var s = '';
       for ( var i = 0 ; i < this.args.length ; i++ ) {
@@ -1753,8 +1758,8 @@ function SET(arg1, arg2) {
   return SetExpr.create({ arg1: compile_(arg1), arg2: compile_(arg2) });
 }
 
-function GROUP_BY(expr1, expr2) {
-  return GroupByExpr.create({arg1: expr1, arg2: expr2});
+function GROUP_BY(expr1, opt_expr2) {
+  return GroupByExpr.create({arg1: expr1, arg2: opt_expr2 || [].sink});
 }
 
 function GRID_BY(xFunc, yFunc, acc) {
@@ -2000,6 +2005,9 @@ MODEL({
   extendsModel: 'UNARY',
 
   methods: {
+    toSQL: function() {
+      return this.arg1.toMQL() + 'DESC';
+    },
     toMQL: function() {
       return '-' + this.arg1.toMQL();
     },

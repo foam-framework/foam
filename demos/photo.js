@@ -111,7 +111,7 @@ var PhotoDetail = FOAM({
 });
 
 var AlbumDAO, PhotoDAO, PhotoDetailDAO;
-var albums = [], photos = [];
+var albums = [].sink, photos = [].sink;
 
 function makeMultiPartKeys(n) {
   var a = [];
@@ -164,7 +164,7 @@ aseq(
     ret();
   })),
   function(ret) { console.clear(); testData = undefined; ret(); },
-  arepeat(DEBUG ? 1 : 3, aseq(
+  arepeat(DEBUG ? 1 : 7, aseq(
   alog('Benchmark...'),
   atest('1aCreateAlbums' + NUM_ALBUMS, arepeatpar(NUM_ALBUMS, function (ret, i) {
     AlbumDAO.put(albums[i], ret);
@@ -185,23 +185,23 @@ aseq(
   atest('2cMultiKeyQuery5000',    function(ret) { PhotoDAO.where(IN(Photo.ID, KEYS_5000)).select()(ret); })
   )),
   atest('2dIndexedFieldQuery',    function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID))(ret);
   }),
   atest('2dIndexedFieldQuery(X10)', arepeat(10,function(ret) {
-    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID, []))(ret);
+    PhotoDAO.where(EQ(Photo.ALBUM_ID, avgKey)).select(MAP(Photo.ALBUM_ID))(ret);
   })),
   atest('2eAdHocFieldQuery',      function(ret) {
-    PhotoDAO.where(EQ(Photo.IS_LOCAL, true)).select(MAP(Photo.HASH, []))(ret);
+    PhotoDAO.where(EQ(Photo.IS_LOCAL, true)).select(MAP(Photo.HASH))(ret);
   }),
   atest('2fSimpleInnerJoinQuery', function(ret) {
-    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID, []))(function (ids) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID))(function (ids) {
       PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select()(ret);
   })}),
 //  atest('2fSimpleInnerJoinQuery(Simpler+Slower Version)', function(ret) {
 //    AlbumDAO.where(EQ(Album.IS_LOCAL, true)).select(MAP(JOIN(PhotoDAO, Photo.ALBUM_ID, []), []))(ret);
 //  }),
   atest('2gSimpleInnerJoinAggregationQuery', function(ret) {
-    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID, []))(function (ids) {
+    AlbumDAO.where(EQ(Album.IS_LOCAL, false)).select(MAP(Album.ID))(function (ids) {
       PhotoDAO.where(IN(Photo.ALBUM_ID, ids.arg2)).select(GROUP_BY(Photo.ALBUM_ID, SUM_PHOTO_COUNT))(ret);
   })}),
 //  atest('2gSimpleInnerJoinAggregationQuery(Simpler+Slower Version', function(ret) {
@@ -218,9 +218,9 @@ aseq(
     PhotoDAO
       .where(AND(GTE(Photo.TIMESTAMP, new Date(96, 0, 1)), LT(Photo.TIMESTAMP, new Date(96, 2, 1))))
       .orderBy(DESC(Photo.TIMESTAMP))
-      .select(GROUP_BY(MONTH(Photo.TIMESTAMP), []))(ret);
+      .select(GROUP_BY(MONTH(Photo.TIMESTAMP)))(ret);
   }),
-  atest('2jSimpleAggregationQuery', function(ret) { PhotoDAO.select(GROUP_BY(Photo.ALBUM_ID, []))(ret); }),
+  atest('2jSimpleAggregationQuery', function(ret) { PhotoDAO.select(GROUP_BY(Photo.ALBUM_ID))(ret); }),
 /*
   atest('3aCreateAndUpdate', atxn(arepeat(DEBUG ? 10 : 1000, function (ret, i) { AlbumDAO.put(randomAlbum(i*2), ret); }))),
   atest('3bSetup', atxn(function(ret) {
