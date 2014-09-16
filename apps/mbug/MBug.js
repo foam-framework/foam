@@ -675,12 +675,15 @@ MODEL({
     {
       name: 'onClick',
       code: function() {
+        var innerView = this.X.IssueOwnerEditView.create(this.editViewArgs);
         this.editView = this.X.FloatingView.create({
-          view: this.X.IssueOwnerEditView.create(this.editViewArgs)
+          view: innerView
         });
         this.X.stack.pushView(this.editView);
-        this.editView.data$ = this.data$;
-        this.editView.focus();
+        innerView.subscribe(['finished'], function() {
+          this.data = innerView.data;
+        }.bind(this));
+        innerView.focus();
       }
     }
   ]
