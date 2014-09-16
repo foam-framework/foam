@@ -878,11 +878,6 @@ MODEL({
 });
 
 
-if ( ! window.NO_GESTURE_MANAGER ) {
-  window.X.touchManager = window.X.TouchManager.create();
-  window.X.gestureManager = window.X.GestureManager.create();
-}
-
 /*
 MODEL({
   name: 'MomentumTouch',
