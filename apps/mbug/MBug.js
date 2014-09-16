@@ -390,7 +390,13 @@ MODEL({
     function toHTML() {/* <div id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
     function toInnerHTML() {/*
 <% for ( var i = 0; i < this.data.length; i++ ) { %>
-  <%= IssueEmailCitationView.create({ data: this.data[i] }) %>
+  <%
+    var view = this.X.IssueEmailCitationView.create({ data: this.data[i], showDelete: true });
+    out(view);
+    view.subscribe(['delete'], function(index) {
+      this.data = this.data.filter(function(x, i) { return i !== index; });
+    }.bind(this, i));
+  %>
 <% } %>
     */}
   ]
@@ -412,12 +418,27 @@ MODEL({
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
     { name: 'tagName', defaultValue: 'div' },
-    { name: 'className', defaultValue: 'owner-info' }
+    { name: 'className', defaultValue: 'owner-info' },
+    { name: 'showDelete', defaultValue: false }
+  ],
+  actions: [
+    {
+      name: 'delete',
+      label: '',
+      iconUrl: 'images/ic_clear_black_24dp.png',
+      action: function() {
+        this.publish(['delete']);
+      }
+    }
   ],
   templates: [
     function toHTML() {/* <div %%cssClassAttr() id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
     function toInnerHTML() {/*
-      <%= IssueOwnerAvatarView.create({ data: this.data }) %> <div class="owner-name"><%= escapeHTML(this.data) %></div>
+      <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
+      <div class="owner-name"><%= escapeHTML(this.data) %></div>
+      <% if ( this.showDelete ) { %>
+        $$delete
+      <% } %>
     */}
   ]
 });
