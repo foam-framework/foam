@@ -688,10 +688,10 @@ MODEL({
       this.onDAOUpdate();
     },
     scroller$: function() {
-      return this.X.document.getElementById(this.scrollID);
+      return this.X.Documentation.getElementById(this.scrollID);
     },
     container$: function() {
-      return this.X.document.getElementById(this.containerID);
+      return this.X.Documentation.getElementById(this.containerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.

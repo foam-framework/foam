@@ -55,9 +55,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      type: 'Document',
+      type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.'
+      help: 'Documentation associated with this entity.',
     },
     {
       name: 'default',
@@ -247,9 +247,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      type: 'Document',
+      type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.'
+      help: 'Documentation associated with this entity.',
     },
   ],
 
@@ -345,9 +345,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      type: 'Document',
+      type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.'
+      help: 'Documentation associated with this entity.',
     },
     {
       name: 'code',
@@ -361,7 +361,7 @@ MODEL({
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
         var multilineComment = /^\s*function\s*\(.*\)\s*{\s*\/\*(.*)\*\/|^\s*\/\*(.*)\*\/ /.exec(this.code.toString());
         if ( multilineComment ) {
-          this.documentation = this.X.Document.create({
+          this.documentation = this.X.Documentation.create({
                 name: this.name,
                 body: Function("/*" + multilineComment[1] + "*/")
           })
@@ -514,9 +514,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      type: 'Document',
+      type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.'
+      help: 'Documentation associated with this entity.',
     },
     {
       model_: 'ArrayProperty',
@@ -639,7 +639,7 @@ MODEL({
 });
 
 MODEL({
-  name: 'Document',
+  name: 'Documentation',
 
   tableProperties: [
     'name'
@@ -668,7 +668,7 @@ MODEL({
       model_: 'ArrayProperty',
       name: 'chapters',
       type: 'Array[Document]',
-      subType: 'Document',
+      subtype: 'Documentation',
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],

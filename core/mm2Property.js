@@ -331,9 +331,9 @@ var Property = {
     },
     {
       name: 'documentation',
-      type: 'Document',
+      type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.'
+      help: 'Documentation associated with this entity.',
     },
     {
       name: 'prototag',

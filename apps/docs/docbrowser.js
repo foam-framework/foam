@@ -156,9 +156,12 @@ MODEL({
   name: 'DocBrowserController',
   extendsModel: 'Model',
 
-  documentation: function() { /*
-      <div id=%%id >DOC $$DOCREF{'DocBrowserController'}. Template!</div>
-    */},
+  documentation: {
+    model_: 'Documentation',
+    body: function() {  /*
+          <div id=%%id >DOC $$DOCREF{'DocBrowserController'}. Template!</div>
+          */}
+  },
 
   methods: {
     init: function() {
@@ -196,9 +199,12 @@ MODEL({
       factory: function() {
         return this.SearchContext.ModelListController.create();
       },
-      documentation: function() { /*
-          <div id=%%id >DOC modelList Property Template!</div>
-      */}
+      documentation: {
+        model_: 'Documentation',
+        body: function() { /*
+          <div id=%%id >Hello $$DOCREF{'DocBrowserController.modelList'}. property doc!</div>
+          */ },
+      },
     },
     {
       name: 'modelListView',
