@@ -399,19 +399,16 @@ Object.defineProperty(Array.prototype, 'pushAll', {
 /**
  * Search for a single element in an array.
  * @param predicate used to determine element to find
- * @param action to be called with (key, index) arguments
- *        when found
  */
-/*
-Object.defineProperty(Array.prototype, 'find', {
-  value: function(predicate, action) {
-  for (var i=0; i<this.length; i++)
-    if (predicate(this[i], i)) {
-      return action(this[i], i) || this[i];
+Object.defineProperty(Array.prototype, 'mapFind', {
+  value: function(map) {
+    for (var i = 0;  i < this.length ; i++ ) {
+      var result = map(this[i], i);
+      if ( result !== undefined ) return result;
     }
-  return undefined;
-}});
-*/
+  }
+});
+
 
 /** Remove an element from an array. **/
 /*
