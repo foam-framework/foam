@@ -248,6 +248,13 @@ var Property = {
       help: 'Factory for creating initial value when new object instantiated.'
     },
     {
+      name: 'lazyFactory',
+      type: 'Function',
+      required: false,
+      view: 'FunctionView',
+      help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.'
+    },
+    {
       name: 'getter',
       type: 'Function',
       required: false,

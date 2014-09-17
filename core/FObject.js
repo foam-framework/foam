@@ -206,13 +206,22 @@ var FObject = {
     if ( prop.getter ) {
       this.defineFOAMGetter(name, prop.getter);
     } else {
-      this.defineFOAMGetter(name, prop.defaultValueFn ?
-        function() {
+      if ( prop.lazyFactory ) {
+        var getter = function() {
+          if ( typeof this.instance_[name] !== 'undefined' ) return this.instance_[name];
+          this.instance_[name] = prop.lazyFactory.call(this, prop);
+          return this.instance_[name];
+        };
+      } else if ( prop.defaultValueFn ) {
+        getter = function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
-        } :
-        function() {
+        };
+      } else {
+        getter = function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
-        });
+        };
+      }
+      this.defineFOAMGetter(name, getter);
     }
 
     if ( prop.setter ) {
