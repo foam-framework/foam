@@ -394,9 +394,9 @@ MODEL({
               for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
                 var p = this.model_.properties[i];
 
-                if ( p.model_ === LabelArrayProperty ) {
+                if ( LabelArrayProperty.isInstance(p) ) {
                   this.instance_[p.name] = [];
-                } else if ( p.model_ === LabelStringProperty ) {
+                } else if ( LabelStringProperty.isInstance(p) ) {
                   this.instance_[p.name] = "";
                 }
               }
