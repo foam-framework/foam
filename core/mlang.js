@@ -1758,8 +1758,8 @@ function SET(arg1, arg2) {
   return SetExpr.create({ arg1: compile_(arg1), arg2: compile_(arg2) });
 }
 
-function GROUP_BY(expr1, expr2) {
-  return GroupByExpr.create({arg1: expr1, arg2: expr2});
+function GROUP_BY(expr1, opt_expr2) {
+  return GroupByExpr.create({arg1: expr1, arg2: opt_expr2 || [].sink});
 }
 
 function GRID_BY(xFunc, yFunc, acc) {

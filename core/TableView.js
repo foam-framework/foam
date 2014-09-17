@@ -109,13 +109,6 @@ MODEL({
       defaultValue: 10
     },
     {
-      name: 'touchScrolling',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      hidden: true,
-      transient: true
-    },
-    {
       name: 'touchPrev',
       hidden: true,
       transient: true,
@@ -226,47 +219,24 @@ MODEL({
       }
     },
     {
-      name: 'onTouchStart',
-      code: function(touches, changed) {
-        if ( touches.length > 1 ) return { drop: true };
-        return { weight: 0.3 };
+      name: 'verticalScrollStart',
+      code: function(dy, ty, y) {
+        this.touchPrev = y;
       }
     },
     {
-      name: 'onTouchMove',
-      code: function(touches, changed) {
-        var t = touches[changed[0]];
-        if ( this.touchScrolling ) {
+      name: 'verticalScrollMove',
+      code: function(dy, ty, y) {
+        var delta = Math.abs(y - this.touchPrev);
+        if ( delta > this.scrollPitch ) {
           var sb = this.scrollbar;
-          var dy = t.y - this.touchPrev;
-          if ( dy > this.scrollPitch && sb.value > 0 ) {
-            this.touchPrev = t.y;
+          if ( y > this.touchPrev && sb.value > 0 ) { // scroll up
             sb.value--;
-          } else if ( dy < -this.scrollPitch && sb.value < sb.size - sb.extent ) {
-            this.touchPrev = t.y;
+          } else if ( y < this.touchPrev && sb.value < sb.size - sb.extent ) { // scroll down
             sb.value++;
           }
-
-          return { claim: true, weight: 0.99, preventDefault: true };
+          this.touchPrev = y;
         }
-
-        if ( Math.abs(t.dy) > 10 && Math.abs(t.dx) < 10 ) {
-          // Moving mostly vertically, so start scrolling.
-          this.touchScrolling = true;
-          this.touchPrev = t.y;
-          return { claim: true, weight: 0.8, preventDefault: true };
-        } else if ( t.distance < 10 ) {
-          return { preventDefault: true };
-        } else {
-          return { drop: true };
-        }
-      }
-    },
-    {
-      name: 'onTouchEnd',
-      code: function(touches, changed) {
-        this.touchScrolling = false;
-        return { drop: true };
       }
     }
   ],
@@ -315,11 +285,12 @@ MODEL({
               sb.value - Math.round(e.wheelDelta / 20)));
         };
 
-        if ( this.X.touchManager ) {
-          this.X.touchManager.install(TouchReceiver.create({
-            id: 'qbug-table-scroll-' + this.id,
-            element: this.$.parentElement,
-            delegate: this
+        if ( this.X.gestureManager ) {
+          this.X.gestureManager.install(this.X.GestureTarget.create({
+            container: this,
+            handler: this,
+            getElement: function() { return this.container.$.parentElement; },
+            gesture: 'verticalScroll'
           }));
         }
 

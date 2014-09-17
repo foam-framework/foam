@@ -519,6 +519,10 @@ MODEL({
 
   properties: [
     {
+      name: 'model',
+      defaultValueFn: function() { return this.dao.model; }
+    },
+    {
       name: 'runway',
       defaultValue: 500,
       help: 'The distance in pixels to render outside the viewport'
@@ -629,6 +633,15 @@ MODEL({
       defaultValue: 0,
       transient: true,
       hidden: true
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+      view: {
+        create: function() { return ChoiceView.create({choices:[
+          "read-only", "read-write", "final"
+        ]}); }
+      }
     }
   ],
 
@@ -761,7 +774,6 @@ MODEL({
       }
       this.extraRows = [];
 
-
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
@@ -842,8 +854,16 @@ MODEL({
             if ( ! a || ! a.length ) return;
             if ( updateNumber !== self.daoUpdateNumber ) return;
 
+            // If we're in read-write mode, clone everything before it goes in the cache.
             for ( var i = 0 ; i < a.length ; i++ ) {
-              self.cache[toLoadTop + i] = a[i];
+              var o = a[i];
+              if ( self.mode === 'read-write' ) {
+                o = a[i].clone();
+                o.addListener(function(x) {
+                  this.dao.put(x);
+                }.bind(self, o));
+              }
+              self.cache[toLoadTop + i] = o;
             }
             self.loadedTop = Math.min(toLoadTop, Math.max(0, self.loadedTop));
             self.loadedBottom = Math.max(toLoadBottom, self.loadedBottom);

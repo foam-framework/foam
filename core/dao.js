@@ -564,7 +564,6 @@ MODEL({
       required: true,
       transient: true,
       factory: function() { return NullDAO.create(); }, // TODO: use singleton
-      preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
@@ -629,7 +628,7 @@ MODEL({
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.unlisten(this.relay());
       }
     },
@@ -660,6 +659,10 @@ MODEL({
     },
     {
       name: 'future'
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.delegate ? this.delegate.model : ''; }
     }
   ],
 
@@ -669,9 +672,6 @@ MODEL({
 
       this.future(function(delegate) {
         this.delegate = delegate;
-        if ( this.daoListeners_.length ) {
-          delegate.listen(this.relay());
-        }
       }.bind(this));
     },
 
@@ -721,7 +721,7 @@ MODEL({
       var a = arguments;
       var f = afuture();
       this.future(function() {
-        this.select.apply(select, a)(f.set);
+        this.select.apply(this, a)(f.set);
       }.bind(this));
 
       return f.get;

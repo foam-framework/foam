@@ -430,5 +430,29 @@ var FObject = {
         this.decorate(method.name, method.code, decorator);
     }
     return this;
+  },
+
+  getFeature: function(featureName) {
+    var lists = [
+      this.properties,
+      this.actions,
+      this.methods,
+      this.listeners,
+      this.templates,
+      this.models,
+      this.tests,
+      this.relationships,
+      this.issues
+    ]
+    var result;
+    lists.some(function(list) {
+      return list.some(function(item) {
+        if (item.name && item.name === featureName ) {
+          result = item;
+          return true;
+        }
+      });
+    });
+    return result;
   }
 };
