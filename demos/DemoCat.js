@@ -145,7 +145,7 @@ var demos = [
     model_: 'Demo',
     name: 'Collision',
     path: 'Collision.html',
-    description: 'Demonstration of collision-detection.',
+    description: 'Demonstration of the physics engine and collision-detection.',
     keywords: ['physics', '14'],
     src: 'Collision.js',
     image: 'Collision.png'
@@ -181,7 +181,7 @@ var demos = [
     model_: 'Demo',
     name: 'Crop Circles',
     path: 'CropCircle.html',
-    description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.',
+    description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.  Just started: needs animation and a graphical live-coding system.',
     keywords: ['graphics', '14'],
     src: 'CropCircle.js',
     image: 'CropCircle.png'
@@ -190,7 +190,7 @@ var demos = [
     model_: 'Demo',
     name: 'Complements',
     path: 'Complements.html',
-    description: 'An animated colour wheel.  Ported from the Elm demo.',
+    description: 'An animated colour wheel.  Ported from the Elm demo.  Shows use of Events.dynamic().',
     keywords: ['animation', '14'],
     image: 'Complements.png'
   },
@@ -206,7 +206,7 @@ var demos = [
     model_: 'Demo',
     name: 'Two-Way Data-Binding',
     path: 'TwoWayDataBinding.html',
-    description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented with other JS libraries at: http://n12v.com/2-way-data-binding/?hn',
+    description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented <a href="http://n12v.com/2-way-data-binding/?hn">with other JS libraries</a>.',
     keywords: ['tutorial', '14'],
     image: 'TwoWayDataBinding.png'
   },
@@ -214,7 +214,7 @@ var demos = [
     model_: 'Demo',
     name: 'Calculator',
     path: '../apps/calc/Calc.html',
-    description: 'A simple calculator application.',
+    description: 'A simple calculator application.  Demonstrates the use of templates to completely change the appearance of a DetailView.',
     keywords: ['app', '14'],
     src: '../apps/calc/',
     image: 'Calc.png'
@@ -259,7 +259,7 @@ var demos = [
     model_: 'Demo',
     name: 'Phone Catalog',
     path: '../apps/phonecat/Cat.html',
-    description: '',
+    description: 'A port of an Angular application for browsing a Cellphone catalog.  Create this app yourself by following the <a href="http://foam-framework.github.io/foam/tutorial/0-intro/">tutorial</a>.',
     keywords: ['tutorial', '14'],
     src: '../apps/phonecat/',
     image: 'PhoneCat.png'
@@ -277,7 +277,7 @@ var demos = [
     model_: 'Demo',
     name: 'Todo',
     path: '../apps/todo/Todo.html',
-    description: 'A FOAM implementation of the http://todomvc.com comparison application.',
+    description: 'A FOAM implementation of the http://todomvc.com comparison application.  Notice that the FOAM implementation is shorter than any other.',
     keywords: ['tutorial', '14'],
     src: '../apps/todo/',
     image: 'Todo.png'
@@ -305,7 +305,7 @@ MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
         <a href="%%data.path" class="thumb">$$name{mode: 'read-only'}</a>
         <br>
         <% if ( this.data.image ) { %> <br><img width=250 height=250 src="democat/%%data.image"> <% } %>
-        <p>$$description{mode: 'read-only'}</p>
+        <p>$$description{mode: 'read-only', escapeHTML: false}</p>
         <b>Keywords:</b> <%= this.data.keywords.join(', ') %><br>
         <b>Source:</b> <a href="%%data.src">here</a><br>
         <% if ( VIDEO_PATH && this.data.video ) { %>

@@ -430,5 +430,21 @@ var FObject = {
         this.decorate(method.name, method.code, decorator);
     }
     return this;
+  },
+
+  getFeature: function(featureName) {
+    return [
+      this.properties,
+      this.actions,
+      this.methods,
+      this.listeners,
+      this.templates,
+      this.models,
+      this.tests,
+      this.relationships,
+      this.issues
+    ].mapFind(function(list) { return list.mapFind(function(f) {
+      return f.name && f.name === featureName && f;
+    })});
   }
 };

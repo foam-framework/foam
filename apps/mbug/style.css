@@ -369,10 +369,6 @@ select[name=sortOrder] {
   flex-grow: 1;
 }
 
-.swipeAltInner {
-  padding-top: 8px;
-}
-
 .stackview {
   height: 100%;
 }
