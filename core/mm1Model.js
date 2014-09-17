@@ -246,41 +246,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       postSet: function(_, templates) {
-        // Load templates from an external file
-        // if their 'template' property isn't set
-        var i = 0;
-        templates.forEach(function(t) {
-          if ( typeof t === 'function' ) {
-            t = templates[i] = Template.create({
-              name: t.name,
-              // ignore first argument, which should be 'opt_out'
-              args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
-                return Arg.create({name: a});
-              }),
-              template: multiline(t)});
-          } else if ( ! t.template ) {
-            // console.log('loading: '+ this.name + ' ' + t.name);
-
-            var future = afuture();
-            var path = document.currentScript.src;
-
-            t.futureTemplate = future.get;
-            path = path.substring(0, path.lastIndexOf('/')+1);
-            path += this.name + '_' + t.name + '.ft';
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", path);
-            xhr.asend(function(data) {
-              t.template = data;
-              future.set(Template.create(t));
-              t.futureTemplate = undefined;
-            });
-          } else if ( typeof t.template === 'function' ) {
-            t.template = multiline(t.template);
-          }
-
-          i++;
-        }.bind(this));
+          TemplateUtil.modelExpandTemplates(this, templates);
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.'
@@ -352,19 +318,9 @@ var Model = {
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Model, using HTML and FOAM Template syntax.',
-      // TODO: share this processing with normal templates
-      preSet: function(_, docTemplate) {
-        // TODO: not sure about the validity of this.X at this point. Will it ever be
-        // not Window?
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
     {
       name: 'notes',

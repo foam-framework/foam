@@ -432,6 +432,7 @@ var FObject = {
   },
 
   getFeature: function(featureName) {
+    featureName = featureName.toUpperCase();
     var lists = [
       this.properties,
       this.actions,
@@ -446,7 +447,7 @@ var FObject = {
     var result;
     lists.some(function(list) {
       return list.some(function(item) {
-        if (item.name && item.name === featureName ) {
+        if (item.name && item.name.toUpperCase() === featureName ) {
           result = item;
           return true;
         }

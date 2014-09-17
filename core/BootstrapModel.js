@@ -168,12 +168,6 @@ var BootstrapModel = {
       addMethod(t.name, TemplateUtil.lazyCompile(t));
     });
 
-    // documentation template TODO: make it a list like ordinary templates? You could name doc formats other than toHTML()
-    if (this.documentation) {
-      this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-    }
-
-
     // mix-in mixins
     // Workaround for crbug.com/258522
     // this.mixins && Object_forEach(this.mixins, function(m) { /* TODO: something */ });

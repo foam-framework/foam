@@ -157,7 +157,7 @@ MODEL({
   extendsModel: 'Model',
 
   documentation: function() { /*
-      <div id=%%id >DOC DocBrowserController Template!</div>
+      <div id=%%id >DOC $$DOCREF{'DocBrowserController'}. Template!</div>
     */},
 
   methods: {
@@ -215,7 +215,14 @@ MODEL({
       factory: function() {
         return this.DetailContext.DocView.create({ model: Model, data$: this.selection$ });
       }
+    },
+    {
+      name: 'documentationView',
+      factory: function() {
+        return this.DetailContext.DocModelView.create({ data: this.model_ });
+      }
     }
+
   ]
 });
 
@@ -227,6 +234,7 @@ MODEL({
     initHTML: function() {
       this.data.modelListView.initHTML();
       this.data.selectionView.initHTML();
+      //this.data.documentationView.initHTML();
     }
   },
 
@@ -237,6 +245,7 @@ MODEL({
         <div class="contentPanes">
           <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
           <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
+<!--          <div class="docPane"><%=this.data.documentationView.toHTML()%></div> -->
         </div>
       </div>
     */}

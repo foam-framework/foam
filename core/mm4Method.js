@@ -55,20 +55,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Action, using HTML and FOAM Template syntax.',
-      // TODO: build this toHTML() stuff into a Documentation property type?
-      preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      },
-      postSet: function(_, docTemplate) {
-        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
     {
       name: 'default',
@@ -258,20 +247,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Argument, using HTML and FOAM Template syntax.',
-      // TODO: build this toHTML() stuff into a Documentation property type?
-      preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      },
-      postSet: function(_, docTemplate) {
-        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
   ],
 
@@ -367,20 +345,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Method, using HTML and FOAM Template syntax.',
-      // TODO: build this toHTML() stuff into a Documentation property type?
-      preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      },
-      postSet: function(_, docTemplate) {
-        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
     {
       name: 'code',
@@ -394,7 +361,10 @@ MODEL({
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
         var multilineComment = /^\s*function\s*\(.*\)\s*{\s*\/\*(.*)\*\/|^\s*\/\*(.*)\*\/ /.exec(this.code.toString());
         if ( multilineComment ) {
-          this.documentation = Function("/*" + multilineComment[1] + "*/");
+          this.documentation = this.X.Document.create({
+                name: this.name,
+                body: Function("/*" + multilineComment[1] + "*/")
+          })
         }
 
       }
@@ -544,20 +514,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Interface, using HTML and FOAM Template syntax.',
-      // TODO: build this toHTML() stuff into a Documentation property type?
-      preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      },
-      postSet: function(_, docTemplate) {
-        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
     {
       model_: 'ArrayProperty',
@@ -678,3 +637,45 @@ MODEL({
   ]
 
 });
+
+MODEL({
+  name: 'Document',
+
+  tableProperties: [
+    'name'
+  ],
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s unique name.'
+    },
+    {
+      name: 'body',
+      type: 'Template',
+      defaultValue: '',
+      help: 'The main content of the document.',
+      preSet: function(_, template) {
+          return TemplateUtil.templateMemberExpander(template, this.X);
+      }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'chapters',
+      type: 'Array[Document]',
+      subType: 'Document',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Sub-documents comprising the full body of this document.'
+    },
+
+  ]
+
+});
+

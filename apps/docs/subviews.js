@@ -89,10 +89,9 @@ MODEL({
 });
 
 
-// ??? Should this have a 'data' property?
-// Or maybe a DataView and ModelView
 MODEL({
   name: 'DocModelView',
+  extendsModel: 'View',
   label: 'Documentation Model View',
   help: 'Shows documentation for a Model.',
 
@@ -101,6 +100,27 @@ MODEL({
       name: 'data',
       help: 'The Model from which to extract documentation.'
     }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id">
+        <%=this.toInnerHTML()%>
+      </div>
+    */},
+
+    function toInnerHTML()    {/*
+      <%    if (this.data) {  %>
+              <div class="introduction">
+                <h1><%=this.data.name%></h1>
+      <%        if (this.data.extendsModel) { %>
+                  <h2>Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></h2>
+      <%        } else { %>
+                  <h2>Extends <a href="#Model">Model</a></h2>
+      <%        } %>
+              </div>
+      <%    } %>
+    */}
   ],
 
   methods: {
@@ -128,15 +148,48 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
-// TODO: reimp for doc
-      var o = this.model_[name];
-      if ( ! o ) throw 'Unknown View Name: ' + name;
-      var v = Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
-        this.createView(o, opt_args) ;
+      // name has been constantized ('PROP_NAME'), but we're
+      // only looking for certain doc tags anyway.
+
+
+      var callMyself = Function(['self', 'ref'], "return self."+name+"(ref);");
+      var o = callMyself(this, opt_args);
+      if ( ! o ) throw 'Unknown Model or feature reference: ' + name;
+      var v = this.createView(o, opt_args) ;
       v.data = this;
       return v;
     },
+
+    DOCREF: function(reference) {
+      var model;
+      var feature;
+      // parse "Model.feature" or "Model" or "feature" with implicit Model==this.data
+      args = reference.split('.');
+      var foundObject;
+      if (args.length > 1)
+      {
+        // two params specified explicitly
+        model = args[0];
+        feature = args[1];
+        foundObject = this.X[model].getFeature(feature);
+      }
+      else
+      {
+        // see if there's a feature on this.data that matches
+        model = this.data.TYPE;
+        feature = args[0];
+        foundObject = this.data.getFeature(feature);
+
+        if (!foundObject) {
+          // no feature found, so assume it's a model
+          model = args[0];
+          feature = undefined;
+          foundObject = this.X[model];
+        }
+      }
+      return foundObject;
+    },
+
 
   }
 });

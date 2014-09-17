@@ -261,20 +261,9 @@ MODEL({
     },
     {
       name: 'documentation',
-      label: 'Documentation Text',
-      type: 'Function',
-      displayWidth: 70,
-      displayHeight: 6,
-      view: 'DocSubView',
-      defaultValue: '',
-      help: 'Documentation for this Relationship, using HTML and FOAM Template syntax.',
-      // TODO: build this toHTML() stuff into a Documentation property type?
-      preSet: function(_, docTemplate) {
-        return TemplateUtil.templateMemberExpander(docTemplate, this.X);
-      },
-      postSet: function(_, docTemplate) {
-        this.documentation.toHTML = TemplateUtil.lazyCompile(this.documentation);
-      }
+      type: 'Document',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.'
     },
     {
       name:  'relatedModel',

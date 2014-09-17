@@ -218,7 +218,44 @@ var TemplateUtil = {
        t.template = multiline(t.template);
      }
      return t;
-   }
+   },
+
+   modelExpandTemplates: function(self, templates) {
+     // Load templates from an external file
+     // if their 'template' property isn't set
+     var i = 0;
+     templates.forEach(function(t) {
+       if ( typeof t === 'function' ) {
+         t = templates[i] = Template.create({
+           name: t.name,
+           // ignore first argument, which should be 'opt_out'
+           args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
+             return Arg.create({name: a});
+           }),
+           template: multiline(t)});
+       } else if ( ! t.template ) {
+         // console.log('loading: '+ self.name + ' ' + t.name);
+
+         var future = afuture();
+         var path = document.currentScript.src;
+
+         t.futureTemplate = future.get;
+         path = path.substring(0, path.lastIndexOf('/')+1);
+         path += self.name + '_' + t.name + '.ft';
+
+         var xhr = new XMLHttpRequest();
+         xhr.open("GET", path);
+         xhr.asend(function(data) {
+           t.template = data;
+           future.set(Template.create(t));
+           t.futureTemplate = undefined;
+         });
+       } else if ( typeof t.template === 'function' ) {
+         t.template = multiline(t.template);
+       }
+       i++;
+     }.bind(self))
+  }
 };
 
 
