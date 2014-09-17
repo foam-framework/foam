@@ -444,7 +444,7 @@ var FObject = {
       this.relationships,
       this.issues
     ].mapFind(function(list) { return list.mapFind(function(f) {
-      return f.name && f.name === featureName ? f : undefined;
+      return f.name && f.name === featureName && f;
     })});
   }
 };

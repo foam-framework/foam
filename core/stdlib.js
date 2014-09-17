@@ -404,7 +404,7 @@ Object.defineProperty(Array.prototype, 'mapFind', {
   value: function(map) {
     for (var i = 0;  i < this.length ; i++ ) {
       var result = map(this[i], i);
-      if ( result !== undefined ) return result;
+      if ( result ) return result;
     }
   }
 });
