@@ -41,7 +41,6 @@ MODEL({
     {
       name: 'data',
       postSet: function(_, nu) {
-        console.log('avatar fired');
         if ( this.$ ) this.updateHTML();
       }
     }
