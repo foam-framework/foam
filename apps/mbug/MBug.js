@@ -82,7 +82,7 @@ MODEL({
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
-        ProjectDAO:        this.qbug.ProjectNetworkDAO,
+        ProjectDAO:        this.qbug.ProjectDAO, // Is this needed?
         stack:             this.stack
       }, 'MBUG CONTEXT');
     },

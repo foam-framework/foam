@@ -50,6 +50,17 @@ MODEL({
         });
       }
     },
+    /*
+    {
+      name: 'QProjectDAO',
+      factory: function() {
+        return this.X.EasyDAO.create({
+          model: QProject,
+          cache: true
+        });
+      }
+    },
+    */
     {
       name: 'ProjectNetworkDAO',
       factory: function() {
@@ -87,19 +98,60 @@ MODEL({
           return this.model.create(json);
         };
 
-          /*
-        dao.jsonToObj = function(json) {
-          if ( json.author ) json.author = json.author.name;
-
-          return this.model.create(json);
-        };
-        */
-
         return dao;
       },
       transient: true
     },
+    {
+      name: 'ProjectDAO',
+      factory: function() {
+        var self = this;
+        var cache = this.X.IDBDAO.create({
+          model: Project,
+          useSimpleSerialization: false
+        });
 
+        return {
+          // Find is the only method called on this DAO.
+          find: function(id, sink) {
+            // Check in Cache first
+            cache.find(id, {
+              // If success, then notify sink but update cache for next time.
+              put: function(project) {
+                sink.put(project);
+                self.ProjectNetworkDAO.find(id, {
+                  put: function(project) {
+                    cache.put(Project.create({
+                      externalId: project.externalId,
+                      name: project.name,
+                      summary: project.summary,
+                      issuesConfig: project.issuesConfig
+                    }));
+                  }
+                });
+              },
+              // If not found in cache, then request from network, and store result in cache
+              error: function() {
+                debugger;
+                self.ProjectNetworkDAO.find(id, {
+                  put: function(project) {
+                debugger;
+                    sink.put(project);
+                    cache.put(Project.create({
+                      externalId: project.externalId,
+                      name: project.name,
+                      summary: project.summary,
+                      issuesConfig: project.issuesConfig
+                    }));
+                  },
+                  error: sink.error && sink.error.bind(sink)
+                });
+              }
+            });
+          }
+        };
+      }
+    },
     {
       // Cache of QProject objects
       name: 'projects_',
@@ -179,7 +231,7 @@ MODEL({
 
       var self = this;
 
-      this.ProjectNetworkDAO.find(projectName, {
+      this.ProjectDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
           var p = (opt_X || (self.X.sub())).QProject.create({qbug: self, project: project});
