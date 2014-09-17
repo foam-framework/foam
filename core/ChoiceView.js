@@ -183,7 +183,7 @@ MODEL({
 
 
 MODEL({
-  name:  'ChoiceListView',
+  name: 'ChoiceListView',
 
   extendsModel: 'AbstractChoiceView',
 
@@ -483,6 +483,7 @@ MODEL({
       name: 'open',
       labelFn: function() { return this.linkLabel; },
       action: function() {
+        var self = this;
         var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
@@ -490,31 +491,36 @@ MODEL({
           autoSetData: this.autoSetData
         });
 
-        // I don't know why the 'animate' is required, but it sometimes
-        // doesn't remove the view without it.
-        view.data$.addListener(EventService.animate(function() {
-          this.data = view.data;
-          if ( view.$ ) view.$.remove();
-        }.bind(this), this.X));
-
         var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
-        var parentNode = view.$.parentNode;
+
+        function mouseMove(evt) {
+          console.log('mouseMove: ', evt);
+          if ( ! view.$.contains(evt.target) ) remove();
+        }
+
+        function remove() {
+          self.X.document.removeEventListener('touchstart', remove);
+          self.X.document.removeEventListener('mousemove',  mouseMove);
+          if ( view.$ ) view.$.remove();
+        }
+
+        // I don't know why the 'animate' is required, but it sometimes
+        // doesn't remove the view without it.
+        view.data$.addListener(EventService.animate(function() {
+          self.data = view.data;
+          remove();
+        }, this.X));
 
         view.$.style.top = pos[1]-2;
         view.$.style.left = pos[0]-toNum(s.width)+30;
         view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
         view.initHTML();
-        view.$.addEventListener('click', function() { if ( view.$ ) view.$.remove(); });
-        parentNode.addEventListener('mousemove', function(evt) {
-          if ( ! view.$ ) {
-            parentNode.removeEventListener('mousemove', arguments.callee);
-          } else if ( ! view.$.contains(evt.target) ) {
-            parentNode.removeEventListener('mousemove', arguments.callee);
-            view.$.remove();
-          }
-        });
+
+        this.X.document.addEventListener('touchstart',  remove);
+        view.$.addEventListener('click',                remove);
+        this.X.document.addEventListener('mousemove',   mouseMove);
       }
     }
   ],
