@@ -433,7 +433,7 @@ var FObject = {
 
   getFeature: function(featureName) {
     featureName = featureName.toUpperCase();
-    var lists = [
+    return [
       this.properties,
       this.actions,
       this.methods,
@@ -443,17 +443,9 @@ var FObject = {
       this.tests,
       this.relationships,
       this.issues
-    ]
-    var result;
-    lists.some(function(list) {
-      return list.some(function(item) {
-        if (item.name && item.name.toUpperCase() === featureName ) {
-          result = item;
-          return true;
-        }
-      });
-    });
-    return result;
+    ].mapFind(function(list) { return list.mapFind(function(f) {
+      return f.name && f.name.toUpperCase === featureName && f;
+    })});
   }
 };
 
