@@ -4365,9 +4365,11 @@ MODEL({
     {
       name: 'thumbHeight',
       dynamicValue: function() {
+        var id = this.thumbID;
+        var height = this.height;
         if (!this.scrollHeight)
           return 0;
-        return this.height * this.height / this.scrollHeight;
+        return height * height / this.scrollHeight;
       },
       postSet: function(old, nu) {
         var thumb = this.thumb();
