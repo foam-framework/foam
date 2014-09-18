@@ -1278,6 +1278,116 @@
       this.assert(seqMatches(['bar setter puppies', 'bar getter']), 'setter was called properly');
     </property>
   </object>
+
+  <object model="UnitTest">
+    <property name="name">Base64</property>
+    <property name="description">Test FOAM's Base64 handling</property>
+    <property name="code" type="function">
+      this.decode = function(str) {
+        var decoder = this.X.Base64Decoder.create([]);
+        decoder.put(str);
+        decoder.eof();
+        return decoder.sink;
+      };
+
+      this.ab2String = function(buffer) {
+        var view = new Uint8Array(buffer[0]);
+        var result = '';
+        for ( var i = 0 ; i &lt; buffer[0].byteLength ; ++i ) {
+          result += String.fromCharCode(view[i]);
+        }
+        return result;
+      };
+
+      this.string2ab = function(str) {
+        var buffer = new ArrayBuffer(str.length);
+        var view = new Uint8Array(buffer);
+        for ( var i = 0 ; i &lt; buffer.byteLength ; ++i ) {
+          view[i] = str.charCodeAt(i);
+        }
+        return buffer;
+      };
+
+      this.encodingTest = function(input, expected) {
+        var encodedString = this.X.Base64Encoder.encode(this.string2ab(input));
+        var decodedString = this.ab2String(this.decode(encodedString));
+        this.assert(expected === encodedString, 'Correctly encoded "' + input + '" as "' + expected + '" (== "' + encodedString + '")');
+        this.assert(input    === decodedString, 'Correctly decoded "' + encodedString + '" back to "' + input + '" (== "' + decodedString + '")');
+      };
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">0-char string</property>
+    <property name="parent">Base64</property>
+    <property name="description">The encoding of an empty string is the empty string.</property>
+    <property name="code" type="function">
+      this.encodingTest('', '');
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">1-char string</property>
+    <property name="parent">Base64</property>
+    <property name="description">Check the encoding and decoding of a length-1 string</property>
+    <property name="code" type="function">
+      this.encodingTest('A', 'QQ==');
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">2-char string</property>
+    <property name="parent">Base64</property>
+    <property name="description">Check the encoding and decoding of a length-2 string</property>
+    <property name="code" type="function">
+      this.encodingTest('AB', 'QUI=');
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">3-char string</property>
+    <property name="parent">Base64</property>
+    <property name="description">Check the encoding and decoding of a length-3 string</property>
+    <property name="code" type="function">
+      this.encodingTest('ABC', 'QUJD');
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">4-char string</property>
+    <property name="parent">Base64</property>
+    <property name="description">Check the encoding and decoding of a length-4 string</property>
+    <property name="code" type="function">
+      this.encodingTest('ABCD', 'QUJDRA==');
+    </property>
+  </object>
+  <object model="UnitTest">
+    <property name="name">All chars</property>
+    <property name="parent">Base64</property>
+    <property name="description">Check the encoding and decoding of a sequence of all 256 chars.</property>
+    <property name="code" type="function">
+      var buffer = new ArrayBuffer(256);
+      var view = new Uint8Array(buffer);
+      for ( var i = 0 ; i &lt; 256 ; ++i ) {
+        view[i] = i;
+      }
+
+      var encodedString = this.X.Base64Encoder.encode(buffer);
+      var EXPECTED_RESULTS =
+        'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIj' +
+        'JCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZH' +
+        'SElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr' +
+        'bG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6P' +
+        'kJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKz' +
+        'tLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX' +
+        '2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7' +
+        '/P3+/w==';
+
+      this.assert(encodedString === EXPECTED_RESULTS, 'Correctly encoded');
+
+      var decodedBuffer = this.decode(encodedString)[0];
+      this.assert(decodedBuffer.byteLength === 256, 'Decoded buffer has correct length');
+      var decodedView = new Uint8Array(decodedBuffer);
+      for ( var i = 0 ; i &lt; 256 ; i++ ) {
+        this.assert(i === decodedView[i], 'Index ' + i + ' matches');
+      }
+    </property>
+  </object>
 </foam>
 
 
