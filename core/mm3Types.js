@@ -684,8 +684,8 @@ var ViewProperty = Model.create({
         if ( typeof f === 'function' ) return f;
 
         if ( typeof f === 'string' ) {
-          return function(d) {
-            return FOAM.lookup(f, this.X).create(d);
+          return function(d, opt_X) {
+            return FOAM.lookup(f, opt_X).create(d, opt_X);
           }.bind(this);
         }
 

@@ -233,7 +233,7 @@ MODEL({
             }
           },
           handler: this,
-          gesture: 'verticalScroll'
+          gesture: 'verticalScrollMomentum'
         });
       }
     }
