@@ -116,6 +116,20 @@ MODEL({
       d.addEventListener('touchstart', this.onTouchStart);
     },
 
+    attach: function(e) {
+      e.addEventListener('touchmove', this.onTouchMove);
+      e.addEventListener('touchend', this.onTouchEnd);
+      e.addEventListener('touchcancel', this.onTouchCancel);
+      e.addEventListener('touchleave', this.onTouchEnd);
+    },
+
+    detach: function(e) {
+      e.removeEventListener('touchmove', this.onTouchMove);
+      e.removeEventListener('touchend', this.onTouchEnd);
+      e.removeEventListener('touchcancel', this.onTouchCancel);
+      e.removeEventListener('touchleave', this.onTouchEnd);
+    },
+
     touchStart: function(i, t, e) {
       this.touches[i] = this.X.InputPoint.create({
         id: i,
@@ -159,10 +173,7 @@ MODEL({
         e.preventDefault();
         // Attach an element-specific touch handlers, in case it gets removed
         // from the DOM.
-        e.target.addEventListener('touchmove', this.onTouchMove);
-        e.target.addEventListener('touchend', this.onTouchEnd);
-        e.target.addEventListener('touchcancel', this.onTouchCancel);
-        e.target.addEventListener('touchleave', this.onTouchEnd);
+        this.attach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
@@ -190,6 +201,8 @@ MODEL({
       name: 'onTouchEnd',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -205,6 +218,8 @@ MODEL({
       name: 'onTouchCancel',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -220,6 +235,8 @@ MODEL({
       name: 'onTouchLeave',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -930,8 +947,13 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(_, __, touch) {
-        if ( ! this.recognized ) {
-          this.checkRecognition();
+        try {
+          if ( ! this.recognized ) {
+            this.checkRecognition();
+          }
+        } catch(e) {
+          debugger;
+          console.error('Error on touch end', e);
         }
 
         delete this.points[touch.id];
