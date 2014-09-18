@@ -714,6 +714,7 @@ MODEL({
 
       view.copyFrom(this.args);
       view.parent = this.parent;
+      view.prop = this.prop;
 
       this.view = view;
       this.bindData(this.data);
