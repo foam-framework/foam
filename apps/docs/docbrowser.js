@@ -159,7 +159,7 @@ MODEL({
   documentation: {
     model_: 'Documentation',
     body: function() {  /*
-          <div id=%%id >DOC $$DOCREF{'DocBrowserController'}. Template!</div>
+          <div id=%%id >DOC $$DOC{ref:'DocBrowserController'}. Template!</div>
           */}
   },
 
@@ -186,8 +186,8 @@ MODEL({
 
   listeners: [
     {
-     name: 'onSelectionChange',
-     code: function(evt) {
+      name: 'onSelectionChange',
+      code: function(evt) {
         location.hash = "#" + this.SearchContext.selection$.value.name;
      }
     }
@@ -202,7 +202,7 @@ MODEL({
       documentation: {
         model_: 'Documentation',
         body: function() { /*
-          <div id=%%id >Hello $$DOCREF{'DocBrowserController.modelList'}. property doc!</div>
+          <div id=%%id >Hello $$DOC{ref:'DocBrowserController.modelList'}. property doc!</div>
           */ },
       },
     },
@@ -240,7 +240,7 @@ MODEL({
     initHTML: function() {
       this.data.modelListView.initHTML();
       this.data.selectionView.initHTML();
-      //this.data.documentationView.initHTML();
+      this.data.documentationView.initHTML();
     }
   },
 
@@ -251,7 +251,7 @@ MODEL({
         <div class="contentPanes">
           <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
           <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-<!--          <div class="docPane"><%=this.data.documentationView.toHTML()%></div> -->
+          <div class="docPane"><%=this.data.documentationView.toHTML()%></div>
         </div>
       </div>
     */}

@@ -98,27 +98,35 @@ MODEL({
   properties: [
     {
       name: 'data',
-      help: 'The Model from which to extract documentation.'
+      help: 'The Model from which to extract documentation.',
+      postSet: function() {
+        // grab the documentation and compile a template to use in this view
+        if (this.data && Documentation.isInstance(this.data.documentation))
+        {
+          // bind docSource
+          this.docSource$ = this.data.documentation$;
+        }
+      }
+    },
+    {
+      name: 'docSource',
+      type: 'Documentation',
+      help: 'The documentation object to render.',
+      postSet: function() {
+
+
+        this.updateHTML();
+      }
     }
+
   ],
 
   templates: [
-    function toHTML() {/*
-      <div id="%%id">
-        <%=this.toInnerHTML()%>
-      </div>
-    */},
 
     function toInnerHTML()    {/*
       <%    if (this.data) {  %>
-              <div class="introduction">
-                <h1><%=this.data.name%></h1>
-      <%        if (this.data.extendsModel) { %>
-                  <h2>Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></h2>
-      <%        } else { %>
-                  <h2>Extends <a href="#Model">Model</a></h2>
-      <%        } %>
-              </div>
+              <h1><%=this.data.name%></h1>
+              <p>docs here</p>
       <%    } %>
     */}
   ],
@@ -126,41 +134,83 @@ MODEL({
   methods: {
 
     /** Create the sub-view from property info. **/
-    createView: function(prop, opt_args) {
-// TODO: reimp for doc
+    createReferenceView: function(prop, opt_args) {
+      if (!opt_args.parentModel) {
+        opt_args.parentModel = data; // pass along the model in case it's needed to resolve a local link
+      }
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args});
+      var v = X.DocRefView.create({args: opt_args});
       this.addChild(v);
-      return v;
-    },
-
-    createActionView: function(action, opt_args) {
-// TODO: reimp for doc
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var modelName = opt_args && opt_args.model_ ?
-        opt_args.model_ :
-        'ActionButton'  ;
-      var v = X[modelName].create({action: action}).copyFrom(opt_args);
-
-      this[action.name + 'View'] = v;
-
       return v;
     },
 
     createTemplateView: function(name, opt_args) {
       // name has been constantized ('PROP_NAME'), but we're
       // only looking for certain doc tags anyway.
+      if (name === 'DOC') {
+        var v = this.createReferenceView(opt_args) ;
+        v.data = this;
+        return v;
+      } else {
+        return this.SUPER(name, opt_args);
+      }
+    }
+  }
+});
 
+MODEL({
+  name: 'DocRefView',
+  extendsModel: 'View',
+  label: 'Documentation Reference View',
+  help: 'The view of a documentation reference link.',
 
-      var callMyself = Function(['self', 'ref'], "return self."+name+"(ref);");
-      var o = callMyself(this, opt_args);
-      if ( ! o ) throw 'Unknown Model or feature reference: ' + name;
-      var v = this.createView(o, opt_args) ;
-      v.data = this;
-      return v;
+  properties: [
+    {
+      name: 'data',
+      help: 'The referenced object.',
+      postSet: function() {
+        updateHTML();
+      }
+    },
+    {
+      name: 'parentModel',
+      help: 'The data of our container view. Used to resolve local links that do not include an explicit Model name.',
+      postSet: function() {
+        // might have to resolve again since ref may have been set first
+        var o = resolveReference(this.ref);
+        if ( o ) data = o;
+      }
+    },
+    {
+      name: 'ref',
+      help: 'The reference to link.',
+      postSet: function() {
+        var o = resolveReference(this.ref);
+        if ( o ) data = o;
+      }
+    }
+  ],
+
+  templates: [
+
+    function toInnerHTML()    {/*
+      <%    if (this.data) {  %>
+              [<%=this.data.label%>]
+      <%    } else { %>
+              [INVALID_REF:<%=this.ref%>]
+      <%    } %>
+    */}
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.tagName = 'span';
+
     },
 
-    DOCREF: function(reference) {
+    resolveReference: function(reference) {
       var model;
       var feature;
       // parse "Model.feature" or "Model" or "feature" with implicit Model==this.data
@@ -175,10 +225,10 @@ MODEL({
       }
       else
       {
-        // see if there's a feature on this.data that matches
-        model = this.data.TYPE;
+        // see if there's a feature on the parent model that matches
+        model = parentModel;
         feature = args[0];
-        foundObject = this.data.getFeature(feature);
+        foundObject = parentModel.getFeature(feature);
 
         if (!foundObject) {
           // no feature found, so assume it's a model

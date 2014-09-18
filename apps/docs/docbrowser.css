@@ -26,3 +26,11 @@ div.detailPane {
   float: left;
 }
 
+div.docPane {
+  padding: 1em;
+  overflow-y: scroll;
+  width: 69%;
+  height: 70%;
+  float: left;
+  clear: both;
+}
