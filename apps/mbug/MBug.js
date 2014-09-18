@@ -91,7 +91,7 @@ MODEL({
         persistentContext: this.qbug.persistentContext,
         ProjectDAO:        this.qbug.ProjectDAO, // Is this needed?
         stack:             this.stack,
-        DontSyncProjectData: false, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
+        DontSyncProjectData: true, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
       }, 'MBUG CONTEXT');
     },
 
