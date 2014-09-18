@@ -685,6 +685,11 @@ MODEL({
       this.$.insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
       this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
 
+      // Force the scrollTop to reset.
+      var oldScroll = this.scrollTop;
+      this.scrollTop = 0;
+      this.scrollTop = oldScroll;
+
       this.onDAOUpdate();
     },
     scroller$: function() {
