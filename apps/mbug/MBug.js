@@ -33,13 +33,13 @@ MODEL({
           delegate: MDAO.create({ model: Y.QIssue })
         });
 
-        project.IssueNetworkDAO.batchSize = 20;
+        project.IssueNetworkDAO.batchSize = 25;
 
         Y.issueDAO = Y.QIssueSplitDAO.create({
           local: localDao,
           model: Y.QIssue,
           remote: project.IssueNetworkDAO,
-          maxLimit: 100
+          maxLimit: 25
         });
 
         var pc = Y.AppController.create({
@@ -518,9 +518,9 @@ MODEL({
          <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
-         Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
+         Commented by $$author<br>
          <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
-         $$content{mode: 'read-only'}
+         $$content{mode: 'read-only', escapeHTML: false}
        </span>
     </div>
   */} ]
