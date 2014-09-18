@@ -186,7 +186,7 @@ MODEL({
     {
       name: 'commentsView',
       factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
       }
     },
     {
