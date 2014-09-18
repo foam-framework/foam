@@ -642,6 +642,16 @@ MODEL({
           "read-only", "read-write", "final"
         ]}); }
       }
+    },
+    {
+      name: 'oldVisibleTop',
+      help: 'Set by allocateVisible after it has adjusted everything.',
+      defaultValue: -1
+    },
+    {
+      name: 'oldVisibleBottom',
+      help: 'Set by allocateVisible after it has adjusted everything.',
+      defaultValue: -1
     }
   ],
 
@@ -687,6 +697,7 @@ MODEL({
     // Will create new visible rows where necessary, and reuse existing ones.
     // Expects the cache to be populated with all the values necessary.
     allocateVisible: function() {
+      if ( this.visibleTop === this.oldVisibleTop && this.visibleBottom === this.oldVisibleBottom ) return;
       var homeless = [];
       var foundIDs = {};
       var self = this;
@@ -758,6 +769,9 @@ MODEL({
       for ( var i = 0 ; i < this.extraRows.length ; i++ ) {
         this.extraRows[i].y = -10000;
       }
+
+      this.oldVisibleTop = this.visibleTop;
+      this.oldVisibleBottom = this.visibleBottom;
     },
 
     // Clears all caches and saved rows and everything.
@@ -777,6 +791,8 @@ MODEL({
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
+      this.oldVisibleBottom = -1;
+      this.oldVisibleTop = -1;
     },
 
     // Clears all cached data, when the DAO changes.
@@ -792,6 +808,8 @@ MODEL({
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
+      this.oldVisibleBottom = -1;
+      this.oldVisibleTop = -1;
     }
   },
 
