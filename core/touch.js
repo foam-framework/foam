@@ -310,6 +310,12 @@ MODEL({
       hidden: true,
       defaultValue: 0
     },
+    {
+      name: 'tickRunning',
+      help: 'True when the physics tick should run.',
+      hidden: true,
+      defaultValue: false
+    },
     'handlers'
   ],
 
@@ -321,7 +327,8 @@ MODEL({
         start: point[xy + '0'],
         delta: point['d' + xy],
         total: point['total' + xy.capitalize()],
-        history: point[xy + 'History']
+        history: point[xy + 'History'],
+        raw: point
       };
     },
     getPrimaryAxis: function(point) {
@@ -347,8 +354,8 @@ MODEL({
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
-          ( Math.abs(this.getPrimaryAxis(point).total) > 10
-          || this.momentum > 0 );
+          ( Math.abs(this.getPrimaryAxis(point).total) > 10 ||
+            Math.abs(this.momentum) > 0 );
     },
 
     attach: function(map, handlers) {
@@ -359,13 +366,8 @@ MODEL({
       axis.prop.addListener(this.onDelta);
       point.done$.addListener(this.onDone);
 
-      if ( this.momentum > 0 ) {
-        // If we were already scrolling with momentum, we just arrest the momentum and
-        // resume following the user's finger.
-        this.momentum = 0;
-        this.lastTime = 0; // Signals this was a reset, not a drag end.
-        // Then no End or Start events are sent, just the ongoing stream of Moves.
-      } else {
+      // If we're already scrolling with momentum, we let the user adjust that momentum with their touches.
+      if ( this.momentum === 0 ) {
         // Now send the start and subsequent events to all the handlers.
         // This is essentially replaying the history for all the handlers,
         // now that we've been recognized.
@@ -380,6 +382,8 @@ MODEL({
             axis.current
           );
         }
+      } else {
+        this.tickRunning = false;
       }
     },
 
@@ -392,6 +396,18 @@ MODEL({
 
     sendEndEvent: function(axis) {
       this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
+    },
+
+    calculateInstantaneousVelocity: function(axis) {
+      // Compute and return the instantaneous velocity, which is
+      // the primary axis delta divided by the time it took.
+      // Our unit for velocity is pixels/millisecond.
+      var now = this.X.performance.now();
+      var lastTime = this.tickRunning ? this.lastTime : axis.raw.lastTime;
+      var velocity = axis.delta / (now - axis.raw.lastTime);
+      if ( this.tickRunning ) this.lastTime = now;
+
+      return velocity;
     }
   },
 
@@ -400,6 +416,13 @@ MODEL({
       name: 'onDelta',
       code: function(obj, prop, old, nu) {
         var axis = this.getPrimaryAxis(obj);
+        if ( this.momentumEnabled ) {
+          // If we're already moving with momentum, we simply add the delta between
+          // the currently momentum velocity and the instantaneous finger velocity.
+          var velocity = this.calculateInstantaneousVelocity(axis);
+          var delta = velocity - this.momentum;
+          this.momentum += delta;
+        }
         this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
       }
     },
@@ -411,47 +434,15 @@ MODEL({
         obj.done$.removeListener(this.onDone);
 
         if ( this.momentumEnabled ) {
-          // If momentum is enabled, we:
-          // - Compute the instantaneous speed using touch.lastTime.
-          // - Set up the various state.
-          // - Fire an every-frame listener for momentum updates.
-          var now = this.X.performance.now();
-
-          // HACK: Manhandling the touch object as if the end never happened.
-          // We pop the latest point off both stacks.
-          // That recreates the last touchmove, effectively removing the touchend.
-          obj.xHistory.pop();
-          obj.yHistory.pop();
-
-          axis = this.getPrimaryAxis(obj);
-
-          // Now we compute the momentum as the average of the last three deltas, if they exist.
-          var stop = axis.history.length-1;
-          var start = Math.max(0, axis.history.length-8);
-          var total = 0;
-          var debug_deltas = [];
-          for ( var i = start ; i < stop ; i++ ) {
-            debug_deltas.push(axis.history[i+1] - axis.history[i]);
-            total += axis.history[i+1] - axis.history[i];
-          }
-
-          var average = total / (stop-start);
-
-          this.momentum = average / (now - obj.lastTime); // Pixels per millisecond.
-          this.lastTime = now;
-
-          // Short-circuit if the momentum is less than the threshold.
           if ( Math.abs(this.momentum) < this.dragClamp ) {
             this.momentum = 0;
             this.sendEndEvent(axis);
-            this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
-            return;
+          } else {
+            this.tickRunning = true;
+            this.lastTime = this.X.performance.now();
+            this.tick(obj);
           }
-
-          // Otherwise, fire the ticker.
-          this.tick(obj);
         } else {
-          // With no momentum, simply end the scroll.
           this.sendEndEvent(axis);
         }
       }
@@ -461,26 +452,19 @@ MODEL({
       isAnimated: true,
       code: function(touch) {
         // First, check if momentum is 0. If so, abort.
-        if ( this.momentum === 0 ) {
-          // Abort always.
-          // Send a scrollEnd event ONLY IF we have not been interrupted by a new scroll.
-          if ( this.lastTime > 0 ) {
-            this.sendEndEvent(this.getPrimaryAxis(touch));
-          }
-          return;
-        }
+        if ( ! this.tickRunning ) return;
 
-        // Run every time to update for momentum.
+        var xy = this.direction === 'vertical' ? 'y' : 'x';
+
         var now = this.X.performance.now();
         var elapsed = now - this.lastTime;
         this.lastTime = now;
 
         // The distance covered in this amount of time.
         var distance = this.momentum * elapsed; // Fractional pixels.
-        // Emit a touchMove for this.
-        var xy = this.direction === 'vertical' ? 'y' : 'x';
         touch[xy] += distance;
         var axis = this.makeAxis(touch, xy);
+        // Emit a touchMove for this.
         this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
 
         // Now we reduce the momentum to its new value.
@@ -489,10 +473,11 @@ MODEL({
         // If this is less than the threshold, we reduce it to 0.
         if ( Math.abs(this.momentum) < this.dragClamp ) {
           this.momentum = 0;
+          this.tickRunning = false;
+          this.sendEndEvent(axis);
+        } else {
+          this.tick(touch);
         }
-
-        // We always call tick; it sends the end and aborts at the beginning.
-        this.tick(touch);
       }
     }
   ]
