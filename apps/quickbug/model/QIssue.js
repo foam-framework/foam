@@ -79,7 +79,20 @@ MODEL({
 MODEL({
   name: 'LabelStringEnumProperty',
   extendsModel: 'LabelStringProperty',
-  traits: ['EnumPropertyTrait']
+  traits: ['EnumPropertyTrait'],
+  properties: [
+    {
+      name: 'postSet',
+      defaultValue: function(o, n, prop) {
+        feedback(this, 'labels', function() {
+          this.replaceLabels(prop.name.capitalize(), n);
+        });
+
+        // Test for LabelStringProperties that should be LabelArrayProperties.
+        if ( o && o !== n ) debugger;
+      }
+    }
+  ]
 });
 
 GeneratedQIssue.properties.forEach(function(p) {

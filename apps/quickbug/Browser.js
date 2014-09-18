@@ -749,10 +749,10 @@ MODEL({
       var codesite = url.indexOf('code.google.com');
       if ( codesite >= 0 ) {
         var question = url.indexOf('?');
+        if ( question == -1 ) question = url.length;
         var before = url.substring(0, question);
         var after = url.substring(question + 1);
         url = before + '?no_qbug=1&' + after;
-        console.log('new url', url);
       }
       this.X.window.open(url);
     }

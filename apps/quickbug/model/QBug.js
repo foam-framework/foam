@@ -132,10 +132,8 @@ MODEL({
               },
               // If not found in cache, then request from network, and store result in cache
               error: function() {
-                debugger;
                 self.ProjectNetworkDAO.find(id, {
                   put: function(project) {
-                debugger;
                     sink.put(project);
                     cache.put(Project.create({
                       externalId: project.externalId,
