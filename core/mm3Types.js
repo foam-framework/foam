@@ -681,16 +681,21 @@ var ViewProperty = Model.create({
       name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
+        debugger;
         if ( typeof f === 'function' ) return f;
         if ( typeof f === 'string' ) {
-          var model = FOAM.lookup(f);
+          var model = FOAM.lookup(f, this.X);
           if ( model ) return model.create.bind(model);
         }
         if ( Model.isInstance(f) ) return f.create.bind(f);
         if ( f.model_ ) return FOAM.bind(null, f);
-        console.error('Unknown view factory: ', f);
-        // What TODO?
+        console.error('******* Unknown view factory: ', f);
+        return f;
       }
+    },
+    {
+      name: 'defaultValue',
+      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
     }
   ]
 });
