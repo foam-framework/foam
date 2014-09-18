@@ -41,24 +41,54 @@ MODEL({
     {
       name: 'x',
       help: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',
-      postSet: function(old, nu) {
-        this.dx = nu - old;
-        this.xHistory.push(nu);
-        this.totalX = nu - this.x0;
+      getter: function() {
+        var h = this.xHistory;
+        return h && h.length ? h[h.length - 1] : 0;
+      },
+      setter: function(x) {
+        var old = this.x;
+        this.xHistory.push(x);
+        this.propertyChange('x', old, x);
       }
     },
     {
       name: 'y',
       help: 'The real latest Y-coordinate. pageY, relative to the whole document, in CSS pixels.',
-      postSet: function(old, nu) {
-        this.dy = nu - old;
-        this.yHistory.push(nu);
-        this.totalY = nu - this.y0;
+      getter: function() {
+        var h = this.yHistory;
+        return h && h.length ? h[h.length - 1] : 0;
+      },
+      setter: function(y) {
+        var old = this.y;
+        this.yHistory.push(y);
+        this.propertyChange('y', old, y);
       }
     },
-    { name: 'x0', getter: function() { return this.xHistory[0]; } },
-    { name: 'y0', getter: function() { return this.yHistory[0]; } },
-    'dx', 'dy', 'totalX', 'totalY'
+    { name: 'x0', getter: function() { return this.xHistory[0] || 0; } },
+    { name: 'y0', getter: function() { return this.yHistory[0] || 0; } },
+    {
+      name: 'dx',
+      getter: function() {
+        var h = this.xHistory;
+        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
+      }
+    },
+    {
+      name: 'dy',
+      getter: function() {
+        var h = this.yHistory;
+        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
+      }
+    },
+    {
+      name: 'totalX',
+      getter: function() { return this.x - this.x0; }
+    },
+    {
+      name: 'totalY',
+      getter: function() { return this.y - this.y0; }
+    },
+    'lastTime'
   ]
 });
 
@@ -86,6 +116,20 @@ MODEL({
       d.addEventListener('touchstart', this.onTouchStart);
     },
 
+    attach: function(e) {
+      e.addEventListener('touchmove', this.onTouchMove);
+      e.addEventListener('touchend', this.onTouchEnd);
+      e.addEventListener('touchcancel', this.onTouchCancel);
+      e.addEventListener('touchleave', this.onTouchEnd);
+    },
+
+    detach: function(e) {
+      e.removeEventListener('touchmove', this.onTouchMove);
+      e.removeEventListener('touchend', this.onTouchEnd);
+      e.removeEventListener('touchcancel', this.onTouchCancel);
+      e.removeEventListener('touchleave', this.onTouchEnd);
+    },
+
     touchStart: function(i, t, e) {
       this.touches[i] = this.X.InputPoint.create({
         id: i,
@@ -98,6 +142,11 @@ MODEL({
     touchMove: function(i, t, e) {
       this.touches[i].x = t.pageX;
       this.touches[i].y = t.pageY;
+
+      // On touchMoves only, set the lastTime.
+      // This is used by momentum scrolling to find the speed at release.
+      this.touches[i].lastTime = this.X.performance.now();
+
       this.publish(this.TOUCH_MOVE, this.touches[i]);
     },
     touchEnd: function(i, t, e) {
@@ -124,10 +173,7 @@ MODEL({
         e.preventDefault();
         // Attach an element-specific touch handlers, in case it gets removed
         // from the DOM.
-        e.target.addEventListener('touchmove', this.onTouchMove);
-        e.target.addEventListener('touchend', this.onTouchEnd);
-        e.target.addEventListener('touchcancel', this.onTouchCancel);
-        e.target.addEventListener('touchleave', this.onTouchEnd);
+        this.attach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
@@ -155,11 +201,13 @@ MODEL({
       name: 'onTouchEnd',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
           if ( ! this.touches[id] ) {
-            console.warn('Touch end for unknown touch.');
+            console.warn('Touch end for unknown touch ' + id, Object.keys(this.touches));
             continue;
           }
           this.touchEnd(id, t, e);
@@ -170,6 +218,8 @@ MODEL({
       name: 'onTouchCancel',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -185,6 +235,8 @@ MODEL({
       name: 'onTouchLeave',
       code: function(e) {
         e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -243,11 +295,43 @@ MODEL({
   properties: [
     {
       name: 'name',
-      defaultValueFn: function() { return this.direction + 'Scroll'; }
+      defaultValueFn: function() { return this.direction + 'Scroll' + ( this.momentumEnabled ? 'Momentum' : '' ); }
     },
     {
       name: 'direction',
       defaultValue: 'vertical'
+    },
+    {
+      name: 'momentumEnabled',
+      defaultValue: false,
+      help: 'Set me (usually by attaching the "verticalScrollMomentum" gesture) to true to enable momentum'
+    },
+    {
+      name: 'dragCoefficient',
+      help: 'Each frame, the momentum will be multiplied by this coefficient. Higher means LESS drag.',
+      defaultValue: 0.94
+    },
+    {
+      name: 'dragClamp',
+      help: 'The speed threshold (pixels/millisecond) below which the momentum drops to 0.',
+      defaultValue: 0.05
+    },
+    {
+      name: 'momentum',
+      help: 'The current speed, in pixels/millisecond, at which the scroller is sliding.',
+      defaultValue: 0
+    },
+    {
+      name: 'lastTime',
+      help: 'The performance.now() value for the last time we computed the momentum slide.',
+      hidden: true,
+      defaultValue: 0
+    },
+    {
+      name: 'tickRunning',
+      help: 'True when the physics tick should run.',
+      hidden: true,
+      defaultValue: false
     },
     'handlers'
   ],
@@ -260,7 +344,8 @@ MODEL({
         start: point[xy + '0'],
         delta: point['d' + xy],
         total: point['total' + xy.capitalize()],
-        history: point[xy + 'History']
+        history: point[xy + 'History'],
+        raw: point
       };
     },
     getPrimaryAxis: function(point) {
@@ -276,12 +361,18 @@ MODEL({
       // - is touch, not mouse and
       // - is not done and
       // - has moved at least 10px in the primary direction
+      // OR
+      // - is a single point that
+      // - is touch, not mouse, and
+      // - is not done and
+      // - we are moving with momentum
 
       if ( Object.keys(map).length !== 1 ) return false;
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
-          Math.abs(this.getPrimaryAxis(point).total) > 10;
+          ( Math.abs(this.getPrimaryAxis(point).total) > 10 ||
+            Math.abs(this.momentum) > 0 );
     },
 
     attach: function(map, handlers) {
@@ -292,19 +383,24 @@ MODEL({
       axis.prop.addListener(this.onDelta);
       point.done$.addListener(this.onDone);
 
-      // Now send the start and subsequent events to all the handlers.
-      // This is essentially replaying the history for all the handlers,
-      // now that we've been recognized.
-      // In this particular case, all three handlers are called with dy, totalY, and y.
-      // The handlers are {vertical,horizontal}Scroll{Start,Move,End}.
-      this.pingHandlers(this.direction + 'ScrollStart', 0, 0, axis.start);
-      for ( var i = 1 ; i < axis.history.length ; i++ ) {
-        this.pingHandlers(
-          this.direction + 'ScrollMove',
-          axis.history[i] - axis.history[i-1],
-          axis.history[i] - axis.start,
-          axis.current
-        );
+      // If we're already scrolling with momentum, we let the user adjust that momentum with their touches.
+      if ( this.momentum === 0 ) {
+        // Now send the start and subsequent events to all the handlers.
+        // This is essentially replaying the history for all the handlers,
+        // now that we've been recognized.
+        // In this particular case, all three handlers are called with dy, totalY, and y.
+        // The handlers are {vertical,horizontal}Scroll{Start,Move,End}.
+        this.pingHandlers(this.direction + 'ScrollStart', 0, 0, axis.start);
+        for ( var i = 1 ; i < axis.history.length ; i++ ) {
+          this.pingHandlers(
+            this.direction + 'ScrollMove',
+            axis.history[i] - axis.history[i-1],
+            axis.history[i] - axis.start,
+            axis.current
+          );
+        }
+      } else {
+        this.tickRunning = false;
       }
     },
 
@@ -313,6 +409,22 @@ MODEL({
         var h = this.handlers[i];
         h && h[method] && h[method](d, t, c);
       }
+    },
+
+    sendEndEvent: function(axis) {
+      this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
+    },
+
+    calculateInstantaneousVelocity: function(axis) {
+      // Compute and return the instantaneous velocity, which is
+      // the primary axis delta divided by the time it took.
+      // Our unit for velocity is pixels/millisecond.
+      var now = this.X.performance.now();
+      var lastTime = this.tickRunning ? this.lastTime : axis.raw.lastTime;
+      var velocity = axis.delta / (now - axis.raw.lastTime);
+      if ( this.tickRunning ) this.lastTime = now;
+
+      return velocity;
     }
   },
 
@@ -321,6 +433,13 @@ MODEL({
       name: 'onDelta',
       code: function(obj, prop, old, nu) {
         var axis = this.getPrimaryAxis(obj);
+        if ( this.momentumEnabled ) {
+          // If we're already moving with momentum, we simply add the delta between
+          // the currently momentum velocity and the instantaneous finger velocity.
+          var velocity = this.calculateInstantaneousVelocity(axis);
+          var delta = velocity - this.momentum;
+          this.momentum += delta;
+        }
         this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
       }
     },
@@ -330,7 +449,52 @@ MODEL({
         var axis = this.getPrimaryAxis(obj);
         axis.prop.removeListener(this.onDelta);
         obj.done$.removeListener(this.onDone);
-        this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
+
+        if ( this.momentumEnabled ) {
+          if ( Math.abs(this.momentum) < this.dragClamp ) {
+            this.momentum = 0;
+            this.sendEndEvent(axis);
+          } else {
+            this.tickRunning = true;
+            this.lastTime = this.X.performance.now();
+            this.tick(obj);
+          }
+        } else {
+          this.sendEndEvent(axis);
+        }
+      }
+    },
+    {
+      name: 'tick',
+      isAnimated: true,
+      code: function(touch) {
+        // First, check if momentum is 0. If so, abort.
+        if ( ! this.tickRunning ) return;
+
+        var xy = this.direction === 'vertical' ? 'y' : 'x';
+
+        var now = this.X.performance.now();
+        var elapsed = now - this.lastTime;
+        this.lastTime = now;
+
+        // The distance covered in this amount of time.
+        var distance = this.momentum * elapsed; // Fractional pixels.
+        touch[xy] += distance;
+        var axis = this.makeAxis(touch, xy);
+        // Emit a touchMove for this.
+        this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+
+        // Now we reduce the momentum to its new value.
+        this.momentum *= this.dragCoefficient;
+
+        // If this is less than the threshold, we reduce it to 0.
+        if ( Math.abs(this.momentum) < this.dragClamp ) {
+          this.momentum = 0;
+          this.tickRunning = false;
+          this.sendEndEvent(axis);
+        } else {
+          this.tick(touch);
+        }
       }
     }
   ]
@@ -577,7 +741,9 @@ MODEL({
       factory: function() {
         return {
           verticalScroll: ScrollGesture.create(),
+          verticalScrollMomentum: ScrollGesture.create({ momentumEnabled: true }),
           horizontalScroll: ScrollGesture.create({ direction: 'horizontal' }),
+          horizontalScrollMomentum: ScrollGesture.create({ direction: 'horizontal', momentumEnabled: true }),
           tap: TapGesture.create(),
           drag: DragGesture.create(),
           pinchTwist: PinchTwistGesture.create()
@@ -781,8 +947,13 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(_, __, touch) {
-        if ( ! this.recognized ) {
-          this.checkRecognition();
+        try {
+          if ( ! this.recognized ) {
+            this.checkRecognition();
+          }
+        } catch(e) {
+          debugger;
+          console.error('Error on touch end', e);
         }
 
         delete this.points[touch.id];
@@ -827,8 +998,9 @@ MODEL({
           });
 
           // Now immediately feed this to the appropriate ScrollGesture.
+          // TODO: May need to check or listen for the non-momentum versions too?
           var gesture = Math.abs(event.deltaX) > Math.abs(event.deltaY) ?
-              'horizontalScroll' : 'verticalScroll';
+              'horizontalScrollMomentum' : 'verticalScrollMomentum';
           // Find all targets for that gesture and check their rectangles.
           this.active[gesture] = [];
           for ( var i = 0 ; i < this.targets.length ; i++ ) {

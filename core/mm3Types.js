@@ -671,6 +671,39 @@ var ModelProperty = Model.create({
 });
 
 
+var ViewProperty = Model.create({
+  extendsModel: 'Property',
+
+  help: "Describes a View-Factory property.",
+
+  properties: [
+    {
+      name: 'preSet',
+      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      defaultValue: function(_, f) {
+        if ( typeof f === 'function' ) return f;
+
+        if ( typeof f === 'string' ) {
+          return function(d) {
+            return FOAM.lookup(f, this.X).create(d);
+          }.bind(this);
+        }
+
+        if ( model ) return model.create.bind(model);
+        if ( Model.isInstance(f) ) return f.create.bind(f);
+        if ( f.model_ ) return FOAM.bind(null, f);
+        console.error('******* Unknown view factory: ', f);
+        return f;
+      }
+    },
+    {
+      name: 'defaultValue',
+      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
+    }
+  ]
+});
+
+
 var ReferenceArrayProperty = Model.create({
   name: 'ReferenceArrayProperty',
   extendsModel: 'ReferenceProperty',

@@ -29,10 +29,17 @@ MODEL({
         var Y = project.X;
         Y.project     = project;
         Y.projectName = project.projectName;
-        Y.issueDAO    = Y.QIssueSplitDAO.create({
-          local: project.IssueDAO,
+        var localDao = LRUCachingDAO.create({
+          delegate: MDAO.create({ model: Y.QIssue })
+        });
+
+        project.IssueNetworkDAO.batchSize = 20;
+
+        Y.issueDAO = Y.QIssueSplitDAO.create({
+          local: localDao,
           model: Y.QIssue,
-          remote: project.IssueNetworkDAO
+          remote: project.IssueNetworkDAO,
+          maxLimit: 100
         });
 
         var pc = Y.AppController.create({
@@ -83,7 +90,8 @@ MODEL({
         user:              this.qbug.user,
         persistentContext: this.qbug.persistentContext,
         ProjectDAO:        this.qbug.ProjectDAO, // Is this needed?
-        stack:             this.stack
+        stack:             this.stack,
+        DontSyncProjectData: true, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
       }, 'MBUG CONTEXT');
     },
 
@@ -225,7 +233,7 @@ MODEL({
             }
           },
           handler: this,
-          gesture: 'verticalScroll'
+          gesture: 'verticalScrollMomentum'
         });
       }
     }

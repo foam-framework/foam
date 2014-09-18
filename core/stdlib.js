@@ -571,17 +571,19 @@ String.prototype.intern = (function() {
 
 // Called like myArray.mapProp('name'), that's equivalent to:
 // myArray.map(function(x) { return x.name; });
-Array.prototype.mapProp = function(prop) {
-  return this.map(function(x) { return x[prop]; });
-};
+Object.defineProperty(Array.prototype, 'mapProp', {
+  value: function(prop) {
+    return this.map(function(x) { return x[prop]; });
+  }
+});
 
-// Called like myArray.mapCall('func', arg1, arg2); and results in:
-// myArray.map(function(x) { return x.func(arg1, arg2); });
-Array.prototype.mapCall = function() {
-  var args = Array.prototype.slice.call(arguments, 0);
-  var func = args.shift();
-  return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
-};
+Object.defineProperty(Array.prototype, 'mapCall', {
+  value: function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    var func = args.shift();
+    return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
+  }
+});
 
 if (window.XMLHttpRequest) {
   /**
