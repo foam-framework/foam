@@ -136,8 +136,9 @@ var xhrDAO = XHRXMLDAO.create({
 
 setTimeout(function() {
   var dao = [];
-  window.X.UnitTestDAO = xhrDAO;
-  xhrDAO.where(EQ(UnitTest.PARENT, '')).select(dao.sink)(function(a) { console.log(a); });
+  var enabledTestsDAO = xhrDAO.where(EQ(UnitTest.DISABLED, false));
+  window.X.UnitTestDAO = enabledTestsDAO;
+  enabledTestsDAO.where(EQ(UnitTest.PARENT, '')).select(dao.sink)(function(a) { console.log(a); });
   dao.dao.listen({
     put: function(x) {
       console.warn('master update', x);

@@ -4609,6 +4609,7 @@ MODEL({
 
   methods: {
     postTest: function() {
+      this.SUPER();
       this.test.regression = this.test.hasRun && ! this.test.results.equals(this.test.master);
     }
   },

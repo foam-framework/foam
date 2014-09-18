@@ -39,6 +39,11 @@ MODEL({
       help: 'A multi-line description of the unit test.'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'disabled',
+      defaultValue: false
+    },
+    {
       model_: 'IntProperty',
       name: 'passed',
       required: true,

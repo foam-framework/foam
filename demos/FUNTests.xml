@@ -553,7 +553,6 @@
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
-      debugger;
       aseq(
         this.f1.bind(this),
         function() { this.log('sync fn'); }.abind(this),
@@ -677,6 +676,7 @@
   <object model="UITest">
     <property name="name">View Tests</property>
     <property name="description">Test Views and Data-Binding.</property>
+    <property name="disabled">true</property>
   </object>
   <object model="UITest">
     <property name="name">AllViews</property>
