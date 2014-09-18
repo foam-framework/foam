@@ -159,7 +159,7 @@ MODEL({
   documentation: {
     model_: 'Documentation',
     body: function() {  /*
-          <div id=%%id >DOC $$DOC{ref:'DocBrowserController'}. Template!</div>
+          <div id=%%id >DOC $$DOC{ref:'.modelList'}. Template!</div>
           */}
   },
 

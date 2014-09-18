@@ -35,10 +35,9 @@ MODEL({
       name:  'dataDAO',
       preSet: function(_, data) {
         if (Array.isArray(data)) {
-          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property});
-
-          newDAO = newDAO.where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
-
+          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property})
+                        .where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
+          // maintain count of items
           newDAO.select(COUNT())(function(c) {
             this.count = c.count;
           }.bind(this));
@@ -186,9 +185,8 @@ MODEL({
     },
     {
       name: 'ref',
-      help: 'The reference to link.',
+      help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
-        console.log("Setting ref [" + this.ref + "]");
         var o = this.resolveReference(this.ref);
         if ( o ) this.data = o;
       }
@@ -219,38 +217,25 @@ MODEL({
     },
 
     resolveReference: function(reference) {
-      var model;
-      var feature;
-      // parse "Model.feature" or "Model" or "feature" with implicit Model==this.data
+      // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
       var foundObject;
-      if (args.length > 1)
-      {
-        // two params specified explicitly
-        model = args[0];
-        feature = args[1];
-        foundObject = this.X[model].getFeature(feature);
-        console.log("Resolved explicit "+model+"."+feature+" to "+ foundObject);
-      }
-      else
-      {
-        // see if there's a feature on the parent model that matches
+      var model;
+
+      // if model not specified, use parentModel
+      if (args[0].length <= 0)
         model = this.parentModel;
-        feature = args[0];
-        foundObject = this.parentModel.getFeature(feature);
+      else
+        model = this.X[args[0]];
 
-        if (!foundObject) {
-          // no feature found, so assume it's a model
-          model = args[0];
-          feature = undefined;
-          foundObject = this.X[model];
-          console.log("Resolved no feature, found model "+model+" to "+ foundObject);
-        }
-        else
-          console.log("Resolved on this.parentModel "+model.name+"."+feature+" to "+ foundObject);
-
+      if (args.length > 1 && args[1].length > 0)
+      {
+        // feature specified
+        foundObject = model.getFeature(args[1]);
+      } else {
+        // no feature found, so assume it's a model
+        foundObject = model;
       }
-      console.log(foundObject);
       return foundObject;
     },
 
