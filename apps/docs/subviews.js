@@ -113,8 +113,16 @@ MODEL({
       type: 'Documentation',
       help: 'The documentation object to render.',
       postSet: function() {
-
-
+        if (this.docSource && this.docSource.body)
+        {
+          this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.docSource.body);
+        }
+      }
+    },
+    {
+      name: 'renderDocSourceHTML',
+      help: 'Automatically created to render the docSource.body template.',
+      postSet: function() {
         this.updateHTML();
       }
     }
@@ -122,24 +130,20 @@ MODEL({
   ],
 
   templates: [
-
     function toInnerHTML()    {/*
       <%    if (this.data) {  %>
               <h1><%=this.data.name%></h1>
-              <p>docs here</p>
+              <p><%=this.renderDocSourceHTML()%></p>
       <%    } %>
     */}
   ],
 
   methods: {
 
-    /** Create the sub-view from property info. **/
-    createReferenceView: function(prop, opt_args) {
-      if (!opt_args.parentModel) {
-        opt_args.parentModel = data; // pass along the model in case it's needed to resolve a local link
-      }
+    /** Create the special reference lookup sub-view from property info. **/
+    createReferenceView: function(opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.DocRefView.create({args: opt_args});
+      var v = X.DocRefView.create({parentModel:this.data, ref:opt_args.ref, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -149,7 +153,6 @@ MODEL({
       // only looking for certain doc tags anyway.
       if (name === 'DOC') {
         var v = this.createReferenceView(opt_args) ;
-        v.data = this;
         return v;
       } else {
         return this.SUPER(name, opt_args);
@@ -169,7 +172,7 @@ MODEL({
       name: 'data',
       help: 'The referenced object.',
       postSet: function() {
-        updateHTML();
+        this.updateHTML();
       }
     },
     {
@@ -177,16 +180,17 @@ MODEL({
       help: 'The data of our container view. Used to resolve local links that do not include an explicit Model name.',
       postSet: function() {
         // might have to resolve again since ref may have been set first
-        var o = resolveReference(this.ref);
-        if ( o ) data = o;
+        var o = this.resolveReference(this.ref);
+        if ( o ) this.data = o;
       }
     },
     {
       name: 'ref',
       help: 'The reference to link.',
       postSet: function() {
-        var o = resolveReference(this.ref);
-        if ( o ) data = o;
+        console.log("Setting ref [" + this.ref + "]");
+        var o = this.resolveReference(this.ref);
+        if ( o ) this.data = o;
       }
     }
   ],
@@ -194,8 +198,12 @@ MODEL({
   templates: [
 
     function toInnerHTML()    {/*
-      <%    if (this.data) {  %>
+      <%    if (this.data && this.data.label && this.data.label.length > 0) {  %>
               [<%=this.data.label%>]
+      <%    } else if (this.data && this.data.name) {  %>
+              [<%=this.data.name%>]
+      <%    } else if (this.data.id) {  %>
+              [<%=this.data.id%>]
       <%    } else { %>
               [INVALID_REF:<%=this.ref%>]
       <%    } %>
@@ -222,21 +230,27 @@ MODEL({
         model = args[0];
         feature = args[1];
         foundObject = this.X[model].getFeature(feature);
+        console.log("Resolved explicit "+model+"."+feature+" to "+ foundObject);
       }
       else
       {
         // see if there's a feature on the parent model that matches
-        model = parentModel;
+        model = this.parentModel;
         feature = args[0];
-        foundObject = parentModel.getFeature(feature);
+        foundObject = this.parentModel.getFeature(feature);
 
         if (!foundObject) {
           // no feature found, so assume it's a model
           model = args[0];
           feature = undefined;
           foundObject = this.X[model];
+          console.log("Resolved no feature, found model "+model+" to "+ foundObject);
         }
+        else
+          console.log("Resolved on this.parentModel "+model.name+"."+feature+" to "+ foundObject);
+
       }
+      console.log(foundObject);
       return foundObject;
     },
 
