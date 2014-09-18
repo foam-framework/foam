@@ -892,7 +892,7 @@ MODEL({
          var gestureTarget = this.X.GestureTarget.create({
            container: this,
            handler: this,
-           gesture: 'verticalScroll'
+           gesture: 'verticalScrollMomentum'
          });
          this.X.gestureManager.install(gestureTarget);
          this.addDestructor(function() {
