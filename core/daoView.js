@@ -897,9 +897,7 @@ MODEL({
       name: 'verticalScrollMove',
       code: function(dy, ty, y) {
         this.scrollTop -= dy;
-        this.update(); // TODO: Maybe run this in setTimeout, or make update an animated listener?
-        // We want the vsm callback to be very fast so scrolling is responsive.
-        // I'll leave it here for now and see whether frames are dropping.
+        this.update();
       }
     }
   ],
