@@ -113,7 +113,7 @@ MODEL({
 
 
 MODEL({
-  name: 'DocView',
+  name: 'OldDocView',
   extendsModel: 'DetailView',
   help: 'Displays the documentation of the given Model.',
 
@@ -231,7 +231,7 @@ MODEL({
     {
       name: 'selectionView',
       factory: function() {
-        return this.DetailContext.DocView.create({ model: Model, data$: this.selection$ });
+        return this.DetailContext.OldDocView.create({ model: Model, data$: this.selection$ });
       }
     },
     {

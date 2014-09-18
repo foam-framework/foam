@@ -89,15 +89,15 @@ MODEL({
 
 
 MODEL({
-  name: 'DocModelView',
+  name: 'DocView',
   extendsModel: 'View',
-  label: 'Documentation Model View',
-  help: 'Shows documentation for a Model.',
+  label: 'Documentation View Base',
+  help: 'Base Model for documentation views.',
 
   properties: [
     {
       name: 'data',
-      help: 'The Model from which to extract documentation.',
+      help: 'The model or feature from which to extract documentation.',
       postSet: function() {
         // grab the documentation and compile a template to use in this view
         if (this.data && Documentation.isInstance(this.data.documentation))
@@ -108,19 +108,16 @@ MODEL({
       }
     },
     {
-      name: 'docSource',
-      type: 'Documentation',
-      help: 'The documentation object to render.',
+      name: 'parentModel',
+      help: 'The Model in which the feature lives.',
       postSet: function() {
-        if (this.docSource && this.docSource.body)
-        {
-          this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.docSource.body);
-        }
+        this.updateHTML();
       }
     },
     {
-      name: 'renderDocSourceHTML',
-      help: 'Automatically created to render the docSource.body template.',
+      name: 'docSource',
+      type: 'Documentation',
+      help: 'The documentation object to render.',
       postSet: function() {
         this.updateHTML();
       }
@@ -128,21 +125,20 @@ MODEL({
 
   ],
 
-  templates: [
-    function toInnerHTML()    {/*
-      <%    if (this.data) {  %>
-              <h1><%=this.data.name%></h1>
-              <%=this.renderDocSourceHTML()%>
-      <%    } %>
-    */}
-  ],
-
   methods: {
+
+    renderDocSourceHTML: function() {
+      // The first time this method is hit, replace it with the one that will
+      // compile the template, then call that. Future calls go direct to lazyCompile's
+      // returned function. You could also implement this the same way lazyCompile does...
+      this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.docSource.body);
+      return this.renderDocSourceHTML();
+    },
 
     /** Create the special reference lookup sub-view from property info. **/
     createReferenceView: function(opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ parentModel:this.data, ref:opt_args.ref, text: opt_args.text, args: opt_args});
+      var v = X.DocRefView.create({ parentModel:this.parentModel, ref:opt_args.ref, text: opt_args.text, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -159,6 +155,56 @@ MODEL({
     }
   }
 });
+
+
+MODEL({
+  name: 'DocModelView',
+  extendsModel: 'DocView',
+  label: 'Documentation Model View',
+  help: 'Shows documentation for a Model.',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The Model from which to extract documentation.',
+      postSet: function() {
+        this.X[this.model_.extendsModel].DATA.postSet.call(this); // TODO: implement this.SUPER() for these
+        this.parentModel = this.data;
+      }
+    },
+
+  ],
+
+  templates: [
+    function toInnerHTML()    {/*
+      <%    if (this.data) {  %>
+              <h1><%=this.data.name%></h1>
+              <%=this.renderDocSourceHTML()%>
+      <%    } %>
+    */}
+  ],
+
+});
+
+MODEL({
+  name: 'DocFeatureView',
+  extendsModel: 'DocModelView',
+  label: 'Documentation Feature View',
+  help: 'Shows documentation for a feature of a Model.',
+
+  templates: [
+    function toInnerHTML()    {/*
+      <%    if (this.data) {  %>
+              <h2><%=this.data.name%></h2>
+              <%=this.renderDocSourceHTML()%>
+      <%    } %>
+    */}
+  ]
+});
+
+
+
+
 
 MODEL({
   name: 'DocRefView',
