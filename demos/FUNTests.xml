@@ -515,6 +515,23 @@
     </property>
   </object>
   <object model="UnitTest">
+    <property name="name">arepeatpar</property>
+    <property name="parent">aFunc Tests</property>
+    <property name="async">true</property>
+    <property name="code" type="function">
+      arepeatpar(6, function(ret, a, b) {
+        this.log(a + ' starting');
+        aseq(
+          asleep(200),
+          function(ret) {
+            this.log(a + ' done');
+            ret();
+          }.bind(this)
+        )(ret);
+      }.bind(this))(ret);
+    </property>
+  </object>
+  <object model="UnitTest">
     <property name="name">aFunc Test 11</property>
     <property name="parent">aFunc Tests</property>
     <property name="async">true</property>
