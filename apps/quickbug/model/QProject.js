@@ -107,9 +107,9 @@ MODEL({
       }
     },
     {
-      name: 'IssueCachingDAO',
+      name: 'IssueIDBDAO',
       factory: function() {
-        var IssueIDBDAO = this.X.EasyDAO.create({
+        return this.X.EasyDAO.create({
           model: this.X.QIssue,
           name: this.projectName + '_' + this.X.QIssue.plural,
           migrationRules: [
@@ -122,10 +122,16 @@ MODEL({
               }
             })
           ]
-//          logging: true
         });
-
-        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: IssueIDBDAO});
+      },
+      transient: true
+    },
+    {
+      name: 'IssueCachingDAO',
+      lazyFactory: function() {
+        debugger;
+        console.log('Creating IssueCachingDAO.');
+        return this.X.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO});
       },
       transient: true
     },
@@ -171,7 +177,7 @@ MODEL({
     },
     {
       name: 'IssueDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.IssueCachingDAO;
       },
       transient: true
@@ -266,7 +272,6 @@ MODEL({
         ];
       }
     }
-
   ],
 
   listeners: [
@@ -779,28 +784,30 @@ MODEL({
 
       this.SUPER(args);
 
-      this.IssueDAO.listen(this.onDAOUpdate);
+      if ( ! this.X.DontSyncProjectData ) {
+        this.IssueDAO.listen(this.onDAOUpdate);
 
-      this.persistentContext.bindObject('syncManager', SyncManager.xbind({
-        syncInterval: 60*5,
-        batchSize: 500,
-      }), {
-        queryParser: this.X.QueryParser,
-        srcDAO: this.IssueNetworkDAO,
-        dstDAO: this.IssueCachingDAO,
-        modifiedProperty: this.X.QIssue.MODIFIED
-      })(function(manager) {
-        this.syncManager = manager;
-        this.syncManagerFuture.set(manager);
-        manager.start();
-      }.bind(this));
+        this.persistentContext.bindObject('syncManager', SyncManager.xbind({
+          syncInterval: 60*5,
+          batchSize: 500,
+        }), {
+          queryParser: this.X.QueryParser,
+          srcDAO: this.IssueNetworkDAO,
+          dstDAO: this.IssueCachingDAO,
+          modifiedProperty: this.X.QIssue.MODIFIED
+        })(function(manager) {
+          this.syncManager = manager;
+          this.syncManagerFuture.set(manager);
+          manager.start();
+        }.bind(this));
 
-      if ( this.projectName !== 'chromium' ) {
-        this.defaultSortChoices = [
-          [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
-          [ this.X.QIssue.PRIORITY, 'Priority' ],
-          [ DESC(this.X.QIssue.ID),            'Issue ID' ]
-        ];
+        if ( this.projectName !== 'chromium' ) {
+          this.defaultSortChoices = [
+            [ DESC(this.X.QIssue.MODIFIED),      'Last modified' ],
+            [ this.X.QIssue.PRIORITY, 'Priority' ],
+            [ DESC(this.X.QIssue.ID),            'Issue ID' ]
+          ];
+        }
       }
     },
 
