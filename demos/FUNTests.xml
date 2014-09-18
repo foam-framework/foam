@@ -996,6 +996,7 @@
   <object model="UITest">
     <property name="name">Autocomplete on TextFieldView</property>
     <property name="description">Test's the autocomplete functionality of a TextFieldView.</property>
+    <property name="disabled">true</property>
     <property name="code" type="function">
       MODEL({
         name: 'Contact',
