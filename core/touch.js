@@ -857,7 +857,7 @@ MODEL({
     // Clears all state in the gesture manager.
     // This is a blunt instrument, use with care.
     resetState: function() {
-      this.active = [];
+      this.active = {};
       this.recognized = null;
       this.points = {};
     }

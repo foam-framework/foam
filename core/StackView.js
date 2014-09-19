@@ -72,8 +72,10 @@ MODEL({
         return;
       }
 
-      this.slider.reverse = opt_transition === 'fromLeft';
-      this.slider.slideView(view);
+      window.setTimeout(function() {
+        this.slider.reverse = opt_transition === 'fromLeft';
+        this.slider.slideView(view, undefined, undefined, 100);
+      }.bind(this), 100)
     },
     setTopView: function(view) {
       if ( this.stack.length > 0 ) {
@@ -82,23 +84,27 @@ MODEL({
       this.stack = [];
       this.pushView(view, undefined, undefined, 'none');
     },
-    slideView: function(view, opt_label, opt_side) {
+    slideView: function(view, opt_label, opt_side, opt_delay) {
       if ( this.slideLatch ) {
         this.slideLatch();
         this.slideLatch = '';
       }
 
+      if ( ! Number.isFinite(opt_delay) ) opt_delay = 100;
+
       this.sliderOpen = true;
       this.overlaySlider.view = view;
 
       var self = this;
-      this.slideLatch = Movement.animate(
-        300,
-        function() { self.overlaySlider.slideAmount = 1 },
-        undefined,
-        function() {
-          self.slideLatch = '';
-        })();
+      window.setTimeout(function() {
+        self.slideLatch = Movement.animate(
+          300,
+          function() { self.overlaySlider.slideAmount = 1 },
+          undefined,
+          function() {
+            self.slideLatch = '';
+          })();
+      }, opt_delay);
     }
   },
   listeners: [

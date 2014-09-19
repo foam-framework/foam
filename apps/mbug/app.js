@@ -66,7 +66,8 @@ window.onload = function() {
             arequire('PinchTwistGesture'),
             arequire('DetailView'),
             arequire('OAuth2'),
-            arequire('OAuthXhrFactory')),
+            arequire('OAuthXhrFactory'),
+            arequire('QIssueCommentAuthorView')),
        function(ret) {
          var w = Y.Window.create({ window: window });
          mbug = Y.MBug.create();

@@ -115,14 +115,14 @@ var TemplateCompiler = {
    },
    'create child': function(v) {
      var name = v[1].join('').constantize();
-     this.push("', this.createTemplateView('", name, "'",
+     this.push("', self.createTemplateView('", name, "'",
                v[2] ? ', ' + v[2] : '',
                "),\n'");
    },
-   'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },
+   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
    'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
    'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
-   'live value tag': function (v) { this.push("',\nthis.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
+   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
    'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },

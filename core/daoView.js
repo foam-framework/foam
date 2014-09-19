@@ -618,6 +618,9 @@ MODEL({
       defaultValue: 'VerticalScrollbarView'
     },
     {
+      name: 'verticalScrollbar',
+    },
+    {
       name: 'loadedTop',
       help: 'Index of the first cached (not necessarily visible) value above the viewing area. Invariant: Always a contiguous block of loaded entries from loadedTop to loadedBottom!',
       defaultValue: -1
@@ -686,14 +689,18 @@ MODEL({
       }
 
       // Add scrollbar.
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
+      this.verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
           height: this.viewportHeight,
           scrollTop$ : this.scrollTop$,
           scrollHeight$ : this.scrollHeight$,
       });
-      //Events.follow(this.viewportHeight$, verticalScrollbar.height$);
-      this.$.insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
-      this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
+      this.$.insertAdjacentHTML('beforeend', this.verticalScrollbar.toHTML());
+      this.X.setTimeout(function() { this.verticalScrollbar.initHTML(); }.bind(this), 0);
+
+      // Force the scrollTop to reset.
+      var oldScroll = this.scrollTop;
+      this.scrollTop = 0;
+      this.scrollTop = oldScroll;
 
       this.onDAOUpdate();
     },
@@ -798,6 +805,13 @@ MODEL({
       }
       this.extraRows = [];
 
+      if ( this.verticalScrollbar ) {
+        Events.unlink(this.verticalScrollbar.scrollTop$, this.scrollTop$);
+        Events.unlink(this.verticalScrollbar.scrollHeight$, this.scrollHeight$);
+        this.verticalScrollbar.destroy();
+        this.verticalScrollbar = '';
+      }
+
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
@@ -808,12 +822,13 @@ MODEL({
     // Clears all cached data, when the DAO changes.
     // Allows reuse of the rows.
     invalidate: function() {
-      if ( ! this.visibleRows ) return;
-      var keys = Object.keys(this.visibleRows);
-      for ( var i = 0 ; i < keys.length ; i++ ) {
-        this.extraRows.push(this.visibleRows[keys[i]]);
+      if ( this.visibleRows ) {
+        var keys = Object.keys(this.visibleRows);
+        for ( var i = 0 ; i < keys.length ; i++ ) {
+          this.extraRows.push(this.visibleRows[keys[i]]);
+        }
+        this.visibleRows = {};
       }
-      this.visibleRows = {};
 
       this.cache = [];
       this.loadedTop = -1;
@@ -893,7 +908,7 @@ MODEL({
               }
               self.cache[toLoadTop + i] = o;
             }
-            self.loadedTop = Math.min(toLoadTop, Math.max(0, self.loadedTop));
+            self.loadedTop = self.loadedTop >= 0 ? Math.min(toLoadTop, self.loadedTop) : toLoadTop;
             self.loadedBottom = Math.max(toLoadBottom, self.loadedBottom);
 
             self.allocateVisible();
@@ -907,9 +922,7 @@ MODEL({
       name: 'verticalScrollMove',
       code: function(dy, ty, y) {
         this.scrollTop -= dy;
-        this.update(); // TODO: Maybe run this in setTimeout, or make update an animated listener?
-        // We want the vsm callback to be very fast so scrolling is responsive.
-        // I'll leave it here for now and see whether frames are dropping.
+        this.update();
       }
     }
   ],

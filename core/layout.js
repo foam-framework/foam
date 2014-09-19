@@ -210,7 +210,7 @@ MODEL({
       this.$.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
     },
-    slideView: function(view, opt_interp, opt_time) {
+    slideView: function(view, opt_interp, opt_time, opt_delay) {
       if ( ! this.$ ) return;
 
       if ( this.latch ) {
@@ -232,16 +232,18 @@ MODEL({
         self.slideAmount = 1.0;
       };
 
-      this.latch = Movement.animate(opt_time, fn, opt_interp, function() {
-        if ( self.view ) {
-          self.view.destroy();
-          self.$.removeChild(self.view.$);
-        }
-        self.view = view;
-        self.incomingView = '';
-        self.latch = '';
-        self.slideAmount = 0;
-      })();
+      window.setTimeout(function() {
+        self.latch = Movement.animate(opt_time, fn, opt_interp, function() {
+          if ( self.view ) {
+            self.view.destroy();
+            self.$.removeChild(self.view.$);
+          }
+          self.view = view;
+          self.incomingView = '';
+          self.latch = '';
+          self.slideAmount = 0;
+        })();
+      }, opt_delay || 0)
     }
   },
   templates: [

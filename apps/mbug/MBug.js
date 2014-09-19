@@ -33,13 +33,13 @@ MODEL({
           delegate: MDAO.create({ model: Y.QIssue })
         });
 
-        project.IssueNetworkDAO.batchSize = 20;
+        project.IssueNetworkDAO.batchSize = 25;
 
         Y.issueDAO = Y.QIssueSplitDAO.create({
           local: localDao,
           model: Y.QIssue,
           remote: project.IssueNetworkDAO,
-          maxLimit: 100
+          maxLimit: 25
         });
 
         var pc = Y.AppController.create({
@@ -186,7 +186,7 @@ MODEL({
     {
       name: 'commentsView',
       factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
       }
     },
     {
@@ -372,6 +372,13 @@ MODEL({
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
             $$cc{model_: 'IssueEmailArrayView'}
+            $$cc{
+              model_: 'mdStringArrayView',
+              daoFactory: function() { return this.X.PersonDAO; },
+              queryFactory: function(data) {
+                return STARTS_WITH_IC(IssuePerson.NAME, data);
+              }
+            }
           </div>
           <%= this.commentsView %>
         </div>
@@ -518,9 +525,9 @@ MODEL({
          <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
-         Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
+         Commented by $$author<br>
          <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
-         $$content{mode: 'read-only'}
+         $$content{mode: 'read-only', escapeHTML: false}
        </span>
     </div>
   */} ]

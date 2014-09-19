@@ -172,7 +172,7 @@ var demos = [
     model_: 'Demo',
     name: 'Trait Graphics',
     path: 'TraitGraphics.html',
-    description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blure.',
+    description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blur.  Traits are not limited to graphics and are a generalized method for safely providing multiple inheritance.',
     keywords: ['traits','graphics', '14'],
     src: 'TraitGraphics.js',
     image: 'TraitGraphics.png'
@@ -277,7 +277,7 @@ var demos = [
     model_: 'Demo',
     name: 'Todo',
     path: '../apps/todo/Todo.html',
-    description: 'A FOAM implementation of the http://todomvc.com comparison application.  Notice that the FOAM implementation is shorter than any other.',
+    description: 'A FOAM implementation of the <a href="http://todomvc.com">http://todomvc.com</a> comparison application.  Notice that the FOAM implementation is by far the shortest listed on the TodoMVC site.',
     keywords: ['tutorial', '14'],
     src: '../apps/todo/',
     image: 'Todo.png'

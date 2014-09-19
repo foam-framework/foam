@@ -513,9 +513,9 @@ MODEL({
           remove();
         }, this.X));
 
-        view.$.style.top = pos[1]-2;
-        view.$.style.left = pos[0]-toNum(s.width)+30;
-        view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
+        view.$.style.top = (pos[1]-2) + 'px';
+        view.$.style.left = (pos[0]-toNum(s.width)+30) + 'px';
+        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
 
         this.X.document.addEventListener('touchstart',  remove);
