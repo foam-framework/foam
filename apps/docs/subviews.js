@@ -185,7 +185,6 @@ MODEL({
     function toInnerHTML()    {/*
       <%    this.destroy(); %>
       <%    if (this.data) {  %>
-              <h1><%=this.data.name%></h1>
               <%=this.renderDocSourceHTML()%>
       <%    } %>
     */}
