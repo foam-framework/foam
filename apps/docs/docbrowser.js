@@ -113,23 +113,26 @@ MODEL({
 
 
 MODEL({
-  name: 'OldDocView',
-  extendsModel: 'DetailView',
+  name: 'DocModelView',
+  extendsModel: 'View',
   help: 'Displays the documentation of the given Model.',
 
-  /// have to override onValueChange to get the HTML update to happen
-  methods: {
-    onValueChange_: function() { this.updateHTML(); },
-  },
+  properties: [
+    {
+      name: 'data',
+      help: 'The Model for which to display documentation.',
+      postSet: function() {
+        this.dataProperties = this.data.properties;
+
+        this.updateHTML();
+      }
+    },
+  ],
 
   templates: [
-    function toHTML() {/*
-      <div id="%%id">
-        <%=this.toInnerHTML()%>
-      </div>
-    */},
 
     function toInnerHTML()    {/*
+<%    this.destroy(); %>
 <%    if (this.data) {  %>
         <div class="introduction">
           <h1><%=this.data.name%></h1>
@@ -138,17 +141,16 @@ MODEL({
 <%        } else { %>
             <h2>Extends <a href="#Model">Model</a></h2>
 <%        } %>
-          <p class="text"><%=this.data.help%></p>
+          $$data{ model_: 'DocModelBodyView', data: this.data }
         </div>
         <div class="members">
-          $$properties{ model_: 'DocPropertyView' }
+          $$data{ model_: 'DocPropertiesView' }
         </div>
 <%    } %>
     */}
   ]
 
 });
-
 
 
 
@@ -163,7 +165,7 @@ MODEL({
           <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
           <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
           <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
-          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelView'}, or even specific features on them, like $$DOC{ref:'DocModelView.docSource', text:'DocModelView&apos;s doc source property'}.</p>
+          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.docSource', text:'DocModelView&apos;s doc source property'}.</p>
           <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.a'}</p>
           <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
         */}
@@ -231,13 +233,13 @@ MODEL({
     {
       name: 'selectionView',
       factory: function() {
-        return this.DetailContext.OldDocView.create({ model: Model, data$: this.selection$ });
+        return this.DetailContext.DocModelView.create({ model: Model, data$: this.selection$ });
       }
     },
     {
       name: 'documentationView',
       factory: function() {
-        return this.DetailContext.DocModelView.create({ data: this.model_ });
+        return this.DetailContext.DocModelBodyView.create({ data: this.model_ });
       }
     }
 

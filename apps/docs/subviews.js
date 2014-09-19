@@ -18,90 +18,102 @@
 
 
 MODEL({
-  name: 'DocPropertyView',
-  extendsModel: 'DetailView',
+  name: 'DocPropertiesView',
+  extendsModel: 'View',
   help: 'Displays the documentation of the given Properties.',
 
   properties: [
     {
       name:  'data',
+      help: 'The model whose properties to view.',
       postSet: function(_, data) {
-        if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        this.dataDAO = data;
-        this.onValueChange();
+        this.dataDAO.delegate = data.properties;
+        this.updateHTML();
       }
     },
     {
       name:  'dataDAO',
-      preSet: function(_, data) {
-        if (Array.isArray(data)) {
-          var newDAO = this.X.ProxyDAO.create({delegate: data, model: Property})
-                        .where(EQ(Property.HIDDEN, FALSE)); // only keep non-hidden
-          // maintain count of items
-          newDAO.select(COUNT())(function(c) {
-            this.count = c.count;
-          }.bind(this));
-          return newDAO;
-        } else {
-          return data;
-        }
+      factory: function() {
+        var newDAO = this.X.ProxyDAO.create({delegate: this.X.NullDAO.create(), model: Property})
+                  .where(EQ(Property.HIDDEN, FALSE));
+
+        newDAO.addListener(this.updateCount);
+
+        return newDAO;
       },
     },
     {
-      name: 'count',
+      name: 'isEmpty',
+      defaultValue: true,
       postSet: function(_, nu) {
-        this.onValueChange();
+        this.updateHTML();
       }
     }
   ],
 
   templates: [
-    function toHTML()    {/*
-      <div id="%%id" class="%%cssClassAttr">
-        <%=this.toInnerHTML()%>
-      </div>
-    */},
     function toInnerHTML()    {/*
-    <%    if (this.count > 0)
-          {  %>
-            <h2>Properties:</h2>
-            <div><%= this.X.DAOListView.create({ rowView: 'DocPropertyRowView', data$: this.dataDAO$ }) %></div>
-    <%    } else { %>
-            <h2>No Properties.</h2>
-    <%    } %>
+    <%    this.destroy(); console.log(this.isEmpty); %>
+         <h2>Properties:</h2>
+         <div>$$dataDAO{ model_: 'DAOListView', rowView: 'DocPropertyRowView', data: this.dataDAO, model: Property }</div>
     */}
+  ],
+  listeners: [
+    {
+      name: 'updateCount',
+      isMerged: true,
+      code: function() {
+        var self = this;
+        // maintain count of items
+     console.log("count listener ", this.dataDAO);
+        if (this.dataDAO) {
+          this.dataDAO.select(COUNT())(function(c) {
+     console.log("count ", c.count);
+            self.isEmpty = c.count <= 0;
+          });
+        }
+      }
+    }
   ]
+
 });
 
 MODEL({
   name: 'DocPropertyRowView',
-  extendsModel: 'DetailView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name:  'data',
+      postSet: function(_, data) {
+        this.updateHTML();
+      }
+    },
+  ],
 
   templates: [
-    function toHTML() {/*
-      <div id="%%id" class="propertyRowView">
-        <h3><%=this.data.name%></h3>
-        <p><%=this.data.help%></p>
-      </div>
+    function toInnerHTML() {/*
+      <h3><%=this.data.name%></h3>
+      <p><%=this.data.help%></p>
     */}
   ]
 });
 
 
 MODEL({
-  name: 'DocView',
+  name: 'DocBodyView',
   extendsModel: 'View',
-  label: 'Documentation View Base',
-  help: 'Base Model for documentation views.',
+  label: 'Documentation Body View Base',
+  help: 'Base Model for documentation body-text views.',
 
   properties: [
     {
       name: 'data',
       help: 'The model or feature from which to extract documentation.',
+      required: true,
       postSet: function() {
         // grab the documentation and compile a template to use in this view
-        if (this.data && Documentation.isInstance(this.data.documentation))
-        {
+        if (this.data && Documentation.isInstance(this.data.documentation)) {
           // bind docSource
           this.docSource$ = this.data.documentation$;
         }
@@ -110,6 +122,7 @@ MODEL({
     {
       name: 'parentModel',
       help: 'The Model in which the feature lives.',
+      required: true,
       postSet: function() {
         this.updateHTML();
       }
@@ -122,17 +135,21 @@ MODEL({
         this.updateHTML();
       }
     },
-
   ],
 
   methods: {
 
     renderDocSourceHTML: function() {
-      // The first time this method is hit, replace it with the one that will
-      // compile the template, then call that. Future calls go direct to lazyCompile's
-      // returned function. You could also implement this the same way lazyCompile does...
-      this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.docSource.body);
-      return this.renderDocSourceHTML();
+      // only update if we have all required data
+      if (this.docSource.body && this.parentModel.model_ && this.data.model_) {
+        // The first time this method is hit, replace it with the one that will
+        // compile the template, then call that. Future calls go direct to lazyCompile's
+        // returned function. You could also implement this the same way lazyCompile does...
+        this.renderDocSourceHTML = TemplateUtil.lazyCompile(this.docSource.body);
+        return this.renderDocSourceHTML();
+      } else {
+        return ""; // no data yet
+      }
     },
 
     /** Create the special reference lookup sub-view from property info. **/
@@ -147,7 +164,7 @@ MODEL({
       // name has been constantized ('PROP_NAME'), but we're
       // only looking for certain doc tags anyway.
       if (name === 'DOC') {
-        var v = this.createReferenceView(opt_args) ;
+        var v = this.createReferenceView(opt_args);
         return v;
       } else {
         return this.SUPER(name, opt_args);
@@ -158,10 +175,10 @@ MODEL({
 
 
 MODEL({
-  name: 'DocModelView',
-  extendsModel: 'DocView',
+  name: 'DocModelBodyView',
+  extendsModel: 'DocBodyView',
   label: 'Documentation Model View',
-  help: 'Shows documentation for a Model.',
+  help: 'Shows the documentation body for a Model.',
 
   properties: [
     {
@@ -177,6 +194,7 @@ MODEL({
 
   templates: [
     function toInnerHTML()    {/*
+      <%    this.destroy(); %>
       <%    if (this.data) {  %>
               <h1><%=this.data.name%></h1>
               <%=this.renderDocSourceHTML()%>
@@ -187,13 +205,16 @@ MODEL({
 });
 
 MODEL({
-  name: 'DocFeatureView',
-  extendsModel: 'DocModelView',
+  name: 'DocFeatureBodyView',
+  extendsModel: 'DocBodyView',
   label: 'Documentation Feature View',
-  help: 'Shows documentation for a feature of a Model.',
+  help: 'Shows documentation body for a feature of a Model.',
+
+  // You must set both data and parentModel
 
   templates: [
     function toInnerHTML()    {/*
+      <%    this.destroy(); %>
       <%    if (this.data) {  %>
               <h2><%=this.data.name%></h2>
               <%=this.renderDocSourceHTML()%>
@@ -245,6 +266,7 @@ MODEL({
   templates: [
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%
+       this.destroy();
       if (this.text && this.text.length > 0) {
         %>[<%=this.text%>]<%
       } else if (this.data && this.data.label && this.data.label.length > 0) {
@@ -279,7 +301,7 @@ MODEL({
       else
         model = this.X[args[0]];
 
-      if (args.length > 1 && args[1].length > 0)
+      if (model && args.length > 1 && args[1].length > 0)
       {
         // feature specified
         foundObject = model.getFeature(args[1]);
@@ -321,3 +343,6 @@ MODEL({
 
   }
 });
+
+
+
