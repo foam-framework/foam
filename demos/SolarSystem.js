@@ -76,3 +76,5 @@ space.addChild(pie);
 var eyes = EyesCView.create({x:600,y:470});
 space.addChild(eyes);
 eyes.watch(earth);
+
+timer.start();

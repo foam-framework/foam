@@ -48,9 +48,9 @@ MODEL({
       name: 'f1',
       factory: function() { return ['a', 'b', 'c']; },
       view: {
-        model_: 'mdStringArrayView',
-        autoCompleteDAO: dao,
-        autoCompleteQueryFactory: function(data) {
+        model_: 'AutocompleteListView',
+        srcDAO: dao,
+        queryFactory: function(data) {
           return STARTS_WITH_IC(RefTable.ID, data);
         }
       }

@@ -372,6 +372,13 @@ MODEL({
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
             $$cc{model_: 'IssueEmailArrayView'}
+            $$cc{
+              model_: 'mdStringArrayView',
+              daoFactory: function() { return this.X.PersonDAO; },
+              queryFactory: function(data) {
+                return STARTS_WITH_IC(IssuePerson.NAME, data);
+              }
+            }
           </div>
           <%= this.commentsView %>
         </div>

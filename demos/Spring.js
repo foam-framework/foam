@@ -6,15 +6,6 @@ MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 space.write(document);
 mouse.connect(space.$);
 
-function bounceOnWalls(c, w, h) {
-  Events.dynamic(function() { c.x; c.y; }, function() {
-    if ( c.x < 0 ) c.vx = Math.abs(c.vx);
-    if ( c.x > w ) c.vx = -Math.abs(c.vx);
-    if ( c.y < 0 ) c.vy = Math.abs(c.vy);
-    if ( c.y > w ) c.vy = -Math.abs(c.vy);
-  });
-}
-
 mouse.x = mouse.y = 300;
 
 var N = 19;
