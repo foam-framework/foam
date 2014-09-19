@@ -44,6 +44,7 @@ var files = [
   'search',
   'async',
   'visitor',
+  'messaging',
   'dao',
   'arrayDAO',
   'ClientDAO',
