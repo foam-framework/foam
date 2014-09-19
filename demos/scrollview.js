@@ -97,7 +97,6 @@ MODEL({
     function toHTML() {/*
       <div id="%%id"
            style="background:%%data.color ;
-                  -webkit-backface-visibility: hidden;
                   margin: 5px 20px 30px 25px;
                   text-align: center;
                   border-radius: 10px;

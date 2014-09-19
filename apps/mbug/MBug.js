@@ -33,13 +33,13 @@ MODEL({
           delegate: MDAO.create({ model: Y.QIssue })
         });
 
-        project.IssueNetworkDAO.batchSize = 20;
+        project.IssueNetworkDAO.batchSize = 25;
 
         Y.issueDAO = Y.QIssueSplitDAO.create({
           local: localDao,
           model: Y.QIssue,
           remote: project.IssueNetworkDAO,
-          maxLimit: 100
+          maxLimit: 25
         });
 
         var pc = Y.AppController.create({
@@ -91,7 +91,7 @@ MODEL({
         persistentContext: this.qbug.persistentContext,
         ProjectDAO:        this.qbug.ProjectDAO, // Is this needed?
         stack:             this.stack,
-        DontSyncProjectData: false, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
+        DontSyncProjectData: true, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
       }, 'MBUG CONTEXT');
     },
 
@@ -186,7 +186,7 @@ MODEL({
     {
       name: 'commentsView',
       factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id)});
+        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
       }
     },
     {
@@ -233,7 +233,7 @@ MODEL({
             }
           },
           handler: this,
-          gesture: 'verticalScroll'
+          gesture: 'verticalScrollMomentum'
         });
       }
     }
@@ -518,9 +518,9 @@ MODEL({
          <%= IssueOwnerAvatarView.create({data: this.data.author.name}) %>
        </span>
        <span class="content">
-         Commented by $$author{mode: 'read-only', tagName: 'span'}<br>
+         Commented by $$author<br>
          <span class="published"><%= this.data.published.toRelativeDateString() %></span> <br><br>
-         $$content{mode: 'read-only'}
+         $$content{mode: 'read-only', escapeHTML: false}
        </span>
     </div>
   */} ]

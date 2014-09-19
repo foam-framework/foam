@@ -129,7 +129,6 @@ MODEL({
     {
       name: 'IssueCachingDAO',
       lazyFactory: function() {
-        debugger;
         console.log('Creating IssueCachingDAO.');
         return this.X.CachingDAO.create({cache: this.IssueMDAO, src: this.IssueIDBDAO});
       },
