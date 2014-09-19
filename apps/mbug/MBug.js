@@ -3,6 +3,42 @@
  **/
 
 MODEL({
+  name: 'CCListView',
+  extendsModel: 'AutocompleteListView',
+  properties: [
+    {
+      name: 'srcDAO',
+      factory: function() { return this.X.PersonDAO; }
+    },
+    {
+      name: 'queryFactory',
+      defaultValue: function(data) {
+        return STARTS_WITH_IC(IssuePerson.NAME, data);
+      }
+    }
+  ]
+});
+
+/*
+MODEL({
+  name: 'LabelsListView',
+  extendsModel: 'AutocompleteListView',
+  properties: [
+    {
+      name: 'srcDAO',
+      factory: function() { return this.X.LabelDAO; }
+    },
+    {
+      name: 'queryFactory',
+      defaultValue: function(data) {
+        return CONTAINS_IC(IssueLabel.NAME, data);
+      }
+    }
+  ]
+});
+*/
+
+MODEL({
   name: 'MBug',
   description: 'Mobile QuickBug',
   traits: ['PositionedDOMViewTrait'],
@@ -371,14 +407,7 @@ MODEL({
           <div class="separator separator1"></div>
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-            $$cc{model_: 'IssueEmailArrayView'}
-            $$cc{
-              model_: 'mdStringArrayView',
-              daoFactory: function() { return this.X.PersonDAO; },
-              queryFactory: function(data) {
-                return STARTS_WITH_IC(IssuePerson.NAME, data);
-              }
-            }
+            $$cc{xmodel_: 'CCListView', model_: 'IssueEmailArrayView'}
           </div>
           <%= this.commentsView %>
         </div>
