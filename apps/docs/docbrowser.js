@@ -176,8 +176,13 @@ MODEL({
       /* spawn and populate sub%%id contexts...  */
       this.SearchContext = this.X.sub({}, 'searchX');
       this.DetailContext = this.X.sub({}, 'detailX');
+
       // search context uses a selection value to indicate the chosen Model to display
       this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();
+
+      // detail context needs a documentViewParentModel to indicate what model it is rooted at
+      this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
+      Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
       this.SUPER();
 
@@ -203,6 +208,7 @@ MODEL({
       name: 'onSelectionChange',
       code: function(evt) {
         location.hash = "#" + this.SearchContext.selection$.value.name;
+
      }
     }
   ],

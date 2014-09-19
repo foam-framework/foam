@@ -26,21 +26,27 @@ MODEL({
     {
       name:  'data',
       help: 'The model whose properties to view.',
-      postSet: function(_, data) {
-        this.dataDAO.delegate = data.properties;
+      postSet: function(old, data) {
+        if (old) Events.unfollow(old.properties$, this.dao$);
+        Events.follow(data.properties$, this.dao$);
         this.updateHTML();
       }
     },
     {
-      name:  'dataDAO',
-      factory: function() {
-        var newDAO = this.X.ProxyDAO.create({delegate: this.X.NullDAO.create(), model: Property})
-                  .where(EQ(Property.HIDDEN, FALSE));
+      name:  'dao',
+      model_: 'DAOProperty',
+      postSet: function() {
+        this.filteredDAO = this.dao.where(EQ(Property.HIDDEN, FALSE));
 
-        newDAO.addListener(this.updateCount);
+        this.filteredDAO.select(COUNT())(function(c) {
+          this.isEmpty = c.count <= 0;
+        }.bind(this));
 
-        return newDAO;
-      },
+      }
+    },
+    {
+      name:  'filteredDAO',
+      model_: 'DAOProperty'
     },
     {
       name: 'isEmpty',
@@ -53,28 +59,15 @@ MODEL({
 
   templates: [
     function toInnerHTML()    {/*
-    <%    this.destroy(); console.log(this.isEmpty); %>
-         <h2>Properties:</h2>
-         <div>$$dataDAO{ model_: 'DAOListView', rowView: 'DocPropertyRowView', data: this.dataDAO, model: Property }</div>
+    <%    this.destroy();
+          if (this.isEmpty) { %>
+            <h2>No Properties.</h2>
+    <%    } else { %>
+            <h2>Properties:</h2>
+            <div>$$filteredDAO{ model_: 'DAOListView', rowView: 'DocPropertyRowView', data: this.filteredDAO, model: Property }</div>
+    <%    } %>
     */}
   ],
-  listeners: [
-    {
-      name: 'updateCount',
-      isMerged: true,
-      code: function() {
-        var self = this;
-        // maintain count of items
-     console.log("count listener ", this.dataDAO);
-        if (this.dataDAO) {
-          this.dataDAO.select(COUNT())(function(c) {
-     console.log("count ", c.count);
-            self.isEmpty = c.count <= 0;
-          });
-        }
-      }
-    }
-  ]
 
 });
 
@@ -120,14 +113,6 @@ MODEL({
       }
     },
     {
-      name: 'parentModel',
-      help: 'The Model in which the feature lives.',
-      required: true,
-      postSet: function() {
-        this.updateHTML();
-      }
-    },
-    {
       name: 'docSource',
       type: 'Documentation',
       help: 'The documentation object to render.',
@@ -138,6 +123,11 @@ MODEL({
   ],
 
   methods: {
+    init: function() {
+      if (!this.X.documentViewParentModel) {
+        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      }
+    },
 
     renderDocSourceHTML: function() {
       // only update if we have all required data
@@ -155,7 +145,7 @@ MODEL({
     /** Create the special reference lookup sub-view from property info. **/
     createReferenceView: function(opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ parentModel:this.parentModel, ref:opt_args.ref, text: opt_args.text, args: opt_args});
+      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -242,14 +232,6 @@ MODEL({
       }
     },
     {
-      name: 'parentModel',
-      help: 'The data of our container view. Used to resolve local links that do not include an explicit Model name.',
-      postSet: function() {
-        // might have to resolve again since ref may have been set first
-        this.data = this.resolveReference(this.ref);
-      }
-    },
-    {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
@@ -285,6 +267,13 @@ MODEL({
       this.SUPER();
 
       this.tagName = 'span';
+
+      if (!this.X.documentViewParentModel) {
+        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+        debugger;
+      } else {
+        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+      }
     },
 
     resolveReference: function(reference) {
@@ -296,10 +285,12 @@ MODEL({
       var model;
 
       // if model not specified, use parentModel
-      if (args[0].length <= 0)
-        model = this.parentModel;
-      else
+      if (args[0].length <= 0) {
+        if (!this.X.documentViewParentModel) return foundObject; // abort
+        model = this.X.documentViewParentModel.get();
+      } else {
         model = this.X[args[0]];
+      }
 
       if (model && args.length > 1 && args[1].length > 0)
       {
@@ -339,9 +330,17 @@ MODEL({
       }
       return foundObject;
     },
+  },
 
+  listeners: [
+    {
+        name: 'onParentModelChanged',
+        code: function() {
+          this.data = this.resolveReference(this.ref);
+        }
+    }
+  ]
 
-  }
 });
 
 
