@@ -1,8 +1,8 @@
 {
-  "packageId": "com.google.foam.MBug",
-  "versionCode": 1,
+  "packageId": "com.foamdev.apps.MBug",
+  "versionCode": 2,
   "oauth2": {
-    "client_id": "18229540903-fois0dr7fn3u0j9a4nnqb275hiods5mk.apps.googleusercontent.com",
+    "client_id": "18229540903-q3jf1svejrq2usts6k25p37aigsvde21.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/projecthosting"
