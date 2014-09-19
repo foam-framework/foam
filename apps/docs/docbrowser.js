@@ -222,7 +222,7 @@ MODEL({
       documentation: {
         model_: 'Documentation',
         body: function() { /*
-          <div id=%%id >Hello $$DOC{ref:'DocBrowserController.modelList'}. property doc!</div>
+          Hello $$DOC{ref:'DocBrowserController.modelList'}. property doc!
           */ },
       },
     },

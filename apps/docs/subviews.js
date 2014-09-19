@@ -73,21 +73,12 @@ MODEL({
 
 MODEL({
   name: 'DocPropertyRowView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name:  'data',
-      postSet: function(_, data) {
-        this.updateHTML();
-      }
-    },
-  ],
+  extendsModel: 'DocBodyView',
 
   templates: [
     function toInnerHTML() {/*
       <h3><%=this.data.name%></h3>
-      <p><%=this.data.help%></p>
+      <%=this.renderDocSourceHTML()%>
     */}
   ]
 });
@@ -104,11 +95,17 @@ MODEL({
       name: 'data',
       help: 'The model or feature from which to extract documentation.',
       required: true,
+      preSet: function(old, nu) {
+        if (old && Documentation.isInstance(old.documentation)) {
+          Events.unfollow(old.documentation$, this.docSource$);
+        }
+        return nu;
+      },
       postSet: function() {
         // grab the documentation and compile a template to use in this view
         if (this.data && Documentation.isInstance(this.data.documentation)) {
           // bind docSource
-          this.docSource$ = this.data.documentation$;
+          Events.follow(this.data.documentation$, this.docSource$);
         }
       }
     },
@@ -124,6 +121,7 @@ MODEL({
 
   methods: {
     init: function() {
+      this.SUPER();
       if (!this.X.documentViewParentModel) {
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       }
@@ -131,7 +129,8 @@ MODEL({
 
     renderDocSourceHTML: function() {
       // only update if we have all required data
-      if (this.docSource.body && this.parentModel.model_ && this.data.model_) {
+      if (this.docSource.body && this.X.documentViewParentModel
+          && this.X.documentViewParentModel.model_ && this.data.model_) {
         // The first time this method is hit, replace it with the one that will
         // compile the template, then call that. Future calls go direct to lazyCompile's
         // returned function. You could also implement this the same way lazyCompile does...
