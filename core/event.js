@@ -603,7 +603,7 @@ var Events = {
     var listener = EventService.animate(fn2, opt_X);
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
-       obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
+      // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
       obj.propertyValue(name).addListener(listener);
     });
     var ret = fn();
