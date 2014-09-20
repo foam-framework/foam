@@ -385,7 +385,7 @@ MODEL({
           </div>
 <!--
           <div class="separator separator1"></div>
-          $$cc{model_: 'CCView'}
+          cc{model_: 'CCView'}
 -->
           <div class="separator separator1"></div>
           <div class="cc">
