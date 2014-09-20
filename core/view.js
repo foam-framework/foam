@@ -706,7 +706,12 @@ MODEL({
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
-        var view = this.X[this.args.model_].create(this.prop);
+        var model = this.X[this.args.model_];
+        if ( ! model ) { 
+          console.error('Unknown View: ', this.args.model_);
+          debugger;
+        }
+        var view = model.create(this.prop);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
