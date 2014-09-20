@@ -15,9 +15,42 @@ MODEL({
       defaultValue: function(data) {
         return STARTS_WITH_IC(IssuePerson.NAME, data);
       }
+    },
+    {
+      name: 'rowView',
+      defaultValue: 'IssueEmailCitationView2'
     }
   ]
 });
+
+
+MODEL({
+  name: 'IssueEmailCitationView2',
+  extendsModel: 'DefaultRowView',
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'IssueEmailCitationView'
+    }
+  ],
+  templates: [
+    function CSS() {/*
+      .IssueEmailCitationView {
+        padding: 12px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: #575757;
+      }
+    */},
+    function toInnerHTML() {/*
+      <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
+      <div class="owner-name"><%= escapeHTML(this.data) %></div>
+      $$removeRow
+    */}
+  ]
+});
+
 
 /*
 MODEL({
@@ -404,10 +437,14 @@ MODEL({
             <div class="owner-header">Owner</div>
             $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
           </div>
+          <!-- 
+          <div class="separator separator1"></div>
+          cc{model_: 'CCListView'}
+          -->
           <div class="separator separator1"></div>
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-            $$cc{xmodel_: 'CCListView', model_: 'IssueEmailArrayView'}
+            $$cc{model_: 'IssueEmailArrayView'}
           </div>
           <%= this.commentsView %>
         </div>
@@ -572,7 +609,7 @@ MODEL({
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },
-    { name: 'className', defaultValue: 'change-project-view' },
+    { name: 'className',      defaultValue: 'change-project-view' },
   ],
 
   templates: [
