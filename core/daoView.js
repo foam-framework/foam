@@ -420,7 +420,7 @@ MODEL({
         }
         this.addChild(view);
         if ( this.useSelection ) {
-          out.push('<div class="' + this.className + ' row' + '" id="' + this.on('click', (function() {
+          out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
           }).bind(this)) + '">');
         }
