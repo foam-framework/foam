@@ -185,7 +185,7 @@ MODEL({
           <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
           <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
           <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.docSource', text:'DocModelView&apos;s doc source property'}.</p>
-          <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.a'}</p>
+          <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
           <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
         */}
   },

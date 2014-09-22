@@ -406,9 +406,9 @@ MODEL({
 });
 
 (function() {
-  for ( var i = 0 ; i < Model.templates.length ; i++ )
-    Model.templates[i] = JSONUtil.mapToObj(Model.templates[i]);
-
+  for ( var i = 0 ; i < Model.templates.length ; i++ ){
+      Model.templates[i] = JSONUtil.mapToObj(Model.templates[i]);
+  }
   (function() {
     var a = Model.properties;
     for ( var i = 0 ; i < a.length ; i++ ) {

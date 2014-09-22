@@ -252,6 +252,9 @@ var TemplateUtil = {
          });
        } else if ( typeof t.template === 'function' ) {
          t.template = multiline(t.template);
+       } else if (!t.template$) {
+         // we haven't FOAMalized the template, and there's no crazy multiline functions
+         t = templates[i] = JSONUtil.mapToObj(t);
        }
        i++;
      }.bind(self))
