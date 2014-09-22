@@ -13,7 +13,7 @@ div.contentPanes {
 div.listPane {
   padding: 1em;
   width: 25%;
-  height: 70%;
+  height: 95%;
   float:left;
 
 }
@@ -22,15 +22,7 @@ div.detailPane {
   padding: 1em;
   overflow-y: scroll;
   width: 69%;
-  height: 70%;
+  height: 95%;
   float: left;
 }
 
-div.docPane {
-  padding: 1em;
-  overflow-y: scroll;
-  width: 69%;
-  height: 70%;
-  float: left;
-  clear: both;
-}

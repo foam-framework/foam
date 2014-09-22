@@ -261,13 +261,6 @@ MODEL({
         return this.DetailContext.DocModelView.create({ model: Model, data$: this.selection$ });
       }
     },
-    {
-      name: 'documentationView',
-      factory: function() {
-        return this.DetailContext.DocModelBodyView.create({ data: this.model_ });
-      }
-    }
-
   ],
   relationships: [
     {
@@ -289,7 +282,6 @@ MODEL({
     initHTML: function() {
       this.data.modelListView.initHTML();
       this.data.selectionView.initHTML();
-      this.data.documentationView.initHTML();
     }
   },
 
@@ -300,7 +292,6 @@ MODEL({
         <div class="contentPanes">
           <div class="listPane"><%=this.data.modelListView.toHTML()%></div>
           <div class="detailPane"><%=this.data.selectionView.toHTML()%></div>
-          <div class="docPane"><%=this.data.documentationView.toHTML()%></div>
         </div>
       </div>
     */}
