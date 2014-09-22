@@ -43,12 +43,12 @@ MODEL({
         if ( ! resp ) sink && sink.error && sink.error(method, params[0]);
         if ( resp.put ) {
           if ( resp.put.model_ )
-            self.notify_('put', resp.put);
+            self.notify_('put', [resp.put]);
           else
-            self.notify_('put', params[0]);
+            self.notify_('put', [params[0]]);
           sink && sink.put && sink.put(resp.put);
         } else if ( resp.remove ) {
-          self.notify_('remove', params[0]);
+          self.notify_('remove', [params[0]]);
           sink && sink.remove && sink.remove(resp.remove);
         } else if ( resp.error ) sink.error(resp.error);
       }, {

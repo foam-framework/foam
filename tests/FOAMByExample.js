@@ -63,12 +63,14 @@ MODEL({
       var self = this;
       this.dao.select({
         put: function(test) {
+          // Clone the test, so that passes, fails and regression updates don't write into the MDAO.
+          var t = test.clone();
           // Prevent the test from recursing; we'll take care of that in this view.
-          test.runChildTests = false;
+          t.runChildTests = false;
           afuncs.push(function(ret) {
             var Y = self.X.sub({ asyncCallback: ret });
-            test.X = self.testScope;
-            var view = Y.DemoView.create({ data: test });
+            t.X = self.testScope;
+            var view = Y.DemoView.create({ data: t });
             self.$.insertAdjacentHTML('beforeend', view.toHTML());
             view.initHTML(); // Actually calls atest().
             // The subviews will eventually call the ret().
@@ -90,7 +92,7 @@ MODEL({
 // TODO: Use boxes.
 function asendjson(path) {
   return function(ret, msg) {
-    var data = JSONUtil.compact.stringify(msg);
+    var data = JSONUtil.compact.where(NOT_TRANSIENT).stringify(msg);
     var xhr = new XMLHttpRequest();
     xhr.open("POST", path);
     aseq(
@@ -98,7 +100,6 @@ function asendjson(path) {
         xhr.asend(ret, data);
       },
       function(ret, resp) {
-        debugger;
         resp = JSONUtil.parse(resp);
         ret(resp);
       })(ret);
@@ -115,18 +116,12 @@ var baseDAO = CachingDAO.create({
 });
 
 setTimeout(function() {
-  var dao = [];
   window.X.UnitTestDAO = baseDAO;
-  baseDAO.where(EQ(UnitTest.PARENT_TEST, '')).select(dao.sink)(function(a) { console.log(a); });
-  dao.dao.listen({
-    put: function(x) {
-      console.warn('master update', x);
-    }
-  });
+  //baseDAO.where(EQ(UnitTest.PARENT_TEST, '')).select(dao.sink)(function(a) { console.log(a); });
 
   var X = window.X.sub({ asyncCallback: function() { console.log('done'); } });
   var view = X.TestsView.create({
-    dao: dao.dao
+    dao: baseDAO.where(EQ(UnitTest.PARENT_TEST, ''))
   });
   document.body.insertAdjacentHTML('beforeend', view.toHTML());
   view.initHTML();

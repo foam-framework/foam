@@ -47,6 +47,7 @@ MODEL({
       model_: 'IntProperty',
       name: 'passed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
       view: 'IntFieldView',
@@ -56,6 +57,7 @@ MODEL({
       model_: 'IntProperty',
       name: 'failed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
       help: 'Number of sub-tests to fail.'
@@ -113,6 +115,7 @@ MODEL({
       type: 'String',
       mode: 'read-only',
       view: 'UnitTestResultView',
+      transient: true,
       required: true,
       displayWidth: 80,
       displayHeight: 20
@@ -128,6 +131,7 @@ MODEL({
     {
       name: 'runChildTests',
       help: 'Whether the nested child tests should be run when this test is. Defaults to true; set to false for UITests.',
+      transient: true,
       defaultValue: true
     }
   ],

@@ -4610,6 +4610,7 @@ MODEL({
   methods: {
     postTest: function() {
       this.SUPER();
+      window.console.warn(this.test.master, this.test.results);
       this.test.regression = this.test.hasRun && ! this.test.results.equals(this.test.master);
     }
   },
@@ -4621,9 +4622,15 @@ MODEL({
       help: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
       isEnabled: function() { return this.test.regression; },
       action: function() {
-        debugger;
         this.test.master = this.test.results;
-        this.X.DAO.put(this.test);
+        this.X.DAO.put(this.test, {
+          put: function() {
+            this.test.regression = false;
+          }.bind(this),
+          error: function(e) {
+            console.error('Error saving update: ' + e);
+          }
+        });
       }
     }
   ],
@@ -4640,10 +4647,10 @@ MODEL({
           </tr>
           <tr>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
-              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data: this.test.master }); out(this.masterView); %>
+              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }); out(this.masterView); %>
             </td>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
-              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data: this.test.results }); out(this.liveView); %>
+              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }); out(this.liveView); %>
             </td>
           </tr>
         </tbody>
