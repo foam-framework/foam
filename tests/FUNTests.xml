@@ -277,13 +277,13 @@
       var Y = X.sub({a:1,b:2}, 'Y');
       this.log(Y);
       this.log(Y.a);
-      Mouse.create();
-      var m1 = Mouse.create();
-      var m2 = Y.Mouse.create();
+      MDAO.create({ model: UnitTest });
+      var m1 = MDAO.create({ model: UnitTest });
+      var m2 = Y.MDAO.create({ model: UnitTest });
       this.log('m2.X ', m2.X);
       this.log('m1.X ', m1.X);
       this.log(m2.X.a);
-      var m3 = m2.X.Mouse.create();
+      var m3 = m2.X.MDAO.create({ model: UnitTest });
       this.log(m3.X);
       this.log(m3.X.a);
     
@@ -552,7 +552,7 @@ person: Andy
   </object>
 
   <object model="UnitTest">
-    <property name="name">Event primitivies</property>
+    <property name="name">Event primitives</property>
     <property name="description">Tests the primitive event listeners and handlers</property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
@@ -579,6 +579,7 @@ person: Andy
           }
         }
         this.assert(correct, 'Updates should be in ascending order');
+        ret();
       }.bind(this), 550);
     
 }

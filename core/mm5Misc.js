@@ -169,11 +169,11 @@ MODEL({
       // The context becomes "this" inside the tests.
       // The UnitTest object itself becomes this.test inside tests.
       this.X = this.X.sub({}, this.name);
-      this.X.log    = this.log;
-      this.X.jlog   = this.jlog;
-      this.X.assert = this.assert;
-      this.X.fail   = this.fail;
-      this.X.ok     = this.ok;
+      this.X.log    = this.log.bind(this);
+      this.X.jlog   = this.jlog.bind(this);
+      this.X.assert = this.assert.bind(this);
+      this.X.fail   = this.fail.bind(this);
+      this.X.ok     = this.ok.bind(this);
       this.X.append = this.append.bind(this);
       this.X.test   = this;
 
@@ -213,11 +213,6 @@ MODEL({
                 test.X = self.X.sub();
                 test.atest()(ret);
               });
-              afuncsInner.push(function(ret) {
-                self.passed += test.passed;
-                self.failed += test.failed;
-                ret();
-              });
             });
             if ( afuncsInner.length ) {
               aseq.apply(this, afuncsInner)(ret);
@@ -230,6 +225,7 @@ MODEL({
 
       afuncs.push(function(ret) {
         self.hasRun = true;
+        self.X.onTestFailure && self.hasFailed() && self.X.onTestFailure(self);
         ret();
       });
 
@@ -297,7 +293,6 @@ MODEL({
       name: 'update',
       isEnabled: function() { return ! this.results.equals(this.master); },
       action: function() {
-        console.warn('updating test', this.$UID, this.name, this.master, this.results);
         this.master = this.results;
       }
     }
@@ -315,10 +310,10 @@ MODEL({
           ret();
         }.bind(this)
       );
+    },
+    hasFailed: function() {
+      return this.regression || this.hasRun && ! this.results.equals(this.master);
     }
-  },
-  hasFailed: function() {
-    return this.regression;
   }
 });
 
