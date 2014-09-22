@@ -1,6 +1,14 @@
-/**
- * Mobile QuickBug.
- **/
+MODEL({
+  name: 'ColoredBackgroundTrait',
+  methods: {
+    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
+    generateColor: function(data) {
+      return '#' + this.colors[Math.abs(data.hashCode()) % this.colors.length];
+    },
+    generateColorStyle: function(data) { return ' style="background:' + this.generateColor(data) + ';"'; }
+  }
+});
+
 
 MODEL({
   name: 'MBug',
@@ -368,19 +376,22 @@ MODEL({
             <div class="owner-header">Owner</div>
             $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
           </div>
+
+<!--
+          <div class="separator separator1"></div>
+          $cc{model_: 'CCView'}
+-->
+
+          <div class="separator separator1"></div>
+          $$labels{model_: 'IssueLabelView'}
+<!--
           <div class="separator separator1"></div>
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-            $$cc{model_: 'IssueEmailArrayView'}
-            $$cc{
-              model_: 'mdStringArrayView',
-              daoFactory: function() { return this.X.PersonDAO; },
-              queryFactory: function(data) {
-                return STARTS_WITH_IC(IssuePerson.NAME, data);
-              }
-            }
+            cc{model_: 'IssueEmailArrayView'}
           </div>
-          <%= this.commentsView %>
+-->
+          <= this.commentsView %>
         </div>
       </div>
     */},
@@ -462,26 +473,24 @@ MODEL({
 MODEL({
   name: 'IssueOwnerAvatarView',
   extendsModel: 'View',
+  traits: ['ColoredBackgroundTrait'],
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
   ],
   methods: {
-    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
-    generateColor: function() {
-      if ( ! this.data ) return 'url(images/silhouette.png)';
-
-      return '#' + this.colors[Math.abs(this.data.hashCode()) % this.colors.length];
+    generateColor: function(data) {
+      return data ? this.SUPER(data) : 'url(images/silhouette.png)';
     },
     updateHTML: function() {
-      if ( this.$ ) this.$.style.background = this.generateColor();
-      return this.SUPER();
+      if ( this.$ ) this.$.style.background = this.generateColor(this.data);
+      this.SUPER();
     },
   },
   templates: [
     function toInnerHTML() {/* {{{this.data[0] && this.data[0].toUpperCase()}}} */},
     // TODO: replace use of data-tip with Tooltip Model
     function toHTML() {/*
-      <div id="<%= this.id %>" data-tip="<%= this.data %>" class="owner-avatar" style="background:<%= this.generateColor() %>"><%= this.toInnerHTML() %></div>
+      <div id="<%= this.id %>" data-tip="<%= this.data %>" class="owner-avatar" style="background:<%= this.generateColor(this.data) %>"><%= this.toInnerHTML() %></div>
     */}
   ]
 });
@@ -543,7 +552,7 @@ MODEL({
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },
-    { name: 'className', defaultValue: 'change-project-view' },
+    { name: 'className',      defaultValue: 'change-project-view' },
   ],
 
   templates: [
