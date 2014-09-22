@@ -64,6 +64,7 @@ cat \
   ../../core/touch.js \
   ../../core/glang.js \
   ../../core/oauth.js \
+  ../../core/ChromeApp.js \
   ../../core/../apps/mailreader/view.js \
   ../../core/../apps/mailreader/email.js \
   ../../core/../lib/email/email.js \

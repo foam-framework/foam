@@ -1,5 +1,5 @@
 MODEL({
-  name: 'CViewView',
+  name: 'AbstractCViewView',
   extendsModel: 'View',
 
   properties: [
@@ -7,11 +7,6 @@ MODEL({
       name: 'cview',
       postSet: function(_, cview) {
         cview.view = this;
-        cview.x$.addListener(this.resize);
-        cview.y$.addListener(this.resize);
-        cview.width$.addListener(this.resize);
-        cview.height$.addListener(this.resize);
-        this.resize();
       }
     },
     {
@@ -20,37 +15,20 @@ MODEL({
       defaultValue: ''
     },
     {
+      model_: 'IntProperty',
       name: 'scalingRatio',
-      type: 'int',
-      defaultValue: 1,
-      postSet: function() {
-        this.width  = this.width;
-        this.height = this.height;
-      }
+      postSet: function(_, v) { console.log('Scaling to: ' , v); },
+      defaultValue: 1
     },
     {
+      model_: 'IntProperty',
       name:  'width',
-      type:  'int',
-      defaultValue: 100,
-      postSet: function(_, width) {
-        if ( this.$ ) {
-          this.$.width = width * this.scalingRatio;
-          this.$.style.width = width + 'px';
-          window.setTimeout(this.paint, 100);
-        }
-      }
+      defaultValue: 100
     },
     {
+      model_: 'IntProperty',
       name:  'height',
-      type:  'int',
-      defaultValue: 100,
-      postSet: function(_, height) {
-        if ( this.$ )  {
-          this.$.height = height * this.scalingRatio;
-          this.$.style.height = height + 'px';
-          window.setTimeout(this.paint, 100);
-        }
-      }
+      defaultValue: 100
     },
     {
       name: 'canvas',
@@ -63,8 +41,11 @@ MODEL({
       name: 'resize',
       isAnimated: true,
       code: function() {
-        this.width  = this.cview.x + this.cview.width;
-        this.height = this.cview.y + this.cview.height;
+        if ( ! this.$ ) return;
+        this.$.width = this.canvasWidth();
+        this.$.style.width = this.styleWidth();
+        this.$.height = this.canvasHeight();
+        this.$.style.height = this.styleHeight();
         this.paint();
       }
     },
@@ -82,11 +63,21 @@ MODEL({
   ],
 
   methods: {
-    toHTML: function() {
-      var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"></canvas>';
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
+                     this.resize);
     },
 
+    styleWidth: function() { return (this.width) + 'px'; },
+    canvasWidth: function() { return this.width * this.scalingRatio; },
+    styleHeight: function() { return (this.height) + 'px'; },
+    canvasHeight: function() { return this.height * this.scalingRatio; },
+    
+    toHTML: function() {
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style=width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+    },
     initHTML: function() {
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
@@ -115,6 +106,66 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'PositionedCViewView',
+  extendsModel: 'AbstractCViewView',
+  traits: ['PositionedDOMViewTrait'],
+  properties: [
+    {
+      name: 'tagName',
+      factory: function() { return 'canvas'; }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() {
+        this.cview; this.width; this.height;
+      }.bind(this), function() {
+        if ( ! this.cview ) return;
+        this.cview.width = this.width;
+        this.cview.height = this.height;
+      }.bind(this));
+    },
+    toHTML: function() {
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" ' + this.layoutStyle() + '></canvas>';
+    }
+  },
+  listeners: [
+    {
+      name: 'resize',
+      isAnimated: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        this.$.width = this.canvasWidth();
+        this.$.style.width = this.styleWidth();
+        this.$.height = this.canvasHeight();
+        this.$.style.height = this.styleHeight();
+        this.cview.width = this.width;
+        this.cview.height = this.height;
+        this.paint();
+      }
+    }
+  ]
+});
+
+MODEL({
+  name: 'CViewView',
+  extendsModel: 'AbstractCViewView',
+  help: 'DOM wrapper for a CView2, auto adjusts it size to fit the given cview.',
+  properties: [
+    {
+      name: 'cview',
+      postSet: function(_, cview) {
+        this.X.dynamic(function() {
+          this.width = cview.x + cview.width;
+          this.height = cview.y + cview.height;
+        }.bind(this));
+      }
+    }
+  ]
+});
 
 // Should CViews' have a cparent?
 MODEL({
@@ -203,7 +254,16 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
-        view = this.X.CViewView.create(params);
+        this.view = this.X.CViewView.create(params);
+      }
+      return this.view;
+    },
+
+    toPositionedView_: function() {
+      if ( ! this.view ) {
+        var params = {cview: this};
+        if ( this.className ) params.className = this.className;
+        this.view = this.X.PositionedCViewView.create(params);
       }
       return this.view;
     },
@@ -652,3 +712,95 @@ MODEL({name: 'Shadow', methods: {
   }
 }});
 
+MODEL({
+  name: 'CanvasScrollView',
+  extendsModel: 'CView2',
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao',
+      onDAOUpdate: 'onDAOUpdate'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'scrollTop'
+    },
+    {
+      name: 'renderer'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'selectNumber'
+    },
+    {
+      name: 'objs',
+      factory: function() { return []; }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() { this.width; this.renderer; }.bind(this),
+                     function() { this.renderer.width = this.width; }.bind(this));
+    },
+    initCView: function() {
+      this.X.dynamic(
+        function() {
+          this.scrollTop; this.height; this.renderer;
+        }.bind(this), this.onDAOUpdate);
+    },
+    paintSelf: function() {
+      var self = this;
+      var offset = -(this.scrollTop % this.renderer.height);
+      for ( var i = 0; i < this.objs.length; i++ ) {
+        self.canvas.save();
+        self.canvas.translate(0, offset + (i * self.renderer.height));
+        self.renderer.render(self.canvas, self.objs[i]);
+        self.canvas.restore();
+      }
+    }
+  },
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      code: function() {
+        if ( ! this.canvas ) return;
+
+        var selectNumber = this.selectNumber + 1;
+        this.selectNumber = selectNumber;
+
+        var limit = Math.floor(this.height / this.renderer.height) + 1;
+        var skip = Math.floor(this.scrollTop / this.renderer.height);
+        var self = this;
+
+        
+        var offset = -(this.scrollTop % this.renderer.height);
+
+        console.log('skip, limit, offset: ', skip, limit, offset);
+
+        var i = 0;
+        this.dao.skip(skip).limit(limit).select([])(function(objs) {
+          self.objs = objs;
+          self.view.paint();
+        });
+
+/*{
+          put: function(obj, _, fc) {
+            if ( selectNumber != self.selectNumber ||
+                 ! self.canvas ) {
+              fc.stop();
+              return;
+            } 
+            if ( i == 0 ) self.erase();
+
+            self.canvas.save();
+            self.canvas.translate(0, offset + (i * self.renderer.height));
+            i = i + 1;
+            self.renderer.render(self.canvas, obj);
+            self.canvas.restore();
+          }
+        });*/
+      }
+    }
+  ]
+});
