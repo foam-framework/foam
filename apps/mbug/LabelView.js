@@ -37,12 +37,14 @@ MODEL({
         align-items: center;
         display: flex;
 
-        border-radius: 3px;
+        border-radius: 50px;
         color: white;
         font-size: 16px;
         margin-right: 12px;
         margin-top: 12px;
         padding: 12px;
+        padding-left: 28px;
+border: 1px solid rgba(0,0,0,.1);
       }
       .IssueLabel canvas {
         background: rgba(0,0,0,0);
@@ -50,8 +52,8 @@ MODEL({
     */},
     function toInnerHTML() {/*
       <div class="IssueLabel" <%= this.generateColorStyle(this.data.match(/[^-]+/)[0]) %>>
-        <div class="owner-name">{{ this.data }}</div>
-        $$removeRow{iconUrl: 'images/ic_clear_24dp.png'}
+        <div style="flex: 1 0 auto;">{{ this.data }}</div>
+        $$removeRow{width: 24, height: 24, iconUrl: 'images/ic_clear_24dp.png'}
       </div>
     */}
   ]

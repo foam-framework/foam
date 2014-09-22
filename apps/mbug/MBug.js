@@ -384,14 +384,13 @@ MODEL({
 
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
-<!--
           <div class="separator separator1"></div>
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-            cc{model_: 'IssueEmailArrayView'}
+            $$cc{model_: 'IssueEmailArrayView'}
           </div>
--->
-          <= this.commentsView %>
+
+          <%= this.commentsView %>
         </div>
       </div>
     */},
