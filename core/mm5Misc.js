@@ -298,7 +298,22 @@ MODEL({
         this.master = this.results;
       }
     }
-  ]
+  ],
+
+  methods: {
+    atest: function() {
+      // Run SUPER's atest, which returns the unexecuted afunc.
+      var sup = this.SUPER();
+      // Now we append a last piece that updates regression based on the results.
+      return aseq(
+        sup,
+        function(ret) {
+          this.regression = this.hasRun && ! this.results.equals(this.master);
+          ret();
+        }.bind(this)
+      );
+    }
+  }
 });
 
 

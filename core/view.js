@@ -4607,14 +4607,6 @@ MODEL({
     }
   ],
 
-  methods: {
-    postTest: function() {
-      this.SUPER();
-      window.console.warn(this.test.master, this.test.results);
-      this.test.regression = this.test.hasRun && ! this.test.results.equals(this.test.master);
-    }
-  },
-
   actions: [
     {
       name: 'update',
