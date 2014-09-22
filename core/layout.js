@@ -32,9 +32,15 @@ MODEL({
 MODEL({
   name: 'PositionedDOMViewTrait',
   traits: ['PositionedViewTrait'],
+  properties: [
+    {
+      name: 'tagName',
+      defaultValue: 'div'
+    }
+  ],
   methods: {
     toHTML: function() {
-      return '<div id="' + this.id + '"' + this.layoutStyle() + this.cssClassAttr() + '>' +
+      return '<' + this.tagName + ' id="' + this.id + '"' + this.layoutStyle() + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</div>';
     },
