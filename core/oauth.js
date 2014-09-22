@@ -365,7 +365,6 @@ MODEL({
       var location = this.X.window.location;
       var token = location.hash.match(/token=([^&]*)/);
       token = token && token[1];
-      debugger;
       if ( token ) {
         this.accessToken = token;
         ret(token);
