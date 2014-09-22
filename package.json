@@ -1,6 +1,6 @@
 {
   "name": "foam",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MVC metaprogramming framework",
   "main": "core/bootFOAM.js",
   "devDependencies": {
@@ -12,7 +12,7 @@
     "grunt-log-headers": "~0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --harmony tests/automatic.js"
   },
   "repository": {
     "type": "git",

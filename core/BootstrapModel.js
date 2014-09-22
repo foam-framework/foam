@@ -206,6 +206,10 @@ var BootstrapModel = {
       defineLazyProperty(cls, r.name, function() {
         var m = this.X[r.relatedModel];
         var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+        if ( ! dao ) {
+          console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
+              m.plural + ' in the context, and neither was found.');
+        }
 
         return {
           get: function() { return dao.where(EQ(m.getProperty(r.relatedProperty), this.id)); },
