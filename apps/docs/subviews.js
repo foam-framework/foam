@@ -82,12 +82,22 @@ MODEL({
       return v;
     },
 
+    createExplicitView: function(opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X[opt_args.model_].create({ args: opt_args });
+      v.data = this.data;
+      this.addChild(v);
+      return v;
+    },
+
     createTemplateView: function(name, opt_args) {
       // name has been constantized ('PROP_NAME'), but we're
       // only looking for certain doc tags anyway.
       if (name === 'DOC') {
         var v = this.createReferenceView(opt_args);
         return v;
+      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
+        return this.createExplicitView(opt_args);
       } else {
         return this.SUPER(name, opt_args);
       }

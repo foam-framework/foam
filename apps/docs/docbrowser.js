@@ -214,7 +214,13 @@ MODEL({
         this.selection = this.SearchContext[location.hash.substring(1)];
       }.bind(this));
 
-      this.model_.methods[1].args.push(this.X.Arg.create({name: 'a'}));
+      var testArg = this.X.Arg.create({name: 'testy'});
+      testArg.documentation = this.X.Documentation.create({
+        body: function() { /*
+          Argument $$DOC{ref:'.'} documentation.
+          */ }
+      });
+      this.model_.methods[1].args.push(testArg);
     },
 
     testMethod: function(a1, b2) {

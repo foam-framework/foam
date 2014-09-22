@@ -35,6 +35,7 @@ MODEL({
     {
       name:  'dao',
       model_: 'DAOProperty',
+      defaultValue: [],
       postSet: function() {
         this.filteredDAO = this.dao; //this.dao.where(EQ(Property.HIDDEN, FALSE));
       }
@@ -59,7 +60,13 @@ MODEL({
       name: 'rowView',
       help: 'Override this to specify the view to use to display each feature.',
       factory: function() { return 'DocFeatureRowView'; }
-    }
+    },
+    {
+      name: 'className',
+      help: 'CSS class name(s), space separated.',
+      defaultValue: 'subsection'
+    },
+
   ],
 
   templates: [
@@ -140,21 +147,6 @@ MODEL({
 
 });
 
-MODEL({
-  name: 'DocMethodsView',
-  extendsModel: 'DocFeaturesView',
-  help: 'Displays the documentation of the given Methods.',
-
-  methods: {
-    getGroupFromTarget: function(target) {
-      return target.methods$;
-    },
-    featureName: function() {
-      return "Methods";
-    },
-  }
-
-});
 
 MODEL({
   name: 'DocActionsView',
@@ -216,6 +208,61 @@ MODEL({
     },
     featureName: function() {
       return "Issues";
+    },
+  }
+
+});
+
+
+MODEL({
+  name: 'DocMethodsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Methods.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocMethodRowView'; }
+    }
+  ],
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.methods$;
+    },
+    featureName: function() {
+      return "Methods";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocMethodRowView',
+  extendsModel: 'DocBodyView',
+  help: 'A view for each item in a list of documented Methods, including arguments.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <h3><%=this.data.name%></h3>
+      $$THISDATA{ model_: 'DocMethodArgumentsView' }
+      <%=this.renderDocSourceHTML()%>
+    */}
+  ]
+});
+
+MODEL({
+  name: 'DocMethodArgumentsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.args$;
+    },
+    featureName: function() {
+      return "Arguments";
     },
   }
 
