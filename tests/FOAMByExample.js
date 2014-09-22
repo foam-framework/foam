@@ -87,58 +87,37 @@ MODEL({
   }
 });
 
+// TODO: Use boxes.
+function asendjson(path) {
+  return function(ret, msg) {
+    var data = JSONUtil.compact.stringify(msg);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", path);
+    aseq(
+      function(ret) {
+        xhr.asend(ret, data);
+      },
+      function(ret, resp) {
+        debugger;
+        resp = JSONUtil.parse(resp);
+        ret(resp);
+      })(ret);
+  };
+}
 
-MODEL({
-  name: 'XHRXMLDAO',
-  label: 'A read-only DAO that fetches an XML file via XHR and reads its contents',
-  extendsModel: 'MDAO',
-
-  properties: ['name'],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-
-      if ( this.name ) {
-        var self = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', this.name);
-
-        aseq(
-          function(ret) {
-            xhr.asend(function(xml) { ret(XMLUtil.parse(xml)); });
-          },
-          function(ret, xml) {
-            xml.dao.select(self);
-            ret();
-          }
-        )(function() { });
-      }
-
-      this.addRawIndex({
-        execute: function() {},
-        bulkLoad: function() {},
-        toString: function() { return 'XHRXMLDAO'; },
-        plan: function() {
-          return { cost: Number.MAX_VALUE };
-        },
-        put: function() { },
-        remove: function() { }
-      });
-    }
-  }
-});
-
-var xhrDAO = XHRXMLDAO.create({
-  model: UnitTest,
-  name: 'FUNTests.xml'
+// This fetches all the tests up front.
+var baseDAO = CachingDAO.create({
+  cache: MDAO.create({ model: UnitTest }),
+  src: ClientDAO.create({
+    asend: asendjson(window.location.origin + '/api'),
+    model: UnitTest
+  }).where(EQ(UnitTest.DISABLED, false))
 });
 
 setTimeout(function() {
   var dao = [];
-  var enabledTestsDAO = xhrDAO.where(EQ(UnitTest.DISABLED, false));
-  window.X.UnitTestDAO = enabledTestsDAO;
-  enabledTestsDAO.where(EQ(UnitTest.PARENT, '')).select(dao.sink)(function(a) { console.log(a); });
+  window.X.UnitTestDAO = baseDAO;
+  baseDAO.where(EQ(UnitTest.PARENT_TEST, '')).select(dao.sink)(function(a) { console.log(a); });
   dao.dao.listen({
     put: function(x) {
       console.warn('master update', x);

@@ -99,11 +99,11 @@ function asendjson(path) {
         xhr.asend(ret, data);
       },
       function(ret, resp) {
-        resp = FOAM(resp);
+        resp = JSONUtil.parse(resp);
         ret(resp);
       })(ret);
   };
-};
+}
 
 // The default implementation uses eval(), which isn't supported in Chrome Apps.
 JSONUtil.parseToMap = function(str) {

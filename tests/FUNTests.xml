@@ -5,7 +5,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Event primitivies</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Tests the primitive event listeners and handlers</property>
     <property name="async">true</property>
     <property name="code" type="function">
@@ -21,7 +21,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Pub/sub support</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Every Modelled object is a pub/sub target. Also shows one-time listeners.</property>
     <property name="code" type="function">
       MODEL({
@@ -57,7 +57,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Event Merging</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Events can be merged into a maximum of 1 event per unit time, or 1 event per animation frame.</property>
     <property name="async">true</property>
     <property name="code" type="function">
@@ -103,7 +103,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Event topic chaining and wildcarding</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Events can have paths, and wildcards will hit all sub-events</property>
     <property name="code" type="function">
       MODEL({ name: 'Test' });
@@ -131,7 +131,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Events.follow()</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Creates a one-way binding between two properties</property>
     <property name="code" type="function">
       MODEL({
@@ -156,7 +156,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Events.map()</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Creates a one-way binding between two properties, running a filter over the value in between</property>
     <property name="code" type="function">
       MODEL({
@@ -181,7 +181,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Events.link()</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Creates a two-way binding between two properties</property>
     <property name="code" type="function">
       MODEL({
@@ -206,7 +206,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Events.relate()</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Creates a two-way binding between two properties, converting with functions</property>
     <property name="code" type="function">
       MODEL({
@@ -231,7 +231,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Direct property binding</property>
-    <property name="parent">Event Tests</property>
+    <property name="parentTest">Event Tests</property>
     <property name="description">Creates a two-way binding between two properties at object creation time.</property>
     <property name="code" type="function">
       MODEL({
@@ -298,7 +298,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Context/SubTest1</property>
-    <property name="parent">Context Examples</property>
+    <property name="parentTest">Context Examples</property>
     <property name="code" type="function">
       this.log('sub test 1, part 1');
       this.log('sub test 1, part 2');
@@ -306,7 +306,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Context/SubTest2</property>
-    <property name="parent">Context Examples</property>
+    <property name="parentTest">Context Examples</property>
     <property name="code" type="function">
       this.log('sub test 2');
     </property>
@@ -367,7 +367,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">DAO Tests/SubTest1</property>
-    <property name="parent">DAO Tests</property>
+    <property name="parentTest">DAO Tests</property>
     <property name="description">Add some sample data and select to a 'sink'.</property>
     <property name="code" type="function">
       dao.put(Person.create({id:'1', name:'John',  age:21}));
@@ -380,7 +380,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">DAO Tests/SubTest2</property>
-    <property name="parent">DAO Tests</property>
+    <property name="parentTest">DAO Tests</property>
     <property name="description">Select directly to an Array.</property>
     <property name="code" type="function">
       var a = [];
@@ -401,7 +401,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 0</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
@@ -409,7 +409,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 1</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
@@ -417,7 +417,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 2</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.f1.bind(this).aseq(this.f2.bind(this).aseq(this.aprint.bind(this)))(ret);
@@ -425,7 +425,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 3</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.f1.bind(this).aseq(this.aprint.bind(this))(ret);
@@ -433,7 +433,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 4</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       ao(this.aprint.bind(this), this.f2.bind(this), this.f1.bind(this))(ret);
@@ -441,7 +441,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 5</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(this.f1.bind(this), this.aprint.bind(this))(ret);
@@ -449,7 +449,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 6</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(this.f1.bind(this), this.f2.bind(this), this.aprint.bind(this))(ret);
@@ -457,7 +457,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">amemo</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="description">Test that amemo() only executes its delegate once.</property>
     <property name="code" type="function">
@@ -467,7 +467,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 7</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(
@@ -479,7 +479,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 8</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       apar(
@@ -490,7 +490,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">arepeat 1</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       arepeat(5, this.f1.bind(this))(ret);
@@ -498,7 +498,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">arepeat 2</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)).aseq(this.aprint.bind(this))(ret);
@@ -506,7 +506,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">arepeat 3</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(
@@ -516,7 +516,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">arepeatpar</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       arepeatpar(6, function(ret, a, b) {
@@ -533,7 +533,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">aFunc Test 11</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(
@@ -548,7 +548,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">anop</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.log('anop');
@@ -557,7 +557,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">abind1</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       var boo = function() { console.log('boo'); };
@@ -567,7 +567,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">abind2</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       aseq(
@@ -579,7 +579,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">alog</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.log('alog');
@@ -588,7 +588,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">asleep</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.log('**********');
@@ -598,7 +598,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">asleep2</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.log('at the start');
@@ -607,7 +607,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Future Function</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       this.log('start');
@@ -622,7 +622,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">asynchronized</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="code" type="function">
       this.tlock = {};
 
@@ -635,7 +635,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Without Synchronization</property>
-    <property name="parent">asynchronized</property>
+    <property name="parentTest">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
       apar(this.f1, this.f1, this.f1)(ret);
@@ -643,7 +643,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">With Synchronization</property>
-    <property name="parent">asynchronized</property>
+    <property name="parentTest">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
       var f1 = asynchronized(this.f1.bind(this));
@@ -653,7 +653,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">With Synchronization (Sequential)</property>
-    <property name="parent">asynchronized</property>
+    <property name="parentTest">asynchronized</property>
     <property name="async">true</property>
     <property name="code" type="function">
       apar(aseq(this.f1, this.f1, this.f1), aseq(this.f1, this.f1, this.f1))(ret);
@@ -663,7 +663,7 @@
 
   <object model="UnitTest">
     <property name="name">mergeAsync</property>
-    <property name="parent">aFunc Tests</property>
+    <property name="parentTest">aFunc Tests</property>
     <property name="async">true</property>
     <property name="code" type="function">
       var calls = [];
@@ -697,7 +697,7 @@
   </object>
   <object model="UITest">
     <property name="name">AllViews</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test all simple view types.</property>
     <property name="code" type="function">
       ModelDAO = MDAO.create({ model: Model });
@@ -895,7 +895,7 @@
   </object>
   <object model="UITest">
     <property name="name">TextFieldView</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in TextFieldViews.</property>
     <property name="code" type="function">
       var v1 = TextFieldView.create();
@@ -909,7 +909,7 @@
   </object>
   <object model="UITest">
     <property name="name">TextFieldView/onKeyMode</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
     <property name="code" type="function">
       var v1 = TextFieldView.create({onKeyMode: true});
@@ -923,7 +923,7 @@
   </object>
   <object model="UITest">
     <property name="name">TextFieldView/readOnlyMode</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
     <property name="code" type="function">
       var v1 = TextFieldView.create({onKeyMode: true});
@@ -937,7 +937,7 @@
   </object>
   <object model="UITest">
     <property name="name">DetailView</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
     <property name="code" type="function">
       var t   = Timer.create();
@@ -950,7 +950,7 @@
   </object>
   <object model="UITest">
     <property name="name">DetailViewSwitchModel</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test DetailView's ability to switch to value with a different Model.</property>
     <property name="code" type="function">
       var t  = Timer.create();
@@ -962,7 +962,7 @@
   </object>
   <object model="UITest">
     <property name="name">DetailViewSwitchModelWithShowActions</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test DetailView's ability to switch to value with a different Model when showActions is set to true.</property>
     <property name="code" type="function">
       var t  = Timer.create();
@@ -974,7 +974,7 @@
   </object>
   <object model="UITest">
     <property name="name">ChoiceViews</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in ChoiceViews.</property>
     <property name="code" type="function">
       var choices = [ 'Value1', 'Value2', 'Value3' ];
@@ -993,7 +993,7 @@
   </object>
   <object model="UITest">
     <property name="name">ChoiceViewsWithKeysAndValues</property>
-    <property name="parent">View Tests</property>
+    <property name="parentTest">View Tests</property>
     <property name="description">Test data-binding in ChoiceViews with different Keys and Values.</property>
     <property name="code" type="function">
       var choices = [ ['a', 'Value1'], ['b', 'Value2'], ['c', 'Value3'] ];
@@ -1118,7 +1118,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Constructor tests</property>
-    <property name="parent">Object Model tests</property>
+    <property name="parentTest">Object Model tests</property>
     <property name="description">Demonstrate various properties of FOAM object constructors</property>
     <property name="code" type="function">
       var x = OMTestBase.create({ bar: 'baz' });
@@ -1136,7 +1136,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Default values and factories</property>
-    <property name="parent">Object Model tests</property>
+    <property name="parentTest">Object Model tests</property>
     <property name="description">Exercises default values functions and factories</property>
     <property name="code" type="function">
       var model = Model.create({
@@ -1180,7 +1180,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Inheritance Tests</property>
-    <property name="parent">Object Model tests</property>
+    <property name="parentTest">Object Model tests</property>
     <property name="description">Exercises Model inheritance and SUPER</property>
     <property name="code" type="function">
       var sub = Model.create({
@@ -1214,7 +1214,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">toFoo wrappers</property>
-    <property name="parent">Object Model tests</property>
+    <property name="parentTest">Object Model tests</property>
     <property name="description">Describes toString, toJSON and toXML default handlers</property>
     <property name="code" type="function">
       var x = OMTestBase.create({});
@@ -1239,7 +1239,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">Property update handlers</property>
-    <property name="parent">Object Model tests</property>
+    <property name="parentTest">Object Model tests</property>
     <property name="description">Exercises property updaters (preSet, postSet) and pseudo-properties (getter, setter)</property>
     <property name="code">
       var model = Model.create({
@@ -1336,7 +1336,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">0-char string</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">The encoding of an empty string is the empty string.</property>
     <property name="code" type="function">
       this.encodingTest('', '');
@@ -1344,7 +1344,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">1-char string</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">Check the encoding and decoding of a length-1 string</property>
     <property name="code" type="function">
       this.encodingTest('A', 'QQ==');
@@ -1352,7 +1352,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">2-char string</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">Check the encoding and decoding of a length-2 string</property>
     <property name="code" type="function">
       this.encodingTest('AB', 'QUI=');
@@ -1360,7 +1360,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">3-char string</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">Check the encoding and decoding of a length-3 string</property>
     <property name="code" type="function">
       this.encodingTest('ABC', 'QUJD');
@@ -1368,7 +1368,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">4-char string</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">Check the encoding and decoding of a length-4 string</property>
     <property name="code" type="function">
       this.encodingTest('ABCD', 'QUJDRA==');
@@ -1376,7 +1376,7 @@
   </object>
   <object model="UnitTest">
     <property name="name">All chars</property>
-    <property name="parent">Base64</property>
+    <property name="parentTest">Base64</property>
     <property name="description">Check the encoding and decoding of a sequence of all 256 chars.</property>
     <property name="code" type="function">
       var buffer = new ArrayBuffer(256);

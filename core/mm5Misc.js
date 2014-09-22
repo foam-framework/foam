@@ -123,7 +123,7 @@ MODEL({
       label: 'Tags'
     },
     {
-      name: 'parent'
+      name: 'parentTest'
     },
     {
       name: 'runChildTests',
@@ -137,7 +137,7 @@ MODEL({
       name: 'tests',
       label: 'Sub-tests of this test.',
       relatedModel: 'UnitTest',
-      relatedProperty: 'parent'
+      relatedProperty: 'parentTest'
     }
   ],
 

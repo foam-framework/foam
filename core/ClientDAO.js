@@ -90,7 +90,9 @@ MODEL({
 
       var self = this;
 
-      if ( sink.model_ || Array.isArray(sink) ) {
+      // XXX: This used to be sink.model_ || Array.isArray, but that would eg.
+      // send an instance of MDAO, rather than its data.
+      if ( Expr.isInstance(sink) || Array.isArray(sink) ) {
         this.asend(function(response) {
           if ( ! response ) sink && sink.error && sink.error();
           future.set(response || sink);
