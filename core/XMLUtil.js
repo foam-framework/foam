@@ -162,7 +162,7 @@ var XMLUtil = {
         out(XMLUtil.escape(obj));
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj);
       }
       else if ( obj instanceof Object ) {
         if ( obj.model_ )
@@ -224,6 +224,9 @@ var XMLUtil = {
         else
           this.output(out, obj);
       }
+    },
+    outputFunction_: function(out, f) {
+      out(XMLUtil.escape(f.toString()));
     }
   },
 
@@ -246,7 +249,7 @@ var XMLUtil = {
         out(XMLUtil.escape(obj));
       }
       else if ( obj instanceof Function ) {
-        out(obj);
+        this.outputFunction_(out, obj, indent);
       }
       else if ( obj instanceof Object ) {
         try {
@@ -327,6 +330,9 @@ var XMLUtil = {
           this.output(out, obj, nestedIndent);
       }
       out('\n',indent);
+    },
+    outputFunction_: function(out, f, opt_indent) {
+      out(XMLUtil.escape(f.toString()) + '\n' + (opt_indent || ''));
     }
   }
 };

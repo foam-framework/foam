@@ -67,6 +67,10 @@ String.prototype.indexOfIC = function(a) {
   return this.toUpperCase().indexOf(a.toUpperCase());
 };
 
+String.prototype.equals = function(other) {
+  return this.compareTo(other) === 0;
+};
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
