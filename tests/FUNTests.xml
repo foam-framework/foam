@@ -1447,7 +1447,7 @@ a message
     <property name="parentTest">aFunc Tests</property>
   </object>
 
-  <object model="RegressionTest">
+  <object model="UnitTest">
     <property name="name">mergeAsync</property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
