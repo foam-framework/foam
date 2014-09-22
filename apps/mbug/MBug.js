@@ -377,13 +377,12 @@ MODEL({
             $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
           </div>
 
-<!--
           <div class="separator separator1"></div>
-          $cc{model_: 'CCView'}
--->
+          $$cc{model_: 'CCView'}
 
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
+
           <div class="separator separator1"></div>
           <div class="cc">
             <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
