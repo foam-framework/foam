@@ -170,6 +170,11 @@ MODEL({
     {
       name:  'value',
       hidden: true
+    },
+    {
+      name: 'version',
+      defaultValue: 1,
+      hidden: true
     }
   ]
 });
@@ -202,19 +207,25 @@ MODEL({
      * Manage persistene for an object.
      * Resave it in the DAO whenever it first propertyChange events.
      **/
-    manage: function(name, obj) {
+    manage: function(name, obj, version) {
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
         this.dao.put(this.X.Binding.create({
           id:    name,
-          value: JSONUtil.compact.where(this.predicate).stringify(obj)
+          value: JSONUtil.compact.where(this.predicate).stringify(obj),
+          version: version
         }));
       }).bind(this), undefined, this.X));
     },
     bindObjects: function(a) {
       // TODO: implement
     },
-    bindObject: function(name, factory, transientValues) {
+    clearBinding: function(ret, name) {
+      var self = this;
+      self.dao.remove.ao(self.dao.find.bind(self.dao, name))(ret);
+    },
+    bindObject: function(name, factory, transientValues, version) {
+      version = version || 1;
       console.log('PersistentContext', 'binding', name);
       var future = afuture();
       transientValues = transientValues || {};
@@ -222,8 +233,22 @@ MODEL({
       if ( this.context[name] ) {
         future.set(this.context[name]);
       } else {
+        var newinit = (function() {
+          console.log('PersistentContext', 'newInit', name);
+          var obj = factory.create();
+          obj.copyFrom(transientValues);
+          this.context[name] = obj;
+          this.manage(name, obj);
+          future.set(obj);
+        }).bind(this);
+
         this.dao.find(name, {
           put: function (binding) {
+            if ( binding.version !== version ) {
+              console.log('PersistentContext', 'verison mismatch', name);
+              newinit();
+              return;
+            }
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
@@ -231,17 +256,10 @@ MODEL({
             var obj = JSONUtil.mapToObj(json);
             obj.copyFrom(transientValues);
             this.context[name] = obj;
-            this.manage(name, obj);
+            this.manage(name, obj, version);
             future.set(obj);
           }.bind(this),
-          error: function() {
-            console.log('PersistentContext', 'newInit', name);
-            var obj = factory.create();
-            obj.copyFrom(transientValues);
-            this.context[name] = obj;
-            this.manage(name, obj);
-            future.set(obj);
-          }.bind(this)
+          error: newinit
         });
       }
 
