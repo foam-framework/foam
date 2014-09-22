@@ -261,6 +261,9 @@ MODEL({
     },
     ok: function(comment) {
       this.assert(true, comment);
+    },
+    hasFailed: function() {
+      return this.failed > 0;
     }
   }
 });
@@ -313,6 +316,9 @@ MODEL({
         }.bind(this)
       );
     }
+  },
+  hasFailed: function() {
+    return this.regression;
   }
 });
 
