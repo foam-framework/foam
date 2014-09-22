@@ -153,9 +153,9 @@ this.Address.create();
 
 is the same as
 
-this.Address.create({ctx_: this.ctx_});
+this.Address.create({X: this.X});
 
-Every Object has a ctx_ property.
+Every Object has an X property.
 
 
 Factories

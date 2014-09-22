@@ -34,12 +34,19 @@ MODEL({
       help: 'An alias for the data property.',
       onDAOUpdate: 'onDAOUpdate',
       postSet: function(oldDAO, dao) {
-        if ( this.data !== dao ) this.data = dao;
+        if ( this.data !== dao ) {
+          this.data = dao;
+          this.X.DAO = dao;
+        }
       }
     }
   ],
 
   methods: {
+    init: function() {
+      this.SUPER();
+      this.X = this.X.sub({ DAO: this.dao });
+    },
     onDAOUpdate: function() {}
   }
 });
@@ -340,7 +347,13 @@ MODEL({
         ]}); }
       }
     },
-    { model_: 'BooleanProperty', name: 'useSelection', defaultValue: false },
+//    {
+//      model_: 'BooleanProperty',
+//      name: 'useSelection',
+//      dynamicValueFn: function() {
+//        return this.X.selection$;
+//      }
+//    },
     'selection',
     {
       name: 'scrollContainer',
@@ -372,6 +385,10 @@ MODEL({
         self.hidden = false;
       });
 
+      // bind to selection, if present
+      if (this.X.selection$) {
+        this.selection$ = this.X.selection$;
+      }
     },
 
     initHTML: function() {
@@ -390,7 +407,8 @@ MODEL({
         this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
-      if ( ! this.hidden ) this.updateHTML();
+      // NB: Not calling updateHTML() here, because when this.dao is set,
+      // it will call updateHTML().
     },
 
     updateHTML: function() {
@@ -419,13 +437,13 @@ MODEL({
           }.bind(this, o));
         }
         this.addChild(view);
-        if ( this.useSelection ) {
+        if ( this.X.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());
-        if ( this.useSelection ) {
+        if ( this.X.selection$ ) {
           out.push('</div>');
         }
       }.bind(this)})(function() {
@@ -444,6 +462,12 @@ MODEL({
   listeners: [
     {
       name: 'onDAOUpdate',
+      code: function() {
+        this.realDAOUpdate();
+      }
+    },
+    {
+      name: 'realDAOUpdate',
       isAnimated: true,
       code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },

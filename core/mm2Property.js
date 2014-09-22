@@ -337,6 +337,12 @@ var Property = {
       help: 'Help text associated with the property.'
     },
     {
+      name: 'documentation',
+      type: 'Documentation',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.',
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',

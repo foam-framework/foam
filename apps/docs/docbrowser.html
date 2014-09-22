@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <script language="javascript" src="../../core/bootFOAM.js"></script>
+    <title>FOAM Documentation Browser</title>
+    <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
+    <link rel="stylesheet" type="text/css" href="docbrowser.css" />
+    <script src="docfeatureviews.js"></script>
+    <script src="subviews.js"></script>
+    <script src="docbrowser.js"></script>
+  </head>
+  <body>
+    <script>
+      Y = X.sub({}, 'baseX');
+
+      var controller = Y.DocBrowserController.create();
+      var view = Y.DocBrowserView.create({ data: controller });
+      view.write(document);
+    </script>
+  </body>
+</html>

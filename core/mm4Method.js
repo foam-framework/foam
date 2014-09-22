@@ -54,6 +54,12 @@ MODEL({
       help: 'Help text associated with the action.'
     },
     {
+      name: 'documentation',
+      type: 'Documentation',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.',
+    },
+    {
       name: 'default',
       type: 'Boolean',
       view: 'BooleanView',
@@ -238,7 +244,13 @@ MODEL({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.'
-    }
+    },
+    {
+      name: 'documentation',
+      type: 'Documentation',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.',
+    },
   ],
 
   methods: {
@@ -332,12 +344,30 @@ MODEL({
       help: 'Help text associated with the entity.'
     },
     {
+      name: 'documentation',
+      type: 'Documentation',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.',
+    },
+    {
       name: 'code',
       type: 'Function',
       displayWidth: 80,
       displayHeight: 30,
       view: 'FunctionView',
-      help: 'Javascript code to implement this method.'
+      help: 'Javascript code to implement this method.',
+      postSet: function() {
+        // check for documentation in a multiline comment at the beginning of the code
+        // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
+        var multilineComment = /^\s*function\s*\(.*\)\s*{\s*\/\*(.*)\*\/|^\s*\/\*(.*)\*\/ /.exec(this.code.toString());
+        if ( multilineComment ) {
+          this.documentation = this.X.Documentation.create({
+                name: this.name,
+                body: Function("/*" + multilineComment[1] + "*/")
+          })
+        }
+
+      }
     },
     {
       name:  'returnType',
@@ -483,6 +513,12 @@ MODEL({
       help: 'Help text associated with the argument.'
     },
     {
+      name: 'documentation',
+      type: 'Documentation',
+      view: 'DocModelView',
+      help: 'Documentation associated with this entity.',
+    },
+    {
       model_: 'ArrayProperty',
       name: 'methods',
       type: 'Array[Method]',
@@ -601,3 +637,45 @@ MODEL({
   ]
 
 });
+
+MODEL({
+  name: 'Documentation',
+
+  tableProperties: [
+    'name'
+  ],
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s unique name.'
+    },
+    {
+      name: 'body',
+      type: 'Template',
+      defaultValue: '',
+      help: 'The main content of the document.',
+      preSet: function(_, template) {
+          return TemplateUtil.templateMemberExpander(template, this.X);
+      }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'chapters',
+      type: 'Array[Document]',
+      subtype: 'Documentation',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Sub-documents comprising the full body of this document.'
+    },
+
+  ]
+
+});
+

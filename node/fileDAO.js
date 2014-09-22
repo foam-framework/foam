@@ -1,5 +1,4 @@
 var fs = require('fs');
-require('../core/bootFOAMnode');
 
 MODEL({
   name: 'JSONFileDAO',
