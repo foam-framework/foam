@@ -198,7 +198,7 @@ defineProperties(Array.prototype, {
     sink = this.decorateSink_(sink, options, false, ! hasQuery);
 
     // Short-circuit COUNT.
-    if ( sink.model_ === CountExpr ) {
+    if ( ! hasQuery && sink.model_ === CountExpr ) {
       sink.count = this.length;
       return aconstant(originalsink);
     }

@@ -121,12 +121,7 @@ MODEL({
                 sink.put(project);
                 self.ProjectNetworkDAO.find(id, {
                   put: function(project) {
-                    cache.put(Project.create({
-                      externalId: project.externalId,
-                      name: project.name,
-                      summary: project.summary,
-                      issuesConfig: project.issuesConfig
-                    }));
+                    cache.put(project);
                   }
                 });
               },
@@ -135,12 +130,7 @@ MODEL({
                 self.ProjectNetworkDAO.find(id, {
                   put: function(project) {
                     sink.put(project);
-                    cache.put(Project.create({
-                      externalId: project.externalId,
-                      name: project.name,
-                      summary: project.summary,
-                      issuesConfig: project.issuesConfig
-                    }));
+                    cache.put(project);
                   },
                   error: sink.error && sink.error.bind(sink)
                 });
