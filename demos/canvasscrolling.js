@@ -4578,6 +4578,18 @@ var dao = JSONUtil.arrayToObjArray([
 
 dao.dao;
 
+this.X.touchManager = this.X.TouchManager.create({});
+var gestureManager = this.X.GestureManager.create({});
+gestureManager.install(this.X.GestureTarget.create({
+  container: { containsPoint: function() { return true; } },
+  handler: {
+    verticalScrollMove: function(dy) {
+      scroller.scrollTop -= dy;
+    }
+  },
+  gesture: 'verticalScrollMomentum'
+}));
+
 var scroller = CanvasScrollView.create({ dao: dao, renderer: IssueCitationRenderer.create({}) });
 
 var win = Window.create({ window: window });
@@ -4591,8 +4603,8 @@ var scrollToTop = function() {
 
 var scrollToBottom = function() {
   Movement.animate(10000, function() { scroller.scrollTop = 1000; }, undefined, function() {
-    scrollToTop();
+//    scrollToTop();
   })();
 }
 
-scrollToBottom();
+//scrollToBottom();
