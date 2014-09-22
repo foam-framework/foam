@@ -360,6 +360,7 @@ MODEL({
     },
   },
 
+  // TODO: make sure these reference objects aren't being kept alive too long
   listeners: [
     {
         name: 'onParentModelChanged',
