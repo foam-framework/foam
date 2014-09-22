@@ -1,7 +1,3 @@
-/**
- * Mobile QuickBug.
- **/
-
 MODEL({
   name: 'CCView',
   extendsModel: 'AutocompleteListView',
