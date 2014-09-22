@@ -112,7 +112,7 @@ var Base64Encoder = {
     var obj = Object.create(this);
     if ( args.urlSafe ) {
       obj.table = this.table.clone();
-      obj.table[62] = '-'
+      obj.table[62] = '-';
       obj.table[63] = '_';
     }
     return obj;
@@ -120,31 +120,33 @@ var Base64Encoder = {
 
   encode: function(b, opt_break) {
     var result = "";
+    var out;
     if ( opt_break >= 0 ) {
       var count = 0;
-      var out = function(c) {
+      out = function(c) {
         result += c;
         count = (count + 1) % opt_break;
-        if ( count == 0 ) result += "\r\n";
-      }
+        if ( count === 0 ) result += "\r\n";
+      };
     } else {
       out = function(c) { result += c; };
     }
 
+    var view = new Uint8Array(b);
     for ( var i = 0; i + 2 < b.byteLength; i += 3 ) {
-      out(this.table[b[i] >>> 2]);
-      out(this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)]);
-      out(this.table[((b[i+1] & 15) << 2) | (b[i+2] >>> 6)]);
-      out(this.table[b[i+2] & 63]);
+      out(this.table[view[i] >>> 2]);
+      out(this.table[((view[i] & 3) << 4) | (view[i+1] >>> 4)]);
+      out(this.table[((view[i+1] & 15) << 2) | (view[i+2] >>> 6)]);
+      out(this.table[view[i+2] & 63]);
     }
 
     if ( i < b.byteLength ) {
-      out(this.table[b[i] >>> 2]);
+      out(this.table[view[i] >>> 2]);
       if ( i + 1 < b.byteLength ) {
-        out(this.table[((b[i] & 3) << 4) | (b[i+1] >>> 4)]);
-        out(this.table[((b[i+1] & 15) << 2)]);
+        out(this.table[((view[i] & 3) << 4) | (view[i+1] >>> 4)]);
+        out(this.table[((view[i+1] & 15) << 2)]);
       } else {
-        out(this.table[((b[i] & 3) << 4)]);
+        out(this.table[((view[i] & 3) << 4)]);
         out('=');
       }
       out('=');

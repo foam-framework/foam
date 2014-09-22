@@ -1,10 +1,23 @@
-
 var http = require('http');
+var fs   = require('fs');
+var path = require('path');
+
+var MIME_TYPES = {
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.html': 'text/html',
+  __default: 'application/octet-stream'
+};
 
 // daoMap: Object mapping string names to DAO objects.
+// static: If provided, the root directory for all static file reads.
 // port: Defaults to 80.
-module.exports.launchServer = function(daoMap, port) {
-  port = port || 80;
+module.exports.launchServer = function(opts) {
+  var daoMap = opts.daoMap || {};
+  var port = opts.port || 80;
+
+  // Compute the static path as absolute.
+  var staticDir = opts.static && path.resolve(opts.static);
 
   function send(res, code, body) {
     res.writeHead(code, { 'Content-Type': 'application/json' });
@@ -15,14 +28,16 @@ module.exports.launchServer = function(daoMap, port) {
     send(res, code, JSON.stringify(obj));
   }
 
+  function send404(res) {
+    res.writeHead(404);
+    res.end();
+  }
+
   return http.createServer(function(req, res) {
     try {
-      // Handle the endpoints. There are only two: / and /api.
-      // / just returns a chunk of JSON data describing the server.
-      // /api is the interesting one.
-      if (req.url == '/') {
-        sendJSON(res, 200, { server: 'FOAM DAO Server', version: 1 });
-      } else if(req.url == '/api') {
+      // Handle the endpoints. The only live one is /api, for the DAOs.
+      // Otherwise, it will try to serve as a static file.
+      if(req.url == '/api') {
         var body = '';
         req.on('data', function(data) { body += data; });
         req.on('end', function() {
@@ -42,6 +57,7 @@ module.exports.launchServer = function(daoMap, port) {
           //   May eventually be useful for authentication, authorization, etc.
           if (msg.method == 'select') {
             dao.select.apply(dao, msg.params)(function(sink) {
+              debugger;
               send(res, 200, JSONUtil.stringify(sink));
             });
           } else if (msg.method == 'removeAll') {
@@ -71,6 +87,38 @@ module.exports.launchServer = function(daoMap, port) {
             });
           }
         });
+      } else {
+        // Try to serve a static file.
+        if ( ! staticDir ) {
+          send404(res);
+          return;
+        }
+
+        // If we're still here, then we've got a static directory.
+        // Compute the resolved path and make sure it's inside my static directory.
+        // Need to knock off the leading / on the URL.
+        var target = path.resolve(staticDir, req.url.substring(1));
+        var rel = path.relative(staticDir, target);
+        // Make sure that path doesn't start with ..
+        if ( rel.startsWith('..') ) {
+          send404(res);
+          return;
+        }
+
+        // Now we have a legal filename within our subdirectory.
+        // We try to stream the file to the other end.
+        if ( ! fs.existsSync(target) ) {
+          send404(res);
+          return;
+        }
+
+        var ext = path.extname(target);
+        var mimetype = MIME_TYPES[ext] || MIME_TYPES.__default;
+        res.writeHead(200, { 'Content-Type': mimetype });
+
+        // Open the file as a stream.
+        var stream = fs.createReadStream(target);
+        stream.pipe(res);
       }
     } catch(e) {
       sendJSON(res, 500, e);

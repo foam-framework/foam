@@ -39,9 +39,15 @@ MODEL({
       help: 'A multi-line description of the unit test.'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'disabled',
+      defaultValue: false
+    },
+    {
       model_: 'IntProperty',
       name: 'passed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
       view: 'IntFieldView',
@@ -51,14 +57,10 @@ MODEL({
       model_: 'IntProperty',
       name: 'failed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
       help: 'Number of sub-tests to fail.'
-    },
-    {
-      name:  'scope',
-      hidden: true,
-      factory: function() { return {}; }
     },
     {
       model_: 'BooleanProperty',
@@ -101,10 +103,19 @@ MODEL({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'hasRun',
+      transient: true,
+      hidden: true,
+      defaultValue: false
+    },
+    {
       model_: 'Property',
       name: 'results',
       type: 'String',
       mode: 'read-only',
+      view: 'UnitTestResultView',
+      transient: true,
       required: true,
       displayWidth: 80,
       displayHeight: 20
@@ -115,24 +126,22 @@ MODEL({
       label: 'Tags'
     },
     {
+      name: 'parentTest'
+    },
+    {
+      name: 'runChildTests',
+      help: 'Whether the nested child tests should be run when this test is. Defaults to true; set to false for UITests.',
+      transient: true,
+      defaultValue: true
+    }
+  ],
+
+  relationships: [
+    {
       name: 'tests',
-      label: 'Unit Tests',
-      type: 'Array[Unit Test]',
-      subType: 'UnitTest',
-      view: 'ArrayView',
-      fromElement: function(e) { return DOM.initElementChildren(e, this.X); },
-      preSet: function(_, tests) {
-        if ( Array.isArray(tests) ) return tests;
-
-        var a = [];
-        for ( key in tests ) {
-          a.push(UnitTest.create({name: key, code: tests[key]}));
-        }
-
-        return a;
-      },
-      factory: function() { return []; },
-      help: 'Sub-tests of this test.'
+      label: 'Sub-tests of this test.',
+      relatedModel: 'UnitTest',
+      relatedProperty: 'parentTest'
     }
   ],
 
@@ -153,11 +162,20 @@ MODEL({
     atest: function() {
       var self = this;
 
-      this.scope.log    = this.log.bind(this);
-      this.scope.jlog   = this.jlog.bind(this);
-      this.scope.assert = this.assert.bind(this);
-      this.scope.fail   = this.fail.bind(this);
-      this.scope.ok     = this.ok.bind(this);
+      if ( this.hasRun ) return anop;
+      this.hasRun = true;
+
+      // Copy the test methods into the context.=
+      // The context becomes "this" inside the tests.
+      // The UnitTest object itself becomes this.test inside tests.
+      this.X = this.X.sub({}, this.name);
+      this.X.log    = this.log;
+      this.X.jlog   = this.jlog;
+      this.X.assert = this.assert;
+      this.X.fail   = this.fail;
+      this.X.ok     = this.ok;
+      this.X.append = this.append.bind(this);
+      this.X.test   = this;
 
       this.results = '';
 
@@ -165,34 +183,54 @@ MODEL({
       this.failed = 0;
 
       var code;
-      with ( this.scope ) { code = eval('(' + this.code.toString() + ')'); }
+      code = eval('(' + this.code.toString() + ')');
 
       var afuncs = [];
       var oldLog;
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.scope.log;
+        console.log = self.log.bind(self.X);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this) : code.abind(this));
+      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
         ret();
       });
 
-      this.tests.forEach(function(test) {
+      if ( this.runChildTests ) {
+        // TODO: This is horrendous, but I can't see a better way.
+        // It would nest quite neatly if there were afunc DAO ops.
+        var future = this.tests.select([].sink);
         afuncs.push(function(ret) {
-          test.scope.__proto__ = self.scope;
-          test.atest()(ret);
+          future(function(innerTests) {
+            var afuncsInner = [];
+            innerTests.forEach(function(test) {
+              afuncsInner.push(function(ret) {
+                test.X = self.X.sub();
+                test.atest()(ret);
+              });
+              afuncsInner.push(function(ret) {
+                self.passed += test.passed;
+                self.failed += test.failed;
+                ret();
+              });
+            });
+            if ( afuncsInner.length ) {
+              aseq.apply(this, afuncsInner)(ret);
+            } else {
+              ret();
+            }
+          });
         });
-        afuncs.push(function(ret) {
-          self.passed += test.passed;
-          self.failed += test.failed;
-          ret();
-        });
+      }
+
+      afuncs.push(function(ret) {
+        self.hasRun = true;
+        ret();
       });
 
       return aseq.apply(this, afuncs);
@@ -223,7 +261,64 @@ MODEL({
     },
     ok: function(comment) {
       this.assert(true, comment);
+    },
+    hasFailed: function() {
+      return this.failed > 0;
     }
+  }
+});
+
+MODEL({
+  name: 'RegressionTest',
+  label: 'Regression Test',
+  help: 'A UnitTest with a gold output, which is compared with the output of the live test.',
+
+  extendsModel: 'UnitTest',
+
+  properties: [
+    {
+      name: 'master'
+    },
+    {
+      name: 'results',
+      view: 'RegressionTestResultView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'regression',
+      hidden: true,
+      transient: true,
+      defaultValue: false
+    }
+  ],
+
+  actions: [
+    {
+      name: 'update',
+      isEnabled: function() { return ! this.results.equals(this.master); },
+      action: function() {
+        console.warn('updating test', this.$UID, this.name, this.master, this.results);
+        this.master = this.results;
+      }
+    }
+  ],
+
+  methods: {
+    atest: function() {
+      // Run SUPER's atest, which returns the unexecuted afunc.
+      var sup = this.SUPER();
+      // Now we append a last piece that updates regression based on the results.
+      return aseq(
+        sup,
+        function(ret) {
+          this.regression = this.hasRun && ! this.results.equals(this.master);
+          ret();
+        }.bind(this)
+      );
+    }
+  },
+  hasFailed: function() {
+    return this.regression;
   }
 });
 

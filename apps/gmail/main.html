@@ -17,6 +17,7 @@
  <body>
   <script>
     // TODO: In the EMailCitationView it refers to mgmail. It should use context but that's not working.
+    EasyOAuth2 = OAuth2Redirect;
     var w = Window.create({ window: window });
     var mgmail = MGmail.create({});
     w.view = mgmail;

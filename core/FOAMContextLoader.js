@@ -29,8 +29,8 @@ var modelsfiles =
     fs.readFileSync(path.join(FOAM_BOOT_DIR, 'FOAMViewlessModels.js'));
 vm.runInThisContext(modelsfiles);
 
-for (var i = 0; i < files.length; i++) {
-  var filename = files[i] + '.js';
+for (var loadingLoopIndex = 0; loadingLoopIndex < files.length; loadingLoopIndex++) {
+  var filename = files[loadingLoopIndex] + '.js';
   var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
   vm.runInThisContext(filedata, filename);
 }

@@ -1,0 +1,18 @@
+<%
+  var test = this.data;
+  this.childView = this.X.sub({ asyncCallback: this.childrenCallback }).TestsView.create({
+      dao: test.tests
+  });
+%>
+<h3>{{test.name}}</h3>
+<% if ( test.description ) { %>
+   <div class="description">
+     {{test.description}}
+   </div>
+   <br>
+<% } %>
+<div>Code:</div>
+<pre><div class="code">{{test.code}}</div></pre>
+$$results{ X: this.X.sub({ asyncCallback: this.resultsCallback }) }
+<blockquote><%= this.childView.toHTML() %></blockquote>
+<br>
