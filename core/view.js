@@ -3755,8 +3755,13 @@ MODEL({
       }
     },
     {
+      model_: 'ModelProperty',
       name: 'listView'
     },
+    {
+      model_: 'ModelProperty',
+      name: 'subType'
+    }
   ],
 
   methods: {
