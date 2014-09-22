@@ -18,17 +18,17 @@
 
 
 MODEL({
-  name: 'DocPropertiesView',
+  name: 'DocFeaturesView',
   extendsModel: 'View',
-  help: 'Displays the documentation of the given Properties.',
+  help: 'Displays the documentation of the given set of features.',
 
   properties: [
     {
       name:  'data',
-      help: 'The model whose properties to view.',
+      help: 'The model whose features to view.',
       postSet: function(old, data) {
-        if (old) Events.unfollow(old.properties$, this.dao$);
-        Events.follow(data.properties$, this.dao$);
+        if (old) Events.unfollow(this.getGroupFromTarget(old), this.dao$);
+        Events.follow(this.getGroupFromTarget(data), this.dao$);
         this.updateHTML();
       }
     },
@@ -36,17 +36,17 @@ MODEL({
       name:  'dao',
       model_: 'DAOProperty',
       postSet: function() {
-        this.filteredDAO = this.dao.where(EQ(Property.HIDDEN, FALSE));
-
-        this.filteredDAO.select(COUNT())(function(c) {
-          this.isEmpty = c.count <= 0;
-        }.bind(this));
-
+        this.filteredDAO = this.dao; //this.dao.where(EQ(Property.HIDDEN, FALSE));
       }
     },
     {
       name:  'filteredDAO',
-      model_: 'DAOProperty'
+      model_: 'DAOProperty',
+      postSet: function() {
+        this.filteredDAO.select(COUNT())(function(c) {
+          this.isEmpty = c.count <= 0;
+        }.bind(this));
+      }
     },
     {
       name: 'isEmpty',
@@ -54,6 +54,11 @@ MODEL({
       postSet: function(_, nu) {
         this.updateHTML();
       }
+    },
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocFeatureRowView'; }
     }
   ],
 
@@ -61,19 +66,29 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.isEmpty) { %>
-            <h2>No Properties.</h2>
+            <h2>No <%=this.featureName()%>.</h2>
     <%    } else { %>
-            <h2>Properties:</h2>
-            <div>$$filteredDAO{ model_: 'DAOListView', rowView: 'DocPropertyRowView', data: this.filteredDAO, model: Property }</div>
+            <h2><%=this.featureName()%>:</h2>
+            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}
   ],
 
+  methods: {
+    getGroupFromTarget: function(target) {
+      debugger; // implement this to return your desired feature (i.e target.properties$)
+    },
+    featureName: function() {
+      debugger; // implement this to return the display name of your feature (i.e. "Properties")
+    },
+  }
+
 });
 
 MODEL({
-  name: 'DocPropertyRowView',
+  name: 'DocFeatureRowView',
   extendsModel: 'DocBodyView',
+  help: 'A generic view for each item in a list of documented features.',
 
   templates: [
     function toInnerHTML() {/*
@@ -81,6 +96,129 @@ MODEL({
       <%=this.renderDocSourceHTML()%>
     */}
   ]
+});
+
+MODEL({
+  name: 'DocPropertiesView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Properties.',
+
+  properties: [
+    {
+      name:  'dao', // filter out hidden properties
+      model_: 'DAOProperty',
+      postSet: function() {
+        this.filteredDAO = this.dao.where(EQ(Property.HIDDEN, FALSE));
+      }
+    }
+  ],
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.properties$;
+    },
+    featureName: function() {
+      return "Properties";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocRelationshipsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Relationships.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.relationships$;
+    },
+    featureName: function() {
+      return "Relationships";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocMethodsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Methods.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.methods$;
+    },
+    featureName: function() {
+      return "Methods";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocActionsView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Actions.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.actions$;
+    },
+    featureName: function() {
+      return "Actions";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocListenersView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Listeners.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.listeners$;
+    },
+    featureName: function() {
+      return "Listeners";
+    },
+  }
+
+});
+
+MODEL({
+  name: 'DocTemplatesView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Templates.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.templates$;
+    },
+    featureName: function() {
+      return "Templates";
+    },
+  }
+
+});
+
+
+MODEL({
+  name: 'DocIssuesView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the documentation of the given Issues.',
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.issues$;
+    },
+    featureName: function() {
+      return "Issues";
+    },
+  }
+
 });
 
 
@@ -275,8 +413,6 @@ MODEL({
     },
 
     resolveReference: function(reference) {
-      // TODO: method arguments can be referenced too? Model.methodName.args.arg1
-
       // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
       var foundObject;

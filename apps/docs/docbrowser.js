@@ -141,11 +141,30 @@ MODEL({
 <%        } else { %>
             <h2>Extends <a href="#Model">Model</a></h2>
 <%        } %>
-          $$data{ model_: 'DocModelBodyView', data: this.data }
+          $$data{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">
           $$data{ model_: 'DocPropertiesView' }
         </div>
+        <div class="members">
+          $$data{ model_: 'DocMethodsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocActionsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocListenersView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocTemplatesView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocRelationshipsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocIssuesView' }
+        </div>
+
 <%    } %>
     */}
   ]
@@ -249,7 +268,17 @@ MODEL({
       }
     }
 
+  ],
+  relationships: [
+    {
+      name: 'listOview',
+      label: 'some other things',
+      relatedModel: 'ControllerView',
+      relatedProperty: 'modelListView'
+    }
   ]
+
+
 });
 
 MODEL({
