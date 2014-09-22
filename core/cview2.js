@@ -254,7 +254,7 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
-        view = this.X.CViewView.create(params);
+        this.view = this.X.CViewView.create(params);
       }
       return this.view;
     },
@@ -263,7 +263,7 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
-        view = this.X.PositionedCViewView.create(params);
+        this.view = this.X.PositionedCViewView.create(params);
       }
       return this.view;
     },
