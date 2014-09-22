@@ -719,10 +719,10 @@ MODEL({
       this.onDAOUpdate();
     },
     scroller$: function() {
-      return this.X.Documentation.getElementById(this.scrollID);
+      return document.getElementById(this.scrollID);
     },
     container$: function() {
-      return this.X.Documentation.getElementById(this.containerID);
+      return document.getElementById(this.containerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.
