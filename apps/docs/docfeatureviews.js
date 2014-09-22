@@ -257,6 +257,14 @@ MODEL({
   extendsModel: 'DocFeaturesView',
   help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
 
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocMethodArgumentRowView'; }
+    }
+  ],
+
   methods: {
     getGroupFromTarget: function(target) {
       return target.args$;
@@ -264,7 +272,32 @@ MODEL({
     featureName: function() {
       return "Arguments";
     },
-  }
+  },
+
+  templates: [
+    function toInnerHTML()    {/*
+    <%    this.destroy();
+          if (this.isEmpty) { %>
+            <h4>No <%=this.featureName()%>.</h4>
+    <%    } else { %>
+            <h4><%=this.featureName()%>:</h4>
+            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
+    <%    } %>
+    */}
+  ],
+
 
 });
 
+MODEL({
+  name: 'DocMethodArgumentRowView',
+  extendsModel: 'DocBodyView',
+  help: 'A view for each item in a list of Args.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <h5><%=this.data.name%></h5>
+      <%=this.renderDocSourceHTML()%>
+    */}
+  ]
+});
