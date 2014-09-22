@@ -26,6 +26,9 @@ div.detailPane {
   float: left;
 }
 
-div.subsection {
-  padding: 2em;
+div.members {
+  padding-left: 2em;
+}
+div.memberList {
+  padding-left: 2em;
 }

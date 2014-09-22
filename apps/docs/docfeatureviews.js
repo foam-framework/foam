@@ -62,11 +62,9 @@ MODEL({
       factory: function() { return 'DocFeatureRowView'; }
     },
     {
-      name: 'className',
-      help: 'CSS class name(s), space separated.',
-      defaultValue: 'subsection'
+      name: 'tagName',
+      defaultValue: 'div'
     },
-
   ],
 
   templates: [
@@ -76,7 +74,7 @@ MODEL({
             <h2>No <%=this.featureName()%>.</h2>
     <%    } else { %>
             <h2><%=this.featureName()%>:</h2>
-            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}
   ],
@@ -246,7 +244,7 @@ MODEL({
   templates: [
     function toInnerHTML() {/*
       <h3><%=this.data.name%></h3>
-      $$THISDATA{ model_: 'DocMethodArgumentsView' }
+      <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
       <%=this.renderDocSourceHTML()%>
     */}
   ]
@@ -278,15 +276,13 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.isEmpty) { %>
-            <h4>No <%=this.featureName()%>.</h4>
+            <h4>(No <%=this.featureName()%>.)</h4>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
-            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
     <%    } %>
     */}
   ],
-
-
 });
 
 MODEL({
