@@ -1,3 +1,3 @@
 [submodule "foam"]
 	path = foam
-	url = git://github.com/foam-framework/foam
+	url = https://github.com/foam-framework/foam
