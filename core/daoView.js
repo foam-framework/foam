@@ -347,14 +347,24 @@ MODEL({
         ]}); }
       }
     },
-//    {
-//      model_: 'BooleanProperty',
-//      name: 'useSelection',
-//      dynamicValueFn: function() {
-//        return this.X.selection$;
-//      }
-//    },
-    'selection',
+    {
+      name: 'useSelection',
+      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      postSet: function(old, nu) {
+        if (this.useSelection && !this.X.selection$)
+        {
+           this.X.selection$ = this.X.SimpleValue.create();
+        }
+        this.selection$ = this.X.selection$;
+      }
+    },
+    {
+      name: 'selection',
+      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      factory: function() {
+        return this.X.SimpleValue.create();
+      }
+    },
     {
       name: 'scrollContainer',
       help: 'Containing element that is responsible for scrolling.'
@@ -678,7 +688,7 @@ MODEL({
       name: 'oldVisibleBottom',
       help: 'Set by allocateVisible after it has adjusted everything.',
       defaultValue: -1
-    }
+    },
   ],
 
   methods: {
