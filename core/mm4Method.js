@@ -54,10 +54,8 @@ MODEL({
       help: 'Help text associated with the action.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       name: 'default',
@@ -246,10 +244,8 @@ MODEL({
       help: 'Help text associated with the entity.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
   ],
 
@@ -344,10 +340,8 @@ MODEL({
       help: 'Help text associated with the entity.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       name: 'code',
@@ -513,10 +507,8 @@ MODEL({
       help: 'Help text associated with the argument.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       model_: 'ArrayProperty',

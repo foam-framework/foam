@@ -271,7 +271,6 @@ var IntProperty = Model.create({
   ]
 });
 
-
 var FloatProperty = Model.create({
   extendsModel: 'Property',
 
@@ -730,6 +729,35 @@ var ReferenceArrayProperty = Model.create({
 
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;
+
+var DocumentationProperty = Model.create({
+  extendsModel: 'Property',
+  name: 'DocumentationProperty',
+  help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultvalue: 'Documentation'
+    },
+    {
+      name: 'preSet',
+      defaultValue: function(_, doc) {
+        if ( Documentation.isInstance(doc) ) return doc;
+        return Documentation.create({ body: doc });
+      }
+    },
+    {
+      name: 'view',
+      defaultValue: 'DocModelView'
+    },
+    {
+      name: 'help',
+      defaultValue: 'Documentation for this entity.'
+    }
+  ]
+});
 
 MODEL({
   name: 'EnumPropertyTrait',

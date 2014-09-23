@@ -350,10 +350,8 @@ MODEL({
       help: 'Help text associated with the relationship.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       name:  'relatedModel',
