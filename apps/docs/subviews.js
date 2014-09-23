@@ -70,6 +70,64 @@ MODEL({
 
 });
 
+
+MODEL({
+  name: 'DocModelView',
+  extendsModel: 'DocView',
+  help: 'Displays the documentation of the given Model.',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The Model for which to display documentation.',
+      postSet: function() {
+        this.updateHTML();
+      }
+    },
+  ],
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        <div class="introduction">
+          <h1><%=this.data.name%></h1>
+<%        if (this.data.extendsModel) { %>
+            <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
+<%        } else { %>
+            <h2>Extends $$DOC{ref: 'Model' }</h2>
+<%        } %>
+          $$data{ model_: 'DocModelBodyView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocPropertiesView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocMethodsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocActionsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocListenersView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocTemplatesView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocRelationshipsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocIssuesView' }
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+
 MODEL({
   name: 'DocBodyView',
   extendsModel: 'DocView',
@@ -397,10 +455,10 @@ MODEL({
           }
         });
       }
-      console.log("resolving "+ reference);
-      newResolvedModelChain.forEach(function(m) {
-        console.log("  "+m.name);
-      });
+//      console.log("resolving "+ reference);
+//      newResolvedModelChain.forEach(function(m) {
+//        console.log("  "+m.name);
+//      });
 
       this.resolvedModelChain = newResolvedModelChain;
       this.valid = true;

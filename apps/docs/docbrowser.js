@@ -112,63 +112,6 @@ MODEL({
 });
 
 
-MODEL({
-  name: 'DocModelView',
-  extendsModel: 'DocView',
-  help: 'Displays the documentation of the given Model.',
-
-  properties: [
-    {
-      name: 'data',
-      help: 'The Model for which to display documentation.',
-      postSet: function() {
-        this.updateHTML();
-      }
-    },
-  ],
-
-  templates: [
-
-    function toInnerHTML()    {/*
-<%    this.destroy(); %>
-<%    if (this.data) {  %>
-        <div class="introduction">
-          <h1><%=this.data.name%></h1>
-<%        if (this.data.extendsModel) { %>
-            <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
-<%        } else { %>
-            <h2>Extends $$DOC{ref: 'Model' }</h2>
-<%        } %>
-          $$data{ model_: 'DocModelBodyView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocPropertiesView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocMethodsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocActionsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocListenersView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocTemplatesView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocRelationshipsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocIssuesView' }
-        </div>
-<%    } %>
-    */}
-  ]
-
-});
-
-
 
 MODEL({
   name: 'DocBrowserController',
@@ -203,7 +146,6 @@ MODEL({
       this.X.documentViewRequestNavigation = function(ref) {
         if (ref.valid) {
           // TODO: navigate to feature sub-view as well
-          console.log("Navigating to ", ref.resolvedModelChain[0]);
           this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
           this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
         }
@@ -221,6 +163,7 @@ MODEL({
       window.addEventListener('hashchange', function() {
         this.selection = this.SearchContext[location.hash.substring(1)];
       }.bind(this));
+      this.selection = this.SearchContext[location.hash.substring(1)];
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({
