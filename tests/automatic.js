@@ -3,6 +3,8 @@ require('../core/bootFOAMnode');
 require('../node/fileDAO');
 var path = require('path');
 
+var startTime = process.hrtime();
+
 // Create an XMLFileDAO against FUNTests.xml
 var rawDAO = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: UnitTest });
 global.X.UnitTestDAO = rawDAO;
@@ -31,7 +33,9 @@ global.X.onTestFailure = onFailure;
 
 function testsComplete() {
   console.log('Testing complete. Passed: ' + (allTests.length - failCount) + ',  Failed: ' + failCount);
-  if ( failCount > 0 ) process.exit(1);
+  var totalTime = process.hrtime(startTime);
+  console.log('Test running took ' + totalTime[0] + ' seconds and ' + (totalTime[1]/1000) + ' microseconds');
+  process.exit( failCount > 0 ? 1 : 0 );
 }
 
 dao.select({ put: function(t) { allTests.push(t.clone()); } })(function() {
