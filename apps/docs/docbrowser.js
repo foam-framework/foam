@@ -161,9 +161,11 @@ MODEL({
       // hack in URL support
       this.SearchContext.selection$.addListener(this.onSelectionChange);
       window.addEventListener('hashchange', function() {
-        this.selection = this.SearchContext[location.hash.substring(1)];
+        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+        this.selection = this.DetailContext.documentViewParentModel.get();
       }.bind(this));
-      this.selection = this.SearchContext[location.hash.substring(1)];
+      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+      this.selection = this.DetailContext.documentViewParentModel.get();
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({
