@@ -496,6 +496,7 @@ MODEL({
 
 MODEL({
   name: 'ScrollViewRow',
+  documentation: 'Wrapper for a single row in a $$DOC{ref: "ScrollView"}. Users should not need to create these. TODO: I should be a submodel of ScrollView once that\'s possible.',
   properties: [
     {
       name: 'data',
@@ -550,15 +551,32 @@ MODEL({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
 
+  documentation: function() {/*
+    <p>Infinite scrolling view. Expects a $$DOC{ref: ".dao"} and displays a subset of the data at a time, minimizing the amount of DOM creation and manipulation.</p>
+
+    <p>60fps when scrolling, generally drops one frame every time more data is rendered.</p>
+
+    <p>The required properties are $$DOC{ref: ".dao"} and $$DOC{ref: ".rowView"}.</p>
+
+    <p>The <tt>rowView</tt> <strong>must</strong> have a fixed vertical size. That size is determined in one of three ways:</p>
+
+    <ul>
+    <li>The user specifies $$DOC{ref: ".rowHeight"}.
+    <li>The $$DOC{ref: ".rowView"} specifies <tt>preferredHeight</tt>.
+    <li>The <tt>ScrollView</tt> will create an instance of the $$DOC{ref: ".rowView"} with no data, insert it into the DOM, let it render, and measure its size. This can be flaky for some <tt>View</tt>s, so if you run into sizing problems, add a <tt>preferredHeight</tt> property with a <tt>defaultValue</tt> on the $$DOC{ref: ".rowView"}'s model.
+    </ul>
+  */},
+
   properties: [
     {
       name: 'model',
+      documentation: 'The model for the data. Defaults to the DAO\'s model.',
       defaultValueFn: function() { return this.dao.model; }
     },
     {
       name: 'runway',
       defaultValue: 500,
-      help: 'The distance in pixels to render outside the viewport'
+      documentation: 'The distance in pixels to render on either side of the viewport. Defaults to 500.'
     },
     {
       name: 'count',
@@ -569,23 +587,29 @@ MODEL({
     },
     {
       name: 'scrollHeight',
+      documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.',
       postSet: function(old, nu) {
         if ( this.$ ) this.scroller$().style.height = nu + 'px';
       }
     },
     {
       name: 'rowHeight',
-      help: 'The height of each row in CSS pixels. If specified, ScrollView will use that height. Otherwise will use rowView\'s preferredHeight, if given. Otherwise defaults to -1 until it can be computed dynamically. Computing it requires rendering a rowView without data set, which breaks some views.',
-      defaultValue: -1
+      defaultValue: -1,
+      documentation: function() {/*
+        <p>The height of each row in CSS pixels.</p>
+        <p>If specified, <tt>ScrollView</tt> will use this height. Otherwise it will use <tt>rowView</tt>'s <tt>preferredHeight</tt>, if set. Otherwise defaults to <tt>-1</tt> until it can be computed dynamically.</p>
+
+        <p>That computation requires rendering a <tt>rowView</tt> without its <tt>data</tt> set, which breaks some views. If that happens to you, or the size of an empty <tt>rowView</tt> is smaller than a full one, measure the proper height and set <tt>preferredHeight</tt> on the <tt>rowView</tt>, or <tt>rowHeight</tt> on the <tt>ScrollView</tt>.</p>
+      */}
     },
     {
       name: 'rowSizeView',
       hidden: true,
-      help: 'If the rowHeight is not set, a rowView will be constructed and its size checked. This property holds that view so it can be destroyed properly.'
+      documentation: 'If the <tt>rowHeight</tt> is not set, a <tt>rowView</tt> will be constructed and its height checked. This property holds that view so it can be destroyed properly.'
     },
     {
       name: 'rowView',
-      help: 'The view for each row. Can specify a preferredHeight, which will become the rowHeight for this view if rowHeight is not set explicitly.',
+      documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
         var view = FOAM.lookup(nu, this.X);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
@@ -594,6 +618,7 @@ MODEL({
     },
     {
       name: 'viewportHeight',
+      documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.',
       defaultValueFn: function() {
         return this.$ && this.$.offsetHeight;
       }
@@ -601,6 +626,7 @@ MODEL({
     {
       name: 'scrollTop',
       defaultValue: 0,
+      documentation: 'The current vertical scroll position. Changing this updates the <tt>translate3d</tt>.',
       preSet: function(old, nu) {
         if ( nu < 0 ) return 0;
         if ( nu > this.scrollHeight - this.viewportHeight )
@@ -615,17 +641,22 @@ MODEL({
     },
     {
       name: 'visibleRows',
-      help: 'Map of currently visible rows, keyed by their position/order',
+      documentation: 'Map of currently visible rows, keyed by their index into the $$DOC{ref: ".cache"}.',
       factory: function() { return {}; }
     },
     {
       name: 'extraRows',
-      help: 'Buffer of extra, unneeded visible rows.',
+      documentation: 'Buffer of extra, unneeded visible rows. These will be the first to be reused if more rows are needed.',
       factory: function() { return []; }
     },
     {
       name: 'cache',
       model_: 'ArrayProprety',
+      documentation: function() {/*
+        <p>An array holding all the rows the <tt>ScrollView</tt> has loaded so far. Only a subset of these are visible (that is, rendered into a $$DOC{ref: "ScrollViewRow"} and stored in <tt>visibleRows</tt>).</p>
+
+        <p>The indices are relative to the current DAO, including any ordering and filtering. A single contiguous range of rows are loaded into the cache at any one time, not necessarily including <tt>0</tt>. The top and bottom indices are given by $$DOC{ref: ".loadedTop"} and $$DOC{ref: ".loadedBottom"}.</p>
+      */},
       factory: function() { return []; }
     },
     {
@@ -645,27 +676,27 @@ MODEL({
     },
     {
       name: 'loadedTop',
-      help: 'Index of the first cached (not necessarily visible) value above the viewing area. Invariant: Always a contiguous block of loaded entries from loadedTop to loadedBottom!',
+      documentation: 'Index of the first cached (not necessarily visible) value. There is always a contiguous block of loaded entries from <tt>loadedTop</tt> to $$DOC{ref: ".loadedBottom"}.',
       defaultValue: -1
     },
     {
       name: 'loadedBottom',
-      help: 'Index of the last cached (not necessarily visible) value below the viewing area. Invariant: Always a contiguous block of loaded entires from loadedTop to loadedBottom!',
+      documentation: 'Index of the last cached (not necessarily visible) value. There is always a contiguous block of loaded entries from $$DOC{ref: ".loadedTop"} to <tt>loadedBottom</tt>.',
       defaultValue: -1
     },
     {
       name: 'visibleTop',
-      help: 'Index of the first visible value.',
+      documentation: 'Index into the $$DOC{ref: ".cache"} of the first value that\'s visible. (That is, rendered into a $$DOC{ref: "ScrollViewRow"} and stored in $$DOC{ref: ".visibleRows"}.) May not actually be inside the viewport right now, rather in the runway.',
       defaultValue: 0
     },
     {
       name: 'visibleBottom',
-      help: 'Index of the last visible value.',
+      documentation: 'Index into the $$DOC{ref: ".cache"} of the last value that\'s visible. (That is, rendered into a $$DOC{ref: "ScrollViewRow"} and stored in $$DOC{ref: ".visibleRows"}.) May not actually be inside the viewport right now, rather in the runway.',
       defaultValue: 0
     },
     {
       name: 'daoUpdateNumber',
-      help: 'Counter for avoiding duplicate DAO updates.',
+      documentation: 'Counts upwards with each $$DOC{ref: ".onDAOUpdate"}, so if many DAO updates come rapidly, only the most recent actually gets rendered.',
       defaultValue: 0,
       transient: true,
       hidden: true
@@ -673,6 +704,7 @@ MODEL({
     {
       name: 'mode',
       defaultValue: 'read-write',
+      documentation: 'Indicates whether this view should be read-write or read-only. In read-write mode, listens for changes to every visible row, and updates the DAO if they change.',
       view: {
         create: function() { return ChoiceView.create({choices:[
           "read-only", "read-write", "final"
@@ -681,14 +713,14 @@ MODEL({
     },
     {
       name: 'oldVisibleTop',
-      help: 'Set by allocateVisible after it has adjusted everything.',
+      documentation: 'Set by $$DOC{ref: ".allocateVisible"} after it has finished. Prevents duplicated work: no need to process the rows if nothing has moved since the last call.',
       defaultValue: -1
     },
     {
       name: 'oldVisibleBottom',
-      help: 'Set by allocateVisible after it has adjusted everything.',
+      documentation: 'Set by $$DOC{ref: ".allocateVisible"} after it has finished. Prevents duplicated work: no need to process the rows if nothing has moved since the last call.',
       defaultValue: -1
-    },
+    }
   ],
 
   methods: {
@@ -864,6 +896,7 @@ MODEL({
   listeners: [
     {
       name: 'onDAOUpdate',
+      documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
       code: function() {
         this.invalidate();
         this.dao.select(COUNT())(function(c) {
@@ -875,6 +908,15 @@ MODEL({
     {
       name: 'update',
       isAnimated: true,
+      documentation: function() {/*
+        <p>This is the cornerstone method. It is called when we scroll, and when the DAO changes.</p>
+
+        <p>It computes, based on the current scroll position, what the visible range should be. It fetches any now-visible rows that are not in the $$DOC{ref: ".cache"}.</p>
+
+        <p>The $$DOC{ref: ".cache"} outruns the visible area, generally keeping between 1 and 3 multiples of $$DOC{ref: ".runway"} from either edge of the visible area.</p>
+
+        <p>As a final note, if there's a gap of unloaded rows between what should now be loaded, and what currently is, we just drop the old cache. This shouldn't happen in general; instead the loaded region grows in small chunks, or is completely replaced after the DAO updates.</p>
+      */},
       code: function() {
         if ( ! this.$ ) return;
         // Calculate visibleIndex based on scrollTop.

@@ -340,7 +340,11 @@ var Property = {
       name: 'documentation',
       type: 'Documentation',
       view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      help: 'Documentation for this entity.',
+      preSet: function(_, doc) {
+        if ( Documentation.isInstance(doc) ) return doc;
+        return Documentation.create({ body: doc });
+      }
     },
     {
       name: 'prototag',

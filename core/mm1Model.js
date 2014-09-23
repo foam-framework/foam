@@ -321,6 +321,10 @@ var Model = {
       type: 'Documentation',
       view: 'DocModelView',
       help: 'Documentation associated with this entity.',
+      preSet: function(_, doc) {
+        if ( Documentation.isInstance(doc) ) return doc;
+        return Documentation.create({ body: doc });
+      }
     },
     {
       name: 'notes',

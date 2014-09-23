@@ -282,8 +282,6 @@ MODEL({
 
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
-        } else if (mostSpecificObject.label && mostSpecificObject.label.length > 0) {
-          %><%=mostSpecificObject.label%><%
         } else if (mostSpecificObject.name) {
           %><%=mostSpecificObject.name%><%
         } else if (mostSpecificObject.id) {

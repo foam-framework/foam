@@ -197,6 +197,11 @@ var TemplateUtil = {
            return X.Arg.create({name: a});
          }),
          template: multiline(t)});
+     } else if ( typeof t === 'string' ) {
+       t = docTemplate = X.Template.create({
+         name: 'body',
+         template: t
+       });
      } else if ( ! t.template ) {
        // console.log('loading: '+ this.name + ' ' + t.name);
 
