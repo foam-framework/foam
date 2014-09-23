@@ -17,9 +17,62 @@
 
 
 
+
+
+MODEL({
+  name: 'DocView',
+  extendsModel: 'View',
+  label: 'Documentation View Base',
+  help: 'Base Model for documentation views.',
+
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      if (!this.X.documentViewParentModel) {
+        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      }
+    },
+
+    /** Create the special reference lookup sub-view from property info. **/
+    createReferenceView: function(opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
+      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
+      this.addChild(v);
+      return v;
+    },
+
+    createExplicitView: function(opt_args) {
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
+      if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
+        v.data = this.data;
+      } else {
+        v.data = this; // TODO: correct assumption? do we want data set to this?
+      }
+      this.addChild(v);
+      return v;
+    },
+
+    createTemplateView: function(name, opt_args) {
+      // name has been constantized ('PROP_NAME'), but we're
+      // only looking for certain doc tags anyway.
+      if (name === 'DOC') {
+        var v = this.createReferenceView(opt_args);
+        return v;
+      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
+        return this.createExplicitView(opt_args);
+      } else {
+        return this.SUPER(name, opt_args);
+      }
+    }
+  }
+
+});
+
 MODEL({
   name: 'DocBodyView',
-  extendsModel: 'View',
+  extendsModel: 'DocView',
   label: 'Documentation Body View Base',
   help: 'Base Model for documentation body-text views.',
 
@@ -51,15 +104,7 @@ MODEL({
       }
     },
   ],
-
   methods: {
-    init: function() {
-      this.SUPER();
-      if (!this.X.documentViewParentModel) {
-        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
-      }
-    },
-
     renderDocSourceHTML: function() {
       // only update if we have all required data
       if (this.docSource.body && this.X.documentViewParentModel
@@ -72,37 +117,10 @@ MODEL({
       } else {
         return ""; // no data yet
       }
-    },
-
-    /** Create the special reference lookup sub-view from property info. **/
-    createReferenceView: function(opt_args) {
-      var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
-      this.addChild(v);
-      return v;
-    },
-
-    createExplicitView: function(opt_args) {
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
-      v.data = this.data;
-      this.addChild(v);
-      return v;
-    },
-
-    createTemplateView: function(name, opt_args) {
-      // name has been constantized ('PROP_NAME'), but we're
-      // only looking for certain doc tags anyway.
-      if (name === 'DOC') {
-        var v = this.createReferenceView(opt_args);
-        return v;
-      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
-        return this.createExplicitView(opt_args);
-      } else {
-        return this.SUPER(name, opt_args);
-      }
     }
   }
+
+
 });
 
 
@@ -313,6 +331,8 @@ MODEL({
       var newResolvedModelChain = [];
 
       this.valid = false;
+
+      if (!reference) return;
 
       // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');

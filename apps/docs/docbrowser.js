@@ -114,7 +114,7 @@ MODEL({
 
 MODEL({
   name: 'DocModelView',
-  extendsModel: 'View',
+  extendsModel: 'DocView',
   help: 'Displays the documentation of the given Model.',
 
   properties: [
@@ -135,9 +135,9 @@ MODEL({
         <div class="introduction">
           <h1><%=this.data.name%></h1>
 <%        if (this.data.extendsModel) { %>
-            <h2>Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></h2>
+            <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
 <%        } else { %>
-            <h2>Extends <a href="#Model">Model</a></h2>
+            <h2>Extends $$DOC{ref: 'Model' }</h2>
 <%        } %>
           $$data{ model_: 'DocModelBodyView' }
         </div>
@@ -162,7 +162,6 @@ MODEL({
         <div class="members">
           $$data{ model_: 'DocIssuesView' }
         </div>
-
 <%    } %>
     */}
   ]
