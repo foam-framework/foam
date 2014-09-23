@@ -407,8 +407,7 @@ MODEL({
         this.scrollContainer.addEventListener('scroll', this.onScroll, false);
       }
 
-      // NB: Not calling updateHTML() here, because when this.dao is set,
-      // it will call updateHTML().
+      if ( ! this.hidden ) this.updateHTML();
     },
 
     updateHTML: function() {
