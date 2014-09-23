@@ -270,6 +270,7 @@
 
   <object model="RegressionTest">
     <property name="name">Context Examples</property>
+    <property name="disabled">true</property>
     <property name="code" type="function">function anonymous() {
 
       X.a = 42;
@@ -517,7 +518,7 @@ person: Andy
           },
           {
             name: 'other',
-            isMerged: 100,
+            isMerged: 20,
             code: function() {
               otherCount++;
             }
@@ -539,7 +540,7 @@ person: Andy
       setTimeout(function() {
         this.assert(animationCount === 1 &amp;&amp; otherCount === 1, 'Both counts are 1 due to the merging');
         ret();
-      }.bind(this), 300);
+      }.bind(this), 50);
     
 }
     </property>
@@ -564,7 +565,7 @@ person: Andy
       t.x = 1;
       t.x = 2;
       t.x = 3;
-      Movement.animate(500, function() { t.x = 10; })();
+      Movement.animate(100, function() { t.x = 10; })();
       setTimeout(function() {
         this.assert(intermediates[0] === 1, 'First update is 1');
         this.assert(intermediates[1] === 2, 'Second update is 2');
@@ -580,7 +581,7 @@ person: Andy
         }
         this.assert(correct, 'Updates should be in ascending order');
         ret();
-      }.bind(this), 550);
+      }.bind(this), 150);
     
 }
     </property>
@@ -745,9 +746,9 @@ person: Andy
       var fn = futurefn(functionFuture);
 
       fn("hello");
-      setTimeout(function() { fn(" world!"); ret(); }, 200);
+      setTimeout(function() { fn(" world!"); ret(); }, 20);
       var log = this.log.bind(this);
-      setTimeout(function() { functionFuture.set(log); }, 100);
+      setTimeout(function() { functionFuture.set(log); }, 10);
     
 }
     </property>
@@ -1369,7 +1370,7 @@ f1() called.
       arepeatpar(6, function(ret, a, b) {
         this.log(a + ' starting');
         aseq(
-          asleep(200),
+          asleep(20),
           function(ret) {
             this.log(a + ' done');
             ret();
@@ -1402,7 +1403,7 @@ f1() called.
 
       this.log('**********');
       this.log('************** Beginning asleep2');
-      aseq(alog('before'), asleep(100), alog('after'), asleep(100), alog('much after'))(ret);
+      aseq(alog('before'), asleep(10), alog('after'), asleep(10), alog('much after'))(ret);
     
 }
     </property>
@@ -1421,7 +1422,7 @@ much after
     <property name="code" type="function">function (ret){
 
       this.log('at the start');
-      aseq(asleep(100), alog('a message'))(ret);
+      aseq(asleep(10), alog('a message'))(ret);
     
 }
     </property>
@@ -1439,7 +1440,7 @@ a message
 
       this.f1 = aseq(
         alog('f1 start'),
-        asleep(200),
+        asleep(20),
         alog('f1 end')
       );
     
@@ -1456,7 +1457,7 @@ a message
       var calls = [];
       var fdirty = mergeAsync(function(r, x) {
         calls.push(x);
-        setTimeout(r, 200);
+        setTimeout(r, 20);
       });
       aseq(
         function(r) { fdirty(1); r(); },
@@ -1466,7 +1467,7 @@ a message
           this.assert(calls.length == 1 &amp;&amp; calls[0] == 1, 'Only one call should fire right away');
           r();
         }.bind(this),
-        asleep(250),
+        asleep(50),
         function(r) {
           this.assert(calls.length == 2 &amp;&amp; calls[0] == 1 &amp;&amp; calls[1] == 3,
               'Both calls should now have fired.');

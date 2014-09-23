@@ -233,7 +233,7 @@ MODEL({
       defaultValue: 'DAOController'
     },
     {
-      name: 'data', 
+      name: 'data',
       postSet: function() {
         this.updateView();
       }
