@@ -184,7 +184,7 @@ MODEL({
           <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
           <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
           <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
-          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.docSource', text:'DocModelView&apos;s doc source property'}.</p>
+          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
           <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
           <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
         */}
@@ -192,16 +192,17 @@ MODEL({
 
   methods: {
     init: function() {
-      /* spawn and populate sub%%id contexts...  */
+      /* This is a method documentation comment: spawn and populate sub contexts. */
       this.SearchContext = this.X.sub({}, 'searchX');
       this.DetailContext = this.X.sub({}, 'detailX');
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();
+      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();    
 
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
       Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
+
 
       this.SUPER();
 

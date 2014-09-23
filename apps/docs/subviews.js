@@ -157,7 +157,6 @@ MODEL({
 
 
 
-
 MODEL({
   name: 'DocRefView',
   extendsModel: 'View',
@@ -165,18 +164,20 @@ MODEL({
   help: 'The view of a documentation reference link.',
 
   properties: [
+
     {
-      name: 'data',
-      help: 'The referenced object.',
+      name: 'ref',
+      help: 'Shortcut to set reference by string.',
       postSet: function() {
-        this.updateHTML();
+        this.data = this.X.DocRef.create({ ref: this.ref });
       }
     },
     {
-      name: 'ref',
-      help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
+      name: 'data',
+      help: 'The reference object.',
       postSet: function() {
-        this.data = this.resolveReference(this.ref);
+        this.updateHTML();
+        this.data.addListener(this.onReferenceChange);
       }
     },
     {
@@ -189,17 +190,27 @@ MODEL({
   templates: [
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%
-       this.destroy();
-      if (this.text && this.text.length > 0) {
-        %>[<%=this.text%>]<%
-      } else if (this.data && this.data.label && this.data.label.length > 0) {
-        %>[<%=this.data.label%>]<%
-      } else if (this.data && this.data.name) {
-        %>[<%=this.data.name%>]<%
-      } else if (this.data.id) {
-        %>[<%=this.data.id%>]<%
+      this.destroy();
+      if (!this.data || !this.data.valid) {
+        if (this.data && this.data.ref) {
+          %>[INVALID_REF:<%=this.data.ref%>]<%
+        } else {
+          %>[INVALID_REF:*no_reference*]<%
+        }
       } else {
-        %>[INVALID_REF:<%=this.ref%>]<%
+        var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
+
+        if (this.text && this.text.length > 0) {
+          %>[<%=this.text%>]<%
+        } else if (mostSpecificObject.label && mostSpecificObject.label.length > 0) {
+          %>[<%=mostSpecificObject.label%>]<%
+        } else if (mostSpecificObject.name) {
+          %>[<%=mostSpecificObject.name%>]<%
+        } else if (mostSpecificObject.id) {
+          %>[<%=mostSpecificObject.id%>]<%
+        } else {
+          %>[INVALID_REF:<%=this.data.ref%>]<%
+        }
       } %>*/}
   ],
 
@@ -208,16 +219,75 @@ MODEL({
       this.SUPER();
 
       this.tagName = 'span';
+    }
+  },
 
+  listeners: [
+    {
+      name: 'onReferenceChange',
+      code: function(evt) {
+        this.updateHTML();
+      }
+    }
+  ],
+});
+
+MODEL({
+  name: 'DocRef',
+  label: 'Documentation Reference',
+  help: 'A reference to a documented Model or feature of a Model',
+
+  properties: [
+    {
+      name: 'resolvedModelChain',
+      defaultValue: [],
+    },
+    {
+      name: 'resolvedName',
+      dynamicValue: function() {
+        var fullname = "";
+        newResolvedModelChain.forEach(function(m) {
+          if (m.name)
+            fullname.concat(m.name);
+          else if (m.id)
+            fullname.concat(m.id);
+        });
+        return fullname;
+      }
+    },
+    {
+      name: 'ref',
+      help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
+      postSet: function() {
+        this.resolveReference(this.ref);
+      }
+    },
+    {
+      name: 'valid',
+      defaultValue: false
+    }
+
+  ],
+
+  methods: {
+    init: function() {
       if (!this.X.documentViewParentModel) {
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
         debugger;
       } else {
-        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+      // TODO: view lifecycle management. The view that created this ref doesn't know
+      // when to kill it, so the addListener on the context keeps this alive forever.
+      // Revisit when we can cause a removeListener at the appropriate time.
+        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
     },
 
     resolveReference: function(reference) {
+      this.resolvedModelChain = [];
+      var newResolvedModelChain = [];
+
+      this.valid = false;
+
       // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
       var foundObject;
@@ -225,19 +295,29 @@ MODEL({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.X.documentViewParentModel) return foundObject; // abort
-        model = this.X.documentViewParentModel.get();
+        if (!this.X.documentViewParentModel) {
+          return; // abort
+        }
+        model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
         model = this.X[args[0]];
       }
 
-      if (model && args.length > 1 && args[1].length > 0)
+      if (!model) {
+        return;
+      }
+
+      newResolvedModelChain.push(model);
+
+      if (args.length > 1 && args[1].length > 0)
       {
-        // feature specified
+        // feature specified "Model.feature" or ".feature"
         foundObject = model.getFeature(args[1]);
-      } else {
-        // no feature found, so assume it's a model
-        foundObject = model;
+        if (!foundObject) {
+          return;
+        } else {
+          newResolvedModelChain.push(foundObject);
+        }
       }
 
       // allow further specification of sub properties or lists
@@ -264,18 +344,29 @@ MODEL({
             })
           }
           foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
-          if (!foundObject) return false;
+          if (!foundObject) {
+            return false;
+          } else {
+            newResolvedModelChain.push(foundObject);
+          }
         });
       }
-      return foundObject;
+      console.log("resolving "+ reference);
+      newResolvedModelChain.forEach(function(m) {
+        console.log("  "+m.name);
+      });
+
+      this.resolvedModelChain = newResolvedModelChain;
+      this.valid = true;
     },
   },
 
+  // TODO: make sure these reference objects aren't being kept alive too long
   listeners: [
     {
         name: 'onParentModelChanged',
         code: function() {
-          this.data = this.resolveReference(this.ref);
+          this.resolveReference(this.ref);
         }
     }
   ]
