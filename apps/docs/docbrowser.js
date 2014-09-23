@@ -122,8 +122,6 @@ MODEL({
       name: 'data',
       help: 'The Model for which to display documentation.',
       postSet: function() {
-        this.dataProperties = this.data.properties;
-
         this.updateHTML();
       }
     },
@@ -193,18 +191,28 @@ MODEL({
   methods: {
     init: function() {
       /* This is a method documentation comment: spawn and populate sub contexts. */
-      this.SearchContext = this.X.sub({}, 'searchX');
-      this.DetailContext = this.X.sub({}, 'detailX');
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();    
+      this.SearchContext = this.X.sub({}, 'searchX');
+      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
+      this.DetailContext = this.X.sub({}, 'detailX');
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
       Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
+      this.X.documentViewRequestNavigation = function(ref) {
+        if (ref.valid) {
+          // TODO: navigate to feature sub-view as well
+          console.log("Navigating to ", ref.resolvedModelChain[0]);
+          this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
+          this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
+        }
+      }.bind(this);
 
+      /////////////////////////// Context setup ^
       this.SUPER();
+      /////////////////////////// this.init v
 
       // Push selection value out to the context so others can use it
       this.selection$ = this.SearchContext.selection$;

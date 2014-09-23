@@ -84,7 +84,7 @@ MODEL({
 
     createExplicitView: function(opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X[opt_args.model_].create({ args: opt_args });
+      var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       v.data = this.data;
       this.addChild(v);
       return v;
@@ -183,6 +183,10 @@ MODEL({
     {
       name: 'text',
       help: 'Text to display instead of the referenced object&apos;s default label or name.'
+    },
+    {
+      name: 'className',
+      defaultValue: 'docLink'
     }
 
   ],
@@ -211,13 +215,16 @@ MODEL({
         } else {
           %>[INVALID_REF:<%=this.data.ref%>]<%
         }
-      } %>*/}
+      }
+
+      this.on('click', this.onClick, this.id);
+
+      %>*/}
   ],
 
   methods: {
     init: function() {
       this.SUPER();
-
       this.tagName = 'span';
     }
   },
@@ -227,6 +234,14 @@ MODEL({
       name: 'onReferenceChange',
       code: function(evt) {
         this.updateHTML();
+      }
+    },
+    {
+      name: 'onClick',
+      code: function(evt) {
+        if (this.data && this.data.valid && this.X.documentViewRequestNavigation) {
+          this.X.documentViewRequestNavigation(this.data);
+        }
       }
     }
   ],
@@ -283,6 +298,17 @@ MODEL({
     },
 
     resolveReference: function(reference) {
+  /* <p>Resolving a reference has a few special cases at the start:</p>
+    <ul>
+      <li>Beginning with ".": relative to Model in X.documentViewParentModel</li>
+      <li>Containing only ".": the Model in X.documentViewParentModel</li>
+      <li>The name after the first ".": a feature of the Model accessible by "getFeature('name')"</li>
+    </ul>
+    <p>Note that the first name is a Model definition (can be looked up by this.X[modelName]),
+     while the second name is an instance of a feature on that Model, and subsequent
+     names are sub-objects on those instances.</p>
+  */
+
       this.resolvedModelChain = [];
       var newResolvedModelChain = [];
 
@@ -361,15 +387,15 @@ MODEL({
     },
   },
 
-  // TODO: make sure these reference objects aren't being kept alive too long
-  listeners: [
-    {
-        name: 'onParentModelChanged',
-        code: function() {
-          this.resolveReference(this.ref);
-        }
-    }
-  ]
+  // TODO: make sure these reference objects aren't being kept alive too long. See above.
+//  listeners: [
+//    {
+//        name: 'onParentModelChanged',
+//        code: function() {
+//          this.resolveReference(this.ref);
+//        }
+//    }
+//  ]
 
 });
 
