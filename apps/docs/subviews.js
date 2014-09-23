@@ -191,7 +191,7 @@ MODEL({
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%
       this.destroy();
-      if (!this.data || !this.data.resolvedModelChain || !this.data.resolvedModelChain[this.data.resolvedModelChain.length-1]) {
+      if (!this.data || !this.data.valid) {
         if (this.data && this.data.ref) {
           %>[INVALID_REF:<%=this.data.ref%>]<%
         } else {
@@ -275,13 +275,18 @@ MODEL({
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
         debugger;
       } else {
-        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+      // TODO: view lifecycle management. The view that created this ref doesn't know
+      // when to kill it, so the addListener on the context keeps this alive forever.
+      // Revisit when we can cause a removeListener at the appropriate time.
+        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
     },
 
     resolveReference: function(reference) {
       this.resolvedModelChain = [];
       var newResolvedModelChain = [];
+
+      this.valid = false;
 
       // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
@@ -291,16 +296,14 @@ MODEL({
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
         if (!this.X.documentViewParentModel) {
-          this.valid = false;
           return; // abort
         }
-        model = this.X.documentViewParentModel.get(); // ".feature"
+        model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
         model = this.X[args[0]];
       }
 
       if (!model) {
-        this.valid = false;
         return;
       }
 
@@ -311,7 +314,6 @@ MODEL({
         // feature specified "Model.feature" or ".feature"
         foundObject = model.getFeature(args[1]);
         if (!foundObject) {
-          this.valid = false;
           return;
         } else {
           newResolvedModelChain.push(foundObject);
@@ -343,7 +345,6 @@ MODEL({
           }
           foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
           if (!foundObject) {
-            this.valid = false;
             return false;
           } else {
             newResolvedModelChain.push(foundObject);
