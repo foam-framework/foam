@@ -371,6 +371,7 @@ MODEL({
               })
             %>
           </div>
+
           <div class="separator separator1"></div>
           <div class="owner">
             <div class="owner-header">Owner</div>
@@ -382,12 +383,6 @@ MODEL({
 
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
-
-          <div class="separator separator1"></div>
-          <div class="cc">
-            <div class="cc-header"><div class="cc-header-text">Cc</div>$$addCc</div>
-            $$cc{model_: 'IssueEmailArrayView'}
-          </div>
 
           <%= this.commentsView %>
         </div>
@@ -403,6 +398,16 @@ MODEL({
   ]
 });
 
+/*
+Old CC code:
+          <!--
+          <div class="separator separator1"></div>
+          <div class="cc">
+            <div class="cc-header"><div class="cc-header-text">Cc</div>$addCc</div>
+            $cc{model_: 'IssueEmailArrayView'}
+          </div>
+          -->
+*/
 
 MODEL({
   name: 'IssueEmailArrayView',
