@@ -380,47 +380,6 @@ MODEL({
 
 
 MODEL({
-  name: 'IssuePersonCitationView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/* $$name{model_: 'IssueEmailCitationView'} */}
-  ]
-});
-
-
-MODEL({
-  name: 'IssueEmailCitationView',
-  extendsModel: 'View',
-  properties: [
-    { name: 'data', postSet: function() { this.updateHTML(); } },
-    { name: 'tagName', defaultValue: 'div' },
-    { name: 'className', defaultValue: 'owner-info' },
-    { name: 'showDelete', defaultValue: false }
-  ],
-  actions: [
-    {
-      name: 'delete',
-      label: '',
-      iconUrl: 'images/ic_clear_black_24dp.png',
-      action: function() {
-        this.publish(['delete']);
-      }
-    }
-  ],
-  templates: [
-    function toHTML() {/* <div %%cssClassAttr() id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
-    function toInnerHTML() {/*
-      <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
-      <div class="owner-name"><%= escapeHTML(this.data) %></div>
-      <% if ( this.showDelete ) { %>
-        $$delete
-      <% } %>
-    */}
-  ]
-});
-
-
-MODEL({
   name: 'IssueOwnerAvatarView',
   extendsModel: 'View',
   traits: ['ColoredBackgroundTrait'],
