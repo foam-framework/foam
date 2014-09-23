@@ -32,3 +32,8 @@ div.members {
 div.memberList {
   padding-left: 2em;
 }
+
+span.docLink {
+  color: blue;
+  text-decoration: underline;
+}

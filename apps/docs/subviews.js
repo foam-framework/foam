@@ -205,13 +205,13 @@ MODEL({
         var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
 
         if (this.text && this.text.length > 0) {
-          %>[<%=this.text%>]<%
+          %><%=this.text%><%
         } else if (mostSpecificObject.label && mostSpecificObject.label.length > 0) {
-          %>[<%=mostSpecificObject.label%>]<%
+          %><%=mostSpecificObject.label%><%
         } else if (mostSpecificObject.name) {
-          %>[<%=mostSpecificObject.name%>]<%
+          %><%=mostSpecificObject.name%><%
         } else if (mostSpecificObject.id) {
-          %>[<%=mostSpecificObject.id%>]<%
+          %><%=mostSpecificObject.id%><%
         } else {
           %>[INVALID_REF:<%=this.data.ref%>]<%
         }
