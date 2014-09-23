@@ -34,19 +34,8 @@ MODEL({
 });
 
 
-var demos = [
-  /*
+var demos = JSONUtil.arrayToObjArray([
   {
-    model_: 'Demo',
-    name: '',
-    path: '',
-    description: '',
-    keywords: [],
-    image: ''
-  },
-  */
-  {
-    model_: 'Demo',
     name: 'Solar System',
     path: 'SolarSystem.html',
     description: 'An animation which demonstrates reactive-programming.  Use the Time-Wheel to spin-time.',
@@ -55,7 +44,14 @@ var demos = [
     image: 'SolarSystem.png',
   },
   {
-    model_: 'Demo',
+    name: 'Canvas Scrolling',
+    path: 'canvasscrolling.html',
+    description: 'A demonstration of high-performance canvas (DOM-less) scrolling..',
+    keywords: ['canvas'],
+    src: 'canvasscrolling.js',
+    image: 'canvasscrolling.png',
+  },
+  {
     name: 'Reactive Clocks',
     path: 'ReactiveClocks.html',
     description: 'A simple demo of reactive programming.  The first clocks reacts to the position of the mouse while the second clock reacts to the position of the first clock and to time.  Reacting to time essentially gives you an animation system for free.',
@@ -64,7 +60,6 @@ var demos = [
     video: 'part11.ogv'
   },
   {
-    model_: 'Demo',
     name: 'Unix Simulator',
     path: 'UnixSimulator.html',
     description: "A simulator which demonstrates the advantage of UNIX's architecture over previous operating-sytems.",
@@ -73,7 +68,6 @@ var demos = [
     video: 'part1.ogv'
   },
   {
-    model_: 'Demo',
     name: 'Google Simulator',
     path: 'GoogleSimulator.html',
     description: 'A simulation of the growth of Google.',
@@ -82,7 +76,6 @@ var demos = [
     video: 'part15.ogv'
   },
   {
-    model_: 'Demo',
     name: 'Fading Circles',
     path: 'FadingCircles.html',
     description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
@@ -90,7 +83,6 @@ var demos = [
     image: 'FadingCircles.png'
   },
   {
-    model_: 'Demo',
     name: 'Follow The Leader',
     path: 'FollowTheLeader.html',
     description: 'An animation which uses Movement.moveTowards() to create a chain of circles which follow the mouse.',
@@ -98,7 +90,6 @@ var demos = [
     image: 'FollowTheLeader.png'
   },
   {
-    model_: 'Demo',
     name: 'InterpolatedClocks',
     path: 'InterpolatedClocks.html',
     description: 'A demonstration of animation interpolators.  Click to animate the clocks.  Notice how the different clocks use different acceleration curves to reach their targets.',
@@ -106,7 +97,6 @@ var demos = [
     image: 'InterpolatedClocks.png'
   },
   {
-    model_: 'Demo',
     name: 'FOAM Architecture Diagram',
     path: 'demoBlockDiagram.html',
     description: 'An animated diagram of FOAM\'s architecture.  Notice the reflections.',
@@ -115,7 +105,6 @@ var demos = [
     video: 'part6.ogv'
   },
   {
-    model_: 'Demo',
     name: 'Dragon Live-Coding',
     path: 'DragonLiveCoding.html',
     description: 'A version of the dragon animation that you can live-code.  Use the Model editor to update methods while the animation is running.',
@@ -125,7 +114,6 @@ var demos = [
     video: 'part12.ogv'
   },
   {
-    model_: 'Demo',
     name: 'Pong',
     path: 'Pong.html',
     description: 'A simple pong game which demonstrates the both the use of graphical traits (motion blur and shadow) and of the physics engine.',
@@ -134,7 +122,6 @@ var demos = [
     image: 'Pong.png'
   },
   {
-    model_: 'Demo',
     name: 'DAO Samples',
     path: 'dao.html',
     description: 'An extensive set of DAO (Data-Access-Object) samples.  A must read for learning FOAM.',
@@ -142,7 +129,6 @@ var demos = [
     image: 'DAO.png'
   },
   {
-    model_: 'Demo',
     name: 'Collision',
     path: 'Collision.html',
     description: 'Demonstration of the physics engine and collision-detection.',
@@ -151,7 +137,6 @@ var demos = [
     image: 'Collision.png'
   },
   {
-    model_: 'Demo',
     name: 'Collision With Spring',
     path: 'CollisionWithSpring.html',
     description: 'A simple physics simulation which shows the use of springs and collision detection.',
@@ -160,7 +145,6 @@ var demos = [
     image: 'CollisionWithSpring.png'
   },
   {
-    model_: 'Demo',
     name: 'Spring',
     path: 'Spring.html',
     description: 'Addictive spring physics simulation.',
@@ -169,7 +153,6 @@ var demos = [
     image: 'Spring.png'
   },
   {
-    model_: 'Demo',
     name: 'Trait Graphics',
     path: 'TraitGraphics.html',
     description: 'Demonstrates the use of graphical Traits.  The circles on the left have shadows and those on the right have motion-blur.  Traits are not limited to graphics and are a generalized method for safely providing multiple inheritance.',
@@ -178,7 +161,6 @@ var demos = [
     image: 'TraitGraphics.png'
   },
   {
-    model_: 'Demo',
     name: 'Crop Circles',
     path: 'CropCircle.html',
     description: 'Crop Circle inspired fractals graphics. Can take 10-20 seconds to load on slow machines. Each fractal is implemented in only one line of code.  Just started: needs animation and a graphical live-coding system.',
@@ -187,7 +169,6 @@ var demos = [
     image: 'CropCircle.png'
   },
   {
-    model_: 'Demo',
     name: 'Complements',
     path: 'Complements.html',
     description: 'An animated colour wheel.  Ported from the Elm demo.  Shows use of Events.dynamic().',
@@ -195,7 +176,6 @@ var demos = [
     image: 'Complements.png'
   },
   {
-    model_: 'Demo',
     name: 'Dragon',
     path: 'Tags.html',
     description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',
@@ -203,7 +183,6 @@ var demos = [
     image: 'Dragon.png'
   },
   {
-    model_: 'Demo',
     name: 'Two-Way Data-Binding',
     path: 'TwoWayDataBinding.html',
     description: 'Demonstrates how to do two way data-binding in FOAM. See the same demo implemented <a href="http://n12v.com/2-way-data-binding/?hn">with other JS libraries</a>.',
@@ -211,7 +190,6 @@ var demos = [
     image: 'TwoWayDataBinding.png'
   },
   {
-    model_: 'Demo',
     name: 'Calculator',
     path: '../apps/calc/Calc.html',
     description: 'A simple calculator application.  Demonstrates the use of templates to completely change the appearance of a DetailView.',
@@ -220,7 +198,6 @@ var demos = [
     image: 'Calc.png'
   },
   {
-    model_: 'Demo',
     name: 'Calculator (Material-Design)',
     path: '../apps/acalc/Calc.html',
     description: 'A calculator application with an animated Material-Design interface.',
@@ -229,7 +206,6 @@ var demos = [
     image: 'ACalc.png'
   },
   {
-    model_: 'Demo',
     name: 'GMail (Material-Design)',
     path: '../apps/gmail/main.html',
     description: 'A simple mobile GMail client with a Material-Design interface, in less than 1k lines of code.',
@@ -238,7 +214,6 @@ var demos = [
     image: 'GMail.png'
   },
   {
-    model_: 'Demo',
     name: 'QuickBug',
     path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
     description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
@@ -247,7 +222,6 @@ var demos = [
     image: 'QuickBug.png'
   },
   {
-    model_: 'Demo',
     name: 'Issue Tracker (Material-Design)',
     path: '../apps/mbug/main.html',
     description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
@@ -256,7 +230,6 @@ var demos = [
     image: 'MBug.png'
   },
   {
-    model_: 'Demo',
     name: 'Phone Catalog',
     path: '../apps/phonecat/Cat.html',
     description: 'A port of an Angular application for browsing a Cellphone catalog.  Create this app yourself by following the <a href="http://foam-framework.github.io/foam/tutorial/0-intro/">tutorial</a>.',
@@ -265,7 +238,6 @@ var demos = [
     image: 'PhoneCat.png'
   },
   {
-    model_: 'Demo',
     name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
     description: 'A Chrome App for composing (and sending) quick GMails.',
@@ -274,7 +246,6 @@ var demos = [
     image: 'QuickCompose.png'
   },
   {
-    model_: 'Demo',
     name: 'Todo',
     path: '../apps/todo/Todo.html',
     description: 'A FOAM implementation of the <a href="http://todomvc.com">http://todomvc.com</a> comparison application.  Notice that the FOAM implementation is by far the shortest listed on the TodoMVC site.',
@@ -283,7 +254,6 @@ var demos = [
     image: 'Todo.png'
   },
   {
-    model_: 'Demo',
     name: 'FOAM Code Browser',
     path: '../core/fobrowser.html',
     description: 'A FOAM Model browser.',
@@ -291,7 +261,7 @@ var demos = [
     src: '../core/fobrowser.js',
     image: 'FOBrowser.png'
   },
-].dao;
+], Demo).dao;
 
 
 MODEL({ name: 'DemoView', extendsModel: 'DetailView', templates: [
