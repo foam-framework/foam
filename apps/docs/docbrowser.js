@@ -192,7 +192,7 @@ MODEL({
 
   methods: {
     init: function() {
-      /* spawn and populate sub contexts */
+      /* This is a method documentation comment: spawn and populate sub contexts. */
       this.SearchContext = this.X.sub({}, 'searchX');
       this.DetailContext = this.X.sub({}, 'detailX');
 
