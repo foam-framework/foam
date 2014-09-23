@@ -270,6 +270,7 @@
 
   <object model="RegressionTest">
     <property name="name">Context Examples</property>
+    <property name="disabled">true</property>
     <property name="code" type="function">function anonymous() {
 
       X.a = 42;
