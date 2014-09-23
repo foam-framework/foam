@@ -12,6 +12,6 @@ dao.find('asynchronized', { put: function(x) { console.log(x); console.log('====
 daoServer.launchServer({
   daoMap: { 'UnitTestDAO': dao },
   port: 8888,
-  static: '..'
+  static: path.resolve(__dirname, '..')
 });
 
