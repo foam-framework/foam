@@ -73,7 +73,9 @@ MODEL({
     canvasWidth: function() { return this.width * this.scalingRatio; },
     styleHeight: function() { return (this.height) + 'px'; },
     canvasHeight: function() { return this.height * this.scalingRatio; },
-    
+
+    toString: function() { return 'CViewView(' + this.cview + ')'; },
+
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
       return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style=width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
@@ -773,7 +775,7 @@ MODEL({
         var skip = Math.floor(this.scrollTop / this.renderer.height);
         var self = this;
 
-        
+
         var offset = -(this.scrollTop % this.renderer.height);
 
         console.log('skip, limit, offset: ', skip, limit, offset);
@@ -790,7 +792,7 @@ MODEL({
                  ! self.canvas ) {
               fc.stop();
               return;
-            } 
+            }
             if ( i == 0 ) self.erase();
 
             self.canvas.save();
