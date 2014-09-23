@@ -153,43 +153,6 @@
   padding-left: 16px;
 }
 
-.issue-edit .owner, .issue-edit .cc {
-  padding: 0 0 12px 16px;
-}
-
-.owner-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: #575757;
-}
-
-.cc .owner-info {
-  padding: 12px 0;
-}
-
-.issue-edit .owner .owner-name {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-}
-
-.issue-edit .cc-header, .issue-edit .owner-header {
-  color: #999;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 0 0 16px 0;
-}
-
-.issue-edit .cc-header {
-  display: flex;
-  align-items: center;
-  margin-top: -16px;
-  padding-bottom: 0px;
-}
-
-.issue-edit .cc-header .cc-header-text {
-  flex: 1 0 auto;
-}
-
 .email-photo {
   overflow: hidden;
   width: 80px;
@@ -197,7 +160,6 @@
   border-radius: 50px;
   border: 1px solid;
 }
-
 
 .actionButton-back {
   width: 48px;
@@ -531,4 +493,8 @@ ul.swipeAltHeader {
 .issueOwnerEditView .header .actionButton {
   flex-grow: 0;
   flex-shrink: 0;
+}
+
+.comment-view {
+  margin-left: 16px;
 }
