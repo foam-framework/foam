@@ -637,6 +637,23 @@ MODEL({
     'name'
   ],
 
+//  documentation: {
+//    model_: 'Documentation',
+//    body: function() {/*
+//      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
+//      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
+//      of your model and specify the body text:</p>
+//      <ul>
+//        <li><p>Fully define the Documentation model:</p><p>documentation:
+//        { model_: 'Documentation', body: function() { \/\* your doc text \*\/}</p>
+//        </li>
+//        <li><p>Define as a function:</p><p>documentation:
+//            function() { \/\* your doc text \*\/}</p>
+//        </li>
+//      </ul>
+//    */}
+//  },
+
   properties: [
     {
       name:  'name',

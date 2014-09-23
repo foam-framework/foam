@@ -158,7 +158,7 @@ MODEL({
       // Push selection value out to the context so others can use it
       this.selection$ = this.SearchContext.selection$;
 
-      // hack in URL support
+      // hack in URL support TODO: clean this up
       this.SearchContext.selection$.addListener(this.onSelectionChange);
       window.addEventListener('hashchange', function() {
         this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);

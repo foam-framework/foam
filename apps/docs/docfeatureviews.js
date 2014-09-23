@@ -241,6 +241,10 @@ MODEL({
   extendsModel: 'DocBodyView',
   help: 'A view for each item in a list of documented Methods, including arguments.',
 
+  documentation: function() { /*
+
+  */ },
+
   templates: [
     function toInnerHTML() {/*
       <h3><%=this.data.name%></h3>
