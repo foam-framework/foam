@@ -1,16 +1,4 @@
 MODEL({
-  name: 'ColoredBackgroundTrait',
-  methods: {
-    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
-    generateColor: function(data) {
-      return '#' + this.colors[Math.abs(data.hashCode()) % this.colors.length];
-    },
-    generateColorStyle: function(data) { return ' style="background:' + this.generateColor(data) + ';"'; }
-  }
-});
-
-
-MODEL({
   name: 'MBug',
   description: 'Mobile QuickBug',
   traits: ['PositionedDOMViewTrait'],
@@ -132,6 +120,18 @@ MODEL({
       }, this.projectContext());
       this.stack.back();
     }
+  }
+});
+
+
+MODEL({
+  name: 'ColoredBackgroundTrait',
+  methods: {
+    colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
+    generateColor: function(data) {
+      return '#' + this.colors[Math.abs(data.hashCode()) % this.colors.length];
+    },
+    generateColorStyle: function(data) { return ' style="background:' + this.generateColor(data) + ';"'; }
   }
 });
 
@@ -298,23 +298,6 @@ MODEL({
       name: 'save',
       label: '',
       iconUrl: 'images/ic_done_24dp.png'
-    },
-    {
-      name: 'addCc',
-      label: '',
-      iconUrl: 'images/ic_add_24dp.png',
-      action: function() {
-        var innerView = this.X.IssueOwnerEditView.create(this.model.CC);
-        var view = this.X.FloatingView.create({
-          view: innerView
-        });
-        this.X.stack.pushView(view);
-        innerView.focus();
-        var self = this;
-        innerView.subscribe(['finished'], function() {
-          self.data.cc = self.data.cc.concat(innerView.data);
-        });
-      }
     }
   ],
   templates: [
@@ -373,10 +356,7 @@ MODEL({
           </div>
 
           <div class="separator separator1"></div>
-          <div class="owner">
-            <div class="owner-header">Owner</div>
-            $$owner{model_: 'IssueOwnerView', className: 'owner-info'}
-          </div>
+          $$owner{model_: 'CCView'}
 
           <div class="separator separator1"></div>
           $$cc{model_: 'CCView'}
@@ -394,80 +374,6 @@ MODEL({
         <%= this.headerToHTML() %>
         <%= this.bodyToHTML() %>
       </div>
-    */}
-  ]
-});
-
-/*
-Old CC code:
-          <!--
-          <div class="separator separator1"></div>
-          <div class="cc">
-            <div class="cc-header"><div class="cc-header-text">Cc</div>$addCc</div>
-            $cc{model_: 'IssueEmailArrayView'}
-          </div>
-          -->
-*/
-
-MODEL({
-  name: 'IssueEmailArrayView',
-  extendsModel: 'View',
-  properties: [
-    { name: 'data', postSet: function() { this.updateHTML(); } }
-  ],
-  templates: [
-    function toHTML() {/* <div id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
-    function toInnerHTML() {/*
-<% for ( var i = 0; i < this.data.length; i++ ) { %>
-  <%
-    var view = this.X.IssueEmailCitationView.create({ data: this.data[i], showDelete: true });
-    out(view);
-    view.subscribe(['delete'], function(index) {
-      this.data = this.data.filter(function(x, i) { return i !== index; });
-    }.bind(this, i));
-  %>
-<% } %>
-    */}
-  ]
-});
-
-
-MODEL({
-  name: 'IssuePersonCitationView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/* $$name{model_: 'IssueEmailCitationView'} */}
-  ]
-});
-
-
-MODEL({
-  name: 'IssueEmailCitationView',
-  extendsModel: 'View',
-  properties: [
-    { name: 'data', postSet: function() { this.updateHTML(); } },
-    { name: 'tagName', defaultValue: 'div' },
-    { name: 'className', defaultValue: 'owner-info' },
-    { name: 'showDelete', defaultValue: false }
-  ],
-  actions: [
-    {
-      name: 'delete',
-      label: '',
-      iconUrl: 'images/ic_clear_black_24dp.png',
-      action: function() {
-        this.publish(['delete']);
-      }
-    }
-  ],
-  templates: [
-    function toHTML() {/* <div %%cssClassAttr() id="<%= this.id %>"><%= this.toInnerHTML() %></div> */},
-    function toInnerHTML() {/*
-      <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
-      <div class="owner-name"><%= escapeHTML(this.data) %></div>
-      <% if ( this.showDelete ) { %>
-        $$delete
-      <% } %>
     */}
   ]
 });
@@ -653,226 +559,4 @@ MODEL({
       }
   */}
  ]
-});
-
-
-MODEL({
-  name: 'IssueOwnerView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'avatarView',
-      mode: 'final'
-    },
-    {
-      name: 'nameView',
-      mode: 'final'
-    },
-    {
-      name: 'editView'
-    },
-    'data',
-    'editViewArgs'
-  ],
-
-  methods: {
-    init: function(args) {
-      this.SUPER(args);
-
-      this.avatarView = this.X.IssueOwnerAvatarView.create(args);
-      this.nameView = this.X.TextFieldView.create(args);
-      this.nameView.mode = 'read-only';
-      this.nameView.className = 'owner-name';
-      this.nameView.placeholder = 'Name';
-      this.editViewArgs = args;
-
-      this.avatarView.data$ = this.nameView.data$ = this.data$;
-    }
-  },
-
-  templates: [
-    function toHTML() {/*
-      <% this.on('click', this.onClick, this.id); %>
-      <div %%cssClassAttr() id="{{this.id}}">%%avatarView %%nameView</div>
-    */}
-  ],
-
-  listeners: [
-    {
-      name: 'onClick',
-      code: function() {
-        var innerView = this.X.IssueOwnerEditView.create(this.editViewArgs);
-        this.editView = this.X.FloatingView.create({
-          view: innerView
-        });
-        this.X.stack.pushView(this.editView);
-        innerView.subscribe(['finished'], function() {
-          this.data = innerView.data;
-        }.bind(this));
-        innerView.focus();
-      }
-    }
-  ]
-});
-
-
-MODEL({
-  name: 'IssueOwnerEditView',
-  extendsModel: 'View',
-
-  properties: [
-    'data',
-    'autocompleter',
-    { model_: 'BooleanProperty', name: 'autocomplete', defaultValue: true },
-    'name',
-    'placeholder',
-    'domValue',
-    'field',
-    'autocompleteView',
-    {
-      name: 'className',
-      defaultValue: 'issueOwnerEditView'
-    }
-  ],
-
-  methods: {
-    init: function(args) {
-      this.SUPER(args);
-
-      var Y = this.X.sub();
-
-      this.autocompleteView = Y.IssuePersonAutocompleteView.create({
-        autocompleter: this.autocompleter,
-        target: this
-      });
-
-      this.children = [this.autocompleteView];
-
-      var view = this.autocompleteView;
-      var self = this;
-      Y.registerModel({
-        create: function(args) {
-          args.target = self;
-          view.copyFrom(args);
-          return view;
-        }
-      }, 'AutocompleteView');
-
-      this.field = Y.TextFieldView.create(args);
-      this.field.onKeyMode = true;
-      this.field.data$ = this.data$;
-      this.field.subscribe(['keydown'], this.onKeyDown);
-      this.field.subscribe(this.field.ESCAPE, this.onCancel);
-    },
-    initHTML: function() {
-      this.SUPER();
-    },
-    onAutocomplete: function(data) {
-      this.data = data;
-      this.finished();
-    },
-    finished: function() {
-      this.publish(['finished']);
-      this.X.stack.back();
-    },
-    focus: function() { this.field.focus(); },
-    valueToText: function(value) { return value; },
-    textToValue: function(text) { return text; },
-  },
-
-  templates: [
-    // ???: Why doesn't this use toInnerHTML()?
-    function toHTML() {/*
-      <div <%= this.cssClassAttr() %> id="{{this.id}}">
-        <div class="header">$$back %%field</div>
-        %%autocompleteView
-      </div>
-    */}
-  ],
-
-  actions: [
-    {
-      name: 'back',
-      label: '',
-      iconUrl: 'images/ic_arrow_back_24dp_black.png',
-      action: function() { this.finished(); this.X.stack.back(); }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onKeyDown',
-      code: function(_,_,e) {
-        if ( e.keyCode === 13 ) {
-          this.data = this.field.data;
-          this.finished();
-        }
-      }
-    },
-    {
-      name: 'onCancel',
-      code: function() {
-        this.finished();
-      }
-    }
-  ],
-});
-
-
-MODEL({
-  name: 'IssuePersonAutocompleteView',
-  extendsModel: 'View',
-
-  properties: [
-    'autocompleter',
-    'target',
-    {
-      name: 'view',
-      factory: function() {
-        return this.X.DAOListView.create({
-          rowView: 'IssuePersonCitationView',
-          dao: NullDAO.create({}),
-          useSelection: true
-        });
-      },
-      postSet: function(old, v) {
-        old && old.selection$.removeListener(this.complete);
-        v.selection$.addListener(this.complete);
-      }
-    },
-    {
-      name: 'tagName',
-      defaultValue: 'div'
-    },
-    {
-      name: 'className',
-      defaultValue: 'issuePersonAutocompleteView'
-    }
-  ],
-
-  methods: {
-    autocomplete: function(partial) {
-      if ( ! this.completer ) {
-        var proto = FOAM.lookup(this.autocompleter, this.X);
-        this.completer = proto.create();
-        this.view.dao = this.completer.autocompleteDao$Proxy,
-        this.view.objToChoice = this.completer.f;
-      }
-      this.completer.autocomplete(partial);
-    },
-    toInnerHTML: function() {
-      this.children = [this.view];
-      return this.view.toHTML();
-    }
-  },
-
-  listeners: [
-    {
-      name: 'complete',
-      code: function() {
-        this.target.onAutocomplete(this.completer.f(this.view.selection));
-      }
-    }
-  ],
 });
