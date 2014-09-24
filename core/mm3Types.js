@@ -766,14 +766,7 @@ MODEL({
       name: 'choices',
       type: 'Array',
       help: 'Array of [value, label] choices.',
-      preSet: function(_, a) {
-        a = a.clone();
-        for ( var i = 0; i < a.length; i++ ) {
-          if ( ! Array.isArray(a[i]) )
-            a[i] = [a[i], a[i]];
-        }
-        return a;
-      },
+      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
       required: true
     },
     {
