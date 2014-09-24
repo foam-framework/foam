@@ -16,6 +16,35 @@
  */
 var BinaryProtoGrammar;
 
+var DocumentationBootstrap = {
+  name: 'documentation',
+  type: 'Documentation',
+  view: 'DocModelView',
+  help: 'Documentation associated with this entity.',
+  setter: function(nu) {
+    this.instance_.documentation = nu;
+  },
+  getter: function() {
+    var doc = this.instance_.documentation;
+    if (doc // a source has to exist (otherwise we'll return undefined below)
+        && (  !doc.model_ // but we don't know if the user set model_
+           || !doc.model_.getPrototype // model_ could be a string
+           || !Documentation.isInstance(doc) // check for correct type
+        ) ) {
+      // So in this case we have something in documentation, but it's not of the
+      // "Documentation" model type, so FOAMalize it.
+      if (doc.body) {
+        this.instance_.documentation = Documentation.create( doc );
+      } else {
+        this.instance_.documentation = Documentation.create({ body: doc });
+      }
+    }
+    // otherwise return the previously FOAMalized model or undefined if nothing specified.
+    return this.instance_.documentation;
+  }
+}
+
+
 var Model = {
   __proto__: BootstrapModel,
 
@@ -316,16 +345,7 @@ var Model = {
       defaultValue: '',
       help: 'Help text associated with the entity.'
     },
-    {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
-      preSet: function(_, doc) {
-        if ( Documentation.isInstance(doc) ) return doc;
-        return Documentation.create({ body: doc });
-      }
-    },
+    DocumentationBootstrap,
     {
       name: 'notes',
       type: 'String',
