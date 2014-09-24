@@ -201,6 +201,7 @@ Date.prototype.toRelativeDateString = function() {
 
 Date.prototype.compareTo = function(o) {
   if ( o === this ) return 0;
+  if ( ! o ) return 1;
   var d = this.getTime() - o.getTime();
   return d == 0 ? 0 : d > 0 ? 1 : -1;
 };
