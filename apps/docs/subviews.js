@@ -25,24 +25,46 @@ MODEL({
   label: 'Documentation View Base',
   help: 'Base Model for documentation views.',
 
+	documentation: function() {/*
+		<p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
+		to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
+		documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
+		references.</p>
+		<p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
+		pass on its data directly, rather than a property of that data.</p>
+		<p>Views that wish to use DOC reference tags should extend this model. To display the
+		$$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
+		$$DOC{ref:'DocBodyView'}.</p>
+		<p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
+		be present on the context. The supplied model is used as the base for resolving documentation
+		references. If you are viewing the documentation for a Model, it will be that Model. If you
+		are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
+		it will be the Model that contains that feature.</p>
+	*/},
 
   methods: {
-    init: function() {
+    init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
+			*/
       this.SUPER();
       if (!this.X.documentViewParentModel) {
-        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       }
     },
 
-    /** Create the special reference lookup sub-view from property info. **/
-    createReferenceView: function(opt_args) {
+    
+    createReferenceView: function(opt_args) { /* 
+			<p>Creates $$DOC{ref'DocRefView'} reference views from DOC tags in documentation templates.</p>
+			*/
       var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
       var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
       this.addChild(v);
       return v;
     },
 
-    createExplicitView: function(opt_args) {
+    createExplicitView: function(opt_args) { /* 
+		  <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'}
+			in opt_args.</p>
+			*/
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
