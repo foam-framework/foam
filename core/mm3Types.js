@@ -742,11 +742,14 @@ var DocumentationProperty = Model.create({
       defaultvalue: 'Documentation'
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, doc) {
-        if ( Documentation.isInstance(doc) ) return doc;
-        return Documentation.create({ body: doc });
-      }
+      name: 'setter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.setter
+    },
+    {
+      name: 'getter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.getter
     },
     {
       name: 'view',

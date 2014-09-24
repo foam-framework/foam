@@ -638,22 +638,25 @@ MODEL({
     'name'
   ],
 
-//  documentation: {
-//    model_: 'Documentation',
-//    body: function() {/*
-//      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
-//      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
-//      of your model and specify the body text:</p>
-//      <ul>
-//        <li><p>Fully define the Documentation model:</p><p>documentation:
-//        { model_: 'Documentation', body: function() { \/\* your doc text \*\/}</p>
-//        </li>
-//        <li><p>Define as a function:</p><p>documentation:
-//            function() { \/\* your doc text \*\/}</p>
-//        </li>
-//      </ul>
-//    */}
-//  },
+  documentation: {
+    model_: 'Documentation',
+    body: function() {/*
+      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
+      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
+      of your model and specify the body text:</p>
+      <ul>
+        <li><p>Fully define the Documentation model:</p><p>documentation:
+        { model_: 'Documentation', body: function() { \/\* your doc text \*\/} }</p>
+        </li>
+        <li><p>Define as a function:</p><p>documentation:
+            function() { \/\* your doc text \*\/} </p>
+        </li>
+        <li><p>Define as a one-line string:</p><p>documentation:
+            "your doc text" </p>
+        </li>
+      </ul>
+    */}
+  },
 
   properties: [
     {
@@ -663,13 +666,15 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The Document\'s unique name.'
+      help: 'The Document\'s unique name.',
+      documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
     },
     {
       name: 'body',
       type: 'Template',
       defaultValue: '',
       help: 'The main content of the document.',
+      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
           return TemplateUtil.templateMemberExpander(template, this.X);
       }
@@ -682,7 +687,8 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Sub-documents comprising the full body of this document.'
+      help: 'Sub-documents comprising the full body of this document.',
+      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents."
     },
 
   ]
