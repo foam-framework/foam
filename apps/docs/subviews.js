@@ -53,7 +53,7 @@ MODEL({
 
     
     createReferenceView: function(opt_args) { /* 
-			<p>Creates $$DOC{ref'DocRefView'} reference views from DOC tags in documentation templates.</p>
+      <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
 			*/
       var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
       var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
@@ -61,10 +61,7 @@ MODEL({
       return v;
     },
 
-    createExplicitView: function(opt_args) { /* 
-		  <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'}
-			in opt_args.</p>
-			*/
+    createExplicitView: function(opt_args) { /* <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'} in opt_args.</p>	*/
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
