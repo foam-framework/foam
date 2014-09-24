@@ -1,9 +1,9 @@
 MODEL({
   name: 'MBug',
   description: 'Mobile QuickBug',
-  traits: ['PositionedDOMViewTrait'],
 
   extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
 
   properties: [
     {
@@ -90,7 +90,6 @@ MODEL({
         DontSyncProjectData: true, // TODO(adamvy): This is a hack to prevent the project from creating its own caching daos.
       }, 'MBUG CONTEXT');
     },
-
     initHTML: function() {
       this.stack.initHTML();
 
@@ -381,8 +380,10 @@ MODEL({
 
 MODEL({
   name: 'IssueOwnerAvatarView',
+
   extendsModel: 'View',
   traits: ['ColoredBackgroundTrait'],
+
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
   ],
@@ -456,8 +457,9 @@ MODEL({
 // used to show and select available projects.
 MODEL({
   name: 'ChangeProjectView',
-  traits: ['PositionedDOMViewTrait'],
+
   extendsModel: 'DetailView',
+  traits: ['PositionedDOMViewTrait'],
 
   properties: [
     { name: 'preferredWidth', defaultValue: 304 },
