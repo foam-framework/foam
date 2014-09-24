@@ -29,9 +29,7 @@ MODEL({
 
         v.sort();
 
-        feedback(this, 'labels', function() {
-          this.replaceLabels(prop.name.capitalize(), v);
-        });
+        this.replaceLabels(prop.name.capitalize(), v);
       }
     },
     {
@@ -61,12 +59,7 @@ MODEL({
     {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        feedback(this, 'labels', function() {
-          this.replaceLabels(prop.name.capitalize(), n);
-        });
-
-        // Test for LabelStringProperties that should be LabelArrayProperties.
-        if ( o && o !== n ) debugger;
+        this.replaceLabels(prop.name.capitalize(), n);
       }
     },
     {
@@ -84,12 +77,7 @@ MODEL({
     {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
-        feedback(this, 'labels', function() {
-          this.replaceLabels(prop.name.capitalize(), n);
-        });
-
-        // Test for LabelStringProperties that should be LabelArrayProperties.
-        if ( o && o !== n ) debugger;
+        this.replaceLabels(prop.name.capitalize(), n);
       }
     }
   ]
