@@ -355,7 +355,7 @@ var FObject = {
         for ( var i = 0 ; i < val.length ; i++ ) {
           var obj = val[i];
 
-          obj = obj.deepClone();
+          val[i] = obj.deepClone();
         }
       }
     }
