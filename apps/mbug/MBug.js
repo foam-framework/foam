@@ -105,7 +105,7 @@ MODEL({
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
       var v = this.project.X.FloatingView.create({
-        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue})
+        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()})
       });
       this.stack.pushView(v, '');
     },
