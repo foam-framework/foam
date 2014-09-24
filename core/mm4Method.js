@@ -353,12 +353,12 @@ MODEL({
       postSet: function() {
         // check for documentation in a multiline comment at the beginning of the code
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
-        var multilineComment = /^\s*function\s*\([\s\S]*\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
+        var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
         if ( multilineComment ) {
           var bodyFn = multilineComment[1];
           this.documentation = this.X.Documentation.create({
                 name: this.name,
-                body: Function("/*" + bodyFn + "*/")
+                body: bodyFn
           })
         }
 
