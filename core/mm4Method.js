@@ -341,7 +341,7 @@ MODEL({
     },
     {
       model_: 'DocumentationProperty',
-      name: 'documentation'
+      name: 'documentation',
     },
     {
       name: 'code',
@@ -353,6 +353,7 @@ MODEL({
       postSet: function() {
         // check for documentation in a multiline comment at the beginning of the code
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
+        // TODO: technically unicode letters are valid in javascript identifiers, which we are not catching here for function arguments.
         var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
         if ( multilineComment ) {
           var bodyFn = multilineComment[1];
@@ -695,3 +696,5 @@ MODEL({
 
 });
 
+// HACK to get around property-template bootstrap ordering issues
+TemplateUtil.modelExpandTemplates(Property, Property.templates);

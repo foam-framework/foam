@@ -758,7 +758,13 @@ var DocumentationProperty = Model.create({
     {
       name: 'help',
       defaultValue: 'Documentation for this entity.'
-    }
+    },
+//    {
+//      name: 'documentation',
+//      defaultValueFn: function() { console.log(DocumentationBootstrap.documentation);
+//        return DocumentationBootstrap.documentation;
+//      }
+//    }
   ]
 });
 
