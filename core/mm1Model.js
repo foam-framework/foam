@@ -64,15 +64,18 @@ var Model = {
     <ul>
       <li>Your own models will extend $$DOC{ref:'Model'}, or extend
       a model that extends $$DOC{ref:'Model'}.</li>
+
       <li>The definition of your model is a $$DOC{ref:'Model'} instance
       (with YourModel.TYPE === "Model"), while instances
       of your model have your new type (myInstance.TYPE === "YourModel"). This
       differs from other object-oriented systems where the definition of a class
       and instances of the class are completely separate entities. In FOAM everything
-      is a $$DOC{ref:'Model'}, including itself.</li>
+      is a $$DOC{ref:'Model'}, including itself. TODO: refine/expand on this.</li>
+
       <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
       <code>this.X.YourModel.create({...})</code>.</li>
+
       <li>Creating a subcontext and replacing X.YourModel with a different model (such as
       YourTestModelMock created specifically for testing) will give you seamless dependency
       injection. See the
