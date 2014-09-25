@@ -671,6 +671,16 @@ MODEL({
       documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
     },
     {
+      name:  'label',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s title or descriptive label.',
+      documentation: "A human readable title to display. Used for books of documentation and chapters."
+    },
+    {
       name: 'body',
       type: 'Template',
       defaultValue: '',
@@ -689,7 +699,7 @@ MODEL({
       factory: function() { return []; },
       defaultValue: [],
       help: 'Sub-documents comprising the full body of this document.',
-      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents."
+      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
     },
 
   ]

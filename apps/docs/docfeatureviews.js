@@ -341,3 +341,39 @@ MODEL({
   ]
 });
 
+
+
+MODEL({
+  name: 'DocChaptersView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the contents of the given Chapters.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocBookView'; }
+    }
+  ],
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.chapters$;
+    },
+    featureName: function() {
+      return "Chapters";
+    },
+  },
+
+  templates: [
+    function toInnerHTML()    {/*
+    <%    this.destroy();
+          if (this.isEmpty) { %>
+    <%    } else { %>
+            <h2><%=this.featureName()%>:</h2>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+    <%    } %>
+    */}
+  ]
+});
+
