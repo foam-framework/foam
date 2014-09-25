@@ -155,7 +155,7 @@ MODEL({
       var numeric = parseInt(data);
       if ( ! Number.isNaN(numeric) ) return numeric;
       if ( this.map[data] !== undefined ) return this.map[data];
-      console.warn('Unknown priority ', data);
+      if ( data ) console.warn('Unknown priority "' + data + '".');
       return 3;
     }
   },

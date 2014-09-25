@@ -532,7 +532,7 @@ MODEL({
                  future.set(s);
                });
              } else {
-               console.log('Creating new query: ' + query + '   ' + order);
+               // console.log('Creating new query: ' + query + '   ' + order);
                this.newQuery(sink, options, query, order, bufOptions, future);
              }
            }).bind(this));
