@@ -148,9 +148,11 @@ FOAM.browse = function(model, opt_dao, opt_X) {
    });
 
   if ( ! Y.stack ) {
+    var w = opt_X ? opt_X.window : window;
+    var win = Y.Window.create({ window: w });
+
     Y.stack = Y.StackView.create();
-    Y.document.body.insertAdjacentHTML('beforeend', Y.stack.toHTML());
-    Y.stack.initHTML();
+    win.view = Y.stack;
     Y.stack.setTopView(ctrl);
   } else {
     Y.stack.pushView(ctrl);
