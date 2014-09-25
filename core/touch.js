@@ -407,7 +407,7 @@ MODEL({
     pingHandlers: function(method, d, t, c) {
       for ( var i = 0 ; i < this.handlers.length ; i++ ) {
         var h = this.handlers[i];
-        h && h[method] && h[method](d, t, c);
+        h && h[method] && h[method](d, t, c, this.stopMomentum);
       }
     },
 
@@ -482,7 +482,8 @@ MODEL({
         touch[xy] += distance;
         var axis = this.makeAxis(touch, xy);
         // Emit a touchMove for this.
-        this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+        if ( axis.delta != 0 )
+          this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
 
         // Now we reduce the momentum to its new value.
         this.momentum *= this.dragCoefficient;
@@ -495,6 +496,15 @@ MODEL({
         } else {
           this.tick(touch);
         }
+      }
+    },
+    {
+      name: 'stopMomentum',
+      documentation: 'Passed to scroll handlers. Can be used to stop momentum from continuing after scrolling has reached the edge of the target\'s scrollable area.',
+      code: function() {
+        this.momentum = 0;
+        // Let tickRunning continue to be true, since tick() will send the end event properly,
+        // now that the momentum has run out.
       }
     }
   ]
