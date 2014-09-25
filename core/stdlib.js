@@ -201,6 +201,7 @@ Date.prototype.toRelativeDateString = function() {
 
 Date.prototype.compareTo = function(o) {
   if ( o === this ) return 0;
+  if ( ! o ) return 1;
   var d = this.getTime() - o.getTime();
   return d == 0 ? 0 : d > 0 ? 1 : -1;
 };
@@ -706,11 +707,3 @@ function findPageXY(node) {
   }
   return [x, y, parent];
 }
-
-var feedback = function(obj, name, fn) {
-  if ( ! obj['_feedback_' + name] ) {
-    obj['_feedback_' + name] = true;
-    fn.call(obj);
-    obj['_feedback_' + name] = false;
-  }
-};

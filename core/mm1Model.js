@@ -16,12 +16,48 @@
  */
 var BinaryProtoGrammar;
 
+var DocumentationBootstrap = {
+  name: 'documentation',
+  type: 'Documentation',
+  view: 'DocModelView',
+  help: 'Documentation associated with this entity.',
+  documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
+  setter: function(nu) {
+    this.instance_.documentation = nu;
+  },
+  getter: function() {
+    var doc = this.instance_.documentation;
+    if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+        && (  !doc.model_ // but we don't know if the user set model_
+           || !doc.model_.getPrototype // model_ could be a string
+           || !Documentation.isInstance(doc) // check for correct type
+        ) ) {
+      // So in this case we have something in documentation, but it's not of the
+      // "Documentation" model type, so FOAMalize it.
+      if (doc.body) {
+        this.instance_.documentation = Documentation.create( doc );
+      } else {
+        this.instance_.documentation = Documentation.create({ body: doc });
+      }
+    }
+    // otherwise return the previously FOAMalized model or undefined if nothing specified.
+    //console.log("getting ", this.instance_.documentation)
+    return this.instance_.documentation;
+  }
+}
+
+
+
 var Model = {
   __proto__: BootstrapModel,
 
   name:  'Model',
   plural:'Models',
   help:  "Describes the attributes and properties of an entity.",
+
+  documentation: function() { /*
+    <p>It's Models all the way down.</p>
+  */ },
 
   tableProperties: [
     'name', 'label', 'plural'
@@ -246,7 +282,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       postSet: function(_, templates) {
-          TemplateUtil.modelExpandTemplates(this, templates);
+        TemplateUtil.modelExpandTemplates(this, templates);
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.'
@@ -316,16 +352,7 @@ var Model = {
       defaultValue: '',
       help: 'Help text associated with the entity.'
     },
-    {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
-      preSet: function(_, doc) {
-        if ( Documentation.isInstance(doc) ) return doc;
-        return Documentation.create({ body: doc });
-      }
-    },
+    DocumentationBootstrap,
     {
       name: 'notes',
       type: 'String',

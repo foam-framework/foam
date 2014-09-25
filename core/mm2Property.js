@@ -336,16 +336,7 @@ var Property = {
       defaultValue: '',
       help: 'Help text associated with the property.'
     },
-    {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation for this entity.',
-      preSet: function(_, doc) {
-        if ( Documentation.isInstance(doc) ) return doc;
-        return Documentation.create({ body: doc });
-      }
-    },
+    DocumentationBootstrap,
     {
       name: 'prototag',
       label: 'Protobuf tag',

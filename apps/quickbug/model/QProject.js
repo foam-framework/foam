@@ -395,16 +395,20 @@ MODEL({
             },
             postSet: function(_, a) {
               // Reset all label properties to initial values.
+              var newValues = {};
+
+              // Create initial values
               for ( var i = 0 ; i < this.model_.properties.length ; i++ ) {
                 var p = this.model_.properties[i];
 
                 if ( LabelArrayProperty.isInstance(p) ) {
-                  this.instance_[p.name] = [];
+                  newValues[p.name] = [];
                 } else if ( LabelStringProperty.isInstance(p) ) {
-                  this.instance_[p.name] = "";
+                  newValues[p.name] = "";
                 }
               }
 
+              // Add values from new list
               for ( var i = 0 ; i < a.length ; i++ ) {
                 var kv = isPropertyLabel(a[i]);
                 if ( kv ) {
@@ -414,13 +418,17 @@ MODEL({
                   }
 
                   if ( Array.isArray(this[kv[0]]) ) {
-                    feedback(this, 'labels', function() {
-                      this[kv[0]] = this[kv[0]].binaryInsert(kv[1]);
-                    });
+                    newValues[kv[0]] = newValues[kv[0]].binaryInsert(kv[1]);
                   } else {
-                    feedback(this, 'labels', function() { this[kv[0]] = kv[1]; });
+                    newValues[kv[0]] = kv[1];
                   }
                 }
+              }
+
+              // Set new values back to object, but only if they've changed
+              for ( var key in newValues ) {
+                var value = newValues[key];
+                if ( this[key].compareTo(value) ) this[key] = value;
               }
             }
           },
@@ -652,7 +660,7 @@ MODEL({
               labels.binaryInsert(label + '-' + values);
             }
 
-            this.labels = labels;
+            if ( this.labels.compareTo(labels) ) this.labels = labels;
           },
           isOpen: function() {
             return !! ({

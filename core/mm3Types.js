@@ -742,11 +742,14 @@ var DocumentationProperty = Model.create({
       defaultvalue: 'Documentation'
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, doc) {
-        if ( Documentation.isInstance(doc) ) return doc;
-        return Documentation.create({ body: doc });
-      }
+      name: 'setter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.setter
+    },
+    {
+      name: 'getter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.getter
     },
     {
       name: 'view',
@@ -755,7 +758,13 @@ var DocumentationProperty = Model.create({
     {
       name: 'help',
       defaultValue: 'Documentation for this entity.'
-    }
+    },
+//    {
+//      name: 'documentation',
+//      defaultValueFn: function() { console.log(DocumentationBootstrap.documentation);
+//        return DocumentationBootstrap.documentation;
+//      }
+//    }
   ]
 });
 
@@ -766,14 +775,7 @@ MODEL({
       name: 'choices',
       type: 'Array',
       help: 'Array of [value, label] choices.',
-      preSet: function(_, a) {
-        a = a.clone();
-        for ( var i = 0; i < a.length; i++ ) {
-          if ( ! Array.isArray(a[i]) )
-            a[i] = [a[i], a[i]];
-        }
-        return a;
-      },
+      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
       required: true
     },
     {

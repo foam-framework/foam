@@ -241,9 +241,13 @@ MODEL({
   extendsModel: 'DocBodyView',
   help: 'A view for each item in a list of documented Methods, including arguments.',
 
+  documentation: function() { /*
+
+  */ },
+
   templates: [
     function toInnerHTML() {/*
-      <h3><%=this.data.name%></h3>
+      <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
       <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
       <%=this.renderDocSourceHTML()%>
     */}
@@ -276,7 +280,6 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.isEmpty) { %>
-            <h4>(No <%=this.featureName()%>.)</h4>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
@@ -297,3 +300,44 @@ MODEL({
     */}
   ]
 });
+
+MODEL({
+  name: 'DocMethodArgumentsSmallView',
+  extendsModel: 'DocMethodArgumentsView',
+  help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocMethodArgumentSmallRowView'; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'span'
+    }
+
+  ],
+
+  templates: [
+    function toInnerHTML()    {/*<%
+          this.destroy();
+          if (!this.isEmpty) {
+            %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
+          } else {
+            %>()<%
+          }
+    %>*/}
+  ],
+});
+
+MODEL({
+  name: 'DocMethodArgumentSmallRowView',
+  extendsModel: 'DocBodyView',
+  help: 'An in-line view for each item in a list of Args.',
+
+  templates: [
+    function toInnerHTML() {/* <%=this.data.name%> */}
+  ]
+});
+
