@@ -540,7 +540,7 @@ MODEL({
        } else {
 //         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 
-         console.log('Creating new query: ' + query + '   ' + order);
+         // console.log('Creating new query: ' + query + '   ' + order);
          this.newQuery(sink, options, query, order, bufOptions, future);
        }
 
