@@ -735,13 +735,20 @@ MODEL({
     {
       name: 'objs',
       factory: function() { return []; }
+    },
+    {
+      name: 'offset',
+      defaultValue: 0
     }
   ],
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.renderer; }.bind(this),
-                     function() { this.renderer.width = this.width; }.bind(this));
+      this.X.dynamic(function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
+                     function() {
+                       this.renderer.width = this.width;
+                       this.view && this.view.paint();
+                     }.bind(this));
     },
     initCView: function() {
       this.X.dynamic(
@@ -751,7 +758,7 @@ MODEL({
     },
     paintSelf: function() {
       var self = this;
-      var offset = -(this.scrollTop % this.renderer.height);
+      var offset = this.offset;
       for ( var i = 0; i < this.objs.length; i++ ) {
         self.canvas.save();
         self.canvas.translate(0, offset + (i * self.renderer.height));
@@ -769,19 +776,17 @@ MODEL({
         var selectNumber = this.selectNumber + 1;
         this.selectNumber = selectNumber;
 
-        var limit = Math.floor(this.height / this.renderer.height) + 1;
+        var limit = Math.floor(this.height / this.renderer.height) + 2;
         var skip = Math.floor(this.scrollTop / this.renderer.height);
         var self = this;
 
         
         var offset = -(this.scrollTop % this.renderer.height);
 
-        console.log('skip, limit, offset: ', skip, limit, offset);
-
         var i = 0;
         this.dao.skip(skip).limit(limit).select([])(function(objs) {
+          self.offset = offset;
           self.objs = objs;
-          self.view.paint();
         });
 
 /*{
