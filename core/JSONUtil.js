@@ -93,7 +93,6 @@ var JSONUtil = {
 
     if ( obj instanceof Object ) {
       var j = 0;
-
       for ( var key in obj ) {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
         j++;
