@@ -64,6 +64,8 @@ MODEL({
         this.propertyChange('redo', this.redo, this.redo);
       }
 
+      if ( ! view.model_.Z ) view = FloatingView.create({ view: view });
+
       this.stack.push(view);
       this.propertyChange('stack', this.stack, this.stack);
 
@@ -85,6 +87,8 @@ MODEL({
       this.pushView(view, undefined, undefined, 'none');
     },
     slideView: function(view, opt_label, opt_side, opt_delay) {
+      if ( ! view.model_.Z ) view = FloatingView.create({ view: view });
+
       if ( this.slideLatch ) {
         this.slideLatch();
         this.slideLatch = '';
