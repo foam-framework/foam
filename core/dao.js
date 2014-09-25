@@ -664,7 +664,8 @@ MODEL({
       }
     },
     {
-      name: 'future'
+      name: 'future',
+      required: true
     },
     {
       name: 'model',
