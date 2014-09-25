@@ -26,6 +26,7 @@ cat \
   ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
+  ../../core/oam.js \
   ../../core/FObject.js \
   ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
@@ -36,9 +37,14 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/layout.js \
   ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
+  ../../core/TableView.js \
+  ../../core/cview.js \
+  ../../core/MementoMgr.js \
+  ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
   ../../core/glang.js \
@@ -46,6 +52,7 @@ cat \
   ../../core/search.js \
   ../../core/visitor.js \
   ../../core/dao.js \
+  ../../core/ChromeStorage.js \
   ../../core/arrayDAO.js \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
@@ -57,7 +64,9 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/oauth.js \
+  ../../core/touch.js \
   ../../core/ChromeApp.js \
+  ../../core/CORE.js \
   ../mailreader/view.js \
   ../../lib/email/email.js \
   ../mailreader/email.js \
