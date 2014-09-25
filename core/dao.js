@@ -3212,9 +3212,9 @@ MODEL({
           $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
           <p>Choices are:</p>
           <ul>
-            <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IDB for storage</li>
-            <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage)</li>
-            <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage)</li>
+            <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IndexDB for storage.</li>
+            <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage).</li>
+            <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage).</li>
           </ul>
        */}
     },

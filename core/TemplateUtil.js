@@ -222,6 +222,8 @@ var TemplateUtil = {
      } else if ( typeof t.template === 'function' ) {
        t.template = multiline(t.template);
      }
+     // TODO: do we need the case where you specify a Template def. with
+     // .template = 'string'? Unify this with modelExpandTemplates.
      return t;
    },
 
@@ -258,8 +260,14 @@ var TemplateUtil = {
        } else if ( typeof t.template === 'function' ) {
          t.template = multiline(t.template);
        } else if (!t.template$) {
-         // we haven't FOAMalized the template, and there's no crazy multiline functions
-         t = templates[i] = JSONUtil.mapToObj(t);
+         // we haven't FOAMalized the template, and there's no crazy multiline functions.
+         // Note that Model and boostrappy models must use this case, as Template is not
+         // yet defined at bootstrap time. Use a Template object definition with a bare
+         // string template body in those cases.
+         if (typeof Template != "undefined")
+           t = templates[i] = JSONUtil.mapToObj(t, Template);
+         else
+           t = templates[i] = JSONUtil.mapToObj(t); // safe for bootstrap, but won't do anything in that case.
        }
        i++;
      }.bind(self))
