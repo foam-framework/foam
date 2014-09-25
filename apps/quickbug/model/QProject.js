@@ -112,10 +112,11 @@ MODEL({
         return this.X.EasyDAO.create({
           model: this.X.QIssue,
           name: this.projectName + '_' + this.X.QIssue.plural,
+          logging: true,
           migrationRules: [
             MigrationRule.create({
               modelName: 'QIssue',
-              version: 119,
+              version: 120,
               migration: function(ret, dao) {
                 console.log("Migrating to ", this.version);
                 dao.removeAll()(ret);
