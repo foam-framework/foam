@@ -36,7 +36,7 @@ MODEL({
       postSet: function(oldDAO, dao) {
         if ( this.data !== dao ) {
           this.data = dao;
-          this.X.DAO = dao;
+          this.X.daoViewCurrentDAO = dao;
         }
       }
     }
@@ -45,7 +45,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({ DAO: this.dao });
+      this.X = this.X.sub({ daoViewCurrentDAO: this.dao });
     },
     onDAOUpdate: function() {}
   }
