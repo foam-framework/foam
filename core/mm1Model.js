@@ -118,7 +118,7 @@ var Model = {
       displayHeight: 1,
       defaultValue: '',
       help: 'The coding identifier for the entity.',
-			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'Model'}.
+			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
 				$$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
 			  $$DOC{ref:'Model'} definition names should use CamelCase starting with a capital letter, while
 			  $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
