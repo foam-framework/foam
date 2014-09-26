@@ -734,6 +734,8 @@ var DocumentationProperty = Model.create({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
+  documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
+
 
   properties: [
     {
@@ -759,12 +761,10 @@ var DocumentationProperty = Model.create({
       name: 'help',
       defaultValue: 'Documentation for this entity.'
     },
-//    {
-//      name: 'documentation',
-//      defaultValueFn: function() { console.log(DocumentationBootstrap.documentation);
-//        return DocumentationBootstrap.documentation;
-//      }
-//    }
+    {
+      name: 'documentation',
+      defaultValue: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."
+   }
   ]
 });
 
