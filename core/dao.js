@@ -264,9 +264,9 @@ var LoggingDAO = {
         logger('select', options || "");
         return delegate.select(sink, options);
       },
-      removeAll: function(query, sink) {
-        logger('removeAll', query);
-        return delegate.remove(query, sink);
+      removeAll: function(sink, options) {
+        logger('removeAll', options);
+        return delegate.removeAll(sink, options);
       }
     };
   }
