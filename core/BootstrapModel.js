@@ -84,7 +84,7 @@ var BootstrapModel = {
 
   TYPE: 'BootstrapModel <startup only, error if you see this>',
 
-  buildPrototype: function() {
+  buildPrototype: function() { /* Internal use only. */
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
@@ -300,7 +300,7 @@ var BootstrapModel = {
     return cls;
   },
 
-  getPrototype: function() {
+  getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
     return this.prototype_ && this.prototype_.model_ == this ?
       this.prototype_ :
       ( this.prototype_ = this.buildPrototype() );
@@ -309,6 +309,7 @@ var BootstrapModel = {
   create: function(args, X) { return this.getPrototype().create(args, X); },
 
   isSubModel: function(model) {
+		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
@@ -316,7 +317,7 @@ var BootstrapModel = {
     }
   },
 
-  getPropertyWithoutCache_: function(name) {
+  getPropertyWithoutCache_: function(name) { /* Internal use only. */
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
 
@@ -326,7 +327,7 @@ var BootstrapModel = {
     return null;
   },
 
-  getProperty: function(name) {
+  getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
@@ -345,7 +346,7 @@ var BootstrapModel = {
     return this.propertyMap_[name];
   },
 
-  getAction: function(name) {
+  getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
     for ( var i = 0 ; i < this.actions.length ; i++ )
       if ( this.actions[i].name === name ) return this.actions[i];
   },
@@ -358,7 +359,9 @@ var BootstrapModel = {
     return string.hashCode();
   },
 
-  isInstance: function(obj) { return obj && obj.model_ && this.isSubModel(obj.model_); },
+  isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
+		return obj && obj.model_ && this.isSubModel(obj.model_); 
+	},
 
   toString: function() { return "BootstrapModel(" + this.name + ")"; }
 };
