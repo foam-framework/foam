@@ -55,8 +55,8 @@ MODEL({
     createReferenceView: function(opt_args) { /* 
       <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
 			*/
-      var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
+      var X = ( opt_args && opt_args.X ) || this.X; 
+      var v = X.DocRefView.create(opt_args);
       this.addChild(v);
       return v;
     },
@@ -343,7 +343,7 @@ MODEL({
         }
       } else {
         var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
-
+if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural, mostSpecificObject);
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
         } else if (this.usePlural && mostSpecificObject.plural) {

@@ -98,13 +98,17 @@ var Model = {
       help: 'Java class package.',
       defaultValueFn: function() {
         return this.extendsModel ? GLOBAL[this.extendsModel].package : '';
-      }
+      },
+			documentation: function() { /* When running FOAM in a Java environment, specifies the 
+				package in which to declare the Java class built from this $$DOC{ref:'Model'}.*/}
     },
     {
       name:  'abstract',
       type: 'boolean',
       defaultValue: false,
-      help: 'If the java class is abstract.'
+      help: 'If the java class is abstract.',
+			documentation: function() { /* When running FOAM in a Java environment, specifies whether the 
+				Java class built from this $$DOC{ref:'Model'} should be declared abstract.*/}
     },
     {
       name:  'name',
@@ -113,7 +117,13 @@ var Model = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the entity.'
+      help: 'The coding identifier for the entity.',
+			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'Model'}.
+				$$DOC{ref:'Model.name'} should generally only contain identifier-safe characters.
+			  $$DOC{ref:'Model'} definition names should use CamelCase starting with a capital letter, while
+			  $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
+			  defined inside a $$DOC{ref:'Model'} should use camelCase staring with a lower case letter.
+				 */}
     },
     {
       name: 'label',
@@ -121,7 +131,10 @@ var Model = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The display label for the entity.'
+      help: 'The display label for the entity.',
+			documentation: function() { /* A human readable label for the $$DOC{ref:'Model'}. May
+				contain spaces or other odd characters.
+				 */}			
     },
     {
       name: 'javaClassName',
@@ -129,7 +142,9 @@ var Model = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return (this.abstract ? 'Abstract' : '') + this.name; },
-      help: 'The Java classname of this Model.'
+      help: 'The Java classname of this Model.',
+			documentation: function() { /* When running FOAM in a Java environment, specifies the name of the 
+				Java class to be built from this $$DOC{ref:'Model'}.*/}
     },
     {
       name: 'extendsModel',
@@ -137,7 +152,16 @@ var Model = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The parent model of this model.'
+      help: 'The parent model of this model.',
+			documentation: function() { /* 
+				<p>Specifies the $$DOC{ref:'Model.name'} of the $$DOC{ref:'Model'} that
+				this model should inherit from. Like object-oriented inheritance, this $$DOC{ref:'Model'} will gain the 
+			  $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true}, and other features
+			  defined inside the $$DOC{ref:'Model'} you extend.</p>
+				<p>You may override features by redefining them in your $$DOC{ref:'Model'}.</p>
+				<p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
+				instances of the $$DOC{ref:'Model'} you extend.</p>
+				 */}						
     },
     {
       name: 'plural',
@@ -145,13 +169,18 @@ var Model = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name + 's'; },
-      help: 'The plural form of this model\'s name.'
+      help: 'The plural form of this model\'s name.',
+			documentation: function() { /* The plural form of $$DOC{ref:'Model.name'}, for use in documentation
+				and other human-readable areas. */}
     },
     {
       name: 'version',
       type: 'int',
       defaultValue: 1,
-      help: 'Version number of model.'
+      help: 'Version number of model.',
+			documentation: function() { /* For backwards compatibility, major changes should be marked by
+			  incrementing the version number. */}
+			
     },
     {
       name: 'ids',
@@ -163,7 +192,13 @@ var Model = {
         if ( id ) return ['id'];
         return this.properties.length ? [this.properties[0].name] : [];
       },
-      help: 'Properties which make up unique id.'
+      help: 'Properties which make up unique id.',
+			documentation: function() { /* An optional list of names of $$DOC{ref:'Property',usePlural:true} from 
+				this $$DOC{ref:'Model'}, which can be used together as a primary key. The $$DOC{ref:'Property',usePlural:true},
+				when combined, should uniquely identify an instance of your $$DOC{ref:'Model'}.
+				$$DOC{ref:'DAO',usePlural:true} that support indexing can use this as a suggestion on how to index
+				instances of your $$DOC{ref:'Model'}. */}
+
     },
     {
       name: 'traits',
