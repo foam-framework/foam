@@ -635,9 +635,7 @@ MODEL({
         return nu;
       },
       postSet: function(old, nu) {
-        var scroller = this.scroller$();
-        if ( scroller ) scroller.style.webkitTransform =
-            'translate3d(0px, -' + nu + 'px, 0px)';
+        this.scrollTo(old, nu);
       }
     },
     {
@@ -725,6 +723,12 @@ MODEL({
   ],
 
   methods: {
+    scrollTo: function(old, nu) {
+      var scroller = this.scroller$();
+      if ( scroller ) scroller.style.webkitTransform =
+          'translate3d(0px, -' + nu + 'px, 0px)';
+    },
+    updateBackend: function() {},
     initHTML: function() {
       this.SUPER();
 
@@ -845,6 +849,7 @@ MODEL({
 
       this.oldVisibleTop = this.visibleTop;
       this.oldVisibleBottom = this.visibleBottom;
+      this.updateBackend();
     },
 
     // Clears all caches and saved rows and everything.

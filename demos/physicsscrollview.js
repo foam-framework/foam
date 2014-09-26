@@ -47,7 +47,7 @@ Y.touchManager = Y.TouchManager.create({});
 Y.touchManager.install(document);
 Y.gestureManager = Y.GestureManager.create();
 
-var view = Y.ScrollView.create({
+var view = Y.PhysicsScrollView.create({
   model: Contact,
   rowView: 'ContactRowView',
   rowHeight: 130,
