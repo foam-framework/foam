@@ -215,7 +215,9 @@ var Model = {
       factory: function() {
         return this.properties.map(function(o) { return o.name; });
       },
-      help: 'Properties to be displayed in table view. Defaults to all properties.'
+      help: 'Properties to be displayed in table view. Defaults to all properties.',
+			documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing a list of instances
+			  of this $$DOC{ref:'Model'} in a table or other $$DOC{ref:'Property'} viewer. */}
     },
     {
       name: 'searchProperties',
@@ -225,7 +227,9 @@ var Model = {
       defaultValueFn: function() {
         return this.tableProperties;
       },
-      help: 'Properties display in a search view. Defaults to table properties.'
+      help: 'Properties display in a search view. Defaults to table properties.',
+			documentation: function() { /* Indicates the $$DOC{ref:'Property',usePlural:true} to display when viewing
+			  of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
       name: 'properties',
@@ -256,7 +260,14 @@ var Model = {
         this.propertyMap_ = null;
 
         return newValue;
-      }
+      },
+			documentation: function() { /* 
+				<p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
+					and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
+				  to other $$DOC{ref:'Property',usePlural:true} for easy reactive programming.</p>
+				<p>Note that, like $$DOC{ref:'Model'} being a $$DOC{ref:'Model'} itself, the 
+					$$DOC{ref:'Model.properties'} feature of all models is itself a $$DOC{ref:'Property'}.
+				*/}
     },
     {
       name: 'actions',
@@ -284,7 +295,12 @@ var Model = {
         }
 
         return newValue;
-      }
+      },
+			documentation: function() { /* 
+				<p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
+				button-like $$DOC{ref:'View'} or menu item to activate the behavior.</p>
+				*/}
+			
     },
     {
       name: 'methods',
@@ -310,7 +326,26 @@ var Model = {
         }
 
         return methods;
-      }
+      },
+			documentation: function() { /* 
+				<p>$$DOC{ref:'Methods',usePlural:true} contain code that runs in the instance's scope, so code
+				in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and 
+				features of your $$DOC{ref:'Model'}.</p>
+				<ul>
+					<li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
+					<li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment 
+							will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from 
+							src to dst.</li>
+					<li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this 
+									$$DOC{ref:'Model'}</li>
+					<li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the 
+										base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling 
+										<code>this.SUPER()</code> is extremely important in your <code>init()</code>
+							     	$$DOC{ref:'Method'}, if you provide one.</li>
+				</ul>
+				<p>In JSON, $$DOC{ref:'Model.methods'} may be specified as a dictionary:</p>
+				<p><code>methods: { methodName: function(arg1) {  ...your code here... }, anotherMethod: ... }</code></p>
+				*/}
     },
     {
       name: 'listeners',
@@ -323,7 +358,16 @@ var Model = {
         return newValue;
       },
       defaultValue: [],
-      help: 'Event listeners associated with the entity.'
+      help: 'Event listeners associated with the entity.',
+			documentation: function() { /* 
+				<p>The $$DOC{ref:'Model.listeners'} $$DOC{ref:'Property'} contains a list of $$DOC{ref:'Method',usePlural:true},
+				  but is separate and differs from the $$DOC{ref:'Model.methods'} $$DOC{ref:'Property'} in how the scope
+				  is handled. For a listener, <code>this</code> is bound to your instance, so when the listener is
+				  invoked by an event from elsewhere in the system it can still access the features of its $$DOC{ref:'Model'}
+				  instance.</p>
+				<p>In javascript, listeners are connected using 
+					<code>OtherProperty.addListener(myModelInstance.myListener);</code></p>
+			*/}				
     },
     /*
       {
