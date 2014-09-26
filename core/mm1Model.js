@@ -205,7 +205,9 @@ var Model = {
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValueFn: function() { return []; },
-      help: 'Traits to mix-into this Model.'
+      help: 'Traits to mix-into this Model.',
+			documentation: function() { /* Traits allow you to mix extra features into your $$DOC{ref:'Model'}
+			 	through composition, avoiding inheritance where unecesssary. */}
     },
     {
       name: 'tableProperties',
@@ -391,7 +393,13 @@ var Model = {
         TemplateUtil.modelExpandTemplates(this, templates);
       },
       //         defaultValueFn: function() { return []; },
-      help: 'Templates associated with this entity.'
+      help: 'Templates associated with this entity.',
+			documentation: function() { /* 
+				The $$DOC{ref:'Template',usePlural:true} to process and install into instances of this 
+				$$DOC{ref:'Model'}. $$DOC{ref:'View',usePlural:true} created inside each $$DOC{ref:'Template'}
+				using the $$DOC{ref:'.templates',text:'$$propertyName{args}'} view creation tag become available
+				as <code>myInstance.propertyNameView</code>.
+				*/}  
     },
     {
       name: 'models',
@@ -400,7 +408,12 @@ var Model = {
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Sub-models embedded within this model.'
+      help: 'Sub-models embedded within this model.',
+			documentation: function() { /* 
+				$$DOC{ref:'Model',usePlural:true} may be nested inside one another to better organize them.
+				$$DOC{ref:'Model',usePlural:true} declared this way do not gain special access to their containing
+				$$DOC{ref:'Model'}, but are only accessible through their container.
+				*/}  
     },
     {
       name: 'tests',
@@ -410,7 +423,11 @@ var Model = {
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Unit tests associated with this model.'
+      help: 'Unit tests associated with this model.',
+			documentation: function() { /* 
+				  Create $$DOC{ref:'UnitTest',usePlural:true} that should run to test the functionality of this
+					$$DOC{ref:'Model'} here.
+				*/}  
     },
     {
       name: 'relationships',
@@ -437,7 +454,13 @@ var Model = {
         }
 
         return newValue;
-      }
+      },
+			documentation: function() { /* 
+				  $$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation between instances of
+				  this $$DOC{ref:'Model'} and the indicated $$DOC{ref:'Model',usePlural:true}, through the indicated
+				  $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true} build a tree
+				  structure of instances, they could likely benefit from a declared $$DOC{ref:'Relationship'}.
+				*/}  
     },
     {
       name: 'issues',
@@ -446,7 +469,11 @@ var Model = {
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Issues associated with this model.'
+      help: 'Issues associated with this model.',
+			documentation: function() { /* 
+				  Bug tracking inside the FOAM system can attach $$DOC{ref:'Issue',usePlural:true} directly to the
+				  affected $$DOC{ref:'Model',usePlural:true}.
+				*/}  
     },
     {
       name: 'help',
@@ -456,7 +483,12 @@ var Model = {
       displayHeight: 6,
       view: 'TextAreaView',
       defaultValue: '',
-      help: 'Help text associated with the entity.'
+      help: 'Help text associated with the entity.',
+			documentation: function() { /* 
+				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Model'} or 
+					$$DOC{ref:'Property'}, through field labels or tooltips.
+				*/}  
+			
     },
     DocumentationBootstrap,
     {
@@ -466,7 +498,11 @@ var Model = {
       displayHeight: 6,
       view: 'TextAreaView',
       defaultValue: '',
-      help: 'Internal documentation associated with this entity.'
+      help: 'Internal documentation associated with this entity.',
+			documentation: function() { /* 
+				  Internal documentation or implementation-specific 'todo' notes.
+				*/}  
+			
     },
     {
       name: 'createActionFactory',
@@ -477,7 +513,8 @@ var Model = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Factory to create the action object for creating this object'
+      help: 'Factory to create the action object for creating this object',
+			documentation: function() { /* Factory to create the action object for creating this object	*/}
     },
     {
       name: 'deleteActionFactory',
@@ -488,7 +525,8 @@ var Model = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Factory to create the action object for deleting this object'
+      help: 'Factory to create the action object for deleting this object',
+		  	documentation: function() { /* Factory to create the action object for deleting this object	*/}
     }
   ],
 
