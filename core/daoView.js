@@ -442,7 +442,8 @@ MODEL({
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {
-            this.dao.put(o);
+            // TODO(kgr): remove the deepClone when the DAO does this itself.
+            this.dao.put(o.deepClone());
           }.bind(this, o));
         }
         this.addChild(view);
@@ -968,7 +969,8 @@ MODEL({
               if ( self.mode === 'read-write' ) {
                 o = a[i].clone();
                 o.addListener(function(x) {
-                  this.dao.put(x);
+                  // TODO(kgr): remove the deepClone when the DAO does this itself.
+                  this.dao.put(x.deepClone());
                 }.bind(self, o));
               }
               self.cache[toLoadTop + i] = o;
