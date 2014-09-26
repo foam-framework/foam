@@ -15,28 +15,18 @@
  * limitations under the License.
  */
 
-var ConfigureProjectsView = FOAM({
-  model_: 'Model',
+MODEL({
   name: 'ConfigureProjectsView',
   extendsModel: 'DetailView',
 
-  properties: [
-    {
-      name: 'defaultProjectView',
-      factory: function() { return ChoiceView.create({}); }
-    }
-  ],
-
-  methods: {
-    updateSubViews: function() {
-      this.SUPER();
-
-      Events.follow(this.obj.preferredProjects$, this.defaultProjectView.choices$);
-      this.defaultProjectView.data$ = this.obj.defaultProject$;
-    }
-  },
-
   templates: [
-    { name: 'toHTML' }
+    function toHTML() {/*
+        <div id="%%id">
+          <b>Preferred projects:</b>
+          $$preferredProjects
+          <br>
+          <b>Default project:</b> $$defaultProject{model_: 'ChoiceView', choices$: this.data.preferredProjects$}
+        </div>
+    */}
   ]
 });

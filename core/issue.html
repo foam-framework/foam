@@ -16,18 +16,17 @@
 <a href="modeller.html">Models</a>
 <br/>
 <br/>
-
   <script language="javascript">
-//    var ModelDAO = ModelDAO.create(this,StorageDAO.createModels("models"));
-//    IssueDAO = SeqNoDAO.create(Issue.getProperty('id'), 10000, IssueDAO);
-    var IssueDAO = StorageDAO.create({model: Issue});
-
+    var IssueDAO = EasyDAO.create({
+      model: Issue,
+      seqNo: true,
+      cache: true
+    });
 
     var stack = StackView.create();
     stack.write(document);
 
     FOAM.browse(Issue);
   </script>
-
  </body>
 </html>

@@ -1,0 +1,27 @@
+{
+  "name": "MBug",
+  "version": "1.0.0",
+  "manifest_version": 2,
+
+  "permissions": [
+    "https://www.googleapis.com/*",
+    "https://code.google.com/p/*",
+    "https://accounts.google.com/*",
+    "webview",
+    "identity",
+    "storage",
+    "unlimitedStorage"
+  ],
+
+  "icons": {
+    "64": "images/logo.png"
+  },
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}

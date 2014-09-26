@@ -2,7 +2,6 @@ export BUILD_DIR=~/Downloads/quickcompose
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../core/css-tooltips.css $BUILD_DIR
 cp ../saturn/contacts.css $BUILD_DIR
 echo 'console.time("load_foam");' > prefix.js
 echo 'console.timeEnd("load_foam");' > postfix.js
@@ -24,10 +23,12 @@ cat \
   ../../core/XMLUtil.js \
   ../../core/context.js \
   ../../core/FOAM.js \
+  ../../core/JSONParser.js \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
-  ../../core/AbstractPrototype.js \
-  ../../core/ModelProto.js \
+  ../../core/oam.js \
+  ../../core/FObject.js \
+  ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
@@ -36,6 +37,13 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/layout.js \
+  ../../core/daoView.js \
+  ../../core/ChoiceView.js \
+  ../../core/DetailView.js \
+  ../../core/TableView.js \
+  ../../core/cview.js \
+  ../../core/MementoMgr.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
   ../../core/mlang.js \
@@ -44,6 +52,8 @@ cat \
   ../../core/search.js \
   ../../core/visitor.js \
   ../../core/dao.js \
+  ../../core/ChromeStorage.js \
+  ../../core/arrayDAO.js \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
@@ -54,8 +64,11 @@ cat \
   ../../core/experimental/protobuf.js \
   ../../core/models.js \
   ../../core/oauth.js \
+  ../../core/touch.js \
   ../../core/ChromeApp.js \
+  ../../core/CORE.js \
   ../mailreader/view.js \
+  ../../lib/email/email.js \
   ../mailreader/email.js \
   ../saturn/EMailBodyDAO.js \
   ../saturn/contacts.js \

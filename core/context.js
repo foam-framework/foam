@@ -47,7 +47,22 @@ function subWindow(w, opt_name, isBackground) {
   if ( ! w ) return this.sub();
 
   var document = this.subDocument ? this.subDocument(w.document) : w.document;
+  var installedModels = new WeakMap();
+
   var map = {
+    registerModel: function(model, opt_name) {
+      if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
+        // console.log('installing model: ', model.name);
+        installedModels.set(model, true);
+        model.getPrototype().installInDocument(this, document);
+      }
+      return GLOBAL.registerModel.call(this, model, opt_name);
+    },
+    addStyle: function(css) {
+      var s = document.createElement('style');
+      s.innerHTML = css;
+      this.document.head.appendChild(s);
+    },
     isBackground: !!isBackground,
     window: w,
     document: document,
@@ -72,7 +87,7 @@ function subWindow(w, opt_name, isBackground) {
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: function(f) { return w.requestAnimationFrame(f); },
+    requestAnimationFrame: function(f) { if ( ! w.requestAnimationFrame ) debugger; return w.requestAnimationFrame(f); },
     cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
   };
 
@@ -86,7 +101,8 @@ function subWindow(w, opt_name, isBackground) {
   return X;
 }
 
-var X = this.subWindow(window, 'DEFAULT WINDOW').sub({IN_WINDOW: false});
+// Using the existence of 'process' to determine that we're running in Node.
+var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
 
 function registerModel(model, opt_name) {
   /*

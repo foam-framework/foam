@@ -361,11 +361,17 @@ var System = FOAM({
     {
       name:  'selectedX',
       type:  'int',
+      preSet: function(oldX, x) {
+        return ( x < 0 || x >= this.features.length ) ? oldX : x;
+      }, 
       defaultValue: 0
     },
     {
       name:  'selectedY',
       type:  'int',
+      preSet: function(oldY, y) {
+        return ( y < 0 || y >= this.entities.length ) ? oldY : y;
+      }, 
       defaultValue: 0
     },
     {

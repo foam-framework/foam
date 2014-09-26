@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var ME = "";
 
 /**
  * Generic Mustang-like query-language parser generator.
@@ -158,7 +157,7 @@ var QueryParserFactory = function(model) {
 
     number: function(v) { return parseInt(v); },
 
-    me: function() { return this.ME || ME; },
+    me: function() { return this.ME || this.X.ME || ""; },
 
     has: function(v) { return NEQ(v[1], ''); },
 
@@ -173,6 +172,7 @@ var QueryParserFactory = function(model) {
       // simplify it when it isn't.
 
       if ( v[1] === '=' ) return IN(v[0], v[2]);
+      if ( v[1] === ':' ) return ContainedInICExpr.create({arg1: compile_(v[0]), arg2: v[2]});
 
       var or = OR();
       var values = v[2];

@@ -38,7 +38,11 @@ function binaryOp(name, keys, f, sym) {
     name: name,
     label: sym,
     keyboardShortcuts: keys,
-    action: function() { this.op = f; }
+    action: function() {
+      if ( this.op != DEFAULT_OP ) this.equals();
+      this.push('', f);
+      this.editable = true;
+    }
   };
 }
 
@@ -51,14 +55,9 @@ function unaryOp(name, keys, f, opt_sym) {
     label: sym,
     keyboardShortcuts: keys,
     action: function() {
-      var a1 = this.a1;
-      var a2 = this.a2;
       this.op = f;
-      this.a2 = '';
-      this.history.put(History.create(this));
-      this.a1 = a2;
-      this.a2 = f.call(this, a2);
-      this.op = DEFAULT_OP;
+      this.push(f.call(this, this.a2));
+      this.editable = false;
     }
   };
 }
@@ -68,7 +67,15 @@ function num(n) {
   return {
     name: n.toString(),
     keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
-    action: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
+    action: function() {
+      if ( ! this.editable ) {
+        this.push(n);
+        this.editable = true;
+      } else {
+        if ( this.a2 == '0' && ! n ) return;
+        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
+      }
+    }
   };
 }
 
@@ -91,49 +98,213 @@ MODEL({ name: 'History', properties: [ 'op', 'a2' ] });
 MODEL({
   name: 'Calc',
 
+  templates: [ function CSS() {/*
+    body {
+      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      font-weight: 300;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      display: none;
+    }
+
+    .calc {
+      background-color: #fff;
+      border: 0;
+      margin: 0;
+      padding: 0px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .calc-display, .calc-display:focus {
+      border: none;
+      letter-spacing: 1px;
+      line-height: 25px;
+      margin: 0;
+      min-width: 204px;
+      overflow: scroll;
+      padding: 0 25pt 2pt 25pt;
+      width: calc( 100% - 40px );
+      text-align: right;
+    }
+
+    .edge-top {
+      height: 5px;
+      width: 100%;
+      z-index: 99;
+      position: absolute;
+      background: #fff;
+    }
+
+    .edge {
+      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,
+                                             rgba(255,255,255,0) 100%);
+      height: 20px;
+      position: absolute;
+      top: 5px;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .edge2 {
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,
+                                             rgba(0,0,0,0) 100%);
+      top: 12px;
+      height: 12px;
+      position: relative;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .calc .buttons {
+      flex: 1 1 100%;
+      width: 100%;
+      height: 350px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 1 1 100%;
+      justify-content: space-between;
+      align-items: stretch;
+    }
+
+    .button {
+      flex-grow: 1;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      background-color: #4b4b4b;
+    }
+
+    .rhs-ops {
+      border-left-width: 1px;
+      border-left-style: solid;
+      border-left-color: rgb(68, 68, 68);
+    }
+
+    .rhs-ops .button {
+      background-color: #777;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    .inner-calc-display {
+      position: absolute;
+      right: 20pt;
+      top: 100%;
+      transition: top 0.3s ease;
+      width: 85%;
+    }
+
+    .calc-display {
+      flex-grow: 5;
+      position: relative;
+    }
+
+    .secondaryButtons {
+      padding-left: 10px;
+      background: rgb(64, 189, 158);
+    }
+
+    .secondaryButtons .button {
+      background: rgb(64, 189, 158);
+    }
+
+    .tertiaryButtons {
+      padding-left: 10px;
+      background: rgb(29, 233, 182);
+    }
+
+    .tertiaryButtons .button {
+      background: rgb(29, 233, 182);
+    }
+
+    .keypad {
+      flex-grow: 0;
+      flex-shrink: 0;
+      margin-bottom: -4px;
+    }
+
+    // Copied from foam.css.
+    .SliderPanel .shadow {
+      background: linear-gradient(to left, rgba(0,0,0,0.3) 0%,
+                                         rgba(0,0,0,0) 100%);
+      height: 100%;
+      left: -8px;
+      position: absolute;
+      width: 8px;
+    }
+  */}],
+
   properties: [
     { name: 'degreesMode', defaultValue: false },
-    { name: 'a1', defaultValue: '0' },
-    { name: 'a2', defaultValue: 0 },
+    { name: 'a1', defaultValue: 0 },
+    { name: 'a2', defaultValue: '' },
+    { name: 'editable', defaultValue: true }, 
     {
       name: 'op',
-      preSet: function(oldOp, newOp) {
-        if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
-          var a3 = this.op(parseFloat(this.a1), parseFloat(this.a2));
-          this.history.put(History.create(this));
-          this.history.put(History.create({a2: a3}));
-          this.a1 = a3;
-          this.a2 = 0;
-        } else if ( this.a2 ) {
-          this.history.put(History.create({a2: this.a2}));
-          this.a1 = this.a2;
-          this.a2 = 0;
-        }
-        return newOp;
-      },
       defaultValue: DEFAULT_OP
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'history',
+      view: { model_: 'DAOListView', rowView: 'HistoryView' },
+      factory: function() { return [].sink; }
     },
     {
       model_: 'StringProperty',
       name: 'row1',
-//      postSet: function(o, n) { console.log(o, ' -> ', n); },
       view: 'ALabel'
     },
-    {
-      name: 'history',
-      model_: 'DAOProperty',
-      view: { model_: 'DAOListView', rowView: 'HistoryView' },
-      factory: function() { return []; }
-    }
   ],
 
   methods: {
     init: function() {
       this.SUPER();
 
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), function() {
-        this.row1 = this.op + ( this.a2 ? '&nbsp;' + this.a2 : '' );
-      }.bind(this));
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.animate(function() {
+        this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
+      }.bind(this)));
+    },
+    push: function(a2, opt_op) {
+      this.history.put(History.create(this));
+      this.a1 = this.a2;
+      this.a2 = a2;
+      this.op = opt_op || DEFAULT_OP;
     }
   },
 
@@ -154,7 +325,12 @@ MODEL({
       label: 'AC',
       help: 'All Clear.',
       keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
-      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = []; }
+      action: function() {
+        this.a2 = '0';
+        this.editable = true;
+        this.op = DEFAULT_OP;
+        this.history = [].sink;
+      }
     },
     {
       name: 'sign',
@@ -175,19 +351,17 @@ MODEL({
       label: '=',
       keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
       action: function() {
-        var a1 = this.a1;
-        var a2 = this.a2;
-        this.a1 = a2;
-        this.history.put(History.create(this));
-        this.a2 = this.op(parseFloat(a1), parseFloat(a2));
-        this.op = DEFAULT_OP;
+        this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
+        this.editable = false;
       }
     },
     {
       name: 'backspace',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2 == 0 ? this.a2 : this.a2.toString().substring(0, this.a2.length-1);
+        this.a2 = this.a2.toString.length == 1 ?
+          '0' :
+          this.a2.toString().substring(0, this.a2.length-1) ;
       }
     },
     {
@@ -231,8 +405,21 @@ MODEL({
   ]
 });
 
+// HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
+// So we wait a second, to give the font time to load, then redraw all the buttons.
+// TODO: Something better.
+MODEL({
+  name: 'ActionButtonCView2',
+  extendsModel: 'ActionButtonCView',
+  methods: {
+    init: function() {
+      this.SUPER();
+      setTimeout(function() { this.view.paint(); }.bind(this), 1000);
+    }
+  }
+});
 
-var CalcButton = ActionButtonCView.xbind({
+var CalcButton = ActionButtonCView2.xbind({
   color:      'white',
   background: '#4b4b4b',
   width:      95,

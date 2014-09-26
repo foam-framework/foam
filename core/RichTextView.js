@@ -48,7 +48,7 @@ MODEL({
   ],
   methods: {
     open: function(x, y) {
-      var view = LinkView.create({model: Link, value: SimpleValue.create(this)});
+      var view = LinkView.create({model: Link, data: this});
       this.richTextView.$.parentNode.insertAdjacentHTML('beforebegin', view.toHTML());
       view.$.style.left = x + this.richTextView.$.offsetLeft;
       view.$.style.top = y + this.richTextView.$.offsetTop;
@@ -88,7 +88,7 @@ MODEL({
       factory: function() {
         return ActionButton.create({
           action: Link.INSERT,
-          value: this.value
+          data: this.data
         });
       }
     }
@@ -142,8 +142,7 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
-      factory: function() { return SimpleValue.create({}); }
+      name: 'data'
     }
   ],
 
@@ -157,7 +156,7 @@ MODEL({
 
         out += '<td class="pickerCell"><div id="' +
           self.on('click', function(e) {
-            self.value.set(value);
+            self.data = value;
             e.preventDefault();
           }) +
           '" class="pickerDiv" style="background-color: ' + value + '"></div></td>';
@@ -208,15 +207,8 @@ MODEL({
         ]}); } }
     },
     {
-      name:  'value',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(oldValue, newValue) {
-        Events.unlink(oldValue, this.domValue);
-        Events.link(newValue, this.domValue);
-        oldValue && oldValue.removeListener(this.maybeShowPlaceholder);
-        newValue.addListener(this.maybeShowPlaceholder);
-      }
+      name:  'data',
+      postSet: function() { this.maybeShowPlaceholder(); }
     },
     {
       name: 'placeholder',
@@ -234,7 +226,7 @@ MODEL({
       code: function() {
         var e = $(this.placeholderId);
         if ( e ) {
-          e.style.visibility = this.value.get() == '' ? 'visible' : 'hidden';
+          e.style.visibility = this.data == '' ? 'visible' : 'hidden';
         }
       }
     }
@@ -253,7 +245,7 @@ MODEL({
       return '<div class="richtext">' +
         '<div id="' + this.dropId + '" class="dropzone"><div class=spacer></div>Drop files here<div class=spacer></div></div>' +
         '<div id="' + this.placeholderId + '" class="placeholder">' + this.placeholder + '</div>' +
-        '<iframe style="width:' + this.width + 'px;min-height:' + this.height + 'px" id="' + this.id + '"' + sandbox + ' img-src="*"></iframe>' +
+        '<iframe style="width:' + this.width + ';min-height:' + this.height + 'px" id="' + this.id + '"' + sandbox + ' img-src="*"></iframe>' +
         '</div>';
     },
 
@@ -263,6 +255,7 @@ MODEL({
       this.dropzone = drop;
       this.document = this.$.contentDocument;
       var body = this.document.body;
+      body.style.whiteSpace = 'pre-wrap';
 
       $(this.placeholderId).addEventListener('click', function() { body.focus(); });
       this.document.head.insertAdjacentHTML(
@@ -307,12 +300,8 @@ MODEL({
         this.document.body.contentEditable = true;
       }
       this.domValue = DomValue.create(this.document.body, 'input', 'innerHTML');
-      this.value = this.value; // connects listeners
+      Events.link(this.data$, this.domValue);
       this.maybeShowPlaceholder();
-    },
-
-    setValue: function(value) {
-      this.value = value;
     },
 
     getSelectionText: function() {
@@ -348,7 +337,7 @@ MODEL({
 
     // Force updating the value after mutating the DOM directly.
     updateValue: function() {
-      this.value.set(this.document.body.innerHTML);
+      this.data = this.document.body.innerHTML;
     },
 
     showDropMessage: function(show) {
@@ -492,11 +481,12 @@ MODEL({
       var e = this.document.getElementById(imageID);
       if ( e ) {
         e.outerHTML = '';
-        this.value.set(this.document.body.innerHTML);
+        this.data = this.document.body.innerHTML;
       }
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.value);
     },
 

@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return QIssue; }
+      factory: function() { return this.X.QIssue; }
     },
     {
       model_: 'BooleanProperty',
@@ -30,53 +30,29 @@ MODEL({
       name: 'cursorView',
       factory: function() {
         return this.X.CursorView.create({
-          data: this.X.Cursor.create({dao: this.cursorIssueDAO})});
+          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
       }
     },
     {
       name: 'blockingView',
       factory: function() {
         return this.X.BlockView.create({
-          ctx: this,
-          property: QIssue.BLOCKING,
-          ids: this.value.get().blocking});
+          property: this.X.QIssue.BLOCKING,
+          ids: this.data.blocking});
       }
     },
     {
       name: 'blockedOnView',
       factory: function() {
         return this.X.BlockView.create({
-          ctx: this,
-          property: QIssue.BLOCKED_ON,
-          ids: this.value.get().blockedOn});
+          property: this.X.QIssue.BLOCKED_ON,
+          ids: this.data.blockedOn});
       }
     },
     'newCommentView'
   ],
 
   listeners: [
-    {
-      name: 'onDAOUpdate',
-      isMerged: 100,
-      code: function() {
-        if ( ! this.data ) return;
-        if ( ! this.$ ) {
-          this.issueDAO$Proxy.unlisten(this.onDAOUpdate);
-          return;
-        }
-
-        var self = this;
-        this.issueDAO.find(this.data.id, {
-          put: function(obj) {
-            if ( obj.equals(self.data) ) return;
-            self.saveEnabled = false;
-            self.data.copyFrom(obj);
-            self.newCommentView.issue = obj;
-            self.saveEnabled = true;
-          }
-        });
-      }
-    },
     {
       name: 'doSave',
       code: function() {
@@ -90,28 +66,12 @@ MODEL({
 
   methods: {
     destroy: function() {
+      this.SUPER();
       if ( this.data ) this.data.removeListener(this.doSave);
-      this.issueDAO.unlisten(this.onDAOUpdate);
     },
-
-    init: function(args) {
-      this.SUPER(args);
-      debugger;
-      this.issueDAO$Proxy.listen(this.onDAOUpdate);
-    },
-
-    onValueChange_: function(_, _, old, v) {
-      this.saveEnabled = false;
-
-      if ( old ) old.removeListener(this.doSave);
-
-      if ( v ) v.addListener(this.doSave);
-      else if ( this.data ) this.data.addListener(this.doSave);
-    },
-
     commentView: function() {
       return this.X.DAOListView.create({
-        dao: this.QIssueCommentDAO,
+        dao: this.QIssueCommentDAO.orderBy(QIssueComment.SEQ_NO),
         model: this.X.QIssueComment,
         rowView: 'QIssueCommentView'
       });
@@ -119,7 +79,8 @@ MODEL({
     commentCreateView: function() {
       return this.newCommentView = this.X.QIssueCommentCreateView.create({
         dao: this.QIssueCommentDAO,
-        issue: this.data
+        issue$: this.data$,
+        data: this.data.newComment()
       });
     },
     clView: function() {
@@ -130,8 +91,22 @@ MODEL({
     },
     updateSubViews: function() {
       this.SUPER();
+      this.newCommentView.data = this.data.newComment();
       this.saveEnabled = true;
-    }
+    },
+    refresh: function() {
+      var self = this;
+      self.issueDAO.where(EQ(this.X.QIssue.ID, self.data.id)).listen(
+        EventService.oneTime(function() {
+          self.issueDAO.find(self.data.id, {
+            put: function(issue) {
+              self.data = issue;
+              self.newCommentView.issue
+            }
+          });
+        })
+      );
+    },
   },
 
   templates: [
@@ -146,20 +121,15 @@ MODEL({
 
   properties: [
     {
-      name: 'value',
+      name: 'data',
       factory: function() { return SimpleValue.create([]); },
-      postSet: function(oldValue, newValue) {
-        oldValue && oldValue.removeListener(this.update);
-        newValue.addListener(this.update);
-        this.update();
-      }
+      postSet: function() { this.update(); }
     }
   ],
 
   methods: {
     toHTML: function() { return '<div id="' + this.id + '"></div>'; },
-    initHTML: function() { this.SUPER(); this.update(); },
-    setValue: function(value) { this.value = value; }
+    initHTML: function() { this.SUPER(); this.update(); }
   },
 
   listeners: [
@@ -169,150 +139,21 @@ MODEL({
       code: function() {
         if ( ! this.$ ) return;
 
-        var value = this.value.get().sort(function (o1, o2) {
+        var value = this.data.sort(function (o1, o2) {
           return o1.toLowerCase().compareTo(o2.toLowerCase());
         });
         var out = "";
         for ( var i = 0; i < value.length; i++ ) {
           var start = value[i].substring(0, value[i].indexOf('-') + 1);
-          var rest = value[i].substring(value[i].indexOf('-') + 1);
+          var rest  = value[i].substring(value[i].indexOf('-') + 1);
 
-          out += '<div><b>' +
-            this.strToHTML(start) + '</b>' +
-            this.strToHTML(rest) + '</div>';
+          if ( start != 'Restrict-' ) {
+            out += '<div><b>' +
+              this.strToHTML(start) + '</b>' +
+              this.strToHTML(rest) + '</div>';
+          }
         }
         this.$.innerHTML = out;
-      }
-    }
-  ]
-});
-
-
-/**
- * Display a heirarchical Issue blocking/blocked-on list.
- * Draw the ID with style line-through if issue closed.
- * Display a TileView hover preview.
- **/
-MODEL({
-  name: 'BlockView',
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'ctx' // TODO: switch to X
-    },
-    {
-      name: 'url',
-      scope: 'ctx',
-      defaultValueFn: function() { return this.ctx.url; }
-    },
-    {
-      name: 'issueDAO',
-      scope: 'ctx',
-      defaultValueFn: function() { return this.ctx.issueDAO; }
-    },
-    {
-      name: 'property',
-      help: 'Property to recurse on.'
-    },
-    {
-      name: 'idSet',
-      help: "Set of Issue ID's that have already been seen.",
-      factory: function() { return {}; }
-    },
-    {
-      name: 'maxDepth',
-      defaultValue: 3
-    },
-    {
-      name: 'ids'
-    }
-  ],
-
-  methods: {
-    toHTML: function(opt_depth) {
-      var s = '<div class="blockList">';
-
-      for ( var i = 0 ; i < this.ids.length ; i++ ) {
-        var issue = this.ids[i];
-        var id = this.nextID();
-
-        if ( this.idSet[issue] ) continue;
-
-        this.idSet[issue] = id;
-
-        var url = this.url + '/issues/detail?id=' + issue;
-
-        s += '<div><a href="" id="' + id + '">Issue ' + issue + '</a><div>';
-
-        this.on('click',     this.editIssue.bind(this, issue),    id);
-        this.on('mouseover', this.startPreview.bind(this, issue), id);
-        this.on('mouseout',  this.endPreview,                     id);
-      }
-
-      s += '</div>';
-
-      return s;
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      var self = this;
-
-      for ( var i = 0 ; i < this.ids.length ; i++ ) {
-        var id = this.ids[i];
-        this.issueDAO.find(id, { put: function(issue) {
-          if ( ! issue.isOpen() ) {
-            $(self.idSet[id]).style.textDecoration = 'line-through';
-          }
-          if ( self.maxDepth > 1 ) {
-            var ids = issue[self.property.name];
-
-            if ( ids.length ) {
-              var subView = self.clone().copyFrom({
-                maxDepth: self.maxDepth-1,
-                ids:      ids
-              });
-              $(self.idSet[id]).insertAdjacentHTML('afterend', '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
-              subView.initHTML();
-            }
-          }
-        }});
-      }
-    }
-  },
-
-  listeners: [
-    {
-      name: 'editIssue',
-      code: function(id) { this.parent.X.browser.location.id = id; }
-    },
-    {
-      name: 'startPreview',
-      code: function(id, e) {
-        if ( this.currentPreview ) return;
-
-        var self = this;
-        this.issueDAO.find(id, { put: function(issue) {
-          self.currentPreview = PopupView.create({
-            x: e.x+30,
-            y: e.y-20,
-            view: QIssueTileView.create({
-              issue: issue,
-              browser: {url: ''}})
-          });
-
-          self.currentPreview.open(self.ctx);
-        }});
-      }
-    },
-    {
-      name: 'endPreview',
-      code: function() {
-        if ( ! this.currentPreview ) return;
-        this.currentPreview.close();
-        this.currentPreview = null;
       }
     }
   ]

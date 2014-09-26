@@ -40,21 +40,17 @@ MODEL({
 
   methods: {
     // Mustang Query Language
-    toMQL: function() {
-      return this.toString();
-    },
-    toSQL: function() {
-      return this.toString();
-    },
-    collectInputs: function(terms) {
-      terms.push(this);
-    },
+    toMQL: function() { return this.label_; },
+    toSQL: function() { return this.label_; },
+    toString: function() { return this.toMQL(); },
+    collectInputs: function(terms) { terms.push(this); },
     partialEval: function() { return this; },
     minterm: function(index, term) {
       // True if this bit is set in the minterm number.
       return !!((term >>> index[0]--) & 1 );
     },
     normalize: function() {
+      return this;
       // Each input term to the expression.
       var inputs = [];
       this.collectInputs(inputs);
@@ -77,9 +73,10 @@ MODEL({
           terms.push(AndExpr.create({ args: subterms }));
         }
       }
-      return OrExpr.create({ args: terms }).partialEval();
+      var ret = OrExpr.create({ args: terms }).partialEval();
+      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
+      return ret;
     },
-    toString: function() { return this.label_; },
     pipe: function(sink) {
       var expr = this;
       return {
@@ -98,9 +95,10 @@ var TRUE = (FOAM({
   extendsModel: 'Expr',
 
   methods: {
-    toSQL: function() { return '( 1 = 1 )'; },
-    toMQL: function() { return ''; },
-    f:     function() { return true; }
+    toString: function() { return '<true>'; },
+    toSQL:    function() { return '( 1 = 1 )'; },
+    toMQL:    function() { return ''; },
+    f:        function() { return true; }
   }
 })).create();
 
@@ -146,6 +144,16 @@ MODEL({
   ],
 
   methods: {
+    toString: function() {
+      var s = this.TYPE + '(';
+      for ( var i = 0 ; i < this.args.length ; i++ ) {
+        var a = this.args[i];
+        s += a.toString();
+        if ( i < this.args.length-1 ) s += (', ');
+      }
+      return s + ')';
+    },
+
     toSQL: function() {
       var s;
       s = this.model_.label;
@@ -273,6 +281,78 @@ MODEL({
       return out;
     },
 
+    PARTIAL_AND_RULES: [
+      [ 'EqExpr', 'EqExpr',
+        function(e1, e2) {
+          return e1.arg1.exclusive ?
+            e1.arg2.f() == e2.arg2.f() ? e1 : FALSE :
+            e1.arg2.f() == e2.arg2.f() ? e1 : null ;
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg1.exclusive ? e1.arg2.intersection(e2.arg2) : e1.arg2.union(e2.arg2) ;
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return null;
+          var i = e1.arg2.filter(function(o) { o = o.toUpperCase(); return e2.arg2.some(function(o2) { return o.indexOf(o2) != -1; }); });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'ContainedInICExpr', 'ContainedInICExpr',
+        function(e1, e2) {
+          debugger;
+        }
+      ],
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          if ( ! e1.arg1.exclusive ) return;
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
+        }
+      ]
+    ],
+
+    partialAnd: function(e1, e2) {
+      if ( e2.model_ === OrExpr ) { var tmp = e1; e1 = e2; e2 = tmp; }
+      if ( e1.model_ === OrExpr ) {
+        var args = [];
+        for ( var i = 0 ; i < e1.args.length ; i++ ) {
+          args.push(AND(e2, e1.args[i]));
+        }
+        return OrExpr.create({args: args}).partialEval();
+      }
+
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_AND_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+      console.log('************** Unknown partialAnd combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -300,6 +380,18 @@ MODEL({
         }
       }
 
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialAnd(newArgs[i], newArgs[j]);
+          if ( a ) {
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
+            if ( a === FALSE ) return FALSE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
+          }
+        }
+      }
+
       if ( newArgs.length == 0 ) return TRUE;
       if ( newArgs.length == 1 ) return newArgs[0];
 
@@ -319,7 +411,6 @@ MODEL({
   name: 'OrExpr',
 
   extendsModel: 'NARY',
-  abstract: true,
 
   methods: {
     toSQL: function() {
@@ -333,6 +424,7 @@ MODEL({
       s += ')';
       return s;
     },
+
     toMQL: function() {
       var s = '';
       for ( var i = 0 ; i < this.args.length ; i++ ) {
@@ -357,6 +449,54 @@ MODEL({
       return out;
     },
 
+    PARTIAL_OR_RULES: [
+      [ 'InExpr', 'EqExpr',
+        function(e1, e2) {
+          return IN(e1.arg1, e1.arg1.union([e2.arg2.f()]));
+        }
+      ],
+      [ 'InExpr', 'InExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return e2.arg2.indexOf(o) !== -1; });
+          return IN(e1.arg1, e1.arg2.union(e2.arg2));
+        }
+      ]
+      /*
+      [ 'InExpr', 'ContainsICExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOfIC(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'InExpr', 'ContainsExpr',
+        function(e1, e2) {
+          var i = e1.arg2.filter(function(o) { return o.indexOf(e2.arg2.f()) !== -1; });
+          return i.length ? IN(e1.arg1, i) : FALSE;
+        }
+      ],
+      [ 'EqExpr', 'InExpr',
+        function(e1, e2) {
+          return e2.arg2.indexOf(e1.arg2.f()) === -1 ? FALSE : e1;
+        }
+      ]*/
+    ],
+
+    partialOr: function(e1, e2) {
+      if ( ! BINARY.isInstance(e1) ) return null;
+      if ( ! BINARY.isInstance(e2) ) return null;
+      if ( e1.arg1 != e2.arg1 ) return null;
+
+      var RULES = this.PARTIAL_OR_RULES;
+      for ( var i = 0 ; i < RULES.length ; i++ ) {
+        if ( e1.model_.name == RULES[i][0] && e2.model_.name == RULES[i][1] ) return RULES[i][2](e1, e2);
+        if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
+      }
+
+      console.log('************** Unknown partialOr combination: ', e1.TYPE, e2.TYPE);
+
+      return null;
+    },
+
     partialEval: function() {
       var newArgs = [];
       var updated = false;
@@ -379,6 +519,18 @@ MODEL({
             newArgs.push(newA);
           }
           if ( a !== newA ) updated = true;
+        }
+      }
+
+      for ( var i = 0 ; i < newArgs.length-1 ; i++ ) {
+        for ( var j = i+1 ; j < newArgs.length ; j++ ) {
+          var a = this.partialOr(newArgs[i], newArgs[j]);
+          if ( a ) {
+            console.log('***************** ', newArgs[i].toMQL(), ' <PartialOr> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
+            if ( a === TRUE ) return TRUE;
+            newArgs[i] = a;
+            newArgs.splice(j, 1);
+          }
         }
       }
 
@@ -408,7 +560,8 @@ MODEL({
       return 'not ( ' + this.arg1.toSQL() + ' )';
     },
     toMQL: function() {
-      return '-( ' + this.arg1.toMQL() + ' )';
+      // TODO: only include params if necessary
+      return '-' + this.arg1.toMQL();
     },
     collectInputs: function(terms) {
       this.arg1.collectInputs(terms);
@@ -476,9 +629,9 @@ MODEL({
     toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
     toMQL: function() {
       if ( ! this.arg1.toMQL || ! this.arg2.toMQL ) return '';
-      return this.arg2 === TRUE ?
-        'is:' + this.arg1.toMQL() :
-        this.arg1.toMQL() + '=' + this.arg2.toMQL();
+      return this.arg2     === TRUE ? 'is:' + this.arg1.toMQL()   :
+             this.arg2.f() == ''    ? '-has:' + this.arg1.toMQL() :
+             this.arg1.toMQL() + '=' + this.arg2.toMQL()      ;
     },
 
     partialEval: function() {
@@ -528,6 +681,10 @@ MODEL({
   ],
 
   methods: {
+    partialEval: function() {
+      if ( this.arg2.length == 1 ) return EQ(this.arg1, this.arg2[0]);
+      return this;
+    },
     valueSet: function() {
       if ( ! this.valueSet_ ) {
         var s = {};
@@ -544,6 +701,47 @@ MODEL({
     }
   }
 });
+
+
+MODEL({
+  name: 'ContainedInICExpr',
+
+  extendsModel: 'BINARY',
+
+  properties: [
+    {
+      name:  'arg2',
+      label: 'Argument',
+      type:  'Expr',
+      help:  'Sub-expression',
+      preSet: function(_, a) { return a.map(function(o) { return o.toUpperCase(); }); }
+    }
+  ],
+
+  methods: {
+    toSQL: function() { return this.arg1.toSQL() + ' IN ' + this.arg2; },
+    toMQL: function() { return this.arg1.toMQL() + ':' + this.arg2.join(',') },
+
+    f: function(obj) {
+      var v = this.arg1.f(obj);
+      if ( Array.isArray(v) ) {
+        for ( var j = 0 ; j < v.length ; j++ ) {
+          var a = v[j].toUpperCase();
+          for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+            if ( a.indexOf(this.arg2[i]) != -1 ) return true;
+          }
+        }
+      } else {
+        v = v.toUpperCase();
+        for ( var i = 0 ; i < this.arg2.length ; i++ ) {
+          if ( v.indexOf(this.arg2[i]) != -1 ) return true;
+        }
+      }
+      return false;
+    }
+  }
+});
+
 
 MODEL({
   name: 'ContainsExpr',
@@ -595,10 +793,7 @@ MODEL({
       type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE,
-      postSet: function(_, value) {
-        // Escape Regex escape characters
-        this.pattern_ = new RegExp(value.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-      }
+      postSet: function(_, value) { this.pattern_ = undefined; }
     }
   ],
 
@@ -622,6 +817,10 @@ MODEL({
 
     f: function(obj) {
       var arg1 = this.arg1.f(obj);
+
+      // Escape Regex escape characters
+      var pattern = this.pattern_ ||
+        ( this.pattern_ = new RegExp(this.arg2.f().toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') );
 
       if ( Array.isArray(arg1) ) {
         var pattern = this.pattern_;
@@ -797,7 +996,18 @@ MODEL({
         this;
     },
 
-    f: function(obj) { return this.arg1.f(obj).startsWith(this.arg2.f(obj)); }
+    f: function(obj) {
+      var arg1 = this.arg1.f(obj);
+      var arg2 = this.arg2.f(obj);
+
+      if ( Array.isArray(arg1) ) {
+        return arg1.some(function(arg) {
+          return arg.startsWith(arg2);
+        });
+      }
+
+      return arg1.startsWith(arg2);
+    }
   }
 });
 
@@ -980,16 +1190,19 @@ MODEL({
   ],
 
   methods: {
+    maximum: function(o1, o2) {
+      return o1.compareTo(o2) > 0 ? o1 : o2;
+    },
     reduce: function(other) {
-      return MaxExpr.create({max: Math.max(this.max, other.max)});
+      return MaxExpr.create({max: this.maximum(this.max, other.max)});
     },
     reduceI: function(other) {
-      this.max = Math.max(this.max, other.max);
+      this.max = this.maximum(this.max, other.max);
     },
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.max = this.max === undefined ? v : Math.max(this.max, v);
+      this.max = this.max === undefined ? v : this.maximum(this.max, v);
     },
     remove: function(obj) { },
     toString: function() { return this.max; }
@@ -1012,16 +1225,19 @@ MODEL({
   ],
 
   methods: {
+    minimum: function(o1, o2) {
+      return o1.compareTo(o2) > 0 ? o2 : o1;
+    },
     reduce: function(other) {
-      return MinExpr.create({max: Math.min(this.min, other.min)});
+      return MinExpr.create({max: this.mininum(this.min, other.min)});
     },
     reduceI: function(other) {
-      this.min = Math.min(this.min, other.min);
+      this.min = this.minimum(this.min, other.min);
     },
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.min = this.min === undefined ? v : Math.min(this.min, v);
+      this.min = this.min === undefined ? v : this.minimum(this.min, v);
     },
     remove: function(obj) { },
     toString: function() { return this.min; }
@@ -1073,6 +1289,14 @@ MODEL({
       type:  'Map[Expr]',
       help:  'Groups.',
       factory: function() { return {}; }
+    },
+    {
+      // Maintain a mapping of real keys because the keys in
+      // 'groups' are actually the toString()'s of the real keys
+      // and his interferes with the property comparator used to
+      // sort groups.
+      name: 'groupKeys',
+      factory: function() { return [] }
     }
   ],
 
@@ -1092,35 +1316,27 @@ MODEL({
       }
       return sink;
     },
+    putInGroup_: function(key, obj) {
+      var group = this.groups.hasOwnProperty(key) && this.groups[key];
+      if ( ! group ) {
+        group = this.arg2.clone();
+        this.groups[key] = group;
+        this.groupKeys.push(key);
+      }
+      group.put(obj);
+    },
     put: function(obj) {
       var key = this.arg1.f(obj);
       if ( Array.isArray(key) ) {
-        for ( var i = 0 ; i < key.length ; i++ ) {
-          var group = this.groups.hasOwnProperty(key[i]) && this.groups[key[i]];
-          if ( ! group ) {
-            group = this.arg2.clone();
-            this.groups[key[i]] = group;
-          }
-          group.put(obj);
-        }
-        // Perhaps we should use a key value of undefiend instead of '', since '' may actually
-        // be a valid key.
-        if ( key.length == 0 ) {
-          var group = this.groups.hasOwnProperty('') && this.groups[''];
-          if ( ! group ) {
-            group = this.arg2.clone();
-            this.groups[''] = group;
-          }
-          group.put(obj);
+        if ( key.length ) {
+          for ( var i = 0 ; i < key.length ; i++ ) this.putInGroup_(key[i], obj);
+        } else {
+          // Perhaps we should use a key value of undefiend instead of '', since
+          // '' may actually be a valid key.
+          this.putInGroup_('', obj);
         }
       } else {
-        var group = this.groups.hasOwnProperty(key) && this.groups[key];
-        if ( ! group ) {
-          group = this.arg2.clone();
-
-          this.groups[key] = group;
-        }
-        group.put(obj);
+        this.putInGroup_(key, obj);
       }
     },
     clone: function() {
@@ -1258,12 +1474,12 @@ MODEL({
     sortRows: function(rows, yFunc) { return this.sortAxis(rows, yFunc); },
     sortedCols: function() {
       return this.sortCols(
-        Object.getOwnPropertyNames(this.cols.groups),
+        this.cols.groupKeys,
         this.xFunc);
     },
     sortedRows: function() {
       return this.sortRows(
-        Object.getOwnPropertyNames(this.rows.groups),
+        this.rows.groupKeys,
         this.yFunc);
     },
     toHTML: function() {
@@ -1290,6 +1506,10 @@ MODEL({
         for ( var i = 0 ; i < sortedCols.length ; i++ ) {
           var x = sortedCols[i];
           var value = rows[y].groups[x];
+          if ( value ) {
+            value.x = x;
+            value.y = y;
+          }
           out += this.renderCell(x, y, value);
         }
 
@@ -1538,8 +1758,8 @@ function SET(arg1, arg2) {
   return SetExpr.create({ arg1: compile_(arg1), arg2: compile_(arg2) });
 }
 
-function GROUP_BY(expr1, expr2) {
-  return GroupByExpr.create({arg1: expr1, arg2: expr2});
+function GROUP_BY(expr1, opt_expr2) {
+  return GroupByExpr.create({arg1: expr1, arg2: opt_expr2 || [].sink});
 }
 
 function GRID_BY(xFunc, yFunc, acc) {
@@ -1547,7 +1767,7 @@ function GRID_BY(xFunc, yFunc, acc) {
 }
 
 function MAP(fn, opt_sink) {
-  return MapExpr.create({arg1: fn, arg2: opt_sink || []});
+  return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
 }
 
 function DISTINCT(fn, sink) {
@@ -1785,6 +2005,9 @@ MODEL({
   extendsModel: 'UNARY',
 
   methods: {
+    toSQL: function() {
+      return this.arg1.toMQL() + 'DESC';
+    },
     toMQL: function() {
       return '-' + this.arg1.toMQL();
     },

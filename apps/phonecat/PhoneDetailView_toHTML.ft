@@ -1,6 +1,6 @@
 <%
   var self  = this;
-  var phone = this.obj;
+  var phone = this.data;
   var imgId = this.nextID();
   function checkmark(b) { return b ? '\u2713' : '\u2718'; }
 %>

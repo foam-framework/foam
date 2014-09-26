@@ -26,21 +26,6 @@ MODEL({
       defaultValueFn: function() { return "Edit " + this.model.label; }
     },
     {
-      name: 'obj',
-      getter: function() { console.warn('DetailView .obj is deprecated.  Use .data instead.'); return this.data; }
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'showActions',
-      defaultValue: false,
-      postSet: function(_, showActions) {
-        // TODO: No way to remove the decorator.
-        if ( showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
-        }
-      }
-    },
-    {
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write'
@@ -55,14 +40,6 @@ MODEL({
         this.onValueChange_.apply(this, arguments);
         if ( this.$ ) this.updateSubViews();
       }
-    },
-    {
-      name: 'onKeyboardShortcut',
-      code: function(evt) {
-        // console.log('***** key: ', this.evtToKeyCode(evt));
-        var action = this.keyMap_[this.evtToKeyCode(evt)];
-        if ( action ) action.callIfEnabled(this.obj);
-      }
     }
   ],
 
@@ -74,9 +51,14 @@ MODEL({
 
     createTemplateView: function(name, opt_args) {
       var o = this.viewModel()[name];
-      if ( o ) return Action.isInstance(o) ?
-        this.createActionView(o, this.data$, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( o ) {
+        var v = Action.isInstance(o) ?
+          this.createActionView(o, opt_args) :
+          this.createView(o, opt_args) ;
+
+        v.data$ = this.data$;
+        return v;
+      }
 
       return this.SUPER(name, opt_args);
     },
@@ -151,33 +133,6 @@ MODEL({
 
       // hooks sub-views upto sub-models
       this.updateSubViews();
-      this.initKeyboardShortcuts();
-    },
-
-    evtToKeyCode: function(evt) {
-      var s = '';
-      if ( evt.ctrlKey ) s += 'ctrl-';
-      if ( evt.shiftKey ) s += 'shift-';
-      s += evt.keyCode;
-      return s;
-    },
-
-    initKeyboardShortcuts: function() {
-      var keyMap = {};
-      var found = false;
-      for ( var i = 0 ; i < this.model.actions.length ; i++ ) {
-        var action = this.model.actions[i];
-        for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
-          var key = action.keyboardShortcuts[j];
-          var keyCode = key.toString();
-          keyMap[keyCode] = action;
-          found = true;
-        }
-      }
-      if ( found ) {
-        this.keyMap_ = keyMap;
-        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
-      }
     },
 
     updateSubViews: function() {
@@ -213,7 +168,7 @@ MODEL({
       postSet: function(_, data) {
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        this.onValueChange();
+        data.addListener(function() { this.version++; }.bind(this));
       }
     },
     {
@@ -225,6 +180,12 @@ MODEL({
     },
     {
       name: 'view'
+    },
+    {
+      // Version of the data which changes whenever any property of the data is updated.
+      // Used to help trigger isEnabled / isAvailable in Actions.
+      model_: 'IntProperty',
+      name: 'version'
     }
   ],
 
@@ -233,15 +194,15 @@ MODEL({
       name:  'save',
       help:  'Save updates.',
 
-      isEnabled: function() { return ! this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() {
         var self = this;
         var obj  = this.data;
+        this.stack.back();
+
         this.dao.put(obj, {
           put: function() {
             console.log("Saving: ", obj.toJSON());
-
-            self.stack.back();
           },
           error: function() {
             console.error("Error saving", arguments);
@@ -252,13 +213,74 @@ MODEL({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isEnabled: function() { return ! this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isEnabled: function() { return this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     }
+  ]
+});
+
+
+MODEL({
+  name: 'RelationshipView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'relationship',
+      required: true
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'viewModel',
+      defaultValue: 'DAOController'
+    },
+    {
+      name: 'data',
+      postSet: function() {
+        this.updateView();
+      }
+    },
+    {
+      name: 'view'
+    }
+  ],
+
+  methods: {
+    updateView: function() {
+      if ( this.view ) this.view.destroy();
+      this.view = this.viewModel.create({
+        dao: this.data[this.relationship.name],
+        model: this.relationship.relatedModel
+      });
+      if ( this.$ ) {
+        this.updateHTML();
+      }
+    }
+  },
+  templates: [
+    function toInnerHTML() {/* %%view */}
+  ]
+});
+
+MODEL({
+  name: 'RelationshipsView',
+  extendsModel: 'DetailView',
+
+  templates: [
+    function toHTML() {/*
+      <%
+        for ( var i = 0, relationship; relationship = this.model.relationships[i]; i++ ) {
+          out(this.X.RelationshipView.create({
+            data$: this.data$,
+            relationship: relationship
+          }));
+        }
+      %>
+    */}
   ]
 });

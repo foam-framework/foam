@@ -62,6 +62,15 @@ if ( ! String.prototype.startsWithIC ) {
   };
 }
 
+String.prototype.indexOfIC = function(a) {
+  if ( a.length > this.length ) return -1;
+  return this.toUpperCase().indexOf(a.toUpperCase());
+};
+
+String.prototype.equals = function(other) {
+  return this.compareTo(other) === 0;
+};
+
 String.prototype.equalsIC = function(other) {
   return other && this.toUpperCase() === other.toUpperCase();
 };
@@ -192,6 +201,7 @@ Date.prototype.toRelativeDateString = function() {
 
 Date.prototype.compareTo = function(o) {
   if ( o === this ) return 0;
+  if ( ! o ) return 1;
   var d = this.getTime() - o.getTime();
   return d == 0 ? 0 : d > 0 ? 1 : -1;
 };
@@ -250,6 +260,19 @@ Object.defineProperty(Array.prototype, 'binaryInsert', {
   }
 });
 
+Object.defineProperty(Array.prototype, 'union', {
+  value: function(other) {
+    return this.concat(
+      other.filter(function(o) { return this.indexOf(o) == -1; }.bind(this)));
+  }
+});
+
+Object.defineProperty(Array.prototype, 'intersection', {
+  value: function(other) {
+    return this.filter(function(o) { return other.indexOf(o) != -1; });
+  }
+});
+
 // TODO: binarySearch
 
 Object.defineProperty(Array.prototype, 'intern', {
@@ -305,19 +328,26 @@ Object.defineProperty(Array.prototype, 'fReduce', {
 /** Reverse the direction of a comparator. **/
 
 var CompoundComparator = function() {
-  var cs = arguments;
+  var args = argsToArray(arguments);
+  var cs = [];
 
   // Convert objects with .compare() methods to compare functions.
-  for ( var i = 0 ; i < cs.length ; i++ )
-    cs[i] = toCompare(cs[i]);
+  for ( var i = 0 ; i < args.length ; i++ )
+    cs[i] = toCompare(args[i]);
 
-  return function(o1, o2) {
+  var f = function(o1, o2) {
     for ( var i = 0 ; i < cs.length ; i++ ) {
       var r = cs[i](o1, o2);
       if ( r != 0 ) return r;
     }
     return 0;
   };
+
+  f.toSQL = function() { return args.map(function(s) { return s.toSQL(); }).join(','); };
+  f.toMQL = function() { return args.map(function(s) { return s.toMQL(); }).join(' '); };
+  f.toString = f.toSQL;
+
+  return f;
 };
 
 
@@ -374,19 +404,16 @@ Object.defineProperty(Array.prototype, 'pushAll', {
 /**
  * Search for a single element in an array.
  * @param predicate used to determine element to find
- * @param action to be called with (key, index) arguments
- *        when found
  */
-/*
-Object.defineProperty(Array.prototype, 'find', {
-  value: function(predicate, action) {
-  for (var i=0; i<this.length; i++)
-    if (predicate(this[i], i)) {
-      return action(this[i], i) || this[i];
+Object.defineProperty(Array.prototype, 'mapFind', {
+  value: function(map) {
+    for (var i = 0;  i < this.length ; i++ ) {
+      var result = map(this[i], i);
+      if ( result ) return result;
     }
-  return undefined;
-}});
-*/
+  }
+});
+
 
 /** Remove an element from an array. **/
 /*
@@ -410,7 +437,7 @@ Object.defineProperty(Object.prototype, 'forEach', {
     for ( var key in this ) if (this.hasOwnProperty(key)) fn(this[key], key);
 }});*/
 
-// Workaround for crbug.com/258522
+// Workaround for crbug.com/258552
 function Object_forEach(obj, fn) {
   for (var key in obj) if (obj.hasOwnProperty(key)) fn(obj[key], key);
 }
@@ -547,6 +574,22 @@ String.prototype.intern = (function() {
   return function() { return map[this] || (map[this] = this.toString()); };
 })();
 
+// Called like myArray.mapProp('name'), that's equivalent to:
+// myArray.map(function(x) { return x.name; });
+Object.defineProperty(Array.prototype, 'mapProp', {
+  value: function(prop) {
+    return this.map(function(x) { return x[prop]; });
+  }
+});
+
+Object.defineProperty(Array.prototype, 'mapCall', {
+  value: function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    var func = args.shift();
+    return this.map(function(x) { return x[func] && x[func].apply(x[func], args); });
+  }
+});
+
 if (window.XMLHttpRequest) {
   /**
       * Add an afunc send to XMLHttpRequest
@@ -567,15 +610,16 @@ RegExp.quote = function(str) {
   return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
 };
 
-function defineLazyProperty(target, name, valueFn) {
-  var value;
+function defineLazyProperty(target, name, definitionFn) {
   Object.defineProperty(target, name, {
     get: function() {
-      if ( value ) return value;
-      value = valueFn.call(this);
-      Object.defineProperty(target, name, value);
-      return value;
-    }
+      var definition = definitionFn.call(this);
+      Object.defineProperty(this, name, definition);
+      return definition.get ?
+        definition.get.call(this) :
+        definition.value;
+    },
+    configurable: true
   });
 }
 

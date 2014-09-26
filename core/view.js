@@ -94,8 +94,8 @@ var DOM = {
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
       // console.log(e.getAttribute('model'), e.getAttribute('view'));
-      GLOBAL[e.getAttribute('view')];
-      GLOBAL[e.getAttribute('model')];
+      FOAM.lookup(e.getAttribute('view'), X);
+      FOAM.lookup(e.getAttribute('model'), X);
     }
     var models = [];
     for ( var key in USED_MODELS ) {
@@ -104,35 +104,34 @@ var DOM = {
 
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
-        this.initElement(fs[i], X.document);
+        this.initElement(fs[i], X, X.document);
       }
     }.bind(this))();
   },
 
-  initElementChildren: function(e) {
+  initElementChildren: function(e, X) {
     var a = [];
 
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
 
       if ( c.tagName === 'FOAM' ) {
-        a.push(DOM.initElement(c));
+        a.push(DOM.initElement(c, X));
       }
     }
 
     return a;
   },
 
-  // TODO: Supply X and set on created children
   /** opt_document -- if supplied the object's view will be added to the document. **/
-  initElement: function(e, opt_document) {
+  initElement: function(e, X, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.contains(e) ) return;
 
     var args = {};
     var modelName = e.getAttribute('model');
-    var model = GLOBAL[modelName];
+    var model = FOAM.lookup(modelName, X);
 
     if ( ! model ) {
       console.error('Unknown Model: ', modelName);
@@ -186,7 +185,7 @@ var DOM = {
       }
     }
 
-    var obj = model.create(args);
+    var obj = model.create(args, X);
 
     var onLoad = e.getAttribute('oninit');
     if ( onLoad ) {
@@ -199,7 +198,7 @@ var DOM = {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
-        var viewModel = viewName ? GLOBAL[viewName] : DetailView;
+        var viewModel = viewName ? FOAM.lookup(viewName, X) : DetailView;
         view = viewModel.create({model: model, data: obj});
         if ( ! viewName ) {
           // default value is 'true' if 'showActions' isn't specified.
@@ -284,6 +283,39 @@ MODEL({
     {
       name: 'extraClassName',
       defaultValue: ''
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showActions',
+      defaultValue: false,
+      postSet: function(oldValue, showActions) {
+        // TODO: No way to remove the decorator.
+        if ( ! oldValue && showActions ) {
+          this.addDecorator(this.X.ActionBorder.create());
+        }
+      }
+    },
+    {
+      name: 'initializers_',
+      factory: function() { return []; }
+    },
+    {
+      name: 'destructors_',
+      factory: function() { return []; }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onKeyboardShortcut',
+      code: function(evt) {
+        // console.log('***** key: ', this.evtToKeyCode(evt));
+        var action = this.keyMap_[this.evtToKeyCode(evt)];
+        if ( action ) {
+          action();
+          evt.preventDefault();
+        }
+      }
     }
   ],
 
@@ -292,7 +324,7 @@ MODEL({
     ON_HIDE: ['onHide'], // Indicates that the View has been hidden
     ON_SHOW: ['onShow'], // Indicates that the View is now being reshown
 
-    toView: function() { return this; },
+    toView_: function() { return this; },
 
     deepPublish: function(topic) {
       var count = this.publish.apply(this, arguments);
@@ -349,12 +381,12 @@ MODEL({
       return v;
     },
 
-    createActionView: function(action, value, opt_args) {
+    createActionView: function(action, opt_args) {
       var X = ( opt_args && opt_args.X ) || this.X;
-      var modelName = opt_args && opt_args.model_ ? opt_args.model_ : 'ActionButton';
-      var v = X[modelName].create({
-        action: action,
-        data$: value}).copyFrom(opt_args);
+      var modelName = opt_args && opt_args.model_ ?
+        opt_args.model_ :
+        'ActionButton'  ;
+      var v = X[modelName].create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -362,21 +394,27 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
+      // TODO: it would be more efficient to replace SimpleValue with ConstantValue
+      // TODO: rename SimpleValue to just Value and make it a Trait?
       var o = this.model_[name];
-      return Action.isInstance(o) ?
-        this.createActionView(o, SimpleValue.create(this), opt_args) :
+      if ( ! o ) throw 'Unknown View Name: ' + name;
+
+      var v = Action.isInstance(o) ?
+        this.createActionView(o, opt_args) :
         this.createView(o, opt_args) ;
+      v.data = this;
+      return v;
     },
 
     focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
 
     addChild: function(child) {
-      if ( child.toView ) child = child.toView(); // Maybe the check isn't needed.
+      if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
       // and then you write the View using TemplateOutput (which also calls addChild).
       // That should all be cleaned up and all outputHTML() methods should use TemplateOutput.
-      if ( child.parent ) return;
+      if ( this.children.indexOf(child) != -1 ) return;
 
       try {
         child.parent = this;
@@ -412,17 +450,58 @@ MODEL({
     },
 
     addInitializer: function(f) {
-      (this.initializers_ || (this.initializers_ = [])).push(f);
+      this.initializers_.push(f);
+    },
+    addDestructor: function(f) {
+      this.destructors_.push(f);
+    },
+
+    tapClick: function() {
     },
 
     on: function(event, listener, opt_id) {
       opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
 
+      if ( event === 'click' && this.X.gestureManager ) {
+        var self = this;
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: {
+            containsPoint: function(x, y, e) {
+              while (e) {
+                if ( e.id === opt_id ) return true;
+                e = e.parentNode;
+              }
+              return false;
+            }
+          },
+          getElement: function() {
+            return self.X.$(opt_id);
+          },
+          handler: {
+            tapClick: function() {
+              // Create a fake event.
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { }
+              });
+            }
+          },
+          gesture: 'tap'
+        });
+
+        manager.install(target);
+        this.addDestructor(function() {
+          manager.uninstall(target);
+        });
+        return opt_id;
+      }
+
       this.addInitializer(function() {
         var e = $(opt_id);
         // if ( ! e ) console.log('Error Missing element for id: ' + opt_id + ' on event ' + event);
-        if ( e ) e.addEventListener(event, listener.bind(this), false);
+        if ( e ) e.addEventListener(event, listener, false);
       });
 
       return opt_id;
@@ -457,6 +536,16 @@ MODEL({
       return opt_id;
     },
 
+    setClasses: function(map, opt_id) {
+      opt_id = opt_id || this.nextID();
+      var keys = Objects.keys(map);
+      for ( var i = 0 ; i < keys.length ; i++ ) {
+        this.setClass(keys[i], map[keys[i]], opt_id);
+      }
+
+      return opt_id;
+    },
+
     /** Insert this View's toHTML into the Element of the supplied name. **/
     insertInElement: function(name) {
       var e = $(name);
@@ -473,6 +562,7 @@ MODEL({
     updateHTML: function() {
       if ( ! this.$ ) return;
 
+      this.invokeDestructors();
       this.$.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
@@ -480,6 +570,7 @@ MODEL({
     toInnerHTML: function() { return ''; },
 
     toHTML: function() {
+      this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
         '</' + this.tagName + '>';
@@ -487,6 +578,7 @@ MODEL({
 
     initHTML: function() {
       this.initInnerHTML();
+      this.initKeyboardShortcuts();
     },
 
     initInnerHTML: function() {
@@ -502,32 +594,80 @@ MODEL({
       if ( this.children ) {
         // init children
         for ( var i = 0 ; i < this.children.length ; i++ ) {
-          // console.log("init child: " + this.children[i]);
+          // console.log(i, 'init child: ' + this.children[i]);
           try {
             this.children[i].initHTML();
           } catch (x) {
-            console.log("Error on View.child.initHTML", x, x.stack);
+            console.log('Error on View.child.initHTML', x, x.stack);
           }
         }
       }
     },
 
     invokeInitializers: function() {
-      if ( ! this.initializers_ ) return;
-
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
+      this.initializers_ = [];
+    },
+    invokeDestructors: function() {
+      for ( var i = 0; i < this.destructors_.length; i++ ) this.destructors_[i]();
+      this.destructors_ = [];
+    },
 
-      this.initializers_ = undefined;
+    evtToKeyCode: function(evt) {
+      var s = '';
+      if ( evt.ctrlKey ) s += 'ctrl-';
+      if ( evt.shiftKey ) s += 'shift-';
+      s += evt.keyCode;
+      return s;
+    },
+
+    initKeyboardShortcuts: function() {
+      var keyMap = {};
+      var found  = false;
+      var self   = this;
+
+      function init(actions, opt_value) {
+        actions.forEach(function(action) {
+          for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
+            var key     = action.keyboardShortcuts[j];
+            keyMap[key] = opt_value ?
+              function() { action.callIfEnabled(self.X, opt_value.get()); } :
+              action.callIfEnabled.bind(action, self.X, self) ;
+            found = true;
+          }
+        });
+      }
+
+      init(this.model_.actions);
+      if ( DetailView.isInstance(this) &&
+          this.model &&
+          this.model.actions )
+        init(this.model.actions, this.data$);
+
+      if ( found ) {
+        this.keyMap_ = keyMap;
+        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+      }
     },
 
     destroy: function() {
       // TODO: remove listeners
+      this.invokeDestructors();
+      for ( var i = 0; i < this.children.length; i++ ) {
+        this.children[i].destroy();
+      }
+      this.children = [];
     },
 
     close: function() {
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
+    },
+
+    // Called by the GestureManager, return true if this view is being touched.
+    containsPoint: function(x, y, element) {
+      return this.$ && this.$.contains(element);
     }
   }
 });
@@ -548,13 +688,15 @@ MODEL({
       type: 'View',
       postSet: function(_, p) {
         p[this.prop.name + 'View'] = this.view;
-        if ( ! this.data ) this.data$ = p.data$;
         if ( this.view ) this.view.parent = p;
       }
     },
     {
       name: 'data',
-      postSet: function(_,d) { this.bindData(); }
+      postSet: function(oldData, data) {
+        this.unbindData(oldData);
+        this.bindData(data);
+      }
     },
     {
       name: 'innerView',
@@ -568,11 +710,17 @@ MODEL({
   ],
 
   methods: {
+
     init: function(args) {
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
-        var view = this.X[this.args.model_].create(this.prop);
+        var model = this.X[this.args.model_];
+        if ( ! model ) {
+          console.error('Unknown View: ', this.args.model_);
+          debugger;
+        }
+        var view = model.create(this.prop);
         delete this.args.model_;
       } else {
         view = this.createViewFromProperty(this.prop);
@@ -580,10 +728,12 @@ MODEL({
 
       view.copyFrom(this.args);
       view.parent = this.parent;
+      view.prop = this.prop;
 
       this.view = view;
-      this.bindData();
+      this.bindData(this.data);
     },
+
     createViewFromProperty: function(prop) {
       var viewName = this.innerView || prop.view
       if ( ! viewName ) return this.X.TextFieldView.create(prop);
@@ -594,15 +744,158 @@ MODEL({
 
       return viewName.create(prop);
     },
-    bindData: function() {
+
+    unbindData: function(oldData) {
       var view = this.view;
-      var data = this.data;
+      if ( ! view || ! oldData ) return;
+      var pValue = oldData.propertyValue(this.prop.name);
+      Events.unlink(pValue, view.data$);
+    },
+
+    bindData: function(data) {
+      var view = this.view;
       if ( ! view || ! data ) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, view.data$);
     },
+
     toHTML: function() { return this.view.toHTML(); },
-    initHTML: function() { this.view.initHTML(); }
+
+    toString: function() { return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
+
+    initHTML: function() { this.view.initHTML(); },
+
+    destroy: function() {
+      this.SUPER();
+      this.view.destroy();
+    }
+  }
+});
+
+
+// http://www.google.com/design/spec/components/tooltips.html#tooltips-usage
+MODEL({
+  name: 'Tooltip',
+
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'action'
+    },
+    {
+      name: 'data'
+    },
+    {
+      name: 'text',
+      help: 'Help text to be shown in tooltip.'
+    },
+    {
+      name: 'target',
+      help: 'Target element to provide tooltip for.'
+    },
+    {
+      name: 'className',
+      defaultValue: 'tooltip'
+    },
+    {
+      name: 'closed',
+      defaultValue: false
+    }
+  ],
+
+  templates: [
+    function CSS() {/*
+      .tooltip {
+        background: rgba(80,80,80,0.9);
+        border-radius: 4px;
+        color: white;
+        font-size: 10pt;
+        left: 0;
+        padding: 5px 8px;
+        position: absolute;
+        top: 0;
+        visibility: hidden;
+        z-index: 999;
+      }
+      .tooltip.animated {
+        transition: top 0.5s ease-in-out;
+        visibility: visible;
+      }
+      .tooltip.fadeout {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+    */}
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      setTimeout(function() {
+        if ( this.closed ) return;
+
+        var document = this.X.document;
+        var div      = document.createElement('div');
+
+        // Only allow one Tooltip per document, so close the previous one if it exists.
+        if ( document.previousTooltip_ ) document.previousTooltip_.close();
+        document.previousTooltip_ = this;
+
+        // Close after 5s
+        this.X.setTimeout(this.close.bind(this), 5000);
+
+        div.className = this.className;
+        div.id = this.id;
+        div.innerHTML = this.toInnerHTML();
+
+        document.body.appendChild(div);
+
+        // If an action is defined and we click on the tooltip, then treat
+        // it as we activated the action.
+        if ( this.action && this.data ) {
+          this.on('click', function() {
+            this.action.callIfEnabled(this.X, this.data);
+            this.close();
+          }.bind(this), this.id);
+        }
+
+        var s            = this.X.window.getComputedStyle(div);
+        var pos          = findPageXY(this.target);
+        var screenHeight = this.X.document.body.clientHeight;
+        var scrollY      = this.X.window.scrollY;
+        var above        = pos[1] - scrollY > screenHeight / 2;
+        var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
+        var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
+        var targetHeight = this.target.clientHeight || this.target.offsetHeight;
+
+        div.style.top  = pos[1];
+        div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
+
+        DOM.setClass(div, 'animated');
+
+        this.X.setTimeout(function() {
+          div.style.top = above ?
+            pos[1] - targetHeight - 8 :
+            pos[1] + targetHeight + 8 ;
+        }, 10);
+
+        this.initHTML();
+      }.bind(this), 500);
+    },
+    toInnerHTML: function() { return this.text; },
+    close: function() {
+      this.closed = true;
+      if ( this.$ ) {
+        this.X.setTimeout(this.$.remove.bind(this.$), 1000);
+        DOM.setClass(this.$, 'fadeout');
+      }
+    },
+    destroy: function() {
+      this.SUPER();
+      this.close();
+    }
   }
 });
 
@@ -642,15 +935,16 @@ MODEL({
   ],
 
   methods: {
-    open: function(e, opt_delay) {
+    // TODO: first argument isn't used anymore, find and cleanup all uses
+    open: function(_, opt_delay) {
       if ( this.$ ) return;
-      var document = (e.$ || e).ownerDocument;
+      var document = this.X.document;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
       div.style.top = this.y + 'px';
-      if ( this.width ) div.style.width = this.width + 'px';
-      if ( this.height ) div.style.height = this.height + 'px';
-      if ( this.maxWidth ) div.style.maxWidth = this.maxWidth + 'px';
+      if ( this.width )     div.style.width = this.width + 'px';
+      if ( this.height )    div.style.height = this.height + 'px';
+      if ( this.maxWidth )  div.style.maxWidth = this.maxWidth + 'px';
       if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;
@@ -663,11 +957,13 @@ MODEL({
       this.$ && this.$.remove();
     },
     destroy: function() {
+      this.SUPER();
       this.close();
       this.view.destroy();
     }
   }
 });
+
 
 MODEL({
   name: 'AutocompleteView',
@@ -732,7 +1028,7 @@ MODEL({
 
     makeView: function() {
       return this.X.ChoiceListView.create({
-        dao: this.completer.autocompleteDao,
+        dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocomplete',
         orientation: 'vertical',
         mode: 'final',
@@ -761,7 +1057,7 @@ MODEL({
 
       if ( this.X.document !== document ) debugger;
 
-      var div      = document.createElement('div');
+      var div    = document.createElement('div');
       var window = document.defaultView;
 
       if ( this.X.window !== window ) debugger;
@@ -799,11 +1095,14 @@ MODEL({
       var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
 
       if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
-        div.style.bottom = parentNode.offsetHeight; document.defaultView.innerHeight - pos[1];
+        div.style.bottom = parentNode.offsetHeight;
+        document.defaultView.innerHeight - pos[1];
       }
 
-      if ( pos[2].offsetWidth - pos[0] < 600 ) div.style.left = 600 - pos[2].offsetWidth;
-      else div.style.left = -parentNode.offsetWidth;
+      if ( pos[2].offsetWidth - pos[0] < 600 )
+        div.style.left = 600 - pos[2].offsetWidth;
+      else
+        div.style.left = -parentNode.offsetWidth;
 
       if ( this.width ) div.style.width = this.width + 'px';
       if ( this.height ) div.style.height = this.height + 'px';
@@ -865,6 +1164,7 @@ MODEL({
     */}
   ]
 });
+
 
 MODEL({
   name: 'StaticHTML',
@@ -1002,8 +1302,8 @@ MODEL({
     {
       name: 'domValue',
       postSet: function(oldValue, newValue) {
-        oldValue && Events.unfollow(this.value, oldValue);
-        Events.follow(this.value, newValue);
+        oldValue && Events.unfollow(this.data$, oldValue);
+        newValue && Events.follow(this.data$, newValue);
       }
     },
     {
@@ -1151,9 +1451,9 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'escapeHTML',
-      // defaultValue: true,
+      defaultValue: true,
       // TODO: make the default 'true' for security reasons
-      help: 'If true, HTML content is excaped in display mode.'
+      help: 'If true, HTML content is escaped in display mode.'
     },
     {
       model_: 'StringProperty',
@@ -1166,10 +1466,10 @@ MODEL({
       }
     },
     {
-      name: 'domValue'
+      name: 'domValue',
     },
     {
-      name: 'data'
+      name: 'data',
     },
     {
       model_: 'StringProperty',
@@ -1191,6 +1491,10 @@ MODEL({
     /** Escape topic published when user presses 'escape' key to abort edits. **/
     // TODO: Model as a 'Topic'
     ESCAPE: ['escape'],
+
+    installInDocument: function(X, document) {
+      console.log('Installing TextFieldView in Document.');
+    },
 
     toHTML: function() {
       return this.mode === 'read-write' ?
@@ -1294,7 +1598,10 @@ MODEL({
       return value;
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   },
 
   listeners: [
@@ -1391,8 +1698,6 @@ MODEL({
         this.mode === 'read-write' ? 'input' : undefined,
         this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
 
-      Events.relate(this.data$, this.domValue, this.valueToDom, this.domToValue);
-
       Events.relate(
         this.data$,
         this.domValue,
@@ -1467,7 +1772,10 @@ MODEL({
       }
     },
 
-    destroy: function() { Events.unlink(this.domValue, this.data$); }
+    destroy: function() {
+      this.SUPER();
+      Events.unlink(this.domValue, this.data$);
+    }
   }
 });
 
@@ -1520,6 +1828,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1557,6 +1866,7 @@ MODEL({
     },
 
     destroy: function() {
+      this.SUPER();
       Events.unlink(this.domValue, this.data$);
     }
   }
@@ -1607,7 +1917,7 @@ MODEL({
     },
     initHTML: function() {
       if ( ! this.$ ) return;
-      this.invokeInitializers();
+      this.SUPER();
       this.updateHTML();
     },
     updateHTML: function() {
@@ -1769,14 +2079,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       try {
         return JSONUtil.parse(text);
@@ -1799,14 +2107,12 @@ MODEL({
 
   extendsModel: 'TextAreaView',
 
+  properties: [
+    { name: 'displayWidth',  defaultValue: 100 },
+    { name: 'displayHeight', defaultValue: 100 }
+  ],
+
   methods: {
-    init: function(args) {
-      this.SUPER();
-
-      this.cols = (args && args.displayWidth)  || 100;
-      this.rows = (args && args.displayHeight) || 50;
-    },
-
     textToValue: function(text) {
       return this.val_; // Temporary hack until XML parsing is implemented
       // TODO: parse XML
@@ -1934,72 +2240,6 @@ MODEL({
 });
 
 
-MODEL({
-  name: 'EditColumnsView',
-
-  extendsModel: 'View',
-
-  properties: [
-    {
-      name: 'model',
-      type: 'Model'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'properties'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'availableProperties'
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onAddColumn',
-      code: function(prop) {
-        this.properties = this.properties.concat([prop]);
-      }
-    },
-    {
-      name: 'onRemoveColumn',
-      code: function(prop) {
-        this.properties = this.properties.deleteF(prop);
-      }
-    }
-
-  ],
-
-  methods: {
-    toHTML: function() {
-      var s = '<span id="' + this.id + '" class="editColumnView" style="position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
-
-      s += 'Show columns:';
-      s += '<table>';
-
-      // Currently Selected Properties
-      for ( var i = 0 ; i < this.properties.length ; i++ ) {
-        var p = this.model.getProperty(this.properties[i]);
-        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
-      }
-
-      // Available but not Selected Properties
-      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
-        var p = this.availableProperties[i];
-        if ( this.properties.indexOf(p.name) == -1 ) {
-          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
-        }
-      }
-
-      s += '</table>';
-      s += '</span>';
-
-      return s;
-    }
-  }
-});
-
-
 // TODO: add ability to set CSS class and/or id
 MODEL({
   name: 'ActionButton',
@@ -2030,6 +2270,10 @@ MODEL({
       defaultValueFn: function() { return this.action.showLabel; }
     },
     {
+      name: 'label',
+      defaultValueFn: function() { return this.action.label; }
+    },
+    {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
     }
@@ -2040,23 +2284,46 @@ MODEL({
       name: 'render',
       isAnimated: true,
       code: function() { this.updateHTML(); }
+    },
+    {
+      name: 'onMouseEnter',
+      code: function(e) {
+        if ( ! this.tooltip_ && this.action.help ) {
+          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, action: this.action, data: this.data, target: this.$});
+        }
+      }
+    },
+    {
+      name: 'onMouseLeave',
+      code: function(e) {
+        if ( this.tooltip_ && e.toElement === this.tooltip_.$ ) return;
+        this.closeTooltip();
+      }
     }
   ],
 
   methods: {
+    closeTooltip: function() {
+      if ( this.tooltip_ ) {
+        this.tooltip_.close();
+        this.tooltip_ = null;
+      }
+    },
     toHTML: function() {
       var self = this;
 
       this.on('click', function() {
-        self.action.callIfEnabled(self.data);
-      }, this.id);
-
-      this.setAttribute('data-tip', function() {
-        return self.action.help || undefined;
+        self.action.callIfEnabled(self.X, self.data);
       }, this.id);
 
       this.setAttribute('disabled', function() {
+        self.closeTooltip();
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
+      }, this.id);
+
+      this.setClass('available', function() {
+        self.closeTooltip();
+        return self.action.isAvailable.call(self.data, self.action);
       }, this.id);
 
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
@@ -2068,7 +2335,7 @@ MODEL({
       var out = '';
 
       if ( this.iconUrl ) {
-        out += '<img src="' + XMLUtil.escapeAttr(this.action.iconUrl) + '">';
+        out += '<img src="' + XMLUtil.escapeAttr(this.iconUrl) + '">';
       }
 
       if ( this.showLabel ) {
@@ -2076,6 +2343,15 @@ MODEL({
       }
 
       return out;
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      if ( this.action.help ) {
+        this.$.addEventListener('mouseenter', this.onMouseEnter);
+        this.$.addEventListener('mouseleave', this.onMouseLeave);
+      }
     }
   }
 });
@@ -2276,26 +2552,33 @@ MODEL({
 MODEL({
   name: 'ActionBorder',
 
-  properties: [
-    {
-      name: 'actions'
-    },
-    {
-      name: 'data'
-    }
-  ],
-
   methods: {
     toHTML: function(border, delegate, args) {
       var str = "";
       str += delegate.apply(this, args);
       str += '<div class="actionToolbar">';
-      var actions = border.actions || this.model.actions;
+
+      // Actions on the View, are bound to the view
+      var actions = this.model_.actions;
       for ( var i = 0 ; i < actions.length; i++ ) {
-        var action = actions[i];
-        var button = this.X.ActionButton.create({ action: action, data$: this.data$ });
-        str += " " + button.toHTML() + " ";
-        this.addChild(button);
+        var v = this.createActionView(actions[i]);
+        v.data = this;
+        str += ' ' + v.toView_().toHTML() + ' ';
+        this.addChild(v);
+      }
+
+      // This is poor design, we should defer to the view and polymorphism
+      // to make the distinction.
+      if ( DetailView.isInstance(this) ) {
+
+        // Actions on the data are bound to the data
+        actions = this.model.actions;
+        for ( var i = 0 ; i < actions.length; i++ ) {
+          var v = this.createActionView(actions[i]);
+          v.data$ = this.data$;
+          str += ' ' + v.toView_().toHTML() + ' ';
+          this.addChild(v);
+        }
       }
 
       str += '</div>';
@@ -2336,16 +2619,17 @@ MODEL({
   }
 });
 
-
+/*
 var ArrayView = {
   create: function(prop) {
+    console.assert(prop.subType, 'Array properties must specify "subType".');
     var view = DAOController.create({
       model: GLOBAL[prop.subType]
     });
     return view;
   }
 };
-
+*/
 
 MODEL({
   name: 'Mouse',
@@ -2435,11 +2719,9 @@ MODEL({
       setter: function(dao) { this.data = dao; }
     },
     {
+      model_: 'ArrayProperty',
       name: 'views',
-      type: 'Array[ViewChoice]',
       subType: 'ViewChoice',
-      view: 'ArrayView',
-      defaultValue: [],
       help: 'View choices.'
     },
     {
@@ -2485,7 +2767,7 @@ MODEL({
           viewChoice.view(this.data.model_, this.data$) :
           GLOBAL[viewChoice.view].create({
             model: this.data.model_,
-            value: this.data$
+            data:  this.data
           });
 
         // TODO: some views are broken and don't have model_, remove
@@ -2555,6 +2837,8 @@ MODEL({
     }
   }
 });
+
+
 // TODO: Currently this view is "eager": it renders all the child views.
 // It could be made more lazy , and therefore more memory-efficient.
 MODEL({
@@ -2590,7 +2874,7 @@ MODEL({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return ChoiceListView.create({
+        return this.X.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
@@ -2629,23 +2913,16 @@ MODEL({
       }
     },
     {
-      name: 'touch',
-      help: 'TouchManager\'s FOAMTouch object',
-      hidden: true
-    },
-    {
-      name: 'touchStarted',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      help: 'True if we received a touchstart',
-      hidden: true
-    },
-    {
-      name: 'touchLive',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      help: 'True if a touch is currently active',
-      hidden: true
+      name: 'swipeGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'horizontalScroll'
+        });
+      }
     }
   ],
 
@@ -2716,12 +2993,7 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.touchManager.install(TouchReceiver.create({
-        id: 'swipeAltView-' + this.id,
-        element: this.$,
-        delegate: this
-      }));
-
+      this.X.gestureManager.install(this.swipeGesture);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -2731,6 +3003,12 @@ MODEL({
           choice.view.initHTML();
         });
       }, 0);
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.X.gestureManager.uninstall(this.swipeGesture);
+      this.views.forEach(function(c) { c.view.destroy(); });
     },
 
     snapToCurrent: function(sizeOfMove) {
@@ -2747,6 +3025,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
+      isMerged: 300,
       code: function() {
         // When the orientation of the screen has changed, update the
         // left and width values of the inner elements and slider.
@@ -2769,36 +3048,9 @@ MODEL({
       }
     },
     {
-      name: 'onTouchStart',
-      code: function(touches, changed) {
-        // Only handle single-point touches.
-        if ( Object.keys(touches).length > 1 ) return { drop: true };
-
-        // Otherwise we're moderately interested, until it moves.
-        this.touch = touches[changed[0]];
-        this.touchStarted = true;
-        this.touchLive = false;
-        return { weight: 0.5 };
-      }
-    },
-    {
-      name: 'onTouchMove',
-      code: function(touches, changed) {
-        if ( ! this.touchStarted ) return { drop: true };
-
-        if ( ! this.touchLive && this.touch.distance < 6 ) {
-          // Prevent default, but don't decide if we're scrolling yet.
-          return { preventDefault: true, weight: 0.5 };
-        }
-
-        if ( ! this.touchLive && Math.abs(this.touch.dx) < Math.abs(this.touch.dy) ) {
-          // Drop our following of this touch.
-          return { drop: true };
-        }
-
-        // Otherwise the touch is live.
-        this.touchLive = true;
-        var x = this.index * this.width - this.touch.dx;
+      name: 'horizontalScrollMove',
+      code: function(dx, tx, x) {
+        var x = this.index * this.width - tx;
 
         // Limit x to be within the scope of the slider: no dragging too far.
         if (x < 0) x = 0;
@@ -2806,20 +3058,14 @@ MODEL({
         if ( x > maxWidth ) x = maxWidth;
 
         this.x = x;
-        return { preventDefault: true, claim: true, weight: 0.9 };
       }
     },
     {
-      name: 'onTouchEnd',
-      code: function(touches, changed) {
-        if ( ! this.touchLive ) return this.onTouchCancel(touches, changed);
-
-        this.touchLive = false;
-
-        var finalX = this.touch.x;
-        if ( Math.abs(finalX - this.touch.startX) > this.width / 3 ) {
+      name: 'horizontalScrollEnd',
+      code: function(dx, tx, x) {
+        if ( Math.abs(tx) > this.width / 3 ) {
           // Consider that a move.
-          if (finalX < this.touch.startX) {
+          if (tx < 0) {
             this.index++;
           } else {
             this.index--;
@@ -2827,18 +3073,33 @@ MODEL({
         } else {
           this.snapToCurrent(1);
         }
-
-        return { drop: true };
-      }
-    },
-    {
-      name: 'onTouchCancel',
-      code: function(touches, changed) {
-        this.touchLive = false;
-        this.touchStarted = false;
-        return { drop: true };
       }
     }
+  ],
+  templates: [
+    function CSS() {/*
+      .swipeAltInner {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .swipeAltOuter {
+        display: flex;
+        overflow: hidden;
+        min-width: 240px;
+        width: 100%;
+      }
+
+      .swipeAltSlider {
+        position: relative;
+        width: 100%;
+        top: 0px;
+        -webkit-transform: translate3d(0,0,0);
+      }
+
+    */}
   ]
 });
 
@@ -3048,7 +3309,7 @@ MODEL({
         view.publish('blur');
       });
     },
-    textToValue: function(text) { return text.replace(/\s/g,'').split(','); },
+    textToValue: function(text) { return text === "" ? [] : text.replace(/\s/g,'').split(','); },
     valueToText: function(value) { return value ? value.toString() : ""; }
   }
 });
@@ -3120,7 +3381,7 @@ MODEL({
   methods: {
     toHTML: function() {
       var toolbar = ToolbarView.create({
-        value: SimpleValue.create(this)
+        data: this
       });
       toolbar.addActions([this.model_.ADD]);
       this.children = [toolbar];
@@ -3505,8 +3766,13 @@ MODEL({
       }
     },
     {
+      model_: 'ModelProperty',
       name: 'listView'
     },
+    {
+      model_: 'ModelProperty',
+      name: 'subType'
+    }
   ],
 
   methods: {
@@ -4120,9 +4386,11 @@ MODEL({
     {
       name: 'thumbHeight',
       dynamicValue: function() {
+        var id = this.thumbID;
+        var height = this.height;
         if (!this.scrollHeight)
           return 0;
-        return this.height * this.height / this.scrollHeight;
+        return height * height / this.scrollHeight;
       },
       postSet: function(old, nu) {
         var thumb = this.thumb();
@@ -4153,8 +4421,9 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
+      if ( ! this.$ ) return;
       this.$.addEventListener('mouseover', this.onMouseEnter);
-      this.$.addEventListener('mouseout', this.onMouseOut);
+      this.$.addEventListener('mouseout',  this.onMouseOut);
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
@@ -4258,34 +4527,168 @@ MODEL({
 
 
 MODEL({
-  name: 'UITestResultView',
-  label: 'UI Test Result View',
-
+  name: 'UnitTestResultView',
   extendsModel: 'View',
 
   properties: [
     {
       name: 'data'
+    },
+    {
+      name: 'test',
+      defaultValueFn: function() { return this.parent.data; }
     }
   ],
 
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+      <pre>
+        <div class="output" id="<%= this.setClass('error', function() { return this.parent.data.failed; }, this.id) %>">
+        </div>
+      </pre>
+    */},
+   function toInnerHTML() {/*
+     <%= TextFieldView.create({ data: this.data, mode: 'read-only', escapeHTML: false }) %>
+   */}
+  ],
   methods: {
     initHTML: function() {
-      var parent = this.parent;
-      var test   = parent.obj;
-      var $ = this.$;
-      test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
-      test.scope.render = function(v) {
-        test.append(v.toHTML());
+      this.SUPER();
+      var self = this;
+      this.preTest();
+      this.test.atest()(function() {
+        self.postTest();
+        self.X.asyncCallback && self.X.asyncCallback();
+      });
+    },
+    preTest: function() {
+      // Override me to insert logic at the start of initHTML, before running the test.
+    },
+    postTest: function() {
+      this.updateHTML();
+      // Override me to insert logic after running this test.
+      // Called asynchronously, after atest() is really finished.
+    }
+  }
+});
+
+MODEL({
+  name: 'RegressionTestValueView',
+  extendsModel: 'TextFieldView',
+  properties: [
+    {
+      name: 'mode',
+      defaultValue: 'read-only'
+    },
+    {
+      name: 'escapeHTML',
+      defaultValue: false
+    }
+  ]
+});
+
+MODEL({
+  name: 'RegressionTestResultView',
+  label: 'Regression Test Result View',
+  help: 'Displays the output of a RegressionTest, either master or live.',
+
+  extendsModel: 'UnitTestResultView',
+
+  properties: [
+    {
+      name: 'masterView',
+      defaultValue: 'RegressionTestValueView'
+    },
+    {
+      name: 'liveView',
+      defaultValue: 'RegressionTestValueView'
+    },
+    {
+      name: 'masterID',
+      factory: function() { return this.nextID(); }
+    },
+    {
+      name: 'liveID',
+      factory: function() { return this.nextID(); }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'update',
+      label: 'Update Master',
+      help: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
+      isEnabled: function() { return this.test.regression; },
+      action: function() {
+        this.test.master = this.test.results;
+        this.X.daoViewCurrentDAO.put(this.test, {
+          put: function() {
+            this.test.regression = false;
+          }.bind(this),
+          error: function(e) {
+            console.error('Error saving update: ' + e);
+          }
+        });
+      }
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+      <table id="<%= this.setClass('error', function() { return this.test.regression; }) %>">
+        <tbody>
+          <tr>
+            <th>Master</th>
+            <th>Live</th>
+          </tr>
+          <tr>
+            <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
+              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }); out(this.masterView); %>
+            </td>
+            <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
+              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }); out(this.liveView); %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      $$update
+    */}
+  ]
+});
+
+MODEL({
+  name: 'UITestResultView',
+  label: 'UI Test Result View',
+  help: 'Overrides the inner masterView and liveView for UITests.',
+
+  extendsModel: 'RegressionTestResultView',
+
+  properties: ['oldTests'],
+
+  methods: {
+    preTest: function() {
+      var test = this.test;
+      var $ = this.liveView.$;
+      test.X.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
+      test.X.render = function(v) {
+        test.X.append(v.toHTML());
         v.initHTML();
       };
-      // Temporarily remove sub-tests to prevent them from being tested also.
-      // This means, that unlike regular UnitTests, UITests do not inherit
-      // variables from their ancestors.
-      var oldTests = test.tests;
-      test.tests = [];
-      test.test();
-      test.tests = oldTests;
+    },
+
+    postTest: function() {
+      // Grab the HTML rendered by the test as its results.
+      // We need the replace() to turn id="view247" into id="view#",
+      // which makes the regression tests far less fragile.
+      var raw = this.liveView.$.innerHTML;
+      this.test.results = raw.replace(/id="view\d+/g, 'id="view#');
+
+      // The above needs to run before SUPER's regression check.
+      this.SUPER();
     }
   }
 });
@@ -4295,12 +4698,17 @@ MODEL({
   name: 'UITest',
   label: 'UI Test',
 
-  extendsModel: 'UnitTest',
+  extendsModel: 'RegressionTest',
 
   properties: [
     {
       name: 'results',
       view: 'UITestResultView'
+    },
+    {
+      name: 'runChildTests',
+      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
+      defaultValue: false
     }
   ],
 
@@ -4546,5 +4954,35 @@ MODEL({
         this.snap();
       }
     }
+  ]
+});
+
+MODEL({
+  name: 'ActionSheetView',
+  extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
+
+  properties: [
+    'actions',
+    'data',
+    { name: 'className', defaultValue: 'actionSheet' },
+    { name: 'preferredWidth', defaultValue: 200 },
+  ],
+
+  help: 'A controller that shows a list of actions.',
+
+  templates: [
+    function toInnerHTML() {/*
+      <% for( var i = 0, action; action = this.actions[i]; i++ ) {
+        var view = this.createActionView(action);
+        view.data$ = this.data$;
+        out(view);
+      } %>
+    */},
+    function CSS() {/*
+      .actionSheet {
+        background: white;
+      }
+    */}
   ]
 });

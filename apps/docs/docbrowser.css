@@ -1,0 +1,39 @@
+
+body {
+  margin: 0px;
+}
+
+div.contentPanes {
+  height: 90%;
+  width: 100%;
+  overflow: hidden;
+  margin:0px;
+}
+
+div.listPane {
+  padding: 1em;
+  width: 25%;
+  height: 95%;
+  float:left;
+
+}
+
+div.detailPane {
+  padding: 1em;
+  overflow-y: scroll;
+  width: 69%;
+  height: 95%;
+  float: left;
+}
+
+div.members {
+  padding-left: 2em;
+}
+div.memberList {
+  padding-left: 2em;
+}
+
+span.docLink {
+  color: blue;
+  text-decoration: underline;
+}

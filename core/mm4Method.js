@@ -54,6 +54,10 @@ MODEL({
       help: 'Help text associated with the action.'
     },
     {
+      model_: 'DocumentationProperty',
+      name: 'documentation'
+    },
+    {
       name: 'default',
       type: 'Boolean',
       view: 'BooleanView',
@@ -125,14 +129,14 @@ MODEL({
     }
   ],
   methods: {
-    callIfEnabled: function(that) {
-      if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
+    callIfEnabled: function(X, that) {
+      if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }
 });
 
-Action.getPrototype().callIfEnabled = function(that) {
-  if ( this.isEnabled.call(that, this) ) this.action.call(that, this);
+Action.getPrototype().callIfEnabled = function(X, that) {
+  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
 };
 
 
@@ -238,7 +242,11 @@ MODEL({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.'
-    }
+    },
+    {
+      model_: 'DocumentationProperty',
+      name: 'documentation'
+    },
   ],
 
   methods: {
@@ -332,12 +340,30 @@ MODEL({
       help: 'Help text associated with the entity.'
     },
     {
+      model_: 'DocumentationProperty',
+      name: 'documentation',
+    },
+    {
       name: 'code',
       type: 'Function',
       displayWidth: 80,
       displayHeight: 30,
       view: 'FunctionView',
-      help: 'Javascript code to implement this method.'
+      help: 'Javascript code to implement this method.',
+      postSet: function() {
+        // check for documentation in a multiline comment at the beginning of the code
+        // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
+        // TODO: technically unicode letters are valid in javascript identifiers, which we are not catching here for function arguments.
+        var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
+        if ( multilineComment ) {
+          var bodyFn = multilineComment[1];
+          this.documentation = this.X.Documentation.create({
+                name: this.name,
+                body: bodyFn
+          })
+        }
+
+      }
     },
     {
       name:  'returnType',
@@ -483,6 +509,10 @@ MODEL({
       help: 'Help text associated with the argument.'
     },
     {
+      model_: 'DocumentationProperty',
+      name: 'documentation'
+    },
+    {
       model_: 'ArrayProperty',
       name: 'methods',
       type: 'Array[Method]',
@@ -569,6 +599,16 @@ MODEL({
       help: 'The template\'s unique name.'
     },
     {
+      model_: 'ArrayProperty',
+      name: 'args',
+      type: 'Array[Arg]',
+      subType: 'Arg',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Method arguments.'
+    },
+    {
       name: 'template',
       type: 'String',
       displayWidth: 180,
@@ -591,3 +631,80 @@ MODEL({
   ]
 
 });
+
+MODEL({
+  name: 'Documentation',
+
+  tableProperties: [
+    'name'
+  ],
+
+  documentation: {
+    model_: 'Documentation',
+    body: function() {/*
+      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
+      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
+      of your model and specify the body text:</p>
+      <ul>
+        <li><p>Fully define the Documentation model:</p><p>documentation:
+        { model_: 'Documentation', body: function() { \/\* your doc text \*\/} }</p>
+        </li>
+        <li><p>Define as a function:</p><p>documentation:
+            function() { \/\* your doc text \*\/} </p>
+        </li>
+        <li><p>Define as a one-line string:</p><p>documentation:
+            "your doc text" </p>
+        </li>
+      </ul>
+    */}
+  },
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s unique name.',
+      documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
+    },
+    {
+      name:  'label',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s title or descriptive label.',
+      documentation: "A human readable title to display. Used for books of documentation and chapters."
+    },
+    {
+      name: 'body',
+      type: 'Template',
+      defaultValue: '',
+      help: 'The main content of the document.',
+      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
+      preSet: function(_, template) {
+          return TemplateUtil.templateMemberExpander(template, this.X);
+      }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'chapters',
+      type: 'Array[Document]',
+      subtype: 'Documentation',
+      view: 'ArrayView',
+      factory: function() { return []; },
+      defaultValue: [],
+      help: 'Sub-documents comprising the full body of this document.',
+      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
+    },
+
+  ]
+
+});
+
+// HACK to get around property-template bootstrap ordering issues
+TemplateUtil.modelExpandTemplates(Property, Property.templates);

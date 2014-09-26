@@ -1,5 +1,4 @@
 cp ../../core/foam.css .
-cp ../../core/css-tooltips.css .
 cp ../quickcompose/QuickCompose_*.ft .
 cp ../quickcompose/QuickEMailView_toFullHTML.ft .
 cp ../quickcompose/quickcompose.css .
@@ -54,6 +53,7 @@ cat \
   ../../core/ChromeApp.js \
   ../quickcompose/QuickCompose.js \
   ../mailreader/view.js \
+  ../../lib/email/email.js \
   ../mailreader/email.js > tmp
 
 if [ -f gmail.js ]; then

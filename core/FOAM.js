@@ -105,7 +105,7 @@ var UNUSED_MODELS = {};
 var USED_MODELS = {};
 
 // Lazy Model Definition - Only creates Model when first referenced
-var MODEL = function(m) {
+function MODEL(m) {
   // Templates need to access document.currentScript in order to know
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
@@ -128,96 +128,55 @@ var MODEL = function(m) {
   });
 }
 
-FOAM.browse = function(model, opt_dao) {
-   var dao = opt_dao || GLOBAL[model.name + 'DAO'] || GLOBAL[model.plural];
+
+FOAM.browse = function(model, opt_dao, opt_X) {
+   var Y = opt_X || X.sub(undefined, "FOAM BROWSER");
+
+   if ( typeof model === 'string' ) model = Y[model];
+
+   var dao = opt_dao || Y[model.name + 'DAO'] || Y[model.plural];
 
    if ( ! dao ) {
-      dao = StorageDAO.create({ model: model });
-      GLOBAL[model.name + 'DAO'] = dao;
+      dao = Y.StorageDAO.create({ model: model });
+      Y[model.name + 'DAO'] = dao;
    }
 
-   var ctrl = DAOController.create({
-      model:     model,
-      dao:       dao,
-      useSearchView: false
-   }).addDecorator(ActionBorder.create({ actions: DAOController.actions }));
+   var ctrl = Y.DAOController.create({
+     model:     model,
+     dao:       dao,
+     useSearchView: false
+   });
 
-  var stack = GLOBAL.stack;
-  ctrl.X.stack = stack;
-  stack.pushView(ctrl);
+  if ( ! Y.stack ) {
+    Y.stack = Y.StackView.create();
+    Y.document.body.insertAdjacentHTML('beforeend', Y.stack.toHTML());
+    Y.stack.initHTML();
+    Y.stack.setTopView(ctrl);
+  } else {
+    Y.stack.pushView(ctrl);
+  }
 };
 
+
 FOAM.lookup = function(key, opt_X) {
-  if ( ! typeof key === 'string' ) return key;
+  if ( ! ( typeof key === 'string' ) ) return key;
 
   var path = key.split('.');
   var root = opt_X || GLOBAL;
   for ( var i = 0 ; i < path.length ; i++ ) root = root[path[i]];
 
   return root;
-}
+};
 
 
-MODEL({
-  name: 'UnitTestResultView',
-  extendsModel: 'View',
-  properties: [
-    {
-      name: 'value',
-      type: 'Value'
-    }
-  ],
-
-  methods: {
-    toHTML: function() {
-      var test = this.value.get();
-      var cssClass = test.failed > 0 ? 'foamTestFailed' : 'foamTestPassed';
-      var results = test.results.replace(/\n/g, '<br/>\n');
-      var pre = '<div class="' + cssClass + ' foamTest" id="' + this.getID() + '">' +
-          '<p><strong>' + test.description + '</strong></p>' +
-          '<p><span>Passed: ' + test.passed + '</span>&nbsp;&nbsp;' +
-          '<span>Failed: ' + test.failed + '</span></p>';
-      if (results.length) {
-        pre += '<div class="foamTestOutput">' + results + '</div>';
-      }
-
-      if (test.tests && test.tests.length > 0) {
-        return pre + '<div class="foamInnerTests">' + this.toInnerHTML() + '</div></div>';
-      } else {
-        return pre + "</div>";
-      }
-    },
-
-    toInnerHTML: function() {
-      var inner = ArrayListView.create({
-        value: SimpleValue.create(this.value.get().tests),
-        listView: UnitTestResultView
-      });
-      this.addChild(inner);
-      return inner.toHTML();
-    }
-  }
-});
-
-// Given a model and a DOM element, render test results into the element.
-// TODO: Put me into a method on models.
-function testModel(model, element) {
-  if (!model.tests || !element) return;
-  model.tests.forEach(function(t) {
-    t.test();
-    var view = UnitTestResultView.create({ value: SimpleValue.create(t) });
-    element.insertAdjacentHTML('beforeend', view.toHTML());
-    view.initHTML();
-  });
-}
-
-
-function arequire(modelName) {
-  var model = GLOBAL[modelName];
+function arequire(modelName, opt_X) {
+  var X = opt_X || GLOBAL;
+  var model = FOAM.lookup(modelName, X);
 
   /** This is so that if the model is arequire'd concurrently the
    *  initialization isn't done more than once.
    **/
+  if ( ! model ) console.log(modelName, 'not found');
   if ( ! model.required__ ) {
     // TODO: eventually this should just call the arequire() method on the Model
     var args = [];

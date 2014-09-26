@@ -34,7 +34,10 @@ MODEL({
       postSet: function(_, d) {
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][0] === d ) {
-            if ( this.index !== i ) this.index = i;
+            if ( this.index !== i ) {
+              this.label = this.choices[i][1];
+              this.index = i;
+            }
             return;
           }
         }
@@ -136,16 +139,9 @@ MODEL({
       model_: 'BooleanProperty'
     },
     {
+      model_: 'DAOProperty',
       name: 'dao',
-      postSet: function(oldDAO, dao) {
-        if ( oldDAO ) {
-          oldDAO.unlisten(this.onDAOUpdate);
-        }
-        if ( dao && this.$ ) {
-          dao.listen(this.onDAOUpdate);
-          this.onDAOUpdate();
-        }
-      }
+      onDAOUpdate: 'onDAOUpdate'
     }
   ],
 
@@ -179,14 +175,15 @@ MODEL({
 
     commit: function() {
       if ( ! this.useSelection ) return;
-      this.choice = this.choices[this.index];
+      if ( this.choices[this.index] )
+        this.choice = this.choices[this.index];
     }
   }
 });
 
 
 MODEL({
-  name:  'ChoiceListView',
+  name: 'ChoiceListView',
 
   extendsModel: 'AbstractChoiceView',
 
@@ -452,7 +449,7 @@ MODEL({
 
 
 MODEL({
-  name:  'PopupChoiceView',
+  name: 'PopupChoiceView',
 
   extendsModel: 'AbstractChoiceView',
 
@@ -474,6 +471,10 @@ MODEL({
     {
       model_: 'BooleanProperty',
       name: 'showValue'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'updateListener'
     }
   ],
 
@@ -482,6 +483,7 @@ MODEL({
       name: 'open',
       labelFn: function() { return this.linkLabel; },
       action: function() {
+        var self = this;
         var view = this.X.ChoiceListView.create({
           className: 'popupChoiceList',
           data: this.data,
@@ -489,31 +491,35 @@ MODEL({
           autoSetData: this.autoSetData
         });
 
-        // I don't know why the 'animate' is required, but it sometimes
-        // doesn't remove the view without it.
-        view.data$.addListener(EventService.animate(function() {
-          this.data = view.data;
-          if ( view.$ ) view.$.remove();
-        }.bind(this), this.X));
-
         var pos = findPageXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
-        var parentNode = view.$.parentNode;
 
-        view.$.style.top = pos[1]-2;
-        view.$.style.left = pos[0]-toNum(s.width)+30;
-        view.$.style.maxHeight = Math.max(200, this.X.window.innerHeight-pos[1]-10);
+        function mouseMove(evt) {
+          if ( ! view.$.contains(evt.target) ) remove();
+        }
+
+        function remove() {
+          self.X.document.removeEventListener('touchstart', remove);
+          self.X.document.removeEventListener('mousemove',  mouseMove);
+          if ( view.$ ) view.$.remove();
+        }
+
+        // I don't know why the 'animate' is required, but it sometimes
+        // doesn't remove the view without it.
+        view.data$.addListener(EventService.animate(function() {
+          self.data = view.data;
+          remove();
+        }, this.X));
+
+        view.$.style.top = (pos[1]-2) + 'px';
+        view.$.style.left = (pos[0]-toNum(s.width)+30) + 'px';
+        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
-        view.$.addEventListener('click', function() { if ( view.$ ) view.$.remove(); });
-        parentNode.addEventListener('mousemove', function(evt) {
-          if ( ! view.$ ) {
-            parentNode.removeEventListener('mousemove', arguments.callee);
-          } else if ( ! view.$.contains(evt.target) ) {
-            parentNode.removeEventListener('mousemove', arguments.callee);
-            view.$.remove();
-          }
-        });
+
+        this.X.document.addEventListener('touchstart',  remove);
+        view.$.addEventListener('click',                remove);
+        this.X.document.addEventListener('mousemove',   mouseMove);
       }
     }
   ],
@@ -525,18 +531,19 @@ MODEL({
       if ( this.showValue ) {
         var id = this.nextID();
         out += '<span id="' + id + '" class="value">' + ((this.choice && this.choice[1]) || '') + '</span>';
-        this.data$.addListener(function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this));
+
+        // Remove any previous data$ listener for this popup.
+        if ( this.updateListener ) this.data$.removeListener(this.updateListener);
+        this.updateListener = function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this);
+        this.data$.addListener(this.updateListener);
       }
 
       out += '<span class="action">';
       this.model_.OPEN.iconUrl = this.iconUrl;
-      var button = this.createActionView(
-        this.model_.OPEN,
-        SimpleValue.create(this)
-      ).toView();
+      var button = this.createActionView(this.model_.OPEN, {data: this}).toView_();
 
       this.addChild(button);
-      
+
       out += button.toHTML();
       out += '</span>';
 

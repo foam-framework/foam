@@ -171,11 +171,17 @@ var DateProperty = Model.create({
     },
     {
       name: 'tableFormatter',
-      defaultValue2: function(d) {
-        return d.toDateString();
-      },
       defaultValue: function(d) {
-        return d.toRelativeDateString();
+        return d ? d.toRelativeDateString() : '';
+      }
+    },
+    {
+      name: 'compareProperty',
+      defaultValue: function(o1, o2) {
+        if ( ! o1 ) return ( ! o2 ) ? 0: -1;
+        if ( ! o2 ) return 1;
+
+        return o1.compareTo(o2);
       }
     }
   ]
@@ -264,7 +270,6 @@ var IntProperty = Model.create({
     }
   ]
 });
-
 
 var FloatProperty = Model.create({
   extendsModel: 'Property',
@@ -396,7 +401,7 @@ var ArrayProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        var m = GLOBAL[prop.subType];
+        var m = this.X[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
 
@@ -418,6 +423,17 @@ var ArrayProperty = Model.create({
       }
     },
     {
+      name: 'postSet',
+      defaultValue: function(oldA, a, prop) {
+        var name = prop.name + 'ArrayRelay_';
+        var l = this[name] || ( this[name] = function() {
+          this.propertyChange(prop.name, null, this[prop.name]);
+        }.bind(this) );
+        if ( oldA && oldA.unlisten ) oldA.unlisten(l);
+        if ( a && a.listen ) a.listen(l);
+      }
+    },
+    {
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
@@ -431,6 +447,23 @@ var ArrayProperty = Model.create({
     {
       name: 'factory',
       defaultValue: function() { return []; }
+    },
+    {
+      name: 'install',
+      defaultValue: function(prop) {
+        defineLazyProperty(this, prop.name + '$Proxy', function() {
+          var proxy = ProxyDAO.create({delegate: this[prop.name].dao});
+
+          this.addPropertyListener(prop.name, function(_, _, _, a) {
+            proxy.delegate = a.dao;
+          });
+
+          return {
+            get: function() { return proxy; },
+            configurable: true
+          };
+        });
+      }
     },
     {
       name: 'prototag',
@@ -522,6 +555,10 @@ var StringArrayProperty = Model.create({
       defaultValue: 50
     },
     {
+      name: 'preSet',
+      defaultValue: function(_, v) { return Array.isArray(v) ? v : [v]; }
+    },
+    {
       name: 'factory',
       defaultValue: function() { return []; }
     },
@@ -542,6 +579,10 @@ var StringArrayProperty = Model.create({
       type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'exclusive',
+      defaultValue: false
     }
   ]
 });
@@ -571,15 +612,92 @@ var DAOProperty = Model.create({
       name: 'install',
       defaultValue: function(prop) {
         defineLazyProperty(this, prop.name + '$Proxy', function() {
-          var proxy = ProxyDAO.create({delegate: this[prop.name]});
+          if ( ! this[prop.name] ) {
+            var future = afuture();
+            var delegate = FutureDAO.create({
+              future: future.get
+            });
+          } else
+            delegate = this[prop.name];
+
+          var proxy = ProxyDAO.create({delegate: delegate});
 
           this.addPropertyListener(prop.name, function(_, _, _, dao) {
-            proxy.delegate = dao
+            if ( future ) {
+              future.set(dao);
+              future = null;
+              return;
+            }
+            proxy.delegate = dao;
           });
 
-          return proxy;
+          return {
+            get: function() { return proxy; },
+            configurable: true
+          };
         });
       }
+    }
+  ]
+});
+
+
+var ModelProperty = Model.create({
+  extendsModel: 'Property',
+
+  help: "Describes a Model property.",
+
+  properties: [
+    {
+      name: 'type',
+      defaultValue: 'Model'
+    },
+    {
+      name: 'getter',
+      defaultValue: function(name) {
+        var value = this.instance_[name];
+        if ( typeof value === 'undefined' ) {
+          var prop = this.model_.getProperty(name);
+          if ( prop && prop.defaultValueFn )
+            value = prop.defaultValueFn.call(this, prop);
+          else
+            value = prop.defaultValue;
+        }
+        return FOAM.lookup(value, this.X);
+      }
+    }
+  ]
+});
+
+
+var ViewProperty = Model.create({
+  extendsModel: 'Property',
+
+  help: "Describes a View-Factory property.",
+
+  properties: [
+    {
+      name: 'preSet',
+      doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
+      defaultValue: function(_, f) {
+        if ( typeof f === 'function' ) return f;
+
+        if ( typeof f === 'string' ) {
+          return function(d, opt_X) {
+            return FOAM.lookup(f, opt_X).create(d, opt_X);
+          }.bind(this);
+        }
+
+        if ( model ) return model.create.bind(model);
+        if ( Model.isInstance(f) ) return f.create.bind(f);
+        if ( f.model_ ) return FOAM.bind(null, f);
+        console.error('******* Unknown view factory: ', f);
+        return f;
+      }
+    },
+    {
+      name: 'defaultValue',
+      preSet: function(_, f) { return ViewProperty.PRE_SET.defaultValue.call(this, null, f); }
     }
   ]
 });
@@ -611,3 +729,64 @@ var ReferenceArrayProperty = Model.create({
 
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;
+
+var DocumentationProperty = Model.create({
+  extendsModel: 'Property',
+  name: 'DocumentationProperty',
+  help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultvalue: 'Documentation'
+    },
+    {
+      name: 'setter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.setter
+    },
+    {
+      name: 'getter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.getter
+    },
+    {
+      name: 'view',
+      defaultValue: 'DocModelView'
+    },
+    {
+      name: 'help',
+      defaultValue: 'Documentation for this entity.'
+    },
+//    {
+//      name: 'documentation',
+//      defaultValueFn: function() { console.log(DocumentationBootstrap.documentation);
+//        return DocumentationBootstrap.documentation;
+//      }
+//    }
+  ]
+});
+
+MODEL({
+  name: 'EnumPropertyTrait',
+  properties: [
+    {
+      name: 'choices',
+      type: 'Array',
+      help: 'Array of [value, label] choices.',
+      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
+      required: true
+    },
+    {
+      name: 'view',
+      defaultValue: 'ChoiceView'
+    }
+  ]
+});
+
+MODEL({
+  name: 'StringEnumProperty',
+  traits: ['EnumPropertyTrait'],
+  extendsModel: 'StringProperty'
+});

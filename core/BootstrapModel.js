@@ -88,11 +88,10 @@ var BootstrapModel = {
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
-        MODEL({
-          __proto__: traitModel,
-          name: name,
-          extendsModel: parentModel.name
-        });
+        var model = traitModel.deepClone();
+        model.name = name;
+        model.extendsModel = parentModel.name;
+        GLOBAL.registerModel(model);
       }
 
       return GLOBAL[name];
@@ -113,11 +112,11 @@ var BootstrapModel = {
       }
     }
 
-    var proto = extendsModel ? extendsModel.getPrototype() : FObject;
-    var cls   = Object.create(proto);
-    cls.model_    = this;
-    cls.name_     = this.name;
-    cls.TYPE      = this.name + "Prototype";
+    var proto  = extendsModel ? extendsModel.getPrototype() : FObject;
+    var cls    = Object.create(proto);
+    cls.model_ = this;
+    cls.name_  = this.name;
+    cls.TYPE   = this.name;
 
     /** Add a method to 'cls' and set it's name. **/
     function addMethod(name, method) {
@@ -180,12 +179,11 @@ var BootstrapModel = {
           if ( extendsModel ) {
             var superAction = extendsModel.getAction(a.name);
             if ( superAction ) {
-              console.log('superAction: ', a.name, a.model_.name);
               a = superAction.clone().copyFrom(a);
               this.actions[i] = a;
             }
           }
-          addMethod(a.name, function() { a.callIfEnabled(this); });
+          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
         }.bind(this))(this.actions[i]);
       }
     }
@@ -205,16 +203,18 @@ var BootstrapModel = {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
       //           this[r.name.constantize()] = r;
+      defineLazyProperty(cls, r.name, function() {
+        var m = this.X[r.relatedModel];
+        var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+        if ( ! dao ) {
+          console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
+              m.plural + ' in the context, and neither was found.');
+        }
 
-      Object.defineProperty(cls, r.name, {
-        get: (function (r) {
-          return function() {
-            var m = this.X[r.relatedModel];
-            var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
-            return dao.where(EQ(m.getProperty(r.relatedProperty), this.id));
-          };
-        })(r),
-        configurable: false
+        return {
+          get: function() { return dao.where(EQ(m.getProperty(r.relatedProperty), this.id)); },
+          configurable: true
+        };
       });
     });
 
@@ -223,6 +223,7 @@ var BootstrapModel = {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
+      if ( ! fn ) debugger;
       fn.name = name;
 
       Object.defineProperty(cls, name, {

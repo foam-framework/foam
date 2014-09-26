@@ -38,6 +38,7 @@ MODEL({
     'project',
     'previewID',
     'favouritesMenu',
+    'createMenu',
     {
       name: 'qbug',
       scope: 'project',
@@ -45,7 +46,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return Location.create(); }
+      factory: function() { return this.X.Location.create(); }
     },
     {
       name: 'memento',
@@ -78,7 +79,7 @@ MODEL({
       factory: function() {
         return this.X.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
-          model: QIssue,
+          model: this.X.QIssue,
           remote: this.project.IssueNetworkDAO
         });
 
@@ -137,11 +138,7 @@ MODEL({
     {
       model_: 'DAOProperty',
       name: 'filteredIssueDAO',
-      defaultValueFn: function() { return this.IssueDAO; },
-      postSet: function(_, dao) {
-        this.view.dao = dao;
-        this.onDAOUpdate();
-      }
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'syncManagerFuture',
@@ -156,11 +153,11 @@ MODEL({
     },
     {
       name: 'rowSelection',
-      factory: function() { return SimpleValue.create(); }
+      postSet: function(_, issue) { this.location.id = issue.id; }
     },
     {
       name: 'timer',
-      factory: function() { return Timer.create(); }
+      factory: function() { return this.X.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -185,8 +182,7 @@ MODEL({
     {
       name: 'view',
       factory: function() {
-        var view = createView(this.rowSelection, this);
-//        this.location.mode$ = view.choice$
+        var view = createView(this.rowSelection$, this);
         view.choice$ = this.location.mode$;
         return view;
       }
@@ -194,7 +190,7 @@ MODEL({
     {
       name: 'searchChoice',
       factory: function() {
-        var open = 'status=Accepted,Assigned,Available,New,Started,Unconfirmed,Untriaged';
+        var open = this.project.openPredicate;
 
         return ChoiceView.create({
           helpText: 'Search within:',
@@ -222,19 +218,21 @@ MODEL({
     {
       name: 'refreshImg',
       factory: function() {
-        return ImageView.create({value: SimpleValue.create('images/refresh.png')});
+        return ImageView.create({data: 'images/refresh.png'});
       }
     },
     {
       name: 'logo',
       factory: function() {
-        return ImageView.create({value: SimpleValue.create(this.url + '/logo')});
+        return ImageView.create({data: this.url + '/logo'});
       }
     },
     {
       name: 'legacyUrl',
       getter: function() {
-        return this.url + '/issues/list?' + this.location.toURL(this);
+        return this.url + '/issues/' + ( this.location.id ?
+          'detail?' + this.location.toURL(this) :
+          'list?'   + this.location.toURL(this) );
       }
     },
     {
@@ -262,16 +260,16 @@ MODEL({
       name: 'onSyncManagerUpdate',
       isAnimated: true,
       code: function(evt) {
-        this.syncManagerFuture.get((function(syncManager) {
+        this.syncManagerFuture.get(function(syncManager) {
           if ( syncManager.isSyncing ) {
             this.timer.step();
             this.timer.start();
           } else {
-            this.timer.stop();
-            // Should no longer be necessary since both views listen for dao updates.
-            // this.view.choice = this.view.choice;
+            // Let the timer run for a bit longer so that people can see
+            // that it's doing something.
+            this.X.setTimeout(this.timer.stop.bind(this.timer), 1000);
           }
-        }).bind(this));
+        }.bind(this));
       }
     },
     {
@@ -288,8 +286,8 @@ MODEL({
       isMerged: 1,
       code: function(evt) {
         this.search(AND(
-          QueryParser.parseString(this.location.can) || TRUE,
-          QueryParser.parseString(this.location.q) || TRUE
+          this.X.QueryParser.parseString(this.location.can) || TRUE,
+          this.X.QueryParser.parseString(this.location.q) || TRUE
         ).partialEval());
         metricsSrv.sendEvent('Browser', 'Query');
       }
@@ -300,12 +298,12 @@ MODEL({
       code: function(evt) {
         this.memento = this.location.toMemento(this);
         if ( this.location.createMode ) {
-          this.createIssue();
+          this.createIssue(this.location.createIssueTemplate);
         } else if ( this.location.id ) {
           this.editIssue(this.location.id);
         } else if ( this.issueMode_ ) {
           // Unselect the current row so that it can be selected/edit again.
-          this.rowSelection.set('');
+          this.rowSelection = '';
           this.back();
         }
       }
@@ -330,7 +328,7 @@ MODEL({
       name: 'link',
       label: '',
       iconUrl: 'images/link.svg',
-      help:  'Link to code.google.com', // disable until tooltips work better
+      help:  'Link to code.google.com',
       action: function() {
         var url = this.legacyUrl;
         console.log(url);
@@ -357,7 +355,7 @@ MODEL({
 
         var view = this.X.ToolbarView.create({
           horizontal: false,
-          value: SimpleValue.create(this),
+          data: this,
           document: this.X.document
         });
 
@@ -438,8 +436,43 @@ MODEL({
     },
     {
       name: 'newIssue',
-      label: 'New issue',
-      action: function() { this.location.createMode = true; }
+      label: 'New issue &#x25BE;',
+      action: function() {
+        if ( this.createMenu ) {
+          this.createMenu.close();
+          return;
+        }
+
+        var view = this.X.ToolbarView.create({
+          horizontal: false,
+          data: this,
+          document: this.X.document
+        });
+
+        var self = this;
+
+        view.addChild(StaticHTML.create({ content: '<b>Templates</b>' }));
+        view.addActions(
+          this.project.project.issuesConfig.prompts.map(function(c) {
+            return Action.create({
+              name: c.name,
+              action: function() {
+                self.location.createIssueTemplate = c.name;
+                self.location.createMode = true;
+              }
+            });
+          }));
+
+        view.left = this.newIssueView.$.offsetLeft;
+        view.top = this.newIssueView.$.offsetTop + this.newIssueView.$.offsetHeight;
+        view.openAsMenu();
+
+        view.subscribe('close', function() {
+          self.createMenu = '';
+        });
+
+        this.createMenu = view;
+      }
     }
   ],
 
@@ -449,8 +482,8 @@ MODEL({
 
       this.memento = '';
 
-      this.location.y = QIssue.OWNER;
-      this.location.x = QIssue.STATUS;
+      this.location.y = this.X.QIssue.OWNER;
+      this.location.x = this.X.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
@@ -475,8 +508,8 @@ MODEL({
           if ( this.location.cells.indexOf('pie') == -1 ) this.location.cells = 'pie(status)';
         }
       }.bind(this));
-      this.rowSelection.addListener(function(_,_,_,issue) {
-        this.location.id = issue.id;
+      this.location.cells$.addListener(function() {
+        if ( this.location.cells.indexOf('pie') == -1 ) this.location.scroll = 'Bars';
       }.bind(this));
 
       this.syncManagerFuture.get((function(syncManager) {
@@ -486,11 +519,8 @@ MODEL({
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
-      this.X.dynamic(function() {
-        // TODO: This doesn't work because the listener is merged()' which doesn't cascade the Exception,
-        // but it should
-        //        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        if ( ! this.refreshImg.$ ) return;
+      timer.i$.addListener(function() {
+        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
@@ -513,34 +543,55 @@ MODEL({
 
       this.onSyncManagerUpdate();
 
-      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {put: function(bookmark) {
-        this.memento = bookmark.url;
-      }.bind(this)});
+      this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
+        put: function(bookmark) {
+          this.memento = bookmark.url;
+          this.search();
+        }.bind(this),
+        error: function () {
+          this.search();
+        }.bind(this)
+      });
     },
 
-    createIssue: function() {
+    createIssue: function(opt_templateName) {
+
+      if ( opt_templateName ) {
+        for ( var i = 0, prompt; prompt = this.project.project.issuesConfig.prompts[i]; i++ ) {
+          if ( prompt.name !== opt_templateName ) continue;
+          var data = this.X.QIssue.create({
+            labels: prompt.labels,
+            status: prompt.status,
+            summary: prompt.title,
+            description: prompt.description
+          });
+          break;
+        }
+      }
+
+      if ( ! data ) {
+          data = this.X.QIssue.create({
+            description: multiline(function(){/*What steps will reproduce the problem?
+1.
+2.
+3.
+What is the expected output? What do you see instead?
+
+Please use labels and text to provide additional information.
+*/}),
+            status: 'New',
+            summary: 'Enter a one-line summary.'
+          });
+      }
+
+
       var self = this;
       apar(
         arequire('QIssueCreateView')
       )(function() {
         var v = self.X.QIssueCreateView.create({
-          data:
-          QIssue.create({
-            description: multiline(function(){/*What steps will reproduce the problem?
-1.
-2.
-3.
-
-What is the expected output? What do you see instead?
-
-
-Please use labels and text to provide additional information.
-
-*/}),
-            status: 'New',
-            summary: 'Enter a one-line summary.'
-          }),
-          mode:             'read-write'
+          data: data,
+          mode: 'read-write'
         });
         self.pushView(v);
       });
@@ -563,11 +614,11 @@ Please use labels and text to provide additional information.
             arequire('QIssueCommentUpdateView')
           )(function() {
             var v = self.X.QIssueDetailView.create({
-              value:            SimpleValue.create(obj),
+              data:             obj,
               mode:             'read-write',
               url:              self.url,
               QIssueCommentDAO: self.project.issueCommentDAO(id),
-              issueDAO:         self.issueDAO,
+              issueDAO:         self.IssueDAO,
               cursorIssueDAO:   self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :
                 self.filteredIssueDAO
@@ -620,12 +671,12 @@ Please use labels and text to provide additional information.
           var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
           var v = self.X.QIssueDetailView.create({
-            value: SimpleValue.create(obj),
+            data: obj,
             QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url
-          }).addDecorator(QIssuePreviewBorder.create());
+          }).addDecorator(self.X.QIssuePreviewBorder.create());
 
           var popup = self.currentPreview = self.X.PopupView.create({
             x: e.x + 25,
@@ -645,7 +696,7 @@ Please use labels and text to provide additional information.
 
     // return true iff url was a legacy URL
     maybeSetLegacyUrl: function(url) {
-      var regex = new RegExp("https://code.google.com/p/([^/]+)/issues/list(\\?(.*))?");
+      var regex = new RegExp("https?://code.google.com/p/([^/]+)/issues/[^\?]*(\\?(.*))?");
       var match = regex.exec(url);
 
       if ( ! match ) return false;
@@ -670,7 +721,10 @@ Please use labels and text to provide additional information.
 
     /** Filter data with the supplied predicate, or select all data if null. **/
     search: function(p) {
-      if ( p ) console.log('SEARCH: ', p.toSQL());
+      if ( p ) {
+        p = p.partialEval();
+        console.log('SEARCH: ', p.toSQL());
+      }
       this.filteredIssueDAO = p ? this.IssueDAO.where(p) : this.IssueDAO;
     },
 
@@ -692,6 +746,14 @@ MODEL({
   methods: {
     openURL: function(url) {
       console.log('openURL: ', url);
+      var codesite = url.indexOf('code.google.com');
+      if ( codesite >= 0 ) {
+        var question = url.indexOf('?');
+        if ( question == -1 ) question = url.length;
+        var before = url.substring(0, question);
+        var after = url.substring(question + 1);
+        url = before + '?no_qbug=1&' + after;
+      }
       this.X.window.open(url);
     }
   }

@@ -74,7 +74,7 @@ var TemplateOutput = {
     var f = function(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var o = arguments[i];
-        if ( o && o.toView ) o = o.toView();
+        if ( o && o.toView_ ) o = o.toView_();
         if ( ! ( o === null || o === undefined ) ) {
           if ( o.appendHTML ) {
             o.appendHTML(this);
@@ -115,14 +115,14 @@ var TemplateCompiler = {
    },
    'create child': function(v) {
      var name = v[1].join('').constantize();
-     this.push("', this.createTemplateView('", name, "'",
+     this.push("', self.createTemplateView('", name, "'",
                v[2] ? ', ' + v[2] : '',
                "),\n'");
    },
-   'simple value': function(v) { this.push("',\n this.", v[1].join(''), ",\n'"); },
+   'simple value': function(v) { this.push("',\n self.", v[1].join(''), ",\n'"); },
    'raw values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-   'values tag': function (v) { this.push("',\n", v[1].join(''), ",\n'"); },
-   'live value tag': function (v) { this.push("',\nthis.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
+   'values tag': function (v) { this.push("',\nescapeHTML(", v[1].join(''), "),\n'"); },
+   'live value tag': function (v) { this.push("',\nself.dynamicTag('span', function() { return ", v[1].join(''), "; }.bind(this)),\n'"); },
    'code tag': function (v) { this.push("');\n", v[1].join(''), ";out('"); },
    'single quote': function () { this.push("\\'"); },
    newline: function () { this.push("\\n"); },
@@ -140,7 +140,7 @@ var TemplateUtil = {
        if ( ! delegate ) {
          if ( ! t.template )
            throw 'Must arequire() template model before use for ' + t.name;
-         delegate = TemplateUtil.compile(t.template);
+         delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
        }
 
        return delegate.apply(this, arguments);
@@ -153,13 +153,18 @@ var TemplateUtil = {
          return "Models must be arequired()'ed for Templates to be compiled in Packaged Apps.";
        };
      } :
-     function(str) {
-       var code = TemplateCompiler.parseString(str);
+     function(t) {
+       var code = TemplateCompiler.parseString(t.template);
 
        try {
-         return new Function("opt_out", code);
+         var args = ['opt_out'];
+         for ( var i = 0 ; i < t.args.length ; i++ ) {
+           args.push(t.args[i].name);
+         }
+         args.push(code);
+         return Function.apply(null, args);
        } catch (err) {
-         console.log("Template Error: ", err);
+         console.log('Template Error: ', err);
          console.log(code);
          return function() {};
        }
@@ -177,7 +182,96 @@ var TemplateUtil = {
 
          return buf.join('');
       };
-   }
+   },
+
+   templateMemberExpander: function(t, opt_X) {
+     // Load templates from an external file
+     // if their 'template' property isn't set
+     var i = 0;
+     var X = opt_X? opt_X : window.X;
+     if ( typeof t === 'function' ) {
+       t = docTemplate = X.Template.create({
+         name: t.name,
+         // ignore first argument, which should be 'opt_out'
+         args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
+           return X.Arg.create({name: a});
+         }),
+         template: multiline(t)});
+     } else if ( typeof t === 'string' ) {
+       t = docTemplate = X.Template.create({
+         name: 'body',
+         template: t
+       });
+     } else if ( ! t.template ) {
+       // console.log('loading: '+ this.name + ' ' + t.name);
+
+       var future = afuture();
+       var path = document.currentScript.src;
+
+       t.futureTemplate = future.get;
+       path = path.substring(0, path.lastIndexOf('/')+1);
+       path += this.name + '_' + t.name + '.ft';
+
+       var xhr = new XMLHttpRequest();
+       xhr.open("GET", path);
+       xhr.asend(function(data) {
+         t.template = data;
+         future.set(X.Template.create(t));
+         t.futureTemplate = undefined;
+       });
+     } else if ( typeof t.template === 'function' ) {
+       t.template = multiline(t.template);
+     }
+     // TODO: do we need the case where you specify a Template def. with
+     // .template = 'string'? Unify this with modelExpandTemplates.
+     return t;
+   },
+
+   modelExpandTemplates: function(self, templates) {
+     // Load templates from an external file
+     // if their 'template' property isn't set
+     var i = 0;
+     templates.forEach(function(t) {
+       if ( typeof t === 'function' ) {
+         t = templates[i] = Template.create({
+           name: t.name,
+           // ignore first argument, which should be 'opt_out'
+           args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
+             return Arg.create({name: a});
+           }),
+           template: multiline(t)});
+       } else if ( ! t.template ) {
+         // console.log('loading: '+ self.name + ' ' + t.name);
+
+         var future = afuture();
+         var path = document.currentScript.src;
+
+         t.futureTemplate = future.get;
+         path = path.substring(0, path.lastIndexOf('/')+1);
+         path += self.name + '_' + t.name + '.ft';
+
+         var xhr = new XMLHttpRequest();
+         xhr.open("GET", path);
+         xhr.asend(function(data) {
+           t.template = data;
+           future.set(Template.create(t));
+           t.futureTemplate = undefined;
+         });
+       } else if ( typeof t.template === 'function' ) {
+         t.template = multiline(t.template);
+       } else if (!t.template$) {
+         // we haven't FOAMalized the template, and there's no crazy multiline functions.
+         // Note that Model and boostrappy models must use this case, as Template is not
+         // yet defined at bootstrap time. Use a Template object definition with a bare
+         // string template body in those cases.
+         if (typeof Template != "undefined")
+           t = templates[i] = JSONUtil.mapToObj(t, Template);
+         else
+           t = templates[i] = JSONUtil.mapToObj(t); // safe for bootstrap, but won't do anything in that case.
+       }
+       i++;
+     }.bind(self))
+  }
 };
 
 
@@ -194,8 +288,8 @@ var aevalTemplate = function(t) {
 
   return aseq(
     t.futureTemplate,
-    function(ret, template) {
-      aeval('function (opt_out) {' + TemplateCompiler.parseString(template) + '}')(ret);
+    function(ret, t) {
+      aeval('function (opt_out) {' + TemplateCompiler.parseString(t.template) + '}')(ret);
     });
 };
 

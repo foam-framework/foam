@@ -24,6 +24,12 @@ var QIssueComment = FOAM({
 
   properties: [
     {
+      model_: 'StringProperty',
+      name: 'id',
+      preSet: function(_, v) { return v; },
+      defaultValue: '0'
+    },
+    {
       name: 'author',
       view: 'QIssueCommentAuthorView',
       preSet: function(_, newValue, prop) {
@@ -55,6 +61,11 @@ var QIssueComment = FOAM({
       name: 'content',
       displayWidth: 85,
       displayHeight: 8
+    },
+    {
+      model_: 'IntProperty',
+      name: 'seqNo',
+      help: 'The sequence number for this comment, indicating where it shows in the comment list for a particular issue.'
     }
   ]
 });
@@ -79,7 +90,7 @@ MODEL({
       function updateField(field) {
         for ( var i = 0; i < comment[field].length; i++ ) {
           if ( comment[field][i][0] === '-' )
-            issue[field] = issue[field].removeF(comment[field][i].substr(1));
+            issue[field] = issue[field].removeF({ f: function(s) { return s === comment[field][i].substr(1); } });
           else
             issue[field] = issue[field].pushF(comment[field][i]);
         }

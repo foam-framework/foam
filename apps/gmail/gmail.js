@@ -1,6 +1,35 @@
 /**
  * Material Design GMail.
  **/
+EMail.ARCHIVE.iconUrl = 'icons/ic_archive_black_24dp.png';
+EMail.ARCHIVE.label = '';
+
+EMail.TRASH.iconUrl = 'icons/ic_delete_black_24dp.png';
+EMail.TRASH.label = '';
+
+EMail.REPLY.iconUrl = 'icons/ic_reply_black_24dp.png';
+EMail.REPLY.label = '';
+
+EMail.REPLY_ALL.iconUrl = 'icons/ic_reply_all_black_24dp.png';
+EMail.REPLY_ALL.label = '';
+
+EMail.SPAM.iconUrl = 'icons/ic_report_black_24dp.png';
+EMail.SPAM.label = '';
+
+EMail.FORWARD.iconUrl = 'icons/ic_forward_black_24dp.png';
+EMail.FORWARD.label = '';
+
+EMail.STAR.iconUrl = 'icons/ic_star_black_24dp.png';
+EMail.STAR.label = '';
+
+EMail.MOVE_TO_INBOX.iconUrl = 'icons/ic_inbox_black_24dp.png';
+EMail.MOVE_TO_INBOX.label = '';
+
+EMail.SEND.iconUrl = 'icons/ic_send_black_24dp.png';
+EMail.SEND.label = '';
+
+EMail.MARK_UNREAD.iconUrl = 'icons/ic_markunread_black_24dp.png';
+EMail.MARK_UNREAD.label = '';
 
 /** Modify the default QueryParser so that label ids are looked up in the EMailLabels DAO. **/
 var queryParser = {
@@ -12,6 +41,8 @@ var queryParser = {
 }.addActions({
   id: function(v) {
      return OR(
+        CONTAINS_IC(EMail.TO, v),
+        CONTAINS_IC(EMail.FROM, v),
         CONTAINS_IC(EMail.SUBJECT, v),
         CONTAINS_IC(EMail.BODY, v));
   },
@@ -35,6 +66,7 @@ queryParser.expr = alt(
 MODEL({
   name: 'MGmail',
   description: 'Mobile Gmail',
+  traits: ['PositionedDOMViewTrait'],
 
   extendsModel: 'View',
 
@@ -44,7 +76,7 @@ MODEL({
       subType: 'AppController',
       postSet: function(_, controller) {
         var view = controller.X.DetailView.create({data: controller});
-        this.stack.setTopView(view);
+        this.stack.setTopView(FloatingView.create({ view: view }));
       }
     },
     { name: 'oauth' },
@@ -55,11 +87,17 @@ MODEL({
         return this.X.LimitedLiveCachingDAO.create({
           cacheLimit: 10,
           src: this.X.GMailToEMailDAO.create({
-            delegate: this.X.StoreAndForwardDAO.create({
-              delegate: this.X.GMailMessageDAO.create({})
-            })
+            delegate: this.X.GMailMessageDAO.create({})
+//            delegate: this.X.StoreAndForwardDAO.create({
+//              delegate: this.X.GMailMessageDAO.create({})
+//            })
           }),
-          cache: this.X.MDAO.create({ model: EMail })
+          cache: this.X.CachingDAO.create({
+              src: this.X.IDBDAO.create({
+                  model: this.X.EMail
+              }),
+              cache: this.X.MDAO.create({ model: this.X.EMail })
+          })
         });
       }
     },
@@ -67,13 +105,24 @@ MODEL({
       name: 'labelDao',
       type: 'DAO',
       factory: function() {
-        return this.X.GMailRestDAO.create({ model: GMailLabel });
+        return this.X.CachingDAO.create({
+          src: this.X.GMailRestDAO.create({ model: GMailLabel }),
+          cache: this.X.MDAO.create({ model: GMailLabel }),
+        });
       }
     },
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); }
+      factory: function() { return this.X.StackView.create(); },
+      postSet: function(old, v) {
+        if ( old ) {
+          Events.unfollow(this.width$, old.width$);
+          Events.unfollow(this.height$, old.height$);
+        }
+        Events.follow(this.width$, v.width$);
+        Events.follow(this.height$, v.height$);
+      }
     }
   ],
 
@@ -82,6 +131,7 @@ MODEL({
       this.X = this.X.sub({
         touchManager: this.X.TouchManager.create({})
       }, 'MGMAIL CONTEXT');
+      this.X.gestureManager = this.X.GestureManager.create({});
 
       this.oauth = this.X.EasyOAuth2.create({
         clientId: "945476427475-oaso9hq95r8lnbp2rruo888rl3hmfuf8.apps.googleusercontent.com",
@@ -107,12 +157,22 @@ MODEL({
 
       var Y = this.X.sub({
         stack: this.stack,
+        EMailDAO: this.emailDao,
         mgmail: this, // TODO: this doesn't actually work.
       }, 'GMAIL CONTEXT');
+
+      var toTop = function(id) {
+        return {
+          compare: function(o1, o2) {
+            return o1.id == id ? -1 : o2.id == id ? 1 : 0;
+          }
+        };
+      };
 
       this.controller = Y.AppController.create({
         model: EMail,
         dao: this.emailDao,
+        createAction: this.model_.COMPOSE,
         citationView: 'EMailCitationView',
         queryParser: queryParser,
         editableCitationViews: true,
@@ -123,17 +183,49 @@ MODEL({
         ],
         menuFactory: function() {
           return this.X.MenuView.create({
-            daoListView: this.X.DAOListView.create({
-              dao: this.X.mgmail.labelDao.orderBy(GMailLabel.TYPE, GMailLabel.NAME),
+            topSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
+                  .where(EQ(GMailLabel.TYPE, 'system'))
+                  .orderBy(
+                    toTop('INBOX'),
+                    toTop('STARRED'),
+                    toTop('DRAFT')
+                  )
+                  .limit(3),
+              rowView: 'MenuLabelCitationView',
+            }),
+            bottomSystemLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao
+                  .where(AND(EQ(GMailLabel.TYPE, 'system'),
+                             NEQ(GMailLabel.ID, 'INBOX'),
+                             NEQ(GMailLabel.ID, 'STARRED'),
+                             NEQ(GMailLabel.ID, 'UNREAD'),
+                             NEQ(GMailLabel.ID, 'DRAFT')))
+                  .orderBy(toTop('SENT'),
+                           toTop('SPAM'),
+                           toTop('TRASH')),
+              rowView: 'MenuLabelCitationView',
+            }),
+            userLabelView: this.X.DAOListView.create({
+              dao: this.X.mgmail.labelDao.where(NEQ(GMailLabel.TYPE, 'system')).orderBy(GMailLabel.NAME),
               rowView: 'MenuLabelCitationView',
             }),
           });
         }
       });
-      this.changeLabel();
+      var self = this;
+      this.labelDao.where(EQ(GMailLabel.ID, 'INBOX')).select({
+        put: function(inbox) {
+          self.changeLabel(inbox);
+        }
+      });
     },
     openEmail: function(email) {
-      var v = this.controller.X.EmailView.create({data: email});
+      email = email.clone();
+      var v = this.controller.X.FloatingView.create({
+        view: this.controller.X.EMailView.create({data: email})
+      });
+      email.markRead(this.controller.X);
       this.stack.pushView(v, '');
     },
     changeLabel: function(label) {
@@ -146,11 +238,30 @@ MODEL({
       }
       this.stack.back();
     },
-  }
+  },
+
+  actions: [
+    {
+      model_: 'Action',
+      name: 'compose',
+      label: '+',
+      action: function() {
+        var view = this.X.FloatingView.create({
+          view: this.X.EMailComposeView.create({
+            data: this.X.EMail.create({
+              labels: ['DRAFT']
+            })
+          })
+        });
+        this.X.stack.pushView(view, undefined, undefined, 'fromRight');
+      }
+    }
+  ]
 });
 
+
 MODEL({
-  name: 'EmailView',
+  name: 'EMailView',
   extendsModel: 'UpdateDetailView',
   properties: [
   ],
@@ -161,6 +272,19 @@ MODEL({
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png'
     },
+    {
+      name: 'moreActions',
+      label: '',
+      isEnabled: function() { return true; },
+      iconUrl: 'icons/ic_more_horiz_white_24dp.png',
+      action: function() {
+        var actionSheet = this.X.ActionSheetView.create({
+          data: this.data,
+          actions: this.data.model_.actions,
+        });
+        this.X.stack.slideView(actionSheet);
+      },
+    },
   ],
   templates: [
     function toHTML() {/*
@@ -168,19 +292,10 @@ MODEL({
         <div class="header">
           $$back{className: 'backButton'}
           $$subject{mode: 'read-only', className: 'subject'}
-          $$inInbox{
-            model_: 'ImageBooleanView',
-            className:  'actionButton',
-            falseClass: 'hide',
-            trueImage: 'images/archive.svg',
-            falseImage: 'images/archive.svg'
-          }
-          $$starred{
-            model_: 'ImageBooleanView',
-            className:  'actionButton',
-            trueImage:  'images/ic_star_24dp.png',
-            falseImage: 'images/ic_star_outline_24dp.png'
-          }
+          $$archive{iconUrl: 'icons/ic_archive_white_24dp.png'}
+          $$moveToInbox{iconUrl: 'icons/ic_inbox_white_24dp.png'}
+          $$trash{iconUrl: 'icons/ic_delete_white_24dp.png'}
+          $$moreActions
         </div>
         <div class="content">
           <div style='display: flex'>
@@ -194,9 +309,45 @@ MODEL({
                 $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
               </div>
             </div>
+            $$starred{
+              model_: 'ImageBooleanView',
+              className:  'actionButton',
+              trueImage:  'images/ic_star_24dp.png',
+              falseImage: 'images/ic_star_outline_24dp.png'
+            }
           </div>
-          $$body{ mode: 'read-only', className: 'body' }
+          $$body{ mode: 'read-only', className: 'body', escapeHTML: false }
         </div>
+      </div>
+    */}
+  ]
+});
+
+MODEL({
+  name: 'EMailComposeView',
+  extendsModel: 'DetailView',
+
+  actions: [
+    {
+      name: 'back',
+      isEnabled: function() { return true; },
+      label: '',
+      iconUrl: 'images/ic_arrow_back_24dp.png',
+      action: function() { this.X.stack.back(); }
+    },
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="<%= this.id %>" class="email-compose-view">
+        <div class="header">
+          $$back{className: 'backButton'}
+          $$subject{mode: 'read-only', className: 'subject'}
+        </div>
+        <div class="content">
+        $$to{placeholder: 'To'} $$cc{placeholder: 'Cc'} $$bcc{placeholder: 'Bcc'} $$subject{ placeholder: 'Subject' } $$body{model_: 'RichTextView', height: 300, placeholder: 'Message' }
+        </div>
+        $$send
       </div>
     */}
   ]
@@ -207,15 +358,21 @@ MODEL({
   name: 'EMailCitationView',
   extendsModel: 'DetailView',
   properties: [
-    { name: 'className', defaultValue: 'email-citation' }
+    { name: 'className', defaultValue: 'email-citation' },
+    {
+      name: 'preferredHeight',
+      help: 'Specifying the preferred height of this view for the ScrollView, since an empty row is too small.',
+      defaultValue: 82
+    }
   ],
   templates: [
     function toHTML() {/*
       <%
-        // this.setClass('unread', function() { return self.data && self.data.unread; });
+        var id = this.setClass('unread', function() { return self.data && self.data.unread; }, this.id);
+        this.on('click', function() { this.X.mgmail.openEmail(this.data); }, this.id);
       %>
 
-      <div id="<%= this.on('click', function() { this.X.mgmail.openEmail(this.data); }) %>" %%cssClassAttr() >
+      <div id="<%= id %>" %%cssClassAttr() >
         $$from{model_: 'MDMonogramStringView'}
         <div style="flex: 1">
           <div style="display: flex">
@@ -237,6 +394,57 @@ MODEL({
           </div>
         </div>
       </div>
+    */},
+    function CSS() {/*
+    .email-citation {
+      display: flex;
+      border-bottom: solid #B5B5B5 1px;
+      padding: 10px 14px 10px 6px;
+    }
+
+    .email-citation.unread {
+      font-weight: bold;
+    }
+
+    .email-citation .from {
+      display: block;
+      font-size: 17px;
+      line-height: 24px;
+      white-space: nowrap;
+      overflow-x:hidden;
+      text-overflow: ellipsis;
+      flex-grow: 1;
+    }
+
+    .email-citation .timestamp {
+      font-size: 12px;
+      color: rgb(17, 85, 204);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .email-citation .subject {
+      display: block;
+      font-size: 13px;
+      line-height: 17px;
+      overflow-x:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .email-citation .snippet {
+      color: rgb(119, 119, 119);
+      display: block;
+      font-size: 13px;
+      height: 20px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .email-citation .monogram-string-view {
+      margin: auto 6px auto 0;
+    }
     */}
    ]
 });
@@ -244,19 +452,47 @@ MODEL({
 MODEL({
   name: 'MenuView',
   extendsModel: 'View',
+  traits: ['PositionedDOMViewTrait'],
   properties: [
     {
-      name: 'daoListView',
+      name: 'topSystemLabelView',
     },
+    {
+      name: 'bottomSystemLabelView',
+    },
+    {
+      name: 'userLabelView',
+    },
+    {
+      name: 'preferredWidth',
+      defaultValue: 200
+    }
   ],
   templates: [
-    function toHTML() {/*
+    function toInnerHTML() {/*
       <div class="menuView">
-        %%daoListView
+        %%topSystemLabelView
+        <br>
         <div id="<%= this.on('click', function() { this.X.mgmail.changeLabel(); }) %>">All Mail</div>
+        %%userLabelView
+        <br>
+        %%bottomSystemLabelView
       </div>
-    */}
-   ]
+    */},
+    function CSS() {/*
+      .menuView {
+        height: 100%;
+        display: block;
+        overflow-y: auto;
+        background: white;
+      }
+
+      .menuView div:hover {
+        background-color: #3e50b4;
+        color: white;
+      }
+   */}
+  ]
 });
 
 MODEL({
@@ -268,3 +504,13 @@ MODEL({
     */}
    ]
 });
+
+var openComposeView = function(email) {
+  var X = mgmail.controller.X;
+  var view = X.FloatingView.create({
+    view: X.EMailComposeView.create({
+      data: email,
+    })
+  });
+  X.stack.pushView(view, undefined, undefined, 'fromRight');
+};

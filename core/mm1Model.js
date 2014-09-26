@@ -16,12 +16,75 @@
  */
 var BinaryProtoGrammar;
 
+var DocumentationBootstrap = {
+  name: 'documentation',
+  type: 'Documentation',
+  view: 'DocModelView',
+  help: 'Documentation associated with this entity.',
+  documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
+  setter: function(nu) {
+    this.instance_.documentation = nu;
+  },
+  getter: function() {
+    var doc = this.instance_.documentation;
+    if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+        && (  !doc.model_ // but we don't know if the user set model_
+           || !doc.model_.getPrototype // model_ could be a string
+           || !Documentation.isInstance(doc) // check for correct type
+        ) ) {
+      // So in this case we have something in documentation, but it's not of the
+      // "Documentation" model type, so FOAMalize it.
+      if (doc.body) {
+        this.instance_.documentation = Documentation.create( doc );
+      } else {
+        this.instance_.documentation = Documentation.create({ body: doc });
+      }
+    }
+    // otherwise return the previously FOAMalized model or undefined if nothing specified.
+    //console.log("getting ", this.instance_.documentation)
+    return this.instance_.documentation;
+  }
+}
+
+
+
 var Model = {
   __proto__: BootstrapModel,
 
   name:  'Model',
   plural:'Models',
   help:  "Describes the attributes and properties of an entity.",
+
+  documentation: function() { /*
+    <p>In FOAM, $$DOC{ref:'Model'} is the basic unit for describing data and behavior.
+    $$DOC{ref:'Model'} itself is a $$DOC{ref:'Model'}, since it defines what can be defined,
+    but does so within the rules it is defining.</p>
+
+    <p>For the developer, this means:</p>
+    <ul>
+      <li>Your own models will extend $$DOC{ref:'Model'}, or extend
+      a model that extends $$DOC{ref:'Model'}.</li>
+
+      <li>The definition of your model is a $$DOC{ref:'Model'} instance
+      (with YourModel.TYPE === "Model"), while instances
+      of your model have your new type (myInstance.TYPE === "YourModel"). This
+      differs from other object-oriented systems where the definition of a class
+      and instances of the class are completely separate entities. In FOAM everything
+      is a $$DOC{ref:'Model'}, including itself. TODO: refine/expand on this.</li>
+
+      <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
+      your model. This is context dependent, so generally you will be calling
+      <code>this.X.YourModel.create({...})</code>.</li>
+
+      <li>Creating a subcontext and replacing X.YourModel with a different model (such as
+      YourTestModelMock created specifically for testing) will give you seamless dependency
+      injection. See the
+      $$DOC{ref:'DevDocumentation_Context.documentation.chapters.Intro', text:'Context documentation'}
+      for more information.</li>
+    </ul>
+
+
+  */ },
 
   tableProperties: [
     'name', 'label', 'plural'
@@ -246,35 +309,7 @@ var Model = {
       factory: function() { return []; },
       defaultValue: [],
       postSet: function(_, templates) {
-        // Load templates from an external file
-        // if their 'template' property isn't set
-        var i = 0;
-        templates.forEach(function(t) {
-          if ( typeof t === 'function' ) {
-            t = templates[i] = Template.create({name: t.name, template: multiline(t)});
-          } else if ( ! t.template ) {
-            // console.log('loading: '+ this.name + ' ' + t.name);
-
-            var future = afuture();
-            var path = document.currentScript.src;
-
-            t.futureTemplate = future.get;
-            path = path.substring(0, path.lastIndexOf('/')+1);
-            path += this.name + '_' + t.name + '.ft';
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", path);
-            xhr.asend(function(data) {
-              t.template = data;
-              future.set(data);
-              t.futureTemplate = undefined;
-            });
-          } else if ( typeof t.template === 'function' ) {
-            t.template = multiline(t.template);
-          }
-
-          i++;
-        }.bind(this));
+        TemplateUtil.modelExpandTemplates(this, templates);
       },
       //         defaultValueFn: function() { return []; },
       help: 'Templates associated with this entity.'
@@ -344,6 +379,7 @@ var Model = {
       defaultValue: '',
       help: 'Help text associated with the entity.'
     },
+    DocumentationBootstrap,
     {
       name: 'notes',
       type: 'String',

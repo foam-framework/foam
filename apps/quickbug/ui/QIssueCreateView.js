@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return QIssue; }
+      factory: function() { return this.X.QIssue; }
     },
     {
       model_: 'BooleanProperty',
@@ -68,8 +68,8 @@ MODEL({
       </td></tr>
       </tbody>
       </table>
-      <%= ActionButton.create({ action: this.model_.SAVE, value: SimpleValue.create(this) }) %>
-      <%= ActionButton.create({ action: this.model_.DISCARD, value: SimpleValue.create(this) }) %>
+      <%= ActionButton.create({ action: this.model_.SAVE,    data: this }) %>
+      <%= ActionButton.create({ action: this.model_.DISCARD, data: this }) %>
       %%errorView
       </div>
       </div>

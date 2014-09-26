@@ -47,14 +47,10 @@ MODEL({
     },
     {
       name:  'hardSelection',
-      type:  'Value',
-      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); },
-      factory: function() { return SimpleValue.create(); }
+      postSet: function(_, v) { this.publish(this.ROW_SELECTED, v); }
     },
     {
-      name:  'selection',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); }
+      name:  'selection'
     },
     {
       name:  'children',
@@ -86,6 +82,11 @@ MODEL({
     },
     {
       model_: 'BooleanProperty',
+      name: 'columnResizeEnabled',
+      defaultValue: false
+    },
+    {
+      model_: 'BooleanProperty',
       name: 'editColumnsEnabled',
       defaultValue: false
     },
@@ -108,17 +109,53 @@ MODEL({
       defaultValue: 10
     },
     {
-      name: 'touchScrolling',
-      model_: 'BooleanProperty',
-      defaultValue: false,
-      hidden: true,
-      transient: true
-    },
-    {
       name: 'touchPrev',
       hidden: true,
       transient: true,
       defaultValue: 0
+    }
+  ],
+
+  actions: [
+    {
+      name: 'selectRow',
+      keyboardShortcuts: [ 13 /* enter */ ],
+      action: function() {
+        if ( this.selection ) this.hardSelection = this.selection;
+        this.publish(this.CLICK, this.selection);
+      }
+    },
+    {
+      name: 'prevRow',
+      keyboardShortcuts: [ 38 /* up arrow */, 75 /* k */ ],
+      action: function() {
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
+          this.scrollbar.value--;
+          if ( i > 0 ) this.selection = this.objs[i-1];
+        } else {
+          this.selection = this.objs[0];
+        }
+        this.repaint();
+      }
+    },
+    {
+      name: 'nextRow',
+      keyboardShortcuts: [ 40 /* down arrow */, 74 /* j */ ],
+      action: function() {
+        if ( ! this. objs || ! this.objs.length ) return;
+        if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
+        if ( this.selection ) {
+          var i = this.objs.indexOf(this.selection);
+          this.scrollbar.value++;
+          if ( i < this.objs.length-1 ) this.selection = this.objs[i+1];
+        } else {
+          this.selection = this.objs[0];
+        }
+        this.repaint();
+      }
     }
   ],
 
@@ -170,64 +207,55 @@ MODEL({
         }.bind(this));
 
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
+
+        var y = findPageXY(this.$)[1];
+        var screenHeight = this.X.document.firstElementChild.offsetHeight;
+        var popupHeight = toNum(v.$.offsetHeight);
+        if ( screenHeight-y-popupHeight < 10 ) {
+          v.$.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
+        }
+
         v.initHTML();
       }
     },
     {
-      name: 'onTouchStart',
-      code: function(touches, changed) {
-        if ( touches.length > 1 ) return { drop: true };
-        return { weight: 0.3 };
+      name: 'verticalScrollStart',
+      code: function(dy, ty, y) {
+        this.touchPrev = y;
       }
     },
     {
-      name: 'onTouchMove',
-      code: function(touches, changed) {
-        var t = touches[changed[0]];
-        if ( this.touchScrolling ) {
+      name: 'verticalScrollMove',
+      code: function(dy, ty, y) {
+        var delta = Math.abs(y - this.touchPrev);
+        if ( delta > this.scrollPitch ) {
           var sb = this.scrollbar;
-          var dy = t.y - this.touchPrev;
-          if ( dy > this.scrollPitch && sb.value > 0 ) {
-            this.touchPrev = t.y;
+          if ( y > this.touchPrev && sb.value > 0 ) { // scroll up
             sb.value--;
-          } else if ( dy < -this.scrollPitch && sb.value < sb.size - sb.extent ) {
-            this.touchPrev = t.y;
+          } else if ( y < this.touchPrev && sb.value < sb.size - sb.extent ) { // scroll down
             sb.value++;
           }
-
-          return { claim: true, weight: 0.99, preventDefault: true };
+          this.touchPrev = y;
         }
-
-        if ( Math.abs(t.dy) > 10 && Math.abs(t.dx) < 10 ) {
-          // Moving mostly vertically, so start scrolling.
-          this.touchScrolling = true;
-          this.touchPrev = t.y;
-          return { claim: true, weight: 0.8, preventDefault: true };
-        } else if ( t.distance < 10 ) {
-          return { preventDefault: true };
-        } else {
-          return { drop: true };
-        }
-      }
-    },
-    {
-      name: 'onTouchEnd',
-      code: function(touches, changed) {
-        this.touchScrolling = false;
-        return { drop: true };
       }
     }
   ],
 
   methods: {
+    MIN_COLUMN_SIZE: 5, // If column is resized below this size, then remove the column instead of shrinking it
+
     ROW_SELECTED: ['escape'],
 
     // Not actually a method, but still works
     // TODO: add 'Constants' to Model
+    CLICK: "click", // event topic
+
     DOUBLE_CLICK: "double-click", // event topic
 
     toHTML: function() {
-      return '<div style="display:flex;width:100%;height:100%">' +
+      // TODO: I don't think this should be height:100%, but needs to be
+      // fixed somehow.
+      return '<div tabindex="99" style="display:flex;width:100%;height:100%">' +
         '<span id="' + this.id + '" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">' +
         this.tableToHTML() +
         '</span>' +
@@ -238,6 +266,8 @@ MODEL({
     },
 
     initHTML: function() {
+      this.SUPER();
+
       this.scrollbar.initHTML();
 
       this.dao && this.onDAOUpdate();
@@ -248,18 +278,19 @@ MODEL({
         var sb = this.scrollbar;
 
         this.$.parentElement.onmousewheel = function(e) {
-          if ( e.wheelDeltaY > 0 && sb.value ) {
-            sb.value--;
-          } else if ( e.wheelDeltaY < 0 && sb.value < sb.size - sb.extent ) {
-            sb.value++;
-          }
+          sb.value = Math.min(
+            sb.size - sb.extent,
+            Math.max(
+              0,
+              sb.value - Math.round(e.wheelDelta / 20)));
         };
 
-        if ( this.X.touchManager ) {
-          this.X.touchManager.install(TouchReceiver.create({
-            id: 'qbug-table-scroll-' + this.id,
-            element: this.$.parentElement,
-            delegate: this
+        if ( this.X.gestureManager ) {
+          this.X.gestureManager.install(this.X.GestureTarget.create({
+            container: this,
+            handler: this,
+            getElement: function() { return this.container.$.parentElement; },
+            gesture: 'verticalScroll'
           }));
         }
 
@@ -297,6 +328,8 @@ MODEL({
     tableToHTML: function() {
       var model = this.model;
 
+      if ( ! model ) return;
+
       if ( this.initializers_ ) {
         // console.log('Warning: TableView.tableToHTML called twice without initHTML');
         delete this['initializers_'];
@@ -319,16 +352,12 @@ MODEL({
 
         if ( prop.hidden ) continue;
 
-        str.push('<th scope=col ');
+        str.push('<th style="position:relative;" scope=col ');
         str.push('id=' +
                  this.on(
                    'click',
                    (function(table, prop) { return function() {
-                     if ( table.sortOrder === prop ) {
-                       table.sortOrder = DESC(prop);
-                     } else {
-                       table.sortOrder = prop;
-                     }
+                     table.sortOrder = ( table.sortOrder === prop ) ? DESC(prop) : prop;
                      table.repaintNow();
                    };})(this, prop)));
         if ( prop.tableWidth ) str.push(' width="' + prop.tableWidth + '"');
@@ -341,7 +370,14 @@ MODEL({
           arrow = ' <span class="indicator">&#9660;</span>';
         }
 
-        str.push('>' + prop.tableLabel + arrow + '</th>');
+        str.push('>', prop.tableLabel, arrow);
+
+        if ( this.columnResizeEnabled ) 
+          str.push(this.columnResizerToHTML(
+            prop,
+            model.getProperty(properties[i+1])));
+
+        str.push('</th>');
 
         props.push(prop);
       }
@@ -351,13 +387,18 @@ MODEL({
       str.push('</tr><tr style="height:2px"></tr></thead><tbody>');
       var objs = this.objs;
       if ( objs ) {
-        var hselect = this.hardSelection.get();
+        var hselect = this.hardSelection;
+        var sselect = this.selection;
         for ( var i = 0 ; i < objs.length; i++ ) {
           var obj = objs[i];
           var className = "tr-" + this.id;
 
           if ( hselect && obj.id == hselect.id ) {
             className += " rowSelected";
+          }
+
+          if ( sselect && obj.id == sselect.id ) {
+            className += " rowSoftSelected";
           }
 
           str.push('<tr class="' + className + '">');
@@ -388,56 +429,150 @@ MODEL({
       return str.join('');
     },
 
+    columnResizerToHTML: function(prop1, prop2) {
+      var id = this.nextID();
+
+      // Prevent the column sort-order listener from firing
+      this.on('click', function(e) { e.stopPropagation(); }, id);
+
+      this.on('mousedown', function(e) {
+        var self   = this;
+        var startX = e.x;
+        var col1   = self.X.$(id).parentElement;
+        var col2   = self.X.$(id).parentElement.nextSibling;
+        var w1     = toNum(col1.width);
+        var w2     = prop2 ? toNum(col2.width) : 0;
+
+        e.preventDefault();
+
+        function onMouseMove(e) {
+          var delta = e.x - startX;
+          col1.width = w1 + ( prop2 ? Math.min(w2, delta) : delta );
+          if ( prop2 ) col2.width = w2 + Math.min(-delta, w1);
+        }
+
+        var onMouseUp = (function(e) {
+          e.preventDefault();
+
+          if ( toNum(col1.width) < this.MIN_COLUMN_SIZE ) {
+            this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop1.name);
+          } else {
+            prop1.tableWidth = col1.width;
+          }
+          if ( prop2 ) {
+            if ( toNum(col2.width) < this.MIN_COLUMN_SIZE ) {
+              this.properties = ( this.properties || this.model.tableProperties ).deleteF(prop2.name);
+            } else {
+              prop2.tableWidth = col2.width;
+            }
+          }
+          this.X.document.removeEventListener('mousemove', onMouseMove);
+          this.X.document.removeEventListener('mouseup',   onMouseUp);
+        }).bind(this);
+
+        this.X.document.addEventListener('mousemove', onMouseMove);
+        this.X.document.addEventListener('mouseup',   onMouseUp);
+      }, id);
+
+      return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';
+    },
+
     initHTML_: function() {
       this.initHTML.super_.call(this);
 
-      var es = $$('tr-' + this.id);
       var self = this;
 
-      /*
-      if ( es.length ) {
-        if ( ! this.sized_ ) {
-          this.sized_ = true;
-          this.layout();
-          return;
-        }
-      }
-      */
+      argsToArray($$('tr-' + this.id)).forEach(function(e, i) {
+        var obj = self.objs[i];
 
-      for ( var i = 0 ; i < es.length ; i++ ) {
-        var e = es[i];
-
-        e.onmouseover = function(value, obj) { return function() {
-          value.set(obj);
-        }; }(this.selection, this.objs[i]);
-        e.onmouseout = function(value, obj) { return function() {
-          value.set(self.hardSelection.get());
-        }; }(this.selection, this.objs[i]);
-        e.onclick = function(value, obj) { return function(evt) {
-          self.hardSelection.set(obj);
-          value.set(obj);
-          delete value['prevValue'];
-          var row = evt.srcElement;
-          while ( row && row.tagName !== "TR") row = row.parentNode;
-          var table = row;
-          while (table && table.tagName !== "TBODY")  table = table.parentNode;
-
-          var siblings = table ? table.childNodes : [];
-          for ( var i = 0 ; i < siblings.length ; i++ ) {
-            siblings[i].classList.remove("rowSelected");
-          }
-          row && row.classList.add('rowSelected');
-        }; }(this.selection, this.objs[i]);
-        e.ondblclick = function(value, obj) { return function(evt) {
-          self.publish(self.DOUBLE_CLICK, obj, value);
-        }; }(this.selection, this.objs[i]);
-      }
+        self.selection$.addListener(function() {
+          DOM.setClass(e, 'rowSoftSelected', self.selection === obj);
+        });
+        self.hardSelection$.addListener(function() {
+          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
+        });
+        e.onmouseover = function() {
+          self.selection = obj;
+        };
+        e.onmouseout = function() {
+          self.selection = self.hardSelection;
+        };
+        e.onclick = function(evt) {
+          self.hardSelection = self.selection = obj;
+          self.publish(self.CLICK, obj);
+        };
+        e.ondblclick = function() {
+          self.publish(self.DOUBLE_CLICK, obj);
+        };
+      });
 
       delete this['initializers_'];
       this.children = [];
-    },
+    }
+  }
+});
 
-    destroy: function() {
+
+MODEL({
+  name: 'EditColumnsView',
+
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'model',
+      type: 'Model'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'properties'
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'availableProperties'
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onAddColumn',
+      code: function(prop) {
+        this.properties = this.properties.concat([prop]);
+      }
+    },
+    {
+      name: 'onRemoveColumn',
+      code: function(prop) {
+        this.properties = this.properties.deleteF(prop);
+      }
+    }
+  ],
+
+  methods: {
+    toHTML: function() {
+      var s = '<span id="' + this.id + '" class="editColumnView" style="overflow-y: scroll;position: absolute;right: 0.96;background: white;top: 138px;border: 1px solid black;">'
+
+      s += 'Show columns:';
+      s += '<table>';
+
+      // Currently Selected Properties
+      for ( var i = 0 ; i < this.properties.length ; i++ ) {
+        var p = this.model.getProperty(this.properties[i]);
+        s += '<tr><td id="' + this.on('click', this.onRemoveColumn.bind(this, p.name)) + '">&nbsp;&#x2666;&nbsp;' + p.label + '</td></tr>';
+      }
+
+      // Available but not Selected Properties
+      for ( var i = 0 ; i < this.availableProperties.length ; i++ ) {
+        var p = this.availableProperties[i];
+        if ( this.properties.indexOf(p.name) == -1 ) {
+          s += '<tr><td id="' + this.on('click', this.onAddColumn.bind(this, p.name)) + '">&nbsp;&nbsp;&nbsp;&nbsp;' + p.label + '</td></tr>';
+        }
+      }
+
+      s += '</table>';
+      s += '</span>';
+
+      return s;
     }
   }
 });

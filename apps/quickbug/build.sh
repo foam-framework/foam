@@ -1,8 +1,8 @@
+cp manifest_prod.json manifest.json
 export BUILD_DIR=~/Downloads/quickbug
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../core/css-tooltips.css $BUILD_DIR
 cat \
   ../../core/stdlib.js \
   ../../core/io.js \
@@ -21,8 +21,8 @@ cat \
   ../../core/TemplateUtil.js \
   ../../core/async.js \
   ../../core/oam.js \
-  ../../core/AbstractPrototype.js \
-  ../../core/ModelProto.js \
+  ../../core/FObject.js \
+  ../../core/BootstrapModel.js \
   ../../core/mm1Model.js \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
@@ -31,6 +31,8 @@ cat \
   ../../core/mm6Protobuf.js \
   ../../core/value.js \
   ../../core/view.js \
+  ../../core/layout.js \
+  ../../core/daoView.js \
   ../../core/ChoiceView.js \
   ../../core/DetailView.js \
   ../../core/TableView.js \
@@ -44,6 +46,8 @@ cat \
   ../../core/search.js \
   ../../core/visitor.js \
   ../../core/dao.js \
+  ../../core/ChromeStorage.js \
+  ../../core/arrayDAO.js \
   ../../core/diff.js \
   ../../core/SplitDAO.js \
   ../../core/index.js \
@@ -57,6 +61,7 @@ cat \
   ../../core/ChromeApp.js \
   ../../core/SyncManager.js \
   ../../lib/bookmarks/bookmark.js \
+  ../../core/CORE.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:

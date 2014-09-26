@@ -1,5 +1,5 @@
 MODEL({
-  name: 'CViewView',
+  name: 'AbstractCViewView',
   extendsModel: 'View',
 
   properties: [
@@ -7,11 +7,6 @@ MODEL({
       name: 'cview',
       postSet: function(_, cview) {
         cview.view = this;
-        cview.x$.addListener(this.resize);
-        cview.y$.addListener(this.resizeP);
-        cview.width$.addListener(this.resize);
-        cview.height$.addListener(this.resize);
-        this.resize();
       }
     },
     {
@@ -20,35 +15,20 @@ MODEL({
       defaultValue: ''
     },
     {
+      model_: 'IntProperty',
       name: 'scalingRatio',
-      type: 'int',
-      defaultValue: 1,
-      postSet: function() {
-        this.width = this.width;
-        this.height = this.height;
-      }
+      postSet: function(_, v) { console.log('Scaling to: ' , v); },
+      defaultValue: 1
     },
     {
+      model_: 'IntProperty',
       name:  'width',
-      type:  'int',
-      defaultValue: 100,
-      postSet: function(_, width) {
-        if ( this.$ ) {
-          this.$.width = width * this.scalingRatio;
-          this.$.style.width = width + 'px';
-        }
-      }
+      defaultValue: 100
     },
     {
+      model_: 'IntProperty',
       name:  'height',
-      type:  'int',
-      defaultValue: 100,
-      postSet: function(_, height) {
-        if ( this.$ )  {
-          this.$.height = height * this.scalingRatio;
-          this.$.style.height = height + 'px';
-        }
-      }
+      defaultValue: 100
     },
     {
       name: 'canvas',
@@ -61,8 +41,12 @@ MODEL({
       name: 'resize',
       isAnimated: true,
       code: function() {
-        this.width  = this.cview.x + this.cview.width;
-        this.height = this.cview.y + this.cview.height;
+        if ( ! this.$ ) return;
+        this.$.width = this.canvasWidth();
+        this.$.style.width = this.styleWidth();
+        this.$.height = this.canvasHeight();
+        this.$.style.height = this.styleHeight();
+        this.paint();
       }
     },
     {
@@ -79,11 +63,23 @@ MODEL({
   ],
 
   methods: {
-    toHTML: function() {
-      var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.width + '" height="' + this.height + '"> </canvas>';
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
+                     this.resize);
     },
 
+    styleWidth: function() { return (this.width) + 'px'; },
+    canvasWidth: function() { return this.width * this.scalingRatio; },
+    styleHeight: function() { return (this.height) + 'px'; },
+    canvasHeight: function() { return this.height * this.scalingRatio; },
+
+    toString: function() { return 'CViewView(' + this.cview + ')'; },
+
+    toHTML: function() {
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style=width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+    },
     initHTML: function() {
       if ( ! this.$ ) return;
       this.canvas = this.$.getContext('2d');
@@ -95,11 +91,83 @@ MODEL({
       if ( devicePixelRatio !== backingStoreRatio )
         this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
+      var style = this.X.window.getComputedStyle(this.$);
+
+      // Copy the background colour from the div styling.
+      // TODO: the same thing for other CSS attributes like 'font'
+      if ( style.backgroundColor && ! this.cview.hasOwnProperty('background') )
+        this.cview.background = style.backgroundColor;
+
       this.paint();
+    },
+
+    destroy: function() {
+      this.SUPER();
+      this.cview.destroy();
     }
   }
 });
 
+MODEL({
+  name: 'PositionedCViewView',
+  extendsModel: 'AbstractCViewView',
+  traits: ['PositionedDOMViewTrait'],
+  properties: [
+    {
+      name: 'tagName',
+      factory: function() { return 'canvas'; }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() {
+        this.cview; this.width; this.height;
+      }.bind(this), function() {
+        if ( ! this.cview ) return;
+        this.cview.width = this.width;
+        this.cview.height = this.height;
+      }.bind(this));
+    },
+    toHTML: function() {
+      var className = this.className ? ' class="' + this.className + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" ' + this.layoutStyle() + '></canvas>';
+    }
+  },
+  listeners: [
+    {
+      name: 'resize',
+      isAnimated: true,
+      code: function() {
+        if ( ! this.$ ) return;
+        this.$.width = this.canvasWidth();
+        this.$.style.width = this.styleWidth();
+        this.$.height = this.canvasHeight();
+        this.$.style.height = this.styleHeight();
+        this.cview.width = this.width;
+        this.cview.height = this.height;
+        this.paint();
+      }
+    }
+  ]
+});
+
+MODEL({
+  name: 'CViewView',
+  extendsModel: 'AbstractCViewView',
+  help: 'DOM wrapper for a CView2, auto adjusts it size to fit the given cview.',
+  properties: [
+    {
+      name: 'cview',
+      postSet: function(_, cview) {
+        this.X.dynamic(function() {
+          this.width = cview.x + cview.width;
+          this.height = cview.y + cview.height;
+        }.bind(this));
+      }
+    }
+  ]
+});
 
 // Should CViews' have a cparent?
 MODEL({
@@ -184,11 +252,20 @@ MODEL({
   ],
 
   methods: {
-    toView: function() {
+    toView_: function() {
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
-        view = this.X.CViewView.create(params);
+        this.view = this.X.CViewView.create(params);
+      }
+      return this.view;
+    },
+
+    toPositionedView_: function() {
+      if ( ! this.view ) {
+        var params = {cview: this};
+        if ( this.className ) params.className = this.className;
+        this.view = this.X.PositionedCViewView.create(params);
       }
       return this.view;
     },
@@ -196,7 +273,7 @@ MODEL({
     initCView: function() { },
 
     write: function(document) {
-      var v = this.toView();
+      var v = this.toView_();
       document.writeln(v.toHTML());
       v.initHTML();
     },
@@ -223,6 +300,7 @@ MODEL({
     },
 
     erase: function() {
+      this.canvas.clearRect(0, 0, this.width, this.height);
       this.canvas.fillStyle = this.background;
       this.canvas.fillRect(0, 0, this.width, this.height);
     },
@@ -248,6 +326,10 @@ MODEL({
       this.erase();
       this.paintSelf();
       this.paintChildren();
+    },
+
+    destroy: function() {
+      // Implement me in submodels to do cleanup when the view is removed.
     }
   }
 });
@@ -282,7 +364,6 @@ MODEL({
 
     paint: function() {
       var c = this.canvas;
-
       if ( ! c ) return;
 
       c.globalAlpha = this.alpha;
@@ -320,11 +401,8 @@ MODEL({
       postSet: function(oldValue, action) {
         //  oldValue && oldValue.removeListener(this.render)
         // action.addListener(this.render);
+        this.bindIsAvailable();
       }
-    },
-    {
-      name: 'data',
-      setter: function(_, d) { this.value = SimpleValue.create(d); }
     },
     {
       name:  'font',
@@ -332,7 +410,10 @@ MODEL({
       defaultValue: ''
     },
     {
-      name: 'data'
+      name: 'data',
+      postSet: function() {
+        this.bindIsAvailable();
+      }
     },
     {
       name: 'showLabel',
@@ -340,6 +421,7 @@ MODEL({
     },
     {
       name: 'iconUrl',
+      postSet: function(_, v) { this.image_ && (this.image_.src = v); },
       defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
@@ -359,26 +441,52 @@ MODEL({
       name:  'iconHeight',
       type:  'int',
       defaultValue: 0
+    },
+    {
+      name:  'radius',
+      type:  'int',
+      defaultValue: 0,
+      postSet: function(_, r) {
+        if ( r ) this.width = this.height = 2 * r;
+      }
+    },
+    {
+      name: 'tapGesture',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'tap'
+        });
+      }
     }
   ],
 
   listeners: [
     {
       name: 'onClick',
-      code: function() { this.action.callIfEnabled(this.data); }
+      code: function() { this.action.callIfEnabled(this.X, this.data); }
     },
     {
       name: 'onMouseDown',
       code: function(evt) {
         this.down_ = true;
-        this.pressCircle.x = evt.offsetX;
-        this.pressCircle.y = evt.offsetY;
-        this.pressCircle.r = 10;
+        if ( evt.type === 'touchstart' ) {
+          var rect = this.$.getBoundingClientRect();
+          var t = evt.touches[0];
+          this.pressCircle.x = t.pageX - rect.left;
+          this.pressCircle.y = t.pageY - rect.top;
+        } else {
+          this.pressCircle.x = evt.offsetX;
+          this.pressCircle.y = evt.offsetY;
+        }
+        this.pressCircle.r = 5;
         Movement.animate(150, function() {
-        x: this.width/2,
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
-          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-2);
+          this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
           this.pressCircle.alpha = 1;
         }.bind(this), Movement.easeIn(1))();
       }
@@ -389,10 +497,8 @@ MODEL({
         if ( ! this.down_ ) return;
         this.down_ = false;
         Movement.animate(
-          200,
-          function() { this.pressCircle.alpha = 0; }.bind(this),
-          undefined,
-          function() { this.pressCircle.r = 15; }.bind(this))();
+          300,
+          function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
     }
   ],
@@ -414,21 +520,87 @@ MODEL({
       }
     },
 
+    bindIsAvailable: function() {
+      if ( ! this.action || ! this.data ) return;
+
+      var self = this;
+      Events.dynamic(
+        function() { self.action.isAvailable.call(self.data, self.action); },
+        function() {
+          if ( self.action.isAvailable.call(self.data, self.action) &&
+               self.oldWidth_ && self.oldHeight_ ) {
+            self.x = self.oldX_;
+            self.y = self.oldY_;
+            self.width = self.oldWidth_;
+            self.height = self.oldHeight_;
+          } else if ( self.width || self.height ) {
+            self.oldX_ = self.x;
+            self.oldY_ = self.y;
+            self.oldWidth_ = self.width;
+            self.oldHeight_ = self.height;
+            self.width = 0;
+            self.height = 0;
+            self.x = 0;
+            self.y = 0;
+          }
+        });
+    },
+
+    containsPoint: function(x, y, e) {
+      if ( this.$ === e ) return true;
+    },
+
+    tapClick: function() {
+      this.onClick();
+    },
+
     initCView: function() {
       this.addChild(this.pressCircle);
 
-      this.$.addEventListener('click',      this.onClick);
-      this.$.addEventListener('mousedown',  this.onMouseDown);
-      this.$.addEventListener('mouseup',    this.onMouseUp);
-      this.$.addEventListener('mouseleave', this.onMouseUp);
+      if ( this.X.gestureManager ) {
+        // TODO: Glow animations on touch.
+        this.X.gestureManager.install(this.tapGesture);
+      } else {
+        this.$.addEventListener('click',      this.onClick);
+      }
+
+      this.$.addEventListener('mousedown',   this.onMouseDown);
+      this.$.addEventListener('mouseup',     this.onMouseUp);
+      this.$.addEventListener('mouseleave',  this.onMouseUp);
+
+      this.$.addEventListener('touchstart',  this.onMouseDown);
+      this.$.addEventListener('touchend',    this.onMouseUp);
+      this.$.addEventListener('touchleave',  this.onMouseUp);
+      this.$.addEventListener('touchcancel', this.onMouseUp);
     },
-    paintChildren: function() { },
+    destroy: function() {
+      this.SUPER();
+      if ( this.X.gestureManager ) {
+        this.X.gestureManager.uninstall(this.tapGesture);
+      }
+    },
+    paint: function() {
+      var c = this.canvas;
+      c.save();
+      c.globalAlpha = this.alpha;
+
+      if ( this.radius ) {
+        this.canvas.clearRect(0, 0, this.width, this.height);
+
+        c.beginPath();
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+        c.strokeStyle = this.background;
+        c.lineWidth = 1;
+        c.stroke();
+        c.clip();
+      }
+
+      this.SUPER();
+      this.paintChildren();
+      c.restore();
+    },
     paintSelf: function() {
       var c = this.canvas;
-
-      c.save();
-      this.pressCircle.paint();
-      c.restore();
 
       if ( this.font ) c.font = this.font;
 
@@ -542,3 +714,95 @@ MODEL({name: 'Shadow', methods: {
   }
 }});
 
+MODEL({
+  name: 'CanvasScrollView',
+  extendsModel: 'CView2',
+  properties: [
+    {
+      model_: 'DAOProperty',
+      name: 'dao',
+      onDAOUpdate: 'onDAOUpdate'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'scrollTop'
+    },
+    {
+      name: 'renderer'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'selectNumber'
+    },
+    {
+      name: 'objs',
+      factory: function() { return []; }
+    }
+  ],
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() { this.width; this.renderer; }.bind(this),
+                     function() { this.renderer.width = this.width; }.bind(this));
+    },
+    initCView: function() {
+      this.X.dynamic(
+        function() {
+          this.scrollTop; this.height; this.renderer;
+        }.bind(this), this.onDAOUpdate);
+    },
+    paintSelf: function() {
+      var self = this;
+      var offset = -(this.scrollTop % this.renderer.height);
+      for ( var i = 0; i < this.objs.length; i++ ) {
+        self.canvas.save();
+        self.canvas.translate(0, offset + (i * self.renderer.height));
+        self.renderer.render(self.canvas, self.objs[i]);
+        self.canvas.restore();
+      }
+    }
+  },
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      code: function() {
+        if ( ! this.canvas ) return;
+
+        var selectNumber = this.selectNumber + 1;
+        this.selectNumber = selectNumber;
+
+        var limit = Math.floor(this.height / this.renderer.height) + 1;
+        var skip = Math.floor(this.scrollTop / this.renderer.height);
+        var self = this;
+
+
+        var offset = -(this.scrollTop % this.renderer.height);
+
+        console.log('skip, limit, offset: ', skip, limit, offset);
+
+        var i = 0;
+        this.dao.skip(skip).limit(limit).select([])(function(objs) {
+          self.objs = objs;
+          self.view.paint();
+        });
+
+/*{
+          put: function(obj, _, fc) {
+            if ( selectNumber != self.selectNumber ||
+                 ! self.canvas ) {
+              fc.stop();
+              return;
+            }
+            if ( i == 0 ) self.erase();
+
+            self.canvas.save();
+            self.canvas.translate(0, offset + (i * self.renderer.height));
+            i = i + 1;
+            self.renderer.render(self.canvas, obj);
+            self.canvas.restore();
+          }
+        });*/
+      }
+    }
+  ]
+});

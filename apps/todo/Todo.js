@@ -99,7 +99,13 @@
 				this.onDAOUpdate();
 			}
 		},
-		templates: [ function toDetailHTML() {/*
+		templates: [
+			function CSS() {/*
+			#filters .selected { font-weight: bold; }
+			#filters li { margin: 4px; }
+			.actionButton-clear:disabled { display: none; }
+			*/},
+                  	function toDetailHTML() {/*
 			<section id="todoapp">
 				<header id="header">
 					<h1>todos</h1>
@@ -128,7 +134,9 @@
 				this.setClass('hidden', f, 'main');
 				this.setClass('hidden', f, 'footer');
 				Events.link(this.X.memento, this.queryView.label$);
-			%> */ } ]
+			%>
+			*/}
+		]
 	});
 })();
 // vim: noexpandtab ts=2 sts=2 sw=2

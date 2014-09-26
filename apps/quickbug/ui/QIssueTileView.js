@@ -25,7 +25,7 @@ MODEL({
 
     // Implement Adapter
     f: function(issue) {
-      var view = QIssueTileView.create({ browser: this.browser });
+      var view = this.X.QIssueTileView.create({ browser: this.browser });
       view.put(issue);
       return view;
     },

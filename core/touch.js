@@ -15,81 +15,80 @@
  * limitations under the License.
  */
 
+
 MODEL({
-  name: 'FOAMTouch',
+  name: 'InputPoint',
   properties: [
-    'id', 'startX', 'startY', 'x', 'y',
+    'id', 'type',
+    { name: 'done', model_: 'BooleanProperty' },
+    {
+      name: 'xHistory',
+      // TODO: factories don't work here because they don't get called until after the x/y postSets
+      getter: function() {
+        if ( this.instance_.xHistory ) return this.instance_.xHistory;
+        this.instance_.xHistory = [];
+        return this.instance_.xHistory;
+      }
+    },
+    {
+      name: 'yHistory',
+      getter: function() {
+        if ( this.instance_.yHistory ) return this.instance_.yHistory;
+        this.instance_.yHistory = [];
+        return this.instance_.yHistory;
+      }
+    },
+    {
+      name: 'x',
+      help: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',
+      getter: function() {
+        var h = this.xHistory;
+        return h && h.length ? h[h.length - 1] : 0;
+      },
+      setter: function(x) {
+        var old = this.x;
+        this.xHistory.push(x);
+        this.propertyChange('x', old, x);
+      }
+    },
+    {
+      name: 'y',
+      help: 'The real latest Y-coordinate. pageY, relative to the whole document, in CSS pixels.',
+      getter: function() {
+        var h = this.yHistory;
+        return h && h.length ? h[h.length - 1] : 0;
+      },
+      setter: function(y) {
+        var old = this.y;
+        this.yHistory.push(y);
+        this.propertyChange('y', old, y);
+      }
+    },
+    { name: 'x0', getter: function() { return this.xHistory[0] || 0; } },
+    { name: 'y0', getter: function() { return this.yHistory[0] || 0; } },
     {
       name: 'dx',
       getter: function() {
-        return this.x - this.startX;
+        var h = this.xHistory;
+        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
       }
     },
     {
       name: 'dy',
       getter: function() {
-        return this.y - this.startY;
+        var h = this.yHistory;
+        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
       }
     },
     {
-      name: 'distance',
-      getter: function() {
-        var dx = this.dx;
-        var dy = this.dy;
-        return Math.sqrt(dx*dx + dy*dy);
-      }
-    }
-  ],
-
-  methods: {
-    cancel: function(e) {
-      // TODO:
+      name: 'totalX',
+      getter: function() { return this.x - this.x0; }
     },
-    leave: function(e) {
-      // TODO:
-    },
-    move: function(t) {
-      this.x = t.clientX;
-      this.y = t.clientY;
-    }
-  }
-});
-
-MODEL({
-  name: 'TouchReceiver',
-  properties: [
-    'id',
-    'element',
     {
-      name: 'delegate',
-      // Default delegate insta-captures every incoming single-point touch, and
-      // drives the propX and propY values with it.
-      defaultValueFn: function() {
-        var oldX, oldY;
-        var self = this;
-        return {
-          onTouchStart: function(touches, changed) {
-            // Skip multi-touches.
-            if ( Object.keys(touches).length > 1 ) return { drop: true };
-            // Set oldX and oldY to the current values of their properties.
-            oldX = self.propX && self.propX.get();
-            oldY = self.propY && self.propY.get();
-
-            return { claim: true, weight: 0.8 };
-          },
-
-          // Move the properties if they are defined, based on the delta.
-          onTouchMove: function(touches, changed) {
-            var t = touches[changed[0]];
-            if ( self.propX ) self.propX.set(oldX + t.dx);
-            if ( self.propY ) self.propY.set(oldY + t.dy);
-            return { claim: true, weight: 0.8, preventDefault: true };
-          }
-        };
-      }
+      name: 'totalY',
+      getter: function() { return this.y - this.y0; }
     },
-    'propX', 'propY',
-    { name: 'activeTouches', factory: function() { return {}; } }
+    'lastTime'
   ]
 });
 
@@ -97,98 +96,73 @@ MODEL({
   name: 'TouchManager',
 
   properties: [
-    { name: 'touches', factory: function() { return {}; } },
-    { name: 'receivers', factory: function() { return []; } },
-    { name: 'attached', defautValue: false, model_: 'BooleanProperty' }
+    { name: 'touches', factory: function() { return {}; } }
   ],
 
   methods: {
-    TOUCH_START: 'touch-start',
-    TOUCH_END: 'touch-end',
+    TOUCH_START: ['touch-start'],
+    TOUCH_END: ['touch-end'],
+    TOUCH_MOVE: ['touch-move'],
 
-    attachHandlers: function() {
-      this.X.window.document.addEventListener('touchstart', this.onTouchStart);
-      this.attached = true;
+    init: function() {
+      this.SUPER();
+      if ( this.X.document ) this.install(this.X.document);
     },
 
-    install: function(recv) {
-      if ( ! this.attached ) this.attachHandlers();
-
-      this.receivers.push(recv);
-
-      // Attach a touchstart handler to the capture phase, this checks
-      // whether each touch is inside the given element, and records the
-      // offset into that element.
-      recv.element.addEventListener('touchstart', this.touchCapture.bind(recv),
-          true);
+    // TODO: Problems if the innermost element actually being touched is removed from the DOM.
+    // Change this to connect the touchstart only to the document, and the others on the fly
+    // after the first touch, to event.target.
+    install: function(d) {
+      d.addEventListener('touchstart', this.onTouchStart);
     },
 
-    // NB: 'this' is bound to the receiver, not the TouchManager!
-    touchCapture: function(event) {
-      for ( var i = 0; i < event.changedTouches.length; i++ ) {
-        var t = event.changedTouches[i];
-        // TODO: Maybe capture the offset into the element here?
-        this.activeTouches[t.identifier] = true;
-      }
+    attach: function(e) {
+      e.addEventListener('touchmove', this.onTouchMove);
+      e.addEventListener('touchend', this.onTouchEnd);
+      e.addEventListener('touchcancel', this.onTouchCancel);
+      e.addEventListener('touchleave', this.onTouchEnd);
     },
 
-    notifyReceivers: function(type, event) {
-      var changed = [];
-      for ( var i = 0 ; i < event.changedTouches.length ; i++ ) {
-        changed.push(event.changedTouches[i].identifier);
-      }
+    detach: function(e) {
+      e.removeEventListener('touchmove', this.onTouchMove);
+      e.removeEventListener('touchend', this.onTouchEnd);
+      e.removeEventListener('touchcancel', this.onTouchCancel);
+      e.removeEventListener('touchleave', this.onTouchEnd);
+    },
 
-      var rets = [];
-      for ( i = 0 ; i < this.receivers.length; i++ ) {
-        var matched = false;
-        for ( var j = 0 ; j < changed.length; j++ ) {
-          if ( this.receivers[i].activeTouches[changed[j]] ) {
-            matched = true;
-            break;
-          }
-        }
+    touchStart: function(i, t, e) {
+      this.touches[i] = this.X.InputPoint.create({
+        id: i,
+        type: 'touch',
+        x: t.pageX,
+        y: t.pageY
+      });
+      this.publish(this.TOUCH_START, this.touches[i]);
+    },
+    touchMove: function(i, t, e) {
+      this.touches[i].x = t.pageX;
+      this.touches[i].y = t.pageY;
 
-        // Skip if this receiver isn't watching any of the changed touches.
-        if ( ! matched ) continue;
+      // On touchMoves only, set the lastTime.
+      // This is used by momentum scrolling to find the speed at release.
+      this.touches[i].lastTime = this.X.performance.now();
 
-        // Since it is watching, let's notify it of the change.
-        var d = this.receivers[i].delegate;
-        var f = d[type].bind(d);
-        if ( f ) rets.push(f(this.touches, changed));
-      }
-
-      // Now rets contains the responses from the listeners.
-      // Any that set drop: true should have their active touches cleared.
-      // Then any that set claim: true have their weights compared.
-      // The highest is the winner and all others are dropped.
-      // If none set claim, then preventDefault if any non-dropped ones set it.
-      // If we did have a winner, then preventDefault based on its wishes.
-      var winner = -1;
-      for ( i = 0 ; i < rets.length ; i++ ) {
-        var r = rets[i];
-        if ( r.drop ) {
-          this.receivers[i].activeTouches = {};
-          continue;
-        }
-
-        if ( r.claim && ( winner < 0 || r.weight > rets[winner].weight ) ) {
-          winner = i;
-        }
-      }
-
-      if ( winner >= 0 ) {
-        for ( i = 0 ; i < rets.length ; i++ ) {
-          if ( i != winner ) this.receivers[i].activeTouches = {};
-        }
-        if ( rets[winner].preventDefault ) event.preventDefault();
-      } else {
-        for ( i = 0 ; i < rets.length ; i++ ) {
-          if ( ! rets[i].drop && rets[i].preventDefault ) {
-            event.preventDefault();
-            break;
-          }
-        }
-      }
+      this.publish(this.TOUCH_MOVE, this.touches[i]);
+    },
+    touchEnd: function(i, t, e) {
+      this.touches[i].x = t.pageX;
+      this.touches[i].y = t.pageY;
+      this.touches[i].done = true;
+      this.publish(this.TOUCH_END, this.touches[i]);
+      delete this.touches[i];
+    },
+    touchCancel: function(i, t, e) {
+      this.touches[i].done = true;
+      this.publish(this.TOUCH_END, this.touches[i]);
+    },
+    touchLeave: function(i, t, e) {
+      this.touches[i].done = true;
+      this.publish(this.TOUCH_END, this.touches[i]);
     }
   },
 
@@ -196,78 +170,1075 @@ MODEL({
     {
       name: 'onTouchStart',
       code: function(e) {
+        e.preventDefault();
+        // Attach an element-specific touch handlers, in case it gets removed
+        // from the DOM.
+        this.attach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( this.touches[t.identifier] ) {
-            console.warn('Touch start for known touch.');
-            continue;
-          }
-          console.log(t);
-          this.touches[t.identifier] = FOAMTouch.create({
-            id: t.identifier,
-            startX: t.clientX,
-            startY: t.clientY,
-            x: t.clientX,
-            y: t.clientY
-          });
+          this.touchStart(t.identifier, t, e);
         }
-
-        e.target.addEventListener('touchmove', this.onTouchMove);
-        e.target.addEventListener('touchend', this.onTouchEnd);
-        e.target.addEventListener('touchcancel', this.onTouchCancel);
-        e.target.addEventListener('touchleave', this.onTouchLeave);
-
-        this.notifyReceivers('onTouchStart', e);
       }
     },
     {
       name: 'onTouchMove',
       code: function(e) {
+        e.preventDefault();
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[t.identifier] ) {
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
             console.warn('Touch move for unknown touch.');
             continue;
           }
-          this.touches[t.identifier].move(t);
+          this.touchMove(id, t, e);
         }
-        this.notifyReceivers('onTouchMove', e);
       }
     },
     {
       name: 'onTouchEnd',
       code: function(e) {
+        e.preventDefault();
+        this.detach(e.target);
+
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
-          if ( ! this.touches[t.identifier] ) {
-            console.warn('Touch end for unknown touch.');
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
+            console.warn('Touch end for unknown touch ' + id, Object.keys(this.touches));
             continue;
           }
-          this.touches[t.identifier].move(t);
-        }
-        this.notifyReceivers('onTouchEnd', e);
-        for ( i = 0; i < e.changedTouches.length; i++ ) {
-          delete this.touches[e.changedTouches[i].identifier];
+          this.touchEnd(id, t, e);
         }
       }
     },
     {
       name: 'onTouchCancel',
       code: function(e) {
-        this.notifyReceivers('onTouchCancel', e);
-        for ( i = 0; i < e.changedTouches.length; i++ ) {
-          delete this.touches[e.changedTouches[i].identifier];
+        e.preventDefault();
+        this.detach(e.target);
+
+        for ( var i = 0; i < e.changedTouches.length; i++ ) {
+          var t = e.changedTouches[i];
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
+            console.warn('Touch cancel for unknown touch.');
+            continue;
+          }
+          this.touchCancel(id, t, e);
         }
       }
     },
     {
       name: 'onTouchLeave',
       code: function(e) {
-        this.notifyReceivers('onTouchLeave', e);
-        for ( i = 0; i < e.changedTouches.length; i++ ) {
-          delete this.touches[e.changedTouches[i].identifier];
+        e.preventDefault();
+        this.detach(e.target);
+
+        for ( var i = 0; i < e.changedTouches.length; i++ ) {
+          var t = e.changedTouches[i];
+          var id = t.identifier;
+          if ( ! this.touches[id] ) {
+            console.warn('Touch cancel for unknown touch.');
+            continue;
+          }
+          this.touchLeave(id, t, e);
         }
       }
     }
   ]
 });
+
+// GESTURES
+
+MODEL({
+  name: 'Gesture',
+  help: 'Installed in the GestureManager to watch for a particular kind of gesture',
+
+  properties: [
+    { name: 'name', required: true }
+  ],
+
+  methods: {
+    recognize: function(map) {
+      return false; // Returns true to indicate recognition, false to ignore.
+    },
+
+    attach: function(handlers) {
+      // Called on recognition, with the array of handlers listening to this gesture.
+      // Usually there's just one, but it could be multiple.
+      // Each gesture defines its own callbacks for these handlers.
+    },
+
+    newPoint: function(point) {
+      // A new point to stick into the map. Most gestures can ignore this.
+      // Only called after recognition of this gesture.
+    }
+
+    /*
+    // TODO: Am I necessary? FOAM listening to the properties on the points works well.
+    update: function(changedTouches) {
+      // Only called after this gesture has been recognized.
+      // Called each time one of the points has updated. Given the ids of the changed points.
+    }
+    */
+  }
+});
+
+
+MODEL({
+  name: 'ScrollGesture',
+  help: 'Gesture that understands vertical or horizontal scrolling.',
+
+  properties: [
+    {
+      name: 'name',
+      defaultValueFn: function() { return this.direction + 'Scroll' + ( this.momentumEnabled ? 'Momentum' : '' ); }
+    },
+    {
+      name: 'direction',
+      defaultValue: 'vertical'
+    },
+    {
+      name: 'momentumEnabled',
+      defaultValue: false,
+      help: 'Set me (usually by attaching the "verticalScrollMomentum" gesture) to true to enable momentum'
+    },
+    {
+      name: 'dragCoefficient',
+      help: 'Each frame, the momentum will be multiplied by this coefficient. Higher means LESS drag.',
+      defaultValue: 0.94
+    },
+    {
+      name: 'dragClamp',
+      help: 'The speed threshold (pixels/millisecond) below which the momentum drops to 0.',
+      defaultValue: 0.05
+    },
+    {
+      name: 'momentum',
+      help: 'The current speed, in pixels/millisecond, at which the scroller is sliding.',
+      defaultValue: 0
+    },
+    {
+      name: 'lastTime',
+      help: 'The performance.now() value for the last time we computed the momentum slide.',
+      hidden: true,
+      defaultValue: 0
+    },
+    {
+      name: 'tickRunning',
+      help: 'True when the physics tick should run.',
+      hidden: true,
+      defaultValue: false
+    },
+    'handlers'
+  ],
+
+  methods: {
+    makeAxis: function(point, xy) {
+      return {
+        current: point[xy],
+        prop: point[xy + '$'],
+        start: point[xy + '0'],
+        delta: point['d' + xy],
+        total: point['total' + xy.capitalize()],
+        history: point[xy + 'History'],
+        raw: point
+      };
+    },
+    getPrimaryAxis: function(point) {
+      return this.makeAxis(point, this.direction == 'vertical' ? 'y' : 'x');
+    },
+    getSecondaryAxis: function(point) {
+      return this.makeAxis(point, this.direction == 'vertical' ? 'x' : 'y');
+    },
+
+    recognize: function(map) {
+      // I recognize:
+      // - a single point that
+      // - is touch, not mouse and
+      // - is not done and
+      // - has moved at least 10px in the primary direction
+      // OR
+      // - is a single point that
+      // - is touch, not mouse, and
+      // - is not done and
+      // - we are moving with momentum
+
+      if ( Object.keys(map).length !== 1 ) return false;
+      var point = map[Object.keys(map)[0]];
+
+      return point.type != 'mouse' && ! point.done &&
+          ( Math.abs(this.getPrimaryAxis(point).total) > 10 ||
+            Math.abs(this.momentum) > 0 );
+    },
+
+    attach: function(map, handlers) {
+      var point = map[Object.keys(map)[0]];
+      this.handlers = handlers || [];
+
+      var axis = this.getPrimaryAxis(point);
+      axis.prop.addListener(this.onDelta);
+      point.done$.addListener(this.onDone);
+
+      // If we're already scrolling with momentum, we let the user adjust that momentum with their touches.
+      if ( this.momentum === 0 ) {
+        // Now send the start and subsequent events to all the handlers.
+        // This is essentially replaying the history for all the handlers,
+        // now that we've been recognized.
+        // In this particular case, all three handlers are called with dy, totalY, and y.
+        // The handlers are {vertical,horizontal}Scroll{Start,Move,End}.
+        this.pingHandlers(this.direction + 'ScrollStart', 0, 0, axis.start);
+        for ( var i = 1 ; i < axis.history.length ; i++ ) {
+          this.pingHandlers(
+            this.direction + 'ScrollMove',
+            axis.history[i] - axis.history[i-1],
+            axis.history[i] - axis.start,
+            axis.current
+          );
+        }
+      } else {
+        this.tickRunning = false;
+      }
+    },
+
+    pingHandlers: function(method, d, t, c) {
+      for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+        var h = this.handlers[i];
+        h && h[method] && h[method](d, t, c, this.stopMomentum);
+      }
+    },
+
+    sendEndEvent: function(axis) {
+      this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
+    },
+
+    calculateInstantaneousVelocity: function(axis) {
+      // Compute and return the instantaneous velocity, which is
+      // the primary axis delta divided by the time it took.
+      // Our unit for velocity is pixels/millisecond.
+      var now = this.X.performance.now();
+      var lastTime = this.tickRunning ? this.lastTime : axis.raw.lastTime;
+      var velocity = axis.delta / (now - axis.raw.lastTime);
+      if ( this.tickRunning ) this.lastTime = now;
+
+      return velocity;
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDelta',
+      code: function(obj, prop, old, nu) {
+        var axis = this.getPrimaryAxis(obj);
+        if ( this.momentumEnabled ) {
+          // If we're already moving with momentum, we simply add the delta between
+          // the currently momentum velocity and the instantaneous finger velocity.
+          var velocity = this.calculateInstantaneousVelocity(axis);
+          var delta = velocity - this.momentum;
+          this.momentum += delta;
+        }
+        this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+      }
+    },
+    {
+      name: 'onDone',
+      code: function(obj, prop, old, nu) {
+        var axis = this.getPrimaryAxis(obj);
+        axis.prop.removeListener(this.onDelta);
+        obj.done$.removeListener(this.onDone);
+
+        if ( this.momentumEnabled ) {
+          if ( Math.abs(this.momentum) < this.dragClamp ) {
+            this.momentum = 0;
+            this.sendEndEvent(axis);
+          } else {
+            this.tickRunning = true;
+            this.lastTime = this.X.performance.now();
+            this.tick(obj);
+          }
+        } else {
+          this.sendEndEvent(axis);
+        }
+      }
+    },
+    {
+      name: 'tick',
+      isAnimated: true,
+      code: function(touch) {
+        // First, check if momentum is 0. If so, abort.
+        if ( ! this.tickRunning ) return;
+
+        var xy = this.direction === 'vertical' ? 'y' : 'x';
+
+        var now = this.X.performance.now();
+        var elapsed = now - this.lastTime;
+        this.lastTime = now;
+
+        // The distance covered in this amount of time.
+        var distance = this.momentum * elapsed; // Fractional pixels.
+        touch[xy] += distance;
+        var axis = this.makeAxis(touch, xy);
+        // Emit a touchMove for this.
+        if ( axis.delta != 0 )
+          this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+
+        // Now we reduce the momentum to its new value.
+        this.momentum *= this.dragCoefficient;
+
+        // If this is less than the threshold, we reduce it to 0.
+        if ( Math.abs(this.momentum) < this.dragClamp ) {
+          this.momentum = 0;
+          this.tickRunning = false;
+          this.sendEndEvent(axis);
+        } else {
+          this.tick(touch);
+        }
+      }
+    },
+    {
+      name: 'stopMomentum',
+      documentation: 'Passed to scroll handlers. Can be used to stop momentum from continuing after scrolling has reached the edge of the target\'s scrollable area.',
+      code: function() {
+        this.momentum = 0;
+        // Let tickRunning continue to be true, since tick() will send the end event properly,
+        // now that the momentum has run out.
+      }
+    }
+  ]
+});
+
+MODEL({
+  name: 'TapGesture',
+  help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
+
+  properties: [
+    {
+      name: 'name',
+      defaultValue: 'tap'
+    },
+    'handlers'
+  ],
+
+  methods: {
+    recognize: function(map) {
+      // I recognize:
+      // - multiple points that
+      // - are all done and
+      // - none of which has moved more than 10px net.
+
+      return Object.keys(map).every(function(key) {
+        var p = map[key];
+        return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
+      });
+    },
+
+    attach: function(map, handlers) {
+      // Nothing to listen for; the tap has already fired when this recognizes.
+      // Just sent the tapClick(numberOfPoints) message to the handlers.
+      if  ( ! handlers || ! handlers.length ) return;
+      var points = Object.keys(map).length;
+      handlers.forEach(function(h) {
+        h && h.tapClick && h.tapClick(points);
+      });
+    }
+  }
+});
+
+MODEL({
+  name: 'DragGesture',
+  help: 'Gesture that understands a hold and drag with mouse or one touch point.',
+  properties: [
+    {
+      name: 'name',
+      defaultValue: 'drag'
+    }
+  ],
+
+  methods: {
+    recognize: function(map) {
+      // I recognize:
+      // - a single point that
+      // - is not done and
+      // - has begun to move
+      // I conflict with: vertical and horizontal scrolling, when using touch.
+      if ( Object.keys(map).length > 1 ) return;
+      var point = map[Object.keys(map)[0]];
+      var r = point.dx !== 0 || point.dy !== 0;
+      return r;
+    },
+
+    attach: function(map, handlers) {
+      // My callbacks take the form: function(point) {}
+      // And I call dragStart and dragEnd on the handler.
+      // There is no dragMove; bind to the point to follow its changes.
+      var point = map[Object.keys(map)[0]];
+      this.handlers = handlers || [];
+
+      point.done$.addListener(this.onDone);
+
+      // Now send the start event to all the handlers.
+      this.pingHandlers('dragStart', point);
+    },
+
+    pingHandlers: function(method, point) {
+      for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+        var h = this.handlers[i];
+        h && h[method] && h[method](point);
+      }
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onDone',
+      code: function(obj, prop, old, nu) {
+        obj.done$.removeListener(this.onDone);
+        this.pingHandlers('dragEnd', obj);
+      }
+    }
+  ]
+});
+
+MODEL({
+  name: 'PinchTwistGesture',
+  help: 'Gesture that understands a two-finger pinch/stretch and rotation',
+  properties: [
+    {
+      name: 'name',
+      defaultValue: 'pinchTwist'
+    },
+    'handlers', 'points'
+  ],
+
+  methods: {
+    getPoints: function(map) {
+      var keys = Object.keys(map);
+      return [map[keys[0]], map[keys[1]]];
+    },
+
+    recognize: function(map) {
+      // I recognize:
+      // - two points that
+      // - are both not done and
+      // - have begun to move.
+      if ( Object.keys(map).length !== 2 ) return;
+
+      var points = this.getPoints(map);
+      return ! points[0].done &&
+             ! points[1].done &&
+             ( points[0].dx !== 0 || points[0].dy !== 0 ) &&
+             ( points[1].dx !== 0 || points[1].dy !== 0 );
+    },
+
+    attach: function(map, handlers) {
+      // I have three callbacks:
+      // function pinchStart();
+      // function pinchMove(scale, rotation);
+      // function pinchEnd();
+      // Scale is a unitless scaling factor, relative to the **start of the gesture**.
+      // Rotation is degrees clockwise relative to the **start of the gesture**.
+      // That is, these values are net totals since the gesture began,
+      // they are not incremental between pinchMove calls, or absolute to the page.
+      // A user of this gesture should save the original values on pinchStart,
+      // and adjust them by the values from each pinchMove to update the UI.
+      // See demos/pinchgesture.html.
+      this.points = this.getPoints(map);
+      this.handlers = handlers || [];
+
+      this.points.forEach(function(p) {
+        p.x$.addListener(this.onMove);
+        p.y$.addListener(this.onMove);
+        p.done$.addListener(this.onDone);
+      }.bind(this));
+
+      // Now send the start event to all the handlers.
+      this.pingHandlers('pinchStart');
+      this.onMove();
+    },
+
+    pingHandlers: function(method, scale, rotation) {
+      for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+        var h = this.handlers[i];
+        h && h[method] && h[method](scale, rotation);
+      }
+    },
+
+    distance: function(x1, y1, x2, y2) {
+      var dx = x2 - x1;
+      var dy = y2 - y1;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onMove',
+      code: function() {
+        var oldDist = this.distance(this.points[0].x0, this.points[0].y0,
+                                    this.points[1].x0, this.points[1].y0);
+        var newDist = this.distance(this.points[0].x, this.points[0].y,
+                                    this.points[1].x, this.points[1].y);
+        var scale = newDist / oldDist;
+
+        // These are values from -pi to +pi.
+        var oldAngle = Math.atan2(this.points[1].y0 - this.points[0].y0, this.points[1].x0 - this.points[0].x0);
+        var newAngle = Math.atan2(this.points[1].y - this.points[0].y, this.points[1].x - this.points[0].x);
+        var rotation = newAngle - oldAngle;
+        while ( rotation < - Math.PI ) rotation += 2 * Math.PI;
+        while ( rotation > Math.PI ) rotation -= 2 * Math.PI;
+        // That's in radians, so I'll convert to degrees.
+        rotation *= 360;
+        rotation /= 2 * Math.PI;
+
+        this.pingHandlers('pinchMove', scale, rotation);
+      }
+    },
+    {
+      name: 'onDone',
+      code: function(obj, prop, old, nu) {
+        this.points.forEach(function(p) {
+          p.x$.removeListener(this.onMove);
+          p.y$.removeListener(this.onMove);
+          p.done$.removeListener(this.onDone);
+        });
+        this.pingHandlers('pinchEnd');
+      }
+    }
+  ]
+});
+
+
+MODEL({
+  name: 'GestureTarget',
+  help: 'Created by each view that wants to receive gestures.',
+  properties: [
+    {
+      name: 'gesture',
+      help: 'The name of the gesture to be tracked.'
+    },
+    {
+      name: 'container',
+      help: 'The containing object. The GestureManager will call containsPoint() on it.'
+    },
+    {
+      name: 'getElement',
+      help: 'Function to retrieve the element this gesture is attached to. Defaults to container.$.',
+      defaultValue: function() { return this.container.$; }
+    },
+    {
+      name: 'handler',
+      help: 'The target for the gesture\'s events, after it has been recognized.'
+    }
+  ],
+
+  methods: {
+    // TODO: Add support for this to CView2.
+    containsPoint: function(point) {
+      return this.container.containsPoint(point.x, point.y,
+          this.X.document.elementFromPoint(point.x, point.y));
+    }
+  }
+});
+
+MODEL({
+  name: 'GestureManager',
+  properties: [
+    {
+      name: 'gestures',
+      factory: function() {
+        return {
+          verticalScroll: ScrollGesture.create(),
+          verticalScrollMomentum: ScrollGesture.create({ momentumEnabled: true }),
+          horizontalScroll: ScrollGesture.create({ direction: 'horizontal' }),
+          horizontalScrollMomentum: ScrollGesture.create({ direction: 'horizontal', momentumEnabled: true }),
+          tap: TapGesture.create(),
+          drag: DragGesture.create(),
+          pinchTwist: PinchTwistGesture.create()
+        };
+      }
+    },
+    {
+      name: 'targets',
+      help: 'GestureTargets that are waiting for gestures',
+      factory: function() { return []; }
+    },
+    {
+      name: 'active',
+      help: 'Gestures that are active right now and should be checked for recognition. ' +
+          'This is the gestures active on the FIRST touch. ' +
+          'Rectangles are not checked for subsequent touches.',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'recognized',
+      help: 'Set to the recognized gesture. Cleared when all points are lifted.'
+    },
+    {
+      name: 'points',
+      factory: function() { return {}; }
+    },
+    'wheelTimer',
+    {
+      name: 'scrollWheelTimeout',
+      defaultValue: 300
+    },
+    {
+      name: 'scrollViewTargets',
+      defaultValue: 0
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      // TODO: Mousewheel and mouse down/up events.
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_START, this.onTouchStart);
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_MOVE,  this.onTouchMove);
+      this.X.touchManager.subscribe(this.X.touchManager.TOUCH_END,   this.onTouchEnd);
+      this.X.document.addEventListener('mousedown', this.onMouseDown);
+      this.X.document.addEventListener('mousemove', this.onMouseMove);
+      this.X.document.addEventListener('mouseup', this.onMouseUp);
+      this.X.document.addEventListener('wheel', this.onWheel);
+      this.X.document.addEventListener('contextmenu', this.onContextMenu);
+    },
+
+    install: function(target) {
+      // Check for dupes first. Nothing sophisticated, just checking if the
+      // GestureTarget is === to any already registered. There are no
+      // circumstances where double-registering an identical target is good.
+      for ( var i = 0 ; i < this.targets.length ; i++ ) {
+        if ( this.targets[i] === target ) {
+          console.warn('duplicate gesture target installation - not cleaning up?');
+          return;
+        }
+      }
+
+      this.targets.push(target);
+    },
+    uninstall: function(target) {
+      this.targets.deleteI(target);
+    },
+
+    debug_tag: function() {
+      this.targets.forEach(function(x) { x.seen = true; });
+    },
+    debug_sweep: function() {
+      this.targets.forEach(function(x) { if ( x.seen ) { console.log(x); } });
+    },
+
+    checkRecognition: function() {
+      if ( this.recognized ) return;
+      var self = this;
+      var match;
+      // TODO: Handle multiple matching gestures.
+      Object.keys(this.active).forEach(function(name) {
+        if ( self.gestures[name].recognize(self.points) ) {
+          match = name;
+        }
+      });
+
+      if ( ! match ) return;
+
+      // Filter all the handlers to make sure none is a child of any already existing.
+      // This prevents eg. two tap handlers firing when the tap is on an inner one.
+      var matched = this.active[match];
+      var legal = [];
+      for ( var i = 0 ; i < matched.length ; i++ ) {
+        var m = matched[i].getElement();
+        var contained = 0;
+        for ( var j = 0 ; j < matched.length ; j++ ) {
+          var n = matched[j].getElement();
+          if ( m !== n && m.contains(n) ) {
+            contained++;
+          }
+        }
+
+        if ( contained === 0 ) legal.push(matched[i].handler);
+      }
+      // There will always be at least one survivor here.
+
+      this.gestures[match].attach(this.points, legal);
+      this.recognized = this.gestures[match];
+    },
+
+    // Clears all state in the gesture manager.
+    // This is a blunt instrument, use with care.
+    resetState: function() {
+      this.active = {};
+      this.recognized = null;
+      this.points = {};
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onTouchStart',
+      code: function(_, __, touch) {
+        // If we've already recognized, it's up to that code to handle the new point.
+        if ( this.recognized ) {
+          this.recognized.addPoint && this.recognized.addPoint(touch);
+          return;
+        }
+
+        // Check if there are any active points already.
+        var pointCount = Object.keys(this.points).length;
+        if ( ! pointCount ) {
+          // Check rectangles, since this is the first point.
+          for ( var i = 0 ; i < this.targets.length ; i++ ) {
+            if ( this.targets[i].containsPoint(touch) ) {
+              var g = this.gestures[this.targets[i].gesture];
+              if ( ! g ) continue;
+              if ( ! this.active[g.name] ) this.active[g.name] = [];
+              this.active[g.name].push(this.targets[i]);
+            }
+          }
+        }
+
+        // Either way, add this to the map and check for recognition.
+        this.points[touch.id] = touch;
+        this.checkRecognition();
+      }
+    },
+    {
+      name: 'onMouseDown',
+      code: function(event) {
+        // Build the InputPoint for it.
+        var point = InputPoint.create({
+          id: 'mouse',
+          type: 'mouse',
+          x: event.pageX,
+          y: event.pageY
+        });
+
+        // TODO: De-dupe me with the code above in onTouchStart.
+        if ( this.recognized ) {
+          this.recognized.addPoint(point);
+          return;
+        }
+
+        var pointCount = Object.keys(this.points).length;
+        if ( ! pointCount ) {
+          // Check rectangles for this first point.
+          for ( var i = 0 ; i < this.targets.length ; i++ ) {
+            if ( this.targets[i].containsPoint(point) ) {
+              var g = this.gestures[this.targets[i].gesture];
+              if ( ! g ) continue;
+              if ( ! this.active[g.name] ) this.active[g.name] = [];
+              this.active[g.name].push(this.targets[i]);
+            }
+          }
+        }
+
+        this.points[point.id] = point;
+        this.checkRecognition();
+      }
+    },
+    {
+      name: 'onTouchMove',
+      code: function(_, __, touch) {
+        if ( this.recognized ) return;
+        this.checkRecognition();
+      }
+    },
+    {
+      name: 'onMouseMove',
+      code: function(event) {
+        // No reaction unless we have an active mouse point.
+        if ( ! this.points.mouse ) return;
+        // If one does exist, update its coordinates.
+        this.points.mouse.x = event.pageX;
+        this.points.mouse.y = event.pageY;
+        this.checkRecognition();
+      }
+    },
+    {
+      name: 'onTouchEnd',
+      code: function(_, __, touch) {
+        try {
+          if ( ! this.recognized ) {
+            this.checkRecognition();
+          }
+        } catch(e) {
+          debugger;
+          console.error('Error on touch end', e);
+        }
+
+        delete this.points[touch.id];
+        this.active = {};
+        this.recognized = undefined;
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function(event) {
+        // TODO: De-dupe me too.
+        if ( ! this.points.mouse ) return;
+        this.points.mouse.done = true;
+        if ( ! this.recognized ) {
+          this.checkRecognition();
+        }
+
+        delete this.points.mouse;
+        this.active = {}
+        this.recognized = undefined;
+      }
+    },
+    {
+      name: 'onWheel',
+      code: function(event) {
+        if ( this.wheelTimer ) {
+          // Wheel is already active. Just update.
+          this.points.wheel.x -= event.deltaX;
+          this.points.wheel.y -= event.deltaY;
+          this.X.window.clearTimeout(this.wheelTimer);
+          this.wheelTimer = this.X.window.setTimeout(this.onWheelDone, this.scrollWheelTimeout);
+        } else {
+          // Do nothing if we're currently recognizing something else.
+          if ( this.recognized || Object.keys(this.points).length > 0) return;
+
+          // New wheel event. Create an input point for it.
+          var wheel = InputPoint.create({
+            id: 'wheel',
+            type: 'wheel',
+            x: event.pageX,
+            y: event.pageY
+          });
+
+          // Now immediately feed this to the appropriate ScrollGesture.
+          // TODO: May need to check or listen for the non-momentum versions too?
+          var gesture = Math.abs(event.deltaX) > Math.abs(event.deltaY) ?
+              'horizontalScrollMomentum' : 'verticalScrollMomentum';
+          // Find all targets for that gesture and check their rectangles.
+          this.active[gesture] = [];
+          for ( var i = 0 ; i < this.targets.length ; i++ ) {
+            if ( this.targets[i].gesture === gesture &&
+                this.targets[i].containsPoint(wheel) ) {
+              this.active[gesture].push(this.targets[i]);
+            }
+          }
+
+          // And since wheel events are already moving, include the deltas immediately.
+          // We have to do this after checking rectangles, or a downward (negative)
+          // scroll too close to the top of the rectangle will fail.
+          wheel.x -= event.deltaX;
+          wheel.y -= event.deltaY;
+
+          if ( this.active[gesture].length ) {
+            this.points.wheel = wheel;
+            this.gestures[gesture].attach(this.points, this.active[gesture].map(function(gt) {
+              return gt.handler;
+            }));
+            this.recognized = this.gestures[gesture];
+            this.wheelTimer = this.X.window.setTimeout(this.onWheelDone,
+                this.scrollWheelTimeout);
+          }
+        }
+      }
+    },
+    {
+      name: 'onWheelDone',
+      code: function() {
+        this.wheelTimer = undefined;
+        this.points.wheel.done = true;
+        delete this.points.wheel;
+        this.recognized = undefined;
+      }
+    },
+    {
+      name: 'onContextMenu',
+      code: function() {
+        // Fired when the user right-clicks to open a context menu.
+        // When this happens, we clear state, since sometimes after the context menu,
+        // we get a broken event sequence.
+        this.resetState();
+      }
+    }
+  ]
+});
+
+
+/*
+MODEL({
+  name: 'MomentumTouch',
+  extendsModel: 'FOAMTouch',
+
+  properties: [
+    { name: 'vsamples', factory: function() { return []; } },
+    'vX', 'vY',
+    'curX','curY',
+    'lastX','lastY',
+    { model_: 'BooleanProperty', name: 'touching', factory: function() { return true; } },
+    { model_: 'BooleanProperty', name: 'finished', factory: function() { return false; } },
+    'a',
+    'asamples',
+    't',
+    'last',
+    { name: 'decel', factory: function() { return 0.002; } }
+  ],
+
+  methods: {
+    start: function(t) {
+      this.touching = true;
+      this.finished = false;
+      this.lastX = t.screenX;
+      this.lastY = t.screenY;
+      this.vX = 0;
+      this.vY = 0;
+      this.x = t.screenX;
+      this.y = t.screenY;
+      this.move(t);
+    },
+
+    move: function(t) {
+      this.curX = t.screenX;
+      this.curY = t.screenY;
+    },
+
+    end: function(t) {
+      this.move(t);
+      this.touching = false;
+      this.lastTick = 0;
+    },
+
+    cancel: function(t) {
+    },
+
+    tick: function() {
+      if ( ! this.lastTick ) {
+        this.lastTick = this.X.performance.now();
+        this.lastX = this.curX;
+        this.lastY = this.curY;
+        return;
+      }
+
+      var t = this.X.performance.now();
+      var deltaT = t - this.lastTick;
+      this.lastTick = t;
+
+      if ( this.touching ) {
+        var deltaX = this.curX - this.lastX;
+        var deltaY = this.curY - this.lastY;
+
+        this.lastX = this.curX;
+        this.lastY = this.curY;
+
+        var vX = deltaX / deltaT;
+        var vY = deltaY / deltaT;
+
+        var signX = vX < 0 ? -1 : 1;
+        var signY = vY < 0 ? -1 : 1;
+
+        this.x = this.curX;
+        this.y = this.curY;
+
+        var vsamples = this.vsamples;
+        var vnewest = [vX, vY];
+        vsamples.push(vnewest);
+
+        var length = vsamples.length;
+
+        if ( length > 3 ) { vsamples.shift(); length--; }
+
+        var voldest = vsamples[0];
+        var oldSignX = vX < 0 ? -1 : 1;
+        var oldSignY = vY < 0 ? -1 : 1;
+
+        if ( oldSignX !== signX ||
+             oldSignY !== signY ) {
+          vsamples = [vnewest];
+          length = 1;
+        }
+
+        this.vsamples = vsamples;
+
+//        this.vX = vnewest[0];
+//        this.vY = vnewest[1];
+        this.vX = this.vX - voldest[0]/length + vnewest[0]/length;
+        this.vY = this.vY - voldest[1]/length + vnewest[1]/length;
+      } else {
+        var deltaV = this.decel * deltaT;
+        vX = this.vX;
+        vY = this.vY;
+
+        this.x = this.x + vX * deltaT;
+        this.y = this.y + vY * deltaT;
+
+        var signX = vX < 0 ? -1 : 1;
+        var signY = vY < 0 ? -1 : 1;
+
+        if ( Math.abs(deltaV) > Math.abs(vX) ) vX = 0;
+        else vX = signX * ( Math.abs(vX) - deltaV );
+        if ( Math.abs(deltaV) > Math.abs(vY) ) vY = 0;
+        else vY = signY * ( Math.abs(vY) - deltaV );
+
+        this.vX = vX;
+        this.vY = vY;
+
+        if ( this.vX === 0 && this.vY === 0 ) this.finished = true;
+      }
+    }
+  }
+});
+
+
+MODEL({
+  name: 'MomentumTouchManager',
+  extendsModel: 'TouchManager',
+
+  properties: [
+    'interval',
+    { model_: 'IntProperty', name: 'period', defaultValue: 0 },
+  ],
+
+  methods: {
+    touchStart: function(i, t, e) {
+      this.SUPER(i, t, e);
+      if ( ! this.interval )
+        this.interval = this.X.setInterval(this.physicsLoop, this.period);
+    },
+    touchMove: function(i, t, e) {
+      this.touches[i].move(t)
+    },
+    touchEnd: function(i, t, e) {
+      this.touches[i].end(t);
+    },
+    touchCancel: function(i, t, e) {
+      this.touches[i].cancel(t);
+    },
+    touchLeave: function(i, t, e) {
+    }
+  },
+
+  listeners: [
+    {
+      name: 'physicsLoop',
+      code: function() {
+        var keys = Object.keys(this.touches);
+        if ( keys.length === 0 ) {
+          this.X.clearInterval(this.interval);
+          this.interval = 0;
+          return;
+        }
+
+        var touches = this.touches;
+        for ( var i = 0; i < keys.length; i++ ) {
+          var key = keys[i];
+          var touch = touches[key];
+
+          if ( touch.finished ) {
+            this.publish(this.TOUCH_END, touch);
+            delete touches[key];
+          }
+
+          touch.tick();
+        }
+        this.touches = touches;
+      }
+    }
+  ]
+});
+*/
+

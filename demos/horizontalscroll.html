@@ -39,6 +39,18 @@ MODEL({
       postSet: function() {
         this.updatePosition();
       }
+    },
+    {
+      name: 'y',
+      defaultValue: 0,
+      preSet: function(old, nu) {
+        if ( nu < 0 ) return 0;
+        if ( nu > 1000 ) return 1000;
+        return nu;
+      },
+      postSet: function() {
+        this.updatePosition();
+      }
     }
   ],
 
@@ -47,7 +59,7 @@ MODEL({
       name: 'updatePosition',
       isAnimated: true,
       code: function() {
-        this.$.innerHTML = '"Scrolled" to ' + this.x + ' pixels';
+        this.$.innerHTML = '"Scrolled" to ' + this.x + ' by ' + this.y + ' pixels';
       }
     }
   ],
@@ -59,13 +71,21 @@ MODEL({
     initHTML: function() {
       this.updatePosition();
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        element: this.$,
+        container: this,
         handler: this,
         gesture: 'horizontalScroll'
+      }));
+      this.X.gestureManager.install(this.X.GestureTarget.create({
+        container: this,
+        handler: this,
+        gesture: 'verticalScroll'
       }));
     },
     horizontalScrollMove: function(dx, tx, x) {
       this.x += dx;
+    },
+    verticalScrollMove: function(dy) {
+      this.y += dy;
     }
   }
 });

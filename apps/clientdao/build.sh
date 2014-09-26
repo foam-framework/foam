@@ -48,6 +48,7 @@ cat \
   ../../core/models.js \
   ../../core/ChromeApp.js \
   ../mailreader/view.js \
+  ../../lib/email/email.js \
   ../mailreader/email.js \
   ../saturn/EMailBodyDAO.js \
   ../saturn/contacts.js \

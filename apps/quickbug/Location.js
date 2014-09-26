@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-var LocationProperty = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'LocationProperty',
 
   extendsModel: 'Property',
@@ -31,9 +29,7 @@ var LocationProperty = FOAM({
 });
 
 
-var Location = FOAM({
-  model_: 'Model',
-
+MODEL({
   name: 'Location',
 
   properties: [
@@ -64,7 +60,8 @@ var Location = FOAM({
         for ( var i = 0 ; i < choices.length ; i++ )
           if ( choices[i][2] == c ) return choices[i][0];
         return choices[1][0];
-      }
+      },
+      defaultMemento: 2 // Open issues
     },
     {
       model_: 'LocationProperty',
@@ -72,7 +69,7 @@ var Location = FOAM({
       defaultValue: '',
       toURL: function(q) {
         // Replace short-names will fullnames that quickbug will understand
-        return (QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
+        return (this.X.QueryParser.parseString(q) || TRUE).partialEval().toMQL().replace(/summary:/g, '');
       }
     },
     {
@@ -113,18 +110,30 @@ var Location = FOAM({
     {
       model_: 'LocationProperty',
       name: 'sort',
-      toMemento: function(sortOrder) { return sortOrder.toMQL(); },
+      toMemento: function(sortOrder) { console.log('sort to memento: ', sortOrder.toMQL()); return sortOrder.toMQL(); },
       fromMemento: function(sort) {
         var ps = sort.split(' ');
+        var sorts = [];
         for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p = ps[i];
+          var p    = ps[i];
+          var name = p.charAt(0) == '-' ? p.substring(1) : p;
+          var prop = this.location.getPropertyIC(name);
+
+          if ( ! prop ) {
+            console.warn("Property not found: ", name);
+            continue;
+          }
+
           if ( p.charAt('0') == '-' ) {
-            ps[i] = DESC(QIssue.getProperty(p.substring(1)));
+            sorts.push(DESC(prop));
           } else {
-            ps[i] = QIssue.getProperty(p);
+            sorts.push(prop);
           }
         }
-        return ( ps.length == 1 ) ? ps[0] : CompoundComparator.apply(null, ps) ;
+
+        return ( sorts.length == 0 ) ? ''            :
+               ( sorts.length == 1 ) ? sorts[0]      :
+               CompoundComparator.apply(null, sorts) ;
       }
     },
     {
@@ -136,28 +145,38 @@ var Location = FOAM({
       model_: 'LocationProperty',
       name: 'y',
       toMemento: function(y) { return y.name; },
-      fromMemento: function(name) { return QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'x',
       toMemento: function(x) { return x.name; },
-      fromMemento: function(name) { return QIssue.getProperty(name); }
+      fromMemento: function(name) { return this.X.QIssue.getProperty(name); }
     },
     {
       model_: 'LocationProperty',
       name: 'scroll',
       defaultMemento: 'Bars'
+    },
+    {
+      model_: 'LocationProperty',
+      name: 'createIssueTemplate'
     }
   ],
 
   methods: {
     getPropertyIC: function(propName) {
       propName = propName.toLowerCase();
-      for ( var i = 0 ; i < QIssue.properties.length ; i++ ) {
-        var prop = QIssue.properties[i];
+      for ( var i = 0 ; i < this.X.QIssue.properties.length ; i++ ) {
+        var prop = this.X.QIssue.properties[i];
 
         if ( prop.name.toLowerCase() === propName ) return prop;
+
+        if ( prop.shortName.toLowerCase() === propName ) return prop;
+
+        for ( var j = 0 ; j < prop.aliases ; j++ ) {
+          if ( prop.aliases[j].toLowerCase() === propName ) return prop;
+        }
       }
 
       return undefined;
@@ -199,7 +218,7 @@ var Location = FOAM({
       var params = s.split('&');
       for ( var i = 0 ; i < params.length ; i++ ) {
         var param    = params[i];
-        var keyValue = param.match(/([^=]*)=(.*)/);
+        var keyValue = param.match(/([^=]*)=([^#]*)/);
         if ( keyValue ) {
           var key      = keyValue[1];
           var value    = keyValue[2];

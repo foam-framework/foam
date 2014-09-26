@@ -1,0 +1,12 @@
+{
+  "packageId": "com.google.foam.MGMail",
+  "versionCode": 1,
+  "oauth2": {
+    "client_id": "18229540903-rbkj6c3o8gif9s5rsflvr4h0357m1tk8.apps.googleusercontent.com",
+    "scopes": [
+      "https://mail.google.com/"
+    ]
+  },
+
+  "webview": "system"
+}

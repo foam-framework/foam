@@ -10,7 +10,7 @@ body {
 .title {
   color: #666;
   font-family: arial, sans-serif;
-  font-size: 39px;
+  font-size: 32px;
   font-style: normal;
   font-variant: normal;
   font-weight: normal;
@@ -111,7 +111,11 @@ body {
   overflow: auto;
 }
 
-.actionButton-link, .actionButton-link:hover{
+.actionButton-link {
+  vertical-align: middle;
+}
+
+.actionButton-link, .actionButton-link:hover {
   border: none;
   background: white;
 }
@@ -312,10 +316,6 @@ input[name="labels"] {
   vertical-align: middle;
 }
 
-.actionButton-link[data-tip]:after {
-  left: -65px;
-}
-
 .gridViewArea {
   overflow: auto;
 }
@@ -402,9 +402,11 @@ input[name="labels"] {
   flex-grow: 1;
 }
 
-.bookmarks-menu {
-  color: blue;
+.bookmarks-menu button {
   background: white;
+  border: none;
+  color: blue;
+  font: 13px arial, sans-serif;
   text-decoration: underline;
 }
 
@@ -451,4 +453,25 @@ input[name="labels"] {
 .appName {
   margin-top: 3px;
   float: right;
+}
+
+.issue_restrictions {
+  padding: 2px 4px;
+  background-color: #f9edbe;
+  border: 1px solid #ccc;
+  min-width: 14em;
+}
+
+.issue_restrictions .restrictions_header {
+  padding: 0 0 2px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.issue_restrictions ul {
+  background-color: #f9edbe;
+  border: none;
+  color: black;
+  margin: 0;
+  padding-left: 15px;
 }

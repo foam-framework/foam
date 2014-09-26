@@ -47,9 +47,9 @@ MODEL({
       delete json['projectId'];
       delete json['movedFrom']; // conflicts with movedFrom label/psedo-property
       if ( json.labels ) json.labels = json.labels.intern();
-      if ( json.closed ) json.closed = new Date(json.closed).getTime()/1000;
-      if ( json.updated ) json.updated = new Date(new Date(json.updated).getTime());
-      if ( json.published ) json.published = new Date(json.published).getTime()/1000;
+      if ( json.closed ) json.closed = new Date(json.closed);
+      if ( json.updated ) json.updated = new Date(json.updated);
+      if ( json.published ) json.published = new Date(json.published);
 
       return this.model.create(json);
     },
@@ -71,14 +71,14 @@ MODEL({
 
       // TODO: Generify this and move it to a helper function.
       // When mLangs have compareTo this will be much easier.
-      if ( GtExpr.isInstance(query) && query.arg1 === QIssue.MODIFIED ) {
+      if ( GtExpr.isInstance(query) && query.arg1 === this.X.QIssue.MODIFIED ) {
         updatedMin = query.arg2.arg1.getTime();
         query = TRUE
       } else if ( AndExpr.isInstance(query) ) {
         for ( var j = 0; j < query.args.length; j++ ) {
           var arg = query.args[j];
 
-          if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.MODIFIED ) {
+          if ( GtExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.MODIFIED ) {
             candidates.push([arg.arg2.arg1.getTime(), [[query, j]]]);
           }
         }
@@ -92,7 +92,7 @@ MODEL({
             for ( j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( GtExpr.isInstance(subarg) && subarg.arg1 === QIssue.MODIFIED ) {
+              if ( GtExpr.isInstance(subarg) && subarg.arg1 === this.X.QIssue.MODIFIED ) {
                 for ( var k = 0; k < candidates.length; k++ ) {
                   if ( candidates[k][0] === subarg.arg2.arg1.getTime() ) {
                     candidates[k][1].push([arg, j]);
@@ -103,7 +103,7 @@ MODEL({
                 }
               }
             }
-          } else if ( GtExpr.isInstance(arg) && arg.arg1 === QIssue.MODIFIED ) {
+          } else if ( GtExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.MODIFIED ) {
             for ( k = 0; k < candidates.length; k++ ) {
               if ( candidates[k][0] === arg.arg2.arg1.getTime() ) {
                 candidates[k][1].push([query, i]);
@@ -146,8 +146,7 @@ MODEL({
 
       outquery[1] = stripDefaultQuery(outquery[1]).partialEval();
 
-      if ( updatedMin ) return ["updatedMin=" + Math.floor(updatedMin/1000)];
-      return [];
+      return updatedMin ? ["updatedMin=" + Math.floor(updatedMin/1000)] : [];
     },
 
     put: function(issue, sink) {
@@ -249,7 +248,7 @@ MODEL({
 
       var id;
 
-      if ( EqExpr.isInstance(query) && query.arg1 === QIssueComment.ISSUE_ID ) {
+      if ( EqExpr.isInstance(query) && query.arg1 === this.X.QIssueComment.ISSUE_ID ) {
         id = query.arg2.arg1;
         query = TRUE
       }
@@ -262,12 +261,12 @@ MODEL({
             for ( var j = 0; j < arg.args.length; j++ ) {
               var subarg = arg.args[j];
 
-              if ( EqExpr.isInstance(subarg) && subarg.arg1 === QIssue.ISSUE_ID ) {
+              if ( EqExpr.isInstance(subarg) && subarg.arg1 === this.X.QIssue.ISSUE_ID ) {
                 if ( id && subarg.arg2.arg1 === id ) id = subarg.arg2.arg1;
                 arg.args[j] = TRUE;
               }
             }
-          } else if ( EqExpr.isInstance(arg) && arg.arg1 === QIssue.ISSUE_ID ) {
+          } else if ( EqExpr.isInstance(arg) && arg.arg1 === this.X.QIssue.ISSUE_ID ) {
             id = arg.arg2.arg1;
             query.args[i] = TRUE;
           }
@@ -282,6 +281,8 @@ MODEL({
     jsonToObj: function(obj, extra) {
       var obj = this.SUPER(obj);
       obj.issueId = extra.issueId;
+      obj.seqNo = obj.id;
+      obj.id = obj.id + '_' + extra.issueId;
       return obj;
     },
     objToJson: function(obj, extra) {
@@ -322,36 +323,42 @@ IssueCommentNetworkDAO.where(EQ(CrIssue.ID, 225776)).select(console.log.json);
  * Also merges DAO update events so as to not force the GUI to update on every frame.
  **/
 MODEL({
-   name: 'QIssueSplitDAO',
-   extendsModel: 'AbstractDAO',
+  name: 'QIssueSplitDAO',
+  extendsModel: 'AbstractDAO',
 
-   properties: [
-      {
-         model_: 'StringProperty',
-         name: 'activeQuery'
-      },
-      {
-         model_: 'StringProperty',
-         name: 'activeOrder'
-      },
-      {
-         name: 'local',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'remote',
-         type: 'DAO',
-         mode: "read-only",
-         hidden: true,
-         required: true
-      },
-      {
-         name: 'model'
-      },
-   ],
+  properties: [
+    {
+      name: 'queryCache',
+      help: 'An array of [query, order, MDAO<data>] entries, oldest first, and a maximum of queryCount.',
+      factory: function() { return []; }
+    },
+    {
+      name: 'queryCount',
+      help: 'The maximum number of queries to cache.',
+      defaultValue: 5
+    },
+    {
+      name: 'local',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'remote',
+      type: 'DAO',
+      mode: "read-only",
+      hidden: true,
+      required: true
+    },
+    {
+      name: 'model'
+    },
+    {
+      name: 'maxLimit',
+      defaultValue: 500
+    }
+  ],
 
   listeners: [
     {
@@ -370,6 +377,7 @@ MODEL({
 
    methods: {
      init: function() {
+       this.SUPER();
        this.relay_ = {
          put:    function() { this.invalidate(); this.mergedPutNotify();    }.bind(this),
          remove: function() { this.invalidate(); this.mergedRemoveNotify(); }.bind(this)
@@ -392,7 +400,7 @@ MODEL({
      },
 
      invalidate: function() {
-       this.buf = this.query = undefined;
+       this.queryCache = [];
      },
 
      put: function(value, sink) {
@@ -419,7 +427,7 @@ MODEL({
        var local = this.local;
 
        local.find(issue.id, {
-         put: function(o) { if ( ! o.equals(issue) ) local.put(issue); },
+         put: function(o) { if ( o.modified.compareTo(issue.modified) ) local.put(issue); },
          error: function() { local.put(issue); }
        });
      },
@@ -430,12 +438,17 @@ MODEL({
        var remote = this.remote;
 
        local.find(key, {
-         __proto__: sink,
+         put: function(obj) {
+           sink && sink.put && sink.put(obj);
+         },
          error: function() {
            remote.find(key, {
              put: function(issue) {
-               sink.put(issue);
+               sink && sink.put && sink.put(issue);
                local.put(issue);
+             },
+             error: function() {
+               sink && sink.error && sink.error.apply(sink, arguments);
              }
            });
          }
@@ -443,18 +456,22 @@ MODEL({
      },
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
-       var buf = this.buf = MDAO.create({ model: this.model });
+       var buf = MDAO.create({ model: this.model });
        // TODO: switch to MDAO's 'autoIndex: true' feature when improved.
        var auto = AutoIndex.create(buf);
 
        // Auto index the buffer, but set an initial index for the current
        // sort order.
-       if ( options && options.order) auto.addIndex(options.order);
-       buf.addRawIndex(auto);
+       if ( options && options.order && Property.isInstance(options.order) ) {
+         auto.addIndex(options.order);
+         buf.addRawIndex(auto);
+       }
 
-       this.activeQuery = query;
+       var cacheEntry = [query, order, buf];
+       if ( this.queryCache.length >= this.queryCount ) this.queryCache.shift();
+       this.queryCache.push(cacheEntry);
 
-       this.local.select(buf, options && options.query ? { query: options.query } : {})(
+       this.local.select({ put: function(x) { if (x === undefined) debugger; buf.put(x) } }, options && options.query ? { query: options.query } : {})(
          (function() {
            buf.select(sink, bufOptions)(function(s) { future.set(s); });
 
@@ -462,9 +479,10 @@ MODEL({
            if ( options && options.query ) remoteOptions.query = options.query;
            if ( options && options.order ) remoteOptions.order = options.order;
 
-           this.remote.limit(500).select({
+           this.remote.limit(this.maxLimit).select({
              put: (function(obj) {
                // Put the object in the buffer, but also cache it in the local DAO
+               if (obj === undefined) debugger;
                buf.put(obj);
                this.putIfMissing(obj);
 
@@ -489,34 +507,40 @@ MODEL({
          if ( options.limit ) bufOptions.limit = options.limit;
        }
 
-       var query = ( options && options.query && options.query.toSQL() ) || "";
-       var order = ( options && options.order && options.order.toSQL() ) || "";
+       var query = ( options && options.query && options.query.toMQL() ) || "";
+       var order = ( options && options.order && options.order.toMQL() ) || "";
 
        var future = afuture();
 
-       if ( this.buf && query === this.activeQuery ) {
-         if ( CountExpr.isInstance(sink) ) return this.buf.select(sink, bufOptions);
+       // Search the cache of buffers for a matching query and order.
+       var matchingQueries = this.queryCache.filter(function(e) { return e[0] === query; });
 
-         if ( order && order !== this.activeOrder ) {
-           this.activeOrder = order;
-
-           this.buf.select(COUNT())((function(c) {
-             if ( c.count < 500 ) {
-               this.buf.select(sink, bufOptions)(function(s) {
+       if ( matchingQueries.length ) {
+         var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
+         if ( matchingOrder.length > 0 ) {
+           return matchingOrder[0][2].select(sink, bufOptions);
+         } else {
+           // We did NOT find a matching order.
+           // But we do have at least one match for this query with a different order.
+           // Check the size of the first match's buffer. If it's < maxLimit we've
+           // got all the data and can simply compute the order ourselves.
+           // If it's >= maxLimit, we have only a subset and need to query the server.
+           var match = matchingQueries[0];
+           match[2].select(COUNT())((function(c) {
+             if ( c.count < this.maxLimit ) {
+               match[2].select(sink, bufOptions)(function(s) {
                  future.set(s);
                });
              } else {
+               // console.log('Creating new query: ' + query + '   ' + order);
                this.newQuery(sink, options, query, order, bufOptions, future);
              }
-           }).bind(this))
-         } else {
-           return this.buf.select(sink, bufOptions);
+           }).bind(this));
          }
        } else {
-         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
+//         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 
-         this.activeQuery = query;
-         this.activeOrder = order;
+         // console.log('Creating new query: ' + query + '   ' + order);
          this.newQuery(sink, options, query, order, bufOptions, future);
        }
 

@@ -186,13 +186,13 @@ var Property = {
       help: 'View component for the property.'
     },
     {
-      model_: 'FunctionProperty',
+//      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.'
     },
     {
-      model_: 'FunctionProperty',
+//      model_: 'FunctionProperty',
       name: 'detailViewPostRow',
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.'
@@ -246,6 +246,13 @@ var Property = {
       view: 'FunctionView',
       defaultValue: '',
       help: 'Factory for creating initial value when new object instantiated.'
+    },
+    {
+      name: 'lazyFactory',
+      type: 'Function',
+      required: false,
+      view: 'FunctionView',
+      help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.'
     },
     {
       name: 'getter',
@@ -329,6 +336,7 @@ var Property = {
       defaultValue: '',
       help: 'Help text associated with the property.'
     },
+    DocumentationBootstrap,
     {
       name: 'prototag',
       label: 'Protobuf tag',
@@ -378,6 +386,13 @@ var Property = {
       view: 'FunctionView',
       defaultValue: '',
       help: "A function which installs additional features into the Model's prototype."
+    },
+    {
+      name: 'exclusive',
+      type: 'Boolean',
+      view: 'BooleanView',
+      defaultValue: true,
+      help: 'Indicates if the property can only have a single value.'
     }
   ],
 
@@ -436,3 +451,9 @@ Model = Model.create(Model);
 Model.model_ = Model;
 
 Property = Model.create(Property);
+
+// Property properties are still Bootstrap Models, so upgrade them.
+for ( var i = 0 ; i < Property.properties.length ; i++ )
+  Property[Property.properties[i].name.constantize()] =
+    Property.properties[i] = Property.create(Property.properties[i]);
+

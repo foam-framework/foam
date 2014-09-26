@@ -237,97 +237,6 @@ MODEL({
 });
 
 
-/** A DAO proxy that delays operations until the delegate is set in the future. **/
-var FutureDAO = {
-  create: function(/* future */ futureDelegate) {
-
-    // This is kind-of-tricky.  We actually return an object whose proto is the future-proxy
-    // code.  This is so that once the future-delegate is set, that we can rewrite the proto
-    // to be that delegate.  This removes the future related code so that we no longer have
-    // pay the overhead once the delegate has been set.
-
-    function setupFuture(delegate) {
-      if ( ret.__proto__ !== delegate ) {
-        var listeners = ret.__proto__.daoListeners_;
-        ret.__proto__ = delegate;
-        for ( var i = 0 ; i < listeners.length ; i++ ) {
-          console.log('******************************************************* AddingListener ', ret, listeners[i]);
-          ret.listen.apply(ret, listeners[i]);
-        }
-//        ret.notify_('put', []);
-      }
-    }
-
-    var ret = {
-      __proto__: {
-        // TODO: implement other DAO methods
-        daoListeners_: [],
-
-        select: function() {
-          var a = arguments;
-          var f = afuture();
-          futureDelegate(function(delegate) {
-            // This removes this code from the delegate-chain and replaces the real delegate.
-            setupFuture(delegate);
-            delegate.select.apply(delegate, a)(f.set);
-          });
-          return f.get;
-        },
-        pipe: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            // This removes this code from the delegate-chain and replaces the real delegate.
-            setupFuture(delegate);
-            delegate.pipe.apply(delegate, a);
-          });
-        },
-        put: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            setupFuture(delegate);
-            delegate.put.apply(delegate, a);
-          });
-        },
-        find: function() {
-          var a = arguments;
-          futureDelegate(function(delegate) {
-            setupFuture(delegate);
-            delegate.find.apply(delegate, a);
-          });
-        },
-        where: function(query) {
-          if ( arguments.length > 1 ) query = CompoundComparator.apply(null, arguments);
-          return filteredDAO(query, this);
-        },
-        limit: function(count) {
-          return limitedDAO(count, this);
-        },
-        skip: function(skip) {
-          return skipDAO(skip, this);
-        },
-        orderBy: function() {
-          return orderedDAO(arguments.length == 1 ? arguments[0] : argsToArray(arguments), this);
-        },
-        listen: function(sink, options) {
-          // this.daoListeners_.push([sink, options]);
-        },
-        unlisten: function(sink) {
-          /*
-          for ( var i = 0 ; i < this.daoListeners_ ; i++ ) {
-            if ( this.daoListeners_[i][0] === sink ) {
-              this.daoListeners_.splice(i, 1);
-              return;
-            }
-          }
-          console.warn('phantom DAO unlisten: ', sink);
-          */
-        }
-      }};
-    return ret;
-  }
-};
-
-
 var LoggingDAO = {
 
   create: function(/*[logger], delegate*/) {
@@ -488,20 +397,22 @@ var JSONToObject = {
 MODEL({
   name: 'AbstractDAO',
 
-  methods: {
+  properties: [
+    {
+      name: 'daoListeners_',
+      transient: true,
+      hidden: true,
+      factory: function() { return []; }
+    }
+  ],
 
+  methods: {
     update: function(expr) {
       return this.select(UPDATE(expr, this));
     },
 
     listen: function(sink, options) {
       sink = this.decorateSink_(sink, options, true);
-      if ( ! this.daoListeners_ ) {
-        Object.defineProperty(this, 'daoListeners_', {
-          enumerable: false,
-          value: []
-        });
-      }
       this.daoListeners_.push(sink);
     },
 
@@ -581,14 +492,12 @@ MODEL({
 
     unlisten: function(sink) {
       var ls = this.daoListeners_;
-      if ( ls ) {
-        for ( var i = 0; i < ls.length ; i++ ) {
-          if ( ls[i].$UID === sink.$UID ) {
-            ls.splice(i, 1);
-            return true;
-          }
+//      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
+      for ( var i = 0; i < ls.length ; i++ ) {
+        if ( ls[i].$UID === sink.$UID ) {
+          ls.splice(i, 1);
+          return true;
         }
-        console.warn('Phantom DAO unlisten: ', this, sink);
       }
     },
 
@@ -614,8 +523,7 @@ MODEL({
      *        possible values: 'put', 'remove'
      **/
     notify_: function(fName, args) {
-//       console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
-      if ( ! this.daoListeners_ ) return;
+      // console.log(this.TYPE, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
         var fn = l[fName];
@@ -631,7 +539,7 @@ MODEL({
             fn.apply(l, args);
           } catch(err) {
             if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-              console.error('Error delivering event (removing listener): ', topic.join('.'));
+              console.error('Error delivering event (removing listener): ', fName, err);
             }
             this.unlisten(l);
           }
@@ -656,15 +564,25 @@ MODEL({
       required: true,
       transient: true,
       factory: function() { return NullDAO.create(); }, // TODO: use singleton
-      preSet: function(_, dao) { return dao || NullDAO.create(); },
       postSet: function(oldDAO, newDAO) {
-        this.model = this.model || newDAO.model;
-        if ( this.daoListeners_ && this.daoListeners_.length ) {
+        if ( this.daoListeners_.length ) {
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           this.notify_('put', []);
         }
       }
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'model',
+      type: 'Model',
+      defaultValueFn: function() { return this.delegate.model; },
+      documentation: function() { /*
+          <p>Determines the expected $$DOC{ref:'Model'} type for the items
+            in this $$DOC{ref:'DAO'}.</p>
+          <p>The properties of the $$DOC{ref:'Model'} definition specified
+            here may be used when filtering and indexing.</p>
+      */}
     }
   ],
 
@@ -705,7 +623,7 @@ MODEL({
 
     listen: function(sink, options) {
       // Adding first listener, so listen to delegate
-      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.listen(this.relay());
       }
 
@@ -716,9 +634,104 @@ MODEL({
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
-      if ( ! this.daoListeners_ || ! this.daoListeners_.length ) {
+      if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.unlisten(this.relay());
       }
+    },
+
+    toString: function() {
+      return this.TYPE + '(' + this.delegate + ')';
+    }
+  }
+});
+
+
+/** A DAO proxy that delays operations until the delegate is set in the future. **/
+MODEL({
+  name: 'FutureDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delegate',
+      factory: function() { return null; },
+      postSet: function(oldDAO, newDAO) {
+        if ( this.daoListeners_.length ) {
+          if ( oldDAO ) oldDAO.unlisten(this.relay());
+          newDAO.listen(this.relay());
+        }
+      }
+    },
+    {
+      name: 'future',
+      required: true
+    },
+    {
+      name: 'model',
+      defaultValueFn: function() { return this.delegate ? this.delegate.model : ''; }
+    }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.future(function(delegate) {
+        this.delegate = delegate;
+      }.bind(this));
+    },
+
+    put: function(value, sink) {
+      if ( this.delegate ) {
+        this.delegate.put(value, sink);
+      } else {
+        this.future(this.put.bind(this, value, sink));
+      }
+    },
+
+    remove: function(query, sink) {
+      if ( this.delegate ) {
+        this.delegate.remove(query, sink);
+      } else {
+        this.future(this.remove.bind(this, query, sink));
+      }
+    },
+
+    removeAll: function() {
+      if ( this.delegate ) {
+        return this.delegate.removeAll.apply(this.delegate, arguments);
+      }
+
+      var a = arguments;
+      var f = afuture();
+      this.future(function(delegate) {
+        this.removeAll.apply(this, a)(f.set);
+      }.bind(this));
+
+      return f.get;
+    },
+
+    find: function(key, sink) {
+      if ( this.delegate ) {
+        this.delegate.find(key, sink);
+      } else {
+        this.future(this.find.bind(this, key, sink));
+      }
+    },
+
+    select: function(sink, options) {
+      if ( this.delegate ) {
+        return this.delegate.select(sink, options);
+      }
+
+      var a = arguments;
+      var f = afuture();
+      this.future(function() {
+        this.select.apply(this, a)(f.set);
+      }.bind(this));
+
+      return f.get;
     }
   }
 });
@@ -729,29 +742,49 @@ MODEL({
  * pretend that accesses are slow. Currently, only select has been targetted.
  */
 MODEL({
-  name: 'SlowDAO',
-  extendsModel: 'ProxyDAO',
+   name: 'DelayedDAO',
 
-  properties: [
-    {
-      name: 'delay',
-      model_: 'IntProperty',
-      defaultValue: 2000,
-    }
-  ],
+   extendsModel: 'ProxyDAO',
 
-  methods: {
-    select: function(sink, options) {
+   properties: [
+     {
+       model_: 'IntProperty',
+       name: 'initialDelay'
+     },
+     {
+       model_: 'IntProperty',
+       name: 'rowDelay'
+     }
+   ],
+
+   methods: {
+      select: function(sink, options) {
       var f = afuture();
-      setTimeout(function() {
-        this.delegate.select(sink, options)(function(result) {
-          f.set(result);
-        });
-      }.bind(this), this.delay);
+         var i = 0;
+         var delayedSink = this.rowDelay ? {
+            __proto__: sink,
+            put: function() {
+               var args = arguments;
+               setTimeout(function() {
+                  sink.put.apply(sink, args);
+               }, this.rowDelay * ++i);
+            }.bind(this)
+         } : sink;
+         setTimeout(function() {
+           this.delegate.select(delayedSink, options)(function(result) {
+             f.set(result);
+           });
+         }.bind(this), this.initialDelay);
       return f.get;
-    }
-  }
+      }
+   }
 });
+
+/*
+var dao = DelayedDAO.create({delegate: [1,2,3], initialDelay: 5000, rowDelay: 2000});
+dao.select(console.log);
+*/
+
 
 MODEL({
   name: 'ErrorDAO',
@@ -824,6 +857,43 @@ MODEL({
 });
 
 
+
+MODEL({
+  name: 'GUIDDAO',
+  label: 'GUIDDAO',
+
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'property',
+      type: 'Property',
+      required: true,
+      hidden: true,
+      defaultValueFn: function() {
+        return this.delegate.model ? this.delegate.model.ID : undefined;
+      },
+      transient: true
+    }
+  ],
+
+  methods: {
+    createGUID: function() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    },
+
+    put: function(obj, sink) {
+      obj[this.property.name] = this.createGUID();
+
+      this.delegate.put(obj, sink);
+    }
+  }
+});
+
+
 MODEL({
   name: 'CachingDAO',
 
@@ -853,7 +923,7 @@ MODEL({
       var cache = this.cache;
 
       var futureDelegate = afuture();
-      this.cache = FutureDAO.create(futureDelegate.get);
+      this.cache = FutureDAO.create({future: futureDelegate.get});
 
       src.select(cache)(function() {
         // Actually means that cache listens to changes in the src.
@@ -867,6 +937,7 @@ MODEL({
     removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
   }
 });
+
 
 MODEL({
   name: 'LimitedLiveCachingDAO',
@@ -982,8 +1053,10 @@ function filteredDAO(query, dao) {
           AND(query, options.query) :
           query
       } : {query: query});
+    },
+    toString: function() {
+      return dao + '.where(' + query + ')';
     }
-
   };
 }
 
@@ -1003,6 +1076,9 @@ function orderedDAO(comparator, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.orderBy(' + comparator + ')';
     }
   };
 }
@@ -1027,12 +1103,16 @@ function limitedDAO(count, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.limit(' + count + ')';
     }
   };
 }
 
 
 function skipDAO(skip, dao) {
+  if ( skip !== Math.floor(skip) ) console.warn('skip() called with non-integer value: ' + skip);
   return {
     __proto__: dao,
     select: function(sink, options) {
@@ -1046,158 +1126,13 @@ function skipDAO(skip, dao) {
       }
 
       return dao.select(sink, options);
+    },
+    toString: function() {
+      return dao + '.skip(' + skip + ')';
     }
   };
 }
 
-
-// Copy AbstractDAO methods in Array prototype
-
-var pmap = {};
-for ( var key in AbstractDAO.methods ) {
-  pmap[AbstractDAO.methods[key].name] = AbstractDAO.methods[key].code;
-}
-
-defineProperties(Array.prototype, pmap);
-
-defineProperties(Array.prototype, {
-  // Clone this Array and remove 'v' (only 1 instance)
-  // TODO: make faster by copying in one pass, without splicing
-  deleteF: function(v) {
-    var a = this.clone();
-    for (var i = 0; i < a.length; i++) {
-      if ( a[i] === v ) { a.splice(i, 1); break; }
-    }
-    return a;
-  },
-  // Remove 'v' from this array (only 1 instance removed)
-  // return true iff the value was removed
-  deleteI: function(v) {
-    for (var i = 0; i < this.length; i++) {
-      if ( this[i] === v ) { this.splice(i, 1); return true; }
-    }
-    return false;
-  },
-  // Clone this Array and remove first object where predicate 'p' returns true
-  // TODO: make faster by copying in one pass, without splicing
-  removeF: function(p) {
-    var a = this.clone();
-    for (var i = 0; i < a.length; i++) {
-      if (p.f(a[i])) { a.splice(i, 1); break; }
-    }
-    return a;
-  },
-  // Remove first object in this array where predicate 'p' returns true
-  removeI: function(p) {
-    for (var i = 0; i < this.length; i++) {
-      if (p.f(this[i])) { this.splice(i, 1); breeak; }
-    }
-    return this;
-  },
-  pushF: function(obj) {
-    var a = this.clone();
-    a.push(obj);
-    return a;
-  },
-  clone: function() {
-    return this.slice(0);
-  },
-  deepClone: function() {
-    var a = this.slice(0);
-    for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = a[i].deepClone();
-    }
-    return a;
-  },
-  put: function(obj, sink) {
-    // With this block of code an [] is a real DAO
-    // but is much slower for collecting results.
-    /*
-      for (var idx in this) {
-      if (this[idx].id === obj.id) {
-      this[idx] = obj;
-      sink && sink.put && sink.put(obj);
-      this.notify_('put', arguments);
-      //        sink && sink.error && sink.error('put', obj, duplicate);
-      return;
-      }
-      }
-    */
-    this.push(obj);
-    this.notify_('put', arguments);
-    sink && sink.put && sink.put(obj);
-  },
-  find: function(query, sink) {
-    if ( query.f ) {
-      for (var idx in this) {
-        if ( query.f(this[idx]) ) {
-          sink && sink.put && sink.put(this[idx]);
-          return;
-        }
-      }
-    } else {
-      for (var idx in this) {
-        if ( this[idx].id === query ) {
-          sink && sink.put && sink.put(this[idx]);
-          return;
-        }
-      }
-    }
-    sink && sink.error && sink.error('find', query);
-  },
-  // TODO: make this faster, should stop after finding first item.
-  remove: function(query, sink) {
-    var id = query.id ? query.id : query;
-    this.removeAll({ remove: sink && sink.remove },
-                   { query: { f: function(obj) { return obj.id ? obj.id === id : obj === id; } } });
-  },
-  removeAll: function(sink, options) {
-    if (!options) options = {};
-    if (!options.query) options.query = { f: function() { return true; } };
-
-    for (var i = 0; i < this.length; i++) {
-      var obj = this[i];
-      if (options.query.f(obj)) {
-        var rem = this.splice(i,1)[0];
-        this.notify_('remove', [rem]);
-        sink && sink.remove && sink.remove(rem);
-        i--;
-      }
-    }
-    sink && sink.eof && sink.eof();
-    return anop();
-  },
-  select: function(sink, options) {
-    sink = sink || [];
-    var hasQuery = options && ( options.query || options.order );
-    var originalsink = sink;
-    sink = this.decorateSink_(sink, options, false, ! hasQuery);
-
-    // Short-circuit COUNT.
-    if ( sink.model_ === CountExpr ) {
-      sink.count = this.length;
-      return aconstant(originalsink);
-    }
-
-    var fc = this.createFlowControl_();
-    var start = Math.max(0, hasQuery ? 0 : ( options && options.skip ) || 0);
-    var end = hasQuery ?
-      this.length :
-      Math.min(this.length, start + ( ( options && options.limit ) || this.length));
-    for ( var i = start ; i < end ; i++ ) {
-      sink.put(this[i], null, fc);
-      if ( fc.stopped ) break;
-      if ( fc.errorEvt ) {
-        sink.error && sink.error(fc.errorEvt);
-        return aconstant(originalsink, fc.errorEvt);
-      }
-    }
-
-    sink.eof && sink.eof();
-
-    return aconstant(originalsink);
-  }
-});
 
 function atxn(afunc) {
   return function(ret) {
@@ -1220,7 +1155,7 @@ function atxn(afunc) {
  * var dao = IDBDAO.create({model: Issue, name: 'ImportantIssues'});
  *
  * TODO:
- * Optimization.  This DAO doesn't use an indexes in indexeddb yet, which
+ * Optimization.  This DAO doesn't use any indexes in indexeddb yet, which
  * means for any query other than a single find/remove we iterate the entire
  * data store.  Obviously this will get slow if you store large amounts
  * of data in the database.
@@ -1234,7 +1169,6 @@ MODEL({
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       required: true
     },
@@ -1250,6 +1184,10 @@ MODEL({
       model_: 'BooleanProperty',
       name: 'useSimpleSerialization',
       defaultValue: true
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'indicies'
     }
   ],
 
@@ -1282,7 +1220,12 @@ MODEL({
     },
 
     SimpleSerialize: function(obj) {
-      return obj.instance_;
+      var s = {};
+      for ( var key in obj.instance_ ) {
+        var prop = obj.model_.getProperty(key);
+        if ( ! prop.transient ) s[key] = obj.instance_[key];
+      }
+      return s;
     },
 
     openDB: function(cc) {
@@ -1293,7 +1236,10 @@ MODEL({
       var request = indexedDB.open("FOAM:" + this.name, 1);
 
       request.onupgradeneeded = (function(e) {
-        e.target.result.createObjectStore(this.name);
+        var store = e.target.result.createObjectStore(this.name);
+        for ( var i = 0; i < this.indicies.length; i++ ) {
+          store.createIndex(this.indicies[i][0], this.indicies[i][0], { unique: this.indicies[i][1] });
+        }
       }).bind(this);
 
       request.onsuccess = (function(e) {
@@ -1347,7 +1293,8 @@ MODEL({
     put: function(value, sink) {
       var self = this;
       this.withStore("readwrite", function(store) {
-        var request = store.put(self.serialize(value), value.id);
+        var request = store.put(self.serialize(value),
+                                value[self.model.ids[0]]);
 
         request.transaction.addEventListener(
           'complete',
@@ -1401,9 +1348,9 @@ MODEL({
 
     remove: function(obj, sink) {
       var self = this;
-      this.withStore("readwrite", function(store) {
-        var key = obj.id ? obj.id : obj;
+      var key = obj[this.model.ids[0]] != undefined ? obj[this.model.ids[0]] : obj;
 
+      this.withStore("readwrite", function(store) {
         var getRequest = store.get(key);
         getRequest.onsuccess = function(e) {
           if (!getRequest.result) {
@@ -1467,7 +1414,7 @@ MODEL({
     },
 
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       sink = this.decorateSink_(sink, options, false);
 
       var fc = this.createFlowControl_();
@@ -1475,7 +1422,11 @@ MODEL({
       var self = this;
 
       this.withStore("readonly", function(store) {
-        var request = store.openCursor();
+        if ( options && options.query && EqExpr.isInstance(options.query) && store.indexNames.contains(options.query.arg1.name) ) {
+          var request = store.index(options.query.arg1.name).openCursor(IDBKeyRange.only(options.query.arg2.f()));
+        } else {
+          var request = store.openCursor();
+        }
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if ( fc.stopped ) return;
@@ -1501,6 +1452,11 @@ MODEL({
       });
 
       return future.get;
+    },
+
+    addIndex: function(prop) {
+      this.indicies.push([prop.name, false]);
+      return this;
     }
   },
 
@@ -1918,7 +1874,7 @@ MODEL({
       this.storage_.find(id, sink);
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       // Cases:
       // 1) Cloneable reducable sink. -- Clone sync, get response, reduceI
       // 2) Non-cloneable reducable sink -- treat same as case 3.
@@ -2253,7 +2209,7 @@ MODEL({
       }
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var myoptions = {};
       var originalsink = sink;
       options = options || {};
@@ -2270,10 +2226,10 @@ MODEL({
       var fc = this.createFlowControl_();
       var future = afuture();
 
-      if (sink.model_ && sink.reduceI) {
+      if ( sink.model_ && sink.reduceI ) {
         var mysink = sink;
       } else {
-        if (options.order) {
+        if ( options.order ) {
           mysink = OrderedCollectorSink.create({ comparator: options.order });
         } else {
           mysink = CollectorSink.create({});
@@ -2391,7 +2347,7 @@ MODEL({
     },
 
     select: function(query, sink) {
-      sink = sink || [];
+      sink = sink || [].sink;
       sink && sink.error && sink.error("Unsupported");
     },
 
@@ -2409,6 +2365,7 @@ MODEL({
   }
 });
 
+
 MODEL({
   name: 'GDriveDAO',
   properties: [
@@ -2424,7 +2381,7 @@ MODEL({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var xhr = new XMLHttpRequest();
       var params = [
         'maxResults=10'
@@ -2453,6 +2410,7 @@ MODEL({
     }
   }
 });
+
 
 MODEL({
   name: 'RestDAO',
@@ -2528,7 +2486,7 @@ MODEL({
     remove: function(query, sink) {
     },
     select: function(sink, options) {
-      sink = sink || [];
+      sink = sink || [].sink;
       var fut = afuture();
       var self = this;
       var limit;
@@ -2594,7 +2552,7 @@ MODEL({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          this.X.ajsonp(url, myparams)(function(data) {
+          self.X.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -2862,7 +2820,26 @@ MODEL({
 
   properties: [
     {
-      name: 'cache'
+      name: 'cache',
+      postSet: function(_, d) {
+        d.listen(this.relay());
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'cacheOnSelect',
+      defaultValue: false
+    },
+    {
+      model_: 'IntProperty',
+      name: 'staleTimeout',
+      defaultValue: 500,
+      units: 'ms',
+      help: 'Time in miliseconds before we consider the delegate results to be stale for a particular query and will issue a new select.'
+    },
+    {
+      name: 'selects',
+      factory: function() { return []; }
     }
   ],
 
@@ -2887,11 +2864,78 @@ MODEL({
         }
       };
 
-      this.cache.find(id, mysink);
+      this.delegate.find(id, mysink);
+    },
+    select: function(sink, options) {
+      if ( ! this.cacheOnSelect ) {
+        return this.SUPER(sink, options);
+      }
+
+      var query = ( options && options.query && options.query.toSQL() ) || "";
+      var limit = ( options && options.limit );
+      var skip =  ( options && options.skip );
+      var order = ( options && options.order && options.order.toSQL() ) || "";
+
+      var running = false;
+      for ( var i = 0; i < this.selects.length; i++ ) {
+        if ( this.selects[i].query === query &&
+             this.selects[i].limit === limit &&
+             this.selects[i].skip === skip &&
+             this.selects[i].order === order ) {
+          running = true;
+        }
+      }
+
+      if ( ! running ) {
+        var pendingSelect = {
+          sink: sink,
+          query: query,
+          limit: limit,
+          skip: skip,
+          order: order
+        };
+
+        this.selects.push(pendingSelect);
+
+
+        var cache = this.cache;
+        var count = 0;
+        var remaining = 0;
+
+        var finished = (function() {
+          if ( count !== remaining ) return;
+          window.setTimeout((function() {
+            for ( var i = 0; i < this.selects.length; i++ ) {
+              if ( this.selects[i] === pendingSelect ) {
+                this.selects.splice(i, 1);
+                break;
+              }
+            }
+          }).bind(this), this.staleTimeout);
+        }).bind(this);
+
+        this.delegate.select({
+          put: function(obj) {
+            remaining++;
+            cache.put(obj, {
+              put: function() {
+                count++;
+                finished();
+              },
+              error: function() {
+                count++;
+                finished();
+              }
+            });
+          },
+          eof: finished
+        }, options);
+      }
+
+      return this.cache.select(sink, options);
     }
   }
 });
-
 
 MODEL({
   name: 'PropertyOffloadDAO',
@@ -2900,9 +2944,6 @@ MODEL({
   properties: [
     {
       name: 'property'
-    },
-    {
-      name: 'model'
     },
     {
       name: 'offloadDAO'
@@ -3056,7 +3097,7 @@ MODEL({
     remove: function(obj, sink) { sink && sink.remove && sink.remove(obj); },
     select: function(sink) {
       sink && sink.eof && sink.eof();
-      return aconstant(sink || []);
+      return aconstant(sink || [].sink);
     },
     find: function(q, sink) { sink && sink.error && sink.error('find', q); },
     listen: function() {},
@@ -3123,70 +3164,136 @@ MODEL({
 
   properties: [
     {
-      name: 'model'
-    },
-    {
       name: 'name',
-      defaultValueFn: function() { return this.model.plural; }
+      defaultValueFn: function() { return this.model.plural; },
+      documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'seqNo',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} use a sequence number to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'guid',
+      label: 'GUID',
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} generate guids to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
     },
     {
       name: 'seqProperty',
-      type: 'Property'
+      type: 'Property',
+      documentation: "The property on your items to use to store the sequence number or guid. This is required for $$DOC{ref:'.seqNo'} or $$DOC{ref:'.guid'} mode."
     },
     {
       model_: 'BooleanProperty',
       name: 'cache',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'logging',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable logging on the $$DOC{ref:'DAO'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'timing',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
     },
     {
       name: 'daoType',
-      defaultValue: 'IDBDAO'
+      defaultValue: 'IDBDAO',
+      documentation: function() { /*
+          <p>Selects the basic functionality this $$DOC{ref:'EasyDAO'} should provide.
+          You can specify an instance of a DAO model definition such as
+          $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
+          <p>Choices are:</p>
+          <ul>
+            <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IndexDB for storage.</li>
+            <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage).</li>
+            <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage).</li>
+          </ul>
+       */}
     },
     {
       model_: 'BooleanProperty',
       name: 'autoIndex',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Automatically generate an index."
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'migrationRules',
+      subType: 'MigrationRule',
+      documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
     }
   ],
 
   methods: {
+    // Aliases for daoType
+    ALIASES: {
+      IDB:   'IDBDAO',
+      LOCAL: 'StorageDAO', // Switches to 'ChromeStorageDAO' for Chrome Apps
+      SYNC:  'StorageDAO'  // Switches to 'ChromeSyncStorageDAO' for Chrome Apps
+    },
+
     init: function(args) {
+      /*
+        <p>On initialization, the $$DOC{ref:'.'} creates an appropriate chain of
+        internal $$DOC{ref:'DAO'} instances based on the $$DOC{ref:'.'}
+        property settings.</p>
+        <p>This process is transparent to the developer, and you can use your
+        $$DOC{ref:'.'} like any other $$DOC{ref:'DAO'}.</p>
+      */
+
       this.SUPER(args);
 
-      var daoModel = typeof this.daoType === 'string' ? GLOBAL[this.daoType] : this.daoType;
-      var params = { model: this.model, autoIndex: this.autoIndex };
+      if ( chrome.storage ) {
+        this.ALIASES.LOCAL = 'ChromeStorageDAO';
+        this.ALIASES.SYNC  = 'ChromeSyncStorageDAO';
+      }
+
+      var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
+      var daoModel = typeof daoType === 'string' ? GLOBAL[daoType] : daoType;
+      var params   = { model: this.model, autoIndex: this.autoIndex };
 
       if ( this.name  ) params.name = this.name;
-      if ( this.seqNo ) params.property = this.seqProperty;
+      if ( this.seqNo || this.guid ) params.property = this.seqProperty;
 
       var dao = daoModel.create(params);
 
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
-      } else if ( this.cache ) {
-        this.mdao = MDAO.create(params);
-        dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+      } else {
+        if ( this.migrationRules && this.migrationRules.length ) {
+          dao = this.X.MigrationDAO.create({
+            delegate: dao,
+            rules: this.migrationRules,
+            name: this.model.name + "_" + daoModel.name + "_" + this.name
+          });
+        }
+        if ( this.cache ) {
+          this.mdao = MDAO.create(params);
+          dao = CachingDAO.create({cache: this.mdao, src: dao, model: this.model});
+        }
       }
+
+      if ( this.seqNo && this.guid ) throw "EasyDAO 'seqNo' and 'guid' features are mutually exclusive.";
 
       if ( this.seqNo ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
         dao = SeqNoDAO.create(args);
+      }
+
+      if ( this.guid ) {
+        var args = {__proto__: params, delegate: dao, model: this.model};
+        if ( this.seqProperty ) args.property = this.seqProperty;
+        dao = GUIDDAO.create(args);
       }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
@@ -3196,17 +3303,23 @@ MODEL({
     },
 
     addIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addIndex', text:'MDAO.addIndex()'}.</p> */
       this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
       return this;
     },
 
     addRawIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addRawIndex', text:'MDAO.addRawIndex()'}. */
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
       return this;
-    },
-
+    }
   }
 });
+
 
 MODEL({
   name: 'StoreAndForwardOperation',
@@ -3216,6 +3329,7 @@ MODEL({
     { name: 'obj' },
   ]
 });
+
 
 MODEL({
   name: 'StoreAndForwardDAO',
@@ -3407,6 +3521,114 @@ MODEL({
       };
       s = this.decorateSink_(s, options, true);
       this.SUPER(mysink, myoptions);
+    }
+  }
+});
+
+MODEL({
+  name: 'DAOVersion',
+  ids: ['name'],
+  properties: [
+    'name',
+    'version'
+  ]
+});
+
+MODEL({
+  name: 'MigrationRule',
+  ids: ['modelName'],
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'modelName',
+    },
+    {
+      model_: 'IntProperty',
+      name: 'version'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'migration'
+    }
+  ]
+});
+
+
+MODEL({
+  name: 'MigrationDAO',
+  extendsModel: 'ProxyDAO',
+
+  properties: [
+    {
+      name: 'delegate'
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'MigrationRule',
+      name: 'rules'
+    },
+    {
+      name: 'name'
+    }
+  ],
+
+  methods: {
+    init: function() {
+      var dao = this.delegate;
+      var future = afuture()
+      this.delegate = FutureDAO.create({future: future.get});
+
+      var self = this;
+      var version;
+      aseq(
+        function(ret) {
+          self.X.DAOVersionDAO.find(self.name, {
+            put: function(c) {
+              version = c;
+              ret();
+            },
+            error: function() {
+              version = DAOVersion.create({
+                name: self.name,
+                version: 0
+              });
+              ret();
+            }
+          });
+        },
+        function(ret) {
+          function updateVersion(ret, v) {
+            var c = version.clone();
+            c.version = v;
+            self.X.DAOVersionDAO.put(c, ret);
+          }
+
+          var rulesDAO = self.rules.dao;
+
+          rulesDAO
+            .where(AND(GT(MigrationRule.VERSION, version.version),
+                       LTE(MigrationRule.VERSION, self.X.App.version)))
+            .select([].sink)(function(rules) {
+              var seq = [];
+              for ( var i = 0; i < rules.length; i++ ) {
+                     (function(rule) {
+                       seq.push(
+                         aseq(
+                           function(ret) {
+                             rule.migration(ret, dao);
+                           },
+                           function(ret) {
+                             updateVersion(ret, rule.version);
+                           }));
+                     })(self.rules[i]);
+              }
+              if ( seq.length > 0 ) aseq.apply(null, seq)(ret);
+              else ret();
+            });
+        })(function() {
+          future.set(dao);
+        });
+      this.SUPER();
     }
   }
 });

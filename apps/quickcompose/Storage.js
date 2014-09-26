@@ -43,20 +43,18 @@ console.timeEnd('BlobXhrFactory');
 console.time('ContactAvatarDAO');
 var ContactAvatarDAO = LRUCachingDAO.create({
   maxSize: 50,
-  delegate: FutureDAO.create(aseq(asleep(200), function(ret) {
+  delegate: FutureDAO.create({future: aseq(asleep(200), function(ret) {
     ret(LazyCacheDAO.create({
       cache: IDBDAO.create({ model: Contact, name: 'ContactAvatars2' }),
       delegate: ContactAvatarNetworkDAO.create({
         xhrFactory: BlobXhrFactory
       })
     }));
-  }))
+  })})
 });
 console.timeEnd('ContactAvatarDAO');
 
-ContactDAO = CachingDAO.create(
-  ContactDAO,
-  IDBDAO.create({ model: Contact }));
+ContactDAO = EasyDAO.create({model: Contact, cache: true})
 
 ContactAvatarDAO = PropertyOffloadDAO.create({
   property: Contact.AVATAR,

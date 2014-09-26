@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var files = [
   ['firefox', function() { return navigator.userAgent.indexOf('Firefox') != -1; }],
   'stdlib',
+  ['WeakMap', function() { return !! this['WeakMap']; }],
   'io',
   'writer',
   'socket',
@@ -65,6 +67,7 @@ var files = [
   'visitor',
   'messaging',
   'dao',
+  'arrayDAO',
   'ClientDAO',
   'diff',
   'SplitDAO',
@@ -82,5 +85,7 @@ var files = [
   'oauth',
   '../apps/mailreader/view',
   '../apps/mailreader/email',
-  'turntable'
+  '../lib/email/email',
+  'turntable',
+  'CORE'
 ];

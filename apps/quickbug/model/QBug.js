@@ -50,6 +50,17 @@ MODEL({
         });
       }
     },
+    /*
+    {
+      name: 'QProjectDAO',
+      factory: function() {
+        return this.X.EasyDAO.create({
+          model: QProject,
+          cache: true
+        });
+      }
+    },
+    */
     {
       name: 'ProjectNetworkDAO',
       factory: function() {
@@ -73,33 +84,62 @@ MODEL({
             if ( json.issuesConfig.statuses ) {
               for ( i = 0; i < json.issuesConfig.statuses.length; i++ ) {
                 json.issuesConfig.statuses[i] =
-                  QIssueStatus.create(json.issuesConfig.statuses[i]);
+                  this.X.QIssueStatus.create(json.issuesConfig.statuses[i]);
               }
             }
 
             if ( json.issuesConfig.labels ) {
               for ( i = 0; i < json.issuesConfig.labels.length; i++ ) {
                 json.issuesConfig.labels[i] =
-                  QIssueLabel.create(json.issuesConfig.labels[i]);
+                  this.X.QIssueLabel.create(json.issuesConfig.labels[i]);
               }
             }
           }
           return this.model.create(json);
         };
 
-          /*
-        dao.jsonToObj = function(json) {
-          if ( json.author ) json.author = json.author.name;
-
-          return this.model.create(json);
-        };
-        */
-
         return dao;
       },
       transient: true
     },
+    {
+      name: 'ProjectDAO',
+      factory: function() {
+        var self = this;
+        var cache = this.X.IDBDAO.create({
+          model: Project,
+          useSimpleSerialization: false
+        });
 
+        return {
+          // Find is the only method called on this DAO.
+          find: function(id, sink) {
+            // Check in Cache first
+            cache.find(id, {
+              // If success, then notify sink but update cache for next time.
+              put: function(project) {
+                sink.put(project);
+                self.ProjectNetworkDAO.find(id, {
+                  put: function(project) {
+                    cache.put(project);
+                  }
+                });
+              },
+              // If not found in cache, then request from network, and store result in cache
+              error: function() {
+                self.ProjectNetworkDAO.find(id, {
+                  put: function(project) {
+                    sink.put(project);
+                    cache.put(project);
+                  },
+                  error: sink.error && sink.error.bind(sink)
+                });
+              }
+            });
+          }
+        };
+      }
+    },
     {
       // Cache of QProject objects
       name: 'projects_',
@@ -142,14 +182,14 @@ MODEL({
       var jsonpFuture = deferJsonP(this.X);
 
       var self = this;
-      this.persistentContext.bindObject('authAgent2', EasyOAuth2, {
-        clientId: opt_clientId || '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
-        clientSecret: opt_clientSecret || 'mbxy7-eZlosojSZgHTRT15o9'
+      this.persistentContext.bindObject('authAgent2', EasyOAuth2.xbind({
+        clientId: opt_clientId ||
+          '18229540903-ajaqivrvb8vu3c1viaq4drg3847vt9nq.apps.googleusercontent.com',
+        clientSecret: opt_clientSecret ||
+          'mbxy7-eZlosojSZgHTRT15o9'
+      }), {
+        scopes: self.scopes
       })(function(oauth2) {
-        if ( oauth2.scopes.compareTo(self.scopes) != 0 ) {
-          oauth2.scopes = self.scopes;
-        }
-
         oauth2.setJsonpFuture(self.X, jsonpFuture);
       });
     },
@@ -179,7 +219,7 @@ MODEL({
 
       var self = this;
 
-      this.ProjectNetworkDAO.find(projectName, {
+      this.ProjectDAO.find(projectName, {
         __proto__: sink,
         put: function(project) {
           var p = (opt_X || (self.X.sub())).QProject.create({qbug: self, project: project});
@@ -225,7 +265,9 @@ MODEL({
   listeners: [
     {
       name: 'onUserUpdate',
-      code: function() { QueryParser.ME = this.user.email; }
+      code: function() {
+        this.X.ME = this.user.email;
+      }
     }
   ]
 });

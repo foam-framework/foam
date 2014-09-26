@@ -15,6 +15,51 @@
  * limitations under the License.
  */
 
+
+var VersionParser = {
+  __proto__: grammar,
+
+  START: repeat(sym('component'), optional(sym('separator'))),
+
+  component: alt(
+    sym('number'),
+    sym('string')
+  ),
+
+  digit: range('0', '9'),
+
+  number: plus(sym('digit')),
+
+  string: str(plus(not(alt(sym('digit'), sym('separator')), anyChar))),
+
+  separator: alt('.', '-')
+}.addActions({
+  number: function(v) { return parseInt(v.join('')); }
+});
+
+function createVersionComparator() {
+  var m = {};
+  
+  function toKey(o) {
+    return m[o] || ( m[o] = VersionParser.parseString(o) );
+  }
+
+  return function(o1, o2) {
+    o1 = toKey(o1);
+    o2 = toKey(o2);
+
+    for ( var i = 0 ; ; i++ ) {
+      if ( i == o1.length && i == o2.length ) return 0;
+      if ( i == o1.length ) return -1;
+      if ( i == o2.length ) return  1;
+      if ( typeof o1[i] === 'string' && typeof o2[i] !== 'string' ) return  1;
+      if ( typeof o1[i] !== 'string' && typeof o2[i] === 'string' ) return -1;
+      var c = o2.compareTo(o1);
+      if ( c !== 0 ) return c;
+    }
+  };
+};
+
 // Accumulator which formats objects in a column.  Used within GridView
 var COL = {
   create: function() { return { __proto__: this, values: [] }; },
@@ -40,8 +85,8 @@ var COL = {
 };
 
 
-var DragAndDropGrid = FOAM({
-  model_: 'Model',
+MODEL({
+  name: 'DragAndDropGrid',
   extendsModel: 'GridByExpr',
 
   properties: [
@@ -55,25 +100,16 @@ var DragAndDropGrid = FOAM({
     //   1. Undefined values come first
     //   2. Next, number values are sorted in descending order
     //   3. Next, string values are sorted in ascending order
+    // TODO: this can be moved to the Model now.
     sortAxis: function(values, f) {
       return values.sort(
-        f.name === 'milestone' || f.name === 'iteration' ? function(o1, o2) {
-          if ( o1 === '' && o2 === '' ) return 0;
-          if ( o1 === '' ) return -1;
-          if ( o2 === '' ) return 1;
-          var i1 = parseInt(o1);
-          var i2 = parseInt(o2);
-          if ( isNaN(i1) && isNaN(i2) ) return o1.compareTo(o2);
-          if ( isNaN(i1) ) return 1;
-          if ( isNaN(i2) ) return -1;
-
-          return i2.compareTo(i1);
-        } :
-        f.compareProperty);
+        f.name === 'milestone' || f.name === 'iteration' ?
+          createVersionComparator() :
+          f.compareProperty);
     },
-    renderCell: function(x, y, value) {
-      var cell = IssueDropCell.create({
-        value: value,
+    renderCell: function(x, y, data) {
+      var cell = this.X.IssueDropCell.create({
+        data: data,
         dao: this.dao,
         props: [this.xFunc, this.yFunc],
         values: [x, y]
@@ -90,14 +126,13 @@ var DragAndDropGrid = FOAM({
 });
 
 
-var IssueDropCell = FOAM({
-  model_: 'Model',
-
+MODEL({
+  name: 'IssueDropCell',
   extendsModel: 'View',
 
   properties: [
     {
-      name: 'value'
+      name: 'data'
     },
     {
       name: 'dao',
@@ -119,14 +154,14 @@ var IssueDropCell = FOAM({
       this.on('dragover', this.onDragEnter, this.id);
       this.on('drop', this.onDrop, this.id);
       return '<td id="' + this.id + '">' +
-        (this.value ? (this.value.toHTML ? this.value.toHTML() : this.value) : '') + '</td>';
+        (this.data ? (this.data.toHTML ? this.data.toHTML() : this.data) : '') + '</td>';
     },
     initHTML: function() {
       this.SUPER();
-      this.value && this.value.initHTML && this.value.initHTML();
+      this.data && this.data.initHTML && this.data.initHTML();
     },
     put: function(obj) {
-      this.value.put(obj);
+      this.data.put(obj);
     }
   },
 
@@ -175,7 +210,8 @@ var IssueDropCell = FOAM({
  * An extension to COUNT() which turns count into a link which performs
  * a query for only the selected data when clicked.
  */
-var ItemCount = Model.create({
+MODEL({
+  name: 'ItemCount',
   extendsModel: 'CountExpr',
 
   properties: [
@@ -185,12 +221,12 @@ var ItemCount = Model.create({
   ],
 
   methods: {
-    put: function(obj) {
-      if ( ! this.obj ) this.obj = obj;
-      this.eid = View.getPrototype().nextID();
-      this.SUPER(obj);
+    init: function() {
+      this.SUPER();
+      if ( ! this.X.QueryParser) debugger;
     },
     toHTML: function() {
+      this.eid = View.getPrototype().nextID();
       return '<span id="' + this.eid + '" class="idcount">' + this.count + '&nbsp;' + (this.count == 1 ? 'item' : 'items') + '</span>';
     },
     initHTML: function() {
@@ -199,9 +235,9 @@ var ItemCount = Model.create({
         var col = altView.views[1].view().col.data;
         var row = altView.views[1].view().row.data;
         var q = AND(
-          QueryParser.parseString(this.browser.location.q),
-          EQ(col, col.f(this.obj)),
-          EQ(row, row.f(this.obj))).partialEval();
+          this.X.QueryParser.parseString(this.browser.location.q),
+          AND(EQ(col, this.x),
+              EQ(row, this.y)).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
         this.browser.location.q = q.toMQL();
       }.bind(this);
@@ -261,24 +297,25 @@ var QIssueTableView = FOAM({
 });
 
 
-function createView(rowSelection, browser) {
+function createView(rowSelectionValue, browser) {
   var X = browser.X;
   var location = browser.location;
 
   return X.AlternateView.create({
-    dao: browser.filteredIssueDAO,
+    dao: browser.filteredIssueDAO$Proxy,
     headerView: browser.countField,
     views: [
       ViewChoice.create({
         label: 'List',
         view: function() {
           var tableView = X.QIssueTableView.create({
-            model:              QIssue,
-            dao:                browser.filteredIssueDAO,
-            browser:            browser,
-            hardSelection:      rowSelection,
-            scrollEnabled:      true,
-            editColumnsEnabled: true
+            model:               X.QIssue,
+            dao:                 browser.filteredIssueDAO$Proxy,
+            browser:             browser,
+            hardSelection$:      rowSelectionValue,
+            columnResizeEnabled: true,
+            scrollEnabled:       true,
+            editColumnsEnabled:  true
           }, browser.X);
 
           tableView.sortOrder$  = location.sort$;
@@ -295,55 +332,28 @@ function createView(rowSelection, browser) {
            var g = Model.create({
               name: 'QIssueGridView',
               extendsModel: 'GridView',
-              properties: [
-                {
-                  name: 'dao',
-                  postSet: function(old, dao) {
-                     if ( this.listener ) {
-                        old && old.unlisten(this.listener);
-                        dao.listen(this.listener);
-                     }
-                     this.grid.dao = dao;
-                     this.updateHTML();
-                  },
-                  // crbug limits grid view to 6000 rows, so do the same
-                  getter: function() {
-                    return ( this.acc.choice && this.acc.choice[1] === 'Tiles' && this.instance_.dao ) ?
-                      this.instance_.dao.limit(2000) :
-                      this.instance_.dao ;
-                  }
-                },
-              ],
               methods: {
-                init: function(args) {
-                  this.SUPER(args);
-                  this.listener = {
-                    put:    this.daoUpdate,
-                    remove: this.daoUpdate
-                  };
+                filteredDAO: function() {
+                  return ( this.acc.choice && this.acc.choice[1] === 'Tiles' ) ?
+                    this.dao.limit(2000) :
+                    this.dao ;
                 }
-              },
-              listeners: [
-                 {
-                    name: 'daoUpdate',
-                    isMerged: 1000,
-                    code: function() { this.updateHTML(); }
-                 }
-              ]}).create({
-                model: QIssue,
+              }
+              }).create({
+                model: X.QIssue,
                 accChoices: [
-                  [ MAP(QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
+                  [ MAP(X.QIssueTileView.create({browser: browser}), COL.create()), "Tiles" ],
                   [ MAP(IdFormatter(browser), COL.create()),                      "IDs" ],
-                  [ ItemCount.create({browser: browser}),                         "Counts" ],
-                  [ PIE(QIssue.STATUS),                                           "Pie(Status)"  ],
-                  [ PIE(QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
-                  // [ PIE(QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
+                  [ X.ItemCount.create({browser: browser}),                         "Counts" ],
+                  [ PIE(X.QIssue.STATUS),                                           "Pie(Status)"  ],
+                  [ PIE(X.QIssue.PRIORITY, priColorMap),                            "Pie(Priority)" ]
+                  // [ PIE(X.QIssue.STATE, {colorMap: {open:'red',closed:'green'}}), "PIE(State)" ]
                 ],
-                grid: /*GridByExpr*/DragAndDropGrid.create({})
-           });
+                grid: /*GridByExpr*/X.DragAndDropGrid.create({dao: browser.filteredIssueDAO$Proxy})
+           }, X);
 
-          g.row.data$ = location.y$;
-          g.col.data$ = location.x$;
+          g.row.data$   = location.y$;
+          g.col.data$   = location.x$;
           g.scrollMode$ = location.scroll$;
 
           // TODO: cleanup this block
@@ -356,14 +366,12 @@ function createView(rowSelection, browser) {
           }
           setAcc(location.cells);
 
-          g.acc.data$.addListener(function(choice) { location.cells = g.acc.choice[1].toLowerCase(); });
+          g.acc.data$.addListener(function(choice) { location.cells = g.acc.label.toLowerCase(); });
           location.cells$.addListener(setAcc);
-
-          g.X = X;
 
           return g;
         }
-      })
+      }, X)
     ]
   });
 }
@@ -426,7 +434,7 @@ MODEL({
     toHTML: function() {
       var link = ActionButton.create({
         action: this.model_.ADD,
-        value: SimpleValue.create(this)
+        data: this
       });
       this.addChild(link);
 
@@ -446,9 +454,6 @@ MODEL({
         autocomplete: this.autocomplete,
         autocompleter: this.autocompleter
       });
-    },
-    setValue: function(value) {
-      this.value = value;
     }
   },
 

@@ -11,7 +11,7 @@ var QIssueCommentAuthorView = FOAM({
     updateSubViews: function() {
       this.SUPER();
       if ( ! this.$ ) return;
-      this.$.firstElementChild.href = this.get().htmlLink;
+      this.$.firstElementChild.href = this.data.htmlLink;
     }
   },
 

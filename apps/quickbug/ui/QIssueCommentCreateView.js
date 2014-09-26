@@ -3,9 +3,9 @@ MODEL({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return QIssueComment; } },
-    { name: 'issue', postSet: function(_, v) { this.data = v.newComment(); } },
+    { name: 'model', factory: function() { return this.X.QIssueComment; } },
     { model_: 'BooleanPropety', name: 'saving', defaultValue: false },
+    { name: 'issue' },
     { name: 'errorView', factory: function() { return TextFieldView.create({ mode: 'read-only' }); } },
     { name: 'dao' }
   ],
@@ -14,7 +14,7 @@ MODEL({
     makeUpdatesView: function() {
       return this.X.PropertyView.create({
         innerView: 'QIssueCommentUpdateDetailView',
-        prop: QIssueComment.UPDATES
+        prop: this.X.QIssueComment.UPDATES
       });
       return view;
     }
@@ -50,7 +50,7 @@ MODEL({
         convertArray('cc');
 
         var comment = this.data.clone();
-        comment.updates = QIssueCommentUpdate.create(diff);
+        comment.updates = this.X.QIssueCommentUpdate.create(diff);
 
         // TODO: UI feedback while saving.
 
@@ -60,7 +60,7 @@ MODEL({
         this.dao.put(comment, {
           put: function(o) {
             self.saving = false;
-            self.data = self.issue.newComment();
+            self.parent.refresh();
           },
           error: function() {
             self.saving = false;

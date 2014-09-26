@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700);
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
 
 body {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
@@ -55,6 +55,7 @@ a {
 .mdui-app-controller .header {
   display: flex;
   background: #3e50b4;
+  flex-shrink: 0;
   padding: 0;
   height: 48px;
 }
@@ -81,6 +82,10 @@ a {
   z-index: 2;
 }
 
+.swipeAltInner {
+  overflow: hidden;
+}
+
 .mdui-app-controller.searchMode .swipeAltHeader {
   display: none;
 }
@@ -104,8 +109,8 @@ input[name=q] {
   border: none;
   color: white;
   font-size: 20px;
-  height: 24px;
-  margin: 20px 20px 20px 6px;
+  height: 30px;
+  margin: 13px 20px 13px 6px;
   padding-left: 10px;
   width: 100%;
 }
@@ -124,4 +129,24 @@ input[name=q]::-webkit-input-placeholder {
 
 .backButton {
   margin-top: 6px;
+}
+
+.header canvas {
+  background: #3e50b4
+}
+
+.body canvas {
+  background: white;
+}
+
+.popupChoiceView {
+  padding: 0;
+}
+
+canvas.createButton {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  z-index: 10;
+  background: rgba(0,0,0,0);
 }

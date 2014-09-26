@@ -97,16 +97,19 @@ MODEL({
     },
     {
       name: 'clientId',
-      required: true
+      required: true,
+      transient: true
     },
     {
       name: 'clientSecret',
-      required: true
+      required: true,
+      transient: true
     },
     {
       model_: 'StringArrayProperty',
       name: 'scopes',
-      required: true
+      required: true,
+      transient: true
     },
     {
       model_: 'URLProperty',
@@ -336,10 +339,59 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'OAuth2ChromeIdentity',
+  extendsModel: 'OAuth2',
+  help: 'OAuth2 strategy that uses the Chrome identity API',
+  methods: {
+    refreshNow_: function(ret) {
+      var self = this;
+      chrome.identity.getAuthToken({
+        interactive: true
+      }, function(token) {
+        self.accessToken = token;
+        ret(self.accessToken);
+      });
+    }
+  }
+});
+
+MODEL({
+  name: 'OAuth2Redirect',
+  extendsModel: 'OAuth2',
+  help: 'OAuth2 strategy that uses the redirect.',
+  methods: {
+    refreshNow_: function(ret) {
+      var location = this.X.window.location;
+      var token = location.hash.match(/token=([^&]*)/);
+      token = token && token[1];
+      if ( token ) {
+        this.accessToken = token;
+        ret(token);
+      } else {
+        var redirect =
+          location.protocol + '//' +
+          location.host +
+          location.pathname +
+          location.search;
+
+        var params = [
+          'response_type=token',
+          'client_id=' + encodeURIComponent(this.clientId),
+          'redirect_uri=' + encodeURIComponent(redirect),
+          'scope=' + encodeURIComponent(this.scopes.join(' '))
+        ];
+        this.X.window.location = this.endpoint + 'auth?' + params.join('&');
+      }
+    }
+  }
+});
 
 // TODO: Register model for model, or fix the facade.
-if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
-  var EasyOAuth2 = OAuth2ChromeApp;
+if ( window.cordova || window.PhoneGap || window.phonegap) {
+  var EasyOAuth2 = OAuth2ChromeIdentity
+} else if ( window.chrome && window.chrome.runtime && window.chrome.runtime.id ) {
+  EasyOAuth2 = OAuth2ChromeApp;
 } else {
   EasyOAuth2 = OAuth2WebClient;
 }

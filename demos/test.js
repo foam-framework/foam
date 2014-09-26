@@ -1,3 +1,39 @@
+var aDAO = [].dao;
+
+aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
+aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
+aDAO.put(Bookmark.create({id: 3, title: 'title3'}));
+aDAO.remove(2);
+
+MODEL({
+  name: 'ArrayDAOExample',
+  properties: [
+    {
+      model_: 'ArrayProperty',
+      name: 'p1',
+      subType: 'Bookmark'
+      // No view: specified, so defaults to DAOController
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'p2',
+      subType: 'Bookmark',
+      view: function() {
+        return ArrayView.create({
+          model: 'Bookmark',
+          daoView: DAOListView.create()
+        });
+      }
+    }
+  ]
+});
+
+
+var ade = ArrayDAOExample.create({p2: [
+  Bookmark.create({id: 1, title: 'title1', img: ''}),
+  Bookmark.create({id: 1, title: 'title2', img: ''})
+]});
+ade.write(document);
 
 
 MODEL({
@@ -80,9 +116,9 @@ document.writeln(dv.toHTML());
 dv.initHTML();
 document.writeln("</font></td></tr></table>");
 
-tv1.selection.addListener(function (src, property, oldValue, newValue) {
+tv1.selection$.addListener(function (src, property, oldValue, newValue) {
   if ( newValue )
-    dv.set(tv1.selection.get()/*.clone()*/);
+    dv.data = tv1.selection.clone();
 });
 
 // Events.follow(tv1.selection, dv);

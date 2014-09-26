@@ -43,12 +43,8 @@ var AttachmentView = FOAM({
 
   properties: [
     {
-      name:  'value',
-      type:  'Value',
-      factory: function() { return SimpleValue.create(); },
-      postSet: function(_, value) {
-        value.addListener(this.redraw.bind(this));
-      }
+      name: 'data',
+      postSet: function() { this.redraw(); }
     }
   ],
 
@@ -57,36 +53,27 @@ var AttachmentView = FOAM({
       model_: 'Method',
       name: 'onRemove',
       code: function(attr) {
-        this.value.set(this.value.get().removeF(EQ(Attachment.ID, attr.id)));
+        this.data = this.data.removeF(EQ(Attachment.ID, attr.id));
       }
     }
   ],
 
   methods: {
-    // TODO: deprecate and remove
-    setValue: function(value) {
-      this.value = value;
-    },
-
     toHTML: function() {
       return '<div id="' + this.id + '" class="attachments"></div>';
     },
 
     initHTML: function() {
-      // this.SUPER();
-
-      this.value = this.value;
-      // this.value.addListener(this.redraw.bind(this));
       this.redraw();
     },
 
     toInnerHTML: function() {
-      this.$.style.display = this.value.get().length ? 'block' : 'none';
+      this.$.style.display = this.data.length ? 'block' : 'none';
 
       var out = "";
 
-      for ( var i = 0 ; i < this.value.get().length ; i++ ) {
-        var att = this.value.get()[i];
+      for ( var i = 0 ; i < this.data.length ; i++ ) {
+        var att = this.data[i];
         var size = '(' + Math.round(att.size/1000).toLocaleString() + 'k)';
         out += '<div class="attachment"><div class="filenameandsize"><span class="filename">' + this.strToHTML(att.filename) + '</span><span class="size">' + size + '</span></div><span class="spacer"/><span class="remove"><button id="' + this.on('click', this.onRemove.bind(this, att)) + '" tabindex="99"><img src="images/x_8px.png"></button></span></div>';
       }
@@ -213,11 +200,11 @@ var QuickCompose = FOAM({
     },
     {
       name: 'minimizeButton',
-      factory: function() { return ActionButton.create({action: this.model_.MINIMIZE, value: SimpleValue.create(this)}); }
+      factory: function() { return ActionButton.create({action: this.model_.MINIMIZE, data: this}); }
     },
     {
       name: 'closeButton',
-      factory: function() { return ActionButton.create({action: this.model_.CLOSE, value: SimpleValue.create(this)}); }
+      factory: function() { return ActionButton.create({action: this.model_.CLOSE, data: this}); }
     },
     {
       name: 'isFull',

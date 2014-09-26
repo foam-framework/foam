@@ -33,7 +33,6 @@ var FObject = {
     if ( typeof args === 'object' ) o.copyFrom(args);
 
     o.init(args);
-
     return o;
   },
 
@@ -41,12 +40,12 @@ var FObject = {
   xbind: function(map) {
     return {
       __proto__: this,
-      create: function(args) {
+      create: function(args, X) {
         args = args || {};
         for ( var key in map ) {
           if ( ! args.hasOwnProperty(key) ) args[key] = map[key];
         }
-        return this.__proto__.create(args);
+        return this.__proto__.create(args, X);
       },
       xbind: function(m2) {
         for ( var key in map ) {
@@ -74,17 +73,7 @@ var FObject = {
   init: function(_) {
     if ( ! this.model_ ) return;
 
-    var ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
-    ps.forEach(function(prop) {
-      var name = prop.name;
-      var dynamicValue = prop.dynamicValue;
-
-      Events.dynamic(
-        dynamicValue.bind(this),
-        function(value) { this[name] = value; }.bind(this));
-    }.bind(this));
-
-    ps = this.selectProperties_('factoryProperties_', 'factory');
+    var ps = this.selectProperties_('factoryProperties_', 'factory');
     for ( var i = 0 ; i < ps.length ; i++ ) {
       var prop = ps[i];
 
@@ -99,6 +88,16 @@ var FObject = {
       if ( ! this.hasOwnProperty(prop.name) ) this[prop.name] = prop.factory.call(this);
     }
 
+    ps = this.selectProperties_('dynamicValueProperties_', 'dynamicValue');
+    ps.forEach(function(prop) {
+      var name = prop.name;
+      var dynamicValue = prop.dynamicValue;
+
+      Events.dynamic(
+        dynamicValue.bind(this),
+        function(value) { this[name] = value; }.bind(this));
+    }.bind(this));
+
     // Add shortcut create() method to Models which allows them to be
     // used as constructors.  Don't do this for the Model though
     // because we need the regular behavior there.
@@ -106,6 +105,9 @@ var FObject = {
       this.create = BootstrapModel.create;
   },
 
+  installInDocument: function(X, document) {
+    if ( this.CSS ) X.addStyle(this.CSS());
+  },
 
   defineFOAMGetter: function(name, getter) {
     var stack = Events.onGet.stack;
@@ -203,13 +205,22 @@ var FObject = {
     if ( prop.getter ) {
       this.defineFOAMGetter(name, prop.getter);
     } else {
-      this.defineFOAMGetter(name, prop.defaultValueFn ?
-        function() {
+      if ( prop.lazyFactory ) {
+        var getter = function() {
+          if ( typeof this.instance_[name] !== 'undefined' ) return this.instance_[name];
+          this.instance_[name] = prop.lazyFactory.call(this, prop);
+          return this.instance_[name];
+        };
+      } else if ( prop.defaultValueFn ) {
+        getter = function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValueFn.call(this, prop);
-        } :
-        function() {
+        };
+      } else {
+        getter = function() {
           return typeof this.instance_[name] !== 'undefined' ? this.instance_[name] : prop.defaultValue;
-        });
+        };
+      }
+      this.defineFOAMGetter(name, getter);
     }
 
     if ( prop.setter ) {
@@ -256,7 +267,7 @@ var FObject = {
       if ( prop.postSet ) {
         setter = (function(setter, postSet) { return function(oldValue, newValue) {
           setter.call(this, oldValue, newValue);
-          postSet.call(this, oldValue, newValue)
+          postSet.call(this, oldValue, newValue, prop)
         }; })(setter, prop.postSet);
       }
 
@@ -319,9 +330,14 @@ var FObject = {
   clone: function() {
     var c = Object.create(this.__proto__);
     c.instance_ = {};
+    c.X = this.X;
     for ( var key in this.instance_ ) {
       var value = this[key];
-      c[key] = Array.isArray(value) ? value.clone() : value;
+      // The commented out (original) implementation was causing
+      // issues with QuickBug because of the 'lables' postSet.
+      // I'm not sure it was done that way originally.
+//      c[key] = Array.isArray(value) ? value.clone() : value;
+      c.instance_[key] = Array.isArray(value) ? value.clone() : value;
     }
     return c;
 //    return ( this.model_ && this.model_.create ) ? this.model_.create(this) : this;
@@ -339,7 +355,7 @@ var FObject = {
         for ( var i = 0 ; i < val.length ; i++ ) {
           var obj = val[i];
 
-          obj = obj.deepClone();
+          val[i] = obj.deepClone();
         }
       }
     }
@@ -396,7 +412,7 @@ var FObject = {
   write: function(document, opt_view) {
     var view = (opt_view || DetailView).create({
       model: this.model_,
-      value: SimpleValue.create(this),
+      data: this,
       showActions: true
     });
 
@@ -422,5 +438,25 @@ var FObject = {
         this.decorate(method.name, method.code, decorator);
     }
     return this;
+  },
+
+  getFeature: function(featureName) {
+    featureName = featureName.toUpperCase();
+    return [
+      this.properties,
+      this.actions,
+      this.methods,
+      this.listeners,
+      this.templates,
+      this.models,
+      this.tests,
+      this.relationships,
+      this.issues
+    ].mapFind(function(list) { return list.mapFind(function(f) {
+      return f.name && f.name.toUpperCase() === featureName && f;
+    })});
   }
 };
+
+
+

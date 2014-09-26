@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-@import "css-tooltips.css";
-
 body {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
 }
-p, h1, form, button{
+p, h1, form, button {
   border: 0;
   margin: 0;
   padding: 0;
@@ -319,6 +317,10 @@ option[selected]{
   padding: 4px 8px 4px 8px;
 }
 .foamTable tbody tr:hover td {
+  color: #009;
+  background: #eee;
+}
+.foamTable tbody tr.rowSoftSelected td {
   color: #009;
   background: #eee;
 }
@@ -692,6 +694,7 @@ div.gridViewControl select {
 .editColumnView {
   font-size: 80%;
   font-weight: normal;
+  z-index: 2;
 }
 .editColumnView td {
   color: #0000cc;
@@ -758,26 +761,6 @@ input.clickToEnableEdit:not(:focus) {
 .foamChoiceListView.horizontal .choice {
   display: inline;
   margin: 12px;
-}
-
-.swipeAltOuter {
-  display: flex;
-  overflow: hidden;
-  min-width: 240px;
-  width: 100%;
-}
-.swipeAltSlider {
-  position: relative;
-  width: 100%;
-  top: 0px;
-  -webkit-transform: translate3d(0,0,0);
-}
-.swipeAltInner {
-  position: absolute;
-  top: 0px;
-  height: 100%;
-  overflow: scroll;
-  width: 100%;
 }
 
 .galleryView {

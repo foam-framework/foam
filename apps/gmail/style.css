@@ -1,9 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
-
-body {
-  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
-}
-
 table {
   border-spacing: 0;
 }
@@ -212,51 +206,6 @@ ul.swipeAltHeader {
    box-shadow: 1px 0px 1px 1px rgba(0,0,0,.2);
 }
 
-.email-citation {
-  display: flex;
-  border-bottom: solid #B5B5B5 1px;
-  padding: 10px 6px;
-}
-
-.email-citation .from {
-  display: block;
-  font-size: 17px;
-  line-height: 24px;
-  white-space: nowrap;
-  overflow-x:hidden;
-  text-overflow: ellipsis;
-  flex-grow: 1;
-}
-
-.email-citation .timestamp {
-  font-size: 12px;
-  color: rgb(17, 85, 204);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.email-citation .subject {
-  display: block;
-  font-size: 13px;
-  line-height: 17px;
-  overflow-x:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.email-citation .snippet {
-  color: rgb(119, 119, 119);
-  display: block;
-  font-size: 13px;
-  height: 20px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.email-citation .monogram-string-view {
-  margin: auto 6px auto 0;
-}
 
 .email-view .monogram-string-view {
   margin: auto 6px auto 0;
@@ -319,13 +268,48 @@ ul.swipeAltHeader {
   display: block;
 }
 
-.menuView {
-  height: 100%;
-  display: block;
-  overflow-y: scroll;
+.email-compose-view .header {
+  background: #3e50b4;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
+  display: flex;
 }
 
-.menuView div:hover {
-  background-color: #3e50b4;
-  color: white;
+.email-compose-view .header .actionButton {
+  margin: 4px;
+}
+
+.email-compose-view .content {
+  margin-top: 62px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.email-compose-view .to {
+}
+
+.email-compose-view .cc {
+}
+
+.email-compose-view .bcc {
+}
+
+.email-compose-view .subject {
+  color: #fff;
+  display: block;
+  font-size: 20px;
+  line-height: 28px;
+  margin: auto;
+  overflow-x: hidden;
+  padding: 0px 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.email-compose-view .richtext {
+  height: 300px;
 }

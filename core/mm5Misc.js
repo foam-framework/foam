@@ -17,6 +17,19 @@
 MODEL({
   name: 'UnitTest',
   plural: 'Unit Tests',
+
+  documentation: function() {/*
+    <p>A basic unit test. $$DOC{ref: ".atest"} is the main method, it executes this test.</p>
+
+    <p>A <tt>UnitTest</tt> may contain child tests, under the $$DOC{ref: ".tests"} $$DOC{ref: "Relationship"}. These tests are run when the parent is, if $$DOC{ref: ".runChildTests"} is truthy (the default).</p>
+
+    <p>After the test has finished running, its $$DOC{ref: ".passed"} and $$DOC{ref: ".failed"} properties count the number of assertions that passed and failed in this <em>subtree</em> (that is, including the children, if run).</p>
+
+    <p>Before the children are run, if $$DOC{ref: ".failed"} is nonzero, $$DOC{ref: ".atest"} will check for <tt>this.X.onTestFailure</tt>. If this function is defined, it will be called with the <tt>UnitTest</tt> object as the first argument. This makes it easy for test runners to hook in their error reporting.</p>
+
+    <p>Test failure is abstracted by the $$DOC{ref: ".hasFailed"} method; this method should always be used, since other subclasses have different definitions of failure.</p>
+  */},
+
   tableProperties: [ 'description', 'passed', 'failed' ],
   properties:
   [
@@ -26,7 +39,7 @@ MODEL({
       type: 'String',
       required: true,
       displayWidth: 50,
-      help: "The unit test's name."
+      documentation: 'The unit test\'s name.'
     },
     {
       model_: 'Property',
@@ -36,34 +49,38 @@ MODEL({
       displayHeight: 5,
       defaultValue: '',
       // defaultValueFn: function() { return "Test " + this.name; },
-      help: 'A multi-line description of the unit test.'
+      documentation: 'A multi-line description of the unit test.'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'disabled',
+      documentation: 'When true, this test is ignored. Test runners should exclude disabled tests from their DAOs.',
+      defaultValue: false
     },
     {
       model_: 'IntProperty',
       name: 'passed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
       view: 'IntFieldView',
-      help: 'Number of sub-tests to pass.'
+      documentation: 'Number of assertions which have passed.'
     },
     {
       model_: 'IntProperty',
       name: 'failed',
       required: true,
+      transient: true,
       displayWidth: 8,
       displayHeight: 1,
-      help: 'Number of sub-tests to fail.'
-    },
-    {
-      name:  'scope',
-      hidden: true,
-      factory: function() { return {}; }
+      documentation: 'Number of assertions which have failed.'
     },
     {
       model_: 'BooleanProperty',
       name: 'async',
-      defaultValue: false
+      defaultValue: false,
+      documentation: 'Set to make this test asynchronoous. Async tests receive a <tt>ret</tt> parameter as their first argument, and $$DOC{ref: ".atest"} will not return until <tt>ret</tt> is called by the test code.'
     },
     {
       model_: 'FunctionProperty',
@@ -71,6 +88,7 @@ MODEL({
       label: 'Test Code',
       displayWidth: 80,
       displayHeight: 30,
+      documentation: 'The code for the test. Should not include the <tt>function() { ... }</tt>, just the body. Should expect a <tt>ret</tt> parameter when the test is async, see $$DOC{ref: ".async", text: "above"}.',
       fromElement: function(e) {
         var txt = e.innerHTML;
 
@@ -101,46 +119,62 @@ MODEL({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'hasRun',
+      transient: true,
+      hidden: true,
+      defaultValue: false,
+      documentation: 'Set after the test has finished executing. Prevents the test from running twice.'
+    },
+    {
       model_: 'Property',
       name: 'results',
       type: 'String',
       mode: 'read-only',
+      view: 'UnitTestResultView',
+      transient: true,
       required: true,
       displayWidth: 80,
-      displayHeight: 20
+      displayHeight: 20,
+      documentation: 'Log output for this test. Written to by $$DOC{ref: ".log"}, as well as $$DOC{ref: ".assert"} and its friends $$DOC{ref: ".fail"} and $$DOC{ref: ".ok"}.'
     },
     {
       model_: 'StringArrayProperty',
       name:  'tags',
-      label: 'Tags'
+      label: 'Tags',
+      documentation: 'A list of tags for this test. Not currently used by our test runners. Could be used in the future to mark what environment (node, browser, OS) this test can run in.'
     },
     {
+      name: 'parentTest',
+      documentation: 'The parent property used to define the $$DOC{ref: ".tests"} relationship.'
+    },
+    {
+      name: 'runChildTests',
+      documentation: 'Whether the nested child tests should be run when this test is. Defaults to <tt>true</tt>, but some test runners set it to <tt>false</tt> so they can integrate with displaying the results.',
+      transient: true,
+      defaultValue: true
+    }
+  ],
+
+  relationships: [
+    {
       name: 'tests',
-      label: 'Unit Tests',
-      type: 'Array[Unit Test]',
-      subType: 'UnitTest',
-      view: 'ArrayView',
-      fromElement: function(e) { return DOM.initElementChildren(e); },
-      preSet: function(_, tests) {
-        if ( Array.isArray(tests) ) return tests;
+      documentation: function() {/*
+        <p>Sub-tests of this test.</p>
 
-        var a = [];
-        for ( key in tests ) {
-          a.push(UnitTest.create({name: key, code: tests[key]}));
-        }
+        <p>Run with the parent test if $$DOC{ref: ".runChildTests"} are set.</p>
 
-        return a;
-      },
-      factory: function() { return []; },
-      help: 'Sub-tests of this test.'
+        <p>If this relationship is in use, <tt>this.X.UnitTestDAO</tt> must be defined. Test runners will generally want to select all (enabled) tests for <tt>this.X.UnitTestDAO</tt>, but filter only the parentless, top-level tests to execute, letting this relationship handle the children.</p>
+      */},
+      relatedModel: 'UnitTest',
+      relatedProperty: 'parentTest'
     }
   ],
 
   actions: [
     {
       name:  'test',
-      help:  'Run the unit tests.',
-
+      documentation:  'Synchronous helper to run the tests. Simply calls $$DOC{ref: ".atest"}.',
       action: function(obj) { asynchronized(this.atest(), this.LOCK)(function() {}); }
     }
   ],
@@ -153,11 +187,20 @@ MODEL({
     atest: function() {
       var self = this;
 
-      this.scope.log    = this.log.bind(this);
-      this.scope.jlog   = this.jlog.bind(this);
-      this.scope.assert = this.assert.bind(this);
-      this.scope.fail   = this.fail.bind(this);
-      this.scope.ok     = this.ok.bind(this);
+      if ( this.hasRun ) return anop;
+      this.hasRun = true;
+
+      // Copy the test methods into the context.=
+      // The context becomes "this" inside the tests.
+      // The UnitTest object itself becomes this.test inside tests.
+      this.X = this.X.sub({}, this.name);
+      this.X.log    = this.log.bind(this);
+      this.X.jlog   = this.jlog.bind(this);
+      this.X.assert = this.assert.bind(this);
+      this.X.fail   = this.fail.bind(this);
+      this.X.ok     = this.ok.bind(this);
+      this.X.append = this.append.bind(this);
+      this.X.test   = this;
 
       this.results = '';
 
@@ -165,34 +208,50 @@ MODEL({
       this.failed = 0;
 
       var code;
-      with ( this.scope ) { code = eval('(' + this.code.toString() + ')'); }
+      code = eval('(' + this.code.toString() + ')');
 
       var afuncs = [];
       var oldLog;
 
       afuncs.push(function(ret) {
         oldLog = console.log;
-        console.log = self.scope.log;
+        console.log = self.log.bind(self.X);
         ret();
       });
 
-      afuncs.push(this.async ? code.bind(this) : code.abind(this));
+      afuncs.push(this.async ? code.bind(this.X) : code.abind(this.X));
 
       afuncs.push(function(ret) {
         console.log = oldLog;
         ret();
       });
 
-      this.tests.forEach(function(test) {
+      if ( this.runChildTests ) {
+        // TODO: This is horrendous, but I can't see a better way.
+        // It would nest quite neatly if there were afunc DAO ops.
+        var future = this.tests.select([].sink);
         afuncs.push(function(ret) {
-          test.scope.__proto__ = self.scope;
-          test.atest()(ret);
+          future(function(innerTests) {
+            var afuncsInner = [];
+            innerTests.forEach(function(test) {
+              afuncsInner.push(function(ret) {
+                test.X = self.X.sub();
+                test.atest()(ret);
+              });
+            });
+            if ( afuncsInner.length ) {
+              aseq.apply(this, afuncsInner)(ret);
+            } else {
+              ret();
+            }
+          });
         });
-        afuncs.push(function(ret) {
-          self.passed += test.passed;
-          self.failed += test.failed;
-          ret();
-        });
+      }
+
+      afuncs.push(function(ret) {
+        self.hasRun = true;
+        self.X.onTestFailure && self.hasFailed() && self.X.onTestFailure(self);
+        ret();
       });
 
       return aseq.apply(this, afuncs);
@@ -223,6 +282,65 @@ MODEL({
     },
     ok: function(comment) {
       this.assert(true, comment);
+    },
+    hasFailed: function() {
+      return this.failed > 0;
+    }
+  }
+});
+
+MODEL({
+  name: 'RegressionTest',
+  label: 'Regression Test',
+  documentation: 'A $$DOC{ref: "UnitTest"} with a "gold master", which is compared with the output of the live test.',
+
+  extendsModel: 'UnitTest',
+
+  properties: [
+    {
+      name: 'master',
+      documentation: 'The "gold" version of the output. Compared with the $$DOC{ref: ".results"} using <tt>.equals()</tt>, and the test passes if they match.'
+    },
+    {
+      name: 'results',
+      view: 'RegressionTestResultView'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'regression',
+      hidden: true,
+      transient: true,
+      defaultValue: false,
+      documentation: 'Set after $$DOC{ref: ".atest"}: <tt>true</tt> if $$DOC{ref: ".master"} and $$DOC{ref: ".results"} match, <tt>false</tt> if they don\'t.'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'update',
+      isEnabled: function() { return ! this.results.equals(this.master); },
+      documentation: 'Bound to a button in the <tt>tests/FOAMTests.html</tt> test page, called when the user wants to promote the new live $$DOC{ref: ".results"} to $$DOC{ref: ".master"}.',
+      action: function() {
+        this.master = this.results;
+      }
+    }
+  ],
+
+  methods: {
+    atest: function() {
+      // Run SUPER's atest, which returns the unexecuted afunc.
+      var sup = this.SUPER();
+      // Now we append a last piece that updates regression based on the results.
+      return aseq(
+        sup,
+        function(ret) {
+          this.regression = this.hasRun && ! this.results.equals(this.master);
+          ret();
+        }.bind(this)
+      );
+    },
+    hasFailed: function() {
+      return this.regression || this.hasRun && ! this.results.equals(this.master);
     }
   }
 });
@@ -239,7 +357,7 @@ MODEL({
       type:  'String',
       displayWidth: 30,
       displayHeight: 1,
-      defaultValueFn: function() { return GLOBAL[this.relatedModel].plural; },
+      defaultValueFn: function() { return GLOBAL[this.relatedModel] ? GLOBAL[this.relatedModel].plural : ''; },
       help: 'The coding identifier for the action.'
     },
     {
@@ -258,6 +376,10 @@ MODEL({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the relationship.'
+    },
+    {
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       name:  'relatedModel',
@@ -309,15 +431,10 @@ MODEL({
   properties:
   [
     {
-      model_: 'Property',
+      model_: 'IntProperty',
       name: 'id',
       label: 'Issue ID',
-      type: 'String',
-      required: true,
       displayWidth: 12,
-      displayHeight: 1,
-      defaultValue: 0,
-      view: 'IntFieldView',
       help: 'Issue\'s unique sequence number.'
     },
     {

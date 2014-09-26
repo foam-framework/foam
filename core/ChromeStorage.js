@@ -17,15 +17,23 @@
 
 MODEL({
   name: 'ChromeStorageDAO',
-  extendsModel: 'AbstractDAO',
   label: 'Chrome Storage DAO',
+
+  extendsModel: 'AbstractDAO',
 
   properties: [
     {
       name:  'model',
-      label: 'Model',
       type:  'Model',
       required: true
+    },
+    {
+      name:  'name',
+      label: 'Store Name',
+      type:  'String',
+      defaultValueFn: function() {
+        return this.model.plural;
+      }
     },
     {
       name:  'store',
@@ -38,8 +46,24 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      this.serialize = this.SimpleSerialize;
+      this.serialize   = this.SimpleSerialize;
       this.deserialize = this.SimpleDeserialize;
+
+      var self = this;
+
+//      this.daoListeners_ = []; // This is required to work around some bug.
+      chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for ( key in changes ) {
+          if ( chrome.storage[namespace] === self.store && self.isID_(key) ) {
+            if ( changes[key].newValue ) {
+              self.notify_('put', [self.deserialize(changes[key].newValue)]);
+            } else {
+              self.notify_('remove', [self.deserialize(changes[key].oldValue)]);
+            }
+          }
+        }
+      });
+
     },
 
     FOAMDeserialize: function(json) {
@@ -55,9 +79,15 @@ MODEL({
     },
 
     SimpleSerialize: function(obj) {
-      return obj.instance_;
+      var s = {};
+      for ( var key in obj.instance_ ) {
+        var prop = obj.model_.getProperty(key);
+        if ( ! prop.transient ) s[key] = obj.instance_[key];
+      }
+      return s;
     },
 
+    /*
     put: function(value, sink) {
       var self = this;
 
@@ -88,35 +118,62 @@ MODEL({
         });
       }
     },
+    */
 
-    /* Simple put without batching.
+    toID_: function(obj) {
+      return this.name + '-' + obj.id;
+    },
+
+    isID_: function(id) {
+      return id.startsWith(this.prefix_ || ( this.prefix_ = this.name + '-' ) );
+    },
+
+    // Simple put without batching.
     put: function(value, sink) {
-      var self = this;
-      this.store.set({id: value}, function() {
+      var map = {};
+      map[this.toID_(value)] = this.serialize(value);
+      this.store.set(map, function() {
         // TODO: check runtime.lastError and call sink.error instead of set
         sink && sink.put && sink.put(value);
       });
     },
-    */
 
-    find: function(key, sink) {
-      this.store.get({id: key}, function(obj) {
-        sink.put(obj);
+    find: function(key, sink) { this.select()(function(a) { a.find(key, sink); }); },
+
+    remove: function(obj, sink) {
+      this.store.remove(this.toID_(obj), function() {
+        sink && sink.remove && sink.remove(obj);
       });
     },
 
-    remove: function(obj, sink) {
-      this.store.remove(obj, sink);
-    },
-
     select: function(sink, options) {
+      var self = this;
+      sink = sink || [];
       var future = afuture();
-      this.store.get(null, function() {
-        console.log('select ', arguments);
+      this.store.get(null, function(map) {
+        for ( key in map ) {
+          if ( self.isID_(key) ) {
+            sink && sink.put && sink.put(self.deserialize(map[key]));
+          }
+        }
+        future.set(sink);
       });
       return future.get;
     }
   }
 });
 
-IDBDAO = ChromeStorageDAO;
+
+MODEL({
+  name: 'ChromeSyncStorageDAO',
+  label: 'Chrome Sync Storage DAO',
+
+  extendsModel: 'ChromeStorageDAO',
+
+  properties: [
+    {
+      name:  'store',
+      defaultValueFn: function() { return chrome.storage.sync; }
+    }
+  ]
+});
