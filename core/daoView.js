@@ -36,7 +36,7 @@ MODEL({
       postSet: function(oldDAO, dao) {
         if ( this.data !== dao ) {
           this.data = dao;
-          this.X.DAO = dao;
+          this.X.daoViewCurrentDAO = dao;
         }
       }
     }
@@ -45,7 +45,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({ DAO: this.dao });
+      this.X = this.X.sub({ daoViewCurrentDAO: this.dao });
     },
     onDAOUpdate: function() {}
   }
@@ -442,7 +442,8 @@ MODEL({
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
           o.addListener(function() {
-            this.dao.put(o);
+            // TODO(kgr): remove the deepClone when the DAO does this itself.
+            this.dao.put(o.deepClone());
           }.bind(this, o));
         }
         this.addChild(view);
@@ -968,7 +969,8 @@ MODEL({
               if ( self.mode === 'read-write' ) {
                 o = a[i].clone();
                 o.addListener(function(x) {
-                  this.dao.put(x);
+                  // TODO(kgr): remove the deepClone when the DAO does this itself.
+                  this.dao.put(x.deepClone());
                 }.bind(self, o));
               }
               self.cache[toLoadTop + i] = o;
@@ -985,8 +987,16 @@ MODEL({
     },
     {
       name: 'verticalScrollMove',
-      code: function(dy, ty, y) {
+      code: function(dy, ty, y, stopMomentum) {
         this.scrollTop -= dy;
+
+        // Cancel the momentum if we've reached the edge of the viewport.
+        if ( stopMomentum && (
+            this.scrollTop === 0 ||
+            this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
+          stopMomentum();
+        }
+
         this.update();
       }
     }

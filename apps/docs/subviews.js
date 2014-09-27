@@ -55,8 +55,8 @@ MODEL({
     createReferenceView: function(opt_args) { /* 
       <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
 			*/
-      var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
+      var X = ( opt_args && opt_args.X ) || this.X; 
+      var v = X.DocRefView.create(opt_args);
       this.addChild(v);
       return v;
     },
@@ -64,10 +64,14 @@ MODEL({
     createExplicitView: function(opt_args) { /* <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'} in opt_args.</p>	*/
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
-      if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
-        v.data = this.data;
+      if (!opt_args.data) { // explicit data is honored
+        if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
+          v.data = this.data;
+        } else {
+          v.data = this; // TODO: correct assumption? do we want data set to this?
+        }
       } else {
-        v.data = this; // TODO: correct assumption? do we want data set to this?
+        v.data = opt_args.data;
       }
       this.addChild(v);
       return v;
@@ -109,7 +113,9 @@ MODEL({
 
     function toInnerHTML()    {/*
 <%    this.destroy(); %>
-<%    if (this.data) {  %>
+<%    if (this.data && DocumentationBook.isSubModel(this.data)) {  %>
+        $$THISDATA{ model_: 'DocBookView', data: this.data.documentation }
+<%    } else if (this.data) {  %>
         <div class="introduction">
           <h1><%=this.data.name%></h1>
 <%        if (this.data.extendsModel) { %>
@@ -145,6 +151,41 @@ MODEL({
   ]
 
 });
+
+MODEL({
+  name: 'DocBookView',
+  extendsModel: 'DocView',
+  help: 'Displays the documentation of the given book.',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The documentation to display.',
+      postSet: function() {
+        this.updateHTML();
+      }
+    },
+  ],
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        <div class="introduction">
+          <h2><%=this.data.label%></h2>
+          $$data{ model_: 'DocModelBodyView', data: "", docSource: this.data }
+        </div>
+        <div class="chapters">
+          $$data{ model_: 'DocChaptersView', data: this.data }
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+
 
 
 MODEL({
@@ -282,8 +323,12 @@ MODEL({
     {
       name: 'className',
       defaultValue: 'docLink'
+    },
+    {
+      name: 'usePlural',
+      defaultValue: false,
+      help: 'If true, use the Model.plural instead of Model.name in the link text.'
     }
-
   ],
 
   templates: [
@@ -298,9 +343,11 @@ MODEL({
         }
       } else {
         var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
-
+if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural, mostSpecificObject);
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
+        } else if (this.usePlural && mostSpecificObject.plural) {
+          %><%=mostSpecificObject.plural%><%
         } else if (mostSpecificObject.name) {
           %><%=mostSpecificObject.name%><%
         } else if (mostSpecificObject.id) {
@@ -433,7 +480,12 @@ MODEL({
       if (args.length > 1 && args[1].length > 0)
       {
         // feature specified "Model.feature" or ".feature"
-        foundObject = model.getFeature(args[1]);
+        if (args[1] === "documentation") {
+          // special case for links into documentation books
+          foundObject = model.documentation;
+        } else {
+          foundObject = model.getFeature(args[1]);
+        }
         if (!foundObject) {
           return;
         } else {
@@ -446,35 +498,40 @@ MODEL({
       {
         remainingArgs = args.slice(2);
 
-        remainingArgs.some(function (arg) {
-          var newObject;
+        if (!remainingArgs.every(function (arg) {
+            var newObject;
 
-          // null arg is an error at this point
-          if (arg.length <= 0) return false;
+            // null arg is an error at this point
+            if (arg.length <= 0) return false;
 
-          // check if arg is the name of a sub-object of foundObject
-          var argCaller = Function('return this.'+arg);
-          if (argCaller.call(foundObject)) {
-            newObject = argCaller.call(foundObject);
-          } else if (foundObject.mapFind) {
+            // check if arg is the name of a sub-object of foundObject
+            var argCaller = Function('return this.'+arg);
+            if (argCaller.call(foundObject)) {
+              newObject = argCaller.call(foundObject);
+
             // otherwise if foundObject is a list, check names of each thing inside
-            foundObject.mapFind(function(f) {
-              if (f.name && f.name === arg && f) {
-                newObject = f;
-              }
-            })
-          }
-          foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
-          if (!foundObject) {
-            return false;
-          } else {
-            newResolvedModelChain.push(foundObject);
-          }
-        });
+            } else if (foundObject.mapFind) {
+              foundObject.mapFind(function(f) {
+                if (f && f.name && f.name === arg) {
+                  newObject = f;
+                }
+              })
+            }
+            foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
+            if (!foundObject) {
+              return false;
+            } else {
+              newResolvedModelChain.push(foundObject);
+              return true;
+            }
+          })) {
+          return; // the loop failed to resolve something
+        }
       }
+
 //      console.log("resolving "+ reference);
 //      newResolvedModelChain.forEach(function(m) {
-//        console.log("  "+m.name);
+//        console.log("  ",m.name,m);
 //      });
 
       this.resolvedModelChain = newResolvedModelChain;

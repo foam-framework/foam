@@ -4623,7 +4623,7 @@ MODEL({
       isEnabled: function() { return this.test.regression; },
       action: function() {
         this.test.master = this.test.results;
-        this.X.DAO.put(this.test, {
+        this.X.daoViewCurrentDAO.put(this.test, {
           put: function() {
             this.test.regression = false;
           }.bind(this),

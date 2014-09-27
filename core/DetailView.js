@@ -198,11 +198,11 @@ MODEL({
       action: function() {
         var self = this;
         var obj  = this.data;
+        this.stack.back();
+
         this.dao.put(obj, {
           put: function() {
             console.log("Saving: ", obj.toJSON());
-
-            self.stack.back();
           },
           error: function() {
             console.error("Error saving", arguments);

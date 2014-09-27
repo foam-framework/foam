@@ -115,7 +115,7 @@ MODEL({
           migrationRules: [
             MigrationRule.create({
               modelName: 'QIssue',
-              version: 119,
+              version: 120,
               migration: function(ret, dao) {
                 console.log("Migrating to ", this.version);
                 dao.removeAll()(ret);
@@ -298,9 +298,9 @@ MODEL({
       var labelToProperty = {
         App:          'app',
         Type:         'type',
-        Milestone:    'milestone',
-        Mstone:       'milestone',
-        M:            'milestone',
+        Milestone:    'm',
+        Mstone:       'm',
+        M:            'm',
         Cr:           'cr',
         Iteration:    'iteration',
         ReleaseBlock: 'releaseBlock',
@@ -340,7 +340,7 @@ MODEL({
           'id',
           //      'app',
           'priority',
-          'milestone',
+          'm',
           'iteration',
           'releaseBlock',
           'cr',
@@ -489,9 +489,9 @@ MODEL({
           },
           {
             model_: 'LabelArrayProperty',
-            name: 'milestone',
-            shortName: 'm',
-            aliases: ['mstone'],
+            name: 'm',
+            label: 'Milestone',
+            aliases: ['mstone', 'milestone'],
             tableLabel: 'M',
             tableWidth: '70px'
           },
@@ -692,7 +692,7 @@ MODEL({
             convertArray('blocking');
             convertArray('cc');
             convertArray('labels');
-            convertArray('milestone');
+            convertArray('m');
             convertArray('iteration');
 
             var comment = this.X.QIssueComment.create({

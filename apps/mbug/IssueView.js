@@ -61,8 +61,15 @@ MODEL({
   listeners: [
     {
       name: 'verticalScrollMove',
-      code: function(dy, ty, y) {
+      code: function(dy, ty, y, stopMomentum) {
         this.scrollTop -= dy;
+
+        // Cancel the momentum if we've reached the edge of the viewport.
+        if ( stopMomentum && (
+            this.scrollTop === 0 ||
+            this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
+          stopMomentum();
+        }
       }
     },
     {

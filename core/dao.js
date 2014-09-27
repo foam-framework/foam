@@ -264,9 +264,9 @@ var LoggingDAO = {
         logger('select', options || "");
         return delegate.select(sink, options);
       },
-      removeAll: function(query, sink) {
-        logger('removeAll', query);
-        return delegate.remove(query, sink);
+      removeAll: function(sink, options) {
+        logger('removeAll', options);
+        return delegate.removeAll(sink, options);
       }
     };
   }
@@ -576,7 +576,13 @@ MODEL({
       model_: 'ModelProperty',
       name: 'model',
       type: 'Model',
-      defaultValueFn: function() { return this.delegate.model; }
+      defaultValueFn: function() { return this.delegate.model; },
+      documentation: function() { /*
+          <p>Determines the expected $$DOC{ref:'Model'} type for the items
+            in this $$DOC{ref:'DAO'}.</p>
+          <p>The properties of the $$DOC{ref:'Model'} definition specified
+            here may be used when filtering and indexing.</p>
+      */}
     }
   ],
 
@@ -658,7 +664,8 @@ MODEL({
       }
     },
     {
-      name: 'future'
+      name: 'future',
+      required: true
     },
     {
       name: 'model',
@@ -3158,51 +3165,71 @@ MODEL({
   properties: [
     {
       name: 'name',
-      defaultValueFn: function() { return this.model.plural; }
+      defaultValueFn: function() { return this.model.plural; },
+      documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'seqNo',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} use a sequence number to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
     },
     {
       model_: 'BooleanProperty',
       name: 'guid',
       label: 'GUID',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Have $$DOC{ref:'.'} generate guids to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
     },
     {
       name: 'seqProperty',
-      type: 'Property'
+      type: 'Property',
+      documentation: "The property on your items to use to store the sequence number or guid. This is required for $$DOC{ref:'.seqNo'} or $$DOC{ref:'.guid'} mode."
     },
     {
       model_: 'BooleanProperty',
       name: 'cache',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'logging',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable logging on the $$DOC{ref:'DAO'}."
     },
     {
       model_: 'BooleanProperty',
       name: 'timing',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
     },
     {
       name: 'daoType',
-      defaultValue: 'IDBDAO'
+      defaultValue: 'IDBDAO',
+      documentation: function() { /*
+          <p>Selects the basic functionality this $$DOC{ref:'EasyDAO'} should provide.
+          You can specify an instance of a DAO model definition such as
+          $$DOC{ref:'MDAO'}, or a constant indicating your requirements.</p>
+          <p>Choices are:</p>
+          <ul>
+            <li>$$DOC{ref:'.ALIASES',text:'IDB'}: Use IndexDB for storage.</li>
+            <li>$$DOC{ref:'.ALIASES',text:'LOCAL'}: Use local storage (for Chrome Apps, this will use local, non-synced storage).</li>
+            <li>$$DOC{ref:'.ALIASES',text:'SYNC'}: Use synchronized storage (for Chrome Apps, this will use Chrome Sync storage).</li>
+          </ul>
+       */}
     },
     {
       model_: 'BooleanProperty',
       name: 'autoIndex',
-      defaultValue: false
+      defaultValue: false,
+      documentation: "Automatically generate an index."
     },
     {
       model_: 'ArrayProperty',
       name: 'migrationRules',
-      subType: 'MigrationRule'
+      subType: 'MigrationRule',
+      documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
     }
   ],
 
@@ -3215,6 +3242,14 @@ MODEL({
     },
 
     init: function(args) {
+      /*
+        <p>On initialization, the $$DOC{ref:'.'} creates an appropriate chain of
+        internal $$DOC{ref:'DAO'} instances based on the $$DOC{ref:'.'}
+        property settings.</p>
+        <p>This process is transparent to the developer, and you can use your
+        $$DOC{ref:'.'} like any other $$DOC{ref:'DAO'}.</p>
+      */
+
       this.SUPER(args);
 
       if ( chrome.storage ) {
@@ -3268,11 +3303,17 @@ MODEL({
     },
 
     addIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addIndex', text:'MDAO.addIndex()'}.</p> */
       this.mdao && this.mdao.addIndex.apply(this.mdao, arguments);
       return this;
     },
 
     addRawIndex: function() {
+      /* <p>Only relevant if $$DOC{ref:'.cache'} is true or if $$DOC{ref:'.daoType'}
+         was set to $$DOC{ref:'MDAO'}, but harmless otherwise.</p>
+         <p>See $$DOC{ref:'MDAO.addRawIndex', text:'MDAO.addRawIndex()'}. */
       this.mdao && this.mdao.addRawIndex.apply(this.mdao, arguments);
       return this;
     }
