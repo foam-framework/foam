@@ -2647,7 +2647,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'maxSize',
-      defaultValue: 30
+      defaultValue: 100
     },
     {
       name: 'cacheFactory',
