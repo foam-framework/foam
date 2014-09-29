@@ -1506,6 +1506,8 @@ MODEL({
       var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
+      this.on('click', this.onClick, this.id);
+
       str += this.readWriteTagName === 'input' ?
         ' size="' + this.displayWidth + '"' :
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
@@ -1622,7 +1624,13 @@ MODEL({
         if ( this.domValue.get() !== this.data )
           this.domValue.set(this.data);
       }
-    }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        this.$ && this.$.focus();
+      }
+    },
   ]
 });
 
