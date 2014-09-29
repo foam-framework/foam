@@ -461,6 +461,13 @@ MODEL({
           gesture: 'tap'
         });
       }
+    },
+    {
+      name: 'className',
+      help: 'CSS class name(s), space separated.',
+      defaultValueFn: function() {
+        return 'actionButtonCView actionButtonCView-' + this.action.name;
+      }
     }
   ],
 
