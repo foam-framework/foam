@@ -66,6 +66,7 @@ cat \
   ../../lib/bookmarks/bookmark.js \
   ../../lib/mdui/AppController.js \
   ../../lib/mdui/view.js \
+  ../../lib/mdui/AutocompleteListView.js \
   ../../core/CORE.js \
   > "$BUILD_DIR/foam.js"
 
