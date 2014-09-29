@@ -354,6 +354,27 @@ MODEL({
     'description'
   ],
 
+  documentation: function() {/*
+    <p>A $$DOC{ref:'Method'} represents a callable piece of code with
+    $$DOC{ref:'args',text:'arguments'} and an optional return value.
+    </p>
+    <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
+    in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
+    features of your $$DOC{ref:'Model'}.</p>
+    <ul>
+      <li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
+      <li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment
+          will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from
+          src to dst.</li>
+      <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
+              $$DOC{ref:'Model'}</li>
+      <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
+                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
+                <code>this.SUPER()</code> is extremely important in your <code>init()</code>
+                $$DOC{ref:'Method'}, if you provide one.</li>
+    </ul>
+  */},
+
   properties: [
     {
       name:  'name',

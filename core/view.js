@@ -242,6 +242,23 @@ MODEL({
   name: 'View',
   label: 'View',
 
+  documentation: function() {/*
+    <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
+       $$DOC{ref:'Model'}, a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
+       <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
+       $$DOC{ref:'Property',usePlural:true} of the data.
+    </p>
+    <p>$$DOC{ref:'View'} instances are arranged in a tree with parent-child links.
+       This represents containment in most cases, where a sub-view appears inside
+       its parent.
+    </p>
+    <p>HTML $$DOC{ref:'View',usePlural:true} should provide a $$DOC{ref:'.toInnerHTML'}
+       $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. If direct control is required,
+       at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
+    </p>
+
+  */},
+
   properties: [
     {
       name:  'id',
@@ -250,7 +267,7 @@ MODEL({
       factory: function() { return this.nextID(); },
       documentation: function() {/*
         The DOM element id for the outermost tag of
-        this $$DOC{ref:'View',usePlural:true}.
+        this $$DOC{ref:'View'}.
       */}
     },
     {

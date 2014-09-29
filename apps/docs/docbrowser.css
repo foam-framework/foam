@@ -3,6 +3,15 @@ body {
   margin: 0px;
 }
 
+p {
+  padding-bottom: 0.5em;
+}
+li {
+  padding-bottom: 0.5em;
+}
+
+
+
 div.contentPanes {
   height: 90%;
   width: 100%;
@@ -35,5 +44,10 @@ div.memberList {
 
 span.docLink {
   color: blue;
+  text-decoration: underline;
+}
+
+span.docLinkNoDocumentation {
+  color: red;
   text-decoration: underline;
 }

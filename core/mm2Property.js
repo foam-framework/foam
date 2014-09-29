@@ -31,6 +31,15 @@ var Property = {
     'defaultValue'
   ],
 
+  documentation: function() { /*
+    <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
+      and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
+      to other $$DOC{ref:'Property',usePlural:true} for easy reactive programming.</p>
+    <p>Note that, like $$DOC{ref:'Model'} being a $$DOC{ref:'Model'} itself, the
+      $$DOC{ref:'Model.properties'} feature of all models is itself a $$DOC{ref:'Property'}.
+    <p>
+  */},
+
   properties: [
     {
       name: 'name',
@@ -327,7 +336,7 @@ var Property = {
       help: "A dynamic function which computes the property's value.",
 			documentation: function() { /* 
 				Allows the value of this $$DOC{ref:'Property'} to be calculated dynamically. 
-				Other $$DOC{ref:'Properties'} and bindable objects used inside the function will be 
+        Other $$DOC{ref:'Property',usePlural:true} and bindable objects used inside the function will be
 				automatically bound and the function re-evaluated when a dependency changes.
 			*/}
 			

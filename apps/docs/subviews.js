@@ -55,7 +55,8 @@ MODEL({
 
     
     createReferenceView: function(opt_args) { /* 
-      <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
+      <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
+          tags in documentation templates.</p>
 			*/
       var X = ( opt_args && opt_args.X ) || this.X; 
       var v = X.DocRefView.create(opt_args);
@@ -63,7 +64,10 @@ MODEL({
       return v;
     },
 
-    createExplicitView: function(opt_args) { /* <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'} in opt_args.</p>	*/
+    createExplicitView: function(opt_args) { /*
+      <p>Creates subviews from the $$DOC{ref:'.',text:'$$THISDATA'} tag, using
+        an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
+      */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       if (!opt_args.data) { // explicit data is honored
@@ -80,6 +84,10 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
+      /*
+        Overridden to add support for the $$DOC{ref:'.',text:'$$DOC'} and
+        $$DOC{ref:'.',text:'$$THISDATA'} tags.
+      */
       // name has been constantized ('PROP_NAME'), but we're
       // only looking for certain doc tags anyway.
       if (name === 'DOC') {
@@ -388,6 +396,10 @@ MODEL({
     init: function() {
       this.SUPER();
       this.tagName = 'span';
+
+      this.setClass('docLinkNoDocumentation', function() {
+        return !(this.data && this.data.valid && this.data.resolvedModelChain[this.data.resolvedModelChain.length-1].documentation);
+      }.bind(this), this.id);
     }
   },
 
@@ -414,10 +426,23 @@ MODEL({
   label: 'Documentation Reference',
   help: 'A reference to a documented Model or feature of a Model',
 
+  documentation: function() { /*
+    <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    <p>Every reference must have documentViewParentModel set on the context.
+      This indicates the starting point of the reference for relative name
+      resolution.</p>
+    */},
+
   properties: [
     {
       name: 'resolvedModelChain',
       defaultValue: [],
+      documentation: function() { /*
+        If this $$DOC{ref:'DocRef'} is valid, actual instances corresponding each
+        part of the reference are in this list. The last item in the list
+        is the target of the reference.
+      */}
     },
     {
       name: 'resolvedName',
@@ -430,24 +455,39 @@ MODEL({
             fullname.concat(m.id);
         });
         return fullname;
-      }
+      },
+      documentation: function() { /*
+        The rebuilt version of $$DOC{ref:'.ref'}, by asking each part of the
+        $$DOC{ref:'.resolvedModelChain'} for its name or id. This may not correspond
+        to the actual value of $$DOC{ref:'.ref'} and can be used for debugging
+        if reference resolution is not behaving as expected.
+      */}
     },
     {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
         this.resolveReference(this.ref);
-      }
+      },
+      documentation: function() { /*
+        The string reference to resolve.
+      */}
     },
     {
       name: 'valid',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() { /*
+        Indicates if the reference is valid. $$DOC{ref:'.resolveReference'} will set
+        $$DOC{ref:'.valid'} to true if resolution succeeds and
+        $$DOC{ref:'.resolvedModelChain'} is usable, false otherwise.
+      */}
     }
 
   ],
 
   methods: {
     init: function() {
+      /* Warns if documentViewParentModel is missing from the context. */
       if (!this.X.documentViewParentModel) {
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
         debugger;
