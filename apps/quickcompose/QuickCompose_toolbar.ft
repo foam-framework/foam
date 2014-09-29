@@ -7,8 +7,8 @@ var ab = this.X.ActionButtonCView.xbind({
 
 // var discardB             = ab.create({action: this.model_.DISCARD,               data: this});
 
-// EMail.SEND.iconUrl = 'images/send.png';
-// EMail.SEND.label = '';
+this.model_.SEND.iconUrl = 'images/send.png';
+this.model_.SEND.label = '';
 
 var boldB                = ab.create({action: RichTextView.BOLD,                 data: this.view.bodyView});
 var italicB              = ab.create({action: RichTextView.ITALIC,               data: this.view.bodyView });
@@ -26,7 +26,7 @@ var sendB                = this.X.ActionButtonCView.create({
     action: this.model_.SEND,
     data:   this,
     color: 'white',
-    radius: 30,
+    radius: 26,
     background: '#259b24'
 });
 %>
