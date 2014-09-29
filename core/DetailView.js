@@ -29,6 +29,11 @@ MODEL({
       model_: 'StringProperty',
       name: 'mode',
       defaultValue: 'read-write'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showRelationships',
+      defaultValue: false
     }
   ],
 
@@ -122,7 +127,18 @@ MODEL({
         str += this.rowToHTML(prop, this.createView(prop));
       }
 
+
       str += '</table>';
+
+      if ( this.showRelationships ) {
+        var view = this.X.RelationshipsView.create({
+          data: this.data
+        });
+        view.data$ = this.data$;
+        str += view.toHTML();
+        this.addChild(view);
+      }
+
       str += '</div>';
 
       return str;
@@ -235,7 +251,7 @@ MODEL({
       required: true
     },
     {
-      model_: 'ModelProperty',
+      model_: 'ViewProperty',
       name: 'viewModel',
       defaultValue: 'DAOController'
     },
@@ -253,7 +269,7 @@ MODEL({
   methods: {
     updateView: function() {
       if ( this.view ) this.view.destroy();
-      this.view = this.viewModel.create({
+      this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
       });

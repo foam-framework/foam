@@ -2765,7 +2765,7 @@ MODEL({
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
           viewChoice.view(this.data.model_, this.data$) :
-          GLOBAL[viewChoice.view].create({
+          this.X[viewChoice.view].create({
             model: this.data.model_,
             data:  this.data
           });

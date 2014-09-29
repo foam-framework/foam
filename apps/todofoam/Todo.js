@@ -28,8 +28,10 @@ MODEL({
 });
 
 var TodoDAO = EasyDAO.create({ daoType: 'MDAO', seqNo: true, model: Todo });
-TodoDAO.put(Todo.create({ id: 1, text: ' Task 1' }));
-TodoDAO.put(Todo.create({ id: 2, text: ' Task 2', parent: 1 }));
+TodoDAO.put(Todo.create({ id: 1, text: 'Task 1' }));
+TodoDAO.put(Todo.create({ id: 2, text: 'Child task', parent: 1 }));
+
+DetailView.SHOW_RELATIONSHIPS.defaultValue = true;
 
 window.onload = function() {
   FOAM.browse('Todo');

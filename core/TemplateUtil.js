@@ -236,8 +236,8 @@ var TemplateUtil = {
          t = templates[i] = Template.create({
            name: t.name,
            // ignore first argument, which should be 'opt_out'
-           args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
-             return Arg.create({name: a});
+           args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
+             return Arg.create({name: a.trim()});
            }),
            template: multiline(t)});
        } else if ( ! t.template ) {
