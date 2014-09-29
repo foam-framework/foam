@@ -82,7 +82,7 @@ function subWindow(w, opt_name, isBackground) {
     },
     dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
     animate: function(duration, fn, opt_interp, opt_onEnd) {
-      Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
+      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
     },
     // TODO(kgr): rename this to onAnimation(), why was this removed?
 //    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
