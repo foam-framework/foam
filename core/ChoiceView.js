@@ -534,7 +534,10 @@ MODEL({
 
         // Remove any previous data$ listener for this popup.
         if ( this.updateListener ) this.data$.removeListener(this.updateListener);
-        this.updateListener = function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this);
+        this.updateListener = function() {
+          var e = this.X.$(id);
+          if ( e ) e.innerHTML = this.choice[1];
+        }.bind(this);
         this.data$.addListener(this.updateListener);
       }
 
