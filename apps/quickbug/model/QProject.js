@@ -417,7 +417,7 @@ MODEL({
                     kv[1] = typeof kv[1] === 'string' ? parseInt(kv[1].charAt(0) === 'M' ? kv[1].substring(1) : kv[1]) : kv[1];
                   }
 
-                  if ( Array.isArray(this[kv[0]]) ) {
+                  if ( Array.isArray(newValues[kv[0]]) ) {
                     newValues[kv[0]] = newValues[kv[0]].binaryInsert(kv[1]);
                   } else {
                     newValues[kv[0]] = kv[1];
