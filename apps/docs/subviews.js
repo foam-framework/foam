@@ -40,6 +40,8 @@ MODEL({
 		references. If you are viewing the documentation for a Model, it will be that Model. If you
 		are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
 		it will be the Model that contains that feature.</p>
+    <p>See $$DOC{ref:'DocumentationBook'} for information on creating documentaion
+    that is not directly associated with a $$DOC{ref:'Model'}.
 	*/},
 
   methods: {
@@ -299,6 +301,11 @@ MODEL({
   label: 'Documentation Reference View',
   help: 'The view of a documentation reference link.',
 
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
   properties: [
 
     {
@@ -306,7 +313,11 @@ MODEL({
       help: 'Shortcut to set reference by string.',
       postSet: function() {
         this.data = this.X.DocRef.create({ ref: this.ref });
-      }
+      },
+      documentation: function() { /*
+        The target reference in string form. Use this instead of setting
+        $$DOC{ref:'.data'} directly if you only have a string.
+        */}
     },
     {
       name: 'data',
@@ -314,20 +325,32 @@ MODEL({
       postSet: function() {
         this.updateHTML();
         this.data.addListener(this.onReferenceChange);
-      }
+      },
+      documentation: function() { /*
+        The target reference.
+        */}
     },
     {
       name: 'text',
-      help: 'Text to display instead of the referenced object&apos;s default label or name.'
+      help: 'Text to display instead of the referenced object&apos;s default label or name.',
+      documentation: function() { /*
+          Text to display instead of the referenced object&apos;s default label or name.
+        */}
     },
     {
       name: 'className',
-      defaultValue: 'docLink'
+      defaultValue: 'docLink',
+      hidden: true
     },
     {
       name: 'usePlural',
       defaultValue: false,
-      help: 'If true, use the Model.plural instead of Model.name in the link text.'
+      help: 'If true, use the Model.plural instead of Model.name in the link text.',
+      documentation: function() { /*
+          If true, use the $$DOC{ref:'Model.plural',text:'Model.plural'}
+          instead of $$DOC{ref:'Model.name',text:'Model.name'} in the link text,
+          for convenient pluralization.
+        */}
     }
   ],
 
@@ -343,7 +366,6 @@ MODEL({
         }
       } else {
         var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
-if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural, mostSpecificObject);
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
         } else if (this.usePlural && mostSpecificObject.plural) {
@@ -353,7 +375,7 @@ if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural
         } else if (mostSpecificObject.id) {
           %><%=mostSpecificObject.id%><%
         } else {
-          %>[INVALID_REF:<%=this.data.ref%>]<%
+          %><%=this.data.ref%><%
         }
       }
 
