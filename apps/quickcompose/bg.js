@@ -4,6 +4,8 @@ var launched = false;
 var WIDTH = 335;
 var HEIGHT = 478;
 
+X = X.subWindow(window, 'BackgroundPage', true);
+
 /** Requirements. **/
 var req = amemo(ametric('init', aseq(
     function(ret) {
@@ -69,10 +71,11 @@ function launchComposer() {
           var dialog = self.dialog = w.contentWindow;
           $addWindow(dialog);
           console.time('CreateQuickCompose');
+          var Y = X.subWindow(dialog, 'QuickComposeDialog');
           var b = QuickCompose.create({
             window: dialog,
             userInfo: userInfo || undefined
-          });
+          }, Y);
           console.timeEnd('CreateQuickCompose');
           openWindow = w;
           b.appWindow = w;
