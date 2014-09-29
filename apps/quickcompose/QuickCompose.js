@@ -192,7 +192,7 @@ var QuickCompose = FOAM({
     {
       name: 'view',
       factory: function() {
-        return QuickEMailView.create({
+        return this.X.QuickEMailView.create({
           model: QuickEMail,
           isFull: this.isFull
         });
