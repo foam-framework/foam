@@ -496,7 +496,6 @@ MODEL({
         var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
-          console.log('mouseMove: ', evt);
           if ( ! view.$.contains(evt.target) ) remove();
         }
 

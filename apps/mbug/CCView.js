@@ -23,6 +23,7 @@ MODEL({
   ]
 });
 
+
 MODEL({
   name: 'CitationView',
   extendsModel: 'DefaultRowView',
@@ -36,11 +37,19 @@ MODEL({
         align-items: center;
         color: #575757;
       }
+
+      .single .CitationView .owner-name {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+      }
+
+      .single .CitationView .removeRow {
+        display: none;
+      }
     */},
-    function toInnerHTML() {/* 
+    function toInnerHTML() {/*
       <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
-      $$removeRow
+      <span class="removeRow">$$removeRow</span>
     */}
   ]
 });

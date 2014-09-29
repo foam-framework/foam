@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved
+ * Copyright 2014 Google Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,180 @@
 
 
 
+
+
+MODEL({
+  name: 'DocView',
+  extendsModel: 'View',
+  label: 'Documentation View Base',
+  help: 'Base Model for documentation views.',
+
+	documentation: function() {/*
+		<p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
+		to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
+		documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
+		references.</p>
+		<p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
+		pass on its data directly, rather than a property of that data.</p>
+		<p>Views that wish to use DOC reference tags should extend this model. To display the
+		$$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
+		$$DOC{ref:'DocBodyView'}.</p>
+		<p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
+		be present on the context. The supplied model is used as the base for resolving documentation
+		references. If you are viewing the documentation for a Model, it will be that Model. If you
+		are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
+		it will be the Model that contains that feature.</p>
+	*/},
+
+  methods: {
+    init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
+			*/
+      this.SUPER();
+      if (!this.X.documentViewParentModel) {
+        console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+      }
+    },
+
+    
+    createReferenceView: function(opt_args) { /* 
+      <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
+			*/
+      var X = ( opt_args && opt_args.X ) || this.X; 
+      var v = X.DocRefView.create(opt_args);
+      this.addChild(v);
+      return v;
+    },
+
+    createExplicitView: function(opt_args) { /* <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'} in opt_args.</p>	*/
+      var X = ( opt_args && opt_args.X ) || this.X;
+      var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
+      if (!opt_args.data) { // explicit data is honored
+        if (this.data) { // TODO: when refactoring $$THISDATA below, figure out what we can assume about this.data being present
+          v.data = this.data;
+        } else {
+          v.data = this; // TODO: correct assumption? do we want data set to this?
+        }
+      } else {
+        v.data = opt_args.data;
+      }
+      this.addChild(v);
+      return v;
+    },
+
+    createTemplateView: function(name, opt_args) {
+      // name has been constantized ('PROP_NAME'), but we're
+      // only looking for certain doc tags anyway.
+      if (name === 'DOC') {
+        var v = this.createReferenceView(opt_args);
+        return v;
+      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
+        return this.createExplicitView(opt_args);
+      } else {
+        return this.SUPER(name, opt_args);
+      }
+    }
+  }
+
+});
+
+
+MODEL({
+  name: 'DocModelView',
+  extendsModel: 'DocView',
+  help: 'Displays the documentation of the given Model.',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The Model for which to display documentation.',
+      postSet: function() {
+        this.updateHTML();
+      }
+    },
+  ],
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data && DocumentationBook.isSubModel(this.data)) {  %>
+        $$THISDATA{ model_: 'DocBookView', data: this.data.documentation }
+<%    } else if (this.data) {  %>
+        <div class="introduction">
+          <h1><%=this.data.name%></h1>
+<%        if (this.data.extendsModel) { %>
+            <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
+<%        } else { %>
+            <h2>Extends $$DOC{ref: 'Model' }</h2>
+<%        } %>
+          $$data{ model_: 'DocModelBodyView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocPropertiesView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocMethodsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocActionsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocListenersView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocTemplatesView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocRelationshipsView' }
+        </div>
+        <div class="members">
+          $$data{ model_: 'DocIssuesView' }
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+MODEL({
+  name: 'DocBookView',
+  extendsModel: 'DocView',
+  help: 'Displays the documentation of the given book.',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The documentation to display.',
+      postSet: function() {
+        this.updateHTML();
+      }
+    },
+  ],
+
+  templates: [
+
+    function toInnerHTML()    {/*
+<%    this.destroy(); %>
+<%    if (this.data) {  %>
+        <div class="introduction">
+          <h2><%=this.data.label%></h2>
+          $$data{ model_: 'DocModelBodyView', data: "", docSource: this.data }
+        </div>
+        <div class="chapters">
+          $$data{ model_: 'DocChaptersView', data: this.data }
+        </div>
+<%    } %>
+    */}
+  ]
+
+});
+
+
+
+
 MODEL({
   name: 'DocBodyView',
-  extendsModel: 'View',
+  extendsModel: 'DocView',
   label: 'Documentation Body View Base',
   help: 'Base Model for documentation body-text views.',
 
@@ -51,15 +222,7 @@ MODEL({
       }
     },
   ],
-
   methods: {
-    init: function() {
-      this.SUPER();
-      if (!this.X.documentViewParentModel) {
-        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
-      }
-    },
-
     renderDocSourceHTML: function() {
       // only update if we have all required data
       if (this.docSource.body && this.X.documentViewParentModel
@@ -72,37 +235,10 @@ MODEL({
       } else {
         return ""; // no data yet
       }
-    },
-
-    /** Create the special reference lookup sub-view from property info. **/
-    createReferenceView: function(opt_args) {
-      var X = ( opt_args && opt_args.X ) || this.X; // TODO: opt_args should have ref and text auto-set on the view?
-      var v = X.DocRefView.create({ ref:opt_args.ref, text: opt_args.text, args: opt_args});
-      this.addChild(v);
-      return v;
-    },
-
-    createExplicitView: function(opt_args) {
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X[opt_args.model_].create({ args: opt_args });
-      v.data = this.data;
-      this.addChild(v);
-      return v;
-    },
-
-    createTemplateView: function(name, opt_args) {
-      // name has been constantized ('PROP_NAME'), but we're
-      // only looking for certain doc tags anyway.
-      if (name === 'DOC') {
-        var v = this.createReferenceView(opt_args);
-        return v;
-      } else if (name === 'THISDATA') { // TODO: refactor this into view.js, as it is very similar to the normal case
-        return this.createExplicitView(opt_args);
-      } else {
-        return this.SUPER(name, opt_args);
-      }
     }
   }
+
+
 });
 
 
@@ -157,7 +293,6 @@ MODEL({
 
 
 
-
 MODEL({
   name: 'DocRefView',
   extendsModel: 'View',
@@ -165,59 +300,162 @@ MODEL({
   help: 'The view of a documentation reference link.',
 
   properties: [
+
+    {
+      name: 'ref',
+      help: 'Shortcut to set reference by string.',
+      postSet: function() {
+        this.data = this.X.DocRef.create({ ref: this.ref });
+      }
+    },
     {
       name: 'data',
-      help: 'The referenced object.',
+      help: 'The reference object.',
       postSet: function() {
         this.updateHTML();
+        this.data.addListener(this.onReferenceChange);
+      }
+    },
+    {
+      name: 'text',
+      help: 'Text to display instead of the referenced object&apos;s default label or name.'
+    },
+    {
+      name: 'className',
+      defaultValue: 'docLink'
+    },
+    {
+      name: 'usePlural',
+      defaultValue: false,
+      help: 'If true, use the Model.plural instead of Model.name in the link text.'
+    }
+  ],
+
+  templates: [
+    // kept tight to avoid HTML adding whitespace around it
+    function toInnerHTML()    {/*<%
+      this.destroy();
+      if (!this.data || !this.data.valid) {
+        if (this.data && this.data.ref) {
+          %>[INVALID_REF:<%=this.data.ref%>]<%
+        } else {
+          %>[INVALID_REF:*no_reference*]<%
+        }
+      } else {
+        var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
+if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural, mostSpecificObject);
+        if (this.text && this.text.length > 0) {
+          %><%=this.text%><%
+        } else if (this.usePlural && mostSpecificObject.plural) {
+          %><%=mostSpecificObject.plural%><%
+        } else if (mostSpecificObject.name) {
+          %><%=mostSpecificObject.name%><%
+        } else if (mostSpecificObject.id) {
+          %><%=mostSpecificObject.id%><%
+        } else {
+          %>[INVALID_REF:<%=this.data.ref%>]<%
+        }
+      }
+
+      this.on('click', this.onClick, this.id);
+
+      %>*/}
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      this.tagName = 'span';
+    }
+  },
+
+  listeners: [
+    {
+      name: 'onReferenceChange',
+      code: function(evt) {
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'onClick',
+      code: function(evt) {
+        if (this.data && this.data.valid && this.X.documentViewRequestNavigation) {
+          this.X.documentViewRequestNavigation(this.data);
+        }
+      }
+    }
+  ],
+});
+
+MODEL({
+  name: 'DocRef',
+  label: 'Documentation Reference',
+  help: 'A reference to a documented Model or feature of a Model',
+
+  properties: [
+    {
+      name: 'resolvedModelChain',
+      defaultValue: [],
+    },
+    {
+      name: 'resolvedName',
+      dynamicValue: function() {
+        var fullname = "";
+        newResolvedModelChain.forEach(function(m) {
+          if (m.name)
+            fullname.concat(m.name);
+          else if (m.id)
+            fullname.concat(m.id);
+        });
+        return fullname;
       }
     },
     {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
-        this.data = this.resolveReference(this.ref);
+        this.resolveReference(this.ref);
       }
     },
     {
-      name: 'text',
-      help: 'Text to display instead of the referenced object&apos;s default label or name.'
+      name: 'valid',
+      defaultValue: false
     }
 
   ],
 
-  templates: [
-    // kept tight to avoid HTML adding whitespace around it
-    function toInnerHTML()    {/*<%
-       this.destroy();
-      if (this.text && this.text.length > 0) {
-        %>[<%=this.text%>]<%
-      } else if (this.data && this.data.label && this.data.label.length > 0) {
-        %>[<%=this.data.label%>]<%
-      } else if (this.data && this.data.name) {
-        %>[<%=this.data.name%>]<%
-      } else if (this.data.id) {
-        %>[<%=this.data.id%>]<%
-      } else {
-        %>[INVALID_REF:<%=this.ref%>]<%
-      } %>*/}
-  ],
-
   methods: {
     init: function() {
-      this.SUPER();
-
-      this.tagName = 'span';
-
       if (!this.X.documentViewParentModel) {
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
         debugger;
       } else {
-        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
+      // TODO: view lifecycle management. The view that created this ref doesn't know
+      // when to kill it, so the addListener on the context keeps this alive forever.
+      // Revisit when we can cause a removeListener at the appropriate time.
+        //        this.X.documentViewParentModel.addListener(this.onParentModelChanged);
       }
     },
 
     resolveReference: function(reference) {
+  /* <p>Resolving a reference has a few special cases at the start:</p>
+    <ul>
+      <li>Beginning with ".": relative to Model in X.documentViewParentModel</li>
+      <li>Containing only ".": the Model in X.documentViewParentModel</li>
+      <li>The name after the first ".": a feature of the Model accessible by "getFeature('name')"</li>
+    </ul>
+    <p>Note that the first name is a Model definition (can be looked up by this.X[modelName]),
+     while the second name is an instance of a feature on that Model, and subsequent
+     names are sub-objects on those instances.</p>
+  */
+
+      this.resolvedModelChain = [];
+      var newResolvedModelChain = [];
+
+      this.valid = false;
+
+      if (!reference) return;
+
       // parse "Model.feature" or "Model" or ".feature" with implicit Model==this.data
       args = reference.split('.');
       var foundObject;
@@ -225,19 +463,34 @@ MODEL({
 
       // if model not specified, use parentModel
       if (args[0].length <= 0) {
-        if (!this.X.documentViewParentModel) return foundObject; // abort
-        model = this.X.documentViewParentModel.get();
+        if (!this.X.documentViewParentModel) {
+          return; // abort
+        }
+        model = this.X.documentViewParentModel.get(); // ".feature" or "."
       } else {
         model = this.X[args[0]];
       }
 
-      if (model && args.length > 1 && args[1].length > 0)
+      if (!model) {
+        return;
+      }
+
+      newResolvedModelChain.push(model);
+
+      if (args.length > 1 && args[1].length > 0)
       {
-        // feature specified
-        foundObject = model.getFeature(args[1]);
-      } else {
-        // no feature found, so assume it's a model
-        foundObject = model;
+        // feature specified "Model.feature" or ".feature"
+        if (args[1] === "documentation") {
+          // special case for links into documentation books
+          foundObject = model.documentation;
+        } else {
+          foundObject = model.getFeature(args[1]);
+        }
+        if (!foundObject) {
+          return;
+        } else {
+          newResolvedModelChain.push(foundObject);
+        }
       }
 
       // allow further specification of sub properties or lists
@@ -245,40 +498,56 @@ MODEL({
       {
         remainingArgs = args.slice(2);
 
-        remainingArgs.some(function (arg) {
-          var newObject;
+        if (!remainingArgs.every(function (arg) {
+            var newObject;
 
-          // null arg is an error at this point
-          if (arg.length <= 0) return false;
+            // null arg is an error at this point
+            if (arg.length <= 0) return false;
 
-          // check if arg is the name of a sub-object of foundObject
-          var argCaller = Function('return this.'+arg);
-          if (argCaller.call(foundObject)) {
-            newObject = argCaller.call(foundObject);
-          } else if (foundObject.mapFind) {
+            // check if arg is the name of a sub-object of foundObject
+            var argCaller = Function('return this.'+arg);
+            if (argCaller.call(foundObject)) {
+              newObject = argCaller.call(foundObject);
+
             // otherwise if foundObject is a list, check names of each thing inside
-            foundObject.mapFind(function(f) {
-              if (f.name && f.name === arg && f) {
-                newObject = f;
-              }
-            })
-          }
-          foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
-          if (!foundObject) return false;
-        });
+            } else if (foundObject.mapFind) {
+              foundObject.mapFind(function(f) {
+                if (f && f.name && f.name === arg) {
+                  newObject = f;
+                }
+              })
+            }
+            foundObject = newObject; // will reset to undefined if we failed to resolve the latest part
+            if (!foundObject) {
+              return false;
+            } else {
+              newResolvedModelChain.push(foundObject);
+              return true;
+            }
+          })) {
+          return; // the loop failed to resolve something
+        }
       }
-      return foundObject;
+
+//      console.log("resolving "+ reference);
+//      newResolvedModelChain.forEach(function(m) {
+//        console.log("  ",m.name,m);
+//      });
+
+      this.resolvedModelChain = newResolvedModelChain;
+      this.valid = true;
     },
   },
 
-  listeners: [
-    {
-        name: 'onParentModelChanged',
-        code: function() {
-          this.data = this.resolveReference(this.ref);
-        }
-    }
-  ]
+  // TODO: make sure these reference objects aren't being kept alive too long. See above.
+//  listeners: [
+//    {
+//        name: 'onParentModelChanged',
+//        code: function() {
+//          this.resolveReference(this.ref);
+//        }
+//    }
+//  ]
 
 });
 

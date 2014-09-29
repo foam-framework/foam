@@ -81,13 +81,17 @@ function subWindow(w, opt_name, isBackground) {
       return document.getElementsByClassName(cls);
     },
     dynamic: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
+    animate: function(duration, fn, opt_interp, opt_onEnd) {
+      return Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
+    },
+    // TODO(kgr): rename this to onAnimation(), why was this removed?
 //    animate: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
     memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: function(f) { return w.requestAnimationFrame(f); },
+    requestAnimationFrame: function(f) { if ( ! w.requestAnimationFrame ) debugger; return w.requestAnimationFrame(f); },
     cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
   };
 
@@ -101,7 +105,8 @@ function subWindow(w, opt_name, isBackground) {
   return X;
 }
 
-var X = this.subWindow(window, 'DEFAULT WINDOW').sub({IN_WINDOW: false});
+// Using the existence of 'process' to determine that we're running in Node.
+var X = this.subWindow(window, 'DEFAULT WINDOW', typeof process === 'object').sub({IN_WINDOW: false});
 
 function registerModel(model, opt_name) {
   /*

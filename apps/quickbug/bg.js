@@ -2,7 +2,7 @@ var metricsSrv = analytics.getService('Quick Bug').getTracker('UA-47217230-3');
 
 X = bootCORE(Application.create({
   name: 'QuickBug',
-  version: 119,
+  version: 120,
   chromeAppVersion: '1.18'
 }));
 

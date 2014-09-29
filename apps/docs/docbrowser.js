@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved
+ * Copyright 2014 Google Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,66 +112,6 @@ MODEL({
 });
 
 
-MODEL({
-  name: 'DocModelView',
-  extendsModel: 'View',
-  help: 'Displays the documentation of the given Model.',
-
-  properties: [
-    {
-      name: 'data',
-      help: 'The Model for which to display documentation.',
-      postSet: function() {
-        this.dataProperties = this.data.properties;
-
-        this.updateHTML();
-      }
-    },
-  ],
-
-  templates: [
-
-    function toInnerHTML()    {/*
-<%    this.destroy(); %>
-<%    if (this.data) {  %>
-        <div class="introduction">
-          <h1><%=this.data.name%></h1>
-<%        if (this.data.extendsModel) { %>
-            <h2>Extends <a href="#<%=this.data.extendsModel%>"><%=this.data.extendsModel%></a></h2>
-<%        } else { %>
-            <h2>Extends <a href="#Model">Model</a></h2>
-<%        } %>
-          $$data{ model_: 'DocModelBodyView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocPropertiesView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocMethodsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocActionsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocListenersView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocTemplatesView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocRelationshipsView' }
-        </div>
-        <div class="members">
-          $$data{ model_: 'DocIssuesView' }
-        </div>
-
-<%    } %>
-    */}
-  ]
-
-});
-
-
 
 MODEL({
   name: 'DocBrowserController',
@@ -184,7 +124,7 @@ MODEL({
           <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
           <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
           <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
-          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.docSource', text:'DocModelView&apos;s doc source property'}.</p>
+          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
           <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
           <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
         */}
@@ -192,27 +132,40 @@ MODEL({
 
   methods: {
     init: function() {
-      /* spawn and populate sub%%id contexts...  */
-      this.SearchContext = this.X.sub({}, 'searchX');
-      this.DetailContext = this.X.sub({}, 'detailX');
+      /* This is a method documentation comment: spawn and populate sub contexts. */
 
       // search context uses a selection value to indicate the chosen Model to display
-      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create();
+      this.SearchContext = this.X.sub({}, 'searchX');
+      this.SearchContext.selection$ = this.SearchContext.SimpleValue.create(); // holds a Model definition
 
       // detail context needs a documentViewParentModel to indicate what model it is rooted at
+      this.DetailContext = this.X.sub({}, 'detailX');
       this.DetailContext.documentViewParentModel = this.DetailContext.SimpleValue.create();
       Events.follow(this.SearchContext.selection$, this.DetailContext.documentViewParentModel);
 
+      this.X.documentViewRequestNavigation = function(ref) {
+        if (ref.valid) {
+          // TODO: navigate to feature sub-view as well
+          this.DetailContext.documentViewParentModel.set(ref.resolvedModelChain[0]);
+          this.selection = ref.resolvedModelChain[0]; // TODO: tighten up this update chain
+        }
+      }.bind(this);
+
+      /////////////////////////// Context setup ^
       this.SUPER();
+      /////////////////////////// this.init v
 
       // Push selection value out to the context so others can use it
       this.selection$ = this.SearchContext.selection$;
 
-      // hack in URL support
+      // hack in URL support TODO: clean this up
       this.SearchContext.selection$.addListener(this.onSelectionChange);
       window.addEventListener('hashchange', function() {
-        this.selection = this.SearchContext[location.hash.substring(1)];
+        this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+        this.selection = this.DetailContext.documentViewParentModel.get();
       }.bind(this));
+      this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+      this.selection = this.DetailContext.documentViewParentModel.get();
 
       var testArg = this.X.Arg.create({name: 'testy'});
       testArg.documentation = this.X.Documentation.create({

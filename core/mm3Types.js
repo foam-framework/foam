@@ -271,7 +271,6 @@ var IntProperty = Model.create({
   ]
 });
 
-
 var FloatProperty = Model.create({
   extendsModel: 'Property',
 
@@ -731,6 +730,44 @@ var ReferenceArrayProperty = Model.create({
 var EMailProperty = StringProperty;
 var URLProperty = StringProperty;
 
+var DocumentationProperty = Model.create({
+  extendsModel: 'Property',
+  name: 'DocumentationProperty',
+  help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
+  documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
+
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultvalue: 'Documentation'
+    },
+    {
+      name: 'setter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.setter
+    },
+    {
+      name: 'getter',
+      type: 'Function',
+      defaultvalue: DocumentationBootstrap.getter
+    },
+    {
+      name: 'view',
+      defaultValue: 'DocModelView'
+    },
+    {
+      name: 'help',
+      defaultValue: 'Documentation for this entity.'
+    },
+    {
+      name: 'documentation',
+      defaultValue: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."
+   }
+  ]
+});
+
 MODEL({
   name: 'EnumPropertyTrait',
   properties: [
@@ -738,14 +775,7 @@ MODEL({
       name: 'choices',
       type: 'Array',
       help: 'Array of [value, label] choices.',
-      preSet: function(_, a) {
-        a = a.clone();
-        for ( var i = 0; i < a.length; i++ ) {
-          if ( ! Array.isArray(a[i]) )
-            a[i] = [a[i], a[i]];
-        }
-        return a;
-      },
+      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
       required: true
     },
     {

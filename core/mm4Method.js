@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2012 Google Inc. All Rights Reserved.
+ * Copyright 2012-2014 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the action.'
+      help: 'The coding identifier for the action.',
+			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+				$$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+			  $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+				 */}
     },
     {
       name: 'label',
@@ -42,7 +46,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The display label for the action.'
+      help: 'The display label for the action.',
+			documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
+				contain spaces or other odd characters.
+				 */}			
     },
     {
       name: 'help',
@@ -51,20 +58,25 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the action.'
+      help: 'Help text associated with the action.',
+			documentation: function() { /* 
+				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+				  through field labels or tooltips.
+				*/}  
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       name: 'default',
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: false,
-      help: 'Indicates if this is the default action.'
+      help: 'Indicates if this is the default action.',
+			documentation: function() { /* 
+					Indicates if this is the default $$DOC{ref:'Action'}.
+				*/}  
     },
     {
       model_: 'FunctionProperty',
@@ -73,7 +85,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 3,
       defaultValue: function() { return true; },
-      help: 'Function to determine if action is available.'
+      help: 'Function to determine if action is available.',
+			documentation: function() { /* 
+						A function used to determine if the $$DOC{ref:'Action'} is available.
+				*/}  
     },
     {
       model_: 'FunctionProperty',
@@ -82,26 +97,38 @@ MODEL({
       displayWidth: 70,
       displayHeight: 3,
       defaultValue: function() { return true; },
-      help: 'Function to determine if action is enabled.'
+      help: 'Function to determine if action is enabled.',
+			documentation: function() { /* 
+						A function used to determine if the $$DOC{ref:'Action'} is enabled.
+				*/}  
     },
     {
       model_: 'FunctionProperty',
       name: 'labelFn',
       label: 'Label Function',
       defaultValue: function(action) { return action.label; },
-      help: "Function to determine label. Defaults to 'this.label'."
+      help: "Function to determine label. Defaults to 'this.label'.",
+			documentation: function() { /* 
+						A function used to determine the label. Defaults to $$DOC{ref:'label'}.
+				*/}  
     },
     {
       name: 'iconUrl',
       type: 'String',
       defaultValue: undefined,
-      help: 'Provides a url for an icon to render for this action'
+      help: 'Provides a url for an icon to render for this action',
+			documentation: function() { /* 
+						A url for the icon to render for this $$DOC{ref:'Action'}.
+								*/}  
     },
     {
       name: 'showLabel',
       type: 'String',
       defaultValue: true,
-      help: 'Property indicating whether the label should be rendered along side the icon'
+      help: 'Property indicating whether the label should be rendered alongside the icon',
+			documentation: function() { /* 
+						Indicates whether the $$DOC{ref:'.label'} should be rendered alongside the icon.
+				*/}  
     },
     {
       name: 'children',
@@ -110,12 +137,18 @@ MODEL({
       subType: 'Action',
       view: 'ArrayView',
       help: 'Child actions of this action.',
-      persistent: false
+      persistent: false,
+			documentation: function() { /* 
+						Child $$DOC{ref:'Action',usePlural:true} of this instance.
+				*/}  
     },
     {
       name: 'parent',
       type: 'String',
-      help: 'The parent action of this action'
+      help: 'The parent action of this action',
+			documentation: function() { /* 
+						The parent $$DOC{ref:'Action'} of this instance.
+				*/}  
     },
     {
       model_: 'FunctionProperty',
@@ -123,15 +156,21 @@ MODEL({
       displayWidth: 80,
       displayHeight: 20,
       defaultValue: '',
-      help: 'Function to implement action.'
+      help: 'Function to implement action.',
+			documentation: function() { /* 
+						This function supplies the execution of the $$DOC{ref:'Action'} when triggered.
+				*/}  
     },
     {
       model_: 'StringArrayProperty',
-      name: 'keyboardShortcuts'
+      name: 'keyboardShortcuts',
+			documentation: function() { /* 
+						Keyboard shortcuts for the $$DOC{ref:'Action'}.
+				*/}  
     }
   ],
-  methods: {
-    callIfEnabled: function(X, that) {
+  methods: { 
+    callIfEnabled: function(X, that) { /* doesn't appear in docs. Bootstrappy issue. */
       if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }
@@ -246,10 +285,8 @@ MODEL({
       help: 'Help text associated with the entity.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
   ],
 
@@ -310,6 +347,7 @@ MODEL({
 
 MODEL({
   name: 'Method',
+	plural: 'Methods',
 
   tableProperties: [
     'name',
@@ -324,7 +362,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the entity.'
+      help: 'The coding identifier for the entity.',
+			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+				$$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+			  $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+				 */}
     },
     {
       name: 'description',
@@ -332,7 +374,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'A brief description of this topic.'
+      help: 'A brief description of this method.',
+			documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
+				 */}
+			
     },
     {
       name: 'help',
@@ -341,13 +386,15 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the entity.'
+      help: 'Help text associated with the entity.',
+			documentation: function() { /* 
+				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+				  through field labels or tooltips.
+				*/}  
     },
     {
+      model_: 'DocumentationProperty',
       name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
     },
     {
       name: 'code',
@@ -359,25 +406,40 @@ MODEL({
       postSet: function() {
         // check for documentation in a multiline comment at the beginning of the code
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
-        var multilineComment = /^\s*function\s*\(.*\)\s*{\s*\/\*(.*)\*\/|^\s*\/\*(.*)\*\/ /.exec(this.code.toString());
+        // TODO: technically unicode letters are valid in javascript identifiers, which we are not catching here for function arguments.
+        var multilineComment = /^\s*function\s*\([\$\s\w\,]*?\)\s*{\s*\/\*([\s\S]*?)\*\/[\s\S]*$|^\s*\/\*([\s\S]*?)\*\/([\s\S]*)/.exec(this.code.toString());
         if ( multilineComment ) {
+          var bodyFn = multilineComment[1];
           this.documentation = this.X.Documentation.create({
                 name: this.name,
-                body: Function("/*" + multilineComment[1] + "*/")
+                body: bodyFn
           })
         }
 
-      }
+      },
+			documentation: function() { /* 
+				  <p>The code to execute for the $$DOC{ref:'Method'} call.</p>
+					<p>In a special case for javascript documentation, an initial multiline comment, if present,
+					 will be pulled from your code and used as a documentation template: 
+						<code>function() { \/\* docs here \*\/ code... }</code></p>
+				  
+				*/}  
     },
     {
       name:  'returnType',
       defaultValue: '',
-      help: 'Interface package.'
+      help: 'Return type.',
+			documentation: function() { /* 
+				  The return type of the $$DOC{ref:'Method'}.
+				*/}  
     },
     {
       model_: 'BooleanProperty',
       name: 'returnTypeRequired',
-      defaultValue: true
+      defaultValue: true,
+			documentation: function() { /* 
+				  Indicates whether the return type is checked. TODO: ???
+				*/}  
     },
     {
       model_: 'ArrayProperty',
@@ -387,17 +449,28 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Method arguments.'
+      help: 'Method arguments.',
+			documentation: function() { /* 
+				  The $$DOC{ref:'Arg',text:'Arguments'} for the method.
+				*/}  
     },
     {
       name: 'isMerged',
-      help: 'As a listener, should this be merged?'
+      help: 'As a listener, should this be merged?',
+			documentation: function() { /* 
+				  For a listener $$DOC{ref:'Method'}, indicates that the events should be merged to avoid
+					repeated activations.
+				*/}  
     },
     {
       model_: 'BooleanProperty',
       name: 'isAnimated',
       help: 'As a listener, should this be animated?',
-      defaultValue: false
+      defaultValue: false,
+			documentation: function() { /* 
+				  For a listener $$DOC{ref:'Method'}, indicates that this should be animated.
+				*/}
+			
     },
   ],
 
@@ -513,10 +586,8 @@ MODEL({
       help: 'Help text associated with the argument.'
     },
     {
-      name: 'documentation',
-      type: 'Documentation',
-      view: 'DocModelView',
-      help: 'Documentation associated with this entity.',
+      model_: 'DocumentationProperty',
+      name: 'documentation'
     },
     {
       model_: 'ArrayProperty',
@@ -645,6 +716,26 @@ MODEL({
     'name'
   ],
 
+  documentation: {
+    model_: 'Documentation',
+    body: function() {/*
+      <p>The $$DOC{ref:'Documentation'} model is used to store documentation text to
+      describe the use of other models. Set the $$DOC{ref:'Model.documentation'} property
+      of your model and specify the body text:</p>
+      <ul>
+        <li><p>Fully define the Documentation model:</p><p>documentation:
+        { model_: 'Documentation', body: function() { \/\* your doc text \*\/} }</p>
+        </li>
+        <li><p>Define as a function:</p><p>documentation:
+            function() { \/\* your doc text \*\/} </p>
+        </li>
+        <li><p>Define as a one-line string:</p><p>documentation:
+            "your doc text" </p>
+        </li>
+      </ul>
+    */}
+  },
+
   properties: [
     {
       name:  'name',
@@ -653,13 +744,25 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The Document\'s unique name.'
+      help: 'The Document\'s unique name.',
+      documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
+    },
+    {
+      name:  'label',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The Document\'s title or descriptive label.',
+      documentation: "A human readable title to display. Used for books of documentation and chapters."
     },
     {
       name: 'body',
       type: 'Template',
       defaultValue: '',
       help: 'The main content of the document.',
+      documentation: "The main body text of the document. Any valid template can be used, including the $$DOC{ref:'DocView'} specific $$DOC{ref:'DocView',text:'$$DOC{\"ref\"}'} and $$DOC{ref:'DocView',text:'$$THISDATA{}'} tags.",
       preSet: function(_, template) {
           return TemplateUtil.templateMemberExpander(template, this.X);
       }
@@ -672,10 +775,13 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Sub-documents comprising the full body of this document.'
+      help: 'Sub-documents comprising the full body of this document.',
+      documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
     },
 
   ]
 
 });
 
+// HACK to get around property-template bootstrap ordering issues
+TemplateUtil.modelExpandTemplates(Property, Property.templates);

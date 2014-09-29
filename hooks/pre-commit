@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# git pre-commit hook for FOAM.
+# Runs the automated tests and rejects the commit if they're failing.
+#
+# Needs to be installed in .git/hooks; call hooks/install.sh once for
+# each repository to set them up.
+
+REPO_DIR="`git rev-parse --show-toplevel`" || exit $?
+
+cd $REPO_DIR
+npm test
+
+if [ $? -gt 0 ]; then
+  cat <<\EOF
+
+Errors running the tests! Commit aborted.
+(To force, use git commit --no-verify)
+EOF
+  exit 1
+fi
+
+exit 0
+

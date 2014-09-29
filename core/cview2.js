@@ -73,10 +73,12 @@ MODEL({
     canvasWidth: function() { return this.width * this.scalingRatio; },
     styleHeight: function() { return (this.height) + 'px'; },
     canvasHeight: function() { return this.height * this.scalingRatio; },
-    
+
+    toString: function() { return 'CViewView(' + this.cview + ')'; },
+
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style=width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
     initHTML: function() {
       if ( ! this.$ ) return;
@@ -481,7 +483,7 @@ MODEL({
           this.pressCircle.y = evt.offsetY;
         }
         this.pressCircle.r = 5;
-        Movement.animate(150, function() {
+        this.X.animate(150, function() {
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
           this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
@@ -494,7 +496,7 @@ MODEL({
       code: function() {
         if ( ! this.down_ ) return;
         this.down_ = false;
-        Movement.animate(
+        this.X.animate(
           300,
           function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
@@ -599,7 +601,6 @@ MODEL({
     },
     paintSelf: function() {
       var c = this.canvas;
-
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
@@ -780,7 +781,7 @@ MODEL({
         var skip = Math.floor(this.scrollTop / this.renderer.height);
         var self = this;
 
-        
+
         var offset = -(this.scrollTop % this.renderer.height);
 
         var i = 0;
@@ -795,7 +796,7 @@ MODEL({
                  ! self.canvas ) {
               fc.stop();
               return;
-            } 
+            }
             if ( i == 0 ) self.erase();
 
             self.canvas.save();

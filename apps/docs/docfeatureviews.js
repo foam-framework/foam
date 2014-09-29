@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved
+ * Copyright 2014 Google Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,11 +62,9 @@ MODEL({
       factory: function() { return 'DocFeatureRowView'; }
     },
     {
-      name: 'className',
-      help: 'CSS class name(s), space separated.',
-      defaultValue: 'subsection'
+      name: 'tagName',
+      defaultValue: 'div'
     },
-
   ],
 
   templates: [
@@ -76,7 +74,7 @@ MODEL({
             <h2>No <%=this.featureName()%>.</h2>
     <%    } else { %>
             <h2><%=this.featureName()%>:</h2>
-            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}
   ],
@@ -243,10 +241,14 @@ MODEL({
   extendsModel: 'DocBodyView',
   help: 'A view for each item in a list of documented Methods, including arguments.',
 
+  documentation: function() { /*
+
+  */ },
+
   templates: [
     function toInnerHTML() {/*
-      <h3><%=this.data.name%></h3>
-      $$THISDATA{ model_: 'DocMethodArgumentsView' }
+      <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
+      <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
       <%=this.renderDocSourceHTML()%>
     */}
   ]
@@ -278,15 +280,12 @@ MODEL({
     function toInnerHTML()    {/*
     <%    this.destroy();
           if (this.isEmpty) { %>
-            <h4>No <%=this.featureName()%>.</h4>
     <%    } else { %>
             <h4><%=this.featureName()%>:</h4>
-            <div>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</div>
     <%    } %>
     */}
   ],
-
-
 });
 
 MODEL({
@@ -301,3 +300,80 @@ MODEL({
     */}
   ]
 });
+
+MODEL({
+  name: 'DocMethodArgumentsSmallView',
+  extendsModel: 'DocMethodArgumentsView',
+  help: 'Displays the documentation of the given Method Arguments. Data should be a Method.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocMethodArgumentSmallRowView'; }
+    },
+    {
+      name: 'tagName',
+      defaultValue: 'span'
+    }
+
+  ],
+
+  templates: [
+    function toInnerHTML()    {/*<%
+          this.destroy();
+          if (!this.isEmpty) {
+            %>(<span>$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Arg }</span>)<%
+          } else {
+            %>()<%
+          }
+    %>*/}
+  ],
+});
+
+MODEL({
+  name: 'DocMethodArgumentSmallRowView',
+  extendsModel: 'DocBodyView',
+  help: 'An in-line view for each item in a list of Args.',
+
+  templates: [
+    function toInnerHTML() {/* <%=this.data.name%> */}
+  ]
+});
+
+
+
+MODEL({
+  name: 'DocChaptersView',
+  extendsModel: 'DocFeaturesView',
+  help: 'Displays the contents of the given Chapters.',
+
+  properties: [
+    {
+      name: 'rowView',
+      help: 'Override this to specify the view to use to display each feature.',
+      factory: function() { return 'DocBookView'; }
+    }
+  ],
+
+  methods: {
+    getGroupFromTarget: function(target) {
+      return target.chapters$;
+    },
+    featureName: function() {
+      return "Chapters";
+    },
+  },
+
+  templates: [
+    function toInnerHTML()    {/*
+    <%    this.destroy();
+          if (this.isEmpty) { %>
+    <%    } else { %>
+            <h2><%=this.featureName()%>:</h2>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+    <%    } %>
+    */}
+  ]
+});
+

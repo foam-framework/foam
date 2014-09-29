@@ -184,7 +184,7 @@ MODEL({
       postSet: function(_, data) {
         this.originalData = data.deepClone();
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
-        this.onValueChange();
+        data.addListener(function() { this.version++; }.bind(this));
       }
     },
     {
@@ -196,6 +196,12 @@ MODEL({
     },
     {
       name: 'view'
+    },
+    {
+      // Version of the data which changes whenever any property of the data is updated.
+      // Used to help trigger isEnabled / isAvailable in Actions.
+      model_: 'IntProperty',
+      name: 'version'
     }
   ],
 
@@ -204,15 +210,15 @@ MODEL({
       name:  'save',
       help:  'Save updates.',
 
-      isEnabled: function() { return ! this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() {
         var self = this;
         var obj  = this.data;
+        this.stack.back();
+
         this.dao.put(obj, {
           put: function() {
             console.log("Saving: ", obj.toJSON());
-
-            self.stack.back();
           },
           error: function() {
             console.error("Error saving", arguments);
@@ -223,16 +229,17 @@ MODEL({
     {
       name:  'cancel',
       help:  'Cancel update.',
-      isEnabled: function() { return ! this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     },
     {
       name:  'back',
-      isEnabled: function() { return this.originalData.equals(this.data); },
+      isAvailable: function() { this.version; return this.originalData.equals(this.data); },
       action: function() { this.stack.back(); }
     }
   ]
 });
+
 
 MODEL({
   name: 'RelationshipView',
@@ -249,7 +256,7 @@ MODEL({
       defaultValue: 'DAOController'
     },
     {
-      name: 'data', 
+      name: 'data',
       postSet: function() {
         this.updateView();
       }

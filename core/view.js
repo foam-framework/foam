@@ -594,11 +594,11 @@ MODEL({
       if ( this.children ) {
         // init children
         for ( var i = 0 ; i < this.children.length ; i++ ) {
-          // console.log("init child: " + this.children[i]);
+          // console.log(i, 'init child: ' + this.children[i]);
           try {
             this.children[i].initHTML();
           } catch (x) {
-            console.log("Error on View.child.initHTML", x, x.stack);
+            console.log('Error on View.child.initHTML', x, x.stack);
           }
         }
       }
@@ -716,7 +716,7 @@ MODEL({
 
       if ( this.args && this.args.model_ ) {
         var model = this.X[this.args.model_];
-        if ( ! model ) { 
+        if ( ! model ) {
           console.error('Unknown View: ', this.args.model_);
           debugger;
         }
@@ -760,6 +760,8 @@ MODEL({
     },
 
     toHTML: function() { return this.view.toHTML(); },
+
+    toString: function() { return 'PropertyView(' + this.prop.name + ', ' + this.view + ')'; },
 
     initHTML: function() { this.view.initHTML(); },
 
@@ -4621,7 +4623,7 @@ MODEL({
       isEnabled: function() { return this.test.regression; },
       action: function() {
         this.test.master = this.test.results;
-        this.X.DAO.put(this.test, {
+        this.X.daoViewCurrentDAO.put(this.test, {
           put: function() {
             this.test.regression = false;
           }.bind(this),

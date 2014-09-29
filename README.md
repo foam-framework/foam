@@ -15,6 +15,20 @@ There is nothing to build.  Just load any of the various .html demos.
 
   * [Website](http://foam-framework.github.io/foam/)
 
+## Testing
+
+FOAM has automated tests that can be run with `npm test`. This depends only on a working Node.js and `npm`.
+
+There is also a pre-commit hook in `hooks/pre-commit`; it can be installed by running `hooks/install.sh` one time. Then the tests will run before any `git commit` and block the commit if they're failing.
+
+Regression tests whose output has legitimately changed can be conveniently updated using the test page. That works as follows:
+```
+node --harmony tests/server.js
+```
+and then navigate to [http://localhost:8888/tests/FOAMTests.html]().
+
+Any failed regression test will highlight its results with red borders, and the "Update Master" button will write the test's latest results into the master. This edits `tests/FUNTests.xml`, which you should then check in. **Be careful to make sure the new output of the test is actually valid!**
+
 ## Bundled Javascript Files
 
 FOAM can bootstrap itself at runtime using `core/bootFOAM.js` and friends.
