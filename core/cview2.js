@@ -483,7 +483,7 @@ MODEL({
           this.pressCircle.y = evt.offsetY;
         }
         this.pressCircle.r = 5;
-        Movement.animate(150, function() {
+        this.X.animate(150, function() {
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
           this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
@@ -496,7 +496,7 @@ MODEL({
       code: function() {
         if ( ! this.down_ ) return;
         this.down_ = false;
-        Movement.animate(
+        this.X.animate(
           300,
           function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
@@ -601,7 +601,6 @@ MODEL({
     },
     paintSelf: function() {
       var c = this.canvas;
-
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
