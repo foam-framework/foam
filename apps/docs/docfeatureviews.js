@@ -164,7 +164,7 @@ MODEL({
 
 MODEL({
   name: 'DocListenersView',
-  extendsModel: 'DocFeaturesView',
+  extendsModel: 'DocMethodsView',
   help: 'Displays the documentation of the given Listeners.',
 
   methods: {

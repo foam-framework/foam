@@ -354,6 +354,27 @@ MODEL({
     'description'
   ],
 
+  documentation: function() {/*
+    <p>A $$DOC{ref:'Method'} represents a callable piece of code with
+    $$DOC{ref:'args',text:'arguments'} and an optional return value.
+    </p>
+    <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
+    in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
+    features of your $$DOC{ref:'Model'}.</p>
+    <ul>
+      <li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
+      <li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment
+          will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from
+          src to dst.</li>
+      <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
+              $$DOC{ref:'Model'}</li>
+      <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
+                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
+                <code>this.SUPER()</code> is extremely important in your <code>init()</code>
+                $$DOC{ref:'Method'}, if you provide one.</li>
+    </ul>
+  */},
+
   properties: [
     {
       name:  'name',
@@ -547,26 +568,47 @@ Method.getPrototype().generateFunction = function() {
 
 MODEL({
   name: 'Interface',
+  plural: 'Interfaces',
 
   tableProperties: [
     'package', 'name', 'description'
   ],
 
+  documentation: function() { /*
+      <p>$$DOC{ref:'Interface',usePlural:true} specify a set of methods with no
+      implementation. $$DOC{ref:'Model',usePlural:true} extending the $$DOC{ref:'Interface'}
+      fill in the implementation as needed. This is analogous to
+      $$DOC{ref:'Interface',usePlural:true} in object-oriented languages.</p>
+    */},
+
   properties: [
     {
       name:  'package',
-      help: 'Interface package.'
+      help: 'Interface package.',
+      documentation: function() { /* When running FOAM in a Java environment, specifies the
+         package in which to declare the Java class built from this $$DOC{ref:'.'}.*/}
     },
     {
       name: 'extends',
       type: 'Array[String]',
       view: 'StringArrayView',
-      help: 'Interfaces extended by this interface.'
+      help: 'Interfaces extended by this interface.',
+      documentation: function() { /*
+        The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
+        from. Unlike most $$DOC{ref:'Model',usePlural:true},
+        $$DOC{ref:'Interface',usePlural:true} should only extend other
+        $$DOC{ref:'Interface',usePlural:true}, and have $$DOC{ref:'Model.extendsModel'}
+        set to $$DOC{ref:'Interface'}.
+      */}
     },
     {
       name:  'name',
       required: true,
-      help: 'Interface name.'
+      help: 'Interface name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
+         */}
     },
     {
       name:  'description',
@@ -575,7 +617,8 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The template\'s unique name.'
+      help: 'The interface\'s description.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}. */ }
     },
     {
       name: 'help',
@@ -583,7 +626,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       view: 'TextAreaView',
-      help: 'Help text associated with the argument.'
+      help: 'Help text associated with the argument.',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}
     },
     {
       model_: 'DocumentationProperty',
@@ -597,7 +644,11 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Methods associated with the interface.'
+      help: 'Methods associated with the interface.',
+      documentation: function() { /*
+        <p>The $$DOC{ref:'Method',usePlural:true} that the interface requires
+        extenders to implement.</p>
+        */}
     }
   ],
   templates:[
@@ -779,7 +830,7 @@ MODEL({
       required: true,
       displayWidth: 30,
       displayHeight: 1,
-      defaultValue: '',
+      defaultValue: 'documentation',
       help: 'The Document\'s unique name.',
       documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
     },

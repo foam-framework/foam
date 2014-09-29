@@ -330,7 +330,7 @@ var Model = {
         return methods;
       },
 			documentation: function() { /* 
-				<p>$$DOC{ref:'Methods',usePlural:true} contain code that runs in the instance's scope, so code
+        <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
 				in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and 
 				features of your $$DOC{ref:'Model'}.</p>
 				<ul>
@@ -361,7 +361,7 @@ var Model = {
       },
       defaultValue: [],
       help: 'Event listeners associated with the entity.',
-			documentation: function() { /* 
+      documentation: function() { /*
 				<p>The $$DOC{ref:'Model.listeners'} $$DOC{ref:'Property'} contains a list of $$DOC{ref:'Method',usePlural:true},
 				  but is separate and differs from the $$DOC{ref:'Model.methods'} $$DOC{ref:'Property'} in how the scope
 				  is handled. For a listener, <code>this</code> is bound to your instance, so when the listener is

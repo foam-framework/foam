@@ -78,14 +78,41 @@ MODEL({
 });
 
 
-MODEL({ name: 'ModelDescriptionRowView', extendsModel: 'DetailView', templates: [
-  function toHTML() {/*
-      <div class="thumbnail">
-        <p><%=this.data.name%></p>
-      </div>
-  */}
-//  <p>$$name{mode:'read-only'}</p>
-]});
+MODEL({
+  name: 'ModelDescriptionRowView',
+  extendsModel: 'View',
+
+  properties: [
+    {
+      name: 'data',
+      help: 'The Model to describe',
+      preSet: function(old,nu) {
+        if (old) Events.unfollow(old.name$, this.modelName$);
+        Events.follow(nu.name$, this.modelName$);
+        return nu;
+      }
+    },
+    {
+      name: 'modelName',
+      help: 'The Model to describe'
+    },
+  ],
+
+  methods: {
+    init: function() {
+      // set up context // TODO: template is compile before we create subcontext
+      this.X = this.X.sub({name:'ModelDescriptionRowView_X'});
+      this.X.documentationViewParentModel = SimpleValue.create();
+
+      this.SUPER();
+    }
+  },
+  templates: [ // TODO: the data gets set on the modelNameView... screws it up
+    function toInnerHTML() {/*
+      <h3>$$modelName{model_:'DocRefView', ref$: this.modelName$}</h3>
+    */}
+  ]
+});
 
 
 MODEL({
@@ -158,13 +185,20 @@ MODEL({
       // Push selection value out to the context so others can use it
       this.selection$ = this.SearchContext.selection$;
 
-      // hack in URL support TODO: clean this up
+      // hack in URL support: (TODO: clean this up)
+
+      // When search.selection changes set the hash
       this.SearchContext.selection$.addListener(this.onSelectionChange);
+
+      // when the hash changes set the documentViewParentModel and this.selection
       window.addEventListener('hashchange', function() {
         this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
         this.selection = this.DetailContext.documentViewParentModel.get();
       }.bind(this));
+
+      // initialization from hash
       this.DetailContext.documentViewParentModel.set(this.SearchContext[location.hash.substring(1)]);
+      // init this.selection
       this.selection = this.DetailContext.documentViewParentModel.get();
 
       var testArg = this.X.Arg.create({name: 'testy'});
@@ -229,7 +263,6 @@ MODEL({
       relatedProperty: 'modelListView'
     }
   ]
-
 
 });
 
