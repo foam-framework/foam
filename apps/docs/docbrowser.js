@@ -144,18 +144,15 @@ MODEL({
   name: 'DocBrowserController',
   extendsModel: 'Model',
 
-  documentation: {
-    model_: 'Documentation',
-    body: function() {  /*
-          <p>Some documentation for the $$DOC{ref:'.'} model.</p>
-          <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
-          <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
-          <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
-          <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
-          <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
-          <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
-        */}
-  },
+  documentation: function() {  /*
+    <p>Some documentation for the $$DOC{ref:'.'} model.</p>
+    <p>This should be expaneded to explain some of the interesting properties found here, such as $$DOC{ref:'.modelList'}.</p>
+    <p>We can also mention how invalid references are caught $$DOC{ref:'modelList'}.</p>
+    <p>And here's a normal property view in the same template: $$data{ mode: 'read-only' }</p>
+    <p>Though you'd often want to link to related models, like $$DOC{ref:'DocModelBodyView'}, or even specific features on them, like $$DOC{ref:'DocModelView.data', text:'DocModelView&apos;s data property'}.</p>
+    <p>Reference to a method argument: $$DOC{ref:'DocBrowserController.testMethod.args.testy'}</p>
+    <p>This won't work since 'properties' here will resolve to the DocBrowserController.PROPERTIES feature: $$DOC{ref:'DocBrowserController.properties.modelListView'}. Only use direct access for layers below Model.feature.</p>
+  */},
 
   methods: {
     init: function() {

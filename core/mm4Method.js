@@ -20,11 +20,22 @@
 
 MODEL({
   name: 'Action',
+  plural: 'Actions',
 
   tableProperties: [
     'name',
     'label'
   ],
+
+  documentation: function() {  /*
+    <p>An executable behavior that can be triggered by the user.
+      $$DOC{ref:'Action',usePlural:true} are typically represented as buttons
+      or menu items. Activating the $$DOC{ref:'Action'} causes the
+      $$DOC{ref:'.action'} function $$DOC{ref:'Property'} to run. The user-facing
+      control's state is handled by $$DOC{ref:'.isEnabled'} and $$DOC{ref:'.isAvailable'}.
+    </p>
+  */},
+
 
   properties: [
     {
