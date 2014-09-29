@@ -10,6 +10,7 @@
     "webview",
     "identity",
     "storage",
+    "https://www.google-analytics.com/",
     "unlimitedStorage"
   ],
 

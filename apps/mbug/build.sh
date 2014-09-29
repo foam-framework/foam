@@ -68,6 +68,7 @@ cat \
   ../../lib/mdui/view.js \
   ../../lib/mdui/AutocompleteListView.js \
   ../../core/CORE.js \
+  ../quickcompose/google-analytics-bundle.js \
   > "$BUILD_DIR/foam.js"
 
 mkdir -p "$BUILD_DIR/quickbug"
