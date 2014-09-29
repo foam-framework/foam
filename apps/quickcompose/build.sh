@@ -43,6 +43,7 @@ cat \
   ../../core/DetailView.js \
   ../../core/TableView.js \
   ../../core/cview.js \
+  ../../core/cview2.js \
   ../../core/MementoMgr.js \
   ../../core/listchoiceview.js \
   ../../core/scroll.js \
