@@ -725,7 +725,10 @@ var Movement = {
 
   /** @return a latch function which can be called to stop the animation. **/
   animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
-    var setIntervalX = ( opt_X && opt_X.setInterval ) || setInterval;
+    var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
+    var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
+
+    if ( ! opt_X || ! opt_X.setInterval ) debugger;
 
     if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
     var interp = opt_interp || Movement.linear;
@@ -736,7 +739,7 @@ var Movement = {
       var timer;
 
       function stop() {
-        clearInterval(timer);
+        clearIntervalX(timer);
         opt_onEnd && opt_onEnd();
         opt_onEnd = null;
       }
