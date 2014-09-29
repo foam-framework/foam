@@ -320,19 +320,26 @@ MODEL({
       name: 'ref',
       help: 'Shortcut to set reference by string.',
       postSet: function() {
-        this.data = this.X.DocRef.create({ ref: this.ref });
+        this.docRef = this.X.DocRef.create({ ref: this.ref });
       },
       documentation: function() { /*
         The target reference in string form. Use this instead of setting
-        $$DOC{ref:'.data'} directly if you only have a string.
+        $$DOC{ref:'.docRef'} directly if you only have a string.
         */}
     },
     {
-      name: 'data',
+      name: 'docRef',
       help: 'The reference object.',
+      preSet: function(old,nu) { // accepts a string ref, or an DocRef object
+        if (typeof nu === 'string') {
+          return this.X.DocRef.create({ ref: nu });
+        } else {
+          return nu;
+        }
+      },
       postSet: function() {
         this.updateHTML();
-        this.data.addListener(this.onReferenceChange);
+        this.docRef.addListener(this.onReferenceChange);
       },
       documentation: function() { /*
         The target reference.
@@ -366,14 +373,14 @@ MODEL({
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%
       this.destroy();
-      if (!this.data || !this.data.valid) {
-        if (this.data && this.data.ref) {
-          %>[INVALID_REF:<%=this.data.ref%>]<%
+      if (!this.docRef || !this.docRef.valid) {
+        if (this.docRef && this.docRef.ref) {
+          %>[INVALID_REF:<%=this.docRef.ref%>]<%
         } else {
           %>[INVALID_REF:*no_reference*]<%
         }
       } else {
-        var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
+        var mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
         } else if (this.usePlural && mostSpecificObject.plural) {
@@ -383,7 +390,7 @@ MODEL({
         } else if (mostSpecificObject.id) {
           %><%=mostSpecificObject.id%><%
         } else {
-          %><%=this.data.ref%><%
+          %><%=this.docRef.ref%><%
         }
       }
 
@@ -398,7 +405,7 @@ MODEL({
       this.tagName = 'span';
 
       this.setClass('docLinkNoDocumentation', function() {
-        return !(this.data && this.data.valid && this.data.resolvedModelChain[this.data.resolvedModelChain.length-1].documentation);
+        return !(this.docRef && this.docRef.valid && this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1].documentation);
       }.bind(this), this.id);
     }
   },
@@ -413,8 +420,8 @@ MODEL({
     {
       name: 'onClick',
       code: function(evt) {
-        if (this.data && this.data.valid && this.X.documentViewRequestNavigation) {
-          this.X.documentViewRequestNavigation(this.data);
+        if (this.docRef && this.docRef.valid && this.X.documentViewRequestNavigation) {
+          this.X.documentViewRequestNavigation(this.docRef);
         }
       }
     }
@@ -490,7 +497,6 @@ MODEL({
       /* Warns if documentViewParentModel is missing from the context. */
       if (!this.X.documentViewParentModel) {
         console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
-        debugger;
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.
