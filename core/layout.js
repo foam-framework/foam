@@ -119,11 +119,12 @@ MODEL({
                        function() {
                          v.width = self.width;
                          v.height = self.height;
+                         self.window.document.body.style.height = self.height + 'px';
                        });
         var s = this.window.document.body.style;
-        s.padding = 0;
-        s.margin = 0;
-        s.border = 0;
+        s.padding = '0px';
+        s.margin = '0px';
+        s.border = '0px';
         this.window.document.body.insertAdjacentHTML('beforeend', v.toHTML());
         v.initHTML();
       }
