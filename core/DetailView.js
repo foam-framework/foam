@@ -2,13 +2,42 @@ MODEL({
   name: 'DetailView',
   extendsModel: 'View',
 
+  documentation:function() {/*
+    <p>When a view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'DetailView'}
+    is the place to start. Either using $$DOC{ref:'DetailView'} directly, implementing
+    a .toDetailHTML() $$DOC{ref:'Method'} in your model, or extending
+    $$DOC{ref:'DetailView'} to add custom formatting.
+    </p>
+    <p>Set the $$DOC{ref:'.data'} $$DOC{ref:'Property'} to the $$DOC{ref:'Model'} instance
+    you want to display. $$DOC{ref:'DetailView'} will extract the $$DOC{ref:'Model'}
+    definition, create editors for the $$DOC{ref:'Property',usePlural:true}, and
+    display the current values of your instance. Set $$DOC{ref:'.mode',usePlural:true}
+    to indicate read-only if desired.
+    </p>
+    <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
+    $$DOC{ref:'Template'} to render their contents instead of
+    $$DOC{ref:'DetailView.defaultToHTML'}.
+    </p>
+  */},
+
   properties: [
     {
       name:  'data',
       postSet: function(_, data) {
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
         this.onValueChange();
-      }
+      },
+      documentation: function() {/*
+        <p>The $$DOC{ref:'Model'} to view. The $$DOC{ref:'Property',usePlural:true}
+        of this $$DOC{ref:'Model'} instance will be examined and a $$DOC{ref:'PropertyView'}
+        created for each with editors for the current value.
+        </p>
+        <p>Sub-views of $$DOC{ref:'DetailView'} are passed this $$DOC{ref:'.data'}
+        property, from which $$DOC{ref:'PropertyView'} will extract its named
+        $$DOC{ref:'Property'}
+        and bind the property to the sub-view $$DOC{ref:'DetailView.data'}.
+        </p>
+      */}
     },
     {
       name:  'model',
@@ -19,21 +48,43 @@ MODEL({
           this.$.outerHTML = this.toHTML();
           this.initHTML();
         }
-      }
+      },
+      documentation: function() {/*
+        <p>The $$DOC{ref:'.model'} is extracted from $$DOC{ref:'.data'}, or can be
+        set in advance when the type of $$DOC{ref:'.data'} is known. The $$DOC{ref:'Model'}
+        is used to set up the structure of the $$DOC{ref:'DetailView'}, by examining the
+        $$DOC{ref:'Property',usePlural:true}. Changing the $$DOC{ref:'.data'} out
+        for another instance of the same $$DOC{ref:'Model'} will refresh the contents
+        of the sub-views without destroying and re-creating them.
+        </p>
+      */}
     },
     {
       name: 'title',
-      defaultValueFn: function() { return "Edit " + this.model.label; }
+      defaultValueFn: function() { return "Edit " + this.model.label; },
+      documentation: function() {/*
+        <p>The display title for the $$DOC{ref:'View'}.
+        </p>
+      */}
     },
     {
       model_: 'StringProperty',
       name: 'mode',
-      defaultValue: 'read-write'
+      defaultValue: 'read-write',
+      documentation: function() {/*
+        <p>The editing mode. To disable editing set to 'read-only'.
+        </p>
+      */}
     },
     {
       model_: 'BooleanProperty',
       name: 'showRelationships',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() {/*
+        <p>Set true to create sub-views to display $$DOC{ref:'Relationship',usePlural:true}
+        for the $$DOC{ref:'.model'}.
+        </p>
+      */}
     }
   ],
 
@@ -44,17 +95,25 @@ MODEL({
         // TODO: Allow overriding of listeners
         this.onValueChange_.apply(this, arguments);
         if ( this.$ ) this.updateSubViews();
-      }
+      },
+      documentation: function() {/*
+        <p>Triggers sub-views to update their values without destroying any of them.
+        </p>
+      */}
     }
   ],
 
   methods: {
     // Template Method
-    onValueChange_: function() { },
+    onValueChange_: function() { /* Override with value update code. */ },
 
-    viewModel: function() { return this.model; },
+    viewModel: function() { /* The $$DOC{ref:'Model'} type of the $$DOC{ref:'.data'}. */
+       return this.model;
+    },
 
     createTemplateView: function(name, opt_args) {
+      /* Overridden here to set the new View.$$DOC{ref:'.data'} to this.$$DOC{ref:'.data'}.
+         See $$DOC{ref:'View.createTemplateView'}. */
       var o = this.viewModel()[name];
       if ( o ) {
         var v = Action.isInstance(o) ?
@@ -69,6 +128,7 @@ MODEL({
     },
 
     titleHTML: function() {
+      /* Title text HTML formatter */
       var title = this.title;
 
       return title ?
@@ -76,11 +136,12 @@ MODEL({
         '';
     },
 
-    startColumns: function() { return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
-    nextColumn:   function() { return '</table></td><td valign=top><table valign=top>'; },
-    endColumns:   function() { return '</table></td></tr></table></td></tr>'; },
+    startColumns: function() { /* HTML formatter */ return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
+    nextColumn:   function() { /* HTML formatter */ return '</table></td><td valign=top><table valign=top>'; },
+    endColumns:   function() { /* HTML formatter */ return '</table></td></tr></table></td></tr>'; },
 
     rowToHTML: function(prop, view) {
+      /* HTML formatter for each $$DOC{ref:'Property'} row. */
       var str = "";
 
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
@@ -105,12 +166,23 @@ MODEL({
 
     // If the Model supplies a toDetailHTML method, then use it instead.
     toHTML: function() {
+      /* <p>Overridden to create the complete HTML content for the $$DOC{ref:'View'}.</p>
+         <p>$$DOC{ref:'Model',usePlural:true} may specify a .toDetailHTML() $$DOC{ref:'Method'} or
+         $$DOC{ref:'Template'} to render their contents instead of the
+          $$DOC{ref:'DetailView.defaultToHTML'} we supply here.</p>
+
+        */
+
       if ( ! this.model ) throw "DetailView: either 'data' or 'model' must be specified.";
 
       return (this.model.getPrototype().toDetailHTML || this.defaultToHTML).call(this);
     },
 
     defaultToHTML: function() {
+      /* For $$DOC{ref:'Model',usePlural:true} that don't supply a .toDetailHTML()
+        $$DOC{ref:'Method'} or $$DOC{ref:'Template'}, a default listing of
+        $$DOC{ref:'Property'} editors is implemented here.
+        */
       this.children = [];
       var model = this.model;
       var str  = "";
@@ -145,6 +217,7 @@ MODEL({
     },
 
     initHTML: function() {
+      /* After sub-view creation, connects sub-views for updates. */
       this.SUPER();
 
       // hooks sub-views upto sub-models
@@ -152,6 +225,7 @@ MODEL({
     },
 
     updateSubViews: function() {
+      /* Connects sub-views for updates. */
       if ( this.data === '' ) return;
 
       for ( var i = 0 ; i < this.children.length ; i++ ) {
