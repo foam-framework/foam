@@ -141,6 +141,9 @@ MODEL({
 <%        } else { %>
             <h2>Extends $$DOC{ref: 'Model' }</h2>
 <%        } %>
+<%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
+            <h2>Implements $$DOC{ref: this.data.model_.id }</h2>
+<%        } %>
           $$data{ model_: 'DocModelBodyView' }
         </div>
         <div class="members">

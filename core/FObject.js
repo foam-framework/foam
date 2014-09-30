@@ -443,15 +443,15 @@ var FObject = {
   getFeature: function(featureName) {
     featureName = featureName.toUpperCase();
     return [
-      this.properties,
-      this.actions,
-      this.methods,
-      this.listeners,
-      this.templates,
-      this.models,
-      this.tests,
-      this.relationships,
-      this.issues
+      this.properties? this.properties : [],
+      this.actions? this.actions : [],
+      this.methods? this.methods : [],
+      this.listeners? this.listeners : [],
+      this.templates? this.templates : [],
+      this.models? this.models : [],
+      this.tests? this.tests : [],
+      this.relationships? this.relationships : [],
+      this.issues? this.issues : []
     ].mapFind(function(list) { return list.mapFind(function(f) {
       return f.name && f.name.toUpperCase() === featureName && f;
     })});

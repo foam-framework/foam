@@ -614,7 +614,7 @@ MODEL({
 
   documentation: function() { /*
       <p>$$DOC{ref:'Interface',usePlural:true} specify a set of methods with no
-      implementation. $$DOC{ref:'Model',usePlural:true} extending the $$DOC{ref:'Interface'}
+      implementation. $$DOC{ref:'Model',usePlural:true} implementing $$DOC{ref:'Interface'}
       fill in the implementation as needed. This is analogous to
       $$DOC{ref:'Interface',usePlural:true} in object-oriented languages.</p>
     */},

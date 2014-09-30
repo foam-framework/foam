@@ -67,7 +67,7 @@ MODEL({
 
   documentation: function() {/*
     <p>The $$DOC{ref:'Sink'} $$DOC{ref:'Interface'} forms the basis for all data
-    access. At a minimum, data stores must suppor the
+    access. At a minimum, data stores must support the
     $$DOC{ref:'.put'} and $$DOC{ref:'.remove'} operations.</p>
   */},
 
