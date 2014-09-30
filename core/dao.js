@@ -59,39 +59,49 @@ MODEL({
 
 
 MODEL({
-  model_: 'Interface',
+  extendsModel: 'Interface',
 
   package: 'dao',
   name: 'Sink',
   description: 'Data Sink',
 
+  documentation: function() {/*
+    The $$DOC{ref:'Sink'} $$DOC{ref:'Interface'} forms the basis for all data
+    access. At a minimum, data stores must suppor the
+    $$DOC{ref:'.put'} and $$DOC{ref:'.remove'} operations.
+  */},
+
   methods: [
     {
       name: 'put',
       description: 'Put (add) an object to the Sink.',
+      documentation: "Adds the given object to the store.",
       args: [
-        { name: 'obj', type: 'Object' },
-        { name: 'sink', type: 'Sink' }
+        { name: 'obj', type: 'Object', documentation: 'The object to add.' },
+        { name: 'sink', type: 'Sink', documentation: 'The next sink to chain: sink.put(obj) is called after this.put() completes.' }
       ]
     },
     {
       name: 'remove',
       description: 'Remove a single object.',
+      documentation: "Removes the given object from the store.",
       args: [
-        { name: 'obj', type: 'Object' },
-        { name: 'sink', type: 'Sink' }
+        { name: 'obj', type: 'Object', documentation: 'The object to remove.' },
+        { name: 'sink', type: 'Sink', documentation: 'The next sink to chain: sink.remove(obj) is called after this.remove() completes.' }
       ]
     },
     {
       name: 'error',
       description: 'Report an error.',
+      documentation: "Report an error to the $$DOC{ref:'Sink'}.",
       args: [
         { name: 'obj', type: 'Object' }
       ]
     },
     {
       name: 'eof',
-      description: 'Indicate that no more operations will be performed on the Sink.'
+      description: 'Indicate that no more operations will be performed on the Sink.',
+      documentation: "Indicates that no more operations will be performed on the $$DOC{ref:'Sink'}."
     }
   ]
 });
