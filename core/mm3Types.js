@@ -767,7 +767,7 @@ var DocumentationProperty = Model.create({
     },
     {
       name: 'view',
-      defaultValue: 'DocModelView'
+      defaultValue: 'DetailView'
     },
     {
       name: 'help',

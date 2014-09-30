@@ -19,7 +19,7 @@ var BinaryProtoGrammar;
 var DocumentationBootstrap = {
   name: 'documentation',
   type: 'Documentation',
-  view: 'DocModelView',
+  view: 'DetailView',
   help: 'Documentation associated with this entity.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
   setter: function(nu) {
