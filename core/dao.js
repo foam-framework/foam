@@ -3162,6 +3162,18 @@ MODEL({
 
   help: 'A facade for easy DAO setup.',
 
+  documentation: function() {/*
+    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
+    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
+    will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
+    </p>
+    <p>Since $$DOC{ref:'EasyDAO'} is a proxy, just use it like you would any other
+    $$DOC{ref:'DAO'}, without worrying about the internal $$DOC{ref:'DAO'} doing the
+    work.
+    </p>
+  */},
+
   properties: [
     {
       name: 'name',

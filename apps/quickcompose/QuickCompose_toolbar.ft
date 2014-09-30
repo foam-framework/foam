@@ -6,7 +6,9 @@ var ab = this.X.ActionButtonCView.xbind({
 });
 
 // var discardB             = ab.create({action: this.model_.DISCARD,               data: this});
-// this.model_.SEND.label = 'Send!';
+
+this.model_.SEND.iconUrl = 'images/send.png';
+this.model_.SEND.label = '';
 
 var boldB                = ab.create({action: RichTextView.BOLD,                 data: this.view.bodyView});
 var italicB              = ab.create({action: RichTextView.ITALIC,               data: this.view.bodyView });
@@ -23,9 +25,9 @@ var blockQuoteB          = ab.create({action: RichTextView.BLOCK_QUOTE,         
 var sendB                = this.X.ActionButtonCView.create({
     action: this.model_.SEND,
     data:   this,
-    color: 'pink',
-    radius: 30,
-    background: 'red'
+    color: 'white',
+    radius: 26,
+    background: '#259b24'
 });
 %>
 <div class=toolbar>
