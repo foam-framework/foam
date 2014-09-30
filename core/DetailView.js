@@ -22,6 +22,10 @@ MODEL({
 
   properties: [
     {
+      name: 'className',
+      defaultValue: 'detailView'
+    },
+    {
       name:  'data',
       postSet: function(_, data) {
         if ( ! this.model && data && data.model_ ) this.model = data.model_;
@@ -136,6 +140,9 @@ MODEL({
         '';
     },
 
+    startForm: function() { return '<table>'; },
+    endForm: function() { return '</table>'; },
+
     startColumns: function() { /* HTML formatter */ return '<tr><td colspan=2><table valign=top><tr><td valign=top><table>'; },
     nextColumn:   function() { /* HTML formatter */ return '</table></td><td valign=top><table valign=top>'; },
     endColumns:   function() { /* HTML formatter */ return '</table></td></tr></table></td></tr>'; },
@@ -187,8 +194,8 @@ MODEL({
       var model = this.model;
       var str  = "";
 
-      str += '<div id="' + this.id + '" class="detailView" name="form">';
-      str += '<table>';
+      str += '<div id="' + this.id + '" ' + this.cssClassAttr() + '" name="form">';
+      str += this.startForm();
       str += this.titleHTML();
 
       for ( var i = 0 ; i < model.properties.length ; i++ ) {
@@ -199,8 +206,7 @@ MODEL({
         str += this.rowToHTML(prop, this.createView(prop));
       }
 
-
-      str += '</table>';
+      str += this.endForm();
 
       if ( this.showRelationships ) {
         var view = this.X.RelationshipsView.create({
