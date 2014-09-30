@@ -496,7 +496,7 @@ MODEL({
     init: function() {
       /* Warns if documentViewParentModel is missing from the context. */
       if (!this.X.documentViewParentModel) {
-        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
+        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.

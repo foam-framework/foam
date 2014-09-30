@@ -59,26 +59,26 @@ MODEL({
 
 
 MODEL({
-  extendsModel: 'Interface',
+  model_: 'Interface',
 
   package: 'dao',
   name: 'Sink',
   description: 'Data Sink',
 
   documentation: function() {/*
-    The $$DOC{ref:'Sink'} $$DOC{ref:'Interface'} forms the basis for all data
+    <p>The $$DOC{ref:'Sink'} $$DOC{ref:'Interface'} forms the basis for all data
     access. At a minimum, data stores must suppor the
-    $$DOC{ref:'.put'} and $$DOC{ref:'.remove'} operations.
+    $$DOC{ref:'.put'} and $$DOC{ref:'.remove'} operations.</p>
   */},
 
   methods: [
     {
       name: 'put',
       description: 'Put (add) an object to the Sink.',
-      documentation: "Adds the given object to the store.",
+      documentation: "<p>Adds the given object to the store.<p>",
       args: [
         { name: 'obj', type: 'Object', documentation: 'The object to add.' },
-        { name: 'sink', type: 'Sink', documentation: 'The next sink to chain: sink.put(obj) is called after this.put() completes.' }
+        { name: 'sink', type: 'Sink', documentation: '<p>The next sink to chain: sink.put(obj) is called after this.put() completes.</p>' }
       ]
     },
     {
@@ -87,13 +87,13 @@ MODEL({
       documentation: "Removes the given object from the store.",
       args: [
         { name: 'obj', type: 'Object', documentation: 'The object to remove.' },
-        { name: 'sink', type: 'Sink', documentation: 'The next sink to chain: sink.remove(obj) is called after this.remove() completes.' }
+        { name: 'sink', type: 'Sink', documentation: '<p>The next sink to chain: sink.remove(obj) is called after this.remove() completes.</p>' }
       ]
     },
     {
       name: 'error',
       description: 'Report an error.',
-      documentation: "Report an error to the $$DOC{ref:'Sink'}.",
+      documentation: "<p>Report an error to the $$DOC{ref:'Sink'}.</p>",
       args: [
         { name: 'obj', type: 'Object' }
       ]
@@ -101,7 +101,7 @@ MODEL({
     {
       name: 'eof',
       description: 'Indicate that no more operations will be performed on the Sink.',
-      documentation: "Indicates that no more operations will be performed on the $$DOC{ref:'Sink'}."
+      documentation: "<p>Indicates that no more operations will be performed on the $$DOC{ref:'Sink'}.</p>"
     }
   ]
 });
