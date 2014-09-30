@@ -109,10 +109,18 @@ MODEL({
   extendsModel: 'DocView',
   help: 'Displays the documentation of the given Model.',
 
+  documentation: function() {/*
+    Displays the documentation for a given $$DOC{ref:'Model'}. If you set a
+    $$DOC{ref:'DocumentationBook'} sub-model, it will switch to a separate
+    book viewer mode to display chapters. The viewer will destroy and
+    re-generate sub-views when the $$DOC{ref:'.data'} changes.
+  */},
+
   properties: [
     {
       name: 'data',
       help: 'The Model for which to display documentation.',
+      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
         this.updateHTML();
       }

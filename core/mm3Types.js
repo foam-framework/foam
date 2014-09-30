@@ -775,7 +775,7 @@ var DocumentationProperty = Model.create({
     },
     {
       name: 'documentation',
-      defaultValue: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."
+      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
    }
   ]
 });

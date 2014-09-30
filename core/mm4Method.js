@@ -236,6 +236,10 @@ MODEL({
     'description'
   ],
 
+  documentation: function() { /*
+      <p>Represents one $$DOC{ref:'Method'} argument, including the type information.</p>
+  */},
+
   properties: [
     {
       name:  'type',
@@ -244,21 +248,27 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: 'Object',
-      help: 'The type of this argument.'
+      help: 'The type of this argument.',
+      documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or a $$DOC{ref:'Model'}.</p>
+      */}
     },
     {
       name: 'javaType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The java type that represents the type of this property.'
+      help: 'The java type that represents the type of this property.',
+      documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
+        or class to use. */}
     },
     {
       name: 'javascriptType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The javascript type that represents the type of this property.'
+      help: 'The javascript type that represents the type of this property.',
+      documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
+         type to use. */}
     },
     {
       name:  'name',
@@ -267,16 +277,26 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the entity.'
+      help: 'The coding identifier for the entity.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
     },
     {
       model_: 'BooleanProperty',
       name: 'required',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /*
+        Indicates that this arugment is required for calls to the containing $$DOC{ref:'Method'}.
+      */}
     },
     {
       name: 'defaultValue',
-      help: 'Default Value if not required and not provided.'
+      help: 'Default Value if not required and not provided.',
+      documentation: function() { /*
+        The default value to use if this argument is not required and not provided to the $$DOC{ref:'Method'} call.
+      */}
     },
     {
       name: 'description',
@@ -284,7 +304,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'A brief description of this topic.'
+      help: 'A brief description of this argument.',
+      documentation: function() { /*
+        A human-readable description of the argument.
+      */}
     },
     {
       name: 'help',
@@ -293,7 +316,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the entity.'
+      help: 'Help text associated with the entity.',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}
     },
     {
       model_: 'DocumentationProperty',
