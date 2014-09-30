@@ -275,7 +275,7 @@ MODEL({
     {
       name: 'keyPress',
       code: function(e) {
-        if ( e.ctrlKey && e.shiftKey ) {
+        if ( e.ctrlKey ) {
           if ( e.keyCode == 189 ) this.zoomOut();
           if ( e.keyCode == 187 ) this.zoomIn();
         }
