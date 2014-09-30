@@ -79,7 +79,7 @@ var Model = {
       <li>Creating a subcontext and replacing X.YourModel with a different model (such as
       YourTestModelMock created specifically for testing) will give you seamless dependency
       injection. See the
-      $$DOC{ref:'DevDocumentation_Context.documentation.chapters.Intro', text:'Context documentation'}
+      $$DOC{ref:'DevDocumentation_Context.documentation.chapters.intro', text:'Context documentation'}
       for more information.</li>
     </ul>
 

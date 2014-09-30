@@ -120,7 +120,7 @@ MODEL({
       defaultValue: function(action) { return action.label; },
       help: "Function to determine label. Defaults to 'this.label'.",
       documentation: function() { /* 
-            A function used to determine the label. Defaults to $$DOC{ref:'label'}.
+            A function used to determine the label. Defaults to $$DOC{ref:'.label'}.
         */}  
     },
     {

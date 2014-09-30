@@ -416,7 +416,11 @@ MODEL({
       this.tagName = 'span';
 
       this.setClass('docLinkNoDocumentation', function() {
-        return !(this.docRef && this.docRef.valid && this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1].documentation);
+        if (this.docRef && this.docRef.valid) {
+          mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
+          return !( mostSpecificObject.documentation
+                   || (mostSpecificObject.model_ && mostSpecificObject.model_.isSubModel(Documentation)));
+        }
       }.bind(this), this.id);
     }
   },
@@ -559,12 +563,13 @@ MODEL({
       if (args.length > 1 && args[1].length > 0)
       {
         // feature specified "Model.feature" or ".feature"
-        if (args[1] === "documentation") {
+        foundObject = model.getFeature(args[1]);
+
+        if (!foundObject && args[1] === "documentation") {
           // special case for links into documentation books
           foundObject = model.documentation;
-        } else {
-          foundObject = model.getFeature(args[1]);
         }
+
         if (!foundObject) {
           return;
         } else {
