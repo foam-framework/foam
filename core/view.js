@@ -322,6 +322,9 @@ MODEL({
       */}
     },
     {
+      name: 'tooltip'
+    },
+    {
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*
@@ -368,6 +371,25 @@ MODEL({
   ],
 
   listeners: [
+    {
+      name: 'openTooltip',
+      code: function(e) {
+console.assert(! this.tooltip_);
+        this.tooltip_ = this.X.Tooltip.create({
+          text:   this.tooltip,
+          target: this.$
+        });
+      }
+    },
+    {
+      name: 'closeTooltip',
+      code: function(e) {
+        if ( this.tooltip_ ) {
+          this.tooltip_.close();
+          this.tooltip_ = null;
+        }
+      }
+    },
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
@@ -708,6 +730,13 @@ MODEL({
         $$DOC{ref:'.initHTML'}. */
       this.initInnerHTML();
       this.initKeyboardShortcuts();
+      this.maybeInitTooltip();
+    },
+    
+    maybeInitTooltip: function() {
+      if ( ! this.tooltip ) return;
+      this.$.addEventListener('mouseenter', this.openTooltip);
+      this.$.addEventListener('mouseleave', this.closeTooltip);
     },
 
     initInnerHTML: function() {
@@ -920,12 +949,6 @@ MODEL({
 
   properties: [
     {
-      name: 'action'
-    },
-    {
-      name: 'data'
-    },
-    {
       name: 'text',
       help: 'Help text to be shown in tooltip.'
     },
@@ -972,7 +995,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      setTimeout(function() {
+      this.X.setTimeout(function() {
         if ( this.closed ) return;
 
         var document = this.X.document;
@@ -990,15 +1013,6 @@ MODEL({
         div.innerHTML = this.toInnerHTML();
 
         document.body.appendChild(div);
-
-        // If an action is defined and we click on the tooltip, then treat
-        // it as we activated the action.
-        if ( this.action && this.data ) {
-          this.on('click', function() {
-            this.action.callIfEnabled(this.X, this.data);
-            this.close();
-          }.bind(this), this.id);
-        }
 
         var s            = this.X.window.getComputedStyle(div);
         var pos          = findPageXY(this.target);
@@ -1021,7 +1035,7 @@ MODEL({
         }, 10);
 
         this.initHTML();
-      }.bind(this), 500);
+      }.bind(this), 800);
     },
     toInnerHTML: function() { return this.text; },
     close: function() {
@@ -2423,6 +2437,10 @@ MODEL({
     {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action.help; }
     }
   ],
 
@@ -2431,31 +2449,10 @@ MODEL({
       name: 'render',
       isAnimated: true,
       code: function() { this.updateHTML(); }
-    },
-    {
-      name: 'onMouseEnter',
-      code: function(e) {
-        if ( ! this.tooltip_ && this.action.help ) {
-          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, action: this.action, data: this.data, target: this.$});
-        }
-      }
-    },
-    {
-      name: 'onMouseLeave',
-      code: function(e) {
-        if ( this.tooltip_ && e.toElement === this.tooltip_.$ ) return;
-        this.closeTooltip();
-      }
     }
   ],
 
   methods: {
-    closeTooltip: function() {
-      if ( this.tooltip_ ) {
-        this.tooltip_.close();
-        this.tooltip_ = null;
-      }
-    },
     toHTML: function() {
       var self = this;
 
@@ -2490,15 +2487,6 @@ MODEL({
       }
 
       return out;
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      if ( this.action.help ) {
-        this.$.addEventListener('mouseenter', this.onMouseEnter);
-        this.$.addEventListener('mouseleave', this.onMouseLeave);
-      }
     }
   }
 });
