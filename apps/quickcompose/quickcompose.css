@@ -240,25 +240,25 @@ height:40px
 }
 
 @media (max-width: 350px) {
-  .actionButton-leftJustify, .actionButton-centerJustify, .actionButton-rightJustify {
+  .actionButtonCView-leftJustify, .actionButtonCView-centerJustify, .actionButtonCView-rightJustify {
     display: none;
   }
 }
 
 @media (max-width: 400px) {
-  .actionButton-numberedList, .actionButton-bulletList {
+  .actionButtonCView-numberedList, .actionButtonCView-bulletList {
     display: none;
   }
 }
 
 @media (max-width: 450px) {
-  .actionButton-decreaseIndentation, .actionButton-increaseIndentation {
+  .actionButtonCView-decreaseIndentation, .actionButtonCView-increaseIndentation {
     display: none;
   }
 }
 
 @media (max-width: 490px) {
-  .actionButton-blockQuote {
+  .actionButtonCView-blockQuote {
     display: none;
   }
 }
