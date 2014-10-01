@@ -455,7 +455,26 @@ var FObject = {
     ].mapFind(function(list) { return list.mapFind(function(f) {
       return f.name && f.name.toUpperCase() === featureName && f;
     })});
+  },
+
+  getAllFeatures: function() {
+    var featureList = [];
+    [
+      this.properties? this.properties : [],
+      this.actions? this.actions : [],
+      this.methods? this.methods : [],
+      this.listeners? this.listeners : [],
+      this.templates? this.templates : [],
+      this.models? this.models : [],
+      this.tests? this.tests : [],
+      this.relationships? this.relationships : [],
+      this.issues? this.issues : []
+    ].map(function(list) {
+      featureList = featureList.concat(list);
+    });
+    return featureList;
   }
+
 };
 
 

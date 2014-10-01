@@ -84,10 +84,7 @@ MODEL({
             }
           </code></p>
 
-          <p>Creating a subcontext and replacing a $$DOC{ref:'Model'}
-          definition inside it will cause any other instances using that Context to
-          use your new $$DOC{ref:'Model'} definition instead, giving you easy
-          dependency injection.
+          <p>You can also replace $$DOC{ref:'Model'} definitions in a sub-context.
           </p>
 
         */}

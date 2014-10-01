@@ -244,7 +244,7 @@ MODEL({
 
   documentation: function() {/*
     <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
-       $$DOC{ref:'Model'}, a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
+       $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
        <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
        $$DOC{ref:'Property',usePlural:true} of the data.
     </p>
