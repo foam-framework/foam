@@ -239,25 +239,25 @@ height:40px
   padding-top: 0;
 }
 
-@media (max-width: 350px) {
+@media (max-width: 360px) {
   .actionButtonCView-leftJustify, .actionButtonCView-centerJustify, .actionButtonCView-rightJustify {
     display: none;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 440px) {
   .actionButtonCView-numberedList, .actionButtonCView-bulletList {
     display: none;
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 510px) {
   .actionButtonCView-decreaseIndentation, .actionButtonCView-increaseIndentation {
     display: none;
   }
 }
 
-@media (max-width: 490px) {
+@media (max-width: 560px) {
   .actionButtonCView-blockQuote {
     display: none;
   }
