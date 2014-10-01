@@ -9,6 +9,12 @@
  </head>
  <body>
 <script>
+Timer.properties = [
+  StringProperty.create({ name: 'name' })
+].concat(Timer.properties);
+
+delete Timer.prototype_;
+
 var t = Timer.create();
 var v1 = DetailView.create({data: t, showActions: true});
 v1.write(document);
