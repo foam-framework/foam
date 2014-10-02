@@ -484,10 +484,7 @@ var Events = {
       srcMap = new WeakMap();
       this.listeners_.set(src, srcMap);
     }
-    if ( srcMap.get(dst) ) {
-      debugger;
-      console.log('duplicate follow');
-    }
+    console.assert( ! srcMap.get(dst), 'recordListener: duplicate follow');
     srcMap.set(dst, listener);
     src.addListener(listener);
     if ( ! opt_dontCallListener ) listener();
@@ -728,7 +725,7 @@ var Movement = {
     var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
     var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
 
-    if ( ! opt_X || ! opt_X.setInterval ) debugger;
+    //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
 
     if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
     var interp = opt_interp || Movement.linear;

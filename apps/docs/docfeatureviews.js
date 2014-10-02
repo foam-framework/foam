@@ -81,10 +81,12 @@ MODEL({
 
   methods: {
     getGroupFromTarget: function(target) {
-      debugger; // implement this to return your desired feature (i.e target.properties$)
+      // implement this to return your desired feature (i.e target.properties$)
+      console.assert(false, 'DocFeaturesView.getGroupFromTarget: implement me!');
     },
     featureName: function() {
-      debugger; // implement this to return the display name of your feature (i.e. "Properties")
+      // implement this to return the display name of your feature (i.e. "Properties")
+      console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
   }
 

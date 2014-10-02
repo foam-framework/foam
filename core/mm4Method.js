@@ -335,23 +335,13 @@ MODEL({
 
       return this.required ?
         function() {
-          if ( arguments[i] === undefined ) {
-            console.assert(false, 'Missing required argument# ' + i);
-            debugger;
-          }
-          if ( typeof arguments[i] !== type ) {
-            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
-            debugger;
-          }
-
+          console.assert(arguments[i] !== undefined, 'Missing required argument# ' + i);
+          console.assert(typeof arguments[i] === type,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
           return f.apply(this, arguments);
         } :
         function() {
-          if ( arguments[i] !== undefined && typeof arguments[i] !== type ) {
-            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
-            debugger;
-          }
-
+          console.assert(arguments[i] === undefined || typeof arguments[i] === type,
+              'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
           return f.apply(this, arguments);
         } ;
     }
@@ -589,12 +579,7 @@ Method.getPrototype().decorateFunction = function(f) {
   return returnType ?
     function() {
       var ret = f.apply(this, arguments);
-
-      if ( typeof ret !== returnType ) {
-        console.assert(false, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
-        debugger;
-      }
-
+      console.assert(typeof ret !== returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
       return ret;
     } : f ;
 };

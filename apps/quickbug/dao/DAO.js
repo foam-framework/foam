@@ -468,7 +468,7 @@ MODEL({
        if ( this.queryCache.length >= this.queryCount ) this.queryCache.shift();
        this.queryCache.push(cacheEntry);
 
-       this.local.select({ put: function(x) { if (x === undefined) debugger; buf.put(x); } }, options && options.query ? { query: options.query } : {})(
+       this.local.select({ put: function(x) { console.assert(x !== undefined, 'SplitDAO.local put: undefined'); buf.put(x); } }, options && options.query ? { query: options.query } : {})(
          (function() {
            buf.select(sink, bufOptions)(function(s) {
              daoFuture.set(buf);
@@ -482,7 +482,7 @@ MODEL({
            this.remote.limit(this.maxLimit).select({
              put: (function(obj) {
                // Put the object in the buffer, but also cache it in the local DAO
-               if (obj === undefined) debugger;
+               console.assert(obj !== undefined, 'SplitDAO.remote put: undefined');
                buf.put(obj);
                this.putIfMissing(obj);
 
