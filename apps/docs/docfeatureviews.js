@@ -37,7 +37,21 @@ MODEL({
       model_: 'DAOProperty',
       defaultValue: [],
       postSet: function() {
+        var self = this;
+
         this.filteredDAO = this.dao; //this.dao.where(EQ(Property.HIDDEN, FALSE));
+        this.inheritedFeaturesDAO = [].dao;
+        this.X.docModelViewFeatureDAO
+          .where(
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().id),
+                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
+                    EQ(DocFeatureInheritanceTracker.TYPE, this.featureName()))
+                )
+          .select({ put: function(feature) {
+              console.log("Feature: ",feature);
+              self.inheritedFeaturesDAO.put(feature.feature);
+            }
+          });
       }
     },
     {
@@ -49,6 +63,15 @@ MODEL({
         }.bind(this));
       }
     },
+    {
+      name:  'inheritedFeaturesDAO',
+      model_: 'DAOProperty',
+      documentation: function() { /*
+          Returns the list of features (matching this feature type) that are
+          inherited but not declared or overridden in this $$DOC{ref:'Model'}
+      */}
+    },
+
     {
       name: 'isEmpty',
       defaultValue: true,
@@ -70,11 +93,12 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
+    console.log(this.inheritedFeaturesDAO);
           if (this.isEmpty) { %>
             <h2>No <%=this.featureName()%>.</h2>
     <%    } else { %>
             <h2><%=this.featureName()%>:</h2>
-            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+            <div class="memberList">$$inheritedFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}
   ],
@@ -95,10 +119,31 @@ MODEL({
   extendsModel: 'DocBodyView',
   help: 'A generic view for each item in a list of documented features.',
 
+  methods: {
+      overrides: function() {
+        console.log("override eval...");
+        var name = "";
+        this.X.docModelViewFeatureDAO
+            .where(
+                  AND(EQ(DocFeatureInheritanceTracker.NAME, this.data.name),
+                      EQ(DocFeatureInheritanceTracker.IS_DECLARED, true))
+            )
+            .orderBy(DESC(DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
+            .select()(function(n) {
+              n.forEach(function(m) {
+                name = name + m.model+"/";
+              });
+              return name;
+            });
+        return name;
+    }
+  },
+
   templates: [
     function toInnerHTML() {/*
       <h3><%=this.data.name%></h3>
       <%=this.renderDocSourceHTML()%>
+      <p>O: <%= this.overrides() %></p>
     */}
   ]
 });
