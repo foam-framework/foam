@@ -38,13 +38,26 @@ MODEL({
 
   package: 'foam.mlang',
 
+  documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
+
   methods: {
     // Mustang Query Language
-    toMQL: function() { return this.label_; },
-    toSQL: function() { return this.label_; },
-    toString: function() { return this.toMQL(); },
-    collectInputs: function(terms) { terms.push(this); },
-    partialEval: function() { return this; },
+    toMQL: function() { /* Outputs Mustang Query Language for this expression. */ return this.label_; },
+    toSQL: function() { /* Outputs SQL for this expression. */ return this.label_; },
+    toString: function() {
+      /* Converts to a string form for debugging; defaults to $$DOC{ref: ".toMQL", text: "MQL"}. */
+      return this.toMQL();
+    },
+    collectInputs: function(terms) {
+      /* Recursively adds all inputs of an expression to an array. */
+      terms.push(this);
+    },
+    partialEval: function() {
+      /* <p>Simplifies the expression by eliminating unnecessary clauses and combining others.</p>
+       <p>Can sometimes reduce whole (sub)expressions to TRUE or FALSE.</p>
+      */
+      return this;
+    },
     minterm: function(index, term) {
       // True if this bit is set in the minterm number.
       return !!((term >>> index[0]--) & 1 );
@@ -78,6 +91,7 @@ MODEL({
       return ret;
     },
     pipe: function(sink) {
+      /* Returns a $$DOC{ref: "Sink"} which applies this expression to every value <tt>put</tt> or <tt>remove</tt>d, calling the provided <tt>sink</tt> only for those values which match the expression. */
       var expr = this;
       return {
         __proto__: sink,
@@ -94,6 +108,8 @@ var TRUE = (FOAM({
   name: 'TRUE',
   extendsModel: 'Expr',
 
+  documentation: 'Model for the primitive true value.',
+
   methods: {
     toString: function() { return '<true>'; },
     toSQL:    function() { return '( 1 = 1 )'; },
@@ -108,6 +124,8 @@ var FALSE = (FOAM({
   name: 'FALSE',
   extendsModel: 'Expr',
 
+  documentation: 'Model for the primitive false value.',
+
   methods: {
     toSQL: function(out) { return '( 1 <> 1 )'; },
     toMQL: function(out) { return '<false>'; },
@@ -119,6 +137,8 @@ var IDENTITY = (FOAM({
   model_: 'Model',
   name: 'IDENTITY',
   extendsModel: 'Expr',
+
+  documentation: 'The identity expression, which passes through its input unchanged.',
 
   methods: {
     f: function(obj) { return obj; },
@@ -133,12 +153,15 @@ MODEL({
   extendsModel: 'Expr',
   abstract: true,
 
+  documentation: 'Parent model for expressions which take an arbitrary number of arguments.',
+
   properties: [
     {
       name:  'args',
       label: 'Arguments',
       type:  'Expr[]',
       help:  'Sub-expressions',
+      documentation: 'An array of subexpressions which are the arguments to this n-ary expression.',
       factory: function() { return []; }
     }
   ],
@@ -189,12 +212,15 @@ MODEL({
   extendsModel: 'Expr',
   abstract: true,
 
+  documentation: 'Parent model for one-argument expressions.',
+
   properties: [
     {
       name:  'arg1',
       label: 'Argument',
       type:  'Expr',
       help:  'Sub-expression',
+      documentation: 'The first argument to the expression.',
       defaultValue: TRUE
     }
   ],
@@ -217,12 +243,15 @@ MODEL({
   extendsModel: 'UNARY',
   abstract: true,
 
+  documentation: 'Parent model for two-argument expressions. Extends $$DOC{ref: "UNARY"} to include $$DOC{ref: ".arg2"}.',
+
   properties: [
     {
       name:  'arg2',
       label: 'Argument',
       type:  'Expr',
       help:  'Sub-expression',
+      documentation: 'Second argument to the expression.',
       defaultValue: TRUE
     }
   ],
@@ -243,6 +272,8 @@ MODEL({
 
   extendsModel: 'NARY',
   abstract: true,
+
+  documentation: 'N-ary expression which is true only if each of its 0 or more arguments is true. AND() === TRUE',
 
   methods: {
     // AND has a higher precedence than OR so doesn't need parenthesis
@@ -412,6 +443,8 @@ MODEL({
 
   extendsModel: 'NARY',
 
+  documentation: 'N-ary expression which is true if any one of its 0 or more subexpressions is true. OR() === FALSE',
+
   methods: {
     toSQL: function() {
       var s;
@@ -555,6 +588,8 @@ MODEL({
   extendsModel: 'UNARY',
   abstract: true,
 
+  documentation: 'Unary expression which inverts the truth value of its argument.',
+
   methods: {
     toSQL: function() {
       return 'not ( ' + this.arg1.toSQL() + ' )';
@@ -597,6 +632,8 @@ MODEL({
 
   extendsModel: 'UNARY',
 
+  documentation: 'Pseudo-expression which outputs a human-readable description of its subexpression, and the plan for evaluating it.',
+
   properties: [
     {
       name:  'plan',
@@ -624,6 +661,12 @@ MODEL({
 
   extendsModel: 'BINARY',
   abstract: true,
+
+  documentation: function() { /*
+    <p>Binary expression that compares its arguments for equality.</p>
+    <p>When evaluated in Javascript, uses <tt>==</tt>.</p>
+    <p>If the first argument is an array, returns true if any of its value match the second argument.</p>
+  */},
 
   methods: {
     toSQL: function() { return this.arg1.toSQL() + '=' + this.arg2.toSQL(); },
@@ -670,6 +713,8 @@ MODEL({
 
   extendsModel: 'BINARY',
 
+  documentation: 'Binary expression which is true if its first argument is EQ to any element of its second argument, which is an array.',
+
   properties: [
     {
       name:  'arg2',
@@ -707,6 +752,8 @@ MODEL({
   name: 'ContainedInICExpr',
 
   extendsModel: 'BINARY',
+
+  documentation: 'Checks if the first argument is contained in the array-valued right argument, ignoring case in strings.',
 
   properties: [
     {
@@ -747,6 +794,8 @@ MODEL({
   name: 'ContainsExpr',
 
   extendsModel: 'BINARY',
+
+  //documentation: 'Checks 
 
   methods: {
     toSQL: function() { return this.arg1.toSQL() + " like '%' + " + this.arg2.toSQL() + "+ '%'"; },
