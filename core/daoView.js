@@ -630,7 +630,8 @@ MODEL({
       documentation: 'The current vertical scroll position. Changing this updates the <tt>translate3d</tt>.',
       preSet: function(old, nu) {
         if ( nu < 0 ) return 0;
-        if ( nu > this.scrollHeight - this.viewportHeight )
+        if ( this.scrollHeight > 0 && this.viewportHeight > 0 &&
+            nu > this.scrollHeight - this.viewportHeight )
           return this.scrollHeight - this.viewportHeight;
         return nu;
       },
@@ -638,6 +639,7 @@ MODEL({
         var scroller = this.scroller$();
         if ( scroller ) scroller.style.webkitTransform =
             'translate3d(0px, -' + nu + 'px, 0px)';
+        this.update();
       }
     },
     {
@@ -996,8 +998,6 @@ MODEL({
             this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
           stopMomentum();
         }
-
-        this.update();
       }
     }
   ],

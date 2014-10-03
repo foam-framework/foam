@@ -546,10 +546,10 @@ MODEL({
       this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
         put: function(bookmark) {
           this.memento = bookmark.url;
-          this.search();
+          this.performQuery();
         }.bind(this),
         error: function () {
-          this.search();
+          this.performQuery();
         }.bind(this)
       });
     },

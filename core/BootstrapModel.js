@@ -46,21 +46,23 @@ function override(cls, methodName, method) {
 
   var SUPER = function() { return super_.apply(this, arguments); };
 
+  var slowF = function(OLD_SUPER, args) {
+    try {
+      return method.apply(this, args);
+    } finally {
+      this.SUPER = OLD_SUPER;
+    }
+  };
   var f = function() {
     var OLD_SUPER = this.SUPER;
     this.SUPER = SUPER;
-    if ( OLD_SUPER ) {
-      try {
-        return method.apply(this, arguments);
-      } finally {
-        this.SUPER = OLD_SUPER;
-      }
-    } else {
-      // Fast-Path when it doesn't matter if we restore SUPER or not
-      var ret = method.apply(this, arguments);
-      this.SUPER = null;
-      return ret;
-    }
+
+    if ( OLD_SUPER ) return slowF.call(this, OLD_SUPER, arguments);
+
+    // Fast-Path when it doesn't matter if we restore SUPER or not
+    var ret = method.apply(this, arguments);
+    this.SUPER = null;
+    return ret;
   };
 
   f.super_ = super_;

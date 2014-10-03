@@ -992,15 +992,14 @@ MODEL({
     init: function() {
       this.SUPER();
 
+      var document = this.X.document;
+
+      document.previousTooltip_ = this;
       this.X.setTimeout(function() {
         if ( this.closed ) return;
+        if ( document.previousTooltip_ != this ) return;
 
-        var document = this.X.document;
-        var div      = document.createElement('div');
-
-        // Only allow one Tooltip per document, so close the previous one if it exists.
-        if ( document.previousTooltip_ ) document.previousTooltip_.close();
-        document.previousTooltip_ = this;
+        var div = document.createElement('div');
 
         // Close after 5s
         this.X.setTimeout(this.close.bind(this), 5000);
@@ -1036,11 +1035,17 @@ MODEL({
     },
     toInnerHTML: function() { return this.text; },
     close: function() {
+      if ( this.closed ) return;
       this.closed = true;
-      if ( this.$ ) {
-        this.X.setTimeout(this.$.remove.bind(this.$), 1000);
-        DOM.setClass(this.$, 'fadeout');
-      }
+      // Closing while it is still animating causes it to jump around
+      // which looks bad, so wait 500ms to give it time to transition
+      // if it is.
+      this.X.setTimeout(function() {
+        if ( this.$ ) {
+          this.X.setTimeout(this.$.remove.bind(this.$), 1000);
+          DOM.setClass(this.$, 'fadeout');
+        }
+      }.bind(this), 500);
     },
     destroy: function() {
       this.SUPER();
