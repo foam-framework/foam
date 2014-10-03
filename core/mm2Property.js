@@ -561,7 +561,7 @@ var Property = {
   },
 
   getProperty: function(name) {
-debugger; // Why is this here?  Is it ever called?
+    console.assert(false, 'Property.getProperty called - Why am I here? It never seems to be called.');
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
 

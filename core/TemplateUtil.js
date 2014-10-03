@@ -69,6 +69,12 @@ var TemplateParser = {
 };
 
 var TemplateOutput = {
+  /**
+   * obj - Parent object.  If objects are output and have an initHTML() method, then they
+   * are added to the parent by calling obj.addChild().
+   **/
+  // TODO(kgr): redesign, I think this is actually broken.  If we call appendHTML() of
+  // a sub-view then it will be added to the wrong parent.
   create: function(obj) {
     var buf = '';
     var f = function(/* arguments */) {

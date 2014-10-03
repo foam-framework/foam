@@ -223,7 +223,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      if ( ! this.X.QueryParser) debugger;
+      console.assert( this.X.QueryParser, 'QueryParser not found');
     },
     toHTML: function() {
       this.eid = View.getPrototype().nextID();

@@ -1794,7 +1794,7 @@ MODEL({
           "var url = '" + url + "';\n",
           "var a = importScripts;",
           "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
-          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n debugger; }\n",
+          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n console.error(e); }\n",
           "WorkerDelegate.create({ dao: [] });\n"
         ];
         return new Worker(window.URL.createObjectURL(
