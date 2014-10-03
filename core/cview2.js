@@ -17,6 +17,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
+      preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
       postSet: function(_, v) { console.log('Scaling to: ' , v); },
       defaultValue: 1
     },
@@ -739,7 +740,8 @@ MODEL({
     },
     {
       model_: 'IntProperty',
-      name: 'scrollTop'
+      name: 'scrollTop',
+      preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
     },
     {
       name: 'renderer'
@@ -771,6 +773,23 @@ MODEL({
         function() {
           this.scrollTop; this.height; this.renderer;
         }.bind(this), this.onDAOUpdate);
+
+      if ( this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'verticalScrollMomentum'
+        });
+        manager.install(target);
+      }
+    },
+    containsPoint: function(x, y, e) {
+      if ( this.$ && this.$ === e ) return true;
+      return false;
+    },
+    verticalScrollMove: function(dy) {
+      this.scrollTop -= dy;
     },
     paintSelf: function() {
       var self = this;

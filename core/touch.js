@@ -957,13 +957,8 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(_, __, touch) {
-        try {
-          if ( ! this.recognized ) {
-            this.checkRecognition();
-          }
-        } catch(e) {
-          debugger;
-          console.error('Error on touch end', e);
+        if ( ! this.recognized ) {
+          this.checkRecognition();
         }
 
         delete this.points[touch.id];

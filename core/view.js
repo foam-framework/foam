@@ -374,7 +374,7 @@ MODEL({
     {
       name: 'openTooltip',
       code: function(e) {
-console.assert(! this.tooltip_);
+        console.assert(! this.tooltip_, 'Tooltip already defined');
         this.tooltip_ = this.X.Tooltip.create({
           text:   this.tooltip,
           target: this.$
@@ -884,10 +884,7 @@ MODEL({
 
       if ( this.args && this.args.model_ ) {
         var model = this.X[this.args.model_];
-        if ( ! model ) {
-          console.error('Unknown View: ', this.args.model_);
-          debugger;
-        }
+        console.assert( model, 'Unknown View: ' + this.args.model_);
         var view = model.create(this.prop);
         delete this.args.model_;
       } else {
@@ -1213,12 +1210,12 @@ MODEL({
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
 
-      if ( this.X.document !== document ) debugger;
+      console.assert( this.X.document === document, 'X.document is not global document');
 
       var div    = document.createElement('div');
       var window = document.defaultView;
 
-      if ( this.X.window !== window ) debugger;
+      console.assert( this.X.window === window, 'X.window is not global window');
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 

@@ -335,7 +335,7 @@ MODEL({
       ],
       [ 'ContainedInICExpr', 'ContainedInICExpr',
         function(e1, e2) {
-          debugger;
+          console.assert(false, 'AND.partialEval: ContainedInICExpr has no partialEval rule');
         }
       ],
       [ 'InExpr', 'ContainsICExpr',

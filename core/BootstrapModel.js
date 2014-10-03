@@ -232,7 +232,7 @@ var BootstrapModel = {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
-      if ( ! fn ) debugger;
+      console.assert( fn, 'createListenerTrampoline: fn not defined');
       fn.name = name;
 
       Object.defineProperty(cls, name, {
@@ -241,7 +241,6 @@ var BootstrapModel = {
           /*
           if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
             console.log('*********************** ', this.model_.name);
-            debugger;
           }
           */
           if ( isAnimated )
