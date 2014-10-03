@@ -50,7 +50,7 @@ MODEL({
         this.filteredDAO.select(COUNT())(function(c) {
           self.isEmpty = c.count <= 0;
         });
-				
+        
         this.inheritedFeaturesDAO = [].dao;
         this.X.docModelViewFeatureDAO
           .where(
@@ -114,9 +114,9 @@ MODEL({
       // implement this to return the display name of your feature (i.e. "Properties")
       console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
-		featureType: function() {
-			debugger; // implement this to return the type name (i.e. "Property", "Method", etc.)
-		}
+    featureType: function() {
+      debugger; // implement this to return the type name (i.e. "Property", "Method", etc.)
+    }
   }
 
 });
@@ -137,7 +137,7 @@ MODEL({
             .orderBy(DESC(DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
             .select()(function(n) {
               n.forEach(function(m) {
-                name = name + m.model+"/";
+                name = name + m.model+"  ";
               });
               return name;
             });
