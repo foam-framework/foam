@@ -1,5 +1,6 @@
 MODEL({
-  name: 'IssueCitationRenderer',
+  name: 'ExperimentalScrollView',
+  extendsModel: 'CView2',
   properties: [
     {
       name: 'silhouette',
@@ -38,14 +39,144 @@ MODEL({
       }
     },
     {
-      name: 'width'
+      name: 'rowHeight',
+      defaultValue: 89
     },
     {
-      name: 'height',
-      defaultValue: 89
+      model_: 'DAOProperty',
+      name: 'dao',
+      onDAOUpdate: 'onDAOUpdate'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'scrollTop',
+      preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'selectNumber'
+    },
+    {
+      name: 'objs',
+      factory: function() { return []; }
+    },
+    {
+      name: 'offset',
+      defaultValue: 0
     }
   ],
   methods: {
+    init: function() {
+      this.SUPER();
+      this.X.dynamic(function() { this.width; this.offset; this.objs; }.bind(this),
+                     function() {
+                       this.view && this.view.paint();
+                     }.bind(this));
+    },
+    initCView: function() {
+      this.X.dynamic(
+        function() {
+          this.scrollTop; this.height;
+        }.bind(this), this.onDAOUpdate);
+
+      if ( this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'verticalScrollMomentum'
+        });
+        manager.install(target);
+      }
+    },
+    containsPoint: function(x, y, e) {
+      if ( this.$ && this.$ === e ) return true;
+      return false;
+    },
+    verticalScrollMove: function(dy) {
+      this.scrollTop -= dy;
+    },
+    paintSelf: function() {
+      var start = performance.now();
+      var self = this;
+      var offset = this.offset;//Math.floor(this.offset);
+      var c = self.canvas;
+      var doPass = function(f) {
+        c.save();
+        c.translate(0, offset);
+        for ( var i = 0; i < self.objs.length; i++ ) {
+          f(self.objs[i]);
+          c.translate(0, self.rowHeight);
+        }
+        c.restore();
+      };
+
+//        doPass(function(data) {
+//          c.save();
+//          c.beginPath();
+//          c.arc(36, 36, 20, 0, Math.PI * 2);
+
+//          if ( data.owner ) {
+//            c.fillStyle = self.generateColor(data.owner);
+//            c.fill();
+//          } else {
+//            c.clip();
+//            c.drawImage(self.silhouette, 18, 18);
+//          }
+//          c.restore();
+//        });
+
+//        c.lineWidth = 1;
+//        c.strokeStyle = 'rgba(0,0,0,0.1)';
+//        c.beginPath();
+
+//        doPass(function() {
+//          c.arc(36, 36, 20, 0, Math.PI * 2);
+//        });
+
+//        c.stroke();
+
+//       c.fillStyle = '#fff';
+//       c.textAlign = 'center';
+//       c.textBaseline = 'middle';
+//       c.font = "normal 20px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+//       doPass(function(data) {
+//         if ( data.owner.length > 0 ) {
+//           var m = c.measureText(data.owner[0]);
+//           c.fillText(data.owner[0], 36, 34);
+//         }
+//       });
+
+//       c.fillStyle = "#444";
+//       c.font = "400 16px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+//       c.textAlign = 'start';
+//       c.textBaseline = 'top';
+
+//       doPass(function(data) {
+//         c.fillText(data.id.toString(), 72, 16);
+//       });
+
+// /*      doPass(function(data) {
+//         var pri = self.dataToPriority(
+//           data.pri !== undefined ? data.pri : data.priority);
+
+//         c.fillStyle = self.priorityColors[pri];
+//         c.fillText('Pri ' + pri, 80 + m.width, 16);
+//       });*/
+
+//       c.fillStyle = '#999';
+//       c.font = "normal 14px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+//       doPass(function(data) {
+//         c.fillText(data.summary.substring(20), 72, 16 + 20);
+//       });
+
+      doPass(function(data) {
+        c.drawImage(data.starred ? self.starred : self.unstarred, self.width - 62, 16);
+      });
+
+//      var end = performance.now();
+//      console.log('Render time: ', end - start);
+    },
     colors: 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' '),
     priorityColors: 'DB4437 F4B400 4285F4 0F9D58'.split(' '),
 
@@ -60,61 +191,31 @@ MODEL({
       return 3;
     },
 
-    render: function(c, data) {
-      c.save();
-      c.beginPath();
-      c.arc(36, 36, 20, 0, Math.PI * 2);
+  },
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      code: function() {
+        if ( ! this.canvas ) return;
 
-      if ( data.owner ) {
-        c.fillStyle = this.generateColor(data.owner);
-        c.fill();
-      } else {
-        c.clip();
-        c.drawImage(this.silhouette, 18, 18);
+        var selectNumber = this.selectNumber + 1;
+        this.selectNumber = selectNumber;
+
+        var limit = Math.floor(this.height / this.rowHeight) + 1;
+        var skip = Math.floor(this.scrollTop / this.rowHeight);
+        var self = this;
+
+
+        var offset = -(this.scrollTop % this.rowHeight);
+
+        var i = 0;
+        this.dao.skip(skip).limit(limit).select([])(function(objs) {
+          self.offset = offset;
+          self.objs = objs;
+        });
       }
-      c.restore();
-
-      c.lineWidth = 1;
-      c.strokeStyle = 'rgba(0,0,0,0.1)';
-      c.beginPath();
-      c.arc(36, 36, 20, 0, Math.PI * 2);
-      c.stroke();
-
-      if ( data.owner.length > 0 ) {
-        c.fillStyle = '#fff';
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.font = "normal 20px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-        var m = c.measureText(data.owner[0]);
-        c.fillText(data.owner[0], 36, 34);
-      }
-
-      c.fillStyle = "#444";
-      c.font = "400 16px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-      c.textAlign = 'start';
-      c.textBaseline = 'top';
-      m = c.measureText(data.id.toString());
-      c.fillText(data.id.toString(), 72, 16);
-
-      var pri = this.dataToPriority(
-        data.pri !== undefined ? data.pri : data.priority);
-
-      c.fillStyle = this.priorityColors[pri];
-      c.font = "normal 16px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-      c.fillText('Pri ' + pri, 80 + m.width, 16);
-
-      c.fillStyle = '#999';
-      c.font = "normal 14px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-      c.save();
-      c.beginPath();
-      c.rect(72, 16 + 10, this.width - 72 - 62, 30)
-      c.clip();
-      c.fillText(data.summary, 72, 16 + 20);
-      c.restore();
-
-      c.drawImage(data.starred ? this.starred : this.unstarred, this.width - 62, 16);
     }
-  }
+  ]
 });
 
 MODEL({
@@ -4580,17 +4681,8 @@ dao.dao;
 
 this.X.touchManager = this.X.TouchManager.create({});
 var gestureManager = this.X.GestureManager.create({});
-gestureManager.install(this.X.GestureTarget.create({
-  container: { containsPoint: function() { return true; } },
-  handler: {
-    verticalScrollMove: function(dy) {
-      scroller.scrollTop -= dy;
-    }
-  },
-  gesture: 'verticalScrollMomentum'
-}));
 
-var scroller = CanvasScrollView.create({ dao: dao, renderer: IssueCitationRenderer.create({}) });
+var scroller = this.X.ExperimentalScrollView.create({ dao: dao });
 
 var win = Window.create({ window: window });
 win.view = scroller.toPositionedView_();
@@ -4603,8 +4695,8 @@ var scrollToTop = function() {
 
 var scrollToBottom = function() {
   Movement.animate(10000, function() { scroller.scrollTop = 1000; }, undefined, function() {
-//    scrollToTop();
+    scrollToTop();
   })();
 }
 
-//scrollToBottom();
+scrollToBottom();
