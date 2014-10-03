@@ -6,7 +6,5 @@
     "scopes": [
       "https://mail.google.com/"
     ]
-  },
-
-  "webview": "system"
+  }
 }

@@ -107,7 +107,16 @@ MODEL({
 MODEL({
   name: 'DocModelInheritanceTracker',
   help: 'Stores inheritance information for a Model',
-  documentation: "Stores inheritance information for a $$DOC{ref:'Model'}. See $$DOC{ref:'DocModelView'}.",
+  documentation: function() { /*
+      <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
+      instance per extending $$DOC{ref:'Model'} is stored in the
+      this.X.docModelViewFeatureDAO (starting with the data of
+      $$DOC{ref:'DocModelView'}, and following the .extendsModel chain
+      down to and including $$DOC{ref:'Model'}.
+      </p>
+      <p>See $$DOC{ref:'DocModelView'}.
+      </p>
+  */},
 
   properties: [
     {
@@ -118,31 +127,39 @@ MODEL({
     },
     {
       name: 'model',
-      help: 'The model.',
-      documentation: "The $$DOC{ref:'Model'}"
+      help: 'The model name.',
+      documentation: "The $$DOC{ref:'Model'} name."
     },
-    {
-      name: 'features',
-      help: 'The features of the model.',
-      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
-      factory: function() {
-        return [].dao;
-      }
-    },
+//    {
+//      name: 'features',
+//      help: 'The features of the model.',
+//      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
+//      factory: function() {
+//        return [].dao;
+//      }
+//    },
   ]
 });
 
 MODEL({
   name: 'DocFeatureInheritanceTracker',
   help: 'Stores inheritance information for a feature of a Model',
-  documentation: "Stores inheritance information for a feature of a $$DOC{ref:'Model'}. See $$DOC{ref:'DocModelView'}.",
+  documentation: function() { /*
+      <p>Stores inheritance information for a feature of a $$DOC{ref:'Model'}
+          in the this.X.docModelViewFeatureDAO.
+      </p>
+      <p>See $$DOC{ref:'DocModelView'}.
+      </p>
+  */},
+
+  ids: [ 'name', 'model' ],
 
   properties: [
     {
       name: 'name',
       help: 'The feature name.',
       documentation: "The feature name. This could be a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature. Feature names are assumed to be unique within the containing $$DOC{ref:'Model'}.",
-      defaultValue: 0
+      defaultValue: ""
     },
     {
       name: 'isDeclared',
@@ -150,7 +167,40 @@ MODEL({
       documentation: "Indicates that the feature is declared in the containing $$DOC{ref:'Model'}.",
       defaultValue: false
     },
-  ]
+    {
+      name: 'type',
+      help: 'The type (Model name string) of the feature, such as Property or Method.',
+      documentation: "The type ($$DOC{ref:'Model.name', text:'Model name'} string) of the feature, such as $$DOC{ref:'Property'} or $$DOC{ref:'Method'}."
+    },
+    {
+      name: 'feature',
+      help: 'A reference to the actual feature.',
+      documentation: "A reference to the actual feature."
+    },
+    {
+      name: 'model',
+      help: 'The name of the Model to which the feature belongs.',
+      documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs."
+    },
+    {
+      name: 'inheritanceLevel',
+      help: 'Helper to look up the inheritance level of model.',
+      documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
+      getter: function() {
+        var modelTracker = [];
+        this.X.docModelViewModelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
+            .select(modelTracker);
+        this.instance_.inheritanceLevel = modelTracker[0];
+//console.log("Getting inheritanceLevel ", this.model, modelTracker[0]);
+        return this.instance_.inheritanceLevel;
+      }
+    }
+  ],
+  methods: {
+    toString: function() {
+      return this.model + ": " + this.name + ", " + this.isDeclared;
+    }
+  }
 });
 
 MODEL({
@@ -190,9 +240,14 @@ MODEL({
         $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
         and other features. */
       if (!this.X.docModelViewFeatureDAO) {
-        this.X.docModelViewFeatureDAO = this.X.MDAO.create({model:DocModelInheritanceTracker});
+        this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
       }
       this.X.docModelViewFeatureDAO.removeAll();
+
+      if (!this.X.docModelViewModelDAO) {
+        this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
+      }
+      this.X.docModelViewModelDAO.removeAll();
 
       // Run through the features in the Model definition in this.data,
       // and load them into the feature DAO. Passing [] assumes we don't
@@ -200,7 +255,7 @@ MODEL({
       // be a global search problem.
       this.loadFeaturesOfModel(this.data, []);
 
-      //this.debugLogFeatureDAO();
+//      this.debugLogFeatureDAO();
 
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
@@ -209,24 +264,39 @@ MODEL({
         <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
         </p>
         */
+      var self = this;
+
       var newModelTr = this.X.DocModelInheritanceTracker.create();
-      newModelTr.model = model;
+      newModelTr.model = model.id;
 
       model.getAllFeatures().forEach(function(feature) {
+
         // all features we hit are declared (or overridden) in this model
-        var featTr = this.X.DocFeatureInheritanceTracker.create({
-                              name: feature.name, isDeclared:true });
-        newModelTr.features.put(featTr);
+        var featTr = self.X.DocFeatureInheritanceTracker.create({
+              name: feature.name,
+              isDeclared:true,
+              type: feature.model_.id,
+              feature: feature,
+              model: newModelTr.model });
+        self.X.docModelViewFeatureDAO.put(featTr);
 
         // for the models that extend this model, make sure they have
         // the feature too, if they didn't already have it declared (overridden).
-        var featTrExt = this.X.DocFeatureInheritanceTracker.create({
-                              name: feature.name, isDeclared:false });
         previousExtenderTrackers.forEach(function(extModelTr) {
-          extModelTr.features.where(NOT(CONTAINS(DocFeatureInheritanceTracker.NAME, feature.name))).select(function() {
-            //console.log("List ", extModelTr.features, " no feature ", feature.name);
-            extModelTr.features.put(featTrExt.clone());
-          });
+          self.X.docModelViewFeatureDAO
+                .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
+                           EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                .select(COUNT())(function(c) {
+                    if (c.count <= 0) {
+                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
+                          name: feature.name,
+                          isDeclared: false,
+                          type: feature.model_.id,
+                          feature: feature,
+                          model: extModelTr.model });
+                      self.X.docModelViewFeatureDAO.put(featTrExt);
+                    }
+                });
         });
       });
 
@@ -243,7 +313,7 @@ MODEL({
       }
 
       // the tracker is now complete
-      this.X.docModelViewFeatureDAO.put(newModelTr);
+      this.X.docModelViewModelDAO.put(newModelTr);
       return newModelTr.inheritanceLevel;
     },
 
@@ -251,6 +321,7 @@ MODEL({
       /* For debugging purposes, prints out the state of the FeatureDAO. */
 
       console.log("Features DAO: ", this.X.docModelViewFeatureDAO);
+      console.log("Model    DAO: ", this.X.docModelViewModelDAO);
     }
 
   },
