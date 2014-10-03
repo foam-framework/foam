@@ -17,6 +17,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
+      preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
       postSet: function(_, v) { console.log('Scaling to: ' , v); },
       defaultValue: 1
     },
