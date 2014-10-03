@@ -732,7 +732,7 @@ MODEL({
       this.initKeyboardShortcuts();
       this.maybeInitTooltip();
     },
-    
+
     maybeInitTooltip: function() {
       if ( ! this.tooltip ) return;
       this.$.addEventListener('mouseenter', this.openTooltip);
@@ -1019,7 +1019,12 @@ MODEL({
         var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
         var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
-        div.style.top  = pos[1];
+        // Start half way to the destination to avoid the user clicking on the tooltip.
+        div.style.top  = above ?
+            pos[1] - targetHeight/2 - 4 :
+            pos[1] + targetHeight/2 + 4 ;
+
+//        div.style.top  = pos[1];
         div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
 
         DOM.setClass(div, 'animated');
