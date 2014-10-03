@@ -239,26 +239,26 @@ height:40px
   padding-top: 0;
 }
 
-@media (max-width: 350px) {
-  .actionButton-leftJustify, .actionButton-centerJustify, .actionButton-rightJustify {
+@media (max-width: 360px) {
+  .actionButtonCView-leftJustify, .actionButtonCView-centerJustify, .actionButtonCView-rightJustify {
     display: none;
   }
 }
 
-@media (max-width: 400px) {
-  .actionButton-numberedList, .actionButton-bulletList {
+@media (max-width: 440px) {
+  .actionButtonCView-numberedList, .actionButtonCView-bulletList {
     display: none;
   }
 }
 
-@media (max-width: 450px) {
-  .actionButton-decreaseIndentation, .actionButton-increaseIndentation {
+@media (max-width: 510px) {
+  .actionButtonCView-decreaseIndentation, .actionButtonCView-increaseIndentation {
     display: none;
   }
 }
 
-@media (max-width: 490px) {
-  .actionButton-blockQuote {
+@media (max-width: 560px) {
+  .actionButtonCView-blockQuote {
     display: none;
   }
 }

@@ -49,10 +49,17 @@ function override(cls, methodName, method) {
   var f = function() {
     var OLD_SUPER = this.SUPER;
     this.SUPER = SUPER;
-    try {
-      return method.apply(this, arguments);
-    } finally {
-      this.SUPER = OLD_SUPER;
+    if ( OLD_SUPER ) {
+      try {
+        return method.apply(this, arguments);
+      } finally {
+        this.SUPER = OLD_SUPER;
+      }
+    } else {
+      // Fast-Path when it doesn't matter if we restore SUPER or not
+      var ret = method.apply(this, arguments);
+      this.SUPER = null;
+      return ret;
     }
   };
 
@@ -223,7 +230,7 @@ var BootstrapModel = {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
-      if ( ! fn ) debugger;
+      console.assert( fn, 'createListenerTrampoline: fn not defined');
       fn.name = name;
 
       Object.defineProperty(cls, name, {
@@ -232,7 +239,6 @@ var BootstrapModel = {
           /*
           if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
             console.log('*********************** ', this.model_.name);
-            debugger;
           }
           */
           if ( isAnimated )

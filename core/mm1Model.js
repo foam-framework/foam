@@ -456,10 +456,11 @@ var Model = {
         return newValue;
       },
 			documentation: function() { /* 
-				  $$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation between instances of
+          <p>$$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation between instances of
 				  this $$DOC{ref:'Model'} and the indicated $$DOC{ref:'Model',usePlural:true}, through the indicated
 				  $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true} build a tree
 				  structure of instances, they could likely benefit from a declared $$DOC{ref:'Relationship'}.
+          </p>
 				*/}  
     },
     {

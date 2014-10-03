@@ -51,7 +51,7 @@ MODEL({
        if ( this.pattern_.test(obj.summary) ) return true;
        if ( this.prefixPattern_.test(obj.owner) ) return true;
        for ( var i = 0 ; i < obj.cc.length     ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
-       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i])  ) return true;
+       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i]) ) return true;
        return false;
      }
    }

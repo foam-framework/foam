@@ -83,6 +83,9 @@ MODEL({
     },
     initHTML: function() {
       if ( ! this.$ ) return;
+
+      this.maybeInitTooltip();
+
       this.canvas = this.$.getContext('2d');
 
       var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
@@ -257,6 +260,7 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
+        if ( this.tooltip )   params.tooltip   = this.tooltip;
         this.view = this.X.CViewView.create(params);
       }
       return this.view;
@@ -469,6 +473,10 @@ MODEL({
       defaultValueFn: function() {
         return 'actionButtonCView actionButtonCView-' + this.action.name;
       }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action.help; }
     }
   ],
 

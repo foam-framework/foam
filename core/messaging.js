@@ -48,9 +48,13 @@ MODEL({
       this.setRequestHeader(xhr, "Content-Type", "application/json");
     },
     bindListeners: function(xhr, ret) {
+      var self = this;
       xhr.onreadystatechange = function() {
         if ( xhr.readyState == 4 ) {
-          ret(xhr.response, xhr);
+          if ( self.responseType === "json" && typeof xhr.response == "string" )
+            var response = JSON.parse(xhr.response);
+          else response = xhr.response;
+          ret(response, xhr);
         }
       }
     },

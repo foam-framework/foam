@@ -216,7 +216,7 @@ var demos = JSONUtil.arrayToObjArray([
   {
     name: 'QuickBug',
     path: 'https://chrome.google.com/webstore/detail/quickbug/hmdcjljmcglpjnmmbjhpialomleabcmg',
-    description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out the grid-view with a PIE chart and warped scrolling.',
+    description: 'A Chrome packaged-app clone of the crbug.com issue tracker.  Provides many extra features and improved performance.  Be sure to try out grid-view\'s drag-and-drop tiles and PIE charts with warped scrolling features. See: <a href="http://quickbug.foamdev.com">http://quickbug.foamdev.com</a>',
     keywords: ['app', '14'],
     src: '../apps/quickbug/',
     image: 'QuickBug.png'
@@ -224,8 +224,8 @@ var demos = JSONUtil.arrayToObjArray([
   {
     name: 'Issue Tracker (Material-Design)',
     path: '../apps/mbug/main.html',
-    description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.',
-    keywords: ['app', 'material-design', 'mobile', '14'],
+    description: 'A simple mobile code.google.com issue-tracker client with a Material-Design interface.  Triage your Crbugs on the go.  See: <a href="http://mbug.foamdev.com">http://mbug.foamdev.com</a>',
+    keywords: ['app', 'material-design', 'mobile', '14', 'android'],
     src: '../apps/mbug/',
     image: 'MBug.png'
   },
@@ -240,7 +240,7 @@ var demos = JSONUtil.arrayToObjArray([
   {
     name: 'Quick-Compose',
     path: 'https://chrome.google.com/webstore/detail/quickcompose/elckoikggmpkacmbmpbgdepginigahja',
-    description: 'A Chrome App for composing (and sending) quick GMails.',
+    description: 'A Chrome App for composing (and sending) quick GMails.  Compose emails while offline and have them delivered when you eventually get a network connection.',
     keywords: ['app', '14'],
     src: '../apps/quickcompose/',
     image: 'QuickCompose.png'

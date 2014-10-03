@@ -200,6 +200,7 @@ layout();
        } else {
           this.predicate = TRUE;
        }
+       console.log("Predicate: ",this.predicate.f);
     }).bind(byModel)});
 
     var modelMatchType = RadioBoxView.create({

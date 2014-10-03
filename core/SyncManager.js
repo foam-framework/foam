@@ -275,7 +275,7 @@ MODEL({
                 self.dstDAO.put(item);
               },
               error: function() {
-                debugger;
+                console.assert(false, 'SyncManager: sync error');
               }
             })(function() {
               self.timesSynced++;

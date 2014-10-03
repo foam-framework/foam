@@ -91,7 +91,7 @@ function subWindow(w, opt_name, isBackground) {
     clearTimeout: w.clearTimeout.bind(w),
     setInterval: w.setInterval.bind(w),
     clearInterval: w.clearInterval.bind(w),
-    requestAnimationFrame: function(f) { if ( ! w.requestAnimationFrame ) debugger; return w.requestAnimationFrame(f); },
+    requestAnimationFrame: function(f) { console.assert(w.requestAnimationFrame, 'requestAnimationFrame not defined'); return w.requestAnimationFrame(f); },
     cancelAnimationFrame: w.cancelAnimationFrame && w.cancelAnimationFrame.bind(w)
   };
 
