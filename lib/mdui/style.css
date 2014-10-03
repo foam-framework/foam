@@ -66,6 +66,10 @@ a {
   margin: 4px;
 }
 
+.mdui-app-controller.searchMode .header {
+  height: 56px;
+}
+
 .mdui-app-controller.searchMode .header .default {
   display: none;
 }
