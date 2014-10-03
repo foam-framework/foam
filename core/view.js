@@ -894,6 +894,7 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+      if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
       this.bindData(this.data);
