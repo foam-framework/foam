@@ -732,7 +732,8 @@ MODEL({
     },
     {
       model_: 'IntProperty',
-      name: 'scrollTop'
+      name: 'scrollTop',
+      preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
     },
     {
       name: 'renderer'
