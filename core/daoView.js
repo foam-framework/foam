@@ -934,6 +934,15 @@ MODEL({
         this.visibleBottom = Math.min(this.count - 1,
             this.visibleIndex + Math.ceil( (this.runway + this.viewportHeight) / this.rowHeight ) );
 
+        // Now, if the visible range is truncated, expand it. The only cases where truncation
+        // can happen is if we're abutting one edge of the range or the other, so we just extend
+        // the opposite end of the range until it fits the maximum set of rows.
+        var maxVisible = Math.ceil((2 * this.runway + this.viewportHeight) / this.rowHeight);
+        if ( this.visibleBottom - this.visibleTop + 1 < maxVisible ) {
+          if ( this.visibleTop === 0 ) this.visibleBottom = Math.min(maxVisible - 1, this.count - 1);
+          else this.visibleTop = Math.max(0, this.visibleBottom - this.count + 1);
+        }
+
         // Four cases:
         // Visible wholly contained.
         // Top overlap.
