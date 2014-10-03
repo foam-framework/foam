@@ -255,7 +255,7 @@ MODEL({
       // be a global search problem.
       this.loadFeaturesOfModel(this.data, []);
 
-      this.debugLogFeatureDAO();
+//      this.debugLogFeatureDAO();
 
     },
     loadFeaturesOfModel: function(model, previousExtenderTrackers) {
@@ -286,7 +286,7 @@ MODEL({
           self.X.docModelViewFeatureDAO
                 .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
                            EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
-                .select(COUNT())(function(c) { console.log(c.count);
+                .select(COUNT())(function(c) {
                     if (c.count <= 0) {
                       var featTrExt = self.X.DocFeatureInheritanceTracker.create({
                           name: feature.name,

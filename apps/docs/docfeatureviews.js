@@ -37,30 +37,31 @@ MODEL({
       model_: 'DAOProperty',
       defaultValue: [],
       postSet: function() {
-        var self = this;
-
         this.filteredDAO = this.dao; //this.dao.where(EQ(Property.HIDDEN, FALSE));
-        this.inheritedFeaturesDAO = [].dao;
-        this.X.docModelViewFeatureDAO
-          .where(
-                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().id),
-                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
-                    EQ(DocFeatureInheritanceTracker.TYPE, this.featureName()))
-                )
-          .select({ put: function(feature) {
-              console.log("Feature: ",feature);
-              self.inheritedFeaturesDAO.put(feature.feature);
-            }
-          });
+
       }
     },
     {
       name:  'filteredDAO',
       model_: 'DAOProperty',
       postSet: function() {
+        var self = this;
+
         this.filteredDAO.select(COUNT())(function(c) {
-          this.isEmpty = c.count <= 0;
-        }.bind(this));
+          self.isEmpty = c.count <= 0;
+        });
+				
+        this.inheritedFeaturesDAO = [].dao;
+        this.X.docModelViewFeatureDAO
+          .where(
+                AND(AND(EQ(DocFeatureInheritanceTracker.MODEL, this.X.documentViewParentModel.get().id),
+                        EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
+                    CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
+                )
+          .select({ put: function(feature) {
+              self.inheritedFeaturesDAO.put(feature.feature);
+            }
+          });
       }
     },
     {
@@ -93,11 +94,12 @@ MODEL({
   templates: [
     function toInnerHTML()    {/*
     <%    this.destroy();
-    console.log(this.inheritedFeaturesDAO);
-          if (this.isEmpty) { %>
+          if (false) { %>
             <h2>No <%=this.featureName()%>.</h2>
     <%    } else { %>
             <h2><%=this.featureName()%>:</h2>
+            <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+            <h2>Inherited <%=this.featureName()%>:</h2>
             <div class="memberList">$$inheritedFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
     <%    } %>
     */}
@@ -112,6 +114,9 @@ MODEL({
       // implement this to return the display name of your feature (i.e. "Properties")
       console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
+		featureType: function() {
+			debugger; // implement this to return the type name (i.e. "Property", "Method", etc.)
+		}
   }
 
 });
@@ -123,7 +128,6 @@ MODEL({
 
   methods: {
       overrides: function() {
-        console.log("override eval...");
         var name = "";
         this.X.docModelViewFeatureDAO
             .where(
@@ -172,6 +176,9 @@ MODEL({
     featureName: function() {
       return "Properties";
     },
+    featureType: function() {
+      return "Property";
+    }
   }
 
 });
@@ -187,6 +194,9 @@ MODEL({
     },
     featureName: function() {
       return "Relationships";
+    },
+    featureType: function() {
+      return "Relationship";
     },
   }
 
@@ -205,6 +215,9 @@ MODEL({
     featureName: function() {
       return "Actions";
     },
+    featureType: function() {
+      return "Action";
+    },
   }
 
 });
@@ -220,6 +233,9 @@ MODEL({
     },
     featureName: function() {
       return "Listeners";
+    },
+    featureType: function() {
+      return "Listener";
     },
   }
 
@@ -237,6 +253,9 @@ MODEL({
     featureName: function() {
       return "Templates";
     },
+    featureType: function() {
+      return "Template";
+    },
   }
 
 });
@@ -253,6 +272,9 @@ MODEL({
     },
     featureName: function() {
       return "Issues";
+    },
+    featureType: function() {
+      return "Issue";
     },
   }
 
@@ -279,13 +301,16 @@ MODEL({
     featureName: function() {
       return "Methods";
     },
+    featureType: function() {
+      return "Method";
+    },
   }
 
 });
 
 MODEL({
   name: 'DocMethodRowView',
-  extendsModel: 'DocBodyView',
+  extendsModel: 'DocFeatureRowView',
   help: 'A view for each item in a list of documented Methods, including arguments.',
 
   templates: [
@@ -293,6 +318,7 @@ MODEL({
       <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
       <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
       <%=this.renderDocSourceHTML()%>
+      <p>O: <%= this.overrides() %></p>
     */}
   ]
 });
@@ -316,6 +342,9 @@ MODEL({
     },
     featureName: function() {
       return "Arguments";
+    },
+    featureType: function() {
+      return "Argument";
     },
   },
 
@@ -405,6 +434,9 @@ MODEL({
     },
     featureName: function() {
       return "Chapters";
+    },
+    featureType: function() {
+      return "Documentation";
     },
   },
 
