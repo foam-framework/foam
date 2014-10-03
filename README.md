@@ -15,6 +15,8 @@ There is nothing to build.  Just load any of the various .html demos.
 
   * [Website](http://foam-framework.github.io/foam/)
 
+  * [Demos](http://foam-framework.github.io/foam/demos/DemoCat.html)
+
 ## Testing
 
 FOAM has automated tests that can be run with `npm test`. This depends only on a working Node.js and `npm`.
