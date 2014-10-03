@@ -639,6 +639,7 @@ MODEL({
         var scroller = this.scroller$();
         if ( scroller ) scroller.style.webkitTransform =
             'translate3d(0px, -' + nu + 'px, 0px)';
+        this.update();
       }
     },
     {
@@ -997,8 +998,6 @@ MODEL({
             this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
           stopMomentum();
         }
-
-        this.update();
       }
     }
   ],
