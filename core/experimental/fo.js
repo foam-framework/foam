@@ -1361,19 +1361,19 @@ var featureDAO = [
     help: 'Should this listener be merged?'
   }],
   ['Listener', 'BooleanProperty', {
-    name: 'isAnimated',
+    name: 'isFramed',
     help: 'As a listener, should this be animated?',
     defaultValue: false
   }],
   ['Listener', 'Method', function install(model, proto) {
     var name = this.name;
     var fn = this.code;
-    var isAnimated = this.isAnimated;
+    var isFramed = this.isFramed;
     var isMerged = this.isMerged;
 
     proto.define(name, trampoline(name, function() {
       var l = fn.bind(this);
-      if ( isAnimated )
+      if ( isFramed )
         l = EventService.framed(l);
       else if ( isMerged )
         l = EventService.merged(l, (isMerged === true) ? undefined : isMerged);

@@ -33,7 +33,7 @@ MODEL({
   listeners: [
     {
       name: 'onDataChange',
-//      isAnimated: true, // interferes with CSS animation
+//      isFramed: true, // interferes with CSS animation
       code: function() {
         if ( ! this.$ ) return;
         var f1$ = this.$.querySelector('.f1');

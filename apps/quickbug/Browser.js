@@ -250,7 +250,7 @@ MODEL({
     },
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         var self = this;
         this.view.dao.select(COUNT())(function (c) { self.selectedIssueCount = c.count; });
@@ -258,7 +258,7 @@ MODEL({
     },
     {
       name: 'onSyncManagerUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         this.syncManagerFuture.get(function(syncManager) {
           if ( syncManager.isSyncing ) {

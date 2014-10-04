@@ -228,7 +228,7 @@ var BootstrapModel = {
     });
 
     // todo: move this somewhere better
-    var createListenerTrampoline = function(cls, name, fn, isMerged, isAnimated) {
+    var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed) {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
@@ -239,11 +239,11 @@ var BootstrapModel = {
         get: function () {
           var l = fn.bind(this);
           /*
-          if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
+          if ( ( isFramed || isMerged ) && this.X.isBackground ) {
             console.log('*********************** ', this.model_.name);
           }
           */
-          if ( isAnimated )
+          if ( isFramed )
             l = EventService.framed(l, this.X);
           else if ( isMerged ) {
             l = EventService.merged(
@@ -263,7 +263,7 @@ var BootstrapModel = {
     if ( Array.isArray(this.listeners) ) {
       for ( var i = 0 ; i < this.listeners.length ; i++ ) {
         var l = this.listeners[i];
-        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isAnimated);
+        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed);
       }
     } else if ( this.listeners )
       //          this.listeners.forEach(function(l, key) {

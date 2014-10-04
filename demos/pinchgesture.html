@@ -51,7 +51,7 @@ MODEL({
   listeners: [
     {
       name: 'updatePosition',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         this.$.style.webkitTransform = 'scale(' + this.scale + ') rotate(' + this.rotation + 'deg)';
       }

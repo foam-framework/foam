@@ -513,7 +513,7 @@ MODEL({
     },
     {
       model_: 'BooleanProperty',
-      name: 'isAnimated',
+      name: 'isFramed',
       help: 'As a listener, should this be animated?',
       defaultValue: false,
       documentation: function() { /* 
