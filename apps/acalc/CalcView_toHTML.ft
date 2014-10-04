@@ -36,7 +36,7 @@
   // This block causes the calc-display to scroll when updated.
   // To remove this feature replace the .inner-calc-display 'transition:' and
   // 'top:' styles with 'bottom: 0'.
-  var move = EventService.animate(function() {
+  var move = EventService.framed(function() {
     if ( ! this.$ ) return;
     var outer$ = this.$.querySelector('.calc-display');
     var inner$ = this.$.querySelector('.inner-calc-display');

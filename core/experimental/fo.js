@@ -1374,7 +1374,7 @@ var featureDAO = [
     proto.define(name, trampoline(name, function() {
       var l = fn.bind(this);
       if ( isAnimated )
-        l = EventService.animate(l);
+        l = EventService.framed(l);
       else if ( isMerged )
         l = EventService.merged(l, (isMerged === true) ? undefined : isMerged);
 

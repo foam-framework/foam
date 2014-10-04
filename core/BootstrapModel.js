@@ -244,7 +244,7 @@ var BootstrapModel = {
           }
           */
           if ( isAnimated )
-            l = EventService.animate(l, this.X);
+            l = EventService.framed(l, this.X);
           else if ( isMerged ) {
             l = EventService.merged(
               l,
