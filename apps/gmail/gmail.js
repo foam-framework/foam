@@ -394,9 +394,9 @@ MODEL({
           $$moreActions
         </div>
         <div class="content">
-          <div style='display: flex'>
+          <div style="display: -webkit-flex">
             $$from{model_: 'MDMonogramStringView'}
-            <div style='flex: 1'>
+            <div style='-webkit-flex: 1'>
               $$from{mode: 'read-only', className: 'from', escapeHTML: true}
               <div class='details'>
                 $$to{mode: 'read-only'}
@@ -435,6 +435,7 @@ MODEL({
     function CSS() {/*
       .email-citation {
         display: flex;
+        display: -webkit-flex;
         border-bottom: solid #B5B5B5 1px;
         padding: 10px 14px 10px 6px;
       }
@@ -491,13 +492,13 @@ MODEL({
 
       <div id="<%= id %>" %%cssClassAttr() >
         $$from{model_: 'MDMonogramStringView'}
-        <div style="flex: 1">
-          <div style="display: flex">
+        <div style="-webkit-flex: 1">
+          <div style="display: -webkit-flex">
             $$from{mode: 'read-only', className: 'from', escapeHTML: true}
             $$timestamp{ model_: 'RelativeDateTimeFieldView', mode: 'read-only', className: 'timestamp' }
           </div>
-          <div style="display: flex">
-            <div style='flex-grow: 1'>
+          <div style="display: -webkit-flex">
+            <div style='-webkit-flex-grow: 1'>
               $$subject{mode: 'read-only', className: 'subject'}
               $$snippet{mode: 'read-only', className: 'snippet'}
               $$labels{mode: 'read-only', className: 'labels'}

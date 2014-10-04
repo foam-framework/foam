@@ -33,14 +33,17 @@ a {
 
 .monogram-string-view {
   align-items: center;
+  -webkit-align-items: center;
   border-radius: 20px;
   border: 1px solid rgba(0,0,0,.1);
   color: #fff;
   display: inline-flex;
-  flex-grow: 0;
+  display: -webkit-inline-flex;
+  -webkit-flex-grow: 0;
   font-size: 20px;
   height: 40px;
   justify-content: center;
+  -webkit-justify-content: center;
   margin-right: 16px;
   overflow: hidden;
   width: 40px;
@@ -48,22 +51,28 @@ a {
 
 .mdui-app-controller {
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   height: 100%;
 }
 
 .mdui-app-controller .header {
   display: flex;
+  display: -webkit-flex;
   background: #3e50b4;
   flex-shrink: 0;
+  -webkit-flex-shrink: 0;
   padding: 0;
   height: 50px;
 }
 
 .mdui-app-controller .header .default {
-  flex: 1.0;
+  -webkit-box-flex: 1.0;
   display: flex;
+  display: -webkit-flex;
   margin: 4px;
+  -webkit-flex-grow: 1.0;
 }
 
 .mdui-app-controller.searchMode .header {
@@ -96,8 +105,9 @@ a {
 
 .mdui-app-controller .header .name {
   align-self: center;
+  -webkit-align-self: center;
   color: white;
-  flex: 1.0;
+  -webkit-box-flex: 1.0;
   font-size: 20px;
   font-weight: 500;
   margin-left: 16px;
@@ -105,10 +115,12 @@ a {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  -webkit-flex-grow: 1.0;
 }
 
 input[name=q] {
   align-self: center;
+  -webkit-align-self: center;
   background: #3e50b4;
   border: none;
   color: white;
