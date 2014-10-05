@@ -106,7 +106,7 @@ var FObject = {
   },
 
   installInDocument: function(X, document) {
-    if ( this.CSS ) X.addStyle(this.CSS());
+    if ( Object.hasOwnProperty.call(this, 'CSS') ) X.addStyle(this.CSS());
   },
 
   defineFOAMGetter: function(name, getter) {
@@ -478,7 +478,7 @@ var FObject = {
   // getFeature accounts for inheritance through extendsModel
   getFeature: function(featureName) {
     var feature = this.getMyFeature(featureName);
-    
+
     if (this.id != "Model" && !feature) {
       if (this.extendsModel.length > 0 && this.X[this.extendsModel]) {
         return this.X[this.extendsModel].getFeature(featureName);
@@ -489,11 +489,11 @@ var FObject = {
       return feature;
     }
   },
-  
+
   // getAllFeatures accounts for inheritance through extendsModel
   getAllFeatures: function() {
     var featureList = this.getAllMyFeatures();
-    
+
     if (this.id != "Model") {
       var superModel = (this.extendsModel.length > 0 && this.X[this.extendsModel].id)? this.X[this.extendsModel] : this.X["Model"];
       console.log("getAll: ", this.extendsModel, superModel);
@@ -505,7 +505,7 @@ var FObject = {
             featureList.push(subFeat);
           }
       });
-    } 
+    }
     return featureList;
   }
 
