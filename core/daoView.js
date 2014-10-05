@@ -162,7 +162,7 @@ MODEL({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.updateHTML(); }
     }
   ],
@@ -241,7 +241,7 @@ MODEL({
     },
     {
       name: 'layout',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         var last = this.$.lastChild;
@@ -253,11 +253,11 @@ MODEL({
     },
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         // If we're currently painting, don't actually paint now,
         // queue up another paint on the next animation frame.
-        // This doesn't spin infinitely because paint is set to animate: true,
+        // This doesn't spin infinitely because paint is set to framed: true,
         // meaning that it's merged to the next animation frame.
         if ( this.painting ) {
           this.paint();
@@ -478,7 +478,7 @@ MODEL({
     },
     {
       name: 'realDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },
     {
@@ -910,7 +910,7 @@ MODEL({
     },
     {
       name: 'update',
-      isAnimated: true,
+      isFramed: true,
       documentation: function() {/*
         <p>This is the cornerstone method. It is called when we scroll, and when the DAO changes.</p>
 

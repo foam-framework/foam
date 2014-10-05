@@ -894,6 +894,7 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+      if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
       this.bindData(this.data);
@@ -2454,7 +2455,7 @@ MODEL({
   listeners: [
     {
       name: 'render',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.updateHTML(); }
     }
   ],
@@ -2800,7 +2801,7 @@ MODEL({
   listeners: [
     {
       name: 'onMouseMove',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         this.x = evt.offsetX;
         this.y = evt.offsetY;
@@ -2902,7 +2903,7 @@ MODEL({
   listeners: [
     {
       name: 'installSubView',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
@@ -3930,7 +3931,7 @@ MODEL({
   listeners: [
     {
       name: 'update',
-      animate: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.innerHTML = '';
@@ -4151,7 +4152,7 @@ MODEL({
   listeners: [
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
 
@@ -5015,7 +5016,7 @@ MODEL({
   listeners: [
     {
       name: 'onResize',
-      isAnimated: true,
+      isFramed: true,
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {

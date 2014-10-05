@@ -129,7 +129,7 @@ MODEL({
   listeners: [
     {
       name: 'tick',
-      isAnimated: true,
+      isFramed: true,
       code: function(e) {
         this.timeout = undefined;
         if ( ! this.isStarted ) return;
