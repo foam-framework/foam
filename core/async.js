@@ -443,7 +443,7 @@ var atramp = (function() {
       return function() {
          jobs.push([afunc, arguments]);
          if ( ! active ) {
-if ( jobs.length > 1 ) debugger;
+           console.assert( jobs.length <= 1, 'atramp with multiple jobs');
            active = true;
            var job;
            // Take responsibility for bouncing

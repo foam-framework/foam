@@ -242,12 +242,33 @@ MODEL({
   name: 'View',
   label: 'View',
 
+  documentation: function() {/*
+    <p>$$DOC{ref:'View',usePlural:true} render data. This could be a specific
+       $$DOC{ref:'Model'} or a $$DOC{ref:'DAO'}. In the case of $$DOC{ref:'DetailView'},
+       <em>any</em> $$DOC{ref:'Model'} can be rendered by walking through the
+       $$DOC{ref:'Property',usePlural:true} of the data.
+    </p>
+    <p>$$DOC{ref:'View'} instances are arranged in a tree with parent-child links.
+       This represents containment in most cases, where a sub-view appears inside
+       its parent.
+    </p>
+    <p>HTML $$DOC{ref:'View',usePlural:true} should provide a $$DOC{ref:'.toInnerHTML'}
+       $$DOC{ref:'Method'} or $$DOC{ref:'Template'}. If direct control is required,
+       at minimum you must implement $$DOC{ref:'.toHTML'} and $$DOC{ref:'.initHTML'}.
+    </p>
+
+  */},
+
   properties: [
     {
       name:  'id',
       label: 'Element ID',
       type:  'String',
-      factory: function() { return this.nextID(); }
+      factory: function() { return this.nextID(); },
+      documentation: function() {/*
+        The DOM element id for the outermost tag of
+        this $$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'parent',
@@ -257,12 +278,24 @@ MODEL({
     {
       name: 'children',
       type: 'Array[View]',
-      factory: function() { return []; }
+      factory: function() { return []; },
+      documentation: function() {/*
+        <p>$$DOC{ref:'View',usePlural:true} are arranged in a tree. Each sub-view
+        contained inside this one is a child. Subviews can be created explicitly
+        or inside a template with the $$DOC{ref:'Template',text:"$$propName"}
+        tag.</p>
+        <p>Generally, sub-views are created around a property of the data that
+        this $$DOC{ref:'View'} is showing, each layer getting more specific.</p>
+
+      */}
     },
     {
       name:   'shortcuts',
       type:   'Array[Shortcut]',
-      factory: function() { return []; }
+      factory: function() { return []; },
+      documentation: function() {/*
+        Keyboard shortcuts for the view. TODO ???
+      */}
     },
     {
       name:   '$',
@@ -273,16 +306,32 @@ MODEL({
     },
     {
       name: 'tagName',
-      defaultValue: 'span'
+      defaultValue: 'span',
+      documentation: function() {/*
+          The HTML tag name to use for HTML $$DOC{ref:'View',usePlural:true}.
+      */}
     },
     {
       name: 'className',
       help: 'CSS class name(s), space separated.',
-      defaultValue: ''
+      defaultValue: '',
+      documentation: function() {/*
+          The CSS class names to use for HTML $$DOC{ref:'View',usePlural:true}.
+          Separate class names with spaces. Each instance of a $$DOC{ref:'View'}
+          may have different classes specified.
+      */}
+    },
+    {
+      name: 'tooltip'
     },
     {
       name: 'extraClassName',
-      defaultValue: ''
+      defaultValue: '',
+      documentation: function() {/*
+          For custom $$DOC{ref:'View',usePlural:true}, you may wish to add standard
+          CSS classes in addition to user-specified ones. Set those here and
+          they will be appended to those from $$DOC{ref:'.className'}.
+      */}
     },
     {
       model_: 'BooleanProperty',
@@ -293,19 +342,54 @@ MODEL({
         if ( ! oldValue && showActions ) {
           this.addDecorator(this.X.ActionBorder.create());
         }
-      }
+      },
+      documentation: function() {/*
+          If $$DOC{ref:'Action',usePlural:true} are set on this $$DOC{ref:'View'},
+          this property enables their automatic display in an $$DOC{ref:'ActionBorder'}.
+          If you do not want to show $$DOC{ref:'Action',usePlural:true} or want
+          to show them in a different way, leave this false.
+      */}
     },
     {
       name: 'initializers_',
-      factory: function() { return []; }
+      factory: function() { return []; },
+      documentation: function() {/*
+          When creating new HTML content, intializers are run. This corresponds
+          to the lifecycle of the HTML (which may be replaced by toHTML() at any
+          time), not the lifecycle of this $$DOC{ref:'View'}.
+      */}
     },
     {
       name: 'destructors_',
-      factory: function() { return []; }
+      factory: function() { return []; },
+      documentation: function() {/*
+          When destroying HTML content, destructors are run. This corresponds
+          to the lifecycle of the HTML (which may be replaced by toHTML() at any
+          time), not the lifecycle of this $$DOC{ref:'View'}.
+      */}
     }
   ],
 
   listeners: [
+    {
+      name: 'openTooltip',
+      code: function(e) {
+        console.assert(! this.tooltip_, 'Tooltip already defined');
+        this.tooltip_ = this.X.Tooltip.create({
+          text:   this.tooltip,
+          target: this.$
+        });
+      }
+    },
+    {
+      name: 'closeTooltip',
+      code: function(e) {
+        if ( this.tooltip_ ) {
+          this.tooltip_.close();
+          this.tooltip_ = null;
+        }
+      }
+    },
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
@@ -315,7 +399,12 @@ MODEL({
           action();
           evt.preventDefault();
         }
-      }
+      },
+      documentation: function() {/*
+          Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
+          To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
+          to your $$DOC{ref:'View'}.
+      */}
     }
   ],
 
@@ -327,6 +416,9 @@ MODEL({
     toView_: function() { return this; },
 
     deepPublish: function(topic) {
+      /*
+       Publish an event and cause all children to publish as well.
+       */
       var count = this.publish.apply(this, arguments);
 
       if ( this.children ) {
@@ -340,10 +432,16 @@ MODEL({
     },
 
     strToHTML: function(str) {
+      /*
+        Escape the string to make it HTML safe.
+        */
       return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     },
 
     cssClassAttr: function() {
+      /*
+        Returns the full CSS class to use for the $$DOC{ref:'View'} DOM element.
+        */
       if ( ! this.className && ! this.extraClassName ) return '';
 
       var s = ' class="';
@@ -357,6 +455,9 @@ MODEL({
     },
 
     dynamicTag: function(tagName, f) {
+      /*
+        Creates a dynamic HTML tag whose content will be automatically updated.
+        */
       var id = this.nextID();
       this.X.dynamic(function() {
         var html = f();
@@ -366,15 +467,20 @@ MODEL({
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
     },
 
-    /** Bind a sub-View to a sub-Value. **/
     bindSubView: function(view, prop) {
+      /*
+        Bind a sub-$$DOC{ref:'View'} to a $$DOC{ref:'Property'} of this.
+        */
       view.setValue(this.propertyValue(prop.name));
     },
 
-    viewModel: function() { return this.model_; },
+    viewModel: function() {
+      /* The $$DOC{ref:'Model'} definition of this $$DOC{ref:'View'}. */
+      return this.model_;
+    },
 
-    /** Create the sub-view from property info. **/
     createView: function(prop, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
@@ -382,6 +488,8 @@ MODEL({
     },
 
     createActionView: function(action, opt_args) {
+      /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
+        specifically for $$DOC{ref:'Action',usePlural:true}. */
       var X = ( opt_args && opt_args.X ) || this.X;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
@@ -394,6 +502,10 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
+      /*
+        Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
+        creation tag in $$DOC{ref:'Template',usePlural:true}.
+      */
       // TODO: it would be more efficient to replace SimpleValue with ConstantValue
       // TODO: rename SimpleValue to just Value and make it a Trait?
       var o = this.model_[name];
@@ -406,9 +518,16 @@ MODEL({
       return v;
     },
 
-    focus: function() { if ( this.$ && this.$.focus ) this.$.focus(); },
+    focus: function() {
+      /* Cause the view to take focus. */
+      if ( this.$ && this.$.focus ) this.$.focus();
+    },
 
     addChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is created, add it to the tree with this method.
+      */
       if ( child.toView_ ) child = child.toView_(); // Maybe the check isn't needed.
       // Check prevents duplicate addChild() calls,
       // which can happen when you use creatView() to create a sub-view (and it calls addChild)
@@ -428,6 +547,10 @@ MODEL({
     },
 
     removeChild: function(child) {
+      /*
+        Maintains the tree structure of $$DOC{ref:'View',usePlural:true}. When
+        a sub-$$DOC{ref:'View'} is destroyed, remove it from the tree with this method.
+      */
       this.children.deleteI(child);
       child.parent = undefined;
 
@@ -435,24 +558,29 @@ MODEL({
     },
 
     addChildren: function() {
+      /* Adds multiple children at once. */
       Array.prototype.forEach.call(arguments, this.addChild.bind(this));
 
       return this;
     },
 
     addShortcut: function(key, callback, context) {
+      /* Add a keyboard shortcut. */
       this.shortcuts.push([key, callback, context]);
     },
 
     // TODO: make use new static_ scope when available
     nextID: function() {
+      /* Convenience method to return unique DOM element ids. */
       return "view" + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     },
 
     addInitializer: function(f) {
+      /* Adds a DOM initializer */
       this.initializers_.push(f);
     },
     addDestructor: function(f) {
+      /* Adds a DOM destructor. */
       this.destructors_.push(f);
     },
 
@@ -460,6 +588,10 @@ MODEL({
     },
 
     on: function(event, listener, opt_id) {
+      /*
+        <p>To create DOM event handlers, use this method to set up your listener:</p>
+        <p><code>this.on('click', this.myListener);</code></p>
+      */
       opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
 
@@ -508,6 +640,7 @@ MODEL({
     },
 
     setAttribute: function(attributeName, valueFn, opt_id) {
+      /* Set a dynamic attribute on the DOM element. */
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
@@ -522,6 +655,7 @@ MODEL({
     },
 
     setClass: function(className, predicate, opt_id) {
+      /* Set a dynamic CSS class on the DOM element. */
       opt_id = opt_id || this.nextID();
       predicate = predicate.bind(this);
 
@@ -537,6 +671,8 @@ MODEL({
     },
 
     setClasses: function(map, opt_id) {
+      /* Set a map of dynamic CSS classes on the DOM element. Mapped as
+         className: predicate.*/
       opt_id = opt_id || this.nextID();
       var keys = Objects.keys(map);
       for ( var i = 0 ; i < keys.length ; i++ ) {
@@ -546,20 +682,22 @@ MODEL({
       return opt_id;
     },
 
-    /** Insert this View's toHTML into the Element of the supplied name. **/
     insertInElement: function(name) {
+      /* Insert this View's toHTML into the Element of the supplied name. */
       var e = $(name);
       e.innerHTML = this.toHTML();
       this.initHTML();
     },
 
     write: function(document) {
-      // Write the View's HTML to the provided document and then initialize.
+      /*  Write the View's HTML to the provided document and then initialize. */
       document.writeln(this.toHTML());
       this.initHTML();
     },
 
     updateHTML: function() {
+      /* Cause the HTML content to be recreated using a call to
+        $$DOC{ref:'.toInnerHTML'}. */
       if ( ! this.$ ) return;
 
       this.invokeDestructors();
@@ -567,9 +705,19 @@ MODEL({
       this.initInnerHTML();
     },
 
-    toInnerHTML: function() { return ''; },
+    toInnerHTML: function() {
+      /* In most cases you can override this method to provide all of your HTML
+        content. Calling $$DOC{ref:'.updateHTML'} will cause this method to
+        be called again, regenerating your content. $$DOC{ref:'Template',usePlural:true}
+        are usually called from here, or you may create a
+        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}. */
+      return '';
+    },
 
     toHTML: function() {
+      /* Generates the complete HTML content of this view, including outermost
+        element. This element is managed by $$DOC{ref:'View'}, so in most cases
+        you should use $$DOC{ref:'.toInnerHTML'} to generate your content. */
       this.invokeDestructors();
       return '<' + this.tagName + ' id="' + this.id + '"' + this.cssClassAttr() + '>' +
         this.toInnerHTML() +
@@ -577,12 +725,23 @@ MODEL({
     },
 
     initHTML: function() {
+      /* This must be called once after your HTML content has been inserted into
+        the DOM. Calling $$DOC{ref:'.updateHTML'} will automatically call
+        $$DOC{ref:'.initHTML'}. */
       this.initInnerHTML();
       this.initKeyboardShortcuts();
+      this.maybeInitTooltip();
+    },
+
+    maybeInitTooltip: function() {
+      if ( ! this.tooltip ) return;
+      this.$.addEventListener('mouseenter', this.openTooltip);
+      this.$.addEventListener('mouseleave', this.closeTooltip);
     },
 
     initInnerHTML: function() {
-      // Initialize this View and all of it's children.
+      /* Initialize this View and all of it's children. Usually just call
+          $$DOC{ref:'.initHTML'} instead. */
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
 
@@ -591,6 +750,8 @@ MODEL({
     },
 
     initChildren: function() {
+      /* Initialize all of the children. Usually just call
+          $$DOC{ref:'.initHTML'} instead. */
       if ( this.children ) {
         // init children
         for ( var i = 0 ; i < this.children.length ; i++ ) {
@@ -605,15 +766,18 @@ MODEL({
     },
 
     invokeInitializers: function() {
+      /* Calls all the DOM $$DOC{ref:'.initializers_'}. */
       for ( var i = 0 ; i < this.initializers_.length ; i++ ) this.initializers_[i]();
       this.initializers_ = [];
     },
     invokeDestructors: function() {
+      /* Calls all the DOM $$DOC{ref:'.destructors_'}. */
       for ( var i = 0; i < this.destructors_.length; i++ ) this.destructors_[i]();
       this.destructors_ = [];
     },
 
     evtToKeyCode: function(evt) {
+      /* Maps an event keycode to a string */
       var s = '';
       if ( evt.ctrlKey ) s += 'ctrl-';
       if ( evt.shiftKey ) s += 'shift-';
@@ -622,6 +786,7 @@ MODEL({
     },
 
     initKeyboardShortcuts: function() {
+      /* Initializes keyboard shortcuts. */
       var keyMap = {};
       var found  = false;
       var self   = this;
@@ -651,6 +816,8 @@ MODEL({
     },
 
     destroy: function() {
+      /* Cleans up the DOM when regenerating content. You should call this before
+         creating new HTML in your $$DOC{ref:'.toInnerHTML'} or $$DOC{ref:'.toHTML'}. */
       // TODO: remove listeners
       this.invokeDestructors();
       for ( var i = 0; i < this.children.length; i++ ) {
@@ -660,13 +827,14 @@ MODEL({
     },
 
     close: function() {
+      /* Call when permanently closing the $$DOC{ref:'View'}. */
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
     },
 
-    // Called by the GestureManager, return true if this view is being touched.
     containsPoint: function(x, y, element) {
+      /* Called by the GestureManager, return true if this view is being touched. */
       return this.$ && this.$.contains(element);
     }
   }
@@ -716,10 +884,7 @@ MODEL({
 
       if ( this.args && this.args.model_ ) {
         var model = this.X[this.args.model_];
-        if ( ! model ) {
-          console.error('Unknown View: ', this.args.model_);
-          debugger;
-        }
+        console.assert( model, 'Unknown View: ' + this.args.model_);
         var view = model.create(this.prop);
         delete this.args.model_;
       } else {
@@ -729,6 +894,8 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+      // TODO(kgr): re-enable when improved
+      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
       this.bindData(this.data);
@@ -781,12 +948,6 @@ MODEL({
 
   properties: [
     {
-      name: 'action'
-    },
-    {
-      name: 'data'
-    },
-    {
       name: 'text',
       help: 'Help text to be shown in tooltip.'
     },
@@ -833,15 +994,14 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      setTimeout(function() {
+      var document = this.X.document;
+
+      document.previousTooltip_ = this;
+      this.X.setTimeout(function() {
         if ( this.closed ) return;
+        if ( document.previousTooltip_ != this ) return;
 
-        var document = this.X.document;
-        var div      = document.createElement('div');
-
-        // Only allow one Tooltip per document, so close the previous one if it exists.
-        if ( document.previousTooltip_ ) document.previousTooltip_.close();
-        document.previousTooltip_ = this;
+        var div = document.createElement('div');
 
         // Close after 5s
         this.X.setTimeout(this.close.bind(this), 5000);
@@ -852,15 +1012,6 @@ MODEL({
 
         document.body.appendChild(div);
 
-        // If an action is defined and we click on the tooltip, then treat
-        // it as we activated the action.
-        if ( this.action && this.data ) {
-          this.on('click', function() {
-            this.action.callIfEnabled(this.X, this.data);
-            this.close();
-          }.bind(this), this.id);
-        }
-
         var s            = this.X.window.getComputedStyle(div);
         var pos          = findPageXY(this.target);
         var screenHeight = this.X.document.body.clientHeight;
@@ -870,7 +1021,12 @@ MODEL({
         var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
         var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
-        div.style.top  = pos[1];
+        // Start half way to the destination to avoid the user clicking on the tooltip.
+        div.style.top  = above ?
+            pos[1] - targetHeight/2 - 4 :
+            pos[1] + targetHeight/2 + 4 ;
+
+//        div.style.top  = pos[1];
         div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
 
         DOM.setClass(div, 'animated');
@@ -882,15 +1038,21 @@ MODEL({
         }, 10);
 
         this.initHTML();
-      }.bind(this), 500);
+      }.bind(this), 800);
     },
     toInnerHTML: function() { return this.text; },
     close: function() {
+      if ( this.closed ) return;
       this.closed = true;
-      if ( this.$ ) {
-        this.X.setTimeout(this.$.remove.bind(this.$), 1000);
-        DOM.setClass(this.$, 'fadeout');
-      }
+      // Closing while it is still animating causes it to jump around
+      // which looks bad, so wait 500ms to give it time to transition
+      // if it is.
+      this.X.setTimeout(function() {
+        if ( this.$ ) {
+          this.X.setTimeout(this.$.remove.bind(this.$), 1000);
+          DOM.setClass(this.$, 'fadeout');
+        }
+      }.bind(this), 500);
     },
     destroy: function() {
       this.SUPER();
@@ -1055,12 +1217,12 @@ MODEL({
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
 
-      if ( this.X.document !== document ) debugger;
+      console.assert( this.X.document === document, 'X.document is not global document');
 
       var div    = document.createElement('div');
       var window = document.defaultView;
 
-      if ( this.X.window !== window ) debugger;
+      console.assert( this.X.window === window, 'X.window is not global window');
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
@@ -1506,6 +1668,8 @@ MODEL({
       var str = '<' + this.readWriteTagName + ' id="' + this.id + '"';
       str += ' type="' + this.type + '" ' + this.cssClassAttr();
 
+      this.on('click', this.onClick, this.id);
+
       str += this.readWriteTagName === 'input' ?
         ' size="' + this.displayWidth + '"' :
         ' rows="' + this.displayHeight + '" cols="' + this.displayWidth + '"';
@@ -1622,7 +1786,13 @@ MODEL({
         if ( this.domValue.get() !== this.data )
           this.domValue.set(this.data);
       }
-    }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        this.$ && this.$.focus();
+      }
+    },
   ]
 });
 
@@ -2276,39 +2446,22 @@ MODEL({
     {
       name: 'iconUrl',
       defaultValueFn: function() { return this.action.iconUrl; }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action.help; }
     }
   ],
 
   listeners: [
     {
       name: 'render',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.updateHTML(); }
-    },
-    {
-      name: 'onMouseEnter',
-      code: function(e) {
-        if ( ! this.tooltip_ && this.action.help ) {
-          this.tooltip_ = this.X.Tooltip.create({text: this.action.help, action: this.action, data: this.data, target: this.$});
-        }
-      }
-    },
-    {
-      name: 'onMouseLeave',
-      code: function(e) {
-        if ( this.tooltip_ && e.toElement === this.tooltip_.$ ) return;
-        this.closeTooltip();
-      }
     }
   ],
 
   methods: {
-    closeTooltip: function() {
-      if ( this.tooltip_ ) {
-        this.tooltip_.close();
-        this.tooltip_ = null;
-      }
-    },
     toHTML: function() {
       var self = this;
 
@@ -2343,15 +2496,6 @@ MODEL({
       }
 
       return out;
-    },
-
-    initHTML: function() {
-      this.SUPER();
-
-      if ( this.action.help ) {
-        this.$.addEventListener('mouseenter', this.onMouseEnter);
-        this.$.addEventListener('mouseleave', this.onMouseLeave);
-      }
     }
   }
 });
@@ -2658,7 +2802,7 @@ MODEL({
   listeners: [
     {
       name: 'onMouseMove',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         this.x = evt.offsetX;
         this.y = evt.offsetY;
@@ -2760,12 +2904,12 @@ MODEL({
   listeners: [
     {
       name: 'installSubView',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
           viewChoice.view(this.data.model_, this.data$) :
-          GLOBAL[viewChoice.view].create({
+          this.X[viewChoice.view].create({
             model: this.data.model_,
             data:  this.data
           });
@@ -3788,7 +3932,7 @@ MODEL({
   listeners: [
     {
       name: 'update',
-      animate: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.innerHTML = '';
@@ -4009,7 +4153,7 @@ MODEL({
   listeners: [
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
 
@@ -4358,7 +4502,7 @@ MODEL({
       name: 'height',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if (this.$) {
+        if ( this.$ ) {
           this.$.style.height = nu + 'px';
         }
       }
@@ -4427,8 +4571,13 @@ MODEL({
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
+
+      this.shown_ = false;
     },
     show: function() {
+      if ( this.shown_ ) return;
+      this.shown_ = true;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '';
@@ -4436,6 +4585,9 @@ MODEL({
       }
     },
     hide: function() {
+      if ( ! this.shown_ ) return;
+      this.shown_ = false;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '200ms opacity';
@@ -4873,7 +5025,7 @@ MODEL({
   listeners: [
     {
       name: 'onResize',
-      isAnimated: true,
+      isFramed: true,
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {

@@ -351,6 +351,18 @@ MODEL({
   tableProperties: [
     'name', 'label', 'relatedModel', 'relatedProperty'
   ],
+
+  documentation: function() { /*
+      $$DOC{ref:'Relationship',usePlural:true} indicate a parent-child relation
+      between instances of
+      a $$DOC{ref:'Model'} and some child $$DOC{ref:'Model',usePlural:true},
+      through the indicated
+      $$DOC{ref:'Property',usePlural:true}. If your $$DOC{ref:'Model',usePlural:true}
+      build a tree
+      structure of instances, they could likely benefit from a declared
+      $$DOC{ref:'Relationship'}.
+    */},
+
   properties: [
     {
       name:  'name',
@@ -358,7 +370,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValueFn: function() { return GLOBAL[this.relatedModel] ? GLOBAL[this.relatedModel].plural : ''; },
-      help: 'The coding identifier for the action.'
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */},
+      help: 'The coding identifier for the relationship.'
     },
     {
       name: 'label',
@@ -366,7 +382,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The display label for the action.'
+      documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
+        contain spaces or other odd characters.
+         */},
+      help: 'The display label for the relationship.'
     },
     {
       name: 'help',
@@ -375,6 +394,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+      */},
       help: 'Help text associated with the relationship.'
     },
     {
@@ -388,6 +411,7 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      documentation: function() { /* The $$DOC{ref:'Model.name'} of the related $$DOC{ref:'Model'}.*/},
       help: 'The name of the related Model.'
     },
     {
@@ -397,6 +421,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      documentation: function() { /*
+        The join $$DOC{ref:'Property'} of the related $$DOC{ref:'Model'}.
+        This is the property that links back to this $$DOC{ref:'Model'} from the other
+        $$DOC{ref:'Model',usePlural:true}.
+      */},
       help: 'The join property of the related Model.'
     }
   ]/*,
@@ -428,6 +457,9 @@ MODEL({
   [
     'id', 'severity', 'status', 'summary', 'assignedTo'
   ],
+  documentation: function() { /*
+      An issue describes a question, feature request, or defect.
+  */},
   properties:
   [
     {
@@ -435,6 +467,7 @@ MODEL({
       name: 'id',
       label: 'Issue ID',
       displayWidth: 12,
+      documentation: function() { /* $$DOC{ref:'Issue'} unique sequence number. */ },
       help: 'Issue\'s unique sequence number.'
     },
     {
@@ -448,6 +481,7 @@ MODEL({
         ]});}
       },
       defaultValue: 'String',
+      documentation: function() { /* The severity of the issue. */ },
       help: 'The severity of the issue.'
     },
     {
@@ -463,6 +497,7 @@ MODEL({
         ]});}
       },
       defaultValue: 'String',
+      documentation: function() { /* The status of the $$DOC{ref:'Issue'}. */ },
       help: 'The status of the issue.'
     },
     {
@@ -472,6 +507,7 @@ MODEL({
       required: true,
       displayWidth: 70,
       displayHeight: 1,
+      documentation: function() { /* A one line summary of the $$DOC{ref:'Issue'}. */ },
       help: 'A one line summary of the issue.'
     },
     {
@@ -482,6 +518,7 @@ MODEL({
       displayWidth: 50,
       displayHeight: 1,
       factory: function() { return new Date(); },
+      documentation: function() { /* When this $$DOC{ref:'Issue'} was created. */ },
       help: 'When this issue was created.'
     },
     {
@@ -492,6 +529,7 @@ MODEL({
       required: true,
       displayWidth: 30,
       displayHeight: 1,
+      documentation: function() { /* Who created the $$DOC{ref:'Issue'}. */ },
       help: 'Who created the issue.'
     },
     {
@@ -501,6 +539,7 @@ MODEL({
       defaultValue: 'kgr',
       displayWidth: 30,
       displayHeight: 1,
+      documentation: function() { /* Who the $$DOC{ref:'Issue'} is currently assigned to. */ },
       help: 'Who the issue is currently assigned to.'
     },
     {
@@ -509,6 +548,7 @@ MODEL({
       displayWidth: 75,
       displayHeight: 20,
       view: 'TextAreaView',
+      documentation: function() { /* Notes describing $$DOC{ref:'Issue'}. */ },
       help: 'Notes describing issue.'
     }
   ],

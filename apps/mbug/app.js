@@ -1,5 +1,11 @@
 var mbug;
 
+(function() {
+    var service = analytics.getService('MBug');
+    var tracker = service.getTracker('UA-47217230-4');
+    tracker.sendAppView('MainView');
+})();
+
 window.onload = function() {
   var Y = bootCORE(Application.create({
     name: 'MBug'
@@ -41,15 +47,16 @@ window.onload = function() {
             arequire('PriorityView'),
             arequire('PriorityCitationView'),
             arequire('IssueView'),
-            arequire('IssueEmailArrayView'),
-            arequire('IssuePersonCitationView'),
-            arequire('IssueEmailCitationView'),
+            arequire('CitationView'),
+            arequire('PersonView'),
+            arequire('DefaultRowView'),
+            arequire('DefaultACRowView'),
+            arequire('AddRowView'),
+            arequire('AutocompleteListView'),
             arequire('IssueOwnerAvatarView'),
             arequire('IssueCitationView'),
             arequire('CommentView'),
             arequire('ChangeProjectView'),
-            arequire('IssueOwnerView'),
-            arequire('IssueOwnerEditView'),
             arequire('Application'),
             arequire('IDBDAO'),
             arequire('DAOVersion'),

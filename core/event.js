@@ -114,7 +114,7 @@ var EventService = {
    * Only the last notification is delivered.
    **/
   // TODO: execute immediately from within a requestAnimationFrame
-  animate: function(listener, opt_X) {
+  framed: function(listener, opt_X) {
 //    if ( ! opt_X ) debugger;
 //    if ( opt_X.isBackground ) debugger;
 
@@ -308,6 +308,23 @@ var EventService = {
   },
 
 
+  /** @return true if the message was delivered without error. **/
+  notifyListener_: function(topic, listener, msg) {
+    try {
+      listener.apply(null, msg);
+    } catch ( err ) {
+      if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+        console.error('Error delivering event (removing listener): ', topic.join('.'));
+      } else {
+        console.warn('Unsubscribing listener: ', topic.join('.'));
+      }
+
+      return false;
+    }
+
+    return true;
+  },
+
   /** @return number of listeners notified **/
   notifyListeners_: function(topic, listeners, msg) {
     if ( listeners == null ) return 0;
@@ -316,14 +333,7 @@ var EventService = {
       for ( var i = 0 ; i < listeners.length ; i++ ) {
         var listener = listeners[i];
 
-        try {
-          listener.apply(null, msg);
-        } catch ( err ) {
-          if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-            console.error('Error delivering event (removing listener): ', topic.join('.'));
-          } else {
-            console.warn('Unsubscribing listener: ', topic.join('.'));
-          }
+        if ( ! this.notifyListener_(topic, listener, msg) ) {
           listeners.splice(i,1);
           i--;
         }
@@ -484,10 +494,7 @@ var Events = {
       srcMap = new WeakMap();
       this.listeners_.set(src, srcMap);
     }
-    if ( srcMap.get(dst) ) {
-      debugger;
-      console.log('duplicate follow');
-    }
+    console.assert( ! srcMap.get(dst), 'recordListener: duplicate follow');
     srcMap.set(dst, listener);
     src.addListener(listener);
     if ( ! opt_dontCallListener ) listener();
@@ -600,7 +607,7 @@ var Events = {
    */
   dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
-    var listener = EventService.animate(fn2, opt_X);
+    var listener = EventService.framed(fn2, opt_X);
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
@@ -724,7 +731,12 @@ var Movement = {
   },
 
   /** @return a latch function which can be called to stop the animation. **/
-  animate: function(duration, fn, opt_interp, opt_onEnd) {
+  animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
+    var setIntervalX   = ( opt_X && opt_X.setInterval   ) || setInterval;
+    var clearIntervalX = ( opt_X && opt_X.clearInterval ) || clearInterval;
+
+    //console.assert( opt_X && opt_X.setInterval, 'opt_X or opt_X.setInterval not available');
+
     if ( duration == 0 ) return Movement.seq(fn, opt_onEnd);
     var interp = opt_interp || Movement.linear;
 
@@ -734,7 +746,7 @@ var Movement = {
       var timer;
 
       function stop() {
-        clearInterval(timer);
+        clearIntervalX(timer);
         opt_onEnd && opt_onEnd();
         opt_onEnd = null;
       }
@@ -750,7 +762,7 @@ var Movement = {
       var startTime = Date.now();
 
       if ( ranges.length > 0 ) {
-        timer = setInterval(function() {
+        timer = setIntervalX(function() {
           var now = Date.now();
           var p   = interp((Math.min(now, startTime + duration)-startTime)/duration);
 
@@ -764,7 +776,7 @@ var Movement = {
           if ( now >= startTime + duration ) stop();
         }, 16);
       } else {
-        timer = setInterval(stop, duration);
+        timer = setIntervalX(stop, duration);
       }
 
       return stop;
@@ -942,7 +954,7 @@ var Movement = {
     var satY  = sat.y$;
     var start = opt_start || 0;
 
-    t.addListener(EventService.animate(function() {
+    t.addListener(EventService.framed(function() {
       var time = t.time;
       satX.set(bodyX.get() + r*Math.sin(time/p*Math.PI*2 + start));
       satY.set(bodyY.get() + r*Math.cos(time/p*Math.PI*2 + start));

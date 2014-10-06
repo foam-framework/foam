@@ -20,11 +20,22 @@
 
 MODEL({
   name: 'Action',
+  plural: 'Actions',
 
   tableProperties: [
     'name',
     'label'
   ],
+
+  documentation: function() {  /*
+    <p>An executable behavior that can be triggered by the user.
+      $$DOC{ref:'Action',usePlural:true} are typically represented as buttons
+      or menu items. Activating the $$DOC{ref:'Action'} causes the
+      $$DOC{ref:'.action'} function $$DOC{ref:'Property'} to run. The user-facing
+      control's state is handled by $$DOC{ref:'.isEnabled'} and $$DOC{ref:'.isAvailable'}.
+    </p>
+  */},
+
 
   properties: [
     {
@@ -34,7 +45,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the action.'
+      help: 'The coding identifier for the action.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
     },
     {
       name: 'label',
@@ -42,7 +57,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The display label for the action.'
+      help: 'The display label for the action.',
+      documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
+        contain spaces or other odd characters.
+         */}      
     },
     {
       name: 'help',
@@ -51,7 +69,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the action.'
+      help: 'Help text associated with the action.',
+      documentation: function() { /* 
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}  
     },
     {
       model_: 'DocumentationProperty',
@@ -62,7 +84,10 @@ MODEL({
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: false,
-      help: 'Indicates if this is the default action.'
+      help: 'Indicates if this is the default action.',
+      documentation: function() { /* 
+          Indicates if this is the default $$DOC{ref:'Action'}.
+        */}  
     },
     {
       model_: 'FunctionProperty',
@@ -71,7 +96,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 3,
       defaultValue: function() { return true; },
-      help: 'Function to determine if action is available.'
+      help: 'Function to determine if action is available.',
+      documentation: function() { /* 
+            A function used to determine if the $$DOC{ref:'Action'} is available.
+        */}  
     },
     {
       model_: 'FunctionProperty',
@@ -80,26 +108,38 @@ MODEL({
       displayWidth: 70,
       displayHeight: 3,
       defaultValue: function() { return true; },
-      help: 'Function to determine if action is enabled.'
+      help: 'Function to determine if action is enabled.',
+      documentation: function() { /* 
+            A function used to determine if the $$DOC{ref:'Action'} is enabled.
+        */}  
     },
     {
       model_: 'FunctionProperty',
       name: 'labelFn',
       label: 'Label Function',
       defaultValue: function(action) { return action.label; },
-      help: "Function to determine label. Defaults to 'this.label'."
+      help: "Function to determine label. Defaults to 'this.label'.",
+      documentation: function() { /* 
+            A function used to determine the label. Defaults to $$DOC{ref:'.label'}.
+        */}  
     },
     {
       name: 'iconUrl',
       type: 'String',
       defaultValue: undefined,
-      help: 'Provides a url for an icon to render for this action'
+      help: 'Provides a url for an icon to render for this action',
+      documentation: function() { /* 
+            A url for the icon to render for this $$DOC{ref:'Action'}.
+                */}  
     },
     {
       name: 'showLabel',
       type: 'String',
       defaultValue: true,
-      help: 'Property indicating whether the label should be rendered along side the icon'
+      help: 'Property indicating whether the label should be rendered alongside the icon',
+      documentation: function() { /* 
+            Indicates whether the $$DOC{ref:'.label'} should be rendered alongside the icon.
+        */}  
     },
     {
       name: 'children',
@@ -108,12 +148,18 @@ MODEL({
       subType: 'Action',
       view: 'ArrayView',
       help: 'Child actions of this action.',
-      persistent: false
+      persistent: false,
+      documentation: function() { /* 
+            Child $$DOC{ref:'Action',usePlural:true} of this instance.
+        */}  
     },
     {
       name: 'parent',
       type: 'String',
-      help: 'The parent action of this action'
+      help: 'The parent action of this action',
+      documentation: function() { /* 
+            The parent $$DOC{ref:'Action'} of this instance.
+        */}  
     },
     {
       model_: 'FunctionProperty',
@@ -121,15 +167,21 @@ MODEL({
       displayWidth: 80,
       displayHeight: 20,
       defaultValue: '',
-      help: 'Function to implement action.'
+      help: 'Function to implement action.',
+      documentation: function() { /* 
+            This function supplies the execution of the $$DOC{ref:'Action'} when triggered.
+        */}  
     },
     {
       model_: 'StringArrayProperty',
-      name: 'keyboardShortcuts'
+      name: 'keyboardShortcuts',
+      documentation: function() { /* 
+            Keyboard shortcuts for the $$DOC{ref:'Action'}.
+        */}  
     }
   ],
-  methods: {
-    callIfEnabled: function(X, that) {
+  methods: { 
+    callIfEnabled: function(X, that) { /* doesn't appear in docs. Bootstrappy issue. */
       if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
     }
   }
@@ -184,6 +236,10 @@ MODEL({
     'description'
   ],
 
+  documentation: function() { /*
+      <p>Represents one $$DOC{ref:'Method'} argument, including the type information.</p>
+  */},
+
   properties: [
     {
       name:  'type',
@@ -192,21 +248,27 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: 'Object',
-      help: 'The type of this argument.'
+      help: 'The type of this argument.',
+      documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or a $$DOC{ref:'Model'}.</p>
+      */}
     },
     {
       name: 'javaType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The java type that represents the type of this property.'
+      help: 'The java type that represents the type of this property.',
+      documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
+        or class to use. */}
     },
     {
       name: 'javascriptType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The javascript type that represents the type of this property.'
+      help: 'The javascript type that represents the type of this property.',
+      documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
+         type to use. */}
     },
     {
       name:  'name',
@@ -215,16 +277,26 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the entity.'
+      help: 'The coding identifier for the entity.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
     },
     {
       model_: 'BooleanProperty',
       name: 'required',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /*
+        Indicates that this arugment is required for calls to the containing $$DOC{ref:'Method'}.
+      */}
     },
     {
       name: 'defaultValue',
-      help: 'Default Value if not required and not provided.'
+      help: 'Default Value if not required and not provided.',
+      documentation: function() { /*
+        The default value to use if this argument is not required and not provided to the $$DOC{ref:'Method'} call.
+      */}
     },
     {
       name: 'description',
@@ -232,7 +304,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'A brief description of this topic.'
+      help: 'A brief description of this argument.',
+      documentation: function() { /*
+        A human-readable description of the argument.
+      */}
     },
     {
       name: 'help',
@@ -241,7 +316,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the entity.'
+      help: 'Help text associated with the entity.',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}
     },
     {
       model_: 'DocumentationProperty',
@@ -256,23 +335,13 @@ MODEL({
 
       return this.required ?
         function() {
-          if ( arguments[i] === undefined ) {
-            console.assert(false, 'Missing required argument# ' + i);
-            debugger;
-          }
-          if ( typeof arguments[i] !== type ) {
-            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
-            debugger;
-          }
-
+          console.assert(arguments[i] !== undefined, 'Missing required argument# ' + i);
+          console.assert(typeof arguments[i] === type,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
           return f.apply(this, arguments);
         } :
         function() {
-          if ( arguments[i] !== undefined && typeof arguments[i] !== type ) {
-            console.assert(false,  'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
-            debugger;
-          }
-
+          console.assert(arguments[i] === undefined || typeof arguments[i] === type,
+              'argument# ' + i + ' type expected to be ' + type + ', but was ' + (typeof arguments[i]) + ': ' + arguments[i]);
           return f.apply(this, arguments);
         } ;
     }
@@ -306,12 +375,33 @@ MODEL({
 
 MODEL({
   name: 'Method',
-	plural: 'Methods',
+  plural: 'Methods',
 
   tableProperties: [
     'name',
     'description'
   ],
+
+  documentation: function() {/*
+    <p>A $$DOC{ref:'Method'} represents a callable piece of code with
+    $$DOC{ref:'args',text:'arguments'} and an optional return value.
+    </p>
+    <p>$$DOC{ref:'Method',usePlural:true} contain code that runs in the instance's scope, so code
+    in your $$DOC{ref:'Method'} has access to the other $$DOC{ref:'Property',usePlural:true} and
+    features of your $$DOC{ref:'Model'}.</p>
+    <ul>
+      <li><code>this.propertyName</code> gives the value of a $$DOC{ref:'Property'}</li>
+      <li><code>this.propertyName$</code> is the binding point for the $$DOC{ref:'Property'}. Assignment
+          will bind bi-directionally, or <code>Events.follow(src, dst)</code> will bind from
+          src to dst.</li>
+      <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
+              $$DOC{ref:'Model'}</li>
+      <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
+                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
+                <code>this.SUPER()</code> is extremely important in your <code>init()</code>
+                $$DOC{ref:'Method'}, if you provide one.</li>
+    </ul>
+  */},
 
   properties: [
     {
@@ -321,7 +411,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the entity.'
+      help: 'The coding identifier for the entity.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
     },
     {
       name: 'description',
@@ -329,7 +423,10 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'A brief description of this topic.'
+      help: 'A brief description of this method.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
+         */}
+      
     },
     {
       name: 'help',
@@ -338,7 +435,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      help: 'Help text associated with the entity.'
+      help: 'Help text associated with the entity.',
+      documentation: function() { /* 
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}  
     },
     {
       model_: 'DocumentationProperty',
@@ -364,17 +465,30 @@ MODEL({
           })
         }
 
-      }
+      },
+      documentation: function() { /* 
+          <p>The code to execute for the $$DOC{ref:'Method'} call.</p>
+          <p>In a special case for javascript documentation, an initial multiline comment, if present,
+           will be pulled from your code and used as a documentation template: 
+            <code>function() { \/\* docs here \*\/ code... }</code></p>
+          
+        */}  
     },
     {
       name:  'returnType',
       defaultValue: '',
-      help: 'Interface package.'
+      help: 'Return type.',
+      documentation: function() { /* 
+          The return type of the $$DOC{ref:'Method'}.
+        */}  
     },
     {
       model_: 'BooleanProperty',
       name: 'returnTypeRequired',
-      defaultValue: true
+      defaultValue: true,
+      documentation: function() { /* 
+          Indicates whether the return type is checked. TODO: ???
+        */}  
     },
     {
       model_: 'ArrayProperty',
@@ -384,17 +498,28 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Method arguments.'
+      help: 'Method arguments.',
+      documentation: function() { /* 
+          The $$DOC{ref:'Arg',text:'Arguments'} for the method.
+        */}  
     },
     {
       name: 'isMerged',
-      help: 'As a listener, should this be merged?'
+      help: 'As a listener, should this be merged?',
+      documentation: function() { /* 
+          For a listener $$DOC{ref:'Method'}, indicates that the events should be merged to avoid
+          repeated activations.
+        */}  
     },
     {
       model_: 'BooleanProperty',
-      name: 'isAnimated',
+      name: 'isFramed',
       help: 'As a listener, should this be animated?',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() { /* 
+          For a listener $$DOC{ref:'Method'}, indicates that this should be animated.
+        */}
+      
     },
   ],
 
@@ -454,12 +579,7 @@ Method.getPrototype().decorateFunction = function(f) {
   return returnType ?
     function() {
       var ret = f.apply(this, arguments);
-
-      if ( typeof ret !== returnType ) {
-        console.assert(false, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
-        debugger;
-      }
-
+      console.assert(typeof ret !== returnType, 'return type expected to be ' + returnType + ', but was ' + (typeof ret) + ': ' + ret);
       return ret;
     } : f ;
 };
@@ -471,26 +591,47 @@ Method.getPrototype().generateFunction = function() {
 
 MODEL({
   name: 'Interface',
+  plural: 'Interfaces',
 
   tableProperties: [
     'package', 'name', 'description'
   ],
 
+  documentation: function() { /*
+      <p>$$DOC{ref:'Interface',usePlural:true} specify a set of methods with no
+      implementation. $$DOC{ref:'Model',usePlural:true} implementing $$DOC{ref:'Interface'}
+      fill in the implementation as needed. This is analogous to
+      $$DOC{ref:'Interface',usePlural:true} in object-oriented languages.</p>
+    */},
+
   properties: [
     {
       name:  'package',
-      help: 'Interface package.'
+      help: 'Interface package.',
+      documentation: function() { /* When running FOAM in a Java environment, specifies the
+         package in which to declare the Java class built from this $$DOC{ref:'.'}.*/}
     },
     {
       name: 'extends',
       type: 'Array[String]',
       view: 'StringArrayView',
-      help: 'Interfaces extended by this interface.'
+      help: 'Interfaces extended by this interface.',
+      documentation: function() { /*
+        The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
+        from. Unlike most $$DOC{ref:'Model',usePlural:true},
+        $$DOC{ref:'Interface',usePlural:true} should only extend other
+        $$DOC{ref:'Interface',usePlural:true}, and have $$DOC{ref:'Model.extendsModel'}
+        set to $$DOC{ref:'Interface'}.
+      */}
     },
     {
       name:  'name',
       required: true,
-      help: 'Interface name.'
+      help: 'Interface name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} definition names should use CamelCase starting with a capital letter.
+         */}
     },
     {
       name:  'description',
@@ -499,7 +640,8 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The template\'s unique name.'
+      help: 'The interface\'s description.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}. */ }
     },
     {
       name: 'help',
@@ -507,7 +649,11 @@ MODEL({
       displayWidth: 70,
       displayHeight: 6,
       view: 'TextAreaView',
-      help: 'Help text associated with the argument.'
+      help: 'Help text associated with the argument.',
+      documentation: function() { /*
+          This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
+          through field labels or tooltips.
+        */}
     },
     {
       model_: 'DocumentationProperty',
@@ -521,7 +667,11 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Methods associated with the interface.'
+      help: 'Methods associated with the interface.',
+      documentation: function() { /*
+        <p>The $$DOC{ref:'Method',usePlural:true} that the interface requires
+        extenders to implement.</p>
+        */}
     }
   ],
   templates:[
@@ -580,6 +730,31 @@ MODEL({
     'name', 'description'
   ],
 
+  documentation: function() {/*
+    <p>A $$DOC{ref:'.'} is processed to create a method that generates content for a $$DOC{ref:'View'}. 
+    Sub-views can be created from inside the
+    $$DOC{ref:'Template'} using special tags. The content is lazily processed, so the first time you ask for 
+    a $$DOC{ref:'Template'}
+    the content is compiled, tags expanded and sub-views created. Generally a template is included in a
+    $$DOC{ref:'View'}, since after compilation a method is created and attached to the $$DOC{ref:'View'}
+    containing the template.
+    </p>
+    <p>For convenience, $$DOC{ref:'Template',usePlural:true} can be specified as a function with a block
+    comment inside to avoid line wrapping problems: 
+    <code>templates: [ myTemplate: function() { \/\* my template content \*\/ }]</code>
+    </p>
+    <p>HTML $$DOC{ref:'Template',usePlural:true} can include the following JSP-style tags:
+    </p>
+    <ul>
+       <li><code>&lt;% code %&gt;</code>: code inserted into template, but nothing implicitly output</li>
+       <li><code>&lt;%= comma-separated-values %&gt;</code>: all values are appended to template output</li>
+       <li><code>&lt;%# expression %&gt;</code>: dynamic (auto-updating) expression is output</li>
+       <li><code>\\&lt;new-line&gt;</code>: ignored</li>
+       <li><code>$$DOC{ref:'Template',text:'%%value'}(&lt;whitespace&gt;|{parameters})</code>: output a single value to the template output</li>
+       <li><code>$$DOC{ref:'Template',text:'$$feature'}(&lt;whitespace&gt;|{parameters})</code>: output the View or Action for the current Value</li>
+    </ul>
+  */},
+    
   properties: [
     {
       name:  'name',
@@ -588,7 +763,11 @@ MODEL({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The template\'s unique name.'
+      help: 'The template\'s unique name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+      */}
     },
     {
       name:  'description',
@@ -597,7 +776,9 @@ MODEL({
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The template\'s unique name.'
+      help: 'The template\'s description.',
+      documentation: function() { /* A human readable description of the $$DOC{ref:'.'}.
+         */}
     },
     {
       model_: 'ArrayProperty',
@@ -607,7 +788,10 @@ MODEL({
       view: 'ArrayView',
       factory: function() { return []; },
       defaultValue: [],
-      help: 'Method arguments.'
+      help: 'Method arguments.',
+      documentation: function() { /* 
+          The $$DOC{ref:'Arg',text:'Arguments'} for the $$DOC{ref:'Template'}.
+        */}  
     },
     {
       name: 'template',
@@ -619,7 +803,9 @@ MODEL({
       view: 'TextAreaView',
       // Doesn't work because of bootstrapping issues.
       // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
-      help: 'Template text. <%= expr %> or <% out(...); %>'
+      help: 'Template text. <%= expr %> or <% out(...); %>',
+      documentation: function() { /* The string content of the uncompiled $$DOC{ref:'Template'} body.
+         */}
     }/*,
        {
        name: 'templates',
@@ -667,7 +853,7 @@ MODEL({
       required: true,
       displayWidth: 30,
       displayHeight: 1,
-      defaultValue: '',
+      defaultValue: 'documentation',
       help: 'The Document\'s unique name.',
       documentation: "An optional name for the document. Documentation is normally referenced by the name of the containing Model."
     },

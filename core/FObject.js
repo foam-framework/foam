@@ -106,7 +106,7 @@ var FObject = {
   },
 
   installInDocument: function(X, document) {
-    if ( this.CSS ) X.addStyle(this.CSS());
+    if ( Object.hasOwnProperty.call(this, 'CSS') ) X.addStyle(this.CSS());
   },
 
   defineFOAMGetter: function(name, getter) {
@@ -440,22 +440,75 @@ var FObject = {
     return this;
   },
 
-  getFeature: function(featureName) {
+  getMyFeature: function(featureName) {
     featureName = featureName.toUpperCase();
     return [
-      this.properties,
-      this.actions,
-      this.methods,
-      this.listeners,
-      this.templates,
-      this.models,
-      this.tests,
-      this.relationships,
-      this.issues
+      this.properties? this.properties : [],
+      this.actions? this.actions : [],
+      this.methods? this.methods : [],
+      this.listeners? this.listeners : [],
+      this.templates? this.templates : [],
+      this.models? this.models : [],
+      this.tests? this.tests : [],
+      this.relationships? this.relationships : [],
+      this.issues? this.issues : []
     ].mapFind(function(list) { return list.mapFind(function(f) {
       return f.name && f.name.toUpperCase() === featureName && f;
     })});
+  },
+
+  getAllMyFeatures: function() {
+    var featureList = [];
+    [
+      this.properties? this.properties : [],
+      this.actions? this.actions : [],
+      this.methods? this.methods : [],
+      this.listeners? this.listeners : [],
+      this.templates? this.templates : [],
+      this.models? this.models : [],
+      this.tests? this.tests : [],
+      this.relationships? this.relationships : [],
+      this.issues? this.issues : []
+    ].map(function(list) {
+      featureList = featureList.concat(list);
+    });
+    return featureList;
+  },
+
+  // getFeature accounts for inheritance through extendsModel
+  getFeature: function(featureName) {
+    var feature = this.getMyFeature(featureName);
+
+    if (this.id != "Model" && !feature) {
+      if (this.extendsModel.length > 0 && this.X[this.extendsModel]) {
+        return this.X[this.extendsModel].getFeature(featureName);
+      } else {
+        return this.X["Model"].getFeature(featureName);
+      }
+    } else {
+      return feature;
+    }
+  },
+
+  // getAllFeatures accounts for inheritance through extendsModel
+  getAllFeatures: function() {
+    var featureList = this.getAllMyFeatures();
+
+    if (this.id != "Model") {
+      var superModel = (this.extendsModel.length > 0 && this.X[this.extendsModel].id)? this.X[this.extendsModel] : this.X["Model"];
+      console.log("getAll: ", this.extendsModel, superModel);
+      superModel.getAllFeatures().map(function(subFeat) {
+          var subName = subFeat.name.toUpperCase();
+          if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
+            return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
+          })) {
+            featureList.push(subFeat);
+          }
+      });
+    }
+    return featureList;
   }
+
 };
 
 

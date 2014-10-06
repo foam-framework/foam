@@ -69,6 +69,12 @@ var TemplateParser = {
 };
 
 var TemplateOutput = {
+  /**
+   * obj - Parent object.  If objects are output and have an initHTML() method, then they
+   * are added to the parent by calling obj.addChild().
+   **/
+  // TODO(kgr): redesign, I think this is actually broken.  If we call appendHTML() of
+  // a sub-view then it will be added to the wrong parent.
   create: function(obj) {
     var buf = '';
     var f = function(/* arguments */) {
@@ -236,8 +242,8 @@ var TemplateUtil = {
          t = templates[i] = Template.create({
            name: t.name,
            // ignore first argument, which should be 'opt_out'
-           args: t.toString().match(/\((.*)\)/)[1].split(',').slice(1).filter(function(a) {
-             return Arg.create({name: a});
+           args: t.toString().match(/\((.*?)\)/)[1].split(',').slice(1).map(function(a) {
+             return Arg.create({name: a.trim()});
            }),
            template: multiline(t)});
        } else if ( ! t.template ) {

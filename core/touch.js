@@ -466,7 +466,7 @@ MODEL({
     },
     {
       name: 'tick',
-      isAnimated: true,
+      isFramed: true,
       code: function(touch) {
         // First, check if momentum is 0. If so, abort.
         if ( ! this.tickRunning ) return;
@@ -957,13 +957,8 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(_, __, touch) {
-        try {
-          if ( ! this.recognized ) {
-            this.checkRecognition();
-          }
-        } catch(e) {
-          debugger;
-          console.error('Error on touch end', e);
+        if ( ! this.recognized ) {
+          this.checkRecognition();
         }
 
         delete this.points[touch.id];

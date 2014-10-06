@@ -507,7 +507,7 @@ MODEL({
 
         // I don't know why the 'animate' is required, but it sometimes
         // doesn't remove the view without it.
-        view.data$.addListener(EventService.animate(function() {
+        view.data$.addListener(EventService.framed(function() {
           self.data = view.data;
           remove();
         }, this.X));
@@ -534,7 +534,10 @@ MODEL({
 
         // Remove any previous data$ listener for this popup.
         if ( this.updateListener ) this.data$.removeListener(this.updateListener);
-        this.updateListener = function() { this.X.$(id).innerHTML = this.choice[1]; }.bind(this);
+        this.updateListener = function() {
+          var e = this.X.$(id);
+          if ( e ) e.innerHTML = this.choice[1];
+        }.bind(this);
         this.data$.addListener(this.updateListener);
       }
 

@@ -86,7 +86,7 @@ var rootFeatureSet = [
   }],
   ['TodoController', 'Listener', {
     name: 'onDAOUpdate',
-    isAnimated: true,
+    isFramed: true,
     code: function() {
         this.todoDAO.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
           this.completedCount = q.groups['true'];

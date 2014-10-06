@@ -46,14 +46,23 @@ function override(cls, methodName, method) {
 
   var SUPER = function() { return super_.apply(this, arguments); };
 
-  var f = function() {
-    var OLD_SUPER = this.SUPER;
-    this.SUPER = SUPER;
+  var slowF = function(OLD_SUPER, args) {
     try {
-      return method.apply(this, arguments);
+      return method.apply(this, args);
     } finally {
       this.SUPER = OLD_SUPER;
     }
+  };
+  var f = function() {
+    var OLD_SUPER = this.SUPER;
+    this.SUPER = SUPER;
+
+    if ( OLD_SUPER ) return slowF.call(this, OLD_SUPER, arguments);
+
+    // Fast-Path when it doesn't matter if we restore SUPER or not
+    var ret = method.apply(this, arguments);
+    this.SUPER = null;
+    return ret;
   };
 
   f.super_ = super_;
@@ -84,7 +93,7 @@ var BootstrapModel = {
 
   TYPE: 'BootstrapModel <startup only, error if you see this>',
 
-  buildPrototype: function() {
+  buildPrototype: function() { /* Internal use only. */
     function addTraitToModel(traitModel, parentModel) {
       var name = parentModel.name + '_ExtendedWith_' + traitModel.name;
       if ( ! GLOBAL[name] ) {
@@ -219,24 +228,23 @@ var BootstrapModel = {
     });
 
     // todo: move this somewhere better
-    var createListenerTrampoline = function(cls, name, fn, isMerged, isAnimated) {
+    var createListenerTrampoline = function(cls, name, fn, isMerged, isFramed) {
       // bind a trampoline to the function which
       // re-binds a bound version of the function
       // when first called
-      if ( ! fn ) debugger;
+      console.assert( fn, 'createListenerTrampoline: fn not defined');
       fn.name = name;
 
       Object.defineProperty(cls, name, {
         get: function () {
           var l = fn.bind(this);
           /*
-          if ( ( isAnimated || isMerged ) && this.X.isBackground ) {
+          if ( ( isFramed || isMerged ) && this.X.isBackground ) {
             console.log('*********************** ', this.model_.name);
-            debugger;
           }
           */
-          if ( isAnimated )
-            l = EventService.animate(l, this.X);
+          if ( isFramed )
+            l = EventService.framed(l, this.X);
           else if ( isMerged ) {
             l = EventService.merged(
               l,
@@ -255,7 +263,7 @@ var BootstrapModel = {
     if ( Array.isArray(this.listeners) ) {
       for ( var i = 0 ; i < this.listeners.length ; i++ ) {
         var l = this.listeners[i];
-        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isAnimated);
+        createListenerTrampoline(cls, l.name, l.code, l.isMerged, l.isFramed);
       }
     } else if ( this.listeners )
       //          this.listeners.forEach(function(l, key) {
@@ -300,7 +308,7 @@ var BootstrapModel = {
     return cls;
   },
 
-  getPrototype: function() {
+  getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
     return this.prototype_ && this.prototype_.model_ == this ?
       this.prototype_ :
       ( this.prototype_ = this.buildPrototype() );
@@ -309,6 +317,7 @@ var BootstrapModel = {
   create: function(args, X) { return this.getPrototype().create(args, X); },
 
   isSubModel: function(model) {
+		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */
     try {
       return model && ( model === this || this.isSubModel(model.getPrototype().__proto__.model_) );
     } catch (x) {
@@ -316,7 +325,7 @@ var BootstrapModel = {
     }
   },
 
-  getPropertyWithoutCache_: function(name) {
+  getPropertyWithoutCache_: function(name) { /* Internal use only. */
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
 
@@ -326,7 +335,7 @@ var BootstrapModel = {
     return null;
   },
 
-  getProperty: function(name) {
+  getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
     if ( ! this.propertyMap_ ) {
@@ -345,7 +354,7 @@ var BootstrapModel = {
     return this.propertyMap_[name];
   },
 
-  getAction: function(name) {
+  getAction: function(name) { /* Returns the requested $$DOC{ref:'Action'} of this instance. */
     for ( var i = 0 ; i < this.actions.length ; i++ )
       if ( this.actions[i].name === name ) return this.actions[i];
   },
@@ -358,7 +367,9 @@ var BootstrapModel = {
     return string.hashCode();
   },
 
-  isInstance: function(obj) { return obj && obj.model_ && this.isSubModel(obj.model_); },
+  isInstance: function(obj) { /* Returns true if the given instance extends this $$DOC{ref:'Model'}. */
+		return obj && obj.model_ && this.isSubModel(obj.model_); 
+	},
 
   toString: function() { return "BootstrapModel(" + this.name + ")"; }
 };

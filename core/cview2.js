@@ -17,6 +17,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'scalingRatio',
+      preSet: function(_, v) { if ( v < 0 ) return 1; return v; },
       postSet: function(_, v) { console.log('Scaling to: ' , v); },
       defaultValue: 1
     },
@@ -39,7 +40,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.width = this.canvasWidth();
@@ -51,7 +52,7 @@ MODEL({
     },
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
@@ -78,10 +79,13 @@ MODEL({
 
     toHTML: function() {
       var className = this.className ? ' class="' + this.className + '"' : '';
-      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style=width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
+      return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
     initHTML: function() {
       if ( ! this.$ ) return;
+
+      this.maybeInitTooltip();
+
       this.canvas = this.$.getContext('2d');
 
       var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
@@ -137,7 +141,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.width = this.canvasWidth();
@@ -256,6 +260,7 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
+        if ( this.tooltip )   params.tooltip   = this.tooltip;
         this.view = this.X.CViewView.create(params);
       }
       return this.view;
@@ -461,6 +466,17 @@ MODEL({
           gesture: 'tap'
         });
       }
+    },
+    {
+      name: 'className',
+      help: 'CSS class name(s), space separated.',
+      defaultValueFn: function() {
+        return 'actionButtonCView actionButtonCView-' + this.action.name;
+      }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action.help; }
     }
   ],
 
@@ -483,7 +499,7 @@ MODEL({
           this.pressCircle.y = evt.offsetY;
         }
         this.pressCircle.r = 5;
-        Movement.animate(150, function() {
+        this.X.animate(150, function() {
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
           this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
@@ -496,7 +512,7 @@ MODEL({
       code: function() {
         if ( ! this.down_ ) return;
         this.down_ = false;
-        Movement.animate(
+        this.X.animate(
           300,
           function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
@@ -601,7 +617,6 @@ MODEL({
     },
     paintSelf: function() {
       var c = this.canvas;
-
       if ( this.font ) c.font = this.font;
 
       c.globalAlpha  = this.alpha;
@@ -725,7 +740,8 @@ MODEL({
     },
     {
       model_: 'IntProperty',
-      name: 'scrollTop'
+      name: 'scrollTop',
+      preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
     },
     {
       name: 'renderer'
@@ -737,23 +753,47 @@ MODEL({
     {
       name: 'objs',
       factory: function() { return []; }
+    },
+    {
+      name: 'offset',
+      defaultValue: 0
     }
   ],
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.renderer; }.bind(this),
-                     function() { this.renderer.width = this.width; }.bind(this));
+      this.X.dynamic(function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
+                     function() {
+                       this.renderer.width = this.width;
+                       this.view && this.view.paint();
+                     }.bind(this));
     },
     initCView: function() {
       this.X.dynamic(
         function() {
           this.scrollTop; this.height; this.renderer;
         }.bind(this), this.onDAOUpdate);
+
+      if ( this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var target = this.X.GestureTarget.create({
+          container: this,
+          handler: this,
+          gesture: 'verticalScrollMomentum'
+        });
+        manager.install(target);
+      }
+    },
+    containsPoint: function(x, y, e) {
+      if ( this.$ && this.$ === e ) return true;
+      return false;
+    },
+    verticalScrollMove: function(dy) {
+      this.scrollTop -= dy;
     },
     paintSelf: function() {
       var self = this;
-      var offset = -(this.scrollTop % this.renderer.height);
+      var offset = this.offset;
       for ( var i = 0; i < this.objs.length; i++ ) {
         self.canvas.save();
         self.canvas.translate(0, offset + (i * self.renderer.height));
@@ -771,19 +811,17 @@ MODEL({
         var selectNumber = this.selectNumber + 1;
         this.selectNumber = selectNumber;
 
-        var limit = Math.floor(this.height / this.renderer.height) + 1;
+        var limit = Math.floor(this.height / this.renderer.height) + 2;
         var skip = Math.floor(this.scrollTop / this.renderer.height);
         var self = this;
 
 
         var offset = -(this.scrollTop % this.renderer.height);
 
-        console.log('skip, limit, offset: ', skip, limit, offset);
-
         var i = 0;
         this.dao.skip(skip).limit(limit).select([])(function(objs) {
+          self.offset = offset;
           self.objs = objs;
-          self.view.paint();
         });
 
 /*{

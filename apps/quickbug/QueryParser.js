@@ -24,6 +24,7 @@ MODEL({
 
    extendsModel: 'UNARY',
 
+   // See Issue#342 for explanation of query syntax
    properties: [
       {
         name:  'arg1',
@@ -32,7 +33,9 @@ MODEL({
           var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           this.pattern_       = new RegExp(pattern, 'i');
           this.prefixPattern_ = new RegExp('^' + pattern, 'i');
-          this.labelPattern_  = new RegExp('^\\w+-' + pattern, 'i');
+          this.labelPattern_  = new RegExp(pattern.indexOf(':') == -1 ?
+            '^\\w+-' + pattern :
+            '^' + pattern.replace(/:/,'-'), 'i');
 
           return value.toLowerCase();
         }
@@ -48,7 +51,7 @@ MODEL({
        if ( this.pattern_.test(obj.summary) ) return true;
        if ( this.prefixPattern_.test(obj.owner) ) return true;
        for ( var i = 0 ; i < obj.cc.length     ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
-       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i])  ) return true;
+       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i]) ) return true;
        return false;
      }
    }

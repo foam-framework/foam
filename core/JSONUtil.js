@@ -102,7 +102,7 @@ var JSONUtil = {
         if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
       }
       */
-
+//if (obj.model_ && obj.model_ === "DocumentationProperty") debugger;
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
       return GLOBAL[obj.model_] ? GLOBAL[obj.model_].create(obj) : obj;

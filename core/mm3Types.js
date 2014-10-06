@@ -734,6 +734,8 @@ var DocumentationProperty = Model.create({
   extendsModel: 'Property',
   name: 'DocumentationProperty',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
+  documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
+
 
   properties: [
     {
@@ -741,30 +743,40 @@ var DocumentationProperty = Model.create({
       type: 'String',
       defaultvalue: 'Documentation'
     },
-    {
-      name: 'setter',
-      type: 'Function',
-      defaultvalue: DocumentationBootstrap.setter
-    },
-    {
+    { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
       type: 'Function',
-      defaultvalue: DocumentationBootstrap.getter
+      factory: function() { return function() {
+        var doc = this.instance_.documentation;
+        if (doc && typeof Documentation != "undefined" && Documentation // a source has to exist (otherwise we'll return undefined below)
+            && (  !doc.model_ // but we don't know if the user set model_
+               || !doc.model_.getPrototype // model_ could be a string
+               || !Documentation.isInstance(doc) // check for correct type
+            ) ) {
+          // So in this case we have something in documentation, but it's not of the
+          // "Documentation" model type, so FOAMalize it.
+          if (doc.body) {
+            this.instance_.documentation = Documentation.create( doc );
+          } else {
+            this.instance_.documentation = Documentation.create({ body: doc });
+          }
+        }
+        // otherwise return the previously FOAMalized model or undefined if nothing specified.
+        return this.instance_.documentation;
+      }; }
     },
     {
       name: 'view',
-      defaultValue: 'DocModelView'
+      defaultValue: 'DetailView'
     },
     {
       name: 'help',
       defaultValue: 'Documentation for this entity.'
     },
-//    {
-//      name: 'documentation',
-//      defaultValueFn: function() { console.log(DocumentationBootstrap.documentation);
-//        return DocumentationBootstrap.documentation;
-//      }
-//    }
+    {
+      name: 'documentation',
+      factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; }
+   }
   ]
 });
 

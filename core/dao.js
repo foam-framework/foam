@@ -65,33 +65,43 @@ MODEL({
   name: 'Sink',
   description: 'Data Sink',
 
+  documentation: function() {/*
+    <p>The $$DOC{ref:'Sink'} $$DOC{ref:'Interface'} forms the basis for all data
+    access. At a minimum, data stores must support the
+    $$DOC{ref:'.put'} and $$DOC{ref:'.remove'} operations.</p>
+  */},
+
   methods: [
     {
       name: 'put',
       description: 'Put (add) an object to the Sink.',
+      documentation: "<p>Adds the given object to the store.<p>",
       args: [
-        { name: 'obj', type: 'Object' },
-        { name: 'sink', type: 'Sink' }
+        { name: 'obj', type: 'Object', documentation: 'The object to add.' },
+        { name: 'sink', type: 'Sink', documentation: '<p>The next sink to chain: sink.put(obj) is called after this.put() completes.</p>' }
       ]
     },
     {
       name: 'remove',
       description: 'Remove a single object.',
+      documentation: "Removes the given object from the store.",
       args: [
-        { name: 'obj', type: 'Object' },
-        { name: 'sink', type: 'Sink' }
+        { name: 'obj', type: 'Object', documentation: 'The object to remove.' },
+        { name: 'sink', type: 'Sink', documentation: '<p>The next sink to chain: sink.remove(obj) is called after this.remove() completes.</p>' }
       ]
     },
     {
       name: 'error',
       description: 'Report an error.',
+      documentation: "<p>Report an error to the $$DOC{ref:'Sink'}.</p>",
       args: [
         { name: 'obj', type: 'Object' }
       ]
     },
     {
       name: 'eof',
-      description: 'Indicate that no more operations will be performed on the Sink.'
+      description: 'Indicate that no more operations will be performed on the Sink.',
+      documentation: "<p>Indicates that no more operations will be performed on the $$DOC{ref:'Sink'}.</p>"
     }
   ]
 });
@@ -1784,7 +1794,7 @@ MODEL({
           "var url = '" + url + "';\n",
           "var a = importScripts;",
           "importScripts = function(scripts) { \nfor (var i = 0; i < arguments.length; i++) \na(url + arguments[i]); \n};\n",
-          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n debugger; }\n",
+          "try { importScripts('bootFOAMWorker.js'); } catch(e) { \n console.error(e); }\n",
           "WorkerDelegate.create({ dao: [] });\n"
         ];
         return new Worker(window.URL.createObjectURL(
@@ -2654,7 +2664,7 @@ MODEL({
     {
       model_: 'IntProperty',
       name: 'maxSize',
-      defaultValue: 30
+      defaultValue: 100
     },
     {
       name: 'cacheFactory',
@@ -3161,6 +3171,18 @@ MODEL({
   extendsModel: 'ProxyDAO',
 
   help: 'A facade for easy DAO setup.',
+
+  documentation: function() {/*
+    <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
+    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
+    will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
+    </p>
+    <p>Since $$DOC{ref:'EasyDAO'} is a proxy, just use it like you would any other
+    $$DOC{ref:'DAO'}, without worrying about the internal $$DOC{ref:'DAO'} doing the
+    work.
+    </p>
+  */},
 
   properties: [
     {

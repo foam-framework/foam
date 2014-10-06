@@ -247,7 +247,7 @@ MODEL({
           scrollbar.value++;
         }
       };
-      scrollbar.addPropertyListener('value', EventService.animate(function() {
+      scrollbar.addPropertyListener('value', EventService.framed(function() {
         if ( self.dao ) self.view.dao = self.dao.skip(scrollbar.value);
       }));
 

@@ -25,7 +25,7 @@ MODEL({
     {
       name: 'postSet',
       defaultValue: function(_, v, prop) {
-        if ( ! Array.isArray(v) ) debugger;
+        console.assert( Array.isArray(v), 'LabelArrayProperty.postSet: new value is not an array');
 
         v.sort();
 

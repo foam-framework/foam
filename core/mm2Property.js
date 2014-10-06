@@ -31,6 +31,15 @@ var Property = {
     'defaultValue'
   ],
 
+  documentation: function() { /*
+    <p>The $$DOC{ref:'Property',usePlural:true} of a $$DOC{ref:'Model'} act as data members
+      and connection points. A $$DOC{ref:'Property'} can store a modelled value, and bind
+      to other $$DOC{ref:'Property',usePlural:true} for easy reactive programming.</p>
+    <p>Note that, like $$DOC{ref:'Model'} being a $$DOC{ref:'Model'} itself, the
+      $$DOC{ref:'Model.properties'} feature of all models is itself a $$DOC{ref:'Property'}.
+    <p>
+  */},
+
   properties: [
     {
       name: 'name',
@@ -39,7 +48,12 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The coding identifier for the property.'
+      help: 'The coding identifier for the property.',
+			documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+				$$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+			  $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+				 */}
+
     },
     {
       name: 'label',
@@ -48,7 +62,10 @@ var Property = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The display label for the property.'
+      help: 'The display label for the property.',
+			documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
+				contain spaces or other odd characters.
+				 */}			
     },
     {
       name: 'tableLabel',
@@ -56,7 +73,11 @@ var Property = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValueFn: function() { return this.name.labelize(); },
-      help: 'The table display label for the entity.'
+      help: 'The table display label for the entity.',
+			documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
+				contain spaces or other odd characters.
+				 */}			
+			
     },
     {
       name: 'type',
@@ -84,21 +105,46 @@ var Property = {
         ]});}
       },
       defaultValue: 'String',
-      help: 'The type of the property.'
+      help: 'The type of the property.',
+			documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or
+					a $$DOC{ref:'Model'}.</p> <p>Primitives include:</p>
+			<ul>
+          <li>Array</li>
+          <li>Boolean</li>
+          <li>Color</li>
+          <li>Date</li>
+          <li>DateTime</li>
+          <li>Email</li>
+          <li>Enum</li>
+          <li>Float</li>
+          <li>Function</li>
+          <li>Image</li>
+          <li>Int</li>
+          <li>Object</li>
+          <li>Password</li>
+          <li>String</li>
+          <li>String[]</li>
+          <li>URL</li>
+			</ul>
+				 */}			
     },
     {
       name: 'javaType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The java type that represents the type of this property.'
+      help: 'The java type that represents the type of this property.',
+			documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
+			  or class to use. */}
     },
     {
       name: 'javascriptType',
       type: 'String',
       required: false,
       defaultValueFn: function() { return this.type; },
-      help: 'The javascript type that represents the type of this property.'
+      help: 'The javascript type that represents the type of this property.',
+			documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
+				 type to use. */}
     },
     {
       name: 'shortName',
@@ -107,14 +153,18 @@ var Property = {
       displayWidth: 10,
       displayHeight: 1,
       defaultValue: '',
-      help: 'A short alternate name to be used for compact encoding.'
+      help: 'A short alternate name to be used for compact encoding.',
+      documentation: "A short alternate $$DOC{ref:'.name'} to be used for compact encoding."
     },
     {
       name: 'aliases',
       type: 'Array[String]',
       view: 'StringArrayView',
       defaultValue: [],
-      help: 'Alternate names for this property.'
+      help: 'Alternate names for this property.',
+			documentation: function() { /* 
+				Aliases can be used as synonyms for this $$DOC{ref:'Property'} in code or to look it up by name. 
+			*/}
     },
     {
       name: 'mode',
@@ -123,7 +173,12 @@ var Property = {
       view: {
         create: function() { return ChoiceView.create({choices:[
           "read-only", "read-write", "final"
-        ]}); } }
+        ]}); } },
+				documentation: function() { /* 
+					To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
+					to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
+					the $$DOC{ref:'Model'} that owns this $$DOC{ref:'Property'}.
+				*/}
     },
     {
       name: 'subType',
@@ -131,7 +186,10 @@ var Property = {
       type: 'String',
       displayWidth: 30,
       // todo: keyView of Models
-      help: 'The type of the property.'
+      help: 'The type of the property.',
+			documentation: function() { /* 
+				In array types, the $$DOC{ref:'.subType'} indicates the type that the array contains.
+			*/}
     },
     {
       name: 'units',
@@ -140,28 +198,44 @@ var Property = {
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
-      help: 'The units of the property.'
+      help: 'The units of the property.',
+			documentation: function() { /* 
+				The units of the $$DOC{ref:'Property'}.
+			*/}
     },
     {
       name: 'required',
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: true,
-      help: 'Indicates if the property is a required field.'
+      help: 'Indicates if the property is a required field.',
+			documentation: function() { /* 
+				Indicates whether the $$DOC{ref:'Property'} is required for its owner $$DOC{ref:'Model'} to
+				function properly.
+			*/}
     },
     {
       name: 'hidden',
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: false,
-      help: 'Indicates if the property is hidden.'
+      help: 'Indicates if the property is hidden.',
+			documentation: function() { /* 
+				Indicates whether the $$DOC{ref:'Property'} is for internal use and should be hidden from
+				the user when viewing tables or other views of $$DOC{ref:'Model'} 
+				$$DOC{ref:'Property',usePlural:true}.
+			*/}
     },
     {
       name: 'transient',
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: false,
-      help: 'Indicates if the property is transient.'
+      help: 'Indicates if the property is transient.',
+			documentation: function() { /* 
+				Indicates whether the $$DOC{ref:'Property'} is transient, and should not be saved permanently
+				or serialized.
+			*/}
     },
     {
       name: 'displayWidth',
@@ -169,7 +243,10 @@ var Property = {
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: '30',
-      help: 'The display width of the property.'
+      help: 'The display width of the property.',
+			documentation: function() { /* 
+				A width suggestion for views that automatically render the $$DOC{ref:'Property'}.
+			*/}
     },
     {
       name: 'displayHeight',
@@ -177,25 +254,39 @@ var Property = {
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: 1,
-      help: 'The display height of the property.'
+      help: 'The display height of the property.',
+			documentation: function() { /* 
+				A height suggestion for views that automatically render the $$DOC{ref:'Property'}.
+			*/}
     },
     {
       name: 'view',
       type: 'view',
       defaultValue: 'TextFieldView',
-      help: 'View component for the property.'
+      help: 'View component for the property.',
+			documentation: function() { /* 
+				The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
+			*/}
     },
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
       defaultValue: function() { return ""; },
-      help: 'Inject HTML before row in DetailView.'
+      help: 'Inject HTML before row in DetailView.',
+			documentation: function() { /* 
+				An optional function to 
+				inject HTML before the row in $$DOC{ref:'DetailView'}.
+			*/}
     },
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPostRow',
       defaultValue: function() { return ""; },
-      help: 'Inject HTML before row in DetailView.'
+      help: 'Inject HTML before row in DetailView.',
+			documentation: function() { /* 
+				An optional function to 
+				inject HTML after the row in $$DOC{ref:'DetailView'}.
+			*/}
     },
     {
       name: 'defaultValue',
@@ -207,7 +298,11 @@ var Property = {
       postSet: function(old, nu) {
         if ( nu && this.defaultValueFn ) this.defaultValueFn = undefined;
       },
-      help: 'The property\'s default value.'
+      help: 'The property\'s default value.',
+			documentation: function() { /* 
+				An optional function to 
+				inject HTML before the row in $$DOC{ref:'DetailView'}.
+			*/}
     },
     {
       name: 'defaultValueFn',
@@ -222,7 +317,11 @@ var Property = {
       postSet: function(old, nu) {
         if ( nu && this.defaultValue ) this.defaultValue = undefined;
       },
-      help: 'The property\'s default value function.'
+      help: 'The property\'s default value function.',
+			documentation: function() { /* 
+				Optional function that is evaluated when a default value is required. Will unset any
+				$$DOC{ref:'.defaultValue'} that has been set.
+			*/}
     },
     {
       name: 'dynamicValue',
@@ -234,7 +333,13 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: "A dynamic function which computes the property's value."
+      help: "A dynamic function which computes the property's value.",
+			documentation: function() { /* 
+				Allows the value of this $$DOC{ref:'Property'} to be calculated dynamically. 
+        Other $$DOC{ref:'Property',usePlural:true} and bindable objects used inside the function will be
+				automatically bound and the function re-evaluated when a dependency changes.
+			*/}
+			
     },
     {
       name: 'factory',
@@ -245,14 +350,23 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Factory for creating initial value when new object instantiated.'
+      help: 'Factory for creating initial value when new object instantiated.',
+			documentation: function() { /* 
+				An optional function that creates the instance used to store the $$DOC{ref:'Property'} value.
+				This is useful when the $$DOC{ref:'Property'} type is a complex $$DOC{ref:'Model'} that requires
+				construction parameters.
+			*/}
     },
     {
       name: 'lazyFactory',
       type: 'Function',
       required: false,
       view: 'FunctionView',
-      help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.'
+      help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.',
+			documentation: function() { /* 
+				Like the $$DOC{ref:'.factory'} function, but only evaulated when this $$DOC{ref:'Property'} is 
+				accessed for the first time.
+			*/}
     },
     {
       name: 'getter',
@@ -262,7 +376,12 @@ var Property = {
       displayHeight: 3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'The property\'s default value function.'
+      help: 'The property\'s default value function.',
+			documentation: function() { /* 
+				For advanced use. Supplying a $$DOC{ref:'.getter'} allows you to completely re-implement the $$DOC{ref:'Property'}
+				storage mechanism, to calculcate the value, or cache, or pre-process the value as it is requested.
+				In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
+			*/}
     },
     {
       name: 'preSet',
@@ -272,7 +391,11 @@ var Property = {
       displayHeight: 3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'An adapter function called before normal setter logic.'
+      help: 'An adapter function called before normal setter logic.',
+			documentation: function() { /* 
+				Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
+				supplied with the old and new value. Return the value you want to be set.
+			*/}
     },
     {
       name: 'postSet',
@@ -282,7 +405,12 @@ var Property = {
       displayHeight: 3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'A function called after normal setter logic, but before property change event fired.'
+      help: 'A function called after normal setter logic, but before property change event fired.',
+			documentation: function() { /* 
+				Allows you to react after the value of the $$DOC{ref:'Property'} has been set, 
+				but before property change event is fired.
+				Parameters <code>(old, nu)</code> are supplied with the old and new value.
+			*/}
     },
     {
       name: 'setter',
@@ -292,7 +420,12 @@ var Property = {
       displayHeight: 3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'The property\'s default value function.'
+      help: 'The property\'s default value function.',
+			documentation: function() { /* 
+				For advanced use. Supplying a $$DOC{ref:'.setter'} allows you to completely re-implement the $$DOC{ref:'Property'}
+				storage mechanism, to calculcate the value, or cache, or pre-process the value as it is set.
+				In most cases you can just supply a $$DOC{ref:'.preSet'} or $$DOC{ref:'.postSet'} instead.
+			*/}
     },
     {
       name: 'tableFormatter',
@@ -304,7 +437,8 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Function to format value for display in TableView.'
+      help: 'Function to format value for display in TableView.',
+      documentation: "A function to format the value for display in a $$DOC{ref:'TableView'}."
     },
     {
       name: 'summaryFormatter',
@@ -316,14 +450,16 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Function to format value for display in SummaryView.'
+      help: 'Function to format value for display in SummaryView.',
+      documentation: "A function to format the value for display in a $$DOC{ref:'SummaryView'}."
     },
     {
       name: 'tableWidth',
       type: 'String',
       required: false,
       defaultValue: '',
-      help: 'Table View Column Width.'
+      help: 'Table View Column Width.',
+      documentation: "A Suggestion for $$DOC{ref:'TableView'} column width."
     },
     {
       name: 'help',
@@ -334,7 +470,11 @@ var Property = {
       displayHeight: 6,
       view: 'TextAreaView',
       defaultValue: '',
-      help: 'Help text associated with the property.'
+      help: 'Help text associated with the property.',
+			documentation: function() { /* 
+				  This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Property'},
+				  through field labels or tooltips.
+				*/}  
     },
     DocumentationBootstrap,
     {
@@ -342,7 +482,8 @@ var Property = {
       label: 'Protobuf tag',
       type: 'Int',
       required: false,
-      help: 'The protobuf tag number for this field.'
+      help: 'The protobuf tag number for this field.',
+      documentation: 'The protobuf tag number for this field.'
     },
     {
       name: 'actionFactory',
@@ -353,7 +494,8 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: 'Factory to create the action objects for taking this property from value A to value B'
+      help: 'Factory to create the action objects for taking this property from value A to value B',
+      documentation: "Factory to create the $$DOC{ref:'Action'} objects for taking this $$DOC{ref:'Property'} from value A to value B"
     },
     {
       name: 'compareProperty',
@@ -364,17 +506,22 @@ var Property = {
       defaultValue: function(o1, o2) {
         return (o1.localeCompare || o1.compareTo).call(o1, o2);
       },
-      help: 'Comparator function.'
+      help: 'Comparator function.',
+      documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
     },
     {
       name: 'fromElement',
       defaultValue: function(e) { return e.innerHTML; },
-      help: 'Function to extract from from DOM Element.'
+      help: 'Function to extract from a DOM Element.',
+      documentation: "Function to extract a value from a DOM Element."
     },
     {
       name: 'autocompleter',
       subType: 'Autocompleter',
       help: 'Name or model for the autocompleter for this property.',
+      documentation: function() { /*
+				Name or $$DOC{ref:'Model'} for the $$DOC{ref:'Autocompleter'} for this $$DOC{ref:'Property'}. 
+		  */}
     },
     {
       name: 'install',
@@ -385,14 +532,22 @@ var Property = {
       rows:3,
       view: 'FunctionView',
       defaultValue: '',
-      help: "A function which installs additional features into the Model's prototype."
+      help: "A function which installs additional features into the Model's prototype.",
+      documentation: function() { /*
+				A function which installs additional features into our $$DOC{ref:'Model'} prototype.
+				This allows extra language dependent features or accessors to be added to instances
+				for use in code.
+		  */}
     },
     {
       name: 'exclusive',
       type: 'Boolean',
       view: 'BooleanView',
       defaultValue: true,
-      help: 'Indicates if the property can only have a single value.'
+      help: 'Indicates if the property can only have a single value.',
+      documentation: function() { /*
+				Indicates if the $$DOC{ref:'Property'} can only have a single value.
+		  */}
     }
   ],
 
@@ -406,7 +561,7 @@ var Property = {
   },
 
   getProperty: function(name) {
-debugger; // Why is this here?  Is it ever called?
+    console.assert(false, 'Property.getProperty called - Why am I here? It never seems to be called.');
     for ( var i = 0 ; i < this.properties.length ; i++ ) {
       var p = this.properties[i];
 

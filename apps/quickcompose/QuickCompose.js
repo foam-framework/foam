@@ -192,7 +192,7 @@ var QuickCompose = FOAM({
     {
       name: 'view',
       factory: function() {
-        return QuickEMailView.create({
+        return this.X.QuickEMailView.create({
           model: QuickEMail,
           isFull: this.isFull
         });
@@ -284,7 +284,7 @@ var QuickCompose = FOAM({
 
          // This is required rather than just calling this.close() because
          // DOM updates don't appear to work once the window is minimized.
-         EventService.animate(EventService.animate(this.close.bind(this)))();
+         EventService.framed(EventService.framed(this.close.bind(this)))();
        }
      },
      {

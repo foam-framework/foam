@@ -384,24 +384,18 @@ MODEL({
        };
 
        this.remoteListener_ = {
-         put: (function() { this.onRemotePut.apply(this, arguments); }).bind(this),
-         remove: (function() { this.onRemoteRemove.apply(this, arguments); }).bind(this)
+         put:    function() { this.onRemotePut.apply(this, arguments);    }.bind(this),
+         remove: function() { this.onRemoteRemove.apply(this, arguments); }.bind(this)
        };
 
        this.local.listen(this.relay_);
        this.remote.listen(this.remoteListener_);
      },
 
-     onRemotePut: function(obj) {
-       this.local.put(obj);
-     },
-     onRemoteRemove: function(obj) {
-       this.local.remove(obj);
-     },
+     onRemotePut:    function(obj) { this.local.put(obj); },
+     onRemoteRemove: function(obj) { this.local.remove(obj);},
 
-     invalidate: function() {
-       this.queryCache = [];
-     },
+     invalidate: function() { this.queryCache = []; },
 
      put: function(value, sink) {
        var self = this;
@@ -409,7 +403,7 @@ MODEL({
          put: function(value) {
            self.local.put(value, sink);
          },
-         error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
+         error: ( sink && sink.error ) ? sink.error.bind(sink) : function() {}
        });
      },
 
@@ -419,7 +413,7 @@ MODEL({
          remove: function(obj) {
            self.local.remove(obj, sink);
          },
-         error: ( sink && sink.error ) ? sink.error.bind(sink) : function(){}
+         error: ( sink && sink.error ) ? sink.error.bind(sink) : function() {}
        });
      },
 
@@ -427,7 +421,7 @@ MODEL({
        var local = this.local;
 
        local.find(issue.id, {
-         put: function(o) { if ( o.modified.compareTo(issue.modified) ) local.put(issue); },
+         put:   function(o) { if ( o.modified.compareTo(issue.modified) ) local.put(issue); },
          error: function() { local.put(issue); }
        });
      },
@@ -456,8 +450,10 @@ MODEL({
      },
 
      newQuery: function(sink, options, query, order, bufOptions, future) {
+       var daoFuture = afuture();
        var buf = MDAO.create({ model: this.model });
        // TODO: switch to MDAO's 'autoIndex: true' feature when improved.
+       /*
        var auto = AutoIndex.create(buf);
 
        // Auto index the buffer, but set an initial index for the current
@@ -466,14 +462,18 @@ MODEL({
          auto.addIndex(options.order);
          buf.addRawIndex(auto);
        }
+       */
 
-       var cacheEntry = [query, order, buf];
+       var cacheEntry = [query, order, FutureDAO.create({future: daoFuture.get})];
        if ( this.queryCache.length >= this.queryCount ) this.queryCache.shift();
        this.queryCache.push(cacheEntry);
 
-       this.local.select({ put: function(x) { if (x === undefined) debugger; buf.put(x) } }, options && options.query ? { query: options.query } : {})(
+       this.local.select({ put: function(x) { console.assert(x !== undefined, 'SplitDAO.local put: undefined'); buf.put(x); } }, options && options.query ? { query: options.query } : {})(
          (function() {
-           buf.select(sink, bufOptions)(function(s) { future.set(s); });
+           buf.select(sink, bufOptions)(function(s) {
+             daoFuture.set(buf);
+             future.set(s);
+           });
 
            var remoteOptions = {};
            if ( options && options.query ) remoteOptions.query = options.query;
@@ -482,7 +482,7 @@ MODEL({
            this.remote.limit(this.maxLimit).select({
              put: (function(obj) {
                // Put the object in the buffer, but also cache it in the local DAO
-               if (obj === undefined) debugger;
+               console.assert(obj !== undefined, 'SplitDAO.remote put: undefined');
                buf.put(obj);
                this.putIfMissing(obj);
 
@@ -517,26 +517,28 @@ MODEL({
 
        if ( matchingQueries.length ) {
          var matchingOrder = matchingQueries.filter(function(e) { return e[1] === order; });
+
          if ( matchingOrder.length > 0 ) {
            return matchingOrder[0][2].select(sink, bufOptions);
-         } else {
-           // We did NOT find a matching order.
-           // But we do have at least one match for this query with a different order.
-           // Check the size of the first match's buffer. If it's < maxLimit we've
-           // got all the data and can simply compute the order ourselves.
-           // If it's >= maxLimit, we have only a subset and need to query the server.
-           var match = matchingQueries[0];
-           match[2].select(COUNT())((function(c) {
-             if ( c.count < this.maxLimit ) {
-               match[2].select(sink, bufOptions)(function(s) {
-                 future.set(s);
-               });
-             } else {
-               // console.log('Creating new query: ' + query + '   ' + order);
-               this.newQuery(sink, options, query, order, bufOptions, future);
-             }
-           }).bind(this));
          }
+
+         // We did NOT find a matching order.
+         // But we do have at least one match for this query with a different order.
+         // Check the size of the first match's buffer. If it's < maxLimit we've
+         // got all the data and can simply compute the order ourselves.
+         // If it's >= maxLimit, we have only a subset and need to query the server.
+         var match = matchingQueries[0];
+         match[2].select(COUNT())((function(c) {
+           if ( c.count < this.maxLimit ) {
+             match[2].select(sink, bufOptions)(function(s) {
+               future.set(s);
+             });
+           } else {
+             // console.log('Creating new query: ' + query + '   ' + order);
+             this.newQuery(sink, options, query, order, bufOptions, future);
+           }
+         }).bind(this));
+
        } else {
 //         if ( CountExpr.isInstance(sink) ) return this.local.select(sink, options);
 

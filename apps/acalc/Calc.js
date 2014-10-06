@@ -296,7 +296,7 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.animate(function() {
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         this.row1 = this.op + ( this.a2 != '' ? '&nbsp;' + this.a2 : '' );
       }.bind(this)));
     },

@@ -250,7 +250,7 @@ MODEL({
     },
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         var self = this;
         this.view.dao.select(COUNT())(function (c) { self.selectedIssueCount = c.count; });
@@ -258,7 +258,7 @@ MODEL({
     },
     {
       name: 'onSyncManagerUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         this.syncManagerFuture.get(function(syncManager) {
           if ( syncManager.isSyncing ) {
@@ -275,7 +275,7 @@ MODEL({
     {
       name: 'keyPress',
       code: function(e) {
-        if ( e.ctrlKey && e.shiftKey ) {
+        if ( e.ctrlKey ) {
           if ( e.keyCode == 189 ) this.zoomOut();
           if ( e.keyCode == 187 ) this.zoomIn();
         }
@@ -546,10 +546,10 @@ MODEL({
       this.bookmarkDAO.find(EQ(Bookmark.TITLE, 'Default'), {
         put: function(bookmark) {
           this.memento = bookmark.url;
-          this.search();
+          this.performQuery();
         }.bind(this),
         error: function () {
-          this.search();
+          this.performQuery();
         }.bind(this)
       });
     },

@@ -1,19 +1,35 @@
 <%
-var sendB                = ActionButton.create({action: this.model_.SEND,                  data: this });
-var boldB                = ActionButton.create({action: RichTextView.BOLD,                 data: this.view.bodyView});
-var italicB              = ActionButton.create({action: RichTextView.ITALIC,               data: this.view.bodyView });
-var underlineB           = ActionButton.create({action: RichTextView.UNDERLINE,            data: this.view.bodyView });
-var linkB                = ActionButton.create({action: RichTextView.LINK,                 data: this.view.bodyView });
-var discardB             = ActionButton.create({action: this.model_.DISCARD,               data: this});
-var leftJustifyB         = ActionButton.create({action: RichTextView.LEFT_JUSTIFY,         data: this.view.bodyView });
-var centerJustifyB       = ActionButton.create({action: RichTextView.CENTER_JUSTIFY,       data: this.view.bodyView });
-var rightJustifyB        = ActionButton.create({action: RichTextView.RIGHT_JUSTIFY,        data: this.view.bodyView });
-var numberedListB        = ActionButton.create({action: RichTextView.NUMBERED_LIST,        data: this.view.bodyView });
-var bulletListB          = ActionButton.create({action: RichTextView.BULLET_LIST,          data: this.view.bodyView });
-var decreaseIndentationB = ActionButton.create({action: RichTextView.DECREASE_INDENTATION, data: this.view.bodyView });
-var increaseIndentationB = ActionButton.create({action: RichTextView.INCREASE_INDENTATION, data: this.view.bodyView });
-var blockQuoteB          = ActionButton.create({action: RichTextView.BLOCK_QUOTE,          data: this.view.bodyView });
+var ab = this.X.ActionButtonCView.xbind({
+  background: 'white',
+  color:      '#4b4b4b',
+  radius:     20
+});
+
+// var discardB             = ab.create({action: this.model_.DISCARD,               data: this});
+
+this.model_.SEND.iconUrl = 'images/send.png';
+this.model_.SEND.label = '';
+
+var boldB                = ab.create({action: RichTextView.BOLD,                 data: this.view.bodyView});
+var italicB              = ab.create({action: RichTextView.ITALIC,               data: this.view.bodyView });
+var underlineB           = ab.create({action: RichTextView.UNDERLINE,            data: this.view.bodyView });
+var linkB                = ab.create({action: RichTextView.LINK,                 data: this.view.bodyView });
+var leftJustifyB         = ab.create({action: RichTextView.LEFT_JUSTIFY,         data: this.view.bodyView });
+var centerJustifyB       = ab.create({action: RichTextView.CENTER_JUSTIFY,       data: this.view.bodyView });
+var rightJustifyB        = ab.create({action: RichTextView.RIGHT_JUSTIFY,        data: this.view.bodyView });
+var numberedListB        = ab.create({action: RichTextView.NUMBERED_LIST,        data: this.view.bodyView });
+var bulletListB          = ab.create({action: RichTextView.BULLET_LIST,          data: this.view.bodyView });
+var decreaseIndentationB = ab.create({action: RichTextView.DECREASE_INDENTATION, data: this.view.bodyView });
+var increaseIndentationB = ab.create({action: RichTextView.INCREASE_INDENTATION, data: this.view.bodyView });
+var blockQuoteB          = ab.create({action: RichTextView.BLOCK_QUOTE,          data: this.view.bodyView });
+var sendB                = this.X.ActionButtonCView.create({
+    action: this.model_.SEND,
+    data:   this,
+    color: 'white',
+    radius: 26,
+    background: '#259b24'
+});
 %>
 <div class=toolbar>
-  <%= sendB, boldB, italicB, underlineB, linkB, leftJustifyB, centerJustifyB, rightJustifyB, numberedListB, bulletListB, decreaseIndentationB, increaseIndentationB, blockQuoteB, discardB %>
+  <%= boldB, italicB, underlineB, linkB, leftJustifyB, centerJustifyB, rightJustifyB, numberedListB, bulletListB, decreaseIndentationB, increaseIndentationB, blockQuoteB, sendB %>
 </div>

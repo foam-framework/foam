@@ -25,26 +25,28 @@ MODEL({
   label: 'Documentation View Base',
   help: 'Base Model for documentation views.',
 
-	documentation: function() {/*
-		<p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
-		to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
-		documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
-		references.</p>
-		<p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
-		pass on its data directly, rather than a property of that data.</p>
-		<p>Views that wish to use DOC reference tags should extend this model. To display the
-		$$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
-		$$DOC{ref:'DocBodyView'}.</p>
-		<p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
-		be present on the context. The supplied model is used as the base for resolving documentation
-		references. If you are viewing the documentation for a Model, it will be that Model. If you
-		are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
-		it will be the Model that contains that feature.</p>
-	*/},
+  documentation: function() {/*
+    <p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
+    to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
+    documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
+    references.</p>
+    <p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
+    pass on its data directly, rather than a property of that data.</p>
+    <p>Views that wish to use DOC reference tags should extend this model. To display the
+    $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
+    $$DOC{ref:'DocBodyView'}.</p>
+    <p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
+    be present on the context. The supplied model is used as the base for resolving documentation
+    references. If you are viewing the documentation for a Model, it will be that Model. If you
+    are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
+    it will be the Model that contains that feature.</p>
+    <p>See $$DOC{ref:'DocumentationBook'} for information on creating documentaion
+    that is not directly associated with a $$DOC{ref:'Model'}.
+  */},
 
   methods: {
     init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
-			*/
+      */
       this.SUPER();
       if (!this.X.documentViewParentModel) {
         console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
@@ -53,15 +55,19 @@ MODEL({
 
     
     createReferenceView: function(opt_args) { /* 
-      <p>Creates $$DOC{ref:'DocRefView'} reference views from DOC tags in documentation templates.</p>
-			*/
+      <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
+          tags in documentation templates.</p>
+      */
       var X = ( opt_args && opt_args.X ) || this.X; 
       var v = X.DocRefView.create(opt_args);
       this.addChild(v);
       return v;
     },
 
-    createExplicitView: function(opt_args) { /* <p>Creates subviews from the THISDATA tag, using en explicitly defined model_ $$DOC{ref:'Model.name'} in opt_args.</p>	*/
+    createExplicitView: function(opt_args) { /*
+      <p>Creates subviews from the $$DOC{ref:'.',text:'$$THISDATA'} tag, using
+        an explicitly defined "model_: $$DOC{ref:'Model.name'}" in opt_args.</p>
+      */
       var X = ( opt_args && opt_args.X ) || this.X;
       var v = X[opt_args.model_].create({ args: opt_args }); // we only support model_ in explicit mode
       if (!opt_args.data) { // explicit data is honored
@@ -78,6 +84,10 @@ MODEL({
     },
 
     createTemplateView: function(name, opt_args) {
+      /*
+        Overridden to add support for the $$DOC{ref:'.',text:'$$DOC'} and
+        $$DOC{ref:'.',text:'$$THISDATA'} tags.
+      */
       // name has been constantized ('PROP_NAME'), but we're
       // only looking for certain doc tags anyway.
       if (name === 'DOC') {
@@ -95,19 +105,224 @@ MODEL({
 
 
 MODEL({
+  name: 'DocModelInheritanceTracker',
+  help: 'Stores inheritance information for a Model',
+  documentation: function() { /*
+      <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
+      instance per extending $$DOC{ref:'Model'} is stored in the
+      this.X.docModelViewFeatureDAO (starting with the data of
+      $$DOC{ref:'DocModelView'}, and following the .extendsModel chain
+      down to and including $$DOC{ref:'Model'}.
+      </p>
+      <p>See $$DOC{ref:'DocModelView'}.
+      </p>
+  */},
+
+  properties: [
+    {
+      name: 'inheritanceLevel',
+      help: 'The inheritance level of model.',
+      documentation: "The inheritance level of $$DOC{ref:'.model'} (0 = $$DOC{ref:'Model'})",
+      defaultValue: 0
+    },
+    {
+      name: 'model',
+      help: 'The model name.',
+      documentation: "The $$DOC{ref:'Model'} name."
+    },
+//    {
+//      name: 'features',
+//      help: 'The features of the model.',
+//      documentation: "The features of $$DOC{ref:'.model'}, indicating whether the feature is declared in the $$DOC{ref:'Model'}.",
+//      factory: function() {
+//        return [].dao;
+//      }
+//    },
+  ]
+});
+
+MODEL({
+  name: 'DocFeatureInheritanceTracker',
+  help: 'Stores inheritance information for a feature of a Model',
+  documentation: function() { /*
+      <p>Stores inheritance information for a feature of a $$DOC{ref:'Model'}
+          in the this.X.docModelViewFeatureDAO.
+      </p>
+      <p>See $$DOC{ref:'DocModelView'}.
+      </p>
+  */},
+
+  ids: [ 'name', 'model' ],
+
+  properties: [
+    {
+      name: 'name',
+      help: 'The feature name.',
+      documentation: "The feature name. This could be a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, or other feature. Feature names are assumed to be unique within the containing $$DOC{ref:'Model'}.",
+      defaultValue: ""
+    },
+    {
+      name: 'isDeclared',
+      help: 'Indicates that the feature is declared in the containing Model.',
+      documentation: "Indicates that the feature is declared in the containing $$DOC{ref:'Model'}.",
+      defaultValue: false
+    },
+    {
+      name: 'type',
+      help: 'The type (Model name string) of the feature, such as Property or Method.',
+      documentation: "The type ($$DOC{ref:'Model.name', text:'Model name'} string) of the feature, such as $$DOC{ref:'Property'} or $$DOC{ref:'Method'}."
+    },
+    {
+      name: 'feature',
+      help: 'A reference to the actual feature.',
+      documentation: "A reference to the actual feature.",
+      postSet: function() {
+        this.name = this.feature.name;
+        this.type = this.feature.model_.id;
+      }
+    },
+    {
+      name: 'model',
+      help: 'The name of the Model to which the feature belongs.',
+      documentation: "The name of the $$DOC{ref:'Model'} to which the feature belongs."
+    },
+    {
+      name: 'inheritanceLevel',
+      help: 'Helper to look up the inheritance level of model.',
+      documentation: "Helper to look up the inheritance level of $$DOC{ref:'.model'}",
+      getter: function() {
+        var modelTracker = [];
+        this.X.docModelViewModelDAO.where(EQ(DocModelInheritanceTracker.MODEL, this.model))
+            .select(modelTracker);
+        this.instance_.inheritanceLevel = modelTracker[0];
+//console.log("Getting inheritanceLevel ", this.model, modelTracker[0]);
+        return this.instance_.inheritanceLevel;
+      }
+    }
+  ],
+  methods: {
+    toString: function() {
+      return this.model + ": " + this.name + ", " + this.isDeclared;
+    }
+  }
+});
+
+MODEL({
   name: 'DocModelView',
   extendsModel: 'DocView',
   help: 'Displays the documentation of the given Model.',
+
+  documentation: function() {/*
+    Displays the documentation for a given $$DOC{ref:'Model'}. If you set a
+    $$DOC{ref:'DocumentationBook'} sub-model, it will switch to a separate
+    book viewer mode to display chapters. The viewer will destroy and
+    re-generate sub-views when the $$DOC{ref:'.data'} changes.
+  */},
 
   properties: [
     {
       name: 'data',
       help: 'The Model for which to display documentation.',
+      documentation: "The $$DOC{ref:'Model'} for which to display $$DOC{ref:'Documentation'}.",
       postSet: function() {
         this.updateHTML();
+        this.generateFeatureDAO();
       }
     },
   ],
+
+  methods: {
+
+    init: function() {
+      this.X = this.X.sub();
+      // we want our own copy of these, since an enclosing view might have put its own copies in X
+      this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
+      this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
+
+      this.SUPER();
+
+    },
+
+
+    generateFeatureDAO: function() {
+      /* Builds a feature DAO to sort out inheritance and overriding of
+        $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
+        and other features. */
+      this.X.docModelViewFeatureDAO.removeAll();
+      this.X.docModelViewModelDAO.removeAll();
+
+      // Run through the features in the Model definition in this.data,
+      // and load them into the feature DAO. Passing [] assumes we don't
+      // care about other models that extend this one. Finding such would
+      // be a global search problem.
+      this.loadFeaturesOfModel(this.data, []);
+
+//      this.debugLogFeatureDAO();
+
+    },
+    loadFeaturesOfModel: function(model, previousExtenderTrackers) {
+      /* <p>Recursively load features of this $$DOC{ref:'Model'} and
+        $$DOC{ref:'Model',usePlural:true} it extends.</p>
+        <p>Returns the inheritance level of model (0 = $$DOC{ref:'Model'}).
+        </p>
+        */
+      var self = this;
+
+      var newModelTr = this.X.DocModelInheritanceTracker.create();
+      newModelTr.model = model.id;
+
+      model.getAllMyFeatures().forEach(function(feature) {
+
+        // all features we hit are declared (or overridden) in this model
+        var featTr = self.X.DocFeatureInheritanceTracker.create({
+              isDeclared:true,
+              feature: feature,
+              model: newModelTr.model });
+        self.X.docModelViewFeatureDAO.put(featTr);
+
+        // for the models that extend this model, make sure they have
+        // the feature too, if they didn't already have it declared (overridden).
+        previousExtenderTrackers.forEach(function(extModelTr) {
+          self.X.docModelViewFeatureDAO
+                .where(AND(EQ(DocFeatureInheritanceTracker.MODEL, extModelTr.model),
+                           EQ(DocFeatureInheritanceTracker.NAME, feature.name)))
+                .select(COUNT())(function(c) {
+                    if (c.count <= 0) {
+                      var featTrExt = self.X.DocFeatureInheritanceTracker.create({
+                          isDeclared: false,
+                          feature: feature,
+                          model: extModelTr.model });
+                      self.X.docModelViewFeatureDAO.put(featTrExt);
+                    }
+                });
+        });
+      });
+
+      // Check if we extend something, or we are just Model (the base case)
+      if (model.id === 'Model') {
+        newModelTr.inheritanceLevel = 0;
+      } else {
+        // add the tracker we're building to the list, for updates from our base models
+        previousExtenderTrackers.push(newModelTr);
+        // inheritance level will bubble back up the stack once we know where the bottom is
+        var extend = model.extendsModel? model.extendsModel : 'Model';
+        newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
+                          this.X[extend], previousExtenderTrackers);
+      }
+
+      // the tracker is now complete
+      this.X.docModelViewModelDAO.put(newModelTr);
+      return newModelTr.inheritanceLevel;
+    },
+
+    debugLogFeatureDAO: function() {
+      /* For debugging purposes, prints out the state of the FeatureDAO. */
+
+      console.log("Features DAO: ", this.X.docModelViewFeatureDAO);
+      console.log("Model    DAO: ", this.X.docModelViewModelDAO);
+    }
+
+  },
 
   templates: [
 
@@ -122,6 +337,9 @@ MODEL({
             <h2>Extends $$DOC{ref: this.data.extendsModel }</h2>
 <%        } else { %>
             <h2>Extends $$DOC{ref: 'Model' }</h2>
+<%        } %>
+<%        if (this.data.model_ && this.data.model_.id && this.data.model_.id != "Model") { %>
+            <h2>Implements $$DOC{ref: this.data.model_.id }</h2>
 <%        } %>
           $$data{ model_: 'DocModelBodyView' }
         </div>
@@ -299,35 +517,63 @@ MODEL({
   label: 'Documentation Reference View',
   help: 'The view of a documentation reference link.',
 
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
   properties: [
 
     {
       name: 'ref',
       help: 'Shortcut to set reference by string.',
       postSet: function() {
-        this.data = this.X.DocRef.create({ ref: this.ref });
-      }
+        this.docRef = this.X.DocRef.create({ ref: this.ref });
+      },
+      documentation: function() { /*
+        The target reference in string form. Use this instead of setting
+        $$DOC{ref:'.docRef'} directly if you only have a string.
+        */}
     },
     {
-      name: 'data',
+      name: 'docRef',
       help: 'The reference object.',
+      preSet: function(old,nu) { // accepts a string ref, or an DocRef object
+        if (typeof nu === 'string') {
+          return this.X.DocRef.create({ ref: nu });
+        } else {
+          return nu;
+        }
+      },
       postSet: function() {
         this.updateHTML();
-        this.data.addListener(this.onReferenceChange);
-      }
+        this.docRef.addListener(this.onReferenceChange);
+      },
+      documentation: function() { /*
+        The target reference.
+        */}
     },
     {
       name: 'text',
-      help: 'Text to display instead of the referenced object&apos;s default label or name.'
+      help: 'Text to display instead of the referenced object&apos;s default label or name.',
+      documentation: function() { /*
+          Text to display instead of the referenced object&apos;s default label or name.
+        */}
     },
     {
       name: 'className',
-      defaultValue: 'docLink'
+      defaultValue: 'docLink',
+      hidden: true
     },
     {
       name: 'usePlural',
       defaultValue: false,
-      help: 'If true, use the Model.plural instead of Model.name in the link text.'
+      help: 'If true, use the Model.plural instead of Model.name in the link text.',
+      documentation: function() { /*
+          If true, use the $$DOC{ref:'Model.plural',text:'Model.plural'}
+          instead of $$DOC{ref:'Model.name',text:'Model.name'} in the link text,
+          for convenient pluralization.
+        */}
     }
   ],
 
@@ -335,15 +581,14 @@ MODEL({
     // kept tight to avoid HTML adding whitespace around it
     function toInnerHTML()    {/*<%
       this.destroy();
-      if (!this.data || !this.data.valid) {
-        if (this.data && this.data.ref) {
-          %>[INVALID_REF:<%=this.data.ref%>]<%
+      if (!this.docRef || !this.docRef.valid) {
+        if (this.docRef && this.docRef.ref) {
+          %>[INVALID_REF:<%=this.docRef.ref%>]<%
         } else {
           %>[INVALID_REF:*no_reference*]<%
         }
       } else {
-        var mostSpecificObject = this.data.resolvedModelChain[this.data.resolvedModelChain.length-1];
-if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural, mostSpecificObject);
+        var mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
         if (this.text && this.text.length > 0) {
           %><%=this.text%><%
         } else if (this.usePlural && mostSpecificObject.plural) {
@@ -353,7 +598,7 @@ if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural
         } else if (mostSpecificObject.id) {
           %><%=mostSpecificObject.id%><%
         } else {
-          %>[INVALID_REF:<%=this.data.ref%>]<%
+          %><%=this.docRef.ref%><%
         }
       }
 
@@ -366,6 +611,14 @@ if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural
     init: function() {
       this.SUPER();
       this.tagName = 'span';
+
+      this.setClass('docLinkNoDocumentation', function() {
+        if (this.docRef && this.docRef.valid) {
+          mostSpecificObject = this.docRef.resolvedModelChain[this.docRef.resolvedModelChain.length-1];
+          return !( mostSpecificObject.documentation
+                   || (mostSpecificObject.model_ && mostSpecificObject.model_.isSubModel(Documentation)));
+        }
+      }.bind(this), this.id);
     }
   },
 
@@ -379,8 +632,8 @@ if (mostSpecificObject.name === "Method") console.log("Plural? ", this.usePlural
     {
       name: 'onClick',
       code: function(evt) {
-        if (this.data && this.data.valid && this.X.documentViewRequestNavigation) {
-          this.X.documentViewRequestNavigation(this.data);
+        if (this.docRef && this.docRef.valid && this.X.documentViewRequestNavigation) {
+          this.X.documentViewRequestNavigation(this.docRef);
         }
       }
     }
@@ -392,10 +645,23 @@ MODEL({
   label: 'Documentation Reference',
   help: 'A reference to a documented Model or feature of a Model',
 
+  documentation: function() { /*
+    <p>A link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    <p>Every reference must have documentViewParentModel set on the context.
+      This indicates the starting point of the reference for relative name
+      resolution.</p>
+    */},
+
   properties: [
     {
       name: 'resolvedModelChain',
       defaultValue: [],
+      documentation: function() { /*
+        If this $$DOC{ref:'DocRef'} is valid, actual instances corresponding each
+        part of the reference are in this list. The last item in the list
+        is the target of the reference.
+      */}
     },
     {
       name: 'resolvedName',
@@ -408,27 +674,41 @@ MODEL({
             fullname.concat(m.id);
         });
         return fullname;
-      }
+      },
+      documentation: function() { /*
+        The rebuilt version of $$DOC{ref:'.ref'}, by asking each part of the
+        $$DOC{ref:'.resolvedModelChain'} for its name or id. This may not correspond
+        to the actual value of $$DOC{ref:'.ref'} and can be used for debugging
+        if reference resolution is not behaving as expected.
+      */}
     },
     {
       name: 'ref',
       help: 'The reference to link. Must be of the form "Model", "Model.feature", or ".feature"',
       postSet: function() {
         this.resolveReference(this.ref);
-      }
+      },
+      documentation: function() { /*
+        The string reference to resolve.
+      */}
     },
     {
       name: 'valid',
-      defaultValue: false
+      defaultValue: false,
+      documentation: function() { /*
+        Indicates if the reference is valid. $$DOC{ref:'.resolveReference'} will set
+        $$DOC{ref:'.valid'} to true if resolution succeeds and
+        $$DOC{ref:'.resolvedModelChain'} is usable, false otherwise.
+      */}
     }
 
   ],
 
   methods: {
     init: function() {
+      /* Warns if documentViewParentModel is missing from the context. */
       if (!this.X.documentViewParentModel) {
-        console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
-        debugger;
+        //console.log("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
       } else {
       // TODO: view lifecycle management. The view that created this ref doesn't know
       // when to kill it, so the addListener on the context keeps this alive forever.
@@ -477,15 +757,17 @@ MODEL({
 
       newResolvedModelChain.push(model);
 
+      // Check for a feature, and check inherited features too
       if (args.length > 1 && args[1].length > 0)
       {
         // feature specified "Model.feature" or ".feature"
-        if (args[1] === "documentation") {
+        foundObject = model.getFeature(args[1]);
+
+        if (!foundObject && args[1] === "documentation") {
           // special case for links into documentation books
           foundObject = model.documentation;
-        } else {
-          foundObject = model.getFeature(args[1]);
         }
+
         if (!foundObject) {
           return;
         } else {

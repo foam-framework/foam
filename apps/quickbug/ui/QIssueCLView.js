@@ -24,7 +24,7 @@ var QIssueCLView = FOAM({
       ],
       [
         /<a href="\/p\/((\w|-)+)\/source\/detail\?r=(\w+)">revision (\w+)<\/a>/,
-        function(r) { debugger; }
+        function(r) { console.assert(false, 'Bad pattern: /source/detail'); }
       ],
     ],
     toHTML: function() {
