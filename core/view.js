@@ -4547,8 +4547,14 @@ MODEL({
       name: 'thumbPosition',
       defaultValue: 0,
       postSet: function(old, nu) {
+        var old = this.oldThumbPosition_ || old;
+
+        // Don't bother moving less than 2px
+        if ( Math.abs(old-nu) < 2.0 ) return;
+
         var thumb = this.thumb();
-        if (thumb) {
+        if ( thumb ) {
+          this.oldThumbPosition_ = nu;
           // TODO: need to generalize this transform stuff.
           thumb.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }
