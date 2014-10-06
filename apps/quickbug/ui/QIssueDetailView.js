@@ -13,9 +13,6 @@ MODEL({
       defaultValue: false
     },
     {
-      name: 'QIssueCommentDAO'
-    },
-    {
       model_: 'DAOProperty',
       name: 'issueDAO'
     },
@@ -69,22 +66,15 @@ MODEL({
       this.SUPER();
       if ( this.data ) this.data.removeListener(this.doSave);
     },
-    commentView: function() {
-      return this.X.DAOListView.create({
-        dao: this.QIssueCommentDAO.orderBy(QIssueComment.SEQ_NO),
-        model: this.X.QIssueComment,
-        rowView: 'QIssueCommentView'
-      });
-    },
     commentCreateView: function() {
       return this.newCommentView = this.X.QIssueCommentCreateView.create({
-        dao: this.QIssueCommentDAO,
+        dao: this.data.comments,
         issue$: this.data$,
         data: this.data.newComment()
       });
     },
     clView: function() {
-      return this.X.QIssueCLView.create({dao: this.QIssueCommentDAO});
+      return this.X.QIssueCLView.create({dao: this.data.comments});
     },
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
