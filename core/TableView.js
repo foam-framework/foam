@@ -208,7 +208,7 @@ MODEL({
 
         this.$.insertAdjacentHTML('beforebegin', v.toHTML());
 
-        var y = findPageXY(this.$)[1];
+        var y = findViewportXY(this.$)[1];
         var screenHeight = this.X.document.firstElementChild.offsetHeight;
         var popupHeight = toNum(v.$.offsetHeight);
         if ( screenHeight-y-popupHeight < 10 ) {
