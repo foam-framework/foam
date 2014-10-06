@@ -308,6 +308,23 @@ var EventService = {
   },
 
 
+  /** @return true if the message was delivered without error. **/
+  notifyListener_: function(topic, listener, msg) {
+    try {
+      listener.apply(null, msg);
+    } catch ( err ) {
+      if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+        console.error('Error delivering event (removing listener): ', topic.join('.'));
+      } else {
+        console.warn('Unsubscribing listener: ', topic.join('.'));
+      }
+
+      return false;
+    }
+
+    return true;
+  },
+
   /** @return number of listeners notified **/
   notifyListeners_: function(topic, listeners, msg) {
     if ( listeners == null ) return 0;
@@ -316,14 +333,7 @@ var EventService = {
       for ( var i = 0 ; i < listeners.length ; i++ ) {
         var listener = listeners[i];
 
-        try {
-          listener.apply(null, msg);
-        } catch ( err ) {
-          if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-            console.error('Error delivering event (removing listener): ', topic.join('.'));
-          } else {
-            console.warn('Unsubscribing listener: ', topic.join('.'));
-          }
+        if ( ! this.notifyListener_(topic, listener, msg) ) {
           listeners.splice(i,1);
           i--;
         }
