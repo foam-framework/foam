@@ -207,11 +207,14 @@ var BootstrapModel = {
       }
     }
 
+    var self = this;
     // add relationships
     this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
       //           this[r.name.constantize()] = r;
+      var name = r.name.constantize();
+      if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
         var m = this.X[r.relatedModel];
         var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
