@@ -1493,7 +1493,7 @@ a message
       var json = x.toJSON();
       this.log(json);
       this.assert(typeof json === 'string', '.toJSON() produces JSON strings');
-      var parsed = JSONUtil.parse(json);
+      var parsed = JSONUtil.parse(X, json);
       this.assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
       this.assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
 

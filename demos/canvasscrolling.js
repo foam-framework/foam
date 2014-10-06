@@ -230,7 +230,7 @@ MODEL({
   ]
 });
 
-var dao = JSONUtil.arrayToObjArray([
+var dao = JSONUtil.arrayToObjArray(X, [
   {
 "model_": "QIssue",
 "blockedOn": [

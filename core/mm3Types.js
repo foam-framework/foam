@@ -689,7 +689,10 @@ var ViewProperty = Model.create({
         }
 
         if ( typeof f.create === 'function' ) return f.create.bind(f);
-        if ( typeof f.model_ === 'string' ) return FOAM.bind(null, f);
+        if ( typeof f.model_ === 'string' ) return function(d, opt_X) {
+          return FOAM(f, opt_X).copyFrom(d);
+        };
+
         console.error('******* Unknown view factory: ', f);
         return f;
       }

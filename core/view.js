@@ -2257,7 +2257,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(text);
+        return JSONUtil.parse(this.X, text);
       } catch (x) {
         console.log("error");
       }

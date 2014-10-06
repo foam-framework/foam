@@ -315,7 +315,7 @@ var Model = {
       preSet: function(_, newValue) {
         if ( ! Method ) return;
 
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(newValue, Method);
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
 
         // convert a map of functions to an array of Method instances
         var methods = [];
@@ -356,7 +356,7 @@ var Model = {
       view: 'ArrayView',
       factory: function() { return []; },
       preSet: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(newValue, Method);
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
         return newValue;
       },
       defaultValue: [],

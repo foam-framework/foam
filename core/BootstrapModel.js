@@ -142,7 +142,7 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(m, Model);
+      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
     });
 
     // build properties

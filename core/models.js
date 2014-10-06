@@ -253,7 +253,7 @@ MODEL({
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
             var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(json);
+            var obj = JSONUtil.mapToObj(this.X, json);
             obj.copyFrom(transientValues);
             this.context[name] = obj;
             this.manage(name, obj, version);
