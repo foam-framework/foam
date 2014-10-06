@@ -902,7 +902,7 @@ MODEL({
       isMerged: 100,
       code: function() {
         this.viewportHeight = this.$.offsetHeight;
-        if ( this.verticalScrollbar.height ) this.verticalScrollbar.height = this.viewportHeight;
+        if ( this.verticalScrollbar ) this.verticalScrollbar.height = this.viewportHeight;
       }
     },
     {
