@@ -901,7 +901,8 @@ MODEL({
       name: 'onResize',
       isMerged: 100,
       code: function() {
-        this.verticalScrollbar.height = this.viewportHeight = this.$.offsetHeight;
+        this.viewportHeight = this.$.offsetHeight;
+        if ( this.verticalScrollbar.height ) this.verticalScrollbar.height = this.viewportHeight;
       }
     },
     {
