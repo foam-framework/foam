@@ -58,10 +58,7 @@ MODEL({
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
-          .select({ put: function(feature) {
-              self.inheritedFeaturesDAO.put(feature.feature);
-            }
-          });
+          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
       }
     },
     {

@@ -1013,7 +1013,7 @@ MODEL({
         document.body.appendChild(div);
 
         var s            = this.X.window.getComputedStyle(div);
-        var pos          = findPageXY(this.target);
+        var pos          = findViewportXY(this.target);
         var screenHeight = this.X.document.body.clientHeight;
         var scrollY      = this.X.window.scrollY;
         var above        = pos[1] - scrollY > screenHeight / 2;
