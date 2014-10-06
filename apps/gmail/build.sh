@@ -76,6 +76,7 @@ cat \
   ../../lib/gmail/ImportedModels.js \
   ../../lib/gmail/dao.js \
   gmail.js \
+  compose.js \
   > "$BUILD_DIR/foam.js"
 
 # For code compression, uncomment the following line:

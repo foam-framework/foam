@@ -466,7 +466,7 @@ MODEL({
     },
     {
       name: 'tick',
-      isAnimated: true,
+      isFramed: true,
       code: function(touch) {
         // First, check if momentum is 0. If so, abort.
         if ( ! this.tickRunning ) return;

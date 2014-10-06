@@ -162,7 +162,7 @@ MODEL({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.updateHTML(); }
     }
   ],
@@ -241,7 +241,7 @@ MODEL({
     },
     {
       name: 'layout',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         var last = this.$.lastChild;
@@ -253,11 +253,11 @@ MODEL({
     },
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         // If we're currently painting, don't actually paint now,
         // queue up another paint on the next animation frame.
-        // This doesn't spin infinitely because paint is set to animate: true,
+        // This doesn't spin infinitely because paint is set to framed: true,
         // meaning that it's merged to the next animation frame.
         if ( this.painting ) {
           this.paint();
@@ -478,7 +478,7 @@ MODEL({
     },
     {
       name: 'realDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function() { if ( ! this.hidden ) this.updateHTML(); }
     },
     {
@@ -619,10 +619,7 @@ MODEL({
     },
     {
       name: 'viewportHeight',
-      documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.',
-      defaultValueFn: function() {
-        return this.$ && this.$.offsetHeight;
-      }
+      documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.'
     },
     {
       name: 'scrollTop',
@@ -733,6 +730,9 @@ MODEL({
       if ( ! this.$.style.height ) {
         this.$.style.height = '100%';
       }
+
+      this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+      this.onResize();
 
       // Grab the height of the -rowsize div, then drop that div.
       if ( this.rowHeight < 0 ) {
@@ -898,6 +898,14 @@ MODEL({
 
   listeners: [
     {
+      name: 'onResize',
+      isMerged: 100,
+      code: function() {
+        this.viewportHeight = this.$.offsetHeight;
+        if ( this.verticalScrollbar ) this.verticalScrollbar.height = this.viewportHeight;
+      }
+    },
+    {
       name: 'onDAOUpdate',
       documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
       code: function() {
@@ -910,7 +918,7 @@ MODEL({
     },
     {
       name: 'update',
-      isAnimated: true,
+      isFramed: true,
       documentation: function() {/*
         <p>This is the cornerstone method. It is called when we scroll, and when the DAO changes.</p>
 
@@ -933,6 +941,15 @@ MODEL({
         this.visibleTop = Math.max(0, this.visibleIndex - runwayCount);
         this.visibleBottom = Math.min(this.count - 1,
             this.visibleIndex + Math.ceil( (this.runway + this.viewportHeight) / this.rowHeight ) );
+
+        // Now, if the visible range is truncated, expand it. The only cases where truncation
+        // can happen is if we're abutting one edge of the range or the other, so we just extend
+        // the opposite end of the range until it fits the maximum set of rows.
+        var maxVisible = Math.ceil((2 * this.runway + this.viewportHeight) / this.rowHeight);
+        if ( this.visibleBottom - this.visibleTop + 1 < maxVisible ) {
+          if ( this.visibleTop === 0 ) this.visibleBottom = Math.min(maxVisible - 1, this.count - 1);
+          else this.visibleTop = Math.max(0, this.visibleBottom - this.count + 1);
+        }
 
         // Four cases:
         // Visible wholly contained.

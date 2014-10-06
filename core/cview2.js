@@ -40,7 +40,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.width = this.canvasWidth();
@@ -52,7 +52,7 @@ MODEL({
     },
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
@@ -141,7 +141,7 @@ MODEL({
   listeners: [
     {
       name: 'resize',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.width = this.canvasWidth();

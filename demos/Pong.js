@@ -68,7 +68,7 @@ MODEL({
   listeners: [
     {
       name: 'onBallMove',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( this.ball.y - this.ball.r <= 0 ) {
           this.ball.vy = Math.abs(this.ball.vy);

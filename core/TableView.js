@@ -177,7 +177,7 @@ MODEL({
     },
     {
       name: 'onDAOUpdate',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
@@ -187,7 +187,7 @@ MODEL({
     },
     {
       name: 'repaint',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.repaintNow(); }
     },
     {

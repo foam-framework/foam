@@ -135,7 +135,7 @@ MODEL({
   listeners: [
     {
       name: 'update',
-      animate: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
 

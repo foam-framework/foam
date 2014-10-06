@@ -732,7 +732,7 @@ MODEL({
       this.initKeyboardShortcuts();
       this.maybeInitTooltip();
     },
-    
+
     maybeInitTooltip: function() {
       if ( ! this.tooltip ) return;
       this.$.addEventListener('mouseenter', this.openTooltip);
@@ -894,6 +894,8 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
+      // TODO(kgr): re-enable when improved
+      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
       this.bindData(this.data);
@@ -1019,7 +1021,12 @@ MODEL({
         var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
         var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
-        div.style.top  = pos[1];
+        // Start half way to the destination to avoid the user clicking on the tooltip.
+        div.style.top  = above ?
+            pos[1] - targetHeight/2 - 4 :
+            pos[1] + targetHeight/2 + 4 ;
+
+//        div.style.top  = pos[1];
         div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
 
         DOM.setClass(div, 'animated');
@@ -2449,7 +2456,7 @@ MODEL({
   listeners: [
     {
       name: 'render',
-      isAnimated: true,
+      isFramed: true,
       code: function() { this.updateHTML(); }
     }
   ],
@@ -2795,7 +2802,7 @@ MODEL({
   listeners: [
     {
       name: 'onMouseMove',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         this.x = evt.offsetX;
         this.y = evt.offsetY;
@@ -2897,7 +2904,7 @@ MODEL({
   listeners: [
     {
       name: 'installSubView',
-      isAnimated: true,
+      isFramed: true,
       code: function(evt) {
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
@@ -3925,7 +3932,7 @@ MODEL({
   listeners: [
     {
       name: 'update',
-      animate: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
         this.$.innerHTML = '';
@@ -4146,7 +4153,7 @@ MODEL({
   listeners: [
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) return;
 
@@ -4495,7 +4502,7 @@ MODEL({
       name: 'height',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if (this.$) {
+        if ( this.$ ) {
           this.$.style.height = nu + 'px';
         }
       }
@@ -4564,8 +4571,13 @@ MODEL({
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
+
+      this.shown_ = false;
     },
     show: function() {
+      if ( this.shown_ ) return;
+      this.shown_ = true;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '';
@@ -4573,6 +4585,9 @@ MODEL({
       }
     },
     hide: function() {
+      if ( ! this.shown_ ) return;
+      this.shown_ = false;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '200ms opacity';
@@ -5010,7 +5025,7 @@ MODEL({
   listeners: [
     {
       name: 'onResize',
-      isAnimated: true,
+      isFramed: true,
       code: function(e) {
         if ( ! this.$ ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {

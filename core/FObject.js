@@ -106,7 +106,7 @@ var FObject = {
   },
 
   installInDocument: function(X, document) {
-    if ( this.CSS ) X.addStyle(this.CSS());
+    if ( Object.hasOwnProperty.call(this, 'CSS') ) X.addStyle(this.CSS());
   },
 
   defineFOAMGetter: function(name, getter) {
@@ -440,7 +440,7 @@ var FObject = {
     return this;
   },
 
-  getFeature: function(featureName) {
+  getMyFeature: function(featureName) {
     featureName = featureName.toUpperCase();
     return [
       this.properties? this.properties : [],
@@ -457,7 +457,7 @@ var FObject = {
     })});
   },
 
-  getAllFeatures: function() {
+  getAllMyFeatures: function() {
     var featureList = [];
     [
       this.properties? this.properties : [],
@@ -472,6 +472,40 @@ var FObject = {
     ].map(function(list) {
       featureList = featureList.concat(list);
     });
+    return featureList;
+  },
+
+  // getFeature accounts for inheritance through extendsModel
+  getFeature: function(featureName) {
+    var feature = this.getMyFeature(featureName);
+
+    if (this.id != "Model" && !feature) {
+      if (this.extendsModel.length > 0 && this.X[this.extendsModel]) {
+        return this.X[this.extendsModel].getFeature(featureName);
+      } else {
+        return this.X["Model"].getFeature(featureName);
+      }
+    } else {
+      return feature;
+    }
+  },
+
+  // getAllFeatures accounts for inheritance through extendsModel
+  getAllFeatures: function() {
+    var featureList = this.getAllMyFeatures();
+
+    if (this.id != "Model") {
+      var superModel = (this.extendsModel.length > 0 && this.X[this.extendsModel].id)? this.X[this.extendsModel] : this.X["Model"];
+      console.log("getAll: ", this.extendsModel, superModel);
+      superModel.getAllFeatures().map(function(subFeat) {
+          var subName = subFeat.name.toUpperCase();
+          if (!featureList.mapFind(function(myFeat) { // merge in features we don't already have
+            return myFeat && myFeat.name && myFeat.name.toUpperCase() === subName;
+          })) {
+            featureList.push(subFeat);
+          }
+      });
+    }
     return featureList;
   }
 

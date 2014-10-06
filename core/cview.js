@@ -49,7 +49,7 @@ MODEL({
   listeners: [
     {
       name: 'paint',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.erase();

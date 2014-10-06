@@ -507,7 +507,7 @@ MODEL({
 
         // I don't know why the 'animate' is required, but it sometimes
         // doesn't remove the view without it.
-        view.data$.addListener(EventService.animate(function() {
+        view.data$.addListener(EventService.framed(function() {
           self.data = view.data;
           remove();
         }, this.X));

@@ -47,7 +47,7 @@ MODEL({
   listeners: [
     {
       name: 'updatePosition',
-      isAnimated: true,
+      isFramed: true,
       code: function() {
         this.$.style.webkitTransform = 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)';
       }

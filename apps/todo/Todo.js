@@ -81,7 +81,7 @@
 		listeners: [
 			{
 				name: 'onDAOUpdate',
-				isAnimated: true,
+				isFramed: true,
 				code: function() {
 					this.dao.select(GROUP_BY(Todo.COMPLETED, COUNT()))(function (q) {
 						this.completedCount = q.groups[true];

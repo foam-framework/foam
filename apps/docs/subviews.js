@@ -25,28 +25,28 @@ MODEL({
   label: 'Documentation View Base',
   help: 'Base Model for documentation views.',
 
-	documentation: function() {/*
-		<p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
-		to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
-		documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
-		references.</p>
-		<p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
-		pass on its data directly, rather than a property of that data.</p>
-		<p>Views that wish to use DOC reference tags should extend this model. To display the
-		$$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
-		$$DOC{ref:'DocBodyView'}.</p>
-		<p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
-		be present on the context. The supplied model is used as the base for resolving documentation
-		references. If you are viewing the documentation for a Model, it will be that Model. If you
-		are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
-		it will be the Model that contains that feature.</p>
+  documentation: function() {/*
+    <p>Underlying the other documentation views, $$DOC{ref:'.'} provides the ability
+    to specify $$DOC{ref:'DocRef', text:"$$DOC{ref:'MyModel.myFeature'}"} tags in your
+    documentation templates, creating child $$DOC{ref:'DocRefView'} views and $$DOC{ref:'DocRef'}
+    references.</p>
+    <p>In addition, the $$DOC{ref:'.', text:"$$THISDATA{}"} tag allows your template to
+    pass on its data directly, rather than a property of that data.</p>
+    <p>Views that wish to use DOC reference tags should extend this model. To display the
+    $$DOC{ref:'Model.documentation'} of a model, use a $$DOC{ref:'DocModelView'} or
+    $$DOC{ref:'DocBodyView'}.</p>
+    <p>Documentation views require that a this.X.documentViewParentModel $$DOC{ref:'SimpleValue'} 
+    be present on the context. The supplied model is used as the base for resolving documentation
+    references. If you are viewing the documentation for a Model, it will be that Model. If you
+    are viewing a feature's documentation (a $$DOC{ref:'Method'}, $$DOC{ref:'Property'}, etc.)
+    it will be the Model that contains that feature.</p>
     <p>See $$DOC{ref:'DocumentationBook'} for information on creating documentaion
     that is not directly associated with a $$DOC{ref:'Model'}.
-	*/},
+  */},
 
   methods: {
     init: function() { /* <p>Warns if this.X.documentViewParentModel is missing.</p>
-			*/
+      */
       this.SUPER();
       if (!this.X.documentViewParentModel) {
         console.warn("*** Warning: DocView ",this," can't find documentViewParentModel in its context "+this.X.NAME);
@@ -57,7 +57,7 @@ MODEL({
     createReferenceView: function(opt_args) { /* 
       <p>Creates $$DOC{ref:'DocRefView'} reference views from $$DOC{ref:'.',text:'$$DOC'}
           tags in documentation templates.</p>
-			*/
+      */
       var X = ( opt_args && opt_args.X ) || this.X; 
       var v = X.DocRefView.create(opt_args);
       this.addChild(v);
@@ -175,7 +175,11 @@ MODEL({
     {
       name: 'feature',
       help: 'A reference to the actual feature.',
-      documentation: "A reference to the actual feature."
+      documentation: "A reference to the actual feature.",
+      postSet: function() {
+        this.name = this.feature.name;
+        this.type = this.feature.model_.id;
+      }
     },
     {
       name: 'model',
@@ -231,7 +235,12 @@ MODEL({
 
     init: function() {
       this.X = this.X.sub();
+      // we want our own copy of these, since an enclosing view might have put its own copies in X
+      this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
+      this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
+
       this.SUPER();
+
     },
 
 
@@ -239,14 +248,7 @@ MODEL({
       /* Builds a feature DAO to sort out inheritance and overriding of
         $$DOC{ref:'Property',usePlural:true}, $$DOC{ref:'Method',usePlural:true},
         and other features. */
-      if (!this.X.docModelViewFeatureDAO) {
-        this.X.docModelViewFeatureDAO = [].dao; // this.X.MDAO.create({model:DocFeatureInheritanceTracker});
-      }
       this.X.docModelViewFeatureDAO.removeAll();
-
-      if (!this.X.docModelViewModelDAO) {
-        this.X.docModelViewModelDAO = [].dao; // this.X.MDAO.create({model:DocModelInheritanceTracker});
-      }
       this.X.docModelViewModelDAO.removeAll();
 
       // Run through the features in the Model definition in this.data,
@@ -269,13 +271,11 @@ MODEL({
       var newModelTr = this.X.DocModelInheritanceTracker.create();
       newModelTr.model = model.id;
 
-      model.getAllFeatures().forEach(function(feature) {
+      model.getAllMyFeatures().forEach(function(feature) {
 
         // all features we hit are declared (or overridden) in this model
         var featTr = self.X.DocFeatureInheritanceTracker.create({
-              name: feature.name,
               isDeclared:true,
-              type: feature.model_.id,
               feature: feature,
               model: newModelTr.model });
         self.X.docModelViewFeatureDAO.put(featTr);
@@ -289,9 +289,7 @@ MODEL({
                 .select(COUNT())(function(c) {
                     if (c.count <= 0) {
                       var featTrExt = self.X.DocFeatureInheritanceTracker.create({
-                          name: feature.name,
                           isDeclared: false,
-                          type: feature.model_.id,
                           feature: feature,
                           model: extModelTr.model });
                       self.X.docModelViewFeatureDAO.put(featTrExt);
@@ -300,7 +298,7 @@ MODEL({
         });
       });
 
-      // Check if we extend something, or just Model (the base case)
+      // Check if we extend something, or we are just Model (the base case)
       if (model.id === 'Model') {
         newModelTr.inheritanceLevel = 0;
       } else {
@@ -759,6 +757,7 @@ MODEL({
 
       newResolvedModelChain.push(model);
 
+      // Check for a feature, and check inherited features too
       if (args.length > 1 && args[1].length > 0)
       {
         // feature specified "Model.feature" or ".feature"

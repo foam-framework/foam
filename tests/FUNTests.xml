@@ -511,7 +511,7 @@ person: Andy
         listeners: [
           {
             name: 'animated',
-            isAnimated: true,
+            isFramed: true,
             code: function() {
               animationCount++;
             }
