@@ -563,7 +563,7 @@ MODEL({
 
 (function() {
   for ( var i = 0 ; i < Model.templates.length ; i++ )
-    Model.templates[i] = JSONUtil.mapToObj(Model.templates[i]);
+    Model.templates[i] = JSONUtil.mapToObj(X, Model.templates[i]);
 
   (function() {
     var a = Model.properties;

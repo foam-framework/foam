@@ -501,6 +501,12 @@ MODEL({
       return v;
     },
 
+    createRelationshipView: function(r, opt_args) {
+      return this.X.RelationshipView.create({
+        relationship: r,
+      }).copyFrom(opt_args);
+    },
+
     createTemplateView: function(name, opt_args) {
       /*
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
@@ -511,9 +517,12 @@ MODEL({
       var o = this.model_[name];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      var v = Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, opt_args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, opt_args);
+      else
+        v = this.createView(o, opt_args);
       v.data = this;
       return v;
     },
@@ -1013,7 +1022,7 @@ MODEL({
         document.body.appendChild(div);
 
         var s            = this.X.window.getComputedStyle(div);
-        var pos          = findPageXY(this.target);
+        var pos          = findViewportXY(this.target);
         var screenHeight = this.X.document.body.clientHeight;
         var scrollY      = this.X.window.scrollY;
         var above        = pos[1] - scrollY > screenHeight / 2;
@@ -2257,7 +2266,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(text);
+        return JSONUtil.parse(this.X, text);
       } catch (x) {
         console.log("error");
       }
@@ -4547,8 +4556,14 @@ MODEL({
       name: 'thumbPosition',
       defaultValue: 0,
       postSet: function(old, nu) {
+        var old = this.oldThumbPosition_ || old;
+
+        // Don't bother moving less than 2px
+        if ( Math.abs(old-nu) < 2.0 ) return;
+
         var thumb = this.thumb();
-        if (thumb) {
+        if ( thumb ) {
+          this.oldThumbPosition_ = nu;
           // TODO: need to generalize this transform stuff.
           thumb.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }

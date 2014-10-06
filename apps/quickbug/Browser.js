@@ -617,7 +617,6 @@ Please use labels and text to provide additional information.
               data:             obj,
               mode:             'read-write',
               url:              self.url,
-              QIssueCommentDAO: self.project.issueCommentDAO(id),
               issueDAO:         self.IssueDAO,
               cursorIssueDAO:   self.location.sort ?
                 self.filteredIssueDAO.orderBy(self.location.sort) :

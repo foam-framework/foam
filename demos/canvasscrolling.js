@@ -97,7 +97,7 @@ MODEL({
       this.scrollTop -= dy;
     },
     paintSelf: function() {
-      var start = performance.now();
+//      var start = performance.now();
       var self = this;
       var offset = this.offset;//Math.floor(this.offset);
       var c = self.canvas;
@@ -111,64 +111,64 @@ MODEL({
         c.restore();
       };
 
-//        doPass(function(data) {
-//          c.save();
-//          c.beginPath();
-//          c.arc(36, 36, 20, 0, Math.PI * 2);
+       doPass(function(data) {
+         c.save();
+         c.beginPath();
+         c.arc(36, 36, 20, 0, Math.PI * 2);
 
-//          if ( data.owner ) {
-//            c.fillStyle = self.generateColor(data.owner);
-//            c.fill();
-//          } else {
-//            c.clip();
-//            c.drawImage(self.silhouette, 18, 18);
-//          }
-//          c.restore();
-//        });
+         if ( data.owner ) {
+           c.fillStyle = self.generateColor(data.owner);
+           c.fill();
+         } else {
+           c.clip();
+           c.drawImage(self.silhouette, 18, 18);
+         }
+         c.restore();
+       });
 
-//        c.lineWidth = 1;
-//        c.strokeStyle = 'rgba(0,0,0,0.1)';
-//        c.beginPath();
+       c.lineWidth = 1;
+       c.strokeStyle = 'rgba(0,0,0,0.1)';
+       c.beginPath();
 
-//        doPass(function() {
-//          c.arc(36, 36, 20, 0, Math.PI * 2);
-//        });
+       doPass(function() {
+         c.arc(36, 36, 20, 0, Math.PI * 2);
+       });
 
-//        c.stroke();
+       c.stroke();
 
-//       c.fillStyle = '#fff';
-//       c.textAlign = 'center';
-//       c.textBaseline = 'middle';
-//       c.font = "normal 20px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-//       doPass(function(data) {
-//         if ( data.owner.length > 0 ) {
-//           var m = c.measureText(data.owner[0]);
-//           c.fillText(data.owner[0], 36, 34);
-//         }
-//       });
+      c.fillStyle = '#fff';
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.font = "normal 20px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+      doPass(function(data) {
+        if ( data.owner.length > 0 ) {
+          var m = c.measureText(data.owner[0]);
+          c.fillText(data.owner[0], 36, 34);
+        }
+      });
 
-//       c.fillStyle = "#444";
-//       c.font = "400 16px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-//       c.textAlign = 'start';
-//       c.textBaseline = 'top';
+      c.fillStyle = "#444";
+      c.font = "400 16px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+      c.textAlign = 'start';
+      c.textBaseline = 'top';
 
-//       doPass(function(data) {
-//         c.fillText(data.id.toString(), 72, 16);
-//       });
+      doPass(function(data) {
+        c.fillText(data.id.toString(), 72, 16);
+      });
 
-// /*      doPass(function(data) {
-//         var pri = self.dataToPriority(
-//           data.pri !== undefined ? data.pri : data.priority);
+/*      doPass(function(data) {
+        var pri = self.dataToPriority(
+          data.pri !== undefined ? data.pri : data.priority);
 
-//         c.fillStyle = self.priorityColors[pri];
-//         c.fillText('Pri ' + pri, 80 + m.width, 16);
-//       });*/
+        c.fillStyle = self.priorityColors[pri];
+        c.fillText('Pri ' + pri, 80 + m.width, 16);
+      });*/
 
-//       c.fillStyle = '#999';
-//       c.font = "normal 14px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
-//       doPass(function(data) {
-//         c.fillText(data.summary.substring(20), 72, 16 + 20);
-//       });
+      c.fillStyle = '#999';
+      c.font = "normal 14px Roboto, 'Helvetica Neue', 'Helvetica Arial'";
+      doPass(function(data) {
+        c.fillText(data.summary.substring(20), 72, 16 + 20);
+      });
 
       doPass(function(data) {
         c.drawImage(data.starred ? self.starred : self.unstarred, self.width - 62, 16);
@@ -230,7 +230,7 @@ MODEL({
   ]
 });
 
-var dao = JSONUtil.arrayToObjArray([
+var dao = JSONUtil.arrayToObjArray(X, [
   {
 "model_": "QIssue",
 "blockedOn": [

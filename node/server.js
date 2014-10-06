@@ -41,7 +41,7 @@ module.exports.launchServer = function(opts) {
         var body = '';
         req.on('data', function(data) { body += data; });
         req.on('end', function() {
-          var msg = JSONUtil.parse(body);
+          var msg = JSONUtil.parse(GLOBAL, body);
           console.log(msg);
           var dao = daoMap[msg.subject];
           if (!dao) {
