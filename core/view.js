@@ -4570,8 +4570,13 @@ MODEL({
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
+
+      this.shown_ = false;
     },
     show: function() {
+      if ( this.shown_ ) return;
+      this.shown_ = true;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '';
@@ -4579,6 +4584,9 @@ MODEL({
       }
     },
     hide: function() {
+      if ( ! this.shown_ ) return;
+      this.shown_ = false;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '200ms opacity';
