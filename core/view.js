@@ -4501,7 +4501,7 @@ MODEL({
       name: 'height',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if (this.$) {
+        if ( this.$ ) {
           this.$.style.height = nu + 'px';
         }
       }
