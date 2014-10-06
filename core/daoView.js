@@ -619,10 +619,7 @@ MODEL({
     },
     {
       name: 'viewportHeight',
-      documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.',
-      defaultValueFn: function() {
-        return this.$ && this.$.offsetHeight;
-      }
+      documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.'
     },
     {
       name: 'scrollTop',
@@ -733,6 +730,9 @@ MODEL({
       if ( ! this.$.style.height ) {
         this.$.style.height = '100%';
       }
+
+      this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+      this.onResize();
 
       // Grab the height of the -rowsize div, then drop that div.
       if ( this.rowHeight < 0 ) {
@@ -897,6 +897,14 @@ MODEL({
   },
 
   listeners: [
+    {
+      name: 'onResize',
+      isMerged: 100,
+      code: function() {
+        this.viewportHeight = this.$.offsetHeight;
+        if ( this.verticalScrollbar ) this.verticalScrollbar.height = this.viewportHeight;
+      }
+    },
     {
       name: 'onDAOUpdate',
       documentation: 'When the DAO changes, we invalidate everything. All $$DOC{ref: ".visibleRows"} are recycled, the $$DOC{ref: ".cache"} is cleared, etc.',
