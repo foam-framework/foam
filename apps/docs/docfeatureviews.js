@@ -101,7 +101,7 @@ MODEL({
             var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
             var collapsedView = this.X.DocFeatureCollapsedView.create();
             %>
-            <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsableView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
+            <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
     <%    } %>
     */}
   ],
