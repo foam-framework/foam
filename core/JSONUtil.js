@@ -67,13 +67,13 @@ var JSONUtil = {
     return eval('(' + str + ')');
   },
 
-  parse: function(str) {
-    return this.mapToObj(this.parseToMap(str));
+  parse: function(X, str) {
+    return this.mapToObj(X, this.parseToMap(str));
   },
 
-  arrayToObjArray: function(a, opt_defaultModel) {
+  arrayToObjArray: function(X, a, opt_defaultModel) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      a[i] = this.mapToObj(a[i], opt_defaultModel);
+      a[i] = this.mapToObj(X, a[i], opt_defaultModel);
     }
     return a;
   },
@@ -82,10 +82,10 @@ var JSONUtil = {
    * Convert JS-Maps which contain the 'model_' property, into
    * instances of that model.
    **/
-  mapToObj: function(obj, opt_defaultModel) {
+  mapToObj: function(X, obj, opt_defaultModel) {
     if ( ! obj || typeof obj.model_ === 'object' ) return obj;
 
-    if ( Array.isArray(obj) ) return this.arrayToObjArray(obj);
+    if ( Array.isArray(obj) ) return this.arrayToObjArray(X, obj);
 
     if ( obj instanceof Function ) return obj;
 
@@ -94,7 +94,7 @@ var JSONUtil = {
     if ( obj instanceof Object ) {
       var j = 0;
       for ( var key in obj ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(obj[key]);
+        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key]);
         j++;
       }
 /*      var keys = Object.keys(obj);
@@ -105,7 +105,7 @@ var JSONUtil = {
 //if (obj.model_ && obj.model_ === "DocumentationProperty") debugger;
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
 
-      return GLOBAL[obj.model_] ? GLOBAL[obj.model_].create(obj) : obj;
+      return X[obj.model_] ? X[obj.model_].create(obj) : obj;
     }
 
     return obj;

@@ -34,7 +34,7 @@ MODEL({
 });
 
 
-var demos = JSONUtil.arrayToObjArray([
+var demos = JSONUtil.arrayToObjArray(X, [
   {
     name: 'Solar System',
     path: 'SolarSystem.html',

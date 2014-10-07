@@ -3,14 +3,12 @@ MODEL({
   extendsModel: 'UpdateDetailView',
   properties: [
     {
-      name: 'commentsView',
-      factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
-      }
+      name: 'scrollerID',
+      getter: function() { return this.id + '-scroller'; }
     },
     {
       name: 'scroller$',
-      getter: function() { return this.X.$(this.id + '-scroller'); }
+      getter: function() { return this.X.$(this.scrollerID); }
     },
     {
       name: 'scrollHeight'
@@ -39,18 +37,9 @@ MODEL({
       hidden: true,
       transient: true,
       factory: function() {
-        var self = this;
+        // TODO(braden): Use native scrolling for me.
         return this.X.GestureTarget.create({
-          container: {
-            containsPoint: function(x, y, e) {
-              var s = self.scroller$;
-              while ( e ) {
-                if ( e === s ) return true;
-                e = e.parentNode;
-              }
-              return false;
-            }
-          },
+          containerID: this.scrollerID,
           handler: this,
           gesture: 'verticalScrollMomentum'
         });
@@ -182,7 +171,7 @@ MODEL({
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
 
-          <%= this.commentsView %>
+          $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>
       </div>
     */},

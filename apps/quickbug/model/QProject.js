@@ -157,6 +157,12 @@ MODEL({
         return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
         });
+      },
+      postSet: function(_, v) {
+        if ( ! this.X.IssueCommentDAO )
+          this.X.QIssueCommentDAO = ProxyDAO.create({ delegate: v });
+        else
+          this.X.QIssueCommentDAO.delegate = v;
       }
     },
     {
@@ -717,7 +723,15 @@ MODEL({
               })
             })
           }
-        }
+        },
+        relationships: [
+          {
+            name: 'comments',
+            label: 'Comments on this issue.',
+            relatedModel: 'QIssueComment',
+            relatedProperty: 'issueId'
+          }
+        ]
       }));
 
       this.X.QIssue.getPrototype();
@@ -923,10 +937,6 @@ MODEL({
           $removeWindow(window);
         });
       });
-    },
-
-    issueCommentDAO: function(id) {
-      return this.IssueCommentDAO.where(EQ(this.X.QIssueComment.ISSUE_ID, id));
     }
   },
 

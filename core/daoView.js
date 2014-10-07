@@ -576,8 +576,8 @@ MODEL({
     },
     {
       name: 'runway',
-      defaultValue: 500,
-      documentation: 'The distance in pixels to render on either side of the viewport. Defaults to 500.'
+      defaultValue: 800,
+      documentation: 'The distance in pixels to render on either side of the viewport. Defaults to 800.'
     },
     {
       name: 'count',
@@ -590,8 +590,13 @@ MODEL({
       name: 'scrollHeight',
       documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.',
       postSet: function(old, nu) {
-        if ( this.$ ) this.scroller$().style.height = nu + 'px';
+        if ( this.$ ) this.container$().style.height = nu + 'px';
       }
+    },
+    {
+      name: 'scrollTop',
+      documentation: 'Set on each scroll event. Saved so we can resume a previous scroll position when we return to this view from elsewhere.',
+      defaultValue: 0
     },
     {
       name: 'rowHeight',
@@ -622,24 +627,6 @@ MODEL({
       documentation: 'The height of the viewport <tt>div</tt>. Computed dynamically.'
     },
     {
-      name: 'scrollTop',
-      defaultValue: 0,
-      documentation: 'The current vertical scroll position. Changing this updates the <tt>translate3d</tt>.',
-      preSet: function(old, nu) {
-        if ( nu < 0 ) return 0;
-        if ( this.scrollHeight > 0 && this.viewportHeight > 0 &&
-            nu > this.scrollHeight - this.viewportHeight )
-          return this.scrollHeight - this.viewportHeight;
-        return nu;
-      },
-      postSet: function(old, nu) {
-        var scroller = this.scroller$();
-        if ( scroller ) scroller.style.webkitTransform =
-            'translate3d(0px, -' + nu + 'px, 0px)';
-        this.update();
-      }
-    },
-    {
       name: 'visibleRows',
       documentation: 'Map of currently visible rows, keyed by their index into the $$DOC{ref: ".cache"}.',
       factory: function() { return {}; }
@@ -666,13 +653,6 @@ MODEL({
     {
       name: 'containerID',
       factory: function() { return this.nextID(); }
-    },
-    {
-      name: 'verticalScrollbarView',
-      defaultValue: 'VerticalScrollbarView'
-    },
-    {
-      name: 'verticalScrollbar',
     },
     {
       name: 'loadedTop',
@@ -745,20 +725,6 @@ MODEL({
         this.rowSizeView = '';
         outer.outerHTML = '';
       }
-
-      // Add scrollbar.
-      this.verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
-          height: this.viewportHeight,
-          scrollTop$ : this.scrollTop$,
-          scrollHeight$ : this.scrollHeight$,
-      });
-      this.$.insertAdjacentHTML('beforeend', this.verticalScrollbar.toHTML());
-      this.X.setTimeout(function() { this.verticalScrollbar.initHTML(); }.bind(this), 0);
-
-      // Force the scrollTop to reset.
-      var oldScroll = this.scrollTop;
-      this.scrollTop = 0;
-      this.scrollTop = oldScroll;
 
       this.onDAOUpdate();
     },
@@ -863,13 +829,6 @@ MODEL({
       }
       this.extraRows = [];
 
-      if ( this.verticalScrollbar ) {
-        Events.unlink(this.verticalScrollbar.scrollTop$, this.scrollTop$);
-        Events.unlink(this.verticalScrollbar.scrollHeight$, this.scrollHeight$);
-        this.verticalScrollbar.destroy();
-        this.verticalScrollbar = '';
-      }
-
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
@@ -902,7 +861,13 @@ MODEL({
       isMerged: 100,
       code: function() {
         this.viewportHeight = this.$.offsetHeight;
-        if ( this.verticalScrollbar ) this.verticalScrollbar.height = this.viewportHeight;
+      }
+    },
+    {
+      name: 'onScroll',
+      code: function() {
+        this.scrollTop = this.scroller$().scrollTop;
+        this.update();
       }
     },
     {
@@ -912,13 +877,17 @@ MODEL({
         this.invalidate();
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
+
+          // That will have updated the height of the inner view.
+          var s = this.scroller$();
+          if ( s ) s.scrollTop = this.scrollTop;
+
           this.X.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
     },
     {
       name: 'update',
-      isFramed: true,
       documentation: function() {/*
         <p>This is the cornerstone method. It is called when we scroll, and when the DAO changes.</p>
 
@@ -1003,34 +972,26 @@ MODEL({
           this.allocateVisible();
         }
       }
-    },
-    {
-      name: 'verticalScrollMove',
-      code: function(dy, ty, y, stopMomentum) {
-        this.scrollTop -= dy;
-
-        // Cancel the momentum if we've reached the edge of the viewport.
-        if ( stopMomentum && (
-            this.scrollTop === 0 ||
-            this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
-          stopMomentum();
-        }
-      }
     }
   ],
 
   templates: [
     function toHTML() {/*
-      <% this.destroy();
-         var gestureTarget = this.X.GestureTarget.create({
-           container: this,
-           handler: this,
-           gesture: 'verticalScrollMomentum'
-         });
-         this.X.gestureManager.install(gestureTarget);
-         this.addDestructor(function() {
-           self.X.gestureManager.uninstall(gestureTarget);
-         });
+      <%
+        this.destroy();
+        var gestureTarget = this.X.GestureTarget.create({
+          gesture: 'verticalScrollNative',
+          containerID: this.scrollID,
+          handler: function() { }
+        });
+        this.addInitializer(function() {
+          self.scroller$().addEventListener('scroll', self.onScroll);
+          self.X.gestureManager.install(gestureTarget);
+        });
+        this.addDestructor(function() {
+          if ( self.scroller$() ) self.scroller$().removeEventListener('scroll', self.onScroll);
+          self.X.gestureManager.uninstall(gestureTarget);
+        });
       %>
       <div id="%%id" style="overflow:hidden;position:relative">
         <% if ( this.rowHeight < 0 ) { %>
@@ -1042,8 +1003,8 @@ MODEL({
             %>
           </div>
         <% } %>
-        <div id="%%scrollID" style="position:absolute;width:100%">
-          <div id="%%containerID" style="position:relative;width:100%;height:100%">
+        <div id="%%scrollID" style="overflow-y: scroll; width:100%; height: 100%;">
+          <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
           </div>
         </div>
       </div>
