@@ -33,8 +33,10 @@ MODEL({
           var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           this.pattern_       = new RegExp(pattern, 'i');
           this.prefixPattern_ = new RegExp('^' + pattern, 'i');
+          // This is a bit different than the server in that we allow prefixes in order
+          // to support search-as-you-type.
           this.labelPattern_  = new RegExp(pattern.indexOf(':') == -1 ?
-            '^\\w+-' + pattern :
+            '(^|-)' + pattern :
             '^' + pattern.replace(/:/,'-'), 'i');
 
           return value.toLowerCase();

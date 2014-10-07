@@ -33,18 +33,17 @@ MODEL({
   templates: [
     function CSS() {/*
       .IssueLabel {
-        flex-direction: row;
         align-items: center;
-        display: flex;
-
         border-radius: 50px;
+        border: 1px solid rgba(0,0,0,.1);
         color: white;
+        display: flex;
+        flex-direction: row;
         font-size: 14px;
         margin-right: 12px;
         margin-top: 12px;
         padding: 10px;
         padding-left: 28px;
-border: 1px solid rgba(0,0,0,.1);
       }
       .IssueLabel canvas {
         background: rgba(0,0,0,0);
