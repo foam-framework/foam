@@ -491,7 +491,7 @@ MODEL({
           autoSetData: this.autoSetData
         });
 
-        var pos = findPageXY(this.$.querySelector('.action'));
+        var pos = findViewportXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
         var s = this.X.window.getComputedStyle(view.$);
 

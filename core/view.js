@@ -501,6 +501,12 @@ MODEL({
       return v;
     },
 
+    createRelationshipView: function(r, opt_args) {
+      return this.X.RelationshipView.create({
+        relationship: r,
+      }).copyFrom(opt_args);
+    },
+
     createTemplateView: function(name, opt_args) {
       /*
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
@@ -511,9 +517,12 @@ MODEL({
       var o = this.model_[name];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      var v = Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, opt_args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, opt_args);
+      else
+        v = this.createView(o, opt_args);
       v.data = this;
       return v;
     },
@@ -894,7 +903,8 @@ MODEL({
       view.copyFrom(this.args);
       view.parent = this.parent;
       view.prop = this.prop;
-      if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
+      // TODO(kgr): re-enable when improved
+      // if ( this.prop.description || this.prop.help ) view.tooltip = this.prop.description || this.prop.help;
 
       this.view = view;
       this.bindData(this.data);
@@ -1012,7 +1022,7 @@ MODEL({
         document.body.appendChild(div);
 
         var s            = this.X.window.getComputedStyle(div);
-        var pos          = findPageXY(this.target);
+        var pos          = findViewportXY(this.target);
         var screenHeight = this.X.document.body.clientHeight;
         var scrollY      = this.X.window.scrollY;
         var above        = pos[1] - scrollY > screenHeight / 2;
@@ -2256,7 +2266,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(text);
+        return JSONUtil.parse(this.X, text);
       } catch (x) {
         console.log("error");
       }
@@ -4501,7 +4511,7 @@ MODEL({
       name: 'height',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if (this.$) {
+        if ( this.$ ) {
           this.$.style.height = nu + 'px';
         }
       }
@@ -4546,8 +4556,14 @@ MODEL({
       name: 'thumbPosition',
       defaultValue: 0,
       postSet: function(old, nu) {
+        var old = this.oldThumbPosition_ || old;
+
+        // Don't bother moving less than 2px
+        if ( Math.abs(old-nu) < 2.0 ) return;
+
         var thumb = this.thumb();
-        if (thumb) {
+        if ( thumb ) {
+          this.oldThumbPosition_ = nu;
           // TODO: need to generalize this transform stuff.
           thumb.style.webkitTransform = 'translate3d(0px, ' + nu + 'px, 0px)';
         }
@@ -4570,8 +4586,13 @@ MODEL({
       this.$.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
+
+      this.shown_ = false;
     },
     show: function() {
+      if ( this.shown_ ) return;
+      this.shown_ = true;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '';
@@ -4579,6 +4600,9 @@ MODEL({
       }
     },
     hide: function() {
+      if ( ! this.shown_ ) return;
+      this.shown_ = false;
+
       var thumb = this.thumb();
       if (thumb) {
         thumb.style.webkitTransition = '200ms opacity';
@@ -5129,3 +5153,99 @@ MODEL({
     */}
   ]
 });
+
+
+MODEL({
+  extendsModel: 'View',
+
+  name: 'CollapsableView',
+
+  properties: [
+    {
+      name: 'data'
+    },
+    {
+      name:  'fullView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.fullView.data$)
+        {
+          this.addChild(this.fullView);
+          this.fullView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name:  'collapsedView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.collapsedView.data$)
+        {
+          this.addChild(this.collapsedView);
+          this.collapsedView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'collapsed',
+      defaultValue: true
+    }
+
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.showActions = true;
+    },
+
+    toInnerHTML: function() {
+      // TODO: don't render full view until expanded for the first time?
+      var retStr = this.collapsedView? this.collapsedView.toHTML() : ''
+           + this.fullView? this.fullView.toHTML() : '';
+      return retStr;
+    },
+  },
+
+  actions: [
+    {
+      name:  'toggle',
+      help:  'Toggle collapsed state.',
+
+      labelFn: function() {
+        return this.collapsed? 'Expand' : 'Hide';
+      },
+      isAvailable: function() {
+        return true;
+      },
+      isEnabled: function() {
+        return true;//this.collapsedView.toHTML && this.fullView.toHTML;
+      },
+      action: function() {
+        var self = this;
+        self.collapsed = !self.collapsed;
+
+        if (self.collapsed) {
+          this.collapsedView.$.style.height = undefined;
+          this.fullView.$.style.height = "0px"
+        } else {
+          this.collapsedView.$.style.height = "0px;"
+          this.fullView.$.style.height = undefined;
+        }
+      }
+    },
+  ]
+});
+
+
+
+

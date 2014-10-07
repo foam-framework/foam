@@ -271,9 +271,9 @@ var TemplateUtil = {
          // yet defined at bootstrap time. Use a Template object definition with a bare
          // string template body in those cases.
          if (typeof Template != "undefined")
-           t = templates[i] = JSONUtil.mapToObj(t, Template);
+           t = templates[i] = JSONUtil.mapToObj(X, t, Template);
          else
-           t = templates[i] = JSONUtil.mapToObj(t); // safe for bootstrap, but won't do anything in that case.
+           t = templates[i] = JSONUtil.mapToObj(X, t); // safe for bootstrap, but won't do anything in that case.
        }
        i++;
      }.bind(self))

@@ -711,16 +711,26 @@ function multiline(f) {
 }
 
 // Computes the XY coordinates of the given node
-// relative to the window.
+// relative to the containing elements.
+// TODO: findViewportXY works better... but do we need to find parent?
 function findPageXY(node) {
   var x = 0;
   var y = 0;
   var parent;
+
   while ( node ) {
     parent = node;
     x += node.offsetLeft;
     y += node.offsetTop;
     node = node.offsetParent;
   }
+
   return [x, y, parent];
+}
+
+// Computes the XY coordinates of the given node
+// relative to the viewport.
+function findViewportXY(node) {
+  var rect = node.getBoundingClientRect();
+  return [rect.left, rect.top];
 }

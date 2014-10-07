@@ -52,9 +52,12 @@ function subWindow(w, opt_name, isBackground) {
   var map = {
     registerModel: function(model, opt_name) {
       if ( model.getPrototype && model.getPrototype().installInDocument && ! installedModels.has(model) ) {
-        // console.log('installing model: ', model.name);
-        installedModels.set(model, true);
-        model.getPrototype().installInDocument(this, document);
+        // TODO(kgr): If Traits have CSS then it will get installed more than once.
+        for ( m = model ; m ; m = m.extendsModel && m.getPrototype().__proto__.model_ ) {
+          // console.log('installing model: ', model.name);
+          installedModels.set(m, true);
+          m.getPrototype().installInDocument(this, document);
+        }
       }
       return GLOBAL.registerModel.call(this, model, opt_name);
     },
@@ -84,8 +87,6 @@ function subWindow(w, opt_name, isBackground) {
     animate: function(duration, fn, opt_interp, opt_onEnd) {
       return Movement.animate(duration, fn, opt_interp, opt_onEnd, this);
     },
-    // TODO(kgr): rename this to onAnimation(), why was this removed?
-//    framed: function(fn, opt_fn) { Events.dynamic(fn, opt_fn, this); },
     memento: w.WindowHashValue && w.WindowHashValue.create({window: w}),
     setTimeout: w.setTimeout.bind(w),
     clearTimeout: w.clearTimeout.bind(w),
