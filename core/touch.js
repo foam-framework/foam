@@ -348,9 +348,16 @@ MODEL({
 
     attach: function(map, handlers) {
       var point = map[Object.keys(map)[0]];
-      if ( this.nativeScrolling ) return;
-
       this.handlers = handlers || [];
+
+      if ( this.nativeScrolling ) {
+        for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+          if ( this.handlers[i].attachScrollEvent ) {
+            this.handlers[i].attachScrollEvent();
+          }
+        }
+        return;
+      }
 
       (this.isVertical ? point.y$ : point.x$).addListener(this.onDelta);
       point.done$.addListener(this.onDone);
@@ -482,6 +489,53 @@ MODEL({
       }
     }
   ]
+});
+
+MODEL({
+  name: 'VerticalScrollNativeTrait',
+  documentation: 'Makes (part of) a View scroll vertically. Expects scrollerID to be a property, giving the DOM ID of the element with overflow:scroll or similar. Any onScroll listener will be called on each scroll event, as per the verticalScrollNative gesture. NB: this.onScroll should be a listener, because this trait does not bind it.',
+  properties: [
+    {
+      name: 'scroller$',
+      documentation: 'A convenience that returns the scroller\'s DOM element.',
+      getter: function() { return this.X.$(this.scrollerID); }
+    },
+    {
+      name: 'scrollGesture',
+      documentation: 'The currently installed ScrollGesture.',
+      hidden: true,
+      transient: true,
+      lazyFactory: function() {
+        if ( ! this.scrollerID ) {
+          console.warn('VerticalScrollNativeTrait attached to View without a scrollerID property set.');
+          return '';
+        }
+        return this.X.GestureTarget.create({
+          containerID: this.scrollerID,
+          handler: this,
+          gesture: 'verticalScrollNative'
+        });
+      }
+    }
+  ],
+
+  methods: {
+    initHTML: function() {
+      this.SUPER();
+      this.X.gestureManager.install(this.scrollGesture);
+    },
+    destroy: function() {
+      this.SUPER();
+      this.X.gestureManager.uninstall(this.scrollGesture);
+      if ( this.onScroll && this.scroller$ )
+        this.scroller$.removeEventListener('scroll', this.onScroll)
+    },
+    attachScrollEvent: function() {
+      /* Checks for this.onScroll. If found, will attach a scroll event listener for it. */
+      if ( this.onScroll )
+        this.scroller$.addEventListener('scroll', this.onScroll);
+    }
+  }
 });
 
 MODEL({

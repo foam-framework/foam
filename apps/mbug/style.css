@@ -111,11 +111,16 @@
 
 .issue-edit .body {
   flex-grow: 1;
-  overflow: scroll;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .issue-edit .body-scroller {
+  height: 100%;
   width: 100%;
+  overflow-y: scroll;
+  flex-grow: 1;
 }
 
 .issue-edit .title {

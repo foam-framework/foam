@@ -552,6 +552,8 @@ MODEL({
   name: 'ScrollView',
   extendsModel: 'AbstractDAOView',
 
+  traits: ['VerticalScrollNativeTrait'],
+
   documentation: function() {/*
     <p>Infinite scrolling view. Expects a $$DOC{ref: ".dao"} and displays a subset of the data at a time, minimizing the amount of DOM creation and manipulation.</p>
 
@@ -647,7 +649,7 @@ MODEL({
       factory: function() { return []; }
     },
     {
-      name: 'scrollID',
+      name: 'scrollerID',
       factory: function() { return this.nextID(); }
     },
     {
@@ -727,9 +729,6 @@ MODEL({
       }
 
       this.onDAOUpdate();
-    },
-    scroller$: function() {
-      return this.X.document.getElementById(this.scrollID);
     },
     container$: function() {
       return this.X.document.getElementById(this.containerID);
@@ -866,7 +865,7 @@ MODEL({
     {
       name: 'onScroll',
       code: function() {
-        this.scrollTop = this.scroller$().scrollTop;
+        this.scrollTop = this.scroller$.scrollTop;
         this.update();
       }
     },
@@ -879,7 +878,7 @@ MODEL({
           this.count = c.count;
 
           // That will have updated the height of the inner view.
-          var s = this.scroller$();
+          var s = this.scroller$;
           if ( s ) s.scrollTop = this.scrollTop;
 
           this.X.setTimeout(this.update.bind(this), 0);
@@ -977,22 +976,7 @@ MODEL({
 
   templates: [
     function toHTML() {/*
-      <%
-        this.destroy();
-        var gestureTarget = this.X.GestureTarget.create({
-          gesture: 'verticalScrollNative',
-          containerID: this.scrollID,
-          handler: function() { }
-        });
-        this.addInitializer(function() {
-          self.scroller$().addEventListener('scroll', self.onScroll);
-          self.X.gestureManager.install(gestureTarget);
-        });
-        this.addDestructor(function() {
-          if ( self.scroller$() ) self.scroller$().removeEventListener('scroll', self.onScroll);
-          self.X.gestureManager.uninstall(gestureTarget);
-        });
-      %>
+      <% this.destroy(); %>
       <div id="%%id" style="overflow:hidden;position:relative">
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
@@ -1003,7 +987,7 @@ MODEL({
             %>
           </div>
         <% } %>
-        <div id="%%scrollID" style="overflow-y: scroll; width:100%; height: 100%;">
+        <div id="%%scrollerID" style="overflow-y: scroll; width:100%; height: 100%;">
           <div id="%%containerID" style="position:relative;width:100%;height:100%; -webkit-transform: translate3d(0px, 0px, 0px);">
           </div>
         </div>

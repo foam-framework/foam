@@ -1,95 +1,13 @@
 MODEL({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
+  traits: ['VerticalScrollNativeTrait'],
   properties: [
     {
       name: 'scrollerID',
       getter: function() { return this.id + '-scroller'; }
-    },
-    {
-      name: 'scroller$',
-      getter: function() { return this.X.$(this.scrollerID); }
-    },
-    {
-      name: 'scrollHeight'
-    },
-    {
-      name: 'viewportHeight',
-      defaultValueFn: function() {
-        return this.$ && this.$.offsetHeight;
-      }
-    },
-    {
-      name: 'scrollTop',
-      hidden: true,
-      defaultValue: 0,
-      postSet: function(_, nu) {
-        var s = this.$.getElementsByClassName('body')[0];
-        if ( s ) s.scrollTop = nu;
-      }
-    },
-    {
-      name: 'verticalScrollbarView',
-      defaultValue: 'VerticalScrollbarView'
-    },
-    {
-      name: 'scrollGesture',
-      hidden: true,
-      transient: true,
-      factory: function() {
-        // TODO(braden): Use native scrolling for me.
-        return this.X.GestureTarget.create({
-          containerID: this.scrollerID,
-          handler: this,
-          gesture: 'verticalScrollMomentum'
-        });
-      }
     }
   ],
-  // TODO: Make traits for DOM (overflow: scroll) and abspos scrolling.
-  listeners: [
-    {
-      name: 'verticalScrollMove',
-      code: function(dy, ty, y, stopMomentum) {
-        this.scrollTop -= dy;
-
-        // Cancel the momentum if we've reached the edge of the viewport.
-        if ( stopMomentum && (
-            this.scrollTop === 0 ||
-            this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
-          stopMomentum();
-        }
-      }
-    },
-    {
-      name: 'updateScrollHeight',
-      code: function() {
-        this.scrollHeight = parseFloat(this.scroller$.style.height);
-      }
-    }
-  ],
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-      this.X.gestureManager.install(this.scrollGesture);
-
-      /*
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
-        height$: this.viewportHeight$,
-        scrollTop$: this.scrollTop$,
-        scrollHeight$: this.scrollHeight$
-      });
-
-      this.$.getElementsByClassName('body')[0].insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
-      this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
-      */
-    },
-
-    destroy: function() {
-      this.SUPER();
-      this.X.gestureManager.uninstall(this.scrollGesture);
-    }
-  },
   actions: [
     {
       name: 'back',
