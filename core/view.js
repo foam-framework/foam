@@ -3784,7 +3784,7 @@ MODEL({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
-      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('blur',    this.framed(this.delay(200, this.framed(this.framed(this.onBlur)))), this.id);
       this.on('focus',   this.onInput, this.id);
 
       return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
@@ -4340,7 +4340,7 @@ MODEL({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
-      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('blur',    this.framed(this.delay(200, this.framed(this.framed(this.onBlur)))), this.id);
       this.on('focus',   this.onInput, this.id);
 
       return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
