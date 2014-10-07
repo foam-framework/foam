@@ -657,7 +657,7 @@ MODEL({
 
         methods: {
           replaceLabels: function(label, values) {
-            var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+            var labels = this.labels.filter(function(l) { return ! l.startsWith(label + '-'); });
             if ( Array.isArray(values) ) {
               for ( var i = 0 ; i < values.length ; i++ ) {
                 labels.binaryInsert(label + '-' + values[i]);
