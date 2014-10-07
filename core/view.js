@@ -5144,3 +5144,99 @@ MODEL({
     */}
   ]
 });
+
+
+MODEL({
+  extendsModel: 'View',
+
+  name: 'CollapsableView',
+
+  properties: [
+    {
+      name: 'data'
+    },
+    {
+      name:  'fullView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.fullView.data$)
+        {
+          this.addChild(this.fullView);
+          this.fullView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name:  'collapsedView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.collapsedView.data$)
+        {
+          this.addChild(this.collapsedView);
+          this.collapsedView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'collapsed',
+      defaultValue: true
+    }
+
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+
+      this.showActions = true;
+    },
+
+    toInnerHTML: function() {
+      // TODO: don't render full view until expanded for the first time?
+      var retStr = this.collapsedView? this.collapsedView.toHTML() : ''
+           + this.fullView? this.fullView.toHTML() : '';
+      return retStr;
+    },
+  },
+
+  actions: [
+    {
+      name:  'toggle',
+      help:  'Toggle collapsed state.',
+
+      labelFn: function() {
+        return this.collapsed? 'Expand' : 'Hide';
+      },
+      isAvailable: function() {
+        return true;
+      },
+      isEnabled: function() {
+        return true;//this.collapsedView.toHTML && this.fullView.toHTML;
+      },
+      action: function() {
+        var self = this;
+        self.collapsed = !self.collapsed;
+
+        if (self.collapsed) {
+          this.collapsedView.$.style.height = undefined;
+          this.fullView.$.style.height = "0px"
+        } else {
+          this.collapsedView.$.style.height = "0px;"
+          this.fullView.$.style.height = undefined;
+        }
+      }
+    },
+  ]
+});
+
+
+
+
