@@ -22,63 +22,46 @@ MODEL({
     'id', 'type',
     { name: 'done', model_: 'BooleanProperty' },
     {
-      name: 'xHistory',
-      // TODO: factories don't work here because they don't get called until after the x/y postSets
-      getter: function() {
-        if ( this.instance_.xHistory ) return this.instance_.xHistory;
-        this.instance_.xHistory = [];
-        return this.instance_.xHistory;
-      }
-    },
-    {
-      name: 'yHistory',
-      getter: function() {
-        if ( this.instance_.yHistory ) return this.instance_.yHistory;
-        this.instance_.yHistory = [];
-        return this.instance_.yHistory;
-      }
-    },
-    {
       name: 'x',
-      help: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',
-      getter: function() {
-        var h = this.xHistory;
-        return h && h.length ? h[h.length - 1] : 0;
-      },
-      setter: function(x) {
-        var old = this.x;
-        this.xHistory.push(x);
-        this.propertyChange('x', old, x);
+      documentation: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',
+      postSet: function(old, nu) {
+        this.lastX = old;
       }
     },
     {
       name: 'y',
-      help: 'The real latest Y-coordinate. pageY, relative to the whole document, in CSS pixels.',
-      getter: function() {
-        var h = this.yHistory;
-        return h && h.length ? h[h.length - 1] : 0;
-      },
-      setter: function(y) {
-        var old = this.y;
-        this.yHistory.push(y);
-        this.propertyChange('y', old, y);
+      documentation: 'The real latest Y-coordinate. pageY, relative to the whole document, in CSS pixels.',
+      postSet: function(old, nu) {
+        this.lastY = old;
       }
     },
-    { name: 'x0', getter: function() { return this.xHistory[0] || 0; } },
-    { name: 'y0', getter: function() { return this.yHistory[0] || 0; } },
+    {
+      name: 'x0',
+      documentation: 'The first X-coordinate. pageX, relative to the whole document, in CSS pixels. Set to x at creation time.',
+      factory: function() { return this.x; }
+    },
+    {
+      name: 'y0',
+      documentation: 'The first Y-coordinate. pageY, relative to the whole document, in CSS pixels. Set to y at creation time.',
+      factory: function() { return this.y; }
+    },
+    {
+      name: 'lastX',
+      documentation: 'The immediately previous X-coordinate. pageX, relative to the whole document, in CSS pixels. Set to x at creation time.',
+      factory: function() { return this.x; }
+    },
+    {
+      name: 'lastY',
+      documentation: 'The immediately previous Y-coordinate. pageY, relative to the whole document, in CSS pixels. Set to y at creation time.',
+      factory: function() { return this.y; }
+    },
     {
       name: 'dx',
-      getter: function() {
-        var h = this.xHistory;
-        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
-      }
+      getter: function() { return this.x - this.lastX; }
     },
     {
       name: 'dy',
-      getter: function() {
-        var h = this.yHistory;
-        return h.length < 2 ? 0 : h[h.length-1] - h[h.length-2];
-      }
+      getter: function() { return this.y - this.lastY; }
     },
     {
       name: 'totalX',
@@ -170,7 +153,6 @@ MODEL({
     {
       name: 'onTouchStart',
       code: function(e) {
-        e.preventDefault();
         // Attach an element-specific touch handlers, in case it gets removed
         // from the DOM.
         this.attach(e.target);
@@ -184,8 +166,6 @@ MODEL({
     {
       name: 'onTouchMove',
       code: function(e) {
-        e.preventDefault();
-
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
           var t = e.changedTouches[i];
           var id = t.identifier;
@@ -200,7 +180,7 @@ MODEL({
     {
       name: 'onTouchEnd',
       code: function(e) {
-        e.preventDefault();
+        if ( e.cancelable ) e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
@@ -217,7 +197,6 @@ MODEL({
     {
       name: 'onTouchCancel',
       code: function(e) {
-        e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
@@ -234,7 +213,6 @@ MODEL({
     {
       name: 'onTouchLeave',
       code: function(e) {
-        e.preventDefault();
         this.detach(e.target);
 
         for ( var i = 0; i < e.changedTouches.length; i++ ) {
@@ -295,16 +273,27 @@ MODEL({
   properties: [
     {
       name: 'name',
-      defaultValueFn: function() { return this.direction + 'Scroll' + ( this.momentumEnabled ? 'Momentum' : '' ); }
+      factory: function() {
+        return this.direction + 'Scroll' + ( this.momentumEnabled ? 'Momentum' : this.nativeScrolling ? 'Native' : '' );
+      }
     },
     {
       name: 'direction',
       defaultValue: 'vertical'
     },
     {
+      name: 'isVertical',
+      factory: function() { return this.direction === 'vertical'; }
+    },
+    {
       name: 'momentumEnabled',
       defaultValue: false,
-      help: 'Set me (usually by attaching the "verticalScrollMomentum" gesture) to true to enable momentum'
+      help: 'Set me to true (usually by attaching the "verticalScrollMomentum" gesture) to enable momentum'
+    },
+    {
+      name: 'nativeScrolling',
+      defaultValue: false,
+      help: 'Set me to true (usually by attaching the "verticalScrollNative" gesture) to enable native browser scrolling'
     },
     {
       name: 'dragCoefficient',
@@ -337,24 +326,6 @@ MODEL({
   ],
 
   methods: {
-    makeAxis: function(point, xy) {
-      return {
-        current: point[xy],
-        prop: point[xy + '$'],
-        start: point[xy + '0'],
-        delta: point['d' + xy],
-        total: point['total' + xy.capitalize()],
-        history: point[xy + 'History'],
-        raw: point
-      };
-    },
-    getPrimaryAxis: function(point) {
-      return this.makeAxis(point, this.direction == 'vertical' ? 'y' : 'x');
-    },
-    getSecondaryAxis: function(point) {
-      return this.makeAxis(point, this.direction == 'vertical' ? 'x' : 'y');
-    },
-
     recognize: function(map) {
       // I recognize:
       // - a single point that
@@ -371,16 +342,17 @@ MODEL({
       var point = map[Object.keys(map)[0]];
 
       return point.type != 'mouse' && ! point.done &&
-          ( Math.abs(this.getPrimaryAxis(point).total) > 10 ||
+          ( Math.abs(this.isVertical ? point.totalY : point.totalX) > 10 ||
             Math.abs(this.momentum) > 0 );
     },
 
     attach: function(map, handlers) {
       var point = map[Object.keys(map)[0]];
+      if ( this.nativeScrolling ) return;
+
       this.handlers = handlers || [];
 
-      var axis = this.getPrimaryAxis(point);
-      axis.prop.addListener(this.onDelta);
+      (this.isVertical ? point.y$ : point.x$).addListener(this.onDelta);
       point.done$.addListener(this.onDone);
 
       // If we're already scrolling with momentum, we let the user adjust that momentum with their touches.
@@ -390,15 +362,10 @@ MODEL({
         // now that we've been recognized.
         // In this particular case, all three handlers are called with dy, totalY, and y.
         // The handlers are {vertical,horizontal}Scroll{Start,Move,End}.
-        this.pingHandlers(this.direction + 'ScrollStart', 0, 0, axis.start);
-        for ( var i = 1 ; i < axis.history.length ; i++ ) {
-          this.pingHandlers(
-            this.direction + 'ScrollMove',
-            axis.history[i] - axis.history[i-1],
-            axis.history[i] - axis.start,
-            axis.current
-          );
-        }
+        //
+        // TODO(braden): Maybe change this to make the last parameter the current?
+        // That will prevent a first-frame jump with a large delta.
+        this.pingHandlers(this.direction + 'ScrollStart', 0, 0, this.isVertical ? point.y0 : point.x0);
       } else {
         this.tickRunning = false;
       }
@@ -411,17 +378,20 @@ MODEL({
       }
     },
 
-    sendEndEvent: function(axis) {
-      this.pingHandlers(this.direction + 'ScrollEnd', axis.delta, axis.total, axis.current);
+    sendEndEvent: function(point) {
+      var delta = this.isVertical ? point.dy : point.dx;
+      var total = this.isVertical ? point.totalY : point.totalX;
+      var current = this.isVertical ? point.y : point.x;
+      this.pingHandlers(this.direction + 'ScrollEnd', delta, total, current);
     },
 
-    calculateInstantaneousVelocity: function(axis) {
+    calculateInstantaneousVelocity: function(point) {
       // Compute and return the instantaneous velocity, which is
       // the primary axis delta divided by the time it took.
       // Our unit for velocity is pixels/millisecond.
       var now = this.X.performance.now();
-      var lastTime = this.tickRunning ? this.lastTime : axis.raw.lastTime;
-      var velocity = axis.delta / (now - axis.raw.lastTime);
+      var lastTime = this.tickRunning ? this.lastTime : point.lastTime;
+      var velocity = (this.isVertical ? point.dy : point.dx) / (now - point.lastTime);
       if ( this.tickRunning ) this.lastTime = now;
 
       return velocity;
@@ -432,35 +402,36 @@ MODEL({
     {
       name: 'onDelta',
       code: function(obj, prop, old, nu) {
-        var axis = this.getPrimaryAxis(obj);
         if ( this.momentumEnabled ) {
           // If we're already moving with momentum, we simply add the delta between
           // the currently momentum velocity and the instantaneous finger velocity.
-          var velocity = this.calculateInstantaneousVelocity(axis);
+          var velocity = this.calculateInstantaneousVelocity(obj);
           var delta = velocity - this.momentum;
           this.momentum += delta;
         }
-        this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+        var delta = this.isVertical ? obj.dy : obj.dx;
+        var total = this.isVertical ? obj.totalY : obj.totalX;
+        var current = this.isVertical ? obj.y : obj.x;
+        this.pingHandlers(this.direction + 'ScrollMove', delta, total, current);
       }
     },
     {
       name: 'onDone',
       code: function(obj, prop, old, nu) {
-        var axis = this.getPrimaryAxis(obj);
-        axis.prop.removeListener(this.onDelta);
+        (this.isVertical ? obj.y$ : obj.x$).removeListener(this.onDelta);
         obj.done$.removeListener(this.onDone);
 
         if ( this.momentumEnabled ) {
           if ( Math.abs(this.momentum) < this.dragClamp ) {
             this.momentum = 0;
-            this.sendEndEvent(axis);
+            this.sendEndEvent(obj);
           } else {
             this.tickRunning = true;
             this.lastTime = this.X.performance.now();
             this.tick(obj);
           }
         } else {
-          this.sendEndEvent(axis);
+          this.sendEndEvent(obj);
         }
       }
     },
@@ -471,7 +442,7 @@ MODEL({
         // First, check if momentum is 0. If so, abort.
         if ( ! this.tickRunning ) return;
 
-        var xy = this.direction === 'vertical' ? 'y' : 'x';
+        var xy = this.isVertical ? 'y' : 'x';
 
         var now = this.X.performance.now();
         var elapsed = now - this.lastTime;
@@ -480,10 +451,13 @@ MODEL({
         // The distance covered in this amount of time.
         var distance = this.momentum * elapsed; // Fractional pixels.
         touch[xy] += distance;
-        var axis = this.makeAxis(touch, xy);
         // Emit a touchMove for this.
-        if ( axis.delta != 0 )
-          this.pingHandlers(this.direction + 'ScrollMove', axis.delta, axis.total, axis.current);
+        var delta, total, current;
+        if ( this.isVertical ) { delta = touch.dy; total = touch.totalY; current = touch.y; }
+        else { delta = touch.dx; total = touch.totalX; current = touch.x; }
+
+        if ( delta != 0 )
+          this.pingHandlers(this.direction + 'ScrollMove', delta, total, current);
 
         // Now we reduce the momentum to its new value.
         this.momentum *= this.dragCoefficient;
@@ -492,7 +466,7 @@ MODEL({
         if ( Math.abs(this.momentum) < this.dragClamp ) {
           this.momentum = 0;
           this.tickRunning = false;
-          this.sendEndEvent(axis);
+          this.sendEndEvent(touch);
         } else {
           this.tick(touch);
         }
@@ -752,8 +726,10 @@ MODEL({
         return {
           verticalScroll: ScrollGesture.create(),
           verticalScrollMomentum: ScrollGesture.create({ momentumEnabled: true }),
+          verticalScrollNative: ScrollGesture.create({ nativeScrolling: true }),
           horizontalScroll: ScrollGesture.create({ direction: 'horizontal' }),
           horizontalScrollMomentum: ScrollGesture.create({ direction: 'horizontal', momentumEnabled: true }),
+          horizontalScrollNative: ScrollGesture.create({ direction: 'horizontal', nativeScrolling: true }),
           tap: TapGesture.create(),
           drag: DragGesture.create(),
           pinchTwist: PinchTwistGesture.create()
