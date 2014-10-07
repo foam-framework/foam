@@ -3,8 +3,12 @@ MODEL({
   extendsModel: 'UpdateDetailView',
   properties: [
     {
+      name: 'scrollerID',
+      getter: function() { return this.id + '-scroller'; }
+    },
+    {
       name: 'scroller$',
-      getter: function() { return this.X.$(this.id + '-scroller'); }
+      getter: function() { return this.X.$(this.scrollerID); }
     },
     {
       name: 'scrollHeight'
@@ -33,18 +37,9 @@ MODEL({
       hidden: true,
       transient: true,
       factory: function() {
-        var self = this;
+        // TODO(braden): Use native scrolling for me.
         return this.X.GestureTarget.create({
-          container: {
-            containsPoint: function(x, y, e) {
-              var s = self.scroller$;
-              while ( e ) {
-                if ( e === s ) return true;
-                e = e.parentNode;
-              }
-              return false;
-            }
-          },
+          containerID: this.scrollerID,
           handler: this,
           gesture: 'verticalScrollMomentum'
         });

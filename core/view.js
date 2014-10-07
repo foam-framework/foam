@@ -608,18 +608,7 @@ MODEL({
         var self = this;
         var manager = this.X.gestureManager;
         var target = this.X.GestureTarget.create({
-          container: {
-            containsPoint: function(x, y, e) {
-              while (e) {
-                if ( e.id === opt_id ) return true;
-                e = e.parentNode;
-              }
-              return false;
-            }
-          },
-          getElement: function() {
-            return self.X.$(opt_id);
-          },
+          containerID: opt_id,
           handler: {
             tapClick: function() {
               // Create a fake event.
@@ -840,11 +829,6 @@ MODEL({
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
-    },
-
-    containsPoint: function(x, y, element) {
-      /* Called by the GestureManager, return true if this view is being touched. */
-      return this.$ && this.$.contains(element);
     }
   }
 });
@@ -3072,7 +3056,7 @@ MODEL({
       transient: true,
       factory: function() {
         return this.X.GestureTarget.create({
-          container: this,
+          containerID: this.id,
           handler: this,
           gesture: 'horizontalScroll'
         });

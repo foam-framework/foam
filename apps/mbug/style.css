@@ -102,7 +102,7 @@
 
 .issue-edit .header {
   background: #3e50b4;
-  height: 176px;
+  height: 160px;
   flex-shrink: 0;
   width: 100%;
   -webkit-transform: translate3d(0,0,10px);
@@ -123,9 +123,8 @@
   font-size: 20px;
   line-height: 28px;
   margin-bottom: 8px;
-  min-height: 132px;
+  min-height: 80px;
   padding: 0px 16px;
-  min-height: 96px;
 }
 
 .issue-edit .toolbar {
