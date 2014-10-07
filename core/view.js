@@ -2458,10 +2458,6 @@ MODEL({
     toHTML: function() {
       var self = this;
 
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
-
       this.setAttribute('disabled', function() {
         self.closeTooltip();
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
@@ -2487,6 +2483,11 @@ MODEL({
       if ( this.showLabel ) {
         out += this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
       }
+
+      var self = this;
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
 
       return out;
     }
@@ -5180,24 +5181,39 @@ MODEL({
     },
     {
       name: 'collapsed',
-      defaultValue: true
+      defaultValue: true,
+      postSet: function() {
+        if (this.collapsed) {
+          this.collapsedView.$.style.height = "";
+          this.fullView.$.style.height = "0";
+
+        } else {
+          this.collapsedView.$.style.height = "0";
+          this.fullView.$.style.height = "";
+        }
+      }
     }
 
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-
-      this.showActions = true;
-    },
-
     toInnerHTML: function() {
       // TODO: don't render full view until expanded for the first time?
-      var retStr = this.collapsedView? this.collapsedView.toHTML() : ''
-           + this.fullView? this.fullView.toHTML() : '';
+      var retStr = this.collapsedView.toHTML() + this.fullView.toHTML();
       return retStr;
     },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // to ensure we can hide by setting the height
+      this.collapsedView.$.style.display = "block";
+      this.fullView.$.style.display = "block";
+      this.collapsedView.$.style.overflow = "hidden";
+      this.fullView.$.style.overflow = "hidden";
+
+      this.collapsed = true;
+    }
   },
 
   actions: [
@@ -5215,16 +5231,7 @@ MODEL({
         return true;//this.collapsedView.toHTML && this.fullView.toHTML;
       },
       action: function() {
-        var self = this;
-        self.collapsed = !self.collapsed;
-
-        if (self.collapsed) {
-          this.collapsedView.$.style.height = undefined;
-          this.fullView.$.style.height = "0px"
-        } else {
-          this.collapsedView.$.style.height = "0px;"
-          this.fullView.$.style.height = undefined;
-        }
+        this.collapsed = !this.collapsed;
       }
     },
   ]
