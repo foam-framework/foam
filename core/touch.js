@@ -694,27 +694,19 @@ MODEL({
       help: 'The name of the gesture to be tracked.'
     },
     {
-      name: 'container',
-      help: 'The containing object. The GestureManager will call containsPoint() on it.'
+      name: 'containerID',
+      help: 'The containing DOM node\'s ID. Used for checking what inputs are within which gesture targets.'
     },
     {
       name: 'getElement',
-      help: 'Function to retrieve the element this gesture is attached to. Defaults to container.$.',
-      defaultValue: function() { return this.container.$; }
+      help: 'Function to retrieve the element this gesture is attached to. Defaults to $(containerID).',
+      defaultValue: function() { return this.X.$(this.containerID); }
     },
     {
       name: 'handler',
       help: 'The target for the gesture\'s events, after it has been recognized.'
     }
-  ],
-
-  methods: {
-    // TODO: Add support for this to CView2.
-    containsPoint: function(point) {
-      return this.container.containsPoint(point.x, point.y,
-          this.X.document.elementFromPoint(point.x, point.y));
-    }
-  }
+  ]
 });
 
 MODEL({
@@ -740,6 +732,11 @@ MODEL({
       name: 'targets',
       help: 'GestureTargets that are waiting for gestures',
       factory: function() { return []; }
+    },
+    {
+      name: 'targetsByID',
+      documentation: 'All gesture targets stored by the ID of their containing DOM element.',
+      factory: function() { return {}; }
     },
     {
       name: 'active',
@@ -793,9 +790,18 @@ MODEL({
       }
 
       this.targets.push(target);
+      if ( ! this.targetsByID[target.containerID] )
+        this.targetsByID[target.containerID] = [];
+      this.targetsByID[target.containerID].push(target);
     },
     uninstall: function(target) {
       this.targets.deleteI(target);
+      if ( this.targetsByID[target.containerID] ) {
+        this.targetsByID[target.containerID].deleteI(target);
+        if ( this.targetsByID[target.containerID].length === 0 ) {
+          delete this.targetsByID[target.containerID];
+        }
+      }
     },
 
     debug_tag: function() {
@@ -803,6 +809,29 @@ MODEL({
     },
     debug_sweep: function() {
       this.targets.forEach(function(x) { if ( x.seen ) { console.log(x); } });
+    },
+
+    // Only allows gestures that match the optional predicate.
+    // If it is not set, any gesture will match.
+    activateContainingGestures: function(x, y, opt_predicate) {
+      // Start at the innermost element and work our way up,
+      // checking against targetsByID. We go all the way up
+      // to the document, since we want every relevant handler.
+      var e = this.X.document.elementFromPoint(x, y);
+      while ( e ) {
+        if ( e.id && this.targetsByID[e.id] ) {
+          var ts = this.targetsByID[e.id];
+          for ( var i = 0 ; i < ts.length ; i++ ) {
+            var t = ts[i];
+            var g = this.gestures[t.gesture];
+            if ( g && ( ! opt_predicate || opt_predicate(g) ) ) {
+              if ( ! this.active[g.name] ) this.active[g.name] = [];
+              this.active[g.name].push(t);
+            }
+          }
+        }
+        e = e.parentNode;
+      }
     },
 
     checkRecognition: function() {
@@ -862,15 +891,7 @@ MODEL({
         // Check if there are any active points already.
         var pointCount = Object.keys(this.points).length;
         if ( ! pointCount ) {
-          // Check rectangles, since this is the first point.
-          for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].containsPoint(touch) ) {
-              var g = this.gestures[this.targets[i].gesture];
-              if ( ! g ) continue;
-              if ( ! this.active[g.name] ) this.active[g.name] = [];
-              this.active[g.name].push(this.targets[i]);
-            }
-          }
+          this.activateContainingGestures(touch.x, touch.y);
         }
 
         // Either way, add this to the map and check for recognition.
@@ -897,15 +918,7 @@ MODEL({
 
         var pointCount = Object.keys(this.points).length;
         if ( ! pointCount ) {
-          // Check rectangles for this first point.
-          for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].containsPoint(point) ) {
-              var g = this.gestures[this.targets[i].gesture];
-              if ( ! g ) continue;
-              if ( ! this.active[g.name] ) this.active[g.name] = [];
-              this.active[g.name].push(this.targets[i]);
-            }
-          }
+          this.activateContainingGestures(point.x, point.y);
         }
 
         this.points[point.id] = point;
@@ -983,21 +996,16 @@ MODEL({
           var gesture = Math.abs(event.deltaX) > Math.abs(event.deltaY) ?
               'horizontalScrollMomentum' : 'verticalScrollMomentum';
           // Find all targets for that gesture and check their rectangles.
-          this.active[gesture] = [];
-          for ( var i = 0 ; i < this.targets.length ; i++ ) {
-            if ( this.targets[i].gesture === gesture &&
-                this.targets[i].containsPoint(wheel) ) {
-              this.active[gesture].push(this.targets[i]);
-            }
-          }
+          this.activateContainingGestures(wheel.x, wheel.y,
+              function(g) { return g.name === gesture; });
 
           // And since wheel events are already moving, include the deltas immediately.
-          // We have to do this after checking rectangles, or a downward (negative)
+          // We have to do this after checking containment above, or a downward (negative)
           // scroll too close to the top of the rectangle will fail.
           wheel.x -= event.deltaX;
           wheel.y -= event.deltaY;
 
-          if ( this.active[gesture].length ) {
+          if ( this.active[gesture] && this.active[gesture].length ) {
             this.points.wheel = wheel;
             this.gestures[gesture].attach(this.points, this.active[gesture].map(function(gt) {
               return gt.handler;
@@ -1029,187 +1037,4 @@ MODEL({
     }
   ]
 });
-
-
-/*
-MODEL({
-  name: 'MomentumTouch',
-  extendsModel: 'FOAMTouch',
-
-  properties: [
-    { name: 'vsamples', factory: function() { return []; } },
-    'vX', 'vY',
-    'curX','curY',
-    'lastX','lastY',
-    { model_: 'BooleanProperty', name: 'touching', factory: function() { return true; } },
-    { model_: 'BooleanProperty', name: 'finished', factory: function() { return false; } },
-    'a',
-    'asamples',
-    't',
-    'last',
-    { name: 'decel', factory: function() { return 0.002; } }
-  ],
-
-  methods: {
-    start: function(t) {
-      this.touching = true;
-      this.finished = false;
-      this.lastX = t.screenX;
-      this.lastY = t.screenY;
-      this.vX = 0;
-      this.vY = 0;
-      this.x = t.screenX;
-      this.y = t.screenY;
-      this.move(t);
-    },
-
-    move: function(t) {
-      this.curX = t.screenX;
-      this.curY = t.screenY;
-    },
-
-    end: function(t) {
-      this.move(t);
-      this.touching = false;
-      this.lastTick = 0;
-    },
-
-    cancel: function(t) {
-    },
-
-    tick: function() {
-      if ( ! this.lastTick ) {
-        this.lastTick = this.X.performance.now();
-        this.lastX = this.curX;
-        this.lastY = this.curY;
-        return;
-      }
-
-      var t = this.X.performance.now();
-      var deltaT = t - this.lastTick;
-      this.lastTick = t;
-
-      if ( this.touching ) {
-        var deltaX = this.curX - this.lastX;
-        var deltaY = this.curY - this.lastY;
-
-        this.lastX = this.curX;
-        this.lastY = this.curY;
-
-        var vX = deltaX / deltaT;
-        var vY = deltaY / deltaT;
-
-        var signX = vX < 0 ? -1 : 1;
-        var signY = vY < 0 ? -1 : 1;
-
-        this.x = this.curX;
-        this.y = this.curY;
-
-        var vsamples = this.vsamples;
-        var vnewest = [vX, vY];
-        vsamples.push(vnewest);
-
-        var length = vsamples.length;
-
-        if ( length > 3 ) { vsamples.shift(); length--; }
-
-        var voldest = vsamples[0];
-        var oldSignX = vX < 0 ? -1 : 1;
-        var oldSignY = vY < 0 ? -1 : 1;
-
-        if ( oldSignX !== signX ||
-             oldSignY !== signY ) {
-          vsamples = [vnewest];
-          length = 1;
-        }
-
-        this.vsamples = vsamples;
-
-//        this.vX = vnewest[0];
-//        this.vY = vnewest[1];
-        this.vX = this.vX - voldest[0]/length + vnewest[0]/length;
-        this.vY = this.vY - voldest[1]/length + vnewest[1]/length;
-      } else {
-        var deltaV = this.decel * deltaT;
-        vX = this.vX;
-        vY = this.vY;
-
-        this.x = this.x + vX * deltaT;
-        this.y = this.y + vY * deltaT;
-
-        var signX = vX < 0 ? -1 : 1;
-        var signY = vY < 0 ? -1 : 1;
-
-        if ( Math.abs(deltaV) > Math.abs(vX) ) vX = 0;
-        else vX = signX * ( Math.abs(vX) - deltaV );
-        if ( Math.abs(deltaV) > Math.abs(vY) ) vY = 0;
-        else vY = signY * ( Math.abs(vY) - deltaV );
-
-        this.vX = vX;
-        this.vY = vY;
-
-        if ( this.vX === 0 && this.vY === 0 ) this.finished = true;
-      }
-    }
-  }
-});
-
-
-MODEL({
-  name: 'MomentumTouchManager',
-  extendsModel: 'TouchManager',
-
-  properties: [
-    'interval',
-    { model_: 'IntProperty', name: 'period', defaultValue: 0 },
-  ],
-
-  methods: {
-    touchStart: function(i, t, e) {
-      this.SUPER(i, t, e);
-      if ( ! this.interval )
-        this.interval = this.X.setInterval(this.physicsLoop, this.period);
-    },
-    touchMove: function(i, t, e) {
-      this.touches[i].move(t)
-    },
-    touchEnd: function(i, t, e) {
-      this.touches[i].end(t);
-    },
-    touchCancel: function(i, t, e) {
-      this.touches[i].cancel(t);
-    },
-    touchLeave: function(i, t, e) {
-    }
-  },
-
-  listeners: [
-    {
-      name: 'physicsLoop',
-      code: function() {
-        var keys = Object.keys(this.touches);
-        if ( keys.length === 0 ) {
-          this.X.clearInterval(this.interval);
-          this.interval = 0;
-          return;
-        }
-
-        var touches = this.touches;
-        for ( var i = 0; i < keys.length; i++ ) {
-          var key = keys[i];
-          var touch = touches[key];
-
-          if ( touch.finished ) {
-            this.publish(this.TOUCH_END, touch);
-            delete touches[key];
-          }
-
-          touch.tick();
-        }
-        this.touches = touches;
-      }
-    }
-  ]
-});
-*/
 

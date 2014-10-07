@@ -71,12 +71,12 @@ MODEL({
     initHTML: function() {
       this.updatePosition();
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
+        containerID: this.id,
         handler: this,
         gesture: 'horizontalScroll'
       }));
       this.X.gestureManager.install(this.X.GestureTarget.create({
-        container: this,
+        containerID: this.id,
         handler: this,
         gesture: 'verticalScroll'
       }));

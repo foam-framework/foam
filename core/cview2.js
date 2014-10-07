@@ -459,9 +459,9 @@ MODEL({
       name: 'tapGesture',
       hidden: true,
       transient: true,
-      factory: function() {
+      lazyFactory: function() {
         return this.X.GestureTarget.create({
-          container: this,
+          containerID: this.view.id,
           handler: this,
           gesture: 'tap'
         });
@@ -560,10 +560,6 @@ MODEL({
             self.y = 0;
           }
         });
-    },
-
-    containsPoint: function(x, y, e) {
-      if ( this.$ === e ) return true;
     },
 
     tapClick: function() {
@@ -777,16 +773,12 @@ MODEL({
       if ( this.X.gestureManager ) {
         var manager = this.X.gestureManager;
         var target = this.X.GestureTarget.create({
-          container: this,
+          containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'
         });
         manager.install(target);
       }
-    },
-    containsPoint: function(x, y, e) {
-      if ( this.$ && this.$ === e ) return true;
-      return false;
     },
     verticalScrollMove: function(dy) {
       this.scrollTop -= dy;

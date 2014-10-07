@@ -287,7 +287,7 @@ MODEL({
 
         if ( this.X.gestureManager ) {
           this.X.gestureManager.install(this.X.GestureTarget.create({
-            container: this,
+            containerID: this.id,
             handler: this,
             getElement: function() { return this.container.$.parentElement; },
             gesture: 'verticalScroll'

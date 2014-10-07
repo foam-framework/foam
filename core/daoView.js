@@ -877,8 +877,11 @@ MODEL({
         this.invalidate();
         this.dao.select(COUNT())(function(c) {
           this.count = c.count;
+
           // That will have updated the height of the inner view.
-          this.scroller$().scrollTop = this.scrollTop;
+          var s = this.scroller$();
+          if ( s ) s.scrollTop = this.scrollTop;
+
           this.X.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
@@ -978,7 +981,7 @@ MODEL({
         this.destroy();
         var gestureTarget = this.X.GestureTarget.create({
           gesture: 'verticalScrollNative',
-          container: this,
+          containerID: this.scrollID,
           handler: function() { }
         });
         this.addInitializer(function() {
@@ -986,7 +989,7 @@ MODEL({
           self.X.gestureManager.install(gestureTarget);
         });
         this.addDestructor(function() {
-          self.scroller$().removeEventListener('scroll', self.onScroll);
+          if ( self.scroller$() ) self.scroller$().removeEventListener('scroll', self.onScroll);
           self.X.gestureManager.uninstall(gestureTarget);
         });
       %>
