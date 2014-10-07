@@ -501,6 +501,12 @@ MODEL({
       return v;
     },
 
+    createRelationshipView: function(r, opt_args) {
+      return this.X.RelationshipView.create({
+        relationship: r,
+      }).copyFrom(opt_args);
+    },
+
     createTemplateView: function(name, opt_args) {
       /*
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
@@ -511,9 +517,12 @@ MODEL({
       var o = this.model_[name];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      var v = Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, opt_args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, opt_args);
+      else
+        v = this.createView(o, opt_args);
       v.data = this;
       return v;
     },
@@ -2257,7 +2266,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(text);
+        return JSONUtil.parse(this.X, text);
       } catch (x) {
         console.log("error");
       }

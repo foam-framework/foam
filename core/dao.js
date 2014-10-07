@@ -1504,7 +1504,7 @@ MODEL({
       this.SUPER();
 
       var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(objs).select(this);
+      if ( objs ) JSONUtil.parse(this.X, objs).select(this);
 
       this.addRawIndex({
         execute: function() {},

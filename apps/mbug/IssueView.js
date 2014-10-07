@@ -3,12 +3,6 @@ MODEL({
   extendsModel: 'UpdateDetailView',
   properties: [
     {
-      name: 'commentsView',
-      factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
-      }
-    },
-    {
       name: 'scroller$',
       getter: function() { return this.X.$(this.id + '-scroller'); }
     },
@@ -182,7 +176,7 @@ MODEL({
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
 
-          <%= this.commentsView %>
+          $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>
       </div>
     */},

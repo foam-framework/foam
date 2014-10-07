@@ -22,7 +22,7 @@ MODEL({
 
       if ( fs.existsSync(this.name) ) {
         var content = fs.readFileSync(this.name, { encoding: 'utf-8' });
-        JSONUtil.parse(content).select(this);
+        JSONUtil.parse(this.X, content).select(this);
       }
 
       this.addRawIndex({

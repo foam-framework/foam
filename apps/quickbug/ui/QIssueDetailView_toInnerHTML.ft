@@ -73,7 +73,7 @@
             </div>&nbsp;
           </td>
           <td class="qvt">
-            %%commentView()
+            $$comments{ viewModel: { model_: 'DAOListView', rowView: 'QIssueCommentView', mode: 'read-only' } }
           </td>
         </tr>
       </tbody>

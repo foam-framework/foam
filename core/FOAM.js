@@ -55,8 +55,8 @@ var $$ = function (cls) {
 };
 
 
-var FOAM = function(map) {
-   var obj = JSONUtil.mapToObj(map);
+var FOAM = function(map, opt_X) {
+   var obj = JSONUtil.mapToObj(opt_X || X, map);
    return obj;
 };
 
@@ -110,7 +110,7 @@ function MODEL(m) {
   // where to load the template from, so the instantiation of Models
   // with templates can't be delayed (yet).
   if ( m.templates ) {
-    registerModel.call(this, JSONUtil.mapToObj(m, Model));
+    registerModel.call(this, JSONUtil.mapToObj(X, m, Model));
     USED_MODELS[m.name] = true;
     return;
   }
@@ -121,7 +121,7 @@ function MODEL(m) {
       USED_MODELS[m.name] = true;
       delete UNUSED_MODELS[m.name];
       Object.defineProperty(GLOBAL, m.name, {value: null, configurable: true});
-      registerModel(JSONUtil.mapToObj(m, Model));
+      registerModel(JSONUtil.mapToObj(X, m, Model));
       return this[m.name];
     },
     configurable: true

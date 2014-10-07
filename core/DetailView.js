@@ -120,9 +120,12 @@ MODEL({
          See $$DOC{ref:'View.createTemplateView'}. */
       var o = this.viewModel()[name];
       if ( o ) {
-        var v = Action.isInstance(o) ?
-          this.createActionView(o, opt_args) :
-          this.createView(o, opt_args) ;
+        if ( Action.isInstance(o) )
+          var v = this.createActionView(o, opt_args);
+        else if ( Relationship.isInstance(o) )
+          v = this.createRelationshipView(o, opt_args);
+        else
+          v = this.createView(o, opt_args);
 
         v.data$ = this.data$;
         return v;
@@ -352,7 +355,7 @@ MODEL({
       this.view = this.viewModel({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
-      });
+      }, this.X);
       if ( this.$ ) {
         this.updateHTML();
       }
