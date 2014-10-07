@@ -2458,6 +2458,10 @@ MODEL({
     toHTML: function() {
       var self = this;
 
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
       this.setAttribute('disabled', function() {
         self.closeTooltip();
         return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
@@ -2483,11 +2487,6 @@ MODEL({
       if ( this.showLabel ) {
         out += this.data ? this.action.labelFn.call(this.data, this.action) : this.action.label;
       }
-
-      var self = this;
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
 
       return out;
     }
