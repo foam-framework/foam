@@ -5143,7 +5143,7 @@ MODEL({
 MODEL({
   extendsModel: 'View',
 
-  name: 'CollapsableView',
+  name: 'CollapsibleView',
 
   properties: [
     {
