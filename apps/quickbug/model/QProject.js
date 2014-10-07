@@ -309,6 +309,7 @@ MODEL({
         M:            'm',
         Cr:           'cr',
         Iteration:    'iteration',
+        Week:         'week',
         ReleaseBlock: 'releaseBlock',
         OS:           'OS',
         MovedFrom:    'movedFrom',
@@ -510,6 +511,11 @@ MODEL({
           },
           {
             model_: 'LabelArrayProperty',
+            name: 'week',
+            tableWidth: '69px'
+          },
+          {
+            model_: 'LabelArrayProperty',
             name: 'releaseBlock',
             shortName: 'rb',
             aliases: ['rBlock', 'release'],
@@ -700,6 +706,7 @@ MODEL({
             convertArray('labels');
             convertArray('m');
             convertArray('iteration');
+            convertArray('week');
 
             var comment = this.X.QIssueComment.create({
               issueId: this.id,
