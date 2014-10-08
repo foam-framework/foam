@@ -611,7 +611,6 @@ MODEL({
           containerID: opt_id,
           handler: {
             tapClick: function() {
-              console.log(opt_id)
               // Create a fake event.
               return listener({
                 preventDefault: function() { },

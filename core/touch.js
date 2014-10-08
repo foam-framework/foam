@@ -556,7 +556,6 @@ MODEL({
       // - multiple points that
       // - are all done and
       // - none of which has moved more than 10px net.
-console.log("tap! rec");
       return Object.keys(map).every(function(key) {
         var p = map[key];
         return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
@@ -564,7 +563,6 @@ console.log("tap! rec");
     },
 
     attach: function(map, handlers) {
-console.log("tap! attach");
       // Nothing to listen for; the tap has already fired when this recognizes.
       // Just sent the tapClick(numberOfPoints) message to the handlers.
       if  ( ! handlers || ! handlers.length ) return;
