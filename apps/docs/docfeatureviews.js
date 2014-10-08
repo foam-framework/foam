@@ -58,10 +58,7 @@ MODEL({
                         EQ(DocFeatureInheritanceTracker.IS_DECLARED, false)),
                     CONTAINS(DocFeatureInheritanceTracker.TYPE, this.featureType()))
                 )
-          .select({ put: function(feature) {
-              self.inheritedFeaturesDAO.put(feature.feature);
-            }
-          });
+          .select(MAP(DocFeatureInheritanceTracker.FEATURE, this.inheritedFeaturesDAO));
       }
     },
     {
@@ -100,10 +97,15 @@ MODEL({
             <h2><%=this.featureName()%>:</h2>
             <div class="memberList">$$filteredDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
             <h2>Inherited <%=this.featureName()%>:</h2>
-            <div class="memberList">$$inheritedFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
+<%
+            var fullView = this.X.DAOListView.create({ rowView: this.rowView, model: Property });
+            var collapsedView = this.X.DocFeatureCollapsedView.create();
+            %>
+            <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'CollapsibleView', data: this.inheritedFeaturesDAO, collapsedView: collapsedView, fullView: fullView, showActions: true }</div>
     <%    } %>
     */}
   ],
+// <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
 
   methods: {
     getGroupFromTarget: function(target) {
@@ -115,33 +117,74 @@ MODEL({
       console.assert(false, 'DocFeaturesView.featureName: implement me!');
     },
     featureType: function() {
-      debugger; // implement this to return the type name (i.e. "Property", "Method", etc.)
+      // implement this to return the type name (i.e. "Property", "Method", etc.)
+      console.assert(false, 'DocFeaturesView.featureType: implement me!');
     }
   }
 
 });
 
 MODEL({
+  name: 'DocFeatureCollapsedView',
+  extendsModel: 'DocBodyView',
+  help: 'A generic view for collapsed sets.',
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function() {
+        this.dao = this.data;
+      }
+    },
+    {
+      name:  'dao',
+      model_: 'DAOProperty',
+      defaultValue: [],
+      postSet: function() {
+        var self = this;
+        this.dao.select(COUNT())(function(c) {
+          self.count = c.count;
+        });
+      }
+    },
+    {
+      name: 'count'
+    }
+  ],
+
+  templates: [
+    function toInnerHTML() {/*
+      <p><%=this.count%> more...</p>
+    */}
+  ]
+});
+
+
+MODEL({
   name: 'DocFeatureRowView',
   extendsModel: 'DocBodyView',
   help: 'A generic view for each item in a list of documented features.',
 
+  properties: [
+    {
+      name: 'overridesDAO',
+      model_: 'DAOProperty',
+      defaultValue: []
+    }
+  ],
+
   methods: {
-      overrides: function() {
-        var name = "";
-        this.X.docModelViewFeatureDAO
-            .where(
-                  AND(EQ(DocFeatureInheritanceTracker.NAME, this.data.name),
-                      EQ(DocFeatureInheritanceTracker.IS_DECLARED, true))
-            )
-            .orderBy(DESC(DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
-            .select()(function(n) {
-              n.forEach(function(m) {
-                name = name + m.model+"  ";
-              });
-              return name;
-            });
-        return name;
+    init: function() {
+      this.SUPER();
+
+      this.overridesDAO = [];
+      this.X.docModelViewFeatureDAO
+          .where(
+                AND(EQ(DocFeatureInheritanceTracker.NAME, this.data.name),
+                    EQ(DocFeatureInheritanceTracker.IS_DECLARED, true))
+          )
+          .orderBy(DESC(DocFeatureInheritanceTracker.INHERITANCE_LEVEL))
+          .pipe(this.overridesDAO);
     }
   },
 
@@ -149,10 +192,38 @@ MODEL({
     function toInnerHTML() {/*
       <h3><%=this.data.name%></h3>
       <%=this.renderDocSourceHTML()%>
-      <p>O: <%= this.overrides() %></p>
+      <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureModelRefView', data: this.overridesDAO, model: DocFeatureInheritanceTracker }</p>
     */}
   ]
 });
+
+MODEL({
+  name: 'DocFeatureModelRefView',
+  extendsModel: 'DocRefView',
+  label: 'Documentation Feature Model Link Reference View',
+  help: 'The view of a documentation reference link based on a Model.',
+
+  documentation: function() { /*
+    <p>An inline link to another place in the documentation. See $$DOC{ref:'DocView'}
+    for notes on usage.</p>
+    */},
+
+  properties: [
+    {
+      name: 'data',
+      help: 'Shortcut to set reference by Model name.',
+      postSet: function() {
+        this.ref = this.data.model + "." + this.data.name;
+        this.text = this.data.model + " / ";
+      },
+      documentation: function() { /*
+        The target reference Model definition. Use this instead of setting
+        $$DOC{ref:'.docRef'}, if you are referencing a $$DOC{ref:'Model'}.
+        */}
+    },
+  ],
+});
+
 
 MODEL({
   name: 'DocPropertiesView',
@@ -318,7 +389,7 @@ MODEL({
       <h3><%=this.data.name%> $$THISDATA{ model_: 'DocMethodArgumentsSmallView' }</h3>
       <div class="memberList">$$THISDATA{ model_: 'DocMethodArgumentsView' }</div>
       <%=this.renderDocSourceHTML()%>
-      <p>O: <%= this.overrides() %></p>
+      <p>Declared in: $$overridesDAO{ model_: 'DAOListView', rowView: 'DocFeatureModelRefView', data: this.overridesDAO, model: Model }</p>
     */}
   ]
 });

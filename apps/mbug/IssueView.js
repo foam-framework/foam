@@ -1,106 +1,13 @@
 MODEL({
   name: 'IssueView',
   extendsModel: 'UpdateDetailView',
+  traits: ['VerticalScrollNativeTrait'],
   properties: [
     {
-      name: 'commentsView',
-      factory: function() {
-        return DAOListView.create({mode: 'read-only', rowView: 'CommentView', dao: this.X.project.issueCommentDAO(this.data.id).orderBy(QIssueComment.SEQ_NO) });
-      }
-    },
-    {
-      name: 'scroller$',
-      getter: function() { return this.X.$(this.id + '-scroller'); }
-    },
-    {
-      name: 'scrollHeight'
-    },
-    {
-      name: 'viewportHeight',
-      defaultValueFn: function() {
-        return this.$ && this.$.offsetHeight;
-      }
-    },
-    {
-      name: 'scrollTop',
-      hidden: true,
-      defaultValue: 0,
-      postSet: function(_, nu) {
-        var s = this.$.getElementsByClassName('body')[0];
-        if ( s ) s.scrollTop = nu;
-      }
-    },
-    {
-      name: 'verticalScrollbarView',
-      defaultValue: 'VerticalScrollbarView'
-    },
-    {
-      name: 'scrollGesture',
-      hidden: true,
-      transient: true,
-      factory: function() {
-        var self = this;
-        return this.X.GestureTarget.create({
-          container: {
-            containsPoint: function(x, y, e) {
-              var s = self.scroller$;
-              while ( e ) {
-                if ( e === s ) return true;
-                e = e.parentNode;
-              }
-              return false;
-            }
-          },
-          handler: this,
-          gesture: 'verticalScrollMomentum'
-        });
-      }
+      name: 'scrollerID',
+      getter: function() { return this.id + '-scroller'; }
     }
   ],
-  // TODO: Make traits for DOM (overflow: scroll) and abspos scrolling.
-  listeners: [
-    {
-      name: 'verticalScrollMove',
-      code: function(dy, ty, y, stopMomentum) {
-        this.scrollTop -= dy;
-
-        // Cancel the momentum if we've reached the edge of the viewport.
-        if ( stopMomentum && (
-            this.scrollTop === 0 ||
-            this.scrollTop + this.viewportHeight === this.scrollHeight ) ) {
-          stopMomentum();
-        }
-      }
-    },
-    {
-      name: 'updateScrollHeight',
-      code: function() {
-        this.scrollHeight = parseFloat(this.scroller$.style.height);
-      }
-    }
-  ],
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-      this.X.gestureManager.install(this.scrollGesture);
-
-      /*
-      var verticalScrollbar = FOAM.lookup(this.verticalScrollbarView, this.X).create({
-        height$: this.viewportHeight$,
-        scrollTop$: this.scrollTop$,
-        scrollHeight$: this.scrollHeight$
-      });
-
-      this.$.getElementsByClassName('body')[0].insertAdjacentHTML('beforeend', verticalScrollbar.toHTML());
-      this.X.setTimeout(function() { verticalScrollbar.initHTML(); }, 0);
-      */
-    },
-
-    destroy: function() {
-      this.SUPER();
-      this.X.gestureManager.uninstall(this.scrollGesture);
-    }
-  },
   actions: [
     {
       name: 'back',
@@ -182,7 +89,7 @@ MODEL({
           <div class="separator separator1"></div>
           $$labels{model_: 'IssueLabelView'}
 
-          <%= this.commentsView %>
+          $$comments{ viewModel: { model_: 'DAOListView', mode: 'read-only', rowView: 'CommentView' } }
         </div>
       </div>
     */},

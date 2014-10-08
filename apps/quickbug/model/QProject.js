@@ -157,6 +157,12 @@ MODEL({
         return this.X.QIssueCommentUpdateDAO.create({
           delegate: this.IssueCommentNetworkDAO
         });
+      },
+      postSet: function(_, v) {
+        if ( ! this.X.IssueCommentDAO )
+          this.X.QIssueCommentDAO = ProxyDAO.create({ delegate: v });
+        else
+          this.X.QIssueCommentDAO.delegate = v;
       }
     },
     {
@@ -303,6 +309,7 @@ MODEL({
         M:            'm',
         Cr:           'cr',
         Iteration:    'iteration',
+        Week:         'week',
         ReleaseBlock: 'releaseBlock',
         OS:           'OS',
         MovedFrom:    'movedFrom',
@@ -388,9 +395,7 @@ MODEL({
               return s;
             },
             preSet: function(_, a) {
-              for ( var i = 0; i < a.length; i++ ) {
-                if ( isPropertyLabel(a[i]) ) a[i] = a[i].intern();
-              }
+              for ( var i = 0; i < a.length; i++ ) a[i] = a[i].intern();
               return a.sort();
             },
             postSet: function(_, a) {
@@ -504,6 +509,11 @@ MODEL({
           },
           {
             model_: 'LabelArrayProperty',
+            name: 'week',
+            tableWidth: '69px'
+          },
+          {
+            model_: 'LabelArrayProperty',
             name: 'releaseBlock',
             shortName: 'rb',
             aliases: ['rBlock', 'release'],
@@ -534,8 +544,7 @@ MODEL({
             model_: 'StringArrayProperty',
             name: 'cc',
             autocompleter: 'PersonCompleter',
-            displayWidth: 70,
-            preSet: function(_, a) { return a.intern(); }
+            displayWidth: 70
           },
           {
             name: 'owner',
@@ -651,7 +660,8 @@ MODEL({
 
         methods: {
           replaceLabels: function(label, values) {
-            var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+            var prefix = label + '-';
+            var labels = this.labels.filter(function(l) { return ! l.startsWith(prefix); });
             if ( Array.isArray(values) ) {
               for ( var i = 0 ; i < values.length ; i++ ) {
                 labels.binaryInsert(label + '-' + values[i]);
@@ -694,6 +704,7 @@ MODEL({
             convertArray('labels');
             convertArray('m');
             convertArray('iteration');
+            convertArray('week');
 
             var comment = this.X.QIssueComment.create({
               issueId: this.id,
@@ -717,7 +728,15 @@ MODEL({
               })
             })
           }
-        }
+        },
+        relationships: [
+          {
+            name: 'comments',
+            label: 'Comments on this issue.',
+            relatedModel: 'QIssueComment',
+            relatedProperty: 'issueId'
+          }
+        ]
       }));
 
       this.X.QIssue.getPrototype();
@@ -923,10 +942,6 @@ MODEL({
           $removeWindow(window);
         });
       });
-    },
-
-    issueCommentDAO: function(id) {
-      return this.IssueCommentDAO.where(EQ(this.X.QIssueComment.ISSUE_ID, id));
     }
   },
 

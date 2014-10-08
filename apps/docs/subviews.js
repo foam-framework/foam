@@ -546,6 +546,7 @@ MODEL({
         }
       },
       postSet: function() {
+        this.tooltip = this.docRef.ref;
         this.updateHTML();
         this.docRef.addListener(this.onReferenceChange);
       },
@@ -626,6 +627,7 @@ MODEL({
     {
       name: 'onReferenceChange',
       code: function(evt) {
+        this.tooltip = this.docRef.ref;
         this.updateHTML();
       }
     },
@@ -720,9 +722,11 @@ MODEL({
     resolveReference: function(reference) {
   /* <p>Resolving a reference has a few special cases at the start:</p>
     <ul>
-      <li>Beginning with ".": relative to Model in X.documentViewParentModel</li>
-      <li>Containing only ".": the Model in X.documentViewParentModel</li>
-      <li>The name after the first ".": a feature of the Model accessible by "getFeature('name')"</li>
+      <li>Beginning with ".": relative to $$DOC{ref:'Model'} in X.documentViewParentModel</li>
+      <li>Containing only ".": the $$DOC{ref:'Model'} in X.documentViewParentModel</li>
+      <li>The name after the first ".": a feature of the $$DOC{ref:'Model'} accessible by "getFeature('name')"</li>
+      <li>A double-dot after the $$DOC{ref:'Model'}: Skip the feature lookup and find instances directly on
+            the $$DOC{ref:'Model'} definition (<code>MyModel..documentation.chapters.chapName</code>)</li>
     </ul>
     <p>Note that the first name is a Model definition (can be looked up by this.X[modelName]),
      while the second name is an instance of a feature on that Model, and subsequent
@@ -763,16 +767,20 @@ MODEL({
         // feature specified "Model.feature" or ".feature"
         foundObject = model.getFeature(args[1]);
 
-        if (!foundObject && args[1] === "documentation") {
-          // special case for links into documentation books
-          foundObject = model.documentation;
-        }
+//        if (!foundObject && args[1] === "documentation") {
+//          // special case for links into documentation books
+//          foundObject = model.documentation;
+//        }
 
         if (!foundObject) {
           return;
         } else {
           newResolvedModelChain.push(foundObject);
         }
+      } else if (args.length > 2) {
+        // Allows MyModel..instance, skipping the feature lookup and going straight to named instances on the Model def itself
+        // In particular, this allows DocumentationBook..documentation.chapters.chapName
+        foundObject = model;
       }
 
       // allow further specification of sub properties or lists

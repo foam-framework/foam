@@ -501,6 +501,12 @@ MODEL({
       return v;
     },
 
+    createRelationshipView: function(r, opt_args) {
+      return this.X.RelationshipView.create({
+        relationship: r,
+      }).copyFrom(opt_args);
+    },
+
     createTemplateView: function(name, opt_args) {
       /*
         Used by the $$DOC{ref:'Template',text:'$$propName'} sub-$$DOC{ref:'View'}
@@ -511,9 +517,12 @@ MODEL({
       var o = this.model_[name];
       if ( ! o ) throw 'Unknown View Name: ' + name;
 
-      var v = Action.isInstance(o) ?
-        this.createActionView(o, opt_args) :
-        this.createView(o, opt_args) ;
+      if ( Action.isInstance(o) )
+        var v = this.createActionView(o, opt_args);
+      else if ( Relationship.isInstance(o) )
+        v = this.createRelationshipView(o, opt_args);
+      else
+        v = this.createView(o, opt_args);
       v.data = this;
       return v;
     },
@@ -599,18 +608,7 @@ MODEL({
         var self = this;
         var manager = this.X.gestureManager;
         var target = this.X.GestureTarget.create({
-          container: {
-            containsPoint: function(x, y, e) {
-              while (e) {
-                if ( e.id === opt_id ) return true;
-                e = e.parentNode;
-              }
-              return false;
-            }
-          },
-          getElement: function() {
-            return self.X.$(opt_id);
-          },
+          containerID: opt_id,
           handler: {
             tapClick: function() {
               // Create a fake event.
@@ -706,11 +704,14 @@ MODEL({
     },
 
     toInnerHTML: function() {
-      /* In most cases you can override this method to provide all of your HTML
+      /* <p>In most cases you can override this method to provide all of your HTML
         content. Calling $$DOC{ref:'.updateHTML'} will cause this method to
         be called again, regenerating your content. $$DOC{ref:'Template',usePlural:true}
         are usually called from here, or you may create a
-        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}. */
+        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}.</p>
+        <p>If you are generating your content here, you may also need to override
+        $$DOC{ref:'.initInnerHTML'} to create event handlers such as
+        <code>this.on('click')</code>. */
       return '';
     },
 
@@ -741,7 +742,11 @@ MODEL({
 
     initInnerHTML: function() {
       /* Initialize this View and all of it's children. Usually just call
-          $$DOC{ref:'.initHTML'} instead. */
+         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'View'}
+         and adding listeners (including <code>this.on('click')</code>) that
+         will be destroyed each time $$DOC{ref:'.toInnerHTML'} is called, you
+         will have to override this $$DOC{ref:'Method'} and add them here.
+       */
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
 
@@ -831,11 +836,6 @@ MODEL({
       this.$ && this.$.remove();
       this.destroy();
       this.publish('closed');
-    },
-
-    containsPoint: function(x, y, element) {
-      /* Called by the GestureManager, return true if this view is being touched. */
-      return this.$ && this.$.contains(element);
     }
   }
 });
@@ -1013,7 +1013,7 @@ MODEL({
         document.body.appendChild(div);
 
         var s            = this.X.window.getComputedStyle(div);
-        var pos          = findPageXY(this.target);
+        var pos          = findViewportXY(this.target);
         var screenHeight = this.X.document.body.clientHeight;
         var scrollY      = this.X.window.scrollY;
         var above        = pos[1] - scrollY > screenHeight / 2;
@@ -2257,7 +2257,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(text);
+        return JSONUtil.parse(this.X, text);
       } catch (x) {
         console.log("error");
       }
@@ -2463,11 +2463,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var self = this;
+      var superResult = this.SUPER(); // get the destructors done before doing our work
 
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
+      var self = this;
 
       this.setAttribute('disabled', function() {
         self.closeTooltip();
@@ -2481,7 +2479,7 @@ MODEL({
 
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
@@ -2496,7 +2494,18 @@ MODEL({
       }
 
       return out;
+    },
+
+    initInnerHTML: function() {
+      this.SUPER();
+
+      var self = this;
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
     }
+
   }
 });
 
@@ -2520,8 +2529,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      var superReuslt = this.SUPER(); // get the destructors done before doing our work
       this.setAttribute('href', function() { return '#' }, this.id);
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
@@ -3062,7 +3072,7 @@ MODEL({
       transient: true,
       factory: function() {
         return this.X.GestureTarget.create({
-          container: this,
+          containerID: this.id,
           handler: this,
           gesture: 'horizontalScroll'
         });
@@ -3790,7 +3800,7 @@ MODEL({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
-      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('blur',    this.framed(this.delay(200, this.framed(this.framed(this.onBlur)))), this.id);
       this.on('focus',   this.onInput, this.id);
 
       return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
@@ -4346,7 +4356,7 @@ MODEL({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
-      this.on('blur',    this.animate(this.delay(200, this.animate(this.animate(this.onBlur)))), this.id);
+      this.on('blur',    this.framed(this.delay(200, this.framed(this.framed(this.onBlur)))), this.id);
       this.on('focus',   this.onInput, this.id);
 
       return '<input name="' + this.name + '" type="text" id="' + this.id + '" class="listInputView">' + this.autocompleteView.toHTML();
@@ -5144,3 +5154,105 @@ MODEL({
     */}
   ]
 });
+
+
+MODEL({
+  extendsModel: 'View',
+
+  name: 'CollapsibleView',
+
+  properties: [
+    {
+      name: 'data'
+    },
+    {
+      name:  'fullView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.fullView.data$)
+        {
+          this.addChild(this.fullView);
+          this.fullView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name:  'collapsedView',
+      preSet: function(old, nu) {
+        if (old) this.removeChild(old);
+        return nu;
+      },
+      postSet: function() {
+        if (this.collapsedView.data$)
+        {
+          this.addChild(this.collapsedView);
+          this.collapsedView.data$ = this.data$;
+        }
+        this.updateHTML();
+      }
+    },
+    {
+      name: 'collapsed',
+      defaultValue: true,
+      postSet: function() {
+        if (this.collapsed) {
+          this.collapsedView.$.style.height = "";
+          this.fullView.$.style.height = "0";
+
+        } else {
+          this.collapsedView.$.style.height = "0";
+          this.fullView.$.style.height = "";
+        }
+      }
+    }
+
+  ],
+
+  methods: {
+    toInnerHTML: function() {
+      // TODO: don't render full view until expanded for the first time?
+      var retStr = this.collapsedView.toHTML() + this.fullView.toHTML();
+      return retStr;
+    },
+
+    initHTML: function() {
+      this.SUPER();
+
+      // to ensure we can hide by setting the height
+      this.collapsedView.$.style.display = "block";
+      this.fullView.$.style.display = "block";
+      this.collapsedView.$.style.overflow = "hidden";
+      this.fullView.$.style.overflow = "hidden";
+
+      this.collapsed = true;
+    }
+  },
+
+  actions: [
+    {
+      name:  'toggle',
+      help:  'Toggle collapsed state.',
+
+      labelFn: function() {
+        return this.collapsed? 'Expand' : 'Hide';
+      },
+      isAvailable: function() {
+        return true;
+      },
+      isEnabled: function() {
+        return true;//this.collapsedView.toHTML && this.fullView.toHTML;
+      },
+      action: function() {
+        this.collapsed = !this.collapsed;
+      }
+    },
+  ]
+});
+
+
+
+

@@ -42,6 +42,10 @@ div.memberList {
   padding-left: 2em;
 }
 
+div.inherited {
+  color: #666666;
+}
+
 span.docLink {
   color: blue;
   text-decoration: underline;
@@ -51,3 +55,4 @@ span.docLinkNoDocumentation {
   color: red;
   text-decoration: underline;
 }
+
