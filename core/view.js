@@ -611,6 +611,7 @@ MODEL({
           containerID: opt_id,
           handler: {
             tapClick: function() {
+              console.log(opt_id)
               // Create a fake event.
               return listener({
                 preventDefault: function() { },
@@ -2456,11 +2457,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var self = this;
+      var superResult = this.SUPER(); // get the destructors done before doing our work
 
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
+      var self = this;
 
       this.setAttribute('disabled', function() {
         self.closeTooltip();
@@ -2474,7 +2473,7 @@ MODEL({
 
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
@@ -2489,7 +2488,18 @@ MODEL({
       }
 
       return out;
+    },
+
+    initInnerHTML: function() {
+      this.SUPER();
+
+      var self = this;
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
     }
+
   }
 });
 
@@ -2513,8 +2523,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      var superReuslt = this.SUPER(); // get the destructors done before doing our work
       this.setAttribute('href', function() { return '#' }, this.id);
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
