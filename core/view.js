@@ -704,11 +704,14 @@ MODEL({
     },
 
     toInnerHTML: function() {
-      /* In most cases you can override this method to provide all of your HTML
+      /* <p>In most cases you can override this method to provide all of your HTML
         content. Calling $$DOC{ref:'.updateHTML'} will cause this method to
         be called again, regenerating your content. $$DOC{ref:'Template',usePlural:true}
         are usually called from here, or you may create a
-        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}. */
+        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}.</p>
+        <p>If you are generating your content here, you may also need to override
+        $$DOC{ref:'.initInnerHTML'} to create event handlers such as
+        <code>this.on('click')</code>. */
       return '';
     },
 
@@ -739,7 +742,11 @@ MODEL({
 
     initInnerHTML: function() {
       /* Initialize this View and all of it's children. Usually just call
-          $$DOC{ref:'.initHTML'} instead. */
+         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'View'}
+         and adding listeners (including <code>this.on('click')</code>) that
+         will be destroyed each time $$DOC{ref:'.toInnerHTML'} is called, you
+         will have to override this $$DOC{ref:'Method'} and add them here.
+       */
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
 
