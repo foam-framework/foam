@@ -53,7 +53,7 @@ MODEL({
       name: 'updatePosition',
       isFramed: true,
       code: function() {
-        this.$.style.webkitTransform = 'scale(' + this.scale + ') rotate(' + this.rotation + 'deg)';
+        this.el.style.webkitTransform = 'scale(' + this.scale + ') rotate(' + this.rotation + 'deg)';
       }
     }
   ],

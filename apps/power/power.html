@@ -426,18 +426,18 @@
     bv4.write(document);
     document.write("</td></tr></table>");
 
-    batteryGraph.canvasView.$.onclick = function() {
+    batteryGraph.canvasView.el.onclick = function() {
        batteryGraph.displayProjection = ! batteryGraph.displayProjection;
        $("subGraphs").hidden = batteryGraph.displayProjection;
     };
 
-    wattsGraph.canvasView.$.onclick = function() {
+    wattsGraph.canvasView.el.onclick = function() {
        $("wattsGraph").hidden = true;
        $("powerGraph").hidden = false;
 
     };
 
-    powerGraph.canvasView.$.onclick = function() {
+    powerGraph.canvasView.el.onclick = function() {
        $("wattsGraph").hidden = false;
        $("powerGraph").hidden = true;
     };

@@ -164,9 +164,9 @@ MODEL({
       name: 'onResize',
       isMerged: 200,
       code: function() {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
-        var h = this.$.parentElement.offsetHeight;
+        var h = this.el.parentElement.offsetHeight;
         var rows = Math.ceil((h - 47)/20)+1;
         // TODO: update the extent somehow
 //        this.scrollbar.extent = rows;
@@ -206,13 +206,13 @@ MODEL({
           this.repaint();
         }.bind(this));
 
-        this.$.insertAdjacentHTML('beforebegin', v.toHTML());
+        this.el.insertAdjacentHTML('beforebegin', v.toHTML());
 
-        var y = findViewportXY(this.$)[1];
+        var y = findViewportXY(this.el)[1];
         var screenHeight = this.X.document.firstElementChild.offsetHeight;
-        var popupHeight = toNum(v.$.offsetHeight);
+        var popupHeight = toNum(v.el.offsetHeight);
         if ( screenHeight-y-popupHeight < 10 ) {
-          v.$.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
+          v.el.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
         }
 
         v.initHTML();
@@ -277,7 +277,7 @@ MODEL({
 
         var sb = this.scrollbar;
 
-        this.$.parentElement.onmousewheel = function(e) {
+        this.el.parentElement.onmousewheel = function(e) {
           sb.value = Math.min(
             sb.size - sb.extent,
             Math.max(
@@ -289,7 +289,7 @@ MODEL({
           this.X.gestureManager.install(this.X.GestureTarget.create({
             containerID: this.id,
             handler: this,
-            getElement: function() { return this.container.$.parentElement; },
+            getElement: function() { return this.container.el.parentElement; },
             gesture: 'verticalScroll'
           }));
         }
@@ -309,7 +309,7 @@ MODEL({
       // this.count__ = ( this.count__ || 0)+1;
       // if ( this.count__ % 3 !== 0 ) return;
 
-      if ( ! dao || ! this.$ ) return;
+      if ( ! dao || ! this.el ) return;
 
       dao = dao.skip(this.scrollbar.value);
 
@@ -318,8 +318,8 @@ MODEL({
 
       dao.limit(this.rows).select()(function(objs) {
         self.objs = objs;
-        if ( self.$ ) {
-          self.$.innerHTML = self.tableToHTML();
+        if ( self.el ) {
+          self.el.innerHTML = self.tableToHTML();
           self.initHTML_();
         }
       });

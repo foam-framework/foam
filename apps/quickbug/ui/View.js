@@ -471,7 +471,7 @@ MODEL({
         views[1].data$.addListener(this.onInput);
         views[2].data$.addListener(this.onInput);
 
-        var inputElement = this.$.firstElementChild;
+        var inputElement = this.el.firstElementChild;
         inputElement.insertAdjacentHTML('beforeend',
                                         '<div>' +
                                         views[0].toHTML() +
@@ -489,9 +489,9 @@ MODEL({
     {
       name: 'update',
       code: function() {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
-        this.$.firstElementChild.innerHTML = '';
+        this.el.firstElementChild.innerHTML = '';
         this.inputs = [];
 
         var i = 0;
@@ -511,7 +511,7 @@ MODEL({
           views[1].data$.addListener(this.onInput);
           views[2].data$.addListener(this.onInput);
 
-          var inputElement = this.$.firstElementChild;
+          var inputElement = this.el.firstElementChild;
           inputElement.insertAdjacentHTML('beforeend',
                                           '<div>' +
                                           views[0].toHTML() +
@@ -530,7 +530,7 @@ MODEL({
     {
       name: 'onInput',
       code: function(e) {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
         var newdata = [];
 

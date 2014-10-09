@@ -49,7 +49,7 @@ MODEL({
       name: 'updatePosition',
       isFramed: true,
       code: function() {
-        this.$.style.webkitTransform = 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)';
+        this.el.style.webkitTransform = 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)';
       }
     }
   ],

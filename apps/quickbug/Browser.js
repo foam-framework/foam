@@ -377,8 +377,8 @@ MODEL({
         view.addSeparator();
         view.addAction(this.model_.CONFIG_PROJECTS);
 
-        view.left = this.favouritesView.$.offsetLeft;
-        view.top = this.favouritesView.$.offsetTop + this.favouritesView.$.offsetHeight;
+        view.left = this.favouritesView.el.offsetLeft;
+        view.top = this.favouritesView.el.offsetTop + this.favouritesView.el.offsetHeight;
         view.openAsMenu();
 
         var self = this;
@@ -410,15 +410,15 @@ MODEL({
       label: '',
       help: 'Create Bookmark',
       action: function() {
-        var anchor = this.addBookmarkView.$;
+        var anchor = this.addBookmarkView.el;
         var view   = this.X.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
         });
 
         anchor.insertAdjacentHTML('beforebegin', view.toHTML());
-        view.$.style.left = 200; // x + anchor.offsetLeft;
-        view.$.style.top  = 200; // y + anchor.offsetTop;
+        view.el.style.left = 200; // x + anchor.offsetLeft;
+        view.el.style.top  = 200; // y + anchor.offsetTop;
         view.initHTML();
       }
     },
@@ -463,8 +463,8 @@ MODEL({
             });
           }));
 
-        view.left = this.newIssueView.$.offsetLeft;
-        view.top = this.newIssueView.$.offsetTop + this.newIssueView.$.offsetHeight;
+        view.left = this.newIssueView.el.offsetLeft;
+        view.top = this.newIssueView.el.offsetTop + this.newIssueView.el.offsetHeight;
         view.openAsMenu();
 
         view.subscribe('close', function() {
@@ -513,19 +513,19 @@ MODEL({
       }.bind(this));
 
       this.syncManagerFuture.get((function(syncManager) {
-        this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
+        this.refreshImg.el.onclick = syncManager.forceSync.bind(syncManager);
       }).bind(this));
 
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
       timer.i$.addListener(function() {
-        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
+        if ( ! this.refreshImg.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        this.refreshImg.el.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
       this.X.document.addEventListener('mousemove', (function(evt) {
-        if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
+        if ( this.currentPreview && ! this.currentPreview.el.contains(evt.target) && ! this.view.el.contains(evt.target) ) {
           this.preview(null);
         }
       }).bind(this));
@@ -632,9 +632,9 @@ Please use labels and text to provide additional information.
     pushView: function(view) {
       this.issueMode_ = true;
 
-      var stack = this.$.querySelector('.stack');
-      this.$.querySelector('.header').style.display = 'none';
-      this.$.querySelector('.BrowserView').style.display = 'none';
+      var stack = this.el.querySelector('.stack');
+      this.el.querySelector('.header').style.display = 'none';
+      this.el.querySelector('.BrowserView').style.display = 'none';
       stack.style.display = '';
 
       stack.innerHTML = view.toHTML();
@@ -644,9 +644,9 @@ Please use labels and text to provide additional information.
     back: function() {
       this.issueMode_ = false;
 
-      var stack = this.$.querySelector('.stack');
-      this.$.querySelector('.header').style.display = '';
-      this.$.querySelector('.BrowserView').style.display = '';
+      var stack = this.el.querySelector('.stack');
+      this.el.querySelector('.header').style.display = '';
+      this.el.querySelector('.BrowserView').style.display = '';
       stack.style.display = 'none';
 
       stack.innerHTML = '';
@@ -667,7 +667,7 @@ Please use labels and text to provide additional information.
         put: function(obj) {
           obj = obj.clone();
           var HEIGHT = 400;
-          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
+          var screenHeight = self.view.el.ownerDocument.defaultView.innerHeight;
 
           var v = self.X.QIssueDetailView.create({
             data: obj,
