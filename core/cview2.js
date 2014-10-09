@@ -33,7 +33,7 @@ MODEL({
     },
     {
       name: 'canvas',
-      getter: function() { return this.$ && this.$.getContext('2d'); }
+      getter: function() { return this.el && this.el.getContext('2d'); }
     }
   ],
 
@@ -42,11 +42,11 @@ MODEL({
       name: 'resize',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
-        this.$.width = this.canvasWidth();
-        this.$.style.width = this.styleWidth();
-        this.$.height = this.canvasHeight();
-        this.$.style.height = this.styleHeight();
+        if ( ! this.el ) return;
+        this.el.width = this.canvasWidth();
+        this.el.style.width = this.styleWidth();
+        this.el.height = this.canvasHeight();
+        this.el.style.height = this.styleHeight();
         this.paint();
       }
     },
@@ -54,7 +54,7 @@ MODEL({
       name: 'paint',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if ( ! this.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.canvas.save();
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
         this.cview.paint();
@@ -82,11 +82,11 @@ MODEL({
       return '<canvas id="' + this.id + '"' + className + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + '"></canvas>';
     },
     initHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
 
       this.maybeInitTooltip();
 
-      this.canvas = this.$.getContext('2d');
+      this.canvas = this.el.getContext('2d');
 
       var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
       var backingStoreRatio = this.canvas.backingStoreRatio ||
@@ -95,7 +95,7 @@ MODEL({
       if ( devicePixelRatio !== backingStoreRatio )
         this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
-      var style = this.X.window.getComputedStyle(this.$);
+      var style = this.X.window.getComputedStyle(this.el);
 
       // Copy the background colour from the div styling.
       // TODO: the same thing for other CSS attributes like 'font'
@@ -143,11 +143,11 @@ MODEL({
       name: 'resize',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
-        this.$.width = this.canvasWidth();
-        this.$.style.width = this.styleWidth();
-        this.$.height = this.canvasHeight();
-        this.$.style.height = this.styleHeight();
+        if ( ! this.el ) return;
+        this.el.width = this.canvasWidth();
+        this.el.style.width = this.styleWidth();
+        this.el.height = this.canvasHeight();
+        this.el.style.height = this.styleHeight();
         this.cview.width = this.width;
         this.cview.height = this.height;
         this.paint();
@@ -190,8 +190,8 @@ MODEL({
       hidden: true
     },
     {
-      name:  '$',
-      getter: function() { return this.view && this.view.$; },
+      name:  'el',
+      getter: function() { return this.view && this.view.el; },
       hidden: true
     },
     {
@@ -322,7 +322,7 @@ MODEL({
     paintSelf: function() {},
 
     paint: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
       if ( this.state === 'initial' ) {
         this.initCView();
         this.state = 'active';
@@ -490,7 +490,7 @@ MODEL({
       code: function(evt) {
         this.down_ = true;
         if ( evt.type === 'touchstart' ) {
-          var rect = this.$.getBoundingClientRect();
+          var rect = this.el.getBoundingClientRect();
           var t = evt.touches[0];
           this.pressCircle.x = t.pageX - rect.left;
           this.pressCircle.y = t.pageY - rect.top;
@@ -573,17 +573,17 @@ MODEL({
         // TODO: Glow animations on touch.
         this.X.gestureManager.install(this.tapGesture);
       } else {
-        this.$.addEventListener('click',      this.onClick);
+        this.el.addEventListener('click',      this.onClick);
       }
 
-      this.$.addEventListener('mousedown',   this.onMouseDown);
-      this.$.addEventListener('mouseup',     this.onMouseUp);
-      this.$.addEventListener('mouseleave',  this.onMouseUp);
+      this.el.addEventListener('mousedown',   this.onMouseDown);
+      this.el.addEventListener('mouseup',     this.onMouseUp);
+      this.el.addEventListener('mouseleave',  this.onMouseUp);
 
-      this.$.addEventListener('touchstart',  this.onMouseDown);
-      this.$.addEventListener('touchend',    this.onMouseUp);
-      this.$.addEventListener('touchleave',  this.onMouseUp);
-      this.$.addEventListener('touchcancel', this.onMouseUp);
+      this.el.addEventListener('touchstart',  this.onMouseDown);
+      this.el.addEventListener('touchend',    this.onMouseUp);
+      this.el.addEventListener('touchleave',  this.onMouseUp);
+      this.el.addEventListener('touchcancel', this.onMouseUp);
     },
     destroy: function() {
       this.SUPER();
