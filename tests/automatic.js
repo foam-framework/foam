@@ -8,7 +8,7 @@ var startTime = process.hrtime();
 // Create an XMLFileDAO against FUNTests.xml
 var rawDAO = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: UnitTest });
 global.X.UnitTestDAO = rawDAO;
-var dao = rawDAO.where(EQ(UnitTest.DISABLED, false));
+var dao = rawDAO.where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'node')));
 
 // Now lets fetch the top-level tests and start executing them.
 // We'll let them hand down to their children as they go, too.
@@ -42,6 +42,7 @@ dao.select({ put: function(t) { allTests.push(t.clone()); } })(function() {
   var afuncs = [];
   allTests.dao.where(EQ(UnitTest.PARENT_TEST, '')).select({
     put: function(test) {
+      console.log('found ' + test.name);
       afuncs.push(function(ret){
         try {
           test.atest()(ret);

@@ -4833,21 +4833,31 @@ MODEL({
   label: 'UI Test Result View',
   help: 'Overrides the inner masterView and liveView for UITests.',
 
-  extendsModel: 'RegressionTestResultView',
+  extendsModel: 'UnitTestResultView',
 
-  properties: ['oldTests'],
+  properties: [
+    {
+      name: 'liveView',
+      getter: function() { return this.X.$(this.liveID); }
+    },
+    {
+      name: 'liveID',
+      factory: function() { return this.nextID(); }
+    }
+  ],
 
   methods: {
     preTest: function() {
       var test = this.test;
-      var $ = this.liveView.el;
-      test.X.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
+      var $ = this.liveView;
+      test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
       test.X.render = function(v) {
-        test.X.append(v.toHTML());
+        test.append(v.toHTML());
         v.initHTML();
       };
     },
 
+    /*
     postTest: function() {
       // Grab the HTML rendered by the test as its results.
       // We need the replace() to turn id="view247" into id="view#",
@@ -4858,40 +4868,18 @@ MODEL({
       // The above needs to run before SUPER's regression check.
       this.SUPER();
     }
-  }
-});
+    */
+  },
 
-
-MODEL({
-  name: 'UITest',
-  label: 'UI Test',
-
-  extendsModel: 'RegressionTest',
-
-  properties: [
-    {
-      name: 'results',
-      view: 'UITestResultView'
-    },
-    {
-      name: 'runChildTests',
-      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
-      defaultValue: false
-    }
-  ],
-
-  /*
-  actions: [
-    {
-      name: 'test',
-      action: function(obj) { }
-    }
-  ],
-  */
-
-  methods: {
-    //atest: function() { return aconstant('output'); },
-  }
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+        <div class="output" id="<%= this.setClass('error', function() { return this.test.failed > 0; }, this.liveID) %>">
+        </div>
+      </div>
+    */}
+  ]
 });
 
 

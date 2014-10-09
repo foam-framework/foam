@@ -112,7 +112,7 @@ var baseDAO = CachingDAO.create({
   src: ClientDAO.create({
     asend: asendjson(window.location.origin + '/api'),
     model: UnitTest
-  }).where(EQ(UnitTest.DISABLED, false))
+  }).where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'web')))
 });
 
 setTimeout(function() {

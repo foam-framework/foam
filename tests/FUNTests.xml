@@ -3,6 +3,10 @@
   <object model="UnitTest">
     <property name="name">0-char string</property>
     <property name="description">The encoding of an empty string is the empty string.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('', '');
@@ -15,6 +19,10 @@
   <object model="UnitTest">
     <property name="name">1-char string</property>
     <property name="description">Check the encoding and decoding of a length-1 string</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('A', 'QQ==');
@@ -27,6 +35,10 @@
   <object model="UnitTest">
     <property name="name">2-char string</property>
     <property name="description">Check the encoding and decoding of a length-2 string</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('AB', 'QUI=');
@@ -39,6 +51,10 @@
   <object model="UnitTest">
     <property name="name">3-char string</property>
     <property name="description">Check the encoding and decoding of a length-3 string</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('ABC', 'QUJD');
@@ -51,6 +67,10 @@
   <object model="UnitTest">
     <property name="name">4-char string</property>
     <property name="description">Check the encoding and decoding of a length-4 string</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('ABCD', 'QUJDRA==');
@@ -63,6 +83,10 @@
   <object model="UnitTest">
     <property name="name">All chars</property>
     <property name="description">Check the encoding and decoding of a sequence of all 256 chars.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var buffer = new ArrayBuffer(256);
@@ -96,10 +120,13 @@
     <property name="parentTest">Base64</property>
   </object>
 
-  <object>
+  <object model="UITest">
     <property name="name">Autocomplete on TextFieldView</property>
-    <property name="description">Test's the autocomplete functionality of a TextFieldView.</property>
-    <property name="disabled">true</property>
+    <property name="description">Tests the autocomplete functionality of a TextFieldView.</property>
+    <property name="tags">
+      <i>web</i>
+      <i>ui</i>
+    </property>
     <property name="code">function anonymous() {
 
       MODEL({
@@ -180,6 +207,10 @@
   <object model="UnitTest">
     <property name="name">Base64</property>
     <property name="description">Test FOAM's Base64 handling</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.decode = function(str) {
@@ -221,6 +252,10 @@
   <object model="UnitTest">
     <property name="name">By-Name Value binding</property>
     <property name="description">Demonstrate the binding of $ values.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({name: 'Test', properties: [ { name: 'x' } ]});
@@ -249,6 +284,10 @@
   <object model="UnitTest">
     <property name="name">Constructor tests</property>
     <property name="description">Demonstrate various properties of FOAM object constructors</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var x = OMTestBase.create({ bar: 'baz' });
@@ -270,6 +309,10 @@
 
   <object model="RegressionTest">
     <property name="name">Context Examples</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="disabled">true</property>
     <property name="code" type="function">function anonymous() {
 
@@ -303,6 +346,10 @@ CONTEXT(Y)
 
   <object model="RegressionTest">
     <property name="name">Context/SubTest1</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.log('sub test 1, part 1');
@@ -318,6 +365,10 @@ sub test 1, part 2
 
   <object model="RegressionTest">
     <property name="name">Context/SubTest2</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.log('sub test 2');
@@ -332,6 +383,10 @@ sub test 1, part 2
   <object model="RegressionTest">
     <property name="name">DAO Tests</property>
     <property name="description">Define the Model (like a schema) and create a DAO.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       Person = FOAM({
@@ -360,6 +415,10 @@ sub test 1, part 2
   <object model="RegressionTest">
     <property name="name">DAO Tests/SubTest1</property>
     <property name="description">Add some sample data and select to a 'sink'.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       dao.put(Person.create({id:'1', name:'John',  age:21}));
@@ -382,6 +441,10 @@ person: Andy
   <object model="RegressionTest">
     <property name="name">DAO Tests/SubTest2</property>
     <property name="description">Select directly to an Array.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var a = [];
@@ -426,6 +489,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Default values and factories</property>
     <property name="description">Exercises default values functions and factories</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var model = Model.create({
@@ -474,6 +541,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Direct property binding</property>
     <property name="description">Creates a two-way binding between two properties at object creation time.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -500,6 +571,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Event Merging</property>
     <property name="description">Events can be merged into a maximum of 1 event per unit time, or 1 event per animation frame.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
 
@@ -550,11 +625,19 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Event Tests</property>
     <property name="description">Tests for event handling.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
   </object>
 
   <object model="UnitTest">
     <property name="name">Event primitives</property>
     <property name="description">Tests the primitive event listeners and handlers</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
 
@@ -591,6 +674,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Event topic chaining and wildcarding</property>
     <property name="description">Events can have paths, and wildcards will hit all sub-events</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({ name: 'Test' });
@@ -623,6 +710,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Events.follow()</property>
     <property name="description">Creates a one-way binding between two properties</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -652,6 +743,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Events.link()</property>
     <property name="description">Creates a two-way binding between two properties</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -681,6 +776,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Events.map()</property>
     <property name="description">Creates a one-way binding between two properties, running a filter over the value in between</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -710,6 +809,10 @@ person: Andy
   <object model="UnitTest">
     <property name="name">Events.relate()</property>
     <property name="description">Creates a two-way binding between two properties, converting with functions</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -738,6 +841,10 @@ person: Andy
 
   <object model="RegressionTest">
     <property name="name">Future Function</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
 
@@ -762,6 +869,10 @@ hello
   <object model="UnitTest">
     <property name="name">Inheritance Tests</property>
     <property name="description">Exercises Model inheritance and SUPER</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var sub = Model.create({
@@ -800,6 +911,10 @@ hello
   <object model="UnitTest">
     <property name="name">Object Model tests</property>
     <property name="description">Tests for the basic Object model</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       seq = [];
@@ -831,6 +946,10 @@ hello
   <object model="UnitTest">
     <property name="name">Property Type Conversions</property>
     <property name="description">Test that properties coerce values properly..</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       o = FOAM({
@@ -865,6 +984,10 @@ hello
   <object model="UnitTest">
     <property name="name">Property update handlers</property>
     <property name="description">Exercises property updaters (preSet, postSet) and pseudo-properties (getter, setter)</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var model = Model.create({
@@ -928,6 +1051,10 @@ hello
   <object model="UnitTest">
     <property name="name">Pub/sub support</property>
     <property name="description">Every Modelled object is a pub/sub target. Also shows one-time listeners.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       MODEL({
@@ -967,6 +1094,10 @@ hello
 
   <object model="RegressionTest">
     <property name="name">With Synchronization</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="async">true</property>
     <property name="code" type="function">function (ret){
 
@@ -989,6 +1120,10 @@ f1 end
   <object model="RegressionTest">
     <property name="name">With Synchronization (Sequential)</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       apar(aseq(this.f1, this.f1, this.f1), aseq(this.f1, this.f1, this.f1))(ret);
@@ -1014,6 +1149,10 @@ f1 end
   <object model="RegressionTest">
     <property name="name">Without Synchronization</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       apar(this.f1, this.f1, this.f1)(ret);
@@ -1033,6 +1172,10 @@ f1 end
   <object model="RegressionTest">
     <property name="name">aFunc Test 0</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
@@ -1049,6 +1192,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 1</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
@@ -1065,6 +1212,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 11</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(
@@ -1089,6 +1240,10 @@ fC1
   <object model="RegressionTest">
     <property name="name">aFunc Test 2</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.f1.bind(this).aseq(this.f2.bind(this).aseq(this.aprint.bind(this)))(ret);
@@ -1105,6 +1260,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 3</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.f1.bind(this).aseq(this.aprint.bind(this))(ret);
@@ -1120,6 +1279,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 4</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       ao(this.aprint.bind(this), this.f2.bind(this), this.f1.bind(this))(ret);
@@ -1136,6 +1299,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 5</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(this.f1.bind(this), this.aprint.bind(this))(ret);
@@ -1151,6 +1318,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 6</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(this.f1.bind(this), this.f2.bind(this), this.aprint.bind(this))(ret);
@@ -1167,6 +1338,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">aFunc Test 7</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(
@@ -1187,6 +1362,10 @@ fC
   <object model="RegressionTest">
     <property name="name">aFunc Test 8</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       apar(
@@ -1206,6 +1385,10 @@ fC
   <object model="RegressionTest">
     <property name="name">aFunc Tests</property>
     <property name="description">Test FOAM's Asynchronous-Functions (aFunc's).</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       console.warn(this.$UID);
@@ -1220,6 +1403,10 @@ fC
   <object model="RegressionTest">
     <property name="name">abind1</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       var boo = function() { console.log('boo'); };
@@ -1237,6 +1424,10 @@ boo
   <object model="RegressionTest">
     <property name="name">abind2</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(
@@ -1257,6 +1448,10 @@ f2() called.
   <object model="RegressionTest">
     <property name="name">alog</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.log('alog');
@@ -1274,6 +1469,10 @@ a message
     <property name="name">amemo</property>
     <property name="description">Test that amemo() only executes its delegate once.</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       m = amemo(function(ret) { this.log('Should only see this once.'); ret(1); }.bind(this));
@@ -1290,6 +1489,10 @@ a message
   <object model="RegressionTest">
     <property name="name">anop</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.log('anop');
@@ -1307,6 +1510,10 @@ after
   <object model="RegressionTest">
     <property name="name">arepeat 1</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       arepeat(5, this.f1.bind(this))(ret);
@@ -1325,6 +1532,10 @@ f1() called.
   <object model="RegressionTest">
     <property name="name">arepeat 2</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)).aseq(this.aprint.bind(this))(ret);
@@ -1344,6 +1555,10 @@ f1() called.
   <object model="RegressionTest">
     <property name="name">arepeat 3</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       aseq(
@@ -1365,6 +1580,10 @@ f1() called.
   <object model="RegressionTest">
     <property name="name">arepeatpar</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       arepeatpar(6, function(ret, a, b) {
@@ -1399,6 +1618,10 @@ f1() called.
   <object model="RegressionTest">
     <property name="name">asleep</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.log('**********');
@@ -1419,6 +1642,10 @@ much after
   <object model="RegressionTest">
     <property name="name">asleep2</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       this.log('at the start');
@@ -1434,6 +1661,10 @@ a message
 
   <object model="RegressionTest">
     <property name="name">asynchronized</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       this.tlock = {};
@@ -1452,6 +1683,10 @@ a message
   <object model="UnitTest">
     <property name="name">mergeAsync</property>
     <property name="async">true</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function (ret){
 
       var calls = [];
@@ -1483,6 +1718,10 @@ a message
   <object model="UnitTest">
     <property name="name">toFoo wrappers</property>
     <property name="description">Describes toString, toJSON and toXML default handlers</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
     <property name="code" type="function">function anonymous() {
 
       var x = OMTestBase.create({});
