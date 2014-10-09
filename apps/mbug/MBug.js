@@ -32,11 +32,17 @@ MODEL({
         project.IssueNetworkDAO.batchSize = 25;
 
         Y.issueDAO = Y.QIssueSplitDAO.create({
-          local: localDao,
           model: Y.QIssue,
+          local: localDao,
           remote: project.IssueNetworkDAO,
           maxLimit: 25
         });
+
+        /*
+        Y.issueDAO = Y.KeywordDAO.create({
+          delegate: Y.issueDAO
+        });
+        */
 
         var pc = Y.AppController.create({
           name: project.projectName,
