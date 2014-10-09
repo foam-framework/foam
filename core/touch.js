@@ -556,7 +556,6 @@ MODEL({
       // - multiple points that
       // - are all done and
       // - none of which has moved more than 10px net.
-
       return Object.keys(map).every(function(key) {
         var p = map[key];
         return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
