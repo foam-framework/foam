@@ -31,6 +31,12 @@ and then navigate to [http://localhost:8888/tests/FOAMTests.html]().
 
 Any failed regression test will highlight its results with red borders, and the "Update Master" button will write the test's latest results into the master. This edits `tests/FUNTests.xml`, which you should then check in. **Be careful to make sure the new output of the test is actually valid!**
 
+### UI Testing
+
+A small subset of tests require human oversight. These can be run using the server (see above) and then navigating to [http://localhost:8888/tests/FOAMTests.html?ui=1]() to see just the UI tests.
+
+The `?ui=1` parameter shows only tests with the `'ui'` tag.
+
 ## Bundled Javascript Files
 
 FOAM can bootstrap itself at runtime using `core/bootFOAM.js` and friends.
