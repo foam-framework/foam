@@ -307,7 +307,7 @@ function launchController(_, callback) {
      // Install keyboard shortcuts.
      // 's' to focus the searchbox.
      controller.addShortcut('U+0053', function() {
-       this.searchField.$.focus();
+       this.searchField.el.focus();
      }.bind(controller));
 
      // 'c' to open the compose window.
@@ -317,7 +317,7 @@ function launchController(_, callback) {
 
      // 't' to focus the first item in the toolbar.
      controller.addShortcut('U+0054', function() {
-       this.toolbar.children[1].$.focus();
+       this.toolbar.children[1].el.focus();
      }.bind(controller));
 
      new KeyboardShortcutController(w, controller);
@@ -337,8 +337,8 @@ function launchController(_, callback) {
 
     // TODO: this should be a property of the controller
     $('settings-' + controller.id).onclick = openMenu;
-    controller.searchChoice.$.parentElement.parentElement.onmouseout  = function(e) { expandState.out && expandState.out(); };
-    controller.searchChoice.$.parentElement.parentElement.onmouseover = function(e) { expandState.over && expandState.over(); };
+    controller.searchChoice.el.parentElement.parentElement.onmouseout  = function(e) { expandState.out && expandState.out(); };
+    controller.searchChoice.el.parentElement.parentElement.onmouseover = function(e) { expandState.over && expandState.over(); };
     controller.layout();
     w.onresize = EventService.merged(function() {
       controller.layout();

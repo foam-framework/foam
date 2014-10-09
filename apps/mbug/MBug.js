@@ -178,9 +178,9 @@ MODEL({
   extendsModel: 'PriorityView',
   methods: {
     updateHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
       this.invokeDestructors();
-      this.$.outerHTML = this.toHTML();
+      this.el.outerHTML = this.toHTML();
       this.initHTML();
     }
   },
@@ -206,7 +206,7 @@ MODEL({
       return data ? this.SUPER(data) : 'url(images/silhouette.png)';
     },
     updateHTML: function() {
-      if ( this.$ ) this.$.style.background = this.generateColor(this.data);
+      if ( this.el ) this.el.style.background = this.generateColor(this.data);
       this.SUPER();
     },
   },

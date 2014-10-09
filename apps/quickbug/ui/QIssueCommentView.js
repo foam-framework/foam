@@ -10,8 +10,8 @@ var QIssueCommentView = FOAM({
   methods: {
     updateSubViews: function() {
       this.SUPER();
-      if ( this.$ && this.data === 0 ) {
-        this.$.style.borderTop = 'none';
+      if ( this.el && this.data === 0 ) {
+        this.el.style.borderTop = 'none';
       }
     }
   },

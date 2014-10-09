@@ -29,7 +29,7 @@
     dragon.paint();
 
     var dmouse = Mouse.create();
-    dmouse.connect(dragon.parent.$);
+    dmouse.connect(dragon.parent.el);
     dragon.eyes.watch(dmouse);
 
     Dragon.methods.forEach(function(meth) {

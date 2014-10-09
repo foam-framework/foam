@@ -37,10 +37,10 @@ MODEL({
       var self = this;
 
       this.issueDAO.find(this.issue, { put: function(issue) {
-        if ( ! self.$ ) return; // stale
+        if ( ! self.el ) return; // stale
 
         if ( ! issue.isOpen() ) {
-          self.$.style.textDecoration = 'line-through';
+          self.el.style.textDecoration = 'line-through';
         }
 
         if ( self.maxDepth > 1 ) {
@@ -53,7 +53,7 @@ MODEL({
               ids:      ids
             });
             
-            self.$.insertAdjacentHTML(
+            self.el.insertAdjacentHTML(
               'afterend',
               '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
             

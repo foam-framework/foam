@@ -52,7 +52,7 @@ var QIssueCLView = FOAM({
           }
         }
       }})(function() {
-        if ( self.$ ) self.$.innerHTML = out;
+        if ( self.el ) self.el.innerHTML = out;
       });
     }
   }

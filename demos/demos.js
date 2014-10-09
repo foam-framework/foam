@@ -415,7 +415,7 @@ var System = FOAM({
 
       this.parent.addChild(this);
 
-      this.mouse.connect(this.parent.$);
+      this.mouse.connect(this.parent.el);
 
       Events.dynamic(function() {
         //           console.log(this.mouse.x, this.mouse.y);

@@ -71,7 +71,7 @@ MODEL({
             var Y = self.X.sub({ asyncCallback: ret });
             t.X = self.testScope;
             var view = Y.DemoView.create({ data: t });
-            self.$.insertAdjacentHTML('beforeend', view.toHTML());
+            self.el.insertAdjacentHTML('beforeend', view.toHTML());
             view.initHTML(); // Actually calls atest().
             // The subviews will eventually call the ret().
           });

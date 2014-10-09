@@ -256,8 +256,8 @@ MODEL({
        this.countField.initHTML();
        this.toolbar.initHTML();
 
-       this.searchField.$.style.display = 'table-cell';
-       this.searchField.$.style.width = '100%';
+       this.searchField.el.style.display = 'table-cell';
+       this.searchField.el.style.width = '100%';
 
        this.table.selection.addListener(EventService.merged(function (value) {
          var newValue = value.get();
@@ -305,11 +305,11 @@ MODEL({
       name: 'layout',
       isMerged: true,
       code: function() {
-        if ( !this.$ ) return;
+        if ( !this.el ) return;
 
         var hideTable = this.table.scrollbar.size == 1;
-        var W         = this.$.offsetWidth; //window.innerWidth;
-        var H         = this.$.offsetHeight; //window.innerHeight;
+        var W         = this.el.offsetWidth; //window.innerWidth;
+        var H         = this.el.offsetHeight; //window.innerHeight;
         var SEARCH_H  = H - this.headerHeight - this.footerHeight;
         var RIGHT_W   = W - this.searchWidth-1;
 

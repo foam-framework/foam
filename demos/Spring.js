@@ -4,7 +4,7 @@ var mouse   = Mouse.create();
 MODEL({name: 'Circle', extendsModel: 'Circle2', traits: ['Physical'] });
 
 space.write(document);
-mouse.connect(space.$);
+mouse.connect(space.el);
 
 mouse.x = mouse.y = 300;
 

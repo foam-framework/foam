@@ -298,7 +298,7 @@ MODEL({
       */}
     },
     {
-      name:   '$',
+      name:   'el',
       hidden: true,
       mode:   "read-only",
       getter: function() { return $(this.id); },
@@ -377,7 +377,7 @@ MODEL({
         console.assert(! this.tooltip_, 'Tooltip already defined');
         this.tooltip_ = this.X.Tooltip.create({
           text:   this.tooltip,
-          target: this.$
+          target: this.el
         });
       }
     },
@@ -529,7 +529,7 @@ MODEL({
 
     focus: function() {
       /* Cause the view to take focus. */
-      if ( this.$ && this.$.focus ) this.$.focus();
+      if ( this.el && this.el.focus ) this.el.focus();
     },
 
     addChild: function(child) {
@@ -696,10 +696,10 @@ MODEL({
     updateHTML: function() {
       /* Cause the HTML content to be recreated using a call to
         $$DOC{ref:'.toInnerHTML'}. */
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
 
       this.invokeDestructors();
-      this.$.innerHTML = this.toInnerHTML();
+      this.el.innerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
 
@@ -736,8 +736,8 @@ MODEL({
 
     maybeInitTooltip: function() {
       if ( ! this.tooltip ) return;
-      this.$.addEventListener('mouseenter', this.openTooltip);
-      this.$.addEventListener('mouseleave', this.closeTooltip);
+      this.el.addEventListener('mouseenter', this.openTooltip);
+      this.el.addEventListener('mouseleave', this.closeTooltip);
     },
 
     initInnerHTML: function() {
@@ -816,7 +816,7 @@ MODEL({
 
       if ( found ) {
         this.keyMap_ = keyMap;
-        this.$.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
+        this.el.parentElement.addEventListener('keydown', this.onKeyboardShortcut);
       }
     },
 
@@ -833,7 +833,7 @@ MODEL({
 
     close: function() {
       /* Call when permanently closing the $$DOC{ref:'View'}. */
-      this.$ && this.$.remove();
+      this.el && this.el.remove();
       this.destroy();
       this.publish('closed');
     }
@@ -1048,9 +1048,9 @@ MODEL({
       // which looks bad, so wait 500ms to give it time to transition
       // if it is.
       this.X.setTimeout(function() {
-        if ( this.$ ) {
-          this.X.setTimeout(this.$.remove.bind(this.$), 1000);
-          DOM.setClass(this.$, 'fadeout');
+        if ( this.el ) {
+          this.X.setTimeout(this.el.remove.bind(this.el), 1000);
+          DOM.setClass(this.el, 'fadeout');
         }
       }.bind(this), 500);
     },
@@ -1099,7 +1099,7 @@ MODEL({
   methods: {
     // TODO: first argument isn't used anymore, find and cleanup all uses
     open: function(_, opt_delay) {
-      if ( this.$ ) return;
+      if ( this.el ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
@@ -1116,7 +1116,7 @@ MODEL({
       this.view.initHTML();
     },
     close: function() {
-      this.$ && this.$.remove();
+      this.el && this.el.remove();
     },
     destroy: function() {
       this.SUPER();
@@ -1212,9 +1212,9 @@ MODEL({
         this.closeTimeout = 0;
       }
 
-      if ( this.$ ) { this.position(this.$.firstElementChild, e.$ || e); return; }
+      if ( this.el ) { this.position(this.el.firstElementChild, e.el || e); return; }
 
-      var parentNode = e.$ || e;
+      var parentNode = e.el || e;
       var document = parentNode.ownerDocument;
 
       console.assert( this.X.document === document, 'X.document is not global document');
@@ -1226,7 +1226,7 @@ MODEL({
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
-      this.position(this.$.firstElementChild, parentNode);
+      this.position(this.el.firstElementChild, parentNode);
       this.initHTML();
     },
 
@@ -1287,11 +1287,11 @@ MODEL({
 
         if ( e.keyCode === 38 /* arrow up */ ) {
           this.view.index--;
-          this.view.scrollToSelection(this.$);
+          this.view.scrollToSelection(this.el);
           e.preventDefault();
         } else if ( e.keyCode  === 40 /* arrow down */ ) {
           this.view.index++;
-          this.view.scrollToSelection(this.$);
+          this.view.scrollToSelection(this.el);
           e.preventDefault();
         } else if ( e.keyCode  === 13 /* enter */ ) {
           this.view.commit();
@@ -1471,16 +1471,16 @@ MODEL({
     {
       name: 'displayWidth',
       postSet: function(_, newValue) {
-        if ( this.$ ) {
-          this.$.style.width = newValue;
+        if ( this.el ) {
+          this.el.style.width = newValue;
         }
       }
     },
     {
       name: 'displayHeight',
       postSet: function(_, newValue) {
-        if ( this.$ ) {
-          this.$.style.height = newValue;
+        if ( this.el ) {
+          this.el.style.height = newValue;
         }
       }
     }
@@ -1501,7 +1501,7 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      if ( this.backupImage ) this.$.addEventListener('error', function() {
+      if ( this.backupImage ) this.el.addEventListener('error', function() {
         this.data = this.backupImage;
       }.bind(this));
 
@@ -1512,11 +1512,11 @@ MODEL({
         xhr.responseType = 'blob';
         xhr.asend(function(blob) {
           if ( blob ) {
-            self.$.src = URL.createObjectURL(blob);
+            self.el.src = URL.createObjectURL(blob);
           }
         });
       } else {
-        this.domValue = DomValue.create(this.$, undefined, 'src');
+        this.domValue = DomValue.create(this.el, undefined, 'src');
         this.displayHeight = this.displayHeight;
         this.displayWidth = this.displayWidth;
       }
@@ -1555,8 +1555,8 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       var self = this;
-      this.$.style.width = self.displayWidth;
-      this.$.style.height = self.displayHeight;
+      this.el.style.width = self.displayWidth;
+      this.el.style.height = self.displayHeight;
       this.onValueChange();
     }
   },
@@ -1565,8 +1565,8 @@ MODEL({
     {
       name: 'onValueChange',
       code: function() {
-        if ( this.data && this.$ )
-          this.$.src = URL.createObjectURL(this.data);
+        if ( this.data && this.el )
+          this.el.src = URL.createObjectURL(this.data);
       }
     }
   ]
@@ -1701,28 +1701,28 @@ MODEL({
     },
 
     bindAutocompleteEvents: function(view) {
-      this.$.addEventListener('blur', function() {
+      this.el.addEventListener('blur', function() {
         // Notify the autocomplete view of a blur, it can decide what to do from there.
         view.publish('blur');
       });
-      this.$.addEventListener('input', (function() {
-        view.autocomplete(this.textToValue(this.$.value));
+      this.el.addEventListener('input', (function() {
+        view.autocomplete(this.textToValue(this.el.value));
       }).bind(this));
-      this.$.addEventListener('focus', (function() {
-        view.autocomplete(this.textToValue(this.$.value));
+      this.el.addEventListener('focus', (function() {
+        view.autocomplete(this.textToValue(this.el.value));
       }).bind(this));
     },
 
     initHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
 
       this.SUPER();
 
       if ( this.mode === 'read-write' ) {
-        if ( this.placeholder ) this.$.placeholder = this.placeholder;
+        if ( this.placeholder ) this.el.placeholder = this.placeholder;
 
         this.domValue = DomValue.create(
-          this.$,
+          this.el,
           this.onKeyMode ? 'input' : 'change');
 
         // In KeyMode we disable feedback to avoid updating the field
@@ -1736,14 +1736,14 @@ MODEL({
           this.onKeyMode);
 
         if ( this.onKeyMode )
-          this.$.addEventListener('blur', this.onBlur);
+          this.el.addEventListener('blur', this.onBlur);
 
-        this.$.addEventListener('keydown', this.onKeyDown);
+        this.el.addEventListener('keydown', this.onKeyDown);
 
         this.setupAutocomplete();
       } else {
         this.domValue = DomValue.create(
-          this.$,
+          this.el,
           'undefined',
           this.escapeHTML ? 'textContent' : 'innerHTML');
 
@@ -1790,7 +1790,7 @@ MODEL({
     {
       name: 'onClick',
       code: function(e) {
-        this.$ && this.$.focus();
+        this.el && this.el.focus();
       }
     },
   ]
@@ -1813,7 +1813,7 @@ MODEL({
 
   methods: {
     initHTML: function() {
-      this.domValue = DomValue.create(this.$, undefined, 'valueAsDate');
+      this.domValue = DomValue.create(this.el, undefined, 'valueAsDate');
       Events.link(this.data$, this.domValue);
     }
   }
@@ -1864,7 +1864,7 @@ MODEL({
       this.SUPER();
 
       this.domValue = DomValue.create(
-        this.$,
+        this.el,
         this.mode === 'read-write' ? 'input' : undefined,
         this.mode === 'read-write' ? 'valueAsNumber' : 'textContent' );
 
@@ -1927,7 +1927,7 @@ MODEL({
     },
 
     initHTML: function() {
-      var e = this.$;
+      var e = this.el;
 
       if ( ! e ) {
         console.log('stale HTMLView');
@@ -1980,7 +1980,7 @@ MODEL({
 
   methods: {
     initHTML: function() {
-      var e = this.$;
+      var e = this.el;
       this.domValue = DomValue.create(e);
       Events.link(this.data$, this.domValue);
     },
@@ -2028,7 +2028,7 @@ MODEL({
     },
 
     initHTML: function() {
-      var e = this.$;
+      var e = this.el;
 
       this.domValue = DomValue.create(e, 'change', 'checked');
 
@@ -2086,20 +2086,20 @@ MODEL({
         '<img id="' + id + '" ' + this.cssClassAttr() + '>' ;
     },
     initHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
       this.SUPER();
       this.updateHTML();
     },
     updateHTML: function() {
-      if ( ! this.$ ) return;
-      this.$.src = this.image();
+      if ( ! this.el ) return;
+      this.el.src = this.image();
 
       if ( this.data ) {
-        this.trueClass  && this.$.classList.add(this.trueClass);
-        this.falseClass && this.$.classList.remove(this.falseClass);
+        this.trueClass  && this.el.classList.add(this.trueClass);
+        this.falseClass && this.el.classList.remove(this.falseClass);
       } else {
-        this.trueClass  && this.$.classList.remove(this.trueClass);
-        this.falseClass && this.$.classList.add(this.falseClass);
+        this.trueClass  && this.el.classList.remove(this.trueClass);
+        this.falseClass && this.el.classList.add(this.falseClass);
       }
     },
   },
@@ -2127,9 +2127,9 @@ MODEL({
 
   methods: {
     initHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
       this.data$.addListener(this.update);
-      this.$.addEventListener('click', this.onClick);
+      this.el.addEventListener('click', this.onClick);
     },
     toHTML: function() {
       return '<span id="' + this.id + '" class="' + this.className + ' ' + (this.data ? 'true' : '') + '">&nbsp;&nbsp;&nbsp;</span>';
@@ -2140,8 +2140,8 @@ MODEL({
     {
       name: 'update',
       code: function() {
-        if ( ! this.$ ) return;
-        DOM.setClass(this.$, 'true', this.data);
+        if ( ! this.el ) return;
+        DOM.setClass(this.el, 'true', this.data);
       }
     },
     {
@@ -2207,8 +2207,8 @@ MODEL({
       this.SUPER();
 
       this.errorView.initHTML();
-      this.errorView.$.style.color = 'red';
-      this.errorView.$.style.display = 'none';
+      this.errorView.el.style.color = 'red';
+      this.errorView.el.style.display = 'none';
     },
 
     toHTML: function() {
@@ -2217,7 +2217,7 @@ MODEL({
 
     setError: function(err) {
       this.errorView.data = err || "";
-      this.errorView.$.style.display = err ? 'block' : 'none';
+      this.errorView.el.style.display = err ? 'block' : 'none';
     },
 
     textToValue: function(text) {
@@ -2625,7 +2625,7 @@ MODEL({
       if ( ! this.openedAsMenu ) return this.SUPER();
 
       this.openedAsMenu = false;
-      this.$.parentNode.remove();
+      this.el.parentNode.remove();
       this.destroy();
       this.publish('closed');
     },
@@ -2655,16 +2655,16 @@ MODEL({
       // focus in the direction.
       this.addShortcut('Right', function(e) {
         var i = 0;
-        for ( ; i < this.children.length && e.target != this.children[i].$ ; i++ );
+        for ( ; i < this.children.length && e.target != this.children[i].el ; i++ );
         i = (i + 1) % this.children.length;
-        this.children[i].$.focus();
+        this.children[i].el.focus();
       }.bind(this), this.id);
 
       this.addShortcut('Left', function(e) {
         var i = 0;
-        for ( ; i < this.children.length && e.target != this.children[i].$ ; i++ );
+        for ( ; i < this.children.length && e.target != this.children[i].el ; i++ );
         i = (i + this.children.length - 1) % this.children.length;
-        this.children[i].$.focus();
+        this.children[i].el.focus();
       }.bind(this), this.id);
     },
 
@@ -2677,8 +2677,8 @@ MODEL({
           var toolbar = ToolbarView.create({
             data$:    self.data$,
             document: self.document,
-            left:     view.$.offsetLeft,
-            top:      view.$.offsetTop
+            left:     view.el.offsetLeft,
+            top:      view.el.offsetTop
           });
           toolbar.addActions(a.children);
           toolbar.openAsMenu(view);
@@ -2762,7 +2762,7 @@ MODEL({
     },
 
     updateValue: function() {
-      var e = this.$;
+      var e = this.el;
 
       e.value = parseInt(this.data);
     },
@@ -2881,7 +2881,7 @@ MODEL({
     {
       name: 'choice',
       postSet: function(oldValue, viewChoice) {
-        if ( this.$ && oldValue != viewChoice ) this.installSubView();
+        if ( this.el && oldValue != viewChoice ) this.installSubView();
       },
       hidden: true
     },
@@ -2928,7 +2928,7 @@ MODEL({
         // first guard when fixed.
         if ( view.model_ && view.model_.getProperty('dao') ) view.dao = this.dao;
 
-        this.$.innerHTML = view.toHTML();
+        this.el.innerHTML = view.toHTML();
         view.initHTML();
         // TODO: this line might need some work
         view.data = this.data;
@@ -3092,7 +3092,7 @@ MODEL({
     },
 
     // The general structure of the carousel is:
-    // - An outer div (this.$), with position: relative.
+    // - An outer div (this.el), with position: relative.
     // - A second div (this.slider) with position: relative.
     //   This is the div that gets translated to and fro.
     // - A set of internal divs (this.slider.children) for the child views.
@@ -3127,15 +3127,15 @@ MODEL({
     },
 
     initHTML: function() {
-      if ( ! this.$ ) return;
+      if ( ! this.el ) return;
       this.SUPER();
 
       // Now is the time to inflate our fake carousel into the real thing.
       // For now we won't worry about re-rendering the current one.
       // TODO: Stop re-rendering if it's slow or causes flicker or whatever.
 
-      this.slider = this.$.children[0];
-      this.width = this.$.clientWidth;
+      this.slider = this.el.children[0];
+      this.width = this.el.clientWidth;
 
       var str = [];
       for ( var i = 0 ; i < this.views.length ; i++ ) {
@@ -3183,12 +3183,12 @@ MODEL({
       code: function() {
         // When the orientation of the screen has changed, update the
         // left and width values of the inner elements and slider.
-        if ( ! this.$ ) {
+        if ( ! this.el ) {
           window.removeEventListener('resize', this.resize, false);
           return;
         }
 
-        this.width = this.$.clientWidth;
+        this.width = this.el.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
           self.x = self.index * self.width;
@@ -3300,9 +3300,9 @@ MODEL({
         circlesDiv.appendChild(circle);
       }
 
-      this.$.appendChild(circlesDiv);
-      this.$.classList.add('galleryView');
-      this.$.style.height = this.height;
+      this.el.appendChild(circlesDiv);
+      this.el.classList.add('galleryView');
+      this.el.style.height = this.height;
 
       this.index$.addListener(function(obj, prop, old, nu) {
         circlesDiv.children[old].classList.remove('selected');
@@ -3416,8 +3416,8 @@ MODEL({
 
   methods: {
     findCurrentValues: function() {
-      var start = this.$.selectionStart;
-      var value = this.$.value;
+      var start = this.el.selectionStart;
+      var value = this.el.value;
 
       var values = value.split(',');
       var i = 0;
@@ -3439,7 +3439,7 @@ MODEL({
       for ( var i = 0; i <= index; i++ ) {
         selection += values[i].length + 1;
       }
-      this.$.setSelectionRange(selection, selection);
+      this.el.setSelectionRange(selection, selection);
       isLast && this.X.setTimeout((function() {
         this.autocompleteView.autocomplete('');
       }).bind(this), 0);
@@ -3456,9 +3456,9 @@ MODEL({
         var values = self.findCurrentValues();
         view.autocomplete(values.values[values.i]);
       }
-      this.$.addEventListener('input', onInput);
-      this.$.addEventListener('focus', onInput);
-      this.$.addEventListener('blur', function() {
+      this.el.addEventListener('input', onInput);
+      this.el.addEventListener('focus', onInput);
+      this.el.addEventListener('blur', function() {
         // Notify the autocomplete view of a blur, it can decide what to do from there.
         view.publish('blur');
       });
@@ -3572,17 +3572,17 @@ MODEL({
     {
       name: 'update',
       code: function() {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
         var inputs = this.inputs;
-        var inputElement = this.$.firstElementChild;
+        var inputElement = this.el.firstElementChild;
         var newViews = [];
         var data = this.data;
 
         // Add/remove rows as necessary.
         if ( inputs.length > data.length ) {
           for ( var i = data.length; i < inputs.length; i++ ) {
-            inputs[i].$.remove();
+            inputs[i].el.remove();
             this.removeChild(inputs[i]);
           }
           inputs.length = data.length;
@@ -3632,7 +3632,7 @@ MODEL({
     {
       name: 'onInput',
       code: function(e) {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
         var inputs = this.inputs;
         var newdata = [];
@@ -3775,7 +3775,7 @@ MODEL({
     {
       name: 'placeholder',
       postSet: function(oldValue, newValue) {
-        if ( this.$ && this.usePlaceholer ) this.$.placeholder = newValue;
+        if ( this.el && this.usePlaceholer ) this.el.placeholder = newValue;
       }
     },
     {
@@ -3783,7 +3783,7 @@ MODEL({
       name: 'usePlaceholder',
       defaultValue: true,
       postSet: function(_, newValue) {
-        if ( this.$ ) this.$.placeholder = newValue ?
+        if ( this.el ) this.el.placeholder = newValue ?
           this.placeholder : '';
       }
     },
@@ -3809,10 +3809,10 @@ MODEL({
       this.SUPER();
 
       if ( this.usePlaceholder && this.placeholder )
-        this.$.placeholder = this.placeholder;
+        this.el.placeholder = this.placeholder;
 
       this.autocompleteView.initHTML();
-      this.domInputValue = DomValue.create(this.$, 'input');
+      this.domInputValue = DomValue.create(this.el, 'input');
       this.domInputValue.addListener(this.onInput);
     },
     pushValue: function(v) {
@@ -3944,8 +3944,8 @@ MODEL({
       name: 'update',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = '';
+        if ( ! this.el ) return;
+        this.el.innerHTML = '';
 
         var objs = this.data;
         var children = new Array(objs.length);
@@ -3956,7 +3956,7 @@ MODEL({
           view.data = objs[i];
         }
 
-        this.$.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
+        this.el.innerHTML = children.map(function(c) { return c.toHTML(); }).join('');
         children.forEach(function(c) { c.initHTML(); });
       }
     }
@@ -4101,10 +4101,10 @@ MODEL({
       defaultValue: 0,
       postSet: function(oldValue, newValue) {
         this.data = this.objs[newValue];
-        if ( this.$ ) {
-          if ( this.$.children[oldValue] )
-            this.$.children[oldValue].className = 'autocompleteListItem';
-          this.$.children[newValue].className += ' autocompleteSelectedItem';
+        if ( this.el ) {
+          if ( this.el.children[oldValue] )
+            this.el.children[oldValue].className = 'autocompleteListItem';
+          this.el.children[newValue].className += ' autocompleteSelectedItem';
         }
       }
     },
@@ -4126,13 +4126,13 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.$.style.display = 'none';
+      this.el.style.display = 'none';
       var self = this;
       this.propertyValue('left').addListener(function(v) {
-        self.$.left = v;
+        self.el.left = v;
       });
       this.propertyValue('top').addListener(function(v) {
-        self.$.top = v;
+        self.el.top = v;
       });
     },
 
@@ -4165,7 +4165,7 @@ MODEL({
       name: 'paint',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
 
         // TODO Determine if its worth double buffering the dom.
         var objs = [];
@@ -4181,11 +4181,11 @@ MODEL({
           },
           eof: function() {
             // Clear old list
-            self.$.innerHTML = '';
+            self.el.innerHTML = '';
             self.objs = objs;
 
             if ( objs.length === 0 ) {
-              self.$.style.display = 'none';
+              self.el.style.display = 'none';
               return;
             }
 
@@ -4200,14 +4200,14 @@ MODEL({
                 };
               })(i);
               container.className = 'autocompleteListItem';
-              self.$.appendChild(container);
+              self.el.appendChild(container);
               view.data = obj;
               container.innerHTML = view.toHTML();
               view.initHTML();
             }
 
             self.selection = newSelection;
-            self.$.style.display = '';
+            self.el.style.display = '';
           }
         });
       }
@@ -4266,8 +4266,8 @@ MODEL({
     },
 
     updateHTML: function() {
-      if ( ! this.$ ) return;
-      this.$.nextElementSibling.outerHTML = this.toInnerHTML();
+      if ( ! this.el ) return;
+      this.el.nextElementSibling.outerHTML = this.toInnerHTML();
       this.initInnerHTML();
     },
 
@@ -4331,7 +4331,7 @@ MODEL({
     {
       name: 'placeholder',
       postSet: function(oldValue, newValue) {
-        if ( this.$ && this.usePlaceholer ) this.$.placeholder = newValue;
+        if ( this.el && this.usePlaceholer ) this.el.placeholder = newValue;
       }
     },
     {
@@ -4339,7 +4339,7 @@ MODEL({
       name: 'usePlaceholder',
       defaultValue: true,
       postSet: function(_, newValue) {
-        if ( this.$ ) this.$.placeholder = newValue ?
+        if ( this.el ) this.el.placeholder = newValue ?
           this.placeholder : '';
       }
     },
@@ -4365,10 +4365,10 @@ MODEL({
       this.SUPER();
 
       if ( this.usePlaceholder && this.placeholder )
-        this.$.placeholder = this.placeholder;
+        this.el.placeholder = this.placeholder;
 
       this.autocompleteView.initHTML();
-      this.domInputValue = DomValue.create(this.$, 'input');
+      this.domInputValue = DomValue.create(this.el, 'input');
       this.domInputValue.addListener(this.onInput);
     },
     pushValue: function(v) {
@@ -4512,8 +4512,8 @@ MODEL({
       name: 'height',
       model_: 'IntProperty',
       postSet: function(old, nu) {
-        if ( this.$ ) {
-          this.$.style.height = nu + 'px';
+        if ( this.el ) {
+          this.el.style.height = nu + 'px';
         }
       }
     },
@@ -4522,8 +4522,8 @@ MODEL({
       model_: 'IntProperty',
       defaultValue: 12,
       postSet: function(old, nu) {
-        if (this.$) {
-          this.$.style.width = nu + 'px';
+        if (this.el) {
+          this.el.style.width = nu + 'px';
         }
         var thumb = this.thumb();
         if (thumb) {
@@ -4581,10 +4581,10 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      if ( ! this.$ ) return;
-      this.$.addEventListener('mouseover', this.onMouseEnter);
-      this.$.addEventListener('mouseout',  this.onMouseOut);
-      this.$.addEventListener('click', this.onTrackClick);
+      if ( ! this.el ) return;
+      this.el.addEventListener('mouseover', this.onMouseEnter);
+      this.el.addEventListener('mouseout',  this.onMouseOut);
+      this.el.addEventListener('click', this.onTrackClick);
       this.thumb().addEventListener('mousedown', this.onStartThumbDrag);
       this.thumb().addEventListener('click', function(e) { e.stopPropagation(); });
 
@@ -4840,7 +4840,7 @@ MODEL({
   methods: {
     preTest: function() {
       var test = this.test;
-      var $ = this.liveView.$;
+      var $ = this.liveView.el;
       test.X.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
       test.X.render = function(v) {
         test.X.append(v.toHTML());
@@ -4852,7 +4852,7 @@ MODEL({
       // Grab the HTML rendered by the test as its results.
       // We need the replace() to turn id="view247" into id="view#",
       // which makes the regression tests far less fragile.
-      var raw = this.liveView.$.innerHTML;
+      var raw = this.liveView.el.innerHTML;
       this.test.results = raw.replace(/id="view\d+/g, 'id="view#');
 
       // The above needs to run before SUPER's regression check.
@@ -4948,7 +4948,7 @@ MODEL({
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
       getter: function() {
-        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+        return toNum(this.X.window.getComputedStyle(this.el.parentNode).width);
       }
     },
     {
@@ -5028,13 +5028,13 @@ MODEL({
       }.bind(this))();
      },
      main$: function() {
-      return this.X.$(this.id + '-main');
+      return this.X.el(this.id + '-main');
     },
     panel$: function() {
-      return this.X.$(this.id + '-panel');
+      return this.X.el(this.id + '-panel');
     },
     shadow$: function() {
-      return this.X.$(this.id + '-shadow');
+      return this.X.el(this.id + '-shadow');
     }
   },
 
@@ -5043,7 +5043,7 @@ MODEL({
       name: 'onResize',
       isFramed: true,
       code: function(e) {
-        if ( ! this.$ ) return;
+        if ( ! this.el ) return;
         if ( this.parentWidth >= this.minWidth + this.minPanelWidth ) {
           this.shadow$().style.display = 'none';
           // Expaded mode. Show the two side by side, setting their widths
@@ -5200,12 +5200,12 @@ MODEL({
       defaultValue: true,
       postSet: function() {
         if (this.collapsed) {
-          this.collapsedView.$.style.height = "";
-          this.fullView.$.style.height = "0";
+          this.collapsedView.el.style.height = "";
+          this.fullView.el.style.height = "0";
 
         } else {
-          this.collapsedView.$.style.height = "0";
-          this.fullView.$.style.height = "";
+          this.collapsedView.el.style.height = "0";
+          this.fullView.el.style.height = "";
         }
       }
     }
@@ -5223,10 +5223,10 @@ MODEL({
       this.SUPER();
 
       // to ensure we can hide by setting the height
-      this.collapsedView.$.style.display = "block";
-      this.fullView.$.style.display = "block";
-      this.collapsedView.$.style.overflow = "hidden";
-      this.fullView.$.style.overflow = "hidden";
+      this.collapsedView.el.style.display = "block";
+      this.fullView.el.style.display = "block";
+      this.collapsedView.el.style.overflow = "hidden";
+      this.fullView.el.style.overflow = "hidden";
 
       this.collapsed = true;
     }

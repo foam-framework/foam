@@ -9,8 +9,8 @@ var QIssueCommentUpdateView = FOAM({
 
   methods: {
     updateSubViews: function() {
-      if ( ! this.$ ) return;
-      this.$.innerHTML = this.render();
+      if ( ! this.el ) return;
+      this.el.innerHTML = this.render();
     }
   },
 

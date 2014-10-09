@@ -109,9 +109,9 @@ MODEL({
     },
 
     paintSelf: function() {
-      this.parent.$.onmousedown = this.mouseDown;
-      this.parent.$.onmouseup   = this.mouseUp;
-      this.parent.$.onmousemove = this.mouseMove;
+      this.parent.el.onmousedown = this.mouseDown;
+      this.parent.el.onmouseup   = this.mouseUp;
+      this.parent.el.onmousemove = this.mouseMove;
 
       var c = this.canvas;
 

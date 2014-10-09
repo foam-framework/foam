@@ -666,6 +666,11 @@ MODEL({
               */
               return [];
             }
+          },
+          {
+            model_: 'StringProperty',
+            name: 'content',
+            displayHeight: 4
           }
         ],
 
@@ -719,6 +724,7 @@ MODEL({
 
             var comment = this.X.QIssueComment.create({
               issueId: this.id,
+              content: other.content,
               updates: this.X.QIssueCommentUpdate.create(diff)
             });
 
