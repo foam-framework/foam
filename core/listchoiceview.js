@@ -166,9 +166,9 @@ MODEL({
         out.push(this.renderer.choice(name, choice, id, i, isCurrentSelection));
       }
 
-      this.el.innerHTML = out.join('');
+      this.$.innerHTML = out.join('');
 
-      selectedAsList = this.el.getElementsByClassName(this.selectedCssClass);
+      selectedAsList = this.$.getElementsByClassName(this.selectedCssClass);
       if ( selectedAsList && selectedAsList.length ) {
         this.selectedElement = selectedAsList[0];
       }
@@ -185,7 +185,7 @@ MODEL({
     },
 
     initHTML: function() {
-      var e = this.el;
+      var e = this.$;
 
       Events.dynamic(function() { this.choices; }.bind(this), this.listToHTML.bind(this));
 
@@ -203,7 +203,7 @@ MODEL({
 
     evtToValue: function(e) {
       var labelView = e.target;
-      while (labelView.parentNode != this.el) {
+      while (labelView.parentNode != this.$) {
         labelView = labelView.parentNode;
       }
       return this.indexToValue(labelView.getAttribute('value'));

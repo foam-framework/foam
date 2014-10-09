@@ -158,7 +158,7 @@ var CompositeServiceView = FOAM({
       name: 'renderChoices',
 //      isFramed: true,
       code: function() {
-        if ( ! this.el ) return;
+        if ( ! this.$ ) return;
 
         var html = '';
         var service = this.value.get();
@@ -187,7 +187,7 @@ var CompositeServiceView = FOAM({
           views.push(subView);
         }
 
-        this.el.innerHTML = html;
+        this.$.innerHTML = html;
         views.forEach(function(v) { v.initHTML(); });
       }
     }
@@ -254,7 +254,7 @@ var CompositeServiceSummaryView = FOAM({
       name: 'render',
 //      isFramed: true,
       code: function() {
-        if ( ! this.el ) return;
+        if ( ! this.$ ) return;
 
         var html = '';
         var service = this.value.get();
@@ -268,7 +268,7 @@ var CompositeServiceSummaryView = FOAM({
           views.push(subView);
         }
 
-        this.el.innerHTML = html;
+        this.$.innerHTML = html;
         views.forEach(function(v) { v.initHTML(); });
       }
     }

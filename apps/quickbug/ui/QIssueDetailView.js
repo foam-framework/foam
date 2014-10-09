@@ -54,7 +54,7 @@ MODEL({
       name: 'doSave',
       code: function() {
         // Don't keep listening if we're no longer around.
-        if ( ! this.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
         if ( this.saveEnabled ) this.issueDAO.put(this.data);
       }
@@ -127,7 +127,7 @@ MODEL({
       name: 'update',
       isFramed: true,
       code: function() {
-        if ( ! this.el ) return;
+        if ( ! this.$ ) return;
 
         var value = this.data.sort(function (o1, o2) {
           return o1.toLowerCase().compareTo(o2.toLowerCase());
@@ -143,7 +143,7 @@ MODEL({
               this.strToHTML(rest) + '</div>';
           }
         }
-        this.el.innerHTML = out;
+        this.$.innerHTML = out;
       }
     }
   ]

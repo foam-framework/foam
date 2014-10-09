@@ -41,7 +41,7 @@ MODEL({
     {
       name: 'data',
       postSet: function(_, nu) {
-        if ( this.el ) this.updateHTML();
+        if ( this.$ ) this.updateHTML();
       }
     }
   ],

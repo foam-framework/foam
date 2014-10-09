@@ -16,7 +16,7 @@ MODEL({
     {
       name: 'left',
       postSet: function(_, l) {
-        this.el.querySelector('.f1').style.left = l;
+        this.$.querySelector('.f1').style.left = l;
       }
     }
   ],
@@ -35,9 +35,9 @@ MODEL({
       name: 'onDataChange',
 //      isFramed: true, // interferes with CSS animation
       code: function() {
-        if ( ! this.el ) return;
-        var f1$ = this.el.querySelector('.f1');
-        var f2$ = this.el.querySelector('.f2');
+        if ( ! this.$ ) return;
+        var f1$ = this.$.querySelector('.f1');
+        var f2$ = this.$.querySelector('.f2');
 
         f1$.innerHTML = this.data;
         f2$.innerHTML = this.data;
@@ -63,16 +63,16 @@ MODEL({
     {
       name: 'displayWidth',
       postSet: function(_, newValue) {
-        if ( this.el ) {
-          this.el.style.width = newValue;
+        if ( this.$ ) {
+          this.$.style.width = newValue;
         }
       }
     },
     {
       name: 'displayHeight',
       postSet: function(_, newValue) {
-        if ( this.el ) {
-          this.el.style.height = newValue;
+        if ( this.$ ) {
+          this.$.style.height = newValue;
         }
       }
     },
@@ -86,8 +86,8 @@ MODEL({
     {
       name: 'onDataChange',
       code: function() {
-        if ( ! this.el ) return;
-        var $ = this.el;
+        if ( ! this.$ ) return;
+        var $ = this.$;
         var height = $.querySelector('img').height;
         var newImage = '<img ' + this.cssClassAttr() + ' src="' + this.data + '" style="position: absolute;transition:top .4s;top:' + height + '">';
         $.insertAdjacentHTML('beforeend', newImage);

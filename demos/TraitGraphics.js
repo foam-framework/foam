@@ -15,7 +15,7 @@ MODEL({
 
 
 space.write(document);
-mouse.connect(space.el);
+mouse.connect(space.$);
 
 mouse.x = mouse.y = 300;
 

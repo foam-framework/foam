@@ -58,7 +58,7 @@ MODEL({
                      this.position);
       this.X.dynamic(function() { self.width; self.height; },
                      this.resize);
-      this.el.style.position = 'absolute';
+      this.$.style.position = 'absolute';
       this.position();
       this.resize();
     },
@@ -79,16 +79,16 @@ MODEL({
     {
       name: 'position',
       code: function() {
-        if ( ! this.el ) return;
-        this.el.style.webkitTransform = this.transform();
+        if ( ! this.$ ) return;
+        this.$.style.webkitTransform = this.transform();
       }
     },
     {
       name: 'resize',
       code: function() {
-        if ( ! this.el ) return;
-        this.el.style.width  = this.styleWidth();
-        this.el.style.height = this.styleHeight();
+        if ( ! this.$ ) return;
+        this.$.style.width  = this.styleWidth();
+        this.$.style.height = this.styleHeight();
       }
     }
   ]
@@ -210,15 +210,15 @@ MODEL({
     setView: function(view) {
       if ( this.view ) {
         this.view.destroy();
-        this.el.removeChild(this.view.el);
+        this.$.removeChild(this.view.$);
       }
       this.view = view;
       this.layout();
-      this.el.insertAdjacentHTML('beforeend', view.toHTML());
+      this.$.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
     },
     slideView: function(view, opt_interp, opt_time, opt_delay) {
-      if ( ! this.el ) return;
+      if ( ! this.$ ) return;
 
       if ( this.latch ) {
         this.latch();
@@ -227,7 +227,7 @@ MODEL({
 
       this.incomingView = view;
       this.layout();
-      this.el.insertAdjacentHTML('beforeend', view.toHTML());
+      this.$.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
 
       opt_interp = opt_interp || Movement.easeOut(1);
@@ -243,7 +243,7 @@ MODEL({
         self.latch = this.X.animate(opt_time, fn, opt_interp, function() {
           if ( self.view ) {
             self.view.destroy();
-            self.el.removeChild(self.view.el);
+            self.$.removeChild(self.view.$);
           }
           self.view = view;
           self.incomingView = '';
@@ -300,7 +300,7 @@ MODEL({
       name: 'view',
       postSet: function(old, v) {
         old && old.destroy();
-        if ( this.el ) { this.updateHTML(); }
+        if ( this.$ ) { this.updateHTML(); }
       }
     },
     { model_: 'FloatProperty', name: 'slideAmount', defaultValue: 0 }
@@ -346,7 +346,7 @@ MODEL({
         var width = Math.min(this.view.preferredWidth,
                              this.width);
 
-        if ( this.el ) {
+        if ( this.$ ) {
           var overlay = this.X.$(this.id + '-slider');
           overlay.style.webkitTransform = 'translate3d(0,0,0px)';
           overlay.style.width = this.width + 'px';

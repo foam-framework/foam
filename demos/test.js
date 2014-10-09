@@ -426,7 +426,7 @@ dragon.paint();
 Events.link(timer.propertyValue('time'), tt.propertyValue('time'));
 
 var dmouse = Mouse.create();
-dmouse.connect(dragon.parent.el);
+dmouse.connect(dragon.parent.$);
 dragon.eyes.watch(dmouse);
 
 document.writeln("<br/><h2>MoveTowards</h2>");
@@ -454,7 +454,7 @@ Movement.moveTowards(timer, bug3, bug4, 0.4);
 //    Movement.moveTowards(timer, bug4, bug1, 0.22);
 
 var mouse = Mouse.create();
-mouse.connect(field.el);
+mouse.connect(field.$);
 Movement.orbit(timer, mouse, bug1, 80, 1500);
 //    Movement.moveTowards(timer, mouse, bug1, 0.24);
 

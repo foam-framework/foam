@@ -32,8 +32,8 @@
 				$$text{className: 'edit'}
 			</li>
 			<%
-				var toEdit    = function() { DOM.setClass(this.el, 'editing'); this.textView.focus(); }.bind(this);
-				var toDisplay = function() { DOM.setClass(this.el, 'editing', false); }.bind(this);
+				var toEdit    = function() { DOM.setClass(this.$, 'editing'); this.textView.focus(); }.bind(this);
+				var toDisplay = function() { DOM.setClass(this.$, 'editing', false); }.bind(this);
 				this.on('dblclick', toEdit, this.id);
 				this.on('blur',	toDisplay, this.textView.id);
 				this.textView.subscribe(this.textView.ESCAPE, toDisplay);
