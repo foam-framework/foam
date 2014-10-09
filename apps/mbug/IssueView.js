@@ -84,7 +84,7 @@ MODEL({
           $$owner{model_: 'CCView'}
 
           <div class="separator separator1"></div>
-          $$content{model_: 'mdTextFieldView', label: 'Comment'}
+          $$content{model_: 'mdTextFieldView', label: 'Comment', onKeyMode: true }
 
           <div class="separator separator1"></div>
           $$cc{model_: 'CCView'}
