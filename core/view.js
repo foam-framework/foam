@@ -4855,20 +4855,7 @@ MODEL({
         test.append(v.toHTML());
         v.initHTML();
       };
-    },
-
-    /*
-    postTest: function() {
-      // Grab the HTML rendered by the test as its results.
-      // We need the replace() to turn id="view247" into id="view#",
-      // which makes the regression tests far less fragile.
-      var raw = this.liveView.el.innerHTML;
-      this.test.results = raw.replace(/id="view\d+/g, 'id="view#');
-
-      // The above needs to run before SUPER's regression check.
-      this.SUPER();
     }
-    */
   },
 
   templates: [

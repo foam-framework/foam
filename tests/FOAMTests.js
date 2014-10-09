@@ -107,12 +107,20 @@ function asendjson(path) {
 }
 
 // This fetches all the tests up front.
+var clientDAO = ClientDAO.create({
+  asend: asendjson(window.location.origin + '/api'),
+  model: UnitTest
+}).where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'web')));
+
+// If the query string contains ?ui=1, filter to only UI tests.
+if ( window.location.search.indexOf('ui=1') >= 0 ) {
+  console.warn('ui found');
+  clientDAO = clientDAO.where(CONTAINS(UnitTest.TAGS, 'ui'));
+}
+
 var baseDAO = CachingDAO.create({
   cache: MDAO.create({ model: UnitTest }),
-  src: ClientDAO.create({
-    asend: asendjson(window.location.origin + '/api'),
-    model: UnitTest
-  }).where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'web')))
+  src: clientDAO
 });
 
 setTimeout(function() {

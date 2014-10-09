@@ -1748,4 +1748,55 @@ a message
     <property name="parentTest">Object Model tests</property>
   </object>
 
+  <object model="UITest">
+    <property name="name">TextFieldView</property>
+    <property name="description">Test data-binding in TextFieldViews.</property>
+    <property name="tags">
+      <i>web</i>
+      <i>ui</i>
+    </property>
+    <property name="code" type="function">
+      var v1 = TextFieldView.create();
+      var v2 = TextFieldView.create();
+
+      this.render(v1);
+      this.render(v2);
+
+      v1.data$ = v2.data$;
+    </property>
+  </object>
+  <object model="UITest">
+    <property name="name">TextFieldView/onKeyMode</property>
+    <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
+    <property name="tags">
+      <i>web</i>
+      <i>ui</i>
+    </property>
+    <property name="code" type="function">
+      var v1 = TextFieldView.create({onKeyMode: true});
+      var v2 = TextFieldView.create({onKeyMode: true});
+
+      this.render(v1);
+      this.render(v2);
+
+      v1.data$ = v2.data$;
+    </property>
+  </object>
+  <object model="UITest">
+    <property name="name">TextFieldView/readOnlyMode</property>
+    <property name="description">Test data-binding in TextFieldViews with onKeyMode enabled.</property>
+    <property name="tags">
+      <i>web</i>
+      <i>ui</i>
+    </property>
+    <property name="code" type="function">
+      var v1 = TextFieldView.create({onKeyMode: true});
+      var v2 = TextFieldView.create({mode: 'read-only'});
+
+      this.render(v1);
+      this.render(v2);
+
+      v1.data$ = v2.data$;
+    </property>
+  </object>
 </foam>
