@@ -2529,7 +2529,7 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var superReuslt = this.SUPER(); // get the destructors done before doing our work
+      var superResult = this.SUPER(); // get the destructors done before doing our work
       this.setAttribute('href', function() { return '#' }, this.id);
       return superResult;
     },
