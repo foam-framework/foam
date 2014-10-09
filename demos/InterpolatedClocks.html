@@ -12,7 +12,7 @@
     space.write(document);
 
     var mouse = Mouse.create();
-    mouse.connect(space.el);
+    mouse.connect(space.$);
 
     var M = Movement;
     var is = [
@@ -59,7 +59,7 @@
       })(i);
     }
 
-    space.el.onmousedown = function(evt) {
+    space.$.onmousedown = function(evt) {
       for ( var i = 0 ; i < is.length ; i++ ) {
         ms[i](evt.offsetX);
       }

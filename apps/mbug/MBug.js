@@ -32,11 +32,17 @@ MODEL({
         project.IssueNetworkDAO.batchSize = 25;
 
         Y.issueDAO = Y.QIssueSplitDAO.create({
-          local: localDao,
           model: Y.QIssue,
+          local: localDao,
           remote: project.IssueNetworkDAO,
           maxLimit: 25
         });
+
+        /*
+        Y.issueDAO = Y.KeywordDAO.create({
+          delegate: Y.issueDAO
+        });
+        */
 
         var pc = Y.AppController.create({
           name: project.projectName,
@@ -172,9 +178,9 @@ MODEL({
   extendsModel: 'PriorityView',
   methods: {
     updateHTML: function() {
-      if ( ! this.el ) return;
+      if ( ! this.$ ) return;
       this.invokeDestructors();
-      this.el.outerHTML = this.toHTML();
+      this.$.outerHTML = this.toHTML();
       this.initHTML();
     }
   },
@@ -200,7 +206,7 @@ MODEL({
       return data ? this.SUPER(data) : 'url(images/silhouette.png)';
     },
     updateHTML: function() {
-      if ( this.el ) this.el.style.background = this.generateColor(this.data);
+      if ( this.$ ) this.$.style.background = this.generateColor(this.data);
       this.SUPER();
     },
   },

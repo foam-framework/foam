@@ -33,7 +33,7 @@ MODEL({
       type:  'int',
       defaultValue: 100,
       postSet: function(_, width) {
-        if ( this.el ) this.el.width = width;
+        if ( this.$ ) this.$.width = width;
       }
     },
     {
@@ -41,7 +41,7 @@ MODEL({
       type:  'int',
       defaultValue: 100,
       postSet: function(_, height) {
-        if ( this.el ) this.el.height = height;
+        if ( this.$ ) this.$.height = height;
       }
     }
   ],
@@ -51,7 +51,7 @@ MODEL({
       name: 'paint',
       isFramed: true,
       code: function() {
-        if ( ! this.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
         this.erase();
         this.paintChildren();
       }
@@ -64,8 +64,8 @@ MODEL({
     },
 
     initHTML: function() {
-      if ( ! this.el ) return;
-      this.canvas = this.el.getContext('2d');
+      if ( ! this.$ ) return;
+      this.canvas = this.$.getContext('2d');
     },
 
     addChild: function(child) {
@@ -233,7 +233,7 @@ MODEL({
     paintSelf: function() {},
 
     paint: function() {
-      if ( ! this.parent.el ) return;
+      if ( ! this.parent.$ ) return;
       this.erase();
       this.paintSelf();
       this.paintChildren();
@@ -1059,9 +1059,9 @@ MODEL({
 
       this.SUPER();
 
-      this.mouse.connect(this.parent.el);
+      this.mouse.connect(this.parent.$);
 
-      this.parent.el.addEventListener('mouseout', function() {
+      this.parent.$.addEventListener('mouseout', function() {
         this.animation_ && this.animation_();
         this.animation_ = Movement.animate(
           800,
@@ -1069,14 +1069,14 @@ MODEL({
           Movement.oscillate(0.8, self.mag/4))();
       });
 
-      this.parent.el.addEventListener('mouseenter', function() {
+      this.parent.$.addEventListener('mouseenter', function() {
         this.animation_ && this.animation_();
         this.animation_ = Movement.animate(
           400,
           function() { self.mag = self.desiredMag; })();
       });
 
-      this.parent.el.onmousewheel = function(e) {
+      this.parent.$.onmousewheel = function(e) {
         if ( e.wheelDeltaY > 0 ) {
           this.desiredMag += 0.05;
         } else {
@@ -1103,8 +1103,8 @@ MODEL({
       var ROW_LABEL_WIDTH = 140;
       var COL_LABEL_HEIGHT = 30;
 
-      this.width  = this.parent.el.parentElement.clientWidth;
-      this.height = this.parent.el.parentElement.clientHeight;
+      this.width  = this.parent.$.parentElement.clientWidth;
+      this.height = this.parent.$.parentElement.clientHeight;
 
       var c = this.canvas;
 

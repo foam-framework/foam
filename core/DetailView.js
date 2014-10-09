@@ -47,9 +47,9 @@ MODEL({
       name:  'model',
       type:  'Model',
       postSet: function(_, m) {
-        if ( this.el ) {
+        if ( this.$ ) {
           this.children = [];
-          this.el.outerHTML = this.toHTML();
+          this.$.outerHTML = this.toHTML();
           this.initHTML();
         }
       },
@@ -98,7 +98,7 @@ MODEL({
       code: function() {
         // TODO: Allow overriding of listeners
         this.onValueChange_.apply(this, arguments);
-        if ( this.el ) this.updateSubViews();
+        if ( this.$ ) this.updateSubViews();
       },
       documentation: function() {/*
         <p>Triggers sub-views to update their values without destroying any of them.
@@ -356,7 +356,7 @@ MODEL({
         dao: this.data[this.relationship.name],
         model: this.relationship.relatedModel
       }, this.X);
-      if ( this.el ) {
+      if ( this.$ ) {
         this.updateHTML();
       }
     }

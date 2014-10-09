@@ -142,7 +142,7 @@ MODEL({
       model_: 'StringArrayProperty',
       name:  'tags',
       label: 'Tags',
-      documentation: 'A list of tags for this test. Not currently used by our test runners. Could be used in the future to mark what environment (node, browser, OS) this test can run in.'
+      documentation: 'A list of tags for this test. Gives the environment(s) in which a test can be run. Currently in use: node, web.'
     },
     {
       name: 'parentTest',
@@ -343,6 +343,25 @@ MODEL({
       return this.regression || this.hasRun && ! this.results.equals(this.master);
     }
   }
+});
+
+MODEL({
+  name: 'UITest',
+  label: 'UI Test',
+
+  extendsModel: 'UnitTest',
+
+  properties: [
+    {
+      name: 'results',
+      view: 'UITestResultView'
+    },
+    {
+      name: 'runChildTests',
+      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
+      defaultValue: false
+    }
+  ]
 });
 
 

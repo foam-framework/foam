@@ -46,14 +46,14 @@
 
    function addEntity(title) {
      sys[0].entities.push(title);
-     space.el.height += 50;
+     space.$.height += 50;
      space.height += 50;
      for (var i = 0 ; i < sys.length ; i++ ) sys[i].height += 50;
    }
 
    function addFeature(title) {
      sys[0].features.push(title);
-     space.el.width += 50;
+     space.$.width += 50;
      space.width += 50;
      for (var i = 0 ; i < sys.length ; i++ ) sys[i].width += 50;
    }

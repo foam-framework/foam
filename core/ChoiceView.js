@@ -199,9 +199,9 @@ MODEL({
         ]
       },
       postSet: function(old, nu) {
-        if ( this.el ) {
-          DOM.setClass(this.el, old, false);
-          DOM.setClass(this.el, nu);
+        if ( this.$ ) {
+          DOM.setClass(this.$, old, false);
+          DOM.setClass(this.$, nu);
         }
       }
     },
@@ -223,9 +223,9 @@ MODEL({
     {
       name: 'updateSelected',
       code: function() {
-        if ( ! this.el || ! this.el.children ) return;
-        for ( var i = 0 ; i < this.el.children.length ; i++ ) {
-          var c = this.el.children[i];
+        if ( ! this.$ || ! this.$.children ) return;
+        for ( var i = 0 ; i < this.$.children.length ; i++ ) {
+          var c = this.$.children[i];
           DOM.setClass(c, 'selected', i === this.index);
         }
       }
@@ -271,7 +271,7 @@ MODEL({
     scrollToSelection: function() {
       // Three cases: in view, need to scroll up, need to scroll down.
       // First we determine the parent's scrolling bounds.
-      var e = this.el.children[this.index];
+      var e = this.$.children[this.index];
       if ( ! e ) return;
       var parent = e.parentElement;
       while ( parent ) {
@@ -328,7 +328,7 @@ MODEL({
     },
 
     updateHTML: function() {
-      if ( ! this.el ) return;
+      if ( ! this.$ ) return;
       var out = [];
 
       if ( this.helpText ) {
@@ -359,14 +359,14 @@ MODEL({
         out.push('</option>');
       }
 
-      this.el.innerHTML = out.join('');
+      this.$.innerHTML = out.join('');
       View.getPrototype().initHTML.call(this);
     },
 
     initHTML: function() {
       this.SUPER();
 
-      var e = this.el;
+      var e = this.$;
 
       this.updateHTML();
       this.domValue = DomValue.create(e);
@@ -414,7 +414,7 @@ MODEL({
     },
 
     updateHTML: function() {
-      if ( ! this.el ) return;
+      if ( ! this.$ ) return;
       var out = '';
       var self = this;
       this.choices.forEach(function(choice) {
@@ -435,7 +435,7 @@ MODEL({
         self.data$.addListener(function() { $(id).checked = ( self.data == value ); });
       });
 
-      this.el.innerHTML = out;
+      this.$.innerHTML = out;
       View.getPrototype().initHTML.call(this);
     },
 
@@ -491,18 +491,18 @@ MODEL({
           autoSetData: this.autoSetData
         });
 
-        var pos = findViewportXY(this.el.querySelector('.action'));
+        var pos = findViewportXY(this.$.querySelector('.action'));
         var e = this.X.document.body.insertAdjacentHTML('beforeend', view.toHTML());
-        var s = this.X.window.getComputedStyle(view.el);
+        var s = this.X.window.getComputedStyle(view.$);
 
         function mouseMove(evt) {
-          if ( ! view.el.contains(evt.target) ) remove();
+          if ( ! view.$.contains(evt.target) ) remove();
         }
 
         function remove() {
           self.X.document.removeEventListener('touchstart', remove);
           self.X.document.removeEventListener('mousemove',  mouseMove);
-          if ( view.el ) view.el.remove();
+          if ( view.$ ) view.$.remove();
         }
 
         // I don't know why the 'animate' is required, but it sometimes
@@ -512,13 +512,13 @@ MODEL({
           remove();
         }, this.X));
 
-        view.el.style.top = (pos[1]-2) + 'px';
-        view.el.style.left = (pos[0]-toNum(s.width)+30) + 'px';
-        view.el.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
+        view.$.style.top = (pos[1]-2) + 'px';
+        view.$.style.left = (pos[0]-toNum(s.width)+30) + 'px';
+        view.$.style.maxHeight = (Math.max(200, this.X.window.innerHeight-pos[1]-10)) + 'px';
         view.initHTML();
 
         this.X.document.addEventListener('touchstart',  remove);
-        view.el.addEventListener('click',                remove);
+        view.$.addEventListener('click',                remove);
         this.X.document.addEventListener('mousemove',   mouseMove);
       }
     }

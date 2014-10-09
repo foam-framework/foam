@@ -18,7 +18,7 @@ function bounceOnWalls(c, w, h) {
 space.write(document);
 space.addChild(bumper);
 space.addChild(anchor);
-mouse.connect(space.el);
+mouse.connect(space.$);
 
 var N = 7;
 for ( var x = 0 ; x < N ; x++ ) {

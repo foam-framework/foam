@@ -90,7 +90,7 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.el.focus();
+      this.$.focus();
     }
   },
 

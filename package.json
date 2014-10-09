@@ -12,7 +12,7 @@
     "grunt-log-headers": "~0.1.0"
   },
   "scripts": {
-    "test": "node --harmony tests/automatic.js"
+    "test": "nodejs --harmony tests/automatic.js"
   },
   "repository": {
     "type": "git",
