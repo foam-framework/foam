@@ -659,7 +659,7 @@ MODEL({
           {
             model_: 'StringProperty',
             name: 'content',
-            displayHeight: 10
+            displayHeight: 4
           }
         ],
 
