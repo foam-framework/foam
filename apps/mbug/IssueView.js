@@ -84,6 +84,9 @@ MODEL({
           $$owner{model_: 'CCView'}
 
           <div class="separator separator1"></div>
+          $$content{model_: 'mdTextFieldView', label: 'Comment'}
+
+          <div class="separator separator1"></div>
           $$cc{model_: 'CCView'}
 
           <div class="separator separator1"></div>
