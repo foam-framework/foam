@@ -25,9 +25,7 @@ MODEL({
         var Y = project.X;
         Y.project     = project;
         Y.projectName = project.projectName;
-        var localDao = LRUCachingDAO.create({
-          delegate: MDAO.create({ model: Y.QIssue })
-        });
+        var localDao = MDAO.create({ model: Y.QIssue });
 
         project.IssueNetworkDAO.batchSize = 25;
 
