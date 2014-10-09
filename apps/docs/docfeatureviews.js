@@ -105,7 +105,6 @@ MODEL({
     <%    } %>
     */}
   ],
-// <div class="memberList inherited">$$inheritedFeaturesDAO{ model_: 'DAOListView', rowView: this.rowView, data: this.filteredDAO, model: Property }</div>
 
   methods: {
     getGroupFromTarget: function(target) {
