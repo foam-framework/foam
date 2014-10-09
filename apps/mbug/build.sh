@@ -67,6 +67,7 @@ cat \
   ../../lib/mdui/AppController.js \
   ../../lib/mdui/view.js \
   ../../lib/mdui/AutocompleteListView.js \
+  ../../lib/mdui/DetailView.js \
   ../../core/CORE.js \
   ../quickcompose/google-analytics-bundle.js \
   > "$BUILD_DIR/foam.js"
