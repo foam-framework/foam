@@ -36,11 +36,11 @@ MODEL({
     },
     {
       name: 'slider',
-      factory: function() { return this.X.ViewSlider.create(); }
+      factory: function() { return this.__ctx__.ViewSlider.create(); }
     },
     {
       name: 'overlaySlider',
-      factory: function() { return this.X.OverlaySlider.create(); },
+      factory: function() { return this.__ctx__.OverlaySlider.create(); },
       postSet: function(old, v) {
         if ( old ) old.unsubscribe(['click'], this.overlayBack);
         v.subscribe(['click'], this.overlayBack);
@@ -53,7 +53,7 @@ MODEL({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; self.sliderOpen }, this.layout);
+      this.__ctx__.dynamic(function() { self.width; self.height; self.sliderOpen }, this.layout);
     },
     setPreview: function(){ console.warn('Preview removed from stack view, do it yourself.'); },
     pushView: function(view, opt_label, opt_back, opt_transition) {

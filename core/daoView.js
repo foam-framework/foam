@@ -36,7 +36,7 @@ MODEL({
       postSet: function(oldDAO, dao) {
         if ( this.data !== dao ) {
           this.data = dao;
-          this.X.daoViewCurrentDAO = dao;
+          this.__ctx__.daoViewCurrentDAO = dao;
         }
       }
     }
@@ -45,7 +45,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({ daoViewCurrentDAO: this.dao });
+      this.__ctx__ = this.__ctx__.sub({ daoViewCurrentDAO: this.dao });
     },
     onDAOUpdate: function() {}
   }
@@ -61,19 +61,19 @@ MODEL({
     {
       name: 'row',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'accChoices',
@@ -94,7 +94,7 @@ MODEL({
     {
       name: 'grid',
       type: 'GridByExpr',
-      factory: function() { return this.X.GridByExpr.create(); }
+      factory: function() { return this.__ctx__.GridByExpr.create(); }
     }
   ],
 
@@ -123,7 +123,7 @@ MODEL({
           self.$.innerHTML = html;
           g.initHTML();
         } else {
-          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          var cview = this.__ctx__.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
           self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
@@ -349,20 +349,20 @@ MODEL({
     },
     {
       name: 'useSelection',
-      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      help: 'Backward compatibility for selection mode. Create a __ctx__.selection$ value in your context instead.',
       postSet: function(old, nu) {
-        if (this.useSelection && !this.X.selection$)
+        if (this.useSelection && !this.__ctx__.selection$)
         {
-           this.X.selection$ = this.X.SimpleValue.create();
+           this.__ctx__.selection$ = this.__ctx__.SimpleValue.create();
         }
-        this.selection$ = this.X.selection$;
+        this.selection$ = this.__ctx__.selection$;
       }
     },
     {
       name: 'selection',
-      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      help: 'Backward compatibility for selection mode. Create a __ctx__.selection$ value in your context instead.',
       factory: function() {
-        return this.X.SimpleValue.create();
+        return this.__ctx__.SimpleValue.create();
       }
     },
     {
@@ -396,8 +396,8 @@ MODEL({
       });
 
       // bind to selection, if present
-      if (this.X.selection$) {
-        this.selection$ = this.X.selection$;
+      if (this.__ctx__.selection$) {
+        this.selection$ = this.__ctx__.selection$;
       }
     },
 
@@ -426,7 +426,7 @@ MODEL({
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView, this.X);
+      var rowView = FOAM.lookup(this.rowView, this.__ctx__);
 
       this.children = [];
       this.initializers_ = [];
@@ -436,8 +436,8 @@ MODEL({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var view = rowView.create({data: o, model: o.model_}, this.X);
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.__ctx__); //.clone();
+        var view = rowView.create({data: o, model: o.model_}, this.__ctx__);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
@@ -447,13 +447,13 @@ MODEL({
           }.bind(this, o));
         }
         this.addChild(view);
-        if ( this.X.selection$ ) {
+        if ( this.__ctx__.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());
-        if ( this.X.selection$ ) {
+        if ( this.__ctx__.selection$ ) {
           out.push('</div>');
         }
       }.bind(this)})(function() {
@@ -619,7 +619,7 @@ MODEL({
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        var view = FOAM.lookup(nu, this.X);
+        var view = FOAM.lookup(nu, this.__ctx__);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
           this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
       }
@@ -718,9 +718,9 @@ MODEL({
 
       // Grab the height of the -rowsize div, then drop that div.
       if ( this.rowHeight < 0 ) {
-        var outer = this.X.$(this.id + '-rowsize');
-        var style = this.X.window.getComputedStyle(outer.children[0]);
-        this.rowHeight = this.X.parseFloat(style.height);
+        var outer = this.__ctx__.$(this.id + '-rowsize');
+        var style = this.__ctx__.window.getComputedStyle(outer.children[0]);
+        this.rowHeight = this.__ctx__.parseFloat(style.height);
 
         // Now destroy it properly.
         this.rowSizeView.destroy();
@@ -731,7 +731,7 @@ MODEL({
       this.onDAOUpdate();
     },
     container$: function() {
-      return this.X.document.getElementById(this.containerID);
+      return this.__ctx__.document.getElementById(this.containerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.
@@ -770,7 +770,7 @@ MODEL({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = FOAM.lookup(this.rowView, this.X);
+        var rowView = FOAM.lookup(this.rowView, this.__ctx__);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
@@ -881,7 +881,7 @@ MODEL({
           var s = this.scroller$;
           if ( s ) s.scrollTop = this.scrollTop;
 
-          this.X.setTimeout(this.update.bind(this), 0);
+          this.__ctx__.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
     },
@@ -981,7 +981,7 @@ MODEL({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
+              this.rowSizeView = FOAM.lookup(this.rowView, this.__ctx__).create({ data: this.dao.model.create() });
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>
@@ -1019,7 +1019,7 @@ MODEL({
       name: 'view',
       required: true,
       preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.X);
+        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.__ctx__);
         this.children = [v];
         v.data = v.dao = this.predicatedDAO$Proxy;
         return v;
@@ -1030,7 +1030,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
+      this.__ctx__ = this.__ctx__.sub({DAO: this.predicatedDAO$Proxy});
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }

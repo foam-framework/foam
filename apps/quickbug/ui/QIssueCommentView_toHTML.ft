@@ -12,7 +12,7 @@
       s = s.replace(
         issue,
         function(_, _, issue) {
-          var view = self.X.IssueLink.create({issue: issue});
+          var view = self.__ctx__.IssueLink.create({issue: issue});
           self.addChild(view);
           return view.toHTML();
         });
@@ -27,7 +27,7 @@
   <div class="qissuecommentdate">
     $$published{ mode: 'read-only' }
   </div>
-  <span style="padding-left:.7em">By </span>$$author <a target="_blank" href="<%= this.X.browser.url %>/issues/detail?id={{this.data.issueId}}#{{ this.data.seqNo }}">#{{ this.data.seqNo || '0' }}</a>
+  <span style="padding-left:.7em">By </span>$$author <a target="_blank" href="<%= this.__ctx__.browser.url %>/issues/detail?id={{this.data.issueId}}#{{ this.data.seqNo }}">#{{ this.data.seqNo || '0' }}</a>
   <%= formatContent(this, this.data.content) %>
   $$updates
 </div>

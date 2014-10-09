@@ -142,7 +142,7 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
+      cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(__ctx__, m, Model);
     });
 
     // build properties
@@ -192,7 +192,7 @@ var BootstrapModel = {
               this.actions[i] = a;
             }
           }
-          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.X, this); });
+          addMethod(a.name, function(opt_x) { a.callIfEnabled(opt_x || this.__ctx__, this); });
         }.bind(this))(this.actions[i]);
       }
     }
@@ -216,8 +216,8 @@ var BootstrapModel = {
       var name = r.name.constantize();
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
-        var m = this.X[r.relatedModel];
-        var dao = this.X[m.name + 'DAO'] || this.X[m.plural];
+        var m = this.__ctx__[r.relatedModel];
+        var dao = this.__ctx__[m.name + 'DAO'] || this.__ctx__[m.plural];
         if ( ! dao ) {
           console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
               m.plural + ' in the context, and neither was found.');
@@ -242,16 +242,16 @@ var BootstrapModel = {
         get: function () {
           var l = fn.bind(this);
           /*
-          if ( ( isFramed || isMerged ) && this.X.isBackground ) {
+          if ( ( isFramed || isMerged ) && this.__ctx__.isBackground ) {
             console.log('*********************** ', this.model_.name);
           }
           */
           if ( isFramed )
-            l = EventService.framed(l, this.X);
+            l = EventService.framed(l, this.__ctx__);
           else if ( isMerged ) {
             l = EventService.merged(
               l,
-              (isMerged === true) ? undefined : isMerged, this.X);
+              (isMerged === true) ? undefined : isMerged, this.__ctx__);
           }
 
           Object.defineProperty(this, name, { value: l});
@@ -317,7 +317,7 @@ var BootstrapModel = {
       ( this.prototype_ = this.buildPrototype() );
   },
 
-  create: function(args, X) { return this.getPrototype().create(args, X); },
+  create: function(args, __ctx__) { return this.getPrototype().create(args, __ctx__); },
 
   isSubModel: function(model) {
 		/* Returns true if the given instance extends this $$DOC{ref:'Model'} or a descendant of this. */

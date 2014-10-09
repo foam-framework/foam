@@ -1,4 +1,4 @@
-var phones = JSONUtil.arrayToObjArray(X, [
+var phones = JSONUtil.arrayToObjArray(__ctx__, [
   {
     "model_": "Phone",
     "id": "motorola-xoom-with-wi-fi",

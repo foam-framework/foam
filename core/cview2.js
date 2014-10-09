@@ -66,7 +66,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
+      this.__ctx__.dynamic(function() { this.scalingRatio; this.width; this.height; }.bind(this),
                      this.resize);
     },
 
@@ -88,14 +88,14 @@ MODEL({
 
       this.canvas = this.$.getContext('2d');
 
-      var devicePixelRatio = this.X.window.devicePixelRatio|| 1;
+      var devicePixelRatio = this.__ctx__.window.devicePixelRatio|| 1;
       var backingStoreRatio = this.canvas.backingStoreRatio ||
         this.canvas.webkitBackingStorePixelRatio || 1;
 
       if ( devicePixelRatio !== backingStoreRatio )
         this.scalingRatio = devicePixelRatio / backingStoreRatio;
 
-      var style = this.X.window.getComputedStyle(this.$);
+      var style = this.__ctx__.window.getComputedStyle(this.$);
 
       // Copy the background colour from the div styling.
       // TODO: the same thing for other CSS attributes like 'font'
@@ -125,7 +125,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() {
+      this.__ctx__.dynamic(function() {
         this.cview; this.width; this.height;
       }.bind(this), function() {
         if ( ! this.cview ) return;
@@ -164,7 +164,7 @@ MODEL({
     {
       name: 'cview',
       postSet: function(_, cview) {
-        this.X.dynamic(function() {
+        this.__ctx__.dynamic(function() {
           this.width = cview.x + cview.width;
           this.height = cview.y + cview.height;
         }.bind(this));
@@ -261,7 +261,7 @@ MODEL({
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
         if ( this.tooltip )   params.tooltip   = this.tooltip;
-        this.view = this.X.CViewView.create(params);
+        this.view = this.__ctx__.CViewView.create(params);
       }
       return this.view;
     },
@@ -270,7 +270,7 @@ MODEL({
       if ( ! this.view ) {
         var params = {cview: this};
         if ( this.className ) params.className = this.className;
-        this.view = this.X.PositionedCViewView.create(params);
+        this.view = this.__ctx__.PositionedCViewView.create(params);
       }
       return this.view;
     },
@@ -327,7 +327,7 @@ MODEL({
         this.initCView();
         this.state = 'active';
       }
-      this.canvas.translate(this.x, this.y);
+      this.canvas.translate(this.__ctx__, this.y);
       this.erase();
       this.paintSelf();
       this.paintChildren();
@@ -377,7 +377,7 @@ MODEL({
         c.lineWidth = this.borderWidth;
         c.strokeStyle = this.border;
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(this.__ctx__, this.y, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.stroke();
       }
@@ -386,7 +386,7 @@ MODEL({
         c.fillStyle = this.color;
 
         c.beginPath();
-        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(this.__ctx__, this.y, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.fill();
       }
@@ -460,7 +460,7 @@ MODEL({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.X.GestureTarget.create({
+        return this.__ctx__.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'tap'
@@ -483,7 +483,7 @@ MODEL({
   listeners: [
     {
       name: 'onClick',
-      code: function() { this.action.callIfEnabled(this.X, this.data); }
+      code: function() { this.action.callIfEnabled(this.__ctx__, this.data); }
     },
     {
       name: 'onMouseDown',
@@ -499,7 +499,7 @@ MODEL({
           this.pressCircle.y = evt.offsetY;
         }
         this.pressCircle.r = 5;
-        this.X.animate(150, function() {
+        this.__ctx__.animate(150, function() {
           this.pressCircle.x = this.width/2;
           this.pressCircle.y = this.height/2;
           this.pressCircle.r = Math.min(28, Math.min(this.width, this.height)/2-1);
@@ -512,7 +512,7 @@ MODEL({
       code: function() {
         if ( ! this.down_ ) return;
         this.down_ = false;
-        this.X.animate(
+        this.__ctx__.animate(
           300,
           function() { this.pressCircle.alpha = 0; }.bind(this))();
       }
@@ -545,18 +545,18 @@ MODEL({
         function() {
           if ( self.action.isAvailable.call(self.data, self.action) &&
                self.oldWidth_ && self.oldHeight_ ) {
-            self.x = self.oldX_;
+            self.__ctx__ = self.oldX_;
             self.y = self.oldY_;
             self.width = self.oldWidth_;
             self.height = self.oldHeight_;
           } else if ( self.width || self.height ) {
-            self.oldX_ = self.x;
+            self.oldX_ = self.__ctx__;
             self.oldY_ = self.y;
             self.oldWidth_ = self.width;
             self.oldHeight_ = self.height;
             self.width = 0;
             self.height = 0;
-            self.x = 0;
+            self.__ctx__ = 0;
             self.y = 0;
           }
         });
@@ -569,9 +569,9 @@ MODEL({
     initCView: function() {
       this.addChild(this.pressCircle);
 
-      if ( this.X.gestureManager ) {
+      if ( this.__ctx__.gestureManager ) {
         // TODO: Glow animations on touch.
-        this.X.gestureManager.install(this.tapGesture);
+        this.__ctx__.gestureManager.install(this.tapGesture);
       } else {
         this.$.addEventListener('click',      this.onClick);
       }
@@ -587,8 +587,8 @@ MODEL({
     },
     destroy: function() {
       this.SUPER();
-      if ( this.X.gestureManager ) {
-        this.X.gestureManager.uninstall(this.tapGesture);
+      if ( this.__ctx__.gestureManager ) {
+        this.__ctx__.gestureManager.uninstall(this.tapGesture);
       }
     },
     paint: function() {
@@ -600,7 +600,7 @@ MODEL({
         this.canvas.clearRect(0, 0, this.width, this.height);
 
         c.beginPath();
-        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+        c.arc(this.__ctx__+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
         c.strokeStyle = this.background;
         c.lineWidth = 1;
         c.stroke();
@@ -623,7 +623,7 @@ MODEL({
       if ( this.image_ && this.image_.width ) {
         c.drawImage(
           this.image_,
-          this.x + (this.width  - this.iconWidth)/2,
+          this.__ctx__ + (this.width  - this.iconWidth)/2,
           this.y + (this.height - this.iconHeight)/2,
           this.iconWidth,
           this.iconHeight);
@@ -631,7 +631,7 @@ MODEL({
 
       c.fillText(
         this.action.labelFn.call(this.data, this.action),
-        this.x+this.width/2,
+        this.__ctx__+this.width/2,
         this.y+this.height/2);
     }
   }
@@ -758,21 +758,21 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
+      this.__ctx__.dynamic(function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
                      function() {
                        this.renderer.width = this.width;
                        this.view && this.view.paint();
                      }.bind(this));
     },
     initCView: function() {
-      this.X.dynamic(
+      this.__ctx__.dynamic(
         function() {
           this.scrollTop; this.height; this.renderer;
         }.bind(this), this.onDAOUpdate);
 
-      if ( this.X.gestureManager ) {
-        var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+      if ( this.__ctx__.gestureManager ) {
+        var manager = this.__ctx__.gestureManager;
+        var target = this.__ctx__.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'

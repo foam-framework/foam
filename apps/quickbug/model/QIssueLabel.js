@@ -33,7 +33,7 @@ MODEL({
     makeView: function() {
       var completer = this.completer;
       var strToHTML = this.strToHTML.bind(this);
-      return this.X.ChoiceListView.create({
+      return this.__ctx__.ChoiceListView.create({
         dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocompleteTable autocomplete',
         orientation: 'vertical',
@@ -55,10 +55,10 @@ MODEL({
   ],
   methods: {
     autocomplete: function(data) {
-      var src = this.X.LabelDAO;
+      var src = this.__ctx__.LabelDAO;
       var dao = src.where(
         data ?
-          STARTS_WITH_IC(this.X.QIssueLabel.LABEL, data) :
+          STARTS_WITH_IC(this.__ctx__.QIssueLabel.LABEL, data) :
           TRUE);
 
       var self = this;

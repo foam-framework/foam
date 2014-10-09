@@ -34,7 +34,7 @@ MODEL({
 });
 
 
-var demos = JSONUtil.arrayToObjArray(X, [
+var demos = JSONUtil.arrayToObjArray(__ctx__, [
   {
     name: 'Solar System',
     path: 'SolarSystem.html',
@@ -328,4 +328,4 @@ MODEL({
 });
 
 
-X.DemoView; // Install CSS, shouldn't be required.  TODO: Fix
+__ctx__.DemoView; // Install CSS, shouldn't be required.  TODO: Fix

@@ -108,7 +108,7 @@ MODEL({
           f.compareProperty);
     },
     renderCell: function(x, y, data) {
-      var cell = this.X.IssueDropCell.create({
+      var cell = this.__ctx__.IssueDropCell.create({
         data: data,
         dao: this.dao,
         props: [this.xFunc, this.yFunc],
@@ -223,7 +223,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      console.assert( this.X.QueryParser, 'QueryParser not found');
+      console.assert( this.__ctx__.QueryParser, 'QueryParser not found');
     },
     toHTML: function() {
       this.eid = View.getPrototype().nextID();
@@ -235,8 +235,8 @@ MODEL({
         var col = altView.views[1].view().col.data;
         var row = altView.views[1].view().row.data;
         var q = AND(
-          this.X.QueryParser.parseString(this.browser.location.q),
-          AND(EQ(col, this.x),
+          this.__ctx__.QueryParser.parseString(this.browser.location.q),
+          AND(EQ(col, this.__ctx__),
               EQ(row, this.y)).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
         this.browser.location.q = q.toMQL();
@@ -298,7 +298,7 @@ var QIssueTableView = FOAM({
 
 
 function createView(rowSelectionValue, browser) {
-  var X = browser.X;
+  var X = browser.__ctx__;
   var location = browser.location;
 
   return X.AlternateView.create({
@@ -316,7 +316,7 @@ function createView(rowSelectionValue, browser) {
             columnResizeEnabled: true,
             scrollEnabled:       true,
             editColumnsEnabled:  true
-          }, browser.X);
+          }, browser.__ctx__);
 
           tableView.sortOrder$  = location.sort$;
           tableView.properties$ = location.colspec$;
@@ -447,7 +447,7 @@ MODEL({
       this.update();
     },
     field: function() {
-      return this.X.TextFieldView.create({
+      return this.__ctx__.TextFieldView.create({
         name: this.name,
         type: this.type,
         displayWidth: this.displayWidth,

@@ -10,9 +10,9 @@ MODEL({
       name: 'qbug',
       label: 'QBug',
       subType: 'QBug',
-      view: function() { return this.X.DetailView.create({model: QBug}); },
+      view: function() { return this.__ctx__.DetailView.create({model: QBug}); },
       factory: function() {
-        return this.X.QBug.create({
+        return this.__ctx__.QBug.create({
           authClientId: '18229540903-cojf1q6g154dk5kpim4jnck3cfdvqe3u.apps.googleusercontent.com',
           authClientSecret: 'HkwDwjSekPBL5Oybq1NsDeZj'
         });
@@ -22,7 +22,7 @@ MODEL({
       name: 'project',
       subType: 'QProject',
       postSet: function(_, project) {
-        var Y = project.X;
+        var Y = project.__ctx__;
         Y.project     = project;
         Y.projectName = project.projectName;
         var localDao = LRUCachingDAO.create({
@@ -54,7 +54,7 @@ MODEL({
           sortChoices: project.defaultSortChoices,
           filterChoices: project.defaultFilterChoices,
           menuFactory: function() {
-            return this.X.ChangeProjectView.create({data: project.user});
+            return this.__ctx__.ChangeProjectView.create({data: project.user});
           }
         });
         var view = FloatingView.create({
@@ -66,7 +66,7 @@ MODEL({
     {
       name: 'stack',
       subType: 'StackView',
-      factory: function() { return this.X.StackView.create(); },
+      factory: function() { return this.__ctx__.StackView.create(); },
       postSet: function(old, v) {
         if ( old ) {
           Events.unfollow(this.width$, old.width$);
@@ -81,12 +81,12 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.touchManager = this.X.TouchManager.create({});
-      this.X.gestureManager = this.X.GestureManager.create({});
+      this.__ctx__.touchManager = this.__ctx__.TouchManager.create({});
+      this.__ctx__.gestureManager = this.__ctx__.GestureManager.create({});
     },
     toHTML: function() { return this.stack.toHTML(); },
     projectContext: function() {
-      return this.X.sub({
+      return this.__ctx__.sub({
         mbug:              this,
         baseURL:           this.qbug.baseURL,
         user:              this.qbug.user,
@@ -110,8 +110,8 @@ MODEL({
     },
     editIssue: function(issue) {
       // TODO: clone issue, and add listener which saves on updates
-      var v = this.project.X.FloatingView.create({
-        view: this.project.X.IssueView.create({dao: this.project.X.issueDAO, data: issue.deepClone()})
+      var v = this.project.__ctx__.FloatingView.create({
+        view: this.project.__ctx__.IssueView.create({dao: this.project.__ctx__.issueDAO, data: issue.deepClone()})
       });
       this.stack.pushView(v, '');
     },
@@ -225,7 +225,7 @@ MODEL({
   extendsModel: 'DetailView',
   templates: [
     function toHTML() {/*
-      <div id="<%= this.on('click', function() { this.X.mbug.editIssue(this.data); }) %>" class="issue-citation">
+      <div id="<%= this.on('click', function() { this.__ctx__.mbug.editIssue(this.data); }) %>" class="issue-citation">
         $$owner{model_: "IssueOwnerAvatarView"}
         <div class="middle">
           $$id{mode: 'read-only', className: 'id'}
@@ -296,9 +296,9 @@ MODEL({
 
          projects.forEach(function(project) { %>
         <% if ( ' chromium-os chromedriver cinc crwm chrome-os-partner ee-testers-external '.indexOf(' ' + project + ' ') != -1 ) return; %>
-        <div id="<%= self.on('click', function() { self.X.stack.back(); self.X.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
-          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.X.baseURL + project + '/logo'}) %>
-          <span class="project-name <%= self.X.projectName === project ? 'selected' : '' %>"><%= project %></span>
+        <div id="<%= self.on('click', function() { self.__ctx__.stack.back(); self.__ctx__.mbug.setProject(project); }, self.nextID()) %>" class="project-citation">
+          <%= ImageView.create({backupImage: 'images/defaultlogo.png', data: self.__ctx__.baseURL + project + '/logo'}) %>
+          <span class="project-name <%= self.__ctx__.projectName === project ? 'selected' : '' %>"><%= project %></span>
         </div>
         <% }); %>
         </div>

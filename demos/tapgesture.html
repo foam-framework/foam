@@ -32,7 +32,7 @@ MODEL({
       return '<div id="' + this.id + '" style="background: #88f; width: 400px; height: 200px;">Click me</div>';
     },
     initHTML: function() {
-      this.X.gestureManager.install(this.X.GestureTarget.create({
+      this.__ctx__.gestureManager.install(this.__ctx__.GestureTarget.create({
         containerID: this.id,
         handler: this,
         gesture: 'tap'
@@ -44,7 +44,7 @@ MODEL({
   }
 });
 
-var Y = this.X.subWindow(window);
+var Y = this.__ctx__.subWindow(window);
 Y.touchManager = Y.TouchManager.create({});
 Y.touchManager.install(document);
 Y.gestureManager = Y.GestureManager.create();

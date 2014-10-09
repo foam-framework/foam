@@ -1,5 +1,5 @@
 <%
-this.X.registerModel(CalcButton.xbind({
+this.__ctx__.registerModel(CalcButton.xbind({
   background: 'rgb(64, 189, 158)',
   width:  100,
   height: 58,

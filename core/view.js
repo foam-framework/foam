@@ -87,15 +87,15 @@ KeyboardShortcutController.prototype.processKey_ = function(event) {
 
 var DOM = {
   /** Instantiate FOAM Objects in a document. **/
-  init: function(X) {
-    if ( ! X.document.FOAM_OBJECTS ) X.document.FOAM_OBJECTS = {};
+  init: function(__ctx__) {
+    if ( ! __ctx__.document.FOAM_OBJECTS ) __ctx__.document.FOAM_OBJECTS = {};
 
-    var fs = X.document.querySelectorAll('foam');
+    var fs = __ctx__.document.querySelectorAll('foam');
     for ( var i = 0 ; i < fs.length ; i++ ) {
       var e = fs[i];
       // console.log(e.getAttribute('model'), e.getAttribute('view'));
-      FOAM.lookup(e.getAttribute('view'), X);
-      FOAM.lookup(e.getAttribute('model'), X);
+      FOAM.lookup(e.getAttribute('view'), __ctx__);
+      FOAM.lookup(e.getAttribute('model'), __ctx__);
     }
     var models = [];
     for ( var key in USED_MODELS ) {
@@ -104,19 +104,19 @@ var DOM = {
 
     aseq(apar.apply(null, models), function(ret) {
       for ( var i = 0 ; i < fs.length ; i++ ) {
-        this.initElement(fs[i], X, X.document);
+        this.initElement(fs[i], __ctx__, __ctx__.document);
       }
     }.bind(this))();
   },
 
-  initElementChildren: function(e, X) {
+  initElementChildren: function(e, __ctx__) {
     var a = [];
 
     for ( var i = 0 ; i < e.children.length ; i++ ) {
       var c = e.children[i];
 
       if ( c.tagName === 'FOAM' ) {
-        a.push(DOM.initElement(c, X));
+        a.push(DOM.initElement(c, __ctx__));
       }
     }
 
@@ -124,14 +124,14 @@ var DOM = {
   },
 
   /** opt_document -- if supplied the object's view will be added to the document. **/
-  initElement: function(e, X, opt_document) {
+  initElement: function(e, __ctx__, opt_document) {
     // If was a sub-object for an object that has already been displayed,
     // then it will no longer be in the DOM and doesn't need to be shown.
     if ( opt_document && ! opt_document.contains(e) ) return;
 
     var args = {};
     var modelName = e.getAttribute('model');
-    var model = FOAM.lookup(modelName, X);
+    var model = FOAM.lookup(modelName, __ctx__);
 
     if ( ! model ) {
       console.error('Unknown Model: ', modelName);
@@ -185,7 +185,7 @@ var DOM = {
       }
     }
 
-    var obj = model.create(args, X);
+    var obj = model.create(args, __ctx__);
 
     var onLoad = e.getAttribute('oninit');
     if ( onLoad ) {
@@ -198,7 +198,7 @@ var DOM = {
         view = obj;
       } else {
         var viewName = e.getAttribute('view');
-        var viewModel = viewName ? FOAM.lookup(viewName, X) : DetailView;
+        var viewModel = viewName ? FOAM.lookup(viewName, __ctx__) : DetailView;
         view = viewModel.create({model: model, data: obj});
         if ( ! viewName ) {
           // default value is 'true' if 'showActions' isn't specified.
@@ -228,7 +228,7 @@ var DOM = {
 };
 
 
-window.addEventListener('load', function() { DOM.init(X); }, false);
+window.addEventListener('load', function() { DOM.init(__ctx__); }, false);
 
 
 // TODO: document and make non-global
@@ -340,7 +340,7 @@ MODEL({
       postSet: function(oldValue, showActions) {
         // TODO: No way to remove the decorator.
         if ( ! oldValue && showActions ) {
-          this.addDecorator(this.X.ActionBorder.create());
+          this.addDecorator(this.__ctx__.ActionBorder.create());
         }
       },
       documentation: function() {/*
@@ -375,7 +375,7 @@ MODEL({
       name: 'openTooltip',
       code: function(e) {
         console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.tooltip_ = this.X.Tooltip.create({
+        this.tooltip_ = this.__ctx__.Tooltip.create({
           text:   this.tooltip,
           target: this.$
         });
@@ -459,7 +459,7 @@ MODEL({
         Creates a dynamic HTML tag whose content will be automatically updated.
         */
       var id = this.nextID();
-      this.X.dynamic(function() {
+      this.__ctx__.dynamic(function() {
         var html = f();
         var e = $(id);
         if ( e ) e.innerHTML = html;
@@ -481,8 +481,8 @@ MODEL({
 
     createView: function(prop, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info. */
-      var X = ( opt_args && opt_args.X ) || this.X;
-      var v = X.PropertyView.create({prop: prop, args: opt_args});
+      var __ctx__ = ( opt_args && opt_args.__ctx__ ) || this.__ctx__;
+      var v = __ctx__.PropertyView.create({prop: prop, args: opt_args});
       this.addChild(v);
       return v;
     },
@@ -490,11 +490,11 @@ MODEL({
     createActionView: function(action, opt_args) {
       /* Creates a sub-$$DOC{ref:'View'} from $$DOC{ref:'Property'} info
         specifically for $$DOC{ref:'Action',usePlural:true}. */
-      var X = ( opt_args && opt_args.X ) || this.X;
+      var __ctx__ = ( opt_args && opt_args.__ctx__ ) || this.__ctx__;
       var modelName = opt_args && opt_args.model_ ?
         opt_args.model_ :
         'ActionButton'  ;
-      var v = X[modelName].create({action: action}).copyFrom(opt_args);
+      var v = __ctx__[modelName].create({action: action}).copyFrom(opt_args);
 
       this[action.name + 'View'] = v;
 
@@ -502,7 +502,7 @@ MODEL({
     },
 
     createRelationshipView: function(r, opt_args) {
-      return this.X.RelationshipView.create({
+      return this.__ctx__.RelationshipView.create({
         relationship: r,
       }).copyFrom(opt_args);
     },
@@ -604,10 +604,10 @@ MODEL({
       opt_id = opt_id || this.nextID();
       listener = listener.bind(this);
 
-      if ( event === 'click' && this.X.gestureManager ) {
+      if ( event === 'click' && this.__ctx__.gestureManager ) {
         var self = this;
-        var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+        var manager = this.__ctx__.gestureManager;
+        var target = this.__ctx__.GestureTarget.create({
           containerID: opt_id,
           handler: {
             tapClick: function() {
@@ -642,7 +642,7 @@ MODEL({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        this.X.dynamic(valueFn, function() {
+        this.__ctx__.dynamic(valueFn, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
@@ -658,7 +658,7 @@ MODEL({
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        this.X.dynamic(predicate, function() {
+        this.__ctx__.dynamic(predicate, function() {
           var e = $(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           DOM.setClass(e, className, predicate());
@@ -801,8 +801,8 @@ MODEL({
           for ( var j = 0 ; j < action.keyboardShortcuts.length ; j++ ) {
             var key     = action.keyboardShortcuts[j];
             keyMap[key] = opt_value ?
-              function() { action.callIfEnabled(self.X, opt_value.get()); } :
-              action.callIfEnabled.bind(action, self.X, self) ;
+              function() { action.callIfEnabled(self.__ctx__, opt_value.get()); } :
+              action.callIfEnabled.bind(action, self.__ctx__, self) ;
             found = true;
           }
         });
@@ -883,7 +883,7 @@ MODEL({
       this.SUPER(args);
 
       if ( this.args && this.args.model_ ) {
-        var model = this.X[this.args.model_];
+        var model = this.__ctx__[this.args.model_];
         console.assert( model, 'Unknown View: ' + this.args.model_);
         var view = model.create(this.prop);
         delete this.args.model_;
@@ -903,8 +903,8 @@ MODEL({
 
     createViewFromProperty: function(prop) {
       var viewName = this.innerView || prop.view
-      if ( ! viewName ) return this.X.TextFieldView.create(prop);
-      if ( typeof viewName === 'string' ) return this.X[viewName].create(prop);
+      if ( ! viewName ) return this.__ctx__.TextFieldView.create(prop);
+      if ( typeof viewName === 'string' ) return this.__ctx__[viewName].create(prop);
       if ( viewName.model_ && typeof viewName.model_ === 'string' ) return FOAM(prop.view);
       if ( viewName.model_ ) { var v = viewName.model_.create(viewName).copyFrom(prop); v.id = this.nextID(); return v; }
       if ( typeof viewName === 'function' ) return viewName(prop, this);
@@ -994,17 +994,17 @@ MODEL({
     init: function() {
       this.SUPER();
 
-      var document = this.X.document;
+      var document = this.__ctx__.document;
 
       document.previousTooltip_ = this;
-      this.X.setTimeout(function() {
+      this.__ctx__.setTimeout(function() {
         if ( this.closed ) return;
         if ( document.previousTooltip_ != this ) return;
 
         var div = document.createElement('div');
 
         // Close after 5s
-        this.X.setTimeout(this.close.bind(this), 5000);
+        this.__ctx__.setTimeout(this.close.bind(this), 5000);
 
         div.className = this.className;
         div.id = this.id;
@@ -1012,13 +1012,13 @@ MODEL({
 
         document.body.appendChild(div);
 
-        var s            = this.X.window.getComputedStyle(div);
+        var s            = this.__ctx__.window.getComputedStyle(div);
         var pos          = findViewportXY(this.target);
-        var screenHeight = this.X.document.body.clientHeight;
-        var scrollY      = this.X.window.scrollY;
+        var screenHeight = this.__ctx__.document.body.clientHeight;
+        var scrollY      = this.__ctx__.window.scrollY;
         var above        = pos[1] - scrollY > screenHeight / 2;
         var left         = pos[0] + ( this.target.clientWidth - toNum(s.width) ) / 2;
-        var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
+        var maxLeft      = this.__ctx__.document.body.clientWidth + this.__ctx__.window.scrollX - 15 - div.clientWidth;
         var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
         // Start half way to the destination to avoid the user clicking on the tooltip.
@@ -1027,11 +1027,11 @@ MODEL({
             pos[1] + targetHeight/2 + 4 ;
 
 //        div.style.top  = pos[1];
-        div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
+        div.style.left = Math.max(this.__ctx__.window.scrollX + 15, Math.min(maxLeft, left));
 
         DOM.setClass(div, 'animated');
 
-        this.X.setTimeout(function() {
+        this.__ctx__.setTimeout(function() {
           div.style.top = above ?
             pos[1] - targetHeight - 8 :
             pos[1] + targetHeight + 8 ;
@@ -1047,9 +1047,9 @@ MODEL({
       // Closing while it is still animating causes it to jump around
       // which looks bad, so wait 500ms to give it time to transition
       // if it is.
-      this.X.setTimeout(function() {
+      this.__ctx__.setTimeout(function() {
         if ( this.$ ) {
-          this.X.setTimeout(this.$.remove.bind(this.$), 1000);
+          this.__ctx__.setTimeout(this.$.remove.bind(this.$), 1000);
           DOM.setClass(this.$, 'fadeout');
         }
       }.bind(this), 500);
@@ -1100,9 +1100,9 @@ MODEL({
     // TODO: first argument isn't used anymore, find and cleanup all uses
     open: function(_, opt_delay) {
       if ( this.$ ) return;
-      var document = this.X.document;
+      var document = this.__ctx__.document;
       var div      = document.createElement('div');
-      div.style.left = this.x + 'px';
+      div.style.left = this.__ctx__ + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';
@@ -1176,7 +1176,7 @@ MODEL({
   methods: {
     autocomplete: function(partial) {
       if ( ! this.completer ) {
-        var proto = FOAM.lookup(this.autocompleter, this.X);
+        var proto = FOAM.lookup(this.autocompleter, this.__ctx__);
         this.completer = proto.create();
       }
       if ( ! this.view ) {
@@ -1189,7 +1189,7 @@ MODEL({
     },
 
     makeView: function() {
-      return this.X.ChoiceListView.create({
+      return this.__ctx__.ChoiceListView.create({
         dao: this.completer.autocompleteDao$Proxy,
         extraClassName: 'autocomplete',
         orientation: 'vertical',
@@ -1208,7 +1208,7 @@ MODEL({
 
     open: function(e, opt_delay) {
       if ( this.closeTimeout ) {
-        this.X.clearTimeout(this.closeTimeout);
+        this.__ctx__.clearTimeout(this.closeTimeout);
         this.closeTimeout = 0;
       }
 
@@ -1217,12 +1217,12 @@ MODEL({
       var parentNode = e.$ || e;
       var document = parentNode.ownerDocument;
 
-      console.assert( this.X.document === document, 'X.document is not global document');
+      console.assert( this.__ctx__.document === document, '__ctx__.document is not global document');
 
       var div    = document.createElement('div');
       var window = document.defaultView;
 
-      console.assert( this.X.window === window, 'X.window is not global window');
+      console.assert( this.__ctx__.window === window, '__ctx__.window is not global window');
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
@@ -1233,7 +1233,7 @@ MODEL({
     close: function(opt_now) {
       if ( opt_now ) {
         if ( this.closeTimeout ) {
-          this.X.clearTimeout(this.closeTimeout);
+          this.__ctx__.clearTimeout(this.closeTimeout);
           this.closeTimeout = 0;
         }
         this.SUPER();
@@ -1244,7 +1244,7 @@ MODEL({
 
       var realClose = this.SUPER;
       var self = this;
-      this.closeTimeout = this.X.setTimeout(function() {
+      this.closeTimeout = this.__ctx__.setTimeout(function() {
         self.closeTimeout = 0;
         realClose.call(self);
       }, this.closeTime);
@@ -1421,7 +1421,7 @@ MODEL({
   properties: [
     {
       name: 'window',
-      defaultValueFn: function() { return this.X.window; }
+      defaultValueFn: function() { return this.__ctx__.window; }
     }
   ],
 
@@ -1442,7 +1442,7 @@ MODEL({
   }
 });
 
-X.memento = X.WindowHashValue.create();
+__ctx__.memento = __ctx__.WindowHashValue.create();
 
 
 MODEL({
@@ -1654,7 +1654,7 @@ MODEL({
     // TODO: Model as a 'Topic'
     ESCAPE: ['escape'],
 
-    installInDocument: function(X, document) {
+    installInDocument: function(__ctx__, document) {
       console.log('Installing TextFieldView in Document.');
     },
 
@@ -1688,7 +1688,7 @@ MODEL({
     setupAutocomplete: function() {
       if ( ! this.autocomplete || ! this.autocompleter ) return;
 
-      var view = this.autocompleteView = this.X.AutocompleteView.create({
+      var view = this.autocompleteView = this.__ctx__.AutocompleteView.create({
         autocompleter: this.autocompleter,
         target: this
       });
@@ -2257,7 +2257,7 @@ MODEL({
   methods: {
     textToValue: function(text) {
       try {
-        return JSONUtil.parse(this.X, text);
+        return JSONUtil.parse(this.__ctx__, text);
       } catch (x) {
         console.log("error");
       }
@@ -2392,7 +2392,7 @@ MODEL({
         out.push(prop.label);
         out.push('</div><div class="text">');
         if ( prop.subType /*&& value instanceof Array*/ && prop.type.indexOf('[') != -1 ) {
-          var subModel = this.X[prop.subType];
+          var subModel = this.__ctx__[prop.subType];
           var subView  = HelpView.create({model: subModel});
           if ( subModel != model )
             out.push(subView.toHTML());
@@ -2477,7 +2477,7 @@ MODEL({
         return self.action.isAvailable.call(self.data, self.action);
       }, this.id);
 
-      this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
+      this.__ctx__.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
       return superResult;
     },
@@ -2501,7 +2501,7 @@ MODEL({
 
       var self = this;
       this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
+        self.action.callIfEnabled(self.__ctx__, self.data);
       }, this.id);
 
     }
@@ -2583,7 +2583,7 @@ MODEL({
       name: 'right'
     },
     {
-      // TODO: This should just come from X instead
+      // TODO: This should just come from __ctx__ instead
       name: 'document'
     },
     {
@@ -2814,7 +2814,7 @@ MODEL({
       name: 'onMouseMove',
       isFramed: true,
       code: function(evt) {
-        this.x = evt.offsetX;
+        this.__ctx__ = evt.offsetX;
         this.y = evt.offsetY;
       }
     }
@@ -2919,7 +2919,7 @@ MODEL({
         var viewChoice = this.choice;
         var view = typeof(viewChoice.view) === 'function' ?
           viewChoice.view(this.data.model_, this.data$) :
-          this.X[viewChoice.view].create({
+          this.__ctx__[viewChoice.view].create({
             model: this.data.model_,
             data:  this.data
           });
@@ -3028,7 +3028,7 @@ MODEL({
       name: 'headerView',
       help: 'Optional View to be displayed in header.',
       factory: function() {
-        return this.X.ChoiceListView.create({
+        return this.__ctx__.ChoiceListView.create({
           choices: this.views.map(function(x) {
             return x.label;
           }),
@@ -3058,7 +3058,7 @@ MODEL({
     },
     {
       name: 'x',
-      help: 'X coordinate of the translation',
+      help: '__ctx__ coordinate of the translation',
       hidden: true,
       postSet: function(old, nu) {
         // TODO: Other browsers.
@@ -3071,7 +3071,7 @@ MODEL({
       hidden: true,
       transient: true,
       factory: function() {
-        return this.X.GestureTarget.create({
+        return this.__ctx__.GestureTarget.create({
           containerID: this.id,
           handler: this,
           gesture: 'horizontalScroll'
@@ -3147,7 +3147,7 @@ MODEL({
       this.slider.innerHTML = str.join('');
 
       window.addEventListener('resize', this.resize, false);
-      this.X.gestureManager.install(this.swipeGesture);
+      this.__ctx__.gestureManager.install(this.swipeGesture);
 
       // Wait for the new HTML to render first, then init it.
       var self = this;
@@ -3161,7 +3161,7 @@ MODEL({
 
     destroy: function() {
       this.SUPER();
-      this.X.gestureManager.uninstall(this.swipeGesture);
+      this.__ctx__.gestureManager.uninstall(this.swipeGesture);
       this.views.forEach(function(c) { c.view.destroy(); });
     },
 
@@ -3169,7 +3169,7 @@ MODEL({
       var self = this;
       var time = 150 + sizeOfMove * 150;
       Movement.animate(time, function(evt) {
-        self.x = self.index * self.width;
+        self.__ctx__ = self.index * self.width;
       }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
@@ -3191,7 +3191,7 @@ MODEL({
         this.width = this.$.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
-          self.x = self.index * self.width;
+          self.__ctx__ = self.index * self.width;
 
           for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
             self.slider.children[i].style.left = (i * 100) + '%';
@@ -3211,7 +3211,7 @@ MODEL({
         var maxWidth = (this.views.length - 1) * this.width;
         if ( x > maxWidth ) x = maxWidth;
 
-        this.x = x;
+        this.__ctx__ = x;
       }
     },
     {
@@ -3440,7 +3440,7 @@ MODEL({
         selection += values[i].length + 1;
       }
       this.$.setSelectionRange(selection, selection);
-      isLast && this.X.setTimeout((function() {
+      isLast && this.__ctx__.setTimeout((function() {
         this.autocompleteView.autocomplete('');
       }).bind(this), 0);
     },
@@ -3526,7 +3526,7 @@ MODEL({
           this.children = [this.field];
           return this.field.toHTML() + '<input type="button" id="' +
             this.on('click', (function(){ this.publish('remove'); }).bind(this)) +
-            '" class="multiLineStringRemove" value="X">';
+            '" class="multiLineStringRemove" value="__ctx__">';
         }
       }
     }
@@ -3552,7 +3552,7 @@ MODEL({
     row: function() {
       // TODO: Find a better way to copy relevant values as this is unsustainable.
       var view = this.model_.RowView.create({
-        field: this.X.TextFieldView.create({
+        field: this.__ctx__.TextFieldView.create({
           name: this.name,
           type: this.type,
           displayWidth: this.displayWidth,
@@ -3971,14 +3971,14 @@ MODEL({
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.X[this.subType + 'DAO']; }
+      factory: function() { return this.__ctx__[this.subType + 'DAO']; }
     },
     { name: 'mode' },
     {
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subKey, this.__ctx__);
         this.dao.where(EQ(subKey, value)).limit(1).select({
           put: function(o) {
             self.innerData = o;
@@ -3992,7 +3992,7 @@ MODEL({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return this.X[this.subType]; }
+      defaultValueFn: function() { return this.__ctx__[this.subType]; }
     },
     { name: 'subKey' },
     {
@@ -4019,14 +4019,14 @@ MODEL({
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.X[this.subType + 'DAO']; }
+      factory: function() { return this.__ctx__[this.subType + 'DAO']; }
     },
     { name: 'mode' },
     {
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        var subKey = FOAM.lookup(this.subKey, this.X);
+        var subKey = FOAM.lookup(this.subKey, this.__ctx__);
         this.innerData = this.dao.where(IN(subKey, value));
       }
     },
@@ -4036,7 +4036,7 @@ MODEL({
     { name: 'subType' },
     {
       name: 'model',
-      defaultValueFn: function() { return this.X[this.subType]; }
+      defaultValueFn: function() { return this.__ctx__[this.subType]; }
     },
     { name: 'subKey' },
     {
@@ -4728,7 +4728,7 @@ MODEL({
       this.preTest();
       this.test.atest()(function() {
         self.postTest();
-        self.X.asyncCallback && self.X.asyncCallback();
+        self.__ctx__.asyncCallback && self.__ctx__.asyncCallback();
       });
     },
     preTest: function() {
@@ -4791,7 +4791,7 @@ MODEL({
       isEnabled: function() { return this.test.regression; },
       action: function() {
         this.test.master = this.test.results;
-        this.X.daoViewCurrentDAO.put(this.test, {
+        this.__ctx__.daoViewCurrentDAO.put(this.test, {
           put: function() {
             this.test.regression = false;
           }.bind(this),
@@ -4815,10 +4815,10 @@ MODEL({
           </tr>
           <tr>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.masterID) %>">
-              <% this.masterView = FOAM.lookup(this.masterView, this.X).create({ data$: this.test.master$ }); out(this.masterView); %>
+              <% this.masterView = FOAM.lookup(this.masterView, this.__ctx__).create({ data$: this.test.master$ }); out(this.masterView); %>
             </td>
             <td class="output" id="<%= this.setClass('error', function() { return this.test.regression; }, this.liveID) %>">
-              <% this.liveView = FOAM.lookup(this.liveView, this.X).create({ data$: this.test.results$ }); out(this.liveView); %>
+              <% this.liveView = FOAM.lookup(this.liveView, this.__ctx__).create({ data$: this.test.results$ }); out(this.liveView); %>
             </td>
           </tr>
         </tbody>
@@ -4838,7 +4838,7 @@ MODEL({
   properties: [
     {
       name: 'liveView',
-      getter: function() { return this.X.$(this.liveID); }
+      getter: function() { return this.__ctx__.$(this.liveID); }
     },
     {
       name: 'liveID',
@@ -4851,7 +4851,7 @@ MODEL({
       var test = this.test;
       var $ = this.liveView;
       test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
-      test.X.render = function(v) {
+      test.__ctx__.render = function(v) {
         test.append(v.toHTML());
         v.initHTML();
       };
@@ -4888,7 +4888,7 @@ MODEL({
       defaultValueFn: function() {
         var e = this.main$();
         return e ?
-            toNum(this.X.window.getComputedStyle(e).width) :
+            toNum(this.__ctx__.window.getComputedStyle(e).width) :
             300;
       }
     },
@@ -4907,7 +4907,7 @@ MODEL({
           return this.panelView.minWidth + (this.panelView.stripWidth || 0);
         var e = this.panel$();
         return e ?
-            toNum(this.X.window.getComputedStyle(e).width) :
+            toNum(this.__ctx__.window.getComputedStyle(e).width) :
             250;
       }
     },
@@ -4923,7 +4923,7 @@ MODEL({
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current with (CSS pixels) of the containing element',
       getter: function() {
-        return toNum(this.X.window.getComputedStyle(this.$.parentNode).width);
+        return toNum(this.__ctx__.window.getComputedStyle(this.$.parentNode).width);
       }
     },
     {
@@ -4987,11 +4987,11 @@ MODEL({
       this.panel$().addEventListener('touchmove',  this.onTouchMove);
       this.panel$().addEventListener('touchend',   this.onTouchEnd);
 
-      this.X.document.addEventListener('mousemove', this.onMouseMove);
-      this.X.document.addEventListener('mouseup',   this.onMouseUp);
+      this.__ctx__.document.addEventListener('mousemove', this.onMouseMove);
+      this.__ctx__.document.addEventListener('mouseup',   this.onMouseUp);
 
       // Resize first, then init the outer view, and finally the panel view.
-      this.X.window.addEventListener('resize', this.onResize);
+      this.__ctx__.window.addEventListener('resize', this.onResize);
       this.onResize();
       this.mainView.initHTML();
       this.panelView.initHTML();
@@ -5003,13 +5003,13 @@ MODEL({
       }.bind(this))();
      },
      main$: function() {
-      return this.X.$(this.id + '-main');
+      return this.__ctx__.$(this.id + '-main');
     },
     panel$: function() {
-      return this.X.$(this.id + '-panel');
+      return this.__ctx__.$(this.id + '-panel');
     },
     shadow$: function() {
-      return this.X.$(this.id + '-shadow');
+      return this.__ctx__.$(this.id + '-shadow');
     }
   },
 
