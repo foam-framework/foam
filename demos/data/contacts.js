@@ -39,7 +39,7 @@ MODEL({
 });
 
 function addContacts(dao) {
-  JSONUtil.arrayToObjArray(X, [
+  JSONUtil.arrayToObjArray(__ctx__, [
     { first: "Harry", last: "Chandler", email: "Harry@Chandler.com" },
     { first: "Austin", last: "Nelson", email: "Austin@Nelson.com" },
     { first: "Ruby", last: "Romero", email: "Ruby@Romero.com" },

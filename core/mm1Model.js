@@ -74,9 +74,9 @@ var Model = {
 
       <li>In javascript code, <code>YourModel.create(...)</code> creates an instance of
       your model. This is context dependent, so generally you will be calling
-      <code>this.X.YourModel.create({...})</code>.</li>
+      <code>this.__ctx__.YourModel.create({...})</code>.</li>
 
-      <li>Creating a subcontext and replacing X.YourModel with a different model (such as
+      <li>Creating a subcontext and replacing __ctx__.YourModel with a different model (such as
       YourTestModelMock created specifically for testing) will give you seamless dependency
       injection. See the
       $$DOC{ref:'DevDocumentation_Context..documentation.chapters.intro', text:'Context documentation'}
@@ -315,7 +315,7 @@ var Model = {
       preSet: function(_, newValue) {
         if ( ! Method ) return;
 
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.__ctx__, newValue, Method);
 
         // convert a map of functions to an array of Method instances
         var methods = [];
@@ -356,7 +356,7 @@ var Model = {
       view: 'ArrayView',
       factory: function() { return []; },
       preSet: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
+        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.__ctx__, newValue, Method);
         return newValue;
       },
       defaultValue: [],

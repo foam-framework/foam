@@ -1,6 +1,6 @@
 <%
   var test = this.data;
-  this.childView = this.X.sub({ asyncCallback: this.childrenCallback }).TestsView.create({
+  this.childView = this.__ctx__.sub({ asyncCallback: this.childrenCallback }).TestsView.create({
       dao: test.tests
   });
 %>
@@ -13,6 +13,6 @@
 <% } %>
 <div>Code:</div>
 <pre><div class="code">{{test.code}}</div></pre>
-$$results{ X: this.X.sub({ asyncCallback: this.resultsCallback }) }
+$$results{ __ctx__: this.__ctx__.sub({ asyncCallback: this.resultsCallback }) }
 <blockquote><%= this.childView.toHTML() %></blockquote>
 <br>

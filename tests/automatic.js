@@ -7,7 +7,7 @@ var startTime = process.hrtime();
 
 // Create an XMLFileDAO against FUNTests.xml
 var rawDAO = XMLFileDAO.create({ name: path.join(__dirname, 'FUNTests.xml'), model: UnitTest });
-global.X.UnitTestDAO = rawDAO;
+global.__ctx__.UnitTestDAO = rawDAO;
 var dao = rawDAO.where(AND(EQ(UnitTest.DISABLED, false), CONTAINS(UnitTest.TAGS, 'node')));
 
 // Now lets fetch the top-level tests and start executing them.
@@ -29,7 +29,7 @@ function onFailure(test) {
   }
 }
 
-global.X.onTestFailure = onFailure;
+global.__ctx__.onTestFailure = onFailure;
 
 function testsComplete() {
   console.log('Testing complete. Passed: ' + (allTests.length - failCount) + ',  Failed: ' + failCount);

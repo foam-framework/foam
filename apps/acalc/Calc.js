@@ -426,7 +426,7 @@ var CalcButton = ActionButtonCView2.xbind({
   height:     85,
   font:       '24px Roboto'
 });
-X.registerModel(CalcButton, 'ActionButton');
+__ctx__.registerModel(CalcButton, 'ActionButton');
 
 
 MODEL({ name: 'HistoryView',          extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });

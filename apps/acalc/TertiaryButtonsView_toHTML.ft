@@ -1,5 +1,5 @@
 <%
-this.X.registerModel(this.X.ActionButton.xbind({
+this.__ctx__.registerModel(this.__ctx__.ActionButton.xbind({
   width: 70,
   height: 70,
   color:      'rgb(119, 119, 119)',

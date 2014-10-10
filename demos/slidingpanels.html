@@ -29,7 +29,7 @@
   });
 
   setTimeout(function() {
-    var Y = this.X.sub();
+    var Y = this.__ctx__.sub();
     //Y.touchManager = Y.TouchManager.create({});
     var v = Y.SlidePanelView.create({
       mainView: Y.BackgroundView.create({ color: 'green' }),

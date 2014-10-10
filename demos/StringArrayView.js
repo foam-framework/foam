@@ -1,4 +1,4 @@
-var stack = X.StackView.create();
+var stack = __ctx__.StackView.create();
 
 MODEL({
   name: 'RefTable',
@@ -20,7 +20,7 @@ MODEL({
   ],
   methods: {
     autocomplete: function(data) {
-      var src = this.X.PersonDAO;
+      var src = this.__ctx__.PersonDAO;
       var dao = src.where(
         data ?
           STARTS_WITH_IC(IssuePerson.NAME, data) :

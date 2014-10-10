@@ -49,12 +49,12 @@ MODEL({
         </p>
         <p>Even if you don't create sub-contexts in your $$DOC{ref:'Model'}, you
         should always use your current context when creating instances:
-        <p><code>this.X.MyModel.create(...)</code></p>
+        <p><code>this.__ctx__.MyModel.create(...)</code></p>
         <p>This guarantees you will play nicely with other $$DOC{ref:'Model',usePlural:true}
         that may rely on sub-contexting for dependency injection or to confgure
         the $$DOC{ref:'View',usePlural:true} that you create, without requiring any
         knowledge or intervention on your part. When in doubt, never use a global. Always
-        <code>this.X</code>.
+        <code>this.__ctx__</code>.
     */},
     chapters: [
       {
@@ -71,7 +71,7 @@ MODEL({
           problem, and singletons are avoided.
           </p>
           <p>A $$DOC{ref:'DevDocumentation_Context',text:'Context'} solves this problem
-          by wrapping the global namespace and instances into an object, <code>this.X</code>,
+          by wrapping the global namespace and instances into an object, <code>this.__ctx__</code>,
           and allowing code
           to create copies with specific changes that can be passed on to
           the instances you create.
@@ -79,7 +79,7 @@ MODEL({
           <p>For example:</p>
           <p><code>
             myMethod: function() {<br/>
-            var subX = this.X.sub({name:'mySubContext'}); // create subcontext<br/>
+            var subX = this.__ctx__.sub({name:'mySubContext'}); // create subcontext<br/>
             subX.greatValue = subX.SimpleValue.create();  // a simple value in sub context<br/>
             }
           </code></p>
@@ -105,11 +105,11 @@ MODEL({
           implementation of a $$DOC{ref:'Model'}, just reassign it in your subcontext:
           <p><code>
             init: function() {<br/>
-            this.X = this.X.sub(); // replace our own context<br/>
+            this.__ctx__ = this.__ctx__.sub(); // replace our own context<br/>
             this.SUPER(); // always call this.SUPER() in your init()!<br/>
-            this.X.DetailView = this.X.MyOtherView; // swap in different view<br/>
+            this.__ctx__.DetailView = this.__ctx__.MyOtherView; // swap in different view<br/>
             ...<br/>
-            var actuallyMyOtherView = this.X.DetailView.create();<br/>
+            var actuallyMyOtherView = this.__ctx__.DetailView.create();<br/>
             }
           </code></p>
           Not only does this cause your own calls to create() to use the new $$DOC{ref:'DetailView'}
@@ -127,7 +127,7 @@ MODEL({
           which includes all the $$DOC{ref:'Model',usePlural:true} defined outside
           of a specific context.
           </p>
-          <p>Each time you call <code>this.X.sub()</code>, you create a branch with
+          <p>Each time you call <code>this.__ctx__.sub()</code>, you create a branch with
           a copy of the parent context. Changes propagate down the branches, so
           if you add a value instance to the root, all the subcontexts will also have
           that value. If you create a value in a subcontext, however, the parent
@@ -135,18 +135,18 @@ MODEL({
           </p>
           <p>The basic rule of thumb is that any $$DOC{ref:'Model'} that wants
           to change the contents of its context should sub-context first.
-          Calling <code>this.X = this.X.sub();</code> in your init() $$DOC{ref:'Method'},
+          Calling <code>this.__ctx__ = this.__ctx__.sub();</code> in your init() $$DOC{ref:'Method'},
           before you call <code>this.SUPER();</code>,
           replaces your implicit context with a subcontext, so anything created inside
           your $$DOC{ref:'Model'} will use the subcontext.
           </p>
           <p>You can also create multiple subcontexts, and manage their use yourself:
           <p><code>
-            this.searchX = this.X.sub({name:'searchContext'});<br/>
-            this.detailX = this.X.sub({name:'detailContext'});<br/>
+            this.searchX = this.__ctx__.sub({name:'searchContext'});<br/>
+            this.detailX = this.__ctx__.sub({name:'detailContext'});<br/>
             ...<br/>
             this.searchX.selection = this.searchX.SimpleValue.create();<br/>
-            this.detailX.DetailView = this.X.BetterDetailView;<br/>
+            this.detailX.DetailView = this.__ctx__.BetterDetailView;<br/>
              </code></p>
           </p>
         */}

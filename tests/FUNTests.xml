@@ -95,7 +95,7 @@
         view[i] = i;
       }
 
-      var encodedString = this.X.Base64Encoder.encode(buffer);
+      var encodedString = this.__ctx__.Base64Encoder.encode(buffer);
       var EXPECTED_RESULTS =
         'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIj' +
         'JCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZH' +
@@ -214,7 +214,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.decode = function(str) {
-        var decoder = this.X.Base64Decoder.create([]);
+        var decoder = this.__ctx__.Base64Decoder.create([]);
         decoder.put(str);
         decoder.eof();
         return decoder.sink;
@@ -239,7 +239,7 @@
       };
 
       this.encodingTest = function(input, expected) {
-        var encodedString = this.X.Base64Encoder.encode(this.string2ab(input));
+        var encodedString = this.__ctx__.Base64Encoder.encode(this.string2ab(input));
         var decodedString = this.ab2String(this.decode(encodedString));
         this.assert(expected === encodedString, 'Correctly encoded "' + input + '" as "' + expected + '" (== "' + encodedString + '")');
         this.assert(input    === decodedString, 'Correctly decoded "' + encodedString + '" back to "' + input + '" (== "' + decodedString + '")');
@@ -316,28 +316,28 @@
     <property name="disabled">true</property>
     <property name="code" type="function">function anonymous() {
 
-      X.a = 42;
-      this.log(X.a);
-      var Y = X.sub({a:1,b:2}, 'Y');
+      __ctx__.a = 42;
+      this.log(__ctx__.a);
+      var Y = __ctx__.sub({a:1,b:2}, 'Y');
       this.log(Y);
       this.log(Y.a);
       MDAO.create({ model: UnitTest });
       var m1 = MDAO.create({ model: UnitTest });
       var m2 = Y.MDAO.create({ model: UnitTest });
-      this.log('m2.X ', m2.X);
-      this.log('m1.X ', m1.X);
-      this.log(m2.X.a);
-      var m3 = m2.X.MDAO.create({ model: UnitTest });
-      this.log(m3.X);
-      this.log(m3.X.a);
+      this.log('m2.__ctx__ ', m2.__ctx__);
+      this.log('m1.__ctx__ ', m1.__ctx__);
+      this.log(m2.__ctx__.a);
+      var m3 = m2.__ctx__.MDAO.create({ model: UnitTest });
+      this.log(m3.__ctx__);
+      this.log(m3.__ctx__.a);
     
 }
     </property>
     <property name="master">42
 CONTEXT(Y)
 1
-m2.X CONTEXT(Y)
-m1.X [object Window]
+m2.__ctx__ CONTEXT(Y)
+m1.__ctx__ [object Window]
 1
 CONTEXT(Y)
 1
@@ -1732,7 +1732,7 @@ a message
       var json = x.toJSON();
       this.log(json);
       this.assert(typeof json === 'string', '.toJSON() produces JSON strings');
-      var parsed = JSONUtil.parse(X, json);
+      var parsed = JSONUtil.parse(__ctx__, json);
       this.assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
       this.assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
 

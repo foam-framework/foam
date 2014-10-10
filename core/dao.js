@@ -1504,7 +1504,7 @@ MODEL({
       this.SUPER();
 
       var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(this.X, objs).select(this);
+      if ( objs ) JSONUtil.parse(this.__ctx__, objs).select(this);
 
       this.addRawIndex({
         execute: function() {},
@@ -2478,7 +2478,7 @@ MODEL({
     put: function(value, sink) {
       var self = this;
       var extra = {};
-      this.X.ajsonp(this.buildPutURL(value),
+      this.__ctx__.ajsonp(this.buildPutURL(value),
              this.buildPutParams(value),
              "POST",
              this.objToJson(value, extra)
@@ -2562,7 +2562,7 @@ MODEL({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          self.X.ajsonp(url, myparams)(function(data) {
+          self.__ctx__.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -2615,7 +2615,7 @@ MODEL({
     },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
+      this.__ctx__.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
         if ( data ) {
           sink && sink.put && sink.put(self.jsonToObj(data));
         } else {
@@ -3174,7 +3174,7 @@ MODEL({
 
   documentation: function() {/*
     <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
-    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    ready to help. Simply <code>this.__ctx__.EasyDAO.create()</code> and set the flags
     to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
     will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
     </p>
@@ -3292,7 +3292,7 @@ MODEL({
         this.mdao = dao;
       } else {
         if ( this.migrationRules && this.migrationRules.length ) {
-          dao = this.X.MigrationDAO.create({
+          dao = this.__ctx__.MigrationDAO.create({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
@@ -3418,7 +3418,7 @@ MODEL({
             });
           },
           function(ret) {
-            self.X.setTimeout(ret, self.retryInterval);
+            self.__ctx__.setTimeout(ret, self.retryInterval);
           }
         ))(function(){});
     },
@@ -3604,7 +3604,7 @@ MODEL({
       var version;
       aseq(
         function(ret) {
-          self.X.DAOVersionDAO.find(self.name, {
+          self.__ctx__.DAOVersionDAO.find(self.name, {
             put: function(c) {
               version = c;
               ret();
@@ -3622,14 +3622,14 @@ MODEL({
           function updateVersion(ret, v) {
             var c = version.clone();
             c.version = v;
-            self.X.DAOVersionDAO.put(c, ret);
+            self.__ctx__.DAOVersionDAO.put(c, ret);
           }
 
           var rulesDAO = self.rules.dao;
 
           rulesDAO
             .where(AND(GT(MigrationRule.VERSION, version.version),
-                       LTE(MigrationRule.VERSION, self.X.App.version)))
+                       LTE(MigrationRule.VERSION, self.__ctx__.App.version)))
             .select([].sink)(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {

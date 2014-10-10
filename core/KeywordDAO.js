@@ -35,7 +35,7 @@ MODEL({
         put: function(obj) {
           if ( ! query.f(obj) ) {
             console.log('******* KEYWORD MATCH: ', obj.id, query.toString(), arg1);
-            dao.X.setTimeout(function() {
+            dao.__ctx__.setTimeout(function() {
               obj = obj.model_.create(obj);
               obj.keywords = obj.keywords.clone().binaryInsert(arg1);
               console.log('* ', obj.keywords);
