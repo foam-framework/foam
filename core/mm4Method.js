@@ -592,11 +592,27 @@ function superMethodDecorator(mName, f) {
   };
 }
 
+function contextMethodDecorator(f) {
+  return function() {
+    var args = argsToArray(arguments);
+    args.unshift(this.__ctx__);
+    return f.apply(this, args);
+  };
+}
+
+
 Method.getPrototype().generateFunction = function() {
   var f = this.code;
 
-  if ( this.args.length && this.args[0].name == 'SUPER' ) {
-    f = superMethodDecorator(this.name, f);
+  if ( this.args.length ) {
+    if ( this.args[0].name == 'SUPER' ) {
+      f = superMethodDecorator(this.name, f);
+      if ( this.args.length > 1 && this.args[1].name == 'X' ) {
+        f = contextMethodDecorator(f);
+      }
+    } else if ( this.args[0].name == 'X' ) {
+      f = contextMethodDecorator(f);
+    }
   }
 
   return DEBUG ? this.decorateFunction(f) : f;

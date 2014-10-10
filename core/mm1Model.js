@@ -332,7 +332,7 @@ var Model = {
           // Model Feature object.
           if ( typeof oldValue == 'function' ) {
             method.args = oldValue.toString().match(/^function[ _$\w]*\(([ ,\w]*)/)[1].split(',').map(function(name) {
-              return Arg.create({name: name});
+              return Arg.create({name: name.trim()});
             });
           }
 

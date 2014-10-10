@@ -11,13 +11,16 @@
       MODEL({name: 'A', methods: { foo: function() { console.log('a'); } }});
       MODEL({name: 'B', extendsModel: 'A', methods: { foo: function() { console.log('b.fore'); this.SUPER(); console.log('b.after'); } }});
       MODEL({name: 'B2', extendsModel: 'A', methods: { foo: function(SUPER) { console.log('b2.fore'); SUPER(); console.log('b2.after'); } }});
+      MODEL({name: 'B3', extendsModel: 'A', methods: { foo: function(SUPER, X) { X.console.log('b3.fore'); SUPER(); X.console.log('b3.after'); } }});
 
-      var a = A.create();
-      var b = B.create();
+      var a  = A.create();
+      var b  = B.create();
       var b2 = B2.create();
+      var b3 = B3.create();
       a.foo();
       b.foo();
       b2.foo();
+      b3.foo();
     }
     </property>
   </object>
