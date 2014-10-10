@@ -33,8 +33,10 @@ MODEL({
           var pattern = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           this.pattern_       = new RegExp(pattern, 'i');
           this.prefixPattern_ = new RegExp('^' + pattern, 'i');
+          // This is a bit different than the server in that we allow prefixes in order
+          // to support search-as-you-type.
           this.labelPattern_  = new RegExp(pattern.indexOf(':') == -1 ?
-            '^\\w+-' + pattern :
+            '(^|-)' + pattern :
             '^' + pattern.replace(/:/,'-'), 'i');
 
           return value.toLowerCase();
@@ -46,12 +48,15 @@ MODEL({
      // No different than the non IC-case
      toSQL: function() { return this.arg1; },
      toMQL: function() { return this.arg1; },
-
      f: function(obj) {
        if ( this.pattern_.test(obj.summary) ) return true;
        if ( this.prefixPattern_.test(obj.owner) ) return true;
-       for ( var i = 0 ; i < obj.cc.length     ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
-       for ( var i = 0 ; i < obj.labels.length ; i++ ) if ( this.labelPattern_.test(obj.labels[i]) ) return true;
+       for ( var i = 0 ; i < obj.cc.length       ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
+       for ( var i = 0 ; i < obj.labels.length   ; i++ ) if ( this.labelPattern_.test(obj.labels[i]) ) return true;
+       for ( var i = 0 ; i < obj.keywords.length ; i++ ) {
+         console.log('*** ', obj.keywords[i], this.arg1);
+if ( obj.keywords[i] == this.arg1 ) return true;
+       }
        return false;
      }
    }

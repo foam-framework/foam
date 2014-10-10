@@ -309,6 +309,7 @@ MODEL({
         M:            'm',
         Cr:           'cr',
         Iteration:    'iteration',
+        Week:         'week',
         ReleaseBlock: 'releaseBlock',
         OS:           'OS',
         MovedFrom:    'movedFrom',
@@ -340,6 +341,8 @@ MODEL({
         extendsModel: 'GeneratedQIssue',
 
         name: 'QIssue',
+
+//        traits: ['KeywordsTrait'],
 
         tableProperties: [
           'starred',
@@ -377,6 +380,15 @@ MODEL({
               return '<div id="' + id + '">' + value + '</div>';
             }
           },
+    {
+      model_: 'StringArrayProperty',
+      name: 'keywords',
+      preSet: function(_, a) {
+        for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
+        a.sort();
+        return a;
+      }
+    },
           {
             name: 'labels',
             shortName: 'l',
@@ -394,9 +406,7 @@ MODEL({
               return s;
             },
             preSet: function(_, a) {
-              for ( var i = 0; i < a.length; i++ ) {
-                if ( isPropertyLabel(a[i]) ) a[i] = a[i].intern();
-              }
+              for ( var i = 0; i < a.length; i++ ) a[i] = a[i].intern();
               return a.sort();
             },
             postSet: function(_, a) {
@@ -510,6 +520,11 @@ MODEL({
           },
           {
             model_: 'LabelArrayProperty',
+            name: 'week',
+            tableWidth: '69px'
+          },
+          {
+            model_: 'LabelArrayProperty',
             name: 'releaseBlock',
             shortName: 'rb',
             aliases: ['rBlock', 'release'],
@@ -540,8 +555,7 @@ MODEL({
             model_: 'StringArrayProperty',
             name: 'cc',
             autocompleter: 'PersonCompleter',
-            displayWidth: 70,
-            preSet: function(_, a) { return a.intern(); }
+            displayWidth: 70
           },
           {
             name: 'owner',
@@ -652,12 +666,18 @@ MODEL({
               */
               return [];
             }
+          },
+          {
+            model_: 'StringProperty',
+            name: 'content',
+            displayHeight: 4
           }
         ],
 
         methods: {
           replaceLabels: function(label, values) {
-            var labels = this.labels.filter(function(l) { return ! l.startsWith(label); });
+            var prefix = label + '-';
+            var labels = this.labels.filter(function(l) { return ! l.startsWith(prefix); });
             if ( Array.isArray(values) ) {
               for ( var i = 0 ; i < values.length ; i++ ) {
                 labels.binaryInsert(label + '-' + values[i]);
@@ -700,9 +720,11 @@ MODEL({
             convertArray('labels');
             convertArray('m');
             convertArray('iteration');
+            convertArray('week');
 
             var comment = this.X.QIssueComment.create({
               issueId: this.id,
+              content: other.content,
               updates: this.X.QIssueCommentUpdate.create(diff)
             });
 

@@ -556,7 +556,6 @@ MODEL({
       // - multiple points that
       // - are all done and
       // - none of which has moved more than 10px net.
-
       return Object.keys(map).every(function(key) {
         var p = map[key];
         return p.done && Math.abs(p.totalX) < 10 && Math.abs(p.totalY) < 10;
@@ -1046,12 +1045,12 @@ MODEL({
           });
 
           // Now immediately feed this to the appropriate ScrollGesture.
-          // TODO: May need to check or listen for the non-momentum versions too?
-          var gesture = Math.abs(event.deltaX) > Math.abs(event.deltaY) ?
-              'horizontalScrollMomentum' : 'verticalScrollMomentum';
+          // We hit all three of vanilla, momentum, and native.
+          var dir = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? 'horizontal' : 'vertical';
+          var gestures = [dir + 'Scroll', dir + 'ScrollMomentum', dir + 'ScrollNative'];
           // Find all targets for that gesture and check their rectangles.
           this.activateContainingGestures(wheel.x, wheel.y,
-              function(g) { return g.name === gesture; });
+              function(g) { return gestures.indexOf(g.name) >= 0; });
 
           // And since wheel events are already moving, include the deltas immediately.
           // We have to do this after checking containment above, or a downward (negative)
@@ -1059,14 +1058,18 @@ MODEL({
           wheel.x -= event.deltaX;
           wheel.y -= event.deltaY;
 
-          if ( this.active[gesture] && this.active[gesture].length ) {
-            this.points.wheel = wheel;
-            this.gestures[gesture].attach(this.points, this.active[gesture].map(function(gt) {
-              return gt.handler;
-            }));
-            this.recognized = this.gestures[gesture];
-            this.wheelTimer = this.X.window.setTimeout(this.onWheelDone,
-                this.scrollWheelTimeout);
+          for ( var i = 0 ; i < gestures.length ; i++ ) {
+            var gesture = gestures[i];
+            if ( this.active[gesture] && this.active[gesture].length ) {
+              if ( ! this.points.wheel ) this.points.wheel = wheel;
+              this.gestures[gesture].attach(this.points, this.active[gesture].map(function(gt) {
+                return gt.handler;
+              }));
+              this.recognized = this.gestures[gesture];
+              this.wheelTimer = this.X.window.setTimeout(this.onWheelDone,
+                  this.scrollWheelTimeout);
+              break;
+            }
           }
         }
       }

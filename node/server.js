@@ -98,6 +98,12 @@ module.exports.launchServer = function(opts) {
         // Compute the resolved path and make sure it's inside my static directory.
         // Need to knock off the leading / on the URL.
         var target = path.resolve(staticDir, req.url.substring(1));
+        // Remove any trailing ? or #.
+        if ( target.indexOf('?') >= 0 )
+          target = target.substring(0, target.indexOf('?'));
+        if ( target.indexOf('#') >= 0 )
+          target = target.substring(0, target.indexOf('#'));
+
         var rel = path.relative(staticDir, target);
         // Make sure that path doesn't start with ..
         if ( rel.startsWith('..') ) {

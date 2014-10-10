@@ -53,6 +53,7 @@ window.onload = function() {
             arequire('DefaultACRowView'),
             arequire('AddRowView'),
             arequire('AutocompleteListView'),
+            arequire('mdTextFieldView'),
             arequire('IssueOwnerAvatarView'),
             arequire('IssueCitationView'),
             arequire('CommentView'),

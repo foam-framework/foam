@@ -704,11 +704,14 @@ MODEL({
     },
 
     toInnerHTML: function() {
-      /* In most cases you can override this method to provide all of your HTML
+      /* <p>In most cases you can override this method to provide all of your HTML
         content. Calling $$DOC{ref:'.updateHTML'} will cause this method to
         be called again, regenerating your content. $$DOC{ref:'Template',usePlural:true}
         are usually called from here, or you may create a
-        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}. */
+        $$DOC{ref:'.toInnerHTML'} $$DOC{ref:'Template'}.</p>
+        <p>If you are generating your content here, you may also need to override
+        $$DOC{ref:'.initInnerHTML'} to create event handlers such as
+        <code>this.on('click')</code>. */
       return '';
     },
 
@@ -739,7 +742,11 @@ MODEL({
 
     initInnerHTML: function() {
       /* Initialize this View and all of it's children. Usually just call
-          $$DOC{ref:'.initHTML'} instead. */
+         $$DOC{ref:'.initHTML'} instead. When implementing a new $$DOC{ref:'View'}
+         and adding listeners (including <code>this.on('click')</code>) that
+         will be destroyed each time $$DOC{ref:'.toInnerHTML'} is called, you
+         will have to override this $$DOC{ref:'Method'} and add them here.
+       */
       // This mostly involves attaching listeners.
       // Must be called activate a view after it has been added to the DOM.
 
@@ -2456,11 +2463,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
-      var self = this;
+      var superResult = this.SUPER(); // get the destructors done before doing our work
 
-      this.on('click', function() {
-        self.action.callIfEnabled(self.X, self.data);
-      }, this.id);
+      var self = this;
 
       this.setAttribute('disabled', function() {
         self.closeTooltip();
@@ -2474,7 +2479,7 @@ MODEL({
 
       this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
@@ -2489,7 +2494,18 @@ MODEL({
       }
 
       return out;
+    },
+
+    initInnerHTML: function() {
+      this.SUPER();
+
+      var self = this;
+      this.on('click', function() {
+        self.action.callIfEnabled(self.X, self.data);
+      }, this.id);
+
     }
+
   }
 });
 
@@ -2513,8 +2529,9 @@ MODEL({
 
   methods: {
     toHTML: function() {
+      var superResult = this.SUPER(); // get the destructors done before doing our work
       this.setAttribute('href', function() { return '#' }, this.id);
-      return this.SUPER();
+      return superResult;
     },
 
     toInnerHTML: function() {
@@ -4816,65 +4833,40 @@ MODEL({
   label: 'UI Test Result View',
   help: 'Overrides the inner masterView and liveView for UITests.',
 
-  extendsModel: 'RegressionTestResultView',
+  extendsModel: 'UnitTestResultView',
 
-  properties: ['oldTests'],
+  properties: [
+    {
+      name: 'liveView',
+      getter: function() { return this.X.$(this.liveID); }
+    },
+    {
+      name: 'liveID',
+      factory: function() { return this.nextID(); }
+    }
+  ],
 
   methods: {
     preTest: function() {
       var test = this.test;
-      var $ = this.liveView.$;
-      test.X.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
+      var $ = this.liveView;
+      test.append = function(s) { $.insertAdjacentHTML('beforeend', s); };
       test.X.render = function(v) {
-        test.X.append(v.toHTML());
+        test.append(v.toHTML());
         v.initHTML();
       };
-    },
-
-    postTest: function() {
-      // Grab the HTML rendered by the test as its results.
-      // We need the replace() to turn id="view247" into id="view#",
-      // which makes the regression tests far less fragile.
-      var raw = this.liveView.$.innerHTML;
-      this.test.results = raw.replace(/id="view\d+/g, 'id="view#');
-
-      // The above needs to run before SUPER's regression check.
-      this.SUPER();
     }
-  }
-});
+  },
 
-
-MODEL({
-  name: 'UITest',
-  label: 'UI Test',
-
-  extendsModel: 'RegressionTest',
-
-  properties: [
-    {
-      name: 'results',
-      view: 'UITestResultView'
-    },
-    {
-      name: 'runChildTests',
-      help: 'Don\'t run child tests by default for UITests; they need a view to be run properly.',
-      defaultValue: false
-    }
-  ],
-
-  /*
-  actions: [
-    {
-      name: 'test',
-      action: function(obj) { }
-    }
-  ],
-  */
-
-  methods: {
-    //atest: function() { return aconstant('output'); },
-  }
+  templates: [
+    function toHTML() {/*
+      <br>
+      <div>Output:</div>
+        <div class="output" id="<%= this.setClass('error', function() { return this.test.failed > 0; }, this.liveID) %>">
+        </div>
+      </div>
+    */}
+  ]
 });
 
 

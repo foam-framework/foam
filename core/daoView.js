@@ -436,7 +436,7 @@ MODEL({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o); //.clone();
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
         var view = rowView.create({data: o, model: o.model_}, this.X);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;

@@ -27,6 +27,7 @@ MODEL({
       defaultValue: function(_, v, prop) {
         console.assert( Array.isArray(v), 'LabelArrayProperty.postSet: new value is not an array');
 
+        for ( var i = 0; i < v.length; i++ ) v[i] = v[i].intern();
         v.sort();
 
         this.replaceLabels(prop.name.capitalize(), v);
@@ -57,6 +58,12 @@ MODEL({
 
   properties: [
     {
+      name: 'preSet',
+      defaultValue: function(o, n, prop) {
+        return n ? n.intern() : n;
+      }
+    },
+    {
       name: 'postSet',
       defaultValue: function(o, n, prop) {
         this.replaceLabels(prop.name.capitalize(), n);
@@ -68,6 +75,7 @@ MODEL({
     }
   ]
 });
+
 
 MODEL({
   name: 'LabelStringEnumProperty',
@@ -82,6 +90,7 @@ MODEL({
     }
   ]
 });
+
 
 GeneratedQIssue.properties.forEach(function(p) {
   if ( ! p["tableFormatter"] ) {
