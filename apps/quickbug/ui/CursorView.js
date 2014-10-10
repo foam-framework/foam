@@ -4,7 +4,7 @@ MODEL({
   properties: [
     {
       name: 'browser',
-      defaultValueFn: function() { return this.X.browser; }
+      defaultValueFn: function() { return this.__ctx__.browser; }
     },
     {
       name: 'location',
@@ -90,7 +90,7 @@ MODEL({
   methods: {
     initHTML: function() {
       this.SUPER();
-      this.el.focus();
+      this.$.focus();
     }
   },
 

@@ -1504,7 +1504,7 @@ MODEL({
       this.SUPER();
 
       var objs = localStorage.getItem(this.name);
-      if ( objs ) JSONUtil.parse(this.X, objs).select(this);
+      if ( objs ) JSONUtil.parse(this.__ctx__, objs).select(this);
 
       this.addRawIndex({
         execute: function() {},
@@ -2478,7 +2478,7 @@ MODEL({
     put: function(value, sink) {
       var self = this;
       var extra = {};
-      this.X.ajsonp(this.buildPutURL(value),
+      this.__ctx__.ajsonp(this.buildPutURL(value),
              this.buildPutParams(value),
              "POST",
              this.objToJson(value, extra)
@@ -2562,7 +2562,7 @@ MODEL({
           myparams.push('maxResults=' + batch);
           myparams.push('startIndex=' + index);
 
-          self.X.ajsonp(url, myparams)(function(data) {
+          self.__ctx__.ajsonp(url, myparams)(function(data) {
             // Short-circuit count.
             // TODO: This count is wrong for queries that use
             if ( CountExpr.isInstance(sink) ) {
@@ -2615,7 +2615,7 @@ MODEL({
     },
     find: function(key, sink) {
       var self = this;
-      this.X.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
+      this.__ctx__.ajsonp(this.buildFindURL(key), this.buildFindParams())(function(data) {
         if ( data ) {
           sink && sink.put && sink.put(self.jsonToObj(data));
         } else {
@@ -3174,7 +3174,7 @@ MODEL({
 
   documentation: function() {/*
     <p>If you don't know which $$DOC{ref:'DAO'} implementation to choose, $$DOC{ref:'EasyDAO'} is
-    ready to help. Simply <code>this.X.EasyDAO.create()</code> and set the flags
+    ready to help. Simply <code>this.__ctx__.EasyDAO.create()</code> and set the flags
     to indicate what behavior you're looking for. Under the hood, $$DOC{ref:'EasyDAO'}
     will create one or more $$DOC{ref:'DAO'} instances to service your requirements.
     </p>
@@ -3292,7 +3292,7 @@ MODEL({
         this.mdao = dao;
       } else {
         if ( this.migrationRules && this.migrationRules.length ) {
-          dao = this.X.MigrationDAO.create({
+          dao = this.__ctx__.MigrationDAO.create({
             delegate: dao,
             rules: this.migrationRules,
             name: this.model.name + "_" + daoModel.name + "_" + this.name
@@ -3418,7 +3418,7 @@ MODEL({
             });
           },
           function(ret) {
-            self.X.setTimeout(ret, self.retryInterval);
+            self.__ctx__.setTimeout(ret, self.retryInterval);
           }
         ))(function(){});
     },
@@ -3604,7 +3604,7 @@ MODEL({
       var version;
       aseq(
         function(ret) {
-          self.X.DAOVersionDAO.find(self.name, {
+          self.__ctx__.DAOVersionDAO.find(self.name, {
             put: function(c) {
               version = c;
               ret();
@@ -3622,14 +3622,14 @@ MODEL({
           function updateVersion(ret, v) {
             var c = version.clone();
             c.version = v;
-            self.X.DAOVersionDAO.put(c, ret);
+            self.__ctx__.DAOVersionDAO.put(c, ret);
           }
 
           var rulesDAO = self.rules.dao;
 
           rulesDAO
             .where(AND(GT(MigrationRule.VERSION, version.version),
-                       LTE(MigrationRule.VERSION, self.X.App.version)))
+                       LTE(MigrationRule.VERSION, self.__ctx__.App.version)))
             .select([].sink)(function(rules) {
               var seq = [];
               for ( var i = 0; i < rules.length; i++ ) {
@@ -3655,6 +3655,96 @@ MODEL({
   }
 });
 
+MODEL({
+  name: 'SlidingWindowDAODecorator',
+  extendsModel: 'ProxyDAO',
+  help: 'A DAO decorator which reduces network calls by caching a chunk of data around a given query for a period of time.',
+  properties: [
+    {
+      name: 'queryCache',
+      factory: function() { return {}; }
+    },
+    {
+      name: 'queryTTL',
+      help: 'Time to keep each query alive in ms',
+      defaultValue: 10000
+    },
+    {
+      name: 'windowSize',
+      defaultValue: 20
+    }
+  ],
+  methods: {
+    select: function(sink, options) {
+      if ( CountExpr.isInstance(sink) ) return this.delegate.select(sink, options);
+
+      if ( ! this.timeout_ ) this.timeout_ = this.X.setTimeout(this.purge, this.queryTTL);
+
+      var query = options && options.query;
+      var order = options && options.order;
+      var skip = options.skip;
+      var limit = options.limit;
+
+      var key = [
+        'query=' + (query ? query.toSQL() : ''),
+        'order=' + (order ? order.toSQL() : '')
+      ];
+      var cached = this.queryCache[key];
+
+      var future = afuture();
+
+      var self = this;
+      if ( cached &&
+           cached[1] <= skip &&
+           cached[2] >= skip + limit ) {
+        cached[3] = Date.now();
+        cached[0].select(sink, {
+          skip: skip - cached[1],
+          limit: limit
+        })(function() {
+          future.set(sink);
+        });
+        return future.get;
+      }
+
+      if ( cached ) delete this.queryCache[key];
+
+      cached = [
+        [].dao,
+        Math.max(0, skip - this.windowSize / 2),
+        skip + limit + this.windowSize / 2,
+        Date.now()
+      ];
+
+      this.queryCache[key] = cached;
+
+      this.delegate.select(cached[0], {
+        query: query,
+        order: order,
+        skip: cached[1],
+        limit: cached[2] - cached[1]
+      })(function() {
+        cached[0].select(sink, {
+          skip: skip - cached[1],
+          limit: limit
+        })(function(s) { future.set(s); });
+      });
+      return future.get;
+    }
+  },
+  listeners: [
+    {
+      name: 'purge',
+      code: function() {
+        this.timeout_ = undefined
+        var keys = Object.keys(this.queryCache);
+        var threshold = Date.now()  - this.queryTTL;
+        for ( var i = 0, key; key = keys[i]; i++ )
+          if ( this.queryCache[key][3] < threshold ) delete this.queryCache[key];
+      }
+    }
+  ]
+});
 
 // Experimental, convert all functions into sinks
 Function.prototype.put    = function() { this.apply(this, arguments); };

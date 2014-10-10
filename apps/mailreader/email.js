@@ -786,7 +786,7 @@ MODEL({
            html += v.toHTML();
          });
 
-        this.el.innerHTML = html;
+        this.$.innerHTML = html;
 
         this.initChildren();
        }

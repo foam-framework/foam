@@ -36,7 +36,7 @@ MODEL({
     {
       name:  'model',
       type:  'Model',
-      defaultValueFn: function() { return this.X.model; }
+      defaultValueFn: function() { return this.__ctx__.model; }
     },
     {
       model_: 'StringArrayProperty',
@@ -94,7 +94,7 @@ MODEL({
       name: 'scrollbar',
       type: 'ScrollCView',
       factory: function() {
-        var sb = this.X.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
+        var sb = this.__ctx__.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
 
 //        if ( this.dao ) this.dao.select(COUNT())(function(c) { sb.size = c.count; });
 
@@ -164,9 +164,9 @@ MODEL({
       name: 'onResize',
       isMerged: 200,
       code: function() {
-        if ( ! this.el ) return;
+        if ( ! this.$ ) return;
 
-        var h = this.el.parentElement.offsetHeight;
+        var h = this.$.parentElement.offsetHeight;
         var rows = Math.ceil((h - 47)/20)+1;
         // TODO: update the extent somehow
 //        this.scrollbar.extent = rows;
@@ -206,13 +206,13 @@ MODEL({
           this.repaint();
         }.bind(this));
 
-        this.el.insertAdjacentHTML('beforebegin', v.toHTML());
+        this.$.insertAdjacentHTML('beforebegin', v.toHTML());
 
-        var y = findViewportXY(this.el)[1];
-        var screenHeight = this.X.document.firstElementChild.offsetHeight;
-        var popupHeight = toNum(v.el.offsetHeight);
+        var y = findViewportXY(this.$)[1];
+        var screenHeight = this.__ctx__.document.firstElementChild.offsetHeight;
+        var popupHeight = toNum(v.$.offsetHeight);
         if ( screenHeight-y-popupHeight < 10 ) {
-          v.el.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
+          v.$.style.maxHeight = ( screenHeight - y - 10 ) + 'px';
         }
 
         v.initHTML();
@@ -277,7 +277,7 @@ MODEL({
 
         var sb = this.scrollbar;
 
-        this.el.parentElement.onmousewheel = function(e) {
+        this.$.parentElement.onmousewheel = function(e) {
           sb.value = Math.min(
             sb.size - sb.extent,
             Math.max(
@@ -285,11 +285,11 @@ MODEL({
               sb.value - Math.round(e.wheelDelta / 20)));
         };
 
-        if ( this.X.gestureManager ) {
-          this.X.gestureManager.install(this.X.GestureTarget.create({
+        if ( this.__ctx__.gestureManager ) {
+          this.__ctx__.gestureManager.install(this.__ctx__.GestureTarget.create({
             containerID: this.id,
             handler: this,
-            getElement: function() { return this.container.el.parentElement; },
+            getElement: function() { return this.container.$.parentElement; },
             gesture: 'verticalScroll'
           }));
         }
@@ -309,7 +309,7 @@ MODEL({
       // this.count__ = ( this.count__ || 0)+1;
       // if ( this.count__ % 3 !== 0 ) return;
 
-      if ( ! dao || ! this.el ) return;
+      if ( ! dao || ! this.$ ) return;
 
       dao = dao.skip(this.scrollbar.value);
 
@@ -318,8 +318,8 @@ MODEL({
 
       dao.limit(this.rows).select()(function(objs) {
         self.objs = objs;
-        if ( self.el ) {
-          self.el.innerHTML = self.tableToHTML();
+        if ( self.$ ) {
+          self.$.innerHTML = self.tableToHTML();
           self.initHTML_();
         }
       });
@@ -438,8 +438,8 @@ MODEL({
       this.on('mousedown', function(e) {
         var self   = this;
         var startX = e.x;
-        var col1   = self.X.$(id).parentElement;
-        var col2   = self.X.$(id).parentElement.nextSibling;
+        var col1   = self.__ctx__.$(id).parentElement;
+        var col2   = self.__ctx__.$(id).parentElement.nextSibling;
         var w1     = toNum(col1.width);
         var w2     = prop2 ? toNum(col2.width) : 0;
 
@@ -466,12 +466,12 @@ MODEL({
               prop2.tableWidth = col2.width;
             }
           }
-          this.X.document.removeEventListener('mousemove', onMouseMove);
-          this.X.document.removeEventListener('mouseup',   onMouseUp);
+          this.__ctx__.document.removeEventListener('mousemove', onMouseMove);
+          this.__ctx__.document.removeEventListener('mouseup',   onMouseUp);
         }).bind(this);
 
-        this.X.document.addEventListener('mousemove', onMouseMove);
-        this.X.document.addEventListener('mouseup',   onMouseUp);
+        this.__ctx__.document.addEventListener('mousemove', onMouseMove);
+        this.__ctx__.document.addEventListener('mouseup',   onMouseUp);
       }, id);
 
       return '<div id="' + id + '" class="columnResizeHandle" style="top:0;z-index:9;cursor:ew-resize;position:absolute;right:-3px;width:6px;height:100%"><div>';

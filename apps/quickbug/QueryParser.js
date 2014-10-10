@@ -53,10 +53,12 @@ MODEL({
        if ( this.prefixPattern_.test(obj.owner) ) return true;
        for ( var i = 0 ; i < obj.cc.length       ; i++ ) if ( this.prefixPattern_.test(obj.cc[i]) ) return true;
        for ( var i = 0 ; i < obj.labels.length   ; i++ ) if ( this.labelPattern_.test(obj.labels[i]) ) return true;
+       /*
        for ( var i = 0 ; i < obj.keywords.length ; i++ ) {
-         console.log('*** ', obj.keywords[i], this.arg1);
+         console.log('****************************** ', obj.keywords[i], this.arg1);
 if ( obj.keywords[i] == this.arg1 ) return true;
        }
+       */
        return false;
      }
    }

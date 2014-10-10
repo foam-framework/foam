@@ -4,14 +4,14 @@ var QIssueCommentView = FOAM({
   extendsModel: 'DetailView',
 
   properties: [
-    { name: 'model', factory: function() { return this.X.QIssueComment; } }
+    { name: 'model', factory: function() { return this.__ctx__.QIssueComment; } }
   ],
 
   methods: {
     updateSubViews: function() {
       this.SUPER();
-      if ( this.el && this.data === 0 ) {
-        this.el.style.borderTop = 'none';
+      if ( this.$ && this.data === 0 ) {
+        this.$.style.borderTop = 'none';
       }
     }
   },

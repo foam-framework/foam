@@ -49,9 +49,9 @@ MODEL({
   methods: {
     open: function(x, y) {
       var view = LinkView.create({model: Link, data: this});
-      this.richTextView.el.parentNode.insertAdjacentHTML('beforebegin', view.toHTML());
-      view.el.style.left = x + this.richTextView.el.offsetLeft;
-      view.el.style.top = y + this.richTextView.el.offsetTop;
+      this.richTextView.$.parentNode.insertAdjacentHTML('beforebegin', view.toHTML());
+      view.$.style.left = x + this.richTextView.$.offsetLeft;
+      view.$.style.top = y + this.richTextView.$.offsetTop;
       view.initHTML();
       this.view = view;
     }
@@ -101,10 +101,10 @@ MODEL({
     },
     initHTML: function() {
       this.SUPER();
-      this.el.addEventListener('keyup', this.keyUp);
+      this.$.addEventListener('keyup', this.keyUp);
       this.labelView.focus();
     },
-    close: function() { this.el.remove(); }
+    close: function() { this.$.remove(); }
   },
 
   listeners: [
@@ -253,7 +253,7 @@ MODEL({
       this.SUPER();
       var drop = $(this.dropId);
       this.dropzone = drop;
-      this.document = this.el.contentDocument;
+      this.document = this.$.contentDocument;
       var body = this.document.body;
       body.style.whiteSpace = 'pre-wrap';
 
@@ -305,7 +305,7 @@ MODEL({
     },
 
     getSelectionText: function() {
-      var window    = this.el.contentWindow;
+      var window    = this.$.contentWindow;
       var selection = window.getSelection();
 
       if ( selection.rangeCount ) {
@@ -316,7 +316,7 @@ MODEL({
     },
 
     insertElement: function(e) {
-      var window    = this.el.contentWindow;
+      var window    = this.$.contentWindow;
       var selection = window.getSelection();
 
       if ( selection.rangeCount ) {
@@ -341,7 +341,7 @@ MODEL({
     },
 
     showDropMessage: function(show) {
-      this.el.style.opacity = show ? '0' : '1';
+      this.$.style.opacity = show ? '0' : '1';
     },
 
     sanitizeDroppedHtml: function(html) {
@@ -471,7 +471,7 @@ MODEL({
     },
 
     addAttachment: function(file) {
-      var id   = 'att' + {}.elUID;
+      var id   = 'att' + {}.$UID;
       console.log('file: ', file, id);
       this.publish('attachmentAdded', file, id);
       return id;
@@ -495,12 +495,12 @@ MODEL({
     valueToText: function(value) { return value; },
 
     setForegroundColor: function(color) {
-      this.el.contentWindow.focus();
+      this.$.contentWindow.focus();
       this.document.execCommand("foreColor", false, color);
     },
 
     setBackgroundColor: function(color) {
-      this.el.contentWindow.focus();
+      this.$.contentWindow.focus();
       this.document.execCommand("backColor", false, color);
     }
   },
@@ -511,7 +511,7 @@ MODEL({
       label: '<b>B</b>',
       help: 'Bold (Ctrl-B)',
       action: function () {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("bold");
       }
     },
@@ -520,7 +520,7 @@ MODEL({
       label: '<i>I</i>',
       help: 'Italic (Ctrl-I)',
       action: function () {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("italic");
       }
     },
@@ -529,7 +529,7 @@ MODEL({
       label: '<u>U</u>',
       help: 'Underline (Ctrl-U)',
       action: function () {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("underline");
       }
     },
@@ -556,7 +556,7 @@ MODEL({
       label: 'small',
       parent: 'fontSize',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "2");
       }
     },
@@ -566,7 +566,7 @@ MODEL({
       label: 'normal',
       parent: 'fontSize',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "3");
       }
     },
@@ -576,7 +576,7 @@ MODEL({
       label: 'large',
       parent: 'fontSize',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "5");
       }
     },
@@ -586,7 +586,7 @@ MODEL({
       label: 'huge',
       parent: 'fontSize',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "7");
       }
     },
@@ -600,7 +600,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial, sans-serif");
       }
     },
@@ -609,7 +609,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "times new roman, serif");
       }
     },
@@ -618,7 +618,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial bold, sans-serif");
       }
     },
@@ -627,7 +627,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial narrow, sans-serif");
       }
     },
@@ -636,7 +636,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "comic sans, sans-serif");
       }
     },
@@ -645,7 +645,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "courier new, monospace");
       }
     },
@@ -654,7 +654,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "garamond, sans-serif");
       }
     },
@@ -663,7 +663,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "georgia, sans-serif");
       }
     },
@@ -672,7 +672,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "tahoma, sans-serif");
       }
     },
@@ -681,7 +681,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "trebuchet ms, sans-serif");
       }
     },
@@ -690,7 +690,7 @@ MODEL({
       help: 'Set\'s the font face.',
       parent: 'fontFace',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "verdana, sans-serif");
       }
     },
@@ -698,7 +698,7 @@ MODEL({
       name: 'removeFormatting',
       help: 'Removes formatting from the current selection.',
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("removeFormat");
       }
     },
@@ -712,7 +712,7 @@ MODEL({
       help: 'Align Left (Ctrl-Shift-W)',
       // Ctrl-Shift-L
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("justifyLeft");
       }
     },
@@ -722,7 +722,7 @@ MODEL({
       help: 'Align Center (Ctrl-Shift-E)',
       // Ctrl-Shift-E
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand("justifyCenter");
       }
     },
@@ -732,7 +732,7 @@ MODEL({
       help: 'Align Right (Ctrl-Shift-R)',
       // Ctrl-Shift-R
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('justifyRight');
       }
     },
@@ -741,7 +741,7 @@ MODEL({
       help: 'Numbered List (Ctrl-Shift-7)',
       // Ctrl-Shift-7
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('insertOrderedList');
       }
     },
@@ -750,7 +750,7 @@ MODEL({
       help: 'Bulleted List (Ctrl-Shift-7)',
       // Ctrl-Shift-8
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('insertUnorderedList');
       }
     },
@@ -759,7 +759,7 @@ MODEL({
       help: 'Indent Less (Ctrl-[)',
       // Ctrl-[
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('outdent');
       }
     },
@@ -768,7 +768,7 @@ MODEL({
       help: 'Indent More (Ctrl-])',
       // Ctrl-]
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('indent');
       }
     },
@@ -777,7 +777,7 @@ MODEL({
       help: 'Quote (Ctrl-Shift-9)',
       // Ctrl-Shift-9
       action: function() {
-        this.el.contentWindow.focus();
+        this.$.contentWindow.focus();
         this.document.execCommand('formatBlock', false, '<blockquote>');
       }
     }

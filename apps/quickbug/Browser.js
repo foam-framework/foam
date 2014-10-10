@@ -32,7 +32,7 @@ MODEL({
 
   properties: [
     {
-      name: 'X',
+      name: '__ctx__',
       preSet: function(_, x) { return x.sub({stack: this, browser: this}); }
     },
     'project',
@@ -46,7 +46,7 @@ MODEL({
     },
     {
       name: 'location',
-      factory: function() { return this.X.Location.create(); }
+      factory: function() { return this.__ctx__.Location.create(); }
     },
     {
       name: 'memento',
@@ -77,20 +77,20 @@ MODEL({
     {
       name: 'IssueDAO',
       factory: function() {
-        return this.X.QIssueSplitDAO.create({
+        return this.__ctx__.QIssueSplitDAO.create({
           local: this.project.IssueDAO,
-          model: this.X.QIssue,
+          model: this.__ctx__.QIssue,
           remote: this.project.IssueNetworkDAO
         });
 
         return this.project.IssueDAO;
         return WaitCursorDAO.create({
           delegate: this.project.IssueDAO,
-          window:   this.X.window
+          window:   this.__ctx__.window
         });
       },
       postSet: function(_, v) {
-        this.X.IssueDAO = v;
+        this.__ctx__.IssueDAO = v;
       }
     },
     {
@@ -102,7 +102,7 @@ MODEL({
       name: 'bookmarksMenu',
       factory: function() {
         var self = this;
-        var Y = this.X.sub({
+        var Y = this.__ctx__.sub({
           ChoiceListView: Model.create({
             name: 'ChoiceListView',
             extendsModel: 'ChoiceListView',
@@ -157,7 +157,7 @@ MODEL({
     },
     {
       name: 'timer',
-      factory: function() { return this.X.Timer.create(); }
+      factory: function() { return this.__ctx__.Timer.create(); }
     },
     {
       mode_: 'IntProperty',
@@ -237,7 +237,7 @@ MODEL({
     },
     {
       name: 'mementoMgr',
-      factory: function() { return this.X.MementoMgr.create({memento: this.memento$}); }
+      factory: function() { return this.__ctx__.MementoMgr.create({memento: this.memento$}); }
     }
   ],
 
@@ -267,7 +267,7 @@ MODEL({
           } else {
             // Let the timer run for a bit longer so that people can see
             // that it's doing something.
-            this.X.setTimeout(this.timer.stop.bind(this.timer), 1000);
+            this.__ctx__.setTimeout(this.timer.stop.bind(this.timer), 1000);
           }
         }.bind(this));
       }
@@ -286,8 +286,8 @@ MODEL({
       isMerged: 1,
       code: function(evt) {
         this.search(AND(
-          this.X.QueryParser.parseString(this.location.can) || TRUE,
-          this.X.QueryParser.parseString(this.location.q) || TRUE
+          this.__ctx__.QueryParser.parseString(this.location.can) || TRUE,
+          this.__ctx__.QueryParser.parseString(this.location.q) || TRUE
         ).partialEval());
         metricsSrv.sendEvent('Browser', 'Query');
       }
@@ -353,10 +353,10 @@ MODEL({
           return;
         }
 
-        var view = this.X.ToolbarView.create({
+        var view = this.__ctx__.ToolbarView.create({
           horizontal: false,
           data: this,
-          document: this.X.document
+          document: this.__ctx__.document
         });
 
         view.addChild(StaticHTML.create({ content: '<b>Projects</b>' }));
@@ -377,8 +377,8 @@ MODEL({
         view.addSeparator();
         view.addAction(this.model_.CONFIG_PROJECTS);
 
-        view.left = this.favouritesView.el.offsetLeft;
-        view.top = this.favouritesView.el.offsetTop + this.favouritesView.el.offsetHeight;
+        view.left = this.favouritesView.$.offsetLeft;
+        view.top = this.favouritesView.$.offsetTop + this.favouritesView.$.offsetHeight;
         view.openAsMenu();
 
         var self = this;
@@ -410,15 +410,15 @@ MODEL({
       label: '',
       help: 'Create Bookmark',
       action: function() {
-        var anchor = this.addBookmarkView.el;
-        var view   = this.X.AddBookmarkDialog.create({
+        var anchor = this.addBookmarkView.$;
+        var view   = this.__ctx__.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
           data: Bookmark.create({url: this.memento})
         });
 
         anchor.insertAdjacentHTML('beforebegin', view.toHTML());
-        view.el.style.left = 200; // x + anchor.offsetLeft;
-        view.el.style.top  = 200; // y + anchor.offsetTop;
+        view.$.style.left = 200; // x + anchor.offsetLeft;
+        view.$.style.top  = 200; // y + anchor.offsetTop;
         view.initHTML();
       }
     },
@@ -443,10 +443,10 @@ MODEL({
           return;
         }
 
-        var view = this.X.ToolbarView.create({
+        var view = this.__ctx__.ToolbarView.create({
           horizontal: false,
           data: this,
-          document: this.X.document
+          document: this.__ctx__.document
         });
 
         var self = this;
@@ -463,8 +463,8 @@ MODEL({
             });
           }));
 
-        view.left = this.newIssueView.el.offsetLeft;
-        view.top = this.newIssueView.el.offsetTop + this.newIssueView.el.offsetHeight;
+        view.left = this.newIssueView.$.offsetLeft;
+        view.top = this.newIssueView.$.offsetTop + this.newIssueView.$.offsetHeight;
         view.openAsMenu();
 
         view.subscribe('close', function() {
@@ -482,15 +482,15 @@ MODEL({
 
       this.memento = '';
 
-      this.location.y = this.X.QIssue.OWNER;
-      this.location.x = this.X.QIssue.STATUS;
+      this.location.y = this.__ctx__.QIssue.OWNER;
+      this.location.x = this.__ctx__.QIssue.STATUS;
 
       this.searchField.data$.addListener(this.onSearch);
       Events.follow(this.location.q$, this.searchField.data$);
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
-      this.X.dynamic(
+      this.__ctx__.dynamic(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.data =
@@ -513,26 +513,26 @@ MODEL({
       }.bind(this));
 
       this.syncManagerFuture.get((function(syncManager) {
-        this.refreshImg.el.onclick = syncManager.forceSync.bind(syncManager);
+        this.refreshImg.$.onclick = syncManager.forceSync.bind(syncManager);
       }).bind(this));
 
       this.location.addListener(this.onLocationUpdate);
 
       var timer = this.timer;
       timer.i$.addListener(function() {
-        if ( ! this.refreshImg.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        this.refreshImg.el.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
+        if ( ! this.refreshImg.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        this.refreshImg.$.style.webkitTransform = 'rotate(' + timer.i + 'deg)';
       }.bind(this));
 
-      this.X.document.addEventListener('mousemove', (function(evt) {
-        if ( this.currentPreview && ! this.currentPreview.el.contains(evt.target) && ! this.view.el.contains(evt.target) ) {
+      this.__ctx__.document.addEventListener('mousemove', (function(evt) {
+        if ( this.currentPreview && ! this.currentPreview.$.contains(evt.target) && ! this.view.$.contains(evt.target) ) {
           this.preview(null);
         }
       }).bind(this));
 
       this.searchChoice.choice = this.searchChoice.choices[1];
 
-      this.X.document.addEventListener('keyup', this.keyPress);
+      this.__ctx__.document.addEventListener('keyup', this.keyPress);
 
       this.IssueDAO.listen(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -559,7 +559,7 @@ MODEL({
       if ( opt_templateName ) {
         for ( var i = 0, prompt; prompt = this.project.project.issuesConfig.prompts[i]; i++ ) {
           if ( prompt.name !== opt_templateName ) continue;
-          var data = this.X.QIssue.create({
+          var data = this.__ctx__.QIssue.create({
             labels: prompt.labels,
             status: prompt.status,
             summary: prompt.title,
@@ -570,7 +570,7 @@ MODEL({
       }
 
       if ( ! data ) {
-          data = this.X.QIssue.create({
+          data = this.__ctx__.QIssue.create({
             description: multiline(function(){/*What steps will reproduce the problem?
 1.
 2.
@@ -589,7 +589,7 @@ Please use labels and text to provide additional information.
       apar(
         arequire('QIssueCreateView')
       )(function() {
-        var v = self.X.QIssueCreateView.create({
+        var v = self.__ctx__.QIssueCreateView.create({
           data: data,
           mode: 'read-write'
         });
@@ -613,7 +613,7 @@ Please use labels and text to provide additional information.
             arequire('QIssueCommentAuthorView'),
             arequire('QIssueCommentUpdateView')
           )(function() {
-            var v = self.X.QIssueDetailView.create({
+            var v = self.__ctx__.QIssueDetailView.create({
               data:             obj,
               mode:             'read-write',
               url:              self.url,
@@ -632,9 +632,9 @@ Please use labels and text to provide additional information.
     pushView: function(view) {
       this.issueMode_ = true;
 
-      var stack = this.el.querySelector('.stack');
-      this.el.querySelector('.header').style.display = 'none';
-      this.el.querySelector('.BrowserView').style.display = 'none';
+      var stack = this.$.querySelector('.stack');
+      this.$.querySelector('.header').style.display = 'none';
+      this.$.querySelector('.BrowserView').style.display = 'none';
       stack.style.display = '';
 
       stack.innerHTML = view.toHTML();
@@ -644,9 +644,9 @@ Please use labels and text to provide additional information.
     back: function() {
       this.issueMode_ = false;
 
-      var stack = this.el.querySelector('.stack');
-      this.el.querySelector('.header').style.display = '';
-      this.el.querySelector('.BrowserView').style.display = '';
+      var stack = this.$.querySelector('.stack');
+      this.$.querySelector('.header').style.display = '';
+      this.$.querySelector('.BrowserView').style.display = '';
       stack.style.display = 'none';
 
       stack.innerHTML = '';
@@ -667,17 +667,17 @@ Please use labels and text to provide additional information.
         put: function(obj) {
           obj = obj.clone();
           var HEIGHT = 400;
-          var screenHeight = self.view.el.ownerDocument.defaultView.innerHeight;
+          var screenHeight = self.view.$.ownerDocument.defaultView.innerHeight;
 
-          var v = self.X.QIssueDetailView.create({
+          var v = self.__ctx__.QIssueDetailView.create({
             data: obj,
             QIssueCommentDAO: self.project.issueCommentDAO(id),
             QIssueDAO: self.IssueDAO,
             mode: 'read-only',
             url: self.url
-          }).addDecorator(self.X.QIssuePreviewBorder.create());
+          }).addDecorator(self.__ctx__.QIssuePreviewBorder.create());
 
-          var popup = self.currentPreview = self.X.PopupView.create({
+          var popup = self.currentPreview = self.__ctx__.PopupView.create({
             x: e.x + 25,
             y: Math.min(
               screenHeight-HEIGHT-180,
@@ -714,7 +714,7 @@ Please use labels and text to provide additional information.
     },
 
     updateZoom: function() {
-      this.X.document.body.style.zoom = this.zoom;
+      this.__ctx__.document.body.style.zoom = this.zoom;
       this.layout();
     },
 
@@ -728,7 +728,7 @@ Please use labels and text to provide additional information.
     },
 
     openURL: function(url) {
-      this.X.document.location = url;
+      this.__ctx__.document.location = url;
     }
   },
 
@@ -753,7 +753,7 @@ MODEL({
         var after = url.substring(question + 1);
         url = before + '?no_qbug=1&' + after;
       }
-      this.X.window.open(url);
+      this.__ctx__.window.open(url);
     }
   }
 

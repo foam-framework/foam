@@ -4,7 +4,7 @@ MODEL({
   properties: [
     {
       name: 'srcDAO',
-      factory: function() { return this.X.PersonDAO; }
+      factory: function() { return this.__ctx__.PersonDAO; }
     },
     {
       name: 'queryFactory',
@@ -47,7 +47,7 @@ MODEL({
       }
     */},
     function toInnerHTML() {/*
-      <%= this.X.IssueOwnerAvatarView.create({ data: this.data }) %>
+      <%= this.__ctx__.IssueOwnerAvatarView.create({ data: this.data }) %>
       <div class="owner-name">{{ this.data }}</div>
       <span class="removeRow">$$removeRow</span>
     */}

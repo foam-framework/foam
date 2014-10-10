@@ -36,7 +36,7 @@ MODEL({
       postSet: function(oldDAO, dao) {
         if ( this.data !== dao ) {
           this.data = dao;
-          this.X.daoViewCurrentDAO = dao;
+          this.__ctx__.daoViewCurrentDAO = dao;
         }
       }
     }
@@ -45,7 +45,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({ daoViewCurrentDAO: this.dao });
+      this.__ctx__ = this.__ctx__.sub({ daoViewCurrentDAO: this.dao });
     },
     onDAOUpdate: function() {}
   }
@@ -61,19 +61,19 @@ MODEL({
     {
       name: 'row',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'col',
       label: 'column',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'acc',
       label: 'accumulator',
       type: 'ChoiceView',
-      factory: function() { return this.X.ChoiceView.create(); }
+      factory: function() { return this.__ctx__.ChoiceView.create(); }
     },
     {
       name: 'accChoices',
@@ -94,7 +94,7 @@ MODEL({
     {
       name: 'grid',
       type: 'GridByExpr',
-      factory: function() { return this.X.GridByExpr.create(); }
+      factory: function() { return this.__ctx__.GridByExpr.create(); }
     }
   ],
 
@@ -107,8 +107,8 @@ MODEL({
     filteredDAO: function() { return this.dao; },
 
     updateHTML: function() {
-      if ( this.initialized_ && ! this.el ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-      if ( ! this.el ) return;
+      if ( this.initialized_ && ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+      if ( ! this.$ ) return;
 
       var self = this;
       this.grid.xFunc = this.col.data || this.grid.xFunc;
@@ -120,11 +120,11 @@ MODEL({
           console.time('toHTML');
           var html = g.toHTML();
           console.timeEnd('toHTML');
-          self.el.innerHTML = html;
+          self.$.innerHTML = html;
           g.initHTML();
         } else {
-          var cview = this.X.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
-          self.el.innerHTML = cview.toHTML();
+          var cview = this.__ctx__.GridCView.create({grid: g, x:5, y: 5, width: 1000, height: 800});
+          self.$.innerHTML = cview.toHTML();
           cview.initHTML();
           cview.paint();
         }
@@ -228,7 +228,7 @@ MODEL({
 
       this.lastView.initHTML();
       this.paint();
-      this.el.ownerDocument.defaultView.addEventListener('resize', this.layout);
+      this.$.ownerDocument.defaultView.addEventListener('resize', this.layout);
     },
   },
 
@@ -243,8 +243,8 @@ MODEL({
       name: 'layout',
       isFramed: true,
       code: function() {
-        if ( ! this.el ) return;
-        var last = this.el.lastChild;
+        if ( ! this.$ ) return;
+        var last = this.$.lastChild;
         last.style.width = '100px';
         last.style.width = 100 + last.parentNode.clientWidth -
           (last.offsetWidth + last.offsetLeft) - 4 /* margin */ - 75;
@@ -270,13 +270,13 @@ MODEL({
         var count = value.length;
         var self  = this;
         var render = function() {
-          while ( self.el.firstChild !== self.el.lastChild ) {
-            self.el.removeChild(self.el.firstChild);
+          while ( self.$.firstChild !== self.$.lastChild ) {
+            self.$.removeChild(self.$.firstChild);
           }
 
           var temp = document.createElement('div');
           temp.style.display = 'None';
-          self.el.insertBefore(temp, self.el.lastChild);
+          self.$.insertBefore(temp, self.$.lastChild);
           temp.outerHTML = self.children.map(
             function(c) { return '<li class="arrayTileItem">' + c.toHTML() + '</li>'; }).join('');
           self.children.forEach(
@@ -287,7 +287,7 @@ MODEL({
         if ( value.length == 0 ) {
           render();
         } else {
-          self.el.style.display = '';
+          self.$.style.display = '';
         }
 
         for ( var i = 0; i < value.length; i++ ) {
@@ -349,20 +349,20 @@ MODEL({
     },
     {
       name: 'useSelection',
-      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      help: 'Backward compatibility for selection mode. Create a __ctx__.selection$ value in your context instead.',
       postSet: function(old, nu) {
-        if (this.useSelection && !this.X.selection$)
+        if (this.useSelection && !this.__ctx__.selection$)
         {
-           this.X.selection$ = this.X.SimpleValue.create();
+           this.__ctx__.selection$ = this.__ctx__.SimpleValue.create();
         }
-        this.selection$ = this.X.selection$;
+        this.selection$ = this.__ctx__.selection$;
       }
     },
     {
       name: 'selection',
-      help: 'Backward compatibility for selection mode. Create a X.selection$ value in your context instead.',
+      help: 'Backward compatibility for selection mode. Create a __ctx__.selection$ value in your context instead.',
       factory: function() {
-        return this.X.SimpleValue.create();
+        return this.__ctx__.SimpleValue.create();
       }
     },
     {
@@ -396,8 +396,8 @@ MODEL({
       });
 
       // bind to selection, if present
-      if (this.X.selection$) {
-        this.selection$ = this.X.selection$;
+      if (this.__ctx__.selection$) {
+        this.selection$ = this.__ctx__.selection$;
       }
     },
 
@@ -408,7 +408,7 @@ MODEL({
       // Either an overflow: scroll element or the window.
       // We keep following the parentElement chain until we get null.
       if ( this.chunkSize > 0 ) {
-        var e = this.el;
+        var e = this.$;
         while ( e ) {
           if ( window.getComputedStyle(e).overflow === 'scroll' ) break;
           e = e.parentElement;
@@ -421,12 +421,12 @@ MODEL({
     },
 
     updateHTML: function() {
-      if ( ! this.dao || ! this.el ) return;
+      if ( ! this.dao || ! this.$ ) return;
       if ( this.painting ) return;
       this.painting = true;
 
       var out = [];
-      var rowView = FOAM.lookup(this.rowView, this.X);
+      var rowView = FOAM.lookup(this.rowView, this.__ctx__);
 
       this.children = [];
       this.initializers_ = [];
@@ -436,8 +436,8 @@ MODEL({
         d = d.limit(this.chunkSize * this.chunksLoaded);
       }
       d.select({put: function(o) {
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.X); //.clone();
-        var view = rowView.create({data: o, model: o.model_}, this.X);
+        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.__ctx__); //.clone();
+        var view = rowView.create({data: o, model: o.model_}, this.__ctx__);
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
@@ -447,17 +447,17 @@ MODEL({
           }.bind(this, o));
         }
         this.addChild(view);
-        if ( this.X.selection$ ) {
+        if ( this.__ctx__.selection$ ) {
           out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
             this.selection = o;
           }).bind(this)) + '">');
         }
         out.push(view.toHTML());
-        if ( this.X.selection$ ) {
+        if ( this.__ctx__.selection$ ) {
           out.push('</div>');
         }
       }.bind(this)})(function() {
-        var e = this.el;
+        var e = this.$;
 
         if ( ! e ) return;
 
@@ -592,7 +592,7 @@ MODEL({
       name: 'scrollHeight',
       documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.',
       postSet: function(old, nu) {
-        if ( this.el ) this.container$().style.height = nu + 'px';
+        if ( this.$ ) this.container$().style.height = nu + 'px';
       }
     },
     {
@@ -619,7 +619,7 @@ MODEL({
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        var view = FOAM.lookup(nu, this.X);
+        var view = FOAM.lookup(nu, this.__ctx__);
         if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
           this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
       }
@@ -709,18 +709,18 @@ MODEL({
     initHTML: function() {
       this.SUPER();
 
-      if ( ! this.el.style.height ) {
-        this.el.style.height = '100%';
+      if ( ! this.$.style.height ) {
+        this.$.style.height = '100%';
       }
 
-      this.el.ownerDocument.defaultView.addEventListener('resize', this.onResize);
+      this.$.ownerDocument.defaultView.addEventListener('resize', this.onResize);
       this.onResize();
 
       // Grab the height of the -rowsize div, then drop that div.
       if ( this.rowHeight < 0 ) {
-        var outer = this.X.$(this.id + '-rowsize');
-        var style = this.X.window.getComputedStyle(outer.children[0]);
-        this.rowHeight = this.X.parseFloat(style.height);
+        var outer = this.__ctx__.$(this.id + '-rowsize');
+        var style = this.__ctx__.window.getComputedStyle(outer.children[0]);
+        this.rowHeight = this.__ctx__.parseFloat(style.height);
 
         // Now destroy it properly.
         this.rowSizeView.destroy();
@@ -731,7 +731,7 @@ MODEL({
       this.onDAOUpdate();
     },
     container$: function() {
-      return this.X.document.getElementById(this.containerID);
+      return this.__ctx__.document.getElementById(this.containerID);
     },
     // Allocates visible rows to the correct positions.
     // Will create new visible rows where necessary, and reuse existing ones.
@@ -770,7 +770,7 @@ MODEL({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = FOAM.lookup(this.rowView, this.X);
+        var rowView = FOAM.lookup(this.rowView, this.__ctx__);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
@@ -859,7 +859,7 @@ MODEL({
       name: 'onResize',
       isMerged: 100,
       code: function() {
-        this.viewportHeight = this.el.offsetHeight;
+        this.viewportHeight = this.$.offsetHeight;
       }
     },
     {
@@ -881,7 +881,7 @@ MODEL({
           var s = this.scroller$;
           if ( s ) s.scrollTop = this.scrollTop;
 
-          this.X.setTimeout(this.update.bind(this), 0);
+          this.__ctx__.setTimeout(this.update.bind(this), 0);
         }.bind(this));
       }
     },
@@ -897,7 +897,7 @@ MODEL({
         <p>As a final note, if there's a gap of unloaded rows between what should now be loaded, and what currently is, we just drop the old cache. This shouldn't happen in general; instead the loaded region grows in small chunks, or is completely replaced after the DAO updates.</p>
       */},
       code: function() {
-        if ( ! this.el ) return;
+        if ( ! this.$ ) return;
         // Calculate visibleIndex based on scrollTop.
         // If the visible rows are inside the cache, just expand the cached area
         // to keep 3*runway rows on each side, up to the edges of the data.
@@ -981,7 +981,7 @@ MODEL({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = FOAM.lookup(this.rowView, this.X).create({ data: this.dao.model.create() });
+              this.rowSizeView = FOAM.lookup(this.rowView, this.__ctx__).create({ data: this.dao.model.create() });
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>
@@ -1019,7 +1019,7 @@ MODEL({
       name: 'view',
       required: true,
       preSet: function(_, v) {
-        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.X);
+        if ( typeof v === 'string' ) v = FOAM.lookup(v, this.__ctx__);
         this.children = [v];
         v.data = v.dao = this.predicatedDAO$Proxy;
         return v;
@@ -1030,7 +1030,7 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X = this.X.sub({DAO: this.predicatedDAO$Proxy});
+      this.__ctx__ = this.__ctx__.sub({DAO: this.predicatedDAO$Proxy});
     },
     toHTML: function() { return this.view.toHTML(); },
     initHTML: function() { this.view.initHTML(); }

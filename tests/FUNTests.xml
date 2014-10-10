@@ -1,6 +1,31 @@
 <foam>
 
   <object model="UnitTest">
+    <property name="name">Super Test</property>
+    <property name="description">Test SUPER support.</property>
+    <property name="tags">
+      <i>node</i>
+      <i>web</i>
+    </property>
+    <property name="code" type="function">function anonymous() {
+      MODEL({name: 'A', methods: { foo: function() { console.log('a'); } }});
+      MODEL({name: 'B', extendsModel: 'A', methods: { foo: function() { console.log('b.fore'); this.SUPER(); console.log('b.after'); } }});
+      MODEL({name: 'B2', extendsModel: 'A', methods: { foo: function(SUPER) { console.log('b2.fore'); SUPER(); console.log('b2.after'); } }});
+      MODEL({name: 'B3', extendsModel: 'A', methods: { foo: function(SUPER, X) { X.console.log('b3.fore'); SUPER(); X.console.log('b3.after'); } }});
+
+      var a  = A.create();
+      var b  = B.create();
+      var b2 = B2.create();
+      var b3 = B3.create();
+      a.foo();
+      b.foo();
+      b2.foo();
+      b3.foo();
+    }
+    </property>
+  </object>
+
+  <object model="UnitTest">
     <property name="name">0-char string</property>
     <property name="description">The encoding of an empty string is the empty string.</property>
     <property name="tags">
@@ -10,7 +35,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('', '');
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -26,7 +51,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('A', 'QQ==');
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -42,7 +67,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('AB', 'QUI=');
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -58,7 +83,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('ABC', 'QUJD');
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -74,7 +99,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.encodingTest('ABCD', 'QUJDRA==');
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -95,7 +120,7 @@
         view[i] = i;
       }
 
-      var encodedString = this.X.Base64Encoder.encode(buffer);
+      var encodedString = this.__ctx__.Base64Encoder.encode(buffer);
       var EXPECTED_RESULTS =
         'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIj' +
         'JCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZH' +
@@ -114,7 +139,7 @@
       for ( var i = 0 ; i &lt; 256 ; i++ ) {
         this.assert(i === decodedView[i], 'Index ' + i + ' matches');
       }
-    
+
 }
     </property>
     <property name="parentTest">Base64</property>
@@ -200,7 +225,7 @@
 
       var view = DetailView.create({ data: Message.create() });
       this.render(view);
-    
+
 }</property>
   </object>
 
@@ -214,7 +239,7 @@
     <property name="code" type="function">function anonymous() {
 
       this.decode = function(str) {
-        var decoder = this.X.Base64Decoder.create([]);
+        var decoder = this.__ctx__.Base64Decoder.create([]);
         decoder.put(str);
         decoder.eof();
         return decoder.sink;
@@ -239,12 +264,12 @@
       };
 
       this.encodingTest = function(input, expected) {
-        var encodedString = this.X.Base64Encoder.encode(this.string2ab(input));
+        var encodedString = this.__ctx__.Base64Encoder.encode(this.string2ab(input));
         var decodedString = this.ab2String(this.decode(encodedString));
         this.assert(expected === encodedString, 'Correctly encoded "' + input + '" as "' + expected + '" (== "' + encodedString + '")');
         this.assert(input    === decodedString, 'Correctly decoded "' + encodedString + '" back to "' + input + '" (== "' + decodedString + '")');
       };
-    
+
 }
     </property>
   </object>
@@ -276,7 +301,7 @@
 
       t3.x = 5;
       this.assert(t3.x === t1.x &amp;&amp; t2.x === 5, 'And all three are now bound together');
-    
+
 }
     </property>
   </object>
@@ -301,7 +326,7 @@
       this.assert(y.foo == x.foo, 'FOAM objects can be passed to constructors to copy');
       y.foo = 'puppies';
       this.assert(y.foo === 'puppies' &amp;&amp; x.foo === 'kittens', 'And it\'s really a copy');
-    
+
 }
     </property>
     <property name="parentTest">Object Model tests</property>
@@ -316,28 +341,27 @@
     <property name="disabled">true</property>
     <property name="code" type="function">function anonymous() {
 
-      X.a = 42;
-      this.log(X.a);
-      var Y = X.sub({a:1,b:2}, 'Y');
+      __ctx__.a = 42;
+      this.log(__ctx__.a);
+      var Y = __ctx__.sub({a:1,b:2}, 'Y');
       this.log(Y);
       this.log(Y.a);
       MDAO.create({ model: UnitTest });
       var m1 = MDAO.create({ model: UnitTest });
       var m2 = Y.MDAO.create({ model: UnitTest });
-      this.log('m2.X ', m2.X);
-      this.log('m1.X ', m1.X);
-      this.log(m2.X.a);
-      var m3 = m2.X.MDAO.create({ model: UnitTest });
-      this.log(m3.X);
-      this.log(m3.X.a);
-    
+      this.log('m2.__ctx__ ', m2.__ctx__);
+      this.log('m1.__ctx__ ', m1.__ctx__);
+      this.log(m2.__ctx__.a);
+      var m3 = m2.__ctx__.MDAO.create({ model: UnitTest });
+      this.log(m3.__ctx__);
+      this.log(m3.__ctx__.a);
 }
     </property>
     <property name="master">42
 CONTEXT(Y)
 1
-m2.X CONTEXT(Y)
-m1.X [object Window]
+m2.__ctx__ CONTEXT(Y)
+m1.__ctx__ [object Window]
 1
 CONTEXT(Y)
 1
@@ -354,7 +378,7 @@ CONTEXT(Y)
 
       this.log('sub test 1, part 1');
       this.log('sub test 1, part 2');
-    
+
 }
     </property>
     <property name="parentTest">Context Examples</property>
@@ -372,7 +396,7 @@ sub test 1, part 2
     <property name="code" type="function">function anonymous() {
 
       this.log('sub test 2');
-    
+
 }
     </property>
     <property name="parentTest">Context Examples</property>
@@ -405,7 +429,7 @@ sub test 1, part 2
         .addIndex(Person.SEX, Person.AGE);
 
       this.log(dao);
-    
+
 }
     </property>
     <property name="master">MDAO(Person,Alt(TreeIndex(id, value),TreeIndex(name, TreeIndex(id, value)),TreeIndex(sex, TreeIndex(age, TreeIndex(id, value)))))
@@ -427,7 +451,7 @@ sub test 1, part 2
       dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
       dao.select({put: function(p) { this.log('person: ', p.name); }.bind(this)});
-    
+
 }
     </property>
     <property name="parentTest">DAO Tests</property>
@@ -450,7 +474,7 @@ person: Andy
       var a = [];
       dao.select(a);
       this.jlog(a);
-    
+
 }
     </property>
     <property name="parentTest">DAO Tests</property>
@@ -532,7 +556,7 @@ person: Andy
       this.assert(x.foo === 7, 'Setting the property to the default value still doesn\'t return to calling the defaultValueFn');
       this.assert(seqMatches(['bar factory', 'foo dVF', 'foo dVF', 'foo dVF']),
           'Requesting it still doesn\'t call defaultValueFn');
-    
+
 }
     </property>
     <property name="parentTest">Object Model tests</property>
@@ -562,7 +586,7 @@ person: Andy
       this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
       this.assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -616,7 +640,7 @@ person: Andy
         this.assert(animationCount === 1 &amp;&amp; otherCount === 1, 'Both counts are 1 due to the merging');
         ret();
       }.bind(this), 50);
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -665,7 +689,7 @@ person: Andy
         this.assert(correct, 'Updates should be in ascending order');
         ret();
       }.bind(this), 150);
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -701,7 +725,7 @@ person: Andy
 
       x.publish(['foo', EventService.WILDCARD]);
       this.assert(barCount === 2 &amp;&amp; bazCount === 2, 'But publishing on WILDCARD hits all events in the subtree');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -734,7 +758,7 @@ person: Andy
       this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
       this.assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -767,7 +791,7 @@ person: Andy
       this.assert(y.foo === 3, 'Changing x.foo updates y.foo');
       y.foo = 5;
       this.assert(x.foo === 5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -800,7 +824,7 @@ person: Andy
       this.assert(y.foo === 6, 'Changing x.foo updates y.foo');
       y.foo = 5;
       this.assert(x.foo === 3 &amp;&amp; y.foo === 5, 'But changing y.foo does not update x.foo');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -833,7 +857,7 @@ person: Andy
       this.assert(y.foo === 6, 'Changing x.foo updates y.foo');
       y.foo = 5;
       this.assert(x.foo === 2.5 &amp;&amp; y.foo === 5, 'And changing y.foo updates x.foo');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -856,7 +880,7 @@ person: Andy
       setTimeout(function() { fn(" world!"); ret(); }, 20);
       var log = this.log.bind(this);
       setTimeout(function() { functionFuture.set(log); }, 10);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -902,7 +926,7 @@ hello
       x.doThings();
       this.assert(seqMatches(['subclass pre', 'doThings base', 'subclass post']),
           'this.SUPER() calls the same method on the superclass, allowing you to add code before and after it');
-    
+
 }
     </property>
     <property name="parentTest">Object Model tests</property>
@@ -938,7 +962,7 @@ hello
         }
         return true;
       }
-    
+
 }
     </property>
   </object>
@@ -976,7 +1000,7 @@ hello
       o.f = 1.0; this.assert(o.f === 1.0, 'Setting Float Properties should work.');
       o.f = undefined; this.assert(o.f === 0.0, 'Setting Float Properties to undefined should convert value to 0.0.');
       o.f = '1.1'; this.assert(o.f === 1.1, 'Setting Float Properties to a string should convert value to Float.');
-    
+
 }
     </property>
   </object>
@@ -1042,7 +1066,7 @@ hello
       x.bar = 'puppies';
       this.assert(x.bar === 'kittens', 'bar is a pseudoproperty - if its setter does nothing with the value, the getter returns what it always does');
       this.assert(seqMatches(['bar setter puppies', 'bar getter']), 'setter was called properly');
-    
+
 }
     </property>
     <property name="parentTest">Object Model tests</property>
@@ -1086,7 +1110,7 @@ hello
       foo.x = 5;
       foo.x = 7;
       this.assert(sevensSeen === 2 &amp;&amp; sevensSeenOneTime === 1, 'And another, but the one-time listener has been removed');
-    
+
 }
     </property>
     <property name="parentTest">Event Tests</property>
@@ -1104,7 +1128,7 @@ hello
       var f1 = asynchronized(this.f1.bind(this));
 
       apar(f1, f1, f1)(ret);
-    
+
 }
     </property>
     <property name="parentTest">asynchronized</property>
@@ -1127,7 +1151,7 @@ f1 end
     <property name="code" type="function">function (ret){
 
       apar(aseq(this.f1, this.f1, this.f1), aseq(this.f1, this.f1, this.f1))(ret);
-    
+
 }
     </property>
     <property name="parentTest">asynchronized</property>
@@ -1156,7 +1180,7 @@ f1 end
     <property name="code" type="function">function (ret){
 
       apar(this.f1, this.f1, this.f1)(ret);
-    
+
 }
     </property>
     <property name="parentTest">asynchronized</property>
@@ -1179,7 +1203,7 @@ f1 end
     <property name="code" type="function">function (ret){
 
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1199,7 +1223,7 @@ f2() called.
     <property name="code" type="function">function (ret){
 
       this.aprint.bind(this).ao(this.f2.bind(this).ao(this.f1.bind(this)))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1226,7 +1250,7 @@ f2() called.
         ),
         this.aprint.bind(this)
       )(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1247,7 +1271,7 @@ fC1
     <property name="code" type="function">function (ret){
 
       this.f1.bind(this).aseq(this.f2.bind(this).aseq(this.aprint.bind(this)))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1267,7 +1291,7 @@ f2() called.
     <property name="code" type="function">function (ret){
 
       this.f1.bind(this).aseq(this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1286,7 +1310,7 @@ f2() called.
     <property name="code" type="function">function (ret){
 
       ao(this.aprint.bind(this), this.f2.bind(this), this.f1.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1306,7 +1330,7 @@ f2() called.
     <property name="code" type="function">function (ret){
 
       aseq(this.f1.bind(this), this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1325,7 +1349,7 @@ f2() called.
     <property name="code" type="function">function (ret){
 
       aseq(this.f1.bind(this), this.f2.bind(this), this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1349,7 +1373,7 @@ f2() called.
         function(ret) { this.log('fC'); ret(2); }.bind(this),
         this.aprint.bind(this)
       )(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1372,7 +1396,7 @@ fC
         function(ret, a) { this.log('fB'); ret(1); }.bind(this),
         function(ret, a) { this.log('fC'); ret(2); }.bind(this)
       )(this.aprint.bind(this).aseq(ret));
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1395,7 +1419,7 @@ fC
       this.f1 = function(ret) { this.log('f1() called.'); ret(1); };
       this.f2 = function(ret, a) { this.log('f2() called.'); ret(a,2); };
       this.aprint = function(ret) { this.log(argsToArray(arguments).slice(1).join(', ')); ret(); };
-    
+
 }
     </property>
   </object>
@@ -1412,7 +1436,7 @@ fC
       var boo = function() { console.log('boo'); };
       boo();
       boo.abind(null)(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1435,7 +1459,7 @@ boo
         function() { this.log('sync fn'); }.abind(this),
         this.f2.bind(this)
       )(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1456,7 +1480,7 @@ f2() called.
 
       this.log('alog');
       alog('a message')(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1477,7 +1501,7 @@ a message
 
       m = amemo(function(ret) { this.log('Should only see this once.'); ret(1); }.bind(this));
       apar(m, m, m).aseq(this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1497,7 +1521,7 @@ a message
 
       this.log('anop');
       aseq(alog('before'), anop, alog('after'))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1517,7 +1541,7 @@ after
     <property name="code" type="function">function (ret){
 
       arepeat(5, this.f1.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1539,7 +1563,7 @@ f1() called.
     <property name="code" type="function">function (ret){
 
       arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)).aseq(this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1564,7 +1588,7 @@ f1() called.
       aseq(
         arepeat(5, function(ret, a, b) { this.log(a); ret(1); }.bind(this)),
         this.aprint.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1596,7 +1620,7 @@ f1() called.
           }.bind(this)
         )(ret);
       }.bind(this))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1627,7 +1651,7 @@ f1() called.
       this.log('**********');
       this.log('************** Beginning asleep2');
       aseq(alog('before'), asleep(10), alog('after'), asleep(10), alog('much after'))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1650,7 +1674,7 @@ much after
 
       this.log('at the start');
       aseq(asleep(10), alog('a message'))(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1674,7 +1698,7 @@ a message
         asleep(20),
         alog('f1 end')
       );
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1709,7 +1733,7 @@ a message
           r();
         }.bind(this)
       )(ret);
-    
+
 }
     </property>
     <property name="parentTest">aFunc Tests</property>
@@ -1732,7 +1756,7 @@ a message
       var json = x.toJSON();
       this.log(json);
       this.assert(typeof json === 'string', '.toJSON() produces JSON strings');
-      var parsed = JSONUtil.parse(X, json);
+      var parsed = JSONUtil.parse(__ctx__, json);
       this.assert(typeof parsed === 'object', '.toJSON() output can be parsed by JSONUtil.parse()');
       this.assert(OMTestBase.isInstance(parsed), 'The parsed object should be an instance of the original Model');
 
@@ -1742,7 +1766,7 @@ a message
       parsed = XMLUtil.parse(xml);
       this.assert(parsed instanceof Array, '.toXML() output can be parsed by XMLUtil.parse(), which returns an array of parsed objects');
       this.assert(OMTestBase.isInstance(parsed[0]), 'The parsed object should be an instance of the original Model');
-    
+
 }
     </property>
     <property name="parentTest">Object Model tests</property>

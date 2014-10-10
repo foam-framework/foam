@@ -37,9 +37,9 @@
   // To remove this feature replace the .inner-calc-display 'transition:' and
   // 'top:' styles with 'bottom: 0'.
   var move = EventService.framed(function() {
-    if ( ! this.el ) return;
-    var outer$ = this.el.querySelector('.calc-display');
-    var inner$ = this.el.querySelector('.inner-calc-display');
+    if ( ! this.$ ) return;
+    var outer$ = this.$.querySelector('.calc-display');
+    var inner$ = this.$.querySelector('.inner-calc-display');
     var outer  = window.getComputedStyle(outer$);
     var inner  = window.getComputedStyle(inner$);
     inner$.style.top = toNum(outer.height)-toNum(inner.height) + 'px';

@@ -1,8 +1,8 @@
 <%
   var todo      = this.value.value;
   var remove    = this.DAO.remove.bind(this.DAO, todo);
-  var toEdit    = function() { DOM.setClass(this.el, 'editMode'); this.textView.el.focus(); }.bind(this);
-  var toDisplay = function() { DOM.setClass(this.el, 'editMode', false); }.bind(this);
+  var toEdit    = function() { DOM.setClass(this.$, 'editMode'); this.textView.$.focus(); }.bind(this);
+  var toDisplay = function() { DOM.setClass(this.$, 'editMode', false); }.bind(this);
 %>
 <li class="{{{todo.completed ? ' completed' : ''}}}" id="{{{this.id}}}">
   <div class="view">

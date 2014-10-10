@@ -68,7 +68,7 @@ var AttachmentView = FOAM({
     },
 
     toInnerHTML: function() {
-      this.el.style.display = this.data.length ? 'block' : 'none';
+      this.$.style.display = this.data.length ? 'block' : 'none';
 
       var out = "";
 
@@ -82,7 +82,7 @@ var AttachmentView = FOAM({
     },
 
     redraw: function() {
-      this.el.innerHTML = this.toInnerHTML();
+      this.$.innerHTML = this.toInnerHTML();
       this.invokeInitializers();
     }
   }
@@ -192,7 +192,7 @@ var QuickCompose = FOAM({
     {
       name: 'view',
       factory: function() {
-        return this.X.QuickEMailView.create({
+        return this.__ctx__.QuickEMailView.create({
           model: QuickEMail,
           isFull: this.isFull
         });
@@ -227,8 +227,8 @@ var QuickCompose = FOAM({
 
       this.SUPER();
 
-      this.closeButton.el.tabIndex = -1;
-      this.minimizeButton.el.tabIndex = -1;
+      this.closeButton.$.tabIndex = -1;
+      this.minimizeButton.$.tabIndex = -1;
 
       this.view.bodyView.subscribe('attachmentAdded', this.addAttachment);
 
@@ -243,12 +243,12 @@ var QuickCompose = FOAM({
       }.bind(this));
 
       this.window.document.addEventListener('keyup', this.keyUp);
-      this.view.bodyView.el.contentDocument.addEventListener('keyup', this.keyUp);
+      this.view.bodyView.$.contentDocument.addEventListener('keyup', this.keyUp);
 
       this.window.document.addEventListener('keypress', this.keyPress);
-      this.view.bodyView.el.contentDocument.addEventListener('keypress', this.keyPress);
+      this.view.bodyView.$.contentDocument.addEventListener('keypress', this.keyPress);
 
-      this.view.toView.inputView.el.focus();
+      this.view.toView.inputView.$.focus();
     }
   },
 

@@ -86,7 +86,7 @@ function layout() {
 window.onresize = layout;
 layout();
 
-emails = JSONUtil.mapToObj(X, [
+emails = JSONUtil.mapToObj(__ctx__, [
    {
       model_: 'EMail',
       timestamp: new Date('Sat Oct 29 2011 15:58:55 GMT-0400 (EDT)'),

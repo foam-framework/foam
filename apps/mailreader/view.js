@@ -49,7 +49,7 @@ MODEL({
 
          name: 'updateHTML',
          code: function() {
-            var e = this.el;
+            var e = this.$;
             if ( e ) e.innerHTML = this.labelsToHTML();
          }
       }

@@ -8,9 +8,9 @@ MODEL({
     },
     {
       name: 'issueDAO',
-      scope: 'X',
-      // TODO: should be renamed from IssueDAO to issueDAO in X
-      defaultValueFn: function() { return this.X.IssueDAO; }
+      scope: '__ctx__',
+      // TODO: should be renamed from IssueDAO to issueDAO in __ctx__
+      defaultValueFn: function() { return this.__ctx__.IssueDAO; }
     },
     {
       name: 'property',
@@ -37,23 +37,23 @@ MODEL({
       var self = this;
 
       this.issueDAO.find(this.issue, { put: function(issue) {
-        if ( ! self.el ) return; // stale
+        if ( ! self.$ ) return; // stale
 
         if ( ! issue.isOpen() ) {
-          self.el.style.textDecoration = 'line-through';
+          self.$.style.textDecoration = 'line-through';
         }
 
         if ( self.maxDepth > 1 ) {
           var ids = issue[self.property.name];
           
           if ( ids.length ) {
-            var subView = self.X.BlockView.create({
+            var subView = self.__ctx__.BlockView.create({
               property: self.property,
               maxDepth: self.maxDepth-1,
               ids:      ids
             });
             
-            self.el.insertAdjacentHTML(
+            self.$.insertAdjacentHTML(
               'afterend',
               '<div style="margin-left:10px;">' + subView.toHTML() + '</div>');
             
@@ -67,7 +67,7 @@ MODEL({
   listeners: [
     {
       name: 'editIssue',
-      code: function(id) { this.parent.X.browser.location.id = id; }
+      code: function(id) { this.parent.__ctx__.browser.location.id = id; }
     },
     {
       name: 'startPreview',
@@ -76,10 +76,10 @@ MODEL({
 
         var self = this;
         this.issueDAO.find(id, { put: function(issue) {
-          self.currentPreview = self.X.PopupView.create({
+          self.currentPreview = self.__ctx__.PopupView.create({
             x: e.x+30,
             y: e.y-20,
-            view: self.X.QIssueTileView.create({issue: issue})
+            view: self.__ctx__.QIssueTileView.create({issue: issue})
           });
 
           self.currentPreview.open(self);

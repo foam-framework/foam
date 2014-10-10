@@ -10,7 +10,7 @@
     var colours = ['#33f','#f00','#fc0','#33f', '#cf0' ];
 
     space.write(document);
-    mouse.connect(space.el);
+    mouse.connect(space.$);
 
     Events.dynamic(function() { mouse.x; mouse.y; }, function() {
        var circle = Circle2.create({

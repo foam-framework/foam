@@ -87,7 +87,7 @@ MODEL({
     asend: function(decorator, delegate, args) {
       var ret = args[0];
       args[0] = function(response, xhr) {
-        if ( xhr.status === 401 || xhr.status === 403 ) {
+        if ( xhr.status === 401 ) {
           decorator.authAgent.refresh(function() {
             ret(response, xhr);
           });
@@ -160,7 +160,7 @@ MODEL({
 
   methods: {
     put: function(obj, sink) {
-      var xhr = this.X.XHR.create();
+      var xhr = this.__ctx__.XHR.create();
       xhr.asend(function(response, xhr) {
         if ( xhr.status >= 200 && xhr.status < 300 ) {
           sink && sink.put && sink.put(response);
