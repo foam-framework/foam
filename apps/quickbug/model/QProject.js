@@ -342,8 +342,6 @@ MODEL({
 
         name: 'QIssue',
 
-//        traits: ['KeywordsTrait'],
-
         tableProperties: [
           'starred',
           'id',
@@ -380,6 +378,7 @@ MODEL({
               return '<div id="' + id + '">' + value + '</div>';
             }
           },
+          /*
     {
       model_: 'StringArrayProperty',
       name: 'keywords',
@@ -389,6 +388,7 @@ MODEL({
         return a;
       }
     },
+    */
           {
             name: 'labels',
             shortName: 'l',

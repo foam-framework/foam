@@ -21,6 +21,19 @@ MODEL({
   extendsModel: 'ProxyDAO',
 
   methods: {
+    init: function() {
+      this.SUPER();
+
+      var map = {};
+      this.map_ = map;
+
+      var oldF = DefaultQuery.getPrototype().f;
+      DefaultQuery.getPrototype().f = function(obj) {
+        if ( map[this.arg1 + '---' + obj.id] ) return true; 
+        return oldF.call(this, obj);
+      };
+    },
+
     select: function(sink, options) {
       var query = options && options.query;
 
@@ -35,12 +48,17 @@ MODEL({
         put: function(obj) {
           if ( ! query.f(obj) ) {
             console.log('******* KEYWORD MATCH: ', obj.id, query.toString(), arg1);
+            dao.map_[arg1 + '---' + obj.id] = true;
+            // obj.keywords.binaryInsert(arg1);
+            //console.log(obj.keywords);
+            /*
             dao.X.setTimeout(function() {
               obj = obj.model_.create(obj);
               obj.keywords = obj.keywords.clone().binaryInsert(arg1);
               console.log('* ', obj.keywords);
-              dao.delegate.put(obj);
-            }, 1000);
+              dao.delegate.local.put(obj);
+            }, 10);
+            */
           }
           sink.put.apply(sink, arguments);
         }
