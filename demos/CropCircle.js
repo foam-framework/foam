@@ -26,7 +26,7 @@ MODEL({
     {
       name: 'f',
       preSet: function(_, f) {
-        var X = {
+        var __ctx__ = {
           d: this.d.bind(this),
           t: this.t.bind(this),
           s: this.s.bind(this),
@@ -36,9 +36,9 @@ MODEL({
           c3: this.c3.bind(this),
           sym: this.sym.bind(this)
         };
-        with ( X ) { f = eval('(' + f.toString() + ')'); }
-        X.f = f.bind(this);
-        return X.f;
+        with ( __ctx__ ) { f = eval('(' + f.toString() + ')'); }
+        __ctx__.f = f.bind(this);
+        return __ctx__.f;
       },
       defaultValue: function() { this.c(); }
     }

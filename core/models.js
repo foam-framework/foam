@@ -210,12 +210,12 @@ MODEL({
     manage: function(name, obj, version) {
       obj.addListener(EventService.merged((function() {
         console.log('PersistentContext', 'updating', name);
-        this.dao.put(this.X.Binding.create({
+        this.dao.put(this.__ctx__.Binding.create({
           id:    name,
           value: JSONUtil.compact.where(this.predicate).stringify(obj),
           version: version
         }));
-      }).bind(this), undefined, this.X));
+      }).bind(this), undefined, this.__ctx__));
     },
     bindObjects: function(a) {
       // TODO: implement
@@ -253,7 +253,7 @@ MODEL({
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
             var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(this.X, json);
+            var obj = JSONUtil.mapToObj(this.__ctx__, json);
             obj.copyFrom(transientValues);
             this.context[name] = obj;
             this.manage(name, obj, version);

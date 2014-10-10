@@ -22,7 +22,7 @@
     </div>
   </div>
 <%
-this.X.registerModel(CalcButton.xbind({
+this.__ctx__.registerModel(CalcButton.xbind({
   background: '#777', width: 70, height: 70
 }), 'ActionButton');
 %>

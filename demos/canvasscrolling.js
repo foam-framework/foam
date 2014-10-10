@@ -68,20 +68,20 @@ MODEL({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.offset; this.objs; }.bind(this),
+      this.__ctx__.dynamic(function() { this.width; this.offset; this.objs; }.bind(this),
                      function() {
                        this.view && this.view.paint();
                      }.bind(this));
     },
     initCView: function() {
-      this.X.dynamic(
+      this.__ctx__.dynamic(
         function() {
           this.scrollTop; this.height;
         }.bind(this), this.onDAOUpdate);
 
-      if ( this.X.gestureManager ) {
-        var manager = this.X.gestureManager;
-        var target = this.X.GestureTarget.create({
+      if ( this.__ctx__.gestureManager ) {
+        var manager = this.__ctx__.gestureManager;
+        var target = this.__ctx__.GestureTarget.create({
           containerID: this.view.id,
           handler: this,
           gesture: 'verticalScrollMomentum'
@@ -226,7 +226,7 @@ MODEL({
   ]
 });
 
-var dao = JSONUtil.arrayToObjArray(X, [
+var dao = JSONUtil.arrayToObjArray(__ctx__, [
   {
 "model_": "QIssue",
 "blockedOn": [
@@ -4675,10 +4675,10 @@ var dao = JSONUtil.arrayToObjArray(X, [
 
 dao.dao;
 
-this.X.touchManager = this.X.TouchManager.create({});
-var gestureManager = this.X.GestureManager.create({});
+this.__ctx__.touchManager = this.__ctx__.TouchManager.create({});
+var gestureManager = this.__ctx__.GestureManager.create({});
 
-var scroller = this.X.ExperimentalScrollView.create({ dao: dao });
+var scroller = this.__ctx__.ExperimentalScrollView.create({ dao: dao });
 
 var win = Window.create({ window: window });
 win.view = scroller.toPositionedView_();

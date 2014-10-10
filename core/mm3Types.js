@@ -401,7 +401,7 @@ var ArrayProperty = Model.create({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        var m = this.X[prop.subType] || GLOBAL[prop.subType];
+        var m = this.__ctx__[prop.subType] || GLOBAL[prop.subType];
 
         if ( ! m ) return a;
 
@@ -663,7 +663,7 @@ var ModelProperty = Model.create({
           else
             value = prop.defaultValue;
         }
-        return FOAM.lookup(value, this.X);
+        return FOAM.lookup(value, this.__ctx__);
       }
     }
   ]

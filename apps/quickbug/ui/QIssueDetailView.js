@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'model',
-      factory: function() { return this.X.QIssue; }
+      factory: function() { return this.__ctx__.QIssue; }
     },
     {
       model_: 'BooleanProperty',
@@ -26,23 +26,23 @@ MODEL({
     {
       name: 'cursorView',
       factory: function() {
-        return this.X.CursorView.create({
-          data: this.X.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
+        return this.__ctx__.CursorView.create({
+          data: this.__ctx__.Cursor.create({dao: this.cursorIssueDAO$Proxy})});
       }
     },
     {
       name: 'blockingView',
       factory: function() {
-        return this.X.BlockView.create({
-          property: this.X.QIssue.BLOCKING,
+        return this.__ctx__.BlockView.create({
+          property: this.__ctx__.QIssue.BLOCKING,
           ids: this.data.blocking});
       }
     },
     {
       name: 'blockedOnView',
       factory: function() {
-        return this.X.BlockView.create({
-          property: this.X.QIssue.BLOCKED_ON,
+        return this.__ctx__.BlockView.create({
+          property: this.__ctx__.QIssue.BLOCKED_ON,
           ids: this.data.blockedOn});
       }
     },
@@ -67,14 +67,14 @@ MODEL({
       if ( this.data ) this.data.removeListener(this.doSave);
     },
     commentCreateView: function() {
-      return this.newCommentView = this.X.QIssueCommentCreateView.create({
+      return this.newCommentView = this.__ctx__.QIssueCommentCreateView.create({
         dao: this.data.comments,
         issue$: this.data$,
         data: this.data.newComment()
       });
     },
     clView: function() {
-      return this.X.QIssueCLView.create({dao: this.data.comments});
+      return this.__ctx__.QIssueCLView.create({dao: this.data.comments});
     },
     toHTML: function() {
       return '<div id="' + this.id + '">' + this.toInnerHTML() + '</div>';
@@ -86,7 +86,7 @@ MODEL({
     },
     refresh: function() {
       var self = this;
-      self.issueDAO.where(EQ(this.X.QIssue.ID, self.data.id)).listen(
+      self.issueDAO.where(EQ(this.__ctx__.QIssue.ID, self.data.id)).listen(
         EventService.oneTime(function() {
           self.issueDAO.find(self.data.id, {
             put: function(issue) {

@@ -5,7 +5,7 @@ MODEL({
   properties: [
     {
       name: 'srcDAO',
-      factory: function() { return this.X.LabelDAO; }
+      factory: function() { return this.__ctx__.LabelDAO; }
     },
     {
       name: 'queryFactory',
