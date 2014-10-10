@@ -1102,7 +1102,7 @@ MODEL({
       if ( this.$ ) return;
       var document = this.__ctx__.document;
       var div      = document.createElement('div');
-      div.style.left = this.__ctx__ + 'px';
+      div.style.left = this.x + 'px';
       div.style.top = this.y + 'px';
       if ( this.width )     div.style.width = this.width + 'px';
       if ( this.height )    div.style.height = this.height + 'px';
@@ -2814,7 +2814,7 @@ MODEL({
       name: 'onMouseMove',
       isFramed: true,
       code: function(evt) {
-        this.__ctx__ = evt.offsetX;
+        this.x = evt.offsetX;
         this.y = evt.offsetY;
       }
     }
@@ -3058,7 +3058,7 @@ MODEL({
     },
     {
       name: 'x',
-      help: '__ctx__ coordinate of the translation',
+      help: 'X coordinate of the translation',
       hidden: true,
       postSet: function(old, nu) {
         // TODO: Other browsers.
@@ -3169,7 +3169,7 @@ MODEL({
       var self = this;
       var time = 150 + sizeOfMove * 150;
       Movement.animate(time, function(evt) {
-        self.__ctx__ = self.index * self.width;
+        self.x = self.index * self.width;
       }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view.deepPublish(self.ON_SHOW);
       })();
@@ -3191,7 +3191,7 @@ MODEL({
         this.width = this.$.clientWidth;
         var self = this;
         var frame = window.requestAnimationFrame(function() {
-          self.__ctx__ = self.index * self.width;
+          self.x = self.index * self.width;
 
           for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
             self.slider.children[i].style.left = (i * 100) + '%';
@@ -3211,7 +3211,7 @@ MODEL({
         var maxWidth = (this.views.length - 1) * this.width;
         if ( x > maxWidth ) x = maxWidth;
 
-        this.__ctx__ = x;
+        this.x = x;
       }
     },
     {

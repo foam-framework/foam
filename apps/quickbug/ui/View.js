@@ -236,7 +236,7 @@ MODEL({
         var row = altView.views[1].view().row.data;
         var q = AND(
           this.__ctx__.QueryParser.parseString(this.browser.location.q),
-          AND(EQ(col, this.__ctx__),
+          AND(EQ(col, this.x),
               EQ(row, this.y)).partialEval()).partialEval();
         this.browser.location.mode = Location.MODE.fromMemento.call(this.browser, 'list');
         this.browser.location.q = q.toMQL();

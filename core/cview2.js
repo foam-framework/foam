@@ -327,7 +327,7 @@ MODEL({
         this.initCView();
         this.state = 'active';
       }
-      this.canvas.translate(this.__ctx__, this.y);
+      this.canvas.translate(this.x, this.y);
       this.erase();
       this.paintSelf();
       this.paintChildren();
@@ -377,7 +377,7 @@ MODEL({
         c.lineWidth = this.borderWidth;
         c.strokeStyle = this.border;
         c.beginPath();
-        c.arc(this.__ctx__, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.stroke();
       }
@@ -386,7 +386,7 @@ MODEL({
         c.fillStyle = this.color;
 
         c.beginPath();
-        c.arc(this.__ctx__, this.y, this.r, 0, Math.PI*2, true);
+        c.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
         c.closePath();
         c.fill();
       }
@@ -545,18 +545,18 @@ MODEL({
         function() {
           if ( self.action.isAvailable.call(self.data, self.action) &&
                self.oldWidth_ && self.oldHeight_ ) {
-            self.__ctx__ = self.oldX_;
+            self.x = self.oldX_;
             self.y = self.oldY_;
             self.width = self.oldWidth_;
             self.height = self.oldHeight_;
           } else if ( self.width || self.height ) {
-            self.oldX_ = self.__ctx__;
+            self.oldX_ = self.x;
             self.oldY_ = self.y;
             self.oldWidth_ = self.width;
             self.oldHeight_ = self.height;
             self.width = 0;
             self.height = 0;
-            self.__ctx__ = 0;
+            self.x = 0;
             self.y = 0;
           }
         });
@@ -600,7 +600,7 @@ MODEL({
         this.canvas.clearRect(0, 0, this.width, this.height);
 
         c.beginPath();
-        c.arc(this.__ctx__+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
+        c.arc(this.x+this.radius, this.y+this.radius, this.radius-1, 0, Math.PI*2, false);
         c.strokeStyle = this.background;
         c.lineWidth = 1;
         c.stroke();
@@ -623,7 +623,7 @@ MODEL({
       if ( this.image_ && this.image_.width ) {
         c.drawImage(
           this.image_,
-          this.__ctx__ + (this.width  - this.iconWidth)/2,
+          this.x + (this.width  - this.iconWidth)/2,
           this.y + (this.height - this.iconHeight)/2,
           this.iconWidth,
           this.iconHeight);
@@ -631,7 +631,7 @@ MODEL({
 
       c.fillText(
         this.action.labelFn.call(this.data, this.action),
-        this.__ctx__+this.width/2,
+        this.x+this.width/2,
         this.y+this.height/2);
     }
   }
