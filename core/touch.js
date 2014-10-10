@@ -350,14 +350,7 @@ MODEL({
       var point = map[Object.keys(map)[0]];
       this.handlers = handlers || [];
 
-      if ( this.nativeScrolling ) {
-        for ( var i = 0 ; i < this.handlers.length ; i++ ) {
-          if ( this.handlers[i].attachScrollEvent ) {
-            this.handlers[i].attachScrollEvent();
-          }
-        }
-        return;
-      }
+      if ( this.nativeScrolling ) return;
 
       (this.isVertical ? point.y$ : point.x$).addListener(this.onDelta);
       point.done$.addListener(this.onDone);
@@ -523,17 +516,15 @@ MODEL({
     initHTML: function() {
       this.SUPER();
       this.__ctx__.gestureManager.install(this.scrollGesture);
+      /* Checks for this.onScroll. If found, will attach a scroll event listener for it. */
+      if ( this.onScroll )
+        this.scroller$.addEventListener('scroll', this.onScroll);
     },
     destroy: function() {
       this.SUPER();
       this.__ctx__.gestureManager.uninstall(this.scrollGesture);
       if ( this.onScroll && this.scroller$ )
         this.scroller$.removeEventListener('scroll', this.onScroll)
-    },
-    attachScrollEvent: function() {
-      /* Checks for this.onScroll. If found, will attach a scroll event listener for it. */
-      if ( this.onScroll )
-        this.scroller$.addEventListener('scroll', this.onScroll);
     }
   }
 });
